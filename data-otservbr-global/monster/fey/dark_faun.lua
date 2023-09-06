@@ -45,11 +45,6 @@ monster.strategiesTarget = {
 	random = 10
 }
 
-monster.respawnType = {
-	period = RESPAWNPERIOD_NIGHT,
-	underground = true
-}
-
 monster.flags = {
 	summonable = false,
 	attackable = true,
@@ -67,21 +62,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Blood, fight and rage!", yell = false },
 	{ text = "This will be your last dance!", yell = false },
+	{ text = "This is a nightmare and you won't wake up!", yell = false },
+	{ text = "Blood, fight and rage!", yell = false },
 	{ text = "You're a threat to this realm! You have to die!", yell = false },
-	{ text = "This is a nightmare and you won't wake up!", yell = false }
 }
 
 monster.loot = {
@@ -114,6 +109,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 50,
 	armor = 50,
+	mitigation = 1.21,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 85, maxDamage = 105, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -127,7 +123,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 40 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 40 },
 }
 
 monster.immunities = {

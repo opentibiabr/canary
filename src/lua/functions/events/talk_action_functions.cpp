@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/account/account.hpp"
+#include "account/account.hpp"
 #include "lua/creature/talkaction.hpp"
 #include "lua/functions/events/talk_action_functions.hpp"
 

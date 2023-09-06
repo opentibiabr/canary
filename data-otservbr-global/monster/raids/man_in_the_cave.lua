@@ -1,4 +1,4 @@
-local mType = Game.createMonsterType("Man In The Cave")
+local mType = Game.createMonsterType("Man in the Cave")
 local monster = {}
 
 monster.description = "man in the cave"
@@ -13,6 +13,11 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 338,
+	bossRace = RARITY_NEMESIS,
+}
+
 monster.health = 485
 monster.maxHealth = 485
 monster.race = "blood"
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8
-}
-
-monster.bosstiary = {
-	bossRaceId = 338,
-	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {
@@ -43,7 +43,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = false,
@@ -54,12 +54,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -74,8 +74,9 @@ monster.voices = {
 	chance = 10,
 	{ text = "THE MONKS ARE MINE!", yell = true },
 	{ text = "I will rope you up! All of you!", yell = false },
-	{ text = "You have been roped up!", yell = false },
-	{ text = "A MIC to rule them all!", yell = false }
+	{ text = "Have you seen my old pal Frack?", yell = false },
+	{ text = "A MIC to rule them all!", yell = false },
+	{ text = "Let me put my rope around your neck!", yell = false },
 }
 
 monster.loot = {
@@ -95,6 +96,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 15,
 	armor = 15,
+	mitigation = 1.00,
 	{ name = "speed", interval = 2000, chance = 12, speedChange = 250, effect = CONST_ME_MAGIC_RED, target = false, duration = 4000 },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 10, maxDamage = 50, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
@@ -109,7 +111,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

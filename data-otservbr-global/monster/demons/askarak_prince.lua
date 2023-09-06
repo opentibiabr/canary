@@ -61,23 +61,23 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = true,
-	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "DEATH TO THE SHABURAK!", yell = false },
-	{ text = "GREEN WILL RULE!", yell = false },
-	{ text = "ONLY WE ARE TRUE DEMONS!", yell = false },
-	{ text = "RED IS MAD!", yell = false },
-	{ text = "WE RULE!", yell = false }
+	{ text = "DEATH TO THE SHABURAK!", yell = true },
+	{ text = "GREEN WILL RULE!", yell = true },
+	{ text = "ONLY WE ARE TRUE DEMONS!", yell = true },
+	{ text = "RED IS MAD!", yell = true },
+	{ text = "WE RULE!", yell = true },
 }
 
 monster.loot = {
@@ -107,7 +107,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 30,
-	armor = 30
+	armor = 45,
+	mitigation = 1.32,
 }
 
 monster.elements = {
@@ -120,7 +121,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 70 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {

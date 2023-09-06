@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 1,
-	Locations = "Secret Library."
+	Locations = "Secret Library energy section."
 }
 
 monster.health = 10500
@@ -59,17 +59,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 4,
+	color = 71,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Did you know... there are over 200 bones in your body to break?", yell = false },
+	{ text = "Did you know... a lot of so-called trivia facts aren't even remotely true?", yell = false },
+	{ text = "Did you know... fear can be smelled?", yell = false },
+	{ text = "Did you know... you could die in 1.299.223 ways within the next ten seconds?", yell = false },
 }
 
 monster.loot = {
@@ -99,6 +103,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 33,
 	armor = 76,
+	mitigation = 2.08,
 	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_PHYSICALDAMAGE, minDamage = 100, maxDamage = 300, radius = 3, effect = CONST_ME_BLOCKHIT, target = false },
 	{ name = "combat", interval = 200, chance = 55, type = COMBAT_PHYSICALDAMAGE, minDamage = 100, maxDamage = 300, radius = 3, effect = CONST_ME_ENERGYHIT, target = false }
 }
@@ -113,11 +118,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 50 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -20 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -20 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

@@ -3,6 +3,7 @@ add_library(${PROJECT_NAME}_lib)
 setup_target(${PROJECT_NAME}_lib)
 
 # Add subdirectories
+add_subdirectory(account)
 add_subdirectory(config)
 add_subdirectory(creatures)
 add_subdirectory(database)

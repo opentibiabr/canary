@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 750
-monster.maxHealth = 750
+monster.health = 1500
+monster.maxHealth = 1500
 monster.race = "undead"
 monster.corpse = 11317
 monster.speed = 80
@@ -63,8 +63,8 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -500 },
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = -350, maxDamage = -600, range = 3, radius = 4, effect = CONST_ME_POFF, target = false },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -500 },
+	{ name = "combat", interval = 3500, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = -350, maxDamage = -600, range = 3, radius = 4, effect = CONST_ME_POFF, target = false },
 	{ name = "death blob curse", interval = 2000, chance = 5, range = 5, target = false }
 }
 

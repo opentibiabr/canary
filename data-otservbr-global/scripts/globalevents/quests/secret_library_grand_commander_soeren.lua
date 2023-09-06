@@ -30,5 +30,5 @@ function grandCommander.onThink(interval, lastExecution)
 	return true
 end
 
-grandCommander:interval(900000)
+grandCommander:interval(15 * 60 * 1000)
 grandCommander:register()

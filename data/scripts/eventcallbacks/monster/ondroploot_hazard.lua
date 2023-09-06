@@ -21,10 +21,9 @@ function callback.monsterOnDropLoot(monster, corpse)
 
 	if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) and rolls > 1 then
 		msgSuffix = msgSuffix .. " (hazard system, " .. rolls .. " extra rolls)"
-	else
+	elseif rolls == 1 then
 		msgSuffix = msgSuffix .. " (hazard system)"
 	end
-
 
 	local lootTable = {}
 	for _ = 1, rolls do

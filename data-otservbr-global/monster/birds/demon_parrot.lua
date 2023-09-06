@@ -31,7 +31,7 @@ monster.maxHealth = 360
 monster.race = "blood"
 monster.corpse = 6056
 monster.speed = 160
-monster.manaCost = 250
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
@@ -59,22 +59,22 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "ISHH THAT THE BESHHT YOU HAVE TO OFFERRR, TIBIANSHH?", yell = false },
-	{ text = "YOU ARRRRRE DOOMED!", yell = false },
-	{ text = "I SHHMELL FEEAARRR!", yell = false },
-	{ text = "MY SHHEED IS FEARRR AND MY HARRRVEST ISHH YOURRR SHHOUL!", yell = false },
-	{ text = "Your shhoooul will be mineee!", yell = false }
+	{ text = "ISHH THAT THE BESHHT YOU HAVE TO OFFERRR, TIBIANSHH?", yell = true },
+	{ text = "YOU ARRRRRE DOOMED!", yell = true },
+	{ text = "I SHHMELL FEEAARRR!", yell = true },
+	{ text = "MY SHHEED IS FEARRR AND MY HARRRVEST ISHH YOURRR SHHOUL!", yell = true },
+	{ text = "Your shhoooul will be mineee!", yell = false },
 }
 
 monster.loot = {
@@ -90,7 +90,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 18,
-	armor = 18
+	armor = 18,
+	mitigation = 0.48,
 }
 
 monster.elements = {
@@ -100,14 +101,14 @@ monster.elements = {
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 100 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

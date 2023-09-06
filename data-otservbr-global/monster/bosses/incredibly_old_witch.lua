@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 100
-monster.maxHealth = 100
+monster.health = 620
+monster.maxHealth = 620
 monster.race = "blood"
 monster.corpse = 6081
 monster.speed = 90
@@ -34,8 +34,8 @@ monster.flags = {
 	attackable = true,
 	hostile = true,
 	convinceable = false,
-	pushable = true,
-	rewardBoss = true,
+	pushable = false,
+	rewardBoss = false,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = false,
@@ -46,22 +46,22 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Stupid people!", yell = false },
+	{ text = "Everyone is so stupid!", yell = false },
 	{ text = "Feel the wrath of the witch!", yell = false },
 	{ text = "Oh how you will regret to have disturbed me!", yell = false },
 	{ text = "I will teach them all to leave me alone!", yell = false },
-	{ text = "Everyone is so stupid!", yell = false },
-	{ text = "Stupid people!", yell = false }
 }
 
 monster.loot = {
@@ -81,7 +81,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 5,
-	armor = 10
+	armor = 10,
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -90,11 +91,11 @@ monster.elements = {
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
 	{ type = COMBAT_FIREDAMAGE, percent = 100 },
 	{ type = COMBAT_LIFEDRAIN, percent = 100 },
-	{ type = COMBAT_MANADRAIN, percent = 100 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

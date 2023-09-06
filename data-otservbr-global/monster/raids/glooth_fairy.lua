@@ -90,14 +90,6 @@ monster.loot = {
 	{ id = 21144, chance = 280 } -- bowl of glooth soup
 }
 
--- TODO: monster-abilities
---monster.attacks = {
---	{name ="melee", interval = 2000, chance = 100, minDamage = -0, maxDamage = -1900},
---	{name ="combat", interval = 2000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -400, range = ?, effect = <>, target = ?}, --[[Blue Electricity Effect|Blue Energy Ultimate Explosion]]
---	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -paralyses you, maxDamage = -paralyses you, range = ?, effect = <>, target = ?}, --[[Poison Effect 2|Poison Ultimate Explosion]]
---	{name ="healing", interval = 2000, chance = 20, minDamage = 200, maxDamage = 250},
---	{name ="healing", interval = 2000, chance = 20, minDamage = 7500, maxDamage = 8000},
---}
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1900 },
 	{ name = "combat", interval = 1000, chance = 7, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -4000, radius = 6, effect = CONST_ME_ENERGYHIT, target = false }, -- blue energy ultimate explosion

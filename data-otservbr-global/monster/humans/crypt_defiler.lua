@@ -31,7 +31,7 @@ monster.maxHealth = 185
 monster.race = "blood"
 monster.corpse = 18078
 monster.speed = 95
-monster.manaCost = 0
+monster.manaCost = 450
 
 monster.changeTarget = {
 	interval = 4000,
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -73,7 +73,7 @@ monster.voices = {
 	{ text = "I smell gold!", yell = false },
 	{ text = "You'll make a fine fake-mummy to be sold!", yell = false },
 	{ text = "Untold riches are awaiting me!", yell = false },
-	{ text = "I don't like competition!", yell = false }
+	{ text = "I don't like competition!", yell = false },
 }
 
 monster.loot = {
@@ -96,7 +96,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 6,
+	mitigation = 0.41,
 }
 
 monster.elements = {
@@ -109,11 +110,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = true },
+	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
 	{ type = "bleed", condition = false }

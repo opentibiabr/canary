@@ -7,6 +7,11 @@ monster.outfit = {
 	lookTypeEx = 30340 -- (frozen) // lookTypeEx = 30341 (thawed)
 }
 
+monster.bosstiary = {
+	bossRaceId = 1744,
+	bossRace = RARITY_NEMESIS,
+}
+
 monster.health = 2300
 monster.maxHealth = 2300
 monster.race = "undead"
@@ -19,11 +24,6 @@ monster.changeTarget = {
 	chance = 8
 }
 
-monster.bosstiary = {
-	bossRaceId = 1744,
-	bossRace = RARITY_NEMESIS
-}
-
 monster.strategiesTarget = {
 	nearest = 100,
 }
@@ -34,9 +34,9 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
-	canPushItems = true,
+	canPushItems = false,
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
@@ -45,12 +45,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -118,6 +118,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 40,
 	armor = 79
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -128,9 +129,9 @@ monster.elements = {
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 80 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 90 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 90 },
 }
 
 monster.immunities = {

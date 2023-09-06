@@ -61,3 +61,15 @@ function Item.setUniqueId(self, uniqueId)
 
 	self:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, uniqueId)
 end
+
+function Item.getDuration(self)
+	return self:getAttribute(ITEM_ATTRIBUTE_DURATION)
+end
+
+function Item.setDurationAttr(self, duration)
+	return self:setAttribute(ITEM_ATTRIBUTE_DURATION, duration)
+end
+
+function Item.stopDecay(self)
+	return self:setAttribute(ITEM_ATTRIBUTE_DECAYSTATE, DECAYING_FALSE)
+end

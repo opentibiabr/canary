@@ -37,7 +37,7 @@
 #include "lua/scripts/scripts.hpp"
 #include "lua/modules/modules.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
-#include "creatures/players/account/account.hpp"
+#include "account/account.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "creatures/npcs/npcs.hpp"
@@ -825,7 +825,7 @@ ReturnValue Game::getPlayerByNameWildcard(const std::string &s, Player*&player) 
 
 Player* Game::getPlayerByAccount(uint32_t acc) {
 	for (const auto &it : players) {
-		if (it.second->getAccount() == acc) {
+		if (it.second->getAccountId() == acc) {
 			return it.second;
 		}
 	}
@@ -1643,7 +1643,7 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index, Item* item, uint32_t count, Item** internalMoveItem, uint32_t flags /*= 0*/, Creature* actor /*=nullptr*/, Item* tradeItem /* = nullptr*/) {
+ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index, Item* item, uint32_t count, Item** movedItem, uint32_t flags /*= 0*/, Creature* actor /*=nullptr*/, Item* tradeItem /* = nullptr*/, bool checkTile /* = true*/) {
 	if (fromCylinder == nullptr) {
 		g_logger().error("[{}] fromCylinder is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
@@ -1653,11 +1653,12 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	Tile* fromTile = fromCylinder->getTile();
-	if (fromTile) {
-		auto it = browseFields.find(fromTile);
-		if (it != browseFields.end() && it->second == fromCylinder) {
-			fromCylinder = fromTile;
+	if (checkTile) {
+		if (Tile* fromTile = fromCylinder->getTile()) {
+			auto it = browseFields.find(fromTile);
+			if (it != browseFields.end() && it->second == fromCylinder) {
+				fromCylinder = fromTile;
+			}
 		}
 	}
 
@@ -1817,11 +1818,11 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 		updateItem->startDecaying();
 	}
 
-	if (internalMoveItem) {
+	if (movedItem) {
 		if (moveItem) {
-			*internalMoveItem = moveItem;
+			*movedItem = moveItem;
 		} else {
-			*internalMoveItem = item;
+			*movedItem = item;
 		}
 	}
 
@@ -2601,7 +2602,7 @@ ReturnValue Game::processMoveOrAddItemToLootContainer(Item* item, Container* loo
 	Item* moveItem = nullptr;
 	ReturnValue ret;
 	if (item->getParent()) {
-		ret = internalMoveItem(item->getParent(), lootContainer, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem, 0, player);
+		ret = internalMoveItem(item->getParent(), lootContainer, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem, 0, player, nullptr, false);
 	} else {
 		ret = internalAddItem(lootContainer, item, INDEX_WHEREEVER);
 	}
@@ -6391,7 +6392,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 						} else {
 							ss << ucfirst(attacker->getNameDescription()) << " healed ";
 							if (attacker == target) {
-								ss << (targetPlayer ? (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "herself" : "himself") : "itself");
+								ss << (targetPlayer ? targetPlayer->getReflexivePronoun() : "itself");
 							} else {
 								ss << target->getNameDescription();
 							}
@@ -6618,8 +6619,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 							if (attacker) {
 								ss << " due to ";
 								if (attacker == target) {
-									ss << (targetPlayer ? (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own " : "his own ") : "its own ");
-									ss << attackMsg;
+									ss << (targetPlayer ? targetPlayer->getPossessivePronoun() : "its") << " own attack";
 								} else {
 									ss << "an " << attackMsg << " by " << attacker->getNameDescription();
 								}
@@ -6813,7 +6813,7 @@ void Game::buildMessageAsSpectator(
 			ss << " due to ";
 			if (attacker == target) {
 				if (targetPlayer) {
-					ss << (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own attack" : "his own attack");
+					ss << targetPlayer->getPossessivePronoun() << " own attack";
 				} else {
 					ss << "its own attack";
 				}
@@ -7017,7 +7017,7 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage &
 				spectatorMessage += ucfirst(attacker->getNameDescription());
 				spectatorMessage += " restored ";
 				if (attacker == target) {
-					spectatorMessage += (targetPlayer ? (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "herself" : "himself") : "itself");
+					spectatorMessage += (targetPlayer ? targetPlayer->getReflexivePronoun() : "itself");
 				} else {
 					spectatorMessage += target->getNameDescription();
 				}
@@ -7162,7 +7162,7 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage &
 					if (attacker) {
 						ss << " due to ";
 						if (attacker == target) {
-							ss << (targetPlayer ? (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own attack" : "his own attack") : "its own attack");
+							ss << (targetPlayer ? targetPlayer->getPossessivePronoun() : "its") << " own attack";
 						} else {
 							ss << "an attack by " << attacker->getNameDescription();
 						}
@@ -8225,6 +8225,11 @@ bool checkCanInitCreateMarketOffer(const Player* player, uint8_t type, const Ite
 		return false;
 	}
 
+	if (!player->getAccount()) {
+		offerStatus << "Failed to load player account";
+		return false;
+	}
+
 	if (!player->isInMarket()) {
 		offerStatus << "Failed to load market for player " << player->getName();
 		return false;
@@ -8306,17 +8311,15 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			account::Account account(player->getAccount());
-			account.LoadAccountDB();
-			uint32_t transferableCoins;
-			account.GetTransferableCoins(&transferableCoins);
+			auto [transferableCoins, result] = player->getAccount()->getCoins(account::CoinType::TRANSFERABLE);
 
 			if (amount > transferableCoins) {
 				offerStatus << "Amount is greater than coins for player " << player->getName();
 				return;
 			}
 
-			account.RemoveTransferableCoins(static_cast<uint32_t>(amount));
+			// Do not register a transaction for coins creating an offer
+			player->getAccount()->removeCoins(account::CoinType::TRANSFERABLE, static_cast<uint32_t>(amount), "");
 		} else {
 			if (!removeOfferItems(*player, *depotLocker, it, amount, tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -8375,7 +8378,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter) {
 	Player* player = getPlayerByID(playerId);
-	if (!player) {
+	if (!player || !player->getAccount()) {
 		return;
 	}
 
@@ -8404,9 +8407,8 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			account::Account account;
-			account.LoadAccountDB(player->getAccount());
-			account.AddTransferableCoins(offer.amount);
+			// Do not register a transaction for coins upon cancellation
+			player->getAccount()->addCoins(account::CoinType::TRANSFERABLE, offer.amount, "");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = offer.amount;
 			while (tmpAmount > 0) {
@@ -8460,7 +8462,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount) {
 	std::ostringstream offerStatus;
 	Player* player = getPlayerByID(playerId);
-	if (!player) {
+	if (!player || !player->getAccount()) {
 		offerStatus << "Failed to load player";
 		return;
 	}
@@ -8513,23 +8515,34 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 		}
 
+		if (!buyerPlayer->getAccount()) {
+			player->sendTextMessage(MESSAGE_MARKET, "Cannot accept offer.");
+			return;
+		}
+
 		if (player == buyerPlayer || player->getAccount() == buyerPlayer->getAccount()) {
 			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
 			return;
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			account::Account account;
-			account.LoadAccountDB(player->getAccount());
-			uint32_t transferableCoins;
-			account.GetTransferableCoins(&transferableCoins);
+			auto [transferableCoins, error] = player->getAccount()->getCoins(account::CoinType::TRANSFERABLE);
+
+			if (error != account::ERROR_NO) {
+				offerStatus << "Failed to load transferable coins for player " << player->getName();
+				return;
+			}
+
 			if (amount > transferableCoins) {
 				offerStatus << "Amount is greater than coins";
 				return;
 			}
 
-			account.RemoveTransferableCoins(amount);
-			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount, "Sold on Market");
+			player->getAccount()->removeCoins(
+				account::CoinType::TRANSFERABLE,
+				amount,
+				"Sold on Market"
+			);
 		} else {
 			if (!removeOfferItems(*player, *depotLocker, it, amount, offer.tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -8553,10 +8566,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		player->setBankBalance(player->getBankBalance() + totalPrice);
 
 		if (it.id == ITEM_STORE_COIN) {
-			account::Account account;
-			account.LoadAccountDB(buyerPlayer->getAccount());
-			account.AddTransferableCoins(amount);
-			account.RegisterCoinsTransaction(account::COIN_ADD, amount, "Purchased on Market");
+			buyerPlayer->getAccount()->addCoins(account::CoinType::TRANSFERABLE, amount, "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -8631,10 +8641,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			account::Account account;
-			account.LoadAccountDB(player->getAccount());
-			account.AddTransferableCoins(amount);
-			account.RegisterCoinsTransaction(account::COIN_ADD, amount, "Purchased on Market");
+			player->getAccount()->addCoins(account::CoinType::TRANSFERABLE, amount, "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -8687,9 +8694,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
 		if (it.id == ITEM_STORE_COIN) {
-			account::Account account;
-			account.LoadAccountDB(sellerPlayer->getAccount());
-			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount, "Sold on Market");
+			sellerPlayer->getAccount()->registerCoinTransaction(account::CoinTransactionType::REMOVE, account::CoinType::TRANSFERABLE, amount, "Sold on Market");
 		}
 
 		if (it.id != ITEM_STORE_COIN) {

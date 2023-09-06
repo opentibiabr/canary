@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Chasm Spawn")
 local monster = {}
 
 monster.description = "a chasm spawn"
-monster.experience = 3500
+monster.experience = 2700
 monster.outfit = {
 	lookType = 1037,
 	lookHead = 0,
@@ -23,11 +23,11 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Warzone 4."
+	Locations = "Warzone 4"
 }
 
-monster.health = 4000
-monster.maxHealth = 4000
+monster.health = 4500
+monster.maxHealth = 4500
 monster.race = "blood"
 monster.corpse = 27563
 monster.speed = 115
@@ -60,21 +60,19 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
+	canWalkOnEnergy = true,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "tzzzz tzzzz tzzzz!", yell = false },
-	{ text = "sloap sloap sloap!", yell = false }
 }
 
 monster.loot = {
@@ -107,7 +105,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 5,
-	armor = 10
+	armor = 74,
+	mitigation = 1.94,
 }
 
 monster.elements = {
@@ -120,7 +119,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

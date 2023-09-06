@@ -66,7 +66,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 20062, chance = 490 }, -- cluster of solace
+	{ id = 20062, chance = 4490 }, -- cluster of solace
 	{ id = 20198, chance = 18560 }, -- frazzle tongue
 	{ id = 3031, chance = 100000, maxCount = 100 }, -- gold coin
 	{ id = 239, chance = 14490, maxCount = 2 }, -- great health potion

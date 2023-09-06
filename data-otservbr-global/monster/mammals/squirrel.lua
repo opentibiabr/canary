@@ -23,8 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "North of Carlin, Northwest of Thais, East of Kazordoon, Yalahar, Dawnport, \z
-		Edron Hunters Camp, Plains of Havoc and other Tibian woods."
+	Locations = "North of Carlin, Northwest of Thais, East of Kazordoon, Yalahar, Dawnport, Edron Hunters Camp, Plains of Havoc and other Tibian woods."
 }
 
 monster.health = 20
@@ -60,18 +59,18 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Chchch", yell = false }
+	{ text = "Chchch", yell = false },
 }
 
 monster.loot = {
@@ -79,10 +78,10 @@ monster.loot = {
 	{ name = "peanut", chance = 980 },
 	{ name = "acorn", chance = 50410 }
 }
-
 monster.defenses = {
 	defense = 5,
-	armor = 1
+	armor = 1,
+	mitigation = 0.05,
 }
 
 monster.elements = {
@@ -95,7 +94,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

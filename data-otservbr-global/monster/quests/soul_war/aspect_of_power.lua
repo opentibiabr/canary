@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Aspect of Power")
 local monster = {}
 
 monster.description = "an aspect of power"
-monster.experience = 5580
+monster.experience = 0
 monster.outfit = {
 	lookType = 1303,
 	lookHead = 0,
@@ -18,6 +18,7 @@ monster.maxHealth = 25000
 monster.race = "undead"
 monster.corpse = 0
 monster.speed = 125
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
@@ -45,12 +46,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -71,20 +72,21 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 40,
-	armor = 82
+	armor = 0,
+	--	mitigation = ???,
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 30 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 20 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = -30 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

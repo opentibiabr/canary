@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("The Bloodweb")
 local monster = {}
 
-monster.description = "the Bloodweb"
+monster.description = "The Bloodweb"
 monster.experience = 1450
 monster.outfit = {
 	lookType = 263,
@@ -38,7 +38,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = false,
@@ -48,19 +48,19 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Screeech!", yell = false }
+	{ text = "Screeech!", yell = false },
 }
 
 monster.loot = {
@@ -78,6 +78,7 @@ monster.loot = {
 }
 
 monster.attacks = {
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -0, maxDamage = -280 },
 	{ name = "melee", interval = 2000, chance = 100, skill = 40, attack = 100, condition = { type = CONDITION_POISON, totalDamage = 8, interval = 4000 } },
 	{ name = "speed", interval = 2000, chance = 20, speedChange = -850, range = 7, radius = 7, effect = CONST_ME_POFF, target = false, duration = 8000 },
 	{ name = "combat", interval = 1000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -60, maxDamage = -150, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = true }
@@ -86,6 +87,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 20,
 	armor = 25,
+	mitigation = 1.80,
 	{ name = "speed", interval = 3000, chance = 40, speedChange = 380, effect = CONST_ME_MAGIC_RED, target = false, duration = 80000 }
 }
 
@@ -99,7 +101,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

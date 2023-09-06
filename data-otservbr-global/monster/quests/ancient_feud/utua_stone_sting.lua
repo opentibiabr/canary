@@ -13,6 +13,12 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 1984,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Quest.U10_80.Grimvale.UtuaTimer,
+}
+
 monster.health = 6400
 monster.maxHealth = 6400
 monster.race = "undead"
@@ -23,12 +29,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 1984,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U10_80.Grimvale.UtuaTimer
 }
 
 monster.strategiesTarget = {
@@ -53,12 +53,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -100,14 +100,15 @@ monster.loot = {
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300, condition = { type = CONDITION_POISON, totalDamage = 1000, interval = 4000 } },
-	{ name = "combat", type = COMBAT_EARTHDAMAGE, interval = 2000, chance = 30, minDamage = -100, maxDamage = -400, target = true, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA },
-	{ name = "combat", type = COMBAT_EARTHDAMAGE, interval = 2000, chance = 25, minDamage = -200, maxDamage = -450, radius = 3, length = 3, spread = 3, target = true, shootEffect = CONST_ANI_POISONARROW, effect = CONST_ME_POISONAREA },
-	{ name = "combat", type = COMBAT_LIFEDRAIN, interval = 4000, chance = 40, minDamage = -200, maxDamage = -400, length = 4, spread = 3, effect = CONST_ME_DRAWBLOOD }
+	{ name = "combat", type = COMBAT_EARTHDAMAGE, interval = 2000, chance = 30, minDamage = -200, maxDamage = -300, target = true, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA },
+	{ name = "combat", type = COMBAT_EARTHDAMAGE, interval = 2000, chance = 25, minDamage = -300, maxDamage = -450, radius = 3, length = 3, spread = 3, target = true, shootEffect = CONST_ANI_POISONARROW, effect = CONST_ME_POISONAREA },
+	{ name = "combat", type = COMBAT_LIFEDRAIN, interval = 4000, chance = 40, minDamage = 0, maxDamage = -400, length = 4, spread = 3, effect = CONST_ME_DRAWBLOOD }
 }
 
 monster.defenses = {
 	defense = 0,
 	armor = 42,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 60, maxDamage = 100, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -121,11 +122,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

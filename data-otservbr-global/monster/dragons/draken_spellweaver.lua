@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Zao Palace, Razzachai, and Zzaion."
+	Locations = "Zao Palace, Razachai, and Zzaion."
 }
 
 monster.health = 5000
@@ -59,42 +59,45 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Kazzzzzzuuum!", yell = false },
+	{ text = "Zzzzzooom!", yell = false },
 	{ text = "Fissziss!", yell = false },
-	{ text = "Zzzzzooom!", yell = false }
+	{ text = "Kazzzzzzuuum!", yell = false },
 }
 
 monster.loot = {
-	{ name = "ring of the sky", chance = 370 },
-	{ name = "small ruby", chance = 6910, maxCount = 5 },
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "platinum coin", chance = 25510, maxCount = 5 },
-	{ name = "green gem", chance = 970 },
-	{ name = "wand of inferno", chance = 1660 },
-	{ name = "meat", chance = 30400 },
-	{ name = "great mana potion", chance = 4970 },
-	{ name = "focus cape", chance = 1450 },
-	{ name = "zaoan shoes", chance = 1980 },
-	{ name = "weaver's wandtip", chance = 19790 },
-	{ name = "draken trophy", chance = 10 },
-	{ name = "spellweaver's robe", chance = 620 },
-	{ name = "zaoan robe", chance = 770 },
-	{ name = "luminous orb", chance = 1980 },
-	{ name = "draken sulphur", chance = 3930 },
+	{ name = "gold coin", chance = 100000, maxCount = 195 },
+	{ name = "meat", chance = 26940 },
+	{ name = "platinum coin", chance = 23800, maxCount = 5 },
+	{ name = "weaver's wandtip", chance = 18450 },
+	{ name = "small ruby", chance = 6640, maxCount = 5 },
+	{ name = "great mana potion", chance = 5350 },
+	{ name = "draken sulphur", chance = 4610 },
+	{ name = "luminous orb", chance = 2580 },
+	{ name = "green gem", chance = 1290 },
+	{ name = "zaoan shoes", chance = 1290 },
+	{ name = "wand of inferno", chance = 1110 },
+	{ name = "focus cape", chance = 740 },
+	{ name = "spellweaver's robe", chance = 740 },
+	{ name = "zaoan legs", chance = 550 },
+	{ name = "zaoan robe", chance = 370 },
+	{ name = "ring of the sky", chance = 180 },
+	{ name = "bamboo leaves", chance = 180 },
 	{ name = "harness", chance = 30 },
-	{ name = "bamboo leaves", chance = 180 }
+	{ name = "draken trophy", chance = 10 },
 }
+
+
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -252 },
@@ -110,6 +113,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 25,
 	armor = 25,
+	mitigation = 1.35,
 	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_RED },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 270, maxDamage = 530, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
@@ -124,7 +128,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 80 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 80 },
 }
 
 monster.immunities = {

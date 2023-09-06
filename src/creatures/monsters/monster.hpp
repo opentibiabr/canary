@@ -156,6 +156,9 @@ public:
 	bool challengeCreature(Creature* creature, int targetChangeCooldown) override;
 
 	bool changeTargetDistance(int32_t distance, uint32_t duration = 12000);
+	bool isChallenged() const {
+		return challengeFocusDuration > 0;
+	}
 
 	CreatureIcon getIcon() const override {
 		if (creatureIcon.isSet()) {
@@ -410,4 +413,14 @@ private:
 	void doRandomStep(Direction &nextDirection, bool &result);
 
 	void onConditionStatusChange(const ConditionType_t &type);
+
+	float getAttackMultiplier() const {
+		float multiplier = mType->getAttackMultiplier();
+		return multiplier * std::pow(1.03f, getForgeStack());
+	}
+
+	float getDefenseMultiplier() const {
+		float multiplier = mType->getAttackMultiplier();
+		return multiplier * std::pow(1.01f, getForgeStack());
+	}
 };

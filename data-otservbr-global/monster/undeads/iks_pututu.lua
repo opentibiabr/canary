@@ -30,7 +30,7 @@ monster.health = 1310
 monster.maxHealth = 1310
 monster.race = "blood"
 monster.corpse = 42061
-monster.speed = 120
+monster.speed = 110
 monster.manaCost = 0
 
 monster.changeTarget = {
@@ -49,7 +49,7 @@ monster.flags = {
 	convinceable = false,
 	pushable = false,
 	rewardBoss = false,
-	illusionable = true,
+	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
 	staticAttackChance = 90,
@@ -59,18 +59,18 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Attahch!", yell = false }
+	{ text = "Attahch!", yell = false },
 }
 
 monster.loot = {
@@ -95,7 +95,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 25,
-	armor = 36,
+	armor = 32,
+	mitigation = 1.18,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 51, maxDamage = 71, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
@@ -109,7 +110,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

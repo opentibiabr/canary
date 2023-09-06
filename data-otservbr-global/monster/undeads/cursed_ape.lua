@@ -15,14 +15,14 @@ monster.outfit = {
 
 monster.raceId = 2347
 monster.Bestiary = {
-	class = "Apes",
+	class = "Undead",
 	race = BESTY_RACE_UNDEAD,
 	toKill = 1000,
 	FirstUnlock = 50,
-	SecondUnlock = 250,
+	SecondUnlock = 500,
 	CharmsPoints = 25,
 	Stars = 3,
-	Occurrence = 1,
+	Occurrence = 0,
 	Locations = "Iksupan"
 }
 
@@ -30,7 +30,7 @@ monster.health = 1700
 monster.maxHealth = 1700
 monster.race = "blood"
 monster.corpse = 42073
-monster.speed = 186
+monster.speed = 108
 monster.manaCost = 0
 
 monster.changeTarget = {
@@ -49,7 +49,7 @@ monster.flags = {
 	convinceable = false,
 	pushable = false,
 	rewardBoss = false,
-	illusionable = true,
+	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
 	staticAttackChance = 90,
@@ -59,15 +59,17 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
+	interval = 5000,
+	chance = 10,
 }
 
 monster.loot = {
@@ -92,6 +94,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 25,
 	armor = 38,
+	mitigation = 1.37,
 }
 
 monster.elements = {
@@ -104,7 +107,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -25 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 30 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 40 },
 }
 
 monster.immunities = {

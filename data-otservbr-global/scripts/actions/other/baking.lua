@@ -50,13 +50,18 @@ function baking.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		item:transform(12802) -- sugar oat
 		target:remove()
 	elseif table.contains(millstones, target.itemid) then
-		item:transform(item.itemid, item.type - 1)
-		player:addItem(3603, 1) -- flour
+		if item.itemid == 3605 then -- bunch of wheat
+			item:transform(item.itemid, item.type - 1)
+			player:addItem(3603, 1) -- flour
+		elseif item.itemid == 30975 then
+			item:transform(item.itemid, item.type - 1)
+			player:addItem(31686, 1) -- ground reed
+		end
 	else
 		return false
 	end
 	return true
 end
 
-baking:id(3603, 3604, 3605, 6276, 8018, 8195, 8196, 8198)
+baking:id(3603, 3604, 3605, 6276, 8018, 8195, 8196, 8198, 30975)
 baking:register()

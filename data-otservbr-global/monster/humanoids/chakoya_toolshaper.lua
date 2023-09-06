@@ -31,7 +31,7 @@ monster.maxHealth = 80
 monster.race = "blood"
 monster.corpse = 7320
 monster.speed = 68
-monster.manaCost = 0
+monster.manaCost = 305
 
 monster.changeTarget = {
 	interval = 60000,
@@ -50,21 +50,21 @@ monster.flags = {
 	pushable = false,
 	rewardBoss = false,
 	illusionable = false,
-	canPushItems = true,
+	canPushItems = false,
 	canPushCreatures = false,
 	staticAttackChance = 80,
 	targetDistance = 1,
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = true,
-	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnEnergy = false,
+	canWalkOnFire = false,
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -73,7 +73,7 @@ monster.voices = {
 	{ text = "Chikuva!", yell = false },
 	{ text = "Jinuma jamjam!", yell = false },
 	{ text = "Suvituka siq chuqua!", yell = false },
-	{ text = "Kiyosa sipaju!", yell = false }
+	{ text = "Kiyosa sipaju!", yell = false },
 }
 
 monster.loot = {
@@ -97,7 +97,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 7,
+	mitigation = 0.23,
 }
 
 monster.elements = {
@@ -110,7 +111,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {

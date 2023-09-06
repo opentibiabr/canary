@@ -23,7 +23,7 @@ GameStore.OfferTypes = {
 	OFFER_TYPE_TEMPLE = 13,
 	OFFER_TYPE_BLESSINGS = 14,
 	OFFER_TYPE_PREMIUM = 15,
-	OFFER_TYPE_POUNCH = 16,
+	OFFER_TYPE_POUCH = 16,
 	OFFER_TYPE_ALLBLESSINGS = 17,
 	OFFER_TYPE_INSTANT_REWARD_ACCESS = 18,
 	OFFER_TYPE_CHARMS = 19,
@@ -33,7 +33,8 @@ GameStore.OfferTypes = {
 	OFFER_TYPE_HIRELING_SKILL = 23,
 	OFFER_TYPE_HIRELING_OUTFIT = 24,
 	OFFER_TYPE_HUNTINGSLOT = 25,
-	OFFER_TYPE_ITEM_BED = 26
+	OFFER_TYPE_ITEM_BED = 26,
+	OFFER_TYPE_ITEM_UNIQUE = 27,
 }
 
 GameStore.SubActions = {
@@ -97,6 +98,7 @@ function convertType(type)
 		[GameStore.OfferTypes.OFFER_TYPE_CHARGES] = GameStore.ConverType.SHOW_ITEM,
 		[GameStore.OfferTypes.OFFER_TYPE_HIRELING] = GameStore.ConverType.SHOW_HIRELING,
 		[GameStore.OfferTypes.OFFER_TYPE_ITEM_BED] = GameStore.ConverType.SHOW_NONE,
+		[GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE] = GameStore.ConverType.SHOW_ITEM,
 	}
 
 	if not types[type] then
@@ -203,7 +205,8 @@ GameStore.DefaultDescriptions = {
 		"It's hunting season! Activate a prey to gain a bonus when hunting a certain monster. Every character can purchase one Permanent Prey Slot, which enables the activation of an additional prey. \nIf you activate a prey, you can select one monster out of nine. The bonus for your prey will be selected randomly from one of the following: damage boost, damage reduction, bonus XP, improved loot. The bonus value may range from 5% to 50%. Your prey will be active for 2 hours hunting time: the duration of an active prey will only be reduced while you are hunting." },
 	PREYBONUS = {
 		"You activated a prey but do not like the randomly selected bonus? Roll for a new one! Here you can purchase five Prey Bonus Rerolls! \nA Bonus Reroll allows you to get a bonus with a higher value (max. 50%). The bonus for your prey will be selected randomly from one of the following: damage boost, damage reduction, bonus XP, improved loot. The 2 hours hunting time will start anew once you have rolled for a new bonus. Your prey monster will stay the same." },
-	TEMPLE = { "Need a quick way home? Buy this transportation service to get instantly teleported to your home temple. \n\nNote, you cannot use this service while having a battle sign or a protection zone block. Further, the service will not work in no-logout zones or close to your home temple." }
+	TEMPLE = {
+		"Need a quick way home? Buy this transportation service to get instantly teleported to your home temple. \n\nNote, you cannot use this service while having a battle sign or a protection zone block. Further, the service will not work in no-logout zones or close to your home temple." }
 }
 
 --==Parsing==--
@@ -411,7 +414,7 @@ function parseBuyStoreOffer(playerId, msg)
 				offer.type ~= GameStore.OfferTypes.OFFER_TYPE_TEMPLE and
 				offer.type ~= GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE and
 				offer.type ~= GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS and
-				offer.type ~= GameStore.OfferTypes.OFFER_TYPE_POUNCH and
+				offer.type ~= GameStore.OfferTypes.OFFER_TYPE_POUCH and
 				offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING and
 				offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_NAMECHANGE and
 				offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_SEXCHANGE and
@@ -435,7 +438,7 @@ function parseBuyStoreOffer(playerId, msg)
 	local pcallOk, pcallError = pcall(function()
 		if offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM then
 			GameStore.processItemPurchase(player, offer.itemtype, offer.count, offer.moveable)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_POUNCH then
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_POUCH then
 			GameStore.processItemPurchase(player, offer.itemtype, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS then
 			GameStore.processInstantRewardAccess(player, offer.count)
@@ -617,7 +620,7 @@ function Player.canBuyOffer(self, offer)
 			offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYBONUS and
 			offer.type ~= GameStore.OfferTypes.OFFER_TYPE_TEMPLE and
 			offer.type ~= GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE and
-			offer.type ~= GameStore.OfferTypes.OFFER_TYPE_POUNCH and
+			offer.type ~= GameStore.OfferTypes.OFFER_TYPE_POUCH and
 			offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL and
 			offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT and
 			not offer.id then
@@ -630,11 +633,11 @@ function Player.canBuyOffer(self, offer)
 	end
 
 	if disabled ~= 1 then
-		if offer.type == GameStore.OfferTypes.OFFER_TYPE_POUNCH then
+		if offer.type == GameStore.OfferTypes.OFFER_TYPE_POUCH then
 			local pounch = self:getItemById(23721, true)
 			if pounch then
 				disabled = 1
-				disabledReason = "You already have Loot Pouch."
+				disabledReason = "You already have a " .. item:getName() .. "."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_BLESSINGS then
 			if self:getBlessingCount(offer.blessid) >= 5 then

@@ -809,6 +809,10 @@ function onUseMachete(player, item, fromPosition, target, toPosition, isHotkey)
 		toPosition:sendMagicEffect(CONST_ME_POFF)
 		target:remove()
 		return true
+	elseif target.itemid == 30623 then -- reed
+		target:transform(30624)
+		target:decay()
+		Game.createItem(30975, 1, toPosition)
 	end
 
 	return onDestroyItem(player, item, fromPosition, target, toPosition, isHotkey)
@@ -943,19 +947,42 @@ function onUseSpoon(player, item, fromPosition, target, toPosition, isHotkey)
 	return true
 end
 
+function onUseSpikedSquelcher(player, item, fromPosition, target, toPosition, isHotkey)
+	if target.itemid == 19068 and toPosition == Position(33276, 31797, 6) then -- mysterious ornate chest at Telas' house
+		item:remove(1)
+
+		local rand = math.random(100)
+		if rand <= 10 then
+			toPosition:sendMagicEffect(CONST_ME_BLUE_FIREWORKS)
+			player:say("Success! Within the chest, you discover the fabled golem grench.", TALKTYPE_MONSTER_SAY)
+			player:addItem(16251, 1)
+		else
+			toPosition:sendMagicEffect(CONST_ME_WHITE_SMOKES)
+			player:say("The spiked squelcher vanishes into the chest's abyss.", TALKTYPE_MONSTER_SAY)
+		end
+	else
+		return false
+	end
+	return true
+end
+
 function onUseScythe(player, item, fromPosition, target, toPosition, isHotkey)
 	if not table.contains({ 3453, 9596 }, item.itemid) then
 		return false
 	end
 
-	if target.itemid == 5464 then
+	if target.itemid == 5464 then -- burning sugar cane
 		target:transform(5463)
 		target:decay()
 		Game.createItem(5466, 1, toPosition)
-	elseif target.itemid == 3653 then
+	elseif target.itemid == 3653 then -- wheat
 		target:transform(3651)
 		target:decay()
 		Game.createItem(3605, 1, toPosition)
+	elseif target.itemid == 30623 then -- reed
+		target:transform(30624)
+		target:decay()
+		Game.createItem(30975, 1, toPosition)
 		-- The secret library
 	elseif toPosition == Position(32177, 31925, 7) then
 		player:teleportTo({ x = 32515, y = 32535, z = 12 })

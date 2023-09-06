@@ -1,14 +1,24 @@
 find_package(ut CONFIG REQUIRED)
 
-set(CMAKE_CXX_FLAGS "-pipe -O0 -g -std=c++11 -lstdc++ -lpthread -ldl")
+enable_testing()
 
-add_executable(canary_ut main.cpp)
+function(setup_test TARGET_NAME DIR)
+    add_executable(${TARGET_NAME} main.cpp)
 
-add_subdirectory(lib)
-add_subdirectory(security)
-add_subdirectory(utils)
+    target_compile_definitions(${TARGET_NAME} PUBLIC -DDEBUG_LOG)
+    target_link_libraries(${TARGET_NAME}  PRIVATE Boost::ut ${PROJECT_NAME}_lib)
+    target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/tests/fixture PRIVATE ${CMAKE_SOURCE_DIR}/tests/${DIR})
 
-target_include_directories(canary_ut PRIVATE ${CMAKE_SOURCE_DIR}/tests)
+    add_test(NAME ${DIR} COMMAND ${TARGET_NAME})
+    if(RUN_TESTS_AFTER_BUILD)
+        add_custom_command(
+                TARGET ${TARGET_NAME} POST_BUILD
+                COMMAND ${CMAKE_CTEST_COMMAND} --verbose
+                COMMENT "Running ctest ${DIR} after building ${TARGET_NAME}"
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/${DIR}
+        )
+    endif (RUN_TESTS_AFTER_BUILD)
+endfunction()
 
-target_compile_definitions(canary_ut PUBLIC -DDEBUG_LOG)
-target_link_libraries(canary_ut PRIVATE Boost::ut ${PROJECT_NAME}_lib)
+add_subdirectory(unit)
+add_subdirectory(integration)

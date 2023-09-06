@@ -13,6 +13,12 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 1444,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.CultsOfTibia.Life.BossTimer,
+}
+
 monster.health = 50000
 monster.maxHealth = 50000
 monster.race = "venom"
@@ -23,12 +29,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 5000,
 	chance = 30
-}
-
-monster.bosstiary = {
-	bossRaceId = 1444,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.CultsOfTibia.Life.BossTimer
 }
 
 monster.strategiesTarget = {
@@ -46,7 +46,7 @@ monster.flags = {
 	pushable = false,
 	rewardBoss = true,
 	illusionable = false,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 95,
 	targetDistance = 1,
@@ -55,18 +55,18 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "CREEEAK!", yell = false }
+	{ text = "CRRRK!", yell = true },
 }
 
 monster.loot = {
@@ -88,7 +88,7 @@ monster.loot = {
 	{ name = "yellow gem", chance = 29460 },
 	{ name = "magic sulphur", chance = 18920 },
 	{ id = 7440, chance = 2000 }, -- mastermind potion
-	{ id = 20062, chance = 2000, maxCount = 2 }, -- cluster of solace
+	{ id = 20062, chance = 12000, maxCount = 2 }, -- cluster of solace
 	{ name = "hailstorm rod", chance = 3470 },
 	{ id = 3036, chance = 1000 }, -- violet gem
 	{ id = 3098, chance = 20000 }, -- ring of healing
@@ -117,7 +117,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 30,
-	armor = 30
+	armor = 30,
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -130,7 +131,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

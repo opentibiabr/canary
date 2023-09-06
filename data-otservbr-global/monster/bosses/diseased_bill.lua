@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Diseased Bill")
 local monster = {}
 
-monster.description = "a diseased Bill"
+monster.description = "Diseased Bill"
 monster.experience = 300
 monster.outfit = {
 	lookType = 299,
@@ -11,6 +11,11 @@ monster.outfit = {
 	lookFeet = 0,
 	lookAddons = 0,
 	lookMount = 0
+}
+
+monster.bosstiary = {
+	bossRaceId = 485,
+	bossRace = RARITY_BANE,
 }
 
 monster.health = 1000
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 60000,
 	chance = 0
-}
-
-monster.bosstiary = {
-	bossRaceId = 485,
-	bossRace = RARITY_BANE
 }
 
 monster.strategiesTarget = {
@@ -54,12 +54,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 4,
+	color = 30,
 }
 
 monster.voices = {
@@ -68,7 +68,7 @@ monster.voices = {
 	{ text = "People like you are the plague and I'll be the cure!", yell = false },
 	{ text = "You all will pay for not helping me!", yell = false },
 	{ text = "Cough! Cough!", yell = false },
-	{ text = "Desolate! Everything is so desolate!", yell = false }
+	{ text = "Desolate! Everything is so desolate!", yell = false },
 }
 
 monster.loot = {
@@ -85,12 +85,13 @@ monster.attacks = {
 monster.defenses = {
 	defense = 15,
 	armor = 10,
+	--	mitigation = ???,
 	{ name = "speed", interval = 10000, chance = 40, speedChange = 310, effect = CONST_ME_MAGIC_GREEN, target = false, duration = 20000 },
 	{ name = "combat", interval = 5000, chance = 60, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 10 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 25 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
 	{ type = COMBAT_FIREDAMAGE, percent = 25 },
@@ -99,7 +100,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 25 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 25 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 1 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 75 },
 }
 
 monster.immunities = {

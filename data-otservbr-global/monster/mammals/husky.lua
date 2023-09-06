@@ -22,7 +22,7 @@ monster.Bestiary = {
 	SecondUnlock = 10,
 	CharmsPoints = 1,
 	Stars = 0,
-	Occurrence = 1,
+	Occurence = 1,
 	Locations = "Svargrond and Nibelor."
 }
 
@@ -32,6 +32,7 @@ monster.race = "blood"
 monster.corpse = 7316
 monster.speed = 132
 monster.manaCost = 420
+
 
 monster.changeTarget = {
 	interval = 4000,
@@ -47,7 +48,7 @@ monster.flags = {
 	attackable = true,
 	hostile = false,
 	convinceable = true,
-	pushable = true,
+	pushable = false,
 	rewardBoss = false,
 	illusionable = true,
 	canPushItems = false,
@@ -59,12 +60,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -72,7 +73,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Yoooohuuuu!", yell = false },
 	{ text = "Grrrrrrr", yell = false },
-	{ text = "Ruff, ruff!", yell = false }
+	{ text = "Ruff, ruff!", yell = false },
 }
 
 monster.loot = {
@@ -80,7 +81,8 @@ monster.loot = {
 
 monster.defenses = {
 	defense = 5,
-	armor = 5
+	armor = 1,
+	mitigation = 0.13,
 }
 
 monster.elements = {
@@ -93,7 +95,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

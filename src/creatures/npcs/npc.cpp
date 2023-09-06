@@ -340,7 +340,7 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 			}
 		}
 		for (auto &[itemId, amount] : toSell) {
-			onPlayerSellItem(player, itemId, 0, amount, ignore, totalPrice);
+			onPlayerSellItem(player, itemId, 0, amount, ignore, totalPrice, container);
 		}
 		auto ss = std::stringstream();
 		if (totalPrice == 0) {
@@ -359,7 +359,7 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 	}
 }
 
-void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, uint64_t &totalPrice) {
+void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, uint64_t &totalPrice, Cylinder* parent /*= nullptr*/) {
 	if (!player) {
 		return;
 	}
@@ -383,6 +383,10 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 	auto toRemove = amount;
 	for (auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore); auto item : inventoryItems) {
 		if (!item || item->getTier() > 0 || item->hasImbuements()) {
+			continue;
+		}
+
+		if (parent && item->getParent() != parent) {
 			continue;
 		}
 

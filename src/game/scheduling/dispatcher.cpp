@@ -21,19 +21,11 @@ Dispatcher &Dispatcher::getInstance() {
 	return inject<Dispatcher>();
 }
 
-void Dispatcher::addTask(std::function<void(void)> f) {
-	addTask(std::make_shared<Task>(std::move(f)));
-}
-
-void Dispatcher::addTask(std::function<void(void)> f, uint32_t expiresAfterMs) {
-	addTask(std::make_shared<Task>(std::move(f)), expiresAfterMs);
-}
-
 void Dispatcher::addTask(std::function<void(void)> f, std::string context) {
 	addTask(std::make_shared<Task>(std::move(f), std::move(context)));
 }
 
-void Dispatcher::addTask(std::function<void(void)> f, uint32_t expiresAfterMs, std::string context) {
+void Dispatcher::addTask(std::function<void(void)> f, std::string context, uint32_t expiresAfterMs) {
 	addTask(std::make_shared<Task>(std::move(f), std::move(context)), expiresAfterMs);
 }
 
@@ -45,7 +37,12 @@ void Dispatcher::addTask(const std::shared_ptr<Task> task, uint32_t expiresAfter
 	auto executeTask = [this, task]() {
 		std::lock_guard lockClass(threadSafetyMutex);
 
-		g_logger().debug("Executing task {}.", task->getContext());
+		if (task->hasTraceableContext()) {
+			g_logger().trace("Executing task {}.", task->getContext());
+		} else {
+			g_logger().debug("Executing task {}.", task->getContext());
+		}
+
 		++dispatcherCycle;
 		(*task)();
 	};

@@ -41,7 +41,7 @@ public:
 
 private:
 	GlobalEventMap thinkMap, serverMap, timerMap;
-	int32_t thinkEventId = 0, timerEventId = 0;
+	uint64_t thinkEventId = 0, timerEventId = 0;
 };
 
 constexpr auto g_globalEvents = GlobalEvents::getInstance;

@@ -46,6 +46,8 @@ namespace account {
 			return ERROR_NO;
 		}
 
+		updatePremiumTime();
+
 		return ERROR_LOADING_ACCOUNT;
 	}
 
@@ -167,11 +169,16 @@ namespace account {
 		return password;
 	}
 
-	error_t Account::addPremiumDays(const int32_t &days) {
-		return setPremiumDays(m_account.premiumRemainingDays + days);
+	void Account::addPremiumDays(const int32_t &days) {
+		uint32_t timeLeft = static_cast<int>((m_account.premiumLastDay - getTimeNow()) % 86400);
+		setPremiumDays(m_account.premiumRemainingDays + days);
+
+		if (timeLeft > 0) {
+			m_account.premiumLastDay += timeLeft;
+		}
 	}
 
-	error_t Account::setPremiumDays(const int32_t &days) {
+	void Account::setPremiumDays(const int32_t &days) {
 		m_account.premiumRemainingDays = days;
 		m_account.premiumLastDay = getTimeNow() + (days * 86400);
 
@@ -179,8 +186,6 @@ namespace account {
 			m_account.premiumLastDay = 0;
 			m_account.premiumRemainingDays = 0;
 		}
-
-		return ERROR_NO;
 	}
 
 	error_t Account::setAccountType(const AccountType &accountType) {
@@ -197,7 +202,7 @@ namespace account {
 		uint32_t daysLeft = static_cast<int>((lastDay - currentTime) / 86400);
 		uint32_t timeLeft = static_cast<int>((lastDay - currentTime) % 86400);
 
-		setPremiumDays(daysLeft > 0 ? daysLeft : 1);
+		m_account.premiumRemainingDays = daysLeft > 0 ? daysLeft : 0;
 
 		if (daysLeft == 0 && timeLeft == 0) {
 			setPremiumDays(0);
@@ -207,7 +212,7 @@ namespace account {
 			setPremiumDays(0);
 		}
 
-		if (remainingDays == m_account.premiumRemainingDays && lastDay == m_account.premiumLastDay) {
+		if (remainingDays == m_account.premiumRemainingDays) {
 			return;
 		}
 

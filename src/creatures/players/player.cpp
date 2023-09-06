@@ -130,8 +130,8 @@ void Player::setID() {
 
 std::string Player::getDescription(int32_t lookDistance) const {
 	std::ostringstream s;
-	std::string pronoun = getSubjectPronoun();
-	capitalizeWords(pronoun);
+	std::string subjectPronoun = getSubjectPronoun();
+	capitalizeWords(subjectPronoun);
 
 	if (lookDistance == -1) {
 		s << "yourself.";
@@ -158,7 +158,7 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		}
 		s << '.';
 
-		s << " " << pronoun;
+		s << " " << subjectPronoun;
 
 		if (group->access) {
 			s << " " << getSubjectVerb() << " " << group->name << '.';
@@ -173,11 +173,11 @@ std::string Player::getDescription(int32_t lookDistance) const {
 			if (loyaltyTitle[0] == 'A' || loyaltyTitle[0] == 'E' || loyaltyTitle[0] == 'I' || loyaltyTitle[0] == 'O' || loyaltyTitle[0] == 'U') {
 				article = "an";
 			}
-			s << " " << pronoun << " " << getSubjectVerb() << " " << article << " " << loyaltyTitle << ".";
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " " << article << " " << loyaltyTitle << ".";
 		}
 
 		if (isVip()) {
-			s << " " << pronoun << " " << getSubjectVerb() << " VIP.";
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " VIP.";
 		}
 	}
 
@@ -185,7 +185,7 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		if (lookDistance == -1) {
 			s << " Your party has ";
 		} else {
-			s << " " << pronoun << " " << getSubjectVerb() << " in a party with ";
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " in a party with ";
 		}
 
 		size_t memberCount = party->getMemberCount() + 1;
@@ -213,7 +213,7 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		if (lookDistance == -1) {
 			s << " You are ";
 		} else {
-			s << " " << pronoun << " " << getSubjectVerb() << " ";
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " ";
 		}
 
 		s << guildRank->name << " of the " << guild->getName();
@@ -2884,9 +2884,9 @@ Item* Player::getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature)
 	if (corpse && corpse->getContainer()) {
 		std::ostringstream ss;
 		if (lastHitCreature) {
-			std::string pronoun = getSubjectPronoun();
-			capitalizeWords(pronoun);
-			ss << "You recognize " << getNameDescription() << ". " << pronoun << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription() << '.';
+			std::string subjectPronoun = getSubjectPronoun();
+			capitalizeWords(subjectPronoun);
+			ss << "You recognize " << getNameDescription() << ". " << subjectPronoun << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription() << '.';
 		} else {
 			ss << "You recognize " << getNameDescription() << '.';
 		}

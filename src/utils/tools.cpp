@@ -1641,7 +1641,7 @@ std::string formatPrice(std::string price, bool space /* = false*/) {
 	return price;
 }
 
-std::string getPlayerSubjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, std::string name) {
+std::string getPlayerSubjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name) {
 	switch (pronoun) {
 		case PLAYERPRONOUN_THEY:
 			return "they";
@@ -1658,7 +1658,7 @@ std::string getPlayerSubjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, st
 	}
 }
 
-std::string getPlayerObjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, std::string name) {
+std::string getPlayerObjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name) {
 	switch (pronoun) {
 		case PLAYERPRONOUN_THEY:
 			return "them";
@@ -1675,7 +1675,7 @@ std::string getPlayerObjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, std
 	}
 }
 
-std::string getPlayerPossessivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, std::string name) {
+std::string getPlayerPossessivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name) {
 	switch (pronoun) {
 		case PLAYERPRONOUN_THEY:
 			return "their";
@@ -1692,7 +1692,7 @@ std::string getPlayerPossessivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex,
 	}
 }
 
-std::string getPlayerReflexivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, std::string name) {
+std::string getPlayerReflexivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name) {
 	switch (pronoun) {
 		case PLAYERPRONOUN_THEY:
 			return "themself";
@@ -1710,12 +1710,10 @@ std::string getPlayerReflexivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, 
 }
 
 std::string getVerbForPronoun(PlayerPronoun_t pronoun, bool pastTense) {
-	switch (pronoun) {
-		case PLAYERPRONOUN_THEY:
-			return pastTense ? "were" : "are";
-		default:
-			return pastTense ? "was" : "is";
+	if (pronoun == PLAYERPRONOUN_THEY) {
+		return pastTense ? "were" : "are";
 	}
+	return pastTense ? "was" : "is";
 }
 
 std::vector<std::string> split(const std::string &str) {

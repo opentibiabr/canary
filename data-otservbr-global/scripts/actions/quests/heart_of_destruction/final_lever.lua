@@ -381,21 +381,21 @@ function heartDestructionFinal.onUse(player, item, fromPosition, itemEx, toPosit
 				for i = 1, #config.hungerPositions do
 					hungerTile = Tile(config.hungerPositions[i]):getTopCreature()
 					if hungerTile and hungerTile:isPlayer() then
-						storeHunger[#storeHunger + 1] = hungerTile
+						storeHunger[#storeHunger+1] = hungerTile
 					end
 				end
 
 				for i = 1, #config.destructionPositions do
 					destructionTile = Tile(config.destructionPositions[i]):getTopCreature()
 					if destructionTile and destructionTile:isPlayer() then
-						storeDestruction[#storeDestruction + 1] = destructionTile
+						storeDestruction[#storeDestruction+1] = destructionTile
 					end
 				end
 
 				for i = 1, #config.ragePositions do
 					rageTile = Tile(config.ragePositions[i]):getTopCreature()
 					if rageTile and rageTile:isPlayer() then
-						storeRage[#storeRage + 1] = rageTile
+						storeRage[#storeRage+1] = rageTile
 					end
 				end
 

@@ -81,7 +81,7 @@ function heartDestructionQuake.onUse(player, item, fromPosition, itemEx, toPosit
 					if tile then
 						local playerTile = tile:getTopCreature()
 						if playerTile and playerTile:isPlayer() then
-							storePlayers[#storePlayers + 1] = playerTile
+							storePlayers[#storePlayers+1] = playerTile
 						end
 					end
 				end

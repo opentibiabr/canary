@@ -6,27 +6,27 @@ local combat = Combat()
 combat:setArea(area)
 
 function onTargetTile(creature, pos)
-    local creatureTable = {}
-    local n, i = Tile({ x = pos.x, y = pos.y, z = pos.z }).creatures, 1
-    if n ~= 0 then
-        local v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
-        while v ~= 0 do
+	local creatureTable = {}
+	local n, i = Tile({ x = pos.x, y = pos.y, z = pos.z }).creatures, 1
+	if n ~= 0 then
+		local v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
+		while v ~= 0 do
 			local creatureFromPos = Creature(v)
 			if creatureFromPos then
-                table.insert(creatureTable, v)
-                if n == #creatureTable then
-                    break
-                end
-            end
-            i = i + 1
-            v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i}).uid
-        end
-    end
-    if #creatureTable ~= nil and #creatureTable > 0 then
-        for r = 1, #creatureTable do
-            if creatureTable[r] ~= creature then
-                local min = 4000
-                local max = 8000
+				table.insert(creatureTable, v)
+				if n == #creatureTable then
+					break
+				end
+			end
+			i = i + 1
+			v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
+		end
+	end
+	if #creatureTable ~= nil and #creatureTable > 0 then
+		for r = 1, #creatureTable do
+			if creatureTable[r] ~= creature then
+				local min = 4000
+				local max = 8000
 				local creatureTarget = Creature(creatureTable[r])
 				if creatureTarget then
 					if (creatureTarget:isPlayer() and table.contains({ VOCATION.BASE_ID.KNIGHT }, creatureTarget:getVocation():getBaseId())) or creatureTarget:isMonster() then

@@ -105,8 +105,8 @@ bool Player::isPushable() const {
 	return Creature::isPushable();
 }
 
-std::shared_ptr<Task> Player::createPlayerTask(uint32_t delay, std::function<void(void)> f) {
-	return std::make_shared<Task>(std::move(f), delay);
+std::shared_ptr<Task> Player::createPlayerTask(uint32_t delay, std::function<void(void)> f, std::string context) {
+	return std::make_shared<Task>(std::move(f), std::move(context), delay);
 }
 
 uint32_t Player::playerFirstID = 0x10000000;
@@ -1836,7 +1836,7 @@ void Player::onCreatureMove(Creature* creature, const Tile* newTile, const Posit
 
 	if (hasFollowPath && (creature == followCreature || (creature == this && followCreature))) {
 		isUpdatingPath = false;
-		g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID()));
+		g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
 	}
 
 	if (creature != this) {
@@ -4143,7 +4143,7 @@ bool Player::updateSaleShopList(const Item* item) {
 		return true;
 	}
 
-	g_dispatcher().addTask(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID()));
+	g_dispatcher().addTask(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID()), "updatePlayerSaleItems");
 	scheduledSaleUpdate = true;
 	return true;
 }
@@ -4214,7 +4214,7 @@ bool Player::setAttackedCreature(Creature* creature) {
 	}
 
 	if (creature) {
-		g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
+		g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
 	}
 	return true;
 }
@@ -4269,7 +4269,7 @@ void Player::doAttacking(uint32_t) {
 			result = Weapon::useFist(this, attackedCreature);
 		}
 
-		std::shared_ptr<Task> task = createPlayerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay), std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
+		std::shared_ptr<Task> task = createPlayerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay), std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
 		if (!classicSpeed) {
 			setNextActionTask(task, false);
 		} else {
@@ -7544,9 +7544,9 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 		// Check if can walk to the toPosition and send event to use function
 		std::forward_list<Direction> listDir;
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
-			g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir));
+			g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir), __FUNCTION__);
 
-			std::shared_ptr<Task> task = createPlayerTask(delay, function);
+			std::shared_ptr<Task> task = createPlayerTask(delay, function, __FUNCTION__);
 			setNextWalkActionTask(task);
 			return true;
 		} else {

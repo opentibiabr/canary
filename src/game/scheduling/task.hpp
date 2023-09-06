@@ -12,17 +12,15 @@
 class Task {
 public:
 	// DO NOT allocate this class on the stack
-	Task(std::function<void(void)> &&f) :
-		func(std::move(f)) { }
-
-	Task(std::function<void(void)> &&f, uint32_t delay) :
-		func(std::move(f)), delay(delay) { }
-
 	Task(std::function<void(void)> &&f, std::string context) :
-		func(std::move(f)), context(std::move(context)) { }
+		context(std::move(context)), func(std::move(f)) {
+		assert(!context.empty() && "Context cannot be empty!");
+	}
 
-	Task(std::function<void(void)> &&f, uint32_t delay, std::string context) :
-		func(std::move(f)), delay(delay), context(std::move(context)) { }
+	Task(std::function<void(void)> &&f, std::string context, uint32_t delay) :
+		delay(delay), context(std::move(context)), func(std::move(f)) {
+		assert(!context.empty() && "Context cannot be empty!");
+	}
 
 	virtual ~Task() = default;
 	void operator()() {
@@ -45,9 +43,23 @@ public:
 		return context;
 	}
 
+	bool hasTraceableContext() const {
+		return std::set<std::string> {
+			"Game::checkLight",
+			"Game::checkCreatures",
+			"Game::checkImbuements",
+			"Game::updateForgeableMonsters",
+			"Game::createFiendishMonsters",
+			"Game::createInfluencedMonsters",
+			"GlobalEvents::think",
+			"Webhook::run"
+		}
+			.contains(context);
+	}
+
 private:
 	uint32_t delay = 0;
 	uint64_t eventId = 0;
-	std::string context = "anonymous";
+	std::string context {};
 	std::function<void(void)> func {};
 };

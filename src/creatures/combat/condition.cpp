@@ -2040,7 +2040,7 @@ bool ConditionFeared::executeCondition(Creature* creature, int32_t interval) {
 		}
 
 		if (getFleePath(creature, currentPos, listDir)) {
-			g_dispatcher().addTask(std::bind(&Game::forcePlayerAutoWalk, &g_game(), creature->getID(), listDir), true);
+			g_dispatcher().addTask(std::bind(&Game::forcePlayerAutoWalk, &g_game(), creature->getID(), listDir), "ConditionFeared::executeCondition");
 			g_logger().debug("[ConditionFeared::executeCondition] Walking Scheduled");
 		}
 	}

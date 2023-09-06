@@ -8,7 +8,7 @@ function dreamerTicTac.onUse(player, item, fromPosition, target, toPosition, isH
 
 	local position = Position(32838, 32264, 14)
 	Game.createItem(3547, 8, position)
-	Game.createItem(3548, 12, {x = 32839, y = 32263, z = 14})
+	Game.createItem(3548, 12, { x = 32839, y = 32263, z = 14 })
 	return true
 end
 

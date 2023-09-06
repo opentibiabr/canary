@@ -1,6 +1,6 @@
 local bridgePosition = Position(32851, 32309, 11)
 local relocatePosition = Position(32852, 32310, 11)
-local dirtIds = {4797, 4799}
+local dirtIds = { 4797, 4799 }
 
 local drawbridge = MoveEvent()
 

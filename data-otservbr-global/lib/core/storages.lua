@@ -3074,7 +3074,8 @@ GlobalStorage = {
 		TentacleWave = 60079,
 		DevourerWave = 60080,
 		GloothWave = 60081,
-		LavaChange = 60082
+		LavaChange = 60082,
+		FastWay = 24867,
 	},
 	ForgottenKnowledge = {
 		-- Reserved storage from 60090 - 60099

@@ -45,7 +45,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "Esperando Script."})
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "Esperando Script." })
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, |PLAYERNAME|.")
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

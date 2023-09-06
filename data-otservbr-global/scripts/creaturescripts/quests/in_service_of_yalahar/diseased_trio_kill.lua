@@ -23,9 +23,9 @@ function diseasedTrioKill.onKill(creature, target)
 	end
 
 	if (player:getStorageValue(Storage.InServiceofYalahar.DiseasedDan) == 1 and
-	player:getStorageValue(Storage.InServiceofYalahar.DiseasedBill) == 1 and
-	player:getStorageValue(Storage.InServiceofYalahar.DiseasedFred) == 1 and
-	player:getStorageValue(Storage.InServiceofYalahar.AlchemistFormula) ~= 1) then
+				player:getStorageValue(Storage.InServiceofYalahar.DiseasedBill) == 1 and
+				player:getStorageValue(Storage.InServiceofYalahar.DiseasedFred) == 1 and
+				player:getStorageValue(Storage.InServiceofYalahar.AlchemistFormula) ~= 1) then
 		player:setStorageValue(Storage.InServiceofYalahar.AlchemistFormula, 0)
 	end
 	return true

@@ -1,7 +1,7 @@
 local lever = Action()
 
 function lever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local position = {x = 32790, y = 31594, z = 7}
+	local position = { x = 32790, y = 31594, z = 7 }
 	if item.itemid == 2772 then
 		Tile(position):getItemById(1772):remove()
 		item:transform(2773)

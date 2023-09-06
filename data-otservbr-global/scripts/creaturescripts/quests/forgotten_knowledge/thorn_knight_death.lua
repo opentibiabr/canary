@@ -27,4 +27,5 @@ function thornKnightDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 	end
 	return true
 end
+
 thornKnightDeath:register()

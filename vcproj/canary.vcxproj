@@ -11,6 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\account\account.hpp" />
+    <ClInclude Include="..\src\account\account_definitions.hpp" />
+    <ClInclude Include="..\src\account\account_repository.hpp" />
+    <ClInclude Include="..\src\account\account_repository_db.hpp" />
     <ClInclude Include="..\src\config\configmanager.hpp" />
     <ClInclude Include="..\src\config\config_definitions.hpp" />
     <ClInclude Include="..\src\core.hpp" />
@@ -28,7 +32,6 @@
     <ClInclude Include="..\src\creatures\npcs\npc.hpp" />
     <ClInclude Include="..\src\creatures\npcs\npcs.hpp" />
     <ClInclude Include="..\src\creatures\npcs\spawns\spawn_npc.hpp" />
-    <ClInclude Include="..\src\creatures\players\account\account.hpp" />
     <ClInclude Include="..\src\creatures\players\grouping\familiars.hpp" />
     <ClInclude Include="..\src\creatures\players\grouping\groups.hpp" />
     <ClInclude Include="..\src\creatures\players\grouping\guild.hpp" />
@@ -95,6 +98,9 @@
     <ClInclude Include="..\src\items\trashholder.hpp" />
     <ClInclude Include="..\src\items\weapons\weapons.hpp" />
     <ClInclude Include="..\src\lib\di\container.hpp" />
+    <ClInclude Include="..\src\lib\di\injector.hpp" />
+    <ClInclude Include="..\src\lib\di\runtime_provider.hpp" />
+    <ClInclude Include="..\src\lib\di\shared.hpp" />
     <ClInclude Include="..\src\lib\di\soft_singleton.hpp" />
     <ClInclude Include="..\src\lib\logging\logger.hpp" />
     <ClInclude Include="..\src\lib\logging\log_with_spd_log.hpp" />
@@ -209,6 +215,7 @@
     <ClInclude Include="..\src\utils\wildcardtree.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\account\account_repository_db.cpp" />
     <ClCompile Include="..\src\config\configmanager.cpp" />
     <ClCompile Include="..\src\creatures\appearance\mounts\mounts.cpp" />
     <ClCompile Include="..\src\creatures\appearance\outfit\outfit.cpp" />
@@ -223,7 +230,7 @@
     <ClCompile Include="..\src\creatures\npcs\npc.cpp" />
     <ClCompile Include="..\src\creatures\npcs\npcs.cpp" />
     <ClCompile Include="..\src\creatures\npcs\spawns\spawn_npc.cpp" />
-    <ClCompile Include="..\src\creatures\players\account\account.cpp" />
+    <ClCompile Include="..\src\account\account.cpp" />
     <ClCompile Include="..\src\creatures\players\grouping\familiars.cpp" />
     <ClCompile Include="..\src\creatures\players\grouping\groups.cpp" />
     <ClCompile Include="..\src\creatures\players\grouping\guild.cpp" />
@@ -370,6 +377,7 @@
     <ClCompile Include="..\src\server\network\webhook\webhook.cpp" />
     <ClCompile Include="..\src\server\server.cpp" />
     <ClCompile Include="..\src\server\signals.cpp" />
+    <ClCompile Include="..\src\utils\pugicast.cpp" />
     <ClCompile Include="..\src\utils\tools.cpp" />
     <ClCompile Include="..\src\utils\wildcardtree.cpp" />
   </ItemGroup>

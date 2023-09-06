@@ -2,11 +2,11 @@ local goldenOutfitCache
 local lastUpdated = 0
 
 local function updateGoldenOutfitCache()
-	if os.time() < lastUpdated + (5 * 60) then  -- Memorial cache update interval (5 minutes)
+	if os.time() < lastUpdated + (5 * 60) then -- Memorial cache update interval (5 minutes)
 		return
 	end
 
-	goldenOutfitCache = {[1] = {}, [2] = {}, [3] = {}}
+	goldenOutfitCache = { [1] = {}, [2] = {}, [3] = {} }
 
 	local resultId = db.storeQuery("SELECT `name`, `value` FROM `player_storage` INNER JOIN `players` as `p` ON `p`.`id` = `player_id` WHERE `key` = " .. Storage.OutfitQuest.GoldenOutfit .. " AND `value` >= 1;")
 	if not resultId then

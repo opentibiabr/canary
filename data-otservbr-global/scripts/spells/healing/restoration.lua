@@ -9,6 +9,7 @@ function onGetFormulaValues(player, level, maglevel)
 	local max = (level * 1.4 / 5) + (maglevel * 10.79 * 1.4) + 79 * 1.4 -- TODO: Formulas (Right now using 40% extra on Ultimate Healing with closer min and max values to the avg)
 	return min, max
 end
+
 combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 
 local spell = Spell("instant")

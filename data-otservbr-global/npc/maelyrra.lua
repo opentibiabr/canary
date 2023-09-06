@@ -66,19 +66,19 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(ThreatenedDreams.Mission02[1]) >= 1
-		and player:getStorageValue(ThreatenedDreams.Mission02[1]) <= 2 then
+				and player:getStorageValue(ThreatenedDreams.Mission02[1]) <= 2 then
 			npcHandler:say({
 				"Have you defeated the nightmare monsters?"
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif player:getStorageValue(ThreatenedDreams.Mission02[1]) >= 3
-		and player:getStorageValue(ThreatenedDreams.Mission02[1]) <= 4 then
+				and player:getStorageValue(ThreatenedDreams.Mission02[1]) <= 4 then
 			npcHandler:say({
 				"Have you found the moon mirror and freed the captured fairies?"
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		elseif player:getStorageValue(ThreatenedDreams.Mission02[1]) == 5
-		and player:getStorageValue(ThreatenedDreams.Mission03[1]) == 4 then
+				and player:getStorageValue(ThreatenedDreams.Mission03[1]) == 4 then
 			npcHandler:say({
 				"Have you already found the starlight vial and the sun catcher?"
 			}, npc, creature)
@@ -113,7 +113,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			local frazzlemawsKills = player:getStorageValue(ThreatenedDreams.Mission02.FrazzlemawsCount)
 			local kroazurKill = player:getStorageValue(ThreatenedDreams.Mission02.KroazurKill)
 			if player:getStorageValue(ThreatenedDreams.Mission02[1]) == 1
-			and kroazurKill >= 1 and (enfeebledKills+frazzlemawsKills) >= 200 then
+					and kroazurKill >= 1 and (enfeebledKills + frazzlemawsKills) >= 200 then
 				npcHandler:say({
 					"Thank you! You rendered a great favour to the fae courts and Feyrist alike. Would you help us with another problem?"
 				}, npc, creature)
@@ -141,7 +141,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			if player:getStorageValue(ThreatenedDreams.Mission02.FairiesCounter) == 5
-			and player:getStorageValue(ThreatenedDreams.Mission02.DarkMoonMirror) == 1 then
+					and player:getStorageValue(ThreatenedDreams.Mission02.DarkMoonMirror) == 1 then
 				npcHandler:say({
 					"Thank you, mortal being! Please keep the mirror. I think you may need it soon, because there is another problem. Would you help us again?"
 				}, npc, creature)
@@ -175,8 +175,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 7 then
 			if player:getItemCount(25734) >= 1
-			and player:getItemCount(25732) >= 1
-			and player:getItemCount(25730) >= 1 then
+					and player:getItemCount(25732) >= 1
+					and player:getItemCount(25730) >= 1 then
 				npcHandler:say({
 					"That's wonderful! Now you will be able to repair the magical barrier. You have to strengthen the arcane sources that power this mystic shield. There are three different arcane sources: the moon sculptures, the dream bird trees and the sun mosaics. ...",
 					"There are five of each of them and you have to find them all to repair the barrier. Spread the gathered moon rays on the moon sculptures. Pour out the starlight over the dream bird trees and let the sunlight shine on the mosaics. ...",
@@ -192,8 +192,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		elseif npcHandler:getTopic(playerId) == 8 then
 			if player:getStorageValue(ThreatenedDreams.Mission02.ChargedMoonMirror) == 0
-			and player:getStorageValue(ThreatenedDreams.Mission02.ChargedStarlightVial) == 0
-			and player:getStorageValue(ThreatenedDreams.Mission02.ChargedSunCatcher) == 0 then
+					and player:getStorageValue(ThreatenedDreams.Mission02.ChargedStarlightVial) == 0
+					and player:getStorageValue(ThreatenedDreams.Mission02.ChargedSunCatcher) == 0 then
 				npcHandler:say({
 					"Thank you, mortal being! The fae will be forever grateful. Take this blossom bag as a little thank-you gift. Such blossoms grow on our trees just once in a decade, so they are quite rare."
 				}, npc, creature)

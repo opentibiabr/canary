@@ -5,7 +5,7 @@ local beastPositions = {
 	[4] = Position(33685, 32337, 15),
 }
 
-local machinePositions ={
+local machinePositions = {
 	[1] = {
 		[1] = Position(33672, 32331, 15),
 		[2] = Position(33673, 32331, 15),
@@ -80,34 +80,34 @@ local function lavaHoles(i)
 			desativado:transform(391)
 			addEvent(function()
 				local ativado = Tile(position):getItemById(391)
-					if ativado then
-						local c = Game.getPlayers()[1]
-						c:say("BOOOOM!", TALKTYPE_MONSTER_SAY, false, false, position)
-						for x = position.x - 4, position.x + 4 do
-							for y = position.y - 4, position.y + 4 do
-								for z = position.z, position.z do
+				if ativado then
+					local c = Game.getPlayers()[1]
+					c:say("BOOOOM!", TALKTYPE_MONSTER_SAY, false, false, position)
+					for x = position.x - 4, position.x + 4 do
+						for y = position.y - 4, position.y + 4 do
+							for z = position.z, position.z do
+								if Tile(Position(x, y, z)) then
 									if Tile(Position(x, y, z)) then
-										if Tile(Position(x, y, z)) then
-											local sqm = Position(x, y, z)
-											local creature = Tile(Position(x, y, z)):getTopCreature()
-											local mwCheck = Tile(Position(x, y, z)):getItemById(2129)
-											local wildCheck = Tile(Position(x, y, z)):getItemById(2130)
-											if not (mwCheck or wildCheck) then
-												if creature then
-													if creature:isPlayer() then
-														creature:addHealth(-(math.random(0, 1500)))
-													end
+										local sqm = Position(x, y, z)
+										local creature = Tile(Position(x, y, z)):getTopCreature()
+										local mwCheck = Tile(Position(x, y, z)):getItemById(2129)
+										local wildCheck = Tile(Position(x, y, z)):getItemById(2130)
+										if not (mwCheck or wildCheck) then
+											if creature then
+												if creature:isPlayer() then
+													creature:addHealth(-(math.random(0, 1500)))
 												end
-												sqm:sendMagicEffect(CONST_ME_HITBYFIRE)
 											end
+											sqm:sendMagicEffect(CONST_ME_HITBYFIRE)
 										end
 									end
 								end
 							end
 						end
-						ativado:transform(390)
 					end
-				end, 3*1000)
+					ativado:transform(390)
+				end
+			end, 3 * 1000)
 			i = i + 1
 			if i > 4 then
 				i = 1
@@ -115,7 +115,7 @@ local function lavaHoles(i)
 		end
 	end
 	if boss == true then
-		addEvent(lavaHoles, 15*1000, i)
+		addEvent(lavaHoles, 15 * 1000, i)
 	end
 end
 
@@ -136,12 +136,12 @@ local function sumonarLavasIV(i)
 				position:sendMagicEffect(CONST_ME_TELEPORT)
 			end
 			i = i - 1
-			addEvent(sumonarLavasIV, 2*1000, i)
+			addEvent(sumonarLavasIV, 2 * 1000, i)
 		elseif i == 0 then
 			for j, position in pairs(aggressiveLavasIV) do
 				local lava = Game.createMonster("Aggressive Lava", position)
 			end
-			addEvent(sumonarLavasIV, 15*1000, 5)
+			addEvent(sumonarLavasIV, 15 * 1000, 5)
 		end
 	end
 end
@@ -163,12 +163,12 @@ local function sumonarLavasVI(i)
 				position:sendMagicEffect(CONST_ME_TELEPORT)
 			end
 			i = i - 1
-			addEvent(sumonarLavasVI, 2*1000, i)
+			addEvent(sumonarLavasVI, 2 * 1000, i)
 		elseif i == 0 then
 			for j, position in pairs(aggressiveLavasVI) do
 				local lava = Game.createMonster("Aggressive Lava", position)
 			end
-			addEvent(sumonarLavasVI, 15*1000, 5)
+			addEvent(sumonarLavasVI, 15 * 1000, 5)
 		end
 	end
 end
@@ -206,15 +206,15 @@ local function sumonarFieryHearts()
 		bossId:addHealth(-(bossId:getHealth() - oldBossHealth))
 	end
 	if boss == true then
-		addEvent(sumonarFieryHearts, 40*1000)
+		addEvent(sumonarFieryHearts, 40 * 1000)
 	end
 end
 
 local function startMachines()
-local random = math.random(1, 5)
-local positionCenter = Position(33681, 32335, 15)
-local spectator = Game.getSpectators(positionCenter, false, false, 20, 20, 20, 20)
-local checagem = false
+	local random = math.random(1, 5)
+	local positionCenter = Position(33681, 32335, 15)
+	local spectator = Game.getSpectators(positionCenter, false, false, 20, 20, 20, 20)
+	local checagem = false
 	for _, monster in pairs(spectator) do
 		if monster:isMonster() then
 			if monster:getName():lower() == "the count of the core" then
@@ -228,7 +228,7 @@ local checagem = false
 							addEvent(function()
 								local a = machineOn:getPosition().y + 10
 								local a_ = machineOn:getPosition().y - 10
-								if random%2 ~= 0 then
+								if random % 2 ~= 0 then
 									for x = machineOn:getPosition().x, machineOn:getPosition().x do
 										for y = machineOn:getPosition().y + 1, a do
 											for z = machineOn:getPosition().z, machineOn:getPosition().z do
@@ -291,16 +291,16 @@ local checagem = false
 									if machineOn then
 										machineOn:transform(31724)
 									end
-								end, 1*1000)
-							end, 2*1000)
+								end, 1 * 1000)
+							end, 2 * 1000)
 						end
 					end
-				end, 6*1000)
+				end, 6 * 1000)
 			end
 		end
 	end
 	if checagem == true then
-		addEvent(startMachines, 6*1000)
+		addEvent(startMachines, 6 * 1000)
 	end
 end
 
@@ -311,7 +311,7 @@ local function summonBeasts(i)
 			position:sendMagicEffect(CONST_ME_TELEPORT)
 		end
 		i = i - 1
-		addEvent(summonBeasts, 2*1000, i)
+		addEvent(summonBeasts, 2 * 1000, i)
 	elseif i == 0 then
 		for j, position in pairs(beastPositions) do
 			local beast = Game.createMonster("Ember Beast", position)
@@ -328,7 +328,7 @@ local function checarSala(qnt)
 		if checagem:isMonster() then
 			if checagem:getName():lower() == "the count of the core" then
 				temBoss = true
-				hpBoss = (checagem:getHealth()/checagem:getMaxHealth())*100
+				hpBoss = (checagem:getHealth() / checagem:getMaxHealth()) * 100
 			end
 		end
 	end
@@ -362,7 +362,7 @@ local function checarSala(qnt)
 				end
 			end
 			if temBoss == true then
-				addEvent(checarSala, 60*1000, qnt)
+				addEvent(checarSala, 60 * 1000, qnt)
 			end
 		end
 	end
@@ -371,35 +371,35 @@ end
 local function startWarzoneIV()
 	addEvent(function()
 		local monstro = Game.createMonster("The Baron From Below", Position(33648, 32303, 15))
-			if monstro then
-				monstro:registerEvent("TheBaronFromBelowThink")
-			end
-			addEvent(sumonarLavasIV, 15*1000, 5)
-			addEvent(lavaHoles, 15*1000, 1)
-	end, 10*1000)
+		if monstro then
+			monstro:registerEvent("TheBaronFromBelowThink")
+		end
+		addEvent(sumonarLavasIV, 15 * 1000, 5)
+		addEvent(lavaHoles, 15 * 1000, 1)
+	end, 10 * 1000)
 end
 
 local function startWarzoneV()
 	addEvent(function()
 		local monstro = Game.createMonster("The Count Of The Core", Position(33681, 32334, 15))
-			if monstro then
-				monstro:registerEvent("SnailSlimeThink")
-			end
+		if monstro then
+			monstro:registerEvent("SnailSlimeThink")
+		end
 		summonBeasts(5)
-		addEvent(startMachines, 10*1000)
-		addEvent(checarSala, 30*1000, 4)
-	end, 5*1000)
+		addEvent(startMachines, 10 * 1000)
+		addEvent(checarSala, 30 * 1000, 4)
+	end, 5 * 1000)
 end
 
 local function startWarzoneVI()
 	addEvent(function()
 		local monstro = Game.createMonster("The Duke Of The Depths", Position(33712, 32303, 15))
-			if monstro then
-				monstro:registerEvent("FieryHeartThink")
-			end
-			addEvent(sumonarFieryHearts, 30*1000)
-			addEvent(sumonarLavasVI, 15*1000, 5)
-	end, 10*1000)
+		if monstro then
+			monstro:registerEvent("FieryHeartThink")
+		end
+		addEvent(sumonarFieryHearts, 30 * 1000)
+		addEvent(sumonarLavasVI, 15 * 1000, 5)
+	end, 10 * 1000)
 end
 
 local dangerousDepthCrystals = Action()
@@ -409,11 +409,11 @@ function dangerousDepthCrystals.onUse(player, item, fromPosition, target, toPosi
 	end
 
 	if not target:isItem() then
-	return false
+		return false
 	end
 
 	if target:isCreature() then
-	return false
+		return false
 	end
 
 	local WarzoneVI = Position(33274, 32316, 15)
@@ -447,8 +447,8 @@ function dangerousDepthCrystals.onUse(player, item, fromPosition, target, toPosi
 							teleport:remove(1)
 							Game.createItem(388, 1, Position(33460, 32267, 15))
 						end
-					end, 8*1000)
-					addEvent(clearForgotten, 30*60*1000, Position(33638, 32291, 15), Position(33675, 32313, 15), Position(33462, 32267, 15), GlobalStorage.DangerousDepths.Geodes.WarzoneIV)
+					end, 8 * 1000)
+					addEvent(clearForgotten, 30 * 60 * 1000, Position(33638, 32291, 15), Position(33675, 32313, 15), Position(33462, 32267, 15), GlobalStorage.DangerousDepths.Geodes.WarzoneIV)
 					startWarzoneIV()
 				end
 			end
@@ -482,8 +482,8 @@ function dangerousDepthCrystals.onUse(player, item, fromPosition, target, toPosi
 							teleport:remove(1)
 							Game.createItem(388, 1, Position(33324, 32109, 15))
 						end
-					end, 8*1000)
-					addEvent(clearForgotten, 30*60*1000, Position(33668, 32310, 15), Position(33695, 32343, 15), Position(33323, 32111, 15), GlobalStorage.DangerousDepths.Geodes.WarzoneV)
+					end, 8 * 1000)
+					addEvent(clearForgotten, 30 * 60 * 1000, Position(33668, 32310, 15), Position(33695, 32343, 15), Position(33323, 32111, 15), GlobalStorage.DangerousDepths.Geodes.WarzoneV)
 					startWarzoneV()
 				end
 			end
@@ -517,8 +517,8 @@ function dangerousDepthCrystals.onUse(player, item, fromPosition, target, toPosi
 							teleport:remove(1)
 							Game.createItem(388, 1, Position(33275, 32316, 15))
 						end
-					end, 8*1000)
-					addEvent(clearForgotten, 30*60*1000, Position(33684, 32293, 15), Position(33724, 32314, 15), Position(33275, 32318, 15), GlobalStorage.DangerousDepths.Geodes.WarzoneVI)
+					end, 8 * 1000)
+					addEvent(clearForgotten, 30 * 60 * 1000, Position(33684, 32293, 15), Position(33724, 32314, 15), Position(33275, 32318, 15), GlobalStorage.DangerousDepths.Geodes.WarzoneVI)
 					startWarzoneVI()
 				end
 			end

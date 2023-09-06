@@ -299,7 +299,7 @@ Blessings.DropLoot = function(player, corpse, chance, skulled)
 			for i = 0, inbox:getSize() do
 				local item = inbox:getItem(i)
 				if item then
-					toBeDeleted[#toBeDeleted + 1] = item.uid
+					toBeDeleted[#toBeDeleted+1] = item.uid
 				end
 			end
 			if #toBeDeleted > 0 then
@@ -322,7 +322,6 @@ Blessings.ClearBless = function(player, killer, currentBless)
 		return
 	end
 	for i = 1, #currentBless do
-
 		Blessings.DebugPrint(i, "ClearBless curBless i", " | " .. currentBless[i].name)
 		player:removeBlessing(currentBless[i].id, 1)
 	end
@@ -340,7 +339,7 @@ Blessings.BuyAllBlesses = function(player)
 	local PvPBlessCost = Blessings.getPvpBlessingCost(player:getLevel(), true)
 	local hasToF = Blessings.Config.HasToF and player:hasBlessing(1) or true
 	donthavefilter = function(p, b) return not p:hasBlessing(b) end
-	local missingBless = player:getBlessings(nil,donthavefilter)
+	local missingBless = player:getBlessings(nil, donthavefilter)
 	local missingBlessAmt = #missingBless + (hasToF and 0 or 1)
 	local totalCost = blessCost * #missingBless
 
@@ -373,7 +372,7 @@ Blessings.PlayerDeath = function(player, corpse, killer)
 	local haveSkull = table.contains({ SKULL_RED, SKULL_BLACK }, player:getSkull())
 	local curBless = player:getBlessings()
 
-	if haveSkull then  -- lose all bless + drop all items
+	if haveSkull then -- lose all bless + drop all items
 		Blessings.DropLoot(player, corpse, 100, true)
 	elseif #curBless < 5 and not hasAol then -- lose all items
 		local equipLoss = Blessings.LossPercent[#curBless].item

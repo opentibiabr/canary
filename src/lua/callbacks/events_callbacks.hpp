@@ -49,7 +49,7 @@ public:
 	 * @brief Adds a new event callback to the list.
 	 * @param callback Pointer to the EventCallback object to add.
 	 */
-	void addCallback(const std::shared_ptr<EventCallback> &callback);
+	void addCallback(const std::shared_ptr<EventCallback> callback);
 
 	/**
 	 * @brief Gets all registered event callbacks.

@@ -17,5 +17,5 @@ function ferumbrasAscendantTarbazNotes.onUse(player, item, fromPosition, target,
 	return true
 end
 
-ferumbrasAscendantTarbazNotes:aid(54388,54389)
+ferumbrasAscendantTarbazNotes:aid(54388, 54389)
 ferumbrasAscendantTarbazNotes:register()

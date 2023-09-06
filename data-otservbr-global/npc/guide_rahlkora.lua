@@ -61,9 +61,9 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local configMarks = {
-	{mark = "shops", position = Position(33130, 32815, 7), markId = MAPMARK_BAG, description = "Shops"},
-	{mark = "depot", position = Position(33126, 32841, 7), markId = MAPMARK_LOCK, description = "Depot"},
-	{mark = "temple", position = Position(33195, 32852, 7), markId = MAPMARK_TEMPLE, description = "Temple"}
+	{ mark = "shops", position = Position(33130, 32815, 7), markId = MAPMARK_BAG, description = "Shops" },
+	{ mark = "depot", position = Position(33126, 32841, 7), markId = MAPMARK_LOCK, description = "Depot" },
+	{ mark = "temple", position = Position(33195, 32852, 7), markId = MAPMARK_TEMPLE, description = "Temple" }
 }
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -74,7 +74,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if table.contains({"map", "marks"}, message) then
+	if table.contains({ "map", "marks" }, message) then
 		npcHandler:say("Would you like me to mark locations like - for example - the depot, bank and shops on your map?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
@@ -92,14 +92,14 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'information'}, StdModule.say, {npcHandler = npcHandler, text = 'Currently, I can tell you all about the town, its temple, the bank, shops, spell trainers and the depot.'})
-keywordHandler:addKeyword({'temple'}, StdModule.say, {npcHandler = npcHandler, text = 'The temple is in the south-eastern part of town. If you exit the depot to the south and walk east - slightly south-east - you can\'t miss it.'})
-keywordHandler:addKeyword({'bank'}, StdModule.say, {npcHandler = npcHandler, text = 'Tesha is in charge of both the bank and the gem store. You can find her on the market pyramid. Just exit the depot on the north side and walk up the next pyramid.'})
-keywordHandler:addKeyword({'shops'}, StdModule.say, {npcHandler = npcHandler, text = 'You can buy weapons, armor, tools, gems, magical equipment, furniture, spells and food here.'})
-keywordHandler:addKeyword({'depot'}, StdModule.say, {npcHandler = npcHandler, text = 'The depot is a place where you can safely store your belongings. You are also protected against attacks there. I escort newcomers there.'})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'I will help you to find your way around Ankrahmun. I can mark important locations on your map and give you some information about the town.'})
-keywordHandler:addKeyword({'town'}, StdModule.say, {npcHandler = npcHandler, text = 'Ankrahmun consists almost completely of pyramids. You can walk up and down those pyramids just like you\'d climb up stairs. Most shops are on the upper floors.'})
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = 'My name is Rahlkora. I\'m a guide.'})
+keywordHandler:addKeyword({ 'information' }, StdModule.say, { npcHandler = npcHandler, text = 'Currently, I can tell you all about the town, its temple, the bank, shops, spell trainers and the depot.' })
+keywordHandler:addKeyword({ 'temple' }, StdModule.say, { npcHandler = npcHandler, text = 'The temple is in the south-eastern part of town. If you exit the depot to the south and walk east - slightly south-east - you can\'t miss it.' })
+keywordHandler:addKeyword({ 'bank' }, StdModule.say, { npcHandler = npcHandler, text = 'Tesha is in charge of both the bank and the gem store. You can find her on the market pyramid. Just exit the depot on the north side and walk up the next pyramid.' })
+keywordHandler:addKeyword({ 'shops' }, StdModule.say, { npcHandler = npcHandler, text = 'You can buy weapons, armor, tools, gems, magical equipment, furniture, spells and food here.' })
+keywordHandler:addKeyword({ 'depot' }, StdModule.say, { npcHandler = npcHandler, text = 'The depot is a place where you can safely store your belongings. You are also protected against attacks there. I escort newcomers there.' })
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = 'I will help you to find your way around Ankrahmun. I can mark important locations on your map and give you some information about the town.' })
+keywordHandler:addKeyword({ 'town' }, StdModule.say, { npcHandler = npcHandler, text = 'Ankrahmun consists almost completely of pyramids. You can walk up and down those pyramids just like you\'d climb up stairs. Most shops are on the upper floors.' })
+keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = 'My name is Rahlkora. I\'m a guide.' })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to Ankrahmun, |PLAYERNAME| This city can be a bit confusing at first. Would you like some information and a map guide?")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")

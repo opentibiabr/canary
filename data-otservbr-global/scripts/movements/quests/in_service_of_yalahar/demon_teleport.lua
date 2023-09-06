@@ -1,11 +1,9 @@
 local teleports = {
-	[3103] = {destination = Position(32861, 31061, 9), soilPosition = Position(32859, 31056, 9)},
-	[3104] = {destination = Position(32856, 31055, 9)},
-	[3105] = {destination = Position(32888, 31045, 9), soilPosition = Position(32894, 31044, 9)},
-	[3106] = {destination = Position(32894, 31046, 9)},
+	[4244] = { destination = Position(32861, 31061, 9), soilPosition = Position(32859, 31056, 9) },
+	[4245] = { destination = Position(32888, 31045, 9), soilPosition = Position(32894, 31044, 9) },
 }
 
-local soilIds = {944, 945, 940, 941}
+local soilIds = { 944, 945, 940, 941 }
 
 local demonTeleport = MoveEvent()
 

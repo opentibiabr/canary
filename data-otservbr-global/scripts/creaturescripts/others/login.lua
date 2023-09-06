@@ -23,7 +23,7 @@ local playerLogin = CreatureEvent("PlayerLogin")
 function playerLogin.onLogin(player)
 	local items = {
 		{ 3003, 1 },
-		{ 3031, 3 }
+		{ 3457, 1 }
 	}
 	if player:getLastLoginSaved() == 0 then
 		player:sendOutfitWindow()
@@ -235,7 +235,16 @@ function playerLogin.onLogin(player)
 	-- Set Client XP Gain Rate --
 	if configManager.getBoolean(configKeys.XP_DISPLAY_MODE) then
 		local baseRate = player:getFinalBaseRateExperience()
-		player:setBaseXpGain(baseRate * 100)
+		baseRate = baseRate * 100
+		if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+			local vipBonusExp = configManager.getNumber(configKeys.VIP_BONUS_EXP)
+			if vipBonusExp > 0 and player:isVip() then
+				vipBonusExp = (vipBonusExp > 100 and 100) or vipBonusExp
+				baseRate = baseRate * (1 + (vipBonusExp / 100))
+				player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Normal base xp is: " .. baseRate .. "%, because you are VIP, bonus of " .. vipBonusExp .. "%")
+			end
+		end
+		player:setBaseXpGain(baseRate)
 	end
 
 	local staminaBonus = player:getFinalBonusStamina()
@@ -251,4 +260,5 @@ function playerLogin.onLogin(player)
 	end
 	return true
 end
+
 playerLogin:register()

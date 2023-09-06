@@ -703,6 +703,8 @@ MagicEffectNames magicEffectNames = {
 	{ "fatal", CONST_ME_FATAL },
 	{ "dodge", CONST_ME_DODGE },
 	{ "hourglass", CONST_ME_HOURGLASS },
+	{ "dazzling", CONST_ME_DAZZLING },
+	{ "sparkling", CONST_ME_SPARKLING },
 	{ "ferumbras1", CONST_ME_FERUMBRAS_1 },
 	{ "gazharagoth", CONST_ME_GAZHARAGOTH },
 	{ "madmage", CONST_ME_MAD_MAGE },
@@ -1639,6 +1641,81 @@ std::string formatPrice(std::string price, bool space /* = false*/) {
 	return price;
 }
 
+std::string getPlayerSubjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name) {
+	switch (pronoun) {
+		case PLAYERPRONOUN_THEY:
+			return "they";
+		case PLAYERPRONOUN_SHE:
+			return "she";
+		case PLAYERPRONOUN_HE:
+			return "he";
+		case PLAYERPRONOUN_ZE:
+			return "ze";
+		case PLAYERPRONOUN_NAME:
+			return name;
+		default:
+			return sex == PLAYERSEX_FEMALE ? "she" : "he";
+	}
+}
+
+std::string getPlayerObjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name) {
+	switch (pronoun) {
+		case PLAYERPRONOUN_THEY:
+			return "them";
+		case PLAYERPRONOUN_SHE:
+			return "her";
+		case PLAYERPRONOUN_HE:
+			return "him";
+		case PLAYERPRONOUN_ZE:
+			return "zir";
+		case PLAYERPRONOUN_NAME:
+			return name;
+		default:
+			return sex == PLAYERSEX_FEMALE ? "her" : "him";
+	}
+}
+
+std::string getPlayerPossessivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name) {
+	switch (pronoun) {
+		case PLAYERPRONOUN_THEY:
+			return "their";
+		case PLAYERPRONOUN_SHE:
+			return "her";
+		case PLAYERPRONOUN_HE:
+			return "his";
+		case PLAYERPRONOUN_ZE:
+			return "zir";
+		case PLAYERPRONOUN_NAME:
+			return name + "'s";
+		default:
+			return sex == PLAYERSEX_FEMALE ? "her" : "his";
+	}
+}
+
+std::string getPlayerReflexivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name) {
+	switch (pronoun) {
+		case PLAYERPRONOUN_THEY:
+			return "themself";
+		case PLAYERPRONOUN_SHE:
+			return "herself";
+		case PLAYERPRONOUN_HE:
+			return "himself";
+		case PLAYERPRONOUN_ZE:
+			return "zirself";
+		case PLAYERPRONOUN_NAME:
+			return name;
+		default:
+			return sex == PLAYERSEX_FEMALE ? "herself" : "himself";
+	}
+}
+
+std::string getVerbForPronoun(PlayerPronoun_t pronoun, bool pastTense) {
+	if (pronoun == PLAYERPRONOUN_THEY) {
+		return pastTense ? "were" : "are";
+	}
+	return pastTense ? "was" : "is";
+}
+
 std::vector<std::string> split(const std::string &str) {
 	std::vector<std::string> tokens;
 	std::string token;
@@ -1678,4 +1755,19 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 	}
 
 	return output.str();
+}
+
+/**
+ * @brief Formats a number to a string with commas
+ * @param number The number to format
+ * @return The formatted number
+ */
+std::string formatNumber(uint64_t number) {
+	std::string formattedNumber = std::to_string(number);
+	int pos = formattedNumber.length() - 3;
+	while (pos > 0) {
+		formattedNumber.insert(pos, ",");
+		pos -= 3;
+	}
+	return formattedNumber;
 }

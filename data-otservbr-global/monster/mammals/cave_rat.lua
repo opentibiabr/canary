@@ -26,7 +26,7 @@ monster.Bestiary = {
 	Locations = "Almost everywhere in tibia, they seem to have a nest-like place in Greenshore, \z
 		a semi-large spawn at the entrance to the Port Hope troll cave and in cave near Ankrahmun ship. \z
 		Also appears in Rat Plague in Thais and Rat Plague in Rookgaard."
-	}
+}
 
 monster.health = 30
 monster.maxHealth = 30
@@ -61,55 +61,56 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Meeeeep!", yell = false},
-	{text = "Meep!", yell = false}
+	{ text = "Meep!", yell = false },
+	{ text = "Meeeeep!", yell = false },
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 85000, maxCount = 2},
-	{name = "cookie", chance = 750},
-	{id = 3607, chance = 30000}, -- cheese
-	{name = "worm", chance = 9700, maxCount = 2}
+	{ name = "gold coin", chance = 85000, maxCount = 2 },
+	{ name = "cookie", chance = 750 },
+	{ id = 3607, chance = 30000 }, -- cheese
+	{ name = "worm", chance = 9700, maxCount = 2 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10 }
 }
 
 monster.defenses = {
 	defense = 5,
-	armor = 5
+	armor = 1,
+	mitigation = 0.10,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = -10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

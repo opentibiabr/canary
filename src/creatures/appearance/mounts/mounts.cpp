@@ -49,7 +49,7 @@ bool Mounts::loadFromXml() {
 }
 
 std::shared_ptr<Mount> Mounts::getMountByID(uint8_t id) {
-	auto it = std::find_if(mounts.begin(), mounts.end(), [id](const std::shared_ptr<Mount> &mount) {
+	auto it = std::find_if(mounts.begin(), mounts.end(), [id](const std::shared_ptr<Mount> mount) {
 		return mount->id == id; // Note the use of -> operator to access the members of the Mount object
 	});
 
@@ -58,7 +58,7 @@ std::shared_ptr<Mount> Mounts::getMountByID(uint8_t id) {
 
 std::shared_ptr<Mount> Mounts::getMountByName(const std::string &name) {
 	auto mountName = name.c_str();
-	auto it = std::find_if(mounts.begin(), mounts.end(), [mountName](const std::shared_ptr<Mount> &mount) {
+	auto it = std::find_if(mounts.begin(), mounts.end(), [mountName](const std::shared_ptr<Mount> mount) {
 		return strcasecmp(mountName, mount->name.c_str()) == 0;
 	});
 
@@ -66,7 +66,7 @@ std::shared_ptr<Mount> Mounts::getMountByName(const std::string &name) {
 }
 
 std::shared_ptr<Mount> Mounts::getMountByClientID(uint16_t clientId) {
-	auto it = std::find_if(mounts.begin(), mounts.end(), [clientId](const std::shared_ptr<Mount> &mount) {
+	auto it = std::find_if(mounts.begin(), mounts.end(), [clientId](const std::shared_ptr<Mount> mount) {
 		return mount->clientId == clientId; // Note the use of -> operator to access the members of the Mount object
 	});
 

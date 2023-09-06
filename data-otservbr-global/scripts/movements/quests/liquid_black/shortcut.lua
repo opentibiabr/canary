@@ -1,4 +1,4 @@
-local enterPosition = {x = 33478, y = 31314, z = 7}
+local enterPosition = { x = 33478, y = 31314, z = 7 }
 
 local shortcut = MoveEvent()
 

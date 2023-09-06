@@ -110,6 +110,8 @@ bool ConfigManager::load() {
 		string[MAP_CUSTOM_AUTHOR] = getGlobalString(L, "mapCustomAuthor", "OTServBR");
 
 		string[HOUSE_RENT_PERIOD] = getGlobalString(L, "houseRentPeriod", "never");
+		floating[HOUSE_PRICE_RENT_MULTIPLIER] = getGlobalFloat(L, "housePriceRentMultiplier", 1.0);
+		floating[HOUSE_RENT_RATE] = getGlobalFloat(L, "houseRentRate", 1.0);
 		string[MYSQL_HOST] = getGlobalString(L, "mysqlHost", "127.0.0.1");
 		string[MYSQL_USER] = getGlobalString(L, "mysqlUser", "root");
 		string[MYSQL_PASS] = getGlobalString(L, "mysqlPass", "");
@@ -183,6 +185,7 @@ bool ConfigManager::load() {
 	boolean[ONLY_PREMIUM_ACCOUNT] = getGlobalBoolean(L, "onlyPremiumAccount", false);
 	boolean[RATE_USE_STAGES] = getGlobalBoolean(L, "rateUseStages", false);
 	boolean[TOGGLE_IMBUEMENT_SHRINE_STORAGE] = getGlobalBoolean(L, "toggleImbuementShrineStorage", true);
+	boolean[TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY] = getGlobalBoolean(L, "toggleImbuementNonAggressiveFightOnly", false);
 
 	boolean[TOGGLE_DOWNLOAD_MAP] = getGlobalBoolean(L, "toggleDownloadMap", false);
 	boolean[USE_ANY_DATAPACK_FOLDER] = getGlobalBoolean(L, "useAnyDatapackFolder", false);
@@ -217,7 +220,7 @@ bool ConfigManager::load() {
 	integer[RATE_MAGIC] = getGlobalNumber(L, "rateMagic", 1);
 	integer[RATE_SPAWN] = getGlobalNumber(L, "rateSpawn", 1);
 	integer[RATE_KILLING_IN_THE_NAME_OF_POINTS] = getGlobalNumber(L, "rateKillingInTheNameOfPoints", 1);
-	integer[HOUSE_PRICE] = getGlobalNumber(L, "housePriceEachSQM", 1000);
+	integer[HOUSE_PRICE_PER_SQM] = getGlobalNumber(L, "housePriceEachSQM", 1000);
 	integer[HOUSE_BUY_LEVEL] = getGlobalNumber(L, "houseBuyLevel", 0);
 	integer[ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenActions", 200);
 	integer[EX_ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenExActions", 1000);
@@ -360,6 +363,7 @@ bool ConfigManager::load() {
 	boolean[TOGGLE_WHEELSYSTEM] = getGlobalBoolean(L, "wheelSystemEnabled", true);
 	integer[WHEEL_POINTS_PER_LEVEL] = getGlobalNumber(L, "wheelPointsPerLevel", 1);
 
+	boolean[PARTY_AUTO_SHARE_EXPERIENCE] = getGlobalBoolean(L, "partyAutoShareExperience", true);
 	boolean[PARTY_SHARE_LOOT_BOOSTS] = getGlobalBoolean(L, "partyShareLootBoosts", true);
 	floating[PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR] = getGlobalFloat(L, "partyShareLootBoostsDimishingFactor", 0.7f);
 	integer[TIBIADROME_CONCOCTION_COOLDOWN] = getGlobalNumber(L, "tibiadromeConcoctionCooldown", 24 * 60 * 60);

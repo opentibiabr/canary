@@ -17,16 +17,16 @@ local config = {
 		Position(33262, 31831, 12)
 	},
 	walls = {
-		{from = Position(33275, 31834, 12), to = Position(33275, 31838, 12), wallId = 5072, soundPosition = Position(33275, 31836, 12)},
-		{from = Position(33266, 31843, 12), to = Position(33270, 31843, 12), wallId = 5071, soundPosition = Position(33268, 31843, 12)},
-		{from = Position(33260, 31834, 12), to = Position(33260, 31838, 12), wallId = 5072, soundPosition = Position(33260, 31836, 12)},
-		{from = Position(33266, 31828, 12), to = Position(33270, 31828, 12), wallId = 5071, soundPosition = Position(33268, 31828, 12)}
+		{ from = Position(33275, 31834, 12), to = Position(33275, 31838, 12), wallId = 5072, soundPosition = Position(33275, 31836, 12) },
+		{ from = Position(33266, 31843, 12), to = Position(33270, 31843, 12), wallId = 5071, soundPosition = Position(33268, 31843, 12) },
+		{ from = Position(33260, 31834, 12), to = Position(33260, 31838, 12), wallId = 5072, soundPosition = Position(33260, 31836, 12) },
+		{ from = Position(33266, 31828, 12), to = Position(33270, 31828, 12), wallId = 5071, soundPosition = Position(33268, 31828, 12) }
 	},
 	roomArea = {
 		from = Position(33261, 31829, 12),
 		to = Position(33274, 31842, 12)
 	},
-	machineStorages = {GlobalStorage.ElementalSphere.Machine1, GlobalStorage.ElementalSphere.Machine2, GlobalStorage.ElementalSphere.Machine3, GlobalStorage.ElementalSphere.Machine4},
+	machineStorages = { GlobalStorage.ElementalSphere.Machine1, GlobalStorage.ElementalSphere.Machine2, GlobalStorage.ElementalSphere.Machine3, GlobalStorage.ElementalSphere.Machine4 },
 	centerPosition = Position(33267, 31836, 12),
 	effectPositions = {
 		Position(33261, 31829, 12), Position(33262, 31830, 12), Position(33263, 31831, 12),
@@ -152,7 +152,7 @@ function elementalSpheresLordLever.onUse(player, item, fromPosition, target, toP
 	for i = 1, #config.positions do
 		local creature = Tile(config.positions[i]):getTopCreature()
 		if creature then
-			players[#players + 1] = creature.uid
+			players[#players+1] = creature.uid
 		end
 	end
 

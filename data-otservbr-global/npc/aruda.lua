@@ -12,7 +12,7 @@ npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
 	lookType = 140,
-	lookHead = 77,
+	lookHead = 96,
 	lookBody = 81,
 	lookLegs = 79,
 	lookFeet = 95,
@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Hey there, up for a chat?'}
+	{ text = 'Hey there, up for a chat?' }
 }
 
 local keywordHandler = KeywordHandler:new()

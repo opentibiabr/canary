@@ -1,6 +1,6 @@
 local rune = Spell("rune")
 
-local corpseIds = {4240, 4241, 4242, 4243, 4246, 4247, 4248}
+local corpseIds = { 4240, 4241, 4242, 4243, 4246, 4247, 4248 }
 local removalLimit = 500
 
 function rune.onCastSpell(creature, variant, isHotkey)

@@ -50,7 +50,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({'food'}, StdModule.say, {npcHandler = npcHandler, text = "I offer quite a lot of food. Ask me for a {trade} if you're hungry"})
+keywordHandler:addKeyword({ 'food' }, StdModule.say, { npcHandler = npcHandler, text = "I offer quite a lot of food. Ask me for a {trade} if you're hungry" })
 
 npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|! What do you need? If it's {food}, you've come to the right place.")
 npcHandler:setMessage(MESSAGE_SENDTRADE, "Yep, take a good look.")

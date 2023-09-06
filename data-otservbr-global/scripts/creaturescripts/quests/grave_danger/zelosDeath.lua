@@ -16,6 +16,7 @@ function KingzelosDeath.onPrepareDeath(creature)
 				specCreature:addOutfit(1243, 0)
 				specCreature:setStorageValue(Storage.Quest.U12_20.GraveDanger.Bosses.InquisitionOutfitReceived, 1)
 			end
+			specCreature:addAchievement("Inquisition's Hand")
 		end
 	end
 

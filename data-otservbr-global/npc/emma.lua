@@ -120,9 +120,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addAchievement("Top CGB Agent")
 				player:addItem(898, 1)
 				npcHandler:say({
-				'Excellent. The queen was not amused about this threat. It\'s a good thing that you have saved the city ...',
-				'Unfortunately, as we are secret agents we can\'t parade for you or something like that, but let me express our gratitude for everything you have done for our city ...',
-				'Take this token of gratitude. You will know when to use it!'
+					'Excellent. The queen was not amused about this threat. It\'s a good thing that you have saved the city ...',
+					'Unfortunately, as we are secret agents we can\'t parade for you or something like that, but let me express our gratitude for everything you have done for our city ...',
+					'Take this token of gratitude. You will know when to use it!'
 				}, npc, creature)
 			else
 				npcHandler:say('Please bring me proof of the mad technomancers defeat!', npc, creature)
@@ -157,9 +157,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.SecretService.Quest, 2)
 			player:setStorageValue(Storage.SecretService.CGBMission01, 1)
 			npcHandler:say({
-			'Our relations with Thais can be called strained at best. Therefore, it\'s not really astounding that the Thaian financed Edron\'s academy but refuse to share some knowledge with our druids ..',
-			'But we won\'t accept this so easily. With the help of divination, we learnt that the knowledge our druids are looking for is found in a certain book ...',
-			'It will be your task to enter the academy and to steal this book for us.'
+				'Our relations with Thais can be called strained at best. Therefore, it\'s not really astounding that the Thaian financed Edron\'s academy but refuse to share some knowledge with our druids ..',
+				'But we won\'t accept this so easily. With the help of divination, we learnt that the knowledge our druids are looking for is found in a certain book ...',
+				'It will be your task to enter the academy and to steal this book for us.'
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(Storage.SecretService.CGBMission01) == 1 then
@@ -209,9 +209,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.SecretService.Quest, 10)
 			player:setStorageValue(Storage.SecretService.CGBMission05, 1)
 			npcHandler:say({
-			'Ruins of some ancient cathedral are found south west of Venore. It was a project that the Thaians never finished. However, our scouts reported some suspicious activities there ...',
-			'There is a continual coming and going which hints on something big hiding there. We ask you to enter the ruins of the cathedral and to find out what all these people are doing there ...',
-			'You might find several hints there, but I am sure you will know exactly when you have found what we are looking for.'
+				'Ruins of some ancient cathedral are found south west of Venore. It was a project that the Thaians never finished. However, our scouts reported some suspicious activities there ...',
+				'There is a continual coming and going which hints on something big hiding there. We ask you to enter the ruins of the cathedral and to find out what all these people are doing there ...',
+				'You might find several hints there, but I am sure you will know exactly when you have found what we are looking for.'
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(Storage.SecretService.CGBMission05) == 1 then
@@ -248,33 +248,48 @@ end
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 -- basic
-keywordHandler:addKeyword({"queen"}, StdModule.say, {npcHandler = npcHandler, text = "I am privileged to be in service of our beloved queen!"})
-keywordHandler:addKeyword({"carlin"}, StdModule.say, {npcHandler = npcHandler, text = "We are proud people who fought hard for their freedom and won't allow others to oppress us again."})
-keywordHandler:addKeyword({"service"}, StdModule.say, {npcHandler = npcHandler, text = "I am the head of Carlin's Girls Brigade, also known as CGB."})
-keywordHandler:addKeyword({"cgb"}, StdModule.say, {npcHandler = npcHandler, text = {
-"The CGB is a patriotic organisation that fights our numerous enemies with means that guards or army do not have at their disposal. ...",
-"We work secretly and covertly. We uncover secret plots and we are both the first line of defence of our city and the last. We are joined only by the best of the best."}})
-keywordHandler:addKeyword({"avin"}, StdModule.say, {npcHandler = npcHandler, text = {
-"The AVIN is rather a crime syndicate than anything else. If there is something dirty and illegal, they are most likely involved. ...",
-"They are unscrupulous and also do not back away from blackmailing and assassination."}})
-keywordHandler:addKeyword({"tbi"}, StdModule.say, {npcHandler = npcHandler, text = {
-"The TBI is as old-fashioned, stubborn and inflexible as only males can be. What makes this bureaucracy somewhat dangerous, is the money they have at their disposal. ...",
-"They buy spies and traitors - all of them weak-willed or greedy individuals."}})
-keywordHandler:addKeyword({"job"}, StdModule.say, {npcHandler = npcHandler, text = "I am the head of Carlin's Girls Brigade, also known as CGB."})
-keywordHandler:addKeyword({"name"}, StdModule.say, {npcHandler = npcHandler, text = "I am known as Emma."})
-keywordHandler:addKeyword({"ab'dendriel"}, StdModule.say, {npcHandler = npcHandler, text = {
-"The elves of Ab'Dendriel are our allies. Our druids contribute most to keeping such a good relation. ...",
-"They seem to understand the elves a bit better than we ordinary people do."}})
-keywordHandler:addKeyword({"thais"}, StdModule.say, {npcHandler = npcHandler, text = "The Thaians never got over the fact that we gained our independence. They do everything they can to hinder the prospering of our city."})
-keywordHandler:addKeyword({"venore"}, StdModule.say, {npcHandler = npcHandler, text = "Venore is a hellhole of evil. The trade barons' greed lets them plot against all other cities and even against each other."})
-keywordHandler:addKeyword({"svargrond"}, StdModule.say, {npcHandler = npcHandler, text = "Svargrond is an important project for our city. It's not a colony but many of our people live there alongside those barbarians. If everything works out fine, Carlin and Svargrond will both prosper."})
-keywordHandler:addKeyword({"ankrahmun"}, StdModule.say, {npcHandler = npcHandler, text = "Strange people with strange customs live in this city. Luckily, we rarely have to deal with them."})
-keywordHandler:addKeyword({"darashia"}, StdModule.say, {npcHandler = npcHandler, text = "Darashia never bothers about the affairs of other cities."})
-keywordHandler:addKeyword({"liberty bay"}, StdModule.say, {npcHandler = npcHandler, text = {
-"The name of the city is a cruel joke. The people there are oppressed by Thais and Venore who slowly bleed the isle and its people white. ...",
-"It shows what would have happened to us if our rebellion had failed."}})
-keywordHandler:addKeyword({"port hope"}, StdModule.say, {npcHandler = npcHandler, text = "It's just another Thaian puppet. Still, it is distant enough to stand a fair chance to get rid of Thais's oppression one day."})
-keywordHandler:addKeyword({"kazordoon"}, StdModule.say, {npcHandler = npcHandler, text = "The dwarfs of Kazordoon usually mind their own business. I wish all other cities would do the same."})
+keywordHandler:addKeyword({ "queen" }, StdModule.say, { npcHandler = npcHandler, text = "I am privileged to be in service of our beloved queen!" })
+keywordHandler:addKeyword({ "carlin" }, StdModule.say, { npcHandler = npcHandler, text = "We are proud people who fought hard for their freedom and won't allow others to oppress us again." })
+keywordHandler:addKeyword({ "service" }, StdModule.say, { npcHandler = npcHandler, text = "I am the head of Carlin's Girls Brigade, also known as CGB." })
+keywordHandler:addKeyword({ "cgb" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = {
+		"The CGB is a patriotic organisation that fights our numerous enemies with means that guards or army do not have at their disposal. ...",
+		"We work secretly and covertly. We uncover secret plots and we are both the first line of defence of our city and the last. We are joined only by the best of the best." }
+})
+keywordHandler:addKeyword({ "avin" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = {
+		"The AVIN is rather a crime syndicate than anything else. If there is something dirty and illegal, they are most likely involved. ...",
+		"They are unscrupulous and also do not back away from blackmailing and assassination." }
+})
+keywordHandler:addKeyword({ "tbi" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = {
+		"The TBI is as old-fashioned, stubborn and inflexible as only males can be. What makes this bureaucracy somewhat dangerous, is the money they have at their disposal. ...",
+		"They buy spies and traitors - all of them weak-willed or greedy individuals." }
+})
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am the head of Carlin's Girls Brigade, also known as CGB." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I am known as Emma." })
+keywordHandler:addKeyword({ "ab'dendriel" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = {
+		"The elves of Ab'Dendriel are our allies. Our druids contribute most to keeping such a good relation. ...",
+		"They seem to understand the elves a bit better than we ordinary people do." }
+})
+keywordHandler:addKeyword({ "thais" }, StdModule.say, { npcHandler = npcHandler, text = "The Thaians never got over the fact that we gained our independence. They do everything they can to hinder the prospering of our city." })
+keywordHandler:addKeyword({ "venore" }, StdModule.say, { npcHandler = npcHandler, text = "Venore is a hellhole of evil. The trade barons' greed lets them plot against all other cities and even against each other." })
+keywordHandler:addKeyword({ "svargrond" }, StdModule.say, { npcHandler = npcHandler, text = "Svargrond is an important project for our city. It's not a colony but many of our people live there alongside those barbarians. If everything works out fine, Carlin and Svargrond will both prosper." })
+keywordHandler:addKeyword({ "ankrahmun" }, StdModule.say, { npcHandler = npcHandler, text = "Strange people with strange customs live in this city. Luckily, we rarely have to deal with them." })
+keywordHandler:addKeyword({ "darashia" }, StdModule.say, { npcHandler = npcHandler, text = "Darashia never bothers about the affairs of other cities." })
+keywordHandler:addKeyword({ "liberty bay" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = {
+		"The name of the city is a cruel joke. The people there are oppressed by Thais and Venore who slowly bleed the isle and its people white. ...",
+		"It shows what would have happened to us if our rebellion had failed." }
+})
+keywordHandler:addKeyword({ "port hope" }, StdModule.say, { npcHandler = npcHandler, text = "It's just another Thaian puppet. Still, it is distant enough to stand a fair chance to get rid of Thais's oppression one day." })
+keywordHandler:addKeyword({ "kazordoon" }, StdModule.say, { npcHandler = npcHandler, text = "The dwarfs of Kazordoon usually mind their own business. I wish all other cities would do the same." })
 npcHandler:setMessage(MESSAGE_GREET, "HAIL TO THE QUEEN!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "LONG LIVE THE QUEEN! You may leave now!")
 -- npcType registering the npcConfig table

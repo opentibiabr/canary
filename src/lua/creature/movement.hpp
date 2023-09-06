@@ -107,19 +107,19 @@ public:
 
 	std::shared_ptr<MoveEvent> getEvent(Item &item, MoveEvent_t eventType);
 
-	bool registerLuaItemEvent(const std::shared_ptr<MoveEvent> &moveEvent);
-	bool registerLuaActionEvent(const std::shared_ptr<MoveEvent> &moveEvent);
-	bool registerLuaUniqueEvent(const std::shared_ptr<MoveEvent> &moveEvent);
-	bool registerLuaPositionEvent(const std::shared_ptr<MoveEvent> &moveEvent);
-	bool registerLuaEvent(const std::shared_ptr<MoveEvent> &event);
+	bool registerLuaItemEvent(const std::shared_ptr<MoveEvent> moveEvent);
+	bool registerLuaActionEvent(const std::shared_ptr<MoveEvent> moveEvent);
+	bool registerLuaUniqueEvent(const std::shared_ptr<MoveEvent> moveEvent);
+	bool registerLuaPositionEvent(const std::shared_ptr<MoveEvent> moveEvent);
+	bool registerLuaEvent(const std::shared_ptr<MoveEvent> event);
 	void clear();
 
 private:
 	void clearMap(std::map<int32_t, MoveEventList> &map) const;
 	void clearPosMap(std::map<Position, MoveEventList> &map);
 
-	bool registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, int32_t id, std::map<int32_t, MoveEventList> &moveListMap) const;
-	bool registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, const Position &position, std::map<Position, MoveEventList> &moveListMap) const;
+	bool registerEvent(const std::shared_ptr<MoveEvent> moveEvent, int32_t id, std::map<int32_t, MoveEventList> &moveListMap) const;
+	bool registerEvent(const std::shared_ptr<MoveEvent> moveEvent, const Position &position, std::map<Position, MoveEventList> &moveListMap) const;
 	std::shared_ptr<MoveEvent> getEvent(Tile &tile, MoveEvent_t eventType);
 
 	std::shared_ptr<MoveEvent> getEvent(Item &item, MoveEvent_t eventType, Slots_t slot);
@@ -248,8 +248,8 @@ public:
 	static uint32_t AddItemField(Item* item, Item* tileItem, const Position &pos);
 	static uint32_t RemoveItemField(Item* item, Item* tileItem, const Position &pos);
 
-	static uint32_t EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
-	static uint32_t DeEquipItem(const std::shared_ptr<MoveEvent> &moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
+	static uint32_t EquipItem(const std::shared_ptr<MoveEvent> moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
+	static uint32_t DeEquipItem(const std::shared_ptr<MoveEvent> moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
 
 private:
 	std::string getScriptTypeName() const override;

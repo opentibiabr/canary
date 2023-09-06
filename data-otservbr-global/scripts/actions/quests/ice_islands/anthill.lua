@@ -1,6 +1,6 @@
 local iceAntHill = Action()
 function iceAntHill.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local mast = {x = 32360, y = 31365, z = 7}
+	local mast = { x = 32360, y = 31365, z = 7 }
 	if target.itemid == 1079 and item.itemid == 7243 then
 		if player:getStorageValue(Storage.TheIceIslands.Questline) == 6 then
 			toPosition:sendMagicEffect(CONST_ME_GROUNDSHAKER)
@@ -20,5 +20,5 @@ function iceAntHill.onUse(player, item, fromPosition, target, toPosition, isHotk
 	return true
 end
 
-iceAntHill:id(7243,7244)
+iceAntHill:id(7243, 7244)
 iceAntHill:register()

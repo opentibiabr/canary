@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'The Edron academy is always in need of magical ingredients!'}
+	{ text = 'The Edron academy is always in need of magical ingredients!' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -56,7 +56,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({'magical ingredients'}, StdModule.say, {npcHandler = npcHandler, text = "Oof, there are too many to list. Magical ingredients can sometimes be found when you defeat a monster, for example bat wings. I buy many of these things if you don't want to use them for quests, just ask me for a {trade}."})
+keywordHandler:addKeyword({ 'magical ingredients' }, StdModule.say, { npcHandler = npcHandler, text = "Oof, there are too many to list. Magical ingredients can sometimes be found when you defeat a monster, for example bat wings. I buy many of these things if you don't want to use them for quests, just ask me for a {trade}." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Good day, |PLAYERNAME|. I hope you bring a lot of {magical ingredients} with you.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye and please come back soon.")
@@ -89,7 +89,7 @@ npcConfig.shop = {
 	{ itemName = "demon horn", clientId = 5954, sell = 1000 },
 	{ itemName = "demonic skeletal hand", clientId = 9647, sell = 80 },
 	{ itemName = "dragon priests wandtip", clientId = 10444, sell = 175 },
-	{ itemName = "dragons tail", clientId = 11457, sell = 100 },
+	{ itemName = "dragon's tail", clientId = 11457, sell = 100 },
 	{ itemName = "draken sulphur", clientId = 11658, sell = 550 },
 	{ itemName = "elder bonelord tentacle", clientId = 10276, sell = 150 },
 	{ itemName = "elven astral observer", clientId = 11465, sell = 90 },

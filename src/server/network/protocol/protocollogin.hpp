@@ -32,7 +32,7 @@ public:
 private:
 	void disconnectClient(const std::string &message);
 
-	void getCharacterList(const std::string &accountIdentifier, const std::string &password);
+	void getCharacterList(const std::string &accountDescriptor, const std::string &password);
 
 	bool oldProtocol = false;
 };

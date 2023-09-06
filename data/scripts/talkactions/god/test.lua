@@ -29,7 +29,7 @@ function testLog.onSay(player, words, param)
 		return false
 	end
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Logged message [".. message .. "] at '".. logLevel .."' level.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Logged message [" .. message .. "] at '" .. logLevel .. "' level.")
 	return true
 end
 

@@ -58,7 +58,7 @@ local function greetCallback(npc, creature)
 		npcHandler:setMessage(MESSAGE_GREET, "How could I help you?") -- It needs to be revised, it's not the same as the global
 		npcHandler:setTopic(playerId, 1)
 	elseif (player:getStorageValue(Storage.Kilmaresh.First.JamesfrancisTask) >= 0 and player:getStorageValue(Storage.Kilmaresh.First.JamesfrancisTask) <= 50)
-	and player:getStorageValue(Storage.Kilmaresh.First.Mission) < 3 then
+			and player:getStorageValue(Storage.Kilmaresh.First.Mission) < 3 then
 		npcHandler:setMessage(MESSAGE_GREET, "How could I help you?") -- It needs to be revised, it's not the same as the global
 		npcHandler:setTopic(playerId, 15)
 	elseif player:getStorageValue(Storage.Kilmaresh.First.Mission) == 4 then
@@ -77,14 +77,14 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	
+
 	if MsgContains(message, "daughter") and player:getStorageValue(Storage.TheSecretLibrary.Peacock) == 1 then
-		npcHandler:say({"I always feared that I lost her. And yet, all those years, I still had a gleam of hope. I'm devastated to learn about her fate - but at least I have certainty now. Thank you for telling me."}, npc, creature)
+		npcHandler:say({ "I always feared that I lost her. And yet, all those years, I still had a gleam of hope. I'm devastated to learn about her fate - but at least I have certainty now. Thank you for telling me." }, npc, creature)
 		player:setStorageValue(Storage.TheSecretLibrary.Peacock, 2)
 		npcHandler:setTopic(playerId, 1)
 		npcHandler:setTopic(playerId, 1)
 	end
-	
+
 	return true
 end
 

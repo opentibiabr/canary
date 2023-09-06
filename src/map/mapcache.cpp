@@ -48,7 +48,7 @@ void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
 	}
 
 	if (BasicItem->uniqueId > 0) {
-		item->setAttribute(ItemAttribute_t::UNIQUEID, BasicItem->uniqueId);
+		item->addUniqueId(BasicItem->uniqueId);
 	}
 
 	if (item->getTeleport() && (BasicItem->destX != 0 || BasicItem->destY != 0 || BasicItem->destZ != 0)) {
@@ -213,7 +213,7 @@ bool BasicItem::unserializeItemNode(FileStream &stream, uint16_t x, uint16_t y, 
 
 		const uint16_t streamId = stream.getU16();
 
-		const auto &item = std::make_shared<BasicItem>();
+		const auto item = std::make_shared<BasicItem>();
 		item->id = streamId;
 
 		if (!item->unserializeItemNode(stream, x, y, z)) {

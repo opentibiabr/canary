@@ -1,5 +1,5 @@
 local config = {
-	demonOakIds = {914, 915, 916, 917},
+	demonOakIds = { 914, 915, 916, 917 },
 	sounds = {
 		'MY ROOTS ARE SHARP AS A SCYTHE! FEEL IT?!?',
 		'CURSE YOU!',
@@ -15,35 +15,35 @@ local config = {
 	bonebeastCount = 4,
 	waves = 10,
 	questArea = {
-		fromPosition = {x = 32706, y = 32345, z = 7},
-		toPosition = {x = 32725, y = 32357, z = 7}
+		fromPosition = { x = 32706, y = 32345, z = 7 },
+		toPosition = { x = 32725, y = 32357, z = 7 }
 	},
 	summonPositions = {
-		{x = 32714, y = 32348, z = 7},
-		{x = 32712, y = 32349, z = 7},
-		{x = 32711, y = 32351, z = 7},
-		{x = 32713, y = 32354, z = 7},
-		{x = 32716, y = 32354, z = 7},
-		{x = 32719, y = 32354, z = 7},
-		{x = 32721, y = 32351, z = 7},
-		{x = 32719, y = 32348, z = 7}
+		{ x = 32714, y = 32348, z = 7 },
+		{ x = 32712, y = 32349, z = 7 },
+		{ x = 32711, y = 32351, z = 7 },
+		{ x = 32713, y = 32354, z = 7 },
+		{ x = 32716, y = 32354, z = 7 },
+		{ x = 32719, y = 32354, z = 7 },
+		{ x = 32721, y = 32351, z = 7 },
+		{ x = 32719, y = 32348, z = 7 }
 	},
 	summons = {
 		[914] = {
-			[5] = {'Spectre', 'Blightwalker', 'Braindeath', 'Demon'},
-			[10] = {'Betrayed Wraith', 'Betrayed Wraith'}
+			[5] = { 'Spectre', 'Blightwalker', 'Braindeath', 'Demon' },
+			[10] = { 'Betrayed Wraith', 'Betrayed Wraith' }
 		},
 		[915] = {
-			[5] = {'Plaguesmith', 'Plaguesmith', 'Blightwalker'},
-			[10] = {'Dark Torturer', 'Blightwalker'}
+			[5] = { 'Plaguesmith', 'Plaguesmith', 'Blightwalker' },
+			[10] = { 'Dark Torturer', 'Blightwalker' }
 		},
 		[916] = {
-			[5] = {'Banshee', 'Plaguesmith', 'Hellhound'},
-			[10] = {'Grim Reaper'}
+			[5] = { 'Banshee', 'Plaguesmith', 'Hellhound' },
+			[10] = { 'Grim Reaper' }
 		},
 		[917] = {
-			[5] = {'Plaguesmith', 'Hellhound', 'Hellhound'},
-			[10] = {'Undead Dragon', 'Hand of Cursed Fate'}
+			[5] = { 'Plaguesmith', 'Hellhound', 'Hellhound' },
+			[10] = { 'Undead Dragon', 'Hand of Cursed Fate' }
 		}
 	},
 	storages = {
@@ -65,21 +65,20 @@ function demonOak.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	end
 
 	local totalProgress = 0
-	for k,v in pairs(config.storages) do
+	for k, v in pairs(config.storages) do
 		totalProgress = totalProgress + math.max(0, player:getStorageValue(v))
 	end
 
 	local spectators, hasMonsters = Game.getSpectators(DEMON_OAK_POSITION, false, false, 9, 9, 6, 6), false
 	for i = 1, #spectators do
-		if spectators[i]:isMonster() then
+		if spectators[i]:isMonster() and not spectators[i]:getMaster() then
 			hasMonsters = true
 			break
 		end
 	end
 
 	local isDefeated = totalProgress == (#config.demonOakIds * (config.waves + 1))
-	if (config.killAllBeforeCut or isDefeated)
-			and hasMonsters then
+	if (config.killAllBeforeCut or isDefeated) and hasMonsters then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You need to kill all monsters first.')
 		return true
 	end
@@ -106,14 +105,14 @@ function demonOak.onUse(player, item, fromPosition, target, toPosition, isHotkey
 		if isLastCut then
 			Game.createMonster('Demon', getRandomSummonPosition(), false, true)
 
-		-- Summon normal monsters otherwise
+			-- Summon normal monsters otherwise
 		else
 			for i = 1, #summons[progress] do
 				Game.createMonster(summons[progress][i], getRandomSummonPosition(), false, true)
 			end
 		end
 
-	-- if it is not the 5th or 10th there is only a chance to summon bonebeasts
+		-- if it is not the 5th or 10th there is only a chance to summon bonebeasts
 	elseif math.random(100) >= config.bonebeastChance then
 		for i = 1, config.bonebeastCount do
 			Game.createMonster('Bonebeast', getRandomSummonPosition(), false, true)

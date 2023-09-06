@@ -9,7 +9,7 @@ function rareCrystal.onUse(player, item, fromPosition, target, toPosition, isHot
 	if toPosition == Position(32011, 31709, 7) then
 		player:setStorageValue(Storage.SeaOfLight.Questline, player:getStorageValue(Storage.SeaOfLight.Questline) + 1)
 		player:setStorageValue(Storage.SeaOfLight.Mission3, player:getStorageValue(Storage.SeaOfLight.Mission3) + 1)
-		player:teleportTo({x = 32017, y = 31730, z = 8})
+		player:teleportTo({ x = 32017, y = 31730, z = 8 })
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		item:remove()
 		return true

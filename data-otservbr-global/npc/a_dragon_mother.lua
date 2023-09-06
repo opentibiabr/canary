@@ -100,7 +100,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 4)
 		end
 	elseif MsgContains(message, "no") then
-			if npcHandler:getTopic(playerId) == 3 then
+		if npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say({
 				"Grrr."
 			}, npc, creature)
@@ -109,7 +109,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "egg") then
-			if npcHandler:getTopic(playerId) == 4 then
+		if npcHandler:getTopic(playerId) == 4 then
 			npcHandler:say({
 				"As I told you, fiendish ice creatures dragged my egg into the lower caves. ...",
 				" Without enough heat the egg will die soon. Venture there and save my hatchling and the knowledge you seeek shall be yours!"

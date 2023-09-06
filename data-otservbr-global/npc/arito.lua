@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	local AritosTask = player:getStorageValue(Storage.TibiaTales.AritosTask)
-		-- START TASK
+	-- START TASK
 	if MsgContains(message, "nomads") then
 		if player:getStorageValue(Storage.TibiaTales.AritosTask) <= 0 and player:getItemCount(7533) >= 0 then
 			npcHandler:say({
@@ -70,7 +70,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
 			end
 			player:setStorageValue(Storage.TibiaTales.AritosTask, 1)
-		-- END TASK
+			-- END TASK
 		elseif player:getStorageValue(Storage.TibiaTales.AritosTask) == 2 then
 			npcHandler:say({
 				'These are great news!! Thank you for your help! I don\'t have much, but without you I wouldn\'t have anything so please take this as a reward.'
@@ -85,7 +85,7 @@ end
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Come in, have a drink and something to eat.'}
+	{ text = 'Come in, have a drink and something to eat.' }
 }
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

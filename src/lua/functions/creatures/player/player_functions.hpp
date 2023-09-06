@@ -133,6 +133,9 @@ private:
 		registerMethod(L, "Player", "getSex", PlayerFunctions::luaPlayerGetSex);
 		registerMethod(L, "Player", "setSex", PlayerFunctions::luaPlayerSetSex);
 
+		registerMethod(L, "Player", "getPronoun", PlayerFunctions::luaPlayerGetPronoun);
+		registerMethod(L, "Player", "setPronoun", PlayerFunctions::luaPlayerSetPronoun);
+
 		registerMethod(L, "Player", "getTown", PlayerFunctions::luaPlayerGetTown);
 		registerMethod(L, "Player", "setTown", PlayerFunctions::luaPlayerSetTown);
 
@@ -462,6 +465,9 @@ private:
 
 	static int luaPlayerGetSex(lua_State* L);
 	static int luaPlayerSetSex(lua_State* L);
+
+	static int luaPlayerGetPronoun(lua_State* L);
+	static int luaPlayerSetPronoun(lua_State* L);
 
 	static int luaPlayerGetTown(lua_State* L);
 	static int luaPlayerSetTown(lua_State* L);

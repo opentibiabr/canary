@@ -15,5 +15,5 @@ function theNewFrontierOutfit.onUse(player, item)
 	return true
 end
 
-theNewFrontierOutfit:position({x = 33053, y = 31020, z = 7})
+theNewFrontierOutfit:position({ x = 33053, y = 31020, z = 7 })
 theNewFrontierOutfit:register()

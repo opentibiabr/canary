@@ -2,13 +2,13 @@ local combat = Combat()
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_PURPLESMOKE)
 
 combat:setArea(createCombatArea({
-	{0, 0, 1, 1, 1, 0, 0},
-	{0, 1, 1, 1, 1, 1, 0},
-	{1, 1, 1, 1, 1, 1, 1},
-	{1, 1, 1, 3, 1, 1, 1},
-	{1, 1, 1, 1, 1, 1, 1},
-	{0, 1, 1, 1, 1, 1, 0},
-	{0, 0, 1, 1, 1, 0, 0}
+	{ 0, 0, 1, 1, 1, 0, 0 },
+	{ 0, 1, 1, 1, 1, 1, 0 },
+	{ 1, 1, 1, 1, 1, 1, 1 },
+	{ 1, 1, 1, 3, 1, 1, 1 },
+	{ 1, 1, 1, 1, 1, 1, 1 },
+	{ 0, 1, 1, 1, 1, 1, 0 },
+	{ 0, 0, 1, 1, 1, 0, 0 }
 }))
 
 function onTargetTile(creature, pos)
@@ -30,7 +30,7 @@ combat:setCallback(CALLBACK_PARAM_TARGETTILE, "onTargetTile")
 
 local evaporate = CreatureEvent("Evaporate")
 function evaporate.onThink(creature)
-	local hp = (creature:getHealth()/creature:getMaxHealth())*100
+	local hp = (creature:getHealth() / creature:getMaxHealth()) * 100
 	if hp < 60.0 then
 		addEvent(function(cid)
 			local creature = Creature(cid)
@@ -38,7 +38,7 @@ function evaporate.onThink(creature)
 				return
 			end
 			creature:say("The liquor spirit evaporates!", TALKTYPE_ORANGE_2)
-			local var = {type = 1, number = creature:getId()}
+			local var = { type = 1, number = creature:getId() }
 			combat:execute(creature, var)
 			creature:remove(1)
 			return true

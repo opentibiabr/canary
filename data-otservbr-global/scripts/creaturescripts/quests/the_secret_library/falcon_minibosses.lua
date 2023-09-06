@@ -7,6 +7,7 @@ function grandCommanderSoerenDeath.onDeath(creature, corpse, killer, mostDamage,
 		end
 	end
 end
+
 grandCommanderSoerenDeath:register()
 
 local preceptorLazareDeath = CreatureEvent("PreceptorLazareDeath")
@@ -18,6 +19,7 @@ function preceptorLazareDeath.onDeath(creature, corpse, killer, mostDamage, unju
 		end
 	end
 end
+
 preceptorLazareDeath:register()
 
 local grandChaplainGaunderDeath = CreatureEvent("GrandChaplainGaunderDeath")
@@ -29,6 +31,7 @@ function grandChaplainGaunderDeath.onDeath(creature, corpse, killer, mostDamage,
 		end
 	end
 end
+
 grandChaplainGaunderDeath:register()
 
 local grandCanonDominusDeath = CreatureEvent("GrandCanonDominusDeath")
@@ -40,6 +43,7 @@ function grandCanonDominusDeath.onDeath(creature, corpse, killer, mostDamage, un
 		end
 	end
 end
+
 grandCanonDominusDeath:register()
 
 local dazedLeafGolemDeath = CreatureEvent("DazedLeafGolemDeath")
@@ -48,4 +52,5 @@ function dazedLeafGolemDeath.onDeath(creature, corpse, killer, mostDamage, unjus
 		killer:setStorageValue(Storage.TheSecretLibrary.OberonAccess, 1) -- Access to teleport
 	end
 end
+
 dazedLeafGolemDeath:register()

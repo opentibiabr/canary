@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Hello there, adventurer! Need a deal in weapons or armor? I\'m your man!'}
+	{ text = 'Hello there, adventurer! Need a deal in weapons or armor? I\'m your man!' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -90,13 +90,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say('Sorry, but without the permission of Gregor I cannot help you with this matter.', npc, creature)
 		end
-
 	elseif MsgContains(message, "old backpack") or MsgContains(message, "backpack") then
 		if player:getStorageValue(Storage.SamsOldBackpack) < 1 then
 			npcHandler:say("What? Are you telling me you found my old adventurer's backpack that I lost years ago??", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
-
 	elseif MsgContains(message, '2000 steel shields') then
 		if player:getStorageValue(Storage.WhatAFoolish.Questline) ~= 29
 				or player:getStorageValue(Storage.WhatAFoolish.Contract) == 2 then
@@ -106,13 +104,11 @@ local function creatureSayCallback(npc, creature, type, message)
 
 		npcHandler:say('What? You want to buy 2000 steel shields??', npc, creature)
 		npcHandler:setTopic(playerId, 2)
-
 	elseif MsgContains(message, 'contract') then
 		if player:getStorageValue(Storage.WhatAFoolish.Contract) == 0 then
 			npcHandler:say('Have you signed the contract?', npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		end
-
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:removeItem(3244, 1) then
@@ -145,11 +141,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say('Excellent! I will start working right away! Now that I am going to be rich, I will take the opportunity to tell some people what I REALLY think about them!', npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-
 	elseif MsgContains(message, "no") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("Then no.", npc, creature)
-		elseif table.contains({2, 3, 4}, npcHandler:getTopic(playerId)) then
+		elseif table.contains({ 2, 3, 4 }, npcHandler:getTopic(playerId)) then
 			npcHandler:say("This deal sounded too good to be true anyway.", npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
@@ -157,7 +152,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "I am the blacksmith. If you need weapons or armor - just ask me."})
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I am the blacksmith. If you need weapons or armor - just ask me." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to my shop, adventurer |PLAYERNAME|! I {trade} with weapons and armor.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye and come again, |PLAYERNAME|.")

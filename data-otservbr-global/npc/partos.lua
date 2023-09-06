@@ -68,7 +68,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say('I won\'t talk about that.', npc, creature)
 		end
-
 	elseif MsgContains(message, 'ankrahmun') then
 		npcHandler:say({
 			'Yes, I\'ve lived in Ankrahmun for quite some time. Ahh, good old times! ...',
@@ -79,9 +78,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'prison'}, StdModule.say, {npcHandler = npcHandler, text = 'You mean that\'s a JAIL? They told me it\'s the finest hotel in town! THAT explains the lousy roomservice!'})
-keywordHandler:addKeyword({'jail'}, StdModule.say, {npcHandler = npcHandler, text = 'You mean that\'s a JAIL? They told me it\'s the finest hotel in town! THAT explains the lousy roomservice!'})
-keywordHandler:addKeyword({'cell'}, StdModule.say, {npcHandler = npcHandler, text = 'You mean that\'s a JAIL? They told me it\'s the finest hotel in town! THAT explains the lousy roomservice!'})
+keywordHandler:addKeyword({ 'prison' }, StdModule.say, { npcHandler = npcHandler, text = 'You mean that\'s a JAIL? They told me it\'s the finest hotel in town! THAT explains the lousy roomservice!' })
+keywordHandler:addKeyword({ 'jail' }, StdModule.say, { npcHandler = npcHandler, text = 'You mean that\'s a JAIL? They told me it\'s the finest hotel in town! THAT explains the lousy roomservice!' })
+keywordHandler:addKeyword({ 'cell' }, StdModule.say, { npcHandler = npcHandler, text = 'You mean that\'s a JAIL? They told me it\'s the finest hotel in town! THAT explains the lousy roomservice!' })
 
 npcHandler:setMessage(MESSAGE_GREET, 'Welcome to my little kingdom, |PLAYERNAME|.')
 npcHandler:setMessage(MESSAGE_FAREWELL, 'Good bye, visit me again. I will be here, promised.')

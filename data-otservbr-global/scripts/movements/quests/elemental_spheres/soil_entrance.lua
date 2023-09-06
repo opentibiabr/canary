@@ -1,8 +1,8 @@
 local setting = {
-	[1062] = {destination = Position(33085, 32096, 13), vocation = VOCATION.BASE_ID.KNIGHT, storage = 10130},
-	[1063] = {destination = Position(33264, 32201, 13), vocation = VOCATION.BASE_ID.PALADIN, storage = 10131},
-	[1064] = {destination = Position(33330, 32077, 13), vocation = VOCATION.BASE_ID.DRUID, storage = 10132},
-	[1065] = {destination = Position(33183, 32198, 13), vocation = VOCATION.BASE_ID.SORCERER, storage = 10133}
+	[1062] = { destination = Position(33085, 32096, 13), vocation = VOCATION.BASE_ID.KNIGHT, storage = 10130 },
+	[1063] = { destination = Position(33264, 32201, 13), vocation = VOCATION.BASE_ID.PALADIN, storage = 10131 },
+	[1064] = { destination = Position(33330, 32077, 13), vocation = VOCATION.BASE_ID.DRUID, storage = 10132 },
+	[1065] = { destination = Position(33183, 32198, 13), vocation = VOCATION.BASE_ID.SORCERER, storage = 10133 }
 }
 
 local soilEntrance = MoveEvent()

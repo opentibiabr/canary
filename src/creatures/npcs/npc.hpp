@@ -12,6 +12,7 @@
 #include "creatures/npcs/npcs.hpp"
 #include "declarations.hpp"
 #include "items/tile.hpp"
+#include "lib/di/container.hpp"
 
 class Creature;
 class Game;
@@ -144,7 +145,7 @@ public:
 	void onPlayerBuyItem(Player* player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, bool inBackpacks);
 	void onPlayerSellAllLoot(uint32_t playerId, uint16_t itemid, bool ignore, uint64_t totalPrice);
 	void onPlayerSellItem(Player* player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore);
-	void onPlayerSellItem(Player* player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, uint64_t &totalPrice);
+	void onPlayerSellItem(Player* player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, uint64_t &totalPrice, Cylinder* parent = nullptr);
 	void onPlayerCheckItem(Player* player, uint16_t itemid, uint8_t count);
 	void onPlayerCloseChannel(Creature* creature);
 	void onPlacedCreature() override;

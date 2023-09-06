@@ -67,11 +67,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.SamsOldBackpackDoor, 1)
 		end
 	elseif MsgContains(message, "measurements") then
-		if player:getStorageValue(Storage.Postman.Mission07) >= 1 and	player:getStorageValue(Storage.Postman.MeasurementsKroox) ~= 1 then
+		if player:getStorageValue(Storage.Postman.Mission07) >= 1 and player:getStorageValue(Storage.Postman.MeasurementsKroox) ~= 1 then
 			npcHandler:say("Hm, well I guess its ok to tell you ... <tells you about Lokurs measurements> ", npc, creature)
 			player:setStorageValue(Storage.Postman.Mission07, player:getStorageValue(Storage.Postman.Mission07) + 1)
 			player:setStorageValue(Storage.Postman.MeasurementsKroox, 1)
-	else
+		else
 			npcHandler:say("...", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

@@ -13,15 +13,13 @@ function ParseAlesarSay(npc, creature, message, npcHandler)
 					"Anyway. Are you prepared to embark on a dangerous mission for us?"
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 1)
-
-			elseif table.contains({1, 2}, missionProgress) then
+			elseif table.contains({ 1, 2 }, missionProgress) then
 				npcHandler:say("Did you find the tear of Daraman?", npc, creature)
 				npcHandler:setTopic(playerId, 2)
 			else
 				npcHandler:say("Don't forget to talk to Malor concerning your next mission.", npc, creature)
 			end
 		end
-
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, "yes") then
 			npcHandler:say({
@@ -36,12 +34,10 @@ function ParseAlesarSay(npc, creature, message, npcHandler)
 			}, npc, creature)
 			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission02, 1)
 			player:setStorageValue(Storage.DjinnWar.EfreetFaction.DoorToMaridTerritory, 1)
-
 		elseif MsgContains(message, "no") then
 			npcHandler:say("Then not.", npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
-
 	elseif npcHandler:getTopic(playerId) == 2 then
 		if MsgContains(message, "yes") then
 			if player:getItemCount(3233) == 0 or missionProgress ~= 2 then
@@ -59,7 +55,6 @@ function ParseAlesarSay(npc, creature, message, npcHandler)
 				player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission02, 3)
 				npcHandler:setTopic(playerId, 0)
 			end
-
 		elseif MsgContains(message, "no") then
 			npcHandler:say("As I expected. You haven't got the stone. Shall I explain your mission again?", npc, creature)
 			npcHandler:setTopic(playerId, 1)

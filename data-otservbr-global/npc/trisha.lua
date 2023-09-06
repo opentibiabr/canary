@@ -116,7 +116,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	local player, storage = Player(creature), Storage.OutfitQuest.WarriorShoulderAddon
 	if npcHandler:getTopic(playerId) == 0 then
-		if table.contains({"outfit", "addon"}, message) then
+		if table.contains({ "outfit", "addon" }, message) then
 			npcHandler:say("Are you talking about my spiky shoulder pad? You can't buy one of these. \z
 				They have to be {earned}.", npc, creature)
 		elseif MsgContains(message, "earn") then
@@ -187,7 +187,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addSpellKeyword({"find", "person"},
+keywordHandler:addSpellKeyword({ "find", "person" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Find Person",
@@ -196,7 +196,7 @@ keywordHandler:addSpellKeyword({"find", "person"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"light"},
+keywordHandler:addSpellKeyword({ "light" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Light",
@@ -205,7 +205,7 @@ keywordHandler:addSpellKeyword({"light"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"cure", "poison"},
+keywordHandler:addSpellKeyword({ "cure", "poison" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Cure Poison",
@@ -214,7 +214,7 @@ keywordHandler:addSpellKeyword({"cure", "poison"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"wound", "cleansing"},
+keywordHandler:addSpellKeyword({ "wound", "cleansing" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Wound Cleansing",
@@ -223,7 +223,7 @@ keywordHandler:addSpellKeyword({"wound", "cleansing"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"great", "light"},
+keywordHandler:addSpellKeyword({ "great", "light" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Great Light",
@@ -232,19 +232,19 @@ keywordHandler:addSpellKeyword({"great", "light"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addKeyword({"healing", "spells"}, StdModule.say,
+keywordHandler:addKeyword({ "healing", "spells" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "In this category I have '{Wound Cleansing}'' and '{Cure Poison}''."
 	}
 )
-keywordHandler:addKeyword({"support", "spells"}, StdModule.say,
+keywordHandler:addKeyword({ "support", "spells" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "In this category I have '{Light}', '{Find Person}' and '{Great Light}'."
 	}
 )
-keywordHandler:addKeyword({"spells"}, StdModule.say,
+keywordHandler:addKeyword({ "spells" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "I can teach you {healing spells} and {support spells}. What kind of spell do you wish to learn? You can also tell me for which level you would like to learn a spell, if you prefer that."

@@ -39,7 +39,6 @@ function spell.onCastSpell(creature, var)
 	end
 
 	local grade = creature:revelationStageWOD("Executioner's Throw")
-	Spdlog.info(grade)
 	if grade == 0 then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
@@ -58,7 +57,7 @@ function spell.onCastSpell(creature, var)
 	var.instantName = "Executioner's Throw"
 	if combat:execute(creature, var) then
 		local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 261)
-		condition:setTicks((cooldown * 1000)/configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+		condition:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 		creature:addCondition(condition)
 		return true
 	end

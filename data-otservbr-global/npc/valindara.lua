@@ -31,7 +31,9 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Im eager for a bath in the lake.'},{text = 'Im interested in shiny precious things, if you have some.'},{text = 'No, you cant have this cloak.'}
+	{ text = 'Im eager for a bath in the lake.' },
+	{ text = 'Im interested in shiny precious things, if you have some.' },
+	{ text = 'No, you cant have this cloak.' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -156,7 +158,7 @@ npcConfig.shop = {
 	{ itemName = "red crystal fragment", clientId = 16126, sell = 800 },
 	{ itemName = "red rose", clientId = 3658, sell = 10 },
 	{ itemName = "ruby necklace", clientId = 3016, buy = 3560 },
-	{ itemName = "shimmering beatles", clientId = 25693, sell = 150 },
+	{ itemName = "shimmering beetles", clientId = 25693, sell = 150 },
 	{ itemName = "silver goblet", clientId = 5806, buy = 3000 },
 	{ itemName = "skull coin", clientId = 32583, sell = 12000 },
 	{ itemName = "sling herb", clientId = 3738, sell = 10 },

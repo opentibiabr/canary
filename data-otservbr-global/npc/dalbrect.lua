@@ -101,73 +101,74 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({"passage"}, StdModule.say,
+keywordHandler:addKeyword({ "passage" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "I have only sailed to the isle of the kings once or twice. \z
 				I dare not anger the monks by bringing travelers there without their permission."
 	},
-	
-function(player)
-	return player:getStorageValue(Storage.WhiteRavenMonastery.Passage) ~= 1
-end)
 
-local travelNode = keywordHandler:addKeyword({"passage"}, StdModule.say,
+	function(player)
+		return player:getStorageValue(Storage.WhiteRavenMonastery.Passage) ~= 1
+	end)
+
+local travelNode = keywordHandler:addKeyword({ "passage" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Do you seek a passage to the isle of the kings for 10 gold coins?"
 	}
 )
-	travelNode:addChildKeyword({"yes"}, StdModule.travel,
-		{
-			npcHandler = npcHandler,
-			premium = false,
-			text = "Have a nice trip!",
-			cost = 10,
-			destination = Position(32190, 31957, 6)
-		}
-	)
-	travelNode:addChildKeyword({"no"}, StdModule.say,
-		{
-			npcHandler = npcHandler, reset = true,
-			text = "Well, I'll be here if you change your mind."
-		}
-	)
+travelNode:addChildKeyword({ "yes" }, StdModule.travel,
+	{
+		npcHandler = npcHandler,
+		premium = false,
+		text = "Have a nice trip!",
+		cost = 10,
+		destination = Position(32190, 31957, 6)
+	}
+)
+travelNode:addChildKeyword({ "no" }, StdModule.say,
+	{
+		npcHandler = npcHandler,
+		reset = true,
+		text = "Well, I'll be here if you change your mind."
+	}
+)
 
-keywordHandler:addKeyword({"name"}, StdModule.say,
+keywordHandler:addKeyword({ "name" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "My name is Dalbrect Windtrouser, of the once proud Windtrouser family."
 	}
 )
-keywordHandler:addKeyword({"hut"}, StdModule.say,
+keywordHandler:addKeyword({ "hut" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "I am merely a humble fisher now that nothing is left of my noble {legacy}."
 	}
 )
-keywordHandler:addKeyword({"legacy"}, StdModule.say,
+keywordHandler:addKeyword({ "legacy" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Once my family was once noble and wealthy, but {fate} turned against us and threw us into poverty."
-	
+
 	}
 )
-keywordHandler:addKeyword({"poverty"}, StdModule.say,
+keywordHandler:addKeyword({ "poverty" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "When Carlin tried to colonize the region now known as the ghostlands, \z
 				my ancestors put their fortune in that {project}."
 	}
 )
-keywordHandler:addKeyword({"fate"}, StdModule.say,
+keywordHandler:addKeyword({ "fate" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "When Carlin tried to colonize the region now known as the ghostlands, \z
 				my ancestors put their fortune in that {project}."
 	}
 )
-keywordHandler:addKeyword({"ghostlands"}, StdModule.say,
+keywordHandler:addKeyword({ "ghostlands" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Our family fortune was lost when the colonization of those cursed lands failed. \z
@@ -175,7 +176,7 @@ keywordHandler:addKeyword({"ghostlands"}, StdModule.say,
 				If I only had something as a reminder of those better times. <sigh>"
 	}
 )
-keywordHandler:addKeyword({"project"}, StdModule.say,
+keywordHandler:addKeyword({ "project" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Our family fortune was lost when the colonization of those cursed lands failed. \z
@@ -183,20 +184,20 @@ keywordHandler:addKeyword({"project"}, StdModule.say,
 				If I only had something as a reminder of those better times. <sigh>"
 	}
 )
-keywordHandler:addKeyword({"carlin"}, StdModule.say,
+keywordHandler:addKeyword({ "carlin" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "To think my family used to belong to the local nobility! And now those arrogant women are in charge!"
 	}
 )
-keywordHandler:addKeyword({"need"}, StdModule.say,
+keywordHandler:addKeyword({ "need" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "There is little I can offer you but a trip with my boat. \z
 				Are you looking for a {passage} to the isle of kings perhaps?"
 	}
 )
-keywordHandler:addKeyword({"ship"}, StdModule.say,
+keywordHandler:addKeyword({ "ship" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "My ship is my only pride and joy."

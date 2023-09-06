@@ -11,6 +11,7 @@
 
 #include "declarations.hpp"
 #include "items/item.hpp"
+#include "lib/di/container.hpp"
 
 class Vocation {
 public:

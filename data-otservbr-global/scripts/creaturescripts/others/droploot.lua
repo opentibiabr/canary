@@ -12,4 +12,5 @@ function dropLoot.onDeath(player, corpse, killer, mostDamage, unjustified, mostD
 	Blessings.DebugPrint("onDeath DROPLOOT EVENT DropLoot")
 	return Blessings.PlayerDeath(player, corpse, killer)
 end
+
 dropLoot:register()

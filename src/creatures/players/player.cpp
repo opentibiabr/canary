@@ -130,6 +130,9 @@ void Player::setID() {
 
 std::string Player::getDescription(int32_t lookDistance) const {
 	std::ostringstream s;
+	std::string subjectPronoun = getSubjectPronoun();
+	capitalizeWords(subjectPronoun);
+
 	if (lookDistance == -1) {
 		s << "yourself.";
 
@@ -155,42 +158,34 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		}
 		s << '.';
 
-		std::string pronoun;
-		if (sex == PLAYERSEX_FEMALE) {
-			pronoun = " She";
-		} else {
-			pronoun = " He";
-		}
-		s << pronoun;
+		s << " " << subjectPronoun;
 
 		if (group->access) {
-			s << " is " << group->name << '.';
+			s << " " << getSubjectVerb() << " " << group->name << '.';
 		} else if (vocation->getId() != VOCATION_NONE) {
-			s << " is " << vocation->getVocDescription() << '.';
+			s << " " << getSubjectVerb() << " " << vocation->getVocDescription() << '.';
 		} else {
 			s << " has no vocation.";
 		}
 
 		if (loyaltyTitle.length() != 0) {
-			if (sex == PLAYERSEX_FEMALE) {
-				s << " She is a " << loyaltyTitle << ".";
-			} else {
-				s << " He is a " << loyaltyTitle << ".";
+			std::string article = "a";
+			if (loyaltyTitle[0] == 'A' || loyaltyTitle[0] == 'E' || loyaltyTitle[0] == 'I' || loyaltyTitle[0] == 'O' || loyaltyTitle[0] == 'U') {
+				article = "an";
 			}
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " " << article << " " << loyaltyTitle << ".";
 		}
 
 		if (isVip()) {
-			s << pronoun << " is VIP.";
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " VIP.";
 		}
 	}
 
 	if (party) {
 		if (lookDistance == -1) {
 			s << " Your party has ";
-		} else if (sex == PLAYERSEX_FEMALE) {
-			s << " She is in a party with ";
 		} else {
-			s << " He is in a party with ";
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " in a party with ";
 		}
 
 		size_t memberCount = party->getMemberCount() + 1;
@@ -217,10 +212,8 @@ std::string Player::getDescription(int32_t lookDistance) const {
 
 		if (lookDistance == -1) {
 			s << " You are ";
-		} else if (sex == PLAYERSEX_FEMALE) {
-			s << " She is ";
 		} else {
-			s << " He is ";
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " ";
 		}
 
 		s << guildRank->name << " of the " << guild->getName();
@@ -512,7 +505,7 @@ uint32_t Player::getClientIcons() const {
 	return icon_bitset.to_ulong();
 }
 
-void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> &mtype, bool isBoss, bool reloadClient /* = false */) {
+void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient /* = false */) {
 	if (client) {
 		uint16_t raceId = mtype ? mtype->info.raceid : 0;
 		// Bostiary tracker logic
@@ -556,7 +549,7 @@ void Player::removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType>
 	}
 }
 
-bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const {
+bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> monsterType) const {
 	if (!monsterType) {
 		return false;
 	}
@@ -584,6 +577,7 @@ void Player::updateInventoryImbuement() {
 	bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
 	// Check if the player is in fight mode
 	bool isInFightMode = hasCondition(CONDITION_INFIGHT);
+	bool nonAggressiveFightOnly = g_configManager().getBoolean(TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY);
 
 	// Iterate through all items in the player's inventory
 	for (auto item : getAllInventoryItems()) {
@@ -605,7 +599,7 @@ void Player::updateInventoryImbuement() {
 			auto parent = item->getParent();
 			bool isInBackpack = parent && parent->getContainer();
 			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.
-			if (categoryImbuement && categoryImbuement->agressive && (isInProtectionZone || !isInFightMode || isInBackpack)) {
+			if (categoryImbuement && (categoryImbuement->agressive || nonAggressiveFightOnly) && (isInProtectionZone || !isInFightMode || isInBackpack)) {
 				continue;
 			}
 			// If the item is not in the backpack slot and it's not a agressive imbuement, ignore it.
@@ -622,9 +616,15 @@ void Player::updateInventoryImbuement() {
 
 			g_logger().debug("Decaying imbuement {} from item {} of player {}", imbuement->getName(), item->getName(), getName());
 			// Calculate the new duration of the imbuement, making sure it doesn't go below 0
-			uint64_t duration = std::max<uint64_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
+			uint32_t duration = std::max<uint32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
 			// Update the imbuement's duration in the item
 			item->decayImbuementTime(slotid, imbuement->getID(), duration);
+
+			if (duration == 0) {
+				removeItemImbuementStats(imbuement);
+				updateImbuementTrackerStats();
+				continue;
+			}
 		}
 	}
 }
@@ -2611,7 +2611,7 @@ void Player::death(Creature* lastHitCreature) {
 		// Charm bless bestiary
 		if (lastHitCreature && lastHitCreature->getMonster()) {
 			if (charmRuneBless != 0) {
-				const auto &mType = g_monsters().getMonsterType(lastHitCreature->getName());
+				const auto mType = g_monsters().getMonsterType(lastHitCreature->getName());
 				if (mType && mType->info.raceid == charmRuneBless) {
 					deathLossPercent = (deathLossPercent * 90) / 100;
 				}
@@ -2884,7 +2884,9 @@ Item* Player::getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature)
 	if (corpse && corpse->getContainer()) {
 		std::ostringstream ss;
 		if (lastHitCreature) {
-			ss << "You recognize " << getNameDescription() << ". " << (getSex() == PLAYERSEX_FEMALE ? "She" : "He") << " was killed by " << lastHitCreature->getNameDescription() << '.';
+			std::string subjectPronoun = getSubjectPronoun();
+			capitalizeWords(subjectPronoun);
+			ss << "You recognize " << getNameDescription() << ". " << subjectPronoun << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription() << '.';
 		} else {
 			ss << "You recognize " << getNameDescription() << '.';
 		}
@@ -2905,6 +2907,8 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 		pzLocked = true;
 		sendIcons();
 	}
+
+	updateImbuementTrackerStats();
 
 	Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0);
 	addCondition(condition);
@@ -2961,7 +2965,10 @@ bool Player::removeVIP(uint32_t vipGuid) {
 		return false;
 	}
 
-	IOLoginData::removeVIPEntry(accountNumber, vipGuid);
+	if (account) {
+		IOLoginData::removeVIPEntry(account->getID(), vipGuid);
+	}
+
 	return true;
 }
 
@@ -2977,10 +2984,14 @@ bool Player::addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t st
 		return false;
 	}
 
-	IOLoginData::addVIPEntry(accountNumber, vipGuid, "", 0, false);
+	if (account) {
+		IOLoginData::addVIPEntry(account->getID(), vipGuid, "", 0, false);
+	}
+
 	if (client) {
 		client->sendVIP(vipGuid, vipName, "", 0, false, status);
 	}
+
 	return true;
 }
 
@@ -2998,7 +3009,10 @@ bool Player::editVIP(uint32_t vipGuid, const std::string &description, uint32_t 
 		return false; // player is not in VIP
 	}
 
-	IOLoginData::editVIPEntry(accountNumber, vipGuid, description, icon, notify);
+	if (account) {
+		IOLoginData::editVIPEntry(account->getID(), vipGuid, description, icon, notify);
+	}
+
 	return true;
 }
 
@@ -4822,7 +4836,7 @@ bool Player::removeOutfitAddon(uint16_t lookType, uint8_t addons) {
 	return false;
 }
 
-bool Player::getOutfitAddons(const std::shared_ptr<Outfit> &outfit, uint8_t &addons) const {
+bool Player::getOutfitAddons(const std::shared_ptr<Outfit> outfit, uint8_t &addons) const {
 	if (group->access) {
 		addons = 3;
 		return true;
@@ -4921,6 +4935,10 @@ bool Player::getFamiliar(const Familiar &familiar) const {
 
 void Player::setSex(PlayerSex_t newSex) {
 	sex = newSex;
+}
+
+void Player::setPronoun(PlayerPronoun_t newPronoun) {
+	pronoun = newPronoun;
 }
 
 Skulls_t Player::getSkull() const {
@@ -5128,7 +5146,7 @@ bool Player::isInWar(const Player* player) const {
 		return false;
 	}
 
-	const auto &playerGuild = player->getGuild();
+	const auto playerGuild = player->getGuild();
 	if (!playerGuild) {
 		return false;
 	}
@@ -5236,12 +5254,11 @@ bool Player::isPremium() const {
 		return true;
 	}
 
-	return premiumDays > 0 || premiumLastDay > getTimeNow();
-}
+	if (!account) {
+		return false;
+	}
 
-void Player::setPremiumDays(uint32_t v) {
-	premiumDays = v;
-	sendBasicData();
+	return account->getPremiumRemainingDays() > 0 || account->getPremiumLastDay() > getTimeNow();
 }
 
 void Player::setTibiaCoins(int32_t v) {
@@ -5509,7 +5526,7 @@ GuildEmblems_t Player::getGuildEmblem(const Player* player) const {
 		return GUILDEMBLEM_NONE;
 	}
 
-	const auto &playerGuild = player->getGuild();
+	const auto playerGuild = player->getGuild();
 	if (!playerGuild) {
 		return GUILDEMBLEM_NONE;
 	}
@@ -5578,8 +5595,8 @@ void Player::setCurrentMount(uint8_t mount) {
 }
 
 bool Player::hasAnyMount() const {
-	for (const auto &mounts = g_game().mounts.getMounts();
-		 const auto &mount : mounts) {
+	const auto mounts = g_game().mounts.getMounts();
+	for (const auto mount : mounts) {
 		if (hasMount(mount)) {
 			return true;
 		}
@@ -5589,9 +5606,8 @@ bool Player::hasAnyMount() const {
 
 uint8_t Player::getRandomMountId() const {
 	std::vector<uint8_t> playerMounts;
-
-	for (const auto &mounts = g_game().mounts.getMounts();
-		 const auto &mount : mounts) {
+	const auto mounts = g_game().mounts.getMounts();
+	for (const auto mount : mounts) {
 		if (hasMount(mount)) {
 			playerMounts.push_back(mount->id);
 		}
@@ -5633,7 +5649,7 @@ bool Player::toggleMount(bool mount) {
 			currentMountId = getRandomMountId();
 		}
 
-		const auto &currentMount = g_game().mounts.getMountByID(currentMountId);
+		const auto currentMount = g_game().mounts.getMountByID(currentMountId);
 		if (!currentMount) {
 			return false;
 		}
@@ -5720,7 +5736,7 @@ bool Player::untameMount(uint8_t mountId) {
 	return true;
 }
 
-bool Player::hasMount(const std::shared_ptr<Mount> &mount) const {
+bool Player::hasMount(const std::shared_ptr<Mount> mount) const {
 	if (isAccessPlayer()) {
 		return true;
 	}
@@ -5740,7 +5756,7 @@ bool Player::hasMount(const std::shared_ptr<Mount> &mount) const {
 }
 
 void Player::dismount() {
-	const auto &mount = g_game().mounts.getMountByID(getCurrentMount());
+	const auto mount = g_game().mounts.getMountByID(getCurrentMount());
 	if (mount && mount->speed > 0) {
 		g_game().changeSpeed(this, -mount->speed);
 	}
@@ -5918,7 +5934,7 @@ uint16_t Player::getHelpers() const {
 	if (guild && party) {
 		phmap::flat_hash_set<Player*> helperSet;
 
-		const auto &guildMembers = guild->getMembersOnline();
+		const auto guildMembers = guild->getMembersOnline();
 		helperSet.insert(guildMembers.begin(), guildMembers.end());
 
 		const auto &partyMembers = party->getMembers();
@@ -6047,7 +6063,7 @@ std::forward_list<Condition*> Player::getMuteConditions() const {
 	return muteConditions;
 }
 
-void Player::setGuild(const std::shared_ptr<Guild> &newGuild) {
+void Player::setGuild(const std::shared_ptr<Guild> newGuild) {
 	if (newGuild == guild) {
 		return;
 	}
@@ -6061,7 +6077,7 @@ void Player::setGuild(const std::shared_ptr<Guild> &newGuild) {
 	guildRank = nullptr;
 
 	if (newGuild) {
-		const auto &rank = newGuild->getRankByLevel(1);
+		const auto rank = newGuild->getRankByLevel(1);
 		if (!rank) {
 			return;
 		}
@@ -6432,7 +6448,7 @@ std::string Player::getBlessingsName() const {
 	return os.str();
 }
 
-bool Player::isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> &mtype) const {
+bool Player::isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> mtype) const {
 	if (!mtype) {
 		return false;
 	}
@@ -7545,27 +7561,15 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
  ******************************************************************************/
 
 void Player::setHazardSystemPoints(int32_t count) {
-	addStorageValue(STORAGEVALUE_HAZARDCOUNT, std::max<int32_t>(0, std::min<int32_t>(0xFFFF, count)), true);
-	reloadHazardSystemPointsCounter = true;
-	const auto tile = getTile();
-	if (!tile) {
+	if (!g_configManager().getBoolean(TOGGLE_HAZARDSYSTEM)) {
 		return;
 	}
-
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, tile->getPosition(), true);
-	for (Creature* spectator : spectators) {
-		if (!spectator || spectator == this) {
-			continue;
-		}
-
-		Player* player = spectator->getPlayer();
-		if (client && player && !client->oldProtocol) {
-			player->sendCreatureIcon(this);
-		}
-	}
-	if (client && !client->oldProtocol) {
-		client->reloadHazardSystemIcon();
+	addStorageValue(STORAGEVALUE_HAZARDCOUNT, std::max<int32_t>(0, std::min<int32_t>(0xFFFF, count)), true);
+	reloadHazardSystemPointsCounter = true;
+	if (count > 0) {
+		setIcon(CreatureIcon(CreatureIconQuests_t::Hazard, count));
+	} else {
+		clearIcon();
 	}
 }
 
@@ -7671,34 +7675,6 @@ void Player::parseAttackDealtHazardSystem(CombatDamage &damage, const Monster* m
 	}
 }
 
-void Player::reloadHazardSystemIcon() {
-	if (reloadHazardSystemPointsCounter) {
-		reloadHazardSystemPointsCounter = false;
-		if (getHazardSystemPoints() > 0) {
-			const auto tile = getTile();
-			if (!tile) {
-				return;
-			}
-
-			SpectatorHashSet spectators;
-			g_game().map.getSpectators(spectators, tile->getPosition(), true);
-			for (Creature* spectator : spectators) {
-				if (!spectator || spectator == this) {
-					continue;
-				}
-
-				Player* player = spectator->getPlayer();
-				if (client && player && !client->oldProtocol) {
-					player->sendCreatureIcon(this);
-				}
-			}
-		}
-		if (client && !client->oldProtocol) {
-			client->reloadHazardSystemIcon();
-		}
-	}
-}
-
 /*******************************************************************************
  * Interfaces
  ******************************************************************************/
@@ -7710,21 +7686,6 @@ std::unique_ptr<PlayerWheel> &Player::wheel() {
 
 const std::unique_ptr<PlayerWheel> &Player::wheel() const {
 	return m_wheelPlayer;
-}
-
-// Account interface
-error_t Player::SetAccountInterface(account::Account* account) {
-	if (account == nullptr) {
-		return account::ERROR_NULLPTR;
-	}
-
-	account_ = account;
-	return account::ERROR_NO;
-}
-
-error_t Player::GetAccountInterface(account::Account* account) {
-	account = account_;
-	return account::ERROR_NO;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

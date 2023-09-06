@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if(MsgContains(message, "mission") and player:getStorageValue(Storage.BigfootBurden.QuestLineComplete) >= 2) then
+	if (MsgContains(message, "mission") and player:getStorageValue(Storage.BigfootBurden.QuestLineComplete) >= 2) then
 		if player:getStorageValue(Storage.BigfootBurden.Rank) >= 120 and player:getStorageValue(Storage.BigfootBurden.Rank) < 480 then
 			npcHandler:say("For your rank there are two missions available: {matchmaker} and golem {repair}. You can undertake each mission, but you can turn in a specific mission only once every 20 hours. ", npc, creature)
 			npcHandler:setTopic(playerId, 0)
@@ -71,22 +71,22 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		end
 
-	--  Matchmaker
+		--  Matchmaker
 	elseif MsgContains(message, "matchmaker") then
 		if player:getStorageValue(Storage.BigfootBurden.Rank) >= 120 then
 			if player:getStorageValue(Storage.BigfootBurden.MissionMatchmaker) < 1 and player:getStorageValue(Storage.BigfootBurden.MatchmakerTimeout) < os.time() then
 				npcHandler:say({
-				"You will have to find a lonely crystal a perfect match. I don't understand the specifics but the gnomes told me that even crystals need a mate to produce offspring. ...",
-				"Be that as it may, in this package you'll find a crystal. Take it out of the package and go to the crystal caves to find it a mate. Just look out for huge red crystals and try your luck. ...",
-				"They should look like one of those seen in your soul melody test. You will find them in the crystal grounds. {Report} back to me when you are done."
-			}, npc, creature)
+					"You will have to find a lonely crystal a perfect match. I don't understand the specifics but the gnomes told me that even crystals need a mate to produce offspring. ...",
+					"Be that as it may, in this package you'll find a crystal. Take it out of the package and go to the crystal caves to find it a mate. Just look out for huge red crystals and try your luck. ...",
+					"They should look like one of those seen in your soul melody test. You will find them in the crystal grounds. {Report} back to me when you are done."
+				}, npc, creature)
 				player:setStorageValue(Storage.BigfootBurden.MissionMatchmaker, 1)
 				player:setStorageValue(Storage.BigfootBurden.MatchmakerStatus, 0)
 				player:setStorageValue(Storage.BigfootBurden.MatchmakerIdNeeded, math.random(15809, 15815))
-				player:addItem(15802, 1)   --- taking missions
-			elseif player:getStorageValue(Storage.BigfootBurden.MatchmakerTimeout) > os.time() then  -- trying to take mission while in cooldown
+				player:addItem(15802, 1) --- taking missions
+			elseif player:getStorageValue(Storage.BigfootBurden.MatchmakerTimeout) > os.time() then -- trying to take mission while in cooldown
 				npcHandler:say("Sorry, you will have to wait before you can undertake this mission again.", npc, creature)
-			elseif player:getStorageValue(Storage.BigfootBurden.MissionMatchmaker) > 0 then  -- reporting mission
+			elseif player:getStorageValue(Storage.BigfootBurden.MissionMatchmaker) > 0 then -- reporting mission
 				if player:getStorageValue(Storage.BigfootBurden.MatchmakerStatus) == 1 then -- can report missions
 					player:setStorageValue(Storage.BigfootBurden.Rank, player:getStorageValue(Storage.BigfootBurden.Rank) + 10)
 					player:addItem(16128, 2)
@@ -99,7 +99,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					player:checkGnomeRank()
 					npcHandler:say("Gnomo arigato |PLAYERNAME|! You did well. That will help us a lot. Take your tokens and this gnomish supply package as a reward. ", npc, creature)
 					npcHandler:setTopic(playerId, 0)
-				else   -- haven't finished
+				else -- haven't finished
 					if npcHandler:getTopic(playerId) >= 1 then
 						npcHandler:say("You are not done yet.", npc, creature) -- is reporting
 					else
@@ -111,9 +111,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say("Sorry, you do have not have the required rank to undertake this mission.", npc, creature)
 		end
-	-- Matchmaker
+		-- Matchmaker
 
-	-- Golem Repair
+		-- Golem Repair
 	elseif MsgContains(message, "repair") then
 		if player:getStorageValue(Storage.BigfootBurden.Rank) >= 120 then
 			if player:getStorageValue(Storage.BigfootBurden.MissionTinkersBell) < 1 and player:getStorageValue(Storage.BigfootBurden.TinkerBellTimeout) < os.time() then
@@ -125,10 +125,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				}, npc, creature)
 				player:setStorageValue(Storage.BigfootBurden.MissionTinkersBell, 1)
 				player:setStorageValue(Storage.BigfootBurden.GolemCount, 0)
-				player:addItem(15832, 1)  --- taking missions
-			elseif player:getStorageValue(Storage.BigfootBurden.TinkerBellTimeout) > os.time() then  -- trying to take mission while in cooldown
+				player:addItem(15832, 1) --- taking missions
+			elseif player:getStorageValue(Storage.BigfootBurden.TinkerBellTimeout) > os.time() then -- trying to take mission while in cooldown
 				npcHandler:say("Sorry, you will have to wait before you can undertake this mission again.", npc, creature)
-			elseif player:getStorageValue(Storage.BigfootBurden.MissionTinkersBell) > 0 then  -- reporting mission
+			elseif player:getStorageValue(Storage.BigfootBurden.MissionTinkersBell) > 0 then -- reporting mission
 				if player:getStorageValue(Storage.BigfootBurden.GolemCount) >= 4 then -- can report missions
 					player:removeItem(15832, 1)
 					player:setStorageValue(Storage.BigfootBurden.Rank, player:getStorageValue(Storage.BigfootBurden.Rank) + 10)
@@ -141,7 +141,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					player:checkGnomeRank()
 					npcHandler:say("Gnomo arigato |PLAYERNAME|! You did well. That will help us a lot. Take your tokens and this gnomish supply package as a reward. ", npc, creature)
 					npcHandler:setTopic(playerId, 0)
-				else   -- haven't finished
+				else -- haven't finished
 					if npcHandler:getTopic(playerId) >= 1 then
 						npcHandler:say("You are not done yet.", npc, creature) -- is reporting
 					else
@@ -153,9 +153,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say("Sorry, you do have not have the required rank to undertake this mission.", npc, creature)
 		end
-	-- Golem Repair
+		-- Golem Repair
 
-	-- Spore Gathering
+		-- Spore Gathering
 	elseif MsgContains(message, "spore") then
 		if player:getStorageValue(Storage.BigfootBurden.Rank) >= 480 then
 			if player:getStorageValue(Storage.BigfootBurden.MissionSporeGathering) < 1 and player:getStorageValue(Storage.BigfootBurden.SporeGatheringTimeout) < os.time() then
@@ -167,10 +167,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.BigfootBurden.MissionSporeGathering, 1)
 				player:setStorageValue(Storage.BigfootBurden.SporeCount, 0)
 				player:addItem(15817, 1)
-				npcHandler:setTopic(playerId, 0)  --- taking missions
-			elseif player:getStorageValue(Storage.BigfootBurden.SporeGatheringTimeout) > os.time() then  -- trying to take mission while in cooldown
+				npcHandler:setTopic(playerId, 0) --- taking missions
+			elseif player:getStorageValue(Storage.BigfootBurden.SporeGatheringTimeout) > os.time() then -- trying to take mission while in cooldown
 				npcHandler:say("Sorry, you will have to wait before you can undertake this mission again.", npc, creature)
-			elseif player:getStorageValue(Storage.BigfootBurden.MissionSporeGathering) > 0 then  -- reporting mission
+			elseif player:getStorageValue(Storage.BigfootBurden.MissionSporeGathering) > 0 then -- reporting mission
 				if player:getStorageValue(Storage.BigfootBurden.SporeCount) == 4 then -- can report missions
 					player:removeItem(15821, 1)
 					player:setStorageValue(Storage.BigfootBurden.Rank, player:getStorageValue(Storage.BigfootBurden.Rank) + 10)
@@ -183,7 +183,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					player:checkGnomeRank()
 					npcHandler:say("Gnomo arigato |PLAYERNAME|! You did well. That will help us a lot. Take your tokens and this gnomish supply package as a reward. ", npc, creature)
 					npcHandler:setTopic(playerId, 0)
-				else   -- haven't finished
+				else -- haven't finished
 					if npcHandler:getTopic(playerId) >= 1 then
 						npcHandler:say("You are not done yet.", npc, creature) -- is reporting
 					else
@@ -195,9 +195,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say("Sorry, you do have not have the required rank to undertake this mission.", npc, creature)
 		end
-	-- Spore Gathering
+		-- Spore Gathering
 
-	-- Grindstone Hunt
+		-- Grindstone Hunt
 	elseif MsgContains(message, "grindstone") then
 		if player:getStorageValue(Storage.BigfootBurden.Rank) >= 480 then
 			if player:getStorageValue(Storage.BigfootBurden.MissionGrindstoneHunt) < 1 and player:getStorageValue(Storage.BigfootBurden.GrindstoneTimeout) < os.time() then
@@ -208,9 +208,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.BigfootBurden.MissionGrindstoneHunt, 1)
 				player:setStorageValue(Storage.BigfootBurden.GrindstoneStatus, 0)
 				npcHandler:setTopic(playerId, 0) --- taking missions
-			elseif player:getStorageValue(Storage.BigfootBurden.GrindstoneTimeout) > os.time() then  -- trying to take mission while in cooldown
+			elseif player:getStorageValue(Storage.BigfootBurden.GrindstoneTimeout) > os.time() then -- trying to take mission while in cooldown
 				npcHandler:say("Sorry, you will have to wait before you can undertake this mission again.", npc, creature)
-			elseif player:getStorageValue(Storage.BigfootBurden.MissionGrindstoneHunt) > 0 then  -- reporting mission
+			elseif player:getStorageValue(Storage.BigfootBurden.MissionGrindstoneHunt) > 0 then -- reporting mission
 				if player:getStorageValue(Storage.BigfootBurden.GrindstoneStatus) == 1 then -- can report missions
 					player:removeItem(15826, 1)
 					player:setStorageValue(Storage.BigfootBurden.Rank, player:getStorageValue(Storage.BigfootBurden.Rank) + 10)
@@ -223,7 +223,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					player:checkGnomeRank()
 					npcHandler:say("Gnomo arigato |PLAYERNAME|! You did well. That will help us a lot. Take your tokens and this gnomish supply package as a reward. ", npc, creature)
 					npcHandler:setTopic(playerId, 0)
-				else   -- haven't finished
+				else -- haven't finished
 					if npcHandler:getTopic(playerId) >= 1 then
 						npcHandler:say("You are not done yet.", npc, creature) -- is reporting
 					else
@@ -235,9 +235,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say("Sorry, you do have not have the required rank to undertake this mission.", npc, creature)
 		end
-	-- Grindstone Hunt
-
-	elseif(MsgContains(message, "report")) then
+		-- Grindstone Hunt
+	elseif (MsgContains(message, "report")) then
 		if player:getStorageValue(Storage.BigfootBurden.Rank) >= 120 and player:getStorageValue(Storage.BigfootBurden.Rank) < 480 then
 			npcHandler:say("Which mission do you want to report: {matchmaker}, golem {repair}?", npc, creature)
 			npcHandler:setTopic(playerId, 1)

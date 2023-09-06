@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Selling herbs, mushrooms and flowers, all picked under the light of the full moon!'}
+	{ text = 'Selling herbs, mushrooms and flowers, all picked under the light of the full moon!' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -56,7 +56,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({'offers'}, StdModule.say, {npcHandler = npcHandler, text = "I'm selling various herbs, mushrooms, and flowers. If you'd like to see my offers, ask me for a {trade}."})
+keywordHandler:addKeyword({ 'offers' }, StdModule.say, { npcHandler = npcHandler, text = "I'm selling various herbs, mushrooms, and flowers. If you'd like to see my offers, ask me for a {trade}." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, traveller. Maybe you'd like to take a look at my {offers}...")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Goodbye, traveller.")

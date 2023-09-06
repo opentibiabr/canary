@@ -1,8 +1,8 @@
 function getGlobalStorage(key)
 	local keyNumber = tonumber(key)
-	if not keyNumber then key = "'"..key.."'" end
-    local resultId = db.storeQuery("SELECT `value` FROM `global_storage` WHERE `key` = " .. key)
-    if resultId ~= false then
+	if not keyNumber then key = "'" .. key .. "'" end
+	local resultId = db.storeQuery("SELECT `value` FROM `global_storage` WHERE `key` = " .. key)
+	if resultId ~= false then
 		local isNumber = tonumber(Result.getString(resultId, "value"))
 		if isNumber then
 			local val = Result.getNumber(resultId, "value")
@@ -13,16 +13,16 @@ function getGlobalStorage(key)
 			Result.free(resultId)
 			return val
 		end
-    end
-    return -1
+	end
+	return -1
 end
 
 function setGlobalStorage(key, value)
 	local keyNumber = tonumber(key)
-	if not keyNumber then key = "'"..key.."'" end
+	if not keyNumber then key = "'" .. key .. "'" end
 	local valueNumber = tonumber(value)
-	if not valueNumber then value = "'"..value.."'" end
-    db.query("INSERT INTO `global_storage` (`key`, `value`) VALUES (".. key ..", ".. value ..") ON DUPLICATE KEY UPDATE `value` = ".. value)
+	if not valueNumber then value = "'" .. value .. "'" end
+	db.query("INSERT INTO `global_storage` (`key`, `value`) VALUES (" .. key .. ", " .. value .. ") ON DUPLICATE KEY UPDATE `value` = " .. value)
 end
 
 function Game.broadcastMessage(message, messageType)
@@ -63,7 +63,7 @@ function Game.getPlayersByAccountNumber(accountNumber)
 	for i = 1, #players do
 		player = players[i]
 		if player:getAccountId() == accountNumber then
-			result[#result + 1] = player
+			result[#result+1] = player
 		end
 	end
 	return result
@@ -77,7 +77,7 @@ function Game.getPlayersByIPAddress(ip, mask)
 	for i = 1, #players do
 		player = players[i]
 		if bit.band(player:getIp(), mask) == masked then
-			result[#result + 1] = player
+			result[#result+1] = player
 		end
 	end
 	return result

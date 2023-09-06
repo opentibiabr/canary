@@ -2,14 +2,14 @@
 
 if Modules == nil then
 	-- default words for greeting and ungreeting the npc. Should be a table containing all such words.
-	FOCUS_GREETWORDS = {"hi", "hello"}
-	FOCUS_FAREWELLWORDS = {"bye", "farewell"}
+	FOCUS_GREETWORDS = { "hi", "hello" }
+	FOCUS_FAREWELLWORDS = { "bye", "farewell" }
 
-	FOCUS_TRADE_MESSAGE = {"trade", "offers"}
+	FOCUS_TRADE_MESSAGE = { "trade", "offers" }
 
 	-- The word for accepting/declining an offer. CAN ONLY CONTAIN ONE FIELD! Should be a table with a single string value.
-	SHOP_YESWORD = {"yes"}
-	SHOP_NOWORD = {"no"}
+	SHOP_YESWORD = { "yes" }
+	SHOP_NOWORD = { "no" }
 
 	StdModule = {}
 
@@ -72,7 +72,7 @@ if Modules == nil then
 			npcHandler:resetNpc(player)
 			npcHandler:removeInteraction(npc, player)
 		elseif parameters.reset then
-			parseInfo = {[TAG_PLAYERNAME] = Player(player):getName()}
+			parseInfo = { [TAG_PLAYERNAME] = Player(player):getName() }
 			npcHandler:say(npcHandler:parseMessage(parameters.text or parameters.message, parseInfo), npc, player)
 			if parameters.reset then
 				npcHandler:resetNpc(player)
@@ -100,7 +100,7 @@ if Modules == nil then
 				npcHandler:say("You are already promoted!", npc, player)
 			elseif player:getLevel() < parameters.level then
 				npcHandler:say(string.format("I am sorry, but I can only promote you once you have reached level %d.",
-                               parameters.level), npc, player)
+					parameters.level), npc, player)
 			elseif not player:removeMoneyBank(parameters.cost) then
 				npcHandler:say("You do not have enough money!", npc, player)
 			else
@@ -132,14 +132,14 @@ if Modules == nil then
 				npcHandler:say("You cannot learn this spell.", npc, player)
 			elseif not player:removeMoneyBank(parameters.price) then
 				npcHandler:say(string.format("You do not have enough money, this spell costs %s gold.",
-                               parameters.price), npc, player)
+					parameters.price), npc, player)
 			else
 				npcHandler:say(string.format("You have learned '%s'.", parameters.spellName), npc, player)
 				player:learnSpell(parameters.spellName)
 			end
 		else
 			npcHandler:say(string.format("You need a premium account in order to buy '%s'.",
-                           parameters.spellName), npc, player)
+				parameters.spellName), npc, player)
 		end
 
 		npcHandler:resetNpc(player)
@@ -169,7 +169,7 @@ if Modules == nil then
                            so it wouldn't make sense to bestow this protection on you now. \z
                            Remember that it can only protect you from the loss of those!", npc, player)
 		elseif not player:removeMoneyBank(type(parameters.cost) == "string"
-		and npcHandler:parseMessage(parameters.cost, parseInfo) or parameters.cost) then
+					and npcHandler:parseMessage(parameters.cost, parseInfo) or parameters.cost) then
 			npcHandler:say("Oh. You do not have enough money.", npc, player)
 		else
 			npcHandler:say(parameters.text or "You have been blessed by one of the seven gods!", npc, player)
@@ -273,9 +273,9 @@ if Modules == nil then
 		end
 		for i, word in pairs(FOCUS_GREETWORDS) do
 			local obj = {}
-			obj[#obj + 1] = word
+			obj[#obj+1] = word
 			obj.callback = FOCUS_GREETWORDS.callback or FocusModule.messageMatcher
-			handler.keywordHandler:addKeyword(obj, FocusModule.onGreet, {module = self})
+			handler.keywordHandler:addKeyword(obj, FocusModule.onGreet, { module = self })
 		end
 
 		if farewellCallback == false then
@@ -283,9 +283,9 @@ if Modules == nil then
 		end
 		for i, word in pairs(FOCUS_FAREWELLWORDS) do
 			local obj = {}
-			obj[#obj + 1] = word
+			obj[#obj+1] = word
 			obj.callback = FOCUS_FAREWELLWORDS.callback or FocusModule.messageMatcher
-			handler.keywordHandler:addKeyword(obj, FocusModule.onFarewell, {module = self})
+			handler.keywordHandler:addKeyword(obj, FocusModule.onFarewell, { module = self })
 		end
 
 		if tradeCallback == false then
@@ -293,9 +293,9 @@ if Modules == nil then
 		end
 		for i, word in pairs(FOCUS_TRADE_MESSAGE) do
 			local obj = {}
-			obj[#obj + 1] = word
+			obj[#obj+1] = word
 			obj.callback = FOCUS_TRADE_MESSAGE.callback or FocusModule.messageMatcher
-			handler.keywordHandler:addKeyword(obj, FocusModule.onTradeRequest, {module = self})
+			handler.keywordHandler:addKeyword(obj, FocusModule.onTradeRequest, { module = self })
 		end
 		return true
 	end
@@ -369,8 +369,8 @@ if Modules == nil then
 		for i, word in pairs(keywords) do
 			if type(word) == "string" then
 				if string.find(message, word)
-				and not string.find(message, "[%w+]" .. word)
-				and not string.find(message, word .. "[%w+]") then
+						and not string.find(message, "[%w+]" .. word)
+						and not string.find(message, word .. "[%w+]") then
 					return true
 				end
 			end
@@ -400,7 +400,7 @@ if Modules == nil then
 
 			local keywords = {}
 			for temp in string.gmatch(keys, "[^,]+") do
-				keywords[#keywords + 1] = temp
+				keywords[#keywords+1] = temp
 				i = i + 1
 			end
 		end
@@ -434,8 +434,8 @@ if Modules == nil then
 
 	function TravelModule:init(handler)
 		self.npcHandler = handler
-		self.yesNode = KeywordNode:new(SHOP_YESWORD, TravelModule.onConfirm, {module = self})
-		self.noNode = KeywordNode:new(SHOP_NOWORD, TravelModule.onDecline, {module = self})
+		self.yesNode = KeywordNode:new(SHOP_YESWORD, TravelModule.onConfirm, { module = self })
+		self.noNode = KeywordNode:new(SHOP_NOWORD, TravelModule.onDecline, { module = self })
 		self.destinations = {}
 		return true
 	end
@@ -467,22 +467,22 @@ if Modules == nil then
 				else
 					logger.warn("[TravelModule:parseDestinations] - Npc: {}] \z
                                 Unknown parameter found in travel destination parameter. temp[{}], destination[{}]",
-                                npc:getName(), temp, destination)
+						npc:getName(), temp, destination)
 				end
 				i = i + 1
 			end
 
 			if name and x and y and z and cost then
-				self:addDestination(name, {x=x, y=y, z=z}, cost, premium)
+				self:addDestination(name, { x = x, y = y, z = z }, cost, premium)
 			else
 				logger.warn("[TravelModule:parseDestinations] - Npc: {}] Parameter(s) missing for travel destination: x = {}, y = {}, z = {}",
-                            npc:getName(), x, y, z)
+					npc:getName(), x, y, z)
 			end
 		end
 	end
 
 	function TravelModule:addDestination(name, position, price, premium)
-		self.destinations[#self.destinations + 1] = name
+		self.destinations[#self.destinations+1] = name
 
 		local parameters = {
 			cost = price,
@@ -491,17 +491,17 @@ if Modules == nil then
 			module = self
 		}
 		local keywords = {}
-		keywords[#keywords + 1] = name
+		keywords[#keywords+1] = name
 
 		local keywords2 = {}
-		keywords2[#keywords2 + 1] = "bring me to " .. name
+		keywords2[#keywords2+1] = "bring me to " .. name
 		local node = self.npcHandler.keywordHandler:addKeyword(keywords, TravelModule.travel, parameters)
 		self.npcHandler.keywordHandler:addKeyword(keywords2, TravelModule.bringMeTo, parameters)
 		node:addChildKeywordNode(self.yesNode)
 		node:addChildKeywordNode(self.noNode)
 
-		self.npcHandler.keywordHandler:addKeyword({'yes'}, TravelModule.onConfirm, {module = self})
-		self.npcHandler.keywordHandler:addKeyword({'no'}, TravelModule.onDecline, {module = self})
+		self.npcHandler.keywordHandler:addKeyword({ 'yes' }, TravelModule.onConfirm, { module = self })
+		self.npcHandler.keywordHandler:addKeyword({ 'no' }, TravelModule.onDecline, { module = self })
 	end
 
 	-- TODO(Eduardo): Need fix this function, is not ok
@@ -514,7 +514,7 @@ if Modules == nil then
 		local cost = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost
 
 		module.npcHandler:say(string.format("Do you want to travel to '%s' for '%d' gold coins?",
-                              keywords[1], cost), npc, player)
+			keywords[1], cost), npc, player)
 		return true
 	end
 

@@ -1,4 +1,4 @@
-local exitPosition = {Position(33062, 31029, 7), Position(33049, 31017, 2)}
+local exitPosition = { Position(33062, 31029, 7), Position(33049, 31017, 2) }
 local TheNewFrontier = Storage.Quest.U8_54.TheNewFrontier
 
 local function clearArena()
@@ -27,7 +27,7 @@ function tireczKill.onKill(creature, target)
 		return true
 	end
 
-	local spectators, spectator = Game.getSpectators(Position({x = 33063, y = 31034, z = 3}), false, true, 10, 10, 10, 10)
+	local spectators, spectator = Game.getSpectators(Position({ x = 33063, y = 31034, z = 3 }), false, true, 10, 10, 10, 10)
 	for i = 1, #spectators do
 		spectator = spectators[i]
 		spectator:teleportTo(exitPosition[1])

@@ -130,6 +130,9 @@ void Player::setID() {
 
 std::string Player::getDescription(int32_t lookDistance) const {
 	std::ostringstream s;
+	std::string subjectPronoun = getSubjectPronoun();
+	capitalizeWords(subjectPronoun);
+
 	if (lookDistance == -1) {
 		s << "yourself.";
 
@@ -155,42 +158,34 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		}
 		s << '.';
 
-		std::string pronoun;
-		if (sex == PLAYERSEX_FEMALE) {
-			pronoun = " She";
-		} else {
-			pronoun = " He";
-		}
-		s << pronoun;
+		s << " " << subjectPronoun;
 
 		if (group->access) {
-			s << " is " << group->name << '.';
+			s << " " << getSubjectVerb() << " " << group->name << '.';
 		} else if (vocation->getId() != VOCATION_NONE) {
-			s << " is " << vocation->getVocDescription() << '.';
+			s << " " << getSubjectVerb() << " " << vocation->getVocDescription() << '.';
 		} else {
 			s << " has no vocation.";
 		}
 
 		if (loyaltyTitle.length() != 0) {
-			if (sex == PLAYERSEX_FEMALE) {
-				s << " She is a " << loyaltyTitle << ".";
-			} else {
-				s << " He is a " << loyaltyTitle << ".";
+			std::string article = "a";
+			if (loyaltyTitle[0] == 'A' || loyaltyTitle[0] == 'E' || loyaltyTitle[0] == 'I' || loyaltyTitle[0] == 'O' || loyaltyTitle[0] == 'U') {
+				article = "an";
 			}
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " " << article << " " << loyaltyTitle << ".";
 		}
 
 		if (isVip()) {
-			s << pronoun << " is VIP.";
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " VIP.";
 		}
 	}
 
 	if (party) {
 		if (lookDistance == -1) {
 			s << " Your party has ";
-		} else if (sex == PLAYERSEX_FEMALE) {
-			s << " She is in a party with ";
 		} else {
-			s << " He is in a party with ";
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " in a party with ";
 		}
 
 		size_t memberCount = party->getMemberCount() + 1;
@@ -217,10 +212,8 @@ std::string Player::getDescription(int32_t lookDistance) const {
 
 		if (lookDistance == -1) {
 			s << " You are ";
-		} else if (sex == PLAYERSEX_FEMALE) {
-			s << " She is ";
 		} else {
-			s << " He is ";
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " ";
 		}
 
 		s << guildRank->name << " of the " << guild->getName();
@@ -2891,7 +2884,9 @@ Item* Player::getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature)
 	if (corpse && corpse->getContainer()) {
 		std::ostringstream ss;
 		if (lastHitCreature) {
-			ss << "You recognize " << getNameDescription() << ". " << (getSex() == PLAYERSEX_FEMALE ? "She" : "He") << " was killed by " << lastHitCreature->getNameDescription() << '.';
+			std::string subjectPronoun = getSubjectPronoun();
+			capitalizeWords(subjectPronoun);
+			ss << "You recognize " << getNameDescription() << ". " << subjectPronoun << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription() << '.';
 		} else {
 			ss << "You recognize " << getNameDescription() << '.';
 		}
@@ -4940,6 +4935,10 @@ bool Player::getFamiliar(const Familiar &familiar) const {
 
 void Player::setSex(PlayerSex_t newSex) {
 	sex = newSex;
+}
+
+void Player::setPronoun(PlayerPronoun_t newPronoun) {
+	pronoun = newPronoun;
 }
 
 Skulls_t Player::getSkull() const {

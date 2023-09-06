@@ -12,8 +12,17 @@
 class Task {
 public:
 	// DO NOT allocate this class on the stack
-	Task(std::function<void(void)> &&f, uint32_t delay = 0) :
+	Task(std::function<void(void)> &&f) :
+		func(std::move(f)) { }
+
+	Task(std::function<void(void)> &&f, uint32_t delay) :
 		func(std::move(f)), delay(delay) { }
+
+	Task(std::function<void(void)> &&f, std::string context) :
+		func(std::move(f)), context(std::move(context)) { }
+
+	Task(std::function<void(void)> &&f, uint32_t delay, std::string context) :
+		func(std::move(f)), delay(delay), context(std::move(context)) { }
 
 	virtual ~Task() = default;
 	void operator()() {
@@ -32,8 +41,13 @@ public:
 		return delay;
 	}
 
+	std::string getContext() const {
+		return context;
+	}
+
 private:
 	uint32_t delay = 0;
 	uint64_t eventId = 0;
+	std::string context = "anonymous";
 	std::function<void(void)> func {};
 };

@@ -101,7 +101,8 @@ int CanaryServer::run() {
 
 			loaderSignal.notify_all();
 		}
-	});
+	},
+						   "CanaryServer::run");
 
 	loaderSignal.wait(loaderUniqueLock, [this] { return loaderDone || loadFailed; });
 

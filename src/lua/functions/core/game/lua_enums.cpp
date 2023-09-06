@@ -164,6 +164,13 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, PLAYERSEX_FEMALE);
 	registerEnum(L, PLAYERSEX_MALE);
 
+	registerEnum(L, PLAYERPRONOUN_UNSET);
+	registerEnum(L, PLAYERPRONOUN_THEY);
+	registerEnum(L, PLAYERPRONOUN_SHE);
+	registerEnum(L, PLAYERPRONOUN_HE);
+	registerEnum(L, PLAYERPRONOUN_ZE);
+	registerEnum(L, PLAYERPRONOUN_NAME);
+
 	registerEnum(L, RESPAWNPERIOD_ALL);
 	registerEnum(L, RESPAWNPERIOD_DAY);
 	registerEnum(L, RESPAWNPERIOD_NIGHT);

@@ -178,3 +178,9 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 }
 
 std::string formatNumber(uint64_t number);
+
+std::string getPlayerSubjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
+std::string getPlayerObjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
+std::string getPlayerPossessivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
+std::string getPlayerReflexivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
+std::string getVerbForPronoun(PlayerPronoun_t pronoun, bool pastTense = false);

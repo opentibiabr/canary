@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     `conditions` blob NOT NULL,
     `cap` int(11) NOT NULL DEFAULT '0',
     `sex` int(11) NOT NULL DEFAULT '0',
+    `pronoun` int(11) NOT NULL DEFAULT '0',
     `lastlogin` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `lastip` int(10) UNSIGNED NOT NULL DEFAULT '0',
     `save` tinyint(1) NOT NULL DEFAULT '1',

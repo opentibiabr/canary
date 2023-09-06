@@ -122,7 +122,7 @@ void House::updateDoorDescription() const {
 	ss << " It is " << houseTiles.size() << " square meters.";
 	const int32_t housePrice = getPrice();
 	if (housePrice != -1) {
-		if (owner == 0) {
+		if (g_configManager().getBoolean(HOUSE_PURSHASED_SHOW_PRICE) || owner == 0) {
 			ss << " It costs " << formatNumber(getPrice()) << " gold coins.";
 		}
 		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));

@@ -7,12 +7,14 @@ monster.outfit = {
 	lookTypeEx = 20110
 }
 
+
 monster.health = 7200
 monster.maxHealth = 7200
 monster.race = "blood"
 monster.corpse = 20163
 monster.speed = 0
 monster.manaCost = 0
+
 
 monster.changeTarget = {
 	interval = 4000,
@@ -43,12 +45,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -61,7 +63,8 @@ monster.loot = {
 
 monster.defenses = {
 	defense = 5,
-	armor = 10
+	armor = 10,
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -74,13 +77,13 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = true },
+	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = true },
+	{ type = "invisible", condition = false },
 	{ type = "bleed", condition = false }
 }
 

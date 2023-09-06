@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Doctor Perhaps")
 local monster = {}
 
-monster.description = "doctor perhaps"
+monster.description = "Doctor Perhaps"
 monster.experience = 325
 monster.outfit = {
 	lookType = 133,
@@ -11,6 +11,11 @@ monster.outfit = {
 	lookFeet = 114,
 	lookAddons = 1,
 	lookMount = 0
+}
+
+monster.bosstiary = {
+	bossRaceId = 564,
+	bossRace = RARITY_BANE,
 }
 
 monster.health = 475
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 564,
-	bossRace = RARITY_BANE
 }
 
 monster.strategiesTarget = {
@@ -43,7 +43,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -54,12 +54,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -75,7 +75,7 @@ monster.voices = {
 	{ text = "I might use some parts of you in my next creation!", yell = false },
 	{ text = "You're only a testsubject to me!", yell = false },
 	{ text = "My creations will kill you!", yell = false },
-	{ text = "You can't beat what you can't comprehend!", yell = false }
+	{ text = "You can't beat what you can't comprehend!", yell = false },
 }
 
 monster.loot = {
@@ -97,6 +97,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 15,
 	armor = 15,
+	mitigation = 0.30,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 10, maxDamage = 30, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -110,11 +111,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

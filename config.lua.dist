@@ -161,6 +161,7 @@ wheelPointsPerLevel = 1
 -- Only change it here if you know what you are doing or to make testing easier with familiars
 familiarTime = 30
 
+partyAutoShareExperience = true
 partyShareLootBoosts = false
 partyShareLootBoostsDimishingFactor = 0.7
 

@@ -1,7 +1,7 @@
-local mType = Game.createMonsterType("Morik The Gladiator")
+local mType = Game.createMonsterType("Morik the Gladiator")
 local monster = {}
 
-monster.description = "Morik The Gladiator"
+monster.description = "Morik the Gladiator"
 monster.experience = 160
 monster.outfit = {
 	lookType = 131,
@@ -37,24 +37,24 @@ monster.flags = {
 	attackable = true,
 	hostile = true,
 	convinceable = false,
-	pushable = true,
+	pushable = false,
 	rewardBoss = true,
 	illusionable = false,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 90,
 	targetDistance = 1,
 	runHealth = 10,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -70,7 +70,7 @@ monster.voices = {
 	{ text = "To be the one you'll have to beat the one!", yell = false },
 	{ text = "Where did I put my ultimate health potion again?", yell = false },
 	{ text = "I am the best!", yell = false },
-	{ text = "I'll take your ears as a trophy!", yell = false }
+	{ text = "I'll take your ears as a trophy!", yell = false },
 }
 
 monster.loot = {
@@ -85,7 +85,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 22,
-	armor = 20
+	armor = 20,
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -98,11 +99,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -1 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -1 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

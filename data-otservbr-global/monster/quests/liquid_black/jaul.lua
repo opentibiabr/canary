@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Jaul")
 local monster = {}
 
 monster.description = "Jaul"
-monster.experience = 35000
+monster.experience = 30000
 monster.outfit = {
 	lookType = 444,
 	lookHead = 0,
@@ -13,8 +13,13 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 95000
-monster.maxHealth = 95000
+monster.bosstiary = {
+	bossRaceId = 773,
+	bossRace = RARITY_BANE,
+}
+
+monster.health = 90000
+monster.maxHealth = 90000
 monster.race = "blood"
 monster.corpse = 13787
 monster.speed = 220
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 2000,
 	chance = 50
-}
-
-monster.bosstiary = {
-	bossRaceId = 773,
-	bossRace = RARITY_BANE
 }
 
 monster.strategiesTarget = {
@@ -54,19 +54,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "QJELL AFAR GOU JEY!!", yell = false },
-	{ text = "DIE!! KENH!!", yell = false }
+	{ text = "DIE!! KENH!!", yell = true },
+	{ text = "QJELL AFAR GOU JEY!!", yell = true },
 }
 
 monster.loot = {
@@ -95,6 +95,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 40,
 	armor = 40,
+	--	mitigation = ???,
 	{ name = "combat", interval = 5000, chance = 7, type = COMBAT_HEALING, minDamage = 12000, maxDamage = 19000, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -108,7 +109,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 15 },
 }
 
 monster.immunities = {

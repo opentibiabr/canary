@@ -19,12 +19,10 @@ local spell = Spell("instant")
 
 function onTargetTile(creature, pos)
 	local tile = Tile(pos)
-	if tile then
-		if tile:getTopCreature() and tile:getTopCreature():isMonster() then
-			if tile:getTopCreature():getName():lower() == "magma bubble" then
-				tile:getTopCreature():addHealth(-math.random(775, 1300))
-				return
-			end
+	if not tile then return end
+	if tile:getTopCreature() and tile:getTopCreature():isMonster() then
+		if tile:getTopCreature():getName():lower() == "magma bubble" then
+			tile:getTopCreature():addHealth(math.random(2000, 5000))
 		end
 	end
 end

@@ -11,6 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\account\account.hpp" />
+    <ClInclude Include="..\src\account\account_definitions.hpp" />
+    <ClInclude Include="..\src\account\account_repository.hpp" />
+    <ClInclude Include="..\src\account\account_repository_db.hpp" />
     <ClInclude Include="..\src\config\configmanager.hpp" />
     <ClInclude Include="..\src\config\config_definitions.hpp" />
     <ClInclude Include="..\src\core.hpp" />
@@ -28,7 +32,6 @@
     <ClInclude Include="..\src\creatures\npcs\npc.hpp" />
     <ClInclude Include="..\src\creatures\npcs\npcs.hpp" />
     <ClInclude Include="..\src\creatures\npcs\spawns\spawn_npc.hpp" />
-    <ClInclude Include="..\src\creatures\players\account\account.hpp" />
     <ClInclude Include="..\src\creatures\players\grouping\familiars.hpp" />
     <ClInclude Include="..\src\creatures\players\grouping\groups.hpp" />
     <ClInclude Include="..\src\creatures\players\grouping\guild.hpp" />
@@ -212,6 +215,7 @@
     <ClInclude Include="..\src\utils\wildcardtree.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\account\account_repository_db.cpp" />
     <ClCompile Include="..\src\config\configmanager.cpp" />
     <ClCompile Include="..\src\creatures\appearance\mounts\mounts.cpp" />
     <ClCompile Include="..\src\creatures\appearance\outfit\outfit.cpp" />
@@ -226,7 +230,7 @@
     <ClCompile Include="..\src\creatures\npcs\npc.cpp" />
     <ClCompile Include="..\src\creatures\npcs\npcs.cpp" />
     <ClCompile Include="..\src\creatures\npcs\spawns\spawn_npc.cpp" />
-    <ClCompile Include="..\src\creatures\players\account\account.cpp" />
+    <ClCompile Include="..\src\account\account.cpp" />
     <ClCompile Include="..\src\creatures\players\grouping\familiars.cpp" />
     <ClCompile Include="..\src\creatures\players\grouping\groups.cpp" />
     <ClCompile Include="..\src\creatures\players\grouping\guild.cpp" />

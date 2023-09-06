@@ -13,6 +13,11 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 454,
+	bossRace = RARITY_ARCHFOE,
+}
+
 monster.health = 8000
 monster.maxHealth = 8000
 monster.race = "undead"
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 5000,
 	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 454,
-	bossRace = RARITY_ARCHFOE
 }
 
 monster.strategiesTarget = {
@@ -43,7 +43,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -52,14 +52,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
+	canWalkOnEnergy = true,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 5,
+	color = 212,
 }
 
 monster.summon = {
@@ -76,7 +76,7 @@ monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "WHO DARES CALLING ME?", yell = true },
-	{ text = "I'LL FREEZE YOU THEN I CRUSH YOU!", yell = true }
+	{ text = "I'LL FREEZE YOU THEN I CRUSH YOU!", yell = true },
 }
 
 monster.loot = {
@@ -96,6 +96,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 30,
 	armor = 30,
+	--	mitigation = ???,
 	{ name = "combat", interval = 1000, chance = 25, type = COMBAT_HEALING, minDamage = 100, maxDamage = 195, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "outfit", interval = 1500, chance = 40, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 3000, outfitMonster = "Energy Overlord" },
 	{ name = "outfit", interval = 1500, chance = 40, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 3000, outfitMonster = "Fire Overlord" },
@@ -104,7 +105,7 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 1 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 50 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 30 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 45 },
 	{ type = COMBAT_FIREDAMAGE, percent = 30 },
@@ -113,11 +114,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 30 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

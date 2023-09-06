@@ -11,6 +11,7 @@
 
 #include "database/database.hpp"
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 
 class IOMarket {
 	using StatisticsMap = std::map<uint16_t, std::map<uint8_t, MarketStatistics>>;

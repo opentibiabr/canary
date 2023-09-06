@@ -62,20 +62,20 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Crush the intruders!", yell = false },
 	{ text = "You're so little!", yell = false },
 	{ text = "Human flesh -  delicious!", yell = false },
-	{ text = "Crush the intruders!", yell = false }
 }
 
 monster.loot = {
@@ -97,7 +97,7 @@ monster.loot = {
 	{ name = "steel boots", chance = 380 },
 	{ name = "meat", chance = 30000, maxCount = 6 },
 	{ name = "perfect behemoth fang", chance = 1090 },
-	{ name = "behemoth claw", chance = 430 },
+	{ name = "behemoth claw", chance = 860 },
 	{ name = "assassin star", chance = 9750, maxCount = 5 },
 	{ id = 7396, chance = 170 }, -- behemoth trophy
 	{ name = "titan axe", chance = 90 },
@@ -113,6 +113,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 45,
 	armor = 50,
+	mitigation = 1.74,
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 300, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
 }
 
@@ -126,7 +127,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 30 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {

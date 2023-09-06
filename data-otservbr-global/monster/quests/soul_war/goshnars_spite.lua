@@ -101,9 +101,6 @@ monster.loot = {
 	{ name = "bag you desire", chance = 100 }
 }
 
--- TODO: monster-abilities
---monster.attacks = {
---}
 monster.attacks = {
 
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -5000 },

@@ -32,7 +32,7 @@ monster.maxHealth = 450
 monster.race = "blood"
 monster.corpse = 6065
 monster.speed = 75
-monster.manaCost = 670
+monster.manaCost = 600
 
 monster.changeTarget = {
 	interval = 4000,
@@ -47,7 +47,7 @@ monster.flags = {
 	summonable = false,
 	attackable = true,
 	hostile = true,
-	convinceable = false,
+	convinceable = true,
 	pushable = false,
 	rewardBoss = false,
 	illusionable = true,
@@ -60,21 +60,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 2,
+	color = 35,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Tssss!", yell = false },
 	{ text = "Gaaahhh!", yell = false },
 	{ text = "Gluh! Gluh!", yell = false },
-	{ text = "Tssss!", yell = false },
-	{ text = "Boohaa!", yell = false }
+	{ text = "Boohaa!", yell = false },
 }
 
 monster.loot = {
@@ -94,7 +94,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 14
+	armor = 14,
+	mitigation = 0.86,
 }
 
 monster.elements = {
@@ -104,10 +105,10 @@ monster.elements = {
 	{ type = COMBAT_FIREDAMAGE, percent = 100 },
 	{ type = COMBAT_LIFEDRAIN, percent = 100 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

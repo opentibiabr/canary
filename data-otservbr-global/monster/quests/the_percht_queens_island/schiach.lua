@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Schiach")
 local monster = {}
 
-monster.description = "an schiach"
+monster.description = "a schiach"
 monster.experience = 580
 monster.outfit = {
 	lookType = 1162,
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 2,
-	Locations = "Percht Island."
+	Locations = "Percht Island"
 }
 
 monster.health = 600
@@ -59,35 +59,26 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Krik Krik!", yell = false },
-	{ text = "Psh psh psh!!", yell = false }
+	{ text = "Psh psh psh!!", yell = false },
 }
 
 monster.loot = {
 	{ name = "gold coin", chance = 100000, maxCount = 50 },
-	{ name = "fireworks capsule", chance = 13220 },
 	{ name = "broken bell", chance = 11070 },
-	{ name = "grainy fireworks powder", chance = 7700 },
-	{ name = "versicolour fireworks powder", chance = 4290 },
 	{ name = "percht horns", chance = 3960 },
 	{ name = "bright bell", chance = 2920 },
-	{ name = "green fireworks powder", chance = 2550 },
-	{ name = "purple fireworks powder", chance = 2440 },
-	{ name = "turquoise fireworks powder", chance = 40 },
-	{ name = "orange fireworks powder", chance = 2260 },
-	{ name = "yellow fireworks powder", chance = 2180 },
-	{ name = "red fireworks powder", chance = 1780 },
 	{ name = "glacier kilt", chance = 1180 },
 	{ name = "glacier robe", chance = 630 }
 }
@@ -103,7 +94,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 43,
-	armor = 43
+	armor = 43,
+	mitigation = 0.78,
 }
 
 monster.elements = {
@@ -116,11 +108,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

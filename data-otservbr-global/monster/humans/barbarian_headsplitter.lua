@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -76,7 +76,7 @@ monster.voices = {
 	{ text = "I will regain my honor with your blood!", yell = false },
 	{ text = "Surrender is not option!", yell = false },
 	{ text = "Its you or me!", yell = false },
-	{ text = "Die! Die! Die!", yell = false }
+	{ text = "Die! Die! Die!", yell = false },
 }
 
 monster.loot = {
@@ -101,7 +101,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 0,
-	armor = 7
+	armor = 7,
+	mitigation = 0.36,
 }
 
 monster.elements = {
@@ -114,7 +115,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 50 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {

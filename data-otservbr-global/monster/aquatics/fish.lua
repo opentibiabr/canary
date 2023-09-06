@@ -31,7 +31,7 @@ monster.maxHealth = 25
 monster.race = "undead"
 monster.corpse = 3578
 monster.speed = 70
-monster.manaCost = 0
+monster.manaCost = 305
 
 monster.changeTarget = {
 	interval = 4000,
@@ -46,7 +46,7 @@ monster.flags = {
 	summonable = false,
 	attackable = true,
 	hostile = true,
-	convinceable = false,
+	convinceable = true,
 	pushable = true,
 	rewardBoss = false,
 	illusionable = true,
@@ -59,19 +59,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Blib!", yell = false },
-	{ text = "Blub!", yell = false }
+	{ text = "Blub!", yell = false },
 }
 
 monster.loot = {
@@ -79,7 +79,8 @@ monster.loot = {
 
 monster.defenses = {
 	defense = 5,
-	armor = 5
+	armor = 9,
+	mitigation = 0.10,
 }
 
 monster.elements = {
@@ -92,7 +93,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

@@ -850,9 +850,9 @@ void Monster::doAttacking(uint32_t interval) {
 
 				float multiplier;
 				if (maxCombatValue > 0) { // Defense
-					multiplier = mType->getDefenseMultiplier();
+					multiplier = getDefenseMultiplier();
 				} else { // Attack
-					multiplier = mType->getAttackMultiplier();
+					multiplier = getAttackMultiplier();
 				}
 
 				minCombatValue = spellBlock.minCombatValue * multiplier;
@@ -1924,9 +1924,9 @@ bool Monster::getCombatValues(int32_t &min, int32_t &max) {
 
 	float multiplier;
 	if (maxCombatValue > 0) { // Defense
-		multiplier = mType->getDefenseMultiplier();
+		multiplier = getDefenseMultiplier();
 	} else { // Attack
-		multiplier = mType->getAttackMultiplier();
+		multiplier = getAttackMultiplier();
 	}
 
 	min = minCombatValue * multiplier;

@@ -10,7 +10,7 @@
 #pragma once
 
 #include "declarations.hpp"
-#include "lib/di/container.hpp"
+#include "lib/logging/log_with_spd_log.hpp"
 
 class DBResult;
 using DBResult_ptr = std::shared_ptr<DBResult>;
@@ -24,9 +24,7 @@ public:
 	Database(const Database &) = delete;
 	Database &operator=(const Database &) = delete;
 
-	static Database &getInstance() {
-		return inject<Database>();
-	}
+	static Database &getInstance();
 
 	bool connect();
 

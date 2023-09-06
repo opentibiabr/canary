@@ -61,14 +61,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 3,
+	color = 180,
 }
 
 monster.summon = {
@@ -82,9 +82,9 @@ monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "You have disturbed my thoughts!", yell = false },
-	{ text = "Let me turn you into something more useful!", yell = false },
+	{ text = "I will turn you into something more useful!", yell = false },
 	{ text = "Let me taste your brain!", yell = false },
-	{ text = "You will be punished!", yell = false }
+	{ text = "You will be punished!", yell = false },
 }
 
 monster.loot = {
@@ -93,7 +93,7 @@ monster.loot = {
 	{ name = "sniper arrow", chance = 9560, maxCount = 4 },
 	{ name = "steel shield", chance = 5940 },
 	{ name = "piece of dead brain", chance = 5030 },
-	{ name = "bonelord eye", chance = 2990 },
+	{ name = "bonelord eye", chance = 2960 },
 	{ name = "clerical mace", chance = 1970 },
 	{ name = "haunted blade", chance = 1440 },
 	{ id = 3059, chance = 930 }, -- spellbook
@@ -115,6 +115,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 12,
 	armor = 12,
+	mitigation = 0.67,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 150, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 260, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
 }
@@ -129,7 +130,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

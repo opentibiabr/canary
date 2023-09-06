@@ -60,12 +60,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -75,7 +75,7 @@ monster.voices = {
 	{ text = "Head off!", yell = false },
 	{ text = "Your head will be mine!", yell = false },
 	{ text = "Stand still!", yell = false },
-	{ text = "One more head for me!", yell = false }
+	{ text = "One more head for me!", yell = false },
 }
 
 monster.loot = {
@@ -102,7 +102,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 12,
-	armor = 12
+	armor = 12,
+	mitigation = 0.36,
 }
 
 monster.elements = {
@@ -115,7 +116,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 5 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {

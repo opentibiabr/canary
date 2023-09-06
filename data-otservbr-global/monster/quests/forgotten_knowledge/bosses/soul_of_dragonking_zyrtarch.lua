@@ -1,8 +1,8 @@
 local mType = Game.createMonsterType("Soul of Dragonking Zyrtarch")
 local monster = {}
 
-monster.description = "soul of dragonking zyrtarch"
-monster.experience = 70700
+monster.description = "soul of Dragonking Zyrtarch"
+monster.experience = 70000
 monster.outfit = {
 	lookType = 938,
 	lookHead = 0,
@@ -11,6 +11,12 @@ monster.outfit = {
 	lookFeet = 0,
 	lookAddons = 0,
 	lookMount = 0
+}
+
+monster.bosstiary = {
+	bossRaceId = 1289,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.ForgottenKnowledge.DragonkingTimer,
 }
 
 monster.health = 150000
@@ -23,12 +29,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 5000,
 	chance = 0
-}
-
-monster.bosstiary = {
-	bossRaceId = 1289,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.ForgottenKnowledge.DragonkingTimer
 }
 
 monster.strategiesTarget = {
@@ -55,17 +55,18 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "What have you done!?", yell = false },
 }
 
 monster.loot = {
@@ -119,20 +120,21 @@ monster.attacks = {
 monster.defenses = {
 	defense = 64,
 	armor = 52,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 450, maxDamage = 550, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 20 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
-	{ type = COMBAT_FIREDAMAGE, percent = 0 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 1 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

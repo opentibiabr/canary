@@ -34,13 +34,13 @@ monster.corpse = 13750
 monster.speed = 135
 monster.manaCost = 0
 
+monster.faction = FACTION_DEEPLING
+monster.enemyFactions = { FACTION_DEATHLING, FACTION_PLAYER }
+
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10
 }
-
-monster.faction = FACTION_DEEPLING
-monster.enemyFactions = { FACTION_DEATHLING, FACTION_PLAYER }
 
 monster.strategiesTarget = {
 	nearest = 70,
@@ -66,18 +66,18 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "QJELL NETA NA!!", yell = false }
+	{ text = "QJELL NETA NA!!", yell = true },
 }
 
 monster.loot = {
@@ -107,7 +107,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 35,
-	armor = 35,
+	armor = 53,
+	mitigation = 1.57,
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 100, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -121,11 +122,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = true },
+	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

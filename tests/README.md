@@ -7,8 +7,26 @@ This will build all tests within the `tests` directory and generate a `tests` fo
 
 Once the executable is generated, you can run the tests with the following command:
 ```bash
-cd build/{build_type}/tests
+cd build/{build_type}/tests/unit
 ./canary_ut
+
+cd build/{build_type}/tests/integration
+./canary_it
+```
+
+#### Running tests with CTest
+
+You can also run the tests using CTest:
+```bash
+-- from the build/{build_type} directory
+-- to run all tests 
+ctest --verbose
+
+-- to run only unit tests
+ctest --verbose -R unit
+
+-- to run only integration tests
+ctest --verbose -R integration
 ```
 
 ### Adding tests
@@ -74,10 +92,12 @@ Assertions are done using the `expect()` function:
 ```cpp
 suite<"foo"> test_foo = [] {
     "test 1"_test = [] {
-        expect(1_i == 1_i);
+        expect(eq(1_i, 1_i));
     };
 };
 ```
+
+It's always preferable to use comparison operators (eq, neq, etc.), as they provide better error messages.
 
 #### Testing against injected dependencies
 

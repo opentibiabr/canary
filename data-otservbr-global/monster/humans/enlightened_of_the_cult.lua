@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -84,7 +84,7 @@ monster.voices = {
 	{ text = "Praise to my master Urgith!", yell = false },
 	{ text = "You will rise as my servant!", yell = false },
 	{ text = "Praise to my masters! Long live the triangle!", yell = false },
-	{ text = "You will die in the name of the triangle!", yell = false }
+	{ text = "You will die in the name of the triangle!", yell = false },
 }
 
 monster.loot = {
@@ -117,7 +117,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 25,
-	armor = 25,
+	armor = 40,
+	mitigation = 1.18,
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 60, maxDamage = 90, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_YELLOW_RINGS }
 }
@@ -132,7 +133,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {

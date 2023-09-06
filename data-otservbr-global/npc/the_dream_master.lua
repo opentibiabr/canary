@@ -88,6 +88,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"So I welcome you as the latest member of the order of the Nightmare Knights. You entered this place as a stranger, butyou will leave this place as a friend ...",
 				"You can always ask me about your current rank and about the privileges the ranks grant to those who hold them."
 			}, npc, creature)
+			player:addItem(768, 1)
 			player:setStorageValue(Storage.OutfitQuest.NightmareOutfit, 1)
 			player:addAchievement('Nightmare Knight')
 			npcHandler:setTopic(playerId, 0)

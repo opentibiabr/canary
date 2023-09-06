@@ -80,7 +80,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "prize") then
 		npcHandler:say("Are you here to claim a prize?", npc, creature)
 		npcHandler:setTopic(playerId, 4)
-	elseif MsgContains(message, "fafnar fire") then
+	elseif string.match(message:lower(), "fafnar") then
 		if player:getStorageValue(Storage.TheShatteredIsles.RaysMission1) == 1 then
 			npcHandler:say("Pssht, not that loud. So they have sent you to get... the stuff?", npc, creature)
 			npcHandler:setTopic(playerId, 5)

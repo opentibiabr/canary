@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Tormented Ghost")
 local monster = {}
 
-monster.description = "a ghost"
+monster.description = "a tormented ghost"
 monster.experience = 5
 monster.outfit = {
 	lookType = 48,
@@ -18,7 +18,7 @@ monster.maxHealth = 210
 monster.race = "undead"
 monster.corpse = 8826
 monster.speed = 80
-monster.manaCost = 100
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
@@ -46,19 +46,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Haaahhh", yell = false },
-	{ text = "Grrglll", yell = false }
+	{ text = "Grrglll", yell = false },
 }
 
 monster.loot = {
@@ -71,7 +71,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 10,
+	mitigation = 0.51,
 }
 
 monster.elements = {
@@ -79,18 +80,18 @@ monster.elements = {
 	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 1 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = false },
+	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }
 }
 

@@ -1,4 +1,4 @@
-local mType = Game.createMonsterType("The Hungry Baron From Below")
+local mType = Game.createMonsterType("The Hungry Baron from Below")
 local monster = {}
 
 monster.description = "The Hungry Baron From Below"
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 50000
-monster.maxHealth = 50000
+monster.health = 350000
+monster.maxHealth = 350000
 monster.race = "blood"
 monster.corpse = 27633
 monster.speed = 0
@@ -38,7 +38,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -49,12 +49,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -76,8 +76,9 @@ monster.attacks = {
 }
 
 monster.defenses = {
-	defense = 5,
-	armor = 10
+	defense = 160,
+	armor = 160,
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -85,9 +86,9 @@ monster.elements = {
 	{ type = COMBAT_ENERGYDAMAGE, percent = 100 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
 	{ type = COMBAT_FIREDAMAGE, percent = 100 },
-	{ type = COMBAT_LIFEDRAIN, percent = 0 },
-	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_MANADRAIN, percent = 100 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
 	{ type = COMBAT_DEATHDAMAGE, percent = 100 }

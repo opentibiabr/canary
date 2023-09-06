@@ -19,7 +19,7 @@ monster.Bestiary = {
 	race = BESTY_RACE_AQUATIC,
 	toKill = 500,
 	FirstUnlock = 25,
-	SecondUnlock = 50,
+	SecondUnlock = 250,
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -83,12 +83,12 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{ name = "drunk", interval = 2000, chance = 10, range = 2, target = false, duration = 5000 }
 }
 
 monster.defenses = {
 	defense = 13,
-	armor = 13
+	armor = 12,
+	mitigation = 0.36,
 }
 
 monster.elements = {
@@ -101,11 +101,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

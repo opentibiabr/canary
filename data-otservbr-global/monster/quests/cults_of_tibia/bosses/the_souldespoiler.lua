@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("The Souldespoiler")
 local monster = {}
 
 monster.description = "The Souldespoiler"
-monster.experience = 0
+monster.experience = 50000
 monster.outfit = {
 	lookType = 875,
 	lookHead = 0,
@@ -13,8 +13,13 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 50000
-monster.maxHealth = 50000
+monster.bosstiary = {
+	bossRaceId = 1422,
+	bossRace = RARITY_ARCHFOE,
+}
+
+monster.health = 290000
+monster.maxHealth = 290000
 monster.race = "blood"
 monster.corpse = 23564
 monster.speed = 125
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 6000,
 	chance = 30
-}
-
-monster.bosstiary = {
-	bossRaceId = 1422,
-	bossRace = RARITY_ARCHFOE
 }
 
 monster.strategiesTarget = {
@@ -52,14 +52,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -72,13 +72,14 @@ monster.summon = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Urrg! I will not lose this soul!", yell = false },
-	{ text = "All souls shall be mine alone!", yell = false }
+	{ text = "Stop freeing the souls! They are mine alone!", yell = false },
+	{ text = "The souls shall not escape me! ", yell = false },
+	{ text = " You will be mine!", yell = false },
 }
 
 monster.loot = {
 	{ name = "curious matter", chance = 8920, maxCount = 10 },
-	{ name = "spark sphere", chance = 21200, maxCount = 10 },
+	{ id = 23516, chance = 20000 }, -- instable proto matter
 	{ id = 282, chance = 26900 }, -- giant shimmering pearl (brown)
 	{ name = "wand of defiance", chance = 8920 },
 	{ name = "rift lance", chance = 13200 },
@@ -109,6 +110,7 @@ monster.loot = {
 	{ name = "great spirit potion", chance = 25690, maxCount = 10 },
 	{ name = "blade of corruption", chance = 3775 },
 	{ name = "magma boots", chance = 15890 },
+	{ name = "spark sphere", chance = 80000 },
 	{ name = "spellbook of lost souls", chance = 7890 },
 	{ name = "shield of corruption", chance = 150 },
 	{ name = "plasma pearls", chance = 100000 },
@@ -125,12 +127,13 @@ monster.attacks = {
 monster.defenses = {
 	defense = 40,
 	armor = 40,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 100, type = COMBAT_HEALING, minDamage = 1000, maxDamage = 7000, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
@@ -138,7 +141,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

@@ -31,7 +31,7 @@ monster.maxHealth = 65
 monster.race = "undead"
 monster.corpse = 5972
 monster.speed = 77
-monster.manaCost = 0
+monster.manaCost = 435
 
 monster.changeTarget = {
 	interval = 4000,
@@ -50,7 +50,7 @@ monster.flags = {
 	pushable = true,
 	rewardBoss = false,
 	illusionable = true,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 90,
 	targetDistance = 1,
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -72,7 +72,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Ahrrr... uhmmm... hmm...", yell = false },
 	{ text = "Grrr...", yell = false },
-	{ text = "Urrrgh... gnarrr...", yell = false }
+	{ text = "Urrrgh... gnarrr...", yell = false },
 }
 
 monster.loot = {
@@ -91,7 +91,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 5,
+	mitigation = 0.25,
 }
 
 monster.elements = {
@@ -104,13 +105,13 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -25 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = false },
+	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }
 }
 

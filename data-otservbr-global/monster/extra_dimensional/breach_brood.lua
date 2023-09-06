@@ -62,18 +62,18 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Hisss!", yell = false }
+	{ text = "Hisss!", yell = false },
 }
 
 monster.loot = {
@@ -81,7 +81,7 @@ monster.loot = {
 	{ id = 3035, chance = 100000, maxCount = 5 }, -- platinum coin
 	{ id = 23535, chance = 15000 }, -- energy bar
 	{ id = 23545, chance = 15000 }, -- energy drink
-	{ id = 23518, chance = 15000 }, -- spark sphere
+	{ id = 23516, chance = 15000 }, -- instable proto matter
 	{ id = 239, chance = 12200 }, -- great health potion
 	{ id = 238, chance = 12000 }, -- great mana potion
 	{ id = 7642, chance = 11700 }, -- great spirit potion
@@ -94,7 +94,8 @@ monster.loot = {
 	{ id = 16119, chance = 4400 }, -- blue crystal shard
 	{ id = 16121, chance = 4100 }, -- green crystal shard
 	{ id = 23544, chance = 470 }, -- collar of red plasma
-	{ id = 23542, chance = 470 } -- collar of blue plasma
+	{ id = 23542, chance = 470 }, -- collar of blue plasma
+	{ name = "spark sphere", chance = 14870 },
 }
 
 monster.attacks = {
@@ -106,7 +107,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 52,
-	armor = 52
+	armor = 53,
+	mitigation = 1.46,
 }
 
 monster.elements = {
@@ -119,7 +121,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 25 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {

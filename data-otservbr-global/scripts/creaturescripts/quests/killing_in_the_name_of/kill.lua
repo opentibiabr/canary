@@ -36,7 +36,7 @@ local function killCheck(player, targetName, taskName, taskStage, taskInfo, task
 	if player:getStorageValue(taskName) == taskStage then
 		if table.contains(taskInfo, targetName) then
 			for k = 1, #taskInfo do
-				if targetName == taskInfo[k] then
+				if taskAltKillCount ~= nil and targetName == taskInfo[k] then
 					player:setStorageValue(taskAltKillCount + k - 1, player:getStorageValue(taskAltKillCount + k - 1) + 1)
 				end
 			end

@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Underground Glooth Factory, Oramond Minotaur Camp, Oramond Dungeon."
+	Locations = "Underground Glooth Factory, Oramond Minotaur Camp, Oramond Dungeon"
 }
 
 monster.health = 2600
@@ -57,14 +57,14 @@ monster.flags = {
 	runHealth = 240,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -72,7 +72,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "I'll protect the herd!", yell = false },
 	{ text = "Never surrender!", yell = false },
-	{ text = "You won't hurt us!", yell = false }
+	{ text = "You won't hurt us!", yell = false },
 }
 
 monster.loot = {
@@ -114,7 +114,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 35,
-	armor = 35
+	armor = 37,
+	mitigation = 1.18,
 }
 
 monster.elements = {
@@ -127,7 +128,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {

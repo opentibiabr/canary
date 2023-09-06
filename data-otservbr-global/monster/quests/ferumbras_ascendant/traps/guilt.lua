@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Guilt")
 local monster = {}
 
-monster.description = "Guilt from Tarbaz"
+monster.description = "Guilt"
 monster.experience = 320
 monster.outfit = {
 	lookType = 583,
@@ -40,7 +40,7 @@ monster.flags = {
 	pushable = false,
 	rewardBoss = false,
 	illusionable = false,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 90,
 	targetDistance = 1,
@@ -49,12 +49,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -66,12 +66,13 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_PHYSICALDAMAGE, minDamage = -300, maxDamage = -400, range = 7, shootEffect = CONST_ANI_ENERGY, target = false }
+	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -500, range = 7, shootEffect = CONST_ANI_ENERGY, target = true }
 }
 
 monster.defenses = {
 	defense = 199,
 	armor = 199
+	--	mitigation = ???,
 }
 
 monster.elements = {

@@ -31,6 +31,8 @@ local tomes = Storage.Quest.U8_54.TheNewFrontier.TomeofKnowledge
 npcConfig.shop = {
 	{ itemName = "didgeridoo", clientId = 2965, buy = 5000, storageKey = tomes, storageValue = 6 },
 	{ itemName = "war drum", clientId = 2966, buy = 1000, storageKey = tomes, storageValue = 6 },
+	{ itemName = "Dragon Statue Kit", clientId = 10216, buy = 2500, storageKey = tomes, storageValue = 11 },
+	{ itemName = "Dragon Throne Kit", clientId = 10288, buy = 5000, storageKey = tomes, storageValue = 12 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)

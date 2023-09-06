@@ -13,6 +13,11 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 419,
+	bossRace = RARITY_NEMESIS,
+}
+
 monster.health = 1500
 monster.maxHealth = 1500
 monster.race = "blood"
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 419,
-	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {
@@ -52,14 +52,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -72,6 +72,10 @@ monster.summon = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Gadarat Ulderek!", yell = false },
+	{ text = "Ruzad buta bana!", yell = false },
+	{ text = "Rahi Gosh!", yell = false },
+	{ text = "Ikem rambo zambo!", yell = false },
 }
 
 monster.loot = {
@@ -96,12 +100,13 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 35,
-	armor = 32
+	armor = 32,
+	--	mitigation = ???,
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 2 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 1 },
 	{ type = COMBAT_EARTHDAMAGE, percent = -10 },
 	{ type = COMBAT_FIREDAMAGE, percent = 80 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
@@ -109,11 +114,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

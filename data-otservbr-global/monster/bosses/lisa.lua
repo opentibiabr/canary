@@ -13,8 +13,13 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 65000
-monster.maxHealth = 65000
+monster.bosstiary = {
+	bossRaceId = 1059,
+	bossRace = RARITY_BANE,
+}
+
+monster.health = 55000
+monster.maxHealth = 55000
 monster.race = "venom"
 monster.corpse = 20988
 monster.speed = 100
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 2000,
 	chance = 3
-}
-
-monster.bosstiary = {
-	bossRaceId = 1059,
-	bossRace = RARITY_BANE
 }
 
 monster.strategiesTarget = {
@@ -52,14 +52,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = true,
-	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnEnergy = false,
+	canWalkOnFire = false,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -105,6 +105,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 25,
 	armor = 15,
+	--	mitigation = ???,
 	{ name = "lisa summon", interval = 2000, chance = 5, target = false },
 	{ name = "lisa heal", interval = 1000, chance = 100, target = false }
 }
@@ -114,12 +115,12 @@ monster.elements = {
 	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
 	{ type = COMBAT_FIREDAMAGE, percent = -5 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
 
 monster.immunities = {

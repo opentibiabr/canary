@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Mounted Thorn Knight")
 local monster = {}
 
-monster.description = "mounted thorn knight"
+monster.description = "mounted Thorn Knight"
 monster.experience = 15000
 monster.outfit = {
 	lookType = 512,
@@ -18,7 +18,7 @@ monster.maxHealth = 100000
 monster.race = "blood"
 monster.corpse = 0
 monster.speed = 215
-monster.manaCost = 290
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
@@ -38,7 +38,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -49,7 +49,7 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.events = {
@@ -59,12 +59,13 @@ monster.events = {
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "I'm the hunter and you are my prey!", yell = false },
 }
 
 monster.loot = {
@@ -81,28 +82,33 @@ monster.attacks = {
 monster.defenses = {
 	defense = 60,
 	armor = 60,
+	--	mitigation = ???,
 	{ name = "thorn summon", interval = 2000, chance = 20, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 1550, maxDamage = 2550, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 1000, chance = 12, speedChange = 620, effect = CONST_ME_MAGIC_RED, target = false, duration = 4000 }
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 80 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 80 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 50 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
-	{ type = COMBAT_FIREDAMAGE, percent = 80 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 80 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 80 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 80 }
+	{ type = COMBAT_ICEDAMAGE, percent = 40 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -100 },
+}
+
+monster.heals = {
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = false },
+	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }
 }
 

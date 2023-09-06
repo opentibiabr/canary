@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("The Blightfather")
 local monster = {}
 
-monster.description = "the Blightfather"
+monster.description = "The Blightfather"
 monster.experience = 400
 monster.outfit = {
 	lookType = 348,
@@ -11,6 +11,11 @@ monster.outfit = {
 	lookFeet = 0,
 	lookAddons = 0,
 	lookMount = 0
+}
+
+monster.bosstiary = {
+	bossRaceId = 638,
+	bossRace = RARITY_NEMESIS,
 }
 
 monster.health = 400
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 5000,
 	chance = 12
-}
-
-monster.bosstiary = {
-	bossRaceId = 638,
-	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {
@@ -54,12 +54,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -84,6 +84,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 25,
 	armor = 25,
+	--	mitigation = ???,
 	{ name = "invisible", interval = 1000, chance = 10, effect = CONST_ME_MAGIC_RED }
 }
 
@@ -91,13 +92,13 @@ monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
-	{ type = COMBAT_FIREDAMAGE, percent = -10 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = -5 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 50 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

@@ -26,6 +26,10 @@ uint64_t Scheduler::addEvent(uint32_t delay, std::function<void(void)> f) {
 	return addEvent(std::make_shared<Task>(std::move(f), delay));
 }
 
+uint64_t Scheduler::addEvent(uint32_t delay, std::function<void(void)> f, std::string context) {
+	return addEvent(std::make_shared<Task>(std::move(f), delay, std::move(context)));
+}
+
 uint64_t Scheduler::addEvent(const std::shared_ptr<Task> task) {
 	if (task->getEventId() == 0) {
 		task->setEventId(++lastEventId);
@@ -46,6 +50,7 @@ uint64_t Scheduler::addEvent(const std::shared_ptr<Task> task) {
 				return;
 			}
 
+			g_logger().debug("Dispatching scheduled task {}.", task->getContext());
 			g_dispatcher().addTask(task);
 		});
 	});

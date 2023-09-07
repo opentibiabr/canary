@@ -111,6 +111,7 @@ private:
 		registerMethod(L, "Player", "getSkillTries", PlayerFunctions::luaPlayerGetSkillTries);
 		registerMethod(L, "Player", "addSkillTries", PlayerFunctions::luaPlayerAddSkillTries);
 
+		registerMethod(L, "Player", "setLevel", PlayerFunctions::luaPlayerSetLevel);
 		registerMethod(L, "Player", "setMagicLevel", PlayerFunctions::luaPlayerSetMagicLevel);
 		registerMethod(L, "Player", "setSkillLevel", PlayerFunctions::luaPlayerSetSkillLevel);
 
@@ -314,6 +315,8 @@ private:
 		registerMethod(L, "Player", "getFaction", PlayerFunctions::luaPlayerGetFaction);
 
 		// Bosstiary Functions
+		registerMethod(L, "Player", "getBosstiaryLevel", PlayerFunctions::luaPlayerGetBosstiaryLevel);
+		registerMethod(L, "Player", "getBosstiaryKills", PlayerFunctions::luaPlayerGetBosstiaryKills);
 		registerMethod(L, "Player", "addBosstiaryKill", PlayerFunctions::luaPlayerAddBosstiaryKill);
 		registerMethod(L, "Player", "setBossPoints", PlayerFunctions::luaPlayerSetBossPoints);
 		registerMethod(L, "Player", "setRemoveBossTime", PlayerFunctions::luaPlayerSetRemoveBossTime);
@@ -444,6 +447,7 @@ private:
 	static int luaPlayerGetSkillTries(lua_State* L);
 	static int luaPlayerAddSkillTries(lua_State* L);
 
+	static int luaPlayerSetLevel(lua_State* L);
 	static int luaPlayerSetMagicLevel(lua_State* L);
 	static int luaPlayerSetSkillLevel(lua_State* L);
 
@@ -651,6 +655,8 @@ private:
 	static int luaPlayerSetFaction(lua_State* L);
 	static int luaPlayerGetFaction(lua_State* L);
 
+	static int luaPlayerGetBosstiaryLevel(lua_State* L);
+	static int luaPlayerGetBosstiaryKills(lua_State* L);
 	static int luaPlayerAddBosstiaryKill(lua_State* L);
 	static int luaPlayerSetBossPoints(lua_State* L);
 	static int luaPlayerSetRemoveBossTime(lua_State* L);

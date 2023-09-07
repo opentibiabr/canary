@@ -465,6 +465,9 @@ public:
 	bool isWrapable() const {
 		return items[id].wrapable && items[id].wrapableTo;
 	}
+	bool isAmmo() const {
+		return items[id].isAmmo();
+	}
 	bool hasWalkStack() const {
 		return items[id].walkStack;
 	}

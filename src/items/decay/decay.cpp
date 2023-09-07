@@ -14,11 +14,11 @@
 #include "game/scheduling/scheduler.hpp"
 
 void Decay::startDecay(Item* item) {
-	if (!item || item->getLoadedFromMap()) {
+	if (!item) {
 		return;
 	}
 
-	auto decayState = item->getDecaying();
+	const auto decayState = item->getDecaying();
 	if (decayState == DECAYING_STOPPING || (!item->canDecay() && decayState == DECAYING_TRUE)) {
 		stopDecay(item);
 		return;
@@ -176,7 +176,7 @@ void Decay::internalDecayItem(Item* item) {
 		}
 		g_game().transformItem(item, static_cast<uint16_t>(it.decayTo));
 	} else {
-		if (item->getLoadedFromMap()) {
+		if (item->isLoadedFromMap()) {
 			return;
 		}
 

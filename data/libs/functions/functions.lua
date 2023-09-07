@@ -514,12 +514,14 @@ function getMonstersInArea(fromPos, toPos, monsterName, ignoreMonsterId)
 end
 
 function isPlayerInArea(fromPos, toPos)
-	for _x = fromPos.x, toPos.x do
-		for _y = fromPos.y, toPos.y do
-			for _z = fromPos.z, toPos.z do
-				creature = getTopCreature({ x = _x, y = _y, z = _z })
-				if (isPlayer(creature.uid)) then
-					return true
+	for positionX = fromPos.x, toPos.x do
+		for positionY = fromPos.y, toPos.y do
+			for positionZ = fromPos.z, toPos.z do
+				local tile = Tile(Position({ x = positionX, y = positionY, z = positionZ }))
+				if tile then
+					if tile:getTopCreature() and tile:getTopCreature():isPlayer() then
+						return true
+					end
 				end
 			end
 		end

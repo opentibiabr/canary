@@ -453,19 +453,18 @@ suite<"account"> accountTest = [] {
 
 	test("Account::addPremiumDays sets premium remaining days") = [] {
 		Account acc { 1 };
-		expect(
-			eq(acc.addPremiumDays(100), Errors::ERROR_NO) and
-			eq(acc.getPremiumRemainingDays(), 100)
-		);
+		acc.addPremiumDays(100);
+
+		expect(eq(acc.getPremiumRemainingDays(), 100));
 	};
 
 	test("Account::addPremiumDays can increase premium") = [] {
 		Account acc { 1 };
 
 		acc.setPremiumDays(50);
+		acc.addPremiumDays(50);
 
 		expect(
-			eq(acc.addPremiumDays(50), Errors::ERROR_NO) and
 			approx(acc.getPremiumLastDay(), getTimeNow() + (100 * 86400), 60 * 60 * 1000) and
 			eq(acc.getPremiumRemainingDays(), 100)
 		);
@@ -475,9 +474,9 @@ suite<"account"> accountTest = [] {
 		Account acc { 1 };
 
 		acc.setPremiumDays(50);
+		acc.addPremiumDays(-30);
 
 		expect(
-			eq(acc.addPremiumDays(-30), Errors::ERROR_NO) and
 			approx(acc.getPremiumLastDay(), getTimeNow() - (20 * 86400), 60 * 60 * 1000) and
 			eq(acc.getPremiumRemainingDays(), 20)
 		);
@@ -507,12 +506,14 @@ suite<"account"> accountTest = [] {
 		acc.setPremiumDays(-10);
 		acc.updatePremiumTime();
 		expect(eq(acc.getPremiumRemainingDays(), 0));
+		expect(eq(acc.getPremiumLastDay(), 0));
 	};
 
 	test("Account::updatePremiumTime sets premium remaining days to 0 if last day is 0") = [] {
 		Account acc { 1 };
 		acc.setPremiumDays(0);
 		acc.updatePremiumTime();
+		expect(eq(acc.getPremiumLastDay(), 0));
 		expect(eq(acc.getPremiumRemainingDays(), 0));
 	};
 
@@ -520,6 +521,9 @@ suite<"account"> accountTest = [] {
 		Account acc { 1 };
 		acc.setPremiumDays(8);
 		acc.updatePremiumTime();
+
+		auto remainingTime = (acc.getPremiumLastDay() - getTimeNow()) / 86400;
+		expect(approx(remainingTime, 8, 0.1));
 		expect(eq(acc.getPremiumRemainingDays(), 8));
 	};
 
@@ -527,6 +531,9 @@ suite<"account"> accountTest = [] {
 		Account acc { 1 };
 		acc.setPremiumDays(1);
 		acc.updatePremiumTime();
+
+		auto remainingTime = (acc.getPremiumLastDay() - getTimeNow()) / 86400;
+		expect(approx(remainingTime, 1, 0.1));
 		expect(eq(acc.getPremiumRemainingDays(), 1));
 	};
 

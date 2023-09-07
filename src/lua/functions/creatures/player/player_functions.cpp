@@ -2402,9 +2402,7 @@ int PlayerFunctions::luaPlayerAddPremiumDays(lua_State* L) {
 		return 1;
 	}
 
-	if (player->getAccount()->addPremiumDays(addDays) != account::ERROR_NO) {
-		return 1;
-	}
+	player->getAccount()->addPremiumDays(addDays);
 
 	if (player->getAccount()->save() != account::ERROR_NO) {
 		return 1;
@@ -2433,9 +2431,7 @@ int PlayerFunctions::luaPlayerRemovePremiumDays(lua_State* L) {
 		return 1;
 	}
 
-	if (player->getAccount()->addPremiumDays(-removeDays) != account::ERROR_NO) {
-		return 1;
-	}
+	player->getAccount()->addPremiumDays(-removeDays);
 
 	if (player->getAccount()->save() != account::ERROR_NO) {
 		return 1;

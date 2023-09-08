@@ -23,7 +23,7 @@
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.hpp"
 #include "items/items_classification.hpp"
-#include "protobuf/appearances.pb.hpp"
+#include "protobuf/appearances.pb.h"
 
 class ServiceManager;
 class Creature;

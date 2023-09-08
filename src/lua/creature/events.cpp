@@ -1186,16 +1186,6 @@ void Events::eventPlayerOnCombat(Player* player, Creature* target, Item* item, C
 			damage.primary.value = -damage.primary.value;
 			damage.secondary.value = -damage.secondary.value;
 		}
-		/*
-			Only EK with dealing physical damage will get elemental damage on skill
-		*/
-		if (damage.origin == ORIGIN_SPELL) {
-			if (player->getVocationId() != 4 && player->getVocationId() != 8) {
-				damage.primary.value = damage.primary.value + damage.secondary.value;
-				damage.secondary.type = COMBAT_NONE;
-				damage.secondary.value = 0;
-			}
-		}
 	}
 
 	scriptInterface.resetScriptEnv();

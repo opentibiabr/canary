@@ -189,7 +189,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 
 		Condition* condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_DRUNK, duration, 0);
 		combatPtr->addCondition(condition);
-	} else if (spellName == "fear") {
+	} else if (spellName == "soulwars fear" || spellName == "fear") {
 		int32_t duration = 6000;
 
 		if (spell->duration != 0) {

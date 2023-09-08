@@ -42,9 +42,11 @@
 #include "creatures/npcs/npc.hpp"
 #include "creatures/npcs/npcs.hpp"
 #include "server/network/webhook/webhook.hpp"
-#include "protobuf/appearances.pb.hpp"
+#include "protobuf/appearances.pb.h"
 #include "server/network/protocol/protocollogin.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
+
+#include "kv/kv.hpp"
 
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, Creature* source) {
@@ -403,6 +405,8 @@ void Game::saveGameState() {
 	}
 
 	Map::save();
+
+	g_kv().saveAll();
 
 	if (gameState == GAME_STATE_MAINTAIN) {
 		setGameState(GAME_STATE_NORMAL);
@@ -2004,7 +2008,7 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 	}
 
 	// Not remove item with decay loaded from map
-	if (!force && item->canDecay() && cylinder->getTile() && item->getLoadedFromMap()) {
+	if (!force && item->canDecay() && cylinder->getTile() && item->isLoadedFromMap()) {
 		g_logger().debug("Cannot remove item with id {}, name {}, on position {}", item->getID(), item->getName(), cylinder->getPosition().toString());
 		item->stopDecaying();
 		return RETURNVALUE_THISISIMPOSSIBLE;

@@ -34,7 +34,6 @@ redSkullDuration = 1
 blackSkullDuration = 3
 orangeSkullDuration = 7
 
-onlyInvitedCanMoveHouseItems = true
 cleanProtectionZones = false
 
 -- Connection Config
@@ -262,6 +261,8 @@ houseRentPeriod = "never"
 houseRentRate = 1.0
 houseOwnedByAccount = false
 houseBuyLevel = 100
+housePurchasedShowPrice = false
+onlyInvitedCanMoveHouseItems = true
 
 -- Item Usage
 timeBetweenActions = 200

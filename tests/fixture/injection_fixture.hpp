@@ -7,6 +7,7 @@
 #include <boost/ut.hpp>
 
 #include "account/in_memory_account_repository.hpp"
+#include "kv/in_memory_kv.hpp"
 #include "test_injection.hpp"
 #include "lib/logging/in_memory_logger.hpp"
 
@@ -20,12 +21,13 @@ struct InjectionFixture {
 		setup();
 	}
 
-	InjectionFixture(const InjectionFixture&) {
+	InjectionFixture(const InjectionFixture &) {
 		setup();
 	}
 
-	InjectionFixture(InjectionFixture&& other) noexcept
-		: injector(std::move(other.injector)) {
+	InjectionFixture(InjectionFixture &&other) noexcept
+		:
+		injector(std::move(other.injector)) {
 		setup();
 	}
 
@@ -42,6 +44,10 @@ struct InjectionFixture {
 		return getImpl<AccountRepository>();
 	}
 
+	KVMemory &kv() const {
+		return getImpl<KVStore>();
+	}
+
 private:
 	template <typename I>
 	typename TestInjection<I>::type &getImpl() const {
@@ -51,16 +57,17 @@ private:
 	void setup() {
 		InMemoryLogger::install(injector);
 		tests::InMemoryAccountRepository::install(injector);
+		KVMemory::install(injector);
 
 		DI::setTestContainer(&injector);
 	}
 };
 
 namespace std {
-	template<>
-	struct tuple_size<InjectionFixture> : std::integral_constant<std::size_t, 2> {};
+	template <>
+	struct tuple_size<InjectionFixture> : std::integral_constant<std::size_t, 2> { };
 
-	template<std::size_t N>
+	template <std::size_t N>
 	struct tuple_element<N, InjectionFixture> {
 		using type = decltype(std::declval<InjectionFixture>().get<N>());
 	};

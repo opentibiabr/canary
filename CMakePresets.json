@@ -50,7 +50,8 @@
         },
         "BUILD_STATIC_LIBRARY": "ON",
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-        "OPTIONS_ENABLE_CCACHE": "ON"
+        "OPTIONS_ENABLE_CCACHE": "ON",
+        "RUN_TESTS_AFTER_BUILD": "OFF"
       },
       "condition": {
         "type": "equals",
@@ -102,6 +103,15 @@
         "SPEED_UP_BUILD_UNITY": "OFF",
         "ASAN_ENABLED": "ON"
       }
+    },
+    {
+      "name": "linux-test",
+      "inherits": "linux-release",
+      "displayName": "Linux - Test Build",
+      "description": "Build Tests",
+      "cacheVariables": {
+        "BUILD_TESTS": "ON"
+      }
     }
   ],
   "buildPresets": [
@@ -112,6 +122,10 @@
     {
       "name": "linux-debug",
       "configurePreset": "linux-debug"
+    },
+    {
+      "name": "linux-test",
+      "configurePreset": "linux-test"
     },
     {
       "name": "windows-release",

@@ -39,7 +39,7 @@ namespace {
 	}
 
 	template <typename SpellType>
-	int checkSpellAdditionalTarget(const std::array<SpellType, 5> &spellsTable, const std::string &spellName, uint8_t stage) {
+	int checkSpellAdditionalTarget(const std::array<SpellType, 5> &spellsTable, const std::string_view &spellName, uint8_t stage) {
 		for (const auto &spellTable : spellsTable) {
 			auto size = std::ssize(spellTable.grade);
 			g_logger().debug("spell target stage {}, grade {}", stage, size);
@@ -55,7 +55,7 @@ namespace {
 	}
 
 	template <typename SpellType>
-	int checkSpellAdditionalDuration(const std::array<SpellType, 5> &spellsTable, const std::string &spellName, uint8_t stage) {
+	int checkSpellAdditionalDuration(const std::array<SpellType, 5> &spellsTable, const std::string_view &spellName, uint8_t stage) {
 		for (const auto &spellTable : spellsTable) {
 			auto size = std::ssize(spellTable.grade);
 			g_logger().debug("spell duration stage {}, grade {}", stage, size);

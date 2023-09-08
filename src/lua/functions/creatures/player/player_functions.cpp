@@ -4058,3 +4058,17 @@ int PlayerFunctions::luaPlayerGetVipTime(lua_State* L) {
 	lua_pushinteger(L, player->getPremiumLastDay());
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerKV(lua_State* L) {
+	// player:kv()
+	auto player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushUserdata<KVStore>(L, player->kv());
+	setMetatable(L, -1, "KVStore");
+	return 1;
+}

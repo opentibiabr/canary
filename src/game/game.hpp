@@ -650,7 +650,7 @@ private:
 	bool playerYell(Player* player, const std::string &text);
 	bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
 	void playerSpeakToNpc(Player* player, const std::string &text);
-	std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f);
+	std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, std::string context) const;
 
 	/**
 	 * Player wants to loot a corpse

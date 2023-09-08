@@ -107,7 +107,7 @@ public:
 		return this;
 	}
 
-	static std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f);
+	static std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, std::string context);
 
 	void setID() override;
 

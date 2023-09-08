@@ -676,7 +676,7 @@ bool Monster::selectTarget(Creature* creature) {
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
-			g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
+			g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
 		}
 	}
 	return setFollowCreature(creature);

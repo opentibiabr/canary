@@ -32,7 +32,7 @@ void PrivateChatChannel::invitePlayer(const Player &player, Player &invitePlayer
 	}
 
 	std::ostringstream ss;
-	ss << player.getName() << " invites you to " << (player.getSex() == PLAYERSEX_FEMALE ? "her" : "his") << " private chat channel.";
+	ss << player.getName() << " invites you to " << player.getPossessivePronoun() << " private chat channel.";
 	invitePlayer.sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
 
 	ss.str(std::string());
@@ -81,7 +81,7 @@ bool ChatChannel::addUser(Player &player) {
 	if (id == CHANNEL_GUILD) {
 		const auto guild = player.getGuild();
 		if (guild && !guild->getMotd().empty()) {
-			g_scheduler().addEvent(150, std::bind(&Game::sendGuildMotd, &g_game(), player.getID()));
+			g_scheduler().addEvent(150, std::bind(&Game::sendGuildMotd, &g_game(), player.getID()), "Game::sendGuildMotd");
 		}
 	}
 

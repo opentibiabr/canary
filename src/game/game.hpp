@@ -23,7 +23,7 @@
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.hpp"
 #include "items/items_classification.hpp"
-#include "protobuf/appearances.pb.hpp"
+#include "protobuf/appearances.pb.h"
 
 class ServiceManager;
 class Creature;
@@ -650,7 +650,7 @@ private:
 	bool playerYell(Player* player, const std::string &text);
 	bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
 	void playerSpeakToNpc(Player* player, const std::string &text);
-	std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f);
+	std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, std::string context) const;
 
 	/**
 	 * Player wants to loot a corpse

@@ -1099,6 +1099,22 @@ int PlayerFunctions::luaPlayerAddSkillTries(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerSetLevel(lua_State* L) {
+	// player:setLevel(level)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		uint16_t level = getNumber<uint16_t>(L, 2);
+		player->level = level;
+		player->experience = Player::getExpForLevel(level);
+		player->sendStats();
+		player->sendSkills();
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerSetMagicLevel(lua_State* L) {
 	// player:setMagicLevel(level[, manaSpent])
 	Player* player = getUserdata<Player>(L, 1);
@@ -1387,6 +1403,30 @@ int PlayerFunctions::luaPlayerSetSex(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetPronoun(lua_State* L) {
+	// player:getPronoun()
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		lua_pushnumber(L, player->getPronoun());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetPronoun(lua_State* L) {
+	// player:setPronoun(newPronoun)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		PlayerPronoun_t newPronoun = getNumber<PlayerPronoun_t>(L, 2);
+		player->setPronoun(newPronoun);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerGetTown(lua_State* L) {
 	// player:getTown()
 	Player* player = getUserdata<Player>(L, 1);
@@ -1636,7 +1676,7 @@ int PlayerFunctions::luaPlayerSetBankBalance(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetStorageValue(lua_State* L) {
 	// player:getStorageValue(key)
-	Player* player = getUserdata<Player>(L, 1);
+	const auto &player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
@@ -2378,9 +2418,7 @@ int PlayerFunctions::luaPlayerAddPremiumDays(lua_State* L) {
 		return 1;
 	}
 
-	if (player->getAccount()->addPremiumDays(addDays) != account::ERROR_NO) {
-		return 1;
-	}
+	player->getAccount()->addPremiumDays(addDays);
 
 	if (player->getAccount()->save() != account::ERROR_NO) {
 		return 1;
@@ -2409,9 +2447,7 @@ int PlayerFunctions::luaPlayerRemovePremiumDays(lua_State* L) {
 		return 1;
 	}
 
-	if (player->getAccount()->addPremiumDays(-removeDays) != account::ERROR_NO) {
-		return 1;
-	}
+	player->getAccount()->addPremiumDays(-removeDays);
 
 	if (player->getAccount()->save() != account::ERROR_NO) {
 		return 1;
@@ -3455,6 +3491,50 @@ int PlayerFunctions::luaPlayerBosstiaryCooldownTimer(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetBosstiaryLevel(lua_State* L) {
+	// player:getBosstiaryLevel(name)
+	if (Player* player = getUserdata<Player>(L, 1);
+		player) {
+		const auto mtype = g_monsters().getMonsterType(getString(L, 2));
+		if (mtype) {
+			uint32_t bossId = mtype->info.raceid;
+			if (bossId == 0) {
+				lua_pushnil(L);
+				return 0;
+			}
+			auto level = g_ioBosstiary().getBossCurrentLevel(player, bossId);
+			lua_pushnumber(L, level);
+		} else {
+			lua_pushnil(L);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetBosstiaryKills(lua_State* L) {
+	// player:getBosstiaryKills(name)
+	if (Player* player = getUserdata<Player>(L, 1);
+		player) {
+		const auto mtype = g_monsters().getMonsterType(getString(L, 2));
+		if (mtype) {
+			uint32_t bossId = mtype->info.raceid;
+			if (bossId == 0) {
+				lua_pushnil(L);
+				return 0;
+			}
+			uint32_t currentKills = player->getBestiaryKillCount(static_cast<uint16_t>(bossId));
+			lua_pushnumber(L, currentKills);
+		} else {
+			lua_pushnil(L);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerAddBosstiaryKill(lua_State* L) {
 	// player:addBosstiaryKill(name[, amount = 1])
 	if (Player* player = getUserdata<Player>(L, 1);
@@ -3976,5 +4056,19 @@ int PlayerFunctions::luaPlayerGetVipTime(lua_State* L) {
 	}
 
 	lua_pushinteger(L, player->getPremiumLastDay());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerKV(lua_State* L) {
+	// player:kv()
+	auto player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushUserdata<KVStore>(L, player->kv());
+	setMetatable(L, -1, "KVStore");
 	return 1;
 }

@@ -105,8 +105,8 @@ bool Player::isPushable() const {
 	return Creature::isPushable();
 }
 
-std::shared_ptr<Task> Player::createPlayerTask(uint32_t delay, std::function<void(void)> f) {
-	return std::make_shared<Task>(std::move(f), delay);
+std::shared_ptr<Task> Player::createPlayerTask(uint32_t delay, std::function<void(void)> f, std::string context) {
+	return std::make_shared<Task>(std::move(f), std::move(context), delay);
 }
 
 uint32_t Player::playerFirstID = 0x10000000;
@@ -130,6 +130,9 @@ void Player::setID() {
 
 std::string Player::getDescription(int32_t lookDistance) const {
 	std::ostringstream s;
+	std::string subjectPronoun = getSubjectPronoun();
+	capitalizeWords(subjectPronoun);
+
 	if (lookDistance == -1) {
 		s << "yourself.";
 
@@ -155,42 +158,34 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		}
 		s << '.';
 
-		std::string pronoun;
-		if (sex == PLAYERSEX_FEMALE) {
-			pronoun = " She";
-		} else {
-			pronoun = " He";
-		}
-		s << pronoun;
+		s << " " << subjectPronoun;
 
 		if (group->access) {
-			s << " is " << group->name << '.';
+			s << " " << getSubjectVerb() << " " << group->name << '.';
 		} else if (vocation->getId() != VOCATION_NONE) {
-			s << " is " << vocation->getVocDescription() << '.';
+			s << " " << getSubjectVerb() << " " << vocation->getVocDescription() << '.';
 		} else {
 			s << " has no vocation.";
 		}
 
 		if (loyaltyTitle.length() != 0) {
-			if (sex == PLAYERSEX_FEMALE) {
-				s << " She is a " << loyaltyTitle << ".";
-			} else {
-				s << " He is a " << loyaltyTitle << ".";
+			std::string article = "a";
+			if (loyaltyTitle[0] == 'A' || loyaltyTitle[0] == 'E' || loyaltyTitle[0] == 'I' || loyaltyTitle[0] == 'O' || loyaltyTitle[0] == 'U') {
+				article = "an";
 			}
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " " << article << " " << loyaltyTitle << ".";
 		}
 
 		if (isVip()) {
-			s << pronoun << " is VIP.";
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " VIP.";
 		}
 	}
 
 	if (party) {
 		if (lookDistance == -1) {
 			s << " Your party has ";
-		} else if (sex == PLAYERSEX_FEMALE) {
-			s << " She is in a party with ";
 		} else {
-			s << " He is in a party with ";
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " in a party with ";
 		}
 
 		size_t memberCount = party->getMemberCount() + 1;
@@ -217,10 +212,8 @@ std::string Player::getDescription(int32_t lookDistance) const {
 
 		if (lookDistance == -1) {
 			s << " You are ";
-		} else if (sex == PLAYERSEX_FEMALE) {
-			s << " She is ";
 		} else {
-			s << " He is ";
+			s << " " << subjectPronoun << " " << getSubjectVerb() << " ";
 		}
 
 		s << guildRank->name << " of the " << guild->getName();
@@ -1843,7 +1836,7 @@ void Player::onCreatureMove(Creature* creature, const Tile* newTile, const Posit
 
 	if (hasFollowPath && (creature == followCreature || (creature == this && followCreature))) {
 		isUpdatingPath = false;
-		g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID()));
+		g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
 	}
 
 	if (creature != this) {
@@ -2891,7 +2884,9 @@ Item* Player::getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature)
 	if (corpse && corpse->getContainer()) {
 		std::ostringstream ss;
 		if (lastHitCreature) {
-			ss << "You recognize " << getNameDescription() << ". " << (getSex() == PLAYERSEX_FEMALE ? "She" : "He") << " was killed by " << lastHitCreature->getNameDescription() << '.';
+			std::string subjectPronoun = getSubjectPronoun();
+			capitalizeWords(subjectPronoun);
+			ss << "You recognize " << getNameDescription() << ". " << subjectPronoun << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription() << '.';
 		} else {
 			ss << "You recognize " << getNameDescription() << '.';
 		}
@@ -4148,7 +4143,7 @@ bool Player::updateSaleShopList(const Item* item) {
 		return true;
 	}
 
-	g_dispatcher().addTask(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID()));
+	g_dispatcher().addTask(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID()), "updatePlayerSaleItems");
 	scheduledSaleUpdate = true;
 	return true;
 }
@@ -4219,7 +4214,7 @@ bool Player::setAttackedCreature(Creature* creature) {
 	}
 
 	if (creature) {
-		g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
+		g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
 	}
 	return true;
 }
@@ -4274,7 +4269,7 @@ void Player::doAttacking(uint32_t) {
 			result = Weapon::useFist(this, attackedCreature);
 		}
 
-		std::shared_ptr<Task> task = createPlayerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay), std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
+		std::shared_ptr<Task> task = createPlayerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay), std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
 		if (!classicSpeed) {
 			setNextActionTask(task, false);
 		} else {
@@ -4940,6 +4935,10 @@ bool Player::getFamiliar(const Familiar &familiar) const {
 
 void Player::setSex(PlayerSex_t newSex) {
 	sex = newSex;
+}
+
+void Player::setPronoun(PlayerPronoun_t newPronoun) {
+	pronoun = newPronoun;
 }
 
 Skulls_t Player::getSkull() const {
@@ -7545,9 +7544,9 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 		// Check if can walk to the toPosition and send event to use function
 		std::forward_list<Direction> listDir;
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
-			g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir));
+			g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir), __FUNCTION__);
 
-			std::shared_ptr<Task> task = createPlayerTask(delay, function);
+			std::shared_ptr<Task> task = createPlayerTask(delay, function, __FUNCTION__);
 			setNextWalkActionTask(task);
 			return true;
 		} else {

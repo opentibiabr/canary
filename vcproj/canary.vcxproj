@@ -97,6 +97,10 @@
     <ClInclude Include="..\src\items\tile.hpp" />
     <ClInclude Include="..\src\items\trashholder.hpp" />
     <ClInclude Include="..\src\items\weapons\weapons.hpp" />
+    <ClInclude Include="..\src\kv\value_wrapper_proto.hpp" />
+    <ClInclude Include="..\src\kv\value_wrapper.hpp" />
+    <ClInclude Include="..\src\kv\kv_sql.hpp" />
+    <ClInclude Include="..\src\kv\kv.hpp" />
     <ClInclude Include="..\src\lib\di\container.hpp" />
     <ClInclude Include="..\src\lib\di\injector.hpp" />
     <ClInclude Include="..\src\lib\di\runtime_provider.hpp" />
@@ -128,6 +132,7 @@
     <ClInclude Include="..\src\lua\functions\core\game\modal_window_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\bit_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\core_libs_functions.hpp" />
+    <ClInclude Include="..\src\lua\functions\core\libs\kv_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\db_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\result_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\logger_functions.hpp" />
@@ -192,7 +197,8 @@
     <ClInclude Include="..\src\map\town.hpp" />
     <ClInclude Include="..\src\map\utils\astarnodes.hpp" />
     <ClInclude Include="..\src\map\utils\qtreenode.hpp" />
-    <ClInclude Include="..\src\protobuf\appearances.pb.hpp" />
+    <ClInclude Include="..\src\protobuf\appearances.pb.h" />
+    <ClInclude Include="..\src\protobuf\kv.pb.h" />
     <ClInclude Include="..\src\security\rsa.hpp" />
     <ClInclude Include="..\src\server\network\connection\connection.hpp" />
     <ClInclude Include="..\src\server\network\message\networkmessage.hpp" />
@@ -286,6 +292,9 @@
     <ClCompile Include="..\src\items\tile.cpp" />
     <ClCompile Include="..\src\items\trashholder.cpp" />
     <ClCompile Include="..\src\items\weapons\weapons.cpp" />
+    <ClCompile Include="..\src\kv\value_wrapper.cpp" />
+    <ClCompile Include="..\src\kv\kv_sql.cpp" />
+    <ClCompile Include="..\src\kv\kv.cpp" />
     <ClCompile Include="..\src\lib\di\soft_singleton.cpp" />
     <ClCompile Include="..\src\lib\logging\log_with_spd_log.cpp" />
     <ClCompile Include="..\src\lib\thread\thread_pool.cpp" />
@@ -306,6 +315,7 @@
     <ClCompile Include="..\src\lua\functions\core\game\lua_enums.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\modal_window_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\bit_functions.cpp" />
+    <ClCompile Include="..\src\lua\functions\core\libs\kv_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\db_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\result_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\logger_functions.cpp" />
@@ -364,7 +374,14 @@
     <ClCompile Include="..\src\map\mapcache.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\canary_server.cpp" />
-    <ClCompile Include="..\src\protobuf\appearances.pb.cc" />
+    <ClCompile Include="..\src\protobuf\appearances.pb.cc">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+    </ClCompile>
+    <ClCompile Include="..\src\protobuf\kv.pb.cc">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+    </ClCompile>
     <ClCompile Include="..\src\security\argon.cpp" />
     <ClCompile Include="..\src\security\rsa.cpp" />
     <ClCompile Include="..\src\server\network\connection\connection.cpp" />

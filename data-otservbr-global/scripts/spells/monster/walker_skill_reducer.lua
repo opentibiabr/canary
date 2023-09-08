@@ -27,7 +27,8 @@ for i = 45, 60 do
 		if n ~= 0 then
 			local v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 			while v ~= 0 do
-				if isCreature(v) == true then
+				local creatureFromPos = Creature(v)
+				if creatureFromPos then
 					table.insert(creatureTable, v)
 					if n == #creatureTable then
 						break

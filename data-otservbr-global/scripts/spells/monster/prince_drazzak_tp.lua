@@ -5,10 +5,13 @@ function spell.onCastSpell(creature, var)
 	creature:say("GET OVER HERE!", TALKTYPE_ORANGE_2, false, 0, center2)
 	for x = 33519, 33538 do
 		for y = 32327, 32342 do
-			local a = Tile(Position({ x = x, y = y, z = 12 })):getTopCreature()
-			if a ~= 0 and isMonster(a) and creature:getName():lower() ~= "prince drazzak" or isPlayer(a) then
-				a:teleportTo(center, true)
-				creature:teleportTo(center2, true)
+			local tile = Tile(Position({ x = x, y = y, z = 12 }))
+			if tile then
+				local creatureTile = tile:getTopCreature()
+				if creatureTile and creatureTile:isMonster() and creature:getName():lower() ~= "prince drazzak" or creatureTile:isPlayer() then
+					creatureTile:teleportTo(center, true)
+					creature:teleportTo(center2, true)
+				end
 			end
 		end
 	end

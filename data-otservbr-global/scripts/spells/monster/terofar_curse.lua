@@ -33,7 +33,7 @@ function spell.onCastSpell(creature, var)
 	else
 		return false
 	end
-return combat[math.random(0.935, 0.935)]:execute(creature, var)
+	return combat[math.random(0.935, 0.935)]:execute(creature, var)
 end
 
 spell:name("terofar curse")

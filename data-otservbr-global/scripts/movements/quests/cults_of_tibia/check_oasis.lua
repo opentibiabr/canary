@@ -8,7 +8,7 @@ function checkOasis.onStepIn(creature, item, position, fromPosition)
 
 	if player:getStorageValue(Storage.CultsOfTibia.Life.Mission) == 2 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-		"You have found a lovely oasis with green fauna and juicy fruit. You didn't expect that.")
+			"You have found a lovely oasis with green fauna and juicy fruit. You didn't expect that.")
 		player:setStorageValue(Storage.CultsOfTibia.Life.Mission, 3)
 	end
 	return true

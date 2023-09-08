@@ -1,9 +1,9 @@
 function onUpdateDatabase()
-    Spdlog.info("Updating database to version 4 (prey tick)")
+	logger.info("Updating database to version 4 (prey tick)")
 
-    db.query([[
+	db.query([[
         ALTER TABLE `prey_slots`
             ADD `tick` smallint(3) NOT NULL DEFAULT '0';
     ]])
-    return true
+	return true
 end

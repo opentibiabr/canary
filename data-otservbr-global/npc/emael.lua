@@ -27,7 +27,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Not enough space for all my trophies...'}
+	{ text = 'Not enough space for all my trophies...' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -83,15 +83,15 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say("You have not aquired enough knowledge in hunting big scary creatures.", npc, creature)
 		end
-			npcHandler:setTopic(playerId, 0)
+		npcHandler:setTopic(playerId, 0)
 	elseif message == "no" and npcHandler:getTopic(playerId == 1) then
 		npcHandler:say("Blessings on your hunts!", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	end
 end
 
-npcHandler:setMessage(MESSAGE_GREET, {"Hello! Ever asked yourself who killed all the monsters for the wall trophies? Yeah, that was me, Emael the Beasthunter! I am an expert in displaying trophies. ...",
-									  "So if you have at least some dangerous monster to show off I strongly advise you to aquire a {podium} of vigour."})
+npcHandler:setMessage(MESSAGE_GREET, { "Hello! Ever asked yourself who killed all the monsters for the wall trophies? Yeah, that was me, Emael the Beasthunter! I am an expert in displaying trophies. ...",
+	"So if you have at least some dangerous monster to show off I strongly advise you to aquire a {podium} of vigour." })
 npcHandler:setMessage(MESSAGE_FAREWELL, "I wish you a good hunt. Goodbye!")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good hunting!")
 

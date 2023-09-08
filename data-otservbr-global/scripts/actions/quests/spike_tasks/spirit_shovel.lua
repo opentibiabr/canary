@@ -1,14 +1,14 @@
 local chance = {
-	{90, "You unearthed a spirit\'s anger!!!", "Enraged Soul"},
-	{80, "Your crude digging has angered some ancient ghost.", "Ghost"},
-	{70, "You unearthed some not-so-death creature.", "Demon Skeleton"},
-	{50, "You unearthed some not-so-death creature.", "Zombie"},
-	{1, "You've found nothing special."}
+	{ 90, "You unearthed a spirit\'s anger!!!", "Enraged Soul" },
+	{ 80, "Your crude digging has angered some ancient ghost.", "Ghost" },
+	{ 70, "You unearthed some not-so-death creature.", "Demon Skeleton" },
+	{ 50, "You unearthed some not-so-death creature.", "Zombie" },
+	{ 1, "You've found nothing special." }
 }
 
 local spikeTasksShovel = Action()
 function spikeTasksShovel.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({-1, 4}, player:getStorageValue(SPIKE_UPPER_MOUND_MAIN)) then
+	if table.contains({ -1, 4 }, player:getStorageValue(SPIKE_UPPER_MOUND_MAIN)) then
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 	end
 

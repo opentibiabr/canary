@@ -2,11 +2,22 @@
 name: Clang-format
 on:
   pull_request:
+    paths:
+      - 'src/**'
   push:
+    paths:
+      - 'src/**'
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Cancel Previous Runs
+        if: github.ref != 'refs/heads/main'
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          concurrent_skipping: 'same_content'
+          cancel_others: true
+
       - name: Set up Git
         if: ${{ github.ref != 'refs/heads/main' }}
         run: |
@@ -23,12 +34,12 @@ jobs:
 
       - name: Run clang format lint
         if: ${{ github.ref != 'refs/heads/main' }}
-        uses: DoozyX/clang-format-lint-action@v0.15
+        uses: DoozyX/clang-format-lint-action@v0.16.2
         with:
           source: "src"
           exclude: "src/protobuf"
           extensions: "cpp,hpp,h"
-          clangFormatVersion: 15
+          clangFormatVersion: 16
           inplace: true
 
       - name: Run add and commit

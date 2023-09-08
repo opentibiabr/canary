@@ -35,7 +35,7 @@ end
 -- Call the dump function and print it to console
 function pdump(input)
 	local dump_str = dump(input)
-	Spdlog.debug(dump_str)
+	logger.debug(dump_str)
 	return dump_str
 end
 
@@ -53,7 +53,7 @@ function tdump(title, input)
 	local dump_str = dump(input)
 	local footer_str = '\n====' .. title_fill .. '====\n'
 
-	Spdlog.debug(header_str .. dump_str .. footer_str)
+	logger.debug(header_str .. dump_str .. footer_str)
 
 	return dump_str
 end

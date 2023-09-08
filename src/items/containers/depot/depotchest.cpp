@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "items/containers/depot/depotchest.h"
-#include "utils/tools.h"
+#include "items/containers/depot/depotchest.hpp"
+#include "utils/tools.hpp"
 
 DepotChest::DepotChest(uint16_t type) :
 	Container(type) {

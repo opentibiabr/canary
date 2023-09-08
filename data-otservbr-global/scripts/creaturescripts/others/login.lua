@@ -23,7 +23,7 @@ local playerLogin = CreatureEvent("PlayerLogin")
 function playerLogin.onLogin(player)
 	local items = {
 		{ 3003, 1 },
-		{ 3031, 3 }
+		{ 3457, 1 }
 	}
 	if player:getLastLoginSaved() == 0 then
 		player:sendOutfitWindow()
@@ -45,11 +45,6 @@ function playerLogin.onLogin(player)
 	else
 		player:sendTextMessage(MESSAGE_STATUS, SERVER_MOTD)
 		player:sendTextMessage(MESSAGE_LOGIN, string.format("Your last visit in " .. SERVER_NAME .. ": %s.", os.date("%d. %b %Y %X", player:getLastLoginSaved())))
-		-- Vip system
-		if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and player:isVip()) then
-			local days = player:getVipDays()
-			player:sendTextMessage(MESSAGE_LOGIN, string.format('You have %s vip day%s left.', (days == 0xFFFF and 'infinite amount of' or days), (days == 1 and '' or 's')))
-		end
 	end
 
 	-- Reset bosstiary time
@@ -185,8 +180,6 @@ function playerLogin.onLogin(player)
 		end
 	end
 
-	-- Attempt to check if we're in a hazard zone
-	player:updateHazard()
 	-- Loyalty system
 	player:initializeLoyaltySystem()
 
@@ -242,7 +235,16 @@ function playerLogin.onLogin(player)
 	-- Set Client XP Gain Rate --
 	if configManager.getBoolean(configKeys.XP_DISPLAY_MODE) then
 		local baseRate = player:getFinalBaseRateExperience()
-		player:setBaseXpGain(baseRate * 100)
+		baseRate = baseRate * 100
+		if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+			local vipBonusExp = configManager.getNumber(configKeys.VIP_BONUS_EXP)
+			if vipBonusExp > 0 and player:isVip() then
+				vipBonusExp = (vipBonusExp > 100 and 100) or vipBonusExp
+				baseRate = baseRate * (1 + (vipBonusExp / 100))
+				player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Normal base xp is: " .. baseRate .. "%, because you are VIP, bonus of " .. vipBonusExp .. "%")
+			end
+		end
+		player:setBaseXpGain(baseRate)
 	end
 
 	local staminaBonus = player:getFinalBonusStamina()
@@ -258,4 +260,5 @@ function playerLogin.onLogin(player)
 	end
 	return true
 end
+
 playerLogin:register()

@@ -75,7 +75,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, 'bloodherb') or MsgContains(message, 'blood herb') then
-		if player:getStorageValue(Storage.BloodHerbQuest) == 1  then
+		if player:getStorageValue(Storage.BloodHerbQuest) == 1 then
 			npcHandler:say('Arrr... here we go again.... do you have a #$*§# blood herb for me?', npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		else

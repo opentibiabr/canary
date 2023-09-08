@@ -47,6 +47,6 @@ function nibelorDogLed.onStepIn(creature, item, position, fromPosition)
 end
 
 for a = 1, #setting do
-	nibelorDogLed:position({x = setting[a].sledPosition.x, y = setting[a].sledPosition.y, z = 7})
+	nibelorDogLed:position({ x = setting[a].sledPosition.x, y = setting[a].sledPosition.y, z = 7 })
 end
 nibelorDogLed:register()

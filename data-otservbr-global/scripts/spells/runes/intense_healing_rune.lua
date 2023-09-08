@@ -19,7 +19,7 @@ function rune.onCastSpell(creature, var, isHotkey)
 	if Monster(var:getNumber(1073762188)) then
 		creature:sendCancelMessage("Sorry, not possible.")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
-	return false
+		return false
 	else
 		return combat:execute(creature, var)
 	end

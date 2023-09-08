@@ -65,7 +65,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		elseif MsgContains(message, 'cookie') then
 			if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31
-			and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.AvarTar) ~= 1 then
+					and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.AvarTar) ~= 1 then
 				npcHandler:say('Do you really think you could bribe a hero like me with a meagre cookie?', npc, creature)
 				npcHandler:setTopic(playerId, 3)
 			end
@@ -110,7 +110,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		elseif MsgContains(message, 'shield') then
 			if player:getStorageValue(Storage.Quest.U7_24.TheAnnihilator.Reward) == 2
-			and player:getStorageValue(Storage.Quest.U6_4.DemonHelmet.Rewards.DemonHelmet) == 1 then
+					and player:getStorageValue(Storage.Quest.U6_4.DemonHelmet.Rewards.DemonHelmet) == 1 then
 				player:addOutfitAddon(541, 1)
 				player:addOutfitAddon(542, 1)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
@@ -122,7 +122,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		elseif MsgContains(message, 'helmet') then
 			if player:getStorageValue(Storage.Quest.U7_24.TheAnnihilator.Reward) == 2
-			and player:getStorageValue(Storage.DemonOak.Done) == 3 then
+					and player:getStorageValue(Storage.DemonOak.Done) == 3 then
 				player:addOutfitAddon(541, 2)
 				player:addOutfitAddon(542, 2)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)

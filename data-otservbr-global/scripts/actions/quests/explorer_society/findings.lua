@@ -74,7 +74,7 @@ function explorerSocietyFindings.onUse(player, item, fromPosition, target, toPos
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a " .. getItemName(uniqueItem.rewardItemId) .. ".")
 		player:setStorageValue(item.uid, 1)
 		player:setStorageValue(uniqueItem.storageMission, uniqueItem.storageMissionValue)
-		if(uniqueItem.storageQuestlineValue > 0) then
+		if (uniqueItem.storageQuestlineValue > 0) then
 			player:setStorageValue(Storage.ExplorerSociety.QuestLine, uniqueItem.storageQuestlineValue)
 		end
 		return true

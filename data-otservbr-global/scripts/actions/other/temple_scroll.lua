@@ -1,7 +1,9 @@
 local templeScroll = Action()
 
 function templeScroll.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not player:isPzLocked() and not player:getCondition(CONDITION_INFIGHT, CONDITIONID_DEFAULT) then
+	local inPz = player:getTile():hasFlag(TILESTATE_PROTECTIONZONE)
+	local inFight = player:isPzLocked() or player:getCondition(CONDITION_INFIGHT, CONDITIONID_DEFAULT)
+	if inPz or not inFight then
 		player:teleportTo(getTownTemplePosition(player:getTown():getId()))
 		item:remove()
 		Position(fromPosition):sendMagicEffect(CONST_ME_TELEPORT)

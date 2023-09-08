@@ -19,7 +19,7 @@ function afflictedOutfit.onUse(player, item, fromPosition, target, toPosition, i
 		player:say('You gained a plague mask for your outfit.', TALKTYPE_MONSTER_SAY, false, player)
 		item:remove()
 
-	-- Plague Bell
+		-- Plague Bell
 	elseif item.itemid == 12787 then
 		if not hasOutfit then
 			return false
@@ -36,7 +36,7 @@ function afflictedOutfit.onUse(player, item, fromPosition, target, toPosition, i
 		player:say('You gained a plague bell for your outfit.', TALKTYPE_MONSTER_SAY, false, player)
 		item:remove()
 
-	-- Outfit
+		-- Outfit
 	else
 		if hasOutfit then
 			return false

@@ -1,5 +1,5 @@
 local config = {
-	position = {fromPosition = Position(33330, 31670, 7), toPosition = Position(33350, 31690, 7)}
+	position = { fromPosition = Position(33330, 31670, 7), toPosition = Position(33350, 31690, 7) }
 }
 local spawnDay = 13
 local currentDay = os.date("%d")

@@ -24,14 +24,17 @@ set(VCPKG_BUILD_TYPE "release")
 # *****************************************************************************
 # Project canary
 # *****************************************************************************
-project(canary)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    project(canary-debug)
+else()
+    project(canary)
+endif()
 
 
 # *****************************************************************************
 # Append cmake search path
 # *****************************************************************************
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
 # *****************************************************************************
 # Include cmake tools
@@ -39,15 +42,12 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(MessageColors)
 include(LoggingHelper)
 
-
 # *****************************************************************************
 # Options
 # *****************************************************************************
 option(OPTIONS_ENABLE_CCACHE "Enable ccache" OFF)
 option(OPTIONS_ENABLE_SCCACHE "Use sccache to speed up compilation process" OFF)
 option(OPTIONS_ENABLE_IPO "Check and Enable interprocedural optimization (IPO/LTO)" ON)
-
-
 
 # *****************************************************************************
 # Options Code
@@ -94,9 +94,15 @@ else()
   log_option_disabled("ipo")
 endif()
 
+option(BUILD_TESTS "Build tests" OFF) # By default, tests will not be built
+option(RUN_TESTS_AFTER_BUILD "Run tests when building" OFF) # By default, tests will only run if requested
 
 # *****************************************************************************
 # Add project
 # *****************************************************************************
 add_subdirectory(src/protobuf)
 add_subdirectory(src)
+
+if(BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

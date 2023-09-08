@@ -5,23 +5,23 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 
-	local grade = creature:upgradeSpellsWOD("Divine Empowerment")
-	if grade == WHEEL_GRADE_NONE then
+	local grade = creature:revelationStageWOD("Divine Empowerment")
+	if grade == 0 then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
 
 	local cooldown = 0
-	if grade >= WHEEL_GRADE_MAX then
+	if grade >= 3 then
 		cooldown = 24
-	elseif grade >= WHEEL_GRADE_UPGRADED then
+	elseif grade >= 2 then
 		cooldown = 28
-	elseif grade >= WHEEL_GRADE_REGULAR then
+	elseif grade >= 1 then
 		cooldown = 32
 	end
 	local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 268)
-	condition:setTicks((cooldown * 1000)/configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+	condition:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 	creature:addCondition(condition)
 
 	local position = creature:getPosition()

@@ -26,10 +26,10 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Come chat with ol\' Bozo!'},
-	{text = 'Do you know the one with the dragon? Where - and then ... hahahaha! Oh no, I guess I ruined it.'},
-	{text = 'The fools\' guild? Are you serious? No, of course not! Hahaha!'},
-	{text = 'Welcome, welcome, step closer!'}
+	{ text = 'Come chat with ol\' Bozo!' },
+	{ text = 'Do you know the one with the dragon? Where - and then ... hahahaha! Oh no, I guess I ruined it.' },
+	{ text = 'The fools\' guild? Are you serious? No, of course not! Hahaha!' },
+	{ text = 'Welcome, welcome, step closer!' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -67,10 +67,10 @@ local config = {
 			[3] = 'Indeed. This flower will do the trick, so to say. Just ask me about another mission whenever you\'re ready.'
 		},
 		yes = true,
-		removeItem = {itemId = 102},
+		removeItem = { itemId = 102 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission1, value = 2},
-			{key = Storage.WhatAFoolish.Questline, value = 2}
+			{ key = Storage.WhatAFoolish.Mission1, value = 2 },
+			{ key = Storage.WhatAFoolish.Questline, value = 2 }
 		}
 	},
 	[2] = {
@@ -82,10 +82,10 @@ local config = {
 				'Take this special vial and fill it with the perfect stench. Then return here and we will talk about your mission.'
 			}
 		},
-		addItem = {itemId = 107},
+		addItem = { itemId = 107 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission2, value = 1},
-			{key = Storage.WhatAFoolish.Questline, value = 3}
+			{ key = Storage.WhatAFoolish.Mission2, value = 1 },
+			{ key = Storage.WhatAFoolish.Questline, value = 3 }
 		}
 	},
 	[3] = {
@@ -95,10 +95,10 @@ local config = {
 			[3] = 'Ugh. You got some efficient stuff there. I have to admit you have a talent for such distasteful matters. Perhaps you feel ready for another mission. Just ask me about it.'
 		},
 		yes = true,
-		removeItem = {itemId = 9170},
+		removeItem = { itemId = 9170 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission2, value = 2},
-			{key = Storage.WhatAFoolish.Questline, value = 4}
+			{ key = Storage.WhatAFoolish.Mission2, value = 2 },
+			{ key = Storage.WhatAFoolish.Questline, value = 4 }
 		}
 	},
 	[4] = {
@@ -111,8 +111,8 @@ local config = {
 			}
 		},
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission3, value = 1},
-			{key = Storage.WhatAFoolish.Questline, value = 5}
+			{ key = Storage.WhatAFoolish.Mission3, value = 1 },
+			{ key = Storage.WhatAFoolish.Questline, value = 5 }
 		}
 	},
 	[5] = {
@@ -126,11 +126,11 @@ local config = {
 			}
 		},
 		yes = true,
-		removeItem = {itemId = 119},
+		removeItem = { itemId = 119 },
 		pie = true,
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission3, value = 2},
-			{key = Storage.WhatAFoolish.Questline, value = 6}
+			{ key = Storage.WhatAFoolish.Mission3, value = 2 },
+			{ key = Storage.WhatAFoolish.Questline, value = 6 }
 		}
 	},
 	[6] = {
@@ -141,8 +141,8 @@ local config = {
 			}
 		},
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission4, value = 1},
-			{key = Storage.WhatAFoolish.Questline, value = 7}
+			{ key = Storage.WhatAFoolish.Mission4, value = 1 },
+			{ key = Storage.WhatAFoolish.Questline, value = 7 }
 		}
 	},
 	[7] = {
@@ -156,12 +156,12 @@ local config = {
 			}
 		},
 		yes = true,
-		removeItem = {itemId = 2874, count = 18, subType = 15},
+		removeItem = { itemId = 2874, count = 18, subType = 15 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission4, value = 2},
-			{key = Storage.WhatAFoolish.Questline, value = 8}
+			{ key = Storage.WhatAFoolish.Mission4, value = 2 },
+			{ key = Storage.WhatAFoolish.Questline, value = 8 }
 		},
-		addItem = {itemId = 117}
+		addItem = { itemId = 117 }
 	},
 	[8] = {
 		text = {
@@ -170,10 +170,10 @@ local config = {
 			[3] = 'I see. I guess we can expect a few drunken mages soon! Am I mistaken or are you up for some more challenging missions? Just ask me about if you feel foolish enough.'
 		},
 		yes = true,
-		removeItem = {itemId = 118},
+		removeItem = { itemId = 118 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission4, value = 3},
-			{key = Storage.WhatAFoolish.Questline, value = 9}
+			{ key = Storage.WhatAFoolish.Mission4, value = 3 },
+			{ key = Storage.WhatAFoolish.Questline, value = 9 }
 		}
 	},
 	[9] = {
@@ -185,9 +185,9 @@ local config = {
 			}
 		},
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission5, value = 1},
-			{key = Storage.WhatAFoolish.TriangleTowerDoor, value = 1},
-			{key = Storage.WhatAFoolish.Questline, value = 10}
+			{ key = Storage.WhatAFoolish.Mission5, value = 1 },
+			{ key = Storage.WhatAFoolish.TriangleTowerDoor, value = 1 },
+			{ key = Storage.WhatAFoolish.Questline, value = 10 }
 		}
 	},
 	[10] = {
@@ -205,8 +205,8 @@ local config = {
 		yes = true,
 		checkItemCount = 112,
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission5, value = 2},
-			{key = Storage.WhatAFoolish.Questline, value = 11}
+			{ key = Storage.WhatAFoolish.Mission5, value = 2 },
+			{ key = Storage.WhatAFoolish.Questline, value = 11 }
 		}
 	},
 	[11] = {
@@ -220,10 +220,10 @@ local config = {
 		},
 		yes = true,
 		checkStorage = Storage.WhatAFoolish.EmperorBeardShave,
-		removeItem = {itemId = 113},
+		removeItem = { itemId = 113 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission5, value = 3},
-			{key = Storage.WhatAFoolish.Questline, value = 12}
+			{ key = Storage.WhatAFoolish.Mission5, value = 3 },
+			{ key = Storage.WhatAFoolish.Questline, value = 12 }
 		}
 	},
 	[12] = {
@@ -236,8 +236,8 @@ local config = {
 			[1] = 'You know, nothing has brought more fun and joy to humanity than the whoopee cushion. Its creation is a delicate matter though. Bring me 4 pieces of minotaur leather first and then lets talk about this mission.'
 		},
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission6, value = 1},
-			{key = Storage.WhatAFoolish.Questline, value = 14}
+			{ key = Storage.WhatAFoolish.Mission6, value = 1 },
+			{ key = Storage.WhatAFoolish.Questline, value = 14 }
 		}
 	},
 	[14] = {
@@ -247,10 +247,10 @@ local config = {
 			[3] = 'Good, this was the first part. Now it gets difficult. To sew it together, we need a very fine yarn, as fine as the silk of a giant spider. Bring me some giant spider silk and talk to me about your mission.'
 		},
 		yes = true,
-		removeItem = {itemId = 5878, count = 4},
+		removeItem = { itemId = 5878, count = 4 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission6, value = 2},
-			{key = Storage.WhatAFoolish.Questline, value = 15}
+			{ key = Storage.WhatAFoolish.Mission6, value = 2 },
+			{ key = Storage.WhatAFoolish.Questline, value = 15 }
 		}
 	},
 	[15] = {
@@ -260,10 +260,10 @@ local config = {
 			[3] = 'Let\'s see, a stitch here, a stitch there. Hey Presto! A whoopee cushion! Are you ready for the fun part? Then talk to me about your next mission.'
 		},
 		yes = true,
-		removeItem = {itemId = 5879},
+		removeItem = { itemId = 5879 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission6, value = 3},
-			{key = Storage.WhatAFoolish.Questline, value = 16}
+			{ key = Storage.WhatAFoolish.Mission6, value = 3 },
+			{ key = Storage.WhatAFoolish.Questline, value = 16 }
 		},
 		effect = CONST_ME_POFF
 	},
@@ -274,10 +274,10 @@ local config = {
 				'Don\'t speak! I already know what you have in your impish mind my friend and I agree fully. You will bring this cushion to Carlin and place it right on Queen Eloise\'s throne! Then return here and talk to me about your mission.'
 			}
 		},
-		addItem = {itemId = 121},
+		addItem = { itemId = 121 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission6, value = 4},
-			{key = Storage.WhatAFoolish.Questline, value = 17}
+			{ key = Storage.WhatAFoolish.Mission6, value = 4 },
+			{ key = Storage.WhatAFoolish.Questline, value = 17 }
 		}
 	},
 	[17] = {
@@ -290,8 +290,8 @@ local config = {
 		yes = true,
 		checkStorage = Storage.WhatAFoolish.WhoopeeCushion,
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission6, value = 5},
-			{key = Storage.WhatAFoolish.Questline, value = 18}
+			{ key = Storage.WhatAFoolish.Mission6, value = 5 },
+			{ key = Storage.WhatAFoolish.Questline, value = 18 }
 		}
 	},
 	[18] = {
@@ -302,9 +302,9 @@ local config = {
 			}
 		},
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission7, value = 1},
-			{key = Storage.WhatAFoolish.QueenEloiseCatDoor, value = 1},
-			{key = Storage.WhatAFoolish.Questline, value = 19}
+			{ key = Storage.WhatAFoolish.Mission7, value = 1 },
+			{ key = Storage.WhatAFoolish.QueenEloiseCatDoor, value = 1 },
+			{ key = Storage.WhatAFoolish.Questline, value = 19 }
 		}
 	},
 	[19] = {
@@ -317,8 +317,8 @@ local config = {
 		yes = true,
 		checkStorage = Storage.WhatAFoolish.ScaredCarina,
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission7, value = 2},
-			{key = Storage.WhatAFoolish.Questline, value = 20}
+			{ key = Storage.WhatAFoolish.Mission7, value = 2 },
+			{ key = Storage.WhatAFoolish.Questline, value = 20 }
 		}
 	},
 	[20] = {
@@ -329,8 +329,8 @@ local config = {
 			}
 		},
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission8, value = 1},
-			{key = Storage.WhatAFoolish.Questline, value = 21}
+			{ key = Storage.WhatAFoolish.Mission8, value = 1 },
+			{ key = Storage.WhatAFoolish.Questline, value = 21 }
 		}
 	},
 	[21] = {
@@ -340,10 +340,10 @@ local config = {
 			[3] = 'So much for part one of my foolish master plan. Now travel to Tiquanda and use a kitchen knife to cut some leaves of the jungle dweller bush for me. Bring them with you when you report about your mission.'
 		},
 		yes = true,
-		removeItem = {itemId = 124},
+		removeItem = { itemId = 124 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission8, value = 2},
-			{key = Storage.WhatAFoolish.Questline, value = 22}
+			{ key = Storage.WhatAFoolish.Mission8, value = 2 },
+			{ key = Storage.WhatAFoolish.Questline, value = 22 }
 		}
 	},
 	[22] = {
@@ -353,10 +353,10 @@ local config = {
 			[3] = 'So far so good. I will prepare some nasty surprise for your next mission. Talk to me about it whenever you feel ready.'
 		},
 		yes = true,
-		removeItem = {itemId = 3129},
+		removeItem = { itemId = 3129 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission8, value = 3},
-			{key = Storage.WhatAFoolish.Questline, value = 23}
+			{ key = Storage.WhatAFoolish.Mission8, value = 3 },
+			{ key = Storage.WhatAFoolish.Questline, value = 23 }
 		}
 	},
 	[23] = {
@@ -366,10 +366,10 @@ local config = {
 				'Take this cigar and give it to Theodore Loveless, the Venorean representative in Liberty Bay. After you [1]ed our little\'present\', report here about the outcome of your mission.'
 			}
 		},
-		addItem = {itemId = 141},
+		addItem = { itemId = 141 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission8, value = 4},
-			{key = Storage.WhatAFoolish.Questline, value = 24}
+			{ key = Storage.WhatAFoolish.Mission8, value = 4 },
+			{ key = Storage.WhatAFoolish.Questline, value = 24 }
 		}
 	},
 	[24] = {
@@ -381,10 +381,10 @@ local config = {
 		yes = true,
 		checkStorage = Storage.WhatAFoolish.Cigar,
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission8, value = 5},
-			{key = Storage.WhatAFoolish.Questline, value = 25}
+			{ key = Storage.WhatAFoolish.Mission8, value = 5 },
+			{ key = Storage.WhatAFoolish.Questline, value = 25 }
 		},
-		addItem = {itemId = 895},
+		addItem = { itemId = 895 },
 		addon = 1
 	},
 	[25] = {
@@ -395,10 +395,10 @@ local config = {
 			}
 		},
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission9, value = 1},
-			{key = Storage.WhatAFoolish.Questline, value = 26}
+			{ key = Storage.WhatAFoolish.Mission9, value = 1 },
+			{ key = Storage.WhatAFoolish.Questline, value = 26 }
 		},
-		addItem = {itemId = 107}
+		addItem = { itemId = 107 }
 	},
 	[26] = {
 		text = {
@@ -410,12 +410,12 @@ local config = {
 			}
 		},
 		yes = true,
-		removeItem = {itemId = 125},
+		removeItem = { itemId = 125 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission9, value = 2},
-			{key = Storage.WhatAFoolish.Questline, value = 27}
+			{ key = Storage.WhatAFoolish.Mission9, value = 2 },
+			{ key = Storage.WhatAFoolish.Questline, value = 27 }
 		},
-		addItem = {itemId = 107}
+		addItem = { itemId = 107 }
 	},
 	[27] = {
 		text = {
@@ -424,10 +424,10 @@ local config = {
 			[3] = 'Excellent. As a true fool you have of course no clue what these ingredients are good for, but I will enlighten you. Just ask about your next mission and I\'ll tell you everything you need to know.'
 		},
 		yes = true,
-		removeItem = {itemId = 9149},
+		removeItem = { itemId = 9149 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission9, value = 3},
-			{key = Storage.WhatAFoolish.Questline, value = 28}
+			{ key = Storage.WhatAFoolish.Mission9, value = 3 },
+			{ key = Storage.WhatAFoolish.Questline, value = 28 }
 		}
 	},
 	[28] = {
@@ -440,10 +440,10 @@ local config = {
 			}
 		},
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission9, value = 4},
-			{key = Storage.WhatAFoolish.Questline, value = 29}
+			{ key = Storage.WhatAFoolish.Mission9, value = 4 },
+			{ key = Storage.WhatAFoolish.Questline, value = 29 }
 		},
-		addItem = {itemId = 127}
+		addItem = { itemId = 127 }
 	},
 	[29] = {
 		text = {
@@ -454,8 +454,8 @@ local config = {
 		yes = true,
 		checkStorage = Storage.WhatAFoolish.Contract,
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission9, value = 5},
-			{key = Storage.WhatAFoolish.Questline, value = 30}
+			{ key = Storage.WhatAFoolish.Mission9, value = 5 },
+			{ key = Storage.WhatAFoolish.Questline, value = 30 }
 		}
 	},
 	[30] = {
@@ -474,10 +474,10 @@ local config = {
 		},
 		yes = true,
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission10, value = 1},
-			{key = Storage.WhatAFoolish.Questline, value = 31}
+			{ key = Storage.WhatAFoolish.Mission10, value = 1 },
+			{ key = Storage.WhatAFoolish.Questline, value = 31 }
 		},
-		addItem = {itemId = 130, count = 10}
+		addItem = { itemId = 130, count = 10 }
 	},
 	[31] = {
 		text = {
@@ -487,8 +487,8 @@ local config = {
 		yes = true,
 		cookiesDelivery = true,
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission10, value = 2},
-			{key = Storage.WhatAFoolish.Questline, value = 32}
+			{ key = Storage.WhatAFoolish.Mission10, value = 2 },
+			{ key = Storage.WhatAFoolish.Questline, value = 32 }
 		}
 	},
 	[32] = {
@@ -499,8 +499,8 @@ local config = {
 			}
 		},
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission11, value = 1},
-			{key = Storage.WhatAFoolish.Questline, value = 33}
+			{ key = Storage.WhatAFoolish.Mission11, value = 1 },
+			{ key = Storage.WhatAFoolish.Questline, value = 33 }
 		}
 	},
 	[33] = {
@@ -514,12 +514,12 @@ local config = {
 			}
 		},
 		yes = true,
-		removeItem = {itemId = 5909, count = 5},
+		removeItem = { itemId = 5909, count = 5 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission11, value = 2},
-			{key = Storage.WhatAFoolish.Questline, value = 34}
+			{ key = Storage.WhatAFoolish.Mission11, value = 2 },
+			{ key = Storage.WhatAFoolish.Questline, value = 34 }
 		},
-		addItem = {itemId = 142}
+		addItem = { itemId = 142 }
 	},
 	[34] = {
 		text = {
@@ -532,12 +532,12 @@ local config = {
 			}
 		},
 		yes = true,
-		removeItem = {itemId = 143},
+		removeItem = { itemId = 143 },
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission11, value = 3},
-			{key = Storage.WhatAFoolish.Questline, value = 35}
+			{ key = Storage.WhatAFoolish.Mission11, value = 3 },
+			{ key = Storage.WhatAFoolish.Questline, value = 35 }
 		},
-		addItem = {itemId = 144}
+		addItem = { itemId = 144 }
 	},
 	[35] = {
 		text = {
@@ -548,10 +548,10 @@ local config = {
 		yes = true,
 		checkStorage = Storage.WhatAFoolish.ScaredKazzan,
 		updateStorages = {
-			{key = Storage.WhatAFoolish.Mission11, value = 4},
-			{key = Storage.WhatAFoolish.Questline, value = 36}
+			{ key = Storage.WhatAFoolish.Mission11, value = 4 },
+			{ key = Storage.WhatAFoolish.Questline, value = 36 }
 		},
-		addItem = {itemId = 894},
+		addItem = { itemId = 894 },
 		addon = 2,
 		last = true
 	},
@@ -781,9 +781,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 	elseif MsgContains(message, 'no') and npcHandler:getTopic(playerId) ~= 0 then
-		if table.contains({1, 2}, npcHandler:getTopic(playerId)) then
+		if table.contains({ 1, 2 }, npcHandler:getTopic(playerId)) then
 			npcHandler:say('Too bad, I\'m convinced you have it in you.', npc, creature)
-		elseif table.contains({3, 4}, npcHandler:getTopic(playerId)) then
+		elseif table.contains({ 3, 4 }, npcHandler:getTopic(playerId)) then
 			if player:getStorageValue(Storage.WhatAFoolish.Questline) == 11
 					and player:getStorageValue(Storage.WhatAFoolish.EmperorBeardShave) == 1 then
 				player:setStorageValue(Storage.WhatAFoolish.Questline, 12)
@@ -808,91 +808,91 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'sorcerer'}, StdModule.say, {npcHandler = npcHandler, text = 'I wanted to become a sorcerer, too, but I was overqualified!'}, function(player) return player:isSorcerer() end)
-keywordHandler:addKeyword({'druid'}, StdModule.say, {npcHandler = npcHandler, text = 'I wanted to become a druid, too, but I was overqualified!'}, function(player) return player:isDruid() end)
-keywordHandler:addKeyword({'paladin'}, StdModule.say, {npcHandler = npcHandler, text = 'I wanted to become a paladin, too, but I was overqualified!'}, function(player) return player:isPaladin() end)
-keywordHandler:addKeyword({'knight'}, StdModule.say, {npcHandler = npcHandler, text = 'I wanted to become a knight, too, but I was overqualified!'}, function(player) return player:isKnight() end)
-keywordHandler:addKeyword({'sorcerer'}, StdModule.say, {npcHandler = npcHandler, text = 'The good thing about them is that they can\'t be at two places at the same time.'})
-keywordHandler:addKeyword({'druid'}, StdModule.say, {npcHandler = npcHandler, text = 'I wonder if they love my water squirt flowers as much as all other plants.'})
-keywordHandler:addKeyword({'paladin'}, StdModule.say, {npcHandler = npcHandler, text = 'They are the king\'s favourites, because they know how to \'bow\'.'})
-keywordHandler:addKeyword({'knight'}, StdModule.say, {npcHandler = npcHandler, text = 'Did you notice that old knights have their scars just on their backs?'})
+keywordHandler:addKeyword({ 'sorcerer' }, StdModule.say, { npcHandler = npcHandler, text = 'I wanted to become a sorcerer, too, but I was overqualified!' }, function(player) return player:isSorcerer() end)
+keywordHandler:addKeyword({ 'druid' }, StdModule.say, { npcHandler = npcHandler, text = 'I wanted to become a druid, too, but I was overqualified!' }, function(player) return player:isDruid() end)
+keywordHandler:addKeyword({ 'paladin' }, StdModule.say, { npcHandler = npcHandler, text = 'I wanted to become a paladin, too, but I was overqualified!' }, function(player) return player:isPaladin() end)
+keywordHandler:addKeyword({ 'knight' }, StdModule.say, { npcHandler = npcHandler, text = 'I wanted to become a knight, too, but I was overqualified!' }, function(player) return player:isKnight() end)
+keywordHandler:addKeyword({ 'sorcerer' }, StdModule.say, { npcHandler = npcHandler, text = 'The good thing about them is that they can\'t be at two places at the same time.' })
+keywordHandler:addKeyword({ 'druid' }, StdModule.say, { npcHandler = npcHandler, text = 'I wonder if they love my water squirt flowers as much as all other plants.' })
+keywordHandler:addKeyword({ 'paladin' }, StdModule.say, { npcHandler = npcHandler, text = 'They are the king\'s favourites, because they know how to \'bow\'.' })
+keywordHandler:addKeyword({ 'knight' }, StdModule.say, { npcHandler = npcHandler, text = 'Did you notice that old knights have their scars just on their backs?' })
 
-keywordHandler:addKeyword({'here'}, StdModule.say, {npcHandler = npcHandler, text = 'A fitting place for a {jester}. I guess there are worse {jobs} around.'})
-keywordHandler:addKeyword({'king'}, StdModule.say, {npcHandler = npcHandler, text = 'Bozo: Nah, no jests about His Royal Highness.'})
-keywordHandler:addKeyword({'tibia'}, StdModule.say, {npcHandler = npcHandler, text = 'I rarely leave the castle. It\'s really stressful to be as popular as me.'})
-keywordHandler:addKeyword({'castle'}, StdModule.say, {npcHandler = npcHandler, text = 'This castle is my home. A fitting place for a jester and all other fools. Feel welcome.'})
-keywordHandler:addKeyword({'help'}, StdModule.say, {npcHandler = npcHandler, text = 'I\'m a jester, not a doctor!'})
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = 'My name is Bozo. But it\'s more than a name, it\'s a lifestyle for me!'})
-keywordHandler:addKeyword({'bozo'}, StdModule.say, {npcHandler = npcHandler, text = 'That\'s me: Bozo, the jester!'})
-keywordHandler:addKeyword({'guild'}, StdModule.say, {npcHandler = npcHandler, text = 'Ever since the first guild was created, there is a great demand of jesters and fools to join them.'})
-keywordHandler:addKeyword({'sell'}, StdModule.say, {npcHandler = npcHandler, text = 'Sell? Hmm, I know a little about magic and by chance I can sell you a truly unusual {weapon}.'})
-keywordHandler:addKeyword({'joke'}, StdModule.say, {npcHandler = npcHandler, text = 'I know some \'monstrous\' jokes!'})
-keywordHandler:addKeyword({'news'}, StdModule.say, {npcHandler = npcHandler, text = 'I know the newest jokes in tibia.'})
-keywordHandler:addKeyword({'how', 'are', 'you'}, StdModule.say, {npcHandler = npcHandler, text = 'Thank you, I\'m fine, the gods are with me.'})
-keywordHandler:addKeyword({'necromant', 'nectar'}, StdModule.say, {npcHandler = npcHandler, text = 'Pheeew! That sounds disgusting! Are you a cook at Frodo\'s?'})
-keywordHandler:addKeyword({'necromant'}, StdModule.say, {npcHandler = npcHandler, text = 'Don\'t feed the necromants.'})
-keywordHandler:addKeyword({'dog'}, StdModule.say, {npcHandler = npcHandler, text = 'Are we talking about Noodles?'})
-keywordHandler:addKeyword({'poodle'}, StdModule.say, {npcHandler = npcHandler, text = 'Are we talking about Noodles?'})
-keywordHandler:addKeyword({'noodles'}, StdModule.say, {npcHandler = npcHandler, text = 'Hey, the little one is almost as funny as me!'})
-keywordHandler:addKeyword({'muriel'}, StdModule.say, {npcHandler = npcHandler, text = 'Better don\'t mess with sorcerers!'})
-keywordHandler:addKeyword({'elane'}, StdModule.say, {npcHandler = npcHandler, text = 'She\'s pretty but too serious for my taste.'})
-keywordHandler:addKeyword({'marvik'}, StdModule.say, {npcHandler = npcHandler, text = 'Humourless old guy! Once, he turned me into a frog for painting his distasteful cave in pink.'})
-keywordHandler:addKeyword({'gregor'}, StdModule.say, {npcHandler = npcHandler, text = 'A man of steel with a stomach of wax. Never offer him a beer!'})
-keywordHandler:addKeyword({'quentin'}, StdModule.say, {npcHandler = npcHandler, text = 'He\'s my baby brother. If you tell him I sent you, he will grant you an extra spell or two.'})
-keywordHandler:addKeyword({'gorn'}, StdModule.say, {npcHandler = npcHandler, text = 'He sells spell scrolls each day at midnight, but you have to address him that very second.'})
-keywordHandler:addKeyword({'god'}, StdModule.say, {npcHandler = npcHandler, text = 'I better make no jokes about THIS matter.'})
-keywordHandler:addKeyword({'sam'}, StdModule.say, {npcHandler = npcHandler, text = 'Did you know that he sells a \'power axe of doom\' now? Run and buy it, he only has got three in store.'})
-keywordHandler:addKeyword({'benjamin'}, StdModule.say, {npcHandler = npcHandler, text = 'He would make a fine jester, too.'})
-keywordHandler:addKeyword({'monster'}, StdModule.say, {npcHandler = npcHandler, text = 'I know a lot of monster jokes. Just tell me a monster\'s name, come on.'})
-keywordHandler:addKeyword({'demon'}, StdModule.say, {npcHandler = npcHandler, text = 'Why are the experienced heroes quicker than others? ... The demons love fast food!'})
-keywordHandler:addKeyword({'ghoul'}, StdModule.say, {npcHandler = npcHandler, text = 'Where do ghouls buy their robes? ... In a boooohtique!'})
-keywordHandler:addKeyword({'dragon'}, StdModule.say, {npcHandler = npcHandler, text = 'Why do dragons breathe fire? ... They ate too many sorcerers in chilli sauce!'})
-keywordHandler:addKeyword({'orc'}, StdModule.say, {npcHandler = npcHandler, text = 'Why do orcs have green skin? ... They ate at Frodo\'s!'})
-keywordHandler:addKeyword({'cyclops'}, StdModule.say, {npcHandler = npcHandler, text = 'How many eyes does a cyclops have? ... One for each IQ point they have!'})
-keywordHandler:addKeyword({'oswald'}, StdModule.say, {npcHandler = npcHandler, text = 'If you believe half the rumours he\'s spreading, you will get in a lot of trouble.'})
-keywordHandler:addKeyword({'dungeon'}, StdModule.say, {npcHandler = npcHandler, text = 'If you are a bad jester, you get a chance to visit them now and then.'})
-keywordHandler:addKeyword({'mino'}, StdModule.say, {npcHandler = npcHandler, text = 'What do all little minotaurs want to become when they are grown-ups? ... Cowboys, of course!'})
-keywordHandler:addKeyword({'troll'}, StdModule.say, {npcHandler = npcHandler, text = 'Why do trolls live underground? ... Because there are so many pks on the surface!'})
-keywordHandler:addKeyword({'bonelord'}, StdModule.say, {npcHandler = npcHandler, text = 'Why are bonelords so ugly? ... Because their mom and dad were bonelords, too!'})
-keywordHandler:addKeyword({'rat'}, StdModule.say, {npcHandler = npcHandler, text = 'Why does the rat have a wooden leg? ... Because it is a former pirate!'})
-keywordHandler:addKeyword({'spider'}, StdModule.say, {npcHandler = npcHandler, text = 'Why did the spider cross the road? ... Because it ... oh you already know this one!?'})
-keywordHandler:addKeyword({'hugo'}, StdModule.say, {npcHandler = npcHandler, text = 'I had a cousin named like that.'})
-keywordHandler:addKeyword({'cousin'}, StdModule.say, {npcHandler = npcHandler, text = 'He died some years ago.'})
-keywordHandler:addKeyword({'durin'}, StdModule.say, {npcHandler = npcHandler, text = 'Isn\'t he the author of the book \'Fun with Demons\'?'})
-keywordHandler:addKeyword({'stephan'}, StdModule.say, {npcHandler = npcHandler, text = 'He is kind of a father figure to me. Of course he denies all kinship to me.'})
-keywordHandler:addKeyword({'steve'}, StdModule.say, {npcHandler = npcHandler, text = 'He\'s a smart one. I heared he hid in a foreign country as the first bugs showed up.'})
-keywordHandler:addKeyword({'excalibug'}, StdModule.say, {npcHandler = npcHandler, text = 'I am not foolish enough to believe in the existence of this weapon.'})
-keywordHandler:addKeyword({'wall', 'carving'}, StdModule.say, {npcHandler = npcHandler, text = 'Oh, I saw some demon carvings in the dungeons as I hid there after a little joke on old Stutch.'})
-keywordHandler:addKeyword({'demon', 'carving'}, StdModule.say, {npcHandler = npcHandler, text = 'Yes, they showed demons, seven actually, dancing around a sword! In something like a flaming pit.'})
-keywordHandler:addKeyword({'flaming', 'pit'}, StdModule.say, {npcHandler = npcHandler, text = 'Ah, don\'t ask me! Usually mages and mystics know more about such stuff.'})
+keywordHandler:addKeyword({ 'here' }, StdModule.say, { npcHandler = npcHandler, text = 'A fitting place for a {jester}. I guess there are worse {jobs} around.' })
+keywordHandler:addKeyword({ 'king' }, StdModule.say, { npcHandler = npcHandler, text = 'Bozo: Nah, no jests about His Royal Highness.' })
+keywordHandler:addKeyword({ 'tibia' }, StdModule.say, { npcHandler = npcHandler, text = 'I rarely leave the castle. It\'s really stressful to be as popular as me.' })
+keywordHandler:addKeyword({ 'castle' }, StdModule.say, { npcHandler = npcHandler, text = 'This castle is my home. A fitting place for a jester and all other fools. Feel welcome.' })
+keywordHandler:addKeyword({ 'help' }, StdModule.say, { npcHandler = npcHandler, text = 'I\'m a jester, not a doctor!' })
+keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = 'My name is Bozo. But it\'s more than a name, it\'s a lifestyle for me!' })
+keywordHandler:addKeyword({ 'bozo' }, StdModule.say, { npcHandler = npcHandler, text = 'That\'s me: Bozo, the jester!' })
+keywordHandler:addKeyword({ 'guild' }, StdModule.say, { npcHandler = npcHandler, text = 'Ever since the first guild was created, there is a great demand of jesters and fools to join them.' })
+keywordHandler:addKeyword({ 'sell' }, StdModule.say, { npcHandler = npcHandler, text = 'Sell? Hmm, I know a little about magic and by chance I can sell you a truly unusual {weapon}.' })
+keywordHandler:addKeyword({ 'joke' }, StdModule.say, { npcHandler = npcHandler, text = 'I know some \'monstrous\' jokes!' })
+keywordHandler:addKeyword({ 'news' }, StdModule.say, { npcHandler = npcHandler, text = 'I know the newest jokes in tibia.' })
+keywordHandler:addKeyword({ 'how', 'are', 'you' }, StdModule.say, { npcHandler = npcHandler, text = 'Thank you, I\'m fine, the gods are with me.' })
+keywordHandler:addKeyword({ 'necromant', 'nectar' }, StdModule.say, { npcHandler = npcHandler, text = 'Pheeew! That sounds disgusting! Are you a cook at Frodo\'s?' })
+keywordHandler:addKeyword({ 'necromant' }, StdModule.say, { npcHandler = npcHandler, text = 'Don\'t feed the necromants.' })
+keywordHandler:addKeyword({ 'dog' }, StdModule.say, { npcHandler = npcHandler, text = 'Are we talking about Noodles?' })
+keywordHandler:addKeyword({ 'poodle' }, StdModule.say, { npcHandler = npcHandler, text = 'Are we talking about Noodles?' })
+keywordHandler:addKeyword({ 'noodles' }, StdModule.say, { npcHandler = npcHandler, text = 'Hey, the little one is almost as funny as me!' })
+keywordHandler:addKeyword({ 'muriel' }, StdModule.say, { npcHandler = npcHandler, text = 'Better don\'t mess with sorcerers!' })
+keywordHandler:addKeyword({ 'elane' }, StdModule.say, { npcHandler = npcHandler, text = 'She\'s pretty but too serious for my taste.' })
+keywordHandler:addKeyword({ 'marvik' }, StdModule.say, { npcHandler = npcHandler, text = 'Humourless old guy! Once, he turned me into a frog for painting his distasteful cave in pink.' })
+keywordHandler:addKeyword({ 'gregor' }, StdModule.say, { npcHandler = npcHandler, text = 'A man of steel with a stomach of wax. Never offer him a beer!' })
+keywordHandler:addKeyword({ 'quentin' }, StdModule.say, { npcHandler = npcHandler, text = 'He\'s my baby brother. If you tell him I sent you, he will grant you an extra spell or two.' })
+keywordHandler:addKeyword({ 'gorn' }, StdModule.say, { npcHandler = npcHandler, text = 'He sells spell scrolls each day at midnight, but you have to address him that very second.' })
+keywordHandler:addKeyword({ 'god' }, StdModule.say, { npcHandler = npcHandler, text = 'I better make no jokes about THIS matter.' })
+keywordHandler:addKeyword({ 'sam' }, StdModule.say, { npcHandler = npcHandler, text = 'Did you know that he sells a \'power axe of doom\' now? Run and buy it, he only has got three in store.' })
+keywordHandler:addKeyword({ 'benjamin' }, StdModule.say, { npcHandler = npcHandler, text = 'He would make a fine jester, too.' })
+keywordHandler:addKeyword({ 'monster' }, StdModule.say, { npcHandler = npcHandler, text = 'I know a lot of monster jokes. Just tell me a monster\'s name, come on.' })
+keywordHandler:addKeyword({ 'demon' }, StdModule.say, { npcHandler = npcHandler, text = 'Why are the experienced heroes quicker than others? ... The demons love fast food!' })
+keywordHandler:addKeyword({ 'ghoul' }, StdModule.say, { npcHandler = npcHandler, text = 'Where do ghouls buy their robes? ... In a boooohtique!' })
+keywordHandler:addKeyword({ 'dragon' }, StdModule.say, { npcHandler = npcHandler, text = 'Why do dragons breathe fire? ... They ate too many sorcerers in chilli sauce!' })
+keywordHandler:addKeyword({ 'orc' }, StdModule.say, { npcHandler = npcHandler, text = 'Why do orcs have green skin? ... They ate at Frodo\'s!' })
+keywordHandler:addKeyword({ 'cyclops' }, StdModule.say, { npcHandler = npcHandler, text = 'How many eyes does a cyclops have? ... One for each IQ point they have!' })
+keywordHandler:addKeyword({ 'oswald' }, StdModule.say, { npcHandler = npcHandler, text = 'If you believe half the rumours he\'s spreading, you will get in a lot of trouble.' })
+keywordHandler:addKeyword({ 'dungeon' }, StdModule.say, { npcHandler = npcHandler, text = 'If you are a bad jester, you get a chance to visit them now and then.' })
+keywordHandler:addKeyword({ 'mino' }, StdModule.say, { npcHandler = npcHandler, text = 'What do all little minotaurs want to become when they are grown-ups? ... Cowboys, of course!' })
+keywordHandler:addKeyword({ 'troll' }, StdModule.say, { npcHandler = npcHandler, text = 'Why do trolls live underground? ... Because there are so many pks on the surface!' })
+keywordHandler:addKeyword({ 'bonelord' }, StdModule.say, { npcHandler = npcHandler, text = 'Why are bonelords so ugly? ... Because their mom and dad were bonelords, too!' })
+keywordHandler:addKeyword({ 'rat' }, StdModule.say, { npcHandler = npcHandler, text = 'Why does the rat have a wooden leg? ... Because it is a former pirate!' })
+keywordHandler:addKeyword({ 'spider' }, StdModule.say, { npcHandler = npcHandler, text = 'Why did the spider cross the road? ... Because it ... oh you already know this one!?' })
+keywordHandler:addKeyword({ 'hugo' }, StdModule.say, { npcHandler = npcHandler, text = 'I had a cousin named like that.' })
+keywordHandler:addKeyword({ 'cousin' }, StdModule.say, { npcHandler = npcHandler, text = 'He died some years ago.' })
+keywordHandler:addKeyword({ 'durin' }, StdModule.say, { npcHandler = npcHandler, text = 'Isn\'t he the author of the book \'Fun with Demons\'?' })
+keywordHandler:addKeyword({ 'stephan' }, StdModule.say, { npcHandler = npcHandler, text = 'He is kind of a father figure to me. Of course he denies all kinship to me.' })
+keywordHandler:addKeyword({ 'steve' }, StdModule.say, { npcHandler = npcHandler, text = 'He\'s a smart one. I heared he hid in a foreign country as the first bugs showed up.' })
+keywordHandler:addKeyword({ 'excalibug' }, StdModule.say, { npcHandler = npcHandler, text = 'I am not foolish enough to believe in the existence of this weapon.' })
+keywordHandler:addKeyword({ 'wall', 'carving' }, StdModule.say, { npcHandler = npcHandler, text = 'Oh, I saw some demon carvings in the dungeons as I hid there after a little joke on old Stutch.' })
+keywordHandler:addKeyword({ 'demon', 'carving' }, StdModule.say, { npcHandler = npcHandler, text = 'Yes, they showed demons, seven actually, dancing around a sword! In something like a flaming pit.' })
+keywordHandler:addKeyword({ 'flaming', 'pit' }, StdModule.say, { npcHandler = npcHandler, text = 'Ah, don\'t ask me! Usually mages and mystics know more about such stuff.' })
 
-local jobKeyword = keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'I\'m the royal jes ... uhm ... the royal tax-collector! Do you want to pay your taxes?'})
-	jobKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Come back, when you have enough money.', reset = true}, function(player) return player:getMoney() < 50 end)
-	jobKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Thank you very much. I will have a drink or two on your health!', reset = true}, nil, function(player) if player:removeMoneyBank(50) then end end)
-	jobKeyword:addChildKeyword({''}, StdModule.say, {npcHandler = npcHandler, text = 'Well, perhaps later.', reset = true})
+local jobKeyword = keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = 'I\'m the royal jes ... uhm ... the royal tax-collector! Do you want to pay your taxes?' })
+jobKeyword:addChildKeyword({ 'yes' }, StdModule.say, { npcHandler = npcHandler, text = 'Come back, when you have enough money.', reset = true }, function(player) return player:getMoney() < 50 end)
+jobKeyword:addChildKeyword({ 'yes' }, StdModule.say, { npcHandler = npcHandler, text = 'Thank you very much. I will have a drink or two on your health!', reset = true }, nil, function(player) if player:removeMoneyBank(50) then end end)
+jobKeyword:addChildKeyword({ '' }, StdModule.say, { npcHandler = npcHandler, text = 'Well, perhaps later.', reset = true })
 
-local magicKeyword = keywordHandler:addKeyword({'magic'}, StdModule.say, {npcHandler = npcHandler, text = 'I actually know some spells! Do you want to learn how to \'lessen your load\' for 200 gold?'})
-	magicKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Come back, when you have enough money.', reset = true}, function(player) return player:getMoney() < 200 end)
-	magicKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Here you are, I already lessened your load.', reset = true}, nil, function(player) if player:removeMoneyBank(200) then end end)
-	magicKeyword:addChildKeyword({''}, StdModule.say, {npcHandler = npcHandler, text = 'You don\'t know what offer you are missing!', reset = true})
-keywordHandler:addAliasKeyword({'spell'})
+local magicKeyword = keywordHandler:addKeyword({ 'magic' }, StdModule.say, { npcHandler = npcHandler, text = 'I actually know some spells! Do you want to learn how to \'lessen your load\' for 200 gold?' })
+magicKeyword:addChildKeyword({ 'yes' }, StdModule.say, { npcHandler = npcHandler, text = 'Come back, when you have enough money.', reset = true }, function(player) return player:getMoney() < 200 end)
+magicKeyword:addChildKeyword({ 'yes' }, StdModule.say, { npcHandler = npcHandler, text = 'Here you are, I already lessened your load.', reset = true }, nil, function(player) if player:removeMoneyBank(200) then end end)
+magicKeyword:addChildKeyword({ '' }, StdModule.say, { npcHandler = npcHandler, text = 'You don\'t know what offer you are missing!', reset = true })
+keywordHandler:addAliasKeyword({ 'spell' })
 
-local weaponKeyword = keywordHandler:addKeyword({'weapon'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy a \'mace of the fury\' for 250 gold?'})
-	weaponKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Come back, when you have enough money.', reset = true}, function(player) return player:getMoney() < 250 end)
-	weaponKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'And here it is, it suits you well!', reset = true}, nil, function(player) if player:removeMoneyBank(250) then player:addItem(3473, 1) end end)
-	weaponKeyword:addChildKeyword({''}, StdModule.say, {npcHandler = npcHandler, text = 'You dont know what offer you have passed!', reset = true})
+local weaponKeyword = keywordHandler:addKeyword({ 'weapon' }, StdModule.say, { npcHandler = npcHandler, text = 'Do you want to buy a \'mace of the fury\' for 250 gold?' })
+weaponKeyword:addChildKeyword({ 'yes' }, StdModule.say, { npcHandler = npcHandler, text = 'Come back, when you have enough money.', reset = true }, function(player) return player:getMoney() < 250 end)
+weaponKeyword:addChildKeyword({ 'yes' }, StdModule.say, { npcHandler = npcHandler, text = 'And here it is, it suits you well!', reset = true }, nil, function(player) if player:removeMoneyBank(250) then player:addItem(3473, 1) end end)
+weaponKeyword:addChildKeyword({ '' }, StdModule.say, { npcHandler = npcHandler, text = 'You dont know what offer you have passed!', reset = true })
 
-keywordHandler:addKeyword({'kiss'}, StdModule.say, {npcHandler = npcHandler, text = 'Uh, go away!', ungreet = true}, function(player) return player:getSex() == PLAYERSEX_MALE end)
+keywordHandler:addKeyword({ 'kiss' }, StdModule.say, { npcHandler = npcHandler, text = 'Uh, go away!', ungreet = true }, function(player) return player:getSex() == PLAYERSEX_MALE end)
 
-local kissKeyword = keywordHandler:addKeyword({'kiss'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to kiss me?'})
-	kissKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Uh, oh! ... I am seeing stars!', reset = true}, nil, function(player) player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE) end)
-	kissKeyword:addChildKeyword({''}, StdModule.say, {npcHandler = npcHandler, text = 'Pah, I didn\'t want to kiss you anyway!', reset = true})
+local kissKeyword = keywordHandler:addKeyword({ 'kiss' }, StdModule.say, { npcHandler = npcHandler, text = 'Do you want to kiss me?' })
+kissKeyword:addChildKeyword({ 'yes' }, StdModule.say, { npcHandler = npcHandler, text = 'Uh, oh! ... I am seeing stars!', reset = true }, nil, function(player) player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE) end)
+kissKeyword:addChildKeyword({ '' }, StdModule.say, { npcHandler = npcHandler, text = 'Pah, I didn\'t want to kiss you anyway!', reset = true })
 
-keywordHandler:addKeyword({'lady'}, StdModule.say, {npcHandler = npcHandler, text = 'Well, women don\'t behave necessarily in a ladylike way just because they dress like one!'}, function(player) return player:getSex() == PLAYERSEX_MALE end)
+keywordHandler:addKeyword({ 'lady' }, StdModule.say, { npcHandler = npcHandler, text = 'Well, women don\'t behave necessarily in a ladylike way just because they dress like one!' }, function(player) return player:getSex() == PLAYERSEX_MALE end)
 
-local ladyKeyword = keywordHandler:addKeyword({'lady'}, StdModule.say, {npcHandler = npcHandler, text = 'Has any man said to you that you\'re not only beautiful but also intelligent?'})
-	ladyKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'This is a world of fantasy and full of surprises!', reset = true})
-	ladyKeyword:addChildKeyword({''}, StdModule.say, {npcHandler = npcHandler, text = 'Well, think about it!', reset = true})
+local ladyKeyword = keywordHandler:addKeyword({ 'lady' }, StdModule.say, { npcHandler = npcHandler, text = 'Has any man said to you that you\'re not only beautiful but also intelligent?' })
+ladyKeyword:addChildKeyword({ 'yes' }, StdModule.say, { npcHandler = npcHandler, text = 'This is a world of fantasy and full of surprises!', reset = true })
+ladyKeyword:addChildKeyword({ '' }, StdModule.say, { npcHandler = npcHandler, text = 'Well, think about it!', reset = true })
 
 npcHandler:setMessage(MESSAGE_FAREWELL, 'Remember: A joke a day keeps the ghouls away!')
 npcHandler:setMessage(MESSAGE_WALKAWAY, 'Hey! Fools have feelings too.')

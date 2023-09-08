@@ -97,8 +97,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 npcHandler:setMessage(MESSAGE_GREET, {
-"Ah, ze human everyone iz talking about. Your victory over ze champion waz quite imprezzive. ...",
-"Alzough, for many ziz only provez what a huge zreat you blank-zkinz ztill poze. What do you {want}?"})
+	"Ah, ze human everyone iz talking about. Your victory over ze champion waz quite imprezzive. ...",
+	"Alzough, for many ziz only provez what a huge zreat you blank-zkinz ztill poze. What do you {want}?" })
 npcHandler:setMessage(MESSAGE_FAREWELL, "Juzt leave me alone.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

@@ -9,14 +9,39 @@
 
 #include "pch.hpp"
 
-#include "security/rsa.h"
+#include "lib/di/container.hpp"
+#include "security/rsa.hpp"
 
-RSA::RSA() {
+RSA::RSA(Logger &logger) :
+	logger(logger) {
 	mpz_init(n);
 	mpz_init2(d, 1024);
 }
 
-RSA::~RSA() = default;
+RSA::~RSA() {
+	mpz_clear(n);
+	mpz_clear(d);
+}
+
+RSA &RSA::getInstance() {
+	return inject<RSA>();
+}
+
+void RSA::start() {
+	const char* p("14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
+	const char* q("7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101");
+	try {
+		if (!loadPEM("key.pem")) {
+			// file doesn't exist - switch to base10-hardcoded keys
+			logger.error("File key.pem not found or have problem on loading... Setting standard rsa key\n");
+			setKey(p, q);
+		}
+	} catch (const std::system_error &e) {
+		logger.error("Loading RSA Key from key.pem failed with error: {}\n", e.what());
+		logger.error("Switching to a default key...");
+		setKey(p, q);
+	}
+}
 
 void RSA::setKey(const char* pString, const char* qString, int base /* = 10*/) {
 	mpz_t p;
@@ -93,7 +118,7 @@ std::string RSA::base64Decrypt(const std::string &input) const {
 		} else if (chr == '/' || chr == '_') {
 			return 63;
 		}
-		SPDLOG_ERROR("[RSA::base64Decrypt] - Invalid base6409");
+		g_logger().error("[RSA::base64Decrypt] - Invalid base6409");
 		return 0;
 	};
 
@@ -136,15 +161,14 @@ enum {
 };
 
 uint16_t RSA::decodeLength(char*&pos) const {
-	std::string buffer;
+	uint8_t buffer[4] = { 0 };
 	auto length = static_cast<uint16_t>(static_cast<uint8_t>(*pos++));
 	if (length & 0x80) {
 		length &= 0x7F;
 		if (length > 4) {
-			SPDLOG_ERROR("[RSA::loadPEM] - Invalid 'length'");
+			g_logger().error("[RSA::loadPEM] - Invalid 'length'");
 			return 0;
 		}
-		buffer[0] = buffer[1] = buffer[2] = buffer[3] = 0;
 		switch (length) {
 			case 4:
 				buffer[3] = static_cast<uint8_t>(*pos++);
@@ -157,7 +181,7 @@ uint16_t RSA::decodeLength(char*&pos) const {
 			default:
 				break;
 		}
-		std::memcpy(&length, buffer.data(), sizeof(length));
+		std::memcpy(&length, buffer, sizeof(length));
 	}
 	return length;
 }
@@ -185,32 +209,32 @@ bool RSA::loadPEM(const std::string &filename) {
 
 	if (key.compare(0, header_old.size(), header_old) == 0) {
 		if (key.compare(key.size() - footer_old.size(), footer_old.size(), footer_old) != 0) {
-			SPDLOG_ERROR("[RSA::loadPEM] - Missing RSA private key footer");
+			g_logger().error("[RSA::loadPEM] - Missing RSA private key footer");
 			return false;
 		}
 
 		key = base64Decrypt(key.substr(header_old.size(), key.size() - header_old.size() - footer_old.size()));
 	} else if (key.compare(0, header_new.size(), header_new) == 0) {
 		if (key.compare(key.size() - footer_new.size(), footer_new.size(), footer_new) != 0) {
-			SPDLOG_ERROR("[RSA::loadPEM] - Missing RSA private key footer");
+			g_logger().error("[RSA::loadPEM] - Missing RSA private key footer");
 			return false;
 		}
 
 		key = base64Decrypt(key.substr(header_new.size(), key.size() - header_new.size() - footer_new.size()));
 	} else {
-		SPDLOG_ERROR("[RSA::loadPEM] - Missing RSA private key header");
+		g_logger().error("[RSA::loadPEM] - Missing RSA private key header");
 		return false;
 	}
 
 	char* pos = &key[0];
 	if (static_cast<uint8_t>(*pos++) != CRYPT_RSA_ASN1_SEQUENCE) {
-		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
+		g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;
 	}
 
 	uint16_t length = decodeLength(pos);
 	if (length != key.length() - std::distance(&key[0], pos)) {
-		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
+		g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;
 	}
 
@@ -228,13 +252,13 @@ bool RSA::loadPEM(const std::string &filename) {
 			++pos;
 		}
 		if (static_cast<uint8_t>(*pos++) != CRYPT_RSA_ASN1_SEQUENCE) {
-			SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
+			g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
 			return false;
 		}
 
 		length = decodeLength(pos);
 		if (length != key.length() - std::distance(&key[0], pos)) {
-			SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
+			g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
 			return false;
 		}
 
@@ -242,7 +266,7 @@ bool RSA::loadPEM(const std::string &filename) {
 	}
 
 	if (tag != CRYPT_RSA_ASN1_INTEGER) {
-		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
+		g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;
 	}
 
@@ -250,13 +274,13 @@ bool RSA::loadPEM(const std::string &filename) {
 	pos += length;
 	if (length != 1 || static_cast<uint8_t>(*pos) > 2) {
 		// public key - we don't have any interest in it
-		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
+		g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;
 	}
 
 	tag = static_cast<uint8_t>(*pos++);
 	if (tag != CRYPT_RSA_ASN1_INTEGER) {
-		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
+		g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;
 	}
 

@@ -9,7 +9,7 @@ local function revertHorror()
 			pos = spec:getPosition()
 			spec:teleportTo(Position(32267, 31071, 14))
 			diference = melting:getHealth() - health
-			melting:addHealth( - diference)
+			melting:addHealth(-diference)
 			melting:teleportTo(pos)
 			monster = true
 		end
@@ -44,6 +44,7 @@ function dragonEggPrepareDeath.onPrepareDeath(creature, lastHitKiller, mostDamag
 	creature:addHealth(1, false)
 	return true
 end
+
 dragonEggPrepareDeath:register()
 
 local dragonEggHealthChange = CreatureEvent("DragonEggHealthChange")
@@ -66,4 +67,5 @@ function dragonEggHealthChange.onHealthChange(creature, attacker, primaryDamage,
 	end
 	return primaryDamage, primaryType, secondaryDamage, secondaryType
 end
+
 dragonEggHealthChange:register()

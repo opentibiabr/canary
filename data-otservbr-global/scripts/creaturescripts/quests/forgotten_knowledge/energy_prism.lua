@@ -9,4 +9,5 @@ function energyPrism.onHealthChange(creature, attacker, primaryDamage, primaryTy
 	end
 	return primaryDamage, primaryType, secondaryDamage, secondaryType
 end
+
 energyPrism:register()

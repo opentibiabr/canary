@@ -81,8 +81,8 @@ function teleportHeart.onStepIn(creature, item, position, fromPosition)
 		end
 	elseif uBosses then
 		if player:getStorageValue(uBosses.storage1) >= 1
-		and player:getStorageValue(uBosses.storage2) >= 1
-		and player:getStorageValue(uBosses.storage3) >= 1 then
+				and player:getStorageValue(uBosses.storage2) >= 1
+				and player:getStorageValue(uBosses.storage3) >= 1 then
 			if player:getStorageValue(uBosses.storageTime) < os.time() then
 				player:teleportTo(uBosses.position)
 			else
@@ -95,7 +95,7 @@ function teleportHeart.onStepIn(creature, item, position, fromPosition)
 		end
 	elseif item.actionid == 14351 then
 		if player:getStorageValue(14330) >= 1
-		and player:getStorageValue(14332) >= 1 then
+				and player:getStorageValue(14332) >= 1 then
 			if player:getStorageValue(14333) < os.time() then
 				player:teleportTo(Position(32272, 31384, 14))
 			else

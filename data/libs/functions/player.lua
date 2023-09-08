@@ -1,6 +1,10 @@
 -- Functions from The Forgotten Server
 local foodCondition = Condition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 
+local function firstToUpper(str)
+	return (str:gsub("^%l", string.upper))
+end
+
 function Player.feed(self, food)
 	local condition = self:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 	if condition then
@@ -185,65 +189,18 @@ function Player.removeFamePoints(self, amount)
 end
 
 function Player.depositMoney(self, amount)
-	if not self:removeMoney(amount) then
-		return false
-	end
-
-	self:setBankBalance(self:getBankBalance() + amount)
-	return true
+	return Bank.deposit(self, amount)
 end
 
 function Player.transferMoneyTo(self, target, amount)
 	if not target then
 		return false
 	end
-
-	-- See if you can afford this transfer
-	local balance = self:getBankBalance()
-	if amount > balance then
-		return false
-	end
-
-	-- See if player is online
-	local targetPlayer = Player(target)
-	if targetPlayer then
-		local town = targetPlayer:getTown()
-		if town and town:getId() ~= TOWNS_LIST.DAWNPORT or town:getId() ~= TOWNS_LIST.DAWNPORT_TUTORIAL then
-			-- Blocking transfer to Dawnport
-			targetPlayer:setBankBalance(targetPlayer:getBankBalance() + amount)
-		end
-	else
-		if not playerExists(target) then
-			return false
-		end
-
-		local query_town = db.storeQuery('SELECT `town_id` FROM `players` WHERE `name` = ' .. db.escapeString(target) .. ' LIMIT 1;')
-		if query_town ~= false then
-			local town = Result.getNumber(query_town, "town_id")
-			Result.free(query_town)
-			if town then
-				local town_id = Town(town) and Town(town):getId()
-				if town_id and town_id == TOWNS_LIST.DAWNPORT or town_id == TOWNS_LIST.DAWNPORT_TUTORIAL then
-					-- Blocking transfer to Dawnport
-					return false
-				end
-			end
-			db.query("UPDATE `players` SET `balance` = `balance` + '" .. amount .. "' WHERE `name` = " .. db.escapeString(target))
-		end
-	end
-
-	self:setBankBalance(self:getBankBalance() - amount)
-	return true
+	return Bank.transfer(self, target, amount)
 end
 
 function Player.withdrawMoney(self, amount)
-	local balance = self:getBankBalance()
-	if amount > balance or not self:addMoney(amount) then
-		return false
-	end
-
-	self:setBankBalance(balance - amount)
-	return true
+	return Bank.withdraw(self, amount)
 end
 
 -- player:removeMoneyBank(money)
@@ -272,13 +229,13 @@ function Player:removeMoneyBank(amount)
 			local remains = amount - moneyCount
 
 			-- Removes player bank money
-			self:setBankBalance(bankCount - remains)
+			Bank.debit(self, remains)
 
-			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d from inventory and %d gold from bank account. Your account balance is now %d gold."):format(moneyCount, amount - moneyCount, self:getBankBalance()))
+			self:sendTextMessage(MESSAGE_TRADE, ("Paid %s from inventory and %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(moneyCount), FormatNumber(amount - moneyCount), FormatNumber(self:getBankBalance())))
 			return true
 		end
 		self:setBankBalance(bankCount - amount)
-		self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from bank account. Your account balance is now %d gold."):format(amount, self:getBankBalance()))
+		self:sendTextMessage(MESSAGE_TRADE, ("Paid %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(amount), FormatNumber(self:getBankBalance())))
 		return true
 	end
 	return false
@@ -291,6 +248,20 @@ function Player.hasRookgaardShield(self)
 			or self:getItemCount(3411) > 0
 			or self:getItemCount(3410) > 0
 			or self:getItemCount(3430) > 0
+end
+
+function Player:vocationAbbrev()
+	local vocation = self:getVocation()
+	if not vocation then
+		return "N"
+	end
+
+	local vocationName = vocation:getName():split(" ")
+	local abbrev = ""
+	for _, name in ipairs(vocationName) do
+		abbrev = abbrev .. name:sub(1, 1)
+	end
+	return abbrev:upper()
 end
 
 function Player.isSorcerer(self)
@@ -315,7 +286,7 @@ function Player.isMage(self)
 end
 
 local ACCOUNT_STORAGES = {}
-function Player.getAccountStorage(self, accountId, key, forceUpdate)
+function Player.getAccountStorage(self, key, forceUpdate)
 	local accountId = self:getAccountId()
 	if ACCOUNT_STORAGES[accountId] and not forceUpdate then
 		return ACCOUNT_STORAGES[accountId]
@@ -331,16 +302,20 @@ function Player.getAccountStorage(self, accountId, key, forceUpdate)
 	return false
 end
 
+function Player:getUpdatedAccountStorage(bucket)
+	local fromMemory = self:getStorageValue(bucket) > 0 and self:getStorageValue(bucket) or 0
+	local fromDB = self:getAccountStorage(bucket, true) and self:getAccountStorage(bucket, true) or 0
+	return bit.bor(fromDB, fromMemory)
+end
+
 function Player.getMarriageDescription(thing)
 	local descr = ""
 	if getPlayerMarriageStatus(thing:getGuid()) == MARRIED_STATUS then
 		playerSpouse = getPlayerSpouse(thing:getGuid())
 		if self == thing then
 			descr = descr .. " You are "
-		elseif thing:getSex() == PLAYERSEX_FEMALE then
-			descr = descr .. " She is "
 		else
-			descr = descr .. " He is "
+			descr = descr .. " " .. firstToUpper(thing:getSubjectPronoun()) .. " " .. thing:getSubjectVerb() .. " "
 		end
 		descr = descr .. "married to " .. getPlayerNameById(playerSpouse) .. '.'
 	end
@@ -382,6 +357,15 @@ function Player.sendWeatherEffect(self, groundEffect, fallEffect, thunderEffect)
 	end
 end
 
+function Player:getFamiliarName()
+	local vocation = FAMILIAR_ID[self:getVocation():getBaseId()]
+	local familiarName
+	if vocation then
+		familiarName = vocation.name
+	end
+	return familiarName
+end
+
 function Player:CreateFamiliarSpell(spellId)
 	local playerPosition = self:getPosition()
 	if not self:isPremium() then
@@ -396,13 +380,32 @@ function Player:CreateFamiliarSpell(spellId)
 		return false
 	end
 
-	local vocation = FAMILIAR_ID[self:getVocation():getBaseId()]
-	local familiarName
-
-	if vocation then
-		familiarName = vocation.name
+	local familiarName = self:getFamiliarName()
+	if not familiarName then
+		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		playerPosition:sendMagicEffect(CONST_ME_POFF)
+		return false
 	end
 
+	-- Divide by 2 to get half the time (the default total time is 30 / 2 = 15)
+	local summonDuration = 60 * configManager.getNumber(configKeys.FAMILIAR_TIME) / 2
+	local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, spellId)
+	local cooldown = summonDuration * 2
+	if self:isVip() then
+		local reduction = configManager.getNumber(configKeys.VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION)
+		reduction = (reduction > summonDuration and summonDuration) or reduction
+		cooldown = cooldown - reduction * 60
+	end
+	condition:setTicks(1000 * cooldown / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+	self:addCondition(condition)
+
+	self:createFamiliar(familiarName, summonDuration)
+
+	return true
+end
+
+function Player:createFamiliar(familiarName, timeLeft)
+	local playerPosition = self:getPosition()
 	if not familiarName then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		playerPosition:sendMagicEffect(CONST_ME_POFF)
@@ -422,9 +425,8 @@ function Player:CreateFamiliarSpell(spellId)
 	playerPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	myFamiliar:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	-- Divide by 2 to get half the time (the default total time is 30 / 2 = 15)
-	local summonDuration = configManager.getNumber(configKeys.FAMILIAR_TIME) / 2
-	self:setStorageValue(Global.Storage.FamiliarSummon, os.time() + summonDuration * 60)
-	addEvent(RemoveFamiliar, summonDuration * 60 * 1000, myFamiliar:getId(), self:getId())
+	self:setStorageValue(Global.Storage.FamiliarSummon, os.time() + timeLeft)
+	addEvent(RemoveFamiliar, timeLeft * 1000, myFamiliar:getId(), self:getId())
 	for sendMessage = 1, #FAMILIAR_TIMER do
 		self:setStorageValue(
 			FAMILIAR_TIMER[sendMessage].storage,
@@ -432,7 +434,7 @@ function Player:CreateFamiliarSpell(spellId)
 			-- Calling function
 				SendMessageFunction,
 				-- Time for execute event
-				(summonDuration * 60 - FAMILIAR_TIMER[sendMessage].countdown) * 1000,
+				(timeLeft - FAMILIAR_TIMER[sendMessage].countdown) * 1000,
 				-- Param "playerId"
 				self:getId(),
 				-- Param "message"
@@ -440,17 +442,20 @@ function Player:CreateFamiliarSpell(spellId)
 			)
 		)
 	end
-	local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, spellId)
-	local cooldown = summonDuration * 60 * 1000
-	if self:isVip() then
-		local reduction = configManager.getNumber(configKeys.VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION)
-		reduction = (reduction > summonDuration and summonDuration) or reduction
-		cooldown = cooldown - reduction
-	end
-	condition:setTicks((cooldown) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
-	self:addCondition(condition)
-
 	return true
+end
+
+function Player:dispellFamiliar()
+	local summons = self:getSummons()
+	for i = 1, #summons do
+		if summons[i]:getName():lower() == self:getFamiliarName():lower() then
+			self:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+			summons[i]:getPosition():sendMagicEffect(CONST_ME_POFF)
+			summons[i]:remove()
+			return true
+		end
+	end
+	return false
 end
 
 function Player.getFinalBaseRateExperience(self)
@@ -492,21 +497,78 @@ function Player.getFinalLowLevelBonus(self)
 	return self:getGrindingXpBoost()
 end
 
+function Player.getSubjectPronoun(self)
+	return Pronouns.getPlayerSubjectPronoun(self:getPronoun(), self:getSex(), self:getName())
+end
+
+function Player.getObjectPronoun(self)
+	return Pronouns.getPlayerObjectPronoun(self:getPronoun(), self:getSex(), self:getName())
+end
+
+function Player.getPossessivePronoun(self)
+	return Pronouns.getPlayerPossessivePronoun(self:getPronoun(), self:getSex(), self:getName())
+end
+
+function Player.getSubjectVerb(self, past)
+	return Pronouns.getPlayerSubjectVerb(self:getPronoun(), past)
+end
+
+function Player.findItemInInbox(self, itemId)
+	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
+	local items = inbox:getItems()
+	for _, item in pairs(items) do
+		if item:getId() == itemId then
+			return item
+		end
+	end
+	return nil
+end
+
 function Player.updateHazard(self)
-	local area = self:getPosition():getHazardArea()
-	if not area then
+	local zones = self:getZones()
+	if not zones or #zones == 0 then
 		self:setHazardSystemPoints(0)
 		return true
 	end
 
-	if self:getParty() then
-		self:getParty():refreshHazard()
-	else
-		area:refresh(self)
+	for _, zone in pairs(zones) do
+		local hazard = Hazard.getByName(zone:getName())
+		if not hazard then
+			self:setHazardSystemPoints(0)
+			return true
+		end
+
+		if self:getParty() then
+			self:getParty():refreshHazard()
+		else
+			self:setHazardSystemPoints(hazard:getPlayerCurrentLevel(self))
+		end
+		return true
 	end
 	return true
 end
 
+function Player:addItemStoreInbox(itemId, amount, moveable)
+	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
+	if not moveable then
+		for _, item in pairs(inbox:getItems()) do
+			if item:getId() == itemId then
+				item:removeAttribute(ITEM_ATTRIBUTE_STORE)
+			end
+		end
+	end
+
+	local newItem = inbox:addItem(itemId, amount, INDEX_WHEREEVER, FLAG_NOLIMIT)
+
+	if not moveable then
+		for _, item in pairs(inbox:getItems()) do
+			if item:getId() == itemId then
+				item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+			end
+		end
+	end
+	return newItem
+end
 
 ---@param monster Monster
 ---@return {factor: number, msgSuffix: string}
@@ -554,12 +616,32 @@ function Player:calculateLootFactor(monster)
 	}
 end
 
-function Player:addEventStamina(target)
-	local monster = target:getMonster()
-	if monster and monster:getName() == staminaBonus.target then
-		local playerId = self:getId()
-		if not staminaBonus.eventsTrainer[playerId] then
-			staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)
-		end
+function Player:setExhaustion(key, seconds)
+	return self:setStorageValue(key, os.time() + seconds)
+end
+
+function Player:getExhaustion(key)
+	return math.max(self:getStorageValue(key) - os.time(), 0)
+end
+
+function Player:hasExhaustion(key)
+	return self:getExhaustion(key) > 0 and true or false
+end
+
+function Player:setFiendish()
+	local position = self:getPosition()
+	position:getNextPosition(self:getDirection())
+
+	local tile = Tile(position)
+	local thing = tile:getTopVisibleThing(self)
+	if not tile or thing and not thing:isMonster() then
+		self:sendCancelMessage("Monster not found.")
+		return false
 	end
+
+	local monster = thing:getMonster()
+	if monster then
+		monster:setFiendish(position, self)
+	end
+	return false
 end

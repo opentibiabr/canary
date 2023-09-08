@@ -6,8 +6,8 @@ local items = {
 		slot = "legs",
 		level = 300,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -24,8 +24,8 @@ local items = {
 		slot = "shield",
 		level = 250,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -42,8 +42,8 @@ local items = {
 		slot = "feet",
 		level = 250,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -60,8 +60,8 @@ local items = {
 		slot = "feet",
 		level = 250,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -78,8 +78,8 @@ local items = {
 		slot = "armor",
 		level = 270,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -96,8 +96,8 @@ local items = {
 		slot = "legs",
 		level = 270,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -106,7 +106,7 @@ local items = {
 		type = "deequip",
 		slot = "legs",
 		level = 270
-	},	
+	},
 	{
 		-- Stitched Mutant Hide Legs
 		itemid = 40589,
@@ -114,8 +114,8 @@ local items = {
 		slot = "legs",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -132,8 +132,8 @@ local items = {
 		slot = "head",
 		level = 250,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -162,8 +162,8 @@ local items = {
 		slot = "necklace",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		},
 	},
 	{
@@ -179,8 +179,8 @@ local items = {
 		slot = "necklace",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		},
 	},
 	{
@@ -196,8 +196,8 @@ local items = {
 		slot = "necklace",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		},
 	},
 	{
@@ -213,8 +213,8 @@ local items = {
 		slot = "ring",
 		level = 400,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -230,8 +230,8 @@ local items = {
 		slot = "ring",
 		level = 400,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -247,8 +247,8 @@ local items = {
 		slot = "ring",
 		level = 400,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -264,8 +264,8 @@ local items = {
 		slot = "ring",
 		level = 400,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -281,8 +281,8 @@ local items = {
 		slot = "ring",
 		level = 400,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -298,8 +298,8 @@ local items = {
 		slot = "ring",
 		level = 400,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -315,8 +315,8 @@ local items = {
 		slot = "ring",
 		level = 400,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -332,8 +332,8 @@ local items = {
 		slot = "ring",
 		level = 400,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -349,8 +349,8 @@ local items = {
 		slot = "ring",
 		level = 400,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -366,8 +366,8 @@ local items = {
 		slot = "ring",
 		level = 400,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -383,8 +383,8 @@ local items = {
 		slot = "ring",
 		level = 400,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -400,8 +400,8 @@ local items = {
 		slot = "ring",
 		level = 400,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -417,8 +417,8 @@ local items = {
 		slot = "legs",
 		level = 250,
 		vocation = {
-			{"Druid", true, true},
-			{"Elder Druid"}
+			{ "Druid", true, true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -434,8 +434,8 @@ local items = {
 		slot = "legs",
 		level = 300,
 		vocation = {
-			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true, true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -451,8 +451,8 @@ local items = {
 		slot = "armor",
 		level = 300,
 		vocation = {
-			{"Druid", true, true},
-			{"Elder Druid"}
+			{ "Druid", true, true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -468,8 +468,8 @@ local items = {
 		slot = "armor",
 		level = 270,
 		vocation = {
-			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true, true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -485,8 +485,8 @@ local items = {
 		slot = "hand",
 		level = 250,
 		vocation = {
-			{"Druid", true, true},
-			{"Elder Druid"}
+			{ "Druid", true, true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -502,8 +502,8 @@ local items = {
 		slot = "hand",
 		level = 250,
 		vocation = {
-			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true, true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -519,8 +519,8 @@ local items = {
 		slot = "feet",
 		level = 270,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -536,8 +536,8 @@ local items = {
 		slot = "right-hand",
 		level = 250,
 		vocation = {
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -553,8 +553,8 @@ local items = {
 		slot = "hand",
 		level = 300,
 		vocation = {
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -570,8 +570,8 @@ local items = {
 		slot = "feet",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -587,8 +587,8 @@ local items = {
 		slot = "hand",
 		level = 300,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -604,8 +604,8 @@ local items = {
 		slot = "hand",
 		level = 300,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -621,8 +621,8 @@ local items = {
 		slot = "hand",
 		level = 300,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -638,8 +638,8 @@ local items = {
 		slot = "shield",
 		level = 400,
 		vocation = {
-			{"Druid", true, true},
-			{"Elder Druid"}
+			{ "Druid", true, true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -655,8 +655,8 @@ local items = {
 		slot = "head",
 		level = 400,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -672,8 +672,8 @@ local items = {
 		slot = "shield",
 		level = 400,
 		vocation = {
-			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true, true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -689,8 +689,8 @@ local items = {
 		slot = "head",
 		level = 400,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -706,8 +706,8 @@ local items = {
 		slot = "right-hand",
 		level = 400,
 		vocation = {
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -723,8 +723,8 @@ local items = {
 		slot = "head",
 		level = 400,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -740,8 +740,8 @@ local items = {
 		slot = "head",
 		level = 400,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -757,8 +757,8 @@ local items = {
 		slot = "armor",
 		level = 400,
 		vocation = {
-			{"Knight", true, true},
-			{"Elite Knight"}
+			{ "Knight", true, true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -798,8 +798,8 @@ local items = {
 		slot = "hand",
 		level = 250,
 		vocation = {
-			{"Druid", true, true},
-			{"Elder Druid"}
+			{ "Druid", true, true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -809,8 +809,8 @@ local items = {
 		slot = "hand",
 		level = 250,
 		vocation = {
-			{"Druid", true, true},
-			{"Elder Druid"}
+			{ "Druid", true, true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -820,8 +820,8 @@ local items = {
 		slot = "hand",
 		level = 250,
 		vocation = {
-			{"Druid", true, true},
-			{"Elder Druid"}
+			{ "Druid", true, true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -831,8 +831,8 @@ local items = {
 		slot = "hand",
 		level = 250,
 		vocation = {
-			{"Druid", true, true},
-			{"Elder Druid"}
+			{ "Druid", true, true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -842,8 +842,8 @@ local items = {
 		slot = "shield",
 		level = 300,
 		vocation = {
-			{"Druid", true, true},
-			{"Elder Druid"}
+			{ "Druid", true, true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -853,8 +853,8 @@ local items = {
 		slot = "shield",
 		level = 300,
 		vocation = {
-			{"Druid", true, true},
-			{"Elder Druid"}
+			{ "Druid", true, true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -864,8 +864,8 @@ local items = {
 		slot = "shield",
 		level = 300,
 		vocation = {
-			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true, true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -875,8 +875,8 @@ local items = {
 		slot = "shield",
 		level = 300,
 		vocation = {
-			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true, true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -886,8 +886,8 @@ local items = {
 		slot = "head",
 		level = 250,
 		vocation = {
-			{"Druid", true, true},
-			{"Elder Druid"}
+			{ "Druid", true, true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -897,8 +897,8 @@ local items = {
 		slot = "head",
 		level = 250,
 		vocation = {
-			{"Druid", true, true},
-			{"Elder Druid"}
+			{ "Druid", true, true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -908,8 +908,8 @@ local items = {
 		slot = "head",
 		level = 250,
 		vocation = {
-			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true, true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -919,8 +919,8 @@ local items = {
 		slot = "head",
 		level = 250,
 		vocation = {
-			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true, true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -930,8 +930,8 @@ local items = {
 		slot = "hand",
 		level = 250,
 		vocation = {
-			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true, true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -941,8 +941,8 @@ local items = {
 		slot = "hand",
 		level = 250,
 		vocation = {
-			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true, true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -952,8 +952,8 @@ local items = {
 		slot = "hand",
 		level = 250,
 		vocation = {
-			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true, true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -963,8 +963,8 @@ local items = {
 		slot = "hand",
 		level = 250,
 		vocation = {
-			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true, true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -974,8 +974,8 @@ local items = {
 		slot = "legs",
 		level = 250,
 		vocation = {
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -985,8 +985,8 @@ local items = {
 		slot = "legs",
 		level = 250,
 		vocation = {
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -996,8 +996,8 @@ local items = {
 		slot = "right-hand",
 		level = 250,
 		vocation = {
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1007,8 +1007,8 @@ local items = {
 		slot = "right-hand",
 		level = 250,
 		vocation = {
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1018,8 +1018,8 @@ local items = {
 		slot = "hand",
 		level = 250,
 		vocation = {
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1029,8 +1029,8 @@ local items = {
 		slot = "hand",
 		level = 250,
 		vocation = {
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1040,8 +1040,8 @@ local items = {
 		slot = "hand",
 		level = 250,
 		vocation = {
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1051,8 +1051,8 @@ local items = {
 		slot = "hand",
 		level = 250,
 		vocation = {
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1062,8 +1062,8 @@ local items = {
 		slot = "armor",
 		level = 250,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1073,8 +1073,8 @@ local items = {
 		slot = "armor",
 		level = 250,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1084,8 +1084,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1095,8 +1095,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1106,8 +1106,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1117,8 +1117,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1128,8 +1128,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1139,8 +1139,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1150,8 +1150,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1161,8 +1161,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1172,8 +1172,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1183,8 +1183,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1194,8 +1194,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1205,8 +1205,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1216,8 +1216,8 @@ local items = {
 		slot = "shield",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1227,8 +1227,8 @@ local items = {
 		slot = "shield",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1249,9 +1249,9 @@ local items = {
 		type = "equip",
 		slot = "right-hand",
 		vocation = {
-			{"None", true},
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "None", true },
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1260,9 +1260,9 @@ local items = {
 		type = "deequip",
 		slot = "right-hand",
 		vocation = {
-			{"None", true},
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "None", true },
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1271,9 +1271,9 @@ local items = {
 		type = "equip",
 		slot = "right-hand",
 		vocation = {
-			{"None", true},
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "None", true },
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1282,9 +1282,9 @@ local items = {
 		type = "deequip",
 		slot = "right-hand",
 		vocation = {
-			{"None", true},
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "None", true },
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1293,9 +1293,9 @@ local items = {
 		type = "equip",
 		slot = "right-hand",
 		vocation = {
-			{"None", true},
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "None", true },
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1304,9 +1304,9 @@ local items = {
 		type = "deequip",
 		slot = "right-hand",
 		vocation = {
-			{"None", true},
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "None", true },
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1316,8 +1316,8 @@ local items = {
 		slot = "right-hand",
 		level = 150,
 		vocation = {
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1327,8 +1327,8 @@ local items = {
 		slot = "right-hand",
 		level = 150,
 		vocation = {
-			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{ "Paladin", true, true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1351,8 +1351,8 @@ local items = {
 		slot = "hand",
 		level = 150,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -1368,8 +1368,8 @@ local items = {
 		slot = "hand",
 		level = 150,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -1385,8 +1385,8 @@ local items = {
 		slot = "feet",
 		level = 150,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -1402,8 +1402,8 @@ local items = {
 		slot = "feet",
 		level = 150,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -1419,8 +1419,8 @@ local items = {
 		slot = "hand",
 		level = 150,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1436,8 +1436,8 @@ local items = {
 		slot = "legs",
 		level = 150,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1453,8 +1453,8 @@ local items = {
 		slot = "legs",
 		level = 130,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1470,8 +1470,8 @@ local items = {
 		slot = "hand",
 		level = 150,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1487,8 +1487,8 @@ local items = {
 		slot = "hand",
 		level = 150,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1504,8 +1504,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1521,8 +1521,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1559,8 +1559,8 @@ local items = {
 		slot = "armor",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1576,8 +1576,8 @@ local items = {
 		slot = "head",
 		level = 230,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1587,8 +1587,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1610,10 +1610,10 @@ local items = {
 		slot = "shield",
 		level = 220,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -1623,8 +1623,8 @@ local items = {
 		slot = "hand",
 		level = 220,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -1640,8 +1640,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -1657,8 +1657,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1680,8 +1680,8 @@ local items = {
 		slot = "shield",
 		level = 400,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1697,8 +1697,8 @@ local items = {
 		slot = "feet",
 		level = 400,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1714,8 +1714,8 @@ local items = {
 		slot = "feet",
 		level = 400,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1731,8 +1731,8 @@ local items = {
 		slot = "armor",
 		level = 400,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -1748,8 +1748,8 @@ local items = {
 		slot = "armor",
 		level = 400,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -1766,8 +1766,8 @@ local items = {
 		slot = "armor",
 		level = 400,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1784,8 +1784,8 @@ local items = {
 		slot = "legs",
 		level = 400,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -1802,8 +1802,8 @@ local items = {
 		slot = "legs",
 		level = 400,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -1819,8 +1819,8 @@ local items = {
 		slot = "hand",
 		level = 400,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -1836,8 +1836,8 @@ local items = {
 		slot = "hand",
 		level = 400,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -1853,8 +1853,8 @@ local items = {
 		slot = "hand",
 		level = 400,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1870,8 +1870,8 @@ local items = {
 		slot = "hand",
 		level = 400,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1887,8 +1887,8 @@ local items = {
 		slot = "hand",
 		level = 400,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1904,8 +1904,8 @@ local items = {
 		slot = "hand",
 		level = 400,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1921,8 +1921,8 @@ local items = {
 		slot = "hand",
 		level = 400,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1938,8 +1938,8 @@ local items = {
 		slot = "hand",
 		level = 400,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1955,8 +1955,8 @@ local items = {
 		slot = "hand",
 		level = 400,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1972,8 +1972,8 @@ local items = {
 		slot = "hand",
 		level = 400,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1990,8 +1990,8 @@ local items = {
 		slot = "ring",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2065,8 +2065,8 @@ local items = {
 		slot = "armor",
 		level = 230,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2109,10 +2109,10 @@ local items = {
 		slot = "feet",
 		level = 140,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -2129,10 +2129,10 @@ local items = {
 		slot = "legs",
 		level = 180,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -2149,10 +2149,10 @@ local items = {
 		slot = "legs",
 		level = 225,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2257,8 +2257,8 @@ local items = {
 		slot = "feet",
 		level = 220,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		},
 	},
 	{
@@ -2301,8 +2301,8 @@ local items = {
 		slot = "armor",
 		level = 220,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		},
 	},
 	{
@@ -2319,8 +2319,8 @@ local items = {
 		slot = "head",
 		level = 220,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		},
 	},
 	{
@@ -2361,8 +2361,8 @@ local items = {
 		slot = "armor",
 		level = 220,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		},
 	},
 	{
@@ -2379,8 +2379,8 @@ local items = {
 		slot = "armor",
 		level = 230,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		},
 	},
 	{
@@ -2397,8 +2397,8 @@ local items = {
 		slot = "head",
 		level = 230,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		},
 	},
 	{
@@ -2527,10 +2527,10 @@ local items = {
 		slot = "necklace",
 		level = 220,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		},
 	},
 	{
@@ -2547,10 +2547,10 @@ local items = {
 		slot = "necklace",
 		level = 220,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		},
 	},
 	{
@@ -2567,10 +2567,10 @@ local items = {
 		slot = "necklace",
 		level = 220,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		},
 	},
 	{
@@ -2587,8 +2587,8 @@ local items = {
 		slot = "hand",
 		level = 220,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		},
 	},
 	{
@@ -2605,8 +2605,8 @@ local items = {
 		slot = "hand",
 		level = 270,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		},
 	},
 	{
@@ -2635,8 +2635,8 @@ local items = {
 		slot = "head",
 		level = 270,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		},
 	},
 	{
@@ -2677,8 +2677,8 @@ local items = {
 		slot = "feet",
 		level = 220,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		},
 	},
 	{
@@ -2793,8 +2793,8 @@ local items = {
 		slot = "necklace",
 		level = 180,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2811,8 +2811,8 @@ local items = {
 		slot = "necklace",
 		level = 180,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2829,8 +2829,8 @@ local items = {
 		slot = "necklace",
 		level = 180,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2847,8 +2847,8 @@ local items = {
 		slot = "necklace",
 		level = 180,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2877,10 +2877,10 @@ local items = {
 		slot = "shield",
 		level = 180,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -2897,8 +2897,8 @@ local items = {
 		slot = "shield",
 		level = 180,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2915,8 +2915,8 @@ local items = {
 		slot = "head",
 		level = 180,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2933,10 +2933,10 @@ local items = {
 		slot = "shield",
 		level = 180,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -2953,10 +2953,10 @@ local items = {
 		slot = "hand",
 		level = 180,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -2973,10 +2973,10 @@ local items = {
 		slot = "feet",
 		level = 180,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -2993,10 +2993,10 @@ local items = {
 		slot = "armor",
 		level = 180,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -3037,10 +3037,10 @@ local items = {
 		slot = "shield",
 		level = 180,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -3069,10 +3069,10 @@ local items = {
 		slot = "armor",
 		level = 180,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -3245,10 +3245,10 @@ local items = {
 		slot = "hand",
 		level = 230,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -3265,10 +3265,10 @@ local items = {
 		slot = "hand",
 		level = 180,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -3321,10 +3321,10 @@ local items = {
 		slot = "shield",
 		level = 300,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3341,10 +3341,10 @@ local items = {
 		slot = "shield",
 		level = 300,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3361,10 +3361,10 @@ local items = {
 		slot = "legs",
 		level = 300,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3381,8 +3381,8 @@ local items = {
 		slot = "armor",
 		level = 300,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3411,8 +3411,8 @@ local items = {
 		slot = "hand",
 		level = 300,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -3429,8 +3429,8 @@ local items = {
 		slot = "hand",
 		level = 300,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -3447,10 +3447,10 @@ local items = {
 		slot = "head",
 		level = 300,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3467,10 +3467,10 @@ local items = {
 		slot = "head",
 		level = 300,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -3523,10 +3523,10 @@ local items = {
 		slot = "shield",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Royal Paladin"},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Royal Paladin" },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3543,10 +3543,10 @@ local items = {
 		slot = "legs",
 		level = 200,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -3563,8 +3563,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3581,10 +3581,10 @@ local items = {
 		slot = "head",
 		level = 200,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -3651,8 +3651,8 @@ local items = {
 		slot = "hand",
 		level = 200,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -3669,8 +3669,8 @@ local items = {
 		slot = "hand",
 		level = 200,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -5249,8 +5249,8 @@ local items = {
 		slot = "hand",
 		level = 41,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -5303,10 +5303,10 @@ local items = {
 		slot = "hand",
 		level = 80,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5323,10 +5323,10 @@ local items = {
 		slot = "shield",
 		level = 80,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5477,8 +5477,8 @@ local items = {
 		slot = "necklace",
 		level = 150,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -5495,10 +5495,10 @@ local items = {
 		slot = "necklace",
 		level = 150,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5515,8 +5515,8 @@ local items = {
 		slot = "necklace",
 		level = 150,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -5533,8 +5533,8 @@ local items = {
 		slot = "ring",
 		level = 100,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -5551,8 +5551,8 @@ local items = {
 		slot = "ring",
 		level = 100,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -5569,10 +5569,10 @@ local items = {
 		slot = "ring",
 		level = 100,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5589,10 +5589,10 @@ local items = {
 		slot = "ring",
 		level = 100,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5609,8 +5609,8 @@ local items = {
 		slot = "ring",
 		level = 100,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -5627,8 +5627,8 @@ local items = {
 		slot = "ring",
 		level = 100,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -5645,8 +5645,8 @@ local items = {
 		slot = "necklace",
 		level = 150,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -5663,10 +5663,10 @@ local items = {
 		slot = "necklace",
 		level = 150,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5683,8 +5683,8 @@ local items = {
 		slot = "necklace",
 		level = 150,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -5741,10 +5741,10 @@ local items = {
 		slot = "head",
 		level = 100,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5761,10 +5761,10 @@ local items = {
 		slot = "head",
 		level = 100,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5781,8 +5781,8 @@ local items = {
 		slot = "hand",
 		level = 100,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5799,8 +5799,8 @@ local items = {
 		slot = "hand",
 		level = 100,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -5913,8 +5913,8 @@ local items = {
 		slot = "hand",
 		level = 100,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5931,8 +5931,8 @@ local items = {
 		slot = "hand",
 		level = 100,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -6033,8 +6033,8 @@ local items = {
 		slot = "hand",
 		level = 100,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -6051,8 +6051,8 @@ local items = {
 		slot = "hand",
 		level = 100,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -6269,8 +6269,8 @@ local items = {
 		slot = "hand",
 		level = 100,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -6287,8 +6287,8 @@ local items = {
 		slot = "hand",
 		level = 65,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -6393,10 +6393,10 @@ local items = {
 		slot = "shield",
 		level = 150,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -6485,10 +6485,10 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -6505,10 +6505,10 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -6525,10 +6525,10 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -6545,10 +6545,10 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -6565,8 +6565,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -6583,8 +6583,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -6601,8 +6601,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -6619,8 +6619,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -6637,8 +6637,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -6655,8 +6655,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -6673,8 +6673,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -6691,8 +6691,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -6709,8 +6709,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -6727,8 +6727,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -6745,8 +6745,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -6763,8 +6763,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -6781,8 +6781,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -6799,8 +6799,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -6817,8 +6817,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -6835,8 +6835,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -6891,8 +6891,8 @@ local items = {
 		slot = "hand",
 		level = 37,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -6981,8 +6981,8 @@ local items = {
 		slot = "head",
 		level = 100,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -6999,8 +6999,8 @@ local items = {
 		slot = "head",
 		level = 100,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -7017,8 +7017,8 @@ local items = {
 		slot = "head",
 		level = 100,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -7035,8 +7035,8 @@ local items = {
 		slot = "head",
 		level = 100,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -7131,10 +7131,10 @@ local items = {
 		slot = "feet",
 		level = 80,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -7248,10 +7248,10 @@ local items = {
 		type = "equip",
 		slot = "shield",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -7267,8 +7267,8 @@ local items = {
 		slot = "hand",
 		level = 1,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -7285,8 +7285,8 @@ local items = {
 		slot = "hand",
 		level = 1,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -7339,10 +7339,10 @@ local items = {
 		slot = "necklace",
 		level = 75,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -7493,10 +7493,10 @@ local items = {
 		slot = "feet",
 		level = 50,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -7538,10 +7538,10 @@ local items = {
 		type = "equip",
 		slot = "armor",
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -7557,10 +7557,10 @@ local items = {
 		slot = "head",
 		level = 70,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -7577,10 +7577,10 @@ local items = {
 		slot = "armor",
 		level = 40,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -7671,10 +7671,10 @@ local items = {
 		slot = "shield",
 		level = 250,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -7691,10 +7691,10 @@ local items = {
 		slot = "shield",
 		level = 150,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -7711,10 +7711,10 @@ local items = {
 		slot = "shield",
 		level = 75,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -8031,10 +8031,10 @@ local items = {
 		slot = "armor",
 		level = 130,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -8086,10 +8086,10 @@ local items = {
 		type = "equip",
 		slot = "legs",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -8323,7 +8323,7 @@ local items = {
 		slot = "hand",
 		level = 1,
 		vocation = {
-			{"None", true}
+			{ "None", true }
 		}
 	},
 	{
@@ -8486,8 +8486,8 @@ local items = {
 		slot = "hand",
 		level = 65,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -8504,8 +8504,8 @@ local items = {
 		slot = "hand",
 		level = 65,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -8522,8 +8522,8 @@ local items = {
 		slot = "shield",
 		level = 150,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -8540,8 +8540,8 @@ local items = {
 		slot = "hand",
 		level = 65,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -8586,8 +8586,8 @@ local items = {
 		slot = "feet",
 		level = 150,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -8604,8 +8604,8 @@ local items = {
 		slot = "legs",
 		level = 150,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -8622,10 +8622,10 @@ local items = {
 		slot = "armor",
 		level = 120,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -8642,8 +8642,8 @@ local items = {
 		slot = "head",
 		level = 150,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -8674,10 +8674,10 @@ local items = {
 		slot = "shield",
 		level = 130,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -8694,10 +8694,10 @@ local items = {
 		slot = "legs",
 		level = 150,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -8714,10 +8714,10 @@ local items = {
 		slot = "armor",
 		level = 150,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -8734,10 +8734,10 @@ local items = {
 		slot = "head",
 		level = 150,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -8778,8 +8778,8 @@ local items = {
 		slot = "hand",
 		level = 65,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -8820,10 +8820,10 @@ local items = {
 		slot = "shield",
 		level = 150,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -9010,10 +9010,10 @@ local items = {
 		slot = "armor",
 		level = 80,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -9078,8 +9078,8 @@ local items = {
 		slot = "shield",
 		level = 130,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -9096,8 +9096,8 @@ local items = {
 		slot = "legs",
 		level = 185,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -9114,10 +9114,10 @@ local items = {
 		slot = "shield",
 		level = 120,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -9134,8 +9134,8 @@ local items = {
 		slot = "feet",
 		level = 150,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -9152,10 +9152,10 @@ local items = {
 		slot = "legs",
 		level = 130,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -9186,8 +9186,8 @@ local items = {
 		slot = "armor",
 		level = 150,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -9204,8 +9204,8 @@ local items = {
 		slot = "armor",
 		level = 200,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -9284,8 +9284,8 @@ local items = {
 		slot = "hand",
 		level = 40,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -9326,8 +9326,8 @@ local items = {
 		slot = "hand",
 		level = 40,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -9379,7 +9379,7 @@ local items = {
 		type = "equip",
 		slot = "ring",
 		vocation = {
-			{"None", true}
+			{ "None", true }
 		}
 	},
 	{
@@ -9388,7 +9388,7 @@ local items = {
 		type = "deequip",
 		slot = "ring",
 		vocation = {
-			{"None", true}
+			{ "None", true }
 		}
 	},
 	{
@@ -9397,7 +9397,7 @@ local items = {
 		type = "equip",
 		slot = "ring",
 		vocation = {
-			{"None", true}
+			{ "None", true }
 		}
 	},
 	{
@@ -9406,7 +9406,7 @@ local items = {
 		type = "deequip",
 		slot = "ring",
 		vocation = {
-			{"None", true}
+			{ "None", true }
 		}
 	},
 	{
@@ -9416,8 +9416,8 @@ local items = {
 		slot = "hand",
 		level = 37,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -9433,10 +9433,10 @@ local items = {
 		type = "equip",
 		slot = "head",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -9548,10 +9548,10 @@ local items = {
 		slot = "shield",
 		level = 100,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -9568,10 +9568,10 @@ local items = {
 		slot = "feet",
 		level = 80,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -9588,8 +9588,8 @@ local items = {
 		slot = "head",
 		level = 100,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -9606,8 +9606,8 @@ local items = {
 		slot = "shield",
 		level = 80,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -9624,10 +9624,10 @@ local items = {
 		slot = "armor",
 		level = 100,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -9644,8 +9644,8 @@ local items = {
 		slot = "armor",
 		level = 100,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -9661,10 +9661,10 @@ local items = {
 		type = "equip",
 		slot = "head",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -9692,10 +9692,10 @@ local items = {
 		slot = "armor",
 		level = 100,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -9760,10 +9760,10 @@ local items = {
 		slot = "head",
 		level = 60,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -9780,10 +9780,10 @@ local items = {
 		slot = "armor",
 		level = 60,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -9800,10 +9800,10 @@ local items = {
 		slot = "armor",
 		level = 60,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -9927,10 +9927,10 @@ local items = {
 		type = "equip",
 		slot = "head",
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -9946,10 +9946,10 @@ local items = {
 		slot = "armor",
 		level = 50,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -10026,10 +10026,10 @@ local items = {
 		slot = "feet",
 		level = 70,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -10058,10 +10058,10 @@ local items = {
 		slot = "feet",
 		level = 70,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -10078,10 +10078,10 @@ local items = {
 		slot = "feet",
 		level = 70,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -10097,10 +10097,10 @@ local items = {
 		type = "equip",
 		slot = "head",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -10608,10 +10608,10 @@ local items = {
 		slot = "head",
 		level = 50,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -10704,10 +10704,10 @@ local items = {
 		slot = "head",
 		level = 80,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -10724,8 +10724,8 @@ local items = {
 		slot = "legs",
 		level = 80,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -10742,8 +10742,8 @@ local items = {
 		slot = "armor",
 		level = 80,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -10915,8 +10915,8 @@ local items = {
 		type = "equip",
 		slot = "legs",
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -10932,8 +10932,8 @@ local items = {
 		slot = "hand",
 		level = 42,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -10950,8 +10950,8 @@ local items = {
 		slot = "hand",
 		level = 22,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -10968,8 +10968,8 @@ local items = {
 		slot = "hand",
 		level = 37,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -10986,10 +10986,10 @@ local items = {
 		slot = "shield",
 		level = 80,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11006,8 +11006,8 @@ local items = {
 		slot = "hand",
 		level = 37,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11024,8 +11024,8 @@ local items = {
 		slot = "hand",
 		level = 22,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11042,8 +11042,8 @@ local items = {
 		slot = "hand",
 		level = 42,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11060,8 +11060,8 @@ local items = {
 		slot = "shield",
 		level = 100,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -11078,8 +11078,8 @@ local items = {
 		slot = "shield",
 		level = 100,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -11096,8 +11096,8 @@ local items = {
 		slot = "shield",
 		level = 100,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -11114,8 +11114,8 @@ local items = {
 		slot = "shield",
 		level = 100,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -11132,8 +11132,8 @@ local items = {
 		slot = "shield",
 		level = 100,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -11150,10 +11150,10 @@ local items = {
 		slot = "shield",
 		level = 70,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11170,10 +11170,10 @@ local items = {
 		slot = "shield",
 		level = 60,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11190,10 +11190,10 @@ local items = {
 		slot = "shield",
 		level = 50,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11210,10 +11210,10 @@ local items = {
 		slot = "shield",
 		level = 40,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11230,10 +11230,10 @@ local items = {
 		slot = "shield",
 		level = 30,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11249,10 +11249,10 @@ local items = {
 		type = "equip",
 		slot = "armor",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11267,8 +11267,8 @@ local items = {
 		type = "equip",
 		slot = "armor",
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -11284,8 +11284,8 @@ local items = {
 		slot = "armor",
 		level = 100,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -11302,8 +11302,8 @@ local items = {
 		slot = "armor",
 		level = 85,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -11320,8 +11320,8 @@ local items = {
 		slot = "armor",
 		level = 100,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -11338,8 +11338,8 @@ local items = {
 		slot = "armor",
 		level = 75,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -11356,8 +11356,8 @@ local items = {
 		slot = "armor",
 		level = 75,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -11374,8 +11374,8 @@ local items = {
 		slot = "armor",
 		level = 75,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -11392,8 +11392,8 @@ local items = {
 		slot = "armor",
 		level = 100,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -11410,8 +11410,8 @@ local items = {
 		slot = "armor",
 		level = 100,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -11428,8 +11428,8 @@ local items = {
 		slot = "armor",
 		level = 100,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -11446,8 +11446,8 @@ local items = {
 		slot = "armor",
 		level = 100,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -11464,10 +11464,10 @@ local items = {
 		slot = "armor",
 		level = 60,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -11484,10 +11484,10 @@ local items = {
 		slot = "armor",
 		level = 60,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -11504,10 +11504,10 @@ local items = {
 		slot = "armor",
 		level = 60,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -11524,10 +11524,10 @@ local items = {
 		slot = "armor",
 		level = 60,
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -11591,8 +11591,8 @@ local items = {
 		type = "equip",
 		slot = "armor",
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -11607,10 +11607,10 @@ local items = {
 		type = "equip",
 		slot = "armor",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11625,10 +11625,10 @@ local items = {
 		type = "equip",
 		slot = "armor",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11644,8 +11644,8 @@ local items = {
 		slot = "armor",
 		level = 75,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11662,8 +11662,8 @@ local items = {
 		slot = "armor",
 		level = 75,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -11680,8 +11680,8 @@ local items = {
 		slot = "armor",
 		level = 75,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -11698,8 +11698,8 @@ local items = {
 		slot = "armor",
 		level = 75,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11716,8 +11716,8 @@ local items = {
 		slot = "armor",
 		level = 65,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -11867,10 +11867,10 @@ local items = {
 		type = "equip",
 		slot = "head",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11885,10 +11885,10 @@ local items = {
 		type = "equip",
 		slot = "armor",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -11999,10 +11999,10 @@ local items = {
 		type = "equip",
 		slot = "head",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12017,10 +12017,10 @@ local items = {
 		type = "equip",
 		slot = "head",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12035,10 +12035,10 @@ local items = {
 		type = "equip",
 		slot = "head",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12053,10 +12053,10 @@ local items = {
 		type = "equip",
 		slot = "head",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12072,10 +12072,10 @@ local items = {
 		slot = "armor",
 		level = 50,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12092,10 +12092,10 @@ local items = {
 		slot = "armor",
 		level = 50,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12112,10 +12112,10 @@ local items = {
 		slot = "armor",
 		level = 50,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12132,10 +12132,10 @@ local items = {
 		slot = "legs",
 		level = 40,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12152,10 +12152,10 @@ local items = {
 		slot = "legs",
 		level = 40,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12172,10 +12172,10 @@ local items = {
 		slot = "legs",
 		level = 40,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12192,10 +12192,10 @@ local items = {
 		slot = "feet",
 		level = 35,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12212,10 +12212,10 @@ local items = {
 		slot = "feet",
 		level = 35,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12232,10 +12232,10 @@ local items = {
 		slot = "feet",
 		level = 35,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12308,10 +12308,10 @@ local items = {
 		slot = "feet",
 		level = 35,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12328,10 +12328,10 @@ local items = {
 		slot = "legs",
 		level = 40,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -12348,10 +12348,10 @@ local items = {
 		slot = "armor",
 		level = 50,
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -14683,8 +14683,8 @@ local items = {
 		type = "equip",
 		slot = "head",
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -14735,8 +14735,8 @@ local items = {
 		type = "equip",
 		slot = "armor",
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -15546,8 +15546,8 @@ local items = {
 		slot = "armor",
 		level = 60,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -15647,10 +15647,10 @@ local items = {
 		type = "equip",
 		slot = "armor",
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -15701,10 +15701,10 @@ local items = {
 		type = "equip",
 		slot = "legs",
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -15719,10 +15719,10 @@ local items = {
 		type = "equip",
 		slot = "armor",
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -15845,10 +15845,10 @@ local items = {
 		type = "equip",
 		slot = "legs",
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -15863,10 +15863,10 @@ local items = {
 		type = "equip",
 		slot = "armor",
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -15917,10 +15917,10 @@ local items = {
 		type = "equip",
 		slot = "armor",
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -15947,10 +15947,10 @@ local items = {
 		type = "equip",
 		slot = "legs",
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -16001,10 +16001,10 @@ local items = {
 		type = "equip",
 		slot = "armor",
 		vocation = {
-			{"Knight", true},
-			{"Paladin", true, true},
-			{"Elite Knight"},
-			{"Royal Paladin"}
+			{ "Knight", true },
+			{ "Paladin", true, true },
+			{ "Elite Knight" },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -17171,10 +17171,10 @@ local items = {
 		type = "equip",
 		slot = "head",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -17478,8 +17478,8 @@ local items = {
 		slot = "hand",
 		level = 13,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -17496,8 +17496,8 @@ local items = {
 		slot = "hand",
 		level = 6,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -17514,8 +17514,8 @@ local items = {
 		slot = "hand",
 		level = 26,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -17532,8 +17532,8 @@ local items = {
 		slot = "hand",
 		level = 19,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -17550,8 +17550,8 @@ local items = {
 		slot = "hand",
 		level = 33,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -17568,8 +17568,8 @@ local items = {
 		slot = "hand",
 		level = 13,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -17586,8 +17586,8 @@ local items = {
 		slot = "hand",
 		level = 19,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -17604,8 +17604,8 @@ local items = {
 		slot = "hand",
 		level = 33,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -17622,8 +17622,8 @@ local items = {
 		slot = "hand",
 		level = 6,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -17640,8 +17640,8 @@ local items = {
 		slot = "hand",
 		level = 26,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -17669,10 +17669,10 @@ local items = {
 		type = "equip",
 		slot = "shield",
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -18467,16 +18467,16 @@ for _, i in ipairs(items) do
 	local movement = MoveEvent()
 	movement:id(i.itemid)
 
-	if(i.type) then
+	if (i.type) then
 		movement:type(i.type)
 	end
-	if(i.slot) then
+	if (i.slot) then
 		movement:slot(i.slot)
 	end
-	if(i.level) then
+	if (i.level) then
 		movement:level(i.level)
 	end
-	if(i.vocation) then
+	if (i.vocation) then
 		for _, v in ipairs(i.vocation) do
 			movement:vocation(v[1], v[2] or false, v[3] or false)
 		end

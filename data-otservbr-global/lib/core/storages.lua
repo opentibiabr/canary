@@ -2845,7 +2845,9 @@ Storage = {
 			},
 			CitizenOfIssaviOutfits = {},
 			RoyalBounaceanAdvisorOutfits = {},
-			TooHotToHandle = {}
+			TooHotToHandle = {
+				BrainstealerTimer = 47611,
+			}
 		},
 		U12_80 = { -- update 12.80 - Reserved Storages 47801 - 47850
 			RoyalCostumeOutfits = {}
@@ -2864,6 +2866,9 @@ Storage = {
 					ThePrimalMenaceKilled = 47855,
 				},
 			},
+			WithinTheTides = {
+				TimiraTimer = 47858,
+			}
 		},
 		U13_10 = { -- update 13.10 - Reserved Storages 47901 - 47951
 			CradleOfMonsters = {
@@ -3069,7 +3074,8 @@ GlobalStorage = {
 		TentacleWave = 60079,
 		DevourerWave = 60080,
 		GloothWave = 60081,
-		LavaChange = 60082
+		LavaChange = 60082,
+		FastWay = 24867,
 	},
 	ForgottenKnowledge = {
 		-- Reserved storage from 60090 - 60099
@@ -3201,8 +3207,8 @@ table.sort(extraction) -- Sort the table
 if #extraction > 1 then
 	for i = 1, #extraction - 1 do
 		if extraction[i] == extraction[i + 1] then
-			Spdlog.warn(string.format("Duplicate storage value found: %d",
-				extraction[i]))
+			logger.warn("Duplicate storage value found: {}",
+				extraction[i])
 		end
 	end
 end

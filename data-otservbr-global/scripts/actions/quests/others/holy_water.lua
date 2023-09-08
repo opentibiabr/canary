@@ -45,7 +45,6 @@ local config = {
 
 local othersHolyWater = Action()
 function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-
 	if target.itemid == config.antler_talisman then
 		item:transform(config.sacred_antler_talisman)
 		item:remove(1)
@@ -88,7 +87,7 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 	if target.actionid == 4007 and target.actionid == 4024 then
 		local graveStorage = storages[target.actionid]
 		if player:getStorageValue(graveStorage) == 1
-		or player:getStorageValue(Storage.TibiaTales.RestInHallowedGround.Questline) ~= 3 then
+				or player:getStorageValue(Storage.TibiaTales.RestInHallowedGround.Questline) ~= 3 then
 			return false
 		end
 
@@ -107,9 +106,9 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 	end
 
 	-- Shadow Nexus
-	if table.contains({7925, 7927, 7929}, target.itemid) then
+	if table.contains({ 7925, 7927, 7929 }, target.itemid) then
 		if target.itemid == 7929 then
-			Game.setStorageValue(GlobalStorage.Inquisition, math.random(4,5))
+			Game.setStorageValue(GlobalStorage.Inquisition, math.random(4, 5))
 		end
 		local newShadowNexus = Game.createItem(target.itemid + 1, 1, shadowNexusPosition)
 		if newShadowNexus then
@@ -120,7 +119,7 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 		toPosition:sendMagicEffect(CONST_ME_ENERGYHIT)
 	elseif target.itemid == 7931 then
 		if Game.getStorageValue(GlobalStorage.Inquisition) > 0 then
-			Game.setStorageValue(GlobalStorage.Inquisition, (Game.getStorageValue(GlobalStorage.Inquisition)-1))
+			Game.setStorageValue(GlobalStorage.Inquisition, (Game.getStorageValue(GlobalStorage.Inquisition) - 1))
 			if player:getStorageValue(Storage.TheInquisition.Questline) < 22 then
 				-- The Inquisition Questlog- 'Mission 7: The Shadow Nexus'
 				player:setStorageValue(Storage.TheInquisition.Mission07, 2)

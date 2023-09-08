@@ -5,7 +5,7 @@ local function delayedCastSpell(cid, var)
 	end
 
 	if creature:getName(creature:getMaster()) == "The Welter" then
-	local summon = creature:getSummons()
+		local summon = creature:getSummons()
 		for i = 1, #summon do
 			if summon[i]:getName() == "Egg" then
 				summon[i]:getPosition():sendMagicEffect(CONST_ME_POISONAREA)
@@ -25,7 +25,7 @@ local maxsummons = 7
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-local summoncount = creature:getSummons()
+	local summoncount = creature:getSummons()
 	if #summoncount < 1 then
 		for i = 1, maxsummons - #summoncount do
 			local mon = Game.createMonster("Egg", creature:getPosition())

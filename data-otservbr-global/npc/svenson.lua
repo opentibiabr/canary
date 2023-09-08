@@ -79,9 +79,9 @@ end
 
 -- Travel
 local function addTravelKeyword(keyword, text, cost, destination)
-	local travelKeyword = keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to sail ' .. text, cost = cost})
-		travelKeyword:addChildKeyword({'yes'}, StdModule.travel, {npcHandler = npcHandler, premium = false, cost = cost, destination = destination})
-		travelKeyword:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, text = 'We would like to serve you some time.', reset = true})
+	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = 'Do you want to sail ' .. text, cost = cost })
+	travelKeyword:addChildKeyword({ 'yes' }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = cost, destination = destination })
+	travelKeyword:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, text = 'We would like to serve you some time.', reset = true })
 end
 
 addTravelKeyword('tibia', 'back to Tibia?', 0, Position(32235, 31674, 7))
@@ -89,9 +89,9 @@ addTravelKeyword('senja', 'Senja for |TRAVELCOST|?', 10, Position(32128, 31664, 
 addTravelKeyword('vega', 'Vega for |TRAVELCOST|?', 10, Position(32020, 31692, 7))
 
 -- Basic
-keywordHandler:addKeyword({'passage'}, StdModule.say, {npcHandler = npcHandler, text = 'Where do you want to go? To {Tibia}, {Senja} or {Vega}?'})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'I am the captain of this ship.'})
-keywordHandler:addKeyword({'captain'}, StdModule.say, {npcHandler = npcHandler, text = 'I am the captain of this ship.'})
+keywordHandler:addKeyword({ 'passage' }, StdModule.say, { npcHandler = npcHandler, text = 'Where do you want to go? To {Tibia}, {Senja} or {Vega}?' })
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = 'I am the captain of this ship.' })
+keywordHandler:addKeyword({ 'captain' }, StdModule.say, { npcHandler = npcHandler, text = 'I am the captain of this ship.' })
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

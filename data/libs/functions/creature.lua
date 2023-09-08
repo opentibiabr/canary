@@ -20,7 +20,7 @@ function Creature.getClosestFreePosition(self, position, maxRadius, mustBeReacha
 
 			local tile = Tile(checkPosition)
 			if tile and tile:getCreatureCount() == 0 and not tile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) and
-				(not mustBeReachable or self:getPathTo(checkPosition)) then
+					(not mustBeReachable or self:getPathTo(checkPosition)) then
 				return checkPosition
 			end
 		end
@@ -221,4 +221,8 @@ function Creature.getKillers(self, onlyPlayers)
 		killers[i] = killer.creature
 	end
 	return killers
+end
+
+function Creature:clearIcon()
+	self:setIcon(0, 0)
 end

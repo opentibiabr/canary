@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_CALLBACKS_CALLBACKS_DEFINITIONS_HPP_
-#define SRC_LUA_CALLBACKS_CALLBACKS_DEFINITIONS_HPP_
+#pragma once
 
 /**
  * @enum EventCallback_t
@@ -18,49 +17,54 @@
  * with specific callbacks.
  * @note The events are categorized by the type of game entity they relate to.
  */
-enum class EventCallback_t : int16_t {
-	None,
+enum class EventCallback_t : uint16_t {
+	none,
 	// Creature
-	CreatureOnChangeOutfit,
-	CreatureOnAreaCombat,
-	CreatureOnTargetCombat,
-	CreatureOnHear,
-	CreatureOnDrainHealth,
+	creatureOnChangeOutfit,
+	creatureOnAreaCombat,
+	creatureOnTargetCombat,
+	creatureOnHear,
+	creatureOnDrainHealth,
 	// Party
-	PartyOnJoin,
-	PartyOnLeave,
-	PartyOnDisband,
-	PartyOnShareExperience,
+	partyOnJoin,
+	partyOnLeave,
+	partyOnDisband,
+	partyOnShareExperience,
 	// Player
-	PlayerOnBrowseField,
-	PlayerOnLook,
-	PlayerOnLookInBattleList,
-	PlayerOnLookInTrade,
-	PlayerOnLookInShop,
-	PlayerOnMoveItem,
-	PlayerOnItemMoved,
-	PlayerOnChangeZone,
-	PlayerOnChangeHazard,
-	PlayerOnMoveCreature,
-	PlayerOnReportRuleViolation,
-	PlayerOnReportBug,
-	PlayerOnTurn,
-	PlayerOnTradeRequest,
-	PlayerOnTradeAccept,
-	PlayerOnGainExperience,
-	PlayerOnLoseExperience,
-	PlayerOnGainSkillTries,
-	PlayerOnRequestQuestLog,
-	PlayerOnRequestQuestLine,
-	PlayerOnStorageUpdate,
-	PlayerOnRemoveCount,
-	PlayerOnCombat,
-	PlayerOnInventoryUpdate,
+	playerOnBrowseField,
+	playerOnLook,
+	playerOnLookInBattleList,
+	playerOnLookInTrade,
+	playerOnLookInShop,
+	playerOnMoveItem,
+	playerOnItemMoved,
+	playerOnChangeZone,
+	playerOnChangeHazard,
+	playerOnMoveCreature,
+	playerOnReportRuleViolation,
+	playerOnReportBug,
+	playerOnTurn,
+	playerOnTradeRequest,
+	playerOnTradeAccept,
+	playerOnGainExperience,
+	playerOnLoseExperience,
+	playerOnGainSkillTries,
+	playerOnRequestQuestLog,
+	playerOnRequestQuestLine,
+	playerOnStorageUpdate,
+	playerOnRemoveCount,
+	playerOnCombat,
+	playerOnInventoryUpdate,
+	playerOnRotateItem,
 	// Monster
-	MonsterOnDropLoot,
-	MonsterOnSpawn,
+	monsterOnDropLoot,
+	monsterPostDropLoot,
+	monsterOnSpawn,
 	// Npc
-	NpcOnSpawn,
+	npcOnSpawn,
+	// Zone
+	zoneBeforeCreatureEnter,
+	zoneBeforeCreatureLeave,
+	zoneAfterCreatureEnter,
+	zoneAfterCreatureLeave,
 };
-
-#endif // SRC_LUA_CALLBACKS_CALLBACKS_DEFINITIONS_HPP_

@@ -49,12 +49,13 @@ function childrenGrease.onUse(player, item, fromPosition, target, toPosition, is
 	end
 	return true
 end
+
 local positions = {
-	{x = 33349, y = 31123, z = 5},
-	{x = 33349, y = 31124, z = 5},
-	{x = 33349, y = 31125, z = 5},
-	{x = 33349, y = 31126, z = 5},
-	{x = 33349, y = 31127, z = 5}
+	{ x = 33349, y = 31123, z = 5 },
+	{ x = 33349, y = 31124, z = 5 },
+	{ x = 33349, y = 31125, z = 5 },
+	{ x = 33349, y = 31126, z = 5 },
+	{ x = 33349, y = 31127, z = 5 }
 }
 
 for index, value in pairs(positions) do

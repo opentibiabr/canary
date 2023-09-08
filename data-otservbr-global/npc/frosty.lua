@@ -44,12 +44,12 @@ npcType.onThink = function(npc, interval)
 end
 
 local sleightInfo = {
-['bright percht sleigh'] = {cost = 0, items = {{30192,1}}, mount = 133, storageID = Storage.Percht1},
-['cold percht sleigh'] = {cost = 0, items = {{30192,1}}, mount = 132, storageID = Storage.Percht2},
-['dark percht sleigh'] = {cost = 0, items = {{30192,1}}, mount = 134, storageID = Storage.Percht3}
+	['bright percht sleigh'] = { cost = 0, items = { { 30192, 1 } }, mount = 133, storageID = Storage.Percht1 },
+	['cold percht sleigh'] = { cost = 0, items = { { 30192, 1 } }, mount = 132, storageID = Storage.Percht2 },
+	['dark percht sleigh'] = { cost = 0, items = { { 30192, 1 } }, mount = 134, storageID = Storage.Percht3 }
 }
 
-local monsterName = {'bright percht sleigh', 'cold percht sleigh', 'dark percht sleigh'}
+local monsterName = { 'bright percht sleigh', 'cold percht sleigh', 'dark percht sleigh' }
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
@@ -57,11 +57,11 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if sleightInfo[message] ~= nil then
 		if (getPlayerStorageValue(creature, sleightInfo[message].storageID) ~= -1) then
-				npcHandler:say('You already have this sleigh!', npc, creature)
-				npcHandler:resetNpc()
+			npcHandler:say('You already have this sleigh!', npc, creature)
+			npcHandler:resetNpc()
 		else
-		local itemsTable = sleightInfo[message].items
-		local items_list = ''
+			local itemsTable = sleightInfo[message].items
+			local items_list = ''
 			if table.maxn(itemsTable) > 0 then
 				for i = 1, table.maxn(itemsTable) do
 					local item = itemsTable[i]
@@ -71,7 +71,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					end
 				end
 			end
-		local text = ''
+			local text = ''
 			if (sleightInfo[message].cost > 0) then
 				text = sleightInfo[message].cost .. ' gp'
 			elseif table.maxn(sleightInfo[message].items) then
@@ -92,20 +92,20 @@ local function creatureSayCallback(npc, creature, type, message)
 			if table.maxn(sleightInfo[rtnt[playerId]].items) > 0 then
 				for i = 1, table.maxn(sleightInfo[rtnt[playerId]].items) do
 					local item = sleightInfo[rtnt[playerId]].items[i]
-					if (getPlayerItemCount(creature,item[1]) >= item[2]) then
+					if (getPlayerItemCount(creature, item[1]) >= item[2]) then
 						items_number = items_number + 1
 					end
 				end
 			end
-			if(player:removeMoneyBank(sleightInfo[rtnt[playerId]].cost) and (items_number == table.maxn(sleightInfo[rtnt[playerId]].items))) then
+			if (player:removeMoneyBank(sleightInfo[rtnt[playerId]].cost) and (items_number == table.maxn(sleightInfo[rtnt[playerId]].items))) then
 				if table.maxn(sleightInfo[rtnt[playerId]].items) > 0 then
 					for i = 1, table.maxn(sleightInfo[rtnt[playerId]].items) do
 						local item = sleightInfo[rtnt[playerId]].items[i]
-						doPlayerRemoveItem(creature,item[1],item[2])
+						doPlayerRemoveItem(creature, item[1], item[2])
 					end
 				end
 				doPlayerAddMount(creature, sleightInfo[rtnt[playerId]].mount)
-				setPlayerStorageValue(creature,sleightInfo[rtnt[playerId]].storageID,1)
+				setPlayerStorageValue(creature, sleightInfo[rtnt[playerId]].storageID, 1)
 				npcHandler:say('Here you are.', npc, creature)
 			else
 				npcHandler:say('You do not have needed items!', npc, creature)
@@ -130,20 +130,20 @@ local function creatureSayCallback(npc, creature, type, message)
 	else
 		if talkState[playerId] ~= nil then
 			if talkState[playerId] > 0 then
-			npcHandler:say('Come back when you get these items.', npc, creature)
-			rtnt[playerId] = nil
-			talkState[playerId] = 0
-			npcHandler:resetNpc()
-			return true
+				npcHandler:say('Come back when you get these items.', npc, creature)
+				rtnt[playerId] = nil
+				talkState[playerId] = 0
+				npcHandler:resetNpc()
+				return true
 			end
 		end
 	end
 	return true
 end
 
-keywordHandler:addKeyword({'carrot'}, StdModule.say, {npcHandler = npcHandler, text = "What about 'no' do you not understand, hrm? You are more annoying than any {percht} around here! Not to mention those bothersome {bunnies} who try to graw away my nose!"})
-keywordHandler:addKeyword({'percht skull'}, StdModule.say, {npcHandler = npcHandler, text = "Well why didn't you say that rightaway, if you give me such a skull I can give you one of my {sleighs}."})
-keywordHandler:addKeyword({'bunnies'}, StdModule.say, {npcHandler = npcHandler, text = "Always trying to eat my nose!"})
+keywordHandler:addKeyword({ 'carrot' }, StdModule.say, { npcHandler = npcHandler, text = "What about 'no' do you not understand, hrm? You are more annoying than any {percht} around here! Not to mention those bothersome {bunnies} who try to graw away my nose!" })
+keywordHandler:addKeyword({ 'percht skull' }, StdModule.say, { npcHandler = npcHandler, text = "Well why didn't you say that rightaway, if you give me such a skull I can give you one of my {sleighs}." })
+keywordHandler:addKeyword({ 'bunnies' }, StdModule.say, { npcHandler = npcHandler, text = "Always trying to eat my nose!" })
 
 npcHandler:setMessage(MESSAGE_GREET, "No, you can't have my nose! If you're in need of a {carrot}, go to the market or just dig up one! Or did you come to bring me a {percht skull}?")
 

@@ -149,11 +149,11 @@ local function creatureSayCallback(npc, creature, type, message)
 	/////////////////////]]
 	if MsgContains(message, 'deliver') then
 		if player:getStorageValue(SPIKE_LOWER_PARCEL_DAILY) >= os.time() then
-			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_LOWER_PARCEL_DAILY)-os.time()) .. ' before this task gets available again.', npc, creature)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_LOWER_PARCEL_DAILY) - os.time()) .. ' before this task gets available again.', npc, creature)
 		end
 
 		if player:getLevel() < level then
-			return npcHandler:say('Sorry, you are not on the required minimum level [' .. level ..'].', npc, creature)
+			return npcHandler:say('Sorry, you are not on the required minimum level [' .. level .. '].', npc, creature)
 		end
 
 		if player:getStorageValue(SPIKE_LOWER_PARCEL_MAIN) == -1 then
@@ -168,7 +168,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if MsgContains(message, 'yes') then
 			player:addItem(19219, 4)
 			player:setStorageValue(SPIKE_LOWER_PARCEL_MAIN, 0)
-			npcHandler:say({'Gnometastic! Here are the parcels. Regrettably, the labels got lost during transport; but I guess those lonely gnomes won\'t mind as long as they get ANY parcel at all.','If you lose the parcels, you\'ll have to get new ones. Gnomux sells all the equipment that is required for our missions.'}, npc, creature)
+			npcHandler:say({ 'Gnometastic! Here are the parcels. Regrettably, the labels got lost during transport; but I guess those lonely gnomes won\'t mind as long as they get ANY parcel at all.', 'If you lose the parcels, you\'ll have to get new ones. Gnomux sells all the equipment that is required for our missions.' }, npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, 'no') then
 			npcHandler:say('Ok then.', npc, creature)
@@ -181,11 +181,11 @@ local function creatureSayCallback(npc, creature, type, message)
 	////////////////]]
 	if MsgContains(message, 'undercover') then
 		if player:getStorageValue(SPIKE_LOWER_UNDERCOVER_DAILY) >= os.time() then
-			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_LOWER_UNDERCOVER_DAILY)-os.time()) .. ' before this task gets available again.', npc, creature)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_LOWER_UNDERCOVER_DAILY) - os.time()) .. ' before this task gets available again.', npc, creature)
 		end
 
 		if player:getLevel() < level then
-			return npcHandler:say('Sorry, you are not on the required minimum level [' .. level ..'].', npc, creature)
+			return npcHandler:say('Sorry, you are not on the required minimum level [' .. level .. '].', npc, creature)
 		end
 
 		if player:getStorageValue(SPIKE_LOWER_UNDERCOVER_MAIN) == -1 then
@@ -212,11 +212,11 @@ local function creatureSayCallback(npc, creature, type, message)
 	//////////////////]]
 	if MsgContains(message, 'temperature') then
 		if player:getStorageValue(SPIKE_LOWER_LAVA_DAILY) >= os.time() then
-			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_LOWER_LAVA_DAILY)-os.time()) .. ' before this task gets available again.', npc, creature)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_LOWER_LAVA_DAILY) - os.time()) .. ' before this task gets available again.', npc, creature)
 		end
 
 		if player:getLevel() < level then
-			return npcHandler:say('Sorry, you are not on the required minimum level [' .. level ..'].', npc, creature)
+			return npcHandler:say('Sorry, you are not on the required minimum level [' .. level .. '].', npc, creature)
 		end
 
 		if player:getStorageValue(SPIKE_LOWER_LAVA_MAIN) == -1 then
@@ -244,11 +244,11 @@ local function creatureSayCallback(npc, creature, type, message)
 	///////////]]
 	if MsgContains(message, 'kill') then
 		if player:getStorageValue(SPIKE_LOWER_KILL_DAILY) >= os.time() then
-			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_LOWER_KILL_DAILY)-os.time()) .. ' before this task gets available again.', npc, creature)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_LOWER_KILL_DAILY) - os.time()) .. ' before this task gets available again.', npc, creature)
 		end
 
 		if player:getLevel() < level then
-			return npcHandler:say('Sorry, you are not on the required minimum level [' .. level ..'].', npc, creature)
+			return npcHandler:say('Sorry, you are not on the required minimum level [' .. level .. '].', npc, creature)
 		end
 
 		if player:getStorageValue(SPIKE_LOWER_KILL_MAIN) == -1 then

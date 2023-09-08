@@ -1,5 +1,5 @@
 local condition = Condition(CONDITION_OUTFIT)
-condition:setOutfit({lookTypeEx = 111})
+condition:setOutfit({ lookTypeEx = 111 })
 condition:setTicks(1000)
 local barbarianMead = Action()
 function barbarianMead.onUse(player, item, fromPosition, target, toPosition, isHotkey)
@@ -30,5 +30,5 @@ function barbarianMead.onUse(player, item, fromPosition, target, toPosition, isH
 	return true
 end
 
-barbarianMead:position({x = 32201, y = 31154, z = 7})
+barbarianMead:position({ x = 32201, y = 31154, z = 7 })
 barbarianMead:register()

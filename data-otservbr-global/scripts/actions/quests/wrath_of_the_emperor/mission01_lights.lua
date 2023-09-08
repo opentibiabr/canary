@@ -1,8 +1,8 @@
 local positions = {
-	{x = 33370, y = 31067, z = 9},
-	{x = 33359, y = 31070, z = 9},
-	{x = 33349, y = 31075, z = 8},
-	{x = 33351, y = 31069, z = 9}
+	{ x = 33370, y = 31067, z = 9 },
+	{ x = 33359, y = 31070, z = 9 },
+	{ x = 33349, y = 31075, z = 8 },
+	{ x = 33351, y = 31069, z = 9 }
 }
 
 local function transformLamp(position, itemId, transformId)

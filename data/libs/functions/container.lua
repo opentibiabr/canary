@@ -7,7 +7,7 @@ end
 ---@param loot LootItems
 function Container:addLoot(loot)
 	for itemId, item in pairs(loot) do
-		Spdlog.debug(string.format("[Container:addLoot] - Adding loot item id: %d to container id: %d", itemId, self:getId()))
+		logger.debug("[Container:addLoot] - Adding loot item id: {} to container id: {}", itemId, self:getId())
 		local tmpItem = self:addItem(itemId, item.count)
 		if tmpItem then
 			if tmpItem:isContainer() and item.childLoot then
@@ -31,6 +31,8 @@ function Container:addLoot(loot)
 			if item.text and item.text ~= "" then
 				tmpItem:setText(item.text)
 			end
+		else
+			Spdlog.warn(("Container:addLoot: failed to add item: %s"):format(ItemType(itemId):getName()))
 		end
 
 		::continue::

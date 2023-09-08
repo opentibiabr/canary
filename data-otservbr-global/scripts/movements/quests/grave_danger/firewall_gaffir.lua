@@ -1,5 +1,5 @@
-local above = {[32021] = 5062}
-local outside = {[5062] = 32021}
+local above = { [32021] = 5062 }
+local outside = { [5062] = 32021 }
 
 -- onStepIn
 local gaffirwall = MoveEvent()

@@ -17,7 +17,7 @@ function gateOfDeathstruction.onStepIn(creature, item, position, fromPosition)
 		local gatePos = Position(33415, 32377, 13)
 		gatePos:sendMagicEffect(CONST_ME_TELEPORT)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-		"You have performed the Blood Well Ritual and now are worthy to enter the lower tunnels.")
+			"You have performed the Blood Well Ritual and now are worthy to enter the lower tunnels.")
 	end
 	return true
 end

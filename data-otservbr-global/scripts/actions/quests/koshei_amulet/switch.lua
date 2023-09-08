@@ -1,9 +1,9 @@
 local config = {
-	{position = Position(33281, 32442, 8), itemId = 2063},
-	{position = Position(33286, 32444, 8), itemId = 2063},
-	{position = Position(33276, 32444, 8), itemId = 2062},
-	{position = Position(33278, 32450, 8), itemId = 2062},
-	{position = Position(33284, 32450, 8), itemId = 2062}
+	{ position = Position(33281, 32442, 8), itemId = 2063 },
+	{ position = Position(33286, 32444, 8), itemId = 2063 },
+	{ position = Position(33276, 32444, 8), itemId = 2062 },
+	{ position = Position(33278, 32450, 8), itemId = 2062 },
+	{ position = Position(33284, 32450, 8), itemId = 2062 }
 }
 
 local coffinPosition = Position(33273, 32458, 8)

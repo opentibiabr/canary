@@ -21,8 +21,7 @@ local ursagrodon = Action()
 function ursagrodon.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local rand = math.random(1, 100)
 
-	if target.itemid == config.item1 or target.itemid  == config.item2 or target.itemid == config.item3 then
-
+	if target.itemid == config.item1 or target.itemid == config.item2 or target.itemid == config.item3 then
 		if player:getStorageValue(config.item4) > 0 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You already have the obedience of ursagrodon.')
 			return true

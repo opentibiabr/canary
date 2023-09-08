@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/npcs/npcs.h"
+#include "creatures/npcs/npcs.hpp"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
-#include "lua/scripts/scripts.h"
-#include "game/game.h"
+#include "lua/scripts/scripts.hpp"
+#include "game/game.hpp"
 
 void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock> &shopVector) {
 	lua_createtable(L, shopVector.size(), 0);
@@ -309,7 +309,7 @@ int NpcTypeFunctions::luaNpcTypeOutfit(lua_State* L) {
 		} else {
 			Outfit_t outfit = getOutfit(L, 2);
 			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
-				SPDLOG_WARN("[NpcTypeFunctions::luaNpcTypeOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
+				g_logger().warn("[NpcTypeFunctions::luaNpcTypeOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
 				lua_pushnil(L);
 			} else {
 				npcType->info.outfit = getOutfit(L, 2);

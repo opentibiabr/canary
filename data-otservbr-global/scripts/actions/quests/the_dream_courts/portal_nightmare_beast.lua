@@ -1,9 +1,9 @@
 local storagesTable = {
-	{storage = Storage.Quest.U12_00.TheDreamCourts.PlaguerootKilled, bossName = "Plagueroot"},
-	{storage = Storage.Quest.U12_00.TheDreamCourts.MalofurKilled, bossName = "Malofur Mangrinder"},
-	{storage = Storage.Quest.U12_00.TheDreamCourts.MaxxeniusKilled, bossName = "Maxxenius"},
-	{storage = Storage.Quest.U12_00.TheDreamCourts.AlptramunKilled, bossName = "Alptramun"},
-	{storage = Storage.Quest.U12_00.TheDreamCourts.IzcandarKilled, bossName = "Izcandar The Banished"},
+	{ storage = Storage.Quest.U12_00.TheDreamCourts.PlaguerootKilled, bossName = "Plagueroot" },
+	{ storage = Storage.Quest.U12_00.TheDreamCourts.MalofurKilled, bossName = "Malofur Mangrinder" },
+	{ storage = Storage.Quest.U12_00.TheDreamCourts.MaxxeniusKilled, bossName = "Maxxenius" },
+	{ storage = Storage.Quest.U12_00.TheDreamCourts.AlptramunKilled, bossName = "Alptramun" },
+	{ storage = Storage.Quest.U12_00.TheDreamCourts.IzcandarKilled, bossName = "Izcandar The Banished" },
 }
 
 local portalNightmareBeast = MoveEvent()
@@ -34,5 +34,5 @@ function portalNightmareBeast.onStepIn(creature, item, position, fromPosition)
 end
 
 portalNightmareBeast:type("stepin")
-portalNightmareBeast:position({x = 32211, y = 32081, z = 15})
+portalNightmareBeast:position({ x = 32211, y = 32081, z = 15 })
 portalNightmareBeast:register()

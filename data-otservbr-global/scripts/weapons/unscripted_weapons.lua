@@ -6,11 +6,11 @@ local weapons = {
 		wandType = "earth",
 		level = 600,
 		mana = 20,
-		damage = {100, 124},
+		damage = { 100, 124 },
 		unproperly = true,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -20,11 +20,11 @@ local weapons = {
 		wandType = "earth",
 		level = 600,
 		mana = 20,
-		damage = {100, 124},
+		damage = { 100, 124 },
 		unproperly = true,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -34,11 +34,11 @@ local weapons = {
 		wandType = "energy",
 		level = 250,
 		mana = 21,
-		damage = {103, 125},
+		damage = { 103, 125 },
 		unproperly = true,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -48,11 +48,11 @@ local weapons = {
 		wandType = "fire",
 		level = 250,
 		mana = 21,
-		damage = {113, 125},
+		damage = { 113, 125 },
 		unproperly = true,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -62,8 +62,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -73,8 +73,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -84,8 +84,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -95,8 +95,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -106,8 +106,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -117,8 +117,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -128,8 +128,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -139,8 +139,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -150,8 +150,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -161,8 +161,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -172,8 +172,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -183,8 +183,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -194,8 +194,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -205,8 +205,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -216,8 +216,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -227,8 +227,8 @@ local weapons = {
 		level = 600,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -243,11 +243,11 @@ local weapons = {
 		wandType = "ice",
 		level = 250,
 		mana = 22,
-		damage = {90, 110},
+		damage = { 90, 110 },
 		unproperly = true,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -257,11 +257,11 @@ local weapons = {
 		wandType = "energy",
 		level = 250,
 		mana = 21,
-		damage = {90, 120},
+		damage = { 90, 120 },
 		unproperly = true,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -271,8 +271,8 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -282,8 +282,8 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -293,8 +293,8 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -304,8 +304,8 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -315,11 +315,11 @@ local weapons = {
 		wandType = "ice",
 		level = 250,
 		mana = 22,
-		damage = {85, 105},
+		damage = { 85, 105 },
 		unproperly = true,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -329,11 +329,11 @@ local weapons = {
 		wandType = "ice",
 		level = 250,
 		mana = 22,
-		damage = {85, 105},
+		damage = { 85, 105 },
 		unproperly = true,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -343,11 +343,11 @@ local weapons = {
 		wandType = "fire",
 		level = 250,
 		mana = 22,
-		damage = {85, 105},
+		damage = { 85, 105 },
 		unproperly = true,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -357,11 +357,11 @@ local weapons = {
 		wandType = "fire",
 		level = 250,
 		mana = 22,
-		damage = {85, 105},
+		damage = { 85, 105 },
 		unproperly = true,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -371,8 +371,8 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -382,8 +382,8 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -393,8 +393,8 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -404,8 +404,8 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -415,8 +415,8 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -426,8 +426,8 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -437,8 +437,8 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -448,8 +448,8 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -467,10 +467,10 @@ local weapons = {
 		wandType = "earth",
 		level = 150,
 		mana = 19,
-		damage = {80, 100},
+		damage = { 80, 100 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -480,10 +480,10 @@ local weapons = {
 		wandType = "ice",
 		level = 150,
 		mana = 19,
-		damage = {80, 100},
+		damage = { 80, 100 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -493,8 +493,8 @@ local weapons = {
 		level = 150,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -504,8 +504,8 @@ local weapons = {
 		level = 150,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -515,8 +515,8 @@ local weapons = {
 		level = 150,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -526,8 +526,8 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -537,8 +537,8 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -548,8 +548,8 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -559,10 +559,10 @@ local weapons = {
 		wandType = "ice",
 		level = 220,
 		mana = 21,
-		damage = {89, 109},
+		damage = { 89, 109 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -572,10 +572,10 @@ local weapons = {
 		wandType = "ice",
 		level = 270,
 		mana = 20,
-		damage = {85, 105},
+		damage = { 85, 105 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -585,8 +585,8 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -596,10 +596,10 @@ local weapons = {
 		wandType = "ice",
 		level = 400,
 		mana = 21,
-		damage = {98, 118},
+		damage = { 98, 118 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -609,10 +609,10 @@ local weapons = {
 		wandType = "death",
 		level = 400,
 		mana = 21,
-		damage = {100, 120},
+		damage = { 100, 120 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -622,8 +622,8 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -633,8 +633,8 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -644,8 +644,8 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -655,8 +655,8 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -666,8 +666,8 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -677,8 +677,8 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -688,8 +688,8 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -699,8 +699,8 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -710,8 +710,8 @@ local weapons = {
 		level = 180,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -726,8 +726,8 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -737,8 +737,8 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -748,8 +748,8 @@ local weapons = {
 		level = 220,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -759,10 +759,10 @@ local weapons = {
 		wandType = "earth",
 		level = 220,
 		mana = 21,
-		damage = {70, 110},
+		damage = { 70, 110 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -772,10 +772,10 @@ local weapons = {
 		wandType = "energy",
 		level = 270,
 		mana = 22,
-		damage = {94, 100},
+		damage = { 94, 100 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -785,8 +785,8 @@ local weapons = {
 		level = 220,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -796,8 +796,8 @@ local weapons = {
 		level = 220,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -807,8 +807,8 @@ local weapons = {
 		level = 220,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -818,8 +818,8 @@ local weapons = {
 		level = 220,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -834,12 +834,12 @@ local weapons = {
 		wandType = "fire",
 		level = 180,
 		mana = 24,
-		damage = {88, 108},
+		damage = { 88, 108 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -849,8 +849,8 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -860,8 +860,8 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -871,8 +871,8 @@ local weapons = {
 		level = 230,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -882,8 +882,8 @@ local weapons = {
 		level = 220,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -951,12 +951,12 @@ local weapons = {
 		wandType = "ice",
 		level = 230,
 		mana = 23,
-		damage = {80, 120},
+		damage = { 80, 120 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -966,12 +966,12 @@ local weapons = {
 		wandType = "ice",
 		level = 180,
 		mana = 23,
-		damage = {86, 98},
+		damage = { 86, 98 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -981,8 +981,8 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -992,8 +992,8 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1003,8 +1003,8 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1014,8 +1014,8 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1025,10 +1025,10 @@ local weapons = {
 		wandType = "energy",
 		level = 300,
 		mana = 21,
-		damage = {86, 102},
+		damage = { 86, 102 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -1038,10 +1038,10 @@ local weapons = {
 		wandType = "earth",
 		level = 300,
 		mana = 20,
-		damage = {87, 101},
+		damage = { 87, 101 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -1051,8 +1051,8 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1072,10 +1072,10 @@ local weapons = {
 		wandType = "ice",
 		level = 200,
 		mana = 20,
-		damage = {80, 110},
+		damage = { 80, 110 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -1085,10 +1085,10 @@ local weapons = {
 		wandType = "energy",
 		level = 200,
 		mana = 20,
-		damage = {80, 110},
+		damage = { 80, 110 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -1098,8 +1098,8 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1109,8 +1109,8 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1120,8 +1120,8 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1131,8 +1131,8 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1142,8 +1142,8 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1153,8 +1153,8 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1164,8 +1164,8 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1175,8 +1175,8 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1756,10 +1756,10 @@ local weapons = {
 		wandType = "death",
 		level = 41,
 		mana = 15,
-		damage = {80, 100},
+		damage = { 80, 100 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -1793,12 +1793,12 @@ local weapons = {
 		wandType = "energy",
 		level = 80,
 		mana = 18,
-		damage = {63, 77},
+		damage = { 63, 77 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -1808,10 +1808,10 @@ local weapons = {
 		wandType = "ice",
 		level = 100,
 		mana = 18,
-		damage = {70, 105},
+		damage = { 70, 105 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -1821,10 +1821,10 @@ local weapons = {
 		wandType = "energy",
 		level = 100,
 		mana = 18,
-		damage = {70, 105},
+		damage = { 70, 105 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -1834,8 +1834,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1845,8 +1845,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1856,8 +1856,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1867,8 +1867,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1878,8 +1878,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1889,8 +1889,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1900,8 +1900,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1911,8 +1911,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1922,10 +1922,10 @@ local weapons = {
 		wandType = "ice",
 		level = 100,
 		mana = 18,
-		damage = {70, 105},
+		damage = { 70, 105 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -1935,10 +1935,10 @@ local weapons = {
 		wandType = "energy",
 		level = 100,
 		mana = 18,
-		damage = {70, 105},
+		damage = { 70, 105 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -1948,8 +1948,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1959,8 +1959,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -1970,8 +1970,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1981,8 +1981,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -1992,8 +1992,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2003,8 +2003,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2014,8 +2014,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2025,8 +2025,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2036,10 +2036,10 @@ local weapons = {
 		wandType = "ice",
 		level = 100,
 		mana = 18,
-		damage = {70, 105},
+		damage = { 70, 105 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -2049,10 +2049,10 @@ local weapons = {
 		wandType = "energy",
 		level = 100,
 		mana = 18,
-		damage = {70, 105},
+		damage = { 70, 105 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -2062,8 +2062,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2073,8 +2073,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2084,8 +2084,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2095,8 +2095,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2106,8 +2106,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2117,8 +2117,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2128,8 +2128,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2139,8 +2139,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2150,8 +2150,8 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2161,8 +2161,8 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2172,10 +2172,10 @@ local weapons = {
 		wandType = "energy",
 		level = 100,
 		mana = 19,
-		damage = {80, 110},
+		damage = { 80, 110 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -2185,10 +2185,10 @@ local weapons = {
 		wandType = "energy",
 		level = 65,
 		mana = 17,
-		damage = {65, 95},
+		damage = { 65, 95 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -2233,10 +2233,10 @@ local weapons = {
 		wandType = "earth",
 		level = 37,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -2266,10 +2266,10 @@ local weapons = {
 		wandType = "ice",
 		level = 1,
 		mana = 1,
-		damage = {4, 8},
+		damage = { 4, 8 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -2279,10 +2279,10 @@ local weapons = {
 		wandType = "fire",
 		level = 1,
 		mana = 1,
-		damage = {4, 8},
+		damage = { 4, 8 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -2300,8 +2300,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2312,8 +2312,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2324,8 +2324,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2385,8 +2385,8 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2396,8 +2396,8 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2407,8 +2407,8 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2418,8 +2418,8 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2429,8 +2429,8 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2440,8 +2440,8 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2451,8 +2451,8 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2462,8 +2462,8 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2473,8 +2473,8 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2484,8 +2484,8 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2495,8 +2495,8 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2506,8 +2506,8 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2517,8 +2517,8 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2528,8 +2528,8 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2539,8 +2539,8 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2550,8 +2550,8 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2561,8 +2561,8 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2572,8 +2572,8 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2583,8 +2583,8 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2594,8 +2594,8 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2605,8 +2605,8 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2616,8 +2616,8 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2627,8 +2627,8 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2638,8 +2638,8 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2655,8 +2655,8 @@ local weapons = {
 		level = 70,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2673,8 +2673,8 @@ local weapons = {
 		level = 50,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -2703,9 +2703,9 @@ local weapons = {
 		wandType = "energy",
 		level = 1,
 		mana = 2,
-		damage = {8, 18},
+		damage = { 8, 18 },
 		vocation = {
-			{"None", true}
+			{ "None", true }
 		}
 	},
 	{
@@ -2714,7 +2714,7 @@ local weapons = {
 		type = WEAPON_MISSILE,
 		breakchance = 3,
 		vocation = {
-			{"None", true}
+			{ "None", true }
 		}
 	},
 	{
@@ -2723,7 +2723,7 @@ local weapons = {
 		type = WEAPON_SWORD,
 		unproperly = true,
 		vocation = {
-			{"None", true}
+			{ "None", true }
 		}
 	},
 	{
@@ -2740,8 +2740,8 @@ local weapons = {
 		level = 105,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2751,8 +2751,8 @@ local weapons = {
 		level = 90,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2807,10 +2807,10 @@ local weapons = {
 		wandType = "ice",
 		level = 65,
 		mana = 17,
-		damage = {75, 95},
+		damage = { 75, 95 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -2820,10 +2820,10 @@ local weapons = {
 		wandType = "earth",
 		level = 65,
 		mana = 17,
-		damage = {75, 95},
+		damage = { 75, 95 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -2833,10 +2833,10 @@ local weapons = {
 		wandType = "fire",
 		level = 65,
 		mana = 17,
-		damage = {75, 95},
+		damage = { 75, 95 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -2846,10 +2846,10 @@ local weapons = {
 		wandType = "energy",
 		level = 65,
 		mana = 17,
-		damage = {75, 95},
+		damage = { 75, 95 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -2873,8 +2873,8 @@ local weapons = {
 		level = 150,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2907,8 +2907,8 @@ local weapons = {
 		level = 50,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2918,8 +2918,8 @@ local weapons = {
 		level = 85,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2971,10 +2971,10 @@ local weapons = {
 		wandType = "energy",
 		level = 40,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -2984,8 +2984,8 @@ local weapons = {
 		level = 40,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -2995,10 +2995,10 @@ local weapons = {
 		wandType = "ice",
 		level = 40,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -3027,10 +3027,10 @@ local weapons = {
 		wandType = "death",
 		level = 37,
 		mana = 9,
-		damage = {44, 62},
+		damage = { 44, 62 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -3054,8 +3054,8 @@ local weapons = {
 		level = 58,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3072,8 +3072,8 @@ local weapons = {
 		level = 20,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3083,8 +3083,8 @@ local weapons = {
 		level = 55,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3101,8 +3101,8 @@ local weapons = {
 		level = 50,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3164,8 +3164,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3189,8 +3189,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3214,8 +3214,8 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3239,10 +3239,10 @@ local weapons = {
 		wandType = "death",
 		level = 42,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -3252,10 +3252,10 @@ local weapons = {
 		wandType = "fire",
 		level = 22,
 		mana = 5,
-		damage = {23, 37},
+		damage = { 23, 37 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -3265,10 +3265,10 @@ local weapons = {
 		wandType = "energy",
 		level = 37,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -3278,10 +3278,10 @@ local weapons = {
 		wandType = "earth",
 		level = 37,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -3291,10 +3291,10 @@ local weapons = {
 		wandType = "ice",
 		level = 22,
 		mana = 5,
-		damage = {23, 37},
+		damage = { 23, 37 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -3304,10 +3304,10 @@ local weapons = {
 		wandType = "death",
 		level = 42,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -3317,8 +3317,8 @@ local weapons = {
 		level = 70,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3328,8 +3328,8 @@ local weapons = {
 		level = 40,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3339,8 +3339,8 @@ local weapons = {
 		level = 60,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3350,8 +3350,8 @@ local weapons = {
 		level = 50,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3361,8 +3361,8 @@ local weapons = {
 		level = 80,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3372,8 +3372,8 @@ local weapons = {
 		level = 80,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3383,8 +3383,8 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3394,8 +3394,8 @@ local weapons = {
 		level = 130,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3405,8 +3405,8 @@ local weapons = {
 		level = 60,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3416,8 +3416,8 @@ local weapons = {
 		level = 45,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -3443,8 +3443,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3487,8 +3487,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3499,8 +3499,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3535,8 +3535,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3547,8 +3547,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3581,8 +3581,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3625,8 +3625,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3637,8 +3637,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3673,8 +3673,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3685,8 +3685,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3751,8 +3751,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3795,8 +3795,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3807,8 +3807,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3843,8 +3843,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3855,8 +3855,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3889,8 +3889,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3933,8 +3933,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3945,8 +3945,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3981,8 +3981,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -3993,8 +3993,8 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4040,8 +4040,8 @@ local weapons = {
 		level = 30,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4051,8 +4051,8 @@ local weapons = {
 		level = 85,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4062,8 +4062,8 @@ local weapons = {
 		level = 30,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4080,8 +4080,8 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4091,8 +4091,8 @@ local weapons = {
 		level = 25,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4114,8 +4114,8 @@ local weapons = {
 		level = 45,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4174,8 +4174,8 @@ local weapons = {
 		level = 55,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4213,8 +4213,8 @@ local weapons = {
 		level = 85,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4280,8 +4280,8 @@ local weapons = {
 		level = 60,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4291,8 +4291,8 @@ local weapons = {
 		level = 40,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4337,8 +4337,8 @@ local weapons = {
 		level = 30,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4348,8 +4348,8 @@ local weapons = {
 		level = 35,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4359,8 +4359,8 @@ local weapons = {
 		level = 70,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4377,8 +4377,8 @@ local weapons = {
 		level = 65,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4388,8 +4388,8 @@ local weapons = {
 		level = 45,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4406,8 +4406,8 @@ local weapons = {
 		level = 50,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4445,8 +4445,8 @@ local weapons = {
 		level = 40,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4477,8 +4477,8 @@ local weapons = {
 		level = 60,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4495,8 +4495,8 @@ local weapons = {
 		level = 35,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4561,8 +4561,8 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4580,8 +4580,8 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4596,8 +4596,8 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
+			{ "Paladin", true },
+			{ "Royal Paladin" }
 		}
 	},
 	{
@@ -4679,8 +4679,8 @@ local weapons = {
 		level = 65,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4726,8 +4726,8 @@ local weapons = {
 		level = 50,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4751,8 +4751,8 @@ local weapons = {
 		level = 65,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4779,8 +4779,8 @@ local weapons = {
 		level = 25,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4938,8 +4938,8 @@ local weapons = {
 		level = 95,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4954,8 +4954,8 @@ local weapons = {
 		itemid = 3301,
 		type = WEAPON_SWORD,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -4986,8 +4986,8 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -5073,8 +5073,8 @@ local weapons = {
 		level = 55,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -5091,8 +5091,8 @@ local weapons = {
 		level = 50,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -5102,8 +5102,8 @@ local weapons = {
 		level = 140,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -5124,8 +5124,8 @@ local weapons = {
 		level = 25,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -5176,8 +5176,8 @@ local weapons = {
 		type = WEAPON_AXE,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -5187,8 +5187,8 @@ local weapons = {
 		level = 20,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
+			{ "Knight", true },
+			{ "Elite Knight" }
 		}
 	},
 	{
@@ -5208,10 +5208,10 @@ local weapons = {
 		wandType = "fire",
 		level = 13,
 		mana = 3,
-		damage = {13, 25},
+		damage = { 13, 25 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -5221,10 +5221,10 @@ local weapons = {
 		wandType = "energy",
 		level = 6,
 		mana = 1,
-		damage = {8, 18},
+		damage = { 8, 18 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -5234,10 +5234,10 @@ local weapons = {
 		wandType = "energy",
 		level = 26,
 		mana = 8,
-		damage = {37, 53},
+		damage = { 37, 53 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -5247,10 +5247,10 @@ local weapons = {
 		wandType = "death",
 		level = 19,
 		mana = 5,
-		damage = {23, 37},
+		damage = { 23, 37 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -5260,10 +5260,10 @@ local weapons = {
 		wandType = "fire",
 		level = 33,
 		mana = 8,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" }
 		}
 	},
 	{
@@ -5273,10 +5273,10 @@ local weapons = {
 		wandType = "ice",
 		level = 13,
 		mana = 3,
-		damage = {13, 25},
+		damage = { 13, 25 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5286,10 +5286,10 @@ local weapons = {
 		wandType = "death",
 		level = 19,
 		mana = 5,
-		damage = {23, 37},
+		damage = { 23, 37 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5299,10 +5299,10 @@ local weapons = {
 		wandType = "ice",
 		level = 33,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5312,10 +5312,10 @@ local weapons = {
 		wandType = "earth",
 		level = 6,
 		mana = 2,
-		damage = {8, 18},
+		damage = { 8, 18 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5325,10 +5325,10 @@ local weapons = {
 		wandType = "earth",
 		level = 26,
 		mana = 8,
-		damage = {37, 53},
+		damage = { 37, 53 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
+			{ "Druid", true },
+			{ "Elder Druid" }
 		}
 	},
 	{
@@ -5349,28 +5349,28 @@ for _, w in ipairs(weapons) do
 	local weapon = Weapon(w.type)
 	weapon:id(w.itemid or w.itemId)
 
-	if(w.action) then
+	if (w.action) then
 		weapon:action(w.action)
 	end
-	if(w.breakchance or w.breakChance) then
+	if (w.breakchance or w.breakChance) then
 		weapon:breakChance(w.breakchance or w.breakChance)
 	end
-	if(w.level) then
+	if (w.level) then
 		weapon:level(w.level)
 	end
-	if(w.mana) then
+	if (w.mana) then
 		weapon:mana(w.mana)
 	end
-	if(w.unproperly) then
+	if (w.unproperly) then
 		weapon:wieldUnproperly(w.unproperly)
 	end
-	if(w.damage) then
+	if (w.damage) then
 		weapon:damage(w.damage[1], w.damage[2])
 	end
-	if(w.wandtype or w.wandType) then
+	if (w.wandtype or w.wandType) then
 		weapon:element(w.wandtype or w.wandType)
 	end
-	if(w.vocation) then
+	if (w.vocation) then
 		for _, v in ipairs(w.vocation) do
 			weapon:vocation(v[1], v[2] or false, v[3] or false)
 		end

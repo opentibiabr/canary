@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "items/cylinder.h"
+#include "items/cylinder.hpp"
 
 VirtualCylinder* VirtualCylinder::virtualCylinder = new VirtualCylinder;
 

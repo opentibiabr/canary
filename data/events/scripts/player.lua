@@ -199,9 +199,9 @@ function Player:onLookInBattleList(creature, distance)
 	local description = "You see " .. creature:getDescription(distance)
 	if creature:isMonster() then
 		local master = creature:getMaster()
-		local summons = {'sorcerer familiar','knight familiar','druid familiar','paladin familiar'}
+		local summons = { 'sorcerer familiar', 'knight familiar', 'druid familiar', 'paladin familiar' }
 		if master and table.contains(summons, creature:getName():lower()) then
-			description = description..' (Master: ' .. master:getName() .. '). \z
+			description = description .. ' (Master: ' .. master:getName() .. '). \z
 				It will disappear in ' .. getTimeInWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
 		end
 	end
@@ -240,7 +240,7 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 
 	-- No move parcel very heavy
 	if CONTAINER_WEIGHT_CHECK and ItemType(item:getId()):isContainer()
-		and item:getWeight() > CONTAINER_WEIGHT_MAX then
+			and item:getWeight() > CONTAINER_WEIGHT_MAX then
 		self:sendCancelMessage("Your cannot move this item too heavy.")
 		return false
 	end
@@ -256,9 +256,9 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	end
 
 	-- SSA exhaust
-	local exhaust = { }
+	local exhaust = {}
 	if toPosition.x == CONTAINER_POSITION and toPosition.y == CONST_SLOT_NECKLACE
-		and item:getId() == ITEM_STONE_SKIN_AMULET then
+			and item:getId() == ITEM_STONE_SKIN_AMULET then
 		local playerId = self:getId()
 		if exhaust[playerId] then
 			self:sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED)
@@ -325,7 +325,7 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 
 		-- The player also shouldn't be able to insert items into the boss corpse
 		local tileCorpse = Tile(container:getPosition())
-		for index, value in ipairs(tileCorpse:getItems() or { }) do
+		for index, value in ipairs(tileCorpse:getItems() or {}) do
 			if value:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 and value:getName() == container:getName() then
 				self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 				return false
@@ -449,10 +449,6 @@ function Player:onReportRuleViolation(targetName, reportType, reportReason, comm
 end
 
 function Player:onReportBug(message, position, category)
-	if self:getAccountType() == ACCOUNT_TYPE_NORMAL then
-		return false
-	end
-
 	local name = self:getName()
 	local file = io.open(string.format("%s/reports/bugs/%s/report.txt", CORE_DIRECTORY, name), "a")
 
@@ -652,16 +648,6 @@ function Player:onChangeZone(zone)
 		end
 	end
 	return false
-end
-
-function Player:onChangeHazard(isHazard)
-	if not isHazard then
-		self:setHazardSystemPoints(0)
-		player:getParty():updateHazard()
-		return true
-	end
-
-	return self:updateHazard()
 end
 
 function Player:onInventoryUpdate(item, slot, equip)

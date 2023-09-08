@@ -206,15 +206,15 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Node 1
-local node1 = keywordHandler:addKeyword({"addon"}, StdModule.say,
+local node1 = keywordHandler:addKeyword({ "addon" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "For the small fee of 20000 gold pieces I will help you mix this potion. \z
 					Just bring me 100 pieces of ape fur, which are necessary to create this potion. ... Do we have a deal?"
 	}
 )
-node1:addChildKeyword({"yes"}, BeggarSecond, {})
-node1:addChildKeyword({"no"}, StdModule.say,
+node1:addChildKeyword({ "yes" }, BeggarSecond, {})
+node1:addChildKeyword({ "no" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Alright then. Come back when you got all neccessary items.",
@@ -223,15 +223,15 @@ node1:addChildKeyword({"no"}, StdModule.say,
 )
 
 -- Node 2
-local node2 = keywordHandler:addKeyword({"dress"}, StdModule.say,
+local node2 = keywordHandler:addKeyword({ "dress" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "For the small fee of 20000 gold pieces I will help you mix this potion. \z
 					Just bring me 100 pieces of ape fur, which are necessary to create this potion. ...Do we have a deal?"
 	}
 )
-node2:addChildKeyword({"yes"}, BeggarFirst, {})
-node2:addChildKeyword({"no"}, StdModule.say,
+node2:addChildKeyword({ "yes" }, BeggarFirst, {})
+node2:addChildKeyword({ "no" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Alright then. Come back when you got all neccessary items.",
@@ -240,14 +240,14 @@ node2:addChildKeyword({"no"}, StdModule.say,
 )
 
 -- Node 3
-local node3 = keywordHandler:addKeyword({"staff"}, StdModule.say,
+local node3 = keywordHandler:addKeyword({ "staff" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "To get beggar staff you need to give me simon the beggar's staff. Do you have it with you?"
 	}
 )
-node3:addChildKeyword({"yes"}, BeggarSecond, {})
-node3:addChildKeyword({"no"}, StdModule.say,
+node3:addChildKeyword({ "yes" }, BeggarSecond, {})
+node3:addChildKeyword({ "no" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Alright then. Come back when you got all neccessary items.",
@@ -256,15 +256,15 @@ node3:addChildKeyword({"no"}, StdModule.say,
 )
 
 -- Node 4
-local node4 = keywordHandler:addKeyword({"outfit"}, StdModule.say,
+local node4 = keywordHandler:addKeyword({ "outfit" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "For the small fee of 20000 gold pieces I will help you mix this potion. \z
 					Just bring me 100 pieces of ape fur, which are necessary to create this potion. ...Do we have a deal?"
 	}
 )
-node4:addChildKeyword({"yes"}, BeggarFirst, {})
-node4:addChildKeyword({"no"}, StdModule.say,
+node4:addChildKeyword({ "yes" }, BeggarFirst, {})
+node4:addChildKeyword({ "no" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Alright then. Come back when you got all neccessary items.",

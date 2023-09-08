@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
-#include "creatures/creature.h"
-#include "creatures/npcs/npc.h"
+#include "game/game.hpp"
+#include "creatures/creature.hpp"
+#include "creatures/npcs/npc.hpp"
 #include "lua/functions/creatures/npc/npc_functions.hpp"
 
 int NpcFunctions::luaNpcCreate(lua_State* L) {
@@ -23,7 +23,7 @@ int NpcFunctions::luaNpcCreate(lua_State* L) {
 		} else if (isString(L, 2)) {
 			npc = g_game().getNpcByName(getString(L, 2));
 		} else if (isUserdata(L, 2)) {
-			if (getUserdataType(L, 2) != LuaData_Npc) {
+			if (getUserdataType(L, 2) != LuaData_t::Npc) {
 				lua_pushnil(L);
 				return 1;
 			}
@@ -543,7 +543,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 			uint8_t internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
 			const ItemType &iType = Item::items[itemId];
 			Item* item;
-			if (iType.isBed()) {
+			if (iType.isWrappable()) {
 				item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
 				item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
 				item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
@@ -563,7 +563,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 				itemsPurchased += internalAmount;
 				remainingAmount -= internalAmount;
 				internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
-				if (iType.isBed()) {
+				if (iType.isWrappable()) {
 					item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
 					item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
 					item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
@@ -576,7 +576,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 		uint8_t internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
 		const ItemType &iType = Item::items[itemId];
 		Item* item;
-		if (iType.isBed()) {
+		if (iType.isWrappable()) {
 			item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
 			item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
 			item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
@@ -596,7 +596,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 			itemsPurchased += internalAmount;
 			remainingAmount -= internalAmount;
 			internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
-			if (iType.isBed()) {
+			if (iType.isWrappable()) {
 				item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
 				item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
 				item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
@@ -611,8 +611,8 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 	uint64_t backpackCost = backpacksPurchased * shoppingBagPrice;
 	if (npc->getCurrency() == ITEM_GOLD_COIN) {
 		if (!g_game().removeMoney(player, itemCost + backpackCost, 0, true)) {
-			SPDLOG_ERROR("[NpcFunctions::luaNpcSellItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npc->getName());
-			SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, npc->getName(), player->getPosition().toString());
+			g_logger().error("[NpcFunctions::luaNpcSellItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npc->getName());
+			g_logger().debug("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, npc->getName(), player->getPosition().toString());
 		} else if (backpacksPurchased > 0) {
 			ss << "Bought " << std::to_string(itemsPurchased) << "x " << it.name << " and " << std::to_string(backpacksPurchased);
 			if (backpacksPurchased > 1) {
@@ -635,8 +635,8 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 		}
 	} else {
 		if (!g_game().removeMoney(player, backpackCost, 0, true) || !player->removeItemOfType(npc->getCurrency(), itemCost, -1, false)) {
-			SPDLOG_ERROR("[NpcFunctions::luaNpcSellItem (removeItemOfType)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npc->getName());
-			SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, npc->getName(), player->getPosition().toString());
+			g_logger().error("[NpcFunctions::luaNpcSellItem (removeItemOfType)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npc->getName());
+			g_logger().debug("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, npc->getName(), player->getPosition().toString());
 		} else if (backpacksPurchased > 0) {
 			ss << "Bought " << std::to_string(itemsPurchased) << "x " << it.name << " for " << std::to_string(itemCost) << " " << Item::items[npc->getCurrency()].name;
 			if (itemCost > 1) {

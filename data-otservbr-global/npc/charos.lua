@@ -91,7 +91,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if npcHandler:getTopic(playerId) == 0 then
 		if MsgContains(message, "yes") then
-			npcHandler:say("Fine. You have ".. -player:getStorageValue(Storage.AdventurersGuild.CharosTrav)+7 .." \z
+			npcHandler:say("Fine. You have " .. -player:getStorageValue(Storage.AdventurersGuild.CharosTrav) + 7 .. " \z
 			attunements left. What is the new city of your choice? Thais, Carlin, Ab'Dendriel, Kazordoon, Venore, \z
 			Ankrahmun, Edron, Darashia, Liberty Bay or Port Hope?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
@@ -100,7 +100,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		local cityTable = config.towns[message:lower()]
 		if cityTable then
 			player:setStorageValue(Storage.AdventurersGuild.CharosTrav,
-			player:getStorageValue(Storage.AdventurersGuild.CharosTrav)+1)
+				player:getStorageValue(Storage.AdventurersGuild.CharosTrav) + 1)
 			player:setStorageValue(Storage.AdventurersGuild.Stone, cityTable)
 			npcHandler:say("Goodbye traveler!", npc, creature)
 		else

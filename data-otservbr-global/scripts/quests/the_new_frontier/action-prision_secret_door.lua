@@ -11,8 +11,7 @@ function prisionSecretDoor.onUse(player, item, fromPosition, target, toPosition,
 		end
 		return true
 	end
-
 end
 
-prisionSecretDoor:position({x = 33170, y = 31248, z = 11})
+prisionSecretDoor:position({ x = 33170, y = 31248, z = 11 })
 prisionSecretDoor:register()

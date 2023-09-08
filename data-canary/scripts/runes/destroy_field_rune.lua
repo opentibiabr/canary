@@ -1,5 +1,5 @@
 -- This array contains all destroyable field items
-local fields = {105, 2118, 2119, 2120, 2121, 2122, 2123, 2124, 2125, 2126, 2132, 2133, 2134, 2135, 21465}
+local fields = { 105, 2118, 2119, 2120, 2121, 2122, 2123, 2124, 2125, 2126, 2132, 2133, 2134, 2135, 21465 }
 
 local rune = Spell("rune")
 

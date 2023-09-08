@@ -58,7 +58,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 
-	if table.contains({"mission", "quest"}, message:lower()) then
+	if table.contains({ "mission", "quest" }, message:lower()) then
 		if player:getStorageValue(Storage.ToOutfoxAFoxQuest) < 1 then
 			npcHandler:say({
 				"Funny that you are asking me for a mission! There is indeed something you can do for me. Ever heard about The Horned Fox? Anyway, yesterday his gang has stolen my mining helmet during a raid. ...",
@@ -76,13 +76,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.ToOutfoxAFoxQuest) == 2 and player:getLevel() <= 40 and player:getStorageValue(Storage.KillingInTheNameOf.BudrikMinos) < 0 then
 			npcHandler:say({
 				"I am so angry I could spit grit! That damn {Horned Fox} and his attacks! Let's show those bull-heads that they have messed with the wrong people....",
-				"I want you to kill 5000 minotaurs - no matter where - for me and all the dwarfs of Kazordoon! Are you willing to do that?"}, npc, creature)
+				"I want you to kill 5000 minotaurs - no matter where - for me and all the dwarfs of Kazordoon! Are you willing to do that?" }, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.BudrikMinos) == 0 then
 			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MinotaurCount) >= 5000 then
 				npcHandler:say({
 					"By all that is holy! You are a truly great warrior! With much patience! I have just found out the location the hideout of The Horned Fox! I have marked the spot on your map so you can find it. Go there and slay him!! ...",
-					"BUT, you will have only this ONE chance to catch him! Good luck!"}, npc, creature)
+					"BUT, you will have only this ONE chance to catch him! Good luck!" }, npc, creature)
 				player:setStorageValue(Storage.KillingInTheNameOf.BudrikMinos, 1)
 				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.FoxCount, 0)
 			else
@@ -123,24 +123,27 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Basic
-keywordHandler:addKeyword({"disturb"}, StdModule.say, {npcHandler = npcHandler, text = "I'm the foreman of this {mine}."})
-keywordHandler:addAliasKeyword({"job"})
-keywordHandler:addAliasKeyword({"shop"})
-keywordHandler:addKeyword({"dwarfs"}, StdModule.say, {npcHandler = npcHandler, text = "We understand the ways of the earth like nobody else."})
-keywordHandler:addKeyword({"help"}, StdModule.say, {npcHandler = npcHandler, text = "I'm a miner, not your mother. Go ask someone else."})
-keywordHandler:addKeyword({"hideout"}, StdModule.say, {npcHandler = npcHandler, text = "The hideout of the Horned Fox is probably a dangerous if not lethal place for inexperienced adventurers. It is the source of all the {trouble} around here."})
-keywordHandler:addKeyword({"horned fox"}, StdModule.say, {npcHandler = npcHandler, text = "He is a minotaur who was kicked out of Mintwallin. He must have some kind of {hideout} nearby."})
-keywordHandler:addKeyword({"mine"}, StdModule.say, {npcHandler = npcHandler, text = "This is not an amusement park! Leave the miners and their drilling-worms alone and get out! We've already got enough {trouble} without you."})
-keywordHandler:addAliasKeyword({"dungeon"})
-keywordHandler:addKeyword({"monster"}, StdModule.say, {npcHandler = npcHandler, text = "We occasionally come across nasty beasts in the deepest mines."})
-keywordHandler:addKeyword({"name"}, StdModule.say, {npcHandler = npcHandler, text = "My name is Budrik Deepdigger, Son of Earth, from the Molten Rock."})
-keywordHandler:addKeyword({"time"}, StdModule.say, {npcHandler = npcHandler, text = {"Precisely "..getFormattedWorldTime()..", young one."}})
-keywordHandler:addKeyword({"trouble"}, StdModule.say, {npcHandler = npcHandler, text = "The {Horned Fox} is leading his bandits in sneak attacks and raids on us."})
-keywordHandler:addKeyword({"shearton softbeard"}, StdModule.say, {npcHandler = npcHandler, text = {
-"Yes, I remember him well. It was a tragedy. An earthquake led to a cave-in and many of our brave miners died. ...",
-"Their ghosts still haunt the Grothmok tunnel in which they died, so we had to seal it off."}})
-keywordHandler:addKeyword({"grothmok"}, StdModule.say, {npcHandler = npcHandler, text = "You may enter the tunnel."})
-keywordHandler:addKeyword({"deeper mines"}, StdModule.say, {npcHandler = npcHandler, text = "This is no funhouse. Leave the miners and their drilling-worms alone and get out! We have already enough trouble without you."})
+keywordHandler:addKeyword({ "disturb" }, StdModule.say, { npcHandler = npcHandler, text = "I'm the foreman of this {mine}." })
+keywordHandler:addAliasKeyword({ "job" })
+keywordHandler:addAliasKeyword({ "shop" })
+keywordHandler:addKeyword({ "dwarfs" }, StdModule.say, { npcHandler = npcHandler, text = "We understand the ways of the earth like nobody else." })
+keywordHandler:addKeyword({ "help" }, StdModule.say, { npcHandler = npcHandler, text = "I'm a miner, not your mother. Go ask someone else." })
+keywordHandler:addKeyword({ "hideout" }, StdModule.say, { npcHandler = npcHandler, text = "The hideout of the Horned Fox is probably a dangerous if not lethal place for inexperienced adventurers. It is the source of all the {trouble} around here." })
+keywordHandler:addKeyword({ "horned fox" }, StdModule.say, { npcHandler = npcHandler, text = "He is a minotaur who was kicked out of Mintwallin. He must have some kind of {hideout} nearby." })
+keywordHandler:addKeyword({ "mine" }, StdModule.say, { npcHandler = npcHandler, text = "This is not an amusement park! Leave the miners and their drilling-worms alone and get out! We've already got enough {trouble} without you." })
+keywordHandler:addAliasKeyword({ "dungeon" })
+keywordHandler:addKeyword({ "monster" }, StdModule.say, { npcHandler = npcHandler, text = "We occasionally come across nasty beasts in the deepest mines." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Budrik Deepdigger, Son of Earth, from the Molten Rock." })
+keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = { "Precisely " .. getFormattedWorldTime() .. ", young one." } })
+keywordHandler:addKeyword({ "trouble" }, StdModule.say, { npcHandler = npcHandler, text = "The {Horned Fox} is leading his bandits in sneak attacks and raids on us." })
+keywordHandler:addKeyword({ "shearton softbeard" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = {
+		"Yes, I remember him well. It was a tragedy. An earthquake led to a cave-in and many of our brave miners died. ...",
+		"Their ghosts still haunt the Grothmok tunnel in which they died, so we had to seal it off." }
+})
+keywordHandler:addKeyword({ "grothmok" }, StdModule.say, { npcHandler = npcHandler, text = "You may enter the tunnel." })
+keywordHandler:addKeyword({ "deeper mines" }, StdModule.say, { npcHandler = npcHandler, text = "This is no funhouse. Leave the miners and their drilling-worms alone and get out! We have already enough trouble without you." })
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Bye, bye.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Bye, bye.")
 npcHandler:setMessage(MESSAGE_GREET, "Hiho, hiho |PLAYERNAME|. Why do you {disturb} me?")

@@ -183,7 +183,7 @@ function teleportMain.onStepIn(creature, item, position, fromPosition)
 	end
 
 	local teleport = teleports
-	[item.uid]
+			[item.uid]
 	if teleport.alwaysSetStorage and player:getStorageValue(Storage.TheInquisition.EnterTeleport) < teleport.storage then
 		player:setStorageValue(Storage.TheInquisition.EnterTeleport, teleport.storage)
 	end
@@ -193,7 +193,6 @@ function teleportMain.onStepIn(creature, item, position, fromPosition)
 			if player:getStorageValue(Storage.TheInquisition.EnterTeleport) < teleport.storage then
 				player:setStorageValue(Storage.TheInquisition.EnterTeleport, teleport.storage)
 				player:setStorageValue(teleport.bossStorage, 0)
-
 			end
 		else
 			player:teleportTo(Position(33165, 31709, 14))

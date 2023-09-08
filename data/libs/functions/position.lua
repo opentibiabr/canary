@@ -1,13 +1,13 @@
 -- Functions from The Forgotten Server
 Position.directionOffset = {
-	[DIRECTION_NORTH] = {x = 0, y = -1},
-	[DIRECTION_EAST] = {x = 1, y = 0},
-	[DIRECTION_SOUTH] = {x = 0, y = 1},
-	[DIRECTION_WEST] = {x = -1, y = 0},
-	[DIRECTION_SOUTHWEST] = {x = -1, y = 1},
-	[DIRECTION_SOUTHEAST] = {x = 1, y = 1},
-	[DIRECTION_NORTHWEST] = {x = -1, y = -1},
-	[DIRECTION_NORTHEAST] = {x = 1, y = -1}
+	[DIRECTION_NORTH] = { x = 0, y = -1 },
+	[DIRECTION_EAST] = { x = 1, y = 0 },
+	[DIRECTION_SOUTH] = { x = 0, y = 1 },
+	[DIRECTION_WEST] = { x = -1, y = 0 },
+	[DIRECTION_SOUTHWEST] = { x = -1, y = 1 },
+	[DIRECTION_SOUTHEAST] = { x = 1, y = 1 },
+	[DIRECTION_NORTHWEST] = { x = -1, y = -1 },
+	[DIRECTION_NORTHEAST] = { x = 1, y = -1 }
 }
 
 function Position:getNextPosition(direction, steps)
@@ -67,15 +67,15 @@ function Position:isInRange(from, to)
 	}
 
 	if self.x >= zone.nW.x and self.x <= zone.sE.x
-	and self.y >= zone.nW.y and self.y <= zone.sE.y
-	and self.z >= zone.nW.z and self.z <= zone.sE.z then
+			and self.y >= zone.nW.y and self.y <= zone.sE.y
+			and self.z >= zone.nW.z and self.z <= zone.sE.z then
 		return true
 	end
 	return false
 end
 
 function Position:moveDownstairs()
-	local swap = function (lhs, rhs)
+	local swap = function(lhs, rhs)
 		lhs.x, rhs.x = rhs.x, lhs.x
 		lhs.y, rhs.y = rhs.y, lhs.y
 		lhs.z, rhs.z = rhs.z, lhs.z
@@ -156,7 +156,6 @@ function Position.getFreePosition(from, to)
 		end
 
 		local tile = Tile(result)
-
 	until tile and tile:isWalkable(false, false, false, false, true)
 	return result
 end
@@ -173,7 +172,6 @@ function Position.getFreeSand()
 		end
 
 		local tile = Tile(result)
-
 	until tile and tile:isWalkable(false, false, false, false, true) and tile:getGround():getName() == "grey sand"
 	return result
 end
@@ -182,22 +180,22 @@ function Position.getDirectionTo(pos1, pos2)
 	local dir = DIRECTION_NORTH
 	if (pos1.x > pos2.x) then
 		dir = DIRECTION_WEST
-		if(pos1.y > pos2.y) then
+		if (pos1.y > pos2.y) then
 			dir = DIRECTION_NORTHWEST
-		elseif(pos1.y < pos2.y) then
+		elseif (pos1.y < pos2.y) then
 			dir = DIRECTION_SOUTHWEST
 		end
 	elseif (pos1.x < pos2.x) then
 		dir = DIRECTION_EAST
-		if(pos1.y > pos2.y) then
+		if (pos1.y > pos2.y) then
 			dir = DIRECTION_NORTHEAST
-		elseif(pos1.y < pos2.y) then
+		elseif (pos1.y < pos2.y) then
 			dir = DIRECTION_SOUTHEAST
 		end
 	else
 		if (pos1.y > pos2.y) then
 			dir = DIRECTION_NORTH
-		elseif(pos1.y < pos2.y) then
+		elseif (pos1.y < pos2.y) then
 			dir = DIRECTION_SOUTH
 		end
 	end
@@ -262,20 +260,20 @@ function Position.hasCreatureInArea(fromPosition, toPosition, removeCreatures, r
 	for positionX = fromPosition.x, toPosition.x do
 		for positionY = fromPosition.y, toPosition.y do
 			for positionZ = fromPosition.z, toPosition.z do
-				local room = {x = positionX, y = positionY, z= positionZ}
+				local room = { x = positionX, y = positionY, z = positionZ }
 				local tile = Tile(room)
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, creature in pairs(creatures) do
-							if removeCreatures == true then
-								if removePlayer == true then
-									if isPlayer(creature) then
+						for _, creatureUid in pairs(creatures) do
+							if removeCreatures then
+								local creature = Creature(creatureUid)
+								if creature then
+									if removePlayer and creature:isPlayer() then
 										creature:teleportTo(teleportTo)
+									elseif creature:isMonster() then
+										creature:remove()
 									end
-								end
-								if isMonster(creature) then
-									creature:remove()
 								end
 							end
 						end

@@ -1,10 +1,10 @@
 local bosses = {
-	["goshnar's malice"] = {storage = Storage.Quest.U12_40.SoulWar.GoshnarMaliceKilled},
-	["goshnar's hatred"] = {storage = Storage.Quest.U12_40.SoulWar.GoshnarHatredKilled},
-	["goshnar's spite"] = {storage = Storage.Quest.U12_40.SoulWar.GoshnarSpiteKilled},
-	["goshnar's cruelty"] = {storage = Storage.Quest.U12_40.SoulWar.GoshnarCrueltyKilled},
-	["goshnar's greed"] = {storage = Storage.Quest.U12_40.SoulWar.GoshnarGreedKilled},
-	["goshnar's megalomania"] = {storage = Storage.Quest.U12_40.SoulWar.GoshnarMegalomaniaKilled},
+	["goshnar's malice"] = { storage = Storage.Quest.U12_40.SoulWar.GoshnarMaliceKilled },
+	["goshnar's hatred"] = { storage = Storage.Quest.U12_40.SoulWar.GoshnarHatredKilled },
+	["goshnar's spite"] = { storage = Storage.Quest.U12_40.SoulWar.GoshnarSpiteKilled },
+	["goshnar's cruelty"] = { storage = Storage.Quest.U12_40.SoulWar.GoshnarCrueltyKilled },
+	["goshnar's greed"] = { storage = Storage.Quest.U12_40.SoulWar.GoshnarGreedKilled },
+	["goshnar's megalomania"] = { storage = Storage.Quest.U12_40.SoulWar.GoshnarMegalomaniaKilled },
 }
 
 local bossesSoulWar = CreatureEvent("SoulWarKill")
@@ -27,4 +27,5 @@ function bossesSoulWar.onKill(creature, target)
 	end
 	return true
 end
+
 bossesSoulWar:register()

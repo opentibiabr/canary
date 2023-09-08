@@ -24,8 +24,8 @@ function createRavenHerb.onPeriodChange(period, light)
 	local time = getWorldTime()
 
 	if configManager.getBoolean(configKeys.ALL_CONSOLE_LOG) then
-		Spdlog.info(string.format("Starting %s Current light is %s and it's %s Tibian Time",
-			periods[period], light, getFormattedWorldTime(time)))
+		logger.info("Starting {} Current light is {} and it's {} Tibian Time",
+			periods[period], light, getFormattedWorldTime(time))
 	end
 	for index, item in pairs(config) do
 		if item.createItem == period then -- Adding
@@ -60,7 +60,7 @@ function ravenHerb.onUse(player, item, fromPosition, target, toPosition, isHotke
 	end
 	if (player:getFreeCapacity() / 100) < herbConfig.herbWeight then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-		message .. ". Weighing " .. herbConfig.herbWeight .. " oz, it is too heavy for you to carry.")
+			message .. ". Weighing " .. herbConfig.herbWeight .. " oz, it is too heavy for you to carry.")
 		return true
 	end
 

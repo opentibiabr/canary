@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
+#include "game/game.hpp"
 #include "lua/functions/items/item_classification_functions.hpp"
 
 int ItemClassificationFunctions::luaItemClassificationCreate(lua_State* L) {

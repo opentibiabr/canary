@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "items/item.h"
-#include "items/items.h"
+#include "items/item.hpp"
+#include "items/items.hpp"
 #include "lua/functions/items/item_type_functions.hpp"
 
 int ItemTypeFunctions::luaItemTypeCreate(lua_State* L) {
@@ -326,6 +326,19 @@ int ItemTypeFunctions::luaItemTypeGetWeight(lua_State* L) {
 
 	uint64_t weight = static_cast<uint64_t>(itemType->weight) * std::max<int32_t>(1, count);
 	lua_pushnumber(L, weight);
+	return 1;
+}
+
+int ItemTypeFunctions::luaItemTypeGetStackSize(lua_State* L) {
+	// itemType:getStackSize()
+	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	if (!itemType) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint64_t stackSize = static_cast<uint64_t>(itemType->stackSize);
+	lua_pushnumber(L, stackSize);
 	return 1;
 }
 

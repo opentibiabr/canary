@@ -155,7 +155,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"The pirates on Nargor are becoming more and more of a threat to us each day. I wish someone could get rid of them once and for all, but unfortunately they just keep coming! ...",
 				"Only a dead pirate is a good pirate. I think killing a large number of them would definitely help us to make Sabrehaven a safer place. ...",
-				"It doesn't matter how long it takes, but... would you be willing to kill 3000 pirates for us?"}, npc, creature)
+				"It doesn't matter how long it takes, but... would you be willing to kill 3000 pirates for us?" }, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.PirateTask) == 0 then
 			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.PirateCount) >= 3000 then
@@ -163,14 +163,14 @@ local function creatureSayCallback(npc, creature, type, message)
 					npcHandler:say({
 						"Hey, great. You've done well! As a small reward I give you some coins from our treasure box. Also, let me tell you an interesting piece of information. ...",
 						"One of our spies told us about a secret hideout somewhere on Nargor. Supposedly, one of the four pirate leaders can be found there sometimes. If you dare go there, you might be able to face him or her in one on one combat. ...",
-						"Beware though - prepare yourself well and only flee if you must. This might be your only chance to get into there, so be careful and don't die!"}, npc, creature)
+						"Beware though - prepare yourself well and only flee if you must. This might be your only chance to get into there, so be careful and don't die!" }, npc, creature)
 					player:setStorageValue(Storage.KillingInTheNameOf.PirateTask, 1)
 					player:addExperience(10000, true)
 					player:addMoney(5000)
 				elseif player:getStorageValue(REPEATSTORAGE_BASE + #tasks.GrizzlyAdams + 1) == 3 then
 					npcHandler:say({
 						"This was probably the last time you will be able to enter that hideout. Well done, my friend, our thanks are with you. ...",
-						"You are most welcome to keep on killing pirates for us though for some bucks and experience. If you want to do so, just ask me about a {task} anytime."}, npc, creature)
+						"You are most welcome to keep on killing pirates for us though for some bucks and experience. If you want to do so, just ask me about a {task} anytime." }, npc, creature)
 					player:setStorageValue(Storage.KillingInTheNameOf.PirateTask, 1)
 					player:addExperience(10000, true)
 					player:addMoney(5000)
@@ -186,7 +186,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.PirateTask) == 2 then
 			npcHandler:say({
 				"So you went into the leaders' hideout? I hope you were successful and got what you were looking for! Thank you, my friend. Pirates still keep coming here, unfortunately. ...",
-				"Do you, by chance, would like to kill pirates again for us?"}, npc, creature)
+				"Do you, by chance, would like to kill pirates again for us?" }, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.PirateTask) == 3 then
 			npcHandler:say("Do you, by chance, would like to kill pirates again for us?", npc, creature)

@@ -264,15 +264,15 @@ function Position.hasCreatureInArea(fromPosition, toPosition, removeCreatures, r
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, creature in pairs(creatures) do
-							if removeCreatures == true then
-								if removePlayer == true then
-									if isPlayer(creature) then
+						for _, creatureUid in pairs(creatures) do
+							if removeCreatures then
+								local creature = Creature(creatureUid)
+								if creature then
+									if removePlayer and creature:isPlayer() then
 										creature:teleportTo(teleportTo)
+									elseif creature:isMonster() then
+										creature:remove()
 									end
-								end
-								if isMonster(creature) then
-									creature:remove()
 								end
 							end
 						end

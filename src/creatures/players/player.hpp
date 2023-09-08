@@ -108,7 +108,7 @@ public:
 		return this;
 	}
 
-	static std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f);
+	static std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, std::string context);
 
 	void setID() override;
 
@@ -475,6 +475,10 @@ public:
 	int32_t getStorageValueByName(const std::string &storageName) const;
 	void addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin = false);
 
+	std::shared_ptr<KVStore> kv() const {
+		return g_kv().scoped("player")->scoped(getID());
+	}
+
 	void genReservedStorageRange();
 
 	void setGroup(Group* newGroup) {
@@ -596,7 +600,26 @@ public:
 	PlayerSex_t getSex() const {
 		return sex;
 	}
+	PlayerPronoun_t getPronoun() const {
+		return pronoun;
+	}
+	std::string getObjectPronoun() const {
+		return getPlayerObjectPronoun(pronoun, sex, name);
+	}
+	std::string getSubjectPronoun() const {
+		return getPlayerSubjectPronoun(pronoun, sex, name);
+	}
+	std::string getPossessivePronoun() const {
+		return getPlayerPossessivePronoun(pronoun, sex, name);
+	}
+	std::string getReflexivePronoun() const {
+		return getPlayerReflexivePronoun(pronoun, sex, name);
+	}
+	std::string getSubjectVerb(bool past = false) const {
+		return getVerbForPronoun(pronoun, past);
+	}
 	void setSex(PlayerSex_t);
+	void setPronoun(PlayerPronoun_t);
 	uint64_t getExperience() const {
 		return experience;
 	}
@@ -2746,6 +2769,7 @@ private:
 	Faction_t faction = FACTION_PLAYER;
 	QuickLootFilter_t quickLootFilter;
 	VipStatus_t statusVipList = VIPSTATUS_ONLINE;
+	PlayerPronoun_t pronoun = PLAYERPRONOUN_THEY;
 
 	bool chaseMode = false;
 	bool secureMode = true;

@@ -329,6 +329,19 @@ int ItemTypeFunctions::luaItemTypeGetWeight(lua_State* L) {
 	return 1;
 }
 
+int ItemTypeFunctions::luaItemTypeGetStackSize(lua_State* L) {
+	// itemType:getStackSize()
+	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	if (!itemType) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint64_t stackSize = static_cast<uint64_t>(itemType->stackSize);
+	lua_pushnumber(L, stackSize);
+	return 1;
+}
+
 int ItemTypeFunctions::luaItemTypeGetHitChance(lua_State* L) {
 	// itemType:getHitChance()
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);

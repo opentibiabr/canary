@@ -264,7 +264,7 @@ bool Party::removeInvite(Player &player, bool removeFromPlayer /* = true*/) {
 
 void Party::revokeInvitation(Player &player) {
 	std::ostringstream ss;
-	ss << leader->getName() << " has revoked " << (leader->getSex() == PLAYERSEX_FEMALE ? "her" : "his") << " invitation.";
+	ss << leader->getName() << " has revoked " << leader->getPossessivePronoun() << " invitation.";
 	player.sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
 
 	ss.str(std::string());
@@ -303,8 +303,9 @@ bool Party::invitePlayer(Player &player) {
 	player.addPartyInvitation(this);
 
 	ss.str(std::string());
-	ss << leader->getName() << " has invited you to " << (leader->getSex() == PLAYERSEX_FEMALE ? "her" : "his") << " party.";
+	ss << leader->getName() << " has invited you to " << leader->getPossessivePronoun() << " party (Share range: " << getMinLevel() << "-" << getMaxLevel() << ").";
 	player.sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
+
 	return true;
 }
 

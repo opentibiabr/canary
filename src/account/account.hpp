@@ -103,8 +103,8 @@ namespace account {
 
 		std::string getPassword();
 
-		error_t addPremiumDays(const int32_t &days);
-		error_t setPremiumDays(const int32_t &days);
+		void addPremiumDays(const int32_t &days);
+		void setPremiumDays(const int32_t &days);
 		[[nodiscard]] inline uint32_t getPremiumRemainingDays() const {
 			return m_account.premiumRemainingDays;
 		}

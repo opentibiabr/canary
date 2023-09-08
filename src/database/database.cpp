@@ -11,6 +11,7 @@
 
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
+#include "lib/di/container.hpp"
 
 Database::~Database() {
 	if (handle != nullptr) {

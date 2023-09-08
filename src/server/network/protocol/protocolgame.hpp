@@ -72,7 +72,7 @@ private:
 	template <typename Callable, typename... Args>
 	void addGameTask(Callable function, Args &&... args);
 	template <typename Callable, typename... Args>
-	void addGameTaskTimed(uint32_t delay, Callable function, Args &&... args);
+	void addGameTaskTimed(uint32_t delay, std::string context, Callable function, Args &&... args);
 
 	ProtocolGame_ptr getThis() {
 		return std::static_pointer_cast<ProtocolGame>(shared_from_this());

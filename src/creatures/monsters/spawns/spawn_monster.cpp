@@ -144,7 +144,7 @@ bool SpawnsMonster::isInZone(const Position &centerPos, int32_t radius, const Po
 
 void SpawnMonster::startSpawnMonsterCheck() {
 	if (checkSpawnMonsterEvent == 0) {
-		checkSpawnMonsterEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this));
+		checkSpawnMonsterEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this), "SpawnMonster::checkSpawnMonster");
 	}
 }
 
@@ -242,7 +242,7 @@ void SpawnMonster::checkSpawnMonster() {
 	}
 
 	if (spawnedMonsterMap.size() < spawnMonsterMap.size()) {
-		checkSpawnMonsterEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this));
+		checkSpawnMonsterEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this), __FUNCTION__);
 	}
 }
 
@@ -250,8 +250,8 @@ void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, uint
 	if (interval <= 0) {
 		spawnMonster(spawnMonsterId, sb.monsterType, sb.pos, sb.direction);
 	} else {
-		Game::addMagicEffect(sb.pos, CONST_ME_TELEPORT);
-		g_scheduler().addEvent(1400, std::bind(&SpawnMonster::scheduleSpawn, this, spawnMonsterId, sb, interval - NONBLOCKABLE_SPAWN_MONSTER_INTERVAL));
+		g_game().addMagicEffect(sb.pos, CONST_ME_TELEPORT);
+		g_scheduler().addEvent(1400, std::bind(&SpawnMonster::scheduleSpawn, this, spawnMonsterId, sb, interval - NONBLOCKABLE_SPAWN_MONSTER_INTERVAL), __FUNCTION__);
 	}
 }
 

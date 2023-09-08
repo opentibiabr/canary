@@ -24,6 +24,7 @@ class Player;
 class Thing;
 class Guild;
 class Zone;
+class KVStore;
 
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)
 

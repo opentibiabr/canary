@@ -2809,16 +2809,6 @@
 	<npc centerx="33024" centery="31554" centerz="14" radius="1">
 		<npc name="Thorgrin" x="0" y="0" z="14" spawntime="60" />
 	</npc>
-	<npc centerx="33191" centery="31689" centerz="14" radius="1">
-		<npc name="Elysieran Soldier" x="0" y="0" z="14" spawntime="60" />
-		<npc name="Elysieran Sentry" x="1" y="0" z="14" spawntime="60" />
-	</npc>
-	<npc centerx="33192" centery="31689" centerz="14" radius="1">
-		<npc name="Elysieran Soldier" x="1" y="0" z="14" spawntime="60" />
-	</npc>
-	<npc centerx="33193" centery="31689" centerz="14" radius="1">
-		<npc name="Elysieran Soldier" x="1" y="0" z="14" spawntime="60" />
-	</npc>
 	<npc centerx="32260" centery="31866" centerz="14" radius="1">
 		<npc name="The Queen Of The Banshees" x="0" y="0" z="14" spawntime="60" />
 	</npc>

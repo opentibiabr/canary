@@ -47,9 +47,6 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		return;
 	}
 
-	// Update premium days
-	account.updatePremiumTime();
-
 	auto output = OutputMessagePool::getOutputMessage();
 	const std::string &motd = g_configManager().getString(SERVER_MOTD);
 	if (!motd.empty()) {
@@ -178,5 +175,5 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-	g_dispatcher().addTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, accountDescriptor, password));
+	g_dispatcher().addTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, accountDescriptor, password), "ProtocolLogin::getCharacterList");
 }

@@ -29,13 +29,13 @@ local function sendExerciseRewardModal(player)
 					if item then
 						item:setActionId(IMMOVABLE_ACTION_ID)
 					else
-						player:sendTextMessage(MESSAGE_INFO_DESCR, "You need to have capacity and empty slots to receive.")
+						player:sendTextMessage(MESSAGE_LOOK, "You need to have capacity and empty slots to receive.")
 						return
 					end
-					player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Congratulations, you received a %s with %i charges in your store inbox.", iType:getName(), it.charges))
+					player:sendTextMessage(MESSAGE_LOOK, string.format("Congratulations, you received a %s with %i charges in your store inbox.", iType:getName(), it.charges))
 					player:setStorageValue(config.storage, 1)
 				else
-					player:sendTextMessage(MESSAGE_INFO_DESCR, "You need to have capacity and empty slots to receive.")
+					player:sendTextMessage(MESSAGE_LOOK, "You need to have capacity and empty slots to receive.")
 				end
 			end)
 		end
@@ -50,7 +50,7 @@ end
 local exercise_reward_modal = TalkAction("!reward")
 function exercise_reward_modal.onSay(player, words, param)
 	if player:getStorageValue(config.storage) > 0 then
-		player:sendTextMessage(MESSAGE_INFO_DESCR, "You already received your exercise weapon reward!")
+		player:sendTextMessage(MESSAGE_LOOK, "You already received your exercise weapon reward!")
 		return true
 	end
 	sendExerciseRewardModal(player)

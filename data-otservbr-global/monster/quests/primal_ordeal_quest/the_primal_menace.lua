@@ -53,7 +53,7 @@ local thePrimalMenaceConfig = {
 }
 
 monster.description = "The Primal Menace"
-monster.experience = 80000
+monster.experience = 0
 monster.outfit = {
 	lookType = 1566,
 	lookHead = 0,
@@ -73,6 +73,7 @@ monster.maxHealth = 400000
 monster.race = "blood"
 monster.corpse = 39530
 monster.speed = 180
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,

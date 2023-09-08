@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -82,7 +82,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Praise the voodoo!", yell = false },
 	{ text = "Power to the cult!", yell = false },
-	{ text = "Feel the power of the cult!", yell = false }
+	{ text = "Feel the power of the cult!", yell = false },
 }
 
 monster.loot = {
@@ -109,7 +109,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 15,
+	armor = 30,
+	mitigation = 1.13,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 40, maxDamage = 60, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -123,7 +124,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {

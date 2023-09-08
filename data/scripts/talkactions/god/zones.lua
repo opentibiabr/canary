@@ -58,11 +58,7 @@ function zones.onSay(player, words, param)
 			player:sendTextMessage(MESSAGE_HEALED, "Zone " .. zone:getName() .. " NPCs: " .. #npcs .. ".")
 		end,
 		kickPlayers = function(zone)
-			local players = zone:getPlayers()
-			for _, player in ipairs(players) do
-				player:teleportTo(player:getTown():getTemplePosition())
-				player:sendTextMessage(MESSAGE_HEALED, "You have been kicked from " .. zone:getName() .. ".")
-			end
+			zone:removePlayers()
 			player:sendTextMessage(MESSAGE_HEALED, "Players kicked from " .. zone:getName() .. ".")
 		end,
 		listPlayers = function(zone)

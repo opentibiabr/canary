@@ -94,8 +94,12 @@ jobs:
           path: |
             ${{ github.workspace }}/build/${{ matrix.buildtype }}/bin/
 
-      - name: Unit tests
+      - name: Run Unit Tests
         run: |
-          cd ${{ github.workspace }}/build/${{ matrix.buildtype }}/tests
-          chmod +x canary_ut
-          ./canary_ut
+          cd ${{ github.workspace }}/build/${{ matrix.buildtype }}/tests/unit
+          ctest --verbose
+
+#      - name: Run Integration Tests
+#        run: |
+#          cd ${{ github.workspace }}/build/${{ matrix.buildtype }}/tests/integration
+#          ctest --verbose

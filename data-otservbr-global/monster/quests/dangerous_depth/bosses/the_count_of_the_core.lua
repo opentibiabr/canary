@@ -1,4 +1,4 @@
-local mType = Game.createMonsterType("The Count Of The Core")
+local mType = Game.createMonsterType("The Count of the Core")
 local monster = {}
 
 monster.description = "The Count Of The Core"
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 50000
-monster.maxHealth = 50000
+monster.health = 350000
+monster.maxHealth = 350000
 monster.race = "blood"
 monster.corpse = 27637
 monster.speed = 135
@@ -54,63 +54,64 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Sluuuurp! Sluuuuurp!", yell = false },
-	{ text = "Shluush!", yell = false }
+	{ text = "Shluush!", yell = false },
+	{ text = "Sluuurp!", yell = false },
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 10000, maxCount = 36 },
-	{ name = "great mana potion", chance = 10000, maxCount = 18 },
-	{ name = "great spirit potion", chance = 10000, maxCount = 10 },
-	{ name = "green crystal shard", chance = 10000, maxCount = 4 },
-	{ name = "huge chunk of crude iron", chance = 10000, maxCount = 2 },
-	{ name = "magic sulphur", chance = 10000, maxCount = 2 },
-	{ name = "mastermind potion", chance = 10000, maxCount = 2 },
-	{ name = "small amethyst", chance = 10000, maxCount = 10 },
-	{ name = "small diamond", chance = 10000, maxCount = 10 },
-	{ name = "small emerald", chance = 10000, maxCount = 12 },
-	{ name = "small ruby", chance = 10000, maxCount = 10 },
-	{ name = "small topaz", chance = 10000, maxCount = 10 },
-	{ name = "ultimate health potion", chance = 10000, maxCount = 5 },
-	{ name = "amber staff", chance = 10000 },
-	{ name = "blue gem", chance = 10000 },
-	{ id = 27626, chance = 10000 }, -- chitinous mouth
-	{ name = "crystal coin", chance = 10000 },
-	{ name = "crystalline armor", chance = 5000 },
-	{ name = "dragon necklace", chance = 10000 },
-	{ name = "fire axe", chance = 10000 },
-	{ name = "fire sword", chance = 10000 },
-	{ id = 281, chance = 10000 }, -- giant shimmering pearl (green)
-	{ name = "giant sword", chance = 10000 },
-	{ name = "guardian axe", chance = 10000 },
-	{ name = "gold token", chance = 10000 },
-	{ name = "green gem", chance = 10000 },
-	{ name = "harpoon of a giant snail", chance = 10000 },
-	{ name = "huge spiky snail shell", chance = 10000 },
-	{ name = "luminous orb", chance = 10000 },
-	{ id = 3039, chance = 10000 }, -- red gem
-	{ name = "silver token", chance = 1000 },
-	{ name = "stone skin amulet", chance = 1000 },
-	{ name = "twiceslicer", chance = 1000 },
-	{ name = "wand of inferno", chance = 1000 },
-	{ name = "yellow gem", chance = 1000 },
-	{ name = "candle stump", chance = 1000 },
-	{ name = "gnome shield", chance = 1000 },
-	{ name = "gnome sword", chance = 1000 },
-	{ name = "mallet handle", chance = 1000 },
-	{ name = "tinged pot", chance = 1000 },
-	{ name = "gnome helmet", chance = 100 }
+	{ name = "platinum coin", chance = 100000, maxCount = 54 },
+	{ id = 27713, chance = 100000, maxCount = 7 }, -- heavy crystal fragment
+	{ name = "mastermind potion", chance = 100000, maxCount = 3 },
+	{ name = "stone skin amulet", chance = 100000 },
+	{ name = "amber staff", chance = 100000 },
+	{ name = "ultimate health potion", chance = 80000, maxCount = 15 },
+	{ name = "great mana potion", chance = 60000, maxCount = 23 },
+	{ name = "small topaz", chance = 60000, maxCount = 10 },
+	{ name = "green crystal shard", chance = 60000 },
+	{ name = "wand of inferno", chance = 60000 },
+	{ name = "huge spiky snail shell", chance = 60000 },
+	{ name = "small diamond", chance = 40000 },
+	{ name = "huge chunk of crude iron", chance = 40000, maxCount = 3 },
+	{ id = 282, chance = 40000 }, -- giant shimmering pearl
+	{ name = "great spirit potion", chance = 20000 },
+	{ name = "silver token", chance = 20000 },
+	{ name = "yellow gem", chance = 20000 },
+	{ name = "fire sword", chance = 20000 },
+	{ id = 3039, chance = 20000 }, -- red gem
+	{ name = "green gem", chance = 20000 },
+	{ name = "slightly rusted helmet", chance = 20000 },
+	{ name = "gold token", chance = 20000 },
+	{ name = "magic sulphur", chance = 40680 },
+	{ id = 27626, chance = 23730 }, -- chitinous mouth (count)
+	{ name = "blue gem", chance = 22030 },
+	{ name = "small emerald", chance = 18640 },
+	{ name = "slightly rusted shield", chance = 16950 },
+	{ name = "small ruby", chance = 13560 },
+	{ name = "small amethyst", chance = 11860 },
+	{ name = "luminous orb", chance = 8470 },
+	{ name = "crystal coin", chance = 6780 },
+	{ name = "harpoon of a giant snail", chance = 5080 },
+	{ name = "gnome shield", chance = 5080 },
+	{ name = "gnome helmet", chance = 3390 },
+	{ name = "magma coat", chance = 3390 },
+	{ name = "gnome sword", chance = 3390 },
+	{ name = "violet gem", chance = 3390 },
+	{ name = "crystalline armor", chance = 1690 },
+	{ name = "giant sword", chance = 1690 },
+	{ name = "guardian axe", chance = 1690 },
+	{ name = "twiceslicer", chance = 1690 },
+	{ name = "tinged pot", chance = 1690 },
 }
 
 monster.attacks = {
@@ -122,21 +123,22 @@ monster.attacks = {
 }
 
 monster.defenses = {
-	defense = 5,
-	armor = 10
+	defense = 160,
+	armor = 160,
+	--	mitigation = ???,
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 60 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 60 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 60 },
-	{ type = COMBAT_FIREDAMAGE, percent = -100 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 25 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 60 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 60 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 60 }
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

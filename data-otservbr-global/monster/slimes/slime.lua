@@ -64,12 +64,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -82,7 +82,7 @@ monster.summon = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Blubb", yell = false }
+	{ text = "Blubb", yell = false },
 }
 
 monster.loot = {
@@ -94,7 +94,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 3,
+	mitigation = 0.25,
 }
 
 monster.elements = {
@@ -107,7 +108,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

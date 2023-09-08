@@ -1,7 +1,7 @@
-local mType = Game.createMonsterType("Paiz The Pauperizer")
+local mType = Game.createMonsterType("Paiz the Pauperizer")
 local monster = {}
 
-monster.description = "Paiz The Pauperizer"
+monster.description = "Paiz the Pauperizer"
 monster.experience = 6300
 monster.outfit = {
 	lookType = 362,
@@ -38,7 +38,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -48,20 +48,20 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnFire = true,
+	canWalkOnPoison = false,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 3,
+	color = 161,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "You will die zhouzandz deazhz!", yell = false },
 	{ text = "For ze emperor!", yell = false },
-	{ text = "You will die zhouzandz deazhz!", yell = false }
 }
 
 monster.loot = {
@@ -105,24 +105,25 @@ monster.attacks = {
 monster.defenses = {
 	defense = 35,
 	armor = 35,
+	mitigation = 2.00,
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 230, maxDamage = 330, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 10 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 40 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
 	{ type = COMBAT_FIREDAMAGE, percent = 100 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 30 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 30 }
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

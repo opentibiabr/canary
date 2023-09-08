@@ -61,13 +61,13 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -76,7 +76,7 @@ monster.voices = {
 	{ text = "Ah, sweet air... don't you miss it?", yell = false },
 	{ text = "Murr tat muuza!", yell = false },
 	{ text = "kchh", yell = false },
-	{ text = "hsssss", yell = false }
+	{ text = "hsssss", yell = false },
 }
 
 monster.loot = {
@@ -99,7 +99,7 @@ monster.loot = {
 	{ name = "green crystal shard", chance = 1540 },
 	{ name = "brown crystal splinter", chance = 52500, maxCount = 2 },
 	{ name = "blue crystal splinter", chance = 10000, maxCount = 3 },
-	{ name = "cluster of solace", chance = 620 },
+	{ name = "cluster of solace", chance = 4620 },
 	{ name = "dead weight", chance = 14180 },
 	{ name = "hemp rope", chance = 14180 }
 }
@@ -117,7 +117,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 35,
-	armor = 35,
+	armor = 65,
+	mitigation = 1.94,
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 80, maxDamage = 150, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -131,7 +132,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 55 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 55 },
 }
 
 monster.immunities = {

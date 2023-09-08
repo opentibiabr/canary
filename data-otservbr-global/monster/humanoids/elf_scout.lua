@@ -61,22 +61,22 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Tha'shi Ab'Dendriel!", yell = false },
+	{ text = "Evicor guide my arrow!", yell = false },
+	{ text = "Your existence will end here!", yell = false },
 	{ text = "Feel the sting of my arrows!", yell = false },
 	{ text = "Thy blood will quench the soil's thirst!", yell = false },
-	{ text = "Evicor guide my arrow!", yell = false },
-	{ text = "Your existence will end here!", yell = false }
 }
 
 monster.loot = {
@@ -100,7 +100,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 7,
+	mitigation = 0.46,
 }
 
 monster.elements = {
@@ -113,7 +114,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {

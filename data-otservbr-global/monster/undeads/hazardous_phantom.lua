@@ -88,7 +88,7 @@ monster.attacks = {
 	{ name = "combat", interval = 3000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -1050, maxDamage = -1100, radius = 3, effect = CONST_ME_ICETORNADO, target = false },
 	{ name = "combat", interval = 3000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -1050, maxDamage = -1300, range = 7, radius = 4, effect = CONST_ME_ICEATTACK, target = true },
 	{ name = "ice chain", interval = 2000, chance = 15, minDamage = -1300, maxDamage = -1500, range = 7 },
-	{ name = "fear", interval = 2000, chance = 2, target = true },
+	{ name = "soulwars fear", interval = 2000, chance = 2, target = true },
 }
 
 monster.defenses = {

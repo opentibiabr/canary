@@ -103,9 +103,6 @@ monster.loot = {
 	{ name = "bag you desire", chance = 100 }
 }
 
--- TODO: monster-abilities
---monster.attacks = {
---}
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -5000 },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -1400, maxDamage = -1800, length = 8, spread = 0, effect = CONST_ME_EXPLOSIONAREA, target = false },

@@ -344,30 +344,25 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing &addThing, uint32_
 	}
 
 	const Cylinder* cylinder = getParent();
-	if (!hasBitSet(FLAG_NOLIMIT, flags)) {
-		while (cylinder) {
-			if (cylinder == &addThing) {
-				return RETURNVALUE_THISISIMPOSSIBLE;
-			}
-
-			if (dynamic_cast<const Inbox*>(cylinder)) {
-				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
-			}
-
-			cylinder = cylinder->getParent();
+	auto noLimit = hasBitSet(FLAG_NOLIMIT, flags);
+	while (cylinder) {
+		if (cylinder == &addThing) {
+			return RETURNVALUE_THISISIMPOSSIBLE;
 		}
-
-		if (addIndex == INDEX_WHEREEVER && size() >= capacity() && !hasPagination()) {
+		const Container* container = cylinder->getContainer();
+		if (!noLimit && container && container->isInbox()) {
 			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 		}
-	} else {
-		while (cylinder) {
-			if (cylinder == &addThing) {
-				return RETURNVALUE_THISISIMPOSSIBLE;
-			}
-
-			cylinder = cylinder->getParent();
+		const Cylinder* parent = cylinder->getParent();
+		if (cylinder == parent) {
+			g_logger().error("Container::queryAdd: parent == cylinder. Preventing infinite loop.");
+			return RETURNVALUE_NOTPOSSIBLE;
 		}
+		cylinder = parent;
+	}
+
+	if (!noLimit && addIndex == INDEX_WHEREEVER && size() >= capacity() && !hasPagination()) {
+		return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 	}
 
 	if (const Container* topParentContainer = getTopParentContainer()) {

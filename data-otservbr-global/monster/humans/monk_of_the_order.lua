@@ -1,4 +1,4 @@
-local mType = Game.createMonsterType("Monk Of The Order")
+local mType = Game.createMonsterType("Monk of the Order")
 local monster = {}
 
 monster.description = "a monk of the order"
@@ -18,7 +18,7 @@ monster.maxHealth = 240
 monster.race = "blood"
 monster.corpse = 18090
 monster.speed = 120
-monster.manaCost = 600
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
@@ -48,20 +48,17 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Repent Heretic!", yell = false },
-	{ text = "A prayer to the almighty one!", yell = false },
-	{ text = "I will punish the sinners!", yell = false }
 }
 
 monster.attacks = {
@@ -70,13 +67,14 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 30,
-	armor = 30,
+	armor = 0,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 30, maxDamage = 50, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 300, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = -10 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -1 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
@@ -84,8 +82,8 @@ monster.elements = {
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 50 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 50 }
+	{ type = COMBAT_HOLYDAMAGE, percent = 1 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 1 },
 }
 
 monster.immunities = {

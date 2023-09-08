@@ -13,6 +13,11 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 969,
+	bossRace = RARITY_NEMESIS,
+}
+
 monster.health = 15000
 monster.maxHealth = 15000
 monster.race = "blood"
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 969, -- or 990 (mortal)
-	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {
@@ -54,23 +54,23 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Cool down, will you?", yell = false },
-	{ text = "Freeze!", yell = false },
-	{ text = "Is this all you've got?", yell = false },
-	{ text = "Pay for your ignorance!", yell = false },
 	{ text = "And stay cool.", yell = false },
-	{ text = "Your cold dead body will be a marvelous ice statue.", yell = false }
+	{ text = "Your cold dead body will be a marvelous ice statue.", yell = false },
+	{ text = "Pay for your ignorance!", yell = false },
+	{ text = "Is this all you've got?", yell = false },
+	{ text = "Freeze!", yell = false },
 }
 
 monster.loot = {
@@ -120,6 +120,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 20,
 	armor = 20,
+	--	mitigation = ???,
 	{ name = "combat", interval = 10000, chance = 1, type = COMBAT_HEALING, minDamage = 7500, maxDamage = 7515, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "combat", interval = 3000, chance = 15, type = COMBAT_HEALING, minDamage = 200, maxDamage = 500, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
@@ -127,14 +128,14 @@ monster.defenses = {
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = -10 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 40 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 50 },
 	{ type = COMBAT_FIREDAMAGE, percent = 50 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 30 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {

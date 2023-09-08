@@ -340,7 +340,7 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 			}
 		}
 		for (auto &[itemId, amount] : toSell) {
-			onPlayerSellItem(player, itemId, 0, amount, ignore, totalPrice);
+			onPlayerSellItem(player, itemId, 0, amount, ignore, totalPrice, container);
 		}
 		auto ss = std::stringstream();
 		if (totalPrice == 0) {
@@ -349,7 +349,7 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 			return;
 		}
 		if (hasMore) {
-			g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, totalPrice));
+			g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, totalPrice), __FUNCTION__);
 			return;
 		}
 		ss << "You sold all of the items from your loot pouch for ";
@@ -359,12 +359,12 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 	}
 }
 
-void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, uint64_t &totalPrice) {
+void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, uint64_t &totalPrice, Cylinder* parent /*= nullptr*/) {
 	if (!player) {
 		return;
 	}
 	if (itemId == ITEM_GOLD_POUCH) {
-		g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, 0));
+		g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, 0), __FUNCTION__);
 		return;
 	}
 
@@ -383,6 +383,10 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 	auto toRemove = amount;
 	for (auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore); auto item : inventoryItems) {
 		if (!item || item->getTier() > 0 || item->hasImbuements()) {
+			continue;
+		}
+
+		if (parent && item->getParent() != parent) {
 			continue;
 		}
 

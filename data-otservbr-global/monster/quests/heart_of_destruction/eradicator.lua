@@ -13,6 +13,12 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 1226,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = 14329,
+}
+
 monster.health = 290000
 monster.maxHealth = 290000
 monster.race = "venom"
@@ -23,12 +29,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 2000,
 	chance = 25
-}
-
-monster.bosstiary = {
-	bossRaceId = 1225,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = 14329
 }
 
 monster.strategiesTarget = {
@@ -53,9 +53,9 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.events = {
@@ -65,7 +65,7 @@ monster.events = {
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -86,7 +86,7 @@ monster.loot = {
 	{ id = 16120, chance = 8000, maxCount = 3 }, -- violet crystal shard
 	{ id = 23535, chance = 8000 }, -- energy bar
 	{ id = 23520, chance = 8000 }, -- plasmatic lightning
-	{ id = 23518, chance = 8000 }, -- spark sphere
+	{ id = 23516, chance = 8000 }, -- instable proto matter
 	{ id = 22721, chance = 100000 }, -- gold token
 	{ id = 23509, chance = 100000 }, -- mysterious remains
 	{ id = 23510, chance = 100000 }, -- odd organ
@@ -98,7 +98,8 @@ monster.loot = {
 	{ id = 23531, chance = 3500 }, -- ring of green plasma
 	{ id = 23533, chance = 3500 }, -- ring of red plasma
 	{ id = 3554, chance = 5000, unique = true }, -- steel boots
-	{ id = 8075, chance = 3000, unique = true } -- spellbook of lost souls
+	{ id = 8075, chance = 3000, unique = true }, -- spellbook of lost souls
+	{ name = "spark sphere", chance = 100000 },
 }
 
 monster.attacks = {
@@ -114,19 +115,20 @@ monster.attacks = {
 monster.defenses = {
 	defense = 100,
 	armor = 100
+	--	mitigation = ???,
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 70 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 30 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 30 },
-	{ type = COMBAT_FIREDAMAGE, percent = 30 },
-	{ type = COMBAT_LIFEDRAIN, percent = 0 },
-	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 30 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 30 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 50 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 50 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 50 },
+	{ type = COMBAT_FIREDAMAGE, percent = 50 },
+	{ type = COMBAT_LIFEDRAIN, percent = 50 },
+	{ type = COMBAT_MANADRAIN, percent = 50 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 50 },
+	{ type = COMBAT_ICEDAMAGE, percent = 50 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 50 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

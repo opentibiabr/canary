@@ -46,18 +46,18 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "POOOWEEER!", yell = false }
+	{ text = "POOOWEEER!", yell = true },
 }
 
 monster.loot = {
@@ -72,6 +72,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 45,
 	armor = 40,
+	--	mitigation = ???,
 	{ name = "combat", interval = 4000, chance = 15, type = COMBAT_HEALING, minDamage = 50, maxDamage = 145, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -85,7 +86,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 95 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 95 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 95 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 95 },
 }
 
 monster.immunities = {

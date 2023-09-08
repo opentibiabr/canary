@@ -1,8 +1,8 @@
-local mType = Game.createMonsterType("Reflection Of Mawhawk")
+local mType = Game.createMonsterType("Reflection of Mawhawk")
 local monster = {}
 
-monster.description = "an reflection of mawhawk"
-monster.experience = 9650
+monster.description = "a reflection of Mawhawk"
+monster.experience = 14000
 monster.outfit = {
 	lookType = 595,
 	lookHead = 0,
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 12600
-monster.maxHealth = 12600
+monster.health = 45000
+monster.maxHealth = 45000
 monster.race = "blood"
 monster.corpse = 21004
 monster.speed = 135
@@ -47,25 +47,19 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "I'm the one who puts the cute into execute!", yell = false },
-	{ text = "I'm here to punish!", yell = false },
-	{ text = "Justice is swift and unavoidable!", yell = false },
-	{ text = "I'll bring justice!", yell = false },
-	{ text = "There is excellence in execution!", yell = false },
-	{ text = "Your sentence is death!", yell = false }
 }
 
 monster.loot = {
@@ -90,27 +84,30 @@ monster.loot = {
 }
 
 monster.attacks = {
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1000 },
 	{ name = "melee", interval = 2000, chance = 100, skill = 90, attack = 80 },
 	{ name = "combat", interval = 2000, chance = 8, type = COMBAT_LIFEDRAIN, minDamage = -135, maxDamage = -280, range = 7, radius = 5, shootEffect = CONST_ANI_WHIRLWINDAXE, target = true },
-	{ name = "combat", interval = 2000, chance = 8, type = COMBAT_PHYSICALDAMAGE, minDamage = -90, maxDamage = -200, range = 7, shootEffect = CONST_ANI_WHIRLWINDAXE, effect = CONST_ME_EXPLOSIONAREA, target = true }
+	{ name = "combat", interval = 2000, chance = 8, type = COMBAT_PHYSICALDAMAGE, minDamage = -90, maxDamage = -500, range = 7, shootEffect = CONST_ANI_WHIRLWINDAXE, effect = CONST_ME_EXPLOSIONAREA, target = true },
+	{ name = "combat", interval = 1800, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -300, maxDamage = -685, length = 7, spread = 3, effect = CONST_ME_STONES, target = false },
 }
 
 monster.defenses = {
-	defense = 40,
-	armor = 40
+	defense = 55,
+	armor = 55,
+	--	mitigation = ???,
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 1 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 20 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 10 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

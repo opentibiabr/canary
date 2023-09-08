@@ -1,5 +1,3 @@
-dofile(DATA_DIRECTORY .. "/monster/quests/the_secret_library/bosses/grand_master_oberon_functions.lua")
-
 local mType = Game.createMonsterType("Grand Master Oberon")
 local monster = {}
 
@@ -15,8 +13,14 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 30000
-monster.maxHealth = 30000
+monster.bosstiary = {
+	bossRaceId = 1576,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.TheSecretLibrary.TheOrderOfTheFalcon.OberonTimer,
+}
+
+monster.health = 60000
+monster.maxHealth = 60000
 monster.race = "blood"
 monster.corpse = 28625
 monster.speed = 115
@@ -25,12 +29,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 1576,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.TheSecretLibrary.TheOrderOfTheFalcon.OberonTimer
 }
 
 monster.strategiesTarget = {
@@ -54,12 +52,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -87,29 +85,30 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1200 },
-	{ name = "combat", interval = 6000, chance = 80, type = COMBAT_HOLYDAMAGE, minDamage = -1000, maxDamage = -2250, length = 8, spread = 3, effect = CONST_ME_HOLYAREA, target = false },
-	{ name = "combat", interval = 1000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -820, maxDamage = -1450, radius = 5, effect = CONST_ME_HITAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -860, maxDamage = -1500, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1400 },
+	{ name = "combat", interval = 3000, chance = 40, type = COMBAT_HOLYDAMAGE, minDamage = -800, maxDamage = -1200, length = 8, effect = CONST_ME_HOLYAREA, target = false },
+	{ name = "combat", interval = 4250, chance = 35, type = COMBAT_EARTHDAMAGE, minDamage = -500, maxDamage = -1000, radius = 5, effect = CONST_ME_HITAREA, target = false },
+	{ name = "combat", interval = 5000, chance = 37, type = COMBAT_DEATHDAMAGE, minDamage = -500, maxDamage = -1000, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false }
 }
 
 monster.defenses = {
 	defense = 60,
 	armor = 82,
+	--	mitigation = ???,
 	{ name = "speed", interval = 1000, chance = 10, speedChange = 180, effect = CONST_ME_POFF, target = false, duration = 4000 }
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = -5 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 5 },
-	{ type = COMBAT_FIREDAMAGE, percent = -5 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 10 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = -25 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_HOLYDAMAGE, percent = -20 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
 
 monster.immunities = {

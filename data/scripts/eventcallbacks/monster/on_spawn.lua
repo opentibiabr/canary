@@ -39,6 +39,7 @@ end
 local callback = EventCallback()
 
 function callback.monsterOnSpawn(monster, position)
+	if not monster then return end
 	HazardMonster.onSpawn(monster, position)
 
 	if monster:getType():isRewardBoss() then

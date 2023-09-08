@@ -1,4 +1,4 @@
-local mType = Game.createMonsterType("Memory Of A Werelion")
+local mType = Game.createMonsterType("Memory of a Werelion")
 local monster = {}
 
 monster.description = "a memory of a werelion"
@@ -12,6 +12,7 @@ monster.outfit = {
 	lookAddons = 3,
 	lookMount = 0
 }
+
 
 monster.health = 3880
 monster.maxHealth = 3880
@@ -40,14 +41,14 @@ monster.flags = {
 	runHealth = 5,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
+	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 1,
-	color = 0
+	level = 0,
+	color = 0,
 }
 
 monster.voices = {
@@ -75,20 +76,21 @@ monster.attacks = {
 monster.defenses = {
 	defense = 40,
 	armor = 40,
+	mitigation = 1.40,
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 100, maxDamage = 150, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 50 },
-	{ type = COMBAT_FIREDAMAGE, percent = 25 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = -25 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 45 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

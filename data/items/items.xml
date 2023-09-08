@@ -17771,6 +17771,7 @@
 	</item>
 	<item id="9014" article="a" name="leaf legs">
 		<attribute key="weight" value="1200"/>
+		<attribute key="armor" value="4"/>
 	</item>
 	<item id="9015" article="a" name="flower dress">
 		<attribute key="weight" value="1900"/>
@@ -44434,7 +44435,12 @@
 	<item fromid="30618" toid="30619" article="a" name="statue of bastesh"/>
 	<item id="30620" article="a" name="potted palm tree"/>
 	<item fromid="30621" toid="30622" article="a" name="potted plant"/>
-	<item fromid="30623" toid="30624" article="a" name="reed"/>
+	<item id="30623" name="reed"/>
+	<item id="30624" name="reed">
+		<attribute key="description" value="It is not mature yet."/>
+		<attribute key="duration" value="240"/>
+		<attribute key="decayTo" value="30623"/>
+	</item>
 	<item id="30625" article="a" name="granite pillar"/>
 	<item fromid="30626" toid="30635" article="a" name="obelisk"/>
 	<item fromid="30636" toid="30645" article="a" name="door casing"/>
@@ -44576,10 +44582,14 @@
 	<item id="30972" name="unknown item"/>
 	<item id="30973" article="a" name="bundle of reed"/>
 	<item id="30974" article="a" name="reed"/>
-	<item id="30975" article="a" name="bunch of reed">
+	<item id="30975" article="a" name="bunch of reed" plural="bunches of reed">
 		<attribute key="weight" value="550"/>
 	</item>
-	<item id="30976" article="a" name="reed"/>
+	<item id="30976" name="reed">
+		<attribute key="description" value="It is not mature yet."/>
+		<attribute key="duration" value="240"/>
+		<attribute key="decayTo" value="30623"/>
+	</item>
 	<item fromid="30977" toid="30982" article="a" name="wall"/>
 	<item fromid="30983" toid="30988" name="unknown item"/>
 	<item id="30989" article="a" name="intricate cobra shrine">
@@ -44947,7 +44957,7 @@
 		<attribute key="duration" value="60"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
-	<item id="31306" article="a" name="Ring of Secret Thoughts">
+	<item id="31306" article="a" name="ring of secret thoughts">
 		<attribute key="description" value="It is charged with the memories of the Ambassador of Rathleton"/>
 		<attribute key="weight" value="90"/>
 	</item>
@@ -50307,7 +50317,6 @@
 		<attribute key="defense" value="42"/>
 		<attribute key="weight" value="5800"/>
 		<attribute key="imbuementslot" value="1">
-			<attribute key="elemental protection death" value="3"/>
 			<attribute key="elemental protection earth" value="3"/>
 			<attribute key="elemental protection fire" value="3"/>
 			<attribute key="elemental protection ice" value="3"/>
@@ -50550,7 +50559,6 @@
 			<attribute key="elemental protection death" value="3"/>
 			<attribute key="elemental protection earth" value="3"/>
 			<attribute key="elemental protection fire" value="3"/>
-			<attribute key="elemental protection ice" value="3"/>
 			<attribute key="elemental protection energy" value="3"/>
 			<attribute key="elemental protection holy" value="3"/>
 			<attribute key="skillboost shielding" value="3"/>
@@ -50564,7 +50572,6 @@
 		<attribute key="weight" value="6500"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection death" value="3"/>
-			<attribute key="elemental protection earth" value="3"/>
 			<attribute key="elemental protection fire" value="3"/>
 			<attribute key="elemental protection ice" value="3"/>
 			<attribute key="elemental protection energy" value="3"/>
@@ -51631,12 +51638,74 @@
 		<attribute key="decayTo" value="35379"/>
 		<attribute key="containersize" value="30"/>
 	</item>
+	<item id="35381" article="a" name="dead pirat bombardier">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="30"/>
+	</item>
+	<item id="35382" article="a" name="dead pirat bombardier">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="35381"/>
+		<attribute key="containersize" value="30"/>
+	</item>
+	<item id="35383" article="a" name="dead pirat bombardier">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="35382"/>
+		<attribute key="containersize" value="30"/>
+	</item>
+	<item id="35384" article="a" name="dead pirat bombardier">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="decayTo" value="35383"/>
+		<attribute key="containersize" value="30"/>
+	</item>
+	<item id="35385" article="a" name="dead pirat mate">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="30"/>
+	</item>
+	<item id="35386" article="a" name="dead pirat mate">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="35385"/>
+		<attribute key="containersize" value="30"/>
+	</item>
+	<item id="35387" article="a" name="dead pirat mate">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="35386"/>
+		<attribute key="containersize" value="30"/>
+	</item>
+	<item id="35388" article="a" name="dead pirat mate">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="decayTo" value="35387"/>
+		<attribute key="containersize" value="30"/>
+	</item>
 	<item id="35479" article="a" name="bag of smuggled goods">
 		<attribute key="weight" value="800"/>
 	</item>
 	<item id="35495" article="a" name="lace-trimmed handkerchief">
 		<attribute key="description" value="It is embroidered with the letter E"/>
 		<attribute key="weight" value="50"/>
+	</item>
+	<item id="35496" article="a" name="teleport box">
+		<attribute key="description" value="They say it's bigger on the inside."/>
+		<attribute key="type" value="teleport"/>
+		<attribute key="effect" value="teleport"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="moveable" value="1"/>
+	</item>
+	<item id="35501" article="a" name="teleport mirror">
+		<attribute key="description" value="You see an infinite amount of possibilities."/>
+		<attribute key="type" value="teleport"/>
+		<attribute key="effect" value="teleport"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="moveable" value="1"/>
 	</item>
 	<item id="35502" article="a" name="magic portal">
 		<attribute key="type" value="teleport"/>
@@ -51894,6 +51963,30 @@
 	</item>
 	<item id="35695" article="a" name="scrubbing brush" plural="scrubbing brushes">
 		<attribute key="weight" value="350"/>
+	</item>
+	<item id="35843" article="a" name="dead ratmiral blackwhiskers">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="30"/>
+	</item>
+	<item id="35844" article="a" name="dead ratmiral blackwhiskers">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="35843"/>
+		<attribute key="containersize" value="30"/>
+	</item>
+	<item id="35845" article="a" name="dead ratmiral blackwhiskers">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="35844"/>
+		<attribute key="containersize" value="30"/>
+	</item>
+	<item id="35846" article="a" name="dead ratmiral blackwhiskers">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="decayTo" value="35845"/>
+		<attribute key="containersize" value="30"/>
 	</item>
 	<item id="35848" article="a" name="blue quiver">
 		<attribute key="slotType" value="right-hand"/>
@@ -58243,6 +58336,24 @@
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="shootType" value="spear"/>
 		<attribute key="range" value="3"/>
+	</item>
+	<item id="40582" article="a" name="crab man claws">
+		<attribute key="weight" value="230"/>
+	</item>
+	<item id="40583" article="a" name="liodile fang">
+		<attribute key="weight" value="170"/>
+	</item>
+	<item id="40584" article="a" name="boar man hoof">
+		<attribute key="weight" value="210"/>
+	</item>
+	<item id="40585" article="a" name="harpy feathers">
+		<attribute key="weight" value="390"/>
+	</item>
+	<item id="40586" article="a" name="carnivostrich feather">
+		<attribute key="weight" value="120"/>
+	</item>
+	<item id="40587" article="a" name="rhindeer antlers">
+		<attribute key="weight" value="570"/>
 	</item>
 	<item id="40588" article="a" name="antler-horn helmet">
 		<attribute key="absorbpercentphysical" value="3"/>

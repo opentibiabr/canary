@@ -38,7 +38,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -47,20 +47,20 @@ monster.flags = {
 	runHealth = 366,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 4,
+	color = 119,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "EMBRACE MY GIFTS!", yell = true }
+	{ text = "EMBRACE MY GIFTS!", yell = true },
 }
 
 monster.loot = {
@@ -102,6 +102,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 35,
 	armor = 45,
+	mitigation = 1.74,
 	{ name = "combat", interval = 2000, chance = 9, type = COMBAT_HEALING, minDamage = 70, maxDamage = 300, effect = CONST_ME_MAGIC_GREEN, target = false }
 }
 
@@ -115,7 +116,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 50 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -15 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

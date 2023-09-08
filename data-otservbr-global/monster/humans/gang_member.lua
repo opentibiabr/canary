@@ -31,7 +31,7 @@ monster.maxHealth = 295
 monster.race = "blood"
 monster.corpse = 18122
 monster.speed = 95
-monster.manaCost = 420
+monster.manaCost = 450
 
 monster.changeTarget = {
 	interval = 4000,
@@ -50,7 +50,7 @@ monster.flags = {
 	pushable = true,
 	rewardBoss = false,
 	illusionable = false,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 90,
 	targetDistance = 1,
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -74,7 +74,7 @@ monster.voices = {
 	{ text = "Help me guys!", yell = false },
 	{ text = "I don't like the way you look!", yell = false },
 	{ text = "You're wearing the wrong colours!", yell = false },
-	{ text = "Don't mess with us!", yell = false }
+	{ text = "Don't mess with us!", yell = false },
 }
 
 monster.loot = {
@@ -90,7 +90,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 8,
+	mitigation = 0.38,
 }
 
 monster.elements = {
@@ -103,7 +104,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {

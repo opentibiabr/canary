@@ -41,21 +41,21 @@ monster.flags = {
 	runHealth = 15,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Seeet the eeegg on fiiireee!", yell = false },
-	{ text = "Slooow the Hooorrorrrr!", yell = false }
+	{ text = "Slooow the Hooorrorrrr!", yell = false },
 }
 
 monster.loot = {
@@ -67,7 +67,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 1,
 	armor = 1,
-	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HEALING, effect = CONST_ME_MORTAREA, target = false }
+	mitigation = 0.00,
 }
 
 monster.elements = {

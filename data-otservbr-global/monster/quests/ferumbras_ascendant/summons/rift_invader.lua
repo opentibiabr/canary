@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Rift Invader")
 local monster = {}
 
 monster.description = "a rift invader"
-monster.experience = 6000
+monster.experience = 100
 monster.outfit = {
 	lookType = 290,
 	lookHead = 0,
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 8200
-monster.maxHealth = 8200
+monster.health = 6250
+monster.maxHealth = 6250
 monster.race = "venom"
 monster.corpse = 0
 monster.speed = 128
@@ -58,7 +58,7 @@ monster.events = {
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -79,7 +79,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 65,
-	armor = 40,
+	armor = 35,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_HEALING, minDamage = 150, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 10, speedChange = 388, effect = CONST_ME_MAGIC_RED, target = false, duration = 4000 }
 }
@@ -89,12 +90,12 @@ monster.elements = {
 	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -15 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

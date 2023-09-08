@@ -6,8 +6,7 @@ for i = 45, 60 do
 	local condition1 = Condition(CONDITION_ATTRIBUTES)
 	condition1:setParameter(CONDITION_PARAM_TICKS, 7000)
 	condition1:setParameter(CONDITION_PARAM_SKILL_MELEEPERCENT, i)
-	condition1:setParameter(CONDITION_PARAM_SKILL_FISTPERCENT, i)
-	condition1:setParameter(CONDITION_PARAM_SKILL_SHIELDPERCENT, i)
+	condition1:setParameter(CONDITION_PARAM_SKILL_DEFENSEPERCENT, i)
 
 	local condition2 = Condition(CONDITION_ATTRIBUTES)
 	condition2:setParameter(CONDITION_PARAM_TICKS, 7000)
@@ -16,7 +15,7 @@ for i = 45, 60 do
 	local condition3 = Condition(CONDITION_ATTRIBUTES)
 	condition3:setParameter(CONDITION_PARAM_TICKS, 7000)
 	condition3:setParameter(CONDITION_PARAM_SKILL_DISTANCEPERCENT, i)
-	condition3:setParameter(CONDITION_PARAM_SKILL_SHIELDPERCENT, i)
+	condition3:setParameter(CONDITION_PARAM_SKILL_DEFENSEPERCENT, i)
 
 	local area = createCombatArea(AREA_CIRCLE3X3)
 	combat[i]:setArea(area)
@@ -28,7 +27,8 @@ for i = 45, 60 do
 		if n ~= 0 then
 			local v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 			while v ~= 0 do
-				if isCreature(v) == true then
+				local creatureFromPos = Creature(v)
+				if creatureFromPos then
 					table.insert(creatureTable, v)
 					if n == #creatureTable then
 						break

@@ -63,12 +63,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -106,7 +106,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 35,
-	armor = 35,
+	armor = 60,
+	mitigation = 1.04,
 	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 150, maxDamage = 180, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -120,7 +121,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 50 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 45 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 45 },
 }
 
 monster.immunities = {

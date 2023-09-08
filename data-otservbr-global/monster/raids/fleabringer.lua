@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Fleabringer")
 local monster = {}
 
-monster.description = "a fleabringer"
+monster.description = "Fleabringer"
 monster.experience = 100
 monster.outfit = {
 	lookType = 341,
@@ -13,21 +13,21 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 640,
+	bossRace = RARITY_NEMESIS,
+}
+
 monster.health = 265
 monster.maxHealth = 265
 monster.race = "blood"
 monster.corpse = 10333
 monster.speed = 140
-monster.manaCost = 465
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 640,
-	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {
@@ -40,7 +40,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = false,
@@ -51,12 +51,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -76,7 +76,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 10,
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -89,13 +90,13 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = true },
+	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = false },
+	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }
 }
 

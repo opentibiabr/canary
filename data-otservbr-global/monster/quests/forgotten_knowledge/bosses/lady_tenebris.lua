@@ -13,6 +13,12 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 1315,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.ForgottenKnowledge.LadyTenebrisTimer,
+}
+
 monster.health = 150000
 monster.maxHealth = 150000
 monster.race = "blood"
@@ -23,12 +29,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 2000,
 	chance = 20
-}
-
-monster.bosstiary = {
-	bossRaceId = 1315,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.ForgottenKnowledge.LadyTenebrisTimer
 }
 
 monster.strategiesTarget = {
@@ -55,7 +55,7 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = true,
 }
 
 monster.events = {
@@ -64,13 +64,15 @@ monster.events = {
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "May the embrace of darkness kill you!", yell = false }
+	{ text = "May the embrace of darkness kill you!", yell = false },
+	{ text = "I'm the one and only mistress of shadows!", yell = false },
+	{ text = "Blackout!", yell = false },
 }
 
 monster.loot = {
@@ -82,7 +84,7 @@ monster.loot = {
 	{ id = 9057, chance = 10000, maxCount = 10 }, -- small topaz
 	{ id = 238, chance = 10000, maxCount = 100 }, -- great mana potion
 	{ id = 7642, chance = 10000, maxCount = 100 }, -- great spirit potion
-	{ id = 20062, chance = 2000, maxCount = 2 }, -- cluster of solace
+	{ id = 20062, chance = 12000, maxCount = 2 }, -- cluster of solace
 	{ id = 16119, chance = 2000, maxCount = 3 }, -- blue crystal shard
 	{ id = 16121, chance = 5000, maxCount = 5 }, -- green crystal shard
 	{ id = 20062, chance = 2000, maxCount = 2 }, -- cluster of solace
@@ -112,7 +114,7 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -800, maxDamage = -1300 },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -800, maxDamage = -1800 },
 	{ name = "combat", interval = 6000, chance = 13, type = COMBAT_DEATHDAMAGE, minDamage = -1200, maxDamage = -1500, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 13, type = COMBAT_DEATHDAMAGE, minDamage = -400, maxDamage = -600, radius = 4, shootEffect = CONST_ANI_DEATH, effect = CONST_ME_SMALLCLOUDS, target = true },
 	{ name = "tenebris summon", interval = 2000, chance = 14, target = false },
@@ -122,21 +124,22 @@ monster.attacks = {
 monster.defenses = {
 	defense = 65,
 	armor = 55,
+	--	mitigation = ???,
 	{ name = "combat", interval = 3000, chance = 25, type = COMBAT_HEALING, minDamage = 600, maxDamage = 2700, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 320, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 50 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 50 },
-	{ type = COMBAT_EARTHDAMAGE, percent = -10 },
-	{ type = COMBAT_FIREDAMAGE, percent = 50 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 5 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 20 },
+	{ type = COMBAT_FIREDAMAGE, percent = 5 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 50 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 80 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 80 }
+	{ type = COMBAT_ICEDAMAGE, percent = 15 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 1 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 60 },
 }
 
 monster.immunities = {

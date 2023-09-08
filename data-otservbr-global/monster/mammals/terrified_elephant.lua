@@ -13,6 +13,19 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.raceId = 771
+monster.Bestiary = {
+	class = "Mammal",
+
+	toKill = 500,
+	FirstUnlock = 25,
+	SecondUnlock = 250,
+	CharmsPoints = 15,
+	Stars = 2,
+	Occurrence = 0,
+	Locations = "East of Port Hope, close to the Deeper Banuta shortcut, Mapper Coords128.84127.16872texthere."
+}
+
 monster.health = 320
 monster.maxHealth = 320
 monster.race = "blood"
@@ -46,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -59,7 +72,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Hooooot-Toooooot!", yell = false },
 	{ text = "Tooooot!", yell = false },
-	{ text = "Trooooot!", yell = false }
+	{ text = "Trooooot!", yell = false },
 }
 
 monster.loot = {
@@ -75,7 +88,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 0,
-	armor = 0,
+	armor = 20,
+	mitigation = 0.41,
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 800, target = false, duration = 5000 }
 }
 
@@ -89,7 +103,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

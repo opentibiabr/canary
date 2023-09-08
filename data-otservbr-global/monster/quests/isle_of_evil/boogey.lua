@@ -13,6 +13,11 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 567,
+	bossRace = RARITY_BANE,
+}
+
 monster.health = 930
 monster.maxHealth = 930
 monster.race = "undead"
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 5000,
 	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 567,
-	bossRace = RARITY_BANE
 }
 
 monster.strategiesTarget = {
@@ -43,7 +43,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -54,12 +54,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -72,11 +72,11 @@ monster.summon = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Since you didn't eat your spinach Bogey comes to get you!", yell = true },
-	{ text = "Too bad you did not eat your lunch, now I have to punish you!", yell = true },
-	{ text = "Even if you beat me, I'll hide in your closet until you one day drop your guard!", yell = true },
-	{ text = "You better had believe in me!", yell = true },
-	{ text = "I'll take you into the darkness ... forever!", yell = true }
+	{ text = "Since you didn't eat your spinach Bogey comes to get you!", yell = false },
+	{ text = "Too bad you did not eat your lunch, now I have to punish you!", yell = false },
+	{ text = "Even if you beat me, I'll hide in your closet until you one day drop your guard!", yell = false },
+	{ text = "You better had believe in me!", yell = false },
+	{ text = "I'll take you into the darkness ... forever!", yell = false },
 }
 
 monster.loot = {
@@ -96,6 +96,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 30,
 	armor = 30,
+	mitigation = 0.40,
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 80, maxDamage = 120, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -109,11 +110,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 25 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

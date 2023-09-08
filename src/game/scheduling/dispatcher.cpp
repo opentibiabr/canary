@@ -21,17 +21,34 @@ Dispatcher &Dispatcher::getInstance() {
 	return inject<Dispatcher>();
 }
 
-void Dispatcher::addTask(std::function<void(void)> f, uint32_t expiresAfterMs /* = 0*/) {
-	addTask(std::make_shared<Task>(std::move(f)), expiresAfterMs);
+void Dispatcher::addTask(std::function<void(void)> f, std::string context) {
+	addTask(std::make_shared<Task>(std::move(f), std::move(context)));
 }
 
-void Dispatcher::addTask(const std::shared_ptr<Task> task, uint32_t expiresAfterMs /* = 0*/) {
+void Dispatcher::addTask(std::function<void(void)> f, std::string context, uint32_t expiresAfterMs) {
+	addTask(std::make_shared<Task>(std::move(f), std::move(context)), expiresAfterMs);
+}
+
+void Dispatcher::addTask(const std::shared_ptr<Task> task) {
+	addTask(task, 0);
+}
+
+void Dispatcher::addTask(const std::shared_ptr<Task> task, uint32_t expiresAfterMs) {
+	auto executeTask = [this, task]() {
+		std::lock_guard lockClass(threadSafetyMutex);
+
+		if (task->hasTraceableContext()) {
+			g_logger().trace("Executing task {}.", task->getContext());
+		} else {
+			g_logger().debug("Executing task {}.", task->getContext());
+		}
+
+		++dispatcherCycle;
+		(*task)();
+	};
+
 	if (expiresAfterMs == 0) {
-		threadPool.addLoad([this, task]() {
-			std::lock_guard lockClass(threadSafetyMutex);
-			++dispatcherCycle;
-			(*task)();
-		});
+		threadPool.addLoad(executeTask);
 
 		return;
 	};
@@ -44,16 +61,14 @@ void Dispatcher::addTask(const std::shared_ptr<Task> task, uint32_t expiresAfter
 			return;
 		}
 
-		g_logger().info("Task was not executed within {} ms, so it was cancelled.", expiresAfterMs);
+		g_logger().info("Task '{}' was not executed within {} ms, so it was cancelled.", task->getContext(), expiresAfterMs);
 	});
 
-	threadPool.addLoad([this, task, timer]() {
-		std::lock_guard lockClass(threadSafetyMutex);
+	threadPool.addLoad([timer, executeTask]() {
 		if (timer->cancel() <= 0) {
 			return;
 		}
 
-		++dispatcherCycle;
-		(*task)();
+		executeTask();
 	});
 }

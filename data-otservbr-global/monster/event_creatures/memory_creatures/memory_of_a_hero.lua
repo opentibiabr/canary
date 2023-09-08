@@ -1,4 +1,4 @@
-local mType = Game.createMonsterType("Memory Of A Hero")
+local mType = Game.createMonsterType("Memory of a Hero")
 local monster = {}
 
 monster.description = "a memory of a hero"
@@ -12,6 +12,7 @@ monster.outfit = {
 	lookAddons = 0,
 	lookMount = 0
 }
+
 
 monster.health = 3850
 monster.maxHealth = 3850
@@ -47,22 +48,18 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = true,
-	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Let's have a fight!", yell = false },
-	{ text = "Welcome to my battleground!", yell = false },
-	{ text = "Have you seen princess Lumelia?", yell = false },
-	{ text = "I will sing a tune at your grave.", yell = false }
 }
 
 monster.loot = {
@@ -90,20 +87,21 @@ monster.attacks = {
 monster.defenses = {
 	defense = 40,
 	armor = 40,
+	mitigation = 1.50,
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 30 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 40 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 50 },
-	{ type = COMBAT_FIREDAMAGE, percent = 30 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 10 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 50 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -20 }
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

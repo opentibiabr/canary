@@ -61,12 +61,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -74,7 +74,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Our mine... leave us alone.", yell = false },
 	{ text = "Turn back...", yell = false },
-	{ text = "These mine is ours... you shall not pass.", yell = false }
+	{ text = "These mine is ours... you shall not pass.", yell = false },
 }
 
 monster.loot = {
@@ -96,7 +96,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 0,
-	armor = 0,
+	armor = 8,
+	mitigation = 0.43,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 5, maxDamage = 15, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -110,7 +111,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -25 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

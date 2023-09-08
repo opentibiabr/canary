@@ -13,6 +13,11 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 965,
+	bossRace = RARITY_NEMESIS,
+}
+
 monster.health = 500
 monster.maxHealth = 500
 monster.race = "blood"
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 2000,
 	chance = 0
-}
-
-monster.bosstiary = {
-	bossRaceId = 965,
-	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {
@@ -52,14 +52,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -92,20 +92,21 @@ monster.attacks = {
 monster.defenses = {
 	defense = 11,
 	armor = 8,
+	mitigation = 0.87,
 	{ name = "white pale summon", interval = 2000, chance = 12, target = false }
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

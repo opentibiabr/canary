@@ -1,4 +1,4 @@
-local mType = Game.createMonsterType("Koshei The Deathless")
+local mType = Game.createMonsterType("Koshei the Deathless")
 local monster = {}
 
 monster.description = "Koshei the Deathless"
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 1200
-monster.maxHealth = 1200
+monster.health = 3000
+monster.maxHealth = 3000
 monster.race = "undead"
 monster.corpse = 7538
 monster.speed = 195
@@ -47,14 +47,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = true,
+	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -72,9 +72,9 @@ monster.voices = {
 	{ text = "Death is my ally!", yell = false },
 	{ text = "Welcome to my domain visitor!", yell = false },
 	{ text = "You will be my toy on the other side!", yell = false },
-	{ text = "You will endure agony beyond thy death!", yell = false },
 	{ text = "What a disgusting smell of life!", yell = false },
-	{ text = "Ahhh, your life energy tastes so delicious!", yell = false }
+	{ text = "You will endure agony beyond thy death!", yell = false },
+	{ text = "Ahhh, your life energy tastes so delicious!", yell = false },
 }
 
 monster.loot = {
@@ -93,20 +93,21 @@ monster.attacks = {
 monster.defenses = {
 	defense = 20,
 	armor = 20,
+	--	mitigation = ???,
 	{ name = "combat", interval = 1000, chance = 30, type = COMBAT_HEALING, minDamage = 150, maxDamage = 300, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 20 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 1 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 90 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
 	{ type = COMBAT_FIREDAMAGE, percent = -10 },
-	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
-	{ type = COMBAT_HOLYDAMAGE, percent = -50 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_HOLYDAMAGE, percent = -15 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

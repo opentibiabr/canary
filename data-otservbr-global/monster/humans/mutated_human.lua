@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -75,7 +75,7 @@ monster.voices = {
 	{ text = "You will be the next infected one... CRAAAHHH!", yell = false },
 	{ text = "Science... is a curse.", yell = false },
 	{ text = "Run as fast as you can.", yell = false },
-	{ text = "Oh by the gods! What is this... aaaaaargh!", yell = false }
+	{ text = "Oh by the gods! What is this... aaaaaargh!", yell = false },
 }
 
 monster.loot = {
@@ -104,7 +104,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 15,
+	armor = 14,
+	mitigation = 0.59,
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 220, effect = CONST_ME_GREEN_RINGS, target = false, duration = 5000 }
 }
 
@@ -118,7 +119,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -25 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

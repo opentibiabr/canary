@@ -21,7 +21,7 @@ monster.Bestiary = {
 	FirstUnlock = 2,
 	SecondUnlock = 3,
 	CharmsPoints = 50,
-	Stars = 2,
+	Stars = 3,
 	Occurrence = 3,
 	Locations = "Calassa, Treasure Island , Seacrest Grounds. \z
 		In the Seacrest Grounds the spawns are Varying Monster Spawns in which the common creature is an Abyssal Calamary. \z
@@ -59,23 +59,23 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Chrchrchr", yell = true },
-	{ text = "Klonklonk", yell = true },
-	{ text = "Chrrrrr", yell = true },
-	{ text = "Crunch crunch", yell = true }
+	{ text = "Chrchrchr", yell = false },
+	{ text = "Klonklonk", yell = false },
+	{ text = "Chrrrrr", yell = false },
+	{ text = "Crunch crunch", yell = false },
 }
 
 monster.loot = {
@@ -94,7 +94,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 45,
-	armor = 40
+	armor = 40,
+	mitigation = 0.91,
 }
 
 monster.elements = {
@@ -107,7 +108,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {

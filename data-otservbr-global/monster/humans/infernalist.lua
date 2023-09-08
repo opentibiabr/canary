@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -80,7 +80,7 @@ monster.voices = {
 	{ text = "Nothing will remain but your scorched bones!", yell = false },
 	{ text = "Some like it hot!", yell = false },
 	{ text = "It's cooking time!", yell = false },
-	{ text = "Feel the heat of battle!", yell = false }
+	{ text = "Feel the heat of battle!", yell = false },
 }
 
 monster.loot = {
@@ -116,7 +116,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 15,
+	armor = 33,
+	mitigation = 1.15,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 60, maxDamage = 230, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_MAGIC_BLUE }
 }
@@ -131,7 +132,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {

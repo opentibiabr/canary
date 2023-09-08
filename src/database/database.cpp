@@ -11,11 +11,16 @@
 
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
+#include "lib/di/container.hpp"
 
 Database::~Database() {
 	if (handle != nullptr) {
 		mysql_close(handle);
 	}
+}
+
+Database &Database::getInstance() {
+	return inject<Database>();
 }
 
 bool Database::connect() {

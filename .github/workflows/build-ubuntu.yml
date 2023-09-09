@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-20.04, ubuntu-22.04 ]
+        os: [ ubuntu-20.04, ubuntu-22.04, self-hosted ]
         buildtype: [ linux-release, linux-debug ]
         include:
           - os: ubuntu-20.04

@@ -16,12 +16,30 @@ find_library(BEATS_LIB beats
         NO_DEFAULT_PATH
 )
 
-# Se não encontrar, crie o alvo para construí-la
+# Determine the correct library extension based on the operating system
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set(BEATS_LIB_EXT "beats.lib")
+else ()
+    set(BEATS_LIB_EXT "libbeats.a")
+endif ()
+
+# Full path to the library
+set(BEATS_LIB_FULL_PATH ${CMAKE_CURRENT_BINARY_DIR}/beats-rust/target/release/${BEATS_LIB_EXT})
+
+# Try to find the library
+find_library(BEATS_LIB ${BEATS_LIB_EXT}
+        PATHS
+        "${CMAKE_CURRENT_BINARY_DIR}/beats-rust/target/release"
+        "${CMAKE_CURRENT_BINARY_DIR}/beats-rust"
+        NO_DEFAULT_PATH
+)
+
+# If the library is not found, set up for build
 if (NOT BEATS_LIB)
-    message("Unable to find the beats library. Setting up for build.")
+    message("-- Unable to find the beats library. Setting up for build.")
 
     add_custom_command(
-            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/beats-rust/target/release/beats.lib
+            OUTPUT ${BEATS_LIB_FULL_PATH}
             COMMAND cargo build --release --target-dir=${CMAKE_CURRENT_BINARY_DIR}/beats-rust/target
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/beats-rust
             COMMENT "Compiling Rust library"
@@ -29,12 +47,12 @@ if (NOT BEATS_LIB)
 
     add_custom_target(
             BeatsTarget ALL
-            DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/beats-rust/target/release/beats.lib
+            DEPENDS ${BEATS_LIB_FULL_PATH}
     )
 
     add_dependencies(${PROJECT_NAME} BeatsTarget)
 
-    set(BEATS_LIB ${CMAKE_CURRENT_BINARY_DIR}/beats-rust/target/release/beats.lib)
+    set(BEATS_LIB ${BEATS_LIB_FULL_PATH})
 else ()
     message("lib beats found at ${BEATS_LIB}.")
 endif ()

@@ -20,8 +20,8 @@ add_subdirectory(utils)
 
 # Add more global sources - please add preferably in the sub_directory CMakeLists.
 set(ProtobufFiles
-	protobuf/appearances.pb.cc
-	protobuf/kv.pb.cc
+        protobuf/appearances.pb.cc
+        protobuf/kv.pb.cc
 )
 
 # Add more global sources - please add preferably in the sub_directory CMakeLists.
@@ -29,7 +29,7 @@ target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp ${ProtobufFiles})
 
 # Skip unity build inclusion for protobuf files
 set_source_files_properties(
-    ${ProtobufFiles} PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON
+        ${ProtobufFiles} PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON
 )
 
 
@@ -41,21 +41,24 @@ target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
 # *****************************************************************************
 if (CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(${PROJECT_NAME}_lib PRIVATE -Wno-deprecated-declarations)
-endif()
+endif ()
 
 # === IPO ===
 check_ipo_supported(RESULT result OUTPUT output)
-if(result)
+if (result)
     set_property(TARGET ${PROJECT_NAME}_lib PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
-else()
+else ()
     message(WARNING "IPO is not supported: ${output}")
-endif()
+endif ()
 
 # === UNITY BUILD (compile time reducer) ===
-if(SPEED_UP_BUILD_UNITY)
+if (SPEED_UP_BUILD_UNITY)
     set_target_properties(${PROJECT_NAME}_lib PROPERTIES UNITY_BUILD ON)
     log_option_enabled("Build unity for speed up compilation")
-endif()
+endif ()
+
+set_target_properties(Beats PROPERTIES
+        IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/beats-rust/beats.lib")
 
 # *****************************************************************************
 # Target include directories - to allow #include
@@ -67,13 +70,13 @@ target_include_directories(${PROJECT_NAME}_lib
         ${GMP_INCLUDE_DIRS}
         ${LUAJIT_INCLUDE_DIRS}
         ${PARALLEL_HASHMAP_INCLUDE_DIRS}
-        )
+)
 
 # *****************************************************************************
 # Target links to external dependencies
 # *****************************************************************************
 target_link_libraries(${PROJECT_NAME}_lib
-    PUBLIC
+        PUBLIC
         ${GMP_LIBRARIES}
         ${LUAJIT_LIBRARIES}
         CURL::libcurl
@@ -90,33 +93,34 @@ target_link_libraries(${PROJECT_NAME}_lib
         unofficial::argon2::libargon2
         unofficial::libmariadb
         unofficial::mariadbclient
+        Beats
 )
 
-if(CMAKE_BUILD_TYPE MATCHES Debug)
+if (CMAKE_BUILD_TYPE MATCHES Debug)
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${ZLIB_LIBRARY_DEBUG})
-else()
+else ()
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${ZLIB_LIBRARY_RELEASE})
-endif()
+endif ()
 
 if (MSVC)
-    if(BUILD_STATIC_LIBRARY)
+    if (BUILD_STATIC_LIBRARY)
         target_link_libraries(${PROJECT_NAME}_lib PUBLIC jsoncpp_static)
-    else()
+    else ()
         target_link_libraries(${PROJECT_NAME}_lib PUBLIC jsoncpp_lib)
-    endif()
+    endif ()
 
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_CLIENT_LIBS})
-else()
+else ()
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC jsoncpp_static Threads::Threads)
 endif (MSVC)
 
 # === OpenMP ===
-if(OPTIONS_ENABLE_OPENMP)
+if (OPTIONS_ENABLE_OPENMP)
     log_option_enabled("openmp")
     find_package(OpenMP)
-    if(OpenMP_CXX_FOUND)
+    if (OpenMP_CXX_FOUND)
         target_link_libraries(${PROJECT_NAME}_lib PUBLIC OpenMP::OpenMP_CXX)
-    endif()
-else()
+    endif ()
+else ()
     log_option_disabled("openmp")
-endif()
+endif ()

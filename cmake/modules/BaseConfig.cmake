@@ -39,6 +39,8 @@ find_package(unofficial-libmariadb CONFIG REQUIRED)
 
 find_path(BOOST_DI_INCLUDE_DIRS "boost/di.hpp")
 
+add_library(Beats STATIC IMPORTED)
+
 # *****************************************************************************
 # Sanity Checks
 # *****************************************************************************
@@ -47,16 +49,16 @@ if (CMAKE_COMPILER_IS_GNUCXX)
     message("-- Compiler: GCC - Version: ${CMAKE_CXX_COMPILER_VERSION}")
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS GNUCXX_MINIMUM_VERSION)
         message(FATAL_ERROR "GCC version must be at least ${GNUCXX_MINIMUM_VERSION}!")
-    endif()
-endif()
+    endif ()
+endif ()
 
 # === Minimum required version for visual studio ===
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     message("-- Compiler: Visual Studio - Version: ${CMAKE_CXX_COMPILER_VERSION}")
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS MSVC_MINIMUM_VERSION)
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS MSVC_MINIMUM_VERSION)
         message(FATAL_ERROR "Visual Studio version must be at least ${MSVC_MINIMUM_VERSION}")
-    endif()
-endif()
+    endif ()
+endif ()
 
 # *****************************************************************************
 # Sanity Checks
@@ -69,50 +71,50 @@ option(BUILD_STATIC_LIBRARY "Build using static libraries" OFF)
 option(SPEED_UP_BUILD_UNITY "Compile using build unity for speed up build" ON)
 
 # === ASAN ===
-if(ASAN_ENABLED)
+if (ASAN_ENABLED)
     log_option_enabled("asan")
-    if(MSVC)
+    if (MSVC)
         add_compile_options(/fsanitize=address)
-    else()
+    else ()
         add_compile_options(-fsanitize=address)
         link_libraries(-fsanitize=address)
-    endif()
-else()
+    endif ()
+else ()
     log_option_disabled("asan")
-endif()
+endif ()
 
 # Build static libs
-if(BUILD_STATIC_LIBRARY)
+if (BUILD_STATIC_LIBRARY)
     log_option_enabled("STATIC_LIBRARY")
 
-    if(MSVC)
+    if (MSVC)
         set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
-    elseif(UNIX AND NOT APPLE)
+    elseif (UNIX AND NOT APPLE)
         set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-    elseif(APPLE)
+    elseif (APPLE)
         set(CMAKE_FIND_LIBRARY_SUFFIXES ".a" ".dylib")
-    endif()
-else()
+    endif ()
+else ()
     log_option_disabled("STATIC_LIBRARY")
-endif()
+endif ()
 
 # === DEBUG LOG ===
 # cmake -DDEBUG_LOG=ON ..
-if(DEBUG_LOG)
+if (DEBUG_LOG)
     add_definitions(-DDEBUG_LOG=ON)
     log_option_enabled("DEBUG LOG")
-else()
+else ()
     log_option_disabled("DEBUG LOG")
-endif(DEBUG_LOG)
+endif (DEBUG_LOG)
 
 # *****************************************************************************
 # Compiler Options
 # *****************************************************************************
 if (MSVC)
-    foreach(type RELEASE DEBUG RELWITHDEBINFO MINSIZEREL)
+    foreach (type RELEASE DEBUG RELWITHDEBINFO MINSIZEREL)
         string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_${type} "${CMAKE_CXX_FLAGS_${type}}")
         string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_${type} "${CMAKE_C_FLAGS_${type}}")
-    endforeach(type)
+    endforeach (type)
 
     add_compile_options(/MP /FS /Zf /EHsc)
 endif (MSVC)
@@ -123,20 +125,20 @@ function(set_output_directory target_name)
         set_target_properties(${target_name}
                 PROPERTIES
                 RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-                )
-    else()
+        )
+    else ()
         set_target_properties(${target_name}
                 PROPERTIES
                 RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/"
-                )
-    endif()
+        )
+    endif ()
 endfunction()
 
 ## Setup shared target basic configurations
 function(setup_target TARGET_NAME)
     if (MSVC AND BUILD_STATIC_LIBRARY)
         set_property(TARGET ${TARGET_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-    endif()
+    endif ()
 endfunction()
 
 # *****************************************************************************

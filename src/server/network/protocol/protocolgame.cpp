@@ -33,6 +33,10 @@
 #include "creatures/players/management/waitlist.hpp"
 #include "items/weapons/weapons.hpp"
 
+extern "C" {
+int32_t get_base_attack(uint32_t level);
+}
+
 /*
  * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.hpp" file
  * Do not use functions only in the .cpp scope without having a namespace, it may conflict with functions in other files of the same name
@@ -3463,11 +3467,12 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 
 			int32_t attackSkill = player->getSkillLevel(SKILL_DISTANCE);
 			float attackFactor = player->getAttackFactor();
-			int32_t maxDamage = static_cast<int32_t>(Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, attackValue, attackFactor, true) * player->getVocation()->distDamageMultiplier);
+			int32_t attackValueBase = get_base_attack(player->getLevel());
+			int32_t maxDamage = static_cast<int32_t>(Weapons::getMaxWeaponDamage(player, attackSkill, attackValue, attackFactor, attackValueBase, true) * player->getVocation()->distDamageMultiplier);
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
-				maxDamage += static_cast<int32_t>(Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, attackValue - weapon->getAttack() + it.abilities->elementDamage, attackFactor, true) * player->getVocation()->distDamageMultiplier);
+				maxDamage += static_cast<int32_t>(Weapons::getMaxWeaponDamage(player, attackSkill, attackValue - weapon->getAttack() + it.abilities->elementDamage, attackFactor, attackValueBase, true) * player->getVocation()->distDamageMultiplier);
 			}
-			msg.add<uint16_t>(maxDamage >> 1);
+			msg.add<uint16_t>(maxDamage);
 			msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL);
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
 				msg.addByte(static_cast<uint32_t>(it.abilities->elementDamage) * 100 / attackValue);
@@ -3479,11 +3484,12 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 			int32_t attackValue = std::max<int32_t>(0, weapon->getAttack());
 			int32_t attackSkill = player->getWeaponSkill(weapon);
 			float attackFactor = player->getAttackFactor();
-			int32_t maxDamage = static_cast<int32_t>(Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, attackValue, attackFactor, true) * player->getVocation()->meleeDamageMultiplier);
+			int32_t attackValueBase = get_base_attack(player->getLevel());
+			int32_t maxDamage = static_cast<int32_t>(Weapons::getMaxWeaponDamage(player, attackSkill, attackValue, attackFactor, attackValueBase, true) * player->getVocation()->meleeDamageMultiplier);
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
-				maxDamage += static_cast<int32_t>(Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, it.abilities->elementDamage, attackFactor, true) * player->getVocation()->meleeDamageMultiplier);
+				maxDamage += static_cast<int32_t>(Weapons::getMaxWeaponDamage(player, attackSkill, it.abilities->elementDamage, attackFactor, attackValueBase, true) * player->getVocation()->meleeDamageMultiplier);
 			}
-			msg.add<uint16_t>(maxDamage >> 1);
+			msg.add<uint16_t>(maxDamage);
 			msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL);
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
 				msg.addByte(static_cast<uint32_t>(it.abilities->elementDamage) * 100 / attackValue);
@@ -3495,10 +3501,11 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	} else {
 		float attackFactor = player->getAttackFactor();
 		int32_t attackSkill = player->getSkillLevel(SKILL_FIST);
-		int32_t attackValue = 7;
+		int32_t attackValue = 0;
+		int32_t attackValueBase = get_base_attack(player->getLevel());
 
-		int32_t maxDamage = Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, attackValue, attackFactor, true);
-		msg.add<uint16_t>(maxDamage >> 1);
+		int32_t maxDamage = Weapons::getMaxWeaponDamage(player, attackSkill, attackValue, attackFactor, attackValueBase, true);
+		msg.add<uint16_t>(maxDamage);
 		msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL);
 		msg.addByte(0);
 		msg.addByte(CIPBIA_ELEMENTAL_AGONY);

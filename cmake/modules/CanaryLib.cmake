@@ -57,8 +57,14 @@ if (SPEED_UP_BUILD_UNITY)
     log_option_enabled("Build unity for speed up compilation")
 endif ()
 
-set_target_properties(Beats PROPERTIES
-        IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/beats-rust/beats.lib")
+if(WIN32)
+    set_target_properties(Beats PROPERTIES
+            IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/beats-rust/beats.lib")
+else()
+    set_target_properties(Beats PROPERTIES
+            IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/beats-rust/beats.a")
+endif()
+
 
 # *****************************************************************************
 # Target include directories - to allow #include

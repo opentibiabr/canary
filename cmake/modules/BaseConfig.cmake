@@ -39,8 +39,6 @@ find_package(unofficial-libmariadb CONFIG REQUIRED)
 
 find_path(BOOST_DI_INCLUDE_DIRS "boost/di.hpp")
 
-add_library(Beats STATIC IMPORTED)
-
 # *****************************************************************************
 # Sanity Checks
 # *****************************************************************************

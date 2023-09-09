@@ -11,12 +11,14 @@ pub extern "C" fn get_base_attack(level: u32) -> i32 {
 }
 
 #[cfg(test)]
+// use: cargo test -- --nocapture / cargo test --package beats --lib -- --nocapture / cargo test --package beats --lib "nome_do_teste_exato" -- --nocapture
 mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
+    fn get_attack_base() {
         let result = get_base_attack(1100);
+        println!("O valor de resultado é: {}", result);
         assert_eq!(result, 200);
     }
 }

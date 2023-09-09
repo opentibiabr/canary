@@ -5,6 +5,4 @@ fn main() {
     if let Err(e) = fs::rename("./target/release/beats.lib", "./beats.lib") {
         println!("Falha ao mover a biblioteca: {}", e);
     }
-
-    println!("biblioteca");
 }

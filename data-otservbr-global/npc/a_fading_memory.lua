@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 0,
 	lookFeet = 0,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -50,7 +50,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-npcHandler:setMessage(MESSAGE_GREET, 'Oh...')
+npcHandler:setMessage(MESSAGE_GREET, "Oh...")
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

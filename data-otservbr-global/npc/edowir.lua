@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 58,
 	lookLegs = 96,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'I\'m just an old man, but I know a lot about Tibia.' }
+	{ text = "I'm just an old man, but I know a lot about Tibia." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -56,7 +56,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I gather wisdom and knowledge. I am also an astrologer." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I gather wisdom and knowledge. I am also an astrologer." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Oh, hello |PLAYERNAME|! How nice of you to visit an old man like me.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Come back whenever you're in need of wisdom.")

@@ -1,8 +1,8 @@
 local config = {
-	{ name = 'Feeble Glooth Horror', monster = 'Weakened Glooth Horror' },
-	{ name = 'Weakened Glooth Horror', monster = 'Glooth Horror' },
-	{ name = 'Glooth Horror', monster = 'Strong Glooth Horror' },
-	{ name = 'Strong Glooth Horror', monster = 'Empowered Glooth Horror' }
+	{ name = "Feeble Glooth Horror", monster = "Weakened Glooth Horror" },
+	{ name = "Weakened Glooth Horror", monster = "Glooth Horror" },
+	{ name = "Glooth Horror", monster = "Strong Glooth Horror" },
+	{ name = "Strong Glooth Horror", monster = "Empowered Glooth Horror" },
 }
 
 local gloothHorror = CreatureEvent("GloothHorror")

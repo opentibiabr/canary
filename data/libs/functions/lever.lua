@@ -5,11 +5,15 @@ setmetatable(Lever, {
 		local lever_data = {
 			positions = {},
 			info_positions = nil,
-			condition = function() return true end,
-			teleport_player_func = function() return true end,
+			condition = function()
+				return true
+			end,
+			teleport_player_func = function()
+				return true
+			end,
 		}
 		return setmetatable(lever_data, { __index = Lever })
-	end
+	end,
 })
 
 ---@return table

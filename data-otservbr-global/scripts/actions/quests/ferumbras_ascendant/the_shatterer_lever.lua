@@ -6,9 +6,9 @@ local config = {
 		Position(33404, 32465, 13),
 		Position(33405, 32465, 13),
 		Position(33406, 32465, 13),
-		Position(33407, 32465, 13)
+		Position(33407, 32465, 13),
 	},
-	newPosition = Position(33398, 32414, 14)
+	newPosition = Position(33398, 32414, 14),
 }
 
 local ferumbrasAscendantTheShattererLever = Action()

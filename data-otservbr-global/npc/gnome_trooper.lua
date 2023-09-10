@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 20,
 	lookLegs = 39,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -30,7 +30,7 @@ local response = {
 	[0] = "It's a pipe! What can be more relaxing for a gnome than to smoke his pipe after a day of duty at the front. At least it's a chance to do something really dangerous after all!",
 	[1] = "Ah, a letter from home! Oh - I had no idea she felt that way! This is most interesting!",
 	[2] = "It's a model of the gnomebase Alpha! For self-assembly! With toothpicks...! Yeeaah...! I guess.",
-	[3] = "A medal of honour! At last they saw my true worth!"
+	[3] = "A medal of honour! At last they saw my true worth!",
 }
 
 if not DELIVERED_PARCELS then
@@ -77,7 +77,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		DELIVERED_PARCELS[player:getGuid()] = {}
 	end
 
-	if MsgContains(message, 'something') and not table.contains({ -1, 4 }, status) then
+	if MsgContains(message, "something") and not table.contains({ -1, 4 }, status) then
 		if table.contains(DELIVERED_PARCELS[player:getGuid()], npc:getId()) then
 			return true
 		end

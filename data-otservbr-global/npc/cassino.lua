@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 22,
 	lookLegs = 24,
 	lookFeet = 32,
-	lookAddons = 2
+	lookAddons = 2,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local config = {
@@ -32,7 +32,7 @@ local config = {
 	},
 	playerPosition = Position(32352, 32226, 7), -- NpcPos(x-2) player must stay on this position to talk with npc
 	dicerCounter = Position(32352, 32225, 7), --	NpcPos(x-1, y-1) 	counter position
-	diePos = Position(32354, 32225, 7) --NpcPos(y-1)
+	diePos = Position(32354, 32225, 7), --NpcPos(y-1)
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -86,7 +86,7 @@ local function getBetValue()
 		for _, item in pairs(items) do
 			if table.contains({ 3043, 3035, 3031 }, item:getId()) then
 				value = value + getCoinValue(item:getId()) * item:getCount()
-				tempMoney[#tempMoney+1] = item
+				tempMoney[#tempMoney + 1] = item
 			end
 		end
 
@@ -107,18 +107,18 @@ local function createMoney(money)
 	currentMoney = currentMoney - crystals * 10000
 	while crystals > 0 do
 		local count = math.min(100, crystals)
-		table[#table+1] = { 3043, count }
+		table[#table + 1] = { 3043, count }
 		crystals = crystals - count
 	end
 
 	local platinums = math.floor(currentMoney / 100)
 	if platinums ~= 0 then
-		table[#table+1] = { 3035, platinums }
+		table[#table + 1] = { 3035, platinums }
 		currentMoney = currentMoney - platinums * 100
 	end
 
 	if currentMoney ~= 0 then
-		table[#table+1] = { 3031, currentMoney }
+		table[#table + 1] = { 3031, currentMoney }
 	end
 	return table
 end
@@ -248,8 +248,8 @@ local function creatureMoveCallback(npc, player, fromPosition, toPosition)
 end
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to the Cassino! Here we play with: \n [PAYOUT 180%] {HIGH / LOW}: High for 4, 5, 6 and Low for 1, 2, and 3 - {ODD / EVEN }: Odd for 1, 3, 5 and Even for 2, 4 and 6 \n [PAYOUT 500%] {NUMBERS}: You choose the number, and if you get it right ... {$$$$$}")
-npcHandler:setMessage(MESSAGE_FAREWELL, 'Good bye.')
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Good bye.')
+npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

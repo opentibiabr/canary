@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 877
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 1,
 	Stars = 0,
 	Occurrence = 1,
-	Locations = "South of Stonehome, deep under Telas's house."
+	Locations = "South of Stonehome, deep under Telas's house.",
 }
 
 monster.health = 1500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -73,8 +73,7 @@ monster.voices = {
 	{ text = "Gnarllll!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.defenses = {
 	defense = 5,
@@ -99,7 +98,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -16,18 +16,18 @@ npcConfig.outfit = {
 	lookBody = 95,
 	lookLegs = 125,
 	lookFeet = 57,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
 	{ text = "Great spirit potions as well as health and mana potions in different sizes!" },
-	{ text = "If you need alchemical fluids like slime and blood, get them here." }
+	{ text = "If you need alchemical fluids like slime and blood, get them here." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -67,11 +67,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if table.contains({ "vial", "ticket", "bonus", "deposit" }, message) then
 		if player:getStorageValue(Storage.OutfitQuest.MageSummoner.AddonBelt) < 1 then
-			npcHandler:say(
-				"You have " ..
-				player:getStorageValue(38412) ..
-				" credits. We have a special offer right now for depositing vials. Are you interested in hearing it?",
-				npc, creature)
+			npcHandler:say("You have " .. player:getStorageValue(38412) .. " credits. We have a special offer right now for depositing vials. Are you interested in hearing it?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(Storage.OutfitQuest.MageSummoner.AddonBelt) >= 1 then
 			npcHandler:say("Would you like to get a lottery ticket instead of the deposit for your vials?", npc, creature)
@@ -92,43 +88,44 @@ local function creatureSayCallback(npc, creature, type, message)
 					"What?? How dare you?! I am a sorcerer of the most reknown academy on the face of this world. \
 					Do you think some lousy pirates could scare me? Get lost! Now! \
 					I will have no further dealings with the likes of you!",
-					npc, creature)
+					npc,
+					creature
+				)
 				player:setStorageValue(Storage.TheShatteredIsles.RaysMission1, 2)
 				npcHandler:setTopic(playerId, 0)
 			end
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say(
-				{
-					"The Edron academy has introduced a bonus system. Each time you deposit 100 vials without \
+			npcHandler:say({
+				"The Edron academy has introduced a bonus system. Each time you deposit 100 vials without \
 					claiming the money for it, you will receive a lottery ticket. ...",
-					"Some of these lottery tickets will grant you a special potion belt accessory, \
+				"Some of these lottery tickets will grant you a special potion belt accessory, \
 					if you bring the ticket to me. ...",
-					"If you join the bonus system now, I will ask you each time you are bringing back 100 or \
+				"If you join the bonus system now, I will ask you each time you are bringing back 100 or \
 					more vials to me whether you claim your deposit or rather want a lottery ticket. ...",
-					"Of course, you can leave or join the bonus system at any time by just asking me for the 'bonus'. ...",
-					"Would you like to join the bonus system now?"
-				},
-				npc, creature)
+				"Of course, you can leave or join the bonus system at any time by just asking me for the 'bonus'. ...",
+				"Would you like to join the bonus system now?",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say(
 				"Great! I've signed you up for our bonus system. From now on, \
 				you will have the chance to win the potion belt addon!",
-				npc, creature)
+				npc,
+				creature
+			)
 			player:setStorageValue(Storage.OutfitQuest.MageSummoner.AddonBelt, 1)
 			player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1) --this for default start of Outfit and Addon Quests
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
-			if player:getStorageValue(38412) >= 100
-					or player:removeItem(283, 100)
-					or player:removeItem(284, 100)
-					or player:removeItem(285, 100) then
+			if player:getStorageValue(38412) >= 100 or player:removeItem(283, 100) or player:removeItem(284, 100) or player:removeItem(285, 100) then
 				npcHandler:say(
 					"Alright, thank you very much! Here is your lottery ticket, good luck. \
 					Would you like to deposit more vials that way?",
-					npc, creature)
+					npc,
+					creature
+				)
 				player:setStorageValue(38412, player:getStorageValue(38412) - 100)
 				player:addItem(5957, 1)
 				npcHandler:setTopic(playerId, 0)
@@ -136,7 +133,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say(
 					"Sorry, but you don't have 100 empty flasks or vials of the SAME kind and thus don't qualify for the lottery. \
 					Would you like to deposit the vials you have as usual and receive 5 gold per vial?",
-					npc, creature)
+					npc,
+					creature
+				)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 4 then
@@ -155,7 +154,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say(
 					"Finally. You have no idea how difficult it is to keep something secret here. \
 					And you brought me all the crystal coins I demanded?",
-					npc, creature)
+					npc,
+					creature
+				)
 				npcHandler:setTopic(playerId, 6)
 			end
 		end
@@ -163,14 +164,10 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 end
 
-keywordHandler:addKeyword(
-	{ "shop" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "I sell potions and fluids. If you'd like to see my offers, ask me for a {trade}."
-	}
-)
+keywordHandler:addKeyword({ "shop" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "I sell potions and fluids. If you'd like to see my offers, ask me for a {trade}.",
+})
 
 npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|, welcome to the fluid and potion {shop} of Edron.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye, |PLAYERNAME|, please come back soon.")
@@ -204,7 +201,7 @@ npcConfig.shop = {
 	{ itemName = "vial of oil", clientId = 2874, buy = 20, count = 7 },
 	{ itemName = "vial of slime", clientId = 2874, buy = 12, count = 6 },
 	{ itemName = "vial of urine", clientId = 2874, buy = 10, count = 8 },
-	{ itemName = "vial of water", clientId = 2874, buy = 8, count = 1 }
+	{ itemName = "vial of water", clientId = 2874, buy = 8, count = 1 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -215,7 +212,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

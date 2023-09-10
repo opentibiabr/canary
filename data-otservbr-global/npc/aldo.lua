@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 37,
 	lookLegs = 116,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.shop = {
@@ -40,7 +40,7 @@ npcConfig.shop = {
 	{ itemName = "steel helmet", clientId = 3351, buy = 580, sell = 293 },
 	{ itemName = "studded helmet", clientId = 3376, buy = 63, sell = 20 },
 	{ itemName = "studded legs", clientId = 3362, buy = 50, sell = 15 },
-	{ itemName = "viking helmet", clientId = 3367, buy = 265, sell = 66 }
+	{ itemName = "viking helmet", clientId = 3367, buy = 265, sell = 66 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -51,8 +51,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -92,7 +91,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	if table.contains({ "soft boots", "repair", "soft", "boots" }, message) then
 		npcHandler:say("Do you want to repair your worn soft boots for 10000 gold coins?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif MsgContains(message, 'yes') and npcHandler:getTopic(playerId) == 1 then
+	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:setTopic(playerId, 0)
 		if player:getItemCount(6530) == 0 then
 			npcHandler:say("Sorry, you don't have the item.", npc, creature)
@@ -107,7 +106,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		player:removeItem(6530, 1)
 		player:addItem(6529, 1)
 		npcHandler:say("Here you are.", npc, creature)
-	elseif MsgContains(message, 'no') and npcHandler:getTopic(playerId) == 1 then
+	elseif MsgContains(message, "no") and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:setTopic(playerId, 0)
 		npcHandler:say("Ok then.", npc, creature)
 	end

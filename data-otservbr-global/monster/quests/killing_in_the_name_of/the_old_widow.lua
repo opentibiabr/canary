@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 3200
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -59,8 +59,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "giant spider", chance = 13, interval = 1000, count = 2 }
-	}
+		{ name = "giant spider", chance = 13, interval = 1000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -83,14 +83,14 @@ monster.loot = {
 	{ id = 3055, chance = 25000 }, -- platinum amulet
 	{ id = 5886, chance = 25000 }, -- spool of yarn
 	{ id = 7416, chance = 3225 }, -- bloody edge
-	{ id = 7419, chance = 1639 } -- dreaded cleaver
+	{ id = 7419, chance = 1639 }, -- dreaded cleaver
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -500 },
 	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -250, maxDamage = -300, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = false },
 	{ name = "speed", interval = 1000, chance = 20, speedChange = -850, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = false, duration = 25000 },
-	{ name = "poisonfield", interval = 1000, chance = 10, range = 7, radius = 4, shootEffect = CONST_ANI_POISON, target = true }
+	{ name = "poisonfield", interval = 1000, chance = 10, range = 7, radius = 4, shootEffect = CONST_ANI_POISON, target = true },
 }
 
 monster.defenses = {
@@ -98,7 +98,7 @@ monster.defenses = {
 	armor = 45,
 	--	mitigation = 1.54,
 	{ name = "combat", interval = 1000, chance = 17, type = COMBAT_HEALING, minDamage = 225, maxDamage = 275, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "speed", interval = 1000, chance = 8, speedChange = 345, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 }
+	{ name = "speed", interval = 1000, chance = 8, speedChange = 345, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
 }
 
 monster.elements = {
@@ -118,7 +118,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

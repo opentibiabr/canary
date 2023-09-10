@@ -5,7 +5,7 @@ local config = {
 	[4] = { storage = Storage.FerumbrasAscension.Mazoran },
 	[5] = { storage = Storage.FerumbrasAscension.Tarbaz },
 	[6] = { storage = Storage.FerumbrasAscension.Shulgrax },
-	[7] = { storage = Storage.FerumbrasAscension.Plagirath }
+	[7] = { storage = Storage.FerumbrasAscension.Plagirath },
 }
 
 local entrance = MoveEvent()
@@ -38,8 +38,7 @@ function entrance.onStepIn(creature, item, position, fromPosition)
 		if player:getStorageValue(Storage.FerumbrasAscension.Access) < 1 then
 			player:teleportTo(Position(33275, 32390, 8))
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-				"This portal is not yet strong enough to breach the destination dimension.")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This portal is not yet strong enough to breach the destination dimension.")
 			return true
 		end
 		player:teleportTo(Position(33319, 32317, 13))

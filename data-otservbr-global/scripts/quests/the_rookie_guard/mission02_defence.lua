@@ -4,33 +4,33 @@ local CATAPULT_ID = {
 	BAR = 1,
 	ACADEMY_1 = 2,
 	ACADEMY_2 = 4,
-	SHOP = 8
+	SHOP = 8,
 }
 
 local missionTiles = {
 	[50313] = {
 		states = { 1 },
 		message = "This is the house Vascalir mentioned. You should find a stone pile in the cellar. Use it to get a stone!",
-		arrowPosition = { x = 32082, y = 32189, z = 7 }
+		arrowPosition = { x = 32082, y = 32189, z = 7 },
 	},
 	[50314] = {
 		states = { 2, 3 },
 		message = "This is Norma's bar. If you go to the roof, you should find one of the catapults that need to be filled with stones.",
 		arrowPosition = { x = 32097, y = 32184, z = 7 },
-		catapults = { CATAPULT_ID.BAR }
+		catapults = { CATAPULT_ID.BAR },
 	},
 	[50315] = {
 		states = { 2, 3 },
 		message = "These stairs lead up to the roof of the academy. Up there you should find TWO of the catapults.",
 		arrowPosition = { x = 32098, y = 32190, z = 7 },
-		catapults = { CATAPULT_ID.ACADEMY_1, CATAPULT_ID.ACADEMY_2 }
+		catapults = { CATAPULT_ID.ACADEMY_1, CATAPULT_ID.ACADEMY_2 },
 	},
 	[50316] = {
 		states = { 2, 3 },
 		message = "This is Obi's shop. Up on his roof you should find one of the catapults Vascalir mentioned.",
 		arrowPosition = { x = 32104, y = 32205, z = 7 },
-		catapults = { CATAPULT_ID.SHOP }
-	}
+		catapults = { CATAPULT_ID.SHOP },
+	},
 }
 
 -- Mission tutorial tiles
@@ -112,7 +112,7 @@ local catapults = {
 	[40006] = CATAPULT_ID.BAR,
 	[40007] = CATAPULT_ID.ACADEMY_1,
 	[40008] = CATAPULT_ID.ACADEMY_2,
-	[40009] = CATAPULT_ID.SHOP
+	[40009] = CATAPULT_ID.SHOP,
 }
 
 -- Heavy stone (load stone on catapult)

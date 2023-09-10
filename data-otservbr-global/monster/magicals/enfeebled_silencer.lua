@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1443
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Feyrist."
+	Locations = "Feyrist.",
 }
 
 monster.health = 1100
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -92,13 +92,13 @@ monster.loot = {
 	{ id = 812, chance = 960 }, -- terra legs
 	{ id = 813, chance = 480 }, -- terra boots
 	{ id = 20200, chance = 4000 }, -- silencer claws
-	{ name = "fairy wings", chance = 12000 }
+	{ name = "fairy wings", chance = 12000 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 80, attack = 70, condition = { type = CONDITION_POISON, totalDamage = 200, interval = 4000 } },
 	{ name = "silencer skill reducer", interval = 2000, chance = 10, range = 3, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_MANADRAIN, minDamage = -40, maxDamage = -90, radius = 4, shootEffect = CONST_ANI_ONYXARROW, effect = CONST_ME_MAGIC_RED, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_MANADRAIN, minDamage = -40, maxDamage = -90, radius = 4, shootEffect = CONST_ANI_ONYXARROW, effect = CONST_ME_MAGIC_RED, target = true },
 }
 
 monster.defenses = {
@@ -106,7 +106,7 @@ monster.defenses = {
 	armor = 44,
 	mitigation = 1.43,
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 450, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 80, maxDamage = 225, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 80, maxDamage = 225, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -126,7 +126,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

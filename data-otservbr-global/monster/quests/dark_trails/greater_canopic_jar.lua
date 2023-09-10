@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 7000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -35,8 +35,8 @@ monster.strategiesTarget = {
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{ name = "Elder Mummy", chance = 20, interval = 2000, count = 1 }
-	}
+		{ name = "Elder Mummy", chance = 20, interval = 2000, count = 1 },
+	},
 }
 monster.flags = {
 	summonable = false,
@@ -68,17 +68,15 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
-monster.attacks = {
-}
+monster.attacks = {}
 
 monster.defenses = {
 	defense = 35,
 	armor = 35,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_HEALING, minDamage = 1000, maxDamage = 1500, radius = 7, effect = CONST_ME_MAGIC_GREEN, target = false }
+	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_HEALING, minDamage = 1000, maxDamage = 1500, radius = 7, effect = CONST_ME_MAGIC_GREEN, target = false },
 }
 
 monster.elements = {
@@ -98,7 +96,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

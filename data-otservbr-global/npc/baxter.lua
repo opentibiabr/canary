@@ -16,18 +16,18 @@ npcConfig.outfit = {
 	lookBody = 29,
 	lookLegs = 29,
 	lookFeet = 115,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'People of Thais, bring honour to your king by fighting in the orc war!' },
-	{ text = 'The orcs are preparing for war!!!' }
+	{ text = "People of Thais, bring honour to your king by fighting in the orc war!" },
+	{ text = "The orcs are preparing for war!!!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -73,7 +73,7 @@ npcConfig.shop = {
 	{ itemName = "orc tooth", clientId = 10196, sell = 150 },
 	{ itemName = "orcish gear", clientId = 11477, sell = 85 },
 	{ itemName = "shamanic hood", clientId = 11478, sell = 45 },
-	{ itemName = "skull belt", clientId = 11480, sell = 80 }
+	{ itemName = "skull belt", clientId = 11480, sell = 80 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -84,7 +84,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

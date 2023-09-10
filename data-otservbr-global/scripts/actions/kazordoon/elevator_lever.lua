@@ -1,6 +1,6 @@
 local config = {
 	[50011] = Position(32636, 31881, 2),
-	[50012] = Position(32636, 31881, 7)
+	[50012] = Position(32636, 31881, 7),
 }
 
 local elevatorLever = Action()

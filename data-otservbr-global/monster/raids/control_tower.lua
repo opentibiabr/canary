@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a control tower"
 monster.experience = 3000
 monster.outfit = {
-	lookTypeEx = 20894
+	lookTypeEx = 20894,
 }
 
 monster.health = 7500
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -59,9 +59,8 @@ monster.voices = {
 monster.loot = {
 	{ id = 3035, chance = 100000, maxCount = 5 }, -- platinum coin
 	{ id = 238, chance = 14285 }, -- great mana potion
-	{ id = 239, chance = 14285 } -- great health potion
+	{ id = 239, chance = 14285 }, -- great health potion
 }
-
 
 monster.defenses = {
 	defense = 10,
@@ -86,7 +85,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

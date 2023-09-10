@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 84,
 	lookLegs = 86,
 	lookFeet = 114,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -50,16 +50,14 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({ "magic" }, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Okay, then just browse through all of my wares."
-	}
-)
+keywordHandler:addKeyword({ "magic" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Okay, then just browse through all of my wares.",
+})
 
 local items = {
 	[VOCATION.BASE_ID.SORCERER] = 3074,
-	[VOCATION.BASE_ID.DRUID] = 3066
+	[VOCATION.BASE_ID.DRUID] = 3066,
 }
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -101,8 +99,11 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:setMessage(MESSAGE_GREET, "Welcome |PLAYERNAME|! Whats your need?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye, |PLAYERNAME|.")
-npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just browse through my wares. \z
-	Or do you want to look only at {potions}, {wands} or {runes}?")
+npcHandler:setMessage(
+	MESSAGE_SENDTRADE,
+	"Of course, just browse through my wares. \z
+	Or do you want to look only at {potions}, {wands} or {runes}?"
+)
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
@@ -156,7 +157,7 @@ npcConfig.shop = {
 	{ itemName = "wand of cosmic energy", clientId = 3073, buy = 10000 },
 	{ itemName = "wand of decay", clientId = 3072, buy = 5000 },
 	{ itemName = "wand of dragonbreath", clientId = 3075, buy = 1000 },
-	{ itemName = "wand of vortex", clientId = 3074, buy = 500 }
+	{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -167,7 +168,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

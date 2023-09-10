@@ -30,7 +30,7 @@ local taskBoss = {
 	[28] = "tiquandas revenge",
 	[29] = "demodras",
 	[30] = "necropharus",
-	[31] = "the horned fox"
+	[31] = "the horned fox",
 }
 local function killCheck(player, targetName, taskName, taskStage, taskInfo, taskAltKillCount, taskkillCount)
 	if player:getStorageValue(taskName) == taskStage then

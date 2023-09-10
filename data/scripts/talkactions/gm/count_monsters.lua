@@ -1,5 +1,5 @@
-local xml_monster_dir = DATA_DIRECTORY .. '/world/otservbr-monster.xml'
-local new_file_name = 'monster_count.txt'
+local xml_monster_dir = DATA_DIRECTORY .. "/world/otservbr-monster.xml"
+local new_file_name = "monster_count.txt"
 
 local count_monsters = TalkAction("/countmonsters")
 
@@ -24,10 +24,10 @@ function count_monsters.onSay(player, words, param)
 		end
 	end
 
-	writing_file:write('--- Total of monsters on server ---\n')
+	writing_file:write("--- Total of monsters on server ---\n")
 
 	for monster, count in pairsByKeys(monsters) do
-		writing_file:write(monster .. ' - ' .. count .. '\n')
+		writing_file:write(monster .. " - " .. count .. "\n")
 	end
 
 	writing_file:close()

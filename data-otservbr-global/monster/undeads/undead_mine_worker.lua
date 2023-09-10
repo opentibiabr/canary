@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 594
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 1,
-	Locations = "West of Edron in the Lost Mines."
+	Locations = "West of Edron in the Lost Mines.",
 }
 
 monster.health = 65
@@ -35,7 +35,7 @@ monster.manaCost = 435
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -81,12 +81,12 @@ monster.loot = {
 	{ id = 3264, chance = 3850 }, -- sword
 	{ name = "mace", chance = 26900 },
 	{ name = "white mushroom", chance = 15400, maxCount = 3 },
-	{ name = "brown mushroom", chance = 3850 }
+	{ name = "brown mushroom", chance = 3850 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -7, maxDamage = -13, range = 1, effect = CONST_ME_MAGIC_RED, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -7, maxDamage = -13, range = 1, effect = CONST_ME_MAGIC_RED, target = false },
 }
 
 monster.defenses = {
@@ -112,7 +112,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

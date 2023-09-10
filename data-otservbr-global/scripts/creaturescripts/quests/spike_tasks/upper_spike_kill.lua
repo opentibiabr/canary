@@ -1,7 +1,7 @@
 local range = {
 	-- Only the Demon Skeletons killed on this area count
 	from = Position(32008, 32522, 8),
-	to = Position(32365, 32759, 10)
+	to = Position(32365, 32759, 10),
 }
 
 local upperSpikeKill = CreatureEvent("UpperSpikeKill")

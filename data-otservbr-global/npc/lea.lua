@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 95,
 	lookLegs = 113,
 	lookFeet = 113,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -50,13 +50,13 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I am the archsorcerer of Carlin. I keep the secrets of our order." })
-keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = "My name is Lea." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am the archsorcerer of Carlin. I keep the secrets of our order." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Lea." })
 --keywordHandler:addKeyword({'spell'}, StdModule.say, {npcHandler = npcHandler, text = "Sorry, I only sell spells to sorcerers."})
-keywordHandler:addKeyword({ 'time' }, StdModule.say, { npcHandler = npcHandler, text = "Time is a force we sorcerers will master one day." })
-keywordHandler:addKeyword({ 'sorcerer' }, StdModule.say, { npcHandler = npcHandler, text = "Any sorcerer dedicates his whole life to the study of the arcane arts." })
-keywordHandler:addKeyword({ 'power' }, StdModule.say, { npcHandler = npcHandler, text = "We sorcerers wield arcane powers beyond comprehension of men." })
-keywordHandler:addKeyword({ 'arcane' }, StdModule.say, { npcHandler = npcHandler, text = "We sorcerers wield arcane powers beyond comprehension of men." })
+keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = "Time is a force we sorcerers will master one day." })
+keywordHandler:addKeyword({ "sorcerer" }, StdModule.say, { npcHandler = npcHandler, text = "Any sorcerer dedicates his whole life to the study of the arcane arts." })
+keywordHandler:addKeyword({ "power" }, StdModule.say, { npcHandler = npcHandler, text = "We sorcerers wield arcane powers beyond comprehension of men." })
+keywordHandler:addKeyword({ "arcane" }, StdModule.say, { npcHandler = npcHandler, text = "We sorcerers wield arcane powers beyond comprehension of men." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Take care on your journeys.")

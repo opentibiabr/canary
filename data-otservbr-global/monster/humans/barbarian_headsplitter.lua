@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 119,
 	lookFeet = 113,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 333
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Krimhorn, Bittermor, Ragnir, and Fenrock."
+	Locations = "Krimhorn, Bittermor, Ragnir, and Fenrock.",
 }
 
 monster.health = 100
@@ -35,7 +35,7 @@ monster.manaCost = 450
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -91,12 +91,12 @@ monster.loot = {
 	{ name = "brown piece of cloth", chance = 980 },
 	{ name = "fur boots", chance = 90 },
 	{ name = "krimhorn helmet", chance = 110 },
-	{ name = "health potion", chance = 560 }
+	{ name = "health potion", chance = 560 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -60, range = 7, radius = 1, shootEffect = CONST_ANI_WHIRLWINDAXE, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -60, range = 7, radius = 1, shootEffect = CONST_ANI_WHIRLWINDAXE, target = true },
 }
 
 monster.defenses = {
@@ -122,7 +122,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

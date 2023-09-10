@@ -18,7 +18,7 @@ function pitsOfInfernoOil.onUse(player, item, fromPosition, target, toPosition, 
 	end
 
 	if not Tile(Position(32800, 32339, 11)):getItemById(2886, 7) then
-		player:say('The lever is creaking and rusty.', TALKTYPE_MONSTER_SAY)
+		player:say("The lever is creaking and rusty.", TALKTYPE_MONSTER_SAY)
 		return true
 	end
 

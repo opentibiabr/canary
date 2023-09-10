@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a disruption"
 monster.experience = 398
 monster.outfit = {
-	lookTypeEx = 22761
+	lookTypeEx = 22761,
 }
 
 monster.health = 12000
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 15
+	chance = 15,
 }
 
 monster.strategiesTarget = {
@@ -43,12 +43,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.events = {
 	"DisruptionTransform",
-	"HeartMinionDeath"
+	"HeartMinionDeath",
 }
 
 monster.light = {
@@ -61,17 +61,16 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -262 },
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -300, radius = 4, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = true }
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -300, radius = 4, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = true },
 }
 
 monster.defenses = {
 	defense = 100,
-	armor = 100
+	armor = 100,
 	--	mitigation = ???,
 }
 
@@ -92,7 +91,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

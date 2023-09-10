@@ -4,7 +4,7 @@ local roshamuulCaves = {
 	Position(33573, 32545, 8),
 	Position(33543, 32560, 8),
 	Position(33579, 32565, 8),
-	Position(33527, 32597, 8)
+	Position(33527, 32597, 8),
 }
 
 local lowerRoshamuul = MoveEvent()

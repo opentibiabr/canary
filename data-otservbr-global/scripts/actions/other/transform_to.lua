@@ -1,6 +1,6 @@
 local voices = {
 	[23708] = "Au au!",
-	[23443] = "Grooaarr!"
+	[23443] = "Grooaarr!",
 }
 
 local transformItems = {
@@ -491,7 +491,7 @@ local transformItems = {
 local transformTo = Action()
 
 function transformTo.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if (voices[item:getId()]) then
+	if voices[item:getId()] then
 		local spectators = Game.getSpectators(fromPosition, false, true, 3, 3)
 		for i = 1, #spectators do
 			player:say(voices[item:getId()], TALKTYPE_MONSTER_SAY, false, spectators[i], fromPosition)

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 91,
 	lookLegs = 12,
 	lookFeet = 95,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
@@ -31,7 +31,7 @@ npcConfig.voices = {
 	{ text = "Do come in! Mind the step of the magical door, though." },
 	{ text = "I'm so sorry... I promise it won't happen again. Problem is, I can't remember where I made the error..." },
 	{ text = "Actually, I STILL prefer inexperienced assistants. They're easier to keep an eye on and don't tend to backstab you." },
-	{ text = "So much to do, so much to do... uh... where should I start?" }
+	{ text = "So much to do, so much to do... uh... where should I start?" },
 }
 
 local keywordHandler = KeywordHandler:new()

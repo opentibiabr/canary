@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 111
@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Sabrehaven, Rookgaard, The McRonalds Farm in Thais, Northport, \z
 		Fibula, Carlin (killable but unreachable), Greenshore, Krimhorn, Orc Fortress, \z
-		Factory Quarter, also theres one in the farm near Edron."
+		Factory Quarter, also theres one in the farm near Edron.",
 }
 
 monster.health = 15
@@ -37,7 +37,7 @@ monster.manaCost = 220
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -80,7 +80,7 @@ monster.loot = {
 	{ name = "meat", chance = 2120, maxCount = 2 },
 	{ id = 3606, chance = 950 }, -- egg
 	{ name = "worm", chance = 10000, maxCount = 3 },
-	{ name = "chicken feather", chance = 20000 }
+	{ name = "chicken feather", chance = 20000 },
 }
 
 monster.defenses = {
@@ -106,7 +106,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

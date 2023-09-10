@@ -1,9 +1,9 @@
 local config = {
-	monsterName = 'Grand Chaplain Gaunder',
+	monsterName = "Grand Chaplain Gaunder",
 	bossPosition = Position(33370, 31327, 5),
 	centerPosition = Position(33370, 31327, 5),
 	rangeX = 50,
-	rangeY = 50
+	rangeY = 50,
 }
 
 local function checkBoss(centerPosition, rangeX, rangeY, bossName)

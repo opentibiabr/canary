@@ -11,7 +11,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 260
@@ -23,7 +23,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -47,19 +47,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 6,
 	summons = {
-		{ name = "Skeleton", chance = 20, interval = 2000, count = 6 }
-	}
+		{ name = "Skeleton", chance = 20, interval = 2000, count = 6 },
+	},
 }
 
 monster.voices = {
@@ -68,7 +68,7 @@ monster.voices = {
 	{ text = "Olho por Olho!", yell = false },
 	{ text = "Estou olhando para voce!", yell = false },
 	{ text = "Deixe-me dar uma olhada em voce!", yell = false },
-	{ text = "Voce tem o olhar!", yell = false }
+	{ text = "Voce tem o olhar!", yell = false },
 }
 
 monster.loot = {
@@ -78,7 +78,7 @@ monster.loot = {
 	{ name = "morning star", chance = 6950 },
 	{ name = "longsword", chance = 8980 },
 	{ name = "steel shield", chance = 4001 },
-	{ name = "bonelord eye", chance = 940 }
+	{ name = "bonelord eye", chance = 940 },
 }
 
 monster.attacks = {
@@ -89,12 +89,12 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_EARTHDAMAGE, minDamage = -5, maxDamage = -45, range = 7, shootEffect = CONST_ANI_POISON, target = false },
 	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_DEATHDAMAGE, minDamage = -5, maxDamage = -50, range = 7, shootEffect = CONST_ANI_DEATH, target = false },
 	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_LIFEDRAIN, minDamage = 0, maxDamage = -45, range = 7, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_MANADRAIN, minDamage = -5, maxDamage = -35, range = 7, target = false }
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_MANADRAIN, minDamage = -5, maxDamage = -35, range = 7, target = false },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 10,
 }
 
 monster.elements = {
@@ -107,14 +107,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

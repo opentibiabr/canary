@@ -2,15 +2,15 @@ local config = {
 	bridgePositions = {
 		{ position = Position(32099, 32205, 8), groundId = 352, itemId = 4634 },
 		{ position = Position(32100, 32205, 8), groundId = 4611 },
-		{ position = Position(32101, 32205, 8), groundId = 352, itemId = 4636 }
+		{ position = Position(32101, 32205, 8), groundId = 352, itemId = 4636 },
 	},
 	leverPositions = {
 		Position(32098, 32204, 8),
-		Position(32104, 32204, 8)
+		Position(32104, 32204, 8),
 	},
 	relocatePosition = Position(32102, 32205, 8),
 	relocateMonsterPosition = Position(32103, 32205, 8),
-	bridgeId = 5770
+	bridgeId = 5770,
 }
 
 function moveToPosition(self, toPosition, pushMove, monsterPosition)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 693
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Forest around Outlaw Camp."
+	Locations = "Forest around Outlaw Camp.",
 }
 
 monster.health = 198
@@ -35,7 +35,7 @@ monster.manaCost = 465
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -76,11 +76,11 @@ monster.voices = {
 
 monster.loot = {
 	{ name = "gold coin", chance = 25000, maxCount = 20 },
-	{ name = "haunch of boar", chance = 20000, maxCount = 2 }
+	{ name = "haunch of boar", chance = 20000, maxCount = 2 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 },
 }
 
 monster.defenses = {
@@ -106,7 +106,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

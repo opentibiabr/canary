@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 888
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Warzones 2 and 3."
+	Locations = "Warzones 2 and 3.",
 }
 
 monster.health = 5900
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 15
+	chance = 15,
 }
 
 monster.strategiesTarget = {
@@ -104,7 +104,7 @@ monster.loot = {
 	{ name = "brown crystal splinter", chance = 7540, maxCount = 2 },
 	{ name = "blue crystal splinter", chance = 4610 },
 	{ name = "green crystal fragment", chance = 6870 },
-	{ name = "drill bolt", chance = 8210, maxCount = 10 }
+	{ name = "drill bolt", chance = 8210, maxCount = 10 },
 }
 
 monster.attacks = {
@@ -113,14 +113,14 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -250, range = 7, radius = 3, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_EXPLOSIONAREA, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -150, maxDamage = -250, radius = 5, effect = CONST_ME_MAGIC_RED, target = false },
 	{ name = "speed", interval = 2000, chance = 10, speedChange = -800, radius = 2, effect = CONST_ME_MAGIC_RED, target = false, duration = 20000 },
-	{ name = "drunk", interval = 2000, chance = 10, radius = 4, effect = CONST_ME_STUN, target = true, duration = 6000 }
+	{ name = "drunk", interval = 2000, chance = 10, radius = 4, effect = CONST_ME_STUN, target = true, duration = 6000 },
 }
 
 monster.defenses = {
 	defense = 40,
 	armor = 80,
 	mitigation = 2.40,
-	{ name = "invisible", interval = 2000, chance = 5, effect = CONST_ME_TELEPORT }
+	{ name = "invisible", interval = 2000, chance = 5, effect = CONST_ME_TELEPORT },
 }
 
 monster.elements = {
@@ -140,7 +140,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

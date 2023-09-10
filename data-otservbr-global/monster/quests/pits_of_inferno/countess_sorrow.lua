@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -66,8 +66,8 @@ monster.summon = {
 	maxSummons = 3,
 	summons = {
 		{ name = "Phantasm", chance = 7, interval = 2000, count = 3 },
-		{ name = "Phantasm Summon", chance = 7, interval = 2000, count = 3 }
-	}
+		{ name = "Phantasm Summon", chance = 7, interval = 2000, count = 3 },
+	},
 }
 
 monster.voices = {
@@ -91,7 +91,7 @@ monster.loot = {
 	{ id = 3557, chance = 8820 }, -- plate legs
 	{ id = 3084, chance = 23530 }, -- protection amulet
 	{ id = 3049, chance = 5880 }, -- stealth ring
-	{ id = 3123, chance = 47060 } -- worn leather boots
+	{ id = 3123, chance = 47060 }, -- worn leather boots
 }
 
 monster.attacks = {
@@ -99,7 +99,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -420, maxDamage = -980, range = 7, radius = 1, shootEffect = CONST_ANI_POISON, effect = CONST_ME_HITBYPOISON, target = true },
 	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_MANADRAIN, minDamage = -45, maxDamage = -90, radius = 3, effect = CONST_ME_YELLOW_RINGS, target = false },
 	{ name = "phantasm drown", interval = 2000, chance = 20, target = false },
-	{ name = "drunk", interval = 2000, chance = 15, range = 7, radius = 6, effect = CONST_ME_MAGIC_RED, target = false, duration = 10000 }
+	{ name = "drunk", interval = 2000, chance = 15, range = 7, radius = 6, effect = CONST_ME_MAGIC_RED, target = false, duration = 10000 },
 }
 
 monster.defenses = {
@@ -108,7 +108,7 @@ monster.defenses = {
 	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 26, type = COMBAT_HEALING, minDamage = 415, maxDamage = 625, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_POFF },
-	{ name = "speed", interval = 2000, chance = 11, speedChange = 736, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 }
+	{ name = "speed", interval = 2000, chance = 11, speedChange = 736, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
 }
 
 monster.elements = {
@@ -128,7 +128,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -400,8 +400,7 @@ end
 local freeQuests = CreatureEvent("FreeQuests")
 
 function freeQuests.onLogin(player)
-	if not configManager.getBoolean(configKeys.TOGGLE_FREE_QUEST) or
-			player:getStorageValue(Storage.FreeQuests) == stage then
+	if not configManager.getBoolean(configKeys.TOGGLE_FREE_QUEST) or player:getStorageValue(Storage.FreeQuests) == stage then
 		return true
 	end
 

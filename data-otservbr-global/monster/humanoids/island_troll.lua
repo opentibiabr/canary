@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 277
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "Goroma."
+	Locations = "Goroma.",
 }
 
 monster.health = 50
@@ -35,7 +35,7 @@ monster.manaCost = 290
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -89,11 +89,11 @@ monster.loot = {
 	{ name = "leather boots", chance = 10500 },
 	{ name = "mango", chance = 5000 },
 	{ id = 5901, chance = 30000 }, -- wood
-	{ name = "marlin", chance = 40 }
+	{ name = "marlin", chance = 40 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10 },
 }
 
 monster.defenses = {
@@ -119,7 +119,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -6,7 +6,7 @@ local config = {
 		storage = Storage.TheSecretLibrary.Mota,
 		getValue = 4,
 		setValue = 5,
-		basin = 3514
+		basin = 3514,
 	},
 	-- green
 	[1086] = {
@@ -15,17 +15,10 @@ local config = {
 		storage = Storage.TheSecretLibrary.Mota,
 		getValue = 5,
 		setValue = 6,
-		basin = 3514
+		basin = 3514,
 	},
 	-- red
-	[1087] =
-	{ itemId = 27869,
-		msg = "Success",
-		storage = Storage.TheSecretLibrary.Mota,
-		getValue = 6,
-		setValue = 7,
-		basin = 3514
-	}
+	[1087] = { itemId = 27869, msg = "Success", storage = Storage.TheSecretLibrary.Mota, getValue = 6, setValue = 7, basin = 3514 },
 }
 
 local energyBasin = Action()

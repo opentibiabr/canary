@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 128,
 	lookFeet = 95,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 10
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Demona, Ghostland (Banshee Quest area), Temple of Xayepocax, Oasis Tomb, Kharos, Magician Quarter, \z
-		beneath Fenrock, The Arcanum."
+		beneath Fenrock, The Arcanum.",
 }
 
 monster.health = 3500
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -71,8 +71,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{ name = "stone golem", chance = 10, interval = 2000, count = 1 }
-	}
+		{ name = "stone golem", chance = 10, interval = 2000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -108,7 +108,7 @@ monster.loot = {
 	{ name = "great mana potion", chance = 4760 },
 	{ name = "great health potion", chance = 5190 },
 	{ name = "lightning robe", chance = 1000 },
-	{ name = "luminous orb", chance = 510 }
+	{ name = "luminous orb", chance = 510 },
 }
 
 monster.attacks = {
@@ -119,7 +119,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -50, maxDamage = -180, range = 7, radius = 3, shootEffect = CONST_ANI_BURSTARROW, effect = CONST_ME_FIREAREA, target = true },
 	{ name = "firefield", interval = 2000, chance = 10, range = 7, radius = 2, shootEffect = CONST_ANI_FIRE, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -230, length = 8, spread = 3, effect = CONST_ME_BIGCLOUDS, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = -600, range = 7, effect = CONST_ME_MAGIC_RED, target = false, duration = 20000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = -600, range = 7, effect = CONST_ME_MAGIC_RED, target = false, duration = 20000 },
 }
 
 monster.defenses = {
@@ -127,7 +127,7 @@ monster.defenses = {
 	armor = 33,
 	mitigation = 1.32,
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 100, maxDamage = 225, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 2000, chance = 20, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 2000, chance = 20, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -147,7 +147,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

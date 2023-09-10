@@ -1,10 +1,10 @@
 function onDeath(creature, corpse, lasthitkiller, mostdamagekiller, lasthitunjustified, mostdamageunjustified)
 	local targetMonster = creature:getMonster()
-	if not targetMonster or targetMonster:getName():lower() ~= 'zamulosh' and not targetMonster:getMaster() then
+	if not targetMonster or targetMonster:getName():lower() ~= "zamulosh" and not targetMonster:getMaster() then
 		return true
 	end
 
-	local monster = Game.createMonster('Zamulosh3', targetMonster:getPosition(), true, true)
+	local monster = Game.createMonster("Zamulosh3", targetMonster:getPosition(), true, true)
 	if not monster then
 		return true
 	end

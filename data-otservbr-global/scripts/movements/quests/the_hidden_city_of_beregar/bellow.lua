@@ -21,8 +21,8 @@ function bellow.onStepIn(creature, item, position, fromPosition)
 		Position(32695, 31494, 10):sendMagicEffect(steameffect)
 		Position(32696, 31494, 10):sendMagicEffect(steameffect)
 	elseif crucibleItem.actionid == 50121 then
-		player:say('TSSSSHHHHH', TALKTYPE_MONSTER_SAY, false, 0, Position(32695, 31494, 11))
-		player:say('CHOOOOOOOHHHHH', TALKTYPE_MONSTER_SAY, false, 0, Position(32698, 31492, 11))
+		player:say("TSSSSHHHHH", TALKTYPE_MONSTER_SAY, false, 0, Position(32695, 31494, 11))
+		player:say("CHOOOOOOOHHHHH", TALKTYPE_MONSTER_SAY, false, 0, Position(32698, 31492, 11))
 	end
 	return true
 end

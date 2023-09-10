@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 4100
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -49,12 +49,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -62,7 +62,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Mwaaaahnducate youuuuuu *gurgle*, mwaaah!", yell = false },
 	{ text = "Mmmwahmwahmwahah, mwaaah!", yell = false },
-	{ text = "MMMWAHMWAHMWAHMWAAAAH!", yell = true }
+	{ text = "MMMWAHMWAHMWAHMWAAAAH!", yell = true },
 }
 
 monster.loot = {
@@ -95,7 +95,7 @@ monster.loot = {
 	{ id = 16126, chance = 5230 }, -- red crystal fragment
 	{ id = 20131, chance = 9640 }, -- remains of a crude dream
 	{ id = 20199, chance = 15990 }, -- frazzle skin
-	{ id = 3125, chance = 9430 } -- remains of a fish
+	{ id = 3125, chance = 9430 }, -- remains of a fish
 }
 
 monster.attacks = {
@@ -104,13 +104,13 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 13, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -700, length = 5, spread = 3, effect = CONST_ME_EXPLOSIONAREA, target = true },
 	-- bleed
 	{ name = "condition", type = CONDITION_BLEEDING, interval = 2000, chance = 16, minDamage = -400, maxDamage = -600, radius = 2, shootEffect = CONST_ANI_LARGEROCK, effect = CONST_ME_STONES, target = true },
-	{ name = "frazzlemaw paralyze", interval = 2000, chance = 15, target = false }
+	{ name = "frazzlemaw paralyze", interval = 2000, chance = 15, target = false },
 }
 
 monster.defenses = {
 	defense = 30,
 	armor = 30,
-	{ name = "combat", interval = 2000, chance = 13, type = COMBAT_HEALING, minDamage = 250, maxDamage = 425, effect = CONST_ME_HITBYPOISON, target = false }
+	{ name = "combat", interval = 2000, chance = 13, type = COMBAT_HEALING, minDamage = 250, maxDamage = 425, effect = CONST_ME_HITBYPOISON, target = false },
 }
 
 monster.elements = {
@@ -123,14 +123,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 15 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

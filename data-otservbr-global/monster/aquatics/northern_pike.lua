@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 783
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 1,
 	Stars = 0,
 	Occurrence = 1,
-	Locations = "Fiehonja."
+	Locations = "Fiehonja.",
 }
 
 monster.health = 95
@@ -35,7 +35,7 @@ monster.manaCost = 315
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -72,8 +72,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.defenses = {
 	defense = 5,
@@ -98,7 +97,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

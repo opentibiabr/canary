@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 57,
 	lookLegs = 0,
 	lookFeet = 68,
-	lookAddons = 2
+	lookAddons = 2,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Trading tokens! First-class equipment available!' }
+	{ text = "Trading tokens! First-class equipment available!" },
 }
 
 npcConfig.currency = 22721
@@ -41,7 +41,7 @@ npcConfig.shop = {
 	{ name = "mace of desctruction", clientId = 27453, buy = 50 },
 	{ name = "rod of desctruction", clientId = 27458, buy = 50 },
 	{ name = "slayer of desctruction", clientId = 27450, buy = 50 },
-	{ name = "wand of desctruction", clientId = 27457, buy = 50 }
+	{ name = "wand of desctruction", clientId = 27457, buy = 50 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -52,88 +52,87 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local products = {
-	['strike'] = {
-		['basic'] = {
+	["strike"] = {
+		["basic"] = {
 			text = "The basic bundle for the strike imbuement consists of 20 protective charms. Would you like to buy it for 2 gold tokens??",
 			itens = {
-				[1] = { id = 11444, amount = 20 }
+				[1] = { id = 11444, amount = 20 },
 			},
-			value = 2
+			value = 2,
 		},
-		['intricate'] = {
+		["intricate"] = {
 			text = "The intricate bundle for the strike imbuement consists of 20 protective charms and 25 sabreteeth. Would you like to buy it for 4 gold tokens??",
 			itens = {
 				[1] = { id = 11444, amount = 20 },
-				[2] = { id = 10311, amount = 25 }
+				[2] = { id = 10311, amount = 25 },
 			},
-			value = 4
+			value = 4,
 		},
-		['powerful'] = {
+		["powerful"] = {
 			text = "The powerful bundle for the strike imbuement consists of 20 protective charms, 25 sabreteeth and 5 vexclaw talons. Would you like to buy it for 6 gold tokens??",
 			itens = {
 				[1] = { id = 11444, amount = 20 },
 				[2] = { id = 10311, amount = 25 },
-				[3] = { id = 22728, amount = 5 }
+				[3] = { id = 22728, amount = 5 },
 			},
-			value = 6
-		}
+			value = 6,
+		},
 	},
-	['vampirism'] = {
-		['basic'] = {
+	["vampirism"] = {
+		["basic"] = {
 			text = "The basic bundle for the vampirism imbuement consists of 25 vampire teeth. Would you like to buy it for 2 gold tokens??",
 			itens = {
-				[1] = { id = 9685, amount = 25 }
+				[1] = { id = 9685, amount = 25 },
 			},
-			value = 2
+			value = 2,
 		},
-		['intricate'] = {
+		["intricate"] = {
 			text = "The intricate bundle for the strike imbuement consists of 20 protective charms and 25 sabreteeth. Would you like to buy it for 4 gold tokens??",
 			itens = {
 				[1] = { id = 9685, amount = 25 },
-				[2] = { id = 9633, amount = 15 }
+				[2] = { id = 9633, amount = 15 },
 			},
-			value = 4
+			value = 4,
 		},
-		['powerful'] = {
+		["powerful"] = {
 			text = "The powerful bundle for the vampirism imbuement consists of 25 vampire teeth, 15 bloody pincers and 5 pieces of dead brain. Would you like to it for 6 gold tokens??",
 			itens = {
 				[1] = { id = 9685, amount = 25 },
 				[2] = { id = 9633, amount = 15 },
-				[3] = { id = 9663, amount = 5 }
+				[3] = { id = 9663, amount = 5 },
 			},
-			value = 6
-		}
+			value = 6,
+		},
 	},
-	['void'] = {
-		['basic'] = {
+	["void"] = {
+		["basic"] = {
 			text = "The basic bundle for the void imbuement consists of 25 rope belts. Would you like to buy it for 2 gold tokens??",
 			itens = {
-				[1] = { id = 11492, amount = 25 }
+				[1] = { id = 11492, amount = 25 },
 			},
 			value = 2,
 		},
-		['intricate'] = {
+		["intricate"] = {
 			text = "The intricate bundle for the void imbuement consists of 25 rope belts and 25 silencer claws. Would you like to buy it for 4 gold tokens??.",
 			itens = {
 				[1] = { id = 11492, amount = 25 },
-				[2] = { id = 20200, amount = 25 }
+				[2] = { id = 20200, amount = 25 },
 			},
 			value = 4,
 		},
-		['powerful'] = {
+		["powerful"] = {
 			text = "The powerful bundle for the void imbuement consists of 25 rope belts, 25 silencer claws and 5 grimeleech wings. Would you like to buy it for 6 gold tokens??",
 			itens = {
 				[1] = { id = 11492, amount = 25 },
 				[2] = { id = 20200, amount = 25 },
-				[3] = { id = 22730, amount = 5 }
+				[3] = { id = 22730, amount = 5 },
 			},
 			value = 6,
-		}
-	}
+		},
+	},
 }
 
 local answerType = {}
@@ -181,8 +180,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "information") then
-		npcHandler:say({ "{Tokens} are small objects made of metal or other materials. You can use them to buy superior equipment from token traders like me.",
-			"There are several ways to obtain the tokens I'm interested in - killing certain bosses, for example. In exchange for a certain amount of tokens, I can offer you some first-class items." }, npc, creature)
+		npcHandler:say({ "{Tokens} are small objects made of metal or other materials. You can use them to buy superior equipment from token traders like me.", "There are several ways to obtain the tokens I'm interested in - killing certain bosses, for example. In exchange for a certain amount of tokens, I can offer you some first-class items." }, npc, creature)
 	elseif MsgContains(message, "worth") then
 		-- to do: check if Heart of Destruction was killed
 		-- after kill message: 'You disrupted the Heart of Destruction, defeated the World Devourer and bought our world some time. You have proven your worth.'
@@ -208,8 +206,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			for i = 1, #products[answerType[playerId]][answerLevel[playerId]].itens do
 				neededCap = neededCap + ItemType(products[answerType[playerId]][answerLevel[playerId]].itens[i].id):getWeight() * products[answerType[playerId]][answerLevel[playerId]].itens[i].amount
 			end
-			npcHandler:say({ imbueLevel.text .. "...",
-				"Make sure that you have " .. #products[answerType[playerId]][answerLevel[playerId]].itens .. " free slot and that you can carry " .. string.format("%.2f", neededCap / 100) .. " oz in addition to that." }, npc, creature)
+			npcHandler:say({ imbueLevel.text .. "...", "Make sure that you have " .. #products[answerType[playerId]][answerLevel[playerId]].itens .. " free slot and that you can carry " .. string.format("%.2f", neededCap / 100) .. " oz in addition to that." }, npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
 	elseif npcHandler:getTopic(playerId) == 3 then
@@ -230,7 +227,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					npcHandler:say("I'm sorry but it seems you don't have enough " .. ItemType(npc:getCurrency()):getPluralName():lower() .. " ..? yet. Bring me " .. products[answerType[playerId]][answerLevel[playerId]].value .. " of them and we'll make a trade.", npc, creature)
 				end
 			else
-				npcHandler:say("You don\'t have enough capacity. You must have " .. neededCap .. " oz.", npc, creature)
+				npcHandler:say("You don't have enough capacity. You must have " .. neededCap .. " oz.", npc, creature)
 			end
 		elseif MsgContains(message, "no") then
 			npcHandler:say("Your decision. Come back if you have changed your mind.", npc, creature)

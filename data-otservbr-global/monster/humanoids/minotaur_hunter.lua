@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1052
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Oramond/Southern Plains, Minotaur Hills, \z
-		Oramond Dungeon (depending on Magistrate votes), Underground Glooth Factory."
+		Oramond Dungeon (depending on Magistrate votes), Underground Glooth Factory.",
 }
 
 monster.health = 1400
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 11
+	chance = 11,
 }
 
 monster.strategiesTarget = {
@@ -99,7 +99,7 @@ monster.loot = {
 	{ id = 3037, chance = 470 }, -- yellow gem
 	{ id = 3039, chance = 400 }, -- red gem
 	{ id = 7401, chance = 190 }, -- minotaur trophy
-	{ id = 21166, chance = 170 } -- mooh'tah plate
+	{ id = 21166, chance = 170 }, -- mooh'tah plate
 }
 
 monster.attacks = {
@@ -108,7 +108,7 @@ monster.attacks = {
 	-- bleed
 	{ name = "condition", type = CONDITION_BLEEDING, interval = 2000, chance = 40, minDamage = -300, maxDamage = -400, range = 7, radius = 3, shootEffect = CONST_ANI_THROWINGKNIFE, effect = CONST_ME_HITAREA, target = true },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -160, maxDamage = -260, range = 7, radius = 2, shootEffect = CONST_ANI_BURSTARROW, effect = CONST_ME_EXPLOSIONHIT, target = true },
-	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_LIFEDRAIN, minDamage = -35, maxDamage = -150, radius = 4, effect = CONST_ME_EXPLOSIONAREA, target = false }
+	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_LIFEDRAIN, minDamage = -35, maxDamage = -150, radius = 4, effect = CONST_ME_EXPLOSIONAREA, target = false },
 }
 
 monster.defenses = {
@@ -116,7 +116,7 @@ monster.defenses = {
 	armor = 36,
 	mitigation = 1.71,
 	{ name = "combat", interval = 2000, chance = 7, type = COMBAT_HEALING, minDamage = 95, maxDamage = 180, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "speed", interval = 2000, chance = 10, speedChange = 520, effect = CONST_ME_POFF, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 10, speedChange = 520, effect = CONST_ME_POFF, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -136,7 +136,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

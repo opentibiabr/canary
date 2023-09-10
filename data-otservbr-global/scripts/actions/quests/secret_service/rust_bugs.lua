@@ -10,7 +10,7 @@ function secretServiceBugs.onUse(player, item, fromPosition, target, toPosition,
 		for i = 32909, 32912 do
 			Game.createItem(1069, 1, Position(i, 32112, 7))
 		end
-		player:say('The bugs are at work!', TALKTYPE_MONSTER_SAY)
+		player:say("The bugs are at work!", TALKTYPE_MONSTER_SAY)
 	end
 	return true
 end

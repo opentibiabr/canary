@@ -1,6 +1,6 @@
 local setting = {
 	[5468] = 5512,
-	[5469] = 5514
+	[5469] = 5514,
 }
 
 local sugarOat = Action()

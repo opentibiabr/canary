@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 4200
@@ -22,12 +22,12 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.bosstiary = {
 	bossRaceId = 87,
-	bossRace = RARITY_BANE
+	bossRace = RARITY_BANE,
 }
 
 monster.strategiesTarget = {
@@ -52,19 +52,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 4,
 	summons = {
-		{ name = "Priestess", chance = 15, interval = 2000, count = 4 }
-	}
+		{ name = "Priestess", chance = 15, interval = 2000, count = 4 },
+	},
 }
 
 monster.voices = {
@@ -73,7 +73,7 @@ monster.voices = {
 	{ text = "You can't escape death forever", yell = false },
 	{ text = "Come closer to learn the final lesson", yell = false },
 	{ text = "Undeath will shatter my shackles.", yell = false },
-	{ text = "You don't need this magic anymore.", yell = false }
+	{ text = "You don't need this magic anymore.", yell = false },
 }
 
 monster.loot = {
@@ -87,7 +87,7 @@ monster.loot = {
 	{ name = "ornamented ankh", chance = 100000 },
 	{ name = "skull staff", chance = 500 },
 	{ name = "pharaoh sword", chance = 300 },
-	{ name = "great mana potion", chance = 7000 }
+	{ name = "great mana potion", chance = 7000 },
 }
 
 monster.attacks = {
@@ -96,13 +96,13 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_MANADRAIN, minDamage = -100, maxDamage = -500, range = 7, effect = CONST_ME_MAGIC_RED, target = false },
 	{ name = "speed", interval = 1000, chance = 15, speedChange = -650, range = 7, effect = CONST_ME_MAGIC_RED, target = false, duration = 50000 },
 	{ name = "drunk", interval = 1000, chance = 12, radius = 7, effect = CONST_ME_LOSEENERGY, target = false },
-	{ name = "melee", interval = 3000, chance = 34, minDamage = -50, maxDamage = -600 }
+	{ name = "melee", interval = 3000, chance = 34, minDamage = -50, maxDamage = -600 },
 }
 
 monster.defenses = {
 	defense = 25,
 	armor = 25,
-	{ name = "combat", interval = 1000, chance = 25, type = COMBAT_HEALING, minDamage = 100, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 1000, chance = 25, type = COMBAT_HEALING, minDamage = 100, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -115,14 +115,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 30 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

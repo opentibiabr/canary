@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 3500
@@ -22,12 +22,12 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.bosstiary = {
 	bossRaceId = 718,
-	bossRace = RARITY_ARCHFOE
+	bossRace = RARITY_ARCHFOE,
 }
 
 monster.strategiesTarget = {
@@ -54,19 +54,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{ name = "Golden Servant", chance = 50, interval = 2000, count = 1 }
-	}
+		{ name = "Golden Servant", chance = 50, interval = 2000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -74,7 +74,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Behold the all permeating powers I draw from this gate!!", yell = false },
 	{ text = "ENERGY!!", yell = false },
-	{ text = "I WILL RETURN!! My death will just be a door to await my homecoming, my physical hull will be... my... argh...", yell = false }
+	{ text = "I WILL RETURN!! My death will just be a door to await my homecoming, my physical hull will be... my... argh...", yell = false },
 }
 
 monster.loot = {
@@ -99,19 +99,19 @@ monster.loot = {
 	{ id = 3079, chance = 610 }, -- boots of haste
 	{ id = 9067, chance = 610 }, -- crystal of power
 	{ id = 5741, chance = 610 }, -- skull helmet
-	{ id = 8074, chance = 610 } -- spellbook of mind control
+	{ id = 8074, chance = 610 }, -- spellbook of mind control
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 },
 	{ name = "thunderstorm rune", interval = 2000, chance = 35, minDamage = -100, maxDamage = -200, range = 7, target = true },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_MANADRAIN, minDamage = -100, maxDamage = -200, range = 7, target = false },
-	{ name = "energyfield", interval = 2000, chance = 15, range = 7, radius = 2, shootEffect = CONST_ANI_ENERGY, target = true }
+	{ name = "energyfield", interval = 2000, chance = 15, range = 7, radius = 2, shootEffect = CONST_ANI_ENERGY, target = true },
 }
 
 monster.defenses = {
 	defense = 25,
-	armor = 25
+	armor = 25,
 }
 
 monster.elements = {
@@ -124,18 +124,17 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 15 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -143,13 +142,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

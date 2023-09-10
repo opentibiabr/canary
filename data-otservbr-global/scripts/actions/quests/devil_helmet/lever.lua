@@ -1,6 +1,6 @@
 local removePositions = {
 	fromPos = 32593,
-	toPos = 32601
+	toPos = 32601,
 }
 
 local closeId = 1270

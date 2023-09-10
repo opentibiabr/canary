@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 2000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -59,8 +59,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_ICEDAMAGE, minDamage = -325, maxDamage = -450, range = 5, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEAREA, target = true },
@@ -69,7 +68,7 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 10,
 	--	mitigation = ???,
 }
 
@@ -83,14 +82,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

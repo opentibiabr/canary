@@ -24,16 +24,12 @@ function pythiusBossTeleport.onStepIn(creature, item, position, fromPosition)
 		item:remove()
 
 		local steamPosition = Position(32551, 31379, 15)
-		iterateArea(
-			function(position)
-				local groundItem = Tile(position):getGround()
-				if groundItem and groundItem.itemid == 5815 then
-					groundItem:transform(21477)
-				end
-			end,
-			Position(32550, 31373, 15),
-			steamPosition
-		)
+		iterateArea(function(position)
+			local groundItem = Tile(position):getGround()
+			if groundItem and groundItem.itemid == 5815 then
+				groundItem:transform(21477)
+			end
+		end, Position(32550, 31373, 15), steamPosition)
 
 		Game.createItem(1791, 1, steamPosition)
 		local steamItem = Game.createItem(8425, 1, steamPosition)

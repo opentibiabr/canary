@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 115,
 	lookLegs = 100,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,27 +58,26 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
-	if (MsgContains(message, "warzones")) then
+	if MsgContains(message, "warzones") then
 		npcHandler:say({
 			"There are three warzones. In each warzone you will find fearsome foes. At the end you'll find their mean master. The masters is well protected though. ...",
 			"Make sure to talk to our gnomish agent in there for specifics of its' protection. ...",
 			"Oh, and to be able to enter the second warzone you have to best the first. To enter the third you have to best the second. ...",
-			"And you can enter each one only once every twenty hours. Your normal teleport crystals won't work on these teleporters. You will have to get {mission} crystals from Gnomally."
+			"And you can enter each one only once every twenty hours. Your normal teleport crystals won't work on these teleporters. You will have to get {mission} crystals from Gnomally.",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif (MsgContains(message, "job")) then
+	elseif MsgContains(message, "job") then
 		npcHandler:say("I am responsible for our war {missions}, to {trade} with seasoned soldiers and rewarding war {heroes}. You have to be rank 4 to enter the {warzones}.", npc, creature)
 		npcHandler:setTopic(playerId, 2)
-	elseif (MsgContains(message, "heroes")) then
+	elseif MsgContains(message, "heroes") then
 		if npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say({
 				"You can trade special spoils of war to get a permission to use the war teleporters to the area of the corresponding boss without need of mission crystals. ...",
-				"Which one would you like to trade: the deathstrike's {snippet}, gnomevil's {hat} or the abyssador {lash}?"
+				"Which one would you like to trade: the deathstrike's {snippet}, gnomevil's {hat} or the abyssador {lash}?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
-	elseif (MsgContains(message, "snippet")) then
+	elseif MsgContains(message, "snippet") then
 		if npcHandler:getTopic(playerId) == 3 then
 			if player:getStorageValue(Storage.BigfootBurden.Rank) < 1440 then
 				npcHandler:say("It seems you did not even set one big foot into the warzone, I am sorry.")
@@ -96,7 +95,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				end
 			end
 		end
-	elseif (MsgContains(message, "lash")) then
+	elseif MsgContains(message, "lash") then
 		if npcHandler:getTopic(playerId) == 3 then
 			if player:getStorageValue(Storage.BigfootBurden.Rank) < 1440 then
 				npcHandler:say("It seems you did not even set one big foot into the warzone, I am sorry.")
@@ -118,7 +117,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				end
 			end
 		end
-	elseif (MsgContains(message, "hat")) then
+	elseif MsgContains(message, "hat") then
 		if npcHandler:getTopic(playerId) == 3 then
 			if player:getStorageValue(Storage.BigfootBurden.Rank) < 1440 then
 				npcHandler:say("It seems you did not even set one big foot into the warzone, I am sorry.")
@@ -140,7 +139,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				end
 			end
 		end
-	elseif (MsgContains(message, "mission")) then
+	elseif MsgContains(message, "mission") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:getStorageValue(Storage.BigfootBurden.Rank) >= 1440 then
 				if player:getStorageValue(Storage.BigfootBurden.WarzoneStatus) < 1 then
@@ -159,11 +158,11 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_GREET, 'Hello |PLAYERNAME|. You are probably eager to enter the {warzones}.')
+npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|. You are probably eager to enter the {warzones}.")
 
 local function onTradeRequest(npc, creature)
 	if Player(creature):getStorageValue(Storage.BigfootBurden.BossKills) < 20 then
-		npcHandler:say('Only if you have killed 20 of our major enemies in the warzones I am allowed to trade with you.', npc, creature)
+		npcHandler:say("Only if you have killed 20 of our major enemies in the warzones I am allowed to trade with you.", npc, creature)
 		return false
 	end
 	return true
@@ -228,7 +227,7 @@ npcConfig.shop = {
 	{ itemName = "trophy of obujos", clientId = 14002, sell = 3000 },
 	{ itemName = "trophy of tanjis", clientId = 14004, sell = 2000 },
 	{ itemName = "unholy book", clientId = 6103, sell = 30000 },
-	{ itemName = "windborn colossus armor", clientId = 8055, sell = 50000 }
+	{ itemName = "windborn colossus armor", clientId = 8055, sell = 50000 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -239,7 +238,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

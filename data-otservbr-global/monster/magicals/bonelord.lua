@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 17
@@ -28,7 +28,7 @@ monster.Bestiary = {
 		Maze of Lost Souls, way to Mintwallin, before Kazordoon city entrance, abandoned building east of Venore, \z
 		Green Claw Swamp, north of the Venore Amazon Camp, Below Point of No Return in Outlaw Camp, Vandura Bonelord Cave, \z
 		Triangle Tower, Hidden cave north of Port Hope, Deeper Banuta, Dark Cathedral, Shadow Tomb, Ancient Ruins Tomb, \z
-		Tarpit Tomb, Mountain Tomb, Peninsula Tomb, Oasis Tomb and beneath Fenrock."
+		Tarpit Tomb, Mountain Tomb, Peninsula Tomb, Oasis Tomb and beneath Fenrock.",
 }
 
 monster.health = 260
@@ -40,7 +40,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -78,8 +78,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 6,
 	summons = {
-		{ name = "Skeleton", chance = 20, interval = 2000, count = 6 }
-	}
+		{ name = "Skeleton", chance = 20, interval = 2000, count = 6 },
+	},
 }
 
 monster.voices = {
@@ -103,7 +103,7 @@ monster.loot = {
 	{ name = "bonelord shield", chance = 110 },
 	{ name = "bonelord eye", chance = 1000 },
 	{ name = "mana potion", chance = 300 },
-	{ name = "small flask of eyedrops", chance = 5060 }
+	{ name = "small flask of eyedrops", chance = 5060 },
 }
 
 monster.attacks = {
@@ -114,7 +114,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_EARTHDAMAGE, minDamage = -5, maxDamage = -45, range = 7, shootEffect = CONST_ANI_POISON, target = false },
 	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_DEATHDAMAGE, minDamage = -5, maxDamage = -50, range = 7, shootEffect = CONST_ANI_DEATH, target = false },
 	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_LIFEDRAIN, minDamage = 0, maxDamage = -45, range = 7, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_MANADRAIN, minDamage = -5, maxDamage = -35, range = 7, target = false }
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_MANADRAIN, minDamage = -5, maxDamage = -35, range = 7, target = false },
 }
 
 monster.defenses = {
@@ -140,7 +140,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

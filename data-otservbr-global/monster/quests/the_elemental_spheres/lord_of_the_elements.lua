@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -68,8 +68,8 @@ monster.summon = {
 		{ name = "Blistering Fire Elemental", chance = 50, interval = 4000, count = 1 },
 		{ name = "Jagged Earth Elemental", chance = 50, interval = 4000, count = 1 },
 		{ name = "Roaring Water Elemental", chance = 50, interval = 4000, count = 1 },
-		{ name = "Overcharged Energy Elemental", chance = 50, interval = 4000, count = 1 }
-	}
+		{ name = "Overcharged Energy Elemental", chance = 50, interval = 4000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -86,11 +86,11 @@ monster.loot = {
 	{ name = "small amethyst", chance = 11111, maxCount = 3 },
 	{ name = "platinum coin", chance = 50000, maxCount = 9 },
 	{ name = "earthborn titan armor", chance = 2063 },
-	{ name = "gold ingot", chance = 25000 }
+	{ name = "gold ingot", chance = 25000 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -690 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -690 },
 }
 
 monster.defenses = {
@@ -101,7 +101,7 @@ monster.defenses = {
 	{ name = "outfit", interval = 1500, chance = 40, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 3000, outfitMonster = "Energy Overlord" },
 	{ name = "outfit", interval = 1500, chance = 40, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 3000, outfitMonster = "Fire Overlord" },
 	{ name = "outfit", interval = 1500, chance = 40, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 3000, outfitMonster = "Earth Overlord" },
-	{ name = "outfit", interval = 1500, chance = 40, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 3000, outfitMonster = "Ice Overlord" }
+	{ name = "outfit", interval = 1500, chance = 40, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 3000, outfitMonster = "Ice Overlord" },
 }
 
 monster.elements = {
@@ -121,7 +121,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 3580
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 15
+	chance = 15,
 }
 
 monster.strategiesTarget = {
@@ -69,7 +69,7 @@ monster.loot = {
 	{ name = "mushroom pie", chance = 17130, maxCount = 3 },
 	{ name = "great health potion", chance = 4950, maxCount = 2 },
 	{ id = 37531, chance = 5155 }, -- candy floss
-	{ name = "yellow gem", chance = 4000 }
+	{ name = "yellow gem", chance = 4000 },
 }
 
 monster.attacks = {
@@ -80,7 +80,7 @@ monster.attacks = {
 	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 10, minDamage = -30, maxDamage = -150, length = 8, spread = 3, effect = CONST_ME_GREEN_RINGS, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -80, maxDamage = -130, length = 5, spread = 3, effect = CONST_ME_MAGIC_RED, target = false },
 	-- poison
-	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 10, minDamage = -50, maxDamage = -180, range = 7, radius = 3, effect = CONST_ME_HITBYPOISON, target = false }
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 10, minDamage = -50, maxDamage = -180, range = 7, radius = 3, effect = CONST_ME_HITBYPOISON, target = false },
 }
 
 monster.defenses = {
@@ -88,7 +88,7 @@ monster.defenses = {
 	armor = 70,
 	mitigation = 1.40,
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 225, maxDamage = 380, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -108,7 +108,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -5,7 +5,7 @@ local areas = {
 	{ from = Position(33007, 32612, 6), to = Position(33020, 32623, 6) },
 	{ from = Position(32987, 32621, 6), to = Position(33043, 32661, 6) },
 	{ from = Position(33002, 32614, 5), to = Position(33023, 32642, 5) },
-	{ from = Position(32993, 32632, 7), to = Position(33042, 32688, 7) }
+	{ from = Position(32993, 32632, 7), to = Position(33042, 32688, 7) },
 }
 
 local adventurersGuildHunt = CreatureEvent("TheGreatDragonHuntKill")
@@ -18,7 +18,7 @@ function adventurersGuildHunt.onKill(creature, target)
 		return true
 	end
 
-	if table.contains({ 'dragon lord', 'dragon' }, target:getName():lower()) then
+	if table.contains({ "dragon lord", "dragon" }, target:getName():lower()) then
 		for _, area in ipairs(areas) do
 			if creature:getPosition():isInRange(area.from, area.to) then
 				creature:setStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter, creature:getStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter) + 1)

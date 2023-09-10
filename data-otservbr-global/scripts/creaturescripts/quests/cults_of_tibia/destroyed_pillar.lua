@@ -12,7 +12,7 @@ function destroyedPillar.onKill(creature, target)
 		[2] = "pillar of death",
 		[3] = "pillar of protection",
 		[4] = "pillar of healing",
-		[5] = "pillar of draining"
+		[5] = "pillar of draining",
 	}
 
 	local monsterName = target:getName():lower()

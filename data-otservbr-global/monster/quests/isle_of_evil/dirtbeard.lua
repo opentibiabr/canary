@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -65,8 +65,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "Pirate Marauder", chance = 30, interval = 4000, count = 2 }
-	}
+		{ name = "Pirate Marauder", chance = 30, interval = 4000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -83,14 +83,14 @@ monster.loot = {
 	{ id = 9375, chance = 1000 }, -- pointed rabbitslayer
 	{ id = 9382, chance = 1000 }, -- helmet of nature
 	{ id = 9374, chance = 1000 }, -- odd hat
-	{ id = 9401, chance = 2000 } -- shield nevermourn
+	{ id = 9401, chance = 2000 }, -- shield nevermourn
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -125 },
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -100, range = 7, shootEffect = CONST_ANI_THROWINGSTAR, target = false },
 	{ name = "melee", interval = 2000, chance = 30, minDamage = 0, maxDamage = 0 },
-	{ name = "pirate corsair skill reducer", interval = 2000, chance = 5, target = false }
+	{ name = "pirate corsair skill reducer", interval = 2000, chance = 5, target = false },
 }
 
 monster.defenses = {
@@ -116,7 +116,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

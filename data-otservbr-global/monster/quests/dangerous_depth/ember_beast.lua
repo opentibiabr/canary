@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 4000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,18 +62,17 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },
 	{ name = "emberbeastarea", interval = 1000, chance = 20, minDamage = -200, maxDamage = -450, target = false },
-	{ name = "emberbeasthur", interval = 2000, chance = 10, minDamage = -200, maxDamage = -450, target = false }
+	{ name = "emberbeasthur", interval = 2000, chance = 10, minDamage = -200, maxDamage = -450, target = false },
 }
 
 monster.defenses = {
 	defense = 5,
-	armor = 10
+	armor = 10,
 	--	mitigation = ???,
 }
 
@@ -94,7 +93,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 113
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Chor, the lizard city south-east from Port Hope. They can also be found in Yalahar's \z
-		Foreigner Quarter and in Zzaion."
+		Foreigner Quarter and in Zzaion.",
 }
 
 monster.health = 410
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -86,11 +86,11 @@ monster.loot = {
 	{ name = "salamander shield", chance = 110 },
 	{ name = "lizard leather", chance = 880 },
 	{ name = "lizard scale", chance = 990 },
-	{ name = "health potion", chance = 890 }
+	{ name = "health potion", chance = 890 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 },
 }
 
 monster.defenses = {
@@ -116,7 +116,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -1,6 +1,6 @@
 local transformid = {
 	[9110] = 9111,
-	[9111] = 9110
+	[9111] = 9110,
 }
 
 local cultsOfTibiaLeverMota = Action()
@@ -15,15 +15,15 @@ function cultsOfTibiaLeverMota.onUse(player, item, fromPosition, itemEx, toPosit
 	end
 	for i = 33300, 33305, 1 do
 		local newpos = Position(i, 32144, 10)
-		if (Tile(newpos):getItemCountById(pedraid) == 1) then
+		if Tile(newpos):getItemCountById(pedraid) == 1 then
 			posPedra = newpos
 		end
 		newpos = Position(i, 32146, 10)
-		if (Tile(newpos):getItemCountById(pedraid) == 1) then
+		if Tile(newpos):getItemCountById(pedraid) == 1 then
 			posPedra2 = newpos
 		end
 		newpos = Position(i, 32148, 10)
-		if (Tile(newpos):getItemCountById(pedraid) == 1) then
+		if Tile(newpos):getItemCountById(pedraid) == 1 then
 			posPedra3 = newpos
 		end
 	end

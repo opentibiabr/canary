@@ -1,15 +1,14 @@
 local setting = {
 	centerRoom = { x = 32255, y = 32178, z = 9 },
-	range = 10
+	range = 10,
 }
 
 local playerPositions = {
 	{ fromPos = { x = 32269, y = 32180, z = 8 }, toPos = { x = 32247, y = 32178, z = 9 } }, -- Player 2
-	{ fromPos = { x = 32270, y = 32180, z = 8 }, toPos = { x = 32264, y = 32178, z = 9 } } -- Player 1
+	{ fromPos = { x = 32270, y = 32180, z = 8 }, toPos = { x = 32264, y = 32178, z = 9 } }, -- Player 1
 }
 
-local positions = {
-}
+local positions = {}
 
 local arena2x2 = Action()
 

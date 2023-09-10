@@ -14,7 +14,6 @@ local function clearArena()
 	end
 end
 
-
 local tireczKill = CreatureEvent("TireczKill")
 
 function tireczKill.onKill(creature, target)
@@ -23,7 +22,7 @@ function tireczKill.onKill(creature, target)
 		return true
 	end
 
-	if targetMonster:getName():lower() ~= 'tirecz' then
+	if targetMonster:getName():lower() ~= "tirecz" then
 		return true
 	end
 
@@ -32,8 +31,8 @@ function tireczKill.onKill(creature, target)
 		spectator = spectators[i]
 		spectator:teleportTo(exitPosition[1])
 		exitPosition[1]:sendMagicEffect(CONST_ME_TELEPORT)
-		spectator:say('You have won! As new champion take the ancient armor as reward before you leave.', TALKTYPE_MONSTER_SAY)
-		spectator:addAchievement('Champion of Chazorai')
+		spectator:say("You have won! As new champion take the ancient armor as reward before you leave.", TALKTYPE_MONSTER_SAY)
+		spectator:addAchievement("Champion of Chazorai")
 		if spectator:getStorageValue(TheNewFrontier.Questline) == 25 then
 			spectator:setStorageValue(TheNewFrontier.Mission09[1], 2) -- Questlog: 'Mission 09: Mortal Combat'
 			spectator:setStorageValue(TheNewFrontier.Questline, 26)

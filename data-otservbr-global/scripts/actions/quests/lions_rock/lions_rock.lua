@@ -1,13 +1,13 @@
 local lionsRockSanctuaryRockId = 1852
 
 local rewards = {
-	'emerald bangle',
-	'giant shimmering pearl',
-	'gold ingot',
-	'green gem',
-	'red gem',
+	"emerald bangle",
+	"giant shimmering pearl",
+	"gold ingot",
+	"green gem",
+	"red gem",
 	"lion's heart",
-	'yellow gem'
+	"yellow gem",
 }
 
 local tests = {
@@ -17,7 +17,7 @@ local tests = {
 		pagodaPosition = { x = 33134, y = 32289, z = 8 },
 		item = 9634,
 		message = "You have sacrificed a cobra tongue at an ancient statue. The light in the small pyramid nearby begins to shine.",
-		effect = CONST_ME_BLOCKHIT
+		effect = CONST_ME_BLOCKHIT,
 	},
 	{
 		storage = Storage.LionsRock.OuterSanctum.LionsBeauty,
@@ -25,7 +25,7 @@ local tests = {
 		pagodaPosition = { x = 33136, y = 32369, z = 8 },
 		item = 21389,
 		message = "You burnt a lion's mane flower. The light in the small pyramid nearby begins to shine.",
-		effect = CONST_ME_REDSMOKE
+		effect = CONST_ME_REDSMOKE,
 	},
 	{
 		storage = Storage.LionsRock.OuterSanctum.LionsTears,
@@ -34,8 +34,8 @@ local tests = {
 		item = 21466,
 		message = "You have purified a sacret pedestal with holy water. You have now passed the last test\z
 		to enter thge inner sanctum.",
-		effect = CONST_ME_LOSEENERGY
-	}
+		effect = CONST_ME_LOSEENERGY,
+	},
 }
 
 -- Lions rock sacrifices
@@ -86,7 +86,9 @@ function lionsGetLionsMane.onUse(player, item, fromPosition, target, toPosition,
 	player:setStorageValue(Storage.LionsRock.Questline, math.max(player:getStorageValue(Storage.LionsRock.Questline), 1))
 	player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
 	item:transform(21935)
-	addEvent(function() item:transform(21388) end, 60 * 1000)
+	addEvent(function()
+		item:transform(21388)
+	end, 60 * 1000)
 	return true
 end
 
@@ -97,7 +99,7 @@ lionsGetLionsMane:register()
 local lionsGetHolyWater = Action()
 
 function lionsGetHolyWater.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You took some holy water from the sacred well.')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You took some holy water from the sacred well.")
 	player:addItem(21466, 1)
 	player:setStorageValue(Storage.LionsRock.Questline, math.max(player:getStorageValue(Storage.LionsRock.Questline), 1))
 	player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
@@ -112,7 +114,7 @@ local lionsRockFountain = Action()
 
 function lionsRockFountain.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if player:getStorageValue(Storage.LionsRock.Time) < os.time() then
-		local reward = ''
+		local reward = ""
 		if player:hasMount(40) then
 			repeat
 				reward = math.random(1, #rewards)
@@ -120,8 +122,7 @@ function lionsRockFountain.onUse(player, item, fromPosition, target, toPosition,
 		else
 			reward = math.random(1, #rewards)
 		end
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			"Something sparkles in the fountain's water. You draw out a " .. rewards[reward] .. '.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Something sparkles in the fountain's water. You draw out a " .. rewards[reward] .. ".")
 		player:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 		player:addAchievement("Lion's Den Explorer")
 		item:transform(lionsRockSanctuaryRockId)
@@ -129,8 +130,7 @@ function lionsRockFountain.onUse(player, item, fromPosition, target, toPosition,
 		player:setStorageValue(Storage.LionsRock.Time, os.time() + 24 * 60 * 60)
 		player:setStorageValue(Storage.LionsRock.Questline, 11)
 	else
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			'At the moment there is neither a treasure nor anything else in the fountain. Perhaps you might return later.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "At the moment there is neither a treasure nor anything else in the fountain. Perhaps you might return later.")
 	end
 	return true
 end

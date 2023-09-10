@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 104
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Kha'zeel, Magician Quarter, Djinn battle island through the Haunted Tomb."
+	Locations = "Kha'zeel, Magician Quarter, Djinn battle island through the Haunted Tomb.",
 }
 
 monster.health = 550
@@ -38,7 +38,7 @@ monster.enemyFactions = { FACTION_EFREET, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -73,8 +73,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "blue djinn", chance = 10, interval = 2000, count = 2 }
-	}
+		{ name = "blue djinn", chance = 10, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -104,7 +104,7 @@ monster.loot = {
 	{ name = "seeds", chance = 2400 },
 	{ name = "magma monocle", chance = 320 },
 	{ name = "jewelled belt", chance = 7880 },
-	{ name = "noble turban", chance = 530 }
+	{ name = "noble turban", chance = 530 },
 }
 
 monster.attacks = {
@@ -115,14 +115,14 @@ monster.attacks = {
 	{ name = "drunk", interval = 2000, chance = 10, range = 7, shootEffect = CONST_ANI_ENERGY, target = false, duration = 6000 },
 	{ name = "outfit", interval = 2000, chance = 1, range = 7, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 4000, outfitMonster = "rabbit" },
 	{ name = "djinn electrify", interval = 2000, chance = 15, range = 5, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -30, maxDamage = -90, radius = 3, effect = CONST_ME_ENERGYHIT, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -30, maxDamage = -90, radius = 3, effect = CONST_ME_ENERGYHIT, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 24,
 	mitigation = 0.91,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -142,7 +142,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

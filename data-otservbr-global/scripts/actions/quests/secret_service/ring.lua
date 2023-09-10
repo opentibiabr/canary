@@ -7,7 +7,7 @@ function secretServiceRing.onUse(player, item, fromPosition, target, toPosition,
 	if player:getStorageValue(Storage.SecretService.TBIMission05) == 1 then
 		player:setStorageValue(Storage.SecretService.TBIMission05, 2)
 		item:remove()
-		player:say('You have placed the false evidence!', TALKTYPE_MONSTER_SAY)
+		player:say("You have placed the false evidence!", TALKTYPE_MONSTER_SAY)
 	end
 	return true
 end

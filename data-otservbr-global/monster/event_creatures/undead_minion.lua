@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 850
@@ -22,7 +22,7 @@ monster.manaCost = 620
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 1
+	chance = 1,
 }
 
 monster.strategiesTarget = {
@@ -69,12 +69,12 @@ monster.loot = {
 	{ name = "battle shield", chance = 1000 },
 	{ name = "guardian shield", chance = 5000 },
 	{ id = 6570, chance = 5538 }, -- surprise bag
-	{ id = 6571, chance = 1538 } -- surprise bag
+	{ id = 6571, chance = 1538 }, -- surprise bag
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 1000, chance = 100, minDamage = 0, maxDamage = -248 },
-	{ name = "combat", interval = 1000, chance = 13, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -160, radius = 4, effect = CONST_ME_MORTAREA, target = false }
+	{ name = "combat", interval = 1000, chance = 13, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -160, radius = 4, effect = CONST_ME_MORTAREA, target = false },
 }
 
 monster.defenses = {
@@ -100,7 +100,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

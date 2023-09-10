@@ -10,7 +10,7 @@ local beam = {
 	{ 0, 1, 0 },
 	{ 0, 1, 0 },
 	{ 0, 1, 0 },
-	{ 0, 3, 0 }
+	{ 0, 3, 0 },
 }
 
 combat:setArea(createCombatArea(beam))
@@ -19,7 +19,9 @@ local spell = Spell("instant")
 
 function onTargetTile(creature, pos)
 	local tile = Tile(pos)
-	if not tile then return end
+	if not tile then
+		return
+	end
 	if tile:getTopCreature() and tile:getTopCreature():isMonster() then
 		if tile:getTopCreature():getName():lower() == "magma bubble" then
 			tile:getTopCreature():addHealth(math.random(2000, 5000))

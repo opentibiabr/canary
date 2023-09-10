@@ -1,9 +1,9 @@
 local overlords = {
-	['energy overlord'] = { storage = Storage.ElementalSphere.BossStorage, globalStorage = GlobalStorage.ElementalSphere.KnightBoss },
-	['fire overlord'] = { storage = Storage.ElementalSphere.BossStorage, globalStorage = GlobalStorage.ElementalSphere.SorcererBoss },
-	['ice overlord'] = { storage = Storage.ElementalSphere.BossStorage, globalStorage = GlobalStorage.ElementalSphere.PaladinBoss },
-	['earth overlord'] = { storage = Storage.ElementalSphere.BossStorage, globalStorage = GlobalStorage.ElementalSphere.DruidBoss },
-	['lord of the elements'] = {}
+	["energy overlord"] = { storage = Storage.ElementalSphere.BossStorage, globalStorage = GlobalStorage.ElementalSphere.KnightBoss },
+	["fire overlord"] = { storage = Storage.ElementalSphere.BossStorage, globalStorage = GlobalStorage.ElementalSphere.SorcererBoss },
+	["ice overlord"] = { storage = Storage.ElementalSphere.BossStorage, globalStorage = GlobalStorage.ElementalSphere.PaladinBoss },
+	["earth overlord"] = { storage = Storage.ElementalSphere.BossStorage, globalStorage = GlobalStorage.ElementalSphere.DruidBoss },
+	["lord of the elements"] = {},
 }
 
 local elementalSpheresOver = CreatureEvent("OverlordKill")
@@ -26,7 +26,7 @@ function elementalSpheresOver.onKill(creature, target)
 		creature:setStorageValue(bossConfig.storage, 1)
 	end
 
-	creature:say('You slayed ' .. bossName .. '.', TALKTYPE_MONSTER_SAY)
+	creature:say("You slayed " .. bossName .. ".", TALKTYPE_MONSTER_SAY)
 	return true
 end
 

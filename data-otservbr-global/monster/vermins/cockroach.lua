@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 1
 monster.maxHealth = 1
@@ -23,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -61,7 +60,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "cockroach leg", chance = 100000 }
+	{ name = "cockroach leg", chance = 100000 },
 }
 
 monster.defenses = {
@@ -87,7 +86,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

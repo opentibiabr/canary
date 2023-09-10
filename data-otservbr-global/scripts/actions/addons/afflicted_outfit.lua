@@ -16,7 +16,7 @@ function afflictedOutfit.onUse(player, item, fromPosition, target, toPosition, i
 		player:addOutfitAddon(431, 2)
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		player:setStorageValue(Storage.OutfitQuest.Afflicted.AddonPlagueMask, 1)
-		player:say('You gained a plague mask for your outfit.', TALKTYPE_MONSTER_SAY, false, player)
+		player:say("You gained a plague mask for your outfit.", TALKTYPE_MONSTER_SAY, false, player)
 		item:remove()
 
 		-- Plague Bell
@@ -33,7 +33,7 @@ function afflictedOutfit.onUse(player, item, fromPosition, target, toPosition, i
 		player:addOutfitAddon(431, 1)
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		player:setStorageValue(Storage.OutfitQuest.Afflicted.AddonPlagueBell, 1)
-		player:say('You gained a plague bell for your outfit.', TALKTYPE_MONSTER_SAY, false, player)
+		player:say("You gained a plague bell for your outfit.", TALKTYPE_MONSTER_SAY, false, player)
 		item:remove()
 
 		-- Outfit
@@ -56,7 +56,7 @@ function afflictedOutfit.onUse(player, item, fromPosition, target, toPosition, i
 		player:addOutfit(431)
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		player:setStorageValue(Storage.OutfitQuest.Afflicted.Outfit, 1)
-		player:say('You have restored an outfit.', TALKTYPE_MONSTER_SAY, false, player)
+		player:say("You have restored an outfit.", TALKTYPE_MONSTER_SAY, false, player)
 	end
 	return true
 end

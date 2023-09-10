@@ -35,15 +35,15 @@ end
 
 local rottinWoodtrap = Action()
 function rottinWoodtrap.onUse(cid, item, fromPosition, itemEx, toPosition, isHotkey)
-	if (item.itemid == 12186) then
-		if (itemEx.itemid == 10480) then
+	if item.itemid == 12186 then
+		if itemEx.itemid == 10480 then
 			if (getPlayerStorageValue(cid, Storage.RottinWoodAndMaried.Mission03) == 5) and getPlayerStorageValue(cid, Storage.RottinWoodAndMaried.Trap) < 3 then
 				doCreatureSay(cid, "You place the trap carefully on the  ground. Between twigs and leaves it is almost invisible.", TALKTYPE_ORANGE_1)
 				doRemoveItem(item.uid, 1)
 				Game.createItem(12187, 1, toPosition)
 				setPlayerStorageValue(cid, Storage.RottinWoodAndMaried.Trap, getPlayerStorageValue(cid, Storage.RottinWoodAndMaried.Trap) + 1)
 			else
-				if (getPlayerStorageValue(cid, Storage.RottinWoodAndMaried.Trap) == 3) then
+				if getPlayerStorageValue(cid, Storage.RottinWoodAndMaried.Trap) == 3 then
 					doCreatureSay(cid, "It looks like the merchants are about to arrive, better hide somewhere where you can see whats going on in the area.", TALKTYPE_ORANGE_1)
 					doRemoveItem(item.uid, 1)
 					Game.createItem(12187, 1, toPosition)

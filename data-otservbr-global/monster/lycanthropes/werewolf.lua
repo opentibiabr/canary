@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 510
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Vengoth Castle, Vengoth Werewolf Cave, Grimvale, were-beasts cave south-west of Edron."
+	Locations = "Vengoth Castle, Vengoth Werewolf Cave, Grimvale, were-beasts cave south-west of Edron.",
 }
 
 monster.health = 1955
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -70,8 +70,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "war wolf", chance = 40, interval = 2000, count = 2 }
-	}
+		{ name = "war wolf", chance = 40, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -100,7 +100,7 @@ monster.loot = {
 	{ name = "ultimate health potion", chance = 2400 },
 	{ id = 8895, chance = 210 }, -- rusted armor
 	{ id = 22052, chance = 15000 }, -- werewolf fangs
-	{ name = "werewolf fur", chance = 10650 }
+	{ name = "werewolf fur", chance = 10650 },
 }
 
 monster.attacks = {
@@ -109,7 +109,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -80, maxDamage = -200, length = 4, spread = 2, effect = CONST_ME_SOUND_RED, target = false },
 	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_PHYSICALDAMAGE, radius = 3, effect = CONST_ME_SOUND_WHITE, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, radius = 1, effect = CONST_ME_SOUND_GREEN, target = false },
-	{ name = "werewolf skill reducer", interval = 2000, chance = 15, range = 1, target = false }
+	{ name = "werewolf skill reducer", interval = 2000, chance = 15, range = 1, target = false },
 }
 
 monster.defenses = {
@@ -117,7 +117,7 @@ monster.defenses = {
 	armor = 36,
 	mitigation = 0.83,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 120, maxDamage = 225, effect = CONST_ME_MAGIC_GREEN, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 400, range = 7, effect = CONST_ME_SOUND_PURPLE, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 400, range = 7, effect = CONST_ME_SOUND_PURPLE, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -137,7 +137,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

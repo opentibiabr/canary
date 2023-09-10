@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 30000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -53,7 +53,7 @@ monster.flags = {
 }
 
 monster.events = {
-	"LeidenHeal"
+	"LeidenHeal",
 }
 
 monster.light = {
@@ -65,8 +65,8 @@ monster.summon = {
 	maxSummons = 2,
 	summons = {
 		{ name = "Barkless Fanatic", chance = 20, interval = 2000, count = 1 },
-		{ name = "Barkless Fanatic", chance = 30, interval = 2000, count = 1 }
-	}
+		{ name = "Barkless Fanatic", chance = 30, interval = 2000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -75,11 +75,10 @@ monster.voices = {
 	{ text = "Bring me the pain! Make me suffer!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },
 }
 
 monster.defenses = {
@@ -98,7 +97,7 @@ monster.reflects = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.elements = {
@@ -118,7 +117,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

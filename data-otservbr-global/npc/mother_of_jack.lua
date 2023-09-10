@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 60,
 	lookLegs = 117,
 	lookFeet = 115,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
@@ -29,7 +29,7 @@ npcConfig.voices = {
 	{ text = "JAAAAACK? EVERYTHING ALRIGHT DOWN THERE?" },
 	{ text = "Oh dear, I can't find anything in here!" },
 	{ text = "There is still some dust on the drawer over there. What where you thinking, Jane?" },
-	{ text = "Jane!" }
+	{ text = "Jane!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -68,37 +68,39 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "jack") then
-		if (player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 5) then
-			if (player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Mother) < 1) then
+		if player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 5 then
+			if player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Mother) < 1 then
 				npcHandler:say(
 					"What about him? He's downstairs as he always has been. He never went away from home \z
 					any further than into the forest nearby. He rarely ever took a walk to Edron, did he?",
-					npc, creature)
+					npc,
+					creature
+				)
 				npcHandler:setTopic(playerId, 1)
 			end
 		end
 	elseif MsgContains(message, "no") then
-		if (npcHandler:getTopic(playerId) == 2) then
+		if npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say(
 				"Thought so. Of course he wouldn't do anything wrong. And he went where? Edron. Hm. I can \z
 					see nothing wrong with that. But... he wasn't there often, was he?",
-				npc, creature)
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 3)
 		end
 	elseif MsgContains(message, "yes") then
-		if (npcHandler:getTopic(playerId) == 1) then
+		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("What...? But he wasn't up to something, was he?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
-		elseif (npcHandler:getTopic(playerId) == 3) then
-			npcHandler:say(
-				{
-					"Oh my... he did what? Why was he there? Edron Academy? ...",
-					"I see... this cannot be. Spectrofuss? Who? Jack! When? How? But why did he do that? Jack!! \z
+		elseif npcHandler:getTopic(playerId) == 3 then
+			npcHandler:say({
+				"Oh my... he did what? Why was he there? Edron Academy? ...",
+				"I see... this cannot be. Spectrofuss? Who? Jack! When? How? But why did he do that? Jack!! \z
 						JACK!! When I find him he owes me an EXPLANATION. Thanks for telling \z
 						me what he is actually doing in his FREE TIME. ...",
-					"JAAAAACK!"
-				},
-				npc, creature)
+				"JAAAAACK!",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.Mother, 1)
 		end

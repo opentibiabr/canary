@@ -6,8 +6,8 @@
 ---- string of mending id "20208"-----
 local ITEMS = {
 	[12737] = { -----Broken Ring Id "12737" Ring of ending "20182"
-		{ "ring of ending", 50.50 } ----- 1.97 es la probabilidad de crear el item
-	}
+		{ "ring of ending", 50.50 }, ----- 1.97 es la probabilidad de crear el item
+	},
 }
 
 local stringOfMending = Action()

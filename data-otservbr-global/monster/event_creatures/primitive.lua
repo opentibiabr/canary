@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 1,
 	lookFeet = 1,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 200
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -90,14 +90,14 @@ monster.loot = {
 	{ name = "studded armor", chance = 7000 },
 	{ name = "studded shield", chance = 1200 },
 	{ id = 6570, chance = 500 }, -- surprise bag
-	{ id = 6571, chance = 500 } -- surprise bag
+	{ id = 6571, chance = 500 }, -- surprise bag
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -32 },
 	{ name = "drunk", interval = 1000, chance = 20, range = 7, shootEffect = CONST_ANI_ENERGY, target = false },
 	{ name = "combat", interval = 1000, chance = 34, type = COMBAT_FIREDAMAGE, minDamage = -20, maxDamage = -20, range = 7, radius = 3, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
-	{ name = "outfit", interval = 1000, chance = 2, radius = 4, effect = CONST_ME_LOSEENERGY, target = false, duration = 10000, outfitMonster = "primitive" }
+	{ name = "outfit", interval = 1000, chance = 2, radius = 4, effect = CONST_ME_LOSEENERGY, target = false, duration = 10000, outfitMonster = "primitive" },
 }
 
 monster.defenses = {
@@ -123,7 +123,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

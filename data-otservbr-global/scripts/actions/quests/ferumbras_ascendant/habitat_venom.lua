@@ -411,7 +411,7 @@ local venom = {
 	{ itemid = 1055, position = Position(33625, 32708, 12) },
 	{ itemid = 417, position = Position(33625, 32708, 12) },
 	{ itemid = 1059, position = Position(33625, 32709, 12) },
-	{ itemid = 417, position = Position(33625, 32709, 12) }
+	{ itemid = 417, position = Position(33625, 32709, 12) },
 }
 local function transformArea()
 	for x = 33611, 33625 do
@@ -449,10 +449,10 @@ local ferumbrasAscendantHabitatVenom = Action()
 function ferumbrasAscendantHabitatVenom.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 9125 then
 		if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Venom) >= 1 then
-			player:say('The lever are stuck, need some time to it can be moveable again.', TALKTYPE_MONSTER_SAY)
+			player:say("The lever are stuck, need some time to it can be moveable again.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
-		Game.createMonster('lovely polar bear', Position(33617, 32702, 12), true, true)
+		Game.createMonster("lovely polar bear", Position(33617, 32702, 12), true, true)
 		addEvent(transformArea, 2 * 1000)
 		item:transform(9126)
 		local basin = Tile(Position(33628, 32703, 12)):getItemById(11114)
@@ -462,7 +462,7 @@ function ferumbrasAscendantHabitatVenom.onUse(player, item, fromPosition, target
 		end
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Venom, 1)
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats, Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats) + 1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The room transforms into a completely different landscape.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The room transforms into a completely different landscape.")
 		if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats) >= 8 then
 			addEvent(function()
 				local basin = Tile(Position(33628, 32703, 12)):getItemById(22196)

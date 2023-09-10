@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 58,
 	lookBody = 21,
 	lookLegs = 86,
-	lookFeet = 116
+	lookFeet = 116,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()

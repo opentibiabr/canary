@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1018
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "All over the surface of Upper Roshamuul and Nightmare Isles."
+	Locations = "All over the surface of Upper Roshamuul and Nightmare Isles.",
 }
 
 monster.health = 5300
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -75,7 +75,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Wait for us, little maggot...", yell = false },
 	{ text = "We will devour you...", yell = false },
-	{ text = "My little beetles, go forth, eat, feast!", yell = false }
+	{ text = "My little beetles, go forth, eat, feast!", yell = false },
 }
 
 monster.loot = {
@@ -94,7 +94,7 @@ monster.loot = {
 	{ name = "wand of starstorm", chance = 960 },
 	{ id = 20029, chance = 3700 }, -- broken dream
 	{ name = "goosebump leather", chance = 16400 },
-	{ name = "pool of chitinous glue", chance = 14000 }
+	{ name = "pool of chitinous glue", chance = 14000 },
 }
 
 monster.attacks = {
@@ -103,12 +103,12 @@ monster.attacks = {
 	{ name = "speed", interval = 2000, chance = 15, speedChange = -700, radius = 4, shootEffect = CONST_ANI_WHIRLWINDCLUB, effect = CONST_ME_STUN, target = true, duration = 15000 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -110, radius = 4, effect = CONST_ME_HITAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -200, radius = 1, shootEffect = CONST_ANI_SNIPERARROW, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -200, maxDamage = -350, radius = 1, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREATTACK, target = true }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -200, maxDamage = -350, radius = 1, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREATTACK, target = true },
 }
 
 monster.defenses = {
 	defense = 30,
-	armor = 30
+	armor = 30,
 }
 
 monster.elements = {
@@ -121,14 +121,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 15 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 20 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 20 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

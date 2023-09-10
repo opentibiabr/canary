@@ -1,13 +1,16 @@
 local config = {
 	[8009] = {
 		storage = Storage.ChildrenoftheRevolution.SpyBuilding01,
-		text = "An impressive ammount of fish is stored here." },
+		text = "An impressive ammount of fish is stored here.",
+	},
 	[8010] = {
 		storage = Storage.ChildrenoftheRevolution.SpyBuilding02,
-		text = "A seemingly endless array of weapon stretches before you into the darkness." },
+		text = "A seemingly endless array of weapon stretches before you into the darkness.",
+	},
 	[8011] = {
 		storage = Storage.ChildrenoftheRevolution.SpyBuilding03,
-		text = "These barracks seem to be home for quite a lot of soldiers." }
+		text = "These barracks seem to be home for quite a lot of soldiers.",
+	},
 }
 
 local spy = MoveEvent()

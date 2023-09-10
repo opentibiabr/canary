@@ -2,7 +2,7 @@ local sacrifices = {
 	[3723] = Tile(Position(31918, 32598, 10)), -- top left
 	[3725] = Tile(Position(31918, 32599, 10)), -- bottom left
 	[3732] = Tile(Position(31920, 32598, 10)), -- top right
-	[3728] = Tile(Position(31920, 32599, 10)) -- bottom right
+	[3728] = Tile(Position(31920, 32599, 10)), -- bottom right
 }
 
 local teleport = MoveEvent()

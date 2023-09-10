@@ -21,7 +21,7 @@ function secondSealPearl.onStepIn(creature, item, position, fromPosition)
 			return true
 		end
 
-		pearlItems[#pearlItems+1] = pearlItem
+		pearlItems[#pearlItems + 1] = pearlItem
 	end
 
 	for i = 1, #pearlItems do

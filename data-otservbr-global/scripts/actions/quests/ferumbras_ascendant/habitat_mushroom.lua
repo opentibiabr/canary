@@ -355,7 +355,7 @@ local mushroom = {
 	{ itemid = 417, position = Position(33623, 32676, 12) },
 	{ itemid = 417, position = Position(33613, 32689, 12) },
 	{ itemid = 417, position = Position(33613, 32688, 12) },
-	{ itemid = 417, position = Position(33625, 32691, 12) }
+	{ itemid = 417, position = Position(33625, 32691, 12) },
 }
 
 local function transformArea()
@@ -394,10 +394,10 @@ local ferumbrasAscendantHabitatMushroom = Action()
 function ferumbrasAscendantHabitatMushroom.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 9125 then
 		if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Mushroom) >= 1 then
-			player:say('The lever are stuck, need some time to it can be moveable again.', TALKTYPE_MONSTER_SAY)
+			player:say("The lever are stuck, need some time to it can be moveable again.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
-		Game.createMonster('lovely scorpion', Position(33617, 32684, 12), true, true)
+		Game.createMonster("lovely scorpion", Position(33617, 32684, 12), true, true)
 		addEvent(transformArea, 2 * 1000)
 		item:transform(9126)
 		local basin = Tile(Position(33628, 32685, 12)):getItemById(11114)
@@ -407,7 +407,7 @@ function ferumbrasAscendantHabitatMushroom.onUse(player, item, fromPosition, tar
 		end
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Mushroom, 1)
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats, Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats) + 1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The room transforms into a completely different landscape.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The room transforms into a completely different landscape.")
 		if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats) >= 8 then
 			addEvent(function()
 				resetFerumbrasAscendantHabitats()

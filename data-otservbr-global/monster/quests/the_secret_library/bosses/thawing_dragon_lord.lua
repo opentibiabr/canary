@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -68,7 +68,7 @@ monster.loot = {
 	{ id = 9058, chance = 50000, maxCount = 4 }, -- gold ingot
 	{ id = 7741, chance = 5560 }, -- ice cube
 	{ id = 7377, chance = 5560 }, -- ice cream cone
-	{ id = 14112, chance = 50 } -- bar of gold
+	{ id = 14112, chance = 50 }, -- bar of gold
 }
 
 monster.attacks = {
@@ -76,7 +76,7 @@ monster.attacks = {
 	{ name = "ice crystal bomb", interval = 2000, chance = 30, minDamage = -600, maxDamage = -700, target = true },
 	{ name = "fire wave", interval = 2000, chance = 30, minDamage = -800, maxDamage = -1200, length = 1, spread = 0, target = true },
 	{ name = "speed", interval = 1000, chance = 12, speedChange = -250, radius = 6, effect = CONST_ME_HITBYFIRE, target = false, duration = 60000 },
-	{ name = "firefield", interval = 1000, chance = 10, range = 7, radius = 4, shootEffect = CONST_ANI_FIRE, target = true }
+	{ name = "firefield", interval = 1000, chance = 10, range = 7, radius = 4, shootEffect = CONST_ANI_FIRE, target = true },
 }
 
 monster.defenses = {
@@ -102,11 +102,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -114,13 +113,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

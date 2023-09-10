@@ -8,7 +8,7 @@ function aftershockTransform.onThink(creature)
 		{ x = 32203, y = 31246, z = 14 },
 		{ x = 32205, y = 31251, z = 14 },
 		{ x = 32210, y = 31251, z = 14 },
-		{ x = 32212, y = 31246, z = 14 }
+		{ x = 32212, y = 31246, z = 14 },
 	}
 
 	local monsterTable = {
@@ -16,7 +16,7 @@ function aftershockTransform.onThink(creature)
 		[60] = { fromStage = 1, toStage = 2 },
 		[40] = { fromStage = 2, toStage = 3 },
 		[25] = { fromStage = 3, toStage = 4 },
-		[10] = { fromStage = 4, toStage = 5 }
+		[10] = { fromStage = 4, toStage = 5 },
 	}
 
 	for index, value in pairs(monsterTable) do

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 26000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -63,8 +63,8 @@ monster.summon = {
 		{ name = "Rift Worm", interval = 30, chance = 3000, count = 8 },
 		{ name = "Rift Brood", interval = 30, chance = 3000, count = 8 },
 		{ name = "Rift Scythe", interval = 30, chance = 3000, count = 8 },
-		{ name = "War Golem", interval = 30, chance = 3000, count = 5 }
-	}
+		{ name = "War Golem", interval = 30, chance = 3000, count = 5 },
+	},
 }
 
 monster.voices = {
@@ -87,21 +87,20 @@ monster.voices = {
 	{ text = "Don't you understand? Gods, Yalarahi, Humans we are all doing HIS bidding all the time!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_MANADRAIN, minDamage = 0, maxDamage = -3800, range = 7, radius = 4, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_BIGCLOUDS, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -524, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -1050, length = 8, spread = 3, effect = CONST_ME_FIREATTACK, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -1050, length = 8, spread = 3, effect = CONST_ME_FIREATTACK, target = false },
 }
 
 monster.defenses = {
 	defense = 65,
 	armor = 40,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_HEALING, minDamage = 400, maxDamage = 900, effect = CONST_ME_MAGIC_GREEN, target = false }
+	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_HEALING, minDamage = 400, maxDamage = 900, effect = CONST_ME_MAGIC_GREEN, target = false },
 }
 
 monster.elements = {
@@ -121,7 +120,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

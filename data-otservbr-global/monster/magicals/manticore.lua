@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 113,
 	lookFeet = 20,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1816
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Kilmaresh."
+	Locations = "Kilmaresh.",
 }
 
 monster.health = 6700
@@ -33,10 +33,9 @@ monster.corpse = 31390
 monster.speed = 150
 monster.manaCost = 0
 
-
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -86,14 +85,14 @@ monster.loot = {
 	{ name = "magma coat", chance = 2970 },
 	{ name = "wand of everblazing", chance = 1120 },
 	{ name = "wand of dragonbreath", chance = 740 },
-	{ name = "wand of draconia", chance = 370 }
+	{ name = "wand of draconia", chance = 370 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -500 },
 	{ name = "combat", interval = 2000, chance = 13, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -450, length = 8, spread = 3, effect = CONST_ME_HITBYFIRE, target = false },
 	{ name = "combat", interval = 4000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -300, maxDamage = -400, radius = 3, shootEffect = CONST_ANI_ENVENOMEDARROW, effect = CONST_ME_GREEN_RINGS, target = true },
-	{ name = "combat", interval = 2000, chance = 22, type = COMBAT_FIREDAMAGE, minDamage = -450, maxDamage = -550, range = 4, shootEffect = CONST_ANI_BURSTARROW, target = true }
+	{ name = "combat", interval = 2000, chance = 22, type = COMBAT_FIREDAMAGE, minDamage = -450, maxDamage = -550, range = 4, shootEffect = CONST_ANI_BURSTARROW, target = true },
 }
 
 monster.defenses = {
@@ -119,7 +118,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

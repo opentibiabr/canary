@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 116,
 	lookLegs = 97,
 	lookFeet = 114,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 npcConfig.shop = { -- Sellable items
 	{ itemName = "basket", clientId = 2855, buy = 6 },
@@ -52,7 +52,7 @@ npcConfig.shop = { -- Sellable items
 	{ itemName = "watch", clientId = 2906, buy = 20, sell = 6 },
 	{ itemName = "waterskin of water", clientId = 2901, buy = 40, count = 1 },
 	{ itemName = "wooden hammer", clientId = 3459, sell = 15 },
-	{ itemName = "worm", clientId = 3492, buy = 1 }
+	{ itemName = "worm", clientId = 3492, buy = 1 },
 }
 
 -- On buy npc shop message
@@ -64,8 +64,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -103,67 +102,66 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'documents') then
+	if MsgContains(message, "documents") then
 		if player:getStorageValue(Storage.ThievesGuild.Mission04) == 2 then
 			player:setStorageValue(Storage.ThievesGuild.Mission04, 3)
 			npcHandler:say({
-				'You need some forged documents? But I will only forge something for a friend. ...',
-				'The nomads at the northern oasis killed someone dear to me. Go and kill at least one of them, then we talk about your document.'
+				"You need some forged documents? But I will only forge something for a friend. ...",
+				"The nomads at the northern oasis killed someone dear to me. Go and kill at least one of them, then we talk about your document.",
 			}, npc, creature)
 		elseif player:getStorageValue(Storage.ThievesGuild.Mission04) == 4 then
-			npcHandler:say('The slayer of my enemies is my friend! For a mere 1000 gold I will create the documents you need. Are you interested?', npc, creature)
+			npcHandler:say("The slayer of my enemies is my friend! For a mere 1000 gold I will create the documents you need. Are you interested?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
-	elseif MsgContains(message, 'mission') or MsgContains(message, 'quest') then
+	elseif MsgContains(message, "mission") or MsgContains(message, "quest") then
 		if player:getStorageValue(Storage.QuestChests.StealFromThieves) < 1 then
 			npcHandler:say({
 				"What are you talking about?? I was robbed!!!! Someone catch those filthy thieves!!!!! GUARDS! ...",
-				"<nothing happens>....<SIGH> Like usual, they hide at the slightest sign of trouble! YOU! Want to earn some quick money?"
+				"<nothing happens>....<SIGH> Like usual, they hide at the slightest sign of trouble! YOU! Want to earn some quick money?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif player:getStorageValue(Storage.QuestChests.StealFromThieves) == 1 or player:getStorageValue(Storage.QuestChests.StealFromThieves) == 2 then
-			npcHandler:say('Did you find my stuff?', npc, creature)
+			npcHandler:say("Did you find my stuff?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
-	elseif MsgContains(message, 'book') then
-		npcHandler:say('I see: You want me to add an additional story to this book. A legend about how it brings ill luck to kill a white deer. I could do that, yes. It costs 5000 gold, however. Are you still interested?', npc, creature)
+	elseif MsgContains(message, "book") then
+		npcHandler:say("I see: You want me to add an additional story to this book. A legend about how it brings ill luck to kill a white deer. I could do that, yes. It costs 5000 gold, however. Are you still interested?", npc, creature)
 		npcHandler:setTopic(playerId, 5)
-	elseif MsgContains(message, 'yes') then
+	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:removeMoneyBank(1000) then
 				player:addItem(7866, 1)
 				player:setStorageValue(Storage.ThievesGuild.Mission04, 5)
-				npcHandler:say('And here they are! Now forget where you got them from.', npc, creature)
+				npcHandler:say("And here they are! Now forget where you got them from.", npc, creature)
 			else
-				npcHandler:say('You don\'t have enough money.', npc, creature)
+				npcHandler:say("You don't have enough money.", npc, creature)
 			end
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say({
 				"Of course you do! Go hunt down the thieves and bring back the stuff they have stolen from me. ...",
-				" I saw them running out of town and then to the north. Maybe they hide at the oasis."
+				" I saw them running out of town and then to the north. Maybe they hide at the oasis.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.QuestChests.StealFromThieves, 1)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:removeItem(235, 1) then
-				npcHandler:say('GREAT! If you ever need a job as my personal security guard, let me know. Here is the reward I promised you.', npc, creature)
+				npcHandler:say("GREAT! If you ever need a job as my personal security guard, let me know. Here is the reward I promised you.", npc, creature)
 				player:setStorageValue(Storage.QuestChests.StealFromThieves, 3)
 				player:addItem(3031, 100)
 				player:addItem(3725, 100)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say('Come back when you find my stuff.', npc, creature)
+				npcHandler:say("Come back when you find my stuff.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 5 then
-			if player:getStorageValue(ThreatenedDreams.Mission01[1]) == 1
-					and player:getStorageValue(ThreatenedDreams.Mission01.PoacherChest) == 1 then
+			if player:getStorageValue(ThreatenedDreams.Mission01[1]) == 1 and player:getStorageValue(ThreatenedDreams.Mission01.PoacherChest) == 1 then
 				if player:getItemCount(25235) >= 1 and player:getMoney() >= 5000 then
 					player:removeMoney(5000)
 					npcHandler:say({
 						"Well then. Here, take the book, I added the story. Oh, just a piece of advice: Not to inflame prejudice but poachers are of rather simple disposition. I doubt they are ardent readers. ...",
-						"So if you want to make sure they read this anytime soon, perhaps don't hide the book in a shelf or chest. Make sure to place it somewhere where they will find it easily, like very obviously on a table or something."
+						"So if you want to make sure they read this anytime soon, perhaps don't hide the book in a shelf or chest. Make sure to place it somewhere where they will find it easily, like very obviously on a table or something.",
 					}, npc, creature)
 					player:setStorageValue(ThreatenedDreams.Mission01[1], 2)
 					npcHandler:setTopic(playerId, 0)

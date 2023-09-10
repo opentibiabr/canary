@@ -1,7 +1,7 @@
 local config = {
 	boss = {
 		name = "Goshnar's Megalomania",
-		position = Position(33710, 31634, 14)
+		position = Position(33710, 31634, 14),
 	},
 	requiredLevel = 250,
 
@@ -10,14 +10,14 @@ local config = {
 		{ pos = Position(33677, 31634, 14), teleport = Position(33710, 31639, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33678, 31634, 14), teleport = Position(33710, 31639, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33679, 31634, 14), teleport = Position(33710, 31639, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33680, 31634, 14), teleport = Position(33710, 31639, 14), effect = CONST_ME_TELEPORT }
+		{ pos = Position(33680, 31634, 14), teleport = Position(33710, 31639, 14), effect = CONST_ME_TELEPORT },
 	},
 	specPos = {
 		from = Position(33701, 31626, 14),
-		to = Position(33719, 31642, 14)
+		to = Position(33719, 31642, 14),
 	},
 	exit = Position(33621, 31427, 10),
-	storage = Storage.Quest.U12_40.SoulWar.GoshnarMegalomaniaTimer
+	storage = Storage.Quest.U12_40.SoulWar.GoshnarMegalomaniaTimer,
 }
 
 local lever = BossLever(config)

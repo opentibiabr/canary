@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 114,
 	lookBody = 0,
 	lookLegs = 114,
-	lookFeet = 0
+	lookFeet = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -57,22 +57,22 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'transport') then
-		npcHandler:say('We can bring you to Thais with one of our coaches for 125 gold. Are you interested?', npc, creature)
+	if MsgContains(message, "transport") then
+		npcHandler:say("We can bring you to Thais with one of our coaches for 125 gold. Are you interested?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif table.contains({ 'rent', 'horses' }, message) then
-		npcHandler:say('Do you want to rent a horse for one day at a price of 500 gold?', npc, creature)
+	elseif table.contains({ "rent", "horses" }, message) then
+		npcHandler:say("Do you want to rent a horse for one day at a price of 500 gold?", npc, creature)
 		npcHandler:setTopic(playerId, 2)
-	elseif MsgContains(message, 'yes') then
+	elseif MsgContains(message, "yes") then
 		local player = Player(creature)
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:isPzLocked() then
-				npcHandler:say('First get rid of those blood stains!', npc, creature)
+				npcHandler:say("First get rid of those blood stains!", npc, creature)
 				return true
 			end
 
 			if not player:removeMoneyBank(125) then
-				npcHandler:say('You don\'t have enough money.', npc, creature)
+				npcHandler:say("You don't have enough money.", npc, creature)
 				return true
 			end
 
@@ -80,33 +80,33 @@ local function creatureSayCallback(npc, creature, type, message)
 			local destination = Position(32449, 32226, 7)
 			player:teleportTo(destination)
 			destination:sendMagicEffect(CONST_ME_TELEPORT)
-			npcHandler:say('Have a nice trip!', npc, creature)
+			npcHandler:say("Have a nice trip!", npc, creature)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			if player:getStorageValue(Storage.RentedHorseTimer) >= os.time() then
-				npcHandler:say('You already have a horse.', npc, creature)
+				npcHandler:say("You already have a horse.", npc, creature)
 				return true
 			end
 
 			if not player:removeMoneyBank(500) then
-				npcHandler:say('You do not have enough money to rent a horse!', npc, creature)
+				npcHandler:say("You do not have enough money to rent a horse!", npc, creature)
 				return true
 			end
 
 			local mountId = { 22, 25, 26 }
 			player:addMount(mountId[math.random(#mountId)])
 			player:setStorageValue(Storage.RentedHorseTimer, os.time() + 86400)
-			player:addAchievement('Natural Born Cowboy')
-			npcHandler:say('I\'ll give you one of our experienced ones. Take care! Look out for low hanging branches.', npc, creature)
+			player:addAchievement("Natural Born Cowboy")
+			npcHandler:say("I'll give you one of our experienced ones. Take care! Look out for low hanging branches.", npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
-	elseif MsgContains(message, 'no') and npcHandler:getTopic(playerId) > 0 then
-		npcHandler:say('Then not.', npc, creature)
+	elseif MsgContains(message, "no") and npcHandler:getTopic(playerId) > 0 then
+		npcHandler:say("Then not.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	end
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_GREET, 'Salutations, |PLAYERNAME| I guess you are here for the {horses}.')
+npcHandler:setMessage(MESSAGE_GREET, "Salutations, |PLAYERNAME| I guess you are here for the {horses}.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

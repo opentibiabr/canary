@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 95,
 	lookLegs = 117,
 	lookFeet = 98,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -54,11 +54,12 @@ local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if (MsgContains(message, "mission")) then
+	if MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.Oramond.PeppermoonBell) < 1 then
 			npcHandler:say({
 				"I am afraid my supplies of peppermoon bell powder have gone flat again. Please provide me with the pollen of this flower. ...",
-				"It only blooms underground in a cavern to the northwest. I will need 15 units of pollen. Bring them to me and we shall conduct a séance." }, npc, creature)
+				"It only blooms underground in a cavern to the northwest. I will need 15 units of pollen. Bring them to me and we shall conduct a séance.",
+			}, npc, creature)
 			player:setStorageValue(Storage.Oramond.PeppermoonBell, 1)
 			player:setStorageValue(Storage.Oramond.PeppermoonBellCount, 0)
 			npcHandler:setTopic(playerId, 0)
@@ -70,7 +71,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		end
 	end
-	if (MsgContains(message, "yes")) then
+	if MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:getStorageValue(Storage.Oramond.PeppermoonBellCount) >= 15 then
 				if player:getStorageValue(Storage.DarkTrails.Mission15) == 1 then
@@ -102,7 +103,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Concentrate! ...",
 				"Concentrate! ...",
 				"Concentrate! ...",
-				"Do you feel something?" }, npc, creature)
+				"Do you feel something?",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			npcHandler:say("Yes, take care, the gate is opening! Can you see a bright light?", npc, creature)
@@ -114,7 +116,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:getPosition():sendMagicEffect(CONST_ME_ENERGYHIT)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif (MsgContains(message, "seance")) then
+	elseif MsgContains(message, "seance") then
 		if player:getStorageValue(Storage.DarkTrails.Mission15) == 3 then
 			npcHandler:say("Splendid. Let me make the final preparations... There. Are you ready, too?", npc, creature)
 			npcHandler:setTopic(playerId, 3)

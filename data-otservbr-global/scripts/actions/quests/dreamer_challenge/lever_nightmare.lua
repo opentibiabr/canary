@@ -1,7 +1,7 @@
 local config = {
 	[1] = { uid = 3041, position = Position(32836, 32221, 14), itemId = 7844, storageOutfit = 2 },
 	[2] = { uid = 3042, position = Position(32837, 32229, 14), itemId = 7846, storageOutfit = 3 },
-	[3] = { uid = 3043, position = Position(32833, 32225, 14), itemId = 7845, storageOutfit = 4 }
+	[3] = { uid = 3043, position = Position(32833, 32225, 14), itemId = 7845, storageOutfit = 4 },
 }
 
 local function revertLever(position)
@@ -27,12 +27,12 @@ function dreamerNightmareLever.onUse(player, item, fromPosition, target, toPosit
 				item:transform(2773)
 				addEvent(revertLever, 4 * 1000, toPosition)
 			elseif not diamondItem and player:getStorageValue(Storage.DreamersChallenge.LeverNightmare1) < 1 then
-				player:sendCancelMessage('You need to offer a small diamond.')
+				player:sendCancelMessage("You need to offer a small diamond.")
 			else
-				player:sendCancelMessage('You have already used this lever!')
+				player:sendCancelMessage("You have already used this lever!")
 			end
 		else
-			player:sendCancelMessage('You still don\'t have permission.')
+			player:sendCancelMessage("You still don't have permission.")
 		end
 	elseif item.uid == config[2].uid then
 		if player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) >= config[2].storageOutfit then
@@ -45,12 +45,12 @@ function dreamerNightmareLever.onUse(player, item, fromPosition, target, toPosit
 				item:transform(2773)
 				addEvent(revertLever, 4 * 1000, toPosition)
 			elseif not diamondItem and player:getStorageValue(Storage.DreamersChallenge.LeverNightmare1) < 1 then
-				player:sendCancelMessage('You need to offer a small diamond.')
+				player:sendCancelMessage("You need to offer a small diamond.")
 			else
-				player:sendCancelMessage('You have already used this lever!')
+				player:sendCancelMessage("You have already used this lever!")
 			end
 		else
-			player:sendCancelMessage('You still don\'t have permission.')
+			player:sendCancelMessage("You still don't have permission.")
 		end
 	elseif item.uid == config[3].uid then
 		if player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) >= config[3].storageOutfit then
@@ -63,12 +63,12 @@ function dreamerNightmareLever.onUse(player, item, fromPosition, target, toPosit
 				item:transform(2773)
 				addEvent(revertLever, 4 * 1000, toPosition)
 			elseif not diamondItem and player:getStorageValue(Storage.DreamersChallenge.LeverNightmare3) < 1 then
-				player:sendCancelMessage('You need to offer a small diamond.')
+				player:sendCancelMessage("You need to offer a small diamond.")
 			else
-				player:sendCancelMessage('You have already used this lever!')
+				player:sendCancelMessage("You have already used this lever!")
 			end
 		else
-			player:sendCancelMessage('You still don\'t have permission.')
+			player:sendCancelMessage("You still don't have permission.")
 		end
 	end
 end

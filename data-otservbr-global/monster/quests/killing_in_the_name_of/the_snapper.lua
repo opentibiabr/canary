@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 300
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -69,11 +69,11 @@ monster.loot = {
 	{ id = 3557, chance = 44000 }, -- plate legs
 	{ id = 3357, chance = 39800 }, -- plate armor
 	{ id = 3556, chance = 6000 }, -- crocodile boots
-	{ id = 3370, chance = 400 } -- knight armor
+	{ id = 3370, chance = 400 }, -- knight armor
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -60 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -60 },
 }
 
 monster.defenses = {
@@ -99,7 +99,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

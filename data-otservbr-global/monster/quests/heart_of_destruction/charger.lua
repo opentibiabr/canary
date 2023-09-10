@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 1600
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 15
+	chance = 15,
 }
 
 monster.strategiesTarget = {
@@ -49,11 +49,11 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.events = {
-	"ChargerSpawn"
+	"ChargerSpawn",
 }
 
 monster.light = {
@@ -66,20 +66,19 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -300 },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -200, maxDamage = -450, range = 4, radius = 2, shootEffect = CONST_ANI_ENERGYBALL, effect = CONST_ME_ENERGYHIT, target = true },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -200, maxDamage = -350, range = 5, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = true },
 	-- energy damage
-	{ name = "condition", type = CONDITION_ENERGY, interval = 2000, chance = 15, minDamage = -400, maxDamage = -800, radius = 5, effect = CONST_ME_BLOCKHIT, target = false }
+	{ name = "condition", type = CONDITION_ENERGY, interval = 2000, chance = 15, minDamage = -400, maxDamage = -800, radius = 5, effect = CONST_ME_BLOCKHIT, target = false },
 }
 
 monster.defenses = {
 	defense = 50,
-	armor = 50
+	armor = 50,
 	--	mitigation = ???,
 }
 
@@ -100,7 +99,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

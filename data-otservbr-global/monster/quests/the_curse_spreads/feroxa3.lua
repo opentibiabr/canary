@@ -11,7 +11,7 @@ monster.outfit = {
 	lookLegs = 77,
 	lookFeet = 57,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 130000
@@ -23,7 +23,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 2
+	chance = 2,
 }
 
 monster.strategiesTarget = {
@@ -50,16 +50,16 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.events = {
-	"feroxaDeath"
+	"feroxaDeath",
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -67,21 +67,20 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -1400, maxDamage = -1800 },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -700, maxDamage = -1250, radius = 6, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_MANADRAIN, minDamage = -700, maxDamage = -1250, length = 9, spread = 1, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -700, maxDamage = -1250, range = 6, shootEffect = CONST_ANI_ARROW, effect = CONST_ME_EXPLOSIONAREA, target = true }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -700, maxDamage = -1250, range = 6, shootEffect = CONST_ANI_ARROW, effect = CONST_ME_EXPLOSIONAREA, target = true },
 }
 
 monster.defenses = {
 	defense = 55,
 	armor = 50,
 	{ name = "speed", interval = 2000, chance = 12, speedChange = 1250, effect = CONST_ME_MAGIC_RED, target = false, duration = 10000 },
-	{ name = "feroxa summon", interval = 2000, chance = 20, target = false }
+	{ name = "feroxa summon", interval = 2000, chance = 20, target = false },
 }
 
 monster.elements = {
@@ -94,14 +93,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 30 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 30 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 30 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 30 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

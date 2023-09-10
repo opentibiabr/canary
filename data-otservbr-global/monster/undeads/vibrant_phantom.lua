@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 88,
 	lookFeet = 91,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1929
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 100,
 	Stars = 5,
 	Occurrence = 0,
-	Locations = "Furious Crater."
+	Locations = "Furious Crater.",
 }
 
 monster.health = 27000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -129,7 +129,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

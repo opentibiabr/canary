@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1818
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Kilmaresh Central Steppe, Kilmaresh Southern Steppe, Green Belt."
+	Locations = "Kilmaresh Central Steppe, Kilmaresh Southern Steppe, Green Belt.",
 }
 
 monster.health = 8300
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -88,21 +88,21 @@ monster.loot = {
 	{ name = "wood cape", chance = 1800 },
 	{ name = "scared frog", chance = 2100 },
 	{ name = "sacred tree amulet", chance = 2500 },
-	{ name = "small tortoise", chance = 1800 }
+	{ name = "small tortoise", chance = 1800 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -350, condition = { type = CONDITION_POISON, totalDamage = 19, interval = 4000 } },
 	{ name = "wave t", interval = 2000, chance = 10, minDamage = -250, maxDamage = -380, target = false },
 	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_EARTHDAMAGE, minDamage = -450, maxDamage = -550, range = 3, radius = 1, shootEffect = CONST_ANI_EARTH, effect = CONST_ME_EXPLOSIONHIT, target = true },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -210, maxDamage = -300, radius = 5, effect = CONST_ME_GROUNDSHAKER, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -210, maxDamage = -300, radius = 5, effect = CONST_ME_GROUNDSHAKER, target = false },
 }
 
 monster.defenses = {
 	defense = 84,
 	armor = 84,
 	mitigation = 2.60,
-	{ name = "speed", interval = 2000, chance = 5, speedChange = 500, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 5, speedChange = 500, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -122,7 +122,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

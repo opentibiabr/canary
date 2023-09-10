@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 18
@@ -30,7 +30,7 @@ monster.Bestiary = {
 		Venore Swamp Troll cave, Ghostship between Venore and Darashia, Triangle Tower, Dark Cathedral, \z
 		Ankrahmun tombs, Isle of the Kings, Treasure Island, Nargor Undead Cave, Helheim, Lion's Rock, \z
 		The Witches' Cliff (only accessible during a quest) and a cave northeast of Ab'Dendriel. \z
-		Also found behind a wall in both Rookgaard and Paradox Tower, although they cannot be reached."
+		Also found behind a wall in both Rookgaard and Paradox Tower, although they cannot be reached.",
 }
 
 monster.health = 100
@@ -42,7 +42,7 @@ monster.manaCost = 450
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -91,19 +91,19 @@ monster.loot = {
 	{ name = "rotten piece of cloth", chance = 14470 },
 	{ name = "ghoul snack", chance = 5130 },
 	{ name = "pile of grave earth", chance = 950 },
-	{ id = 23986, chance = 1000 } -- heavy old tome
+	{ id = 23986, chance = 1000 }, -- heavy old tome
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -15, maxDamage = -27, range = 1, radius = 1, effect = CONST_ME_SMALLCLOUDS, target = true }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -15, maxDamage = -27, range = 1, radius = 1, effect = CONST_ME_SMALLCLOUDS, target = true },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 8,
 	mitigation = 0.43,
-	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 9, maxDamage = 15, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 9, maxDamage = 15, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -123,7 +123,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

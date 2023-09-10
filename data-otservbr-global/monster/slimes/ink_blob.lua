@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1658
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Secret Library (earth, fire and ice sections)"
+	Locations = "Secret Library (earth, fire and ice sections)",
 }
 
 monster.health = 9500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -90,7 +90,7 @@ monster.loot = {
 	{ name = "terra legs", chance = 650, maxCount = 4 },
 	{ name = "terra mantle", chance = 550, maxCount = 4 },
 	{ name = "clay lump", chance = 1200, maxCount = 4 },
-	{ name = "terra amulet", chance = 1200, maxCount = 4 }
+	{ name = "terra amulet", chance = 1200, maxCount = 4 },
 }
 
 monster.attacks = {
@@ -98,14 +98,14 @@ monster.attacks = {
 	-- poison
 	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 13, minDamage = -400, maxDamage = -580, radius = 4, effect = CONST_ME_POISONAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_EARTHDAMAGE, minDamage = -285, maxDamage = -480, radius = 3, shootEffect = CONST_ANI_ENVENOMEDARROW, effect = CONST_ME_GREEN_RINGS, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -260, maxDamage = -505, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = true }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -260, maxDamage = -505, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = true },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 70,
 	mitigation = 2.02,
-	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 20, maxDamage = 30, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 20, maxDamage = 30, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -125,7 +125,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

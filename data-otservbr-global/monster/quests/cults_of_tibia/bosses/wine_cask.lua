@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a wine cask"
 monster.experience = 0
 monster.outfit = {
-	lookTypeEx = 2521
+	lookTypeEx = 2521,
 }
 
 monster.health = 30000
@@ -15,12 +15,12 @@ monster.speed = 0
 monster.manaCost = 0
 
 monster.events = {
-	"Splash"
+	"Splash",
 }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -51,11 +51,11 @@ monster.flags = {
 }
 
 monster.events = {
-	"Splash"
+	"Splash",
 }
 
 monster.events = {
-	"Splash"
+	"Splash",
 }
 
 monster.light = {
@@ -68,8 +68,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.defenses = {
 	defense = 35,
@@ -94,7 +93,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 7,
 	lookLegs = 12,
 	lookFeet = 19,
-	lookAddons = 2
+	lookAddons = 2,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -645,7 +645,7 @@ npcConfig.shop = {
 	{ itemName = "yirkas' egg", clientId = 34102, sell = 280 },
 	{ itemName = "young lich worm", clientId = 31590, sell = 25000 },
 	{ itemName = "zaogun flag", clientId = 10413, sell = 600 },
-	{ itemName = "zaogun shoulderplates", clientId = 10414, sell = 150 }
+	{ itemName = "zaogun shoulderplates", clientId = 10414, sell = 150 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -656,8 +656,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)

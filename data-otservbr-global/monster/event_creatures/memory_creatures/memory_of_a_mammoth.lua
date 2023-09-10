@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 3850
 monster.maxHealth = 3850
@@ -23,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -70,11 +69,11 @@ monster.loot = {
 	{ name = "thick fur", chance = 7280 },
 	{ id = 37531, chance = 5155 }, -- candy floss
 	{ name = "bottle of champagne", chance = 7280 },
-	{ name = "mammoth tusk", chance = 7500, maxCount = 2 }
+	{ name = "mammoth tusk", chance = 7500, maxCount = 2 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110 },
 }
 
 monster.defenses = {
@@ -100,7 +99,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

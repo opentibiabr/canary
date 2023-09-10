@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -26,12 +26,12 @@ monster.speed = 105
 monster.manaCost = 0
 
 monster.events = {
-	"PreceptorLazareDeath"
+	"PreceptorLazareDeath",
 }
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -93,21 +93,21 @@ monster.loot = {
 	{ name = "heavy mace", chance = 600 },
 	{ name = "mastermind shield", chance = 500 },
 	{ name = "falcon rod", chance = 200 },
-	{ name = "falcon greaves", chance = 110 }
+	{ name = "falcon greaves", chance = 110 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -700 },
 	{ name = "combat", interval = 3000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -300, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_POWERBOLT, target = true },
 	{ name = "combat", interval = 2400, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -500, range = 7, shootEffect = CONST_ANI_ENERGYBALL, target = true },
-	{ name = "combat", interval = 2700, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -500, maxDamage = -600, range = 7, radius = 4, effect = CONST_ME_HOLYDAMAGE, target = false }
+	{ name = "combat", interval = 2700, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -500, maxDamage = -600, range = 7, radius = 4, effect = CONST_ME_HOLYDAMAGE, target = false },
 }
 
 monster.defenses = {
 	defense = 60,
 	armor = 86,
 	--	mitigation = ???,
-	{ name = "combat", interval = 1500, chance = 20, type = COMBAT_HEALING, minDamage = 200, maxDamage = 800, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 1500, chance = 20, type = COMBAT_HEALING, minDamage = 200, maxDamage = 800, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -127,11 +127,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -139,13 +138,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

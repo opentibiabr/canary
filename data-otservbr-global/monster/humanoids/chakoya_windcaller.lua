@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 329
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Inukaya, Chyllfroest, Chakoya Iceberg."
+	Locations = "Inukaya, Chyllfroest, Chakoya Iceberg.",
 }
 
 monster.health = 84
@@ -35,7 +35,7 @@ monster.manaCost = 305
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -84,7 +84,7 @@ monster.loot = {
 	{ name = "northern pike", chance = 40 },
 	{ name = "rainbow trout", chance = 40 },
 	{ name = "green perch", chance = 110 },
-	{ name = "fireproof horn", chance = 410 }
+	{ name = "fireproof horn", chance = 410 },
 }
 
 monster.attacks = {
@@ -92,14 +92,14 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -16, maxDamage = -32, range = 7, shootEffect = CONST_ANI_ICE, target = false },
 	-- freeze
 	{ name = "condition", type = CONDITION_FREEZING, interval = 2000, chance = 10, minDamage = -130, maxDamage = -160, radius = 3, effect = CONST_ME_ICEAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -9, maxDamage = -30, length = 5, spread = 2, effect = CONST_ME_ICEAREA, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -9, maxDamage = -30, length = 5, spread = 2, effect = CONST_ME_ICEAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 10,
 	armor = 7,
 	mitigation = 0.38,
-	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -119,7 +119,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

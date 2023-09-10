@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1109
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 2,
-	Locations = "Second floor Glooth Underground Factory, east side during the Oramond Minotaurs raid."
+	Locations = "Second floor Glooth Underground Factory, east side during the Oramond Minotaurs raid.",
 }
 
 monster.health = 1850
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -79,11 +79,11 @@ monster.loot = {
 	{ id = 11472, chance = 8330, maxCount = 2 }, -- minotaur horn
 	{ id = 11482, chance = 5040 }, -- piece of warrior armor
 	{ id = 5878, chance = 1000 }, -- minotaur leather
-	{ id = 7401, chance = 90 } -- minotaur trophy
+	{ id = 7401, chance = 90 }, -- minotaur trophy
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -350 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -350 },
 }
 
 monster.defenses = {
@@ -109,7 +109,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

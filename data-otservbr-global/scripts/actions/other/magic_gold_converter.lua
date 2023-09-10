@@ -5,8 +5,8 @@ local data = {
 	},
 	coins = {
 		[ITEM_GOLD_COIN] = ITEM_PLATINUM_COIN,
-		[ITEM_PLATINUM_COIN] = ITEM_CRYSTAL_COIN
-	}
+		[ITEM_PLATINUM_COIN] = ITEM_CRYSTAL_COIN,
+	},
 }
 
 local function finditem(self, cylinder, conv)

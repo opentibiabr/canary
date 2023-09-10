@@ -45,13 +45,14 @@ public:
 
 	bool hasTraceableContext() const {
 		return std::set<std::string> {
-			"Game::checkLight",
-			"Game::checkCreatures",
-			"Game::checkImbuements",
-			"Game::updateForgeableMonsters",
-			"Game::createFiendishMonsters",
-			"Game::createInfluencedMonsters",
-			"GlobalEvents::think",
+			"Game::checkCreatures"
+			"Game::checkImbuements"
+			"Game::checkLight"
+			"Game::createFiendishMonsters"
+			"Game::createInfluencedMonsters"
+			"Game::updateForgeableMonsters"
+			"GlobalEvents::think"
+			"OutputMessagePool::sendAll"
 			"Webhook::run"
 		}
 			.contains(context);

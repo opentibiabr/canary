@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 100
 monster.maxHealth = 100
@@ -23,7 +22,7 @@ monster.manaCost = 330
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -71,11 +70,11 @@ monster.loot = {
 	{ id = 3274, chance = 4000 }, -- axe
 	{ id = 11472, chance = 2000, maxCount = 2 }, -- minotaur horn
 	{ id = 5878, chance = 980 }, -- minotaur leather
-	{ id = 3457, chance = 310 } -- shovel
+	{ id = 3457, chance = 310 }, -- shovel
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 },
 }
 
 monster.defenses = {
@@ -101,7 +100,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -5,7 +5,7 @@ function ungreezKill.onKill(creature, target)
 		return true
 	end
 
-	if targetMonster:getName():lower() ~= 'ungreez' then
+	if targetMonster:getName():lower() ~= "ungreez" then
 		return true
 	end
 

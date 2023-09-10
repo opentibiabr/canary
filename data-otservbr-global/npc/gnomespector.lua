@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 59,
 	lookLegs = 59,
 	lookFeet = 58,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -66,7 +66,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.BigfootBurden.QuestLine) == 6 then
 			npcHandler:say({
 				"Your examination is quite easy. Just step through the green crystal {apparatus} in the south! We will examine you with what we call g-rays. Where g stands for gnome of course ...",
-				"Afterwards walk up to Gnomedix for your ear examination."
+				"Afterwards walk up to Gnomedix for your ear examination.",
 			}, npc, creature)
 			player:setStorageValue(Storage.BigfootBurden.QuestLine, 8)
 			npcHandler:setTopic(playerId, 1)
@@ -78,7 +78,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_GREET, 'Hello fearless {recruit}.')
+npcHandler:setMessage(MESSAGE_GREET, "Hello fearless {recruit}.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

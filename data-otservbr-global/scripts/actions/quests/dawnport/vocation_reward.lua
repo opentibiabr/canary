@@ -15,7 +15,7 @@ local reward = {
 	commonItems = {
 		{ id = 16277, amount = 1 }, -- Adventurer's stone
 		-- Parchment
-		{ id = 2819, amount = 1, text = adventurersGuildText }
+		{ id = 2819, amount = 1, text = adventurersGuildText },
 	},
 	vocationItems = {
 		-- Sorcerer
@@ -25,7 +25,7 @@ local reward = {
 			{ id = 3559, amount = 1 }, -- Leather legs
 			{ id = 3552, amount = 1 }, -- Leather boots
 			{ id = 3074, amount = 1 }, -- Wand of vortex
-			{ id = 3059, amount = 1 } -- Spellbook
+			{ id = 3059, amount = 1 }, -- Spellbook
 		},
 		-- Druid
 		[14026] = {
@@ -34,7 +34,7 @@ local reward = {
 			{ id = 3559, amount = 1 }, -- Leather legs
 			{ id = 3552, amount = 1 }, -- Leather boots
 			{ id = 3066, amount = 1 }, -- Snakebite rod
-			{ id = 3059, amount = 1 } -- Spellbook
+			{ id = 3059, amount = 1 }, -- Spellbook
 		},
 		-- Paladin
 		[14027] = {
@@ -45,7 +45,7 @@ local reward = {
 			{ id = 3350, amount = 1 }, -- Bow
 			{ id = 3277, amount = 1 }, -- Spear
 			{ id = 35562, amount = 1 }, -- Quiver
-			{ id = 3447, amount = 100 } -- Arrows
+			{ id = 3447, amount = 100 }, -- Arrows
 		},
 		-- Knight
 		[14028] = {
@@ -56,9 +56,9 @@ local reward = {
 			{ id = 7774, amount = 1 }, -- Jagged sword
 			{ id = 17824, amount = 1 }, -- Swampling club
 			{ id = 7773, amount = 1 }, -- steel axe
-			{ id = 3409, amount = 1 } -- Steel shield
-		}
-	}
+			{ id = 3409, amount = 1 }, -- Steel shield
+		},
+	},
 }
 
 local vocationReward = Action()
@@ -84,19 +84,12 @@ function vocationReward.onUse(player, item, fromPosition, itemEx, toPosition)
 	end
 	-- Check if enough weight capacity
 	if player:getFreeCapacity() < rewardsWeight then
-		player:sendTextMessage(
-			MESSAGE_EVENT_ADVANCE,
-			"You have found a " .. getItemName(reward.container) ..
-			". Weighing " .. (rewardsWeight / 100) .. " oz it is too heavy."
-		)
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a " .. getItemName(reward.container) .. ". Weighing " .. (rewardsWeight / 100) .. " oz it is too heavy.")
 		return true
 	end
 	-- Check if enough free slots
 	if player:getFreeBackpackSlots() < 1 then
-		player:sendTextMessage(
-			MESSAGE_EVENT_ADVANCE,
-			"You have found a " .. getItemName(reward.container) .. ". There is no room."
-		)
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a " .. getItemName(reward.container) .. ". There is no room.")
 		return true
 	end
 	-- Create reward container

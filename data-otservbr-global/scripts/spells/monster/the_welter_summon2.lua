@@ -11,7 +11,7 @@ function spell.onCastSpell(creature, var)
 			end
 		end
 	end
-	if (check < 10) then
+	if check < 10 then
 		creature:getPosition():sendMagicEffect(CONST_ME_GREEN_RINGS)
 		Game.createMonster("Egg", creature:getPosition(), false, true)
 	else

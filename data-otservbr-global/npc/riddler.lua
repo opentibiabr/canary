@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 48
+	lookType = 48,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -53,19 +53,26 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	local storage = Storage.Quest.U7_24.TheParadoxTower
 	if MsgContains(message, "test") then
 		npcHandler:say("Death awaits those who fail the test of the three seals! Do you really want me to test you?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
-		npcHandler:say("FOOL! Now you're doomed! But well ... \z
+		npcHandler:say(
+			"FOOL! Now you're doomed! But well ... \z
 			So be it! Let's start out with the Seal of Knowledge and the first question: \z
-			What name did the necromant king choose for himself?", npc, creature)
+			What name did the necromant king choose for himself?",
+			npc,
+			creature
+		)
 		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, "goshnar") and npcHandler:getTopic(playerId) == 2 then
-		npcHandler:say("HOHO! You have learned your lesson well. \z
-			Question number two then: Who or what is the feared Hugo?", npc, creature)
+		npcHandler:say(
+			"HOHO! You have learned your lesson well. \z
+			Question number two then: Who or what is the feared Hugo?",
+			npc,
+			creature
+		)
 		npcHandler:setTopic(playerId, 3)
 	elseif MsgContains(message, "demonbunny") and npcHandler:getTopic(playerId) == 3 then
 		if player:getStorageValue(storage.TheFearedHugo) == 4 then
@@ -85,8 +92,12 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say("That was an easy one. Let's try the second: If you name it, you break it.", npc, creature)
 		npcHandler:setTopic(playerId, 8)
 	elseif MsgContains(message, "silence") and npcHandler:getTopic(playerId) == 8 then
-		npcHandler:say("Hm. I bet you think you're smart. All right. \z
-			How about this: What does everybody want to become but nobody to be?", npc, creature)
+		npcHandler:say(
+			"Hm. I bet you think you're smart. All right. \z
+			How about this: What does everybody want to become but nobody to be?",
+			npc,
+			creature
+		)
 		npcHandler:setTopic(playerId, 9)
 	elseif MsgContains(message, "old") and npcHandler:getTopic(playerId) == 9 then
 		npcHandler:say("ARGH! You did it again! Well all right. Do you wish to break the Seal of Madness?", npc, creature)
@@ -98,12 +109,20 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(storage.FavoriteColour) < 1 then
 			player:setStorageValue(storage.FavoriteColour, 1)
 		end
-		npcHandler:say("UHM UH OH ... How could you guess that? Are you mad??? All right. \z
-			Penultimate question: What is the opposite?", npc, creature)
+		npcHandler:say(
+			"UHM UH OH ... How could you guess that? Are you mad??? All right. \z
+			Penultimate question: What is the opposite?",
+			npc,
+			creature
+		)
 		npcHandler:setTopic(playerId, 12)
 	elseif MsgContains(message, "none") and npcHandler:getTopic(playerId) == 12 then
-		npcHandler:say("NO! NO! NO! That can't be true. You're not only mad, you are a complete idiot! \z
-			Ah well. Here is the last question: What is 1 plus 1?", npc, creature)
+		npcHandler:say(
+			"NO! NO! NO! That can't be true. You're not only mad, you are a complete idiot! \z
+			Ah well. Here is the last question: What is 1 plus 1?",
+			npc,
+			creature
+		)
 		npcHandler:setTopic(playerId, 13)
 	elseif MsgContains(message, "1") then
 		if npcHandler:getTopic(playerId) == 13 then

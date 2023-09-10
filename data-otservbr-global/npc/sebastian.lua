@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 52,
 	lookLegs = 109,
 	lookFeet = 115,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -54,13 +54,13 @@ local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if (MsgContains(message, "nargor")) then
+	if MsgContains(message, "nargor") then
 		if player:getStorageValue(Storage.TheShatteredIsles.AccessToNargor) == 1 then
 			npcHandler:say("Do you want to sail Nargor for 50 gold coins?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
-	elseif (MsgContains(message, "yes")) then
-		if (npcHandler:getTopic(playerId) == 1) then
+	elseif MsgContains(message, "yes") then
+		if npcHandler:getTopic(playerId) == 1 then
 			if player:getStorageValue(Storage.TheShatteredIsles.AccessToNargor) == 1 then
 				if player:removeMoneyBank(50) then
 					npcHandler:say("Set the sails!", npc, creature)
@@ -76,54 +76,42 @@ end
 
 -- Travel
 local function addTravelKeyword(keyword, cost, destination)
-	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say,
-		{
-			npcHandler = npcHandler,
-			text = 'Do you want to sail ' .. keyword:titleCase() .. ' for |TRAVELCOST|?',
-			cost = cost,
-			discount = 'postman'
-		}
-	)
-	travelKeyword:addChildKeyword({ 'yes' }, StdModule.travel,
-		{
-			npcHandler = npcHandler,
-			premium = false,
-			cost = cost,
-			discount = 'postman',
-			destination = destination
-		}
-	)
-	travelKeyword:addChildKeyword({ 'no' }, StdModule.say,
-		{
-			npcHandler = npcHandler,
-			text = 'We would like to serve you some time.',
-			reset = true
-		}
-	)
+	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, {
+		npcHandler = npcHandler,
+		text = "Do you want to sail " .. keyword:titleCase() .. " for |TRAVELCOST|?",
+		cost = cost,
+		discount = "postman",
+	})
+	travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, {
+		npcHandler = npcHandler,
+		premium = false,
+		cost = cost,
+		discount = "postman",
+		destination = destination,
+	})
+	travelKeyword:addChildKeyword({ "no" }, StdModule.say, {
+		npcHandler = npcHandler,
+		text = "We would like to serve you some time.",
+		reset = true,
+	})
 end
 
-addTravelKeyword('liberty bay', 50, Position(32316, 32702, 7))
-addTravelKeyword('nargor', 50, Position(32025, 32812, 7))
+addTravelKeyword("liberty bay", 50, Position(32316, 32702, 7))
+addTravelKeyword("nargor", 50, Position(32025, 32812, 7))
 
 -- Basic
-keywordHandler:addKeyword({ 'passage' }, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = 'Where do you want to go? To {Liberty bay} or to {Nargor}?'
-	}
-)
-keywordHandler:addKeyword({ 'job' }, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = 'I am the captain of this ship.'
-	}
-)
-keywordHandler:addKeyword({ 'captain' }, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = 'I am the captain of this ship.'
-	}
-)
+keywordHandler:addKeyword({ "passage" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Where do you want to go? To {Liberty bay} or to {Nargor}?",
+})
+keywordHandler:addKeyword({ "job" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "I am the captain of this ship.",
+})
+keywordHandler:addKeyword({ "captain" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "I am the captain of this ship.",
+})
 
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, daring adventurer. If you need a {passage}, let me know.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")

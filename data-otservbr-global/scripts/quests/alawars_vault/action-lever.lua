@@ -2,7 +2,7 @@ local wallsPositions = {
 	{ x = 32186, y = 31626, z = 8 },
 	{ x = 32187, y = 31626, z = 8 },
 	{ x = 32188, y = 31626, z = 8 },
-	{ x = 32189, y = 31626, z = 8 }
+	{ x = 32189, y = 31626, z = 8 },
 }
 
 local lever = Action()

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 114,
 	lookLegs = 114,
 	lookFeet = 114,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -115,7 +115,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 npcHandler:setMessage(MESSAGE_GREET, "<nods>")
-npcHandler:setMessage(MESSAGE_FAREWELL, 'Good bye!') -- Need revision
+npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye!") -- Need revision
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 

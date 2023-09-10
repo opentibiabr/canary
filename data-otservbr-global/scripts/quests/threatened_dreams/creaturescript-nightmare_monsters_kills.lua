@@ -1,7 +1,7 @@
 local nightmareMonsters = {
 	"enfeebled silencer",
 	"weakened frazzlemaw",
-	"kroazur"
+	"kroazur",
 }
 local ThreatenedDreams = Storage.Quest.U11_40.ThreatenedDreams
 

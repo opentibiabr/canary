@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 10,
 	lookFeet = 85,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 7150
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 0,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -65,18 +65,17 @@ monster.voices = {
 	{ text = "Feel the wrath of father chyll!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -455 },
 	{ name = "melee", interval = 3000, chance = 50, minDamage = -500, maxDamage = -800 },
-	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -170, maxDamage = -200, range = 7, shootEffect = CONST_ANI_SNOWBALL, target = false }
+	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -170, maxDamage = -200, range = 7, shootEffect = CONST_ANI_SNOWBALL, target = false },
 }
 
 monster.defenses = {
 	defense = 52,
-	armor = 51
+	armor = 51,
 	--	mitigation = ???,
 }
 
@@ -97,7 +96,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

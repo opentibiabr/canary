@@ -2,52 +2,52 @@ local goldenOutfitDisplay = Action()
 
 function goldenOutfitDisplay.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if player:getStorageValue(Storage.OutfitQuest.GoldenOutfit) == 3 then
-		if (item:getId() == 31509) then --direita
+		if item:getId() == 31509 then --direita
 			item:transform(31500)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31500) then
+		elseif item:getId() == 31500 then
 			item:transform(31505)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31505) then
+		elseif item:getId() == 31505 then
 			item:transform(31513)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31513) then
+		elseif item:getId() == 31513 then
 			item:transform(31509)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31510) then --baixo
+		elseif item:getId() == 31510 then --baixo
 			item:transform(31502)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31502) then
+		elseif item:getId() == 31502 then
 			item:transform(31506)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31506) then
+		elseif item:getId() == 31506 then
 			item:transform(31514)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31514) then
+		elseif item:getId() == 31514 then
 			item:transform(31510)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31511) then --esquerda
+		elseif item:getId() == 31511 then --esquerda
 			item:transform(31503)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31503) then
+		elseif item:getId() == 31503 then
 			item:transform(31507)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31507) then
+		elseif item:getId() == 31507 then
 			item:transform(31515)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31515) then
+		elseif item:getId() == 31515 then
 			item:transform(31511)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31512) then --cima
+		elseif item:getId() == 31512 then --cima
 			item:transform(31504)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31504) then
+		elseif item:getId() == 31504 then
 			item:transform(31508)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31508) then
+		elseif item:getId() == 31508 then
 			item:transform(31516)
 			item:getPosition():sendMagicEffect(171)
-		elseif (item:getId() == 31516) then
+		elseif item:getId() == 31516 then
 			item:transform(31512)
 			item:getPosition():sendMagicEffect(171)
 		end

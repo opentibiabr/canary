@@ -2,7 +2,7 @@ local vocation = {
 	VOCATION.BASE_ID.SORCERER,
 	VOCATION.BASE_ID.DRUID,
 	VOCATION.BASE_ID.PALADIN,
-	VOCATION.BASE_ID.KNIGHT
+	VOCATION.BASE_ID.KNIGHT,
 }
 
 local area = {
@@ -73,7 +73,7 @@ local function delayedCastSpell(cid, var)
 	if creature:getHealth() >= 1 then
 		local master = creature:getMaster()
 		master:addHealth(math.random(20000, 30000), true, true)
-		Game.createMonster('demon', creature:getPosition(), true, true)
+		Game.createMonster("demon", creature:getPosition(), true, true)
 		return combat:execute(creature, positionToVariant(creature:getPosition()))
 	end
 	return

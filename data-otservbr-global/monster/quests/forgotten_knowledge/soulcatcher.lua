@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a soulcatcher"
 monster.experience = 320
 monster.outfit = {
-	lookTypeEx = 11053
+	lookTypeEx = 11053,
 }
 
 monster.health = 50000
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -44,7 +44,7 @@ monster.flags = {
 }
 
 monster.events = {
-	"SoulcatcherSummon"
+	"SoulcatcherSummon",
 }
 
 monster.light = {
@@ -57,11 +57,10 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -400, radius = 3, effect = CONST_ME_MAGIC_RED, target = false }
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -400, radius = 3, effect = CONST_ME_MAGIC_RED, target = false },
 }
 
 monster.defenses = {
@@ -69,7 +68,7 @@ monster.defenses = {
 	armor = 50,
 	mitigation = 0.51,
 	{ name = "soulcatcher summon", interval = 2000, chance = 10, target = false },
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 100, maxDamage = 145, effect = CONST_ME_HITBYFIRE, target = false }
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 100, maxDamage = 145, effect = CONST_ME_HITBYFIRE, target = false },
 }
 
 monster.elements = {
@@ -89,7 +88,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

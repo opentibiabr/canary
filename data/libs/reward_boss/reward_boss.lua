@@ -53,13 +53,13 @@ function InsertItems(buffer, info, parent, items)
 end
 
 function InsertRewardItems(playerGuid, timestamp, itemList)
-	local maxSidQueryResult = db.query('select max(`sid`) as max_sid from `player_rewards` where player_id = ' .. playerGuid .. ';')
-	local bagSid = (Result.getNumber(maxSidQueryResult, 'max_sid') or 0) + 1;
-	local nextSid = bagSid + 1;
-	local buffer = { 'INSERT INTO `player_rewards` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES' }
+	local maxSidQueryResult = db.query("select max(`sid`) as max_sid from `player_rewards` where player_id = " .. playerGuid .. ";")
+	local bagSid = (Result.getNumber(maxSidQueryResult, "max_sid") or 0) + 1
+	local nextSid = bagSid + 1
+	local buffer = { "INSERT INTO `player_rewards` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES" }
 	local info = {
 		playerGuid = playerGuid,
-		running = nextSid
+		running = nextSid,
 	}
 	local bag = Game.createItem(ITEM_REWARD_CONTAINER)
 	bag:setAttribute(ITEM_ATTRIBUTE_DATE, timestamp)
@@ -71,7 +71,7 @@ function InsertRewardItems(playerGuid, timestamp, itemList)
 	local total = InsertItems(buffer, info, bagSid, { bag })
 
 	if total ~= 0 then
-		local insertItemsQuery = table.concat(buffer):sub(1, -2) .. ";";
+		local insertItemsQuery = table.concat(buffer):sub(1, -2) .. ";"
 		db.query(insertItemsQuery)
 	end
 end

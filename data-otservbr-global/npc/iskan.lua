@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 116,
 	lookLegs = 38,
 	lookFeet = 19,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -84,7 +84,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getStorageValue(Storage.TheIceIslands.Questline) == 1 then
 				npcHandler:say({
 					"Well, one of the boys has run away. I think he got the scent of some beast. He's young and inexperienced so I can't blame the cub ...",
-					"I would like you to see after him. He should be somewhere north west of the town. He is probably marking his territory so you should be able to find his trace. Are you willing to do that?"
+					"I would like you to see after him. He should be somewhere north west of the town. He is probably marking his territory so you should be able to find his trace. Are you willing to do that?",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 1)
 			elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 2 then
@@ -111,7 +111,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say({
 				"That's surprising. Take a piece of meat. If you find the boy, feed it to him. That will give him enough strength and incentive to return to his pack ...",
-				"Talk to him by calling his name 'Sniffler' and tell him you got meat for him. After he has eaten the meat, return here to talk to me about your mission."
+				"Talk to him by calling his name 'Sniffler' and tell him you got meat for him. After he has eaten the meat, return here to talk to me about your mission.",
 			}, npc, creature)
 			player:setStorageValue(Storage.TheIceIslands.Questline, 1)
 			player:setStorageValue(Storage.TheIceIslands.Mission01, 1) -- Questlog The Ice Islands Quest, Befriending the Musher
@@ -157,7 +157,8 @@ keywordHandler:addKeyword({ "bonelords" }, StdModule.say, {
 	text = {
 		"I'll tell you something. I have seen such a creature once, far on the ice to the east. It was the coldest winter I can remember and the chakoyas were roaming the ice almost everywhere. ...",
 		"To evade them, me and the boys had to walk a long way to a spot where the ice was treacherous and thin. ...",
-		"And there I've seen such a creature. The boys went almost mad and I turned my sled immediately. No idea how we made it home. True story." }
+		"And there I've seen such a creature. The boys went almost mad and I turned my sled immediately. No idea how we made it home. True story.",
+	},
 })
 keywordHandler:addKeyword({ "edron" }, StdModule.say, { npcHandler = npcHandler, text = "Me and the boys care only about our own territory." })
 keywordHandler:addAliasKeyword({ "thais" })

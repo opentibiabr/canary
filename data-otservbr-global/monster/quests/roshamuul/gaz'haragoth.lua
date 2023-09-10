@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 350000
@@ -22,12 +22,12 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 10000,
-	chance = 20
+	chance = 20,
 }
 
 monster.bosstiary = {
 	bossRaceId = 1003,
-	bossRace = RARITY_NEMESIS
+	bossRace = RARITY_NEMESIS,
 }
 
 monster.strategiesTarget = {
@@ -54,20 +54,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.events = {
-	"GazHaragothHeal"
+	"GazHaragothHeal",
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
-monster.summon = {
-}
+monster.summon = {}
 
 monster.voices = {
 	interval = 5000,
@@ -75,7 +74,7 @@ monster.voices = {
 	{ text = "NO ONE WILL ESCAPE ME!", yell = true },
 	{ text = "I'LL KEEP THE ORDER UP!", yell = true },
 	{ text = "I've beaten tougher demons then you even know!", yell = true },
-	{ text = "You puny humans will be my snacks!", yell = true }
+	{ text = "You puny humans will be my snacks!", yell = true },
 }
 
 monster.loot = {
@@ -135,7 +134,7 @@ monster.loot = {
 	{ id = 10344, chance = 6000 }, -- twin sun charm
 	{ id = 10343, chance = 6000 }, -- spiritual charm
 	{ id = 10342, chance = 6000 }, -- unity charm
-	{ id = 10341, chance = 6000 } -- phoenix charm
+	{ id = 10341, chance = 6000 }, -- phoenix charm
 }
 
 monster.attacks = {
@@ -150,14 +149,14 @@ monster.attacks = {
 	{ name = "gaz'haragoth iceball", interval = 2000, chance = 24, minDamage = -1000, maxDamage = -1000, target = false },
 	{ name = "gaz'haragoth death", interval = 4000, chance = 6, target = false },
 	{ name = "gaz'haragoth paralyze", interval = 2000, chance = 12, target = false },
-	{ name = "gaz'haragoth summon", interval = 1000, chance = 100, target = false }
+	{ name = "gaz'haragoth summon", interval = 1000, chance = 100, target = false },
 }
 
 monster.defenses = {
 	defense = 65,
 	armor = 55,
 	{ name = "combat", interval = 3000, chance = 35, type = COMBAT_HEALING, minDamage = 2500, maxDamage = 3500, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "speed", interval = 4000, chance = 80, speedChange = 700, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 }
+	{ name = "speed", interval = 4000, chance = 80, speedChange = 700, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
 }
 
 monster.elements = {
@@ -170,18 +169,17 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 50 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 50 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 50 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -189,13 +187,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

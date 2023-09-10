@@ -11,7 +11,7 @@ local setting = {
 		6576,
 		6577,
 		6578,
-		6279
+		6279,
 	},
 	-- Red present
 	[6571] = {
@@ -30,8 +30,8 @@ local setting = {
 		3420,
 		5944,
 		6566,
-		6568
-	}
+		6568,
+	},
 }
 
 local surpriseBag = Action()

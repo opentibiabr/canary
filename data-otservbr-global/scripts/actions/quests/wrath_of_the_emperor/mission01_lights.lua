@@ -2,7 +2,7 @@ local positions = {
 	{ x = 33370, y = 31067, z = 9 },
 	{ x = 33359, y = 31070, z = 9 },
 	{ x = 33349, y = 31075, z = 8 },
-	{ x = 33351, y = 31069, z = 9 }
+	{ x = 33351, y = 31069, z = 9 },
 }
 
 local function transformLamp(position, itemId, transformId)
@@ -21,7 +21,7 @@ function wrathEmperorMiss1Light.onUse(player, item, fromPosition, target, toPosi
 			local pos = {
 				Position(33369, 31075, 8),
 				Position(33372, 31075, 8),
-				Position(33375, 31075, 8)
+				Position(33375, 31075, 8),
 			}
 			for i = 1, #pos do
 				transformLamp(pos[i], 10491, 10479)
@@ -34,7 +34,7 @@ function wrathEmperorMiss1Light.onUse(player, item, fromPosition, target, toPosi
 			addEvent(Game.setStorageValue, 20 * 1000, GlobalStorage.WrathOfTheEmperor.Light02, 0)
 			local pos = {
 				Position(33357, 31077, 8),
-				Position(33360, 31079, 8)
+				Position(33360, 31079, 8),
 			}
 			for i = 1, #pos do
 				transformLamp(pos[i], 10493, 10478)

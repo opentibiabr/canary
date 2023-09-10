@@ -138,7 +138,7 @@ function setBestiary.onSay(player, words, param)
 
 	local monsterName = split[2]
 	local mType = MonsterType(monsterName)
-	if not (mType) or (mType and mType:raceId() == 0) then
+	if not mType or (mType and mType:raceId() == 0) then
 		player:sendCancelMessage("This monster has no bestiary. Type the name exactly as in game.")
 		return true
 	end

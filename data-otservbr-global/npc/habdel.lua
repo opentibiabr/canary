@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 1,
 	lookLegs = 0,
 	lookFeet = 58,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,39 +58,39 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'outfit') then
+	if MsgContains(message, "outfit") then
 		if player:getSex() == PLAYERSEX_FEMALE then
-			npcHandler:say('My scimitar? Well, mylady, I do not want to sound rude, but I don\'t think a scimitar would fit to your beautiful outfit. If you are looking for an accessory, why don\'t you talk to Ishina?', npc, creature)
+			npcHandler:say("My scimitar? Well, mylady, I do not want to sound rude, but I don't think a scimitar would fit to your beautiful outfit. If you are looking for an accessory, why don't you talk to Ishina?", npc, creature)
 			return true
 		end
 		if player:getStorageValue(Storage.OutfitQuest.firstOrientalAddon) < 1 then
-			npcHandler:say('My scimitar? Yes, that is a true masterpiece. Of course I could make one for you, but I have a small request. Would you fulfil a task for me?', npc, creature)
+			npcHandler:say("My scimitar? Yes, that is a true masterpiece. Of course I could make one for you, but I have a small request. Would you fulfil a task for me?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
-	elseif MsgContains(message, 'comb') then
+	elseif MsgContains(message, "comb") then
 		if player:getSex() == PLAYERSEX_FEMALE then
-			npcHandler:say('Comb? This is a weapon shop.', npc, creature)
+			npcHandler:say("Comb? This is a weapon shop.", npc, creature)
 			return true
 		end
 		if player:getStorageValue(Storage.OutfitQuest.firstOrientalAddon) == 1 then
-			npcHandler:say('Have you brought a mermaid\'s comb for Ishina?', npc, creature)
+			npcHandler:say("Have you brought a mermaid's comb for Ishina?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
-	elseif MsgContains(message, 'yes') then
+	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say({
-				'Listen, um... I know that Ishina has been wanting a comb for a long time... not just any comb, but a mermaid\'s comb. She said it prevents split ends... or something. ...',
-				'Do you think you could get one for me so I can give it to her? I really would appreciate it.'
+				"Listen, um... I know that Ishina has been wanting a comb for a long time... not just any comb, but a mermaid's comb. She said it prevents split ends... or something. ...",
+				"Do you think you could get one for me so I can give it to her? I really would appreciate it.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
 			player:setStorageValue(Storage.OutfitQuest.firstOrientalAddon, 1)
-			npcHandler:say('Brilliant! I will wait for you to return with a mermaid\'s comb then.', npc, creature)
+			npcHandler:say("Brilliant! I will wait for you to return with a mermaid's comb then.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if not player:removeItem(5945, 1) then
-				npcHandler:say('No... that\'s not it.', npc, creature)
+				npcHandler:say("No... that's not it.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true
 			end
@@ -98,21 +98,21 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:addOutfitAddon(150, 1)
 			player:addOutfitAddon(146, 1)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			npcHandler:say('Yeah! That\'s it! I can\'t wait to give it to her! Oh - but first, I\'ll fulfil my promise: Here is your scimitar! Thanks again!', npc, creature)
+			npcHandler:say("Yeah! That's it! I can't wait to give it to her! Oh - but first, I'll fulfil my promise: Here is your scimitar! Thanks again!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif MsgContains(message, 'no') and npcHandler:getTopic(playerId) ~= 0 then
-		npcHandler:say('Ah well. Doesn\'t matter.', npc, creature)
+	elseif MsgContains(message, "no") and npcHandler:getTopic(playerId) ~= 0 then
+		npcHandler:say("Ah well. Doesn't matter.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	end
 	return true
 end
 
-keywordHandler:addKeyword({ 'weapons' }, StdModule.say, { npcHandler = npcHandler, text = 'I sell the finest weapons in town. If you\'d like to see my offers, ask me for a {trade}.' })
+keywordHandler:addKeyword({ "weapons" }, StdModule.say, { npcHandler = npcHandler, text = "I sell the finest weapons in town. If you'd like to see my offers, ask me for a {trade}." })
 
-npcHandler:setMessage(MESSAGE_GREET, 'Welcome |PLAYERNAME|! See the fine {weapons} I sell.')
-npcHandler:setMessage(MESSAGE_FAREWELL, 'Good bye. Come back soon.')
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Good bye. Come back soon.')
+npcHandler:setMessage(MESSAGE_GREET, "Welcome |PLAYERNAME|! See the fine {weapons} I sell.")
+npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye. Come back soon.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye. Come back soon.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
@@ -158,7 +158,7 @@ npcConfig.shop = {
 	{ itemName = "throwing knife", clientId = 3298, buy = 25 },
 	{ itemName = "throwing star", clientId = 3287, buy = 42 },
 	{ itemName = "two handed sword", clientId = 3265, buy = 950 },
-	{ itemName = "war hammer", clientId = 3279, buy = 10000 }
+	{ itemName = "war hammer", clientId = 3279, buy = 10000 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -169,7 +169,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

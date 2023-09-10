@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 350000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 50
+	chance = 50,
 }
 
 monster.strategiesTarget = {
@@ -49,19 +49,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Chhhhhhh!", yell = false },
-	{ text = "SzzzzSzzz! SzzzzSzzz!", yell = false }
+	{ text = "SzzzzSzzz! SzzzzSzzz!", yell = false },
 }
 
 monster.loot = {
@@ -82,7 +82,7 @@ monster.loot = {
 	{ id = 21176, chance = 1420 }, -- execowtioner axe
 	{ id = 3318, chance = 770 }, -- knight axe
 	{ id = 7413, chance = 390 }, -- titan axe
-	{ id = 7401, chance = 520 } -- minotaur trophy
+	{ id = 7401, chance = 520 }, -- minotaur trophy
 }
 
 monster.attacks = {
@@ -90,12 +90,12 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = 0, maxDamage = -1500, range = 3, length = 6, spread = 8, effect = CONST_ME_FIREAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = 0, maxDamage = -1500, range = 3, length = 9, spread = 4, effect = CONST_ME_HITBYFIRE, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -135, maxDamage = -1500, radius = 2, effect = CONST_ME_EXPLOSIONAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -1500, radius = 8, effect = CONST_ME_HITAREA, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -1500, radius = 8, effect = CONST_ME_HITAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 40,
-	armor = 40
+	armor = 40,
 }
 
 monster.elements = {
@@ -108,18 +108,18 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 monster.heals = {
-	{ type = COMBAT_FIREDAMAGE, percent = 100 }
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
 }
 
 mType:register(monster)

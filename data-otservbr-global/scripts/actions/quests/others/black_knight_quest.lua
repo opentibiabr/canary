@@ -7,7 +7,7 @@ function othersBlackKnight.onUse(player, item, fromPosition, target, toPosition,
 		player:setStorageValue(Storage.QuestChests.BlackKnightTreeKey, 1)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a silver key.")
 	else
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The ' .. ItemType(item.itemid):getName() .. ' is empty.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. ItemType(item.itemid):getName() .. " is empty.")
 	end
 end
 

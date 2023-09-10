@@ -13,18 +13,18 @@ function heroRathletonProfessor.onUse(player, item, fromPosition, target, toPosi
 	end
 
 	if Game.getStorageValue(GlobalStorage.HeroRathleton.MaxxenRunning) >= 1 then
-		player:say('Impossible to turn on this machine for now!', TALKTYPE_MONSTER_SAY, false, nil, toPosition)
+		player:say("Impossible to turn on this machine for now!", TALKTYPE_MONSTER_SAY, false, nil, toPosition)
 		return true
 	end
 
 	if Game.getStorageValue(GlobalStorage.HeroRathleton.ThirdMachines) == 7 then
-		player:say('All machines are working, now is possible to use the teleport at east.', TALKTYPE_MONSTER_SAY)
+		player:say("All machines are working, now is possible to use the teleport at east.", TALKTYPE_MONSTER_SAY)
 	end
 
 	item:transform(21744)
 	addEvent(revertMachine, 10 * 60 * 1000, toPosition, 21744, 21743)
 	Game.setStorageValue(GlobalStorage.HeroRathleton.ThirdMachines, Game.getStorageValue(GlobalStorage.HeroRathleton.ThirdMachines) + 1)
-	player:say('~Zzzz~\n The machine is working!', TALKTYPE_MONSTER_SAY, false, nil, toPosition)
+	player:say("~Zzzz~\n The machine is working!", TALKTYPE_MONSTER_SAY, false, nil, toPosition)
 	return true
 end
 

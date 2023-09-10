@@ -9,10 +9,10 @@ local config = {
 		bossPosition = Position(33154, 32252, 12),
 		specPos = {
 			from = Position(33150, 32242, 12),
-			to = Position(33164, 32260, 12)
+			to = Position(33164, 32260, 12),
 		},
 		exitPosition = Position(33123, 32240, 12),
-		storage = Storage.Quest.U10_80.Grimvale.YirkasTimer
+		storage = Storage.Quest.U10_80.Grimvale.YirkasTimer,
 	},
 	[2] = {
 		teleportPosition = { x = 33131, y = 32252, z = 12 },
@@ -24,10 +24,10 @@ local config = {
 		bossPosition = Position(33122, 32285, 12),
 		specPos = {
 			from = Position(33115, 32275, 12),
-			to = Position(33127, 32290, 12)
+			to = Position(33127, 32290, 12),
 		},
 		exitPosition = Position(33130, 32252, 12),
-		storage = Storage.Quest.U10_80.Grimvale.SrezzTimer
+		storage = Storage.Quest.U10_80.Grimvale.SrezzTimer,
 	},
 	[3] = {
 		teleportPosition = { x = 33123, y = 32265, z = 12 },
@@ -39,10 +39,10 @@ local config = {
 		bossPosition = Position(33087, 32245, 12),
 		specPos = {
 			from = Position(33082, 32237, 12),
-			to = Position(33091, 32252, 12)
+			to = Position(33091, 32252, 12),
 		},
 		exitPosition = Position(33123, 32264, 12),
-		storage = Storage.Quest.U10_80.Grimvale.UtuaTimer
+		storage = Storage.Quest.U10_80.Grimvale.UtuaTimer,
 	},
 	[4] = {
 		teleportPosition = { x = 33114, y = 32252, z = 12 },
@@ -54,26 +54,26 @@ local config = {
 		bossPosition = Position(33152, 32289, 12),
 		specPos = {
 			from = Position(33145, 32279, 12),
-			to = Position(33159, 32293, 12)
+			to = Position(33159, 32293, 12),
 		},
 		exitPosition = Position(33115, 32252, 12),
-		storage = Storage.Quest.U10_80.Grimvale.KatexTimer
+		storage = Storage.Quest.U10_80.Grimvale.KatexTimer,
 	},
 	[5] = {
 		teleportPosition = { x = 33154, y = 32245, z = 12 },
-		exitPosition = Position(33123, 32240, 12)
+		exitPosition = Position(33123, 32240, 12),
 	},
 	[6] = {
 		teleportPosition = { x = 33119, y = 32278, z = 12 },
-		exitPosition = Position(33130, 32252, 12)
+		exitPosition = Position(33130, 32252, 12),
 	},
 	[7] = {
 		teleportPosition = { x = 33087, y = 32239, z = 12 },
-		exitPosition = Position(33123, 32264, 12)
+		exitPosition = Position(33123, 32264, 12),
 	},
 	[8] = {
 		teleportPosition = { x = 33148, y = 32283, z = 12 },
-		exitPosition = Position(33115, 32252, 12)
+		exitPosition = Position(33115, 32252, 12),
 	},
 }
 

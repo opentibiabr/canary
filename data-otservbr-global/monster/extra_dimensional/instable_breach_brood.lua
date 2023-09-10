@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1265
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Otherworld Dwarf Bridge"
+	Locations = "Otherworld Dwarf Bridge",
 }
 
 monster.health = 2200
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -89,14 +89,14 @@ monster.loot = {
 	{ id = 16121, chance = 3400 }, -- green crystal shard
 	{ id = 16125, chance = 3300 }, -- cyan crystal fragment
 	{ id = 16124, chance = 2600 }, -- blue crystal splinter
-	{ id = 16119, chance = 2100 } -- blue crystal shard
+	{ id = 16119, chance = 2100 }, -- blue crystal shard
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -240 },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -160, maxDamage = -250, range = 6, shootEffect = CONST_ANI_FLASHARROW, effect = CONST_ME_STUN, target = true },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -80, maxDamage = -200, radius = 5, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "breach brood reducer", interval = 2000, chance = 20, target = false }
+	{ name = "breach brood reducer", interval = 2000, chance = 20, target = false },
 }
 
 monster.defenses = {
@@ -122,7 +122,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

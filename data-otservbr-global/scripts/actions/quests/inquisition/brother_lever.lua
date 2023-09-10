@@ -13,10 +13,10 @@ local config = {
 			Position(33235, 31721, 11),
 			Position(33236, 31721, 11),
 			Position(33237, 31721, 11),
-			Position(33238, 31721, 11)
+			Position(33238, 31721, 11),
 		},
 		wallDown = 2162,
-		wallUp = 1295
+		wallUp = 1295,
 	},
 	[1007] = {
 		wallPositions = {
@@ -28,10 +28,10 @@ local config = {
 			Position(33223, 31729, 11),
 			Position(33223, 31730, 11),
 			Position(33223, 31731, 11),
-			Position(33223, 31732, 11)
+			Position(33223, 31732, 11),
 		},
 		wallDown = 2164,
-		wallUp = 1294
+		wallUp = 1294,
 	},
 	[1008] = {
 		wallPositions = {
@@ -47,10 +47,10 @@ local config = {
 			Position(33235, 31735, 11),
 			Position(33236, 31735, 11),
 			Position(33237, 31735, 11),
-			Position(33238, 31735, 11)
+			Position(33238, 31735, 11),
 		},
 		wallDown = 2162,
-		wallUp = 1295
+		wallUp = 1295,
 	},
 	[1009] = {
 		wallPositions = {
@@ -62,11 +62,11 @@ local config = {
 			Position(33241, 31729, 11),
 			Position(33241, 31730, 11),
 			Position(33241, 31731, 11),
-			Position(33241, 31732, 11)
+			Position(33241, 31732, 11),
 		},
 		wallDown = 2164,
-		wallUp = 1294
-	}
+		wallUp = 1294,
+	},
 }
 
 local inquisitionBrother = Action()

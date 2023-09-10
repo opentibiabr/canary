@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 24,
 	lookFeet = 95,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 223
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Dark Cathedral, Tiquanda Bandit Caves, Outlaw Camp, mountain pass west of Ankrahmun, \z
-		Tyrsung, Thais Bandit Cave, Formorgar Mines. Also summoned by Gamel."
+		Tyrsung, Thais Bandit Cave, Formorgar Mines. Also summoned by Gamel.",
 }
 
 monster.health = 245
@@ -36,7 +36,7 @@ monster.manaCost = 450
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -84,11 +84,11 @@ monster.loot = {
 	{ name = "brass armor", chance = 2500 },
 	{ name = "brass shield", chance = 16800 },
 	{ name = "leather legs", chance = 15500 },
-	{ name = "tomato", chance = 7630, maxCount = 2 }
+	{ name = "tomato", chance = 7630, maxCount = 2 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 },
 }
 
 monster.defenses = {
@@ -114,7 +114,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

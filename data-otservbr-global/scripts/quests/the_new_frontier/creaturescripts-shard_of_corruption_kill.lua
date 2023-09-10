@@ -8,7 +8,7 @@ function shardOfCorruptionKill.onKill(creature, target)
 		return true
 	end
 
-	if targetMonster:getName():lower() ~= 'shard of corruption' then
+	if targetMonster:getName():lower() ~= "shard of corruption" then
 		return true
 	end
 

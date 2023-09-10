@@ -33,7 +33,7 @@ function spy.onSay(player, words, param)
 	-- create log
 	logCommand(player, words, param)
 
-	if (param == "") then
+	if param == "" then
 		player:sendCancelMessage("Write the name of the character to be spyed.")
 		return true
 	end

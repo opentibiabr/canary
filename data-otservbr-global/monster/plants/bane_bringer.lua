@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 679
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 3,
 	Occurrence = 3,
-	Locations = "Green Claw Swamp underground, near the big witches' cauldron."
+	Locations = "Green Claw Swamp underground, near the big witches' cauldron.",
 }
 
 monster.health = 2500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 0,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -79,11 +79,11 @@ monster.voices = {
 
 monster.loot = {
 	{ id = 3135, chance = 15220, maxCount = 96 }, -- wooden trash
-	{ name = "dry piece of wood", chance = 100000 }
+	{ name = "dry piece of wood", chance = 100000 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -150 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -150 },
 }
 
 monster.defenses = {
@@ -109,7 +109,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

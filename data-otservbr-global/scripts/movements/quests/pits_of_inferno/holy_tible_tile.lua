@@ -1,6 +1,6 @@
 local destinations = {
 	[2000] = Position(32791, 32331, 10),
-	[2001] = Position(32791, 32327, 10)
+	[2001] = Position(32791, 32327, 10),
 }
 
 local holyTibleTile = MoveEvent()

@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 105
 monster.maxHealth = 105
@@ -23,7 +22,7 @@ monster.manaCost = 320
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -69,11 +68,11 @@ monster.loot = {
 	{ id = 3456, chance = 8570 }, -- pick
 	{ id = 3410, chance = 17140 }, -- plate shield
 	{ id = 3378, chance = 8570 }, -- studded armor
-	{ id = 3723, chance = 47140 } -- white mushroom
+	{ id = 3723, chance = 47140 }, -- white mushroom
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 10, attack = 26 }
+	{ name = "melee", interval = 2000, chance = 100, skill = 10, attack = 26 },
 }
 
 monster.defenses = {
@@ -99,7 +98,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

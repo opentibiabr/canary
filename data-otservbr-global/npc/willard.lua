@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 104,
 	lookLegs = 0,
 	lookFeet = 116,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Selling weapons, ammunition and armor. Special offers only available here, have a look!' }
+	{ text = "Selling weapons, ammunition and armor. Special offers only available here, have a look!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -69,7 +69,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"Oooh, damn, I completely forgot about that. I was supposed to pick it up from the Outlaw Camp. ...",
 				"I can't leave my shop here right now, please go and talk to Snake Eye about that package... I promise he won't make any trouble. ...",
-				"Don't tell Rashid! I really don't want him to know that I forgot his order. Okay?"
+				"Don't tell Rashid! I really don't want him to know that I forgot his order. Okay?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -196,7 +196,7 @@ npcConfig.shop = {
 	{ itemName = "viking shield", clientId = 3431, buy = 260, sell = 85 },
 	{ itemName = "vortex bolt", clientId = 14252, buy = 6 },
 	{ itemName = "war hammer", clientId = 3279, buy = 10000, sell = 450 },
-	{ itemName = "wooden shield", clientId = 3412, buy = 15, sell = 5 }
+	{ itemName = "wooden shield", clientId = 3412, buy = 15, sell = 5 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -207,7 +207,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

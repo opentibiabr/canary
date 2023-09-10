@@ -36,7 +36,7 @@ function svargrondArenaKill.onKill(creature, target)
 		end
 	end
 	player:setStorageValue(Storage.SvargrondArena.PitDoor, pit + 1)
-	player:say('Victory! Head through the new teleporter into the next room.', TALKTYPE_MONSTER_SAY)
+	player:say("Victory! Head through the new teleporter into the next room.", TALKTYPE_MONSTER_SAY)
 	return true
 end
 

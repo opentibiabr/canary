@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 786
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Hive, Hive Outpost."
+	Locations = "Hive, Hive Outpost.",
 }
 
 monster.health = 1450
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -84,19 +84,19 @@ monster.loot = {
 	{ name = "small topaz", chance = 10040, maxCount = 2 },
 	{ name = "crawler head plating", chance = 18430 },
 	{ name = "compound eye", chance = 14640 },
-	{ name = "grasshopper legs", chance = 100 }
+	{ name = "grasshopper legs", chance = 100 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -228, condition = { type = CONDITION_POISON, totalDamage = 80, interval = 4000 } },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -100, maxDamage = -180, range = 7, shootEffect = CONST_ANI_SMALLEARTH, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -100, maxDamage = -180, range = 7, shootEffect = CONST_ANI_SMALLEARTH, target = false },
 }
 
 monster.defenses = {
 	defense = 30,
 	armor = 38,
 	mitigation = 1.26,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 300, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 300, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000 },
 }
 
 monster.elements = {
@@ -116,7 +116,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

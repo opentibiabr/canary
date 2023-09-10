@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 43,
 	lookLegs = 38,
 	lookFeet = 76,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -68,13 +68,13 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "pass") then
 		npcHandler:say("You can {pass} either to the {Arena Quarter} or {Foreigner Quarter}. Which one will it be?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif (MsgContains(message, "arena")) then
+	elseif MsgContains(message, "arena") then
 		if npcHandler:getTopic(playerId) == 1 then
 			player:teleportTo(Position(32695, 31254, 7))
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif (MsgContains(message, "foreigner")) then
+	elseif MsgContains(message, "foreigner") then
 		if npcHandler:getTopic(playerId) == 1 then
 			player:teleportTo(Position(32695, 31259, 7))
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

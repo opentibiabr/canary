@@ -35,7 +35,6 @@ function login.onLogin(player)
 	player:registerEvent("DropLoot")
 	player:registerEvent("BossParticipation")
 
-
 	if onExerciseTraining[player:getId()] then -- onLogin & onLogout
 		stopEvent(onExerciseTraining[player:getId()].event)
 		onExerciseTraining[player:getId()] = nil
@@ -52,8 +51,11 @@ function login.onLogin(player)
 
 	if SCHEDULE_EXP_RATE ~= 100 then
 		if SCHEDULE_EXP_RATE > 100 then
-			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Exp Rate Event! Monsters yield more experience points than usual \
-			Happy Hunting!")
+			player:sendTextMessage(
+				MESSAGE_BOOSTED_CREATURE,
+				"Exp Rate Event! Monsters yield more experience points than usual \
+			Happy Hunting!"
+			)
 		else
 			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Exp Rate Decreased! Monsters yield less experience points than usual.")
 		end
@@ -61,8 +63,11 @@ function login.onLogin(player)
 
 	if SCHEDULE_SPAWN_RATE ~= 100 then
 		if SCHEDULE_SPAWN_RATE > 100 then
-			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Spawn Rate Event! Monsters respawn at a faster rate \
-			Happy Hunting!")
+			player:sendTextMessage(
+				MESSAGE_BOOSTED_CREATURE,
+				"Spawn Rate Event! Monsters respawn at a faster rate \
+			Happy Hunting!"
+			)
 		else
 			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Spawn Rate Decreased! Monsters respawn at a slower rate.")
 		end
@@ -70,8 +75,11 @@ function login.onLogin(player)
 
 	if SCHEDULE_LOOT_RATE ~= 100 then
 		if SCHEDULE_LOOT_RATE > 100 then
-			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Loot Rate Event! Monsters carry more loot than usual \
-			Happy Hunting!")
+			player:sendTextMessage(
+				MESSAGE_BOOSTED_CREATURE,
+				"Loot Rate Event! Monsters carry more loot than usual \
+			Happy Hunting!"
+			)
 		else
 			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Loot Rate Decreased! Monsters carry less loot than usual.")
 		end
@@ -79,8 +87,11 @@ function login.onLogin(player)
 
 	if SCHEDULE_SKILL_RATE ~= 100 then
 		if SCHEDULE_SKILL_RATE > 100 then
-			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Skill Rate Event! Your skills progresses at a higher rate \
-			Happy Hunting!")
+			player:sendTextMessage(
+				MESSAGE_BOOSTED_CREATURE,
+				"Skill Rate Event! Your skills progresses at a higher rate \
+			Happy Hunting!"
+			)
 		else
 			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Skill Rate Decreased! Your skills progresses at a lower rate.")
 		end

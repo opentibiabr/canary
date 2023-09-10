@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 389
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Cyclopolis second floor and below, Mistrock, Mount Sternum, \z
-		Cyclops Camp second floor and in the Cyclops version of the Forsaken Mine."
+		Cyclops Camp second floor and in the Cyclops version of the Forsaken Mine.",
 }
 
 monster.health = 435
@@ -36,7 +36,7 @@ monster.manaCost = 695
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,12 +62,12 @@ monster.flags = {
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
 	canWalkOnPoison = false,
-	pet = false
+	pet = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -75,7 +75,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Outis emoi g' onoma.", yell = false },
 	{ text = "Whack da humy!", yell = false },
-	{ text = "Ai humy phary ty kaynon", yell = false }
+	{ text = "Ai humy phary ty kaynon", yell = false },
 }
 
 monster.loot = {
@@ -92,18 +92,18 @@ monster.loot = {
 	{ id = 7398, chance = 140 }, -- cyclops trophy
 	{ id = 7452, chance = 150 }, -- spiked squelcher
 	{ id = 236, chance = 390 }, -- strong health potion
-	{ id = 9657, chance = 10280 } -- cyclops toe
+	{ id = 9657, chance = 10280 }, -- cyclops toe
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -150 },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -70, range = 7, shootEffect = CONST_ANI_WHIRLWINDCLUB, target = false },
-	{ name = "drunk", interval = 2000, chance = 10, shootEffect = CONST_ANI_WHIRLWINDCLUB, effect = CONST_ME_STUN, target = false, duration = 4000 }
+	{ name = "drunk", interval = 2000, chance = 10, shootEffect = CONST_ANI_WHIRLWINDCLUB, effect = CONST_ME_STUN, target = false, duration = 4000 },
 }
 
 monster.defenses = {
 	defense = 25,
-	armor = 25
+	armor = 25,
 }
 
 monster.elements = {
@@ -116,14 +116,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 1 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

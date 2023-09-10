@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 79,
 	lookFeet = 114,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 527
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Trade Quarter, Arena and Zoo Quarter."
+	Locations = "Trade Quarter, Arena and Zoo Quarter.",
 }
 
 monster.health = 185
@@ -35,7 +35,7 @@ monster.manaCost = 470
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -86,18 +86,18 @@ monster.loot = {
 	{ name = "steel shield", chance = 840 },
 	{ name = "plate shield", chance = 9950 },
 	{ name = "meat", chance = 19000 },
-	{ name = "belted cape", chance = 340 }
+	{ name = "belted cape", chance = 340 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90 },
 }
 
 monster.defenses = {
 	defense = 25,
 	armor = 14,
 	mitigation = 0.78,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 215, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 215, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -117,7 +117,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

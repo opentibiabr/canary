@@ -14,8 +14,8 @@ local elementals = {
 		{ from = 802, to = 1002, itemId = 3032 }, -- small emerald
 		{ from = 1003, to = 1053, itemId = 281 }, -- giant shimmering pearl (green)
 		{ from = 1054, to = 1104, itemId = 282 }, -- giant shimmering pearl (brown)
-		{ from = 1105, to = 1115, itemId = 9303 } -- leviathan's amulet
-	}
+		{ from = 1105, to = 1115, itemId = 9303 }, -- leviathan's amulet
+	},
 }
 
 local useWorms = true
@@ -52,7 +52,7 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				player:addItem(randomItem.itemId, 1)
 			end
 			if chance > 1115 then
-				player:say('There was just rubbish in it.', TALKTYPE_MONSTER_SAY)
+				player:say("There was just rubbish in it.", TALKTYPE_MONSTER_SAY)
 				return true
 			end
 		end

@@ -11,22 +11,22 @@ local specialQuests = {
 	-- {x = 32232, y = 31059, z = 7}
 	[51716] = Storage.SvargrondArena.RewardScrapper,
 	-- {x = 32232, y = 31052, z = 7}
-	[51717] = Storage.SvargrondArena.RewardWarlord
+	[51717] = Storage.SvargrondArena.RewardWarlord,
 }
 
 local questsExperience = {
-	[3101] = 1 -- dummy values
+	[3101] = 1, -- dummy values
 }
 
 local questLog = {
-	[8213] = Storage.HiddenCityOfBeregar.DefaultStart
+	[8213] = Storage.HiddenCityOfBeregar.DefaultStart,
 }
 
 local tutorialIds = {
 	[50080] = 5,
 	[50082] = 6,
 	[50084] = 10,
-	[50086] = 11
+	[50086] = 11,
 }
 
 local function copyContainerItem(originalContainer, newContainer)
@@ -65,7 +65,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 	end
 
 	if player:getStorageValue(storage) > 0 and player:getGroup():getId() < GROUP_TYPE_GAMEMASTER then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The ' .. ItemType(item.itemid):getName() .. ' is empty.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. ItemType(item.itemid):getName() .. " is empty.")
 		return true
 	end
 
@@ -107,7 +107,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 			if originalItem:isContainer() then
 				copyContainerItem(Container(originalItem.uid), Container(newItem.uid))
 			end
-			items[#items+1] = newItem
+			items[#items + 1] = newItem
 		end
 
 		if size == 1 then
@@ -115,15 +115,15 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 		end
 	end
 
-	local result = ''
+	local result = ""
 	if reward then
 		local ret = ItemType(reward.itemid)
 		if ret:isRune() then
-			result = ret:getArticle() .. ' ' .. ret:getName() .. ' (' .. reward.type .. ' charges)'
+			result = ret:getArticle() .. " " .. ret:getName() .. " (" .. reward.type .. " charges)"
 		elseif ret:isStackable() and reward:getCount() > 1 then
-			result = reward:getCount() .. ' ' .. ret:getPluralName()
-		elseif ret:getArticle() ~= '' then
-			result = ret:getArticle() .. ' ' .. ret:getName()
+			result = reward:getCount() .. " " .. ret:getPluralName()
+		elseif ret:getArticle() ~= "" then
+			result = ret:getArticle() .. " " .. ret:getName()
 		else
 			result = ret:getName()
 		end
@@ -143,15 +143,15 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 			end
 		end
 		local ret = ItemType(reward.itemid)
-		result = ret:getArticle() .. ' ' .. ret:getName()
+		result = ret:getArticle() .. " " .. ret:getName()
 	end
 
 	if player:addItemEx(reward) ~= RETURNVALUE_NOERROR then
 		local weight = reward:getWeight()
 		if player:getFreeCapacity() < weight then
-			player:sendCancelMessage(string.format('You have found %s weighing %.2f oz. You have no capacity.', result, (weight / 100)))
+			player:sendCancelMessage(string.format("You have found %s weighing %.2f oz. You have no capacity.", result, (weight / 100)))
 		else
-			player:sendCancelMessage('You have found ' .. result .. ', but you have no room to take it.')
+			player:sendCancelMessage("You have found " .. result .. ", but you have no room to take it.")
 		end
 		return true
 	end
@@ -177,7 +177,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 		end
 	end
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You have found ' .. result .. '.')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found " .. result .. ".")
 	player:setStorageValue(storage, 1)
 	return true
 end

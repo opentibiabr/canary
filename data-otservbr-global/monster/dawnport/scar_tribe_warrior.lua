@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 125
 monster.maxHealth = 125
@@ -23,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -66,11 +65,11 @@ monster.loot = {
 	{ id = 3031, chance = 100000, maxCount = 8 }, -- gold coin
 	{ id = 3577, chance = 13480 }, -- meat
 	{ id = 11479, chance = 5620 }, -- orc leather
-	{ id = 11480, chance = 1120 } -- skull belt
+	{ id = 11480, chance = 1120 }, -- skull belt
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 10, attack = 25 }
+	{ name = "melee", interval = 2000, chance = 100, skill = 10, attack = 25 },
 }
 
 monster.defenses = {
@@ -96,7 +95,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

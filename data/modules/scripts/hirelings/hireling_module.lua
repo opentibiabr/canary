@@ -3,7 +3,7 @@ HirelingModule = {}
 HirelingModule.Credits = {
 	Developer = 'Leonardo "Leu" Pereira (jlcvp)',
 	Version = "1.0",
-	Date = "30/04/2020 "
+	Date = "30/04/2020 ",
 }
 
 HirelingModule.S_Packets = { SendOutfitWindow = 0xC8 }
@@ -47,7 +47,7 @@ local function parseChangeOutfit(player, msg)
 end
 
 function onRecvbyte(player, msg, byte)
-	if (byte == HirelingModule.C_Packets.ConfirmOutfitChange) then
+	if byte == HirelingModule.C_Packets.ConfirmOutfitChange then
 		if not player:isChangingHirelingOutfit() then
 			return
 		end

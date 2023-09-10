@@ -27,12 +27,11 @@ for i = 60, 75 do
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		{ 0, 1, 1, 1, 1, 1, 1, 1, 0 },
 		{ 0, 0, 1, 1, 1, 1, 1, 0, 0 },
-		{ 0, 0, 0, 1, 1, 1, 0, 0, 0 }
+		{ 0, 0, 0, 1, 1, 1, 0, 0, 0 },
 	}
 
 	local area = createCombatArea(arr)
 	combat[i]:setArea(area)
-
 
 	function onTargetTile(creature, pos)
 		local creatureTable = {}

@@ -63,7 +63,7 @@ function heartDestructionAnomaly.onUse(player, item, fromPosition, itemEx, toPos
 			Position(32245, 31246, 14),
 			Position(32245, 31247, 14),
 			Position(32245, 31248, 14),
-			Position(32245, 31249, 14)
+			Position(32245, 31249, 14),
 		},
 
 		newPos = { x = 32271, y = 31257, z = 14 },
@@ -80,7 +80,7 @@ function heartDestructionAnomaly.onUse(player, item, fromPosition, itemEx, toPos
 					if tile then
 						local playerTile = tile:getTopCreature()
 						if playerTile and playerTile:isPlayer() then
-							storePlayers[#storePlayers+1] = playerTile
+							storePlayers[#storePlayers + 1] = playerTile
 						end
 					end
 				end

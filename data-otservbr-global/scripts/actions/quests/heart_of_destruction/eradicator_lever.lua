@@ -65,7 +65,7 @@ function heartDestructionEradicator.onUse(player, item, fromPosition, itemEx, to
 			Position(32334, 31285, 14),
 			Position(32334, 31286, 14),
 			Position(32334, 31287, 14),
-			Position(32334, 31288, 14)
+			Position(32334, 31288, 14),
 		},
 
 		newPos = { x = 32309, y = 31290, z = 14 },
@@ -82,7 +82,7 @@ function heartDestructionEradicator.onUse(player, item, fromPosition, itemEx, to
 					if tile then
 						local playerTile = tile:getTopCreature()
 						if playerTile and playerTile:isPlayer() then
-							storePlayers[#storePlayers+1] = playerTile
+							storePlayers[#storePlayers + 1] = playerTile
 						end
 					end
 				end
@@ -103,7 +103,9 @@ function heartDestructionEradicator.onUse(player, item, fromPosition, itemEx, to
 					eradicatorReleaseT = false -- Liberar Spell
 					eradicatorWeak = 0 -- Eradicator Form
 					areaEradicator1 = addEvent(clearArea, 15 * 60000)
-					areaEradicator2 = addEvent(function() eradicatorReleaseT = true end, 74000)
+					areaEradicator2 = addEvent(function()
+						eradicatorReleaseT = true
+					end, 74000)
 
 					Game.createMonster("Spark of Destruction", { x = 32304, y = 31282, z = 14 }, false, true)
 					Game.createMonster("Spark of Destruction", { x = 32305, y = 31287, z = 14 }, false, true)

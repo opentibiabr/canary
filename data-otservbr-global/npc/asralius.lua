@@ -16,18 +16,18 @@ npcConfig.outfit = {
 	lookBody = 85,
 	lookLegs = 113,
 	lookFeet = 114,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Let me speak a few words to you.' },
-	{ text = 'Death comes to the best of us, but this time you had no chance.' }
+	{ text = "Let me speak a few words to you." },
+	{ text = "Death comes to the best of us, but this time you had no chance." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -56,6 +56,5 @@ end
 npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
-
 
 npcType:register(npcConfig)

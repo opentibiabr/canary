@@ -1,13 +1,11 @@
 registerNpcType = {}
-setmetatable(registerNpcType,
-	{
-		__call =
-				function(self, npcType, mask)
-					for _, parse in pairs(self) do
-						parse(npcType, mask)
-					end
-				end
-	})
+setmetatable(registerNpcType, {
+	__call = function(self, npcType, mask)
+		for _, parse in pairs(self) do
+			parse(npcType, mask)
+		end
+	end,
+})
 
 NpcType.register = function(self, mask)
 	return registerNpcType(self, mask)
@@ -108,7 +106,7 @@ end
 
 registerNpcType.sounds = function(npcType, mask)
 	if type(mask.sounds) == "table" then
-		if mask.sounds.ticks and mask.sounds.chance and mask.sounds.ids and type(mask.sounds.ids) == "table" and #(mask.sounds.ids) > 0 then
+		if mask.sounds.ticks and mask.sounds.chance and mask.sounds.ids and type(mask.sounds.ids) == "table" and #mask.sounds.ids > 0 then
 			npcType:soundSpeedTicks(mask.sounds.ticks)
 			npcType:soundChance(mask.sounds.chance)
 			for _, v in pairs(mask.sounds.ids) do

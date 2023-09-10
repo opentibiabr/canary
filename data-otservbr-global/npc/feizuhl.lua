@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 116,
 	lookLegs = 62,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'I sell furniture both to the mourned and the enlightened.' }
+	{ text = "I sell furniture both to the mourned and the enlightened." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -156,7 +156,7 @@ npcConfig.shop = {
 	{ itemName = "yellow footboard", clientId = 32485, buy = 40 },
 	{ itemName = "yellow headboard", clientId = 32476, buy = 40 },
 	{ itemName = "yellow pillow", clientId = 900, buy = 25 },
-	{ itemName = "yellow tapestry", clientId = 2650, buy = 25 }
+	{ itemName = "yellow tapestry", clientId = 2650, buy = 25 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -167,7 +167,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

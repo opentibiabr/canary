@@ -1,7 +1,7 @@
 local inServiceYalaharReward = Action()
 function inServiceYalaharReward.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if (item.uid == 3088) then
-		if (player:getStorageValue(Storage.InServiceofYalahar.Questline) == 53) then
+	if item.uid == 3088 then
+		if player:getStorageValue(Storage.InServiceofYalahar.Questline) == 53 then
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 54)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission10, 5) -- StorageValue for Questlog "Mission 10: The Final Battle"
 			player:addItem(8862, 1)
@@ -9,8 +9,8 @@ function inServiceYalaharReward.onUse(player, item, fromPosition, target, toPosi
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The chest is empty.")
 		end
-	elseif (item.uid == 3089) then
-		if (player:getStorageValue(Storage.InServiceofYalahar.Questline) == 53) then
+	elseif item.uid == 3089 then
+		if player:getStorageValue(Storage.InServiceofYalahar.Questline) == 53 then
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 54)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission10, 5) -- StorageValue for Questlog "Mission 10: The Final Battle"
 			player:addItem(8864, 1)
@@ -18,8 +18,8 @@ function inServiceYalaharReward.onUse(player, item, fromPosition, target, toPosi
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The chest is empty.")
 		end
-	elseif (item.uid == 3090) then
-		if (player:getStorageValue(Storage.InServiceofYalahar.Questline) == 53) then
+	elseif item.uid == 3090 then
+		if player:getStorageValue(Storage.InServiceofYalahar.Questline) == 53 then
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 54)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission10, 5) -- StorageValue for Questlog "Mission 10: The Final Battle"
 			player:addItem(8863, 1)

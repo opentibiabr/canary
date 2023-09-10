@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 22,
 	lookFeet = 61,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 3800
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -47,7 +47,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-	pet = false
+	pet = false,
 }
 
 monster.light = {
@@ -63,7 +63,7 @@ monster.voices = {
 monster.loot = {
 	{ name = "gold coin", chance = 70000, maxCount = 75 },
 	{ name = "emerald bangle", chance = 4970 },
-	{ name = "small topaz", chance = 6810, maxCount = 2 }
+	{ name = "small topaz", chance = 6810, maxCount = 2 },
 }
 
 monster.attacks = {
@@ -76,7 +76,7 @@ monster.defenses = {
 	defense = 37,
 	armor = 37,
 	mitigation = 1.30,
-	{ name = "speed", interval = 2000, chance = 8, speedChange = 250, effect = CONST_ME_MAGIC_GREEN, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 8, speedChange = 250, effect = CONST_ME_MAGIC_GREEN, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -96,7 +96,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

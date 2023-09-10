@@ -23,7 +23,7 @@ local destinations = {
 	[28831] = Position(32855, 32321, 9),
 	[28832] = Position(32855, 32320, 9),
 	[28833] = Position(32855, 32318, 9),
-	[28834] = Position(32855, 32319, 9)
+	[28834] = Position(32855, 32319, 9),
 }
 
 local tileTeleport = MoveEvent()

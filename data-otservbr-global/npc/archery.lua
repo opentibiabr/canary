@@ -17,17 +17,17 @@ npcConfig.outfit = {
 	lookLegs = 96,
 	lookFeet = 114,
 	lookAddons = 3,
-	lookMount = 1101
+	lookMount = 1101,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Come into my tavern and share some stories!' }
+	{ text = "Come into my tavern and share some stories!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -59,7 +59,7 @@ end
 
 -- Basic
 
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I am the owner of this saloon. I call it Archery's Hut. I am also {selling} ammunitions." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am the owner of this saloon. I call it Archery's Hut. I am also {selling} ammunitions." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to Archery's shop!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Please come back from time to time.")
@@ -97,7 +97,7 @@ npcConfig.shop = {
 	{ itemName = "spectral bolt", clientId = 35902, buy = 70 },
 	{ itemName = "tarsal arrow", clientId = 14251, buy = 6 },
 	{ itemName = "throwing star", clientId = 3287, buy = 42 },
-	{ itemName = "vortex bolt", clientId = 14252, buy = 6 }
+	{ itemName = "vortex bolt", clientId = 14252, buy = 6 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -108,7 +108,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

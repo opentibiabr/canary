@@ -11,11 +11,11 @@ npcConfig.walkInterval = 0
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookTypeEx = 5811
+	lookTypeEx = 5811,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -80,9 +80,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.ADjinnInLove) == 4 then
 			npcHandler:say({
 				"This lovely, exotic Djinn is a true poet. And he is asking me for a date? Excellent. Now I can finaly dump this human pirate. He was growing to be boring more and more with each day ...",
-				"As a little reward for your efforts I allow you to ride my sea turtles. Just look around at the shores and you will find them."
+				"As a little reward for your efforts I allow you to ride my sea turtles. Just look around at the shores and you will find them.",
 			}, npc, creature)
-			player:addAchievement('Matchmaker')
+			player:addAchievement("Matchmaker")
 			player:setStorageValue(Storage.TheShatteredIsles.ADjinnInLove, 5)
 			player:setStorageValue(Storage.TheShatteredIsles.AccessToLagunaIsland, 1)
 			npcHandler:setTopic(playerId, 0)
@@ -95,7 +95,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"<giggles> It's funny how easy it is to get humans to say what you want. Now, proving it will be even more fun! ...",
 				"You want me to touch something gooey, so you have to touch something gooey for me too. <giggles> ...",
-				"I love honey and I haven't eaten it in a while, so bring me 50 honeycombs and worship my beauty a little more, then we will see."
+				"I love honey and I haven't eaten it in a while, so bring me 50 honeycombs and worship my beauty a little more, then we will see.",
 			}, npc, creature)
 			player:setStorageValue(Storage.FriendsandTraders.TheMermaidMarina, 1)
 			player:setStorageValue(Storage.FriendsandTraders.DefaultStart, 1)
@@ -122,8 +122,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({ 'comb' }, StdModule.say, { npcHandler = npcHandler, text = 'Sorry, I don\'t have a spare comb. I lost my favourite one when diving around in Calassa.' })
-keywordHandler:addKeyword({ 'mermaid comb' }, StdModule.say, { npcHandler = npcHandler, text = 'Sorry, I don\'t have a spare comb. I lost my favourite one when diving around in Calassa.' })
+keywordHandler:addKeyword({ "comb" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, I don't have a spare comb. I lost my favourite one when diving around in Calassa." })
+keywordHandler:addKeyword({ "mermaid comb" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, I don't have a spare comb. I lost my favourite one when diving around in Calassa." })
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

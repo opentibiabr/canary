@@ -11,18 +11,18 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 66
+	lookType = 66,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = '<mumbles>' },
-	{ text = 'Just great. Getting stranded on a remote underground isle was not that bad but now I\'m becoming a tourist attraction!' }
+	{ text = "<mumbles>" },
+	{ text = "Just great. Getting stranded on a remote underground isle was not that bad but now I'm becoming a tourist attraction!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -60,38 +60,38 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'parcel') then
-		npcHandler:say('Do you want to buy a parcel for 15 gold?', npc, creature)
+	if MsgContains(message, "parcel") then
+		npcHandler:say("Do you want to buy a parcel for 15 gold?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif MsgContains(message, 'label') then
-		npcHandler:say('Do you want to buy a label for 1 gold?', npc, creature)
+	elseif MsgContains(message, "label") then
+		npcHandler:say("Do you want to buy a label for 1 gold?", npc, creature)
 		npcHandler:setTopic(playerId, 2)
-	elseif MsgContains(message, 'yes') then
+	elseif MsgContains(message, "yes") then
 		local player = Player(creature)
 		if npcHandler:getTopic(playerId) == 1 then
 			if not player:removeMoneyBank(15) then
-				npcHandler:say('Sorry, that\'s only dust in your purse.', npc, creature)
+				npcHandler:say("Sorry, that's only dust in your purse.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true
 			end
 
 			player:addItem(3503, 1)
-			npcHandler:say('Fine.', npc, creature)
+			npcHandler:say("Fine.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			if not player:removeMoneyBank(1) then
-				npcHandler:say('Sorry, that\'s only dust in your purse.', npc, creature)
+				npcHandler:say("Sorry, that's only dust in your purse.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true
 			end
 
 			player:addItem(3507, 1)
-			npcHandler:say('Fine.', npc, creature)
+			npcHandler:say("Fine.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif MsgContains(message, 'no') then
+	elseif MsgContains(message, "no") then
 		if table.contains({ 1, 2 }, npcHandler:getTopic(playerId)) then
-			npcHandler:say('I knew I would be stuck with that stuff.', npc, creature)
+			npcHandler:say("I knew I would be stuck with that stuff.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end

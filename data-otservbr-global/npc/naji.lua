@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 113,
 	lookLegs = 95,
 	lookFeet = 113,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = "It's a wise idea to store your money in your bank account.", yell = false }
+	{ text = "It's a wise idea to store your money in your bank account.", yell = false },
 }
 
 local keywordHandler = KeywordHandler:new()

@@ -16,19 +16,19 @@ npcConfig.outfit = {
 	lookBody = 120,
 	lookLegs = 15,
 	lookFeet = 94,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Nature is in pain.' },
-	{ text = 'The weather is fine today.' },
-	{ text = 'I can hear the call of the forest.' }
+	{ text = "Nature is in pain." },
+	{ text = "The weather is fine today." },
+	{ text = "I can hear the call of the forest." },
 }
 
 local keywordHandler = KeywordHandler:new()

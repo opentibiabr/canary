@@ -29,7 +29,7 @@ function dangerousDepthPesticide.onUse(player, item, fromPosition, target, toPos
 				target:transform(30730)
 			end
 		end
-	elseif (table.contains({ 27495, 27496, 27497 }, target:getId())) then
+	elseif table.contains({ 27495, 27496, 27497 }, target:getId()) then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Only half-decayed diremaw corpses can be neutralised with these pesticides.")
 		return true
 	end

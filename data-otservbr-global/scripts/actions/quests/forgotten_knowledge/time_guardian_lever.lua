@@ -7,25 +7,25 @@ local config = {
 		{ pos = Position(33010, 31661, 14), teleport = Position(32977, 31667, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33010, 31662, 14), teleport = Position(32977, 31667, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33010, 31663, 14), teleport = Position(32977, 31667, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33010, 31664, 14), teleport = Position(32977, 31667, 14), effect = CONST_ME_TELEPORT }
+		{ pos = Position(33010, 31664, 14), teleport = Position(32977, 31667, 14), effect = CONST_ME_TELEPORT },
 	},
 	bosses = {
-		{ bossPosition = Position(32977, 31662, 14), bossName = 'The Time Guardian' },
-		{ bossPosition = Position(32975, 31664, 13), bossName = 'The Freezing Time Guardian' },
-		{ bossPosition = Position(32980, 31664, 13), bossName = 'The Blazing Time Guardian' }
+		{ bossPosition = Position(32977, 31662, 14), bossName = "The Time Guardian" },
+		{ bossPosition = Position(32975, 31664, 13), bossName = "The Freezing Time Guardian" },
+		{ bossPosition = Position(32980, 31664, 13), bossName = "The Blazing Time Guardian" },
 	},
 	monsters = {
-		{ cosmic = 'cosmic energy prism a invu', pos = Position(32801, 32827, 14) },
-		{ cosmic = 'cosmic energy prism b invu', pos = Position(32798, 32827, 14) },
-		{ cosmic = 'cosmic energy prism c invu', pos = Position(32803, 32826, 14) },
-		{ cosmic = 'cosmic energy prism d invu', pos = Position(32796, 32826, 14) }
+		{ cosmic = "cosmic energy prism a invu", pos = Position(32801, 32827, 14) },
+		{ cosmic = "cosmic energy prism b invu", pos = Position(32798, 32827, 14) },
+		{ cosmic = "cosmic energy prism c invu", pos = Position(32803, 32826, 14) },
+		{ cosmic = "cosmic energy prism d invu", pos = Position(32796, 32826, 14) },
 	},
 	specPos = {
 		from = Position(32967, 31654, 13),
-		to = Position(32989, 31677, 14)
+		to = Position(32989, 31677, 14),
 	},
 	exit = Position(32870, 32724, 14),
-	storage = Storage.ForgottenKnowledge.TimeGuardianTimer
+	storage = Storage.ForgottenKnowledge.TimeGuardianTimer,
 }
 
 local forgottenKnowledgeGuardianLever = Action()

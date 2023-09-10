@@ -62,7 +62,7 @@ function Player.resetTrackedMissions(self, missions)
 					missionId = missionId,
 					questName = questName,
 					missionName = self:getMissionName(questId, missionIndex),
-					missionDesc = self:getMissionDescription(questId, missionIndex)
+					missionDesc = self:getMissionDescription(questId, missionIndex),
 				}
 				table.insert(PlayerTrackedMissionsData[self:getId()], data)
 				if #PlayerTrackedMissionsData[self:getId()] >= maxAllowed then
@@ -124,9 +124,9 @@ function Player.getMissionsData(self, storage)
 						local data = {
 							missionId = mission.missionId,
 							missionName = self:getMissionName(questId, missionId),
-							missionDesc = self:getMissionDescription(questId, missionId)
+							missionDesc = self:getMissionDescription(questId, missionId),
 						}
-						missions[#missions+1] = data
+						missions[#missions + 1] = data
 					end
 				end
 			end
@@ -375,8 +375,7 @@ function Player.updateStorage(self, key, value, oldValue, currentFrameTime)
 end
 
 local function sendPrint(questId, index)
-	logger.warn("[sendPrint] - Quest id:[{}]] mission:[{}]",
-		questId, index)
+	logger.warn("[sendPrint] - Quest id:[{}]] mission:[{}]", questId, index)
 end
 
 for questId = 1, #Quests do

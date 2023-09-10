@@ -28,7 +28,7 @@ function spikeTasksThermometer.onUse(player, item, fromPosition, target, toPosit
 		player:setStorageValue(SPIKE_LOWER_LAVA_MAIN, 1)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Whew! That was that hot, it melted the thermometer! At least you've found the hot spot!")
 	else
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'This is not the hot spot!')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This is not the hot spot!")
 	end
 	return true
 end

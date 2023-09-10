@@ -64,7 +64,7 @@ function heartDestructionOutburst.onUse(player, item, fromPosition, itemEx, toPo
 			Position(32207, 31285, 14),
 			Position(32207, 31286, 14),
 			Position(32207, 31287, 14),
-			Position(32207, 31288, 14)
+			Position(32207, 31288, 14),
 		},
 
 		newPos = { x = 32234, y = 31292, z = 14 },
@@ -81,7 +81,7 @@ function heartDestructionOutburst.onUse(player, item, fromPosition, itemEx, toPo
 					if tile then
 						local playerTile = tile:getTopCreature()
 						if playerTile and playerTile:isPlayer() then
-							storePlayers[#storePlayers+1] = playerTile
+							storePlayers[#storePlayers + 1] = playerTile
 						end
 					end
 				end

@@ -15,13 +15,12 @@ npcConfig.outfit = {
 	lookHead = 57,
 	lookBody = 57,
 	lookLegs = 57,
-	lookFeet = 57
+	lookFeet = 57,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
-
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -72,11 +71,10 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "help") then
 		npcHandler:say("You mean you want help us?", npc, creature)
 		npcHandler:setTopic(playerId, 11)
-	elseif MsgContains(message, "mission") and npcHandler:getTopic(playerId) == 12 and player:getStorageValue(Storage.UnnaturalSelection.Questline) < 1
-			and player:getStorageValue(TheNewFrontier.Mission03) == 3 then
+	elseif MsgContains(message, "mission") and npcHandler:getTopic(playerId) == 12 and player:getStorageValue(Storage.UnnaturalSelection.Questline) < 1 and player:getStorageValue(TheNewFrontier.Mission03) == 3 then
 		npcHandler:say({
 			"Big problem we have! Skull of first leader gone. He ancestor of whole tribe but died long ago in war. We have keep his skull on our sacred place. ...",
-			"Then one night, green men came with wolves... and one of wolves took skull and ran off chewing on it! We need back - many wisdom and power is in skull. Maybe they took to north fortress. But can be hard getting in. You try get our holy skull back?"
+			"Then one night, green men came with wolves... and one of wolves took skull and ran off chewing on it! We need back - many wisdom and power is in skull. Maybe they took to north fortress. But can be hard getting in. You try get our holy skull back?",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "mission") and player:getStorageValue(Storage.UnnaturalSelection.Questline) >= 1 then
@@ -87,7 +85,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"You brought back skull of first leader. Hero of tribe! But we more missions to do. ...",
 				"Me and Ulala talk about land outside. We wanting to see more of land! Land over big water! But us no can leave tribe. No can cross water. Only way is skull of first leader. ...",
-				"What holy skull sees, tribe sees. That we believe. Can you bring holy skull over big water and show places?"
+				"What holy skull sees, tribe sees. That we believe. Can you bring holy skull over big water and show places?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif player:getStorageValue(Storage.UnnaturalSelection.Questline) == 3 then
@@ -100,7 +98,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"You well did! Great hunt is under best signs now. We prepare weapons and paint faces and then go! ...",
 				"No no, you no need to help us. But can prepare afterparty! Little men sent us stuff some time ago. Was strange water in there. Brown and stinky! But when we tried all tribe became veeeeeeery happy. ...",
-				"Now brown water is gone and we sad! Can you bring POT of brown water for party after great hunt? Just bring to me and me trade for shiny treasure."
+				"Now brown water is gone and we sad! Can you bring POT of brown water for party after great hunt? Just bring to me and me trade for shiny treasure.",
 			}, npc, creature)
 			player:setStorageValue(Storage.UnnaturalSelection.Questline, 14)
 			player:setStorageValue(Storage.UnnaturalSelection.Mission06, 2) --Questlog, Unnatural Selection Quest "Mission 6: Firewater Burn"

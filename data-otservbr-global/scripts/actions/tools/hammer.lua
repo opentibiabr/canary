@@ -15,28 +15,28 @@ local settingTable = {
 	[42501] = {
 		position = Position(32647, 32216, 7),
 		removeItem = 12183,
-		createItem = 6474
+		createItem = 6474,
 	},
 	[42502] = {
 		position = Position(32660, 32213, 7),
 		removeItem = 12183,
-		createItem = 6474
+		createItem = 6474,
 	},
 	[42503] = {
 		position = Position(32644, 32183, 6),
 		removeItem = 12185,
-		createItem = 6473
+		createItem = 6473,
 	},
 	[42504] = {
 		position = Position(32660, 32201, 7),
 		removeItem = 12184,
-		createItem = 6473
+		createItem = 6473,
 	},
 	[42505] = {
 		position = Position(32652, 32200, 5),
 		removeItem = 12185,
-		createItem = 6473
-	}
+		createItem = 6473,
+	},
 }
 
 local hammer = Action()

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 96,
 	lookFeet = 114,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 322
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Ragnir, Krimhorn, Bittermor, and Fenrock."
+	Locations = "Ragnir, Krimhorn, Bittermor, and Fenrock.",
 }
 
 monster.health = 135
@@ -35,7 +35,7 @@ monster.manaCost = 450
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -91,11 +91,11 @@ monster.loot = {
 	{ name = "crystal sword", chance = 100 },
 	{ name = "fur boots", chance = 100 },
 	{ name = "ragnir helmet", chance = 100 },
-	{ name = "health potion", chance = 100 }
+	{ name = "health potion", chance = 100 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -60 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -60 },
 }
 
 monster.defenses = {
@@ -121,7 +121,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

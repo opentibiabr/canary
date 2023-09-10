@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 78,
 	lookLegs = 94,
 	lookFeet = 78,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.shop = {
@@ -88,7 +88,7 @@ npcConfig.shop = {
 	{ clientId = 27706, sell = 9000, itemName = "werefox trophy", storageKey = POINTSSTORAGE, storageValue = 70 },
 	{ clientId = 34219, sell = 12000, itemName = "werehyaena trophy", storageKey = POINTSSTORAGE, storageValue = 70 },
 	-- Buy offers
-	{ clientId = 9601, buy = 1000, itemName = "demon backpack", storageKey = POINTSSTORAGE, storageValue = 70 }
+	{ clientId = 9601, buy = 1000, itemName = "demon backpack", storageKey = POINTSSTORAGE, storageValue = 70 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -99,8 +99,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -135,11 +134,13 @@ local function greetCallback(npc, creature)
 
 	if player:getStorageValue(Storage.KillingInTheNameOf.QuestLogEntry) ~= 0 then
 		npcHandler:setMessage(MESSAGE_GREET, "Hi there, do you want to to {join} the 'Paw and Fur - Hunting Elite'?")
-	elseif player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) < 0 and player:getStorageValue(POINTSSTORAGE) >= 10 and player:getLevel() >= 6 or -- to Huntsman Rank
-			player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 0 and player:getStorageValue(POINTSSTORAGE) >= 20 and player:getLevel() >= 6 or -- to Ranger Rank
-			player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 2 and player:getStorageValue(POINTSSTORAGE) >= 40 and player:getLevel() >= 50 or -- to Big Game Hunter Rank
-			player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 4 and player:getStorageValue(POINTSSTORAGE) >= 70 and player:getLevel() >= 80 or -- to Trophy Hunter Rank
-			player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 6 and player:getStorageValue(POINTSSTORAGE) >= 100 and player:getLevel() >= 130 then -- to Elite Hunter Rank
+	elseif
+		player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) < 0 and player:getStorageValue(POINTSSTORAGE) >= 10 and player:getLevel() >= 6 -- to Huntsman Rank
+		or player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 0 and player:getStorageValue(POINTSSTORAGE) >= 20 and player:getLevel() >= 6 -- to Ranger Rank
+		or player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 2 and player:getStorageValue(POINTSSTORAGE) >= 40 and player:getLevel() >= 50 -- to Big Game Hunter Rank
+		or player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 4 and player:getStorageValue(POINTSSTORAGE) >= 70 and player:getLevel() >= 80 -- to Trophy Hunter Rank
+		or player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 6 and player:getStorageValue(POINTSSTORAGE) >= 100 and player:getLevel() >= 130
+	then -- to Elite Hunter Rank
 		npcHandler:setMessage(MESSAGE_GREET, "Good to see you again |PLAYERNAME|. You gained " .. player:getStorageValue(POINTSSTORAGE) .. " points for our society. Ask me for {promotion} to advance your rank!")
 	else
 		npcHandler:setMessage(MESSAGE_GREET, "Welcome to the 'Paw and Fur - Hunting Elite' |PLAYERNAME|. Feel free to do {tasks} for us.")
@@ -165,55 +166,48 @@ local messageTask = {
 	[1] = "Nice work, old chap. If you're up for another hunting mission, just ask me for a {task}.",
 	[2] = "Jolly good job you did there, old chap. If you're up for another hunting mission, just ask me for a {task}.",
 	[3] = "Well done! If you're up for another hunting mission, just ask me for a {task}.",
-	[4] = "That took some time, huh? Good hunting though. If you're up for another hunting mission, just ask me for a {task}."
+	[4] = "That took some time, huh? Good hunting though. If you're up for another hunting mission, just ask me for a {task}.",
 }
 local messageBoss = {
-	{ "Spiffing work, old chap. Now I have a special task for you. Recently several citizens of Port Hope vanished. It is rumoured that they were killed by a crocodile. The people call it 'Snapper'. Hunt down and kill that evil man-eating beast. ...",
-		"Ask me about new {tasks} if you're up for a further hunting mission. Be aware that you can only have one 'Snapper' task active at the same time!" },
+	{
+		"Spiffing work, old chap. Now I have a special task for you. Recently several citizens of Port Hope vanished. It is rumoured that they were killed by a crocodile. The people call it 'Snapper'. Hunt down and kill that evil man-eating beast. ...",
+		"Ask me about new {tasks} if you're up for a further hunting mission. Be aware that you can only have one 'Snapper' task active at the same time!",
+	},
 	"Nicely done! Now I shall assign you a special task. Rumour has it that there is an ancient and evil tarantula who preys on humans. She is called 'Hide'. Track her down and kill her! Good luck, old chap.",
-	{ "Well done, old chap. Now i shall assign you a special task. Rumour has it that there is an old carniphila somewhere in the jungle. Find Deathbine's hideout and kill it! Good luck, old chap ...",
-		"Ask me about new {tasks} if you're up for further hunting mission. Be aware that you can only have one 'Deathbine' task active at the same time!" },
+	{ "Well done, old chap. Now i shall assign you a special task. Rumour has it that there is an old carniphila somewhere in the jungle. Find Deathbine's hideout and kill it! Good luck, old chap ...", "Ask me about new {tasks} if you're up for further hunting mission. Be aware that you can only have one 'Deathbine' task active at the same time!" },
 	"Jolly good job you did there, but now I have a special task for you. The citizens of Svargrond live in fear because of a frightfully bad-tempered mammoth they call 'Blood Tusk'. Go there and put an end to him. Happy hunting!",
-	{ "As I see it, you need more of a challenge! I have heard that there is an ice golem the hunters in Svargrond call 'Shardhead'. It is an extremely dangerous example of its kind! ...",
-		"I believe you are equal to the task, |PLAYERNAME|! If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Shardhead' task active at the same time!" },
-	{ "Very good work, old chap. Lucky you are here - I have just been told of a task which is perfect for you. ...",
-		"The Yalaharians are having a spot of bother with a huge mutated rat. They call it 'Esmeralda' and you should find her somewhere in the sewers. Good hunting!" },
-	{ "Very good work, old chap. Lucky you are here - I have just been told of a task which is perfect for you. ...",
+	{ "As I see it, you need more of a challenge! I have heard that there is an ice golem the hunters in Svargrond call 'Shardhead'. It is an extremely dangerous example of its kind! ...", "I believe you are equal to the task, |PLAYERNAME|! If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Shardhead' task active at the same time!" },
+	{ "Very good work, old chap. Lucky you are here - I have just been told of a task which is perfect for you. ...", "The Yalaharians are having a spot of bother with a huge mutated rat. They call it 'Esmeralda' and you should find her somewhere in the sewers. Good hunting!" },
+	{
+		"Very good work, old chap. Lucky you are here - I have just been told of a task which is perfect for you. ...",
 		"The people of Ankrahmun are having a spot of bother with a huge ancient scarab. They call it 'Fleshcrawler' and you should find and kill it. Good hunting! ...",
-		"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Fleshcrawler' task active at the same time!" },
-	{ "Very good work, old chap. Have you heard about 'Ribstride'? It must have a hideout. Try to find it and slay the beast. ...",
-		"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Ribstride' task active at the same time!" },
-	{ "Very good work, old chap. Have you heard about 'Bloodweb'? It must have a hideout. Try to find it and slay the beast. ...",
-		"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Bloodweb' task active at the same time!" },
-	{ "Superb work. However, there is something else I want you to do. It is said that there is a quara general named 'Thul' who is responsible for the attacks on Liberty Bay. Find and kill the general and bring peace back to Liberty Bay! ...",
-		"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Thul' task active at the same time!" },
+		"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Fleshcrawler' task active at the same time!",
+	},
+	{ "Very good work, old chap. Have you heard about 'Ribstride'? It must have a hideout. Try to find it and slay the beast. ...", "If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Ribstride' task active at the same time!" },
+	{ "Very good work, old chap. Have you heard about 'Bloodweb'? It must have a hideout. Try to find it and slay the beast. ...", "If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Bloodweb' task active at the same time!" },
+	{ "Superb work. However, there is something else I want you to do. It is said that there is a quara general named 'Thul' who is responsible for the attacks on Liberty Bay. Find and kill the general and bring peace back to Liberty Bay! ...", "If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Thul' task active at the same time!" },
 	"Well THAT was a hunt. Good job. Have you heard about the 'Old Widow'? It must have a hideout. Try to find it and slay the beast. You can ask about new {tasks} by the way. Be aware that you can only have one 'Old Widow' task active at the same time!",
-	{ "What an impressive hunt. Nicely done. By the way there is still something I want you to do for me. 'Hemming' a furious werewolf is up to mischief. Find its hideout and bring it down! ...",
-		"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Hemming' task active at the same time!" },
-	{ "Thumbs up, nice performance. Have you heard about 'Tormentor'? Find it and slay the beast. ...",
-		"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Tormentor' task active at the same time!" },
+	{ "What an impressive hunt. Nicely done. By the way there is still something I want you to do for me. 'Hemming' a furious werewolf is up to mischief. Find its hideout and bring it down! ...", "If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Hemming' task active at the same time!" },
+	{ "Thumbs up, nice performance. Have you heard about 'Tormentor'? Find it and slay the beast. ...", "If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Tormentor' task active at the same time!" },
 	"Well THAT was a hunt. Good job. Have you heard about 'Flameborn'? It must have a hideout. Try to find it and slay the beast. You can ask about new {tasks} by the way. Be aware that you can only have one 'Flameborn' task active at the same time!",
-	{ "What an impressive hunt. Nicely done. Have you heard about 'Fazzrah'? Try to find it and slay the beast. ...",
-		"You can ask about new {tasks} by the way. Be aware that you can only have one 'Fazzrah' task active at the same time!" },
-	{ "Nicely done. However, there is something else I want you to do. I have heard that there is a stampor the hunters in the Muggy Plains call 'Tromphonyte'. It is an extremely dangerous example of its kind! ...",
+	{ "What an impressive hunt. Nicely done. Have you heard about 'Fazzrah'? Try to find it and slay the beast. ...", "You can ask about new {tasks} by the way. Be aware that you can only have one 'Fazzrah' task active at the same time!" },
+	{
+		"Nicely done. However, there is something else I want you to do. I have heard that there is a stampor the hunters in the Muggy Plains call 'Tromphonyte'. It is an extremely dangerous example of its kind! ...",
 		"I believe you are equal to the task, |PLAYERNAME|! Find and kill it and bring peace back! ...",
-		"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Tromphonyte' task active at the same time!" },
+		"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Tromphonyte' task active at the same time!",
+	},
 	"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Sulphur Scuttler' task active at the same time!",
 	"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Bruise Payne' task active at the same time!",
 	"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Many' task active at the same time!",
-	{ "My - you can be proud of yourself! However, you're not finished yet. There are rumours about a being called 'The Noxious Spawn' which was seen deep down in the ruins of Banuta. Try to find its hideout. ...",
-		"You can ask about new {tasks} bye the way. Be aware that you can only have one 'Noxious Spawn' task active at the same time!" },
+	{ "My - you can be proud of yourself! However, you're not finished yet. There are rumours about a being called 'The Noxious Spawn' which was seen deep down in the ruins of Banuta. Try to find its hideout. ...", "You can ask about new {tasks} bye the way. Be aware that you can only have one 'Noxious Spawn' task active at the same time!" },
 	"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Gorgo' task active at the same time!",
-	{ "Such marvellous hunting skills! Perhaps you can help me with this one. Have you heard about 'Stonecracker'? ...",
-		"It's the oldest and most dangerous of all behemoths and was last seen under the Cyclopolis in Edron. What do you think? Are you hunter enough? I think you are!" },
-	{ "Good job, old chap! Are you up for a challenge? Have you heard of the legendary sea serpent called the 'Leviathan'? It must be somewhere near the spot you found. ...",
-		"This is a true test of your hunting skills - find it and kill it. Good hunting! ...", "You can ask about new {tasks} by the way. Be aware that you can only have one 'Leviathan' task active at the same time!" },
-	{ "Outstanding! You do have impressive hunting skills. Have you already heard about Kerberos the oldest and most dangerous of all hellhounds? He must have a hideout somewhere. Try to find him and slay the beast. ...",
-		"You can ask about new tasks by the way. Be aware that you can only have one Kerberos task active at the same time!" },
+	{ "Such marvellous hunting skills! Perhaps you can help me with this one. Have you heard about 'Stonecracker'? ...", "It's the oldest and most dangerous of all behemoths and was last seen under the Cyclopolis in Edron. What do you think? Are you hunter enough? I think you are!" },
+	{ "Good job, old chap! Are you up for a challenge? Have you heard of the legendary sea serpent called the 'Leviathan'? It must be somewhere near the spot you found. ...", "This is a true test of your hunting skills - find it and kill it. Good hunting! ...", "You can ask about new {tasks} by the way. Be aware that you can only have one 'Leviathan' task active at the same time!" },
+	{ "Outstanding! You do have impressive hunting skills. Have you already heard about Kerberos the oldest and most dangerous of all hellhounds? He must have a hideout somewhere. Try to find him and slay the beast. ...", "You can ask about new tasks by the way. Be aware that you can only have one Kerberos task active at the same time!" },
 	"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Ethershreck' task active at the same time!",
 	"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Paiz the Pauperizer' task active at the same time!",
 	"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Bretzecutioner' task active at the same time!",
-	"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Zanakeph' task active at the same time!"
+	"If you're up for another hunting mission, just ask me for a {task}. Be aware that you can only have one 'Zanakeph' task active at the same time!",
 }
 local messageBossStart = {
 	"Okay. Go forth and kill him.", -- Snapper
@@ -243,25 +237,25 @@ local messageBossStart = {
 	"Okay. Go forth and kill him.",
 	"Okay. Go forth and kill him.",
 	"Okay. Go forth and kill him.",
-	"Okay. Go forth and kill him."
+	"Okay. Go forth and kill him.",
 }
 local tier = {
 	{
 		allName = { "crocodiles", "badgers", "tarantulas", "carniphilas", "stone golems", "mammoths", "gnarlhounds", "terramites", "apes", "thornback tortoises", "gargoyles", "crocodile", "badger", "tarantula", "carniphila", "stone golem", "mammoth", "gnarlhound", "terramite", "ape", "thornback tortoise", "gargoyle" },
-		withsName = { "crocodiles", "badgers", "tarantulas", "carniphilas", "stone golems", "mammoths", "gnarlhounds", "terramites", "apes", "thornback tortoises", "gargoyles" }
+		withsName = { "crocodiles", "badgers", "tarantulas", "carniphilas", "stone golems", "mammoths", "gnarlhounds", "terramites", "apes", "thornback tortoises", "gargoyles" },
 	},
 	{
 		allName = { "ice golems", "quara scouts", "mutated rats", "ancient scarabs", "wyverns", "lancer beetles", "wailing widows", "killer caimans", "bonebeasts", "crystal spiders", "mutated tigers", "ice golem", "quara scout", "mutated rat", "ancient scarab", "wyvern", "lancer beetle", "wailing widow", "killer caiman", "bonebeast", "crystal spider", "mutated tiger" },
-		withsName = { "ice golems", "quara scouts", "mutated rats", "ancient scarabs", "wyverns", "lancer beetles", "wailing widows", "killer caimans", "bonebeasts", "crystal spiders", "mutated tigers" }
+		withsName = { "ice golems", "quara scouts", "mutated rats", "ancient scarabs", "wyverns", "lancer beetles", "wailing widows", "killer caimans", "bonebeasts", "crystal spiders", "mutated tigers" },
 	},
 	{
 		allName = { "underwater quara", "giant spiders", "werewolves", "nightmares", "hellspawns", "high class lizards", "stampors", "brimstone bugs", "mutated bats", "giant spider", "werewolve", "nightmare", "hellspawn", "high class lizard", "stampor", "brimstone bug", "mutated bat" },
-		withsName = { "underwater quara", "giant spiders", "werewolves", "nightmares", "hellspawns", "high class lizards", "stampors", "brimstone bugs", "mutated bats" }
+		withsName = { "underwater quara", "giant spiders", "werewolves", "nightmares", "hellspawns", "high class lizards", "stampors", "brimstone bugs", "mutated bats" },
 	},
 	{
 		allName = { "hydras", "serpent spawns", "medusae", "behemoths", "sea serpents", "hellhounds", "ghastly dragons", "undead dragons", "drakens", "destroyers", "hydra", "serpent spawn", "medusa", "behemoth", "sea serpent", "hellhound", "ghastly dragon", "undead dragon", "draken", "destroyer" },
-		withsName = { "hydras", "serpent spawns", "medusae", "behemoths", "sea serpents", "hellhounds", "ghastly dragons", "undead dragons", "drakens", "destroyers" }
-	}
+		withsName = { "hydras", "serpent spawns", "medusae", "behemoths", "sea serpents", "hellhounds", "ghastly dragons", "undead dragons", "drakens", "destroyers" },
+	},
 }
 local messageStartTask = {
 	["crocodiles"] = "They are a nuisance! You'll find them here in the jungle near the river. Hunt 300 crocodiles and you'll get a nice reward. Interested?",
@@ -300,12 +294,13 @@ local messageStartTask = {
 	["behemoths"] = "Behemoths must be kept away from the settlements at all costs. You'll find them east of here in the taboo-area or under Cyclopolis in Edron. Go there and hunt a few of them - shall we say... 700? Are you up for that?",
 	["sea serpents"] = {
 		"The sea serpent threat increases! Captain Haba knows where to find them. ...",
-		"Go to Svargrond and talk to him. 900 sea serpents, including the young ones, should be enough to reduce the threat. Got it?" },
+		"Go to Svargrond and talk to him. 900 sea serpents, including the young ones, should be enough to reduce the threat. Got it?",
+	},
 	["hellhounds"] = "These harbingers of darkness can be found in many deep dungeons all over Tibia. Kill 250 of them. Are you in?",
 	["ghastly dragons"] = "Ghastly dragons are devastating creatures which can be found in many dangerous places all over Tibia. Kill 500 of them. Are you in?",
 	["undead dragons"] = "You are a thrill seeker? Undead dragons belong to one of the most powerful races that can be found in Tibia. Kill 400 of them. Are you in?",
 	["drakens"] = "Go to the Zaoan landmass and reduce their number! Kill 900 drakens, I'll accept: draken abomination, draken elite, draken spellweaver and draken warmaster. Are you in?",
-	["destroyers"] = "You can find those dark creatures on several places all over Tibia. For this task I want you to kill 650 destroyers. Are you in?"
+	["destroyers"] = "You can find those dark creatures on several places all over Tibia. For this task I want you to kill 650 destroyers. Are you in?",
 }
 local messageStartTaskAlt = {
 	["crocodile"] = messageStartTask["crocodiles"],
@@ -410,7 +405,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	message = message:gsub("(%l)(%w*)", function(a, b) return string.upper(a) .. b end)
+	message = message:gsub("(%l)(%w*)", function(a, b)
+		return string.upper(a) .. b
+	end)
 
 	if (MsgContains("join", message) or MsgContains("yes", message)) and npcHandler:getTopic(playerId) == 0 and player:getStorageValue(Storage.KillingInTheNameOf.QuestLogEntry) ~= 0 then
 		player:setStorageValue(JOIN_STOR, 1)
@@ -431,11 +428,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		if checkZ(npc, player, message) == true then
 			return true
 		end
-		if player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) < 0 and player:getStorageValue(POINTSSTORAGE) >= 10 and player:getLevel() >= 6 or -- to Huntsman Rank
-				player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 0 and player:getStorageValue(POINTSSTORAGE) >= 20 and player:getLevel() >= 6 or -- to Ranger Rank
-				player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 2 and player:getStorageValue(POINTSSTORAGE) >= 40 and player:getLevel() >= 50 or -- to Big Game Hunter Rank
-				player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 4 and player:getStorageValue(POINTSSTORAGE) >= 70 and player:getLevel() >= 80 or -- to Trophy Hunter Rank
-				player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 6 and player:getStorageValue(POINTSSTORAGE) >= 100 and player:getLevel() >= 130 then -- to Elite Hunter Rank
+		if
+			player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) < 0 and player:getStorageValue(POINTSSTORAGE) >= 10 and player:getLevel() >= 6 -- to Huntsman Rank
+			or player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 0 and player:getStorageValue(POINTSSTORAGE) >= 20 and player:getLevel() >= 6 -- to Ranger Rank
+			or player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 2 and player:getStorageValue(POINTSSTORAGE) >= 40 and player:getLevel() >= 50 -- to Big Game Hunter Rank
+			or player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 4 and player:getStorageValue(POINTSSTORAGE) >= 70 and player:getLevel() >= 80 -- to Trophy Hunter Rank
+			or player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 6 and player:getStorageValue(POINTSSTORAGE) >= 100 and player:getLevel() >= 130
+		then -- to Elite Hunter Rank
 			npcHandler:say("You are ready to advance one rank in our society |PLAYERNAME|. Ask me for a {promotion} first.", npc, creature)
 			return true
 		end
@@ -483,9 +482,7 @@ local function creatureSayCallback(npc, creature, type, message)
 							end
 
 							local pointsToReceive = reward.value[1] * ratePoints
-							if player:getStorageValue(POINTSSTORAGE) >= 40 and player:getLevel() < 50 or
-									player:getStorageValue(POINTSSTORAGE) >= 70 and player:getLevel() < 80 or
-									player:getStorageValue(POINTSSTORAGE) >= 100 and player:getLevel() < 130 then
+							if player:getStorageValue(POINTSSTORAGE) >= 40 and player:getLevel() < 50 or player:getStorageValue(POINTSSTORAGE) >= 70 and player:getLevel() < 80 or player:getStorageValue(POINTSSTORAGE) >= 100 and player:getLevel() < 130 then
 								messageAltPoints = true
 							elseif player:getLevel() >= 130 and player:getStorageValue(POINTSSTORAGE) <= 20 then
 								player:setStorageValue(POINTSSTORAGE, getPlayerTasksPoints(creature) + pointsToReceive + 3)
@@ -534,7 +531,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		if messageAltExtra == true then
 			npcHandler:say({
 				"Such brave deed deserves a special reward! Take this holy icon. It neutralises great evil and gives you access to areas which are protected by those forces. But remember ...",
-				"This is a one-time opportunity! You won't get the holy icon twice." }, npc, creature)
+				"This is a one-time opportunity! You won't get the holy icon twice.",
+			}, npc, creature)
 			return true
 		end
 		if finished > 0 then
@@ -544,7 +542,8 @@ local function creatureSayCallback(npc, creature, type, message)
 					if messageAltPoints == true then
 						npcHandler:say({
 							"Ah, okay. This time you'll just get an experience reward, no points for our society as you already gained enough points for your level range. Ask me for a {boss} and the choice is yours. ...",
-							"Level up and new tasks and thus points will be available." }, npc, creature)
+							"Level up and new tasks and thus points will be available.",
+						}, npc, creature)
 					elseif messageAltExtraPoints == true then
 						npcHandler:say("You're lucky today. This time you'll get an experience reward and " .. extraValue .. " extra points for our societ.", npc, creature)
 					else
@@ -568,7 +567,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say({
 					"You may not advance in your rank anymore until you've levelled up. But you can accept tasks without getting Paw & Fur points, just for an experience reward and the possibility to fight a boss from the range lower than level 50. ...",
 					"You can try {crocodiles}, {badgers}, {tarantulas}, {carniphilas}, {stone golems}, {mammoths}, {gnarlhounds}, ...",
-					"as well as {terramites}, {apes}, {thornback tortoises} and {gargoyles}." }, npc, creature)
+					"as well as {terramites}, {apes}, {thornback tortoises} and {gargoyles}.",
+				}, npc, creature)
 			else
 				npcHandler:say("Alright, what would you like to hunt? {Crocodiles}, {badgers}, {tarantulas}, {carniphilas}, {stone golems}, {mammoths}, {gnarlhounds}, {terramites}, {apes}, {thornback tortoises} or {gargoyles}.", npc, creature)
 			end
@@ -577,32 +577,38 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say({
 					"You may not advance in your rank anymore until you've levelled up. But you can accept tasks without getting Paw & Fur points, just for an experience reward and the possibility to fight a boss from the range lower than level 80. ...",
 					"You can try {ice golems}, {quara scouts}, {mutated rats}, {ancient scarabs}, {wyverns}, {lancer beetles}, {wailing widows}, ...",
-					"as well as {killer caimans}, {bonebeasts}, {crystal spiders} and {mutated tigers}." }, npc, creature)
+					"as well as {killer caimans}, {bonebeasts}, {crystal spiders} and {mutated tigers}.",
+				}, npc, creature)
 			else
 				npcHandler:say({
 					"Alright, what would you like to hunt? {Ice golems}, {quara scouts}, {mutated rats}, {ancient scarabs}, {wyverns}, {lancer beetles}, ...",
-					"or {wailing widows}, {killer caimans}, {bonebeasts}, {crystal spiders} or {mutated tigers}." }, npc, creature)
+					"or {wailing widows}, {killer caimans}, {bonebeasts}, {crystal spiders} or {mutated tigers}.",
+				}, npc, creature)
 			end
 		elseif player:getLevel() >= 80 and player:getLevel() < 130 then
 			if player:getStorageValue(POINTSSTORAGE) >= 100 then
 				npcHandler:say({
 					"You may not advance in your rank anymore until you've levelled up. But you can accept tasks without getting Paw & Fur points, just for an experience reward and the possibility to fight a boss from the range lower than level 130. ...",
 					"You can try {underwater quara}, {giant spiders}, {werewolves}, {nightmares}, {hellspawns}, {high class lizards}, {stampors}, ...",
-					"as well as {brimstone bugs} and {mutated bats}." }, npc, creature)
+					"as well as {brimstone bugs} and {mutated bats}.",
+				}, npc, creature)
 			else
 				npcHandler:say({
 					"Alright, what would you like to hunt? {Underwater quara}, {giant spiders}, {werewolves}, {nightmares}, {hellspawns}, ...",
-					"as well as {high class lizards}, {stampors}, {brimstone bugs}, {mutated bats}." }, npc, creature)
+					"as well as {high class lizards}, {stampors}, {brimstone bugs}, {mutated bats}.",
+				}, npc, creature)
 			end
 		elseif player:getLevel() >= 130 and player:getStorageValue(POINTSSTORAGE) < 100 then
 			npcHandler:say({
 				"Alright, what would you like to hunt? You can try {hydras}, {serpent spawns}, {medusae}, {behemoths}, {sea serpents}, ...",
-				"as well as {hellhounds}, {ghastly dragons}, {undead dragons}, {draken} and {destroyers}." }, npc, creature)
+				"as well as {hellhounds}, {ghastly dragons}, {undead dragons}, {draken} and {destroyers}.",
+			}, npc, creature)
 		else
 			npcHandler:say({
 				"Alright, what would you like to hunt? Be aware you won't gain any paw and fur points as you already achieved the highest rank, but you'll get an experience reward and can face bosses. ...",
 				"You can try {hydras}, {serpent spawns}, {medusae}, {behemoths}, {sea serpents}, ...",
-				"as well as {hellhounds}, {ghastly dragons}, {undead dragons}, {draken} and {destroyers} or maybe {demons}." }, npc, creature)
+				"as well as {hellhounds}, {ghastly dragons}, {undead dragons}, {draken} and {destroyers} or maybe {demons}.",
+			}, npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
 	elseif message ~= "" and player:canStartTask(message) then
@@ -623,7 +629,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				local chanceX = math.random(2)
 				local messageCarniphilas = {
 					[1] = "Interesting kind and not so easy to find. The fun begins when you want to hunt {Tiquanda's Revenge}. It's strong and smart like no other carniphila.",
-					[2] = "Damn walking weed-thingies! You'll find them deeper in the jungle. Weed out 150 carniphilas for our society. Alright?"
+					[2] = "Damn walking weed-thingies! You'll find them deeper in the jungle. Weed out 150 carniphilas for our society. Alright?",
 				}
 				npcHandler:say(messageCarniphilas[chanceX], npc, creature)
 			elseif table.contains(tier[1].withsName, message:lower()) then
@@ -718,14 +724,15 @@ local function creatureSayCallback(npc, creature, type, message)
 		local started = player:getStartedTasks()
 		if started and #started > 0 then
 			local text = ""
-			table.sort(started, (function(a, b) return (a < b) end))
+			table.sort(started, function(a, b)
+				return (a < b)
+			end)
 			local t = 0
 			local id
 			for i = 1, #started do
 				id = started[i]
 				t = t + 1
-				text = text .. "Task name: " .. tasks.GrizzlyAdams[id].raceName .. ". " ..
-						"Current kills: " .. player:getStorageValue(KillCounter + id) .. ".\n"
+				text = text .. "Task name: " .. tasks.GrizzlyAdams[id].raceName .. ". " .. "Current kills: " .. player:getStorageValue(KillCounter + id) .. ".\n"
 			end
 			npcHandler:say({ "The status of your current tasks is:\n" .. text }, npc, creature)
 		else
@@ -735,22 +742,26 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) < 0 and player:getStorageValue(POINTSSTORAGE) >= 10 and player:getLevel() >= 6 then -- to Huntsman Rank
 			npcHandler:say({
 				"You gained 10 points! Let me promote you to the first rank: 'Huntsman'. Congratulations! ...",
-				"If you find any trophies - either monster heads or other parts of monsters that you don't need - feel free to ask me for a trade." }, npc, creature)
+				"If you find any trophies - either monster heads or other parts of monsters that you don't need - feel free to ask me for a trade.",
+			}, npc, creature)
 			player:setStorageValue(Storage.KillingInTheNameOf.PawAndFurRank, 0)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 0 and player:getStorageValue(POINTSSTORAGE) >= 20 and player:getLevel() >= 6 then -- to Ranger Rank
 			npcHandler:say({
 				"You gained 20 points. It's time for a promotion. You advance to the rank of a 'Ranger'. Congratulations! ...",
-				"Oh, I made a deal with Lorek. He ships Rangers from our society - and higher ranks of course - to Banuta, Chor or near the mountain pass to Darama. Just ask him for a passage." }, npc, creature)
+				"Oh, I made a deal with Lorek. He ships Rangers from our society - and higher ranks of course - to Banuta, Chor or near the mountain pass to Darama. Just ask him for a passage.",
+			}, npc, creature)
 			player:setStorageValue(Storage.KillingInTheNameOf.PawAndFurRank, 2)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 2 and player:getStorageValue(POINTSSTORAGE) >= 40 and player:getLevel() >= 50 then -- to Big Game Hunter Rank
 			npcHandler:say({
 				"Good show! You gained 40 points for the 'Paw and Fur - Hunting Elite'. You have earned the right to join the ranks of those known as 'Big game hunter'. Congratulations! ...",
-				"From now on I'll buy more trophies from you!" }, npc, creature)
+				"From now on I'll buy more trophies from you!",
+			}, npc, creature)
 			player:setStorageValue(Storage.KillingInTheNameOf.PawAndFurRank, 4)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 4 and player:getStorageValue(POINTSSTORAGE) >= 70 and player:getLevel() >= 80 then -- to Trophy Hunter Rank
 			npcHandler:say({
 				"Spiffing! You gained 70 hunting points! From now on you can call yourself a 'Trophy hunter'. As a reward I have this special backpack for you and in addition, you can sell some more rare trophies to me. ...",
-				"Ask me for {special} tasks from time to time." }, npc, creature)
+				"Ask me for {special} tasks from time to time.",
+			}, npc, creature)
 			player:setStorageValue(Storage.KillingInTheNameOf.PawAndFurRank, 6)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 6 and player:getStorageValue(POINTSSTORAGE) >= 100 and player:getLevel() >= 130 then -- to Elite Hunter Rank
 			npcHandler:say("Congratulations, |PLAYERNAME|! You have gained the highest rank: 'Elite hunter'. If you haven't done yet, ask me for the {special} task.", npc, creature)
@@ -768,18 +779,21 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 4)
 			elseif player:getLevel() >= 50 and player:getLevel() < 80 then
 				npcHandler:say({
-					"You can choose between the {Snapper}, {Hide}, {Deathbine}, the {Bloodtusk}, {Shardhead}, {Fleshcrawler}, {Ribstride}, {Bloodweb} and {Esmeralda}" }, npc, creature)
+					"You can choose between the {Snapper}, {Hide}, {Deathbine}, the {Bloodtusk}, {Shardhead}, {Fleshcrawler}, {Ribstride}, {Bloodweb} and {Esmeralda}",
+				}, npc, creature)
 				npcHandler:setTopic(playerId, 5)
 			elseif player:getLevel() >= 80 and player:getLevel() < 130 then
 				npcHandler:say({
 					"You can choose between the {Snapper}, {Hide}, {Deathbine}, the {Bloodtusk}, {Shardhead}, {Fleshcrawler}, {Ribstride}, {Bloodweb}, {Esmeralda}, ...",
-					"{Thul}, {Flameborn}, {Sulphur Scuttler}, the {Old Widow}, {Hemming}, {Tormentor}, {Fazzrah}, {Tromphonyte} and {Bruise Payne}." }, npc, creature)
+					"{Thul}, {Flameborn}, {Sulphur Scuttler}, the {Old Widow}, {Hemming}, {Tormentor}, {Fazzrah}, {Tromphonyte} and {Bruise Payne}.",
+				}, npc, creature)
 				npcHandler:setTopic(playerId, 6)
 			else
 				npcHandler:say({
 					"You can choose between the {Snapper}, {Hide}, {Deathbine}, the {Bloodtusk}, {Shardhead}, {Fleshcrawler}, {Ribstride}, {Bloodweb}, {Esmeralda}, ...",
 					"{Thul}, {Flameborn}, {Sulphur Scuttler}, the {Old Widow}, {Hemming}, {Tormentor}, {Fazzrah}, {Tromphonyte}, {Bruise Payne}, ...",
-					"the {Many}, the {Noxious Spawn}, {Stonecracker}, {Gorgo}, {Kerberos}, {Ethershreck}, {Zanakeph}, {Paiz the Pauperizer}, {Bretzecutioner} and {Leviathan}." }, npc, creature)
+					"the {Many}, the {Noxious Spawn}, {Stonecracker}, {Gorgo}, {Kerberos}, {Ethershreck}, {Zanakeph}, {Paiz the Pauperizer}, {Bretzecutioner} and {Leviathan}.",
+				}, npc, creature)
 				npcHandler:setTopic(playerId, 7)
 			end
 		else
@@ -816,7 +830,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		if started and #started > 0 then
 			local text = ""
 			local sep = ", "
-			table.sort(started, (function(a, b) return (a < b) end))
+			table.sort(started, function(a, b)
+				return (a < b)
+			end)
 			local t = 0
 			local id
 			for i = 1, #started do
@@ -830,8 +846,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				text = text .. "{" .. (tasks.GrizzlyAdams[id].name or tasks.GrizzlyAdams[id].raceName) .. "}" .. sep
 			end
 
-			npcHandler:say("The current task" .. (#started > 1 and "s" or "") .. " that you started" ..
-				" " .. (#started > 1 and "are" or "is") .. " " .. text, npc, creature)
+			npcHandler:say("The current task" .. (#started > 1 and "s" or "") .. " that you started" .. " " .. (#started > 1 and "are" or "is") .. " " .. text, npc, creature)
 		else
 			npcHandler:say("You haven't started any task yet.", npc, creature)
 		end
@@ -839,7 +854,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		local started = player:getStartedTasks()
 		local text = ""
 		local sep = ", "
-		table.sort(started, (function(a, b) return (a < b) end))
+		table.sort(started, function(a, b)
+			return (a < b)
+		end)
 		local t = 0
 		local id
 		for i = 1, #started do
@@ -853,35 +870,24 @@ local function creatureSayCallback(npc, creature, type, message)
 			text = text .. "{" .. (tasks.GrizzlyAdams[id].name or tasks.GrizzlyAdams[id].raceName) .. "}" .. sep
 		end
 		if started and #started > 0 then
-			npcHandler:say("Canceling a task will make the counter restart. " ..
-				"Which of these tasks you want cancel?" .. (#started > 1 and "" or "") .. " " .. text, npc, creature)
+			npcHandler:say("Canceling a task will make the counter restart. " .. "Which of these tasks you want cancel?" .. (#started > 1 and "" or "") .. " " .. text, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		else
 			npcHandler:say("You haven't started any task yet.", npc, creature)
 		end
-	elseif ((getTaskByName(message)) and
-				(npcHandler:getTopic(playerId) == 2) and
-				(table.contains(getPlayerStartedTasks(creature), getTaskByName(message)))) then
+	elseif (getTaskByName(message)) and (npcHandler:getTopic(playerId) == 2) and (table.contains(getPlayerStartedTasks(creature), getTaskByName(message))) then
 		local task = getTaskByName(message)
 		if player:getStorageValue(KillCounter + task) > 0 then
-			npcHandler:say("You currently killed " .. player:getStorageValue(KillCounter + task) .. "/" ..
-				tasks.GrizzlyAdams[task].killsRequired .. " " .. tasks.GrizzlyAdams[task].raceName .. "." ..
-				" " .. "Canceling this task will restart the count." ..
-				" " .. "Are you sure you want to cancel this task?", npc, creature)
+			npcHandler:say("You currently killed " .. player:getStorageValue(KillCounter + task) .. "/" .. tasks.GrizzlyAdams[task].killsRequired .. " " .. tasks.GrizzlyAdams[task].raceName .. "." .. " " .. "Canceling this task will restart the count." .. " " .. "Are you sure you want to cancel this task?", npc, creature)
 		else
 			npcHandler:say("Are you sure you want to cancel this task?", npc, creature)
 		end
 		npcHandler:setTopic(playerId, 3)
 		cancel[playerId] = task
-	elseif ((getTaskByName(message)) and
-				(npcHandler:getTopic(playerId) == 1) and
-				(table.contains(getPlayerStartedTasks(creature), getTaskByName(message)))) then
+	elseif (getTaskByName(message)) and (npcHandler:getTopic(playerId) == 1) and (table.contains(getPlayerStartedTasks(creature), getTaskByName(message))) then
 		local task = getTaskByName(message)
 		if player:getStorageValue(KillCounter + task) > 0 then
-			npcHandler:say("You currently killed " ..
-				player:getStorageValue(KillCounter + task) .. "/" ..
-				tasks.GrizzlyAdams[task].killsRequired .. " " ..
-				tasks.GrizzlyAdams[task].raceName .. ".", npc, creature)
+			npcHandler:say("You currently killed " .. player:getStorageValue(KillCounter + task) .. "/" .. tasks.GrizzlyAdams[task].killsRequired .. " " .. tasks.GrizzlyAdams[task].raceName .. ".", npc, creature)
 		else
 			npcHandler:say("You currently killed 0/" .. tasks.GrizzlyAdams[task].killsRequired .. " " .. tasks.GrizzlyAdams[task].raceName .. ".", npc, creature)
 		end
@@ -890,18 +896,18 @@ local function creatureSayCallback(npc, creature, type, message)
 		player:setStorageValue(QUESTSTORAGE_BASE + cancel[playerId], -1)
 		player:setStorageValue(KILLSSTORAGE_BASE + cancel[playerId], player:getStorageValue(KILLSSTORAGE_BASE + cancel[playerId]) - 1)
 		player:setStorageValue(KillCounter + cancel[playerId], 0)
-		npcHandler:say("You have canceled the task " ..
-			(tasks.GrizzlyAdams[cancel[playerId]].name or tasks.GrizzlyAdams[cancel[playerId]].raceName) .. ".", npc, creature)
+		npcHandler:say("You have canceled the task " .. (tasks.GrizzlyAdams[cancel[playerId]].name or tasks.GrizzlyAdams[cancel[playerId]].raceName) .. ".", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif table.contains({ "points", "rank" }, message:lower()) then
-		npcHandler:say("At this time, you have " .. player:getPawAndFurPoints() .. " Paw & Fur points. You " ..
-			(player:getPawAndFurRank() == 6 and "are an Elite Hunter" or
-				player:getPawAndFurRank() == 5 and "are a Trophy Hunter" or
-				player:getPawAndFurRank() == 4 and "are a Big Game Hunter" or
-				player:getPawAndFurRank() == 3 and "are a Ranger" or
-				player:getPawAndFurRank() == 2 and "are a Huntsman" or
-				player:getPawAndFurRank() == 1 and "are a Member" or
-				"haven't been ranked yet") .. ".", npc, creature)
+		npcHandler:say(
+			"At this time, you have "
+				.. player:getPawAndFurPoints()
+				.. " Paw & Fur points. You "
+				.. (player:getPawAndFurRank() == 6 and "are an Elite Hunter" or player:getPawAndFurRank() == 5 and "are a Trophy Hunter" or player:getPawAndFurRank() == 4 and "are a Big Game Hunter" or player:getPawAndFurRank() == 3 and "are a Ranger" or player:getPawAndFurRank() == 2 and "are a Huntsman" or player:getPawAndFurRank() == 1 and "are a Member" or "haven't been ranked yet")
+				.. ".",
+			npc,
+			creature
+		)
 		npcHandler:setTopic(playerId, 0)
 	elseif message:lower() == "no" and npcHandler:getTopic(playerId) == 10 then
 		npcHandler:say("Speak to me again when you are done hunting", npc, creature)
@@ -911,7 +917,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getStorageValue(Storage.KillingInTheNameOf.MissionTiquandasRevenge) < 1 then
 				npcHandler:say({
 					"Have you heard about {Tiquanda's Revenge}? It is said that the jungle itself is alive and takes revenge for all the bad things people have done to it. ...",
-					"I myself believe that there is some truth in this clap-trap. Something 'real' which must have a hideout somewhere. Go find it and take revenge yourself! Ask me about the {special} task when you're done." }, npc, creature)
+					"I myself believe that there is some truth in this clap-trap. Something 'real' which must have a hideout somewhere. Go find it and take revenge yourself! Ask me about the {special} task when you're done.",
+				}, npc, creature)
 				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.TiquandasCount, 0)
 				player:setStorageValue(Storage.KillingInTheNameOf.MissionTiquandasRevenge, 1)
 			elseif player:getStorageValue(Storage.KillingInTheNameOf.MissionTiquandasRevenge) <= 2 and player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.TiquandasCount) == 0 then

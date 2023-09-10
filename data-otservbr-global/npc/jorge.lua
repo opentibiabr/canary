@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 38,
 	lookBody = 77,
 	lookLegs = 78,
-	lookFeet = 94
+	lookFeet = 94,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -80,7 +80,7 @@ local items = {
 	[28] = { name = "Phoenix Statue", id = 22026 },
 	[29] = { name = "The Mexcalibur", id = 19154 },
 	[30] = { name = "TibiaHispano Emblem", id = 25980 },
-	[31] = { name = "Goromaphone", id = 34210 }
+	[31] = { name = "Goromaphone", id = 34210 },
 }
 
 local function greetCallback(npc, creature)
@@ -96,16 +96,15 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	if message then
 		for i = 1, #items do
 			if MsgContains(message, items[i].name) then
 				if getPlayerItemCount(creature, 19083) >= 20 then
 					doPlayerRemoveItem(creature, 19083, 20)
 					doPlayerAddItem(creature, items[i].id, 1)
-					selfSay('You just swapped 20 silver raid tokens for 1 ' .. getItemName(items[i].name) .. '.', npc, creature)
+					selfSay("You just swapped 20 silver raid tokens for 1 " .. getItemName(items[i].name) .. ".", npc, creature)
 				else
-					selfSay('You need 20 silver raid tokens.', npc, creature)
+					selfSay("You need 20 silver raid tokens.", npc, creature)
 				end
 			end
 		end

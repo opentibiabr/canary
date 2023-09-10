@@ -116,6 +116,5 @@ function Player.loadDailyRewardBonuses(self)
 			DailyRewardBonus.Soul[self:getId()] = addEvent(RegenSoul, delay, self:getId(), delay)
 		end
 	end
-	logger.debug("Player: {}, streak level: {}, active bonuses: {}",
-		self:getName(), streakLevel, self:getActiveDailyRewardBonusesName())
+	logger.debug("Player: {}, streak level: {}, active bonuses: {}", self:getName(), streakLevel, self:getActiveDailyRewardBonusesName())
 end

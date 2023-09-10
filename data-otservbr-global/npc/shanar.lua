@@ -15,18 +15,18 @@ npcConfig.outfit = {
 	lookHead = 0,
 	lookBody = 94,
 	lookLegs = 105,
-	lookFeet = 76
+	lookFeet = 76,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Fine elven armor and weapons. Have a look.' },
-	{ text = 'Looking for protective spells for druids? I can teach you.' }
+	{ text = "Fine elven armor and weapons. Have a look." },
+	{ text = "Looking for protective spells for druids? I can teach you." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -112,7 +112,7 @@ npcConfig.shop = {
 	{ itemName = "staff", clientId = 3289, buy = 40 },
 	{ itemName = "steel shield", clientId = 3409, buy = 240 },
 	{ itemName = "throwing knife", clientId = 3298, buy = 25 },
-	{ itemName = "wooden shield", clientId = 3412, buy = 15 }
+	{ itemName = "wooden shield", clientId = 3412, buy = 15 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -123,7 +123,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

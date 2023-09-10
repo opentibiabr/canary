@@ -20,7 +20,7 @@ local config = {
 		Position(33271, 31478, 14),
 		Position(33271, 31479, 14),
 		Position(33271, 31480, 14),
-		Position(33271, 31481, 14)
+		Position(33271, 31481, 14),
 	},
 	range = 20,
 	time = 30, -- time in minutes to remove the player
@@ -32,7 +32,7 @@ local function clearFerumbrasRoom()
 		if spectator:isPlayer() then
 			spectator:teleportTo(config.exitPosition)
 			spectator:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			spectator:say('Time out! You were teleported out by strange forces.', TALKTYPE_MONSTER_SAY)
+			spectator:say("Time out! You were teleported out by strange forces.", TALKTYPE_MONSTER_SAY)
 		elseif spectator:isMonster() then
 			spectator:remove()
 		end

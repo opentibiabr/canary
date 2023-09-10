@@ -1,16 +1,16 @@
 local config = {
 	-- soil guardian
 	[16252] = { female = 514, male = 516, effect = CONST_ME_GREEN_RINGS },
-	[16253] = { female = 514, male = 516, addon = 1, effect = CONST_ME_GREEN_RINGS, achievement = 'Funghitastic' },
-	[16254] = { female = 514, male = 516, addon = 2, effect = CONST_ME_GREEN_RINGS, achievement = 'Funghitastic' },
+	[16253] = { female = 514, male = 516, addon = 1, effect = CONST_ME_GREEN_RINGS, achievement = "Funghitastic" },
+	[16254] = { female = 514, male = 516, addon = 2, effect = CONST_ME_GREEN_RINGS, achievement = "Funghitastic" },
 	-- crystal warlord
 	[16255] = { female = 513, male = 512, effect = CONST_ME_GIANTICE },
-	[16256] = { female = 513, male = 512, addon = 1, effect = CONST_ME_GIANTICE, achievement = 'Crystal Clear' },
-	[16257] = { female = 513, male = 512, addon = 2, effect = CONST_ME_GIANTICE, achievement = 'Crystal Clear' },
+	[16256] = { female = 513, male = 512, addon = 1, effect = CONST_ME_GIANTICE, achievement = "Crystal Clear" },
+	[16257] = { female = 513, male = 512, addon = 2, effect = CONST_ME_GIANTICE, achievement = "Crystal Clear" },
 	-- makeshift warrior
 	[27655] = { female = 1043, male = 1042 },
-	[27657] = { female = 1043, male = 1042, addon = 1, achievement = 'Cobbled and Patched' },
-	[27656] = { female = 1043, male = 1042, addon = 2, achievement = 'Cobbled and Patched' },
+	[27657] = { female = 1043, male = 1042, addon = 1, achievement = "Cobbled and Patched" },
+	[27656] = { female = 1043, male = 1042, addon = 2, achievement = "Cobbled and Patched" },
 	-- hand of the inquisition
 	[31738] = { female = 1244, male = 1243, addon = 1, effect = CONST_ME_HOLYAREA, achievement = "Inquisition's Arm" },
 	[31737] = { female = 1244, male = 1243, addon = 2, effect = CONST_ME_HOLYAREA, achievement = "Inquisition's Arm" },
@@ -30,10 +30,8 @@ function addons.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local looktype = player:getSex() == PLAYERSEX_FEMALE and useItem.female or useItem.male
 
 	if useItem.addon then
-		if not player:isPremium()
-				or not player:hasOutfit(looktype)
-				or player:hasOutfit(looktype, useItem.addon) then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You own no premium account, lack the base outfit or already own this outfit part.')
+		if not player:isPremium() or not player:hasOutfit(looktype) or player:hasOutfit(looktype, useItem.addon) then
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You own no premium account, lack the base outfit or already own this outfit part.")
 			return true
 		end
 
@@ -48,7 +46,7 @@ function addons.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		item:remove()
 	else
 		if not player:isPremium() or player:hasOutfit(looktype) then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You own no premium account or already own this outfit part.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You own no premium account or already own this outfit part.")
 			return true
 		end
 

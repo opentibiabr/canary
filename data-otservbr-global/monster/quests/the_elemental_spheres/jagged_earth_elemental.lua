@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 1500
 monster.maxHealth = 1500
@@ -23,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 20000,
-	chance = 50
+	chance = 50,
 }
 
 monster.strategiesTarget = {
@@ -72,18 +71,18 @@ monster.loot = {
 	{ id = 3130, chance = 18000 }, -- twigs
 	{ name = "iron ore", chance = 800, maxCount = 2 },
 	{ name = "seeds", chance = 1600 },
-	{ name = "natural soil", chance = 9000 }
+	{ name = "natural soil", chance = 9000 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300 },
 	{ name = "combat", interval = 1000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -100, maxDamage = -250, length = 6, spread = 3, effect = CONST_ME_STONES, target = false },
-	{ name = "combat", interval = 1000, chance = 11, type = COMBAT_EARTHDAMAGE, minDamage = 0, maxDamage = -200, range = 7, radius = 6, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_POISONAREA, target = true }
+	{ name = "combat", interval = 1000, chance = 11, type = COMBAT_EARTHDAMAGE, minDamage = 0, maxDamage = -200, range = 7, radius = 6, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_POISONAREA, target = true },
 }
 
 monster.defenses = {
 	defense = 25,
-	armor = 25
+	armor = 25,
 	--	mitigation = ???,
 }
 
@@ -104,7 +103,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

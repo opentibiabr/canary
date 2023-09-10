@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 4
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Orc Fort, Orc Peninsula, near Dark Cathedral, Zao Orc Land."
+	Locations = "Orc Fort, Orc Peninsula, near Dark Cathedral, Zao Orc Land.",
 }
 
 monster.health = 180
@@ -35,7 +35,7 @@ monster.manaCost = 490
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -86,18 +86,18 @@ monster.loot = {
 	{ name = "meat", chance = 24000, maxCount = 3 },
 	{ name = "orc tooth", chance = 2000 },
 	{ name = "warwolf fur", chance = 9410 },
-	{ name = "orc leather", chance = 9760 }
+	{ name = "orc leather", chance = 9760 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -130 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -130 },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 9,
 	mitigation = 0.51,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 200, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 200, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -117,7 +117,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

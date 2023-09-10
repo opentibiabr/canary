@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 28,
 	lookLegs = 28,
 	lookFeet = 51,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -55,7 +55,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	local playerId = player:getId()
 
 	-- Missing script for complete the mission 16 of dark trails
-	if (MsgContains(message, "mission")) then
+	if MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.DarkTrails.Mission16) == 1 then
 			npcHandler:say("Ahhhhhhhh! Find and investigate the hideout, the mission 17", npc, creature)
 			setPlayerStorageValue(creature, Storage.DarkTrails.Mission17, 1)

@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 260
 monster.maxHealth = 260
@@ -23,7 +22,7 @@ monster.manaCost = 490
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -71,12 +70,12 @@ monster.loot = {
 	{ id = 3410, chance = 1350 }, -- plate shield
 	{ id = 3362, chance = 9460 }, -- studded legs
 	{ id = 3264, chance = 21620 }, -- sword
-	{ id = 3012, chance = 1350 } -- wolf tooth chain
+	{ id = 3012, chance = 1350 }, -- wolf tooth chain
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 20, attack = 30 },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -20, range = 7, shootEffect = CONST_ANI_LARGEROCK, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -20, range = 7, shootEffect = CONST_ANI_LARGEROCK, target = false },
 }
 
 monster.defenses = {
@@ -102,7 +101,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

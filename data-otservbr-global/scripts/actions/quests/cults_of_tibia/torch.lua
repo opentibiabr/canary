@@ -1,5 +1,5 @@
 local config = {
-	{ position = Position(32396, 31806, 8), itemId = 1295 }
+	{ position = Position(32396, 31806, 8), itemId = 1295 },
 }
 
 local cultsOfTibiaTouch = Action()

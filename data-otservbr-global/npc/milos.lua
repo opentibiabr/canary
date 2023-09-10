@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 3,
 	lookLegs = 3,
 	lookFeet = 2,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'What a fascinating idea!' }
+	{ text = "What a fascinating idea!" },
 }
 
 local keywordHandler = KeywordHandler:new()

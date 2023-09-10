@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 3500
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 15
+	chance = 15,
 }
 
 monster.strategiesTarget = {
@@ -80,13 +80,13 @@ monster.loot = {
 	{ id = 9034, chance = 1610 }, -- dracoyle statue
 	{ id = 7421, chance = 3230 }, -- onyx flail
 	{ id = 12311, chance = 4840 }, -- carrot on a stick
-	{ id = 3419, chance = 29030 } -- crown shield
+	{ id = 3419, chance = 29030 }, -- crown shield
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -350 },
 	{ name = "fireball rune", interval = 2000, chance = 20, minDamage = -150, maxDamage = -175, target = false },
-	{ name = "hellspawn soulfire", interval = 2000, chance = 10, range = 5, target = false }
+	{ name = "hellspawn soulfire", interval = 2000, chance = 10, range = 5, target = false },
 }
 
 monster.defenses = {
@@ -94,7 +94,7 @@ monster.defenses = {
 	armor = 40,
 	mitigation = 1.52,
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 120, maxDamage = 230, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 270, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 270, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -114,7 +114,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

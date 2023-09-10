@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 57,
 	lookFeet = 114,
 	lookAddons = 2,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -34,13 +34,13 @@ monster.summon = {
 	summons = {
 		{ name = "preceptor lazare", chance = 10, interval = 8000, count = 1 },
 		{ name = "grand commander soeren", chance = 10, interval = 8000, count = 1 },
-		{ name = "grand chaplain gaunder", chance = 10, interval = 8000, count = 1 }
-	}
+		{ name = "grand chaplain gaunder", chance = 10, interval = 8000, count = 1 },
+	},
 }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 25
+	chance = 25,
 }
 
 monster.strategiesTarget = {
@@ -123,7 +123,7 @@ monster.loot = {
 	{ name = "lion spellbook", chance = 350 },
 	{ name = "lion wand", chance = 300 },
 	{ name = "lion amulet", chance = 300 },
-	{ name = "lion rod", chance = 300 }
+	{ name = "lion rod", chance = 300 },
 }
 
 monster.attacks = {
@@ -132,14 +132,14 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -800, maxDamage = -1200, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 22, type = COMBAT_DEATHDAMAGE, minDamage = -800, maxDamage = -1000, radius = 3, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 24, type = COMBAT_ICEDAMAGE, minDamage = -700, maxDamage = -900, length = 4, spread = 0, effect = CONST_ME_ICEATTACK, target = false },
-	{ name = "singlecloudchain", interval = 2000, chance = 34, minDamage = -600, maxDamage = -1100, range = 4, effect = CONST_ME_ENERGYHIT, target = true }
+	{ name = "singlecloudchain", interval = 2000, chance = 34, minDamage = -600, maxDamage = -1100, range = 4, effect = CONST_ME_ENERGYHIT, target = true },
 }
 
 monster.defenses = {
 	defense = 60,
 	armor = 82,
 	--	mitigation = ???,
-	{ name = "combat", interval = 4000, chance = 40, type = COMBAT_HEALING, minDamage = 300, maxDamage = 800, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 4000, chance = 40, type = COMBAT_HEALING, minDamage = 300, maxDamage = 800, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -159,7 +159,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType.onAppear = function(monster, creature)

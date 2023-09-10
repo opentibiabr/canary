@@ -2,18 +2,18 @@ local data = {
 	[28484] = {
 		Type = "mana",
 		ExhaustStor = Storage.BlueberryCupcake,
-		timestamp = 10
+		timestamp = 10,
 	},
 	[28485] = {
 		Type = "health",
 		ExhaustStor = Storage.StrawberryCupcake,
-		timestamp = 10
+		timestamp = 10,
 	},
 	[28486] = {
 		Type = "skill",
 		ExhaustStor = Storage.LemonCupcake,
-		timestamp = 10
-	}
+		timestamp = 10,
+	},
 }
 
 local lemon = Condition(CONDITION_ATTRIBUTES)
@@ -24,7 +24,7 @@ local cupCakes = Action()
 
 function cupCakes.onUse(player, item, fromPos, itemEx, toPos)
 	local foundItem = data[item.itemid]
-	if not (foundItem) then
+	if not foundItem then
 		return
 	end
 	if (player:getStorageValue(foundItem.ExhaustStor)) < os.time() then

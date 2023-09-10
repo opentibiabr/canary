@@ -78,36 +78,36 @@ local bosses = {
 		actionId = 14325,
 		fromPos = { x = 32258, y = 31237, z = 14 },
 		toPos = { x = 32284, y = 31262, z = 14 },
-		storage = 14326
+		storage = 14326,
 	},
 	["rupture"] = {
 		tile = { x = 32326, y = 31250, z = 14 },
 		actionId = 14325,
 		fromPos = { x = 32324, y = 31239, z = 14 },
 		toPos = { x = 32347, y = 31263, z = 14 },
-		storage = 14327
+		storage = 14327,
 	},
 	["realityquake"] = {
 		tile = { x = 32199, y = 31248, z = 14 },
 		actionId = 14325,
 		fromPos = { x = 32197, y = 31236, z = 14 },
 		toPos = { x = 32220, y = 31260, z = 14 },
-		storage = 14328
+		storage = 14328,
 	},
 	["eradicator"] = {
 		tile = { x = 32318, y = 31284, z = 14 },
 		actionId = 14325,
 		fromPos = { x = 32297, y = 31272, z = 14 },
 		toPos = { x = 32321, y = 31296, z = 14 },
-		storage = 14330
+		storage = 14330,
 	},
 	["outburst"] = {
 		tile = { x = 32225, y = 31285, z = 14 },
 		actionId = 14325,
 		fromPos = { x = 32223, y = 31273, z = 14 },
 		toPos = { x = 32246, y = 31297, z = 14 },
-		storage = 14332
-	}
+		storage = 14332,
+	},
 }
 
 local heartBossDeath = CreatureEvent("HeartBossDeath")

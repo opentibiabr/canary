@@ -11,18 +11,18 @@ npcConfig.walkInterval = 0
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 7
+	lookType = 7,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Grrrr.' },
-	{ text = 'Fetchi maruk buta.' }
+	{ text = "Grrrr." },
+	{ text = "Fetchi maruk buta." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -51,6 +51,5 @@ end
 npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
-
 
 npcType:register(npcConfig)

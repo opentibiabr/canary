@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 67
@@ -26,7 +26,7 @@ monster.Bestiary = {
 	Locations = "Maze of Lost Souls, in and around Ashta daramai, Formorgar Mines, \z
 		Mad Technomancer room, Dark Cathedral, Demona, Goroma, Tarpit Tomb, Peninsula Tomb, \z
 		Deeper Banuta, Forbidden Lands, Beregar Mines, Farmine Mines, Drillworm Caves, 2 caves on Hrodmir, \z
-		Orc Fortress (single spawn) and Medusa Tower."
+		Orc Fortress (single spawn) and Medusa Tower.",
 }
 
 monster.health = 270
@@ -38,7 +38,7 @@ monster.manaCost = 590
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -87,11 +87,11 @@ monster.loot = {
 	{ name = "shiny stone", chance = 760 },
 	{ name = "sulphurous stone", chance = 10370 },
 	{ name = "piece of marble rock", chance = 380 },
-	{ id = 12600, chance = 550 } -- coal
+	{ id = 12600, chance = 550 }, -- coal
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110 },
 }
 
 monster.defenses = {
@@ -117,7 +117,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

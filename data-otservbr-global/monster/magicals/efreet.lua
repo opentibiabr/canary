@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 103
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Mal'ouquah, Deeper Banuta, Goromas Cult Cave (in the classroom), Magician Quarter."
+	Locations = "Mal'ouquah, Deeper Banuta, Goromas Cult Cave (in the classroom), Magician Quarter.",
 }
 
 monster.health = 550
@@ -38,7 +38,7 @@ monster.enemyFactions = { FACTION_MARID, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -73,8 +73,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "green djinn", chance = 10, interval = 2000, count = 2 }
-	}
+		{ name = "green djinn", chance = 10, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -103,7 +103,7 @@ monster.loot = {
 	{ name = "strong mana potion", chance = 3500 },
 	{ name = "magma monocle", chance = 360 },
 	{ name = "jewelled belt", chance = 8540 },
-	{ name = "noble turban", chance = 1130 }
+	{ name = "noble turban", chance = 1130 },
 }
 
 monster.attacks = {
@@ -114,14 +114,14 @@ monster.attacks = {
 	{ name = "speed", interval = 2000, chance = 15, speedChange = -650, range = 7, effect = CONST_ME_MAGIC_RED, target = false, duration = 15000 },
 	{ name = "drunk", interval = 2000, chance = 10, range = 7, shootEffect = CONST_ANI_ENERGY, target = false, duration = 6000 },
 	{ name = "outfit", interval = 2000, chance = 1, range = 7, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 4000, outfitMonster = "rat" },
-	{ name = "djinn electrify", interval = 2000, chance = 15, range = 5, target = false }
+	{ name = "djinn electrify", interval = 2000, chance = 15, range = 5, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 24,
 	mitigation = 0.91,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -141,7 +141,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

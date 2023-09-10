@@ -15,22 +15,22 @@ local directions = {
 	[DIRECTION_NORTHEAST] = "north-east",
 	[DIRECTION_NORTHWEST] = "north-west",
 	[DIRECTION_SOUTHEAST] = "south-east",
-	[DIRECTION_SOUTHWEST] = "south-west"
+	[DIRECTION_SOUTHWEST] = "south-west",
 }
 
 local messages = {
 	[DISTANCE_BESIDE] = {
 		[LEVEL_LOWER] = "is below you",
 		[LEVEL_SAME] = "is standing next to you",
-		[LEVEL_HIGHER] = "is above you"
+		[LEVEL_HIGHER] = "is above you",
 	},
 	[DISTANCE_CLOSE] = {
 		[LEVEL_LOWER] = "is on a lower level to the",
 		[LEVEL_SAME] = "is to the",
-		[LEVEL_HIGHER] = "is on a higher level to the"
+		[LEVEL_HIGHER] = "is on a higher level to the",
 	},
 	[DISTANCE_FAR] = "is far to the",
-	[DISTANCE_VERYFAR] = "is very far to the"
+	[DISTANCE_VERYFAR] = "is very far to the",
 }
 
 local spell = Spell("instant")
@@ -48,7 +48,7 @@ function spell.onCastSpell(creature, variant)
 	local positionDifference = {
 		x = creaturePosition.x - targetPosition.x,
 		y = creaturePosition.y - targetPosition.y,
-		z = creaturePosition.z - targetPosition.z
+		z = creaturePosition.z - targetPosition.z,
 	}
 
 	local maxPositionDifference, direction = math.max(math.abs(positionDifference.x), math.abs(positionDifference.y))

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 57,
 	lookLegs = 22,
 	lookFeet = 20,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -53,7 +53,7 @@ end
 -- Travel
 local function addTravelKeyword(keyword, text, destination, randomDestination, randomNumber, condition, ringCheck, ringRemove, helheimAccess)
 	if condition then
-		keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = 'No, no, no, you even are no barb....barba...er.. one of us!!!! Talk to the Jarl first!' }, condition)
+		keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "No, no, no, you even are no barb....barba...er.. one of us!!!! Talk to the Jarl first!" }, condition)
 	end
 	if helheimAccess then
 		keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = text }, helheimAccess)
@@ -62,51 +62,72 @@ local function addTravelKeyword(keyword, text, destination, randomDestination, r
 		local ring = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "Ohh, you got a nice ring there! Ya don't have to pay if you gimme the ring and I promise you I will bring you to the correct spot!*HICKS* Alright?" }, ringCheck)
 		ring:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = 0, destination = destination }, ringRemove)
 		local normalTravel = ring:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "Give me 50 gold and I bring you to " .. keyword .. ". 'kay?" })
-		normalTravel:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, text = "You shouldn't miss the experience.", reset = true })
+		normalTravel:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "You shouldn't miss the experience.", reset = true })
 		if randomNumber then
-			normalTravel:addChildKeyword({ 'yes' }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = 50, discount = 'postman', destination = destination }, randomNumber)
+			normalTravel:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = 50, discount = "postman", destination = destination }, randomNumber)
 		end
-		normalTravel:addChildKeyword({ 'yes' }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = 50, discount = 'postman', destination = randomDestination }, randomNumber)
+		normalTravel:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = 50, discount = "postman", destination = randomDestination }, randomNumber)
 	end
-	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = text, cost = 50, discount = 'postman' })
-	travelKeyword:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, text = "You shouldn't miss the experience.", reset = true })
+	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = text, cost = 50, discount = "postman" })
+	travelKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "You shouldn't miss the experience.", reset = true })
 	if randomNumber then
-		travelKeyword:addChildKeyword({ 'yes' }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = 50, discount = 'postman', destination = destination }, randomNumber)
+		travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = 50, discount = "postman", destination = destination }, randomNumber)
 	end
-	travelKeyword:addChildKeyword({ 'yes' }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = 50, discount = 'postman', destination = randomDestination }, randomNumber)
+	travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = 50, discount = "postman", destination = randomDestination }, randomNumber)
 end
 
 local randomDestination = { Position(32255, 31197, 7), Position(32225, 31381, 7), Position(32462, 31174, 7), Position(32333, 31227, 7) }
-addTravelKeyword('svargrond', "You know a town nicer than this? NICER DICER! Apropos, don't play dice when you are drunk ...", Position(32255, 31197, 7),
-	function() return randomDestination[math.random(#randomDestination)] end,
-	function() return math.random(5) > 1 end,
-	function(player) return player:getStorageValue(Storage.BarbarianTest.Questline) < 8 end,
-	function(player) return player:getItemCount(3097) > 0 end,
-	function(player) return player:removeItem(3097, 1) end)
-addTravelKeyword('okolnir', "It's nice there. Except of the ice dragons which are not very companionable.", Position(32225, 31381, 7),
-	function() return randomDestination[math.random(#randomDestination)] end,
-	function() return math.random(5) > 1 end,
-	function(player) return player:getStorageValue(Storage.BarbarianTest.Questline) < 8 end,
-	function(player) return player:getItemCount(3097) > 0 end,
-	function(player) return player:removeItem(3097, 1) end)
-addTravelKeyword('helheim', "T'at is a small island to the east.", Position(32462, 31174, 7),
-	function() return randomDestination[math.random(#randomDestination)] end,
-	function() return math.random(5) > 1 end,
-	function(player) return player:getStorageValue(Storage.BarbarianTest.Questline) < 8 end,
-	function(player) return player:getItemCount(3097) > 0 end,
-	function(player) return player:removeItem(3097, 1) end,
-	function(player) return player:getStorageValue(Storage.TheIceIslands.Questline) < 30 end)
-addTravelKeyword('tyrsung', '*HICKS* Big, big island east of here. Venorian hunters settled there ..... I could bring you north of their camp.', Position(32333, 31227, 7),
-	function() return randomDestination[math.random(#randomDestination)] end,
-	function() return math.random(5) > 1 end,
-	function(player) return player:getStorageValue(Storage.BarbarianTest.Questline) < 8 end,
-	function(player) return player:getItemCount(3097) > 0 end,
-	function(player) return player:removeItem(3097, 1) end)
+addTravelKeyword("svargrond", "You know a town nicer than this? NICER DICER! Apropos, don't play dice when you are drunk ...", Position(32255, 31197, 7), function()
+	return randomDestination[math.random(#randomDestination)]
+end, function()
+	return math.random(5) > 1
+end, function(player)
+	return player:getStorageValue(Storage.BarbarianTest.Questline) < 8
+end, function(player)
+	return player:getItemCount(3097) > 0
+end, function(player)
+	return player:removeItem(3097, 1)
+end)
+addTravelKeyword("okolnir", "It's nice there. Except of the ice dragons which are not very companionable.", Position(32225, 31381, 7), function()
+	return randomDestination[math.random(#randomDestination)]
+end, function()
+	return math.random(5) > 1
+end, function(player)
+	return player:getStorageValue(Storage.BarbarianTest.Questline) < 8
+end, function(player)
+	return player:getItemCount(3097) > 0
+end, function(player)
+	return player:removeItem(3097, 1)
+end)
+addTravelKeyword("helheim", "T'at is a small island to the east.", Position(32462, 31174, 7), function()
+	return randomDestination[math.random(#randomDestination)]
+end, function()
+	return math.random(5) > 1
+end, function(player)
+	return player:getStorageValue(Storage.BarbarianTest.Questline) < 8
+end, function(player)
+	return player:getItemCount(3097) > 0
+end, function(player)
+	return player:removeItem(3097, 1)
+end, function(player)
+	return player:getStorageValue(Storage.TheIceIslands.Questline) < 30
+end)
+addTravelKeyword("tyrsung", "*HICKS* Big, big island east of here. Venorian hunters settled there ..... I could bring you north of their camp.", Position(32333, 31227, 7), function()
+	return randomDestination[math.random(#randomDestination)]
+end, function()
+	return math.random(5) > 1
+end, function(player)
+	return player:getStorageValue(Storage.BarbarianTest.Questline) < 8
+end, function(player)
+	return player:getItemCount(3097) > 0
+end, function(player)
+	return player:removeItem(3097, 1)
+end)
 
 -- Kick
-keywordHandler:addKeyword({ 'kick' }, StdModule.kick, { npcHandler = npcHandler, text = "Get out o' here!*HICKS*", destination = { Position(32020, 31297, 7), Position(32021, 31297, 7), Position(32022, 31297, 7) } })
+keywordHandler:addKeyword({ "kick" }, StdModule.kick, { npcHandler = npcHandler, text = "Get out o' here!*HICKS*", destination = { Position(32020, 31297, 7), Position(32021, 31297, 7), Position(32022, 31297, 7) } })
 
-keywordHandler:addKeyword({ 'passage' }, StdModule.say, { npcHandler = npcHandler, text = "Where are we at the moment? Is this Svargrond? Ahh yes!*HICKS* Where do you want to go?" })
+keywordHandler:addKeyword({ "passage" }, StdModule.say, { npcHandler = npcHandler, text = "Where are we at the moment? Is this Svargrond? Ahh yes!*HICKS* Where do you want to go?" })
 keywordHandler:addAliasKeyword({ "trip" })
 keywordHandler:addAliasKeyword({ "go" })
 keywordHandler:addAliasKeyword({ "sail" })
@@ -115,7 +136,7 @@ npcHandler:setMessage(MESSAGE_GREET, "Where are we at the moment? Is this {Svarg
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
-	{ itemName = "compass", clientId = 10302, sell = 45 }
+	{ itemName = "compass", clientId = 10302, sell = 45 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -126,7 +147,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

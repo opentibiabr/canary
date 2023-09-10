@@ -57,14 +57,341 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
--- Basic
+-- start of sales of imbuement packages
+keywordHandler:addKeyword({'imbuement packages'}, StdModule.say, {npcHandler = npcHandler, text = 'Skill Increase: {Bash}, {Blockade}, {Chop}, {Epiphany}, {Precision}, {Slash}. Additional Attributes: {Featherweight}, {Strike}, {Swiftness}, {Vampirism}, {Vibrancy}, {Void}. Elemental Damage: {Electrify}, {Frost}, {Reap}, {Scorch}, {Venom}. Elemental Protection: {Cloud Fabric}, {Demon Presence}, {Dragon Hide}, {Lich Shroud}, {Quara Scale}, {Snake Skin}.'})
 
-keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "Currently I have been working selling items for imbuement." })
+-- skill increase packages
+local stoneKeyword = keywordHandler:addKeyword({'bash'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for skill club imbuement for 6250 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 6250 end,
+    function(player)
+        if player:removeMoneyBank(6250) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(9657, 20) -- cyclops toe
+            shoppingBag:addItem(22189, 15) -- ogre nose ring
+            shoppingBag:addItem(10405, 10) -- warmaster's wristguards
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
 
-npcHandler:setMessage(MESSAGE_GREET, "Welcome to Imbuement's shop!")
-npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye and come again.")
-npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye and come again.")
+local stoneKeyword = keywordHandler:addKeyword({'blockade'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for skill shield imbuement for 16150 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 16150 end,
+    function(player)
+        if player:removeMoneyBank(16150) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(9641, 20) -- piece of scarab shell
+            shoppingBag:addItem(11703, 25) -- brimstone shell
+            shoppingBag:addItem(20199, 25) -- frazzle skin
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
 
+local stoneKeyword = keywordHandler:addKeyword({'chop'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for skill axe imbuement for 13050 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 13050 end,
+    function(player)
+        if player:removeMoneyBank(13050) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(10196, 20) -- orc tooth
+            shoppingBag:addItem(11447, 25) -- battle stone
+            shoppingBag:addItem(21200, 20) -- moohtant horn
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'epiphany'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for magic level imbuement for 10650 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 10650 end,
+    function(player)
+        if player:removeMoneyBank(10650) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(9635, 25) -- elvish talisman
+            shoppingBag:addItem(11452, 15) -- broken shamanic staff
+            shoppingBag:addItem(10309, 15) -- strand of medusa hair
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'precision'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for skill distance imbuement for 6750 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 6750 end,
+    function(player)
+        if player:removeMoneyBank(6750) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(11464, 25) -- elven scouting glass
+            shoppingBag:addItem(18994, 20) -- elven hoof
+            shoppingBag:addItem(10298, 10) -- metal spike
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'slash'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for skill sword imbuement for 6550 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 6550 end,
+    function(player)
+        if player:removeMoneyBank(6550) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(9691, 25) -- lion's mane
+            shoppingBag:addItem(21202, 25) -- mooh'tah shell
+            shoppingBag:addItem(9654, 5) -- war crystal
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+-- additional attributes packages
+local stoneKeyword = keywordHandler:addKeyword({'featherweight'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for capacity increase imbuement for 12250 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 12250 end,
+    function(player)
+        if player:removeMoneyBank(12250) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(25694, 20) -- fairy wings
+            shoppingBag:addItem(25702, 10) -- little bowl of myrrh
+            shoppingBag:addItem(20205, 5) -- goosebump leather
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'strike'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for critical imbuement for 16700 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 16700 end,
+    function(player)
+        if player:removeMoneyBank(16700) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(11444, 20) -- protective charm
+            shoppingBag:addItem(10311, 25) -- sabretooth
+            shoppingBag:addItem(22728, 5) -- vexclaw talon
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'swiftness'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for speed imbuement for 5225 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 5225 end,
+    function(player)
+        if player:removeMoneyBank(5225) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(17458, 15) -- damselfly wing
+            shoppingBag:addItem(10302, 25) -- compass
+            shoppingBag:addItem(14081, 20) -- waspoid wing
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'vampirism'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for life leech imbuement for 10475 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 10475 end,
+    function(player)
+        if player:removeMoneyBank(10475) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(9685, 25) -- vampire teeth
+            shoppingBag:addItem(9633, 15) -- bloody pincers
+            shoppingBag:addItem(9663, 5) -- piece of dead brain
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'vibrancy'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for paralysis removal imbuement for 15000 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 15000 end,
+    function(player)
+        if player:removeMoneyBank(15000) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(22053, 20) -- wereboar hooves
+            shoppingBag:addItem(23507, 15) -- crystallized anger
+            shoppingBag:addItem(28567, 5) -- quill
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'void'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for mana leech imbuement for 17400 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 17400 end,
+    function(player)
+        if player:removeMoneyBank(17400) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(11492, 25) -- rope belt
+            shoppingBag:addItem(20200, 25) -- silencer claws
+            shoppingBag:addItem(22730, 5) -- some grimeleech wings
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+-- elemental damage packages
+local stoneKeyword = keywordHandler:addKeyword({'electrify'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for energy damage imbuement for 3770 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 3770 end,
+    function(player)
+        if player:removeMoneyBank(3770) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(18993, 25) -- rorc feather
+            shoppingBag:addItem(21975, 5) -- peacock feather fan
+            shoppingBag:addItem(23508, 1) -- energy vein
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'frost'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for ice damage imbuement for 9750 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 9750 end,
+    function(player)
+        if player:removeMoneyBank(9750) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(9661, 25) -- frosty heart
+            shoppingBag:addItem(21801, 10) -- seacrest hair
+            shoppingBag:addItem(9650, 5) -- polar bear paw
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'reap'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for death damage imbuement for 3475 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 3475 end,
+    function(player)
+        if player:removeMoneyBank(3475) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(11484, 25) -- pile of grave earth
+            shoppingBag:addItem(9647, 20) -- demonic skeletal hand
+            shoppingBag:addItem(10420, 5) -- petrified scream
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'scorch'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for fire damage imbuement for 15875 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 15875 end,
+    function(player)
+        if player:removeMoneyBank(15875) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(9636, 25) -- fiery heart
+            shoppingBag:addItem(5920, 5) -- green dragon scale
+            shoppingBag:addItem(5954, 5) -- demon horn
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'venom'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for earth damage imbuement for 1820 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 1820 end,
+    function(player)
+        if player:removeMoneyBank(1820) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(9686, 25) -- swamp grass
+            shoppingBag:addItem(9640, 20) -- poisonous slime
+            shoppingBag:addItem(21194, 2) -- slime heart
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+-- elemental protection packages
+local stoneKeyword = keywordHandler:addKeyword({'cloud fabric'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for energy protection imbuement for 13775 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 13775 end,
+    function(player)
+        if player:removeMoneyBank(13775) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(9644, 20) -- wyvern talisman
+            shoppingBag:addItem(14079, 15) -- crawler head plating
+            shoppingBag:addItem(9665, 10) -- wyrm scale
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'demon presence'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for holy protection imbuement for  20250 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 20250 end,
+    function(player)
+        if player:removeMoneyBank(20250) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(9639, 25) -- cultish robe
+            shoppingBag:addItem(9638, 25) -- cultish mask
+            shoppingBag:addItem(10304, 20) -- hellspawn tail
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'dragon hide'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for fire protection imbuement for 10850 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 10850 end,
+    function(player)
+        if player:removeMoneyBank(10850) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(5877, 20) -- green dragon leather
+            shoppingBag:addItem(16131, 10) -- blazing bone
+            shoppingBag:addItem(11658, 5) -- draken sulphur
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'lich shroud'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for death protection imbuement for 5650 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 5650 end,
+    function(player)
+        if player:removeMoneyBank(5650) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(11466, 25) -- flask of embalming fluid
+            shoppingBag:addItem(22007, 20) -- gloom wolf fur
+            shoppingBag:addItem(9660, 5) -- mystical hourglass
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'quara scale'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for ice protection imbuement for 3650 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 3650 end,
+    function(player)
+        if player:removeMoneyBank(3650) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(10295, 25) -- winter wolf fur
+            shoppingBag:addItem(10307, 15) -- thick fur
+            shoppingBag:addItem(14012, 10) -- deepling warts
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+
+local stoneKeyword = keywordHandler:addKeyword({'snake skin'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy items for earth protection imbuement for 12550 gold?'})
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You have successfully completed your purchase of the items.', reset = true},
+    function(player) return player:getMoney() + player:getBankBalance() >= 12550 end,
+    function(player)
+        if player:removeMoneyBank(12550) then
+            local shoppingBag = player:addItem(2856, 1) -- present box
+            shoppingBag:addItem(17823, 25) -- piece of swampling wood
+            shoppingBag:addItem(9694, 20) -- snake skin
+            shoppingBag:addItem(11702, 10) -- brimstone fangs
+        end
+    end
+)
+stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
+-- end of imbuement packages sales
+
+npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME| say {imbuement packages} or {trade} for buy imbuement items.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "See you later |PLAYERNAME| come back soon.")
+npcHandler:setMessage(MESSAGE_FAREWELL, "See you later |PLAYERNAME| come back soon.") 
+
+npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

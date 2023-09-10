@@ -4,9 +4,8 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_BLUE_ENERGY_SPARK)
 arr_small = {
 	{ 1, 1, 1 },
 	{ 1, 3, 1 },
-	{ 1, 1, 1 }
+	{ 1, 1, 1 },
 }
-
 
 local area = createCombatArea(arr_small)
 combat:setArea(area)

@@ -7,7 +7,7 @@ local config = {
 		{ id = 37461, count = 1 }, -- balloon box
 		{ id = 37463, count = 1 }, -- luminous box
 		{ id = 37467, count = 1 }, -- carpet box
-		{ id = 37468, count = 1 } -- special fx box
+		{ id = 37468, count = 1 }, -- special fx box
 	},
 	[39705] = { -- reward box
 		{ id = 37530, count = 2 }, -- bottle of champagne
@@ -22,7 +22,7 @@ local config = {
 		{ id = 37465, count = 2 }, -- box full of presents
 		{ id = 37457, count = 1 }, -- supernatural box
 		{ id = 37469, count = 2 }, -- special balloon box
-		{ id = 37466, count = 1 } -- embroidered box
+		{ id = 37466, count = 1 }, -- embroidered box
 	},
 	[39706] = { -- box full of balloons
 		{ id = 39671, count = 1 }, -- balloon no. 0
@@ -50,8 +50,8 @@ local config = {
 		{ id = 37465, count = 2 }, -- box full of presents
 		{ id = 37457, count = 1 }, -- supernatural box
 		{ id = 37469, count = 2 }, -- special balloon box
-		{ id = 37466, count = 1 } -- embroidered box
-	}
+		{ id = 37466, count = 1 }, -- embroidered box
+	},
 }
 
 local rewardBox = Action()

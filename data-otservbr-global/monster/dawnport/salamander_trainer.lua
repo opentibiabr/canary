@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 220
 monster.maxHealth = 220
@@ -23,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -65,11 +64,11 @@ monster.loot = {
 	{ id = 3031, chance = 65300, maxCount = 12 }, -- gold coin
 	{ id = 3577, chance = 15200 }, -- meat
 	{ id = 3003, chance = 7960 }, -- rope
-	{ id = 3277, chance = 12970, maxCount = 3 } -- spear
+	{ id = 3277, chance = 12970, maxCount = 3 }, -- spear
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 10, attack = 25 }
+	{ name = "melee", interval = 2000, chance = 100, skill = 10, attack = 25 },
 }
 
 monster.defenses = {
@@ -77,7 +76,7 @@ monster.defenses = {
 	armor = 7,
 	mitigation = 0.38,
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 10, maxDamage = 25, effect = CONST_ME_MAGIC_GREEN, target = false },
-	{ name = "salamander trainer summon", interval = 2000, chance = 30, target = false }
+	{ name = "salamander trainer summon", interval = 2000, chance = 30, target = false },
 }
 
 monster.elements = {
@@ -97,7 +96,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

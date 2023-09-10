@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 38,
 	lookLegs = 78,
 	lookFeet = 114,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -55,17 +55,15 @@ local function greetCallback(npc, creature)
 	local playerId = player:getId()
 
 	if player:getStorageValue(Storage.Tutorial) < 1 then
-		npcHandler:say(
-			{
-				"Finally, reinforcements - oh but no, you came through the crystal portal, like the others! \z
+		npcHandler:say({
+			"Finally, reinforcements - oh but no, you came through the crystal portal, like the others! \z
 					I am ser Menesto, I guard the portal. That beast caught me by surprise, I lost my dagger and had to retreat. ...",
-				"... ...",
-				"Hmm. ...",
-				"You look hungry, you should eat regularly to reagain your strength! \z
+			"... ...",
+			"Hmm. ...",
+			"You look hungry, you should eat regularly to reagain your strength! \z
 					See what you can find while hunting. Or buy food in a city shop. \z
-					Here, have some of my rations, I'll take my dagger. Tell me when you're {ready}."
-			},
-			npc, creature, 10)
+					Here, have some of my rations, I'll take my dagger. Tell me when you're {ready}.",
+		}, npc, creature, 10)
 		player:addItem(3577, 1)
 		player:setStorageValue(Storage.Dawnport.Tutorial, 1)
 	end
@@ -82,13 +80,11 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "ready") then
 		if player:getStorageValue(Storage.Dawnport.Tutorial) == 1 then
-			npcHandler:say(
-				{
-					"I'll stay here till reinforcements come. Go up the ladder to reach the surface. \z
+			npcHandler:say({
+				"I'll stay here till reinforcements come. Go up the ladder to reach the surface. \z
 						You'll need a rope for the ropestot that comes after the ladder - here, take my spare equipment. ...",
-					"And remember: Tibia is a world with many dangers and mysteries, so be careful! Farewell, friend."
-				},
-				npc, creature, 10)
+				"And remember: Tibia is a world with many dangers and mysteries, so be careful! Farewell, friend.",
+			}, npc, creature, 10)
 			player:setStorageValue(Storage.Dawnport.Tutorial, 2)
 			npcHandler:setTopic(playerId, 0)
 		end

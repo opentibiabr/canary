@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 750
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -67,7 +67,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 12000, maxCount = 13 } -- gold coin
+	{ id = 3031, chance = 12000, maxCount = 13 }, -- gold coin
 }
 
 monster.attacks = {
@@ -75,7 +75,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = 0, maxDamage = -87, radius = 3, effect = CONST_ME_HITAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 19, type = COMBAT_ICEDAMAGE, minDamage = 0, maxDamage = -80, radius = 3, shootEffect = CONST_ANI_POISON, target = false },
 	{ name = "combat", interval = 2000, chance = 7, type = COMBAT_ICEDAMAGE, minDamage = -56, maxDamage = -87, radius = 4, effect = CONST_ME_ICEAREA, target = false },
-	{ name = "quara constrictor electrify", interval = 2000, chance = 10, range = 1, target = false }
+	{ name = "quara constrictor electrify", interval = 2000, chance = 10, range = 1, target = false },
 }
 
 monster.defenses = {
@@ -101,7 +101,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

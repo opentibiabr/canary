@@ -17,7 +17,7 @@ setmetatable(EncounterStage, {
 			tick = config.tick,
 			finish = config.finish,
 		}, { __index = EncounterStage })
-	end
+	end,
 })
 
 ---@class Encounter
@@ -54,7 +54,7 @@ setmetatable(Encounter, {
 			encounter:resetConfig(config)
 		end
 		return encounter
-	end
+	end,
 })
 
 ---Resets the encounter configuration
@@ -162,7 +162,9 @@ function Encounter:spawnMonsters(config)
 		end
 		self:addEvent(function(name, position, event, spawn, timeLimit)
 			local monster = Game.createMonster(name, position)
-			if not monster then return false end
+			if not monster then
+				return false
+			end
 			if spawn then
 				spawn(monster)
 			end
@@ -172,7 +174,9 @@ function Encounter:spawnMonsters(config)
 			if timeLimit then
 				self:addEvent(function(monsterId)
 					local monster = Monster(monsterId)
-					if not monster then return end
+					if not monster then
+						return
+					end
 					monster:remove()
 				end, config.timeLimit, monster:getID())
 			end
@@ -213,7 +217,9 @@ end
 ---Resets the encounter to its initial state
 ---@return boolean True if the encounter is reset successfully, false otherwise
 function Encounter:reset()
-	if self.currentStage == unstarted then return true end
+	if self.currentStage == unstarted then
+		return true
+	end
 	return self:enterStage(unstarted)
 end
 
@@ -233,7 +239,9 @@ end
 ---Enters the next stage in the encounter
 ---@return boolean True if the next stage is entered successfully, false otherwise
 function Encounter:nextStage()
-	if self.currentStage == #self.stages then return self:reset() end
+	if self.currentStage == #self.stages then
+		return self:reset()
+	end
 	return self:enterStage(self.currentStage + 1)
 end
 
@@ -241,7 +249,9 @@ end
 ---@return boolean True if the encounter is started successfully, false otherwise
 function Encounter:start()
 	Encounter.registerTickEvent()
-	if self.currentStage ~= unstarted then return false end
+	if self.currentStage ~= unstarted then
+		return false
+	end
 	return self:enterStage(1)
 end
 
@@ -271,19 +281,31 @@ function Encounter:startOnEnter()
 	local zoneEvents = ZoneEvent(self.zone)
 
 	function zoneEvents.afterEnter(zone, creature)
-		if not self.registered then return true end
+		if not self.registered then
+			return true
+		end
 		local player = creature:getPlayer()
-		if not player then return true end
-		if player:hasGroupFlag(IgnoredByMonsters) then return end
+		if not player then
+			return true
+		end
+		if player:hasGroupFlag(IgnoredByMonsters) then
+			return
+		end
 		self:start()
 	end
 
 	function zoneEvents.afterLeave(zone, creature)
 		local player = creature:getPlayer()
-		if not player then return end
-		if player:hasGroupFlag(IgnoredByMonsters) then return end
+		if not player then
+			return
+		end
+		if player:hasGroupFlag(IgnoredByMonsters) then
+			return
+		end
 		-- last player left; reset encounter
-		if self:countPlayers() == 1 then return end
+		if self:countPlayers() == 1 then
+			return
+		end
 		self:reset()
 	end
 
@@ -300,7 +322,9 @@ function Encounter:register()
 end
 
 function Encounter.registerTickEvent()
-	if Encounter.tick then return end
+	if Encounter.tick then
+		return
+	end
 	Encounter.tick = GlobalEvent("encounter.ticks.onThink")
 	function Encounter.tick.onThink(interval, lastExecution)
 		for _, encounter in pairs(Encounter.registry) do

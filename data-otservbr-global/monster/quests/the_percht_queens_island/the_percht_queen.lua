@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "The Percht Queen"
 monster.experience = 500
 monster.outfit = {
-	lookTypeEx = 30340 -- (frozen) // lookTypeEx = 30341 (thawed)
+	lookTypeEx = 30340, -- (frozen) // lookTypeEx = 30341 (thawed)
 }
 
 monster.bosstiary = {
@@ -21,7 +21,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -107,17 +107,17 @@ monster.loot = {
 	{ name = "abyss hammer", chance = 1480 },
 	{ name = "golden bell", chance = 2548 },
 	{ name = "golden cotton reel", chance = 1254 },
-	{ name = "lucky pig", chance = 2540 }
+	{ name = "lucky pig", chance = 2540 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -200 },
-	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -100, maxDamage = -200, range = 7, shootEffect = CONST_ANI_ICE, target = false }
+	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -100, maxDamage = -200, range = 7, shootEffect = CONST_ANI_ICE, target = false },
 }
 
 monster.defenses = {
 	defense = 40,
-	armor = 79
+	armor = 79,
 	--	mitigation = ???,
 }
 
@@ -138,7 +138,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

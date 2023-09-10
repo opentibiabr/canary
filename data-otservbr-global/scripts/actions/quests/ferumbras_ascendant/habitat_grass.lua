@@ -387,7 +387,7 @@ local grass = {
 	{ itemid = 417, position = Position(33639, 32672, 12) },
 	{ itemid = 417, position = Position(33640, 32663, 12) },
 	{ itemid = 417, position = Position(33639, 32664, 12) },
-	{ itemid = 417, position = Position(33648, 32673, 12) }
+	{ itemid = 417, position = Position(33648, 32673, 12) },
 }
 
 local function transformArea()
@@ -426,10 +426,10 @@ local ferumbrasAscendantHabitatGlass = Action()
 function ferumbrasAscendantHabitatGlass.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 9125 then
 		if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Grass) >= 1 then
-			player:say('The lever are stuck, need some time to it can be moveable again.', TALKTYPE_MONSTER_SAY)
+			player:say("The lever are stuck, need some time to it can be moveable again.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
-		Game.createMonster('lovely frazzlemaw', Position(33642, 32666, 12), true, true)
+		Game.createMonster("lovely frazzlemaw", Position(33642, 32666, 12), true, true)
 		addEvent(transformArea, 2 * 1000)
 		item:transform(9126)
 		local basin = Tile(Position(33631, 32667, 12)):getItemById(11114)
@@ -439,7 +439,7 @@ function ferumbrasAscendantHabitatGlass.onUse(player, item, fromPosition, target
 		end
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Grass, 1)
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats, Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats) + 1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The room transforms into a completely different landscape.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The room transforms into a completely different landscape.")
 		if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats) >= 8 then
 			addEvent(function()
 				resetFerumbrasAscendantHabitats()

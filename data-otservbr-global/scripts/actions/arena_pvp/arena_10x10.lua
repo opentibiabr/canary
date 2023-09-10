@@ -1,6 +1,6 @@
 local setting = {
 	centerRoom = { x = 32255, y = 32178, z = 9 },
-	range = 10
+	range = 10,
 }
 
 local playerPositions = {

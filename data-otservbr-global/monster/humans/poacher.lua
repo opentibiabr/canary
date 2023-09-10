@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 118,
 	lookFeet = 116,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 376
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "South of Elvenbane and Ab'Dendriel, Ferngrims Gate, Northeast of Carlin, \z
-		Edron Hunter Camps, Yalahar - Trade Quarter and Foreigner Quarter."
+		Edron Hunter Camps, Yalahar - Trade Quarter and Foreigner Quarter.",
 }
 
 monster.health = 90
@@ -36,7 +36,7 @@ monster.manaCost = 530
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -84,12 +84,12 @@ monster.loot = {
 	{ name = "poison arrow", chance = 2930, maxCount = 3 },
 	{ id = 3481, chance = 710 }, -- closed trap
 	{ name = "leather legs", chance = 26740 },
-	{ name = "roll", chance = 11110, maxCount = 2 }
+	{ name = "roll", chance = 11110, maxCount = 2 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -35, range = 7, shootEffect = CONST_ANI_ARROW, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -35, range = 7, shootEffect = CONST_ANI_ARROW, target = false },
 }
 
 monster.defenses = {
@@ -115,7 +115,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

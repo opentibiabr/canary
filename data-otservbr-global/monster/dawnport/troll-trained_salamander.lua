@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 70
 monster.maxHealth = 70
@@ -23,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -72,12 +71,12 @@ monster.loot = {
 	{ id = 3448, chance = 2970, maxCount = 2 }, -- poison arrow
 	{ id = 3294, chance = 4470 }, -- short sword
 	{ id = 3457, chance = 5080 }, -- shovel
-	{ id = 3376, chance = 4070 } -- studded helmet
+	{ id = 3376, chance = 4070 }, -- studded helmet
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 10, attack = 11, condition = { type = CONDITION_POISON, totalDamage = 5, interval = 4000 } },
-	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_EARTHDAMAGE, minDamage = -4, maxDamage = -6, range = 5, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_HITBYPOISON, target = true }
+	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_EARTHDAMAGE, minDamage = -4, maxDamage = -6, range = 5, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_HITBYPOISON, target = true },
 }
 
 monster.defenses = {
@@ -103,7 +102,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

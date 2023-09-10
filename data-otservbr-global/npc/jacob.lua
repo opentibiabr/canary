@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 114,
 	lookLegs = 114,
 	lookFeet = 114,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -55,7 +55,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	local playerId = player:getId()
 
 	-- Mission 3 start
-	if (MsgContains(message, "abandoned sewers")) then
+	if MsgContains(message, "abandoned sewers") then
 		if player:getStorageValue(Storage.Oramond.MissionAbandonedSewer) < 21 then
 			npcHandler:say("You want to enter the abandoned sewers? That's rather dangerous and not a good idea, man. That part of the sewers was not sealed off for nothing, you know? ...", npc, creature)
 			npcHandler:say("But hey, it's your life, bro. So here's the deal. I'll let you into the abandoned sewers if you help me with our {mission}.", npc, creature)
@@ -72,8 +72,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 7)
 		end
 		-- Mission 3 start
-	elseif (MsgContains(message, "mission")) then
-		if (npcHandler:getTopic(playerId) == 0) then
+	elseif MsgContains(message, "mission") then
+		if npcHandler:getTopic(playerId) == 0 then
 			npcHandler:say("The sewers need repair. You in?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 			-- Mission 3 end
@@ -82,24 +82,24 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 3)
 		end
 		-- Mission 3 start - sewer access
-	elseif (MsgContains(message, "yes")) then
-		if (npcHandler:getTopic(playerId) == 2) then
+	elseif MsgContains(message, "yes") then
+		if npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Good. Broken pipe and generator pieces, there's smoke evading. That's how you recognise them. See how you can fix them using your hands. Need about, oh, twenty of them at least repaired. Report to me or Jacob", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.Oramond.AbandonedSewer, 1)
 			player:setStorageValue(Storage.Oramond.MissionAbandonedSewer, 0)
 		end
 		-- Task: The Ancient Sewers
-	elseif (MsgContains(message, "ok")) then
-		if (npcHandler:getTopic(playerId) == 3) then
+	elseif MsgContains(message, "ok") then
+		if npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say("Good. Thanks, man. That's one vote you got for helping us with this.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.Oramond.MissionAbandonedSewer, 21) -- Mission 3 end
 		end
 		-- Final mission 5
-	elseif (MsgContains(message, "report")) then
+	elseif MsgContains(message, "report") then
 		if player:getStorageValue(Storage.DarkTrails.Mission05) == 1 then
-			if (npcHandler:getTopic(playerId) == 7) then
+			if npcHandler:getTopic(playerId) == 7 then
 				npcHandler:say("A sacrificial site? Damn, sounds like some freakish cult or something. Just great. And this ancient structure you talked about that's not part of the sewers? You'd better see the local historian about that, man. ...", npc, creature)
 				npcHandler:say("He can make more sense of what you found there. His name is Barazbaz. He should be in the magistrate building.", npc, creature)
 				player:setStorageValue(Storage.DarkTrails.Mission06, 1) -- Start mission 6

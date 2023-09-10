@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 150
@@ -20,10 +20,9 @@ monster.corpse = 5993
 monster.speed = 80
 monster.manaCost = 0
 
-
 monster.changeTarget = {
 	interval = 0,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -55,14 +54,12 @@ monster.light = {
 	color = 0,
 }
 
-
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 --monster.attacks = {
 --}
@@ -90,7 +87,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

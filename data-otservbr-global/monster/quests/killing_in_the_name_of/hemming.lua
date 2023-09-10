@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 3000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -60,8 +60,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "War Wolf", chance = 100, interval = 2000, count = 2 }
-	}
+		{ name = "War Wolf", chance = 100, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -86,7 +86,7 @@ monster.loot = {
 	{ id = 10389, chance = 15000 }, -- sai
 	{ id = 7419, chance = 9800 }, -- dreaded cleaver
 	{ id = 3053, chance = 6000 }, -- time ring
-	{ id = 7428, chance = 2000 } -- bonebreaker
+	{ id = 7428, chance = 2000 }, -- bonebreaker
 }
 
 monster.attacks = {
@@ -94,7 +94,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -180, maxDamage = -265, radius = 3, effect = CONST_ME_SOUND_RED, target = false },
 	{ name = "outfit", interval = 2000, chance = 5, effect = CONST_ME_SOUND_BLUE, target = false, duration = 2000, outfitMonster = "Werewolf" },
 	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_PHYSICALDAMAGE, radius = 3, effect = CONST_ME_SOUND_WHITE, target = false },
-	{ name = "werewolf skill reducer", interval = 2000, chance = 15, range = 1, target = false }
+	{ name = "werewolf skill reducer", interval = 2000, chance = 15, range = 1, target = false },
 }
 
 monster.defenses = {
@@ -102,7 +102,7 @@ monster.defenses = {
 	armor = 40,
 	mitigation = 1.03,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 50, maxDamage = 200, effect = CONST_ME_MAGIC_GREEN, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 300, range = 7, effect = CONST_ME_SOUND_PURPLE, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 300, range = 7, effect = CONST_ME_SOUND_PURPLE, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -122,7 +122,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

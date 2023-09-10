@@ -94,21 +94,37 @@ setConditionFormula = Condition.setFormula
 addDamageCondition = Condition.addDamage
 addOutfitCondition = Condition.setOutfit
 
-function doCombat(cid, combat, var) return combat:execute(cid, var) end
+function doCombat(cid, combat, var)
+	return combat:execute(cid, var)
+end
 
-function isCreature(cid) return Creature(cid) ~= nil end
+function isCreature(cid)
+	return Creature(cid) ~= nil
+end
 
-function isPlayer(cid) return Player(cid) ~= nil end
+function isPlayer(cid)
+	return Player(cid) ~= nil
+end
 
-function isMonster(cid) return Monster(cid) ~= nil end
+function isMonster(cid)
+	return Monster(cid) ~= nil
+end
 
-function isSummon(cid) return Creature(cid):getMaster() ~= nil end
+function isSummon(cid)
+	return Creature(cid):getMaster() ~= nil
+end
 
-function isNpc(cid) return Npc(cid) ~= nil end
+function isNpc(cid)
+	return Npc(cid) ~= nil
+end
 
-function isItem(uid) return Item(uid) ~= nil end
+function isItem(uid)
+	return Item(uid) ~= nil
+end
 
-function isContainer(uid) return Container(uid) ~= nil end
+function isContainer(uid)
+	return Container(uid) ~= nil
+end
 
 function getCreatureName(cid)
 	local c = Creature(cid)
@@ -171,7 +187,7 @@ function getCreatureSummons(cid)
 
 	local result = {}
 	for _, summon in ipairs(c:getSummons()) do
-		result[#result+1] = summon:getId()
+		result[#result + 1] = summon:getId()
 	end
 	return result
 end
@@ -527,17 +543,23 @@ function isPremium(cid)
 	return p ~= nil and p:isPremium() or false
 end
 
-function getBlessingsCost(level, byCommand) return Blessings.getBlessingsCost(level, byCommand) end
+function getBlessingsCost(level, byCommand)
+	return Blessings.getBlessingsCost(level, byCommand)
+end
 
-function getPvpBlessingCost(level, byCommand) return Blessings.getPvpBlessingCost(level, byCommand) end
+function getPvpBlessingCost(level, byCommand)
+	return Blessings.getPvpBlessingCost(level, byCommand)
+end
 
 function getPlayersByIPAddress(ip, mask)
-	if mask == nil then mask = 0xFFFFFFFF end
+	if mask == nil then
+		mask = 0xFFFFFFFF
+	end
 	local masked = bit.band(ip, mask)
 	local result = {}
 	for _, player in ipairs(Game.getPlayers()) do
 		if bit.band(player:getIp(), mask) == masked then
-			result[#result+1] = player:getId()
+			result[#result + 1] = player:getId()
 		end
 	end
 	return result
@@ -546,7 +568,7 @@ end
 function getOnlinePlayers()
 	local result = {}
 	for _, player in ipairs(Game.getPlayers()) do
-		result[#result+1] = player:getName()
+		result[#result + 1] = player:getName()
 	end
 	return result
 end
@@ -555,7 +577,7 @@ function getPlayersByAccountNumber(accountNumber)
 	local result = {}
 	for _, player in ipairs(Game.getPlayers()) do
 		if player:getAccountId() == accountNumber then
-			result[#result+1] = player:getId()
+			result[#result + 1] = player:getId()
 		end
 	end
 	return result
@@ -837,7 +859,7 @@ function getPartyMembers(cid)
 
 	local result = { party:getLeader():getId() }
 	for _, member in ipairs(party:getMembers()) do
-		result[#result+1] = member:getId()
+		result[#result + 1] = member:getId()
 	end
 	return result
 end
@@ -853,7 +875,7 @@ function getMonsterTargetList(cid)
 	local result = {}
 	for _, creature in ipairs(monster:getTargetList()) do
 		if monster:isTarget(creature) then
-			result[#result+1] = creature:getId()
+			result[#result + 1] = creature:getId()
 		end
 	end
 	return result
@@ -870,7 +892,7 @@ function getMonsterFriendList(cid)
 	local result = {}
 	for _, creature in ipairs(monster:getFriendList()) do
 		if not creature:isRemoved() and creature:getPosition().z == z then
-			result[#result+1] = creature:getId()
+			result[#result + 1] = creature:getId()
 		end
 	end
 	return result
@@ -1000,11 +1022,17 @@ function doAddContainerItemEx(uid, virtualId)
 	return res
 end
 
-function doSendMagicEffect(pos, magicEffect, ...) return Position(pos):sendMagicEffect(magicEffect, ...) end
+function doSendMagicEffect(pos, magicEffect, ...)
+	return Position(pos):sendMagicEffect(magicEffect, ...)
+end
 
-function doSendDistanceShoot(fromPos, toPos, distanceEffect, ...) return Position(fromPos):sendDistanceEffect(toPos, distanceEffect, ...) end
+function doSendDistanceShoot(fromPos, toPos, distanceEffect, ...)
+	return Position(fromPos):sendDistanceEffect(toPos, distanceEffect, ...)
+end
 
-function isSightClear(fromPos, toPos, floorCheck) return Position(fromPos):isSightClear(toPos, floorCheck) end
+function isSightClear(fromPos, toPos, floorCheck)
+	return Position(fromPos):isSightClear(toPos, floorCheck)
+end
 
 function getPromotedVocation(vocationId)
 	local vocation = Vocation(vocationId)
@@ -1047,7 +1075,9 @@ end
 
 function getHouseTown(houseId)
 	local h = House(houseId)
-	if h == nil then return false end
+	if h == nil then
+		return false
+	end
 	local t = h:getTown()
 	return t and t:getId() or false
 end
@@ -1057,17 +1087,29 @@ function getHouseTilesSize(houseId)
 	return h and h:getTileCount() or false
 end
 
-function isItemStackable(itemId) return ItemType(itemId):isStackable() end
+function isItemStackable(itemId)
+	return ItemType(itemId):isStackable()
+end
 
-function isItemRune(itemId) return ItemType(itemId):isRune() end
+function isItemRune(itemId)
+	return ItemType(itemId):isRune()
+end
 
-function isItemDoor(itemId) return ItemType(itemId):isDoor() end
+function isItemDoor(itemId)
+	return ItemType(itemId):isDoor()
+end
 
-function isItemContainer(itemId) return ItemType(itemId):isContainer() end
+function isItemContainer(itemId)
+	return ItemType(itemId):isContainer()
+end
 
-function isItemFluidContainer(itemId) return ItemType(itemId):isFluidContainer() end
+function isItemFluidContainer(itemId)
+	return ItemType(itemId):isFluidContainer()
+end
 
-function isItemMovable(itemId) return ItemType(itemId):isMovable() end
+function isItemMovable(itemId)
+	return ItemType(itemId):isMovable()
+end
 
 function isCorpse(uid)
 	local i = Item(uid)
@@ -1077,9 +1119,13 @@ end
 isItemMoveable = isItemMovable
 isMoveable = isMovable
 
-function getItemName(itemId) return ItemType(itemId):getName() end
+function getItemName(itemId)
+	return ItemType(itemId):getName()
+end
 
-function getItemWeight(itemId, ...) return ItemType(itemId):getWeight(...) / 100 end
+function getItemWeight(itemId, ...)
+	return ItemType(itemId):getWeight(...) / 100
+end
 
 function getItemDescriptions(itemId)
 	local itemType = ItemType(itemId)
@@ -1087,7 +1133,7 @@ function getItemDescriptions(itemId)
 		name = itemType:getName(),
 		plural = itemType:getPluralName(),
 		article = itemType:getArticle(),
-		description = itemType:getDescription()
+		description = itemType:getDescription(),
 	}
 end
 
@@ -1127,7 +1173,9 @@ function getItemRWInfo(uid)
 	return rwFlags
 end
 
-function getContainerCapById(itemId) return ItemType(itemId):getCapacity() end
+function getContainerCapById(itemId)
+	return ItemType(itemId):getCapacity()
+end
 
 function getFluidSourceType(itemId)
 	local it = ItemType(itemId)
@@ -1380,7 +1428,7 @@ function getConfigInfo(info)
 	if type(info) ~= "string" then
 		return nil
 	end
-	dofile('config.lua')
+	dofile("config.lua")
 	return _G[info]
 end
 
@@ -1514,7 +1562,9 @@ function doTileAddItemEx(pos, uid, flags)
 	return false
 end
 
-function isInArray(array, value) return table.contains(array, value) end
+function isInArray(array, value)
+	return table.contains(array, value)
+end
 
 function doCreateItem(itemid, count, pos)
 	local tile = Tile(pos)

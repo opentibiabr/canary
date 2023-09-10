@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 115,
 	lookFeet = 0,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -56,10 +56,10 @@ local function greetCallback(npc, creature, message)
 
 	if player:getStorageValue(HiddenThreats.CorymRescued03) < 0 then
 		npcHandler:setMessage(MESSAGE_GREET, {
-			'Every man is the architect of his own fortune. The times of {repression} are finally over.'
+			"Every man is the architect of his own fortune. The times of {repression} are finally over.",
 		})
 	else
-		npcHandler:setMessage(MESSAGE_GREET, 'We need weapons to overcome our situation.')
+		npcHandler:setMessage(MESSAGE_GREET, "We need weapons to overcome our situation.")
 	end
 	return true
 end
@@ -71,9 +71,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if (MsgContains(message, "repression")) then
+	if MsgContains(message, "repression") then
 		npcHandler:say({
-			"We need weapons to overcome our situation."
+			"We need weapons to overcome our situation.",
 		}, npc, creature)
 		if player:getStorageValue(HiddenThreats.CorymRescued03) < 0 then
 			player:setStorageValue(HiddenThreats.CorymRescueMission, player:getStorageValue(HiddenThreats.CorymRescueMission) + 1)
@@ -84,7 +84,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Greeting message
-npcHandler:setMessage(MESSAGE_FAREWELL, 'Good bye, |PLAYERNAME|.')
+npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye, |PLAYERNAME|.")
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

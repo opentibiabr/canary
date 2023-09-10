@@ -1,7 +1,7 @@
 local config = {
 	boss = {
 		name = "Ghulosh",
-		position = Position(32756, 32720, 10)
+		position = Position(32756, 32720, 10),
 	},
 	requiredLevel = 250,
 
@@ -10,14 +10,14 @@ local config = {
 		{ pos = Position(32748, 32773, 10), teleport = Position(32756, 32729, 10), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32749, 32773, 10), teleport = Position(32756, 32729, 10), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32750, 32773, 10), teleport = Position(32756, 32729, 10), effect = CONST_ME_TELEPORT },
-		{ pos = Position(32751, 32773, 10), teleport = Position(32756, 32729, 10), effect = CONST_ME_TELEPORT }
+		{ pos = Position(32751, 32773, 10), teleport = Position(32756, 32729, 10), effect = CONST_ME_TELEPORT },
 	},
 	specPos = {
 		from = Position(32748, 32713, 10),
-		to = Position(32763, 32729, 10)
+		to = Position(32763, 32729, 10),
 	},
 	exit = Position(32660, 32713, 13),
-	storage = Storage.Quest.U11_80.TheSecretLibrary.GhuloshTimer
+	storage = Storage.Quest.U11_80.TheSecretLibrary.GhuloshTimer,
 }
 
 local lever = BossLever(config)

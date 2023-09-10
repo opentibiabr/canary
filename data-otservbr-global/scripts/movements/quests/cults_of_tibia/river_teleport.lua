@@ -6,8 +6,8 @@ function riverTeleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if (player:getStorageValue(player:getStorageValue(Storage.CultsOfTibia.Life.BossTimer)) > os.time()) then
-		player:sendCancelMessage('You need to wait for 20 hours to face this boss again.')
+	if player:getStorageValue(player:getStorageValue(Storage.CultsOfTibia.Life.BossTimer)) > os.time() then
+		player:sendCancelMessage("You need to wait for 20 hours to face this boss again.")
 		player:teleportTo(fromPosition)
 		return false
 	end

@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 65
+	lookType = 65,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -61,7 +61,7 @@ npcConfig.shop = {
 	{ itemName = "flask of embalming fluid", clientId = 11466, sell = 30 },
 	{ itemName = "strange symbol", clientId = 3058, sell = 200 },
 	{ itemName = "unholy bone", clientId = 10316, sell = 480 },
-	{ itemName = "witch broom", clientId = 9652, sell = 60 }
+	{ itemName = "witch broom", clientId = 9652, sell = 60 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -72,7 +72,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

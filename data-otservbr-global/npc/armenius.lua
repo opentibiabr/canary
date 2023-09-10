@@ -17,11 +17,11 @@ npcConfig.outfit = {
 	lookLegs = 113,
 	lookFeet = 115,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -79,7 +79,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say({
 				"...... ...... ....",
-				"HAHAHAHAHA! What the... HAHAHAHA! Come on, say it again, just because it's so funny - and then I'll get rid of you, little mouse!" }, npc, creature)
+				"HAHAHAHAHA! What the... HAHAHAHA! Come on, say it again, just because it's so funny - and then I'll get rid of you, little mouse!",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
 	end
@@ -99,7 +100,7 @@ npcConfig.shop = {
 	{ itemName = "mug of beer", clientId = 2880, buy = 3, count = 3 },
 	{ itemName = "mug of rum", clientId = 2880, buy = 10, count = 13 },
 	{ itemName = "mug of wine", clientId = 2880, buy = 4, count = 2 },
-	{ itemName = "tomato", clientId = 3596, buy = 3 }
+	{ itemName = "tomato", clientId = 3596, buy = 3 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -110,7 +111,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

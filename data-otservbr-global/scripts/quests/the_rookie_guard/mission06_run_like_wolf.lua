@@ -4,25 +4,25 @@ local missionTiles = {
 	[50329] = {
 		state = 2,
 		message = "Follow the north-eastern path into the forest. Beware of wolves!",
-		arrowPosition = { x = 32109, y = 32166, z = 7 }
+		arrowPosition = { x = 32109, y = 32166, z = 7 },
 	},
 	[50330] = {
 		state = 2,
-		message = "This is not the way into the wolf forest. Stay on the southern path leading to the north-east!"
+		message = "This is not the way into the wolf forest. Stay on the southern path leading to the north-east!",
 	},
 	[50331] = {
 		state = 2,
-		message = "This is not the way into the wolf forest. Stay on the southern path leading to the north-east!"
+		message = "This is not the way into the wolf forest. Stay on the southern path leading to the north-east!",
 	},
 	[50332] = {
 		state = 2,
 		message = "This hole leads into the wolves' den. Only enter if you have full health and food - this might be dangerous.",
-		arrowPosition = { x = 32138, y = 32132, z = 7 }
+		arrowPosition = { x = 32138, y = 32132, z = 7 },
 	},
 	[50333] = {
 		state = 3,
-		message = "It seems plans changed. It's up to you now to find a dead war wolf and use the skinning knife on it to get some leather."
-	}
+		message = "It seems plans changed. It's up to you now to find a dead war wolf and use the skinning knife on it to get some leather.",
+	},
 }
 
 -- Mission tutorial tiles
@@ -83,18 +83,18 @@ local specialMissionTiles = {
 		state = 2,
 		message = "Well.. that seems to be the poacher. Dead. Check his body - maybe he still has something that you can use.",
 		arrowPosition = { x = 32135, y = 32133, z = 8 },
-		newState = 3
+		newState = 3,
 	},
 	[25026] = {
 		state = 3,
 		message = "There is a dead war wolf! Use the knife, and then use it on its body to get some leather - but quickly!",
-		arrowPosition = { x = 32108, y = 32132, z = 11 }
+		arrowPosition = { x = 32108, y = 32132, z = 11 },
 	},
 	[25027] = {
 		state = 5,
 		message = "You reached the exit in time! Phew.. back to Tom.",
-		newState = 6
-	}
+		newState = 6,
+	},
 }
 
 -- War wolf den special tiles

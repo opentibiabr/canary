@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a fiery heart"
 monster.experience = 0
 monster.outfit = {
-	lookTypeEx = 391
+	lookTypeEx = 391,
 }
 
 monster.health = 7500
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 1
+	chance = 1,
 }
 
 monster.strategiesTarget = {
@@ -56,16 +56,15 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "aggressivelavawave", interval = 2000, chance = 30, minDamage = 0, maxDamage = -550, target = false }
+	{ name = "aggressivelavawave", interval = 2000, chance = 30, minDamage = 0, maxDamage = -550, target = false },
 }
 
 monster.defenses = {
 	defense = 30,
-	armor = 30
+	armor = 30,
 	--	mitigation = ???,
 }
 
@@ -86,11 +85,11 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 monster.heals = {
-	{ type = COMBAT_FIREDAMAGE, percent = 100 }
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 76
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Port Hope Swamp Trolls, Venore Swamp Troll Cave, all around north area of Port Hope, \z
-		small spawn north-west of Venore and in cave south-east of Thais, also one in Foreigner Quarter."
+		small spawn north-west of Venore and in cave south-east of Thais, also one in Foreigner Quarter.",
 }
 
 monster.health = 55
@@ -36,7 +36,7 @@ monster.manaCost = 320
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -87,11 +87,11 @@ monster.loot = {
 	{ name = "troll green", chance = 1200 },
 	{ id = 5901, chance = 2140 }, -- wood
 	{ name = "swamp grass", chance = 3100 },
-	{ name = "medicine pouch", chance = 2160 }
+	{ name = "medicine pouch", chance = 2160 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -13, condition = { type = CONDITION_POISON, totalDamage = 1, interval = 4000 } }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -13, condition = { type = CONDITION_POISON, totalDamage = 1, interval = 4000 } },
 }
 
 monster.defenses = {
@@ -117,7 +117,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

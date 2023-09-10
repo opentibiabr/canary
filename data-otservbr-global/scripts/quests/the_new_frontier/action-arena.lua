@@ -1,22 +1,22 @@
 local config = {
 	bosses = {
-		{ 'Baron Brute', 'The Axeorcist' },
-		{ 'Menace', 'Fatality' },
-		{ 'Incineron', 'Coldheart' },
-		{ 'Dreadwing', 'Doomhowl' },
-		{ 'Haunter', 'The Dreadorian' },
-		{ 'Rocko', 'Tremorak' },
-		{ 'Tirecz' }
+		{ "Baron Brute", "The Axeorcist" },
+		{ "Menace", "Fatality" },
+		{ "Incineron", "Coldheart" },
+		{ "Dreadwing", "Doomhowl" },
+		{ "Haunter", "The Dreadorian" },
+		{ "Rocko", "Tremorak" },
+		{ "Tirecz" },
 	},
 
 	playerPos = {
 		Position(33080, 31014, 2),
-		Position(33081, 31014, 2)
+		Position(33081, 31014, 2),
 	},
 
 	teleportPositions = {
 		Position(33059, 31032, 3),
-		Position(33057, 31034, 3)
+		Position(33057, 31034, 3),
 	},
 
 	positions = {
@@ -26,8 +26,8 @@ local config = {
 
 		-- first 2 bosses
 		Position(33065, 31033, 3),
-		Position(33066, 31037, 3)
-	}
+		Position(33066, 31037, 3),
+	},
 }
 local TheNewFrontier = Storage.Quest.U8_54.TheNewFrontier
 
@@ -59,12 +59,12 @@ function theNewFrontierArena.onUse(player, item, fromPosition, target, toPositio
 		end
 
 		if creature:getStorageValue(TheNewFrontier.Questline) >= 26 then
-			return player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You already finished this battle.')
+			return player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You already finished this battle.")
 		end
 	end
 
 	if Game.getStorageValue(TheNewFrontier.Mission09[1]) == 1 then
-		return player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The arena is already in use.')
+		return player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The arena is already in use.")
 	end
 
 	Game.setStorageValue(TheNewFrontier.Mission09[1], 1)

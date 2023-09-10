@@ -11,17 +11,17 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 381
+	lookType = 381,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Krrrrrng.' }
+	{ text = "Krrrrrng." },
 }
 
 local keywordHandler = KeywordHandler:new()

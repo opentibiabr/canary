@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2092
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Antrum of the Fallen."
+	Locations = "Antrum of the Fallen.",
 }
 
 monster.health = 10000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -95,7 +95,7 @@ monster.loot = {
 	{ name = "ornate crossbow", chance = 1040 },
 	{ name = "jade hammer", chance = 1200 },
 	{ name = "shadow sceptre", chance = 400 },
-	{ name = "metal bat", chance = 320 }
+	{ name = "metal bat", chance = 320 },
 }
 
 monster.attacks = {
@@ -128,7 +128,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -1,7 +1,8 @@
 local textPos = {
 	{ x = 32318, y = 32251, z = 9 },
 	{ x = 32319, y = 32251, z = 9 },
-	{ x = 32320, y = 32251, z = 9 } }
+	{ x = 32320, y = 32251, z = 9 },
+}
 
 local rewardRoomText = MoveEvent()
 

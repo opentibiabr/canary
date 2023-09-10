@@ -1,20 +1,20 @@
 local teleports = {
 	[3189] = {
 		destination = Position(33041, 31086, 15),
-		storage = GlobalStorage.WrathOfTheEmperor.Bosses.Fury
+		storage = GlobalStorage.WrathOfTheEmperor.Bosses.Fury,
 	},
 	[3190] = {
 		destination = Position(33091, 31083, 15),
-		storage = GlobalStorage.WrathOfTheEmperor.Bosses.Wrath
+		storage = GlobalStorage.WrathOfTheEmperor.Bosses.Wrath,
 	},
 	[3191] = {
 		destination = Position(33094, 31118, 15),
-		storage = GlobalStorage.WrathOfTheEmperor.Bosses.Scorn
+		storage = GlobalStorage.WrathOfTheEmperor.Bosses.Scorn,
 	},
 	[3192] = {
 		destination = Position(33038, 31119, 15),
-		storage = GlobalStorage.WrathOfTheEmperor.Bosses.Spite
-	}
+		storage = GlobalStorage.WrathOfTheEmperor.Bosses.Spite,
+	},
 }
 
 local bossTeleport = MoveEvent()

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1742
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 2,
-	Locations = "Percht Island"
+	Locations = "Percht Island",
 }
 
 monster.health = 500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -81,14 +81,14 @@ monster.loot = {
 	{ name = "lightning pendant", chance = 6820 },
 	{ name = "strange talisman", chance = 5760 },
 	{ name = "sacred tree amulet", chance = 2730 },
-	{ name = "yetislippers", chance = 450 }
+	{ name = "yetislippers", chance = 450 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -200 },
 	{ name = "combat", interval = 2000, chance = 1, type = COMBAT_PHYSICALDAMAGE, minDamage = -100, maxDamage = -150, radius = 4, effect = CONST_ME_POFF, target = true },
 	{ name = "combat", interval = 2000, chance = 1, type = COMBAT_FIREDAMAGE, minDamage = -100, maxDamage = -150, radius = 1, effect = CONST_ME_ENERGYAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 111, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -150, radius = 4, target = true }
+	{ name = "combat", interval = 2000, chance = 111, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -150, radius = 4, target = true },
 }
 
 monster.defenses = {
@@ -114,7 +114,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

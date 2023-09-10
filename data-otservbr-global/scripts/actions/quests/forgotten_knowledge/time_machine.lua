@@ -3,7 +3,7 @@ function forgottenKnowledgeMachine.onUse(player, item, fromPosition, target, toP
 	if player:getPosition() == Position(32870, 32723, 15) then
 		player:teleportTo(Position(32870, 32724, 14))
 		player:getPosition():sendMagicEffect(CONST_ME_ENERGYHIT)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The mechanism takes you back in time.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The mechanism takes you back in time.")
 		return true
 	end
 
@@ -11,7 +11,7 @@ function forgottenKnowledgeMachine.onUse(player, item, fromPosition, target, toP
 		if player:getStorageValue(Storage.ForgottenKnowledge.TimeGuardianTimer) < os.time() then
 			player:teleportTo(Position(32870, 32724, 15))
 			player:getPosition():sendMagicEffect(CONST_ME_ENERGYHIT)
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The mechanism takes you back in time.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The mechanism takes you back in time.")
 			return true
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait a while before travel in time!")

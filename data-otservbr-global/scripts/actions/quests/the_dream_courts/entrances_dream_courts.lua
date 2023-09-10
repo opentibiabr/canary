@@ -2,7 +2,7 @@ local config = {
 	{ position = { x = 32042, y = 31938, z = 15 } },
 	{ position = { x = 32043, y = 31938, z = 15 } },
 	{ position = { x = 32042, y = 31939, z = 15 } },
-	{ position = { x = 32043, y = 31939, z = 15 } }
+	{ position = { x = 32043, y = 31939, z = 15 } },
 }
 
 local entranceDreamCourts = MoveEvent()

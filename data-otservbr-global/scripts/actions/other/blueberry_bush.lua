@@ -4,7 +4,7 @@ function blueberryBush.onUse(player, item, fromPosition, target, toPosition, isH
 	item:transform(3700)
 	item:decay()
 	Game.createItem(3588, 3, fromPosition)
-	player:addAchievementProgress('Bluebarian', 500)
+	player:addAchievementProgress("Bluebarian", 500)
 	return true
 end
 

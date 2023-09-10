@@ -2,13 +2,13 @@ local playerPosition = {
 	{ x = 247, y = 659, z = 13 },
 	{ x = 247, y = 660, z = 13 },
 	{ x = 247, y = 661, z = 13 },
-	{ x = 247, y = 662, z = 13 }
+	{ x = 247, y = 662, z = 13 },
 }
 local newPosition = {
 	{ x = 189, y = 650, z = 13 },
 	{ x = 189, y = 651, z = 13 },
 	{ x = 189, y = 652, z = 13 },
-	{ x = 189, y = 653, z = 13 }
+	{ x = 189, y = 653, z = 13 },
 }
 
 local annihilator = Action()
@@ -22,7 +22,7 @@ function annihilator.onUse(player, item, fromPosition, target, toPosition, isHot
 				player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 				return false
 			end
-			players[#players+1] = topPlayer
+			players[#players + 1] = topPlayer
 		end
 
 		for i, targetPlayer in ipairs(players) do

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 797
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 2,
 	Locations = "The Hive: east tower (beyond gates), west tower (including beyond gates), \z
-		also anywhere Hive Overseers are found (as summons), Hive Outpost."
+		also anywhere Hive Overseers are found (as summons), Hive Outpost.",
 }
 
 monster.health = 5000
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -88,11 +88,11 @@ monster.loot = {
 	{ name = "compound eye", chance = 13210 },
 	{ name = "calopteryx cape", chance = 1280 },
 	{ name = "carapace shield", chance = 1170 },
-	{ name = "hive scythe", chance = 1390 }
+	{ name = "hive scythe", chance = 1390 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -349 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -349 },
 }
 
 monster.defenses = {
@@ -118,7 +118,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

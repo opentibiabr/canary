@@ -5,7 +5,7 @@ local setting = {
 	[2093] = { storage = Storage.PitsOfInferno.ThroneApocalypse, value = 1 },
 	[2094] = { storage = Storage.PitsOfInferno.ThroneBazir, value = 1 },
 	[2095] = { storage = Storage.PitsOfInferno.ThroneAshfalor, value = 1 },
-	[2096] = { storage = Storage.PitsOfInferno.ThronePumin, value = 1 }
+	[2096] = { storage = Storage.PitsOfInferno.ThronePumin, value = 1 },
 }
 
 local checkThrone = MoveEvent()

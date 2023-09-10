@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 16
@@ -26,7 +26,7 @@ monster.Bestiary = {
 	Locations = "Several spawns near Kazordoon, Femor Hills, north of Thais, near the White Flower Temple, \z
 		Rookgaard Bear Cave, Bear Room Quest in Rookgaard, Rookgaard Bear Mountain, South of Villa Scapula, \z
 		Ferngrims Gate, North of Carlin, Fields of Glory, Edron Troll Cave, south of Venore, Desert Dungeon, \z
-		first floor of the Orc Fort mountain and west of Outlaw Camp."
+		first floor of the Orc Fort mountain and west of Outlaw Camp.",
 }
 
 monster.health = 80
@@ -38,7 +38,7 @@ monster.manaCost = 300
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -81,11 +81,11 @@ monster.loot = {
 	{ name = "meat", chance = 39750, maxCount = 4 },
 	{ name = "ham", chance = 20000, maxCount = 3 },
 	{ name = "bear paw", chance = 2000 },
-	{ name = "honeycomb", chance = 460 }
+	{ name = "honeycomb", chance = 460 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -25 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -25 },
 }
 
 monster.defenses = {
@@ -111,7 +111,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

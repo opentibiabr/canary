@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 22,
 	lookFeet = 61,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2108
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Forest of Life."
+	Locations = "Forest of Life.",
 }
 
 monster.health = 8000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -70,8 +70,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{ name = "Carnisylvan Sapling", chance = 70, interval = 2000, count = 1 }
-	}
+		{ name = "Carnisylvan Sapling", chance = 70, interval = 2000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -97,7 +97,7 @@ monster.loot = {
 	{ name = "sacred tree amulet", chance = 2880 },
 	{ id = 281, chance = 2090 }, -- giant shimmering pearl (green)
 	{ name = "gemmed figurine", chance = 790 },
-	{ name = "human teeth", chance = 520 }
+	{ name = "human teeth", chance = 520 },
 }
 
 monster.attacks = {
@@ -110,7 +110,7 @@ monster.defenses = {
 	defense = 37,
 	armor = 37,
 	mitigation = 1.13,
-	{ name = "speed", interval = 2000, chance = 8, speedChange = 250, effect = CONST_ME_MAGIC_GREEN, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 8, speedChange = 250, effect = CONST_ME_MAGIC_GREEN, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -130,7 +130,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

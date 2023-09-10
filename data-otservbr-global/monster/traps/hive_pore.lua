@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a hive pore"
 monster.experience = 0
 monster.outfit = {
-	lookTypeEx = 14064
+	lookTypeEx = 14064,
 }
 
 monster.health = 1
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -51,8 +51,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 3,
 	summons = {
-		{ name = "Lesser Swarmer", chance = 100, interval = 30000, count = 3 }
-	}
+		{ name = "Lesser Swarmer", chance = 100, interval = 30000, count = 3 },
+	},
 }
 
 monster.voices = {
@@ -60,17 +60,15 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
-monster.attacks = {
-}
+monster.attacks = {}
 
 monster.defenses = {
 	defense = 0,
 	armor = 0,
 	mitigation = 0.00,
-	{ name = "effect", interval = 30000, chance = 100, radius = 3, effect = CONST_ME_HITBYPOISON, target = false }
+	{ name = "effect", interval = 30000, chance = 100, radius = 3, effect = CONST_ME_HITBYPOISON, target = false },
 }
 
 monster.elements = {
@@ -90,7 +88,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

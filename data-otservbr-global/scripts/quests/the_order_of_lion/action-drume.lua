@@ -7,7 +7,7 @@ local config = {
 	usurperPosition = {
 		Position(32450, 32520, 7),
 		Position(32444, 32516, 7),
-		Position(32448, 32512, 7)
+		Position(32448, 32512, 7),
 	},
 	firstPlayerPosition = Position(32457, 32508, 6),
 	centerPosition = Position(32439, 32523, 7), -- Center Room
@@ -29,10 +29,8 @@ local function RoomIsOccupied(centerPosition, rangeX, rangeY)
 	return false
 end
 
-
 local function clearRoomDrume(centerPosition, rangeX, rangeY, resetGlobalStorage)
-	local spectators,
-	spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
+	local spectators, spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
 	for i = 1, #spectators do
 		spectator = spectators[i]
 		if spectator:isMonster() then
@@ -51,7 +49,9 @@ end
 
 local drumeAction = Action()
 function drumeAction.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if player:getPosition() ~= config.firstPlayerPosition then return false end
+	if player:getPosition() ~= config.firstPlayerPosition then
+		return false
+	end
 	if RoomIsOccupied(config.centerPosition, config.rangeX, config.rangeY) then
 		player:sendCancelMessage("There's someone already in the skirmish.")
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
@@ -69,7 +69,9 @@ function drumeAction.onUse(player, item, fromPosition, target, toPosition, isHot
 			end
 		end
 	end
-	if #players == 0 then return false end
+	if #players == 0 then
+		return false
+	end
 	for _, pi in pairs(players) do
 		if pi:getStorageValue(Storage.TheOrderOfTheLion.Drume.Timer) > os.time() then
 			player:sendCancelMessage("Someone of your team has already fought in the skirmish in the last 20h.")

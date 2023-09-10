@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 73,
 	lookFeet = 116,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1145
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Old Fortress (north of Edron), Old Masonry, Forbidden Temple (Carlin)."
+	Locations = "Old Fortress (north of Edron), Old Masonry, Forbidden Temple (Carlin).",
 }
 
 monster.health = 1000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -96,19 +96,19 @@ monster.loot = {
 	{ id = 3269, chance = 830 }, -- halberd
 	{ id = 3415, chance = 330 }, -- guardian shield
 	{ id = 3371, chance = 230 }, -- knight legs
-	{ id = 3369, chance = 200 } -- warrior helmet
+	{ id = 3369, chance = 200 }, -- warrior helmet
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 10, maxDamage = -175 },
-	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_PHYSICALDAMAGE, minDamage = 10, maxDamage = -100, range = 7, shootEffect = CONST_ANI_BOLT, target = false }
+	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_PHYSICALDAMAGE, minDamage = 10, maxDamage = -100, range = 7, shootEffect = CONST_ANI_BOLT, target = false },
 }
 
 monster.defenses = {
 	defense = 50,
 	armor = 30,
 	mitigation = 1.24,
-	{ name = "combat", interval = 4000, chance = 25, type = COMBAT_HEALING, minDamage = 20, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 4000, chance = 25, type = COMBAT_HEALING, minDamage = 20, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -128,7 +128,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

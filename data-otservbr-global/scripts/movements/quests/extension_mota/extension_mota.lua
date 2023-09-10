@@ -1,6 +1,6 @@
 local destination = {
 	[64015] = { toPosition = Position(33246, 32099, 8) }, --Entrance
-	[64016] = { toPosition = Position(33246, 32108, 8) } --Exit
+	[64016] = { toPosition = Position(33246, 32108, 8) }, --Exit
 }
 
 local extensionMota = MoveEvent()

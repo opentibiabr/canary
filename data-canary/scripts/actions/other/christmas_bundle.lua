@@ -9,7 +9,7 @@ local setting = { -- [christmas bundle item id] = {{reward item id, count}, ...}
 		6501, -- christmas wreath
 		6489, -- christmas branch
 		6503, -- red christmas garland
-		6387 -- christmas card
+		6387, -- christmas card
 	},
 	[6507] = { -- blue bundle
 		{ 6569, 15 }, -- candy
@@ -21,7 +21,7 @@ local setting = { -- [christmas bundle item id] = {{reward item id, count}, ...}
 		6501, -- christmas wreath
 		6489, -- christmas branch
 		6505, -- blue christmas garland
-		6387 -- christmas card
+		6387, -- christmas card
 	},
 	[6508] = { -- green bundle
 		{ 6569, 15 }, -- candy
@@ -33,8 +33,8 @@ local setting = { -- [christmas bundle item id] = {{reward item id, count}, ...}
 		6501, -- christmas wreath
 		6489, -- christmas branch
 		6502, -- christmas garland
-		6387 -- christmas card
-	}
+		6387, -- christmas card
+	},
 }
 
 local christmasBundle = Action()
@@ -53,7 +53,7 @@ function christmasBundle.onUse(player, item, fromPosition, target, toPosition, i
 		if type(gift) == "table" then
 			gift, count = unpack(gift)
 		end
-		rewards[#rewards+1] = { gift, count }
+		rewards[#rewards + 1] = { gift, count }
 		table.remove(targetItem, rand)
 	end
 

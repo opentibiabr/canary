@@ -5,7 +5,7 @@ local foods = {
 	3585, -- apple
 	3600, -- bread
 	3601, -- roll
-	3607 -- cheese
+	3607, -- cheese
 }
 
 local spell = Spell("instant")

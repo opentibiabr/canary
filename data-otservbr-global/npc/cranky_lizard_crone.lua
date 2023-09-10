@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 339
+	lookType = 339,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -42,9 +42,9 @@ npcType.onThink = function(npc, interval)
 end
 
 -- Messages
-local newaddon = 'Here you are, enjoy your brand new addon!'
-local noItems = 'You do not have all the required items.'
-local already = 'It seems you already have this addon, don\'t you try to mock me son!'
+local newaddon = "Here you are, enjoy your brand new addon!"
+local noItems = "You do not have all the required items."
+local already = "It seems you already have this addon, don't you try to mock me son!"
 
 --WAYFARER START --
 function WayfarerFirst(npc, creature, message, keywords, parameters, node)
@@ -89,23 +89,23 @@ function WayfarerSecond(npc, creature, message, keywords, parameters, node)
 end
 
 -- WAYFARER END --
-keywordHandler:addKeyword({ 'addons' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "I can offer you first & second addons of the following outfit: {Wayfarer}." })
+keywordHandler:addKeyword({ "addons" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "I can offer you first & second addons of the following outfit: {Wayfarer}." })
 
-keywordHandler:addKeyword({ 'storage' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Ask about {first addon} or {second addon}." })
+keywordHandler:addKeyword({ "storage" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Ask about {first addon} or {second addon}." })
 
-keywordHandler:addKeyword({ 'outfit' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Ask about {first addon} or {second addon}." })
+keywordHandler:addKeyword({ "outfit" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Ask about {first addon} or {second addon}." })
 
-keywordHandler:addKeyword({ 'mission' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Ask about {first addon} or {second addon}." })
+keywordHandler:addKeyword({ "mission" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Ask about {first addon} or {second addon}." })
 
-keywordHandler:addKeyword({ 'help' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "llected all the required pieces, say 'yes' and voila - you got yourself an addon!" })
+keywordHandler:addKeyword({ "help" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "llected all the required pieces, say 'yes' and voila - you got yourself an addon!" })
 
-local node1 = keywordHandler:addKeyword({ 'first addon' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = 'To achieve the first storage addon you need to give me the Old Cape. Do you have them with you?' })
-node1:addChildKeyword({ 'yes' }, WayfarerFirst, {})
-node1:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = 'Alright then. Come back when you got all neccessary items.', reset = true })
+local node1 = keywordHandler:addKeyword({ "first addon" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "To achieve the first storage addon you need to give me the Old Cape. Do you have them with you?" })
+node1:addChildKeyword({ "yes" }, WayfarerFirst, {})
+node1:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Alright then. Come back when you got all neccessary items.", reset = true })
 
-local node2 = keywordHandler:addKeyword({ 'second addon' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = 'To achieve the second storage addon you need to give me the Sedge Hat. Do you have them with you?' })
-node2:addChildKeyword({ 'yes' }, WayfarerSecond, {})
-node2:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = 'Alright then. Come back when you got all neccessary items.', reset = true })
+local node2 = keywordHandler:addKeyword({ "second addon" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "To achieve the second storage addon you need to give me the Sedge Hat. Do you have them with you?" })
+node2:addChildKeyword({ "yes" }, WayfarerSecond, {})
+node2:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Alright then. Come back when you got all neccessary items.", reset = true })
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

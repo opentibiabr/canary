@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 0,
 	lookBody = 120,
 	lookLegs = 82,
-	lookFeet = 95
+	lookFeet = 95,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -61,7 +61,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.SamsOldBackpack) == 1 then
 			npcHandler:say({
 				"Oh, so its you, he wrote me about? Sadly I have no dwarven armor in stock. But I give you the permission to retrive one from the mines. ...",
-				"The problem is, some giant spiders made the tunnels where the storage is their new home. Good luck."
+				"The problem is, some giant spiders made the tunnels where the storage is their new home. Good luck.",
 			}, npc, creature)
 			player:setStorageValue(Storage.SamsOldBackpack, 2)
 			player:setStorageValue(Storage.SamsOldBackpackDoor, 1)
@@ -120,7 +120,7 @@ npcConfig.shop = {
 	{ itemName = "viking helmet", clientId = 3367, buy = 265, sell = 66 },
 	{ itemName = "viking shield", clientId = 3431, buy = 260, sell = 85 },
 	{ itemName = "warrior helmet", clientId = 3369, sell = 696 },
-	{ itemName = "wooden shield", clientId = 3412, buy = 15, sell = 5 }
+	{ itemName = "wooden shield", clientId = 3412, buy = 15, sell = 5 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -131,7 +131,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 150
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -71,12 +71,12 @@ monster.loot = {
 	{ id = 5909, chance = 1940 }, -- white piece of cloth
 	{ id = 9690, chance = 1870 }, -- ghostly tissue
 	{ id = 3432, chance = 860 }, -- ancient shield
-	{ id = 3049, chance = 180 } -- stealth ring
+	{ id = 3049, chance = 180 }, -- stealth ring
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 30, attack = 40 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -25, maxDamage = -45, range = 1, effect = CONST_ME_MAGIC_RED, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -25, maxDamage = -45, range = 1, effect = CONST_ME_MAGIC_RED, target = true },
 }
 
 monster.defenses = {
@@ -102,7 +102,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

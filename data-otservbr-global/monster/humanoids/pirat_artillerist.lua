@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 86,
 	lookFeet = 94,
 	lookAddons = 2,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 2700
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -76,20 +76,20 @@ monster.loot = {
 	{ id = 17820, chance = 14285 }, -- soft cheese
 	{ id = 17821, chance = 14285 }, -- rat cheese
 	{ id = 820, chance = 1612 }, -- lightning boots
-	{ id = 818, chance = 3225 } -- magma boots
+	{ id = 818, chance = 3225 }, -- magma boots
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 450, maxDamage = -140 },
 	{ name = "corym vanguard wave", interval = 2000, chance = 10, minDamage = -50, maxDamage = -100, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -40, maxDamage = -70, radius = 4, effect = CONST_ME_MORTAREA, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -40, maxDamage = -70, radius = 4, effect = CONST_ME_MORTAREA, target = true },
 }
 
 monster.defenses = {
 	defense = 65,
 	armor = 65,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 30, maxDamage = 60, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 30, maxDamage = 60, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -109,7 +109,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 94,
 	lookLegs = 113,
 	lookFeet = 114,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -50,7 +50,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({ 'brotherhood of bones' }, StdModule.say, { npcHandler = npcHandler, text = "... what?! Uh - no, no. Of course I wouldn't have anything to do with... them." })
+keywordHandler:addKeyword({ "brotherhood of bones" }, StdModule.say, { npcHandler = npcHandler, text = "... what?! Uh - no, no. Of course I wouldn't have anything to do with... them." })
 
 npcHandler:setMessage(MESSAGE_GREET, "What do you want in my magical robe store? I doubt I have anything that's of interest to you.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "See ya, |PLAYERNAME|.")
@@ -66,7 +66,7 @@ npcConfig.shop = {
 	{ itemName = "magicians robe", clientId = 7991, buy = 450 },
 	{ itemName = "spellweavers rob", clientId = 10438, sell = 12000 },
 	{ itemName = "spirit cloak", clientId = 8042, buy = 1000, sell = 350 },
-	{ itemName = "zaoan robe", clientId = 10439, sell = 12000 }
+	{ itemName = "zaoan robe", clientId = 10439, sell = 12000 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -77,7 +77,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

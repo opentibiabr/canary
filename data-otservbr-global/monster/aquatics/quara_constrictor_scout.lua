@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 240
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Malada, Arena Quarter, Treasure Island Eastern Caves, \z
-		Hrodmir Quara Scout Caves, Quara Grotto, Oramond."
+		Hrodmir Quara Scout Caves, Quara Grotto, Oramond.",
 }
 
 monster.health = 450
@@ -36,7 +36,7 @@ monster.manaCost = 600
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -84,12 +84,12 @@ monster.loot = {
 	{ name = "shrimp", chance = 5140, maxCount = 3 },
 	{ name = "brass armor", chance = 4810 },
 	{ name = "small amethyst", chance = 3060 },
-	{ name = "fish fin", chance = 490 }
+	{ name = "fish fin", chance = 490 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -135, effect = CONST_ME_DRAWBLOOD },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = 0, maxDamage = -80, radius = 3, effect = CONST_ME_HITAREA, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = 0, maxDamage = -80, radius = 3, effect = CONST_ME_HITAREA, target = false },
 }
 
 monster.defenses = {
@@ -115,7 +115,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 47,
 	lookLegs = 47,
 	lookFeet = 76,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -63,20 +63,24 @@ local function greetCallback(npc, creature)
 	return true
 end
 
-keywordHandler:addKeyword({ 'work' }, StdModule.say, { npcHandler = npcHandler, text = 'Here\'s the situation: a tide of hazardous bugs, the gnomes named them {diremaws}, threatens our base. Then there is some kind of {growth} which seems connected to them somehow. We need to get rid of both.' })
-keywordHandler:addKeyword({ 'worth' }, StdModule.say, {
+keywordHandler:addKeyword({ "work" }, StdModule.say, { npcHandler = npcHandler, text = "Here's the situation: a tide of hazardous bugs, the gnomes named them {diremaws}, threatens our base. Then there is some kind of {growth} which seems connected to them somehow. We need to get rid of both." })
+keywordHandler:addKeyword({ "worth" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = { 'You\'re already known amongst the gnomes, member of the Bigfoot Brigade. I will make sure that the alliance learns of your deeds but you\'ll still need to help the dwarves and gnomes of this outpost to show your worth. ...',
-		'We also found suspicious devices carried by all kinds of creatures down here. Down here, they are of extreme worth to us since they could contain the key to what\'s happening all around us. ... ',
-		'If you can aquire any, return them to me and I make sure to tell the others of your generosity. Return to me afterwards to check on your current {status}.' }
+	text = {
+		"You're already known amongst the gnomes, member of the Bigfoot Brigade. I will make sure that the alliance learns of your deeds but you'll still need to help the dwarves and gnomes of this outpost to show your worth. ...",
+		"We also found suspicious devices carried by all kinds of creatures down here. Down here, they are of extreme worth to us since they could contain the key to what's happening all around us. ... ",
+		"If you can aquire any, return them to me and I make sure to tell the others of your generosity. Return to me afterwards to check on your current {status}.",
+	},
 })
-keywordHandler:addKeyword({ 'job' }, StdModule.say, {
+keywordHandler:addKeyword({ "job" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = { 'Leading the charge! It\'s a war down here. I maintain the outer defences and supplies which are organised back in Kazordoon and also by the gnomes. ...',
-		'I have sealed some of the areas far too dangerous for anyone to enter. If you can prove you\'re capable, you\'ll get an oportunity to help destroying the weird machines, pumping lava into the caves leading to the most dangerous enemies.',
-		'But even if we knew nothing more about them, the fact alone that they employ the help of those mockeries of all things dwarfish, marks them as an enemy of the dwarves and it\'s our obligation to annihilate them.' }
+	text = {
+		"Leading the charge! It's a war down here. I maintain the outer defences and supplies which are organised back in Kazordoon and also by the gnomes. ...",
+		"I have sealed some of the areas far too dangerous for anyone to enter. If you can prove you're capable, you'll get an oportunity to help destroying the weird machines, pumping lava into the caves leading to the most dangerous enemies.",
+		"But even if we knew nothing more about them, the fact alone that they employ the help of those mockeries of all things dwarfish, marks them as an enemy of the dwarves and it's our obligation to annihilate them.",
+	},
 })
-keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = 'Bashsmite. That\'s all you need to know.' })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "Bashsmite. That's all you need to know." })
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
@@ -95,19 +99,23 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		end
 		if player:getStorageValue(Storage.DangerousDepths.Scouts.Diremaw) == 2 and player:getStorageValue(Storage.DangerousDepths.Scouts.TimeTaskDiremaws) <= 0 then -- Vai fazer a missão após 20h
-			npcHandler:say({ "The gnomes say that these creatures seem to thrive on mushroom sponges. But not only that, apparently they also lay eggs in their own cadavers to breed even faster. ...",
+			npcHandler:say({
+				"The gnomes say that these creatures seem to thrive on mushroom sponges. But not only that, apparently they also lay eggs in their own cadavers to breed even faster. ...",
 				"Yes, disgusting. I guess it provides everything their offspring needs... well, we probably shouldn't go into that much further. Instead we should focus on preventing that from happening. ... ",
 				"If I understood that correctly, the gnomes 'grew' a device to completely neutralise diremaw corpses. Acting as a very effective counter measure. ... ",
 				"A lot of corpses are lying around wherever these creatures are being hunted. Now all we need are, you guessed it, volunteers to clean up as many of those remains as possible ... ",
-				"Are you willing to help? " }, npc, creature)
+				"Are you willing to help? ",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
 		if player:getStorageValue(Storage.DangerousDepths.Scouts.Diremaw) < 1 then -- Não possuía a missão, agora possui!
-			npcHandler:say({ "The gnomes say that these creatures seem to thrive on mushroom sponges. But not only that, apparently they also lay eggs in their own cadavers to breed even faster. ...",
+			npcHandler:say({
+				"The gnomes say that these creatures seem to thrive on mushroom sponges. But not only that, apparently they also lay eggs in their own cadavers to breed even faster. ...",
 				"Yes, disgusting. I guess it provides everything their offspring needs... well, we probably shouldn't go into that much further. Instead we should focus on preventing that from happening. ... ",
 				"If I understood that correctly, the gnomes 'grew' a device to completely neutralise diremaw corpses. Acting as a very effective counter measure. ... ",
 				"A lot of corpses are lying around wherever these creatures are being hunted. Now all we need are, you guessed it, volunteers to clean up as many of those remains as possible ... ",
-				"Are you willing to help? " }, npc, creature)
+				"Are you willing to help? ",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif (player:getStorageValue(Storage.DangerousDepths.Scouts.Diremaw) == 1) and (player:getStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount) < 20) then -- Está na missão porém não terminou a task!
 			npcHandler:say({ "Come back when you have finished your job." }, npc, creature)
@@ -139,22 +147,26 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		end
 		if player:getStorageValue(Storage.DangerousDepths.Scouts.Growth) == 2 and player:getStorageValue(Storage.DangerousDepths.Scouts.TimeTaskGrowth) <= 0 then -- Vai fazer a missão após 20h
-			npcHandler:say({ "I can't explain that stuff, even the gnomes don't know what grows in those caves. All we know is that this stuff brought about all the diremaws we are now facing. ...",
+			npcHandler:say({
+				"I can't explain that stuff, even the gnomes don't know what grows in those caves. All we know is that this stuff brought about all the diremaws we are now facing. ...",
 				"This vermin is somehow attracted to this sponge, my guess is they use it as a nourishment, too. We need to get rid of the stuff regularly to reduce their numbers to a manageable level. ...",
 				"We hauled our explosives down there - and I mean ALL our explosives. Dangerous? Indeed, so we positioned someone down there to actually watch this depot. ...",
 				"We built an iron fence around it and added a mechanism to quickly get barrel if need be. Then an... accident happened to our guard down there and ...",
 				"Well, to make a long story short, the barrels are unguarded right now and the diremaws are now too numerous and we are in desperate need of volunteers. ... ",
-				"We need someone to take those barrels to the source of the ever growing sponge and burn it down. All of it. There should be at least five locations. Are you up for that? " }, npc, creature)
+				"We need someone to take those barrels to the source of the ever growing sponge and burn it down. All of it. There should be at least five locations. Are you up for that? ",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 22)
 			npcHandler:setTopic(playerId, 22)
 		end
 		if player:getStorageValue(Storage.DangerousDepths.Scouts.Growth) < 1 then -- Não possuía a missão, agora possui!
-			npcHandler:say({ "I can't explain that stuff, even the gnomes don't know what grows in those caves. All we know is that this stuff brought about all the diremaws we are now facing. ...",
+			npcHandler:say({
+				"I can't explain that stuff, even the gnomes don't know what grows in those caves. All we know is that this stuff brought about all the diremaws we are now facing. ...",
 				"This vermin is somehow attracted to this sponge, my guess is they use it as a nourishment, too. We need to get rid of the stuff regularly to reduce their numbers to a manageable level. ...",
 				"We hauled our explosives down there - and I mean ALL our explosives. Dangerous? Indeed, so we positioned someone down there to actually watch this depot. ...",
 				"We built an iron fence around it and added a mechanism to quickly get barrel if need be. Then an... accident happened to our guard down there and ...",
 				"Well, to make a long story short, the barrels are unguarded right now and the diremaws are now too numerous and we are in desperate need of volunteers. ... ",
-				"We need someone to take those barrels to the source of the ever growing sponge and burn it down. All of it. There should be at least five locations. Are you up for that? " }, npc, creature)
+				"We need someone to take those barrels to the source of the ever growing sponge and burn it down. All of it. There should be at least five locations. Are you up for that? ",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 22)
 			npcHandler:setTopic(playerId, 22)
 		end
@@ -246,20 +258,20 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	-- Início checagem de pontos de tasks!!
 	if MsgContains(message, "status") then
-		npcHandler:say({ "So you want to know what we all think about your deeds? What leader\'s opinion are you interested in, the {gnomes} (Gnomus), the {dwarves} (Klom Stonecutter) or the {scouts} (Lardoc Bashsmite)?" }, npc, creature)
+		npcHandler:say({ "So you want to know what we all think about your deeds? What leader's opinion are you interested in, the {gnomes} (Gnomus), the {dwarves} (Klom Stonecutter) or the {scouts} (Lardoc Bashsmite)?" }, npc, creature)
 		npcHandler:setTopic(playerId, 5)
 		npcHandler:setTopic(playerId, 5)
 	elseif MsgContains(message, "gnomes") and npcHandler:getTopic(playerId) == 5 then
-		npcHandler:say({ 'The gnomes are still in need of your help, member of Bigfoot\'s Brigade. Prove your worth by answering their calls! (' .. math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.Status), 0) .. '/10)' }, npc, creature)
+		npcHandler:say({ "The gnomes are still in need of your help, member of Bigfoot's Brigade. Prove your worth by answering their calls! (" .. math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.Status), 0) .. "/10)" }, npc, creature)
 	elseif MsgContains(message, "dwarves") and npcHandler:getTopic(playerId) == 5 then
-		npcHandler:say({ 'The dwarves are still in need of your help, member of Bigfoot\'s Brigade. Prove your worth by answering their calls! (' .. math.max(player:getStorageValue(Storage.DangerousDepths.Dwarves.Status), 0) .. '/10)' }, npc, creature)
+		npcHandler:say({ "The dwarves are still in need of your help, member of Bigfoot's Brigade. Prove your worth by answering their calls! (" .. math.max(player:getStorageValue(Storage.DangerousDepths.Dwarves.Status), 0) .. "/10)" }, npc, creature)
 	elseif MsgContains(message, "scouts") and npcHandler:getTopic(playerId) == 5 then
-		npcHandler:say({ 'The scouts are still in need of your help, member of Bigfoot\'s Brigade. Prove your worth by answering their calls! (' .. math.max(player:getStorageValue(Storage.DangerousDepths.Scouts.Status), 0) .. '/10)' }, npc, creature)
+		npcHandler:say({ "The scouts are still in need of your help, member of Bigfoot's Brigade. Prove your worth by answering their calls! (" .. math.max(player:getStorageValue(Storage.DangerousDepths.Scouts.Status), 0) .. "/10)" }, npc, creature)
 	end
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Well, bye then.')
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)

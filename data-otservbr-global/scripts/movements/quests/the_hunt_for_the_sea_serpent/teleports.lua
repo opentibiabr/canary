@@ -3,7 +3,7 @@ local config = {
 	{ teleportPos = { x = 31943, y = 31046, z = 7 }, destination = Position(31943, 31045, 2) },
 	{ teleportPos = { x = 31943, y = 31046, z = 2 }, destination = Position(31943, 31044, 7) },
 	{ teleportPos = { x = 31938, y = 31041, z = 6 }, destination = Position(31938, 31041, 8), condition = TheHuntForTheSeaSerpent.QuestLine },
-	{ teleportPos = { x = 31939, y = 31050, z = 6 }, destination = Position(31912, 31187, 9), condition = TheHuntForTheSeaSerpent.QuestLine }
+	{ teleportPos = { x = 31939, y = 31050, z = 6 }, destination = Position(31912, 31187, 9), condition = TheHuntForTheSeaSerpent.QuestLine },
 }
 
 local teleports = MoveEvent()

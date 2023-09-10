@@ -2,7 +2,7 @@ local desperateSoul = MoveEvent()
 
 function desperateSoul.onStepIn(creature, item, position, fromPosition)
 	local monster = creature:getMonster()
-	if not monster or monster:getName():lower() ~= 'desperate soul' then
+	if not monster or monster:getName():lower() ~= "desperate soul" then
 		return true
 	end
 

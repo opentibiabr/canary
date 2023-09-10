@@ -23,7 +23,7 @@ local positions = {
 	Position(32849, 32231, 9),
 	Position(32850, 32231, 9),
 	Position(32848, 32232, 9),
-	Position(32849, 32232, 9)
+	Position(32849, 32232, 9),
 }
 
 local othersFireBug = Action()
@@ -36,7 +36,7 @@ function othersFireBug.onUse(player, item, fromPosition, target, toPosition, isH
 			player:setStorageValue(Storage.FerumbrasAscension.BasinCounter, 0)
 		end
 		if player:getStorageValue(Storage.FerumbrasAscension.BasinCounter) == 7 then
-			player:say('You ascended the last basin.', TALKTYPE_MONSTER_SAY)
+			player:say("You ascended the last basin.", TALKTYPE_MONSTER_SAY)
 			item:remove()
 			player:setStorageValue(Storage.FerumbrasAscension.MonsterDoor, 1)
 		end
@@ -104,7 +104,7 @@ function othersFireBug.onUse(player, item, fromPosition, target, toPosition, isH
 		return true
 	elseif random == 1 then --it explode on the user 1% chance
 		doTargetCombatHealth(0, player, COMBAT_FIREDAMAGE, -5, -5, CONST_ME_HITBYFIRE)
-		player:say('OUCH!', TALKTYPE_MONSTER_SAY)
+		player:say("OUCH!", TALKTYPE_MONSTER_SAY)
 		item:remove(1)
 		return true
 	else

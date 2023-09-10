@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 12
+	chance = 12,
 }
 
 monster.strategiesTarget = {
@@ -74,18 +74,18 @@ monster.loot = {
 	{ id = 9640, chance = 12500 }, -- poisonous slime
 	{ id = 10455, chance = 7000 }, -- lancer beetle shell
 	{ id = 10457, chance = 400 }, -- beetle necklace
-	{ id = 3033, chance = 800 } -- small amethyst
+	{ id = 3033, chance = 800 }, -- small amethyst
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 40, attack = 80 }
+	{ name = "melee", interval = 2000, chance = 100, skill = 40, attack = 80 },
 }
 
 monster.defenses = {
 	defense = 25,
 	armor = 25,
 	--	mitigation = ???,
-	{ name = "invisible", interval = 1000, chance = 10, effect = CONST_ME_MAGIC_RED }
+	{ name = "invisible", interval = 1000, chance = 10, effect = CONST_ME_MAGIC_RED },
 }
 
 monster.elements = {
@@ -105,11 +105,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -117,13 +116,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

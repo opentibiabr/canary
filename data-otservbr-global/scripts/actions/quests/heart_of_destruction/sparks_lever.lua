@@ -144,7 +144,7 @@ function heartDestructionSparks.onUse(player, item, fromPosition, itemEx, toPosi
 			Position(32227, 31344, 11),
 			Position(32227, 31345, 11),
 			Position(32227, 31346, 11),
-			Position(32227, 31347, 11)
+			Position(32227, 31347, 11),
 		},
 
 		newPos = { x = 32151, y = 31301, z = 14 },
@@ -161,7 +161,7 @@ function heartDestructionSparks.onUse(player, item, fromPosition, itemEx, toPosi
 					if tile then
 						local playerTile = tile:getTopCreature()
 						if playerTile and playerTile:isPlayer() then
-							storePlayers[#storePlayers+1] = playerTile
+							storePlayers[#storePlayers + 1] = playerTile
 						end
 					end
 				end

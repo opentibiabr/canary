@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 13
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "Femor Hills, cultist cave in Liberty Bay, Drefia."
+	Locations = "Femor Hills, cultist cave in Liberty Bay, Drefia.",
 }
 
 monster.health = 20
@@ -35,7 +35,7 @@ monster.manaCost = 250
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -75,7 +75,7 @@ monster.voices = {
 
 monster.loot = {
 	{ name = "meat", chance = 70860, maxCount = 5 },
-	{ name = "black wool", chance = 1000 }
+	{ name = "black wool", chance = 1000 },
 }
 
 monster.defenses = {
@@ -101,7 +101,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

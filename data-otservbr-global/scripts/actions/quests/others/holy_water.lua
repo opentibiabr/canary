@@ -2,7 +2,7 @@ local doorPosition = Position(32260, 32791, 7)
 local shadowNexusPosition = Position(33115, 31702, 12)
 local effectPositions = {
 	Position(33113, 31702, 12),
-	Position(33116, 31702, 12)
+	Position(33116, 31702, 12),
 }
 
 local function revertItem(position, itemId, transformId)
@@ -35,12 +35,12 @@ local storages = {
 	[4020] = Storage.TibiaTales.RestInHallowedGround.Graves.Grave13,
 	[4021] = Storage.TibiaTales.RestInHallowedGround.Graves.Grave14,
 	[4022] = Storage.TibiaTales.RestInHallowedGround.Graves.Grave15,
-	[4023] = Storage.TibiaTales.RestInHallowedGround.Graves.Grave16
+	[4023] = Storage.TibiaTales.RestInHallowedGround.Graves.Grave16,
 }
 
 local config = {
 	antler_talisman = 22008,
-	sacred_antler_talisman = 22009
+	sacred_antler_talisman = 22009,
 }
 
 local othersHolyWater = Action()
@@ -69,7 +69,7 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 			return true
 		end
 
-		Game.createMonster('Pirate Ghost', toPosition)
+		Game.createMonster("Pirate Ghost", toPosition)
 		item:remove(1)
 
 		-- The Inquisition Questlog- 'Mission 4: The Haunted Ruin'
@@ -86,8 +86,7 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 
 	if target.actionid == 4007 and target.actionid == 4024 then
 		local graveStorage = storages[target.actionid]
-		if player:getStorageValue(graveStorage) == 1
-				or player:getStorageValue(Storage.TibiaTales.RestInHallowedGround.Questline) ~= 3 then
+		if player:getStorageValue(graveStorage) == 1 or player:getStorageValue(Storage.TibiaTales.RestInHallowedGround.Questline) ~= 3 then
 			return false
 		end
 
@@ -115,7 +114,7 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 			target:remove()
 			newShadowNexus:decay()
 		end
-		nexusMessage(player, player:getName() .. ' damaged the shadow nexus! You can\'t damage it while it\'s burning.')
+		nexusMessage(player, player:getName() .. " damaged the shadow nexus! You can't damage it while it's burning.")
 		toPosition:sendMagicEffect(CONST_ME_ENERGYHIT)
 	elseif target.itemid == 7931 then
 		if Game.getStorageValue(GlobalStorage.Inquisition) > 0 then
@@ -128,7 +127,7 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 			for i = 1, #effectPositions do
 				effectPositions[i]:sendMagicEffect(CONST_ME_HOLYAREA)
 			end
-			nexusMessage(player, player:getName() .. ' destroyed the shadow nexus! In 10 seconds it will return to its original state.')
+			nexusMessage(player, player:getName() .. " destroyed the shadow nexus! In 10 seconds it will return to its original state.")
 			item:remove(1)
 			toPosition:sendMagicEffect(CONST_ME_HOLYAREA)
 		else

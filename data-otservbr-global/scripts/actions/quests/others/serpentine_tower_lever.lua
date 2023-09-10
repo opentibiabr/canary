@@ -2,7 +2,7 @@ local walls = {
 	{ position = Position(33148, 32867, 9), relocatePosition = Position(33148, 32869, 9) },
 	{ position = Position(33148, 32868, 9), relocatePosition = Position(33148, 32869, 9) },
 	{ position = Position(33149, 32867, 9), relocatePosition = Position(33149, 32869, 9) },
-	{ position = Position(33149, 32868, 9), relocatePosition = Position(33149, 32869, 9) }
+	{ position = Position(33149, 32868, 9), relocatePosition = Position(33149, 32869, 9) },
 }
 
 local othersSerpentineLever = Action()

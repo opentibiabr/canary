@@ -3,7 +3,7 @@ local config = {
 	[3261] = 2,
 	[3258] = 3,
 	[3260] = 4,
-	[3257] = 5
+	[3257] = 5,
 }
 
 local storage = Storage.TheAncientTombs.VashresamunInstruments
@@ -13,7 +13,7 @@ function theAncientRuinsInstru.onUse(player, item, fromPosition, target, toPosit
 	local targetTable = config[item.itemid]
 	if not targetTable then
 		player:setStorageValue(storage, 0)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You played them wrong, now you must begin with first again!')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You played them wrong, now you must begin with first again!")
 		doTargetCombatHealth(0, player, COMBAT_PHYSICALDAMAGE, -20, -20, CONST_ME_GROUNDSHAKER)
 		return true
 	end
@@ -23,7 +23,7 @@ function theAncientRuinsInstru.onUse(player, item, fromPosition, target, toPosit
 		fromPosition:sendMagicEffect(CONST_ME_SOUND_BLUE)
 	else
 		player:setStorageValue(Storage.TheAncientTombs.VashresamunsDoor, 1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You played them in correct order and got the access through door!')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You played them in correct order and got the access through door!")
 	end
 	return true
 end

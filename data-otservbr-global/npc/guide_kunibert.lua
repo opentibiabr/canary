@@ -16,19 +16,19 @@ npcConfig.outfit = {
 	lookBody = 46,
 	lookLegs = 68,
 	lookFeet = 29,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Talk to me if you need directions.' },
-	{ text = 'Hello, is this your first visit to Rathleton? I can show you around a little.' },
-	{ text = 'Free escort to the depot for newcomers!' }
+	{ text = "Talk to me if you need directions." },
+	{ text = "Hello, is this your first visit to Rathleton? I can show you around a little." },
+	{ text = "Free escort to the depot for newcomers!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -60,7 +60,7 @@ end
 
 local configMarks = {
 	{ mark = "depot", position = Position(33625, 31894, 6), markId = MAPMARK_LOCK, description = "Depot" },
-	{ mark = "temple", position = Position(33594, 31899, 6), markId = MAPMARK_TEMPLE, description = "Temple" }
+	{ mark = "temple", position = Position(33594, 31899, 6), markId = MAPMARK_TEMPLE, description = "Temple" },
 }
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -89,14 +89,14 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({ 'information' }, StdModule.say, { npcHandler = npcHandler, text = 'Currently, I can tell you all about the town, its temple, the bank, shops, spell trainers and the depot, as well as about the world status.' })
-keywordHandler:addKeyword({ 'temple' }, StdModule.say, { npcHandler = npcHandler, text = 'The temple can be found in one of the uptown districts. Look for stairs up from the lower city, you\'ll find the temple in the northwest of the upper city.' })
-keywordHandler:addKeyword({ 'bank' }, StdModule.say, { npcHandler = npcHandler, text = 'The First Oramond Bank is an important part of Rathleton, and is situated in the centre of the upper city. I can mark it on your map if you want.' })
-keywordHandler:addKeyword({ 'shops' }, StdModule.say, { npcHandler = npcHandler, text = 'You can buy almost everything here! Visit one of our shops for weapons, armors, magical equipment, spells, gems, tools, furnitureand everything else you can imagine.' })
-keywordHandler:addKeyword({ 'depot' }, StdModule.say, { npcHandler = npcHandler, text = 'The depot is a place where you can safely store your belongings. You are also protected against attacks there. I escort newcomers there.' })
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = ' I will help you find your way in the marvellous city of Rathleton. I can mark important locations on your map and give you someinformation about the town and the world status.' })
-keywordHandler:addKeyword({ 'town' }, StdModule.say, { npcHandler = npcHandler, text = 'This city is a modern marvel of progress. The city\'s wealth and industry is based on the famous glooth. The magistrate runs the city according to the wishes of its inhabitants.' })
-keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = 'I\'m Kunibert, of course.' })
+keywordHandler:addKeyword({ "information" }, StdModule.say, { npcHandler = npcHandler, text = "Currently, I can tell you all about the town, its temple, the bank, shops, spell trainers and the depot, as well as about the world status." })
+keywordHandler:addKeyword({ "temple" }, StdModule.say, { npcHandler = npcHandler, text = "The temple can be found in one of the uptown districts. Look for stairs up from the lower city, you'll find the temple in the northwest of the upper city." })
+keywordHandler:addKeyword({ "bank" }, StdModule.say, { npcHandler = npcHandler, text = "The First Oramond Bank is an important part of Rathleton, and is situated in the centre of the upper city. I can mark it on your map if you want." })
+keywordHandler:addKeyword({ "shops" }, StdModule.say, { npcHandler = npcHandler, text = "You can buy almost everything here! Visit one of our shops for weapons, armors, magical equipment, spells, gems, tools, furnitureand everything else you can imagine." })
+keywordHandler:addKeyword({ "depot" }, StdModule.say, { npcHandler = npcHandler, text = "The depot is a place where you can safely store your belongings. You are also protected against attacks there. I escort newcomers there." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = " I will help you find your way in the marvellous city of Rathleton. I can mark important locations on your map and give you someinformation about the town and the world status." })
+keywordHandler:addKeyword({ "town" }, StdModule.say, { npcHandler = npcHandler, text = "This city is a modern marvel of progress. The city's wealth and industry is based on the famous glooth. The magistrate runs the city according to the wishes of its inhabitants." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I'm Kunibert, of course." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to Rathleton, |PLAYERNAME|! Looking for a transport to the main isle of Oramond or would you like some information and a mapguide?")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")

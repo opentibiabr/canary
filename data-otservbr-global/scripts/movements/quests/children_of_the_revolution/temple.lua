@@ -10,8 +10,7 @@ function temple.onStepIn(creature, item, position, fromPosition)
 		--Questlog, Children of the Revolution 'Mission 1: Corruption'
 		player:setStorageValue(Storage.ChildrenoftheRevolution.Mission01, 2)
 		player:setStorageValue(Storage.ChildrenoftheRevolution.Questline, 5)
-		player:say('The temple has been corrupted and is lost. Zalamon should be informed about this as soon as possible.',
-			TALKTYPE_MONSTER_SAY)
+		player:say("The temple has been corrupted and is lost. Zalamon should be informed about this as soon as possible.", TALKTYPE_MONSTER_SAY)
 	end
 	return true
 end

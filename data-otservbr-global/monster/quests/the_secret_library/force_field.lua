@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a force field"
 monster.experience = 0
 monster.outfit = {
-	lookTypeEx = 2128
+	lookTypeEx = 2128,
 }
 
 monster.health = 10000
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -53,9 +53,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
-
+monster.loot = {}
 
 monster.defenses = {
 	defense = 33,
@@ -73,7 +71,7 @@ monster.reflects = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 20 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 20 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 20 },
 }
 
 monster.elements = {
@@ -93,7 +91,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

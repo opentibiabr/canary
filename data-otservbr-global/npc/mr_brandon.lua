@@ -16,18 +16,18 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 0,
 	lookFeet = 0,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = '<grumble> Maybe I should rearrange some warm currents to get rid of this horrible fog.' },
-	{ text = 'All these treasures I cannot reach... what a pity.' }
+	{ text = "<grumble> Maybe I should rearrange some warm currents to get rid of this horrible fog." },
+	{ text = "All these treasures I cannot reach... what a pity." },
 }
 
 local keywordHandler = KeywordHandler:new()

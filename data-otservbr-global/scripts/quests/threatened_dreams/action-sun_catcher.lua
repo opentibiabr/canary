@@ -4,8 +4,8 @@ local config = {
 		fromPos = Position(33508, 32163, 7),
 		toPos = Position(33522, 32173, 7),
 		usablePeriod = "day",
-		failMessage = "You are rubbing the gem in the sun catcher\'s centre but nothing happens.",
-		successMessage = "The sun catcher is shining with sunlight now."
+		failMessage = "You are rubbing the gem in the sun catcher's centre but nothing happens.",
+		successMessage = "The sun catcher is shining with sunlight now.",
 	},
 	[25734] = {
 		targetPos = {
@@ -13,13 +13,13 @@ local config = {
 			Position(33484, 32192, 7),
 			Position(33546, 32155, 7),
 			Position(33547, 32206, 7),
-			Position(33568, 32243, 7)
+			Position(33568, 32243, 7),
 		},
 		usablePeriod = "day",
 		failMessage = "The sun has to be shining in order to strengthen the barrier. Wait for the day.",
 		successMessage = {
 			"As soon as you're placing the sun catcher on the stone the pattern the mosaic is infused with sunlight. The barrier strengthens.",
-			"As soon as you're placing the sun catcher on the stone the pattern the mosaic is infused with sunlight. This was the last mosaic."
+			"As soon as you're placing the sun catcher on the stone the pattern the mosaic is infused with sunlight. This was the last mosaic.",
 		},
 		storageCounter = ThreatenedDreams.Mission02.ChargedSunCatcher,
 		storagePos = {
@@ -28,8 +28,8 @@ local config = {
 			ThreatenedDreams.Mission02.SunCatcherPos03,
 			ThreatenedDreams.Mission02.SunCatcherPos04,
 			ThreatenedDreams.Mission02.SunCatcherPos05,
-		}
-	}
+		},
+	},
 }
 
 local sunCatcher = Action()
@@ -48,8 +48,7 @@ function sunCatcher.onUse(player, item, fromPosition, target, toPosition, isHotk
 			return true
 		end
 
-		if player:getStorageValue(ThreatenedDreams.Mission02[1]) ~= 6
-				and player:getStorageValue(ThreatenedDreams.Mission02[1]) ~= 8 then
+		if player:getStorageValue(ThreatenedDreams.Mission02[1]) ~= 6 and player:getStorageValue(ThreatenedDreams.Mission02[1]) ~= 8 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, tool.failMessage)
 			return true
 		end
@@ -61,14 +60,12 @@ function sunCatcher.onUse(player, item, fromPosition, target, toPosition, isHotk
 			item:transform(25977)
 		end
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, tool.successMessage)
-		iterateArea(
-			function(position)
-				local tile = Tile(position)
-				if tile then
-					position:sendMagicEffect(CONST_ME_MAGIC_POWDER)
-				end
-			end,
-			tool.fromPos, tool.toPos)
+		iterateArea(function(position)
+			local tile = Tile(position)
+			if tile then
+				position:sendMagicEffect(CONST_ME_MAGIC_POWDER)
+			end
+		end, tool.fromPos, tool.toPos)
 		return true
 	elseif item.itemid == 25734 then
 		if tool.usablePeriod ~= currentPeriod then

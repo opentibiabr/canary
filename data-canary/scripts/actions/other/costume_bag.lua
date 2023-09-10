@@ -5,7 +5,7 @@ local setting = {
 		"pirate cutthroat",
 		"dworc voodoomaster",
 		"dwarf guard",
-		"minotaur mage"
+		"minotaur mage",
 	},
 	-- Uncommon
 	[654] = {
@@ -13,7 +13,7 @@ local setting = {
 		"diabolic imp",
 		"banshee",
 		"frost giant",
-		"lich"
+		"lich",
 	},
 	-- Deluxe
 	[655] = {
@@ -21,7 +21,7 @@ local setting = {
 		"demon",
 		"juggernaut",
 		"behemoth",
-		"ashmunrah"
+		"ashmunrah",
 	},
 }
 

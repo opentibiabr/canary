@@ -6,289 +6,298 @@ local config = {
 		[4272] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 4012
+			after = 4012,
 		},
 		-- minotaur, after being killed
 		[5969] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 4012
+			after = 4012,
 		},
 		-- minotaur archer
 		[4052] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 4053
+			after = 4053,
 		},
 		-- minotaur archer, after being killed
 		[5982] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 4053
+			after = 4053,
 		},
 		-- minotaur mage
 		[4047] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 4048
+			after = 4048,
 		},
 		-- minotaur mage, after being killed
 		[5981] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 4048
+			after = 4048,
 		},
 		-- minotaur guard
 		[4057] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 4058
+			after = 4058,
 		},
 		-- minotaur guard, after being killed
 		[5983] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 4058
+			after = 4058,
 		},
 		-- mooh'tah warrior
 		[21092] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 21093
+			after = 21093,
 		},
 		-- mooh'tah warrior, after being killed
 		[21091] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 21093
+			after = 21093,
 		},
 		-- minotaur hunter
 		[21096] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 21097
+			after = 21097,
 		},
 		-- minotaur hunter, after being killed
 		[21095] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 21097
+			after = 21097,
 		},
 		-- worm priestess
 		[21100] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 21101
+			after = 21101,
 		},
 		-- worm priestess, after being killed
 		[21099] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 21101
+			after = 21101,
 		},
 		-- minotaur amazon
 		[21000] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 21002
+			after = 21002,
 		},
 		-- minotaur amazon, after being killed
 		[21001] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 21002
+			after = 21002,
 		},
 		-- execowtioner
 		[21004] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 21006
+			after = 21006,
 		},
 		-- execowtioner, after being killed
 		[21005] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 21006
+			after = 21006,
 		},
 		-- moohtant
 		[20996] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 20998
+			after = 20998,
 		},
 		-- moohtant, after being killed
 		[20997] = {
 			chance = 7000,
 			newItem = 5878,
-			after = 20998
+			after = 20998,
 		},
 		-- low class lizards
 		-- lizard sentinel
 		[4324] = {
 			chance = 6000,
 			newItem = 5876,
-			after = 4325
+			after = 4325,
 		},
 		-- lizard sentinel, after being killed
 		[6040] = {
 			chance = 6000,
 			newItem = 5876,
-			after = 4325
+			after = 4325,
 		},
 		-- lizard snakecharmer
 		[4327] = {
 			chance = 6000,
 			newItem = 5876,
-			after = 4328
+			after = 4328,
 		},
 		-- lizard snakecharmer, after being killed
 		[6041] = {
 			chance = 6000,
 			newItem = 5876,
-			after = 4328
+			after = 4328,
 		},
 		-- lizard templar
 		[4321] = {
 			chance = 6000,
 			newItem = 5876,
-			after = 4322
+			after = 4322,
 		},
 		-- lizard templar, after being killed
 		[4239] = {
 			chance = 6000,
 			newItem = 5876,
-			after = 4322
+			after = 4322,
 		},
 		-- high class lizards
 		-- lizard chosen
 		[10368] = {
 			chance = 10000,
 			newItem = 5876,
-			after = 10369
+			after = 10369,
 		},
 		-- lizard chosen, after being killed
 		[10371] = {
 			chance = 10000,
 			newItem = 5876,
-			after = 10369
+			after = 10369,
 		},
 		-- lizard dragon priest
 		[10360] = {
 			chance = 10000,
 			newItem = 5876,
-			after = 10361
+			after = 10361,
 		},
 		-- lizard dragon priest, after being killed
 		[10363] = {
 			chance = 10000,
 			newItem = 5876,
-			after = 10361
+			after = 10361,
 		},
 		-- lizard high guard
 		[10352] = {
 			chance = 10000,
 			newItem = 5876,
-			after = 10353
+			after = 10353,
 		},
 		-- lizard high guard, after being killed
 		[10355] = {
 			chance = 10000,
 			newItem = 5876,
-			after = 10353
+			after = 10353,
 		},
 		-- lizard zaogun
 		[10364] = {
 			chance = 10000,
 			newItem = 5876,
-			after = 10365
+			after = 10365,
 		},
 		-- lizard zaogun, after being killed
 		[10367] = {
 			chance = 10000,
 			newItem = 5876,
-			after = 10365
+			after = 10365,
 		},
 		-- dragon
 		[4286] = {
 			chance = 5000,
 			newItem = 5877,
-			after = 4287 },
+			after = 4287,
+		},
 		[5973] = {
 			chance = 5000,
 			newItem = 5877,
-			after = 4287
+			after = 4287,
 		}, -- after being killed
 		-- dragon lord
 		[4062] = {
 			chance = 5000,
 			newItem = 5948,
-			after = 4063 },
+			after = 4063,
+		},
 		[5984] = {
 			chance = 5000,
 			newItem = 5948,
-			after = 4063
+			after = 4063,
 		}, -- after being killed
 		-- behemoth
 		[4112] = {
 			chance = 10000,
 			newItem = 5893,
-			after = 4113 },
+			after = 4113,
+		},
 		[5999] = {
 			chance = 10000,
 			newItem = 5893,
-			after = 4113
+			after = 4113,
 		}, -- after being killed
 		-- bone beast
 		[4212] = {
 			chance = 6000,
 			newItem = 5925,
-			after = 4213 },
+			after = 4213,
+		},
 		[6030] = {
 			chance = 6000,
 			newItem = 5925,
-			after = 4213
+			after = 4213,
 		}, -- after being killed
 		-- clomp
 		[22743] = {
 			chance = 50000,
 			newItem = 24842,
-			after = 22744 },
+			after = 22744,
+		},
 		[22742] = {
 			chance = 50000,
 			newItem = 24842,
-			after = 22744
+			after = 22744,
 		}, -- after being killed
 		-- piece of marble rock
 		[10426] = {
 			{
 				chance = 530,
 				newItem = 10429,
-				desc = "This little figurine of a goddess was masterfully sculpted by |PLAYERNAME|."
+				desc = "This little figurine of a goddess was masterfully sculpted by |PLAYERNAME|.",
 			},
 			{
 				chance = 9600,
 				newItem = 10428,
-				desc = "This little figurine made by |PLAYERNAME| has some room for improvement."
+				desc = "This little figurine made by |PLAYERNAME| has some room for improvement.",
 			},
 			{
 				chance = 24000,
 				newItem = 10427,
-				desc = "This shoddy work was made by |PLAYERNAME|."
-			}
+				desc = "This shoddy work was made by |PLAYERNAME|.",
+			},
 		},
 		-- ice cube
 		[7441] = {
 			chance = 22000,
-			newItem = 7442 },
+			newItem = 7442,
+		},
 		[7442] = {
 			chance = 4800,
-			newItem = 7444 },
+			newItem = 7444,
+		},
 		[7444] = {
 			chance = 900,
-			newItem = 7445 },
+			newItem = 7445,
+		},
 		[7445] = {
 			chance = 40,
-			newItem = 7446 }
+			newItem = 7446,
+		},
 	},
 	-- blessed wooden stake
 	[5942] = {
@@ -296,43 +305,45 @@ local config = {
 		[4097] = {
 			chance = 3000,
 			newItem = 5906,
-			after = 4098 },
+			after = 4098,
+		},
 		[5995] = {
 			chance = 3000,
 			newItem = 5906,
-			after = 4098
+			after = 4098,
 		}, -- after being killed
 		-- vampires
 		[4137] = {
 			chance = 6000,
 			newItem = 5905,
-			after = 4138
+			after = 4138,
 		}, -- vampire
 		[6006] = {
 			chance = 6000,
 			newItem = 5905,
-			after = 4138
+			after = 4138,
 		}, -- vampire, after being killed
 		[8738] = {
 			chance = 6000,
 			newItem = 5905,
-			after = 8742
+			after = 8742,
 		}, -- vampire bride
 		[8744] = {
 			chance = 6000,
 			newItem = 5905,
-			after = 8742
+			after = 8742,
 		}, -- vampire bride, after being killed
 		[18958] = {
 			chance = 6000,
 			newItem = 5905,
-			after = 18959
+			after = 18959,
 		}, -- vampire viscount
 		[18961] = {
 			chance = 6000,
 			newItem = 5905,
-			after = 18959 } -- vampire viscount, after being killed
-	}
+			after = 18959,
+		}, -- vampire viscount, after being killed
+	},
 }
 
 local skinning = Action()

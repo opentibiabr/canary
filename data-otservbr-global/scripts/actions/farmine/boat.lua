@@ -2,7 +2,7 @@ local boats = {
 	{ pos = { x = 33344, y = 31349, z = 7 }, destination = Position(33326, 31351, 7), unlockShortcut = Storage.TheSecretLibrary.ShortcutToBastion },
 	{ pos = { x = 33373, y = 31309, z = 7 }, destination = Position(33382, 31292, 7) },
 	{ pos = { x = 33382, y = 31294, z = 7 }, destination = Position(33374, 31310, 7) },
-	{ pos = { x = 33328, y = 31352, z = 7 }, destination = Position(33346, 31348, 7), access = Storage.TheSecretLibrary.ShortcutToBastion }
+	{ pos = { x = 33328, y = 31352, z = 7 }, destination = Position(33346, 31348, 7), access = Storage.TheSecretLibrary.ShortcutToBastion },
 }
 
 local boat = Action()

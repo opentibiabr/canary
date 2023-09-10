@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 30000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -60,16 +60,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "lightsphere", chance = 99990 }
+	{ name = "lightsphere", chance = 99990 },
 }
 
 monster.attacks = {
-	{ name = "combat", interval = 2000, chance = 4, type = COMBAT_ENERGYDAMAGE, minDamage = -3000, maxDamage = -5000, range = 3, shootEffect = CONST_ANI_ENERGY, target = false }
+	{ name = "combat", interval = 2000, chance = 4, type = COMBAT_ENERGYDAMAGE, minDamage = -3000, maxDamage = -5000, range = 3, shootEffect = CONST_ANI_ENERGY, target = false },
 }
 
 monster.defenses = {
 	defense = 55,
-	armor = 55
+	armor = 55,
 	--	mitigation = ???,
 }
 
@@ -90,7 +90,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 77,
 	lookLegs = 79,
 	lookFeet = 94,
-	lookAddons = 2
+	lookAddons = 2,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = '<sigh> The world has grown complicated since my youth.' }
+	{ text = "<sigh> The world has grown complicated since my youth." },
 }
 
 local keywordHandler = KeywordHandler:new()

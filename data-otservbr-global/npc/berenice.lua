@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 87,
 	lookLegs = 104,
 	lookFeet = 106,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -89,7 +89,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"While in Calassa, do not take the helmet off under any circumstances. If you have any questions, don't hesitate to ask Captain Max. ...",
 				"Your mission there, apart from observing the Quara, is to retrieve a special logbook from one of the shipwrecks buried there. ...",
 				"One of our last expeditions there failed horribly and the ship sank, but we still do not know the exact reason. ...",
-				"If you could retrieve the logbook, we'd finally know what happened. Have you understood your task and are willing to take this risk?"
+				"If you could retrieve the logbook, we'd finally know what happened. Have you understood your task and are willing to take this risk?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif npcHandler:getTopic(playerId) == 3 then
@@ -116,7 +116,7 @@ npcConfig.shop = {
 	{ itemName = "fourth verse of the hymn", clientId = 6090, sell = 800 },
 	{ itemName = "orichalcum pearl", clientId = 5021, buy = 80 },
 	{ itemName = "second verse of the hymn", clientId = 6088, sell = 250 },
-	{ itemName = "third verse of the hymn", clientId = 6089, sell = 400 }
+	{ itemName = "third verse of the hymn", clientId = 6089, sell = 400 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -127,7 +127,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

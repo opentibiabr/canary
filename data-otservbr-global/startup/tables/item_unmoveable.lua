@@ -5,7 +5,7 @@ ItemUnmoveableAction = {
 	[100] = {
 		itemId = false,
 		itemPos = {
-			{ x = xxxxx, y = yyyyy, z = z }
-		}
-	}
+			{ x = xxxxx, y = yyyyy, z = z },
+		},
+	},
 }

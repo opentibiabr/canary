@@ -319,7 +319,7 @@ local desert = {
 	{ itemid = 231, position = Position(33639, 32678, 12) },
 	{ itemid = 231, position = Position(33640, 32678, 12) },
 	{ itemid = 231, position = Position(33645, 32683, 12) },
-	{ itemid = 231, position = Position(33645, 32682, 12) }
+	{ itemid = 231, position = Position(33645, 32682, 12) },
 }
 
 local function transformArea()
@@ -358,10 +358,10 @@ local ferumbrasAscendantHabitatDesert = Action()
 function ferumbrasAscendantHabitatDesert.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 9125 then
 		if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Desert) >= 1 then
-			player:say('The lever are stuck, need some time to it can be moveable again.', TALKTYPE_MONSTER_SAY)
+			player:say("The lever are stuck, need some time to it can be moveable again.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
-		Game.createMonster('lovely rotworm', Position(33641, 32684, 12), true, true)
+		Game.createMonster("lovely rotworm", Position(33641, 32684, 12), true, true)
 		addEvent(transformArea, 2 * 1000)
 		item:transform(9126)
 		local basin = Tile(Position(33631, 32685, 12)):getItemById(11114)
@@ -371,7 +371,7 @@ function ferumbrasAscendantHabitatDesert.onUse(player, item, fromPosition, targe
 		end
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Desert, 1)
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats, Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats) + 1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The room transforms into a completely different landscape.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The room transforms into a completely different landscape.")
 		if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats) >= 8 then
 			addEvent(function()
 				resetFerumbrasAscendantHabitats()

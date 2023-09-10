@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 0,
 	lookBody = 119,
 	lookLegs = 119,
-	lookFeet = 126
+	lookFeet = 126,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -61,34 +61,32 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
-	if MsgContains(message, 'cookie') then
-		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31
-				and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.Wyda) ~= 1 then
-			npcHandler:say('You brought me a cookie?', npc, creature)
+	if MsgContains(message, "cookie") then
+		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31 and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.Wyda) ~= 1 then
+			npcHandler:say("You brought me a cookie?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
-	elseif MsgContains(message, 'mission') or MsgContains(message, 'quest') then
+	elseif MsgContains(message, "mission") or MsgContains(message, "quest") then
 		npcHandler:say({
-			"A quest? Well, if you\'re so keen on doing me a favour... Why don\'t you try to find a {blood herb}?",
-			"To be honest, I\'m drowning in blood herbs by now."
+			"A quest? Well, if you're so keen on doing me a favour... Why don't you try to find a {blood herb}?",
+			"To be honest, I'm drowning in blood herbs by now.",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
-	elseif MsgContains(message, 'bloodherb') or MsgContains(message, 'blood herb') then
+	elseif MsgContains(message, "bloodherb") or MsgContains(message, "blood herb") then
 		if player:getStorageValue(Storage.BloodHerbQuest) == 1 then
-			npcHandler:say('Arrr... here we go again.... do you have a #$*§# blood herb for me?', npc, creature)
+			npcHandler:say("Arrr... here we go again.... do you have a #$*§# blood herb for me?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		else
 			npcHandler:say({
 				"The blood herb is very rare. This plant would be very useful for me, but I don't know any accessible places to find it.",
-				"To be honest, I'm drowning in blood herbs by now. But if it helps you, well yes.. I guess I could use another blood herb..."
+				"To be honest, I'm drowning in blood herbs by now. But if it helps you, well yes.. I guess I could use another blood herb...",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif MsgContains(message, 'yes') then
+	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if not player:removeItem(130, 1) then
-				npcHandler:say('You have no cookie that I\'d like.', npc, creature)
+				npcHandler:say("You have no cookie that I'd like.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true
 			end
@@ -96,11 +94,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.WhatAFoolish.CookieDelivery.Wyda, 1)
 			player:addCondition(condition)
 			if player:getCookiesDelivered() == 10 then
-				player:addAchievement('Allow Cookies?')
+				player:addAchievement("Allow Cookies?")
 			end
 
 			npc:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
-			npcHandler:say('Well, it\'s a welcome change from all that gingerbread ... AHHH HOW DARE YOU??? FEEL MY WRATH!', npc, creature)
+			npcHandler:say("Well, it's a welcome change from all that gingerbread ... AHHH HOW DARE YOU??? FEEL MY WRATH!", npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		elseif npcHandler:getTopic(playerId) == 2 then
@@ -110,21 +108,21 @@ local function creatureSayCallback(npc, creature, type, message)
 				local TornTeddyRand = math.random(1, 100)
 				if TornTeddyRand <= 70 then
 					player:addItem(3454, 1) -- witchesbroom
-					npcHandler:say('Thank you -SOOO- much! No, I really mean it! Really! Here, let me give you a reward...', npc, creature)
+					npcHandler:say("Thank you -SOOO- much! No, I really mean it! Really! Here, let me give you a reward...", npc, creature)
 					npcHandler:setTopic(playerId, 0)
 				else
 					player:addItem(12617, 1) -- torn teddy
-					npcHandler:say('Thank you -SOOO- much! No, I really mean it! Really! Ah, you know what, you can have this old thing...', npc, creature)
+					npcHandler:say("Thank you -SOOO- much! No, I really mean it! Really! Ah, you know what, you can have this old thing...", npc, creature)
 					npcHandler:setTopic(playerId, 0)
 				end
 			else
-				npcHandler:say('No, you don\'t have any...', npc, creature)
+				npcHandler:say("No, you don't have any...", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 		end
-	elseif MsgContains(message, 'no') then
+	elseif MsgContains(message, "no") then
 		if npcHandler:getTopic(playerId) == 1 or npcHandler:getTopic(playerId) == 2 then
-			npcHandler:say('I see.', npc, creature)
+			npcHandler:say("I see.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 59,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 916
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Venore Corym Cave, Tiquanda Corym Cave, Corym Black Market, \z
-		Carlin Corym Cave/Dwarf Mines Diggers Depths Mine, Upper Spike."
+		Carlin Corym Cave/Dwarf Mines Diggers Depths Mine, Upper Spike.",
 }
 
 monster.health = 250
@@ -36,7 +36,7 @@ monster.manaCost = 490
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -90,11 +90,11 @@ monster.loot = {
 	{ name = "earflap", chance = 7142 },
 	{ name = "soft cheese", chance = 12500 },
 	{ name = "rat cheese", chance = 14285 },
-	{ name = "leather harness", chance = 537 }
+	{ name = "leather harness", chance = 537 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -105 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -105 },
 }
 
 monster.defenses = {
@@ -120,7 +120,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

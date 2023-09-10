@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 3,
 	lookLegs = 1,
 	lookFeet = 76,
-	lookAddons = 2
+	lookAddons = 2,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = "Have a drink in Meriana's only tavern!" }
+	{ text = "Have a drink in Meriana's only tavern!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -56,7 +56,6 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -66,8 +65,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "cookie") then
-		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31 and
-				player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.Ariella) ~= 1 then
+		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31 and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.Ariella) ~= 1 then
 			npcHandler:say("So you brought a cookie to a pirate?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -75,14 +73,18 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say(
 			"To get pirate hat you need give me Brutus Bloodbeard's Hat, \
 		Lethal Lissy's Shirt, Ron the Ripper's Sabre and Deadeye Devious' Eye Patch. Do you have them with you?",
-			npc, creature)
+			npc,
+			creature
+		)
 		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 1 then
 			npcHandler:say(
 				"You know, we have plenty of rum here but we lack some basic food. \
 			Especially food that easily becomes mouldy is a problem. Bring me 100 breads and you will help me a lot.",
-				npc, creature)
+				npc,
+				creature
+			)
 			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 2)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 2 then
 			npcHandler:say("Are you here to bring me the 100 pieces of bread that I requested?", npc, creature)
@@ -92,7 +94,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"The sailors always tell tales about the famous beer of Carlin. \z
 				You must know, alcohol is forbidden in that city. ...",
 				"The beer is served in a secret whisper bar anyway. \z
-				Bring me a sample of the whisper beer, NOT the usual beer but whisper beer. I hope you are listening."
+				Bring me a sample of the whisper beer, NOT the usual beer but whisper beer. I hope you are listening.",
 			}, npc, creature)
 			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 11)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 12 or player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 11 then
@@ -113,20 +115,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 
 			npc:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
-			npcHandler:say(
-				"How sweet of you ... Uhh ... OH NO ... Bozo did it again. Tell this prankster I'll pay him back.",
-				npc, creature)
+			npcHandler:say("How sweet of you ... Uhh ... OH NO ... Bozo did it again. Tell this prankster I'll pay him back.", npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			if player:getStorageValue(Storage.OutfitQuest.PirateHatAddon) == -1 then
-				if player:getItemCount(6101) > 0 and player:getItemCount(6102) > 0 and player:getItemCount(6100) > 0 and
-						player:getItemCount(6099) > 0
-				then
-					if
-							player:removeItem(6101, 1) and player:removeItem(6102, 1) and player:removeItem(6100, 1) and
-							player:removeItem(6099, 1)
-					then
+				if player:getItemCount(6101) > 0 and player:getItemCount(6102) > 0 and player:getItemCount(6100) > 0 and player:getItemCount(6099) > 0 then
+					if player:removeItem(6101, 1) and player:removeItem(6102, 1) and player:removeItem(6100, 1) and player:removeItem(6099, 1) then
 						npcHandler:say("Ah, right! The pirate hat! Here you go.", npc, creature)
 						player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
 						player:setStorageValue(Storage.OutfitQuest.PirateHatAddon, 1)
@@ -194,7 +189,7 @@ npcConfig.shop = {
 	{ itemName = "pumpkin", clientId = 3594, buy = 10 },
 	{ itemName = "red apple", clientId = 3585, buy = 5 },
 	{ itemName = "strawberry", clientId = 3591, buy = 2 },
-	{ itemName = "valentine's cake", clientId = 6392, buy = 100 }
+	{ itemName = "valentine's cake", clientId = 6392, buy = 100 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -205,7 +200,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

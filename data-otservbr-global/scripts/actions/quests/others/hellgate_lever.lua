@@ -2,11 +2,11 @@ local config = {
 	bridgePositions = {
 		Position(32627, 31699, 10),
 		Position(32628, 31699, 10),
-		Position(32629, 31699, 10)
+		Position(32629, 31699, 10),
 	},
 	removeCreaturePosition = Position(32630, 31699, 10),
 	bridgeID = 5770,
-	waterID = 622
+	waterID = 622,
 }
 
 local othersHellGate = Action()

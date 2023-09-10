@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 0,
 	lookFeet = 0,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
@@ -29,7 +29,7 @@ npcConfig.voices = {
 	{ text = "Is this a mutiny or what? Move, move!!" },
 	{ text = "In the rigging ya lazy fools!" },
 	{ text = "I wanna see you movin' ya lazy fools!!" },
-	{ text = "Full sails!! There's a sea serpent to catch!!" }
+	{ text = "Full sails!! There's a sea serpent to catch!!" },
 }
 
 local keywordHandler = KeywordHandler:new()

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 19,
 	lookLegs = 28,
 	lookFeet = 76,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -51,14 +51,14 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Don't forget npcHandler = npcHandler in the parameters. It is required for all StdModule functions!
-keywordHandler:addKeyword({ 'silus' }, StdModule.say, { npcHandler = npcHandler, text = "My {father}, can you tell me if he's alright?" })
-keywordHandler:addKeyword({ 'thais' }, StdModule.say, { npcHandler = npcHandler, text = "Alright then, you are very welcome to explore the temple!" })
-keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = "My name is Ivalisse." })
-keywordHandler:addKeyword({ 'time' }, StdModule.say, { npcHandler = npcHandler, text = "There is always time to make a change." })
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "Besides my various {duties} in the temple, I also take care of visitors. Well, I would but right now I can't get my mind of how my {father}'s doing. I am sorry." })
-keywordHandler:addKeyword({ 'duties' }, StdModule.say, { npcHandler = npcHandler, text = " I help linking the portals of this temple to other ancient sites of the {Astral Shapers}." })
-keywordHandler:addKeyword({ 'duties' }, StdModule.say, { npcHandler = npcHandler, text = " I help linking the portals of this temple to other ancient sites of the {Astral Shapers}." })
-keywordHandler:addKeyword({ 'mission' }, StdModule.say, { npcHandler = npcHandler, text = "Besides my various {duties} in the temple, I also take care of visitors. Well, I would but right now I can't get my mind of how my {father}'s doing. I am sorry." })
+keywordHandler:addKeyword({ "silus" }, StdModule.say, { npcHandler = npcHandler, text = "My {father}, can you tell me if he's alright?" })
+keywordHandler:addKeyword({ "thais" }, StdModule.say, { npcHandler = npcHandler, text = "Alright then, you are very welcome to explore the temple!" })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Ivalisse." })
+keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = "There is always time to make a change." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "Besides my various {duties} in the temple, I also take care of visitors. Well, I would but right now I can't get my mind of how my {father}'s doing. I am sorry." })
+keywordHandler:addKeyword({ "duties" }, StdModule.say, { npcHandler = npcHandler, text = " I help linking the portals of this temple to other ancient sites of the {Astral Shapers}." })
+keywordHandler:addKeyword({ "duties" }, StdModule.say, { npcHandler = npcHandler, text = " I help linking the portals of this temple to other ancient sites of the {Astral Shapers}." })
+keywordHandler:addKeyword({ "mission" }, StdModule.say, { npcHandler = npcHandler, text = "Besides my various {duties} in the temple, I also take care of visitors. Well, I would but right now I can't get my mind of how my {father}'s doing. I am sorry." })
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
@@ -70,7 +70,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "temple") then
 		npcHandler:say({
-			"Well, I hope you like it here. We tried to rebuild in the {Shaper}'s will. I am a bit preoccupied at the moment because of the absence of my {father}. I may not be the best of help currently, sorry."
+			"Well, I hope you like it here. We tried to rebuild in the {Shaper}'s will. I am a bit preoccupied at the moment because of the absence of my {father}. I may not be the best of help currently, sorry.",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	end
@@ -83,7 +83,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			"The discovery of the foundations of this very temple we are standing in, was the key to access their legacy. It is now the center of all our efforts in getting closer to the astral predecessors. ...",
 			"They found ways to connect various sites with a system of gates, all concentrating energy to allow travel to far away places. The more we learn, the more we can restore of these ancient gateways. ...",
 			"We see the gates as an invitation, use them to your advantage and follow the ways of the Shapers. Access to one of these ancient shrines is the only way to learn additional imbuements. ...",
-			"But beware, as far as we know, some of them have been claimed by other ancient beings and there is now way for us to prepare you what lies beyond any of those gates."
+			"But beware, as far as we know, some of them have been claimed by other ancient beings and there is now way for us to prepare you what lies beyond any of those gates.",
 		}, npc, creature)
 	end
 
@@ -103,7 +103,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say({
 			"What? You're telling me you found father? How is he, what did papa say? A chalice? As a disguise? The whole time? ...",
 			"Well, I am not as much surprised as I am happy to hear that he's alright. You know, after the incident with the duck and the umbrella - it doesn't get to me that easily anymore. ...",
-			"Thank you very much for doing all this for me, I will be forever grateful. I have nothing to repay you with but you are already blessed to have been able to lay eyes on the sacred shaper ruins."
+			"Thank you very much for doing all this for me, I will be forever grateful. I have nothing to repay you with but you are already blessed to have been able to lay eyes on the sacred shaper ruins.",
 		}, npc, creature)
 		player:setStorageValue(Storage.ForgottenKnowledge.Ivalisse, 1)
 	end

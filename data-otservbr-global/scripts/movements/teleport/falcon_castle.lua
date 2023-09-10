@@ -10,10 +10,10 @@ local teleports = {
 			{ x = 33296, y = 31288, z = 9 },
 			{ x = 33298, y = 31288, z = 9 },
 			{ x = 33298, y = 31289, z = 9 },
-			{ x = 33297, y = 31289, z = 9 }
+			{ x = 33297, y = 31289, z = 9 },
 		},
-		destination = Position(33363, 31342, 9)
-	}
+		destination = Position(33363, 31342, 9),
+	},
 }
 
 local falconCastle = MoveEvent()

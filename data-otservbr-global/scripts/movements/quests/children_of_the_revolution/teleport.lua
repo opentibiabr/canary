@@ -1,6 +1,6 @@
 local positions = {
 	{ x = 33356, y = 31124, z = 7 },
-	{ x = 33261, y = 31076, z = 8 }
+	{ x = 33261, y = 31076, z = 8 },
 }
 
 local teleport = MoveEvent()

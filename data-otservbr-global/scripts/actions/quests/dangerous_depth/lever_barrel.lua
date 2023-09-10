@@ -1,6 +1,6 @@
 local transformid = {
 	[2772] = 2773,
-	[2773] = 2772
+	[2773] = 2772,
 }
 
 local config = {

@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 355
+	lookType = 355,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -59,25 +59,25 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say({
 					"Although we are willing to hand this item to you, there is something you have to understand: There is no such thing as 'the' sceptre. ...",
 					"Those sceptres are created for special purposes each time anew. Therefore you will have to create one on your own. It will be your {mission} to find us three keepers and to get the three parts of the holy sceptre. ...",
-					"Then go to the holy altar and create a new one."
+					"Then go to the holy altar and create a new one.",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 1)
 			elseif npcHandler:getTopic(playerId) == 1 then
 				npcHandler:say({
 					"Even though we are spirits, we can't create anything out of thin air. You will have to donate some precious metal which we can drain for energy and substance. ...",
-					"The equivalent of 5000 gold will do. Are you willing to make such a donation?"
+					"The equivalent of 5000 gold will do. Are you willing to make such a donation?",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 2)
 			elseif player:getPosition().z == 13 and player:getStorageValue(Storage.WrathoftheEmperor.GhostOfAPriest02) < 1 then
 				npcHandler:say({
 					"Even though we are spirits, we can't create anything out of thin air. You will have to donate some precious metal which we can drain for energy and substance. ...",
-					"The equivalent of 5000 gold will do. Are you willing to make such a donation?"
+					"The equivalent of 5000 gold will do. Are you willing to make such a donation?",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 3)
 			elseif player:getPosition().z == 14 and player:getStorageValue(Storage.WrathoftheEmperor.GhostOfAPriest03) < 1 then
 				npcHandler:say({
 					"Even though we are spirits, we can't create anything out of thin air. You will have to donate some precious metal which we can drain for energy and substance. ...",
-					"The equivalent of 5000 gold will do. Are you willing to make such a donation?"
+					"The equivalent of 5000 gold will do. Are you willing to make such a donation?",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 4)
 			end
@@ -124,7 +124,8 @@ keywordHandler:addKeyword({ "left" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
 		"Some of the relics are still left in this world. They are insignia of the snake god's power. We know that you came for one of those insignia. ...",
-		"The Great {Snake} approves that you acquire its holy {sceptre}. We will not question the wisdom of the god to hand this relic to one of the false-born." }
+		"The Great {Snake} approves that you acquire its holy {sceptre}. We will not question the wisdom of the god to hand this relic to one of the false-born.",
+	},
 })
 keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "We are the guardians. We are all what is left from the glory of the past." })
 keywordHandler:addKeyword({ "banuta" }, StdModule.say, { npcHandler = npcHandler, text = "What you call Banuta was once a centre of our civilisation and culture. We gave those {apes} so much, but they wanted more. In the end, the Great {Snake} used them as a tool to teach our people a painful but necessary lesson." })
@@ -134,7 +135,8 @@ keywordHandler:addKeyword({ "redeem" }, StdModule.say, {
 	text = {
 		"We have failed our god and paid a high price. But all tragedies and obstacles are just a test of the Great Snake. We will have to prove we are worthy to be its first true-born. ...",
 		"Only in the face of seemingly impossible odds, we can prove what we are capable of. If we overcome all obstacles, the favour of the Great {Snake} will return to us. ...",
-		"The god has cast us down only to elevate us to new heights if we are worthy." }
+		"The god has cast us down only to elevate us to new heights if we are worthy.",
+	},
 })
 keywordHandler:addKeyword({ "dragon" }, StdModule.say, { npcHandler = npcHandler, text = "Dragons are one of the greatest creations of the Great {Snake}. Yet, they are still distanced from the Great {Snake} and susceptible for {corruption} and the lies of the egg stealers." })
 keywordHandler:addKeyword({ "corruption" }, StdModule.say, { npcHandler = npcHandler, text = "There are many forms of corruption in this world. All of it is the work of the egg stealers who spread their taint. The creation hatched by the Great {Snake} was perfect without even the option of corruption." })
@@ -142,13 +144,15 @@ keywordHandler:addKeyword({ "zalamon" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
 		"We understand what he is and what he has become. We were not aware there were others like us left in the world. ...",
-		"Perhaps there is still a chance our race can redeem itself in the eyes of the Great {Snake}." }
+		"Perhaps there is still a chance our race can redeem itself in the eyes of the Great {Snake}.",
+	},
 })
 keywordHandler:addKeyword({ "snake" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
 		"The father and mother of everything. Its first egg hatched the world. Its second egg hatched life itself. The lizard people were of its third litter. ...",
-		"Of the third litter but the first true-born, we became its keepers. As its first true children, we inherited the earth but it was taken from us by the {egg stealers}." }
+		"Of the third litter but the first true-born, we became its keepers. As its first true children, we inherited the earth but it was taken from us by the {egg stealers}.",
+	},
 })
 keywordHandler:addAliasKeyword({ "gods" })
 keywordHandler:addKeyword({ "egg stealers" }, StdModule.say, { npcHandler = npcHandler, text = "Creatures from beyond. Greedy and traitorous, they stole parts of the world and of life for themselves. They corrupted the world by their deceptions and stole our {birthright}." })
@@ -156,7 +160,8 @@ keywordHandler:addKeyword({ "birthright" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
 		"We were the rulers of the world. We overlooked the world in the name of the Great {Snake}. The egg stealers and their creatures stole it from our claws. ...",
-		"We have failed the Great {Snake} and our {decline} is its punishment." }
+		"We have failed the Great {Snake} and our {decline} is its punishment.",
+	},
 })
 keywordHandler:addKeyword({ "decline" }, StdModule.say, { npcHandler = npcHandler, text = "We were overthrown by those of who we vainly thought we could use for our advantage, even though we knew about the foulness of the false-born." })
 keywordHandler:addKeyword({ "false born" }, StdModule.say, { npcHandler = npcHandler, text = "Everything that lacks scales is no true litter of the Great Snake. They are the corrupted kin of the egg stealers." })
@@ -167,7 +172,8 @@ keywordHandler:addKeyword({ "worthy" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
 		"The Great Snake deserves that we try to use the best of our abilities and capabilities to serve it. Our existence is a test in this world corrupted by the egg stealers. ...",
-		"Only when we overcome all obstacles cast into our way, we will become worthy to serve the Great Snake in all eternity." }
+		"Only when we overcome all obstacles cast into our way, we will become worthy to serve the Great Snake in all eternity.",
+	},
 })
 keywordHandler:addKeyword({ "creatures" }, StdModule.say, { npcHandler = npcHandler, text = "They are the false-born. They hatched from foul eggs - poisoned by the egg stealers. They are numerous and like a plague for the world." })
 keywordHandler:addKeyword({ "temple" }, StdModule.say, { npcHandler = npcHandler, text = "This was once the centre of power of our religion. From here we ruled Tiquanda in the name of the snake god." })
@@ -176,13 +182,15 @@ keywordHandler:addKeyword({ "left" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
 		"Some of the relics are still left in this world. They are insignia of the snake god's power. We know that you came for one of those insignia. ...",
-		"The Great Snake approves that you acquire its holy sceptre. We will not question the wisdom of the god to hand this relic to one of the false-born." }
+		"The Great Snake approves that you acquire its holy sceptre. We will not question the wisdom of the god to hand this relic to one of the false-born.",
+	},
 })
 keywordHandler:addKeyword({ "slumber" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
 		"We were once the heigh priests of the Great Snake. We willingly left our mortal existence behind to become bound to this temple. ...",
-		"In this state we can serve the Great Snake in a more suitable way. You have to understand that it is an honour and a privilege, not a sacrifice." }
+		"In this state we can serve the Great Snake in a more suitable way. You have to understand that it is an honour and a privilege, not a sacrifice.",
+	},
 })
 npcHandler:setMessage(MESSAGE_FAREWELL, "Bye.")
 npcHandler:setMessage(MESSAGE_GREET, "Greetings {mortal}.")

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 35
@@ -26,7 +26,7 @@ monster.Bestiary = {
 	Locations = "Hero Cave, Ferumbras' Citadel, Goroma, Ghostlands (Warlock area; unreachable), \z
 		Liberty Bay (hidden underground passage; unreachable), Razzachai, deep in Pits of Inferno \z
 		(found in every throneroom except Verminor's), deep Formorgar Mines, Demon Forge, \z
-		Alchemist Quarter, Magician Quarter, Chyllfroest, Oramond Dungeon, Abandoned Sewers."
+		Alchemist Quarter, Magician Quarter, Chyllfroest, Oramond Dungeon, Abandoned Sewers.",
 }
 
 monster.health = 8200
@@ -39,7 +39,7 @@ monster.maxSummons = 1
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -67,19 +67,19 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-	pet = false
+	pet = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{ name = "fire elemental", chance = 10, interval = 2000 }
-	}
+		{ name = "fire elemental", chance = 10, interval = 2000 },
+	},
 }
 
 monster.sounds = {
@@ -88,8 +88,8 @@ monster.sounds = {
 	death = SOUND_EFFECT_TYPE_DEMON_DEATH,
 	ids = {
 		SOUND_EFFECT_TYPE_DEMON_BARK,
-		SOUND_EFFECT_TYPE_UNKNOWN_CREATURE_DEATH_1
-	}
+		SOUND_EFFECT_TYPE_UNKNOWN_CREATURE_DEATH_1,
+	},
 }
 
 monster.voices = {
@@ -99,7 +99,7 @@ monster.voices = {
 	{ text = "MUHAHAHAHA!", yell = false },
 	{ text = "CHAMEK ATH UTHUL ARAK!", yell = false },
 	{ text = "I SMELL FEEEEAAAAAR!", yell = false },
-	{ text = "Your resistance is futile!", yell = false }
+	{ text = "Your resistance is futile!", yell = false },
 }
 
 monster.loot = {
@@ -136,7 +136,7 @@ monster.loot = {
 	{ id = 7393, chance = 90 }, -- demon trophy
 	{ id = 238, chance = 22220, maxCount = 3 }, -- great mana potion
 	{ id = 7643, chance = 19540, maxCount = 3 }, -- ultimate health potion
-	{ id = 7642, chance = 18510, maxCount = 3 } -- great spirit potion
+	{ id = 7642, chance = 18510, maxCount = 3 }, -- great spirit potion
 }
 
 monster.attacks = {
@@ -146,14 +146,14 @@ monster.attacks = {
 	{ name = "firefield", interval = 2000, chance = 10, range = 7, radius = 1, shootEffect = CONST_ANI_FIRE, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -490, length = 8, spread = 0, effect = CONST_ME_PURPLEENERGY, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -210, maxDamage = -300, range = 1, shootEffect = CONST_ANI_ENERGY, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = -700, radius = 1, effect = CONST_ME_MAGIC_RED, target = true, duration = 30000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = -700, radius = 1, effect = CONST_ME_MAGIC_RED, target = true, duration = 30000 },
 }
 
 monster.defenses = {
 	defense = 55,
 	armor = 55,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 180, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 320, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 320, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -166,14 +166,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 30 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 30 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 1100
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -49,12 +49,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -64,7 +64,7 @@ monster.voices = {
 	{ text = "I will devour your soul.", yell = false },
 	{ text = "Souuuls!", yell = false },
 	{ text = "I will feed on you.", yell = false },
-	{ text = "Aaaahh", yell = false }
+	{ text = "Aaaahh", yell = false },
 }
 
 monster.loot = {
@@ -78,7 +78,7 @@ monster.loot = {
 	{ id = 3073, chance = 910 }, -- wand of cosmic energy
 	{ id = 3069, chance = 980 }, -- necrotic rod
 	{ id = 6299, chance = 330 }, -- death ring
-	{ id = 5884, chance = 140 } -- spirit container
+	{ id = 5884, chance = 140 }, -- spirit container
 }
 
 monster.attacks = {
@@ -86,14 +86,14 @@ monster.attacks = {
 	{ name = "souleater drown", interval = 2000, chance = 9, target = false },
 	{ name = "combat", interval = 2000, chance = 8, type = COMBAT_ICEDAMAGE, minDamage = -50, maxDamage = -100, radius = 1, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEATTACK, target = true },
 	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_LIFEDRAIN, minDamage = -10, maxDamage = -60, radius = 4, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "souleater wave", interval = 2000, chance = 12, minDamage = -100, maxDamage = -210, target = false }
+	{ name = "souleater wave", interval = 2000, chance = 12, minDamage = -100, maxDamage = -210, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 25,
 	{ name = "invisible", interval = 2000, chance = 12, effect = CONST_ME_POFF },
-	{ name = "combat", interval = 2000, chance = 16, type = COMBAT_HEALING, minDamage = 130, maxDamage = 205, effect = CONST_ME_MAGIC_RED, target = false }
+	{ name = "combat", interval = 2000, chance = 16, type = COMBAT_HEALING, minDamage = 130, maxDamage = 205, effect = CONST_ME_MAGIC_RED, target = false },
 }
 
 monster.elements = {
@@ -106,14 +106,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

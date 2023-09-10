@@ -16,16 +16,15 @@ npcConfig.outfit = {
 	lookBody = 90,
 	lookLegs = 13,
 	lookFeet = 14,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
-
 
 npcType.onAppear = function(npc, creature)
 	npcHandler:onAppear(npc, creature)
@@ -53,12 +52,11 @@ local function creatureSayCallback(npc, creature, type, message)
 	local playerId = player:getId()
 
 	if MsgContains(message, "fur") then
-		if player:getStorageValue(ThreatenedDreams.Mission01[1]) == 7
-				and player:getStorageValue(ThreatenedDreams.Mission01.PoacherNotes) == 1 then
+		if player:getStorageValue(ThreatenedDreams.Mission01[1]) == 7 and player:getStorageValue(ThreatenedDreams.Mission01.PoacherNotes) == 1 then
 			npcHandler:say({
 				"A wolf whelp fur? Well, some months ago a hunter came here - a rather scruffy, smelly guy. I would have thrown him out instantly, but he had to offer some fine pelts. One of them was the fur of a very young wolf. ...",
 				"I was not delighted that he obviously killed such a young animal. When I confronted him, he said he wanted to raise it as a companion but it unfortunately died. A sad story. In the end, I bought some of his pelts, among them the whelp fur. ...",
-				"You can have it if this is important for you. I would sell it for 1000 gold. Are you interested?"
+				"You can have it if this is important for you. I would sell it for 1000 gold. Are you interested?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 8)
 		else
@@ -66,7 +64,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "addon") then
-		if (getPlayerStorageValue(creature, Storage.Irmana1) < 1) then
+		if getPlayerStorageValue(creature, Storage.Irmana1) < 1 then
 			npcHandler:say("Currently we are offering accessories for the nobleman - and, of course, noblewoman - outfit. Would you like to hear more about our offer?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif getPlayerStorageValue(creature, Storage.Irmana2) < 1 then
@@ -80,7 +78,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Especially for you, mylady, we are offering a pretty {hat} and a beautiful {dress} like the ones I wear. Which one are you interested in?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 3 then
-			if (doPlayerRemoveMoney(creature, 150000) and getPlayerStorageValue(creature, Storage.Irmana1) < 1) then
+			if doPlayerRemoveMoney(creature, 150000) and getPlayerStorageValue(creature, Storage.Irmana1) < 1 then
 				npcHandler:say("Congratulations! Here is your brand-new accessory, I hope you like it. Please visit us again! ", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				player:addOutfitAddon(140, 2)
@@ -91,7 +89,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				end
 			end
 		elseif npcHandler:getTopic(playerId) == 4 then
-			if (doPlayerRemoveMoney(creature, 150000) and getPlayerStorageValue(creature, Storage.Irmana2) < 1) then
+			if doPlayerRemoveMoney(creature, 150000) and getPlayerStorageValue(creature, Storage.Irmana2) < 1 then
 				npcHandler:say("Congratulations! Here is your brand-new accessory, I hope you like it. Please visit us again! ", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				player:addOutfitAddon(140, 1)
@@ -104,29 +102,29 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 5 then
 			if getPlayerItemCount(creature, 3566) >= 1 then
 				doPlayerRemoveItem(creature, 3566, 1)
-				npcHandler:say("A {Red Robe}! Great. Here, take this red piece of cloth, I don\'t need it anyway.", npc, creature)
+				npcHandler:say("A {Red Robe}! Great. Here, take this red piece of cloth, I don't need it anyway.", npc, creature)
 				doPlayerAddItem(creature, 5911, 1)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say('Are you trying to mess with me?!', npc, creature)
+				npcHandler:say("Are you trying to mess with me?!", npc, creature)
 			end
 		elseif npcHandler:getTopic(playerId) == 6 then
 			if getPlayerItemCount(creature, 3574) >= 1 then
 				doPlayerRemoveItem(creature, 3574, 1)
-				npcHandler:say("A {Mystic Turban}! Great. Here, take this blue piece of cloth, I don\'t need it anyway.", npc, creature)
+				npcHandler:say("A {Mystic Turban}! Great. Here, take this blue piece of cloth, I don't need it anyway.", npc, creature)
 				doPlayerAddItem(creature, 5912, 1)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say('Are you trying to mess with me?!', npc, creature)
+				npcHandler:say("Are you trying to mess with me?!", npc, creature)
 			end
 		elseif npcHandler:getTopic(playerId) == 7 then
 			if getPlayerItemCount(creature, 3563) >= 150 then
 				doPlayerRemoveItem(creature, 3563, 150)
-				npcHandler:say("A 150 {Green Tunic}! Great. Here, take this green piece of cloth, I don\'t need it anyway.", npc, creature)
+				npcHandler:say("A 150 {Green Tunic}! Great. Here, take this green piece of cloth, I don't need it anyway.", npc, creature)
 				doPlayerAddItem(creature, 5910, 1)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say('Are you trying to mess with me?!', npc, creature)
+				npcHandler:say("Are you trying to mess with me?!", npc, creature)
 			end
 		elseif npcHandler:getTopic(playerId) == 8 then
 			if player:getMoney() >= 1000 then
@@ -136,40 +134,32 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(ThreatenedDreams.Mission01[1], 8)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say('Are you trying to mess with me?!', npc, creature)
+				npcHandler:say("Are you trying to mess with me?!", npc, creature)
 			end
 		end
 	elseif (MsgContains(message, "hat") or MsgContains(message, "accessory")) and (npcHandler:getTopic(playerId) == 2 and getPlayerStorageValue(creature, Storage.Irmana1) < 1) then
-		npcHandler:say(
-			{
-				"This accessory requires a small fee of 150000 gold pieces. Of course, we do not want to put you at any risk to be attacked while carrying this huge amount of money. ...",
-				"This is why we have established our brand-new instalment sale. You can choose to either pay the price at once, or if you want to be safe, by instalments of 10000 gold pieces. ...",
-				"I also have to inform you that once you started paying for one of the accessories, you have to finish the payment first before you can start paying for the other one, of course. ...",
-				"Are you interested in purchasing this accessory?"
-			},
-			npc,
-			creature
-		)
+		npcHandler:say({
+			"This accessory requires a small fee of 150000 gold pieces. Of course, we do not want to put you at any risk to be attacked while carrying this huge amount of money. ...",
+			"This is why we have established our brand-new instalment sale. You can choose to either pay the price at once, or if you want to be safe, by instalments of 10000 gold pieces. ...",
+			"I also have to inform you that once you started paying for one of the accessories, you have to finish the payment first before you can start paying for the other one, of course. ...",
+			"Are you interested in purchasing this accessory?",
+		}, npc, creature)
 		npcHandler:setTopic(playerId, 3)
 	elseif (MsgContains(message, "dress") or MsgContains(message, "coat")) and (npcHandler:getTopic(playerId) == 2 and getPlayerStorageValue(creature, Storage.Irmana2) < 1) then
-		npcHandler:say(
-			{
-				"This accessory requires a small fee of 150000 gold pieces. Of course, we do not want to put you at any risk to be attacked while carrying this huge amount of money. ...",
-				"This is why we have established our brand-new instalment sale. You can choose to either pay the price at once, or if you want to be safe, by instalments of 10000 gold pieces. ...",
-				"I also have to inform you that once you started paying for one of the accessories, you have to finish the payment first before you can start paying for the other one, of course. ...",
-				"Are you interested in purchasing this accessory?"
-			},
-			npc,
-			creature
-		)
+		npcHandler:say({
+			"This accessory requires a small fee of 150000 gold pieces. Of course, we do not want to put you at any risk to be attacked while carrying this huge amount of money. ...",
+			"This is why we have established our brand-new instalment sale. You can choose to either pay the price at once, or if you want to be safe, by instalments of 10000 gold pieces. ...",
+			"I also have to inform you that once you started paying for one of the accessories, you have to finish the payment first before you can start paying for the other one, of course. ...",
+			"Are you interested in purchasing this accessory?",
+		}, npc, creature)
 		npcHandler:setTopic(playerId, 4)
-	elseif (MsgContains(message, "red robe")) then
+	elseif MsgContains(message, "red robe") then
 		npcHandler:say("Have you found a {Red Robe} for me?", npc, creature)
 		npcHandler:setTopic(playerId, 5)
-	elseif (MsgContains(message, "mystic turban")) then
+	elseif MsgContains(message, "mystic turban") then
 		npcHandler:say("Have you found a {Mystic Turban} for me?", npc, creature)
 		npcHandler:setTopic(playerId, 6)
-	elseif (MsgContains(message, "green tunic")) then
+	elseif MsgContains(message, "green tunic") then
 		npcHandler:say("Have you found {150 Green Tunic} for me?", npc, creature)
 		npcHandler:setTopic(playerId, 7)
 	end
@@ -223,7 +213,7 @@ npcConfig.shop = {
 	{ itemName = "white piece of cloth", clientId = 5909, sell = 100 },
 	{ itemName = "winter wolf fur", clientId = 10295, sell = 20 },
 	{ itemName = "wool", clientId = 10319, sell = 15 },
-	{ itemName = "yellow piece of cloth", clientId = 5914, sell = 150 }
+	{ itemName = "yellow piece of cloth", clientId = 5914, sell = 150 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -234,7 +224,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

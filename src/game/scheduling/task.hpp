@@ -45,16 +45,27 @@ public:
 
 	bool hasTraceableContext() const {
 		return std::set<std::string> {
+			"Creature::checkCreatureWalk",
+			"Decay::checkDecay",
+			"Game::checkCreatureAttack",
 			"Game::checkCreatures",
 			"Game::checkImbuements",
 			"Game::checkLight",
 			"Game::createFiendishMonsters",
 			"Game::createInfluencedMonsters",
+			"Game::updateCreatureWalk",
 			"Game::updateForgeableMonsters",
 			"GlobalEvents::think",
+			"LuaEnvironment::executeTimerEvent",
+			"Modules::executeOnRecvbyte",
 			"OutputMessagePool::sendAll",
+			"ProtocolGame::addGameTask",
+			"ProtocolGame::parsePacketFromDispatcher",
+			"Raids::checkRaids",
 			"SpawnMonster::checkSpawnMonster",
+			"SpawnNpc::checkSpawnNpc",
 			"Webhook::run",
+			"sendRecvMessageCallback",
 		}
 			.contains(context);
 	}

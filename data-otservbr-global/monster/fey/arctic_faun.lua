@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 85,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1626
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 1,
-	Locations = "Arctic Faun's Island."
+	Locations = "Arctic Faun's Island.",
 }
 
 monster.health = 300
@@ -33,10 +33,9 @@ monster.corpse = 28811
 monster.speed = 105
 monster.manaCost = 0
 
-
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -71,7 +70,6 @@ monster.light = {
 	color = 0,
 }
 
-
 monster.voices = {
 	interval = 5000,
 	chance = 10,
@@ -97,13 +95,13 @@ monster.loot = {
 	{ name = "wood cape", chance = 820 },
 	{ name = "leaf legs", chance = 340 },
 	{ name = "wooden spellbook", chance = 210 },
-	{ id = 5792, chance = 140 } -- die
+	{ id = 5792, chance = 140 }, -- die
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -200 },
 	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -180, range = 7, shootEffect = CONST_ANI_SNOWBALL, effect = CONST_ME_POFF, target = false },
-	{ name = "combat", interval = 1000, chance = 12, type = COMBAT_ENERGYDAMAGE, minDamage = 0, maxDamage = -175, length = 3, spread = 3, effect = CONST_ME_POFF, target = false }
+	{ name = "combat", interval = 1000, chance = 12, type = COMBAT_ENERGYDAMAGE, minDamage = 0, maxDamage = -175, length = 3, spread = 3, effect = CONST_ME_POFF, target = false },
 }
 
 monster.defenses = {
@@ -129,7 +127,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

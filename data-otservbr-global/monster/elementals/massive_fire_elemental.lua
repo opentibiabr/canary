@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 313
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Demon Forge, Deeper Banuta, Hero Cave, Hot Spot, Fury Dungeon."
+	Locations = "Demon Forge, Deeper Banuta, Hero Cave, Hot Spot, Fury Dungeon.",
 }
 
 monster.health = 1800
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -83,7 +83,7 @@ monster.loot = {
 	{ name = "magma amulet", chance = 1300 },
 	{ name = "magma boots", chance = 560 },
 	{ name = "magma legs", chance = 210 },
-	{ id = 8895, chance = 1330 } -- rusted armor
+	{ id = 8895, chance = 1330 }, -- rusted armor
 }
 
 monster.attacks = {
@@ -92,7 +92,7 @@ monster.attacks = {
 	{ name = "firefield", interval = 2000, chance = 10, range = 7, radius = 3, shootEffect = CONST_ANI_FIRE, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -200, maxDamage = -700, length = 7, spread = 3, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -60, maxDamage = -250, radius = 3, effect = CONST_ME_EXPLOSIONHIT, target = false },
-	{ name = "massive fire elemental soulfire", interval = 2000, chance = 15, target = false }
+	{ name = "massive fire elemental soulfire", interval = 2000, chance = 15, target = false },
 }
 
 monster.defenses = {
@@ -118,7 +118,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

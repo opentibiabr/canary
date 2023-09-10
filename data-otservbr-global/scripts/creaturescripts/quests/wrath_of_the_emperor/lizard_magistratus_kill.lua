@@ -5,7 +5,7 @@ function lizardMagistratusKill.onKill(creature, target)
 		return true
 	end
 
-	if targetMonster:getName():lower() ~= 'lizard magistratus' then
+	if targetMonster:getName():lower() ~= "lizard magistratus" then
 		return true
 	end
 

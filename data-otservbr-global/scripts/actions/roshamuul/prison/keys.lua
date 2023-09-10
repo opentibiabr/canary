@@ -1,7 +1,7 @@
 local config = {
 	[20272] = {
 		targetId = 20302, -- Target ID.
-		bossName = 'Zavarash', -- boss name
+		bossName = "Zavarash", -- boss name
 		keyPlayerPosition = Position(33608, 32394, 11), -- Where the player should be.
 		newPosition = Position(33567, 32422, 12), -- Position to teleport
 		bossPosition = Position(33565, 32418, 12), -- Boss Position
@@ -13,7 +13,7 @@ local config = {
 	},
 	[20271] = {
 		targetId = 20300, -- Target ID.
-		bossName = 'Horadron', -- boss name
+		bossName = "Horadron", -- boss name
 		keyPlayerPosition = Position(33603, 32394, 11), -- Where the player should be.
 		newPosition = Position(33607, 32421, 12), -- Position to teleport
 		bossPosition = Position(33606, 32417, 12), -- Boss Position
@@ -25,7 +25,7 @@ local config = {
 	},
 	[20270] = {
 		targetId = 20304, -- Target ID.
-		bossName = 'Terofar', -- boss name
+		bossName = "Terofar", -- boss name
 		keyPlayerPosition = Position(33614, 32394, 11), -- Where the player should be.
 		newPosition = Position(33526, 32421, 12), -- Position to teleport
 		bossPosition = Position(33524, 32418, 12), -- Boss Position
@@ -34,7 +34,7 @@ local config = {
 		rangeX = 20,
 		rangeY = 20,
 		time = 15, -- time in minutes to remove the player
-	}
+	},
 }
 
 local function roomIsOccupied(centerPosition, rangeX, rangeY)
@@ -89,8 +89,8 @@ function keys.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	end
 
 	-- Send message
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You have entered an ancient demon prison cell!')
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You have fifteen minutes to kill and loot this boss, else you will lose that chance.')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have entered an ancient demon prison cell!")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have fifteen minutes to kill and loot this boss, else you will lose that chance.")
 
 	-- Let's roll
 	addEvent(clearBossRoom, 60 * tmpConfig.time * 1000, player:getId(), tmpConfig.centerPosition, tmpConfig.rangeX, tmpConfig.rangeY, tmpConfig.exitPosition)

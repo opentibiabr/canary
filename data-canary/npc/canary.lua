@@ -18,7 +18,7 @@ npcConfig.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 2,
-	lookMount = 42
+	lookMount = 42,
 }
 
 npcConfig.sounds = {
@@ -28,18 +28,18 @@ npcConfig.sounds = {
 		SOUND_EFFECT_TYPE_ACTION_HITING_FORGE,
 		SOUND_EFFECT_TYPE_ACTION_WOOD_HIT,
 		SOUND_EFFECT_TYPE_ACTION_CRATE_BREAK_MAGIC_DUST,
-		SOUND_EFFECT_TYPE_ACTION_SWORD_DRAWN
-	}
+		SOUND_EFFECT_TYPE_ACTION_SWORD_DRAWN,
+	},
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 20,
-	{ text = "Welcome to the Canary Server!" }
+	{ text = "Welcome to the Canary Server!" },
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 -- Npc shop
@@ -73,7 +73,7 @@ npcConfig.shop = {
 	{ itemName = "watch", clientId = 2906, buy = 20, sell = 6 },
 	{ itemName = "waterskin of water", clientId = 2901, buy = 10, count = 1 },
 	{ itemName = "wooden hammer", clientId = 3459, sell = 15 },
-	{ itemName = "worm", clientId = 3492, buy = 1 }
+	{ itemName = "worm", clientId = 3492, buy = 1 },
 }
 
 -- Create keywordHandler and npcHandler
@@ -121,8 +121,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 end
 
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 -- Function called by the callback "npcHandler:setCallback(CALLBACK_GREET, greetCallback)" in end of file
 local function greetCallback(npc, player)
@@ -143,7 +142,7 @@ local function creatureSayCallback(npc, player, type, msg)
 				"The goal is for Canary to be an 'engine', that is, it will be \z
 					a server with a 'clean' datapack, with as few things as possible, \z
 					thus facilitating development and testing.",
-				"See more on our {discord group}."
+				"See more on our {discord group}.",
 			}, npc, player, 3000)
 			npcHandler:setTopic(playerId, 1)
 		end

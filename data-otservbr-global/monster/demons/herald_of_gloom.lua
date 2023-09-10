@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 586
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 3,
 	Occurrence = 3,
-	Locations = "Edron Hero Cave around the Lightbringers basin."
+	Locations = "Edron Hero Cave around the Lightbringers basin.",
 }
 
 monster.health = 340
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 0,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -79,13 +79,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "midnight shard", chance = 1886 }
+	{ name = "midnight shard", chance = 1886 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90 },
 	{ name = "speed", interval = 3000, chance = 10, speedChange = -600, range = 7, effect = CONST_ME_MAGIC_RED, target = true, duration = 30000 },
-	{ name = "combat", interval = 2000, chance = 24, type = COMBAT_HOLYDAMAGE, minDamage = -90, maxDamage = -170, range = 4, shootEffect = CONST_ANI_SMALLHOLY, target = false }
+	{ name = "combat", interval = 2000, chance = 24, type = COMBAT_HOLYDAMAGE, minDamage = -90, maxDamage = -170, range = 4, shootEffect = CONST_ANI_SMALLHOLY, target = false },
 }
 
 monster.defenses = {
@@ -99,7 +99,7 @@ monster.defenses = {
 	{ name = "outfit", interval = 1500, chance = 10, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 6000, outfitMonster = "the count =" },
 	{ name = "outfit", interval = 1500, chance = 10, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 6000, outfitMonster = "grim reaper" },
 	{ name = "outfit", interval = 1500, chance = 10, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 6000, outfitMonster = "tarantula" },
-	{ name = "outfit", interval = 1500, chance = 10, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 6000, outfitMonster = "ferumbras" }
+	{ name = "outfit", interval = 1500, chance = 10, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 6000, outfitMonster = "ferumbras" },
 }
 
 monster.elements = {
@@ -119,7 +119,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

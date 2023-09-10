@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Orc Fortress, Foreigner Quarter, Zao Orc Land."
+	Locations = "Orc Fortress, Foreigner Quarter, Zao Orc Land.",
 }
 
 monster.health = 950
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -101,19 +101,19 @@ monster.loot = {
 	{ name = "orc tooth", chance = 9640 },
 	{ name = "broken helmet", chance = 24350 },
 	{ name = "orc leather", chance = 20620 },
-	{ name = "skull belt", chance = 4610 }
+	{ name = "skull belt", chance = 4610 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -250 },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -200, range = 7, shootEffect = CONST_ANI_THROWINGSTAR, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -200, range = 7, shootEffect = CONST_ANI_THROWINGSTAR, target = false },
 }
 
 monster.defenses = {
 	defense = 35,
 	armor = 28,
 	mitigation = 1.46,
-	{ name = "invisible", interval = 2000, chance = 5, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 2000, chance = 5, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -133,7 +133,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

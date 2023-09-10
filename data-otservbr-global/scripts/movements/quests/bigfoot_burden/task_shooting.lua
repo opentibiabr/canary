@@ -24,7 +24,7 @@ end
 local shootingPos = {
 	{ x = 32751, y = 31789, z = 10 },
 	{ x = 32753, y = 31789, z = 10 },
-	{ x = 32755, y = 31789, z = 10 }
+	{ x = 32755, y = 31789, z = 10 },
 }
 
 local taskShooting = MoveEvent()

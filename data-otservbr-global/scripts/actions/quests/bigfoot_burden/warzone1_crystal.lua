@@ -2,7 +2,7 @@ local posdotp = Position(33104, 31908, 10)
 
 local creatures = {
 	"humongous fungus",
-	"hideous fungus"
+	"hideous fungus",
 }
 
 local function removeTp()

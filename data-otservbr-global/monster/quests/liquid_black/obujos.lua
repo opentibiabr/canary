@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 50
+	chance = 50,
 }
 
 monster.strategiesTarget = {
@@ -72,7 +72,7 @@ monster.voices = {
 monster.loot = {
 	{ name = "deepling axe", chance = 1300 },
 	{ name = "depth scutum", chance = 1185 },
-	{ name = "ornate legs", chance = 700, unique = true }
+	{ name = "ornate legs", chance = 700, unique = true },
 }
 
 monster.attacks = {
@@ -81,14 +81,14 @@ monster.attacks = {
 	{ name = "combat", interval = 3500, chance = 20, type = COMBAT_MANADRAIN, minDamage = -200, maxDamage = -600, range = 7, radius = 6, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_BIGCLOUDS, target = true },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_EARTHDAMAGE, minDamage = -200, maxDamage = -800, range = 7, radius = 1, shootEffect = CONST_ANI_POISONARROW, effect = CONST_ME_GREEN_RINGS, target = true },
 	{ name = "combat", interval = 1200, chance = 7, type = COMBAT_ICEDAMAGE, minDamage = -600, maxDamage = -1300, length = 8, spread = 3, effect = CONST_ME_GIANTICE, target = false },
-	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_LIFEDRAIN, minDamage = -600, maxDamage = -1600, length = 8, spread = 3, effect = CONST_ME_ICETORNADO, target = false }
+	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_LIFEDRAIN, minDamage = -600, maxDamage = -1600, length = 8, spread = 3, effect = CONST_ME_ICETORNADO, target = false },
 }
 
 monster.defenses = {
 	defense = 40,
 	armor = 40,
 	--	mitigation = ???,
-	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_HEALING, minDamage = 800, maxDamage = 2200, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_HEALING, minDamage = 800, maxDamage = 2200, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -108,11 +108,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -120,13 +119,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

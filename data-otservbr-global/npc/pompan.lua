@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 13,
 	lookLegs = 32,
 	lookFeet = 108,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local tomes = Storage.Quest.U8_54.TheNewFrontier.TomeofKnowledge
@@ -81,7 +81,7 @@ npcConfig.shop = {
 	-- 2 tomes
 	{ name = "minotaur backpack", clientId = 10327, buy = 200, storageKey = tomes, storageValue = 2 },
 	-- 5 tomes
-	{ name = "dragon backpack", clientId = 10326, buy = 200, storageKey = tomes, storageValue = 5 }
+	{ name = "dragon backpack", clientId = 10326, buy = 200, storageKey = tomes, storageValue = 5 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -92,8 +92,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -122,8 +121,8 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-npcHandler:setMessage(MESSAGE_GREET, 'Hello.')
-npcHandler:setMessage(MESSAGE_FAREWELL, 'It was a pleasure to help you, |PLAYERNAME|.')
+npcHandler:setMessage(MESSAGE_GREET, "Hello.")
+npcHandler:setMessage(MESSAGE_FAREWELL, "It was a pleasure to help you, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_SENDTRADE, "Keep in mind you won't find better offers here. Just browse through my wares.")
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

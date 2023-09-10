@@ -9,7 +9,7 @@ function spell.onCastSpell(creature, var)
 	if not mid then
 		return
 	end
-	mid:say('The shadow fiend revives!', TALKTYPE_MONSTER_SAY)
+	mid:say("The shadow fiend revives!", TALKTYPE_MONSTER_SAY)
 	return combat:execute(creature, var)
 end
 

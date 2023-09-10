@@ -1,7 +1,7 @@
 local bosses = {
-	['jaul'] = { status = 2, storage = Storage.DeeplingBosses.Jaul },
-	['tanjis'] = { status = 3, storage = Storage.DeeplingBosses.Tanjis },
-	['obujos'] = { status = 4, storage = Storage.DeeplingBosses.Obujos },
+	["jaul"] = { status = 2, storage = Storage.DeeplingBosses.Jaul },
+	["tanjis"] = { status = 3, storage = Storage.DeeplingBosses.Tanjis },
+	["obujos"] = { status = 4, storage = Storage.DeeplingBosses.Obujos },
 }
 
 local deeplingBosses = CreatureEvent("DeeplingBosses")

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 212
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "Tiquanda, Shattered Isles, Gardens of Night."
+	Locations = "Tiquanda, Shattered Isles, Gardens of Night.",
 }
 
 monster.health = 25
@@ -35,7 +35,7 @@ monster.manaCost = 250
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -73,7 +73,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "downy feather", chance = 1180 }
+	{ name = "downy feather", chance = 1180 },
 }
 
 monster.defenses = {
@@ -99,7 +99,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

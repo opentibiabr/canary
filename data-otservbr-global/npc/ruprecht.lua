@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 115,
 	lookLegs = 115,
 	lookFeet = 38,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -73,7 +73,7 @@ local itemsTable = {
 	["orclops santa"] = { itemId = 24394, count = 250 },
 	["raccoon santa"] = { itemId = 35692, count = 250 },
 	["santa fox"] = { itemId = 27591, count = 250 },
-	["santa leech"] = { itemId = 32746, count = 250 }
+	["santa leech"] = { itemId = 32746, count = 250 },
 }
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -84,8 +84,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
-	if (MsgContains(message, "offers")) then
+	if MsgContains(message, "offers") then
 		local text = "I have these offers: "
 		for i, v in pairs(itemsTable) do
 			text = text .. "{" .. i .. "}, "
@@ -96,7 +95,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	if npcHandler:getTopic(playerId) == 0 then
 		local table = itemsTable[message]
 		if table then
-			if (table.itemId ~= 6496) then
+			if table.itemId ~= 6496 then
 				npcHandler:say("So you want to exchange " .. message .. ", for " .. table.count .. " christmas tokens?", npc, creature)
 				storeTable[playerId] = message
 				npcHandler:setTopic(playerId, 1)
@@ -108,8 +107,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, "yes") then
-			if (tonumber(storeTable[playerId]) == 6526) then
-				if (player:removeItem(6496, 1)) then
+			if tonumber(storeTable[playerId]) == 6526 then
+				if player:removeItem(6496, 1) then
 					npcHandler:say("Thank you, here is your 1 christmas token.", npc, creature)
 					player:addItem(6526, 1)
 					npcHandler:setTopic(playerId, 0)
@@ -146,7 +145,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			"And he learned that this way his fortune gave him more joy and pleasure than it ever did when he locked it away. ...",
 			"Over the years he turned it into a game. He hid somewhere to reward those who found him ...",
 			"But once every year, on a very special day which happens to be his curse's anniversary, he goes out and brings presents to the people, and especially to the children ...",
-			"Well, that is his story ... Nah, that's not a tear in my eye. It's just the wind, you know."
+			"Well, that is his story ... Nah, that's not a tear in my eye. It's just the wind, you know.",
 		}, npc, creature)
 	end
 	return true

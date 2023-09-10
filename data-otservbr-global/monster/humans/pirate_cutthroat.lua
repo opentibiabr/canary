@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 248
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Nargor, Tyrsung on the ship, Yalahar, Krailos Steppe and The Cave."
+	Locations = "Nargor, Tyrsung on the ship, Yalahar, Krailos Steppe and The Cave.",
 }
 
 monster.health = 325
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 15
+	chance = 15,
 }
 
 monster.strategiesTarget = {
@@ -88,12 +88,12 @@ monster.loot = {
 	{ name = "hook", chance = 550 },
 	{ name = "eye patch", chance = 450 },
 	{ name = "peg leg", chance = 500 },
-	{ name = "compass", chance = 10120 }
+	{ name = "compass", chance = 10120 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -170, condition = { type = CONDITION_POISON, totalDamage = 10, interval = 4000 } },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -95, range = 3, radius = 1, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_EXPLOSIONAREA, target = true }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -95, range = 3, radius = 1, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_EXPLOSIONAREA, target = true },
 }
 
 monster.defenses = {
@@ -119,7 +119,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 387
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 0,
 	Occurrence = 0,
 	Locations = "Carlin, Rookgaard, Factory Quarter, Yalahar, \z
-		The Witches' Cliff (only accessible during a quest), probably more areas."
+		The Witches' Cliff (only accessible during a quest), probably more areas.",
 }
 
 monster.health = 20
@@ -36,7 +36,7 @@ monster.manaCost = 220
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -76,11 +76,10 @@ monster.voices = {
 	{ text = "Meow meow!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = 0 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = 0 },
 }
 
 monster.defenses = {
@@ -106,7 +105,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

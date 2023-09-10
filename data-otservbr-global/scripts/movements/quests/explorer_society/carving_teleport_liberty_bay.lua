@@ -1,6 +1,6 @@
 local destination = {
 	[25020] = { position = Position(32320, 31137, 6) },
-	[25021] = { position = Position(32359, 32807, 6) }
+	[25021] = { position = Position(32359, 32807, 6) },
 }
 
 local carvingTeleportLibertyBay = MoveEvent()
@@ -16,9 +16,7 @@ function carvingTeleportLibertyBay.onStepIn(creature, item, position, fromPositi
 		return
 	end
 
-	if player:getStorageValue(Storage.ExplorerSociety.TheIceMusic) >= 62
-			and player:getStorageValue(Storage.ExplorerSociety.QuestLine) >= 62
-			and player:removeItem(5021, 1) then
+	if player:getStorageValue(Storage.ExplorerSociety.TheIceMusic) >= 62 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) >= 62 and player:removeItem(5021, 1) then
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:teleportTo(carvingTP.position)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 267
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "Meriana and other Shattered Isles, Port Hope caves, The Witches Cliff (only accessible during a quest)."
+	Locations = "Meriana and other Shattered Isles, Port Hope caves, The Witches Cliff (only accessible during a quest).",
 }
 
 monster.health = 25
@@ -35,7 +35,7 @@ monster.manaCost = 250
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -74,11 +74,9 @@ monster.voices = {
 	{ text = "Ribbit! Ribbit!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
-monster.attacks = {
-}
+monster.attacks = {}
 
 monster.defenses = {
 	defense = 5,
@@ -103,7 +101,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

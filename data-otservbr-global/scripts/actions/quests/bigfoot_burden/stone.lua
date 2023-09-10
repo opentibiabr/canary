@@ -8,12 +8,12 @@ function bigfootStone.onUse(player, item, fromPosition, target, toPosition, isHo
 	item:transform(15824)
 
 	if math.random(15) <= 12 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You had no luck this time.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You had no luck this time.")
 		return true
 	end
 
 	player:setStorageValue(Storage.BigfootBurden.GrindstoneStatus, 1)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Your skill allowed you to grab a whetstone before the stone sinks into lava.')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your skill allowed you to grab a whetstone before the stone sinks into lava.")
 	player:addItem(15826, 1)
 	return true
 end

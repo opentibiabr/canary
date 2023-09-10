@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 3500
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -62,14 +62,13 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -350 },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -200, maxDamage = -400, range = 6, shootEffect = CONST_ANI_FLASHARROW, effect = CONST_ME_STUN, target = true },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -150, maxDamage = -350, radius = 5, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "breach brood reducer", interval = 2000, chance = 20, target = false }
+	{ name = "breach brood reducer", interval = 2000, chance = 20, target = false },
 }
 
 monster.defenses = {
@@ -95,7 +94,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

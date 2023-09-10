@@ -40,7 +40,7 @@ function vortexCrackler.onStepIn(creature, item, position, fromPosition)
 			for i = 1, #positions1 do
 				playerTile = Tile(positions1[i]):getTopCreature()
 				if playerTile:isPlayer() then
-					storePlayers[#storePlayers+1] = playerTile
+					storePlayers[#storePlayers + 1] = playerTile
 				end
 			end
 			if #storePlayers == #positions1 then
@@ -51,7 +51,7 @@ function vortexCrackler.onStepIn(creature, item, position, fromPosition)
 			for i = 1, #positions2 do
 				playerTile = Tile(positions2[i]):getTopCreature()
 				if playerTile:isPlayer() then
-					storePlayers[#storePlayers+1] = playerTile
+					storePlayers[#storePlayers + 1] = playerTile
 				end
 			end
 			if #storePlayers == #positions2 then
@@ -62,7 +62,7 @@ function vortexCrackler.onStepIn(creature, item, position, fromPosition)
 			for i = 1, #positions3 do
 				playerTile = Tile(positions3[i]):getTopCreature()
 				if playerTile:isPlayer() then
-					storePlayers[#storePlayers+1] = playerTile
+					storePlayers[#storePlayers + 1] = playerTile
 				end
 			end
 			if #storePlayers == #positions3 then
@@ -73,7 +73,7 @@ function vortexCrackler.onStepIn(creature, item, position, fromPosition)
 			for i = 1, #positions4 do
 				playerTile = Tile(positions4[i]):getTopCreature()
 				if playerTile:isPlayer() then
-					storePlayers[#storePlayers+1] = playerTile
+					storePlayers[#storePlayers + 1] = playerTile
 				end
 			end
 			if #storePlayers == #positions4 then

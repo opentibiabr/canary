@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 297
+	lookType = 297,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -55,15 +55,23 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "key") then
 		if player:getStorageValue(Storage.Quest.U10_55.Dawnport.TheDormKey) == 1 then
-			npcHandler:say("Me not give key! Key my precious now! \z
+			npcHandler:say(
+				"Me not give key! Key my precious now! \z
 				By old goblin law all that one has in his pockets for two days is family heirloom! \z
-				Me no part with my precious ... hm unless you provide Woblin with some {reward}!", npc, creature)
+				Me no part with my precious ... hm unless you provide Woblin with some {reward}!",
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "reward") then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say("Me good angler but one fish eludes me since many many weeks. I call fish ''Old Nasty''. \z
-				You might catch him in this cave, in that pond there. Bring me Old Nasty and I'll give you key!", npc, creature)
+			npcHandler:say(
+				"Me good angler but one fish eludes me since many many weeks. I call fish ''Old Nasty''. \z
+				You might catch him in this cave, in that pond there. Bring me Old Nasty and I'll give you key!",
+				npc,
+				creature
+			)
 			player:setStorageValue(Storage.Quest.U10_55.Dawnport.TheDormKey, 2)
 			npcHandler:setTopic(playerId, 0)
 		end
@@ -74,9 +82,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 2 then
-			npcHandler:say("Wonderful. I don't believe you will find Dormovo alive, though. \z
+			npcHandler:say(
+				"Wonderful. I don't believe you will find Dormovo alive, though. \z
 				He would not have stayed abroad that long without refilling his inkpot for his research notes. \z
-				But at least the amulet should be retrieved.", npc, creature)
+				But at least the amulet should be retrieved.",
+				npc,
+				creature
+			)
 			player:removeItem(21402, 1)
 			local TheDormKey = player:addItem(21392, 1)
 			TheDormKey:setActionId(103)
@@ -86,25 +98,19 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	return true
 end
-keywordHandler:addKeyword({ "goblins" }, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "No part of clan. Me prefer company of precious. Or mirror image. Always nice to see pretty me!"
-	}
-)
-keywordHandler:addKeyword({ "quest" }, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "What you on quest for? Go leave Woblin alone with {precious}"
-	}
-)
-keywordHandler:addKeyword({ "precious" }, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Me not give {key}! Key my precious now! By old goblin law all that one has in his pockets for two days \z
-			is family heirloom! Me no part with my precious ... hm unless you provide Woblin with some {reward}!"
-	}
-)
+keywordHandler:addKeyword({ "goblins" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "No part of clan. Me prefer company of precious. Or mirror image. Always nice to see pretty me!",
+})
+keywordHandler:addKeyword({ "quest" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "What you on quest for? Go leave Woblin alone with {precious}",
+})
+keywordHandler:addKeyword({ "precious" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Me not give {key}! Key my precious now! By old goblin law all that one has in his pockets for two days \z
+			is family heirloom! Me no part with my precious ... hm unless you provide Woblin with some {reward}!",
+})
 
 npcHandler:setMessage(MESSAGE_GREET, "Hi there human!")
 

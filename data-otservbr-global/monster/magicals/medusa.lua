@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 570
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Vandura Mountain (single spawn), Talahu (Medusa Cave), Deeper Banuta, Medusa Tower."
+	Locations = "Vandura Mountain (single spawn), Talahu (Medusa Cave), Deeper Banuta, Medusa Tower.",
 }
 
 monster.health = 4500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -93,7 +93,7 @@ monster.loot = {
 	{ name = "ultimate health potion", chance = 9290, maxCount = 2 },
 	{ id = 8896, chance = 500 }, -- slightly rusted armor
 	{ name = "sacred tree amulet", chance = 850 },
-	{ name = "strand of medusa hair", chance = 9900 }
+	{ name = "strand of medusa hair", chance = 9900 },
 }
 
 monster.attacks = {
@@ -101,14 +101,14 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -21, maxDamage = -350, range = 7, shootEffect = CONST_ANI_EARTH, effect = CONST_ME_CARNIPHILA, target = true },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -250, maxDamage = -500, length = 8, spread = 3, effect = CONST_ME_CARNIPHILA, target = false },
 	{ name = "speed", interval = 2000, chance = 25, radius = 7, effect = CONST_ME_POFF, target = true },
-	{ name = "outfit", interval = 2000, chance = 1, range = 7, target = true, duration = 3000, outfitMonster = "clay guardian" }
+	{ name = "outfit", interval = 2000, chance = 1, range = 7, target = true, duration = 3000, outfitMonster = "clay guardian" },
 }
 
 monster.defenses = {
 	defense = 30,
 	armor = 45,
 	mitigation = 1.74,
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 150, maxDamage = 300, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 150, maxDamage = 300, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -128,7 +128,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

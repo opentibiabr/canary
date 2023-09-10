@@ -57,50 +57,50 @@ function serverstartup.onStartup()
 	end
 
 	local time = os.time()
-	db.asyncQuery('TRUNCATE TABLE `players_online`')
+	db.asyncQuery("TRUNCATE TABLE `players_online`")
 
 	local resetSessionsOnStartup = configManager.getBoolean(configKeys.RESET_SESSIONS_ON_STARTUP)
 	if AUTH_TYPE == "session" then
 		if resetSessionsOnStartup then
-			db.query('TRUNCATE TABLE `account_sessions`')
+			db.query("TRUNCATE TABLE `account_sessions`")
 		else
-			db.query('DELETE FROM `account_sessions` WHERE `expires` <= ' .. time)
+			db.query("DELETE FROM `account_sessions` WHERE `expires` <= " .. time)
 		end
 	end
 
 	-- reset Daily Reward status
-	db.query('UPDATE `players` SET `isreward` = ' .. DAILY_REWARD_NOTCOLLECTED)
+	db.query("UPDATE `players` SET `isreward` = " .. DAILY_REWARD_NOTCOLLECTED)
 
 	-- reset storages and allow purchase of boost in the store
-	db.query('UPDATE `player_storage` SET `value` = 0 WHERE `player_storage`.`key` = 51052')
+	db.query("UPDATE `player_storage` SET `value` = 0 WHERE `player_storage`.`key` = 51052")
 
 	-- reset familiars message storage
-	db.query('DELETE FROM `player_storage` WHERE `key` = ' .. Global.Storage.FamiliarSummonEvent10)
-	db.query('DELETE FROM `player_storage` WHERE `key` = ' .. Global.Storage.FamiliarSummonEvent60)
+	db.query("DELETE FROM `player_storage` WHERE `key` = " .. Global.Storage.FamiliarSummonEvent10)
+	db.query("DELETE FROM `player_storage` WHERE `key` = " .. Global.Storage.FamiliarSummonEvent60)
 
 	-- delete canceled and rejected guilds
-	db.asyncQuery('DELETE FROM `guild_wars` WHERE `status` = 2')
-	db.asyncQuery('DELETE FROM `guild_wars` WHERE `status` = 3')
+	db.asyncQuery("DELETE FROM `guild_wars` WHERE `status` = 2")
+	db.asyncQuery("DELETE FROM `guild_wars` WHERE `status` = 3")
 
 	-- Delete guilds that are pending for 3 days
-	db.asyncQuery('DELETE FROM `guild_wars` WHERE `status` = 0 AND (`started` + 72 * 60 * 60) <= ' .. os.time())
+	db.asyncQuery("DELETE FROM `guild_wars` WHERE `status` = 0 AND (`started` + 72 * 60 * 60) <= " .. os.time())
 
-	db.asyncQuery('DELETE FROM `players` WHERE `deletion` != 0 AND `deletion` < ' .. time)
-	db.asyncQuery('DELETE FROM `ip_bans` WHERE `expires_at` != 0 AND `expires_at` <= ' .. time)
-	db.asyncQuery('DELETE FROM `market_history` WHERE `inserted` <= \z
-	' .. (time - configManager.getNumber(configKeys.MARKET_OFFER_DURATION)))
+	db.asyncQuery("DELETE FROM `players` WHERE `deletion` != 0 AND `deletion` < " .. time)
+	db.asyncQuery("DELETE FROM `ip_bans` WHERE `expires_at` != 0 AND `expires_at` <= " .. time)
+	db.asyncQuery("DELETE FROM `market_history` WHERE `inserted` <= \z
+	" .. (time - configManager.getNumber(configKeys.MARKET_OFFER_DURATION)))
 
 	-- Move expired bans to ban history
-	local banResultId = db.storeQuery('SELECT * FROM `account_bans` WHERE `expires_at` != 0 AND `expires_at` <= ' .. time)
+	local banResultId = db.storeQuery("SELECT * FROM `account_bans` WHERE `expires_at` != 0 AND `expires_at` <= " .. time)
 	if banResultId ~= false then
 		repeat
-			local accountId = Result.getNumber(banResultId, 'account_id')
-			db.asyncQuery('INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, \z
-			`expired_at`, `banned_by`) VALUES (' .. accountId .. ', \z
-			' .. db.escapeString(Result.getString(banResultId, 'reason')) .. ', \z
-			' .. Result.getNumber(banResultId, 'banned_at') .. ', ' .. Result.getNumber(banResultId, 'expires_at') .. ', \z
-			' .. Result.getNumber(banResultId, 'banned_by') .. ')')
-			db.asyncQuery('DELETE FROM `account_bans` WHERE `account_id` = ' .. accountId)
+			local accountId = Result.getNumber(banResultId, "account_id")
+			db.asyncQuery("INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, \z
+			`expired_at`, `banned_by`) VALUES (" .. accountId .. ", \z
+			" .. db.escapeString(Result.getString(banResultId, "reason")) .. ", \z
+			" .. Result.getNumber(banResultId, "banned_at") .. ", " .. Result.getNumber(banResultId, "expires_at") .. ", \z
+			" .. Result.getNumber(banResultId, "banned_by") .. ")")
+			db.asyncQuery("DELETE FROM `account_bans` WHERE `account_id` = " .. accountId)
 		until not Result.next(banResultId)
 		Result.free(banResultId)
 	end
@@ -112,22 +112,22 @@ function serverstartup.onStartup()
 	end
 
 	-- Check house auctions
-	local resultId = db.storeQuery('SELECT `id`, `highest_bidder`, `last_bid`, (SELECT `balance` FROM \z
+	local resultId = db.storeQuery("SELECT `id`, `highest_bidder`, `last_bid`, (SELECT `balance` FROM \z
 	`players` WHERE `players`.`id` = `highest_bidder`) AS `balance` FROM `houses` WHERE `owner` = 0 AND \z
-	`bid_end` != 0 AND `bid_end` < ' .. time)
+	`bid_end` != 0 AND `bid_end` < " .. time)
 	if resultId ~= false then
 		repeat
-			local house = House(Result.getNumber(resultId, 'id'))
+			local house = House(Result.getNumber(resultId, "id"))
 			if house then
-				local highestBidder = Result.getNumber(resultId, 'highest_bidder')
-				local balance = Result.getNumber(resultId, 'balance')
-				local lastBid = Result.getNumber(resultId, 'last_bid')
+				local highestBidder = Result.getNumber(resultId, "highest_bidder")
+				local balance = Result.getNumber(resultId, "balance")
+				local lastBid = Result.getNumber(resultId, "last_bid")
 				if balance >= lastBid then
-					db.query('UPDATE `players` SET `balance` = ' .. (balance - lastBid) .. ' WHERE `id` = ' .. highestBidder)
+					db.query("UPDATE `players` SET `balance` = " .. (balance - lastBid) .. " WHERE `id` = " .. highestBidder)
 					house:setOwnerGuid(highestBidder)
 				end
-				db.asyncQuery('UPDATE `houses` SET `last_bid` = 0, `bid_end` = 0, `highest_bidder` = 0, \z
-				`bid` = 0 WHERE `id` = ' .. house:getId())
+				db.asyncQuery("UPDATE `houses` SET `last_bid` = 0, `bid_end` = 0, `highest_bidder` = 0, \z
+				`bid` = 0 WHERE `id` = " .. house:getId())
 			end
 		until not Result.next(resultId)
 		Result.free(resultId)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 38,
 	lookFeet = 105,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1646
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Falcon Bastion."
+	Locations = "Falcon Bastion.",
 }
 
 monster.health = 9000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -99,13 +99,13 @@ monster.loot = {
 	{ name = "mastermind shield", chance = 620 },
 	{ name = "heavy mace", chance = 460 },
 	{ id = 3481, chance = 370 }, -- closed trap
-	{ id = 3019, chance = 100 } -- demonbone amulet
+	{ id = 3019, chance = 100 }, -- demonbone amulet
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },
 	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_EARTHDAMAGE, minDamage = -400, maxDamage = -500, radius = 2, effect = CONST_ME_GROUNDSHAKER, target = false },
-	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_HOLYDAMAGE, minDamage = -290, maxDamage = -360, length = 5, spread = 3, effect = CONST_ME_BLOCKHIT, target = false }
+	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_HOLYDAMAGE, minDamage = -290, maxDamage = -360, length = 5, spread = 3, effect = CONST_ME_BLOCKHIT, target = false },
 }
 
 monster.defenses = {
@@ -131,7 +131,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

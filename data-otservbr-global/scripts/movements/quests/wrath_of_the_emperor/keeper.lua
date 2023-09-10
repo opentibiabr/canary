@@ -13,7 +13,7 @@ function keeper.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if monster:getName():lower() ~= 'the keeper' then
+	if monster:getName():lower() ~= "the keeper" then
 		return true
 	end
 

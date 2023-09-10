@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1051
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Oramond/Southern Plains, Minotaur Hills, \z
-		Oramond Dungeon (depending on Magistrate votes), Underground Glooth Factory."
+		Oramond Dungeon (depending on Magistrate votes), Underground Glooth Factory.",
 }
 
 monster.health = 1200
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 4
+	chance = 4,
 }
 
 monster.strategiesTarget = {
@@ -60,19 +60,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Feel the power of the Mooh'Tah!", yell = false },
-	{ text = "Ommm!", yell = false }
+	{ text = "Ommm!", yell = false },
 }
 
 monster.loot = {
@@ -102,9 +102,8 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -200, length = 4, spread = 3, effect = CONST_ME_YELLOWENERGY, target = false },
 	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -135, range = 7, shootEffect = CONST_ANI_LARGEROCK, effect = CONST_ME_EXPLOSIONAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -50, maxDamage = -150, radius = 3, effect = CONST_ME_HITAREA, target = false },
-	{ name = "mooh'tah master skill reducer", interval = 2000, chance = 19, range = 7, target = false }
+	{ name = "mooh'tah master skill reducer", interval = 2000, chance = 19, range = 7, target = false },
 }
-
 
 monster.defenses = {
 	defense = 37,
@@ -124,14 +123,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 15 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

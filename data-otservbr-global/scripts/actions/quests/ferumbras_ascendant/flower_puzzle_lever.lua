@@ -7,14 +7,14 @@ local flowerPositions = {
 	[6] = { itemid = 3677, position = Position(33456, 32708, 14) },
 	[7] = { itemid = 3676, position = Position(33458, 32709, 14) },
 	[8] = { itemid = 3677, position = Position(33459, 32708, 14) },
-	[9] = { itemid = 3678, position = Position(33460, 32709, 14) }
+	[9] = { itemid = 3678, position = Position(33460, 32709, 14) },
 }
 
 local gates = {
 	{ position = Position(33476, 32698, 14), itemid = 7144, transform = 1635 },
 	{ position = Position(33478, 32698, 14), itemid = 7144, transform = 1634 },
 	{ position = Position(33475, 32698, 14), itemid = 1635, transform = 7144 },
-	{ position = Position(33479, 32698, 14), itemid = 1634, transform = 7144 }
+	{ position = Position(33479, 32698, 14), itemid = 1634, transform = 7144 },
 }
 
 local function revertItem(position, itemId, transformId)
@@ -30,16 +30,16 @@ function ferumbrasAscendantFlowerPuzzle.onUse(player, item, fromPosition, target
 		for a = 1, #flowerPositions do
 			local flower = flowerPositions[a]
 			if not Tile(flower.position):getItemById(flower.itemid) then
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The order of the flowers in the garden are wrong.')
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The order of the flowers in the garden are wrong.")
 				return true
 			end
 		end
 		if Game.getStorageValue(Storage.FerumbrasAscension.FlowerPuzzleTimer) >= 1 then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The portal still activated.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The portal still activated.")
 		else
 			Game.setStorageValue(Storage.FerumbrasAscension.FlowerPuzzleTimer, 1)
 			addEvent(Game.setStorageValue, 30 * 1000, Storage.FerumbrasAscension.FlowerPuzzleTimer, 0)
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'A portal forms as two beams of a strange construction dividing this room move towards each other.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "A portal forms as two beams of a strange construction dividing this room move towards each other.")
 			for x = 33475, 33479 do
 				local pos = Position(x, 32698, 14)
 				pos:sendMagicEffect(CONST_ME_POFF)

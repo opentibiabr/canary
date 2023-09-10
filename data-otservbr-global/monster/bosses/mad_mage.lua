@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 30
+	chance = 30,
 }
 
 monster.strategiesTarget = {
@@ -65,8 +65,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{ name = "Golden Servant", chance = 10, interval = 1000, count = 1 }
-	}
+		{ name = "Golden Servant", chance = 10, interval = 1000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -95,7 +95,7 @@ monster.loot = {
 	{ id = 11454, chance = 370 }, -- luminous orb
 	{ id = 2995, chance = 1370 }, -- piggy bank
 	{ id = 3006, chance = 1370 }, -- ring of the sky
-	{ id = 8073, chance = 2370 } -- spellbook of warding
+	{ id = 8073, chance = 2370 }, -- spellbook of warding
 }
 
 monster.attacks = {
@@ -103,14 +103,14 @@ monster.attacks = {
 	{ name = "combat", interval = 1000, chance = 12, type = COMBAT_FIREDAMAGE, minDamage = 0, maxDamage = -200, range = 7, shootEffect = CONST_ANI_FIRE, target = true },
 	{ name = "combat", interval = 1400, chance = 24, type = COMBAT_MANADRAIN, minDamage = 0, maxDamage = -120, range = 6, shootEffect = CONST_ANI_ICE, target = false },
 	{ name = "firefield", interval = 1600, chance = 20, range = 7, radius = 3, shootEffect = CONST_ANI_FIRE, target = true },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -100, maxDamage = -200, radius = 4, effect = CONST_ME_BIGCLOUDS, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -100, maxDamage = -200, radius = 4, effect = CONST_ME_BIGCLOUDS, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 20,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 35, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 35, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -130,11 +130,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -142,13 +141,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

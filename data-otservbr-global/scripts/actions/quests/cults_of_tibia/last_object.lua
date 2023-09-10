@@ -10,8 +10,7 @@ local config = {
 	[9] = Position(32746, 31462, 8),
 	[10] = Position(32683, 31537, 9),
 	[11] = Position(32740, 31494, 9), -- Bancada Cult Object
-	[12] = Position(32741, 31494, 9) -- Bancada Cult Object
-
+	[12] = Position(32741, 31494, 9), -- Bancada Cult Object
 }
 
 local cultsOfTibiaLastObject = Action()

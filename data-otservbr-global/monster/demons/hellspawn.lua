@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 519
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Magician Quarter, Vengoth, Deeper Banuta, Formorgar Minese, Chyllfroest, Oramond Dungeon, Asura Palace, Asura Vaults."
+	Locations = "Magician Quarter, Vengoth, Deeper Banuta, Formorgar Minese, Chyllfroest, Oramond Dungeon, Asura Palace, Asura Vaults.",
 }
 
 monster.health = 3500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 15
+	chance = 15,
 }
 
 monster.strategiesTarget = {
@@ -99,13 +99,13 @@ monster.loot = {
 	{ id = 9034, chance = 140 }, -- dracoyle statue
 	{ id = 9056, chance = 151 }, -- black skull
 	{ name = "small topaz", chance = 5882, maxCount = 3 },
-	{ name = "hellspawn tail", chance = 20000 }
+	{ name = "hellspawn tail", chance = 20000 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -352 },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -150, maxDamage = -175, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREATTACK, target = false },
-	{ name = "hellspawn soulfire", interval = 2000, chance = 10, range = 5, target = false }
+	{ name = "hellspawn soulfire", interval = 2000, chance = 10, range = 5, target = false },
 }
 
 monster.defenses = {
@@ -113,7 +113,7 @@ monster.defenses = {
 	armor = 44,
 	mitigation = 1.32,
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 120, maxDamage = 230, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 270, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 270, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -133,7 +133,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

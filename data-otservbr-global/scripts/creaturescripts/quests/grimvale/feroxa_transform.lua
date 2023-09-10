@@ -1,12 +1,12 @@
 local feroxaTransform = CreatureEvent("FeroxaTransform")
 function feroxaTransform.onThink(creature)
-	if creature:getName():lower() ~= 'feroxa' then
+	if creature:getName():lower() ~= "feroxa" then
 		return true
 	end
 	if creature:getMaxHealth() == 100000 then
 		if creature:getHealth() <= 50000 then
 			creature:getPosition():sendMagicEffect(CONST_ME_POFF)
-			Game.createMonster('feroxa2', creature:getPosition(), true, true)
+			Game.createMonster("feroxa2", creature:getPosition(), true, true)
 			creature:remove()
 		end
 	end
@@ -14,8 +14,8 @@ function feroxaTransform.onThink(creature)
 		if creature:getHealth() <= 25000 then
 			creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 			local feroxas = {
-				[1] = { name = 'feroxa3' },
-				[2] = { name = 'feroxa4' }
+				[1] = { name = "feroxa3" },
+				[2] = { name = "feroxa4" },
 			}
 			Game.createMonster(feroxas[math.random(#feroxas)].name, creature:getPosition(), true, true)
 			creature:remove()

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 94,
 	lookFeet = 18,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 4
+	chance = 4,
 }
 
 monster.strategiesTarget = {
@@ -96,7 +96,7 @@ monster.loot = {
 	{ id = 8906, chance = 1000 }, -- heavily rusted helmet
 	{ name = "epaulette", chance = 500 },
 	{ name = "giant emerald", chance = 500 },
-	{ name = "unliving demonbone", chance = 500 }
+	{ name = "unliving demonbone", chance = 500 },
 }
 
 monster.attacks = {
@@ -105,7 +105,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -210, maxDamage = -600, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -210, maxDamage = -600, range = 7, radius = 3, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "melee", interval = 2000, chance = 100, skill = 90, attack = 250 },
-	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_LIFEDRAIN, minDamage = -1500, maxDamage = -2000, range = 7, radius = 3, target = false }
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_LIFEDRAIN, minDamage = -1500, maxDamage = -2000, range = 7, radius = 3, target = false },
 }
 
 monster.defenses = {
@@ -131,11 +131,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -143,13 +142,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

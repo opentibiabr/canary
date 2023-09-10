@@ -11,11 +11,11 @@ npcConfig.walkInterval = 0
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookTypeEx = 2031
+	lookTypeEx = 2031,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -51,26 +51,26 @@ local config = {
 	towns = {
 		["venore"] = TOWNS_LIST.VENORE,
 		["thais"] = TOWNS_LIST.THAIS,
-		["carlin"] = TOWNS_LIST.CARLIN
+		["carlin"] = TOWNS_LIST.CARLIN,
 	},
 	vocations = {
 		["sorcerer"] = {
 			text = "A SORCERER! ARE YOU SURE? THIS DECISION IS IRREVERSIBLE!",
-			vocationId = VOCATION.ID.SORCERER
+			vocationId = VOCATION.ID.SORCERER,
 		},
 		["druid"] = {
 			text = "A DRUID! ARE YOU SURE? THIS DECISION IS IRREVERSIBLE!",
-			vocationId = VOCATION.ID.DRUID
+			vocationId = VOCATION.ID.DRUID,
 		},
 		["paladin"] = {
 			text = "A PALADIN! ARE YOU SURE? THIS DECISION IS IRREVERSIBLE!",
-			vocationId = VOCATION.ID.PALADIN
+			vocationId = VOCATION.ID.PALADIN,
 		},
 		["knight"] = {
 			text = "A KNIGHT! ARE YOU SURE? THIS DECISION IS IRREVERSIBLE!",
-			vocationId = VOCATION.ID.KNIGHT
-		}
-	}
+			vocationId = VOCATION.ID.KNIGHT,
+		},
+	},
 }
 
 local function greetCallback(npc, creature)

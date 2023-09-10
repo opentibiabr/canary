@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 78,
 	lookFeet = 78,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1637
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "The Extension Site"
+	Locations = "The Extension Site",
 }
 
 monster.health = 8000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -70,8 +70,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{ name = "Lava Lurker Attendant", chance = 70, interval = 2000, count = 1 }
-	}
+		{ name = "Lava Lurker Attendant", chance = 70, interval = 2000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -89,7 +89,7 @@ monster.loot = {
 	{ name = "flask of demonic blood", chance = 12000, maxCount = 5 },
 	{ name = "demonic essence", chance = 10000, maxCount = 5 },
 	{ id = 3456, chance = 10000 }, -- pick
-	{ name = "sample of monster blood", chance = 10000, maxCount = 5 }
+	{ name = "sample of monster blood", chance = 10000, maxCount = 5 },
 }
 
 monster.attacks = {
@@ -97,7 +97,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -390, maxDamage = -480, range = 7, shootEffect = CONST_ANI_FIRE, target = false },
 	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_ENERGYDAMAGE, minDamage = -390, maxDamage = -480, range = 7, shootEffect = CONST_ANI_ENERGY, target = false },
 	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -400, radius = 3, effect = CONST_ME_EXPLOSIONAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -490, maxDamage = -630, length = 4, spread = 3, effect = CONST_ME_HITBYFIRE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -490, maxDamage = -630, length = 4, spread = 3, effect = CONST_ME_HITBYFIRE, target = false },
 }
 
 monster.defenses = {
@@ -123,7 +123,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

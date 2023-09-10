@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 878
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Drillworm Caves, Lower Spike, Lost Dwarf version of the Forsaken Mine, Oramond Factory Raids and Warzone 4."
+	Locations = "Drillworm Caves, Lower Spike, Lost Dwarf version of the Forsaken Mine, Oramond Factory Raids and Warzone 4.",
 }
 
 monster.health = 1500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -90,14 +90,14 @@ monster.loot = {
 	{ name = "blue crystal splinter", chance = 9610 },
 	{ name = "pulverized ore", chance = 5400 },
 	{ name = "vein of ore", chance = 7280 },
-	{ name = "drill bolt", chance = 4870, maxCount = 2 }
+	{ name = "drill bolt", chance = 4870, maxCount = 2 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300, condition = { type = CONDITION_POISON, totalDamage = 100, interval = 4000 } },
 	{ name = "speed", interval = 2000, chance = 15, speedChange = -600, length = 8, spread = 3, effect = CONST_ME_MAGIC_RED, target = false, duration = 15000 },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -150, maxDamage = -300, length = 8, spread = 3, effect = CONST_ME_HITBYPOISON, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -100, maxDamage = -150, radius = 3, effect = CONST_ME_POISONAREA, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -100, maxDamage = -150, radius = 3, effect = CONST_ME_POISONAREA, target = true },
 }
 
 monster.defenses = {
@@ -123,7 +123,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a containment crystal"
 monster.experience = 0
 monster.outfit = {
-	lookTypeEx = 7805
+	lookTypeEx = 7805,
 }
 
 monster.health = 20000
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -56,11 +56,10 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_ENERGYDAMAGE, minDamage = -100, maxDamage = -220, radius = 3, effect = CONST_ME_PURPLEENERGY, target = false }
+	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_ENERGYDAMAGE, minDamage = -100, maxDamage = -220, radius = 3, effect = CONST_ME_PURPLEENERGY, target = false },
 }
 
 monster.defenses = {
@@ -86,7 +85,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

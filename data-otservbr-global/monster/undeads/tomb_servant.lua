@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 708
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 2,
-	Locations = "Horestis Tomb"
+	Locations = "Horestis Tomb",
 }
 
 monster.health = 475
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -85,12 +85,12 @@ monster.loot = {
 	{ name = "bone shield", chance = 5300 },
 	{ name = "worm", chance = 25325, maxCount = 12 },
 	{ name = "half-digested piece of meat", chance = 1000 },
-	{ name = "fist on a stick", chance = 230 }
+	{ name = "fist on a stick", chance = 230 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -130 },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -40, maxDamage = -55, range = 7, effect = CONST_ME_MAGIC_RED, target = true }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -40, maxDamage = -55, range = 7, effect = CONST_ME_MAGIC_RED, target = true },
 }
 
 monster.defenses = {
@@ -116,7 +116,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

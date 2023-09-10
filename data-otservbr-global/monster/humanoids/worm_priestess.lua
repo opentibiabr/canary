@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1053
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Oramond/Southern Plains, Minotaur Hills, \z
-		Oramond Dungeon (depending on Magistrate votes), Underground Glooth Factory, Oramond Fury Dungeon."
+		Oramond Dungeon (depending on Magistrate votes), Underground Glooth Factory, Oramond Fury Dungeon.",
 }
 
 monster.health = 1100
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -97,7 +97,7 @@ monster.loot = {
 	{ id = 8082, chance = 1590 }, -- underworld rod
 	{ id = 3037, chance = 560 }, -- yellow gem
 	{ id = 3039, chance = 430 }, -- red gem
-	{ id = 7401, chance = 160 } -- minotaur trophy
+	{ id = 7401, chance = 160 }, -- minotaur trophy
 }
 
 monster.attacks = {
@@ -106,7 +106,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 16, type = COMBAT_ENERGYDAMAGE, minDamage = -100, maxDamage = -165, range = 4, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_POISONAREA, target = false },
 	{ name = "worm priestess paralyze", interval = 2000, chance = 12, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -115, maxDamage = -200, range = 7, radius = 3, shootEffect = CONST_ANI_DEATH, effect = CONST_ME_MORTAREA, target = true },
-	{ name = "combat", interval = 2000, chance = 13, type = COMBAT_EARTHDAMAGE, minDamage = -200, maxDamage = -300, range = 7, radius = 4, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_HITBYPOISON, target = true }
+	{ name = "combat", interval = 2000, chance = 13, type = COMBAT_EARTHDAMAGE, minDamage = -200, maxDamage = -300, range = 7, radius = 4, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_HITBYPOISON, target = true },
 }
 
 monster.defenses = {
@@ -114,7 +114,7 @@ monster.defenses = {
 	armor = 36,
 	mitigation = 1.37,
 	{ name = "combat", interval = 2000, chance = 8, type = COMBAT_HEALING, minDamage = 100, maxDamage = 150, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "haste", interval = 2000, chance = 9, speedChange = 198, effect = CONST_ME_MAGIC_RED, target = false, duration = 1000 }
+	{ name = "haste", interval = 2000, chance = 9, speedChange = 198, effect = CONST_ME_MAGIC_RED, target = false, duration = 1000 },
 }
 
 monster.elements = {
@@ -134,7 +134,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

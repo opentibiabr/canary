@@ -18,7 +18,7 @@ function bossEntrance.onStepIn(creature, item, position, fromPosition, toPositio
 	if item:getPosition() == WarzoneIV then -- Warzone IV
 		if player:getStorageValue(Storage.DangerousDepths.Bosses.TheBaronFromBelow) > os.time() then
 			player:teleportTo(fromPosition)
-			player:say('You have to wait to challenge this enemy again!', TALKTYPE_MONSTER_SAY)
+			player:say("You have to wait to challenge this enemy again!", TALKTYPE_MONSTER_SAY)
 		else
 			player:teleportTo(WarzoneIV_b)
 		end
@@ -27,7 +27,7 @@ function bossEntrance.onStepIn(creature, item, position, fromPosition, toPositio
 	if item:getPosition() == WarzoneV then -- Warzone V
 		if player:getStorageValue(Storage.DangerousDepths.Bosses.TheCountOfTheCore) > os.time() then
 			player:teleportTo(fromPosition)
-			player:say('You have to wait to challenge this enemy again!', TALKTYPE_MONSTER_SAY)
+			player:say("You have to wait to challenge this enemy again!", TALKTYPE_MONSTER_SAY)
 		else
 			player:teleportTo(WarzoneV_b)
 		end
@@ -36,7 +36,7 @@ function bossEntrance.onStepIn(creature, item, position, fromPosition, toPositio
 	if item:getPosition() == WarzoneVI then -- Warzone VI
 		if player:getStorageValue(Storage.DangerousDepths.Bosses.TheDukeOfTheDepths) > os.time() then
 			player:teleportTo(fromPosition)
-			player:say('You have to wait to challenge this enemy again!', TALKTYPE_MONSTER_SAY)
+			player:say("You have to wait to challenge this enemy again!", TALKTYPE_MONSTER_SAY)
 		else
 			player:teleportTo(WarzoneVI_b)
 		end

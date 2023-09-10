@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 6000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 50
+	chance = 50,
 }
 
 monster.strategiesTarget = {
@@ -74,21 +74,21 @@ monster.loot = {
 	{ id = 3029, chance = 50000, maxCount = 5 }, -- small sapphire
 	{ id = 237, chance = 50000 }, -- strong mana potion
 	{ id = 9604, chance = 14000 }, -- moon backpack
-	{ id = 8059, chance = 1500 } -- frozen plate
+	{ id = 8059, chance = 1500 }, -- frozen plate
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -500 },
 	{ name = "combat", interval = 1000, chance = 8, type = COMBAT_EARTHDAMAGE, minDamage = -130, maxDamage = -460, length = 9, spread = 3, effect = CONST_ME_BIGPLANTS, target = false },
 	{ name = "combat", interval = 1000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -365, maxDamage = -491, length = 9, spread = 3, effect = CONST_ME_ICEAREA, target = false },
-	{ name = "combat", interval = 1000, chance = 11, type = COMBAT_DROWNDAMAGE, minDamage = -15, maxDamage = -20, radius = 4, effect = CONST_ME_LOSEENERGY, target = true }
+	{ name = "combat", interval = 1000, chance = 11, type = COMBAT_DROWNDAMAGE, minDamage = -15, maxDamage = -20, radius = 4, effect = CONST_ME_LOSEENERGY, target = true },
 }
 
 monster.defenses = {
 	defense = 30,
 	armor = 20,
 	mitigation = 1.24,
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 100, maxDamage = 500, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 100, maxDamage = 500, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -108,7 +108,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -3,7 +3,7 @@ local config = {
 		[1] = { id = 3358, chance = 6994 }, -- Chain Armor
 		[2] = { id = 3377, chance = 3952 }, -- Scale Armor
 		[3] = { id = 3359, chance = 1502 }, -- Brass Armor
-		[4] = { id = 3357, chance = 197 } -- Plate Armor
+		[4] = { id = 3357, chance = 197 }, -- Plate Armor
 	},
 	[8895] = { -- Rusty Armor (Semi-rare)
 		[1] = { id = 3358, chance = 6437 }, -- Scale Armor
@@ -12,7 +12,7 @@ local config = {
 		[4] = { id = 3357, chance = 1559 }, -- Plate Armor
 		[5] = { id = 3370, chance = 595 }, -- Knight Armor
 		[6] = { id = 8063, chance = 283 }, -- Paladin Armor
-		[7] = { id = 3381, chance = 49 } -- Crown Armor
+		[7] = { id = 3381, chance = 49 }, -- Crown Armor
 	},
 	[8896] = { -- Rusty Armor (Rare)
 		[1] = { id = 3359, chance = 6681 }, -- Brass Armor
@@ -20,13 +20,13 @@ local config = {
 		[3] = { id = 3370, chance = 1832 }, -- Knight Armor
 		[4] = { id = 3381, chance = 177 }, -- Crown Armor
 		[5] = { id = 8063, chance = 31 }, -- Paladin Armor
-		[6] = { id = 3360, chance = 10 } -- Golden Armor
+		[6] = { id = 3360, chance = 10 }, -- Golden Armor
 	},
 	[8897] = { -- Rusty Legs (Common)
 		[1] = { id = 3558, chance = 6949 }, -- Chain Legs
 		[2] = { id = 3362, chance = 3692 }, -- Studded Legs
 		[3] = { id = 3372, chance = 1307 }, -- Brass Legs
-		[4] = { id = 3557, chance = 133 } -- Plate Legs
+		[4] = { id = 3557, chance = 133 }, -- Plate Legs
 	},
 	[8898] = { -- Rusty Legs (Semi-Rare)
 		[1] = { id = 3362, chance = 5962 }, -- Studded Legs
@@ -40,7 +40,7 @@ local config = {
 		[2] = { id = 3557, chance = 3800 }, -- Plate Legs
 		[3] = { id = 3371, chance = 200 }, -- Knight Legs
 		[4] = { id = 3382, chance = 52 }, -- Crown Legs
-		[5] = { id = 3364, chance = 30 } -- Golden Legs
+		[5] = { id = 3364, chance = 30 }, -- Golden Legs
 	},
 	[8900] = { -- Heavily Rusted Shield
 	},
@@ -51,7 +51,7 @@ local config = {
 		[2] = { id = 3432, chance = 2887 }, -- Ancient Shield
 		[3] = { id = 7460, chance = 929 }, -- Norse Shield
 		[4] = { id = 3419, chance = 23 }, -- Crown Shield
-		[5] = { id = 3434, chance = 10 } -- Vampire Shield
+		[5] = { id = 3434, chance = 10 }, -- Vampire Shield
 	},
 	[8903] = { -- Heavily Rusted Boots
 	},
@@ -67,14 +67,14 @@ local config = {
 		[3] = { id = 3353, chance = 1490 }, -- Iron Helmet
 		[4] = { id = 3351, chance = 1010 }, -- Steel Helmet
 		[5] = { id = 3385, chance = 190 }, -- Crown Helmet
-		[6] = { id = 3391, chance = 10 } -- Crusader Helmet
+		[6] = { id = 3391, chance = 10 }, -- Crusader Helmet
 	},
 	[8908] = { -- Slightly Rusted Helmet
 		[1] = { id = 3353, chance = 3156 }, -- Iron Helmet
 		[2] = { id = 3351, chance = 2976 }, -- Steel Helmet
 		[3] = { id = 3385, chance = 963 }, -- Crown Helmet
 		[4] = { id = 3391, chance = 210 }, -- Crusader Helmet
-		[5] = { id = 3392, chance = 7 } -- Royal Helmet
+		[5] = { id = 3392, chance = 7 }, -- Royal Helmet
 	},
 }
 

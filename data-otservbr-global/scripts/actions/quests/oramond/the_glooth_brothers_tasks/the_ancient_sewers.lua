@@ -10,7 +10,7 @@ end
 
 local config = {
 	[21039] = { itemGerator = 21792, itemTransform = 21039 }, -- Gerator 1
-	[21040] = { itemGerator = 21792, itemTransform = 21040 } -- Gerator 2
+	[21040] = { itemGerator = 21792, itemTransform = 21040 }, -- Gerator 2
 }
 
 local theAncientSewers = Action()
@@ -19,9 +19,9 @@ function theAncientSewers.onUse(player, item, fromPosition, target, toPosition, 
 	local gerator = config[item.itemid]
 	if gerator then
 		local chance = math.random(1, 100)
-		if ((chance >= 1) and (chance < 50)) then
+		if (chance >= 1) and (chance < 50) then
 			player:say("<clong!> <clong!> There This piece fixed.", TALKTYPE_ORANGE_1)
-		elseif ((chance >= 50) and (chance < 100)) then
+		elseif (chance >= 50) and (chance < 100) then
 			player:say("<clong!> <clong!> <scrit scrit scrit>This should do it.", TALKTYPE_ORANGE_1)
 		end
 

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 68,
 	lookFeet = 68,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 30000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -64,8 +64,8 @@ monster.summon = {
 		{ name = "Dread Minion", chance = 30, interval = 2000, count = 1 },
 		{ name = "Dread Minion", chance = 20, interval = 2000, count = 1 },
 		{ name = "Dread Minion", chance = 30, interval = 2000, count = 1 },
-		{ name = "Dread Minion", chance = 20, interval = 2000, count = 1 }
-	}
+		{ name = "Dread Minion", chance = 20, interval = 2000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -73,11 +73,10 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },
 }
 
 monster.defenses = {
@@ -103,7 +102,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

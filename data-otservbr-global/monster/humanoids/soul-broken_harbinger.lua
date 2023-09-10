@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 16,
 	lookFeet = 83,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1734
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Court of Winter."
+	Locations = "Court of Winter.",
 }
 
 monster.health = 6300
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -89,23 +89,23 @@ monster.loot = {
 	{ name = "wood cape", chance = 1710 },
 	{ id = 23529, chance = 1370 }, -- ring of blue plasma
 	{ name = "tower shield", chance = 680 },
-	{ id = 23543, chance = 680 } -- collar of green plasma
+	{ id = 23543, chance = 680 }, -- collar of green plasma
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -240 },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -120, range = 7, shootEffect = CONST_ANI_ARROW, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -120, range = 7, shootEffect = CONST_ANI_ARROW, target = false },
 }
 
 monster.defenses = {
 	defense = 40,
 	armor = 76,
 	mitigation = 2.08,
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.reflects = {
-	{ type = COMBAT_ICEDAMAGE, percent = 70 }
+	{ type = COMBAT_ICEDAMAGE, percent = 70 },
 }
 
 monster.elements = {
@@ -125,7 +125,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -1,7 +1,7 @@
 local communicates = {
 	"Welcome to Canary Server! Visit the organization to see all our work: https://github.com/opentibiabr",
 	"Did you like it? Help support what we do here with a donation by visiting the link: https://docs.opentibiabr.com/home/donate/",
-	"Visit our discord to ask questions or report issues: https://discord.gg/gvTj5sh9Mp"
+	"Visit our discord to ask questions or report issues: https://discord.gg/gvTj5sh9Mp",
 }
 
 local scriptConfig = {
@@ -13,8 +13,8 @@ local scriptConfig = {
 		{ x = 5518, y = 5126, z = 6 },
 		{ x = 5852, y = 5295, z = 5 },
 		{ x = 1940, y = 1345, z = 7 },
-		{ x = 4709, y = 4186, z = 7 }
-	}
+		{ x = 4709, y = 4186, z = 7 },
+	},
 }
 
 local worldBoard = Action()

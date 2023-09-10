@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -66,8 +66,8 @@ monster.summon = {
 	maxSummons = 2,
 	summons = {
 		{ name = "Crypt Shambler", chance = 10, interval = 2000, count = 1 },
-		{ name = "Ghost", chance = 10, interval = 2000, count = 1 }
-	}
+		{ name = "Ghost", chance = 10, interval = 2000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -87,13 +87,13 @@ monster.loot = {
 	{ id = 6087, chance = 3000 }, -- music sheet (first verse)
 	{ id = 6088, chance = 3000 }, -- music sheet (second verse)
 	{ id = 6089, chance = 3000 }, -- music sheet (third verse)
-	{ id = 6090, chance = 3000 } -- music sheet (fourth verse)
+	{ id = 6090, chance = 3000 }, -- music sheet (fourth verse)
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100, effect = CONST_ME_DRAWBLOOD },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_LIFEDRAIN, minDamage = -138, maxDamage = -362, range = 1, radius = 1, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYAREA, target = true },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = 0, maxDamage = -50, range = 1, radius = 1, effect = CONST_ME_MAGIC_RED, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = 0, maxDamage = -50, range = 1, radius = 1, effect = CONST_ME_MAGIC_RED, target = true },
 }
 
 monster.defenses = {
@@ -101,7 +101,7 @@ monster.defenses = {
 	armor = 25,
 	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 60, maxDamage = 90, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_YELLOW_RINGS }
+	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_YELLOW_RINGS },
 }
 
 monster.elements = {
@@ -121,11 +121,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -133,13 +132,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

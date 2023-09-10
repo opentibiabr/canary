@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 90000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -49,11 +49,11 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.events = {
-	"FerumbrasSoulSplinter"
+	"FerumbrasSoulSplinter",
 }
 
 monster.light = {
@@ -64,8 +64,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 3,
 	summons = {
-		{ name = "Demon", chance = 11, interval = 2000, count = 3 }
-	}
+		{ name = "Demon", chance = 11, interval = 2000, count = 3 },
+	},
 }
 
 monster.voices = {
@@ -73,8 +73,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 90, attack = 200 },
@@ -84,7 +83,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 16, type = COMBAT_MANADRAIN, minDamage = -225, maxDamage = -410, radius = 6, effect = CONST_ME_MAGIC_RED, target = false },
 	{ name = "combat", interval = 2000, chance = 21, type = COMBAT_LIFEDRAIN, minDamage = -200, maxDamage = -450, radius = 6, effect = CONST_ME_POFF, target = false },
 	{ name = "ferumbras soulfire", interval = 2000, chance = 20, range = 7, target = false },
-	{ name = "combat", interval = 2000, chance = 17, type = COMBAT_LIFEDRAIN, minDamage = -590, maxDamage = -1050, length = 8, spread = 3, effect = CONST_ME_HITBYPOISON, target = false }
+	{ name = "combat", interval = 2000, chance = 17, type = COMBAT_LIFEDRAIN, minDamage = -590, maxDamage = -1050, length = 8, spread = 3, effect = CONST_ME_HITBYPOISON, target = false },
 }
 
 monster.defenses = {
@@ -93,7 +92,7 @@ monster.defenses = {
 	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 23, type = COMBAT_HEALING, minDamage = 600, maxDamage = 2490, effect = CONST_ME_MAGIC_GREEN, target = false },
 	{ name = "combat", interval = 2000, chance = 3, type = COMBAT_HEALING, minDamage = 20000, maxDamage = 35000, effect = CONST_ME_MAGIC_GREEN, target = false },
-	{ name = "speed", interval = 2000, chance = 14, speedChange = 700, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 7000 }
+	{ name = "speed", interval = 2000, chance = 14, speedChange = 700, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 7000 },
 }
 
 monster.elements = {
@@ -113,7 +112,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

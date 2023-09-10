@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 519
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Magician Quarter, Vengoth, Deeper Banuta, Formorgar Mines, Chyllfroest, Oramond Dungeon."
+	Locations = "Magician Quarter, Vengoth, Deeper Banuta, Formorgar Mines, Chyllfroest, Oramond Dungeon.",
 }
 
 monster.health = 3500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 15
+	chance = 15,
 }
 
 monster.strategiesTarget = {
@@ -63,12 +63,12 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-	pet = false
+	pet = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -78,7 +78,7 @@ monster.voices = {
 	{ text = "You little weasel will not live to see another day.", yell = false },
 	{ text = "I'm just a messenger of what's yet to come.", yell = false },
 	{ text = "HRAAAAAAAAAAAAAAAARRRR!", yell = true },
-	{ text = "I'm taking you down with me!", yell = false }
+	{ text = "I'm taking you down with me!", yell = false },
 }
 
 monster.loot = {
@@ -101,7 +101,7 @@ monster.loot = {
 	{ id = 9034, chance = 140 }, -- dracoyle statue
 	{ id = 9056, chance = 151 }, -- black skull
 	{ id = 9057, chance = 5882, maxCount = 3 }, -- small topaz
-	{ id = 10304, chance = 20000 } -- hellspawn tail
+	{ id = 10304, chance = 20000 }, -- hellspawn tail
 }
 
 monster.attacks = {
@@ -114,7 +114,7 @@ monster.defenses = {
 	defense = 40,
 	armor = 40,
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 120, maxDamage = 230, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 270, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 270, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -127,14 +127,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 30 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

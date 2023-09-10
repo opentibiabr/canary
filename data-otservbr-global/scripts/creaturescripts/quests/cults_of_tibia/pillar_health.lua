@@ -12,7 +12,7 @@ function healthPillar.onHealthChange(creature, attacker, primaryDamage, primaryT
 		return primaryDamage, primaryType, secondaryDamage, secondaryType
 	end
 	local monster = defensor[creature:getName():lower()]
-	local protector = 'pillar of'
+	local protector = "pillar of"
 	if monster then
 		local pMonster = Tile(Position(monster)):getTopCreature()
 		if not pMonster then

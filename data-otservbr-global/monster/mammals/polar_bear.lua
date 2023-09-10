@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 42
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Ice Islands."
+	Locations = "Ice Islands.",
 }
 
 monster.health = 85
@@ -35,7 +35,7 @@ monster.manaCost = 315
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -76,11 +76,11 @@ monster.voices = {
 monster.loot = {
 	{ name = "meat", chance = 50500, maxCount = 4 },
 	{ name = "ham", chance = 50320, maxCount = 2 },
-	{ name = "polar bear paw", chance = 980 }
+	{ name = "polar bear paw", chance = 980 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30 },
 }
 
 monster.defenses = {
@@ -106,7 +106,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

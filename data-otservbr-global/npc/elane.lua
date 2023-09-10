@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 101,
 	lookLegs = 120,
 	lookFeet = 120,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -97,7 +97,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Secondly, we need a lot of leather for new quivers. 100 pieces of lizard leather and 100 pieces of red dragon leather should suffice. ...",
 				"Third, since we are giving out tiaras, we are always in need of enchanted chicken wings. Please bring me 5, that would help us tremendously. ...",
 				"Lastly, for our arrow heads we need a lot of steel. Best would be one piece of royal steel, one piece of draconian steel and one piece of hell steel. ...",
-				"Did you understand everything I told you and are willing to handle this task?"
+				"Did you understand everything I told you and are willing to handle this task?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif npcHandler:getTopic(playerId) == 3 then
@@ -156,81 +156,88 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Sniper Gloves
-keywordHandler:addKeyword({ 'sniper gloves' }, StdModule.say, { npcHandler = npcHandler, text = 'We are always looking for sniper gloves. They are supposed to raise accuracy. If you find a pair, bring them here. Maybe I can offer you a nice trade.' }, function(player) return player:getItemCount(5875) == 0 end)
+keywordHandler:addKeyword({ "sniper gloves" }, StdModule.say, { npcHandler = npcHandler, text = "We are always looking for sniper gloves. They are supposed to raise accuracy. If you find a pair, bring them here. Maybe I can offer you a nice trade." }, function(player)
+	return player:getItemCount(5875) == 0
+end)
 
 local function addGloveKeyword(text, condition, action)
-	local gloveKeyword = keywordHandler:addKeyword({ 'sniper gloves' }, StdModule.say, { npcHandler = npcHandler, text = text[1] }, condition)
-	gloveKeyword:addChildKeyword({ 'yes' }, StdModule.say, { npcHandler = npcHandler, text = text[2], reset = true }, function(player) return player:getItemCount(5875) == 0 end)
-	gloveKeyword:addChildKeyword({ 'yes' }, StdModule.say, { npcHandler = npcHandler, text = text[3], reset = true }, nil, action)
-	gloveKeyword:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, text = text[2], reset = true })
+	local gloveKeyword = keywordHandler:addKeyword({ "sniper gloves" }, StdModule.say, { npcHandler = npcHandler, text = text[1] }, condition)
+	gloveKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = text[2], reset = true }, function(player)
+		return player:getItemCount(5875) == 0
+	end)
+	gloveKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = text[3], reset = true }, nil, action)
+	gloveKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = text[2], reset = true })
 end
 
 -- Free Account
 addGloveKeyword({
-	'You found sniper gloves?! Incredible! I would love to grant you the sniper gloves accessory, but I can only do that for premium warriors. However, I would pay you 2000 gold pieces for them. How about it?',
-	'Maybe another time.',
-	'Alright! Here is your money, thank you very much.'
-}, function(player) return not player:isPremium() end, function(player)
+	"You found sniper gloves?! Incredible! I would love to grant you the sniper gloves accessory, but I can only do that for premium warriors. However, I would pay you 2000 gold pieces for them. How about it?",
+	"Maybe another time.",
+	"Alright! Here is your money, thank you very much.",
+}, function(player)
+	return not player:isPremium()
+end, function(player)
 	player:removeItem(5875, 1)
 	player:addMoney(2000)
-end
-)
+end)
 
 -- Premium account with addon
 addGloveKeyword({
-	'Did you find sniper gloves AGAIN?! Incredible! I cannot grant you other accessories, but would you like to sell them to me for 2000 gold pieces?',
-	'Maybe another time.',
-	'Alright! Here is your money, thank you very much.'
-}, function(player) return player:getStorageValue(Storage.OutfitQuest.Hunter.AddonGlove) == 1 end, function(player)
+	"Did you find sniper gloves AGAIN?! Incredible! I cannot grant you other accessories, but would you like to sell them to me for 2000 gold pieces?",
+	"Maybe another time.",
+	"Alright! Here is your money, thank you very much.",
+}, function(player)
+	return player:getStorageValue(Storage.OutfitQuest.Hunter.AddonGlove) == 1
+end, function(player)
 	player:removeItem(5875, 1)
 	player:addMoney(2000)
-end
-)
+end)
 
 -- If you don't have the addon
 addGloveKeyword({
-	'You found sniper gloves?! Incredible! Listen, if you give them to me, I will grant you the right to wear the sniper gloves accessory. How about it?',
-	'No problem, maybe another time.',
-	'Great! I hereby grant you the right to wear the sniper gloves as an accessory. Congratulations!'
-}, function(player) return player:getStorageValue(Storage.OutfitQuest.Hunter.AddonGlove) == -1 end, function(player)
+	"You found sniper gloves?! Incredible! Listen, if you give them to me, I will grant you the right to wear the sniper gloves accessory. How about it?",
+	"No problem, maybe another time.",
+	"Great! I hereby grant you the right to wear the sniper gloves as an accessory. Congratulations!",
+}, function(player)
+	return player:getStorageValue(Storage.OutfitQuest.Hunter.AddonGlove) == -1
+end, function(player)
 	player:removeItem(5875, 1)
 	player:setStorageValue(Storage.OutfitQuest.Hunter.AddonGlove, 1)
 	player:addOutfitAddon(129, 2)
 	player:addOutfitAddon(137, 1)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-end
-)
+end)
 
 -- Basic
-keywordHandler:addKeyword({ 'help' }, StdModule.say, { npcHandler = npcHandler, text = "I am the leader of the Paladins. I help our members." })
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I am the leader of the Paladins. I help our members." })
-keywordHandler:addKeyword({ 'paladins' }, StdModule.say, { npcHandler = npcHandler, text = "Paladins are great warriors and magicians. Besides that we are excellent missile fighters. Many people in Tibia want to join us." })
-keywordHandler:addKeyword({ 'warriors' }, StdModule.say, { npcHandler = npcHandler, text = "Of course, we aren't as strong as knights, but no druid or sorcerer will ever defeat a paladin with a sword." })
-keywordHandler:addKeyword({ 'magicians' }, StdModule.say, { npcHandler = npcHandler, text = "There are many magic spells and runes paladins can use." })
-keywordHandler:addKeyword({ 'missile' }, StdModule.say, { npcHandler = npcHandler, text = "Paladins are the best missile fighters in Tibia!" })
-keywordHandler:addKeyword({ 'news' }, StdModule.say, { npcHandler = npcHandler, text = "I am a paladin, not a storyteller." })
-keywordHandler:addKeyword({ 'members' }, StdModule.say, { npcHandler = npcHandler, text = "Every paladin profits from his vocation. It has many advantages to be a paladin." })
-keywordHandler:addKeyword({ 'advantages' }, StdModule.say, { npcHandler = npcHandler, text = "We will help you to improve your skills. Besides I offer spells for paladins." })
-keywordHandler:addKeyword({ 'general' }, StdModule.say, { npcHandler = npcHandler, text = "Harkath Bloodblade is the royal general." })
-keywordHandler:addKeyword({ 'army' }, StdModule.say, { npcHandler = npcHandler, text = "Some paladins serve in the kings army." })
-keywordHandler:addKeyword({ 'baxter' }, StdModule.say, { npcHandler = npcHandler, text = "He has some potential." })
-keywordHandler:addKeyword({ 'bozo' }, StdModule.say, { npcHandler = npcHandler, text = "How spineless do you have to be to become a jester?" })
-keywordHandler:addKeyword({ 'mcronald' }, StdModule.say, { npcHandler = npcHandler, text = "The McRonalds are simple farmers." })
-keywordHandler:addKeyword({ 'eclesius' }, StdModule.say, { npcHandler = npcHandler, text = "He must have been skilled before he became the way he is now. Such a pity." })
-keywordHandler:addKeyword({ 'elane' }, StdModule.say, { npcHandler = npcHandler, text = "Yes?" })
-keywordHandler:addKeyword({ 'frodo' }, StdModule.say, { npcHandler = npcHandler, text = "The alcohol he sells shrouds the mind and the eye." })
-keywordHandler:addKeyword({ 'galuna' }, StdModule.say, { npcHandler = npcHandler, text = "One of the most important members of our guild. She makes all the bows and arrows we need." })
-keywordHandler:addKeyword({ 'gorn' }, StdModule.say, { npcHandler = npcHandler, text = "He sells a lot of useful equipment." })
-keywordHandler:addKeyword({ 'gregor' }, StdModule.say, { npcHandler = npcHandler, text = "He and his guildfellows lack the grace of a true warrior." })
-keywordHandler:addKeyword({ 'harkath bloodblade' }, StdModule.say, { npcHandler = npcHandler, text = "A fine warrior and a skilled general." })
-keywordHandler:addKeyword({ 'king tibianus' }, StdModule.say, { npcHandler = npcHandler, text = "King Tibianus is a wise ruler." })
-keywordHandler:addKeyword({ 'lugri' }, StdModule.say, { npcHandler = npcHandler, text = "A follower of evil that will get what he deserves one day." })
-keywordHandler:addKeyword({ 'lynda' }, StdModule.say, { npcHandler = npcHandler, text = "Mhm, a little too nice for my taste. Still, it's amazing how she endures all those men stalking her, especially this creepy Oswald." })
-keywordHandler:addKeyword({ 'marvik' }, StdModule.say, { npcHandler = npcHandler, text = "A skilled healer, that's for sure." })
-keywordHandler:addKeyword({ 'muriel' }, StdModule.say, { npcHandler = npcHandler, text = "Just another arrogant sorcerer." })
-keywordHandler:addKeyword({ 'oswald' }, StdModule.say, { npcHandler = npcHandler, text = "If there wouldn't be higher powers to protect him..." })
-keywordHandler:addKeyword({ 'quentin' }, StdModule.say, { npcHandler = npcHandler, text = "A humble monk and a wise man." })
-keywordHandler:addKeyword({ 'sam' }, StdModule.say, { npcHandler = npcHandler, text = "Strong man. But a little shy." })
+keywordHandler:addKeyword({ "help" }, StdModule.say, { npcHandler = npcHandler, text = "I am the leader of the Paladins. I help our members." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am the leader of the Paladins. I help our members." })
+keywordHandler:addKeyword({ "paladins" }, StdModule.say, { npcHandler = npcHandler, text = "Paladins are great warriors and magicians. Besides that we are excellent missile fighters. Many people in Tibia want to join us." })
+keywordHandler:addKeyword({ "warriors" }, StdModule.say, { npcHandler = npcHandler, text = "Of course, we aren't as strong as knights, but no druid or sorcerer will ever defeat a paladin with a sword." })
+keywordHandler:addKeyword({ "magicians" }, StdModule.say, { npcHandler = npcHandler, text = "There are many magic spells and runes paladins can use." })
+keywordHandler:addKeyword({ "missile" }, StdModule.say, { npcHandler = npcHandler, text = "Paladins are the best missile fighters in Tibia!" })
+keywordHandler:addKeyword({ "news" }, StdModule.say, { npcHandler = npcHandler, text = "I am a paladin, not a storyteller." })
+keywordHandler:addKeyword({ "members" }, StdModule.say, { npcHandler = npcHandler, text = "Every paladin profits from his vocation. It has many advantages to be a paladin." })
+keywordHandler:addKeyword({ "advantages" }, StdModule.say, { npcHandler = npcHandler, text = "We will help you to improve your skills. Besides I offer spells for paladins." })
+keywordHandler:addKeyword({ "general" }, StdModule.say, { npcHandler = npcHandler, text = "Harkath Bloodblade is the royal general." })
+keywordHandler:addKeyword({ "army" }, StdModule.say, { npcHandler = npcHandler, text = "Some paladins serve in the kings army." })
+keywordHandler:addKeyword({ "baxter" }, StdModule.say, { npcHandler = npcHandler, text = "He has some potential." })
+keywordHandler:addKeyword({ "bozo" }, StdModule.say, { npcHandler = npcHandler, text = "How spineless do you have to be to become a jester?" })
+keywordHandler:addKeyword({ "mcronald" }, StdModule.say, { npcHandler = npcHandler, text = "The McRonalds are simple farmers." })
+keywordHandler:addKeyword({ "eclesius" }, StdModule.say, { npcHandler = npcHandler, text = "He must have been skilled before he became the way he is now. Such a pity." })
+keywordHandler:addKeyword({ "elane" }, StdModule.say, { npcHandler = npcHandler, text = "Yes?" })
+keywordHandler:addKeyword({ "frodo" }, StdModule.say, { npcHandler = npcHandler, text = "The alcohol he sells shrouds the mind and the eye." })
+keywordHandler:addKeyword({ "galuna" }, StdModule.say, { npcHandler = npcHandler, text = "One of the most important members of our guild. She makes all the bows and arrows we need." })
+keywordHandler:addKeyword({ "gorn" }, StdModule.say, { npcHandler = npcHandler, text = "He sells a lot of useful equipment." })
+keywordHandler:addKeyword({ "gregor" }, StdModule.say, { npcHandler = npcHandler, text = "He and his guildfellows lack the grace of a true warrior." })
+keywordHandler:addKeyword({ "harkath bloodblade" }, StdModule.say, { npcHandler = npcHandler, text = "A fine warrior and a skilled general." })
+keywordHandler:addKeyword({ "king tibianus" }, StdModule.say, { npcHandler = npcHandler, text = "King Tibianus is a wise ruler." })
+keywordHandler:addKeyword({ "lugri" }, StdModule.say, { npcHandler = npcHandler, text = "A follower of evil that will get what he deserves one day." })
+keywordHandler:addKeyword({ "lynda" }, StdModule.say, { npcHandler = npcHandler, text = "Mhm, a little too nice for my taste. Still, it's amazing how she endures all those men stalking her, especially this creepy Oswald." })
+keywordHandler:addKeyword({ "marvik" }, StdModule.say, { npcHandler = npcHandler, text = "A skilled healer, that's for sure." })
+keywordHandler:addKeyword({ "muriel" }, StdModule.say, { npcHandler = npcHandler, text = "Just another arrogant sorcerer." })
+keywordHandler:addKeyword({ "oswald" }, StdModule.say, { npcHandler = npcHandler, text = "If there wouldn't be higher powers to protect him..." })
+keywordHandler:addKeyword({ "quentin" }, StdModule.say, { npcHandler = npcHandler, text = "A humble monk and a wise man." })
+keywordHandler:addKeyword({ "sam" }, StdModule.say, { npcHandler = npcHandler, text = "Strong man. But a little shy." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to the paladins' guild, |PLAYERNAME|! How can I help you?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Bye, |PLAYERNAME|.")
@@ -240,7 +247,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
-	{ itemName = "sniper gloves", clientId = 5875, sell = 2000 }
+	{ itemName = "sniper gloves", clientId = 5875, sell = 2000 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -251,7 +258,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

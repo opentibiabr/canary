@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 48
+	lookType = 48,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -72,7 +72,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"I was captured and tortured to death by the cultists here. They worship a being that they call Ghazbaran ...",
 				"In his name they have claimed the mines and started to melt the ice to free an army of vile demons that have been frozen here for ages ...",
-				"Their plan is to create a new demon army for their master to conquer the world. Hjaern and the other shamans must learn about it! Hurry before its too late."
+				"Their plan is to create a new demon army for their master to conquer the world. Hjaern and the other shamans must learn about it! Hurry before its too late.",
 			}, npc, creature)
 			player:setStorageValue(Storage.TheIceIslands.Questline, 38)
 			player:setStorageValue(Storage.TheIceIslands.Mission10, 2) -- Questlog The Ice Islands Quest, Formorgar Mines 2: Ghostwhisperer

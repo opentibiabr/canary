@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 696
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 3,
 	Occurrence = 3,
-	Locations = "Lich Hell."
+	Locations = "Lich Hell.",
 }
 
 monster.health = 450
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -78,11 +78,11 @@ monster.loot = {
 	{ name = "gold coin", chance = 31820, maxCount = 80 },
 	{ name = "maxilla", chance = 13640 },
 	{ name = "cavebear skull", chance = 2600 },
-	{ name = "health potion", chance = 1300 }
+	{ name = "health potion", chance = 1300 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },
 }
 
 monster.defenses = {
@@ -108,7 +108,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

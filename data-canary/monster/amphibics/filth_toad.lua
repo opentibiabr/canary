@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 735
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Tiquanda, around Lake Equivocolao."
+	Locations = "Tiquanda, around Lake Equivocolao.",
 }
 
 monster.health = 185
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -77,18 +77,18 @@ monster.loot = {
 	{ name = "two handed sword", chance = 500 },
 	{ name = "mace", chance = 2000 },
 	{ id = 3578, chance = 22000 },
-	{ name = "poisonous slime", chance = 3000 }
+	{ name = "poisonous slime", chance = 3000 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30, effect = CONST_ME_DRAWBLOOD, condition = { type = CONDITION_POISON, totalDamage = 20, interval = 4000 } },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -8, maxDamage = -17, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_GREEN_RINGS, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -8, maxDamage = -17, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_GREEN_RINGS, target = false },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 15,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 200, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 200, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -101,14 +101,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

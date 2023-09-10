@@ -5,14 +5,14 @@ local cToneStorages = {
 	Storage.BigfootBurden.MelodyTone4,
 	Storage.BigfootBurden.MelodyTone5,
 	Storage.BigfootBurden.MelodyTone6,
-	Storage.BigfootBurden.MelodyTone7
+	Storage.BigfootBurden.MelodyTone7,
 }
 
 local Crystals = {
 	{ x = 32776, y = 31804, z = 10 }, -- Dark Blue Cystal
 	{ x = 32781, y = 31807, z = 10 }, -- Red Crystal
 	{ x = 32777, y = 31812, z = 10 }, -- Green Crystal
-	{ x = 32771, y = 31810, z = 10 } -- Light Blue Crystal
+	{ x = 32771, y = 31810, z = 10 }, -- Light Blue Crystal
 }
 
 local bigfootMusic = Action()

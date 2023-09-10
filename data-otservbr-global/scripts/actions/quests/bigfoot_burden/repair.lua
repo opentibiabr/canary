@@ -4,7 +4,7 @@ function bigfootRepair.onUse(player, item, fromPosition, target, toPosition, isH
 		return false
 	end
 
-	if target:getName():lower() ~= 'damaged crystal golem' then
+	if target:getName():lower() ~= "damaged crystal golem" then
 		return false
 	end
 
@@ -18,7 +18,7 @@ function bigfootRepair.onUse(player, item, fromPosition, target, toPosition, isH
 	end
 
 	player:setStorageValue(Storage.BigfootBurden.GolemCount, player:getStorageValue(Storage.BigfootBurden.GolemCount) + 1)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The golem has been returned to the gnomish workshop.')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The golem has been returned to the gnomish workshop.")
 	target:remove()
 	player:getPosition():sendMagicEffect(CONST_ME_ENERGYHIT)
 

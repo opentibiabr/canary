@@ -5,7 +5,6 @@
 --
 -- This script should be used in test environments only.
 
-
 function Player.reloadTalkaction(self, words, param)
 	local reloadTypes = {
 		["all"] = RELOAD_TYPE_ALL,
@@ -51,7 +50,7 @@ function Player.reloadTalkaction(self, words, param)
 		["imbuements"] = RELOAD_TYPE_IMBUEMENTS,
 
 		["group"] = RELOAD_TYPE_GROUPS,
-		["groups"] = RELOAD_TYPE_GROUPS
+		["groups"] = RELOAD_TYPE_GROUPS,
 	}
 
 	if not configManager.getBoolean(configKeys.ALLOW_RELOAD) then

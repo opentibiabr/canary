@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 260
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Formorgar Glacier, Tyrsung, around the Barbarian Settlements, Mammoth Shearing Factory, Chyllfroest."
+	Locations = "Formorgar Glacier, Tyrsung, around the Barbarian Settlements, Mammoth Shearing Factory, Chyllfroest.",
 }
 
 monster.health = 320
@@ -35,7 +35,7 @@ monster.manaCost = 500
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -83,11 +83,11 @@ monster.loot = {
 	{ name = "mammoth whopper", chance = 2800 },
 	{ name = "furry club", chance = 500 },
 	{ name = "thick fur", chance = 7280 },
-	{ name = "mammoth tusk", chance = 7500, maxCount = 2 }
+	{ name = "mammoth tusk", chance = 7500, maxCount = 2 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110 },
 }
 
 monster.defenses = {
@@ -113,7 +113,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

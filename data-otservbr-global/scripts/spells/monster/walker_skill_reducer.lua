@@ -20,7 +20,6 @@ for i = 45, 60 do
 	local area = createCombatArea(AREA_CIRCLE3X3)
 	combat[i]:setArea(area)
 
-
 	function onTargetTile(creature, pos)
 		local creatureTable = {}
 		local n, i = Tile({ x = pos.x, y = pos.y, z = pos.z }).creatures, 1

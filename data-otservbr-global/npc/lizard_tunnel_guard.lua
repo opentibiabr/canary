@@ -11,11 +11,11 @@ npcConfig.walkInterval = 0
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 338
+	lookType = 338,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()

@@ -8,7 +8,7 @@ if KeywordHandler == nil then
 		children = nil,
 		parent = nil,
 		condition = nil,
-		action = nil
+		action = nil,
 	}
 
 	-- Created a new keywordnode with the given keywords, callback function and parameters and without any childNodes.
@@ -55,13 +55,13 @@ if KeywordHandler == nil then
 		local data = {}
 		local last = 0
 		for _, keyword in ipairs(self.keywords) do
-			if type(keyword) == 'string' then
+			if type(keyword) == "string" then
 				local a, b = string.find(message, keyword)
 				if a == nil or b == nil or a < last then
 					return false
 				end
-				if keyword:sub(1, 1) == '%' then
-					data[#data+1] = tonumber(message:sub(a, b)) or nil
+				if keyword:sub(1, 1) == "%" then
+					data[#data + 1] = tonumber(message:sub(a, b)) or nil
 				end
 				last = a
 			end
@@ -99,7 +99,7 @@ if KeywordHandler == nil then
 
 	function KeywordNode:addAliasKeyword(keywords)
 		if #self.children == 0 then
-			logger.error('[KeywordNode:addAliasKeyword] - No previous node found')
+			logger.error("[KeywordNode:addAliasKeyword] - No previous node found")
 			return false
 		end
 
@@ -113,14 +113,14 @@ if KeywordHandler == nil then
 
 	-- Adds a pre-created childNode to this node. Should be used for example if several nodes should have a common child.
 	function KeywordNode:addChildKeywordNode(childNode)
-		self.children[#self.children+1] = childNode
+		self.children[#self.children + 1] = childNode
 		childNode.parent = self
 		return childNode
 	end
 
 	KeywordHandler = {
 		root = nil,
-		lastNode = nil
+		lastNode = nil,
 	}
 
 	-- Creates a new keywordhandler with an empty rootnode.
@@ -145,7 +145,7 @@ if KeywordHandler == nil then
 	function KeywordHandler:processMessage(npc, player, message)
 		local node = self:getLastNode(player)
 		if node == nil then
-			error('No root node found.')
+			error("No root node found.")
 			return false
 		end
 

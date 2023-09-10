@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 335
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 3,
 	Locations = "Any place with penguins like, Formorgar Glacier, Helheim, Tyrsung or Svargrond. \z
-		Known spawn locations: west of Svargrond, up the Formorgar Glacier."
+		Known spawn locations: west of Svargrond, up the Formorgar Glacier.",
 }
 
 monster.health = 173
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -79,20 +79,20 @@ monster.loot = {
 	{ id = 3578, chance = 11040, maxCount = 3 }, -- fish
 	{ name = "rainbow trout", chance = 4800 },
 	{ id = 3580, chance = 5900 }, -- northern pike
-	{ name = "green perch", chance = 6200 }
+	{ name = "green perch", chance = 6200 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -80 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -35, range = 7, radius = 1, shootEffect = CONST_ANI_SMALLSTONE, effect = CONST_ME_EXPLOSIONAREA, target = true },
-	{ name = "speed", interval = 2000, chance = 10, speedChange = -600, range = 7, radius = 4, effect = CONST_ME_POFF, target = false, duration = 9000 }
+	{ name = "speed", interval = 2000, chance = 10, speedChange = -600, range = 7, radius = 4, effect = CONST_ME_POFF, target = false, duration = 9000 },
 }
 
 monster.defenses = {
 	defense = 16,
 	armor = 16,
 	mitigation = 0.59,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 310, range = 7, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 310, range = 7, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000 },
 }
 
 monster.elements = {
@@ -112,7 +112,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

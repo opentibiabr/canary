@@ -888,7 +888,7 @@ local itemsRoom = {
 	{ itemid = 1855, position = Position(33583, 32682, 14) },
 	{ itemid = 1855, position = Position(33590, 32691, 14) },
 	{ itemid = 1855, position = Position(33575, 32689, 14) },
-	{ itemid = 1854, position = Position(33581, 32689, 14) }
+	{ itemid = 1854, position = Position(33581, 32689, 14) },
 }
 
 local function revertLava()
@@ -910,7 +910,9 @@ local function revertLava()
 end
 local function lavaGrounds(cid)
 	local creature = Creature(cid)
-	if not creature then return true end
+	if not creature then
+		return true
+	end
 	local summoncount = creature:getSummons()
 	if #summoncount < 4 then
 		for i = 1, 4 do
@@ -952,7 +954,7 @@ end
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	creature:say('THE GROUND BEGINS TO HEAT UP RAPIDLY!', TALKTYPE_MONSTER_YELL)
+	creature:say("THE GROUND BEGINS TO HEAT UP RAPIDLY!", TALKTYPE_MONSTER_YELL)
 	addEvent(lavaGrounds, 3 * 1000, creature:getId())
 	return
 end

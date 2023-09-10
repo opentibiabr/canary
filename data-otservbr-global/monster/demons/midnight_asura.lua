@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 90,
 	lookFeet = 90,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1135
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Asura Palace."
+	Locations = "Asura Palace.",
 }
 
 monster.health = 3100
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -108,7 +108,7 @@ monster.loot = {
 	{ id = 8074, chance = 150 }, -- spellbook of mind control
 	{ id = 3403, chance = 2030 }, -- tribal mask
 	{ id = 8082, chance = 760 }, -- underworld rod
-	{ id = 3037, chance = 870 } -- yellow gem
+	{ id = 3037, chance = 870 }, -- yellow gem
 }
 
 monster.attacks = {
@@ -117,7 +117,7 @@ monster.attacks = {
 	{ name = "firefield", interval = 2000, chance = 10, range = 7, radius = 1, shootEffect = CONST_ANI_FIRE, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -50, maxDamage = -200, length = 8, spread = 3, effect = CONST_ME_PURPLEENERGY, target = false },
 	{ name = "energy strike", interval = 2000, chance = 10, minDamage = -10, maxDamage = -100, range = 1, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = -100, radius = 1, effect = CONST_ME_MAGIC_RED, target = true, duration = 30000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = -100, radius = 1, effect = CONST_ME_MAGIC_RED, target = true, duration = 30000 },
 }
 
 monster.defenses = {
@@ -125,7 +125,7 @@ monster.defenses = {
 	armor = 55,
 	mitigation = 1.60,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 50, maxDamage = 100, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 320, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 320, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -145,7 +145,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

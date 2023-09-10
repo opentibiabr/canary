@@ -9,10 +9,10 @@ local config = {
 		bossPosition = Position(33467, 31399, 8),
 		specPos = {
 			from = Position(33460, 31393, 8),
-			to = Position(33474, 31408, 8)
+			to = Position(33474, 31408, 8),
 		},
 		exitPosition = Position(33493, 31400, 8),
-		storage = Storage.Quest.U12_30.FeasterOfSouls.IrgixTimer
+		storage = Storage.Quest.U12_30.FeasterOfSouls.IrgixTimer,
 	},
 	[2] = {
 		teleportPosition = { x = 33566, y = 31475, z = 8 },
@@ -24,10 +24,10 @@ local config = {
 		bossPosition = Position(33565, 31496, 8),
 		specPos = {
 			from = Position(33558, 31487, 8),
-			to = Position(33582, 31499, 8)
+			to = Position(33582, 31499, 8),
 		},
 		exitPosition = Position(33563, 31477, 8),
-		storage = Storage.Quest.U12_30.FeasterOfSouls.UnazTimer
+		storage = Storage.Quest.U12_30.FeasterOfSouls.UnazTimer,
 	},
 	[3] = {
 		teleportPosition = { x = 33509, y = 31450, z = 9 },
@@ -39,22 +39,22 @@ local config = {
 		bossPosition = Position(33508, 31486, 9),
 		specPos = {
 			from = Position(33501, 31483, 9),
-			to = Position(33515, 31496, 9)
+			to = Position(33515, 31496, 9),
 		},
 		exitPosition = Position(33509, 31451, 9),
-		storage = Storage.Quest.U12_30.FeasterOfSouls.VokTimer
+		storage = Storage.Quest.U12_30.FeasterOfSouls.VokTimer,
 	},
 	[4] = {
 		teleportPosition = { x = 33467, y = 31396, z = 8 },
-		exitPosition = Position(33493, 31400, 8)
+		exitPosition = Position(33493, 31400, 8),
 	},
 	[5] = {
 		teleportPosition = { x = 33562, y = 31492, z = 8 },
-		exitPosition = Position(33563, 31477, 8)
+		exitPosition = Position(33563, 31477, 8),
 	},
 	[6] = {
 		teleportPosition = { x = 33505, y = 31485, z = 9 },
-		exitPosition = Position(33509, 31451, 9)
+		exitPosition = Position(33509, 31451, 9),
 	},
 }
 

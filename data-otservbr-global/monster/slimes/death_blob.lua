@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 514
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Alchemist Quarter, Drefia, Razzachai, Souleater Mountains, \z
-		Northern Zao Plantations and Raging Mage tower."
+		Northern Zao Plantations and Raging Mage tower.",
 }
 
 monster.health = 320
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -74,8 +74,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 3,
 	summons = {
-		{ name = "Death Blob", chance = 10, interval = 2000, count = 3 }
-	}
+		{ name = "Death Blob", chance = 10, interval = 2000, count = 3 },
+	},
 }
 
 monster.voices = {
@@ -85,20 +85,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "glob of tar", chance = 18470 }
+	{ name = "glob of tar", chance = 18470 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = -35, maxDamage = -60, range = 3, radius = 4, effect = CONST_ME_POFF, target = false },
-	{ name = "death blob curse", interval = 2000, chance = 5, range = 5, target = false }
+	{ name = "death blob curse", interval = 2000, chance = 5, range = 5, target = false },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 15,
 	mitigation = 0.46,
-	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 20, maxDamage = 30, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 20, maxDamage = 30, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -118,7 +118,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

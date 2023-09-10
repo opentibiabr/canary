@@ -94,8 +94,8 @@ local config = {
 		[8109] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 8111 }, -- vampire lord, after being killed (the count, diblis, etc)
 		[8110] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 8111 }, -- vampire lord (the count, diblis, etc)
 		[18958] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 18959 }, -- vampire viscount
-		[18961] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 18959 } -- vampire viscount, after being killed
-	}
+		[18961] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 18959 }, -- vampire viscount, after being killed
+	},
 }
 
 local skinning = Action()
@@ -160,7 +160,7 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	end
 
 	local random, effect, transform = math.random(1, chanceRange), CONST_ME_MAGIC_GREEN, true
-	if type(skin[1]) == 'table' then
+	if type(skin[1]) == "table" then
 		local added = false
 		local _skin
 		for i = 1, #skin do
@@ -170,7 +170,7 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 					target:getPosition():sendMagicEffect(CONST_ME_ICEAREA)
 					local gobletItem = player:addItem(_skin.newItem, _skin.amount or 1)
 					if gobletItem then
-						gobletItem:setDescription(_skin.desc:gsub('|PLAYERNAME|', player:getName()))
+						gobletItem:setDescription(_skin.desc:gsub("|PLAYERNAME|", player:getName()))
 					end
 					target:remove()
 					added = true
@@ -193,7 +193,7 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	elseif random <= skin.value then
 		if isInArray({ 7441, 7442, 7444, 7445 }, target.itemid) then
 			if skin.newItem == 7446 then
-				player:addAchievement('Ice Sculptor')
+				player:addAchievement("Ice Sculptor")
 			end
 			target:transform(skin.newItem, 1)
 			effect = CONST_ME_HITAREA
@@ -202,7 +202,7 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 		end
 	else
 		if isInArray({ 7441, 7442, 7444, 7445 }, target.itemid) then
-			player:say('The attempt of sculpting failed miserably.', TALKTYPE_MONSTER_SAY)
+			player:say("The attempt of sculpting failed miserably.", TALKTYPE_MONSTER_SAY)
 			effect = CONST_ME_HITAREA
 			target:remove()
 		else

@@ -1,6 +1,6 @@
 local config = {
 	[4] = { { x = 33021, y = 31536, z = 4 }, Position(33022, 31536, 6) },
-	[6] = { { x = 33021, y = 31536, z = 6 }, Position(33021, 31536, 4) }
+	[6] = { { x = 33021, y = 31536, z = 6 }, Position(33021, 31536, 4) },
 }
 
 local theNewFrontierVine = Action()

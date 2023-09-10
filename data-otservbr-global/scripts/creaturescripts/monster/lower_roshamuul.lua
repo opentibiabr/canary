@@ -1,6 +1,6 @@
 local setting = {
 	["frazzlemaw"] = roshamuul_killed_frazzlemaws,
-	["silencer"] = ROSHAMUUL_KILLED_SILENCERS
+	["silencer"] = ROSHAMUUL_KILLED_SILENCERS,
 }
 
 local lowerRoshamuul = CreatureEvent("LowerRoshamuul")

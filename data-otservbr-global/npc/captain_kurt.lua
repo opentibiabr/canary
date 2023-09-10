@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 24,
 	lookLegs = 38,
 	lookFeet = 0,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 108
@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Hellgate, near the Hellgate Library, Deeper Banuta, behind piano in Cult Cave to the \z
 		northeast of Liberty Bay, Vandura Bonelord Cave, Goroma, Helheim, \z
-		underground of Fenrock (on the way to Beregar), Vengoth."
+		underground of Fenrock (on the way to Beregar), Vengoth.",
 }
 
 monster.health = 500
@@ -37,7 +37,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -76,8 +76,8 @@ monster.summon = {
 	maxSummons = 6,
 	summons = {
 		{ name = "Gazer", chance = 10, interval = 2000, count = 6 },
-		{ name = "Crypt Shambler", chance = 15, interval = 2000, count = 6 }
-	}
+		{ name = "Crypt Shambler", chance = 15, interval = 2000, count = 6 },
+	},
 }
 
 monster.voices = {
@@ -112,7 +112,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -20, maxDamage = -40, range = 7, shootEffect = CONST_ANI_POISON, target = false },
 	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_LIFEDRAIN, minDamage = -45, maxDamage = -85, range = 7, effect = CONST_ME_MAGIC_RED, target = false },
 	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_MANADRAIN, minDamage = 0, maxDamage = -40, range = 7, target = false },
-	{ name = "speed", interval = 2000, chance = 10, speedChange = -600, range = 7, effect = CONST_ME_MAGIC_RED, target = false, duration = 20000 }
+	{ name = "speed", interval = 2000, chance = 10, speedChange = -600, range = 7, effect = CONST_ME_MAGIC_RED, target = false, duration = 20000 },
 }
 
 monster.defenses = {
@@ -138,7 +138,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

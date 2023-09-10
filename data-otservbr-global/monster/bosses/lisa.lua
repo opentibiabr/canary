@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 3
+	chance = 3,
 }
 
 monster.strategiesTarget = {
@@ -88,7 +88,7 @@ monster.loot = {
 	{ name = "glooth cape", chance = 6000 },
 	{ id = 3039, chance = 2600 }, -- red gem
 	{ name = "yellow gem", chance = 2500 },
-	{ name = "lisa's doll", chance = 300 }
+	{ name = "lisa's doll", chance = 300 },
 }
 
 monster.attacks = {
@@ -99,7 +99,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 13, type = COMBAT_MANADRAIN, minDamage = -100, maxDamage = -200, radius = 8, effect = CONST_ME_POISONAREA, target = false },
 	{ name = "lisa paralyze", interval = 2000, chance = 12, target = false },
 	{ name = "lisa skill reducer", interval = 2000, chance = 15, target = false },
-	{ name = "lisa wave", interval = 2000, chance = 11, minDamage = -400, maxDamage = -900, target = false }
+	{ name = "lisa wave", interval = 2000, chance = 11, minDamage = -400, maxDamage = -900, target = false },
 }
 
 monster.defenses = {
@@ -107,7 +107,7 @@ monster.defenses = {
 	armor = 15,
 	--	mitigation = ???,
 	{ name = "lisa summon", interval = 2000, chance = 5, target = false },
-	{ name = "lisa heal", interval = 1000, chance = 100, target = false }
+	{ name = "lisa heal", interval = 1000, chance = 100, target = false },
 }
 
 monster.elements = {
@@ -127,11 +127,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -139,13 +138,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

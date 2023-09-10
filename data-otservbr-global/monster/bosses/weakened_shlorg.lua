@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 10000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -49,19 +49,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Tchhh!", yell = false },
-	{ text = "Slurp!", yell = false }
+	{ text = "Slurp!", yell = false },
 }
 
 monster.loot = {
@@ -84,7 +84,7 @@ monster.loot = {
 	{ id = 3297, chance = 20000 }, -- serpent sword
 	{ id = 8084, chance = 20000 }, -- springsprout rod
 	{ id = 8063, chance = 10000 }, -- paladin armor
-	{ id = 9667, chance = 100000 } -- boggy dreads
+	{ id = 9667, chance = 100000 }, -- boggy dreads
 }
 
 monster.attacks = {
@@ -93,13 +93,13 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -150, radius = 5, effect = CONST_ME_GREEN_RINGS, target = false },
 	-- poison
 	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 13, minDamage = -360, maxDamage = -440, radius = 5, effect = CONST_ME_GREEN_RINGS, target = false },
-	{ name = "shlorg paralyze", interval = 2000, chance = 11, target = false }
+	{ name = "shlorg paralyze", interval = 2000, chance = 11, target = false },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 10,
-	{ name = "combat", interval = 2000, chance = 35, type = COMBAT_HEALING, minDamage = 95, maxDamage = 150, effect = CONST_ME_MAGIC_RED, target = false }
+	{ name = "combat", interval = 2000, chance = 35, type = COMBAT_HEALING, minDamage = 95, maxDamage = 150, effect = CONST_ME_MAGIC_RED, target = false },
 }
 
 monster.elements = {
@@ -112,18 +112,17 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -131,13 +130,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

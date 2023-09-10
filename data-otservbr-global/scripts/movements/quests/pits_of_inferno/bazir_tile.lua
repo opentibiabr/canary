@@ -3,7 +3,7 @@ local setting = {
 	[16773] = Position(32725, 32381, 15),
 	[16774] = Position(32827, 32241, 12),
 	[50082] = Position(32745, 32394, 14),
-	[50083] = Position(32745, 32394, 14)
+	[50083] = Position(32745, 32394, 14),
 }
 
 local bazirTile = MoveEvent()

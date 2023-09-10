@@ -3,9 +3,9 @@ combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_EARTHDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HITBYPOISON)
 
 arr = {
-	{ 1, 1, 1, },
-	{ 1, 3, 1, },
-	{ 1, 1, 1, },
+	{ 1, 1, 1 },
+	{ 1, 3, 1 },
+	{ 1, 1, 1 },
 }
 
 local area = createCombatArea(arr)

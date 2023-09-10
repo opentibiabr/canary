@@ -5,7 +5,7 @@ local config = {
 		toPos = Position(33527, 32215, 7),
 		usablePeriod = "night",
 		failMessage = "The moon is not shining. Wait for the night.",
-		successMessage = "The mirror is shining with the moonlight now."
+		successMessage = "The mirror is shining with the moonlight now.",
 	},
 	[25730] = {
 		targetPos = {
@@ -13,13 +13,13 @@ local config = {
 			Position(33511, 32320, 6),
 			Position(33518, 32193, 7),
 			Position(33549, 32219, 7),
-			Position(33597, 32182, 7)
+			Position(33597, 32182, 7),
 		},
 		usablePeriod = "night",
 		failMessage = "The moon has to be shining. Wait for the night. Wait for the night.",
 		successMessage = {
 			"As soon as you're touching the moon sculpture with the mirror the sculpture is infused with moonlight. The barrier strengthens.",
-			"As soon as you're touching the moon sculpture with the mirror the sculpture is infused with moonlight. This was the last sculpture."
+			"As soon as you're touching the moon sculpture with the mirror the sculpture is infused with moonlight. This was the last sculpture.",
 		},
 		storageCounter = ThreatenedDreams.Mission02.ChargedMoonMirror,
 		storagePos = {
@@ -28,8 +28,8 @@ local config = {
 			ThreatenedDreams.Mission02.MoonMirrorPos03,
 			ThreatenedDreams.Mission02.MoonMirrorPos04,
 			ThreatenedDreams.Mission02.MoonMirrorPos05,
-		}
-	}
+		},
+	},
 }
 
 local moonMirror = Action()
@@ -48,8 +48,7 @@ function moonMirror.onUse(player, item, fromPosition, target, toPosition, isHotk
 			return true
 		end
 
-		if player:getStorageValue(ThreatenedDreams.Mission02[1]) ~= 6
-				and player:getStorageValue(ThreatenedDreams.Mission02[1]) ~= 8 then
+		if player:getStorageValue(ThreatenedDreams.Mission02[1]) ~= 6 and player:getStorageValue(ThreatenedDreams.Mission02[1]) ~= 8 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, tool.failMessage)
 			return true
 		end
@@ -61,14 +60,12 @@ function moonMirror.onUse(player, item, fromPosition, target, toPosition, isHotk
 			item:transform(25975)
 		end
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, tool.successMessage)
-		iterateArea(
-			function(position)
-				local tile = Tile(position)
-				if tile then
-					position:sendMagicEffect(CONST_ME_THUNDER)
-				end
-			end,
-			tool.fromPos, tool.toPos)
+		iterateArea(function(position)
+			local tile = Tile(position)
+			if tile then
+				position:sendMagicEffect(CONST_ME_THUNDER)
+			end
+		end, tool.fromPos, tool.toPos)
 		return true
 	elseif item.itemid == 25730 then
 		if tool.usablePeriod ~= currentPeriod then

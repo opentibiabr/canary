@@ -4,24 +4,24 @@ local missionTiles = {
 	[50324] = {
 		states = { 1 },
 		message = "This is not the way to the tarantula's lair. Head up the little ramp to the southwest.",
-		arrowPosition = { x = 32090, y = 32147, z = 7 }
+		arrowPosition = { x = 32090, y = 32147, z = 7 },
 	},
 	[50326] = {
 		states = { 1 },
 		message = "Follow the small path to the north to reach the spider lair.",
-		arrowPosition = { x = 32067, y = 32132, z = 7 }
+		arrowPosition = { x = 32067, y = 32132, z = 7 },
 	},
 	[50327] = {
 		states = { 1 },
 		message = "Walk to the west from here to reach the hole leading to the tarantula lair.",
-		arrowPosition = { x = 32051, y = 32110, z = 7 }
+		arrowPosition = { x = 32051, y = 32110, z = 7 },
 	},
 	[50328] = {
 		states = { 1, 2, 4 },
 		message = "Remember that you have to aquire a web sample for Vascalir. You should not leave this cave without it.",
 		arrowPosition = { x = 32003, y = 32109, z = 11 },
-		walkBack = true
-	}
+		walkBack = true,
+	},
 }
 
 -- Mission tutorial tiles

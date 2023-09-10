@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 320000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.bosstiary = {
@@ -55,12 +55,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -116,12 +116,12 @@ monster.loot = {
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -500, maxDamage = -1000 },
 	{ name = "energy beam", interval = 2000, chance = 10, minDamage = -500, maxDamage = -1200, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYAREA, target = false },
-	{ name = "energy wave", interval = 2000, chance = 10, minDamage = -500, maxDamage = -1200, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYAREA, target = false }
+	{ name = "energy wave", interval = 2000, chance = 10, minDamage = -500, maxDamage = -1200, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 60,
-	armor = 60
+	armor = 60,
 }
 
 monster.elements = {
@@ -134,22 +134,21 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 15 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 20 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 20 },
 }
 
 monster.heals = {
-	{ type = COMBAT_ENERGYDAMAGE, percent = 500 }
+	{ type = COMBAT_ENERGYDAMAGE, percent = 500 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -157,13 +156,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

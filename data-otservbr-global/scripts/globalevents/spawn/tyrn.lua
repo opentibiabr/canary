@@ -1,9 +1,9 @@
 local config = {
-	monsterName = 'Tyrn',
+	monsterName = "Tyrn",
 	bossPosition = Position(33056, 32393, 14),
 	centerPosition = Position(33056, 32393, 14),
 	rangeX = 50,
-	rangeY = 50
+	rangeY = 50,
 }
 
 local function checkBoss(centerPosition, rangeX, rangeY, bossName)
@@ -24,7 +24,7 @@ function tyrn.onThink(interval, lastExecution)
 	if checkBoss(config.centerPosition, config.rangeX, config.rangeY, config.monsterName) then
 		return true
 	end
-	addEvent(Game.broadcastMessage, 150, 'Beware of Tyrn!', MESSAGE_EVENT_ADVANCE)
+	addEvent(Game.broadcastMessage, 150, "Beware of Tyrn!", MESSAGE_EVENT_ADVANCE)
 	local boss = Game.createMonster(config.monsterName, config.bossPosition, true, true)
 	boss:setReward(true)
 	return true

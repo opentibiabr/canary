@@ -13,7 +13,7 @@ local config = {
 	},
 	specPos = {
 		from = Position(32490, 31117, 15),
-		to = Position(32506, 31132, 15)
+		to = Position(32506, 31132, 15),
 	},
 	exit = Position(32536, 31122, 15),
 	storage = Storage.Quest.U12_70.TooHotToHandle.BrainstealerTimer,

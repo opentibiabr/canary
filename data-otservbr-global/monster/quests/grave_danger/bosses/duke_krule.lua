@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 19,
 	lookFeet = 79,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 75000
@@ -22,13 +22,13 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.bosstiary = {
 	bossRaceId = 1758,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_20.GraveDanger.Bosses.DukeKruleTimer
+	storageCooldown = Storage.Quest.U12_20.GraveDanger.Bosses.DukeKruleTimer,
 }
 
 monster.strategiesTarget = {
@@ -68,8 +68,8 @@ monster.voices = {
 monster.summon = {
 	maxSummons = 4,
 	summons = {
-		{ name = "Soul Scourge", chance = 20, interval = 2000, count = 4 }
-	}
+		{ name = "Soul Scourge", chance = 20, interval = 2000, count = 4 },
+	},
 }
 
 monster.loot = {
@@ -102,14 +102,14 @@ monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900 },
 	{ name = "combat", interval = 3500, chance = 37, type = COMBAT_PHYSICALDAMAGE, minDamage = -700, maxDamage = -1200, length = 7, spread = 3, effect = CONST_ME_BLOCKHIT, target = false },
 	{ name = "combat", interval = 2500, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -400, maxDamage = -1000, length = 7, spread = 0, effect = CONST_ME_BLOCKHIT, target = false },
-	{ name = "combat", interval = 4200, chance = 40, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -500, radius = 9, effect = CONST_ME_HITBYFIRE, target = false }
+	{ name = "combat", interval = 4200, chance = 40, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -500, radius = 9, effect = CONST_ME_HITBYFIRE, target = false },
 }
 
 monster.defenses = {
 	defense = 25,
 	armor = 78,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_HEALING, minDamage = 150, maxDamage = 350, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_HEALING, minDamage = 150, maxDamage = 350, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -129,11 +129,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -141,13 +140,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

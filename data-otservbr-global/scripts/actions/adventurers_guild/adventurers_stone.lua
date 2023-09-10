@@ -68,12 +68,12 @@ function adventurersStone.onUse(player, item, fromPosition, target, toPosition, 
 	if not allowed then
 		local enabledLocations = {}
 		if config.enableTemplaes then
-			table.insert(enabledLocations, 'temple')
+			table.insert(enabledLocations, "temple")
 		end
 		if config.enableDepots then
-			table.insert(enabledLocations, 'depot')
+			table.insert(enabledLocations, "depot")
 		end
-		local message = 'Try to move more to the center of a ' .. table.concat(enabledLocations, ' or ') .. ' to use the spiritual energy for a teleport.'
+		local message = "Try to move more to the center of a " .. table.concat(enabledLocations, " or ") .. " to use the spiritual energy for a teleport."
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
 		return true
 	end

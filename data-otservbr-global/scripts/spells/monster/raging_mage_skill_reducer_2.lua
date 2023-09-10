@@ -30,7 +30,6 @@ for i = 35, 55 do
 	combat[i]:addCondition(condition)
 end
 
-
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)

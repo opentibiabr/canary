@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 1
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -69,12 +69,11 @@ monster.voices = {
 	{ text = "A pirate's unlife for me!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = 0 },
-	{ name = "drunk", interval = 5000, chance = 10, range = 2, effect = CONST_ME_POFF, target = false }
+	{ name = "drunk", interval = 5000, chance = 10, range = 2, effect = CONST_ME_POFF, target = false },
 }
 
 monster.defenses = {
@@ -100,7 +99,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

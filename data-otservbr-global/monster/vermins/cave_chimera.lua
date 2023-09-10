@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 64,
 	lookFeet = 70,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2096
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Dwelling of the Forgotten"
+	Locations = "Dwelling of the Forgotten",
 }
 
 monster.health = 8000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -95,7 +95,7 @@ monster.loot = {
 	{ name = "ornate crossbow", chance = 850 },
 	{ name = "crystal crossbow", chance = 180 },
 	{ name = "composite hornbow", chance = 100 },
-	{ name = "elvish bow", chance = 80 }
+	{ name = "elvish bow", chance = 80 },
 }
 
 monster.attacks = {
@@ -109,7 +109,7 @@ monster.defenses = {
 	defense = 60,
 	armor = 60,
 	mitigation = 1.88,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 200, maxDamage = 700, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 200, maxDamage = 700, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -129,7 +129,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

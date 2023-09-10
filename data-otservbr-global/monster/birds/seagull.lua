@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 264
@@ -26,7 +26,7 @@ monster.Bestiary = {
 	Locations = "Various locations, sighted in the Shattered Isles, Venore, Thais, Femor Hills, \z
 		Cormaya, Edron Troll-Goblin Peninsula, Liberty Bay, Port Hope, Fibula, Drefia, Factory Quarter, \z
 		bordering Orc Fort, Rookgaard Premium Zone (not reachable), AbDendriel elf caves, \z
-		Northern coast of Tibia between Dalbrect and Northport."
+		Northern coast of Tibia between Dalbrect and Northport.",
 }
 
 monster.health = 25
@@ -38,7 +38,7 @@ monster.manaCost = 250
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -75,11 +75,10 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -3 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -3 },
 }
 
 monster.defenses = {
@@ -105,7 +104,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

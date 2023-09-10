@@ -5,7 +5,7 @@ function keeperKill.onKill(creature, target)
 		return true
 	end
 
-	if targetMonster:getName():lower() == 'the keeper' then
+	if targetMonster:getName():lower() == "the keeper" then
 		Game.setStorageValue(Storage.WrathoftheEmperor.Mission03, 0)
 	end
 	return true

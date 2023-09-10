@@ -5,7 +5,7 @@ local config = {
 	[4] = { storage = Storage.FerumbrasAscension.Mazoran },
 	[5] = { storage = Storage.FerumbrasAscension.Tarbaz },
 	[6] = { storage = Storage.FerumbrasAscension.Shulgrax },
-	[7] = { storage = Storage.FerumbrasAscension.Plagirath }
+	[7] = { storage = Storage.FerumbrasAscension.Plagirath },
 }
 
 local stair = MoveEvent()

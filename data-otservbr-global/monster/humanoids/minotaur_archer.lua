@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 24
@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Ancient Temple, way to Mintwallin, Folda Underground Cave, Outlaw Camp, Plains of Havoc, \z
 		Kazordoon Minotaur Tower, Daramian Minotaur Pyramid, Deeper Fibula Dungeon (level 50+ to open the door), \z
-		Hero Cave, Foreigner Quarter and Elvenbane."
+		Hero Cave, Foreigner Quarter and Elvenbane.",
 }
 
 monster.health = 100
@@ -37,7 +37,7 @@ monster.manaCost = 390
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -87,12 +87,12 @@ monster.loot = {
 	{ name = "piercing bolt", chance = 12340, maxCount = 4 },
 	{ name = "broken crossbow", chance = 15400 },
 	{ name = "minotaur horn", chance = 1990, maxCount = 2 },
-	{ name = "piece of archer armor", chance = 8260 }
+	{ name = "piece of archer armor", chance = 8260 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -25 },
-	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -80, range = 7, shootEffect = CONST_ANI_BOLT, target = false }
+	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -80, range = 7, shootEffect = CONST_ANI_BOLT, target = false },
 }
 
 monster.defenses = {
@@ -118,7 +118,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

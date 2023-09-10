@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 509
@@ -26,7 +26,7 @@ monster.Bestiary = {
 	Locations = "Cemetery Quarter (around 10 underground on the west side along with banshees, \z
 		and 4 bats on the church roof), Alchemist Quarter (4 found on top of roofs), \z
 		Arena and Zoo Quarter (2 under the arena with other mutated creatures), \z
-		Razzachai, Northern Zao Plantations, Souleater Mountains, Middle Spike, Vengoth and Vengoth Castle."
+		Razzachai, Northern Zao Plantations, Souleater Mountains, Middle Spike, Vengoth and Vengoth Castle.",
 }
 
 monster.health = 900
@@ -38,7 +38,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -90,7 +90,7 @@ monster.loot = {
 	{ id = 8894, chance = 12530 }, -- heavily rusted armor
 	{ id = 8895, chance = 12530, maxCount = 2 }, -- rusted armor
 	{ name = "batwing hat", chance = 80 },
-	{ name = "mutated bat ear", chance = 4900 }
+	{ name = "mutated bat ear", chance = 4900 },
 }
 
 monster.attacks = {
@@ -99,14 +99,14 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DROWNDAMAGE, minDamage = -30, maxDamage = -90, radius = 6, effect = CONST_ME_SOUND_WHITE, target = false },
 	{ name = "mutated bat curse", interval = 2000, chance = 10, target = false },
 	-- poison
-	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -190, maxDamage = -240, length = 4, spread = 3, effect = CONST_ME_POISONAREA, target = false }
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -190, maxDamage = -240, length = 4, spread = 3, effect = CONST_ME_POISONAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 19,
 	mitigation = 1.74,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 80, maxDamage = 95, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 80, maxDamage = 95, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -126,7 +126,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

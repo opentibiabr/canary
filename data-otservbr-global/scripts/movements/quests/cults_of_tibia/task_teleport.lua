@@ -3,14 +3,14 @@ local setting = {
 		storage = Storage.CultsOfTibia.Humans.Decaying,
 		max = 10,
 		text = "You absorb the energetic remains of this decaying soul. Its power is very fragile and fleeting",
-		effect = CONST_ME_GREEN_ENERGY_SPARK
+		effect = CONST_ME_GREEN_ENERGY_SPARK,
 	},
 	[32414] = {
 		storage = Storage.CultsOfTibia.Humans.Vaporized,
 		max = 10,
 		text = "You absorb the energetic remains of this whitering soul. Its power is very fragile and fleeting.",
-		effect = CONST_ME_BLUE_ENERGY_SPARK
-	}
+		effect = CONST_ME_BLUE_ENERGY_SPARK,
+	},
 }
 
 local taskTeleport = MoveEvent()
@@ -32,10 +32,9 @@ function taskTeleport.onStepIn(creature, item, position, fromPosition)
 		local teleport = Tile(position):getItemById(index)
 		if teleport then
 			local storage = (player:getStorageValue(value.storage) < 0 and 0 or player:getStorageValue(value.storage))
-			local attribute = teleport:getCustomAttribute("task") or ''
+			local attribute = teleport:getCustomAttribute("task") or ""
 			if attribute:find(player:getName()) or storage >= value.max then
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-					"The power of these souls is now within you. You cannot absorb any more souls.")
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The power of these souls is now within you. You cannot absorb any more souls.")
 				return false
 			end
 			attribute = string.format("%s, %s", attribute, player:getName())

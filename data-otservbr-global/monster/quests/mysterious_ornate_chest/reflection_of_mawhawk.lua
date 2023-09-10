@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 45000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 4
+	chance = 4,
 }
 
 monster.strategiesTarget = {
@@ -80,7 +80,7 @@ monster.loot = {
 	{ id = 21176, chance = 1420 }, -- execowtioner axe
 	{ id = 3318, chance = 770 }, -- knight axe
 	{ id = 7413, chance = 390 }, -- titan axe
-	{ id = 7401, chance = 520 } -- minotaur trophy
+	{ id = 7401, chance = 520 }, -- minotaur trophy
 }
 
 monster.attacks = {
@@ -114,7 +114,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

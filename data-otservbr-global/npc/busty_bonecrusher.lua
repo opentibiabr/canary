@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 66,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Behave yourself as long as you are in Carlin, commoner!' }
+	{ text = "Behave yourself as long as you are in Carlin, commoner!" },
 }
 
 local keywordHandler = KeywordHandler:new()

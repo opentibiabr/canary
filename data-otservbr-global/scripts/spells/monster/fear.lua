@@ -8,7 +8,9 @@ combat:addCondition(condition)
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	if not creature then return end
+	if not creature then
+		return
+	end
 	return combat:execute(creature, var)
 end
 

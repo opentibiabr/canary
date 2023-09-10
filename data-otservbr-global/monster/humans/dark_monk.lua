@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 225
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Dark Cathedral, Vandura (Cult Cave), Foreigner Quarter."
+	Locations = "Dark Cathedral, Vandura (Cult Cave), Foreigner Quarter.",
 }
 
 monster.health = 190
@@ -35,7 +35,7 @@ monster.manaCost = 480
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -91,12 +91,12 @@ monster.loot = {
 	{ name = "book of prayers", chance = 1900 },
 	{ name = "dark rosary", chance = 10500 },
 	{ name = "rope belt", chance = 6666 },
-	{ name = "safety pin", chance = 990 }
+	{ name = "safety pin", chance = 990 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -20, maxDamage = -50, range = 1, effect = CONST_ME_MAGIC_RED, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -20, maxDamage = -50, range = 1, effect = CONST_ME_MAGIC_RED, target = false },
 }
 
 monster.defenses = {
@@ -104,7 +104,7 @@ monster.defenses = {
 	armor = 22,
 	mitigation = 1.13,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 25, maxDamage = 49, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 300, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 300, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
 }
 
 monster.elements = {
@@ -124,7 +124,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 78,
 	lookFeet = 79,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 291
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 4,
 	Occurrence = 0,
 	Locations = "Pits of Inferno (Apocalypse's Throne Room), The Inquisition Quest (The Shadow Nexus, Battlefield), \z
-	Vengoth, Fury Dungeon, Oramond Fury Dungeon, The Extension Site, Grounds of Destruction and Halls of Ascension."
+	Vengoth, Fury Dungeon, Oramond Fury Dungeon, The Extension Site, Grounds of Destruction and Halls of Ascension.",
 }
 
 monster.health = 4100
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -96,7 +96,7 @@ monster.loot = {
 	{ name = "assassin dagger", chance = 660 },
 	{ name = "noble axe", chance = 2000 },
 	{ name = "great health potion", chance = 10500 },
-	{ name = "jalapeno pepper", chance = 29280, maxCount = 4 }
+	{ name = "jalapeno pepper", chance = 29280, maxCount = 4 },
 }
 
 monster.attacks = {
@@ -107,14 +107,14 @@ monster.attacks = {
 	{ name = "fury skill reducer", interval = 2000, chance = 5, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -120, maxDamage = -300, radius = 3, effect = CONST_ME_HITAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -125, maxDamage = -250, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_SMALLCLOUDS, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = -800, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_SMALLCLOUDS, target = false, duration = 30000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = -800, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_SMALLCLOUDS, target = false, duration = 30000 },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 35,
 	mitigation = 1.32,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 800, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 800, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -134,7 +134,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

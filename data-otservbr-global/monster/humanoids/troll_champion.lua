@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 392
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Edron Troll-Goblin Peninsula, Ab'dendriel Shadow Caves, Thais South-East Troll Caves, \z
-		Dusalk's Troll Clan Cave, Island of Destiny in Paladin's guild."
+		Dusalk's Troll Clan Cave, Island of Destiny in Paladin's guild.",
 }
 
 monster.health = 75
@@ -36,7 +36,7 @@ monster.manaCost = 350
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -88,10 +88,10 @@ monster.loot = {
 	{ name = "leather boots", chance = 9000 },
 	{ name = "meat", chance = 9650 },
 	{ name = "bunch of troll hair", chance = 3000 },
-	{ name = "trollroot", chance = 750 }
+	{ name = "trollroot", chance = 750 },
 }
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 },
 }
 
 monster.defenses = {
@@ -117,7 +117,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

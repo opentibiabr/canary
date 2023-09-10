@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 4500
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -74,7 +74,7 @@ monster.loot = {
 	{ id = 6499, chance = 7200 }, -- demonic essence
 	{ id = 3318, chance = 2857 }, -- knight axe
 	{ id = 3271, chance = 2500 }, -- spike sword
-	{ id = 6558, chance = 8888 } -- flask of demonic blood
+	{ id = 6558, chance = 8888 }, -- flask of demonic blood
 }
 
 monster.attacks = {
@@ -82,7 +82,7 @@ monster.attacks = {
 	{ name = "combat", interval = 1500, chance = 300, type = COMBAT_ENERGYDAMAGE, minDamage = -100, maxDamage = -200, length = 8, spread = 3, effect = CONST_ME_LOSEENERGY, target = false },
 	{ name = "combat", interval = 1000, chance = 150, type = COMBAT_EARTHDAMAGE, minDamage = -120, maxDamage = -300, length = 8, spread = 3, effect = CONST_ME_POISONAREA, target = false },
 	{ name = "combat", interval = 1000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = -105, maxDamage = -235, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, target = false },
-	{ name = "combat", interval = 1000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -135, maxDamage = -255, range = 7, radius = 6, effect = CONST_ME_LOSEENERGY, target = false }
+	{ name = "combat", interval = 1000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -135, maxDamage = -255, range = 7, radius = 6, effect = CONST_ME_LOSEENERGY, target = false },
 }
 
 monster.defenses = {
@@ -108,7 +108,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

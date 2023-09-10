@@ -16,7 +16,7 @@ function MsgContains(message, keyword)
 		return true
 	end
 
-	return lowerMessage:find(lowerKeyword) and not lowerMessage:find('(%w+)' .. lowerKeyword)
+	return lowerMessage:find(lowerKeyword) and not lowerMessage:find("(%w+)" .. lowerKeyword)
 end
 
 function MsgFind(message, keyword)
@@ -25,9 +25,7 @@ function MsgFind(message, keyword)
 		return true
 	end
 
-	return string.find(lowerMessage, lowerKeyword)
-			and string.find(lowerMessage, lowerKeyword .. '(%w+)')
-			and string.find(lowerMessage, '(%w+)' .. lowerKeyword)
+	return string.find(lowerMessage, lowerKeyword) and string.find(lowerMessage, lowerKeyword .. "(%w+)") and string.find(lowerMessage, "(%w+)" .. lowerKeyword)
 end
 
 -- Npc talk
@@ -68,10 +66,9 @@ function SayEvent(npcId, playerId, messageDelayed, npcHandler, textType)
 		[TAG_PLAYERNAME] = player:getName(),
 		[TAG_TIME] = getFormattedWorldTime(),
 		[TAG_BLESSCOST] = Blessings.getBlessingsCost(player:getLevel(), false),
-		[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel(), false)
+		[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel(), false),
 	}
-	npc:say(npcHandler:parseMessage(messageDelayed, parseInfo),
-		textType or TALKTYPE_PRIVATE_NP, false, player, npc:getPosition())
+	npc:say(npcHandler:parseMessage(messageDelayed, parseInfo), textType or TALKTYPE_PRIVATE_NP, false, player, npc:getPosition())
 end
 
 function GetCount(string)

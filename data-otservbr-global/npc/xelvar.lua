@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 70
+	lookType = 70,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -65,7 +65,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"You can stock up your supply by buying more from me. Just ask me for a {trade}. Gnomette in the teleport chamber of the gnome outpost will sell them too. ...",
 				"The teleporter here will transport you to one of the bigger gnomish outposts. ...",
 				"There you will meet Gnomerik, the recruitment officer of the Gnomes. If you are lost, Gnomette in the teleport chamber might be able to help you with directions. ...",
-				"Good luck to you and don't embarrass your race down there! Keep in mind that you are a representative of the big people."
+				"Good luck to you and don't embarrass your race down there! Keep in mind that you are a representative of the big people.",
 			}, npc, creature)
 
 			player:setStorageValue(Storage.BigfootBurden.QuestLine, 1)
@@ -90,7 +90,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say({
 				"The gnomes preferred to keep our alliance and their whole {existence} a secret. They are a bit distrustful of others. ...",
-				"They are quite self-sufficient and the fact that they are actually accepting some help is more than alarming. The gnomes are in real trouble and I am kind of an ambassador to find some people willing to {help}."
+				"They are quite self-sufficient and the fact that they are actually accepting some help is more than alarming. The gnomes are in real trouble and I am kind of an ambassador to find some people willing to {help}.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		end
@@ -98,7 +98,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if npcHandler:getTopic(playerId) == 4 then
 			npcHandler:say({
 				"The gnomes are locked in a war with an enemy that thins out their resources but foremost their manpower. We have suggested that people like you could be just the specialists they are looking for. ...",
-				"If you are interested to {join} the gnomish cause I can arrange a meeting with their recruiter."
+				"If you are interested to {join} the gnomish cause I can arrange a meeting with their recruiter.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 5)
 		end
@@ -110,7 +110,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"You can stock up your supply by buying more from me. Just ask me for a {trade}. Gnomette in the teleport chamber of the gnome outpost will sell them too. ...",
 				"The teleporter here will transport you to one of the bigger gnomish outposts. ...",
 				"There you will meet Gnomerik, the recruitment officer of the Gnomes. If you are lost, Gnomette in the teleport chamber might be able to help you with directions. ...",
-				"Good luck to you and don't embarrass your race down there! Keep in mind that you are a representative of the big people."
+				"Good luck to you and don't embarrass your race down there! Keep in mind that you are a representative of the big people.",
 			}, npc, creature)
 
 			player:setStorageValue(Storage.BigfootBurden.QuestLine, 1)
@@ -125,7 +125,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
-	{ itemName = "teleport crystal", clientId = 16167, buy = 150 }
+	{ itemName = "teleport crystal", clientId = 16167, buy = 150 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -136,7 +136,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

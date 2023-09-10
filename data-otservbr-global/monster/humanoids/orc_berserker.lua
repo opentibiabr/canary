@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 8
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Orc Fort, Dwacatra, Orc Peninsula, Elvenbane, Edron Orc Cave, Plains of Havoc, below Point of No Return in Outlaw Camp, Maze of Lost Souls, Cyclopolis, Desert Dungeon, Ancient Temple, Foreigner Quarter, Zao Orc Land."
+	Locations = "Orc Fort, Dwacatra, Orc Peninsula, Elvenbane, Edron Orc Cave, Plains of Havoc, below Point of No Return in Outlaw Camp, Maze of Lost Souls, Cyclopolis, Desert Dungeon, Ancient Temple, Foreigner Quarter, Zao Orc Land.",
 }
 
 monster.health = 210
@@ -35,7 +35,7 @@ monster.manaCost = 590
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -84,18 +84,18 @@ monster.loot = {
 	{ name = "hunting spear", chance = 5000 },
 	{ name = "orc tooth", chance = 3000 },
 	{ name = "orcish gear", chance = 9400 },
-	{ name = "orc leather", chance = 4000 }
+	{ name = "orc leather", chance = 4000 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -200 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -200 },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 12,
 	mitigation = 0.30,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 290, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 290, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
 }
 
 monster.elements = {
@@ -115,7 +115,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

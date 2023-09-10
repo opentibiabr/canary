@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 42,
 	lookFeet = 75,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 868
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 2,
-	Locations = "Horestis Tomb."
+	Locations = "Horestis Tomb.",
 }
 
 monster.health = 185
@@ -35,7 +35,7 @@ monster.manaCost = 450
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -86,12 +86,12 @@ monster.loot = {
 	{ name = "nomad parchment", chance = 220 },
 	{ name = "potato", chance = 4840, maxCount = 3 },
 	{ name = "dirty turban", chance = 1570 },
-	{ name = "rope belt", chance = 4040 }
+	{ name = "rope belt", chance = 4040 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -40, range = 7, radius = 1, shootEffect = CONST_ANI_THROWINGSTAR, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -40, range = 7, radius = 1, shootEffect = CONST_ANI_THROWINGSTAR, target = true },
 }
 
 monster.defenses = {
@@ -117,7 +117,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

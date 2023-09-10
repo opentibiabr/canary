@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 100,
 	lookLegs = 96,
 	lookFeet = 115,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -63,7 +63,7 @@ npcConfig.shop = {
 	{ itemName = "mug of lemonade", clientId = 2880, buy = 2, count = 12 },
 	{ itemName = "mug of water", clientId = 2880, buy = 2, count = 1 },
 	{ itemName = "mug of wine", clientId = 2880, buy = 3, count = 2 },
-	{ itemName = "tomato", clientId = 3596, buy = 3 }
+	{ itemName = "tomato", clientId = 3596, buy = 3 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -74,7 +74,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

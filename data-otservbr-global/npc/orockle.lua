@@ -11,11 +11,11 @@ npcConfig.walkInterval = 0
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookTypeEx = 13418
+	lookTypeEx = 13418,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -80,7 +80,7 @@ npcConfig.shop = {
 	{ itemName = "gooey substance", clientId = 14051, buy = 150 },
 	{ itemName = "reagent flask", clientId = 14054, buy = 200 },
 	{ itemName = "strange powder", clientId = 13974, buy = 150 },
-	{ itemName = "swarmer drum", clientId = 14255, buy = 200 }
+	{ itemName = "swarmer drum", clientId = 14255, buy = 200 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -91,7 +91,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

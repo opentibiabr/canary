@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 113,
 	lookFeet = 113,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 6300
@@ -22,13 +22,13 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.bosstiary = {
 	bossRaceId = 1981,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U10_80.Grimvale.KatexTimer
+	storageCooldown = Storage.Quest.U10_80.Grimvale.KatexTimer,
 }
 
 monster.strategiesTarget = {
@@ -52,24 +52,24 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{ name = "werehyaena", chance = 50, interval = 5000, count = 1 }
-	}
+		{ name = "werehyaena", chance = 50, interval = 5000, count = 1 },
+	},
 }
 
 monster.voices = {
 	interval = 0,
-	chance = 0
+	chance = 0,
 }
 
 monster.loot = {
@@ -99,20 +99,20 @@ monster.loot = {
 	{ id = 7382, chance = 560 }, -- demonrage sword
 	{ id = 3360, chance = 560 }, -- golden armor
 	{ id = 33778, chance = 360 }, -- raw watermelon tourmaline
-	{ id = 282, chance = 140 } -- giant shimmering pearl (brown)
+	{ id = 282, chance = 140 }, -- giant shimmering pearl (brown)
 }
 
 monster.attacks = {
 	{ name = "melee", type = COMBAT_PHYSICALDAMAGE, interval = 2000, maxDamage = -300 },
 	{ name = "combat", type = COMBAT_EARTHDAMAGE, interval = 2000, chance = 30, minDamage = -350, maxDamage = -500, range = 5, radius = 3, length = 3, spread = 3, target = true, shootEffect = CONST_ANI_LARGEROCK, effect = CONST_ME_POFF },
 	{ name = "combat", type = COMBAT_DEATHDAMAGE, interval = 2000, chance = 40, minDamage = -300, maxDamage = -400, radius = 5, target = false, effect = CONST_ME_MORTAREA },
-	{ name = "katex deathT", interval = 2000, chance = 30, minDamage = -250, maxDamage = -350, target = false }
+	{ name = "katex deathT", interval = 2000, chance = 30, minDamage = -250, maxDamage = -350, target = false },
 }
 
 monster.defenses = {
 	{ name = "speed", interval = 2000, chance = 15, speed = 200, duration = 5000, effect = CONST_ME_MAGIC_BLUE },
 	defense = 0,
-	armor = 38
+	armor = 38,
 }
 
 monster.elements = {
@@ -125,14 +125,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = true }
+	{ type = "bleed", condition = true },
 }
 
 mType.onAppear = function(monster, creature)

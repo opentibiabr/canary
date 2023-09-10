@@ -8,7 +8,7 @@ function boat.onStepIn(creature, item, toPosition, fromPosition)
 
 	if player:getStorageValue(Storage.TheSecretLibrary.HighDry) == 1 then
 		player:setStorageValue(Storage.TheSecretLibrary.HighDry, 2)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There are still some loose planks and hawsers. You can\'t use the raft like this, it will sink for sure.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There are still some loose planks and hawsers. You can't use the raft like this, it will sink for sure.")
 	end
 	return true
 end

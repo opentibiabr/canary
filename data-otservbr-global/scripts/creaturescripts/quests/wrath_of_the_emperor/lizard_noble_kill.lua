@@ -5,7 +5,7 @@ function lizardNobleKill.onKill(creature, target)
 		return true
 	end
 
-	if targetMonster:getName():lower() ~= 'lizard noble' then
+	if targetMonster:getName():lower() ~= "lizard noble" then
 		return true
 	end
 

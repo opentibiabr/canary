@@ -1,5 +1,23 @@
 local invalidIds = {
-	1, 2, 3, 4, 5, 6, 7, 10, 11, 13, 14, 15, 19, 21, 26, 27, 28, 35, 43
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	10,
+	11,
+	13,
+	14,
+	15,
+	19,
+	21,
+	26,
+	27,
+	28,
+	35,
+	43,
 }
 
 local createItem = TalkAction("/i")
@@ -29,9 +47,9 @@ function createItem.onSay(player, words, param)
 		if itemType:isStackable() then
 			count = math.min(10000, math.max(1, count))
 		elseif not itemType:isFluidContainer() then
-			local min = 100;
-			if (charges > 0) then
-				min = charges;
+			local min = 100
+			if charges > 0 then
+				min = charges
 			end
 			count = math.min(min, math.max(1, count))
 		else

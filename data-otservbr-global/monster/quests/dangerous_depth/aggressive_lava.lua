@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 5000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,17 +62,16 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -450 },
-	{ name = "aggressivelavawave", interval = 2000, chance = 30, minDamage = 0, maxDamage = -650, target = false }
+	{ name = "aggressivelavawave", interval = 2000, chance = 30, minDamage = 0, maxDamage = -650, target = false },
 }
 
 monster.defenses = {
 	defense = 30,
-	armor = 30
+	armor = 30,
 	--	mitigation = ???,
 }
 
@@ -93,11 +92,11 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 monster.heals = {
-	{ type = COMBAT_FIREDAMAGE, percent = 100 }
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
 }
 
 mType:register(monster)

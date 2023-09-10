@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 114,
 	lookLegs = 0,
 	lookFeet = 38,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -90,7 +90,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"What? Who are you to imply I need help from a worm like you? ...",
 				"I don't need help. But if you desperately wish to do something to earn the favour of Zathroth, feel free. Don't expect any reward though. ...",
-				"Do you want to help and serve Zathroth out of your own free will, without demanding payment or recognition?"
+				"Do you want to help and serve Zathroth out of your own free will, without demanding payment or recognition?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 7)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.LugriNecromancers) == 0 then
@@ -98,7 +98,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say({
 					"You've slain a mere " .. player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount) .. " necromancers and priestesses. Still, you've shown some dedication. Maybe that means you can kill one of those so-called 'leaders' too. ...",
 					"Deep under Drefia, a necromancer called Necropharus is hiding in the Halls of Sacrifice. I'll place a spell on you with which you will be able to pass his weak protective gate. ...",
-					"Know that this will be your only chance to enter his room. If you leave it or die, you won't be able to return. We'll see if you really dare enter those halls."
+					"Know that this will be your only chance to enter his room. If you leave it or die, you won't be able to return. We'll see if you really dare enter those halls.",
 				}, npc, creature)
 				player:setStorageValue(Storage.KillingInTheNameOf.LugriNecromancers, 1)
 				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.NecropharusCount, 0)
@@ -108,7 +108,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.LugriNecromancers) == 2 then
 			npcHandler:say({
 				"Hrm. So you had the guts to enter that room. Well, it's all fake magic anyway and no real threat. ...",
-				"What are you looking at me for? Waiting for something? I told you that there was no reward. Despite being allowed to stand before me without being squashed like a bug. Get out of my sight!"
+				"What are you looking at me for? Waiting for something? I told you that there was no reward. Despite being allowed to stand before me without being squashed like a bug. Get out of my sight!",
 			}, npc, creature)
 			player:setStorageValue(Storage.KillingInTheNameOf.LugriNecromancers, 4)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.LugriNecromancers) == 3 then
@@ -171,7 +171,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"You do? I mean - wise decision. Let me explain. By now, Tibia has been overrun by numerous followers of different cults and beliefs. The true Necromancers died or left Tibia long ago, shortly after their battle was lost. ...",
 				"What is left are mainly pseudo-dark pretenders, the old wisdom and power being far beyond their grasp. They think they have the right to tap that dark power, but they don't. ...",
-				"I want you to eliminate them. As many as you can. All of the upstart necromancer orders, and those priestesses. And as I said, don't expect a reward - this is what has to be done to cleanse Tibia of its false dark prophets." }, npc, creature)
+				"I want you to eliminate them. As many as you can. All of the upstart necromancer orders, and those priestesses. And as I said, don't expect a reward - this is what has to be done to cleanse Tibia of its false dark prophets.",
+			}, npc, creature)
 			player:setStorageValue(JOIN_STOR, 1)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount, 0)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NecromancerCount, 0)

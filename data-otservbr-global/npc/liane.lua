@@ -16,20 +16,20 @@ npcConfig.outfit = {
 	lookBody = 98,
 	lookLegs = 79,
 	lookFeet = 114,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Welcome to the post office!' },
-	{ text = 'Hey, send a letter to your friend now and then. Keep in touch, you know.' },
-	{ text = 'If you need help with letters or parcels, just ask me. I can explain everything.' },
-	{ text = 'No, no, no, there IS no parcel bug, I\'m telling you!' }
+	{ text = "Welcome to the post office!" },
+	{ text = "Hey, send a letter to your friend now and then. Keep in touch, you know." },
+	{ text = "If you need help with letters or parcels, just ask me. I can explain everything." },
+	{ text = "No, no, no, there IS no parcel bug, I'm telling you!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -83,7 +83,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.Postman.MeasurementsLiane, 1)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say("Oh, you don\'t have it.", npc, creature)
+				npcHandler:say("Oh, you don't have it.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 		end
@@ -101,7 +101,7 @@ npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 npcConfig.shop = {
 	{ itemName = "label", clientId = 3507, buy = 1 },
 	{ itemName = "letter", clientId = 3505, buy = 8 },
-	{ itemName = "parcel", clientId = 3503, buy = 15 }
+	{ itemName = "parcel", clientId = 3503, buy = 15 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -112,7 +112,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

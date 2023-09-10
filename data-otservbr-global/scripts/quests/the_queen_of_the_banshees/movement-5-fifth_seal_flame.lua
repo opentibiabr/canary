@@ -6,8 +6,7 @@ function fifthSealFlame.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.FifthSeal) ~= 1
-			and player:getStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.FifthSealTile) == 9 then
+	if player:getStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.FifthSeal) ~= 1 and player:getStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.FifthSealTile) == 9 then
 		player:setStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.FifthSealTile, 1)
 		player:setStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.FifthSeal, 1)
 		player:setStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.FifthSealDoor, 1)

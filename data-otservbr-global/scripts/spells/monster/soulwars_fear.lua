@@ -9,7 +9,9 @@ local spell = Spell("instant")
 
 local function executeCombat(cid, var)
 	local creature = Creature(cid)
-	if not creature then return end
+	if not creature then
+		return
+	end
 	return combat:execute(creature, var)
 end
 

@@ -3134,12 +3134,12 @@ void ProtocolGame::addCreatureIcon(NetworkMessage &msg, const Creature* creature
 		return;
 	}
 
-	const auto icon = creature->getIcon();
-	// 0 = no icon, 1 = we'll send an icon
-	if (icon.isNone()) {
-		msg.addByte(0);
-	} else {
-		msg.addByte(1);
+	const auto icons = creature->getIcons();
+	// client only supports 3 icons, otherwise it will crash
+	const auto count = icons.size() > 3 ? 3 : icons.size();
+	msg.addByte(count);
+	for (uint8_t i = 0; i < count; ++i) {
+		const auto &icon = icons[i];
 		msg.addByte(icon.serialize());
 		msg.addByte(static_cast<uint8_t>(icon.category));
 		msg.add<uint16_t>(icon.count);

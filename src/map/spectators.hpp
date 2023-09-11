@@ -91,6 +91,11 @@ public:
 		return creatures.end();
 	}
 
+	const auto &data() noexcept {
+		update();
+		return creatures;
+	}
+
 private:
 	static phmap::flat_hash_map<Position, SpectatorsCache> spectatorsCache;
 

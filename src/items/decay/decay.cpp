@@ -13,7 +13,7 @@
 #include "game/game.hpp"
 #include "game/scheduling/scheduler.hpp"
 
-void Decay::startDecay(Item* item) {
+void Decay::startDecay(std::shared_ptr<Item> item) {
 	if (!item) {
 		return;
 	}
@@ -56,13 +56,13 @@ void Decay::startDecay(Item* item) {
 	}
 }
 
-void Decay::stopDecay(Item* item) {
+void Decay::stopDecay(std::shared_ptr<Item> item) {
 	if (item->hasAttribute(ItemAttribute_t::DECAYSTATE)) {
 		auto timestamp = item->getAttribute<int64_t>(ItemAttribute_t::DURATION_TIMESTAMP);
 		if (item->hasAttribute(ItemAttribute_t::DURATION_TIMESTAMP)) {
 			auto it = decayMap.find(timestamp);
 			if (it != decayMap.end()) {
-				std::vector<Item*> &decayItems = it->second;
+				std::vector<std::shared_ptr<Item>> &decayItems = it->second;
 
 				size_t i = 0, end = decayItems.size();
 				if (end == 1) {
@@ -104,7 +104,7 @@ void Decay::stopDecay(Item* item) {
 void Decay::checkDecay() {
 	int64_t timestamp = OTSYS_TIME();
 
-	std::vector<Item*> tempItems;
+	std::vector<std::shared_ptr<Item>> tempItems;
 	tempItems.reserve(32); // Small preallocation
 
 	auto it = decayMap.begin(), end = decayMap.end();
@@ -114,12 +114,12 @@ void Decay::checkDecay() {
 		}
 
 		// Iterating here is unsafe so let's copy our items into temporary vector
-		std::vector<Item*> &decayItems = it->second;
+		std::vector<std::shared_ptr<Item>> &decayItems = it->second;
 		tempItems.insert(tempItems.end(), decayItems.begin(), decayItems.end());
 		it = decayMap.erase(it);
 	}
 
-	for (Item* item : tempItems) {
+	for (std::shared_ptr<Item> item : tempItems) {
 		if (!item->canDecay()) {
 			item->setDuration(item->getDuration());
 			item->setDecaying(DECAYING_FALSE);
@@ -136,10 +136,10 @@ void Decay::checkDecay() {
 	}
 }
 
-void Decay::internalDecayItem(Item* item) {
+void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 	const ItemType &it = Item::items[item->getID()];
 	if (it.decayTo != 0) {
-		Player* player = item->getHoldingPlayer();
+		std::shared_ptr<Player> player = item->getHoldingPlayer();
 		if (player) {
 			bool needUpdateSkills = false;
 			for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {

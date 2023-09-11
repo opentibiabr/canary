@@ -22,15 +22,15 @@ public:
 		return inject<Decay>();
 	}
 
-	void startDecay(Item* item);
-	void stopDecay(Item* item);
+	void startDecay(std::shared_ptr<Item> item);
+	void stopDecay(std::shared_ptr<Item> item);
 
 private:
 	void checkDecay();
-	void internalDecayItem(Item* item);
+	void internalDecayItem(std::shared_ptr<Item> item);
 
 	uint32_t eventId { 0 };
-	std::map<int64_t, std::vector<Item*>> decayMap;
+	std::map<int64_t, std::vector<std::shared_ptr<Item>>> decayMap;
 };
 
 constexpr auto g_decay = Decay::getInstance;

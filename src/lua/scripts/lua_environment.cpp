@@ -21,7 +21,6 @@ LuaEnvironment::LuaEnvironment() :
 
 LuaEnvironment::~LuaEnvironment() {
 	if (!testInterface) {
-		delete testInterface;
 	}
 
 	LuaEnvironment::shuttingDown = true;

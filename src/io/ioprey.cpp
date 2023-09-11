@@ -246,7 +246,7 @@ void TaskHuntingSlot::reloadReward() {
 }
 
 // Prey/Task hunting global class
-void IOPrey::CheckPlayerPreys(Player* player, uint8_t amount) const {
+void IOPrey::CheckPlayerPreys(std::shared_ptr<Player> player, uint8_t amount) const {
 	if (!player) {
 		return;
 	}
@@ -289,7 +289,7 @@ void IOPrey::CheckPlayerPreys(Player* player, uint8_t amount) const {
 	}
 }
 
-void IOPrey::ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const {
+void IOPrey::ParsePreyAction(std::shared_ptr<Player> player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const {
 	PreySlot* slot = player->getPreySlotById(slotId);
 	if (!slot || slot->state == PreyDataState_Locked) {
 		player->sendMessageDialog("To unlock this prey slot first you must buy it on store.");
@@ -389,7 +389,7 @@ void IOPrey::ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t act
 	player->reloadPreySlot(slotId);
 }
 
-void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const {
+void IOPrey::ParseTaskHuntingAction(std::shared_ptr<Player> player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const {
 	TaskHuntingSlot* slot = player->getTaskHuntingSlotById(slotId);
 	if (!slot || slot->state == PreyTaskDataState_Locked) {
 		player->sendMessageDialog("To unlock this task hunting slot first you must buy it on store.");

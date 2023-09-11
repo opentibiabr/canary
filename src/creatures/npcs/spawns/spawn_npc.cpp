@@ -137,7 +137,7 @@ void SpawnNpc::startSpawnNpcCheck() {
 
 SpawnNpc::~SpawnNpc() {
 	for (const auto &it : spawnedNpcMap) {
-		Npc* npc = it.second;
+		auto npc = it.second;
 		npc->setSpawnNpc(nullptr);
 		npc->decrementReferenceCounter();
 	}
@@ -146,7 +146,7 @@ SpawnNpc::~SpawnNpc() {
 bool SpawnNpc::findPlayer(const Position &pos) {
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, pos, false, true);
-	for (Creature* spectator : spectators) {
+	for (std::shared_ptr<Creature> spectator : spectators) {
 		if (!spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
 			return true;
 		}
@@ -159,19 +159,18 @@ bool SpawnNpc::isInSpawnNpcZone(const Position &pos) {
 }
 
 bool SpawnNpc::spawnNpc(uint32_t spawnId, NpcType* npcType, const Position &pos, Direction dir, bool startup /*= false*/) {
-	std::unique_ptr<Npc> npc_ptr(new Npc(npcType));
+	auto npc = std::make_shared<Npc>(npcType);
 	if (startup) {
 		// No need to send out events to the surrounding since there is no one out there to listen!
-		if (!g_game().internalPlaceCreature(npc_ptr.get(), pos, true, false)) {
+		if (!g_game().internalPlaceCreature(npc, pos, true, false)) {
 			return false;
 		}
 	} else {
-		if (!g_game().placeCreature(npc_ptr.get(), pos, false, true)) {
+		if (!g_game().placeCreature(npc, pos, false, true)) {
 			return false;
 		}
 	}
 
-	Npc* npc = npc_ptr.release();
 	npc->setDirection(dir);
 	npc->setSpawnNpc(this);
 	npc->setMasterPos(pos);
@@ -238,7 +237,7 @@ void SpawnNpc::cleanup() {
 	auto it = spawnedNpcMap.begin();
 	while (it != spawnedNpcMap.end()) {
 		uint32_t spawnId = it->first;
-		Npc* npc = it->second;
+		auto npc = it->second;
 		if (npc->isRemoved()) {
 			spawnNpcMap[spawnId].lastSpawnNpc = OTSYS_TIME();
 			npc->decrementReferenceCounter();
@@ -270,7 +269,7 @@ bool SpawnNpc::addNpc(const std::string &name, const Position &pos, Direction di
 	return true;
 }
 
-void SpawnNpc::removeNpc(Npc* npc) {
+void SpawnNpc::removeNpc(std::shared_ptr<Npc> npc) {
 	for (auto it = spawnedNpcMap.begin(), end = spawnedNpcMap.end(); it != end; ++it) {
 		if (it->second == npc) {
 			npc->decrementReferenceCounter();

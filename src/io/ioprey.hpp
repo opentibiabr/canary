@@ -217,10 +217,10 @@ public:
 		return inject<IOPrey>();
 	}
 
-	void CheckPlayerPreys(Player* player, uint8_t amount) const;
-	void ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const;
+	void CheckPlayerPreys(std::shared_ptr<Player> player, uint8_t amount) const;
+	void ParsePreyAction(std::shared_ptr<Player> player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const;
 
-	void ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const;
+	void ParseTaskHuntingAction(std::shared_ptr<Player> player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const;
 
 	void InitializeTaskHuntOptions();
 	TaskHuntingOption* GetTaskRewardOption(const TaskHuntingSlot* slot) const;

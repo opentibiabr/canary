@@ -705,7 +705,6 @@ void ItemParse::parseField(const std::string &tmpStrValue, pugi::xml_node attrib
 
 		if (combatType != COMBAT_NONE) {
 			if (conditionDamage) {
-				delete conditionDamage;
 			}
 
 			conditionDamage = new ConditionDamage(conditionId, conditionType);

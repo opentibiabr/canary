@@ -12,7 +12,7 @@
 #include "io/functions/iologindata_save_player.hpp"
 #include "game/game.hpp"
 
-bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
+bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -22,7 +22,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 	std::ostringstream ss;
 
 	// Initialize variables
-	using ContainerBlock = std::pair<Container*, int32_t>;
+	using ContainerBlock = std::pair<std::shared_ptr<Container>, int32_t>;
 	std::list<ContainerBlock> queue;
 	int32_t runningId = 100;
 
@@ -30,11 +30,11 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 	const auto &openContainers = player->getOpenContainers();
 	for (const auto &it : itemList) {
 		int32_t pid = it.first;
-		Item* item = it.second;
+		std::shared_ptr<Item> item = it.second;
 		++runningId;
 
 		// Update container attributes if necessary
-		if (Container* container = item->getContainer()) {
+		if (std::shared_ptr<Container> container = item->getContainer()) {
 			if (!container) {
 				continue; // Check for null container
 			}
@@ -82,7 +82,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 	// Loop through containers in queue
 	while (!queue.empty()) {
 		const ContainerBlock &cb = queue.front();
-		Container* container = cb.first;
+		std::shared_ptr<Container> container = cb.first;
 		int32_t parentId = cb.second;
 		queue.pop_front();
 
@@ -91,7 +91,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 		}
 
 		// Loop through items in container
-		for (Item* item : container->getItemList()) {
+		for (std::shared_ptr<Item> item : container->getItemList()) {
 			if (!item) {
 				continue; // Check for null item
 			}
@@ -99,7 +99,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 			++runningId;
 
 			// Update sub-container attributes if necessary
-			Container* subContainer = item->getContainer();
+			std::shared_ptr<Container> subContainer = item->getContainer();
 			if (subContainer) {
 				queue.emplace_back(subContainer, runningId);
 				if (subContainer->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER) > 0) {
@@ -148,7 +148,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerFirst(Player* player) {
+bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -313,7 +313,7 @@ bool IOLoginDataSave::savePlayerFirst(Player* player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerStash(const Player* player) {
+bool IOLoginDataSave::savePlayerStash(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -339,7 +339,7 @@ bool IOLoginDataSave::savePlayerStash(const Player* player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerSpells(const Player* player) {
+bool IOLoginDataSave::savePlayerSpells(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -368,7 +368,7 @@ bool IOLoginDataSave::savePlayerSpells(const Player* player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerKills(const Player* player) {
+bool IOLoginDataSave::savePlayerKills(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -397,7 +397,7 @@ bool IOLoginDataSave::savePlayerKills(const Player* player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerBestiarySystem(const Player* player) {
+bool IOLoginDataSave::savePlayerBestiarySystem(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -447,7 +447,7 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const Player* player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerItem(const Player* player) {
+bool IOLoginDataSave::savePlayerItem(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -466,7 +466,7 @@ bool IOLoginDataSave::savePlayerItem(const Player* player) {
 
 	ItemBlockList itemList;
 	for (int32_t slotId = CONST_SLOT_FIRST; slotId <= CONST_SLOT_LAST; ++slotId) {
-		Item* item = player->inventory[slotId];
+		std::shared_ptr<Item> item = player->inventory[slotId];
 		if (item) {
 			itemList.emplace_back(slotId, item);
 		}
@@ -479,7 +479,7 @@ bool IOLoginDataSave::savePlayerItem(const Player* player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerDepotItems(const Player* player) {
+bool IOLoginDataSave::savePlayerDepotItems(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -501,7 +501,7 @@ bool IOLoginDataSave::savePlayerDepotItems(const Player* player) {
 		DBInsert depotQuery("INSERT INTO `player_depotitems` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
 
 		for (const auto &[pid, depotChest] : player->depotChests) {
-			for (Item* item : depotChest->getItemList()) {
+			for (std::shared_ptr<Item> item : depotChest->getItemList()) {
 				depotList.emplace_back(pid, item);
 			}
 		}
@@ -514,7 +514,7 @@ bool IOLoginDataSave::savePlayerDepotItems(const Player* player) {
 	return true;
 }
 
-bool IOLoginDataSave::saveRewardItems(Player* player) {
+bool IOLoginDataSave::saveRewardItems(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -548,7 +548,7 @@ bool IOLoginDataSave::saveRewardItems(Player* player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerInbox(const Player* player) {
+bool IOLoginDataSave::savePlayerInbox(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -566,7 +566,7 @@ bool IOLoginDataSave::savePlayerInbox(const Player* player) {
 	query.str("");
 	DBInsert inboxQuery("INSERT INTO `player_inboxitems` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
 
-	for (Item* item : player->getInbox()->getItemList()) {
+	for (std::shared_ptr<Item> item : player->getInbox()->getItemList()) {
 		inboxList.emplace_back(0, item);
 	}
 
@@ -576,7 +576,7 @@ bool IOLoginDataSave::savePlayerInbox(const Player* player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerPreyClass(Player* player) {
+bool IOLoginDataSave::savePlayerPreyClass(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -631,7 +631,7 @@ bool IOLoginDataSave::savePlayerPreyClass(Player* player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerTaskHuntingClass(Player* player) {
+bool IOLoginDataSave::savePlayerTaskHuntingClass(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -684,7 +684,7 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(Player* player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerForgeHistory(Player* player) {
+bool IOLoginDataSave::savePlayerForgeHistory(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -718,7 +718,7 @@ bool IOLoginDataSave::savePlayerForgeHistory(Player* player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerBosstiary(const Player* player) {
+bool IOLoginDataSave::savePlayerBosstiary(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -762,7 +762,7 @@ bool IOLoginDataSave::savePlayerBosstiary(const Player* player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerStorage(Player* player) {
+bool IOLoginDataSave::savePlayerStorage(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;

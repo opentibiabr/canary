@@ -34,7 +34,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 			continue;
 		}
 
-		Tile* tile = map->getTile(x, y, z);
+		std::shared_ptr<Tile> tile = map->getTile(x, y, z);
 		if (!tile) {
 			continue;
 		}
@@ -77,7 +77,7 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 	PropWriteStream stream;
 	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
 		// save house items
-		for (HouseTile* tile : house->getTiles()) {
+		for (std::shared_ptr<HouseTile> tile : house->getTiles()) {
 			saveTile(stream, tile);
 
 			size_t attributesSize;
@@ -100,7 +100,7 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 	return true;
 }
 
-bool IOMapSerialize::loadContainer(PropStream &propStream, Container* container) {
+bool IOMapSerialize::loadContainer(PropStream &propStream, std::shared_ptr<Container> container) {
 	while (container->serializationCount > 0) {
 		if (!loadItem(propStream, container)) {
 			g_logger().warn("Deserialization error for container item: {}", container->getID());
@@ -119,13 +119,13 @@ bool IOMapSerialize::loadContainer(PropStream &propStream, Container* container)
 
 uint32_t NEW_BEDS_START_ID = 30000;
 
-bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent, bool isHouseItem /*= false*/) {
+bool IOMapSerialize::loadItem(PropStream &propStream, std::shared_ptr<Cylinder> parent, bool isHouseItem /*= false*/) {
 	uint16_t id;
 	if (!propStream.read<uint16_t>(id)) {
 		return false;
 	}
 
-	Tile* tile = nullptr;
+	std::shared_ptr<Tile> tile = nullptr;
 	if (parent->getParent() == nullptr) {
 		tile = parent->getTile();
 	}
@@ -136,12 +136,12 @@ bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent, bool isH
 	}
 	if (iType.moveable || !tile || iType.isCarpet() || iType.isBed()) {
 		// create a new item
-		Item* item = Item::CreateItem(id);
+		std::shared_ptr<Item> item = Item::CreateItem(id);
 		if (item) {
 			if (item->unserializeAttr(propStream)) {
-				Container* container = item->getContainer();
+				std::shared_ptr<Container> container = item->getContainer();
 				if (container && !loadContainer(propStream, container)) {
-					delete item;
+
 					return false;
 				}
 
@@ -149,15 +149,15 @@ bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent, bool isH
 				item->startDecaying();
 			} else {
 				g_logger().warn("Deserialization error in {}", id);
-				delete item;
+
 				return false;
 			}
 		}
 	} else {
 		// Stationary items like doors/beds/blackboards/bookcases
-		Item* item = nullptr;
+		std::shared_ptr<Item> item = nullptr;
 		if (const TileItemVector* items = tile->getItemList()) {
-			for (Item* findItem : *items) {
+			for (auto &findItem : *items) {
 				if (findItem->getID() == id) {
 					item = findItem;
 					break;
@@ -176,7 +176,7 @@ bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent, bool isH
 
 		if (item) {
 			if (item->unserializeAttr(propStream)) {
-				Container* container = item->getContainer();
+				std::shared_ptr<Container> container = item->getContainer();
 				if (container && !loadContainer(propStream, container)) {
 					return false;
 				}
@@ -187,15 +187,15 @@ bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent, bool isH
 			}
 		} else {
 			// The map changed since the last save, just read the attributes
-			std::unique_ptr<Item> dummy(Item::CreateItem(id));
+			auto dummy = Item::CreateItem(id);
 			if (dummy) {
 				dummy->unserializeAttr(propStream);
-				Container* container = dummy->getContainer();
+				std::shared_ptr<Container> container = dummy->getContainer();
 				if (container) {
 					if (!loadContainer(propStream, container)) {
 						return false;
 					}
-				} else if (BedItem* bedItem = dynamic_cast<BedItem*>(dummy.get())) {
+				} else if (std::shared_ptr<BedItem> bedItem = std::dynamic_pointer_cast<BedItem>(dummy)) {
 					uint32_t sleeperGUID = bedItem->getSleeper();
 					if (sleeperGUID != 0) {
 						g_game().removeBedSleeper(sleeperGUID);
@@ -207,8 +207,8 @@ bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent, bool isH
 	return true;
 }
 
-void IOMapSerialize::saveItem(PropWriteStream &stream, const Item* item) {
-	const Container* container = item->getContainer();
+void IOMapSerialize::saveItem(PropWriteStream &stream, std::shared_ptr<Item> item) {
+	std::shared_ptr<Container> container = item->getContainer();
 
 	// Write ID & props
 	stream.write<uint16_t>(item->getID());
@@ -226,15 +226,15 @@ void IOMapSerialize::saveItem(PropWriteStream &stream, const Item* item) {
 	stream.write<uint8_t>(0x00); // attr end
 }
 
-void IOMapSerialize::saveTile(PropWriteStream &stream, const Tile* tile) {
+void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> tile) {
 	const TileItemVector* tileItems = tile->getItemList();
 	if (!tileItems) {
 		return;
 	}
 
-	std::forward_list<Item*> items;
+	std::forward_list<std::shared_ptr<Item>> items;
 	uint16_t count = 0;
-	for (Item* item : *tileItems) {
+	for (auto &item : *tileItems) {
 		if (!item->isSavedToHouses()) {
 			continue;
 		}
@@ -250,7 +250,7 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, const Tile* tile) {
 		stream.write<uint8_t>(tilePosition.z);
 
 		stream.write<uint32_t>(count);
-		for (const Item* item : items) {
+		for (std::shared_ptr<Item> item : items) {
 			saveItem(stream, item);
 		}
 	}
@@ -342,7 +342,7 @@ bool IOMapSerialize::SaveHouseInfoGuard() {
 			listText.clear();
 		}
 
-		for (Door* door : house->getDoors()) {
+		for (std::shared_ptr<Door> door : house->getDoors()) {
 			if (door->getAccessList(listText) && !listText.empty()) {
 				query << house->getId() << ',' << door->getDoorId() << ',' << db.escapeString(listText);
 				if (!stmt.addRow(query)) {

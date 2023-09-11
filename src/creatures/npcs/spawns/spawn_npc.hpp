@@ -34,7 +34,7 @@ public:
 	SpawnNpc &operator=(const SpawnNpc &) = delete;
 
 	bool addNpc(const std::string &name, const Position &pos, Direction dir, uint32_t interval);
-	void removeNpc(Npc* npc);
+	void removeNpc(std::shared_ptr<Npc> npc);
 
 	uint32_t getInterval() const {
 		return interval;
@@ -49,7 +49,7 @@ public:
 
 private:
 	// map of the spawned npcs
-	using SpawnedNpcMap = std::multimap<uint32_t, Npc*>;
+	using SpawnedNpcMap = std::multimap<uint32_t, std::shared_ptr<Npc>>;
 	using spawned_pair = SpawnedNpcMap::value_type;
 	SpawnedNpcMap spawnedNpcMap;
 

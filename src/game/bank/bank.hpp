@@ -17,7 +17,7 @@ public:
 	virtual void setBankBalance(uint64_t amount) = 0;
 	[[nodiscard]] virtual uint64_t getBankBalance() const = 0;
 	virtual ~Bankable() = default;
-	virtual Player* getPlayer() {
+	virtual std::shared_ptr<Player> getPlayer() {
 		return nullptr;
 	}
 	virtual bool isGuild() {
@@ -43,7 +43,7 @@ public:
 	uint64_t balance();
 	bool hasBalance(uint64_t amount);
 	bool transferTo(const std::shared_ptr<Bank> destination, uint64_t amount);
-	bool withdraw(Player* player, uint64_t amount);
+	bool withdraw(std::shared_ptr<Player> player, uint64_t amount);
 	bool deposit(const std::shared_ptr<Bank> destination);
 	bool deposit(const std::shared_ptr<Bank> destination, uint64_t amount);
 

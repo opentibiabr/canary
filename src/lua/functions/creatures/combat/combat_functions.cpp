@@ -150,7 +150,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 		}
 	}
 
-	Creature* creature = getCreature(L, 2);
+	std::shared_ptr<Creature> creature = getCreature(L, 2);
 
 	const LuaVariant &variant = getVariant(L, 3);
 	combat->setInstantSpellName(variant.instantName);
@@ -158,7 +158,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 	bool result = true;
 	switch (variant.type) {
 		case VARIANT_NUMBER: {
-			Creature* target = g_game().getCreatureByID(variant.number);
+			std::shared_ptr<Creature> target = g_game().getCreatureByID(variant.number);
 			if (!target) {
 				pushBoolean(L, false);
 				return 1;
@@ -188,7 +188,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 		}
 
 		case VARIANT_STRING: {
-			Player* target = g_game().getPlayerByName(variant.text);
+			std::shared_ptr<Player> target = g_game().getPlayerByName(variant.text);
 			if (!target) {
 				pushBoolean(L, false);
 				return 1;

@@ -34,12 +34,12 @@ bool CreatureCallback::startScriptInterface(int32_t scriptId) {
 	return true;
 }
 
-void CreatureCallback::pushSpecificCreature(Creature* creature) {
-	if (Npc* npc = creature->getNpc()) {
+void CreatureCallback::pushSpecificCreature(std::shared_ptr<Creature> creature) {
+	if (std::shared_ptr<Npc> npc = creature->getNpc()) {
 		LuaScriptInterface::pushUserdata<Npc>(L, npc);
-	} else if (Monster* monster = creature->getMonster()) {
+	} else if (std::shared_ptr<Monster> monster = creature->getMonster()) {
 		LuaScriptInterface::pushUserdata<Monster>(L, monster);
-	} else if (Player* player = creature->getPlayer()) {
+	} else if (std::shared_ptr<Player> player = creature->getPlayer()) {
 		LuaScriptInterface::pushUserdata<Player>(L, player);
 	} else {
 		return;
@@ -49,7 +49,7 @@ void CreatureCallback::pushSpecificCreature(Creature* creature) {
 	LuaScriptInterface::setMetatable(L, -1, getCreatureClass(creature));
 }
 
-std::string CreatureCallback::getCreatureClass(Creature* creature) {
+std::string CreatureCallback::getCreatureClass(std::shared_ptr<Creature> creature) {
 	if (creature->getNpc()) {
 		return "Npc";
 	}

@@ -29,8 +29,8 @@ public:
 	Guild(uint32_t initId, std::string initName) :
 		name(std::move(initName)), id(initId) { }
 
-	void addMember(Player* player);
-	void removeMember(Player* player);
+	void addMember(std::shared_ptr<Player> player);
+	void removeMember(std::shared_ptr<Player> player);
 
 	bool isGuild() {
 		return true;
@@ -48,7 +48,7 @@ public:
 	const std::string &getName() const {
 		return name;
 	}
-	const std::list<Player*> &getMembersOnline() const {
+	const std::list<std::shared_ptr<Player>> &getMembersOnline() const {
 		return membersOnline;
 	}
 	uint32_t getMemberCount() const {
@@ -81,7 +81,7 @@ public:
 	}
 
 private:
-	std::list<Player*> membersOnline;
+	std::list<std::shared_ptr<Player>> membersOnline;
 	std::vector<GuildRank_ptr> ranks;
 	std::string name;
 	uint64_t bankBalance = 0;

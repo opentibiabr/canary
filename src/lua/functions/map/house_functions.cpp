@@ -131,8 +131,8 @@ int HouseFunctions::luaHouseSetOwnerGuid(lua_State* L) {
 int HouseFunctions::luaHouseStartTrade(lua_State* L) {
 	// house:startTrade(player, tradePartner)
 	House* house = getUserdata<House>(L, 1);
-	Player* player = getUserdata<Player>(L, 2);
-	Player* tradePartner = getUserdata<Player>(L, 3);
+	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 2);
+	std::shared_ptr<Player> tradePartner = getUserdataShared<Player>(L, 3);
 
 	if (!player || !tradePartner || !house) {
 		lua_pushnil(L);
@@ -159,7 +159,7 @@ int HouseFunctions::luaHouseStartTrade(lua_State* L) {
 		return 1;
 	}
 
-	Item* transferItem = house->getTransferItem();
+	std::shared_ptr<Item> transferItem = house->getTransferItem();
 	if (!transferItem) {
 		lua_pushnumber(L, RETURNVALUE_YOUCANNOTTRADETHISHOUSE);
 		return 1;
@@ -186,7 +186,7 @@ int HouseFunctions::luaHouseGetBeds(lua_State* L) {
 	lua_createtable(L, beds.size(), 0);
 
 	int index = 0;
-	for (BedItem* bedItem : beds) {
+	for (std::shared_ptr<BedItem> bedItem : beds) {
 		pushUserdata<Item>(L, bedItem);
 		setItemMetatable(L, -1, bedItem);
 		lua_rawseti(L, -2, ++index);
@@ -217,7 +217,7 @@ int HouseFunctions::luaHouseGetDoors(lua_State* L) {
 	lua_createtable(L, doors.size(), 0);
 
 	int index = 0;
-	for (Door* door : doors) {
+	for (std::shared_ptr<Door> door : doors) {
 		pushUserdata<Item>(L, door);
 		setItemMetatable(L, -1, door);
 		lua_rawseti(L, -2, ++index);
@@ -244,7 +244,7 @@ int HouseFunctions::luaHouseGetDoorIdByPosition(lua_State* L) {
 		return 1;
 	}
 
-	Door* door = house->getDoorByPosition(getPosition(L, 2));
+	std::shared_ptr<Door> door = house->getDoorByPosition(getPosition(L, 2));
 	if (door) {
 		lua_pushnumber(L, door->getDoorId());
 	} else {
@@ -265,7 +265,7 @@ int HouseFunctions::luaHouseGetTiles(lua_State* L) {
 	lua_newtable(L);
 
 	int index = 0;
-	for (Tile* tile : tiles) {
+	for (std::shared_ptr<Tile> tile : tiles) {
 		pushUserdata<Tile>(L, tile);
 		setMetatable(L, -1, "Tile");
 		lua_rawseti(L, -2, ++index);
@@ -285,10 +285,10 @@ int HouseFunctions::luaHouseGetItems(lua_State* L) {
 	lua_newtable(L);
 
 	int index = 0;
-	for (Tile* tile : tiles) {
+	for (std::shared_ptr<Tile> tile : tiles) {
 		TileItemVector* itemVector = tile->getItemList();
 		if (itemVector) {
-			for (Item* item : *itemVector) {
+			for (auto &item : *itemVector) {
 				pushUserdata<Item>(L, item);
 				setItemMetatable(L, -1, item);
 				lua_rawseti(L, -2, ++index);
@@ -318,7 +318,7 @@ int HouseFunctions::luaHouseCanEditAccessList(lua_State* L) {
 	}
 
 	uint32_t listId = getNumber<uint32_t>(L, 2);
-	Player* player = getPlayer(L, 3);
+	std::shared_ptr<Player> player = getPlayer(L, 3);
 
 	pushBoolean(L, house->canEditAccessList(listId, player));
 	return 1;
@@ -377,7 +377,7 @@ int HouseFunctions::luaHouseIsInvited(lua_State* L) {
 		return 1;
 	}
 
-	Player* player = getPlayer(L, 2);
+	std::shared_ptr<Player> player = getPlayer(L, 2);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;

@@ -149,7 +149,7 @@ void SpawnMonster::startSpawnMonsterCheck() {
 
 SpawnMonster::~SpawnMonster() {
 	for (const auto &it : spawnedMonsterMap) {
-		Monster* monster = it.second;
+		std::shared_ptr<Monster> monster = it.second;
 		monster->setSpawnMonster(nullptr);
 		monster->decrementReferenceCounter();
 	}
@@ -158,7 +158,7 @@ SpawnMonster::~SpawnMonster() {
 bool SpawnMonster::findPlayer(const Position &pos) {
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, pos, false, true);
-	for (Creature* spectator : spectators) {
+	for (std::shared_ptr<Creature> spectator : spectators) {
 		if (!spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
 			return true;
 		}
@@ -171,19 +171,18 @@ bool SpawnMonster::isInSpawnMonsterZone(const Position &pos) {
 }
 
 bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, const std::shared_ptr<MonsterType> monsterType, const Position &pos, Direction dir, bool startup /*= false*/) {
-	std::unique_ptr<Monster> monster_ptr(new Monster(monsterType));
+	auto monster = std::make_shared<Monster>(monsterType);
 	if (startup) {
 		// No need to send out events to the surrounding since there is no one out there to listen!
-		if (!g_game().internalPlaceCreature(monster_ptr.get(), pos, true)) {
+		if (!g_game().internalPlaceCreature(monster, pos, true)) {
 			return false;
 		}
 	} else {
-		if (!g_game().placeCreature(monster_ptr.get(), pos, false, true)) {
+		if (!g_game().placeCreature(monster, pos, false, true)) {
 			return false;
 		}
 	}
 
-	Monster* monster = monster_ptr.release();
 	monster->setDirection(dir);
 	monster->setSpawnMonster(this);
 	monster->setMasterPos(pos);
@@ -259,7 +258,7 @@ void SpawnMonster::cleanup() {
 	auto it = spawnedMonsterMap.begin();
 	while (it != spawnedMonsterMap.end()) {
 		uint32_t spawnMonsterId = it->first;
-		Monster* monster = it->second;
+		std::shared_ptr<Monster> monster = it->second;
 		if (monster->isRemoved()) {
 			spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
 			monster->decrementReferenceCounter();
@@ -291,7 +290,7 @@ bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Dire
 	return true;
 }
 
-void SpawnMonster::removeMonster(Monster* monster) {
+void SpawnMonster::removeMonster(std::shared_ptr<Monster> monster) {
 	for (auto it = spawnedMonsterMap.begin(), end = spawnedMonsterMap.end(); it != end; ++it) {
 		if (it->second == monster) {
 			monster->decrementReferenceCounter();

@@ -16,7 +16,7 @@
 
 int32_t PartyFunctions::luaPartyCreate(lua_State* L) {
 	// Party(userdata)
-	Player* player = getUserdata<Player>(L, 2);
+	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 2);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
@@ -57,7 +57,7 @@ int PartyFunctions::luaPartyGetLeader(lua_State* L) {
 		return 1;
 	}
 
-	Player* leader = party->getLeader();
+	std::shared_ptr<Player> leader = party->getLeader();
 	if (leader) {
 		pushUserdata<Player>(L, leader);
 		setMetatable(L, -1, "Player");
@@ -69,7 +69,7 @@ int PartyFunctions::luaPartyGetLeader(lua_State* L) {
 
 int PartyFunctions::luaPartySetLeader(lua_State* L) {
 	// party:setLeader(player)
-	Player* player = getPlayer(L, 2);
+	std::shared_ptr<Player> player = getPlayer(L, 2);
 	Party* party = getUserdata<Party>(L, 1);
 	if (party && player) {
 		pushBoolean(L, party->passPartyLeadership(player));
@@ -89,7 +89,7 @@ int PartyFunctions::luaPartyGetMembers(lua_State* L) {
 
 	int index = 0;
 	lua_createtable(L, party->getMemberCount(), 0);
-	for (Player* player : party->getMembers()) {
+	for (std::shared_ptr<Player> player : party->getMembers()) {
 		pushUserdata<Player>(L, player);
 		setMetatable(L, -1, "Player");
 		lua_rawseti(L, -2, ++index);
@@ -115,7 +115,7 @@ int PartyFunctions::luaPartyGetInvitees(lua_State* L) {
 		lua_createtable(L, party->getInvitationCount(), 0);
 
 		int index = 0;
-		for (Player* player : party->getInvitees()) {
+		for (std::shared_ptr<Player> player : party->getInvitees()) {
 			pushUserdata<Player>(L, player);
 			setMetatable(L, -1, "Player");
 			lua_rawseti(L, -2, ++index);
@@ -139,10 +139,10 @@ int PartyFunctions::luaPartyGetInviteeCount(lua_State* L) {
 
 int PartyFunctions::luaPartyAddInvite(lua_State* L) {
 	// party:addInvite(player)
-	Player* player = getPlayer(L, 2);
+	std::shared_ptr<Player> player = getPlayer(L, 2);
 	Party* party = getUserdata<Party>(L, 1);
 	if (party && player) {
-		pushBoolean(L, party->invitePlayer(*player));
+		pushBoolean(L, party->invitePlayer(player));
 	} else {
 		lua_pushnil(L);
 	}
@@ -151,10 +151,10 @@ int PartyFunctions::luaPartyAddInvite(lua_State* L) {
 
 int PartyFunctions::luaPartyRemoveInvite(lua_State* L) {
 	// party:removeInvite(player)
-	Player* player = getPlayer(L, 2);
+	std::shared_ptr<Player> player = getPlayer(L, 2);
 	Party* party = getUserdata<Party>(L, 1);
 	if (party && player) {
-		pushBoolean(L, party->removeInvite(*player));
+		pushBoolean(L, party->removeInvite(player));
 	} else {
 		lua_pushnil(L);
 	}
@@ -163,10 +163,10 @@ int PartyFunctions::luaPartyRemoveInvite(lua_State* L) {
 
 int PartyFunctions::luaPartyAddMember(lua_State* L) {
 	// party:addMember(player)
-	Player* player = getPlayer(L, 2);
+	std::shared_ptr<Player> player = getPlayer(L, 2);
 	Party* party = getUserdata<Party>(L, 1);
 	if (party && player) {
-		pushBoolean(L, party->joinParty(*player));
+		pushBoolean(L, party->joinParty(player));
 	} else {
 		lua_pushnil(L);
 	}
@@ -175,7 +175,7 @@ int PartyFunctions::luaPartyAddMember(lua_State* L) {
 
 int PartyFunctions::luaPartyRemoveMember(lua_State* L) {
 	// party:removeMember(player)
-	Player* player = getPlayer(L, 2);
+	std::shared_ptr<Player> player = getPlayer(L, 2);
 	Party* party = getUserdata<Party>(L, 1);
 	if (party && player) {
 		pushBoolean(L, party->leaveParty(player));

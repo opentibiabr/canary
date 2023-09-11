@@ -815,6 +815,11 @@ void Monster::doAttacking(uint32_t interval) {
 		return;
 	}
 
+	if (attackedCreature->isRemoved()) {
+		attackedCreature = nullptr;
+		return;
+	}
+
 	bool updateLook = true;
 	bool resetTicks = interval != 0;
 	attackTicks += interval;

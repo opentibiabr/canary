@@ -61,6 +61,10 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 }
 
 Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onlyPlayers, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY) {
+	if (!creatures.empty()) {
+		needUpdate = true;
+	}
+
 	minRangeX = (minRangeX == 0 ? -MAP_MAX_VIEW_PORT_X : -minRangeX);
 	maxRangeX = (maxRangeX == 0 ? MAP_MAX_VIEW_PORT_X : maxRangeX);
 	minRangeY = (minRangeY == 0 ? -MAP_MAX_VIEW_PORT_Y : -minRangeY);
@@ -185,8 +189,6 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	auto &cache = cacheFound ? it->second : spectatorsCache.emplace(centerPos, SpectatorsCache { .minRangeX = minRangeX, .maxRangeX = maxRangeX, .minRangeY = minRangeY, .maxRangeY = maxRangeY }).first->second;
 
 	if (spectators.size() > 0) {
-		needUpdate = !creatures.empty();
-
 		insertAll(spectators);
 
 		auto &creaturesCache = onlyPlayers ? cache.players : cache.creatures;

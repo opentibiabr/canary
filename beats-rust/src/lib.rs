@@ -1,5 +1,33 @@
 use std::f64;
 
+enum Player {}
+
+extern "C" {
+    // Declara as funções que serão importadas do C++
+    fn getPlayerByID(player_id: u32) -> *mut Player;
+    fn setInMarket(player: *mut Player, in_market: bool);
+
+    fn set_in_market(player: *mut std::ffi::c_void, value: bool);
+}
+
+#[no_mangle]
+pub extern "C" fn your_rust_function(player_ptr: *mut std::ffi::c_void, value: bool) {
+    unsafe {
+        set_in_market(player_ptr, value);
+    }
+}
+
+// A função que substituirá playerLeaveMarket em C++
+#[no_mangle]
+pub extern "C" fn player_leave_market(player_id: u32) {
+    let player = unsafe { getPlayerByID(player_id) };
+    if !player.is_null() {
+        unsafe {
+            setInMarket(player, false);
+        }
+    }
+}
+
 #[no_mangle]
 pub extern "C" fn get_base_attack(level: u32) -> i32 {
     let square = f64::sqrt(2.0 * (level as f64) - 1.0 + 2025.0);

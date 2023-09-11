@@ -36,6 +36,8 @@
 extern "C" {
 int32_t get_base_attack(uint32_t level);
 int32_t get_max_weapon_damage(int32_t attack_skill, int32_t attack_value, float attack_factor, int32_t attack_value_base, bool is_melee);
+void player_leave_market(uint32_t player_id);
+void your_rust_function(void* player, bool value);
 }
 
 /*
@@ -2987,7 +2989,9 @@ void ProtocolGame::parseQuestLine(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseMarketLeave() {
-	addGameTask(&Game::playerLeaveMarket, player->getID());
+	auto task = [=]() { player_leave_market(player->getID()); };
+	g_logger().info("beats c++ chamou player_leave_market no rust");
+	g_dispatcher().addTask(task, "ProtocolGame::parseMarketLeave");
 }
 
 void ProtocolGame::parseMarketBrowse(NetworkMessage &msg) {
@@ -4439,6 +4443,16 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 	writeToOutputBuffer(msg);
 }
 
+// essa função pode ser chamada tanto pelo codigo ou a lib rust, como pode ser chamada diretamente no codigo c++
+extern "C" {
+void set_in_market(Player* player, bool value) {
+	g_logger().info("beats rust chamou set_in_market no c++");
+	if (player) {
+		player->setInMarket(value);
+	}
+}
+}
+
 void ProtocolGame::sendMarketEnter(uint32_t depotId) {
 	NetworkMessage msg;
 	msg.addByte(0xF6);
@@ -4456,7 +4470,9 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId) {
 		return;
 	}
 
-	player->setInMarket(true);
+	// player->setInMarket(true);
+	// aqui eu chamo a função na lib rust
+	your_rust_function(static_cast<void*>(player), true);
 
 	// Only use here locker items, itemVector is for use of Game::createMarketOffer
 	auto [itemVector, lockerItems] = player->requestLockerItems(depotLocker, true);

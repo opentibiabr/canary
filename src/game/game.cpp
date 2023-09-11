@@ -8088,13 +8088,22 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
 	}
 }
 
-void Game::playerLeaveMarket(uint32_t playerId) {
-	Player* player = getPlayerByID(playerId);
-	if (!player) {
-		return;
-	}
+// essa função pode ser chamada tanto pelo codigo ou a lib rust, como pode ser chamada diretamente no codigo c++
+extern "C" {
+Player* getPlayerByID(uint32_t playerId) {
+	g_logger().info("beats rust chamou getPlayerByID no c++");
+	return g_game().getPlayerByID(playerId, false);
+}
+}
 
-	player->setInMarket(false);
+// essa função pode ser chamada tanto pelo codigo ou a lib rust, como pode ser chamada diretamente no codigo c++
+extern "C" {
+void setInMarket(Player* player, bool inMarket) {
+	if (player) {
+		g_logger().info("beats rust chamou setInMarket no c++");
+		player->setInMarket(inMarket);
+	}
+}
 }
 
 void Game::playerBrowseMarket(uint32_t playerId, uint16_t itemId, uint8_t tier) {

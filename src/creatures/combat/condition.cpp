@@ -1192,7 +1192,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 					message.primary.color = TEXTCOLOR_PASTELRED;
 					player->sendTextMessage(message);
 
-					auto spectators = Spectators().find<Player>(player->getPosition(), false);
+					auto spectators = Spectators().find<Player>(player->getPosition());
 					spectators.erase(player);
 					if (!spectators.empty()) {
 						message.type = MESSAGE_HEALED_OTHERS;

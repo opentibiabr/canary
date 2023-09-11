@@ -880,12 +880,6 @@ void PlayerWheel::loadDBPlayerSlotPointsOnLogin() {
 bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
-	query << "DELETE FROM `player_wheeldata` WHERE `player_id` = " << m_player.getGUID();
-	if (!db.executeQuery(query.str())) {
-		return false;
-	}
-	query.str(std::string());
-
 	DBInsert insertWheelData("INSERT INTO `player_wheeldata` (`player_id`, `slot`) VALUES ");
 	insertWheelData.upsert({ "slot" });
 	PropWriteStream stream;

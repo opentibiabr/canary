@@ -81,11 +81,6 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 			cache.maxRangeX = maxRangeX = std::max<int32_t>(maxRangeX, cache.maxRangeX);
 			cache.maxRangeY = maxRangeY = std::max<int32_t>(maxRangeY, cache.maxRangeY);
 		} else {
-			// checks if the cache is empty, as there is a possibility that there are no spectators in the cache.
-			if (cache.isEmpty()) {
-				return *this;
-			}
-
 			const bool checkDistance = minRangeX != cache.minRangeX || maxRangeX != cache.maxRangeX || minRangeY != cache.minRangeY || maxRangeY != cache.maxRangeY;
 
 			if (onlyPlayers) {
@@ -187,17 +182,16 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 
 	// It is necessary to create the cache even if no spectators is found, so that there is no future query.
 	auto &cache = cacheFound ? it->second : spectatorsCache.emplace(centerPos, SpectatorsCache { .minRangeX = minRangeX, .maxRangeX = maxRangeX, .minRangeY = minRangeY, .maxRangeY = maxRangeY }).first->second;
+	auto &creaturesCache = onlyPlayers ? cache.players : cache.creatures;
+	auto &creatureList = (multifloor ? creaturesCache.multiFloor : creaturesCache.floor);
+	if (creatureList) {
+		creatureList->clear();
+	} else {
+		creatureList.emplace();
+	}
 
-	if (spectators.size() > 0) {
+	if (!spectators.empty()) {
 		insertAll(spectators);
-
-		auto &creaturesCache = onlyPlayers ? cache.players : cache.creatures;
-		auto &creatureList = (multifloor ? creaturesCache.multiFloor : creaturesCache.floor);
-		if (creatureList) {
-			creatureList->clear();
-		} else {
-			creatureList = std::make_unique<SpectatorList>();
-		}
 
 #ifdef SPECTATORS_USE_HASHSET
 		creatureList->insert(spectators.begin(), spectators.end());

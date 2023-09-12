@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-20.04, ubuntu-22.04, self-hosted ]
+        os: [ ubuntu-20.04, ubuntu-22.04 ]
         buildtype: [ linux-release, linux-debug ]
         include:
           - os: ubuntu-20.04
@@ -42,12 +42,11 @@ jobs:
           concurrent_skipping: 'same_content'
           cancel_others: true
 
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          default: true
+      - name: Setup Rust
+        run: |
+          rustup self update
+          rustup update stable
+          rustup default stable
 
       - name: Checkout repository
         uses: actions/checkout@main

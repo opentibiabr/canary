@@ -36,12 +36,12 @@ jobs:
           concurrent_skipping: 'same_content'
           cancel_others: true
 
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          default: true
+      - name: Setup Rust
+        run: |
+          rustup self update
+          rustup update stable
+          rustup default stable
+        shell: cmd
 
       - name: Checkout repository
         uses: actions/checkout@main

@@ -92,12 +92,8 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 			}
 		}
 		// Reload creature on spectators
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, monster->getPosition(), true);
-		for (Creature* spectator : spectators) {
-			if (Player* tmpPlayer = spectator->getPlayer()) {
-				tmpPlayer->sendCreatureReload(monster);
-			}
+		for (Creature* spectator : Spectators().find<Player>(monster->getPosition(), true)) {
+			spectator->getPlayer()->sendCreatureReload(monster);
 		}
 		pushBoolean(L, true);
 	} else {
@@ -471,7 +467,7 @@ int MonsterFunctions::luaMonsterSetForgeStack(lua_State* L) {
 		? CreatureIconModifications_t::Influenced
 		: CreatureIconModifications_t::Fiendish;
 	monster->setIcon("forge", CreatureIcon(icon, icon == CreatureIconModifications_t::Influenced ? static_cast<uint8_t>(stack) : 0));
-	g_game().updateCreatureIcon(monster);
+	Game::updateCreatureIcon(monster);
 	g_game().sendUpdateCreature(monster);
 	return 1;
 }

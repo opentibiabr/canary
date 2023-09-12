@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 674
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Beneath Razzachai, Northern Zao Plantations, Brimstone Bug Caves, Chyllfroest, Krailos Spider Lair."
+	Locations = "Beneath Razachai, Northern Zao Plantations, Brimstone Bug Cave, Chyllfroest, Krailos Spider Lair",
 }
 
 monster.health = 1300
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -59,66 +59,67 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 2,
+	color = 66,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Chrrr!", yell = false}
+	{ text = "Chrrr!", yell = false },
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 100000, maxCount = 200},
-	{name = "small emerald", chance = 2702, maxCount = 4},
-	{id = 3049, chance = 892}, -- stealth ring
-	{name = "platinum amulet", chance = 110},
-	{name = "magic sulphur", chance = 1639},
-	{name = "strong health potion", chance = 9003},
-	{name = "strong mana potion", chance = 9025},
-	{name = "poisonous slime", chance = 50000},
-	{name = "lump of earth", chance = 20000},
-	{name = "sulphurous stone", chance = 14970},
-	{name = "brimstone fangs", chance = 5710},
-	{name = "brimstone shell", chance = 10000}
+	{ name = "gold coin", chance = 100000, maxCount = 200 },
+	{ name = "small emerald", chance = 2702, maxCount = 4 },
+	{ id = 3049, chance = 892 }, -- stealth ring
+	{ name = "platinum amulet", chance = 110 },
+	{ name = "magic sulphur", chance = 1639 },
+	{ name = "strong health potion", chance = 9003 },
+	{ name = "strong mana potion", chance = 9025 },
+	{ name = "poisonous slime", chance = 50000 },
+	{ name = "lump of earth", chance = 20000 },
+	{ name = "sulphurous stone", chance = 14970 },
+	{ name = "brimstone fangs", chance = 5710 },
+	{ name = "brimstone shell", chance = 10000 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -213, condition = {type = CONDITION_POISON, totalDamage = 400, interval = 4000}},
-	{name ="speed", interval = 2000, chance = 20, speedChange = -600, range = 7, shootEffect = CONST_ANI_DEATH, effect = CONST_ME_MORTAREA, target = false, duration = 10000},
-	{name ="combat", interval = 2000, chance = 5, type = COMBAT_EARTHDAMAGE, minDamage = -140, maxDamage = -310, radius = 6, effect = CONST_ME_SMALLPLANTS, target = false},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -130, maxDamage = -200, length = 6, spread = 3, effect = CONST_ME_HITBYPOISON, target = false},
-	{name ="brimstone bug wave", interval = 2000, chance = 15, minDamage = -80, maxDamage = -120, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -213, condition = { type = CONDITION_POISON, totalDamage = 400, interval = 4000 } },
+	{ name = "speed", interval = 2000, chance = 20, speedChange = -600, range = 7, shootEffect = CONST_ANI_DEATH, effect = CONST_ME_MORTAREA, target = false, duration = 10000 },
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_EARTHDAMAGE, minDamage = -140, maxDamage = -310, radius = 6, effect = CONST_ME_SMALLPLANTS, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -130, maxDamage = -200, length = 6, spread = 3, effect = CONST_ME_HITBYPOISON, target = false },
+	{ name = "brimstone bug wave", interval = 2000, chance = 15, minDamage = -80, maxDamage = -120, target = false },
 }
 
 monster.defenses = {
 	defense = 25,
-	armor = 38
+	armor = 38,
+	mitigation = 1.18,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -10},
-	{type = COMBAT_ENERGYDAMAGE, percent = -10},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -10},
-	{type = COMBAT_HOLYDAMAGE , percent = -10},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -10 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = -10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -10 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

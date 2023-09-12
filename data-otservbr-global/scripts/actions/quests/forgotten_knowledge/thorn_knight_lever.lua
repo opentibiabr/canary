@@ -1,21 +1,21 @@
 local config = {
 	bossName = "Thorn Knight",
 	timeToFightAgain = 20, -- In hour
-	timeToDefeatBoss = 15, -- In minutes
+	timeToDefeat = 15, -- In minutes
 	playerPositions = {
 		{ pos = Position(32657, 32877, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32657, 32878, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32657, 32879, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32657, 32880, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(32657, 32881, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT }
+		{ pos = Position(32657, 32881, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },
 	},
 	bossPosition = Position(32624, 32880, 14),
 	specPos = {
 		from = Position(32613, 32869, 14),
-		to = Position(32636, 32892, 14)
+		to = Position(32636, 32892, 14),
 	},
 	exit = Position(32678, 32888, 14),
-	storage = Storage.ForgottenKnowledge.ThornKnightTimer
+	storage = Storage.ForgottenKnowledge.ThornKnightTimer,
 }
 
 local forgottenKnowledgeThorn = Action()
@@ -62,7 +62,7 @@ function forgottenKnowledgeThorn.onUse(player, item, fromPosition, target, toPos
 	if lever:checkConditions() then
 		spec:removeMonsters()
 		for d = 1, 6 do
-			Game.createMonster('possessed tree', Position(math.random(32619, 32629), math.random(32877, 32884), 14), true, true)
+			Game.createMonster("possessed tree", Position(math.random(32619, 32629), math.random(32877, 32884), 14), true, true)
 		end
 		local monster = Game.createMonster("mounted thorn knight", config.bossPosition, true, true)
 		if not monster then
@@ -88,7 +88,7 @@ function forgottenKnowledgeThorn.onUse(player, item, fromPosition, target, toPos
 				end
 			end
 			spec:removePlayers(player_remove)
-		end, config.timeToDefeatBoss * 60 * 1000)
+		end, config.timeToDefeat * 60 * 1000)
 	end
 end
 

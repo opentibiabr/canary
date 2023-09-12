@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 94,
 	lookFeet = 19,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 254
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Goroma, Liberty Bay's deeper cult dungeon, Formorgar Mines, Magician Quarter, Forbidden Temple."
-	}
+	Locations = "Goroma, Liberty Bay's deeper cult dungeon, Formorgar Mines, Magician Quarter, Forbidden Temple.",
+}
 
 monster.health = 430
 monster.maxHealth = 430
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,79 +62,80 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{name = "Ghoul", chance = 10, interval = 2000, count = 2}
-	}
+		{ name = "Ghoul", chance = 10, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Feel the power of the cult!", yell = false},
-	{text = "Praise the voodoo!", yell = false},
-	{text = "Power to the cult!", yell = false}
+	{ text = "Feel the power of the cult!", yell = false },
+	{ text = "Praise the voodoo!", yell = false },
+	{ text = "Power to the cult!", yell = false },
 }
 
 monster.loot = {
-	{id = 2828, chance = 940}, -- book
-	{name = "small ruby", chance = 320},
-	{name = "gold coin", chance = 65520, maxCount = 60},
-	{id = 3053, chance = 420}, -- time ring
-	{name = "silver amulet", chance = 1020},
-	{name = "hailstorm rod", chance = 220},
-	{name = "clerical mace", chance = 1260},
-	{name = "red robe", chance = 80},
-	{name = "pirate voodoo doll", chance = 1730},
-	{id = 6089, chance = 700}, -- music sheet
-	{name = "lunar staff", chance = 120},
-	{name = "amber staff", chance = 680},
-	{name = "cultish robe", chance = 10080},
-	{name = "cultish symbol", chance = 90},
-	{name = "rope belt", chance = 10000},
-	{name = "broken key ring", chance = 120}
+	{ id = 2828, chance = 940 }, -- book
+	{ name = "small ruby", chance = 320 },
+	{ name = "gold coin", chance = 65520, maxCount = 60 },
+	{ id = 3053, chance = 420 }, -- time ring
+	{ name = "silver amulet", chance = 1020 },
+	{ name = "hailstorm rod", chance = 220 },
+	{ name = "clerical mace", chance = 1260 },
+	{ name = "red robe", chance = 80 },
+	{ name = "pirate voodoo doll", chance = 1730 },
+	{ id = 6089, chance = 700 }, -- music sheet
+	{ name = "lunar staff", chance = 120 },
+	{ name = "amber staff", chance = 680 },
+	{ name = "cultish robe", chance = 10080 },
+	{ name = "cultish symbol", chance = 90 },
+	{ name = "rope belt", chance = 10000 },
+	{ name = "broken key ring", chance = 120 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90, condition = {type = CONDITION_POISON, totalDamage = 2, interval = 4000}},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -70, maxDamage = -150, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = true},
-	{name ="drunk", interval = 2000, chance = 10, range = 7, radius = 1, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true, duration = 4000}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90, condition = { type = CONDITION_POISON, totalDamage = 2, interval = 4000 } },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -70, maxDamage = -150, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = true },
+	{ name = "drunk", interval = 2000, chance = 10, range = 7, radius = 1, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true, duration = 4000 },
 }
 
 monster.defenses = {
 	defense = 20,
-	armor = 20,
-	{name ="combat", interval = 3000, chance = 20, type = COMBAT_HEALING, minDamage = 45, maxDamage = 60, effect = CONST_ME_MAGIC_BLUE, target = false},
-	{name ="invisible", interval = 2000, chance = 10, effect = CONST_ME_YELLOW_RINGS}
+	armor = 33,
+	mitigation = 1.13,
+	{ name = "combat", interval = 3000, chance = 20, type = COMBAT_HEALING, minDamage = 45, maxDamage = 60, effect = CONST_ME_MAGIC_BLUE, target = false },
+	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_YELLOW_RINGS },
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = 40},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 20},
-	{type = COMBAT_HOLYDAMAGE , percent = 30},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -5 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 40 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 20 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 30 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

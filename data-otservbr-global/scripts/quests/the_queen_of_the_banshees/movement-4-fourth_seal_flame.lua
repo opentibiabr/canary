@@ -11,7 +11,7 @@ function fourthSealFlame.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	local bloodPos = {x = 32243, y = 31892, z = 14}
+	local bloodPos = { x = 32243, y = 31892, z = 14 }
 	local tile = Tile(bloodPos)
 	if tile then
 		local bloodItem = tile:getItemById(2886, 5)
@@ -26,7 +26,7 @@ function fourthSealFlame.onStepIn(creature, item, position, fromPosition)
 	Position(bloodPos):sendMagicEffect(CONST_ME_MAGIC_RED)
 	player:setStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.FourthSeal, 1)
 	player:setStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.FourthSealDoor, 1)
-	player:teleportTo({x = 32261, y = 31849, z = 15})
+	player:teleportTo({ x = 32261, y = 31849, z = 15 })
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
 	return true
 end

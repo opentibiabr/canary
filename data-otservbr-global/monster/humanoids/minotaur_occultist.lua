@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 125
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -44,14 +44,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -60,47 +60,48 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3031, chance = 100000, maxCount = 21}, -- gold coin
-	{id = 3595, chance = 35000, maxCount = 4}, -- carrot
-	{id = 17824, chance = 12000}, -- swampling club
-	{id = 11472, chance = 10000}, -- minotaur horn
-	{id = 3559, chance = 9000}, -- leather legs
-	{id = 268, chance = 3500}, -- mana potion
-	{id = 2920, chance = 3500}, -- torch
-	{id = 3355, chance = 1800}, -- leather helmet
-	{id = 11473, chance = 1800} -- purple robe
+	{ id = 3031, chance = 100000, maxCount = 21 }, -- gold coin
+	{ id = 3595, chance = 35000, maxCount = 4 }, -- carrot
+	{ id = 17824, chance = 12000 }, -- swampling club
+	{ id = 11472, chance = 10000 }, -- minotaur horn
+	{ id = 3559, chance = 9000 }, -- leather legs
+	{ id = 268, chance = 3500 }, -- mana potion
+	{ id = 2920, chance = 3500 }, -- torch
+	{ id = 3355, chance = 1800 }, -- leather helmet
+	{ id = 11473, chance = 1800 }, -- purple robe
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = 0, maxDamage = -20, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = false},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = 0, maxDamage = -20, range = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = false},
-	{name ="energyfield", interval = 2000, chance = 10, range = 7, shootEffect = CONST_ANI_ENERGYBALL, target = true}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = 0, maxDamage = -20, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = 0, maxDamage = -20, range = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = false },
+	{ name = "energyfield", interval = 2000, chance = 10, range = 7, shootEffect = CONST_ANI_ENERGYBALL, target = true },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 8,
+	mitigation = 0.40,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	Spdlog.info("Updating database to version 27 (towns)")
+	logger.info("Updating database to version 27 (towns)")
 
 	db.query([[
 	CREATE TABLE IF NOT EXISTS `towns` (

@@ -10,7 +10,12 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
+}
+
+monster.bosstiary = {
+	bossRaceId = 1585,
+	bossRace = RARITY_BANE,
 }
 
 monster.health = 25000
@@ -22,12 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
-}
-
-monster.bosstiary = {
-	bossRaceId = 1585,
-	bossRace = RARITY_BANE
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -42,21 +42,21 @@ monster.flags = {
 	pushable = false,
 	rewardBoss = true,
 	illusionable = true,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 90,
 	targetDistance = 1,
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -65,47 +65,47 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 9058, chance = 50000, maxCount = 4}, -- gold ingot
-	{id = 7741, chance = 5560}, -- ice cube
-	{id = 7377, chance = 5560}, -- ice cream cone
-	{id = 14112, chance = 50} -- bar of gold
+	{ id = 9058, chance = 50000, maxCount = 4 }, -- gold ingot
+	{ id = 7741, chance = 5560 }, -- ice cube
+	{ id = 7377, chance = 5560 }, -- ice cream cone
+	{ id = 14112, chance = 50 }, -- bar of gold
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300},
-	{name ="ice crystal bomb", interval = 2000, chance = 30, minDamage = -600, maxDamage = -700, target = true},
-	{name ="fire wave", interval = 2000, chance = 30, minDamage = -800, maxDamage = -1200, length = 1, spread = 0, target = true},
-	{name ="speed", interval = 1000, chance = 12, speedChange = -250, radius = 6, effect = CONST_ME_HITBYFIRE, target = false, duration = 60000},
-	{name ="firefield", interval = 1000, chance = 10, range = 7, radius = 4, shootEffect = CONST_ANI_FIRE, target = true}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300 },
+	{ name = "ice crystal bomb", interval = 2000, chance = 30, minDamage = -600, maxDamage = -700, target = true },
+	{ name = "fire wave", interval = 2000, chance = 30, minDamage = -800, maxDamage = -1200, length = 1, spread = 0, target = true },
+	{ name = "speed", interval = 1000, chance = 12, speedChange = -250, radius = 6, effect = CONST_ME_HITBYFIRE, target = false, duration = 60000 },
+	{ name = "firefield", interval = 1000, chance = 10, range = 7, radius = 4, shootEffect = CONST_ANI_FIRE, target = true },
 }
 
 monster.defenses = {
 	defense = 40,
-	armor = 80
+	armor = 80,
+	--	mitigation = ???,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 40},
-	{type = COMBAT_HOLYDAMAGE , percent = 50},
-	{type = COMBAT_DEATHDAMAGE , percent = 50}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -113,13 +113,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

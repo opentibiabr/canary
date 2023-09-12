@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1563
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Deep Hub Magma Dungeon, Lava Pump Dungeon (Dwarfs), Lava Pump Dungeon (Gnomes), Lava Pump Dungeon (Scouts)."
-	}
+	Locations = "Gnome Deep Hub",
+}
 
 monster.health = 5900
 monster.maxHealth = 5900
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -62,58 +62,53 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 5,
+	color = 192,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "hot hot hot!", yell = false},
-	{text = "wobble wobble!", yell = false}
 }
 
 monster.loot = {
-	{id = 676, chance = 14620, maxCount = 2} -- small enchanted ruby
+	{ id = 676, chance = 14620, maxCount = 2 }, -- small enchanted ruby
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -200},
-	{name ="combat", interval = 1000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -70, maxDamage = -300, range = 7, length = 3, spread = 3, effect = CONST_ME_HITBYFIRE, target = false},
-	{name ="combat", interval = 1000, chance = 12, type = COMBAT_FIREDAMAGE, minDamage = 0, maxDamage = -100, range = 7, length = 6, spread = 3, effect = CONST_ME_HITBYFIRE, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -200 },
+	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -70, maxDamage = -300, range = 7, length = 3, spread = 3, effect = CONST_ME_HITBYFIRE, target = false },
+	{ name = "combat", interval = 1000, chance = 12, type = COMBAT_FIREDAMAGE, minDamage = 0, maxDamage = -100, range = 7, length = 6, spread = 3, effect = CONST_ME_HITBYFIRE, target = false },
 }
 
 monster.defenses = {
 	defense = 33,
-	armor = 45
+	armor = 82,
+	mitigation = 2.16,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
-
-monster.heals = {
-	{type = COMBAT_FIREDAMAGE, percent = 100},
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

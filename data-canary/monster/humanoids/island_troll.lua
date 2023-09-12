@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 277
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "Goroma."
-	}
+	Locations = "Goroma.",
+}
 
 monster.health = 50
 monster.maxHealth = 50
@@ -35,7 +35,7 @@ monster.manaCost = 290
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -60,66 +60,66 @@ monster.flags = {
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
 	canWalkOnPoison = false,
-	pet = false
+	pet = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Hmmm, turtles", yell = false},
-	{text = "Hmmm, dogs", yell = false},
-	{text = "Hmmm, worms", yell = false},
-	{text = "Groar", yell = false},
-	{text = "Gruntz!", yell = false}
+	{ text = "Hmmm, turtles", yell = false },
+	{ text = "Hmmm, dogs", yell = false },
+	{ text = "Hmmm, worms", yell = false },
+	{ text = "Groar", yell = false },
+	{ text = "Gruntz!", yell = false },
 }
 
 monster.loot = {
-	{id = 3003, chance = 8000}, -- rope
-	{id = 3031, chance = 60000, maxCount = 10}, -- gold coin
-	{id = 3054, chance = 70}, -- silver amulet
-	{id = 3268, chance = 18000}, -- hand axe
-	{id = 3277, chance = 20000}, -- spear
-	{id = 3336, chance = 5000}, -- studded club
-	{id = 3355, chance = 10000}, -- leather helmet
-	{id = 3412, chance = 16000}, -- wooden shield
-	{id = 3552, chance = 10500}, -- leather boots
-	{id = 5096, chance = 5000}, -- mango
-	{id = 5901, chance = 30000}, -- wood
-	{id = 901, chance = 40} -- marlin
+	{ id = 3003, chance = 8000 }, -- rope
+	{ id = 3031, chance = 60000, maxCount = 10 }, -- gold coin
+	{ id = 3054, chance = 70 }, -- silver amulet
+	{ id = 3268, chance = 18000 }, -- hand axe
+	{ id = 3277, chance = 20000 }, -- spear
+	{ id = 3336, chance = 5000 }, -- studded club
+	{ id = 3355, chance = 10000 }, -- leather helmet
+	{ id = 3412, chance = 16000 }, -- wooden shield
+	{ id = 3552, chance = 10500 }, -- leather boots
+	{ id = 5096, chance = 5000 }, -- mango
+	{ id = 5901, chance = 30000 }, -- wood
+	{ id = 901, chance = 40 }, -- marlin
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10 },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 10,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

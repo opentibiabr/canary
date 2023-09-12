@@ -1,11 +1,11 @@
 local setting = {
 	["Monday"] = Position(31254, 32604, 9), --Minos
 	["Tuesday"] = Position(33459, 31715, 9), --Catacombs
-	["Wednesday"]  = Position(31061, 32605, 9), --Golem
+	["Wednesday"] = Position(31061, 32605, 9), --Golem
 	["Thursday"] = Position(33459, 31715, 9), --Catacombs
-	["Friday"]  = Position(33459, 31715, 9), --Catacombs
+	["Friday"] = Position(33459, 31715, 9), --Catacombs
 	["Saturday"] = Position(31254, 32604, 9), --Minos
-	["Sunday"] = Position(33459, 31715, 9) --Catacombs
+	["Sunday"] = Position(33459, 31715, 9), --Catacombs
 }
 
 local votingOramond = MoveEvent()

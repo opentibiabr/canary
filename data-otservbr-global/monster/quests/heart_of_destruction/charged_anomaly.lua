@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 5,
 	lookFeet = 80,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 18000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 25
+	chance = 25,
 }
 
 monster.strategiesTarget = {
@@ -47,18 +47,17 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
-
 monster.events = {
-	"ChargedAnomalyDeath"
+	"ChargedAnomalyDeath",
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -66,46 +65,45 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -900, maxDamage = -2100},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -500, maxDamage = -900, radius = 3, effect = CONST_ME_BIGCLOUDS, target = false},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -350, maxDamage = -700, length = 7, spread = 3, effect = CONST_ME_ENERGYAREA, target = false},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -500, maxDamage = -800, length = 7, spread = 3, effect = CONST_ME_YELLOWENERGY, target = false},
-	{name ="anomaly break", interval = 2000, chance = 40, target = false},
-	{name ="charge vortex", interval = 9000, chance = 100, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -900, maxDamage = -2100 },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -500, maxDamage = -900, radius = 3, effect = CONST_ME_BIGCLOUDS, target = false },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -350, maxDamage = -700, length = 7, spread = 3, effect = CONST_ME_ENERGYAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -500, maxDamage = -800, length = 7, spread = 3, effect = CONST_ME_YELLOWENERGY, target = false },
+	{ name = "anomaly break", interval = 2000, chance = 40, target = false },
+	{ name = "charge vortex", interval = 9000, chance = 100, target = false },
 }
 
 monster.defenses = {
 	defense = 100,
 	armor = 100,
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_HEALING, radius = 8, effect = CONST_ME_MAGIC_BLUE, target = false}
+	--	mitigation = ???,
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, radius = 8, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 100},
-	{type = COMBAT_ENERGYDAMAGE, percent = 100},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 100},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 100 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 100 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_MANADRAIN, percent = 100 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -113,13 +111,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

@@ -2,25 +2,25 @@ local vocation = {
 	VOCATION.BASE_ID.SORCERER,
 	VOCATION.BASE_ID.DRUID,
 	VOCATION.BASE_ID.PALADIN,
-	VOCATION.BASE_ID.KNIGHT
+	VOCATION.BASE_ID.KNIGHT,
 }
 
 area = {
-	{0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-	{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-	{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},
-	{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-	{1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1},
-	{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-	{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},
-	{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-	{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0}
+	{ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+	{ 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 },
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+	{ 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1 },
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+	{ 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 },
+	{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
 }
 
 local createArea = createCombatArea(area)
@@ -33,7 +33,7 @@ function onTargetTile(cid, pos)
 	if not creature then
 		return true
 	end
-	
+
 	local tile = Tile(pos)
 	if tile then
 		local creatures = tile:getCreatures()
@@ -53,7 +53,7 @@ function onTargetTile(cid, pos)
 			end
 		end
 	end
-	
+
 	pos:sendMagicEffect(CONST_ME_MORTAREA)
 	return true
 end
@@ -81,14 +81,14 @@ function spell.onCastSpell(creature, var)
 			if not spec:getPosition():compare(roomCenterPosition) then
 				spec:teleportTo(roomCenterPosition)
 			end
-		elseif spec:getName():lower() == 'lady tenebris' then
+		elseif spec:getName():lower() == "lady tenebris" then
 			if not spec:getPosition():compare(roomCenterPosition) then
 				spec:teleportTo(roomCenterPosition)
 			end
 			spec:setMoveLocked(true)
 		end
 	end
-	
+
 	creature:say("LADY TENEBRIS BEGINS TO CHANNEL A POWERFULL SPELL! TAKE COVER!", TALKTYPE_MONSTER_YELL)
 	addEvent(delayedCastSpell, 4000, creature:getId(), var)
 	return true

@@ -6,15 +6,16 @@ condition:setParameter(CONDITION_PARAM_HEALTHTICKS, 15 * 60 * 1000)
 
 local hirintrorHeal = CreatureEvent("HirintrorHeal")
 function hirintrorHeal.onPrepareDeath(creature, lastHitKiller, mostDamageKiller)
-    if creature:getName():lower() == "hirintror" then
-        if not creature:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT, 88888) then
-            creature:addCondition(condition)
-            creature:addHealth(1000)
-            return
-        end
-    else
-        return
-    end
-    return true
+	if creature:getName():lower() == "hirintror" then
+		if not creature:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT, 88888) then
+			creature:addCondition(condition)
+			creature:addHealth(1000)
+			return
+		end
+	else
+		return
+	end
+	return true
 end
+
 hirintrorHeal:register()

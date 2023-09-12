@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 919
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Venore swamp area, Venore Salamander Cave, Tiquanda Laboratory."
-	}
+	Locations = "Venore swamp area, Venore Salamander Cave, Tiquanda Laboratory.",
+}
 
 monster.health = 80
 monster.maxHealth = 80
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -62,58 +62,59 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Gnark!", yell = false}
+	{ text = "Gnark!", yell = false },
 }
 
 monster.loot = {
-	{id = 3003, chance = 5080}, -- rope
-	{name = "gold coin", chance = 84900, maxCount = 12},
-	{name = "white mushroom", chance = 10220, maxCount = 5},
-	{name = "swampling club", chance = 7410},
-	{name = "swampling moss", chance = 19900},
-	{name = "piece of swampling wood", chance = 14870}
+	{ id = 3003, chance = 5080 }, -- rope
+	{ name = "gold coin", chance = 84900, maxCount = 12 },
+	{ name = "white mushroom", chance = 10220, maxCount = 5 },
+	{ name = "swampling club", chance = 7410 },
+	{ name = "swampling moss", chance = 19900 },
+	{ name = "piece of swampling wood", chance = 14870 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -80},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -2, maxDamage = -15, range = 7, shootEffect = CONST_ANI_POISON, target = false},
-	{name ="speed", interval = 2000, chance = 15, speedChange = -300, length = 3, spread = 2, effect = CONST_ME_WATERSPLASH, target = false, duration = 5000}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -80 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -2, maxDamage = -15, range = 7, shootEffect = CONST_ANI_POISON, target = false },
+	{ name = "speed", interval = 2000, chance = 15, speedChange = -300, length = 3, spread = 2, effect = CONST_ME_WATERSPLASH, target = false, duration = 5000 },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 4,
+	mitigation = 0.25,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

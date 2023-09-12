@@ -9,15 +9,18 @@
 
 #include "pch.hpp"
 
-#include "items/containers/container.h"
-#include "items/decay/decay.h"
-#include "io/iomap.h"
-#include "game/game.h"
+#include "items/containers/container.hpp"
+#include "items/decay/decay.hpp"
+#include "io/iomap.hpp"
+#include "game/game.hpp"
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
-	if (getID() == ITEM_GOLD_POUCH) {
+	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM));
+	if (getID() == ITEM_GOLD_POUCH || isStoreInbox()) {
 		pagination = true;
+		m_maxItems = 2000;
+		maxSize = 32;
 	}
 }
 
@@ -229,10 +232,86 @@ std::ostringstream &Container::getContentDescription(std::ostringstream &os, boo
 	return os;
 }
 
+bool Container::isStoreInbox() const {
+	return getID() == ITEM_STORE_INBOX;
+}
+
+bool Container::isStoreInboxFiltered() const {
+	auto attribute = getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
+	if (isStoreInbox() && !attribute.empty() && attribute != "All") {
+		return true;
+	}
+
+	return false;
+}
+
+std::deque<Item*> Container::getStoreInboxFilteredItems() const {
+	const auto enumName = getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
+	ItemDeque storeInboxFilteredList;
+	if (isStoreInboxFiltered()) {
+		for (Item* item : getItemList()) {
+			auto itemId = item->getID();
+			auto attribute = item->getCustomAttribute("unWrapId");
+			uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
+			if (unWrapId != 0) {
+				itemId = unWrapId;
+			}
+			const auto &itemType = Item::items.getItemType(itemId);
+			auto primaryType = toPascalCase(itemType.m_primaryType);
+			auto name = toPascalCase(enumName);
+			g_logger().debug("Get filtered items, primaty type {}, enum name {}", primaryType, name);
+			if (primaryType == name) {
+				storeInboxFilteredList.push_back(item);
+			}
+		}
+	}
+
+	return storeInboxFilteredList;
+}
+
+phmap::flat_hash_set<ContainerCategory_t> Container::getStoreInboxValidCategories() const {
+	phmap::flat_hash_set<ContainerCategory_t> validCategories;
+	for (const auto &item : itemlist) {
+		auto itemId = item->getID();
+		auto attribute = item->getCustomAttribute("unWrapId");
+		uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
+		if (unWrapId != 0) {
+			itemId = unWrapId;
+		}
+		const auto &itemType = Item::items.getItemType(itemId);
+		auto convertedString = toPascalCase(itemType.m_primaryType);
+		g_logger().debug("Store item '{}', primary type {}", itemId, convertedString);
+		auto category = magic_enum::enum_cast<ContainerCategory_t>(convertedString);
+		if (category.has_value()) {
+			g_logger().debug("Adding valid category {}", static_cast<uint8_t>(category.value()));
+			validCategories.insert(category.value());
+		}
+	}
+
+	return validCategories;
+}
+
+Item* Container::getFilteredItemByIndex(size_t index) const {
+	const auto &filteredItems = getStoreInboxFilteredItems();
+	if (index >= filteredItems.size()) {
+		return nullptr;
+	}
+
+	auto item = filteredItems[index];
+
+	auto it = std::find(itemlist.begin(), itemlist.end(), item);
+	if (it == itemlist.end()) {
+		return nullptr;
+	}
+
+	return *it;
+}
+
 Item* Container::getItemByIndex(size_t index) const {
 	if (index >= size()) {
 		return nullptr;
 	}
+
 	return itemlist[index];
 }
 
@@ -344,49 +423,43 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing &addThing, uint32_
 	}
 
 	const Cylinder* cylinder = getParent();
-	if (!hasBitSet(FLAG_NOLIMIT, flags)) {
-		while (cylinder) {
-			if (cylinder == &addThing) {
-				return RETURNVALUE_THISISIMPOSSIBLE;
-			}
-
-			if (dynamic_cast<const Inbox*>(cylinder)) {
-				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
-			}
-
-			cylinder = cylinder->getParent();
+	auto noLimit = hasBitSet(FLAG_NOLIMIT, flags);
+	while (cylinder) {
+		if (cylinder == &addThing) {
+			return RETURNVALUE_THISISIMPOSSIBLE;
 		}
-
-		if (addIndex == INDEX_WHEREEVER && size() >= capacity() && !hasPagination()) {
+		const Container* container = cylinder->getContainer();
+		if (!noLimit && container && container->isInbox()) {
 			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 		}
-	} else {
-		while (cylinder) {
-			if (cylinder == &addThing) {
-				return RETURNVALUE_THISISIMPOSSIBLE;
-			}
-
-			cylinder = cylinder->getParent();
+		const Cylinder* parent = cylinder->getParent();
+		if (cylinder == parent) {
+			g_logger().error("Container::queryAdd: parent == cylinder. Preventing infinite loop.");
+			return RETURNVALUE_NOTPOSSIBLE;
 		}
+		cylinder = parent;
+	}
+
+	if (!noLimit && addIndex == INDEX_WHEREEVER && size() >= capacity() && !hasPagination()) {
+		return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 	}
 
 	if (const Container* topParentContainer = getTopParentContainer()) {
-		uint32_t maxItem = static_cast<uint32_t>(g_configManager().getNumber(MAX_ITEM));
 		if (const Container* addContainer = item->getContainer()) {
 			uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
 			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER));
 			if (addContainerCount + topParentContainer->getContainerHoldingCount() > maxContainer) {
-				return RETURNVALUE_NOTPOSSIBLE;
+				return RETURNVALUE_CONTAINERISFULL;
 			}
 
 			uint32_t addItemCount = addContainer->getItemHoldingCount() + 1;
-			if (addItemCount + topParentContainer->getItemHoldingCount() > maxItem) {
-				return RETURNVALUE_NOTPOSSIBLE;
+			if (addItemCount + topParentContainer->getItemHoldingCount() > m_maxItems) {
+				return RETURNVALUE_CONTAINERISFULL;
 			}
 		}
 
-		if (topParentContainer->getItemHoldingCount() + 1 > maxItem) {
-			return RETURNVALUE_NOTPOSSIBLE;
+		if (topParentContainer->getItemHoldingCount() + 1 > m_maxItems) {
+			return RETURNVALUE_CONTAINERISFULL;
 		}
 	}
 
@@ -556,8 +629,9 @@ void Container::addThing(Thing* thing) {
 }
 
 void Container::addThing(int32_t index, Thing* thing) {
-	if (!thing)
+	if (!thing) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
+	}
 
 	if (index >= static_cast<int32_t>(capacity())) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
@@ -696,7 +770,7 @@ uint32_t Container::getItemTypeCount(uint16_t itemId, int32_t subType /* = -1*/)
 	return count;
 }
 
-phmap::btree_map<uint32_t, uint32_t> &Container::getAllItemTypeCount(phmap::btree_map<uint32_t, uint32_t> &countMap) const {
+std::map<uint32_t, uint32_t> &Container::getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const {
 	for (Item* item : itemlist) {
 		countMap[item->getID()] += item->getItemCount();
 	}
@@ -754,8 +828,9 @@ void Container::internalAddThing(Thing* thing) {
 }
 
 void Container::internalAddThing(uint32_t, Thing* thing) {
-	if (!thing)
+	if (!thing) {
 		return;
+	}
 
 	Item* item = thing->getItem();
 	if (item == nullptr) {

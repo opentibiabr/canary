@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 914
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Venore swamp surface, Venore Salamander Cave, Dryad Gardens."
-	}
+	Locations = "Venore swamp surface, Venore Salamander Cave, Dryad Gardens.",
+}
 
 monster.health = 100
 monster.maxHealth = 100
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -59,60 +59,61 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Rrrawk! Rrrrawk!", yell = false}
+	{ text = "Rrrawk! Rrrrawk!", yell = false },
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 64090, maxCount = 23},
-	{name = "meat", chance = 19950, maxCount = 2},
-	{id = 3578, chance = 20320, maxCount = 2}, -- fish
-	{name = "worm", chance = 14730, maxCount = 2},
-	{name = "marsh stalker feather", chance = 8650},
-	{name = "longsword", chance = 7560},
-	{name = "marsh stalker beak", chance = 6080},
-	{id = 3003, chance = 4830}, -- rope
-	{name = "seeds", chance = 110}
+	{ name = "gold coin", chance = 64090, maxCount = 23 },
+	{ name = "meat", chance = 19950, maxCount = 2 },
+	{ id = 3578, chance = 20320, maxCount = 2 }, -- fish
+	{ name = "worm", chance = 14730, maxCount = 2 },
+	{ name = "marsh stalker feather", chance = 8650 },
+	{ name = "longsword", chance = 7560 },
+	{ name = "marsh stalker beak", chance = 6080 },
+	{ id = 3003, chance = 4830 }, -- rope
+	{ name = "seeds", chance = 110 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -8, range = 7, radius = 1, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_EXPLOSIONAREA, target = true}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10 },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -8, range = 7, radius = 1, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_EXPLOSIONAREA, target = true },
 }
 
 monster.defenses = {
 	defense = 3,
-	armor = 3
+	armor = 3,
+	mitigation = 0.23,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = -5},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 5},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -5 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 5 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

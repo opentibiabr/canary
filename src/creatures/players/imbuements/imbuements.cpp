@@ -8,9 +8,9 @@
  */
 
 #include "pch.hpp"
-#include "creatures/players/imbuements/imbuements.h"
-#include "lua/creature/events.h"
-#include "utils/pugicast.h"
+#include "creatures/players/imbuements/imbuements.hpp"
+#include "lua/creature/events.hpp"
+#include "utils/pugicast.hpp"
 
 Imbuement* Imbuements::getImbuement(uint16_t id) {
 	if (id == 0) {
@@ -52,7 +52,6 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				pugi::cast<uint32_t>(baseNode.attribute("removecost").value()),
 				pugi::cast<uint32_t>(baseNode.attribute("duration").value()),
 				pugi::cast<uint16_t>(baseNode.attribute("percent").value())
-
 			);
 
 			// Category/Group
@@ -240,8 +239,9 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						} else if (usenormalskill == 3) {
 							imbuement.skills[skillId] = bonus;
 							int32_t chance = 100;
-							if ((attr = childNode.attribute("chance")))
+							if ((attr = childNode.attribute("chance"))) {
 								chance = std::min<uint32_t>(100, pugi::cast<int32_t>(attr.value()));
+							}
 
 							imbuement.skills[skillId - 1] = chance;
 						}
@@ -251,7 +251,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							continue;
 						}
 
-						CombatType_t combatType = getCombatType(attr.as_string());
+						CombatType_t combatType = getCombatTypeByName(attr.as_string());
 						if (combatType == COMBAT_NONE) {
 							g_logger().warn("Unknown combat type for element {}", attr.as_string());
 							continue;
@@ -272,7 +272,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							continue;
 						}
 
-						CombatType_t combatType = getCombatType(attr.as_string());
+						CombatType_t combatType = getCombatTypeByName(attr.as_string());
 						if (combatType == COMBAT_NONE) {
 							g_logger().warn("Unknown combat type for element {}", attr.as_string());
 							continue;

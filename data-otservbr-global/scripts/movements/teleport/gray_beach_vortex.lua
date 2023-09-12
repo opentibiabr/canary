@@ -1,6 +1,6 @@
 local config = {
 	[9238] = Position(33456, 31346, 8),
-	[9239] = Position(33199, 31978, 8)
+	[9239] = Position(33199, 31978, 8),
 }
 
 local grayBeachVortex = MoveEvent()

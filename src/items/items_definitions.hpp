@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
-#define SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
+#pragma once
 
 class Imbuement;
 
@@ -61,6 +60,7 @@ enum ReturnValue {
 	RETURNVALUE_CANNOTPICKUP,
 	RETURNVALUE_THISISIMPOSSIBLE,
 	RETURNVALUE_DEPOTISFULL,
+	RETURNVALUE_CONTAINERISFULL,
 	RETURNVALUE_CREATUREDOESNOTEXIST,
 	RETURNVALUE_CANNOTUSETHISOBJECT,
 	RETURNVALUE_PLAYERWITHTHISNAMEISNOTONLINE,
@@ -235,6 +235,7 @@ enum AttrTypes_t {
 	ATTR_AMOUNT = 39,
 	ATTR_TIER = 40,
 	ATTR_CUSTOM = 41,
+	ATTR_STORE_INBOX_CATEGORY = 42,
 
 	// Always the last
 	ATTR_NONE = 0
@@ -260,6 +261,130 @@ enum ImbuementTypes_t : int64_t {
 	IMBUEMENT_SKILLBOOST_DISTANCE = 15,
 	IMBUEMENT_SKILLBOOST_MAGIC_LEVEL = 16,
 	IMBUEMENT_INCREASE_CAPACITY = 17
+};
+
+enum class ContainerCategory_t : uint8_t {
+	All,
+	Ammunition,
+	AmuletsAndNecklaces,
+	Animals,
+	Annelids,
+	Arachnids,
+	Armors,
+	ArtificialTiles,
+	AstralShapers,
+	AttackRunes,
+	AxeWeapons,
+	Bats,
+	Bears,
+	Birds,
+	BlessingCharms,
+	Blobs,
+	Books,
+	Boots,
+	Bushes,
+	Cactuses,
+	Canines,
+	Casks,
+	Closets,
+	ClothingAccessories,
+	ClubWeapons,
+	Coffins,
+	Constructions,
+	Containers,
+	ContestPrizes,
+	CreatureProducts,
+	Decoration,
+	Demons,
+	DistanceWeapons,
+	DocumentsAndPapers,
+	DollsAndBears,
+	Doors,
+	Dragons,
+	Dreamhaunters,
+	Dropdowns,
+	EnchantedItems,
+	EventCreatures,
+	ExerciseWeapons,
+	FansiteItems,
+	Ferns,
+	Fields,
+	Flags,
+	FloorDecorations,
+	FloraAndMinerals,
+	Flowers,
+	FluidContainers,
+	Food,
+	Furniture,
+	GameTokens,
+	Ghosts,
+	Glires,
+	Grass,
+	HealingRunes,
+	Helmets,
+	HiveBorn,
+	Illumination,
+	Keys,
+	KitchenTools,
+	Ladders,
+	Legs,
+	LightSources,
+	Liquids,
+	MachinesObjects,
+	Machines,
+	MagicalItems,
+	Metals,
+	Mollusks,
+	Mushrooms,
+	MusicalInstruments,
+	NaturalProducts,
+	NaturalTiles,
+	OtherItems,
+	Outlaws,
+	PaintingEquipment,
+	PartyItems,
+	Pillars,
+	PlantsAndHerbs,
+	Plants,
+	Portals,
+	QuestItems,
+	QuestObjects,
+	Quivers,
+	Refuse,
+	Remains,
+	Rings,
+	Rocks,
+	Rods,
+	Rubbish,
+	Shields,
+	ShrinesAndAltars,
+	Signs,
+	Skeletons,
+	Spellbooks,
+	Stairs,
+	Statues,
+	SupportRunes,
+	SwordWeapons,
+	Tables,
+	TamingItems,
+	Teleporters,
+	ToolsObjects,
+	Tools,
+	TortureInstruments,
+	TournamentRewards,
+	TrainingWeapons,
+	Transportation,
+	Traps,
+	Trees,
+	Trophies,
+	UndeadHumanoids,
+	Ungulates,
+	Utilities,
+	Valuables,
+	WallHangings,
+	Walls,
+	Wands,
+	Windows
 };
 
 enum SlotPositionBits : uint32_t {
@@ -306,7 +431,6 @@ enum TileFlags_t : uint32_t {
 	TILESTATE_IMMOVABLENOFIELDBLOCKPATH = 1 << 21,
 	TILESTATE_NOFIELDBLOCKPATH = 1 << 22,
 	TILESTATE_SUPPORTS_HANGABLE = 1 << 23,
-	TILESTATE_HAZARD = 1 << 24,
 
 	TILESTATE_FLOORCHANGE = TILESTATE_FLOORCHANGE_DOWN | TILESTATE_FLOORCHANGE_NORTH | TILESTATE_FLOORCHANGE_SOUTH | TILESTATE_FLOORCHANGE_EAST | TILESTATE_FLOORCHANGE_WEST | TILESTATE_FLOORCHANGE_SOUTH_ALT | TILESTATE_FLOORCHANGE_EAST_ALT,
 };
@@ -467,11 +591,10 @@ enum ItemParseAttributes_t {
 	ITEM_PARSE_CLEAVEPERCENT,
 	ITEM_PARSE_REFLECTPERCENTALL,
 	ITEM_PARSE_REFLECTDAMAGE,
+	ITEM_PARSE_PRIMARYTYPE,
 };
 
 struct ImbuementInfo {
-		Imbuement* imbuement;
-		uint32_t duration = 0;
+	Imbuement* imbuement;
+	uint32_t duration = 0;
 };
-
-#endif // SRC_ITEMS_ITEMS_DEFINITIONS_HPP_

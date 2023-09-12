@@ -12,7 +12,7 @@ end
 
 local function spawnBoss(inf)
 	local boss = Game.createMonster(inf.boss, inf.bossResp)
-	boss:registerEvent('BossWarzoneDeath')
+	boss:registerEvent("BossWarzoneDeath")
 end
 
 local warzoneBoss = MoveEvent()
@@ -35,15 +35,18 @@ function warzoneBoss.onStepIn(creature, item, pos, fromPosition)
 	end
 
 	if warzone.locked then
-		creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Please, wait until the room is cleared. \z
-		This happens 30 minutes after the last team entered.")
+		creature:sendTextMessage(
+			MESSAGE_EVENT_ADVANCE,
+			"Please, wait until the room is cleared. \z
+		This happens 30 minutes after the last team entered."
+		)
 		creature:teleportTo(fromPosition)
 		return true
 	end
 
 	creature:teleportTo(warzone.teleportTo)
 	creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have half an hour to heroically defeat the \z
-	" .. warzone.boss .. ". Otherwise you'll be teleported out by the gnomish emergency device." )
+	" .. warzone.boss .. ". Otherwise you'll be teleported out by the gnomish emergency device.")
 	return true
 end
 

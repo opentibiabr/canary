@@ -1,4 +1,4 @@
-local upFloorIds = {21297}
+local upFloorIds = { 21297 }
 
 local sewerGrateTeleport = Action()
 

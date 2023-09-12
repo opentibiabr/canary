@@ -9,12 +9,13 @@
 
 #include "pch.hpp"
 
-#include "server/network/connection/connection.h"
-#include "server/network/message/outputmessage.h"
-#include "server/network/protocol/protocol.h"
-#include "server/network/protocol/protocolgame.h"
-#include "game/scheduling/scheduler.h"
-#include "server/server.h"
+#include "server/network/connection/connection.hpp"
+#include "server/network/message/outputmessage.hpp"
+#include "server/network/protocol/protocol.hpp"
+#include "server/network/protocol/protocolgame.hpp"
+#include "game/scheduling/scheduler.hpp"
+#include "game/scheduling/dispatcher.hpp"
+#include "server/server.hpp"
 
 Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort) {
 	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
@@ -66,7 +67,7 @@ void Connection::close(bool force) {
 	connectionState = CONNECTION_STATE_CLOSED;
 
 	if (protocol) {
-		g_dispatcher().addTask(std::bind_front(&Protocol::release, protocol), 1000);
+		g_dispatcher().addTask(std::bind_front(&Protocol::release, protocol), "Protocol::release", 1000);
 	}
 
 	if (messageQueue.empty() || force) {
@@ -93,7 +94,7 @@ void Connection::closeSocket() {
 void Connection::accept(Protocol_ptr protocolPtr) {
 	this->connectionState = CONNECTION_STATE_IDENTIFYING;
 	this->protocol = protocolPtr;
-	g_dispatcher().addTask(std::bind_front(&Protocol::onConnect, protocolPtr), 1000);
+	g_dispatcher().addTask(std::bind_front(&Protocol::onConnect, protocolPtr), "Protocol::onConnect", 1000);
 
 	// Call second accept for not duplicate code
 	accept(false);

@@ -9,11 +9,11 @@
 
 #include "pch.hpp"
 
-#include "server/network/message/outputmessage.h"
-#include "server/server.h"
-#include "config/configmanager.h"
-#include "game/scheduling/scheduler.h"
-#include "creatures/players/management/ban.h"
+#include "server/network/message/outputmessage.hpp"
+#include "server/server.hpp"
+#include "config/configmanager.hpp"
+#include "game/scheduling/scheduler.hpp"
+#include "creatures/players/management/ban.hpp"
 
 ServiceManager::~ServiceManager() {
 	try {
@@ -108,7 +108,7 @@ void ServicePort::onAccept(Connection_ptr connection, const std::error_code &err
 		if (!pendingStart) {
 			close();
 			pendingStart = true;
-			g_scheduler().addEvent(15000, std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), serverPort));
+			g_scheduler().addEvent(15000, std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), serverPort), "ServicePort::openAcceptor");
 		}
 	}
 }
@@ -157,7 +157,7 @@ void ServicePort::open(uint16_t port) {
 		g_logger().warn("[ServicePort::open] - Error code: {}", e.what());
 
 		pendingStart = true;
-		g_scheduler().addEvent(15000, std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port));
+		g_scheduler().addEvent(15000, std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port), "ServicePort::openAcceptor");
 	}
 }
 

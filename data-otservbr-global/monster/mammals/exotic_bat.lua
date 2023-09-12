@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2051
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Exotic cave Spider cave."
-	}
+	Locations = "Exotic cave Spider cave.",
+}
 
 monster.health = 1500
 monster.maxHealth = 1500
@@ -35,7 +35,7 @@ monster.manaCost = 250
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -59,58 +59,58 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 100000, maxCount = 4},
-	{name = "great mana potion", chance = 30000, maxCount = 2},
-	{name = "terra amulet", chance = 6000},
-	{name = "dark mushroom", chance = 15000, maxCount = 6},
-	{name = "green mushroom", chance = 10300, maxCount = 5},
-	{name = "garlic necklace", chance = 5000},
-	{name = "bat wing", chance = 5000, maxCount = 2}
+	{ name = "platinum coin", chance = 100000, maxCount = 4 },
+	{ name = "great mana potion", chance = 30000, maxCount = 2 },
+	{ name = "terra amulet", chance = 6000 },
+	{ name = "dark mushroom", chance = 15000, maxCount = 6 },
+	{ name = "green mushroom", chance = 10300, maxCount = 5 },
+	{ name = "garlic necklace", chance = 5000 },
+	{ name = "bat wing", chance = 5000, maxCount = 2 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -80, maxDamage = -150, length = 5, spread = 2, effect = CONST_ME_GREEN_RINGS, target = false},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = -60, maxDamage = -150, range = 7, radius = 3, effect = CONST_ME_YELLOW_RINGS, target = true}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -80, maxDamage = -150, length = 5, spread = 2, effect = CONST_ME_GREEN_RINGS, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = -60, maxDamage = -150, range = 7, radius = 3, effect = CONST_ME_YELLOW_RINGS, target = true },
 }
 
 monster.defenses = {
 	defense = 40,
-	armor = 40
+	armor = 40,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 5},
-	{type = COMBAT_EARTHDAMAGE, percent = 1},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 5},
-	{type = COMBAT_HOLYDAMAGE , percent = 5},
-	{type = COMBAT_DEATHDAMAGE , percent = 5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 5 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 1 },
+	{ type = COMBAT_FIREDAMAGE, percent = -10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 5 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 5 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 5 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

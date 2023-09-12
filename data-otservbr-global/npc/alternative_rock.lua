@@ -11,17 +11,17 @@ npcConfig.walkInterval = 0
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookTypeEx = 13414
+	lookTypeEx = 13414,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Passages to Tibia, Folda and Vega.'}
+	{ text = "Passages to Tibia, Folda and Vega." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -54,8 +54,8 @@ end
 -- Travel
 --local function addTravelKeyword(keyword, text, cost, destination)
 --	local travelKeyword = keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to sail ' .. text, cost = cost})
-	--	travelKeyword:addChildKeyword({'yes'}, StdModule.travel, {npcHandler = npcHandler, premium = false, cost = cost, destination = destination})
-	--	travelKeyword:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, text = 'We would like to serve you some time.', reset = true})
+--	travelKeyword:addChildKeyword({'yes'}, StdModule.travel, {npcHandler = npcHandler, premium = false, cost = cost, destination = destination})
+--	travelKeyword:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, text = 'We would like to serve you some time.', reset = true})
 --end
 
 --addTravelKeyword('tibia', 'back to Tibia?', 0, Position(32235, 31674, 7))
@@ -63,7 +63,7 @@ end
 --addTravelKeyword('folda', 'to Folda for |TRAVELCOST|?', 10, Position(32046, 31578, 7))
 
 -- Basic
-keywordHandler:addKeyword({'help'}, StdModule.say, {npcHandler = npcHandler, text = 'Find the Golden Anchor and click there, after talk with Navigator.'})
+keywordHandler:addKeyword({ "help" }, StdModule.say, { npcHandler = npcHandler, text = "Find the Golden Anchor and click there, after talk with Navigator." })
 --keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'I am the captain of this ship.'})
 --keywordHandler:addKeyword({'captain'}, StdModule.say, {npcHandler = npcHandler, text = 'I am the captain of this ship.'})
 

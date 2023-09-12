@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "creatures/combat/combat.h"
-#include "game/game.h"
+#include "creatures/combat/combat.hpp"
+#include "game/game.hpp"
 #include "lua/functions/creatures/combat/combat_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 
@@ -143,8 +143,8 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 	}
 
 	if (isUserdata(L, 2)) {
-		LuaDataType type = getUserdataType(L, 2);
-		if (type != LuaData_Player && type != LuaData_Monster && type != LuaData_Npc) {
+		LuaData_t type = getUserdataType(L, 2);
+		if (type != LuaData_t::Player && type != LuaData_t::Monster && type != LuaData_t::Npc) {
 			pushBoolean(L, false);
 			return 1;
 		}

@@ -1,24 +1,24 @@
-find_package(Catch2 REQUIRED)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR})
-include_directories(SYSTEM ${MYSQL_INCLUDE_DIR} ${LUA_INCLUDE_DIR}
-                    ${Boost_INCLUDE_DIRS} ${PUGIXML_INCLUDE_DIR}
-                    ${CRYPTOPP_INCLUDE_DIR})
+find_package(ut CONFIG REQUIRED)
 
-project(canary_unittest)
+enable_testing()
 
-set(CMAKE_CXX_FLAGS     "-pipe -O0 -g -Wno-everything -std=c++11 -lstdc++ -lpthread -ldl")
+function(setup_test TARGET_NAME DIR)
+    add_executable(${TARGET_NAME} main.cpp)
 
-add_executable(canary_unittest
-							main.cpp
-							account_test.cpp)
+    target_compile_definitions(${TARGET_NAME} PUBLIC -DDEBUG_LOG)
+    target_link_libraries(${TARGET_NAME}  PRIVATE Boost::ut ${PROJECT_NAME}_lib)
+    target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/tests/fixture PRIVATE ${CMAKE_SOURCE_DIR}/tests/${DIR})
 
-target_compile_definitions(canary_unittest PUBLIC -DUNIT_TESTING -DDEBUG_LOG)
+    add_test(NAME ${DIR} COMMAND ${TARGET_NAME})
+    if(RUN_TESTS_AFTER_BUILD)
+        add_custom_command(
+                TARGET ${TARGET_NAME} POST_BUILD
+                COMMAND ${CMAKE_CTEST_COMMAND} --verbose
+                COMMENT "Running ctest ${DIR} after building ${TARGET_NAME}"
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/${DIR}
+        )
+    endif (RUN_TESTS_AFTER_BUILD)
+endfunction()
 
-target_link_libraries(canary_unittest Catch2::Catch2 canary_lib ${MYSQL_CLIENT_LIBS} ${LUA_LIBRARIES}
-						${Boost_LIBRARIES} ${Boost_FILESYSTEM_LIBRARY}
-						${PUGIXML_LIBRARIES} ${CRYPTOPP_LIBRARIES}
-						${CMAKE_THREAD_LIBS_INIT})
-
-include(CTest)
-include(Catch)
-catch_discover_tests(canary_unittest)
+add_subdirectory(unit)
+add_subdirectory(integration)

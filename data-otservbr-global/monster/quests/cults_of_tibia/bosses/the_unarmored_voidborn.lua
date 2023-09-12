@@ -10,7 +10,12 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
+}
+
+monster.bosstiary = {
+	bossRaceId = 1406,
+	bossRace = RARITY_ARCHFOE,
 }
 
 monster.health = 250000
@@ -22,12 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 50
-}
-
-monster.bosstiary = {
-	bossRaceId = 1406,
-	bossRace = RARITY_ARCHFOE
+	chance = 50,
 }
 
 monster.strategiesTarget = {
@@ -45,7 +45,7 @@ monster.flags = {
 	pushable = false,
 	rewardBoss = true,
 	illusionable = false,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 95,
 	targetDistance = 1,
@@ -54,86 +54,85 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "CHHRRR!", yell = false}
 }
 
 monster.loot = {
-	{name = "magic sulphur", chance = 8920, maxCount = 10},
-	{name = "gold ingot", chance = 21200, maxCount = 10},
-	{id = 282, chance = 26900}, -- giant shimmering pearl (brown)
-	{name = "berserker", chance = 8920},
-	{name = "abyss hammer", chance = 7620},
-	{name = "skull helmet", chance = 9700},
-	{name = "silver token", chance = 2732},
-	{name = "gold token", chance = 1532},
-	{name = "gold coin", chance = 100000, maxCount = 200},
-	{name = "platinum coin", chance = 29840, maxCount = 25},
-	{name = "yellow gem", chance = 29460},
-	{name = "blue gem", chance = 21892},
-	{name = "skull fetish", chance = 7270},
-	{name = "bonebreaker", chance = 9510},
-	{name = "mysterious remains", chance = 100000},
-	{name = "small diamond", chance = 12760, maxCount = 10},
-	{name = "small amethyst", chance = 14700, maxCount = 10},
-	{name = "small topaz", chance = 11520, maxCount = 10},
-	{name = "small sapphire", chance = 13790, maxCount = 10},
-	{name = "small emerald", chance = 14700, maxCount = 10},
-	{name = "small amethyst", chance = 12259, maxCount = 10},
-	{name = "energy bar", chance = 16872, maxCount = 3},
-	{name = "ultimate health potion", chance = 27652, maxCount = 10},
-	{name = "great mana potion", chance = 33721, maxCount = 10},
-	{name = "great spirit potion", chance = 25690, maxCount = 5},
-	{id = 23542, chance = 12798}, -- collar of blue plasma
-	{name = "piece of royal steel", chance = 15890},
-	{name = "shadow sceptre", chance = 7890},
-	{id = 23533, chance = 14542}, -- ring of red plasma
-	{name = "terra hood", chance = 16892}
+	{ name = "magic sulphur", chance = 8920, maxCount = 10 },
+	{ name = "gold ingot", chance = 21200, maxCount = 10 },
+	{ id = 282, chance = 26900 }, -- giant shimmering pearl (brown)
+	{ name = "berserker", chance = 8920 },
+	{ name = "abyss hammer", chance = 7620 },
+	{ name = "skull helmet", chance = 9700 },
+	{ name = "silver token", chance = 2732 },
+	{ name = "gold token", chance = 1532 },
+	{ name = "gold coin", chance = 100000, maxCount = 200 },
+	{ name = "platinum coin", chance = 29840, maxCount = 25 },
+	{ name = "yellow gem", chance = 29460 },
+	{ name = "blue gem", chance = 21892 },
+	{ name = "skull fetish", chance = 7270 },
+	{ name = "bonebreaker", chance = 9510 },
+	{ name = "mysterious remains", chance = 100000 },
+	{ name = "small diamond", chance = 12760, maxCount = 10 },
+	{ name = "small amethyst", chance = 14700, maxCount = 10 },
+	{ name = "small topaz", chance = 11520, maxCount = 10 },
+	{ name = "small sapphire", chance = 13790, maxCount = 10 },
+	{ name = "small emerald", chance = 14700, maxCount = 10 },
+	{ name = "small amethyst", chance = 12259, maxCount = 10 },
+	{ name = "energy bar", chance = 16872, maxCount = 3 },
+	{ name = "ultimate health potion", chance = 27652, maxCount = 10 },
+	{ name = "great mana potion", chance = 33721, maxCount = 10 },
+	{ name = "great spirit potion", chance = 25690, maxCount = 5 },
+	{ id = 23542, chance = 12798 }, -- collar of blue plasma
+	{ name = "piece of royal steel", chance = 15890 },
+	{ name = "shadow sceptre", chance = 7890 },
+	{ id = 23533, chance = 14542 }, -- ring of red plasma
+	{ name = "terra hood", chance = 16892 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -550},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -400, length = 7, spread = 5, effect = CONST_ME_SMALLCLOUDS, target = false},
-	{name ="combat", interval = 2000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -250, maxDamage = -440, radius = 5, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -550 },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -400, length = 7, spread = 5, effect = CONST_ME_SMALLCLOUDS, target = false },
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -250, maxDamage = -440, radius = 5, target = false },
 }
 
 monster.defenses = {
 	defense = 50,
-	armor = 50
+	armor = 50,
+	--	mitigation = ???,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -300},
-	{type = COMBAT_ENERGYDAMAGE, percent = -300},
-	{type = COMBAT_EARTHDAMAGE, percent = -300},
-	{type = COMBAT_FIREDAMAGE, percent = -300},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -300},
-	{type = COMBAT_HOLYDAMAGE , percent = -300},
-	{type = COMBAT_DEATHDAMAGE , percent = -300}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -300 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -255 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -255 },
+	{ type = COMBAT_FIREDAMAGE, percent = -255 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -300 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -300 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -300 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -141,13 +140,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

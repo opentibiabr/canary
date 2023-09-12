@@ -10,12 +10,12 @@ local maxsummons = 4
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-creature:say("Watch my maws!", TALKTYPE_ORANGE_1)
+	creature:say("Watch my maws!", TALKTYPE_ORANGE_1)
 	local summoncount = creature:getSummons()
 	if #summoncount < 4 then
 		for i = 1, maxsummons - #summoncount do
 			local mid = Game.createMonster("Guzzlemaw", creature:getPosition())
-    		if not mid then
+			if not mid then
 				return
 			end
 			mid:setMaster(creature)

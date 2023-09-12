@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 582
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 3,
 	Occurrence = 3,
-	Locations = "Ramoa."
-	}
+	Locations = "Ramoa around the Lightbringers basin.",
+}
 
 monster.health = 555
 monster.maxHealth = 555
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 0,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -60,55 +60,56 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Grrrr!", yell = true}
+	{ text = "Grrrr!", yell = false },
 }
 
 monster.loot = {
-	{name = "midnight shard", chance = 8333}
+	{ name = "midnight shard", chance = 8333 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -350},
-	{name ="combat", interval = 2000, chance = 24, type = COMBAT_FIREDAMAGE, minDamage = -60, maxDamage = -160, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREATTACK, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -350 },
+	{ name = "combat", interval = 2000, chance = 24, type = COMBAT_FIREDAMAGE, minDamage = -60, maxDamage = -160, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREATTACK, target = false },
 }
 
 monster.defenses = {
 	defense = 55,
-	armor = 50,
-	{name ="combat", interval = 1000, chance = 15, type = COMBAT_HEALING, minDamage = 60, maxDamage = 230, effect = CONST_ME_MAGIC_BLUE, target = false}
+	armor = 38,
+	mitigation = 1.04,
+	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_HEALING, minDamage = 60, maxDamage = 230, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = -25},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = -10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -25 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

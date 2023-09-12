@@ -52,7 +52,7 @@ function onlineTokensEvent.onThink(interval)
 			end
 		end
 
-		:: continue ::
+		::continue::
 	end
 	return true
 end

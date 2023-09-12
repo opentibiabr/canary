@@ -12,10 +12,10 @@ local spell = Spell("instant")
 function spell.onCastSpell(creature, var)
 	local summoncount = creature:getSummons()
 	if #summoncount < 1 then
-		mid = Game.createMonster("Elder Mummy", creature:getPosition())
-    		if not mid then
-				return
-			end
+		local mid = Game.createMonster("Elder Mummy", creature:getPosition())
+		if not mid then
+			return
+		end
 		mid:setMaster(creature)
 	end
 	return combat:execute(creature, var)

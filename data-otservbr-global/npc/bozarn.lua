@@ -16,14 +16,14 @@ npcConfig.outfit = {
 	lookBody = 38,
 	lookLegs = 95,
 	lookFeet = 115,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
- local keywordHandler = KeywordHandler:new()
+local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 
 npcType.onAppear = function(npc, creature)

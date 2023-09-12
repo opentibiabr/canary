@@ -24,11 +24,14 @@ local words = {
 		"dot",
 		"a dot",
 		"a shadow",
-		"a huge shadow"},
+		"a huge shadow",
+	},
 	direction = {
 		" straight ahead of you",
 		". It is to the starboard side",
-		". It is on the larboard side"}}
+		". It is on the larboard side",
+	},
+}
 local telescope = Action()
 
 function telescope.onUse(player, item, fromPosition, target, toPosition, isHotkey)

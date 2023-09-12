@@ -99,7 +99,7 @@ function Player.loadDailyRewardBonuses(self)
 	local streakLevel = self:getStreakLevel()
 	-- Stamina regeneration
 	if streakLevel >= DAILY_REWARD_STAMINA_REGENERATION then
-	local staminaEvent = DailyRewardBonus.Stamina[self:getId()]
+		local staminaEvent = DailyRewardBonus.Stamina[self:getId()]
 		if not staminaEvent then
 			local delay = 3
 			if self:getStamina() > 2340 and self:getStamina() <= 2520 then
@@ -116,6 +116,5 @@ function Player.loadDailyRewardBonuses(self)
 			DailyRewardBonus.Soul[self:getId()] = addEvent(RegenSoul, delay, self:getId(), delay)
 		end
 	end
-	Spdlog.debug(string.format("Player: %s, streak level: %d, active bonuses: %s",
-		self:getName(), streakLevel, self:getActiveDailyRewardBonusesName()))
+	logger.debug("Player: {}, streak level: {}, active bonuses: {}", self:getName(), streakLevel, self:getActiveDailyRewardBonusesName())
 end

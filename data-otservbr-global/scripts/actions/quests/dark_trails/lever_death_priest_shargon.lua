@@ -1,32 +1,32 @@
 local setting = {
-	centerRoom = {x = 33487, y = 32111, z = 9},
+	centerRoom = { x = 33487, y = 32111, z = 9 },
 	range = 10,
 	playerPositions = {
-		{x = 33583, y = 31844, z = 10},
-		{x = 33584, y = 31844, z = 10},
-		{x = 33585, y = 31844, z = 10},
-		{x = 33586, y = 31844, z = 10},
-		{x = 33587, y = 31844, z = 10}
+		{ x = 33583, y = 31844, z = 10 },
+		{ x = 33584, y = 31844, z = 10 },
+		{ x = 33585, y = 31844, z = 10 },
+		{ x = 33586, y = 31844, z = 10 },
+		{ x = 33587, y = 31844, z = 10 },
 	},
 	newPositions = {
-		{x = 33486, y = 32120, z = 9},
-		{x = 33486, y = 32120, z = 9},
-		{x = 33486, y = 32120, z = 9},
-		{x = 33486, y = 32120, z = 9},
-		{x = 33486, y = 32120, z = 9}
+		{ x = 33486, y = 32120, z = 9 },
+		{ x = 33486, y = 32120, z = 9 },
+		{ x = 33486, y = 32120, z = 9 },
+		{ x = 33486, y = 32120, z = 9 },
+		{ x = 33486, y = 32120, z = 9 },
 	},
 	minionPositions = {
-		{x = 33482, y = 32105, z = 9},
-		{x = 33484, y = 32105, z = 9},
-		{x = 33484, y = 32107, z = 9},
-		{x = 33481, y = 32109, z = 9},
-		{x = 33482, y = 32111, z = 9},
-		{x = 33488, y = 32106, z = 9},
-		{x = 33490, y = 32106, z = 9},
-		{x = 33492, y = 32109, z = 9},
-		{x = 33492, y = 32112, z = 9},
-		{x = 33490, y = 32112, z = 9}
-	}
+		{ x = 33482, y = 32105, z = 9 },
+		{ x = 33484, y = 32105, z = 9 },
+		{ x = 33484, y = 32107, z = 9 },
+		{ x = 33481, y = 32109, z = 9 },
+		{ x = 33482, y = 32111, z = 9 },
+		{ x = 33488, y = 32106, z = 9 },
+		{ x = 33490, y = 32106, z = 9 },
+		{ x = 33492, y = 32109, z = 9 },
+		{ x = 33492, y = 32112, z = 9 },
+		{ x = 33490, y = 32112, z = 9 },
+	},
 }
 
 local leverDeathPriestShargon = Action()
@@ -49,9 +49,8 @@ function leverDeathPriestShargon.onUse(player, item, fromPosition, target, toPos
 
 		for i = 1, #config.minionPositions do
 			Game.createMonster("greater death minion", config.minionPositions[i])
-
 		end
-		Game.createMonster("death priest shargon", {x = 33487, y = 32108, z = 9})
+		Game.createMonster("death priest shargon", { x = 33487, y = 32108, z = 9 })
 
 		local players
 		for i = 1, #storePlayers do

@@ -9,20 +9,20 @@
 
 #include "pch.hpp"
 
-#include "items/item.h"
+#include "items/item.hpp"
 #include "items/functions/item/item_parse.hpp"
-#include "items/containers/container.h"
-#include "items/decay/decay.h"
-#include "game/movement/teleport.h"
-#include "items/trashholder.h"
-#include "items/containers/mailbox/mailbox.h"
-#include "map/house/house.h"
-#include "game/game.h"
-#include "items/bed.h"
-#include "containers/rewards/rewardchest.h"
-#include "creatures/players/imbuements/imbuements.h"
-#include "lua/creature/actions.h"
-#include "creatures/combat/spells.h"
+#include "items/containers/container.hpp"
+#include "items/decay/decay.hpp"
+#include "game/movement/teleport.hpp"
+#include "items/trashholder.hpp"
+#include "items/containers/mailbox/mailbox.hpp"
+#include "map/house/house.hpp"
+#include "game/game.hpp"
+#include "items/bed.hpp"
+#include "containers/rewards/rewardchest.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
+#include "lua/creature/actions.hpp"
+#include "creatures/combat/spells.hpp"
 
 #define ITEM_IMBUEMENT_SLOT 500
 
@@ -120,7 +120,6 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 	for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
 		ImbuementInfo imbuementInfo;
 		if (getImbuementInfo(slotid, &imbuementInfo)) {
-
 			if (const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
 				categoryImbuement->id == categoryId) {
 				return true;
@@ -795,6 +794,17 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 			break;
 		}
 
+		case ATTR_STORE_INBOX_CATEGORY: {
+			std::string category;
+			if (!propStream.readString(category)) {
+				g_logger().error("[{}] failed to read store inbox category from item {}", __FUNCTION__, getName());
+				return ATTR_READ_ERROR;
+			}
+
+			setAttribute(ItemAttribute_t::STORE_INBOX_CATEGORY, category);
+			break;
+		}
+
 		default:
 			return ATTR_READ_ERROR;
 	}
@@ -955,6 +965,10 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<uint8_t>(ATTR_AMOUNT);
 		propWriteStream.write<uint16_t>(getAttribute<uint16_t>(AMOUNT));
 	}
+	if (hasAttribute(STORE_INBOX_CATEGORY)) {
+		propWriteStream.write<uint8_t>(ATTR_STORE_INBOX_CATEGORY);
+		propWriteStream.writeString(getString(ItemAttribute_t::STORE_INBOX_CATEGORY));
+	}
 
 	// Serialize custom attributes, only serialize if the map not is empty
 	if (hasCustomAttribute()) {
@@ -1007,8 +1021,9 @@ bool Item::canBeMoved() const {
 }
 
 void Item::checkDecayMapItemOnMove() {
-	if (getDuration() > 0 && getLoadedFromMap() && canBeMoved()) {
-		setLoadedFromMap(false);
+	if (getDuration() > 0 && isDecayDisabled() && canBeMoved()) {
+		decayDisabled = false;
+		loadedFromMap = false;
 		startDecaying();
 	}
 }
@@ -2217,7 +2232,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 
 	if (it.isRune()) {
 		if (it.runeLevel > 0 || it.runeMagLevel > 0) {
-			if (const RuneSpell* rune = g_spells().getRuneSpell(it.id)) {
+			if (const auto rune = g_spells().getRuneSpell(it.id)) {
 				int32_t tmpSubType = subType;
 				if (item) {
 					tmpSubType = item->getSubType();
@@ -3034,7 +3049,7 @@ void Item::addUniqueId(uint16_t uniqueId) {
 }
 
 bool Item::canDecay() const {
-	if (isRemoved()) {
+	if (isRemoved() || isDecayDisabled()) {
 		return false;
 	}
 
@@ -3067,17 +3082,19 @@ uint32_t Item::getWorth() const {
 }
 
 uint32_t Item::getForgeSlivers() const {
-	if (getID() == ITEM_FORGE_SLIVER)
+	if (getID() == ITEM_FORGE_SLIVER) {
 		return getItemCount();
-	else
+	} else {
 		return 0;
+	}
 }
 
 uint32_t Item::getForgeCores() const {
-	if (getID() == ITEM_FORGE_CORE)
+	if (getID() == ITEM_FORGE_CORE) {
 		return getItemCount();
-	else
+	} else {
 		return 0;
+	}
 }
 
 LightInfo Item::getLightInfo() const {

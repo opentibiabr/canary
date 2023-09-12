@@ -1,6 +1,9 @@
 local bossDeath = CreatureEvent("BossDeath")
 
 function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)
+	if not corpse then
+		return true
+	end
 	-- Deny summons and players
 	if not creature or creature:isPlayer() or creature:getMaster() then
 		return true
@@ -10,6 +13,10 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 	local monsterType = creature:getType()
 	-- Make sure it is a boss
 	if monsterType and monsterType:isRewardBoss() then
+		if not corpse:isContainer() then
+			logger.warn("[bossDeath.onDeath] Corpse (id: {}) for reward boss {} is not a container.", corpse:getId(), creature:getName())
+		end
+		corpse:registerReward()
 		local bossId = creature:getId()
 		local rewardId = corpse:getAttribute(ITEM_ATTRIBUTE_DATE)
 
@@ -49,7 +56,9 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 				participants = participants + 1
 			end
 		end
-		table.sort(scores, function(a, b) return a.score > b.score end)
+		table.sort(scores, function(a, b)
+			return a.score > b.score
+		end)
 
 		local expectedScore = 1 / participants
 
@@ -58,7 +67,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 			if con.score ~= 0 then
 				local reward, stamina, player
 				if con.player then
-					player = con.player;
+					player = con.player
 				else
 					player = Game.getOfflinePlayer(con.guid)
 				end

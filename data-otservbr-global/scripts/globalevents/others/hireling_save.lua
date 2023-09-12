@@ -1,7 +1,8 @@
 local hirelingSave = GlobalEvent("hirelingSave")
 function hirelingSave.onShutdown()
-	Spdlog.info("Saving Hirelings")
+	logger.info("Saving Hirelings")
 	SaveHirelings()
 	return true
 end
+
 hirelingSave:register()

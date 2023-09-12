@@ -1,64 +1,64 @@
 local shrinesEntrance = {
 	ice = {
-		{x = 32356, y = 31780, z = 9},--Carlin
-		{x = 32358, y = 32242, z = 6},--Thais
-		{x = 32954, y = 32076, z = 5},--Venore
-		{x = 32678, y = 31688, z = 2},--Ab'Dendriel
-		{x = 32643, y = 31928, z = 11},--Kazodroon
-		{x = 33229, y = 32389, z = 5},--Darashia
-		{x = 33126, y = 32812, z = 4},--Ankrahmun
-		{x = 33264, y = 31837, z = 9},--Edron
-		{x = 32333, y = 32838, z = 8},--Liberty Bay
-		{x = 32624, y = 32744, z = 4},--Port Hope
-		{x = 32212, y = 31130, z = 8},--Svargrond
-		{x = 32784, y = 31243, z = 5},--Yalahar
-		{x = 33592, y = 31896, z = 4}--Oramond
+		{ x = 32356, y = 31780, z = 9 }, --Carlin
+		{ x = 32358, y = 32242, z = 6 }, --Thais
+		{ x = 32954, y = 32076, z = 5 }, --Venore
+		{ x = 32678, y = 31688, z = 2 }, --Ab'Dendriel
+		{ x = 32643, y = 31928, z = 11 }, --Kazodroon
+		{ x = 33229, y = 32389, z = 5 }, --Darashia
+		{ x = 33126, y = 32812, z = 4 }, --Ankrahmun
+		{ x = 33264, y = 31837, z = 9 }, --Edron
+		{ x = 32333, y = 32838, z = 8 }, --Liberty Bay
+		{ x = 32624, y = 32744, z = 4 }, --Port Hope
+		{ x = 32212, y = 31130, z = 8 }, --Svargrond
+		{ x = 32784, y = 31243, z = 5 }, --Yalahar
+		{ x = 33592, y = 31896, z = 4 }, --Oramond
 	},
 	earth = {
-		{x = 32364, y = 31780, z = 9},--Carlin
-		{x = 32360, y = 32239, z = 6},--Thais
-		{x = 32958, y = 32079, z = 5},--Venore
-		{x = 32678, y = 31686, z = 2},--Ab'Dendriel
-		{x = 32649, y = 31928, z = 11},--Kazodroon
-		{x = 33232, y = 32389, z = 5},--Darashia
-		{x = 33131, y = 32806, z = 4},--Ankrahmun
-		{x = 33266, y = 31831, z = 9},--Edron
-		{x = 32339, y = 32842, z = 8},--Liberty Bay
-		{x = 32625, y = 32740, z = 4},--Port Hope
-		{x = 32215, y = 31130, z = 8},--Svargrond
-		{x = 32787, y = 31243, z = 5},--Yalahar
-		{x = 33596, y = 31901, z = 4}--Oramond
+		{ x = 32364, y = 31780, z = 9 }, --Carlin
+		{ x = 32360, y = 32239, z = 6 }, --Thais
+		{ x = 32958, y = 32079, z = 5 }, --Venore
+		{ x = 32678, y = 31686, z = 2 }, --Ab'Dendriel
+		{ x = 32649, y = 31928, z = 11 }, --Kazodroon
+		{ x = 33232, y = 32389, z = 5 }, --Darashia
+		{ x = 33131, y = 32806, z = 4 }, --Ankrahmun
+		{ x = 33266, y = 31831, z = 9 }, --Edron
+		{ x = 32339, y = 32842, z = 8 }, --Liberty Bay
+		{ x = 32625, y = 32740, z = 4 }, --Port Hope
+		{ x = 32215, y = 31130, z = 8 }, --Svargrond
+		{ x = 32787, y = 31243, z = 5 }, --Yalahar
+		{ x = 33596, y = 31901, z = 4 }, --Oramond
 	},
 	fire = {
-		{x = 32356, y = 31783, z = 9},--Carlin
-		{x = 32379, y = 32242, z = 6},--Thais
-		{x = 32961, y = 32076, z = 5},--Venore
-		{x = 32678, y = 31684, z = 2},--Ab'Dendriel
-		{x = 32649, y = 31921, z = 11},--Kazodroon
-		{x = 33235, y = 32389, z = 5},--Darashia
-		{x = 33126, y = 32820, z = 4},--Ankrahmun
-		{x = 33271, y = 31831, z = 9},--Edron
-		{x = 32343, y = 32838, z = 8},--Liberty Bay
-		{x = 32632, y = 32740, z = 4},--Port Hope
-		{x = 32208, y = 31133, z = 8},--Svargrond
-		{x = 32790, y = 31243, z = 5},--Yalahar
-		{x = 33592, y = 31901, z = 4}--Oramond
+		{ x = 32356, y = 31783, z = 9 }, --Carlin
+		{ x = 32379, y = 32242, z = 6 }, --Thais
+		{ x = 32961, y = 32076, z = 5 }, --Venore
+		{ x = 32678, y = 31684, z = 2 }, --Ab'Dendriel
+		{ x = 32649, y = 31921, z = 11 }, --Kazodroon
+		{ x = 33235, y = 32389, z = 5 }, --Darashia
+		{ x = 33126, y = 32820, z = 4 }, --Ankrahmun
+		{ x = 33271, y = 31831, z = 9 }, --Edron
+		{ x = 32343, y = 32838, z = 8 }, --Liberty Bay
+		{ x = 32632, y = 32740, z = 4 }, --Port Hope
+		{ x = 32208, y = 31133, z = 8 }, --Svargrond
+		{ x = 32790, y = 31243, z = 5 }, --Yalahar
+		{ x = 33592, y = 31901, z = 4 }, --Oramond
 	},
 	energy = {
-		{x = 32364, y = 31783, z = 9},--Carlin
-		{x = 32377, y = 32239, z = 6},--Thais
-		{x = 32958, y = 32072, z = 5},--Venore
-		{x = 32681, y = 31683, z = 2},--Ab'Dendriel
-		{x = 32643, y = 31921, z = 11},--Kazodroon
-		{x = 33226, y = 32389, z = 5},--Darashia
-		{x = 33131, y = 32823, z = 4},--Ankrahmun
-		{x = 33271, y = 31837, z = 9},--Edron
-		{x = 32339, y = 32832, z = 8},--Liberty Bay
-		{x = 32632, y = 32744, z = 4},--Port Hope
-		{x = 32209, y = 31130, z = 8},--Svargrond
-		{x = 32781, y = 31243, z = 5},--Yalahar
-		{x = 33596, y = 31896, z = 4}--Oramond
-	}
+		{ x = 32364, y = 31783, z = 9 }, --Carlin
+		{ x = 32377, y = 32239, z = 6 }, --Thais
+		{ x = 32958, y = 32072, z = 5 }, --Venore
+		{ x = 32681, y = 31683, z = 2 }, --Ab'Dendriel
+		{ x = 32643, y = 31921, z = 11 }, --Kazodroon
+		{ x = 33226, y = 32389, z = 5 }, --Darashia
+		{ x = 33131, y = 32823, z = 4 }, --Ankrahmun
+		{ x = 33271, y = 31837, z = 9 }, --Edron
+		{ x = 32339, y = 32832, z = 8 }, --Liberty Bay
+		{ x = 32632, y = 32744, z = 4 }, --Port Hope
+		{ x = 32209, y = 31130, z = 8 }, --Svargrond
+		{ x = 32781, y = 31243, z = 5 }, --Yalahar
+		{ x = 33596, y = 31896, z = 4 }, --Oramond
+	},
 }
 
 local function toShrine(player, entrance, destination)

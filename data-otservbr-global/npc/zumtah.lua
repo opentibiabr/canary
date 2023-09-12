@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 51
+	lookType = 51,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -46,7 +46,7 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local condition = Condition(CONDITION_OUTFIT)
-condition:setOutfit({lookType = 348})
+condition:setOutfit({ lookType = 348 })
 condition:setTicks(-1)
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -75,18 +75,17 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("No, I really can't remember. I enjoyed my stay here so much that I forgot how it looks outside of this hole. Outside. The air, the sky, the light. Oh well... well.", npc, creature)
 				npcHandler:setTopic(playerId, 12)
 			elseif npcHandler:getTopic(playerId) == 12 then
-				npcHandler:say({"Oh yes, yes. I... I never really thought about how you creatures feel in here I guess. I... just watched all these beings die here. ...",
-				"I... enjoyed this torture so much that I forgot time and everything around me. ...",
-				"I feel - sorry. Yes, sorry."}, npc, creature)
+				npcHandler:say({ "Oh yes, yes. I... I never really thought about how you creatures feel in here I guess. I... just watched all these beings die here. ...", "I... enjoyed this torture so much that I forgot time and everything around me. ...", "I feel - sorry. Yes, sorry." }, npc, creature)
 				npcHandler:setTopic(playerId, 13)
 			elseif npcHandler:getTopic(playerId) == 13 then
-				npcHandler:say({"Oh, excuse me of course, you... wanted to go. Like all... the others. I am sorry, so sorry. You... you can leave. Yes. You can go. You are free. I shall stay here and help every poor soul which ever gets thrown in here from this day onward. ...",
-				"Yes, I will redeem myself. Maybe in another 278 years. ...",
-				"If you want to go, just ask for an {exit} and I will transform you into a creature small enough to fit through that hole over there."}, npc, creature)
+				npcHandler:say({
+					"Oh, excuse me of course, you... wanted to go. Like all... the others. I am sorry, so sorry. You... you can leave. Yes. You can go. You are free. I shall stay here and help every poor soul which ever gets thrown in here from this day onward. ...",
+					"Yes, I will redeem myself. Maybe in another 278 years. ...",
+					"If you want to go, just ask for an {exit} and I will transform you into a creature small enough to fit through that hole over there.",
+				}, npc, creature)
 				npcHandler:setTopic(playerId, 14)
 			elseif npcHandler:getTopic(playerId) == 14 then
-				npcHandler:say({"Alright, as I said you are free now. There will not be an outside for the next three centuries, but you - go. ...",
-				"Oh and I recovered the strange crate you where hiding in, it will wait for you at the exit since you can't carry it as... a beetle, muhaha. Yes, you shall now crawl through the passage as a beetle. There you go."}, npc, creature)
+				npcHandler:say({ "Alright, as I said you are free now. There will not be an outside for the next three centuries, but you - go. ...", "Oh and I recovered the strange crate you where hiding in, it will wait for you at the exit since you can't carry it as... a beetle, muhaha. Yes, you shall now crawl through the passage as a beetle. There you go." }, npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				player:setStorageValue(Storage.WrathoftheEmperor.ZumtahStatus, 1)
 				player:setStorageValue(Storage.WrathoftheEmperor.PrisonReleaseStatus, 1)
@@ -129,16 +128,16 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 --Basic
-keywordHandler:addKeyword({"job"}, StdModule.say, {npcHandler = npcHandler, text = "I wait. I wait for someone like you to come here. I wait for them to grow disconsolate. I wait for them to despair. And I wait for them to die. Muhahaha."})
-keywordHandler:addKeyword({"name"}, StdModule.say, {npcHandler = npcHandler, text = "I am Zumtah, Zumtah the impeccable, Zumtah the marvellous, Zumtah the... the... eternal."})
-keywordHandler:addAliasKeyword({"djinn"})
-keywordHandler:addAliasKeyword({"zumtah"})
-keywordHandler:addKeyword({"zao"}, StdModule.say, {npcHandler = npcHandler, text = "The land you are currently dwelling in, human. Don't you have any sense of your surroundings?"})
-keywordHandler:addKeyword({"humans"}, StdModule.say, {npcHandler = npcHandler, text = "I have seen many of them. I have seen many of them die. In here, with me. Perhaps you will be pleased to meet them. Not long and you will join their ranks. Muhaha."})
-keywordHandler:addKeyword({"lizard"}, StdModule.say, {npcHandler = npcHandler, text = "Pesky creatures. Many of them have been brought here, many of them died here. Humans, lizards, beasts, they all die the same. Down here, with me. Muhahaha."})
-keywordHandler:addKeyword({"zalamon"}, StdModule.say, {npcHandler = npcHandler, text = "What? What do you mean by that?"})
-keywordHandler:addKeyword({"emperor"}, StdModule.say, {npcHandler = npcHandler, text = "Hmm, an old one. I don't care much about politics or power, as here, he has none. Here, only I have power. Muhaha."})
-keywordHandler:addKeyword({"resistance"}, StdModule.say, {npcHandler = npcHandler, text = "What are you talking about, such things do not matter down here. Down here alone, isolated and broken. Muhaha."})
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I wait. I wait for someone like you to come here. I wait for them to grow disconsolate. I wait for them to despair. And I wait for them to die. Muhahaha." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I am Zumtah, Zumtah the impeccable, Zumtah the marvellous, Zumtah the... the... eternal." })
+keywordHandler:addAliasKeyword({ "djinn" })
+keywordHandler:addAliasKeyword({ "zumtah" })
+keywordHandler:addKeyword({ "zao" }, StdModule.say, { npcHandler = npcHandler, text = "The land you are currently dwelling in, human. Don't you have any sense of your surroundings?" })
+keywordHandler:addKeyword({ "humans" }, StdModule.say, { npcHandler = npcHandler, text = "I have seen many of them. I have seen many of them die. In here, with me. Perhaps you will be pleased to meet them. Not long and you will join their ranks. Muhaha." })
+keywordHandler:addKeyword({ "lizard" }, StdModule.say, { npcHandler = npcHandler, text = "Pesky creatures. Many of them have been brought here, many of them died here. Humans, lizards, beasts, they all die the same. Down here, with me. Muhahaha." })
+keywordHandler:addKeyword({ "zalamon" }, StdModule.say, { npcHandler = npcHandler, text = "What? What do you mean by that?" })
+keywordHandler:addKeyword({ "emperor" }, StdModule.say, { npcHandler = npcHandler, text = "Hmm, an old one. I don't care much about politics or power, as here, he has none. Here, only I have power. Muhaha." })
+keywordHandler:addKeyword({ "resistance" }, StdModule.say, { npcHandler = npcHandler, text = "What are you talking about, such things do not matter down here. Down here alone, isolated and broken. Muhaha." })
 npcHandler:setMessage(MESSAGE_GREET, "Another visitor to this constricted, cosy, calm realm, perfect except for an {exit}. Muhaha.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Muhahaha.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

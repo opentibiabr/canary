@@ -7,12 +7,12 @@ condition:setParameter(CONDITION_PARAM_DELAYED, 1)
 condition:addDamage(159, 9000, -10)
 combat:addCondition(condition)
 
-	arr = {
-		{0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
-		{0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0}
-	}
+arr = {
+	{ 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0 },
+}
 
 local area = createCombatArea(arr)
 combat:setArea(area)

@@ -9,28 +9,51 @@
 
 #include "pch.hpp"
 
+#include "lib/di/container.hpp"
+#include "lib/thread/thread_pool.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/task.hpp"
+
+Dispatcher::Dispatcher(ThreadPool &threadPool) :
+	threadPool(threadPool) { }
 
 Dispatcher &Dispatcher::getInstance() {
 	return inject<Dispatcher>();
 }
 
-void Dispatcher::addTask(std::function<void(void)> f, uint32_t expiresAfterMs /* = 0*/) {
-	addTask(std::make_shared<Task>(std::move(f)), expiresAfterMs);
+void Dispatcher::addTask(std::function<void(void)> f, std::string context) {
+	addTask(std::make_shared<Task>(std::move(f), std::move(context)));
 }
 
-void Dispatcher::addTask(const std::shared_ptr<Task> &task, uint32_t expiresAfterMs /* = 0*/) {
+void Dispatcher::addTask(std::function<void(void)> f, std::string context, uint32_t expiresAfterMs) {
+	addTask(std::make_shared<Task>(std::move(f), std::move(context)), expiresAfterMs);
+}
+
+void Dispatcher::addTask(const std::shared_ptr<Task> task) {
+	addTask(task, 0);
+}
+
+void Dispatcher::addTask(const std::shared_ptr<Task> task, uint32_t expiresAfterMs) {
+	auto executeTask = [this, task]() {
+		std::lock_guard lockClass(threadSafetyMutex);
+
+		if (task->hasTraceableContext()) {
+			g_logger().trace("Executing task {}.", task->getContext());
+		} else {
+			g_logger().debug("Executing task {}.", task->getContext());
+		}
+
+		++dispatcherCycle;
+		(*task)();
+	};
+
 	if (expiresAfterMs == 0) {
-		addLoad([this, task]() {
-			++dispatcherCycle;
-			(*task)();
-		});
+		threadPool.addLoad(executeTask);
 
 		return;
 	};
 
-	auto timer = std::make_shared<asio::steady_timer>(io_service);
+	auto timer = std::make_shared<asio::steady_timer>(threadPool.getIoContext());
 	timer->expires_after(std::chrono::milliseconds(expiresAfterMs));
 
 	timer->async_wait([task, expiresAfterMs](const std::error_code &error) {
@@ -38,15 +61,14 @@ void Dispatcher::addTask(const std::shared_ptr<Task> &task, uint32_t expiresAfte
 			return;
 		}
 
-		g_logger().info("Task was not executed within {} ms, so it was cancelled.", expiresAfterMs);
+		g_logger().info("Task '{}' was not executed within {} ms, so it was cancelled.", task->getContext(), expiresAfterMs);
 	});
 
-	addLoad([this, task, timer]() {
+	threadPool.addLoad([timer, executeTask]() {
 		if (timer->cancel() <= 0) {
 			return;
 		}
 
-		++dispatcherCycle;
-		(*task)();
+		executeTask();
 	});
 }

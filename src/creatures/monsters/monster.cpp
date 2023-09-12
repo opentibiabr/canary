@@ -9,12 +9,12 @@
 
 #include "pch.hpp"
 
-#include "creatures/monsters/monster.h"
-#include "creatures/combat/spells.h"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/combat/spells.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "game/game.h"
+#include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "lua/creature/events.h"
+#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 
@@ -24,14 +24,14 @@ int32_t Monster::despawnRadius;
 uint32_t Monster::monsterAutoID = 0x50000001;
 
 Monster* Monster::createMonster(const std::string &name) {
-	MonsterType* mType = g_monsters().getMonsterType(name);
+	const auto mType = g_monsters().getMonsterType(name);
 	if (!mType) {
 		return nullptr;
 	}
 	return new Monster(mType);
 }
 
-Monster::Monster(MonsterType* mType) :
+Monster::Monster(const std::shared_ptr<MonsterType> mType) :
 	Creature(),
 	strDescription(asLowerCaseString(mType->nameDescription)),
 	mType(mType) {
@@ -315,8 +315,9 @@ void Monster::addTarget(Creature* creature, bool pushFront /* = false*/) {
 		} else {
 			targetList.push_back(creature);
 		}
-		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer())
+		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen++;
+		}
 	}
 }
 
@@ -648,7 +649,7 @@ BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int32
 }
 
 bool Monster::isTarget(const Creature* creature) const {
-	if (creature->isRemoved() || !creature->isAttackable() || creature->getZone() == ZONE_PROTECTION || !canSeeCreature(creature)) {
+	if (creature->isRemoved() || !creature->isAttackable() || creature->getZoneType() == ZONE_PROTECTION || !canSeeCreature(creature)) {
 		return false;
 	}
 
@@ -675,7 +676,7 @@ bool Monster::selectTarget(Creature* creature) {
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
-			g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
+			g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
 		}
 	}
 	return setFollowCreature(creature);
@@ -849,9 +850,9 @@ void Monster::doAttacking(uint32_t interval) {
 
 				float multiplier;
 				if (maxCombatValue > 0) { // Defense
-					multiplier = mType->getDefenseMultiplier();
+					multiplier = getDefenseMultiplier();
 				} else { // Attack
-					multiplier = mType->getAttackMultiplier();
+					multiplier = getAttackMultiplier();
 				}
 
 				minCombatValue = spellBlock.minCombatValue * multiplier;
@@ -1923,9 +1924,9 @@ bool Monster::getCombatValues(int32_t &min, int32_t &max) {
 
 	float multiplier;
 	if (maxCombatValue > 0) { // Defense
-		multiplier = mType->getDefenseMultiplier();
+		multiplier = getDefenseMultiplier();
 	} else { // Attack
-		multiplier = mType->getAttackMultiplier();
+		multiplier = getAttackMultiplier();
 	}
 
 	min = minCombatValue * multiplier;
@@ -2006,8 +2007,10 @@ void Monster::dropLoot(Container* corpse, Creature*) {
 				corpse->internalAddThing(sliver);
 			}
 		}
-		g_events().eventMonsterOnDropLoot(this, corpse);
-		g_callbacks().executeCallback(EventCallback_t::monsterOnDropLoot, &EventCallback::monsterOnDropLoot, this, corpse);
+		if (!this->isRewardBoss() && g_configManager().getNumber(RATE_LOOT) > 0) {
+			g_callbacks().executeCallback(EventCallback_t::monsterOnDropLoot, &EventCallback::monsterOnDropLoot, this, corpse);
+			g_callbacks().executeCallback(EventCallback_t::monsterPostDropLoot, &EventCallback::monsterPostDropLoot, this, corpse);
+		}
 	}
 }
 
@@ -2076,6 +2079,14 @@ bool Monster::changeTargetDistance(int32_t distance, uint32_t duration /* = 1200
 	return true;
 }
 
+bool Monster::isImmune(ConditionType_t conditionType) const {
+	return mType->info.m_conditionImmunities[static_cast<size_t>(conditionType)];
+}
+
+bool Monster::isImmune(CombatType_t combatType) const {
+	return mType->info.m_damageImmunities[combatTypeToIndex(combatType)];
+}
+
 void Monster::getPathSearchParams(const Creature* creature, FindPathParams &fpp) const {
 	Creature::getPathSearchParams(creature, fpp);
 
@@ -2092,8 +2103,8 @@ void Monster::getPathSearchParams(const Creature* creature, FindPathParams &fpp)
 			fpp.fullPathSearch = !canUseAttack(getPosition(), creature);
 		}
 	} else if (isFleeing()) {
-		// Distance should be higher than the client view range (Map::maxClientViewportX/Map::maxClientViewportY)
-		fpp.maxTargetDist = Map::maxViewportX;
+		// Distance should be higher than the client view range (MAP_MAX_CLIENT_VIEW_PORT_X/MAP_MAX_CLIENT_VIEW_PORT_Y)
+		fpp.maxTargetDist = MAP_MAX_VIEW_PORT_X;
 		fpp.clearSight = false;
 		fpp.keepDistance = true;
 		fpp.fullPathSearch = false;
@@ -2109,21 +2120,14 @@ void Monster::configureForgeSystem() {
 		return;
 	}
 
-	// Avoid double forge
 	if (monsterForgeClassification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
-		// Set stack
 		setForgeStack(15);
-		// Set icon
-		setMonsterIcon(15, 5);
-		// Update
+		setIcon("forge", CreatureIcon(CreatureIconModifications_t::Fiendish, 0 /* don't show stacks on fiends */));
 		g_game().updateCreatureIcon(this);
 	} else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER) {
-		// Set stack
 		auto stack = static_cast<uint16_t>(normal_random(1, 5));
 		setForgeStack(stack);
-		// Set icon
-		setMonsterIcon(stack, 4);
-		// Update
+		setIcon("forge", CreatureIcon(CreatureIconModifications_t::Influenced, stack));
 		g_game().updateCreatureIcon(this);
 	}
 
@@ -2149,16 +2153,9 @@ void Monster::clearFiendishStatus() {
 	health = mType->info.health * mType->getHealthMultiplier();
 	healthMax = mType->info.healthMax * mType->getHealthMultiplier();
 
-	// Set icon
-	setMonsterIcon(0, CREATUREICON_NONE);
+	removeIcon("forge");
 	g_game().updateCreatureIcon(this);
-
 	g_game().sendUpdateCreature(this);
-}
-
-void Monster::setMonsterIcon(uint16_t iconcount, uint16_t iconnumber) {
-	iconCount = iconcount;
-	iconNumber = iconnumber;
 }
 
 bool Monster::canDropLoot() const {

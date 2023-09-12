@@ -2,7 +2,7 @@ local lava = {
 	Position(32912, 32209, 15),
 	Position(32913, 32209, 15),
 	Position(32912, 32210, 15),
-	Position(32913, 32210, 15)
+	Position(32913, 32210, 15),
 }
 
 local pitsOfInfernoFirstThroneLever = Action()
@@ -10,7 +10,7 @@ function pitsOfInfernoFirstThroneLever.onUse(player, item, fromPosition, target,
 	local lavaTile
 	for i = 1, #lava do
 		lavaTile = Tile(lava[i]):getGround()
-		if lavaTile and table.contains({410, 21477}, lavaTile.itemid) then
+		if lavaTile and table.contains({ 410, 21477 }, lavaTile.itemid) then
 			lavaTile:transform(lavaTile.itemid == 21477 and 410 or 21477)
 			lava[i]:sendMagicEffect(CONST_ME_SMOKE)
 		end

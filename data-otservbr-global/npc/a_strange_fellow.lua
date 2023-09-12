@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 118,
 	lookLegs = 57,
 	lookFeet = 95,
-	lookAddons = 2
+	lookAddons = 2,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -62,18 +62,18 @@ local function creatureSayCallback(npc, creature, type, message)
 		return true
 	end
 	if MsgContains(message, "bill") then
-		if	npcHandler:getTopic(playerId) == 6 then
+		if npcHandler:getTopic(playerId) == 6 then
 			npcHandler:say("A bill? Oh boy so you are delivering another bill to poor me?", npc, creature)
 			npcHandler:setTopic(playerId, 7)
 		end
 	elseif MsgContains(message, "yes") then
-		if	player:removeItem(3216, 1)	and	npcHandler:getTopic(playerId) == 7 then
+		if player:removeItem(3216, 1) and npcHandler:getTopic(playerId) == 7 then
 			npcHandler:say("Ok, ok, I'll take it. I guess I have no other choice anyways. And now leave me alone in my misery please.", npc, creature)
 			player:setStorageValue(Storage.Postman.Mission03, 2)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "hat") then
-		if	npcHandler:getTopic(playerId) < 1 then
+		if npcHandler:getTopic(playerId) < 1 then
 			npcHandler:say("Uh? What do you want?!", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 2 then

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1138
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Tainted Caves in the Green Claw Swamp (under the right conditions)."
-	}
+	Locations = "Tainted Caves in the Green Claw Swamp (under the right conditions).",
+}
 
 monster.health = 250
 monster.maxHealth = 250
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -62,53 +62,52 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Ting-a-ling.", yell = false},
-	{text = "Free ... finally.", yell = false}
+	{ text = "Ting-a-ling.", yell = false },
+	{ text = "Free ... finally.", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
-monster.attacks = {
-}
+monster.attacks = {}
 
 monster.defenses = {
 	defense = 15,
-	armor = 10,
-	{name ="speed", interval = 2000, chance = 8, speedChange = 240, effect = CONST_ME_MAGIC_GREEN, target = false, duration = 20000},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false},
-	{name ="invisible", interval = 2000, chance = 15, effect = CONST_ME_MAGIC_BLUE}
+	armor = 12,
+	mitigation = 0.64,
+	{ name = "speed", interval = 2000, chance = 8, speedChange = 240, effect = CONST_ME_MAGIC_GREEN, target = false, duration = 20000 },
+	{ name = "combat", interval = 2000, chance = 100, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false },
+	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 65},
-	{type = COMBAT_ENERGYDAMAGE, percent = 30},
-	{type = COMBAT_EARTHDAMAGE, percent = 90},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 60 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 20 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

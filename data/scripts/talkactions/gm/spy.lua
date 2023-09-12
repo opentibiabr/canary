@@ -29,21 +29,19 @@ end
 
 local spy = TalkAction("/spy")
 
-function spy.onSay(cid, words, param)
-	local player = Player(cid)
-
+function spy.onSay(player, words, param)
 	-- create log
 	logCommand(player, words, param)
 
-	if (param == "") then
+	if param == "" then
 		player:sendCancelMessage("Write the name of the character to be spyed.")
 		return true
 	end
 
-	local slotName = { "Helmet", "Amulet", "Backpack", "Armor", "Right Hand", "Left Hand", "Legs", "Boots", "Ring", "Arrow" }
 	local target = Player(param)
 
 	if target and target:isPlayer() then
+		local slotName = { "Helmet", "Amulet", "Backpack", "Armor", "Right Hand", "Left Hand", "Legs", "Boots", "Ring", "Arrow" }
 		local text = "Equipments of " .. Creature(target):getName()
 		for i = 1, 10 do
 			text = text .. "\n\n"

@@ -8,7 +8,7 @@ function addTutor.onSay(player, words, param)
 	if param == "" then
 		player:sendCancelMessage("Player name param required")
 		-- Distro log
-		Spdlog.error("[addTutor.onSay] - Player name param not found")
+		logger.error("[addTutor.onSay] - Player name param not found")
 		return true
 	end
 
@@ -20,7 +20,7 @@ function addTutor.onSay(player, words, param)
 	if not targetPlayer then
 		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
-		Spdlog.error("[addTutor.onSay] - Player " .. string.titleCase(name) .. " is not online")
+		logger.error("[addTutor.onSay] - Player {} is not online", string.titleCase(name))
 		return true
 	end
 
@@ -50,7 +50,7 @@ function removeTutor.onSay(player, words, param)
 	if param == "" then
 		player:sendCancelMessage("Player name param required")
 		-- Distro log
-		Spdlog.error("[removeTutor.onSay] - Player name param not found")
+		logger.error("[removeTutor.onSay] - Player name param not found")
 		return true
 	end
 
@@ -62,7 +62,7 @@ function removeTutor.onSay(player, words, param)
 	if not targetPlayer then
 		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
-		Spdlog.error("[removeTutor.onSay] - Player " .. string.titleCase(name) .. " is not online")
+		logger.error("[removeTutor.onSay] - Player {} is not online", string.titleCase(name))
 		return true
 	end
 

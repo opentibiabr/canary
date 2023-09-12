@@ -5,7 +5,6 @@
 --
 -- This script should be used in test environments only.
 
-
 function Player.reloadTalkaction(self, words, param)
 	local reloadTypes = {
 		["all"] = RELOAD_TYPE_ALL,
@@ -51,7 +50,7 @@ function Player.reloadTalkaction(self, words, param)
 		["imbuements"] = RELOAD_TYPE_IMBUEMENTS,
 
 		["group"] = RELOAD_TYPE_GROUPS,
-		["groups"] = RELOAD_TYPE_GROUPS
+		["groups"] = RELOAD_TYPE_GROUPS,
 	}
 
 	if not configManager.getBoolean(configKeys.ALLOW_RELOAD) then
@@ -72,15 +71,15 @@ function Player.reloadTalkaction(self, words, param)
 		-- Force save server before reload
 		saveServer()
 		SaveHirelings()
-		Spdlog.info("Saved Hirelings")
+		logger.info("Saved Hirelings")
 		self:sendTextMessage(MESSAGE_ADMINISTRADOR, "Server is saved.. Now will reload configs!")
 
 		Game.reload(reloadType)
 		self:sendTextMessage(MESSAGE_LOOK, string.format("Reloaded %s.", param:lower()))
-		Spdlog.info("Reloaded " .. param:lower() .. "")
+		logger.info("Reloaded {}", param:lower())
 	elseif not reloadType then
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Reload type not found.")
-		Spdlog.warn("[reload.onSay] - Reload type '" .. param .. "' not found")
+		logger.warn("[reload.onSay] - Reload type '{}' not found", param)
 	end
 	return true
 end

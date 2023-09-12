@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 113,
 	lookFeet = 115,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 222
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Around Dark Cathedral, Tiquanda Bandit Caves, the Outlaw Camp, Tyrsung, Yalahar and Nargor."
-	}
+	Locations = "Around Dark Cathedral, Tiquanda Bandit Caves, the Outlaw Camp, Tyrsung, Yalahar and Nargor.",
+}
 
 monster.health = 130
 monster.maxHealth = 130
@@ -35,7 +35,7 @@ monster.manaCost = 390
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -59,62 +59,63 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "I will silence you forever!", yell = false},
-	{text = "You saw something you shouldn't!", yell = false}
+	{ text = "You saw something you shouldn't!", yell = false },
+	{ text = "I will silence you forever!", yell = false },
 }
 
 monster.loot = {
-	{id = 2920, chance = 30200, maxCount = 2}, -- torch
-	{name = "gold coin", chance = 80000, maxCount = 10},
-	{id = 3264, chance = 5000}, -- sword
-	{name = "knife", chance = 9920},
-	{name = "combat knife", chance = 4400},
-	{name = "short sword", chance = 10000},
-	{name = "leather helmet", chance = 10050},
-	{name = "leather legs", chance = 14840},
-	{name = "ham", chance = 10200},
-	{id = 7397, chance = 110}, -- deer trophy
-	{name = "raspberry", chance = 5000, maxCount = 5}
+	{ id = 2920, chance = 30200, maxCount = 2 }, -- torch
+	{ name = "gold coin", chance = 80000, maxCount = 10 },
+	{ id = 3264, chance = 5000 }, -- sword
+	{ name = "knife", chance = 9920 },
+	{ name = "combat knife", chance = 4400 },
+	{ name = "short sword", chance = 10000 },
+	{ name = "leather helmet", chance = 10050 },
+	{ name = "leather legs", chance = 14840 },
+	{ name = "ham", chance = 10200 },
+	{ id = 7397, chance = 110 }, -- deer trophy
+	{ name = "raspberry", chance = 5000, maxCount = 5 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -60}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -60 },
 }
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 8,
+	mitigation = 0.33,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -5},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -5 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

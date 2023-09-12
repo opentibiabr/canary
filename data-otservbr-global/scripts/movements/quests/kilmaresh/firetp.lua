@@ -1,43 +1,42 @@
 -- (Eduardo) TODO: Refactor this script
 local firstTp = {
 	itemActionId = 57539, -- action id teleport
-	posFireOne = {x = 33830, y = 31628, z = 9}, -- local do fire um
-	posFireTwo = {x = 33832, y = 31628, z = 9}, -- local do fire dois
-	posFireTree = {x = 33834, y = 31628, z = 9}, -- local do fire tres
+	posFireOne = { x = 33830, y = 31628, z = 9 }, -- local do fire um
+	posFireTwo = { x = 33832, y = 31628, z = 9 }, -- local do fire dois
+	posFireTree = { x = 33834, y = 31628, z = 9 }, -- local do fire tres
 	fireIdOn = 171, -- id do fire on
 	fireIdOff = 2114, -- id do fire off
 }
 
 local secondTp = {
 	itemActionId = 57540, -- action id teleport
-	posFireOne = {x = 33830, y = 31628, z = 9}, -- local do fire um
-	posFireTwo = {x = 33832, y = 31628, z = 9}, -- local do fire dois
-	posFireTree = {x = 33834, y = 31628, z = 9}, -- local do fire tres
+	posFireOne = { x = 33830, y = 31628, z = 9 }, -- local do fire um
+	posFireTwo = { x = 33832, y = 31628, z = 9 }, -- local do fire dois
+	posFireTree = { x = 33834, y = 31628, z = 9 }, -- local do fire tres
 	fireIdOn = 171, -- id do fire on
 	fireIdOff = 2114, -- id do fire off
 }
 
 local thirdTp = {
 	itemActionId = 57541, -- action id teleport
-	posFireOne = {x = 33830, y = 31628, z = 9}, -- local do fire um
-	posFireTwo = {x = 33832, y = 31628, z = 9}, -- local do fire dois
-	posFireTree = {x = 33834, y = 31628, z = 9}, -- local do fire tres
+	posFireOne = { x = 33830, y = 31628, z = 9 }, -- local do fire um
+	posFireTwo = { x = 33832, y = 31628, z = 9 }, -- local do fire dois
+	posFireTree = { x = 33834, y = 31628, z = 9 }, -- local do fire tres
 	fireIdOn = 171, -- id do fire on
 	fireIdOff = 2114, -- id do fire off
 }
 
 local fourthTp = {
 	itemActionId = 57542, -- action id teleport
-	posFireOne = {x = 33830, y = 31628, z = 9}, -- local do fire um
-	posFireTwo = {x = 33832, y = 31628, z = 9}, -- local do fire dois
-	posFireTree = {x = 33834, y = 31628, z = 9}, -- local do fire tres
+	posFireOne = { x = 33830, y = 31628, z = 9 }, -- local do fire um
+	posFireTwo = { x = 33832, y = 31628, z = 9 }, -- local do fire dois
+	posFireTree = { x = 33834, y = 31628, z = 9 }, -- local do fire tres
 	fireIdOn = 171, -- id do fire on
 	fireIdOff = 2114, -- id do fire off
 }
 
-
-local backPosition = {x = 33822, y = 31645, z = 9} -- errou
-local finalPosition = {x = 33826, y = 31620, z = 9} -- deu certo
+local backPosition = { x = 33822, y = 31645, z = 9 } -- errou
+local finalPosition = { x = 33826, y = 31620, z = 9 } -- deu certo
 
 local firetp = MoveEvent()
 

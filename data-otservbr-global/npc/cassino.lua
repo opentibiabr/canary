@@ -16,23 +16,23 @@ npcConfig.outfit = {
 	lookBody = 22,
 	lookLegs = 24,
 	lookFeet = 32,
-	lookAddons = 2
+	lookAddons = 2,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local config = {
 	bet = {
 		min = 10000, -- gold coins // 30k
-		max = 10000000000, 
+		max = 10000000000,
 		win = 180, -- 170% high/low
 		winNum = 500, -- 300% numbers
 	},
 	playerPosition = Position(32352, 32226, 7), -- NpcPos(x-2) player must stay on this position to talk with npc
 	dicerCounter = Position(32352, 32225, 7), --	NpcPos(x-1, y-1) 	counter position
-	diePos = Position(32354, 32225, 7) --NpcPos(y-1)
+	diePos = Position(32354, 32225, 7), --NpcPos(y-1)
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -81,15 +81,15 @@ local function getBetValue()
 		if not items or #items == 0 then
 			return 0
 		end
-		
+
 		local tempMoney = {}
 		for _, item in pairs(items) do
-			if table.contains({3043, 3035, 3031}, item:getId()) then
+			if table.contains({ 3043, 3035, 3031 }, item:getId()) then
 				value = value + getCoinValue(item:getId()) * item:getCount()
 				tempMoney[#tempMoney + 1] = item
 			end
 		end
-		
+
 		if value >= config.bet.min and value <= config.bet.max then -- valid bet
 			for _, item in pairs(tempMoney) do
 				item:remove()
@@ -107,18 +107,18 @@ local function createMoney(money)
 	currentMoney = currentMoney - crystals * 10000
 	while crystals > 0 do
 		local count = math.min(100, crystals)
-		table[#table + 1] = {3043, count}
+		table[#table + 1] = { 3043, count }
 		crystals = crystals - count
 	end
-	
+
 	local platinums = math.floor(currentMoney / 100)
 	if platinums ~= 0 then
-		table[#table + 1] = {3035, platinums}
+		table[#table + 1] = { 3035, platinums }
 		currentMoney = currentMoney - platinums * 100
 	end
-	
+
 	if currentMoney ~= 0 then
-		table[#table + 1] = {3031, currentMoney}
+		table[#table + 1] = { 3031, currentMoney }
 	end
 	return table
 end
@@ -147,17 +147,17 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:unGreet(npc, creature)
 		return false
 	end
-	if table.contains({"low", "high", "h", "l", "1", "2", "3", "4", "5", "6", "odd", "impar", "par", "even"}, message) then
+	if table.contains({ "low", "high", "h", "l", "1", "2", "3", "4", "5", "6", "odd", "impar", "par", "even" }, message) then
 		local bet = getBetValue()
 		if not bet then
-			npcHandler:say("Your bet is lower than the min {".. config.bet.min .."}gps or higher than the max {"..config.bet.max.."}gps bet.", npc, creature)
+			npcHandler:say("Your bet is lower than the min {" .. config.bet.min .. "}gps or higher than the max {" .. config.bet.max .. "}gps bet.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			return true
 		end
 		player:say(message, TALKTYPE_SAY, false, true, player:getPosition())
 		local number = math.random(6)
-		
-		local dadimid = {5792, 5793, 5794, 5795, 5796, 5797}
+
+		local dadimid = { 5792, 5793, 5794, 5795, 5796, 5797 }
 		local daddd = 0
 		local haveDie = false
 		for x = 1, 6 do
@@ -170,74 +170,64 @@ local function creatureSayCallback(npc, creature, type, message)
 		if haveDie then
 			daddd:transform(dadimid[number])
 		else
-			Game.createItem((5791+number), 1, config.diePos)
+			Game.createItem((5791 + number), 1, config.diePos)
 		end
-		npc:say(npc:getName() .. " rolled a ".. number .. ".", TALKTYPE_MONSTER_SAY, false, true, config.diePos)
+		npc:say(npc:getName() .. " rolled a " .. number .. ".", TALKTYPE_MONSTER_SAY, false, true, config.diePos)
 		config.diePos:sendMagicEffect(CONST_ME_CRAPS)
-		if table.contains({"low", "l"}, message) then
-			if table.contains({1, 2, 3}, number) then
+		if table.contains({ "low", "l" }, message) then
+			if table.contains({ 1, 2, 3 }, number) then
 				local wonMoney = math.ceil(bet * (config.bet.win / 100))
-				npc:say("You won! Here's your ".. wonMoney .." gold coins.", TALKTYPE_SAY)
+				npc:say("You won! Here's your " .. wonMoney .. " gold coins.", TALKTYPE_SAY)
 				config.dicerCounter:sendMagicEffect(math.random(29, 31))
 				for _, coin in pairs(createMoney(wonMoney)) do
 					Game.createItem(coin[1], coin[2], config.dicerCounter)
 				end
 			else
-				
-				npc:say("You have lost your "..bet.." gold coins.", TALKTYPE_SAY)
-				
+				npc:say("You have lost your " .. bet .. " gold coins.", TALKTYPE_SAY)
 			end
-		elseif table.contains({"high", "h"}, message) then
-			if table.contains({4, 5, 6}, number) then
+		elseif table.contains({ "high", "h" }, message) then
+			if table.contains({ 4, 5, 6 }, number) then
 				local wonMoney = math.ceil(bet * (config.bet.win / 100))
-				npc:say("You won! Here's your ".. wonMoney .." gold coins.", TALKTYPE_SAY)
+				npc:say("You won! Here's your " .. wonMoney .. " gold coins.", TALKTYPE_SAY)
 				config.dicerCounter:sendMagicEffect(math.random(29, 31))
 				for _, coin in pairs(createMoney(wonMoney)) do
 					Game.createItem(coin[1], coin[2], config.dicerCounter)
 				end
 			else
-				
-				npc:say("You have lost your "..bet.." gold coins.", TALKTYPE_SAY)
-				
+				npc:say("You have lost your " .. bet .. " gold coins.", TALKTYPE_SAY)
 			end
-		elseif table.contains({"odd", "impar"}, message) then
-			if table.contains({1, 3, 5}, number) then
+		elseif table.contains({ "odd", "impar" }, message) then
+			if table.contains({ 1, 3, 5 }, number) then
 				local wonMoney = math.ceil(bet * (config.bet.win / 100))
-				npc:say("You won! Here's your ".. wonMoney .." gold coins.", TALKTYPE_SAY)
+				npc:say("You won! Here's your " .. wonMoney .. " gold coins.", TALKTYPE_SAY)
 				config.dicerCounter:sendMagicEffect(math.random(29, 31))
 				for _, coin in pairs(createMoney(wonMoney)) do
 					Game.createItem(coin[1], coin[2], config.dicerCounter)
 				end
 			else
-				
-				npc:say("You have lost your "..bet.." gold coins.", TALKTYPE_SAY)
-				
+				npc:say("You have lost your " .. bet .. " gold coins.", TALKTYPE_SAY)
 			end
-		elseif table.contains({"par", "even"}, message) then
-			if table.contains({2, 4, 6}, number) then
+		elseif table.contains({ "par", "even" }, message) then
+			if table.contains({ 2, 4, 6 }, number) then
 				local wonMoney = math.ceil(bet * (config.bet.win / 100))
-				npc:say("You won! Here's your ".. wonMoney .." gold coins.", TALKTYPE_SAY)
+				npc:say("You won! Here's your " .. wonMoney .. " gold coins.", TALKTYPE_SAY)
 				config.dicerCounter:sendMagicEffect(math.random(29, 31))
 				for _, coin in pairs(createMoney(wonMoney)) do
 					Game.createItem(coin[1], coin[2], config.dicerCounter)
 				end
 			else
-				
-				npc:say("You have lost your "..bet.." gold coins.", TALKTYPE_SAY)
-				
+				npc:say("You have lost your " .. bet .. " gold coins.", TALKTYPE_SAY)
 			end
-		elseif table.contains({"1", "2", "3", "4", "5", "6"}, message) then
+		elseif table.contains({ "1", "2", "3", "4", "5", "6" }, message) then
 			if number == tonumber(message) then
 				local wonMoney = math.ceil(bet * (config.bet.winNum / 100))
-				npc:say("You won! Here's your ".. wonMoney .." gold coins.", TALKTYPE_SAY)
+				npc:say("You won! Here's your " .. wonMoney .. " gold coins.", TALKTYPE_SAY)
 				config.dicerCounter:sendMagicEffect(math.random(29, 31))
 				for _, coin in pairs(createMoney(wonMoney)) do
 					Game.createItem(coin[1], coin[2], config.dicerCounter)
 				end
 			else
-				
-				npc:say("You have lost your "..bet.." gold coins.", TALKTYPE_SAY)
-				
+				npc:say("You have lost your " .. bet .. " gold coins.", TALKTYPE_SAY)
 			end
 		end
 	end
@@ -258,8 +248,8 @@ local function creatureMoveCallback(npc, player, fromPosition, toPosition)
 end
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to the Cassino! Here we play with: \n [PAYOUT 180%] {HIGH / LOW}: High for 4, 5, 6 and Low for 1, 2, and 3 - {ODD / EVEN }: Odd for 1, 3, 5 and Even for 2, 4 and 6 \n [PAYOUT 500%] {NUMBERS}: You choose the number, and if you get it right ... {$$$$$}")
-npcHandler:setMessage(MESSAGE_FAREWELL, 'Good bye.')
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Good bye.')
+npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

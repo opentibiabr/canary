@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Lesser Death Minion")
 local monster = {}
 
 monster.description = "a lesser death minion"
-monster.experience = 35
+monster.experience = 0
 monster.outfit = {
 	lookType = 33,
 	lookHead = 0,
@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 550
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -40,21 +40,21 @@ monster.flags = {
 	pushable = false,
 	rewardBoss = false,
 	illusionable = false,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 90,
 	targetDistance = 1,
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -62,37 +62,36 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, skill = 70, attack = 80},
-	{name ="combat", interval = 2000, chance = 8, type = COMBAT_LIFEDRAIN, minDamage = -7, maxDamage = -13, range = 1, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -0, maxDamage = -300 },
 }
 
 monster.defenses = {
-	defense = 9,
-	armor = 2
+	defense = 34,
+	armor = 35,
+	--	mitigation = ???,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = -10},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

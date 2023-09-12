@@ -2,18 +2,18 @@ local data = {
 	[28484] = {
 		Type = "mana",
 		ExhaustStor = Storage.BlueberryCupcake,
-		timestamp = 10
+		timestamp = 10,
 	},
 	[28485] = {
 		Type = "health",
 		ExhaustStor = Storage.StrawberryCupcake,
-		timestamp = 10
+		timestamp = 10,
 	},
 	[28486] = {
 		Type = "skill",
 		ExhaustStor = Storage.LemonCupcake,
-		timestamp = 10
-	}
+		timestamp = 10,
+	},
 }
 
 local lemon = Condition(CONDITION_ATTRIBUTES)
@@ -23,13 +23,13 @@ lemon:setParameter(CONDITION_PARAM_SKILL_DISTANCE, 10)
 local cupCakes = Action()
 
 function cupCakes.onUse(player, item, fromPos, itemEx, toPos)
-local foundItem = data[item.itemid]
-	if not(foundItem) then
+	local foundItem = data[item.itemid]
+	if not foundItem then
 		return
 	end
 	if (player:getStorageValue(foundItem.ExhaustStor)) < os.time() then
 		if foundItem.Type == "mana" then
-			player:addMana(player:getMaxMana())	
+			player:addMana(player:getMaxMana())
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your mana has been refilled.")
 		elseif foundItem.Type == "health" then
 			player:addHealth(player:getMaxHealth())
@@ -38,9 +38,9 @@ local foundItem = data[item.itemid]
 			player:addCondition(lemon)
 			player:sendTextMessage(MESSAGE_FAILURE, "You feel more focused.")
 		end
-		player:say("Mmmm.",TALKTYPE_ORANGE_1)
+		player:say("Mmmm.", TALKTYPE_ORANGE_1)
 		item:remove(1)
-		player:setStorageValue(foundItem.ExhaustStor, os.time() + (foundItem.timestamp * 60))	
+		player:setStorageValue(foundItem.ExhaustStor, os.time() + (foundItem.timestamp * 60))
 	else
 		player:sendTextMessage(MESSAGE_FAILURE, "You need to wait before using it again.")
 	end

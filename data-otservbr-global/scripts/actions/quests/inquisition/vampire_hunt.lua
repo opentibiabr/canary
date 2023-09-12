@@ -1,7 +1,7 @@
 local altars = {
 	Position(32777, 31982, 9),
 	Position(32779, 31977, 9),
-	Position(32781, 31982, 9)
+	Position(32781, 31982, 9),
 }
 
 local inquisitionVampire = Action()

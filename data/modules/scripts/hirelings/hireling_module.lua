@@ -3,12 +3,12 @@ HirelingModule = {}
 HirelingModule.Credits = {
 	Developer = 'Leonardo "Leu" Pereira (jlcvp)',
 	Version = "1.0",
-	Date = "30/04/2020 "
+	Date = "30/04/2020 ",
 }
 
-HirelingModule.S_Packets= { SendOutfitWindow = 0xC8 }
+HirelingModule.S_Packets = { SendOutfitWindow = 0xC8 }
 
-HirelingModule.C_Packets = { RequestChangeOutfit = 0xD2, ConfirmOutfitChange = 0xD3  }
+HirelingModule.C_Packets = { RequestChangeOutfit = 0xD2, ConfirmOutfitChange = 0xD3 }
 
 local function getOutfit(msg)
 	local outfitType = 0
@@ -31,7 +31,7 @@ local function getOutfit(msg)
 	return outfit
 end
 
-local function parseChangeOutfit(player,msg)
+local function parseChangeOutfit(player, msg)
 	local hireling = player:getHirelingChangingOutfit()
 	local outfit
 	if not hireling then
@@ -47,7 +47,7 @@ local function parseChangeOutfit(player,msg)
 end
 
 function onRecvbyte(player, msg, byte)
-	if (byte == HirelingModule.C_Packets.ConfirmOutfitChange) then
+	if byte == HirelingModule.C_Packets.ConfirmOutfitChange then
 		if not player:isChangingHirelingOutfit() then
 			return
 		end

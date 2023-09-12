@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/management/waitlist.h"
-#include "game/game.h"
+#include "creatures/players/management/waitlist.hpp"
+#include "game/game.hpp"
 
 constexpr std::size_t SLOT_LIMIT_ONE = 5;
 constexpr std::size_t SLOT_LIMIT_TWO = 10;

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 40,
 	lookLegs = 40,
 	lookFeet = 57,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,7 +58,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	if MsgContains(message, "huntsman") then
 		npcHandler:say("I hunt game of all sorts to earn a living. I respect the {balance} of nature though and take only as much as I need.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
@@ -67,40 +66,37 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"To be honest, I don't care too much about that spiritual balance thing. Better talk to {Benevola} about such things. ...",
 				"As a matter of fact though, if too many animals are killed, things might rapidly change for the worse. ...",
-				"So it's only practical thinking to keep the balance in mind as long as I can afford it."
+				"So it's only practical thinking to keep the balance in mind as long as I can afford it.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
-	
 	elseif MsgContains(message, "benevola") then
 		if npcHandler:getTopic(playerId) == 2 then
 			player:addMapMark(Position(32596, 31746, 7), MAPMARK_FLAG, "Benevola's Hut")
 			npcHandler:say("She is a bit overly concerned about that nature and balance stuff but she has a good heart. She is living in the woods between Carlin and Ab'Dendriel. I'll mark her hut on your map.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
-		end  
-
+		end
 	elseif MsgContains(message, "white deer") then
 		npcHandler:say("The white deer are somewhat sacred to the elves. Though their fur and antlers are rumoured to earn a decent amount of {gold} on the market, it's probably not worth the trouble.", npc, creature)
 		npcHandler:setTopic(playerId, 3)
-		
 	elseif MsgContains(message, "gold") then
 		if npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say("Just between you and me, I heard a guy named {Cruleo} is offering some handsome cash for the trophies of a white deer.", npc, creature)
-			npcHandler:setTopic(playerId, 4) 
-		end	
+			npcHandler:setTopic(playerId, 4)
+		end
 	elseif MsgContains(message, "cruleo") then
-		if npcHandler:getTopic(playerId) == 4 then		   
+		if npcHandler:getTopic(playerId) == 4 then
 			player:addMapMark(Position(32723, 31793, 7), MAPMARK_FLAG, "Cruleo's Hut")
 			npcHandler:say("He has a house in the wilderness. Just between Ab'Dendriel and the orcland. I'll mark his hut on your map.", npc, creature)
-			npcHandler:setTopic(playerId, 0)		   
-		end 
+			npcHandler:setTopic(playerId, 0)
+		end
 	end
-	
+
 	return true
 end
 
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'I\'m just a simple {huntsman}.'})
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, I don\'t think telling a stranger your name is a smart thing to do.'})
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I'm just a simple {huntsman}." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, I don't think telling a stranger your name is a smart thing to do." })
 
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye. Take care.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "I can still see you.")

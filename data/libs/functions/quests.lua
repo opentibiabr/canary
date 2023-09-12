@@ -62,7 +62,7 @@ function Player.resetTrackedMissions(self, missions)
 					missionId = missionId,
 					questName = questName,
 					missionName = self:getMissionName(questId, missionIndex),
-					missionDesc = self:getMissionDescription(questId, missionIndex)
+					missionDesc = self:getMissionDescription(questId, missionIndex),
 				}
 				table.insert(PlayerTrackedMissionsData[self:getId()], data)
 				if #PlayerTrackedMissionsData[self:getId()] >= maxAllowed then
@@ -124,7 +124,7 @@ function Player.getMissionsData(self, storage)
 						local data = {
 							missionId = mission.missionId,
 							missionName = self:getMissionName(questId, missionId),
-							missionDesc = self:getMissionDescription(questId, missionId)
+							missionDesc = self:getMissionDescription(questId, missionId),
 						}
 						missions[#missions + 1] = data
 					end
@@ -375,8 +375,7 @@ function Player.updateStorage(self, key, value, oldValue, currentFrameTime)
 end
 
 local function sendPrint(questId, index)
-	Spdlog.warn(string.format("[sendPrint] - Quest id:[%d] mission:[%d]",
-		questId, index))
+	logger.warn("[sendPrint] - Quest id:[{}]] mission:[{}]", questId, index)
 end
 
 for questId = 1, #Quests do
@@ -385,23 +384,23 @@ for questId = 1, #Quests do
 		for index, value in ipairs(quest.missions) do
 			if index then
 				if not value.name then
-					Spdlog.warn("Quest.load: Wrong mission name found")
+					logger.error("Quest.load: Wrong mission name found")
 					sendPrint(questId, index)
 				end
 				if not value.storageId then
-					Spdlog.warn("Quest.load: Wrong mission storage found")
+					logger.error("Quest.load: Wrong mission storage found")
 					sendPrint(questId, index)
 				end
 				if not value.missionId then
-					Spdlog.warn("Quest.load: Wrong mission id found")
+					logger.error("Quest.load: Wrong mission id found")
 					sendPrint(questId, index)
 				end
 				if not value.startValue then
-					Spdlog.warn("Quest.load: Wrong mission start value found")
+					logger.error("Quest.load: Wrong mission start value found")
 					sendPrint(questId, index)
 				end
 				if not value.endValue then
-					Spdlog.warn("Quest.load: Wrong mission end value found")
+					logger.error("Quest.load: Wrong mission end value found")
 					sendPrint(questId, index)
 				end
 			end

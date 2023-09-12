@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a control tower"
 monster.experience = 3000
 monster.outfit = {
-	lookTypeEx = 20894
+	lookTypeEx = 20894,
 }
 
 monster.health = 7500
@@ -12,11 +12,11 @@ monster.maxHealth = 7500
 monster.race = "venom"
 monster.corpse = 21940
 monster.speed = 0
-monster.manaCost = 330
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -34,7 +34,7 @@ monster.flags = {
 	pushable = false,
 	rewardBoss = false,
 	illusionable = false,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 90,
 	targetDistance = 1,
@@ -43,12 +43,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -57,34 +57,35 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3035, chance = 100000, maxCount = 5}, -- platinum coin
-	{id = 238, chance = 14285}, -- great mana potion
-	{id = 239, chance = 14285} -- great health potion
+	{ id = 3035, chance = 100000, maxCount = 5 }, -- platinum coin
+	{ id = 238, chance = 14285 }, -- great mana potion
+	{ id = 239, chance = 14285 }, -- great health potion
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 10,
+	--	mitigation = ???,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 55},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 55},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 55},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 55 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 55 },
+	{ type = COMBAT_FIREDAMAGE, percent = 55 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 55 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

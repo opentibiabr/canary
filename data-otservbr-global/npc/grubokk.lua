@@ -11,14 +11,14 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 857
+	lookType = 857,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
- local keywordHandler = KeywordHandler:new()
+local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 
 npcType.onAppear = function(npc, creature)

@@ -6,11 +6,9 @@ condition:setParameter(CONDITION_PARAM_TICKS, 20000)
 condition:setFormula(-0.85, 0, -0.90, 0)
 combat:addCondition(condition)
 
-
 local area = createCombatArea(AREA_SQUARE1X1)
-	combat:setArea(area)
-	combat:addCondition(condition)
-
+combat:setArea(area)
+combat:addCondition(condition)
 
 local spell = Spell("instant")
 

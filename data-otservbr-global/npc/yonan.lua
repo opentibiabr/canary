@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 49,
 	lookLegs = 10,
 	lookFeet = 0,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.shop = {
@@ -76,7 +76,7 @@ npcConfig.shop = {
 	{ itemName = "violet crystal shard", clientId = 16120, sell = 1500 },
 	{ itemName = "wedding ring", clientId = 3004, buy = 990 },
 	{ itemName = "white silk flower", clientId = 34008, sell = 9000 },
-	{ itemName = "white pearl", clientId = 3026, buy = 320 }
+	{ itemName = "white pearl", clientId = 3026, buy = 320 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -87,8 +87,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -124,8 +123,7 @@ local function greetCallback(npc, creature)
 	if player:getStorageValue(Storage.Kilmaresh.First.Access) < 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "How could I help you?") -- It needs to be revised, it's not the same as the global
 		npcHandler:setTopic(playerId, 1)
-	elseif (player:getStorageValue(Storage.Kilmaresh.First.JamesfrancisTask) >= 0 and player:getStorageValue(Storage.Kilmaresh.First.JamesfrancisTask) <= 50)
-	and player:getStorageValue(Storage.Kilmaresh.First.Mission) < 3 then
+	elseif (player:getStorageValue(Storage.Kilmaresh.First.JamesfrancisTask) >= 0 and player:getStorageValue(Storage.Kilmaresh.First.JamesfrancisTask) <= 50) and player:getStorageValue(Storage.Kilmaresh.First.Mission) < 3 then
 		npcHandler:setMessage(MESSAGE_GREET, "How could I help you?") -- It needs to be revised, it's not the same as the global
 		npcHandler:setTopic(playerId, 15)
 	elseif player:getStorageValue(Storage.Kilmaresh.First.Mission) == 4 then
@@ -146,45 +144,45 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "mission") and player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 1 then
 		if player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 1 then
-			npcHandler:say({"Could you help me do a ritual?"}, npc, creature)-- It needs to be revised, it's not the same as the global
+			npcHandler:say({ "Could you help me do a ritual?" }, npc, creature) -- It needs to be revised, it's not the same as the global
 			npcHandler:setTopic(playerId, 1)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 and player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 1 then
-		if player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 1 then	
+		if player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 1 then
 			player:addItem(31717, 1) -- Yonans List
 			player:addItem(31613, 1) -- Pick Enchanted
-			npcHandler:say({"Here is the list with the missing ingredients to complete the ritual."}, npc, creature)-- It needs to be revised, it's not the same as the global
+			npcHandler:say({ "Here is the list with the missing ingredients to complete the ritual." }, npc, creature) -- It needs to be revised, it's not the same as the global
 			player:setStorageValue(Storage.Kilmaresh.Eighth.Yonan, 2)
 			npcHandler:setTopic(playerId, 2)
 			npcHandler:setTopic(playerId, 2)
 		else
-			npcHandler:say({"Sorry."}, npc, creature)
+			npcHandler:say({ "Sorry." }, npc, creature)
 		end
 	end
 	if MsgContains(message, "mission") and player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 2 then
 		if player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 2 then
-			npcHandler:say({"Did you bring all the materials I informed you about? "}, npc, creature)-- It needs to be revised, it's not the same as the global
+			npcHandler:say({ "Did you bring all the materials I informed you about? " }, npc, creature) -- It needs to be revised, it's not the same as the global
 			npcHandler:setTopic(playerId, 3)
 			npcHandler:setTopic(playerId, 3)
-		end	
+		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 3 and player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 2 then
 		if player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 2 and player:getItemById(9651, 3) and player:getItemById(31325, 12) and player:getItemById(31333, 10) then
 			player:removeItem(9651, 3)
 			player:removeItem(31325, 12)
 			player:removeItem(31333, 10)
-			npcHandler:say({"Thank you this stage of the ritual is complete."}, npc, creature)-- It needs to be revised, it's not the same as the global
+			npcHandler:say({ "Thank you this stage of the ritual is complete." }, npc, creature) -- It needs to be revised, it's not the same as the global
 			player:setStorageValue(Storage.Kilmaresh.Eighth.Yonan, 3)
 			npcHandler:setTopic(playerId, 4)
 			npcHandler:setTopic(playerId, 4)
 		else
-			npcHandler:say({"Sorry."}, npc, creature)-- It needs to be revised, it's not the same as the global
+			npcHandler:say({ "Sorry." }, npc, creature) -- It needs to be revised, it's not the same as the global
 		end
 	end
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Well, bye then.')
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)

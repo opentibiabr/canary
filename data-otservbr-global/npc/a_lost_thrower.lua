@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 539
+	lookType = 539,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -52,7 +52,7 @@ local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local SPIKE_STORAGE = player:getStorageValue(SPIKE_LOWER_UNDERCOVER_MAIN)
 
-	if table.contains({-1, 3}, SPIKE_STORAGE) then
+	if table.contains({ -1, 3 }, SPIKE_STORAGE) then
 		npcHandler:setMessage(MESSAGE_GREET, "Pssst! Keep it down! <gives you an elaborate report on monster activity>")
 		return true
 	end

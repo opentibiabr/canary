@@ -19,7 +19,7 @@ local function summonHungry(creature)
 				if monster then
 					monster:say("Gulp!", TALKTYPE_MONSTER_SAY)
 				end
-			end, 2*1000)
+			end, 2 * 1000)
 			addEvent(function()
 				local spectators = Game.getSpectators(Position(33648, 32303, 15), false, false, 20, 20, 20, 20)
 				for _, checagem in pairs(spectators) do
@@ -44,7 +44,7 @@ local function summonHungry(creature)
 					monster:setType("The Baron From Below")
 					monster:addHealth(-(monster:getHealth() - hungryBossHealth))
 				end
-			end, 10*1000)
+			end, 10 * 1000)
 		end
 	end
 	timers[creature] = false
@@ -58,7 +58,7 @@ function theBaronFromBelowThink.onThink(creature)
 
 	if creature:getName():lower() == "the baron from below" then
 		if not timers[creature:getId()] then
-			timers[creature:getId()] = addEvent(summonHungry, 30*1000, creature:getId())
+			timers[creature:getId()] = addEvent(summonHungry, 30 * 1000, creature:getId())
 		end
 	end
 	return true

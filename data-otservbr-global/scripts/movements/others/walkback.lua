@@ -1,4 +1,4 @@
-local SPECIAL_QUESTS = {3099, 3100, 9628, 11418, 11557, 23644, 24632, 14338}
+local SPECIAL_QUESTS = { 3099, 3100, 9628, 11418, 11557, 23644, 24632, 14338 }
 
 local walkback = MoveEvent()
 
@@ -9,7 +9,7 @@ function walkback.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if (Container(item.uid) and not table.contains(SPECIAL_QUESTS, item.actionid) and item.uid > 65535) then
+	if Container(item.uid) and not table.contains(SPECIAL_QUESTS, item.actionid) and item.uid > 65535 then
 		return true
 	end
 

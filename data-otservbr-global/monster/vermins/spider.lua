@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 30
@@ -24,8 +24,8 @@ monster.Bestiary = {
 	Stars = 1,
 	Occurrence = 0,
 	Locations = "Almost everywhere, in grass areas, sewers like Carlin sewers, \z
-		caves like as Ancient Temple, Rookgaard and the Tiquanda Tarantula Caves."
-	}
+		caves like as Ancient Temple, Rookgaard and the Tiquanda Tarantula Caves.",
+}
 
 monster.health = 20
 monster.maxHealth = 20
@@ -36,7 +36,7 @@ monster.manaCost = 210
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -60,12 +60,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -74,37 +74,38 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 65150, maxCount = 5},
-	{name = "spider fangs", chance = 960}
+	{ name = "gold coin", chance = 65150, maxCount = 5 },
+	{ name = "spider fangs", chance = 960 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -9}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -9 },
 }
 
 monster.defenses = {
 	defense = 2,
-	armor = 2
+	armor = 2,
+	mitigation = 0.05,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = -20},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = -20 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

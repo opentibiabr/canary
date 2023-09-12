@@ -1,10 +1,10 @@
 local config = {
-	{leverpos = Position(32645, 32465, 9)},
-	{leverpos = Position(32647, 32483, 9)},
-	{leverpos = Position(32619, 32523, 9)},
-	{leverpos = Position(32610, 32523, 9)},
-	{leverpos = Position(32583, 32482, 9)},
-	{leverpos = Position(32584, 32465, 9)}
+	{ leverpos = Position(32645, 32465, 9) },
+	{ leverpos = Position(32647, 32483, 9) },
+	{ leverpos = Position(32619, 32523, 9) },
+	{ leverpos = Position(32610, 32523, 9) },
+	{ leverpos = Position(32583, 32482, 9) },
+	{ leverpos = Position(32584, 32465, 9) },
 }
 
 local function revertLever(position)

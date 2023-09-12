@@ -1,6 +1,6 @@
 local config = {
 	enabled = true,
-	messageStyle = MESSAGE_INFO_DESCR
+	messageStyle = MESSAGE_LOOK,
 }
 
 if not config.enabled then
@@ -22,7 +22,7 @@ local deposit = TalkAction("!deposit")
 function deposit.onSay(player, words, param)
 	local amount
 	if param == "all" then
-		 amount = player:getMoney()
+		amount = player:getMoney()
 	else
 		amount = tonumber(param)
 		if not amount or amount <= 0 and isValidMoney(amount) then

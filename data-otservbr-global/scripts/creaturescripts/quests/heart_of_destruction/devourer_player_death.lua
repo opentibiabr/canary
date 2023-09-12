@@ -6,4 +6,5 @@ function devourerStorage.onDeath(player)
 	player:unregisterEvent("DevourerStorage")
 	return true
 end
+
 devourerStorage:register()

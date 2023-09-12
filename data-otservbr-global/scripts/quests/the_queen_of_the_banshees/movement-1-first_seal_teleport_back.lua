@@ -6,7 +6,7 @@ function teleportBack.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	player:teleportTo({x = 32266, y = 31886, z = 12})
+	player:teleportTo({ x = 32266, y = 31886, z = 12 })
 	return true
 end
 

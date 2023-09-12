@@ -10,13 +10,13 @@
 #include "pch.hpp"
 
 #include "declarations.hpp"
-#include "creatures/combat/combat.h"
-#include "creatures/creature.h"
+#include "creatures/combat/combat.hpp"
+#include "creatures/creature.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "creatures/combat/spells.h"
-#include "creatures/npcs/npcs.h"
-#include "lua/scripts/scripts.h"
-#include "game/game.h"
+#include "creatures/combat/spells.hpp"
+#include "creatures/npcs/npcs.hpp"
+#include "lua/scripts/scripts.hpp"
+#include "game/game.hpp"
 
 bool NpcType::canSpawn(const Position &pos) {
 	bool canSpawn = true;

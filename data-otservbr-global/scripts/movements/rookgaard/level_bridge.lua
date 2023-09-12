@@ -14,7 +14,7 @@ function levelBridge.onStepIn(creature, item, position, fromPosition)
 
 	player:teleportTo(failPosition)
 	failPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You need to be at least Level 2 in order to pass.')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to be at least Level 2 in order to pass.")
 	return true
 end
 

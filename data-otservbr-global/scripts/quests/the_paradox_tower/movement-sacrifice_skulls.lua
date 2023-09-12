@@ -1,8 +1,8 @@
 local positions = {
-	{x = 32563, y = 31957, z = 1},
-	{x = 32565, y = 31957, z = 1},
-	{x = 32567, y = 31957, z = 1},
-	{x = 32569, y = 31957, z = 1}
+	{ x = 32563, y = 31957, z = 1 },
+	{ x = 32565, y = 31957, z = 1 },
+	{ x = 32567, y = 31957, z = 1 },
+	{ x = 32569, y = 31957, z = 1 },
 }
 
 local sacrificeSkulls = MoveEvent()
@@ -32,7 +32,7 @@ function sacrificeSkulls.onStepIn(creature, item, position, fromPosition)
 					skull:remove(1)
 				end
 			end
-			player:teleportTo({x = 32479, y = 31923, z = 7})
+			player:teleportTo({ x = 32479, y = 31923, z = 7 })
 		end
 	end
 	return true

@@ -11,21 +11,21 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 32
+	lookType = 32,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Grrrrrrr.' },
-	{ text = '<wiggles>' },
-	{ text = '<sniff>' },
-	{ text = 'Woof! Woof!' },
-	{ text = 'Wooof!' }
+	{ text = "Grrrrrrr." },
+	{ text = "<wiggles>" },
+	{ text = "<sniff>" },
+	{ text = "Woof! Woof!" },
+	{ text = "Wooof!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -85,7 +85,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 	elseif MsgContains(message, "like") then
-		if npcHandler:getTopic(playerId) == 1  then
+		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("Woof!", npc, creature)
 			player:setStorageValue(Storage.Postman.Mission06, 8)
 			npcHandler:setTopic(playerId, 0)

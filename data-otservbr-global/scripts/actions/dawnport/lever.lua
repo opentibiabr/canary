@@ -1,8 +1,8 @@
 local positions = {
-	{x = 32106, y = 31903, z = 7},
-	{x = 32106, y = 31904, z = 7},
-	{x = 32105, y = 31903, z = 7},
-	{x = 32105, y = 31904, z = 7}
+	{ x = 32106, y = 31903, z = 7 },
+	{ x = 32106, y = 31904, z = 7 },
+	{ x = 32105, y = 31903, z = 7 },
+	{ x = 32105, y = 31904, z = 7 },
 }
 
 local lever = Action()
@@ -20,7 +20,7 @@ function lever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				createBridge:transform(5769)
 			end
 		end
-		player:say("<squeaak>", TALKTYPE_MONSTER_SAY, false, player, {x = 32107, y = 31904, z = 7})
+		player:say("<squeaak>", TALKTYPE_MONSTER_SAY, false, player, { x = 32107, y = 31904, z = 7 })
 		player:setStorageValue(Storage.Dawnport.Lever, 2)
 		item:transform(21290)
 		addEvent(function(pos)
@@ -63,7 +63,7 @@ function lever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				end
 			end
 		end
-		player:say("<crrk>", TALKTYPE_MONSTER_SAY, false, player, {x = 32107, y = 31904, z = 7})
+		player:say("<crrk>", TALKTYPE_MONSTER_SAY, false, player, { x = 32107, y = 31904, z = 7 })
 		player:setStorageValue(Storage.Dawnport.Lever, 1)
 		item:transform(21290)
 		addEvent(function(pos)

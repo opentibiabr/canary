@@ -13,5 +13,5 @@ function corruptionhole.onStepIn(player, item, position, fromPosition)
 	return true
 end
 
-corruptionhole:position({x = 33345, y = 31116, z = 7})
+corruptionhole:position({ x = 33345, y = 31116, z = 7 })
 corruptionhole:register()

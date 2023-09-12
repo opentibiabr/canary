@@ -11,15 +11,15 @@ local function ServerSave()
 	-- Updating daily reward next server save
 	UpdateDailyRewardGlobalStorage(DailyReward.storages.lastServerSave, os.time())
 	-- Reset gamestore exp boost count.
-	db.query('UPDATE `player_storage` SET `value` = 0 WHERE `player_storage`.`key` = 51052')
+	db.query("UPDATE `player_storage` SET `value` = 0 WHERE `player_storage`.`key` = 51052")
 end
 
 local function ServerSaveWarning(time)
 	-- minus one minutes
 	local remainingTime = tonumber(time) - 60000
 	if configManager.getBoolean(configKeys.GLOBAL_SERVER_SAVE_NOTIFY_MESSAGE) then
-		local message = "Server is saving game in " .. (remainingTime/60000) .." minute(s). Please logout."
-		Webhook.send("Server save", message, WEBHOOK_COLOR_WARNING)
+		local message = "Server is saving game in " .. (remainingTime / 60000) .. " minute(s). Please logout."
+		Webhook.sendMessage("Server save", message, WEBHOOK_COLOR_WARNING)
 		Game.broadcastMessage(message, MESSAGE_GAME_HIGHLIGHT)
 	end
 	-- if greater than one minute, schedule another warning
@@ -37,11 +37,11 @@ local serversave = GlobalEvent("serversave")
 function serversave.onTime(interval)
 	local remainingTime = configManager.getNumber(configKeys.GLOBAL_SERVER_SAVE_NOTIFY_DURATION) * 60000
 	if configManager.getBoolean(configKeys.GLOBAL_SERVER_SAVE_NOTIFY_MESSAGE) then
-		local message = "Server is saving game in " .. (remainingTime/60000) .." minute(s). Please logout."
-		Webhook.send("Server save", message, WEBHOOK_COLOR_WARNING)
+		local message = "Server is saving game in " .. (remainingTime / 60000) .. " minute(s). Please logout."
+		Webhook.sendMessage("Server save", message, WEBHOOK_COLOR_WARNING)
 		Game.broadcastMessage(message, MESSAGE_GAME_HIGHLIGHT)
 	end
-	addEvent(ServerSaveWarning, 60000, remainingTime)	-- Schedule next event in 1 minute(60000)
+	addEvent(ServerSaveWarning, 60000, remainingTime) -- Schedule next event in 1 minute(60000)
 	return not configManager.getBoolean(configKeys.GLOBAL_SERVER_SAVE_SHUTDOWN)
 end
 

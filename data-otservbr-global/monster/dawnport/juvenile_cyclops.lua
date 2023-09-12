@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 260
@@ -22,7 +22,7 @@ monster.manaCost = 490
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -46,12 +46,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -60,47 +60,48 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3358, chance = 10810}, -- chain armor
-	{id = 3352, chance = 12160}, -- chain helmet
-	{id = 9657, chance = 4050}, -- cyclops toe
-	{id = 3031, chance = 100000, maxCount = 25}, -- gold coin
-	{id = 3276, chance = 9460}, -- hatchet
-	{id = 3286, chance = 18920}, -- mace
-	{id = 3577, chance = 30070}, -- meat
-	{id = 3410, chance = 1350}, -- plate shield
-	{id = 3362, chance = 9460}, -- studded legs
-	{id = 3264, chance = 21620}, -- sword
-	{id = 3012, chance = 1350} -- wolf tooth chain
+	{ id = 3358, chance = 10810 }, -- chain armor
+	{ id = 3352, chance = 12160 }, -- chain helmet
+	{ id = 9657, chance = 4050 }, -- cyclops toe
+	{ id = 3031, chance = 100000, maxCount = 25 }, -- gold coin
+	{ id = 3276, chance = 9460 }, -- hatchet
+	{ id = 3286, chance = 18920 }, -- mace
+	{ id = 3577, chance = 30070 }, -- meat
+	{ id = 3410, chance = 1350 }, -- plate shield
+	{ id = 3362, chance = 9460 }, -- studded legs
+	{ id = 3264, chance = 21620 }, -- sword
+	{ id = 3012, chance = 1350 }, -- wolf tooth chain
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, skill = 20, attack = 30},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -20, range = 7, shootEffect = CONST_ANI_LARGEROCK, target = false}
+	{ name = "melee", interval = 2000, chance = 100, skill = 20, attack = 30 },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -20, range = 7, shootEffect = CONST_ANI_LARGEROCK, target = false },
 }
 
 monster.defenses = {
 	defense = 22,
-	armor = 6
+	armor = 11,
+	mitigation = 0.62,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

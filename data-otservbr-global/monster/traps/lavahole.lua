@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a lavahole"
 monster.experience = 0
 monster.outfit = {
-	lookTypeEx = 391
+	lookTypeEx = 391,
 }
 
 monster.health = 1
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -40,12 +40,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -53,36 +53,36 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{name ="combat", interval = 2000, chance = 50, type = COMBAT_FIREDAMAGE, minDamage = 0, maxDamage = -100, range = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = false}
+	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_FIREDAMAGE, minDamage = 0, maxDamage = -100, range = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 5,
-	armor = 10
+	armor = 10,
+	mitigation = 0.00,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 100},
-	{type = COMBAT_ENERGYDAMAGE, percent = 100},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 100},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 100},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 100 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 100 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = true},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = true },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

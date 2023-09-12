@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 720
@@ -23,9 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 2,
-	Locations = "Around Ab'Dendriel, Carlin (east from Lothar), Femor Hills and Ferngrims Gate, usually in pairs. \z
-		They will appear when they're not overhunted."
-	}
+	Locations = "Around AbDendriel, Carlin east from Lothar, Femor Hills and Ferngrims Gate, usually in pairs. They will appear when they're not overhunted.",
+}
 
 monster.health = 195
 monster.maxHealth = 195
@@ -36,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -60,53 +59,49 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
-}
-
-monster.events = {
-	"WhiteDeerDeath"
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "*wheeze*", yell = false},
-	{text = "ROOOAAARR!!", yell = false},
-	{text = "*sniff*", yell = false},
-	{text = "*bell*", yell = false}
+	{ text = "*bell*", yell = false },
+	{ text = "ROOOAAARR!!", yell = true },
+	{ text = "*sniff*", yell = false },
+	{ text = "*wheeze*", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.defenses = {
 	defense = 5,
-	armor = 10
+	armor = 2,
+	mitigation = 0.56,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

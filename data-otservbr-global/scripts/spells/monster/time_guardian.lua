@@ -1,6 +1,6 @@
 local monsters = {
-	[1] = {pos = Position(32980, 31664, 13)},
-	[2] = {pos = Position(32975, 31664, 13)}
+	[1] = { pos = Position(32980, 31664, 13) },
+	[2] = { pos = Position(32975, 31664, 13) },
 }
 
 local function functionBack(position, oldpos)
@@ -9,7 +9,7 @@ local function functionBack(position, oldpos)
 	local spectators, spectator = Game.getSpectators(Position(32977, 31662, 14), false, false, 15, 15, 15, 15)
 	for v = 1, #spectators do
 		spectator = spectators[v]
-		if spectator:getName():lower() == 'the freezing time guardian' or spectator:getName():lower() == 'the blazing time guardian' then
+		if spectator:getName():lower() == "the freezing time guardian" or spectator:getName():lower() == "the blazing time guardian" then
 			oldpos = spectator:getPosition()
 			bool = true
 		end
@@ -21,13 +21,13 @@ local function functionBack(position, oldpos)
 	local specs, spec = Game.getSpectators(Position(32977, 31662, 14), false, false, 15, 15, 15, 15)
 	for i = 1, #specs do
 		spec = specs[i]
-		if spec:isMonster() and spec:getName():lower() == 'the freezing time guardian' or spec:getName():lower() == 'the blazing time guardian' then
+		if spec:isMonster() and spec:getName():lower() == "the freezing time guardian" or spec:getName():lower() == "the blazing time guardian" then
 			spec:teleportTo(position)
 			health = spec:getHealth()
 			diference = guardian:getHealth() - health
 		end
 	end
-	guardian:addHealth( - diference)
+	guardian:addHealth(-diference)
 	guardian:teleportTo(oldpos)
 end
 
@@ -45,7 +45,7 @@ function spell.onCastSpell(creature, var)
 	local diference, health = 0, 0
 	health = creature:getHealth()
 	diference = form:getHealth() - health
-	form:addHealth( - diference)
+	form:addHealth(-diference)
 	form:teleportTo(monsterPos)
 	addEvent(functionBack, 30 * 1000, position, monsterPos)
 	return true

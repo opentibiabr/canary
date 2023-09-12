@@ -12,5 +12,5 @@ function dough.onAddItem(moveitem, tileitem, position)
 	return true
 end
 
-dough:id(2535,2537,2539,2541)
+dough:id(2535, 2537, 2539, 2541)
 dough:register()

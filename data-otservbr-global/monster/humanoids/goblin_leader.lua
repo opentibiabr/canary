@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 377
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 30,
 	Stars = 2,
 	Occurrence = 3,
-	Locations = "Way to Beregar, below Femor Hills (Tower Defence Quest), near Femor Hills during Goblin raid."
-	}
+	Locations = "Way to Beregar, below Femor Hills (Tower Defence Quest), near Femor Hills during Goblin raid.",
+}
 
 monster.health = 50
 monster.maxHealth = 50
@@ -35,7 +35,7 @@ monster.manaCost = 290
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -47,10 +47,10 @@ monster.flags = {
 	attackable = true,
 	hostile = true,
 	convinceable = false,
-	pushable = true,
+	pushable = false,
 	rewardBoss = false,
 	illusionable = true,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 90,
 	targetDistance = 1,
@@ -59,64 +59,65 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Go go, Gobo attack!!", yell = false},
-	{text = "Me the greenest and the meanest!", yell = false},
-	{text = "Me have power to crush you!", yell = false},
-	{text = "Goblinkiller! Catch him !!", yell = false}
+	{ text = "Go go, Gobo attack!!", yell = false },
+	{ text = "Me the greenest and the meanest!", yell = false },
+	{ text = "Me have power to crush you!", yell = false },
+	{ text = "Goblinkiller! Catch him !!", yell = false },
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 40000, maxCount = 10},
-	{id = 3115, chance = 11500}, -- bone
-	{name = "mouldy cheese", chance = 9000},
-	{name = "dagger", chance = 10300},
-	{name = "short sword", chance = 15400},
-	{name = "bone club", chance = 1300},
-	{name = "leather helmet", chance = 16670},
-	{name = "leather armor", chance = 5000},
-	{name = "small axe", chance = 12800},
-	{id = 3578, chance = 15000} -- fish
+	{ name = "gold coin", chance = 40000, maxCount = 10 },
+	{ id = 3115, chance = 11500 }, -- bone
+	{ name = "mouldy cheese", chance = 9000 },
+	{ name = "dagger", chance = 10300 },
+	{ name = "short sword", chance = 15400 },
+	{ name = "bone club", chance = 1300 },
+	{ name = "leather helmet", chance = 16670 },
+	{ name = "leather armor", chance = 5000 },
+	{ name = "small axe", chance = 12800 },
+	{ id = 3578, chance = 15000 }, -- fish
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -45, range = 7, shootEffect = CONST_ANI_SMALLSTONE, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -45, range = 7, shootEffect = CONST_ANI_SMALLSTONE, target = false },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 7,
+	mitigation = 0.33,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

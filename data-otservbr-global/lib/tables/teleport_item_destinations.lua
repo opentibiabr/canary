@@ -5,11 +5,11 @@
 ]]
 
 ItemTeleports = {
-	[5629] = {destination = Position(33145, 32863, 7), effect = CONST_ME_MAGIC_GREEN},
-	[5630] = {destination = Position(33147, 32864, 7), effect = CONST_ME_MAGIC_GREEN},
+	[5629] = { destination = Position(33145, 32863, 7), effect = CONST_ME_MAGIC_GREEN },
+	[5630] = { destination = Position(33147, 32864, 7), effect = CONST_ME_MAGIC_GREEN },
 
 	-- Rookgaard level bridge
-	[50240] = {destination = Position(32092, 32177, 6), effect = CONST_ME_MAGIC_BLUE},
+	[50240] = { destination = Position(32092, 32177, 6), effect = CONST_ME_MAGIC_BLUE },
 	-- Rookgaard premium bridge
-	[50241] = {destination = Position(32066, 32192, 7), effect = CONST_ME_MAGIC_BLUE}
+	[50241] = { destination = Position(32066, 32192, 7), effect = CONST_ME_MAGIC_BLUE },
 }

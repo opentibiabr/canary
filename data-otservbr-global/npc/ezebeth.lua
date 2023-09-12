@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 31,
 	lookLegs = 34,
 	lookFeet = 94,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -84,7 +84,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			doPlayerAddOutfit(610, 1)
 			doPlayerAddOutfit(618, 1)
 			npcHandler:setTopic(playerId, 0)
-	elseif player:getStorageValue(Storage.DarkTrails.Outfit) == 1 then
+		elseif player:getStorageValue(Storage.DarkTrails.Outfit) == 1 then
 			npcHandler:say("You already have the outfit.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

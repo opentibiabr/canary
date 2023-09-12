@@ -7,7 +7,7 @@ local periods = {
 	[LIGHT_STATE_NIGHT] = "Night",
 	[LIGHT_STATE_DAY] = "Day",
 	[LIGHT_STATE_SUNRISE] = "Sunrise",
-	[LIGHT_STATE_SUNSET] = "Sunset"
+	[LIGHT_STATE_SUNSET] = "Sunset",
 }
 
 local spawns = {
@@ -16,20 +16,20 @@ local spawns = {
 		name = "Ghostly Wolf",
 		spawn = LIGHT_STATE_SUNSET,
 		despawn = LIGHT_STATE_SUNRISE,
-		position = { x = 33332, y = 32052, z = 7 }
+		position = { x = 33332, y = 32052, z = 7 },
 	},
 	[2] = { -- spawn in night
 		name = "Talila",
 		spawn = LIGHT_STATE_SUNSET,
 		despawn = LIGHT_STATE_SUNRISE,
-		position = { x=33504 , y=32222 , z=7 }
+		position = { x = 33504, y = 32222, z = 7 },
 	},
 	[3] = { -- spawn in day
 		name = "Valindara",
 		spawn = LIGHT_STATE_SUNRISE,
 		despawn = LIGHT_STATE_SUNSET,
-		position = { x=33504 , y=32222 , z=7 }
-	}
+		position = { x = 33504, y = 32222, z = 7 },
+	},
 }
 
 local spawnsByTime = GlobalEvent("spawnsByTime")
@@ -37,8 +37,7 @@ function spawnsByTime.onPeriodChange(period, light)
 	local time = getWorldTime()
 
 	if configManager.getBoolean(configKeys.ALL_CONSOLE_LOG) then
-		Spdlog.info(string.format("Starting %s Current light is %s and it's %s Tibian Time",
-			periods[period], light, getFormattedWorldTime(time)))
+		logger.info("Starting {} Current light is {} and it's {} Tibian Time", periods[period], light, getFormattedWorldTime(time))
 	end
 	for index, value in pairs(spawns) do
 		if value.spawn == period then
@@ -46,7 +45,7 @@ function spawnsByTime.onPeriodChange(period, light)
 			local spawn = Game.createNpc(value.name, value.position)
 			if spawn then
 				if configManager.getBoolean(configKeys.ALL_CONSOLE_LOG) then
-					Spdlog.info("NPC " .. value.name .. " added")
+					logger.info("NPC {} added", value.name)
 				end
 				spawn:setMasterPos(value.position)
 				spawn:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -56,7 +55,7 @@ function spawnsByTime.onPeriodChange(period, light)
 			local target = Npc(value.name)
 			if target then
 				if configManager.getBoolean(configKeys.ALL_CONSOLE_LOG) then
-					Spdlog.info("NPC " .. value.name .. " removed")
+					logger.info("NPC {} removed", value.name)
 				end
 				target:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				target:remove()

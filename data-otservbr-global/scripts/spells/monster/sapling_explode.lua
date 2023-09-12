@@ -3,10 +3,11 @@ combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_FIREDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_FIREAREA)
 combat:setArea(createCombatArea(AREA_CIRCLE3X3))
 
-
 function removeSapling(cid)
 	local creature = Creature(cid)
-	if not isCreature(creature) then return false end
+	if not creature then
+		return false
+	end
 	creature:remove()
 end
 

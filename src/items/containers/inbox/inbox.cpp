@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "items/containers/inbox/inbox.h"
-#include "utils/tools.h"
+#include "items/containers/inbox/inbox.hpp"
+#include "utils/tools.hpp"
 
 Inbox::Inbox(uint16_t type) :
 	Container(type, 30, false, true) {

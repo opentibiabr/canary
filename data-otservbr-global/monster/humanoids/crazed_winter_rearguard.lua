@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 85,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1731
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Court of Winter, Dream Labyrinth."
-	}
+	Locations = "Court of Winter, Dream Labyrinth.",
+}
 
 monster.health = 5200
 monster.maxHealth = 5200
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -76,61 +76,62 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 86000, maxCount = 5},
-	{name = "red crystal fragment", chance = 2000},
-	{id= 3039, chance = 330}, -- red gem
-	{name = "ice rapier", chance = 17200},
-	{name = "ultimate health potion", chance = 16850},
-	{name = "great spirit potion", chance = 15780},
-	{id = 30058, chance = 9000, maxCount = 2}, -- ice flower
-	{name = "life crystal", chance = 7900},
-	{name = "dream essence egg", chance = 8750},
-	{name = "elven astral observer", chance = 7600},
-	{name = "glacier mask", chance = 6000},
-	{name = "moonlight rod", chance = 5400},
-	{name = "small enchanted sapphire", chance = 4700, maxCount = 7},
-	{name = "northwind rod", chance = 2360},
-	{name = "glacier amulet", chance = 2930},
-	{name = "hailstorm rod", chance = 2660},
-	{name = "glacier robe", chance = 1930},
-	{name = "cyan crystal fragment", chance = 2100},
-	{name = "elven amulet", chance = 1260},
-	{name = "blue gem", chance = 330}
+	{ name = "platinum coin", chance = 86000, maxCount = 5 },
+	{ name = "red crystal fragment", chance = 2000 },
+	{ id = 3039, chance = 330 }, -- red gem
+	{ name = "ice rapier", chance = 17200 },
+	{ name = "ultimate health potion", chance = 16850 },
+	{ name = "great spirit potion", chance = 15780 },
+	{ id = 30058, chance = 9000, maxCount = 2 }, -- ice flower
+	{ name = "life crystal", chance = 7900 },
+	{ name = "dream essence egg", chance = 8750 },
+	{ name = "elven astral observer", chance = 7600 },
+	{ name = "glacier mask", chance = 6000 },
+	{ name = "moonlight rod", chance = 5400 },
+	{ name = "small enchanted sapphire", chance = 4700, maxCount = 7 },
+	{ name = "northwind rod", chance = 2360 },
+	{ name = "glacier amulet", chance = 2930 },
+	{ name = "hailstorm rod", chance = 2660 },
+	{ name = "glacier robe", chance = 1930 },
+	{ name = "cyan crystal fragment", chance = 2100 },
+	{ name = "elven amulet", chance = 1260 },
+	{ name = "blue gem", chance = 330 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -110, maxDamage = -400},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -200, maxDamage = -300, radius = 3, effect = CONST_ME_ICEAREA, target = true},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -250, maxDamage = -300, range = 7, shootEffect = CONST_ANI_ICE, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -110, maxDamage = -400 },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -200, maxDamage = -300, radius = 3, effect = CONST_ME_ICEAREA, target = true },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -250, maxDamage = -300, range = 7, shootEffect = CONST_ANI_ICE, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
-	armor = 70
+	armor = 76,
+	mitigation = 2.11,
 }
 
 monster.reflects = {
-	{type = COMBAT_ICEDAMAGE, percent = 70}
+	{ type = COMBAT_ICEDAMAGE, percent = 70 },
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = -15},
-	{type = COMBAT_EARTHDAMAGE, percent = -20},
-	{type = COMBAT_FIREDAMAGE, percent = -20},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 40},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 20}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -15 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -20 },
+	{ type = COMBAT_FIREDAMAGE, percent = -20 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 40 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 20 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = true},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = true },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

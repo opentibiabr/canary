@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/npcs/npcs.h"
+#include "creatures/npcs/npcs.hpp"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
-#include "lua/scripts/scripts.h"
-#include "game/game.h"
+#include "lua/scripts/scripts.hpp"
+#include "game/game.hpp"
 
 void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock> &shopVector) {
 	lua_createtable(L, shopVector.size(), 0);

@@ -17,22 +17,22 @@ function info.onSay(player, words, param)
 
 	local targetIp = target:getIp()
 
-	local text = 'Player Info: \n\n'
-	text = text .. 'Name: ' .. target:getName() .. '\n'
-	text = text .. 'Access: ' .. (target:getGroup():getAccess() and '1' or '0') .. '\n'
-	text = text .. 'Speed: ' .. target:getSpeed() .. '\n'
-	text = text .. 'Position: ' .. string.format("(%0.5d / %0.5d / %0.3d)", target:getPosition().x, target:getPosition().y, target:getPosition().z) .. '\n'
-	text = text .. 'IP: ' .. Game.convertIpToString(targetIp) .. '\n\n'
+	local text = "Player Info: \n\n"
+	text = text .. "Name: " .. target:getName() .. "\n"
+	text = text .. "Access: " .. (target:getGroup():getAccess() and "1" or "0") .. "\n"
+	text = text .. "Speed: " .. target:getSpeed() .. "\n"
+	text = text .. "Position: " .. string.format("(%0.5d / %0.5d / %0.3d)", target:getPosition().x, target:getPosition().y, target:getPosition().z) .. "\n"
+	text = text .. "IP: " .. Game.convertIpToString(targetIp) .. "\n\n"
 
-	text = text .. 'Skills: \n\n'
-	text = text .. '* Level: ' .. target:getLevel() .. '\n'
-	text = text .. '* Skill Axe: ' .. target:getSkillLevel(SKILL_AXE) .. '\n'
-	text = text .. '* Skill Club: ' .. target:getSkillLevel(SKILL_CLUB) .. '\n'
-	text = text .. '* Skill Distance: ' .. target:getSkillLevel(SKILL_DISTANCE) .. '\n'
-	text = text .. '* Skill Fist: ' .. target:getSkillLevel(SKILL_FIST) .. '\n'
-	text = text .. '* Skill Magic: ' .. target:getMagicLevel() .. '\n'
-	text = text .. '* Skill Shield: ' .. target:getSkillLevel(SKILL_SHIELD) .. '\n'
-	text = text .. '* Skill Sword: ' .. target:getSkillLevel(SKILL_SWORD) .. '\n'
+	text = text .. "Skills: \n\n"
+	text = text .. "* Level: " .. target:getLevel() .. "\n"
+	text = text .. "* Skill Axe: " .. target:getSkillLevel(SKILL_AXE) .. "\n"
+	text = text .. "* Skill Club: " .. target:getSkillLevel(SKILL_CLUB) .. "\n"
+	text = text .. "* Skill Distance: " .. target:getSkillLevel(SKILL_DISTANCE) .. "\n"
+	text = text .. "* Skill Fist: " .. target:getSkillLevel(SKILL_FIST) .. "\n"
+	text = text .. "* Skill Magic: " .. target:getMagicLevel() .. "\n"
+	text = text .. "* Skill Shield: " .. target:getSkillLevel(SKILL_SHIELD) .. "\n"
+	text = text .. "* Skill Sword: " .. target:getSkillLevel(SKILL_SWORD) .. "\n"
 
 	player:popupFYI(text)
 

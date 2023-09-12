@@ -14,6 +14,8 @@
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/scripts/script_environment.hpp"
 
+bool LuaEnvironment::shuttingDown = false;
+
 LuaEnvironment::LuaEnvironment() :
 	LuaScriptInterface("Main Interface") { }
 
@@ -22,12 +24,12 @@ LuaEnvironment::~LuaEnvironment() {
 		delete testInterface;
 	}
 
-	shuttingDown = true;
+	LuaEnvironment::shuttingDown = true;
 	closeState();
 }
 
 lua_State* LuaEnvironment::getLuaState() {
-	if (shuttingDown) {
+	if (LuaEnvironment::isShuttingDown()) {
 		return luaState;
 	}
 

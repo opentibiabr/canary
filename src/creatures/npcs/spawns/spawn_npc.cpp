@@ -9,14 +9,14 @@
 
 #include "pch.hpp"
 
-#include "creatures/npcs/spawns/spawn_npc.h"
-#include "creatures/npcs/npc.h"
-#include "game/game.h"
-#include "game/scheduling/scheduler.h"
-#include "lua/creature/events.h"
+#include "creatures/npcs/spawns/spawn_npc.hpp"
+#include "creatures/npcs/npc.hpp"
+#include "game/game.hpp"
+#include "game/scheduling/scheduler.hpp"
+#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
-#include "utils/pugicast.h"
+#include "utils/pugicast.hpp"
 
 static constexpr int32_t MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MAXSPAWN_INTERVAL = 86400000; // 1 day
@@ -131,7 +131,7 @@ bool SpawnsNpc::isInZone(const Position &centerPos, int32_t radius, const Positi
 
 void SpawnNpc::startSpawnNpcCheck() {
 	if (checkSpawnNpcEvent == 0) {
-		checkSpawnNpcEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this));
+		checkSpawnNpcEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this), "SpawnNpc::checkSpawnNpc");
 	}
 }
 
@@ -221,7 +221,7 @@ void SpawnNpc::checkSpawnNpc() {
 	}
 
 	if (spawnedNpcMap.size() < spawnNpcMap.size()) {
-		checkSpawnNpcEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this));
+		checkSpawnNpcEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this), __FUNCTION__);
 	}
 }
 
@@ -230,7 +230,7 @@ void SpawnNpc::scheduleSpawnNpc(uint32_t spawnId, spawnBlockNpc_t &sb, uint16_t 
 		spawnNpc(spawnId, sb.npcType, sb.pos, sb.direction);
 	} else {
 		g_game().addMagicEffect(sb.pos, CONST_ME_TELEPORT);
-		g_scheduler().addEvent(1400, std::bind(&SpawnNpc::scheduleSpawnNpc, this, spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL));
+		g_scheduler().addEvent(1400, std::bind(&SpawnNpc::scheduleSpawnNpc, this, spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL), __FUNCTION__);
 	}
 }
 

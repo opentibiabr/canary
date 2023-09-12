@@ -1,7 +1,7 @@
 local setting = {
 	[293] = 294,
 	[475] = 476,
-	[1066] = 1067
+	[1066] = 1067,
 }
 
 local decayTo = MoveEvent()

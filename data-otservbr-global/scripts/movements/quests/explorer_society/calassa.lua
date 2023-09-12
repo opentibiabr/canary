@@ -7,15 +7,15 @@ function calassa.onStepIn(creature, item, position, fromPosition)
 	end
 
 	local headItem = player:getSlotItem(CONST_SLOT_HEAD)
-	if headItem and table.contains({5460, 11585, 13995}, headItem.itemid) then
+	if headItem and table.contains({ 5460, 11585, 13995 }, headItem.itemid) then
 		player:teleportTo(Position(31914, 32713, 12))
 		player:getPosition():sendMagicEffect(CONST_ME_WATERSPLASH)
 		player:getPosition():sendMagicEffect(CONST_ME_LOSEENERGY)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You enter the realm of Calassa.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You enter the realm of Calassa.")
 	else
 		player:teleportTo(fromPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You must wear an underwater exploration helmet in order to dive.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You must wear an underwater exploration helmet in order to dive.")
 	end
 	return true
 end

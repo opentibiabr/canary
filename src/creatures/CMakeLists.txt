@@ -1,0 +1,26 @@
+target_sources(${PROJECT_NAME}_lib PRIVATE
+    appearance/mounts/mounts.cpp
+    appearance/outfit/outfit.cpp
+    combat/combat.cpp
+    combat/condition.cpp
+    combat/spells.cpp
+    creature.cpp
+    interactions/chat.cpp
+    monsters/monster.cpp
+    monsters/monsters.cpp
+    monsters/spawns/spawn_monster.cpp
+    npcs/npc.cpp
+    npcs/npcs.cpp
+    npcs/spawns/spawn_npc.cpp
+    players/grouping/familiars.cpp
+    players/grouping/groups.cpp
+    players/grouping/guild.cpp
+    players/grouping/party.cpp
+    players/imbuements/imbuements.cpp
+    players/management/ban.cpp
+    players/management/waitlist.cpp
+    players/storages/storages.cpp
+    players/player.cpp
+    players/wheel/player_wheel.cpp
+    players/vocations/vocation.cpp
+)

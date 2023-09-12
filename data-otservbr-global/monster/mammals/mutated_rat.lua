@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 502
@@ -25,8 +25,8 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Alchemist Quarter, Arena and Zoo Quarter (Inside the arena with other mutated creatures), \z
 		Razzachai, Vampire Castle on Vengoth, Robson's Isle, Mushroom Gardens, Souleater Mountains, \z
-		Northern Zao Plantations, Middle Spike."
-	}
+		Northern Zao Plantations, Middle Spike.",
+}
 
 monster.health = 550
 monster.maxHealth = 550
@@ -37,7 +37,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -61,71 +61,72 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Grrrrrrrrrrrrrr!", yell = false},
-	{text = "Fcccccchhhhhh", yell = false}
+	{ text = "Grrrrrrrrrrrrrr!", yell = false },
+	{ text = "Fcccccchhhhhh", yell = false },
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 78500, maxCount = 130},
-	{id = 3049, chance = 540}, -- stealth ring
-	{id = 3114, chance = 20240}, -- skull
-	{name = "mouldy cheese", chance = 950},
-	{name = "halberd", chance = 2990},
-	{name = "plate shield", chance = 3750},
-	{name = "tower shield", chance = 50},
-	{name = "green mushroom", chance = 1390},
-	{name = "stone herb", chance = 4920},
-	{name = "health potion", chance = 560},
-	{name = "spellbook of enlightenment", chance = 300},
-	{name = "mutated rat tail", chance = 3800}
+	{ name = "gold coin", chance = 78500, maxCount = 130 },
+	{ id = 3049, chance = 540 }, -- stealth ring
+	{ id = 3114, chance = 20240 }, -- skull
+	{ name = "mouldy cheese", chance = 950 },
+	{ name = "halberd", chance = 2990 },
+	{ name = "plate shield", chance = 3750 },
+	{ name = "tower shield", chance = 50 },
+	{ name = "green mushroom", chance = 1390 },
+	{ name = "stone herb", chance = 4920 },
+	{ name = "health potion", chance = 560 },
+	{ name = "spellbook of enlightenment", chance = 300 },
+	{ name = "mutated rat tail", chance = 3800 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -158, condition = {type = CONDITION_POISON, totalDamage = 100, interval = 4000}},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -45, maxDamage = -85, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = false},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -158, condition = { type = CONDITION_POISON, totalDamage = 100, interval = 4000 } },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -45, maxDamage = -85, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = false },
 	-- poison
-	{name ="condition", type = CONDITION_POISON, interval = 2000, chance = 10, minDamage = -80, maxDamage = -100, length = 5, spread = 3, effect = CONST_ME_POISONAREA, target = false},
-	{name ="speed", interval = 2000, chance = 10, speedChange = -600, range = 7, effect = CONST_ME_MAGIC_RED, target = true, duration = 30000},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -30, maxDamage = -70, range = 7, radius = 3, effect = CONST_ME_MAGIC_RED, target = false},
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 10, minDamage = -80, maxDamage = -100, length = 5, spread = 3, effect = CONST_ME_POISONAREA, target = false },
+	{ name = "speed", interval = 2000, chance = 10, speedChange = -600, range = 7, effect = CONST_ME_MAGIC_RED, target = true, duration = 30000 },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -30, maxDamage = -70, range = 7, radius = 3, effect = CONST_ME_MAGIC_RED, target = false },
 	-- poison
-	{name ="condition", type = CONDITION_POISON, interval = 2000, chance = 10, range = 7, radius = 3, effect = CONST_ME_POISONAREA, target = false}
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 10, range = 7, radius = 3, effect = CONST_ME_POISONAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 32,
-	{name ="combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 80, maxDamage = 95, effect = CONST_ME_MAGIC_BLUE, target = false}
+	mitigation = 0.99,
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 80, maxDamage = 95, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 10},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = -10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

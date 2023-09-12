@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 60
@@ -23,10 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "Rookgaard, Orc Fort, under Femor Hills with Goblins, some farms like The McRonald's Farm, \z
-		Liberty Bay slums and Nargor, Foreigner Quarter in Yalahar, Isle of the Kings, \z
-		cells in Tafariel's throneroom in Pits of Inferno, Gardens of Night."
-	}
+	Locations = "Rookgaard, Orc Fort, under Femor Hills with Goblins, some farms like Donald McRonaldThe McRonalds Farm, Liberty Bay slums and Nargor, Foreigner Quarter in Yalahar, Isle of the Kings, cells in The Pits of Inferno QuestTafariels throneroom in Pits of Inferno, Gardens of Night Mapper Coords129.18126.125104texthere, unreachable.",
+}
 
 monster.health = 25
 monster.maxHealth = 25
@@ -37,7 +35,7 @@ monster.manaCost = 255
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -61,49 +59,50 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Oink oink", yell = false},
-	{text = "Oink", yell = false}
+	{ text = "Oink oink", yell = false },
+	{ text = "Oink", yell = false },
 }
 
 monster.loot = {
-	{name = "meat", chance = 64000, maxCount = 4},
-	{name = "pig foot", chance = 950}
+	{ name = "meat", chance = 64000, maxCount = 4 },
+	{ name = "pig foot", chance = 950 },
 }
 
 monster.defenses = {
 	defense = 5,
-	armor = 10
+	armor = 2,
+	mitigation = 0.05,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

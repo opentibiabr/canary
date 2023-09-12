@@ -1,11 +1,11 @@
 table.append = table.insert
-table.empty = function (t)
+table.empty = function(t)
 	return next(t) == nil
 end
 
-table.find = function (table, value)
+table.find = function(table, value)
 	for i, v in pairs(table) do
-		if(v == value) then
+		if v == value then
 			return i
 		end
 	end
@@ -22,10 +22,10 @@ table.contains = function(array, value)
 	return false
 end
 
-table.count = function (table, item)
+table.count = function(table, item)
 	local count = 0
 	for i, n in pairs(table) do
-		if(item == n) then
+		if item == n then
 			count = count + 1
 		end
 	end
@@ -34,14 +34,14 @@ table.count = function (table, item)
 end
 table.countElements = table.count
 
-table.getCombinations = function (table, num)
+table.getCombinations = function(table, num)
 	local a, number, select, newlist = {}, #table, num, {}
 	for i = 1, select do
 		a[#a + 1] = i
 	end
 
 	local newthing = {}
-	while(true) do
+	while true do
 		local newrow = {}
 		for i = 1, select do
 			newrow[#newrow + 1] = table[a[i]]
@@ -49,11 +49,11 @@ table.getCombinations = function (table, num)
 
 		newlist[#newlist + 1] = newrow
 		i = select
-		while(a[i] == (number - select + i)) do
+		while a[i] == (number - select + i) do
 			i = i - 1
 		end
 
-		if(i < 1) then
+		if i < 1 then
 			break
 		end
 
@@ -70,18 +70,18 @@ function table.serialize(x, recur)
 	local t = type(x)
 	recur = recur or {}
 
-	if(t == nil) then
+	if t == nil then
 		return "nil"
-	elseif(t == "string") then
+	elseif t == "string" then
 		return string.format("%q", x)
-	elseif(t == "number") then
+	elseif t == "number" then
 		return tostring(x)
-	elseif(t == "boolean") then
+	elseif t == "boolean" then
 		return t and "true" or "false"
-	elseif(getmetatable(x)) then
+	elseif getmetatable(x) then
 		error("Can not serialize a table that has a metatable associated with it.")
-	elseif(t == "table") then
-		if(table.find(recur, x)) then
+	elseif t == "table" then
+		if table.find(recur, x) then
 			error("Can not serialize recursive tables.")
 		end
 		table.append(recur, x)
@@ -104,13 +104,17 @@ end
 
 function pairsByKeys(t, f)
 	local a = {}
-	for n in pairs(t) do table.insert(a, n) end
+	for n in pairs(t) do
+		table.insert(a, n)
+	end
 	table.sort(a, f)
-	local i = 0      -- iterator variable
-	local iter = function ()   -- iterator function
+	local i = 0 -- iterator variable
+	local iter = function() -- iterator function
 		i = i + 1
-		if a[i] == nil then return nil
-			else return a[i], t[a[i]]
+		if a[i] == nil then
+			return nil
+		else
+			return a[i], t[a[i]]
 		end
 	end
 	return iter

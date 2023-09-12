@@ -9,11 +9,11 @@
 
 #include "pch.hpp"
 
-#include "config/configmanager.h"
-#include "game/game.h"
-#include "creatures/players/grouping/groups.h"
-#include "utils/pugicast.h"
-#include "utils/tools.h"
+#include "config/configmanager.hpp"
+#include "game/game.hpp"
+#include "creatures/players/grouping/groups.hpp"
+#include "utils/pugicast.hpp"
+#include "utils/tools.hpp"
 
 namespace ParsePlayerFlagMap {
 	// Initialize the map with all the values from the PlayerFlags_t enumeration

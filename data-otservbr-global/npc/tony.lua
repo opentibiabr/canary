@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 43,
 	lookLegs = 38,
 	lookFeet = 76,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -61,20 +61,20 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "report") then
 		if player:getStorageValue(Storage.InServiceofYalahar.Questline) == 7 or player:getStorageValue(Storage.InServiceofYalahar.Questline) == 13 then
 			npcHandler:say("Uhm, report, eh? <slowly gives a clumsy description of recent problems>. ", npc, creature)
-			player:setStorageValue(Storage.InServiceofYalahar.Questline, math.max(1, player:getStorageValue(Storage.InServiceofYalahar.Questline) +1))
-			player:setStorageValue(Storage.InServiceofYalahar.Mission02, math.max(1, player:getStorageValue(Storage.InServiceofYalahar.Mission02) +1)) -- StorageValue for Questlog "Mission 02: Watching the Watchmen"
+			player:setStorageValue(Storage.InServiceofYalahar.Questline, math.max(1, player:getStorageValue(Storage.InServiceofYalahar.Questline) + 1))
+			player:setStorageValue(Storage.InServiceofYalahar.Mission02, math.max(1, player:getStorageValue(Storage.InServiceofYalahar.Mission02) + 1)) -- StorageValue for Questlog "Mission 02: Watching the Watchmen"
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "pass") then
 		npcHandler:say("You can {pass} either to the {Arena Quarter} or {Foreigner Quarter}. Which one will it be?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif(MsgContains(message, "arena")) then
+	elseif MsgContains(message, "arena") then
 		if npcHandler:getTopic(playerId) == 1 then
 			player:teleportTo(Position(32695, 31254, 7))
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, "foreigner")) then
+	elseif MsgContains(message, "foreigner") then
 		if npcHandler:getTopic(playerId) == 1 then
 			player:teleportTo(Position(32695, 31259, 7))
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

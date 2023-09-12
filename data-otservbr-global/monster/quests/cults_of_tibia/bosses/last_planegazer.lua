@@ -1,8 +1,8 @@
 local mType = Game.createMonsterType("Last Planegazer")
 local monster = {}
 
-monster.description = "a last planegazer"
-monster.experience = 40000
+monster.description = "Last Planegazer"
+monster.experience = 10000
 monster.outfit = {
 	lookType = 1044,
 	lookHead = 0,
@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 50000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -38,9 +38,9 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 90,
 	targetDistance = 1,
@@ -49,12 +49,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -63,47 +63,48 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3031, chance = 65700, maxCount = 15}, -- gold coin
-	{id = 3410, chance = 20000}, -- plate shield
-	{id = 3286, chance = 12900}, -- mace
-	{id = 3358, chance = 10000}, -- chain armor
-	{id = 3354, chance = 7800}, -- brass helmet
-	{id = 3264, chance = 5000}, -- sword
-	{id = 3577, chance = 5000}, -- meat
-	{id = 3274, chance = 4000}, -- axe
-	{id = 11472, chance = 2000, maxCount = 2}, -- minotaur horn
-	{id = 5878, chance = 980}, -- minotaur leather
-	{id = 3457, chance = 310}, -- shovel
-	{id = 3056, chance = 120} -- bronze amulet
+	{ id = 3031, chance = 65700, maxCount = 15 }, -- gold coin
+	{ id = 3410, chance = 20000 }, -- plate shield
+	{ id = 3286, chance = 12900 }, -- mace
+	{ id = 3358, chance = 10000 }, -- chain armor
+	{ id = 3354, chance = 7800 }, -- brass helmet
+	{ id = 3264, chance = 5000 }, -- sword
+	{ id = 3577, chance = 5000 }, -- meat
+	{ id = 3274, chance = 4000 }, -- axe
+	{ id = 11472, chance = 2000, maxCount = 2 }, -- minotaur horn
+	{ id = 5878, chance = 980 }, -- minotaur leather
+	{ id = 3457, chance = 310 }, -- shovel
+	{ id = 3056, chance = 120 }, -- bronze amulet
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 },
 }
 
 monster.defenses = {
 	defense = 15,
-	armor = 10
+	armor = 10,
+	--	mitigation = ???,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 45 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 35 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 40 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 70 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

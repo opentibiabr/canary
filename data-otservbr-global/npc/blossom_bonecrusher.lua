@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 100,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if table.contains({"fuck", "idiot", "asshole", "ass", "fag", "stupid", "tyrant", "shit", "lunatic"}, message) then
+	if table.contains({ "fuck", "idiot", "asshole", "ass", "fag", "stupid", "tyrant", "shit", "lunatic" }, message) then
 		npcHandler:say("Take this!", npc, creature)
 		local player = Player(creature)
 		player:getPosition():sendMagicEffect(CONST_ME_EXPLOSIONAREA)

@@ -10,11 +10,11 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
-monster.health = 200000
-monster.maxHealth = 200000
+monster.health = 320000
+monster.maxHealth = 320000
 monster.race = "blood"
 monster.corpse = 30017
 monster.speed = 125
@@ -22,12 +22,13 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.bosstiary = {
 	bossRaceId = 1696,
-	bossRace = RARITY_NEMESIS
+	bossRace = RARITY_NEMESIS,
+	storage = Storage.Quest.U12_00.TheDreamCourts.ArenaTimer,
 }
 
 monster.strategiesTarget = {
@@ -52,82 +53,95 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "RAAAARGH! I'M MASHING YE TO DUST BOOM!", yell = false},
-	{text = "BOOOM!", yell = false},
-	{text = "BOOOOM!!!", yell = false},
-	{text = "BOOOOOM!!!", yell = false}
+	{ text = "RAAAARGH! I'M MASHING YE TO DUST BOOM!", yell = true },
+	{ text = "BOOOM!", yell = true },
+	{ text = "BOOOOM!!!", yell = true },
+	{ text = "BOOOOOM!!!", yell = true },
 }
 
 monster.loot = {
-	{name = "ultimate spirit potion", chance = 50000, maxCount = 6},
-	{name = "crystal coin", chance = 50000},
-	{name = "ultimate mana potion", chance = 50000, maxCount = 14},
-	{name = "supreme health potion", chance = 50000, maxCount = 6},
-	{name = "gold token", chance = 50000, maxCount = 2},
-	{name = "silver token", chance = 100000, maxCount = 2},
-	{id = 281, chance = 100000}, -- giant shimmering pearl (green)
-	{name = "green gem", chance = 100000},
-	{id= 3039, chance = 50000}, -- red gem
-	{name = "blue gem", chance = 100000},
-	{id = 23529, chance = 50000}, -- ring of blue plasma
-	{name = "platinum coin", chance = 50000, maxCount = 5},
-	{name = "bullseye potion", chance = 50000, maxCount = 10},
-	{name = "piggy bank", chance = 100000},
-	{name = "mysterious remains", chance = 100000},
-	{name = "energy bar", chance = 100000},
-	{id = 23543, chance = 50000}, -- collar of green plasma
-	{name = "ring of the sky", chance = 100000},
-	{name = "crunor idol", chance = 100000},
-	{name = "resizer", chance = 100000},
-	{name = "shoulder plate", chance = 100000},
-	{name = "malofur's lunchbox", chance = 100000},
-	{name = "pomegranate", chance = 50000}
+	{ id = 23544, chance = 22220 }, -- collar of red plasma
+	{ id = 23529, chance = 13890 }, --  ring of blue plasma
+	{ id = 23531, chance = 8330 }, -- ring of green plasma
+	{ id = 23542, chance = 8330 }, -- collar of blue plasma
+	{ id = 23543, chance = 16670 }, -- collar of green plasma
+	{ id = 3039, chance = 47220 }, -- red gem
+	{ name = "berserk potion", chance = 20000 },
+	{ name = "blue gem", chance = 20000 },
+	{ name = "bullseye potion", chance = 20000 },
+	{ name = "chaos mace", chance = 8330 },
+	{ name = "crystal coin", chance = 25000, maxCount = 2 },
+	{ name = "energy bar", chance = 88890 },
+	{ id = 282, chance = 8330 }, -- giant shimmering pearl
+	{ name = "gold ingot", chance = 22220 },
+	{ name = "gold token", chance = 60000, maxCount = 3 },
+	{ name = "green gem", chance = 11110 },
+	{ name = "huge chunk of crude iron", chance = 40000 },
+	{ name = "magic sulphur", chance = 5560 },
+	{ name = "mastermind potion", chance = 22220 },
+	{ name = "mysterious remains", chance = 88890 },
+	{ name = "piggy bank", chance = 97220 },
+	{ name = "platinum coin", chance = 100000, maxCount = 8 },
+	{ name = "pomegranate", chance = 16670 },
+	{ name = "resizer", chance = 2780 },
+	{ id = 23533, chance = 5560 }, -- ring of red plasma
+	{ name = "ring of the sky", chance = 2780 },
+	{ name = "royal star", chance = 52780 },
+	{ name = "silver token", chance = 91670, maxCount = 3 },
+	{ name = "skull staff", chance = 8330 },
+	{ name = "soul stone", chance = 8330 },
+	{ name = "supreme health potion", chance = 80000, maxCount = 29 },
+	{ name = "ultimate mana potion", chance = 55560, maxCount = 20 },
+	{ name = "ultimate spirit potion", chance = 80000, maxCount = 13 },
+	{ name = "violet gem", chance = 8330 },
+	{ name = "yellow gem", chance = 44440, maxCount = 2 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -5}
+	{ name = "combat", interval = 2000, chance = 100, type = COMBAT_PHYSICALDAMAGE, minDamage = -400, maxDamage = -2500, target = true }, -- basic attack
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = -400, maxDamage = -5500, effect = CONST_ME_GROUNDSHAKER, radius = 4, target = false }, -- groundshaker
 }
 
 monster.defenses = {
-	defense = 20,
-	armor = 20
+	defense = 60,
+	armor = 60,
+	--	mitigation = ???,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 20},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 5 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -135,13 +149,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

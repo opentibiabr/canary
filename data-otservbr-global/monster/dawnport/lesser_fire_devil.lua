@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 175
@@ -18,11 +18,11 @@ monster.maxHealth = 175
 monster.race = "blood"
 monster.corpse = 5985
 monster.speed = 75
-monster.manaCost = 0
+monster.manaCost = 530
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -30,10 +30,10 @@ monster.strategiesTarget = {
 }
 
 monster.flags = {
-	summonable = false,
+	summonable = true,
 	attackable = true,
 	hostile = true,
-	convinceable = false,
+	convinceable = true,
 	pushable = false,
 	rewardBoss = false,
 	illusionable = true,
@@ -44,14 +44,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -60,42 +60,43 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3147, chance = 21050}, -- blank rune
-	{id = 3031, chance = 100000, maxCount = 10}, -- gold coin
-	{id = 11513, chance = 22810}, -- small pitchfork
-	{id = 2920, chance = 1750}, -- torch
-	{id = 2920, chance = 1750} -- torch
+	{ id = 3147, chance = 21050 }, -- blank rune
+	{ id = 3031, chance = 100000, maxCount = 10 }, -- gold coin
+	{ id = 11513, chance = 22810 }, -- small pitchfork
+	{ id = 2920, chance = 1750 }, -- torch
+	{ id = 2920, chance = 1750 }, -- torch
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, skill = 10, attack = 25},
-	{name ="combat", interval = 2000, chance = 5, type = COMBAT_FIREDAMAGE, minDamage = -24, maxDamage = -36, range = 7, radius = 4, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true},
-	{name ="combat", interval = 2000, chance = 35, type = COMBAT_FIREDAMAGE, minDamage = -4, maxDamage = -12, range = 7, radius = 2, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREATTACK, target = true}
+	{ name = "melee", interval = 2000, chance = 100, skill = 10, attack = 25 },
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_FIREDAMAGE, minDamage = -24, maxDamage = -36, range = 7, radius = 4, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
+	{ name = "combat", interval = 2000, chance = 35, type = COMBAT_FIREDAMAGE, minDamage = -4, maxDamage = -12, range = 7, radius = 2, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREATTACK, target = true },
 }
 
 monster.defenses = {
 	defense = 9,
-	armor = 5
+	armor = 9,
+	mitigation = 0.38,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 35 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

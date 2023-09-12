@@ -1,10 +1,10 @@
 local config = {
 	teleportId = 1949,
-	teleportPosition = {x = 33487, y = 32101, z = 9},
+	teleportPosition = { x = 33487, y = 32101, z = 9 },
 	destinationPosition = Position(33489, 32088, 9),
 	storageKey = Storage.DarkTrails.Mission18,
 	getStorageValue = 1,
-	setStorageValue = 2
+	setStorageValue = 2,
 }
 
 local function removeTeleport(position)

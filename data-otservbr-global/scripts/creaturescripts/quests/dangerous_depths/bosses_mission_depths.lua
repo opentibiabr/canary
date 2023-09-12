@@ -17,12 +17,9 @@ function bossesMissionDepth.onKill(creature, creature)
 	end
 
 	local bosses = {
-		["the count of the core"] = {stg = Storage.DangerousDepths.Bosses.TheCountOfTheCore, value = os.time() + 20*60*60, teleportPosition = Position(33681, 32340, 15),
-		toPosition = Position(33682, 32315, 15), toPositionBack = Position(33324, 32111, 15)},
-		["the duke of the depths"] = {stg = Storage.DangerousDepths.Bosses.TheDukeOfTheDepths, value = os.time() + 20*60*60, teleportPosition = Position(33719, 32302, 15),
-		toPosition = Position(33691, 32301, 15), toPositionBack = Position(33275, 32318, 15)},
-		["the baron from below"] = {stg = Storage.DangerousDepths.Bosses.TheBaronFromBelow, value = os.time() + 20*60*60, teleportPosition = Position(33650, 32312, 15),
-		toPosition = Position(33668, 32301, 15), toPositionBack = Position(33462, 32267, 15)},
+		["the count of the core"] = { stg = Storage.DangerousDepths.Bosses.TheCountOfTheCore, value = os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN), teleportPosition = Position(33681, 32340, 15), toPosition = Position(33682, 32315, 15), toPositionBack = Position(33324, 32111, 15) },
+		["the duke of the depths"] = { stg = Storage.DangerousDepths.Bosses.TheDukeOfTheDepths, value = os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN), teleportPosition = Position(33719, 32302, 15), toPosition = Position(33691, 32301, 15), toPositionBack = Position(33275, 32318, 15) },
+		["the baron from below"] = { stg = Storage.DangerousDepths.Bosses.TheBaronFromBelow, value = os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN), teleportPosition = Position(33650, 32312, 15), toPosition = Position(33668, 32301, 15), toPositionBack = Position(33462, 32267, 15) },
 	}
 
 	local boss = bosses[creature:getName():lower()]
@@ -39,7 +36,7 @@ function bossesMissionDepth.onKill(creature, creature)
 		if teleport then
 			teleport:transform(22761)
 			teleport:setDestination(boss.toPosition)
-			addEvent(revert, 20*60*1000, boss.teleportPosition, boss.toPositionBack)
+			addEvent(revert, 20 * 60 * 1000, boss.teleportPosition, boss.toPositionBack)
 		end
 	end
 	return true

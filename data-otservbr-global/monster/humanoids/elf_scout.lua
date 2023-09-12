@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 64
@@ -25,8 +25,8 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Yalahar Foreigner Quarter, Shadowthorn, northwest of Ab'Dendriel, north and west of Mount Sternum, \z
 		Hellgate, Maze of Lost Souls, near Knightwatch Tower in the Plains of Havoc. \z
-		Two may also spawn when a Desperate White Deer or an Enraged White Deer is killed."
-	}
+		Two may also spawn when a Desperate White Deer or an Enraged White Deer is killed.",
+}
 
 monster.health = 160
 monster.maxHealth = 160
@@ -37,7 +37,7 @@ monster.manaCost = 360
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -61,66 +61,67 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Tha'shi Ab'Dendriel!", yell = false},
-	{text = "Feel the sting of my arrows!", yell = false},
-	{text = "Thy blood will quench the soil's thirst!", yell = false},
-	{text = "Evicor guide my arrow!", yell = false},
-	{text = "Your existence will end here!", yell = false}
+	{ text = "Tha'shi Ab'Dendriel!", yell = false },
+	{ text = "Evicor guide my arrow!", yell = false },
+	{ text = "Your existence will end here!", yell = false },
+	{ text = "Feel the sting of my arrows!", yell = false },
+	{ text = "Thy blood will quench the soil's thirst!", yell = false },
 }
 
 monster.loot = {
-	{name = "waterskin", chance = 1350},
-	{name = "gold coin", chance = 75000, maxCount = 25},
-	{name = "bow", chance = 4000},
-	{name = "arrow", chance = 30710, maxCount = 12},
-	{name = "poison arrow", chance = 15400, maxCount = 4},
-	{name = "sandals", chance = 1180},
-	{name = "grapes", chance = 17750},
-	{id = 5921, chance = 1130}, -- heaven blossom
-	{name = "elvish bow", chance = 140},
-	{name = "elvish talisman", chance = 5200},
-	{name = "elven scouting glass", chance = 9750}
+	{ name = "waterskin", chance = 1350 },
+	{ name = "gold coin", chance = 75000, maxCount = 25 },
+	{ name = "bow", chance = 4000 },
+	{ name = "arrow", chance = 30710, maxCount = 12 },
+	{ name = "poison arrow", chance = 15400, maxCount = 4 },
+	{ name = "sandals", chance = 1180 },
+	{ name = "grapes", chance = 17750 },
+	{ id = 5921, chance = 1130 }, -- heaven blossom
+	{ name = "elvish bow", chance = 140 },
+	{ name = "elvish talisman", chance = 5200 },
+	{ name = "elven scouting glass", chance = 9750 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -80, range = 7, shootEffect = CONST_ANI_ARROW, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -80, range = 7, shootEffect = CONST_ANI_ARROW, target = false },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 7,
+	mitigation = 0.46,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 20},
-	{type = COMBAT_DEATHDAMAGE , percent = -10}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

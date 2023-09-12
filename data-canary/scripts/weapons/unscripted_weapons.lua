@@ -6,12 +6,12 @@ local weapons = {
 		wandType = "ice",
 		level = 250,
 		mana = 22,
-		damage = {90, 110},
+		damage = { 90, 110 },
 		unproperly = true,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- naga wand
@@ -20,12 +20,12 @@ local weapons = {
 		wandType = "energy",
 		level = 250,
 		mana = 21,
-		damage = {90, 120},
+		damage = { 90, 120 },
 		unproperly = true,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- naga crossbow
@@ -34,9 +34,9 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- naga club
@@ -45,9 +45,9 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- naga axe
@@ -56,9 +56,9 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- naga sword
@@ -67,9 +67,9 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- gilded eldritch rod
@@ -78,9 +78,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- eldritch rod
@@ -89,9 +89,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- gilded eldritch wand
@@ -100,9 +100,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- eldritch wand
@@ -111,9 +111,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- gilded eldritch bow
@@ -122,9 +122,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- eldritch bow
@@ -133,9 +133,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- gilded eldritch greataxe
@@ -144,9 +144,9 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- eldritch greataxe
@@ -155,9 +155,9 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- gilded eldritch warmace
@@ -166,9 +166,9 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- eldritch warmace
@@ -177,9 +177,9 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- gilded eldritch claymore
@@ -188,9 +188,9 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- eldritch claymore
@@ -199,9 +199,9 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- spectral bolt (no decay)
@@ -209,7 +209,7 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 150,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- jungle wand
@@ -218,11 +218,11 @@ local weapons = {
 		wandType = "earth",
 		level = 150,
 		mana = 19,
-		damage = {80, 100},
+		damage = { 80, 100 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- jungle rod
@@ -231,11 +231,11 @@ local weapons = {
 		wandType = "ice",
 		level = 150,
 		mana = 19,
-		damage = {80, 100},
+		damage = { 80, 100 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- jungle bow
@@ -244,9 +244,9 @@ local weapons = {
 		level = 150,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- throwing axe
@@ -255,9 +255,9 @@ local weapons = {
 		level = 150,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- jungle flail
@@ -266,9 +266,9 @@ local weapons = {
 		level = 150,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- lion longsword
@@ -277,9 +277,9 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- lion hammer
@@ -288,9 +288,9 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- lion axe
@@ -299,9 +299,9 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- lion wand
@@ -310,11 +310,11 @@ local weapons = {
 		wandType = "ice",
 		level = 220,
 		mana = 21,
-		damage = {89, 109},
+		damage = { 89, 109 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- lion rod
@@ -323,11 +323,11 @@ local weapons = {
 		wandType = "ice",
 		level = 270,
 		mana = 20,
-		damage = {85, 105},
+		damage = { 85, 105 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- lion longbow
@@ -336,9 +336,9 @@ local weapons = {
 		level = 270,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- soulhexer rod
@@ -347,11 +347,11 @@ local weapons = {
 		wandType = "ice",
 		level = 400,
 		mana = 21,
-		damage = {98, 118},
+		damage = { 98, 118 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- soultainter wand
@@ -360,11 +360,11 @@ local weapons = {
 		wandType = "death",
 		level = 400,
 		mana = 21,
-		damage = {100, 120},
+		damage = { 100, 120 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- soulpiercer crossbow
@@ -373,9 +373,9 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- soulbleeder bow
@@ -384,9 +384,9 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- soulmaimer club
@@ -395,9 +395,9 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- soulcrusher club
@@ -406,9 +406,9 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- souleater axe
@@ -417,9 +417,9 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- soulbiter axe
@@ -428,9 +428,9 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- soulshredder sword
@@ -439,9 +439,9 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- soulcutter sword
@@ -450,9 +450,9 @@ local weapons = {
 		level = 400,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- phantasmal axe
@@ -461,14 +461,14 @@ local weapons = {
 		level = 180,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- meat hammer
 		itemid = 32093,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- tagralt blade
@@ -477,9 +477,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- bow of cataclysm
@@ -488,9 +488,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- mortal mace
@@ -499,9 +499,9 @@ local weapons = {
 		level = 220,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- cobra rod
@@ -510,11 +510,11 @@ local weapons = {
 		wandType = "earth",
 		level = 220,
 		mana = 21,
-		damage = {70, 110},
+		damage = { 70, 110 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- cobra wand
@@ -523,11 +523,11 @@ local weapons = {
 		wandType = "energy",
 		level = 270,
 		mana = 22,
-		damage = {94, 100},
+		damage = { 94, 100 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- cobra sword
@@ -536,9 +536,9 @@ local weapons = {
 		level = 220,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- cobra axe
@@ -547,9 +547,9 @@ local weapons = {
 		level = 220,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- cobra club
@@ -558,9 +558,9 @@ local weapons = {
 		level = 220,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- cobra crossbow
@@ -569,14 +569,14 @@ local weapons = {
 		level = 220,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- ice hatchet
 		itemid = 30283,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- energized limb
@@ -585,13 +585,13 @@ local weapons = {
 		wandType = "fire",
 		level = 180,
 		mana = 24,
-		damage = {88, 108},
+		damage = { 88, 108 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
-		}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- winterblade
@@ -600,9 +600,9 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- summerblade
@@ -611,9 +611,9 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- resizer
@@ -622,9 +622,9 @@ local weapons = {
 		level = 230,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- living vine bow
@@ -633,67 +633,67 @@ local weapons = {
 		level = 220,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- golden axe
 		itemid = 29286,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- wand of destruction test
 		itemid = 28479,
-		type = WEAPON_WAND
+		type = WEAPON_WAND,
 	},
 	{
 		-- umbral master bow test
 		itemid = 28478,
-		type = WEAPON_DISTANCE
+		type = WEAPON_DISTANCE,
 	},
 	{
 		-- sorcerer test weapon
 		itemid = 28466,
-		type = WEAPON_WAND
+		type = WEAPON_WAND,
 	},
 	{
 		-- bow of destruction test
 		itemid = 28465,
-		type = WEAPON_DISTANCE
+		type = WEAPON_DISTANCE,
 	},
 	{
 		-- test weapon for knights
 		itemid = 28464,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- sulphurous demonbone
 		itemid = 28832,
 		type = WEAPON_CLUB,
 		level = 80,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- unliving demonbone
 		itemid = 28831,
 		type = WEAPON_CLUB,
 		level = 80,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- energized demonbone
 		itemid = 28830,
 		type = WEAPON_CLUB,
 		level = 80,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- rotten demonbone
 		itemid = 28829,
 		type = WEAPON_CLUB,
 		level = 80,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- deepling fork
@@ -702,13 +702,13 @@ local weapons = {
 		wandType = "ice",
 		level = 230,
 		mana = 23,
-		damage = {80, 120},
+		damage = { 80, 120 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
-		}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- deepling ceremonial dagger
@@ -717,13 +717,13 @@ local weapons = {
 		wandType = "ice",
 		level = 180,
 		mana = 23,
-		damage = {86, 98},
+		damage = { 86, 98 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
-		}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- falcon mace
@@ -732,9 +732,9 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- falcon battleaxe
@@ -743,9 +743,9 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- falcon longsword
@@ -754,9 +754,9 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- falcon bow
@@ -765,9 +765,9 @@ local weapons = {
 		level = 300,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- falcon wand
@@ -776,11 +776,11 @@ local weapons = {
 		wandType = "energy",
 		level = 300,
 		mana = 21,
-		damage = {86, 102},
+		damage = { 86, 102 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- falcon rod
@@ -789,11 +789,11 @@ local weapons = {
 		wandType = "earth",
 		level = 300,
 		mana = 20,
-		damage = {87, 101},
+		damage = { 87, 101 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- gnome sword
@@ -802,19 +802,19 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- mallet handle
 		itemid = 27525,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- strange mallet
 		itemid = 27523,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- rod of destruction
@@ -823,11 +823,11 @@ local weapons = {
 		wandType = "ice",
 		level = 200,
 		mana = 20,
-		damage = {80, 110},
+		damage = { 80, 110 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- wand of destruction
@@ -836,11 +836,11 @@ local weapons = {
 		wandType = "energy",
 		level = 200,
 		mana = 20,
-		damage = {80, 110},
+		damage = { 80, 110 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- crossbow of destruction
@@ -849,9 +849,9 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- bow of destruction
@@ -860,9 +860,9 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- hammer of destruction
@@ -871,9 +871,9 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- mace of destruction
@@ -882,9 +882,9 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- chopper of destruction
@@ -893,9 +893,9 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- axe of destruction
@@ -904,9 +904,9 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- slayer of destruction
@@ -915,9 +915,9 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- blade of destruction
@@ -926,579 +926,579 @@ local weapons = {
 		level = 200,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- ornate carving hammer
 		itemid = 26061,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- valuable carving hammer
 		itemid = 26060,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- plain carving hammer
 		itemid = 26059,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- ornate carving mace
 		itemid = 26058,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- valuable carving mace
 		itemid = 26057,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- plain carving mace
 		itemid = 26056,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- ornate carving chopper
 		itemid = 26055,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- valuable carving chopper
 		itemid = 26054,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- plain carving chopper
 		itemid = 26053,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- ornate carving axe
 		itemid = 26052,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- valuable carving axe
 		itemid = 26051,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- plain carving axe
 		itemid = 26050,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- ornate carving slayer
 		itemid = 26049,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- valuable carving slayer
 		itemid = 26048,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- plain carving slayer
 		itemid = 26047,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- ornate carving blade
 		itemid = 26046,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- valuable carving blade
 		itemid = 26045,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- plain carving blade
 		itemid = 26044,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- ornate remedy hammer
 		itemid = 26031,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- valuable remedy hammer
 		itemid = 26030,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- plain remedy hammer
 		itemid = 26029,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- ornate remedy mace
 		itemid = 26028,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- valuable remedy mace
 		itemid = 26027,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- plain remedy mace
 		itemid = 26026,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- ornate remedy chopper
 		itemid = 26025,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- valuable remedy chopper
 		itemid = 26024,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- plain remedy chopper
 		itemid = 26023,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- ornate remedy axe
 		itemid = 26022,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- valuable remedy axe
 		itemid = 26021,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- plain remedy axe
 		itemid = 26020,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- ornate remedy slayer
 		itemid = 26019,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- valuable remedy slayer
 		itemid = 26018,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- plain remedy slayer
 		itemid = 26017,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- ornate remedy blade
 		itemid = 26016,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- valuable remedy blade
 		itemid = 26015,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- plain remedy blade
 		itemid = 26014,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- ornate mayhem hammer
 		itemid = 26000,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- valuable mayhem hammer
 		itemid = 25999,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- plain mayhem hammer
 		itemid = 25998,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- ornate mayhem mace
 		itemid = 25997,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- valuable mayhem mace
 		itemid = 25996,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- plain mayhem mace
 		itemid = 25995,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- ornate mayhem chopper
 		itemid = 25994,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- valuable mayhem chopper
 		itemid = 25993,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- plain mayhem chopper
 		itemid = 25992,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- ornate mayhem axe
 		itemid = 25991,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- valuable mayhem axe
 		itemid = 25990,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- plain mayhem axe
 		itemid = 25989,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- ornate mayhem slayer
 		itemid = 25988,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- valuable mayhem slayer
 		itemid = 25987,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- plain mayhem slayer
 		itemid = 25986,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- ornate mayhem blade
 		itemid = 25985,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- valuable mayhem blade
 		itemid = 25984,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- plain mayhem blade
 		itemid = 25983,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- energy war hammer replica
 		itemid = 25974,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- energy orcish maul replica
 		itemid = 25973,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- energy basher replica
 		itemid = 25972,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- energy crystal mace replica
 		itemid = 25971,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- energy clerical mace replica
 		itemid = 25970,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- energy war axe replica
 		itemid = 25969,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- energy headchopper replica
 		itemid = 25968,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- energy heroic axe replica
 		itemid = 25967,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- energy knight axe replica
 		itemid = 25966,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- energy barbarian axe replica
 		itemid = 25965,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- energy dragon slayer replica
 		itemid = 25964,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- energy blacksteel replica
 		itemid = 25963,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- energy mystic blade replica
 		itemid = 25962,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- energy relic sword replica
 		itemid = 25961,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- energy spike sword replica
 		itemid = 25960,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- earth war hammer replica
 		itemid = 25959,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- earth orcish maul replica
 		itemid = 25958,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- earth basher replica
 		itemid = 25957,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- earth crystal mace replica
 		itemid = 25956,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- earth clerical mace replica
 		itemid = 25955,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- earth war axe replica
 		itemid = 25954,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- earth headchopper replica
 		itemid = 25953,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- earth heroic axe replica
 		itemid = 25952,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- earth knight axe replica
 		itemid = 25951,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- earth barbarian axe replica
 		itemid = 25950,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- earth dragon slayer replica
 		itemid = 25949,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- earth blacksteel replica
 		itemid = 25948,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- earth mystic blade replica
 		itemid = 25947,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- earth relic sword replica
 		itemid = 25946,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- earth spike sword replica
 		itemid = 25945,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- icy war hammer replica
 		itemid = 25944,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- icy orcish maul replica
 		itemid = 25943,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- icy basher replica
 		itemid = 25942,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- icy crystal mace replica
 		itemid = 25941,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- icy clerical mace replica
 		itemid = 25940,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- icy war axe replica
 		itemid = 25939,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- icy headchopper replica
 		itemid = 25938,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- icy heroic axe replica
 		itemid = 25937,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- icy knight axe replica
 		itemid = 25936,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- icy barbarian axe replica
 		itemid = 25935,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- icy dragon slayer replica
 		itemid = 25934,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- icy blacksteel replica
 		itemid = 25933,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- icy mystic blade replica
 		itemid = 25932,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- icy relic sword replica
 		itemid = 25931,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- icy spike sword replica
 		itemid = 25930,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- fiery war hammer replica
 		itemid = 25929,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- fiery orcish maul replica
 		itemid = 25928,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- fiery basher replica
 		itemid = 25927,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- fiery crystal mace replica
 		itemid = 25926,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- fiery clerical mace replica
 		itemid = 25925,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- fiery war axe replica
 		itemid = 25924,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- fiery headchopper replica
 		itemid = 25923,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- fiery heroic axe replica
 		itemid = 25922,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- fiery knight axe replica
 		itemid = 25921,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- fiery barbarian axe replica
 		itemid = 25920,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- fiery dragon slayer replica
 		itemid = 25919,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- fiery blacksteel replica
 		itemid = 25918,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- fiery mystic blade replica
 		itemid = 25917,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- fiery relic sword replica
 		itemid = 25916,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- fiery spike sword replica
 		itemid = 25915,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- wand of darkness
@@ -1507,11 +1507,11 @@ local weapons = {
 		wandType = "death",
 		level = 41,
 		mana = 15,
-		damage = {80, 100},
+		damage = { 80, 100 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- royal star
@@ -1519,7 +1519,7 @@ local weapons = {
 		type = WEAPON_DISTANCE,
 		level = 120,
 		unproperly = true,
-		breakchance = 30
+		breakchance = 30,
 	},
 	{
 		-- spectral bolt
@@ -1527,7 +1527,7 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 150,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- leaf star
@@ -1535,7 +1535,7 @@ local weapons = {
 		type = WEAPON_DISTANCE,
 		level = 60,
 		unproperly = true,
-		breakchance = 40
+		breakchance = 40,
 	},
 	{
 		-- dream blossom staff
@@ -1544,13 +1544,13 @@ local weapons = {
 		wandType = "energy",
 		level = 80,
 		mana = 18,
-		damage = {63, 77},
+		damage = { 63, 77 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Druid", true, true},
-			{"Master Sorcerer"},
-			{"Elder Druid"}
-		}
+			{ "Sorcerer", true },
+			{ "Druid", true, true },
+			{ "Master Sorcerer" },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- rod of carving
@@ -1559,11 +1559,11 @@ local weapons = {
 		wandType = "ice",
 		level = 100,
 		mana = 18,
-		damage = {70, 105},
+		damage = { 70, 105 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- wand of carving
@@ -1572,11 +1572,11 @@ local weapons = {
 		wandType = "energy",
 		level = 100,
 		mana = 18,
-		damage = {70, 105},
+		damage = { 70, 105 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- crossbow of carving
@@ -1585,9 +1585,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- bow of carving
@@ -1596,9 +1596,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- hammer of carving
@@ -1607,9 +1607,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- mace of carving
@@ -1618,9 +1618,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- chopper of carving
@@ -1629,9 +1629,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- axe of carving
@@ -1640,9 +1640,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- slayer of carving
@@ -1651,9 +1651,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- blade of carving
@@ -1662,9 +1662,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- rod of remedy
@@ -1673,11 +1673,11 @@ local weapons = {
 		wandType = "ice",
 		level = 100,
 		mana = 18,
-		damage = {70, 105},
+		damage = { 70, 105 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- wand of remedy
@@ -1686,11 +1686,11 @@ local weapons = {
 		wandType = "energy",
 		level = 100,
 		mana = 18,
-		damage = {70, 105},
+		damage = { 70, 105 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- crossbow of remedy
@@ -1699,9 +1699,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- bow of remedy
@@ -1710,9 +1710,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- hammer of remedy
@@ -1721,9 +1721,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- mace of remedy
@@ -1732,9 +1732,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- chopper of remedy
@@ -1743,9 +1743,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- axe of remedy
@@ -1754,9 +1754,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- slayer of remedy
@@ -1765,9 +1765,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- blade of remedy
@@ -1776,9 +1776,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- rod of mayhem
@@ -1787,11 +1787,11 @@ local weapons = {
 		wandType = "ice",
 		level = 100,
 		mana = 18,
-		damage = {70, 105},
+		damage = { 70, 105 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- wand of mayhem
@@ -1800,11 +1800,11 @@ local weapons = {
 		wandType = "energy",
 		level = 100,
 		mana = 18,
-		damage = {70, 105},
+		damage = { 70, 105 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- crossbow of mayhem
@@ -1813,9 +1813,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- bow of mayhem
@@ -1824,9 +1824,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- hammer of mayhem
@@ -1835,9 +1835,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- mace of mayhem
@@ -1846,9 +1846,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- chopper of mayhem
@@ -1857,9 +1857,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- axe of mayhem
@@ -1868,9 +1868,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- slayer of mayhem
@@ -1879,9 +1879,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- blade of mayhem
@@ -1890,9 +1890,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- rift crossbow
@@ -1901,9 +1901,9 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- rift bow
@@ -1912,9 +1912,9 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- ferumbras' staff (enchanted)
@@ -1923,11 +1923,11 @@ local weapons = {
 		wandType = "energy",
 		level = 100,
 		mana = 19,
-		damage = {80, 110},
+		damage = { 80, 110 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- ferumbras' staff (failed)
@@ -1936,46 +1936,46 @@ local weapons = {
 		wandType = "energy",
 		level = 65,
 		mana = 17,
-		damage = {65, 95},
+		damage = { 65, 95 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- Ferumbras' staff
 		itemid = 22764,
 		type = WEAPON_CLUB,
 		level = 100,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- maimer
 		itemid = 22762,
 		type = WEAPON_CLUB,
 		level = 150,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- Impaler of the igniter
 		itemid = 22760,
 		type = WEAPON_SWORD,
 		level = 150,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- plague bite
 		itemid = 22759,
 		type = WEAPON_AXE,
 		level = 150,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- rift lance
 		itemid = 22727,
 		type = WEAPON_AXE,
 		level = 70,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- ogre sceptra
@@ -1984,31 +1984,31 @@ local weapons = {
 		wandType = "earth",
 		level = 37,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- ogre choppa
 		itemid = 22172,
 		type = WEAPON_AXE,
 		level = 25,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- ogre klubba
 		itemid = 22171,
 		type = WEAPON_AXE,
 		level = 50,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- simple arrow
 		itemid = 21470,
 		type = WEAPON_AMMO,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- the chiller
@@ -2017,11 +2017,11 @@ local weapons = {
 		wandType = "ice",
 		level = 1,
 		mana = 1,
-		damage = {4, 8},
+		damage = { 4, 8 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- the scorcher
@@ -2030,18 +2030,18 @@ local weapons = {
 		wandType = "fire",
 		level = 1,
 		mana = 1,
-		damage = {4, 8},
+		damage = { 4, 8 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- one hit wonder
 		itemid = 21219,
 		type = WEAPON_CLUB,
 		level = 70,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- glooth axe
@@ -2050,9 +2050,9 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- glooth blade
@@ -2061,9 +2061,9 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- glooth club
@@ -2073,51 +2073,51 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- cowtana
 		itemid = 21177,
 		type = WEAPON_SWORD,
 		level = 25,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- execowtioner axe
 		itemid = 21176,
 		type = WEAPON_AXE,
 		level = 55,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- mino lance
 		itemid = 21174,
 		type = WEAPON_AXE,
 		level = 45,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- moohtant cudgel
 		itemid = 21173,
 		type = WEAPON_CLUB,
 		level = 60,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- glooth whip
 		itemid = 21172,
 		type = WEAPON_CLUB,
 		level = 25,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- metal bat
 		itemid = 21171,
 		type = WEAPON_CLUB,
 		level = 55,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- glooth spear
@@ -2125,7 +2125,7 @@ local weapons = {
 		type = WEAPON_DISTANCE,
 		level = 60,
 		unproperly = true,
-		breakchance = 2
+		breakchance = 2,
 	},
 	{
 		-- umbral master crossbow
@@ -2134,9 +2134,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- umbral crossbow
@@ -2145,9 +2145,9 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- crude umbral crossbow
@@ -2156,9 +2156,9 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- umbral master bow
@@ -2167,9 +2167,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- umbral bow
@@ -2178,9 +2178,9 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- crude umbral bow
@@ -2189,9 +2189,9 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- umbral master hammer
@@ -2200,9 +2200,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- umbral hammer
@@ -2211,9 +2211,9 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- crude umbral hammer
@@ -2222,9 +2222,9 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- umbral master mace
@@ -2233,9 +2233,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- umbral mace
@@ -2244,9 +2244,9 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- crude umbral mace
@@ -2255,9 +2255,9 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- umbral master chopper
@@ -2266,9 +2266,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- umbral chopper
@@ -2277,9 +2277,9 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- guardian halberd
@@ -2288,9 +2288,9 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- umbral master axe
@@ -2299,9 +2299,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- umbral axe
@@ -2310,9 +2310,9 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- crude umbral axe
@@ -2321,9 +2321,9 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- umbral master slayer
@@ -2332,9 +2332,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- umbral slayer
@@ -2343,9 +2343,9 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- crude umbral slayer
@@ -2354,9 +2354,9 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- umbral masterblade
@@ -2365,9 +2365,9 @@ local weapons = {
 		level = 250,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- umbral blade
@@ -2376,9 +2376,9 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- crude umbral blade
@@ -2387,15 +2387,15 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- icicle bow
 		itemid = 19362,
 		type = WEAPON_DISTANCE,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- triple bolt crossbow
@@ -2404,16 +2404,16 @@ local weapons = {
 		level = 70,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- spiky club
 		itemid = 17859,
 		type = WEAPON_CLUB,
 		level = 20,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- pair of iron fists
@@ -2422,28 +2422,28 @@ local weapons = {
 		level = 50,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- swampling club
 		itemid = 17824,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- life preserver
 		itemid = 17813,
 		type = WEAPON_CLUB,
 		level = 15,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- ratana
 		itemid = 17812,
 		type = WEAPON_SWORD,
 		level = 15,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- sorc and druid staff
@@ -2452,10 +2452,10 @@ local weapons = {
 		wandType = "energy",
 		level = 1,
 		mana = 2,
-		damage = {8, 18},
+		damage = { 8, 18 },
 		vocation = {
-			{"None", true}
-		}
+			{ "None", true },
+		},
 	},
 	{
 		-- mean paladin spear
@@ -2463,8 +2463,8 @@ local weapons = {
 		type = WEAPON_DISTANCE,
 		breakchance = 3,
 		vocation = {
-			{"None", true}
-		}
+			{ "None", true },
+		},
 	},
 	{
 		-- mean knight sword
@@ -2472,15 +2472,15 @@ local weapons = {
 		type = WEAPON_SWORD,
 		unproperly = true,
 		vocation = {
-			{"None", true}
-		}
+			{ "None", true },
+		},
 	},
 	{
 		-- shiny blade
 		itemid = 16175,
 		type = WEAPON_SWORD,
 		level = 120,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- mycological bow
@@ -2489,9 +2489,9 @@ local weapons = {
 		level = 105,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- crystal crossbow
@@ -2500,30 +2500,30 @@ local weapons = {
 		level = 90,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- mycological mace
 		itemid = 16162,
 		type = WEAPON_CLUB,
 		level = 120,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- crystalline axe
 		itemid = 16161,
 		type = WEAPON_AXE,
 		level = 120,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- crystalline sword
 		itemid = 16160,
 		type = WEAPON_SWORD,
 		level = 62,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- envenomed arrow
@@ -2531,7 +2531,7 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 70,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- drill bolt
@@ -2539,7 +2539,7 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 70,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- prismatic bolt
@@ -2547,7 +2547,7 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 90,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- glacial rod
@@ -2556,11 +2556,11 @@ local weapons = {
 		wandType = "ice",
 		level = 65,
 		mana = 17,
-		damage = {75, 95},
+		damage = { 75, 95 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- muck rod
@@ -2569,11 +2569,11 @@ local weapons = {
 		wandType = "earth",
 		level = 65,
 		mana = 17,
-		damage = {75, 95},
+		damage = { 75, 95 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- wand of everblazing
@@ -2582,11 +2582,11 @@ local weapons = {
 		wandType = "fire",
 		level = 65,
 		mana = 17,
-		damage = {75, 95},
+		damage = { 75, 95 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- wand of defiance
@@ -2595,11 +2595,11 @@ local weapons = {
 		wandType = "energy",
 		level = 65,
 		mana = 17,
-		damage = {75, 95},
+		damage = { 75, 95 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- crystalline arrow
@@ -2607,13 +2607,13 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 90,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- crystal bolt
 		itemid = 15792,
 		type = WEAPON_AMMO,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- thorn spitter
@@ -2622,9 +2622,9 @@ local weapons = {
 		level = 150,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- vortex bolt
@@ -2632,7 +2632,7 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 40,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- tarsal arrow
@@ -2640,14 +2640,14 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 30,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- deepling squelcher
 		itemid = 14250,
 		type = WEAPON_CLUB,
 		level = 48,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- ornate crossbow
@@ -2656,9 +2656,9 @@ local weapons = {
 		level = 50,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- hive bow
@@ -2667,51 +2667,51 @@ local weapons = {
 		level = 85,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- hive scythe
 		itemid = 14089,
 		type = WEAPON_AXE,
 		level = 70,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- guardian axe
 		itemid = 14043,
 		type = WEAPON_AXE,
 		level = 50,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- warrior's axe
 		itemid = 14040,
 		type = WEAPON_AXE,
 		level = 40,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- ornate mace
 		itemid = 14001,
 		type = WEAPON_CLUB,
 		level = 90,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- deepling axe
 		itemid = 13991,
 		type = WEAPON_AXE,
 		level = 80,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- deepling staff
 		itemid = 13987,
 		type = WEAPON_CLUB,
 		level = 38,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- shimmer wand
@@ -2720,11 +2720,11 @@ local weapons = {
 		wandType = "energy",
 		level = 40,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- shimmer bow
@@ -2733,9 +2733,9 @@ local weapons = {
 		level = 40,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- shimmer rod
@@ -2744,30 +2744,30 @@ local weapons = {
 		wandType = "ice",
 		level = 40,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- shimmer sword
 		itemid = 12731,
 		type = WEAPON_SWORD,
 		level = 40,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- heavy trident
 		itemid = 12683,
 		type = WEAPON_AXE,
 		level = 25,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- wooden sword
 		itemid = 12673,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- wand of dimensions
@@ -2776,25 +2776,25 @@ local weapons = {
 		wandType = "death",
 		level = 37,
 		mana = 9,
-		damage = {44, 62},
+		damage = { 44, 62 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- blade of corruption
 		itemid = 11693,
 		type = WEAPON_SWORD,
 		level = 82,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- snake god's sceptre
 		itemid = 11692,
 		type = WEAPON_CLUB,
 		level = 82,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- twiceslicer
@@ -2803,16 +2803,16 @@ local weapons = {
 		level = 58,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- Zaoan halberd
 		itemid = 10406,
 		type = WEAPON_AXE,
 		level = 25,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- twin hooks
@@ -2821,9 +2821,9 @@ local weapons = {
 		level = 20,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- drachaku
@@ -2832,16 +2832,16 @@ local weapons = {
 		level = 55,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- Zaoan sword
 		itemid = 10390,
 		type = WEAPON_SWORD,
 		level = 55,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- sai
@@ -2850,61 +2850,61 @@ local weapons = {
 		level = 50,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- drakinata
 		itemid = 10388,
 		type = WEAPON_AXE,
 		level = 60,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- incredible mumpiz slayer
 		itemid = 9396,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- poet's fencing quill
 		itemid = 9387,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- farmer's avenger
 		itemid = 9386,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- club of the fury
 		itemid = 9385,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- scythe of the reaper
 		itemid = 9384,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- musician's bow
 		itemid = 9378,
-		type = WEAPON_DISTANCE
+		type = WEAPON_DISTANCE,
 	},
 	{
 		-- stale bread of ancientness
 		itemid = 9376,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- pointed rabbitslayer
 		itemid = 9375,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- glutton's mace
 		itemid = 9373,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- the calamity
@@ -2913,23 +2913,23 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- the epiphany
 		itemid = 8103,
 		type = WEAPON_SWORD,
 		level = 120,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- emerald sword
 		itemid = 8102,
 		type = WEAPON_SWORD,
 		level = 100,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- the stomper
@@ -2938,23 +2938,23 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- obsidian truncheon
 		itemid = 8100,
 		type = WEAPON_CLUB,
 		level = 100,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- dark trinity mace
 		itemid = 8099,
 		type = WEAPON_CLUB,
 		level = 120,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- demonwing axe
@@ -2963,23 +2963,23 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- solar axe
 		itemid = 8097,
 		type = WEAPON_AXE,
 		level = 130,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- hellforged axe
 		itemid = 8096,
 		type = WEAPON_AXE,
 		level = 110,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- wand of voodoo
@@ -2988,11 +2988,11 @@ local weapons = {
 		wandType = "death",
 		level = 42,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- wand of draconia
@@ -3001,11 +3001,11 @@ local weapons = {
 		wandType = "fire",
 		level = 22,
 		mana = 5,
-		damage = {23, 37},
+		damage = { 23, 37 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- wand of starmstorm
@@ -3014,11 +3014,11 @@ local weapons = {
 		wandType = "energy",
 		level = 37,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- springsprout rod
@@ -3027,11 +3027,11 @@ local weapons = {
 		wandType = "earth",
 		level = 37,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- northwind rod
@@ -3040,11 +3040,11 @@ local weapons = {
 		wandType = "ice",
 		level = 22,
 		mana = 5,
-		damage = {23, 37},
+		damage = { 23, 37 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- underworld rod
@@ -3053,11 +3053,11 @@ local weapons = {
 		wandType = "death",
 		level = 42,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- elethriel's elemental bow
@@ -3066,9 +3066,9 @@ local weapons = {
 		level = 70,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- silkweaver bow
@@ -3077,9 +3077,9 @@ local weapons = {
 		level = 40,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- yol's bow
@@ -3088,9 +3088,9 @@ local weapons = {
 		level = 60,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- composite hornbow
@@ -3099,9 +3099,9 @@ local weapons = {
 		level = 50,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- warsinger bow
@@ -3110,9 +3110,9 @@ local weapons = {
 		level = 80,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- ironworker
@@ -3121,9 +3121,9 @@ local weapons = {
 		level = 80,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- devileye
@@ -3132,9 +3132,9 @@ local weapons = {
 		level = 100,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- royal crossbow
@@ -3143,9 +3143,9 @@ local weapons = {
 		level = 130,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- chain bolter
@@ -3154,9 +3154,9 @@ local weapons = {
 		level = 60,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- modified crossbow
@@ -3165,24 +3165,24 @@ local weapons = {
 		level = 45,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- jagged sword
 		itemid = 7774,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- steel axe
 		itemid = 7773,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- crimson sword
 		itemid = 860,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- energy war hammer
@@ -3192,9 +3192,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- energy orcish maul
@@ -3202,7 +3202,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 35,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- energy cranial basher
@@ -3210,7 +3210,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 60,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- energy crystal mace
@@ -3218,7 +3218,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 35,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- energy clerical mace
@@ -3226,7 +3226,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 20,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- energy war axe
@@ -3236,9 +3236,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- energy headchopper
@@ -3248,9 +3248,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- energy heroic axe
@@ -3258,7 +3258,7 @@ local weapons = {
 		type = WEAPON_AXE,
 		level = 60,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- energy knight axe
@@ -3266,7 +3266,7 @@ local weapons = {
 		type = WEAPON_AXE,
 		level = 25,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- energy barbarian axe
@@ -3274,7 +3274,7 @@ local weapons = {
 		type = WEAPON_AXE,
 		level = 20,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- energy dragon slayer
@@ -3284,9 +3284,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- energy blacksteel sword
@@ -3296,9 +3296,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- energy mystic blade
@@ -3306,7 +3306,7 @@ local weapons = {
 		type = WEAPON_SWORD,
 		level = 60,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- energy relic sword
@@ -3314,13 +3314,13 @@ local weapons = {
 		type = WEAPON_SWORD,
 		level = 50,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- energy spike sword
 		itemid = 794,
 		type = WEAPON_SWORD,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- earth war hammer
@@ -3330,9 +3330,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- earth orcish maul
@@ -3340,7 +3340,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 35,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- earth cranial basher
@@ -3348,7 +3348,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 60,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- earth crystal mace
@@ -3356,7 +3356,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 35,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- earth clerical mace
@@ -3364,7 +3364,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 20,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- earth war axe
@@ -3374,9 +3374,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- earth headchopper
@@ -3386,9 +3386,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- earth heroic axe
@@ -3396,7 +3396,7 @@ local weapons = {
 		type = WEAPON_AXE,
 		level = 60,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- earth knight axe
@@ -3404,7 +3404,7 @@ local weapons = {
 		type = WEAPON_AXE,
 		level = 25,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- earth barbarian axe
@@ -3412,7 +3412,7 @@ local weapons = {
 		type = WEAPON_AXE,
 		level = 20,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- earth dragon slayer
@@ -3422,9 +3422,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- earth blacksteel sword
@@ -3434,9 +3434,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- earth mystic blade
@@ -3444,7 +3444,7 @@ local weapons = {
 		type = WEAPON_SWORD,
 		level = 60,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- earth relic sword
@@ -3452,13 +3452,13 @@ local weapons = {
 		type = WEAPON_SWORD,
 		level = 50,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- earth spike sword
 		itemid = 779,
 		type = WEAPON_SWORD,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- earth arrow
@@ -3466,7 +3466,7 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 20,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- flaming arrow
@@ -3474,7 +3474,7 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 20,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- shiver arrow
@@ -3482,7 +3482,7 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 20,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- flash arrow
@@ -3490,7 +3490,7 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 20,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- icy war hammer
@@ -3500,9 +3500,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- icy orcish maul
@@ -3510,7 +3510,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 35,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- icy cranial basher
@@ -3518,7 +3518,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 60,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- icy crystal mace
@@ -3526,7 +3526,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 35,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- icy clerical mace
@@ -3534,7 +3534,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 20,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- icy war axe
@@ -3544,9 +3544,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- icy headchopper
@@ -3556,9 +3556,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- icy heroic axe
@@ -3566,7 +3566,7 @@ local weapons = {
 		type = WEAPON_AXE,
 		level = 60,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- icy knight axe
@@ -3574,7 +3574,7 @@ local weapons = {
 		type = WEAPON_AXE,
 		level = 25,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- icy barbarian axe
@@ -3582,7 +3582,7 @@ local weapons = {
 		type = WEAPON_AXE,
 		level = 20,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- icy dragon slayer
@@ -3592,9 +3592,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- icy blacksteel sword
@@ -3604,9 +3604,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- icy mystic blade
@@ -3614,7 +3614,7 @@ local weapons = {
 		type = WEAPON_SWORD,
 		level = 60,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- icy relic sword
@@ -3622,13 +3622,13 @@ local weapons = {
 		type = WEAPON_SWORD,
 		level = 50,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- icy spike sword
 		itemid = 679,
 		type = WEAPON_SWORD,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- fiery war hammer
@@ -3638,9 +3638,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- fiery orcish maul
@@ -3648,7 +3648,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 35,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- fiery cranial basher
@@ -3656,7 +3656,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 60,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- fiery crystal mace
@@ -3664,7 +3664,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 35,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- fiery clerical mace
@@ -3672,7 +3672,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 		level = 20,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- fiery war axe
@@ -3682,9 +3682,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- fiery headchopper
@@ -3694,9 +3694,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- fiery heroic axe
@@ -3704,7 +3704,7 @@ local weapons = {
 		type = WEAPON_AXE,
 		level = 60,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- fiery knight axe
@@ -3712,7 +3712,7 @@ local weapons = {
 		type = WEAPON_AXE,
 		level = 25,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- fiery barbarian axe
@@ -3720,7 +3720,7 @@ local weapons = {
 		type = WEAPON_AXE,
 		level = 20,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- fiery dragon slayer
@@ -3730,9 +3730,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- fiery blacksteel sword
@@ -3742,9 +3742,9 @@ local weapons = {
 		unproperly = true,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- fiery mystic blade
@@ -3752,7 +3752,7 @@ local weapons = {
 		type = WEAPON_SWORD,
 		level = 60,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- fiery relic sword
@@ -3760,27 +3760,27 @@ local weapons = {
 		type = WEAPON_SWORD,
 		level = 50,
 		unproperly = true,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- fiery spike sword
 		itemid = 660,
 		type = WEAPON_SWORD,
-		action = "removecharge"
+		action = "removecharge",
 	},
 	{
 		-- noble axe
 		itemid = 7456,
 		type = WEAPON_AXE,
 		level = 35,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- mythril axe
 		itemid = 7455,
 		type = WEAPON_AXE,
 		level = 80,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- glorious axe
@@ -3789,9 +3789,9 @@ local weapons = {
 		level = 30,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- executioner
@@ -3800,9 +3800,9 @@ local weapons = {
 		level = 85,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- spiked squelcher
@@ -3811,16 +3811,16 @@ local weapons = {
 		level = 30,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- shadow sceptre
 		itemid = 7451,
 		type = WEAPON_CLUB,
 		level = 35,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- hammer of prophecy
@@ -3829,9 +3829,9 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- crystal sword
@@ -3840,21 +3840,21 @@ local weapons = {
 		level = 25,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- elvish bow
 		itemid = 7438,
-		type = WEAPON_DISTANCE
+		type = WEAPON_DISTANCE,
 	},
 	{
 		-- sapphire hammer
 		itemid = 7437,
 		type = WEAPON_CLUB,
 		level = 30,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- angelic axe
@@ -3863,58 +3863,58 @@ local weapons = {
 		level = 45,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- impaler
 		itemid = 7435,
 		type = WEAPON_AXE,
 		level = 85,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- royal axe
 		itemid = 7434,
 		type = WEAPON_AXE,
 		level = 75,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- ravenwing
 		itemid = 7433,
 		type = WEAPON_AXE,
 		level = 65,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- furry club
 		itemid = 7432,
 		type = WEAPON_CLUB,
 		level = 20,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- demonbone
 		itemid = 7431,
 		type = WEAPON_CLUB,
 		level = 80,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- dragonbone staff
 		itemid = 7430,
 		type = WEAPON_CLUB,
 		level = 30,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- blessed sceptre
 		itemid = 7429,
 		type = WEAPON_CLUB,
 		level = 75,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- bonebreaker
@@ -3923,37 +3923,37 @@ local weapons = {
 		level = 55,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- chaos mace
 		itemid = 7427,
 		type = WEAPON_CLUB,
 		level = 45,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- amber staff
 		itemid = 7426,
 		type = WEAPON_CLUB,
 		level = 40,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- taurus mace
 		itemid = 7425,
 		type = WEAPON_CLUB,
 		level = 20,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- lunar staff
 		itemid = 7424,
 		type = WEAPON_CLUB,
 		level = 30,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- skullcrusher
@@ -3962,65 +3962,65 @@ local weapons = {
 		level = 85,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- jade hammer
 		itemid = 7422,
 		type = WEAPON_CLUB,
 		level = 70,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- onyx flail
 		itemid = 7421,
 		type = WEAPON_CLUB,
 		level = 65,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- reaper's axe
 		itemid = 7420,
 		type = WEAPON_AXE,
 		level = 70,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- dreaded cleaver
 		itemid = 7419,
 		type = WEAPON_AXE,
 		level = 40,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- nightmare blade
 		itemid = 7418,
 		type = WEAPON_SWORD,
 		level = 70,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- runed sword
 		itemid = 7417,
 		type = WEAPON_SWORD,
 		level = 65,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- bloody edge
 		itemid = 7416,
 		type = WEAPON_SWORD,
 		level = 55,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- cranial basher
 		itemid = 7415,
 		type = WEAPON_CLUB,
 		level = 60,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- abyss hammer
@@ -4029,9 +4029,9 @@ local weapons = {
 		level = 60,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- titan axe
@@ -4040,44 +4040,44 @@ local weapons = {
 		level = 40,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- butcher's axe
 		itemid = 7412,
 		type = WEAPON_AXE,
 		level = 45,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- ornamented axe
 		itemid = 7411,
 		type = WEAPON_AXE,
 		level = 50,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- queen's sceptre
 		itemid = 7410,
 		type = WEAPON_CLUB,
 		level = 55,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- northern star
 		itemid = 7409,
 		type = WEAPON_CLUB,
 		level = 50,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- wyvern fang
 		itemid = 7408,
 		type = WEAPON_SWORD,
 		level = 25,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- haunted blade
@@ -4086,9 +4086,9 @@ local weapons = {
 		level = 30,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- blacksteel sword
@@ -4097,9 +4097,9 @@ local weapons = {
 		level = 35,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- havoc blade
@@ -4108,16 +4108,16 @@ local weapons = {
 		level = 70,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- assassin dagger
 		itemid = 7404,
 		type = WEAPON_SWORD,
 		level = 40,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- berserker
@@ -4126,9 +4126,9 @@ local weapons = {
 		level = 65,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- dragon slayer
@@ -4137,16 +4137,16 @@ local weapons = {
 		level = 45,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- orcish maul
 		itemid = 7392,
 		type = WEAPON_CLUB,
 		level = 35,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- thaian sword
@@ -4155,37 +4155,37 @@ local weapons = {
 		level = 50,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- the justice seeker
 		itemid = 7390,
 		type = WEAPON_SWORD,
 		level = 75,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- heroic axe
 		itemid = 7389,
 		type = WEAPON_AXE,
 		level = 60,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- vile axe
 		itemid = 7388,
 		type = WEAPON_AXE,
 		level = 55,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- diamond sceptre
 		itemid = 7387,
 		type = WEAPON_CLUB,
 		level = 25,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- mercenary sword
@@ -4194,30 +4194,30 @@ local weapons = {
 		level = 40,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- crimson sword
 		itemid = 7385,
 		type = WEAPON_SWORD,
 		level = 20,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- mystic blade
 		itemid = 7384,
 		type = WEAPON_SWORD,
 		level = 60,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- relic sword
 		itemid = 7383,
 		type = WEAPON_SWORD,
 		level = 50,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- demonrage sword
@@ -4226,16 +4226,16 @@ local weapons = {
 		level = 60,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- mammoth whopper
 		itemid = 7381,
 		type = WEAPON_CLUB,
 		level = 20,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- headchopper
@@ -4244,16 +4244,16 @@ local weapons = {
 		level = 35,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- brutetamer's staff
 		itemid = 7379,
 		type = WEAPON_CLUB,
 		level = 25,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- royal spear
@@ -4261,7 +4261,7 @@ local weapons = {
 		type = WEAPON_DISTANCE,
 		level = 25,
 		unproperly = true,
-		breakchance = 3
+		breakchance = 3,
 	},
 	{
 		-- assassin star
@@ -4269,7 +4269,7 @@ local weapons = {
 		type = WEAPON_DISTANCE,
 		level = 80,
 		unproperly = true,
-		breakchance = 33
+		breakchance = 33,
 	},
 	{
 		-- enchanted spear
@@ -4277,7 +4277,7 @@ local weapons = {
 		type = WEAPON_DISTANCE,
 		level = 42,
 		unproperly = true,
-		breakchance = 1
+		breakchance = 1,
 	},
 	{
 		-- onyx arrow
@@ -4285,7 +4285,7 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 40,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- sniper arrow
@@ -4293,7 +4293,7 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 20,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- piercing bolt
@@ -4301,7 +4301,7 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 30,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- ruthless axe
@@ -4310,9 +4310,9 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- infernal bolt
@@ -4320,7 +4320,7 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 110,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- the avenger
@@ -4329,14 +4329,14 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- Ron the Ripper's sabre
 		itemid = 6101,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- arbalest
@@ -4345,14 +4345,14 @@ local weapons = {
 		level = 75,
 		unproperly = true,
 		vocation = {
-			{"Paladin", true},
-			{"Royal Paladin"}
-		}
+			{ "Paladin", true },
+			{ "Royal Paladin" },
+		},
 	},
 	{
 		-- banana staff
 		itemid = 3348,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- hunting spear
@@ -4360,36 +4360,36 @@ local weapons = {
 		type = WEAPON_DISTANCE,
 		level = 20,
 		unproperly = true,
-		breakchance = 6
+		breakchance = 6,
 	},
 	{
 		-- ripper lance
 		itemid = 3346,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- templar scytheblade
 		itemid = 3345,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- beastslayer axe
 		itemid = 3344,
 		type = WEAPON_AXE,
 		level = 30,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- lich staff
 		itemid = 3343,
 		type = WEAPON_CLUB,
 		level = 40,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- scythe
 		itemid = 3453,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- power bolt
@@ -4397,29 +4397,29 @@ local weapons = {
 		type = WEAPON_AMMO,
 		level = 55,
 		unproperly = true,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- arrow
 		itemid = 3447,
 		type = WEAPON_AMMO,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- bolt
 		itemid = 3446,
 		type = WEAPON_AMMO,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- bow
 		itemid = 3350,
-		type = WEAPON_DISTANCE
+		type = WEAPON_DISTANCE,
 	},
 	{
 		-- crossbow
 		itemid = 3349,
-		type = WEAPON_DISTANCE
+		type = WEAPON_DISTANCE,
 	},
 	{
 		-- war axe
@@ -4428,16 +4428,16 @@ local weapons = {
 		level = 65,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- arcane staff
 		itemid = 3341,
 		type = WEAPON_CLUB,
 		level = 75,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- heavy mace
@@ -4446,31 +4446,31 @@ local weapons = {
 		level = 70,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- djinn blade
 		itemid = 3339,
 		type = WEAPON_SWORD,
 		level = 35,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- bone sword
 		itemid = 3338,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- bone club
 		itemid = 3337,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- studded club
 		itemid = 3336,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- twin axe
@@ -4479,23 +4479,23 @@ local weapons = {
 		level = 50,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- pharaoh sword
 		itemid = 3334,
 		type = WEAPON_SWORD,
 		level = 45,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- crystal mace
 		itemid = 3333,
 		type = WEAPON_CLUB,
 		level = 35,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- hammer of wrath
@@ -4504,9 +4504,9 @@ local weapons = {
 		level = 65,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- ravager's axe
@@ -4515,19 +4515,19 @@ local weapons = {
 		level = 70,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- heavy machete
 		itemid = 3330,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- daramian axe
 		itemid = 3329,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- daramian waraxe
@@ -4536,157 +4536,157 @@ local weapons = {
 		level = 25,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- daramian mace
 		itemid = 3327,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- epee
 		itemid = 3326,
 		type = WEAPON_SWORD,
 		level = 30,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- light mace
 		itemid = 3325,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- skull staff
 		itemid = 3324,
 		type = WEAPON_CLUB,
 		level = 30,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- dwarven axe
 		itemid = 3323,
 		type = WEAPON_AXE,
 		level = 20,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- dragon hammer
 		itemid = 3322,
 		type = WEAPON_CLUB,
 		level = 25,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- enchanted staff
 		itemid = 3321,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- fire axe
 		itemid = 3320,
 		type = WEAPON_AXE,
 		level = 35,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- stonecutter axe
 		itemid = 3319,
 		type = WEAPON_AXE,
 		level = 90,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- knight axe
 		itemid = 3318,
 		type = WEAPON_AXE,
 		level = 25,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- barbarian axe
 		itemid = 3317,
 		type = WEAPON_AXE,
 		level = 20,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- orcish axe
 		itemid = 3316,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- guardian halberd
 		itemid = 3315,
 		type = WEAPON_AXE,
 		level = 55,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- naginata
 		itemid = 3314,
 		type = WEAPON_AXE,
 		level = 25,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- obsidian lance
 		itemid = 3313,
 		type = WEAPON_AXE,
 		level = 20,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- silver mace
 		itemid = 3312,
 		type = WEAPON_CLUB,
 		level = 45,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- clerical mace
 		itemid = 3311,
 		type = WEAPON_CLUB,
 		level = 20,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- iron hammer
 		itemid = 3310,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- thunder hammer
 		itemid = 3309,
 		type = WEAPON_CLUB,
 		level = 85,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- machete
 		itemid = 3308,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- scimitar
 		itemid = 3307,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- golden sickle
 		itemid = 3306,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- battle hammer
 		itemid = 3305,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- crowbar
 		itemid = 3304,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- great axe
@@ -4695,46 +4695,46 @@ local weapons = {
 		level = 95,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- dragon lance
 		itemid = 3302,
 		type = WEAPON_AXE,
 		level = 60,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- broadsword
 		itemid = 3301,
 		type = WEAPON_SWORD,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- katana
 		itemid = 3300,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- poison dagger
 		itemid = 3299,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- throwing knife
 		itemid = 3298,
 		type = WEAPON_DISTANCE,
-		breakchance = 7
+		breakchance = 7,
 	},
 	{
 		-- serpent sword
 		itemid = 3297,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- warlord sword
@@ -4743,69 +4743,69 @@ local weapons = {
 		level = 120,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- bright sword
 		itemid = 3295,
 		type = WEAPON_SWORD,
 		level = 30,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- short sword
 		itemid = 3294,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- sickle
 		itemid = 3293,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- combat knife
 		itemid = 3292,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- knife
 		itemid = 3291,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- silver dagger
 		itemid = 3290,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- staff
 		itemid = 3289,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- magic sword
 		itemid = 3288,
 		type = WEAPON_SWORD,
 		level = 80,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- throwing star
 		itemid = 3287,
 		type = WEAPON_DISTANCE,
-		breakchance = 10
+		breakchance = 10,
 	},
 	{
 		-- mace
 		itemid = 3286,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- longsword
 		itemid = 3285,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- ice rapier
@@ -4813,19 +4813,19 @@ local weapons = {
 		type = WEAPON_SWORD,
 		action = "removecharge",
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- carlin sword
 		itemid = 3283,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- morning star
 		itemid = 3282,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- giant sword
@@ -4834,16 +4834,16 @@ local weapons = {
 		level = 55,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- fire sword
 		itemid = 3280,
 		type = WEAPON_SWORD,
 		level = 30,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- war hammer
@@ -4852,9 +4852,9 @@ local weapons = {
 		level = 50,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- magic longsword
@@ -4863,20 +4863,20 @@ local weapons = {
 		level = 140,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- spear
 		itemid = 3277,
 		type = WEAPON_DISTANCE,
-		breakchance = 3
+		breakchance = 3,
 	},
 	{
 		-- hatchet
 		itemid = 3276,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- double axe
@@ -4885,51 +4885,51 @@ local weapons = {
 		level = 25,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- axe
 		itemid = 3274,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- sabre
 		itemid = 3273,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- rapier
 		itemid = 3272,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- spike sword
 		itemid = 3271,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- club
 		itemid = 3270,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- halberd
 		itemid = 3269,
 		type = WEAPON_AXE,
 		level = 25,
-		unproperly = true
+		unproperly = true,
 	},
 	{
 		-- hand axe
 		itemid = 3268,
-		type = WEAPON_AXE
+		type = WEAPON_AXE,
 	},
 	{
 		-- dagger
 		itemid = 3267,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- battle axe
@@ -4937,9 +4937,9 @@ local weapons = {
 		type = WEAPON_AXE,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- two handed sword
@@ -4948,19 +4948,19 @@ local weapons = {
 		level = 20,
 		unproperly = true,
 		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+			{ "Knight", true },
+			{ "Elite Knight" },
+		},
 	},
 	{
 		-- sword
 		itemid = 3264,
-		type = WEAPON_SWORD
+		type = WEAPON_SWORD,
 	},
 	{
 		-- giant smithhammer
 		itemid = 12510,
-		type = WEAPON_CLUB
+		type = WEAPON_CLUB,
 	},
 	{
 		-- wand of dragonbreath
@@ -4969,11 +4969,11 @@ local weapons = {
 		wandType = "fire",
 		level = 13,
 		mana = 3,
-		damage = {13, 25},
+		damage = { 13, 25 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- wand of vortex
@@ -4982,11 +4982,11 @@ local weapons = {
 		wandType = "energy",
 		level = 6,
 		mana = 1,
-		damage = {8, 18},
+		damage = { 8, 18 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- wand of cosmic energy
@@ -4995,11 +4995,11 @@ local weapons = {
 		wandType = "energy",
 		level = 26,
 		mana = 8,
-		damage = {37, 53},
+		damage = { 37, 53 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- wand of decay
@@ -5008,11 +5008,11 @@ local weapons = {
 		wandType = "death",
 		level = 19,
 		mana = 5,
-		damage = {23, 37},
+		damage = { 23, 37 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- wand of inferno
@@ -5021,11 +5021,11 @@ local weapons = {
 		wandType = "fire",
 		level = 33,
 		mana = 8,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
-		}
+			{ "Sorcerer", true },
+			{ "Master Sorcerer" },
+		},
 	},
 	{
 		-- moonlight rod
@@ -5034,11 +5034,11 @@ local weapons = {
 		wandType = "ice",
 		level = 13,
 		mana = 3,
-		damage = {13, 25},
+		damage = { 13, 25 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- necrotic rod
@@ -5047,11 +5047,11 @@ local weapons = {
 		wandType = "death",
 		level = 19,
 		mana = 5,
-		damage = {23, 37},
+		damage = { 23, 37 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- hailstorm rod
@@ -5060,11 +5060,11 @@ local weapons = {
 		wandType = "ice",
 		level = 33,
 		mana = 13,
-		damage = {56, 74},
+		damage = { 56, 74 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- snakebit rod
@@ -5073,11 +5073,11 @@ local weapons = {
 		wandType = "earth",
 		level = 6,
 		mana = 2,
-		damage = {8, 18},
+		damage = { 8, 18 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- terra rod
@@ -5086,52 +5086,52 @@ local weapons = {
 		wandType = "earth",
 		level = 26,
 		mana = 8,
-		damage = {37, 53},
+		damage = { 37, 53 },
 		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
+			{ "Druid", true },
+			{ "Elder Druid" },
+		},
 	},
 	{
 		-- snowball
 		itemid = 2992,
 		type = WEAPON_DISTANCE,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- small stone
 		itemid = 1781,
 		type = WEAPON_DISTANCE,
-		breakchance = 3
-	}
+		breakchance = 3,
+	},
 }
 
 for _, w in ipairs(weapons) do
 	local weapon = Weapon(w.type)
 	weapon:id(w.itemid)
 
-	if(w.action) then
+	if w.action then
 		weapon:action(w.action)
 	end
-	if(w.breakchance) then
+	if w.breakchance then
 		weapon:breakChance(w.breakchance)
 	end
-	if(w.level) then
+	if w.level then
 		weapon:level(w.level)
 	end
-	if(w.mana) then
+	if w.mana then
 		weapon:mana(w.mana)
 	end
-	if(w.unproperly) then
+	if w.unproperly then
 		weapon:wieldUnproperly(w.unproperly)
 	end
-	if(w.damage) then
+	if w.damage then
 		weapon:damage(w.damage[1], w.damage[2])
 	end
-	if(w.wandType) then
+	if w.wandType then
 		weapon:element(w.wandType)
 	end
-	if(w.vocation) then
+	if w.vocation then
 		for _, v in ipairs(w.vocation) do
 			weapon:vocation(v[1], v[2] or false, v[3] or false)
 		end

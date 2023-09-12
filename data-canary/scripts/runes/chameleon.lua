@@ -22,7 +22,7 @@ function rune.onCastSpell(creature, variant, isHotkey)
 		return false
 	end
 
-	condition:setOutfit({lookTypeEx = item.itemid})
+	condition:setOutfit({ lookTypeEx = item.itemid })
 	creature:addCondition(condition)
 	creature:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
 	return true

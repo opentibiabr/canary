@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_ENUMS_HPP
-#define SRC_ENUMS_HPP
+#pragma once
 
 enum ItemAttribute_t : uint64_t {
 	NONE = 0,
@@ -45,6 +44,7 @@ enum ItemAttribute_t : uint64_t {
 	STORE = 31,
 	CUSTOM = 32,
 	LOOTMESSAGE_SUFFIX = 33,
+	STORE_INBOX_CATEGORY = 34,
 };
 
 enum ItemDecayState_t : uint8_t {
@@ -59,5 +59,3 @@ enum ItemAnimation_t : uint8_t {
 	ANIMATION_RANDOM = 1,
 	ANIMATION_DESYNC = 2,
 };
-
-#endif // SRC_ENUMS_HPP

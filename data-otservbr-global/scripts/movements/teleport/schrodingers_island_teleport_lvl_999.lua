@@ -19,7 +19,7 @@ function schrodingersIslandTeleportLvl999.onStepIn(creature, item, position, fro
 	player:teleportTo(accessPosition)
 	fromPosition:sendMagicEffect(CONST_ME_TELEPORT)
 	accessPosition:sendMagicEffect(CONST_ME_TELEPORT)
-    return true
+	return true
 end
 
 schrodingersIslandTeleportLvl999:type("stepin")

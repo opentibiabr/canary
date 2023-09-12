@@ -16,19 +16,19 @@ npcConfig.outfit = {
 	lookBody = 86,
 	lookLegs = 0,
 	lookFeet = 0,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Welcome to the post office!' },
-	{ text = 'If you need help with letters or parcels, just ask me. I can explain everything.' },
-	{ text = 'Hey, send a letter to your friend now and then. Keep in touch, you know.' }
+	{ text = "Welcome to the post office!" },
+	{ text = "If you need help with letters or parcels, just ask me. I can explain everything." },
+	{ text = "Hey, send a letter to your friend now and then. Keep in touch, you know." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -68,12 +68,12 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "measurements") then
 		local player = Player(creature)
-		if player:getStorageValue(Storage.Postman.Mission07) >= 1 and	player:getStorageValue(Storage.Postman.MeasurementsBenjamin) ~= 1 then
+		if player:getStorageValue(Storage.Postman.Mission07) >= 1 and player:getStorageValue(Storage.Postman.MeasurementsBenjamin) ~= 1 then
 			npcHandler:say("Oh they don't change that much since in the old days as... <tells a boring and confusing story about a cake, a parcel, himself and two squirrels, at least he tells you his measurements in the end> ", npc, creature)
 			player:setStorageValue(Storage.Postman.Mission07, player:getStorageValue(Storage.Postman.Mission07) + 1)
 			player:setStorageValue(Storage.Postman.MeasurementsBenjamin, 1)
 			npcHandler:setTopic(playerId, 0)
-	else
+		else
 			npcHandler:say("...", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
@@ -90,7 +90,7 @@ npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 npcConfig.shop = {
 	{ itemName = "label", clientId = 3507, buy = 1 },
 	{ itemName = "letter", clientId = 3505, buy = 8 },
-	{ itemName = "parcel", clientId = 3503, buy = 15 }
+	{ itemName = "parcel", clientId = 3503, buy = 15 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -101,7 +101,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

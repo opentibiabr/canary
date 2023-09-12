@@ -10,7 +10,7 @@
 #include "pch.hpp"
 
 #include "items/functions/item/item_parse.hpp"
-#include "utils/pugicast.h"
+#include "utils/pugicast.hpp"
 
 void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	// Parse all item attributes
@@ -56,7 +56,6 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseMagicLevelPoint(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseFieldAbsorbPercent(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseAbsorbPercent(tmpStrValue, valueAttribute, itemType);
-
 	ItemParse::parseSupressDrunk(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseField(tmpStrValue, attributeNode, valueAttribute, itemType);
 	ItemParse::parseReplaceable(tmpStrValue, valueAttribute, itemType);
@@ -73,6 +72,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseCleavePercent(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseTransformOnUse(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parsePrimaryType(tmpStrValue, valueAttribute, itemType);
 }
 
 void ItemParse::parseDummyRate(pugi::xml_node attributeNode, ItemType &itemType) {
@@ -585,7 +585,7 @@ void ItemParse::parseAbsorbPercent(const std::string &tmpStrValue, pugi::xml_att
 void ItemParse::parseSupressDrunk(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	std::string stringValue = tmpStrValue;
 	if (valueAttribute.as_bool()) {
-		ConditionType_t conditionType;
+		ConditionType_t conditionType = CONDITION_NONE;
 		if (stringValue == "suppressdrunk") {
 			conditionType = CONDITION_DRUNK;
 		} else if (stringValue == "suppressenergy") {
@@ -606,8 +606,7 @@ void ItemParse::parseSupressDrunk(const std::string &tmpStrValue, pugi::xml_attr
 			conditionType = CONDITION_CURSED;
 		}
 
-		// Initialize condititon with value 0
-		itemType.getAbilities().conditionSuppressions[conditionType] = CONDITION_NONE;
+		itemType.getAbilities().conditionSuppressions[conditionType] = conditionType;
 	}
 }
 
@@ -939,5 +938,11 @@ void ItemParse::parseReflectDamage(const std::string &tmpStrValue, pugi::xml_att
 void ItemParse::parseTransformOnUse(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (tmpStrValue == "transformonuse") {
 		itemType.m_transformOnUse = pugi::cast<uint16_t>(valueAttribute.value());
+	}
+}
+
+void ItemParse::parsePrimaryType(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+	if (tmpStrValue == "primarytype") {
+		itemType.m_primaryType = asLowerCaseString(valueAttribute.as_string());
 	}
 }

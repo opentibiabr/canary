@@ -9,15 +9,12 @@
 
 #include "pch.hpp"
 
-#include "creatures/appearance/mounts/mounts.h"
-#include "database/databasetasks.h"
-#include "game/game.h"
-#include "game/scheduling/scheduler.h"
+#include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "lua/creature/events.h"
-#include "lua/creature/raids.h"
+#include "lib/thread/thread_pool.hpp"
+#include "lua/creature/events.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "server/signals.h"
+#include "server/signals.hpp"
 
 Signals::Signals(asio::io_service &service) :
 	set(service) {
@@ -55,25 +52,23 @@ void Signals::asyncWait() {
 void Signals::dispatchSignalHandler(int signal) {
 	switch (signal) {
 		case SIGINT: // Shuts the server down
-			g_dispatcher().addTask(sigintHandler);
+			g_dispatcher().addTask(sigintHandler, "sigintHandler");
 			break;
 		case SIGTERM: // Shuts the server down
-			g_dispatcher().addTask(sigtermHandler);
+			g_dispatcher().addTask(sigtermHandler, "sigtermHandler");
 			break;
 #ifndef _WIN32
 		case SIGHUP: // Reload config/data
-			g_dispatcher().addTask(sighupHandler);
+			g_dispatcher().addTask(sighupHandler, "sighupHandler");
 			break;
 		case SIGUSR1: // Saves game state
-			g_dispatcher().addTask(sigusr1Handler);
+			g_dispatcher().addTask(sigusr1Handler, "sigusr1Handler");
 			break;
 #else
 		case SIGBREAK: // Shuts the server down
-			g_dispatcher().addTask(sigbreakHandler);
+			g_dispatcher().addTask(sigbreakHandler, "sigbreakHandler");
 			// hold the thread until other threads end
-			g_scheduler().join();
-			g_databaseTasks().join();
-			g_dispatcher().join();
+			inject<ThreadPool>().shutdown();
 			break;
 #endif
 		default:

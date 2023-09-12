@@ -1,7 +1,7 @@
 local setting = {
 	[50084] = Position(32857, 32667, 9),
 	[50085] = Position(32892, 32632, 11),
-	[50086] = Position(32886, 32632, 11)
+	[50086] = Position(32886, 32632, 11),
 }
 
 local deeperBanutaShortcutTeleport = MoveEvent()

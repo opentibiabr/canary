@@ -6,8 +6,8 @@ condition:setParameter(CONDITION_PARAM_HEALTHTICKS, 7 * 1000)
 
 local gazHaragothHeal = CreatureEvent("GazHaragothHeal")
 function gazHaragothHeal.onThink(creature)
-	local hp = (creature:getHealth()/creature:getMaxHealth())*100
-	if (hp < 12.5 and not creature:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT, 88888)) then
+	local hp = (creature:getHealth() / creature:getMaxHealth()) * 100
+	if hp < 12.5 and not creature:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT, 88888) then
 		creature:addCondition(condition)
 		creature:say("Gaz'haragoth begins to draw on the nightmares to HEAL himself!", TALKTYPE_ORANGE_2)
 		addEvent(function(cid)
@@ -22,4 +22,5 @@ function gazHaragothHeal.onThink(creature)
 		end, 7000, creature:getId())
 	end
 end
+
 gazHaragothHeal:register()

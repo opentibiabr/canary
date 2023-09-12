@@ -18,31 +18,31 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 
-	local grade = creature:upgradeSpellsWOD("Twin Burst")
-	if grade == WHEEL_GRADE_NONE then
+	local grade = creature:revelationStageWOD("Twin Burst")
+	if grade == 0 then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
 
 	local cooldown = 0
-	if grade >= WHEEL_GRADE_MAX then
-		cooldown = 24
-	elseif grade >= WHEEL_GRADE_UPGRADED then
-		cooldown = 28
-	elseif grade >= WHEEL_GRADE_REGULAR then
-		cooldown = 32
+	if grade >= 3 then
+		cooldown = 14
+	elseif grade >= 2 then
+		cooldown = 18
+	elseif grade >= 1 then
+		cooldown = 22
 	end
 
 	var.instantName = "Twin Burst"
 	if combat:execute(creature, var) then
 		-- Ice cooldown
 		local condition1 = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 262)
-		condition1:setTicks((cooldown * 1000)/configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+		condition1:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 		creature:addCondition(condition1)
 		-- Earth cooldown
 		local condition2 = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 263)
-		condition2:setTicks((cooldown * 1000)/configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+		condition2:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 		creature:addCondition(condition2)
 		return true
 	end

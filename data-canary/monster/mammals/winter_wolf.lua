@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 52
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "Ice Islands."
-	}
+	Locations = "Ice Islands.",
+}
 
 monster.health = 30
 monster.maxHealth = 30
@@ -35,7 +35,7 @@ monster.manaCost = 260
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -60,52 +60,52 @@ monster.flags = {
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
 	canWalkOnPoison = false,
-	pet = false
+	pet = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Yoooohhuuuu!", yell = false}
+	{ text = "Yoooohhuuuu!", yell = false },
 }
 
 monster.loot = {
-	{id = 3577, chance = 30000, maxCount = 2}, -- meat
-	{id = 10295, chance = 10000} -- winter wolf fur
+	{ id = 3577, chance = 30000, maxCount = 2 }, -- meat
+	{ id = 10295, chance = 10000 }, -- winter wolf fur
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -20}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -20 },
 }
 
 monster.defenses = {
 	defense = 5,
-	armor = 5
+	armor = 5,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 20},
-	{type = COMBAT_HOLYDAMAGE , percent = 5},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -5 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 20 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 5 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

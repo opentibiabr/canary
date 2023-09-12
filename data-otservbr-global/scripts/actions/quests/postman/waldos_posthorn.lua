@@ -5,7 +5,7 @@ function postmanWaldos.onUse(player, item, fromPosition, target, toPosition, isH
 		player:addItem(3219, 1)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You found Waldo's posthorn.")
 	else
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The dead human is empty.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The dead human is empty.")
 	end
 	return true
 end

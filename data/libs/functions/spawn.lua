@@ -5,7 +5,7 @@ MonsterStorage = {
 	Spawn = {
 		info = 550000,
 		monster_spawn_object = 550001,
-	}
+	},
 }
 Spawn = {}
 SpawnMetatables = {}
@@ -22,22 +22,22 @@ setmetatable(Spawn, {
 				["onSpawn"] = {
 					["MonsterDeath"] = function(s, monster)
 						monster:setStorageValue(s.storage.object, s)
-						monster:registerEvent('monsterDeath')
-					end
+						monster:registerEvent("monsterDeath")
+					end,
 				},
 				["onDeath"] = {
 					["Respawn"] = function(s, monster)
 						if monster:getStorageValue(s.storage.info) > 0 then
 							s:spawnMonsterIndex(monster:getStorageValue(s.storage.info))
 						end
-					end
-				}
-			}
+					end,
+				},
+			},
 		}
 		local mt = setmetatable(spawn_data, { __index = Spawn })
 		table.insert(SpawnMetatables, mt)
 		return mt
-	end
+	end,
 })
 
 -- positions - {monster = "Rat" ,pos = Position(x, y, z), spawntime = 60, status = true}
@@ -141,7 +141,7 @@ function Spawn.spawnMonsterTimer(self, config, func)
 		addEvent(function()
 			local monster = Game.createMonster(config.monster, config.pos, false, false)
 			if not monster then
-				Spdlog.error("[Spawn] Error on spawn monster: " .. config.monster)
+				logger.error("[Spawn] Error on spawn monster: {}", config.monster)
 				return false
 			end
 
@@ -160,7 +160,7 @@ function Spawn.spawnMonsterIndex(self, index)
 		local config = {
 			spawntime = table.spawntime,
 			monster = table.monster,
-			pos = table.pos
+			pos = table.pos,
 		}
 		local func = function(s, monster)
 			monster:setStorageValue(s.storage.info, index)
@@ -169,14 +169,14 @@ function Spawn.spawnMonsterIndex(self, index)
 		self:addFunctionMonster("onSpawn", func, "MonsterIndex")
 		self:spawnMonsterTimer(config)
 	else
-		Spdlog.error("[Spawn.spawnMonsterIndex] - Table is nil")
+		logger.error("[Spawn.spawnMonsterIndex] - Table is nil")
 	end
 end
 
 function Spawn.executeSpawn(self)
 	local pos = self:getPositions()
 	if not pos then
-		error('Not set pos')
+		error("Not set pos")
 		return false
 	end
 	for i, v in pairs(pos) do
@@ -187,7 +187,7 @@ end
 function Spawn.removeSpawn(self)
 	local pos = self:getPositions()
 	if not pos then
-		error('Not set pos')
+		error("Not set pos")
 		return false
 	end
 	for i, v in pairs(pos) do
@@ -199,7 +199,7 @@ function Spawn.checkMonstersUID(self)
 	local monsters = self:getMonsters()
 	local statistics = {
 		active = 0,
-		inactive = 0
+		inactive = 0,
 	}
 	for i, v in pairs(monsters) do
 		if v ~= nil and v:isMonster() then

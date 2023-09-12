@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/grouping/familiars.h"
-#include "config/configmanager.h"
-#include "utils/pugicast.h"
-#include "utils/tools.h"
+#include "creatures/players/grouping/familiars.hpp"
+#include "config/configmanager.hpp"
+#include "utils/pugicast.hpp"
+#include "utils/tools.hpp"
 
 bool Familiars::loadFromXml() {
 	pugi::xml_document doc;

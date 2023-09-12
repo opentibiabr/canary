@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 82
@@ -23,10 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Ankrahmun Pharaoh Tombs, Ashta'daramai, Daramian Mountain Scarab Lair, \z
-		Daramian Scarab Caves, Daramian Scarab Lairs, Deeper Drefia, Kha'zeel Mountains, Lion's Rock, \z
-		Northern Darama Desert, Port Hope Surroundings, Treasure Island, Yalahar Factory Quarter."
-	}
+	Locations = "Larva Caves, Ankrahmun Tombs, Lions Rock, Gardens of Night (unreachable)",
+}
 
 monster.health = 70
 monster.maxHealth = 70
@@ -37,7 +35,7 @@ monster.manaCost = 355
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -61,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -75,37 +73,38 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 63000, maxCount = 15},
-	{name = "meat", chance = 14666}
+	{ name = "gold coin", chance = 63000, maxCount = 15 },
+	{ name = "meat", chance = 14666 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35, condition = {type = CONDITION_POISON, totalDamage = 15, interval = 4000}}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35, condition = { type = CONDITION_POISON, totalDamage = 15, interval = 4000 } },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 5,
+	mitigation = 0.28,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 10},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -5},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = -10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -5 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

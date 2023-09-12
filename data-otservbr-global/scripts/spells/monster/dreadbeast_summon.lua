@@ -8,24 +8,24 @@ combat:setArea(area)
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-local t, spectator = Game.getSpectators(creature:getPosition(), false, false, 50, 50, 50, 50)
-    local check = 0
-    if #t ~= nil then
-        for i = 1, #t do
-		spectator = t[i]
-            if spectator:getName() == "Dreadbeast" then
-               check = check + 1
-            end
-        end
-    end
-	if (check < 10) then
+	local t, spectator = Game.getSpectators(creature:getPosition(), false, false, 50, 50, 50, 50)
+	local check = 0
+	if #t ~= nil then
+		for i = 1, #t do
+			spectator = t[i]
+			if spectator:getName() == "Dreadbeast" then
+				check = check + 1
+			end
+		end
+	end
+	if check < 10 then
 		local summon = Game.createMonster("Dreadbeast", creature:getPosition(), true, false)
 		if summon then
 		end
 		summon:setMaster(creature)
-		else
+	else
 	end
-return combat:execute(creature, var)
+	return combat:execute(creature, var)
 end
 
 spell:name("dreadbeast summon")

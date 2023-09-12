@@ -13,9 +13,10 @@
 
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
-#include "utils/tools.h"
-#include "items/item.h"
-#include "creatures/players/player.h"
+#include "utils/tools.hpp"
+#include "items/item.hpp"
+#include "creatures/players/player.hpp"
+#include "game/zones/zone.hpp"
 
 /**
  * @class EventCallback
@@ -573,28 +574,6 @@ void EventCallback::playerOnChangeZone(Player* player, ZoneType_t zone) const {
 	getScriptInterface()->callVoidFunction(2);
 }
 
-void EventCallback::playerOnChangeHazard(Player* player, bool isHazard) const {
-	if (!getScriptInterface()->reserveScriptEnv()) {
-		g_logger().error("[EventCallback::playerOnChangeHazard - "
-						 "Player {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 player->getName());
-		return;
-	}
-
-	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
-	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
-
-	lua_State* L = getScriptInterface()->getLuaState();
-	getScriptInterface()->pushFunction(getScriptId());
-
-	LuaScriptInterface::pushUserdata<Player>(L, player);
-	LuaScriptInterface::setMetatable(L, -1, "Player");
-
-	lua_pushnumber(L, isHazard);
-	getScriptInterface()->callVoidFunction(2);
-}
-
 bool EventCallback::playerOnMoveCreature(Player* player, Creature* creature, const Position &fromPosition, const Position &toPosition) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnMoveCreature - "
@@ -1059,6 +1038,30 @@ void EventCallback::monsterOnDropLoot(Monster* monster, Container* corpse) const
 	return getScriptInterface()->callVoidFunction(2);
 }
 
+void EventCallback::monsterPostDropLoot(Monster* monster, Container* corpse) const {
+	if (!getScriptInterface()->reserveScriptEnv()) {
+		g_logger().error("[EventCallback::monsterPostDropLoot - "
+						 "Monster corpse {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 corpse->getName());
+		return;
+	}
+
+	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
+
+	lua_State* L = getScriptInterface()->getLuaState();
+	getScriptInterface()->pushFunction(getScriptId());
+
+	LuaScriptInterface::pushUserdata<Monster>(L, monster);
+	LuaScriptInterface::setMetatable(L, -1, "Monster");
+
+	LuaScriptInterface::pushUserdata<Container>(L, corpse);
+	LuaScriptInterface::setMetatable(L, -1, "Container");
+
+	return getScriptInterface()->callVoidFunction(2);
+}
+
 void EventCallback::monsterOnSpawn(Monster* monster, const Position &position) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("{} - "
@@ -1114,4 +1117,100 @@ void EventCallback::npcOnSpawn(Npc* npc, const Position &position) const {
 	}
 
 	getScriptInterface()->resetScriptEnv();
+}
+
+bool EventCallback::zoneBeforeCreatureEnter(std::shared_ptr<Zone> zone, Creature* creature) const {
+	if (!getScriptInterface()->reserveScriptEnv()) {
+		g_logger().error("[EventCallback::zoneBeforeCreatureEnter - "
+						 "Zone {} Creature {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 zone->getName(), creature->getName());
+		return false;
+	}
+
+	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
+
+	lua_State* L = getScriptInterface()->getLuaState();
+	getScriptInterface()->pushFunction(getScriptId());
+
+	LuaScriptInterface::pushUserdata<Zone>(L, zone);
+	LuaScriptInterface::setMetatable(L, -1, "Zone");
+
+	LuaScriptInterface::pushUserdata<Creature>(L, creature);
+	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
+
+	return getScriptInterface()->callFunction(2);
+}
+
+bool EventCallback::zoneBeforeCreatureLeave(std::shared_ptr<Zone> zone, Creature* creature) const {
+	if (!getScriptInterface()->reserveScriptEnv()) {
+		g_logger().error("[EventCallback::zoneBeforeCreatureLeave - "
+						 "Zone {} Creature {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 zone->getName(), creature->getName());
+		return false;
+	}
+
+	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
+
+	lua_State* L = getScriptInterface()->getLuaState();
+	getScriptInterface()->pushFunction(getScriptId());
+
+	LuaScriptInterface::pushUserdata<Zone>(L, zone);
+	LuaScriptInterface::setMetatable(L, -1, "Zone");
+
+	LuaScriptInterface::pushUserdata<Creature>(L, creature);
+	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
+
+	return getScriptInterface()->callFunction(2);
+}
+
+void EventCallback::zoneAfterCreatureEnter(std::shared_ptr<Zone> zone, Creature* creature) const {
+	if (!getScriptInterface()->reserveScriptEnv()) {
+		g_logger().error("[EventCallback::zoneAfterCreatureEnter - "
+						 "Zone {} Creature {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 zone->getName(), creature->getName());
+		return;
+	}
+
+	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
+
+	lua_State* L = getScriptInterface()->getLuaState();
+	getScriptInterface()->pushFunction(getScriptId());
+
+	LuaScriptInterface::pushUserdata<Zone>(L, zone);
+	LuaScriptInterface::setMetatable(L, -1, "Zone");
+
+	LuaScriptInterface::pushUserdata<Creature>(L, creature);
+	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
+
+	getScriptInterface()->callVoidFunction(2);
+}
+
+void EventCallback::zoneAfterCreatureLeave(std::shared_ptr<Zone> zone, Creature* creature) const {
+	if (!getScriptInterface()->reserveScriptEnv()) {
+		g_logger().error("[EventCallback::zoneAfterCreatureLeave - "
+						 "Zone {} Creature {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 zone->getName(), creature->getName());
+		return;
+	}
+
+	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
+
+	lua_State* L = getScriptInterface()->getLuaState();
+	getScriptInterface()->pushFunction(getScriptId());
+
+	LuaScriptInterface::pushUserdata<Zone>(L, zone);
+	LuaScriptInterface::setMetatable(L, -1, "Zone");
+
+	LuaScriptInterface::pushUserdata<Creature>(L, creature);
+	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
+
+	getScriptInterface()->callVoidFunction(2);
 }

@@ -2,26 +2,26 @@
 
 local missionTiles = {
 	[50324] = {
-		states = {1},
+		states = { 1 },
 		message = "This is not the way to the tarantula's lair. Head up the little ramp to the southwest.",
-		arrowPosition = {x = 32090, y = 32147, z = 7}
+		arrowPosition = { x = 32090, y = 32147, z = 7 },
 	},
 	[50326] = {
-		states = {1},
+		states = { 1 },
 		message = "Follow the small path to the north to reach the spider lair.",
-		arrowPosition = {x = 32067, y = 32132, z = 7}
+		arrowPosition = { x = 32067, y = 32132, z = 7 },
 	},
 	[50327] = {
-		states = {1},
+		states = { 1 },
 		message = "Walk to the west from here to reach the hole leading to the tarantula lair.",
-		arrowPosition = {x = 32051, y = 32110, z = 7}
+		arrowPosition = { x = 32051, y = 32110, z = 7 },
 	},
 	[50328] = {
-		states = {1, 2, 4},
+		states = { 1, 2, 4 },
 		message = "Remember that you have to aquire a web sample for Vascalir. You should not leave this cave without it.",
-		arrowPosition = {x = 32003, y = 32109, z = 11},
-		walkBack = true
-	}
+		arrowPosition = { x = 32003, y = 32109, z = 11 },
+		walkBack = true,
+	},
 }
 
 -- Mission tutorial tiles
@@ -98,7 +98,7 @@ function greasyStone.onUse(player, item, frompos, item2, topos)
 		-- Check delayed notifications (message/arrow)
 		if not isTutorialNotificationDelayed(player) then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You rub the strange grease on your body. The spider queen will not be able to smell you for about 2 minutes. Hurry!")
-			Position({x = 32018, y = 32098, z = 11}):sendMagicEffect(CONST_ME_TUTORIALARROW)
+			Position({ x = 32018, y = 32098, z = 11 }):sendMagicEffect(CONST_ME_TUTORIALARROW)
 		end
 		player:setStorageValue(Storage.TheRookieGuard.Mission05, 2)
 	else
@@ -124,7 +124,7 @@ function spiderQueenChamberHole.onStepIn(creature, item, position, fromPosition)
 		-- Check delayed notifications (message/arrow)
 		if not isTutorialNotificationDelayed(player) then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Don't enter the lair without a protective grease. Use one of the stones to the north to become invisible to her.")
-			Position({x = 32014, y = 32096, z = 11}):sendMagicEffect(CONST_ME_TUTORIALARROW)
+			Position({ x = 32014, y = 32096, z = 11 }):sendMagicEffect(CONST_ME_TUTORIALARROW)
 		end
 		player:teleportTo(fromPosition, true)
 	elseif missionState == 3 then

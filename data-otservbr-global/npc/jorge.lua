@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 38,
 	lookBody = 77,
 	lookLegs = 78,
-	lookFeet = 94
+	lookFeet = 94,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -50,37 +50,37 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local items = {
-	 [1] = {name = "Abacus", id = 19151},
-	 [2] = {name = "Assassin Doll", id = 28897},
-	 [3] = {name = "Bag of Oriental Spices", id = 10817},
-	 [4] = {name = "Bookworm Doll", id = 18343},
-	 [5] = {name = "Cateroides Doll", id = 22151},
-	 [6] = {name = "Doll of Durin the Almighty", id = 14764},
-	 [7] = {name = "Dragon Eye", id = 22027},
-	 [8] = {name = "Dragon Goblet", id = 31265},
-	 [9] = {name = "Draken Doll", id = 12043},
-	 [10] = {name = "Encyclopedia", id = 8149},
-	 [11] = {name = "Friendship Amulet", id = 19153},
-	 [12] = {name = "Frozen Heart", id = 19156},
-	 [13] = {name = "Golden Falcon", id = 28896},
-	 [14] = {name = "Golden Newspaper", id = 8153},
-	 [15] = {name = "Hand Puppets", id = 9189},
-	 [16] = {name = "Imortus", id = 12811},
-	 [17] = {name = "Jade Amulet", id = 31268},
-	 [18] = {name = "Key of Numerous Locks", id = 19152},
-	 [19] = {name = "Loremaster Doll", id = 31267},
-	 [20] = {name = "Mathmaster Shield", id = 14760},
-	 [21] = {name = "Medusa Skull", id = 14762},
-	 [22] = {name = "Music Box", id = 12045},
-	 [23] = {name = "Noble Sword", id = 16276},
-	 [24] = {name = "Norsemal Doll", id = 19150},
-	 [25] = {name = "Old Radio", id = 12813},
-	 [26] = {name = "Orcs Jaw Shredder", id = 19155},
-	 [27] = {name = "Pigeon Trophy", id = 31266},
-	 [28] = {name = "Phoenix Statue", id = 22026},
-	 [29] = {name = "The Mexcalibur", id = 19154},
-	 [30] = {name = "TibiaHispano Emblem", id = 25980},
-	 [31] = {name = "Goromaphone", id = 34210}
+	[1] = { name = "Abacus", id = 19151 },
+	[2] = { name = "Assassin Doll", id = 28897 },
+	[3] = { name = "Bag of Oriental Spices", id = 10817 },
+	[4] = { name = "Bookworm Doll", id = 18343 },
+	[5] = { name = "Cateroides Doll", id = 22151 },
+	[6] = { name = "Doll of Durin the Almighty", id = 14764 },
+	[7] = { name = "Dragon Eye", id = 22027 },
+	[8] = { name = "Dragon Goblet", id = 31265 },
+	[9] = { name = "Draken Doll", id = 12043 },
+	[10] = { name = "Encyclopedia", id = 8149 },
+	[11] = { name = "Friendship Amulet", id = 19153 },
+	[12] = { name = "Frozen Heart", id = 19156 },
+	[13] = { name = "Golden Falcon", id = 28896 },
+	[14] = { name = "Golden Newspaper", id = 8153 },
+	[15] = { name = "Hand Puppets", id = 9189 },
+	[16] = { name = "Imortus", id = 12811 },
+	[17] = { name = "Jade Amulet", id = 31268 },
+	[18] = { name = "Key of Numerous Locks", id = 19152 },
+	[19] = { name = "Loremaster Doll", id = 31267 },
+	[20] = { name = "Mathmaster Shield", id = 14760 },
+	[21] = { name = "Medusa Skull", id = 14762 },
+	[22] = { name = "Music Box", id = 12045 },
+	[23] = { name = "Noble Sword", id = 16276 },
+	[24] = { name = "Norsemal Doll", id = 19150 },
+	[25] = { name = "Old Radio", id = 12813 },
+	[26] = { name = "Orcs Jaw Shredder", id = 19155 },
+	[27] = { name = "Pigeon Trophy", id = 31266 },
+	[28] = { name = "Phoenix Statue", id = 22026 },
+	[29] = { name = "The Mexcalibur", id = 19154 },
+	[30] = { name = "TibiaHispano Emblem", id = 25980 },
+	[31] = { name = "Goromaphone", id = 34210 },
 }
 
 local function greetCallback(npc, creature)
@@ -96,16 +96,15 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	if message then
 		for i = 1, #items do
-		  if MsgContains(message, items[i].name) then
+			if MsgContains(message, items[i].name) then
 				if getPlayerItemCount(creature, 19083) >= 20 then
 					doPlayerRemoveItem(creature, 19083, 20)
 					doPlayerAddItem(creature, items[i].id, 1)
-					selfSay('You just swapped 20 silver raid tokens for 1 '.. getItemName(items[i].name) ..'.', npc, creature)
+					selfSay("You just swapped 20 silver raid tokens for 1 " .. getItemName(items[i].name) .. ".", npc, creature)
 				else
-					selfSay('You need 20 silver raid tokens.', npc, creature)
+					selfSay("You need 20 silver raid tokens.", npc, creature)
 				end
 			end
 		end

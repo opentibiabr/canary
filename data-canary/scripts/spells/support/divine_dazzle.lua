@@ -24,7 +24,7 @@ local function chain(player)
 	local lastChainPosition = player:getPosition()
 	local closestMonster, closestMonsterIndex, closestMonsterPosition
 	local path, tempPosition, updateLastChain
-	while (totalChain < 3 and #monsters > 0) do
+	while totalChain < 3 and #monsters > 0 do
 		closestMonster = nil
 		for index, monster in pairs(monsters) do
 			tempPosition = monster:getPosition()
@@ -41,7 +41,7 @@ local function chain(player)
 		else
 			path = lastChainPosition:getPathTo(closestMonsterPosition, 0, 1, true, true, 9)
 			if path and #path > 0 then
-				for i=1, #path do
+				for i = 1, #path do
 					lastChainPosition:getNextPosition(path[i], 1)
 					lastChainPosition:sendMagicEffect(CONST_ME_DIVINE_DAZZLE)
 				end

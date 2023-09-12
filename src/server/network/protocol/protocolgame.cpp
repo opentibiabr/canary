@@ -207,6 +207,32 @@ namespace {
 			}
 		}
 	}
+
+	/**
+	 * @brief Sends the container category to the network message.
+	 *
+	 * @note The default value is "all", which is the first enum (0). The message must always start with "All".
+	 *
+	 * @details for example of enum see the ContainerCategory_t
+	 *
+	 * @param msg The network message to send the category to.
+	 */
+	template <typename T>
+	void sendContainerCategory(NetworkMessage &msg, phmap::flat_hash_set<T> categories = {}, uint8_t categoryType = 0) {
+		msg.addByte(categoryType);
+		g_logger().debug("Sendding category type '{}', categories total size '{}'", categoryType, categories.size());
+		msg.addByte(categories.size());
+		for (auto value : categories) {
+			if (value == T::All) {
+				continue;
+			}
+
+			g_logger().debug("Sendding category number '{}', category name '{}'", static_cast<uint8_t>(value), magic_enum::enum_name(value).data());
+			msg.addByte(static_cast<uint8_t>(value));
+			msg.addString(toStartCaseWithSpace(magic_enum::enum_name(value).data()));
+		}
+	}
+
 } // namespace
 
 ProtocolGame::ProtocolGame(Connection_ptr initConnection) :
@@ -276,6 +302,10 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint
 	if (it.wearOut) {
 		msg.add<uint32_t>(it.charges);
 		msg.addByte(0x01); // Brand-new
+	}
+
+	if (it.isWrapKit && !oldProtocol) {
+		msg.add<uint16_t>(0x00);
 	}
 }
 
@@ -402,6 +432,15 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item* item) {
 		} else {
 			msg.add<uint32_t>(static_cast<uint32_t>(item->getSubType()));
 			msg.addByte(item->getSubType() == it.charges ? 0x01 : 0x00); // Brand-new
+		}
+	}
+
+	if (it.isWrapKit && !oldProtocol) {
+		uint16_t unWrapId = item->getCustomAttribute("unWrapId") ? static_cast<uint16_t>(item->getCustomAttribute("unWrapId")->getInteger()) : 0;
+		if (unWrapId != 0) {
+			msg.add<uint16_t>(unWrapId);
+		} else {
+			msg.add<uint16_t>(0x00);
 		}
 	}
 }
@@ -1275,7 +1314,8 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			// case 0xDF, 0xE0, 0xE1, 0xFB, 0xFC, 0xFD, 0xFE Premium Shop.
 
 		default:
-			g_logger().debug("Player: {} sent an unknown packet header: x0{}", player->getName(), static_cast<uint16_t>(recvbyte));
+			std::string hexString = fmt::format("0x{:02x}", recvbyte);
+			g_logger().debug("Player '{}' sent unknown packet header: hex[{}], decimal[{}]", player->getName(), asUpperCaseString(hexString), recvbyte);
 			break;
 	}
 }
@@ -3069,7 +3109,8 @@ void ProtocolGame::parseBrowseField(NetworkMessage &msg) {
 void ProtocolGame::parseSeekInContainer(NetworkMessage &msg) {
 	uint8_t containerId = msg.getByte();
 	uint16_t index = msg.get<uint16_t>();
-	addGameTask(&Game::playerSeekInContainer, player->getID(), containerId, index);
+	auto primaryType = msg.getByte();
+	addGameTask(&Game::playerSeekInContainer, player->getID(), containerId, index, primaryType);
 }
 
 // Send methods
@@ -3134,12 +3175,12 @@ void ProtocolGame::addCreatureIcon(NetworkMessage &msg, const Creature* creature
 		return;
 	}
 
-	const auto icon = creature->getIcon();
-	// 0 = no icon, 1 = we'll send an icon
-	if (icon.isNone()) {
-		msg.addByte(0);
-	} else {
-		msg.addByte(1);
+	const auto icons = creature->getIcons();
+	// client only supports 3 icons, otherwise it will crash
+	const auto count = icons.size() > 3 ? 3 : icons.size();
+	msg.addByte(count);
+	for (uint8_t i = 0; i < count; ++i) {
+		const auto &icon = icons[i];
 		msg.addByte(icon.serialize());
 		msg.addByte(static_cast<uint8_t>(icon.category));
 		msg.add<uint16_t>(icon.count);
@@ -4186,6 +4227,10 @@ void ProtocolGame::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8
 }
 
 void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool hasParent, uint16_t firstIndex) {
+	if (!player) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0x6E);
 
@@ -4198,6 +4243,8 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 		AddItem(msg, container);
 		msg.addString(container->getName());
 	}
+
+	const auto itemsStoreInboxToSend = container->getStoreInboxFilteredItems();
 
 	msg.addByte(container->capacity());
 
@@ -4212,6 +4259,9 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 	msg.addByte(container->hasPagination() ? 0x01 : 0x00); // Pagination
 
 	uint32_t containerSize = container->size();
+	if (!itemsStoreInboxToSend.empty()) {
+		containerSize = itemsStoreInboxToSend.size();
+	}
 	msg.add<uint16_t>(containerSize);
 	msg.add<uint16_t>(firstIndex);
 
@@ -4223,17 +4273,58 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 		maxItemsToSend = container->capacity();
 	}
 
+	const ItemDeque &itemList = container->getItemList();
 	if (firstIndex >= containerSize) {
 		msg.addByte(0x00);
+	} else if (container->getID() == ITEM_STORE_INBOX && !itemsStoreInboxToSend.empty()) {
+		msg.addByte(std::min<uint32_t>(maxItemsToSend, containerSize));
+		for (const auto item : itemsStoreInboxToSend) {
+			AddItem(msg, item);
+		}
 	} else {
 		msg.addByte(std::min<uint32_t>(maxItemsToSend, containerSize));
 
 		uint32_t i = 0;
-		const ItemDeque &itemList = container->getItemList();
 		for (ItemDeque::const_iterator it = itemList.begin() + firstIndex, end = itemList.end(); i < maxItemsToSend && it != end; ++it, ++i) {
 			AddItem(msg, *it);
 		}
 	}
+
+	// From here on down is for version 13.21+
+	if (oldProtocol) {
+		writeToOutputBuffer(msg);
+		return;
+	}
+
+	if (container->isStoreInbox()) {
+		auto categories = container->getStoreInboxValidCategories();
+		const auto enumName = container->getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
+		auto category = magic_enum::enum_cast<ContainerCategory_t>(enumName);
+		if (category.has_value()) {
+			bool toSendCategory = false;
+			// Check if category exist in the deque
+			for (const auto &tempCategory : categories) {
+				if (tempCategory == category.value()) {
+					toSendCategory = true;
+					g_logger().debug("found category {}", toSendCategory);
+				}
+			}
+
+			if (!toSendCategory) {
+				Container* container = player->getContainerByID(cid);
+				if (container) {
+					container->removeAttribute(ItemAttribute_t::STORE_INBOX_CATEGORY);
+				}
+			}
+			sendContainerCategory<ContainerCategory_t>(msg, categories, static_cast<uint8_t>(category.value()));
+		} else {
+			sendContainerCategory<ContainerCategory_t>(msg, categories);
+		}
+	} else {
+		msg.addByte(0x00);
+		msg.addByte(0x00);
+	}
+
 	writeToOutputBuffer(msg);
 }
 

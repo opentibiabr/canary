@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 3
+	chance = 3,
 }
 
 monster.strategiesTarget = {
@@ -85,7 +85,7 @@ monster.loot = {
 	{ name = "moohtant cudgel", chance = 1800 },
 	{ name = "red piece of cloth", chance = 1500 },
 	{ name = "yellow gem", chance = 1200 },
-	{ name = "one hit wonder", chance = 350 }
+	{ name = "one hit wonder", chance = 350 },
 }
 
 monster.attacks = {
@@ -95,7 +95,7 @@ monster.attacks = {
 	{ name = "condition", type = CONDITION_BLEEDING, interval = 2000, chance = 9, minDamage = -400, maxDamage = -600, radius = 8, effect = CONST_ME_ICEATTACK, target = false },
 	{ name = "combat", interval = 2000, chance = 8, type = COMBAT_PHYSICALDAMAGE, minDamage = -250, maxDamage = -400, range = 7, radius = 6, shootEffect = CONST_ANI_LARGEROCK, effect = CONST_ME_STONES, target = true },
 	{ name = "combat", interval = 2000, chance = 13, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -400, range = 7, radius = 4, shootEffect = CONST_ANI_WHIRLWINDCLUB, effect = CONST_ME_EXPLOSIONHIT, target = true },
-	{ name = "bullwark paralyze", interval = 2000, chance = 6, target = false }
+	{ name = "bullwark paralyze", interval = 2000, chance = 6, target = false },
 }
 
 monster.defenses = {
@@ -104,7 +104,7 @@ monster.defenses = {
 	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 1, type = COMBAT_HEALING, minDamage = 4000, maxDamage = 6000, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 11, speedChange = 660, effect = CONST_ME_HITAREA, target = false, duration = 7000 },
-	{ name = "bullwark summon", interval = 2000, chance = 9, target = false }
+	{ name = "bullwark summon", interval = 2000, chance = 9, target = false },
 }
 
 monster.elements = {
@@ -124,11 +124,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -136,13 +135,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

@@ -11,7 +11,7 @@ local areaSmall = {
 	{ 0, 1, 1, 1, 0 },
 	{ 0, 1, 1, 1, 0 },
 	{ 0, 0, 1, 0, 0 },
-	{ 0, 0, 3, 0, 0 }
+	{ 0, 0, 3, 0, 0 },
 }
 
 local areaLarge = {
@@ -21,7 +21,7 @@ local areaLarge = {
 	{ 0, 0, 1, 1, 1, 0, 0 },
 	{ 0, 0, 1, 1, 1, 0, 0 },
 	{ 0, 0, 0, 1, 0, 0, 0 },
-	{ 0, 0, 0, 3, 0, 0, 0 }
+	{ 0, 0, 0, 3, 0, 0, 0 },
 }
 
 combatSmall:setArea(createCombatArea(areaSmall))

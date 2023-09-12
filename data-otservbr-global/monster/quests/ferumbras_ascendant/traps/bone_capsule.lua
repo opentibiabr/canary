@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 70000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -49,11 +49,11 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.events = {
-	"BoneCapsule"
+	"BoneCapsule",
 }
 
 monster.light = {
@@ -66,9 +66,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
-
+monster.loot = {}
 
 monster.defenses = {
 	defense = 55,
@@ -93,7 +91,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

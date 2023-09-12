@@ -4,19 +4,19 @@ local waves = {
 	Position(32782, 31162, 10),
 	Position(32784, 31162, 10),
 	Position(32782, 31170, 10),
-	Position(32784, 31170, 10)
+	Position(32784, 31170, 10),
 }
 
 local creatureNames = {
-	[1] = 'rift worm',
-	[2] = 'rift scythe',
-	[3] = 'rift brood',
-	[4] = 'war golem'
+	[1] = "rift worm",
+	[2] = "rift scythe",
+	[3] = "rift brood",
+	[4] = "war golem",
 }
 
 local effectPositions = {
 	Position(32779, 31161, 10),
-	Position(32787, 31171, 10)
+	Position(32787, 31171, 10),
 }
 
 local function doClearAreaAzerus()
@@ -57,7 +57,7 @@ end
 local inServiceYalaharLastFight = Action()
 function inServiceYalaharLastFight.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if Game.getStorageValue(GlobalStorage.InServiceOfYalahar.LastFight) == 1 then
-		player:say('You have to wait some time before this globe charges.', TALKTYPE_MONSTER_SAY)
+		player:say("You have to wait some time before this globe charges.", TALKTYPE_MONSTER_SAY)
 		return true
 	end
 

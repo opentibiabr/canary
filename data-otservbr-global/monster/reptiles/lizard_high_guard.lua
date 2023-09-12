@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 625
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Zzaion, Zao Palace and its antechambers, Muggy Plains, Zao Orc Land (single spawn in fort), \z
-		Corruption Hole, Razachai, Temple of Equilibrium, Northern Zao Plantations."
+		Corruption Hole, Razachai, Temple of Equilibrium, Northern Zao Plantations.",
 }
 
 monster.health = 1800
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -94,18 +94,18 @@ monster.loot = {
 	{ name = "zaoan legs", chance = 720 },
 	{ name = "spiked iron ball", chance = 7000 },
 	{ name = "high guard flag", chance = 2990 },
-	{ name = "high guard shoulderplates", chance = 8150 }
+	{ name = "high guard shoulderplates", chance = 8150 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -306 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -306 },
 }
 
 monster.defenses = {
 	defense = 35,
 	armor = 40,
 	mitigation = 1.18,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 25, maxDamage = 75, effect = CONST_ME_MAGIC_GREEN, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 25, maxDamage = 75, effect = CONST_ME_MAGIC_GREEN, target = false },
 }
 
 monster.elements = {
@@ -125,7 +125,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

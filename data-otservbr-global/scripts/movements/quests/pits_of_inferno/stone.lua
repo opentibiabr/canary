@@ -12,7 +12,7 @@ function stone.onStepIn(creature, item, position, fromPosition)
 	if not stoneItem and leverItem then
 		Game.createItem(1791, 1, stonePosition)
 		leverItem:transform(2772)
-		player:say('You hear a rumbling from far away.', TALKTYPE_MONSTER_SAY, false, player)
+		player:say("You hear a rumbling from far away.", TALKTYPE_MONSTER_SAY, false, player)
 	end
 	return true
 end

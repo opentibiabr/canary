@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 110,
 	lookLegs = 71,
 	lookFeet = 116,
-	lookAddons = 2
+	lookAddons = 2,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -55,7 +55,7 @@ local function greetCallback(npc, creature)
 
 	if player:getStorageValue(Storage.Quest.U12_60.APiratesTail.RascacoonShortcut) == 1 then
 		npcHandler:setMessage(MESSAGE_GREET, {
-			"Hello my friend. What a delight to see you, even on a {busy} day. I see you already talked to my agent. I'm willing to lend you my boat if you want to take a {shortcut}. ..."
+			"Hello my friend. What a delight to see you, even on a {busy} day. I see you already talked to my agent. I'm willing to lend you my boat if you want to take a {shortcut}. ...",
 		})
 	else
 		npcHandler:setMessage(MESSAGE_GREET, "Hello my friend. What a delight to see you, even on a busy day. You can check your status or ask me about the location of ongoing raids.")
@@ -79,7 +79,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "shortcut") then
 		if player:getStorageValue(Storage.Quest.U12_60.APiratesTail.RascacoonShortcut) == 1 then
 			npcHandler:say({
-				"You are trustworthy enough to take my boat. My agent made sure it takes me to their island. Do you want to take it?"
+				"You are trustworthy enough to take my boat. My agent made sure it takes me to their island. Do you want to take it?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end

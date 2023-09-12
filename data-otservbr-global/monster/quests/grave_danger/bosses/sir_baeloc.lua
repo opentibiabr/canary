@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 3,
 	lookFeet = 93,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 75000
@@ -22,13 +22,13 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.bosstiary = {
 	bossRaceId = 1755,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_20.GraveDanger.Bosses.BaelocNictrosTimer
+	storageCooldown = Storage.Quest.U12_20.GraveDanger.Bosses.BaelocNictrosTimer,
 }
 
 monster.strategiesTarget = {
@@ -63,8 +63,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 3,
 	summons = {
-		{ name = "Retainer of Baeloc", chance = 20, interval = 2000, count = 3 }
-	}
+		{ name = "Retainer of Baeloc", chance = 20, interval = 2000, count = 3 },
+	},
 }
 
 monster.voices = {
@@ -110,7 +110,7 @@ monster.defenses = {
 	defense = 25,
 	armor = 78,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 35, type = COMBAT_HEALING, minDamage = 350, maxDamage = 550, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 35, type = COMBAT_HEALING, minDamage = 350, maxDamage = 550, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -130,11 +130,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -142,13 +141,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

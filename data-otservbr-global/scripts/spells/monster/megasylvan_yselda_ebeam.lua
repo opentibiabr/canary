@@ -9,7 +9,7 @@ local combatArea = {
 	{ 0 },
 	{ 1 },
 	{ 0 },
-	{ 3 }
+	{ 3 },
 }
 
 combat:setArea(createCombatArea(combatArea))

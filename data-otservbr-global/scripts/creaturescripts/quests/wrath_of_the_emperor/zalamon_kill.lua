@@ -1,16 +1,16 @@
 local bossForms = {
-	['snake god essence'] = {
-		text = 'IT\'S NOT THAT EASY MORTALS! FEEL THE POWER OF THE GOD!',
-		newForm = 'snake thing'
+	["snake god essence"] = {
+		text = "IT'S NOT THAT EASY MORTALS! FEEL THE POWER OF THE GOD!",
+		newForm = "snake thing",
 	},
-	['snake thing'] = {
-		text = 'NOOO! NOW YOU HERETICS WILL FACE MY GODLY WRATH!',
-		newForm = 'lizard abomination'
+	["snake thing"] = {
+		text = "NOOO! NOW YOU HERETICS WILL FACE MY GODLY WRATH!",
+		newForm = "lizard abomination",
 	},
-	['lizard abomination'] = {
-		text = 'YOU ... WILL ... PAY WITH ETERNITY ... OF AGONY!',
-		newForm = 'mutated zalamon'
-	}
+	["lizard abomination"] = {
+		text = "YOU ... WILL ... PAY WITH ETERNITY ... OF AGONY!",
+		newForm = "mutated zalamon",
+	},
 }
 
 local zalamonKill = CreatureEvent("ZalamonKill")
@@ -20,7 +20,7 @@ function zalamonKill.onKill(player, target)
 		return true
 	end
 
-	if targetMonster:getName():lower() == 'mutated zalamon' then
+	if targetMonster:getName():lower() == "mutated zalamon" then
 		Game.setStorageValue(Storage.WrathoftheEmperor.Mission11, -1)
 		return true
 	end

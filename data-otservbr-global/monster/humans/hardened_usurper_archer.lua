@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 21,
 	lookFeet = 21,
 	lookAddons = 2,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 7300
@@ -25,7 +25,7 @@ monster.enemyFactions = { FACTION_LION, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,14 +62,13 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 100, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -430, range = 7, shootEffect = CONST_ANI_BURSTARROW, target = true },
 	{ name = "combat", interval = 6000, chance = 8, type = COMBAT_DEATHDAMAGE, minDamage = -160, maxDamage = -485, range = 7, shootEffect = CONST_ANI_SMALLHOLY, target = true },
 	{ name = "combat", interval = 4000, chance = 6, type = COMBAT_DEATHDAMAGE, minDamage = -160, maxDamage = -545, range = 7, effect = CONST_ME_MORTAREA, shootEffect = CONST_ANI_SUDDENDEATH, target = true },
-	{ name = "combat", interval = 4000, chance = 6, type = COMBAT_ICEDAMAGE, minDamage = -150, maxDamage = -425, radius = 3, effect = CONST_ME_ICEAREA, target = true }
+	{ name = "combat", interval = 4000, chance = 6, type = COMBAT_ICEDAMAGE, minDamage = -150, maxDamage = -425, radius = 3, effect = CONST_ME_ICEAREA, target = true },
 }
 
 monster.defenses = {
@@ -95,7 +94,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

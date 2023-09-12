@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 77,
 	lookFeet = 19,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1775
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Cobra Bastion."
+	Locations = "Cobra Bastion.",
 }
 
 monster.health = 8200
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -85,14 +85,14 @@ monster.loot = {
 	{ name = "bone sword", chance = 5000 },
 	{ name = "machete", chance = 2250 },
 	{ name = "carlin sword", chance = 2250 },
-	{ id = 23533, chance = 1690 } -- ring of red plasma
+	{ id = 23533, chance = 1690 }, -- ring of red plasma
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -450 },
 	{ name = "wave t", interval = 2000, chance = 10, minDamage = -300, maxDamage = -380, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -280, maxDamage = -400, radius = 4, effect = CONST_ME_EXPLOSIONHIT, target = false },
-	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_PHYSICALDAMAGE, minDamage = -250, maxDamage = -400, length = 5, spread = 3, effect = CONST_ME_BLOCKHIT, target = false }
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_PHYSICALDAMAGE, minDamage = -250, maxDamage = -400, length = 5, spread = 3, effect = CONST_ME_BLOCKHIT, target = false },
 }
 
 monster.defenses = {
@@ -118,7 +118,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

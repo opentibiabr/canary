@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 655
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Razzachai."
+	Locations = "Razzachai.",
 }
 
 monster.health = 6250
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -81,19 +81,19 @@ monster.loot = {
 	{ name = "lizard leather", chance = 220 },
 	{ name = "lizard scale", chance = 450 },
 	{ name = "strong mana potion", chance = 6280 },
-	{ name = "great mana potion", chance = 4480 }
+	{ name = "great mana potion", chance = 4480 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -60 },
-	{ name = "lizard magistratus curse", interval = 2000, chance = 10, range = 5, target = false }
+	{ name = "lizard magistratus curse", interval = 2000, chance = 10, range = 5, target = false },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 25,
 	mitigation = 1.18,
-	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -113,7 +113,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

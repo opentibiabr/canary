@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 0,
 	lookFeet = 0,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -61,19 +61,15 @@ local function creatureSayCallback(npc, creature, type, message)
 	if (MsgContains(message, "outfit")) or (MsgContains(message, "addon")) then
 		npcHandler:say("In exchange for a truly generous donation, I will offer a special outfit. Do you want to make a donation?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif (MsgContains(message, "yes")) then
+	elseif MsgContains(message, "yes") then
 		-- vamos tratar todas condições para YES aqui
 		if npcHandler:getTopic(playerId) == 1 then
 			-- para o primeiro Yes, o npc deve explicar como obter o outfit
-			npcHandler:say(
-				{
-					"Excellent! Now, let me explain. If you donate 1.000.000.000 gold pieces, you will be entitled to wear a unique outfit. ...",
-					"You will be entitled to wear the {armor} for 500.000.000 gold pieces, {helmet} for an additional 250.000.000 and the {boots} for another 250.000.000 gold pieces. ...",
-					"What will it be?"
-				},
-				npc,
-				creature
-			)
+			npcHandler:say({
+				"Excellent! Now, let me explain. If you donate 1.000.000.000 gold pieces, you will be entitled to wear a unique outfit. ...",
+				"You will be entitled to wear the {armor} for 500.000.000 gold pieces, {helmet} for an additional 250.000.000 and the {boots} for another 250.000.000 gold pieces. ...",
+				"What will it be?",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 			-- O NPC só vai oferecer os addons se o player já tiver escolhido.
 		elseif npcHandler:getTopic(playerId) == 2 then
@@ -85,7 +81,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getStorageValue(Storage.OutfitQuest.GoldenOutfit) < 1 then
 				if player:getMoney() + player:getBankBalance() >= 500000000 then
 					local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-					if inbox and inbox:getEmptySlots() > 0 then
+					if inbox then
 						local decoKit = inbox:addItem(23398, 1)
 						local decoItemName = ItemType(31510):getName()
 						decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a " .. decoItemName .. ".")
@@ -176,15 +172,15 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Promotion
-local node1 = keywordHandler:addKeyword({ 'promot' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = 'I can promote you for 20000 gold coins. Do you want me to promote you?' })
-node1:addChildKeyword({ 'yes' }, StdModule.promotePlayer, { npcHandler = npcHandler, cost = 20000, level = 20, text = 'Congratulations! You are now promoted.' })
-node1:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = 'Alright then, come back when you are ready.', reset = true })
+local node1 = keywordHandler:addKeyword({ "promot" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "I can promote you for 20000 gold coins. Do you want me to promote you?" })
+node1:addChildKeyword({ "yes" }, StdModule.promotePlayer, { npcHandler = npcHandler, cost = 20000, level = 20, text = "Congratulations! You are now promoted." })
+node1:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Alright then, come back when you are ready.", reset = true })
 
 -- Greeting message
 keywordHandler:addGreetKeyword({ "hail emperor" }, { npcHandler = npcHandler, text = "Hiho, may fire and earth bless you, my child. Are you looking for a promotion?" })
 keywordHandler:addGreetKeyword({ "salutations emperor" }, { npcHandler = npcHandler, text = "Hiho, may fire and earth bless you, my child. Are you looking for a promotion?" })
 
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Farewell, |PLAYERNAME|, my child!')
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Farewell, |PLAYERNAME|, my child!")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)

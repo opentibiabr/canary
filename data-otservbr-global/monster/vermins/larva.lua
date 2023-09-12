@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 82
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Larva Caves, Ankrahmun Tombs, Lions Rock, Gardens of Night (unreachable)"
+	Locations = "Larva Caves, Ankrahmun Tombs, Lions Rock, Gardens of Night (unreachable)",
 }
 
 monster.health = 70
@@ -35,7 +35,7 @@ monster.manaCost = 355
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -74,11 +74,11 @@ monster.voices = {
 
 monster.loot = {
 	{ name = "gold coin", chance = 63000, maxCount = 15 },
-	{ name = "meat", chance = 14666 }
+	{ name = "meat", chance = 14666 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35, condition = { type = CONDITION_POISON, totalDamage = 15, interval = 4000 } }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35, condition = { type = CONDITION_POISON, totalDamage = 15, interval = 4000 } },
 }
 
 monster.defenses = {
@@ -104,7 +104,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 58,
 	lookLegs = 67,
 	lookFeet = 120,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Any time\'s a good time to buy some furniture!' }
+	{ text = "Any time's a good time to buy some furniture!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -57,26 +57,25 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Wooden Stake
-local stakeKeyword = keywordHandler:addKeyword({ 'stake' }, StdModule.say, { npcHandler = npcHandler, text = 'Making a stake from a chair? Are you insane??! I won\'t waste my chairs on you for free! You will have to pay for it, but since I consider your plan a blasphemy, it will cost 5000 gold pieces. Okay?' },
-	function(player) return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) ~= -1 end
-)
+local stakeKeyword = keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "Making a stake from a chair? Are you insane??! I won't waste my chairs on you for free! You will have to pay for it, but since I consider your plan a blasphemy, it will cost 5000 gold pieces. Okay?" }, function(player)
+	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) ~= -1
+end)
 
-stakeKeyword:addChildKeyword({ 'yes' }, StdModule.say, { npcHandler = npcHandler, text = 'Argh... my heart aches! Alright... a promise is a promise. Here - take this wooden stake, and now get lost.', ungreet = true },
-	function(player) return player:getMoney() + player:getBankBalance() >= 5000 end,
-	function(player)
-		player:removeMoneyBank(5000)
-		player:addItem(5941, 1)
-	end
-)
+stakeKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "Argh... my heart aches! Alright... a promise is a promise. Here - take this wooden stake, and now get lost.", ungreet = true }, function(player)
+	return player:getMoney() + player:getBankBalance() >= 5000
+end, function(player)
+	player:removeMoneyBank(5000)
+	player:addItem(5941, 1)
+end)
 
-stakeKeyword:addChildKeyword({ 'yes' }, StdModule.say, { npcHandler = npcHandler, text = 'You can\'t even pay for that.', reset = true })
-stakeKeyword:addChildKeyword({ '' }, StdModule.say, { npcHandler = npcHandler, text = 'Phew. No chair-killing.', reset = true })
+stakeKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "You can't even pay for that.", reset = true })
+stakeKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "Phew. No chair-killing.", reset = true })
 
 -- Others
-npcHandler:setMessage(MESSAGE_GREET, 'Nice to meet you, Mister |PLAYERNAME|! Looking for furniture? You\'ve come to the right place!')
-npcHandler:setMessage(MESSAGE_FAREWELL, 'You\'ll come back. They all do.')
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Good bye.')
-npcHandler:setMessage(MESSAGE_SENDTRADE, 'Have a look. Most furniture comes in handy kits. Just use them in your house to assemble the furniture. Do you want to see only a certain type of furniture?')
+npcHandler:setMessage(MESSAGE_GREET, "Nice to meet you, Mister |PLAYERNAME|! Looking for furniture? You've come to the right place!")
+npcHandler:setMessage(MESSAGE_FAREWELL, "You'll come back. They all do.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Have a look. Most furniture comes in handy kits. Just use them in your house to assemble the furniture. Do you want to see only a certain type of furniture?")
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
@@ -173,7 +172,7 @@ npcConfig.shop = {
 	{ itemName = "yellow footboard", clientId = 32485, buy = 40 },
 	{ itemName = "yellow headboard", clientId = 32476, buy = 40 },
 	{ itemName = "yellow pillow", clientId = 900, buy = 25 },
-	{ itemName = "yellow tapestry", clientId = 2650, buy = 25 }
+	{ itemName = "yellow tapestry", clientId = 2650, buy = 25 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -184,7 +183,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

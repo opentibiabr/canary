@@ -1,6 +1,6 @@
 local config = {
 	storage = 19042, --use empty storage
-	exhaust = 600 --Exhaust is in seconds 600 equals 10min
+	exhaust = 600, --Exhaust is in seconds 600 equals 10min
 }
 
 local chilliConCarniphila = Condition(CONDITION_HASTE)
@@ -31,48 +31,48 @@ local hirelingFood = Action()
 
 function hirelingFood.onUse(player, item, frompos, item2, topos)
 	local cid = player:getId()
-	if (player:getStorageValue(config.storage) <= os.time()) then
-		if (item.itemid == 29408) then
+	if player:getStorageValue(config.storage) <= os.time() then
+		if item.itemid == 29408 then
 			player:say("Chomp.", TALKTYPE_MONSTER_SAY)
 			Creature(cid):addCondition(roastedWyvernWings)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
-		elseif (item.itemid == 29409) then
+		elseif item.itemid == 29409 then
 			player:say("Yummm.", TALKTYPE_MONSTER_SAY)
 			Creature(cid):addCondition(carrotPie)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
-		elseif (item.itemid == 29410) then
+		elseif item.itemid == 29410 then
 			player:say("Munch.", TALKTYPE_MONSTER_SAY)
 			Creature(cid):addCondition(tropicalMarinatedTiger)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
-		elseif (item.itemid == 29411) then
+		elseif item.itemid == 29411 then
 			player:say("Munch.", TALKTYPE_MONSTER_SAY)
 			Creature(cid):addCondition(delicatessenSalad)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
-		elseif (item.itemid == 29412) then
+		elseif item.itemid == 29412 then
 			player:say("Yummm.", TALKTYPE_MONSTER_SAY)
 			Creature(cid):addCondition(chilliConCarniphila)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
-		elseif (item.itemid == 29413) then
+		elseif item.itemid == 29413 then
 			player:say("Mmmmm.", TALKTYPE_MONSTER_SAY)
 			Creature(cid):addCondition(svargrondSalmonFilet)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
-		elseif (item.itemid == 29414) then
+		elseif item.itemid == 29414 then
 			Creature(cid):addHealth(getCreatureMaxHealth(cid) * 0.3)
 			player:say("Munch.", TALKTYPE_MONSTER_SAY)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
-		elseif (item.itemid == 29415) then
+		elseif item.itemid == 29415 then
 			Creature(cid):addMana(Creature(cid):getMaxMana() * 0.3)
 			player:say("Chomp.", TALKTYPE_MONSTER_SAY)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
-		elseif (item.itemid == 29416) then
+		elseif item.itemid == 29416 then
 			player:say("Blurg.", TALKTYPE_MONSTER_SAY)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)

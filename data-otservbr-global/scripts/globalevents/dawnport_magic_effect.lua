@@ -6,7 +6,7 @@ local positions = {
 	{ x = 32074, y = 31892, z = 5 },
 	{ x = 32074, y = 31889, z = 5 },
 	{ x = 32063, y = 31881, z = 5 },
-	{ x = 32066, y = 31881, z = 5 }
+	{ x = 32066, y = 31881, z = 5 },
 }
 local dawnportMagicEffect = GlobalEvent("DawnportMagicEffect")
 

@@ -2122,12 +2122,12 @@ void Monster::configureForgeSystem() {
 
 	if (monsterForgeClassification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
 		setForgeStack(15);
-		setIcon(CreatureIcon(CreatureIconModifications_t::Fiendish, 0 /* don't show stacks on fiends */));
+		setIcon("forge", CreatureIcon(CreatureIconModifications_t::Fiendish, 0 /* don't show stacks on fiends */));
 		g_game().updateCreatureIcon(this);
 	} else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER) {
 		auto stack = static_cast<uint16_t>(normal_random(1, 5));
 		setForgeStack(stack);
-		setIcon(CreatureIcon(CreatureIconModifications_t::Influenced, stack));
+		setIcon("forge", CreatureIcon(CreatureIconModifications_t::Influenced, stack));
 		g_game().updateCreatureIcon(this);
 	}
 
@@ -2153,7 +2153,7 @@ void Monster::clearFiendishStatus() {
 	health = mType->info.health * mType->getHealthMultiplier();
 	healthMax = mType->info.healthMax * mType->getHealthMultiplier();
 
-	clearIcon();
+	removeIcon("forge");
 	g_game().updateCreatureIcon(this);
 	g_game().sendUpdateCreature(this);
 }

@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a dragon egg"
 monster.experience = 0
 monster.outfit = {
-	lookTypeEx = 25077
+	lookTypeEx = 25077,
 }
 
 monster.health = 5000
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -45,7 +45,7 @@ monster.flags = {
 
 monster.events = {
 	"DragonEggPrepareDeath",
-	"DragonEggHealthChange"
+	"DragonEggHealthChange",
 }
 
 monster.light = {
@@ -58,11 +58,9 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
-monster.attacks = {
-}
+monster.attacks = {}
 
 monster.defenses = {
 	defense = 5,
@@ -71,7 +69,7 @@ monster.defenses = {
 }
 
 monster.heals = {
-	{ type = COMBAT_FIREDAMAGE, percent = 100 }
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
 }
 
 monster.elements = {
@@ -91,7 +89,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

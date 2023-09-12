@@ -1,6 +1,6 @@
 local config = {
 	antlers = 10297,
-	antler_talisman = 22008
+	antler_talisman = 22008,
 }
 
 local starHerb = Action()

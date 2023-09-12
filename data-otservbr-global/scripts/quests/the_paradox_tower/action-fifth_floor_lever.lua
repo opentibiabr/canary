@@ -1,6 +1,6 @@
 local positions = {
 	{ x = 32478, y = 31903, z = 3 },
-	{ x = 32479, y = 31903, z = 3 }
+	{ x = 32479, y = 31903, z = 3 },
 }
 
 local fifthFloorLever = Action()

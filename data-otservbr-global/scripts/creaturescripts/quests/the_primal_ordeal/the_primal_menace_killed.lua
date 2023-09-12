@@ -7,7 +7,9 @@ function thePrimalMenaceDeath.onDeath(creature, corpse, killer, mostDamage, unju
 
 	local damageMap = creature:getMonster():getDamageMap()
 	local hazard = Hazard.getByName("hazard.gnomprona-gardens")
-	if not hazard then return end
+	if not hazard then
+		return
+	end
 	local _, hazardPoints = hazard:getHazardPlayerAndPoints(damageMap)
 
 	for key, value in pairs(damageMap) do

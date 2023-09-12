@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 5000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -59,16 +59,15 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "energy pulse explosion", interval = 1000, chance = 100, minDamage = -5000, maxDamage = -6000, target = false }
+	{ name = "energy pulse explosion", interval = 1000, chance = 100, minDamage = -5000, maxDamage = -6000, target = false },
 }
 
 monster.defenses = {
 	defense = 5,
-	armor = 10
+	armor = 10,
 	--	mitigation = ???,
 }
 
@@ -89,7 +88,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

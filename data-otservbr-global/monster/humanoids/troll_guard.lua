@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 745
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 3,
-	Locations = "Rookgaards central cave in the Mapper Coords125.64125.136104textnew western Troll tunnel, north-west of Carlin during raids and Thais Knights Guild arena during raids on Kingsday Mini World ChangeKingsday."
+	Locations = "Rookgaards central cave in the Mapper Coords125.64125.136104textnew western Troll tunnel, north-west of Carlin during raids and Thais Knights Guild arena during raids on Kingsday Mini World ChangeKingsday.",
 }
 
 monster.health = 60
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -76,11 +76,11 @@ monster.loot = {
 	{ id = 3003, chance = 10000 }, -- rope
 	{ name = "gold coin", chance = 58000, maxCount = 12 },
 	{ name = "studded club", chance = 3000 },
-	{ name = "meat", chance = 14000, maxCount = 2 }
+	{ name = "meat", chance = 14000, maxCount = 2 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -9 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -9 },
 }
 
 monster.defenses = {
@@ -106,7 +106,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

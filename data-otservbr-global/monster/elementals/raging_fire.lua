@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1121
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 3,
 	Occurrence = 3,
-	Locations = "Jaccus Maxxen's Dungeon."
+	Locations = "Jaccus Maxxen's Dungeon.",
 }
 
 monster.health = 1800
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -73,15 +73,14 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 60, attack = 100 },
 	{ name = "combat", interval = 2000, chance = 9, type = COMBAT_FIREDAMAGE, minDamage = -65, maxDamage = -605, length = 7, spread = 3, target = false },
 	{ name = "massive fire elemental soulfire", interval = 2000, chance = 12, target = false },
 	{ name = "firefield", interval = 2000, chance = 11, range = 7, radius = 3, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_EXPLOSIONHIT, target = true },
-	{ name = "firefield", interval = 2000, chance = 11, radius = 3, effect = CONST_ME_HITBYFIRE, target = false }
+	{ name = "firefield", interval = 2000, chance = 11, radius = 3, effect = CONST_ME_HITBYFIRE, target = false },
 }
 
 monster.defenses = {
@@ -107,7 +106,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

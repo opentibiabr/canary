@@ -11,11 +11,11 @@ npcConfig.walkInterval = 0
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookTypeEx = 5811
+	lookTypeEx = 5811,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -53,11 +53,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if (MsgContains(message, "quara")) then
-		if (player:getStorageValue(Storage.InServiceofYalahar.Questline) == 41 and player:getStorageValue(Storage.InServiceofYalahar.QuaraInky) < 1 and player:getStorageValue(Storage.InServiceofYalahar.QuaraSplasher) < 1 and player:getStorageValue(Storage.InServiceofYalahar.QuaraSharptooth) < 1) then
+	if MsgContains(message, "quara") then
+		if player:getStorageValue(Storage.InServiceofYalahar.Questline) == 41 and player:getStorageValue(Storage.InServiceofYalahar.QuaraInky) < 1 and player:getStorageValue(Storage.InServiceofYalahar.QuaraSplasher) < 1 and player:getStorageValue(Storage.InServiceofYalahar.QuaraSharptooth) < 1 then
 			npcHandler:say({
 				"The quara in this area are a strange race that seeks for inner perfection rather than physical one. ...",
-				"However, recently the quara got mad because their area is flooded with toxic sewage from the city. If you could inform someone about it, they might stop the sewage and the quara could return to their own business."
+				"However, recently the quara got mad because their area is flooded with toxic sewage from the city. If you could inform someone about it, they might stop the sewage and the quara could return to their own business.",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 42)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission07, 3) -- StorageValue for Questlog "Mission 07: A Fishy Mission"

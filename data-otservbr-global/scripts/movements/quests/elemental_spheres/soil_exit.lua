@@ -2,7 +2,7 @@ local setting = {
 	{ storage = 10130, toPosition = Position(33264, 31835, 10) }, --EK
 	{ storage = 10131, toPosition = Position(33272, 31835, 10) }, --RP
 	{ storage = 10132, toPosition = Position(33268, 31840, 10) }, --ED
-	{ storage = 10133, toPosition = Position(33268, 31831, 10) } -- SORC
+	{ storage = 10133, toPosition = Position(33268, 31831, 10) }, -- SORC
 }
 
 local soilExit = MoveEvent()

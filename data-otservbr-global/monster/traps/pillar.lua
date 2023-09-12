@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a pillar"
 monster.experience = 0
 monster.outfit = {
-	lookTypeEx = 2190
+	lookTypeEx = 2190,
 }
 
 monster.health = 100
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -53,9 +53,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
-
+monster.loot = {}
 
 monster.defenses = {
 	defense = 1,
@@ -80,7 +78,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

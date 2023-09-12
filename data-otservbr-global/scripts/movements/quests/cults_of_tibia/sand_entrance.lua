@@ -14,5 +14,5 @@ function sandEntrance.onStepIn(creature, item, position, fromPosition)
 end
 
 sandEntrance:type("stepin")
-sandEntrance:position { x = 33296, y = 32291, z = 11 }
+sandEntrance:position({ x = 33296, y = 32291, z = 11 })
 sandEntrance:register()

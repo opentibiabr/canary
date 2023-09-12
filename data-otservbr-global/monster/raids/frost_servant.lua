@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 385
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -62,18 +62,17 @@ monster.voices = {
 	{ text = "Gnarr.", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 140, attack = 40 }
+	{ name = "melee", interval = 2000, chance = 100, skill = 140, attack = 40 },
 }
 
 monster.defenses = {
 	defense = 25,
 	armor = 25,
 	mitigation = 0.70,
-	{ name = "hirintror summon", interval = 2000, chance = 18, target = false }
+	{ name = "hirintror summon", interval = 2000, chance = 18, target = false },
 }
 
 monster.elements = {
@@ -93,7 +92,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

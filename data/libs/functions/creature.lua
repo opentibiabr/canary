@@ -19,8 +19,7 @@ function Creature.getClosestFreePosition(self, position, maxRadius, mustBeReacha
 			end
 
 			local tile = Tile(checkPosition)
-			if tile and tile:getCreatureCount() == 0 and not tile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) and
-					(not mustBeReachable or self:getPathTo(checkPosition)) then
+			if tile and tile:getCreatureCount() == 0 and not tile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) and (not mustBeReachable or self:getPathTo(checkPosition)) then
 				return checkPosition
 			end
 		end
@@ -90,7 +89,7 @@ function Creature:setItemOutfit(item, time)
 
 	local condition = Condition(CONDITION_OUTFIT)
 	condition:setOutfit({
-		lookTypeEx = itemType:getId()
+		lookTypeEx = itemType:getId(),
 	})
 	condition:setTicks(time)
 	self:addCondition(condition)
@@ -203,8 +202,4 @@ function Creature:addEventStamina(target)
 			staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)
 		end
 	end
-end
-
-function Creature:clearIcon()
-	self:setIcon(0, 0)
 end

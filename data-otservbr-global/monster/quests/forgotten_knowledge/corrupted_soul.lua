@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 1100
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -50,7 +50,7 @@ monster.flags = {
 }
 
 monster.events = {
-	"CorruptedSoul"
+	"CorruptedSoul",
 }
 
 monster.light = {
@@ -63,15 +63,14 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 60, attack = 60 },
 	{ name = "souleater drown", interval = 2000, chance = 9, target = false },
 	{ name = "combat", interval = 2000, chance = 8, type = COMBAT_ICEDAMAGE, minDamage = -50, maxDamage = -100, radius = 1, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEATTACK, target = true },
 	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_LIFEDRAIN, minDamage = -10, maxDamage = -60, radius = 4, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "souleater wave", interval = 2000, chance = 12, minDamage = -100, maxDamage = -210, target = false }
+	{ name = "souleater wave", interval = 2000, chance = 12, minDamage = -100, maxDamage = -210, target = false },
 }
 
 monster.defenses = {
@@ -79,7 +78,7 @@ monster.defenses = {
 	armor = 25,
 	mitigation = 0.51,
 	{ name = "invisible", interval = 2000, chance = 12, effect = CONST_ME_POFF },
-	{ name = "combat", interval = 2000, chance = 16, type = COMBAT_HEALING, minDamage = 130, maxDamage = 205, effect = CONST_ME_MAGIC_RED, target = false }
+	{ name = "combat", interval = 2000, chance = 16, type = COMBAT_HEALING, minDamage = 130, maxDamage = 205, effect = CONST_ME_MAGIC_RED, target = false },
 }
 
 monster.elements = {
@@ -99,7 +98,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

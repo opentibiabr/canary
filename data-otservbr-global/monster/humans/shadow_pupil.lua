@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 960
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Drefia."
+	Locations = "Drefia.",
 }
 
 monster.health = 450
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -71,8 +71,8 @@ monster.summon = {
 	maxSummons = 4,
 	summons = {
 		{ name = "Skeleton", chance = 10, interval = 2000, count = 4 },
-		{ name = "Ghost", chance = 5, interval = 2000, count = 4 }
-	}
+		{ name = "Ghost", chance = 5, interval = 2000, count = 4 },
+	},
 }
 
 monster.voices = {
@@ -95,13 +95,13 @@ monster.loot = {
 	{ name = "book of necromantic rituals", chance = 6920 },
 	{ name = "horoscope", chance = 15000 },
 	{ name = "incantation notes", chance = 9130 },
-	{ name = "pieces of magic chalk", chance = 4300 }
+	{ name = "pieces of magic chalk", chance = 4300 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70, condition = { type = CONDITION_POISON, totalDamage = 90, interval = 4000 } },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -60, maxDamage = -80, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -30, maxDamage = -60, radius = 3, effect = CONST_ME_MORTAREA, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -30, maxDamage = -60, radius = 3, effect = CONST_ME_MORTAREA, target = false },
 }
 
 monster.defenses = {
@@ -127,7 +127,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

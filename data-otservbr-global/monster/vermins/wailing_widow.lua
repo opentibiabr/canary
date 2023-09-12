@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 632
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Zao Wailing Widow Cave, Northern Zao Plantations, Northern Brimstone Bug Cave, \z
-		Razzachai, Chyllfroest, Krailos Spider Lair."
+		Razzachai, Chyllfroest, Krailos Spider Lair.",
 }
 
 monster.health = 850
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -61,12 +61,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -84,21 +84,21 @@ monster.loot = {
 	{ name = "mana potion", chance = 4785 },
 	{ name = "zaoan halberd", chance = 2210 },
 	{ name = "widow's mandibles", chance = 20950 },
-	{ name = "wailing widow's necklace", chance = 900 }
+	{ name = "wailing widow's necklace", chance = 900 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -120, condition = { type = CONDITION_POISON, totalDamage = 160, interval = 4000 } },
 	{ name = "drunk", interval = 2000, chance = 20, range = 7, radius = 4, effect = CONST_ME_SOUND_RED, target = false, duration = 4000 },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -40, maxDamage = -70, radius = 3, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -60, maxDamage = -110, range = 7, shootEffect = CONST_ANI_POISON, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -60, maxDamage = -110, range = 7, shootEffect = CONST_ANI_POISON, target = false },
 }
 
 monster.defenses = {
 	defense = 0,
 	armor = 0,
 	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 70, maxDamage = 100, effect = CONST_ME_SOUND_WHITE, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 820, effect = CONST_ME_SOUND_YELLOW, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 820, effect = CONST_ME_SOUND_YELLOW, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -111,14 +111,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

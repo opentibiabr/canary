@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 81,
 	lookLegs = 67,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,13 +58,12 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	if MsgContains(message, "angelina") then
 		if player:getStorageValue(Storage.OutfitQuest.MageSummoner.AddonWand) == 1 then
 			npcHandler:say({
 				"Angelina had been imprisoned? My, these are horrible news, but I am so glad to hear that she is safe now. ...",
 				"I will happily carry out her wish and reward you, but I fear I need some important ingredients for my blessing spell first. ...",
-				"Will you gather them for me?"
+				"Will you gather them for me?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -95,10 +94,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addOutfitAddon(141, 1)
 				player:addOutfitAddon(130, 1)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				npcHandler:say('I\'m glad to tell you that I have finished the ritual, player. Here is your new wand. I hope you carry it proudly for everyone to see..', npc, creature)
+				npcHandler:say("I'm glad to tell you that I have finished the ritual, player. Here is your new wand. I hope you carry it proudly for everyone to see..", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say('Please let me focus for a while, |PLAYERNAME|.', npc, creature)
+				npcHandler:say("Please let me focus for a while, |PLAYERNAME|.", npc, creature)
 			end
 		end
 	elseif MsgContains(message, "yes") then
@@ -110,7 +109,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Secondly, I need 10 ounces of magic sulphur. It can absorb the elemental energy of all the wands and rods and bind it to something else. ...",
 				"Next, I will need a soul stone. These can be used as a vessel for energy, evil as well as good. They are rarely used nowaday though. ...",
 				"Lastly, I need a lot of holy energy. I can extract it from ankhs, but only a small amount each time. I will need about 20 ankhs. ...",
-				"Did you understand everything I told you and will help me with my blessing?"
+				"Did you understand everything I told you and will help me with my blessing?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 2 then
@@ -167,22 +166,20 @@ local function confirmWedding(npc, creature, message, keywords, parameters, node
 		setPlayerSpouse(player:getGuid(), candidate)
 		setPlayerSpouse(candidate, player:getGuid())
 		local itemAttribute = Item(doPlayerAddItem(creature, ITEM_ENGRAVED_WEDDING_RING, 1))
-		npcHandler:say(
-			{
-				'Dear friends and family, we are gathered here today to witness and celebrate the union of ' .. getPlayerNameById(candidate) .. ' and ' .. player:getName() .. ' in marriage.',
-				'Through their time together, they have come to realize that their personal dreams, hopes, and goals are more attainable and more meaningful through the combined effort and mutual support provided in love, commitment, and family;',
-				'and so they have decided to live together as husband and wife. And now, by the power vested in me by the Gods of Tibia, I hereby pronounce you husband and wife.',
-				'*After a whispered blessing opens an hand towards ' .. player:getName() .. '* Take these two engraved wedding rings and give one of them to your spouse.',
-				'You may now kiss your bride.',
-				npc,
-				creature,
-				10000
-			}
-		)
-		itemAttribute:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, player:getName() .. ' & ' .. getPlayerNameById(candidate) .. ' forever - married on ' .. os.date('%B %d, %Y.'))
-		itemAttribute:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, player:getName() .. ' & ' .. getPlayerNameById(candidate) .. ' forever - married on ' .. os.date('%B %d, %Y.'))
+		npcHandler:say({
+			"Dear friends and family, we are gathered here today to witness and celebrate the union of " .. getPlayerNameById(candidate) .. " and " .. player:getName() .. " in marriage.",
+			"Through their time together, they have come to realize that their personal dreams, hopes, and goals are more attainable and more meaningful through the combined effort and mutual support provided in love, commitment, and family;",
+			"and so they have decided to live together as husband and wife. And now, by the power vested in me by the Gods of Tibia, I hereby pronounce you husband and wife.",
+			"*After a whispered blessing opens an hand towards " .. player:getName() .. "* Take these two engraved wedding rings and give one of them to your spouse.",
+			"You may now kiss your bride.",
+			npc,
+			creature,
+			10000,
+		})
+		itemAttribute:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, player:getName() .. " & " .. getPlayerNameById(candidate) .. " forever - married on " .. os.date("%B %d, %Y."))
+		itemAttribute:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, player:getName() .. " & " .. getPlayerNameById(candidate) .. " forever - married on " .. os.date("%B %d, %Y."))
 	else
-		npcHandler:say('Your partner didn\'t accept your proposal, yet', npc, creature)
+		npcHandler:say("Your partner didn't accept your proposal, yet", npc, creature)
 	end
 	return true
 end
@@ -193,8 +190,8 @@ local function confirmRemoveEngage(npc, creature, message, keywords, parameters,
 	local playerStatus = getPlayerMarriageStatus(player:getGuid())
 	local playerSpouse = getPlayerSpouse(player:getGuid())
 	if playerStatus == PROPOSED_STATUS then
-		npcHandler:say('Are you sure you want to remove your wedding proposal with {' .. getPlayerNameById(playerSpouse) .. '}?', npc, creature)
-		node:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, moveup = 3, text = 'Ok, let\'s keep it then.' })
+		npcHandler:say("Are you sure you want to remove your wedding proposal with {" .. getPlayerNameById(playerSpouse) .. "}?", npc, creature)
+		node:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, moveup = 3, text = "Ok, let's keep it then." })
 
 		local function removeEngage(creature, message, keywords, parameters, node)
 			doPlayerAddItem(creature, ITEM_WEDDING_RING, 1)
@@ -204,9 +201,9 @@ local function confirmRemoveEngage(npc, creature, message, keywords, parameters,
 			npcHandler:say(parameters.text, npc, creature)
 			keywordHandler:moveUp(parameters.moveup)
 		end
-		node:addChildKeyword({ 'yes' }, removeEngage, { moveup = 3, text = 'Ok, your marriage proposal to {' .. getPlayerNameById(playerSpouse) .. '} has been removed. Take your wedding ring back.' })
+		node:addChildKeyword({ "yes" }, removeEngage, { moveup = 3, text = "Ok, your marriage proposal to {" .. getPlayerNameById(playerSpouse) .. "} has been removed. Take your wedding ring back." })
 	else
-		npcHandler:say('You don\'t have any pending proposal to be removed.', npc, creature)
+		npcHandler:say("You don't have any pending proposal to be removed.", npc, creature)
 		keywordHandler:moveUp(2)
 	end
 	return true
@@ -217,8 +214,8 @@ local function confirmDivorce(npc, creature, message, keywords, parameters, node
 	local playerStatus = getPlayerMarriageStatus(player:getGuid())
 	local playerSpouse = getPlayerSpouse(player:getGuid())
 	if playerStatus == MARRIED_STATUS then
-		npcHandler:say('Are you sure you want to divorce of {' .. getPlayerNameById(playerSpouse) .. '}?', npc, creature)
-		node:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, moveup = 3, text = 'Great! Marriages should be an eternal commitment.' })
+		npcHandler:say("Are you sure you want to divorce of {" .. getPlayerNameById(playerSpouse) .. "}?", npc, creature)
+		node:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, moveup = 3, text = "Great! Marriages should be an eternal commitment." })
 
 		local function divorce(creature, message, keywords, parameters, node)
 			local player = Player(creature)
@@ -230,27 +227,27 @@ local function confirmDivorce(npc, creature, message, keywords, parameters, node
 			npcHandler:say(parameters.text, npc, creature)
 			keywordHandler:moveUp(parameters.moveup)
 		end
-		node:addChildKeyword({ 'yes' }, divorce, { moveup = 3, text = 'Ok, you are now divorced of {' .. getPlayerNameById(playerSpouse) .. '}. Think better next time after marrying someone.' })
+		node:addChildKeyword({ "yes" }, divorce, { moveup = 3, text = "Ok, you are now divorced of {" .. getPlayerNameById(playerSpouse) .. "}. Think better next time after marrying someone." })
 	else
-		npcHandler:say('You aren\'t married to get a divorce.', npc, creature)
+		npcHandler:say("You aren't married to get a divorce.", npc, creature)
 		keywordHandler:moveUp(2)
 	end
 	return true
 end
 
-local node1 = keywordHandler:addKeyword({ 'marry' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = 'Would you like to get married? Make sure you have a wedding ring and the wedding outfit box with you.' })
-node1:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, moveup = 1, text = 'That\'s fine.' })
-local node2 = node1:addChildKeyword({ 'yes' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = 'And who would you like to marry?' })
-node2:addChildKeyword({ '[%w]' }, tryEngage, {})
+local node1 = keywordHandler:addKeyword({ "marry" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to get married? Make sure you have a wedding ring and the wedding outfit box with you." })
+node1:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, moveup = 1, text = "That's fine." })
+local node2 = node1:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "And who would you like to marry?" })
+node2:addChildKeyword({ "[%w]" }, tryEngage, {})
 
-local node3 = keywordHandler:addKeyword({ 'celebration' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = 'Is your soulmate and friends here with you for the celebration?' })
-node3:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, moveup = 1, text = 'Then go bring them here!' })
-local node4 = node3:addChildKeyword({ 'yes' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = 'Good, let\'s {begin} then!' }) --, confirmWedding, {})
-node4:addChildKeyword({ 'begin' }, confirmWedding, {})
+local node3 = keywordHandler:addKeyword({ "celebration" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Is your soulmate and friends here with you for the celebration?" })
+node3:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, moveup = 1, text = "Then go bring them here!" })
+local node4 = node3:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Good, let's {begin} then!" }) --, confirmWedding, {})
+node4:addChildKeyword({ "begin" }, confirmWedding, {})
 
-keywordHandler:addKeyword({ 'remove' }, confirmRemoveEngage, {})
+keywordHandler:addKeyword({ "remove" }, confirmRemoveEngage, {})
 
-keywordHandler:addKeyword({ 'divorce' }, confirmDivorce, {})
+keywordHandler:addKeyword({ "divorce" }, confirmDivorce, {})
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome in the name of the gods, pilgrim |PLAYERNAME|!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Be careful on your journeys.")

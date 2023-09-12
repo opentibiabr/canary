@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 10000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -49,11 +49,11 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.events = {
-	"GloothHorror"
+	"GloothHorror",
 }
 
 monster.light = {
@@ -66,20 +66,19 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 90, attack = 100 },
 	{ name = "combat", interval = 2000, chance = 17, type = COMBAT_DEATHDAMAGE, minDamage = -300, maxDamage = -600, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_DEATHDAMAGE, minDamage = -200, maxDamage = -400, range = 1, shootEffect = CONST_ANI_POISON, target = true }
+	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_DEATHDAMAGE, minDamage = -200, maxDamage = -400, range = 1, shootEffect = CONST_ANI_POISON, target = true },
 }
 
 monster.defenses = {
 	defense = 25,
 	armor = 15,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 500, maxDamage = 600, effect = CONST_ME_MAGIC_GREEN, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 500, maxDamage = 600, effect = CONST_ME_MAGIC_GREEN, target = false },
 }
 
 monster.elements = {
@@ -99,7 +98,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

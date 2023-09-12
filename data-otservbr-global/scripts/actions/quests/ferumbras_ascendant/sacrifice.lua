@@ -2,7 +2,7 @@ local fount = {
 	[1] = { transformid = 22166, pos = Position(33421, 32383, 12), revert = 2094 },
 	[2] = { transformid = 22167, pos = Position(33422, 32383, 12), revert = 2095 },
 	[3] = { transformid = 22168, pos = Position(33421, 32384, 12), revert = 2096 },
-	[4] = { transformid = 22169, pos = Position(33422, 32384, 12), revert = 2097 }
+	[4] = { transformid = 22169, pos = Position(33422, 32384, 12), revert = 2097 },
 }
 
 local ferumbrasAscendantSacrifice = Action()
@@ -12,25 +12,25 @@ function ferumbrasAscendantSacrifice.onUse(player, item, fromPosition, target, t
 	end
 	if item.itemid == 22158 then
 		if player:getStorageValue(Storage.FerumbrasAscension.Bone) >= 1 then
-			player:say('You already put the bones on the blood well.', TALKTYPE_MONSTER_SAY)
+			player:say("You already put the bones on the blood well.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
 		player:setStorageValue(Storage.FerumbrasAscension.Bone, 1)
 	elseif item.itemid == 22170 then
 		if player:getStorageValue(Storage.FerumbrasAscension.Ring2) >= 1 then
-			player:say('You already put the signet ring on the blood well.', TALKTYPE_MONSTER_SAY)
+			player:say("You already put the signet ring on the blood well.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
 		player:setStorageValue(Storage.FerumbrasAscension.Ring2, 1)
 	elseif item.itemid == 9685 then
 		if player:getStorageValue(Storage.FerumbrasAscension.Vampire) >= 1 then
-			player:say('You already put the vampire teeth on the blood well.', TALKTYPE_MONSTER_SAY)
+			player:say("You already put the vampire teeth on the blood well.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
 		player:setStorageValue(Storage.FerumbrasAscension.Vampire, 1)
 	elseif item.itemid == 3661 then
 		if player:getStorageValue(Storage.FerumbrasAscension.Flower) >= 1 then
-			player:say('You already put the grave flower on the blood well.', TALKTYPE_MONSTER_SAY)
+			player:say("You already put the grave flower on the blood well.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
 		player:setStorageValue(Storage.FerumbrasAscension.Flower, 1)
@@ -51,7 +51,7 @@ function ferumbrasAscendantSacrifice.onUse(player, item, fromPosition, target, t
 		player:setStorageValue(Storage.FerumbrasAscension.Fount, 0)
 	end
 	player:setStorageValue(Storage.FerumbrasAscension.Fount, player:getStorageValue(Storage.FerumbrasAscension.Fount) + 1)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You put the ' .. item:getName() .. ' into the dried well.')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You put the " .. item:getName() .. " into the dried well.")
 	toPosition:sendMagicEffect(CONST_ME_DRAWBLOOD)
 	item:remove(1)
 	return true

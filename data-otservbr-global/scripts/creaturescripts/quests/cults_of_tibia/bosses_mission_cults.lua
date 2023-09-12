@@ -7,7 +7,7 @@ function bossesCults.onKill(player, creature)
 		["the unarmored voidborn"] = { storage = Storage.CultsOfTibia.Orcs.Mission, value = 2 },
 		["the false god"] = { storage = Storage.CultsOfTibia.Minotaurs.Mission, value = 4 },
 		["the sandking"] = { storage = Storage.CultsOfTibia.Life.Mission, value = 8, global = "sandking", g_value = 5 },
-		["the corruptor of souls"] = { createNew = 'The Source Of Corruption', pos = Position(33039, 31922, 15), removeMonster = 'zarcorix of yalahar', area1 = Position(33073, 31885, 15), area2 = Position(33075, 31887, 15) },
+		["the corruptor of souls"] = { createNew = "The Source Of Corruption", pos = Position(33039, 31922, 15), removeMonster = "zarcorix of yalahar", area1 = Position(33073, 31885, 15), area2 = Position(33075, 31887, 15) },
 		["the source of corruption"] = { storage = Storage.CultsOfTibia.FinalBoss.Mission, value = 2 },
 	}
 
@@ -26,7 +26,7 @@ function bossesCults.onKill(player, creature)
 			return true
 		end
 		if boss.createNew then
-			Game.setStorageValue('CheckTile', -1)
+			Game.setStorageValue("CheckTile", -1)
 			Game.createMonster(boss.createNew, boss.pos)
 			if removeMonster then
 				for _x = boss.area1.x, boss.area2.x, 1 do

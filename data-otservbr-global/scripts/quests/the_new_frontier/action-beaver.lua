@@ -3,7 +3,7 @@ local config = {
 		Position(32515, 31927, 7), -- Tree 01
 		Position(32474, 31947, 7), -- Tree 02
 		Position(32458, 31997, 7), -- Tree 03
-	}
+	},
 }
 local TheNewFrontier = Storage.Quest.U8_54.TheNewFrontier
 

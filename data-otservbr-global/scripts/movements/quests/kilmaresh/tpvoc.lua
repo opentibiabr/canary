@@ -1,20 +1,20 @@
 local setting = {
 	[57531] = {
 		vocationId = VOCATION.BASE_ID.SORCERER,
-		toPosition = { x = 33829, y = 31635, z = 9 }
+		toPosition = { x = 33829, y = 31635, z = 9 },
 	},
 	[57532] = {
 		vocationId = VOCATION.BASE_ID.DRUID,
-		toPosition = { x = 33831, y = 31635, z = 9 }
+		toPosition = { x = 33831, y = 31635, z = 9 },
 	},
 	[57533] = {
 		vocationId = VOCATION.BASE_ID.PALADIN,
-		toPosition = { x = 33833, y = 31635, z = 9 }
+		toPosition = { x = 33833, y = 31635, z = 9 },
 	},
 	[57534] = {
 		vocationId = VOCATION.BASE_ID.KNIGHT,
-		toPosition = { x = 33835, y = 31635, z = 9 }
-	}
+		toPosition = { x = 33835, y = 31635, z = 9 },
+	},
 }
 
 local tpvoc = MoveEvent()

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 595
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 1,
-	Locations = "West of Edron, in a some Lost Mines."
+	Locations = "West of Edron, in a some Lost Mines.",
 }
 
 monster.health = 100
@@ -35,7 +35,7 @@ monster.manaCost = 440
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -87,18 +87,18 @@ monster.loot = {
 	{ name = "viking helmet", chance = 1000 },
 	{ name = "scale armor", chance = 1000 },
 	{ name = "worm", chance = 92310, maxCount = 6 },
-	{ name = "brown piece of cloth", chance = 1000 }
+	{ name = "brown piece of cloth", chance = 1000 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 },
 }
 
 monster.defenses = {
 	defense = 0,
 	armor = 8,
 	mitigation = 0.43,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 5, maxDamage = 15, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 5, maxDamage = 15, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -118,7 +118,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

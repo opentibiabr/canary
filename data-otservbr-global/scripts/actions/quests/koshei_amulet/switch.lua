@@ -3,7 +3,7 @@ local config = {
 	{ position = Position(33286, 32444, 8), itemId = 2063 },
 	{ position = Position(33276, 32444, 8), itemId = 2062 },
 	{ position = Position(33278, 32450, 8), itemId = 2062 },
-	{ position = Position(33284, 32450, 8), itemId = 2062 }
+	{ position = Position(33284, 32450, 8), itemId = 2062 },
 }
 
 local coffinPosition = Position(33273, 32458, 8)
@@ -28,7 +28,7 @@ function kosheiSwitch.onUse(player, item, fromPosition, target, toPosition, isHo
 	end
 
 	if not statuesInOrder or Tile(coffinPosition):getItemById(167) then
-		player:say('Nothing happens', TALKTYPE_MONSTER_SAY, false, player, toPosition)
+		player:say("Nothing happens", TALKTYPE_MONSTER_SAY, false, player, toPosition)
 		return true
 	end
 
@@ -36,7 +36,7 @@ function kosheiSwitch.onUse(player, item, fromPosition, target, toPosition, isHo
 	if coffinItem then
 		coffinItem:transform(167)
 		addEvent(revertCoffin, 2 * 60 * 1000)
-		player:say('CLICK', TALKTYPE_MONSTER_SAY, false, player, coffinPosition)
+		player:say("CLICK", TALKTYPE_MONSTER_SAY, false, player, coffinPosition)
 	end
 	return true
 end

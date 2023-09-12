@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 5
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Ulderek's Rock, Edron Orc Cave, Ancient Temple, Ice Islands, Venore Orc Cave, \z
-		Rookgaard Orc Fortress, Rookgaard main cave, Fibula Dungeon, Elvenbane, Foreigner Quarter, Zao Orc Land."
+		Rookgaard Orc Fortress, Rookgaard main cave, Fibula Dungeon, Elvenbane, Foreigner Quarter, Zao Orc Land.",
 }
 
 monster.health = 70
@@ -36,7 +36,7 @@ monster.manaCost = 300
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -86,11 +86,11 @@ monster.loot = {
 	{ name = "meat", chance = 10160 },
 	{ name = "orc tooth", chance = 210 },
 	{ name = "orc leather", chance = 590 },
-	{ id = 23986, chance = 1000 } -- heavy old tome
+	{ id = 23986, chance = 1000 }, -- heavy old tome
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 },
 }
 
 monster.defenses = {
@@ -116,7 +116,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -121,7 +121,7 @@ function loginEvents.onLogin(player)
 		-- Concoctions
 		"ConcoctionsOnLogin",
 		-- Hazard System
-		"PrimalHazardKill"
+		"PrimalHazardKill",
 	}
 
 	for i = 1, #events do

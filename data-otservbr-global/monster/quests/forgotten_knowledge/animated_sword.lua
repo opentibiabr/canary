@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "an animated sword"
 monster.experience = 0
 monster.outfit = {
-	lookTypeEx = 24227
+	lookTypeEx = 24227,
 }
 
 monster.health = 2000
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -56,19 +56,18 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 50, attack = 50 },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_MANADRAIN, minDamage = -40, maxDamage = -160, radius = 6, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "berserk", interval = 2000, chance = 15, minDamage = -40, maxDamage = -160, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -40, maxDamage = -100, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -40, maxDamage = -100, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
 }
 
 monster.defenses = {
 	defense = 30,
-	armor = 30
+	armor = 30,
 	--	mitigation = ???,
 }
 
@@ -89,7 +88,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

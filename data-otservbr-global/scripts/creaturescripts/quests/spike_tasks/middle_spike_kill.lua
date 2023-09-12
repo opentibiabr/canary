@@ -1,7 +1,7 @@
 local range = {
 	-- Only the Crystalcrushers killed on this area count
 	from = Position(32100, 32470, 11),
-	to = Position(32380, 32725, 12)
+	to = Position(32380, 32725, 12),
 }
 
 local middleSpikeKill = CreatureEvent("MiddleSpikeKill")

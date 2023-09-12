@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 14
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "In Rookgaard Sheep field, Greenshore and other farms like the one in Thais, east of Carlin. They can also be found wandering the fields of Edron, and some can be found along with a Black Sheep with the Hunter in Femor Hills."
+	Locations = "In Rookgaard Sheep field, Greenshore and other farms like the one in Thais, east of Carlin. They can also be found wandering the fields of Edron, and some can be found along with a Black Sheep with the Hunter in Femor Hills.",
 }
 
 monster.health = 20
@@ -35,7 +35,7 @@ monster.manaCost = 250
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -75,11 +75,11 @@ monster.voices = {
 
 monster.loot = {
 	{ name = "meat", chance = 70000, maxCount = 4 },
-	{ name = "wool", chance = 1000 }
+	{ name = "wool", chance = 1000 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1 },
 }
 
 monster.defenses = {
@@ -105,7 +105,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 899
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Can be found in Truffels Garden as well as the Mushroom Gardens."
+	Locations = "Can be found in Truffels Garden as well as the Mushroom Gardens.",
 }
 
 monster.health = 1200
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -60,19 +60,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Zzzrp", yell = false },
-	{ text = "Crick! Crick!", yell = false }
+	{ text = "Crick! Crick!", yell = false },
 }
 
 monster.loot = {
@@ -89,7 +89,7 @@ monster.loot = {
 	{ name = "crystalline arrow", chance = 15540, maxCount = 5 },
 	{ name = "green crystal splinter", chance = 3600 },
 	{ name = "green crystal fragment", chance = 2070 },
-	{ name = "drill bolt", chance = 15260, maxCount = 5 }
+	{ name = "drill bolt", chance = 15260, maxCount = 5 },
 }
 
 monster.attacks = {
@@ -97,13 +97,13 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -180, maxDamage = -270, length = 4, spread = 3, target = false },
 	-- poison
 	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 10, minDamage = -160, maxDamage = -200, range = 7, shootEffect = CONST_ANI_POISONARROW, effect = CONST_ME_SMALLPLANTS, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = -700, length = 3, spread = 2, effect = CONST_ME_HITAREA, target = false, duration = 30000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = -700, length = 3, spread = 2, effect = CONST_ME_HITAREA, target = false, duration = 30000 },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 15,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 510, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 510, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -116,14 +116,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

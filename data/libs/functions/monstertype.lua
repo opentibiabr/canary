@@ -13,8 +13,12 @@ function MonsterType:generateLootRoll(config, resultTable)
 	local result = resultTable or {}
 	for _, item in ipairs(monsterLoot) do
 		local iType = ItemType(item.itemId)
-		if config.filter and not config.filter(iType, item.unique) then goto continue end
-		if uniqueItems[item.itemId] then goto continue end
+		if config.filter and not config.filter(iType, item.unique) then
+			goto continue
+		end
+		if uniqueItems[item.itemId] then
+			goto continue
+		end
 		if not result[item.itemId] then
 			result[item.itemId] = { count = 0, gut = false }
 		end
@@ -25,7 +29,9 @@ function MonsterType:generateLootRoll(config, resultTable)
 		end
 
 		local randValue = getLootRandom(factor)
-		if randValue >= chance then goto continue end
+		if randValue >= chance then
+			goto continue
+		end
 
 		local count = 0
 		if iType:isStackable() then

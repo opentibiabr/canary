@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 93,
 	lookFeet = 114,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 379
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Kazordoon Underground"
+	Locations = "Kazordoon Underground",
 }
 
 monster.health = 350
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -76,11 +76,10 @@ monster.voices = {
 	{ text = "We have license to kill!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 },
 	--drown
 	--envenom
 }
@@ -108,7 +107,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

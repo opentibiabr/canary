@@ -4,18 +4,18 @@ Dawnport = {
 	skillsLimit = {
 		[VOCATION.ID.NONE] = {},
 		[VOCATION.ID.SORCERER] = {
-			[SKILL_MAGLEVEL] = 20
+			[SKILL_MAGLEVEL] = 20,
 		},
 		[VOCATION.ID.DRUID] = {
-			[SKILL_MAGLEVEL] = 20
+			[SKILL_MAGLEVEL] = 20,
 		},
 		[VOCATION.ID.PALADIN] = {
-			[SKILL_MAGLEVEL] = 9
+			[SKILL_MAGLEVEL] = 9,
 		},
 		[VOCATION.ID.KNIGHT] = {
-			[SKILL_MAGLEVEL] = 4
-		}
-	}
+			[SKILL_MAGLEVEL] = 4,
+		},
+	},
 }
 
 -- Change player vocation, converts magic level and skills between vocations and set proper stats
@@ -37,7 +37,7 @@ function Player.changeVocation(self, newVocationId)
 		{ id = SKILL_SWORD },
 		{ id = SKILL_AXE },
 		{ id = SKILL_DISTANCE },
-		{ id = SKILL_SHIELD }
+		{ id = SKILL_SHIELD },
 	}
 	-- Get current vocation skills levels and skills tries
 	for i = 1, #skills do
@@ -56,7 +56,7 @@ function Player.changeVocation(self, newVocationId)
 		local reqManaSpent = self:getVocation():getRequiredManaSpent(newMagicLevel + 1)
 		while magic.manaSpent >= reqManaSpent do
 			magic.manaSpent = magic.manaSpent - reqManaSpent
-			newMagicLevel = newMagicLevel + 1;
+			newMagicLevel = newMagicLevel + 1
 			reqManaSpent = self:getVocation():getRequiredManaSpent(newMagicLevel + 1)
 		end
 	end
@@ -74,7 +74,7 @@ function Player.changeVocation(self, newVocationId)
 			local reqSkillTries = self:getVocation():getRequiredSkillTries(skills[i].id, (newSkillLevel + 1))
 			while skills[i].tries >= reqSkillTries do
 				skills[i].tries = skills[i].tries - reqSkillTries
-				newSkillLevel = newSkillLevel + 1;
+				newSkillLevel = newSkillLevel + 1
 				reqSkillTries = self:getVocation():getRequiredSkillTries(skills[i].id, (newSkillLevel + 1))
 			end
 		end
@@ -100,12 +100,9 @@ function Player.changeVocation(self, newVocationId)
 			local baseLevel = 7
 			local baseVocation = Vocation(VOCATION.ID.NONE)
 			local level = self:getLevel() - 8
-			stats.health = stats.health
-					+ (baseLevel * baseVocation:getHealthGain()) + (level * self:getVocation():getHealthGain())
-			stats.mana = stats.mana
-					+ (baseLevel * baseVocation:getManaGain()) + (level * self:getVocation():getManaGain())
-			stats.capacity = stats.capacity
-					+ (baseLevel * baseVocation:getCapacityGain()) + (level * self:getVocation():getCapacityGain())
+			stats.health = stats.health + (baseLevel * baseVocation:getHealthGain()) + (level * self:getVocation():getHealthGain())
+			stats.mana = stats.mana + (baseLevel * baseVocation:getManaGain()) + (level * self:getVocation():getManaGain())
+			stats.capacity = stats.capacity + (baseLevel * baseVocation:getCapacityGain()) + (level * self:getVocation():getCapacityGain())
 		end
 		self:setMaxHealth(stats.health)
 		self:addHealth(stats.health)
@@ -161,7 +158,7 @@ function removeMainlandSmugglingItems(player)
 		268, -- Mana potion
 		7876, -- Small health potion
 		21352, -- Lightest missile rune
-		21351 -- Light stone shower rune
+		21351, -- Light stone shower rune
 	}
 	for i = 1, #smugglingItemIds do
 		local smugglingItemAmount = player:getItemCount(smugglingItemIds[i])

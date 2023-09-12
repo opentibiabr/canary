@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -54,11 +54,11 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.events = {
-	"TheRavagerDeath"
+	"TheRavagerDeath",
 }
 
 monster.light = {
@@ -71,8 +71,8 @@ monster.summon = {
 	summons = {
 		{ name = "Elder Mummy", chance = 9, interval = 2000, count = 4 },
 		{ name = "Canopic Jar", chance = 9, interval = 2000, count = 4 },
-		{ name = "Greater Canopic Jar", chance = 9, interval = 2000, count = 8 }
-	}
+		{ name = "Greater Canopic Jar", chance = 9, interval = 2000, count = 8 },
+	},
 }
 
 monster.voices = {
@@ -86,21 +86,21 @@ monster.loot = {
 	{ id = 239, chance = 5000, maxCount = 5 }, -- great health potion
 	{ id = 3035, chance = 37500, maxCount = 5 }, -- platinum coin
 	{ id = 3042, chance = 15000, maxCount = 5 }, -- scarab coin
-	{ id = 3328, chance = 5000 } -- daramian waraxe
+	{ id = 3328, chance = 5000 }, -- daramian waraxe
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 82, attack = 70, condition = { type = CONDITION_POISON, totalDamage = 320, interval = 4000 } },
 	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -200, maxDamage = -750, range = 7, shootEffect = CONST_ANI_DEATH, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 9, type = COMBAT_DEATHDAMAGE, minDamage = -700, maxDamage = -880, length = 8, spread = 3, effect = CONST_ME_SMALLCLOUDS, target = false },
-	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_LIFEDRAIN, minDamage = -400, maxDamage = -500, length = 7, spread = 3, effect = CONST_ME_SMOKE, target = false }
+	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_LIFEDRAIN, minDamage = -400, maxDamage = -500, length = 7, spread = 3, effect = CONST_ME_SMOKE, target = false },
 }
 
 monster.defenses = {
 	defense = 30,
 	armor = 25,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 200, maxDamage = 400, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 200, maxDamage = 400, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -120,7 +120,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

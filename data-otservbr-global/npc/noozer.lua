@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 39,
 	lookLegs = 39,
 	lookFeet = 19,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -67,14 +67,15 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	-- Começou a quest
 	if MsgContains(message, "pass") and npcHandler:getTopic(playerId) == 1 then
-		npcHandler:say({ "Yes, yes. Or wait - why do you want to.. ah what does it matter. So you want to get through these {caves}, fine. But be warned! ...",
+		npcHandler:say({
+			"Yes, yes. Or wait - why do you want to.. ah what does it matter. So you want to get through these {caves}, fine. But be warned! ...",
 			"...wait a second, I lost it. What was I going to say again? Ah yes - DANGEROUS! These. Caves. Are. Dangerous. No way you get out alive. Ever. Again. ...",
 			"Also you should not disturb those... people down there. Yeah. They... hm, wait, they - who are they again? Hey! Who are you? Are you talking to me?! Ah, ah... oh yes, I remember. ...",
 			"Wait - I am the guardian here, yes! The keeper of... something... or another, yes, I... guard this place. With my life. Don't I? Of course! ...",
-			"Is, er... this the moment where I should try to... stop you? Yes? No? Ah, you know what - you go down there, those guys are angry as dung anyway. Try your luck, return to me when you're done. If you still can. Or not." }, npc, creature)
+			"Is, er... this the moment where I should try to... stop you? Yes? No? Ah, you know what - you go down there, those guys are angry as dung anyway. Try your luck, return to me when you're done. If you still can. Or not.",
+		}, npc, creature)
 		if player:getStorageValue(Storage.CultsOfTibia.Questline) < 1 then
 			player:setStorageValue(Storage.CultsOfTibia.Questline, 1)
 		end
@@ -92,7 +93,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Well, bye then.')
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)

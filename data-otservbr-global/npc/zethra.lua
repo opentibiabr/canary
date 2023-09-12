@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 45,
 	lookLegs = 12,
 	lookFeet = 94,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Come over here if you have to resupply!' }
+	{ text = "Come over here if you have to resupply!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -57,8 +57,7 @@ npcType.onCloseChannel = function(npc, creature)
 end
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-npcConfig.shop =
-{
+npcConfig.shop = {
 	{ itemName = "backpack", clientId = 2854, buy = 10 },
 	{ itemName = "bag", clientId = 2853, buy = 4 },
 	{ itemName = "fishing rod", clientId = 3483, buy = 150, sell = 30 },
@@ -67,7 +66,7 @@ npcConfig.shop =
 	{ itemName = "scythe", clientId = 3453, buy = 12 },
 	{ itemName = "shovel", clientId = 3457, buy = 10, sell = 2 },
 	{ itemName = "torch", clientId = 2920, buy = 2 },
-	{ itemName = "worm", clientId = 3492, buy = 1 }
+	{ itemName = "worm", clientId = 3492, buy = 1 },
 }
 
 -- On buy npc shop message
@@ -81,8 +80,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 end
 
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 -- npcType registering the npcConfig table
 npcType:register(npcConfig)

@@ -10,7 +10,7 @@ function Monster.getStorageValue(self, key)
 	for id, pid in pairs(monsterStorage) do
 		if id == self:getId() then
 			for key1, value in pairs(pid) do
-				if (key1 == key) then
+				if key1 == key then
 					ret = value
 					break
 				end
@@ -67,10 +67,10 @@ function Monster.inSharedLife(self)
 		return false
 	end
 	for id, pid in pairs(hpCompartilhada) do
-		if (storage == id) then
+		if storage == id then
 			for _id, mid in pairs(pid.monsters) do
 				local mtemp = Monster(mid)
-				if (mtemp and mtemp:getId() == self:getId()) then
+				if mtemp and mtemp:getId() == self:getId() then
 					return true
 				end
 			end
@@ -83,12 +83,12 @@ function updateMonstersSharedLife(hpid, amount, orign, _type, kill)
 	if not hpCompartilhada[hpid] then
 		return false
 	end
-	if (_type == "healing") then
+	if _type == "healing" then
 		hpCompartilhada[hpid].hp = hpCompartilhada[hpid].hp + amount
 	else
 		hpCompartilhada[hpid].hp = hpCompartilhada[hpid].hp - amount
 	end
-	if (hpCompartilhada[hpid].hp < 0) then
+	if hpCompartilhada[hpid].hp < 0 then
 		hpCompartilhada[hpid].hp = 0
 	end
 	for _, monster in pairs(hpCompartilhada[hpid].monsters) do

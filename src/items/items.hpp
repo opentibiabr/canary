@@ -239,6 +239,7 @@ public:
 	std::string description;
 	std::string runeSpellName;
 	std::string vocationString;
+	std::string m_primaryType;
 
 	std::unique_ptr<Abilities> abilities;
 	std::unique_ptr<ConditionDamage> conditionDamage;
@@ -340,6 +341,7 @@ public:
 	bool isCorpse = false;
 	bool loaded = false;
 	bool spellbook = false;
+	bool isWrapKit = false;
 };
 
 class Items {

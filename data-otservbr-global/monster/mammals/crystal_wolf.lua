@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 740
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 3,
 	Occurrence = 3,
-	Locations = "Shadowthorn"
+	Locations = "Shadowthorn",
 }
 
 monster.health = 750
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -80,21 +80,21 @@ monster.loot = {
 	{ name = "meat", chance = 52000, maxCount = 4 },
 	{ name = "wolf paw", chance = 3700 },
 	{ name = "shiver arrow", chance = 11000, maxCount = 10 },
-	{ name = "crystalline armor", chance = 3700 }
+	{ name = "crystalline armor", chance = 3700 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -80 },
 	{ name = "crystal wolf wave", interval = 2000, chance = 15, minDamage = -60, maxDamage = -130, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -80, maxDamage = -150, range = 6, radius = 3, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_GIANTICE, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -25, maxDamage = -80, range = 7, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -25, maxDamage = -80, range = 7, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 19,
 	mitigation = 0.67,
-	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 15, maxDamage = 55, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 15, maxDamage = 55, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -114,7 +114,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

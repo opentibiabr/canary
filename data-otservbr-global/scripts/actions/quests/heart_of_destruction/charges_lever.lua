@@ -197,7 +197,7 @@ function heartDestructionCharges.onUse(player, item, fromPosition, itemEx, toPos
 			Position(32092, 31327, 12),
 			Position(32093, 31327, 12),
 			Position(32094, 31327, 12),
-			Position(32095, 31327, 12)
+			Position(32095, 31327, 12),
 		},
 
 		newPos = { x = 32135, y = 31363, z = 14 },
@@ -214,7 +214,7 @@ function heartDestructionCharges.onUse(player, item, fromPosition, itemEx, toPos
 					if tile then
 						local playerTile = tile:getTopCreature()
 						if playerTile and playerTile:isPlayer() then
-							storePlayers[#storePlayers+1] = playerTile
+							storePlayers[#storePlayers + 1] = playerTile
 						end
 					end
 				end

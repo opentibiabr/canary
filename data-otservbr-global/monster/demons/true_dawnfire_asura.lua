@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 79,
 	lookFeet = 121,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1620
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Asura Palace, Asura Vaults."
+	Locations = "Asura Palace, Asura Vaults.",
 }
 
 monster.health = 8500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -99,7 +99,7 @@ monster.loot = {
 	{ id = 3016, chance = 2330 }, -- ruby necklace
 	{ id = 5944, chance = 20140 }, -- soul orb
 	{ id = 8074, chance = 620 }, -- spellbook of mind control
-	{ id = 3071, chance = 1440 } -- wand of inferno
+	{ id = 3071, chance = 1440 }, -- wand of inferno
 }
 
 monster.attacks = {
@@ -107,7 +107,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -50, maxDamage = -300, range = 7, target = false }, -- mana drain beam
 	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -450, maxDamage = -830, length = 1, spread = 0, effect = CONST_ME_HITBYFIRE, target = false }, -- fire missile
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -550, maxDamage = -750, radius = 4, effect = CONST_ME_BLACKSMOKE, target = false }, -- death ball
-	{ name = "speed", interval = 2000, chance = 15, speedChange = -200, radius = 1, effect = CONST_ME_MAGIC_RED, target = true, duration = 30000 } -- smoke berserk
+	{ name = "speed", interval = 2000, chance = 15, speedChange = -200, radius = 1, effect = CONST_ME_MAGIC_RED, target = true, duration = 30000 }, -- smoke berserk
 }
 
 monster.defenses = {
@@ -115,7 +115,7 @@ monster.defenses = {
 	armor = 77,
 	mitigation = 2.16,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 50, maxDamage = 100, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 320, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 320, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -135,7 +135,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

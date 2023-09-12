@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 30
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 1,
 	Occurrence = 0,
 	Locations = "Almost everywhere, in grass areas, sewers like Carlin sewers, \z
-		caves like as Ancient Temple, Rookgaard and the Tiquanda Tarantula Caves."
+		caves like as Ancient Temple, Rookgaard and the Tiquanda Tarantula Caves.",
 }
 
 monster.health = 20
@@ -36,7 +36,7 @@ monster.manaCost = 210
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -61,12 +61,12 @@ monster.flags = {
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
 	canWalkOnPoison = false,
-	pet = false
+	pet = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -76,16 +76,16 @@ monster.voices = {
 
 monster.loot = {
 	{ id = 3031, chance = 65150, maxCount = 5 }, -- gold coin
-	{ id = 8031, chance = 960 } -- spider fangs
+	{ id = 8031, chance = 960 }, -- spider fangs
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -9 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -9 },
 }
 
 monster.defenses = {
 	defense = 2,
-	armor = 2
+	armor = 2,
 }
 
 monster.elements = {
@@ -98,14 +98,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

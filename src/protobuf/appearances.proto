@@ -177,6 +177,7 @@ message AppearanceFlags {
 	optional bool clockexpire = 54;
 	optional bool expire = 55;
 	optional bool expirestop = 56;
+	optional bool wrapkit = 57;
 }
 
 message AppearanceFlagUpgradeClassification {
@@ -261,6 +262,7 @@ message SpecialMeaningAppearanceIds {
 	optional uint32 tibia_coin_id = 4;
 	optional uint32 stamped_letter_id = 5;
 	optional uint32 supply_stash_id = 6;
+	optional uint32 reward_chest_id = 7;
 }
 
 enum FIXED_FRAME_GROUP {

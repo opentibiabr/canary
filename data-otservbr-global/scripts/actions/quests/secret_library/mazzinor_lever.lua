@@ -1,7 +1,7 @@
 local config = {
 	boss = {
 		name = "Mazzinor",
-		position = Position(32725, 32719, 10)
+		position = Position(32725, 32719, 10),
 	},
 	requiredLevel = 250,
 
@@ -10,14 +10,14 @@ local config = {
 		{ pos = Position(32721, 32773, 10), teleport = Position(32725, 32728, 10), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32721, 32773, 10), teleport = Position(32725, 32728, 10), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32721, 32773, 10), teleport = Position(32725, 32728, 10), effect = CONST_ME_TELEPORT },
-		{ pos = Position(32721, 32773, 10), teleport = Position(32725, 32728, 10), effect = CONST_ME_TELEPORT }
+		{ pos = Position(32721, 32773, 10), teleport = Position(32725, 32728, 10), effect = CONST_ME_TELEPORT },
 	},
 	specPos = {
 		from = Position(32716, 32713, 10),
-		to = Position(32732, 32728, 10)
+		to = Position(32732, 32728, 10),
 	},
 	exit = Position(32616, 32531, 13),
-	storage = Storage.Quest.U11_80.TheSecretLibrary.MazzinorTimer
+	storage = Storage.Quest.U11_80.TheSecretLibrary.MazzinorTimer,
 }
 
 local lever = BossLever(config)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 674
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Beneath Razachai, Northern Zao Plantations, Brimstone Bug Cave, Chyllfroest, Krailos Spider Lair"
+	Locations = "Beneath Razachai, Northern Zao Plantations, Brimstone Bug Cave, Chyllfroest, Krailos Spider Lair",
 }
 
 monster.health = 1300
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -85,7 +85,7 @@ monster.loot = {
 	{ name = "lump of earth", chance = 20000 },
 	{ name = "sulphurous stone", chance = 14970 },
 	{ name = "brimstone fangs", chance = 5710 },
-	{ name = "brimstone shell", chance = 10000 }
+	{ name = "brimstone shell", chance = 10000 },
 }
 
 monster.attacks = {
@@ -93,7 +93,7 @@ monster.attacks = {
 	{ name = "speed", interval = 2000, chance = 20, speedChange = -600, range = 7, shootEffect = CONST_ANI_DEATH, effect = CONST_ME_MORTAREA, target = false, duration = 10000 },
 	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_EARTHDAMAGE, minDamage = -140, maxDamage = -310, radius = 6, effect = CONST_ME_SMALLPLANTS, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -130, maxDamage = -200, length = 6, spread = 3, effect = CONST_ME_HITBYPOISON, target = false },
-	{ name = "brimstone bug wave", interval = 2000, chance = 15, minDamage = -80, maxDamage = -120, target = false }
+	{ name = "brimstone bug wave", interval = 2000, chance = 15, minDamage = -80, maxDamage = -120, target = false },
 }
 
 monster.defenses = {
@@ -119,7 +119,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

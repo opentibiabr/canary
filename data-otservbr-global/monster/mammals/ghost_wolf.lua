@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1148
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 2,
-	Locations = "Poacher Caves/Gloomy."
+	Locations = "Poacher Caves/Gloomy.",
 }
 
 monster.health = 160
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -73,11 +73,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 65000, maxCount = 20 }
+	{ name = "gold coin", chance = 65000, maxCount = 20 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 },
 }
 
 monster.defenses = {
@@ -103,7 +103,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

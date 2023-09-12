@@ -766,7 +766,7 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 	const Position oldPosition = creature->getPosition();
 	if (auto ret = g_game().internalTeleport(creature, position, pushMovement);
 		ret != RETURNVALUE_NOERROR) {
-		g_logger().error("[{}] Failed to teleport creature {}, on position {}, error code: {}", __FUNCTION__, creature->getName(), oldPosition.toString(), getReturnMessage(ret));
+		g_logger().debug("[{}] Failed to teleport creature {}, on position {}, error code: {}", __FUNCTION__, creature->getName(), oldPosition.toString(), getReturnMessage(ret));
 		pushBoolean(L, false);
 		return 1;
 	}
@@ -982,46 +982,95 @@ int CreatureFunctions::luaCreatureGetZones(lua_State* L) {
 }
 
 int CreatureFunctions::luaCreatureSetIcon(lua_State* L) {
-	// creature:setIcon(category, icon[, number])
-	Creature* creature = getUserdata<Creature>(L, 1);
+	// creature:setIcon(key, category, icon[, number])
+	auto creature = getUserdata<Creature>(L, 1);
 	if (!creature) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		pushBoolean(L, false);
 		return 1;
 	}
-	auto category = getNumber<CreatureIconCategory_t>(L, 2);
-	auto count = getNumber<uint16_t>(L, 4, 0);
+	const auto key = getString(L, 2);
+	auto category = getNumber<CreatureIconCategory_t>(L, 3);
+	auto count = getNumber<uint16_t>(L, 5, 0);
 	CreatureIcon creatureIcon;
 	if (category == CreatureIconCategory_t::Modifications) {
-		auto icon = getNumber<CreatureIconModifications_t>(L, 3);
+		auto icon = getNumber<CreatureIconModifications_t>(L, 5);
 		creatureIcon = CreatureIcon(icon, count);
 	} else {
-		auto icon = getNumber<CreatureIconQuests_t>(L, 3);
+		auto icon = getNumber<CreatureIconQuests_t>(L, 4);
 		creatureIcon = CreatureIcon(icon, count);
 	}
 
-	creature->setIcon(creatureIcon);
+	creature->setIcon(key, creatureIcon);
 	pushBoolean(L, true);
 	return 1;
 }
 
-int CreatureFunctions::luaCreatureGetIcon(lua_State* L) {
-	// creature:getIcon()
-	Creature* creature = getUserdata<Creature>(L, 1);
+int CreatureFunctions::luaCreatureGetIcons(lua_State* L) {
+	// creature:getIcons()
+	const auto creature = getUserdata<Creature>(L, 1);
 	if (!creature) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		pushBoolean(L, false);
 		return 1;
 	}
 
-	auto creatureIcon = creature->getIcon();
-	if (creatureIcon.isNone()) {
-		lua_pushnil(L);
+	auto icons = creature->getIcons();
+	lua_createtable(L, static_cast<int>(icons.size()), 0);
+	for (auto &icon : icons) {
+		lua_createtable(L, 0, 3);
+		setField(L, "category", static_cast<uint8_t>(icon.category));
+		setField(L, "icon", icon.serialize());
+		setField(L, "count", icon.count);
+		lua_rawseti(L, -2, static_cast<int>(icon.category));
+	}
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureGetIcon(lua_State* L) {
+	// creature:getIcon(key)
+	const auto creature = getUserdata<Creature>(L, 1);
+	if (!creature) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		pushBoolean(L, false);
 		return 1;
 	}
-	lua_createtable(L, 0, 3);
-	setField(L, "category", static_cast<uint8_t>(creatureIcon.category));
-	setField(L, "icon", creatureIcon.serialize());
-	setField(L, "count", creatureIcon.count);
+	const auto key = getString(L, 2);
+	auto icon = creature->getIcon(key);
+	if (icon.isSet()) {
+		lua_createtable(L, 0, 3);
+		setField(L, "category", static_cast<uint8_t>(icon.category));
+		setField(L, "icon", icon.serialize());
+		setField(L, "count", icon.count);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureRemoveIcon(lua_State* L) {
+	// creature:removeIcon(key)
+	auto creature = getUserdata<Creature>(L, 1);
+	if (!creature) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	const auto key = getString(L, 2);
+	creature->removeIcon(key);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureClearIcons(lua_State* L) {
+	// creature:clearIcons()
+	auto creature = getUserdata<Creature>(L, 1);
+	if (!creature) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	creature->clearIcons();
+	pushBoolean(L, true);
 	return 1;
 }

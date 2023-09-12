@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 51
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Mal'ouquah, Oasis Tomb, under the Ankrahmun Library Tomb, \z
-		Serpentine Tower last floor behind the Magic Walls, Deeper Banuta, Goroma underground, Magician Quarter."
+		Serpentine Tower last floor behind the Magic Walls, Deeper Banuta, Goroma underground, Magician Quarter.",
 }
 
 monster.health = 330
@@ -39,7 +39,7 @@ monster.enemyFactions = { FACTION_MARID, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -63,12 +63,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -77,7 +77,7 @@ monster.voices = {
 	{ text = "I grant you a deathwish!", yell = false },
 	{ text = "Muahahahahaha", yell = false },
 	{ text = "I wish you a merry trip to hell!", yell = false },
-	{ text = "Good wishes are for fairytales", yell = false }
+	{ text = "Good wishes are for fairytales", yell = false },
 }
 
 monster.loot = {
@@ -91,7 +91,7 @@ monster.loot = {
 	{ name = "green piece of cloth", chance = 2000 },
 	{ name = "royal spear", chance = 4870, maxCount = 2 },
 	{ name = "mana potion", chance = 490 },
-	{ name = "dirty turban", chance = 2210 }
+	{ name = "dirty turban", chance = 2210 },
 }
 
 monster.attacks = {
@@ -101,12 +101,12 @@ monster.attacks = {
 	{ name = "drunk", interval = 2000, chance = 10, range = 7, shootEffect = CONST_ANI_ENERGY, target = false, duration = 5000 },
 	{ name = "outfit", interval = 2000, chance = 1, range = 7, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 4000, outfitMonster = "rat" },
 	{ name = "djinn electrify", interval = 2000, chance = 15, range = 5, target = false },
-	{ name = "djinn cancel invisibility", interval = 2000, chance = 10, target = false }
+	{ name = "djinn cancel invisibility", interval = 2000, chance = 10, target = false },
 }
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 15,
 }
 
 monster.elements = {
@@ -119,14 +119,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -13 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 20 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 20 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

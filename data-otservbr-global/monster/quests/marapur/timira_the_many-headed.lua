@@ -24,7 +24,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 25
+	chance = 25,
 }
 
 monster.flags = {
@@ -85,7 +85,7 @@ monster.loot = {
 	{ name = "naga club", chance = 200 },
 	{ name = "naga wand", chance = 200 },
 	{ name = "naga rod", chance = 200 },
-	{ name = "naga crossbow", chance = 200 }
+	{ name = "naga crossbow", chance = 200 },
 }
 
 monster.attacks = {
@@ -121,7 +121,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType.onAppear = function(monster, creature)

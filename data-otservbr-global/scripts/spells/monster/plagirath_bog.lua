@@ -3,7 +3,6 @@ combat2:setParameter(COMBAT_PARAM_TYPE, COMBAT_EARTHDAMAGE)
 combat2:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_POISON)
 combat2:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_POISON)
 
-
 arr = {
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },

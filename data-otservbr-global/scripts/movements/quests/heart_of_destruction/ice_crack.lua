@@ -16,7 +16,7 @@ local config = {
 	{ position = { x = 32162, y = 31296, z = 6 }, itemId = 6296 },
 	{ position = { x = 32162, y = 31297, z = 6 }, itemId = 6297 },
 	{ position = { x = 32161, y = 31294, z = 6 }, itemId = 6297 },
-	{ position = { x = 32161, y = 31293, z = 6 }, itemId = 6296 }
+	{ position = { x = 32161, y = 31293, z = 6 }, itemId = 6296 },
 }
 
 local function removeIceCrack(position, itemId)

@@ -4,7 +4,7 @@
 string.split = function(str, sep)
 	local res = {}
 	for v in str:gmatch("([^" .. sep .. "]+)") do
-		res[#res+1] = v
+		res[#res + 1] = v
 	end
 	return res
 end
@@ -13,7 +13,7 @@ end
 -- @param str (string) - the string to be modified
 -- @return the string without whitespace at the beginning and end
 string.trim = function(str)
-	return str:match '^()%s*$' and '' or str:match '^%s*(.*%S)'
+	return str:match("^()%s*$") and "" or str:match("^%s*(.*%S)")
 end
 
 --- Function that checks if a string starts with a specific substring
@@ -27,7 +27,9 @@ end
 -- @param str (string) - the string to be modified
 -- @return the string with each word starting with an uppercase letter
 string.titleCase = function(str)
-	return str:gsub("(%a)([%w_']*)", function(first, rest) return first:upper() .. rest:lower() end)
+	return str:gsub("(%a)([%w_']*)", function(first, rest)
+		return first:upper() .. rest:lower()
+	end)
 end
 
 --- Function that converts a time interval into a human-readable format
@@ -35,22 +37,22 @@ end
 -- @return a string representing the time interval in a readable format
 string.diff = function(diff)
 	local format = {
-		{ 'day', diff / 60 / 60 / 24 },
-		{ 'hour', diff / 60 / 60 % 24 },
-		{ 'minute', diff / 60 % 60 },
-		{ 'second', diff % 60 }
+		{ "day", diff / 60 / 60 / 24 },
+		{ "hour", diff / 60 / 60 % 24 },
+		{ "minute", diff / 60 % 60 },
+		{ "second", diff % 60 },
 	}
 
 	local out = {}
 	for k, t in ipairs(format) do
 		local v = math.floor(t[2])
-		if (v > 0) then
-			table.insert(out, (k < #format and (#out > 0 and ', ' or '') or ' and ') .. v .. ' ' .. t[1] .. (v ~= 1 and 's' or ''))
+		if v > 0 then
+			table.insert(out, (k < #format and (#out > 0 and ", " or "") or " and ") .. v .. " " .. t[1] .. (v ~= 1 and "s" or ""))
 		end
 	end
 	local ret = table.concat(out)
-	if ret:len() < 16 and ret:find('second') then
-		local a, b = ret:find(' and ')
+	if ret:len() < 16 and ret:find("second") then
+		local a, b = ret:find(" and ")
 		ret = ret:sub(b + 1)
 	end
 	return ret
@@ -78,7 +80,7 @@ end
 string.split = function(str, sep)
 	local res = {}
 	for v in str:gmatch("([^" .. sep .. "]+)") do
-		res[#res+1] = v
+		res[#res + 1] = v
 	end
 	return res
 end
@@ -89,7 +91,7 @@ end
 string.splitTrimmed = function(str, sep)
 	local res = {}
 	for v in str:gmatch("([^" .. sep .. "]+)") do
-		res[#res+1] = v:trim()
+		res[#res + 1] = v:trim()
 	end
 	return res
 end
@@ -98,7 +100,7 @@ end
 -- @param str (string) - the string to be modified
 -- @return the string without whitespace at the beginning and end
 string.trim = function(str)
-	return str:match('^%s*(.*%S)') or ''
+	return str:match("^%s*(.*%S)") or ""
 end
 
 --- Function to format a string with a table of arguments
@@ -106,7 +108,9 @@ end
 -- @return the formatted string
 -- Example: string.formatNamed("Hello ${name}!", {name = "World"}) -> "Hello World!"
 string.formatNamed = function(str, args)
-	return (str:gsub('($%b{})', function(w) return args[w:sub(3, -2)] or w end))
+	return (str:gsub("($%b{})", function(w)
+		return args[w:sub(3, -2)] or w
+	end))
 end
 
 string.capitalize = function(str)

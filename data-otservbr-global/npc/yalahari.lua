@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 88,
 	lookLegs = 88,
 	lookFeet = 115,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.InServiceofYalahar.Questline) == 17 then
 			npcHandler:say({
 				"With all the coming and going of strangers here, it would be quite tedious to explain everything again and again. So we have written a manifesto. ...",
-				"Grab a copy from the room behind me. Let's talk about your further career in our ranks once you've read it."
+				"Grab a copy from the room behind me. Let's talk about your further career in our ranks once you've read it.",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 18)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission03, 3) -- StorageValue for Questlog "Mission 03: Death to the Deathbringer"
@@ -72,7 +72,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"I'm mildly impressed by your previous deeds in our service. So I'm willing to grant you some more important {missions}. ...",
 				"If you please us, a life of luxury as an important person in our city is ensured. If you fail, you will be replaced by someone more capable than you. ...",
-				"So if you are up for a challenge, ask me for a {mission}."
+				"So if you are up for a challenge, ask me for a {mission}.",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 19)
 			npcHandler:setTopic(playerId, 0)
@@ -83,7 +83,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"It will be your task to eliminate them. This spell will protect you from becoming infected yourself. Enter the alchemist quarter and kill the three plague carriers, and atbest anything else you might find there. ...",
 				"Even more important, retrieve the last research notes that the local alchemists made before the plague killed them. They might be the key for a cure or something else. ...",
 				"At least we have to make sure that these scientists did not die in vain, and honour their researches. So please bring us these research notes. ...",
-				"Also, I will inform the guards that you are allowed to pass the centre gate to the alchemist quarter. Just use the gate mechanism to pass."
+				"Also, I will inform the guards that you are allowed to pass the centre gate to the alchemist quarter. Just use the gate mechanism to pass.",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 20)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission03, 4) -- StorageValue for Questlog "Mission 03: Death to the Deathbringer"
@@ -96,7 +96,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"We surely cannot allow some underworld kingpin to rule a significant part of the city. Although, I have to admit that his firm grip on the former trade quarter might be useful....",
 				"I expect you to fight your way through his minions and to show him that we are determined and powerful enough to retake the quarter, if necessary by force. Talk to himafter killing some of his henchmen. ...",
 				"I'm sure he'll understand that he will succumb to a greater power. That's how his little empire has worked after all. ...",
-				"Also, I will inform the guards that you are allowed to pass the centre gate to the trade quarter now. Just use the gate mechanism to pass."
+				"Also, I will inform the guards that you are allowed to pass the centre gate to the trade quarter now. Just use the gate mechanism to pass.",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 23)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission04, 1) -- StorageValue for Questlog "Mission 04: Good to be Kingpin"
@@ -104,7 +104,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.InServiceofYalahar.Questline) == 26 then
 			npcHandler:say({
 				"So he has been too uncooperative for you? Well, you weren't the first we have sent and you won't be the last. ...",
-				"However, if you cannot even serve us as a bully, we might have to rethink if you are the right person for us. That was a bad job and we don't tolerate many of them."
+				"However, if you cannot even serve us as a bully, we might have to rethink if you are the right person for us. That was a bad job and we don't tolerate many of them.",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 27)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission04, 6) -- StorageValue for Questlog "Mission 04: Good to be Kingpin"
@@ -113,7 +113,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"I hope you gave this criminal a real scare! I'm sure he'll remember what he has to expect if he arouses our anger again. ...",
 				"You have proven yourself as quite valuable with this mission! That was just the first step on your rise through the ranks of our helpers. ...",
-				"Just ask me for more missions and we will see what you are capable of!"
+				"Just ask me for more missions and we will see what you are capable of!",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.BadSide, player:getStorageValue(Storage.InServiceofYalahar.BadSide) >= 0 and player:getStorageValue(Storage.InServiceofYalahar.BadSide) + 1 or 0) -- Side Storage
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 27)
@@ -126,7 +126,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Now all kinds of beasts roam the park, and gladiators challenge them and visitors to test their skills. One of the residents is an ancient druid that rather cares foranimals than for people. ...",
 				"It is said that he is able to use magic to breed animals with changed abilities and appearances. Such skills are of course quite useful for us. ...",
 				"We lack the manpower to retake all quarters, or just to defend ourselves adequately. If he bred us some guards and warbeasts, we could strengthen our positionconsiderably. ...",
-				"Travel to the arena quarter and gain his assistance for us. I will inform the guards that you are allowed to pass the centre gate to the arena quarter now. Just use thegate mechanism to pass."
+				"Travel to the arena quarter and gain his assistance for us. I will inform the guards that you are allowed to pass the centre gate to the arena quarter now. Just use thegate mechanism to pass.",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 28)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission05, 1) -- StorageValue for Questlog "Mission 05: Food or Fight"
@@ -134,14 +134,14 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.InServiceofYalahar.Questline) == 33 then
 			npcHandler:say({
 				"This druid dares to affront us? We will look into this when we have enough time. But there are other things that needs to be settled. ...",
-				"Although, we probably should not do so after your last failure, we are willing to grant you another mission."
+				"Although, we probably should not do so after your last failure, we are willing to grant you another mission.",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 34)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(Storage.InServiceofYalahar.Questline) == 32 and player:getStorageValue(Storage.InServiceofYalahar.TamerinStatus) == 2 then
 			npcHandler:say({
 				"So have you won us a new ally? Excellent. I knew you would not dare to ruin this mission. Soon we might be able to strengthen our defences and even relocate some of our guards. ...",
-				"Perhaps some day soon, you lead your own unit of men. However, there are more missions that need to be accomplished. Let's talk about them."
+				"Perhaps some day soon, you lead your own unit of men. However, there are more missions that need to be accomplished. Let's talk about them.",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.BadSide, player:getStorageValue(Storage.InServiceofYalahar.BadSide) >= 0 and player:getStorageValue(Storage.InServiceofYalahar.BadSide) + 1 or 0) -- Side Storage
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 34)
@@ -153,7 +153,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"However, those undead could be useful, at least some of them. Particular ghosts consist of a substance that is very similar to the energy source that powered some of our devices. ...",
 				"Since we lack most of the original sources, some substitute might come in handy. Take this ghost charm and place it on the strange carving in the cemetery. ...",
 				"Use it to attract ghosts and slay them. Then use the residues of the ghosts on the charm to capture the essence. ...",
-				"Once it is filled, ghosts will not be attracted any longer. Then return the charm to me. I will inform the guards that you are allowed to pass the centre gate to the cemetery quarter now. Just use the gate mechanism to pass."
+				"Once it is filled, ghosts will not be attracted any longer. Then return the charm to me. I will inform the guards that you are allowed to pass the centre gate to the cemetery quarter now. Just use the gate mechanism to pass.",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 35)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission06, 1) -- StorageValue for Questlog "Mission 06: Frightening Fuel"
@@ -162,7 +162,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.InServiceofYalahar.Questline) == 38 then
 			npcHandler:say({
 				"Destroyed you say? That's impossible! I'm not sure if I can trust you in this matter? One might assume, you fled from the ghosts in terror and left the charm there. ...",
-				"You will have to work twice as hard on your next missions to restore the trust you have lost."
+				"You will have to work twice as hard on your next missions to restore the trust you have lost.",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 39)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission06, 5) -- StorageValue for Questlog "Mission 06: Frightening Fuel"
@@ -171,7 +171,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:removeItem(8827, 1) then
 				npcHandler:say({
 					"Ah, what an unexpected sight. I can almost feel the energy of the charm. It will help to recover some of the past wealth. ...",
-					"You did quite an impressive job. I'm considering to introduce you to my ma.. to my direct superior one day. But there are still other missions to fulfil."
+					"You did quite an impressive job. I'm considering to introduce you to my ma.. to my direct superior one day. But there are still other missions to fulfil.",
 				}, npc, creature)
 				player:setStorageValue(Storage.InServiceofYalahar.Questline, 39)
 				player:setStorageValue(Storage.InServiceofYalahar.Mission06, 5) -- StorageValue for Questlog "Mission 06: Frightening Fuel"
@@ -183,7 +183,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"Recently, our fishermen have been attacked by a maritime race called the quara. They live in the sunken quarter and are a significant threat to our people. I ask you to enter the sunken quarter and slay all their leaders. ...",
 				"We believe that there are three leaders in this area. Your task is simple enough, so you better don't fail! ...",
-				"I will inform the guards that you are allowed to pass the centre gate to the sunken quarter now. Just use the gate mechanism to pass."
+				"I will inform the guards that you are allowed to pass the centre gate to the sunken quarter now. Just use the gate mechanism to pass.",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 40)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission07, 1) -- StorageValue for Questlog "Mission 07: A Fishy Mission"
@@ -199,7 +199,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"In the past, we had many magical factories providing the citizens with everything they needed. Now that most of these factories are shut down, we have trouble getting enough supplies. ...",
 				"We need you to enter one of the lesser damaged factories. Go to the factory district and look for a pattern crystal used for weapon production. Use it on the factory controller. ...",
 				"It will ensure that the factory will provide us with a suitable amount of weapons which we dearly need to reclaim and secure the most dangerous parts of the city. ...",
-				"I will inform the guards that you are allowed to pass the centre gate to the factory quarter now. Just use the gate mechanism to pass."
+				"I will inform the guards that you are allowed to pass the centre gate to the factory quarter now. Just use the gate mechanism to pass.",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 44)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission08, 1) -- StorageValue for Questlog "Mission 08: Dangerous Machinations"
@@ -218,7 +218,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.InServiceofYalahar.Questline) == 47 then
 			npcHandler:say({
 				"I'm impressed by your support for our cause. Still, I'm aware that this scheming Palimuth tried to influence you. Think about who are your real friends and who can assist you in your career. ...",
-				"Come back if you have decided to which side you want to belong."
+				"Come back if you have decided to which side you want to belong.",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 48)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission09, 1) -- StorageValue for Questlog "Mission 09: Decision"
@@ -231,7 +231,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"For your noble deeds, we would like to invite you to a special celebration ceremony. ...",
 				"Only the most prominent Yalahari are allowed to join the festivities. I assume you can imagine what honour it is that you'vebeen invited to join us. Meet us in the inner city's centre. ...",
 				"As our most trusted ally, you may pass all doors to reach the festivity hall. There you will receive your reward for the achievements you have gained so far. ...",
-				"I'm convinced your reward will be beyond your wildest dreams. And that is just the beginning!"
+				"I'm convinced your reward will be beyond your wildest dreams. And that is just the beginning!",
 			}, npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 51)
 			player:setStorageValue(Storage.InServiceofYalahar.DoorToLastFight, 1)
@@ -270,7 +270,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission03, 6) -- StorageValue for Questlog "Mission 03: Death to the Deathbringer"
 			npcHandler:say({
 				"Hm, no sign of any notes you say? That's odd - odd and a bit suspicious. I doubt you have tried hard enough. ...",
-				"There are only a few chances to impress us. For those who please us great rewards are in store. If you fail though, you might lose more than you can imagine."
+				"There are only a few chances to impress us. For those who please us great rewards are in store. If you fail though, you might lose more than you can imagine.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

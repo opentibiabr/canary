@@ -16,7 +16,7 @@ local rewards = {
 	{ id = 34096, name = "Soulshroud" },
 	{ id = 34097, name = "Pair of Soulwalkers" },
 	{ id = 34098, name = "Pair of Soulstalkers" },
-	{ id = 34099, name = "Soulbastion" }
+	{ id = 34099, name = "Soulbastion" },
 }
 
 local rewardSoulWar = Action()
@@ -29,11 +29,11 @@ function rewardSoulWar.onUse(creature, item, fromPosition, target, toPosition, i
 	end
 	if player:getStorageValue(Storage.Quest.U12_40.SoulWar.QuestReward) < 0 then
 		player:addItem(rewardItem.id, 1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You have found a ' .. rewardItem.name .. '.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a " .. rewardItem.name .. ".")
 		player:setStorageValue(Storage.Quest.U12_40.SoulWar.QuestReward, 1)
 		return true
 	else
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You have already collected your reward')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have already collected your reward")
 		return false
 	end
 end

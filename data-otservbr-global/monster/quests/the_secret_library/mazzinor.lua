@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 3,
 	lookFeet = 15,
 	lookAddons = 2,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 4
+	chance = 4,
 }
 
 monster.strategiesTarget = {
@@ -86,7 +86,7 @@ monster.loot = {
 	{ name = "dreaded cleaver", chance = 30000 },
 	{ name = "frozen lightning", chance = 30000 },
 	{ name = "sinister book", chance = 1000 },
-	{ name = "wand of dimensions", chance = 10 }
+	{ name = "wand of dimensions", chance = 10 },
 }
 
 monster.attacks = {
@@ -95,7 +95,7 @@ monster.attacks = {
 	{ name = "berserk", interval = 2000, chance = 20, minDamage = -90, maxDamage = -500, range = 7, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -135, maxDamage = -280, range = 7, radius = 5, effect = CONST_ME_MAGIC_BLUE, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -210, maxDamage = -600, length = 8, spread = 3, effect = CONST_ME_ENERGYAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HOLYDAMAGE, minDamage = -210, maxDamage = -700, length = 8, spread = 3, effect = CONST_ME_HOLYAREA, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HOLYDAMAGE, minDamage = -210, maxDamage = -700, length = 8, spread = 3, effect = CONST_ME_HOLYAREA, target = false },
 }
 
 monster.defenses = {
@@ -121,11 +121,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -133,13 +132,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

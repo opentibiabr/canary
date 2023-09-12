@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 318
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "In and north of Formorgar Glacier, Nibelor, Helheim, Grimlund, south of Svargrond, Chyllfroest."
+	Locations = "In and north of Formorgar Glacier, Nibelor, Helheim, Grimlund, south of Svargrond, Chyllfroest.",
 }
 
 monster.health = 33
@@ -35,7 +35,7 @@ monster.manaCost = 290
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -75,11 +75,11 @@ monster.voices = {
 monster.loot = {
 	{ id = 3578, chance = 7830, maxCount = 2 }, -- fish
 	{ name = "rainbow trout", chance = 70 },
-	{ name = "green perch", chance = 130 }
+	{ name = "green perch", chance = 130 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -3 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -3 },
 }
 
 monster.defenses = {
@@ -105,7 +105,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

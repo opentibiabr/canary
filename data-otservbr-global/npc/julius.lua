@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 114,
 	lookLegs = 114,
 	lookFeet = 113,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -94,7 +94,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(BloodBrothers.Mission02) == 2 and player:getStorageValue(BloodBrothers.Mission03) < 0 then
 			npcHandler:say({
 				"Listen, I thought of something. If we could somehow figure out who among those five is their leader and manage to defeat him,the others might give up too. ...",
-				"Without their leader they will at least be much weaker. Before I explain my plan, do you think you could do that?" }, npc, creature)
+				"Without their leader they will at least be much weaker. Before I explain my plan, do you think you could do that?",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 9)
 		elseif player:getStorageValue(BloodBrothers.Mission03) == 2 then
 			npcHandler:say("Oh! You look horrible - I mean, rather weary. What happened? Who is the master vampire?", npc, creature)
@@ -104,7 +105,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"You know, I came to think that the spell didn't work because there is another, greater power behind all of this. I fear that if we don't find the source of the vampire threat we can't defeat them. ...",
 				"I heard that there is an island not far from here. Unholy and fearsome things are said to happen there, and maybe that means vampires are not far away. ...",
 				"I want you to try and convince someone with a boat to bring you to this island, Vengoth. I'll give you an empty map. Please map the area for me and pay special attention to unusual spots. ...",
-				"Mark them on my map and come back once you have found at least five remarkable places on Vengoth. Can you do that for me?" }, npc, creature)
+				"Mark them on my map and come back once you have found at least five remarkable places on Vengoth. Can you do that for me?",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 12)
 		end
 	elseif message == "yes" then
@@ -121,7 +123,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"As I already told you, anyone in this city could really be a vampire, even the most unsuspicious citizen. I want you to find that brood. ...",
 				"You can possibly identify the vampires by using a trick with hidden garlic, but better put it into something unsuspicious, like... cookies maybe! ...",
 				"Just bake a few by using holy water on flour, then use that holy water dough on garlic, use the garlic dough on a baking tray and finally place the tray on an oven. Then just play little girl scout and distribute some cookies to the citizens. ...",
-				"Watch their reaction! If it's suspicious, write down the name and let me know. Then we'll work something out against them. Agreed?" }, npc, creature)
+				"Watch their reaction! If it's suspicious, write down the name and let me know. Then we'll work something out against them. Agreed?",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 6)
 		elseif npcHandler:getTopic(playerId) == 6 then
 			npcHandler:say("Fine. Good luck! Talk to me again about your mission once you have confirmed the names of five suspects.", npc, creature)
@@ -133,12 +136,14 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"Great, now here's my plan. As I said, my strength lies not on the battlefield, but it's theory and knowledge. While you were distributing cookies I developed a spell. ...",
 				"This spell is designed to reveal the identity of the master vampire and force him to show his true face. It is even likely that it instantly defeats him. ...",
-				"I want you to go to the five vampires you detected and try out the magic formula on them. One of them - the oldest and most powerful - will react to it, I'm sure of it. The words are: '{Alori Mort}'. Please repeat them." }, npc, creature)
+				"I want you to go to the five vampires you detected and try out the magic formula on them. One of them - the oldest and most powerful - will react to it, I'm sure of it. The words are: '{Alori Mort}'. Please repeat them.",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 10)
 		elseif npcHandler:getTopic(playerId) == 12 then
 			npcHandler:say({
 				"Here is the map. When you are standing near a remarkable spot, use it to mark that spot on the map. Don't forget, come back with at least five marks! ...",
-				"Also, they say there is a castle on this island. That mark HAS to be included, it's far too important to leave it out. Good luck!" }, npc, creature)
+				"Also, they say there is a castle on this island. That mark HAS to be included, it's far too important to leave it out. Good luck!",
+			}, npc, creature)
 			player:addItem(8200)
 			player:setStorageValue(BloodBrothers.Mission04, 1)
 			player:setStorageValue(BloodBrothers.VengothAccess, 1)
@@ -249,7 +254,7 @@ npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
 	{ itemName = "blood preservation", clientId = 11449, sell = 320 },
-	{ itemName = "vampire teeth", clientId = 9685, sell = 275 }
+	{ itemName = "vampire teeth", clientId = 9685, sell = 275 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -260,7 +265,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "Realityquake"
 monster.experience = 20000
 monster.outfit = {
-	lookTypeEx = 1949
+	lookTypeEx = 1949,
 }
 
 monster.bosstiary = {
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 3000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -49,11 +49,11 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.events = {
-	"HeartBossDeath"
+	"HeartBossDeath",
 }
 
 monster.light = {
@@ -87,7 +87,7 @@ monster.loot = {
 	{ id = 282, chance = 4000 }, -- giant shimmering pearl (brown)
 	{ id = 3073, chance = 8000 }, -- wand of cosmic energy
 	{ id = 23531, chance = 6000 }, -- ring of green plasma
-	{ id = 23533, chance = 6000 } -- ring of red plasma
+	{ id = 23533, chance = 6000 }, -- ring of red plasma
 }
 
 monster.attacks = {
@@ -98,14 +98,14 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HOLYDAMAGE, minDamage = -240, maxDamage = -600, radius = 5, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_EARTHDAMAGE, minDamage = -200, maxDamage = -450, length = 4, spread = 2, effect = CONST_ME_MAGIC_RED, target = false },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = -240, maxDamage = -600, radius = 5, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_SMALLCLOUDS, target = true },
-	{ name = "anomaly break", interval = 2000, chance = 40, target = false }
+	{ name = "anomaly break", interval = 2000, chance = 40, target = false },
 }
 
 monster.defenses = {
 	defense = 100,
 	armor = 100,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, radius = 8, effect = CONST_ME_POFF, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, radius = 8, effect = CONST_ME_POFF, target = false },
 }
 
 monster.elements = {
@@ -125,11 +125,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -137,13 +136,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

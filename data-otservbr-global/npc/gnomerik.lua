@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 60,
 	lookLegs = 3,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -50,14 +50,12 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addGreetKeyword({ 'hi' }, { npcHandler = npcHandler, text = 'Hello and welcome in the gnomish {recruitment} office.' },
-	function(player)
-		if player:getStorageValue(Storage.BigfootBurden.QuestLine) == 1 then
-			player:setStorageValue(Storage.BigfootBurden.QuestLine, 3)
-		end
+keywordHandler:addGreetKeyword({ "hi" }, { npcHandler = npcHandler, text = "Hello and welcome in the gnomish {recruitment} office." }, function(player)
+	if player:getStorageValue(Storage.BigfootBurden.QuestLine) == 1 then
+		player:setStorageValue(Storage.BigfootBurden.QuestLine, 3)
 	end
-)
-keywordHandler:addAliasKeyword({ 'hello' })
+end)
+keywordHandler:addAliasKeyword({ "hello" })
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
@@ -66,7 +64,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	if not npcHandler:checkInteraction(npc, creature) then
 		return false
 	end
-
 
 	if player:getStorageValue(Storage.BigfootBurden.NeedsBeer) == 1 then
 		if MsgContains(message, "recruit") or MsgContains(message, "test") or MsgContains(message, "result") then
@@ -90,31 +87,31 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.BigfootBurden.Test, 0)
 				npcHandler:say({
 					"Imagine, during your travels you come upon a rare and unknown mushroom. Would you {A}) note down its specifics and location and look for a gnome to take care of it. ...",
-					"Or would you {B}) smash it to an unrecognisable pulp. Or would you {C}) pluck it to take it with you for further examination. Or would you {D}) try to become friends with the mushroom by singing questionable bar-room songs?"
+					"Or would you {B}) smash it to an unrecognisable pulp. Or would you {C}) pluck it to take it with you for further examination. Or would you {D}) try to become friends with the mushroom by singing questionable bar-room songs?",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 2)
 			elseif npcHandler:getTopic(playerId) == 3 then
 				npcHandler:say({
 					"Imagine you wake up one morning and discover you have forgotten how to knot your shoelaces. Would you {A}) admit defeat and go to bed once more. ...",
-					"{B}) look for a gnome that can remind you how to do it. {C}) Despite the risk of injuring yourself, try to figure it out on your own. {D}) Use some pottery instead of shoes."
+					"{B}) look for a gnome that can remind you how to do it. {C}) Despite the risk of injuring yourself, try to figure it out on your own. {D}) Use some pottery instead of shoes.",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 4)
 			elseif npcHandler:getTopic(playerId) == 5 then
 				npcHandler:say({
 					"Now let us assume you see a gnome in danger. Would you {A}) not care because you must be imagining things. {B}) Save the gnome despite all odds and risk to your own life. ...",
-					"{C}) Inspire the gnome by singing the gnomish national anthem. {D}) Hide and loot his corpse if he dies."
+					"{C}) Inspire the gnome by singing the gnomish national anthem. {D}) Hide and loot his corpse if he dies.",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 6)
 			elseif npcHandler:getTopic(playerId) == 7 then
 				npcHandler:say({
 					"Imagine you were participating in a gnome-throwing competition. Would you {A}) do some physical calculations in advance to increase your chances of winning. ...",
-					"{B}) throw the gnome as safely as you can to ensure his safety. {C}) Sabotage the throwing gnomes of your competitors. {D}) Never participate in such an abominable competition."
+					"{B}) throw the gnome as safely as you can to ensure his safety. {C}) Sabotage the throwing gnomes of your competitors. {D}) Never participate in such an abominable competition.",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 8)
 			elseif npcHandler:getTopic(playerId) == 9 then
 				npcHandler:say({
 					"Now imagine you were given the order to guard a valuable and unique mushroom. You guard it for days and no one shows up to release you and you grow hungry. ...",
-					"Would you {A}) eat your boots. {B}) eat the mushroom. {C}) eat a bit of the mushroom. {D}) stick to your duty and continue starving."
+					"Would you {A}) eat your boots. {B}) eat the mushroom. {C}) eat a bit of the mushroom. {D}) stick to your duty and continue starving.",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 10)
 			elseif npcHandler:getTopic(playerId) == 11 then
@@ -123,19 +120,19 @@ local function creatureSayCallback(npc, creature, type, message)
 			elseif npcHandler:getTopic(playerId) == 13 then
 				npcHandler:say({
 					"How many bigfoot does it take to change a light crystal? {A}) Only one since it's a piece of mushroom cake. {B}) Light crystals are delicate products of gnomish science and should only be handled by certified gnomish experts. ...",
-					"{C}) Three. One to hold the crystal and two to turn him around. {D}) Five. A light crystal turner, a light crystal picker, a light crystal exchanger, a light crystal changing manager and finally a light crystal changing manager assistant."
+					"{C}) Three. One to hold the crystal and two to turn him around. {D}) Five. A light crystal turner, a light crystal picker, a light crystal exchanger, a light crystal changing manager and finally a light crystal changing manager assistant.",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 14)
 			elseif npcHandler:getTopic(playerId) == 15 then
 				npcHandler:say({
 					"What is a pollyfluxed quantumresonator? {A}) Something funny. {B}) Something important. {C}) Something to be destroyed. ...",
-					"{D}) Sadly I am not a gnome and lack the intelligence and education to know about even the simplest of gnomish inventions."
+					"{D}) Sadly I am not a gnome and lack the intelligence and education to know about even the simplest of gnomish inventions.",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 16)
 			elseif npcHandler:getTopic(playerId) == 17 then
 				npcHandler:say({
 					"If your mushroom patch is infested with cave worms, would you {A}) place some green light crystals to drive them away. {B}) place some disharmonic crystals to drive them away. ...",
-					"{C}) burn everything down. {D}) switch your diet to cave worms."
+					"{C}) burn everything down. {D}) switch your diet to cave worms.",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 18)
 			elseif npcHandler:getTopic(playerId) == 19 then
@@ -144,7 +141,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			elseif npcHandler:getTopic(playerId) == 21 then
 				npcHandler:say({
 					"On a military campaign what piece of equipment would you need most? ...",
-					"Is it {A}) some tasty mushroom beer to keep the morale high. {B}) A large backpack to carry all the loot. {C}) A mighty weapon to vanquish the foes. {D}) Mushroom earplugs to be spared of the cries of agony of your opponents?"
+					"Is it {A}) some tasty mushroom beer to keep the morale high. {B}) A large backpack to carry all the loot. {C}) A mighty weapon to vanquish the foes. {D}) Mushroom earplugs to be spared of the cries of agony of your opponents?",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 22)
 			elseif npcHandler:getTopic(playerId) == 23 then
@@ -292,7 +289,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.BigfootBurden.NeedsBeer, 1)
 				npcHandler:say({
 					"You have failed the test with " .. player:getStorageValue(Storage.BigfootBurden.Test) .. " of 112 possible points. You probably were just too nervous. ...",
-					"I suggest you relax a bit with a fresh mushroom beer and we'll start over after that. Gnominus sells some beer. You should find him somewhere in the central chamber."
+					"I suggest you relax a bit with a fresh mushroom beer and we'll start over after that. Gnominus sells some beer. You should find him somewhere in the central chamber.",
 				}, npc, creature)
 			else
 				npcHandler:say("You have passed the test with " .. player:getStorageValue(Storage.BigfootBurden.Test) .. " of 112 possible points. Congratulations. You are ready to proceed with the more physical parts of your examination! Go and talk to Gnomespector about it.", npc, creature)
@@ -309,7 +306,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_GREET, 'Hello and welcome in the gnomish {recruitment} office.')
+npcHandler:setMessage(MESSAGE_GREET, "Hello and welcome in the gnomish {recruitment} office.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

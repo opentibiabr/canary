@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 400
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -59,8 +59,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 3,
 	summons = {
-		{ name = "War Wolf", chance = 13, interval = 1000, count = 3 }
-	}
+		{ name = "War Wolf", chance = 13, interval = 1000, count = 3 },
+	},
 }
 
 monster.voices = {
@@ -91,13 +91,13 @@ monster.loot = {
 	{ id = 3563, chance = 7000 }, -- green tunic
 	{ id = 3061, chance = 7000 }, -- life crystal
 	{ id = 3738, chance = 7000 }, -- sling herb
-	{ id = 3012, chance = 7000 } -- wolf tooth chain
+	{ id = 3012, chance = 7000 }, -- wolf tooth chain
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 },
 	{ name = "combat", interval = 1000, chance = 13, type = COMBAT_HOLYDAMAGE, minDamage = -65, maxDamage = -180, range = 7, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYDAMAGE, target = false },
-	{ name = "combat", interval = 1000, chance = 25, type = COMBAT_MANADRAIN, minDamage = -20, maxDamage = -45, range = 7, effect = CONST_ME_MAGIC_RED, target = false }
+	{ name = "combat", interval = 1000, chance = 25, type = COMBAT_MANADRAIN, minDamage = -20, maxDamage = -45, range = 7, effect = CONST_ME_MAGIC_RED, target = false },
 }
 
 monster.defenses = {
@@ -106,7 +106,7 @@ monster.defenses = {
 	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 10, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 1000, chance = 7, speedChange = 280, effect = CONST_ME_MAGIC_RED, target = false, duration = 10000 },
-	{ name = "outfit", interval = 1000, chance = 5, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 14000, outfitMonster = "War Wolf" }
+	{ name = "outfit", interval = 1000, chance = 5, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 14000, outfitMonster = "War Wolf" },
 }
 
 monster.elements = {
@@ -126,7 +126,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

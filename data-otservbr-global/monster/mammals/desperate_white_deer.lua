@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 55
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -66,17 +66,16 @@ monster.voices = {
 monster.loot = {
 	{ name = "ham", chance = 20000, maxCount = 3 },
 	{ name = "white deer antlers", chance = 20000 },
-	{ name = "white deer skin", chance = 20000 }
+	{ name = "white deer skin", chance = 20000 },
 }
 
-monster.attacks = {
-}
+monster.attacks = {}
 
 monster.defenses = {
 	defense = 15,
 	armor = 1,
 	mitigation = 0.05,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 400, effect = CONST_ME_MAGIC_RED, target = false, duration = 4000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 400, effect = CONST_ME_MAGIC_RED, target = false, duration = 4000 },
 }
 
 monster.elements = {
@@ -96,7 +95,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

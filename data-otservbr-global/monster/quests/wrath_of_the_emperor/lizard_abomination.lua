@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 95000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -65,21 +65,20 @@ monster.voices = {
 	{ text = "I WILL MAKE YOU ZHEE!", yell = true },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -550 },
 	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_EARTHDAMAGE, minDamage = 0, maxDamage = -980, radius = 3, effect = CONST_ME_HITBYPOISON, target = false },
 	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_LIFEDRAIN, minDamage = -200, maxDamage = -300, length = 8, spread = 3, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "speed", interval = 2000, chance = 20, radius = 3, effect = CONST_ME_POISONAREA, target = false }
+	{ name = "speed", interval = 2000, chance = 20, radius = 3, effect = CONST_ME_POISONAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 60,
 	armor = 55,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 50, maxDamage = 350, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 50, maxDamage = 350, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -99,7 +98,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -28,7 +28,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -83,7 +83,7 @@ monster.loot = {
 	{ id = 16160, chance = 6666 }, -- crystalline sword
 	{ id = 16164, chance = 6263 }, -- mycological bow
 	{ id = 16155, chance = 2754 }, -- decorative ribbon
-	{ id = 16162, chance = 2754 } -- mycological mace
+	{ id = 16162, chance = 2754 }, -- mycological mace
 }
 
 monster.attacks = {
@@ -91,7 +91,7 @@ monster.attacks = {
 	-- energy damage
 	{ name = "condition", type = CONDITION_ENERGY, interval = 1000, chance = 10, minDamage = -800, maxDamage = -800, radius = 4, shootEffect = CONST_ANI_POISON, effect = CONST_ME_SMALLPLANTS, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -500, maxDamage = -1600, radius = 4, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = false },
-	{ name = "abyssador poison wave", interval = 1000, chance = 20, minDamage = -1000, maxDamage = -1800, target = false }
+	{ name = "abyssador poison wave", interval = 1000, chance = 20, minDamage = -1000, maxDamage = -1800, target = false },
 }
 
 monster.defenses = {
@@ -100,7 +100,7 @@ monster.defenses = {
 	--	mitigation = ???,
 	{ name = "combat", interval = 1000, chance = 1, type = COMBAT_HEALING, minDamage = 0, maxDamage = 300000, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "combat", interval = 5000, chance = 30, type = COMBAT_HEALING, minDamage = 1000, maxDamage = 1000, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 2000, chance = 25, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 2000, chance = 25, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -120,7 +120,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 259
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Laguna Islands, Meriana Gargoyle Cave and one on Nargor."
+	Locations = "Laguna Islands, Meriana Gargoyle Cave and one on Nargor.",
 }
 
 monster.health = 300
@@ -35,7 +35,7 @@ monster.manaCost = 490
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -83,11 +83,11 @@ monster.loot = {
 	{ name = "tortoise egg", chance = 790, maxCount = 3 },
 	{ id = 5899, chance = 800 }, -- turtle shell
 	{ name = "health potion", chance = 1600 },
-	{ name = "thorn", chance = 15980 }
+	{ name = "thorn", chance = 15980 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110, condition = { type = CONDITION_POISON, totalDamage = 40, interval = 4000 } }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110, condition = { type = CONDITION_POISON, totalDamage = 40, interval = 4000 } },
 }
 
 monster.defenses = {
@@ -113,7 +113,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

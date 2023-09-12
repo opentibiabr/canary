@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 60
+	lookType = 60,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -56,11 +56,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if (MsgContains(message, "kiss")) then
+	if MsgContains(message, "kiss") then
 		npcHandler:say("Do you want to try to release me with a kiss?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif (MsgContains(message, "yes")) then
-		if (npcHandler:getTopic(playerId) == 1) then
+	elseif MsgContains(message, "yes") then
+		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("Mhm Uhhh. Not bad, not bad at all! But you can still improve your skill a LOT.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 521
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Alchemist Quarter and Factory Quarter (Yalahar), Robson's Isle, Tiquanda Laboratory."
+	Locations = "Alchemist Quarter and Factory Quarter (Yalahar), Robson's Isle, Tiquanda Laboratory.",
 }
 
 monster.health = 240
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -91,7 +91,7 @@ monster.loot = {
 	{ name = "worm", chance = 7110, maxCount = 2 },
 	{ name = "peanut", chance = 580 },
 	{ id = 8894, chance = 190 }, -- heavily rusted armor
-	{ name = "mutated flesh", chance = 19940 }
+	{ name = "mutated flesh", chance = 19940 },
 }
 
 monster.attacks = {
@@ -99,14 +99,14 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -50, maxDamage = -60, length = 3, spread = 1, effect = CONST_ME_POISONAREA, target = false },
 	-- poison
 	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 20, minDamage = -190, maxDamage = -280, effect = CONST_ME_HITBYPOISON, target = true },
-	{ name = "speed", interval = 2000, chance = 10, speedChange = -600, range = 7, effect = CONST_ME_STUN, target = true, duration = 30000 }
+	{ name = "speed", interval = 2000, chance = 10, speedChange = -600, range = 7, effect = CONST_ME_STUN, target = true, duration = 30000 },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 14,
 	mitigation = 0.59,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 220, effect = CONST_ME_GREEN_RINGS, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 220, effect = CONST_ME_GREEN_RINGS, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -126,7 +126,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 1500
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -49,12 +49,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -62,7 +62,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "IIEEH!! Iiih iih ih iiih!!!", yell = true },
 	{ text = "Iiiieeeh iiiieh iiieeh!", yell = true },
-	{ text = "Bsssmm bssmm bsssmmm", yell = true }
+	{ text = "Bsssmm bssmm bsssmmm", yell = true },
 }
 
 monster.loot = {
@@ -81,7 +81,7 @@ monster.loot = {
 	{ id = 3326, chance = 520 }, -- epee
 	{ id = 9304, chance = 570 }, -- shockwave amulet
 	{ id = 816, chance = 830 }, -- lightning pendant
-	{ id = 822, chance = 480 } -- lightning legs
+	{ id = 822, chance = 480 }, -- lightning legs
 }
 
 monster.attacks = {
@@ -91,13 +91,13 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -75, maxDamage = -120, radius = 3, shootEffect = CONST_ANI_EARTH, effect = CONST_ME_HITBYPOISON, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -120, maxDamage = -215, radius = 3, effect = CONST_ME_HITBYPOISON, target = false },
 	-- poison
-	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 13, minDamage = -50, maxDamage = -50, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_HITBYPOISON, target = true }
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 13, minDamage = -50, maxDamage = -50, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_HITBYPOISON, target = true },
 }
 
 monster.defenses = {
 	defense = 45,
 	armor = 30,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 100, maxDamage = 150, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 100, maxDamage = 150, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -110,14 +110,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

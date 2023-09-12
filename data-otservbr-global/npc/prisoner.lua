@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 57,
 	lookLegs = 76,
 	lookFeet = 38,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
@@ -32,7 +32,7 @@ npcConfig.voices = {
 	{ text = "I repent!" },
 	{ text = "Noooooo!" },
 	{ text = "Please! I beg you to stop!" },
-	{ text = "Take it away! Please!" }
+	{ text = "Take it away! Please!" },
 }
 
 local keywordHandler = KeywordHandler:new()

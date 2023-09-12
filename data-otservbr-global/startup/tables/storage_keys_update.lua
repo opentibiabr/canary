@@ -84,7 +84,6 @@ QuestKeysUpdate = {
 		{ old = 10058, new = 40127 }, -- CrystallBall
 		{ old = 10059, new = 40128 }, -- TimeRing
 		{ old = 10060, new = 40129 }, -- ElvenAmulet
-
 	},
 	[2] = {
 		-- TheNewFrontier
@@ -273,5 +272,6 @@ QuestKeysUpdate = {
 		{old = 10004, new = 80004}, -- Example
 		{old = 10005, new = 80005}, -- Example
 	},
-]] --
+]]
+	--
 }

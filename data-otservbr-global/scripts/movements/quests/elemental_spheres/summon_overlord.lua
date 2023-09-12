@@ -15,8 +15,8 @@ local config = {
 			Position(33097, 32196, 13),
 			Position(33094, 32196, 13),
 			Position(33092, 32194, 13),
-			Position(33092, 32191, 13)
-		}
+			Position(33092, 32191, 13),
+		},
 	},
 	[7739] = {
 		storage = GlobalStorage.ElementalSphere.SorcererBoss,
@@ -34,15 +34,15 @@ local config = {
 			Position(33201, 32109, 13),
 			Position(33198, 32109, 13),
 			Position(33196, 32107, 13),
-			Position(33196, 32104, 13)
-		}
+			Position(33196, 32104, 13),
+		},
 	},
 	[7740] = {
 		storage = GlobalStorage.ElementalSphere.PaladinBoss,
 		corpse = 8140,
 		charged = 7744,
 		inactive = 7741,
-		boss = 'Ice Overlord',
+		boss = "Ice Overlord",
 		effect = CONST_ME_ICETORNADO,
 		summonEffect = CONST_ME_ICEAREA,
 		summonPos = Position(33286, 32102, 13),
@@ -54,15 +54,15 @@ local config = {
 			Position(33288, 32104, 13),
 			Position(33285, 32104, 13),
 			Position(33283, 32102, 13),
-			Position(33283, 32099, 13)
-		}
+			Position(33283, 32099, 13),
+		},
 	},
 	[7748] = {
 		storage = GlobalStorage.ElementalSphere.DruidBoss,
 		corpse = 8106,
 		charged = 7746,
 		inactive = 7742,
-		boss = 'Earth Overlord',
+		boss = "Earth Overlord",
 		effect = CONST_ME_BIGPLANTS,
 		summonPos = Position(33347, 32208, 13),
 		positions = {
@@ -73,9 +73,9 @@ local config = {
 			Position(33349, 32210, 13),
 			Position(33346, 32210, 13),
 			Position(33344, 32208, 13),
-			Position(33344, 32205, 13)
-		}
-	}
+			Position(33344, 32205, 13),
+		},
+	},
 }
 
 local summonOverlord = MoveEvent()

@@ -2,15 +2,13 @@ local smallAreaRadius = 3
 local superDrunkDuration = 4000
 
 registerMonsterType = {}
-setmetatable(registerMonsterType,
-	{
-		__call =
-				function(self, mtype, mask)
-					for _, parse in pairs(self) do
-						parse(mtype, mask)
-					end
-				end
-	})
+setmetatable(registerMonsterType, {
+	__call = function(self, mtype, mask)
+		for _, parse in pairs(self) do
+			parse(mtype, mask)
+		end
+	end,
+})
 
 MonsterType.register = function(self, mask)
 	return registerMonsterType(self, mask)
@@ -150,7 +148,7 @@ registerMonsterType.enemyFactions = function(mtype, mask)
 	if mask.enemyFactions then
 		for _, enemyFaction in pairs(mask.enemyFactions) do
 			if not enemyFaction then
-				print("[Error - Loading monsters] Monster: \"" .. mtype:name() .. "\". Unknown enemy faction.")
+				print('[Error - Loading monsters] Monster: "' .. mtype:name() .. '". Unknown enemy faction.')
 			else
 				mtype:enemyFactions(enemyFaction)
 			end
@@ -190,8 +188,7 @@ registerMonsterType.flags = function(mtype, mask)
 			mtype:familiar(mask.flags.familiar)
 		end
 		if mask.flags.respawntype or mask.flags.respawnType then
-			logger.warn("[registerMonsterType.flags] - Monster: {}. Deprecated flag 'respawnType', use instead table 'respawnType = { period = RespawnPeriod_t, underground = boolean}'",
-				mtype:name())
+			logger.warn("[registerMonsterType.flags] - Monster: {}. Deprecated flag 'respawnType', use instead table 'respawnType = { period = RespawnPeriod_t, underground = boolean}'", mtype:name())
 		end
 		if mask.flags.canPushCreatures ~= nil then
 			mtype:canPushCreatures(mask.flags.canPushCreatures)
@@ -274,7 +271,7 @@ registerMonsterType.sounds = function(mtype, mask)
 		if mask.sounds.death then
 			mtype:deathSound(mask.sounds.death)
 		end
-		if mask.sounds.ticks and mask.sounds.chance and mask.sounds.ids and type(mask.sounds.ids) == "table" and #(mask.sounds.ids) > 0 then
+		if mask.sounds.ticks and mask.sounds.chance and mask.sounds.ids and type(mask.sounds.ids) == "table" and #mask.sounds.ids > 0 then
 			mtype:soundSpeedTicks(mask.sounds.ticks)
 			mtype:soundChance(mask.sounds.chance)
 			for _, v in pairs(mask.sounds.ids) do
@@ -532,71 +529,66 @@ end
 
 local function loadcastSound(effect, incomingLua, mtype)
 	-- Throw shoottype
-	if effect == CONST_ANI_SPEAR or
-			effect == CONST_ANI_THROWINGSTAR or
-			effect == CONST_ANI_THROWINGKNIFE or
-			effect == CONST_ANI_SMALLSTONE or
-			effect == CONST_ANI_LARGEROCK or
-			effect == CONST_ANI_SNOWBALL or
-			effect == CONST_ANI_HUNTINGSPEAR or
-			effect == CONST_ANI_ENCHANTEDSPEAR or
-			effect == CONST_ANI_REDSTAR or
-			effect == CONST_ANI_GREENSTAR or
-			effect == CONST_ANI_ROYALSPEAR or
-			effect == CONST_ANI_WHIRLWINDSWORD or
-			effect == CONST_ANI_WHIRLWINDAXE or
-			effect == CONST_ANI_WHIRLWINDCLUB or
-			effect == CONST_ANI_CAKE or
-			effect == CONST_ANI_GLOOTHSPEAR or
-			effect == CONST_ANI_LEAFSTAR or
-			effect == CONST_ANI_ROYALSTAR
+	if
+		effect == CONST_ANI_SPEAR
+		or effect == CONST_ANI_THROWINGSTAR
+		or effect == CONST_ANI_THROWINGKNIFE
+		or effect == CONST_ANI_SMALLSTONE
+		or effect == CONST_ANI_LARGEROCK
+		or effect == CONST_ANI_SNOWBALL
+		or effect == CONST_ANI_HUNTINGSPEAR
+		or effect == CONST_ANI_ENCHANTEDSPEAR
+		or effect == CONST_ANI_REDSTAR
+		or effect == CONST_ANI_GREENSTAR
+		or effect == CONST_ANI_ROYALSPEAR
+		or effect == CONST_ANI_WHIRLWINDSWORD
+		or effect == CONST_ANI_WHIRLWINDAXE
+		or effect == CONST_ANI_WHIRLWINDCLUB
+		or effect == CONST_ANI_CAKE
+		or effect == CONST_ANI_GLOOTHSPEAR
+		or effect == CONST_ANI_LEAFSTAR
+		or effect == CONST_ANI_ROYALSTAR
 	then
 		return SOUND_EFFECT_TYPE_DIST_ATK_THROW
 
 		-- Crossbow shoottype
-	elseif effect == CONST_ANI_BOLT or
-			effect == CONST_ANI_POWERBOLT or
-			effect == CONST_ANI_INFERNALBOLT or
-			effect == CONST_ANI_PIERCINGBOLT or
-			effect == CONST_ANI_VORTEXBOLT or
-			effect == CONST_ANI_PRISMATICBOLT or
-			effect == CONST_ANI_DRILLBOLT or
-			effect == CONST_ANI_SPECTRALBOLT
-	then
+	elseif effect == CONST_ANI_BOLT or effect == CONST_ANI_POWERBOLT or effect == CONST_ANI_INFERNALBOLT or effect == CONST_ANI_PIERCINGBOLT or effect == CONST_ANI_VORTEXBOLT or effect == CONST_ANI_PRISMATICBOLT or effect == CONST_ANI_DRILLBOLT or effect == CONST_ANI_SPECTRALBOLT then
 		return SOUND_EFFECT_TYPE_DIST_ATK_CROSSBOW
 
 		-- Bow shoottype
-	elseif effect == CONST_ANI_POISONARROW or
-			effect == CONST_ANI_BURSTARROW or
-			effect == CONST_ANI_SNIPERARROW or
-			effect == CONST_ANI_ONYXARROW or
-			effect == CONST_ANI_FLASHARROW or
-			effect == CONST_ANI_FLAMMINGARROW or
-			effect == CONST_ANI_SHIVERARROW or
-			effect == CONST_ANI_EARTHARROW or
-			effect == CONST_ANI_TARSALARROW or
-			effect == CONST_ANI_CRYSTALLINEARROW or
-			effect == CONST_ANI_ENVENOMEDARROW or
-			effect == CONST_ANI_SIMPLEARROW or
-			effect == CONST_ANI_DIAMONDARROW
+	elseif
+		effect == CONST_ANI_POISONARROW
+		or effect == CONST_ANI_BURSTARROW
+		or effect == CONST_ANI_SNIPERARROW
+		or effect == CONST_ANI_ONYXARROW
+		or effect == CONST_ANI_FLASHARROW
+		or effect == CONST_ANI_FLAMMINGARROW
+		or effect == CONST_ANI_SHIVERARROW
+		or effect == CONST_ANI_EARTHARROW
+		or effect == CONST_ANI_TARSALARROW
+		or effect == CONST_ANI_CRYSTALLINEARROW
+		or effect == CONST_ANI_ENVENOMEDARROW
+		or effect == CONST_ANI_SIMPLEARROW
+		or effect == CONST_ANI_DIAMONDARROW
 	then
 		return SOUND_EFFECT_TYPE_DIST_ATK_BOW
 
 		-- Magical shoottype
-	elseif effect == CONST_ANI_FIRE or
-			effect == CONST_ANI_ENERGY or
-			effect == CONST_ANI_DEATH or
-			effect == CONST_ANI_POISON or
-			effect == CONST_ANI_ETHEREALSPEAR or
-			effect == CONST_ANI_ICE or
-			effect == CONST_ANI_EARTH or
-			effect == CONST_ANI_HOLY or
-			effect == CONST_ANI_SUDDENDEATH or
-			effect == CONST_ANI_ENERGYBALL or
-			effect == CONST_ANI_SMALLICE or
-			effect == CONST_ANI_SMALLHOLY or
-			effect == CONST_ANI_SMALLEARTH or
-			effect == CONST_ANI_EXPLOSION
+	elseif
+		effect == CONST_ANI_FIRE
+		or effect == CONST_ANI_ENERGY
+		or effect == CONST_ANI_DEATH
+		or effect == CONST_ANI_POISON
+		or effect == CONST_ANI_ETHEREALSPEAR
+		or effect == CONST_ANI_ICE
+		or effect == CONST_ANI_EARTH
+		or effect == CONST_ANI_HOLY
+		or effect == CONST_ANI_SUDDENDEATH
+		or effect == CONST_ANI_ENERGYBALL
+		or effect == CONST_ANI_SMALLICE
+		or effect == CONST_ANI_SMALLHOLY
+		or effect == CONST_ANI_SMALLEARTH
+		or effect == CONST_ANI_EXPLOSION
 	then
 		return SOUND_EFFECT_TYPE_MAGICAL_RANGE_ATK
 	end
@@ -955,12 +947,12 @@ function readSpell(incomingLua, mtype)
 		end
 	end
 
-	if not (hasImpactSound) or not (hasCastSound) then
+	if not hasImpactSound or not hasCastSound then
 		local sounds = loadSpellSoundType(incomingLua, mtype)
-		if (not (hasCastSound) and sounds.cast ~= SOUND_EFFECT_TYPE_SILENCE) then
+		if not hasCastSound and sounds.cast ~= SOUND_EFFECT_TYPE_SILENCE then
 			spell:castSound(sounds.cast)
 		end
-		if (not (hasImpactSound) and sounds.impact ~= SOUND_EFFECT_TYPE_SILENCE) then
+		if not hasImpactSound and sounds.impact ~= SOUND_EFFECT_TYPE_SILENCE then
 			spell:castSound(sounds.impact)
 		end
 	end

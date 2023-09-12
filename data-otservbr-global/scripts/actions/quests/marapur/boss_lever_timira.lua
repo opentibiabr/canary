@@ -13,7 +13,7 @@ local config = {
 	},
 	specPos = {
 		from = Position(33803, 32690, 9),
-		to = Position(33828, 32715, 9)
+		to = Position(33828, 32715, 9),
 	},
 	exit = Position(33810, 32699, 8),
 	storage = Storage.Quest.U12_90.WithinTheTides.TimiraTimer,

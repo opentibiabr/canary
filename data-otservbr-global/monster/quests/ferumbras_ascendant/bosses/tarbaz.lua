@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 19,
 	lookFeet = 3,
 	lookAddons = 2,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 290000
@@ -22,13 +22,13 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.bosstiary = {
 	bossRaceId = 1188,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.FerumbrasAscension.TarbazTimer
+	storageCooldown = Storage.FerumbrasAscension.TarbazTimer,
 }
 
 monster.strategiesTarget = {
@@ -66,7 +66,7 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "You are a failure.", yell = false }
+	{ text = "You are a failure.", yell = false },
 }
 
 monster.loot = {
@@ -100,7 +100,7 @@ monster.loot = {
 	{ id = 22727, chance = 800 }, -- rift lance
 	{ id = 3038, chance = 1000 }, -- green gem
 	{ id = 8082, chance = 4000 }, -- underworld rod
-	{ id = 22757, chance = 500, unique = true } -- shroud of despair
+	{ id = 22757, chance = 500, unique = true }, -- shroud of despair
 }
 
 monster.attacks = {
@@ -109,7 +109,7 @@ monster.attacks = {
 	{ name = "speed", interval = 2000, chance = 25, speedChange = -600, radius = 7, effect = CONST_ME_MAGIC_RED, target = false, duration = 15000 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -700, radius = 5, effect = CONST_ME_HITBYFIRE, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -500, maxDamage = -800, length = 10, spread = 3, effect = CONST_ME_EXPLOSIONHIT, target = false },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -500, maxDamage = -800, length = 8, spread = 3, effect = CONST_ME_FIREATTACK, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -500, maxDamage = -800, length = 8, spread = 3, effect = CONST_ME_FIREATTACK, target = false },
 }
 
 monster.defenses = {
@@ -117,7 +117,7 @@ monster.defenses = {
 	armor = 100,
 	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 900, maxDamage = 3500, effect = CONST_ME_MAGIC_GREEN, target = false },
-	{ name = "speed", interval = 3000, chance = 30, speedChange = 460, effect = CONST_ME_MAGIC_RED, target = false, duration = 7000 }
+	{ name = "speed", interval = 3000, chance = 30, speedChange = 460, effect = CONST_ME_MAGIC_RED, target = false, duration = 7000 },
 }
 
 monster.elements = {
@@ -137,11 +137,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -149,13 +148,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

@@ -1,4 +1,4 @@
 GazVariables = {
 	MinionsNow = 2,
-	MaxSummons = 7
+	MaxSummons = 7,
 }

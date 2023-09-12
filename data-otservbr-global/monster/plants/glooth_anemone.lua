@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1042
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Rathleton Sewers, Underground Glooth Factory, Jaccus Maxxen's Dungeon."
+	Locations = "Rathleton Sewers, Underground Glooth Factory, Jaccus Maxxen's Dungeon.",
 }
 
 monster.health = 2400
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 3
+	chance = 3,
 }
 
 monster.strategiesTarget = {
@@ -94,14 +94,14 @@ monster.loot = {
 	{ id = 21179, chance = 120 }, -- glooth blade
 	{ id = 21178, chance = 370 }, -- glooth club
 	{ id = 21180, chance = 240 }, -- glooth axe
-	{ id = 21158, chance = 370 } -- glooth spear
+	{ id = 21158, chance = 370 }, -- glooth spear
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 60, attack = 50 },
 	{ name = "combat", interval = 2000, chance = 9, type = COMBAT_EARTHDAMAGE, minDamage = -100, maxDamage = -200, range = 7, radius = 4, shootEffect = CONST_ANI_GLOOTHSPEAR, effect = CONST_ME_HITBYPOISON, target = true },
 	{ name = "combat", interval = 2000, chance = 7, type = COMBAT_LIFEDRAIN, minDamage = -50, maxDamage = -100, range = 7, radius = 1, shootEffect = CONST_ANI_POISON, effect = CONST_ME_MAGIC_RED, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, radius = 5, effect = CONST_ME_MAGIC_RED, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, radius = 5, effect = CONST_ME_MAGIC_RED, target = false },
 }
 
 monster.defenses = {
@@ -109,7 +109,7 @@ monster.defenses = {
 	armor = 42,
 	mitigation = 1.02,
 	{ name = "combat", interval = 2000, chance = 9, type = COMBAT_HEALING, minDamage = 50, maxDamage = 100, effect = CONST_ME_MAGIC_GREEN, target = false },
-	{ name = "glooth anemone summon", interval = 2000, chance = 14, target = false }
+	{ name = "glooth anemone summon", interval = 2000, chance = 14, target = false },
 }
 
 monster.elements = {
@@ -129,7 +129,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

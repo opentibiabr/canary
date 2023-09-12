@@ -2,7 +2,7 @@ local monsterTable = {
 	[1] = 72500,
 	[2] = 145000,
 	[3] = 217500,
-	[4] = 275500
+	[4] = 275500,
 }
 
 local chargedAnomalyDeath = CreatureEvent("ChargedAnomalyDeath")

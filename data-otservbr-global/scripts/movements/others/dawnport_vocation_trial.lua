@@ -1,6 +1,6 @@
 local tutorialEffects = {
 	CONST_ME_TUTORIALARROW,
-	CONST_ME_TUTORIALSQUARE
+	CONST_ME_TUTORIALSQUARE,
 }
 
 local vocationTrials = {
@@ -16,13 +16,13 @@ local vocationTrials = {
 			outfit = {
 				lookType = {
 					[PLAYERSEX_FEMALE] = 138,
-					[PLAYERSEX_MALE] = 130
+					[PLAYERSEX_MALE] = 130,
 				},
 				lookHead = 95,
 				lookBody = 109,
 				lookLegs = 112,
-				lookFeet = 128
-			}
+				lookFeet = 128,
+			},
 		},
 		items = {
 			{ id = 21348, amount = 1, slot = CONST_SLOT_LEFT }, -- The scorcher
@@ -31,8 +31,8 @@ local vocationTrials = {
 			{ id = 268, amount = 10, storage = Storage.Dawnport.SorcererManaPotion, limit = 1 }, -- Mana potion
 			{ id = 21352, amount = 2, storage = Storage.Dawnport.SorcererLightestMissile, limit = 1 }, -- Lightest missile runes
 			{ id = 21351, amount = 2, storage = Storage.Dawnport.SorcererLightStoneShower, limit = 1 }, -- Light stone shower runes
-			{ id = 3577, amount = 1, storage = Storage.Dawnport.SorcererMeat, limit = 1 } -- Meat
-		}
+			{ id = 3577, amount = 1, storage = Storage.Dawnport.SorcererMeat, limit = 1 }, -- Meat
+		},
 	},
 	-- Druid trial
 	[25006] = {
@@ -46,13 +46,13 @@ local vocationTrials = {
 			outfit = {
 				lookType = {
 					[PLAYERSEX_FEMALE] = 138,
-					[PLAYERSEX_MALE] = 130
+					[PLAYERSEX_MALE] = 130,
 				},
 				lookHead = 95,
 				lookBody = 123,
 				lookLegs = 9,
-				lookFeet = 118
-			}
+				lookFeet = 118,
+			},
 		},
 		items = {
 			{ id = 21350, amount = 1, slot = CONST_SLOT_LEFT }, -- The chiller
@@ -61,8 +61,8 @@ local vocationTrials = {
 			{ id = 268, amount = 10, storage = Storage.Dawnport.DruidManaPotion, limit = 1 }, -- Mana potion
 			{ id = 21352, amount = 2, storage = Storage.Dawnport.DruidLightestMissile, limit = 1 }, -- Lightest missile runes
 			{ id = 21351, amount = 2, storage = Storage.Dawnport.DruidLightStoneShower, limit = 1 }, -- Light stone shower runes
-			{ id = 3577, amount = 1, storage = Storage.Dawnport.DruidMeat, limit = 1 } -- Meat
-		}
+			{ id = 3577, amount = 1, storage = Storage.Dawnport.DruidMeat, limit = 1 }, -- Meat
+		},
 	},
 	-- Paladin trial
 	[25007] = {
@@ -76,13 +76,13 @@ local vocationTrials = {
 			outfit = {
 				lookType = {
 					[PLAYERSEX_FEMALE] = 137,
-					[PLAYERSEX_MALE] = 129
+					[PLAYERSEX_MALE] = 129,
 				},
 				lookHead = 95,
 				lookBody = 117,
 				lookLegs = 98,
-				lookFeet = 78
-			}
+				lookFeet = 78,
+			},
 		},
 		items = {
 			{ id = 3350, amount = 1, slot = CONST_SLOT_LEFT }, -- Bow
@@ -92,8 +92,8 @@ local vocationTrials = {
 			{ id = 268, amount = 5, storage = Storage.Dawnport.PaladinManaPotion, limit = 1 }, -- Mana potion
 			{ id = 21352, amount = 1, storage = Storage.Dawnport.PaladinLightestMissile, limit = 1 }, -- Lightest missile rune
 			{ id = 21351, amount = 1, storage = Storage.Dawnport.PaladinLightStoneShower, limit = 1 }, -- Light stone shower rune
-			{ id = 3577, amount = 1, storage = Storage.Dawnport.PaladinMeat, limit = 1 } -- Meat
-		}
+			{ id = 3577, amount = 1, storage = Storage.Dawnport.PaladinMeat, limit = 1 }, -- Meat
+		},
 	},
 	-- Knight trial
 	[25008] = {
@@ -107,22 +107,22 @@ local vocationTrials = {
 			outfit = {
 				lookType = {
 					[PLAYERSEX_FEMALE] = 139,
-					[PLAYERSEX_MALE] = 131
+					[PLAYERSEX_MALE] = 131,
 				},
 				lookHead = 95,
 				lookBody = 38,
 				lookLegs = 94,
-				lookFeet = 115
-			}
+				lookFeet = 115,
+			},
 		},
 		items = {
 			{ id = 3267, amount = 1, slot = CONST_SLOT_LEFT }, -- Dagger
 			{ id = 3412, amount = 1, slot = CONST_SLOT_RIGHT }, -- Wooden shield
 			{ id = 7876, amount = 10, storage = Storage.Dawnport.KnightHealthPotion, limit = 1 }, -- Health potion
 			{ id = 268, amount = 2, storage = Storage.Dawnport.KnightManaPotion, limit = 1 }, -- Mana potion
-			{ id = 3577, amount = 1, storage = Storage.Dawnport.KnightMeat, limit = 1 } -- Meat
-		}
-	}
+			{ id = 3577, amount = 1, storage = Storage.Dawnport.KnightMeat, limit = 1 }, -- Meat
+		},
+	},
 }
 
 -- First items, added only in first step and having no vocation
@@ -132,8 +132,8 @@ local function addFirstItems(player)
 			[CONST_SLOT_HEAD] = Game.createItem(3355),
 			[CONST_SLOT_ARMOR] = Game.createItem(3562),
 			[CONST_SLOT_LEGS] = Game.createItem(3559),
-			[CONST_SLOT_FEET] = Game.createItem(3552)
-		}
+			[CONST_SLOT_FEET] = Game.createItem(3552),
+		},
 	}
 	for slot, item in pairs(firstItems.slots) do
 		local ret = player:addItemEx(item, false, sot)
@@ -152,19 +152,24 @@ local function tileStep(player, trial)
 			Position(trial.effectPosition):sendMagicEffect(tutorialEffects[i])
 		end
 		player:sendTutorial(trial.tutorialId)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			"As this is the first time you try out a vocation, the Guild has kitted you out. " .. trial.message)
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "As this is the first time you try out a vocation, the Guild has kitted you out. " .. trial.message)
 		addFirstItems(player)
 		-- Second step
 	elseif player:getStorageValue(trial.storage) == -1 and vocationId ~= VOCATION.ID.NONE then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("As this is your first time as a \z
-		" .. trial.vocation.name .. ', you received a few extra items. ' .. trial.message))
+		player:sendTextMessage(
+			MESSAGE_EVENT_ADVANCE,
+			string.format("As this is your first time as a \z
+		" .. trial.vocation.name .. ", you received a few extra items. " .. trial.message)
+		)
 		player:setStorageValue(trial.storage, 1)
 		player:sendTutorial(trial.tutorialId)
 		-- Other steps
 	elseif player:getStorageValue(trial.storage) == 1 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have received the weapons of a \z
-		" .. trial.vocation.name .. '. ' .. trial.message))
+		player:sendTextMessage(
+			MESSAGE_EVENT_ADVANCE,
+			string.format("You have received the weapons of a \z
+		" .. trial.vocation.name .. ". " .. trial.message)
+		)
 	end
 	return true
 end
@@ -178,7 +183,7 @@ local function removeItems(player)
 		3350, -- Bow
 		3267, -- Dagger
 		3412, -- Wooden shield
-		35562 -- Quiver
+		35562, -- Quiver
 	}
 	for i = 1, #equipmentItemIds do
 		local equipmentItemAmount = player:getItemCount(equipmentItemIds[i])
@@ -239,7 +244,7 @@ local function setOutfit(player, outfit)
 		lookLegs = outfit.lookLegs,
 		lookFeet = outfit.lookFeet,
 		lookAddons = 0,
-		lookMount = 0
+		lookMount = 0,
 	})
 end
 

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 781
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 1,
-	Locations = "Fiehonja, Krailos Steppe underwater cave."
+	Locations = "Fiehonja, Krailos Steppe underwater cave.",
 }
 
 monster.health = 55
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -77,18 +77,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "shrimp", chance = 8333, maxCount = 2 }
+	{ name = "shrimp", chance = 8333, maxCount = 2 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10, effect = CONST_ME_DRAWBLOOD }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10, effect = CONST_ME_DRAWBLOOD },
 }
 
 monster.defenses = {
 	defense = 10,
 	armor = 11,
 	mitigation = 0.30,
-	{ name = "invisible", interval = 2000, chance = 15 }
+	{ name = "invisible", interval = 2000, chance = 15 },
 }
 
 monster.elements = {
@@ -108,7 +108,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

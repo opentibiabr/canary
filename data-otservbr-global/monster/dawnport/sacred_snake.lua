@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 10
 monster.maxHealth = 10
@@ -23,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -64,11 +63,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "eggs of a sacred snake", chance = 100000, maxCount = 20 }
+	{ name = "eggs of a sacred snake", chance = 100000, maxCount = 20 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -8, condition = { type = CONDITION_POISON, totalDamage = 1, interval = 4000 } }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -8, condition = { type = CONDITION_POISON, totalDamage = 1, interval = 4000 } },
 }
 
 monster.defenses = {
@@ -94,7 +93,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

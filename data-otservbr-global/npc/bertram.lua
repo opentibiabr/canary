@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 114,
 	lookLegs = 0,
 	lookFeet = 114,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,16 +58,19 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'key') then
-		if player:getStorageValue(Storage.ThievesGuild.Mission06) == 1
-				and player:getSex() == PLAYERSEX_FEMALE then
+	if MsgContains(message, "key") then
+		if player:getStorageValue(Storage.ThievesGuild.Mission06) == 1 and player:getSex() == PLAYERSEX_FEMALE then
 			local headItem = player:getSlotItem(CONST_SLOT_HEAD)
 			if headItem and headItem.itemid == 3576 and player:getStorageValue(Storage.Postman.Rank) == 5 then
 				player:addItem(7934, 1)
 				player:setStorageValue(Storage.ThievesGuild.Mission06, 2)
-				npcHandler:say('Oh my! You look so great in your uniform! \z
+				npcHandler:say(
+					"Oh my! You look so great in your uniform! \z
 				You archpostwomen are not only daring but also beautiful. \z
-				Here take it, that\'s the key you wanted. Just promise to visit me now and then!', npc, creature)
+				Here take it, that's the key you wanted. Just promise to visit me now and then!",
+					npc,
+					creature
+				)
 			end
 		end
 	end

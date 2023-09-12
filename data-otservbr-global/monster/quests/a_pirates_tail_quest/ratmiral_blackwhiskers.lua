@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 220000
@@ -22,13 +22,13 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.bosstiary = {
 	bossRaceId = 2006,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_60.APiratesTail.RatmiralTimer
+	storageCooldown = Storage.Quest.U12_60.APiratesTail.RatmiralTimer,
 }
 
 monster.strategiesTarget = {
@@ -52,19 +52,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 4,
 	summons = {
 		{ name = "elite pirat", chance = 30, interval = 1000 },
-	}
+	},
 }
 
 monster.voices = {
@@ -103,14 +103,14 @@ monster.loot = {
 	{ id = 35521, chance = 890 }, -- jungle rod
 	{ id = 35522, chance = 890 }, -- jungle wand
 	{ id = 35519, chance = 890 }, -- makeshift boots
-	{ id = 35520, chance = 890 } -- make-do boots
+	{ id = 35520, chance = 890 }, -- make-do boots
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -270, maxDamage = -500 },
 	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_PHYSICALDAMAGE, minDamage = -300, maxDamage = -600, range = 7, shootEffect = CONST_ANI_WHIRLWINDCLUB, target = true },
 	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -600, radius = 4, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -600, maxDamage = -1000, length = 4, spread = 0, effect = CONST_ME_SOUND_PURPLE, target = false }
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -600, maxDamage = -1000, length = 4, spread = 0, effect = CONST_ME_SOUND_PURPLE, target = false },
 }
 
 monster.defenses = {
@@ -128,14 +128,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType.onAppear = function(monster, creature)

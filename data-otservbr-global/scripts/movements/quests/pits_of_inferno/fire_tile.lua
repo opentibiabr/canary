@@ -22,7 +22,7 @@ local fires = {
 	[2060] = { vocationId = VOCATION.BASE_ID.KNIGHT, damage = 1200 },
 	[2061] = { vocationId = VOCATION.BASE_ID.KNIGHT, damage = 2400 },
 	[2062] = { vocationId = VOCATION.BASE_ID.KNIGHT, damage = 3600 },
-	[2063] = { vocationId = VOCATION.BASE_ID.KNIGHT, damage = 7200 }
+	[2063] = { vocationId = VOCATION.BASE_ID.KNIGHT, damage = 7200 },
 }
 
 local fireTile = MoveEvent()

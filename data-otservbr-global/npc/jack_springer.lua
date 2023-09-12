@@ -16,18 +16,18 @@ npcConfig.outfit = {
 	lookBody = 114,
 	lookLegs = 114,
 	lookFeet = 113,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
 	{ text = "Always be on guard." },
-	{ text = "Hmm." }
+	{ text = "Hmm." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -76,7 +76,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(GraveDanger.QuestLine) < 1 then
 			npcHandler:say({
 				"While you travel and fight the threat where it arises, we will put all our resources into researching the ultimate plans of the legion. Perhaps I can tell you more when you {report} back. ...",
-				"Don't forget that you'll need very potent holy water for your task. If you need some, just ask me for a {trade}." }, npc, creature)
+				"Don't forget that you'll need very potent holy water for your task. If you need some, just ask me for a {trade}.",
+			}, npc, creature)
 			player:setStorageValue(GraveDanger.QuestLine, 1)
 			player:setStorageValue(GraveDanger.Graves.Edron, 1)
 			player:setStorageValue(GraveDanger.Graves.DarkCathedral, 1)
@@ -102,7 +103,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
-	{ itemName = "vial of potent holy water", clientId = 31612, buy = 100 }
+	{ itemName = "vial of potent holy water", clientId = 31612, buy = 100 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -113,7 +114,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

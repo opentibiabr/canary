@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1267
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Otherworld (Edron)"
+	Locations = "Otherworld (Edron)",
 }
 
 monster.health = 2800
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 25
+	chance = 25,
 }
 
 monster.strategiesTarget = {
@@ -92,20 +92,20 @@ monster.loot = {
 	{ id = 3029, chance = 4400, maxCount = 2 }, -- small sapphire
 	{ id = 16120, chance = 4200 }, -- violet crystal shard
 	{ id = 3030, chance = 3400, maxCount = 2 }, -- small ruby
-	{ id = 16125, chance = 3300 } -- cyan crystal fragment
+	{ id = 16125, chance = 3300 }, -- cyan crystal fragment
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = -200, maxDamage = -300, range = 4, radius = 4, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true },
-	{ name = "dread intruder wave", interval = 2000, chance = 25, minDamage = -350, maxDamage = -450, target = false }
+	{ name = "dread intruder wave", interval = 2000, chance = 25, minDamage = -350, maxDamage = -450, target = false },
 }
 
 monster.defenses = {
 	defense = 50,
 	armor = 46,
 	mitigation = 1.37,
-	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 80, maxDamage = 120, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 80, maxDamage = 120, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -125,7 +125,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 86,
 	lookFeet = 67,
 	lookAddons = 2,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2038
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Pirat Mine, The Wreckoning"
+	Locations = "Pirat Mine, The Wreckoning",
 }
 
 monster.health = 2300
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -84,20 +84,20 @@ monster.loot = {
 	{ name = "mouldy powder", chance = 4000 },
 	{ id = 23529, chance = 2000 }, -- ring of blue plasma
 	{ name = "lightning boots", chance = 1000 },
-	{ name = "wood cape", chance = 1000 }
+	{ name = "wood cape", chance = 1000 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -0, maxDamage = -350 },
 	{ name = "energy beam", interval = 2000, chance = 10, minDamage = -80, maxDamage = -160, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYAREA, target = false },
-	{ name = "energy wave", interval = 2000, chance = 10, minDamage = -35, maxDamage = -75, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYAREA, target = false }
+	{ name = "energy wave", interval = 2000, chance = 10, minDamage = -35, maxDamage = -75, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 65,
 	mitigation = 1.82,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 30, maxDamage = 60, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 30, maxDamage = 60, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -117,7 +117,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

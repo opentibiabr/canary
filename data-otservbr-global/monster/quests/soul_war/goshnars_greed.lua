@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 300000
@@ -22,13 +22,13 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 10
+	chance = 10,
 }
 
 monster.bosstiary = {
 	bossRaceId = 1905,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_40.SoulWar.GoshnarGreedTimer
+	storageCooldown = Storage.Quest.U12_40.SoulWar.GoshnarGreedTimer,
 }
 
 monster.strategiesTarget = {
@@ -56,7 +56,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-	pet = false
+	pet = false,
 }
 
 monster.light = {
@@ -68,8 +68,8 @@ monster.summon = {
 	maxSummons = 4,
 	summons = {
 		{ name = "dreadful harvester", chance = 10, interval = 1000, count = 2 },
-		{ name = "hateful soul", chance = 10, interval = 1000, count = 2 }
-	}
+		{ name = "hateful soul", chance = 10, interval = 1000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -98,7 +98,7 @@ monster.loot = {
 	{ name = "greed's arm", chance = 25000, maxCount = 1 },
 	{ name = "figurine of greed", chance = 400 },
 	{ name = "the skull of a beast", chance = 400 },
-	{ name = "bag you desire", chance = 100 }
+	{ name = "bag you desire", chance = 100 },
 }
 
 monster.attacks = {
@@ -133,11 +133,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -145,13 +144,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

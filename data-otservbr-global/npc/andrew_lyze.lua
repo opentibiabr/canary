@@ -16,14 +16,14 @@ npcConfig.outfit = {
 	lookBody = 43,
 	lookLegs = 75,
 	lookFeet = 58,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 npcConfig.shop = {
-	{ itemName = "broken compass", clientId = 25746, buy = 10000 }
+	{ itemName = "broken compass", clientId = 25746, buy = 10000 },
 }
 
 -- On buy npc shop message
@@ -35,8 +35,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -77,7 +76,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say({
 			"Well, a while ago powerful magic devices were used all around Tibia. These are chargeable compasses. There was but one problem: they offered the possibility to make people rich in a quite easy way. ...",
 			"Therefore, these instruments were very coveted. People tried to get their hands on them at all costs. And so it happened what everybody feared - bloody battles forged ahead. ...",
-			"To put an end to these cruel escalations, eventually all of the devices were collected and destroyed. The remains were buried {deep} in the earth."
+			"To put an end to these cruel escalations, eventually all of the devices were collected and destroyed. The remains were buried {deep} in the earth.",
 		}, npc, creature, 10)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "deep") then
@@ -93,7 +92,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say({
 			"Only in the cave down there you will find the materials you need to repair the compass. Now you know why the entrance is sealed. There's the seal, but I have a deal for you: ...",
 			"I can repair the compass for you if you deliver what I need. Besides the broken compass you have to bring me the following materials: 50 blue glas plates, 15 green glas plates and 5 violet glas plates. ...",
-			"They all can be found in this closed cave in front of you. I should have destroyed this seal key but things have changed. The entrance is opened now, go down and do what has to be done." }, npc, creature, 10)
+			"They all can be found in this closed cave in front of you. I should have destroyed this seal key but things have changed. The entrance is opened now, go down and do what has to be done.",
+		}, npc, creature, 10)
 		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, "down") then
 		npcHandler:say("On first glance, this cave does not look very spectacular, but the things you find in there, are. You have to know that this is the only place where you can find the respective materials to build the {compass}.", npc, creature)

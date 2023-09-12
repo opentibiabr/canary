@@ -12,7 +12,7 @@ local shrinesEntrance = {
 		{ x = 32624, y = 32744, z = 4 }, --Port Hope
 		{ x = 32212, y = 31130, z = 8 }, --Svargrond
 		{ x = 32784, y = 31243, z = 5 }, --Yalahar
-		{ x = 33592, y = 31896, z = 4 } --Oramond
+		{ x = 33592, y = 31896, z = 4 }, --Oramond
 	},
 	earth = {
 		{ x = 32364, y = 31780, z = 9 }, --Carlin
@@ -27,7 +27,7 @@ local shrinesEntrance = {
 		{ x = 32625, y = 32740, z = 4 }, --Port Hope
 		{ x = 32215, y = 31130, z = 8 }, --Svargrond
 		{ x = 32787, y = 31243, z = 5 }, --Yalahar
-		{ x = 33596, y = 31901, z = 4 } --Oramond
+		{ x = 33596, y = 31901, z = 4 }, --Oramond
 	},
 	fire = {
 		{ x = 32356, y = 31783, z = 9 }, --Carlin
@@ -42,7 +42,7 @@ local shrinesEntrance = {
 		{ x = 32632, y = 32740, z = 4 }, --Port Hope
 		{ x = 32208, y = 31133, z = 8 }, --Svargrond
 		{ x = 32790, y = 31243, z = 5 }, --Yalahar
-		{ x = 33592, y = 31901, z = 4 } --Oramond
+		{ x = 33592, y = 31901, z = 4 }, --Oramond
 	},
 	energy = {
 		{ x = 32364, y = 31783, z = 9 }, --Carlin
@@ -57,8 +57,8 @@ local shrinesEntrance = {
 		{ x = 32632, y = 32744, z = 4 }, --Port Hope
 		{ x = 32209, y = 31130, z = 8 }, --Svargrond
 		{ x = 32781, y = 31243, z = 5 }, --Yalahar
-		{ x = 33596, y = 31896, z = 4 } --Oramond
-	}
+		{ x = 33596, y = 31896, z = 4 }, --Oramond
+	},
 }
 
 local function toShrine(player, entrance, destination)

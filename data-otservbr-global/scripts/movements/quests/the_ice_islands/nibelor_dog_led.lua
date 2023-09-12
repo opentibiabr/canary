@@ -4,26 +4,26 @@ local setting = {
 		sledPosition = Position(32367, 31058, 7),
 		destination = Position(32407, 31067, 7),
 		storage = Storage.TheIceIslands.Mission06,
-		value = 8
+		value = 8,
 	},
 	{
 		sledPosition = Position(32409, 31066, 7),
 		destination = Position(32365, 31059, 7),
 		storage = Storage.TheIceIslands.Mission06,
-		value = 8
+		value = 8,
 	},
 	{
 		sledPosition = Position(32303, 31081, 7),
 		destination = Position(32329, 31045, 7),
 		storage = Storage.TheIceIslands.Mission03,
-		value = 3
+		value = 3,
 	},
 	{
 		sledPosition = Position(32327, 31045, 7),
 		destination = Position(32301, 31080, 7),
 		storage = Storage.TheIceIslands.Mission03,
-		value = 3
-	}
+		value = 3,
+	},
 }
 
 local nibelorDogLed = MoveEvent()

@@ -8,7 +8,7 @@ local config = {
 	{ position = { x = 33540, y = 31411, z = 9 }, destination = { x = 33528, y = 31410, z = 9 } },
 	{ position = { x = 33531, y = 31410, z = 9 }, destination = { x = 33541, y = 31412, z = 9 } },
 	{ position = { x = 33535, y = 31444, z = 8 }, destination = { x = 33546, y = 31444, z = 8 } },
-	{ position = { x = 33544, y = 31444, z = 8 }, destination = { x = 33533, y = 31444, z = 8 } }
+	{ position = { x = 33544, y = 31444, z = 8 }, destination = { x = 33533, y = 31444, z = 8 } },
 }
 
 local slab = MoveEvent()

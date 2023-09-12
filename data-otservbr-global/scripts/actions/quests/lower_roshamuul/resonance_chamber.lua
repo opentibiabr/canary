@@ -4,17 +4,17 @@ local config = {
 	position = {
 		Position(33637, 32516, 5), -- Top Left
 		Position(33664, 32537, 5), -- botton Right
-		Position(33650, 32527, 5) -- Center
+		Position(33650, 32527, 5), -- Center
 	},
 	raid = {
 		[1] = { "silencer", math.random(8, 15) },
 		[2] = { "silencer", math.random(11, 18) },
 		[3] = { "silencer", math.random(8, 15) },
-		[4] = { "sight of surrender", math.random(3, 8) }
+		[4] = { "sight of surrender", math.random(3, 8) },
 	},
 	globalEventTime = 30 * 60 * 1000, -- [30min] waiting time to get started again
 	timeBetweenraid = 1 * 60 * 1000, -- [1min] Waiting time between each raid
-	cleanraid = true -- Clean zone after globalEventTime
+	cleanraid = true, -- Clean zone after globalEventTime
 }
 
 local function raids(monster)
@@ -25,7 +25,9 @@ local function raids(monster)
 
 	local pos = Position(randX, randY, randZ)
 	local tile = Tile(pos)
-	if not tile then return false end
+	if not tile then
+		return false
+	end
 
 	if tile:isWalkable(true, false, false, false, true) then
 		Game.createMonster(monster, Position(randX, randY, randZ))
@@ -62,11 +64,11 @@ function lowerRoshamuulChamber.onUse(cid, item, fromPosition, itemEx, toPosition
 		end
 	end
 	if not hasPlayer then
-		player:sendCancelMessage('Use on Silencer Plateau is located in the south-eastern part of Roshamuul')
+		player:sendCancelMessage("Use on Silencer Plateau is located in the south-eastern part of Roshamuul")
 		return true
 	end
 	if hasMonsters then
-		player:sendCancelMessage('You need kill all monsters')
+		player:sendCancelMessage("You need kill all monsters")
 		return true
 	end
 
@@ -98,7 +100,7 @@ function lowerRoshamuulChamber.onUse(cid, item, fromPosition, itemEx, toPosition
 		end
 		item:remove(1)
 	else
-		player:sendCancelMessage('You need to wait')
+		player:sendCancelMessage("You need to wait")
 	end
 end
 

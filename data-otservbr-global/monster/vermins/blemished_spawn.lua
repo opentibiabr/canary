@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2093
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Antrum of the Fallen."
+	Locations = "Antrum of the Fallen.",
 }
 
 monster.health = 9000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 15
+	chance = 15,
 }
 
 monster.strategiesTarget = {
@@ -98,7 +98,7 @@ monster.loot = {
 	{ id = 3289, chance = 3760 }, -- staff
 	{ name = "wand of cosmic energy", chance = 3620 },
 	{ name = "blemished spawn tail", chance = 3530 },
-	{ name = "fur armor", chance = 1360 }
+	{ name = "fur armor", chance = 1360 },
 }
 
 monster.attacks = {
@@ -131,7 +131,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

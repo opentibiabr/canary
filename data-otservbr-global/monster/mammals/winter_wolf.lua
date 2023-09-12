@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 52
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "Ice Islands."
+	Locations = "Ice Islands.",
 }
 
 monster.health = 30
@@ -35,7 +35,7 @@ monster.manaCost = 260
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -75,11 +75,11 @@ monster.voices = {
 
 monster.loot = {
 	{ name = "meat", chance = 30000, maxCount = 2 },
-	{ name = "winter wolf fur", chance = 10000 }
+	{ name = "winter wolf fur", chance = 10000 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -20 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -20 },
 }
 
 monster.defenses = {
@@ -105,7 +105,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

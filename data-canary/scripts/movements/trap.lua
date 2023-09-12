@@ -2,7 +2,7 @@ local traps = {
 	[2145] = { transformTo = 2146, damage = { -50, -100 } },
 	[2147] = { transformTo = 2148, damage = { -50, -100 } },
 	[3481] = { transformTo = 3482, damage = { -15, -30 } },
-	[3944] = { transformTo = 3945, damage = { -15, -30 }, type = COMBAT_EARTHDAMAGE }
+	[3944] = { transformTo = 3945, damage = { -15, -30 }, type = COMBAT_EARTHDAMAGE },
 }
 
 local trap = MoveEvent()

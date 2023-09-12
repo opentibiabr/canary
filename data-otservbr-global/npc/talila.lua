@@ -11,24 +11,24 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 982
+	lookType = 982,
 }
 
 npcConfig.respawnType = {
 	period = RESPAWNPERIOD_NIGHT,
-	underground = false
+	underground = false,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Are you interested in a trade?' },
-	{ text = 'Dont touch the wings, theyre delicate.' },
-	{ text = 'Tralllalalla.' }
+	{ text = "Are you interested in a trade?" },
+	{ text = "Dont touch the wings, theyre delicate." },
+	{ text = "Tralllalalla." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -195,7 +195,7 @@ npcConfig.shop = {
 	{ itemName = "wild flowers", clientId = 25691, sell = 120 },
 	{ itemName = "wild growth rune", clientId = 3156, buy = 160 },
 	{ itemName = "wood cape", clientId = 3575, sell = 5000 },
-	{ itemName = "wooden spellbook", clientId = 25699, sell = 12000 }
+	{ itemName = "wooden spellbook", clientId = 25699, sell = 12000 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -206,7 +206,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

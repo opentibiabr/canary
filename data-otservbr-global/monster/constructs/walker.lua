@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1043
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 1,
-	Locations = "A few spawns in the Underground Glooth Factory, Glooth Factory, and Rathleton Sewers."
+	Locations = "A few spawns in the Underground Glooth Factory, Glooth Factory, and Rathleton Sewers.",
 }
 
 monster.health = 3000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -88,13 +88,13 @@ monster.loot = {
 	{ id = 239, chance = 3230 }, -- great health potion
 	{ id = 238, chance = 2300 }, -- great mana potion
 	{ id = 21169, chance = 1780 }, -- metal spats
-	{ id = 3554, chance = 450 } -- steel boots
+	{ id = 3554, chance = 450 }, -- steel boots
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 70, attack = 50 },
 	{ name = "walker skill reducer", interval = 2000, chance = 21, target = false },
-	{ name = "combat", interval = 2000, chance = 17, type = COMBAT_FIREDAMAGE, minDamage = -125, maxDamage = -245, length = 8, spread = 3, effect = CONST_ME_EXPLOSIONHIT, target = false }
+	{ name = "combat", interval = 2000, chance = 17, type = COMBAT_FIREDAMAGE, minDamage = -125, maxDamage = -245, length = 8, spread = 3, effect = CONST_ME_EXPLOSIONHIT, target = false },
 }
 
 monster.defenses = {
@@ -120,7 +120,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

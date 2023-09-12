@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1118
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 1,
-	Locations = "Lion's Rock temple."
+	Locations = "Lion's Rock temple.",
 }
 
 monster.health = 1000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -80,18 +80,18 @@ monster.loot = {
 	{ id = 3031, chance = 100000, maxCount = 68 }, -- gold coin
 	{ id = 3577, chance = 25000 }, -- meat
 	{ id = 3582, chance = 25000 }, -- ham
-	{ id = 9691, chance = 20000 } -- lion's mane
+	{ id = 9691, chance = 20000 }, -- lion's mane
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 70, attack = 40 }
+	{ name = "melee", interval = 2000, chance = 100, skill = 70, attack = 40 },
 }
 
 monster.defenses = {
 	defense = 26,
 	armor = 27,
 	mitigation = 1.02,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 250, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 250, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -111,7 +111,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -14,11 +14,7 @@ function zavarashHide.onThink(creature)
 		creature:addCondition(condition2)
 		creature:setHiddenHealth(creature)
 	end
-	if creature:getCondition(CONDITION_POISON, CONDITIONID_COMBAT) or
-			creature:getCondition(CONDITION_FIRE, CONDITIONID_COMBAT) or
-			creature:getCondition(CONDITION_ENERGY, CONDITIONID_COMBAT) or
-			creature:getCondition(CONDITION_BLEEDING, CONDITIONID_COMBAT) or
-			creature:getCondition(CONDITION_DAZZLED, CONDITIONID_COMBAT) then
+	if creature:getCondition(CONDITION_POISON, CONDITIONID_COMBAT) or creature:getCondition(CONDITION_FIRE, CONDITIONID_COMBAT) or creature:getCondition(CONDITION_ENERGY, CONDITIONID_COMBAT) or creature:getCondition(CONDITION_BLEEDING, CONDITIONID_COMBAT) or creature:getCondition(CONDITION_DAZZLED, CONDITIONID_COMBAT) then
 		creature:setOutfit({ lookType = 12, lookHead = 0, lookAddons = 0, lookLegs = 57, lookBody = 15, lookFeet = 85 }, -1)
 		creature:removeCondition(CONDITION_INVISIBLE)
 		creature:removeCondition(CONDITION_OUTFIT)

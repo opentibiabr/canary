@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1041
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Workshop Quarter, Glooth Factory, Underground Glooth Factory, \z
-		Oramond Dungeon (depending on Magistrate votes), Jaccus Maxxens Dungeon."
+		Oramond Dungeon (depending on Magistrate votes), Jaccus Maxxens Dungeon.",
 }
 
 monster.health = 2800
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -63,12 +63,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -76,7 +76,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "*clatter*", yell = false },
 	{ text = "*krrk*", yell = false },
-	{ text = "*frzzp*", yell = false }
+	{ text = "*frzzp*", yell = false },
 }
 
 monster.loot = {
@@ -96,20 +96,20 @@ monster.loot = {
 	{ id = 21171, chance = 330 }, -- metal bat
 	{ id = 21170, chance = 2930 }, -- gearwheel chain
 	{ id = 8896, chance = 5860 }, -- slightly rusted armor
-	{ id = 8899, chance = 4230 } -- slightly rusted legs
+	{ id = 8899, chance = 4230 }, -- slightly rusted legs
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 118, attack = 50 },
 	{ name = "rustheap golem electrify", interval = 2000, chance = 11, range = 7, target = false },
 	{ name = "frazzlemaw paralyze", interval = 2000, chance = 10, target = false },
-	{ name = "rustheap golem wave", interval = 2000, chance = 9, minDamage = -100, maxDamage = -210, target = false }
+	{ name = "rustheap golem wave", interval = 2000, chance = 9, minDamage = -100, maxDamage = -210, target = false },
 }
 
 monster.defenses = {
 	defense = 45,
 	armor = 40,
-	{ name = "speed", interval = 2000, chance = 11, speedChange = 428, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 6000 }
+	{ name = "speed", interval = 2000, chance = 11, speedChange = 428, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 6000 },
 }
 
 monster.elements = {
@@ -122,14 +122,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

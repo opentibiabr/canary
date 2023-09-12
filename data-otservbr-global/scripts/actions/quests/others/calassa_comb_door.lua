@@ -5,7 +5,7 @@ function othersCalassa.onUse(player, item, fromPosition, target, toPosition, isH
 	end
 
 	if player:getStorageValue(Storage.OutfitQuest.firstOrientalAddon) ~= 1 or player:hasOutfit(player:getSex() == PLAYERSEX_FEMALE and 150 or 146, 1) then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The door seems to be sealed against unwanted intruders.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The door seems to be sealed against unwanted intruders.")
 		return true
 	end
 

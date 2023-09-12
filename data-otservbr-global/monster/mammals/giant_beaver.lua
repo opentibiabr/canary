@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 85,
 	lookFeet = 105,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 5290
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -82,7 +82,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = true }
+	{ type = "bleed", condition = true },
 }
 
 mType:register(monster)

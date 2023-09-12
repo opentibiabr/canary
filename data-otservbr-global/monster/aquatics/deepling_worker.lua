@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 795
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Fiehonja, Coral mine."
+	Locations = "Fiehonja, Coral mine.",
 }
 
 monster.health = 190
@@ -38,7 +38,7 @@ monster.enemyFactions = { FACTION_DEATHLING, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -86,11 +86,11 @@ monster.loot = {
 	{ name = "heavy trident", chance = 510 },
 	{ name = "fish fin", chance = 350 },
 	{ name = "eye of a deepling", chance = 283 },
-	{ name = "small emerald", chance = 110, maxCount = 1 }
+	{ name = "small emerald", chance = 110, maxCount = 1 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -80, effect = CONST_ME_DRAWBLOOD }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -80, effect = CONST_ME_DRAWBLOOD },
 }
 
 monster.defenses = {
@@ -116,7 +116,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

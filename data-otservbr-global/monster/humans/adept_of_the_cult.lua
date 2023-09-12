@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 94,
 	lookFeet = 19,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 254
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Goroma, Liberty Bay's deeper cult dungeon, Formorgar Mines, Magician Quarter, Forbidden Temple."
+	Locations = "Goroma, Liberty Bay's deeper cult dungeon, Formorgar Mines, Magician Quarter, Forbidden Temple.",
 }
 
 monster.health = 430
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -73,8 +73,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "Ghoul", chance = 10, interval = 2000, count = 2 }
-	}
+		{ name = "Ghoul", chance = 10, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -101,13 +101,13 @@ monster.loot = {
 	{ name = "cultish robe", chance = 10080 },
 	{ name = "cultish symbol", chance = 90 },
 	{ name = "rope belt", chance = 10000 },
-	{ name = "broken key ring", chance = 120 }
+	{ name = "broken key ring", chance = 120 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90, condition = { type = CONDITION_POISON, totalDamage = 2, interval = 4000 } },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -70, maxDamage = -150, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = true },
-	{ name = "drunk", interval = 2000, chance = 10, range = 7, radius = 1, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true, duration = 4000 }
+	{ name = "drunk", interval = 2000, chance = 10, range = 7, radius = 1, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true, duration = 4000 },
 }
 
 monster.defenses = {
@@ -115,7 +115,7 @@ monster.defenses = {
 	armor = 33,
 	mitigation = 1.13,
 	{ name = "combat", interval = 3000, chance = 20, type = COMBAT_HEALING, minDamage = 45, maxDamage = 60, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_YELLOW_RINGS }
+	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_YELLOW_RINGS },
 }
 
 monster.elements = {
@@ -135,7 +135,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

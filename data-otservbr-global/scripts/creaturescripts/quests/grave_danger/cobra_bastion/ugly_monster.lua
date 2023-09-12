@@ -9,7 +9,7 @@ local randLoot = {
 	{ itemId = 3601 },
 	{ itemId = 30059 },
 	{ itemId = 30060 },
-	{ itemId = 30061 }
+	{ itemId = 30061 },
 }
 
 local uglyMonster = nil
@@ -18,7 +18,9 @@ local creatureToSpawn = {}
 
 local uglyMonsterSpawn = CreatureEvent("UglyMonsterSpawn")
 function uglyMonsterSpawn.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)
-	if not creature then return primaryDamage, primaryType, secondaryDamage, secondaryType end
+	if not creature then
+		return primaryDamage, primaryType, secondaryDamage, secondaryType
+	end
 	if creatureToSpawn[creature:getId()] then
 		return primaryDamage, primaryType, secondaryDamage, secondaryType
 	end
@@ -41,8 +43,12 @@ uglyMonsterSpawn:register()
 
 local uglyMonsterCleanup = CreatureEvent("UglyMonsterCleanup")
 function uglyMonsterCleanup.onDeath(creature, corpse, killer, mostDamage, unjustified, mostDamage_unjustified)
-	if not creature then return true end
-	if not creatureToSpawn[creature:getId()] then return true end
+	if not creature then
+		return true
+	end
+	if not creatureToSpawn[creature:getId()] then
+		return true
+	end
 	table.remove(creatureToSpawn, creature:getId())
 	return true
 end

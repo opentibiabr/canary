@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a makeshift home"
 monster.experience = 1800
 monster.outfit = {
-	lookTypeEx = 27366
+	lookTypeEx = 27366,
 }
 
 monster.health = 6900
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -56,17 +56,16 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -120, maxDamage = -200 },
-	{ name = "combat", interval = 2000, chance = 60, type = COMBAT_PHYSICALDAMAGE, minDamage = -70, maxDamage = -230, range = 3, shootEffect = CONST_ANI_ARROW, target = true }
+	{ name = "combat", interval = 2000, chance = 60, type = COMBAT_PHYSICALDAMAGE, minDamage = -70, maxDamage = -230, range = 3, shootEffect = CONST_ANI_ARROW, target = true },
 }
 
 monster.defenses = {
 	defense = 5,
-	armor = 10
+	armor = 10,
 	--	mitigation = ???,
 }
 
@@ -87,7 +86,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

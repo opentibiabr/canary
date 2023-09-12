@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -68,16 +68,16 @@ monster.loot = {
 	{ name = "gold coin", chance = 99990, maxCount = 10 },
 	{ name = "gold ingot", chance = 99990 },
 	{ name = "ham", chance = 50000 },
-	{ name = "piece of crocodile leather", chance = 99990 }
+	{ name = "piece of crocodile leather", chance = 99990 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -200 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -200 },
 }
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 15,
 	--	mitigation = ???,
 }
 
@@ -98,7 +98,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

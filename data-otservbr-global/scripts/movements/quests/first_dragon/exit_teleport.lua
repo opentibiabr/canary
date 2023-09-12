@@ -1,20 +1,20 @@
 local UniqueTable = {
 	-- Tazhadur exit
 	[35005] = {
-		backPos = { x = 33234, y = 32278, z = 12 }
+		backPos = { x = 33234, y = 32278, z = 12 },
 	},
 	-- Kalyassa exit
 	[35006] = {
-		backPos = { x = 33162, y = 31320, z = 5 }
+		backPos = { x = 33162, y = 31320, z = 5 },
 	},
 	-- Zorvorax exit
 	[35007] = {
-		backPos = { x = 33002, y = 31595, z = 11 }
+		backPos = { x = 33002, y = 31595, z = 11 },
 	},
 	-- Gelidrazah exit
 	[35008] = {
-		backPos = { x = 32278, y = 31367, z = 4 }
-	}
+		backPos = { x = 32278, y = 31367, z = 4 },
+	},
 }
 
 local exitTeleport = MoveEvent()

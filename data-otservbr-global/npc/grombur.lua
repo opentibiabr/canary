@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 114,
 	lookBody = 77,
 	lookLegs = 79,
-	lookFeet = 114
+	lookFeet = 114,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -56,7 +56,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	if not npcHandler:checkInteraction(npc, creature) then
 		return false
 	end
-
 
 	if MsgContains(message, "nokmir") then
 		if player:getStorageValue(Storage.HiddenCityOfBeregar.JusticeForAll) == 2 then

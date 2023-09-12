@@ -1,7 +1,7 @@
 local config = {
 	heal = true,
 	save = true,
-	effect = false
+	effect = false,
 }
 
 local advanceSave = CreatureEvent("AdvanceSave")
@@ -13,7 +13,7 @@ function advanceSave.onAdvance(player, skill, oldLevel, newLevel)
 
 	if config.effect then
 		player:getPosition():sendMagicEffect(math.random(CONST_ME_FIREWORK_YELLOW, CONST_ME_FIREWORK_BLUE))
-		player:say('LEVEL UP!', TALKTYPE_MONSTER_SAY)
+		player:say("LEVEL UP!", TALKTYPE_MONSTER_SAY)
 	end
 
 	if config.heal then

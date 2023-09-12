@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 221
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Tiquanda, Trapwood, the outskirts of Chor and Forbidden Lands, Alchemist Quarter in Yalahar, \z
-		Tiquanda Laboratory."
+		Tiquanda Laboratory.",
 }
 
 monster.health = 150
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -78,20 +78,20 @@ monster.loot = {
 	{ name = "shadow herb", chance = 11080 },
 	{ name = "nettle spit", chance = 9620 },
 	{ name = "sling herb", chance = 5680, maxCount = 2 },
-	{ name = "nettle blossom", chance = 970 }
+	{ name = "nettle blossom", chance = 970 },
 }
 
 monster.attacks = {
 	{ name = "combat", interval = 1000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -15, maxDamage = -40, range = 7, shootEffect = CONST_ANI_POISON, target = true },
 	-- poison
-	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -40, maxDamage = -100, range = 7, shootEffect = CONST_ANI_POISON, target = true }
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -40, maxDamage = -100, range = 7, shootEffect = CONST_ANI_POISON, target = true },
 }
 
 monster.defenses = {
 	defense = 0,
 	armor = 12,
 	mitigation = 0.86,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 8, maxDamage = 16, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 8, maxDamage = 16, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -111,7 +111,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

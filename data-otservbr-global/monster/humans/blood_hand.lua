@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 974
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Drefia."
+	Locations = "Drefia.",
 }
 
 monster.health = 700
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -92,7 +92,7 @@ monster.loot = {
 	{ name = "horoscope", chance = 7950 },
 	{ name = "blood tincture in a vial", chance = 15460 },
 	{ name = "incantation notes", chance = 8820 },
-	{ name = "pieces of magic chalk", chance = 6120 }
+	{ name = "pieces of magic chalk", chance = 6120 },
 }
 
 monster.attacks = {
@@ -100,7 +100,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -50, maxDamage = -100, radius = 4, effect = CONST_ME_MAGIC_RED, target = false },
 	{ name = "speed", interval = 2000, chance = 10, speedChange = -600, radius = 4, effect = CONST_ME_BLOCKHIT, target = true, duration = 15000 },
 	-- bleed
-	{ name = "condition", type = CONDITION_BLEEDING, interval = 2000, chance = 15, minDamage = -120, maxDamage = -160, radius = 6, effect = CONST_ME_HITAREA, target = false }
+	{ name = "condition", type = CONDITION_BLEEDING, interval = 2000, chance = 15, minDamage = -120, maxDamage = -160, radius = 6, effect = CONST_ME_HITAREA, target = false },
 }
 
 monster.defenses = {
@@ -108,7 +108,7 @@ monster.defenses = {
 	armor = 48,
 	mitigation = 1.10,
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 70, maxDamage = 90, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "effect", interval = 2000, chance = 10, radius = 1, effect = CONST_ME_INSECTS, target = false }
+	{ name = "effect", interval = 2000, chance = 10, radius = 1, effect = CONST_ME_INSECTS, target = false },
 }
 
 monster.elements = {
@@ -128,7 +128,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

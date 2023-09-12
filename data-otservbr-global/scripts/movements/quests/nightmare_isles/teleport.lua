@@ -1,13 +1,13 @@
 local setting = {
 	{ storage = 210001, teleportPosition = Position(33032, 32400, 7) }, -- entrance teleport Darashia Northwest
 	{ storage = 210002, teleportPosition = Position(33215, 32273, 7) }, -- entrance teleport Darashia North
-	{ storage = 210016, teleportPosition = Position(33255, 32678, 7) } -- entrance teleport Ankrahmun
+	{ storage = 210016, teleportPosition = Position(33255, 32678, 7) }, -- entrance teleport Ankrahmun
 }
 
 local teleports = {
 	[64001] = 210001, -- northwest Darashia
 	[64002] = 210002, -- north Darashia
-	[64003] = 210016 -- north Ankrahmun
+	[64003] = 210016, -- north Ankrahmun
 }
 
 local teleport = MoveEvent()

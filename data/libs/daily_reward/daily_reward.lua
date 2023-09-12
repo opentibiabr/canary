@@ -10,7 +10,7 @@ DAILY_REWARD_LAST = 7
 -- Global tables
 DailyRewardBonus = {
 	Stamina = {},
-	Soul = {}
+	Soul = {},
 }
 
 function RegenStamina(id, delay)
@@ -63,22 +63,22 @@ end
 
 function string.diff(self)
 	local format = {
-		{ 'day', self / 60 / 60 / 24 },
-		{ 'hour', self / 60 / 60 % 24 },
-		{ 'minute', self / 60 % 60 },
-		{ 'second', self % 60 }
+		{ "day", self / 60 / 60 / 24 },
+		{ "hour", self / 60 / 60 % 24 },
+		{ "minute", self / 60 % 60 },
+		{ "second", self % 60 },
 	}
 
 	local out = {}
 	for k, t in ipairs(format) do
 		local v = math.floor(t[2])
-		if (v > 0) then
-			table.insert(out, (k < #format and (#out > 0 and ', ' or '') or ' and ') .. v .. ' ' .. t[1] .. (v ~= 1 and 's' or ''))
+		if v > 0 then
+			table.insert(out, (k < #format and (#out > 0 and ", " or "") or " and ") .. v .. " " .. t[1] .. (v ~= 1 and "s" or ""))
 		end
 	end
 	local ret = table.concat(out)
-	if ret:len() < 16 and ret:find('second') then
-		local a, b = ret:find(' and ')
+	if ret:len() < 16 and ret:find("second") then
+		local a, b = ret:find(" and ")
 		ret = ret:sub(b + 1)
 	end
 	return ret

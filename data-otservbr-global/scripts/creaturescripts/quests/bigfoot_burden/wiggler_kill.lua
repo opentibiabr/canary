@@ -5,7 +5,7 @@ function wigglerKill.onKill(creature, target)
 		return true
 	end
 
-	if targetMonster:getName():lower() ~= 'wiggler' then
+	if targetMonster:getName():lower() ~= "wiggler" then
 		return true
 	end
 

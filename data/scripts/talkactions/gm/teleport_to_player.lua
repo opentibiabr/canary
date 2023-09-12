@@ -25,7 +25,7 @@ function teleportToCreature.onSay(player, words, param)
 				table.insert(playerList, targetPlayer)
 			end
 		end
-		:: continue ::
+		::continue::
 	end
 
 	if #playerList == 0 then
@@ -33,10 +33,10 @@ function teleportToCreature.onSay(player, words, param)
 		return false
 	end
 
-	local window = ModalWindow {
+	local window = ModalWindow({
 		title = "Teleport to Player",
-		message = 'select player to teleport'
-	}
+		message = "select player to teleport",
+	})
 	for _, targetPlayer in pairs(playerList) do
 		if targetPlayer then
 			window:addChoice(targetPlayer:getName(), function(player, button, choice)

@@ -4,7 +4,7 @@ function forgottenKnowledgeFount.onUse(player, item, fromPosition, target, toPos
 		return false
 	end
 	player:addItem(23810)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'A phial of fresh pond water. It looks crystal clear and sparkles a little.')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "A phial of fresh pond water. It looks crystal clear and sparkles a little.")
 	player:setStorageValue(Storage.ForgottenKnowledge.Phial, 1)
 	return true
 end

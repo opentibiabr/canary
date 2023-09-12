@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 100,
 	lookLegs = 117,
 	lookFeet = 115,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -70,7 +70,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 end
 --Basic
-keywordHandler:addKeyword({ "alori mort" }, StdModule.say, { npcHandler = npcHandler, text = "Hold your tongue." }, function(player) return player:getStorageValue(BloodBrothers.Mission03) == 1 end)
+keywordHandler:addKeyword({ "alori mort" }, StdModule.say, { npcHandler = npcHandler, text = "Hold your tongue." }, function(player)
+	return player:getStorageValue(BloodBrothers.Mission03) == 1
+end)
 
 npcHandler:setMessage(MESSAGE_GREET, "I'd rather be left in {peace}. Keep it short.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 30
 monster.maxHealth = 30
@@ -23,7 +22,7 @@ monster.manaCost = 250
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -61,11 +60,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 5120, maxCount = 3 }
+	{ name = "gold coin", chance = 5120, maxCount = 3 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -8 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -8 },
 }
 
 monster.defenses = {
@@ -91,7 +90,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 57,
 	lookLegs = 38,
 	lookFeet = 76,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local function greetCallback(npc, creature)
@@ -32,13 +32,11 @@ local function greetCallback(npc, creature)
 	if player:getStorageValue(Storage.CultsOfTibia.Minotaurs.Access) < 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "Gerimor is right. As an expert for minotaurs I am researching these creatures for years. I thought I already knew a lot but the monsters in this cave are {different}. It's a big {mystery}.")
 		npcHandler:setTopic(playerId, 1)
-	elseif (player:getStorageValue(Storage.CultsOfTibia.Minotaurs.JamesfrancisTask) >= 0 and player:getStorageValue(Storage.CultsOfTibia.Minotaurs.JamesfrancisTask) <= 50)
-			and player:getStorageValue(Storage.CultsOfTibia.Minotaurs.Mission) < 3 then
+	elseif (player:getStorageValue(Storage.CultsOfTibia.Minotaurs.JamesfrancisTask) >= 0 and player:getStorageValue(Storage.CultsOfTibia.Minotaurs.JamesfrancisTask) <= 50) and player:getStorageValue(Storage.CultsOfTibia.Minotaurs.Mission) < 3 then
 		npcHandler:setMessage(MESSAGE_GREET, "How is your {mission} going?")
 		npcHandler:setTopic(playerId, 5)
 	elseif player:getStorageValue(Storage.CultsOfTibia.Minotaurs.Mission) == 4 then
-		npcHandler:setMessage(MESSAGE_GREET, { "You say the minotaurs were controlled by a very powerful boss they worshipped. This explains why they had so much more power than the normal ones. ...",
-			"I'm very thankful. Please go to the Druid of Crunor and tell him what you've seen. He might be interested in that." })
+		npcHandler:setMessage(MESSAGE_GREET, { "You say the minotaurs were controlled by a very powerful boss they worshipped. This explains why they had so much more power than the normal ones. ...", "I'm very thankful. Please go to the Druid of Crunor and tell him what you've seen. He might be interested in that." })
 		player:setStorageValue(Storage.CultsOfTibia.Minotaurs.Mission, 5)
 		npcHandler:setTopic(playerId, 10)
 	end
@@ -47,7 +45,7 @@ end
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Don\'t enter this area if you are an inexperienced fighter! It would be your end!' }
+	{ text = "Don't enter this area if you are an inexperienced fighter! It would be your end!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -76,7 +74,6 @@ end
 npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
-
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
@@ -117,7 +114,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Well, bye then.')
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)

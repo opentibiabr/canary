@@ -2,7 +2,7 @@ local config = {
 	[940] = { targetId = 7742, transformId = 7746, effect = CONST_ME_BIGPLANTS },
 	[941] = { targetId = 7743, transformId = 7745 },
 	[944] = { targetId = 7741, transformId = 7744, effect = CONST_ME_ICEATTACK },
-	[945] = { targetId = 7737, createId = 2126 }
+	[945] = { targetId = 7737, createId = 2126 },
 }
 
 local elementalSpheresSouls1 = Action()

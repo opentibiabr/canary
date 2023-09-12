@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 43
@@ -27,7 +27,7 @@ monster.Bestiary = {
 		Green Claw Swamp, beneath Folda, Maze of Lost Souls, Plains of Havoc, \z
 		Venore and Ankrahmun Dragon Lairs, beneath Edron Graveyard, Ancient Temple, \z
 		Hellgate, Mad Mage Room, Ankrahmun Tombs, Treasure Island, Mal'ouquah, Ramoa, \z
-		Cyclopolis, Ghostlands, Vengoth, Lion's Rock."
+		Cyclopolis, Ghostlands, Vengoth, Lion's Rock.",
 }
 
 monster.health = 45
@@ -39,7 +39,7 @@ monster.manaCost = 310
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -78,11 +78,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "scorpion tail", chance = 4930 }
+	{ name = "scorpion tail", chance = 4930 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50, condition = { type = CONDITION_POISON, totalDamage = 340, interval = 4000 } }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50, condition = { type = CONDITION_POISON, totalDamage = 340, interval = 4000 } },
 }
 
 monster.defenses = {
@@ -108,7 +108,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

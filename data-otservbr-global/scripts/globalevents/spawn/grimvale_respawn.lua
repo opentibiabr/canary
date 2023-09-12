@@ -1,5 +1,5 @@
 local config = {
-	position = { fromPosition = Position(33330, 31670, 7), toPosition = Position(33350, 31690, 7) }
+	position = { fromPosition = Position(33330, 31670, 7), toPosition = Position(33350, 31690, 7) },
 }
 local spawnDay = 13
 local currentDay = os.date("%d")
@@ -27,8 +27,8 @@ end
 local grimvaleRespawn = GlobalEvent("grimvale respawn")
 function grimvaleRespawn.onStartup()
 	if spawnDay == tonumber(currentDay) then
-		table.insert(monsters, 'wereboar')
-		table.insert(monsters, 'werebadger')
+		table.insert(monsters, "wereboar")
+		table.insert(monsters, "werebadger")
 		for x = config.position.fromPosition.x, config.position.toPosition.x do
 			for y = config.position.fromPosition.y, config.position.toPosition.y do
 				if math.random(1000) >= 983 then
@@ -39,10 +39,10 @@ function grimvaleRespawn.onStartup()
 			end
 		end
 	else
-		table.insert(monsters, 'bandit')
-		table.insert(monsters, 'badger')
-		table.insert(monsters, 'blue butterfly')
-		table.insert(monsters, 'yellow butterfly')
+		table.insert(monsters, "bandit")
+		table.insert(monsters, "badger")
+		table.insert(monsters, "blue butterfly")
+		table.insert(monsters, "yellow butterfly")
 		for x = config.position.fromPosition.x, config.position.toPosition.x do
 			for y = config.position.fromPosition.y, config.position.toPosition.y do
 				if math.random(1000) >= 983 then

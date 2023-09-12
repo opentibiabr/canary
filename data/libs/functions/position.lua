@@ -7,7 +7,7 @@ Position.directionOffset = {
 	[DIRECTION_SOUTHWEST] = { x = -1, y = 1 },
 	[DIRECTION_SOUTHEAST] = { x = 1, y = 1 },
 	[DIRECTION_NORTHWEST] = { x = -1, y = -1 },
-	[DIRECTION_NORTHEAST] = { x = 1, y = -1 }
+	[DIRECTION_NORTHEAST] = { x = 1, y = -1 },
 }
 
 function Position:getNextPosition(direction, steps)
@@ -56,18 +56,16 @@ function Position:isInRange(from, to)
 		nW = {
 			x = (from.x < to.x and from.x or to.x),
 			y = (from.y < to.y and from.y or to.y),
-			z = (from.z < to.z and from.z or to.z)
+			z = (from.z < to.z and from.z or to.z),
 		},
 		sE = {
 			x = (to.x > from.x and to.x or from.x),
 			y = (to.y > from.y and to.y or from.y),
-			z = (to.z > from.z and to.z or from.z)
-		}
+			z = (to.z > from.z and to.z or from.z),
+		},
 	}
 
-	if self.x >= zone.nW.x and self.x <= zone.sE.x
-			and self.y >= zone.nW.y and self.y <= zone.sE.y
-			and self.z >= zone.nW.z and self.z <= zone.sE.z then
+	if self.x >= zone.nW.x and self.x <= zone.sE.x and self.y >= zone.nW.y and self.y <= zone.sE.y and self.z >= zone.nW.z and self.z <= zone.sE.z then
 		return true
 	end
 	return false
@@ -84,7 +82,9 @@ function Position:moveDownstairs()
 
 	local defaultPosition = self + Position.directionOffset[DIRECTION_SOUTH]
 	local tile = Tile(defaultPosition)
-	if not tile then return false end
+	if not tile then
+		return false
+	end
 
 	if not tile:isWalkable(false, false, false, false, true) then
 		for direction = DIRECTION_NORTH, DIRECTION_NORTHEAST do
@@ -94,7 +94,9 @@ function Position:moveDownstairs()
 
 			local position = self + Position.directionOffset[direction]
 			local newTile = Tile(position)
-			if not newTile then return false end
+			if not newTile then
+				return false
+			end
 
 			if newTile:isWalkable(false, false, false, false, true) then
 				swap(self, position)
@@ -134,8 +136,7 @@ end
 
 function Position.removeMonster(centerPosition, rangeX, rangeY)
 	local spectators = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
-	local spectators,
-	spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
+	local spectators, spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
 	for i = 1, #spectators do
 		spectator = spectators[i]
 		if spectator:isMonster() then
@@ -177,24 +178,24 @@ end
 
 function Position.getDirectionTo(pos1, pos2)
 	local dir = DIRECTION_NORTH
-	if (pos1.x > pos2.x) then
+	if pos1.x > pos2.x then
 		dir = DIRECTION_WEST
-		if (pos1.y > pos2.y) then
+		if pos1.y > pos2.y then
 			dir = DIRECTION_NORTHWEST
-		elseif (pos1.y < pos2.y) then
+		elseif pos1.y < pos2.y then
 			dir = DIRECTION_SOUTHWEST
 		end
-	elseif (pos1.x < pos2.x) then
+	elseif pos1.x < pos2.x then
 		dir = DIRECTION_EAST
-		if (pos1.y > pos2.y) then
+		if pos1.y > pos2.y then
 			dir = DIRECTION_NORTHEAST
-		elseif (pos1.y < pos2.y) then
+		elseif pos1.y < pos2.y then
 			dir = DIRECTION_SOUTHEAST
 		end
 	else
-		if (pos1.y > pos2.y) then
+		if pos1.y > pos2.y then
 			dir = DIRECTION_NORTH
-		elseif (pos1.y < pos2.y) then
+		elseif pos1.y < pos2.y then
 			dir = DIRECTION_SOUTH
 		end
 	end

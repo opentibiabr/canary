@@ -26,7 +26,9 @@ function familiarOnLogin.onLogin(player)
 		end
 	end
 
-	if not familiarName then return true end
+	if not familiarName then
+		return true
+	end
 	player:createFamiliar(familiarName, familiarTimeLeft)
 	return true
 end

@@ -135,7 +135,7 @@ function heartDestructionCracklers.onUse(player, item, fromPosition, itemEx, toP
 			Position(32079, 31314, 13),
 			Position(32079, 31315, 13),
 			Position(32079, 31316, 13),
-			Position(32079, 31317, 13)
+			Position(32079, 31317, 13),
 		},
 
 		newPos = { x = 32219, y = 31325, z = 14 },
@@ -152,7 +152,7 @@ function heartDestructionCracklers.onUse(player, item, fromPosition, itemEx, toP
 					if tile then
 						local playerTile = tile:getTopCreature()
 						if playerTile and playerTile:isPlayer() then
-							storePlayers[#storePlayers+1] = playerTile
+							storePlayers[#storePlayers + 1] = playerTile
 						end
 					end
 				end

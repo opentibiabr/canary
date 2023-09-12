@@ -3,7 +3,7 @@ local words = {
 	"WAKE UP!",
 	"TIC TAC",
 	"TAC",
-	"TIC"
+	"TIC",
 }
 
 local clockTile = MoveEvent()

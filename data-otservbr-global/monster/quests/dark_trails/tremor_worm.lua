@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 125000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -65,7 +65,7 @@ monster.voices = {
 monster.loot = {
 	{ id = 3035, chance = 33000, maxCount = 5 }, -- platinum coin
 	{ id = 239, chance = 10000 }, -- great health potion
-	{ id = 238, chance = 10000 } -- great mana potion
+	{ id = 238, chance = 10000 }, -- great mana potion
 }
 
 monster.attacks = {
@@ -74,7 +74,7 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 100,
-	armor = 100
+	armor = 100,
 	--	mitigation = ???,
 }
 
@@ -95,7 +95,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

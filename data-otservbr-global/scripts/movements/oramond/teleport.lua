@@ -1,15 +1,15 @@
 local setting = {
-	[50510] = { position = Position(33459, 31715, 9), message = 'Slrrp!', premium = false }, --entrance
-	[50511] = { position = Position(33668, 31887, 5), message = 'Slrrp!', premium = false }, --exit
+	[50510] = { position = Position(33459, 31715, 9), message = "Slrrp!", premium = false }, --entrance
+	[50511] = { position = Position(33668, 31887, 5), message = "Slrrp!", premium = false }, --exit
 
-	[50512] = { position = Position(31254, 32604, 9), message = 'Slrrp!', premium = false }, --minos entrance
-	[50513] = { position = Position(31061, 32605, 9), message = 'Slrrp!', premium = false }, --golens entrance
+	[50512] = { position = Position(31254, 32604, 9), message = "Slrrp!", premium = false }, --minos entrance
+	[50513] = { position = Position(31061, 32605, 9), message = "Slrrp!", premium = false }, --golens entrance
 
-	[50514] = { position = Position(33668, 31887, 5), message = 'Slrrp!', premium = false }, --minos exit
-	[50515] = { position = Position(33668, 31887, 5), message = 'Slrrp!', premium = false }, --golens exit
+	[50514] = { position = Position(33668, 31887, 5), message = "Slrrp!", premium = false }, --minos exit
+	[50515] = { position = Position(33668, 31887, 5), message = "Slrrp!", premium = false }, --golens exit
 
-	[50624] = { position = Position(33668, 31887, 5), message = 'Slrrp!', premium = false }, --minos exit
-	[50625] = { position = Position(33668, 31887, 5), message = 'Slrrp!', premium = false }, --golens exit
+	[50624] = { position = Position(33668, 31887, 5), message = "Slrrp!", premium = false }, --minos exit
+	[50625] = { position = Position(33668, 31887, 5), message = "Slrrp!", premium = false }, --golens exit
 }
 
 local oramondTeleports = MoveEvent()

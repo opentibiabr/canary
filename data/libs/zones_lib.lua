@@ -54,7 +54,9 @@ end
 
 function Zone:isInZone(position)
 	local zones = position:getZones()
-	if not zones then return false end
+	if not zones then
+		return false
+	end
 	for _, zone in ipairs(zones) do
 		if zone == self then
 			return true
@@ -80,14 +82,16 @@ setmetatable(ZoneEvent, {
 		obj.onEnter = nil
 		obj.onLeave = nil
 		return obj
-	end
+	end,
 })
 
 function ZoneEvent:register()
 	if self.beforeEnter then
 		local beforeEnter = EventCallback()
 		function beforeEnter.zoneBeforeCreatureEnter(zone, creature)
-			if zone ~= self.zone then return true end
+			if zone ~= self.zone then
+				return true
+			end
 			return self.beforeEnter(zone, creature)
 		end
 
@@ -97,7 +101,9 @@ function ZoneEvent:register()
 	if self.beforeLeave then
 		local beforeLeave = EventCallback()
 		function beforeLeave.zoneBeforeCreatureLeave(zone, creature)
-			if zone ~= self.zone then return true end
+			if zone ~= self.zone then
+				return true
+			end
 			return self.beforeLeave(zone, creature)
 		end
 
@@ -107,7 +113,9 @@ function ZoneEvent:register()
 	if self.afterEnter then
 		local afterEnter = EventCallback()
 		function afterEnter.zoneAfterCreatureEnter(zone, creature)
-			if zone ~= self.zone then return true end
+			if zone ~= self.zone then
+				return true
+			end
 			self.afterEnter(zone, creature)
 		end
 
@@ -117,7 +125,9 @@ function ZoneEvent:register()
 	if self.afterLeave then
 		local afterLeave = EventCallback()
 		function afterLeave.zoneAfterCreatureLeave(zone, creature)
-			if zone ~= self.zone then return true end
+			if zone ~= self.zone then
+				return true
+			end
 			self.afterLeave(zone, creature)
 		end
 

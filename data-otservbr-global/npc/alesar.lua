@@ -13,11 +13,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 80
+	lookType = 80,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.shop = {
@@ -45,7 +45,7 @@ npcConfig.shop = {
 	{ itemName = "titan axe", clientId = 7413, sell = 4000 },
 	{ itemName = "tower shield", clientId = 3428, sell = 8000 },
 	{ itemName = "vampire shield", clientId = 3434, sell = 15000 },
-	{ itemName = "warrior helmet", clientId = 3369, sell = 5000 }
+	{ itemName = "warrior helmet", clientId = 3369, sell = 5000 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -56,8 +56,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)

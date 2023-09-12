@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 631
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Steppe of Zao, Lion's Rock, Zao Terramite Caves, Darama Terramite Cave, \z
-		Terramite Breeding Tunnels. Also raids desert north of Ankrahmun."
+		Terramite Breeding Tunnels. Also raids desert north of Ankrahmun.",
 }
 
 monster.health = 365
@@ -36,7 +36,7 @@ monster.manaCost = 505
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -78,12 +78,12 @@ monster.loot = {
 	{ name = "gold coin", chance = 97520, maxCount = 45 },
 	{ name = "terramite shell", chance = 7730 },
 	{ name = "terramite eggs", chance = 4680, maxCount = 3 },
-	{ name = "terramite legs", chance = 14880 }
+	{ name = "terramite legs", chance = 14880 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -5, maxDamage = -16, range = 7, shootEffect = CONST_ANI_POISON, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -5, maxDamage = -16, range = 7, shootEffect = CONST_ANI_POISON, target = true },
 }
 
 monster.defenses = {
@@ -109,7 +109,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -34,7 +34,7 @@ function machineDeath.onDeath(creature, attacker)
 			Position(33133, 31856, 15),
 			Position(33140, 31856, 15),
 			Position(33140, 31863, 15),
-			Position(33133, 31863, 15)
+			Position(33133, 31863, 15),
 		}
 		for _, position in pairs(itensToMonster) do
 			local tile = Tile(position)

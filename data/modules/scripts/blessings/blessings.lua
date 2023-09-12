@@ -15,8 +15,8 @@ Blessings.Credits = {
 		"WotE data\\movements\\scripts\\quests\\wrath of the emperor\\realmTeleport.lua has line checking if player has bless 1??? wtf",
 		"add blessings module support npc\\lib\\npcsystem\\modules.lua",
 		"Fix store buying bless",
-		"Check if store is inside lua or source..."
-	}
+		"Check if store is inside lua or source...",
+	},
 }
 
 Blessings.Config = {
@@ -25,7 +25,7 @@ Blessings.Config = {
 	InquisitonBlessPriceMultiplier = 1.1, -- Bless price multiplied by henricus
 	SkulledDeathLoseStoreItem = true, -- Destroy all items on store when dying with red/blackskull
 	InventoryGlowOnFiveBless = true, -- Glow in yellow inventory items when the player has 5 or more bless,
-	Debug = false -- Prin debug messages in console if enabled
+	Debug = false, -- Prin debug messages in console if enabled
 }
 
 dofile(CORE_DIRECTORY .. "/modules/scripts/blessings/assets.lua")
@@ -63,22 +63,21 @@ Blessings.DebugPrint = function(content, pre, pos)
 		logger.debug(content)
 		logger.debug("[Blessings] END BOOL - {}", pos)
 	else
-		logger.debug("[Blessings] pre:[{}], content[{}], pos[{}]",
-			pre, content, pos)
+		logger.debug("[Blessings] pre:[{}], content[{}], pos[{}]", pre, content, pos)
 	end
 end
 
 Blessings.C_Packet = {
-	OpenWindow = 0xCF
+	OpenWindow = 0xCF,
 }
 
 Blessings.S_Packet = {
 	BlessDialog = 0x9B,
-	BlessStatus = 0x9C
+	BlessStatus = 0x9C,
 }
 
 function onRecvbyte(player, msg, byte)
-	if (byte == Blessings.C_Packet.OpenWindow) then
+	if byte == Blessings.C_Packet.OpenWindow then
 		Blessings.sendBlessDialog(player)
 	end
 end
@@ -91,7 +90,9 @@ Blessings.sendBlessStatus = function(player, curBless)
 	-- why not using ProtocolGame::sendBlessStatus ?
 	local msg = NetworkMessage()
 	msg:addByte(Blessings.S_Packet.BlessStatus)
-	callback = function(k) return true end
+	callback = function(k)
+		return true
+	end
 	if curBless == nil then
 		curBless = player:getBlessings(callback) -- ex: {1, 2, 5, 7}
 	end
@@ -129,7 +130,9 @@ Blessings.sendBlessDialog = function(player)
 	local msg = NetworkMessage()
 	msg:addByte(Blessings.S_Packet.BlessDialog)
 
-	callback = function(k) return true end
+	callback = function(k)
+		return true
+	end
 	local curBless = player:getBlessings()
 
 	msg:addByte(Blessings.Config.HasToF and #Blessings.All or (#Blessings.All - 1)) -- total blessings
@@ -173,7 +176,6 @@ Blessings.sendBlessDialog = function(player)
 
 	msg:addByte(haveSkull and 1 or 0) -- is red/black skull
 	msg:addByte(hasAol and 1 or 0)
-
 
 	-- History
 	local historyAmount = 1
@@ -230,12 +232,12 @@ Blessings.useCharm = function(player, item)
 			end
 
 			if player:hasBlessing(value.id) then
-				player:say('You already possess this blessing.', TALKTYPE_MONSTER_SAY)
+				player:say("You already possess this blessing.", TALKTYPE_MONSTER_SAY)
 				return true
 			end
 
 			player:addBlessing(value.id, 1)
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, value.name .. ' protects you.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, value.name .. " protects you.")
 			player:getPosition():sendMagicEffect(CONST_ME_LOSEENERGY)
 			item:remove(1)
 			return true
@@ -244,11 +246,11 @@ Blessings.useCharm = function(player, item)
 end
 
 Blessings.checkBless = function(player)
-	local result, bless = 'Received blessings:'
+	local result, bless = "Received blessings:"
 	for k, v in pairs(Blessings.All) do
-		result = player:hasBlessing(k) and result .. '\n' .. v.name or result
+		result = player:hasBlessing(k) and result .. "\n" .. v.name or result
 	end
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 20 > result:len() and 'No blessings received.' or result)
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 20 > result:len() and "No blessings received." or result)
 	return true
 end
 
@@ -258,15 +260,19 @@ Blessings.doAdventurerBlessing = function(player)
 	end
 	player:addMissingBless(true, true)
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You received adventurers blessings for you being level lower than ' .. Blessings.Config.AdventurerBlessingLevel .. '!')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You received adventurers blessings for you being level lower than " .. Blessings.Config.AdventurerBlessingLevel .. "!")
 	player:getPosition():sendMagicEffect(CONST_ME_HOLYDAMAGE)
 	return true
 end
 
 Blessings.getInquisitionPrice = function(player)
 	-- Find how many missing bless we have and give out the price
-	inquifilter = function(b) return b.inquisition end
-	donthavefilter = function(p, b) return not p:hasBlessing(b) end
+	inquifilter = function(b)
+		return b.inquisition
+	end
+	donthavefilter = function(p, b)
+		return not p:hasBlessing(b)
+	end
 	local missing = #player:getBlessings(inquifilter, donthavefilter)
 	local totalBlessPrice = Blessings.getBlessingsCost(player:getLevel(), false) * missing * Blessings.Config.InquisitonBlessPriceMultiplier
 	return missing, totalBlessPrice
@@ -299,7 +305,7 @@ Blessings.DropLoot = function(player, corpse, chance, skulled)
 			for i = 0, inbox:getSize() do
 				local item = inbox:getItem(i)
 				if item then
-					toBeDeleted[#toBeDeleted+1] = item.uid
+					toBeDeleted[#toBeDeleted + 1] = item.uid
 				end
 			end
 			if #toBeDeleted > 0 then
@@ -338,7 +344,9 @@ Blessings.BuyAllBlesses = function(player)
 	local blessCost = Blessings.getBlessingsCost(player:getLevel(), true)
 	local PvPBlessCost = Blessings.getPvpBlessingCost(player:getLevel(), true)
 	local hasToF = Blessings.Config.HasToF and player:hasBlessing(1) or true
-	donthavefilter = function(p, b) return not p:hasBlessing(b) end
+	donthavefilter = function(p, b)
+		return not p:hasBlessing(b)
+	end
 	local missingBless = player:getBlessings(nil, donthavefilter)
 	local missingBlessAmt = #missingBless + (hasToF and 0 or 1)
 	local totalCost = blessCost * #missingBless
@@ -382,7 +390,6 @@ Blessings.PlayerDeath = function(player, corpse, killer)
 	end
 	--Blessings.ClearBless(player, killer, curBless) IMPLEMENTED IN SOURCE BECAUSE THIS WAS HAPPENING BEFORE SKILL/EXP CALCULATIONS
 
-
 	if not player:getSlotItem(CONST_SLOT_BACKPACK) then
 		player:addItem(ITEM_BAG, 1, false, CONST_SLOT_BACKPACK)
 	end
@@ -393,11 +400,15 @@ end
 function Player.getBlessings(self, filter, hasblessingFilter)
 	local blessings = {}
 	if filter == nil then
-		filter = function(b) return b.losscount end
+		filter = function(b)
+			return b.losscount
+		end
 	end
 
 	if hasblessingFilter == nil then
-		hasblessingFilter = function(p, b) return p:hasBlessing(b) end
+		hasblessingFilter = function(p, b)
+			return p:hasBlessing(b)
+		end
 	end
 	for k, v in pairs(Blessings.All) do
 		if filter(v) and hasblessingFilter(self, k) then

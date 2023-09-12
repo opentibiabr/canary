@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 56
@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Almost everywhere in tibia, they seem to have a nest-like place in Greenshore, \z
 		a semi-large spawn at the entrance to the Port Hope troll cave and in cave near Ankrahmun ship. \z
-		Also appears in Rat Plague in Thais and Rat Plague in Rookgaard."
+		Also appears in Rat Plague in Thais and Rat Plague in Rookgaard.",
 }
 
 monster.health = 30
@@ -37,7 +37,7 @@ monster.manaCost = 250
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -80,11 +80,11 @@ monster.loot = {
 	{ name = "gold coin", chance = 85000, maxCount = 2 },
 	{ name = "cookie", chance = 750 },
 	{ id = 3607, chance = 30000 }, -- cheese
-	{ name = "worm", chance = 9700, maxCount = 2 }
+	{ name = "worm", chance = 9700, maxCount = 2 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10 },
 }
 
 monster.defenses = {
@@ -110,7 +110,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 796
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Hive, Hive Outpost."
+	Locations = "Hive, Hive Outpost.",
 }
 
 monster.health = 950
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -78,11 +78,11 @@ monster.loot = {
 	{ name = "epee", chance = 560 },
 	{ name = "health potion", chance = 5090 },
 	{ name = "compound eye", chance = 15380 },
-	{ id = 14225, chance = 14990 } -- dung ball
+	{ id = 14225, chance = 14990 }, -- dung ball
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -163, condition = { type = CONDITION_POISON, totalDamage = 160, interval = 4000 } }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -163, condition = { type = CONDITION_POISON, totalDamage = 160, interval = 4000 } },
 }
 
 monster.defenses = {
@@ -108,7 +108,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

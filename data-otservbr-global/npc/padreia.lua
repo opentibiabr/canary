@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 87,
 	lookLegs = 85,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,29 +58,28 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	-- Tibia tales quest
 	if MsgContains(message, "cough syrup") then
 		npcHandler:say("Do you want to buy a bottle of cough syrup for 50 gold?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif MsgContains(message, 'mission') then
+	elseif MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.TibiaTales.TheExterminator) == -1 then
 			npcHandler:say({
-				'Oh ' .. player:getName() .. ', thank god you came to me. Last night, I had a vision about an upcoming plague here in Carlin. ...',
-				'It will originate from slimes that will swarm out of the sewers and infect every citizen with a deadly disease. Are you willing to help me save Carlin?'
+				"Oh " .. player:getName() .. ", thank god you came to me. Last night, I had a vision about an upcoming plague here in Carlin. ...",
+				"It will originate from slimes that will swarm out of the sewers and infect every citizen with a deadly disease. Are you willing to help me save Carlin?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif player:getStorageValue(Storage.TibiaTales.TheExterminator) == 1 then
-			npcHandler:say('You MUST find that slime pool immediately or life here in Carlin will not be the same anymore.', npc, creature)
+			npcHandler:say("You MUST find that slime pool immediately or life here in Carlin will not be the same anymore.", npc, creature)
 		elseif player:getStorageValue(Storage.TibiaTales.TheExterminator) == 2 then
 			local itemId = { 3033, 3032, 3030, 3029 }
 			for i = 1, #itemId do
 				player:addItem(itemId[i], 1)
 			end
 			player:setStorageValue(Storage.TibiaTales.TheExterminator, 3)
-			npcHandler:say('You did it! Even if only few of the Carliners will ever know about that, you saved all of their lives. Here, take this as a reward. Farewell!', npc, creature)
+			npcHandler:say("You did it! Even if only few of the Carliners will ever know about that, you saved all of their lives. Here, take this as a reward. Farewell!", npc, creature)
 		else
-			npcHandler:say('Maybe the guards have something to do for you or know someone who could need some help.', npc, creature)
+			npcHandler:say("Maybe the guards have something to do for you or know someone who could need some help.", npc, creature)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
@@ -95,8 +94,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:addItem(135, 1)
 			player:setStorageValue(Storage.TibiaTales.TheExterminator, 1)
 			npcHandler:say({
-				'I knew I could count on you. Take this highly intensified vermin poison. In my vision, I saw some kind of \'pool\' where these slimes came from. ...',
-				'Pour the poison in the water to stop the demise of Carlin. Tell me about your mission after you fulfilled your task.'
+				"I knew I could count on you. Take this highly intensified vermin poison. In my vision, I saw some kind of 'pool' where these slimes came from. ...",
+				"Pour the poison in the water to stop the demise of Carlin. Tell me about your mission after you fulfilled your task.",
 			}, npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
@@ -105,7 +104,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Then no.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
-			npcHandler:say('Then the downfall of Carlin is inescapable. Please think about it. You know where to find me.', npc, creature)
+			npcHandler:say("Then the downfall of Carlin is inescapable. Please think about it. You know where to find me.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end
@@ -125,13 +124,13 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I am the grand druid of Carlin. I am responsible for the guild, the fields, and our citizens' health." })
-keywordHandler:addKeyword({ 'magic' }, StdModule.say, { npcHandler = npcHandler, text = "Every druid is able to learn the numerous spells of our craft." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am the grand druid of Carlin. I am responsible for the guild, the fields, and our citizens' health." })
+keywordHandler:addKeyword({ "magic" }, StdModule.say, { npcHandler = npcHandler, text = "Every druid is able to learn the numerous spells of our craft." })
 --keywordHandler:addKeyword({'spell'}, StdModule.say, {npcHandler = npcHandler, text = "Sorry, I don't teach spells for your vocation."})
-keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = "I am Padreia, grand druid of our fine city." })
-keywordHandler:addKeyword({ 'time' }, StdModule.say, { npcHandler = npcHandler, text = "Time is just a crystal pillar - the centre of creation and life." })
-keywordHandler:addKeyword({ 'druids' }, StdModule.say, { npcHandler = npcHandler, text = "We are druids, preservers of life. Our magic is about defence, healing, and nature." })
-keywordHandler:addKeyword({ 'sorcerers' }, StdModule.say, { npcHandler = npcHandler, text = "Sorcerers are destructive. Their power lies in destruction and pain." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I am Padreia, grand druid of our fine city." })
+keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = "Time is just a crystal pillar - the centre of creation and life." })
+keywordHandler:addKeyword({ "druids" }, StdModule.say, { npcHandler = npcHandler, text = "We are druids, preservers of life. Our magic is about defence, healing, and nature." })
+keywordHandler:addKeyword({ "sorcerers" }, StdModule.say, { npcHandler = npcHandler, text = "Sorcerers are destructive. Their power lies in destruction and pain." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to our humble guild, wanderer. May I be of any assistance to you?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell.")

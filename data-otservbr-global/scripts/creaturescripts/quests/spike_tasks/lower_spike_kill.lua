@@ -1,7 +1,7 @@
 local range = {
 	-- Only the Drillworms killed on this area count
 	from = Position(32120, 32470, 13),
-	to = Position(32345, 32710, 15)
+	to = Position(32345, 32710, 15),
 }
 
 local lowerSpikeKill = CreatureEvent("LowerSpikeKill")

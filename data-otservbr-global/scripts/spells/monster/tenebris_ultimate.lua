@@ -2,7 +2,7 @@ local vocation = {
 	VOCATION.BASE_ID.SORCERER,
 	VOCATION.BASE_ID.DRUID,
 	VOCATION.BASE_ID.PALADIN,
-	VOCATION.BASE_ID.KNIGHT
+	VOCATION.BASE_ID.KNIGHT,
 }
 
 area = {
@@ -20,7 +20,7 @@ area = {
 	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 },
-	{ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 }
+	{ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
 }
 
 local createArea = createCombatArea(area)
@@ -81,7 +81,7 @@ function spell.onCastSpell(creature, var)
 			if not spec:getPosition():compare(roomCenterPosition) then
 				spec:teleportTo(roomCenterPosition)
 			end
-		elseif spec:getName():lower() == 'lady tenebris' then
+		elseif spec:getName():lower() == "lady tenebris" then
 			if not spec:getPosition():compare(roomCenterPosition) then
 				spec:teleportTo(roomCenterPosition)
 			end

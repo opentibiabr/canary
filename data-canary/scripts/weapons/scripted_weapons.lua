@@ -1,7 +1,7 @@
 local burstArea = createCombatArea({
 	{ 1, 1, 1 },
 	{ 1, 3, 1 },
-	{ 1, 1, 1 }
+	{ 1, 1, 1 },
 })
 
 local burstCombat = Combat()

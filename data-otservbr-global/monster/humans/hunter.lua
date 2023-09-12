@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 120,
 	lookFeet = 115,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 11
@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "North of Mount Sternum, Plains of Havoc, Outlaw Camp, Dark Cathedral, Femor Hills, \z
 		Maze of Lost Souls, north of the Amazon Camp, at the entrance and in the Hero Cave, \z
-		a castle tower at Elvenbane, Trade Quarter, Smuggler camp on Tyrsung, Formorgar Mines."
+		a castle tower at Elvenbane, Trade Quarter, Smuggler camp on Tyrsung, Formorgar Mines.",
 }
 
 monster.health = 150
@@ -37,7 +37,7 @@ monster.manaCost = 530
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -95,12 +95,12 @@ monster.loot = {
 	{ id = 7394, chance = 190 }, -- wolf trophy
 	{ id = 7397, chance = 520 }, -- deer trophy
 	{ id = 7400, chance = 70 }, -- lion trophy
-	{ name = "hunter's quiver", chance = 10240 }
+	{ name = "hunter's quiver", chance = 10240 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -20 },
-	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -100, range = 7, shootEffect = CONST_ANI_ARROW, target = false }
+	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -100, range = 7, shootEffect = CONST_ANI_ARROW, target = false },
 }
 
 monster.defenses = {
@@ -126,7 +126,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

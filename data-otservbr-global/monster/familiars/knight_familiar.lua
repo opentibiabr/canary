@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 10000
@@ -22,7 +22,7 @@ monster.manaCost = 1000
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -50,7 +50,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-	familiar = true
+	familiar = true,
 }
 
 monster.light = {
@@ -63,8 +63,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -200 },
@@ -73,14 +72,14 @@ monster.attacks = {
 	{ name = "combat", interval = 3000, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = -180, maxDamage = -250, range = 5, radius = 3, effect = CONST_ME_MORTAREA, target = true },
 	{ name = "combat", interval = 3000, chance = 25, type = COMBAT_ICEDAMAGE, minDamage = -180, maxDamage = -250, range = 5, radius = 3, effect = CONST_ME_ICEAREA, target = true },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -200, maxDamage = -250, range = 6, radius = 2, effect = CONST_ME_ICETORNADO, target = true },
-	{ name = "ice strike", interval = 2000, chance = 17, minDamage = -300, maxDamage = -350, range = 5, target = true }
+	{ name = "ice strike", interval = 2000, chance = 17, minDamage = -300, maxDamage = -350, range = 5, target = true },
 }
 
 monster.defenses = {
 	defense = 55,
 	armor = 55,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 75, type = COMBAT_HEALING, minDamage = 300, maxDamage = 300, effect = CONST_ME_MAGIC_GREEN, target = false }
+	{ name = "combat", interval = 2000, chance = 75, type = COMBAT_HEALING, minDamage = 300, maxDamage = 300, effect = CONST_ME_MAGIC_GREEN, target = false },
 }
 
 monster.elements = {

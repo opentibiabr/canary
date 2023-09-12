@@ -16,14 +16,14 @@ npcConfig.outfit = {
 	lookBody = 113,
 	lookLegs = 31,
 	lookFeet = 38,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 npcConfig.shop = {
-	{ itemName = "holy tible", clientId = 2836 }
+	{ itemName = "holy tible", clientId = 2836 },
 }
 
 -- On buy npc shop message
@@ -35,8 +35,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -102,7 +101,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	-- Demon oak quest
 	if MsgContains(message, "mission") or MsgContains(message, "demon oak") then
 		if player:getStorageValue(Storage.DemonOak.Done) < 1 then
@@ -114,7 +112,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"You chopped down the demon oak?!? Unbelievable!! Let's hope it doesn't come back. As long as evil is still existent in the soil of the plains, it won't be over. Still, the demons suffered a setback, that's for sure. ...",
 				"For your brave action, I tell you a secret which has been kept for many many years. There is an old house south of the location where you found the demon oak. There should be a grave with the name 'Yesim Adeit' somewhere close by. ...",
-				"It belongs to a Daramian nobleman named 'Teme Saiyid'. I knew him well and he told me -almost augured- that someone will come who is worthy to obtain his treasure. I'm sure this 'someone' is you. Good luck in finding it!"
+				"It belongs to a Daramian nobleman named 'Teme Saiyid'. I knew him well and he told me -almost augured- that someone will come who is worthy to obtain his treasure. I'm sure this 'someone' is you. Good luck in finding it!",
 			}, npc, creature)
 			player:setStorageValue(Storage.DemonOak.Done, 2)
 		end

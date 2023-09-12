@@ -1,36 +1,36 @@
 local rewards = {
 	[9302] = {
 		storage = Storage.DeeplingBosses.Jaul,
-		bossName = 'Jaul',
+		bossName = "Jaul",
 		items = {
 			{ rand = true, itemId = { 13990, 14021 } },
 			{ itemId = 3035, count = 50 },
 			{ itemId = 14224 },
-			{ itemId = 14042 }
-		}
+			{ itemId = 14042 },
+		},
 	},
 	[9303] = {
 		storage = Storage.DeeplingBosses.Tanjis,
-		bossName = 'Tanjis',
+		bossName = "Tanjis",
 		items = {
 			{ rand = true, itemId = { 14022, 3027 } },
 			{ itemId = 14223 },
 			{ itemId = 3035, count = 20 },
 			{ itemId = 13990 },
-			{ itemId = 14042 }
-		}
+			{ itemId = 14042 },
+		},
 	},
 	[9304] = {
 		storage = Storage.DeeplingBosses.Obujos,
-		bossName = 'Obujos',
+		bossName = "Obujos",
 		items = {
 			{ rand = true, itemId = { 14023, 281 } },
 			{ itemId = 14222 },
 			{ itemId = 14043 },
 			{ itemId = 3035, count = 30 },
-			{ itemId = 13987 }
-		}
-	}
+			{ itemId = 13987 },
+		},
+	},
 }
 
 local bossesReward = Action()
@@ -43,10 +43,9 @@ function bossesReward.onUse(player, item, fromPosition, target, toPosition, isHo
 		end
 
 		if player:getStorageValue(reward.storage) ~= 1 then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, reward.bossName .. ' defends his belongings and will not let you open his chest.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, reward.bossName .. " defends his belongings and will not let you open his chest.")
 			return true
 		end
-
 
 		for i = 1, #reward.items do
 			local items = reward.items[i]

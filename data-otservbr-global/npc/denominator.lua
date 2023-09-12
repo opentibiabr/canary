@@ -11,11 +11,11 @@ npcConfig.walkInterval = 0
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookTypeEx = 2025
+	lookTypeEx = 2025,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -62,67 +62,91 @@ local function greetCallback(npc, creature)
 end
 
 local quiz1 = {
-	[1] = { p = "The sum of first and second digit?", r = function(player)
-		player:setStorageValue(Storage.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.CultsOfTibia.MotA.Stone1) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone2))
-		return player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
-	end },
-	[2] = { p = "The sum of second and third digit?", r = function(player)
-		player:setStorageValue(Storage.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.CultsOfTibia.MotA.Stone2) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone3))
-		return player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
-	end },
-	[3] = { p = "The sum of first and third digit?", r = function(player)
-		player:setStorageValue(Storage.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.CultsOfTibia.MotA.Stone1) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone3))
-		return player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
-	end },
-	[4] = { p = "The digit sum?", r = function(player)
-		player:setStorageValue(Storage.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.CultsOfTibia.MotA.Stone1) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone2) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone3))
-		return player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
-	end }
+	[1] = {
+		p = "The sum of first and second digit?",
+		r = function(player)
+			player:setStorageValue(Storage.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.CultsOfTibia.MotA.Stone1) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone2))
+			return player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
+		end,
+	},
+	[2] = {
+		p = "The sum of second and third digit?",
+		r = function(player)
+			player:setStorageValue(Storage.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.CultsOfTibia.MotA.Stone2) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone3))
+			return player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
+		end,
+	},
+	[3] = {
+		p = "The sum of first and third digit?",
+		r = function(player)
+			player:setStorageValue(Storage.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.CultsOfTibia.MotA.Stone1) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone3))
+			return player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
+		end,
+	},
+	[4] = {
+		p = "The digit sum?",
+		r = function(player)
+			player:setStorageValue(Storage.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.CultsOfTibia.MotA.Stone1) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone2) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone3))
+			return player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
+		end,
+	},
 }
 
 local quiz2 = {
-	[1] = { p = "Is the number prime?", r =
-			function(player)
-				local stg = player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
-				if stg < 1 then
-					return 0
-				end
-				if stg == 1 or stg == 2 then
-					return 1
-				end
-				local incr = 0
-				for i = 1, stg do
-					if (stg % i == 0) then
-						incr = incr + 1
-					end
-				end
-				return (incr == 2 and 1 or 0)
+	[1] = {
+		p = "Is the number prime?",
+		r = function(player)
+			local stg = player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
+			if stg < 1 then
+				return 0
 			end
+			if stg == 1 or stg == 2 then
+				return 1
+			end
+			local incr = 0
+			for i = 1, stg do
+				if stg % i == 0 then
+					incr = incr + 1
+				end
+			end
+			return (incr == 2 and 1 or 0)
+		end,
 	},
-	[2] = { p = "Does the number belong to a prime twing?", r =
-			function(player)
-				local stg = player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
-				if stg < 2 then
-					return 0
-				end
-				if stg == 1 or stg == 2 then
-					return 1
-				end
-				local incr = 0
-				for i = 1, stg do
-					if (stg % i == 0) then
-						incr = incr + 1
-					end
-				end
-				return (incr == 2 and 1 or 0)
+	[2] = {
+		p = "Does the number belong to a prime twing?",
+		r = function(player)
+			local stg = player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
+			if stg < 2 then
+				return 0
 			end
+			if stg == 1 or stg == 2 then
+				return 1
+			end
+			local incr = 0
+			for i = 1, stg do
+				if stg % i == 0 then
+					incr = incr + 1
+				end
+			end
+			return (incr == 2 and 1 or 0)
+		end,
 	},
 	-- [2] = {p = "", r = ""}
 }
 
 local quiz3 = {
-	[1] = { p = "Is the number divisible by 3?", r = function(player) return (player:getStorageValue(Storage.CultsOfTibia.MotA.Answer) % 3 == 0 and 1 or 0) end },
-	[2] = { p = "Is the number divisible by 2?", r = function(player) return (player:getStorageValue(Storage.CultsOfTibia.MotA.Answer) % 2 == 0 and 1 or 0) end }
+	[1] = {
+		p = "Is the number divisible by 3?",
+		r = function(player)
+			return (player:getStorageValue(Storage.CultsOfTibia.MotA.Answer) % 3 == 0 and 1 or 0)
+		end,
+	},
+	[2] = {
+		p = "Is the number divisible by 2?",
+		r = function(player)
+			return (player:getStorageValue(Storage.CultsOfTibia.MotA.Answer) % 2 == 0 and 1 or 0)
+		end,
+	},
 }
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
@@ -143,12 +167,12 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say(quiz1[perguntaid].p, npc, creature)
 		npcHandler:setTopic(playerId, 3)
 		npcHandler:setTopic(playerId, 3)
-	elseif (npcHandler:getTopic(playerId) == 3) then
+	elseif npcHandler:getTopic(playerId) == 3 then
 		npcHandler:say(string.format("Your answer is %s, do you want to continue?", message), npc, creature)
 		playerLastResp[playerId] = tonumber(message)
 		npcHandler:setTopic(playerId, 4)
 		npcHandler:setTopic(playerId, 4)
-	elseif (npcHandler:getTopic(playerId) == 4) then
+	elseif npcHandler:getTopic(playerId) == 4 then
 		if MsgContains(message, "yes") then
 			local resposta = quiz1[player:getStorageValue(Storage.CultsOfTibia.MotA.QuestionId)].r
 			if playerLastResp[playerId] ~= (tonumber(resposta(player))) then
@@ -248,7 +272,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Well, bye then.')
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)

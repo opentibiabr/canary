@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 801
@@ -26,7 +26,7 @@ monster.Bestiary = {
 	Locations = "The Hive towers: on the highest floor of each tower, \z
 		and in many of the closed rooms accessed with pheromones; \z
 		many in the large underground room of the west tower. \z
-	Liberty Bay Hive Outpost: one spawn on the second floor underground."
+	Liberty Bay Hive Outpost: one spawn on the second floor underground.",
 }
 
 monster.health = 7500
@@ -38,7 +38,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -73,8 +73,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "Spidris Elite Summon", chance = 40, interval = 2000, count = 2 }
-	}
+		{ name = "Spidris Elite Summon", chance = 40, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -100,14 +100,14 @@ monster.loot = {
 	{ name = "carapace shield", chance = 920 },
 	{ name = "hive scythe", chance = 1650 },
 	{ name = "gooey mass", chance = 13000, maxCount = 2 },
-	{ name = "hive bow", chance = 830 }
+	{ name = "hive bow", chance = 830 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -450 },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -60, maxDamage = -80, radius = 4, effect = CONST_ME_POISONAREA, target = false },
 	-- poison
-	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 20, minDamage = -600, maxDamage = -1000, radius = 4, effect = CONST_ME_GREEN_RINGS, target = false }
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 20, minDamage = -600, maxDamage = -1000, radius = 4, effect = CONST_ME_GREEN_RINGS, target = false },
 }
 
 monster.defenses = {
@@ -115,7 +115,7 @@ monster.defenses = {
 	armor = 57,
 	mitigation = 2.40,
 	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_HEALING, minDamage = 50, maxDamage = 100, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 500, maxDamage = 700, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 500, maxDamage = 700, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -135,7 +135,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

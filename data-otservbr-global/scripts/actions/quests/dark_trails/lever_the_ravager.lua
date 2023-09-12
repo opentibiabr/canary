@@ -5,20 +5,20 @@ local setting = {
 		Position(33417, 32102, 10),
 		Position(33418, 32102, 10),
 		Position(33419, 32102, 10),
-		Position(33420, 32102, 10)
+		Position(33420, 32102, 10),
 	},
 	newPositions = {
 		Position(33487, 32088, 8),
 		Position(33487, 32088, 8),
 		Position(33487, 32088, 8),
-		Position(33487, 32088, 8)
+		Position(33487, 32088, 8),
 	},
 	canopicJarPositions = {
 		Position(33486, 32081, 8),
 		Position(33488, 32081, 8),
 		Position(33486, 32083, 8),
-		Position(33488, 32083, 8)
-	}
+		Position(33488, 32083, 8),
+	},
 }
 
 local leverTheRavager = Action()
@@ -36,7 +36,7 @@ function leverTheRavager.onUse(player, item, fromPosition, target, toPosition, i
 				player:sendCancelMessage("You need 4 of players to fight with The Ravager.")
 				return true
 			end
-			storePlayers[#storePlayers+1] = playerTile
+			storePlayers[#storePlayers + 1] = playerTile
 		end
 
 		for i = 1, #setting.canopicJarPositions do

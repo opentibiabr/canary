@@ -72,7 +72,7 @@ setmetatable(BossLever, {
 			_uid = nil,
 			_aid = nil,
 		}, { __index = BossLever })
-	end
+	end,
 })
 
 ---@param self BossLever
@@ -196,12 +196,24 @@ end
 ---@return boolean
 function BossLever:register()
 	local missingParams = {}
-	if not self.name then table.insert(missingParams, "boss.name") end
-	if not self.storage then table.insert(missingParams, "storage") end
-	if not self.playerPositions then table.insert(missingParams, "playerPositions") end
-	if not self.area then table.insert(missingParams, "specPos") end
-	if not self.exit then table.insert(missingParams, "exit") end
-	if not self._position and not self._uid and not self._aid then table.insert(missingParams, "position or uid or aid") end
+	if not self.name then
+		table.insert(missingParams, "boss.name")
+	end
+	if not self.storage then
+		table.insert(missingParams, "storage")
+	end
+	if not self.playerPositions then
+		table.insert(missingParams, "playerPositions")
+	end
+	if not self.area then
+		table.insert(missingParams, "specPos")
+	end
+	if not self.exit then
+		table.insert(missingParams, "exit")
+	end
+	if not self._position and not self._uid and not self._aid then
+		table.insert(missingParams, "position or uid or aid")
+	end
 	if #missingParams > 0 then
 		local name = self.name or "unknown"
 		logger.error("BossLever:register() - boss with name {} missing parameters: {}", name, table.concat(missingParams, ", "))
@@ -215,7 +227,9 @@ function BossLever:register()
 	zone:setRemoveDestination(self.exit)
 
 	local action = Action()
-	action.onUse = function(player) self:onUse(player) end
+	action.onUse = function(player)
+		self:onUse(player)
+	end
 	if self._position then
 		action:position(self._position)
 	end

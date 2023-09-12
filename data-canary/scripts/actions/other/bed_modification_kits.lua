@@ -3,7 +3,7 @@ local setting = {
 	[832] = { { 742, 743 }, { 744, 745 } }, -- yellow kit
 	[833] = { { 738, 739 }, { 740, 741 } }, -- red kit
 	[834] = { { 2487, 2488 }, { 2493, 2494 } }, -- removal kit
-	[17972] = { { 17917, 17918 }, { 17919, 17920 } } -- canopy kit
+	[17972] = { { 17917, 17918 }, { 17919, 17920 } }, -- canopy kit
 }
 
 local function internalBedTransform(item, targetItem, toPosition, itemArray)

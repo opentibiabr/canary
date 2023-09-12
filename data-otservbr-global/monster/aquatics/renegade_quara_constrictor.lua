@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1097
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 2,
-	Locations = "Seacrest Grounds when Seacrest Serpents are not spawning."
+	Locations = "Seacrest Grounds when Seacrest Serpents are not spawning.",
 }
 
 monster.health = 1500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -89,20 +89,20 @@ monster.loot = {
 	{ name = "violet crystal shard", chance = 1210 },
 	{ name = "northwind rod", chance = 740 },
 	{ name = "fish fin", chance = 370 },
-	{ name = "piggy bank", chance = 190 }
+	{ name = "piggy bank", chance = 190 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 60, attack = 40, effect = CONST_ME_DRAWBLOOD },
 	{ name = "quara constrictor freeze", interval = 2000, chance = 10, target = false },
-	{ name = "quara constrictor electrify", interval = 2000, chance = 10, range = 1, target = false }
+	{ name = "quara constrictor electrify", interval = 2000, chance = 10, range = 1, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 35,
 	mitigation = 1.04,
-	{ name = "combat", interval = 3000, chance = 35, type = COMBAT_HEALING, minDamage = 150, maxDamage = 300, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 3000, chance = 35, type = COMBAT_HEALING, minDamage = 150, maxDamage = 300, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -122,7 +122,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

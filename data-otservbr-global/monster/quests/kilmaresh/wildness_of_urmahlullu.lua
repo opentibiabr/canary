@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 38,
 	lookFeet = 86,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 400000
@@ -22,13 +22,13 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.bosstiary = {
 	bossRaceId = 1811,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Kilmaresh.UrmahlulluTimer
+	storageCooldown = Storage.Kilmaresh.UrmahlulluTimer,
 }
 
 monster.strategiesTarget = {
@@ -59,7 +59,7 @@ monster.flags = {
 }
 
 monster.events = {
-	"UrmahlulluChanges"
+	"UrmahlulluChanges",
 }
 
 monster.light = {
@@ -72,20 +72,19 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -150, maxDamage = -1300 },
 	{ name = "combat", interval = 3000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -500, maxDamage = -800, radius = 4, effect = CONST_ME_FIREAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -550, maxDamage = -800, radius = 3, effect = CONST_ME_FIREAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -550, maxDamage = -800, radius = 3, shootEffect = CONST_ANI_ENERGYBALL, effect = CONST_ME_ENERGYHIT, target = false },
-	{ name = "urmahlulluring", interval = 2000, chance = 18, minDamage = -450, maxDamage = -600, target = false }
+	{ name = "urmahlulluring", interval = 2000, chance = 18, minDamage = -450, maxDamage = -600, target = false },
 }
 
 monster.defenses = {
 	defense = 84,
-	armor = 84
+	armor = 84,
 	--	mitigation = ???,
 }
 
@@ -106,7 +105,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -5,8 +5,6 @@ enable_testing()
 function(setup_test TARGET_NAME DIR)
     add_executable(${TARGET_NAME} main.cpp)
 
-    include(RustLib)
-
     target_compile_definitions(${TARGET_NAME} PUBLIC -DDEBUG_LOG)
     target_link_libraries(${TARGET_NAME} PRIVATE Boost::ut ${PROJECT_NAME}_lib)
     target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/tests/fixture PRIVATE ${CMAKE_SOURCE_DIR}/tests/${DIR})

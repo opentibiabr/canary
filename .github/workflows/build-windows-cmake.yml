@@ -36,12 +36,22 @@ jobs:
           concurrent_skipping: 'same_content'
           cancel_others: true
 
-      - name: Setup Rust
+      - name: Setup Rust tools
+        run: |
+          rustup toolchain install nightly
+          rustup component add rustfmt --toolchain nightly
+          rustup component add clippy --toolchain nightly
+
+      - name: Remove existing Rust tools
+        run: |
+          Remove-Item -Path $env:USERPROFILE\.cargo\bin\rust-analyzer.exe -Force
+          Remove-Item -Path $env:USERPROFILE\.cargo\bin\rustfmt.exe -Force
+          Remove-Item -Path $env:USERPROFILE\.cargo\bin\cargo-fmt.exe -Force
+
+      - name: Update Rust
         run: |
           rustup self update
           rustup update stable
-          rustup default stable
-        shell: cmd
 
       - name: Checkout repository
         uses: actions/checkout@main

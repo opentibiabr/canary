@@ -295,7 +295,7 @@ public:
 	void playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId);
 	void playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::string &text);
 	void playerBrowseField(uint32_t playerId, const Position &pos);
-	void playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index);
+	void playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index, uint8_t containerCategory);
 	void playerUpdateHouseWindow(uint32_t playerId, uint8_t listId, uint32_t windowTextId, const std::string &text);
 	void playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t stackPos, uint32_t tradePlayerId, uint16_t itemId);
 	void playerAcceptTrade(uint32_t playerId);

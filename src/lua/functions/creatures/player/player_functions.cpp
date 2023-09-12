@@ -1945,6 +1945,25 @@ int PlayerFunctions::luaPlayerSendContainer(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerSendUpdateContainer(lua_State* L) {
+	// player:sendUpdateContainer(container)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto container = getUserdata<Container>(L, 2);
+	if (!container) {
+		reportErrorFunc("Container is nullptr");
+		return 1;
+	}
+
+	player->onSendContainer(container);
+	pushBoolean(L, true);
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerGetMoney(lua_State* L) {
 	// player:getMoney()
 	Player* player = getUserdata<Player>(L, 1);

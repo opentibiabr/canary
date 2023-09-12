@@ -222,7 +222,7 @@ public:
 		varBuffs[buff] += modifier;
 	}
 
-	virtual const std::vector<CreatureIcon> getIcons() const {
+	virtual std::vector<CreatureIcon> getIcons() const {
 		std::vector<CreatureIcon> icons;
 		icons.reserve(creatureIcons.size());
 		for (const auto &[_, icon] : creatureIcons) {

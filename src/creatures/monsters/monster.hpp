@@ -160,7 +160,7 @@ public:
 		return challengeFocusDuration > 0;
 	}
 
-	const std::vector<CreatureIcon> getIcons() const override {
+	std::vector<CreatureIcon> getIcons() const override {
 		const auto creatureIcons = Creature::getIcons();
 		if (!creatureIcons.empty()) {
 			return creatureIcons;

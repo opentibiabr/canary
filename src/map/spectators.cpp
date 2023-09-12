@@ -22,11 +22,9 @@ void Spectators::update() noexcept {
 	}
 
 	needUpdate = false;
-#ifndef SPECTATORS_USE_HASHSET
 	std::ranges::sort(creatures);
 	const auto &[f, l] = std::ranges::unique(creatures);
 	creatures.erase(f, l);
-#endif
 }
 
 bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onlyPlayers, const Position &centerPos, bool checkDistance, bool multifloor, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY) {
@@ -161,11 +159,7 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 						continue;
 					}
 
-#ifdef SPECTATORS_USE_HASHSET
-					spectators.emplace(creature);
-#else
 					spectators.emplace_back(creature);
-#endif
 				}
 				leafE = leafE->leafE;
 			} else {
@@ -193,11 +187,7 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	if (!spectators.empty()) {
 		insertAll(spectators);
 
-#ifdef SPECTATORS_USE_HASHSET
-		creatureList->insert(spectators.begin(), spectators.end());
-#else
 		creatureList->insert(creatureList->end(), spectators.begin(), spectators.end());
-#endif
 	}
 
 	return *this;
@@ -205,33 +195,20 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 
 Spectators Spectators::insert(Creature* creature) {
 	if (creature) {
-#ifdef SPECTATORS_USE_HASHSET
-		creatures.emplace(creature);
-#else
 		creatures.emplace_back(creature);
-#endif
 	}
 	return *this;
 }
 
 Spectators Spectators::insertAll(const SpectatorList &list) {
 	if (!list.empty()) {
-#ifdef SPECTATORS_USE_HASHSET
-		creatures.insert(list.begin(), list.end());
-#else
 		creatures.insert(creatures.end(), list.begin(), list.end());
-
-#endif
 	}
 	return *this;
 }
 
 bool Spectators::contains(const Creature* creature) const {
-#ifdef SPECTATORS_USE_HASHSET
-	return creature && creatures.contains(creature);
-#else
 	return creature && std::ranges::find(creatures.begin(), creatures.end(), creature) != creatures.end();
-#endif
 }
 
 bool Spectators::erase(const Creature* creature) {
@@ -240,14 +217,12 @@ bool Spectators::erase(const Creature* creature) {
 	}
 
 	update();
-#ifdef SPECTATORS_USE_HASHSET
-	return creatures.erase(creature) > 0;
-#else
+
 	const auto &it = std::ranges::find(creatures.begin(), creatures.end(), creature);
 	if (it == creatures.end()) {
 		return false;
 	}
 	creatures.erase(it);
+
 	return true;
-#endif
 }

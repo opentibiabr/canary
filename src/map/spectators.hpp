@@ -17,12 +17,7 @@ class Monster;
 class Npc;
 struct Position;
 
-#ifdef SPECTATORS_USE_HASHSET
-// it's 3~5x slower
-using SpectatorList = phmap::flat_hash_set<Creature*>;
-#else
 using SpectatorList = std::vector<Creature*>;
-#endif
 
 struct SpectatorsCache {
 	struct FloorData {
@@ -60,11 +55,7 @@ public:
 
 	template <class F>
 	bool erase_if(F fnc) {
-#ifdef SPECTATORS_USE_HASHSET
-		return phmap::erase_if(creatures, std::move(fnc)) > 0;
-#else
 		return std::erase_if(creatures, std::move(fnc)) > 0;
-#endif
 	}
 
 	Spectators insert(Creature* creature);

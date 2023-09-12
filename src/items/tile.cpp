@@ -1442,13 +1442,9 @@ void Tile::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cyl
 	std::shared_ptr<Creature> creature = thing->getCreature();
 	std::shared_ptr<Item> item;
 	if (creature) {
-		creature->incrementReferenceCounter();
 		item = nullptr;
 	} else {
 		item = thing->getItem();
-		if (item) {
-			item->incrementReferenceCounter();
-		}
 	}
 
 	if (link == LINK_OWNER) {

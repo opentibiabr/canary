@@ -63,8 +63,6 @@ std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0
 				newItem = std::make_shared<Item>(type, count);
 			}
 		}
-
-		newItem->incrementReferenceCounter();
 	} else if (type > 0 && itemPosition) {
 		auto position = *itemPosition;
 		g_logger().warn("[Item::CreateItem] Item with id '{}', in position '{}' not exists in the appearances.dat and cannot be created.", type, position.toString());
@@ -143,7 +141,6 @@ std::shared_ptr<Container> Item::CreateItemAsContainer(const uint16_t type, uint
 	}
 
 	std::shared_ptr<Container> newItem = std::make_shared<Container>(type, size);
-	newItem->incrementReferenceCounter();
 	return newItem;
 }
 

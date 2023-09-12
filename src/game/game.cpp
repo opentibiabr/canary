@@ -854,7 +854,6 @@ bool Game::internalPlaceCreature(std::shared_ptr<Creature> creature, const Posit
 		return false;
 	}
 
-	creature->incrementReferenceCounter();
 	creature->setID();
 	creature->addList();
 
@@ -3530,9 +3529,7 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
 		auto it = browseFields.find(tile);
 		if (it == browseFields.end()) {
 			parentContainer = std::make_shared<Container>(tile);
-			parentContainer->incrementReferenceCounter();
 			browseFields[tile] = parentContainer;
-			g_scheduler().addEvent(30000, std::bind(&Game::decreaseBrowseFieldRef, this, tile->getPosition()), "Game::decreaseBrowseFieldRef");
 		} else {
 			parentContainer = it->second;
 		}
@@ -4002,9 +3999,7 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 	auto it = browseFields.find(tile);
 	if (it == browseFields.end()) {
 		container = std::make_shared<Container>(tile);
-		container->incrementReferenceCounter();
 		browseFields[tile] = container;
-		g_scheduler().addEvent(30000, std::bind(&Game::decreaseBrowseFieldRef, this, tile->getPosition()), "Game::decreaseBrowseFieldRef");
 	} else {
 		container = it->second;
 	}
@@ -4316,7 +4311,6 @@ bool Game::internalStartTrade(std::shared_ptr<Player> player, std::shared_ptr<Pl
 	player->tradePartner = tradePartner;
 	player->tradeItem = tradeItem;
 	player->tradeState = TRADE_INITIATED;
-	tradeItem->incrementReferenceCounter();
 	tradeItems[tradeItem] = player->getID();
 
 	player->sendTradeItemRequest(player->getName(), tradeItem, true);
@@ -5707,7 +5701,6 @@ void Game::addCreatureCheck(std::shared_ptr<Creature> creature) {
 
 	creature->inCheckCreaturesVector = true;
 	checkCreatureLists[uniform_random(0, EVENT_CREATURECOUNT - 1)].push_back(creature);
-	creature->incrementReferenceCounter();
 }
 
 void Game::removeCreatureCheck(std::shared_ptr<Creature> creature) {
@@ -7411,15 +7404,7 @@ void Game::shutdown() {
 }
 
 void Game::cleanup() {
-	// free memory
-	for (auto creature : ToReleaseCreatures) {
-		creature->decrementReferenceCounter();
-	}
 	ToReleaseCreatures.clear();
-
-	for (auto item : ToReleaseItems) {
-		item->decrementReferenceCounter();
-	}
 	ToReleaseItems.clear();
 }
 
@@ -9250,18 +9235,6 @@ void Game::removeGuild(uint32_t guildId) {
 		IOGuild::saveGuild(it->second);
 	}
 	guilds.erase(guildId);
-}
-
-void Game::decreaseBrowseFieldRef(const Position &pos) {
-	std::shared_ptr<Tile> tile = map.getTile(pos.x, pos.y, pos.z);
-	if (!tile) {
-		return;
-	}
-
-	auto it = browseFields.find(tile);
-	if (it != browseFields.end()) {
-		it->second->decrementReferenceCounter();
-	}
 }
 
 void Game::internalRemoveItems(const std::vector<std::shared_ptr<Item>> itemVector, uint32_t amount, bool stackable) {

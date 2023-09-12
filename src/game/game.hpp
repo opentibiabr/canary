@@ -495,7 +495,6 @@ public:
 	std::shared_ptr<Guild> getGuildByName(const std::string &name, bool allowOffline = false) const;
 	void addGuild(const std::shared_ptr<Guild> guild);
 	void removeGuild(uint32_t guildId);
-	void decreaseBrowseFieldRef(const Position &pos);
 
 	phmap::flat_hash_map<std::shared_ptr<Tile>, std::shared_ptr<Container>> browseFields;
 

@@ -292,16 +292,12 @@ void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses typ
 
 void Monster::addFriend(std::shared_ptr<Creature> creature) {
 	assert(creature.get() != this);
-	auto result = friendList.insert(creature);
-	if (result.second) {
-		creature->incrementReferenceCounter();
-	}
+	friendList.insert(creature);
 }
 
 void Monster::removeFriend(std::shared_ptr<Creature> creature) {
 	auto it = friendList.find(creature);
 	if (it != friendList.end()) {
-		creature->decrementReferenceCounter();
 		friendList.erase(it);
 	}
 }
@@ -309,7 +305,6 @@ void Monster::removeFriend(std::shared_ptr<Creature> creature) {
 void Monster::addTarget(std::shared_ptr<Creature> creature, bool pushFront /* = false*/) {
 	assert(creature.get() != this);
 	if (std::find(targetList.begin(), targetList.end(), creature) == targetList.end()) {
-		creature->incrementReferenceCounter();
 		if (pushFront) {
 			targetList.push_front(creature);
 		} else {
@@ -332,7 +327,6 @@ void Monster::removeTarget(std::shared_ptr<Creature> creature) {
 			totalPlayersOnScreen--;
 		}
 
-		creature->decrementReferenceCounter();
 		targetList.erase(it);
 	}
 }
@@ -342,7 +336,6 @@ void Monster::updateTargetList() {
 	while (friendIterator != friendList.end()) {
 		std::shared_ptr<Creature> creature = *friendIterator;
 		if (creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
-			creature->decrementReferenceCounter();
 			friendIterator = friendList.erase(friendIterator);
 		} else {
 			++friendIterator;
@@ -353,7 +346,6 @@ void Monster::updateTargetList() {
 	while (targetIterator != targetList.end()) {
 		std::shared_ptr<Creature> creature = *targetIterator;
 		if (creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
-			creature->decrementReferenceCounter();
 			targetIterator = targetList.erase(targetIterator);
 		} else {
 			++targetIterator;
@@ -371,16 +363,10 @@ void Monster::updateTargetList() {
 }
 
 void Monster::clearTargetList() {
-	for (std::shared_ptr<Creature> creature : targetList) {
-		creature->decrementReferenceCounter();
-	}
 	targetList.clear();
 }
 
 void Monster::clearFriendList() {
-	for (std::shared_ptr<Creature> creature : friendList) {
-		creature->decrementReferenceCounter();
-	}
 	friendList.clear();
 }
 
@@ -613,8 +599,6 @@ void Monster::onFollowCreatureComplete(std::shared_ptr<Creature> creature) {
 				targetList.push_front(target);
 			} else if (!isSummon()) {
 				targetList.push_back(target);
-			} else {
-				target->decrementReferenceCounter();
 			}
 		}
 	}

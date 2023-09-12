@@ -151,7 +151,6 @@ SpawnMonster::~SpawnMonster() {
 	for (const auto &it : spawnedMonsterMap) {
 		std::shared_ptr<Monster> monster = it.second;
 		monster->setSpawnMonster(nullptr);
-		monster->decrementReferenceCounter();
 	}
 }
 
@@ -186,7 +185,6 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, const std::shared_ptr<M
 	monster->setDirection(dir);
 	monster->setSpawnMonster(this);
 	monster->setMasterPos(pos);
-	monster->incrementReferenceCounter();
 
 	spawnedMonsterMap.insert(spawned_pair(spawnMonsterId, monster));
 	spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
@@ -261,7 +259,6 @@ void SpawnMonster::cleanup() {
 		std::shared_ptr<Monster> monster = it->second;
 		if (monster->isRemoved()) {
 			spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
-			monster->decrementReferenceCounter();
 			it = spawnedMonsterMap.erase(it);
 		} else {
 			++it;
@@ -293,7 +290,6 @@ bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Dire
 void SpawnMonster::removeMonster(std::shared_ptr<Monster> monster) {
 	for (auto it = spawnedMonsterMap.begin(), end = spawnedMonsterMap.end(); it != end; ++it) {
 		if (it->second == monster) {
-			monster->decrementReferenceCounter();
 			spawnedMonsterMap.erase(it);
 			break;
 		}

@@ -277,11 +277,6 @@ class DynamicTile : public Tile {
 public:
 	DynamicTile(uint16_t x, uint16_t y, uint8_t z) :
 		Tile(x, y, z) { }
-	~DynamicTile() {
-		for (std::shared_ptr<Item> item : items) {
-			item->decrementReferenceCounter();
-		}
-	}
 
 	// non-copyable
 	DynamicTile(const DynamicTile &) = delete;
@@ -317,13 +312,6 @@ class StaticTile final : public Tile {
 public:
 	StaticTile(uint16_t x, uint16_t y, uint8_t z) :
 		Tile(x, y, z) { }
-	~StaticTile() {
-		if (items) {
-			for (auto &item : *items) {
-				item->decrementReferenceCounter();
-			}
-		}
-	}
 
 	// non-copyable
 	StaticTile(const StaticTile &) = delete;

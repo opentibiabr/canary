@@ -449,7 +449,6 @@ void ProtocolGame::release() {
 	// dispatcher thread
 	if (player && player->client == shared_from_this()) {
 		player->client.reset();
-		player->decrementReferenceCounter();
 		player = nullptr;
 	}
 
@@ -479,7 +478,6 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		player->setName(name);
 		g_game().addPlayerUniqueLogin(player);
 
-		player->incrementReferenceCounter();
 		player->setID();
 
 		if (!IOLoginDataLoad::preLoadPlayer(player, name)) {
@@ -613,7 +611,6 @@ void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t oper
 	}
 
 	player = foundPlayer;
-	player->incrementReferenceCounter();
 	g_game().addPlayerUniqueLogin(player);
 
 	g_chat().removeUserFromAllChannels(player);

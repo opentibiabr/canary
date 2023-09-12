@@ -563,14 +563,6 @@ public:
 
 	bool hasMarketAttributes() const;
 
-	void incrementReferenceCounter() {
-		++referenceCounter;
-	}
-	void decrementReferenceCounter() {
-		if (--referenceCounter == 0) {
-		}
-	}
-
 	std::shared_ptr<Cylinder> getParent() const override {
 		return parent;
 	}
@@ -682,8 +674,6 @@ public:
 
 protected:
 	std::shared_ptr<Cylinder> parent = nullptr;
-
-	uint32_t referenceCounter = 0;
 
 	uint16_t id; // the same id as in ItemType
 	uint8_t count = 1; // number of stacked items

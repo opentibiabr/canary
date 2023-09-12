@@ -139,7 +139,6 @@ SpawnNpc::~SpawnNpc() {
 	for (const auto &it : spawnedNpcMap) {
 		auto npc = it.second;
 		npc->setSpawnNpc(nullptr);
-		npc->decrementReferenceCounter();
 	}
 }
 
@@ -174,7 +173,6 @@ bool SpawnNpc::spawnNpc(uint32_t spawnId, NpcType* npcType, const Position &pos,
 	npc->setDirection(dir);
 	npc->setSpawnNpc(this);
 	npc->setMasterPos(pos);
-	npc->incrementReferenceCounter();
 
 	spawnedNpcMap.insert(spawned_pair(spawnId, npc));
 	spawnNpcMap[spawnId].lastSpawnNpc = OTSYS_TIME();
@@ -240,7 +238,6 @@ void SpawnNpc::cleanup() {
 		auto npc = it->second;
 		if (npc->isRemoved()) {
 			spawnNpcMap[spawnId].lastSpawnNpc = OTSYS_TIME();
-			npc->decrementReferenceCounter();
 			it = spawnedNpcMap.erase(it);
 		} else {
 			++it;
@@ -272,7 +269,6 @@ bool SpawnNpc::addNpc(const std::string &name, const Position &pos, Direction di
 void SpawnNpc::removeNpc(std::shared_ptr<Npc> npc) {
 	for (auto it = spawnedNpcMap.begin(), end = spawnedNpcMap.end(); it != end; ++it) {
 		if (it->second == npc) {
-			npc->decrementReferenceCounter();
 			spawnedNpcMap.erase(it);
 			break;
 		}

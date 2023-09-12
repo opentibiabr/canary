@@ -39,7 +39,6 @@ Player::Player(ProtocolGame_ptr p) :
 	lastPong(lastPing),
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
 	client(std::move(p)) {
-	inbox->incrementReferenceCounter();
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 }
 
@@ -48,22 +47,12 @@ Player::~Player() {
 		if (item) {
 			item->setParent(nullptr);
 			item->stopDecaying();
-			item->decrementReferenceCounter();
 		}
 	}
 
 	for (const auto &it : depotLockerMap) {
 		it.second->removeInbox(inbox);
 		it.second->stopDecaying();
-		it.second->decrementReferenceCounter();
-	}
-
-	for (const auto &it : rewardMap) {
-		it.second->decrementReferenceCounter();
-	}
-
-	for (const auto &it : quickLootContainers) {
-		it.second->decrementReferenceCounter();
 	}
 
 	for (PreySlot* slot : preys) {
@@ -77,7 +66,6 @@ Player::~Player() {
 	}
 
 	inbox->stopDecaying();
-	inbox->decrementReferenceCounter();
 
 	setWriteItem(nullptr);
 	setEditHouse(nullptr);
@@ -770,16 +758,11 @@ void Player::addContainer(uint8_t cid, std::shared_ptr<Container> container) {
 		return;
 	}
 
-	if (container->getID() == ITEM_BROWSEFIELD) {
-		container->incrementReferenceCounter();
-	}
-
 	auto it = openContainers.find(cid);
 	if (it != openContainers.end()) {
 		OpenContainer &openContainer = it->second;
 		auto oldContainer = openContainer.container;
 		if (oldContainer->getID() == ITEM_BROWSEFIELD) {
-			oldContainer->decrementReferenceCounter();
 		}
 
 		openContainer.container = container;
@@ -803,7 +786,6 @@ void Player::closeContainer(uint8_t cid) {
 
 	openContainers.erase(it);
 	if (container && container->getID() == ITEM_BROWSEFIELD) {
-		container->decrementReferenceCounter();
 	}
 }
 
@@ -1033,14 +1015,12 @@ std::shared_ptr<Container> Player::setLootContainer(ObjectCategory_t category, s
 			previousContainer->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, flags);
 		}
 
-		previousContainer->decrementReferenceCounter();
 		quickLootContainers.erase(it);
 	}
 	if (container) {
 		previousContainer = container;
 		quickLootContainers[category] = container;
 
-		container->incrementReferenceCounter();
 		if (!loading) {
 			auto flags = container->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
 			auto sendAttribute = flags | 1 << category;
@@ -1095,7 +1075,6 @@ void Player::checkLootContainers(std::shared_ptr<Item> item) {
 			shouldSend = true;
 			it = quickLootContainers.erase(it);
 			lootContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
-			lootContainer->decrementReferenceCounter();
 		} else {
 			++it;
 		}
@@ -1154,7 +1133,6 @@ std::shared_ptr<DepotChest> Player::getDepotChest(uint32_t depotId, bool autoCre
 		depotChest = std::make_shared<DepotChest>(ITEM_DEPOT_XX);
 	}
 
-	depotChest->incrementReferenceCounter();
 	depotChests[depotId] = depotChest;
 	return depotChest;
 }
@@ -1211,7 +1189,6 @@ std::shared_ptr<Reward> Player::getReward(const uint64_t rewardId, const bool au
 	}
 
 	auto reward = std::make_shared<Reward>();
-	reward->incrementReferenceCounter();
 	reward->setAttribute(ItemAttribute_t::DATE, rewardId);
 	rewardMap[rewardId] = reward;
 	g_game().internalAddItem(getRewardChest(), reward, INDEX_WHEREEVER, FLAG_NOLIMIT);
@@ -1307,28 +1284,15 @@ std::shared_ptr<Item> Player::getWriteItem(uint32_t &retWindowTextId, uint16_t &
 }
 
 void Player::setImbuingItem(std::shared_ptr<Item> item) {
-	if (imbuingItem) {
-		imbuingItem->decrementReferenceCounter();
-	}
-
-	if (item) {
-		item->incrementReferenceCounter();
-	}
-
 	imbuingItem = item;
 }
 
 void Player::setWriteItem(std::shared_ptr<Item> item, uint16_t maxWriteLength /*= 0*/) {
 	windowTextId++;
 
-	if (writeItem) {
-		writeItem->decrementReferenceCounter();
-	}
-
 	if (item) {
 		writeItem = item;
 		this->maxWriteLen = maxWriteLength;
-		writeItem->incrementReferenceCounter();
 	} else {
 		writeItem = nullptr;
 		this->maxWriteLen = 0;

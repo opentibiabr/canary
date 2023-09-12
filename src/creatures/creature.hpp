@@ -314,7 +314,6 @@ public:
 	void removeMaster() {
 		if (master) {
 			master = nullptr;
-			decrementReferenceCounter();
 		}
 	}
 
@@ -523,13 +522,6 @@ public:
 	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, const FindPathParams &fpp);
 	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
 
-	void incrementReferenceCounter() {
-		++referenceCounter;
-	}
-	void decrementReferenceCounter() {
-		if (--referenceCounter == 0) {
-		}
-	}
 	struct CountBlock_t {
 		int32_t total;
 		int64_t ticks;
@@ -681,7 +673,6 @@ protected:
 	bool summoned = false;
 
 	uint64_t lastStep = 0;
-	uint32_t referenceCounter = 0;
 	uint32_t id = 0;
 	uint32_t scriptEventsBitField = 0;
 	uint32_t eventWalk = 0;

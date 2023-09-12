@@ -55,7 +55,6 @@ Container::~Container() {
 	} else {
 		for (std::shared_ptr<Item> item : itemlist) {
 			item->setParent(nullptr);
-			item->decrementReferenceCounter();
 		}
 	}
 }

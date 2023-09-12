@@ -305,7 +305,6 @@ bool House::isInvited(std::shared_ptr<Player> player) {
 }
 
 void House::addDoor(std::shared_ptr<Door> door) {
-	door->incrementReferenceCounter();
 	doorList.push_back(door);
 	door->setHouse(this);
 	updateDoorDescription();
@@ -314,7 +313,6 @@ void House::addDoor(std::shared_ptr<Door> door) {
 void House::removeDoor(std::shared_ptr<Door> door) {
 	auto it = std::find(doorList.begin(), doorList.end(), door);
 	if (it != doorList.end()) {
-		door->decrementReferenceCounter();
 		doorList.erase(it);
 	}
 }
@@ -384,7 +382,6 @@ void House::resetTransferItem() {
 
 std::shared_ptr<HouseTransferItem> HouseTransferItem::createHouseTransferItem(House* house) {
 	std::shared_ptr<HouseTransferItem> transferItem = std::make_shared<HouseTransferItem>(house);
-	transferItem->incrementReferenceCounter();
 	transferItem->setID(ITEM_DOCUMENT_RO);
 	transferItem->setSubType(1);
 	std::ostringstream ss;

@@ -49,7 +49,6 @@ void Decay::startDecay(std::shared_ptr<Item> item) {
 			}
 		}
 
-		item->incrementReferenceCounter();
 		item->setDecaying(DECAYING_TRUE);
 		item->setAttribute(ItemAttribute_t::DURATION_TIMESTAMP, timestamp);
 		decayMap[timestamp].push_back(item);

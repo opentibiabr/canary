@@ -1219,7 +1219,6 @@ bool Creature::setMaster(std::shared_ptr<Creature> newMaster, bool reloadCreatur
 		g_game().reloadCreature(static_self_cast<Creature>());
 	}
 	if (newMaster) {
-		incrementReferenceCounter();
 		newMaster->summons.push_back(static_self_cast<Creature>());
 	}
 
@@ -1230,7 +1229,6 @@ bool Creature::setMaster(std::shared_ptr<Creature> newMaster, bool reloadCreatur
 		auto summon = std::find(oldMaster->summons.begin(), oldMaster->summons.end(), getCreature());
 		if (summon != oldMaster->summons.end()) {
 			oldMaster->summons.erase(summon);
-			decrementReferenceCounter();
 		}
 	}
 	return true;

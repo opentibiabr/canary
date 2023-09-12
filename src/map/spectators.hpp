@@ -103,6 +103,8 @@ template <typename T>
 Spectators Spectators::filter() {
 	update();
 	auto specs = Spectators();
+	specs.creatures.reserve(creatures.size());
+
 	for (const auto &c : creatures) {
 		if constexpr (std::is_same_v<T, Player>) {
 			if (c->getPlayer() != nullptr) {

@@ -40,6 +40,8 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 	}
 
 	if (checkDistance) {
+		SpectatorList spectators;
+		spectators.reserve(creatures.size());
 		for (const auto creature : *list) {
 			const auto &specPos = creature->getPosition();
 			if (centerPos.x - specPos.x >= minRangeX
@@ -48,9 +50,10 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 				&& centerPos.y - specPos.y <= maxRangeY
 				&& (multifloor || specPos.z == centerPos.z)
 				&& (!onlyPlayers || creature->getPlayer())) {
-				insert(creature);
+				spectators.emplace_back(creature);
 			}
 		}
+		insertAll(spectators);
 	} else {
 		insertAll(*list);
 	}

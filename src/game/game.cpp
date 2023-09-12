@@ -2526,7 +2526,7 @@ void Game::internalQuickLootCorpse(Player* player, Container* corpse) {
 		ss << " (automatic looting)";
 	}
 	ss << ".";
-	player->sendTextMessage(MESSAGE_LOOT, ss.str());
+	player->sendTextMessage(MESSAGE_STATUS, ss.str());
 
 	if (shouldNotifyCapacity) {
 		ss.str(std::string());

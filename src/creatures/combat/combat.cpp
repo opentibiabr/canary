@@ -18,7 +18,6 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "items/weapons/weapons.hpp"
-#include "map/spectators.hpp"
 
 int32_t Combat::getLevelFormula(const Player* player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
@@ -639,7 +638,7 @@ CombatDamage Combat::applyImbuementElementalDamage(Player* attackerPlayer, Item*
 		damage.primary.value = damage.primary.value * (1 - damagePercent);
 
 		if (imbuementInfo.imbuement->soundEffect != SoundEffect_t::SILENCE) {
-			Game::sendSingleSoundEffect(item->getPosition(), imbuementInfo.imbuement->soundEffect, item->getHoldingPlayer());
+			g_game().sendSingleSoundEffect(item->getPosition(), imbuementInfo.imbuement->soundEffect, item->getHoldingPlayer());
 		}
 
 		// If damage imbuement is set, we can return without checking other slots
@@ -755,7 +754,7 @@ void Combat::CombatNullFunc(Creature* caster, Creature* target, const CombatPara
 	CombatDispelFunc(caster, target, params, nullptr);
 }
 
-void Combat::combatTileEffects(Spectators &spectators, Creature* caster, Tile* tile, const CombatParams &params) {
+void Combat::combatTileEffects(const SpectatorHashSet &spectators, Creature* caster, Tile* tile, const CombatParams &params) {
 	if (params.itemId != 0) {
 		uint16_t itemId = params.itemId;
 		switch (itemId) {
@@ -840,9 +839,9 @@ void Combat::combatTileEffects(Spectators &spectators, Creature* caster, Tile* t
 	}
 
 	if (params.soundImpactEffect != SoundEffect_t::SILENCE) {
-		Game::sendDoubleSoundEffect(tile->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+		g_game().sendDoubleSoundEffect(tile->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
 	} else if (params.soundCastEffect != SoundEffect_t::SILENCE) {
-		Game::sendSingleSoundEffect(tile->getPosition(), params.soundCastEffect, caster);
+		g_game().sendSingleSoundEffect(tile->getPosition(), params.soundCastEffect, caster);
 	}
 }
 
@@ -852,9 +851,9 @@ void Combat::postCombatEffects(Creature* caster, const Position &origin, const P
 	}
 
 	if (params.soundImpactEffect != SoundEffect_t::SILENCE) {
-		Game::sendDoubleSoundEffect(pos, params.soundCastEffect, params.soundImpactEffect, caster);
+		g_game().sendDoubleSoundEffect(pos, params.soundCastEffect, params.soundImpactEffect, caster);
 	} else if (params.soundCastEffect != SoundEffect_t::SILENCE) {
-		Game::sendSingleSoundEffect(pos, params.soundCastEffect, caster);
+		g_game().sendSingleSoundEffect(pos, params.soundCastEffect, caster);
 	}
 }
 
@@ -879,6 +878,14 @@ void Combat::addDistanceEffect(Creature* caster, const Position &fromPos, const 
 			case WEAPON_CLUB:
 				effect = CONST_ANI_WHIRLWINDCLUB;
 				break;
+			case WEAPON_MISSILE: {
+				auto weapon = player->getWeapon();
+				if (weapon) {
+					const auto &iType = Item::items[weapon->getID()];
+					effect = iType.shootType;
+				}
+				break;
+			}
 			default:
 				effect = CONST_ANI_NONE;
 				break;
@@ -886,7 +893,7 @@ void Combat::addDistanceEffect(Creature* caster, const Position &fromPos, const 
 	}
 
 	if (effect != CONST_ANI_NONE) {
-		Game::addDistanceEffect(fromPos, toPos, effect);
+		g_game().addDistanceEffect(fromPos, toPos, effect);
 	}
 }
 
@@ -901,44 +908,41 @@ void Combat::doChainEffect(const Position &origin, const Position &dest, uint8_t
 		if (g_game().map.getPathMatching(origin, dirList, FrozenPathingConditionCall(dest), fpp)) {
 			for (auto dir : dirList) {
 				pos = getNextPosition(dir, pos);
-				Game::addMagicEffect(pos, effect);
+				g_game().addMagicEffect(pos, effect);
 			}
 		}
-		Game::addMagicEffect(dest, effect);
+		g_game().addMagicEffect(dest, effect);
 	}
 }
 
 bool Combat::doCombatChain(Creature* caster, Creature* target, bool aggressive) const {
-	auto targets = std::vector<Creature*>();
-	auto targetSet = std::set<uint32_t>();
-	auto visitedChain = std::set<uint32_t>();
-	if (target != nullptr) {
-		targets.push_back(target);
-		targetSet.insert(target->getID());
-	}
-	if (caster != nullptr) {
-		visitedChain.insert(caster->getID());
-	}
-	if (params.chainCallback) {
-		uint8_t maxTargets, chainDistance;
-		bool backtracking = false;
-		params.chainCallback->onChainCombat(caster, maxTargets, chainDistance, backtracking);
-		pickChainTargets(caster, targets, targetSet, visitedChain, params, chainDistance, maxTargets, backtracking, aggressive);
-	}
-	if (targets.empty() || targets.size() == 1 && targets[0] == caster) {
+	if (!params.chainCallback) {
 		return false;
 	}
-	Creature* previousTarget = caster;
-	for (auto currentTarget : targets) {
-		if (currentTarget == caster) {
-			continue;
-		}
-		g_logger().debug("Combat: {} -> {}", previousTarget ? previousTarget->getName() : "none", currentTarget ? currentTarget->getName() : "none");
-		auto origin = previousTarget != nullptr ? previousTarget->getPosition() : Position();
-		doChainEffect(origin, currentTarget->getPosition(), params.chainEffect);
-		doCombat(caster, currentTarget, origin);
-		previousTarget = currentTarget;
+
+	uint8_t maxTargets;
+	uint8_t chainDistance;
+	bool backtracking = false;
+	params.chainCallback->onChainCombat(caster, maxTargets, chainDistance, backtracking);
+	auto targets = pickChainTargets(caster, params, chainDistance, maxTargets, backtracking, aggressive, target);
+
+	g_logger().debug("[{}] Chain targets: {}", __FUNCTION__, targets.size());
+	if (targets.empty() || targets.size() == 1 && targets.begin()->second.empty()) {
+		return false;
 	}
+
+	for (const auto &[from, toVector] : targets) {
+		auto combat = this;
+		for (auto to : toVector) {
+			auto nextTarget = g_game().getCreatureByID(to);
+			if (!nextTarget) {
+				continue;
+			}
+			combat->doChainEffect(from, nextTarget->getPosition(), combat->params.chainEffect);
+			combat->doCombat(caster, nextTarget, from);
+		}
+	}
+
 	return true;
 }
 
@@ -996,6 +1000,7 @@ void Combat::CombatFunc(Creature* caster, const Position &origin, const Position
 		getCombatArea(pos, pos, area, tileList);
 	}
 
+	SpectatorHashSet spectators;
 	uint32_t maxX = 0;
 	uint32_t maxY = 0;
 
@@ -1016,8 +1021,7 @@ void Combat::CombatFunc(Creature* caster, const Position &origin, const Position
 
 	const int32_t rangeX = maxX + MAP_MAX_VIEW_PORT_X;
 	const int32_t rangeY = maxY + MAP_MAX_VIEW_PORT_Y;
-
-	auto spectators = Spectators().find<Player>(pos, true, rangeX, rangeX, rangeY, rangeY);
+	g_game().map.getSpectators(spectators, pos, true, true, rangeX, rangeX, rangeY, rangeY);
 
 	int affected = 0;
 	for (Tile* tile : tileList) {
@@ -1128,7 +1132,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, const Position &
 	if ((caster && target)
 		&& (caster == target || canCombat)
 		&& (params.impactEffect != CONST_ME_NONE)) {
-		Game::addMagicEffect(target->getPosition(), params.impactEffect);
+		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
 	if (target && params.combatType == COMBAT_HEALING && target->getMonster()) {
@@ -1149,7 +1153,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, const Position &
 					const auto charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
 					if (charm) {
 						chance += charm->percent;
-						Game::sendDoubleSoundEffect(target->getPosition(), charm->soundCastEffect, charm->soundImpactEffect, caster);
+						g_game().sendDoubleSoundEffect(target->getPosition(), charm->soundCastEffect, charm->soundImpactEffect, caster);
 					}
 				}
 			}
@@ -1184,9 +1188,9 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, const Position &
 		}
 
 		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
-			Game::sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
 		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
-			Game::sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}
 }
@@ -1226,7 +1230,7 @@ void Combat::doCombatMana(Creature* caster, Creature* target, const Position &or
 	if ((caster && target)
 		&& (caster == target || canCombat)
 		&& (params.impactEffect != CONST_ME_NONE)) {
-		Game::addMagicEffect(target->getPosition(), params.impactEffect);
+		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
 	if (caster && caster->getPlayer()) {
@@ -1250,9 +1254,9 @@ void Combat::doCombatMana(Creature* caster, Creature* target, const Position &or
 		}
 
 		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
-			Game::sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
 		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
-			Game::sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}
 }
@@ -1279,7 +1283,7 @@ void Combat::doCombatCondition(Creature* caster, const Position &position, const
 void Combat::doCombatCondition(Creature* caster, Creature* target, const CombatParams &params) {
 	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR);
 	if ((caster == target || canCombat) && params.impactEffect != CONST_ME_NONE) {
-		Game::addMagicEffect(target->getPosition(), params.impactEffect);
+		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
 	if (canCombat) {
@@ -1293,9 +1297,9 @@ void Combat::doCombatCondition(Creature* caster, Creature* target, const CombatP
 		}
 
 		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
-			Game::sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
 		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
-			Game::sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}
 }
@@ -1310,7 +1314,7 @@ void Combat::doCombatDispel(Creature* caster, Creature* target, const CombatPara
 	if ((caster && target)
 		&& (caster == target || canCombat)
 		&& (params.impactEffect != CONST_ME_NONE)) {
-		Game::addMagicEffect(target->getPosition(), params.impactEffect);
+		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
 	if (canCombat) {
@@ -1324,9 +1328,9 @@ void Combat::doCombatDispel(Creature* caster, Creature* target, const CombatPara
 		}
 
 		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
-			Game::sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
 		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
-			Game::sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}
 }
@@ -1337,7 +1341,8 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const CombatPar
 
 void Combat::doCombatDefault(Creature* caster, Creature* target, const Position &origin, const CombatParams &params) {
 	if (!params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR)) {
-		auto spectators = Spectators().find<Player>(target->getPosition(), true);
+		SpectatorHashSet spectators;
+		g_game().map.getSpectators(spectators, target->getPosition(), true, true);
 
 		CombatNullFunc(caster, target, params, nullptr);
 		combatTileEffects(spectators, caster, target->getTile(), params);
@@ -1348,7 +1353,7 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const Position 
 
 		/*
 		if (params.impactEffect != CONST_ME_NONE) {
-			Game::addMagicEffect(target->getPosition(), params.impactEffect);
+			g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 		}
 		*/
 
@@ -1357,9 +1362,9 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const Position 
 		}
 
 		if (params.soundImpactEffect != SoundEffect_t::SILENCE) {
-			Game::sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
 		} else if (params.soundCastEffect != SoundEffect_t::SILENCE) {
-			Game::sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}
 }
@@ -1372,54 +1377,84 @@ void Combat::setRuneSpellName(const std::string &value) {
 	runeSpellName = value;
 }
 
-void Combat::pickChainTargets(Creature* caster, std::vector<Creature*> &targets, std::set<uint32_t> &targetSet, std::set<uint32_t> &visited, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive) {
-	if (maxTargets == 0 || targets.size() > maxTargets) {
-		return;
-	}
-	// we need a target to chain from
-	if (targets.empty()) {
-		return;
+std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets(Creature* caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive, Creature* initialTarget /* = nullptr */) {
+	if (!caster) {
+		return {};
 	}
 
-	auto currentTarget = targets.back();
-	auto spectators = Spectators().find<Creature>(currentTarget->getPosition(), false, chainDistance, chainDistance, chainDistance, chainDistance);
-	g_logger().debug("Combat::pickChainTargets: currentTarget: {}, spectators: {}", currentTarget->getName(), spectators.size());
-	auto maxBacktrackingAttempts = 10;
-	for (auto attempts = 0; targets.size() <= maxTargets && attempts < maxBacktrackingAttempts; ++attempts) {
-		auto closestDistance = std::numeric_limits<uint16_t>::max();
+	std::vector<std::pair<Position, std::vector<uint32_t>>> resultMap;
+	std::vector<Creature*> targets;
+	std::set<uint32_t> visited;
+
+	if (initialTarget && initialTarget != caster) {
+		targets.push_back(initialTarget);
+		visited.insert(initialTarget->getID());
+		resultMap.push_back({ caster->getPosition(), { initialTarget->getID() } });
+	} else {
+		targets.push_back(caster);
+		maxTargets++;
+	}
+
+	const int maxBacktrackingAttempts = 10; // Can be adjusted as needed
+	while (!targets.empty() && targets.size() <= maxTargets) {
+		Creature* currentTarget = targets.back();
+		SpectatorHashSet spectators;
+		g_game().map.getSpectators(spectators, currentTarget->getPosition(), false, false, chainDistance, chainDistance, chainDistance, chainDistance);
+		g_logger().debug("Combat::pickChainTargets: currentTarget: {}, spectators: {}", currentTarget->getName(), spectators.size());
+
+		double closestDistance = std::numeric_limits<double>::max();
 		Creature* closestSpectator = nullptr;
-		for (auto spectator : spectators) {
-			Creature* creature = spectator;
-			if (creature == nullptr || visited.contains(creature->getID())) {
+		for (Creature* spectator : spectators) {
+			if (!spectator || visited.contains(spectator->getID())) {
 				continue;
 			}
-			bool canCombat = canDoCombat(caster, creature, aggressive) == RETURNVALUE_NOERROR;
-			bool pick = params.chainPickerCallback ? params.chainPickerCallback->onChainCombat(caster, creature) : true;
-			bool hasSight = g_game().isSightClear(currentTarget->getPosition(), creature->getPosition(), true);
-			if (!canCombat || !pick || !hasSight) {
-				visited.insert(creature->getID());
+			if (!isValidChainTarget(caster, currentTarget, spectator, params, aggressive)) {
+				visited.insert(spectator->getID());
 				continue;
 			}
 
-			auto distance = Position::getDiagonalDistance(currentTarget->getPosition(), creature->getPosition());
+			double distance = Position::getEuclideanDistance(currentTarget->getPosition(), spectator->getPosition());
 			if (distance < closestDistance) {
 				closestDistance = distance;
 				closestSpectator = spectator;
 			}
 		}
 
-		if (closestSpectator != nullptr) {
+		if (closestSpectator) {
 			g_logger().debug("Combat::pickChainTargets: closestSpectator: {}", closestSpectator->getName());
-			targets.push_back(closestSpectator);
-			targetSet.insert(closestSpectator->getID());
-			visited.insert(closestSpectator->getID());
-			pickChainTargets(caster, targets, targetSet, visited, params, chainDistance, maxTargets, backtracking, aggressive);
-		}
 
-		if (!backtracking || closestSpectator == nullptr) {
-			break;
+			bool found = false;
+			for (auto &[pos, vec] : resultMap) {
+				if (pos == currentTarget->getPosition()) {
+					vec.push_back(closestSpectator->getID());
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				resultMap.push_back({ currentTarget->getPosition(), { closestSpectator->getID() } });
+			}
+
+			targets.push_back(closestSpectator);
+			visited.insert(closestSpectator->getID());
+			continue;
+		} else if (backtracking) {
+			targets.pop_back();
+			if (targets.size() <= maxBacktrackingAttempts) {
+				continue;
+			}
 		}
+		break;
 	}
+
+	return resultMap;
+}
+
+bool Combat::isValidChainTarget(Creature* caster, Creature* currentTarget, Creature* potentialTarget, const CombatParams &params, bool aggressive) {
+	bool canCombat = canDoCombat(caster, potentialTarget, aggressive) == RETURNVALUE_NOERROR;
+	bool pick = params.chainPickerCallback ? params.chainPickerCallback->onChainCombat(caster, potentialTarget) : true;
+	bool hasSight = g_game().isSightClear(currentTarget->getPosition(), potentialTarget->getPosition(), true);
+	return canCombat && pick && hasSight;
 }
 
 //**********************************************************//

@@ -1,22 +1,26 @@
 function PrettyString(tbl, indent)
-	if not indent then indent = 0 end
+	if not indent then
+		indent = 0
+	end
 	local toprint = string.rep(" ", indent) .. "{\n"
 	indent = indent + 2
 	for k, v in pairs(tbl) do
 		toprint = toprint .. string.rep(" ", indent)
-		if (type(k) == "number") then
+		if type(k) == "number" then
 			toprint = toprint .. "[" .. k .. "] = "
-		elseif (type(k) == "string") then
+		elseif type(k) == "string" then
 			toprint = toprint .. k .. "= "
 		end
-		if (type(v) == "number") then
+		if type(v) == "number" then
 			toprint = toprint .. v .. ",\n"
-		elseif (type(v) == "string") then
-			toprint = toprint .. "\"" .. v .. "\",\n"
-		elseif (type(v) == "table") then
+		elseif type(v) == "string" then
+			toprint = toprint .. '"' .. v .. '",\n'
+		elseif type(v) == "table" then
 			toprint = toprint .. PrettyString(v, indent + 2) .. ",\n"
+		elseif type(v) == "userdata" then
+			toprint = toprint .. '"' .. tostring(v) .. '",\n'
 		else
-			toprint = toprint .. "\"" .. tostring(v) .. "\",\n"
+			toprint = toprint .. '"' .. tostring(v) .. '",\n'
 		end
 	end
 	toprint = toprint .. string.rep(" ", indent - 2) .. "}"
@@ -25,7 +29,7 @@ end
 
 function getTibiaTimerDayOrNight()
 	local light = getWorldLight()
-	if (light == 40) then
+	if light == 40 then
 		return "night"
 	else
 		return "day"
@@ -38,14 +42,16 @@ function getFormattedWorldTime()
 
 	local minutes = worldTime % 60
 	if minutes < 10 then
-		minutes = '0' .. minutes
+		minutes = "0" .. minutes
 	end
-	return hours .. ':' .. minutes
+	return hours .. ":" .. minutes
 end
 
 function getTitle(uid)
 	local player = Player(uid)
-	if not player then return false end
+	if not player then
+		return false
+	end
 
 	for i = #titles, 1, -1 do
 		if player:getStorageValue(titles[i].storageID) == 1 then
@@ -56,46 +62,28 @@ function getTitle(uid)
 	return false
 end
 
-function getHours(seconds)
-	return math.floor((seconds / 60) / 60)
-end
-
-function getMinutes(seconds)
-	return math.floor(seconds / 60)
-end
-
-function getSeconds(seconds)
-	return seconds % 60
-end
-
-function getTime(seconds)
-	local hours, minutes = getHours(seconds), getMinutes(seconds)
-	if (minutes > 59) then
-		minutes = minutes - hours * 60
-	end
-
-	if (minutes < 10) then
-		minutes = "0" .. minutes
-	end
-
-	return hours .. ":" .. minutes .. "h"
-end
-
-function getTimeInWords(secs)
+function getTimeInWords(secsParam)
+	local secs = tonumber(secsParam)
 	local hours, minutes, seconds = getHours(secs), getMinutes(secs), getSeconds(secs)
-	if (minutes > 59) then
-		minutes = minutes - hours * 60
+	local timeStr = ""
+
+	if hours > 0 then
+		timeStr = hours .. (hours > 1 and " hours" or " hour")
 	end
 
-	local timeStr = ''
-
-	if hours > 1 then
-		timeStr = hours .. ' hours '
-	elseif hours == 1 then
-		timeStr = hours .. ' hour '
+	if minutes > 0 then
+		if timeStr ~= "" then
+			timeStr = timeStr .. ", "
+		end
+		timeStr = timeStr .. minutes .. (minutes > 1 and " minutes" or " minute")
 	end
 
-	timeStr = timeStr .. minutes .. ' minutes and ' .. seconds .. ' seconds.'
+	if seconds > 0 then
+		if timeStr ~= "" then
+			timeStr = timeStr .. " and "
+		end
+		timeStr = timeStr .. seconds .. (seconds > 1 and " seconds" or " second")
+	end
 
 	return timeStr
 end
@@ -111,8 +99,7 @@ debug.sethook(function(event, line)
 	linecount = linecount + 1
 	if systemTime() - start >= 1 then
 		if linecount >= 30000 then
-			logger.warn("[debug.sethook] - Possible infinite loop in file [{}] near line [{}]",
-				debug.getinfo(2).source, line)
+			logger.warn("[debug.sethook] - Possible infinite loop in file [{}] near line [{}]", debug.getinfo(2).source, line)
 			debug.sethook()
 		end
 		linecount = 0
@@ -136,7 +123,7 @@ function getJackLastMissionState(player)
 end
 
 function getRateFromTable(t, level, default)
-	if (t ~= nil) then
+	if t ~= nil then
 		for _, rate in ipairs(t) do
 			if level >= rate.minlevel and (not rate.maxlevel or level <= rate.maxlevel) then
 				return rate.multiplier
@@ -162,8 +149,7 @@ function getAccountNumberByPlayerName(name)
 end
 
 function getMoneyCount(string)
-	local b,
-	e = string:find("%d+")
+	local b, e = string:find("%d+")
 	local money = b and e and tonumber(string:sub(b, e)) or -1
 	if isValidMoney(money) then
 		return money
@@ -187,8 +173,7 @@ function getMoneyWeight(money)
 	gold = gold - crystal * 10000
 	local platinum = math.floor(gold / 100)
 	gold = gold - platinum * 100
-	return (ItemType(3043):getWeight() * crystal) + (ItemType(3035):getWeight() * platinum) +
-			(ItemType(3031):getWeight() * gold)
+	return (ItemType(3043):getWeight() * crystal) + (ItemType(3035):getWeight() * platinum) + (ItemType(3031):getWeight() * gold)
 end
 
 function getRealDate()
@@ -257,8 +242,7 @@ function setPlayerMarriageStatus(id, val)
 end
 
 function clearBossRoom(playerId, bossId, centerPosition, rangeX, rangeY, exitPosition)
-	local spectators,
-	spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
+	local spectators, spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
 	for i = 1, #spectators do
 		spectator = spectators[i]
 		if spectator:isPlayer() and spectator.uid == playerId then
@@ -273,8 +257,7 @@ function clearBossRoom(playerId, bossId, centerPosition, rangeX, rangeY, exitPos
 end
 
 function clearRoom(centerPosition, rangeX, rangeY, resetGlobalStorage)
-	local spectators,
-	spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
+	local spectators, spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
 	for i = 1, #spectators do
 		spectator = spectators[i]
 		if spectator:isMonster() then
@@ -345,7 +328,7 @@ function resetFerumbrasAscendantHabitats()
 		if spec:isPlayer() then
 			spec:teleportTo(Position(33630, 32648, 12))
 			spec:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			spec:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You were teleported because the habitats are returning to their original form.')
+			spec:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You were teleported because the habitats are returning to their original form.")
 		elseif spec:isMonster() then
 			spec:remove()
 		end
@@ -395,12 +378,12 @@ function resetFerumbrasAscendantHabitats()
 		end
 	end
 
-	Game.loadMap(DATA_DIRECTORY .. '/world/quest/ferumbras_ascendant/habitats.otbm')
+	Game.loadMap(DATA_DIRECTORY .. "/world/quest/ferumbras_ascendant/habitats.otbm")
 	return true
 end
 
 function checkWallArito(item, toPosition)
-	if (not item:isItem()) then
+	if not item:isItem() then
 		return false
 	end
 	local wallTile = Tile(Position(33206, 32536, 6))
@@ -409,50 +392,42 @@ function checkWallArito(item, toPosition)
 	end
 	local checkEqual = {
 		[2886] = { Position(33207, 32537, 6), { 5858, -1 }, Position(33205, 32537, 6) },
-		[3307] = { Position(33205, 32537, 6), { 2016, 1 }, Position(33207, 32537, 6), 5858 }
+		[3307] = { Position(33205, 32537, 6), { 2016, 1 }, Position(33207, 32537, 6), 5858 },
 	}
 	local it = checkEqual[item:getId()]
-	if (it and it[1] == toPosition and Tile(it[3]):getItemCountById(it[2][1], it[2][2]) > 0) then
+	if it and it[1] == toPosition and Tile(it[3]):getItemCountById(it[2][1], it[2][2]) > 0 then
 		wallTile:getItemById(1085):transform(7181)
 
-		if (it[4]) then
+		if it[4] then
 			item:transform(it[4])
 		end
 
-		addEvent(
-			function()
-				if (Tile(Position(33206, 32536, 6)):getItemCountById(7476) > 0) then
-					Tile(Position(33206, 32536, 6)):getItemById(7476):transform(1085)
-				end
-				if (Tile(Position(33205, 32537, 6)):getItemCountById(5858) > 0) then
-					Tile(Position(33205, 32537, 6)):getItemById(5858):remove()
-				end
-			end,
-			5 * 60 * 1000
-		)
+		addEvent(function()
+			if Tile(Position(33206, 32536, 6)):getItemCountById(7476) > 0 then
+				Tile(Position(33206, 32536, 6)):getItemById(7476):transform(1085)
+			end
+			if Tile(Position(33205, 32537, 6)):getItemCountById(5858) > 0 then
+				Tile(Position(33205, 32537, 6)):getItemById(5858):remove()
+			end
+		end, 5 * 60 * 1000)
 	else
-		if (it and it[4] and it[1] == toPosition) then
+		if it and it[4] and it[1] == toPosition then
 			item:transform(it[4])
 		end
 	end
 end
 
-function placeSpawnRandom(fromPositon, toPosition, monsterName, ammount, hasCall, storage, value, removestorage,
-	sharedHP, event, message)
+function placeSpawnRandom(fromPositon, toPosition, monsterName, ammount, hasCall, storage, value, removestorage, sharedHP, event, message)
 	for _x = fromPositon.x, toPosition.x do
 		for _y = fromPositon.y, toPosition.y do
 			for _z = fromPositon.z, toPosition.z do
 				local tile = Tile(Position(_x, _y, _z))
 				if not removestorage then
-					if tile and tile:getTopCreature() and tile:getTopCreature():isMonster() and
-							tile:getTopCreature():getName() == monsterName
-					then
+					if tile and tile:getTopCreature() and tile:getTopCreature():isMonster() and tile:getTopCreature():getName() == monsterName then
 						tile:getTopCreature():remove()
 					end
 				else
-					if tile and tile:getTopCreature() and tile:getTopCreature():isMonster() and
-							tile:getTopCreature():getStorageValue(storage) == value
-					then
+					if tile and tile:getTopCreature() and tile:getTopCreature():isMonster() and tile:getTopCreature():getStorageValue(storage) == value then
 						tile:getTopCreature():remove()
 					end
 				end
@@ -468,7 +443,7 @@ function placeSpawnRandom(fromPositon, toPosition, monsterName, ammount, hasCall
 			local position = {
 				x = math.random(fromPositon.x, toPosition.x),
 				y = math.random(fromPositon.y, toPosition.y),
-				z = math.random(fromPositon.z, toPosition.z)
+				z = math.random(fromPositon.z, toPosition.z),
 			}
 			-- tile = Tile(position)
 			-- passing = tile and #tile:getItems() <= 0
@@ -478,7 +453,7 @@ function placeSpawnRandom(fromPositon, toPosition, monsterName, ammount, hasCall
 				summoned = summoned + 1
 				-- Set first spawn
 				monster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				if (hasCall) then
+				if hasCall then
 					monster:setStorage(storage, value)
 					if sharedHP then
 						monster:beginSharedLife(tm)
@@ -498,7 +473,7 @@ function placeSpawnRandom(fromPositon, toPosition, monsterName, ammount, hasCall
 					end
 				end
 			end
-		until (summoned == ammount)
+		until summoned == ammount
 	end
 end
 
@@ -512,13 +487,12 @@ function getMonstersInArea(fromPos, toPos, monsterName, ignoreMonsterId)
 					for _, pid in pairs(tile:getCreatures()) do
 						local mt = Monster(pid)
 						if not ignoreMonsterId then
-							if (mt and mt:isMonster() and mt:getName():lower() == monsterName:lower() and not mt:getMaster()) then
-								monsters[#monsters+1] = mt
+							if mt and mt:isMonster() and mt:getName():lower() == monsterName:lower() and not mt:getMaster() then
+								monsters[#monsters + 1] = mt
 							end
 						else
-							if (mt and mt:isMonster() and mt:getName():lower() == monsterName:lower()
-										and not mt:getMaster() and ignoreMonsterId ~= mt:getId()) then
-								monsters[#monsters+1] = mt
+							if mt and mt:isMonster() and mt:getName():lower() == monsterName:lower() and not mt:getMaster() and ignoreMonsterId ~= mt:getId() then
+								monsters[#monsters + 1] = mt
 							end
 						end
 					end
@@ -530,12 +504,14 @@ function getMonstersInArea(fromPos, toPos, monsterName, ignoreMonsterId)
 end
 
 function isPlayerInArea(fromPos, toPos)
-	for _x = fromPos.x, toPos.x do
-		for _y = fromPos.y, toPos.y do
-			for _z = fromPos.z, toPos.z do
-				creature = getTopCreature({ x = _x, y = _y, z = _z })
-				if (isPlayer(creature.uid)) then
-					return true
+	for positionX = fromPos.x, toPos.x do
+		for positionY = fromPos.y, toPos.y do
+			for positionZ = fromPos.z, toPos.z do
+				local tile = Tile(Position({ x = positionX, y = positionY, z = positionZ }))
+				if tile then
+					if tile:getTopCreature() and tile:getTopCreature():isPlayer() then
+						return true
+					end
 				end
 			end
 		end
@@ -591,8 +567,7 @@ function cleanAreaQuest(frompos, topos, itemtable, blockmonsters)
 	return true
 end
 
-function kickerPlayerRoomAfferMin(playername, fromPosition, toPosition, teleportPos, message, monsterName, minutes,
-	firstCall, itemtable, blockmonsters)
+function kickerPlayerRoomAfferMin(playername, fromPosition, toPosition, teleportPos, message, monsterName, minutes, firstCall, itemtable, blockmonsters)
 	local players = false
 	if type(playername) == table then
 		players = true
@@ -661,18 +636,16 @@ function kickerPlayerRoomAfferMin(playername, fromPosition, toPosition, teleport
 		end
 	end
 	local min = 60 -- Use the 60 for 1 minute
-	if (firstCall) then
-		addEvent(kickerPlayerRoomAfferMin, 1000, playername, fromPosition, toPosition, teleportPos, message,
-			monsterName, minutes, false, itemtable, blockmonsters)
+	if firstCall then
+		addEvent(kickerPlayerRoomAfferMin, 1000, playername, fromPosition, toPosition, teleportPos, message, monsterName, minutes, false, itemtable, blockmonsters)
 	else
 		local subt = minutes - 1
-		if (monsterName ~= "") then
+		if monsterName ~= "" then
 			if minutes > 3 and table.maxn(monster) == 0 then
 				subt = 2
 			end
 		end
-		addEvent(kickerPlayerRoomAfferMin, min * 1000, playername, fromPosition, toPosition, teleportPos, message,
-			monsterName, subt, false, itemtable, blockmonsters)
+		addEvent(kickerPlayerRoomAfferMin, min * 1000, playername, fromPosition, toPosition, teleportPos, message, monsterName, subt, false, itemtable, blockmonsters)
 	end
 end
 
@@ -683,8 +656,7 @@ function checkWeightAndBackpackRoom(player, itemWeight, message)
 		return false
 	end
 	if (player:getFreeCapacity() / 100) < itemWeight then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			message .. ". Weighing " .. itemWeight .. " oz, it is too heavy for you to carry.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message .. ". Weighing " .. itemWeight .. " oz, it is too heavy for you to carry.")
 		return false
 	end
 	return true
@@ -707,7 +679,9 @@ if not bosssPlayers then
 	bosssPlayers = {
 		addPlayers = function(self, cid)
 			local player = Player(cid)
-			if not player then return false end
+			if not player then
+				return false
+			end
 			if not self.players then
 				self.players = {}
 			end
@@ -715,23 +689,33 @@ if not bosssPlayers then
 		end,
 		removePlayer = function(self, cid)
 			local player = Player(cid)
-			if not player then return false end
-			if not self.players then return false end
+			if not player then
+				return false
+			end
+			if not self.players then
+				return false
+			end
 			self.players[player:getId()] = nil
 		end,
 		getPlayersCount = function(self)
-			if not self.players then return 0 end
+			if not self.players then
+				return 0
+			end
 			local c = 0
-			for _ in pairs(self.players) do c = c + 1 end
+			for _ in pairs(self.players) do
+				c = c + 1
+			end
 			return c
-		end
+		end,
 	}
 end
 
 function isInRange(pos, fromPos, toPos)
-	return pos.x >= fromPos.x and pos.y >= fromPos.y
-			and pos.z >= fromPos.z and pos.x <= toPos.x
-			and pos.y <= toPos.y and pos.z <= toPos.z
+	return pos.x >= fromPos.x and pos.y >= fromPos.y and pos.z >= fromPos.z and pos.x <= toPos.x and pos.y <= toPos.y and pos.z <= toPos.z
+end
+
+function isInRangeIgnoreZ(pos, fromPos, toPos)
+	return pos.x >= fromPos.x and pos.y >= fromPos.y and pos.z >= fromPos.z and pos.x <= toPos.x
 end
 
 function isNumber(str)
@@ -900,7 +884,7 @@ function kickPlayersAfterTime(players, fromPos, toPos, exit)
 		local player = Player(pid)
 		if player and player:getPosition():isInRange(fromPos, toPos) then
 			player:teleportTo(exit)
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You were kicked by exceding time inside the boss room.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You were kicked by exceding time inside the boss room.")
 		end
 	end
 end
@@ -913,7 +897,7 @@ function Player:doCheckBossRoom(bossName, fromPos, toPos)
 					local sqm = Tile(Position(x, y, z))
 					if sqm then
 						if sqm:getTopCreature() and sqm:getTopCreature():isPlayer() then
-							self:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You must wait. Someone is challenging ' .. bossName .. ' now.')
+							self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You must wait. Someone is challenging " .. bossName .. " now.")
 							return false
 						end
 					end
@@ -982,6 +966,31 @@ function SetInfluenced(monsterType, monster, player, influencedLevel)
 	monster:setForgeStack(influencedLevel)
 end
 
+function getHours(seconds)
+	return math.floor((seconds / 60) / 60)
+end
+
+function getMinutes(seconds)
+	return math.floor(seconds / 60) % 60
+end
+
+function getSeconds(seconds)
+	return seconds % 60
+end
+
+function getTime(seconds)
+	local hours, minutes = getHours(seconds), getMinutes(seconds)
+	if minutes > 59 then
+		minutes = minutes - hours * 60
+	end
+
+	if minutes < 10 then
+		minutes = "0" .. minutes
+	end
+
+	return hours .. ":" .. minutes .. "h"
+end
+
 function ReloadDataEvent(cid)
 	local player = Player(cid)
 	if not player then
@@ -1007,7 +1016,7 @@ function HasValidTalkActionParams(player, param, usage)
 end
 
 function FormatNumber(number)
-	local _, _, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
+	local _, _, minus, int, fraction = tostring(number):find("([-]?)(%d+)([.]?%d*)")
 	int = int:reverse():gsub("(%d%d%d)", "%1,")
 	return minus .. int:reverse():gsub("^,", "") .. fraction
 end

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 80
+	chance = 80,
 }
 
 monster.strategiesTarget = {
@@ -87,17 +87,9 @@ monster.loot = {
 	{ id = 3039, chance = 980 }, -- red gem
 	{ id = 21292, chance = 480 }, -- feedbag
 	{ id = 5880, chance = 980 }, -- iron ore
-	{ id = 21144, chance = 280 } -- bowl of glooth soup
+	{ id = 21144, chance = 280 }, -- bowl of glooth soup
 }
 
--- TODO: monster-abilities
---monster.attacks = {
---	{name ="melee", interval = 2000, chance = 100, minDamage = -0, maxDamage = -1900},
---	{name ="combat", interval = 2000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -400, range = ?, effect = <>, target = ?}, --[[Blue Electricity Effect|Blue Energy Ultimate Explosion]]
---	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -paralyses you, maxDamage = -paralyses you, range = ?, effect = <>, target = ?}, --[[Poison Effect 2|Poison Ultimate Explosion]]
---	{name ="healing", interval = 2000, chance = 20, minDamage = 200, maxDamage = 250},
---	{name ="healing", interval = 2000, chance = 20, minDamage = 7500, maxDamage = 8000},
---}
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1900 },
 	{ name = "combat", interval = 1000, chance = 7, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -4000, radius = 6, effect = CONST_ME_ENERGYHIT, target = false }, -- blue energy ultimate explosion
@@ -131,7 +123,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

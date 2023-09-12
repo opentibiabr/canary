@@ -10,7 +10,7 @@
 #pragma once
 
 #include "declarations.hpp"
-#include "lib/di/container.hpp"
+#include "lib/logging/log_with_spd_log.hpp"
 
 class DBResult;
 using DBResult_ptr = std::shared_ptr<DBResult>;
@@ -24,9 +24,7 @@ public:
 	Database(const Database &) = delete;
 	Database &operator=(const Database &) = delete;
 
-	static Database &getInstance() {
-		return inject<Database>();
-	}
+	static Database &getInstance();
 
 	bool connect();
 
@@ -62,7 +60,6 @@ private:
 		return error == CR_SERVER_LOST || error == CR_SERVER_GONE_ERROR || error == CR_CONN_HOST_ERROR || error == 1053 /*ER_SERVER_SHUTDOWN*/ || error == CR_CONNECTION_ERROR;
 	}
 
-private:
 	MYSQL* handle = nullptr;
 	std::recursive_mutex databaseLock;
 	uint64_t maxPacketSize = 1048576;

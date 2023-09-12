@@ -10,7 +10,12 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
+}
+
+monster.bosstiary = {
+	bossRaceId = 566,
+	bossRace = RARITY_BANE,
 }
 
 monster.health = 415
@@ -22,12 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
-}
-
-monster.bosstiary = {
-	bossRaceId = 566,
-	bossRace = RARITY_BANE
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -43,7 +43,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -53,13 +53,13 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnFire = true,
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -69,7 +69,7 @@ monster.voices = {
 	{ text = "I sence so much potential in you. It's almost a shame I have to kill you.", yell = false },
 	{ text = "Yes, slay me for the loot I might have. Give in to your greed.", yell = false },
 	{ text = "Wealth, Power, it is all at your fingertips. All you have to do is a bit blackmailing and bullying.", yell = false },
-	{ text = "Come on. being a bit evil won't hurt you.", yell = false }
+	{ text = "Come on. being a bit evil won't hurt you.", yell = false },
 }
 
 monster.loot = {
@@ -78,19 +78,20 @@ monster.loot = {
 	{ id = 9376, chance = 1000 }, -- stale bread of ancientness
 	{ id = 9387, chance = 1000 }, -- poet's fencing quill
 	{ id = 9400, chance = 1000 }, -- rain coat
-	{ id = 3537, chance = 1000 } -- white knight
+	{ id = 3537, chance = 1000 }, -- white knight
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 1200, chance = 100, minDamage = 0, maxDamage = -35 },
-	{ name = "combat", interval = 1500, chance = 70, type = COMBAT_FIREDAMAGE, minDamage = -15, maxDamage = -45, range = 7, radius = 2, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true }
+	{ name = "combat", interval = 1500, chance = 70, type = COMBAT_FIREDAMAGE, minDamage = -15, maxDamage = -45, range = 7, radius = 2, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
 }
 
 monster.defenses = {
 	defense = 35,
 	armor = 30,
+	mitigation = 0.40,
 	{ name = "speed", interval = 1000, chance = 40, speedChange = 400, effect = CONST_ME_MAGIC_RED, target = false, duration = 40000 },
-	{ name = "invisible", interval = 4000, chance = 50, effect = CONST_ME_MAGIC_RED }
+	{ name = "invisible", interval = 4000, chance = 50, effect = CONST_ME_MAGIC_RED },
 }
 
 monster.elements = {
@@ -103,14 +104,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

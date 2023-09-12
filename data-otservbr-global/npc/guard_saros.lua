@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 0,
 	lookFeet = 0,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Praised be Suon, the Benevolent King!' }
+	{ text = "Praised be Suon, the Benevolent King!" },
 }
 
 local keywordHandler = KeywordHandler:new()

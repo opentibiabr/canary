@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 245
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Calassa, Frozen Trench, Yalahar (Sunken Quarter)."
+	Locations = "Calassa, Frozen Trench, Yalahar (Sunken Quarter).",
 }
 
 monster.health = 1800
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 2,
+	color = 35,
 }
 
 monster.voices = {
@@ -72,7 +72,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Clank! Clank!", yell = false },
 	{ text = "Clap!", yell = false },
-	{ text = "Crrrk! Crrrk!", yell = false }
+	{ text = "Crrrk! Crrrk!", yell = false },
 }
 
 monster.loot = {
@@ -88,17 +88,18 @@ monster.loot = {
 	{ name = "warrior helmet", chance = 1460 },
 	{ name = "crown armor", chance = 280 },
 	{ name = "glacier robe", chance = 120 },
-	{ name = "giant shrimp", chance = 40 }
+	{ name = "giant shrimp", chance = 40 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -342, effect = CONST_ME_DRAWBLOOD },
-	{ name = "speed", interval = 2000, chance = 20, speedChange = -600, range = 1, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000 }
+	{ name = "speed", interval = 2000, chance = 20, speedChange = -600, range = 1, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000 },
 }
 
 monster.defenses = {
 	defense = 50,
-	armor = 50
+	armor = 85,
+	mitigation = 0.99,
 }
 
 monster.elements = {
@@ -111,14 +112,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

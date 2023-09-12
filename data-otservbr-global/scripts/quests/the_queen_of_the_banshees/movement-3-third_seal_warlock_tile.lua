@@ -9,8 +9,8 @@ function thirdSealWarlockTile.onStepIn(creature, item, position, fromPosition)
 	if player:getStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.ThirdSealWarlocks) < 1 then
 		player:setStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.ThirdSealWarlocks, 1)
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
-		Game.createMonster('Warlock', { x = 32215, y = 31835, z = 15 }, false, true)
-		Game.createMonster('Warlock', { x = 32215, y = 31840, z = 15 }, false, true)
+		Game.createMonster("Warlock", { x = 32215, y = 31835, z = 15 }, false, true)
+		Game.createMonster("Warlock", { x = 32215, y = 31840, z = 15 }, false, true)
 	end
 	return true
 end

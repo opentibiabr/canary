@@ -1,12 +1,12 @@
 local config = {
 	bossName = {
-		['Monday'] = 'Plagueroot',
-		['Tuesday'] = 'Malofur Mangrinder',
-		['Wednesday'] = 'Maxxenius',
-		['Thursday'] = 'Alptramun',
-		['Friday'] = 'Izcandar The Banished',
-		['Saturday'] = 'Maxxenius',
-		['Sunday'] = 'Alptramun'
+		["Monday"] = "Plagueroot",
+		["Tuesday"] = "Malofur Mangrinder",
+		["Wednesday"] = "Maxxenius",
+		["Thursday"] = "Alptramun",
+		["Friday"] = "Izcandar The Banished",
+		["Saturday"] = "Maxxenius",
+		["Sunday"] = "Alptramun",
 	},
 	requiredLevel = 250,
 	timeToFightAgain = 10, -- In hour
@@ -16,15 +16,15 @@ local config = {
 		{ pos = Position(32208, 32022, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32208, 32023, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32208, 32024, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(32208, 32025, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT }
+		{ pos = Position(32208, 32025, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT },
 	},
 	bossPosition = Position(32207, 32051, 14),
 	specPos = {
 		from = Position(32199, 32039, 14),
-		to = Position(32229, 32055, 14)
+		to = Position(32229, 32055, 14),
 	},
 	exit = Position(32210, 32035, 13),
-	storage = Storage.Quest.U12_00.TheDreamCourts.ArenaTimer
+	storage = Storage.Quest.U12_00.TheDreamCourts.ArenaTimer,
 }
 
 local dreamCourtsLever = Action()

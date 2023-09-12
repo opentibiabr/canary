@@ -10,7 +10,12 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
+}
+
+monster.bosstiary = {
+	bossRaceId = 964,
+	bossRace = RARITY_NEMESIS,
 }
 
 monster.health = 25000
@@ -22,12 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
-}
-
-monster.bosstiary = {
-	bossRaceId = 964,
-	bossRace = RARITY_NEMESIS
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -52,27 +52,27 @@ monster.flags = {
 	runHealth = 300,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{ name = "spawn of the welter", chance = 16, interval = 2000, count = 1 }
-	}
+		{ name = "spawn of the welter", chance = 16, interval = 2000, count = 1 },
+	},
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "FCHHHHH", yell = true }
+	{ text = "FCHHHHH", yell = true },
 }
 
 monster.loot = {
@@ -94,7 +94,7 @@ monster.loot = {
 	{ id = 4839, chance = 2000 }, -- hydra egg
 	{ id = 237, chance = 20000, maxCount = 2 }, -- strong mana potion
 	{ id = 3035, chance = 20000, maxCount = 10 }, -- platinum coin
-	{ id = 3031, chance = 20000, maxCount = 100 } -- gold coin
+	{ id = 3031, chance = 20000, maxCount = 100 }, -- gold coin
 }
 
 monster.attacks = {
@@ -104,40 +104,40 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_DEATHDAMAGE, minDamage = -200, maxDamage = -450, length = 8, spread = 3, effect = CONST_ME_BLACKSMOKE, target = false },
 	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_ICEDAMAGE, minDamage = -150, maxDamage = -270, range = 7, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEATTACK, target = true },
 	{ name = "combat", interval = 2000, chance = 13, type = COMBAT_ICEDAMAGE, minDamage = -120, maxDamage = -230, range = 1, radius = 1, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEATTACK, target = true },
-	{ name = "the welter paralyze", interval = 2000, chance = 9, target = false }
+	{ name = "the welter paralyze", interval = 2000, chance = 9, target = false },
 }
 
 monster.defenses = {
 	defense = 45,
 	armor = 27,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 32, type = COMBAT_HEALING, minDamage = 250, maxDamage = 600, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_HEALING, minDamage = 150, maxDamage = 700, radius = 5, effect = CONST_ME_MAGIC_GREEN, target = false },
 	{ name = "the welter summon2", interval = 2000, chance = 9, target = false },
-	{ name = "the welter heal", interval = 2000, chance = 8, target = false }
+	{ name = "the welter heal", interval = 2000, chance = 8, target = false },
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = -5 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = -10 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 50 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 30 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 25 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -145,13 +145,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

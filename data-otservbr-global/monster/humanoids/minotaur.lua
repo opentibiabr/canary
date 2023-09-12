@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 25
@@ -26,7 +26,7 @@ monster.Bestiary = {
 	Locations = "Mino Hell (Rookgaard), Two outside Bear Room Quest, (Rookgaard) and also 2x on the premium side, \z
 		Mintwallin, Folda, Minotaur Pyramid, Outlaw Camp, Kazordoon minotaur cave, Plains of Havoc, Elven Bane, \z
 		Deeper Fibula Dungeon (level 50+ to open the door), Ancient Temple, Maze of Lost Souls, \z
-		Thais Minotaur Camp, Foreigner Quarter."
+		Thais Minotaur Camp, Foreigner Quarter.",
 }
 
 monster.health = 100
@@ -38,7 +38,7 @@ monster.manaCost = 330
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -62,19 +62,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Kaplar!", yell = false },
-	{ text = "Hurr", yell = false }
+	{ text = "Hurr", yell = false },
 }
 
 monster.loot = {
@@ -89,16 +89,17 @@ monster.loot = {
 	{ id = 3457, chance = 310 }, -- shovel
 	{ name = "meat", chance = 5000 },
 	{ name = "minotaur leather", chance = 990 },
-	{ name = "minotaur horn", chance = 2090, maxCount = 2 }
+	{ name = "minotaur horn", chance = 2090, maxCount = 2 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 },
 }
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 11,
+	mitigation = 0.28,
 }
 
 monster.elements = {
@@ -111,14 +112,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

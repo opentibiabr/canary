@@ -1,7 +1,7 @@
 local goldCoins = {
 	[3031] = { changeTo = 3035 },
 	[3035] = { changeBack = 3031, changeTo = 3043 },
-	[3043] = { changeBack = 3035 }
+	[3043] = { changeBack = 3035 },
 }
 
 local changeGold = Action()

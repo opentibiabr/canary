@@ -17,11 +17,11 @@ npcConfig.outfit = {
 	lookLegs = 19,
 	lookFeet = 38,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -93,7 +93,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:addItem(22182, 1)
 			player:setStorageValue(Storage.FerumbrasAscension.Access, 1)
 		else
-			npcHandler:say("You don\'t have the demonic essences, back here when you get it.", npc, creature)
+			npcHandler:say("You don't have the demonic essences, back here when you get it.", npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 		end
 	elseif MsgContains(message, "godbreaker") then
@@ -132,7 +132,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "kazordoon") then
 		npcHandler:say("The dwarves are leftovers from a time long gone by. They have outlived their usefulness to the gods and seem to have come to terms with that. ...", npc, creature)
 		npcHandler:say("They are as unchanging as rock and no greatness awaits them any more. They missed their chance, if they ever had any.", npc, creature)
-	elseif MsgContains(message, "ab\'dendriel") then
+	elseif MsgContains(message, "ab'dendriel") then
 		npcHandler:say("The elves are like lost children. Their potential might be great, but they lack focus and dedication to truly improve. If their myths are true, some of the more early elves might have accomplished ascension. ...", npc, creature)
 		npcHandler:say("Yet even if hints strongly suggest those stories are true, the sheer inaction of those assumedly ascended beings is disturbing. Perhaps what those legendary elves achieved was something completely different.", npc, creature)
 	elseif MsgContains(message, "edron") then

@@ -16,7 +16,7 @@ combat:setArea(createCombatArea({
 
 local monsters = {
 	"lost gnome",
-	"gnome pack crawler"
+	"gnome pack crawler",
 }
 
 function onTargetTile(cid, pos)

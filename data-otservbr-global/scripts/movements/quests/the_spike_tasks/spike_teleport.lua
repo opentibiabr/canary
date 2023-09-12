@@ -16,7 +16,7 @@ local config = {
 	[4240] = { level = 80, destination = Position(32244, 32588, 14) },
 	[4241] = { destination = Position(32237, 32605, 14) },
 	[4242] = { level = 80, destination = Position(32224, 32606, 15) },
-	[4243] = { destination = Position(32237, 32605, 15) }
+	[4243] = { destination = Position(32237, 32605, 15) },
 }
 
 local spikeTeleport = MoveEvent()

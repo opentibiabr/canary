@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 215
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "South of Port Hope (Trapwood) on ground level and underground."
+	Locations = "South of Port Hope (Trapwood) on ground level and underground.",
 }
 
 monster.health = 85
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -50,7 +50,7 @@ monster.flags = {
 	pushable = true,
 	rewardBoss = false,
 	illusionable = true,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 90,
 	targetDistance = 1,
@@ -59,20 +59,20 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Brak brrretz!", yell = false },
 	{ text = "Grow truk grrrrr.", yell = false },
-	{ text = "Prek tars, dekklep zurk.", yell = false }
+	{ text = "Brak brrretz!", yell = false },
+	{ text = "Prek tars, dekklep zurk.", yell = false },
 }
 
 monster.loot = {
@@ -84,17 +84,18 @@ monster.loot = {
 	{ name = "cleaver", chance = 9750 },
 	{ name = "ripper lance", chance = 90 },
 	{ name = "hunting spear", chance = 2000 },
-	{ name = "tribal mask", chance = 500 }
+	{ name = "tribal mask", chance = 500 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -25, condition = { type = CONDITION_POISON, totalDamage = 20, interval = 4000 } },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -15, range = 7, shootEffect = CONST_ANI_THROWINGKNIFE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -15, range = 7, shootEffect = CONST_ANI_THROWINGKNIFE, target = false },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 3,
+	mitigation = 0.20,
 }
 
 monster.elements = {
@@ -107,14 +108,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -13 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -13 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

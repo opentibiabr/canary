@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 132,
 	lookFeet = 94,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 323
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Krimhorn, Bittermor, Ragnir, Arena and Zoo Quarter inside the Arena."
+	Locations = "Krimhorn, Bittermor, Ragnir, Arena and Zoo Quarter inside the Arena.",
 }
 
 monster.health = 305
@@ -35,7 +35,7 @@ monster.manaCost = 590
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,21 +62,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "YAAAHEEE!", yell = false },
-	{ text = "SLAUGHTER!", yell = false },
-	{ text = "CARNAGE!", yell = false },
-	{ text = "You can run but you can't hide", yell = false }
+	{ text = "YAAAHEEE!", yell = true },
+	{ text = "SLAUGHTER!", yell = true },
+	{ text = "CARNAGE!", yell = true },
+	{ text = "You can run but you can't hide", yell = false },
 }
 
 monster.loot = {
@@ -91,17 +91,18 @@ monster.loot = {
 	{ name = "red piece of cloth", chance = 540 },
 	{ name = "shard", chance = 300 },
 	{ name = "fur boots", chance = 100 },
-	{ name = "health potion", chance = 980 }
+	{ name = "health potion", chance = 980 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -240 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -240 },
 }
 
 monster.defenses = {
 	defense = 0,
 	armor = 9,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 240, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	mitigation = 0.25,
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 240, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -114,14 +115,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 50 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

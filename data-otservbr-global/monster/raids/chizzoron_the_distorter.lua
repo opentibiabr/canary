@@ -1,7 +1,7 @@
-local mType = Game.createMonsterType("Chizzoron The Distorter")
+local mType = Game.createMonsterType("Chizzoron the Distorter")
 local monster = {}
 
-monster.description = "Chizzoron The Distorter"
+monster.description = "Chizzoron the Distorter"
 monster.experience = 4000
 monster.outfit = {
 	lookType = 340,
@@ -10,7 +10,12 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
+}
+
+monster.bosstiary = {
+	bossRaceId = 629,
+	bossRace = RARITY_NEMESIS,
 }
 
 monster.health = 16000
@@ -22,12 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 629,
-	bossRace = RARITY_NEMESIS
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -54,19 +54,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "Lizard Dragon Priest", chance = 10, interval = 2000, count = 2 }
-	}
+		{ name = "Lizard Dragon Priest", chance = 10, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -74,7 +74,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Humanzzz! Leave Zzaion at onzzzze!", yell = false },
 	{ text = "I pray to my mazzterzz, the mighty dragonzzz!", yell = false },
-	{ text = "You are not worzzy to touch zzizz zzacred ground!", yell = false }
+	{ text = "You are not worzzy to touch zzizz zzacred ground!", yell = false },
 }
 
 monster.loot = {
@@ -86,7 +86,7 @@ monster.loot = {
 	{ id = 3038, chance = 16300 }, -- green gem
 	{ id = 3053, chance = 11025 }, -- time ring
 	{ id = 239, chance = 5750 }, -- great health potion
-	{ id = 3386, chance = 5750 } -- dragon scale mail
+	{ id = 3386, chance = 5750 }, -- dragon scale mail
 }
 
 monster.attacks = {
@@ -94,12 +94,13 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = 0, maxDamage = -430, range = 7, radius = 1, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = 0, maxDamage = -874, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -300, maxDamage = -646, radius = 3, effect = CONST_ME_POFF, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -148, maxDamage = -250, range = 7, effect = CONST_ME_MAGIC_RED, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -148, maxDamage = -250, range = 7, effect = CONST_ME_MAGIC_RED, target = true },
 }
 
 monster.defenses = {
 	defense = 85,
-	armor = 70
+	armor = 70,
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -112,18 +113,17 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 30 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 30 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -131,13 +131,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

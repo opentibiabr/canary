@@ -52,7 +52,7 @@ local carpetItems = {
 	[26152] = 26153,
 	[26153] = 26152, -- Crested carpet
 	[26154] = 26155,
-	[26155] = 26154 -- Decorated carpet
+	[26155] = 26154, -- Decorated carpet
 }
 
 local carpets = Action()

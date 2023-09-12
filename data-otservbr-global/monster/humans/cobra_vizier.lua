@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Cobra Vizier")
 local monster = {}
 
 monster.description = "a cobra vizier"
-monster.experience = 9108
+monster.experience = 7650
 monster.outfit = {
 	lookType = 1217,
 	lookHead = 19,
@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 67,
 	lookFeet = 78,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1824
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Cobra Bastion."
+	Locations = "Cobra Bastion.",
 }
 
 monster.health = 8500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -59,20 +59,20 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "COMBINE FORCES MY BRETHEN!", yell = false },
+	{ text = "COMBINE FORCES MY BRETHEN!", yell = true },
 	{ text = "Feel the cobras wrath!", yell = false },
-	{ text = "OH NO, YOU WON'T!", yell = false }
+	{ text = "OH NO, YOU WON'T!", yell = true },
 }
 
 monster.loot = {
@@ -92,19 +92,20 @@ monster.loot = {
 	{ name = "serpent sword", chance = 2420 },
 	{ name = "violet crystal shard", chance = 2420 },
 	{ name = "green gem", chance = 1610 },
-	{ name = "onyx chip", chance = 1610, maxCount = 3 }
+	{ name = "onyx chip", chance = 1610, maxCount = 3 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -480 },
 	{ name = "explosion wave", interval = 2000, chance = 15, minDamage = -280, maxDamage = -400, target = false },
-	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_EARTHDAMAGE, minDamage = -350, maxDamage = -520, radius = 4, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_GREEN_RINGS, target = true }
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_EARTHDAMAGE, minDamage = -350, maxDamage = -520, radius = 4, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_GREEN_RINGS, target = true },
 }
 
 monster.defenses = {
 	defense = 82,
 	armor = 82,
-	{ name = "speed", interval = 2000, chance = 8, speedChange = 250, effect = CONST_ME_MAGIC_GREEN, target = false, duration = 5000 }
+	mitigation = 2.31,
+	{ name = "speed", interval = 2000, chance = 8, speedChange = 250, effect = CONST_ME_MAGIC_GREEN, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -117,14 +118,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

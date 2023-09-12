@@ -159,6 +159,9 @@ public:
 	bool isBed() const {
 		return (type == ITEM_TYPE_BED);
 	}
+	bool isWrappable() const {
+		return (wrapableTo > 0);
+	}
 	bool isRune() const {
 		return (type == ITEM_TYPE_RUNE);
 	}
@@ -170,6 +173,9 @@ public:
 	}
 	bool isQuiver() const {
 		return (type == ITEM_TYPE_QUIVER);
+	}
+	bool isAmmo() const {
+		return (type == ITEM_TYPE_AMMO);
 	}
 	bool isLadder() const {
 		return (type == ITEM_TYPE_LADDER);

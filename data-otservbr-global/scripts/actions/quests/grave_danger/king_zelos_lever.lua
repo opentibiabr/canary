@@ -1,7 +1,7 @@
 local config = {
 	boss = {
 		name = "King Zelos",
-		position = Position(33443, 31545, 13)
+		position = Position(33443, 31545, 13),
 	},
 	requiredLevel = 250,
 
@@ -15,14 +15,14 @@ local config = {
 		{ pos = Position(33486, 31547, 13), teleport = Position(33443, 31554, 13), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33486, 31548, 13), teleport = Position(33443, 31554, 13), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33486, 31545, 13), teleport = Position(33443, 31554, 13), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33486, 31544, 13), teleport = Position(33443, 31554, 13), effect = CONST_ME_TELEPORT }
+		{ pos = Position(33486, 31544, 13), teleport = Position(33443, 31554, 13), effect = CONST_ME_TELEPORT },
 	},
 	specPos = {
 		from = Position(33433, 31535, 13),
-		to = Position(33453, 31555, 13)
+		to = Position(33453, 31555, 13),
 	},
 	exit = Position(32172, 31918, 8),
-	storage = Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosTimer
+	storage = Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosTimer,
 }
 
 local lever = BossLever(config)

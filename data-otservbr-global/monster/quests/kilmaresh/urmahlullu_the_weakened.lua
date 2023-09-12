@@ -1,8 +1,8 @@
 local mType = Game.createMonsterType("Urmahlullu the Weakened")
 local monster = {}
 
-monster.description = "urmahlullu the weakened"
-monster.experience = 85000
+monster.description = "Urmahlullu the Weakened"
+monster.experience = 55000
 monster.outfit = {
 	lookType = 1197,
 	lookHead = 0,
@@ -10,7 +10,13 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
+}
+
+monster.bosstiary = {
+	bossRaceId = 1811,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Kilmaresh.UrmahlulluTimer,
 }
 
 monster.health = 100000
@@ -22,13 +28,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 1811,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Kilmaresh.UrmahlulluTimer
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -55,18 +55,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "You will regret this!", yell = false }
+	{ text = "You will regret this!", yell = false },
+	{ text = "Now you have to die!", yell = false },
 }
 
 monster.loot = {
@@ -75,7 +76,7 @@ monster.loot = {
 	{ name = "energy bar", chance = 100000 },
 	{ name = "ultimate mana potion", chance = 73080, maxCount = 31 },
 	{ name = "supreme health potion", chance = 53850, maxCount = 28 },
-	{ id = 36706, chance = 53850, maxCount = 2 }, -- red gem
+	{ id = 3039, chance = 53850, maxCount = 2 }, -- red gem
 	{ name = "lightning pendant", chance = 30770 },
 	{ name = "berserk potion", chance = 23080, maxCount = 15 },
 	{ name = "bullseye potion", chance = 23080, maxCount = 15 },
@@ -111,24 +112,25 @@ monster.loot = {
 	{ name = "rainbow necklace", chance = 1160 },
 	{ id = 30403, chance = 160 }, -- enchanted theurgic amulet
 	{ name = "sun medal", chance = 160 },
-	{ name = "sunray emblem", chance = 160 }
+	{ name = "sunray emblem", chance = 160 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -50, maxDamage = -1100 },
 	{ name = "combat", interval = 3000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -500, maxDamage = -800, radius = 4, effect = CONST_ME_FIREAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -550, maxDamage = -800, radius = 3, effect = CONST_ME_FIREAREA, target = false },
-	{ name = "urmahlulluring", interval = 2000, chance = 18, minDamage = -450, maxDamage = -600, target = false }
+	{ name = "urmahlulluring", interval = 2000, chance = 18, minDamage = -450, maxDamage = -600, target = false },
 }
 
 monster.defenses = {
 	defense = 84,
-	armor = 84
+	armor = 84,
+	--	mitigation = ???,
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 40 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
 	{ type = COMBAT_FIREDAMAGE, percent = 100 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
@@ -136,18 +138,17 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -155,13 +156,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

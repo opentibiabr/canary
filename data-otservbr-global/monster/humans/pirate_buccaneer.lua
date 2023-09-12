@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 249
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Nargor, Tyrsung (on the ship), Yalahar (Foreign Quarter), Krailos Steppe."
+	Locations = "Nargor, Tyrsung on the ship, Yalahar Foreign Quarter, Krailos Steppe and The Cave.",
 }
 
 monster.health = 425
@@ -35,7 +35,7 @@ monster.manaCost = 595
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 15
+	chance = 15,
 }
 
 monster.strategiesTarget = {
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -72,7 +72,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Give up!", yell = false },
 	{ text = "Hiyaa", yell = false },
-	{ text = "Plundeeeeer!", yell = false }
+	{ text = "Plundeeeeer!", yell = false },
 }
 
 monster.loot = {
@@ -92,17 +92,18 @@ monster.loot = {
 	{ name = "eye patch", chance = 420 },
 	{ name = "peg leg", chance = 510 },
 	{ name = "strong health potion", chance = 670 },
-	{ name = "compass", chance = 9780 }
+	{ name = "compass", chance = 9780 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -160 },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -100, range = 4, shootEffect = CONST_ANI_THROWINGKNIFE, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -100, range = 4, shootEffect = CONST_ANI_THROWINGKNIFE, target = false },
 }
 
 monster.defenses = {
 	defense = 30,
-	armor = 30
+	armor = 16,
+	mitigation = 1.04,
 }
 
 monster.elements = {
@@ -115,14 +116,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

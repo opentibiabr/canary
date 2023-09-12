@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 770
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Fiehonja. During Deeplings stage 1 around 10 spawns exist. \z
-		Also may spawn during the gemcutting mission. Many more spawns in almost all areas of Deepling stage 2 and 3."
+		Also may spawn during the gemcutting mission. Many more spawns in almost all areas of Deepling stage 2 and 3.",
 }
 
 monster.health = 1900
@@ -34,13 +34,13 @@ monster.corpse = 13750
 monster.speed = 135
 monster.manaCost = 0
 
-monster.changeTarget = {
-	interval = 4000,
-	chance = 10
-}
-
 monster.faction = FACTION_DEEPLING
 monster.enemyFactions = { FACTION_DEATHLING, FACTION_PLAYER }
+
+monster.changeTarget = {
+	interval = 4000,
+	chance = 10,
+}
 
 monster.strategiesTarget = {
 	nearest = 70,
@@ -66,18 +66,18 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "QJELL NETA NA!!", yell = false }
+	{ text = "QJELL NETA NA!!", yell = true },
 }
 
 monster.loot = {
@@ -96,19 +96,20 @@ monster.loot = {
 	{ name = "deepling squelcher", chance = 751 },
 	{ name = "deepling backpack", chance = 333 },
 	{ name = "ornate crossbow", chance = 362 },
-	{ name = "foxtail", chance = 10 }
+	{ name = "foxtail", chance = 10 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400, effect = CONST_ME_DRAWBLOOD },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -200, range = 7, shootEffect = CONST_ANI_WHIRLWINDSWORD, target = true },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DROWNDAMAGE, minDamage = -100, maxDamage = -150, range = 7, shootEffect = CONST_ANI_SPEAR, effect = CONST_ME_LOSEENERGY, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DROWNDAMAGE, minDamage = -100, maxDamage = -150, range = 7, shootEffect = CONST_ANI_SPEAR, effect = CONST_ME_LOSEENERGY, target = true },
 }
 
 monster.defenses = {
 	defense = 35,
-	armor = 35,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 100, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false }
+	armor = 53,
+	mitigation = 1.57,
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 100, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -121,14 +122,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = true },
+	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -2,7 +2,7 @@ local vocation = {
 	VOCATION.BASE_ID.SORCERER,
 	VOCATION.BASE_ID.DRUID,
 	VOCATION.BASE_ID.PALADIN,
-	VOCATION.BASE_ID.KNIGHT
+	VOCATION.BASE_ID.KNIGHT,
 }
 
 local area = {
@@ -32,7 +32,8 @@ function onTargetTile(creature, pos)
 	if n ~= 0 then
 		local v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 		while v ~= 0 do
-			if isCreature(v) == true then
+			local creatureFromPos = Creature(v)
+			if creatureFromPos then
 				table.insert(creatureTable, v)
 				if n == #creatureTable then
 					break

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 45,
 	lookFeet = 114,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 223
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Dark Cathedral, Tiquanda Bandit Caves, Outlaw Camp, mountain pass west of Ankrahmun, \z
-		Tyrsung, Thais Bandit Cave, Formorgar Mines. Also summoned by Gamel."
+		Tyrsung, Thais Bandit Cave, Formorgar Mines. Also summoned by Gamel.",
 }
 
 monster.health = 245
@@ -36,7 +36,7 @@ monster.manaCost = 450
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -61,19 +61,19 @@ monster.flags = {
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
 	canWalkOnPoison = false,
-	pet = false
+	pet = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Your money or your life!", yell = false },
-	{ text = "Hand me your purse!", yell = false }
+	{ text = "Hand me your purse!", yell = false },
 }
 
 monster.loot = {
@@ -85,16 +85,16 @@ monster.loot = {
 	{ id = 3359, chance = 2500 }, -- brass armor
 	{ id = 3411, chance = 16800 }, -- brass shield
 	{ id = 3559, chance = 15500 }, -- leather legs
-	{ id = 3596, chance = 7630, maxCount = 2 } -- tomato
+	{ id = 3596, chance = 7630, maxCount = 2 }, -- tomato
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 },
 }
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 15,
 }
 
 monster.elements = {
@@ -107,14 +107,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

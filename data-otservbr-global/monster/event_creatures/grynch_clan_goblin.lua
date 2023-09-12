@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Grynch Clan Goblin")
 local monster = {}
 
-monster.description = "Grynch Clan Goblin"
+monster.description = "a grynch clan goblin"
 monster.experience = 4
 monster.outfit = {
 	lookType = 61,
@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 393
@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 3,
 	Locations = "They do not have a set respawn spot. They are announced to be stealing presents from a \z
 			random Tibian city and spawn in the aforetold city. \z
-			There are two or three messages that appear on each raid and three massive spawns of goblins."
+			There are two or three messages that appear on each raid and three massive spawns of goblins.",
 }
 
 monster.health = 80
@@ -37,7 +37,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -55,21 +55,21 @@ monster.flags = {
 	pushable = false,
 	rewardBoss = false,
 	illusionable = true,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 0,
 	targetDistance = 11,
 	runHealth = 80,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -99,7 +99,7 @@ monster.voices = {
 	{ text = "Oh what fun it is to steal a one-horse open sleigh!", yell = false },
 	{ text = "Must have it! Must have it!", yell = false },
 	{ text = "Where me put me lockpick?", yell = false },
-	{ text = "Catch me if you can!", yell = false }
+	{ text = "Catch me if you can!", yell = false },
 }
 
 monster.loot = {
@@ -132,36 +132,36 @@ monster.loot = {
 	{ name = "christmas present bag", chance = 7000 },
 	{ name = "gingerbreadman", chance = 4000, maxCount = 2 },
 	{ name = "walnut", chance = 3500, maxCount = 5 },
-	{ name = "peanut", chance = 3500, maxCount = 100 }
+	{ name = "peanut", chance = 3500, maxCount = 100 },
 }
 
-monster.attacks = {
-}
+monster.attacks = {}
 
 monster.defenses = {
 	defense = 12,
-	armor = 10,
-	{ name = "speed", interval = 1000, chance = 15, speedChange = 500, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	armor = 5,
+	mitigation = 0.25,
+	{ name = "speed", interval = 1000, chance = 15, speedChange = 500, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
-	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

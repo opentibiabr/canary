@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "void"
 monster.experience = 320
 monster.outfit = {
-	lookTypeEx = 470
+	lookTypeEx = 470,
 }
 
 monster.health = 2000
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -43,19 +43,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 10,
 	summons = {
-		{ name = "Enthralled Demon", chance = 25, interval = 2000, count = 10 }
-	}
+		{ name = "Enthralled Demon", chance = 25, interval = 2000, count = 10 },
+	},
 }
 
 monster.voices = {
@@ -63,12 +63,11 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.defenses = {
 	defense = 5,
-	armor = 10
+	armor = 10,
 }
 
 monster.elements = {
@@ -81,14 +80,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

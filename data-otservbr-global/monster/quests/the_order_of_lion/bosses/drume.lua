@@ -10,40 +10,44 @@ monster.outfit = {
 	lookLegs = 57,
 	lookFeet = 114,
 	lookAddons = 2,
-	lookMount = 0
-}
-
-monster.health = 35000
-monster.maxHealth = 35000
-monster.race = "blood"
-monster.corpse = 33973
-monster.speed = 130
-
-monster.faction = FACTION_LIONUSURPERS
-monster.enemyFactions = { FACTION_LION, FACTION_PLAYER }
-
-monster.summon = {
-	maxSummons = 3,
-	summons = {
-		{ name = "preceptor lazare", chance = 10, interval = 8000, count = 1 },
-		{ name = "grand commander soeren", chance = 10, interval = 8000, count = 1 },
-		{ name = "grand chaplain gaunder", chance = 10, interval = 8000, count = 1 }
-	}
-}
-
-monster.changeTarget = {
-	interval = 4000,
-	chance = 25
+	lookMount = 0,
 }
 
 monster.bosstiary = {
 	bossRaceId = 1957,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.TheOrderOfTheLion.Drume.Timer
+	storageCooldown = Storage.TheOrderOfTheLion.Drume.Timer,
+}
+
+monster.health = 80000
+monster.maxHealth = 80000
+monster.race = "blood"
+monster.corpse = 33973
+monster.speed = 130
+monster.manaCost = 0
+
+monster.faction = FACTION_LIONUSURPERS
+monster.enemyFactions = { FACTION_LION, FACTION_PLAYER }
+
+monster.summon = {
+	maxSummons = 1,
+	summons = {
+		{ name = "preceptor lazare", chance = 10, interval = 8000, count = 1 },
+		{ name = "grand commander soeren", chance = 10, interval = 8000, count = 1 },
+		{ name = "grand chaplain gaunder", chance = 10, interval = 8000, count = 1 },
+	},
+}
+
+monster.changeTarget = {
+	interval = 4000,
+	chance = 25,
 }
 
 monster.strategiesTarget = {
-	nearest = 100,
+	nearest = 50,
+	health = 20,
+	damage = 20,
+	random = 10,
 }
 
 monster.flags = {
@@ -63,17 +67,20 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "I've studied the Cobras - I wield the secrets of the snake!", yell = false },
+	{ text = "I am a true knight of the lion, you will never defeat the true order!", yell = false },
+	{ text = "The Falcons will come to my aid in need!", yell = false },
 }
 
 monster.loot = {
@@ -116,26 +123,27 @@ monster.loot = {
 	{ name = "lion spellbook", chance = 350 },
 	{ name = "lion wand", chance = 300 },
 	{ name = "lion amulet", chance = 300 },
-	{ name = "lion rod", chance = 300 }
+	{ name = "lion rod", chance = 300 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900, effect = CONST_ME_DRAWBLOOD },
-	{ name = "combat", interval = 6000, chance = 25, type = COMBAT_HOLYDAMAGE, minDamage = -650, maxDamage = -950, length = 8, spread = 3, effect = CONST_ME_HOLYAREA, target = false },
-	{ name = "combat", interval = 2750, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -600, maxDamage = -1000, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 2500, chance = 22, type = COMBAT_DEATHDAMAGE, minDamage = -600, maxDamage = -800, radius = 3, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 3300, chance = 24, type = COMBAT_ICEDAMAGE, minDamage = -500, maxDamage = -700, length = 4, spread = 0, effect = CONST_ME_ICEATTACK, target = false },
-	{ name = "singlecloudchain", interval = 6000, chance = 34, minDamage = -400, maxDamage = -900, range = 4, effect = CONST_ME_ENERGYHIT, target = true }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1100, effect = CONST_ME_DRAWBLOOD },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HOLYDAMAGE, minDamage = -850, maxDamage = -1150, length = 8, spread = 3, effect = CONST_ME_HOLYAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -800, maxDamage = -1200, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 22, type = COMBAT_DEATHDAMAGE, minDamage = -800, maxDamage = -1000, radius = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 24, type = COMBAT_ICEDAMAGE, minDamage = -700, maxDamage = -900, length = 4, spread = 0, effect = CONST_ME_ICEATTACK, target = false },
+	{ name = "singlecloudchain", interval = 2000, chance = 34, minDamage = -600, maxDamage = -1100, range = 4, effect = CONST_ME_ENERGYHIT, target = true },
 }
 
 monster.defenses = {
 	defense = 60,
 	armor = 82,
-	{ name = "combat", interval = 4000, chance = 40, type = COMBAT_HEALING, minDamage = 300, maxDamage = 800, effect = CONST_ME_MAGIC_BLUE, target = false }
+	--	mitigation = ???,
+	{ name = "combat", interval = 4000, chance = 40, type = COMBAT_HEALING, minDamage = 300, maxDamage = 800, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 50 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 35 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = -20 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
@@ -143,15 +151,15 @@ monster.elements = {
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 50 }
+	{ type = COMBAT_HOLYDAMAGE, percent = -20 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType.onAppear = function(monster, creature)

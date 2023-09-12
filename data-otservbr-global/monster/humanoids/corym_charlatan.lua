@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 59,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 916
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Venore Corym Cave, Tiquanda Corym Cave, Corym Black Market, \z
-		Carlin Corym Cave/Dwarf Mines Diggers Depths Mine, Upper Spike."
+		Carlin Corym Cave/Dwarf Mines Diggers Depths Mine, Upper Spike.",
 }
 
 monster.health = 250
@@ -32,11 +32,11 @@ monster.maxHealth = 250
 monster.race = "blood"
 monster.corpse = 17445
 monster.speed = 95
-monster.manaCost = 0
+monster.manaCost = 490
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -63,19 +63,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Mehehe!", yell = false },
-	{ text = "Beware! Me hexing you!", yell = false }
+	{ text = "Beware! Me hexing you!", yell = false },
 }
 
 monster.loot = {
@@ -90,16 +90,17 @@ monster.loot = {
 	{ name = "earflap", chance = 7142 },
 	{ name = "soft cheese", chance = 12500 },
 	{ name = "rat cheese", chance = 14285 },
-	{ name = "leather harness", chance = 537 }
+	{ name = "leather harness", chance = 537 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -105 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -105 },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 17,
+	mitigation = 0.62,
 }
 
 monster.elements = {
@@ -112,14 +113,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 15 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

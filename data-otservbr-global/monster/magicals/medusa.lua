@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 570
@@ -21,9 +21,9 @@ monster.Bestiary = {
 	FirstUnlock = 100,
 	SecondUnlock = 1000,
 	CharmsPoints = 50,
-	Stars = 5,
+	Stars = 4,
 	Occurrence = 0,
-	Locations = "Vandura Mountain (single spawn), Talahu (Medusa Cave), Deeper Banuta, Medusa Tower."
+	Locations = "Vandura Mountain (single spawn), Talahu (Medusa Cave), Deeper Banuta, Medusa Tower.",
 }
 
 monster.health = 4500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -75,8 +75,8 @@ monster.voices = {
 	chance = 10,
 	{ text = "You will make sssuch a fine ssstatue!", yell = false },
 	{ text = "There isss no chhhanccce of essscape", yell = false },
+	{ text = "Are you tired or why are you moving thhat ssslow <chuckle>", yell = false },
 	{ text = "Jussst look at me!", yell = false },
-	{ text = "Are you tired or why are you moving thhat ssslow <chuckle>", yell = false }
 }
 
 monster.loot = {
@@ -93,7 +93,7 @@ monster.loot = {
 	{ name = "ultimate health potion", chance = 9290, maxCount = 2 },
 	{ id = 8896, chance = 500 }, -- slightly rusted armor
 	{ name = "sacred tree amulet", chance = 850 },
-	{ name = "strand of medusa hair", chance = 9900 }
+	{ name = "strand of medusa hair", chance = 9900 },
 }
 
 monster.attacks = {
@@ -101,13 +101,14 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -21, maxDamage = -350, range = 7, shootEffect = CONST_ANI_EARTH, effect = CONST_ME_CARNIPHILA, target = true },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -250, maxDamage = -500, length = 8, spread = 3, effect = CONST_ME_CARNIPHILA, target = false },
 	{ name = "speed", interval = 2000, chance = 25, radius = 7, effect = CONST_ME_POFF, target = true },
-	{ name = "outfit", interval = 2000, chance = 1, range = 7, target = true, duration = 3000, outfitMonster = "clay guardian" }
+	{ name = "outfit", interval = 2000, chance = 1, range = 7, target = true, duration = 3000, outfitMonster = "clay guardian" },
 }
 
 monster.defenses = {
 	defense = 30,
 	armor = 45,
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 150, maxDamage = 300, effect = CONST_ME_MAGIC_BLUE, target = false }
+	mitigation = 1.74,
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 150, maxDamage = 300, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -120,14 +121,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

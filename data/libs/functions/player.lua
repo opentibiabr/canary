@@ -1,6 +1,10 @@
 -- Functions from The Forgotten Server
 local foodCondition = Condition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 
+local function firstToUpper(str)
+	return (str:gsub("^%l", string.upper))
+end
+
 function Player.feed(self, food)
 	local condition = self:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 	if condition then
@@ -103,12 +107,19 @@ function Player.getCookiesDelivered(self)
 		return true
 	end
 
-	local storage, amount = {
-		Storage.WhatAFoolish.CookieDelivery.SimonTheBeggar, Storage.WhatAFoolish.CookieDelivery.Markwin, Storage.WhatAFoolish.CookieDelivery.Ariella,
-		Storage.WhatAFoolish.CookieDelivery.Hairycles, Storage.WhatAFoolish.CookieDelivery.Djinn, Storage.WhatAFoolish.CookieDelivery.AvarTar,
-		Storage.WhatAFoolish.CookieDelivery.OrcKing, Storage.WhatAFoolish.CookieDelivery.Lorbas, Storage.WhatAFoolish.CookieDelivery.Wyda,
-		Storage.WhatAFoolish.CookieDelivery.Hjaern
-	}, 0
+	local storage, amount =
+		{
+			Storage.WhatAFoolish.CookieDelivery.SimonTheBeggar,
+			Storage.WhatAFoolish.CookieDelivery.Markwin,
+			Storage.WhatAFoolish.CookieDelivery.Ariella,
+			Storage.WhatAFoolish.CookieDelivery.Hairycles,
+			Storage.WhatAFoolish.CookieDelivery.Djinn,
+			Storage.WhatAFoolish.CookieDelivery.AvarTar,
+			Storage.WhatAFoolish.CookieDelivery.OrcKing,
+			Storage.WhatAFoolish.CookieDelivery.Lorbas,
+			Storage.WhatAFoolish.CookieDelivery.Wyda,
+			Storage.WhatAFoolish.CookieDelivery.Hjaern,
+		}, 0
 	for i = 1, #storage do
 		if self:getStorageValue(storage[i]) == 1 then
 			amount = amount + 1
@@ -132,31 +143,31 @@ function Player.checkGnomeRank(self)
 		if questProgress <= 25 then
 			self:setStorageValue(Storage.BigfootBurden.QuestLine, 26)
 			self:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			self:addAchievement('Gnome Little Helper')
+			self:addAchievement("Gnome Little Helper")
 		end
 	elseif points >= 120 and points < 480 then
 		if questProgress <= 26 then
 			self:setStorageValue(Storage.BigfootBurden.QuestLine, 27)
 			self:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			self:addAchievement('Gnome Little Helper')
-			self:addAchievement('Gnome Friend')
+			self:addAchievement("Gnome Little Helper")
+			self:addAchievement("Gnome Friend")
 		end
 	elseif points >= 480 and points < 1440 then
 		if questProgress <= 27 then
 			self:setStorageValue(Storage.BigfootBurden.QuestLine, 28)
 			self:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			self:addAchievement('Gnome Little Helper')
-			self:addAchievement('Gnome Friend')
-			self:addAchievement('Gnomelike')
+			self:addAchievement("Gnome Little Helper")
+			self:addAchievement("Gnome Friend")
+			self:addAchievement("Gnomelike")
 		end
 	elseif points >= 1440 then
 		if questProgress <= 29 then
 			self:setStorageValue(Storage.BigfootBurden.QuestLine, 30)
 			self:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			self:addAchievement('Gnome Little Helper')
-			self:addAchievement('Gnome Friend')
-			self:addAchievement('Gnomelike')
-			self:addAchievement('Honorary Gnome')
+			self:addAchievement("Gnome Little Helper")
+			self:addAchievement("Gnome Friend")
+			self:addAchievement("Gnomelike")
+			self:addAchievement("Honorary Gnome")
 		end
 	end
 	return true
@@ -197,7 +208,7 @@ end
 
 -- player:removeMoneyBank(money)
 function Player:removeMoneyBank(amount)
-	if type(amount) == 'string' then
+	if type(amount) == "string" then
 		amount = tonumber(amount)
 	end
 
@@ -240,11 +251,21 @@ end
 
 function Player.hasRookgaardShield(self)
 	-- Wooden Shield, Studded Shield, Brass Shield, Plate Shield, Copper Shield
-	return self:getItemCount(3412) > 0
-			or self:getItemCount(3426) > 0
-			or self:getItemCount(3411) > 0
-			or self:getItemCount(3410) > 0
-			or self:getItemCount(3430) > 0
+	return self:getItemCount(3412) > 0 or self:getItemCount(3426) > 0 or self:getItemCount(3411) > 0 or self:getItemCount(3410) > 0 or self:getItemCount(3430) > 0
+end
+
+function Player:vocationAbbrev()
+	local vocation = self:getVocation()
+	if not vocation then
+		return "N"
+	end
+
+	local vocationName = vocation:getName():split(" ")
+	local abbrev = ""
+	for _, name in ipairs(vocationName) do
+		abbrev = abbrev .. name:sub(1, 1)
+	end
+	return abbrev:upper()
 end
 
 function Player.isSorcerer(self)
@@ -264,12 +285,11 @@ function Player.isPaladin(self)
 end
 
 function Player.isMage(self)
-	return table.contains({ VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER, VOCATION.ID.DRUID, VOCATION.ID.ELDER_DRUID },
-		self:getVocation():getId())
+	return table.contains({ VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER, VOCATION.ID.DRUID, VOCATION.ID.ELDER_DRUID }, self:getVocation():getId())
 end
 
 local ACCOUNT_STORAGES = {}
-function Player.getAccountStorage(self, accountId, key, forceUpdate)
+function Player.getAccountStorage(self, key, forceUpdate)
 	local accountId = self:getAccountId()
 	if ACCOUNT_STORAGES[accountId] and not forceUpdate then
 		return ACCOUNT_STORAGES[accountId]
@@ -285,18 +305,22 @@ function Player.getAccountStorage(self, accountId, key, forceUpdate)
 	return false
 end
 
+function Player:getUpdatedAccountStorage(bucket)
+	local fromMemory = self:getStorageValue(bucket) > 0 and self:getStorageValue(bucket) or 0
+	local fromDB = self:getAccountStorage(bucket, true) and self:getAccountStorage(bucket, true) or 0
+	return bit.bor(fromDB, fromMemory)
+end
+
 function Player.getMarriageDescription(thing)
 	local descr = ""
 	if getPlayerMarriageStatus(thing:getGuid()) == MARRIED_STATUS then
 		playerSpouse = getPlayerSpouse(thing:getGuid())
 		if self == thing then
 			descr = descr .. " You are "
-		elseif thing:getSex() == PLAYERSEX_FEMALE then
-			descr = descr .. " She is "
 		else
-			descr = descr .. " He is "
+			descr = descr .. " " .. firstToUpper(thing:getSubjectPronoun()) .. " " .. thing:getSubjectVerb() .. " "
 		end
-		descr = descr .. "married to " .. getPlayerNameById(playerSpouse) .. '.'
+		descr = descr .. "married to " .. getPlayerNameById(playerSpouse) .. "."
 	end
 	return descr
 end
@@ -336,6 +360,15 @@ function Player.sendWeatherEffect(self, groundEffect, fallEffect, thunderEffect)
 	end
 end
 
+function Player:getFamiliarName()
+	local vocation = FAMILIAR_ID[self:getVocation():getBaseId()]
+	local familiarName
+	if vocation then
+		familiarName = vocation.name
+	end
+	return familiarName
+end
+
 function Player:CreateFamiliarSpell(spellId)
 	local playerPosition = self:getPosition()
 	if not self:isPremium() then
@@ -350,13 +383,32 @@ function Player:CreateFamiliarSpell(spellId)
 		return false
 	end
 
-	local vocation = FAMILIAR_ID[self:getVocation():getBaseId()]
-	local familiarName
-
-	if vocation then
-		familiarName = vocation.name
+	local familiarName = self:getFamiliarName()
+	if not familiarName then
+		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		playerPosition:sendMagicEffect(CONST_ME_POFF)
+		return false
 	end
 
+	-- Divide by 2 to get half the time (the default total time is 30 / 2 = 15)
+	local summonDuration = 60 * configManager.getNumber(configKeys.FAMILIAR_TIME) / 2
+	local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, spellId)
+	local cooldown = summonDuration * 2
+	if self:isVip() then
+		local reduction = configManager.getNumber(configKeys.VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION)
+		reduction = (reduction > summonDuration and summonDuration) or reduction
+		cooldown = cooldown - reduction * 60
+	end
+	condition:setTicks(1000 * cooldown / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+	self:addCondition(condition)
+
+	self:createFamiliar(familiarName, summonDuration)
+
+	return true
+end
+
+function Player:createFamiliar(familiarName, timeLeft)
+	local playerPosition = self:getPosition()
 	if not familiarName then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		playerPosition:sendMagicEffect(CONST_ME_POFF)
@@ -376,17 +428,16 @@ function Player:CreateFamiliarSpell(spellId)
 	playerPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	myFamiliar:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	-- Divide by 2 to get half the time (the default total time is 30 / 2 = 15)
-	local summonDuration = configManager.getNumber(configKeys.FAMILIAR_TIME) / 2
-	self:setStorageValue(Global.Storage.FamiliarSummon, os.time() + summonDuration * 60)
-	addEvent(RemoveFamiliar, summonDuration * 60 * 1000, myFamiliar:getId(), self:getId())
+	self:setStorageValue(Global.Storage.FamiliarSummon, os.time() + timeLeft)
+	addEvent(RemoveFamiliar, timeLeft * 1000, myFamiliar:getId(), self:getId())
 	for sendMessage = 1, #FAMILIAR_TIMER do
 		self:setStorageValue(
 			FAMILIAR_TIMER[sendMessage].storage,
 			addEvent(
-			-- Calling function
+				-- Calling function
 				SendMessageFunction,
 				-- Time for execute event
-				(summonDuration * 60 - FAMILIAR_TIMER[sendMessage].countdown) * 1000,
+				(timeLeft - FAMILIAR_TIMER[sendMessage].countdown) * 1000,
 				-- Param "playerId"
 				self:getId(),
 				-- Param "message"
@@ -394,17 +445,20 @@ function Player:CreateFamiliarSpell(spellId)
 			)
 		)
 	end
-	local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, spellId)
-	local cooldown = summonDuration * 60 * 1000
-	if self:isVip() then
-		local reduction = configManager.getNumber(configKeys.VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION)
-		reduction = (reduction > summonDuration and summonDuration) or reduction
-		cooldown = cooldown - reduction
-	end
-	condition:setTicks((cooldown) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
-	self:addCondition(condition)
-
 	return true
+end
+
+function Player:dispellFamiliar()
+	local summons = self:getSummons()
+	for i = 1, #summons do
+		if summons[i]:getName():lower() == self:getFamiliarName():lower() then
+			self:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+			summons[i]:getPosition():sendMagicEffect(CONST_ME_POFF)
+			summons[i]:remove()
+			return true
+		end
+	end
+	return false
 end
 
 function Player.getFinalBaseRateExperience(self)
@@ -446,6 +500,33 @@ function Player.getFinalLowLevelBonus(self)
 	return self:getGrindingXpBoost()
 end
 
+function Player.getSubjectPronoun(self)
+	return Pronouns.getPlayerSubjectPronoun(self:getPronoun(), self:getSex(), self:getName())
+end
+
+function Player.getObjectPronoun(self)
+	return Pronouns.getPlayerObjectPronoun(self:getPronoun(), self:getSex(), self:getName())
+end
+
+function Player.getPossessivePronoun(self)
+	return Pronouns.getPlayerPossessivePronoun(self:getPronoun(), self:getSex(), self:getName())
+end
+
+function Player.getSubjectVerb(self, past)
+	return Pronouns.getPlayerSubjectVerb(self:getPronoun(), past)
+end
+
+function Player.findItemInInbox(self, itemId)
+	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
+	local items = inbox:getItems()
+	for _, item in pairs(items) do
+		if item:getId() == itemId then
+			return item
+		end
+	end
+	return nil
+end
+
 function Player.updateHazard(self)
 	local zones = self:getZones()
 	if not zones or #zones == 0 then
@@ -470,13 +551,35 @@ function Player.updateHazard(self)
 	return true
 end
 
+function Player:addItemStoreInbox(itemId, amount, moveable)
+	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
+	if not moveable then
+		for _, item in pairs(inbox:getItems()) do
+			if item:getId() == itemId then
+				item:removeAttribute(ITEM_ATTRIBUTE_STORE)
+			end
+		end
+	end
+
+	local newItem = inbox:addItem(itemId, amount, INDEX_WHEREEVER, FLAG_NOLIMIT)
+
+	if not moveable then
+		for _, item in pairs(inbox:getItems()) do
+			if item:getId() == itemId then
+				item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+			end
+		end
+	end
+	return newItem
+end
+
 ---@param monster Monster
 ---@return {factor: number, msgSuffix: string}
 function Player:calculateLootFactor(monster)
 	if self:getStamina() <= 840 then
 		return {
 			factor = 0.0,
-			msgSuffix = " (due to low stamina)"
+			msgSuffix = " (due to low stamina)",
 		}
 	end
 
@@ -512,7 +615,7 @@ function Player:calculateLootFactor(monster)
 
 	return {
 		factor = factor,
-		msgSuffix = suffix
+		msgSuffix = suffix,
 	}
 end
 

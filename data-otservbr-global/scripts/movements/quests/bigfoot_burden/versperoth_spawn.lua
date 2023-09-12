@@ -36,7 +36,7 @@ local function executeVersperothBattle(mid)
 		local position, minionMonster
 		for i = 1, 10 do
 			position = Position(math.random(33070, 33081), math.random(31874, 31883), 12)
-			minionMonster = Game.createMonster('Minion of Versperoth', position)
+			minionMonster = Game.createMonster("Minion of Versperoth", position)
 			position:sendMagicEffect(CONST_ME_TELEPORT)
 			if minionMonster then
 				addEvent(removeMinion, 20 * 1000, minionMonster:getId())
@@ -46,7 +46,7 @@ local function executeVersperothBattle(mid)
 		return
 	end
 
-	local monster = Game.createMonster('Versperoth', versperothPosition, false, true)
+	local monster = Game.createMonster("Versperoth", versperothPosition, false, true)
 	if monster then
 		local holee = Tile(versperothPosition):getItemById(16172)
 		if holee then

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Chasm Spawn")
 local monster = {}
 
 monster.description = "a chasm spawn"
-monster.experience = 3500
+monster.experience = 2700
 monster.outfit = {
 	lookType = 1037,
 	lookHead = 0,
@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1546
@@ -23,11 +23,11 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Warzone 4."
+	Locations = "Warzone 4",
 }
 
-monster.health = 4000
-monster.maxHealth = 4000
+monster.health = 4500
+monster.maxHealth = 4500
 monster.race = "blood"
 monster.corpse = 27563
 monster.speed = 115
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -60,21 +60,19 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
+	canWalkOnEnergy = true,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "tzzzz tzzzz tzzzz!", yell = false },
-	{ text = "sloap sloap sloap!", yell = false }
 }
 
 monster.loot = {
@@ -91,7 +89,7 @@ monster.loot = {
 	{ name = "green crystal shard", chance = 7850 },
 	{ name = "violet crystal shard", chance = 4690 },
 	{ name = "mushroom backpack", chance = 610 },
-	{ name = "suspicious device", chance = 520 }
+	{ name = "suspicious device", chance = 520 },
 }
 
 monster.attacks = {
@@ -102,12 +100,13 @@ monster.attacks = {
 	{ name = "explosion rune", interval = 2000, chance = 15, minDamage = -50, maxDamage = -170, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -40, maxDamage = -60, range = 7, target = false },
 	{ name = "stone shower rune", interval = 2000, chance = 10, minDamage = -70, maxDamage = -140, range = 7, target = false },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -70, maxDamage = -140, length = 3, spread = 3, effect = CONST_ME_PLANTATTACK, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -70, maxDamage = -140, length = 3, spread = 3, effect = CONST_ME_PLANTATTACK, target = false },
 }
 
 monster.defenses = {
 	defense = 5,
-	armor = 10
+	armor = 74,
+	mitigation = 1.94,
 }
 
 monster.elements = {
@@ -120,14 +119,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

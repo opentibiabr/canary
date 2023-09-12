@@ -2,7 +2,7 @@ DailyRewardSystem = {
 	Developer = "Westwol, Marcosvf132",
 	Version = "1.3",
 	lastUpdate = "12/10/2020 - 20:30",
-	ToDo = "Move this system to CPP"
+	ToDo = "Move this system to CPP",
 }
 
 local ServerPackets = {
@@ -20,7 +20,7 @@ local ClientPackets = {
 	OpenRewardHistory = 0xD9,
 	SelectReward = 0xDA,
 	CollectionResource = 0x14,
-	JokerResource = 0x15
+	JokerResource = 0x15,
 }
 
 --[[-- Constants
@@ -89,7 +89,7 @@ DailyReward = {
 		lastServerSave = 14110,
 		avoidDouble = 13412,
 		notifyReset = 13413,
-		avoidDoubleJoker = 13414
+		avoidDoubleJoker = 13414,
 	},
 
 	strikeBonuses = {
@@ -100,7 +100,7 @@ DailyReward = {
 		[4] = { text = "Stamina Regeneration" },
 		[5] = { text = "Double Hit Point Regeneration" },
 		[6] = { text = "Double Mana Regeneration" },
-		[7] = { text = "Soul Points Regeneration" }
+		[7] = { text = "Soul Points Regeneration" },
 	},
 
 	rewards = {
@@ -109,31 +109,31 @@ DailyReward = {
 			type = DAILY_REWARD_TYPE_ITEM,
 			systemType = DAILY_REWARD_SYSTEM_TYPE_ONE,
 			freeAccount = 5,
-			premiumAccount = 10
+			premiumAccount = 10,
 		},
 		[2] = {
 			type = DAILY_REWARD_TYPE_ITEM,
 			systemType = DAILY_REWARD_SYSTEM_TYPE_ONE,
 			freeAccount = 5,
-			premiumAccount = 10
+			premiumAccount = 10,
 		},
 		[3] = {
 			type = DAILY_REWARD_TYPE_PREY_REROLL,
 			systemType = DAILY_REWARD_SYSTEM_TYPE_TWO,
 			freeAccount = 1,
-			premiumAccount = 2
+			premiumAccount = 2,
 		},
 		[4] = {
 			type = DAILY_REWARD_TYPE_ITEM,
 			systemType = DAILY_REWARD_SYSTEM_TYPE_ONE,
 			freeAccount = 10,
-			premiumAccount = 20
+			premiumAccount = 20,
 		},
 		[5] = {
 			type = DAILY_REWARD_TYPE_PREY_REROLL,
 			systemType = DAILY_REWARD_SYSTEM_TYPE_TWO,
 			freeAccount = 1,
-			premiumAccount = 2
+			premiumAccount = 2,
 		},
 		[6] = {
 			type = DAILY_REWARD_TYPE_ITEM,
@@ -141,14 +141,14 @@ DailyReward = {
 			items = { 28540, 28541, 28542, 28543, 28544, 28545 },
 			freeAccount = 1,
 			premiumAccount = 2,
-			itemCharges = 50
+			itemCharges = 50,
 		},
 		[7] = {
 			type = DAILY_REWARD_TYPE_XP_BOOST,
 			systemType = DAILY_REWARD_SYSTEM_TYPE_TWO,
 			freeAccount = 10,
-			premiumAccount = 30
-		}
+			premiumAccount = 30,
+		},
 		-- Storage reward template
 		--[[[5] = {
 			type = DAILY_REWARD_TYPE_STORAGE,
@@ -192,23 +192,29 @@ DailyReward = {
 				}
 			}
 		},]]
-	}
+	},
 }
 
 function onRecvbyte(player, msg, byte)
-	if (byte == ClientPackets.OpenRewardWall) then
+	if byte == ClientPackets.OpenRewardWall then
 		DailyReward.loadDailyReward(player:getId(), REWARD_FROM_PANEL)
-	elseif (byte == ClientPackets.OpenRewardHistory) then
+	elseif byte == ClientPackets.OpenRewardHistory then
 		player:sendRewardHistory()
-	elseif (byte == ClientPackets.SelectReward) then
+	elseif byte == ClientPackets.SelectReward then
 		player:selectDailyReward(msg)
 	end
 end
 
 -- Core functions
 DailyReward.insertHistory = function(playerId, dayStreak, description)
-	return db.query(string.format("INSERT INTO `daily_reward_history`(`player_id`, `daystreak`, `timestamp`, \z
-		`description`) VALUES (%s, %s, %s, %s)", playerId, dayStreak, os.time(), db.escapeString(description)))
+	return db.query(string.format(
+		"INSERT INTO `daily_reward_history`(`player_id`, `daystreak`, `timestamp`, \z
+		`description`) VALUES (%s, %s, %s, %s)",
+		playerId,
+		dayStreak,
+		os.time(),
+		db.escapeString(description)
+	))
 end
 
 DailyReward.retrieveHistoryEntries = function(playerId)
@@ -240,9 +246,10 @@ DailyReward.loadDailyReward = function(playerId, target)
 		return false
 	end
 
-	target = REWARD_FROM_PANEL
-	if target ~= 0 then
-		target = REWARD_FROM_SHRINE
+	if target == REWARD_FROM_SHRINE then -- if you receive 0 (shrine) send 1
+		target = 1
+	else
+		target = 0 -- if you receive 1 (panel) send 0
 	end
 
 	player:sendCollectionResource(ClientPackets.JokerResource, player:getJokerTokens())
@@ -309,7 +316,7 @@ DailyReward.init = function(playerId)
 	if player:getNextRewardTime() < GetDailyRewardLastServerSave() then
 		if player:getStorageValue(DailyReward.storages.notifyReset) ~= GetDailyRewardLastServerSave() then
 			player:setStorageValue(DailyReward.storages.notifyReset, GetDailyRewardLastServerSave())
-			timeMath = math.ceil(timeMath / (DailyReward.serverTimeThreshold))
+			timeMath = math.ceil(timeMath / DailyReward.serverTimeThreshold)
 			if player:getJokerTokens() >= timeMath then
 				player:setJokerTokens(player:getJokerTokens() - timeMath)
 				player:sendTextMessage(MESSAGE_LOGIN, "You lost " .. timeMath .. " joker tokens to prevent loosing your streak.")
@@ -423,9 +430,9 @@ function Player.selectDailyReward(self, msg)
 	-- Items as reward
 	if dailyTable.type == DAILY_REWARD_TYPE_ITEM then
 		local items = {}
-		local possibleItems = DailyRewardItems[self:getVocation():getBaseId()];
+		local possibleItems = DailyRewardItems[self:getVocation():getBaseId()]
 		if dailyTable.items then
-			possibleItems = dailyTable.items;
+			possibleItems = dailyTable.items
 		end
 
 		-- Creating items table
@@ -435,12 +442,12 @@ function Player.selectDailyReward(self, msg)
 		for i = 1, columnsPicked do
 			local itemId = msg:getU16()
 			local count = msg:getByte()
-			orderedCounter = orderedCounter + count;
+			orderedCounter = orderedCounter + count
 			for index, val in ipairs(possibleItems) do
 				if val == itemId then
 					items[i] = { itemId = itemId, count = count }
-					totalCounter = totalCounter + count;
-					break;
+					totalCounter = totalCounter + count
+					break
 				end
 			end
 		end

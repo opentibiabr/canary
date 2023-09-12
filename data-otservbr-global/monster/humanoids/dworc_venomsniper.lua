@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 216
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "South of Port Hope (Trapwood) on ground level and underground and on Foreigner Quarter of Yalahar."
+	Locations = "South of Port Hope (Trapwood) on ground level and underground and on Foreigner Quarter of Yalahar.",
 }
 
 monster.health = 80
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -50,7 +50,7 @@ monster.flags = {
 	pushable = true,
 	rewardBoss = false,
 	illusionable = true,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 90,
 	targetDistance = 4,
@@ -59,20 +59,20 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Brak brrretz!", yell = false },
 	{ text = "Grow truk grrrrr.", yell = false },
-	{ text = "Prek tars, dekklep zurk.", yell = false }
+	{ text = "Brak brrretz!", yell = false },
+	{ text = "Prek tars, dekklep zurk.", yell = false },
 }
 
 monster.loot = {
@@ -85,18 +85,19 @@ monster.loot = {
 	{ name = "poison arrow", chance = 5000, maxCount = 3 },
 	{ name = "tribal mask", chance = 510 },
 	{ name = "bast skirt", chance = 100 },
-	{ name = "seeds", chance = 200 }
+	{ name = "seeds", chance = 200 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -15 },
 	-- poison
-	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -20, maxDamage = -40, range = 5, shootEffect = CONST_ANI_POISON, target = false }
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -20, maxDamage = -40, range = 5, shootEffect = CONST_ANI_POISON, target = false },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 3,
+	mitigation = 0.38,
 }
 
 monster.elements = {
@@ -109,14 +110,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -13 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 15 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -8 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -8 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

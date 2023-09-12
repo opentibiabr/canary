@@ -71,11 +71,11 @@ local questTable = {
 	{ storage = Storage.CultsOfTibia.MotA.Perguntaid, storageValue = 1 },
 	{ storage = Storage.CultsOfTibia.Barkless.Mission, storageValue = 1 },
 	{ storage = Storage.CultsOfTibia.Barkless.sulphur, storageValue = 4 },
-	{ storage = Storage.CultsOfTibia.Barkless.tar, storageValue = 3 },
-	{ storage = Storage.CultsOfTibia.Barkless.ice, storageValue = 3 },
+	{ storage = Storage.CultsOfTibia.Barkless.Tar, storageValue = 3 },
+	{ storage = Storage.CultsOfTibia.Barkless.Ice, storageValue = 3 },
 	{ storage = Storage.CultsOfTibia.Barkless.Objects, storageValue = 1 },
 	{ storage = Storage.CultsOfTibia.Barkless.Temp, storageValue = 1 },
-	{ storage = Storage.CultsOfTibia.Barkless.bossTimer, storageValue = 1 },
+	{ storage = Storage.CultsOfTibia.Barkless.BossTimer, storageValue = 1 },
 	{ storage = Storage.CultsOfTibia.Orcs.Mission, storageValue = 1 },
 	{ storage = Storage.CultsOfTibia.Orcs.lookType, storageValue = 1 },
 	{ storage = Storage.CultsOfTibia.Orcs.bossTimer, storageValue = 1 },
@@ -159,7 +159,8 @@ local questTable = {
 	{ storage = Storage.SearoutesAroundYalahar.Carlin, storageValue = 1 },
 	{ storage = Storage.HiddenCityOfBeregar.DefaultStart, storageValue = 1 },
 	{ storage = Storage.HiddenCityOfBeregar.GoingDown, storageValue = 1 },
-	{ storage = Storage.TheIceIslands.Questline, storageValue = 12 },
+	{ storage = Storage.HiddenCityOfBeregar.WayToBeregar, storageValue = 1 },
+	{ storage = Storage.TheIceIslands.Questline, storageValue = 40 },
 	{ storage = Storage.TheIceIslands.Mission01, storageValue = 3 },
 	{ storage = Storage.TheIceIslands.Mission02, storageValue = 5 },
 	{ storage = Storage.TheIceIslands.Mission03, storageValue = 3 },
@@ -172,6 +173,7 @@ local questTable = {
 	{ storage = Storage.TheIceIslands.Mission10, storageValue = 2 },
 	{ storage = Storage.TheIceIslands.Mission11, storageValue = 2 },
 	{ storage = Storage.TheIceIslands.Mission12, storageValue = 6 },
+	{ storage = Storage.TheIceIslands.yakchalDoor, storageValue = 1 },
 	{ storage = Storage.TheInquisition.Questline, storageValue = 25 },
 	{ storage = Storage.TheInquisition.Mission01, storageValue = 7 },
 	{ storage = Storage.TheInquisition.Mission02, storageValue = 3 },
@@ -260,6 +262,7 @@ local questTable = {
 	{ storage = Storage.WrathoftheEmperor.Mission10, storageValue = 1 },
 	{ storage = Storage.TheApeCity.Started, storageValue = 1 },
 	{ storage = Storage.TheApeCity.Questline, storageValue = 18 },
+	{ storage = Storage.BanutaSecretTunnel.DeeperBanutaShortcut, storageValue = 1 },
 	{ storage = Storage.Oramond.QuestLine, storageValue = 1 },
 	{ storage = Storage.Oramond.MissionToTakeRoots, storageValue = 3000 },
 	{ storage = Storage.DangerousDepths.Questline, storageValue = 1 },
@@ -316,7 +319,7 @@ local questTable = {
 	{ storage = Storage.WrathoftheEmperor.TeleportAccess.BossRoom, storageValue = 1 },
 	{ storage = Storage.WrathoftheEmperor.TeleportAccess.InnerSanctum, storageValue = 1 },
 	{ storage = Storage.WrathoftheEmperor.TeleportAccess.Rebel, storageValue = 1 },
-	{ storage = Storage.WrathoftheEmperor.TeleportAccess.SleepingDragon, storageValue = 1 },
+	{ storage = Storage.WrathoftheEmperor.TeleportAccess.SleepingDragon, storageValue = 2 },
 	{ storage = Storage.WrathoftheEmperor.TeleportAccess.Wote10, storageValue = 1 },
 	{ storage = Storage.WrathoftheEmperor.TeleportAccess.Zizzle, storageValue = 1 },
 	{ storage = Storage.WrathoftheEmperor.TeleportAccess.Zlak, storageValue = 1 },
@@ -324,6 +327,7 @@ local questTable = {
 	{ storage = Storage.TheSecretLibrary.FalconBastionAccess, storageValue = 1 },
 	{ storage = Storage.TheSecretLibrary.LowerBastionAccess, storageValue = 1 },
 	{ storage = Storage.TheSecretLibrary.UndergroundBastionAccess, storageValue = 1 },
+	{ storage = Storage.TheSecretLibrary.ShortcutToBastion, storageValue = 1 },
 	{ storage = Storage.TheSecretLibrary.OberonAccess, storageValue = 1 },
 	{ storage = Storage.TheSecretLibrary.MotaDoor, storageValue = 1 },
 	{ storage = Storage.TheSecretLibrary.BasinDoor, storageValue = 1 },
@@ -349,8 +353,28 @@ local questTable = {
 	{ storage = Storage.Quest.U13_10.CradleOfMonsters.Access.MutatedAbomination, storageValue = 1 },
 	{ storage = Storage.Quest.U8_54.TheNewFrontier.SnakeHeadTeleport, storageValue = 1 },
 	{ storage = Storage.LiquidBlackQuest.Visitor, storageValue = 5 },
+	{ storage = Storage.Quest.U8_4.BloodBrothers.VengothAccess, storageValue = 1 },
+
+	-- Assassin Outfit quests
+	{ storage = Storage.KillingInTheNameOf.BudrikMinos, storageValue = 0 },
+	{ storage = Storage.ToOutfoxAFoxQuest, storageValue = 2 },
+
+	-- Hunter Outfit quests
+	{ storage = Storage.OutfitQuest.HunterMusicSheet01, storageValue = 1 },
+	{ storage = Storage.OutfitQuest.HunterMusicSheet02, storageValue = 1 },
+	{ storage = Storage.OutfitQuest.HunterMusicSheet03, storageValue = 1 },
+	{ storage = Storage.OutfitQuest.HunterMusicSheet04, storageValue = 1 },
+
+	-- Norseman
+	{ storage = Storage.OutfitQuest.NorsemanAddon, storageValue = 1 },
+	{ storage = Storage.OutfitQuest.DefaultStart, storageValue = 1 },
+
+	{ storage = Storage.HeroRathleton.AccessDoor, storageValue = 1 },
+	{ storage = Storage.HeroRathleton.FastWay, storageValue = 1 },
 }
 
+-- from Position: (33201, 31762, 1)
+-- to Position: (33356, 31309, 4)
 local function playerFreeQuestStart(playerId, index)
 	local player = Player(playerId)
 	if not player then
@@ -360,7 +384,7 @@ local function playerFreeQuestStart(playerId, index)
 	for i = 1, 5 do
 		index = index + 1
 		if not questTable[index] then
-			player:sendTextMessage(MESSAGE_INFO_DESCR, "Player FreeQuest is complete.")
+			player:sendTextMessage(MESSAGE_INFO_DESCR, "Adding free quests completed.")
 			player:setStorageValue(Storage.FreeQuests, stage)
 			return
 		end
@@ -376,13 +400,15 @@ end
 local freeQuests = CreatureEvent("FreeQuests")
 
 function freeQuests.onLogin(player)
-	if not configManager.getBoolean(configKeys.TOGGLE_FREE_QUEST) or
-			player:getStorageValue(Storage.FreeQuests) == stage then
+	if not configManager.getBoolean(configKeys.TOGGLE_FREE_QUEST) or player:getStorageValue(Storage.FreeQuests) == stage then
 		return true
 	end
 
-	player:sendTextMessage(MESSAGE_INFO_DESCR, "Player FreeQuest in progress..")
+	player:sendTextMessage(MESSAGE_INFO_DESCR, "Adding free acccess quests to your character.")
 	addEvent(playerFreeQuestStart, 500, player:getId(), 0)
+	player:addOutfit(251, 0)
+	player:addOutfit(252, 0)
+
 	return true
 end
 

@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 41,
 	lookBody = 51,
 	lookLegs = 70,
-	lookFeet = 95
+	lookFeet = 95,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -57,26 +57,25 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
-	if MsgContains(message, 'cookbook') then
+	if MsgContains(message, "cookbook") then
 		if player:getStorageValue(Storage.MaryzaCookbook) ~= 1 then
-			npcHandler:say('The cookbook of the famous dwarven kitchen. You\'re lucky. I have a few copies on sale. Do you like one for 150 gold?', npc, creature)
+			npcHandler:say("The cookbook of the famous dwarven kitchen. You're lucky. I have a few copies on sale. Do you like one for 150 gold?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		else
-			npcHandler:say('I\'m sorry but I sell only one copy to each customer. Otherwise they would have been sold out a long time ago.', npc, creature)
+			npcHandler:say("I'm sorry but I sell only one copy to each customer. Otherwise they would have been sold out a long time ago.", npc, creature)
 		end
 	elseif npcHandler:getTopic(playerId) == 1 then
-		if MsgContains(message, 'yes') then
+		if MsgContains(message, "yes") then
 			if not player:removeMoneyBank(150) then
-				npcHandler:say('No gold, no sale, that\'s it.', npc, creature)
+				npcHandler:say("No gold, no sale, that's it.", npc, creature)
 				return true
 			end
 
-			npcHandler:say('Here you are. Happy cooking!', npc, creature)
+			npcHandler:say("Here you are. Happy cooking!", npc, creature)
 			player:setStorageValue(Storage.MaryzaCookbook, 1)
 			player:addItem(3234, 1)
-		elseif MsgContains(message, 'no') then
-			npcHandler:say('I have but a few copies, anyway.', npc, creature)
+		elseif MsgContains(message, "no") then
+			npcHandler:say("I have but a few copies, anyway.", npc, creature)
 		end
 	end
 	return true
@@ -85,7 +84,7 @@ end
 -- Greeting message
 keywordHandler:addGreetKeyword({ "maryza" }, { npcHandler = npcHandler, text = "Welcome to the Jolly Axeman, |PLAYERNAME|. Have a good time and eat some food!" })
 
-npcHandler:setMessage(MESSAGE_GREET, 'Welcome to the Jolly Axeman, |PLAYERNAME|. Have a good time and eat some food!')
+npcHandler:setMessage(MESSAGE_GREET, "Welcome to the Jolly Axeman, |PLAYERNAME|. Have a good time and eat some food!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye!")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
@@ -98,7 +97,7 @@ npcConfig.shop = {
 	{ itemName = "cookie", clientId = 3598, buy = 2 },
 	{ itemName = "ham", clientId = 3582, buy = 8 },
 	{ itemName = "meat", clientId = 3577, buy = 5 },
-	{ itemName = "roll", clientId = 3601, buy = 2 }
+	{ itemName = "roll", clientId = 3601, buy = 2 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -109,7 +108,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

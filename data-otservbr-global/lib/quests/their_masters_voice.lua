@@ -3,13 +3,13 @@ local config = {
 	slime_exhaust = 5, --  exhaust until you can remove another slime, in seconds
 	slimes_needed = 25, -- slimes needed to be removed to kill mad mage and complete quest
 	max_slimes = 100, -- max slimes needed to start waves
-	max_waves = 25 -- max waves, last one will be mad mage
+	max_waves = 25, -- max waves, last one will be mad mage
 }
 
 local mage_positions = {
 	{ x = 33328, y = 31859, z = 9 },
 	{ x = 33367, y = 31873, z = 9 },
-	{ x = 33349, y = 31899, z = 9 }
+	{ x = 33349, y = 31899, z = 9 },
 }
 
 local servant_positions = {
@@ -37,7 +37,7 @@ local servant_positions = {
 	{ x = 33311, y = 31854, z = 9 },
 	{ x = 33334, y = 31889, z = 9 },
 	{ x = 33340, y = 31890, z = 9 },
-	{ x = 33347, y = 31889, z = 9 }
+	{ x = 33347, y = 31889, z = 9 },
 }
 
 local slime_ids = { 12059, 12060, 12061, 12062, 12063 }
@@ -45,26 +45,28 @@ local slime_ids = { 12059, 12060, 12061, 12062, 12063 }
 local servants = {
 	{ 10, "diamond servant" },
 	{ 40, "golden servant" },
-	{ 100, "iron servant" }
+	{ 100, "iron servant" },
 }
 
-slime_exhaust = slime_exhaust or {}
-slimes_removed = slimes_removed or {}
-current_servants = current_servants or {}
-current_mage = current_mage or 0
-current_wave = current_wave or 0
-valid_participants = valid_participants or {}
+local slime_exhaust = slime_exhaust or {}
+local slimes_removed = slimes_removed or {}
+local current_servants = current_servants or {}
+local current_mage = current_mage or 0
+local current_wave = current_wave or 0
+local valid_participants = valid_participants or {}
+local mageSpawned = false
 
 function startServantWave()
-	current_wave = current_wave + 1
-	if current_wave == config.max_waves then
+	if current_wave == config.max_waves and not mageSpawned then
 		local mage = Game.createMonster("Mad Mage", mage_positions[math.random(#mage_positions)], true, true)
 		if mage then
-			mage:registerEvent("Mage_Death")
+			mageSpawned = true
+			mage:registerEvent("MageDeath")
 		end
 		return
 	end
 
+	current_wave = current_wave + 1
 	current_servants = {}
 	for pos_key = 1, #servant_positions do
 		local random = math.random(100)
@@ -72,8 +74,8 @@ function startServantWave()
 			if random <= servants[servant_key][1] then
 				local servant = Game.createMonster(servants[servant_key][2], servant_positions[pos_key], true, true)
 				if servant then
-					current_servants[#current_servants+1] = servant.uid
-					servant:registerEvent("Servant_Death")
+					current_servants[#current_servants + 1] = servant.uid
+					servant:registerEvent("ServantDeath")
 					break
 				end
 			end
@@ -81,7 +83,7 @@ function startServantWave()
 	end
 end
 
-function revertQuest()
+local function revertQuest()
 	for i = 1, #current_servants do
 		local servant = Creature(current_servants[i])
 		if servant then
@@ -121,7 +123,7 @@ function Gobbler_onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	slime_exhaust[player.uid] = time + config.slime_exhaust
 	player:say("The slime gobbler gobbles large chunks of the slime fungus with great satisfaction.", TALKTYPE_MONSTER_SAY)
 	player:addExperience(20, true, true)
-	slimes_removed[#slimes_removed+1] = { cid = player.uid, id = target.itemid, pos = toPosition }
+	slimes_removed[#slimes_removed + 1] = { cid = player.uid, id = target.itemid, pos = toPosition }
 	target:transform(12065)
 
 	if not table.contains(valid_participants, player.uid) then
@@ -129,9 +131,9 @@ function Gobbler_onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		for i = 1, #slimes_removed do
 			if slimes_removed[i].cid == player.uid then
 				slime_count = slime_count + 1
-				if slime_count == 25 then
+				if slime_count >= config.slimes_needed then
 					player:say("You gobbled enough slime to get a good grip on this dungeon's slippery floor.", TALKTYPE_MONSTER_SAY)
-					valid_participants[#valid_participants+1] = player.uid
+					valid_participants[#valid_participants + 1] = player.uid
 					break
 				end
 			end
@@ -140,7 +142,7 @@ function Gobbler_onUse(player, item, fromPosition, target, toPosition, isHotkey)
 
 	if #slimes_removed == 1 then
 		addEvent(revertQuest, config.quest_duration * 60 * 1000)
-	elseif #slimes_removed >= config.max_slimes then
+	elseif #slimes_removed >= config.max_slimes and current_wave == 0 then
 		player:say("COME! My servants! RISE!", TALKTYPE_MONSTER_SAY)
 		startServantWave()
 	end
@@ -165,6 +167,5 @@ function Mage_onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnjusti
 	if killer and table.contains(valid_participants, killer.uid) then
 		-- add achievements if needed
 	end
-	revertQuest()
 	return true
 end

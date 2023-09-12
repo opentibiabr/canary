@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1056
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Rathleton Sewers, Lower Rathleton, Oramond/Western Plains, \z
-		Underground Glooth Factory, Jaccus Maxxen's Dungeon."
+		Underground Glooth Factory, Jaccus Maxxen's Dungeon.",
 }
 
 monster.health = 1900
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -63,12 +63,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 4,
+	color = 139,
 }
 
 monster.voices = {
@@ -76,7 +76,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "*gulp*", yell = false },
 	{ text = "*Bruaarrr!*", yell = false },
-	{ text = "*omnnommm nomm*", yell = false }
+	{ text = "*omnnommm nomm*", yell = false },
 }
 
 monster.loot = {
@@ -99,7 +99,7 @@ monster.loot = {
 	{ id = 21180, chance = 390 }, -- glooth axe
 	{ id = 21158, chance = 370 }, -- glooth spear
 	{ id = 8084, chance = 250 }, -- springsprout rod
-	{ id = 3065, chance = 260 } -- terra rod
+	{ id = 3065, chance = 260 }, -- terra rod
 }
 
 monster.attacks = {
@@ -109,13 +109,14 @@ monster.attacks = {
 	{ name = "devourer wave", interval = 2000, chance = 5, minDamage = -50, maxDamage = -150, target = false },
 	{ name = "devourer paralyze", interval = 2000, chance = 9, target = false },
 	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_EARTHDAMAGE, minDamage = -50, maxDamage = -150, length = 1, spread = 0, effect = CONST_ME_SMOKE, target = false },
-	{ name = "combat", interval = 2000, chance = 7, type = COMBAT_EARTHDAMAGE, minDamage = -120, maxDamage = -135, radius = 4, effect = CONST_ME_GREEN_RINGS, target = false }
+	{ name = "combat", interval = 2000, chance = 7, type = COMBAT_EARTHDAMAGE, minDamage = -120, maxDamage = -135, radius = 4, effect = CONST_ME_GREEN_RINGS, target = false },
 }
 
 monster.defenses = {
 	defense = 25,
-	armor = 15,
-	{ name = "combat", interval = 2000, chance = 6, type = COMBAT_HEALING, minDamage = 100, maxDamage = 150, effect = CONST_ME_MAGIC_GREEN, target = false }
+	armor = 45,
+	mitigation = 1.46,
+	{ name = "combat", interval = 2000, chance = 6, type = COMBAT_HEALING, minDamage = 100, maxDamage = 150, effect = CONST_ME_MAGIC_GREEN, target = false },
 }
 
 monster.elements = {
@@ -123,19 +124,19 @@ monster.elements = {
 	{ type = COMBAT_ENERGYDAMAGE, percent = -5 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 15 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 74
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "In most grass areas of Tibia, for example on Tutorial Island."
+	Locations = "In most grass areas of Tibia, for example on Tutorial Island.",
 }
 
 monster.health = 15
@@ -35,7 +35,7 @@ monster.manaCost = 220
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -74,12 +74,13 @@ monster.voices = {
 
 monster.loot = {
 	{ name = "meat", chance = 85620, maxCount = 2 },
-	{ id = 3595, chance = 10000, maxCount = 2 } -- carrot
+	{ id = 3595, chance = 10000, maxCount = 2 }, -- carrot
 }
 
 monster.defenses = {
 	defense = 5,
-	armor = 5
+	armor = 1,
+	mitigation = 0.05,
 }
 
 monster.elements = {
@@ -92,14 +93,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

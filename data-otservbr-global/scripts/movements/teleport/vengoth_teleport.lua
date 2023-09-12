@@ -8,7 +8,7 @@ local setting = {
 	[50226] = Position(32951, 31568, 1),
 	[50227] = Position(32940, 31577, 0),
 	[50228] = Position(32940, 31558, 1),
-	[50229] = Position(32951, 31552, 3)
+	[50229] = Position(32951, 31552, 3),
 }
 
 local vengothTeleport = MoveEvent()

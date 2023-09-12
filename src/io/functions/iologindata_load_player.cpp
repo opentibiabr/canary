@@ -29,7 +29,7 @@ void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, Player 
 				Item* item = Item::CreateItem(type, count);
 				if (item) {
 					if (!item->unserializeAttr(propStream)) {
-						g_logger().warn("[{}] - Failed to deserialize item attributes {}, from player {}, from account id {}", __FUNCTION__, item->getID(), player.getName(), player.getAccount());
+						g_logger().warn("[{}] - Failed to deserialize item attributes {}, from player {}, from account id {}", __FUNCTION__, item->getID(), player.getName(), player.getAccountId());
 						savePlayer(&player);
 						g_logger().info("[{}] - Deleting wrong item: {}", __FUNCTION__, item->getID());
 						delete item;
@@ -37,7 +37,7 @@ void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, Player 
 					}
 					itemsMap[sid] = std::make_pair(item, pid);
 				} else {
-					g_logger().warn("[{}] - Failed to create item of type {} for player {}, from account id {}", __FUNCTION__, type, player.getName(), player.getAccount());
+					g_logger().warn("[{}] - Failed to create item of type {} for player {}, from account id {}", __FUNCTION__, type, player.getName(), player.getAccountId());
 				}
 			} catch (const std::exception &e) {
 				g_logger().warn("[{}] - Exception during the creation or deserialization of the item: {}", __FUNCTION__, e.what());
@@ -53,12 +53,7 @@ bool IOLoginDataLoad::preLoadPlayer(Player* player, const std::string &name) {
 	Database &db = Database::getInstance();
 
 	std::ostringstream query;
-	query << "SELECT `id`, `account_id`, `group_id`, `deletion`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`";
-	query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
-	query << ", (SELECT `lastday` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_last_day`";
-	query << ", (SELECT `premdays_purchased` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days_purchased`";
-	query << ", (SELECT `creation` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `creation_timestamp`";
-	query << " FROM `players` WHERE `name` = " << db.escapeString(name);
+	query << "SELECT `id`, `account_id`, `group_id`, `deletion` FROM `players` WHERE `name` = " << db.escapeString(name);
 	DBResult_ptr result = db.storeQuery(query.str());
 	if (!result) {
 		return false;
@@ -75,35 +70,33 @@ bool IOLoginDataLoad::preLoadPlayer(Player* player, const std::string &name) {
 		return false;
 	}
 	player->setGroup(group);
-	player->accountNumber = result->getNumber<uint32_t>("account_id");
-	player->accountType = static_cast<account::AccountType>(result->getNumber<uint16_t>("account_type"));
-	player->premiumDays = result->getNumber<uint16_t>("premium_days");
-	player->premiumLastDay = result->getNumber<uint32_t>("premium_last_day");
 
-	/*
-	  Loyalty system:
-	  - If creation timestamp is 0, that means it's the first time the player is trying to login on this account.
-	  - Since it's the first login, we must update the database manually.
-	  - This should be handled by the account manager, but not all of then do it so we handle it by ourself.
-	*/
-	time_t creation = result->getNumber<time_t>("creation_timestamp");
-	int32_t premiumDays = result->getNumber<int32_t>("premium_days");
-	int32_t premiumDaysPurchased = result->getNumber<int32_t>("premium_days_purchased");
-	if (creation == 0) {
-		query.str(std::string());
-		query << "UPDATE `accounts` SET `creation` = " << static_cast<uint32_t>(time(nullptr)) << " WHERE `id` = " << player->accountNumber;
-		db.executeQuery(query.str());
+	auto accountId = result->getNumber<uint32_t>("account_id");
+	if (!player->setAccount(accountId)) {
+		g_logger().error("Player {} has account id {} which doesn't exist", player->name, accountId);
+		return false;
 	}
 
-	// If the player has more premium days than he purchased, it means data existed before the loyalty system was implemented.
-	// Update premdays_purchased to the minimum acceptable value.
-	if (premiumDays > premiumDaysPurchased) {
-		query.str(std::string());
-		query << "UPDATE `accounts` SET `premdays_purchased` = " << premiumDays << " WHERE `id` = " << player->accountNumber;
-		db.executeQuery(query.str());
+	auto [coins, error] = player->account->getCoins(account::CoinType::COIN);
+	if (error != account::ERROR_NO) {
+		g_logger().error("Failed to get coins for player {}, error {}", player->name, static_cast<uint8_t>(error));
+		return false;
 	}
 
-	player->loyaltyPoints = static_cast<uint32_t>(std::ceil((static_cast<double>(time(nullptr) - creation)) / 86400)) * g_configManager().getNumber(LOYALTY_POINTS_PER_CREATION_DAY)
+	player->coinBalance = coins;
+
+	auto [transferableCoins, errorT] = player->account->getCoins(account::CoinType::TRANSFERABLE);
+	if (errorT != account::ERROR_NO) {
+		g_logger().error("Failed to get transferable coins for player {}, error {}", player->name, static_cast<uint8_t>(errorT));
+		return false;
+	}
+
+	player->coinTransferableBalance = transferableCoins;
+
+	uint32_t premiumDays = player->getAccount()->getPremiumRemainingDays();
+	uint32_t premiumDaysPurchased = player->getAccount()->getPremiumDaysPurchased();
+
+	player->loyaltyPoints = player->getAccount()->getAccountAgeInDays() * g_configManager().getNumber(LOYALTY_POINTS_PER_CREATION_DAY)
 		+ (premiumDaysPurchased - premiumDays) * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT)
 		+ premiumDaysPurchased * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_PURCHASED);
 
@@ -116,22 +109,12 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 		return false;
 	}
 
-	Database &db = Database::getInstance();
-
-	uint32_t accountId = result->getNumber<uint32_t>("account_id");
-	account::Account acc;
-	acc.SetDatabaseInterface(&db);
-	acc.LoadAccountDB(accountId);
-
-	bool oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL) && player->getProtocolVersion() < 1200;
 	player->setGUID(result->getNumber<uint32_t>("id"));
 	player->name = result->getString("name");
-	acc.GetID(&(player->accountNumber));
-	acc.GetAccountType(&(player->accountType));
-	acc.GetPremiumRemainingDays(&(player->premiumDays));
-	acc.GetPremiumLastDay(&(player->premiumLastDay));
-	acc.GetCoins(&(player->coinBalance));
-	acc.GetTransferableCoins(&(player->coinTransferableBalance));
+
+	if (!player->getAccount()) {
+		player->setAccount(result->getNumber<uint32_t>("account_id"));
+	}
 
 	Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
 	if (!group) {
@@ -148,6 +131,7 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 	player->setBankBalance(result->getNumber<uint64_t>("balance"));
 	player->quickLootFallbackToMainContainer = result->getNumber<bool>("quickloot_fallback");
 	player->setSex(static_cast<PlayerSex_t>(result->getNumber<uint16_t>("sex")));
+	player->setPronoun(static_cast<PlayerPronoun_t>(result->getNumber<uint16_t>("pronoun")));
 	player->level = std::max<uint32_t>(1, result->getNumber<uint32_t>("level"));
 	player->soul = static_cast<uint8_t>(result->getNumber<unsigned short>("soul"));
 	player->capacity = result->getNumber<uint32_t>("cap") * 100;
@@ -696,7 +680,7 @@ void IOLoginDataLoad::loadPlayerVip(Player* player, DBResult_ptr result) {
 
 	Database &db = Database::getInstance();
 	std::ostringstream query;
-	query << "SELECT `player_id` FROM `account_viplist` WHERE `account_id` = " << player->getAccount();
+	query << "SELECT `player_id` FROM `account_viplist` WHERE `account_id` = " << player->getAccountId();
 	if ((result = db.storeQuery(query.str()))) {
 		do {
 			player->addVIPInternal(result->getNumber<uint32_t>("player_id"));

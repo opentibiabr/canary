@@ -1,9 +1,9 @@
 local config = {
-	monsterName = 'Preceptor Lazare',
+	monsterName = "Preceptor Lazare",
 	bossPosition = Position(33373, 31348, 3),
 	centerPosition = Position(33373, 31348, 3),
 	rangeX = 50,
-	rangeY = 50
+	rangeY = 50,
 }
 
 local function checkBoss(centerPosition, rangeX, rangeY, bossName)
@@ -30,5 +30,5 @@ function preceptorLazare.onThink(interval, lastExecution)
 	return true
 end
 
-preceptorLazare:interval(900000)
+preceptorLazare:interval(15 * 60 * 1000)
 preceptorLazare:register()

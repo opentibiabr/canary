@@ -4,7 +4,12 @@ local monster = {}
 monster.description = "The Percht Queen"
 monster.experience = 500
 monster.outfit = {
-	lookTypeEx = 30340 -- (frozen) // lookTypeEx = 30341 (thawed)
+	lookTypeEx = 30340, -- (frozen) // lookTypeEx = 30341 (thawed)
+}
+
+monster.bosstiary = {
+	bossRaceId = 1744,
+	bossRace = RARITY_NEMESIS,
 }
 
 monster.health = 2300
@@ -16,12 +21,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
-}
-
-monster.bosstiary = {
-	bossRaceId = 1744,
-	bossRace = RARITY_NEMESIS
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -34,9 +34,9 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
-	canPushItems = true,
+	canPushItems = false,
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
@@ -45,12 +45,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -107,17 +107,18 @@ monster.loot = {
 	{ name = "abyss hammer", chance = 1480 },
 	{ name = "golden bell", chance = 2548 },
 	{ name = "golden cotton reel", chance = 1254 },
-	{ name = "lucky pig", chance = 2540 }
+	{ name = "lucky pig", chance = 2540 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -200 },
-	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -100, maxDamage = -200, range = 7, shootEffect = CONST_ANI_ICE, target = false }
+	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -100, maxDamage = -200, range = 7, shootEffect = CONST_ANI_ICE, target = false },
 }
 
 monster.defenses = {
 	defense = 40,
-	armor = 79
+	armor = 79,
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -128,16 +129,16 @@ monster.elements = {
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 80 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 90 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 90 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

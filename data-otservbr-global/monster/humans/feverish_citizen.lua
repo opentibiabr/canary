@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 719
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 2,
-	Locations = "Venore."
+	Locations = "Venore.",
 }
 
 monster.health = 125
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -60,12 +60,11 @@ monster.flags = {
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
 	canWalkOnPoison = false,
-	isForgeCreature = false
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -80,7 +79,7 @@ monster.voices = {
 	{ text = "<giggle>", yell = false },
 	{ text = "Burn heretic! Burn!", yell = false },
 	{ text = "Harrr!", yell = false },
-	{ text = "This is Venore!", yell = false }
+	{ text = "This is Venore!", yell = false },
 }
 
 monster.loot = {
@@ -92,18 +91,19 @@ monster.loot = {
 	{ name = "voluminous piece of cloth", chance = 2290 },
 	{ name = "obvious piece of cloth", chance = 2006 },
 	{ name = "ludicrous piece of cloth", chance = 2060 },
-	{ name = "luminous piece of cloth", chance = 2290 }
+	{ name = "luminous piece of cloth", chance = 2290 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -18 },
-	{ name = "drunk", interval = 2000, chance = 15, length = 3, spread = 2, effect = CONST_ME_POISONAREA, target = false, duration = 3000 }
+	{ name = "drunk", interval = 2000, chance = 15, length = 3, spread = 2, effect = CONST_ME_POISONAREA, target = false, duration = 3000 },
 }
 
 monster.defenses = {
 	defense = 15,
-	armor = 15,
-	{ name = "outfit", interval = 2000, chance = 1, radius = 3, effect = CONST_ME_GREEN_RINGS, target = false, duration = 5000, outfitMonster = "bog raider" }
+	armor = 14,
+	mitigation = 0.25,
+	{ name = "outfit", interval = 2000, chance = 1, radius = 3, effect = CONST_ME_GREEN_RINGS, target = false, duration = 5000, outfitMonster = "bog raider" },
 }
 
 monster.elements = {
@@ -116,14 +116,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 75 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

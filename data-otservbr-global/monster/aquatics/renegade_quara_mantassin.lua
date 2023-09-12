@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1099
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 2,
-	Locations = "Seacrest Grounds during a world change."
+	Locations = "Seacrest Grounds when Seacrest Serpents are not spawning.",
 }
 
 monster.health = 1200
@@ -31,11 +31,11 @@ monster.maxHealth = 1200
 monster.race = "blood"
 monster.corpse = 6064
 monster.speed = 295
-monster.manaCost = 330
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 2,
+	color = 35,
 }
 
 monster.voices = {
@@ -87,17 +87,18 @@ monster.loot = {
 	{ name = "two handed sword", chance = 820 },
 	{ name = "fish fin", chance = 740 },
 	{ name = "blue robe", chance = 660 },
-	{ id = 3051, chance = 580 } -- energy ring
+	{ id = 3051, chance = 580 }, -- energy ring
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 40, attack = 55, effect = CONST_ME_DRAWBLOOD }
+	{ name = "melee", interval = 2000, chance = 100, skill = 40, attack = 55, effect = CONST_ME_DRAWBLOOD },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 16,
-	{ name = "invisible", interval = 2000, chance = 20, effect = CONST_ME_MAGIC_BLUE }
+	mitigation = 0.70,
+	{ name = "invisible", interval = 2000, chance = 20, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -110,14 +111,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

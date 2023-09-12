@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 55,
 	lookLegs = 49,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -61,7 +61,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			"Usually, I'm too much bound to my duties to the city to sacrifice time for such an endeavour. ...",
 			"But on the other hand, just now is the time of an important decision of the magistrate concerning the funding of the archives. It is a matter easily overlooked by our good citizens. ...",
 			"If you'd be so kind to place just one of your votes for the funding of the archives, I would be inclined to take the time for your investigation in turn. ...",
-			"Just go to Marvin in the magistrate and vote for a greater funding of the archives. Afterwards, I might be able to present you with some first results of my investigations on your behalf."
+			"Just go to Marvin in the magistrate and vote for a greater funding of the archives. Afterwards, I might be able to present you with some first results of my investigations on your behalf.",
 		}, npc, creature, 10)
 		player:setStorageValue(Storage.DarkTrails.Mission07, 1)
 	elseif MsgContains(message, "abandoned sewers") and player:getStorageValue(Storage.DarkTrails.Mission08) == 1 then
@@ -71,13 +71,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			"The nature of this evil is up to debate, but there are hints that this evil predated the settlement of men and that it perhaps was part of a more ancient civilisation or caused the downfall of the latter. ...",
 			"After that evil had been overcome, much was sealed away. Some say that only forbidden knowledge had been sealed, but others like me were always worried that more had been hidden. ...",
 			"Something like the ruins you have found. What you have seen there hints to a new incident, though. As if someone or something was searching for something. In the past, when those ruins were buried, people were primitive and superstitious. ...",
-			"Today, we have advanced far more and could have the ruins investigated in a far more efficient way. And that is what I would just recommend you to do: get a necrometer from magistrate Jondrin upstairs and investigate the ruins thoroughly."
+			"Today, we have advanced far more and could have the ruins investigated in a far more efficient way. And that is what I would just recommend you to do: get a necrometer from magistrate Jondrin upstairs and investigate the ruins thoroughly.",
 		}, npc, creature, 10)
 		player:setStorageValue(Storage.DarkTrails.Mission09, 1)
 	elseif (MsgContains(message, "notebook")) and (player:getStorageValue(Storage.DarkTrails.Mission11) == 1 and getPlayerItemCount(creature, 11450) == 1) then
 		npcHandler:say({
 			" I know that handwriting you describe! It belongs to a traveller from far away. Magistrate Sholley introduced him 	to me and she was quite excited to learn more about our city's past. ...",
-			"I should have thought of him right in the beginning when I heard the stuff you mentioned. But I haven't seen him for a while. You should ask Sholley about her friend to learn about his whereabouts."
+			"I should have thought of him right in the beginning when I heard the stuff you mentioned. But I haven't seen him for a while. You should ask Sholley about her friend to learn about his whereabouts.",
 		}, npc, creature, 10)
 		player:setStorageValue(Storage.DarkTrails.Mission12, 1)
 		doPlayerRemoveItem(creature, 11450, 1)

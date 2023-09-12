@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 295
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Pits of Inferno, Demon Forge, Fury Dungeon."
+	Locations = "Pits of Inferno, Demon Forge, Fury Dungeon.",
 }
 
 monster.health = 3800
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -60,12 +60,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 5,
+	color = 212,
 }
 
 monster.voices = {
@@ -87,11 +87,12 @@ monster.loot = {
 	{ name = "fire axe", chance = 440 },
 	{ name = "soul orb", chance = 12150 },
 	{ name = "demonic essence", chance = 14500 },
-	{ name = "magma legs", chance = 730 },
-	{ name = "magma coat", chance = 470 },
+	{ name = "magma legs", chance = 682 },
+	{ name = "magma coat", chance = 380 },
 	{ name = "fiery heart", chance = 9570 },
 	{ name = "piece of hellfire armor", chance = 5060 },
-	{ id = 12600, chance = 670 } -- coal
+	{ id = 12600, chance = 670 }, -- coal
+	{ name = "eternal flames", chance = 380 },
 }
 
 monster.attacks = {
@@ -99,12 +100,13 @@ monster.attacks = {
 	{ name = "firefield", interval = 2000, chance = 10, range = 7, radius = 3, shootEffect = CONST_ANI_FIRE, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -392, maxDamage = -1500, length = 8, spread = 3, effect = CONST_ME_FIREATTACK, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -60, maxDamage = -330, range = 7, radius = 3, effect = CONST_ME_HITBYFIRE, target = false },
-	{ name = "hellfire fighter soulfire", interval = 2000, chance = 15, target = false }
+	{ name = "hellfire fighter soulfire", interval = 2000, chance = 15, target = false },
 }
 
 monster.defenses = {
 	defense = 35,
-	armor = 35
+	armor = 62,
+	mitigation = 1.60,
 }
 
 monster.elements = {
@@ -117,14 +119,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -25 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 20 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 20 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

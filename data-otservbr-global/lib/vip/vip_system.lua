@@ -1,8 +1,8 @@
 local config = {
-	activationMessage = 'You have received %s VIP days.',
+	activationMessage = "You have received %s VIP days.",
 	activationMessageType = MESSAGE_EVENT_ADVANCE,
 
-	expirationMessage = 'Your VIP days ran out.',
+	expirationMessage = "Your VIP days ran out.",
 	expirationMessageType = MESSAGE_STATUS_WARNING,
 
 	outfits = {},
@@ -34,8 +34,10 @@ function Player.onRemoveVip(self)
 	self:setStorageValue(Storage.VipSystem.IsVip, 0)
 end
 
-function Player.onAddVip(self, days)
-	self:sendTextMessage(config.activationMessageType, string.format(config.activationMessage, days))
+function Player.onAddVip(self, days, silent)
+	if not silent then
+		self:sendTextMessage(config.activationMessageType, string.format(config.activationMessage, days))
+	end
 
 	for _, outfit in ipairs(config.outfits) do
 		self:addOutfitAddon(outfit, 3)
@@ -50,13 +52,13 @@ end
 
 function CheckPremiumAndPrint(player, msgType)
 	if player:getVipDays() == 0xFFFF then
-		player:sendTextMessage(msgType, 'You have infinite amount of VIP days left.')
+		player:sendTextMessage(msgType, "You have infinite amount of VIP days left.")
 		return true
 	end
 
 	local playerVipTime = player:getVipTime()
 	if playerVipTime < os.time() then
-		local msg = 'You do not have VIP on your account.'
+		local msg = "You do not have VIP on your account."
 		player:sendTextMessage(msgType, msg)
 		return true
 	end

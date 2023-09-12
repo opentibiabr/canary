@@ -6,14 +6,14 @@ local setting = {
 		{ x = 33584, y = 31844, z = 10 },
 		{ x = 33585, y = 31844, z = 10 },
 		{ x = 33586, y = 31844, z = 10 },
-		{ x = 33587, y = 31844, z = 10 }
+		{ x = 33587, y = 31844, z = 10 },
 	},
 	newPositions = {
 		{ x = 33486, y = 32120, z = 9 },
 		{ x = 33486, y = 32120, z = 9 },
 		{ x = 33486, y = 32120, z = 9 },
 		{ x = 33486, y = 32120, z = 9 },
-		{ x = 33486, y = 32120, z = 9 }
+		{ x = 33486, y = 32120, z = 9 },
 	},
 	minionPositions = {
 		{ x = 33482, y = 32105, z = 9 },
@@ -25,8 +25,8 @@ local setting = {
 		{ x = 33490, y = 32106, z = 9 },
 		{ x = 33492, y = 32109, z = 9 },
 		{ x = 33492, y = 32112, z = 9 },
-		{ x = 33490, y = 32112, z = 9 }
-	}
+		{ x = 33490, y = 32112, z = 9 },
+	},
 }
 
 local leverDeathPriestShargon = Action()
@@ -44,7 +44,7 @@ function leverDeathPriestShargon.onUse(player, item, fromPosition, target, toPos
 				player:sendCancelMessage("You need 5 of players to fight with Death Priest Shargon.")
 				return true
 			end
-			storePlayers[#storePlayers+1] = playerTile
+			storePlayers[#storePlayers + 1] = playerTile
 		end
 
 		for i = 1, #config.minionPositions do

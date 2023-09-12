@@ -4,23 +4,23 @@ local config = {
 			{ position = Position(32878, 32270, 14), itemId = 2886 },
 			{ position = Position(32881, 32267, 14), itemId = 3052 },
 			{ position = Position(32881, 32273, 14), itemId = 6299 },
-			{ position = Position(32884, 32270, 14), itemId = 21465 } -- or itemID = 2118 for PVP servers
+			{ position = Position(32884, 32270, 14), itemId = 21465 }, -- or itemID = 2118 for PVP servers
 		},
 		wells = {
 			{ position = Position(32874, 32263, 14), wellId = 2094, transformId = 2098 },
 			{ position = Position(32875, 32263, 14), wellId = 2095, transformId = 2099 },
 			{ position = Position(32874, 32264, 14), wellId = 2096, transformId = 2100 },
-			{ position = Position(32875, 32264, 14), wellId = 2097, transformId = 2101 }
-		}
+			{ position = Position(32875, 32264, 14), wellId = 2097, transformId = 2101 },
+		},
 	},
 	[2773] = {
 		wells = {
 			{ position = Position(32874, 32263, 14), wellId = 2098, transformId = 2094 },
 			{ position = Position(32875, 32263, 14), wellId = 2099, transformId = 2095 },
 			{ position = Position(32874, 32264, 14), wellId = 2100, transformId = 2096 },
-			{ position = Position(32875, 32264, 14), wellId = 2101, transformId = 2097 }
-		}
-	}
+			{ position = Position(32875, 32264, 14), wellId = 2101, transformId = 2097 },
+		},
+	},
 }
 
 local dreamerStone = Action()

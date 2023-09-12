@@ -6,7 +6,7 @@ local itemInfos = {
 	[26192] = { 26188, 29428 },
 	[26188] = { 26192, 29428 },
 	[26194] = { 26190, 29426 },
-	[26190] = { 26194, 29426 }
+	[26190] = { 26194, 29426 },
 }
 
 local storageValues = {}
@@ -15,7 +15,7 @@ local exhaustDelaySeconds = 1
 local magicTree = Action()
 
 function magicTree.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if (fromPosition.x == CONTAINER_POSITION) then
+	if fromPosition.x == CONTAINER_POSITION then
 		return false
 	end
 

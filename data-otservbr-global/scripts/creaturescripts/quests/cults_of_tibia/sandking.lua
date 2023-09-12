@@ -75,7 +75,7 @@ function sandkingThink.onThink(creature)
 		end
 	elseif str == 4 then
 		local tm = os.time()
-		if ((maxhealth * 0.50) > creature:getHealth()) then
+		if (maxhealth * 0.50) > creature:getHealth() then
 			creature:say("THE SANDKING VANISHES INTO THE SAND AND HIS BROOD EMERGES!", TALKTYPE_MONSTER_SAY)
 			creature:remove()
 			local ps = {
@@ -107,17 +107,15 @@ function sandkingDeath.onDeath(creature, attacker, corpse)
 		return true
 	end
 	if creature:getName():lower() == "sand brood" then
-		addEvent(
-			function(position, corpseid)
-				local tile = Tile(position)
-				if tile then
-					local corpoCount = tile:getItemCountById(corpseid)
-					if corpoCount > 0 then
-						tile:getItemById(corpseid):setActionId(5595)
-					end
+		addEvent(function(position, corpseid)
+			local tile = Tile(position)
+			if tile then
+				local corpoCount = tile:getItemCountById(corpseid)
+				if corpoCount > 0 then
+					tile:getItemById(corpseid):setActionId(5595)
 				end
-			end, 200, creature:getPosition(), MonsterType(creature:getName()):getCorpseId()
-		)
+			end
+		end, 200, creature:getPosition(), MonsterType(creature:getName()):getCorpseId())
 		return true
 	end
 	local stg = Game.getStorageValue("sandking")
@@ -130,7 +128,6 @@ function sandkingDeath.onDeath(creature, attacker, corpse)
 end
 
 sandkingDeath:register()
-
 
 local sandHealth = CreatureEvent("SandHealth")
 function sandHealth.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)

@@ -94,7 +94,8 @@ Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {
 	}
 
 	item->startDecaying();
-	item->setLoadedFromMap(true);
+	item->loadedFromMap = true;
+	item->decayDisabled = Item::items[item->getID()].decayTo != -1;
 
 	return item;
 }

@@ -1,8 +1,8 @@
 local mType = Game.createMonsterType("Ferumbras Mortal Shell")
 local monster = {}
 
-monster.description = "ferumbras mortal shell"
-monster.experience = 42000
+monster.description = "Ferumbras Mortal Shell"
+monster.experience = 100000
 monster.outfit = {
 	lookType = 229,
 	lookHead = 0,
@@ -10,11 +10,11 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
-monster.health = 500000
-monster.maxHealth = 500000
+monster.health = 300000
+monster.maxHealth = 300000
 monster.race = "venom"
 monster.corpse = 6078
 monster.speed = 195
@@ -22,13 +22,13 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.bosstiary = {
 	bossRaceId = 1204,
 	bossRace = RARITY_NEMESIS,
-	storageCooldown = Storage.FerumbrasAscension.FerumbrasTimer
+	storageCooldown = Storage.FerumbrasAscension.FerumbrasTimer,
 }
 
 monster.strategiesTarget = {
@@ -55,27 +55,29 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 3,
 	summons = {
-		{ name = "Demon", chance = 100, interval = 1000, count = 3 }
-	}
+		{ name = "Demon", chance = 100, interval = 1000, count = 3 },
+	},
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "INSECTS!", yell = true },
+	{ text = "If you strike me down, I shall become more powerful than you could possibly imagine!", yell = false },
 	{ text = "I' STILL POWERFUL ENOUGH TO CRUSH YOU!", yell = true },
-	{ text = "If you strike me down, I shall become more powerful than you could possibly imagine!", yell = false }
+	{ text = "I WILL MAKE ALL OF YOU SUFFER!", yell = true },
+	{ text = "THE POWER WAS MINE!", yell = true },
 }
 
 monster.loot = {
@@ -135,7 +137,7 @@ monster.loot = {
 	{ id = 9058, chance = 800 }, -- gold ingot
 	{ id = 7405, chance = 800 }, -- havoc blade
 	{ id = 7411, chance = 400 }, -- ornamented axe
-	{ id = 22737, chance = 3500 } -- folded rift carpet
+	{ id = 22737, chance = 3500 }, -- folded rift carpet
 }
 
 monster.attacks = {
@@ -148,40 +150,40 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 21, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -650, radius = 9, effect = CONST_ME_ENERGYHIT, target = false },
 	{ name = "combat", interval = 2000, chance = 21, type = COMBAT_LIFEDRAIN, minDamage = -200, maxDamage = -450, radius = 6, effect = CONST_ME_POFF, target = false },
 	{ name = "ferumbras soulfire", interval = 2000, chance = 20, range = 7, target = false },
-	{ name = "combat", interval = 2000, chance = 17, type = COMBAT_LIFEDRAIN, minDamage = -590, maxDamage = -1050, length = 8, spread = 3, effect = CONST_ME_HITBYPOISON, target = false }
+	{ name = "combat", interval = 2000, chance = 17, type = COMBAT_LIFEDRAIN, minDamage = -590, maxDamage = -1050, length = 8, spread = 3, effect = CONST_ME_HITBYPOISON, target = false },
 }
 
 monster.defenses = {
 	defense = 120,
 	armor = 100,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 23, type = COMBAT_HEALING, minDamage = 600, maxDamage = 2490, effect = CONST_ME_MAGIC_GREEN, target = false },
 	{ name = "combat", interval = 2000, chance = 3, type = COMBAT_HEALING, minDamage = 20000, maxDamage = 35000, effect = CONST_ME_MAGIC_GREEN, target = false },
 	{ name = "speed", interval = 2000, chance = 14, speedChange = 700, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 7000 },
-	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = -50 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
-	{ type = COMBAT_FIREDAMAGE, percent = 90 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
-	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 65 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 65 },
+	{ type = COMBAT_FIREDAMAGE, percent = 65 },
+	{ type = COMBAT_LIFEDRAIN, percent = 65 },
+	{ type = COMBAT_MANADRAIN, percent = 65 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = -20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_ICEDAMAGE, percent = 65 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 65 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 65 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -189,13 +191,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 732
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 2,
-	Locations = "West and south of Greenshore."
+	Locations = "West and south of Greenshore.",
 }
 
 monster.health = 230
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -57,37 +57,38 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Klk! Klk!", yell = false },
 	{ text = "Chrrr! Chrr!", yell = false },
-	{ text = "Klk! Klk!", yell = false }
 }
 
 monster.loot = {
 	{ name = "gold coin", chance = 80000, maxCount = 80 },
 	{ id = 3093, chance = 100 }, -- club ring
 	{ name = "ripper lance", chance = 850 },
-	{ name = "health potion", chance = 280 }
+	{ name = "health potion", chance = 280 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -74, condition = { type = CONDITION_POISON, totalDamage = 60, interval = 4000 } }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -74, condition = { type = CONDITION_POISON, totalDamage = 60, interval = 4000 } },
 }
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 27,
+	mitigation = 0.56,
 }
 
 monster.elements = {
@@ -100,14 +101,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

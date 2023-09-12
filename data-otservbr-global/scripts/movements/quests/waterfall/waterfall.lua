@@ -1,7 +1,7 @@
 local setting = {
 	swimmingPosition = Position(32968, 32626, 5),
 	caveEntrancePosition = Position(32968, 32631, 8),
-	caveExitPosition = Position(32971, 32620, 8)
+	caveExitPosition = Position(32971, 32620, 8),
 }
 
 local waterfall = MoveEvent()

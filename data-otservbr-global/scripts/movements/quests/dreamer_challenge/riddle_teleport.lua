@@ -2,7 +2,7 @@ local function shuffleTable(t)
 	local newTable = {}
 	for i = 1, #t do
 		randomId = math.random(1, #t)
-		newTable[#newTable+1] = t[randomId]
+		newTable[#newTable + 1] = t[randomId]
 		table.remove(t, randomId)
 	end
 	return newTable
@@ -15,7 +15,7 @@ local function doResetPillows()
 	for i = 0, 3 do
 		local pillowId = 2394 + i
 		for i = 1, 9 do
-			storePillows[#storePillows+1] = pillowId
+			storePillows[#storePillows + 1] = pillowId
 		end
 	end
 
@@ -49,10 +49,7 @@ function riddleTeleport.onStepIn(creature, item, position, fromPosition)
 		return false
 	end
 
-	if checkPillows(arenaPosition.x, arenaPosition.y, 2394)
-			and checkPillows(arenaPosition.x + 3, arenaPosition.y, 2396)
-			and checkPillows(arenaPosition.x, arenaPosition.y + 3, 2395)
-			and (checkPillows(arenaPosition.x + 3, arenaPosition.y + 3, 2397) or checkPillows(arenaPosition.x + 3, arenaPosition.y + 3, 900)) then
+	if checkPillows(arenaPosition.x, arenaPosition.y, 2394) and checkPillows(arenaPosition.x + 3, arenaPosition.y, 2396) and checkPillows(arenaPosition.x, arenaPosition.y + 3, 2395) and (checkPillows(arenaPosition.x + 3, arenaPosition.y + 3, 2397) or checkPillows(arenaPosition.x + 3, arenaPosition.y + 3, 900)) then
 		player:teleportTo(Position(32766, 32275, 14))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		doResetPillows()

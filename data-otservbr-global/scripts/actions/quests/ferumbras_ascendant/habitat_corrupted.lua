@@ -338,7 +338,7 @@ local corrupted = {
 	{ itemid = 417, position = Position(33614, 32722, 12) },
 	{ itemid = 417, position = Position(33614, 32715, 12) },
 	{ itemid = 417, position = Position(33614, 32721, 12) },
-	{ itemid = 417, position = Position(33611, 32712, 12) }
+	{ itemid = 417, position = Position(33611, 32712, 12) },
 }
 local function transformArea()
 	for x = 33611, 33625 do
@@ -378,10 +378,10 @@ local ferumbrasAscendantHabitatCorrupted = Action()
 function ferumbrasAscendantHabitatCorrupted.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 9125 then
 		if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Corrupted) >= 1 then
-			player:say('The lever are stuck, need some time to it can be moveable again.', TALKTYPE_MONSTER_SAY)
+			player:say("The lever are stuck, need some time to it can be moveable again.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
-		Game.createMonster('lovely yielothax', Position(33619, 32722, 12), true, true)
+		Game.createMonster("lovely yielothax", Position(33619, 32722, 12), true, true)
 		addEvent(transformArea, 2 * 1000)
 		item:transform(9126)
 		local basin = Tile(Position(33628, 32721, 12)):getItemById(11114)
@@ -391,7 +391,7 @@ function ferumbrasAscendantHabitatCorrupted.onUse(player, item, fromPosition, ta
 		end
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Corrupted, 1)
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats, Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats) + 1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The room transforms into a completely different landscape.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The room transforms into a completely different landscape.")
 		if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats) >= 8 then
 			addEvent(function()
 				resetFerumbrasAscendantHabitats()

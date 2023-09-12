@@ -2,7 +2,7 @@ local config = {
 	[24939] = { storage = Storage.FirstDragon.Scale },
 	[24940] = { storage = Storage.FirstDragon.Tooth },
 	[24941] = { storage = Storage.FirstDragon.Horn },
-	[24942] = { storage = Storage.FirstDragon.Bones }
+	[24942] = { storage = Storage.FirstDragon.Bones },
 }
 
 local sacrificeItems = Action()
@@ -19,7 +19,7 @@ function sacrificeItems.onUse(player, item, fromPosition, target, toPosition, is
 	end
 
 	if player:getStorageValue(Storage.FirstDragon.AccessCave) >= 4 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You\'re plunging " .. item:getName() .. " into the lava. You are now worthy to enter The First Dragon's Lair. Touch the lava pool again.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You're plunging " .. item:getName() .. " into the lava. You are now worthy to enter The First Dragon's Lair. Touch the lava pool again.")
 		return true
 	end
 
@@ -27,7 +27,7 @@ function sacrificeItems.onUse(player, item, fromPosition, target, toPosition, is
 		player:setStorageValue(Storage.FirstDragon.AccessCave, 0)
 	end
 	local targetPosition = Position(33047, 32712, 3)
-	if (toPosition == targetPosition) then
+	if toPosition == targetPosition then
 		local targetId = Tile(targetPosition):getItemById(25160)
 		if targetId then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You're plunging " .. item:getName() .. " into the lava.")

@@ -122,7 +122,9 @@ void House::updateDoorDescription() const {
 	ss << " It is " << houseTiles.size() << " square meters.";
 	const int32_t housePrice = getPrice();
 	if (housePrice != -1) {
-		ss << " It costs " << formatNumber(getPrice()) << " gold coins.";
+		if (g_configManager().getBoolean(HOUSE_PURSHASED_SHOW_PRICE) || owner == 0) {
+			ss << " It costs " << formatNumber(getPrice()) << " gold coins.";
+		}
 		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
 		if (strRentPeriod != "never") {
 			ss << " The rent cost is " << formatNumber(getRent()) << " gold coins and it is billed " << strRentPeriod << ".";
@@ -140,7 +142,7 @@ AccessHouseLevel_t House::getHouseAccessLevel(const Player* player) {
 	}
 
 	if (g_configManager().getBoolean(HOUSE_OWNED_BY_ACCOUNT)) {
-		if (ownerAccountId == player->getAccount()) {
+		if (ownerAccountId == player->getAccountId()) {
 			return HOUSE_OWNER;
 		}
 	}

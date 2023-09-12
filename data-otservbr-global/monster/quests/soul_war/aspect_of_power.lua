@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Aspect of Power")
 local monster = {}
 
 monster.description = "an aspect of power"
-monster.experience = 5580
+monster.experience = 0
 monster.outfit = {
 	lookType = 1303,
 	lookHead = 0,
@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 25000
@@ -18,10 +18,11 @@ monster.maxHealth = 25000
 monster.race = "undead"
 monster.corpse = 0
 monster.speed = 125
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -45,12 +46,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -66,32 +67,33 @@ monster.attacks = {
 	{ name = "outfit", interval = 1000, chance = 5, radius = 8, effect = CONST_ME_LOSEENERGY, target = false, duration = 5000, outfitMonster = "goshnar's hatred" },
 	{ name = "outfit", interval = 1000, chance = 5, radius = 8, effect = CONST_ME_LOSEENERGY, target = false, duration = 5000, outfitMonster = "goshnar's greed" },
 	{ name = "outfit", interval = 1000, chance = 5, radius = 8, effect = CONST_ME_LOSEENERGY, target = false, duration = 5000, outfitMonster = "goshnar's malice" },
-	{ name = "outfit", interval = 1000, chance = 5, radius = 8, effect = CONST_ME_LOSEENERGY, target = false, duration = 5000, outfitMonster = "goshnar's spite" }
+	{ name = "outfit", interval = 1000, chance = 5, radius = 8, effect = CONST_ME_LOSEENERGY, target = false, duration = 5000, outfitMonster = "goshnar's spite" },
 }
 
 monster.defenses = {
 	defense = 40,
-	armor = 82
+	armor = 0,
+	--	mitigation = ???,
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 30 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 20 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = -30 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

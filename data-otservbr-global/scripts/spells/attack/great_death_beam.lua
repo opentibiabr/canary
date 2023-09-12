@@ -43,7 +43,7 @@ function spell.onCastSpell(creature, var)
 
 	if executed then
 		local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 260)
-		local executedCooldown = cooldown[grade];
+		local executedCooldown = cooldown[grade]
 		if executedCooldown ~= nil then
 			condition:setTicks((executedCooldown * 1000))
 		end

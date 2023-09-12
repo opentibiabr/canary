@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 673
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Razachai including the Inner Sanctum."
+	Locations = "Razachai including the Inner Sanctum.",
 }
 
 monster.health = 6250
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -59,28 +59,28 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "Death Blob", chance = 10, interval = 2000, count = 2 }
-	}
+		{ name = "Death Blob", chance = 10, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Uhhhg!", yell = false },
+	{ text = "Gll", yell = false },
 	{ text = "Hmmnn!", yell = false },
 	{ text = "Aaag!", yell = false },
-	{ text = "Gll", yell = false }
 }
 
 monster.loot = {
@@ -103,7 +103,7 @@ monster.loot = {
 	{ name = "shield of corruption", chance = 10 },
 	{ name = "draken boots", chance = 540 },
 	{ name = "snake god's wristguard", chance = 10 },
-	{ name = "bamboo leaves", chance = 360 }
+	{ name = "bamboo leaves", chance = 360 },
 }
 
 monster.attacks = {
@@ -112,13 +112,14 @@ monster.attacks = {
 	{ name = "draken abomination curse", interval = 2000, chance = 10, range = 5, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -170, maxDamage = -370, length = 4, spread = 3, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "drunk", interval = 2000, chance = 15, range = 7, radius = 4, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = false, duration = 9000 },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, range = 7, radius = 3, effect = CONST_ME_HITBYPOISON, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, range = 7, radius = 3, effect = CONST_ME_HITBYPOISON, target = false },
 }
 
 monster.defenses = {
 	defense = 30,
-	armor = 30,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 650, maxDamage = 700, effect = CONST_ME_MAGIC_BLUE, target = false }
+	armor = 45,
+	mitigation = 1.60,
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 650, maxDamage = 700, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -131,14 +132,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

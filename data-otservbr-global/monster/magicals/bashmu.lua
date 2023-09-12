@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 42,
 	lookFeet = 79,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2100
@@ -22,8 +22,8 @@ monster.Bestiary = {
 	SecondUnlock = 1000,
 	CharmsPoints = 50,
 	Stars = 4,
-	Occurrence = 1,
-	Locations = "Salt Caves"
+	Occurrence = 0,
+	Locations = "Salt Caves.",
 }
 
 monster.health = 8200
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -60,18 +60,17 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Hsssssss!", yell = false },
 }
 
 monster.loot = {
@@ -93,7 +92,7 @@ monster.loot = {
 	{ id = 23544, chance = 660 }, -- collar of red plasma
 	{ name = "haunted blade", chance = 590 },
 	{ name = "magma amulet", chance = 520 },
-	{ id = 23542, chance = 440 } -- collar of blue plasma
+	{ id = 23542, chance = 440 }, -- collar of blue plasma
 }
 
 monster.attacks = {
@@ -106,8 +105,9 @@ monster.attacks = {
 monster.defenses = {
 	defense = 72,
 	armor = 72,
+	mitigation = 2.16,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 250, maxDamage = 500, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 340, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 340, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -120,14 +120,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

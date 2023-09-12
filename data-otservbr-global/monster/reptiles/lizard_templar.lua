@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 113
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Chor, the lizard city south-east from Port Hope. They can also be found in Yalahar's \z
-		Foreigner Quarter and in Zzaion."
+		Foreigner Quarter and in Zzaion.",
 }
 
 monster.health = 410
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -60,18 +60,18 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Hissss!", yell = false }
+	{ text = "Hissss!", yell = false },
 }
 
 monster.loot = {
@@ -86,16 +86,17 @@ monster.loot = {
 	{ name = "salamander shield", chance = 110 },
 	{ name = "lizard leather", chance = 880 },
 	{ name = "lizard scale", chance = 990 },
-	{ name = "health potion", chance = 890 }
+	{ name = "health potion", chance = 890 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 },
 }
 
 monster.defenses = {
 	defense = 20,
-	armor = 20
+	armor = 26,
+	mitigation = 0.51,
 }
 
 monster.elements = {
@@ -108,14 +109,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

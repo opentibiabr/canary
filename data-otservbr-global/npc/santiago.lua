@@ -16,20 +16,20 @@ npcConfig.outfit = {
 	lookBody = 115,
 	lookLegs = 87,
 	lookFeet = 114,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Evil little beasts... I hope someone helps me fight them.' },
-	{ text = 'Nasty creepy crawlies!' },
-	{ text = 'Hey! You over there, could you help me with a little quest? Just say \'hi\' or \'hello\' to talk to me!' },
-	{ text = 'Don\'t be shy, can\'t hurt to greet me with \'hello\' or \'hi\'!' }
+	{ text = "Evil little beasts... I hope someone helps me fight them." },
+	{ text = "Nasty creepy crawlies!" },
+	{ text = "Hey! You over there, could you help me with a little quest? Just say 'hi' or 'hello' to talk to me!" },
+	{ text = "Don't be shy, can't hurt to greet me with 'hello' or 'hi'!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,7 +58,6 @@ end
 npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
-
 
 local storeTalkCid = {}
 local function greetCallback(npc, creature)
@@ -190,7 +189,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif storeTalkCid[playerId] == 7 then
 			npcHandler:say({
 				"Here, take this fish which I've caught myself. Find it in your inventory, then 'Use' it to eat it. This will slowly refill your health. ...",
-				"By the way: If your hitpoints are below 150, you will regenerate back to 150 hitpoints after few seconds as long as you are not hungry, outside a protection zone and do not have a battle sign. {Easy}, yes?"
+				"By the way: If your hitpoints are below 150, you will regenerate back to 150 hitpoints after few seconds as long as you are not hungry, outside a protection zone and do not have a battle sign. {Easy}, yes?",
 			}, npc, creature)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.SantiagoQuestLog, 9)
 			player:addItem(3578, 1)

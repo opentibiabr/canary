@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Werelion")
 local monster = {}
 
 monster.description = "a werelion"
-monster.experience = 2400
+monster.experience = 2200
 monster.outfit = {
 	lookType = 1301,
 	lookHead = 58,
@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 94,
 	lookFeet = 10,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1965
@@ -21,9 +21,9 @@ monster.Bestiary = {
 	FirstUnlock = 100,
 	SecondUnlock = 1000,
 	CharmsPoints = 50,
-	Stars = 3,
+	Stars = 4,
 	Occurrence = 0,
-	Locations = "This monster you can find in Hyaena Lairs."
+	Locations = "Lion Sanctum.",
 }
 
 monster.health = 2800
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 20
+	chance = 20,
 }
 
 monster.flags = {
@@ -55,12 +55,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 1,
-	color = 0
+	level = 0,
+	color = 0,
 }
 
 monster.voices = {
@@ -90,20 +90,21 @@ monster.loot = {
 	{ name = "rainbow quartz", chance = 1500 },
 	{ name = "noble axe", chance = 500 },
 	{ name = "white silk flower", chance = 500 },
-	{ name = "lion figurine", chance = 100 }
+	{ name = "lion figurine", chance = 100 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300 },
 	{ name = "werelion wave", interval = 2000, chance = 20, minDamage = -150, maxDamage = -250, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HOLYDAMAGE, minDamage = -300, maxDamage = -410, range = 3, effect = CONST_ME_HOLYAREA, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HOLYDAMAGE, minDamage = -170, maxDamage = -350, range = 3, shootEffect = CONST_ANI_HOLY, target = true }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HOLYDAMAGE, minDamage = -170, maxDamage = -350, range = 3, shootEffect = CONST_ANI_HOLY, target = true },
 }
 
 monster.defenses = {
 	defense = 40,
-	armor = 40,
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 100, maxDamage = 150, effect = CONST_ME_MAGIC_BLUE, target = false }
+	armor = 38,
+	mitigation = 0.91,
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 100, maxDamage = 150, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -116,14 +117,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -25 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 45 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 45 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

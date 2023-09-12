@@ -30,13 +30,13 @@ local taskBoss = {
 	[28] = "tiquandas revenge",
 	[29] = "demodras",
 	[30] = "necropharus",
-	[31] = "the horned fox"
+	[31] = "the horned fox",
 }
 local function killCheck(player, targetName, taskName, taskStage, taskInfo, taskAltKillCount, taskkillCount)
 	if player:getStorageValue(taskName) == taskStage then
 		if table.contains(taskInfo, targetName) then
 			for k = 1, #taskInfo do
-				if targetName == taskInfo[k] then
+				if taskAltKillCount ~= nil and targetName == taskInfo[k] then
 					player:setStorageValue(taskAltKillCount + k - 1, player:getStorageValue(taskAltKillCount + k - 1) + 1)
 				end
 			end

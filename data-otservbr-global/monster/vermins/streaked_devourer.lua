@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2091
@@ -22,8 +22,8 @@ monster.Bestiary = {
 	SecondUnlock = 1000,
 	CharmsPoints = 50,
 	Stars = 4,
-	Occurrence = 1,
-	Locations = "Grotto of the Lost."
+	Occurrence = 0,
+	Locations = "Grotto of the Lost.",
 }
 
 monster.health = 7000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -62,19 +62,17 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "tzzzz tzzzz tzzzz!", yell = false },
-	{ text = "sloap sloap sloap!", yell = false }
 }
 
 monster.loot = {
@@ -93,7 +91,7 @@ monster.loot = {
 	{ name = "guardian halberd", chance = 3080 },
 	{ name = "warrior's axe", chance = 1540 },
 	{ name = "giant sword", chance = 830 },
-	{ name = "war axe", chance = 4620 }
+	{ name = "war axe", chance = 4620 },
 }
 
 monster.attacks = {
@@ -105,7 +103,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 62,
-	armor = 62
+	armor = 62,
+	mitigation = 1.60,
 }
 
 monster.elements = {
@@ -118,14 +117,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -15 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

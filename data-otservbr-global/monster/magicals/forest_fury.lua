@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 980
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Forest Fury Camp and in the Forest Fury version of the Forsaken Mine."
+	Locations = "Forest Fury Camp and in the Forest Fury version of the Forsaken Mine.",
 }
 
 monster.health = 480
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -60,14 +60,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = true,
-	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnEnergy = false,
+	canWalkOnFire = false,
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -75,7 +75,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "To arms, sisters!", yell = false },
 	{ text = "Feel the wrath of mother forest!", yell = false },
-	{ text = "By the power of Greenskull!", yell = false }
+	{ text = "By the power of Greenskull!", yell = false },
 }
 
 monster.loot = {
@@ -87,18 +87,19 @@ monster.loot = {
 	{ name = "elvish bow", chance = 90 },
 	{ name = "small topaz", chance = 470 },
 	{ name = "elven hoof", chance = 7030 },
-	{ name = "venison", chance = 13210 }
+	{ name = "venison", chance = 13210 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -125 },
 	{ name = "combat", interval = 1500, chance = 40, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -100, range = 7, radius = 4, shootEffect = CONST_ANI_HUNTINGSPEAR, effect = CONST_ME_MAGIC_GREEN, target = true },
-	{ name = "forest fury skill reducer", interval = 2000, chance = 20, range = 5, target = false }
+	{ name = "forest fury skill reducer", interval = 2000, chance = 20, range = 5, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
-	armor = 20
+	armor = 19,
+	mitigation = 0.80,
 }
 
 monster.elements = {
@@ -111,14 +112,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 40 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 40 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

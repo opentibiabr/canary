@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Naga Warrior")
 local monster = {}
 
 monster.description = "a naga warrior"
-monster.experience = 6330
+monster.experience = 5890
 monster.outfit = {
 	lookType = 1539,
 	lookHead = 85,
@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 85,
 	lookFeet = 105,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2261
@@ -22,23 +22,20 @@ monster.Bestiary = {
 	SecondUnlock = 1000,
 	CharmsPoints = 50,
 	Stars = 4,
-	Occurrence = 1,
-	Locations = "Temple of the Moon Goddess."
+	Occurrence = 0,
+	Locations = "Temple of the Moon Goddess.",
 }
 
-
-monster.health = 5290
-monster.maxHealth = 5290
+monster.health = 5530
+monster.maxHealth = 5530
 monster.race = "blood"
 monster.corpse = 39225
 monster.speed = 180
 monster.manaCost = 0
-monster.maxSummons = 0
-
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,18 +59,18 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "The Moon Goddess is ashamed of you!", yell = false },
+	{ text = "Fear the wrath of the wronged!", yell = false },
 }
 
 monster.loot = {
@@ -103,7 +100,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 110,
-	armor = 120,
+	armor = 78,
+	mitigation = 2.19,
 }
 
 monster.elements = {
@@ -116,14 +114,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

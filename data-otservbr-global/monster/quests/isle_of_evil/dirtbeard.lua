@@ -10,7 +10,12 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
+}
+
+monster.bosstiary = {
+	bossRaceId = 565,
+	bossRace = RARITY_BANE,
 }
 
 monster.health = 630
@@ -22,12 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
-}
-
-monster.bosstiary = {
-	bossRaceId = 565,
-	bossRace = RARITY_BANE
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -43,7 +43,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -54,19 +54,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "Pirate Marauder", chance = 30, interval = 4000, count = 2 }
-	}
+		{ name = "Pirate Marauder", chance = 30, interval = 4000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -74,7 +74,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "You are no match for the scourge of the seas!", yell = false },
 	{ text = "You move like a seasick whale!", yell = false },
-	{ text = "Yarr, death to all landlubbers!", yell = false }
+	{ text = "Yarr, death to all landlubbers!", yell = false },
 }
 
 monster.loot = {
@@ -83,19 +83,20 @@ monster.loot = {
 	{ id = 9375, chance = 1000 }, -- pointed rabbitslayer
 	{ id = 9382, chance = 1000 }, -- helmet of nature
 	{ id = 9374, chance = 1000 }, -- odd hat
-	{ id = 9401, chance = 2000 } -- shield nevermourn
+	{ id = 9401, chance = 2000 }, -- shield nevermourn
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -125 },
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -100, range = 7, shootEffect = CONST_ANI_THROWINGSTAR, target = false },
 	{ name = "melee", interval = 2000, chance = 30, minDamage = 0, maxDamage = 0 },
-	{ name = "pirate corsair skill reducer", interval = 2000, chance = 5, target = false }
+	{ name = "pirate corsair skill reducer", interval = 2000, chance = 5, target = false },
 }
 
 monster.defenses = {
 	defense = 35,
-	armor = 30
+	armor = 30,
+	mitigation = 0.40,
 }
 
 monster.elements = {
@@ -108,14 +109,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

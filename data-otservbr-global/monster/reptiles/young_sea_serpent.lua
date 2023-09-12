@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 439
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Sea Serpent Area."
+	Locations = "Sea Serpent Area.",
 }
 
 monster.health = 1050
@@ -31,11 +31,11 @@ monster.maxHealth = 1050
 monster.race = "blood"
 monster.corpse = 8965
 monster.speed = 240
-monster.manaCost = 390
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -59,19 +59,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "CHHHRRRR", yell = false },
-	{ text = "HISSSS", yell = false }
+	{ text = "HISSSS", yell = true },
+	{ text = "CHHHRRRR", yell = true },
 }
 
 monster.loot = {
@@ -87,21 +87,22 @@ monster.loot = {
 	{ name = "strong mana potion", chance = 4000 },
 	{ id = 8894, chance = 7940 }, -- heavily rusted armor
 	{ id = 8895, chance = 7940 }, -- rusted armor
-	{ name = "sea serpent scale", chance = 5000 }
+	{ name = "sea serpent scale", chance = 5000 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -200 },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -10, maxDamage = -250, length = 7, spread = 2, effect = CONST_ME_SMALLPLANTS, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -80, maxDamage = -250, length = 7, spread = 2, effect = CONST_ME_ICEATTACK, target = false },
-	{ name = "young sea serpent drown", interval = 2000, chance = 15, range = 5, target = false }
+	{ name = "young sea serpent drown", interval = 2000, chance = 15, range = 5, target = false },
 }
 
 monster.defenses = {
 	defense = 30,
-	armor = 30,
+	armor = 20,
+	mitigation = 0.78,
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HEALING, minDamage = 25, maxDamage = 175, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 400, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 400, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -114,14 +115,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -15 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -15 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

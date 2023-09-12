@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Jaul")
 local monster = {}
 
 monster.description = "Jaul"
-monster.experience = 35000
+monster.experience = 30000
 monster.outfit = {
 	lookType = 444,
 	lookHead = 0,
@@ -10,11 +10,16 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
-monster.health = 95000
-monster.maxHealth = 95000
+monster.bosstiary = {
+	bossRaceId = 773,
+	bossRace = RARITY_BANE,
+}
+
+monster.health = 90000
+monster.maxHealth = 90000
 monster.race = "blood"
 monster.corpse = 13787
 monster.speed = 220
@@ -22,12 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 50
-}
-
-monster.bosstiary = {
-	bossRaceId = 773,
-	bossRace = RARITY_BANE
+	chance = 50,
 }
 
 monster.strategiesTarget = {
@@ -54,19 +54,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "QJELL AFAR GOU JEY!!", yell = false },
-	{ text = "DIE!! KENH!!", yell = false }
+	{ text = "DIE!! KENH!!", yell = true },
+	{ text = "QJELL AFAR GOU JEY!!", yell = true },
 }
 
 monster.loot = {
@@ -77,7 +77,7 @@ monster.loot = {
 	{ name = "ornate chestplate", chance = 650, unique = true },
 	{ name = "ornate legs", chance = 740 },
 	{ name = "ornate mace", chance = 1500 },
-	{ name = "ornate shield", chance = 1400 }
+	{ name = "ornate shield", chance = 1400 },
 }
 
 monster.attacks = {
@@ -89,13 +89,14 @@ monster.attacks = {
 	{ name = "combat", interval = 1000, chance = 5, type = COMBAT_FIREDAMAGE, minDamage = -500, maxDamage = -1000, length = 8, spread = 3, effect = CONST_ME_HITBYFIRE, target = false },
 	{ name = "combat", interval = 1000, chance = 5, type = COMBAT_ICEDAMAGE, minDamage = -1000, maxDamage = -2000, length = 8, spread = 3, effect = CONST_ME_ICEAREA, target = false },
 	{ name = "combat", interval = 4000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -500, maxDamage = -1000, length = 8, spread = 3, effect = CONST_ME_WATERSPLASH, target = false },
-	{ name = "speed", interval = 1900, chance = 14, speedChange = -700, range = 7, radius = 1, target = true, duration = 15000 }
+	{ name = "speed", interval = 1900, chance = 14, speedChange = -700, range = 7, radius = 1, target = true, duration = 15000 },
 }
 
 monster.defenses = {
 	defense = 40,
 	armor = 40,
-	{ name = "combat", interval = 5000, chance = 7, type = COMBAT_HEALING, minDamage = 12000, maxDamage = 19000, effect = CONST_ME_MAGIC_BLUE, target = false }
+	--	mitigation = ???,
+	{ name = "combat", interval = 5000, chance = 7, type = COMBAT_HEALING, minDamage = 12000, maxDamage = 19000, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -108,18 +109,17 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 15 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -127,13 +127,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

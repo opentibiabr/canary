@@ -11,11 +11,11 @@ npcConfig.walkInterval = 0
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 231
+	lookType = 231,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -49,15 +49,16 @@ local treasureKeyword = keywordHandler:addKeyword({ "treasure" }, StdModule.say,
 treasureKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "ALRIGHT. BUT FIRST OF ALL I WANT YOU TO BRING ME SOMETHING IN EXCHANGE. SURPRISE ME....AND IF I LIKE IT, YOU MAY GET WHAT YOU DESERVE.", reset = true })
 treasureKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "HAVE YOU SEEN THESE LEGENDARY ITEMS BACK THERE? WHO COULD REFUSE THE CHANCE OF OBTAINING ONE?!? SO WHAT IS YOUR ANSWER?" })
 
-local offerKeyword = keywordHandler:addKeyword({ "offer" }, StdModule.say, { npcHandler = npcHandler, text = "I GRANT YOU ACCESS TO THE DUNGEON IN THE NORTH. YOU'LL FIND SOME OF MY LIVING BROTHERS THERE....BUT.....EVERY TIME YOU WANT TO ENTER YOU HAVE TO GIVE ME SOMETHING PRECIOUS. ALRIGHT?" }, function(player) return player:getLevel() > 99 end)
+local offerKeyword = keywordHandler:addKeyword({ "offer" }, StdModule.say, { npcHandler = npcHandler, text = "I GRANT YOU ACCESS TO THE DUNGEON IN THE NORTH. YOU'LL FIND SOME OF MY LIVING BROTHERS THERE....BUT.....EVERY TIME YOU WANT TO ENTER YOU HAVE TO GIVE ME SOMETHING PRECIOUS. ALRIGHT?" }, function(player)
+	return player:getLevel() > 99
+end)
 local mugKeyword = offerKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "AS YOU WISH. WHAT DO YOU HAVE TO OFFER?" })
-mugKeyword:addChildKeyword({ "golden mug" }, StdModule.say, { npcHandler = npcHandler, text = "I LIKE THAT AND GRANT YOU ACCESS TO THE DUNGEON IN THE NORTH FOR THE NEXT FEW MINUTES. COME BACK ANYTIME AND BRING ME MORE TREASURES.", reset = true },
-	function(player) return player:getItemCount(2903) > 0 end,
-	function(player)
-		player:removeItem(2903, 1)
-		player:setStorageValue(Storage.HiddenCityOfBeregar.PythiusTheRotten, os.time() + 180)
-	end
-)
+mugKeyword:addChildKeyword({ "golden mug" }, StdModule.say, { npcHandler = npcHandler, text = "I LIKE THAT AND GRANT YOU ACCESS TO THE DUNGEON IN THE NORTH FOR THE NEXT FEW MINUTES. COME BACK ANYTIME AND BRING ME MORE TREASURES.", reset = true }, function(player)
+	return player:getItemCount(2903) > 0
+end, function(player)
+	player:removeItem(2903, 1)
+	player:setStorageValue(Storage.HiddenCityOfBeregar.PythiusTheRotten, os.time() + 180)
+end)
 mugKeyword:addChildKeyword({ "golden mug" }, StdModule.say, { npcHandler = npcHandler, text = "THIS IS NOT WORTH BEING PART OF MY TREASURE! BRING ME SOMETHING ELSE.", reset = true })
 mugKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "THIS IS NOT WORTH BEING PART OF MY TREASURE! BRING ME SOMETHING ELSE", reset = true })
 offerKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "TELL ME IF YOU CHANGE YOUR MIND. MY TREASURE THIRSTS FOR GOLD.", reset = true })

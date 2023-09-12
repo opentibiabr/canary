@@ -10,11 +10,16 @@ monster.outfit = {
 	lookLegs = 78,
 	lookFeet = 94,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
-monster.health = 60000
-monster.maxHealth = 60000
+monster.bosstiary = {
+	bossRaceId = 312,
+	bossRace = RARITY_NEMESIS,
+}
+
+monster.health = 77000
+monster.maxHealth = 77000
 monster.race = "undead"
 monster.corpse = 6068
 monster.speed = 200
@@ -22,12 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 10000,
-	chance = 20
-}
-
-monster.bosstiary = {
-	bossRaceId = 312,
-	bossRace = RARITY_NEMESIS
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -52,30 +52,30 @@ monster.flags = {
 	runHealth = 3500,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 4,
 	summons = {
-		{ name = "Deathslicer", chance = 20, interval = 4000, count = 4 }
-	}
+		{ name = "Deathslicer", chance = 20, interval = 4000, count = 4 },
+	},
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "COME AND GIVE ME SOME AMUSEMENT", yell = false },
+	{ text = "COME AND GIVE ME SOME AMUSEMENT", yell = true },
 	{ text = "IS THAT THE BEST YOU HAVE TO OFFER, TIBIANS?", yell = true },
 	{ text = "I AM GHAZBARAN OF THE TRIANGLE... AND I AM HERE TO CHALLENGE YOU ALL.", yell = true },
-	{ text = "FLAWLESS VICTORY!", yell = true }
+	{ text = "FLAWLESS VICTORY!", yell = true },
 }
 
 monster.loot = {
@@ -122,7 +122,7 @@ monster.loot = {
 	{ name = "spellbook of mind control", chance = 11111 },
 	{ name = "spellbook of lost souls", chance = 16666 },
 	{ name = "spellscroll of prophecies", chance = 25000 },
-	{ name = "spellbook of dark mysteries", chance = 20000 }
+	{ name = "spellbook of dark mysteries", chance = 20000 },
 }
 
 monster.attacks = {
@@ -133,18 +133,19 @@ monster.attacks = {
 	{ name = "combat", interval = 3000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -480, range = 14, radius = 5, effect = CONST_ME_POFF, target = false },
 	{ name = "combat", interval = 4000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -100, maxDamage = -650, range = 7, radius = 13, effect = CONST_ME_BLOCKHIT, target = false },
 	{ name = "combat", interval = 4000, chance = 18, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -600, radius = 14, effect = CONST_ME_LOSEENERGY, target = false },
-	{ name = "combat", interval = 3000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -750, range = 7, radius = 4, effect = CONST_ME_ENERGYAREA, target = false }
+	{ name = "combat", interval = 3000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -750, range = 7, radius = 4, effect = CONST_ME_ENERGYAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 65,
 	armor = 55,
+	--	mitigation = ???,
 	{ name = "combat", interval = 3000, chance = 35, type = COMBAT_HEALING, minDamage = 300, maxDamage = 800, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "speed", interval = 4000, chance = 80, speedChange = 440, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 }
+	{ name = "speed", interval = 4000, chance = 80, speedChange = 440, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 1 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 30 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
 	{ type = COMBAT_FIREDAMAGE, percent = 100 },
@@ -152,19 +153,18 @@ monster.elements = {
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
-	{ type = COMBAT_HOLYDAMAGE, percent = -1 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 1 }
+	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 1 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -172,13 +172,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

@@ -1,8 +1,8 @@
 local destination = {
 	[26668] = {
 		position = Position(33411, 31082, 10),
-		storage = Storage.ForgottenKnowledge.AccessLavaTeleport
-	}
+		storage = Storage.ForgottenKnowledge.AccessLavaTeleport,
+	},
 }
 
 local lavaTeleport = MoveEvent()

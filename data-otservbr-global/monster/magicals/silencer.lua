@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1014
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "All over the Roshamuul surface and Nightmare Isles."
+	Locations = "All over the Roshamuul surface and Nightmare Isles.",
 }
 
 monster.health = 5400
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -62,21 +62,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Prrrroooaaaah!!! PRROAAAH!!", yell = false },
-	{ text = "PRRRROOOOOAAAAAHHHH!!!", yell = false },
-	{ text = "HUUUSSSSSSSSH!!", yell = false },
-	{ text = "Hussssssh!!", yell = false }
+	{ text = "PRRRROOOOOAAAAAHHHH!!!", yell = true },
+	{ text = "HUUUSSSSSSSSH!!", yell = true },
+	{ text = "Hussssssh!!", yell = false },
 }
 
 monster.loot = {
@@ -93,22 +93,23 @@ monster.loot = {
 	{ name = "glorious axe", chance = 2400 },
 	{ name = "terra legs", chance = 960 },
 	{ name = "terra boots", chance = 480 },
-	{ name = "cluster of solace", chance = 560 },
+	{ name = "cluster of solace", chance = 4560 },
 	{ name = "silencer claws", chance = 17000 },
-	{ name = "silencer resonating chamber", chance = 8410 }
+	{ name = "silencer resonating chamber", chance = 8410 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -315, condition = { type = CONDITION_POISON, totalDamage = 600, interval = 4000 } },
 	{ name = "silencer skill reducer", interval = 2000, chance = 10, range = 3, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_MANADRAIN, minDamage = -40, maxDamage = -150, radius = 4, shootEffect = CONST_ANI_ONYXARROW, effect = CONST_ME_MAGIC_RED, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_MANADRAIN, minDamage = -40, maxDamage = -150, radius = 4, shootEffect = CONST_ANI_ONYXARROW, effect = CONST_ME_MAGIC_RED, target = true },
 }
 
 monster.defenses = {
 	defense = 20,
-	armor = 20,
+	armor = 71,
+	mitigation = 1.82,
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 450, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 220, maxDamage = 425, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 220, maxDamage = 425, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -121,14 +122,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 15 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -25 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 65 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 65 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = true },
+	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 85,
 	lookFeet = 105,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2272
@@ -18,12 +18,12 @@ monster.Bestiary = {
 	class = "Plant",
 	race = BESTY_RACE_PLANT,
 	toKill = 5000,
-	FirstUnlock = 50,
-	SecondUnlock = 500,
+	FirstUnlock = 200,
+	SecondUnlock = 2000,
 	CharmsPoints = 100,
 	Stars = 5,
-	Occurrence = 1,
-	Locations = "Monster Graveyard"
+	Occurrence = 0,
+	Locations = "Monster Graveyard",
 }
 
 monster.health = 17100
@@ -32,11 +32,10 @@ monster.race = "blood"
 monster.corpse = 39307
 monster.speed = 190
 monster.manaCost = 0
-monster.maxSummons = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -60,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -89,15 +88,15 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 300, maxDamage = -400, effect = CONST_ME_CARNIPHILA },
-	{ name = "combat", interval = 2500, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 1012, maxDamage = -1049, range = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_HITBYFIRE, target = true },
-	{ name = "combat", interval = 1900, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 1020, maxDamage = -1090, range = 5, radius = 4, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_PLANTATTACK, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -800, length = 7, spread = 0, effect = CONST_ME_PINK_ENERGY_SPARK, target = false },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400, effect = CONST_ME_CARNIPHILA },
+	{ name = "combat", interval = 4000, chance = 40, type = COMBAT_FIREDAMAGE, minDamage = -800, maxDamage = -1050, range = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_HITBYFIRE, target = true },
+	{ name = "combat", interval = 2900, chance = 25, type = COMBAT_EARTHDAMAGE, minDamage = -850, maxDamage = -1130, radius = 4, effect = CONST_ME_PLANTATTACK, target = false },
 }
 
 monster.defenses = {
 	defense = 110,
 	armor = 76,
+	mitigation = 2.11,
 }
 
 monster.elements = {
@@ -110,14 +109,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -44,7 +44,7 @@ local config = {
 	[50251] = Position(32495, 31833, 9), -- To: Crystal Storage
 	[50252] = Position(32511, 31806, 9), -- To: Crystal Mining
 	[50253] = Position(32498, 31807, 9), -- To: Crystal Cultivation
-	[50254] = Position(32516, 31829, 9) -- To: Entrance Area
+	[50254] = Position(32516, 31829, 9), -- To: Entrance Area
 }
 
 local oreWagons = Action()
@@ -60,7 +60,7 @@ function oreWagons.onUse(player, item, fromPosition, target, toPosition, isHotke
 		return true
 	end
 
-	player:addAchievementProgress('Rollercoaster', 100)
+	player:addAchievementProgress("Rollercoaster", 100)
 	player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	player:teleportTo(targetPosition)
 	targetPosition:sendMagicEffect(CONST_ME_TELEPORT)

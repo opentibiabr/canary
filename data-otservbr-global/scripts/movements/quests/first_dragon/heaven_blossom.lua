@@ -6,12 +6,12 @@ function heavenBlossom.onStepIn(creature, item, position, fromPosition)
 	end
 
 	if item.uid == 1066 then
-		if creature:getName() == 'Spirit of Fertility' then
-			creature:say('An allergic reaction weakens the dragon!', TALKTYPE_MONSTER_SAY)
+		if creature:getName() == "Spirit of Fertility" then
+			creature:say("An allergic reaction weakens the dragon!", TALKTYPE_MONSTER_SAY)
 			creature:remove()
-			Game.createMonster('Angry Plant', position, true, true)
+			Game.createMonster("Angry Plant", position, true, true)
 			item:remove()
-			creature:say('The fertile spirit brings a plant monster to life!', TALKTYPE_MONSTER_SAY)
+			creature:say("The fertile spirit brings a plant monster to life!", TALKTYPE_MONSTER_SAY)
 		end
 	end
 	return true

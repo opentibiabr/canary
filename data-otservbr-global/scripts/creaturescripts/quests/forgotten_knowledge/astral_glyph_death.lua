@@ -5,8 +5,8 @@ function astralGlyphDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 		return true
 	end
 
-	if targetMonster:getName():lower() == 'an astral glyph' then
-		Game.createMonster('the last lore keeper', targetMonster:getPosition(), true, true)
+	if targetMonster:getName():lower() == "an astral glyph" then
+		Game.createMonster("the last lore keeper", targetMonster:getPosition(), true, true)
 	end
 	return true
 end

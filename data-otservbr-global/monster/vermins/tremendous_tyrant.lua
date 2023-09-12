@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 40,
 	lookFeet = 94,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2089
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 1,
-	Locations = "Dwelling of the Forgotten"
+	Locations = "Dwelling of the Forgotten",
 }
 
 monster.health = 11500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 10000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,18 +62,17 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 3,
+	color = 106,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "naps naps naps!", yell = false }
 }
 
 monster.loot = {
@@ -96,7 +95,7 @@ monster.loot = {
 	{ name = "warrior's shield", chance = 1820 },
 	{ name = "elven amulet", chance = 2730 },
 	{ name = "focus cape", chance = 1820 },
-	{ name = "glacier robe", chance = 4555 }
+	{ name = "glacier robe", chance = 4555 },
 }
 
 monster.attacks = {
@@ -108,7 +107,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 71,
-	armor = 71
+	armor = 71,
+	mitigation = 1.88,
 }
 
 monster.elements = {
@@ -116,19 +116,19 @@ monster.elements = {
 	{ type = COMBAT_ENERGYDAMAGE, percent = 20 },
 	{ type = COMBAT_EARTHDAMAGE, percent = -20 },
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
-	{ type = COMBAT_MANADRAIN, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 15 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

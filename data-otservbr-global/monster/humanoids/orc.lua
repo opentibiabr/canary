@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 5
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Ulderek's Rock, Edron Orc Cave, Ancient Temple, Ice Islands, Venore Orc Cave, \z
-		Rookgaard Orc Fortress, Rookgaard main cave, Fibula Dungeon, Elvenbane, Foreigner Quarter, Zao Orc Land."
+		Rookgaard Orc Fortress, Rookgaard main cave, Fibula Dungeon, Elvenbane, Foreigner Quarter, Zao Orc Land.",
 }
 
 monster.health = 70
@@ -36,7 +36,7 @@ monster.manaCost = 300
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -60,20 +60,20 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Grak brrretz!", yell = false },
 	{ text = "Grow truk grrrrr.", yell = false },
-	{ text = "Prek tars, dekklep zurk.", yell = false }
+	{ text = "Prek tars, dekklep zurk.", yell = false },
+	{ text = "Grak brrretz!", yell = false },
 }
 
 monster.loot = {
@@ -86,16 +86,17 @@ monster.loot = {
 	{ name = "meat", chance = 10160 },
 	{ name = "orc tooth", chance = 210 },
 	{ name = "orc leather", chance = 590 },
-	{ id = 23986, chance = 1000 } -- heavy old tome
+	{ id = 23986, chance = 1000 }, -- heavy old tome
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 4,
+	mitigation = 0.20,
 }
 
 monster.elements = {
@@ -108,14 +109,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

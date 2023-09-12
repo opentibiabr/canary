@@ -1,7 +1,7 @@
 Blessings.Types = {
 	REGULAR = 1,
 	ENHANCED = 2,
-	PvP = 3
+	PvP = 3,
 }
 
 Blessings.All = {
@@ -12,9 +12,8 @@ Blessings.All = {
 	[5] = { id = 5, name = "The Spiritual Shielding", charm = 10343, type = Blessings.Types.REGULAR, losscount = true, inquisition = true },
 	[6] = { id = 6, name = "The Embrace of Tibia", charm = 10342, type = Blessings.Types.REGULAR, losscount = true, inquisition = true },
 	[7] = { id = 7, name = "Blood of the Mountain", charm = 25360, type = Blessings.Types.ENHANCED, losscount = true, inquisition = false },
-	[8] = { id = 8, name = "Heart of the Mountain", charm = 25361, type = Blessings.Types.ENHANCED, losscount = true, inquisition = false }
+	[8] = { id = 8, name = "Heart of the Mountain", charm = 25361, type = Blessings.Types.ENHANCED, losscount = true, inquisition = false },
 }
-
 
 Blessings.LossPercent = {
 	[0] = { item = 100, skill = 0 },
@@ -25,9 +24,8 @@ Blessings.LossPercent = {
 	[5] = { item = 0, skill = 40 },
 	[6] = { item = 0, skill = 48 },
 	[7] = { item = 0, skill = 56 },
-	[8] = { item = 0, skill = 56 }
+	[8] = { item = 0, skill = 56 },
 }
-
 
 Blessings.BitWiseTable = {
 	[0] = 1,
@@ -45,5 +43,5 @@ Blessings.BitWiseTable = {
 	[12] = 4096,
 	[13] = 8192,
 	[14] = 16384,
-	[15] = 32768
+	[15] = 32768,
 }

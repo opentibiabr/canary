@@ -2,7 +2,7 @@ local lava = {
 	Position(32912, 32209, 15),
 	Position(32913, 32209, 15),
 	Position(32912, 32210, 15),
-	Position(32913, 32210, 15)
+	Position(32913, 32210, 15),
 }
 
 local pitsOfInfernoFirstThroneLever = Action()

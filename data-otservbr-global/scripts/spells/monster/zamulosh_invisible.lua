@@ -6,7 +6,7 @@ local function invisible(fromPosition, toPosition)
 			for z = fromPosition.z, toPosition.z do
 				local creature = Tile(Position(x, y, z)):getTopCreature()
 				if creature then
-					if creature:isMonster() and creature:getName():lower() == 'zamulosh' then
+					if creature:isMonster() and creature:getName():lower() == "zamulosh" then
 						creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 						creature:addCondition(condition)
 					end

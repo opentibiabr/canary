@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 42,
 	lookFeet = 75,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 868
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 2,
-	Locations = "Horestis Tomb."
+	Locations = "Horestis Tomb.",
 }
 
 monster.health = 185
@@ -31,11 +31,11 @@ monster.maxHealth = 185
 monster.race = "blood"
 monster.corpse = 18078
 monster.speed = 95
-monster.manaCost = 0
+monster.manaCost = 450
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -73,7 +73,7 @@ monster.voices = {
 	{ text = "I smell gold!", yell = false },
 	{ text = "You'll make a fine fake-mummy to be sold!", yell = false },
 	{ text = "Untold riches are awaiting me!", yell = false },
-	{ text = "I don't like competition!", yell = false }
+	{ text = "I don't like competition!", yell = false },
 }
 
 monster.loot = {
@@ -86,17 +86,18 @@ monster.loot = {
 	{ name = "nomad parchment", chance = 220 },
 	{ name = "potato", chance = 4840, maxCount = 3 },
 	{ name = "dirty turban", chance = 1570 },
-	{ name = "rope belt", chance = 4040 }
+	{ name = "rope belt", chance = 4040 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -40, range = 7, radius = 1, shootEffect = CONST_ANI_THROWINGSTAR, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -40, range = 7, radius = 1, shootEffect = CONST_ANI_THROWINGSTAR, target = true },
 }
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 6,
+	mitigation = 0.41,
 }
 
 monster.elements = {
@@ -109,14 +110,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = true },
+	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -1,8 +1,8 @@
 local mType = Game.createMonsterType("Ragiaz")
 local monster = {}
 
-monster.description = "ragiaz"
-monster.experience = 100000
+monster.description = "Ragiaz"
+monster.experience = 50000
 monster.outfit = {
 	lookType = 862,
 	lookHead = 76,
@@ -10,11 +10,17 @@ monster.outfit = {
 	lookLegs = 19,
 	lookFeet = 0,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
-monster.health = 380000
-monster.maxHealth = 380000
+monster.bosstiary = {
+	bossRaceId = 1180,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.FerumbrasAscension.RagiazTimer,
+}
+
+monster.health = 280000
+monster.maxHealth = 280000
 monster.race = "undead"
 monster.corpse = 22495
 monster.speed = 170
@@ -22,13 +28,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
-}
-
-monster.bosstiary = {
-	bossRaceId = 1180,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.FerumbrasAscension.RagiazTimer
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -55,12 +55,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -100,7 +100,7 @@ monster.loot = {
 	{ id = 282, chance = 3000, maxCount = 5 }, -- giant shimmering pearl (brown)
 	{ id = 7642, chance = 3100, maxCount = 5 }, -- great spirit potion
 	{ id = 7643, chance = 3000, maxCount = 5 }, -- ultimate health potion
-	{ id = 9057, chance = 3000, maxCount = 8 } -- small topaz
+	{ id = 9057, chance = 3000, maxCount = 8 }, -- small topaz
 }
 
 monster.attacks = {
@@ -109,39 +109,39 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -500, maxDamage = -900, range = 4, radius = 4, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_POFF, target = true },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -1000, maxDamage = -1200, length = 10, spread = 3, effect = CONST_ME_MAGIC_GREEN, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -1500, maxDamage = -1900, length = 10, spread = 3, effect = CONST_ME_GROUNDSHAKER, target = false },
-	{ name = "speed", interval = 2000, chance = 20, speedChange = -600, radius = 7, effect = CONST_ME_POFF, target = false, duration = 20000 }
+	{ name = "speed", interval = 2000, chance = 20, speedChange = -600, radius = 7, effect = CONST_ME_POFF, target = false, duration = 20000 },
 }
 
 monster.defenses = {
-	defense = 25,
-	armor = 25,
+	defense = 125,
+	armor = 125,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 1000, maxDamage = 2000, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 20, speedChange = 600, effect = CONST_ME_MAGIC_GREEN, target = false, duration = 4000 },
-	{ name = "ragiaz transform", interval = 2000, chance = 8, target = false }
+	{ name = "ragiaz transform", interval = 2000, chance = 8, target = false },
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 10 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 10 },
-	{ type = COMBAT_FIREDAMAGE, percent = 10 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 90 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 10 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 30 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -149,13 +149,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

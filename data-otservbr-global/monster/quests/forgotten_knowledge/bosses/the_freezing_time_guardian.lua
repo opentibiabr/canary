@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("The Freezing Time Guardian")
 local monster = {}
 
-monster.description = "the freezing time guardian"
+monster.description = "The Freezing Time Guardian"
 monster.experience = 50000
 monster.outfit = {
 	lookType = 943,
@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 150000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -49,12 +49,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 5,
+	color = 107,
 }
 
 monster.voices = {
@@ -83,7 +83,7 @@ monster.loot = {
 	{ id = 3439, chance = 100 }, -- phoenix shield
 	{ id = 7417, chance = 100 }, -- runed sword
 	{ id = 22721, chance = 100000 }, -- gold token
-	{ id = 22516, chance = 100000 } -- silver token
+	{ id = 22516, chance = 100000 }, -- silver token
 }
 
 monster.attacks = {
@@ -94,41 +94,41 @@ monster.attacks = {
 	-- energy damage
 	{ name = "condition", type = CONDITION_ENERGY, interval = 2000, chance = 20, minDamage = -2000, maxDamage = -2000, radius = 7, effect = CONST_ME_BLOCKHIT, target = false },
 	-- bleed
-	{ name = "condition", type = CONDITION_BLEEDING, interval = 2000, chance = 20, minDamage = -2000, maxDamage = -2000, length = 9, spread = 3, effect = CONST_ME_BLOCKHIT, target = false }
+	{ name = "condition", type = CONDITION_BLEEDING, interval = 2000, chance = 20, minDamage = -2000, maxDamage = -2000, length = 9, spread = 3, effect = CONST_ME_BLOCKHIT, target = false },
 }
 
 monster.defenses = {
 	defense = 70,
 	armor = 70,
-	{ name = "time guardian lost time", interval = 2000, chance = 10, target = false }
+	--	mitigation = ???,
+	{ name = "time guardian lost time", interval = 2000, chance = 10, target = false },
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 70 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 70 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 70 },
-	{ type = COMBAT_FIREDAMAGE, percent = -40 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = -1 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 70 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 70 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 70 }
+	{ type = COMBAT_ICEDAMAGE, percent = -100 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.heals = {
-	{ type = COMBAT_ICEDAMAGE, percent = 100 }
+	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -136,13 +136,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

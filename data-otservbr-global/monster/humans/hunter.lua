@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 120,
 	lookFeet = 115,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 11
@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "North of Mount Sternum, Plains of Havoc, Outlaw Camp, Dark Cathedral, Femor Hills, \z
 		Maze of Lost Souls, north of the Amazon Camp, at the entrance and in the Hero Cave, \z
-		a castle tower at Elvenbane, Trade Quarter, Smuggler camp on Tyrsung, Formorgar Mines."
+		a castle tower at Elvenbane, Trade Quarter, Smuggler camp on Tyrsung, Formorgar Mines.",
 }
 
 monster.health = 150
@@ -37,7 +37,7 @@ monster.manaCost = 530
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -61,21 +61,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Guess who we're hunting, hahaha!", yell = false },
 	{ text = "Guess who we are hunting!", yell = false },
+	{ text = "Guess who we're hunting, hahaha!", yell = false },
 	{ text = "Bullseye!", yell = false },
-	{ text = "You'll make a nice trophy!", yell = false }
+	{ text = "You'll make a nice trophy!", yell = false },
 }
 
 monster.loot = {
@@ -90,22 +90,23 @@ monster.loot = {
 	{ id = 3449, chance = 5360, maxCount = 3 }, -- burst arrow
 	{ name = "orange", chance = 20300, maxCount = 2 },
 	{ name = "roll", chance = 11370, maxCount = 2 },
-	{ name = "sniper gloves", chance = 610 },
+	{ name = "sniper gloves", chance = 540 },
 	{ name = "slingshot", chance = 120 },
 	{ id = 7394, chance = 190 }, -- wolf trophy
 	{ id = 7397, chance = 520 }, -- deer trophy
 	{ id = 7400, chance = 70 }, -- lion trophy
-	{ name = "hunter's quiver", chance = 10240 }
+	{ name = "hunter's quiver", chance = 10240 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -20 },
-	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -100, range = 7, shootEffect = CONST_ANI_ARROW, target = false }
+	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -100, range = 7, shootEffect = CONST_ANI_ARROW, target = false },
 }
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 8,
+	mitigation = 0.25,
 }
 
 monster.elements = {
@@ -118,14 +119,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

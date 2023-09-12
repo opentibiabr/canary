@@ -7,8 +7,7 @@ for i = 60, 75 do
 	local condition1 = Condition(CONDITION_ATTRIBUTES)
 	condition1:setParameter(CONDITION_PARAM_TICKS, 7000)
 	condition1:setParameter(CONDITION_PARAM_SKILL_MELEEPERCENT, i)
-	condition1:setParameter(CONDITION_PARAM_SKILL_FISTPERCENT, i)
-	condition1:setParameter(CONDITION_PARAM_SKILL_SHIELDPERCENT, i)
+	condition1:setParameter(CONDITION_PARAM_SKILL_DEFENSEPERCENT, i)
 
 	local condition2 = Condition(CONDITION_ATTRIBUTES)
 	condition2:setParameter(CONDITION_PARAM_TICKS, 7000)
@@ -17,7 +16,7 @@ for i = 60, 75 do
 	local condition3 = Condition(CONDITION_ATTRIBUTES)
 	condition3:setParameter(CONDITION_PARAM_TICKS, 7000)
 	condition3:setParameter(CONDITION_PARAM_SKILL_DISTANCEPERCENT, i)
-	condition3:setParameter(CONDITION_PARAM_SKILL_SHIELDPERCENT, i)
+	condition3:setParameter(CONDITION_PARAM_SKILL_DEFENSEPERCENT, i)
 
 	arr = {
 		{ 0, 0, 0, 1, 1, 1, 0, 0, 0 },
@@ -28,12 +27,11 @@ for i = 60, 75 do
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		{ 0, 1, 1, 1, 1, 1, 1, 1, 0 },
 		{ 0, 0, 1, 1, 1, 1, 1, 0, 0 },
-		{ 0, 0, 0, 1, 1, 1, 0, 0, 0 }
+		{ 0, 0, 0, 1, 1, 1, 0, 0, 0 },
 	}
 
 	local area = createCombatArea(arr)
 	combat[i]:setArea(area)
-
 
 	function onTargetTile(creature, pos)
 		local creatureTable = {}
@@ -41,7 +39,8 @@ for i = 60, 75 do
 		if n ~= 0 then
 			local v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 			while v ~= 0 do
-				if isCreature(v) == true then
+				local creatureFromPos = Creature(v)
+				if creatureFromPos then
 					table.insert(creatureTable, v)
 					if n == #creatureTable then
 						break
@@ -55,18 +54,15 @@ for i = 60, 75 do
 			for r = 1, #creatureTable do
 				if creatureTable[r] ~= creature then
 					local player = Player(creatureTable[r])
-					local vocationClientId = player:getVocation():getBaseId()
-
-					if isPlayer(creatureTable[r]) == true
-							and table.contains({ VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID }, vocationClientId) then
-						player:addCondition(condition2)
-					elseif isPlayer(creatureTable[r]) == true
-							and table.contains({ VOCATION.BASE_ID.PALADIN }, vocationClientId) then
-						player:addCondition(condition3)
-					elseif isPlayer(creatureTable[r]) == true
-							and table.contains({ VOCATION.BASE_ID.KNIGHT }, vocationClientId) then
-						player:addCondition(condition1)
-					elseif isMonster(creatureTable[r]) == true then
+					if player then
+						local vocationClientId = player:getVocation():getBaseId()
+						if table.contains({ VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID }, vocationClientId) then
+							player:addCondition(condition2)
+						elseif table.contains({ VOCATION.BASE_ID.PALADIN }, vocationClientId) then
+							player:addCondition(condition3)
+						elseif table.contains({ VOCATION.BASE_ID.KNIGHT }, vocationClientId) then
+							player:addCondition(condition1)
+						end
 					end
 				end
 			end

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1260
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Otherworld."
+	Locations = "Otherworld",
 }
 
 monster.health = 4500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 25
+	chance = 25,
 }
 
 monster.strategiesTarget = {
@@ -61,19 +61,19 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = true,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Whirr!", yell = false }
+	{ text = "Whirr!", yell = false },
 }
 
 monster.loot = {
@@ -83,7 +83,7 @@ monster.loot = {
 	{ id = 23545, chance = 15000 }, -- energy drink
 	{ id = 23535, chance = 15000 }, -- energy bar
 	{ id = 23519, chance = 15000 }, -- frozen lightning
-	{ id = 23516, chance = 15000 }, -- instable proto matter
+	{ id = 23516, chance = 8000 }, -- instable proto matter
 	{ id = 7642, chance = 14000 }, -- great spirit potion
 	{ id = 7643, chance = 13500 }, -- ultimate health potion
 	{ id = 238, chance = 12700 }, -- great mana potion
@@ -99,7 +99,7 @@ monster.loot = {
 	{ id = 23533, chance = 450 }, -- ring of red plasma
 	{ id = 23542, chance = 230 }, -- collar of blue plasma
 	{ id = 23543, chance = 230 }, -- collar of green plasma
-	{ id = 23529, chance = 230 } -- ring of blue plasma
+	{ id = 23529, chance = 230 }, -- ring of blue plasma
 }
 
 monster.attacks = {
@@ -107,13 +107,14 @@ monster.attacks = {
 	-- energy damage
 	{ name = "condition", type = CONDITION_ENERGY, interval = 2000, chance = 20, minDamage = -400, maxDamage = -600, radius = 5, effect = CONST_ME_ENERGYHIT, target = false },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = -250, maxDamage = -400, range = 4, radius = 4, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true },
-	{ name = "dread intruder wave", interval = 2000, chance = 25, minDamage = -350, maxDamage = -550, target = false }
+	{ name = "dread intruder wave", interval = 2000, chance = 25, minDamage = -350, maxDamage = -550, target = false },
 }
 
 monster.defenses = {
 	defense = 50,
 	armor = 50,
-	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 80, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false }
+	mitigation = 1.54,
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 80, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -126,14 +127,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 80 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 80 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = true },
+	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -5,11 +5,15 @@ setmetatable(Lever, {
 		local lever_data = {
 			positions = {},
 			info_positions = nil,
-			condition = function() return true end,
-			teleport_player_func = function() return true end,
+			condition = function()
+				return true
+			end,
+			teleport_player_func = function()
+				return true
+			end,
 		}
 		return setmetatable(lever_data, { __index = Lever })
-	end
+	end,
 })
 
 ---@return table
@@ -175,10 +179,12 @@ function Lever.setStorageAllPlayers(self, key, value) -- Will set storage on all
 	end
 
 	for i, v in pairs(info) do
-		local player = v.creature
-		if player then
-			player:setStorageValue(key, value)
-			player:sendBosstiaryCooldownTimer()
+		if v.creature then
+			local player = v.creature:getPlayer()
+			if player then
+				player:setStorageValue(key, value)
+				player:sendBosstiaryCooldownTimer()
+			end
 		end
 	end
 end

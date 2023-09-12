@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 21
+	lookType = 21,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -61,41 +61,41 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'spy report') then
+	if MsgContains(message, "spy report") then
 		local reportProgress = player:getStorageValue(Storage.DjinnWar.MaridFaction.RataMari)
 		if reportProgress < 1 then
 			npcHandler:say({
-				'You have come for the report? Great! I have been working hard on it during the last months. And nobody came to pick it up. I thought everybody had forgotten about me! ...',
-				'Do you have any idea how difficult it is to hold a pen when you have claws instead of hands? ...',
-				'But - you know - now I have worked so hard on this report I somehow don\'t want to part with it. At least not without some decent payment. ...',
-				'All right - listen - I know Fa\'hradin would not approve of this, but I can\'t help it. I need some cheese! I need it now! ...',
-				'And I will not give the report to you until you get me some! Meep!'
+				"You have come for the report? Great! I have been working hard on it during the last months. And nobody came to pick it up. I thought everybody had forgotten about me! ...",
+				"Do you have any idea how difficult it is to hold a pen when you have claws instead of hands? ...",
+				"But - you know - now I have worked so hard on this report I somehow don't want to part with it. At least not without some decent payment. ...",
+				"All right - listen - I know Fa'hradin would not approve of this, but I can't help it. I need some cheese! I need it now! ...",
+				"And I will not give the report to you until you get me some! Meep!",
 			}, npc, creature)
 			player:setStorageValue(Storage.DjinnWar.MaridFaction.RataMari, 1)
 		elseif reportProgress == 1 then
-			npcHandler:say('Ok, have you brought me the cheese, I\'ve asked for?', npc, creature)
+			npcHandler:say("Ok, have you brought me the cheese, I've asked for?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		else
-			npcHandler:say('I already gave you the report. I\'m not going to write another one!', npc, creature)
+			npcHandler:say("I already gave you the report. I'm not going to write another one!", npc, creature)
 		end
 	elseif npcHandler:getTopic(playerId) == 1 then
-		if MsgContains(message, 'yes') then
+		if MsgContains(message, "yes") then
 			if not player:removeItem(3607, 1) then
-				npcHandler:say('No cheese - no report.', npc, creature)
+				npcHandler:say("No cheese - no report.", npc, creature)
 				return true
 			end
 			player:setStorageValue(Storage.DjinnWar.MaridFaction.RataMari, 2)
 			player:addItem(3232, 1)
-			npcHandler:say('Meep! Meep! Great! Here is the spyreport for you!', npc, creature)
+			npcHandler:say("Meep! Meep! Great! Here is the spyreport for you!", npc, creature)
 		else
-			npcHandler:say('No cheese - no report.', npc, creature)
+			npcHandler:say("No cheese - no report.", npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
 	end
 	return true
 end
 
-keywordHandler:addKeyword({ 'rat' }, StdModule.say, { npcHandler = npcHandler, text = 'Your power of observation is stunning. Yes, I\'m a rat.' })
+keywordHandler:addKeyword({ "rat" }, StdModule.say, { npcHandler = npcHandler, text = "Your power of observation is stunning. Yes, I'm a rat." })
 
 -- Greeting message
 keywordHandler:addGreetKeyword({ "piedpiper" }, { npcHandler = npcHandler, text = "Meep? I mean - hello! Sorry, |PLAYERNAME|... Being a {rat} has kind of grown on me." })

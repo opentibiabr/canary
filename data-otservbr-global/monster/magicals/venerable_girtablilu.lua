@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 114,
 	lookFeet = 2,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2098
@@ -22,8 +22,8 @@ monster.Bestiary = {
 	SecondUnlock = 1000,
 	CharmsPoints = 50,
 	Stars = 4,
-	Occurrence = 1,
-	Locations = "Ruins of Nuur"
+	Occurrence = 0,
+	Locations = "Ruins of Nuur",
 }
 
 monster.health = 8500
@@ -31,10 +31,11 @@ monster.maxHealth = 8500
 monster.race = "blood"
 monster.corpse = 36963
 monster.speed = 180
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -58,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -96,7 +97,7 @@ monster.loot = {
 	{ name = "wood cape", chance = 1340 },
 	{ name = "necrotic rod", chance = 1040 },
 	{ name = "springsprout rod", chance = 1040 },
-	{ name = "wand of decay", chance = 1040 }
+	{ name = "wand of decay", chance = 1040 },
 }
 
 monster.attacks = {
@@ -110,7 +111,8 @@ monster.attacks = {
 monster.defenses = {
 	defense = 80,
 	armor = 80,
-	{ name = "speed", interval = 1000, chance = 10, speedChange = 160, effect = CONST_ME_POFF, target = false, duration = 4000 }
+	mitigation = 2.16,
+	{ name = "speed", interval = 1000, chance = 10, speedChange = 160, effect = CONST_ME_POFF, target = false, duration = 4000 },
 }
 
 monster.elements = {
@@ -123,15 +125,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
-
 
 mType:register(monster)

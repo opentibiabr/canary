@@ -21,8 +21,9 @@ local function doCheckArea()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
+						for _, creature in pairs(creatures) do
+							local player = Player(creature)
+							if player then
 								return true
 							end
 						end
@@ -46,11 +47,14 @@ local function clearArea()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
-								c:teleportTo({ x = 32225, y = 31347, z = 11 })
-							elseif isMonster(c) then
-								c:remove()
+						for _, creatureUid in pairs(creatures) do
+							local creature = Creature(creatureUid)
+							if creature then
+								if creature:isPlayer() then
+									creature:teleportTo({ x = 32225, y = 31347, z = 11 })
+								elseif creature:isMonster() then
+									creature:remove()
+								end
 							end
 						end
 					end
@@ -140,7 +144,7 @@ function heartDestructionSparks.onUse(player, item, fromPosition, itemEx, toPosi
 			Position(32227, 31344, 11),
 			Position(32227, 31345, 11),
 			Position(32227, 31346, 11),
-			Position(32227, 31347, 11)
+			Position(32227, 31347, 11),
 		},
 
 		newPos = { x = 32151, y = 31301, z = 14 },
@@ -151,11 +155,14 @@ function heartDestructionSparks.onUse(player, item, fromPosition, itemEx, toPosi
 	if item.actionid == 14328 then
 		if item.itemid == 8911 then
 			if player:getPosition().x == pushPos.x and player:getPosition().y == pushPos.y and player:getPosition().z == pushPos.z then
-				local storePlayers, playerTile = {}
+				local storePlayers = {}
 				for i = 1, #config.playerPositions do
-					playerTile = Tile(config.playerPositions[i]):getTopCreature()
-					if isPlayer(playerTile) then
-						storePlayers[#storePlayers+1] = playerTile
+					local tile = Tile(Position(config.playerPositions[i]))
+					if tile then
+						local playerTile = tile:getTopCreature()
+						if playerTile and playerTile:isPlayer() then
+							storePlayers[#storePlayers + 1] = playerTile
+						end
 					end
 				end
 

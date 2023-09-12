@@ -15,17 +15,17 @@ npcConfig.outfit = {
 	lookHead = 0,
 	lookBody = 21,
 	lookLegs = 20,
-	lookFeet = 39
+	lookFeet = 39,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Passage to {Kazordoon}.' }
+	{ text = "Passage to {Kazordoon}." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -57,19 +57,19 @@ end
 
 -- Travel
 local function addTravelKeyword(keyword, cost, destination, action)
-	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = 'Do you seek a passage to ' .. keyword:titleCase() .. ' for |TRAVELCOST|?', cost = cost, discount = 'postman' })
-	travelKeyword:addChildKeyword({ 'yes' }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = cost, discount = 'postman', destination = destination }, nil, action)
-	travelKeyword:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, text = 'We would like to serve you some time.', reset = true })
+	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "Do you seek a passage to " .. keyword:titleCase() .. " for |TRAVELCOST|?", cost = cost, discount = "postman" })
+	travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = cost, discount = "postman", destination = destination }, nil, action)
+	travelKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "We would like to serve you some time.", reset = true })
 end
 
-addTravelKeyword('kazordoon', 0, Position(32699, 31993, 14))
+addTravelKeyword("kazordoon", 0, Position(32699, 31993, 14))
 -- Basic
-keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = 'My name is Rapanaio from the Royal Tibia Line.' })
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = 'I am the captain of this sailing-ship.' })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Rapanaio from the Royal Tibia Line." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am the captain of this sailing-ship." })
 
-npcHandler:setMessage(MESSAGE_GREET, 'Welcome on board, |PLAYERNAME|. I can travel you to {kazordoon}.')
-npcHandler:setMessage(MESSAGE_FAREWELL, 'Good bye. Recommend us if you were satisfied with our service.')
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Good bye then.')
+npcHandler:setMessage(MESSAGE_GREET, "Welcome on board, |PLAYERNAME|. I can travel you to {kazordoon}.")
+npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye. Recommend us if you were satisfied with our service.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye then.")
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 100,
 	lookLegs = 100,
 	lookFeet = 115,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Selling herbs, mushrooms and flowers, all picked under the light of the full moon!' }
+	{ text = "Selling herbs, mushrooms and flowers, all picked under the light of the full moon!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -56,7 +56,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({ 'offers' }, StdModule.say, { npcHandler = npcHandler, text = "I'm selling various herbs, mushrooms, and flowers. If you'd like to see my offers, ask me for a {trade}." })
+keywordHandler:addKeyword({ "offers" }, StdModule.say, { npcHandler = npcHandler, text = "I'm selling various herbs, mushrooms, and flowers. If you'd like to see my offers, ask me for a {trade}." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, traveller. Maybe you'd like to take a look at my {offers}...")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Goodbye, traveller.")
@@ -94,7 +94,7 @@ npcConfig.shop = {
 	{ itemName = "trollroot", clientId = 11515, sell = 50 },
 	{ itemName = "tulip", clientId = 3668, buy = 9 },
 	{ itemName = "white mushroom", clientId = 3723, buy = 6 },
-	{ itemName = "wood mushroom", clientId = 3727, sell = 15 }
+	{ itemName = "wood mushroom", clientId = 3727, sell = 15 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -105,7 +105,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

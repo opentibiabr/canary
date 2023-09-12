@@ -4,7 +4,7 @@ local function revertHorror()
 	local specs, spec = Game.getSpectators(Position(32269, 31091, 14), false, false, 12, 12, 12, 12)
 	for i = 1, #specs do
 		spec = specs[i]
-		if spec:isMonster() and spec:getName():lower() == 'melting frozen horror' then
+		if spec:isMonster() and spec:getName():lower() == "melting frozen horror" then
 			health = spec:getHealth()
 			pos = spec:getPosition()
 			spec:teleportTo(Position(32267, 31071, 14))
@@ -27,7 +27,7 @@ local function changeHorror()
 	local specs, spec = Game.getSpectators(Position(32269, 31091, 14), false, false, 12, 12, 12, 12)
 	for i = 1, #specs do
 		spec = specs[i]
-		if spec:isMonster() and spec:getName():lower() == 'solid frozen horror' then
+		if spec:isMonster() and spec:getName():lower() == "solid frozen horror" then
 			pos = spec:getPosition()
 			spec:teleportTo(Position(32267, 31071, 14))
 			melting:teleportTo(pos)
@@ -49,7 +49,7 @@ dragonEggPrepareDeath:register()
 
 local dragonEggHealthChange = CreatureEvent("DragonEggHealthChange")
 function dragonEggHealthChange.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)
-	if creature:getName():lower() == 'dragon egg' then
+	if creature:getName():lower() == "dragon egg" then
 		if primaryType == COMBAT_HEALING then
 			doTargetCombatHealth(0, creature, COMBAT_ICEDAMAGE, -primaryDamage, -primaryDamage, CONST_ME_MAGIC_GREEN)
 			return true
@@ -58,7 +58,7 @@ function dragonEggHealthChange.onHealthChange(creature, attacker, primaryDamage,
 			primaryType = COMBAT_HEALING
 			creature:addHealth(primaryDamage, true)
 			if creature:getHealth() == creature:getMaxHealth() then
-				creature:say('The egg sends out a fiery eruption!\n Weakening the frozen horror significantly!', TALKTYPE_MONSTER_SAY)
+				creature:say("The egg sends out a fiery eruption!\n Weakening the frozen horror significantly!", TALKTYPE_MONSTER_SAY)
 				doTargetCombatHealth(0, creature, COMBAT_ICEDAMAGE, -4500, -4500, CONST_ME_MAGIC_GREEN)
 				changeHorror()
 			end

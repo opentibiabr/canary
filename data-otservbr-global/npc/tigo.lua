@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 6,
 	lookLegs = 121,
 	lookFeet = 120,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -69,7 +69,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	-- Começou a quest
 	if MsgContains(message, "barkless") and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:say({ "You are now one of us. Learn to endure this world's suffering in every facet and take delight in the soothing eternity that waits for the {purest} of us on the other side." }, npc, creature)
@@ -87,19 +86,21 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, 2)
 		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, "trial") and npcHandler:getTopic(playerId) == 3 then
-		npcHandler:say({ "The trial consists of three steps. The trial of tar, where you will suffer unbearable heat and embrace the stigma of misfortune. ...",
+		npcHandler:say({
+			"The trial consists of three steps. The trial of tar, where you will suffer unbearable heat and embrace the stigma of misfortune. ...",
 			"The trial of sulphur, where you will bathe in burning sulphur and embrace the stigma of vanity. Then, there is the trial of purification. The truest of us will be purified to face judgement from the {Penitent}.",
 			"To purge your soul, your body will have to be near absolute zero, the point where life becomes impossible. ...",
 			"Something about you is different.  I know that you will find a way to return even if you should die during the purification. And if you do... Leiden will become aware of you and retreat. ...",
 			"If he does, follow him into his own chambers. Barkless are neither allowed to go near the throne room, aside from being judged, nor can we actually enter it.",
-			"He should be easy to defeat with his back to the wall, find him - and delvier us from whatever became of the Penitent." }, npc, creature)
+			"He should be easy to defeat with his back to the wall, find him - and delvier us from whatever became of the Penitent.",
+		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 		npcHandler:setTopic(playerId, 0)
 	end
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Well, bye then.')
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)

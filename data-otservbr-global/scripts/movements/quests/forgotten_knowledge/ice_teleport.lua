@@ -1,8 +1,8 @@
 local destination = {
 	[26667] = {
 		position = Position(32273, 31053, 13),
-		storage = Storage.ForgottenKnowledge.AccessMachine
-	}
+		storage = Storage.ForgottenKnowledge.AccessMachine,
+	},
 }
 
 local iceTeleport = MoveEvent()

@@ -1,4 +1,4 @@
-local mType = Game.createMonsterType("The Source Of Corruption")
+local mType = Game.createMonsterType("The Source of Corruption")
 local monster = {}
 
 monster.description = "The Source Of Corruption"
@@ -10,7 +10,13 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
+}
+
+monster.bosstiary = {
+	bossRaceId = 1500,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.CultsOfTibia.FinalBoss.BossTimer,
 }
 
 monster.health = 500000
@@ -22,13 +28,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 20
-}
-
-monster.bosstiary = {
-	bossRaceId = 1500,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.CultsOfTibia.FinalBoss.BossTimer
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -55,12 +55,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -68,17 +68,17 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1500 },
-	{ name = "source of corruption wave", interval = 2000, chance = 15, target = false }
+	{ name = "source of corruption wave", interval = 2000, chance = 15, target = false },
 }
 
 monster.defenses = {
 	defense = 30,
-	armor = 30
+	armor = 30,
+	--	mitigation = ???,
 }
 
 monster.reflects = {
@@ -91,7 +91,7 @@ monster.reflects = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 15 },
 	{ type = COMBAT_ICEDAMAGE, percent = 15 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 15 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 15 },
 }
 
 monster.elements = {
@@ -104,18 +104,17 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -123,13 +122,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

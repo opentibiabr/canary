@@ -7,7 +7,7 @@ arr = {
 	{ 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
-	{ 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0 }
+	{ 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0 },
 }
 
 local area = createCombatArea(arr)
@@ -18,8 +18,7 @@ function onTargetCreature(creature, target)
 	local max = 700
 
 	local master = target:getMaster()
-	if target:isPlayer() and not master
-			or master and master:isPlayer() then
+	if target:isPlayer() and not master or master and master:isPlayer() then
 		doTargetCombatHealth(0, target, COMBAT_ICEDAMAGE, min, max, CONST_ME_NONE)
 		return true
 	end

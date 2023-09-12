@@ -10,7 +10,13 @@ monster.outfit = {
 	lookLegs = 113,
 	lookFeet = 113,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
+}
+
+monster.bosstiary = {
+	bossRaceId = 2103,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Kilmaresh.AmenefTimer,
 }
 
 monster.health = 26000
@@ -22,13 +28,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 2103,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Kilmaresh.AmenefTimer
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -41,7 +41,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -52,12 +52,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -94,7 +94,7 @@ monster.loot = {
 	{ name = "noble axe", chance = 127 },
 	{ name = "sacred tree amulet", chance = 127 },
 	{ name = "golden mask", chance = 63 },
-	{ name = "mercenary sword", chance = 63 }
+	{ name = "mercenary sword", chance = 63 },
 }
 
 monster.attacks = {
@@ -102,12 +102,13 @@ monster.attacks = {
 	{ name = "firering", interval = 2000, chance = 10, minDamage = -300, maxDamage = -600, target = false },
 	{ name = "firex", interval = 2000, chance = 15, minDamage = -450, maxDamage = -750, target = false },
 	{ name = "combat", interval = 2000, chance = 17, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -600, radius = 2, effect = CONST_ME_FIREATTACK, target = false },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -500, maxDamage = -750, length = 3, spread = 0, effect = CONST_ME_ENERGYHIT, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -500, maxDamage = -750, length = 3, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },
 }
 
 monster.defenses = {
 	defense = 60,
 	armor = 82,
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -120,14 +121,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

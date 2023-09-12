@@ -6,7 +6,7 @@ for i = 1, 40 do
 
 	local condition = Condition(CONDITION_ATTRIBUTES)
 	condition:setParameter(CONDITION_PARAM_TICKS, 4000)
-	condition:setParameter(CONDITION_PARAM_SKILL_SHIELDPERCENT, i)
+	condition:setParameter(CONDITION_PARAM_SKILL_DEFENSEPERCENT, i)
 
 	local area = createCombatArea({
 		{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
@@ -23,7 +23,7 @@ for i = 1, 40 do
 		{ 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0 },
 		{ 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0 },
 		{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0 }
+		{ 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0 },
 	})
 
 	combat[i]:setArea(area)

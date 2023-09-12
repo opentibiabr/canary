@@ -4,8 +4,7 @@ local dryadPos = {
 	[33331] = Position(33202, 32012, 11),
 
 	-- exit
-	[33332] = Position(33264, 32012, 7)
-
+	[33332] = Position(33264, 32012, 7),
 }
 
 local dryadAction = Action()

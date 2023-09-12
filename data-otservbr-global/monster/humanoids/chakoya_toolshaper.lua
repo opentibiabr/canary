@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 328
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Inukaya, Chyllfroest, Chakoya Iceberg."
+	Locations = "Inukaya, Chyllfroest, Chakoya Iceberg.",
 }
 
 monster.health = 80
@@ -31,11 +31,11 @@ monster.maxHealth = 80
 monster.race = "blood"
 monster.corpse = 7320
 monster.speed = 68
-monster.manaCost = 0
+monster.manaCost = 305
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -50,21 +50,21 @@ monster.flags = {
 	pushable = false,
 	rewardBoss = false,
 	illusionable = false,
-	canPushItems = true,
+	canPushItems = false,
 	canPushCreatures = false,
 	staticAttackChance = 80,
 	targetDistance = 1,
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = true,
-	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnEnergy = false,
+	canWalkOnFire = false,
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -73,7 +73,7 @@ monster.voices = {
 	{ text = "Chikuva!", yell = false },
 	{ text = "Jinuma jamjam!", yell = false },
 	{ text = "Suvituka siq chuqua!", yell = false },
-	{ text = "Kiyosa sipaju!", yell = false }
+	{ text = "Kiyosa sipaju!", yell = false },
 }
 
 monster.loot = {
@@ -87,17 +87,18 @@ monster.loot = {
 	{ name = "green perch", chance = 70 },
 	{ name = "mammoth whopper", chance = 160 },
 	{ id = 7441, chance = 450 }, -- ice cube
-	{ name = "fireproof horn", chance = 390 }
+	{ name = "fireproof horn", chance = 390 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -45, range = 7, radius = 3, shootEffect = CONST_ANI_SMALLSTONE, target = true }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -45, range = 7, radius = 3, shootEffect = CONST_ANI_SMALLSTONE, target = true },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 7,
+	mitigation = 0.23,
 }
 
 monster.elements = {
@@ -110,14 +111,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -7,8 +7,7 @@ local config = {
 	[6] = Position(33482, 32234, 10),
 	[7] = Position(33492, 32234, 10),
 	[8] = Position(33491, 32227, 10),
-	[9] = Position(33492, 32226, 10)
-
+	[9] = Position(33492, 32226, 10),
 }
 
 local cultsOfTibiaCounter = Action()

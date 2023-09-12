@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 95,
 	lookFeet = 115,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 372
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Magician Tower, Dark Cathedral, Hero Cave, Magician Quarter."
+	Locations = "Magician Tower, Dark Cathedral, Hero Cave, Magician Quarter.",
 }
 
 monster.health = 225
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -59,21 +59,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Outch!", yell = false },
+	{ text = "I must dispose of my masters enemies!", yell = false },
 	{ text = "Oops, I did it again.", yell = false },
 	{ text = "From the spirits that I called Sir, deliver me!", yell = false },
-	{ text = "I must dispose of my masters enemies!", yell = false }
 }
 
 monster.loot = {
@@ -83,7 +83,7 @@ monster.loot = {
 	{ name = "blank rune", chance = 8125, maxCount = 3 },
 	{ name = "health potion", chance = 2900 },
 	{ name = "mana potion", chance = 2980 },
-	{ name = "reins", chance = 10 }
+	{ name = "reins", chance = 10 },
 }
 
 monster.attacks = {
@@ -92,14 +92,15 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -10, maxDamage = -20, range = 7, shootEffect = CONST_ANI_ENERGY, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -24, range = 7, shootEffect = CONST_ANI_SMALLSTONE, target = false },
 	{ name = "outfit", interval = 2000, chance = 1, range = 3, shootEffect = CONST_ANI_EXPLOSION, target = true, duration = 2000, outfitMonster = "cyclops" },
-	{ name = "outfit", interval = 2000, chance = 1, radius = 4, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 2000, outfitItem = 2324 }
+	{ name = "outfit", interval = 2000, chance = 1, radius = 4, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 2000, outfitItem = 2324 },
 }
 
 monster.defenses = {
 	defense = 15,
-	armor = 15,
+	armor = 16,
+	mitigation = 0.30,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 30, maxDamage = 40, effect = CONST_ME_MAGIC_GREEN, target = false },
-	{ name = "outfit", interval = 2000, chance = 5, target = true, duration = 3000, outfitMonster = "green frog" }
+	{ name = "outfit", interval = 2000, chance = 5, target = true, duration = 3000, outfitMonster = "green frog" },
 }
 
 monster.elements = {
@@ -112,14 +113,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 50
@@ -18,11 +18,11 @@ monster.maxHealth = 50
 monster.race = "undead"
 monster.corpse = 5972
 monster.speed = 73
-monster.manaCost = 0
+monster.manaCost = 300
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -30,10 +30,10 @@ monster.strategiesTarget = {
 }
 
 monster.flags = {
-	summonable = false,
+	summonable = true,
 	attackable = true,
 	hostile = true,
-	convinceable = false,
+	convinceable = true,
 	pushable = true,
 	rewardBoss = false,
 	illusionable = true,
@@ -44,14 +44,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -69,17 +69,18 @@ monster.loot = {
 	{ id = 3378, chance = 2920 }, -- studded armor
 	{ id = 3264, chance = 6100 }, -- sword
 	{ id = 2920, chance = 10610 }, -- torch
-	{ id = 3367, chance = 3980 } -- viking helmet
+	{ id = 3367, chance = 3980 }, -- viking helmet
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 10, attack = 18 },
-	{ name = "combat", interval = 2000, chance = 8, type = COMBAT_LIFEDRAIN, minDamage = -7, maxDamage = -13, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, target = false }
+	{ name = "combat", interval = 2000, chance = 8, type = COMBAT_LIFEDRAIN, minDamage = -7, maxDamage = -13, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, target = false },
 }
 
 monster.defenses = {
 	defense = 9,
-	armor = 2
+	armor = 2,
+	mitigation = 0.23,
 }
 
 monster.elements = {
@@ -92,14 +93,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

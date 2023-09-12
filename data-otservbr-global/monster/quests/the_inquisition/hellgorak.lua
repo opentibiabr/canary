@@ -10,7 +10,12 @@ monster.outfit = {
 	lookLegs = 3,
 	lookFeet = 80,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
+}
+
+monster.bosstiary = {
+	bossRaceId = 403,
+	bossRace = RARITY_BANE,
 }
 
 monster.health = 25850
@@ -22,12 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
-}
-
-monster.bosstiary = {
-	bossRaceId = 403,
-	bossRace = RARITY_BANE
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -43,7 +43,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -52,14 +52,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -70,7 +70,7 @@ monster.voices = {
 	{ text = "No man can defeat me!", yell = false },
 	{ text = "Your puny skills are no match for me.", yell = false },
 	{ text = "I smell your fear.", yell = false },
-	{ text = "Delicious!", yell = false }
+	{ text = "Delicious!", yell = false },
 }
 
 monster.loot = {
@@ -117,7 +117,7 @@ monster.loot = {
 	{ id = 8051, chance = 450 }, -- voltage armor
 	{ id = 8090, chance = 300 }, -- spellbook of dark mysteries
 	{ id = 3019, chance = 150 }, -- demonbone amulet
-	{ id = 3303, chance = 100 } -- great axe
+	{ id = 3303, chance = 100 }, -- great axe
 }
 
 monster.attacks = {
@@ -125,13 +125,14 @@ monster.attacks = {
 	{ name = "combat", interval = 1000, chance = 11, type = COMBAT_ENERGYDAMAGE, minDamage = -250, maxDamage = -819, length = 8, spread = 3, effect = CONST_ME_PURPLEENERGY, target = false },
 	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_MANADRAIN, minDamage = -90, maxDamage = -500, radius = 5, effect = CONST_ME_STUN, target = false },
 	{ name = "combat", interval = 1000, chance = 11, type = COMBAT_FIREDAMAGE, minDamage = -50, maxDamage = -520, radius = 5, effect = CONST_ME_FIREAREA, target = true },
-	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_LIFEDRAIN, minDamage = 0, maxDamage = -150, radius = 7, effect = CONST_ME_POFF, target = false }
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_LIFEDRAIN, minDamage = 0, maxDamage = -150, radius = 7, effect = CONST_ME_POFF, target = false },
 }
 
 monster.defenses = {
 	defense = 65,
 	armor = 70,
-	{ name = "combat", interval = 1000, chance = 11, type = COMBAT_HEALING, minDamage = 400, maxDamage = 900, effect = CONST_ME_MAGIC_GREEN, target = false }
+	--	mitigation = ???,
+	{ name = "combat", interval = 1000, chance = 11, type = COMBAT_HEALING, minDamage = 400, maxDamage = 900, effect = CONST_ME_MAGIC_GREEN, target = false },
 }
 
 monster.elements = {
@@ -141,17 +142,17 @@ monster.elements = {
 	{ type = COMBAT_FIREDAMAGE, percent = 98 },
 	{ type = COMBAT_LIFEDRAIN, percent = 100 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = -305 },
+	{ type = COMBAT_DROWNDAMAGE, percent = -205 },
 	{ type = COMBAT_ICEDAMAGE, percent = 98 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 95 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 98 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 98 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 116
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "In Banuta, northeast of Port Hope, Arena and Zoo Quarter."
+	Locations = "In Banuta, northeast of Port Hope, Arena and Zoo Quarter.",
 }
 
 monster.health = 340
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -59,20 +59,20 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Hugah!", yell = false },
 	{ text = "Ungh! Ungh!", yell = false },
-	{ text = "Huaauaauaauaa!", yell = false }
+	{ text = "Hugah!", yell = false },
+	{ text = "Huaauaauaauaa!", yell = false },
 }
 
 monster.loot = {
@@ -84,17 +84,18 @@ monster.loot = {
 	{ name = "banana", chance = 30000, maxCount = 12 },
 	{ name = "ape fur", chance = 980 },
 	{ name = "health potion", chance = 570 },
-	{ name = "kongra's shoulderpad", chance = 4900 }
+	{ name = "kongra's shoulderpad", chance = 4900 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -60 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -60 },
 }
 
 monster.defenses = {
 	defense = 20,
-	armor = 20,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 260, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000 }
+	armor = 18,
+	mitigation = 0.36,
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 260, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000 },
 }
 
 monster.elements = {
@@ -107,14 +108,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -15 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

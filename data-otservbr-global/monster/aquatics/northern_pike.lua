@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 783
@@ -21,9 +21,9 @@ monster.Bestiary = {
 	FirstUnlock = 5,
 	SecondUnlock = 10,
 	CharmsPoints = 1,
-	Stars = 1,
+	Stars = 0,
 	Occurrence = 1,
-	Locations = "Fiehonja."
+	Locations = "Fiehonja.",
 }
 
 monster.health = 95
@@ -31,11 +31,11 @@ monster.maxHealth = 95
 monster.race = "undead"
 monster.corpse = 3580
 monster.speed = 105
-monster.manaCost = 0
+monster.manaCost = 315
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -46,11 +46,11 @@ monster.flags = {
 	summonable = false,
 	attackable = true,
 	hostile = true,
-	convinceable = false,
+	convinceable = true,
 	pushable = true,
 	rewardBoss = false,
 	illusionable = true,
-	canPushItems = true,
+	canPushItems = false,
 	canPushCreatures = true,
 	staticAttackChance = 95,
 	targetDistance = 1,
@@ -59,26 +59,25 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
-	chance = 25,
-	{ text = "Blub!", yell = false }
+	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.defenses = {
 	defense = 5,
-	armor = 9
+	armor = 9,
+	mitigation = 0.10,
 }
 
 monster.elements = {
@@ -91,14 +90,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

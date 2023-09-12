@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 96,
 	lookFeet = 114,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 322
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Ragnir, Krimhorn, Bittermor, and Fenrock."
+	Locations = "Ragnir, Krimhorn, Bittermor, and Fenrock.",
 }
 
 monster.health = 135
@@ -35,7 +35,7 @@ monster.manaCost = 450
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -75,7 +75,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "You will become my trophy.", yell = false },
 	{ text = "Fight harder, coward.", yell = false },
-	{ text = "Show that you are a worthy opponent.", yell = false }
+	{ text = "Show that you are a worthy opponent.", yell = false },
 }
 
 monster.loot = {
@@ -91,16 +91,17 @@ monster.loot = {
 	{ name = "crystal sword", chance = 100 },
 	{ name = "fur boots", chance = 100 },
 	{ name = "ragnir helmet", chance = 100 },
-	{ name = "health potion", chance = 100 }
+	{ name = "health potion", chance = 100 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -60 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -60 },
 }
 
 monster.defenses = {
 	defense = 0,
-	armor = 8
+	armor = 8,
+	mitigation = 0.33,
 }
 
 monster.elements = {
@@ -113,14 +114,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 50 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

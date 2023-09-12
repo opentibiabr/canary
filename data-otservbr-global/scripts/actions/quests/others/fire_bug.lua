@@ -9,12 +9,9 @@ local function revertAshes()
 	local tile = Tile(Position(32849, 32233, 9))
 	local item = tile:getItemById(1949)
 	if tile and item then
-		item:transform(3134)
-		local tileItemUid = Tile(Position(32849, 32233, 9))
-		local itemUid = tileItemUid:getItemById(3134)
-		if tileItemUid and itemUid then
-			itemUid:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, 2243)
-		end
+		item:remove()
+		local ashes = Game.createItem(3134, 1, Position(32849, 32233, 9))
+		ashes:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, 2243)
 	end
 end
 
@@ -26,7 +23,7 @@ local positions = {
 	Position(32849, 32231, 9),
 	Position(32850, 32231, 9),
 	Position(32848, 32232, 9),
-	Position(32849, 32232, 9)
+	Position(32849, 32232, 9),
 }
 
 local othersFireBug = Action()
@@ -39,7 +36,7 @@ function othersFireBug.onUse(player, item, fromPosition, target, toPosition, isH
 			player:setStorageValue(Storage.FerumbrasAscension.BasinCounter, 0)
 		end
 		if player:getStorageValue(Storage.FerumbrasAscension.BasinCounter) == 7 then
-			player:say('You ascended the last basin.', TALKTYPE_MONSTER_SAY)
+			player:say("You ascended the last basin.", TALKTYPE_MONSTER_SAY)
 			item:remove()
 			player:setStorageValue(Storage.FerumbrasAscension.MonsterDoor, 1)
 		end
@@ -59,6 +56,15 @@ function othersFireBug.onUse(player, item, fromPosition, target, toPosition, isH
 		addEvent(revertAshes, 5 * 60 * 1000) -- 5 minutes
 		createTeleport:setDestination(Position(32857, 32234, 11))
 		return true
+	elseif target.uid == 2273 then
+		if player:getStorageValue(Storage.TheShatteredIsles.RaysMission2) == 1 and player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 15 then
+			player:setStorageValue(Storage.TheShatteredIsles.RaysMission2, 2)
+			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 16)
+			toPosition:sendMagicEffect(CONST_ME_HITBYFIRE)
+			return true
+		else
+			return false
+		end
 	elseif target.actionid == 50119 then
 		target:transform(7813)
 		return true
@@ -98,7 +104,7 @@ function othersFireBug.onUse(player, item, fromPosition, target, toPosition, isH
 		return true
 	elseif random == 1 then --it explode on the user 1% chance
 		doTargetCombatHealth(0, player, COMBAT_FIREDAMAGE, -5, -5, CONST_ME_HITBYFIRE)
-		player:say('OUCH!', TALKTYPE_MONSTER_SAY)
+		player:say("OUCH!", TALKTYPE_MONSTER_SAY)
 		item:remove(1)
 		return true
 	else

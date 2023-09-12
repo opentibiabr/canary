@@ -1,8 +1,8 @@
 local mType = Game.createMonsterType("Plagirath")
 local monster = {}
 
-monster.description = "plagirath"
-monster.experience = 58000
+monster.description = "Plagirath"
+monster.experience = 50000
 monster.outfit = {
 	lookType = 862,
 	lookHead = 84,
@@ -10,7 +10,13 @@ monster.outfit = {
 	lookLegs = 60,
 	lookFeet = 79,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
+}
+
+monster.bosstiary = {
+	bossRaceId = 1199,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.FerumbrasAscension.PlagirathTimer,
 }
 
 monster.health = 290000
@@ -22,13 +28,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
-}
-
-monster.bosstiary = {
-	bossRaceId = 1199,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.FerumbrasAscension.PlagirathTimer
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -55,21 +55,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "BOOOOOOOMMM!!!!!", yell = false },
+	{ text = "I CAN SENSE YOUR BODY ROTTING!", yell = true },
 	{ text = "WITHER AND DIE!", yell = true },
+	{ text = "COME AND RECEIVE MY GIFTS!!", yell = true },
 	{ text = "DEATH AND DECAY!", yell = true },
-	{ text = "I CAN SENSE YOUR BODIES ROOTING!", yell = true }
 }
 
 monster.loot = {
@@ -95,7 +95,7 @@ monster.loot = {
 	{ id = 814, chance = 5000 }, -- terra amulet
 	{ id = 7643, chance = 23000, maxCount = 15 }, -- ultimate health potion
 	{ id = 8073, chance = 4000 }, -- spellbook of warding
-	{ id = 9057, chance = 10000, maxCount = 8 } -- small topaz
+	{ id = 9057, chance = 10000, maxCount = 8 }, -- small topaz
 }
 
 monster.attacks = {
@@ -105,40 +105,40 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -1000, maxDamage = -1200, length = 10, spread = 3, effect = CONST_ME_POFF, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -1500, maxDamage = -1900, length = 10, spread = 3, effect = CONST_ME_POFF, target = false },
 	{ name = "speed", interval = 2000, chance = 20, speedChange = -600, radius = 7, effect = CONST_ME_MAGIC_GREEN, target = false, duration = 20000 },
-	{ name = "plagirath bog", interval = 20000, chance = 25, target = false }
+	{ name = "plagirath bog", interval = 20000, chance = 25, target = false },
 }
 
 monster.defenses = {
-	defense = 55,
-	armor = 55,
+	defense = 125,
+	armor = 125,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 3000, maxDamage = 4000, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 30, speedChange = 440, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
 	{ name = "plagirath summon", interval = 2000, chance = 15, target = false },
-	{ name = "plagirath heal", interval = 2000, chance = 17, target = false }
+	{ name = "plagirath heal", interval = 2000, chance = 17, target = false },
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 10 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 100 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -10 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
-	{ type = COMBAT_FIREDAMAGE, percent = -20 },
+	{ type = COMBAT_FIREDAMAGE, percent = -25 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 10 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -146,13 +146,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

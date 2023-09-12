@@ -1,9 +1,9 @@
 local config = {
-	monsterName = 'Grand Chaplain Gaunder',
+	monsterName = "Grand Chaplain Gaunder",
 	bossPosition = Position(33370, 31327, 5),
 	centerPosition = Position(33370, 31327, 5),
 	rangeX = 50,
-	rangeY = 50
+	rangeY = 50,
 }
 
 local function checkBoss(centerPosition, rangeX, rangeY, bossName)
@@ -30,5 +30,5 @@ function chaplaingaunder.onThink(interval, lastExecution)
 	return true
 end
 
-chaplaingaunder:interval(900000)
+chaplaingaunder:interval(15 * 60 * 1000)
 chaplaingaunder:register()

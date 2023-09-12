@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Anomaly")
 local monster = {}
 
-monster.description = "Anomaly"
+monster.description = "anomaly"
 monster.experience = 50000
 monster.outfit = {
 	lookType = 876,
@@ -10,7 +10,13 @@ monster.outfit = {
 	lookLegs = 76,
 	lookFeet = 79,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
+}
+
+monster.bosstiary = {
+	bossRaceId = 1219,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = 14321,
 }
 
 monster.health = 290000
@@ -20,15 +26,14 @@ monster.corpse = 23564
 monster.speed = 200
 monster.manaCost = 0
 
-monster.changeTarget = {
-	interval = 2000,
-	chance = 25
+monster.events = {
+	"AnomalyTransform",
+	"HeartBossDeath",
 }
 
-monster.bosstiary = {
-	bossRaceId = 1219,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = 14321
+monster.changeTarget = {
+	interval = 2000,
+	chance = 25,
 }
 
 monster.strategiesTarget = {
@@ -55,28 +60,27 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.events = {
 	"AnomalyTransform",
-	"HeartBossDeath"
+	"HeartBossDeath",
 }
 
 monster.events = {
 	"AnomalyTransform",
-	"HeartBossDeath"
+	"HeartBossDeath",
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Brzlll! Brzzzl!", yell = false }
 }
 
 monster.loot = {
@@ -113,7 +117,7 @@ monster.loot = {
 	{ id = 23474, chance = 1600, unique = true }, -- tiara of power
 	{ id = 23477, chance = 1600, unique = true }, -- void boots
 	{ id = 6553, chance = 1600, unique = true }, -- ruthless axe
-	{ id = 282, chance = 1600, maxCount = 3 } -- giant shimmering pearl (brown)
+	{ id = 282, chance = 1600, maxCount = 3 }, -- giant shimmering pearl (brown)
 }
 
 monster.attacks = {
@@ -122,13 +126,14 @@ monster.attacks = {
 	{ name = "anomaly wave", interval = 2000, chance = 25, minDamage = -500, maxDamage = -900, target = false },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = -600, maxDamage = -1000, length = 9, spread = 3, effect = CONST_ME_EXPLOSIONHIT, target = false },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -600, length = 9, spread = 3, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "anomaly break", interval = 2000, chance = 40, target = false }
+	{ name = "anomaly break", interval = 2000, chance = 40, target = false },
 }
 
 monster.defenses = {
 	defense = 100,
 	armor = 100,
-	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HEALING, minDamage = 150, maxDamage = 400, effect = CONST_ME_MAGIC_BLUE, target = false }
+	--	mitigation = ???,
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HEALING, minDamage = 150, maxDamage = 400, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -141,18 +146,17 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -160,13 +164,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

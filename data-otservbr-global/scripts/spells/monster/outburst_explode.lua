@@ -10,11 +10,14 @@ local function outExplode()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
-								c:teleportTo({ x = 32234, y = 31280, z = 14 })
-							elseif isMonster(c) and c:getName() == "Charging Outburst" then
-								c:teleportTo({ x = 32234, y = 31279, z = 14 })
+						for _, creatureUid in pairs(creatures) do
+							local creature = Creature(creatureUid)
+							if creature then
+								if creature:isPlayer() then
+									creature:teleportTo({ x = 32234, y = 31280, z = 14 })
+								elseif creature:isMonster() and creature:getName() == "Charging Outburst" then
+									creature:teleportTo({ x = 32234, y = 31279, z = 14 })
+								end
 							end
 						end
 					end
@@ -56,7 +59,9 @@ end
 
 function removeOutburst(cid)
 	local creature = Creature(cid)
-	if not isCreature(creature) then return false end
+	if not creature then
+		return false
+	end
 	creature:remove()
 end
 

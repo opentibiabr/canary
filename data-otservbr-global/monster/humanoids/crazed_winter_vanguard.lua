@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 8,
 	lookFeet = 1,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1730
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Court of Winter, Dream Labyrinth."
+	Locations = "Court of Winter, Dream Labyrinth.",
 }
 
 monster.health = 5800
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,17 +62,20 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Nobody will ever escape from this place, muwahaha!!!", yell = false },
+	{ text = "These voices… they never stop!", yell = false },
+	{ text = " I am getting crazy here...Wa wa wahhh!!!", yell = false },
 }
 
 monster.loot = {
@@ -88,23 +91,24 @@ monster.loot = {
 	{ name = "ice rapier", chance = 6250 },
 	{ name = "glacier robe", chance = 2500 },
 	{ name = "elven amulet", chance = 720 },
-	{ name = "blue gem", chance = 200 }
+	{ name = "blue gem", chance = 200 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -150, maxDamage = -400 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -200, maxDamage = -300, radius = 5, effect = CONST_ME_ICEAREA, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -240, maxDamage = -300, length = 4, spread = 3, effect = CONST_ME_GIANTICE, target = false },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -250, maxDamage = -300, range = 7, shootEffect = CONST_ANI_ICE, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -250, maxDamage = -300, range = 7, shootEffect = CONST_ANI_ICE, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
-	armor = 70
+	armor = 77,
+	mitigation = 2.16,
 }
 
 monster.reflects = {
-	{ type = COMBAT_ICEDAMAGE, percent = 70 }
+	{ type = COMBAT_ICEDAMAGE, percent = 70 },
 }
 
 monster.elements = {
@@ -112,19 +116,19 @@ monster.elements = {
 	{ type = COMBAT_ENERGYDAMAGE, percent = -20 },
 	{ type = COMBAT_EARTHDAMAGE, percent = -15 },
 	{ type = COMBAT_FIREDAMAGE, percent = -30 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 50 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 15 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

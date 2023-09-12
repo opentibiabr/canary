@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 97,
 	lookFeet = 115,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 120
@@ -22,7 +22,7 @@ monster.manaCost = 420
 
 monster.changeTarget = {
 	interval = 0,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -40,7 +40,7 @@ monster.flags = {
 	pushable = true,
 	rewardBoss = false,
 	illusionable = true,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 80,
 	targetDistance = 1,
@@ -49,12 +49,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -62,7 +62,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Work, work!", yell = false },
 	{ text = "Intruders in the mines!", yell = false },
-	{ text = "Mine, all mine!", yell = false }
+	{ text = "Mine, all mine!", yell = false },
 }
 
 monster.loot = {
@@ -73,16 +73,17 @@ monster.loot = {
 	{ id = 3456, chance = 11111 }, -- pick
 	{ name = "leather legs", chance = 9090 },
 	{ name = "meat", chance = 3846 },
-	{ name = "iron ore", chance = 793 }
+	{ name = "iron ore", chance = 793 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -26 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 7
+	armor = 7,
+	mitigation = 0.51,
 }
 
 monster.elements = {
@@ -95,14 +96,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

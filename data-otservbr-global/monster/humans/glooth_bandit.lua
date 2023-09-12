@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 114,
 	lookFeet = 114,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1119
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Underground Glooth Factory."
+	Locations = "Underground Glooth Factory.",
 }
 
 monster.health = 2600
@@ -31,11 +31,11 @@ monster.maxHealth = 2600
 monster.race = "blood"
 monster.corpse = 21882
 monster.speed = 150
-monster.manaCost = 450
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -102,18 +102,19 @@ monster.loot = {
 	{ id = 3344, chance = 1000 }, -- beastslayer axe
 	{ id = 21183, chance = 500 }, -- glooth amulet
 	{ id = 813, chance = 500 }, -- terra boots
-	{ id = 812, chance = 500 } -- terra legs
+	{ id = 812, chance = 500 }, -- terra legs
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 80, attack = 68 },
-	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_PHYSICALDAMAGE, minDamage = -60, maxDamage = -200, range = 8, shootEffect = CONST_ANI_ARROW, target = false }
+	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_PHYSICALDAMAGE, minDamage = -60, maxDamage = -200, range = 8, shootEffect = CONST_ANI_ARROW, target = false },
 }
 
 monster.defenses = {
 	defense = 32,
-	armor = 32,
-	{ name = "combat", interval = 3000, chance = 35, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false }
+	armor = 46,
+	mitigation = 1.65,
+	{ name = "combat", interval = 3000, chance = 35, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -126,14 +127,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 20 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 20 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

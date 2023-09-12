@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Deepworm")
 local monster = {}
 
 monster.description = "a deepworm"
-monster.experience = 230
+monster.experience = 2300
 monster.outfit = {
 	lookType = 1033,
 	lookHead = 0,
@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1531
@@ -23,11 +23,11 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Gnome Deep Hub."
+	Locations = "Gnome Deep Hub",
 }
 
-monster.health = 4500
-monster.maxHealth = 4500
+monster.health = 3500
+monster.maxHealth = 3500
 monster.race = "blood"
 monster.corpse = 27545
 monster.speed = 102
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,19 +62,17 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "*bluuuuuure*", yell = false },
-	{ text = "*slurp slurp ... slurp*", yell = false }
 }
 
 monster.loot = {
@@ -93,18 +91,19 @@ monster.loot = {
 	{ name = "springsprout rod", chance = 1120 },
 	{ name = "sacred tree amulet", chance = 2390 },
 	{ id = 281, chance = 860 }, -- giant shimmering pearl (green)
-	{ name = "suspicious device", chance = 530 }
+	{ name = "suspicious device", chance = 530 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -190, maxDamage = -300, range = 7, length = 6, spread = 2, effect = CONST_ME_POISONAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -200, maxDamage = -400, length = 3, spread = 3, effect = CONST_ME_POISONAREA, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -200, maxDamage = -400, length = 3, spread = 3, effect = CONST_ME_POISONAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 5,
-	armor = 10
+	armor = 73,
+	mitigation = 1.88,
 }
 
 monster.elements = {
@@ -117,14 +116,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = true },
+	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

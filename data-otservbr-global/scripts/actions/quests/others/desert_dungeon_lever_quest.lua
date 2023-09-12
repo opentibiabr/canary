@@ -4,29 +4,29 @@ local config = {
 		toPosition = Position(32671, 32071, 8),
 		sacrificePosition = Position(32679, 32089, 8),
 		sacrificeId = 3059,
-		vocationId = VOCATION.BASE_ID.SORCERER
+		vocationId = VOCATION.BASE_ID.SORCERER,
 	},
 	{
 		fromPosition = Position(32669, 32089, 8),
 		toPosition = Position(32673, 32071, 8),
 		sacrificePosition = Position(32667, 32089, 8),
 		sacrificeId = 3585,
-		vocationId = VOCATION.BASE_ID.DRUID
+		vocationId = VOCATION.BASE_ID.DRUID,
 	},
 	{
 		fromPosition = Position(32673, 32085, 8),
 		toPosition = Position(32670, 32071, 8),
 		sacrificePosition = Position(32673, 32083, 8),
 		sacrificeId = 3349,
-		vocationId = VOCATION.BASE_ID.PALADIN
+		vocationId = VOCATION.BASE_ID.PALADIN,
 	},
 	{
 		fromPosition = Position(32673, 32093, 8),
 		toPosition = Position(32672, 32071, 8),
 		sacrificePosition = Position(32673, 32094, 8),
 		sacrificeId = 3264,
-		vocationId = VOCATION.BASE_ID.KNIGHT
-	}
+		vocationId = VOCATION.BASE_ID.KNIGHT,
+	},
 }
 
 local othersDesert = Action()
@@ -43,26 +43,26 @@ function othersDesert.onUse(player, item, fromPosition, target, toPosition, isHo
 	for i = 1, #config do
 		local creature = Tile(config[i].fromPosition):getTopCreature()
 		if not creature or not creature:isPlayer() then
-			player:sendCancelMessage('You need one player of each vocation for this quest.')
+			player:sendCancelMessage("You need one player of each vocation for this quest.")
 			position:sendMagicEffect(CONST_ME_POFF)
 			return true
 		end
 
 		local vocationId = creature:getVocation():getBaseId()
 		if vocationId ~= config[i].vocationId then
-			player:sendCancelMessage('You need one player of each vocation for this quest.')
+			player:sendCancelMessage("You need one player of each vocation for this quest.")
 			position:sendMagicEffect(CONST_ME_POFF)
 			return true
 		end
 
 		local sacrificeItem = Tile(config[i].sacrificePosition):getItemById(config[i].sacrificeId)
 		if not sacrificeItem then
-			player:sendCancelMessage(creature:getName() .. ' is missing ' .. (creature:getSex() == PLAYERSEX_FEMALE and 'her' or 'his') .. ' sacrifice on the altar.')
+			player:sendCancelMessage(creature:getName() .. " is missing " .. creature:getPossessivePronoun() .. " sacrifice on the altar.")
 			position:sendMagicEffect(CONST_ME_POFF)
 			return true
 		end
 
-		players[#players+1] = creature
+		players[#players + 1] = creature
 	end
 
 	for i = 1, #players do

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 40,
 	lookLegs = 40,
 	lookFeet = 57,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,7 +58,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	if MsgContains(message, "huntsman") then
 		npcHandler:say("I hunt game of all sorts to earn a living. I respect the {balance} of nature though and take only as much as I need.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
@@ -67,7 +66,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"To be honest, I don't care too much about that spiritual balance thing. Better talk to {Benevola} about such things. ...",
 				"As a matter of fact though, if too many animals are killed, things might rapidly change for the worse. ...",
-				"So it's only practical thinking to keep the balance in mind as long as I can afford it."
+				"So it's only practical thinking to keep the balance in mind as long as I can afford it.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
@@ -96,8 +95,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = 'I\'m just a simple {huntsman}.' })
-keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = 'Sorry, I don\'t think telling a stranger your name is a smart thing to do.' })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I'm just a simple {huntsman}." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, I don't think telling a stranger your name is a smart thing to do." })
 
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye. Take care.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "I can still see you.")

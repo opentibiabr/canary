@@ -20,7 +20,7 @@ local configQuest = {
 			You feel an urge for more of this energy.", -- step in the second tile
 			"The tar covering you has cooled down and tell off for the most part. \z
 			Your body is not heated up anymore.", -- there's no time to step
-		}
+		},
 	},
 	["acid"] = {
 		itemId = 4406,
@@ -42,7 +42,7 @@ local configQuest = {
 			Take heart and cross the threshold of sulphur.", -- step in the second tile
 			"The acid covering you has cooled down and tell off for the most part. \z
 			Your body is not heated up anymore.", --  there's no time to step
-		}
+		},
 	},
 }
 
@@ -109,8 +109,7 @@ function tar.onStepIn(creature, item, position, fromPosition)
 		elseif position:compare(value.secondSqm) then
 			if player:getStorageValue(value.storageBarkless) == 2 then
 				player:setStorageValue(value.storageBarkless, 3)
-				if player:getStorageValue(Storage.CultsOfTibia.Barkless.sulphur) == 3 and
-						player:getStorageValue(Storage.CultsOfTibia.Barkless.Tar) == 3 then
+				if player:getStorageValue(Storage.CultsOfTibia.Barkless.sulphur) == 3 and player:getStorageValue(Storage.CultsOfTibia.Barkless.Tar) == 3 then
 					player:setStorageValue(Storage.CultsOfTibia.Barkless.Mission, 2)
 				end
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, value.msgs[5])

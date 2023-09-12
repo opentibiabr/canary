@@ -13,7 +13,7 @@ function onTargetCreature(creature, target)
 	condition:setParameter(CONDITION_PARAM_BUFF_DAMAGERECEIVED, 105)
 
 	local grade = 0
-	if (creature and creature:getPlayer()) then
+	if creature and creature:getPlayer() then
 		grade = creature:upgradeSpellsWOD("Drain_Body_Spells")
 	end
 	condition:setParameter(CONDITION_PARAM_DRAIN_BODY, grade)

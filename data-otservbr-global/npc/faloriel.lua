@@ -16,18 +16,18 @@ npcConfig.outfit = {
 	lookBody = 100,
 	lookLegs = 29,
 	lookFeet = 97,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
 	{ text = "Health potions! Mana potions! Buy them here!" },
-	{ text = "All kinds of potions available here!" }
+	{ text = "All kinds of potions available here!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -57,36 +57,32 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local potionTalk = keywordHandler:addKeyword(
-	{ "ring" }, StdModule.say, {
-		npcHandler = npcHandler,
-		text = "So, the Librarian sent you. Well, yes, I have a vial of the hallucinogen you need. I'll give it to you for 1000 gold. Do you agree?"
-	},
-	function(player) return player:getStorageValue(Storage.Kilmaresh.Fifth.Memories) == 1 end
-)
+local potionTalk = keywordHandler:addKeyword({ "ring" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "So, the Librarian sent you. Well, yes, I have a vial of the hallucinogen you need. I'll give it to you for 1000 gold. Do you agree?",
+}, function(player)
+	return player:getStorageValue(Storage.Kilmaresh.Fifth.Memories) == 1
+end)
 
-potionTalk:addChildKeyword(
-	{ "yes" }, StdModule.say, {
-		npcHandler = npcHandler,
-		text = "Great. Here, take it."
-	},
-	function(player) return player:getMoney() + player:getBankBalance() >= 1000 end,
-	function(player)
-		player:removeMoneyBank(1000)
-		player:addItem(31350, 1) -- flask of hallucinogen
-	end
-)
+potionTalk:addChildKeyword({ "yes" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Great. Here, take it.",
+}, function(player)
+	return player:getMoney() + player:getBankBalance() >= 1000
+end, function(player)
+	player:removeMoneyBank(1000)
+	player:addItem(31350, 1) -- flask of hallucinogen
+end)
 
-potionTalk:addChildKeyword(
-	{ "yes" }, StdModule.say, {
-		npcHandler = npcHandler,
-		text = "You do not have enough money."
-	},
-	function(player) return player:getMoney() + player:getBankBalance() < 1000 end
-)
+potionTalk:addChildKeyword({ "yes" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "You do not have enough money.",
+}, function(player)
+	return player:getMoney() + player:getBankBalance() < 1000
+end)
 
-npcHandler:setMessage(MESSAGE_GREET, 'Greetings, dear guest and welcome to my {potion} shop.')
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Well, bye then.')
+npcHandler:setMessage(MESSAGE_GREET, "Greetings, dear guest and welcome to my {potion} shop.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)
@@ -109,7 +105,7 @@ npcConfig.shop = {
 	{ itemName = "ultimate health potion", clientId = 7643, buy = 379 },
 	{ itemName = "ultimate mana potion", clientId = 23373, buy = 438 },
 	{ itemName = "ultimate spirit potion", clientId = 23374, buy = 438 },
-	{ itemName = "vial", clientId = 2874, sell = 5 }
+	{ itemName = "vial", clientId = 2874, sell = 5 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -120,7 +116,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

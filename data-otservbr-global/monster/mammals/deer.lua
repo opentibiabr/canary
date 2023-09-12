@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 31
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 1,
 	Occurrence = 0,
 	Locations = "Darama (Devourer, Kha'labal), in most grassy areas of Tibia, also found in \z
-		Rookgaard and on Tutorial Island. There are also 2 unreachable Deer found near Fiehonja's protection zone."
+		Rookgaard and on Tutorial Island. There are also 2 unreachable Deer found near Fiehonja's protection zone.",
 }
 
 monster.health = 25
@@ -36,7 +36,7 @@ monster.manaCost = 260
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -60,12 +60,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -76,16 +76,17 @@ monster.voices = {
 monster.loot = {
 	{ name = "meat", chance = 80000, maxCount = 4 },
 	{ name = "ham", chance = 50000, maxCount = 2 },
-	{ id = 10297, chance = 870 } -- antlers
+	{ id = 10297, chance = 870 }, -- antlers
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1 },
 }
 
 monster.defenses = {
 	defense = 5,
-	armor = 5
+	armor = 2,
+	mitigation = 0.05,
 }
 
 monster.elements = {
@@ -98,14 +99,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

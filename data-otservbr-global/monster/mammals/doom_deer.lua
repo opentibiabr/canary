@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 559
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 1,
-	Locations = "Isle of Evil."
+	Locations = "Isle of Evil.",
 }
 
 monster.health = 405
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -57,35 +57,36 @@ monster.flags = {
 	runHealth = 25,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
+	canWalkOnEnergy = true,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "I bet it was you who killed my mom!", yell = false }
+	{ text = "I bet it was you who killed my mom!", yell = false },
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 100 }
+	{ name = "gold coin", chance = 50000, maxCount = 100 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 },
-	{ name = "combat", interval = 4000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -35, maxDamage = -55, length = 5, spread = 3, effect = CONST_ME_BIGCLOUDS, target = false }
+	{ name = "combat", interval = 4000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -35, maxDamage = -55, length = 5, spread = 3, effect = CONST_ME_BIGCLOUDS, target = false },
 }
 
 monster.defenses = {
 	defense = 35,
-	armor = 30,
-	{ name = "speed", interval = 3000, chance = 30, speedChange = 400, effect = CONST_ME_MAGIC_RED, target = false, duration = 8000 }
+	armor = 19,
+	mitigation = 0.70,
+	{ name = "speed", interval = 3000, chance = 30, speedChange = 400, effect = CONST_ME_MAGIC_RED, target = false, duration = 8000 },
 }
 
 monster.elements = {
@@ -98,14 +99,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

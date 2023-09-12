@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 898
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Hot Spot (in Gnomebase Alpha) and Lower Spike."
+	Locations = "Hot Spot (in Gnomebase Alpha) and Lower Spike.",
 }
 
 monster.health = 1600
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,20 +62,20 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Fuchah! Fuchah!", yell = false },
 	{ text = "Fuchah!", yell = false },
-	{ text = "Yag! Yag! Yag!", yell = false }
+	{ text = "Fuchah! Fuchah!", yell = false },
+	{ text = "Yag! Yag! Yag!", yell = false },
 }
 
 monster.loot = {
@@ -95,19 +95,20 @@ monster.loot = {
 	{ name = "brown crystal splinter", chance = 4850 },
 	{ name = "red crystal fragment", chance = 2280 },
 	{ name = "magma clump", chance = 12440 },
-	{ name = "blazing bone", chance = 8030 }
+	{ name = "blazing bone", chance = 8030 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -235 },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -195, maxDamage = -340, length = 8, spread = 3, effect = CONST_ME_EXPLOSIONHIT, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -100, maxDamage = -200, range = 7, shootEffect = CONST_ANI_FIRE, target = true },
-	{ name = "vulcongra soulfire", interval = 3000, chance = 100, target = false }
+	{ name = "vulcongra soulfire", interval = 3000, chance = 100, target = false },
 }
 
 monster.defenses = {
 	defense = 35,
-	armor = 35
+	armor = 50,
+	mitigation = 1.46,
 }
 
 monster.elements = {
@@ -120,14 +121,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 5 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

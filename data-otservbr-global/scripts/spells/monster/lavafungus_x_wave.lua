@@ -7,7 +7,6 @@ arr = {
 	{ 1, 0, 1 },
 }
 
-
 local area = createCombatArea(arr)
 combat:setArea(area)
 

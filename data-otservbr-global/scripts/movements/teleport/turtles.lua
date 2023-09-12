@@ -6,7 +6,7 @@ local setting = {
 	[3210] = Position(32490, 32979, 7),
 	[3211] = Position(32440, 32971, 7),
 	[3212] = Position(32527, 32951, 7),
-	[3213] = Position(32523, 32923, 7)
+	[3213] = Position(32523, 32923, 7),
 }
 
 local turtles = MoveEvent()

@@ -1,6 +1,6 @@
 local config = {
 	{ gatePosX = Position(32569, 31421, 9), gatePosY = Position(32569, 31422, 9), tileIdX = 501, tileIdY = 502 },
-	{ gatePosX = Position(32600, 31421, 9), gatePosY = Position(32600, 31422, 9), tileIdX = 502, tileIdY = 501 }
+	{ gatePosX = Position(32600, 31421, 9), gatePosY = Position(32600, 31422, 9), tileIdX = 502, tileIdY = 501 },
 }
 
 local function wall(i)

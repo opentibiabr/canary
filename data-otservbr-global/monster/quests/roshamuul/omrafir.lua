@@ -10,7 +10,12 @@ monster.outfit = {
 	lookLegs = 79,
 	lookFeet = 79,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
+}
+
+monster.bosstiary = {
+	bossRaceId = 1011,
+	bossRace = RARITY_NEMESIS,
 }
 
 monster.health = 322000
@@ -22,12 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 25
-}
-
-monster.bosstiary = {
-	bossRaceId = 1011,
-	bossRace = RARITY_NEMESIS
+	chance = 25,
 }
 
 monster.strategiesTarget = {
@@ -52,26 +52,27 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "FIRST I'LL OBLITERATE YOU THEN I BURN THIS PRISON DOWN!!", yell = false },
+	{ text = "FIRST I'LL OBLITERATE YOU THEN I BURN THIS PRISON DOWN!!", yell = true },
 	{ text = "I'M TOO HOT FOR YOU TO HANDLE!", yell = true },
-	{ text = "FREEDOM FOR PRINCESS", yell = true },
-	{ text = "THE POWER OF HIS INTERNAL FIRE RENEWS OMRAFIR!", yell = true },
+	{ text = "FREEDOM FOR THE PRINCES!", yell = true },
 	{ text = "OMRAFIR INHALES DEEPLY!", yell = true },
 	{ text = "OMRAFIR BREATHES INFERNAL FIRE", yell = true },
-	{ text = "I WILL RULE WHEN THE NEW ORDER IS ESTABLISHED!", yell = true }
+	{ text = "THE POWER OF HIS INTERNAL FIRE RENEWS OMRAFIR!", yell = true },
+	{ text = "I WILL RULE WHEN THE NEW ORDER IS ESTABLISHED!", yell = true },
+	{ text = "INFERNATIL! COME HERE AND FIGHT ME YOU COWARD!", yell = true },
 }
 
 monster.loot = {
@@ -104,7 +105,7 @@ monster.loot = {
 	{ id = 3554, chance = 6250 }, -- steel boots
 	{ id = 7643, chance = 31250, maxCount = 8 }, -- ultimate health potion
 	{ id = 20264, chance = 81250, maxCount = 3 }, -- unrealized dream
-	{ id = 16120, chance = 18750, maxCount = 5 } -- violet crystal shard
+	{ id = 16120, chance = 18750, maxCount = 5 }, -- violet crystal shard
 }
 
 monster.attacks = {
@@ -115,15 +116,16 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -200, maxDamage = -400, radius = 3, effect = CONST_ME_MAGIC_RED, target = false },
 	{ name = "combat", interval = 2000, chance = 19, type = COMBAT_FIREDAMAGE, minDamage = -150, maxDamage = -300, radius = 4, effect = CONST_ME_EXPLOSIONHIT, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, radius = 1, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_HITBYFIRE, target = true },
-	{ name = "firefield", interval = 2000, chance = 12, radius = 3, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREATTACK, target = true }
+	{ name = "firefield", interval = 2000, chance = 12, radius = 3, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREATTACK, target = true },
 }
 
 monster.defenses = {
 	defense = 165,
 	armor = 155,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 22, type = COMBAT_HEALING, minDamage = 440, maxDamage = 800, target = false },
 	{ name = "omrafir summon", interval = 2000, chance = 50, target = false },
-	{ name = "omrafir healing 2", interval = 2000, chance = 20, target = false }
+	{ name = "omrafir healing 2", interval = 2000, chance = 20, target = false },
 }
 
 monster.elements = {
@@ -131,23 +133,22 @@ monster.elements = {
 	{ type = COMBAT_ENERGYDAMAGE, percent = 50 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 50 },
 	{ type = COMBAT_FIREDAMAGE, percent = 100 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 50 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 50 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 50 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -155,13 +156,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

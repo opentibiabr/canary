@@ -115,6 +115,11 @@ public:
 	bool hasParent() const;
 	void addItem(Item* item);
 	StashContainerList getStowableItems() const;
+	bool isStoreInbox() const;
+	bool isStoreInboxFiltered() const;
+	std::deque<Item*> getStoreInboxFilteredItems() const;
+	phmap::flat_hash_set<ContainerCategory_t> getStoreInboxValidCategories() const;
+	Item* getFilteredItemByIndex(size_t index) const;
 	Item* getItemByIndex(size_t index) const;
 	bool isHoldingItem(const Item* item) const;
 	bool isHoldingItemWithId(const uint16_t id) const;
@@ -168,6 +173,7 @@ public:
 protected:
 	std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol) const;
 
+	uint32_t m_maxItems;
 	uint32_t maxSize;
 	uint32_t totalWeight = 0;
 	ItemDeque itemlist;

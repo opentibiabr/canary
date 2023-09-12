@@ -282,7 +282,7 @@ local function processItemInboxPurchase(player, name, id)
 	end
 
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-	if inbox and inbox:getEmptySlots() > 0 then
+	if inbox then
 		local decoKit = inbox:addItem(23398, 1)
 		if decoKit then
 			decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item with the Walter Jaeger.\nUnwrap it in your own house to create a <" .. name .. ">.")

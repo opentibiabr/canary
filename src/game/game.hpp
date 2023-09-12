@@ -496,7 +496,7 @@ public:
 	void addGuild(const std::shared_ptr<Guild> guild);
 	void removeGuild(uint32_t guildId);
 
-	phmap::flat_hash_map<std::shared_ptr<Tile>, std::shared_ptr<Container>> browseFields;
+	phmap::flat_hash_map<std::shared_ptr<Tile>, std::weak_ptr<Container>> browseFields;
 
 	void internalRemoveItems(const std::vector<std::shared_ptr<Item>> itemVector, uint32_t amount, bool stackable);
 

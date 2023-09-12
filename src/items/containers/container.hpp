@@ -39,8 +39,11 @@ class Container : public Item, public Cylinder {
 public:
 	explicit Container(uint16_t type);
 	Container(uint16_t type, uint16_t size, bool unlocked = true, bool pagination = false);
-	explicit Container(std::shared_ptr<Tile> type);
 	~Container();
+
+	static std::shared_ptr<Container> create(uint16_t type);
+	static std::shared_ptr<Container> create(uint16_t type, uint16_t size, bool unlocked = true, bool pagination = false);
+	static std::shared_ptr<Container> create(std::shared_ptr<Tile> type);
 
 	// non-copyable
 	Container(const Container &) = delete;

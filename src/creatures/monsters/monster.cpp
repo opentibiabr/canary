@@ -56,11 +56,6 @@ Monster::Monster(const std::shared_ptr<MonsterType> mType) :
 	}
 }
 
-Monster::~Monster() {
-	clearTargetList();
-	clearFriendList();
-}
-
 void Monster::addList() {
 	g_game().addMonster(static_self_cast<Monster>());
 }

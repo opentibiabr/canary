@@ -1652,6 +1652,11 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 	return RETURNVALUE_NOERROR;
 }
 
+bool isMatchingCylinder(const std::weak_ptr<Cylinder> &weakCylinder, const std::shared_ptr<Cylinder> &targetCylinder) {
+	auto lockedCylinder = weakCylinder.lock();
+	return lockedCylinder && lockedCylinder == targetCylinder;
+}
+
 ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder, int32_t index, std::shared_ptr<Item> item, uint32_t count, std::shared_ptr<Item>* movedItem, uint32_t flags /*= 0*/, std::shared_ptr<Creature> actor /*=nullptr*/, std::shared_ptr<Item> tradeItem /* = nullptr*/, bool checkTile /* = true*/) {
 	if (fromCylinder == nullptr) {
 		g_logger().error("[{}] fromCylinder is nullptr", __FUNCTION__);
@@ -1665,7 +1670,7 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 	if (checkTile) {
 		if (std::shared_ptr<Tile> fromTile = fromCylinder->getTile()) {
 			auto it = browseFields.find(fromTile);
-			if (it != browseFields.end() && it->second == fromCylinder) {
+			if (it != browseFields.end() && isMatchingCylinder(it->second, fromCylinder)) {
 				fromCylinder = fromTile;
 			}
 		}
@@ -2005,7 +2010,7 @@ ReturnValue Game::internalRemoveItem(std::shared_ptr<Item> item, int32_t count /
 	std::shared_ptr<Tile> fromTile = cylinder->getTile();
 	if (fromTile) {
 		auto it = browseFields.find(fromTile);
-		if (it != browseFields.end() && it->second == cylinder) {
+		if (it != browseFields.end() && isMatchingCylinder(it->second, cylinder)) {
 			cylinder = fromTile;
 		}
 	}
@@ -2264,7 +2269,7 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 	std::shared_ptr<Tile> fromTile = cylinder->getTile();
 	if (fromTile) {
 		auto it = browseFields.find(fromTile);
-		if (it != browseFields.end() && it->second == cylinder) {
+		if (it != browseFields.end() && isMatchingCylinder(it->second, cylinder)) {
 			cylinder = fromTile;
 		}
 	}
@@ -3527,11 +3532,11 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
 		}
 
 		auto it = browseFields.find(tile);
-		if (it == browseFields.end()) {
-			parentContainer = std::make_shared<Container>(tile);
+		if (it == browseFields.end() || it->second.expired()) {
+			parentContainer = Container::create(tile);
 			browseFields[tile] = parentContainer;
 		} else {
-			parentContainer = it->second;
+			parentContainer = it->second.lock();
 		}
 	}
 
@@ -3997,11 +4002,11 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 	std::shared_ptr<Container> container;
 
 	auto it = browseFields.find(tile);
-	if (it == browseFields.end()) {
-		container = std::make_shared<Container>(tile);
+	if (it == browseFields.end() || it->second.expired()) {
+		container = Container::create(tile);
 		browseFields[tile] = container;
 	} else {
-		container = it->second;
+		container = it->second.lock();
 	}
 
 	uint8_t dummyContainerId = 0xF - ((pos.x % 3) * 3 + (pos.y % 3));
@@ -7406,6 +7411,14 @@ void Game::shutdown() {
 void Game::cleanup() {
 	ToReleaseCreatures.clear();
 	ToReleaseItems.clear();
+
+	for (auto it = browseFields.begin(); it != browseFields.end();) {
+		if (it->second.expired()) {
+			it = browseFields.erase(it);
+		} else {
+			++it;
+		}
+	}
 }
 
 void Game::ReleaseCreature(std::shared_ptr<Creature> creature) {

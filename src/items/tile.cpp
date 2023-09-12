@@ -340,8 +340,11 @@ void Tile::onAddTileItem(std::shared_ptr<Item> item) {
 	if ((item->hasProperty(CONST_PROP_MOVEABLE) || item->getContainer()) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVEABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH))) {
 		auto it = g_game().browseFields.find(static_self_cast<Tile>());
 		if (it != g_game().browseFields.end()) {
-			it->second->addItemBack(item);
-			item->setParent(static_self_cast<Tile>());
+			auto lockedCylinder = it->second.lock();
+			if (lockedCylinder) {
+				lockedCylinder->addItemBack(item);
+				item->setParent(getTile());
+			}
 		}
 	}
 
@@ -409,20 +412,26 @@ void Tile::onAddTileItem(std::shared_ptr<Item> item) {
 
 void Tile::onUpdateTileItem(std::shared_ptr<Item> oldItem, const ItemType &oldType, std::shared_ptr<Item> newItem, const ItemType &newType) {
 	if ((newItem->hasProperty(CONST_PROP_MOVEABLE) || newItem->getContainer()) || (newItem->isWrapable() && newItem->hasProperty(CONST_PROP_MOVEABLE) && !oldItem->hasProperty(CONST_PROP_BLOCKPATH))) {
-		auto it = g_game().browseFields.find(static_self_cast<Tile>());
+		auto it = g_game().browseFields.find(getTile());
 		if (it != g_game().browseFields.end()) {
-			int32_t index = it->second->getThingIndex(oldItem);
-			if (index != -1) {
-				it->second->replaceThing(index, newItem);
-				newItem->setParent(static_self_cast<Tile>());
+			auto lockedCylinder = it->second.lock();
+			if (lockedCylinder) {
+				int32_t index = lockedCylinder->getThingIndex(oldItem);
+				if (index != -1) {
+					lockedCylinder->replaceThing(index, newItem);
+					newItem->setParent(static_self_cast<Tile>());
+				}
 			}
 		}
 	} else if ((oldItem->hasProperty(CONST_PROP_MOVEABLE) || oldItem->getContainer()) || (oldItem->isWrapable() && !oldItem->hasProperty(CONST_PROP_MOVEABLE) && !oldItem->hasProperty(CONST_PROP_BLOCKPATH))) {
-		auto it = g_game().browseFields.find(static_self_cast<Tile>());
+		auto it = g_game().browseFields.find(getTile());
 		if (it != g_game().browseFields.end()) {
-			std::shared_ptr<Cylinder> oldParent = oldItem->getParent();
-			it->second->removeThing(oldItem, oldItem->getItemCount());
-			oldItem->setParent(oldParent);
+			auto lockedCylinder = it->second.lock();
+			if (lockedCylinder) {
+				std::shared_ptr<Cylinder> oldParent = oldItem->getParent();
+				lockedCylinder->removeThing(oldItem, oldItem->getItemCount());
+				oldItem->setParent(oldParent);
+			}
 		}
 	}
 
@@ -446,9 +455,12 @@ void Tile::onUpdateTileItem(std::shared_ptr<Item> oldItem, const ItemType &oldTy
 
 void Tile::onRemoveTileItem(const SpectatorHashSet &spectators, const std::vector<int32_t> &oldStackPosVector, std::shared_ptr<Item> item) {
 	if ((item->hasProperty(CONST_PROP_MOVEABLE) || item->getContainer()) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVEABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH))) {
-		auto it = g_game().browseFields.find(static_self_cast<Tile>());
+		auto it = g_game().browseFields.find(getTile());
 		if (it != g_game().browseFields.end()) {
-			it->second->removeThing(item, item->getItemCount());
+			auto lockedCylinder = it->second.lock();
+			if (lockedCylinder) {
+				lockedCylinder->removeThing(item, item->getItemCount());
+			}
 		}
 	}
 	for (const auto zone : getZones()) {
@@ -958,7 +970,7 @@ void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
 				const ItemType &oldType = Item::items[ground->getID()];
 
 				std::shared_ptr<Item> oldGround = ground;
-				ground->setParent(nullptr);
+				ground->resetParent();
 				g_game().ReleaseItem(ground);
 				ground = item;
 				resetTileFlags(oldGround);
@@ -976,7 +988,7 @@ void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
 					}
 
 					removeThing(oldSplash, 1);
-					oldSplash->setParent(nullptr);
+					oldSplash->resetParent();
 					g_game().ReleaseItem(oldSplash);
 					postRemoveNotification(oldSplash, nullptr, 0);
 					break;
@@ -1013,13 +1025,13 @@ void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
 							if (oldField->isReplaceable()) {
 								removeThing(oldField, 1);
 
-								oldField->setParent(nullptr);
+								oldField->resetParent();
 								g_game().ReleaseItem(oldField);
 								postRemoveNotification(oldField, nullptr, 0);
 								break;
 							} else {
 								// This magic field cannot be replaced.
-								item->setParent(nullptr);
+								item->resetParent();
 								g_game().ReleaseItem(item);
 								return;
 							}
@@ -1122,7 +1134,7 @@ void Tile::replaceThing(uint32_t index, std::shared_ptr<Thing> thing) {
 		const ItemType &newType = Item::items[item->getID()];
 		onUpdateTileItem(oldItem, oldType, item, newType);
 
-		oldItem->setParent(nullptr);
+		oldItem->resetParent();
 		return /*RETURNVALUE_NOERROR*/;
 	}
 }
@@ -1152,7 +1164,7 @@ void Tile::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 	}
 
 	if (item == ground) {
-		ground->setParent(nullptr);
+		ground->resetParent();
 		ground = nullptr;
 
 		SpectatorHashSet spectators;
@@ -1182,7 +1194,7 @@ void Tile::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 			}
 		}
 
-		item->setParent(nullptr);
+		item->resetParent();
 		items->erase(it);
 		onRemoveTileItem(spectators, oldStackPosVector, item);
 	} else {
@@ -1207,7 +1219,7 @@ void Tile::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 				}
 			}
 
-			item->setParent(nullptr);
+			item->resetParent();
 			items->erase(it);
 			items->decreaseDownItemCount();
 			onRemoveTileItem(spectators, oldStackPosVector, item);

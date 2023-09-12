@@ -3095,7 +3095,7 @@ std::shared_ptr<Item> Item::transform(uint16_t itemId, uint16_t itemCount /*= -1
 	std::shared_ptr<Tile> fromTile = cylinder->getTile();
 	if (fromTile) {
 		auto it = g_game().browseFields.find(fromTile);
-		if (it != g_game().browseFields.end() && it->second == cylinder) {
+		if (it != g_game().browseFields.end() && it->second.lock() == cylinder) {
 			cylinder = fromTile;
 		}
 	}
@@ -3116,7 +3116,7 @@ std::shared_ptr<Item> Item::transform(uint16_t itemId, uint16_t itemCount /*= -1
 	cylinder->replaceThing(itemIndex, newItem);
 	cylinder->postAddNotification(newItem, cylinder, itemIndex);
 
-	setParent(nullptr);
+	resetParent();
 	cylinder->postRemoveNotification(static_self_cast<Item>(), cylinder, itemIndex);
 	stopDecaying();
 	g_game().ReleaseItem(static_self_cast<Item>());

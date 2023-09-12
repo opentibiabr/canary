@@ -27,7 +27,6 @@ public:
 	static int32_t despawnRadius;
 
 	explicit Monster(const std::shared_ptr<MonsterType> mType);
-	~Monster();
 
 	// non-copyable
 	Monster(const Monster &) = delete;

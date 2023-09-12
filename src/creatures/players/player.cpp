@@ -45,7 +45,7 @@ Player::Player(ProtocolGame_ptr p) :
 Player::~Player() {
 	for (std::shared_ptr<Item> item : inventory) {
 		if (item) {
-			item->setParent(nullptr);
+			item->resetParent();
 			item->stopDecaying();
 		}
 	}
@@ -53,16 +53,6 @@ Player::~Player() {
 	for (const auto &it : depotLockerMap) {
 		it.second->removeInbox(inbox);
 		it.second->stopDecaying();
-	}
-
-	for (PreySlot* slot : preys) {
-		if (slot) {
-		}
-	}
-
-	for (TaskHuntingSlot* slot : taskHunting) {
-		if (slot) {
-		}
 	}
 
 	inbox->stopDecaying();
@@ -3534,7 +3524,7 @@ void Player::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 			// event methods
 			onRemoveInventoryItem(item);
 
-			item->setParent(nullptr);
+			item->resetParent();
 			inventory[index] = nullptr;
 		} else {
 			uint8_t newCount = static_cast<uint8_t>(std::max<int32_t>(0, item->getItemCount() - count));
@@ -3553,7 +3543,7 @@ void Player::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 		// event methods
 		onRemoveInventoryItem(item);
 
-		item->setParent(nullptr);
+		item->resetParent();
 		inventory[index] = nullptr;
 	}
 }

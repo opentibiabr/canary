@@ -35,7 +35,7 @@ public:
 		return getParent();
 	}
 
-	virtual void setParent(std::shared_ptr<Cylinder>) {
+	virtual void setParent(std::weak_ptr<Cylinder>) {
 		//
 	}
 

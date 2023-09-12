@@ -30,31 +30,34 @@ Container::Container(uint16_t initType, uint16_t initSize, bool initUnlocked /*=
 	unlocked(initUnlocked),
 	pagination(initPagination) { }
 
-Container::Container(std::shared_ptr<Tile> tile) :
-	Container(ITEM_BROWSEFIELD, 30, false, true) {
+std::shared_ptr<Container> Container::create(uint16_t type) {
+	return std::make_shared<Container>(type);
+}
+
+std::shared_ptr<Container> Container::create(uint16_t type, uint16_t size, bool unlocked /*= true*/, bool pagination /*= false*/) {
+	return std::make_shared<Container>(type, size, unlocked, pagination);
+}
+
+std::shared_ptr<Container> Container::create(std::shared_ptr<Tile> tile) {
+	auto container = std::make_shared<Container>(ITEM_BROWSEFIELD, 30, false, true);
 	TileItemVector* itemVector = tile->getItemList();
 	if (itemVector) {
 		for (auto &item : *itemVector) {
 			if (((item->getContainer() || item->hasProperty(CONST_PROP_MOVEABLE)) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVEABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH))) && !item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
-				itemlist.push_front(item);
-				item->setParent(getContainer());
+				container->itemlist.push_front(item);
+				item->setParent(container);
 			}
 		}
 	}
 
-	setParent(tile);
+	container->setParent(tile);
+	return container;
 }
 
 Container::~Container() {
 	if (getID() == ITEM_BROWSEFIELD) {
-		g_game().browseFields.erase(getTile());
-
 		for (std::shared_ptr<Item> item : itemlist) {
 			item->setParent(parent);
-		}
-	} else {
-		for (std::shared_ptr<Item> item : itemlist) {
-			item->setParent(nullptr);
 		}
 	}
 }
@@ -703,7 +706,7 @@ void Container::replaceThing(uint32_t index, std::shared_ptr<Thing> thing) {
 		onUpdateContainerItem(index, replacedItem, item);
 	}
 
-	replacedItem->setParent(nullptr);
+	replacedItem->resetParent();
 }
 
 void Container::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
@@ -735,7 +738,7 @@ void Container::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 			onRemoveContainerItem(index, item);
 		}
 
-		item->setParent(nullptr);
+		item->resetParent();
 		itemlist.erase(itemlist.begin() + index);
 	}
 }
@@ -894,7 +897,7 @@ void Container::removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient
 		}
 
 		itemlist.erase(it);
-		itemToRemove->setParent(nullptr);
+		itemToRemove->resetParent();
 	}
 }
 

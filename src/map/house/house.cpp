@@ -363,7 +363,7 @@ std::shared_ptr<HouseTransferItem> House::getTransferItem() {
 		return nullptr;
 	}
 
-	transfer_container.setParent(nullptr);
+	transfer_container.resetParent();
 	transferItem = HouseTransferItem::createHouseTransferItem(this);
 	transfer_container.addThing(transferItem);
 	return transferItem;
@@ -373,8 +373,7 @@ void House::resetTransferItem() {
 	if (transferItem) {
 		std::shared_ptr<Item> tmpItem = transferItem;
 		transferItem = nullptr;
-		transfer_container.setParent(nullptr);
-
+		transfer_container.resetParent();
 		transfer_container.removeThing(tmpItem, tmpItem->getItemCount());
 		g_game().ReleaseItem(tmpItem);
 	}

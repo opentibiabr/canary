@@ -30,10 +30,6 @@ Creature::~Creature() {
 		summon->setAttackedCreature(nullptr);
 		summon->removeMaster();
 	}
-
-	for (Condition* condition : conditions) {
-		condition->endCondition(static_self_cast<Creature>());
-	}
 }
 
 bool Creature::canSee(const Position &myPos, const Position &pos, int32_t viewRangeX, int32_t viewRangeY) {

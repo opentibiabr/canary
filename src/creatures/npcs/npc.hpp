@@ -104,7 +104,7 @@ public:
 		return false;
 	}
 
-	bool canInteract(const Position &pos, uint32_t range = 4) ;
+	bool canInteract(const Position &pos, uint32_t range = 4);
 	bool canSeeInvisibility() const override {
 		return true;
 	}

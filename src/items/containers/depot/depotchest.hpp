@@ -40,7 +40,7 @@ public:
 
 	std::shared_ptr<Cylinder> getParent() const override;
 	std::shared_ptr<Cylinder> getRealParent() const override {
-		return parent;
+		return parent.lock();
 	}
 
 private:

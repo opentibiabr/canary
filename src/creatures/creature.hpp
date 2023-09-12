@@ -493,9 +493,11 @@ public:
 	std::shared_ptr<Cylinder> getParent() const override final {
 		return tile;
 	}
-	void setParent(std::shared_ptr<Cylinder> cylinder) override final {
-		tile = std::static_pointer_cast<Tile>(cylinder);
-		position = tile->getPosition();
+	void setParent(std::weak_ptr<Cylinder> cylinder) override final {
+		if (!cylinder.expired()) {
+			tile = std::static_pointer_cast<Tile>(cylinder.lock());
+			position = tile->getPosition();
+		}
 	}
 
 	const Position &getPosition() override final {

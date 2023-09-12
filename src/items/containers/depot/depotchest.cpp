@@ -68,8 +68,9 @@ void DepotChest::postRemoveNotification(std::shared_ptr<Thing> thing, std::share
 }
 
 std::shared_ptr<Cylinder> DepotChest::getParent() const {
-	if (parent && parent->getParent()) {
-		return parent->getParent()->getParent();
+	auto parentLocked = parent.lock();
+	if (parentLocked && parentLocked->getParent()) {
+		return parentLocked->getParent()->getParent();
 	}
 	return nullptr;
 }

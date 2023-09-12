@@ -1,0 +1,14 @@
+[package]
+name = "beats"
+version = "0.1.0"
+edition = "2021"
+
+# Custom profile
+[profile.relwithdebinfo]
+inherits = "release"
+debug = true
+
+build = "build.rs"
+
+[lib]
+crate-type = ["staticlib"]

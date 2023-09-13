@@ -20,6 +20,9 @@ class Spawn;
 using CreatureHashSet = phmap::flat_hash_set<std::shared_ptr<Creature>>;
 using CreatureList = std::list<std::shared_ptr<Creature>>;
 
+using CreatureWeakHashMap = phmap::flat_hash_map<uint32_t, std::weak_ptr<Creature>>;
+using CreatureIDList = std::list<uint32_t>;
+
 class Monster final : public Creature {
 public:
 	static std::shared_ptr<Monster> createMonster(const std::string &name);
@@ -182,11 +185,31 @@ public:
 	bool searchTarget(TargetSearchType_t searchType = TARGETSEARCH_DEFAULT);
 	bool selectTarget(std::shared_ptr<Creature> creature);
 
-	const CreatureList &getTargetList() const {
-		return targetList;
+	CreatureList getTargetList() {
+		std::list<std::shared_ptr<Creature>> list;
+		for (auto it = targetIDList.begin(); it != targetIDList.end();) {
+			auto cid = *it;
+			if (auto targetCreature = targetListMap[cid].lock()) {
+				list.push_back(targetCreature);
+				++it;
+			} else {
+				it = targetIDList.erase(it);
+				targetListMap.erase(cid);
+			}
+		}
+		return list;
 	}
-	const CreatureHashSet &getFriendList() const {
-		return friendList;
+	CreatureHashSet getFriendList() {
+		CreatureHashSet set;
+		for (auto it = friendList.begin(); it != friendList.end();) {
+			if (auto friendCreature = it->second.lock()) {
+				set.insert(friendCreature);
+				++it;
+			} else {
+				it = friendList.erase(it);
+			}
+		}
+		return set;
 	}
 
 	bool isTarget(std::shared_ptr<Creature> creature);
@@ -301,8 +324,9 @@ public:
 	bool isImmune(CombatType_t combatType) const override;
 
 private:
-	CreatureHashSet friendList;
-	CreatureList targetList;
+	CreatureWeakHashMap friendList;
+	CreatureIDList targetIDList;
+	CreatureWeakHashMap targetListMap;
 
 	time_t timeToChangeFiendish = 0;
 

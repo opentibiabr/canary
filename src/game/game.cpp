@@ -1652,11 +1652,6 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 	return RETURNVALUE_NOERROR;
 }
 
-bool isMatchingCylinder(const std::weak_ptr<Cylinder> &weakCylinder, const std::shared_ptr<Cylinder> &targetCylinder) {
-	auto lockedCylinder = weakCylinder.lock();
-	return lockedCylinder && lockedCylinder == targetCylinder;
-}
-
 ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder, int32_t index, std::shared_ptr<Item> item, uint32_t count, std::shared_ptr<Item>* movedItem, uint32_t flags /*= 0*/, std::shared_ptr<Creature> actor /*=nullptr*/, std::shared_ptr<Item> tradeItem /* = nullptr*/, bool checkTile /* = true*/) {
 	if (fromCylinder == nullptr) {
 		g_logger().error("[{}] fromCylinder is nullptr", __FUNCTION__);
@@ -1669,8 +1664,7 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 
 	if (checkTile) {
 		if (std::shared_ptr<Tile> fromTile = fromCylinder->getTile()) {
-			auto it = browseFields.find(fromTile);
-			if (it != browseFields.end() && isMatchingCylinder(it->second, fromCylinder)) {
+			if (fromTile && browseFields.contains(fromTile) && browseFields[fromTile].lock() == fromCylinder) {
 				fromCylinder = fromTile;
 			}
 		}
@@ -2009,8 +2003,7 @@ ReturnValue Game::internalRemoveItem(std::shared_ptr<Item> item, int32_t count /
 	}
 	std::shared_ptr<Tile> fromTile = cylinder->getTile();
 	if (fromTile) {
-		auto it = browseFields.find(fromTile);
-		if (it != browseFields.end() && isMatchingCylinder(it->second, cylinder)) {
+		if (fromTile && browseFields.contains(fromTile) && browseFields[fromTile].lock() == cylinder) {
 			cylinder = fromTile;
 		}
 	}
@@ -2267,11 +2260,8 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 	}
 
 	std::shared_ptr<Tile> fromTile = cylinder->getTile();
-	if (fromTile) {
-		auto it = browseFields.find(fromTile);
-		if (it != browseFields.end() && isMatchingCylinder(it->second, cylinder)) {
-			cylinder = fromTile;
-		}
+	if (fromTile && browseFields.contains(fromTile) && browseFields[fromTile].lock() == cylinder) {
+		cylinder = fromTile;
 	}
 
 	int32_t itemIndex = cylinder->getThingIndex(item);

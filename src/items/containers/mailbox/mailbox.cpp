@@ -80,6 +80,16 @@ bool Mailbox::sendItem(Item* item) const {
 		return false;
 	}
 
+	if (item && item->getContainer() && item->getTile()) {
+		SpectatorHashSet spectators;
+		g_game().map.getSpectators(spectators, item->getTile()->getPosition(), false, true);
+		for (Creature* spectator : spectators) {
+			if (spectator && spectator->getPlayer()) {
+				spectator->getPlayer()->autoCloseContainers(item->getContainer());
+			}
+		}
+	}
+
 	Player* player = g_game().getPlayerByName(receiver, true);
 	std::string writer;
 	time_t date = time(0);

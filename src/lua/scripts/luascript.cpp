@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "lua/scripts/luascript.hpp"
+#include "lua/scripts/luascript.h"
 #include "lua/scripts/lua_environment.hpp"
 
 ScriptEnvironment::DBResultMap ScriptEnvironment::tempResults;
@@ -28,8 +28,8 @@ LuaScriptInterface::~LuaScriptInterface() {
 }
 
 bool LuaScriptInterface::reInitState() {
-	g_luaEnvironment().clearCombatObjects(this);
-	g_luaEnvironment().clearAreaObjects(this);
+	g_luaEnvironment.clearCombatObjects(this);
+	g_luaEnvironment.clearAreaObjects(this);
 
 	closeState();
 	return initState();
@@ -196,7 +196,7 @@ bool LuaScriptInterface::pushFunction(int32_t functionId) {
 }
 
 bool LuaScriptInterface::initState() {
-	luaState = g_luaEnvironment().getLuaState();
+	luaState = g_luaEnvironment.getLuaState();
 	if (!luaState) {
 		return false;
 	}
@@ -208,11 +208,7 @@ bool LuaScriptInterface::initState() {
 }
 
 bool LuaScriptInterface::closeState() {
-	if (LuaEnvironment::isShuttingDown()) {
-		luaState = nullptr;
-	}
-
-	if (!luaState || !g_luaEnvironment().getLuaState()) {
+	if (!g_luaEnvironment.getLuaState() || !luaState) {
 		return false;
 	}
 

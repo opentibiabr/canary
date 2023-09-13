@@ -10,17 +10,15 @@
 #include "pch.hpp"
 
 #include "items/functions/item/item_parse.hpp"
-#include "items/items.hpp"
-#include "items/weapons/weapons.hpp"
-#include "game/game.hpp"
-#include "utils/pugicast.hpp"
+#include "items/items.h"
+#include "items/weapons/weapons.h"
+#include "game/game.h"
+#include "utils/pugicast.h"
 
 Items::Items() = default;
 
 void Items::clear() {
 	items.clear();
-	ladders.clear();
-	dummys.clear();
 	nameToItems.clear();
 }
 
@@ -82,7 +80,7 @@ void Items::loadFromProtobuf() {
 
 		// This scenario should never happen but on custom assets this can break the loader.
 		if (!object.has_flags()) {
-			g_logger().warn("[Items::loadFromProtobuf] - Item with id '{}' is invalid and was ignored.", object.id());
+			SPDLOG_WARN("[Items::loadFromProtobuf] - Item with id '{}' is invalid and was ignored.", object.id());
 			continue;
 		}
 
@@ -203,15 +201,15 @@ bool Items::loadFromXml() {
 
 		auto fromIdAttribute = itemNode.attribute("fromid");
 		if (!fromIdAttribute) {
-			g_logger().warn("[Items::loadFromXml] - No item id found, use id or fromid");
+			SPDLOG_WARN("[Items::loadFromXml] - No item id found, use id or fromid");
 			continue;
 		}
 
 		auto toIdAttribute = itemNode.attribute("toid");
 		if (!toIdAttribute) {
-			g_logger().warn("[Items::loadFromXml] - "
-							"tag fromid: {} without toid",
-							fromIdAttribute.value());
+			SPDLOG_WARN("[Items::loadFromXml] - "
+						"tag fromid: {} without toid",
+						fromIdAttribute.value());
 			continue;
 		}
 
@@ -239,15 +237,20 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 	if (id >= items.size()) {
 		items.resize(id + 1);
 	}
-	ItemType &itemType = getItemType(id);
-	// Ids 0-100 are used for fluids in the XML
-	if (id >= 100 && (itemType.id == 0 && (itemType.name.empty() || itemType.name == asLowerCaseString("reserved sprite")))) {
+	ItemType &iType = items[id];
+	if (iType.id == 0 && (iType.name.empty() || iType.name == asLowerCaseString("reserved sprite"))) {
 		return;
 	}
-	itemType.id = id;
+
+	iType.id = id;
+
+	ItemType &itemType = getItemType(id);
+	if (itemType.id == 0) {
+		return;
+	}
 
 	if (itemType.loaded) {
-		g_logger().warn("[Items::parseItemNode] - Duplicate item with id: {}", id);
+		SPDLOG_WARN("[Items::parseItemNode] - Duplicate item with id: {}", id);
 		return;
 	}
 
@@ -294,13 +297,13 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 		if (parseAttribute != ItemParseAttributesMap.end()) {
 			ItemParse::initParse(tmpStrValue, attributeNode, valueAttribute, itemType);
 		} else {
-			g_logger().warn("[Items::parseItemNode] - Unknown key value: {}", keyAttribute.as_string());
+			SPDLOG_WARN("[Items::parseItemNode] - Unknown key value: {}", keyAttribute.as_string());
 		}
 	}
 
 	// Check bed items
 	if ((itemType.transformToFree != 0 || itemType.transformToOnUse[PLAYERSEX_FEMALE] != 0 || itemType.transformToOnUse[PLAYERSEX_MALE] != 0) && itemType.type != ITEM_TYPE_BED) {
-		g_logger().warn("[Items::parseItemNode] - Item {} is not set as a bed-type", itemType.id);
+		SPDLOG_WARN("[Items::parseItemNode] - Item {} is not set as a bed-type", itemType.id);
 	}
 }
 
@@ -321,9 +324,8 @@ const ItemType &Items::getItemType(size_t id) const {
 uint16_t Items::getItemIdByName(const std::string &name) {
 	auto result = nameToItems.find(asLowerCaseString(name));
 
-	if (result == nameToItems.end()) {
+	if (result == nameToItems.end())
 		return 0;
-	}
 
 	return result->second;
 }

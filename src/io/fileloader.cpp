@@ -9,9 +9,10 @@
 
 #include "pch.hpp"
 
-#include "io/fileloader.hpp"
+#include "io/fileloader.h"
 
 namespace OTB {
+
 	constexpr Identifier wildcard = { { '\0', '\0', '\0', '\0' } };
 
 	Loader::Loader(const std::string &fileName, const Identifier &acceptedIdentifier) :
@@ -104,4 +105,5 @@ namespace OTB {
 		props.init(&propBuffer[0], std::distance(propBuffer.begin(), escapedPropEnd));
 		return true;
 	}
+
 } // namespace OTB

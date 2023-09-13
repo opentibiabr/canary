@@ -10,8 +10,8 @@
 #include "pch.hpp"
 
 #include "lua/functions/core/network/network_message_functions.hpp"
-#include "creatures/players/player.hpp"
-#include "server/network/protocol/protocolstatus.hpp"
+#include "creatures/players/player.h"
+#include "server/network/protocol/protocolstatus.h"
 
 int NetworkMessageFunctions::luaNetworkMessageCreate(lua_State* L) {
 	// NetworkMessage()

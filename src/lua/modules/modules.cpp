@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "lua/modules/modules.hpp"
-#include "creatures/players/player.hpp"
-#include "game/game.hpp"
+#include "lua/modules/modules.h"
+#include "creatures/players/player.h"
+#include "game/game.h"
 
 Modules::Modules() :
 	scriptInterface("Modules Interface") {
@@ -46,7 +46,7 @@ Event_ptr Modules::getEvent(const std::string &nodeName) {
 bool Modules::registerEvent(Event_ptr event, const pugi::xml_node &) {
 	Module_ptr module { static_cast<Module*>(event.release()) };
 	if (module->getEventType() == MODULE_TYPE_NONE) {
-		g_logger().error("Trying to register event without type!");
+		SPDLOG_ERROR("Trying to register event without type!");
 		return false;
 	}
 
@@ -101,7 +101,7 @@ bool Module::configureEvent(const pugi::xml_node &node) {
 
 	pugi::xml_attribute typeAttribute = node.attribute("type");
 	if (!typeAttribute) {
-		g_logger().error("Missing type for module.");
+		SPDLOG_ERROR("Missing type for module.");
 		return false;
 	}
 
@@ -109,14 +109,14 @@ bool Module::configureEvent(const pugi::xml_node &node) {
 	if (tmpStr == "recvbyte") {
 		pugi::xml_attribute byteAttribute = node.attribute("byte");
 		if (!byteAttribute) {
-			g_logger().error("Missing byte for module typed recvbyte.");
+			SPDLOG_ERROR("Missing byte for module typed recvbyte.");
 			return false;
 		}
 
 		recvbyte = static_cast<uint8_t>(byteAttribute.as_int());
 		type = MODULE_TYPE_RECVBYTE;
 	} else {
-		g_logger().error("Invalid type for module.");
+		SPDLOG_ERROR("Invalid type for module.");
 		return false;
 	}
 
@@ -155,7 +155,7 @@ void Module::clearEvent() {
 void Module::executeOnRecvbyte(Player* player, NetworkMessage &msg) {
 	// onRecvbyte(player, msg, recvbyte)
 	if (!scriptInterface->reserveScriptEnv()) {
-		g_logger().error("Call stack overflow. Too many lua script calls being nested {}", player->getName());
+		SPDLOG_ERROR("Call stack overflow. Too many lua script calls being nested {}", player->getName());
 		return;
 	}
 

@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "items/containers/rewards/rewardchest.hpp"
+#include "items/containers/rewards/rewardchest.h"
 
 RewardChest::RewardChest(uint16_t type) :
 	Container(type) {

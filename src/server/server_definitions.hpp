@@ -7,7 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#pragma once
+#ifndef SRC_SERVER_SERVER_DEFINITIONS_HPP_
+#define SRC_SERVER_SERVER_DEFINITIONS_HPP_
 
 // Enums
 // Connection and networkmessage.
@@ -111,27 +112,29 @@ enum Supply_Stash_Actions_t : uint8_t {
 
 // Structs
 struct HighscoreCategory {
-	HighscoreCategory(const char* name, uint8_t id) :
-		name(name),
-		id(id) { }
+		HighscoreCategory(const char* name, uint8_t id) :
+			name(name),
+			id(id) { }
 
-	const char* name;
-	uint8_t id;
+		const char* name;
+		uint8_t id;
 };
 
 struct HighscoreCharacter {
-	HighscoreCharacter(std::string name, uint64_t points, uint32_t id, uint32_t rank, uint16_t level, uint8_t vocation) :
-		name(std::move(name)),
-		points(points),
-		id(id),
-		rank(rank),
-		level(level),
-		vocation(vocation) { }
+		HighscoreCharacter(std::string name, uint64_t points, uint32_t id, uint32_t rank, uint16_t level, uint8_t vocation) :
+			name(std::move(name)),
+			points(points),
+			id(id),
+			rank(rank),
+			level(level),
+			vocation(vocation) { }
 
-	std::string name;
-	uint64_t points;
-	uint32_t id;
-	uint32_t rank;
-	uint16_t level;
-	uint8_t vocation;
+		std::string name;
+		uint64_t points;
+		uint32_t id;
+		uint32_t rank;
+		uint16_t level;
+		uint8_t vocation;
 };
+
+#endif // SRC_SERVER_SERVER_DEFINITIONS_HPP_

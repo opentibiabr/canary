@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "config/configmanager.hpp"
+#include "config/configmanager.h"
 #include "game/scheduling/events_scheduler.hpp"
-#include "lua/scripts/scripts.hpp"
-#include "utils/pugicast.hpp"
+#include "lua/scripts/scripts.h"
+#include "utils/pugicast.h"
 
 bool EventsScheduler::loadScheduleEventFromXml() {
 	pugi::xml_document doc;
@@ -51,13 +51,13 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 		}
 
 		if (!eventScript.empty() && loadedScripts.contains(eventScript)) {
-			g_logger().warn("{} - Script declaration '{}' in duplicate 'data/XML/events.xml'.", __FUNCTION__, eventScript);
+			SPDLOG_WARN("{} - Script declaration '{}' in duplicate 'data/XML/events.xml'.", __FUNCTION__, eventScript);
 			continue;
 		}
 
 		loadedScripts.insert(eventScript);
 		if (!eventScript.empty() && !g_scripts().loadEventSchedulerScripts(eventScript)) {
-			g_logger().warn("{} - Can not load the file '{}' on '/events/scripts/scheduler/'", __FUNCTION__, eventScript);
+			SPDLOG_WARN("{} - Can not load the file '{}' on '/events/scripts/scheduler/'", __FUNCTION__, eventScript);
 			return false;
 		}
 
@@ -106,7 +106,7 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 
 			if (!modifiedRates.empty()) {
 				std::string ratesString = join(modifiedRates, ", ");
-				g_logger().warn("{} - Events '{}' and '{}' have the same rates [{}] on the same day.", __FUNCTION__, eventNode.attribute("name").as_string(), eventName.c_str(), ratesString);
+				SPDLOG_WARN("{} - Events '{}' and '{}' have the same rates [{}] on the same day.", __FUNCTION__, eventNode.attribute("name").as_string(), eventName.c_str(), ratesString);
 			}
 		}
 
@@ -116,7 +116,7 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 
 	for (const auto &event : eventScheduler) {
 		if (daysMath >= event.startDays && daysMath <= event.endDays) {
-			g_logger().info("Active EventScheduler: {}", event.name);
+			SPDLOG_INFO("Active EventScheduler: {}", event.name);
 		}
 	}
 	return true;

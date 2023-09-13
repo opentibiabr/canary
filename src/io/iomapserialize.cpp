@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "io/iomapserialize.hpp"
-#include "game/game.hpp"
-#include "items/bed.hpp"
+#include "io/iomapserialize.h"
+#include "game/game.h"
+#include "items/bed.h"
 
 void IOMapSerialize::loadHouseItems(Map* map) {
 	int64_t start = OTSYS_TIME();
@@ -48,7 +48,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 			loadItem(propStream, tile, true);
 		}
 	} while (result->next());
-	g_logger().info("Loaded house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
+	SPDLOG_INFO("Loaded house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
 }
 bool IOMapSerialize::saveHouseItems() {
 	bool success = DBTransaction::executeWithinTransaction([]() {
@@ -56,7 +56,7 @@ bool IOMapSerialize::saveHouseItems() {
 	});
 
 	if (!success) {
-		g_logger().error("[{}] Error occurred saving houses", __FUNCTION__);
+		SPDLOG_ERROR("[{}] Error occurred saving houses", __FUNCTION__);
 	}
 
 	return success;
@@ -96,14 +96,14 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 		return false;
 	}
 
-	g_logger().info("Saved house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
+	SPDLOG_INFO("Saved house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
 	return true;
 }
 
 bool IOMapSerialize::loadContainer(PropStream &propStream, Container* container) {
 	while (container->serializationCount > 0) {
 		if (!loadItem(propStream, container)) {
-			g_logger().warn("Deserialization error for container item: {}", container->getID());
+			SPDLOG_WARN("Deserialization error for container item: {}", container->getID());
 			return false;
 		}
 		container->serializationCount--;
@@ -111,7 +111,7 @@ bool IOMapSerialize::loadContainer(PropStream &propStream, Container* container)
 
 	uint8_t endAttr;
 	if (!propStream.read<uint8_t>(endAttr) || endAttr != 0) {
-		g_logger().warn("Deserialization error for container item: {}", container->getID());
+		SPDLOG_WARN("Deserialization error for container item: {}", container->getID());
 		return false;
 	}
 	return true;
@@ -148,7 +148,7 @@ bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent, bool isH
 				parent->internalAddThing(item);
 				item->startDecaying();
 			} else {
-				g_logger().warn("Deserialization error in {}", id);
+				SPDLOG_WARN("Deserialization error in {}", id);
 				delete item;
 				return false;
 			}
@@ -180,7 +180,7 @@ bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent, bool isH
 
 				g_game().transformItem(item, id);
 			} else {
-				g_logger().warn("Deserialization error in {}", id);
+				SPDLOG_WARN("Deserialization error in {}", id);
 			}
 		} else {
 			// The map changed since the last save, just read the attributes
@@ -291,7 +291,7 @@ bool IOMapSerialize::saveHouseInfo() {
 	});
 
 	if (!success) {
-		g_logger().error("[{}] Error occurred saving houses info", __FUNCTION__);
+		SPDLOG_ERROR("[{}] Error occurred saving houses info", __FUNCTION__);
 	}
 
 	return success;

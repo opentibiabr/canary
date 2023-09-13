@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "items/containers/depot/depotlocker.hpp"
+#include "items/containers/depot/depotlocker.h"
 
 DepotLocker::DepotLocker(uint16_t type, uint16_t size) :
 	Container(type, size), depotId(0) { }

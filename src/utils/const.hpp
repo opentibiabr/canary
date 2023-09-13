@@ -7,10 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#pragma once
+#ifndef SRC_UTILS_CONST_H_
+#define SRC_UTILS_CONST_H_
 
-static constexpr uint32_t MAX_LOOTCHANCE = 100000;
-static constexpr uint32_t MAX_STATICWALK = 100;
+const uint32_t MAX_LOOTCHANCE = 100000;
+const uint32_t MAX_STATICWALK = 100;
 
 static constexpr size_t NETWORKMESSAGE_PLAYERNAME_MAXLENGTH = 30;
 static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 65500;
@@ -23,7 +24,7 @@ static constexpr int32_t CHANNEL_PRIVATE = 0xFFFF;
 
 // This is in miliseconds
 static constexpr int32_t EVENT_IMBUEMENT_INTERVAL = 1000;
-static constexpr uint8_t IMBUEMENT_MAX_TIER = 3;
+static constexpr uint8_t IMBUEMENT_MAX_TIER = 4;
 
 static constexpr int32_t STORAGEVALUE_EMOTE = 30008;
 static constexpr int32_t STORAGEVALUE_PROMOTION = 30018;
@@ -57,3 +58,5 @@ static constexpr int32_t IMMOVABLE_ACTION_ID = 100;
 
 #define IS_IN_KEYRANGE(key, range) \
 	(key >= PSTRG_##range##_START && ((key - PSTRG_##range##_START) <= PSTRG_##range##_SIZE))
+
+#endif // SRC_UTILS_CONST_H_

@@ -11,9 +11,9 @@
 
 #include "lua/functions/items/item_functions.hpp"
 
-#include "game/game.hpp"
-#include "items/item.hpp"
-#include "items/decay/decay.hpp"
+#include "game/game.h"
+#include "items/item.h"
+#include "items/decay/decay.h"
 
 class Imbuement;
 
@@ -589,15 +589,15 @@ int ItemFunctions::luaItemMoveTo(lua_State* L) {
 
 	Cylinder* toCylinder;
 	if (isUserdata(L, 2)) {
-		const LuaData_t type = getUserdataType(L, 2);
+		const LuaDataType type = getUserdataType(L, 2);
 		switch (type) {
-			case LuaData_t::Container:
+			case LuaData_Container:
 				toCylinder = getUserdata<Container>(L, 2);
 				break;
-			case LuaData_t::Player:
+			case LuaData_Player:
 				toCylinder = getUserdata<Player>(L, 2);
 				break;
-			case LuaData_t::Tile:
+			case LuaData_Tile:
 				toCylinder = getUserdata<Tile>(L, 2);
 				break;
 			default:
@@ -885,18 +885,5 @@ int ItemFunctions::luaItemGetClassification(lua_State* L) {
 	}
 
 	lua_pushnumber(L, item->getClassification());
-	return 1;
-}
-
-int ItemFunctions::luaItemCanReceiveAutoCarpet(lua_State* L) {
-	// item:canReceiveAutoCarpet()
-	const Item* item = getUserdata<Item>(L, 1);
-	if (!item) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
-		pushBoolean(L, false);
-		return 1;
-	}
-
-	pushBoolean(L, item->canReceiveAutoCarpet());
 	return 1;
 }

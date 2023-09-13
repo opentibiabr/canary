@@ -12,10 +12,10 @@
 #include "io/io_wheel.hpp"
 
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "creatures/players/player.hpp"
-#include "creatures/combat/spells.hpp"
+#include "creatures/players/player.h"
+#include "creatures/combat/spells.h"
 
-#include "utils/tools.hpp"
+#include "utils/tools.h"
 
 /**
  * @brief This namespace groups together variables, functions, and class definitions within a specific scope.
@@ -49,7 +49,9 @@ namespace InternalPlayerWheel {
 	void registerWheelSpellTable(const T &spellData, const std::string &name, WheelSpellGrade_t gradeType) {
 		if (name == "Any_Focus_Mage_Spell") {
 			for (const std::string &focusSpellName : m_focusSpells) {
-				g_logger().debug("[{}] registered any spell: {}", __FUNCTION__, focusSpellName);
+				if (isDevMode()) {
+					spdlog::info("[{}] registered any spell: {}", __FUNCTION__, focusSpellName);
+				}
 				registerWheelSpellTable(spellData, focusSpellName, gradeType);
 			}
 			return;
@@ -57,7 +59,9 @@ namespace InternalPlayerWheel {
 
 		auto spell = g_spells().getInstantSpellByName(name);
 		if (spell) {
-			g_logger().debug("[{}] registering instant spell with name {}", __FUNCTION__, spell->getName());
+			if (isDevMode()) {
+				spdlog::info("[{}] registering instant spell with name {}", __FUNCTION__, spell->getName());
+			}
 			// Increase data
 			const auto &increaseData = spellData.increase;
 			if (increaseData.damage > 0) {
@@ -94,7 +98,7 @@ namespace InternalPlayerWheel {
 			}
 			spell->setWheelOfDestinyUpgraded(true);
 		} else {
-			g_logger().warn("[{}] Spell with name {} could not be found and was ignored", __FUNCTION__, name);
+			spdlog::warn("[{}] Spell with name {} could not be found and was ignored", __FUNCTION__, name);
 		}
 	}
 
@@ -155,9 +159,9 @@ bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 
 	// Register enum with default values for each vocation
 	if (!reload) {
-		g_logger().debug("Loading wheel of destiny... [Success]");
+		spdlog::info("Loading wheel of destiny... [Success]");
 	} else {
-		g_logger().debug("Reloading wheel of destiny... [Success]");
+		spdlog::info("Reloading wheel of destiny... [Success]");
 	}
 	return true;
 }
@@ -203,7 +207,7 @@ int8_t IOWheel::getSlotPrioritaryOrder(WheelSlots_t slot) const {
 		return 4;
 	}
 
-	g_logger().error("[{}] unknown whell slot type': {}", __FUNCTION__, std::to_string(slot));
+	spdlog::error("[{}] unknown whell slot type': {}", __FUNCTION__, std::to_string(slot));
 	return -1;
 }
 

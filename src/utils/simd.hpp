@@ -7,7 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#pragma once
+#ifndef SRC_UTILS_SIMD_HPP_
+#define SRC_UTILS_SIMD_HPP_
 
 // #define __DISABLE_VECTORIZATION__ 1
 
@@ -64,3 +65,5 @@ __forceinline unsigned int _mm_ctz(unsigned int value) {
 #else
 	#define _mm_ctz __builtin_ctz
 #endif
+
+#endif // SRC_UTILS_SIMD_HPP_

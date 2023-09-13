@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/vocations/vocation.hpp"
+#include "creatures/players/vocations/vocation.h"
 
-#include "utils/pugicast.hpp"
-#include "utils/tools.hpp"
+#include "utils/pugicast.h"
+#include "utils/tools.h"
 
 bool Vocations::loadFromXml() {
 	pugi::xml_document doc;
@@ -26,7 +26,7 @@ bool Vocations::loadFromXml() {
 	for (auto vocationNode : doc.child("vocations").children()) {
 		pugi::xml_attribute attr;
 		if (!(attr = vocationNode.attribute("id"))) {
-			g_logger().warn("[{}] - Missing vocation id", __FUNCTION__);
+			SPDLOG_WARN("[{}] - Missing vocation id", __FUNCTION__);
 			continue;
 		}
 
@@ -119,14 +119,14 @@ bool Vocations::loadFromXml() {
 					if (skill_id <= SKILL_LAST) {
 						voc.skillMultipliers[skill_id] = pugi::cast<float>(childNode.attribute("multiplier").value());
 					} else {
-						g_logger().warn("[Vocations::loadFromXml] - "
-										"No valid skill id: {} for vocation: {}",
-										skill_id, voc.id);
+						SPDLOG_WARN("[Vocations::loadFromXml] - "
+									"No valid skill id: {} for vocation: {}",
+									skill_id, voc.id);
 					}
 				} else {
-					g_logger().warn("[Vocations::loadFromXml] - "
-									"Missing skill id for vocation: {}",
-									voc.id);
+					SPDLOG_WARN("[Vocations::loadFromXml] - "
+								"Missing skill id for vocation: {}",
+								voc.id);
 				}
 			} else if (strcasecmp(childNode.name(), "mitigation") == 0) {
 				pugi::xml_attribute factorAttribute = childNode.attribute("multiplier");
@@ -172,9 +172,9 @@ bool Vocations::loadFromXml() {
 Vocation* Vocations::getVocation(uint16_t id) {
 	auto it = vocationsMap.find(id);
 	if (it == vocationsMap.end()) {
-		g_logger().warn("[Vocations::getVocation] - "
-						"Vocation {} not found",
-						id);
+		SPDLOG_WARN("[Vocations::getVocation] - "
+					"Vocation {} not found",
+					id);
 		return nullptr;
 	}
 	return &it->second;

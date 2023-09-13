@@ -14,12 +14,12 @@
 #include "creatures/players/account/account.hpp"
 #include "creatures/players/wheel/wheel_definitions.hpp"
 #include "io/io_bosstiary.hpp"
-#include "config/configmanager.hpp"
-#include "creatures/creature.hpp"
-#include "lua/creature/creatureevent.hpp"
+#include "config/configmanager.h"
+#include "creatures/creature.h"
+#include "lua/creature/creatureevent.h"
 #include "declarations.hpp"
 #include "game/functions/game_reload.hpp"
-#include "game/game.hpp"
+#include "game/game.h"
 
 #define registerEnumClass(luaState, enumClassType)               \
 	{                                                            \
@@ -89,7 +89,6 @@ void LuaEnums::init(lua_State* L) {
 	initFightModeEnums(L);
 	initItemAttributeEnums(L);
 	initItemTypeEnums(L);
-	initFluidEnums(L);
 	initItemIdEnums(L);
 	initPlayerFlagEnums(L);
 	initReportReasonEnums(L);
@@ -264,7 +263,6 @@ void LuaEnums::initCombatEnums(lua_State* L) {
 	registerEnum(L, COMBAT_ICEDAMAGE);
 	registerEnum(L, COMBAT_HOLYDAMAGE);
 	registerEnum(L, COMBAT_DEATHDAMAGE);
-	registerEnum(L, COMBAT_AGONYDAMAGE);
 	registerEnum(L, COMBAT_NEUTRALDAMAGE);
 }
 
@@ -578,7 +576,6 @@ void LuaEnums::initConstMeEnums(lua_State* L) {
 	registerEnum(L, CONST_ME_DIVINE_GRENADE);
 	registerEnum(L, CONST_ME_DIVINE_EMPOWERMENT);
 	registerEnum(L, CONST_ME_WATER_FLOATING_THRASH);
-	registerEnum(L, CONST_ME_AGONY);
 }
 
 void LuaEnums::initConstAniEnums(lua_State* L) {
@@ -807,12 +804,6 @@ void LuaEnums::initItemTypeEnums(lua_State* L) {
 	registerEnum(L, ITEM_TYPE_UNASSIGNED);
 }
 
-void LuaEnums::initFluidEnums(lua_State* L) {
-	for (auto value : magic_enum::enum_values<Fluids_t>()) {
-		registerEnumClass(L, value);
-	}
-}
-
 void LuaEnums::initItemIdEnums(lua_State* L) {
 	registerEnum(L, ITEM_BAG);
 	registerEnum(L, ITEM_SHOPPING_BAG);
@@ -984,7 +975,6 @@ void LuaEnums::initTextColorEnums(lua_State* L) {
 	registerEnum(L, TEXTCOLOR_BLUE);
 	registerEnum(L, TEXTCOLOR_LIGHTGREEN);
 	registerEnum(L, TEXTCOLOR_LIGHTBLUE);
-	registerEnum(L, TEXTCOLOR_DARKBROWN);
 	registerEnum(L, TEXTCOLOR_MAYABLUE);
 	registerEnum(L, TEXTCOLOR_DARKRED);
 	registerEnum(L, TEXTCOLOR_LIGHTGREY);

@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "lua/callbacks/creaturecallback.hpp"
+#include "lua/callbacks/creaturecallback.h"
 
 bool CreatureCallback::startScriptInterface(int32_t scriptId) {
 	if (scriptId == -1) {
@@ -15,7 +15,7 @@ bool CreatureCallback::startScriptInterface(int32_t scriptId) {
 	}
 
 	if (!scriptInterface->reserveScriptEnv()) {
-		g_logger().error(
+		SPDLOG_ERROR(
 			"[CreatureCallback::startScriptInterface] - {} {} Call stack overflow. Too many lua script calls being nested.",
 			getCreatureClass(targetCreature),
 			targetCreature->getName()

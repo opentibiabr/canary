@@ -14,8 +14,6 @@
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/scripts/script_environment.hpp"
 
-bool LuaEnvironment::shuttingDown = false;
-
 LuaEnvironment::LuaEnvironment() :
 	LuaScriptInterface("Main Interface") { }
 
@@ -23,21 +21,7 @@ LuaEnvironment::~LuaEnvironment() {
 	if (!testInterface) {
 		delete testInterface;
 	}
-
-	LuaEnvironment::shuttingDown = true;
 	closeState();
-}
-
-lua_State* LuaEnvironment::getLuaState() {
-	if (LuaEnvironment::isShuttingDown()) {
-		return luaState;
-	}
-
-	if (luaState == nullptr) {
-		initState();
-	}
-
-	return luaState;
 }
 
 bool LuaEnvironment::initState() {
@@ -172,9 +156,9 @@ void LuaEnvironment::executeTimerEvent(uint32_t eventIndex) {
 		env->setScriptId(timerEventDesc.scriptId, this);
 		callFunction(timerEventDesc.parameters.size());
 	} else {
-		g_logger().error("[LuaEnvironment::executeTimerEvent - Lua file {}] "
-						 "Call stack overflow. Too many lua script calls being nested",
-						 getLoadingFile());
+		SPDLOG_ERROR("[LuaEnvironment::executeTimerEvent - Lua file {}] "
+					 "Call stack overflow. Too many lua script calls being nested",
+					 getLoadingFile());
 	}
 
 	// free resources

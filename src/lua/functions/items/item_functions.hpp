@@ -18,7 +18,7 @@
 class ItemFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "Item", "", ItemFunctions::luaItemCreate);
+		registerSharedClass(L, "Item", "", ItemFunctions::luaItemCreate);
 		registerMetaMethod(L, "Item", "__eq", ItemFunctions::luaUserdataCompare);
 
 		registerMethod(L, "Item", "isItem", ItemFunctions::luaItemIsItem);

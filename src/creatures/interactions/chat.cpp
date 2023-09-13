@@ -154,7 +154,7 @@ bool ChatChannel::executeCanJoinEvent(const std::shared_ptr<Player> &player) {
 	lua_State* L = scriptInterface->getLuaState();
 
 	scriptInterface->pushFunction(canJoinEvent);
-	LuaScriptInterface::pushUserdata(L, &player);
+	LuaScriptInterface::pushUserdata(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
 	return scriptInterface->callFunction(1);
@@ -180,7 +180,7 @@ bool ChatChannel::executeOnJoinEvent(const std::shared_ptr<Player> &player) {
 	lua_State* L = scriptInterface->getLuaState();
 
 	scriptInterface->pushFunction(onJoinEvent);
-	LuaScriptInterface::pushUserdata(L, &player);
+	LuaScriptInterface::pushUserdata(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
 	return scriptInterface->callFunction(1);
@@ -206,7 +206,7 @@ bool ChatChannel::executeOnLeaveEvent(const std::shared_ptr<Player> &player) {
 	lua_State* L = scriptInterface->getLuaState();
 
 	scriptInterface->pushFunction(onLeaveEvent);
-	LuaScriptInterface::pushUserdata(L, &player);
+	LuaScriptInterface::pushUserdata(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
 	return scriptInterface->callFunction(1);
@@ -232,7 +232,7 @@ bool ChatChannel::executeOnSpeakEvent(const std::shared_ptr<Player> &player, Spe
 	lua_State* L = scriptInterface->getLuaState();
 
 	scriptInterface->pushFunction(onSpeakEvent);
-	LuaScriptInterface::pushUserdata(L, &player);
+	LuaScriptInterface::pushUserdata(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
 	lua_pushnumber(L, type);

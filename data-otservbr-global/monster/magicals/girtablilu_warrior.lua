@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Girtablilu Warrior")
 local monster = {}
 
 monster.description = "a girtablilu warrior"
-monster.experience = 5800
+monster.experience = 15800
 monster.outfit = {
 	lookType = 1407,
 	lookHead = 114,
@@ -26,8 +26,8 @@ monster.Bestiary = {
 	Locations = "Ruins of Nuur"
 }
 
-monster.health = 8500
-monster.maxHealth = 8500
+monster.health = 10500
+monster.maxHealth = 10500
 monster.race = "blood"
 monster.corpse = 36800
 monster.speed = 180

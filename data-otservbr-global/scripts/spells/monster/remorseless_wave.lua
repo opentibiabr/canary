@@ -37,7 +37,7 @@ function onTargetTile(cid, pos)
 	spellCallback(param)
 end
 
-combat:setCallback(CALLBACK_PARAM_TARGETTILE, "onTargetTile")
+setCombatCallback(combat, CALLBACK_PARAM_TARGETTILE, "onTargetTile")
 
 local spell = Spell("instant")
 

@@ -1,6 +1,6 @@
 local function formulaFunction(player, level, maglevel)
-	local min = (level / 5) + (maglevel * 4)
-	local max = (level / 5) + (maglevel * 7)
+	local min = (level / 5) + (maglevel * 10)
+	local max = (level / 5) + (maglevel * 16)
 	return -min, -max
 end
 
@@ -46,7 +46,7 @@ spell:mana(110)
 spell:isPremium(false)
 spell:needDirection(true)
 spell:blockWalls(true)
-spell:cooldown(6 * 1000)
+spell:cooldown(3 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:needLearn(false)
 spell:vocation("sorcerer;true", "master sorcerer;true")

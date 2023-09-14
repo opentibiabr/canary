@@ -45,6 +45,11 @@ function playerLogin.onLogin(player)
 	else
 		player:sendTextMessage(MESSAGE_STATUS, SERVER_MOTD)
 		player:sendTextMessage(MESSAGE_LOGIN, string.format("Your last visit in " .. SERVER_NAME .. ": %s.", os.date("%d. %b %Y %X", player:getLastLoginSaved())))
+		-- Vip system
+		if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and player:isVip()) then
+			local days = player:getVipDays()
+			player:sendTextMessage(MESSAGE_LOGIN, string.format('You have %s vip day%s left.', (days == 0xFFFF and 'infinite amount of' or days), (days == 1 and '' or 's')))
+		end
 	end
 
 	-- Reset bosstiary time
@@ -60,11 +65,11 @@ function playerLogin.onLogin(player)
 	local defaultTown = "Thais" -- default town where player is teleported if his home town is in premium area
 	local freeTowns = { "Ab'Dendriel", "Carlin", "Kazordoon", "Thais", "Venore", "Rookgaard", "Dawnport", "Dawnport Tutorial", "Island of Destiny" } -- towns in free account area
 
-	if isPremium(player) == false and table.contains(freeTowns, player:getTown():getName()) == false then
+	if isPremium(player) == false and isInArray(freeTowns, player:getTown():getName()) == false then
 		local town = player:getTown()
 		local sex = player:getSex()
 		local home = getHouseByPlayerGUID(getPlayerGUID(player))
-		town = table.contains(freeTowns, town:getName()) and town or Town(defaultTown)
+		town = isInArray(freeTowns, town:getName()) and town or Town(defaultTown)
 		player:teleportTo(town:getTemplePosition())
 		player:setTown(town)
 		player:sendTextMessage(MESSAGE_FAILURE, "Your premium time has expired.")
@@ -180,6 +185,8 @@ function playerLogin.onLogin(player)
 		end
 	end
 
+	-- Attempt to check if we're in a hazard zone
+	player:updateHazard()
 	-- Loyalty system
 	player:initializeLoyaltySystem()
 
@@ -252,3 +259,4 @@ function playerLogin.onLogin(player)
 	return true
 end
 playerLogin:register()
+

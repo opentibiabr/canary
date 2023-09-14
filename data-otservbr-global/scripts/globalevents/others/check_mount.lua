@@ -15,7 +15,7 @@ function rentedMounts.onThink(interval)
 		end
 
 		outfit = player:getOutfit()
-		if table.contains(mountIds, outfit.lookMount) then
+		if isInArray(mountIds, outfit.lookMount) then
 			outfit.lookMount = nil
 			player:setOutfit(outfit)
 		end

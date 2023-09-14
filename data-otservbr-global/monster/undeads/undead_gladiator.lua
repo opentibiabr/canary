@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Undead Gladiator")
 local monster = {}
 
 monster.description = "an undead gladiator"
-monster.experience = 800
+monster.experience = 850
 monster.outfit = {
 	lookType = 306,
 	lookHead = 0,
@@ -20,7 +20,7 @@ monster.Bestiary = {
 	toKill = 1000,
 	FirstUnlock = 50,
 	SecondUnlock = 500,
-	CharmsPoints = 25,
+	CharmsPoints = 50,
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Arena and Zoo Quarter, Krailos."

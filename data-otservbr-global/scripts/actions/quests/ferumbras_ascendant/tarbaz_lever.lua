@@ -3,8 +3,8 @@ local config = {
 		name = "Tarbaz",
 		position = Position(33459, 32844, 11)
 	},
-
-	timeToDefeat = 30 * 60,
+	timeToFightAgain = 20 * 60 * 60,
+	timeToDefeatBoss = 30 * 60,
 	playerPositions = {
 		{ pos = Position(33418, 32849, 11), teleport = Position(33459, 32848, 11), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33418, 32850, 11), teleport = Position(33459, 32848, 11), effect = CONST_ME_TELEPORT },
@@ -20,6 +20,10 @@ local config = {
 	storage = Storage.FerumbrasAscension.TarbazTimer
 }
 
-local lever = BossLever(config)
-lever:uid(1027)
-lever:register()
+local ferumbrasAscendantTarbazLever = Action()
+function ferumbrasAscendantTarbazLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	return CreateDefaultLeverBoss(player, config)
+end
+
+ferumbrasAscendantTarbazLever:uid(1027)
+ferumbrasAscendantTarbazLever:register()

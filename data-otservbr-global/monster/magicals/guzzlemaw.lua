@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Guzzlemaw")
 local monster = {}
 
 monster.description = "a guzzlemaw"
-monster.experience = 6050
+monster.experience = 8050
 monster.outfit = {
 	lookType = 584,
 	lookHead = 0,
@@ -27,8 +27,8 @@ monster.Bestiary = {
 		(south of the Depot and west of the entrance to Roshamuul Prison)."
 	}
 
-monster.health = 6400
-monster.maxHealth = 6400
+monster.health = 8400
+monster.maxHealth = 8400
 monster.race = "blood"
 monster.corpse = 20151
 monster.speed = 200

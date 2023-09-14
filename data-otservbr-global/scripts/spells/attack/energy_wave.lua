@@ -1,6 +1,6 @@
 local function formulaFunction(player, level, maglevel)
-	local min = (level / 5) + (maglevel * 4.5)
-	local max = (level / 5) + (maglevel * 9)
+	local min = (level / 5) + (maglevel * 8.5)
+	local max = (level / 5) + (maglevel * 15)
 	return -min, -max
 end
 
@@ -45,8 +45,8 @@ spell:castSound(SOUND_EFFECT_TYPE_SPELL_ENERGY_WAVE)
 spell:level(38)
 spell:mana(170)
 spell:needDirection(true)
-spell:cooldown(8 * 1000)
-spell:groupCooldown(2 * 1000)
+spell:cooldown(2 * 1000)
+spell:groupCooldown(1 * 1000)
 spell:needLearn(false)
 spell:vocation("sorcerer;true", "master sorcerer;true")
 spell:register()

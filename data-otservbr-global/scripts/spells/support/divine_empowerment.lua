@@ -5,19 +5,19 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 
-	local grade = creature:revelationStageWOD("Divine Empowerment")
-	if grade == 0 then
+	local grade = creature:upgradeSpellsWORD("Divine Empowerment")
+	if grade == WHEEL_GRADE_NONE then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
 
 	local cooldown = 0
-	if grade >= 3 then
+	if grade >= WHEEL_GRADE_MAX then
 		cooldown = 24
-	elseif grade >= 2 then
+	elseif grade >= WHEEL_GRADE_UPGRADED then
 		cooldown = 28
-	elseif grade >= 1 then
+	elseif grade >= WHEEL_GRADE_REGULAR then
 		cooldown = 32
 	end
 	local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 268)
@@ -47,7 +47,7 @@ spell:isPremium(true)
 spell:range(7)
 spell:isSelfTarget(true)
 spell:isAggressive(false)
-spell:cooldown(1000) -- Cooldown is calculated on the casting
+spell:cooldown(5 * 1000) -- Cooldown is calculated on the casting
 spell:groupCooldown(2 * 1000)
 spell:needLearn(true)
 spell:vocation("paladin;true", "royal paladin;true")

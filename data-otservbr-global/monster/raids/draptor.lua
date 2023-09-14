@@ -22,7 +22,7 @@ monster.Bestiary = {
 	SecondUnlock = 3,
 	CharmsPoints = 50,
 	Stars = 3,
-	Occurrence = 3,
+	Occurrence = 10,
 	Locations = "Zao, north east of Dragonblaze Peaks during raid. There are up to 10 draptors per raid, \z
 		while 6 of them may also appear in mission 8 of Wrath of the Emperor Quest."
 	}

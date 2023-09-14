@@ -4,8 +4,8 @@ local config = {
 		position = Position(33617, 32561, 13),
 	},
 	requiredLevel = 250,
-
-	timeToDefeat = 15 * 60,
+	timeToFightAgain = 20 * 60 * 60,
+	timeToDefeatBoss = 15 * 60,
 	playerPositions = {
 		{ pos = Position(33638, 32562, 13), teleport = Position(33617, 32567, 13), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33639, 32562, 13), teleport = Position(33617, 32567, 13), effect = CONST_ME_TELEPORT },
@@ -21,6 +21,11 @@ local config = {
 	storage = Storage.Quest.U12_00.TheDreamCourts.FacelessBaneTime
 }
 
-local lever = BossLever(config)
-lever:uid(1039)
-lever:register()
+local threatenedLever = Action()
+
+function threatenedLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	return CreateDefaultLeverBoss(player, config)
+end
+
+threatenedLever:uid(1039)
+threatenedLever:register()

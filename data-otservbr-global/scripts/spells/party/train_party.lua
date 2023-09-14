@@ -59,7 +59,7 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 
-	creature:addMana(-(mana - baseMana), false)
+	creature:addMana(-(mana - baseMana), FALSE)
 	creature:addManaSpent((mana - baseMana))
 
 	for _, targetPlayer in ipairs(affectedList) do

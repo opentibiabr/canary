@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Giant Spider")
 local monster = {}
 
 monster.description = "a giant spider"
-monster.experience = 900
+monster.experience = 2900
 monster.outfit = {
 	lookType = 38,
 	lookHead = 0,
@@ -35,8 +35,8 @@ monster.Bestiary = {
 		Second floor of Krailos Spider Lair , Caverna Exanima."
 	}
 
-monster.health = 1300
-monster.maxHealth = 1300
+monster.health = 2300
+monster.maxHealth = 2300
 monster.race = "venom"
 monster.corpse = 5977
 monster.speed = 120

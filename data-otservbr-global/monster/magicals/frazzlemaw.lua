@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Frazzlemaw")
 local monster = {}
 
 monster.description = "a frazzlemaw"
-monster.experience = 3740
+monster.experience = 6740
 monster.outfit = {
 	lookType = 594,
 	lookHead = 0,
@@ -26,8 +26,8 @@ monster.Bestiary = {
 	Locations = "Lower Roshamuul, Guzzlemaw Valley, the entrance to Upper Roshamuul."
 	}
 
-monster.health = 4100
-monster.maxHealth = 4100
+monster.health = 6100
+monster.maxHealth = 6100
 monster.race = "blood"
 monster.corpse = 20233
 monster.speed = 200

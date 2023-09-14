@@ -70,7 +70,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 	if size == 0 then
 		reward = Game.createItem(item.itemid, item.type)
 		if not reward then
-			logger.error("[questSystem1.onUse] failed to create reward item")
+			Spdlog.error("[questSystem1.onUse] failed to create reward item")
 			return false
 		end
 
@@ -88,7 +88,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 			local originalItem = container:getItem(i)
 			local newItem = Game.createItem(originalItem.itemid, originalItem.type)
 			if not newItem then
-				logger.error("[questSystem1.onUse] failed to create new item")
+				Spdlog.error("[questSystem1.onUse] failed to create new item")
 				return false
 			end
 			local newActionId = originalItem:getActionId()
@@ -135,7 +135,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 		for i = 1, size do
 			local tmp = items[i]
 			if reward:addItemEx(tmp) ~= RETURNVALUE_NOERROR then
-				logger.warn("[questSystem1.onUse] - Could not add quest reward to container")
+				Spdlog.warn("[questSystem1.onUse] - Could not add quest reward to container")
 			end
 		end
 		local ret = ItemType(reward.itemid)
@@ -167,7 +167,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 		end
 	end
 
-	if table.contains(hotaQuest, item.uid) then
+	if isInArray(hotaQuest, item.uid) then
 		if player:getStorageValue(Storage.TheAncientTombs.DefaultStart) ~= 1 then
 			player:setStorageValue(Storage.TheAncientTombs.DefaultStart, 1)
 		end

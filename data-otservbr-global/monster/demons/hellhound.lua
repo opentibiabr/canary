@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Hellhound")
 local monster = {}
 
 monster.description = "a hellhound"
-monster.experience = 5440
+monster.experience = 8440
 monster.outfit = {
 	lookType = 240,
 	lookHead = 0,
@@ -27,8 +27,8 @@ monster.Bestiary = {
 		Roshamuul Prison, Chyllfroest, Oramond Dungeon, The Extension Site and under the Asura Palace."
 	}
 
-monster.health = 7500
-monster.maxHealth = 7500
+monster.health = 8500
+monster.maxHealth = 8500
 monster.race = "blood"
 monster.corpse = 6331
 monster.speed = 180

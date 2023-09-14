@@ -4,8 +4,8 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_SMALLPLANTS)
 combat:setArea(createCombatArea(AREA_RING1_BURST3))
 
 function onGetFormulaValues(player, level, maglevel)
-	local min = (level / 5) + (maglevel * 7)
-	local max = (level / 5) + (maglevel * 10.5)
+	local min = (level * 2) + (maglevel * 17)  
+	local max = (level * 2.2) + (maglevel * 19.5)
 	return -min, -max
 end
 
@@ -18,20 +18,20 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 
-	local grade = creature:revelationStageWOD("Twin Burst")
-	if grade == 0 then
+	local grade = creature:upgradeSpellsWORD("Twin Burst")
+	if grade == WHEEL_GRADE_NONE then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
 
 	local cooldown = 0
-	if grade >= 3 then
-		cooldown = 14
-	elseif grade >= 2 then
-		cooldown = 18
-	elseif grade >= 1 then
-		cooldown = 22
+	if grade >= WHEEL_GRADE_MAX then
+		cooldown = 4
+	elseif grade >= WHEEL_GRADE_UPGRADED then
+		cooldown = 6
+	elseif grade >= WHEEL_GRADE_REGULAR then
+		cooldown = 8
 	end
 
 	var.instantName = "Twin Burst"

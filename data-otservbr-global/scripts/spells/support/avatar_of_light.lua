@@ -8,20 +8,20 @@ function spell.onCastSpell(creature, variant)
 		return false
 	end
 
-	local grade = creature:revelationStageWOD("Avatar of Light")
-	if grade == 0 then
+	local grade = creature:upgradeSpellsWORD("Avatar of Light")
+	if grade == WHEEL_GRADE_NONE then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
 
 	local cooldown = 0
-	if grade >= 3 then
-		cooldown = 60
-	elseif grade >= 2 then
-		cooldown = 90
-	elseif grade >= 1 then
-		cooldown = 120
+	if grade >= WHEEL_GRADE_MAX then
+		cooldown = 5
+	elseif grade >= WHEEL_GRADE_UPGRADED then
+		cooldown = 5
+	elseif grade >= WHEEL_GRADE_REGULAR then
+		cooldown = 5
 	end
 	local duration = 15000
 	condition:setTicks(duration)

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Demon")
 local monster = {}
 
 monster.description = "a demon"
-monster.experience = 6000
+monster.experience = 10000
 monster.outfit = {
 	lookType = 35,
 	lookHead = 0,
@@ -29,8 +29,8 @@ monster.Bestiary = {
 		Alchemist Quarter, Magician Quarter, Chyllfroest, Oramond Dungeon, Abandoned Sewers."
 	}
 
-monster.health = 8200
-monster.maxHealth = 8200
+monster.health = 10200
+monster.maxHealth = 10200
 monster.race = "fire"
 monster.corpse = 5995
 monster.speed = 128

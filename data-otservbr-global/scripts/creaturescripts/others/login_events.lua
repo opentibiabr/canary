@@ -3,6 +3,11 @@ function loginEvents.onLogin(player)
 
 	local events = {
 		--Monster
+		"CriticalLife",
+		"CriticalMana",
+		"DodgeLife",
+		"DodgeMana",
+		"TaskCreature",
 		"LowerRoshamuul",
 		--Others
 		"AdvanceSave",

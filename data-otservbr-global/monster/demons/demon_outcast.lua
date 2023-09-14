@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Demon Outcast")
 local monster = {}
 
 monster.description = "a demon outcast"
-monster.experience = 6200
+monster.experience = 8200
 monster.outfit = {
 	lookType = 590,
 	lookHead = 0,
@@ -26,8 +26,8 @@ monster.Bestiary = {
 	Locations = "Roshamuul Prison."
 	}
 
-monster.health = 6900
-monster.maxHealth = 6900
+monster.health = 8900
+monster.maxHealth = 8900
 monster.race = "blood"
 monster.corpse = 20215
 monster.speed = 148

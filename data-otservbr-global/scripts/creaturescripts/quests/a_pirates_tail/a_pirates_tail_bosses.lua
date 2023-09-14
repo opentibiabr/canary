@@ -8,6 +8,7 @@ function tentuglysHeadDeath.onDeath(creature, corpse, killer, mostDamage, unjust
 		if player and player:getStorageValue(Storage.Quest.U12_60.APiratesTail.TentuglyKilled) < 1 then
 			player:setStorageValue(Storage.Quest.U12_60.APiratesTail.TentuglyKilled, 1) -- Access to wreckoning
 			player:addMount(175)
+			player:addOutfit(1372, 1371)
 		end
 	end
 end

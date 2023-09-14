@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Destroyer")
 local monster = {}
 
 monster.description = "a destroyer"
-monster.experience = 2500
+monster.experience = 7500
 monster.outfit = {
 	lookType = 236,
 	lookHead = 0,
@@ -26,8 +26,8 @@ monster.Bestiary = {
 	Locations = "Pits of Inferno, Formorgar Mines, Alchemist Quarter, Oramond Dungeon."
 	}
 
-monster.health = 3700
-monster.maxHealth = 3700
+monster.health = 4700
+monster.maxHealth = 4700
 monster.race = "undead"
 monster.corpse = 6319
 monster.speed = 150

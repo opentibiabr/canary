@@ -6,8 +6,8 @@ local area = createCombatArea(AREA_WAVE7, AREADIAGONAL_WAVE7)
 combat:setArea(area)
 
 function onGetFormulaValues(player, level, maglevel)
-	local min = (level / 5) + (maglevel * 2.8) + 16
-	local max = (level / 5) + (maglevel * 4.4) + 28 -- TODO: Formulas (TibiaWiki says ~Strong Flame Strike but we need more acurracy)
+	local min = (level / 5) + (maglevel * 8.8) + 16
+	local max = (level / 5) + (maglevel * 13.4) + 28 -- TODO: Formulas (TibiaWiki says ~Strong Flame Strike but we need more acurracy)
 	return -min, -max
 end
 combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
@@ -27,7 +27,7 @@ spell:level(38)
 spell:mana(120)
 spell:isPremium(true)
 spell:needDirection(true)
-spell:cooldown(4 * 1000)
+spell:cooldown(3 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:needLearn(false)
 spell:vocation("sorcerer;true", "master sorcerer;true")

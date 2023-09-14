@@ -1,5 +1,5 @@
 local config = {
-	bossName = "Ascending Ferumbras",
+	bossName = "Ferumbras Mortal Shell",
 	summonName = "Rift Invader",
 	bossPos = Position(33392, 31473, 14),
 	centerRoom = Position(33392, 31473, 14), -- Center Room
@@ -75,7 +75,8 @@ function ferumbrasAscendantLever.onUse(player, item, fromPosition, target, toPos
 				spectator:remove()
 			end
 		end
-
+		
+		Game.createMonster(config.bossName, config.bossPos, true, true)
 		for x = 33269, 33271 do
 			for y = 31477, 31481 do
 				local playerTile = Tile(Position(x, y, 14)):getTopCreature()
@@ -83,7 +84,7 @@ function ferumbrasAscendantLever.onUse(player, item, fromPosition, target, toPos
 					playerTile:getPosition():sendMagicEffect(CONST_ME_POFF)
 					playerTile:teleportTo(config.newPos)
 					playerTile:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-					playerTile:setStorageValue(Storage.FerumbrasAscension.FerumbrasTimer, os.time() + 280 * 60 * 3600) -- 14 days
+					playerTile:setStorageValue(Storage.FerumbrasAscension.FerumbrasTimer, os.time() + 14 * 86400) -- 14 days
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have 30 minutes to kill and loot this boss. Otherwise you will lose that chance and will be kicked out.")
 					addEvent(clearFerumbrasRoom, 60 * config.time * 1000, player:getId(), config.centerRoom, config.range, config.range, config.exitPosition)
 
@@ -95,11 +96,12 @@ function ferumbrasAscendantLever.onUse(player, item, fromPosition, target, toPos
 						end
 					end
 
-					Game.createMonster(config.bossName, config.bossPos, true, true)
+					-- Game.createMonster(config.bossName, config.bossPos, true, true)
 					item:transform(8912)
 				end
 			end
 		end
+		
 	elseif item.itemid == 8912 then
 		item:transform(8911)
 		return true

@@ -1,2 +1,85 @@
 <?xml version="1.0"?>
-<monsters />
+<monsters>
+	<monster centerx="2866" centery="2082" centerz="11" radius="3">
+		<monster name="Castle Barrier" x="1" y="-2" z="11" spawntime="3600" />
+		<monster name="Castle Barrier" x="1" y="-1" z="11" spawntime="3600" direction="3" />
+		<monster name="Castle Barrier" x="1" y="0" z="11" spawntime="3600" direction="3" />
+		<monster name="Castle Barrier" x="1" y="1" z="11" spawntime="3600" direction="3" />
+		<monster name="Castle Barrier" x="1" y="2" z="11" spawntime="3600" />
+	</monster>
+	<monster centerx="2886" centery="2082" centerz="11" radius="10">
+		<monster name="Castle Barrier" x="5" y="-5" z="11" spawntime="3600" direction="1" />
+		<monster name="Castle Barrier" x="-4" y="-4" z="11" spawntime="3600" direction="3" />
+		<monster name="Castle Barrier" x="5" y="-4" z="11" spawntime="3600" direction="1" />
+		<monster name="Castle Barrier" x="-4" y="-3" z="11" spawntime="3600" direction="3" />
+		<monster name="Castle Barrier" x="5" y="-3" z="11" spawntime="3600" direction="1" />
+		<monster name="Castle Barrier" x="-4" y="-2" z="11" spawntime="3600" direction="3" />
+		<monster name="Castle Barrier" x="5" y="-2" z="11" spawntime="3600" direction="1" />
+		<monster name="Castle Barrier" x="-4" y="-1" z="11" spawntime="3600" direction="3" />
+		<monster name="Castle Barrier" x="5" y="-1" z="11" spawntime="3600" direction="1" />
+		<monster name="Castle Barrier" x="-1" y="1" z="11" spawntime="3600" direction="2" />
+		<monster name="Castle Barrier" x="0" y="1" z="11" spawntime="3600" direction="2" />
+		<monster name="Castle Barrier" x="1" y="1" z="11" spawntime="3600" direction="2" />
+		<monster name="Castle Barrier" x="2" y="1" z="11" spawntime="3600" direction="2" />
+		<monster name="Castle Barrier" x="3" y="1" z="11" spawntime="3600" direction="2" />
+		<monster name="Castle Barrier" x="-8" y="7" z="11" spawntime="3600" direction="3" />
+		<monster name="Castle Barrier" x="-8" y="8" z="11" spawntime="3600" direction="3" />
+		<monster name="Castle Barrier" x="-8" y="9" z="11" spawntime="3600" direction="3" />
+	</monster>
+	<monster centerx="2870" centery="2088" centerz="11" radius="1">
+		<monster name="Castle Barrier" x="-1" y="-1" z="11" spawntime="3600" />
+		<monster name="Castle Barrier" x="0" y="-1" z="11" spawntime="3600" />
+		<monster name="Castle Barrier" x="1" y="-1" z="11" spawntime="3600" />
+	</monster>
+	<monster centerx="2864" centery="2078" centerz="12" radius="5">
+		<monster name="Castle Barrier" x="-3" y="-1" z="12" spawntime="3600" />
+		<monster name="Castle Barrier" x="-2" y="-1" z="12" spawntime="3600" />
+		<monster name="Castle Barrier" x="-1" y="-1" z="12" spawntime="3600" />
+		<monster name="Castle Barrier" x="0" y="-1" z="12" spawntime="3600" />
+		<monster name="Castle Barrier" x="1" y="-1" z="12" spawntime="3600" />
+	</monster>
+	<monster centerx="2868" centery="2092" centerz="12" radius="1">
+		<monster name="Castle Barrier" x="-1" y="-1" z="12" spawntime="3600" direction="1" />
+		<monster name="Castle Barrier" x="-1" y="0" z="12" spawntime="3600" direction="1" />
+		<monster name="Castle Barrier" x="-1" y="1" z="12" spawntime="3600" direction="1" />
+	</monster>
+	<monster centerx="2868" centery="2094" centerz="12" radius="1">
+		<monster name="Castle Barrier" x="-1" y="0" z="12" spawntime="3600" direction="1" />
+		<monster name="Castle Barrier" x="-1" y="1" z="12" spawntime="3600" direction="1" />
+	</monster>
+	<monster centerx="2868" centery="2096" centerz="12" radius="1">
+		<monster name="Castle Barrier" x="-1" y="0" z="12" spawntime="3600" direction="1" />
+		<monster name="Castle Barrier" x="-1" y="1" z="12" spawntime="3600" direction="1" />
+	</monster>
+	<monster centerx="2883" centery="2073" centerz="13" radius="1">
+		<monster name="Castle Barrier" x="0" y="-1" z="13" spawntime="3600" />
+		<monster name="Castle Barrier" x="1" y="-1" z="13" spawntime="3600" />
+	</monster>
+	<monster centerx="2885" centery="2073" centerz="13" radius="1">
+		<monster name="Castle Barrier" x="0" y="-1" z="13" spawntime="3600" />
+		<monster name="Castle Barrier" x="1" y="-1" z="13" spawntime="3600" />
+	</monster>
+	<monster centerx="2887" centery="2073" centerz="13" radius="1">
+		<monster name="Castle Barrier" x="0" y="-1" z="13" spawntime="3600" />
+		<monster name="Castle Barrier" x="1" y="-1" z="13" spawntime="3600" />
+	</monster>
+	<monster centerx="2868" centery="2095" centerz="13" radius="1">
+		<monster name="Castle Barrier" x="-1" y="0" z="13" spawntime="3600" />
+		<monster name="Castle Barrier" x="-1" y="1" z="13" spawntime="3600" direction="3" />
+	</monster>
+	<monster centerx="2868" centery="2097" centerz="13" radius="1">
+		<monster name="Castle Barrier" x="-1" y="0" z="13" spawntime="3600" direction="3" />
+	</monster>
+	<monster centerx="2854" centery="2080" centerz="14" radius="1">
+		<monster name="Castle Barrier" x="-1" y="-1" z="14" spawntime="3600" />
+		<monster name="Castle Barrier" x="-1" y="0" z="14" spawntime="3600" />
+		<monster name="Castle Barrier" x="-1" y="1" z="14" spawntime="3600" direction="3" />
+	</monster>
+	<monster centerx="2854" centery="2082" centerz="14" radius="1">
+		<monster name="Castle Barrier" x="-1" y="0" z="14" spawntime="3600" direction="3" />
+		<monster name="Castle Barrier" x="-1" y="1" z="14" spawntime="3600" />
+	</monster>
+	<monster centerx="2854" centery="2083" centerz="14" radius="1">
+		<monster name="Castle Barrier" x="-1" y="1" z="14" spawntime="3600" />
+	</monster>
+</monsters>

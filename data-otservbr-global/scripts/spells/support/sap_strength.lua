@@ -10,7 +10,7 @@ local function targetFunction(creature, target)
 
 	local buff = 90
 	if creature and creature:getPlayer() then
-		local grade = creature:upgradeSpellsWOD("Sap Strength")
+		local grade = creature:upgradeSpellsWORD("Sap Strength")
 		if grade == WHEEL_GRADE_UPGRADED then
 			buff = 80
 		end
@@ -22,7 +22,7 @@ local function targetFunction(creature, target)
 
 	local gradeBuff = 0
 	if creature and creature:getPlayer() then
-		gradeBuff = creature:upgradeSpellsWOD("Drain_Body_Spells")
+		gradeBuff = creature:upgradeSpellsWORD("Drain_Body_Spells")
 	end
 	condition:setParameter(CONDITION_PARAM_DRAIN_BODY, gradeBuff)
 
@@ -74,8 +74,8 @@ spell:castSound(SOUND_EFFECT_TYPE_SPELL_SAP_STRENGTH)
 spell:level(275)
 spell:mana(300)
 spell:isSelfTarget(true)
-spell:cooldown(12 * 1000)
-spell:groupCooldown(2 * 1000, 12 * 1000)
+spell:cooldown(6 * 1000)
+spell:groupCooldown(1 * 1000, 1 * 1000)
 spell:vocation("sorcerer;true", "master sorcerer;true")
 spell:needLearn(false)
 spell:register()

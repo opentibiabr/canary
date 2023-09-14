@@ -14,7 +14,7 @@ end
 combat:setCallback(CALLBACK_PARAM_CHAINPICKER, "canChain")
 
 function getChainValue(creature)
-	local targets = 5
+	local targets = 6
 	local player = creature:getPlayer()
 	if creature and player then
 		targets = targets + player:getWheelSpellAdditionalTarget("Chivalrous Challenge")

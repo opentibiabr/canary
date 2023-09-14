@@ -4,8 +4,8 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HOLYAREA)
 combat:setArea(createCombatArea(AREA_CIRCLE3X3))
 
 function onGetFormulaValues(player, level, maglevel)
-	local min = (level / 5) + (maglevel * 4)
-	local max = (level / 5) + (maglevel * 6)
+	local min = (level * 1.5) + (maglevel * 1.5)
+	local max = (level * 2) + (maglevel * 3.5)
 	return -min, -max
 end
 
@@ -26,8 +26,8 @@ spell:level(50)
 spell:mana(160)
 spell:isPremium(true)
 spell:isSelfTarget(true)
-spell:cooldown(4 * 1000)
-spell:groupCooldown(2 * 1000)
+spell:cooldown(2 * 1000)
+spell:groupCooldown(1 * 1000)
 spell:needLearn(false)
 spell:vocation("paladin;true", "royal paladin;true")
 spell:register()

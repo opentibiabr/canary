@@ -498,7 +498,7 @@ public:
 
 	phmap::flat_hash_map<std::shared_ptr<Tile>, std::weak_ptr<Container>> browseFields;
 
-	void internalRemoveItems(const std::vector<std::shared_ptr<Item>> itemVector, uint32_t amount, bool stackable);
+	void internalRemoveItems(const std::vector<std::shared_ptr<Item>> &itemVector, uint32_t amount, bool stackable);
 
 	std::shared_ptr<BedItem> getBedBySleeper(uint32_t guid) const;
 	void setBedSleeper(std::shared_ptr<BedItem> bed, uint32_t guid);

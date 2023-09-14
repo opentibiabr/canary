@@ -9240,7 +9240,7 @@ void Game::removeGuild(uint32_t guildId) {
 	guilds.erase(guildId);
 }
 
-void Game::internalRemoveItems(const std::vector<std::shared_ptr<Item>> itemVector, uint32_t amount, bool stackable) {
+void Game::internalRemoveItems(const std::vector<std::shared_ptr<Item>> &itemVector, uint32_t amount, bool stackable) {
 	if (stackable) {
 		for (std::shared_ptr<Item> item : itemVector) {
 			if (item->getItemCount() > amount) {

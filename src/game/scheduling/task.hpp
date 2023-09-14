@@ -14,12 +14,12 @@ public:
 	// DO NOT allocate this class on the stack
 	Task(std::function<void(void)> &&f, std::string context) :
 		context(std::move(context)), func(std::move(f)) {
-		assert(!context.empty() && "Context cannot be empty!");
+		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
 	Task(std::function<void(void)> &&f, std::string context, uint32_t delay) :
 		delay(delay), context(std::move(context)), func(std::move(f)) {
-		assert(!context.empty() && "Context cannot be empty!");
+		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
 	virtual ~Task() = default;

@@ -16,8 +16,11 @@
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
-	if (getID() == ITEM_GOLD_POUCH) {
+	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM));
+	if (getID() == ITEM_GOLD_POUCH || isStoreInbox()) {
 		pagination = true;
+		m_maxItems = 2000;
+		maxSize = 32;
 	}
 }
 
@@ -229,10 +232,86 @@ std::ostringstream &Container::getContentDescription(std::ostringstream &os, boo
 	return os;
 }
 
+bool Container::isStoreInbox() const {
+	return getID() == ITEM_STORE_INBOX;
+}
+
+bool Container::isStoreInboxFiltered() const {
+	auto attribute = getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
+	if (isStoreInbox() && !attribute.empty() && attribute != "All") {
+		return true;
+	}
+
+	return false;
+}
+
+std::deque<Item*> Container::getStoreInboxFilteredItems() const {
+	const auto enumName = getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
+	ItemDeque storeInboxFilteredList;
+	if (isStoreInboxFiltered()) {
+		for (Item* item : getItemList()) {
+			auto itemId = item->getID();
+			auto attribute = item->getCustomAttribute("unWrapId");
+			uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
+			if (unWrapId != 0) {
+				itemId = unWrapId;
+			}
+			const auto &itemType = Item::items.getItemType(itemId);
+			auto primaryType = toPascalCase(itemType.m_primaryType);
+			auto name = toPascalCase(enumName);
+			g_logger().debug("Get filtered items, primaty type {}, enum name {}", primaryType, name);
+			if (primaryType == name) {
+				storeInboxFilteredList.push_back(item);
+			}
+		}
+	}
+
+	return storeInboxFilteredList;
+}
+
+phmap::flat_hash_set<ContainerCategory_t> Container::getStoreInboxValidCategories() const {
+	phmap::flat_hash_set<ContainerCategory_t> validCategories;
+	for (const auto &item : itemlist) {
+		auto itemId = item->getID();
+		auto attribute = item->getCustomAttribute("unWrapId");
+		uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
+		if (unWrapId != 0) {
+			itemId = unWrapId;
+		}
+		const auto &itemType = Item::items.getItemType(itemId);
+		auto convertedString = toPascalCase(itemType.m_primaryType);
+		g_logger().debug("Store item '{}', primary type {}", itemId, convertedString);
+		auto category = magic_enum::enum_cast<ContainerCategory_t>(convertedString);
+		if (category.has_value()) {
+			g_logger().debug("Adding valid category {}", static_cast<uint8_t>(category.value()));
+			validCategories.insert(category.value());
+		}
+	}
+
+	return validCategories;
+}
+
+Item* Container::getFilteredItemByIndex(size_t index) const {
+	const auto &filteredItems = getStoreInboxFilteredItems();
+	if (index >= filteredItems.size()) {
+		return nullptr;
+	}
+
+	auto item = filteredItems[index];
+
+	auto it = std::find(itemlist.begin(), itemlist.end(), item);
+	if (it == itemlist.end()) {
+		return nullptr;
+	}
+
+	return *it;
+}
+
 Item* Container::getItemByIndex(size_t index) const {
 	if (index >= size()) {
 		return nullptr;
 	}
+
 	return itemlist[index];
 }
 
@@ -366,22 +445,21 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing &addThing, uint32_
 	}
 
 	if (const Container* topParentContainer = getTopParentContainer()) {
-		uint32_t maxItem = static_cast<uint32_t>(g_configManager().getNumber(MAX_ITEM));
 		if (const Container* addContainer = item->getContainer()) {
 			uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
 			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER));
 			if (addContainerCount + topParentContainer->getContainerHoldingCount() > maxContainer) {
-				return RETURNVALUE_NOTPOSSIBLE;
+				return RETURNVALUE_CONTAINERISFULL;
 			}
 
 			uint32_t addItemCount = addContainer->getItemHoldingCount() + 1;
-			if (addItemCount + topParentContainer->getItemHoldingCount() > maxItem) {
-				return RETURNVALUE_NOTPOSSIBLE;
+			if (addItemCount + topParentContainer->getItemHoldingCount() > m_maxItems) {
+				return RETURNVALUE_CONTAINERISFULL;
 			}
 		}
 
-		if (topParentContainer->getItemHoldingCount() + 1 > maxItem) {
-			return RETURNVALUE_NOTPOSSIBLE;
+		if (topParentContainer->getItemHoldingCount() + 1 > m_maxItems) {
+			return RETURNVALUE_CONTAINERISFULL;
 		}
 	}
 

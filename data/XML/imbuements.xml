@@ -1,7 +1,9 @@
 <imbuements>
 	<base id="1" name="Basic" price="5000" protectionPrice="10000" percent="90" removecost="15000" duration="72000" />
 	<base id="2" name="Intricate" price="25000" protectionPrice="30000" percent="70" removecost="15000" duration="72000" />
-	<base id="3" name="Powerful" price="100000" protectionPrice="50000" percent="50" removecost="15000" duration="72000" />
+	<base id="3" name="Powerful" price="100000" protectionPrice="50000" percent="40" removecost="15000" duration="72000" />
+	<base id="4" name="Ultra" price="500000" protectionPrice="100000" percent="30" removecost="15000" duration="122000" />
+
 
 	<!-- Category Names -->
 	<category id="0" name="Elemental Damage" agressive="1" />
@@ -127,30 +129,45 @@
 		<attribute key="item" value="9633" count="15" />
 	</imbuement>
 	<imbuement name="Vampirism" base="3" category="1" iconid="46" premium="1" storage="50488">
-		<attribute key="description" value="Converts 25% of damage to HP with a chance of 100%." />
-		<attribute key="effect" type="skill" value="lifeleech" bonus="2500" chance="100" />
+		<attribute key="description" value="Converts 30% of damage to HP with a chance of 100%." />
+		<attribute key="effect" type="skill" value="lifeleech" bonus="1500" chance="100" />
 		<attribute key="item" value="9685" count="25" />
 		<attribute key="item" value="9633" count="15" />
 		<attribute key="item" value="9663" count="5" />
 	</imbuement>
+	<imbuement name="Vampirism" base="4" category="1" iconid="43" premium="1" storage="0">
+		<attribute key="description" value="Converts 50% of damage to HP with a chance of 100%." />
+		<attribute key="effect" type="skill" value="lifeleech" bonus="2000" chance="100" />
+		<attribute key="item" value="9685" count="50" />
+		<attribute key="item" value="9633" count="30" />
+		<attribute key="item" value="9663" count="10" />
+	</imbuement>
+
 	<!-- Mana Leech Imbuement -->
 	<imbuement name="Void" base="1" category="2" iconid="49" premium="0" storage="0">
-		<attribute key="description" value="Converts 3% of damage to MP with a chance of 100%." />
+		<attribute key="description" value="Converts 5% of damage to MP with a chance of 100%." />
 		<attribute key="effect" type="skill" value="manaleech" bonus="300" chance="100" />
 		<attribute key="item" value="11492" count="25" />
 	</imbuement>
 	<imbuement name="Void" base="2" category="2" iconid="49" premium="1" storage="0">
-		<attribute key="description" value="Converts 5% of damage to MP with a chance of 100%." />
-		<attribute key="effect" type="skill" value="manaleech" bonus="500" chance="100" />
+		<attribute key="description" value="Converts 8% of damage to MP with a chance of 100%." />
+		<attribute key="effect" type="skill" value="manaleech" bonus="600" chance="100" />
 		<attribute key="item" value="11492" count="25" />
 		<attribute key="item" value="20200" count="25" />
 	</imbuement>
 	<imbuement name="Void" base="3" category="2" iconid="49" premium="1" storage="50494">
-		<attribute key="description" value="Converts 8% of damage to MP with a chance of 100%." />
-		<attribute key="effect" type="skill" value="manaleech" bonus="800" chance="100" />
+		<attribute key="description" value="Converts 15% of damage to MP with a chance of 100%." />
+		<attribute key="effect" type="skill" value="manaleech" bonus="900" chance="100" />
 		<attribute key="item" value="11492" count="25" />
 		<attribute key="item" value="20200" count="25" />
 		<attribute key="item" value="22730" count="5" />
+	</imbuement>
+	<imbuement name="Void" base="4" category="2" iconid="49" premium="1" storage="0">
+		<attribute key="description" value="Converts 30% of damage to MP with a chance of 100%." />
+		<attribute key="effect" type="skill" value="manaleech" bonus="1300" chance="100" />
+		<attribute key="item" value="11492" count="50" />
+		<attribute key="item" value="20200" count="50" />
+		<attribute key="item" value="22730" count="10" />
 	</imbuement>
 	<!-- Critical Imbuement -->
 	<imbuement name="Strike" base="1" category="3" iconid="1" premium="0" storage="0">
@@ -165,11 +182,18 @@
 		<attribute key="item" value="10311" count="25" />
 	</imbuement>
 	<imbuement name="Strike" base="3" category="3" iconid="1" premium="1" storage="50501">
-		<attribute key="description" value="Raises crit hit damage by 50% and crit hit chance by 10%." />
-		<attribute key="effect" type="skill" value="critical" bonus="50" chance="10" />
+		<attribute key="description" value="Raises crit hit damage by 40% and crit hit chance by 15%." />
+		<attribute key="effect" type="skill" value="critical" bonus="40" chance="15" />
 		<attribute key="item" value="11444" count="20" />
 		<attribute key="item" value="10311" count="25" />
 		<attribute key="item" value="22728" count="5" />
+	</imbuement>
+	<imbuement name="Strike" base="4" category="3" iconid="1" premium="1" storage="0">
+		<attribute key="description" value="Raises crit hit damage by 80% and crit hit chance by 30%." />
+		<attribute key="effect" type="skill" value="critical" bonus="80" chance="30" />
+		<attribute key="item" value="11444" count="150" />
+		<attribute key="item" value="10311" count="155" />
+		<attribute key="item" value="22728" count="100" />
 	</imbuement>
 	<!-- Protections Imbuements -->
 	<imbuement name="Lich Shroud" base="1" category="4" iconid="25" premium="0" storage="0">
@@ -421,10 +445,17 @@
 		<attribute key="item" value="25702" count="10" />
 	</imbuement>
 	<imbuement name="Featherweight" base="3" category="17" iconid="75" premium="1" storage="0">
-		<attribute key="description" value="Raises capacity by 15." />
-		<attribute key="effect" type="capacity" value="15" />
-		<attribute key="item" value="25694" count="20" />
-		<attribute key="item" value="25702" count="10" />
-		<attribute key="item" value="20205" count="5" />
+		<attribute key="description" value="Raises capacity by 20." />
+		<attribute key="effect" type="capacity" value="20" />
+		<attribute key="item" value="25694" count="50" />
+		<attribute key="item" value="25702" count="50" />
+		<attribute key="item" value="20205" count="50" />
+	</imbuement>
+	<imbuement name="Featherweight" base="4" category="17" iconid="73" premium="1" storage="0">
+		<attribute key="description" value="Raises capacity by 5000." />
+		<attribute key="effect" type="capacity" value="5000" />
+		<attribute key="item" value="25694" count="200" />
+		<attribute key="item" value="25702" count="200" />
+		<attribute key="item" value="20205" count="200" />
 	</imbuement>
 </imbuements>

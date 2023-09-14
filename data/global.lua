@@ -50,8 +50,8 @@ SERVER_MOTD = configManager.getString(configKeys.SERVER_MOTD)
 AUTH_TYPE = configManager.getString(configKeys.AUTH_TYPE)
 
 -- Bestiary charm
-GLOBAL_CHARM_GUT = 120 -- 20% more chance to get creature products from looting
-GLOBAL_CHARM_SCAVENGE = 125 -- 25% more chance to get creature products from skinning
+GLOBAL_CHARM_GUT = 0
+GLOBAL_CHARM_SCAVENGE = 0
 
 --WEATHER
 weatherConfig = {
@@ -72,13 +72,13 @@ SCHEDULE_SPAWN_RATE = 100
 PROPOSED_STATUS = 1
 MARRIED_STATUS = 2
 PROPACCEPT_STATUS = 3
-LOOK_MARRIAGE_DESCR = true
+LOOK_MARRIAGE_DESCR = TRUE
 ITEM_WEDDING_RING = 3004
 ITEM_ENGRAVED_WEDDING_RING = 9585
 
 -- Scarlett Etzel
 SCARLETT_MAY_TRANSFORM = 0
-SCARLETT_MAY_DIE = 0
+SCARLETT_MAY_DIE = 1
 
 ropeSpots = {386, 421, 386, 7762, 12202, 12936, 14238, 17238, 23363, 21965, 21966, 21967, 21968}
 specialRopeSpots = { 12935 }

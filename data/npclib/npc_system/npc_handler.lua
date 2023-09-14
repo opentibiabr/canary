@@ -66,7 +66,7 @@ if NpcHandler == nil then
 	NpcHandler = {
 		keywordHandler = nil,
 		talkStart = nil,
-		talkDelay = 300, -- Delay from each messages
+		talkDelay = 1000, -- Delay from each messages
 		talkDelayTimeForOutgoingMessages = 1, -- Seconds to delay outgoing messages
 		callbackFunctions = nil,
 		modules = nil,
@@ -74,7 +74,6 @@ if NpcHandler == nil then
 		eventSay = nil,
 		eventDelayedSay = nil,
 		topic = nil,
-		talkRange = 4,
 		messages = {
 			-- These are the default replies of all npcs. They can/should be changed individually for each npc.
 			-- Leave empty for no send message
@@ -117,14 +116,6 @@ if NpcHandler == nil then
 		setmetatable(obj, self)
 		self.__index = self
 		return obj
-	end
-
-	function NpcHandler:getTalkRange()
-		return self.talkRange
-	end
-
-	function NpcHandler:setTalkRange(newRange)
-		self.talkRange = newRange
 	end
 
 	-- NpcHandler get and set obj
@@ -221,7 +212,7 @@ if NpcHandler == nil then
 	function NpcHandler:removeInteraction(npc, player)
 		local playerId = player:getId()
 		if Player(player) == nil then
-			return logger.error("[NpcHandler:removeInteraction] - Player is missing or nil")
+			return Spdlog.error("[NpcHandler:removeInteraction] - Player is missing or nil")
 		end
 
 		if self:getEventDelayedSay(playerId) then
@@ -268,15 +259,15 @@ if NpcHandler == nil then
 			self.modules[#self.modules + 1] = module
 			self.npcName = initNpcName
 			if greetCallback == nil then
-				logger.warn("[NpcHandler:addModule] - Greet callback is missing for npc with name: {}, setting to true", initNpcName)
+				Spdlog.warn("[NpcHandler:addModule] - Greet callback is missing for npc with name: ".. initNpcName ..", setting to true")
 				greetCallback = true
 			end
 			if farewellCallback == nil then
-				logger.warn("[NpcHandler:addModule] - Farewell callback is missing for npc with name: {}, setting to true", initNpcName)
+				Spdlog.warn("[NpcHandler:addModule] - Farewell callback is missing for npc with name: ".. initNpcName ..", setting to true")
 				farewellCallback = true
 			end
 			if tradeCallback == nil then
-				logger.warn("[NpcHandler:addModule] - Trade callback is missing for npc with name: {}, setting to true", initNpcName)
+				Spdlog.warn("[NpcHandler:addModule] - Trade callback is missing for npc with name: ".. initNpcName ..", setting to true")
 				tradeCallback = true
 			end
 			module:init(self, greetCallback, farewellCallback, tradeCallback)
@@ -479,11 +470,16 @@ if NpcHandler == nil then
 
 	-- Callback for requesting a trade window with the NPC.
 	function NpcHandler:onTradeRequest(npc, player, message)
-		if self:checkInteraction(npc, player) then
-			self:tradeRequest(npc, player, message)
-			return true
-		end
-	end
+        if self:checkInteraction(npc, player) then
+                    if npc:getName() == 'Hunt Refiller' then
+                if not HUNT_REFILLER[player:getId()] or (HUNT_REFILLER[player:getId()] and HUNT_REFILLER[player:getId()].npc ~= npc:getId()) then
+                    return false
+                end
+            end
+            self:tradeRequest(npc, player, message)
+            return true
+        end
+    end
 
 	-- Handles onThink events. If you wish to handle this yourself, please use the CALLBACK_ON_THINK callback.
 	function NpcHandler:onThink(npc, interval)
@@ -513,7 +509,7 @@ if NpcHandler == nil then
 
 	-- Tries to greet the player with the given player.
 	function NpcHandler:onGreet(npc, player, message)
-		if npc:isInTalkRange(Player(player):getPosition(), self:getTalkRange()) then
+		if npc:isInTalkRange(Player(player):getPosition()) then
 			if not self:checkInteraction(npc, player) then
 				self:greet(npc, player, message)
 				return true
@@ -592,12 +588,12 @@ if NpcHandler == nil then
 
 		local playerUniqueId = player.uid
 		if not playerUniqueId then
-			return logger.error("[NpcHandler:doNPCTalkALot] - playerUniqueId is wrong or unsafe.")
+			return Spdlog.error("[NpcHandler:doNPCTalkALot] - playerUniqueId is wrong or unsafe.")
 		end
 
 		local npcUniqueId = npc.uid
 		if not npcUniqueId then
-			return logger.error("[NpcHandler:doNPCTalkALot] - npcUniqueId is wrong or unsafe.")
+			return Spdlog.error("[NpcHandler:doNPCTalkALot] - npcUniqueId is wrong or unsafe.")
 		end
 
 		self.eventDelayedSay[playerId] = {}

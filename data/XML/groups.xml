@@ -50,13 +50,13 @@
 			<flag setmaxspeed="1" />
 			<flag specialvip="1" />
 			<flag notgenerateloot="1" />
-			<flag cantalkredchannelanonymous="0" />
+			<flag cantalkredchannelanonymous="1" />
 			<flag ignoreprotectionzone="1" />
 			<flag ignorespellcheck="0" />
 			<flag ignoreweaponcheck="0" />
 			<flag cannotbemuted="1" />
 			<flag isalwayspremium="1" />
-			<flag canmapclickteleport="0" />
+			<flag canmapclickteleport="1" />
 		</flags>
 	</group>
 	<group id="5" name="community manager" access="1" maxdepotitems="0" maxvipentries="200">

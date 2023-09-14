@@ -81,12 +81,8 @@ bool Mailbox::sendItem(Item* item) const {
 	}
 
 	if (item && item->getContainer() && item->getTile()) {
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, item->getTile()->getPosition(), false, true);
-		for (Creature* spectator : spectators) {
-			if (spectator && spectator->getPlayer()) {
-				spectator->getPlayer()->autoCloseContainers(item->getContainer());
-			}
+		for (const auto spectator : Spectators().find<Player>(item->getTile()->getPosition())) {
+			spectator->getPlayer()->autoCloseContainers(item->getContainer());
 		}
 	}
 

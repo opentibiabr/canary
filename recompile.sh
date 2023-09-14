@@ -3,9 +3,8 @@
 set -euo pipefail
 
 # Variáveis
-VCPKG_PATH=${1:-"$HOME"}
-VCPKG_PATH=$VCPKG_PATH/vcpkg/scripts/buildsystems/vcpkg.cmake
-BUILD_TYPE=${2:-"linux-release"}
+VCPKG_PATH="$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake"
+BUILD_TYPE="linux-release"
 ARCHITECTURE=$(uname -m)
 ARCHITECTUREVALUE=0
 

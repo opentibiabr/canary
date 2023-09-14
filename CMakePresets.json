@@ -48,7 +48,6 @@
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
-        "BUILD_STATIC_LIBRARY": "ON",
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "OPTIONS_ENABLE_CCACHE": "ON"
       },
@@ -75,23 +74,6 @@
       }
     },
     {
-      "name": "windows-debug",
-      "inherits": "windows-release",
-      "displayName": "Windows - Debug",
-      "description": "Build Debug Mode",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "DEBUG_LOG": "ON",
-        "ASAN_ENABLED": "OFF",
-        "BUILD_STATIC_LIBRARY": "OFF",
-        "VCPKG_TARGET_TRIPLET": "x64-windows"
-      },
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
-      }
-    },
-    {
       "name": "linux-debug",
       "inherits": "linux-release",
       "displayName": "Linux - Debug Build",
@@ -99,7 +81,6 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "DEBUG_LOG": "ON",
-        "SPEED_UP_BUILD_UNITY": "OFF",
         "ASAN_ENABLED": "ON"
       }
     }
@@ -120,10 +101,6 @@
     {
       "name": "windows-release-asan",
       "configurePreset": "windows-release-asan"
-    },
-    {
-      "name": "windows-Xdebug",
-      "configurePreset": "windows-debug"
     }
   ]
 }

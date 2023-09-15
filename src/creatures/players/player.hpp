@@ -303,8 +303,8 @@ public:
 		}
 	}
 
-	void refreshBestiaryMonsterTracker() const {
-		refreshCyclopediaMonsterTracker(getCyclopediaMonsterTrackerSet(false), false);
+	void refreshCyclopediaMonsterTracker(bool isBoss = false) const {
+		refreshCyclopediaMonsterTracker(getCyclopediaMonsterTrackerSet(isBoss), isBoss);
 	}
 
 	void refreshCyclopediaMonsterTracker(const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {

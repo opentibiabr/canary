@@ -1655,7 +1655,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 		}
 
 		// Reload bestiary tracker
-		refreshBestiaryMonsterTracker();
+		refreshCyclopediaMonsterTracker();
 
 		g_game().checkPlayersRecord();
 		IOLoginData::updateOnlineStatus(guid, true);

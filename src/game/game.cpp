@@ -9821,6 +9821,18 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 		return;
 	}
 
+	// Updates the parent of the reward chest and reward containers to avoid memory usage after cleaning
+	RewardChest* myRewardChest = player->getRewardChest();
+	if (myRewardChest->size() == 0) {
+		player->sendCancelMessage(RETURNVALUE_REWARDCHESTISEMPTY);
+		return;
+	}
+
+	myRewardChest->setParent(item->getContainer()->getParent()->getTile());
+	for (const auto &[mapRewardId, reward] : player->rewardMap) {
+		reward->setParent(myRewardChest);
+	}
+
 	std::lock_guard<std::mutex> lock(player->quickLootMutex);
 
 	ReturnValue returnValue = collectRewardChestItems(player, maxMoveItems);

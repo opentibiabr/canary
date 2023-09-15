@@ -95,25 +95,25 @@ end
 encounter:register()
 
 local function addShieldStack(player)
-	local currentIcon = player:getIcon()
+	local currentIcon = player:getIcon("magma-bubble")
 	if not currentIcon or currentIcon.category ~= CreatureIconCategory_Quests or currentIcon.icon ~= CreatureIconQuests_GreenShield then
-		player:setIcon(CreatureIconCategory_Quests, CreatureIconQuests_GreenShield, 5)
+		player:setIcon("magma-bubble", CreatureIconCategory_Quests, CreatureIconQuests_GreenShield, 5)
 		return true
 	end
-	player:setIcon(CreatureIconCategory_Quests, CreatureIconQuests_GreenShield, currentIcon.count + 5)
+	player:setIcon("magma-bubble", CreatureIconCategory_Quests, CreatureIconQuests_GreenShield, currentIcon.count + 5)
 end
 
 local function tickShields(player)
-	local currentIcon = player:getIcon()
+	local currentIcon = player:getIcon("magma-bubble")
 	if not currentIcon or currentIcon.category ~= CreatureIconCategory_Quests or currentIcon.icon ~= CreatureIconQuests_GreenShield then
 		return 0
 	end
 	if currentIcon.count <= 0 then
-		player:clearIcon()
+		player:removeIcon("magma-bubble")
 		return 0
 	end
 	local newCount = currentIcon.count - 1
-	player:setIcon(CreatureIconCategory_Quests, CreatureIconQuests_GreenShield, newCount)
+	player:setIcon("magma-bubble", CreatureIconCategory_Quests, CreatureIconQuests_GreenShield, newCount)
 	return newCount
 end
 
@@ -294,3 +294,24 @@ function magmaBubbleDeath.onDeath()
 end
 
 magmaBubbleDeath:register()
+
+local zoneEvent = ZoneEvent(bossZone)
+function zoneEvent.afterEnter(_zone, creature)
+	local player = creature:getPlayer()
+	if not player then
+		return false
+	end
+
+	player:setIcon("magma-bubble", CreatureIconCategory_Quests, CreatureIconQuests_GreenShield, 0)
+end
+
+function zoneEvent.afterLeave(_zone, creature)
+	local player = creature:getPlayer()
+	if not player then
+		return false
+	end
+
+	player:removeIcon("magma-bubble")
+end
+
+zoneEvent:register()

@@ -58,10 +58,6 @@ monster.flags = {
 	canWalkOnPoison = true,
 }
 
-monster.events = {
-	"GrandCommanderSoerenDeath",
-}
-
 monster.light = {
 	level = 0,
 	color = 0,

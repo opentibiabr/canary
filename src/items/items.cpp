@@ -176,6 +176,7 @@ void Items::loadFromProtobuf() {
 		iType.clockExpire = object.flags().clockexpire();
 		iType.expire = object.flags().expire();
 		iType.expireStop = object.flags().expirestop();
+		iType.isWrapKit = object.flags().wrapkit();
 
 		if (!iType.name.empty()) {
 			nameToItems.insert({ asLowerCaseString(iType.name),

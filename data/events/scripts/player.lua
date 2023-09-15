@@ -1,6 +1,3 @@
-CONTAINER_WEIGHT_CHECK = true -- true = enable / false = disable
-CONTAINER_WEIGHT_MAX = 1000000 -- 1000000 = 10k = 10000.00 oz
-
 local storeItemID = {
 	-- registered item ids here are not tradable with players
 	-- these items can be set to moveable at items.xml
@@ -240,16 +237,10 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		return false
 	end
 
-	-- No move if item count > 20 items
+	-- No move if tile item count > 20 items
 	local tile = Tile(toPosition)
 	if tile and tile:getItemCount() > 20 then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-		return false
-	end
-
-	-- No move parcel very heavy
-	if CONTAINER_WEIGHT_CHECK and ItemType(item:getId()):isContainer() and item:getWeight() > CONTAINER_WEIGHT_MAX then
-		self:sendCancelMessage("Your cannot move this item too heavy.")
 		return false
 	end
 

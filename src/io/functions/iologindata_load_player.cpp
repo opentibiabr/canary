@@ -230,14 +230,10 @@ void IOLoginDataLoad::loadPlayerConditions(const Player* player, DBResult_ptr re
 	PropStream propStream;
 	propStream.init(attr, attrSize);
 
-	std::list<std::unique_ptr<Condition>> conditionList;
 	Condition* condition = Condition::createCondition(propStream);
 	while (condition) {
-		std::unique_ptr<Condition> uniqueCondition(condition);
-		if (uniqueCondition->unserialize(propStream)) {
-			conditionList.push_front(std::move(uniqueCondition));
-		} else {
-			uniqueCondition.release(); // Release memory ownership
+		if (condition->unserialize(propStream)) {
+			player->storedConditionList.push_front(condition);
 		}
 		condition = Condition::createCondition(propStream);
 	}

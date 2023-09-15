@@ -303,7 +303,7 @@ std::string toPascalCase(const std::string &str) {
 				result += std::toupper(ch);
 				capitalizeNext = false;
 			} else {
-				result += std::tolower(ch);
+				result += ch; // Keep the character as is.
 			}
 		}
 	}
@@ -340,6 +340,22 @@ std::string toKebabCase(const std::string &str) {
 		}
 	}
 
+	return result;
+}
+
+std::string toStartCaseWithSpace(const std::string &str) {
+	std::string result;
+	for (size_t i = 0; i < str.length(); ++i) {
+		char ch = str[i];
+		if (i == 0 || std::isupper(ch)) {
+			if (i > 0) {
+				result += ' ';
+			}
+			result += std::toupper(ch);
+		} else {
+			result += std::tolower(ch);
+		}
+	}
 	return result;
 }
 
@@ -1257,6 +1273,9 @@ const char* getReturnMessage(ReturnValue value) {
 
 		case RETURNVALUE_DEPOTISFULL:
 			return "You cannot put more items in this depot.";
+
+		case RETURNVALUE_CONTAINERISFULL:
+			return "You cannot put more items in this container.";
 
 		case RETURNVALUE_CANNOTUSETHISOBJECT:
 			return "You cannot use this object.";

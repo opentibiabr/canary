@@ -1928,7 +1928,7 @@ void Player::onCloseContainer(const Container* container) {
 }
 
 void Player::onSendContainer(const Container* container) {
-	if (!client) {
+	if (!client || !container) {
 		return;
 	}
 
@@ -7569,9 +7569,9 @@ void Player::setHazardSystemPoints(int32_t count) {
 	addStorageValue(STORAGEVALUE_HAZARDCOUNT, std::max<int32_t>(0, std::min<int32_t>(0xFFFF, count)), true);
 	reloadHazardSystemPointsCounter = true;
 	if (count > 0) {
-		setIcon(CreatureIcon(CreatureIconQuests_t::Hazard, count));
+		setIcon("hazard", CreatureIcon(CreatureIconQuests_t::Hazard, count));
 	} else {
-		clearIcon();
+		removeIcon("hazard");
 	}
 }
 

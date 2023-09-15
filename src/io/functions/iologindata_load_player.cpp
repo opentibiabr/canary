@@ -219,7 +219,7 @@ void IOLoginDataLoad::loadPlayerBlessings(Player* player, DBResult_ptr result) {
 	}
 }
 
-void IOLoginDataLoad::loadPlayerConditions(const Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerConditions(Player* player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;

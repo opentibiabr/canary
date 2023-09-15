@@ -2695,9 +2695,9 @@ ReturnValue Game::internalCollectLootItems(Player* player, Item* item, ObjectCat
 ReturnValue Game::collectRewardChestItems(Player* player, uint32_t maxMoveItems /* = 0*/) {
 	// Check if have item on player reward chest
 	RewardChest* rewardChest = player->getRewardChest();
-	if (!rewardChest || rewardChest->empty()) {
-		g_logger().debug("Reward chest is wrong or empty");
-		return RETURNVALUE_NOTPOSSIBLE;
+	if (rewardChest->empty()) {
+		g_logger().debug("Reward chest is empty");
+		return RETURNVALUE_REWARDCHESTISEMPTY;
 	}
 
 	auto rewardItemsVector = player->getRewardsFromContainer(rewardChest->getContainer());
@@ -9822,15 +9822,15 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 	}
 
 	// Updates the parent of the reward chest and reward containers to avoid memory usage after cleaning
-	RewardChest* myRewardChest = player->getRewardChest();
-	if (myRewardChest->size() == 0) {
+	RewardChest* playerRewardChest = player->getRewardChest();
+	if (playerRewardChest->empty()) {
 		player->sendCancelMessage(RETURNVALUE_REWARDCHESTISEMPTY);
 		return;
 	}
 
-	myRewardChest->setParent(item->getContainer()->getParent()->getTile());
+	playerRewardChest->setParent(item->getContainer()->getParent()->getTile());
 	for (const auto &[mapRewardId, reward] : player->rewardMap) {
-		reward->setParent(myRewardChest);
+		reward->setParent(playerRewardChest);
 	}
 
 	std::lock_guard<std::mutex> lock(player->quickLootMutex);

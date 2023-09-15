@@ -114,9 +114,9 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, std::shared
 void House::updateDoorDescription() const {
 	std::ostringstream ss;
 	if (owner != 0) {
-		ss << "It belongs to house '" << houseName << "'. " << ownerName << " owns static_self_cast<HouseTransferItem>() house.";
+		ss << "It belongs to house '" << houseName << "'. " << ownerName << " owns this house.";
 	} else {
-		ss << "It belongs to house '" << houseName << "'. Nobody owns static_self_cast<HouseTransferItem>() house.";
+		ss << "It belongs to house '" << houseName << "'. Nobody owns this house.";
 	}
 
 	ss << " It is " << getSize() << " square meters.";

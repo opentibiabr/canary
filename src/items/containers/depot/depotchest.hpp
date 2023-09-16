@@ -34,12 +34,12 @@ public:
 	bool canRemove() const override {
 		return false;
 	}
-	bool isRemoved() const override {
+	bool isRemoved() override {
 		return false;
 	}
 
-	std::shared_ptr<Cylinder> getParent() const override;
-	std::shared_ptr<Cylinder> getRealParent() const override {
+	std::shared_ptr<Cylinder> getParent() override;
+	std::shared_ptr<Cylinder> getRealParent() override {
 		return parent.lock();
 	}
 

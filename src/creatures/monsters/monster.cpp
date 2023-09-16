@@ -227,6 +227,7 @@ void Monster::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr
 		updateIdleStatus();
 
 		if (!isSummon()) {
+			auto followCreature = getFollowCreature();
 			if (followCreature) {
 				const Position &followPosition = followCreature->getPosition();
 				const Position &pos = getPosition();
@@ -304,7 +305,7 @@ void Monster::addTarget(std::shared_ptr<Creature> creature, bool pushFront /* = 
 		} else {
 			targetIDList.push_back(cid);
 		}
-		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
+		if (!getMaster() && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen++;
 		}
 	}
@@ -317,7 +318,7 @@ void Monster::removeTarget(std::shared_ptr<Creature> creature) {
 
 	auto it = std::find(targetIDList.begin(), targetIDList.end(), creature->getID());
 	if (it != targetIDList.end()) {
-		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
+		if (!getMaster() && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen--;
 		}
 
@@ -689,11 +690,12 @@ void Monster::setIdle(bool idle) {
 
 void Monster::updateIdleStatus() {
 	bool idle = false;
+	auto master = getMaster();
 
 	if (conditions.empty()) {
 		if (!isSummon() && targetIDList.empty()) {
 			idle = true;
-		} else if ((!isSummon() && totalPlayersOnScreen == 0 || isSummon() && master->getMonster() && master->getMonster()->totalPlayersOnScreen == 0) && getFaction() != FACTION_DEFAULT) {
+		} else if (master && (!isSummon() && totalPlayersOnScreen == 0 || isSummon() && master->getMonster() && master->getMonster()->totalPlayersOnScreen == 0) && getFaction() != FACTION_DEFAULT) {
 			idle = true;
 		}
 	}
@@ -767,6 +769,8 @@ void Monster::onThink(uint32_t interval) {
 		if (!isIdle) {
 			addEventWalk();
 
+			auto attackedCreature = getAttackedCreature();
+			auto followCreature = getFollowCreature();
 			if (isSummon()) {
 				if (!attackedCreature) {
 					if (getMaster() && getMaster()->getAttackedCreature()) {
@@ -801,6 +805,7 @@ void Monster::onThink(uint32_t interval) {
 }
 
 void Monster::doAttacking(uint32_t interval) {
+	auto attackedCreature = getAttackedCreature();
 	if (!attackedCreature || (isSummon() && attackedCreature.get() == this)) {
 		return;
 	}
@@ -820,10 +825,6 @@ void Monster::doAttacking(uint32_t interval) {
 
 	for (const spellBlock_t &spellBlock : mType->info.attackSpells) {
 		bool inRange = false;
-
-		if (attackedCreature == nullptr) {
-			break;
-		}
 
 		if (spellBlock.spell == nullptr || spellBlock.isMelee && isFleeing()) {
 			continue;
@@ -855,7 +856,7 @@ void Monster::doAttacking(uint32_t interval) {
 					continue;
 				}
 
-				spellBlock.spell->castSpell(static_self_cast<Monster>(), attackedCreature);
+				spellBlock.spell->castSpell(getMonster(), attackedCreature);
 
 				if (spellBlock.isMelee) {
 					extraMeleeAttack = false;
@@ -995,14 +996,14 @@ void Monster::onThinkDefense(uint32_t interval) {
 		}
 	}
 
-	if (!isSummon() && summons.size() < mType->info.maxSummons && hasFollowPath) {
+	if (!isSummon() && m_summons.size() < mType->info.maxSummons && hasFollowPath) {
 		for (const summonBlock_t &summonBlock : mType->info.summons) {
 			if (summonBlock.speed > defenseTicks) {
 				resetTicks = false;
 				continue;
 			}
 
-			if (summons.size() >= mType->info.maxSummons) {
+			if (m_summons.size() >= mType->info.maxSummons) {
 				continue;
 			}
 
@@ -1012,7 +1013,7 @@ void Monster::onThinkDefense(uint32_t interval) {
 			}
 
 			uint32_t summonCount = 0;
-			for (std::shared_ptr<Creature> summon : summons) {
+			for (std::shared_ptr<Creature> summon : m_summons) {
 				if (summon->getName() == summonBlock.name) {
 					++summonCount;
 				}
@@ -1178,7 +1179,7 @@ bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 
 	bool result = false;
 
-	if (followCreature && hasFollowPath) {
+	if (getFollowCreature() && hasFollowPath) {
 		doFollowCreature(flags, nextDirection, result);
 	} else {
 		doRandomStep(nextDirection, result);
@@ -1219,6 +1220,8 @@ void Monster::doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &
 			updateMapCache();
 		}
 		// target dancing
+		auto attackedCreature = getAttackedCreature();
+		auto followCreature = getFollowCreature();
 		if (attackedCreature && attackedCreature == followCreature) {
 			if (isFleeing()) {
 				result = getDanceStep(getPosition(), nextDirection, false, false);
@@ -1247,9 +1250,11 @@ bool Monster::getRandomStep(const Position &creaturePos, Direction &moveDirectio
 }
 
 bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection, bool keepAttack /*= true*/, bool keepDistance /*= true*/) {
+	auto attackedCreature = getAttackedCreature();
+	if (!attackedCreature) {
+		return false;
+	}
 	bool canDoAttackNow = canUseAttack(creaturePos, attackedCreature);
-
-	assert(attackedCreature != nullptr);
 	const Position &centerPos = attackedCreature->getPosition();
 
 	int_fast32_t offset_x = Position::getOffsetX(creaturePos, centerPos);
@@ -1266,13 +1271,12 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 	}
 
 	std::vector<Direction> dirList;
-
 	if (!keepDistance || offset_y >= 0) {
 		uint32_t tmpDist = std::max<uint32_t>(distance_x, std::abs((creaturePos.getY() - 1) - centerPos.getY()));
 		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_NORTH)) {
 			bool result = true;
 
-			if (keepAttack) {
+			if (attackedCreature && keepAttack) {
 				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x, creaturePos.y - 1, creaturePos.z), attackedCreature));
 			}
 
@@ -1287,7 +1291,7 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_SOUTH)) {
 			bool result = true;
 
-			if (keepAttack) {
+			if (attackedCreature && keepAttack) {
 				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x, creaturePos.y + 1, creaturePos.z), attackedCreature));
 			}
 
@@ -1302,7 +1306,7 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_EAST)) {
 			bool result = true;
 
-			if (keepAttack) {
+			if (attackedCreature && keepAttack) {
 				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x + 1, creaturePos.y, creaturePos.z), attackedCreature));
 			}
 
@@ -1317,7 +1321,7 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_WEST)) {
 			bool result = true;
 
-			if (keepAttack) {
+			if (attackedCreature && keepAttack) {
 				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x - 1, creaturePos.y, creaturePos.z), attackedCreature));
 			}
 
@@ -1848,11 +1852,11 @@ void Monster::death(std::shared_ptr<Creature>) {
 	}
 	setAttackedCreature(nullptr);
 
-	for (std::shared_ptr<Creature> summon : summons) {
+	for (std::shared_ptr<Creature> summon : m_summons) {
 		summon->changeHealth(-summon->getHealth());
 		summon->removeMaster();
 	}
-	summons.clear();
+	m_summons.clear();
 
 	clearTargetList();
 	clearFriendList();
@@ -1923,59 +1927,61 @@ bool Monster::getCombatValues(int32_t &min, int32_t &max) {
 
 void Monster::updateLookDirection() {
 	Direction newDir = getDirection();
+	auto attackedCreature = getAttackedCreature();
+	if (!attackedCreature) {
+		return;
+	}
 
-	if (attackedCreature) {
-		const Position &pos = getPosition();
-		const Position &attackedCreaturePos = attackedCreature->getPosition();
-		int_fast32_t offsetx = Position::getOffsetX(attackedCreaturePos, pos);
-		int_fast32_t offsety = Position::getOffsetY(attackedCreaturePos, pos);
+	const Position &pos = getPosition();
+	const Position &attackedCreaturePos = attackedCreature->getPosition();
+	int_fast32_t offsetx = Position::getOffsetX(attackedCreaturePos, pos);
+	int_fast32_t offsety = Position::getOffsetY(attackedCreaturePos, pos);
 
-		int32_t dx = std::abs(offsetx);
-		int32_t dy = std::abs(offsety);
-		if (dx > dy) {
-			// look EAST/WEST
-			if (offsetx < 0) {
+	int32_t dx = std::abs(offsetx);
+	int32_t dy = std::abs(offsety);
+	if (dx > dy) {
+		// look EAST/WEST
+		if (offsetx < 0) {
+			newDir = DIRECTION_WEST;
+		} else {
+			newDir = DIRECTION_EAST;
+		}
+	} else if (dx < dy) {
+		// look NORTH/SOUTH
+		if (offsety < 0) {
+			newDir = DIRECTION_NORTH;
+		} else {
+			newDir = DIRECTION_SOUTH;
+		}
+	} else {
+		Direction dir = getDirection();
+		if (offsetx < 0 && offsety < 0) {
+			if (dir == DIRECTION_SOUTH) {
 				newDir = DIRECTION_WEST;
-			} else {
-				newDir = DIRECTION_EAST;
-			}
-		} else if (dx < dy) {
-			// look NORTH/SOUTH
-			if (offsety < 0) {
+			} else if (dir == DIRECTION_EAST) {
 				newDir = DIRECTION_NORTH;
-			} else {
+			}
+		} else if (offsetx < 0 && offsety > 0) {
+			if (dir == DIRECTION_NORTH) {
+				newDir = DIRECTION_WEST;
+			} else if (dir == DIRECTION_EAST) {
 				newDir = DIRECTION_SOUTH;
 			}
+		} else if (offsetx > 0 && offsety < 0) {
+			if (dir == DIRECTION_SOUTH) {
+				newDir = DIRECTION_EAST;
+			} else if (dir == DIRECTION_WEST) {
+				newDir = DIRECTION_NORTH;
+			}
 		} else {
-			Direction dir = getDirection();
-			if (offsetx < 0 && offsety < 0) {
-				if (dir == DIRECTION_SOUTH) {
-					newDir = DIRECTION_WEST;
-				} else if (dir == DIRECTION_EAST) {
-					newDir = DIRECTION_NORTH;
-				}
-			} else if (offsetx < 0 && offsety > 0) {
-				if (dir == DIRECTION_NORTH) {
-					newDir = DIRECTION_WEST;
-				} else if (dir == DIRECTION_EAST) {
-					newDir = DIRECTION_SOUTH;
-				}
-			} else if (offsetx > 0 && offsety < 0) {
-				if (dir == DIRECTION_SOUTH) {
-					newDir = DIRECTION_EAST;
-				} else if (dir == DIRECTION_WEST) {
-					newDir = DIRECTION_NORTH;
-				}
-			} else {
-				if (dir == DIRECTION_NORTH) {
-					newDir = DIRECTION_EAST;
-				} else if (dir == DIRECTION_WEST) {
-					newDir = DIRECTION_SOUTH;
-				}
+			if (dir == DIRECTION_NORTH) {
+				newDir = DIRECTION_EAST;
+			} else if (dir == DIRECTION_WEST) {
+				newDir = DIRECTION_SOUTH;
 			}
 		}
 	}
-	g_game().internalCreatureTurn(static_self_cast<Monster>(), newDir);
+	g_game().internalCreatureTurn(getMonster(), newDir);
 }
 
 void Monster::dropLoot(std::shared_ptr<Container> corpse, std::shared_ptr<Creature>) {

@@ -135,7 +135,7 @@ public:
 	bool isPushable() override {
 		return getWalkDelay() <= 0;
 	}
-	bool isRemoved() const override final {
+	bool isRemoved() override final {
 		return isInternalRemoved;
 	}
 	virtual bool canSeeInvisibility() const {
@@ -255,9 +255,9 @@ public:
 		return defaultOutfit;
 	}
 	bool isInvisible() const;
-	ZoneType_t getZoneType() const {
-		if (tile) {
-			return tile->getZoneType();
+	ZoneType_t getZoneType() {
+		if (getTile()) {
+			return getTile()->getZoneType();
 		}
 
 		return ZONE_NORMAL;
@@ -278,7 +278,7 @@ public:
 
 	// follow functions
 	std::shared_ptr<Creature> getFollowCreature() const {
-		return followCreature;
+		return m_followCreature.lock();
 	}
 	virtual bool setFollowCreature(std::shared_ptr<Creature> creature);
 
@@ -288,7 +288,7 @@ public:
 
 	// combat functions
 	std::shared_ptr<Creature> getAttackedCreature() {
-		return attackedCreature;
+		return m_attackedCreature.lock();
 	}
 	virtual bool setAttackedCreature(std::shared_ptr<Creature> creature);
 
@@ -312,13 +312,13 @@ public:
 	bool setMaster(std::shared_ptr<Creature> newMaster, bool reloadCreature = false);
 
 	void removeMaster() {
-		if (master) {
-			master = nullptr;
+		if (getMaster()) {
+			m_master.reset();
 		}
 	}
 
 	bool isSummon() const {
-		return master != nullptr;
+		return !m_master.expired();
 	}
 
 	/**
@@ -328,11 +328,11 @@ public:
 		return summoned;
 	}
 	std::shared_ptr<Creature> getMaster() const {
-		return master;
+		return m_master.lock();
 	}
 
 	const std::list<std::shared_ptr<Creature>> &getSummons() const {
-		return summons;
+		return m_summons;
 	}
 
 	virtual int32_t getArmor() const {
@@ -445,7 +445,7 @@ public:
 	 * @return true
 	 * @return false
 	 */
-	void checkSummonMove(const Position &newPos, bool teleportSummon = false) const;
+	void checkSummonMove(const Position &newPos, bool teleportSummon = false);
 	virtual void onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport);
 
 	virtual void onAttackedCreatureDisappear(bool) { }
@@ -460,7 +460,7 @@ public:
 	}
 
 	size_t getSummonCount() const {
-		return summons.size();
+		return m_summons.size();
 	}
 
 	/**
@@ -470,7 +470,7 @@ public:
 	 * @return false = empty
 	 */
 	bool hasSummons() const {
-		if (!summons.empty()) {
+		if (!m_summons.empty()) {
 			return true;
 		}
 		return false;
@@ -490,13 +490,15 @@ public:
 	bool registerCreatureEvent(const std::string &name);
 	bool unregisterCreatureEvent(const std::string &name);
 
-	std::shared_ptr<Cylinder> getParent() const override final {
-		return tile;
+	std::shared_ptr<Cylinder> getParent() override final {
+		return getTile();
 	}
 	void setParent(std::weak_ptr<Cylinder> cylinder) override final {
-		if (!cylinder.expired()) {
-			tile = std::static_pointer_cast<Tile>(cylinder.lock());
-			position = tile->getPosition();
+		auto lockedCylinder = cylinder.lock();
+		if (lockedCylinder) {
+			auto newParent = lockedCylinder->getTile();
+			position = newParent->getPosition();
+			m_tile = newParent;
 		}
 	}
 
@@ -505,7 +507,7 @@ public:
 	}
 
 	std::shared_ptr<Tile> getTile() override final {
-		return tile;
+		return m_tile.lock();
 	}
 
 	int32_t getWalkCache(const Position &pos);
@@ -653,16 +655,16 @@ protected:
 
 	CountMap damageMap;
 
-	std::list<std::shared_ptr<Creature>> summons;
+	std::list<std::shared_ptr<Creature>> m_summons;
 	CreatureEventList eventsList;
 	ConditionList conditions;
 
 	std::forward_list<Direction> listWalkDir;
 
-	std::shared_ptr<Tile> tile = nullptr;
-	std::shared_ptr<Creature> attackedCreature = nullptr;
-	std::shared_ptr<Creature> master = nullptr;
-	std::shared_ptr<Creature> followCreature = nullptr;
+	std::weak_ptr<Tile> m_tile;
+	std::weak_ptr<Creature> m_attackedCreature;
+	std::weak_ptr<Creature> m_master;
+	std::weak_ptr<Creature> m_followCreature;
 
 	/**
 	 * We need to persist if this creature is summon or not because when we
@@ -763,7 +765,7 @@ protected:
 	friend class CreatureFunctions;
 
 private:
-	bool canFollowMaster() const;
+	bool canFollowMaster();
 	bool isLostSummon();
 	void handleLostSummon(bool teleportSummons);
 };

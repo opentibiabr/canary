@@ -280,7 +280,7 @@ public:
 		return inbox;
 	}
 
-	uint32_t getClientIcons() const;
+	uint32_t getClientIcons();
 
 	const GuildWarVector &getGuildWarVector() const {
 		return guildWarVector;
@@ -1309,7 +1309,7 @@ public:
 		}
 	}
 	void sendClosePrivate(uint16_t channelId);
-	void sendIcons() const {
+	void sendIcons() {
 		if (client) {
 			client->sendIcons(getClientIcons());
 		}
@@ -2502,7 +2502,7 @@ public:
 
 	void sendLootMessage(const std::string &message) const;
 
-	std::shared_ptr<Container> getLootPouch() const;
+	std::shared_ptr<Container> getLootPouch();
 
 private:
 	static uint32_t playerFirstID;

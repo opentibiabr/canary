@@ -103,7 +103,7 @@ public:
 	}
 
 	bool countsToLootAnalyzerBalance();
-	bool hasParent() const;
+	bool hasParent();
 	void addItem(std::shared_ptr<Item> item);
 	StashContainerList getStowableItems() const;
 	bool isStoreInbox() const;

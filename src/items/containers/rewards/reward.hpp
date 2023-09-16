@@ -30,8 +30,8 @@ public:
 		return true;
 	}
 
-	std::shared_ptr<Cylinder> getParent() const final;
-	std::shared_ptr<Cylinder> getRealParent() const final {
+	std::shared_ptr<Cylinder> getParent() final;
+	std::shared_ptr<Cylinder> getRealParent() final {
 		return parent.lock();
 	}
 };

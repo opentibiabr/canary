@@ -26,7 +26,7 @@ Creature::Creature() {
 }
 
 Creature::~Creature() {
-	for (std::shared_ptr<Creature> summon : summons) {
+	for (std::shared_ptr<Creature> summon : m_summons) {
 		summon->setAttackedCreature(nullptr);
 		summon->removeMaster();
 	}
@@ -107,10 +107,13 @@ void Creature::onThink(uint32_t interval) {
 		updateMapCache();
 	}
 
+	auto followCreature = getFollowCreature();
+	auto master = getMaster();
 	if (followCreature && master != followCreature && !canSeeCreature(followCreature)) {
 		onCreatureDisappear(followCreature, false);
 	}
 
+	auto attackedCreature = getAttackedCreature();
 	if (attackedCreature && master != attackedCreature && !canSeeCreature(attackedCreature)) {
 		onCreatureDisappear(attackedCreature, false);
 	}
@@ -143,11 +146,15 @@ void Creature::onThink(uint32_t interval) {
 }
 
 void Creature::onAttacking(uint32_t interval) {
+	auto attackedCreature = getAttackedCreature();
 	if (!attackedCreature) {
 		return;
 	}
 
 	onAttacked();
+	if (!attackedCreature) {
+		return;
+	}
 	attackedCreature->onAttacked();
 
 	if (g_game().isSightClear(getPosition(), attackedCreature->getPosition(), true)) {
@@ -391,18 +398,19 @@ void Creature::onRemoveCreature(std::shared_ptr<Creature> creature, bool) {
 }
 
 void Creature::onCreatureDisappear(std::shared_ptr<Creature> creature, bool isLogout) {
-	if (attackedCreature == creature) {
+	if (getAttackedCreature() == creature) {
 		setAttackedCreature(nullptr);
 		onAttackedCreatureDisappear(isLogout);
 	}
 
-	if (followCreature == creature) {
+	if (getFollowCreature() == creature) {
 		setFollowCreature(nullptr);
 		onFollowCreatureDisappear(isLogout);
 	}
 }
 
 void Creature::onChangeZone(ZoneType_t zone) {
+	auto attackedCreature = getAttackedCreature();
 	if (attackedCreature && zone == ZONE_PROTECTION) {
 		onCreatureDisappear(attackedCreature, false);
 	}
@@ -410,11 +418,14 @@ void Creature::onChangeZone(ZoneType_t zone) {
 
 void Creature::onAttackedCreatureChangeZone(ZoneType_t zone) {
 	if (zone == ZONE_PROTECTION) {
-		onCreatureDisappear(attackedCreature, false);
+		auto attackedCreature = getAttackedCreature();
+		if (attackedCreature) {
+			onCreatureDisappear(attackedCreature, false);
+		}
 	}
 }
 
-void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) const {
+void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 	if (hasSummons()) {
 		std::vector<std::shared_ptr<Creature>> despawnMonsterList;
 		for (std::shared_ptr<Creature> creature : getSummons()) {
@@ -424,6 +435,7 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) cons
 
 			const Position &pos = creature->getPosition();
 			std::shared_ptr<Monster> monster = creature->getMonster();
+			auto tile = getTile();
 			bool protectionZoneCheck = tile ? tile->hasFlag(TILESTATE_PROTECTIONZONE) : false;
 			// Check if any of our summons is out of range (+/- 0 floors or 15 tiles away)
 			bool checkSummonDist = Position::getDistanceZ(newPos, pos) > 0 || (std::max<int32_t>(Position::getDistanceX(newPos, pos), Position::getDistanceY(newPos, pos)) > 15);
@@ -588,6 +600,7 @@ void Creature::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_pt
 		}
 	}
 
+	auto followCreature = getFollowCreature();
 	if (followCreature && (creature == getCreature() || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
@@ -599,7 +612,8 @@ void Creature::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_pt
 		}
 	}
 
-	if (creature == attackedCreature || (creature == getCreature() && attackedCreature)) {
+	auto attackedCreature = getAttackedCreature();
+	if (attackedCreature && (creature == attackedCreature || creature == getCreature())) {
 		if (newPos.z != oldPos.z || !canSee(attackedCreature->getPosition())) {
 			onCreatureDisappear(attackedCreature, false);
 		} else {
@@ -683,14 +697,14 @@ void Creature::onDeath() {
 		g_game().removeCreature(static_self_cast<Creature>(), false);
 	}
 
-	if (master) {
+	if (getMaster()) {
 		removeMaster();
 	}
 }
 
 bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified) {
 	if (!lootDrop && getMonster()) {
-		if (master) {
+		if (getMaster()) {
 			// Scripting event onDeath
 			const CreatureEventList &deathEvents = getCreatureEvents(CREATURE_EVENT_DEATH);
 			for (const auto deathEventPtr : deathEvents) {
@@ -920,24 +934,25 @@ BlockType_t Creature::blockHit(std::shared_ptr<Creature> attacker, CombatType_t 
 bool Creature::setAttackedCreature(std::shared_ptr<Creature> creature) {
 	if (creature) {
 		auto monster = getMonster();
+		auto tile = getTile();
 		if (monster && monster->isFamiliar() && tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			return false;
 		}
 
 		const Position &creaturePos = creature->getPosition();
 		if (creaturePos.z != getPosition().z || !canSee(creaturePos)) {
-			attackedCreature = nullptr;
+			m_attackedCreature.reset();
 			return false;
 		}
 
-		attackedCreature = creature;
-		onAttackedCreature(attackedCreature);
-		attackedCreature->onAttacked();
+		m_attackedCreature = creature;
+		onAttackedCreature(creature);
+		creature->onAttacked();
 	} else {
-		attackedCreature = nullptr;
+		m_attackedCreature.reset();
 	}
 
-	for (std::shared_ptr<Creature> summon : summons) {
+	for (std::shared_ptr<Creature> summon : m_summons) {
 		summon->setAttackedCreature(creature);
 	}
 	return true;
@@ -952,6 +967,7 @@ void Creature::getPathSearchParams(std::shared_ptr<Creature>, FindPathParams &fp
 }
 
 void Creature::goToFollowCreature() {
+	auto followCreature = getFollowCreature();
 	if (followCreature) {
 		if (isSummon() && !getMonster()->isFamiliar() && !canFollowMaster()) {
 			hasFollowPath = false;
@@ -1001,25 +1017,29 @@ void Creature::goToFollowCreature() {
 	onFollowCreatureComplete(followCreature);
 }
 
-bool Creature::canFollowMaster() const {
+bool Creature::canFollowMaster() {
+	auto master = getMaster();
+	if (!master) {
+		return false;
+	}
 	auto tile = master->getTile();
 	return tile && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && (canSeeInvisibility() || !master->isInvisible());
 }
 
 bool Creature::setFollowCreature(std::shared_ptr<Creature> creature) {
 	if (creature) {
-		if (followCreature == creature) {
+		if (getFollowCreature() == creature) {
 			return true;
 		}
 
 		if (hasCondition(CONDITION_FEARED)) {
-			followCreature = nullptr;
+			m_followCreature.reset();
 			return false;
 		}
 
 		const Position &creaturePos = creature->getPosition();
 		if (creaturePos.z != getPosition().z || !canSee(creaturePos)) {
-			followCreature = nullptr;
+			m_followCreature.reset();
 			return false;
 		}
 
@@ -1030,11 +1050,11 @@ bool Creature::setFollowCreature(std::shared_ptr<Creature> creature) {
 
 		hasFollowPath = false;
 		forceUpdateFollowPath = false;
-		followCreature = creature;
+		m_followCreature = creature;
 		isUpdatingPath = true;
 	} else {
 		isUpdatingPath = false;
-		followCreature = nullptr;
+		m_followCreature.reset();
 	}
 
 	onFollowCreature(creature);
@@ -1102,6 +1122,7 @@ void Creature::onEndCondition(ConditionType_t) {
 }
 
 void Creature::onTickCondition(ConditionType_t type, bool &bRemove) {
+	auto tile = getTile();
 	std::shared_ptr<MagicField> field = tile ? tile->getFieldItem() : nullptr;
 	if (!field) {
 		return;
@@ -1157,6 +1178,7 @@ void Creature::onAttackedCreatureKilled(std::shared_ptr<Creature> target) {
 }
 
 bool Creature::onKilledCreature(std::shared_ptr<Creature> target, bool lastHit) {
+	auto master = getMaster();
 	if (master) {
 		master->onKilledCreature(target, lastHit);
 	}
@@ -1170,6 +1192,7 @@ bool Creature::onKilledCreature(std::shared_ptr<Creature> target, bool lastHit) 
 }
 
 void Creature::onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target) {
+	auto master = getMaster();
 	if (gainExp == 0 || !master) {
 		return;
 	}
@@ -1202,8 +1225,9 @@ void Creature::onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> targ
 bool Creature::setMaster(std::shared_ptr<Creature> newMaster, bool reloadCreature /* = false*/) {
 	// Persists if this creature has ever been a summon
 	this->summoned = true;
+	auto oldMaster = getMaster();
 
-	if (!newMaster && !master) {
+	if (!newMaster && !oldMaster) {
 		return false;
 	}
 
@@ -1215,16 +1239,15 @@ bool Creature::setMaster(std::shared_ptr<Creature> newMaster, bool reloadCreatur
 		g_game().reloadCreature(static_self_cast<Creature>());
 	}
 	if (newMaster) {
-		newMaster->summons.push_back(static_self_cast<Creature>());
+		newMaster->m_summons.push_back(static_self_cast<Creature>());
 	}
 
-	std::shared_ptr<Creature> oldMaster = master;
-	master = newMaster;
+	m_master = newMaster;
 
 	if (oldMaster) {
-		auto summon = std::find(oldMaster->summons.begin(), oldMaster->summons.end(), getCreature());
-		if (summon != oldMaster->summons.end()) {
-			oldMaster->summons.erase(summon);
+		auto summon = std::find(oldMaster->m_summons.begin(), oldMaster->m_summons.end(), getCreature());
+		if (summon != oldMaster->m_summons.end()) {
+			oldMaster->m_summons.erase(summon);
 		}
 	}
 	return true;
@@ -1416,6 +1439,7 @@ int64_t Creature::getStepDuration() {
 	calculatedStepSpeed = (stepSpeed > -Creature::speedB) ? calculatedStepSpeed : 1;
 
 	uint32_t groundSpeed = 150;
+	auto tile = getTile();
 	if (tile && tile->getGround()) {
 		std::shared_ptr<Item> ground = tile->getGround();
 		const ItemType &it = Item::items[ground->getID()];
@@ -1777,6 +1801,7 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Creature::getZones() 
 }
 
 void Creature::iconChanged() {
+	auto tile = getTile();
 	if (!tile) {
 		return;
 	}

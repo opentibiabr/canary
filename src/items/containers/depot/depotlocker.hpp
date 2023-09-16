@@ -41,7 +41,7 @@ public:
 	bool canRemove() const override {
 		return false;
 	}
-	bool isRemoved() const override {
+	bool isRemoved() override {
 		return false;
 	}
 

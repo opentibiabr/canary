@@ -102,8 +102,14 @@ std::shared_ptr<Container> Container::getRootContainer() {
 	return getTopParentContainer();
 }
 
-bool Container::hasParent() const {
-	return getID() != ITEM_BROWSEFIELD && std::dynamic_pointer_cast<Player>(getParent()) == nullptr;
+bool Container::hasParent() {
+	auto parent = getParent();
+	if (!parent) {
+		return false;
+	}
+	auto creature = parent->getCreature();
+	bool isPlayer = creature && creature->getPlayer() != nullptr;
+	return getID() != ITEM_BROWSEFIELD && !isPlayer;
 }
 
 void Container::addItem(std::shared_ptr<Item> item) {

@@ -301,7 +301,7 @@ public:
 	void setID(uint16_t newid);
 
 	// Returns the player that is holding this item in his inventory
-	std::shared_ptr<Player> getHoldingPlayer() const;
+	std::shared_ptr<Player> getHoldingPlayer();
 
 	WeaponType_t getWeaponType() const {
 		return items[id].weaponType;
@@ -537,7 +537,7 @@ public:
 		return items[id].decayTime * 1000;
 	}
 
-	bool canDecay() const;
+	bool canDecay();
 
 	virtual bool canRemove() const {
 		return true;
@@ -563,7 +563,7 @@ public:
 
 	bool hasMarketAttributes() const;
 
-	std::shared_ptr<Cylinder> getParent() const override {
+	std::shared_ptr<Cylinder> getParent() override {
 		return parent.lock();
 	}
 	void setParent(std::weak_ptr<Cylinder> cylinder) override {
@@ -574,11 +574,11 @@ public:
 	}
 	std::shared_ptr<Cylinder> getTopParent();
 	std::shared_ptr<Tile> getTile() override;
-	bool isRemoved() const override {
+	bool isRemoved() override {
 		return parent.expired() || getParent()->isRemoved();
 	}
 
-	bool isInsideDepot(bool includeInbox = false) const;
+	bool isInsideDepot(bool includeInbox = false);
 
 	/**
 	 * @brief Get the Imbuement Info object

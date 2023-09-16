@@ -207,7 +207,7 @@ public:
 	std::string getDescription(int32_t) override {
 		return {};
 	}
-	bool isRemoved() const override {
+	bool isRemoved() override {
 		return false;
 	}
 };

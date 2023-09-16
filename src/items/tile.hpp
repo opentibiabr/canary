@@ -235,7 +235,7 @@ public:
 		return tilePos;
 	}
 
-	bool isRemoved() const override final {
+	bool isRemoved() override final {
 		return false;
 	}
 

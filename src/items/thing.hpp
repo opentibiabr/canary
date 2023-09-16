@@ -28,10 +28,10 @@ public:
 
 	virtual std::string getDescription(int32_t lookDistance) = 0;
 
-	virtual std::shared_ptr<Cylinder> getParent() const {
+	virtual std::shared_ptr<Cylinder> getParent() {
 		return nullptr;
 	}
-	virtual std::shared_ptr<Cylinder> getRealParent() const {
+	virtual std::shared_ptr<Cylinder> getRealParent() {
 		return getParent();
 	}
 
@@ -66,7 +66,7 @@ public:
 		return nullptr;
 	}
 
-	virtual bool isRemoved() const {
+	virtual bool isRemoved() {
 		return true;
 	}
 };

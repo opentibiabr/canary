@@ -344,7 +344,7 @@ uint16_t Item::getSubType() const {
 	return static_cast<uint16_t>(count);
 }
 
-std::shared_ptr<Player> Item::getHoldingPlayer() const {
+std::shared_ptr<Player> Item::getHoldingPlayer() {
 	std::shared_ptr<Cylinder> p = getParent();
 	while (p) {
 		if (p->getCreature()) {
@@ -3023,7 +3023,7 @@ void Item::addUniqueId(uint16_t uniqueId) {
 	}
 }
 
-bool Item::canDecay() const {
+bool Item::canDecay() {
 	if (isRemoved() || isDecayDisabled()) {
 		return false;
 	}
@@ -3150,7 +3150,7 @@ bool Item::hasMarketAttributes() const {
 	return true;
 }
 
-bool Item::isInsideDepot(bool includeInbox /* = false*/) const {
+bool Item::isInsideDepot(bool includeInbox /* = false*/) {
 	if (std::shared_ptr<Container> thisContainer = getContainer(); thisContainer && (thisContainer->getDepotLocker() || thisContainer->isDepotChest() || (includeInbox && thisContainer->isInbox()))) {
 		return true;
 	}

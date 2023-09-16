@@ -445,7 +445,7 @@ float Player::getDefenseFactor() const {
 	}
 }
 
-uint32_t Player::getClientIcons() const {
+uint32_t Player::getClientIcons() {
 	uint32_t icons = 0;
 	for (Condition* condition : conditions) {
 		if (!isSuppress(condition->getType())) {
@@ -457,6 +457,7 @@ uint32_t Player::getClientIcons() const {
 		icons |= ICON_REDSWORDS;
 	}
 
+	auto tile = getTile();
 	if (tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 		icons |= ICON_PIGEON;
 		client->sendRestingStatus(1);
@@ -1254,6 +1255,7 @@ void Player::sendPing() {
 	}
 
 	int64_t noPongTime = timeNow - lastPong;
+	auto attackedCreature = getAttackedCreature();
 	if ((hasLostConnection || noPongTime >= 7000) && attackedCreature && attackedCreature->getPlayer()) {
 		setAttackedCreature(nullptr);
 	}
@@ -1637,7 +1639,7 @@ void Player::onFollowCreatureDisappear(bool isLogout) {
 
 void Player::onChangeZone(ZoneType_t zone) {
 	if (zone == ZONE_PROTECTION) {
-		if (attackedCreature && !hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
+		if (getAttackedCreature() && !hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
 			setAttackedCreature(nullptr);
 			onAttackedCreatureDisappear(false);
 		}
@@ -1665,6 +1667,10 @@ void Player::onChangeZone(ZoneType_t zone) {
 }
 
 void Player::onAttackedCreatureChangeZone(ZoneType_t zone) {
+	auto attackedCreature = getAttackedCreature();
+	if (!attackedCreature) {
+		return;
+	}
 	if (zone == ZONE_PROTECTION) {
 		if (!hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
 			setAttackedCreature(nullptr);
@@ -1783,6 +1789,7 @@ void Player::onWalk(Direction &dir) {
 void Player::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport) {
 	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 
+	auto followCreature = getFollowCreature();
 	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
 		isUpdatingPath = false;
 		g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
@@ -4155,9 +4162,9 @@ bool Player::setAttackedCreature(std::shared_ptr<Creature> creature) {
 		return false;
 	}
 
+	auto followCreature = getFollowCreature();
 	if (chaseMode && creature) {
 		if (followCreature != creature) {
-			// chase opponent
 			setFollowCreature(creature);
 		}
 	} else if (followCreature) {
@@ -4178,7 +4185,7 @@ void Player::goToFollowCreature() {
 
 		Creature::goToFollowCreature();
 
-		if (followCreature && !hasFollowPath) {
+		if (getFollowCreature() && !hasFollowPath) {
 			lastFailedFollow = OTSYS_TIME();
 		}
 	}
@@ -4195,6 +4202,11 @@ void Player::doAttacking(uint32_t) {
 	}
 
 	if (hasCondition(CONDITION_PACIFIED)) {
+		return;
+	}
+
+	auto attackedCreature = getAttackedCreature();
+	if (!attackedCreature) {
 		return;
 	}
 
@@ -4252,6 +4264,8 @@ void Player::onFollowCreature(std::shared_ptr<Creature> creature) {
 void Player::setChaseMode(bool mode) {
 	bool prevChaseMode = chaseMode;
 	chaseMode = mode;
+	auto attackedCreature = getAttackedCreature();
+	auto followCreature = getFollowCreature();
 
 	if (prevChaseMode != chaseMode) {
 		if (chaseMode) {
@@ -7653,7 +7667,7 @@ void Player::sendLootMessage(const std::string &message) const {
 	}
 }
 
-std::shared_ptr<Container> Player::getLootPouch() const {
+std::shared_ptr<Container> Player::getLootPouch() {
 	// Allow players with CM access or higher have the loot pouch anywhere
 	auto parentItem = getParent() ? getParent()->getItem() : nullptr;
 	if (isPlayerGroup() && parentItem && parentItem->getID() != ITEM_STORE_INBOX) {

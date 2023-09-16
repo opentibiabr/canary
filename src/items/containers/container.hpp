@@ -170,6 +170,11 @@ public:
 
 	virtual void removeItem(Thing* thing, bool sendUpdateToClient = false);
 
+	bool isAnyKindOfRewardChest() const;
+	bool isAnyKindOfRewardContainer() const;
+	bool isBrowseFieldAndHoldsRewardChest() const;
+	bool isInsideContainerWithId(const uint16_t id) const;
+
 protected:
 	std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol) const;
 

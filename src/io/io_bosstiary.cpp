@@ -176,6 +176,7 @@ void IOBosstiary::addBosstiaryKill(Player* player, const std::shared_ptr<Monster
 
 	auto oldBossLevel = getBossCurrentLevel(player, bossId);
 	player->addBestiaryKillCount(bossId, amount);
+	player->refreshCyclopediaMonsterTracker(true);
 	auto newBossLevel = getBossCurrentLevel(player, bossId);
 	if (oldBossLevel == newBossLevel) {
 		return;

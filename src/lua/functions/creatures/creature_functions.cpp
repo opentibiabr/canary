@@ -859,7 +859,11 @@ int CreatureFunctions::luaCreatureGetSummons(lua_State* L) {
 	lua_createtable(L, creature->getSummonCount(), 0);
 
 	int index = 0;
-	for (std::shared_ptr<Creature> summon : creature->getSummons()) {
+	for (auto summonPtr : creature->getSummons()) {
+		auto summon = summonPtr.lock();
+		if (!summon) {
+			continue;
+		}
 		pushUserdata<Creature>(L, summon);
 		setCreatureMetatable(L, -1, summon);
 		lua_rawseti(L, -2, ++index);

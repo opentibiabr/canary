@@ -26,7 +26,11 @@ Creature::Creature() {
 }
 
 Creature::~Creature() {
-	for (std::shared_ptr<Creature> summon : m_summons) {
+	for (auto summonPtr : m_summons) {
+		auto summon = summonPtr.lock();
+		if (!summon) {
+			continue;
+		}
 		summon->setAttackedCreature(nullptr);
 		summon->removeMaster();
 	}
@@ -428,7 +432,8 @@ void Creature::onAttackedCreatureChangeZone(ZoneType_t zone) {
 void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 	if (hasSummons()) {
 		std::vector<std::shared_ptr<Creature>> despawnMonsterList;
-		for (std::shared_ptr<Creature> creature : getSummons()) {
+		for (auto summonPtr : getSummons()) {
+			auto creature = summonPtr.lock();
 			if (!creature) {
 				continue;
 			}
@@ -952,7 +957,11 @@ bool Creature::setAttackedCreature(std::shared_ptr<Creature> creature) {
 		m_attackedCreature.reset();
 	}
 
-	for (std::shared_ptr<Creature> summon : m_summons) {
+	for (auto summonPtr : m_summons) {
+		auto summon = summonPtr.lock();
+		if (!summon) {
+			continue;
+		}
 		summon->setAttackedCreature(creature);
 	}
 	return true;
@@ -1245,9 +1254,9 @@ bool Creature::setMaster(std::shared_ptr<Creature> newMaster, bool reloadCreatur
 	m_master = newMaster;
 
 	if (oldMaster) {
-		auto summon = std::find(oldMaster->m_summons.begin(), oldMaster->m_summons.end(), getCreature());
-		if (summon != oldMaster->m_summons.end()) {
-			oldMaster->m_summons.erase(summon);
+		auto summon = getSummon(getID());
+		if (summon) {
+			oldMaster->removeSummon(summon);
 		}
 	}
 	return true;

@@ -1013,8 +1013,9 @@ void Monster::onThinkDefense(uint32_t interval) {
 			}
 
 			uint32_t summonCount = 0;
-			for (std::shared_ptr<Creature> summon : m_summons) {
-				if (summon->getName() == summonBlock.name) {
+			for (auto summonPtr : m_summons) {
+				auto summon = summonPtr.lock();
+				if (summon && summon->getName() == summonBlock.name) {
 					++summonCount;
 				}
 			}
@@ -1852,7 +1853,11 @@ void Monster::death(std::shared_ptr<Creature>) {
 	}
 	setAttackedCreature(nullptr);
 
-	for (std::shared_ptr<Creature> summon : m_summons) {
+	for (auto summonPtr : m_summons) {
+		auto summon = summonPtr.lock();
+		if (!summon) {
+			continue;
+		}
 		summon->changeHealth(-summon->getHealth());
 		summon->removeMaster();
 	}

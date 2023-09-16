@@ -509,11 +509,19 @@ void Party::showPlayerStatus(std::shared_ptr<Player> player, std::shared_ptr<Pla
 	player->sendPartyCreatureShowStatus(member, showStatus);
 	member->sendPartyCreatureShowStatus(player, showStatus);
 	if (showStatus) {
-		for (std::shared_ptr<Creature> summon : member->getSummons()) {
+		for (auto summonPtr : member->getSummons()) {
+			auto summon = summonPtr.lock();
+			if (!summon) {
+				continue;
+			}
 			player->sendPartyCreatureShowStatus(summon, showStatus);
 			player->sendPartyCreatureHealth(summon, std::ceil((static_cast<double>(summon->getHealth()) / std::max<int32_t>(summon->getMaxHealth(), 1)) * 100));
 		}
-		for (std::shared_ptr<Creature> summon : player->getSummons()) {
+		for (auto summonPtr : player->getSummons()) {
+			auto summon = summonPtr.lock();
+			if (!summon) {
+				continue;
+			}
 			member->sendPartyCreatureShowStatus(summon, showStatus);
 			member->sendPartyCreatureHealth(summon, std::ceil((static_cast<double>(summon->getHealth()) / std::max<int32_t>(summon->getMaxHealth(), 1)) * 100));
 		}
@@ -522,10 +530,18 @@ void Party::showPlayerStatus(std::shared_ptr<Player> player, std::shared_ptr<Pla
 		player->sendPartyPlayerMana(member, std::ceil((static_cast<double>(member->getMana()) / std::max<int32_t>(member->getMaxMana(), 1)) * 100));
 		member->sendPartyPlayerMana(player, std::ceil((static_cast<double>(player->getMana()) / std::max<int32_t>(player->getMaxMana(), 1)) * 100));
 	} else {
-		for (std::shared_ptr<Creature> summon : player->getSummons()) {
+		for (auto summonPtr : player->getSummons()) {
+			auto summon = summonPtr.lock();
+			if (!summon) {
+				continue;
+			}
 			member->sendPartyCreatureShowStatus(summon, showStatus);
 		}
-		for (std::shared_ptr<Creature> summon : member->getSummons()) {
+		for (auto summonPtr : member->getSummons()) {
+			auto summon = summonPtr.lock();
+			if (!summon) {
+				continue;
+			}
 			player->sendPartyCreatureShowStatus(summon, showStatus);
 		}
 	}

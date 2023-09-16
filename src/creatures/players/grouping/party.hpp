@@ -24,20 +24,18 @@ enum SharedExpStatus_t : uint8_t {
 class Player;
 class Party;
 
-using PlayerVector = std::vector<std::shared_ptr<Player>>;
-
 class Party {
 public:
 	explicit Party(std::shared_ptr<Player> leader);
 
 	std::shared_ptr<Player> getLeader() const {
-		return leader;
+		return m_leader.lock();
 	}
-	PlayerVector &getMembers() {
-		return memberList;
+	std::vector<std::shared_ptr<Player>> getMembers() {
+		return weak::lock(memberList);
 	}
-	const PlayerVector &getInvitees() const {
-		return inviteList;
+	std::vector<std::shared_ptr<Player>> getInvitees() {
+		return weak::lock(inviteList);
 	}
 	size_t getMemberCount() const {
 		return memberList.size();
@@ -55,7 +53,7 @@ public:
 
 	bool removeInvite(const std::shared_ptr<Player> &player, bool removeFromPlayer = true);
 
-	bool isPlayerInvited(std::shared_ptr<Player> player) const;
+	bool isPlayerInvited(const std::shared_ptr<Player> &player) const;
 	void updateAllPartyIcons();
 	void broadcastPartyMessage(MessageClasses msgClass, const std::string &msg, bool sendToInvitations = false);
 	bool empty() const {
@@ -71,8 +69,8 @@ public:
 	bool isSharedExperienceEnabled() const {
 		return sharedExpEnabled;
 	}
-	bool canUseSharedExperience(std::shared_ptr<Player> player) const;
-	SharedExpStatus_t getMemberSharedExperienceStatus(std::shared_ptr<Player> player) const;
+	bool canUseSharedExperience(std::shared_ptr<Player> player);
+	SharedExpStatus_t getMemberSharedExperienceStatus(std::shared_ptr<Player> player);
 	void updateSharedExperience();
 
 	void updatePlayerTicks(std::shared_ptr<Player> player, uint32_t points);
@@ -85,7 +83,7 @@ public:
 	void updatePlayerMana(std::shared_ptr<Player> player, uint8_t manaPercent);
 	void updatePlayerVocation(std::shared_ptr<Player> player);
 
-	void updateTrackerAnalyzer() const;
+	void updateTrackerAnalyzer();
 	void addPlayerLoot(std::shared_ptr<Player> player, std::shared_ptr<Item> item);
 	void addPlayerSupply(std::shared_ptr<Player> player, std::shared_ptr<Item> item);
 	void addPlayerDamage(std::shared_ptr<Player> player, uint64_t amount);
@@ -117,19 +115,19 @@ public:
 
 private:
 	const char* getSharedExpReturnMessage(SharedExpStatus_t value);
-	bool isPlayerActive(std::shared_ptr<Player> player) const;
+	bool isPlayerActive(std::shared_ptr<Player> player);
 	SharedExpStatus_t getSharedExperienceStatus();
-	uint32_t getHighestLevel() const;
-	uint32_t getLowestLevel() const;
-	uint32_t getMinLevel() const;
-	uint32_t getMaxLevel() const;
+	uint32_t getHighestLevel();
+	uint32_t getLowestLevel();
+	uint32_t getMinLevel();
+	uint32_t getMaxLevel();
 
 	std::map<uint32_t, int64_t> ticksMap;
 
-	PlayerVector memberList;
-	PlayerVector inviteList;
+	weak::vector<Player> memberList;
+	weak::vector<Player> inviteList;
 
-	std::shared_ptr<Player> leader;
+	std::weak_ptr<Player> m_leader;
 
 	bool sharedExpActive = false;
 	bool sharedExpEnabled = false;

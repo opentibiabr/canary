@@ -238,15 +238,15 @@ Position Spells::getCasterPosition(std::shared_ptr<Creature> creature, Direction
 
 CombatSpell::CombatSpell(const std::shared_ptr<Combat> newCombat, bool newNeedTarget, bool newNeedDirection) :
 	Script(&g_spells().getScriptInterface()),
-	combat(newCombat),
+	m_combat(newCombat),
 	needDirection(newNeedDirection),
 	needTarget(newNeedTarget) {
 	// Empty
 }
 
 bool CombatSpell::loadScriptCombat() {
-	combat = g_luaEnvironment().getCombatObject(g_luaEnvironment().lastCombatId);
-	return combat != nullptr;
+	m_combat = g_luaEnvironment().getCombatObject(g_luaEnvironment().lastCombatId);
+	return !m_combat.expired();
 }
 
 bool CombatSpell::castSpell(std::shared_ptr<Creature> creature) {
@@ -270,6 +270,11 @@ bool CombatSpell::castSpell(std::shared_ptr<Creature> creature) {
 		pos = creature->getPosition();
 	}
 
+	auto combat = getCombat();
+	if (!combat) {
+		return false;
+	}
+
 	if (soundCastEffect != SoundEffect_t::SILENCE) {
 		combat->setParam(COMBAT_PARAM_CASTSOUND, static_cast<uint32_t>(soundCastEffect));
 	}
@@ -283,9 +288,13 @@ bool CombatSpell::castSpell(std::shared_ptr<Creature> creature) {
 }
 
 bool CombatSpell::castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) {
+	auto combat = getCombat();
+	if (!combat) {
+		return false;
+	}
+
 	if (isLoadedCallback()) {
 		LuaVariant var;
-
 		if (combat->hasArea()) {
 			var.type = VARIANT_POSITION;
 

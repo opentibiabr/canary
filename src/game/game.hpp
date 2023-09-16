@@ -364,8 +364,6 @@ public:
 	void cleanup();
 	void shutdown();
 	void dieSafely(std::string errorMsg);
-	void ReleaseCreature(std::shared_ptr<Creature> creature);
-	void ReleaseItem(std::shared_ptr<Item> item);
 	void addBestiaryList(uint16_t raceid, std::string name);
 	const std::map<uint16_t, std::string> &getBestiaryList() const {
 		return BestiaryList;
@@ -734,9 +732,9 @@ private:
 	 */
 	ReturnValue collectRewardChestItems(std::shared_ptr<Player> player, uint32_t maxMoveItems = 0);
 
-	phmap::flat_hash_map<std::string, std::shared_ptr<Player>> m_uniqueLoginPlayerNames;
+	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> m_uniqueLoginPlayerNames;
 	phmap::flat_hash_map<uint32_t, std::shared_ptr<Player>> players;
-	phmap::flat_hash_map<std::string, std::shared_ptr<Player>> mappedPlayerNames;
+	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> mappedPlayerNames;
 	phmap::flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
 	phmap::flat_hash_map<uint16_t, std::shared_ptr<Item>> uniqueItems;
 	std::map<uint32_t, uint32_t> stages;
@@ -751,9 +749,7 @@ private:
 	std::string boostedCreature = "";
 
 	std::vector<std::shared_ptr<Charm>> CharmList;
-	std::vector<std::shared_ptr<Creature>> ToReleaseCreatures;
 	std::vector<std::shared_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
-	std::vector<std::shared_ptr<Item>> ToReleaseItems;
 
 	std::vector<uint16_t> registeredMagicEffects;
 	std::vector<uint16_t> registeredDistanceEffects;

@@ -1386,11 +1386,7 @@ public:
 			client->sendShop(npc);
 		}
 	}
-	void sendSaleItemList(const std::map<uint16_t, uint16_t> &inventoryMap) const {
-		if (client && shopOwner) {
-			client->sendSaleItemList(shopOwner->getShopItemVector(), inventoryMap);
-		}
-	}
+	void sendSaleItemList(const std::map<uint16_t, uint16_t> &inventoryMap) const;
 	void sendCloseShop() const {
 		if (client) {
 			client->sendCloseShop();

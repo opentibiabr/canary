@@ -148,7 +148,14 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Npc>> &Zone::getNpcs() const
 }
 
 const phmap::parallel_flat_hash_set<std::shared_ptr<Item>> &Zone::getItems() const {
-	return itemsCache;
+	static phmap::parallel_flat_hash_set<std::shared_ptr<Item>> items;
+	items.clear();
+	for (const auto &item : itemsCache) {
+		if (auto itemPtr = item.lock()) {
+			items.insert(itemPtr);
+		}
+	}
+	return items;
 }
 
 void Zone::removePlayers() const {
@@ -266,5 +273,6 @@ void Zone::itemRemoved(std::shared_ptr<Item> item) {
 	if (!item) {
 		return;
 	}
-	itemsCache.erase(item);
+	std::weak_ptr<Item> weakItem = item;
+	itemsCache.erase(weakItem);
 }

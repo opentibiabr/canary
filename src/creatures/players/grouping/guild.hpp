@@ -48,8 +48,15 @@ public:
 	const std::string &getName() const {
 		return name;
 	}
-	const std::list<std::shared_ptr<Player>> &getMembersOnline() const {
-		return membersOnline;
+	std::vector<std::shared_ptr<Player>> getMembersOnline() const {
+		auto result = std::vector<std::shared_ptr<Player>>(membersOnline.size());
+		std::transform(membersOnline.begin(), membersOnline.end(), result.begin(), [](const std::weak_ptr<Player> &weak) {
+			return weak.lock();
+		});
+		return result;
+	}
+	uint32_t getMemberCountOnline() const {
+		return membersOnline.size();
 	}
 	uint32_t getMemberCount() const {
 		return memberCount;
@@ -81,7 +88,7 @@ public:
 	}
 
 private:
-	std::list<std::shared_ptr<Player>> membersOnline;
+	weak::list<Player> membersOnline;
 	std::vector<GuildRank_ptr> ranks;
 	std::string name;
 	uint64_t bankBalance = 0;

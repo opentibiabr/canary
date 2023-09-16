@@ -1277,7 +1277,7 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_NORTH)) {
 			bool result = true;
 
-			if (attackedCreature && keepAttack) {
+			if (keepAttack) {
 				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x, creaturePos.y - 1, creaturePos.z), attackedCreature));
 			}
 
@@ -1292,7 +1292,7 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_SOUTH)) {
 			bool result = true;
 
-			if (attackedCreature && keepAttack) {
+			if (keepAttack) {
 				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x, creaturePos.y + 1, creaturePos.z), attackedCreature));
 			}
 
@@ -1307,7 +1307,7 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_EAST)) {
 			bool result = true;
 
-			if (attackedCreature && keepAttack) {
+			if (keepAttack) {
 				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x + 1, creaturePos.y, creaturePos.z), attackedCreature));
 			}
 
@@ -1322,7 +1322,7 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_WEST)) {
 			bool result = true;
 
-			if (attackedCreature && keepAttack) {
+			if (keepAttack) {
 				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x - 1, creaturePos.y, creaturePos.z), attackedCreature));
 			}
 

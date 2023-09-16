@@ -15,10 +15,11 @@
 #include "io/iologindata.hpp"
 
 Bank::Bank(const std::shared_ptr<Bankable> bankable) :
-	bankable(bankable) {
+	m_bankable(bankable) {
 }
 
 Bank::~Bank() {
+	auto bankable = getBankable();
 	if (bankable == nullptr || bankable->isOnline()) {
 		return;
 	}
@@ -48,7 +49,8 @@ bool Bank::debit(uint64_t amount) {
 }
 
 bool Bank::balance(uint64_t amount) const {
-	if (bankable == nullptr) {
+	auto bankable = getBankable();
+	if (!bankable) {
 		return 0;
 	}
 	bankable->setBankBalance(amount);
@@ -56,7 +58,8 @@ bool Bank::balance(uint64_t amount) const {
 }
 
 uint64_t Bank::balance() {
-	if (bankable == nullptr) {
+	auto bankable = getBankable();
+	if (!bankable) {
 		return 0;
 	}
 	return bankable->getBankBalance();
@@ -78,10 +81,18 @@ const std::set<std::string> deniedNames = {
 const uint32_t minTownId = 3;
 
 bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) {
-	if (destination == nullptr) {
+	if (!destination) {
 		return false;
 	}
-	if (destination->bankable->getPlayer() != nullptr) {
+	auto bankable = getBankable();
+	if (!bankable) {
+		return false;
+	}
+	auto destinationBankable = destination->getBankable();
+	if (!destinationBankable) {
+		return false;
+	}
+	if (destinationBankable->getPlayer() != nullptr) {
 		auto player = bankable->getPlayer();
 		auto name = asLowerCaseString(player->getName());
 		replaceString(name, " ", "");
@@ -109,6 +120,10 @@ bool Bank::withdraw(std::shared_ptr<Player> player, uint64_t amount) {
 }
 
 bool Bank::deposit(const std::shared_ptr<Bank> destination) {
+	auto bankable = getBankable();
+	if (!bankable) {
+		return false;
+	}
 	if (bankable->getPlayer() == nullptr) {
 		return false;
 	}
@@ -117,7 +132,11 @@ bool Bank::deposit(const std::shared_ptr<Bank> destination) {
 }
 
 bool Bank::deposit(const std::shared_ptr<Bank> destination, uint64_t amount) {
-	if (destination == nullptr) {
+	if (!destination) {
+		return false;
+	}
+	auto bankable = getBankable();
+	if (!bankable) {
 		return false;
 	}
 	if (!g_game().removeMoney(bankable->getPlayer(), amount)) {

@@ -10,6 +10,7 @@
 #pragma once
 
 #include "creatures/npcs/npcs.hpp"
+#include "creatures/players/player.hpp"
 #include "declarations.hpp"
 #include "items/tile.hpp"
 #include "lib/di/container.hpp"
@@ -174,7 +175,7 @@ private:
 
 	std::map<uint32_t, uint16_t> playerInteractions;
 
-	std::set<std::shared_ptr<Player>> shopPlayerSet;
+	weak::parallel_flat_hash_set<Player> shopPlayerSet;
 
 	NpcType* npcType;
 	SpawnNpc* spawnNpc = nullptr;

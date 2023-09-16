@@ -375,7 +375,6 @@ void House::resetTransferItem() {
 		transferItem = nullptr;
 		transfer_container.resetParent();
 		transfer_container.removeThing(tmpItem, tmpItem->getItemCount());
-		g_game().ReleaseItem(tmpItem);
 	}
 }
 

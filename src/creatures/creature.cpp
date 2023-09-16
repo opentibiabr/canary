@@ -156,9 +156,6 @@ void Creature::onAttacking(uint32_t interval) {
 	}
 
 	onAttacked();
-	if (!attackedCreature) {
-		return;
-	}
 	attackedCreature->onAttacked();
 
 	if (g_game().isSightClear(getPosition(), attackedCreature->getPosition(), true)) {

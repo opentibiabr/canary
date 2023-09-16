@@ -742,7 +742,7 @@ std::shared_ptr<Creature> Game::getCreatureByName(const std::string &s) {
 
 	auto m_it = mappedPlayerNames.find(lowerCaseName);
 	if (m_it != mappedPlayerNames.end()) {
-		return m_it->second;
+		return m_it->second.lock();
 	}
 
 	for (const auto &it : npcs) {
@@ -791,7 +791,7 @@ std::shared_ptr<Player> Game::getPlayerByName(const std::string &s, bool loadTmp
 		tmpPlayer->setOnline(false);
 		return tmpPlayer;
 	}
-	return it->second;
+	return it->second.lock();
 }
 
 std::shared_ptr<Player> Game::getPlayerByGUID(const uint32_t &guid) {
@@ -933,7 +933,6 @@ bool Game::removeCreature(std::shared_ptr<Creature> creature, bool isLogout /* =
 
 	creature->removeList();
 	creature->setRemoved();
-	ReleaseCreature(creature);
 
 	removeCreatureCheck(creature);
 
@@ -1801,7 +1800,6 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 
 		if (item->isRemoved()) {
 			item->stopDecaying();
-			ReleaseItem(item);
 		}
 	}
 
@@ -1956,7 +1954,6 @@ ReturnValue Game::internalAddItem(std::shared_ptr<Cylinder> toCylinder, std::sha
 				std::shared_ptr<Item> remainderItem = item->clone();
 				remainderItem->setItemCount(count);
 				if (internalAddItem(destCylinder, remainderItem, INDEX_WHEREEVER, flags, false) != RETURNVALUE_NOERROR) {
-					ReleaseItem(remainderItem);
 					remainderCount = count;
 				}
 			} else {
@@ -1970,7 +1967,6 @@ ReturnValue Game::internalAddItem(std::shared_ptr<Cylinder> toCylinder, std::sha
 		} else {
 			// fully merged with toItem, item will be destroyed
 			item->onRemoved();
-			ReleaseItem(item);
 
 			int32_t itemIndex = toCylinder->getThingIndex(toItem);
 			if (itemIndex != -1) {
@@ -2039,7 +2035,6 @@ ReturnValue Game::internalRemoveItem(std::shared_ptr<Item> item, int32_t count /
 		if (item->isRemoved()) {
 			item->onRemoved();
 			item->stopDecaying();
-			ReleaseItem(item);
 		}
 
 		cylinder->postRemoveNotification(item, nullptr, index);
@@ -2062,7 +2057,6 @@ ReturnValue Game::internalPlayerAddItem(std::shared_ptr<Player> player, std::sha
 		std::shared_ptr<Item> remainderItem = Item::CreateItem(item->getID(), remainderCount);
 		ReturnValue remaindRet = internalAddItem(player->getTile(), remainderItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
 		if (remaindRet != RETURNVALUE_NOERROR) {
-			ReleaseItem(remainderItem);
 			player->sendLootStats(item, static_cast<uint8_t>(item->getItemCount()));
 		}
 	}
@@ -2298,7 +2292,6 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 		std::shared_ptr<Cylinder> newParent = item->getParent();
 		if (newParent == nullptr) {
 			item->stopDecaying();
-			ReleaseItem(item);
 			return nullptr;
 		}
 
@@ -4369,13 +4362,11 @@ void Game::playerAcceptTrade(uint32_t playerId) {
 
 		auto it = tradeItems.find(tradeItem1);
 		if (it != tradeItems.end()) {
-			ReleaseItem(it->first);
 			tradeItems.erase(it);
 		}
 
 		it = tradeItems.find(tradeItem2);
 		if (it != tradeItems.end()) {
-			ReleaseItem(it->first);
 			tradeItems.erase(it);
 		}
 
@@ -4541,7 +4532,6 @@ void Game::internalCloseTrade(std::shared_ptr<Player> player) {
 	if (player->getTradeItem()) {
 		auto it = tradeItems.find(player->getTradeItem());
 		if (it != tradeItems.end()) {
-			ReleaseItem(it->first);
 			tradeItems.erase(it);
 		}
 
@@ -4559,7 +4549,6 @@ void Game::internalCloseTrade(std::shared_ptr<Player> player) {
 		if (tradePartner->getTradeItem()) {
 			auto it = tradeItems.find(tradePartner->getTradeItem());
 			if (it != tradeItems.end()) {
-				ReleaseItem(it->first);
 				tradeItems.erase(it);
 			}
 
@@ -5726,7 +5715,6 @@ void Game::checkCreatures(size_t index) {
 			++it;
 		} else {
 			creature->inCheckCreaturesVector = false;
-			ReleaseCreature(creature);
 
 			checkCreatureList[it] = checkCreatureList.back();
 			checkCreatureList.pop_back();
@@ -7403,9 +7391,6 @@ void Game::shutdown() {
 }
 
 void Game::cleanup() {
-	ToReleaseCreatures.clear();
-	ToReleaseItems.clear();
-
 	for (auto it = browseFields.begin(); it != browseFields.end();) {
 		if (it->second.expired()) {
 			it = browseFields.erase(it);
@@ -7413,18 +7398,6 @@ void Game::cleanup() {
 			++it;
 		}
 	}
-}
-
-void Game::ReleaseCreature(std::shared_ptr<Creature> creature) {
-	ToReleaseCreatures.push_back(creature);
-}
-
-void Game::ReleaseItem(std::shared_ptr<Item> item) {
-	if (!item) {
-		return;
-	}
-
-	ToReleaseItems.push_back(item);
 }
 
 void Game::addBestiaryList(uint16_t raceid, std::string name) {
@@ -9720,7 +9693,7 @@ std::shared_ptr<Player> Game::getPlayerUniqueLogin(const std::string &playerName
 	}
 
 	auto it = m_uniqueLoginPlayerNames.find(asLowerCaseString(playerName));
-	return (it != m_uniqueLoginPlayerNames.end()) ? it->second : nullptr;
+	return (it != m_uniqueLoginPlayerNames.end()) ? it->second.lock() : nullptr;
 }
 
 void Game::removePlayerUniqueLogin(const std::string &playerName) {
@@ -9739,8 +9712,8 @@ void Game::removePlayerUniqueLogin(std::shared_ptr<Player> player) {
 		return;
 	}
 
-	const std::string &lowercase_name = asLowerCaseString(player->getName());
-	m_uniqueLoginPlayerNames.erase(lowercase_name);
+	const std::string &lowercaseName = asLowerCaseString(player->getName());
+	m_uniqueLoginPlayerNames.erase(lowercaseName);
 }
 
 void Game::playerCheckActivity(const std::string &playerName, int interval) {

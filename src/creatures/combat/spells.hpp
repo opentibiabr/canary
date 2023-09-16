@@ -104,7 +104,7 @@ public:
 
 	bool loadScriptCombat();
 	std::shared_ptr<Combat> getCombat() {
-		return combat;
+		return m_combat.lock();
 	}
 
 private:
@@ -112,7 +112,7 @@ private:
 		return "onCastSpell";
 	}
 
-	std::shared_ptr<Combat> combat;
+	std::weak_ptr<Combat> m_combat;
 
 	bool needDirection;
 	bool needTarget;

@@ -48,5 +48,8 @@ public:
 	bool deposit(const std::shared_ptr<Bank> destination, uint64_t amount);
 
 private:
-	std::shared_ptr<Bankable> bankable;
+	std::shared_ptr<Bankable> getBankable() const {
+		return m_bankable.lock();
+	}
+	std::weak_ptr<Bankable> m_bankable;
 };

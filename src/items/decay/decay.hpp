@@ -30,7 +30,7 @@ private:
 	void internalDecayItem(std::shared_ptr<Item> item);
 
 	uint32_t eventId { 0 };
-	std::map<int64_t, std::vector<std::shared_ptr<Item>>> decayMap;
+	std::map<int64_t, weak::vector<Item>> decayMap;
 };
 
 constexpr auto g_decay = Decay::getInstance;

@@ -648,13 +648,15 @@ void Npc::addShopPlayer(std::shared_ptr<Player> player) {
 }
 
 void Npc::removeShopPlayer(std::shared_ptr<Player> player) {
-	if (player) {
-		shopPlayerSet.erase(player);
+	if (!player) {
+		return;
 	}
+	weak::erase(shopPlayerSet, player);
 }
 
 void Npc::closeAllShopWindows() {
-	for (auto shopPlayer : shopPlayerSet) {
+	for (auto shopPlayerPtr : shopPlayerSet) {
+		auto shopPlayer = shopPlayerPtr.lock();
 		if (shopPlayer) {
 			shopPlayer->closeShopWindow();
 		}

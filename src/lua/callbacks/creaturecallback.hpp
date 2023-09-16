@@ -17,7 +17,7 @@ class Creature;
 class CreatureCallback {
 public:
 	CreatureCallback(LuaScriptInterface* scriptInterface, std::shared_ptr<Creature> targetCreature) :
-		scriptInterface(scriptInterface), targetCreature(targetCreature) {};
+		scriptInterface(scriptInterface), m_targetCreature(targetCreature) {};
 	~CreatureCallback() { }
 
 	bool startScriptInterface(int32_t scriptId);
@@ -59,7 +59,7 @@ protected:
 
 private:
 	LuaScriptInterface* scriptInterface;
-	std::shared_ptr<Creature> targetCreature;
+	std::weak_ptr<Creature> m_targetCreature;
 	uint32_t params = 0;
 	lua_State* L = nullptr;
 };

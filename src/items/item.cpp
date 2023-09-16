@@ -3119,7 +3119,6 @@ std::shared_ptr<Item> Item::transform(uint16_t itemId, uint16_t itemCount /*= -1
 	resetParent();
 	cylinder->postRemoveNotification(static_self_cast<Item>(), cylinder, itemIndex);
 	stopDecaying();
-	g_game().ReleaseItem(static_self_cast<Item>());
 	newItem->startDecaying();
 	return newItem;
 }

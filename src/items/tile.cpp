@@ -971,7 +971,6 @@ void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
 
 				std::shared_ptr<Item> oldGround = ground;
 				ground->resetParent();
-				g_game().ReleaseItem(ground);
 				ground = item;
 				resetTileFlags(oldGround);
 				setTileFlags(item);
@@ -989,7 +988,6 @@ void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
 
 					removeThing(oldSplash, 1);
 					oldSplash->resetParent();
-					g_game().ReleaseItem(oldSplash);
 					postRemoveNotification(oldSplash, nullptr, 0);
 					break;
 				}
@@ -1026,13 +1024,11 @@ void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
 								removeThing(oldField, 1);
 
 								oldField->resetParent();
-								g_game().ReleaseItem(oldField);
 								postRemoveNotification(oldField, nullptr, 0);
 								break;
 							} else {
 								// This magic field cannot be replaced.
 								item->resetParent();
-								g_game().ReleaseItem(item);
 								return;
 							}
 						}
@@ -1483,13 +1479,6 @@ void Tile::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cyl
 		} else if (item) {
 			g_moveEvents().onItemMove(item, static_self_cast<Tile>(), true);
 		}
-	}
-
-	// release the reference to this item onces we are finished
-	if (creature) {
-		g_game().ReleaseCreature(creature);
-	} else if (item) {
-		g_game().ReleaseItem(item);
 	}
 }
 

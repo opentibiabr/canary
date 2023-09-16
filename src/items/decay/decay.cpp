@@ -61,30 +61,30 @@ void Decay::stopDecay(std::shared_ptr<Item> item) {
 		if (item->hasAttribute(ItemAttribute_t::DURATION_TIMESTAMP)) {
 			auto it = decayMap.find(timestamp);
 			if (it != decayMap.end()) {
-				std::vector<std::shared_ptr<Item>> &decayItems = it->second;
+				auto &decayItems = it->second;
 
 				size_t i = 0, end = decayItems.size();
+				auto decayItem = decayItems[i].lock();
 				if (end == 1) {
-					if (item == decayItems[i]) {
+					if (item == decayItem) {
 						if (item->hasAttribute(ItemAttribute_t::DURATION)) {
 							// Incase we removed duration attribute don't assign new duration
 							item->setDuration(item->getDuration());
 						}
 						item->removeAttribute(ItemAttribute_t::DECAYSTATE);
-						g_game().ReleaseItem(item);
 
 						decayMap.erase(it);
 					}
 					return;
 				}
 				while (i < end) {
-					if (item == decayItems[i]) {
+					decayItem = decayItems[i].lock();
+					if (item == decayItem) {
 						if (item->hasAttribute(ItemAttribute_t::DURATION)) {
 							// Incase we removed duration attribute don't assign new duration
 							item->setDuration(item->getDuration());
 						}
 						item->removeAttribute(ItemAttribute_t::DECAYSTATE);
-						g_game().ReleaseItem(item);
 
 						decayItems[i] = decayItems.back();
 						decayItems.pop_back();
@@ -113,12 +113,15 @@ void Decay::checkDecay() {
 		}
 
 		// Iterating here is unsafe so let's copy our items into temporary vector
-		std::vector<std::shared_ptr<Item>> &decayItems = it->second;
-		tempItems.insert(tempItems.end(), decayItems.begin(), decayItems.end());
+		auto &decayItems = it->second;
+		tempItems.reserve(tempItems.size() + decayItems.size());
+		for (auto &decayItem : decayItems) {
+			tempItems.push_back(decayItem.lock());
+		}
 		it = decayMap.erase(it);
 	}
 
-	for (std::shared_ptr<Item> item : tempItems) {
+	for (auto item : tempItems) {
 		if (!item->canDecay()) {
 			item->setDuration(item->getDuration());
 			item->setDecaying(DECAYING_FALSE);
@@ -126,8 +129,6 @@ void Decay::checkDecay() {
 			item->setDecaying(DECAYING_FALSE);
 			internalDecayItem(item);
 		}
-
-		g_game().ReleaseItem(item);
 	}
 
 	if (it != end) {

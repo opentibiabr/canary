@@ -1441,6 +1441,12 @@ void Player::openImbuementWindow(std::shared_ptr<Item> item) {
 	client->openImbuementWindow(item);
 }
 
+void Player::sendSaleItemList(const std::map<uint16_t, uint16_t> &inventoryMap) const {
+	if (client && shopOwner) {
+		client->sendSaleItemList(shopOwner->getShopItemVector(), inventoryMap);
+	}
+}
+
 void Player::sendMarketEnter(uint32_t depotId) {
 	if (!client || this->getLastDepotId() == -1 || !depotId) {
 		return;
@@ -5912,7 +5918,7 @@ uint16_t Player::getHelpers() const {
 
 		helpers = helperSet.size();
 	} else if (guild) {
-		helpers = guild->getMembersOnline().size();
+		helpers = guild->getMemberCountOnline();
 	} else if (party) {
 		helpers = party->getMemberCount() + party->getInvitationCount() + 1;
 	} else {

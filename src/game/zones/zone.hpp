@@ -10,6 +10,7 @@
 #pragma once
 
 #include "game/movement/position.hpp"
+#include "items/item.hpp"
 
 class Tile;
 class Creature;
@@ -127,7 +128,7 @@ private:
 	std::string name;
 	phmap::parallel_flat_hash_set<Position> positions;
 
-	phmap::parallel_flat_hash_set<std::shared_ptr<Item>> itemsCache;
+	weak::parallel_flat_hash_set<Item> itemsCache;
 	phmap::parallel_flat_hash_set<uint32_t> creaturesCache;
 	phmap::parallel_flat_hash_set<uint32_t> monstersCache;
 	phmap::parallel_flat_hash_set<uint32_t> npcsCache;

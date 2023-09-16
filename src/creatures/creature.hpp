@@ -331,7 +331,7 @@ public:
 		return m_master.lock();
 	}
 
-	const std::list<std::weak_ptr<Creature>> &getSummons() const {
+	const weak::list<Creature> &getSummons() const {
 		return m_summons;
 	}
 
@@ -675,7 +675,7 @@ protected:
 
 	CountMap damageMap;
 
-	std::list<std::weak_ptr<Creature>> m_summons;
+	weak::list<Creature> m_summons;
 	CreatureEventList eventsList;
 	ConditionList conditions;
 

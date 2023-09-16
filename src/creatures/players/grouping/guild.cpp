@@ -14,15 +14,21 @@
 
 void Guild::addMember(std::shared_ptr<Player> player) {
 	membersOnline.push_back(player);
-	for (std::shared_ptr<Player> member : membersOnline) {
+	for (auto member : getMembersOnline()) {
 		g_game().updatePlayerHelpers(member);
 	}
 }
 
 void Guild::removeMember(std::shared_ptr<Player> player) {
-	membersOnline.remove(player);
-	for (std::shared_ptr<Player> member : membersOnline) {
-		g_game().updatePlayerHelpers(member);
+	// loop over to udpate all members and delete the player from the list
+	for (auto it = membersOnline.begin(); it != membersOnline.end(); ++it) {
+		if (auto member = it->lock()) {
+			if (member == player) {
+				it = membersOnline.erase(it);
+			} else {
+				g_game().updatePlayerHelpers(member);
+			}
+		}
 	}
 
 	g_game().updatePlayerHelpers(player);

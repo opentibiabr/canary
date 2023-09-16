@@ -1858,6 +1858,11 @@ std::string Item::parseImbuementDescription(const Item* item) {
 	return s.str();
 }
 
+bool Item::isSavedToHouses() const {
+	const auto &it = items[id];
+	return it.moveable || it.isWrappable() || it.isCarpet() || getDoor() || (getContainer() && !getContainer()->empty()) || it.canWriteText || getBed() || it.m_transformOnUse;
+}
+
 SoundEffect_t Item::getMovementSound(Cylinder* toCylinder) const {
 	if (!toCylinder) {
 		return SoundEffect_t::ITEM_MOVE_DEFAULT;

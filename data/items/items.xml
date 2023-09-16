@@ -5532,10 +5532,18 @@
 		<attribute key="primarytype" value="tools"/>
 		<attribute key="weight" value="50"/>
 	</item>
-	<item id="2907" article="a" name="wall lamp"/>
-	<item id="2908" article="a" name="lit wall lamp"/>
-	<item id="2909" article="a" name="wall lamp"/>
-	<item id="2910" article="a" name="lit wall lamp"/>
+	<item id="2907" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="2908"/>
+	</item>
+	<item id="2908" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="2907"/>
+	</item>
+	<item id="2909" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="2910"/>
+	</item>
+	<item id="2910" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="2909"/>
+	</item>
 	<item id="2911" article="a" name="candelabrum">
 		<attribute key="primarytype" value="light sources"/>
 		<attribute key="stopduration" value="1"/>
@@ -5647,10 +5655,18 @@
 		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="2935" article="a" name="lit table lamp"/>
-	<item id="2936" article="a" name="wall lamp"/>
-	<item id="2937" article="a" name="lit wall lamp"/>
-	<item id="2938" article="a" name="wall lamp"/>
-	<item id="2939" article="a" name="lit wall lamp"/>
+	<item id="2936" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="2937"/>
+	</item>
+	<item id="2937" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="2936"/>
+	</item>
+	<item id="2938" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="2939"/>
+	</item>
+	<item id="2939" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="2938"/>
+	</item>
 	<item id="2940" article="a" name="torch bearer">
 		<attribute key="primarytype" value="wall hangings"/>
 	</item>
@@ -5663,10 +5679,18 @@
 	<item id="2943" article="a" name="lit torch bearer">
 		<attribute key="primarytype" value="wall hangings"/>
 	</item>
-	<item id="2944" article="a" name="wall lamp"/>
-	<item id="2945" article="a" name="lit wall lamp"/>
-	<item id="2946" article="a" name="wall lamp"/>
-	<item id="2947" article="a" name="lit wall lamp"/>
+	<item id="2944" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="2945"/>
+	</item>
+	<item id="2945" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="2944"/>
+	</item>
+	<item id="2946" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="2947"/>
+	</item>
+	<item id="2947" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="2946"/>
+	</item>
 	<item id="2948" article="a" name="wooden flute">
 		<attribute key="primarytype" value="musical instruments"/>
 		<attribute key="weight" value="200"/>
@@ -64974,20 +64998,44 @@
 	<item fromid="38522" toid="38525" article="a" name="naga lamp"/>
 	<item id="38526" article="a" name="basin with a glowing flower"/>
 	<item id="38528" article="a" name="basin with flower"/>
-	<item id="38529" article="a" name="wall lamp"/>
-	<item id="38530" article="a" name="lit wall lamp"/>
-	<item id="38531" article="a" name="wall lamp"/>
-	<item id="38532" article="a" name="lit wall lamp"/>
-	<item id="38533" article="a" name="wall lamp"/>
-	<item id="38534" article="a" name="lit wall lamp"/>
-	<item id="38535" article="a" name="wall lamp"/>
-	<item id="38536" article="a" name="lit wall lamp"/>
+	<item id="38529" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="38530"/>
+	</item>
+	<item id="38530" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="38529"/>
+	</item>
+	<item id="38531" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="38532"/>
+	</item>
+	<item id="38532" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="38531"/>
+	</item>
+	<item id="38533" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="38534"/>
+	</item>
+	<item id="38534" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="38533"/>
+	</item>
+	<item id="38535" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="38536"/>
+	</item>
+	<item id="38536" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="38535"/>
+	</item>
 	<item fromid="38537" toid="38613" article="a" name="big naga statue"/>
 	<item fromid="38614" toid="38622" name="mangrove branches"/>
-	<item id="38623" article="a" name="wall lamp"/>
-	<item id="38624" article="a" name="lit wall lamp"/>
-	<item id="38625" article="a" name="wall lamp"/>
-	<item id="38626" article="a" name="lit wall lamp"/>
+	<item id="38623" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="38624"/>
+	</item>
+	<item id="38624" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="38623"/>
+	</item>
+	<item id="38625" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="38626"/>
+	</item>
+	<item id="38626" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="38625"/>
+	</item>
 	<item id="38633" name="peacock feather">
 		<attribute key="primarytype" value="quest items"/>
 		<attribute key="weight" value="20"/>
@@ -66632,19 +66680,23 @@
 	</item>
 	<item id="39446" article="a" name="knightly wall lamp">
 		<attribute key="primarytype" value="furniture"/>
+		<attribute key="transformOnUse" value="39447"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="39447" article="a" name="knightly wall lamp">
 		<attribute key="primarytype" value="furniture"/>
+		<attribute key="transformOnUse" value="39446"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item fromid="39484" toid="39495" name="some crystals"/>
 	<item id="39496" article="a" name="knightly sword lamp">
 		<attribute key="primarytype" value="furniture"/>
+		<attribute key="transformOnUse" value="39497"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="39497" article="a" name="knightly sword lamp">
 		<attribute key="primarytype" value="furniture"/>
+		<attribute key="transformOnUse" value="39496"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="39498" article="a" name="knightly candelabra">

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 540
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 1,
-	Locations = "Old Beregar mines."
+	Locations = "Old Beregar mines.",
 }
 
 monster.health = 245
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -70,8 +70,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "Mechanical Fighter", chance = 90, interval = 2000, count = 2 }
-	}
+		{ name = "Mechanical Fighter", chance = 90, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -85,11 +85,11 @@ monster.loot = {
 	{ name = "gold coin", chance = 93000, maxCount = 146 },
 	{ name = "platinum coin", chance = 6000 },
 	{ name = "war hammer", chance = 750 },
-	{ name = "bunch of troll hair", chance = 4400 }
+	{ name = "bunch of troll hair", chance = 4400 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 },
 }
 
 monster.defenses = {
@@ -115,7 +115,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

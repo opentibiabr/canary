@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 93,
 	lookLegs = 36,
 	lookFeet = 93,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,21 +58,21 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'letter') then
+	if MsgContains(message, "letter") then
 		if player:getStorageValue(Storage.ThievesGuild.Mission06) == 1 then
-			npcHandler:say('You would like Chantalle\'s letter? only if you are willing to pay a price. {gold} maybe?', npc, creature)
+			npcHandler:say("You would like Chantalle's letter? only if you are willing to pay a price. {gold} maybe?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
-	elseif MsgContains(message, 'gold') then
+	elseif MsgContains(message, "gold") then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say('Are you willing to pay 1000 gold for this letter?', npc, creature)
+			npcHandler:say("Are you willing to pay 1000 gold for this letter?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
-	elseif MsgContains(message, 'yes') then
+	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 2 then
 			if player:removeMoneyBank(1000) then
 				player:addItem(7940, 1)
-				npcHandler:say('Here you go kind sir.', npc, creature)
+				npcHandler:say("Here you go kind sir.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 		end
@@ -86,7 +86,7 @@ npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 npcConfig.shop = {
 	{ itemName = "label", clientId = 3507, buy = 1 },
 	{ itemName = "letter", clientId = 3505, buy = 8 },
-	{ itemName = "parcel", clientId = 3503, buy = 15 }
+	{ itemName = "parcel", clientId = 3503, buy = 15 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -97,7 +97,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

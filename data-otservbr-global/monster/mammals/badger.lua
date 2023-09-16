@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 105
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "Hrodmir, southern Tiquanda, unannounced raid in Ab'Dendriel and Edron."
+	Locations = "Hrodmir, southern Tiquanda, unannounced raid in Ab'Dendriel and Edron.",
 }
 
 monster.health = 23
@@ -35,7 +35,7 @@ monster.manaCost = 200
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -75,11 +75,11 @@ monster.voices = {
 monster.loot = {
 	{ id = 10299, chance = 10230 }, -- badger fur
 	{ name = "beetroot", chance = 40710 },
-	{ name = "acorn", chance = 5130 }
+	{ name = "acorn", chance = 5130 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -12 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -12 },
 }
 
 monster.defenses = {
@@ -105,7 +105,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

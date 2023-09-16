@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 218
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Around Port Hope, Arena and Zoo Quarter in Yalahar, few on Zao steppes."
+	Locations = "Around Port Hope, Arena and Zoo Quarter in Yalahar, few on Zao steppes.",
 }
 
 monster.health = 300
@@ -35,7 +35,7 @@ monster.manaCost = 490
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -84,11 +84,11 @@ monster.loot = {
 	{ name = "colourful feather", chance = 3090 },
 	{ name = "health potion", chance = 690 },
 	{ name = "seeds", chance = 280 },
-	{ name = "feather headdress", chance = 100 }
+	{ name = "feather headdress", chance = 100 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90 },
 }
 
 monster.defenses = {
@@ -114,7 +114,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

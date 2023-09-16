@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 123,
 	lookLegs = 86,
 	lookFeet = 98,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -70,7 +70,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 end
 --Basic
-keywordHandler:addKeyword({ "alori mort" }, StdModule.say, { npcHandler = npcHandler, text = "There's something about these words which makes me feel awkward. Or maybe it's you who causes that feeling. You better get lost." }, function(player) return player:getStorageValue(BloodBrothers.Mission03) == 1 end)
+keywordHandler:addKeyword({ "alori mort" }, StdModule.say, { npcHandler = npcHandler, text = "There's something about these words which makes me feel awkward. Or maybe it's you who causes that feeling. You better get lost." }, function(player)
+	return player:getStorageValue(BloodBrothers.Mission03) == 1
+end)
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to my fruit and vegetable store, |PLAYERNAME|! Ask me for a {trade} if you'd like to see my wares.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
@@ -92,7 +94,7 @@ npcConfig.shop = {
 	{ itemName = "potato", clientId = 8010, buy = 4 },
 	{ itemName = "pumpkin", clientId = 3594, buy = 10 },
 	{ itemName = "strawberry", clientId = 3591, buy = 2 },
-	{ itemName = "white mushroom", clientId = 3723, buy = 10 }
+	{ itemName = "white mushroom", clientId = 3723, buy = 10 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -103,7 +105,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

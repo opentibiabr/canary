@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 211
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "East of Port Hope close to Grizzly Adams, deep in the jungle, \z
-		Arena and Zoo Quarter, Mammoth Shearing Factory."
+		Arena and Zoo Quarter, Mammoth Shearing Factory.",
 }
 
 monster.health = 320
@@ -36,7 +36,7 @@ monster.manaCost = 500
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -81,11 +81,11 @@ monster.loot = {
 	{ name = "meat", chance = 39000, maxCount = 4 },
 	{ name = "ham", chance = 30000, maxCount = 3 },
 	{ name = "tusk", chance = 1000, maxCount = 2 },
-	{ name = "tusk shield", chance = 140 }
+	{ name = "tusk shield", chance = 140 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 },
 }
 
 monster.defenses = {
@@ -111,7 +111,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

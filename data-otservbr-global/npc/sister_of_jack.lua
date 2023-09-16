@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 128,
 	lookLegs = 110,
 	lookFeet = 115,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
@@ -29,7 +29,7 @@ npcConfig.voices = {
 	{ text = "Where did I put my broom? Mother?" },
 	{ text = "Mother?! Oh no, now I have to do this all over again" },
 	{ text = "Mhmhmhmhm." },
-	{ text = "Lalala..." }
+	{ text = "Lalala..." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -68,45 +68,40 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "jack") then
-		if (player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 5) then
-			if
-					(player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Mother == 1) and
-						(player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Sister)) < 1)
-			then
+		if player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 5 then
+			if player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Mother == 1) and (player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Sister)) < 1 then
 				npcHandler:say("Why are you asking, he didn't get himself into something again did he?", npc, creature)
 				npcHandler:setTopic(playerId, 1)
 			end
 		end
 	elseif MsgContains(message, "spectulus") then
-		if (npcHandler:getTopic(playerId) == 3) then
+		if npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say(
 				"Spelltolust?! That sounds awfully nasty! What was he doing there - are you telling \z
 				me he lived an alternate life and he didn't even tell {mother}?",
-				npc, creature)
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 4)
 		end
 	elseif MsgContains(message, "yes") then
-		if (npcHandler:getTopic(playerId) == 1) then
-			npcHandler:say(
-				{
-					"I knew it! He likes taking extended walks outside, leaving all the cleaning to me - \z
+		if npcHandler:getTopic(playerId) == 1 then
+			npcHandler:say({
+				"I knew it! He likes taking extended walks outside, leaving all the cleaning to me - \z
 					especially when he is working on this sculpture, this... 'thing' he tries to create. ...",
-					"What did he do? Since you look like a guy from the city, I bet he went to Edron in \z
-						secrecy or something like that, didn't he? And you are here because of that?"
-				},
-				npc, creature)
+				"What did he do? Since you look like a guy from the city, I bet he went to Edron in \z
+						secrecy or something like that, didn't he? And you are here because of that?",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
-		elseif (npcHandler:getTopic(playerId) == 2) then
+		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("What?! And what did he do there? Who did he visit there?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
-		elseif (npcHandler:getTopic(playerId) == 4) then
-			npcHandler:say(
-				{
-					"Yesss! So this time he will get it for a change! And he lived there...? He helped whom? \z
+		elseif npcHandler:getTopic(playerId) == 4 then
+			npcHandler:say({
+				"Yesss! So this time he will get it for a change! And he lived there...? He helped whom? \z
 					Ha! He won't get away this time! What did he do there? I see... interesting! ...",
-					"Wait till mother hears that! Oh he will be in for a surprise, I can tell you that. Ma!! Maaaaa!!"
-				},
-				npc, creature)
+				"Wait till mother hears that! Oh he will be in for a surprise, I can tell you that. Ma!! Maaaaa!!",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.Sister, 1)
 			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, 6)

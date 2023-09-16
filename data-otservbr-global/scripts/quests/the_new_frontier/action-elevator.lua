@@ -9,7 +9,7 @@ local config = {
 		Position(33055, 31527, 12), -- Elevator Stage 2 to the mines
 		Position(33055, 31527, 10), -- Elevator Stage 3 to the mines
 		Position(33065, 31489, 15), -- Elevator to return from the mines
-	}
+	},
 }
 local TheNewFrontier = Storage.Quest.U8_54.TheNewFrontier
 

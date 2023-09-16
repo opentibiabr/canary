@@ -16,8 +16,8 @@ Harsky ***
 Stutch *
 Ferumbras *
 Frodo **
-Noodles ****]]
-	}
+Noodles ****]],
+	},
 }
 
 local achievementTable = {
@@ -26,7 +26,7 @@ local achievementTable = {
 	[6085] = "Annihilator",
 	[6086] = "Annihilator",
 	[6087] = "Annihilator",
-	[6088] = "Annihilator"
+	[6088] = "Annihilator",
 }
 
 local function playerAddItem(params, item)
@@ -113,8 +113,7 @@ function questReward.onUse(player, item, fromPosition, itemEx, toPosition)
 			return true
 		end
 		if (player:getFreeCapacity() / 100) < setting.weight then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-				message .. ". Weighing " .. setting.weight .. " oz, it is too heavy for you to carry.")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message .. ". Weighing " .. setting.weight .. " oz, it is too heavy for you to carry.")
 			return true
 		end
 	end
@@ -156,7 +155,7 @@ function questReward.onUse(player, item, fromPosition, itemEx, toPosition)
 			}
 
 			if count > 1 and ItemType(itemid):isStackable() then
-				if (itemDescriptions.plural) then
+				if itemDescriptions.plural then
 					itemName = itemDescriptions.plural
 				end
 				addItemParams.message = "You have found " .. count .. " " .. itemName
@@ -182,7 +181,7 @@ function questReward.onUse(player, item, fromPosition, itemEx, toPosition)
 				storage = setting.storage,
 				action = setting.keyAction,
 				itemBagName = itemBagName,
-				containerReward = itemBag
+				containerReward = itemBag,
 			}
 
 			if not playerAddContainerItem(addContainerItemParams, item) then

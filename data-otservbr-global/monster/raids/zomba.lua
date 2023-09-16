@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -72,11 +72,11 @@ monster.loot = {
 	{ id = 3031, chance = 100000, maxCount = 25 }, -- gold coin
 	{ id = 9691, chance = 100000, maxCount = 2 }, -- lion's mane
 	{ id = 3035, chance = 25000 }, -- platinum coin
-	{ id = 3052, chance = 12500 } -- life ring
+	{ id = 3052, chance = 12500 }, -- life ring
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 30, attack = 20 }
+	{ name = "melee", interval = 2000, chance = 100, skill = 30, attack = 20 },
 }
 
 monster.defenses = {
@@ -102,7 +102,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -5,7 +5,7 @@ local setting = {
 	[50142] = Storage.TheAncientTombs.MorguthisBlueFlameStorage4,
 	[50143] = Storage.TheAncientTombs.MorguthisBlueFlameStorage5,
 	[50144] = Storage.TheAncientTombs.MorguthisBlueFlameStorage6,
-	[50145] = Storage.TheAncientTombs.MorguthisBlueFlameStorage7
+	[50145] = Storage.TheAncientTombs.MorguthisBlueFlameStorage7,
 }
 
 local stepMorguthisBlueFlames = MoveEvent()
@@ -25,8 +25,7 @@ function stepMorguthisBlueFlames.onStepIn(creature, item, position, fromPosition
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	else
 		local missingStorage = false
-		for i = Storage.TheAncientTombs.MorguthisBlueFlameStorage1,
-		Storage.TheAncientTombs.MorguthisBlueFlameStorage7 do
+		for i = Storage.TheAncientTombs.MorguthisBlueFlameStorage1, Storage.TheAncientTombs.MorguthisBlueFlameStorage7 do
 			if player:getStorageValue(i) ~= 1 then
 				missingStorage = true
 				break

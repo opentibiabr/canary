@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 116,
 	lookLegs = 117,
 	lookFeet = 59,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -56,14 +56,14 @@ local function greetCallback(npc, creature)
 	return true
 end
 
-keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = "I am miss Penny, your secretary." })
-keywordHandler:addKeyword({ 'penny' }, StdModule.say, { npcHandler = npcHandler, text = "Yep, Penny's my name. You seem to be as smart as you're talkative." })
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I'm a secretary. I'm organising all those papers and your mail." })
-keywordHandler:addKeyword({ 'criminal' }, StdModule.say, { npcHandler = npcHandler, text = "<Sigh> It's an evil world, isn't it?" })
-keywordHandler:addKeyword({ 'record' }, StdModule.say, { npcHandler = npcHandler, text = "<Sigh> It's an evil world, isn't it?" })
-keywordHandler:addKeyword({ 'paper' }, StdModule.say, { npcHandler = npcHandler, text = "<Sigh> It's an evil world, isn't it?" })
-keywordHandler:addKeyword({ 'mail' }, StdModule.say, { npcHandler = npcHandler, text = "You can get a letter from me." })
-keywordHandler:addKeyword({ '?' }, StdModule.say, { npcHandler = npcHandler, text = "Don't stare at me." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I am miss Penny, your secretary." })
+keywordHandler:addKeyword({ "penny" }, StdModule.say, { npcHandler = npcHandler, text = "Yep, Penny's my name. You seem to be as smart as you're talkative." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I'm a secretary. I'm organising all those papers and your mail." })
+keywordHandler:addKeyword({ "criminal" }, StdModule.say, { npcHandler = npcHandler, text = "<Sigh> It's an evil world, isn't it?" })
+keywordHandler:addKeyword({ "record" }, StdModule.say, { npcHandler = npcHandler, text = "<Sigh> It's an evil world, isn't it?" })
+keywordHandler:addKeyword({ "paper" }, StdModule.say, { npcHandler = npcHandler, text = "<Sigh> It's an evil world, isn't it?" })
+keywordHandler:addKeyword({ "mail" }, StdModule.say, { npcHandler = npcHandler, text = "You can get a letter from me." })
+keywordHandler:addKeyword({ "?" }, StdModule.say, { npcHandler = npcHandler, text = "Don't stare at me." })
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell, and may Justice be with you!")
@@ -72,7 +72,7 @@ npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
 	{ itemName = "cake", clientId = 6277, buy = 1 },
-	{ itemName = "letter", clientId = 3505, buy = 1 }
+	{ itemName = "letter", clientId = 3505, buy = 1 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -83,7 +83,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

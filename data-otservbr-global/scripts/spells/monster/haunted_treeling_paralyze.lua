@@ -12,13 +12,12 @@ arr = {
 	{ 1 },
 	{ 1 },
 	{ 1 },
-	{ 3 }
+	{ 3 },
 }
 
 local area = createCombatArea(arr)
 combat:setArea(area)
 combat:addCondition(condition)
-
 
 local spell = Spell("instant")
 

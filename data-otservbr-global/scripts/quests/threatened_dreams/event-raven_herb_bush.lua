@@ -3,7 +3,7 @@ local periods = {
 	[LIGHT_STATE_NIGHT] = "Night",
 	[LIGHT_STATE_DAY] = "Day",
 	[LIGHT_STATE_SUNRISE] = "Sunrise",
-	[LIGHT_STATE_SUNSET] = "Sunset"
+	[LIGHT_STATE_SUNSET] = "Sunset",
 }
 local config = {
 	-- createByType day / night
@@ -14,8 +14,8 @@ local config = {
 		pos = Position(33497, 32196, 7),
 		herbId = 5953,
 		herbWeight = 1,
-		storage = ThreatenedDreams.Mission03.RavenHerbTimer
-	}
+		storage = ThreatenedDreams.Mission03.RavenHerbTimer,
+	},
 }
 
 local createRavenHerb = GlobalEvent("createRavenHerb")
@@ -24,8 +24,7 @@ function createRavenHerb.onPeriodChange(period, light)
 	local time = getWorldTime()
 
 	if configManager.getBoolean(configKeys.ALL_CONSOLE_LOG) then
-		logger.info("Starting {} Current light is {} and it's {} Tibian Time",
-			periods[period], light, getFormattedWorldTime(time))
+		logger.info("Starting {} Current light is {} and it's {} Tibian Time", periods[period], light, getFormattedWorldTime(time))
 	end
 	for index, item in pairs(config) do
 		if item.createItem == period then -- Adding
@@ -47,7 +46,6 @@ end
 
 createRavenHerb:register()
 
-
 local ravenHerb = Action()
 function ravenHerb.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local herbConfig = config[1]
@@ -59,8 +57,7 @@ function ravenHerb.onUse(player, item, fromPosition, target, toPosition, isHotke
 		return true
 	end
 	if (player:getFreeCapacity() / 100) < herbConfig.herbWeight then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			message .. ". Weighing " .. herbConfig.herbWeight .. " oz, it is too heavy for you to carry.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message .. ". Weighing " .. herbConfig.herbWeight .. " oz, it is too heavy for you to carry.")
 		return true
 	end
 

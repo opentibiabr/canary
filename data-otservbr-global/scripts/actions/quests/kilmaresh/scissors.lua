@@ -9,7 +9,6 @@ function scissors.onUse(player, item, frompos, item2, topos)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Empty.")
 	end
 
-
 	return true
 end
 

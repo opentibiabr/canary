@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -57,8 +57,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{ name = "Carnisylvan Sapling", chance = 70, interval = 2000, count = 1 }
-	}
+		{ name = "Carnisylvan Sapling", chance = 70, interval = 2000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -92,7 +92,7 @@ monster.loot = {
 	{ id = 36808, chance = 1430 }, -- old royal diary
 	{ id = 812, chance = 1430 }, -- terra legs
 	{ id = 811, chance = 1430 }, -- terra mantle
-	{ id = 32623, chance = 1200, count = 1 } -- giant topaz
+	{ id = 32623, chance = 1200, count = 1 }, -- giant topaz
 }
 
 monster.attacks = {
@@ -100,7 +100,7 @@ monster.attacks = {
 	{ name = "earth beamMY", interval = 2000, chance = 50, minDamage = -400, maxDamage = -900, target = false },
 	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_DEATHDAMAGE, minDamage = -400, maxDamage = -800, range = 5, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_PHYSICALDAMAGE, minDamage = -400, maxDamage = -800, radius = 5, effect = CONST_ME_GROUNDSHAKER, target = false },
-	{ name = "mana leechMY", interval = 2000, chance = 50, minDamage = -100, maxDamage = -400, target = false }
+	{ name = "mana leechMY", interval = 2000, chance = 50, minDamage = -100, maxDamage = -400, target = false },
 }
 
 monster.defenses = {
@@ -126,7 +126,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType.onAppear = function(monster, creature)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 106
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 1,
 	Occurrence = 0,
 	Locations = "Unannounced raid in Edron outside the depot, Tiquanda, Shattered Isles, \z
-		Liberty Bay, south gate of Thais."
+		Liberty Bay, south gate of Thais.",
 }
 
 monster.health = 20
@@ -36,7 +36,7 @@ monster.manaCost = 200
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -75,12 +75,12 @@ monster.voices = {
 
 monster.loot = {
 	{ name = "bulb of garlic", chance = 4910 },
-	{ name = "skunk tail", chance = 920 }
+	{ name = "skunk tail", chance = 920 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -5 },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -1, maxDamage = -3, range = 1, target = true }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -1, maxDamage = -3, range = 1, target = true },
 }
 
 monster.defenses = {
@@ -106,7 +106,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

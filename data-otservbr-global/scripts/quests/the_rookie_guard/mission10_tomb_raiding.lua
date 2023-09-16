@@ -5,35 +5,35 @@ local missionTiles = {
 		{
 			sarcophagus = -1,
 			message = "This is not the way to the crypt. Go south-west to reach the graveyard.",
-			arrowPosition = { x = 32124, y = 32177, z = 7 }
-		}
+			arrowPosition = { x = 32124, y = 32177, z = 7 },
+		},
 	},
 	[50347] = {
 		{
 			sarcophagus = -1,
 			message = "This is the crypt Vascalir was talking about. Explore it and search the coffins - one of them must hold a nice fleshy bone.",
-			arrowPosition = { x = 32131, y = 32201, z = 7 }
-		}
+			arrowPosition = { x = 32131, y = 32201, z = 7 },
+		},
 	},
 	[50348] = {
 		{
 			sarcophagus = -1,
 			message = "This door seems to lead deeper into the crypt. Go downstairs and look for a special coffin. Beware of the walking dead!",
-			arrowPosition = { x = 32147, y = 32185, z = 9 }
-		}
+			arrowPosition = { x = 32147, y = 32185, z = 9 },
+		},
 	},
 	[50349] = {
 		{
 			sarcophagus = -1,
 			message = "This sarcophagus seems special. Sarcophagi are said to conserve meat longer than normal coffins - maybe you get lucky.",
-			arrowPosition = { x = 32145, y = 32204, z = 10 }
+			arrowPosition = { x = 32145, y = 32204, z = 10 },
 		},
 		{
 			sarcophagus = 1,
 			message = "Now that you have a fleshy bone, it's time to find out what Vascalir wanted with it.",
-			arrowPosition = { x = 32136, y = 32202, z = 10 }
-		}
-	}
+			arrowPosition = { x = 32136, y = 32202, z = 10 },
+		},
+	},
 }
 
 -- Mission tutorial tiles
@@ -105,7 +105,7 @@ sarcophagus:register()
 
 local CHEST_ID = {
 	BOX = 1,
-	COFFIN = 2
+	COFFIN = 2,
 }
 
 local chests = {
@@ -113,16 +113,16 @@ local chests = {
 		id = CHEST_ID.BOX,
 		item = {
 			id = 3725,
-			amount = 5
-		}
+			amount = 5,
+		},
 	},
 	[40078] = {
 		id = CHEST_ID.COFFIN,
 		item = {
 			id = 7876,
-			amount = 1
-		}
-	}
+			amount = 1,
+		},
+	},
 }
 
 local unholyCryptChests = Action()

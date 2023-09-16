@@ -5,7 +5,7 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_CRAPS)
 local area = createCombatArea({
 	{ 1, 1, 1 },
 	{ 0, 1, 0 },
-	{ 0, 3, 0 }
+	{ 0, 3, 0 },
 })
 
 combat:setArea(area)

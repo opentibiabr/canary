@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 100,
 	lookLegs = 119,
 	lookFeet = 116,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -85,7 +85,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"However, these trickles are said to contain water as pure and clean as nowhere else in Tibia. ...",
 				"If you could reach one of these trickles and retrieve a water sample for me, it would be a great help. ...",
 				"It is important that you take the water directly from the trickle, not from the pond - else it will not be as pure anymore. ...",
-				"Have you understood everything I told you and will fulfil this task for me?"
+				"Have you understood everything I told you and will fulfil this task for me?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 6)
 		elseif player:getStorageValue(Storage.OutfitQuest.DruidHatAddon) == 4 then
@@ -96,7 +96,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"It does not work all the time, but if you succeed, their vicious spirit is finally defeated. ...",
 				"I want proof that you are on the right side, against Zathroth. Bring me 100 ounces of demon dust and I shall be convinced. ...",
 				"You will probably need to ask a priest for help to obtain a blessed stake. ...",
-				"Have you understood everything I told you and will fulfil this task for me?"
+				"Have you understood everything I told you and will fulfil this task for me?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 8)
 		elseif player:getStorageValue(Storage.OutfitQuest.DruidHatAddon) == 6 then
@@ -105,7 +105,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Unfortunately, my intrusion was discovered and I had to run for my life. During my escape, I lost my favourite wolf tooth chain.",
 				"It should still be somewhere in the fortress, if the orcs did not try to eat it. I really wish you could retrieve it for me.",
 				"It has the letter 'C' carved into one of the teeth. Please look for it.",
-				"Have you understood everything I told you and will fulfil this task for me?"
+				"Have you understood everything I told you and will fulfil this task for me?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 10)
 		end
@@ -136,7 +136,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"This place is somewhere in the bleak mountains of Nargor. I would love to have a sample of its blossom, but the problem is that it seldom actually blooms. ...",
 				"I cannot afford to travel there each day just to check whether the time has already come, besides I have no idea where to start looking. ...",
 				"I would be deeply grateful if you could support me in this matter and collect a sample of the blooming Griffinclaw for me. ...",
-				"Have you understood everything I told you and will fullfil this task for me?"
+				"Have you understood everything I told you and will fullfil this task for me?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		elseif npcHandler:getTopic(playerId) == 4 then

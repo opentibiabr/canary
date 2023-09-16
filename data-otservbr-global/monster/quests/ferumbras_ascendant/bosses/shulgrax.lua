@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 2,
 	lookFeet = 87,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 40000
@@ -22,13 +22,13 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.bosstiary = {
 	bossRaceId = 1191,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.FerumbrasAscension.ShulgraxTimer
+	storageCooldown = Storage.FerumbrasAscension.ShulgraxTimer,
 }
 
 monster.strategiesTarget = {
@@ -55,12 +55,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -68,7 +68,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "DAMMMMNNNNAAATIONN!", yell = false },
 	{ text = "I WILL FEAST ON YOUR SOUL!", yell = true },
-	{ text = "YOU ARE ALL DAMNED!", yell = true }
+	{ text = "YOU ARE ALL DAMNED!", yell = true },
 }
 
 monster.loot = {
@@ -110,7 +110,7 @@ monster.loot = {
 	{ id = 822, chance = 1000 }, -- lightning legs
 	{ id = 7642, chance = 46100, maxCount = 10 }, -- great spirit potion
 	{ id = 7643, chance = 23000, maxCount = 5 }, -- ultimate health potion
-	{ id = 9057, chance = 10000, maxCount = 5 } -- small topaz
+	{ id = 9057, chance = 10000, maxCount = 5 }, -- small topaz
 }
 
 monster.attacks = {
@@ -119,7 +119,7 @@ monster.attacks = {
 	{ name = "speed", interval = 2000, chance = 25, speedChange = -600, radius = 7, effect = CONST_ME_MAGIC_RED, target = false, duration = 15000 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -700, radius = 5, effect = CONST_ME_HITBYFIRE, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -500, maxDamage = -800, length = 10, spread = 3, effect = CONST_ME_EXPLOSIONHIT, target = false },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -500, maxDamage = -800, length = 8, spread = 3, effect = CONST_ME_FIREATTACK, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -500, maxDamage = -800, length = 8, spread = 3, effect = CONST_ME_FIREATTACK, target = false },
 }
 
 monster.defenses = {
@@ -127,7 +127,7 @@ monster.defenses = {
 	armor = 55,
 	{ name = "combat", interval = 3000, chance = 35, type = COMBAT_HEALING, minDamage = 400, maxDamage = 6000, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "shulgrax summon", interval = 5000, chance = 5, target = false },
-	{ name = "speed", interval = 4000, chance = 80, speedChange = 440, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 }
+	{ name = "speed", interval = 4000, chance = 80, speedChange = 440, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
 }
 
 monster.elements = {
@@ -140,18 +140,17 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -159,13 +158,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

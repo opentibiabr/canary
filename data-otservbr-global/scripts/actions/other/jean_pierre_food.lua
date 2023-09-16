@@ -1,8 +1,14 @@
 local conditions = {
-	CONDITION_POISON, CONDITION_FIRE, CONDITION_ENERGY,
-	CONDITION_PARALYZE, CONDITION_DRUNK, CONDITION_DROWN,
-	CONDITION_FREEZING, CONDITION_DAZZLED, CONDITION_CURSED,
-	CONDITION_BLEEDING
+	CONDITION_POISON,
+	CONDITION_FIRE,
+	CONDITION_ENERGY,
+	CONDITION_PARALYZE,
+	CONDITION_DRUNK,
+	CONDITION_DROWN,
+	CONDITION_FREEZING,
+	CONDITION_DAZZLED,
+	CONDITION_CURSED,
+	CONDITION_BLEEDING,
 }
 local condition_shield = Condition(CONDITION_ATTRIBUTES)
 condition_shield:setParameter(CONDITION_PARAM_SUBID, 3)
@@ -181,9 +187,9 @@ function jeanPierreFood.onUse(player, item, frompos, item2, topos)
 			[12670] = 12669,
 			[3086] = 3049,
 			[3094] = 3091,
-			[3090] = 3053
+			[3090] = 3053,
 		}
-		if (ring.itemid == 0) then
+		if ring.itemid == 0 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "No ring equipped.")
 			player:getPosition():sendMagicEffect(CONST_ME_POFF)
 			return true

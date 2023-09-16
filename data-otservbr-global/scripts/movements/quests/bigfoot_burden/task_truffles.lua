@@ -1,7 +1,7 @@
 local taskTruffles = MoveEvent()
 
 function taskTruffles.onStepIn(creature, item, position, fromPosition)
-	if creature:getName():lower() ~= 'mushroom sniffer' then
+	if creature:getName():lower() ~= "mushroom sniffer" then
 		return true
 	end
 

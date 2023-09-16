@@ -11,7 +11,7 @@ function sparkDevourerSpawn()
 		{ x = 32268, y = 31341, z = 14 },
 		{ x = 32275, y = 31342, z = 14 },
 		{ x = 32269, y = 31352, z = 14 },
-		{ x = 32277, y = 31351, z = 14 }
+		{ x = 32277, y = 31351, z = 14 },
 	}
 
 	if sparkSpawnCount > 0 then
@@ -345,7 +345,7 @@ function heartDestructionFinal.onUse(player, item, fromPosition, itemEx, toPosit
 			Position(32271, 31375, 14),
 			Position(32271, 31376, 14),
 			Position(32271, 31377, 14),
-			Position(32271, 31378, 14)
+			Position(32271, 31378, 14),
 		},
 
 		destructionPositions = {
@@ -353,7 +353,7 @@ function heartDestructionFinal.onUse(player, item, fromPosition, itemEx, toPosit
 			Position(32272, 31375, 14),
 			Position(32272, 31376, 14),
 			Position(32272, 31377, 14),
-			Position(32272, 31378, 14)
+			Position(32272, 31378, 14),
 		},
 
 		ragePositions = {
@@ -361,7 +361,7 @@ function heartDestructionFinal.onUse(player, item, fromPosition, itemEx, toPosit
 			Position(32273, 31375, 14),
 			Position(32273, 31376, 14),
 			Position(32273, 31377, 14),
-			Position(32273, 31378, 14)
+			Position(32273, 31378, 14),
 		},
 
 		hungerNewPos = { x = 32244, y = 31381, z = 14 },
@@ -381,21 +381,21 @@ function heartDestructionFinal.onUse(player, item, fromPosition, itemEx, toPosit
 				for i = 1, #config.hungerPositions do
 					hungerTile = Tile(config.hungerPositions[i]):getTopCreature()
 					if hungerTile and hungerTile:isPlayer() then
-						storeHunger[#storeHunger+1] = hungerTile
+						storeHunger[#storeHunger + 1] = hungerTile
 					end
 				end
 
 				for i = 1, #config.destructionPositions do
 					destructionTile = Tile(config.destructionPositions[i]):getTopCreature()
 					if destructionTile and destructionTile:isPlayer() then
-						storeDestruction[#storeDestruction+1] = destructionTile
+						storeDestruction[#storeDestruction + 1] = destructionTile
 					end
 				end
 
 				for i = 1, #config.ragePositions do
 					rageTile = Tile(config.ragePositions[i]):getTopCreature()
 					if rageTile and rageTile:isPlayer() then
-						storeRage[#storeRage+1] = rageTile
+						storeRage[#storeRage + 1] = rageTile
 					end
 				end
 

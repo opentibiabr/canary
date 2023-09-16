@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1395
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 1,
-	Locations = "Astral Shaper Ruins in two small rooms on the second floor, and to the east."
+	Locations = "Astral Shaper Ruins in two small rooms on the second floor, and to the east.",
 }
 
 monster.health = 3000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -80,18 +80,18 @@ monster.loot = {
 	{ id = 5925, chance = 50320 }, -- hardened bone
 	{ id = 24388, chance = 50320 }, -- rhino hide
 	{ id = 24389, chance = 50320 }, -- rhino horn
-	{ id = 22186, chance = 50320 } -- raw meat
+	{ id = 22186, chance = 50320 }, -- raw meat
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -280 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -280 },
 }
 
 monster.defenses = {
 	defense = 10,
 	armor = 72,
 	mitigation = 1.88,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 0, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 0, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -111,7 +111,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

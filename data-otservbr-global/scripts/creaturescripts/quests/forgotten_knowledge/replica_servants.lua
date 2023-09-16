@@ -1,12 +1,12 @@
 local servants = {
-	['golden servant replica'] = {
+	["golden servant replica"] = {
 		storage = GlobalStorage.ForgottenKnowledge.GoldenServant,
-		playerStorage = Storage.ForgottenKnowledge.GoldenServantCounter
+		playerStorage = Storage.ForgottenKnowledge.GoldenServantCounter,
 	},
-	['diamond servant replica'] = {
+	["diamond servant replica"] = {
 		storage = GlobalStorage.ForgottenKnowledge.DiamondServant,
-		playerStorage = Storage.ForgottenKnowledge.DiamondServantCounter
-	}
+		playerStorage = Storage.ForgottenKnowledge.DiamondServantCounter,
+	},
 }
 local replicaServant = CreatureEvent("ReplicaServant")
 function replicaServant.onKill(creature, target)

@@ -1,7 +1,7 @@
 local trees = {
 	Position(32857, 32231, 11),
 	Position(32857, 32232, 11),
-	Position(32857, 32233, 11)
+	Position(32857, 32233, 11),
 }
 
 local deathRingTeleport = MoveEvent()

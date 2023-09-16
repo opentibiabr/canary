@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 120,
 	lookFeet = 38,
-	lookAddons = 2
+	lookAddons = 2,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -83,8 +83,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 2)
 		elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 2 then
 			if (player:getMoney() + player:getBankBalance()) >= valor then
-				npcHandler:say({ "This is a very wise decision. You won't regret it. Congratulations! As your first task I like you to investigate the crime scene of a theft wich occurred last night. ...",
-					"A very varuable artefact has been stolen. I open the door for you. You can find the room on the same floor as we are right now." }, npc, creature)
+				npcHandler:say({ "This is a very wise decision. You won't regret it. Congratulations! As your first task I like you to investigate the crime scene of a theft wich occurred last night. ...", "A very varuable artefact has been stolen. I open the door for you. You can find the room on the same floor as we are right now." }, npc, creature)
 				npcHandler:setTopic(playerId, 3)
 				player:removeMoneyBank(valor)
 				player:addItem(25689, 1)
@@ -107,9 +106,11 @@ local function creatureSayCallback(npc, creature, type, message)
 
 		-- Depois de ter pago o Iwar
 	elseif MsgContains(message, "mission") and player:getStorageValue(Storage.CultsOfTibia.MotA.Mission) == 5 then
-		npcHandler:say({ "Nice! I'm really happy to have the picture back. First of all I have to check if everything's fine. Then I'll put it back on its place. For now, I'd like you to find out if some rumours about fake pictures in the MOTA are true. ...",
+		npcHandler:say({
+			"Nice! I'm really happy to have the picture back. First of all I have to check if everything's fine. Then I'll put it back on its place. For now, I'd like you to find out if some rumours about fake pictures in the MOTA are true. ...",
 			"Some say one of the small pictures in the entrance hall here is fake. For this reason you have to go to my friend {Angelo} and ask him to get a {magnifier} for the investigation.",
-			"Then do your job here in the museum and come back." }, npc, creature)
+			"Then do your job here in the museum and come back.",
+		}, npc, creature)
 		player:setStorageValue(Storage.CultsOfTibia.MotA.Mission, 6)
 		npcHandler:setTopic(playerId, 1)
 
@@ -118,8 +119,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say({ "So the rumours are true. How could this happen? I'll keep the picture at its place until we've got a replacement. Please fo to {Angelo} and ask him if he has a new artefact for our museum." }, npc, creature)
 		player:setStorageValue(Storage.CultsOfTibia.MotA.Mission, 10)
 	elseif MsgContains(message, "mission") and player:getStorageValue(Storage.CultsOfTibia.MotA.Mission) == 11 then
-		npcHandler:say({ "You're back, nice. Angelo's team hasn't found an artefact yet? I thought the progress would be faster. Anyway thanks for you efforts. ...",
-			"I have no work for you right now. If you like to, you can have a look at the last floor. I open the door for you." }, npc, creature)
+		npcHandler:say({ "You're back, nice. Angelo's team hasn't found an artefact yet? I thought the progress would be faster. Anyway thanks for you efforts. ...", "I have no work for you right now. If you like to, you can have a look at the last floor. I open the door for you." }, npc, creature)
 		player:setStorageValue(Storage.CultsOfTibia.MotA.Mission, 12)
 		player:setStorageValue(Storage.CultsOfTibia.MotA.AccessDoorGareth, 1)
 
@@ -136,8 +136,10 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "problem") and npcHandler:getTopic(playerId) == 11 then
 		if npcHandler:getTopic(playerId) == 11 then
-			npcHandler:say({ "Well, the situation is this: We have explored a portal, I would say a very aggressive, capriciously and dangerous one. Through this gate monsters entered the construction site and attacked our workers. ...",
-				"With enormous effort they could have been dispersed. When my fellows tried to fill up the portal, it appeared again and again. So the only thing they could do was to stop working for the moment. Are you eventually interested in further investigations?" }, npc, creature)
+			npcHandler:say({
+				"Well, the situation is this: We have explored a portal, I would say a very aggressive, capriciously and dangerous one. Through this gate monsters entered the construction site and attacked our workers. ...",
+				"With enormous effort they could have been dispersed. When my fellows tried to fill up the portal, it appeared again and again. So the only thing they could do was to stop working for the moment. Are you eventually interested in further investigations?",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 12)
 		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 12 then
@@ -150,16 +152,17 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "bone") and player:getStorageValue(Storage.TheSecretLibrary.Mota) == 2 then
-		npcHandler:say({ "Hmm, interesting. Several years ago I have read some books dealing with strange locking mechanisms. I think what you have found here is a bone lever of category 3. ...",
-			"Normally this is not used because it is not secure. The production failed and the lever can always be activated as follows: back, back, up, right, left. Just have a try, it should work." }, npc, creature)
+		npcHandler:say({ "Hmm, interesting. Several years ago I have read some books dealing with strange locking mechanisms. I think what you have found here is a bone lever of category 3. ...", "Normally this is not used because it is not secure. The production failed and the lever can always be activated as follows: back, back, up, right, left. Just have a try, it should work." }, npc, creature)
 		player:setStorageValue(Storage.TheSecretLibrary.Mota, 3)
 		npcHandler:setTopic(playerId, 14)
 	end
 
 	if MsgContains(message, "extension") and player:getStorageValue(Storage.TheSecretLibrary.Mota) == 11 then
-		npcHandler:say({ "You have found an inscription I would like to translate for you. The tibianus cipher was used: ...",
-			"Those who are accorded the honour to visit this exclusive place will smash their blindness and face the truth. ...",
-			"Astonishingly, Dedoras from Cormaya has recently asked me for these kinds of inscriptions. For sure he is able to bring light into the darkness. You should visit him. " }, npc, creature)
+		npcHandler:say(
+			{ "You have found an inscription I would like to translate for you. The tibianus cipher was used: ...", "Those who are accorded the honour to visit this exclusive place will smash their blindness and face the truth. ...", "Astonishingly, Dedoras from Cormaya has recently asked me for these kinds of inscriptions. For sure he is able to bring light into the darkness. You should visit him. " },
+			npc,
+			creature
+		)
 		player:setStorageValue(Storage.TheSecretLibrary.Mota, 12)
 		player:setStorageValue(Storage.TheSecretLibrary.TheLament, 1)
 		npcHandler:setTopic(playerId, 15)
@@ -167,7 +170,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	return true
 end
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Well, bye then.')
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)

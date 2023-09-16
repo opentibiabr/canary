@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 94,
 	lookFeet = 39,
 	lookAddons = 2,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 529
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Magician Quarter, Hero Cave, Demona, Fury Dungeon."
+	Locations = "Magician Quarter, Hero Cave, Demona, Fury Dungeon.",
 }
 
 monster.health = 3650
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -70,8 +70,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{ name = "fire elemental", chance = 20, interval = 2000, count = 1 }
-	}
+		{ name = "fire elemental", chance = 20, interval = 2000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -101,7 +101,7 @@ monster.loot = {
 	{ name = "royal tapestry", chance = 520 },
 	{ id = 9056, chance = 820 }, -- black skull
 	{ name = "gold ingot", chance = 70 },
-	{ name = "crystal of power", chance = 220 }
+	{ name = "crystal of power", chance = 220 },
 }
 
 monster.attacks = {
@@ -111,7 +111,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_MANADRAIN, minDamage = -53, maxDamage = -120, range = 7, radius = 3, shootEffect = CONST_ANI_ENERGYBALL, effect = CONST_ME_TELEPORT, target = true },
 	{ name = "firefield", interval = 2000, chance = 15, range = 7, radius = 3, shootEffect = CONST_ANI_FIRE, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -150, maxDamage = -250, length = 8, spread = 3, effect = CONST_ME_FIREATTACK, target = false },
-	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_PHYSICALDAMAGE, minDamage = -100, maxDamage = -150, radius = 2, effect = CONST_ME_EXPLOSIONAREA, target = false }
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_PHYSICALDAMAGE, minDamage = -100, maxDamage = -150, radius = 2, effect = CONST_ME_EXPLOSIONAREA, target = false },
 }
 
 monster.defenses = {
@@ -119,7 +119,7 @@ monster.defenses = {
 	armor = 33,
 	mitigation = 1.15,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 60, maxDamage = 230, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -139,7 +139,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

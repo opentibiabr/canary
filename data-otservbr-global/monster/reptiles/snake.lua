@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 28
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "In almost all grassy areas of Tibia. Also found in Rookgaard."
+	Locations = "In almost all grassy areas of Tibia. Also found in Rookgaard.",
 }
 
 monster.health = 15
@@ -35,7 +35,7 @@ monster.manaCost = 205
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -73,11 +73,10 @@ monster.voices = {
 	{ text = "Zzzzzzt", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -8, condition = { type = CONDITION_POISON, totalDamage = 15, interval = 4000 } }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -8, condition = { type = CONDITION_POISON, totalDamage = 15, interval = 4000 } },
 }
 
 monster.defenses = {
@@ -103,7 +102,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

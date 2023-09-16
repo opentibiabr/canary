@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -65,8 +65,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 4,
 	summons = {
-		{ name = "Vampire", chance = 30, interval = 2000, count = 4 }
-	}
+		{ name = "Vampire", chance = 30, interval = 2000, count = 4 },
+	},
 }
 
 monster.voices = {
@@ -85,12 +85,12 @@ monster.loot = {
 	{ id = 8192, chance = 100000 }, -- vampire lord token
 	{ id = 3035, chance = 50000, maxCount = 5 }, -- platinum coin
 	{ id = 3031, chance = 100000, maxCount = 93 }, -- gold coin
-	{ id = 3434, chance = 6300 } -- vampire shield
+	{ id = 3434, chance = 6300 }, -- vampire shield
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 70, attack = 95 },
-	{ name = "combat", interval = 1000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -190, radius = 4, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true }
+	{ name = "combat", interval = 1000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -190, radius = 4, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true },
 }
 
 monster.defenses = {
@@ -98,7 +98,7 @@ monster.defenses = {
 	armor = 38,
 	mitigation = 1.04,
 	{ name = "combat", interval = 1000, chance = 12, type = COMBAT_HEALING, minDamage = 100, maxDamage = 235, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 3000, chance = 25, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 3000, chance = 25, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -118,7 +118,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

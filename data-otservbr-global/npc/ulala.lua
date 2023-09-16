@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 57,
 	lookBody = 57,
 	lookLegs = 57,
-	lookFeet = 57
+	lookFeet = 57,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"The great hunt! About to begin, but gods are not in favour of us yet. We need all help we get. We please Krunus with special nature dance. ...",
 				"You seen Krunus altar south in camp, on mountain top? This is where dance is. If you do right steps Krunus will give you sign. If wrong, he not pleased. ...",
-				"Do Krunus dance for us! Step and dance and turn around! You will know when you do good. Make {Krunus} happy and support our great hunt!"
+				"Do Krunus dance for us! Step and dance and turn around! You will know when you do good. Make {Krunus} happy and support our great hunt!",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(Storage.UnnaturalSelection.Questline) == 6 then
@@ -72,7 +72,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"You born dancer! Krunus is pleased and support the great hunt. But he easy to please! Pandor much harder. We weak, so he sad about us. ...",
 				"Maybe we can please with sacrifice of body parts of our enemies. But you need help us get it! We much too weak. ...",
-				"If you bring us 5 teeth of green men, 5 skin of horned ones and 5 skin of snakemen that already be good. Please help tribe make Pandor happy!"
+				"If you bring us 5 teeth of green men, 5 skin of horned ones and 5 skin of snakemen that already be good. Please help tribe make Pandor happy!",
 			}, npc, creature)
 			player:setStorageValue(Storage.UnnaturalSelection.Questline, 8)
 			player:setStorageValue(Storage.UnnaturalSelection.Mission04, 1) --Questlog, Unnatural Selection Quest "Mission 4: Bits and Pieces"
@@ -84,7 +84,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"We need make sure Fasuon is on our side. There is laaaaaaaarge crystal on top of mountain. Don't know where come from, was there before us. Problem is - way is infested with creatures! ...",
 				"Creatures from the other side of mountain. Bony! Scary! We too weak to go through there, can just run and hope to survive.. but you do better! ...",
-				"Please find great crystal of Fasuon and pray there for his support!"
+				"Please find great crystal of Fasuon and pray there for his support!",
 			}, npc, creature)
 			player:setStorageValue(Storage.UnnaturalSelection.Questline, 10)
 			player:setStorageValue(Storage.UnnaturalSelection.Mission05, 1) --Questlog, Unnatural Selection Quest "Mission 5: Ray of Light"
@@ -100,7 +100,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.UnnaturalSelection.Questline) == 12 then
 			npcHandler:say({
 				"Uzroth very easy to anger. You been great help so far but me think that need to pray to Uzroth meself. Only me understand what he wants at time and he is veeeeeery moody. Cannot risk to make angry! ...",
-				"So me will do when you gone. But me thank you very much. Go speak Lazaran and tell the gods are pleased now."
+				"So me will do when you gone. But me thank you very much. Go speak Lazaran and tell the gods are pleased now.",
 			}, npc, creature)
 			player:setStorageValue(Storage.UnnaturalSelection.Questline, 13)
 			player:setStorageValue(Storage.UnnaturalSelection.Mission06, 1) --Questlog, Unnatural Selection Quest "Mission 6: Firewater Burn"

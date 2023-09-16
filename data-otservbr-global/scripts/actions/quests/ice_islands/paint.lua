@@ -23,7 +23,7 @@ function icePaint.onUse(player, item, fromPosition, target, toPosition, isHotkey
 				player:addAchievement("Animal Activist")
 			end
 		end
-		player:say('You painted a baby seal.', TALKTYPE_MONSTER_SAY)
+		player:say("You painted a baby seal.", TALKTYPE_MONSTER_SAY)
 		target:transform(7252)
 		addEvent(transformBack, 30 * 1000, toPosition, 7252, 7178)
 	end

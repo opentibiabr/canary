@@ -10,20 +10,22 @@ local rewards = {
 	{ id = 39183, name = "charged arcanomancer sigil" },
 	{ id = 39153, name = "arboreal crown" },
 	{ id = 39154, name = "arboreal tome" },
-	{ id = 39186, name = "charged arboreal ring" }
+	{ id = 39186, name = "charged arboreal ring" },
 }
 
 local primalBag = Action()
 
 function primalBag.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not player then return false end
+	if not player then
+		return false
+	end
 	local randId = math.random(1, #rewards)
 	local rewardItem = rewards[randId]
 
 	player:addItem(rewardItem.id, 1)
 	item:remove(1)
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You received one ' .. rewardItem.name .. '.')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You received one " .. rewardItem.name .. ".")
 	return true
 end
 

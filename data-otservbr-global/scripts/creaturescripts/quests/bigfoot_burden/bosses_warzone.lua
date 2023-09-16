@@ -1,7 +1,7 @@
 local bosses = {
-	['deathstrike'] = { status = 2, storage = Storage.BigfootBurden.Warzone1Reward },
-	['gnomevil'] = { status = 3, storage = Storage.BigfootBurden.Warzone2Reward },
-	['abyssador'] = { status = 4, storage = Storage.BigfootBurden.Warzone3Reward },
+	["deathstrike"] = { status = 2, storage = Storage.BigfootBurden.Warzone1Reward },
+	["gnomevil"] = { status = 3, storage = Storage.BigfootBurden.Warzone2Reward },
+	["abyssador"] = { status = 4, storage = Storage.BigfootBurden.Warzone3Reward },
 }
 
 -- This will set the status of warzone (killing 1, 2 and 3 wz bosses in order you can open the chest and get "some golden fruits") and the reward chest storages

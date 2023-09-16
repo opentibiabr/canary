@@ -29,8 +29,8 @@ Global = {
 		FamiliarSummon = 30026,
 		StoreExaust = 30051,
 		FamiliarSummonEvent10 = 30054,
-		FamiliarSummonEvent60 = 30055
-	}
+		FamiliarSummonEvent60 = 30055,
+	},
 }
 
 -- Values extraction function
@@ -54,8 +54,7 @@ table.sort(extraction) -- Sort the table
 if #extraction > 1 then
 	for i = 1, #extraction - 1 do
 		if extraction[i] == extraction[i + 1] then
-			logger.warn("Duplicate global storage value found: {}",
-				extraction[i])
+			logger.warn("Duplicate global storage value found: {}", extraction[i])
 		end
 	end
 end

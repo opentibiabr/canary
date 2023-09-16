@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 0,
 	lookFeet = 0,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -50,13 +50,13 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local travelNode = keywordHandler:addKeyword({ 'liberty bay' }, StdModule.say, { npcHandler = npcHandler, text = 'Do you seek a passage back to Liberty Bay for |TRAVELCOST|?', cost = 0, discount = 'postman' })
-travelNode:addChildKeyword({ 'yes' }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = 50, discount = 'postman', destination = Position(32349, 32856, 7) })
-travelNode:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, reset = true, text = 'We would like to serve you some time.' })
+local travelNode = keywordHandler:addKeyword({ "liberty bay" }, StdModule.say, { npcHandler = npcHandler, text = "Do you seek a passage back to Liberty Bay for |TRAVELCOST|?", cost = 0, discount = "postman" })
+travelNode:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = 50, discount = "postman", destination = Position(32349, 32856, 7) })
+travelNode:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, reset = true, text = "We would like to serve you some time." })
 
-keywordHandler:addKeyword({ 'passage' }, StdModule.say, { npcHandler = npcHandler, text = 'Where do you want to go? To {Liberty bay}?' })
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = 'I am the captain of this ship.' })
-keywordHandler:addKeyword({ 'captain' }, StdModule.say, { npcHandler = npcHandler, text = 'I am the captain of this ship.' })
+keywordHandler:addKeyword({ "passage" }, StdModule.say, { npcHandler = npcHandler, text = "Where do you want to go? To {Liberty bay}?" })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am the captain of this ship." })
+keywordHandler:addKeyword({ "captain" }, StdModule.say, { npcHandler = npcHandler, text = "I am the captain of this ship." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, daring adventurer. If you need a return {passage}, let me know.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")

@@ -11,17 +11,17 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 66
+	lookType = 66,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Ask me for a passage...' }
+	{ text = "Ask me for a passage..." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -53,16 +53,16 @@ end
 
 -- Travel
 local function addTravelKeyword(keyword, cost, destination)
-	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = 'Do you seek a ride to ' .. keyword:titleCase() .. ' for |TRAVELCOST|?', cost = cost, discount = 'postman' })
-	travelKeyword:addChildKeyword({ 'yes' }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = cost, discount = 'postman', destination = destination })
-	travelKeyword:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, text = 'Then not.', reset = true })
+	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "Do you seek a ride to " .. keyword:titleCase() .. " for |TRAVELCOST|?", cost = cost, discount = "postman" })
+	travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = cost, discount = "postman", destination = destination })
+	travelKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "Then not.", reset = true })
 end
 
-addTravelKeyword('kazordoon', 210, Position(32659, 31957, 15))
-addTravelKeyword('cormaya', 110, Position(33310, 31988, 15))
-addTravelKeyword('gnomprona', { 'Would you like to travel to Gnomprona for |TRAVELCOST|?', 'Full steam ahead!', 'Then not.' }, 200, 'postman', Position(33516, 32856, 14))
+addTravelKeyword("kazordoon", 210, Position(32659, 31957, 15))
+addTravelKeyword("cormaya", 110, Position(33310, 31988, 15))
+addTravelKeyword("gnomprona", { "Would you like to travel to Gnomprona for |TRAVELCOST|?", "Full steam ahead!", "Then not." }, 200, "postman", Position(33516, 32856, 14))
 
-keywordHandler:addKeyword({ 'passage' }, StdModule.say, { npcHandler = npcHandler, text = "Do you want me take you to {Cormaya}, {Kazordoon} or {Gnomprona}?" })
+keywordHandler:addKeyword({ "passage" }, StdModule.say, { npcHandler = npcHandler, text = "Do you want me take you to {Cormaya}, {Kazordoon} or {Gnomprona}?" })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome, |PLAYERNAME|! May earth protect you on the rocky grounds. If you need a {passage} back, I can help you.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")

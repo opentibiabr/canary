@@ -2,33 +2,33 @@ local destination = {
 	[1067] = {
 		newPos = Position(32903, 31630, 14),
 		backPos = Position(32915, 31639, 14),
-		storage = Storage.ForgottenKnowledge.LadyTenebrisTimer
+		storage = Storage.ForgottenKnowledge.LadyTenebrisTimer,
 	},
 	[1068] = {
 		newPos = Position(32658, 32885, 14),
 		backPos = Position(32678, 32888, 14),
-		storage = Storage.ForgottenKnowledge.ThornKnightTimer
+		storage = Storage.ForgottenKnowledge.ThornKnightTimer,
 	},
 	[1069] = {
 		newPos = Position(33391, 31184, 10),
 		backPos = Position(33407, 31172, 10),
-		storage = Storage.ForgottenKnowledge.DragonkingTimer
+		storage = Storage.ForgottenKnowledge.DragonkingTimer,
 	},
 	[1070] = {
 		newPos = Position(32302, 31095, 14),
 		backPos = Position(32318, 31091, 14),
-		storage = Storage.ForgottenKnowledge.HorrorTimer
+		storage = Storage.ForgottenKnowledge.HorrorTimer,
 	},
 	[1071] = {
 		newPos = Position(33026, 31663, 14),
 		backPos = Position(32849, 32691, 15),
-		storage = Storage.ForgottenKnowledge.TimeGuardianTimer
+		storage = Storage.ForgottenKnowledge.TimeGuardianTimer,
 	},
 	[1072] = {
 		newPos = Position(32019, 32851, 14),
 		backPos = Position(32035, 32859, 14),
-		storage = Storage.ForgottenKnowledge.LastLoreTimer
-	}
+		storage = Storage.ForgottenKnowledge.LastLoreTimer,
+	},
 }
 
 local challenger = MoveEvent()

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 37,
 	lookLegs = 71,
 	lookFeet = 70,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,19 +58,19 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'key') then
+	if MsgContains(message, "key") then
 		if player:getStorageValue(Storage.ThievesGuild.Mission06) == 1 then
 			local headItem = player:getSlotItem(CONST_SLOT_HEAD)
 			if headItem and headItem.itemid == 3576 and player:getStorageValue(Storage.Postman.Rank) == 5 and player:getSex() ~= PLAYERSEX_FEMALE then
 				player:addItem(7934)
 				player:setStorageValue(Storage.ThievesGuild.Mission06, 2)
-				npcHandler:say('Oh my! You look so great in your uniform! You archpostmen are not only daring but also handsome. Here take it, that\'s the key you wanted. Just promise to visit me now and then!', npc, creature)
+				npcHandler:say("Oh my! You look so great in your uniform! You archpostmen are not only daring but also handsome. Here take it, that's the key you wanted. Just promise to visit me now and then!", npc, creature)
 			elseif player:removeItem(7939, 1) then
 				player:addItem(7934)
 				player:setStorageValue(Storage.ThievesGuild.Mission06, 2)
-				npcHandler:say('Oh my, such a lovely necklace! Here take it, that\'s the key you wanted. Now let me admire my precious necklace alone.', npc, creature)
+				npcHandler:say("Oh my, such a lovely necklace! Here take it, that's the key you wanted. Now let me admire my precious necklace alone.", npc, creature)
 			else
-				npcHandler:say('I am sorry, I am not interested in your money. Maybe you should try your luck with Herbert, the postman instead.', npc, creature)
+				npcHandler:say("I am sorry, I am not interested in your money. Maybe you should try your luck with Herbert, the postman instead.", npc, creature)
 			end
 		end
 	end
@@ -141,7 +141,7 @@ npcConfig.shop = {
 	{ itemName = "watermelon tourmaline", clientId = 33780, sell = 230000 },
 	{ itemName = "wedding ring", clientId = 3004, buy = 990 },
 	{ itemName = "white silk flower", clientId = 34008, sell = 9000 },
-	{ itemName = "white pearl", clientId = 3026, buy = 320 }
+	{ itemName = "white pearl", clientId = 3026, buy = 320 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -152,7 +152,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

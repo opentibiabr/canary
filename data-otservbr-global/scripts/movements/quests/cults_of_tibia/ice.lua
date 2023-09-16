@@ -4,8 +4,8 @@ function sendConditionCults(playerid, info, fromPos, toPos, fromPos2, toPos2, ti
 		return false
 	end
 
-	if (not player:getPosition():isInRange(fromPos2, toPos2)) then
-		if (not player:getPosition():isInRange(fromPos, toPos)) then
+	if not player:getPosition():isInRange(fromPos2, toPos2) then
+		if not player:getPosition():isInRange(fromPos, toPos) then
 			return true
 		end
 	end
@@ -18,8 +18,7 @@ function sendConditionCults(playerid, info, fromPos, toPos, fromPos2, toPos2, ti
 	elseif time == 90 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, info.msgs[2])
 	elseif time >= 120 then
-		local storage = player:getStorageValue(info.storageBarkless) < 0 and 0 or
-				player:getStorageValue(info.storageBarkless)
+		local storage = player:getStorageValue(info.storageBarkless) < 0 and 0 or player:getStorageValue(info.storageBarkless)
 		if storage < 3 and storage ~= 1 and storage ~= 2 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, info.msgs[3])
 			player:setStorageValue(info.storageBarkless, 1)
@@ -34,8 +33,7 @@ local function floorPassage(playerid, info, time)
 	if not player then
 		return true
 	end
-	local storage = player:getStorageValue(info.storageBarkless) < 0 and 0 or
-			player:getStorageValue(info.storageBarkless)
+	local storage = player:getStorageValue(info.storageBarkless) < 0 and 0 or player:getStorageValue(info.storageBarkless)
 	if time == 0 and storage < 3 then
 		player:setStorageValue(info.storageBarkless, 0)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, info.msgs[6])
@@ -70,12 +68,11 @@ function ice.onStepIn(creature, item, position, fromPosition)
 			"You are now washed and ready to purify yourself in the chambers of purification.", -- step in the first tile
 			"You are now ready to prove your worth. Take heart and cross the threshold of ice.", -- step in the second tile
 			"You took so long. You are no longer purified.", -- there's no time to step
-		}
+		},
 	}
 	if fromPosition.y == 31441 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, setting.msgs[1])
-		sendConditionCults(player:getId(), setting, setting.fromPos,
-			setting.toPos, setting.fromPos2, setting.toPos2, 0)
+		sendConditionCults(player:getId(), setting, setting.fromPos, setting.toPos, setting.fromPos2, setting.toPos2, 0)
 		return true
 	end
 

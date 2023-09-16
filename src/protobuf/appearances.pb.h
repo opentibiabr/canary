@@ -2307,6 +2307,7 @@ class AppearanceFlags final :
     kClockexpireFieldNumber = 54,
     kExpireFieldNumber = 55,
     kExpirestopFieldNumber = 56,
+    kWrapkitFieldNumber = 57,
   };
   // repeated .Canary.protobuf.appearances.AppearanceFlagNPC npcsaledata = 40;
   int npcsaledata_size() const;
@@ -3116,6 +3117,19 @@ class AppearanceFlags final :
   void _internal_set_expirestop(bool value);
   public:
 
+  // optional bool wrapkit = 57;
+  bool has_wrapkit() const;
+  private:
+  bool _internal_has_wrapkit() const;
+  public:
+  void clear_wrapkit();
+  bool wrapkit() const;
+  void set_wrapkit(bool value);
+  private:
+  bool _internal_wrapkit() const;
+  void _internal_set_wrapkit(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Canary.protobuf.appearances.AppearanceFlags)
  private:
   class _Internal;
@@ -3182,6 +3196,7 @@ class AppearanceFlags final :
     bool clockexpire_;
     bool expire_;
     bool expirestop_;
+    bool wrapkit_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_appearances_2eproto;
@@ -6066,6 +6081,7 @@ class SpecialMeaningAppearanceIds final :
     kTibiaCoinIdFieldNumber = 4,
     kStampedLetterIdFieldNumber = 5,
     kSupplyStashIdFieldNumber = 6,
+    kRewardChestIdFieldNumber = 7,
   };
   // optional uint32 gold_coin_id = 1;
   bool has_gold_coin_id() const;
@@ -6145,6 +6161,19 @@ class SpecialMeaningAppearanceIds final :
   void _internal_set_supply_stash_id(uint32_t value);
   public:
 
+  // optional uint32 reward_chest_id = 7;
+  bool has_reward_chest_id() const;
+  private:
+  bool _internal_has_reward_chest_id() const;
+  public:
+  void clear_reward_chest_id();
+  uint32_t reward_chest_id() const;
+  void set_reward_chest_id(uint32_t value);
+  private:
+  uint32_t _internal_reward_chest_id() const;
+  void _internal_set_reward_chest_id(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Canary.protobuf.appearances.SpecialMeaningAppearanceIds)
  private:
   class _Internal;
@@ -6161,6 +6190,7 @@ class SpecialMeaningAppearanceIds final :
     uint32_t tibia_coin_id_;
     uint32_t stamped_letter_id_;
     uint32_t supply_stash_id_;
+    uint32_t reward_chest_id_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_appearances_2eproto;
@@ -10187,6 +10217,34 @@ inline void AppearanceFlags::set_expirestop(bool value) {
   // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.AppearanceFlags.expirestop)
 }
 
+// optional bool wrapkit = 57;
+inline bool AppearanceFlags::_internal_has_wrapkit() const {
+  bool value = (_impl_._has_bits_[1] & 0x00800000u) != 0;
+  return value;
+}
+inline bool AppearanceFlags::has_wrapkit() const {
+  return _internal_has_wrapkit();
+}
+inline void AppearanceFlags::clear_wrapkit() {
+  _impl_.wrapkit_ = false;
+  _impl_._has_bits_[1] &= ~0x00800000u;
+}
+inline bool AppearanceFlags::_internal_wrapkit() const {
+  return _impl_.wrapkit_;
+}
+inline bool AppearanceFlags::wrapkit() const {
+  // @@protoc_insertion_point(field_get:Canary.protobuf.appearances.AppearanceFlags.wrapkit)
+  return _internal_wrapkit();
+}
+inline void AppearanceFlags::_internal_set_wrapkit(bool value) {
+  _impl_._has_bits_[1] |= 0x00800000u;
+  _impl_.wrapkit_ = value;
+}
+inline void AppearanceFlags::set_wrapkit(bool value) {
+  _internal_set_wrapkit(value);
+  // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.AppearanceFlags.wrapkit)
+}
+
 // -------------------------------------------------------------------
 
 // AppearanceFlagUpgradeClassification
@@ -11317,6 +11375,34 @@ inline void SpecialMeaningAppearanceIds::_internal_set_supply_stash_id(uint32_t 
 inline void SpecialMeaningAppearanceIds::set_supply_stash_id(uint32_t value) {
   _internal_set_supply_stash_id(value);
   // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.SpecialMeaningAppearanceIds.supply_stash_id)
+}
+
+// optional uint32 reward_chest_id = 7;
+inline bool SpecialMeaningAppearanceIds::_internal_has_reward_chest_id() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool SpecialMeaningAppearanceIds::has_reward_chest_id() const {
+  return _internal_has_reward_chest_id();
+}
+inline void SpecialMeaningAppearanceIds::clear_reward_chest_id() {
+  _impl_.reward_chest_id_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline uint32_t SpecialMeaningAppearanceIds::_internal_reward_chest_id() const {
+  return _impl_.reward_chest_id_;
+}
+inline uint32_t SpecialMeaningAppearanceIds::reward_chest_id() const {
+  // @@protoc_insertion_point(field_get:Canary.protobuf.appearances.SpecialMeaningAppearanceIds.reward_chest_id)
+  return _internal_reward_chest_id();
+}
+inline void SpecialMeaningAppearanceIds::_internal_set_reward_chest_id(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.reward_chest_id_ = value;
+}
+inline void SpecialMeaningAppearanceIds::set_reward_chest_id(uint32_t value) {
+  _internal_set_reward_chest_id(value);
+  // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.SpecialMeaningAppearanceIds.reward_chest_id)
 }
 
 #ifdef __GNUC__

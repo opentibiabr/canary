@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -65,8 +65,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 3,
 	summons = {
-		{ name = "Acid Blob", chance = 40, interval = 4000, count = 3 }
-	}
+		{ name = "Acid Blob", chance = 40, interval = 4000, count = 3 },
+	},
 }
 
 monster.voices = {
@@ -81,19 +81,19 @@ monster.loot = {
 	{ id = 9381, chance = 1000 }, -- helmet of ultimate terror
 	{ id = 9386, chance = 1000 }, -- farmer's avenger
 	{ id = 9380, chance = 1000 }, -- shield of care
-	{ id = 9396, chance = 1000 } -- incredible mumpiz slayer
+	{ id = 9396, chance = 1000 }, -- incredible mumpiz slayer
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 1200, chance = 100, minDamage = 0, maxDamage = -167 },
-	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -66, maxDamage = -85, length = 6, spread = 3, effect = CONST_ME_MAGIC_GREEN, target = false }
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -66, maxDamage = -85, length = 6, spread = 3, effect = CONST_ME_MAGIC_GREEN, target = false },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 15,
 	mitigation = 0.50,
-	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HEALING, minDamage = 90, maxDamage = 200, effect = CONST_ME_HITBYFIRE, target = false }
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HEALING, minDamage = 90, maxDamage = 200, effect = CONST_ME_HITBYFIRE, target = false },
 }
 
 monster.elements = {
@@ -113,7 +113,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

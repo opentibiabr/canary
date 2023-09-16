@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -67,11 +67,11 @@ monster.voices = {
 monster.loot = {
 	{ name = "meat", chance = 25000, maxCount = 3 },
 	{ name = "worm", chance = 75000, maxCount = 3 },
-	{ name = "shaggy tail", chance = 99990 }
+	{ name = "shaggy tail", chance = 99990 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90 },
 }
 
 monster.defenses = {
@@ -97,7 +97,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

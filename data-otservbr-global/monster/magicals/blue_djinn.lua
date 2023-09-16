@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 80
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Kha'zeel, Magician Quarter, Forgotten Tomb."
+	Locations = "Kha'zeel, Magician Quarter, Forgotten Tomb.",
 }
 
 monster.health = 330
@@ -38,7 +38,7 @@ monster.enemyFactions = { FACTION_EFREET, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -91,7 +91,7 @@ monster.loot = {
 	{ name = "blue piece of cloth", chance = 1920 },
 	{ name = "royal spear", chance = 4500, maxCount = 2 },
 	{ name = "mana potion", chance = 860 },
-	{ name = "dirty turban", chance = 1890 }
+	{ name = "dirty turban", chance = 1890 },
 }
 
 monster.attacks = {
@@ -101,7 +101,7 @@ monster.attacks = {
 	{ name = "drunk", interval = 2000, chance = 10, range = 7, shootEffect = CONST_ANI_ENERGY, target = false, duration = 5000 },
 	{ name = "outfit", interval = 2000, chance = 1, range = 7, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 4000, outfitMonster = "rabbit" },
 	{ name = "djinn electrify", interval = 2000, chance = 15, range = 5, target = false },
-	{ name = "djinn cancel invisibility", interval = 2000, chance = 10, target = false }
+	{ name = "djinn cancel invisibility", interval = 2000, chance = 10, target = false },
 }
 
 monster.defenses = {
@@ -127,7 +127,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

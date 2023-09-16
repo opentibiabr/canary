@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 50
@@ -26,7 +26,7 @@ monster.Bestiary = {
 	Locations = "Orc Fortress, Folda Dungeon, Edron Orc Cave and around it, Ancient Temple, \z
 		Venore Orc Cave, below the Point of No Return in Outlaw Camp, Plains of Havoc, \z
 		North of Thais in the Orc Peninsula, Elvenbane and Orc Camp in Foreigner Quarter. \z
-		Also found in Rookgaard West plains, Zao Orc Land."
+		Also found in Rookgaard West plains, Zao Orc Land.",
 }
 
 monster.health = 105
@@ -38,7 +38,7 @@ monster.manaCost = 310
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -85,12 +85,12 @@ monster.loot = {
 	{ name = "meat", chance = 30200 },
 	{ name = "orc tooth", chance = 150 },
 	{ name = "orc leather", chance = 2300 },
-	{ id = 23986, chance = 1000 } -- heavy old tome
+	{ id = 23986, chance = 1000 }, -- heavy old tome
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -25 },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -30, range = 7, shootEffect = CONST_ANI_SPEAR, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -30, range = 7, shootEffect = CONST_ANI_SPEAR, target = false },
 }
 
 monster.defenses = {
@@ -116,7 +116,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

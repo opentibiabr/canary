@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 96,
 	lookBody = 60,
 	lookLegs = 97,
-	lookFeet = 116
+	lookFeet = 116,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -57,10 +57,10 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if (MsgContains(message, "piece of draconian steel")) then
+	if MsgContains(message, "piece of draconian steel") then
 		npcHandler:say("You bringing me draconian steel and obsidian lance in exchange for obsidian knife?", npc, creature)
 		npcHandler:setTopic(playerId, 15)
-	elseif (MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 15) then
+	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 15 then
 		if player:getItemCount(5889) >= 1 and player:getItemCount(3313) >= 1 then
 			if player:removeItem(5889, 1) and player:removeItem(3313, 1) then
 				npcHandler:say("Here you have it.", npc, creature)
@@ -68,36 +68,36 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 0)
 			end
 		else
-			npcHandler:say("You don\'t have these items.", npc, creature)
+			npcHandler:say("You don't have these items.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end
 
-	if (MsgContains(message, "pickaxe")) then
+	if MsgContains(message, "pickaxe") then
 		if player:getStorageValue(Storage.ExplorerSociety.JoiningTheExplorers) == 1 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 1 then
 			npcHandler:say("True dwarven pickaxes having to be maded by true weaponsmith! You wanting to get pickaxe for explorer society?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
-	elseif (MsgContains(message, "crimson sword")) then
+	elseif MsgContains(message, "crimson sword") then
 		if player:getStorageValue(Storage.TravellingTrader.Mission05) == 1 then
 			npcHandler:say("Me don't sell crimson sword.", npc, creature)
 			npcHandler:setTopic(playerId, 5)
 		end
-	elseif (MsgContains(message, "forge")) then
-		if (npcHandler:getTopic(playerId) == 5) then
+	elseif MsgContains(message, "forge") then
+		if npcHandler:getTopic(playerId) == 5 then
 			npcHandler:say("You telling me to forge one?! Especially for you? You making fun of me?", npc, creature)
 			npcHandler:setTopic(playerId, 6)
 		end
-	elseif (MsgContains(message, "brooch")) then
+	elseif MsgContains(message, "brooch") then
 		if player:getStorageValue(Storage.ExplorerSociety.JoiningTheExplorers) == 3 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 3 then
 			npcHandler:say("You got me brooch?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
-	elseif (MsgContains(message, "yes")) then
-		if (npcHandler:getTopic(playerId) == 1) then
+	elseif MsgContains(message, "yes") then
+		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("Me order book quite full is. But telling you what: You getting me something me lost and Uzgod seeing that your pickaxe comes first. Jawoll! You interested?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
-		elseif (npcHandler:getTopic(playerId) == 2) then
+		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Good good. You listening: Me was stolen valuable heirloom. Brooch from my family. Good thing is criminal was caught. Bad thing is, criminal now in dwarven prison of dwacatra is and must have taken brooch with him ...", npc, creature)
 			npcHandler:say("To get into dwacatra you having to get several keys. Each key opening way to other key until you get key to dwarven prison ...", npc, creature)
 			npcHandler:say("Last key should be in the generals quarter near armory. Only General might have key to enter there too. But me not knowing how to enter Generals private room at barracks. You looking on your own ...", npc, creature)
@@ -106,18 +106,18 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.ExplorerSociety.JoiningTheExplorers, 2)
 			player:setStorageValue(Storage.ExplorerSociety.DwacatraDoor, 1)
 			player:setStorageValue(Storage.ExplorerSociety.QuestLine, 2)
-		elseif (npcHandler:getTopic(playerId) == 3) then
+		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:removeItem(4834, 1) then -----
 				npcHandler:say("Thanking you for brooch. Me guessing you now want your pickaxe?", npc, creature)
 				npcHandler:setTopic(playerId, 4)
 			end
-		elseif (npcHandler:getTopic(playerId) == 4) then
+		elseif npcHandler:getTopic(playerId) == 4 then
 			npcHandler:say("Here you have it.", npc, creature)
 			player:addItem(4845, 1) -----
 			player:setStorageValue(Storage.ExplorerSociety.JoiningTheExplorers, 4)
 			player:setStorageValue(Storage.ExplorerSociety.QuestLine, 4)
 			npcHandler:setTopic(playerId, 0)
-		elseif (npcHandler:getTopic(playerId) == 9) then
+		elseif npcHandler:getTopic(playerId) == 9 then
 			if player:getMoney() + player:getBankBalance() >= 250 and player:getItemCount(5880) >= 3 then
 				if player:removeMoneyBank(250) and player:removeItem(5880, 3) then
 					npcHandler:say("Ah, that's how me like me customers. Ok, me do this... <pling pling> ... another fine swing of the hammer here and there... <ploing>... here you have it!", npc, creature)
@@ -127,14 +127,14 @@ local function creatureSayCallback(npc, creature, type, message)
 				end
 			end
 		end
-	elseif (MsgContains(message, "no")) then
-		if (npcHandler:getTopic(playerId) == 6) then
+	elseif MsgContains(message, "no") then
+		if npcHandler:getTopic(playerId) == 6 then
 			npcHandler:say("Well. Thinking about it, me a smith, so why not. 1000 gold for your personal crimson sword. Ok?", npc, creature)
 			npcHandler:setTopic(playerId, 7)
-		elseif (npcHandler:getTopic(playerId) == 7) then
+		elseif npcHandler:getTopic(playerId) == 7 then
 			npcHandler:say("Too expensive?! You think me work is cheap? Well, if you want cheap, I can make cheap. Hrmpf. I make cheap sword for 300 gold. Ok?", npc, creature)
 			npcHandler:setTopic(playerId, 8)
-		elseif (npcHandler:getTopic(playerId) == 8) then
+		elseif npcHandler:getTopic(playerId) == 8 then
 			npcHandler:say("Cheap but good quality? Impossible. Unless... you bring material. Three iron ores, 250 gold. Okay?", npc, creature)
 			npcHandler:setTopic(playerId, 9)
 		end
@@ -192,7 +192,7 @@ npcConfig.shop = {
 	{ itemName = "sword", clientId = 3264, buy = 85 },
 	{ itemName = "throwing knife", clientId = 3298, buy = 25 },
 	{ itemName = "two handed sword", clientId = 3265, buy = 950 },
-	{ itemName = "war hammer", clientId = 3279, buy = 10000 }
+	{ itemName = "war hammer", clientId = 3279, buy = 10000 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -203,7 +203,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

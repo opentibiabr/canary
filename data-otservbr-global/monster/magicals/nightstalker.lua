@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 520
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Cemetery Quarter, Vengoth Castle, Vandura Mountain, Robson Isle."
+	Locations = "Cemetery Quarter, Vengoth Castle, Vandura Mountain, Robson Isle.",
 }
 
 monster.health = 700
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 0,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -93,7 +93,7 @@ monster.loot = {
 	{ name = "chaos mace", chance = 121 },
 	{ name = "strong mana potion", chance = 1612 },
 	{ name = "spirit cloak", chance = 520 },
-	{ name = "crystal of balance", chance = 127 }
+	{ name = "crystal of balance", chance = 127 },
 }
 
 monster.attacks = {
@@ -113,7 +113,7 @@ monster.defenses = {
 	{ name = "outfit", interval = 5000, chance = 10, target = false, duration = 4000, outfitMonster = "the count" },
 	{ name = "outfit", interval = 5000, chance = 10, target = false, duration = 4000, outfitMonster = "grim reaper" },
 	{ name = "outfit", interval = 5000, chance = 10, target = false, duration = 4000, outfitMonster = "tarantula" },
-	{ name = "outfit", interval = 5000, chance = 1, target = false, duration = 4000, outfitMonster = "ferumbras" }
+	{ name = "outfit", interval = 5000, chance = 1, target = false, duration = 4000, outfitMonster = "ferumbras" },
 }
 
 monster.elements = {
@@ -133,7 +133,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

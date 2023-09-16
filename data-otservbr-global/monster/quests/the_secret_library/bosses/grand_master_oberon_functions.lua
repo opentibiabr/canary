@@ -1,7 +1,7 @@
 local oberonOthersMessages = {
 	[1] = "Are you ever going to fight or do you prefer talking! Then let me show you the concept of mortality before it! Dare strike up a Minnesang and you will receive your last accolade!",
 	[2] = "Even before they smell your breath? Too bad you barely exist at all! SEHWO ASIMO, TOLIDO ESD Excuse me but I still do not get the message! Then why are we fighting alone right now? How appropriate, you look like something worms already got the better of!",
-};
+}
 
 GrandMasterOberonAsking = {
 	[1] = { msg = "You appear like a worm among men!" },
@@ -35,9 +35,9 @@ GrandMasterOberonConfig = {
 	},
 	Monster = {
 		"Falcon Knight",
-		"Falcon Paladin"
+		"Falcon Paladin",
 	},
-	AmountLife = 3
+	AmountLife = 3,
 }
 
 local function healOberon(monster)
@@ -47,7 +47,7 @@ local function healOberon(monster)
 end
 
 function SendOberonAsking(monster)
-	monster:registerEvent('OberonImmunity')
+	monster:registerEvent("OberonImmunity")
 	local random = math.random(#GrandMasterOberonAsking)
 	monster:say(GrandMasterOberonAsking[random].msg, TALKTYPE_MONSTER_SAY)
 	monster:setStorageValue(GrandMasterOberonConfig.Storage.Asking, random)

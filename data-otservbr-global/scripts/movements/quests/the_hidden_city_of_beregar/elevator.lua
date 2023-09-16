@@ -1,6 +1,6 @@
 local setting = {
 	[50092] = Position(32612, 31499, 15),
-	[50093] = Position(32612, 31499, 14)
+	[50093] = Position(32612, 31499, 14),
 }
 
 local elevator = MoveEvent()

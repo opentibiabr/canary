@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 891
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Warzone 1, Rathleton Sewers, unreachable location in Tiquanda Laboratory."
+	Locations = "Warzone 1, Rathleton Sewers, unreachable location in Tiquanda Laboratory.",
 }
 
 monster.health = 4600
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -73,8 +73,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "humorless fungus", chance = 10, interval = 2000, count = 2 }
-	}
+		{ name = "humorless fungus", chance = 10, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -103,7 +103,7 @@ monster.loot = {
 	{ name = "muck rod", chance = 590 },
 	{ name = "hideous chunk", chance = 14285 },
 	{ name = "envenomed arrow", chance = 14500, maxCount = 15 },
-	{ name = "mycological bow", chance = 60 }
+	{ name = "mycological bow", chance = 60 },
 }
 
 monster.attacks = {
@@ -113,7 +113,7 @@ monster.attacks = {
 	{ name = "speed", interval = 2000, chance = 10, speedChange = -600, radius = 1, effect = CONST_ME_MAGIC_RED, target = true, duration = 60000 },
 	{ name = "drunk", interval = 2000, chance = 10, range = 7, radius = 5, shootEffect = CONST_ANI_SMALLSTONE, effect = CONST_ME_STUN, target = true, duration = 4000 },
 	-- poison
-	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 10, minDamage = -400, maxDamage = -640, range = 7, radius = 3, effect = CONST_ME_HITBYPOISON, target = false }
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 10, minDamage = -400, maxDamage = -640, range = 7, radius = 3, effect = CONST_ME_HITBYPOISON, target = false },
 }
 
 monster.defenses = {
@@ -121,7 +121,7 @@ monster.defenses = {
 	armor = 60,
 	mitigation = 1.74,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 275, maxDamage = 350, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -141,7 +141,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

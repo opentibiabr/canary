@@ -1,6 +1,6 @@
 local config = {
 	{ position = { x = 32424, y = 32500, z = 10 }, destination = { x = 32405, y = 32497, z = 10 } },
-	{ position = { x = 32405, y = 32498, z = 10 }, destination = { x = 32424, y = 32498, z = 10 } }
+	{ position = { x = 32405, y = 32498, z = 10 }, destination = { x = 32424, y = 32498, z = 10 } },
 }
 
 local forestOfLife = MoveEvent()

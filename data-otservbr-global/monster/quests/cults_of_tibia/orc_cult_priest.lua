@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1504
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 1,
-	Locations = "Edron Orc Cave."
+	Locations = "Edron Orc Cave.",
 }
 
 monster.health = 1300
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -88,7 +88,7 @@ monster.loot = {
 	{ name = "mysterious fetish", chance = 8910 },
 	{ name = "shamanic hood", chance = 14360 },
 	{ name = "broken shamanic staff", chance = 5940 },
-	{ name = "heavy old tome", chance = 99 }
+	{ name = "heavy old tome", chance = 99 },
 }
 
 monster.attacks = {
@@ -97,14 +97,14 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_FIREDAMAGE, minDamage = -200, maxDamage = -250, range = 7, radius = 1, shootEffect = CONST_ANI_FIRE, target = true },
 	{ name = "outfit", interval = 4000, chance = 15, target = true, duration = 30000, outfitMonster = "orc warlord" },
 	{ name = "outfit", interval = 4000, chance = 10, target = true, duration = 30000, outfitMonster = "orc shaman" },
-	{ name = "outfit", interval = 4000, chance = 20, target = true, duration = 30000, outfitMonster = "orc" }
+	{ name = "outfit", interval = 4000, chance = 20, target = true, duration = 30000, outfitMonster = "orc" },
 }
 
 monster.defenses = {
 	defense = 27,
 	armor = 27,
 	mitigation = 1.18,
-	{ name = "heal monster", interval = 2000, chance = 20, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "heal monster", interval = 2000, chance = 20, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -124,7 +124,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

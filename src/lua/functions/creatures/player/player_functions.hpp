@@ -177,6 +177,7 @@ private:
 		registerMethod(L, "Player", "removeStashItem", PlayerFunctions::luaPlayerRemoveStashItem);
 		registerMethod(L, "Player", "removeItem", PlayerFunctions::luaPlayerRemoveItem);
 		registerMethod(L, "Player", "sendContainer", PlayerFunctions::luaPlayerSendContainer);
+		registerMethod(L, "Player", "sendUpdateContainer", PlayerFunctions::luaPlayerSendUpdateContainer);
 
 		registerMethod(L, "Player", "getMoney", PlayerFunctions::luaPlayerGetMoney);
 		registerMethod(L, "Player", "addMoney", PlayerFunctions::luaPlayerAddMoney);
@@ -515,6 +516,7 @@ private:
 	static int luaPlayerRemoveStashItem(lua_State* L);
 	static int luaPlayerRemoveItem(lua_State* L);
 	static int luaPlayerSendContainer(lua_State* L);
+	static int luaPlayerSendUpdateContainer(lua_State* L);
 
 	static int luaPlayerGetMoney(lua_State* L);
 	static int luaPlayerAddMoney(lua_State* L);

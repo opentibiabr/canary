@@ -1,8 +1,8 @@
 local creatureName = {
-	[1] = 'ice golem',
-	[2] = 'ice witch',
-	[3] = 'crystal spider',
-	[4] = 'frost dragon'
+	[1] = "ice golem",
+	[2] = "ice witch",
+	[3] = "crystal spider",
+	[4] = "frost dragon",
 }
 
 local function summonMonster(name, position)

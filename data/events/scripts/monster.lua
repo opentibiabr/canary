@@ -12,8 +12,7 @@ end
 local function checkItemType(itemId)
 	local itemType = ItemType(itemId):getType()
 	-- Based on enum ItemTypes_t
-	if (itemType > 0 and itemType < 4) or itemType == 7 or itemType == 8 or
-			itemType == 11 or itemType == 13 or (itemType > 15 and itemType < 22) then
+	if (itemType > 0 and itemType < 4) or itemType == 7 or itemType == 8 or itemType == 11 or itemType == 13 or (itemType > 15 and itemType < 22) then
 		return true
 	end
 	return false

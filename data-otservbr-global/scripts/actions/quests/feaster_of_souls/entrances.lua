@@ -4,7 +4,7 @@ local positions = {
 	{ position = { x = 32883, y = 32518, z = 7 }, destination = { x = 33613, y = 31415, z = 8 } }, -- entrance port hope
 	{ position = { x = 32884, y = 32518, z = 7 }, destination = { x = 33613, y = 31415, z = 8 } },
 	{ position = { x = 32625, y = 32076, z = 7 }, destination = { x = 31914, y = 32354, z = 8 } }, -- entrance jakundaf
-	{ position = { x = 32626, y = 32076, z = 7 }, destination = { x = 31914, y = 32354, z = 8 } }
+	{ position = { x = 32626, y = 32076, z = 7 }, destination = { x = 31914, y = 32354, z = 8 } },
 }
 
 local feasterEntrances = MoveEvent()

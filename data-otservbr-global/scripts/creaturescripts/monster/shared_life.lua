@@ -11,7 +11,7 @@ function sharedLife.onHealthChange(creature, attacker, primaryDamage, primaryTyp
 	if primaryType == COMBAT_HEALING then
 		creature:onReceivDamageSL(primaryDamage, "healing", killer)
 	else
-		if (creature:getHealth() - primaryDamage <= 0) then
+		if creature:getHealth() - primaryDamage <= 0 then
 			killer = true
 		end
 		creature:onReceivDamageSL(primaryDamage, "damage", killer)
@@ -20,7 +20,7 @@ function sharedLife.onHealthChange(creature, attacker, primaryDamage, primaryTyp
 	if secondaryType == COMBAT_HEALING then
 		creature:onReceivDamageSL(secondaryDamage, "healing", killer)
 	else
-		if (creature:getHealth() - secondaryDamage <= 0) then
+		if creature:getHealth() - secondaryDamage <= 0 then
 			killer = true
 		end
 		creature:onReceivDamageSL(secondaryDamage, "damage", killer)

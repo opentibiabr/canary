@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 94,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 32000
@@ -22,13 +22,13 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.bosstiary = {
 	bossRaceId = 1892,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_30.FeasterOfSouls.VokTimer
+	storageCooldown = Storage.Quest.U12_30.FeasterOfSouls.VokTimer,
 }
 
 monster.strategiesTarget = {
@@ -75,7 +75,7 @@ monster.loot = {
 	{ name = "ornate crossbow", chance = 10000 },
 	{ name = "silver hand mirror", chance = 150 },
 	{ name = "death toll", chance = 150 },
-	{ name = "pair of nightmare boots", chance = 150 }
+	{ name = "pair of nightmare boots", chance = 150 },
 }
 
 monster.attacks = {
@@ -83,12 +83,12 @@ monster.attacks = {
 	{ name = "combat", interval = 1500, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -300, maxDamage = -500, radius = 3, shootEffect = CONST_ANI_ENVENOMEDARROW, target = true },
 	{ name = "combat", interval = 1500, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -650, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
 	{ name = "combat", interval = 1500, chance = 35, type = COMBAT_DEATHDAMAGE, minDamage = -300, maxDamage = -650, radius = 4, effect = CONST_ME_MORTAREA, target = true },
-	{ name = "combat", interval = 1500, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -300, maxDamage = -650, radius = 4, effect = CONST_ME_GREEN_RINGS, target = true }
+	{ name = "combat", interval = 1500, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -300, maxDamage = -650, radius = 4, effect = CONST_ME_GREEN_RINGS, target = true },
 }
 
 monster.defenses = {
 	defense = 40,
-	armor = 82
+	armor = 82,
 	--	mitigation = ???,
 }
 
@@ -109,11 +109,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -121,13 +120,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

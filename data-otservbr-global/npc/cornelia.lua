@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 76,
 	lookLegs = 100,
 	lookFeet = 115,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Quality armors for sale!' }
+	{ text = "Quality armors for sale!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -56,7 +56,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I run this armoury. If you want to protect your life, you better buy my wares." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I run this armoury. If you want to protect your life, you better buy my wares." })
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
@@ -70,19 +70,19 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.OutfitQuest.WarriorShoulderAddon) == 5 then
 			player:setStorageValue(Storage.OutfitQuest.WarriorShoulderAddon, 6)
 			player:setStorageValue(Storage.OutfitQuest.WarriorShoulderTimer, os.time() + (player:getSex() == PLAYERSEX_FEMALE and 1768 or 7200))
-			npcHandler:say('Ah, you must be the hero Trisha talked about. I\'ll prepare the shoulder spikes for you. Please give me some time to finish.', npc, creature)
+			npcHandler:say("Ah, you must be the hero Trisha talked about. I'll prepare the shoulder spikes for you. Please give me some time to finish.", npc, creature)
 		elseif player:getStorageValue(Storage.OutfitQuest.WarriorShoulderAddon) == 6 then
 			if player:getStorageValue(Storage.OutfitQuest.WarriorShoulderTimer) > os.time() then
-				npcHandler:say('I\'m not done yet. Please be as patient as you are courageous.', npc, creature)
+				npcHandler:say("I'm not done yet. Please be as patient as you are courageous.", npc, creature)
 			elseif player:getStorageValue(Storage.OutfitQuest.WarriorShoulderTimer) > 0 and player:getStorageValue(Storage.OutfitQuest.WarriorShoulderTimer) < os.time() then
 				player:addOutfitAddon(142, 1)
 				player:addOutfitAddon(134, 1)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:setStorageValue(Storage.OutfitQuest.WarriorShoulderAddon, 7)
-				player:addAchievementProgress('Wild Warrior', 2)
-				npcHandler:say('Finished! Since you are a man, I thought you probably wanted two. Men always want that little extra status symbol. <giggles>', npc, creature)
+				player:addAchievementProgress("Wild Warrior", 2)
+				npcHandler:say("Finished! Since you are a man, I thought you probably wanted two. Men always want that little extra status symbol. <giggles>", npc, creature)
 			else
-				npcHandler:say('I\'m selling leather armor, chain armor, and brass armor. Ask me for a {trade} if you like to take a look.', npc, creature)
+				npcHandler:say("I'm selling leather armor, chain armor, and brass armor. Ask me for a {trade} if you like to take a look.", npc, creature)
 			end
 		end
 	end
@@ -128,7 +128,7 @@ npcConfig.shop = {
 	{ itemName = "studded shield", clientId = 3426, buy = 50, sell = 16 },
 	{ itemName = "viking helmet", clientId = 3367, buy = 265, sell = 66 },
 	{ itemName = "viking shield", clientId = 3431, buy = 260, sell = 85 },
-	{ itemName = "wooden shield", clientId = 3412, buy = 15, sell = 5 }
+	{ itemName = "wooden shield", clientId = 3412, buy = 15, sell = 5 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -139,7 +139,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

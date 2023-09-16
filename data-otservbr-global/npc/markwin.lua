@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 23
+	lookType = 23,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -91,10 +91,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 1)
 			end
 		end
-	elseif MsgContains(message, 'cookie') then
-		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31
-				and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.Markwin) ~= 1 then
-			npcHandler:say('You bring me ... a cookie???', npc, creature)
+	elseif MsgContains(message, "cookie") then
+		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31 and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.Markwin) ~= 1 then
+			npcHandler:say("You bring me ... a cookie???", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
 	elseif MsgContains(message, "yes") then
@@ -105,18 +104,18 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			if not player:removeItem(130, 1) then
-				npcHandler:say('You have no cookie that I\'d like.', npc, creature)
+				npcHandler:say("You have no cookie that I'd like.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true
 			end
 
 			player:setStorageValue(Storage.WhatAFoolish.CookieDelivery.Markwin, 1)
 			if player:getCookiesDelivered() == 10 then
-				player:addAchievement('Allow Cookies?')
+				player:addAchievement("Allow Cookies?")
 			end
 
 			npc:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
-			npcHandler:say('I understand this as a peace-offering, human ... UNGH ... THIS IS AN OUTRAGE! THIS MEANS WAR!!!', npc, creature)
+			npcHandler:say("I understand this as a peace-offering, human ... UNGH ... THIS IS AN OUTRAGE! THIS MEANS WAR!!!", npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		end

@@ -10,14 +10,14 @@ local dolls = {
 		"You should do something you always wanted to.",
 		"If you walk under a ladder and it falls down on you it probably means bad luck.",
 		"Never say 'oops'. Always say 'Ah, interesting!'",
-		"Five steps east, fourteen steps south, two steps north and seventeen steps west!"
+		"Five steps east, fourteen steps south, two steps north and seventeen steps west!",
 	},
 	[6566] = {
 		"Fchhhhhh!",
 		"Zchhhhhh!",
 		"Grooaaaaar*cough*",
 		"Aaa... CHOO!",
-		"You... will.... burn!!"
+		"You... will.... burn!!",
 	},
 	[6387] = { "Merry Christmas |PLAYERNAME|." },
 	[6511] = {
@@ -26,7 +26,7 @@ local dolls = {
 		"Have you been naughty?",
 		"Have you been nice?",
 		"Merry Christmas!",
-		"Can you stop squeezing me now... I'm starting to feel a little sick."
+		"Can you stop squeezing me now... I'm starting to feel a little sick.",
 	},
 	[8146] = { "ARE YOU PREPARED TO FACE YOUR DESTINY?" },
 	[8149] = {
@@ -34,18 +34,18 @@ local dolls = {
 		"Pie for breakfast, pie for lunch and pie for dinner!",
 		"All hail the control panel!",
 		"I own, Tibiacity owns, perfect match!",
-		"Hug me! Feed me! Hail me!"
+		"Hug me! Feed me! Hail me!",
 	},
 	[8153] = {
 		"It's news to me.",
 		"News, updated as infrequently as possible!",
 		"Extra! Extra! Read all about it!",
-		"Fresh off the press!"
+		"Fresh off the press!",
 	},
 	[8154] = {
 		"Hail TibiaNordic!",
 		"So cold..",
-		"Run, mammoth!"
+		"Run, mammoth!",
 	},
 	[21435] = {
 		"I can hear their whisperings... Revenge!",
@@ -53,9 +53,9 @@ local dolls = {
 		"I do not need a sword to slaughter you",
 		"My sword is broken, but my spirit is not dead",
 		"I can say 469 and more...",
-		"My dark magic lies on tibialatina.wikia.com"
+		"My dark magic lies on tibialatina.wikia.com",
 	},
-	[21962] = { "Hail Tibia Brasileiros! (União&Força)" }
+	[21962] = { "Hail Tibia Brasileiros! (União&Força)" },
 }
 
 local doll = Action()
@@ -88,7 +88,7 @@ function doll.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		fromPosition:sendMagicEffect(CONST_ME_SOUND_YELLOW)
 	end
 
-	sound = sound:gsub('|PLAYERNAME|', player:getName())
+	sound = sound:gsub("|PLAYERNAME|", player:getName())
 	player:say(sound, TALKTYPE_MONSTER_SAY, false, 0, fromPosition)
 	return true
 end

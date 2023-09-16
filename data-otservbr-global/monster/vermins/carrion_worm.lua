@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 251
@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Edron, Cormaya, Drillworm Caves, Venore Swamps, Liberty Bay, Vandura, Hellgate, \z
 	Fibula Dungeon, Stonehome, Kazordoon, Darashia Rotworm Caves, Port Hope, Ancient Temple, \z
-	Fenrock, Arena and Zoo Quarter."
+	Fenrock, Arena and Zoo Quarter.",
 }
 
 monster.health = 145
@@ -37,7 +37,7 @@ monster.manaCost = 380
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -79,11 +79,11 @@ monster.loot = {
 	{ name = "meat", chance = 9460, maxCount = 2 },
 	{ name = "worm", chance = 2100, maxCount = 2 },
 	{ name = "carrion worm fang", chance = 10000 },
-	{ id = 12600, chance = 210 } -- coal
+	{ id = 12600, chance = 210 }, -- coal
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 },
 }
 
 monster.defenses = {
@@ -109,7 +109,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

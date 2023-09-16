@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 123
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "South of Port Hope around Trapwood, as well as a lone specimen in the Arena Quarter."
+	Locations = "South of Port Hope around Trapwood, as well as a lone specimen in the Arena Quarter.",
 }
 
 monster.health = 80
@@ -35,7 +35,7 @@ monster.manaCost = 300
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -77,11 +77,11 @@ monster.voices = {
 monster.loot = {
 	{ name = "meat", chance = 70500, maxCount = 4 },
 	{ name = "ham", chance = 39000, maxCount = 2 },
-	{ name = "bamboo stick", chance = 10000 }
+	{ name = "bamboo stick", chance = 10000 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -20 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -20 },
 }
 
 monster.defenses = {
@@ -107,7 +107,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

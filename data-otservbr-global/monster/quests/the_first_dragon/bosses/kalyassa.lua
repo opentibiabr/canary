@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 19,
 	lookFeet = 95,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 10000
@@ -22,13 +22,13 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.bosstiary = {
 	bossRaceId = 1389,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.FirstDragon.KalyassaTimer
+	storageCooldown = Storage.FirstDragon.KalyassaTimer,
 }
 
 monster.strategiesTarget = {
@@ -55,19 +55,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "Dragon Lord", chance = 20, interval = 2000, count = 2 }
-	}
+		{ name = "Dragon Lord", chance = 20, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -89,7 +89,7 @@ monster.loot = {
 	{ id = 7365, chance = 26610, maxCount = 10 }, -- onyx arrow
 	{ id = 3280, chance = 25000 }, -- fire sword
 	{ id = 3051, chance = 25000 }, -- energy ring
-	{ id = 5948, chance = 25000 } -- red dragon leather
+	{ id = 5948, chance = 25000 }, -- red dragon leather
 }
 
 monster.attacks = {
@@ -97,13 +97,13 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -110, maxDamage = -495, range = 7, radius = 5, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -310, maxDamage = -495, length = 9, spread = 4, effect = CONST_ME_FIREAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -710, maxDamage = -895, length = 9, spread = 3, effect = CONST_ME_FIREAREA, target = false },
-	{ name = "firefield", interval = 2000, chance = 10, range = 7, radius = 7, shootEffect = CONST_ANI_FIRE, target = true }
+	{ name = "firefield", interval = 2000, chance = 10, range = 7, radius = 7, shootEffect = CONST_ANI_FIRE, target = true },
 }
 
 monster.defenses = {
 	defense = 70,
 	armor = 45,
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 400, maxDamage = 700, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 400, maxDamage = 700, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -116,14 +116,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

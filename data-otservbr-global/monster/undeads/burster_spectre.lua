@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 86,
 	lookFeet = 79,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1726
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Haunted Tomb west of Darashia, Buried Cathedral."
+	Locations = "Haunted Tomb west of Darashia, Buried Cathedral.",
 }
 
 monster.health = 6500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -97,7 +97,7 @@ monster.loot = {
 	{ name = "glacial rod", chance = 520 },
 	{ name = "shockwave amulet", chance = 620 },
 	{ name = "strange symbol", chance = 720 },
-	{ name = "hexagonal ruby", chance = 480 }
+	{ name = "hexagonal ruby", chance = 480 },
 }
 
 monster.attacks = {
@@ -113,11 +113,11 @@ monster.defenses = {
 	defense = 70,
 	armor = 70,
 	mitigation = 2.11,
-	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HEALING, minDamage = 150, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HEALING, minDamage = 150, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.reflects = {
-	{ type = COMBAT_ICEDAMAGE, percent = 133 }
+	{ type = COMBAT_ICEDAMAGE, percent = 133 },
 }
 
 monster.elements = {
@@ -137,7 +137,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

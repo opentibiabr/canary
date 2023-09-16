@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1656
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Secret Library earth, energy, fire and ice sections. Also two incarcerated in the Issavi prison, reachable from the city Library."
+	Locations = "Secret Library earth, energy, fire and ice sections. Also two incarcerated in the Issavi prison, reachable from the city Library.",
 }
 
 monster.health = 6500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -77,13 +77,13 @@ monster.loot = {
 	{ name = "book page", chance = 500, maxCount = 4 },
 	{ name = "glowing rune", chance = 500, maxCount = 2 },
 	{ name = "platinum coin", chance = 10000, maxCount = 5 },
-	{ name = "silken bookmark", chance = 500, maxCount = 3 }
+	{ name = "silken bookmark", chance = 500, maxCount = 3 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1055 },
 	{ name = "combat", interval = 1000, chance = 12, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -1210, radius = 5, effect = CONST_ME_SMOKE, target = false },
-	{ name = "combat", interval = 1000, chance = 14, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -1210, radius = 3, effect = CONST_ME_BATS, target = false }
+	{ name = "combat", interval = 1000, chance = 14, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -1210, radius = 3, effect = CONST_ME_BATS, target = false },
 }
 
 monster.defenses = {
@@ -109,7 +109,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -11,8 +11,12 @@ function createFunctions(class)
 		end
 		if add then
 			local str = name:sub(1, 1):upper() .. name:sub(2)
-			local getFunc = function(self) return func(self) end
-			local setFunc = function(self, ...) return func(self, ...) end
+			local getFunc = function(self)
+				return func(self)
+			end
+			local setFunc = function(self, ...)
+				return func(self, ...)
+			end
 			local get = "get" .. str
 			local set = "set" .. str
 			if not (rawget(class, get) and rawget(class, set)) then

@@ -11,13 +11,12 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 340
+	lookType = 340,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
-
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -58,7 +57,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "guezt") then
 		if player:getStorageValue(TheNewFrontier.Questline) == 23 then
 			npcHandler:say({
-				"Ziz iz not for you to azk. I work for zomeone of immenze power. He haz an {offer} for you."
+				"Ziz iz not for you to azk. I work for zomeone of immenze power. He haz an {offer} for you.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -72,7 +71,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"Zere iz a great tournament of ztrengz each decade. It determinez ze granted privilegez for zertain individualz of power for ze comming decade. ...",
 				"My mazter wantz to zurprize hiz opponentz by an unexpected move. He will uze warriorz from ze outzide, zomeone zat no one can azzezz. ...",
-				"One of ziz warriorz could be you. Or you could ztay here and rot in ze dungeon. Are you interezted in ziz deal?"
+				"One of ziz warriorz could be you. Or you could ztay here and rot in ze dungeon. Are you interezted in ziz deal?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
@@ -80,13 +79,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		if npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say({
 				"You are zmart for a zoftzkin, but before you begin to feel too zmart, you should know zat we will zeal our deal wiz you drinking a ztrong poizon zat will inevitably kill you if you want to trick me and not attend ze tournament. ...",
-				"Zo are you ready to drink ziz poizon here?"
+				"Zo are you ready to drink ziz poizon here?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			npcHandler:say({
 				"Excellent! Now you may leave ziz area zrough ze teleporter to ze norz. It will bring you to a hidden boat. Ziz boat will take you to ze tournament izle. ...",
-				"Zere you'll learn anyzing you need to know about ze great tournament."
+				"Zere you'll learn anyzing you need to know about ze great tournament.",
 			}, npc, creature)
 			player:setStorageValue(TheNewFrontier.Questline, 24)
 			player:setStorageValue(TheNewFrontier.Mission08, 2) --Questlog, The New Frontier Quest "Mission 08: An Offer You Can't Refuse"

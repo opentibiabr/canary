@@ -4,24 +4,24 @@ local missionTiles = {
 	[50342] = {
 		state = 1,
 		message = "This is not the way to the troll caves. Go back down the stairs and walk north to find them.",
-		arrowPosition = { x = 32089, y = 32147, z = 6 }
+		arrowPosition = { x = 32089, y = 32147, z = 6 },
 	},
 	[50343] = {
 		state = 1,
 		message = "This is not the way to the troll caves. Go back down the stairs and walk north to find them.",
-		arrowPosition = { x = 32094, y = 32137, z = 7 }
+		arrowPosition = { x = 32094, y = 32137, z = 7 },
 	},
 	[50344] = {
 		state = 1,
 		newState = 2,
 		message = "You've reached the newly dug troll tunnel. Take what you find in this chest and use it to bring down all support beams!",
-		arrowPosition = { x = 32059, y = 32132, z = 10 }
+		arrowPosition = { x = 32059, y = 32132, z = 10 },
 	},
 	[50345] = {
 		state = 7,
 		newState = 8,
-		message = "You hear a crumbling below you. The tunnel collapsed. Vascalir will be pleased to hear about that."
-	}
+		message = "You hear a crumbling below you. The tunnel collapsed. Vascalir will be pleased to hear about that.",
+	},
 }
 
 -- Mission tutorial tiles
@@ -87,18 +87,18 @@ tunnelHole:register()
 
 local CHEST_ID = {
 	LEATHER_LEGS = 1,
-	PICK = 2
+	PICK = 2,
 }
 
 local chests = {
 	[40048] = {
 		id = CHEST_ID.LEATHER_LEGS,
-		itemId = 3559
+		itemId = 3559,
 	},
 	[40049] = {
 		id = CHEST_ID.PICK,
-		itemId = 3456
-	}
+		itemId = 3456,
+	},
 }
 
 local trunkChest = Action()
@@ -135,7 +135,7 @@ local PILLAR_ID = {
 	BOTTOM_LEFT = 2,
 	TOP_LEFT = 4,
 	TOP_CENTER = 8,
-	TOP_RIGHT = 16
+	TOP_RIGHT = 16,
 }
 
 local tunnelPillars = {
@@ -143,7 +143,7 @@ local tunnelPillars = {
 	[40051] = PILLAR_ID.BOTTOM_LEFT,
 	[40052] = PILLAR_ID.TOP_LEFT,
 	[40053] = PILLAR_ID.TOP_CENTER,
-	[40054] = PILLAR_ID.TOP_RIGHT
+	[40054] = PILLAR_ID.TOP_RIGHT,
 }
 
 -- /data/scripts/lib/register_actions.lua (onUsePick)

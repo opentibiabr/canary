@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 39,
 	lookLegs = 39,
 	lookFeet = 76,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -69,7 +69,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"However, to get an audience with the king, you'll have to help his subjects a bit. ... ",
 				"His subjects that would be us, the poor, you know? ... ",
 				"So why don't you show your dedication to the poor? Go and help Chavis at the poor house. He's collecting food for people like us. ... ",
-				"If you brought enough of the stuff you'll see that the king will grant you entrance in his {palace}."
+				"If you brought enough of the stuff you'll see that the king will grant you entrance in his {palace}.",
 			}, npc, creature, 100)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.DarkTrails.Mission01, 2) -- Mission 1 end

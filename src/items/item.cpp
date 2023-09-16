@@ -794,6 +794,17 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 			break;
 		}
 
+		case ATTR_STORE_INBOX_CATEGORY: {
+			std::string category;
+			if (!propStream.readString(category)) {
+				g_logger().error("[{}] failed to read store inbox category from item {}", __FUNCTION__, getName());
+				return ATTR_READ_ERROR;
+			}
+
+			setAttribute(ItemAttribute_t::STORE_INBOX_CATEGORY, category);
+			break;
+		}
+
 		default:
 			return ATTR_READ_ERROR;
 	}
@@ -953,6 +964,10 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 	if (hasAttribute(AMOUNT)) {
 		propWriteStream.write<uint8_t>(ATTR_AMOUNT);
 		propWriteStream.write<uint16_t>(getAttribute<uint16_t>(AMOUNT));
+	}
+	if (hasAttribute(STORE_INBOX_CATEGORY)) {
+		propWriteStream.write<uint8_t>(ATTR_STORE_INBOX_CATEGORY);
+		propWriteStream.writeString(getString(ItemAttribute_t::STORE_INBOX_CATEGORY));
 	}
 
 	// Serialize custom attributes, only serialize if the map not is empty

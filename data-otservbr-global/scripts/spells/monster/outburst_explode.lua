@@ -59,7 +59,9 @@ end
 
 function removeOutburst(cid)
 	local creature = Creature(cid)
-	if not creature then return false end
+	if not creature then
+		return false
+	end
 	creature:remove()
 end
 

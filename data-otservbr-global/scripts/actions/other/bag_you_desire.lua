@@ -16,7 +16,7 @@ local rewards = {
 	{ id = 34096, name = "Soulshroud" },
 	{ id = 34097, name = "Pair of Soulwalkers" },
 	{ id = 34098, name = "Pair of Soulstalkers" },
-	{ id = 34099, name = "Soulbastion" }
+	{ id = 34099, name = "Soulbastion" },
 }
 
 local bagyouDesire = Action()
@@ -28,7 +28,7 @@ function bagyouDesire.onUse(player, item, fromPosition, target, toPosition, isHo
 	player:addItem(rewardItem.id, 1)
 	item:remove(1)
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You received a ' .. rewardItem.name .. '.')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You received a " .. rewardItem.name .. ".")
 	return true
 end
 

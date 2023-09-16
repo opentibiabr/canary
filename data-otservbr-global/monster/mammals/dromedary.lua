@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 733
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "Ankrahmun near the way to Darashia, Ankrahmun near sea, around Darashia, Issavi."
+	Locations = "Ankrahmun near the way to Darashia, Ankrahmun near sea, around Darashia, Issavi.",
 }
 
 monster.health = 45
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -75,12 +75,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "meat", chance = 36000, maxCount = 2 }
+	{ name = "meat", chance = 36000, maxCount = 2 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -8 },
-	{ name = "drunk", interval = 4000, chance = 5, range = 1, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_STUN, target = true, duration = 6000 }
+	{ name = "drunk", interval = 4000, chance = 5, range = 1, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_STUN, target = true, duration = 6000 },
 }
 
 monster.defenses = {
@@ -106,7 +106,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

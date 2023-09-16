@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 1025
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 0,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -65,18 +65,17 @@ monster.voices = {
 	{ text = "Cccchhhhhhhhh!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -150 },
 	{ name = "poisonfield", interval = 1000, chance = 50, shootEffect = CONST_ANI_POISON, target = false },
-	{ name = "combat", interval = 3049, chance = 40, type = COMBAT_PHYSICALDAMAGE, minDamage = -10, maxDamage = -50, effect = CONST_ME_HITAREA, target = false }
+	{ name = "combat", interval = 3049, chance = 40, type = COMBAT_PHYSICALDAMAGE, minDamage = -10, maxDamage = -50, effect = CONST_ME_HITAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 38,
-	armor = 36
+	armor = 36,
 	--	mitigation = ???,
 }
 
@@ -97,7 +96,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

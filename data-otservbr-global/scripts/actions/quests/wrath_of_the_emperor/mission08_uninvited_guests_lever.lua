@@ -1,6 +1,6 @@
 local config = {
 	[3184] = Position(33082, 31110, 2),
-	[3185] = Position(33078, 31080, 13)
+	[3185] = Position(33078, 31080, 13),
 }
 
 local wrathEmperorMiss8Uninvited = Action()

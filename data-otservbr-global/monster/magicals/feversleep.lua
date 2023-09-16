@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1021
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Roshamuul Mines, Roshamuul Cistern."
+	Locations = "Roshamuul Mines, Roshamuul Cistern.",
 }
 
 monster.health = 5900
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -88,7 +88,7 @@ monster.loot = {
 	{ name = "blue crystal splinter", chance = 13000 },
 	{ name = "cyan crystal fragment", chance = 18000 },
 	{ name = "trapped bad dream monster", chance = 17000 },
-	{ name = "bowl of terror sweat", chance = 14000 }
+	{ name = "bowl of terror sweat", chance = 14000 },
 }
 
 monster.attacks = {
@@ -98,7 +98,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -70, maxDamage = -100, radius = 5, effect = CONST_ME_MAGIC_RED, target = false },
 	{ name = "feversleep skill reducer", interval = 2000, chance = 10, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -250, maxDamage = -300, length = 6, spread = 3, effect = CONST_ME_YELLOWENERGY, target = true },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -150, maxDamage = -300, radius = 1, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -150, maxDamage = -300, radius = 1, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true },
 }
 
 monster.defenses = {
@@ -106,7 +106,7 @@ monster.defenses = {
 	armor = 73,
 	mitigation = 1.10,
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 250, maxDamage = 425, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_HITAREA }
+	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_HITAREA },
 }
 
 monster.elements = {
@@ -126,7 +126,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

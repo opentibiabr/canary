@@ -90,5 +90,5 @@ windowTable = {
 	{ closedWindow = 33640, openWindow = 33638 },
 	{ closedWindow = 33641, openWindow = 33639 },
 	{ closedWindow = 33644, openWindow = 33642 },
-	{ closedWindow = 33645, openWindow = 33643 }
+	{ closedWindow = 33645, openWindow = 33643 },
 }

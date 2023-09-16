@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 3900
@@ -22,12 +22,12 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.bosstiary = {
 	bossRaceId = 86,
-	bossRace = RARITY_BANE
+	bossRace = RARITY_BANE,
 }
 
 monster.strategiesTarget = {
@@ -53,19 +53,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 4,
 	summons = {
-		{ name = "Fire Elemental", chance = 30, interval = 2000, count = 4 }
-	}
+		{ name = "Fire Elemental", chance = 30, interval = 2000, count = 4 },
+	},
 }
 
 monster.voices = {
@@ -76,7 +76,7 @@ monster.voices = {
 	{ text = "The eternal flame demands its due!", yell = false },
 	{ text = "This is why I'm hot.", yell = false },
 	{ text = "May my flames engulf you!", yell = false },
-	{ text = "Burnnnnnnnnn!", yell = false }
+	{ text = "Burnnnnnnnnn!", yell = false },
 }
 
 monster.loot = {
@@ -90,7 +90,7 @@ monster.loot = {
 	{ name = "burning heart", chance = 100000 },
 	{ name = "fire axe", chance = 750 },
 	{ name = "phoenix shield", chance = 300 },
-	{ name = "great health potion", chance = 1500 }
+	{ name = "great health potion", chance = 1500 },
 }
 
 monster.attacks = {
@@ -101,13 +101,13 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 34, type = COMBAT_FIREDAMAGE, minDamage = -80, maxDamage = -800, radius = 3, effect = CONST_ME_EXPLOSIONAREA, target = false },
 	{ name = "firefield", interval = 1000, chance = 12, radius = 4, effect = CONST_ME_BLOCKHIT, target = false },
 	-- fire
-	{ name = "condition", type = CONDITION_FIRE, interval = 2000, chance = 13, minDamage = -50, maxDamage = -500, length = 8, spread = 3, effect = CONST_ME_EXPLOSIONHIT, target = false }
+	{ name = "condition", type = CONDITION_FIRE, interval = 2000, chance = 13, minDamage = -50, maxDamage = -500, length = 8, spread = 3, effect = CONST_ME_EXPLOSIONHIT, target = false },
 }
 
 monster.defenses = {
 	defense = 30,
 	armor = 20,
-	{ name = "combat", interval = 1000, chance = 20, type = COMBAT_HEALING, minDamage = 20, maxDamage = 800, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 1000, chance = 20, type = COMBAT_HEALING, minDamage = 20, maxDamage = 800, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -120,14 +120,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -25 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -22 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

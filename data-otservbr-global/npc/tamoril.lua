@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 39
+	lookType = 39,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -64,9 +64,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "draconic incitements") and npcHandler:getTopic(playerId) == 3 then
 		npcHandler:setTopic(playerId, 4)
 		npcHandler:say({
-			'Each kind of dragon has its own incitement, an important aspect that impels them and occupies their mind. For the common dragons this is the lust for power, for the dragon lords the greed for treasures. ...',
-			'The frost dragons\' incitement is the thirst for knowledge und for the undead dragons it\'s the desire for life, as they regret their ancestor\'s mistake. ...',
-			'These incitements are also a kind of trial that has to be undergone if one wants to {find} the First Dragon\'s four descendants.'
+			"Each kind of dragon has its own incitement, an important aspect that impels them and occupies their mind. For the common dragons this is the lust for power, for the dragon lords the greed for treasures. ...",
+			"The frost dragons' incitement is the thirst for knowledge und for the undead dragons it's the desire for life, as they regret their ancestor's mistake. ...",
+			"These incitements are also a kind of trial that has to be undergone if one wants to {find} the First Dragon's four descendants.",
 		}, npc, creature)
 	elseif MsgContains(message, "find") then
 		npcHandler:setTopic(playerId, 5)
@@ -74,16 +74,16 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 5 then
 		npcHandler:setTopic(playerId, 6)
 		npcHandler:say({
-			' Fine! I\'ll tell you where to find our ancestors. You now may ask yourself why I should want you to go there and fight them. It\'s quite simple: I am a straight descendant of Kalyassa herself. She was not really a caring mother. ...',
-			'No, she called herself an empress and behaved exactly like that. She was domineering, farouche and conceited and this finally culminated in a serious quarrel between us. ...',
-			'I sought support by my aunt and my uncles but they were not a bit better than my mother was! So, feel free to go to their lairs and challenge them. I doubt you will succeed but then again that\'s not my problem. ...',
-			'So, you want to know about their secret lairs?'
+			" Fine! I'll tell you where to find our ancestors. You now may ask yourself why I should want you to go there and fight them. It's quite simple: I am a straight descendant of Kalyassa herself. She was not really a caring mother. ...",
+			"No, she called herself an empress and behaved exactly like that. She was domineering, farouche and conceited and this finally culminated in a serious quarrel between us. ...",
+			"I sought support by my aunt and my uncles but they were not a bit better than my mother was! So, feel free to go to their lairs and challenge them. I doubt you will succeed but then again that's not my problem. ...",
+			"So, you want to know about their secret lairs?",
 		}, npc, creature)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 6 then
 		npcHandler:say({
-			'So listen: The lairs are secluded and you can only reach them by using a magical gem teleporter. You will find a teleporter carved out of a giant emerald in the dragon lairs deep beneath the Darama desert, which will lead you to Tazhadur\'s lair. ...',
-			'A ruby teleporter located in the western Dragonblaze Peaks allows you to enter the lair of Kalyassa. A teleporter carved out of sapphire is on the island Okolnir and leads you to Gelidrazah\'s lair. ...',
-			'And finally an amethyst teleporter in undead-infested caverns underneath Edron allows you to enter the lair of Zorvorax.'
+			"So listen: The lairs are secluded and you can only reach them by using a magical gem teleporter. You will find a teleporter carved out of a giant emerald in the dragon lairs deep beneath the Darama desert, which will lead you to Tazhadur's lair. ...",
+			"A ruby teleporter located in the western Dragonblaze Peaks allows you to enter the lair of Kalyassa. A teleporter carved out of sapphire is on the island Okolnir and leads you to Gelidrazah's lair. ...",
+			"And finally an amethyst teleporter in undead-infested caverns underneath Edron allows you to enter the lair of Zorvorax.",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 		player:setStorageValue(Storage.FirstDragon.Questline, 1)
@@ -105,7 +105,7 @@ npcConfig.shop = {
 	{ itemName = "red gem", clientId = 3039, sell = 1000 },
 	{ itemName = "violet gem", clientId = 3036, sell = 10000 },
 	{ itemName = "white gem", clientId = 32769, sell = 12000 },
-	{ itemName = "yellow gem", clientId = 3037, sell = 1000 }
+	{ itemName = "yellow gem", clientId = 3037, sell = 1000 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -116,7 +116,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

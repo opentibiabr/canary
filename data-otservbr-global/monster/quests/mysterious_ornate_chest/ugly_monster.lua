@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 10000
@@ -22,12 +22,12 @@ monster.manaCost = 0
 
 monster.events = {
 	"UglyMonsterDeath",
-	"UglyMonsterDrop"
+	"UglyMonsterDrop",
 }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -72,20 +72,20 @@ monster.loot = {
 	{ name = "cobra sword", chance = 300 },
 	{ name = "cobra wand", chance = 300 },
 	{ name = "cobra rod", chance = 300 },
-	{ name = "cobra club", chance = 300 }
+	{ name = "cobra club", chance = 300 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -120 },
 	{ name = "outfit", interval = 2000, chance = 10, range = 5, shootEffect = CONST_ANI_EARTH, target = false, duration = 10000, outfitMonster = "Ugly Monster" },
-	{ name = "drunk", interval = 2000, chance = 10, range = 5, shootEffect = CONST_ANI_EARTH, target = false, duration = 5000 }
+	{ name = "drunk", interval = 2000, chance = 10, range = 5, shootEffect = CONST_ANI_EARTH, target = false, duration = 5000 },
 }
 
 monster.defenses = {
 	defense = 48,
 	armor = 0,
 	--	mitigation = ???,
-	{ name = "invisible", interval = 2000, chance = 8, effect = CONST_ME_HITAREA }
+	{ name = "invisible", interval = 2000, chance = 8, effect = CONST_ME_HITAREA },
 }
 
 monster.elements = {
@@ -105,7 +105,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

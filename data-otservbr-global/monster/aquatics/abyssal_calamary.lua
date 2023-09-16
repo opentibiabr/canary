@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1105
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Seacrest Grounds."
+	Locations = "Seacrest Grounds.",
 }
 
 monster.health = 300
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -79,11 +79,10 @@ monster.loot = {
 	{ name = "white pearl", chance = 830, maxCount = 1 },
 	{ name = "small sapphire", chance = 250, maxCount = 3 },
 	{ name = "small ruby", chance = 500, maxCount = 3 },
-	{ name = "small amethyst", chance = 750, maxCount = 3 }
+	{ name = "small amethyst", chance = 750, maxCount = 3 },
 }
 
-monster.attacks = {
-}
+monster.attacks = {}
 
 monster.defenses = {
 	defense = 13,
@@ -108,7 +107,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

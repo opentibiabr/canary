@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 65
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -69,11 +69,11 @@ monster.loot = {
 	{ name = "meat", chance = 20000 },
 	{ name = "ham", chance = 20120 },
 	{ name = "worm", chance = 3000, maxCount = 3 },
-	{ name = "lump of dirt", chance = 10000 }
+	{ name = "lump of dirt", chance = 10000 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -40 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -40 },
 }
 
 monster.defenses = {
@@ -99,7 +99,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

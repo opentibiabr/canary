@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -58,7 +58,7 @@ monster.flags = {
 }
 
 monster.events = {
-	"ShargonKill"
+	"ShargonKill",
 }
 
 monster.light = {
@@ -71,8 +71,8 @@ monster.summon = {
 	summons = {
 		{ name = "Lesser Death Minion", chance = 30, interval = 2000, count = 2 },
 		{ name = "Superior Death Minion", chance = 30, interval = 2000, count = 2 },
-		{ name = "Greater Death Minion", chance = 30, interval = 2000, count = 2 }
-	}
+		{ name = "Greater Death Minion", chance = 30, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -88,20 +88,20 @@ monster.loot = {
 	{ id = 238, chance = 10000, maxCount = 4 }, -- great mana potion
 	{ id = 9058, chance = 25000 }, -- gold ingot
 	{ id = 9056, chance = 9090 }, -- black skull
-	{ id = 8531, chance = 9090 } -- blood goblet
+	{ id = 8531, chance = 9090 }, -- blood goblet
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 200, attack = 150 },
 	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -660, range = 7, radius = 6, shootEffect = CONST_ANI_DEATH, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_HOLYDAMAGE, minDamage = -350, maxDamage = -1000, length = 6, spread = 2, effect = CONST_ME_PURPLEENERGY, target = false }
+	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_HOLYDAMAGE, minDamage = -350, maxDamage = -1000, length = 6, spread = 2, effect = CONST_ME_PURPLEENERGY, target = false },
 }
 
 monster.defenses = {
 	defense = 120,
 	armor = 120,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 0, maxDamage = 699, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 0, maxDamage = 699, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -121,7 +121,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

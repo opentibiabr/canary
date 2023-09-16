@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 900
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -68,18 +68,18 @@ monster.loot = {
 	{ id = 5925, chance = 1200, maxCount = 2 }, -- hardened bone
 	{ id = 10307, chance = 900 }, -- thick fur
 	{ id = 3443, chance = 400 }, -- tusk shield
-	{ id = 7432, chance = 200 } -- furry club
+	{ id = 7432, chance = 200 }, -- furry club
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 40, maxDamage = -289, condition = { type = CONDITION_FIRE, totalDamage = 6, interval = 9000 } }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 40, maxDamage = -289, condition = { type = CONDITION_FIRE, totalDamage = 6, interval = 9000 } },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 20,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 80, maxDamage = 95, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 80, maxDamage = 95, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -99,7 +99,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

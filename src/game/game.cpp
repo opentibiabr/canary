@@ -9087,6 +9087,7 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 	// We retrieve the outfit information to be able to rotate the podium of renown in the new direction
 	Outfit_t newOutfit;
 	newOutfit.lookType = InternalGame::getCustomAttributeValue<uint16_t>(item, "LookType");
+	newOutfit.lookAddons = InternalGame::getCustomAttributeValue<uint8_t>(item, "LookAddons");
 	newOutfit.lookHead = InternalGame::getCustomAttributeValue<uint8_t>(item, "LookHead");
 	newOutfit.lookBody = InternalGame::getCustomAttributeValue<uint8_t>(item, "LookBody");
 	newOutfit.lookLegs = InternalGame::getCustomAttributeValue<uint8_t>(item, "LookLegs");

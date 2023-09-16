@@ -131,7 +131,7 @@ void Raids::checkRaids() {
 		}
 	}
 
-	checkRaidsEvent = g_scheduler().addEvent(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this), __FUNCTION__);
+	checkRaidsEvent = g_scheduler().addEvent(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this), "Raids::checkRaids");
 }
 
 void Raids::clear() {

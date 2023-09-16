@@ -43,7 +43,7 @@ local config = {
 	exhaustTime = 2000,
 }
 
-local pushDelay = { }
+local pushDelay = {}
 
 local function antiPush(player, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
 	if not player then

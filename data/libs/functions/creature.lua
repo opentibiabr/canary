@@ -208,14 +208,16 @@ function Creature.getKillers(self, onlyPlayers)
 	for cid, cb in pairs(self:getDamageMap()) do
 		local creature = getCreature(cid)
 		if creature and creature ~= self and (timeNow - cb.ticks) <= inFightTicks then
-			killers[#killers+1] = {
+			killers[#killers + 1] = {
 				creature = creature,
-				damage = cb.total
+				damage = cb.total,
 			}
 		end
 	end
 
-	table.sort(killers, function(a, b) return a.damage > b.damage end)
+	table.sort(killers, function(a, b)
+		return a.damage > b.damage
+	end)
 	for i, killer in pairs(killers) do
 		killers[i] = killer.creature
 	end

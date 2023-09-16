@@ -2695,9 +2695,9 @@ ReturnValue Game::internalCollectLootItems(Player* player, Item* item, ObjectCat
 ReturnValue Game::collectRewardChestItems(Player* player, uint32_t maxMoveItems /* = 0*/) {
 	// Check if have item on player reward chest
 	RewardChest* rewardChest = player->getRewardChest();
-	if (!rewardChest || rewardChest->empty()) {
-		g_logger().debug("Reward chest is wrong or empty");
-		return RETURNVALUE_NOTPOSSIBLE;
+	if (rewardChest->empty()) {
+		g_logger().debug("Reward chest is empty");
+		return RETURNVALUE_REWARDCHESTISEMPTY;
 	}
 
 	auto rewardItemsVector = player->getRewardsFromContainer(rewardChest->getContainer());
@@ -9087,6 +9087,7 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 	// We retrieve the outfit information to be able to rotate the podium of renown in the new direction
 	Outfit_t newOutfit;
 	newOutfit.lookType = InternalGame::getCustomAttributeValue<uint16_t>(item, "LookType");
+	newOutfit.lookAddons = InternalGame::getCustomAttributeValue<uint8_t>(item, "LookAddons");
 	newOutfit.lookHead = InternalGame::getCustomAttributeValue<uint8_t>(item, "LookHead");
 	newOutfit.lookBody = InternalGame::getCustomAttributeValue<uint8_t>(item, "LookBody");
 	newOutfit.lookLegs = InternalGame::getCustomAttributeValue<uint8_t>(item, "LookLegs");
@@ -9819,6 +9820,18 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 	if (auto function = std::bind(&Game::playerRewardChestCollect, this, player->getID(), pos, itemId, stackPos, maxMoveItems);
 		player->canAutoWalk(item->getPosition(), function)) {
 		return;
+	}
+
+	// Updates the parent of the reward chest and reward containers to avoid memory usage after cleaning
+	RewardChest* playerRewardChest = player->getRewardChest();
+	if (playerRewardChest->empty()) {
+		player->sendCancelMessage(RETURNVALUE_REWARDCHESTISEMPTY);
+		return;
+	}
+
+	playerRewardChest->setParent(item->getContainer()->getParent()->getTile());
+	for (const auto &[mapRewardId, reward] : player->rewardMap) {
+		reward->setParent(playerRewardChest);
 	}
 
 	std::lock_guard<std::mutex> lock(player->quickLootMutex);

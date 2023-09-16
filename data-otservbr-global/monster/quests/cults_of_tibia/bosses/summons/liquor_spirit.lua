@@ -56,14 +56,6 @@ monster.flags = {
 	canWalkOnPoison = true,
 }
 
-monster.events = {
-	"Evaporate",
-}
-
-monster.events = {
-	"Evaporate",
-}
-
 monster.light = {
 	level = 0,
 	color = 0,

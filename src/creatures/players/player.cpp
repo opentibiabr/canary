@@ -1654,9 +1654,6 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 			}
 		}
 
-		// Reload bestiary tracker
-		refreshBestiaryMonsterTracker();
-
 		g_game().checkPlayersRecord();
 		IOLoginData::updateOnlineStatus(guid, true);
 		if (getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL)) {

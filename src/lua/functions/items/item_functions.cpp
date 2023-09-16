@@ -848,6 +848,20 @@ int ItemFunctions::luaItemIsInsideDepot(lua_State* L) {
 	return 1;
 }
 
+int ItemFunctions::luaItemIsContainer(lua_State* L) {
+	// item:isContainer()
+	const auto item = getUserdata<const Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	const auto &it = Item::items[item->getID()];
+	pushBoolean(L, it.isContainer());
+	return 1;
+}
+
 int ItemFunctions::luaItemGetTier(lua_State* L) {
 	// item:getTier()
 	const Item* item = getUserdata<Item>(L, 1);

@@ -372,7 +372,7 @@ function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder,
 						end
 						Game.setStorageValue("CheckTile", os.time() + 30)
 					elseif tileBoss:getName():lower() == "the corruptor of souls" then
-						Game.setStorageValue"CheckTile", os.time() + 30)
+						Game.setStorageValue("CheckTile", os.time() + 30)
 						removeItem = true
 					end
 				end

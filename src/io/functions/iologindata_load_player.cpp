@@ -219,7 +219,7 @@ void IOLoginDataLoad::loadPlayerBlessings(Player* player, DBResult_ptr result) {
 	}
 }
 
-void IOLoginDataLoad::loadPlayerConditions(const Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerConditions(Player* player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -230,14 +230,10 @@ void IOLoginDataLoad::loadPlayerConditions(const Player* player, DBResult_ptr re
 	PropStream propStream;
 	propStream.init(attr, attrSize);
 
-	std::list<std::unique_ptr<Condition>> conditionList;
 	Condition* condition = Condition::createCondition(propStream);
 	while (condition) {
-		std::unique_ptr<Condition> uniqueCondition(condition);
-		if (uniqueCondition->unserialize(propStream)) {
-			conditionList.push_front(std::move(uniqueCondition));
-		} else {
-			uniqueCondition.release(); // Release memory ownership
+		if (condition->unserialize(propStream)) {
+			player->storedConditionList.push_front(condition);
 		}
 		condition = Condition::createCondition(propStream);
 	}

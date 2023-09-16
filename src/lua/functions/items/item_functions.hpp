@@ -75,6 +75,7 @@ public:
 		registerMethod(L, "Item", "setDuration", ItemFunctions::luaItemSetDuration);
 
 		registerMethod(L, "Item", "isInsideDepot", ItemFunctions::luaItemIsInsideDepot);
+		registerMethod(L, "Item", "isContainer", ItemFunctions::luaItemIsContainer);
 
 		registerMethod(L, "Item", "getTier", ItemFunctions::luaItemGetTier);
 		registerMethod(L, "Item", "setTier", ItemFunctions::luaItemSetTier);
@@ -145,6 +146,7 @@ private:
 	static int luaItemSetDuration(lua_State* L);
 
 	static int luaItemIsInsideDepot(lua_State* L);
+	static int luaItemIsContainer(lua_State* L);
 
 	static int luaItemGetTier(lua_State* L);
 	static int luaItemSetTier(lua_State* L);

@@ -120,7 +120,7 @@ function createHirelingType(HirelingName)
 		{ itemName = "durable exercise wand", clientId = 35284, buy = 945000 },
 		{ itemName = "lasting exercise axe", clientId = 35286, buy = 7560000 },
 		{ itemName = "lasting exercise bow", clientId = 35288, buy = 7560000 },
-		{ itemName = "lasting exercise club", clientId = 35287, buy = 7560000, },
+		{ itemName = "lasting exercise club", clientId = 35287, buy = 7560000 },
 		{ itemName = "lasting exercise rod", clientId = 35289, buy = 7560000 },
 		{ itemName = "lasting exercise shield", clientId = 44067, buy = 7560000 },
 		{ itemName = "lasting exercise sword", clientId = 35285, buy = 7560000 },

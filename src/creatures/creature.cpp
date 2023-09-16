@@ -1788,8 +1788,7 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Creature::getZones() 
 	return Zone::getZones(getPosition());
 }
 
-void Creature::setIcon(CreatureIcon icon) {
-	creatureIcon = icon;
+void Creature::iconChanged() const {
 	if (!tile) {
 		return;
 	}

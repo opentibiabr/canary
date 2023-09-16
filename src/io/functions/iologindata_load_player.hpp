@@ -17,7 +17,7 @@ public:
 	static bool preLoadPlayer(Player* player, const std::string &name);
 	static void loadPlayerExperience(Player* player, DBResult_ptr result);
 	static void loadPlayerBlessings(Player* player, DBResult_ptr result);
-	static void loadPlayerConditions(const Player* player, DBResult_ptr result);
+	static void loadPlayerConditions(Player* player, DBResult_ptr result);
 	static void loadPlayerDefaultOutfit(Player* player, DBResult_ptr result);
 	static void loadPlayerSkullSystem(Player* player, DBResult_ptr result);
 	static void loadPlayerSkill(Player* player, DBResult_ptr result);

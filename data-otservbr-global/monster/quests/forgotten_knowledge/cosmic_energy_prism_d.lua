@@ -52,10 +52,6 @@ monster.light = {
 	color = 0,
 }
 
-monster.events = {
-	"EnergyPrism",
-}
-
 monster.voices = {
 	interval = 5000,
 	chance = 10,

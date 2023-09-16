@@ -1503,7 +1503,7 @@ function GameStore.processItemPurchase(player, offerId, offerCount, moveable)
 	end
 
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-	if inbox and inbox:getEmptySlots() > offerCount then
+	if inbox then
 		for t = 1, offerCount do
 			local inboxItem = inbox:addItem(offerId, offerCount or 1)
 			if moveable ~= true and inboxItem then
@@ -1521,7 +1521,7 @@ function GameStore.processChargesPurchase(player, itemtype, name, charges, movea
 	end
 
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-	if inbox and inbox:getEmptySlots() > 1 then
+	if inbox then
 		local inboxItem = inbox:addItem(itemtype, charges)
 
 		if moveable ~= true and inboxItem then
@@ -1582,7 +1582,7 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 	end
 
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-	if inbox and inbox:getEmptySlots() > 0 then
+	if inbox then
 		if (isKeg and offerCount > 500) or offerCount > 100 then
 			local parcel = inbox:addItem(PARCEL_ID, 1)
 			parcel:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
@@ -1637,7 +1637,7 @@ function GameStore.processHouseRelatedPurchase(player, offer)
 	if type(itemIds) ~= "table" then
 		itemIds = { itemIds }
 	end
-	if inbox and inbox:getEmptySlots() >= #itemIds then
+	if inbox then
 		for _, itemId in ipairs(itemIds) do
 			local decoKit = inbox:addItem(23398, 1)
 			if decoKit then
@@ -1652,6 +1652,7 @@ function GameStore.processHouseRelatedPurchase(player, offer)
 				end
 			end
 		end
+		player:sendUpdateContainer(inbox)
 	else
 		return error({ code = 0, message = "Please make sure you have free slots in your store inbox." })
 	end

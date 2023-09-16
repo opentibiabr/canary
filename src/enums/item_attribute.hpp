@@ -44,6 +44,7 @@ enum ItemAttribute_t : uint64_t {
 	STORE = 31,
 	CUSTOM = 32,
 	LOOTMESSAGE_SUFFIX = 33,
+	STORE_INBOX_CATEGORY = 34,
 };
 
 enum ItemDecayState_t : uint8_t {

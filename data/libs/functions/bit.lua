@@ -13,7 +13,7 @@ end
 
 -- checa se a flag tem o valor
 function hasBitSet(flag, flags)
-	return bit.band(flags, flag) ~= 0;
+	return bit.band(flags, flag) ~= 0
 end
 
 -- setando uma nova flag

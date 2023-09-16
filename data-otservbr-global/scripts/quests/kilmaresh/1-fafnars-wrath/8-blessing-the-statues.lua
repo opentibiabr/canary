@@ -1,23 +1,23 @@
 local config = {
 	[40036] = {
 		itemId = 31162,
-		storage = 1
+		storage = 1,
 	},
 	[40037] = {
 		itemId = 31162,
-		storage = 2
+		storage = 2,
 	},
 	[40038] = {
 		itemId = 31161,
-		storage = 4
+		storage = 4,
 	},
 	[40039] = {
 		itemId = 31162,
-		storage = 8
+		storage = 8,
 	},
 	[40040] = {
 		itemId = 31161,
-		storage = 16
+		storage = 16,
 	},
 }
 
@@ -30,9 +30,7 @@ function statuesActions.onUse(player, item, fromPosition, target, toPosition, is
 		return false
 	end
 
-	if player:getStorageValue(Storage.Kilmaresh.Sixth.Favor) >= 5 and
-			not testFlag(player:getStorageValue(Storage.Kilmaresh.Sixth.BlessedStatues), key.storage)
-	then
+	if player:getStorageValue(Storage.Kilmaresh.Sixth.Favor) >= 5 and not testFlag(player:getStorageValue(Storage.Kilmaresh.Sixth.BlessedStatues), key.storage) then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You bless the statue.")
 		player:setStorageValue(Storage.Kilmaresh.Sixth.Favor, player:getStorageValue(Storage.Kilmaresh.Sixth.Favor) + 1)
 		player:setStorageValue(Storage.Kilmaresh.Sixth.BlessedStatues, player:getStorageValue(Storage.Kilmaresh.Sixth.BlessedStatues) + key.storage)

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 38,
 	lookLegs = 1,
 	lookFeet = 1,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -70,7 +70,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Explore the anterior outskirts of Zao, use my almanach and find the two specimens with missing samples on their pages. The almanach can be found in a chest in my storage, next to my shop. It's the door over there. ...",
 				"If you lose it I will have to write a new one and put it in there again - which will undoubtedly take me a while. So keep an eye on it on your travels. ...",
 				"Once you find what I need, best use a knife to carefully cut and gather a leaf or a scrap of their integument and press it directly under their appropriate entry into my botanical almanach. ...",
-				"Simply return to me after you have done that and we will discuss your reward. What do you say, are you in?"
+				"Simply return to me after you have done that and we will discuss your reward. What do you say, are you in?",
 			}, npc, creature)
 		elseif player:getStorageValue(Storage.TibiaTales.AnInterestInBotany) == 3 then
 			npcHandler:setTopic(playerId, 2)
@@ -92,7 +92,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say({
 					"Ah, thank you. Now look at that texture and fine colour, simply marvellous. ...",
 					"I hope the sun in the steppe did not exhaust you too much? Shellshock. A dangerous foe in the world of field science and exploration. ...",
-					"Here, I always wore this comfortable hat when travelling, take it. It may be of use for you on further reconnaissances in Zao. Again you have my thanks, friend."
+					"Here, I always wore this comfortable hat when travelling, take it. It may be of use for you on further reconnaissances in Zao. Again you have my thanks, friend.",
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			else
@@ -167,7 +167,7 @@ npcConfig.shop = {
 	{ itemName = "wand of inferno", clientId = 3071, buy = 15000 },
 	{ itemName = "wand of starstorm", clientId = 8092, buy = 18000 },
 	{ itemName = "wand of voodoo", clientId = 8094, buy = 22000 },
-	{ itemName = "wand of vortex", clientId = 3074, buy = 500 }
+	{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -178,7 +178,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

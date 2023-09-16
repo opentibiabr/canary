@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 95
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Meriana Gargoyle Cave, Ankrahmun Tombs, Mal'ouquah, Goroma, Deeper Banuta, \z
-		Formorgar Mines, Vengoth, Farmine Mines, Upper Spike and Medusa Tower."
+		Formorgar Mines, Vengoth, Farmine Mines, Upper Spike and Medusa Tower.",
 }
 
 monster.health = 250
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -91,18 +91,18 @@ monster.loot = {
 	{ name = "potato", chance = 9220, maxCount = 2 },
 	{ name = "stone wing", chance = 11730 },
 	{ name = "shiny stone", chance = 190 },
-	{ name = "piece of marble rock", chance = 630 }
+	{ name = "piece of marble rock", chance = 630 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -65 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -65 },
 }
 
 monster.defenses = {
 	defense = 25,
 	armor = 26,
 	mitigation = 0.78,
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 5, maxDamage = 15, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 5, maxDamage = 15, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -122,7 +122,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

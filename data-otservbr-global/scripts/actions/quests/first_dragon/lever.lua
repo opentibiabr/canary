@@ -2,7 +2,7 @@ local lever = Action()
 
 local setting = {
 	centerRoom = { x = 33616, y = 31022, z = 14 },
-	range = 10
+	range = 10,
 }
 
 local monsterPosition = {
@@ -10,7 +10,7 @@ local monsterPosition = {
 	{ position = Position(33592, 31013, 14) },
 	{ position = Position(33583, 31022, 14) },
 	{ position = Position(33574, 31031, 14) },
-	{ position = Position(33592, 31031, 14) }
+	{ position = Position(33592, 31031, 14) },
 }
 
 local playerPositions = {
@@ -28,7 +28,7 @@ local playerPositions = {
 	Position(33584, 30996, 14),
 	Position(33582, 30997, 14),
 	Position(33583, 30997, 14),
-	Position(33584, 30997, 14)
+	Position(33584, 30997, 14),
 }
 
 local config = {

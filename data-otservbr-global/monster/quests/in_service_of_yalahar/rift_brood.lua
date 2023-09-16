@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 2950
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 20000,
-	chance = 15
+	chance = 15,
 }
 
 monster.strategiesTarget = {
@@ -62,19 +62,18 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -255 },
-	{ name = "combat", interval = 1000, chance = 90, type = COMBAT_MANADRAIN, minDamage = -0, maxDamage = -179, range = 3, radius = 2, effect = CONST_ME_PURPLEENERGY, target = true }
+	{ name = "combat", interval = 1000, chance = 90, type = COMBAT_MANADRAIN, minDamage = -0, maxDamage = -179, range = 3, radius = 2, effect = CONST_ME_PURPLEENERGY, target = true },
 }
 
 monster.defenses = {
 	defense = 30,
 	armor = 30,
 	mitigation = 0.51,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 70, maxDamage = 100, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 70, maxDamage = 100, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -94,7 +93,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

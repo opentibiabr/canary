@@ -1,7 +1,7 @@
 local chest = Action()
 
 function chest.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if (player:getStorageValue(405492) == 1) then
+	if player:getStorageValue(405492) == 1 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The chest is empty.")
 		return true
 	end

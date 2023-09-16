@@ -616,7 +616,12 @@ Thing* Game::internalGetThing(Player* player, const Position &pos, int32_t index
 		}
 
 		uint8_t slot = pos.z;
-		return parentContainer->getItemByIndex(player->getContainerIndex(fromCid) + slot);
+		auto containerIndex = player->getContainerIndex(fromCid) + slot;
+		if (parentContainer->isStoreInboxFiltered()) {
+			return parentContainer->getFilteredItemByIndex(containerIndex);
+		}
+
+		return parentContainer->getItemByIndex(containerIndex);
 	} else if (pos.y == 0x20 || pos.y == 0x21) {
 		// '0x20' -> From depot.
 		// '0x21' -> From inbox.
@@ -1590,8 +1595,9 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 		}
 
 		const Container* topParentContainer = toCylinderContainer->getRootContainer();
-
-		if (!item->isStoreItem() && (containerID == ITEM_STORE_INBOX || topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
+		const auto parentContainer = topParentContainer->getParent() ? topParentContainer->getParent()->getContainer() : nullptr;
+		auto isStoreInbox = parentContainer && parentContainer->isStoreInbox();
+		if (!item->isStoreItem() && (containerID == ITEM_STORE_INBOX || isStoreInbox)) {
 			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 		}
 
@@ -1605,7 +1611,7 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 				isValidMoveItem = true;
 			}
 
-			if (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && (topParentContainer->getParent()->getContainer()->isDepotChest() || topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
+			if (parentContainer && (parentContainer->isDepotChest() || isStoreInbox)) {
 				isValidMoveItem = true;
 			}
 
@@ -1859,9 +1865,18 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 		return retMaxCount;
 	}
 
-	// looting analyser from this point forward
+	auto fromContainer = fromCylinder ? fromCylinder->getContainer() : nullptr;
+	auto toContainer = toCylinder ? toCylinder->getContainer() : nullptr;
+	auto player = actor ? actor->getPlayer() : nullptr;
+	if (player) {
+		// Update containers
+		player->onSendContainer(toContainer);
+		player->onSendContainer(fromContainer);
+	}
+
+	// Actor related actions
 	if (fromCylinder && actor && toCylinder) {
-		if (!fromCylinder->getContainer() || !actor->getPlayer() || !toCylinder->getContainer()) {
+		if (!fromContainer || !toContainer || !player) {
 			return ret;
 		}
 
@@ -1876,7 +1891,8 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 				return ret;
 			}
 
-			if (it.isCorpse && toCylinder->getContainer()->getTopParent() == player && item->getIsLootTrackeable()) {
+			// Looting analyser
+			if (it.isCorpse && toContainer->getTopParent() == player && item->getIsLootTrackeable()) {
 				player->sendLootStats(item, static_cast<uint8_t>(item->getItemCount()));
 			}
 		}
@@ -2525,7 +2541,7 @@ void Game::internalQuickLootCorpse(Player* player, Container* corpse) {
 		ss << " (automatic looting)";
 	}
 	ss << ".";
-	player->sendTextMessage(MESSAGE_LOOT, ss.str());
+	player->sendTextMessage(MESSAGE_STATUS, ss.str());
 
 	if (shouldNotifyCapacity) {
 		ss.str(std::string());
@@ -2679,9 +2695,9 @@ ReturnValue Game::internalCollectLootItems(Player* player, Item* item, ObjectCat
 ReturnValue Game::collectRewardChestItems(Player* player, uint32_t maxMoveItems /* = 0*/) {
 	// Check if have item on player reward chest
 	RewardChest* rewardChest = player->getRewardChest();
-	if (!rewardChest || rewardChest->empty()) {
-		g_logger().debug("Reward chest is wrong or empty");
-		return RETURNVALUE_NOTPOSSIBLE;
+	if (rewardChest->empty()) {
+		g_logger().debug("Reward chest is empty");
+		return RETURNVALUE_REWARDCHESTISEMPTY;
 	}
 
 	auto rewardItemsVector = player->getRewardsFromContainer(rewardChest->getContainer());
@@ -4114,7 +4130,7 @@ void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t coun
 	}
 }
 
-void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index) {
+void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index, uint8_t containerCategory) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -4123,6 +4139,12 @@ void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_
 	Container* container = player->getContainerByID(containerId);
 	if (!container || !container->hasPagination()) {
 		return;
+	}
+
+	if (container->isStoreInbox()) {
+		auto enumName = magic_enum::enum_name(static_cast<ContainerCategory_t>(containerCategory)).data();
+		container->setAttribute(ItemAttribute_t::STORE_INBOX_CATEGORY, enumName);
+		g_logger().debug("Setting new container with store inbox category name {}", enumName);
 	}
 
 	if ((index % container->capacity()) != 0 || index >= container->size()) {
@@ -9797,6 +9819,18 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 	if (auto function = std::bind(&Game::playerRewardChestCollect, this, player->getID(), pos, itemId, stackPos, maxMoveItems);
 		player->canAutoWalk(item->getPosition(), function)) {
 		return;
+	}
+
+	// Updates the parent of the reward chest and reward containers to avoid memory usage after cleaning
+	RewardChest* playerRewardChest = player->getRewardChest();
+	if (playerRewardChest->empty()) {
+		player->sendCancelMessage(RETURNVALUE_REWARDCHESTISEMPTY);
+		return;
+	}
+
+	playerRewardChest->setParent(item->getContainer()->getParent()->getTile());
+	for (const auto &[mapRewardId, reward] : player->rewardMap) {
+		reward->setParent(playerRewardChest);
 	}
 
 	std::lock_guard<std::mutex> lock(player->quickLootMutex);

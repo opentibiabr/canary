@@ -13,7 +13,7 @@ local config = {
 	{ position = { x = 32750, y = 32696, z = 10 }, destination = { x = 32466, y = 32654, z = 12 } },
 	{ position = { x = 32480, y = 32601, z = 15 }, destination = { x = 32673, y = 32738, z = 11 } }, -- scourge of oblivion
 	{ position = { x = 32672, y = 32736, z = 11 }, destination = { x = 32480, y = 32599, z = 15 } },
-	{ position = { x = 32726, y = 32748, z = 11 }, destination = { x = 32480, y = 32599, z = 15 } }
+	{ position = { x = 32726, y = 32748, z = 11 }, destination = { x = 32480, y = 32599, z = 15 } },
 }
 
 local libraryEntrances = MoveEvent()

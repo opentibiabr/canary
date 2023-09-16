@@ -310,17 +310,17 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 
 		// reward chest
 		if (container->getRewardChest() != nullptr && container->getParent()) {
-			RewardChest* myRewardChest = player->getRewardChest();
-			if (myRewardChest->size() == 0) {
+			RewardChest* playerRewardChest = player->getRewardChest();
+			if (playerRewardChest->empty()) {
 				return RETURNVALUE_REWARDCHESTISEMPTY;
 			}
 
-			myRewardChest->setParent(container->getParent()->getTile());
+			playerRewardChest->setParent(container->getParent()->getTile());
 			for (const auto &[mapRewardId, reward] : player->rewardMap) {
-				reward->setParent(myRewardChest);
+				reward->setParent(playerRewardChest);
 			}
 
-			openContainer = myRewardChest;
+			openContainer = playerRewardChest;
 		}
 
 		auto rewardId = container->getAttribute<time_t>(ItemAttribute_t::DATE);

@@ -11,17 +11,17 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 115
+	lookType = 115,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = "Don't forget to deposit your money here in the Global Bank before you head out for adventure.", yell = false }
+	{ text = "Don't forget to deposit your money here in the Global Bank before you head out for adventure.", yell = false },
 }
 
 local keywordHandler = KeywordHandler:new()

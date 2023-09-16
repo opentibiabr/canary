@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 73,
 	lookFeet = 55,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 300000
@@ -22,13 +22,13 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.bosstiary = {
 	bossRaceId = 1181,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.FerumbrasAscension.ZamuloshTimer
+	storageCooldown = Storage.FerumbrasAscension.ZamuloshTimer,
 }
 
 monster.strategiesTarget = {
@@ -66,8 +66,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{ name = "Zamulosh2", chance = 100, interval = 1000, count = 1 }
-	}
+		{ name = "Zamulosh2", chance = 100, interval = 1000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -100,7 +100,7 @@ monster.loot = {
 	{ id = 8050, chance = 770 }, -- crystalline armor
 	{ id = 22726, chance = 670 }, -- rift shield
 	{ id = 22762, chance = 500, unique = true }, -- maimer
-	{ id = 22555, chance = 500, unique = true } -- stone wall
+	{ id = 22555, chance = 500, unique = true }, -- stone wall
 }
 
 monster.attacks = {
@@ -108,7 +108,7 @@ monster.attacks = {
 	{ name = "combat", interval = 1000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -700, maxDamage = -800, length = 12, spread = 3, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_MANADRAIN, minDamage = -2600, maxDamage = -3300, length = 12, spread = 3, effect = CONST_ME_TELEPORT, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -900, maxDamage = -1500, length = 6, spread = 2, effect = CONST_ME_FIREAREA, target = false },
-	{ name = "speed", interval = 2000, chance = 35, speedChange = -600, radius = 8, effect = CONST_ME_MAGIC_RED, target = false, duration = 15000 }
+	{ name = "speed", interval = 2000, chance = 35, speedChange = -600, radius = 8, effect = CONST_ME_MAGIC_RED, target = false, duration = 15000 },
 }
 
 monster.defenses = {
@@ -117,7 +117,7 @@ monster.defenses = {
 	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 220, maxDamage = 535, effect = CONST_ME_YELLOW_RINGS, target = false },
 	{ name = "zamulosh invisible", interval = 2000, chance = 25 },
-	{ name = "zamulosh tp", interval = 2000, chance = 15, target = false }
+	{ name = "zamulosh tp", interval = 2000, chance = 15, target = false },
 }
 
 monster.elements = {
@@ -137,11 +137,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -149,13 +148,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

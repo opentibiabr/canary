@@ -11,17 +11,17 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 78
+	lookType = 78,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Let me mourn in peace.' }
+	{ text = "Let me mourn in peace." },
 }
 
 local keywordHandler = KeywordHandler:new()

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 67,
 	lookLegs = 38,
 	lookFeet = 95,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -57,10 +57,10 @@ local config = {
 			wrongValue = "Well, I'll give you a little hint. They can sometimes be extracted from creatures \z
 				that consist only of - you guessed it, bones. You need an obsidian knife though.",
 			deliever = "How are you faring with your mission? Have you collected all 100 hardened bones?",
-			success = "I'm surprised. That's pretty good for a man. Now, bring us the 100 turtle shells."
+			success = "I'm surprised. That's pretty good for a man. Now, bring us the 100 turtle shells.",
 		},
 		itemId = 5925,
-		count = 100
+		count = 100,
 	},
 	["turtle shells"] = {
 		value = 2,
@@ -68,10 +68,10 @@ local config = {
 			wrongValue = "Turtles can be found on some idyllic islands which have recently been discovered.",
 			deliever = "Did you get us 100 turtle shells so we can make new shields?",
 			success = "Well done - for a man. These shells are enough to build many strong new shields. \z
-			Thank you! Now - show me fighting spirit."
+			Thank you! Now - show me fighting spirit.",
 		},
 		itemId = 5899,
-		count = 100
+		count = 100,
 	},
 	["fighting spirit"] = {
 		value = 3,
@@ -80,9 +80,9 @@ local config = {
 				Sorry, but you have to figure this one out by yourself. Unless someone grants you a wish.",
 			deliever = "So, can you show me your fighting spirit?",
 			success = "Correct - pretty smart for a man. But the hardest task is yet to come: \z
-				the claw from a lord among the dragon lords."
+				the claw from a lord among the dragon lords.",
 		},
-		itemId = 5884
+		itemId = 5884,
 	},
 	["dragon claw"] = {
 		value = 4,
@@ -91,10 +91,10 @@ local config = {
 				It requires a special one, a lord among the lords.",
 			deliever = "Have you actually managed to obtain the dragon claw I asked for?",
 			success = "You did it! I have seldom seen a man as courageous as you. \z
-				I really have to say that you deserve to wear a spike. Go ask Cornelia to adorn your armour."
+				I really have to say that you deserve to wear a spike. Go ask Cornelia to adorn your armour.",
 		},
-		itemId = 5919
-	}
+		itemId = 5919,
+	},
 }
 
 local topic = {}
@@ -117,18 +117,30 @@ local function creatureSayCallback(npc, creature, type, message)
 	local player, storage = Player(creature), Storage.OutfitQuest.WarriorShoulderAddon
 	if npcHandler:getTopic(playerId) == 0 then
 		if table.contains({ "outfit", "addon" }, message) then
-			npcHandler:say("Are you talking about my spiky shoulder pad? You can't buy one of these. \z
-				They have to be {earned}.", npc, creature)
+			npcHandler:say(
+				"Are you talking about my spiky shoulder pad? You can't buy one of these. \z
+				They have to be {earned}.",
+				npc,
+				creature
+			)
 		elseif MsgContains(message, "earn") then
 			if player:getStorageValue(storage) < 1 then
-				npcHandler:say("I'm not sure if you are enough of a hero to earn them. \z
-					You could try, though. What do you think?", npc, creature)
+				npcHandler:say(
+					"I'm not sure if you are enough of a hero to earn them. \z
+					You could try, though. What do you think?",
+					npc,
+					creature
+				)
 				npcHandler:setTopic(playerId, 1)
 			elseif player:getStorageValue(storage) >= 1 and player:getStorageValue(storage) < 5 then
 				npcHandler:say("Before I can nominate you for an award, please complete your task.", npc, creature)
 			elseif player:getStorageValue(storage) == 5 then
-				npcHandler:say("You did it! I have seldom seen a man as courageous as you. \z
-					I really have to say that you deserve to wear a spike. Go ask Cornelia to adorn your armour.", npc, creature)
+				npcHandler:say(
+					"You did it! I have seldom seen a man as courageous as you. \z
+					I really have to say that you deserve to wear a spike. Go ask Cornelia to adorn your armour.",
+					npc,
+					creature
+				)
 			end
 		elseif config[message:lower()] then
 			local targetMessage = config[message:lower()]
@@ -151,7 +163,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"It is said that excellent shields can be created from these. ...",
 				"Alright, um, afterwards show me that you have fighting spirit. Any true hero needs plenty of that. ...",
 				"The last task is the hardest. You will need to bring me a claw from a mighty dragon king. ...",
-				"Did you understand everything I told you and are willing to handle this task?"
+				"Did you understand everything I told you and are willing to handle this task?",
 			}, npc, creature, 100)
 			npcHandler:setTopic(playerId, 2)
 		elseif MsgContains(message, "no") then
@@ -187,69 +199,53 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addSpellKeyword({ "find", "person" },
-	{
-		npcHandler = npcHandler,
-		spellName = "Find Person",
-		price = 80,
-		level = 8,
-		vocation = VOCATION.BASE_ID.KNIGHT
-	}
-)
-keywordHandler:addSpellKeyword({ "light" },
-	{
-		npcHandler = npcHandler,
-		spellName = "Light",
-		price = 0,
-		level = 8,
-		vocation = VOCATION.BASE_ID.KNIGHT
-	}
-)
-keywordHandler:addSpellKeyword({ "cure", "poison" },
-	{
-		npcHandler = npcHandler,
-		spellName = "Cure Poison",
-		price = 150,
-		level = 10,
-		vocation = VOCATION.BASE_ID.KNIGHT
-	}
-)
-keywordHandler:addSpellKeyword({ "wound", "cleansing" },
-	{
-		npcHandler = npcHandler,
-		spellName = "Wound Cleansing",
-		price = 0,
-		level = 8,
-		vocation = VOCATION.BASE_ID.KNIGHT
-	}
-)
-keywordHandler:addSpellKeyword({ "great", "light" },
-	{
-		npcHandler = npcHandler,
-		spellName = "Great Light",
-		price = 500,
-		level = 13,
-		vocation = VOCATION.BASE_ID.KNIGHT
-	}
-)
-keywordHandler:addKeyword({ "healing", "spells" }, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "In this category I have '{Wound Cleansing}'' and '{Cure Poison}''."
-	}
-)
-keywordHandler:addKeyword({ "support", "spells" }, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "In this category I have '{Light}', '{Find Person}' and '{Great Light}'."
-	}
-)
-keywordHandler:addKeyword({ "spells" }, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "I can teach you {healing spells} and {support spells}. What kind of spell do you wish to learn? You can also tell me for which level you would like to learn a spell, if you prefer that."
-	}
-)
+keywordHandler:addSpellKeyword({ "find", "person" }, {
+	npcHandler = npcHandler,
+	spellName = "Find Person",
+	price = 80,
+	level = 8,
+	vocation = VOCATION.BASE_ID.KNIGHT,
+})
+keywordHandler:addSpellKeyword({ "light" }, {
+	npcHandler = npcHandler,
+	spellName = "Light",
+	price = 0,
+	level = 8,
+	vocation = VOCATION.BASE_ID.KNIGHT,
+})
+keywordHandler:addSpellKeyword({ "cure", "poison" }, {
+	npcHandler = npcHandler,
+	spellName = "Cure Poison",
+	price = 150,
+	level = 10,
+	vocation = VOCATION.BASE_ID.KNIGHT,
+})
+keywordHandler:addSpellKeyword({ "wound", "cleansing" }, {
+	npcHandler = npcHandler,
+	spellName = "Wound Cleansing",
+	price = 0,
+	level = 8,
+	vocation = VOCATION.BASE_ID.KNIGHT,
+})
+keywordHandler:addSpellKeyword({ "great", "light" }, {
+	npcHandler = npcHandler,
+	spellName = "Great Light",
+	price = 500,
+	level = 13,
+	vocation = VOCATION.BASE_ID.KNIGHT,
+})
+keywordHandler:addKeyword({ "healing", "spells" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "In this category I have '{Wound Cleansing}'' and '{Cure Poison}''.",
+})
+keywordHandler:addKeyword({ "support", "spells" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "In this category I have '{Light}', '{Find Person}' and '{Great Light}'.",
+})
+keywordHandler:addKeyword({ "spells" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "I can teach you {healing spells} and {support spells}. What kind of spell do you wish to learn? You can also tell me for which level you would like to learn a spell, if you prefer that.",
+})
 
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Be careful on your journeys.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Don't hurt yourself with that weapon, little one.")

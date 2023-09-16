@@ -14,7 +14,7 @@ local config = {
 	[13] = Position(32991, 31497, 1),
 	[14] = Position(32992, 31496, 1),
 	[15] = Position(32991, 31497, 1),
-	[16] = Position(32991, 31496, 1)
+	[16] = Position(32991, 31496, 1),
 }
 
 -- Missing: CONST_ME_CARNIPHILA effects when dancing (pattern unknown)

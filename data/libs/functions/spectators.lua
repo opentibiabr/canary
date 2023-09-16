@@ -7,12 +7,11 @@ setmetatable(Spectators, {
 			only_player = true,
 			multi_floor = false,
 			blacklist_pos = {},
-			creature_detect = {}
+			creature_detect = {},
 		}
 		return setmetatable(spectators_data, { __index = Spectators })
-	end
+	end,
 })
-
 
 function Spectators.getOnlyPlayer(self)
 	return self.only_player
@@ -79,18 +78,14 @@ function Spectators.convertPosToRange(self)
 	return {
 		x = (pos.to.x - pos.from.x) / 2,
 		y = (pos.to.y - pos.from.y) / 2,
-		z = pos.from.z
+		z = pos.from.z,
 	}
 end
 
 function Spectators.convertPos(self)
 	local pos = self:getCheckPosition()
 	local range = self:convertPosToRange()
-	return Position(
-		pos.from.x + range.x,
-		pos.from.y + range.y,
-		range.z
-	)
+	return Position(pos.from.x + range.x, pos.from.y + range.y, range.z)
 end
 
 function Spectators.checkCreatureBlacklistPos(self, creature)
@@ -150,7 +145,7 @@ end
 function Spectators.getPlayers(self)
 	local count = 0
 	if not self:getCreatureDetect() then
-		error('Not creature detect')
+		error("Not creature detect")
 		return nil
 	end
 	for _, v in pairs(self:getCreatureDetect()) do

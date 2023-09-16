@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 70
 monster.maxHealth = 70
@@ -23,7 +22,7 @@ monster.manaCost = 350
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -71,11 +70,11 @@ monster.loot = {
 	{ id = 3336, chance = 10390 }, -- studded club
 	{ id = 3378, chance = 9090 }, -- studded armor
 	{ id = 11515, chance = 5190 }, -- trollroot
-	{ id = 3412, chance = 11690 } -- wooden shield
+	{ id = 3412, chance = 11690 }, -- wooden shield
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 10, attack = 25 }
+	{ name = "melee", interval = 2000, chance = 100, skill = 10, attack = 25 },
 }
 
 monster.defenses = {
@@ -101,7 +100,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

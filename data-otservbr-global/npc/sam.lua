@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 113,
 	lookLegs = 67,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Hello there, adventurer! Need a deal in weapons or armor? I\'m your man!' }
+	{ text = "Hello there, adventurer! Need a deal in weapons or armor? I'm your man!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -64,15 +64,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'adorn')
-			or MsgContains(message, 'outfit')
-			or MsgContains(message, 'addon') then
+	if MsgContains(message, "adorn") or MsgContains(message, "outfit") or MsgContains(message, "addon") then
 		local addonProgress = player:getStorageValue(Storage.OutfitQuest.Knight.AddonHelmet)
 		if addonProgress == 5 then
 			player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 6)
 			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 6)
 			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmetTimer, os.time() + 7200)
-			npcHandler:say('Oh, Gregor sent you? I see. It will be my pleasure to adorn your helmet. Please give me some time to finish it.', npc, creature)
+			npcHandler:say("Oh, Gregor sent you? I see. It will be my pleasure to adorn your helmet. Please give me some time to finish it.", npc, creature)
 		elseif addonProgress == 6 then
 			if player:getStorageValue(Storage.OutfitQuest.Knight.AddonHelmetTimer) < os.time() then
 				player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 0)
@@ -81,32 +79,31 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addOutfitAddon(131, 2)
 				player:addOutfitAddon(139, 2)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				npcHandler:say('Just in time, |PLAYERNAME|. Your helmet is finished, I hope you like it.', npc, creature)
+				npcHandler:say("Just in time, |PLAYERNAME|. Your helmet is finished, I hope you like it.", npc, creature)
 			else
-				npcHandler:say('Please have some patience, |PLAYERNAME|. Forging is hard work!', npc, creature)
+				npcHandler:say("Please have some patience, |PLAYERNAME|. Forging is hard work!", npc, creature)
 			end
 		elseif addonProgress == 7 then
-			npcHandler:say('I think it\'s one of my masterpieces.', npc, creature)
+			npcHandler:say("I think it's one of my masterpieces.", npc, creature)
 		else
-			npcHandler:say('Sorry, but without the permission of Gregor I cannot help you with this matter.', npc, creature)
+			npcHandler:say("Sorry, but without the permission of Gregor I cannot help you with this matter.", npc, creature)
 		end
 	elseif MsgContains(message, "old backpack") or MsgContains(message, "backpack") then
 		if player:getStorageValue(Storage.SamsOldBackpack) < 1 then
 			npcHandler:say("What? Are you telling me you found my old adventurer's backpack that I lost years ago??", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
-	elseif MsgContains(message, '2000 steel shields') then
-		if player:getStorageValue(Storage.WhatAFoolish.Questline) ~= 29
-				or player:getStorageValue(Storage.WhatAFoolish.Contract) == 2 then
-			npcHandler:say('My offers are weapons, armors, helmets, legs, and shields. If you\'d like to see my offers, ask me for a {trade}.', npc, creature)
+	elseif MsgContains(message, "2000 steel shields") then
+		if player:getStorageValue(Storage.WhatAFoolish.Questline) ~= 29 or player:getStorageValue(Storage.WhatAFoolish.Contract) == 2 then
+			npcHandler:say("My offers are weapons, armors, helmets, legs, and shields. If you'd like to see my offers, ask me for a {trade}.", npc, creature)
 			return true
 		end
 
-		npcHandler:say('What? You want to buy 2000 steel shields??', npc, creature)
+		npcHandler:say("What? You want to buy 2000 steel shields??", npc, creature)
 		npcHandler:setTopic(playerId, 2)
-	elseif MsgContains(message, 'contract') then
+	elseif MsgContains(message, "contract") then
 		if player:getStorageValue(Storage.WhatAFoolish.Contract) == 0 then
-			npcHandler:say('Have you signed the contract?', npc, creature)
+			npcHandler:say("Have you signed the contract?", npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		end
 	elseif MsgContains(message, "yes") then
@@ -114,31 +111,31 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:removeItem(3244, 1) then
 				npcHandler:say({
 					"Thank you very much! This brings back good old memories! Please, as a reward, travel to Kazordoon and ask my old friend Kroox to provide you a special dwarven armor. ...",
-					"I will mail him about you immediately. Just tell him, his old buddy Sam is sending you."
+					"I will mail him about you immediately. Just tell him, his old buddy Sam is sending you.",
 				}, npc, creature)
 				player:setStorageValue(Storage.SamsOldBackpack, 1)
-				player:addAchievement('Backpack Tourist')
+				player:addAchievement("Backpack Tourist")
 			else
 				npcHandler:say("You don't have it...", npc, creature)
 			end
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
-			npcHandler:say('I can\'t believe it. Finally I will be rich! I could move to Edron and enjoy my retirement! But ... wait a minute! I will not start working without a contract! Are you willing to sign one?', npc, creature)
+			npcHandler:say("I can't believe it. Finally I will be rich! I could move to Edron and enjoy my retirement! But ... wait a minute! I will not start working without a contract! Are you willing to sign one?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			player:addItem(129, 1)
 			player:setStorageValue(Storage.WhatAFoolish.Contract, 1)
-			npcHandler:say('Fine! Here is the contract. Please sign it. Talk to me about it again when you\'re done.', npc, creature)
+			npcHandler:say("Fine! Here is the contract. Please sign it. Talk to me about it again when you're done.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			if not player:removeItem(128, 1) then
-				npcHandler:say('You don\'t have a signed contract.', npc, creature)
+				npcHandler:say("You don't have a signed contract.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true
 			end
 
 			player:setStorageValue(Storage.WhatAFoolish.Contract, 2)
-			npcHandler:say('Excellent! I will start working right away! Now that I am going to be rich, I will take the opportunity to tell some people what I REALLY think about them!', npc, creature)
+			npcHandler:say("Excellent! I will start working right away! Now that I am going to be rich, I will take the opportunity to tell some people what I REALLY think about them!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "no") then
@@ -152,7 +149,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I am the blacksmith. If you need weapons or armor - just ask me." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am the blacksmith. If you need weapons or armor - just ask me." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to my shop, adventurer |PLAYERNAME|! I {trade} with weapons and armor.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye and come again, |PLAYERNAME|.")
@@ -236,7 +233,7 @@ npcConfig.shop = {
 	{ itemName = "viking helmet", clientId = 3367, buy = 265 },
 	{ itemName = "viking shield", clientId = 3431, buy = 260 },
 	{ itemName = "war hammer", clientId = 3279, buy = 10000 },
-	{ itemName = "wooden shield", clientId = 3412, buy = 15 }
+	{ itemName = "wooden shield", clientId = 3412, buy = 15 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -247,7 +244,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

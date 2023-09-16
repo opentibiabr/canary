@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 457
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Khazeel, Energy Elemental Lair, Vandura Mountain, Vengoths mountain."
+	Locations = "Khazeel, Energy Elemental Lair, Vandura Mountain, Vengoths mountain.",
 }
 
 monster.health = 500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -89,21 +89,21 @@ monster.loot = {
 	{ name = "crystal sword", chance = 5882 },
 	{ name = "strong mana potion", chance = 7692 },
 	{ name = "mana potion", chance = 11711 },
-	{ id = 761, chance = 10000, maxCount = 10 } -- flash arrow
+	{ id = 761, chance = 10000, maxCount = 10 }, -- flash arrow
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -175 },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -125, maxDamage = -252, range = 7, radius = 2, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = true },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -100, maxDamage = -130, range = 7, shootEffect = CONST_ANI_ENERGYBALL, effect = CONST_ME_ENERGYHIT, target = true },
-	{ name = "energy elemental electrify", interval = 2000, chance = 20, target = false }
+	{ name = "energy elemental electrify", interval = 2000, chance = 20, target = false },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 25,
 	mitigation = 0.72,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 90, maxDamage = 150, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 90, maxDamage = 150, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -123,7 +123,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

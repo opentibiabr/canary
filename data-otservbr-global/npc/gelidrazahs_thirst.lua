@@ -11,11 +11,11 @@ npcConfig.walkInterval = 100000
 npcConfig.walkRadius = 0
 
 npcConfig.outfit = {
-	lookTypeEx = 10031
+	lookTypeEx = 10031,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -54,11 +54,10 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	if MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 0 then
 		npcHandler:say({
 			"There are three questions. First: What is the name of the princess who fell in love with a Thaian nobleman during the regency of pharaoh Uthemath? Second: Who is the author of the book ,The Language of the Wolves'? ...",
-			"Third: Which ancient Tibian race reportedly travelled the sky in cloud ships? Can you answer these questions?"
+			"Third: Which ancient Tibian race reportedly travelled the sky in cloud ships? Can you answer these questions?",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
@@ -75,7 +74,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, 0)
 		player:setStorageValue(Storage.FirstDragon.GelidrazahAccess, 1)
 	else
-		npcHandler:say('I don\'t know what you are talking about.', npc, creature)
+		npcHandler:say("I don't know what you are talking about.", npc, creature)
 	end
 	return true
 end

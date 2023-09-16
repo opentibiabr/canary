@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 77,
 	lookLegs = 98,
 	lookFeet = 95,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -72,9 +72,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 1)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 14 and player:getStorageValue(Storage.TheShatteredIsles.RaysMission1) < 1 then
 			npcHandler:say({
-				'Indeed, I could use some help. The evil pirates of Nargor have convinced an alchemist from Edron to supply them with a substance called Fafnar\'s Fire ...',
-				'It can burn even on water and is a threat to us all. I need you to travel to Edron and pretend to the alchemist Sandra that you are the one whom the other pirates sent to get the fire ...',
-				'When she asks for a payment, tell her \'Your continued existence is payment enough\'. That should enrage any member of the Edron academy enough to refuse any further deals with the pirates.',
+				"Indeed, I could use some help. The evil pirates of Nargor have convinced an alchemist from Edron to supply them with a substance called Fafnar's Fire ...",
+				"It can burn even on water and is a threat to us all. I need you to travel to Edron and pretend to the alchemist Sandra that you are the one whom the other pirates sent to get the fire ...",
+				"When she asks for a payment, tell her 'Your continued existence is payment enough'. That should enrage any member of the Edron academy enough to refuse any further deals with the pirates.",
 			}, npc, creature)
 			player:setStorageValue(Storage.TheShatteredIsles.RaysMission1, 1)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.RaysMission1) == 2 then
@@ -83,13 +83,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.TheShatteredIsles.RaysMission1, 3)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.RaysMission1) == 3 and player:getStorageValue(Storage.TheShatteredIsles.RaysMission2) < 1 then
 			npcHandler:say({
-				'The mission on which I will send you is vital to our cause. It is a sabotage mission. Nargor is guarded by several heavy catapults. ...',
-				'I need you to sabotage the most dangerous of those catapults which can be found right in their harbour, aiming at ships passing by the entrance. ...',
-				'Get a fire bug - you can buy them in Liberty Bay - and set this catapult on fire. ...',
-				'Make sure to use the bug on the left part of the catapult where its lever is. That is where it\'s most vulnerable. ...',
-				'If you see a short explosion, you will know that it worked. I will tell Sebastian to bring you to Nargor, but beware. ...',
-				'Of course, he can\'t drop you off directly in the pirate\'s base. However, we have discovered a secret way into the Howling Grotto. ...',
-				'Try to make your way through the caves of Nargor to reach their harbour. This is where you will find the catapult in question.'
+				"The mission on which I will send you is vital to our cause. It is a sabotage mission. Nargor is guarded by several heavy catapults. ...",
+				"I need you to sabotage the most dangerous of those catapults which can be found right in their harbour, aiming at ships passing by the entrance. ...",
+				"Get a fire bug - you can buy them in Liberty Bay - and set this catapult on fire. ...",
+				"Make sure to use the bug on the left part of the catapult where its lever is. That is where it's most vulnerable. ...",
+				"If you see a short explosion, you will know that it worked. I will tell Sebastian to bring you to Nargor, but beware. ...",
+				"Of course, he can't drop you off directly in the pirate's base. However, we have discovered a secret way into the Howling Grotto. ...",
+				"Try to make your way through the caves of Nargor to reach their harbour. This is where you will find the catapult in question.",
 			}, npc, creature)
 			player:setStorageValue(Storage.TheShatteredIsles.AccessToNargor, 1)
 			player:setStorageValue(Storage.TheShatteredIsles.RaysMission2, 1)
@@ -99,19 +99,19 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.TheShatteredIsles.RaysMission2, 3)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.RaysMission2) == 3 and player:getStorageValue(Storage.TheShatteredIsles.RaysMission3) < 1 then
 			npcHandler:say({
-				'If you manage to accomplish this vital mission you will prove yourself to be a worthy member of our community. Imight even grant you your own ship and pirate clothing! ...',
-				'So listen to the first step of my plan. I want you to infiltrate their base. Try to enter their tavern, which meansthat you have to get past the guard. ...',
-				'You will probably have to deceive him somehow, so that he thinks you are one of them. ...',
-				'In the tavern, the pirates feel safe and plan their next strikes. Study ALL of their maps and plans lying around ...',
-				'Afterwards, return here and report to me about your mission.'
+				"If you manage to accomplish this vital mission you will prove yourself to be a worthy member of our community. Imight even grant you your own ship and pirate clothing! ...",
+				"So listen to the first step of my plan. I want you to infiltrate their base. Try to enter their tavern, which meansthat you have to get past the guard. ...",
+				"You will probably have to deceive him somehow, so that he thinks you are one of them. ...",
+				"In the tavern, the pirates feel safe and plan their next strikes. Study ALL of their maps and plans lying around ...",
+				"Afterwards, return here and report to me about your mission.",
 			}, npc, creature)
 			player:setStorageValue(Storage.TheShatteredIsles.RaysMission3, 1)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.RaysMission3) == 1 and player:getStorageValue(Storage.TheShatteredIsles.TavernMap1) == 1 and player:getStorageValue(Storage.TheShatteredIsles.TavernMap2) == 1 and player:getStorageValue(Storage.TheShatteredIsles.TavernMap3) == 1 then
 			npcHandler:say({
-				'Well done, my friend. That will help us a lot. Of course there are other things to be done though. ...',
-				'I learned that Klaus, the owner of the tavern, wants me dead. He is offering any of those pirates a mission to kill me....',
-				'If we could convince him that you fulfilled that mission, the pirates will have the party of their lives. This would beour chance for a sneak attack to damage their boats and steal their plunder! ...',
-				'Obtain this mission from him and learn what he needs as a proof. Then return to me and report to me about yourmission so we can formulate an appropriate plan.'
+				"Well done, my friend. That will help us a lot. Of course there are other things to be done though. ...",
+				"I learned that Klaus, the owner of the tavern, wants me dead. He is offering any of those pirates a mission to kill me....",
+				"If we could convince him that you fulfilled that mission, the pirates will have the party of their lives. This would beour chance for a sneak attack to damage their boats and steal their plunder! ...",
+				"Obtain this mission from him and learn what he needs as a proof. Then return to me and report to me about yourmission so we can formulate an appropriate plan.",
 			}, npc, creature)
 			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 20)
 			player:setStorageValue(Storage.TheShatteredIsles.RaysMission3, 3)
@@ -122,9 +122,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.TheShatteredIsles.RaysMission4, 3)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.RaysMission4) == 4 then
 			npcHandler:say({
-				'Incredible! You did what no other did even dare to think about! You are indeed a true hero to our cause ...',
-				'Sadly I have no ship that lacks a captain, else you would of course be our first choice. I am still true to my word asbest as I am able. ...',
-				'So take this as your very own ship. Oh, and remind me about the pirate outfit sometime.'
+				"Incredible! You did what no other did even dare to think about! You are indeed a true hero to our cause ...",
+				"Sadly I have no ship that lacks a captain, else you would of course be our first choice. I am still true to my word asbest as I am able. ...",
+				"So take this as your very own ship. Oh, and remind me about the pirate outfit sometime.",
 			}, npc, creature)
 			player:addItem(2994, 1)
 			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 21)
@@ -155,7 +155,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"The pirates on Nargor are becoming more and more of a threat to us each day. I wish someone could get rid of them once and for all, but unfortunately they just keep coming! ...",
 				"Only a dead pirate is a good pirate. I think killing a large number of them would definitely help us to make Sabrehaven a safer place. ...",
-				"It doesn't matter how long it takes, but... would you be willing to kill 3000 pirates for us?" }, npc, creature)
+				"It doesn't matter how long it takes, but... would you be willing to kill 3000 pirates for us?",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.PirateTask) == 0 then
 			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.PirateCount) >= 3000 then
@@ -163,14 +164,16 @@ local function creatureSayCallback(npc, creature, type, message)
 					npcHandler:say({
 						"Hey, great. You've done well! As a small reward I give you some coins from our treasure box. Also, let me tell you an interesting piece of information. ...",
 						"One of our spies told us about a secret hideout somewhere on Nargor. Supposedly, one of the four pirate leaders can be found there sometimes. If you dare go there, you might be able to face him or her in one on one combat. ...",
-						"Beware though - prepare yourself well and only flee if you must. This might be your only chance to get into there, so be careful and don't die!" }, npc, creature)
+						"Beware though - prepare yourself well and only flee if you must. This might be your only chance to get into there, so be careful and don't die!",
+					}, npc, creature)
 					player:setStorageValue(Storage.KillingInTheNameOf.PirateTask, 1)
 					player:addExperience(10000, true)
 					player:addMoney(5000)
 				elseif player:getStorageValue(REPEATSTORAGE_BASE + #tasks.GrizzlyAdams + 1) == 3 then
 					npcHandler:say({
 						"This was probably the last time you will be able to enter that hideout. Well done, my friend, our thanks are with you. ...",
-						"You are most welcome to keep on killing pirates for us though for some bucks and experience. If you want to do so, just ask me about a {task} anytime." }, npc, creature)
+						"You are most welcome to keep on killing pirates for us though for some bucks and experience. If you want to do so, just ask me about a {task} anytime.",
+					}, npc, creature)
 					player:setStorageValue(Storage.KillingInTheNameOf.PirateTask, 1)
 					player:addExperience(10000, true)
 					player:addMoney(5000)
@@ -186,7 +189,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.PirateTask) == 2 then
 			npcHandler:say({
 				"So you went into the leaders' hideout? I hope you were successful and got what you were looking for! Thank you, my friend. Pirates still keep coming here, unfortunately. ...",
-				"Do you, by chance, would like to kill pirates again for us?" }, npc, creature)
+				"Do you, by chance, would like to kill pirates again for us?",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.PirateTask) == 3 then
 			npcHandler:say("Do you, by chance, would like to kill pirates again for us?", npc, creature)

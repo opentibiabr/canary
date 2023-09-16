@@ -1,5 +1,5 @@
 local summons = {
-	[1] = { name = "Werewolf" }
+	[1] = { name = "Werewolf" },
 }
 
 local combat = Combat()

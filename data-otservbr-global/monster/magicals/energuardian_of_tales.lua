@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 82,
 	lookFeet = 93,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1666
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "The Secret Library (energy section)."
+	Locations = "The Secret Library (energy section).",
 }
 
 monster.health = 14000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -83,12 +83,12 @@ monster.loot = {
 	{ name = "spellbook of warding", chance = 350 },
 	{ name = "ultimate health potion", chance = 10000, maxCount = 5 },
 	{ name = "ultimate mana potion", chance = 10000, maxCount = 5 },
-	{ name = "wand of starstorm", chance = 300 }
+	{ name = "wand of starstorm", chance = 300 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -10, maxDamage = -550 },
-	{ name = "combat", interval = 1000, chance = 13, type = COMBAT_ENERGYDAMAGE, minDamage = -100, maxDamage = -555, radius = 3, effect = CONST_ME_ENERGYAREA, target = false }
+	{ name = "combat", interval = 1000, chance = 13, type = COMBAT_ENERGYDAMAGE, minDamage = -100, maxDamage = -555, radius = 3, effect = CONST_ME_ENERGYAREA, target = false },
 }
 
 monster.defenses = {
@@ -114,7 +114,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 78,
 	lookFeet = 79,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 737
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 2,
-	Locations = "Shadowthorn, during the Thornfire World Change."
+	Locations = "Shadowthorn, during the Thornfire World Change.",
 }
 
 monster.health = 180
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -89,13 +89,13 @@ monster.loot = {
 	{ name = "flaming arrow", chance = 30000, maxCount = 12 },
 	{ name = "elvish talisman", chance = 5000 },
 	{ id = 12600, chance = 15280 }, -- coal
-	{ name = "flintstone", chance = 340 }
+	{ name = "flintstone", chance = 340 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -15 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = 0, maxDamage = -21, radius = 1, shootEffect = CONST_ANI_BURSTARROW, effect = CONST_ME_EXPLOSIONHIT, target = true },
-	{ name = "firefield", interval = 2000, chance = 10, radius = 1, shootEffect = CONST_ANI_FIRE, target = true }
+	{ name = "firefield", interval = 2000, chance = 10, radius = 1, shootEffect = CONST_ANI_FIRE, target = true },
 }
 
 monster.defenses = {
@@ -121,7 +121,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 40,
 	lookFeet = 95,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 8500
@@ -25,7 +25,7 @@ monster.enemyFactions = { FACTION_LION, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -33,7 +33,7 @@ monster.strategiesTarget = {
 }
 
 monster.events = {
-	"usurperCommanderDeath"
+	"usurperCommanderDeath",
 }
 
 monster.flags = {
@@ -66,8 +66,8 @@ monster.summon = {
 	summons = {
 		{ name = "hardened usurper archer", chance = 0, interval = 600000, count = 2 },
 		{ name = "hardened usurper warlock", chance = 0, interval = 600000, count = 2 },
-		{ name = "hardened usurper knight", chance = 0, interval = 600000, count = 2 }
-	}
+		{ name = "hardened usurper knight", chance = 0, interval = 600000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -76,8 +76,7 @@ monster.voices = {
 	{ text = "FORMATION!", yell = true },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -500, effect = CONST_ME_DRAWBLOOD },
@@ -89,7 +88,7 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 86,
-	armor = 86
+	armor = 86,
 	--	mitigation = ???,
 }
 
@@ -110,11 +109,13 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType.onAppear = function(monster, creature)
-	if monster ~= creature then return true end
+	if monster ~= creature then
+		return true
+	end
 	local sum
 	for i = 1, 5 do
 		sum = Game.createMonster(monster:getType():getSummonList()[math.random(1, #monster:getType():getSummonList())].name, monster:getPosition(), true)

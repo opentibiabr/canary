@@ -2,7 +2,7 @@ local pos = {
 	[2025] = { x = 32831, y = 32333, z = 11 },
 	[2026] = { x = 32833, y = 32333, z = 11 },
 	[2027] = { x = 32835, y = 32333, z = 11 },
-	[2028] = { x = 32837, y = 32333, z = 11 }
+	[2028] = { x = 32837, y = 32333, z = 11 },
 }
 
 local function doRemoveFirewalls(fwPos)
@@ -17,7 +17,7 @@ end
 
 local pitsOfInfernoWalls = Action()
 function pitsOfInfernoWalls.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if (item.itemid == 2772) then
+	if item.itemid == 2772 then
 		doRemoveFirewalls(pos[item.uid])
 		Position(pos[item.uid]):sendMagicEffect(CONST_ME_FIREAREA)
 	else

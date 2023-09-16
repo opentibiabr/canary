@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 57,
 	lookFeet = 57,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 8200
@@ -25,7 +25,7 @@ monster.enemyFactions = { FACTION_LIONUSURPERS }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -65,7 +65,7 @@ monster.voices = {
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400, effect = CONST_ME_DRAWBLOOD },
 	{ name = "combat", interval = 6000, chance = 12, type = COMBAT_HOLYDAMAGE, minDamage = -400, maxDamage = -500, radius = 3, effect = CONST_ME_HOLYAREA, target = false },
-	{ name = "combat", interval = 4000, chance = 10, type = COMBAT_HOLYDAMAGE, minDamage = -200, maxDamage = -500, range = 5, radius = 3, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYAREA, target = true }
+	{ name = "combat", interval = 4000, chance = 10, type = COMBAT_HOLYDAMAGE, minDamage = -200, maxDamage = -500, range = 5, radius = 3, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYAREA, target = true },
 }
 
 monster.defenses = {
@@ -91,7 +91,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

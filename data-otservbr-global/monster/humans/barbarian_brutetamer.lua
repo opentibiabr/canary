@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 95,
 	lookFeet = 121,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 332
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Krimhorn, Bittermor, Ragnir, and Fenrock."
+	Locations = "Krimhorn, Bittermor, Ragnir, and Fenrock.",
 }
 
 monster.health = 145
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -73,8 +73,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "War Wolf", chance = 10, interval = 2000, count = 2 }
-	}
+		{ name = "War Wolf", chance = 10, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -97,20 +97,20 @@ monster.loot = {
 	{ name = "fur boots", chance = 170 },
 	{ name = "mammoth fur cape", chance = 150 },
 	{ name = "mammoth fur shorts", chance = 90 },
-	{ name = "mana potion", chance = 580 }
+	{ name = "mana potion", chance = 580 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -20 },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -34, range = 7, radius = 1, shootEffect = CONST_ANI_SNOWBALL, target = true },
-	{ name = "barbarian brutetamer skill reducer", interval = 2000, chance = 15, range = 5, target = false }
+	{ name = "barbarian brutetamer skill reducer", interval = 2000, chance = 15, range = 5, target = false },
 }
 
 monster.defenses = {
 	defense = 0,
 	armor = 8,
 	mitigation = 0.36,
-	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -130,7 +130,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

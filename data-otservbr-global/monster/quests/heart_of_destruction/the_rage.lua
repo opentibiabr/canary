@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 19,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 250000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 25
+	chance = 25,
 }
 
 monster.strategiesTarget = {
@@ -49,11 +49,11 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.events = {
-	"HeartMinionDeath"
+	"HeartMinionDeath",
 }
 
 monster.light = {
@@ -66,8 +66,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -740 },
@@ -78,12 +77,12 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, radius = 8, effect = CONST_ME_MAGIC_RED, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -600, length = 10, spread = 3, effect = CONST_ME_YELLOW_RINGS, target = false },
 	{ name = "anomaly break", interval = 2000, chance = 40, target = false },
-	{ name = "rage summon", interval = 2000, chance = 20, target = false }
+	{ name = "rage summon", interval = 2000, chance = 20, target = false },
 }
 
 monster.defenses = {
 	defense = 100,
-	armor = 100
+	armor = 100,
 	--	mitigation = ???,
 }
 
@@ -104,7 +103,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

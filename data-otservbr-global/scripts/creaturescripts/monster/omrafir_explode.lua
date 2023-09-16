@@ -23,8 +23,7 @@ local omrafirExplode = CreatureEvent("OmrafirExplode")
 function omrafirExplode.onThink(creature)
 	local hp = (creature:getHealth() / creature:getMaxHealth()) * 100
 	local summons = creature:getSummons()
-	if hp <= 50 and #summons < 4 and not creature:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT, 88888) and
-			Game.getStorageValue(112416) < 2 then
+	if hp <= 50 and #summons < 4 and not creature:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT, 88888) and Game.getStorageValue(112416) < 2 then
 		addEvent(boom, 10, creature:getId())
 		addEvent(function(cid)
 			Game.createMonster("Omrafir", Position(33586, 32379, 12), false, true)

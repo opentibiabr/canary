@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 83,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1866
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Brain Grounds, Netherworld, Zarganash."
+	Locations = "Brain Grounds, Netherworld, Zarganash.",
 }
 
 monster.health = 7000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -82,7 +82,7 @@ monster.loot = {
 	{ id = 23529, chance = 1220 }, -- ring of blue plasma
 	{ name = "silver hand mirror", chance = 1090 },
 	{ name = "ornate crossbow", chance = 1090 },
-	{ name = "crystal crossbow", chance = 270 }
+	{ name = "crystal crossbow", chance = 270 },
 }
 
 monster.attacks = {
@@ -90,7 +90,7 @@ monster.attacks = {
 	{ name = "combat", interval = 1700, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -300, maxDamage = -550, radius = 3, shootEffect = CONST_ANI_ENVENOMEDARROW, target = true },
 	{ name = "combat", interval = 1700, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -550, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
 	{ name = "combat", interval = 1700, chance = 35, type = COMBAT_DEATHDAMAGE, minDamage = -150, maxDamage = -550, radius = 4, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 1700, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -550, radius = 4, effect = CONST_ME_ENERGYAREA, target = false }
+	{ name = "combat", interval = 1700, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -550, radius = 4, effect = CONST_ME_ENERGYAREA, target = false },
 }
 
 monster.defenses = {
@@ -116,7 +116,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

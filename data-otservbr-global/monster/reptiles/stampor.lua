@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 694
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Stampor Cave on the Muggy Plains, Chyllfroest."
+	Locations = "Stampor Cave on the Muggy Plains, Chyllfroest.",
 }
 
 monster.health = 1200
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -84,21 +84,21 @@ monster.loot = {
 	{ name = "small topaz", chance = 7940, maxCount = 2 },
 	{ name = "stampor horn", chance = 4920 },
 	{ name = "stampor talons", chance = 9950, maxCount = 2 },
-	{ name = "hollow stampor hoof", chance = 3020 }
+	{ name = "hollow stampor hoof", chance = 3020 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -130 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -150, maxDamage = -280, radius = 3, effect = CONST_ME_GROUNDSHAKER, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -75, maxDamage = -100, shootEffect = CONST_ANI_SMALLSTONE, target = true },
-	{ name = "stampor skill reducer", interval = 2000, chance = 10, range = 5, target = false }
+	{ name = "stampor skill reducer", interval = 2000, chance = 10, range = 5, target = false },
 }
 
 monster.defenses = {
 	defense = 0,
 	armor = 60,
 	mitigation = 0.91,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 90, maxDamage = 120, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 90, maxDamage = 120, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -118,7 +118,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

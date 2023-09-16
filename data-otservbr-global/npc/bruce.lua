@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 43,
 	lookLegs = 38,
 	lookFeet = 76,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,23 +58,23 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'report') then
+	if MsgContains(message, "report") then
 		local player = Player(creature)
 		if table.contains({ 9, 11 }, player:getStorageValue(Storage.InServiceofYalahar.Questline)) then
-			npcHandler:say('Well, .. <gives a short and precise report>.', npc, creature)
+			npcHandler:say("Well, .. <gives a short and precise report>.", npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, player:getStorageValue(Storage.InServiceofYalahar.Questline) + 1)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission02, player:getStorageValue(Storage.InServiceofYalahar.Mission02) + 1) -- StorageValue for Questlog 'Mission 02: Watching the Watchmen'
 		end
-	elseif MsgContains(message, 'pass') then
-		npcHandler:say('You can {pass} either to the {Alchemist Quarter} or {Cemetery Quarter}. Which one will it be?', npc, creature)
+	elseif MsgContains(message, "pass") then
+		npcHandler:say("You can {pass} either to the {Alchemist Quarter} or {Cemetery Quarter}. Which one will it be?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif npcHandler:getTopic(playerId) == 1 then
-		if MsgContains(message, 'alchemist') then
+		if MsgContains(message, "alchemist") then
 			local destination = Position(32738, 31113, 7)
 			Player(creature):teleportTo(destination)
 			destination:sendMagicEffect(CONST_ME_TELEPORT)
 			npcHandler:setTopic(playerId, 0)
-		elseif MsgContains(message, 'cemetery') then
+		elseif MsgContains(message, "cemetery") then
 			local destination = Position(32743, 31113, 7)
 			Player(creature):teleportTo(destination)
 			destination:sendMagicEffect(CONST_ME_TELEPORT)

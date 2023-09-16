@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 0,
 	lookBody = 112,
 	lookLegs = 93,
-	lookFeet = 95
+	lookFeet = 95,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -52,14 +52,14 @@ local normalItems = {
 	{ 3051, 3097, 3098 },
 	{ 10310 },
 	{ 3039 },
-	{ 3036 }
+	{ 3036 },
 }
 
 local semiRareItems = {
 	{ 3057 },
 	{ 9040 },
 	{ 9058 },
-	{ 5080 }
+	{ 5080 },
 }
 
 local rareItems = {
@@ -69,7 +69,7 @@ local rareItems = {
 	{ 10338 },
 	{ 10339 },
 	{ 6566 },
-	{ 2993 }
+	{ 2993 },
 }
 
 local veryRareItems = {
@@ -77,19 +77,19 @@ local veryRareItems = {
 	{ 3001 },
 	{ 3553 },
 	{ 9604 },
-	{ 5804 }
+	{ 5804 },
 }
 
 local function getReward()
 	local rewardTable = {}
 	local random = math.random(100)
-	if (random <= 90) then
+	if random <= 90 then
 		rewardTable = normalItems
-	elseif (random <= 70) then
+	elseif random <= 70 then
 		rewardTable = semiRareItems
-	elseif (random <= 30) then
+	elseif random <= 30 then
 		rewardTable = rareItems
-	elseif (random <= 10) then
+	elseif random <= 10 then
 		rewardTable = veryRareItems
 	end
 
@@ -100,9 +100,9 @@ end
 local function creatureSayCallback(npc, creature, type, message)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or creature
 
-	if MsgContains(message, 'present') then
+	if MsgContains(message, "present") then
 		local player = Player(creature)
-		if (player:getStorageValue(840293) == 1) then
+		if player:getStorageValue(840293) == 1 then
 			npcHandler:say("You can't get other present.", npc, creature)
 			return false
 		end
@@ -112,8 +112,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		local count = 1
 
 		for i = 1, #reward do
-			if (reward[i] == 2992 or
-						reward[i] == 3599) then
+			if reward[i] == 2992 or reward[i] == 3599 then
 				count = 10
 			end
 

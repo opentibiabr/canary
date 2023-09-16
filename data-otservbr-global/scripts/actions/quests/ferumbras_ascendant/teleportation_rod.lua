@@ -5,7 +5,7 @@ local config = {
 	[24833] = { storageKey = Storage.FerumbrasAscension.Mazoran },
 	[24834] = { storageKey = Storage.FerumbrasAscension.Tarbaz },
 	[24835] = { storageKey = Storage.FerumbrasAscension.Shulgrax },
-	[24836] = { storageKey = Storage.FerumbrasAscension.Plagirath }
+	[24836] = { storageKey = Storage.FerumbrasAscension.Plagirath },
 }
 
 local ferumbrasAscendantTeleportation = Action()
@@ -15,7 +15,7 @@ function ferumbrasAscendantTeleportation.onUse(player, item, fromPosition, targe
 		return false
 	end
 	if player:getStorageValue(targetItem.storageKey) == 1 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You already teleported this part of the Godbreaker to Mazarius.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You already teleported this part of the Godbreaker to Mazarius.")
 		return true
 	end
 	player:setStorageValue(targetItem.storageKey, 1)

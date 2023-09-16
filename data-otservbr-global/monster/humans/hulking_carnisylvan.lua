@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 20,
 	lookFeet = 57,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2107
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Forest of Life."
+	Locations = "Forest of Life.",
 }
 
 monster.health = 8600
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -86,7 +86,7 @@ monster.loot = {
 	{ name = "diamond sceptre", chance = 4320 },
 	{ name = "epee", chance = 2590 },
 	{ name = "war hammer", chance = 3750 },
-	{ name = "human teeth", chance = 580 }
+	{ name = "human teeth", chance = 580 },
 }
 
 monster.attacks = {
@@ -119,7 +119,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

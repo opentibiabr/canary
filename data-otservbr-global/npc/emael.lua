@@ -17,17 +17,17 @@ npcConfig.outfit = {
 	lookLegs = 75,
 	lookFeet = 113,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Not enough space for all my trophies...' }
+	{ text = "Not enough space for all my trophies..." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -68,7 +68,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:removeMoney(1000000) then
 				npcHandler:say("Ah, I see you killed a lot of dangerous creatures. Here's your podium of vigour!", npc, creature)
 				local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-				if inbox and inbox:getEmptySlots() > 0 then
+				if inbox then
 					local decoKit = inbox:addItem(23398, 1)
 					if decoKit then
 						decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "Unwrap it in your own house to create a <" .. ItemType(38707):getName() .. ">.")
@@ -90,8 +90,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 end
 
-npcHandler:setMessage(MESSAGE_GREET, { "Hello! Ever asked yourself who killed all the monsters for the wall trophies? Yeah, that was me, Emael the Beasthunter! I am an expert in displaying trophies. ...",
-	"So if you have at least some dangerous monster to show off I strongly advise you to aquire a {podium} of vigour." })
+npcHandler:setMessage(MESSAGE_GREET, { "Hello! Ever asked yourself who killed all the monsters for the wall trophies? Yeah, that was me, Emael the Beasthunter! I am an expert in displaying trophies. ...", "So if you have at least some dangerous monster to show off I strongly advise you to aquire a {podium} of vigour." })
 npcHandler:setMessage(MESSAGE_FAREWELL, "I wish you a good hunt. Goodbye!")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good hunting!")
 

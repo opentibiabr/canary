@@ -7,7 +7,7 @@ local UniqueTable = {
 		timer = Storage.FirstDragon.TazhadurTimer,
 		newPos = { x = 32015, y = 32466, z = 8 },
 		bossName = "Tazhadur",
-		bossPos = { x = 32018, y = 32465, z = 8 }
+		bossPos = { x = 32018, y = 32465, z = 8 },
 	},
 	-- Kalyassa entrance
 	[35002] = {
@@ -17,7 +17,7 @@ local UniqueTable = {
 		timer = Storage.FirstDragon.KalyassaTimer,
 		newPos = { x = 32078, y = 32456, z = 8 },
 		bossName = "Kalyassa",
-		bossPos = { x = 32079, y = 32459, z = 8 }
+		bossPos = { x = 32079, y = 32459, z = 8 },
 	},
 	-- Zorvorax entrance
 	[35003] = {
@@ -27,7 +27,7 @@ local UniqueTable = {
 		timer = Storage.FirstDragon.ZorvoraxTimer,
 		newPos = { x = 32008, y = 32396, z = 8 },
 		bossName = "Zorvorax",
-		bossPos = { x = 32015, y = 32396, z = 8 }
+		bossPos = { x = 32015, y = 32396, z = 8 },
 	},
 	-- Gelidrazah entrance
 	[35004] = {
@@ -37,8 +37,8 @@ local UniqueTable = {
 		timer = Storage.FirstDragon.GelidrazahTimer,
 		newPos = { x = 32076, y = 32402, z = 8 },
 		bossName = "Gelidrazah The Frozen",
-		bossPos = { x = 32078, y = 32400, z = 8 }
-	}
+		bossPos = { x = 32078, y = 32400, z = 8 },
+	},
 }
 
 local entranceTeleport = MoveEvent()

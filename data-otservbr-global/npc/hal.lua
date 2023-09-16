@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 43,
 	lookLegs = 38,
 	lookFeet = 76,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,25 +58,25 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if (MsgContains(message, "report")) then
-		if (player:getStorageValue(Storage.InServiceofYalahar.Questline) == 8 or player:getStorageValue(Storage.InServiceofYalahar.Questline) == 12) then
+	if MsgContains(message, "report") then
+		if player:getStorageValue(Storage.InServiceofYalahar.Questline) == 8 or player:getStorageValue(Storage.InServiceofYalahar.Questline) == 12 then
 			npcHandler:say("Hicks! I... I... <he is obviously drunk and his report more than confusing>. ", npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, player:getStorageValue(Storage.InServiceofYalahar.Questline) + 1)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission02, player:getStorageValue(Storage.InServiceofYalahar.Mission02) + 1) -- StorageValue for Questlog "Mission 02: Watching the Watchmen"
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif (MsgContains(message, "pass")) then
+	elseif MsgContains(message, "pass") then
 		npcHandler:say("You can {pass} either to the {Arena Quarter} or {Alchemist Quarter}. Which one will it be?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif (MsgContains(message, "arena")) then
-		if (npcHandler:getTopic(playerId) == 1) then
+	elseif MsgContains(message, "arena") then
+		if npcHandler:getTopic(playerId) == 1 then
 			local destination = Position(32688, 31193, 7)
 			player:teleportTo(destination)
 			destination:sendMagicEffect(CONST_ME_TELEPORT)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif (MsgContains(message, "alchemist")) then
-		if (npcHandler:getTopic(playerId) == 1) then
+	elseif MsgContains(message, "alchemist") then
+		if npcHandler:getTopic(playerId) == 1 then
 			local destination = Position(32688, 31188, 7)
 			player:teleportTo(destination)
 			destination:sendMagicEffect(CONST_ME_TELEPORT)

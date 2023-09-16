@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 94,
 	lookBody = 95,
 	lookLegs = 58,
-	lookFeet = 114
+	lookFeet = 114,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -57,12 +57,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	if table.contains({ "mission", "quest" }, message:lower()) then
 		if player:getStorageValue(Storage.ToOutfoxAFoxQuest) < 1 then
 			npcHandler:say({
 				"Funny that you are asking me for a mission! There is indeed something you can do for me. Ever heard about The Horned Fox? Anyway, yesterday his gang has stolen my mining helmet during a raid. ...",
-				"It belonged to my father and before that to my grandfather. That helmet is at least 600 years old! I need it back. Are you willing to help me?"
+				"It belonged to my father and before that to my grandfather. That helmet is at least 600 years old! I need it back. Are you willing to help me?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(Storage.ToOutfoxAFoxQuest) == 1 then
@@ -76,13 +75,15 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.ToOutfoxAFoxQuest) == 2 and player:getLevel() <= 40 and player:getStorageValue(Storage.KillingInTheNameOf.BudrikMinos) < 0 then
 			npcHandler:say({
 				"I am so angry I could spit grit! That damn {Horned Fox} and his attacks! Let's show those bull-heads that they have messed with the wrong people....",
-				"I want you to kill 5000 minotaurs - no matter where - for me and all the dwarfs of Kazordoon! Are you willing to do that?" }, npc, creature)
+				"I want you to kill 5000 minotaurs - no matter where - for me and all the dwarfs of Kazordoon! Are you willing to do that?",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.BudrikMinos) == 0 then
 			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MinotaurCount) >= 5000 then
 				npcHandler:say({
 					"By all that is holy! You are a truly great warrior! With much patience! I have just found out the location the hideout of The Horned Fox! I have marked the spot on your map so you can find it. Go there and slay him!! ...",
-					"BUT, you will have only this ONE chance to catch him! Good luck!" }, npc, creature)
+					"BUT, you will have only this ONE chance to catch him! Good luck!",
+				}, npc, creature)
 				player:setStorageValue(Storage.KillingInTheNameOf.BudrikMinos, 1)
 				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.FoxCount, 0)
 			else
@@ -140,7 +141,8 @@ keywordHandler:addKeyword({ "shearton softbeard" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
 		"Yes, I remember him well. It was a tragedy. An earthquake led to a cave-in and many of our brave miners died. ...",
-		"Their ghosts still haunt the Grothmok tunnel in which they died, so we had to seal it off." }
+		"Their ghosts still haunt the Grothmok tunnel in which they died, so we had to seal it off.",
+	},
 })
 keywordHandler:addKeyword({ "grothmok" }, StdModule.say, { npcHandler = npcHandler, text = "You may enter the tunnel." })
 keywordHandler:addKeyword({ "deeper mines" }, StdModule.say, { npcHandler = npcHandler, text = "This is no funhouse. Leave the miners and their drilling-worms alone and get out! We have already enough trouble without you." })

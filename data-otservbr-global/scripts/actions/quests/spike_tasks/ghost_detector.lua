@@ -4,7 +4,7 @@ end
 
 ghost_detector_area = {
 	from = Position(32008, 32522, 8),
-	to = Position(32365, 32759, 10)
+	to = Position(32365, 32759, 10),
 }
 
 local function getSearchString(fromPos, toPos)
@@ -38,15 +38,15 @@ local function getSearchString(fromPos, toPos)
 		[0] = {
 			[0] = "above you",
 			[1] = "below you",
-			[2] = "next to you"
+			[2] = "next to you",
 		},
 		[1] = {
 			[0] = "on a higher level to the ",
 			[1] = "on a lower level to the ",
-			[2] = "to the "
+			[2] = "to the ",
 		},
 		[2] = "far to the ",
-		[3] = "very far to the "
+		[3] = "very far to the ",
 	}
 
 	local dirs = {
@@ -57,10 +57,10 @@ local function getSearchString(fromPos, toPos)
 		[4] = "north-east",
 		[5] = "north-west",
 		[6] = "south-east",
-		[7] = "south-west"
+		[7] = "south-west",
 	}
 
-	return ((type(text[distance]) == "table") and text[distance][level] or text[distance]) .. ((distance ~= 0) and dirs[direction] or '')
+	return ((type(text[distance]) == "table") and text[distance][level] or text[distance]) .. ((distance ~= 0) and dirs[direction] or "")
 end
 
 local spikeTasksGhost = Action()
@@ -86,11 +86,11 @@ function spikeTasksGhost.onUse(player, item, fromPosition, target, toPosition, i
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You found a malignant presence, the glowing detector signals that it does not need any further data.")
 		else
 			GHOST_DETECTOR_MAP[player:getGuid()] = getFreeSand()
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You found a malignant presence, the glowing detector signals another presence nearby.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You found a malignant presence, the glowing detector signals another presence nearby.")
 		end
 		player:setStorageValue(SPIKE_UPPER_TRACK_MAIN, stat + 1)
 	else
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The detector points ' .. getSearchString(player:getPosition(), current) .. '.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The detector points " .. getSearchString(player:getPosition(), current) .. ".")
 	end
 	return true
 end

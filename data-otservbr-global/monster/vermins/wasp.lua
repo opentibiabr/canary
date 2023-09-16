@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 44
@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "South of Thais, west of Ab'Dendriel, northeastern Cormaya, \z
 		Green Claw Swamp between Kazordoon and Venore, Wasp Tower in Rookgaard, \z
-		Wasp Towers in Darashia, all over Tiquanda, and all over Vandura, roaming around Marapur."
+		Wasp Towers in Darashia, all over Tiquanda, and all over Vandura, roaming around Marapur.",
 }
 
 monster.health = 35
@@ -37,7 +37,7 @@ monster.manaCost = 280
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -77,11 +77,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "honeycomb", chance = 3000 }
+	{ name = "honeycomb", chance = 3000 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 1500, chance = 100, minDamage = 0, maxDamage = -20, condition = { type = CONDITION_POISON, totalDamage = 20, interval = 4000 } }
+	{ name = "melee", interval = 1500, chance = 100, minDamage = 0, maxDamage = -20, condition = { type = CONDITION_POISON, totalDamage = 20, interval = 4000 } },
 }
 
 monster.defenses = {
@@ -107,7 +107,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

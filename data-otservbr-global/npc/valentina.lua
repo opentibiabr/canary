@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 116,
 	lookLegs = 98,
 	lookFeet = 45,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Love is beautiful, we are loved.' }
+	{ text = "Love is beautiful, we are loved." },
 }
 
 npcConfig.shop = {
@@ -37,7 +37,7 @@ npcConfig.shop = {
 	{ itemName = "sweetheart ring", clientId = 21955, buy = 500 },
 	{ itemName = "truelove teddy", clientId = 21953, buy = 1000 },
 	{ itemName = "valentines cake", clientId = 6392, buy = 30 },
-	{ itemName = "valentines card", clientId = 6538, buy = 5 }
+	{ itemName = "valentines card", clientId = 6538, buy = 5 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -48,8 +48,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -79,7 +78,7 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Basic
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I am known as the saleswoman of love, as a cupid." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am known as the saleswoman of love, as a cupid." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to Valentine's Store. Let's {trade} something?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Please come back from time to time.")

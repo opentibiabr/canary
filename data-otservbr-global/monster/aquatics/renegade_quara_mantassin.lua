@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1099
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 2,
-	Locations = "Seacrest Grounds when Seacrest Serpents are not spawning."
+	Locations = "Seacrest Grounds when Seacrest Serpents are not spawning.",
 }
 
 monster.health = 1200
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -87,18 +87,18 @@ monster.loot = {
 	{ name = "two handed sword", chance = 820 },
 	{ name = "fish fin", chance = 740 },
 	{ name = "blue robe", chance = 660 },
-	{ id = 3051, chance = 580 } -- energy ring
+	{ id = 3051, chance = 580 }, -- energy ring
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 40, attack = 55, effect = CONST_ME_DRAWBLOOD }
+	{ name = "melee", interval = 2000, chance = 100, skill = 40, attack = 55, effect = CONST_ME_DRAWBLOOD },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 16,
 	mitigation = 0.70,
-	{ name = "invisible", interval = 2000, chance = 20, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 2000, chance = 20, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -118,7 +118,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

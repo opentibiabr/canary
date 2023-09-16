@@ -74,7 +74,7 @@ local balloonItems = {
 	[39679] = 39691,
 	[39691] = 39679, -- balloon no.8
 	[39680] = 39692,
-	[39692] = 39680 -- balloon no.9
+	[39692] = 39680, -- balloon no.9
 }
 
 local balloons = Action()

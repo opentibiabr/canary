@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 43,
 	lookLegs = 38,
 	lookFeet = 76,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -292,7 +292,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("I grant you the title of Archpostman. You are a legend in our guild. As privilege of your newly aquired status you are allowed to make use of certain mailboxes in dangerous areas. Just look out for them and you'll see.", npc, creature)
 			player:setStorageValue(Storage.Postman.Rank, 5)
 			player:setStorageValue(Storage.Postman.Door, 1)
-			player:addAchievement('Archpostman')
+			player:addAchievement("Archpostman")
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 28 then
 			npcHandler:say("Your eagerness is a virtue, young one, but first let's talk about advancement", npc, creature)

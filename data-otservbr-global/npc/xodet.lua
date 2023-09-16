@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 86,
 	lookLegs = 87,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -52,7 +52,7 @@ end
 
 local items = {
 	[VOCATION.BASE_ID.SORCERER] = 3074,
-	[VOCATION.BASE_ID.DRUID] = 3066
+	[VOCATION.BASE_ID.DRUID] = 3066,
 }
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -64,26 +64,26 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	local itemId = items[player:getVocation():getBaseId()]
-	if MsgContains(message, 'first rod') or MsgContains(message, 'first wand') then
+	if MsgContains(message, "first rod") or MsgContains(message, "first wand") then
 		if player:isMage() then
 			if player:getStorageValue(Storage.FirstMageWeapon) == -1 then
-				npcHandler:say('So you ask me for a {' .. ItemType(itemId):getName() .. '} to begin your adventure?', npc, creature)
+				npcHandler:say("So you ask me for a {" .. ItemType(itemId):getName() .. "} to begin your adventure?", npc, creature)
 				npcHandler:setTopic(playerId, 1)
 			else
-				npcHandler:say('What? I have already gave you one {' .. ItemType(itemId):getName() .. '}!', npc, creature)
+				npcHandler:say("What? I have already gave you one {" .. ItemType(itemId):getName() .. "}!", npc, creature)
 			end
 		else
-			npcHandler:say('Sorry, you aren\'t a druid either a sorcerer.', npc, creature)
+			npcHandler:say("Sorry, you aren't a druid either a sorcerer.", npc, creature)
 		end
-	elseif MsgContains(message, 'yes') then
+	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			player:addItem(itemId, 1)
-			npcHandler:say('Here you are young adept, take care yourself.', npc, creature)
+			npcHandler:say("Here you are young adept, take care yourself.", npc, creature)
 			player:setStorageValue(Storage.FirstMageWeapon, 1)
 		end
 		npcHandler:setTopic(playerId, 0)
-	elseif MsgContains(message, 'no') and npcHandler:getTopic(playerId) == 1 then
-		npcHandler:say('Ok then.', npc, creature)
+	elseif MsgContains(message, "no") and npcHandler:getTopic(playerId) == 1 then
+		npcHandler:say("Ok then.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	end
 	return true
@@ -142,7 +142,7 @@ npcConfig.shop = {
 	{ itemName = "wand of cosmic energy", clientId = 3073, buy = 10000 },
 	{ itemName = "wand of decay", clientId = 3072, buy = 5000 },
 	{ itemName = "wand of dragonbreath", clientId = 3075, buy = 1000 },
-	{ itemName = "wand of vortex", clientId = 3074, buy = 500 }
+	{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -154,7 +154,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

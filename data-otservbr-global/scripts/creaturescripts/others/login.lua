@@ -23,7 +23,7 @@ local playerLogin = CreatureEvent("PlayerLogin")
 function playerLogin.onLogin(player)
 	local items = {
 		{ 3003, 1 },
-		{ 3457, 1 }
+		{ 3457, 1 },
 	}
 	if player:getLastLoginSaved() == 0 then
 		player:sendOutfitWindow()
@@ -34,7 +34,7 @@ function playerLogin.onLogin(player)
 			end
 		end
 		player:addItem(2920, 1, true, 1, CONST_SLOT_AMMO)
-		db.query('UPDATE `players` SET `istutorial` = 0 where `id`=' .. player:getGuid())
+		db.query("UPDATE `players` SET `istutorial` = 0 where `id`=" .. player:getGuid())
 		-- Open channels
 		if table.contains({ TOWNS_LIST.DAWNPORT, TOWNS_LIST.DAWNPORT_TUTORIAL }, player:getTown():getId()) then
 			player:openChannel(3) -- World chat
@@ -76,15 +76,15 @@ function playerLogin.onLogin(player)
 		end
 		if home ~= nil and not isPremium(player) then
 			setHouseOwner(home, 0)
-			player:sendTextMessage(MESSAGE_GAME_HIGHLIGHT, 'You\'ve lost your house because you are not premium anymore.')
-			player:sendTextMessage(MESSAGE_GAME_HIGHLIGHT, 'Your items from house are send to your inbox.')
+			player:sendTextMessage(MESSAGE_GAME_HIGHLIGHT, "You've lost your house because you are not premium anymore.")
+			player:sendTextMessage(MESSAGE_GAME_HIGHLIGHT, "Your items from house are send to your inbox.")
 		end
 	end
 	-- End 'Premium Ends Teleport to Temple'
 
 	-- Recruiter system
-	local resultId = db.storeQuery('SELECT `recruiter` from `accounts` where `id`=' .. getAccountNumberByPlayerName(getPlayerName(player)))
-	local recruiterStatus = Result.getNumber(resultId, 'recruiter')
+	local resultId = db.storeQuery("SELECT `recruiter` from `accounts` where `id`=" .. getAccountNumberByPlayerName(getPlayerName(player)))
+	local recruiterStatus = Result.getNumber(resultId, "recruiter")
 	local sex = player:getSex()
 	if recruiterStatus >= 1 then
 		if sex == 1 then
@@ -146,8 +146,11 @@ function playerLogin.onLogin(player)
 
 	if SCHEDULE_EXP_RATE ~= 100 then
 		if SCHEDULE_EXP_RATE > 100 then
-			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Exp Rate Event! Monsters yield more experience points than usual \
-			Happy Hunting!")
+			player:sendTextMessage(
+				MESSAGE_BOOSTED_CREATURE,
+				"Exp Rate Event! Monsters yield more experience points than usual \
+			Happy Hunting!"
+			)
 		else
 			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Exp Rate Decreased! Monsters yield less experience points than usual.")
 		end
@@ -155,8 +158,11 @@ function playerLogin.onLogin(player)
 
 	if SCHEDULE_SPAWN_RATE ~= 100 then
 		if SCHEDULE_SPAWN_RATE > 100 then
-			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Spawn Rate Event! Monsters respawn at a faster rate \
-			Happy Hunting!")
+			player:sendTextMessage(
+				MESSAGE_BOOSTED_CREATURE,
+				"Spawn Rate Event! Monsters respawn at a faster rate \
+			Happy Hunting!"
+			)
 		else
 			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Spawn Rate Decreased! Monsters respawn at a slower rate.")
 		end
@@ -164,8 +170,11 @@ function playerLogin.onLogin(player)
 
 	if SCHEDULE_LOOT_RATE ~= 100 then
 		if SCHEDULE_LOOT_RATE > 100 then
-			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Loot Rate Event! Monsters carry more loot than usual \
-			Happy Hunting!")
+			player:sendTextMessage(
+				MESSAGE_BOOSTED_CREATURE,
+				"Loot Rate Event! Monsters carry more loot than usual \
+			Happy Hunting!"
+			)
 		else
 			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Loot Rate Decreased! Monsters carry less loot than usual.")
 		end
@@ -173,8 +182,11 @@ function playerLogin.onLogin(player)
 
 	if SCHEDULE_SKILL_RATE ~= 100 then
 		if SCHEDULE_SKILL_RATE > 100 then
-			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Skill Rate Event! Your skills progresses at a higher rate \
-			Happy Hunting!")
+			player:sendTextMessage(
+				MESSAGE_BOOSTED_CREATURE,
+				"Skill Rate Event! Your skills progresses at a higher rate \
+			Happy Hunting!"
+			)
 		else
 			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Skill Rate Decreased! Your skills progresses at a lower rate.")
 		end
@@ -192,7 +204,7 @@ function playerLogin.onLogin(player)
 	-- Concoction Duration
 	nextUseConcoctionTime[playerId] = 1
 
-	if (player:getAccountType() == ACCOUNT_TYPE_TUTOR) then
+	if player:getAccountType() == ACCOUNT_TYPE_TUTOR then
 		local msg = [[:: Tutor Rules
 		1 *> 3 Warnings you lose the job.
 		2 *> Without parallel conversations with players in Help, if the player starts offending, you simply mute it.
@@ -216,9 +228,8 @@ function playerLogin.onLogin(player)
 
 	-- Rewards
 	local rewards = #player:getRewardList()
-	if (rewards > 0) then
-		player:sendTextMessage(MESSAGE_LOGIN, string.format("You have %d %s in your reward chest.",
-			rewards, rewards > 1 and "rewards" or "reward"))
+	if rewards > 0 then
+		player:sendTextMessage(MESSAGE_LOGIN, string.format("You have %d %s in your reward chest.", rewards, rewards > 1 and "rewards" or "reward"))
 	end
 
 	-- Update player id

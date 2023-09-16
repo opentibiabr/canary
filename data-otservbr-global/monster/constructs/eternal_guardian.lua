@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 615
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "North-east Muggy Plains, Deeper Banuta."
+	Locations = "North-east Muggy Plains, Deeper Banuta.",
 }
 
 monster.health = 2500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -91,11 +91,11 @@ monster.loot = {
 	{ name = "spiked iron ball", chance = 9960 },
 	{ name = "clay lump", chance = 720 },
 	{ name = "piece of marble rock", chance = 430 },
-	{ id = 12600, chance = 400 } -- coal
+	{ id = 12600, chance = 400 }, -- coal
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300 },
 }
 
 monster.defenses = {
@@ -121,7 +121,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

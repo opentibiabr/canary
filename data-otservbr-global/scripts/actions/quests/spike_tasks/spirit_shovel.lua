@@ -1,9 +1,9 @@
 local chance = {
-	{ 90, "You unearthed a spirit\'s anger!!!", "Enraged Soul" },
+	{ 90, "You unearthed a spirit's anger!!!", "Enraged Soul" },
 	{ 80, "Your crude digging has angered some ancient ghost.", "Ghost" },
 	{ 70, "You unearthed some not-so-death creature.", "Demon Skeleton" },
 	{ 50, "You unearthed some not-so-death creature.", "Zombie" },
-	{ 1, "You've found nothing special." }
+	{ 1, "You've found nothing special." },
 }
 
 local spikeTasksShovel = Action()

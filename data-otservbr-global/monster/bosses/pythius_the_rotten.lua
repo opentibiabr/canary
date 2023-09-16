@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 9000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -60,8 +60,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "Undead Gladiator", chance = 10, interval = 1000, count = 2 }
-	}
+		{ name = "Undead Gladiator", chance = 10, interval = 1000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -73,8 +73,7 @@ monster.voices = {
 	{ text = "YOU MADE A HUGE WASTE!", yell = true },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -475 },
@@ -84,7 +83,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2500, chance = 22, type = COMBAT_MANADRAIN, minDamage = -85, maxDamage = -110, range = 7, radius = 4, shootEffect = CONST_ANI_ICE, target = true },
 	{ name = "speed", interval = 2000, chance = 20, speedChange = -300, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true, duration = 30000 },
 	-- curse
-	{ name = "condition", type = CONDITION_CURSED, interval = 2000, chance = 15, range = 7, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEATTACK, target = true }
+	{ name = "condition", type = CONDITION_CURSED, interval = 2000, chance = 15, range = 7, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEATTACK, target = true },
 }
 
 monster.defenses = {
@@ -110,11 +109,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -122,13 +120,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

@@ -9,7 +9,7 @@ end
 local azerus = CreatureEvent("Azerus")
 function azerus.onKill(creature, target)
 	local targetMonster = target:getMonster()
-	if not target or not targetMonster or targetMonster:getName():lower() ~= 'azerus' then
+	if not target or not targetMonster or targetMonster:getName():lower() ~= "azerus" then
 		return true
 	end
 
@@ -20,8 +20,7 @@ function azerus.onKill(creature, target)
 	if item:isTeleport() then
 		item:setDestination(teleportToPosition)
 	end
-	targetMonster:say("Azerus ran into teleporter! It will disappear in 2 minutes. Enter it!",
-		TALKTYPE_MONSTER_SAY, 0, 0, position)
+	targetMonster:say("Azerus ran into teleporter! It will disappear in 2 minutes. Enter it!", TALKTYPE_MONSTER_SAY, 0, 0, position)
 	--remove portal after 2 min
 	addEvent(removeTeleport, 2 * 60 * 1000, position)
 

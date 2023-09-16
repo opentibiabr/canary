@@ -28,9 +28,9 @@ local config = {
 			{ from = 9892, to = 9929, itemId = 5895 },
 			{ from = 9930, to = 9967, itemId = 5880 },
 			{ from = 9968, to = 9998, itemId = 12519 },
-			{ from = 9999, to = 10001, itemId = 3079 }
+			{ from = 9999, to = 10001, itemId = 3079 },
 		},
-		effect = CONST_ME_POFF
+		effect = CONST_ME_POFF,
 	},
 	[14172] = { -- gooey mass
 		chances = {
@@ -42,9 +42,9 @@ local config = {
 			{ from = 8150, to = 9823, itemId = 238, count = 2 },
 			{ from = 9824, to = 9923, itemId = 9058 },
 			{ from = 9924, to = 9990, itemId = 14143 },
-			{ from = 9991, to = 10001, itemId = 14089 }
+			{ from = 9991, to = 10001, itemId = 14089 },
 		},
-		effect = CONST_ME_HITBYPOISON
+		effect = CONST_ME_HITBYPOISON,
 	},
 	[15698] = { -- gnomish supply package
 		chances = {
@@ -72,9 +72,9 @@ local config = {
 			{ from = 9930, to = 9958, itemId = 16242 },
 			{ from = 9959, to = 9987, itemId = 3037 },
 			{ from = 9988, to = 9994, itemId = 3041 },
-			{ from = 9995, to = 10001, itemId = 3038 }
+			{ from = 9995, to = 10001, itemId = 3038 },
 		},
-		effect = CONST_ME_CRAPS
+		effect = CONST_ME_CRAPS,
 	},
 	[22763] = { -- shaggy ogre bag
 		chances = {
@@ -95,9 +95,9 @@ local config = {
 			{ from = 8711, to = 9033, itemId = 22192 },
 			{ from = 9034, to = 9356, itemId = 7413 },
 			{ from = 9357, to = 9679, itemId = 7452 },
-			{ from = 9680, to = 10001, itemId = 5668 }
+			{ from = 9680, to = 10001, itemId = 5668 },
 		},
-		effect = CONST_ME_CRAPS
+		effect = CONST_ME_CRAPS,
 	},
 	[23509] = { -- mysterious remains
 		chances = {
@@ -123,9 +123,9 @@ local config = {
 			{ from = 9837, to = 9893, itemId = 9058 },
 			{ from = 9894, to = 9929, itemId = 22737 },
 			{ from = 9930, to = 9958, itemId = 23536 },
-			{ from = 9959, to = 10001, itemId = 22731 }
+			{ from = 9959, to = 10001, itemId = 22731 },
 		},
-		effect = CONST_ME_CRAPS
+		effect = CONST_ME_CRAPS,
 	},
 	[27654] = { -- surprise jar
 		chances = {
@@ -133,10 +133,10 @@ local config = {
 			{ from = 2501, to = 5001, itemId = 3036 },
 			{ from = 5002, to = 6668, itemId = 22721 },
 			{ from = 6668, to = 8335, itemId = 22516 },
-			{ from = 8336, to = 10001, itemId = 27653 }
+			{ from = 8336, to = 10001, itemId = 27653 },
 		},
-		effect = CONST_ME_CRAPS
-	}
+		effect = CONST_ME_CRAPS,
+	},
 }
 
 local randomItems = Action()
@@ -156,10 +156,10 @@ function randomItems.onUse(player, item, fromPosition, target, toPosition, isHot
 				player:addItem(itemId, count)
 				if item.itemid == 12413 then
 					local itemType = ItemType(itemId)
-					player:say('You found ' .. (count > 1 and count or (itemType:getArticle() ~= '' and itemType:getArticle() or '')) .. ' ' .. (count > 1 and itemType:getPluralName() or itemType:getName()) .. ' in the bag.', TALKTYPE_MONSTER_SAY)
+					player:say("You found " .. (count > 1 and count or (itemType:getArticle() ~= "" and itemType:getArticle() or "")) .. " " .. (count > 1 and itemType:getPluralName() or itemType:getName()) .. " in the bag.", TALKTYPE_MONSTER_SAY)
 				end
 			else
-				player:say('You found nothing useful.', TALKTYPE_MONSTER_SAY)
+				player:say("You found nothing useful.", TALKTYPE_MONSTER_SAY)
 			end
 
 			item:getPosition():sendMagicEffect(useId.effect)

@@ -23,7 +23,7 @@ function versperothKill.onKill(creature, target)
 		return true
 	end
 
-	if targetMonster:getName():lower() ~= 'versperoth' then
+	if targetMonster:getName():lower() ~= "versperoth" then
 		return true
 	end
 

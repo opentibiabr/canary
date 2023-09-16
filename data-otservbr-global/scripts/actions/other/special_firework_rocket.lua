@@ -62,7 +62,7 @@ local fireworks = {
 			{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
 			{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
 			{ 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0 },
-			{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 }
+			{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
 		},
 		effect = CONST_ME_HEARTS,
 		type = CONST_FIREWORK_TYPE_INSTANT,
@@ -99,7 +99,7 @@ local fireworks = {
 		effect = CONST_ME_PIXIE_EXPLOSION,
 		type = CONST_FIREWORK_TYPE_RANDOM,
 		disassemble = true,
-	}
+	},
 }
 
 local function cleanMatrix(matrix)

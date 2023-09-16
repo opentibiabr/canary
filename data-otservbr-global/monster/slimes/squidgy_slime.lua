@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 20
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 2,
-	Locations = "Horestis Tomb during one of the states of The Mummys Curse World Change."
+	Locations = "Horestis Tomb during one of the states of The Mummys Curse World Change.",
 }
 
 monster.health = 150
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -73,8 +73,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 3,
 	summons = {
-		{ name = "Squidgy Slime", chance = 10, interval = 2000, count = 3 }
-	}
+		{ name = "Squidgy Slime", chance = 10, interval = 2000, count = 3 },
+	},
 }
 
 monster.voices = {
@@ -83,11 +83,10 @@ monster.voices = {
 	{ text = "Blubb", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 45, attack = 40 }
+	{ name = "melee", interval = 2000, chance = 100, skill = 45, attack = 40 },
 }
 
 monster.defenses = {
@@ -113,7 +112,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

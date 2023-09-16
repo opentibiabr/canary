@@ -1,6 +1,6 @@
 local portals = {
-	[50500] = { position = Position(33539, 32014, 6), message = 'Slrrp!' }, --entrance
-	[50501] = { position = Position(33491, 31985, 7), message = 'Slrrp!' }, --exit
+	[50500] = { position = Position(33539, 32014, 6), message = "Slrrp!" }, --entrance
+	[50501] = { position = Position(33491, 31985, 7), message = "Slrrp!" }, --exit
 }
 
 local oramondEntrance = MoveEvent()

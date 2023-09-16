@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 59,
 	lookFeet = 2,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 935
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 0,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -61,8 +61,8 @@ monster.summon = {
 	maxSummons = 2,
 	summons = {
 		{ name = "Ghost", chance = 26, interval = 2000, count = 1 },
-		{ name = "Crypt Shambler", chance = 26, interval = 2000, count = 1 }
-	}
+		{ name = "Crypt Shambler", chance = 26, interval = 2000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -74,13 +74,12 @@ monster.voices = {
 	{ text = "I'll teach you respect for the old!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 },
 	{ name = "drunk", interval = 3000, chance = 35, range = 5, radius = 1, target = true, duration = 15000 },
-	{ name = "speed", interval = 4000, chance = 55, speedChange = -400, range = 5, radius = 1, effect = CONST_ME_MAGIC_RED, target = true, duration = 12000 }
+	{ name = "speed", interval = 4000, chance = 55, speedChange = -400, range = 5, radius = 1, effect = CONST_ME_MAGIC_RED, target = true, duration = 12000 },
 }
 
 monster.defenses = {
@@ -88,7 +87,7 @@ monster.defenses = {
 	armor = 24,
 	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 35, type = COMBAT_HEALING, minDamage = 95, maxDamage = 155, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 3000, chance = 50, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 3000, chance = 50, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -108,7 +107,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

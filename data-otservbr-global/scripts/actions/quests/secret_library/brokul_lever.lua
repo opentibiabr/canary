@@ -8,7 +8,10 @@ bossConfig = {
 		playerStorage = 36000,
 		teleportPosition = Position(33483, 31445, 15),
 		centerRoomPosition = Position(33483, 31439, 15),
-		northRange = 15, eastRange = 15, southRange = 15, westRange = 15,
+		northRange = 15,
+		eastRange = 15,
+		southRange = 15,
+		westRange = 15,
 		exit = Position(33522, 31468, 15),
 		bossPosition = Position(33483, 31434, 15),
 		time = 15,
@@ -18,9 +21,9 @@ bossConfig = {
 			[2] = Position(33521, 31465, 15),
 			[3] = Position(33522, 31465, 15),
 			[4] = Position(33523, 31465, 15),
-			[5] = Position(33524, 31465, 15)
-		}
-	}
+			[5] = Position(33524, 31465, 15),
+		},
+	},
 }
 
 local function resetBoss(bossConfig, bossId)
@@ -42,7 +45,7 @@ function secretBrokul.onUse(player, item, fromPosition, target, toPosition, isHo
 			return false
 		end
 
-		if (getGlobalStorageValue(bossConfig.bossGlobalStorage) > 0) then
+		if getGlobalStorageValue(bossConfig.bossGlobalStorage) > 0 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There is already a team inside. Please wait.")
 			return true
 		end
@@ -57,20 +60,20 @@ function secretBrokul.onUse(player, item, fromPosition, target, toPosition, isHo
 						if playerTile:getStorageValue(bossConfig.playerStorage) <= os.time() then
 							table.insert(rPlayers, playerTile:getId())
 						else
-							errorMsg = 'One or more players have already entered in the last 20 hours.'
+							errorMsg = "One or more players have already entered in the last 20 hours."
 						end
 					else
-						errorMsg = 'All the players need to be level ' .. bossConfig.requiredLevel .. ' or higher.'
+						errorMsg = "All the players need to be level " .. bossConfig.requiredLevel .. " or higher."
 					end
 				end
 			end
 		end
 
-		if (#rPlayers >= bossConfig.minPlayersRequired) then
+		if #rPlayers >= bossConfig.minPlayersRequired then
 			for _, pid in pairs(rPlayers) do
 				local rplayer = Player(pid)
 				if rplayer:isPlayer() then
-					rplayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, ('You have %o minutes before you get kicked out.'):format(bossConfig.time))
+					rplayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, ("You have %o minutes before you get kicked out."):format(bossConfig.time))
 					bossConfig.playerPositions[_]:sendMagicEffect(CONST_ME_POFF)
 					rplayer:teleportTo(bossConfig.teleportPosition)
 					rplayer:setStorageValue(bossConfig.playerStorage, os.time() + (configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN)))

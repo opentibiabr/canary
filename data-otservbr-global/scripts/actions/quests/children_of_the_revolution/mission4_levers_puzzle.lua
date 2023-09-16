@@ -2,7 +2,7 @@ local puzzlePositions = {
 	[1] = Position(33352, 31126, 5),
 	[2] = Position(33353, 31126, 5),
 	[3] = Position(33354, 31126, 5),
-	[4] = Position(33355, 31126, 5)
+	[4] = Position(33355, 31126, 5),
 }
 local function puzzle(position, itemId, itemTransform)
 	if Tile(position):getItemById(itemId) then
@@ -55,7 +55,7 @@ local positions = {
 	{ x = 33349, y = 31124, z = 5 },
 	{ x = 33349, y = 31125, z = 5 },
 	{ x = 33349, y = 31126, z = 5 },
-	{ x = 33349, y = 31127, z = 5 }
+	{ x = 33349, y = 31127, z = 5 },
 }
 
 for index, value in pairs(positions) do

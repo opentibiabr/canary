@@ -10,9 +10,9 @@ function areasound.onSay(player, words, param)
 	end
 
 	local split = param:split(",")
-	if not (split[2]) then
+	if not split[2] then
 		local primaryEffect = tonumber(param)
-		if (primaryEffect == nil or primaryEffect == 0) then
+		if primaryEffect == nil or primaryEffect == 0 then
 			player:sendCancelMessage("Invalid command param.")
 			return true
 		end
@@ -24,7 +24,7 @@ function areasound.onSay(player, words, param)
 
 	local primaryEffect = tonumber(split[1])
 	local secondaryEffect = tonumber(split[2])
-	if (primaryEffect == nil or secondaryEffect == nil) then
+	if primaryEffect == nil or secondaryEffect == nil then
 		player:sendCancelMessage("Invalid command params.")
 		return true
 	end
@@ -51,9 +51,9 @@ function internalsound.onSay(player, words, param)
 	end
 
 	local split = param:split(",")
-	if not (split[2]) then
+	if not split[2] then
 		local primaryEffect = tonumber(param)
-		if (primaryEffect == nil or primaryEffect == 0) then
+		if primaryEffect == nil or primaryEffect == 0 then
 			player:sendCancelMessage("Invalid command param.")
 			return true
 		end
@@ -65,7 +65,7 @@ function internalsound.onSay(player, words, param)
 
 	local primaryEffect = tonumber(split[1])
 	local secondaryEffect = tonumber(split[2])
-	if (primaryEffect == nil or secondaryEffect == nil) then
+	if primaryEffect == nil or secondaryEffect == nil then
 		player:sendCancelMessage("Invalid command params.")
 		return true
 	end
@@ -92,9 +92,9 @@ function globalsound.onSay(player, words, param)
 	end
 
 	local split = param:split(",")
-	if not (split[2]) then
+	if not split[2] then
 		local primaryEffect = tonumber(param)
-		if (primaryEffect == nil or primaryEffect == 0) then
+		if primaryEffect == nil or primaryEffect == 0 then
 			player:sendCancelMessage("Invalid command param.")
 			return true
 		end
@@ -108,7 +108,7 @@ function globalsound.onSay(player, words, param)
 
 	local primaryEffect = tonumber(split[1])
 	local secondaryEffect = tonumber(split[2])
-	if (primaryEffect == nil or secondaryEffect == nil) then
+	if primaryEffect == nil or secondaryEffect == nil then
 		player:sendCancelMessage("Invalid command params.")
 		return true
 	end

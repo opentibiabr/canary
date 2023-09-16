@@ -5,7 +5,7 @@ arr = {
 	{ 1, 1, 1 },
 	{ 1, 1, 1 },
 	{ 0, 1, 0 },
-	{ 0, 3, 0 }
+	{ 0, 3, 0 },
 }
 
 local area = createCombatArea(arr)

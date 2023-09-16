@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 64
@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Yalahar Foreigner Quarter, Shadowthorn, northwest of Ab'Dendriel, north and west of Mount Sternum, \z
 		Hellgate, Maze of Lost Souls, near Knightwatch Tower in the Plains of Havoc. \z
-		Two may also spawn when a Desperate White Deer or an Enraged White Deer is killed."
+		Two may also spawn when a Desperate White Deer or an Enraged White Deer is killed.",
 }
 
 monster.health = 160
@@ -37,7 +37,7 @@ monster.manaCost = 360
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -90,12 +90,12 @@ monster.loot = {
 	{ id = 5921, chance = 1130 }, -- heaven blossom
 	{ name = "elvish bow", chance = 140 },
 	{ name = "elvish talisman", chance = 5200 },
-	{ name = "elven scouting glass", chance = 9750 }
+	{ name = "elven scouting glass", chance = 9750 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -80, range = 7, shootEffect = CONST_ANI_ARROW, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -80, range = 7, shootEffect = CONST_ANI_ARROW, target = false },
 }
 
 monster.defenses = {
@@ -121,7 +121,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

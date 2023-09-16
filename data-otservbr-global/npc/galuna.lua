@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 96,
 	lookLegs = 95,
 	lookFeet = 96,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Bows, crossbows and ammunition on special sale today.' }
+	{ text = "Bows, crossbows and ammunition on special sale today." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -70,7 +70,7 @@ npcConfig.shop = {
 	{ itemName = "crossbow", clientId = 3349, buy = 500 },
 	{ itemName = "quiver", clientId = 35562, buy = 400 },
 	{ itemName = "red quiver", clientId = 35849, buy = 400 },
-	{ itemName = "spear", clientId = 3277, buy = 10 }
+	{ itemName = "spear", clientId = 3277, buy = 10 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -81,7 +81,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

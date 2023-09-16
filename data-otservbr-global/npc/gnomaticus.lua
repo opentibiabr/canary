@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 86,
 	lookLegs = 1,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.BigfootBurden.QuestLine) == 11 then
 			npcHandler:say({
 				"To the left you see our shooting range. Grab a cannon and shoot at the targets. You need five hits to succeed. ...",
-				"Shoot at the villain targets that will pop up. DON'T shoot innocent civilians since this will reset your score and you have to start all over. Report to me afterwards."
+				"Shoot at the villain targets that will pop up. DON'T shoot innocent civilians since this will reset your score and you have to start all over. Report to me afterwards.",
 			}, npc, creature)
 			player:setStorageValue(Storage.BigfootBurden.QuestLine, 13)
 			player:setStorageValue(Storage.BigfootBurden.Shooting, 0)
@@ -83,7 +83,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_GREET, 'Hi there! Are you here for the {shooting} test or to {report} your success?')
+npcHandler:setMessage(MESSAGE_GREET, "Hi there! Are you here for the {shooting} test or to {report} your success?")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

@@ -13,8 +13,8 @@ local charms = {
 		effect = CONST_ME_HITAREA,
 		points = 600,
 		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
-		}
+			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE,
+		},
 	},
 	-- Enflame charm
 	[2] = {
@@ -30,8 +30,8 @@ local charms = {
 		effect = CONST_ME_HITBYFIRE,
 		points = 1000,
 		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_FLAME_STRIKE
-		}
+			castSound = SOUND_EFFECT_TYPE_SPELL_FLAME_STRIKE,
+		},
 	},
 	-- Poison charm
 	[3] = {
@@ -47,8 +47,8 @@ local charms = {
 		effect = CONST_ME_GREEN_RINGS,
 		points = 600,
 		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_TERRA_STRIKE
-		}
+			castSound = SOUND_EFFECT_TYPE_SPELL_TERRA_STRIKE,
+		},
 	},
 	-- Freeze charm
 	[4] = {
@@ -64,8 +64,8 @@ local charms = {
 		effect = CONST_ME_ICEATTACK,
 		points = 800,
 		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_ICE_STRIKE
-		}
+			castSound = SOUND_EFFECT_TYPE_SPELL_ICE_STRIKE,
+		},
 	},
 	--Zap charm
 	[5] = {
@@ -81,8 +81,8 @@ local charms = {
 		effect = CONST_ME_ENERGYHIT,
 		points = 800,
 		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_ENERGY_STRIKE
-		}
+			castSound = SOUND_EFFECT_TYPE_SPELL_ENERGY_STRIKE,
+		},
 	},
 	--Curse charm
 	[6] = {
@@ -98,8 +98,8 @@ local charms = {
 		effect = CONST_ME_SMALLCLOUDS,
 		points = 900,
 		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_DEATH_STRIKE
-		}
+			castSound = SOUND_EFFECT_TYPE_SPELL_DEATH_STRIKE,
+		},
 	},
 	-- Cripple charm
 	[7] = {
@@ -108,7 +108,7 @@ local charms = {
 		type = CHARM_OFFENSIVE,
 		chance = 10,
 		messageCancel = "You cripple the monster.",
-		points = 500
+		points = 500,
 	},
 	-- Parry charm
 	[8] = {
@@ -120,7 +120,7 @@ local charms = {
 		messageCancel = "You parry the attack.",
 		messageServerLog = "[Parry charm]",
 		effect = CONST_ME_EXPLOSIONAREA,
-		points = 1000
+		points = 1000,
 	},
 	-- Dodge charm
 	[9] = {
@@ -130,7 +130,7 @@ local charms = {
 		chance = 10,
 		messageCancel = "You dodge the attack.",
 		effect = CONST_ME_POFF,
-		points = 600
+		points = 600,
 	},
 	-- Adrenaline burst charm
 	[10] = {
@@ -140,7 +140,7 @@ local charms = {
 		type = CHARM_DEFENSIVE,
 		chance = 10,
 		messageCancel = "Your movements where bursted.",
-		points = 500
+		points = 500,
 	},
 	-- Numb charm
 	[11] = {
@@ -149,7 +149,7 @@ local charms = {
 		type = CHARM_DEFENSIVE,
 		chance = 10,
 		messageCancel = "You numb the monster.",
-		points = 500
+		points = 500,
 	},
 	-- Cleanse charm
 	[12] = {
@@ -159,7 +159,7 @@ local charms = {
 		type = CHARM_DEFENSIVE,
 		chance = 10,
 		messageCancel = "You purified the attack.",
-		points = 700
+		points = 700,
 	},
 	-- Bless charm
 	[13] = {
@@ -170,8 +170,8 @@ local charms = {
 		chance = 100,
 		points = 800,
 		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
-		}
+			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE,
+		},
 	},
 	-- Scavenge charm
 	[14] = {
@@ -181,8 +181,8 @@ local charms = {
 		percent = 25,
 		points = 800,
 		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
-		}
+			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE,
+		},
 	},
 	-- Gut charm
 	[15] = {
@@ -202,8 +202,8 @@ local charms = {
 		chance = 100,
 		points = 2000,
 		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
-		}
+			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE,
+		},
 	},
 	-- Divine wrath charm
 	[17] = {
@@ -219,8 +219,8 @@ local charms = {
 		effect = CONST_ME_HOLYDAMAGE,
 		points = 1500,
 		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_HOLY_FLASH
-		}
+			castSound = SOUND_EFFECT_TYPE_SPELL_HOLY_FLASH,
+		},
 	},
 	-- Vampiric embrace charm
 	[18] = {
@@ -229,7 +229,7 @@ local charms = {
 		type = CHARM_PASSIVE,
 		percent = 4,
 		chance = 100,
-		points = 1500
+		points = 1500,
 	},
 	-- Void's call charm
 	[19] = {
@@ -238,8 +238,8 @@ local charms = {
 		type = CHARM_PASSIVE,
 		percent = 2,
 		chance = 100,
-		points = 1500
-	}
+		points = 1500,
+	},
 }
 
 for charmId, chamsTable in ipairs(charms) do

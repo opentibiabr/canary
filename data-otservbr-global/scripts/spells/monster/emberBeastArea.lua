@@ -5,7 +5,7 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_EXPLOSIONHIT)
 combat:setArea(createCombatArea({
 	{ 1, 1, 1 },
 	{ 1, 3, 1 },
-	{ 1, 1, 1 }
+	{ 1, 1, 1 },
 }))
 
 local monsters = {

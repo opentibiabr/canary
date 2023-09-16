@@ -23,8 +23,7 @@ function looktype.onStepIn(creature, item, position, fromPosition)
 	if position == secondCheck or position == Position(secondCheck.x + 1, secondCheck.y, secondCheck.z) then
 		if player:getStorageValue(Storage.CultsOfTibia.Orcs.LookType) < 2 then
 			if creature:getOutfit().lookType == 2 then
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-					"With the help off the might of an orc warlod you are able to pass this rift.")
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "With the help off the might of an orc warlod you are able to pass this rift.")
 				player:setStorageValue(Storage.CultsOfTibia.Orcs.LookType, 2)
 			else
 				player:teleportTo(fromPosition, true)
@@ -32,12 +31,10 @@ function looktype.onStepIn(creature, item, position, fromPosition)
 			end
 		end
 	end
-	if position == thirdCheck or position == Position(thirdCheck.x + 1, thirdCheck.y, thirdCheck.z) or
-			position == Position(thirdCheck.x + 2, thirdCheck.y, thirdCheck.z) then
+	if position == thirdCheck or position == Position(thirdCheck.x + 1, thirdCheck.y, thirdCheck.z) or position == Position(thirdCheck.x + 2, thirdCheck.y, thirdCheck.z) then
 		if player:getStorageValue(Storage.CultsOfTibia.Orcs.LookType) < 3 then
 			if creature:getOutfit().lookType == 6 then
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-					"With the help of the wisdom of an orc shaman you are able to pass this rift.")
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "With the help of the wisdom of an orc shaman you are able to pass this rift.")
 				player:setStorageValue(Storage.CultsOfTibia.Orcs.LookType, 3)
 			else
 				player:teleportTo(fromPosition, true)

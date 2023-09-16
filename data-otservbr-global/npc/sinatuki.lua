@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 0,
 	lookBody = 0,
 	lookLegs = 0,
-	lookFeet = 0
+	lookFeet = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -49,14 +49,14 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({ 'Chuqua' }, StdModule.say, { npcHandler = npcHandler, text = "Chuqua jamjam!! Tiyopa Sinatuki?" })
+keywordHandler:addKeyword({ "Chuqua" }, StdModule.say, { npcHandler = npcHandler, text = "Chuqua jamjam!! Tiyopa Sinatuki?" })
 
 local fishsID = { 7158, 7159 }
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 
-	if MsgContains(message, 'Nupi') then
+	if MsgContains(message, "Nupi") then
 		if player:getStorageValue(Storage.BarbarianTest.Questline) >= 3 and player:getStorageValue(Storage.TheIceIslands.Questline) >= 5 then
 			for i = 1, #fishsID do
 				if player:getItemCount(fishsID[i]) >= 100 then

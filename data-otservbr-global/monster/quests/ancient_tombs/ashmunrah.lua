@@ -10,12 +10,12 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
 	bossRaceId = 91,
-	bossRace = RARITY_BANE
+	bossRace = RARITY_BANE,
 }
 
 monster.health = 5000
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -64,8 +64,8 @@ monster.summon = {
 	maxSummons = 4,
 	summons = {
 		{ name = "Ancient Scarab", chance = 100, interval = 1000, count = 2 },
-		{ name = "Green Djinn", chance = 100, interval = 1000, count = 2 }
-	}
+		{ name = "Green Djinn", chance = 100, interval = 1000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -87,7 +87,7 @@ monster.loot = {
 	{ name = "gold coin", chance = 50000, maxCount = 60 },
 	{ name = "might ring", chance = 1000 },
 	{ name = "crown armor", chance = 80000 },
-	{ name = "great mana potion", chance = 1500 }
+	{ name = "great mana potion", chance = 1500 },
 }
 
 monster.attacks = {
@@ -96,7 +96,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_EARTHDAMAGE, minDamage = -100, maxDamage = -500, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = false },
 	{ name = "combat", interval = 3000, chance = 12, type = COMBAT_PHYSICALDAMAGE, minDamage = -120, maxDamage = -750, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "speed", interval = 3000, chance = 25, speedChange = -650, range = 7, effect = CONST_ME_MAGIC_RED, target = false, duration = 50000 },
-	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_LIFEDRAIN, minDamage = -50, maxDamage = -550, length = 8, spread = 3, effect = CONST_ME_YELLOW_RINGS, target = false }
+	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_LIFEDRAIN, minDamage = -50, maxDamage = -550, length = 8, spread = 3, effect = CONST_ME_YELLOW_RINGS, target = false },
 }
 
 monster.defenses = {
@@ -105,7 +105,7 @@ monster.defenses = {
 	--	mitigation = ???,
 	{ name = "combat", interval = 1000, chance = 20, type = COMBAT_HEALING, minDamage = 200, maxDamage = 400, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "invisible", interval = 1000, chance = 7, effect = CONST_ME_MAGIC_BLUE },
-	{ name = "outfit", interval = 1000, chance = 3, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 6000, outfitMonster = "ancient scarab" }
+	{ name = "outfit", interval = 1000, chance = 3, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 6000, outfitMonster = "ancient scarab" },
 }
 
 monster.elements = {
@@ -125,7 +125,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

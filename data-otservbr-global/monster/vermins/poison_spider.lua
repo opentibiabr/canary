@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 36
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "Found in various caves and plains around Tibia (including Rookgaard)."
+	Locations = "Found in various caves and plains around Tibia (including Rookgaard).",
 }
 
 monster.health = 26
@@ -35,7 +35,7 @@ monster.manaCost = 270
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -74,11 +74,11 @@ monster.voices = {
 
 monster.loot = {
 	{ name = "gold coin", chance = 75000, maxCount = 4 },
-	{ name = "poison spider shell", chance = 1140 }
+	{ name = "poison spider shell", chance = 1140 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -20, condition = { type = CONDITION_POISON, totalDamage = 30, interval = 4000 } }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -20, condition = { type = CONDITION_POISON, totalDamage = 30, interval = 4000 } },
 }
 
 monster.defenses = {
@@ -104,7 +104,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

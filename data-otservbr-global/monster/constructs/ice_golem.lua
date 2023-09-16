@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 326
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Formorgar Glacier, Formorgar Mines, Nibelor Ice Cave, Ice Witch Temple, \z
-		Deeper Banuta, Crystal Caves, Chyllfroest."
+		Deeper Banuta, Crystal Caves, Chyllfroest.",
 }
 
 monster.health = 385
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -89,14 +89,14 @@ monster.loot = {
 	{ name = "strong health potion", chance = 2500 },
 	{ name = "strong mana potion", chance = 3000 },
 	{ name = "glacier mask", chance = 200 },
-	{ name = "frosty heart", chance = 14500 }
+	{ name = "frosty heart", chance = 14500 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -220 },
 	{ name = "speed", interval = 1000, chance = 13, speedChange = -800, length = 8, spread = 3, effect = CONST_ME_ENERGYHIT, target = false, duration = 20000 },
 	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -50, maxDamage = -85, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = false },
-	{ name = "ice golem skill reducer", interval = 2000, chance = 10, target = false }
+	{ name = "ice golem skill reducer", interval = 2000, chance = 10, target = false },
 }
 
 monster.defenses = {
@@ -122,7 +122,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

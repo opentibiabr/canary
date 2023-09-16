@@ -94,8 +94,8 @@ if NpcHandler == nil then
 			[MESSAGE_ONCLOSESHOP] = "Thank you, come back whenever you're in need of something else.",
 			[MESSAGE_ALREADYFOCUSED] = "|PLAYERNAME|, I am already talking to you.",
 			[MESSAGE_WALKAWAY_MALE] = "",
-			[MESSAGE_WALKAWAY_FEMALE] = ""
-		}
+			[MESSAGE_WALKAWAY_FEMALE] = "",
+		},
 	}
 
 	-- Creates a new NpcHandler with an empty callbackFunction stack.
@@ -265,7 +265,7 @@ if NpcHandler == nil then
 	-- Variables "greetCallback, farewellCallback and tradeCallback" are boolean value, true by default
 	function NpcHandler:addModule(module, initNpcName, greetCallback, farewellCallback, tradeCallback)
 		if self.modules ~= nil then
-			self.modules[#self.modules+1] = module
+			self.modules[#self.modules + 1] = module
 			self.npcName = initNpcName
 			if greetCallback == nil then
 				logger.warn("[NpcHandler:addModule] - Greet callback is missing for npc with name: {}, setting to true", initNpcName)
@@ -347,7 +347,7 @@ if NpcHandler == nil then
 	-- Translates all message tags found in msg using parseInfo
 	function NpcHandler:parseMessage(msg, parseInfo)
 		local ret = msg
-		if type(ret) == 'string' then
+		if type(ret) == "string" then
 			for search, replace in pairs(parseInfo) do
 				ret = string.gsub(ret, search, replace)
 			end
@@ -431,9 +431,7 @@ if NpcHandler == nil then
 				end
 
 				if self.keywordHandler ~= nil then
-					if self:checkInteraction(npc, player)
-							and msgtype == TALKTYPE_PRIVATE_PN
-							or not self:checkInteraction(npc, player) then
+					if self:checkInteraction(npc, player) and msgtype == TALKTYPE_PRIVATE_PN or not self:checkInteraction(npc, player) then
 						local ret = self.keywordHandler:processMessage(npc, player, msg)
 						if not ret then
 							callback = self:getCallback(CALLBACK_MESSAGE_DEFAULT)
@@ -608,18 +606,19 @@ if NpcHandler == nil then
 				self.talkDelay = delay
 			end
 			-- The "self.talkDelayTimeForOutgoingMessages * 1000" = Interval for sending subsequent messages from the first
-			npc:sayWithDelay(npcUniqueId, msgs[messagesTable], TALKTYPE_PRIVATE_NP, ((messagesTable - 1) * self.talkDelay + self.talkDelayTimeForOutgoingMessages * 1000),
-				self.eventDelayedSay[playerId][messagesTable], playerUniqueId)
-			ret[#ret+1] = self.eventDelayedSay[playerId][messagesTable]
+			npc:sayWithDelay(npcUniqueId, msgs[messagesTable], TALKTYPE_PRIVATE_NP, ((messagesTable - 1) * self.talkDelay + self.talkDelayTimeForOutgoingMessages * 1000), self.eventDelayedSay[playerId][messagesTable], playerUniqueId)
+			ret[#ret + 1] = self.eventDelayedSay[playerId][messagesTable]
 		end
-		return (ret)
+		return ret
 	end
 
 	-- Makes the npc represented by this instance of NpcHandler say something.
 	-- This implements the currently set type of talkdelay.
 	-- The "delay" variable sets the delay for the interval between messages
 	function NpcHandler:say(message, npc, player, delay, textType)
-		if not player then return end
+		if not player then
+			return
+		end
 		local playerId = player:getId()
 		if type(message) == "table" then
 			return self:doNPCTalkALot(message, delay, npc, player)

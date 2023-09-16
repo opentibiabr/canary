@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 0,
 	lookFeet = 0,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -57,26 +57,26 @@ local weapon = {}
 local weapon_sub = {}
 
 -- Messages
-local newAddon = 'Here you are, enjoy your brand new addon!'
-local noItems = 'You do not have all the required items.'
-local alreadyHaveAddon = 'It seems you already have this addon, don\'t you try to mock me son!'
+local newAddon = "Here you are, enjoy your brand new addon!"
+local noItems = "You do not have all the required items."
+local alreadyHaveAddon = "It seems you already have this addon, don't you try to mock me son!"
 
 local Config = {
 	Create = {
 		Clusters = 20,
 		DreamMatter = 1,
-		Chance = 70 --70%
+		Chance = 70, --70%
 	},
 	Improve = {
 		Clusters = 75,
 		Chance = 55, --55%
-		BreakChance = 50 --50% of chance that when failing the improvement, the weapons is destroyed but you keep the clusters. Else, you keep the weapon and lose the clusters
+		BreakChance = 50, --50% of chance that when failing the improvement, the weapons is destroyed but you keep the clusters. Else, you keep the weapon and lose the clusters
 	},
 	Transform = {
 		Clusters = 150,
 		Chance = 45, --45%
-		BreakChance = 50 --50% of chance that when failing the transforming, the weapon is destroyed but you keep all the clusters. Else, the weapon is downgraded to crude piece and you lose half of clusters.
-	}
+		BreakChance = 50, --50% of chance that when failing the transforming, the weapon is destroyed but you keep all the clusters. Else, the weapon is downgraded to crude piece and you lose half of clusters.
+	},
 }
 
 local IDS = {
@@ -118,7 +118,7 @@ local IDS = {
 
 	CRUDE_UMBRAL_SPELLBOOK = 20088,
 	UMBRAL_SPELLBOOK = 20089,
-	UMBRAL_MASTER_SPELLBOOK = 20090
+	UMBRAL_MASTER_SPELLBOOK = 20090,
 }
 
 local TYPES = {
@@ -127,7 +127,7 @@ local TYPES = {
 	CLUB = 3,
 	BOW = 4,
 	CROSSBOW = 5,
-	SPELLBOOK = 6
+	SPELLBOOK = 6,
 }
 
 local SUB_TYPES = {
@@ -139,13 +139,13 @@ local SUB_TYPES = {
 	HAMMER = 6,
 	BOW = 7,
 	CROSSBOW = 8,
-	SPELLBOOK = 9
+	SPELLBOOK = 9,
 }
 
 local ACTION = {
 	CREATE = 1,
 	IMPROVE = 2,
-	TRANSFORM = 3
+	TRANSFORM = 3,
 }
 
 -- dream START --
@@ -197,7 +197,7 @@ local function greetCallback(npc, creature)
 	if player:getStorageValue(Storage.EruaranGreeting) > 0 then
 		npcHandler:setMessage(MESSAGE_GREET, "Ashari Lillithy, so we meet {again}! What brings you here this time, general {information}, {transform}, {improve}, {create}, {outfit}, or {talk}?")
 	else
-		npcHandler:setMessage(MESSAGE_GREET, 'Welcome |PLAYERNAME|.')
+		npcHandler:setMessage(MESSAGE_GREET, "Welcome |PLAYERNAME|.")
 		player:setStorageValue(Storage.EruaranGreeting, 1)
 	end
 	return true
@@ -335,7 +335,15 @@ local function creatureSayCallback(npc, creature, type, message)
 		if action[playerId] == ACTION.CREATE then --create
 			if player:getItemCount(IDS.DREAM_MATTER) >= 1 and player:getItemCount(IDS.CLUSTER_OF_SOLACE) >= Config.Create.Clusters then
 				if math.random(100) <= Config.Create.Chance then
-					local newItemId = (weapon[playerId] == TYPES.SWORD and (weapon_sub[playerId] == SUB_TYPES.BLADE and IDS.CRUDE_UMBRAL_BLADE or IDS.CRUDE_UMBRAL_SLAYER) or weapon[playerId] == TYPES.AXE and (weapon_sub[playerId] == SUB_TYPES.AXE and IDS.CRUDE_UMBRAL_AXE or IDS.CRUDE_UMBRAL_CHOPPER) or weapon[playerId] == TYPES.CLUB and (weapon_sub[playerId] == SUB_TYPES.MACE and IDS.CRUDE_UMBRAL_MACE or IDS.CRUDE_UMBRAL_HAMMER) or weapon[playerId] == TYPES.BOW and IDS.CRUDE_UMBRAL_BOW or weapon[playerId] == TYPES.CROSSBOW and IDS.CRUDE_UMBRAL_CROSSBOW or weapon[playerId] == TYPES.SPELLBOOK and IDS.CRUDE_UMBRAL_SPELLBOOK or false)
+					local newItemId = (
+						weapon[playerId] == TYPES.SWORD and (weapon_sub[playerId] == SUB_TYPES.BLADE and IDS.CRUDE_UMBRAL_BLADE or IDS.CRUDE_UMBRAL_SLAYER)
+						or weapon[playerId] == TYPES.AXE and (weapon_sub[playerId] == SUB_TYPES.AXE and IDS.CRUDE_UMBRAL_AXE or IDS.CRUDE_UMBRAL_CHOPPER)
+						or weapon[playerId] == TYPES.CLUB and (weapon_sub[playerId] == SUB_TYPES.MACE and IDS.CRUDE_UMBRAL_MACE or IDS.CRUDE_UMBRAL_HAMMER)
+						or weapon[playerId] == TYPES.BOW and IDS.CRUDE_UMBRAL_BOW
+						or weapon[playerId] == TYPES.CROSSBOW and IDS.CRUDE_UMBRAL_CROSSBOW
+						or weapon[playerId] == TYPES.SPELLBOOK and IDS.CRUDE_UMBRAL_SPELLBOOK
+						or false
+					)
 					if newItemId then
 						player:addItem(newItemId)
 						player:removeItem(IDS.DREAM_MATTER, Config.Create.DreamMatter)
@@ -352,7 +360,15 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("Sorry, you don't have the required ingredients.", npc, creature)
 			end
 		elseif action[playerId] == ACTION.IMPROVE then --improve
-			local oldItemId = (weapon[playerId] == TYPES.SWORD and (weapon_sub[playerId] == SUB_TYPES.BLADE and IDS.CRUDE_UMBRAL_BLADE or IDS.CRUDE_UMBRAL_SLAYER) or weapon[playerId] == TYPES.AXE and (weapon_sub[playerId] == SUB_TYPES.AXE and IDS.CRUDE_UMBRAL_AXE or IDS.CRUDE_UMBRAL_CHOPPER) or weapon[playerId] == TYPES.CLUB and (weapon_sub[playerId] == SUB_TYPES.MACE and IDS.CRUDE_UMBRAL_MACE or IDS.CRUDE_UMBRAL_HAMMER) or weapon[playerId] == TYPES.BOW and IDS.CRUDE_UMBRAL_BOW or weapon[playerId] == TYPES.CROSSBOW and IDS.CRUDE_UMBRAL_CROSSBOW or weapon[playerId] == TYPES.SPELLBOOK and IDS.CRUDE_UMBRAL_SPELLBOOK or false)
+			local oldItemId = (
+				weapon[playerId] == TYPES.SWORD and (weapon_sub[playerId] == SUB_TYPES.BLADE and IDS.CRUDE_UMBRAL_BLADE or IDS.CRUDE_UMBRAL_SLAYER)
+				or weapon[playerId] == TYPES.AXE and (weapon_sub[playerId] == SUB_TYPES.AXE and IDS.CRUDE_UMBRAL_AXE or IDS.CRUDE_UMBRAL_CHOPPER)
+				or weapon[playerId] == TYPES.CLUB and (weapon_sub[playerId] == SUB_TYPES.MACE and IDS.CRUDE_UMBRAL_MACE or IDS.CRUDE_UMBRAL_HAMMER)
+				or weapon[playerId] == TYPES.BOW and IDS.CRUDE_UMBRAL_BOW
+				or weapon[playerId] == TYPES.CROSSBOW and IDS.CRUDE_UMBRAL_CROSSBOW
+				or weapon[playerId] == TYPES.SPELLBOOK and IDS.CRUDE_UMBRAL_SPELLBOOK
+				or false
+			)
 			local newItemId = (oldItemId and oldItemId + 1 or false)
 			if player:getItemCount(IDS.CLUSTER_OF_SOLACE) >= Config.Improve.Clusters then
 				if newItemId and oldItemId then
@@ -375,7 +391,15 @@ local function creatureSayCallback(npc, creature, type, message)
 				end
 			end
 		elseif action[playerId] == ACTION.TRANSFORM then --transform
-			local oldItemId = (weapon[playerId] == TYPES.SWORD and (weapon_sub[playerId] == SUB_TYPES.BLADE and IDS.UMBRAL_BLADE or IDS.UMBRAL_SLAYER) or weapon[playerId] == TYPES.AXE and (weapon_sub[playerId] == SUB_TYPES.AXE and IDS.UMBRAL_AXE or IDS.UMBRAL_CHOPPER) or weapon[playerId] == TYPES.CLUB and (weapon_sub[playerId] == SUB_TYPES.MACE and IDS.UMBRAL_MACE or IDS.UMBRAL_HAMMER) or weapon[playerId] == TYPES.BOW and IDS.UMBRAL_BOW or weapon[playerId] == TYPES.CROSSBOW and IDS.UMBRAL_CROSSBOW or weapon[playerId] == TYPES.SPELLBOOK and IDS.UMBRAL_SPELLBOOK or false)
+			local oldItemId = (
+				weapon[playerId] == TYPES.SWORD and (weapon_sub[playerId] == SUB_TYPES.BLADE and IDS.UMBRAL_BLADE or IDS.UMBRAL_SLAYER)
+				or weapon[playerId] == TYPES.AXE and (weapon_sub[playerId] == SUB_TYPES.AXE and IDS.UMBRAL_AXE or IDS.UMBRAL_CHOPPER)
+				or weapon[playerId] == TYPES.CLUB and (weapon_sub[playerId] == SUB_TYPES.MACE and IDS.UMBRAL_MACE or IDS.UMBRAL_HAMMER)
+				or weapon[playerId] == TYPES.BOW and IDS.UMBRAL_BOW
+				or weapon[playerId] == TYPES.CROSSBOW and IDS.UMBRAL_CROSSBOW
+				or weapon[playerId] == TYPES.SPELLBOOK and IDS.UMBRAL_SPELLBOOK
+				or false
+			)
 			local newItemId = (oldItemId and oldItemId + 1 or false)
 			if player:getItemCount(IDS.CLUSTER_OF_SOLACE) >= Config.Transform.Clusters then
 				if newItemId and oldItemId then
@@ -409,14 +433,14 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 end
 
-keywordHandler:addKeyword({ 'outfit' }, StdModule.say, { npcHandler = npcHandler, text = 'What addon you are looking? I need for first addon: {dream warden mask} and for second {dream warden claw}.' })
-local node1 = keywordHandler:addKeyword({ 'dream warden mask' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = 'To achieve the first dream addon you need to give me 1 dream warden mask. Do you have them with you?' })
-node1:addChildKeyword({ 'yes' }, dreamFirst, {})
-node1:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = 'Alright then. Come back when you got all neccessary items.', reset = true })
+keywordHandler:addKeyword({ "outfit" }, StdModule.say, { npcHandler = npcHandler, text = "What addon you are looking? I need for first addon: {dream warden mask} and for second {dream warden claw}." })
+local node1 = keywordHandler:addKeyword({ "dream warden mask" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "To achieve the first dream addon you need to give me 1 dream warden mask. Do you have them with you?" })
+node1:addChildKeyword({ "yes" }, dreamFirst, {})
+node1:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Alright then. Come back when you got all neccessary items.", reset = true })
 
-local node2 = keywordHandler:addKeyword({ 'dream warden claw' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = 'To achieve the second dream addon you need to give me 1 dream warden claw. Do you have them with you?' })
-node2:addChildKeyword({ 'yes' }, dreamSecond, {})
-node2:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = 'Alright then. Come back when you got all neccessary items.', reset = true })
+local node2 = keywordHandler:addKeyword({ "dream warden claw" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "To achieve the second dream addon you need to give me 1 dream warden claw. Do you have them with you?" })
+node2:addChildKeyword({ "yes" }, dreamSecond, {})
+node2:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Alright then. Come back when you got all neccessary items.", reset = true })
 
 -- Greeting message
 keywordHandler:addGreetKeyword({ "ashari" }, { npcHandler = npcHandler, text = "Greetings, |PLAYERNAME|." })

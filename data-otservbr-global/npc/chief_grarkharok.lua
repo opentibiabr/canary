@@ -11,19 +11,19 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 281
+	lookType = 281,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Grarkharok\'s bestest troll tribe! Yeee, good name!' },
-	{ text = 'Grarkharok make new tribe here! Me Chief now!' },
-	{ text = 'Me like to throw rocks, me also like frogs! Yumyum!' }
+	{ text = "Grarkharok's bestest troll tribe! Yeee, good name!" },
+	{ text = "Grarkharok make new tribe here! Me Chief now!" },
+	{ text = "Me like to throw rocks, me also like frogs! Yumyum!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -63,7 +63,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'cloak') or MsgContains(message, 'feather') or MsgContains(message, 'swan') or MsgContains(message, 'maiden') then
+	if MsgContains(message, "cloak") or MsgContains(message, "feather") or MsgContains(message, "swan") or MsgContains(message, "maiden") then
 		if player:getStorageValue(ThreatenedDreams.Mission01[1]) == 12 then
 			npcHandler:say("Hahaha! Grarkharok take cloak from pretty girl. Then ... girl is swan. Grarkharok wants eat but flies away. Grarkharok not understand. Not need cloak, too many feathers. Give cloak to To ... Ta ... Tereban in Edron. Getting shiny coins and meat.", npc, creature)
 		else
@@ -161,6 +161,5 @@ npcHandler:setMessage(MESSAGE_WALKAWAY, "Grarkharok be {chief}!")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
-
 
 npcType:register(npcConfig)

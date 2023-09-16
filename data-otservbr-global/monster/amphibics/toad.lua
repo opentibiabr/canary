@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 262
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "The Laguna Islands, Arena and Zoo Quarter, TiquandaTarantula Caves, Shadowthorn Bog God Temple, Northern Zao Plantations, Northern Brimstone Bug CavesBrimstone Bug Cave, Tainted Caves."
+	Locations = "The Laguna Islands, Arena and Zoo Quarter, TiquandaTarantula Caves, Shadowthorn Bog God Temple, Northern Zao Plantations, Northern Brimstone Bug CavesBrimstone Bug Cave, Tainted Caves.",
 }
 
 monster.health = 135
@@ -35,7 +35,7 @@ monster.manaCost = 400
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -79,19 +79,19 @@ monster.loot = {
 	{ name = "war hammer", chance = 148 },
 	{ name = "mace", chance = 2854 },
 	{ id = 3578, chance = 20000 }, -- fish
-	{ name = "poisonous slime", chance = 4761 }
+	{ name = "poisonous slime", chance = 4761 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30, effect = CONST_ME_DRAWBLOOD, condition = { type = CONDITION_POISON, totalDamage = 20, interval = 4000 } },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -8, maxDamage = -17, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_GREEN_RINGS, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -8, maxDamage = -17, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_GREEN_RINGS, target = false },
 }
 
 monster.defenses = {
 	defense = 6,
 	armor = 6,
 	mitigation = 0.36,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 200, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 200, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -111,7 +111,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

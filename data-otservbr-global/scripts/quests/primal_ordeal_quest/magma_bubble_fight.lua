@@ -3,9 +3,9 @@ local chargedFlameId = 39230
 local heatedCrystalId = 39168
 local cooledCrystalId = 39169
 
-local overheatedZone = Zone('fight.magma-bubble.overheated')
+local overheatedZone = Zone("fight.magma-bubble.overheated")
 local bossZone = Zone("boss.magma-bubble")
-local spawnZone = Zone('fight.magma-bubble.spawn')
+local spawnZone = Zone("fight.magma-bubble.spawn")
 
 -- top left
 overheatedZone:addArea({ x = 33634, y = 32891, z = 15 }, { x = 33645, y = 32898, z = 15 })
@@ -18,7 +18,6 @@ overheatedZone:addArea({ x = 33664, y = 32896, z = 15 }, { x = 33671, y = 32899,
 -- bottom left
 overheatedZone:addArea({ x = 33635, y = 32911, z = 15 }, { x = 33643, y = 32929, z = 15 })
 overheatedZone:addArea({ x = 33644, y = 32921, z = 15 }, { x = 33647, y = 32928, z = 15 })
-
 
 -- central area where monsters/boss spawns
 spawnZone:addArea({ x = 33647, y = 32900, z = 15 }, { x = 33659, y = 32913, z = 15 })
@@ -96,25 +95,25 @@ end
 encounter:register()
 
 local function addShieldStack(player)
-	local currentIcon = player:getIcon()
+	local currentIcon = player:getIcon("magma-bubble")
 	if not currentIcon or currentIcon.category ~= CreatureIconCategory_Quests or currentIcon.icon ~= CreatureIconQuests_GreenShield then
-		player:setIcon(CreatureIconCategory_Quests, CreatureIconQuests_GreenShield, 5)
+		player:setIcon("magma-bubble", CreatureIconCategory_Quests, CreatureIconQuests_GreenShield, 5)
 		return true
 	end
-	player:setIcon(CreatureIconCategory_Quests, CreatureIconQuests_GreenShield, currentIcon.count + 5)
+	player:setIcon("magma-bubble", CreatureIconCategory_Quests, CreatureIconQuests_GreenShield, currentIcon.count + 5)
 end
 
 local function tickShields(player)
-	local currentIcon = player:getIcon()
+	local currentIcon = player:getIcon("magma-bubble")
 	if not currentIcon or currentIcon.category ~= CreatureIconCategory_Quests or currentIcon.icon ~= CreatureIconQuests_GreenShield then
 		return 0
 	end
 	if currentIcon.count <= 0 then
-		player:clearIcon()
+		player:removeIcon("magma-bubble")
 		return 0
 	end
 	local newCount = currentIcon.count - 1
-	player:setIcon(CreatureIconCategory_Quests, CreatureIconQuests_GreenShield, newCount)
+	player:setIcon("magma-bubble", CreatureIconCategory_Quests, CreatureIconQuests_GreenShield, newCount)
 	return newCount
 end
 
@@ -122,7 +121,9 @@ local overheatedDamage = GlobalEvent("self.magma-bubble.overheated.onThink")
 function overheatedDamage.onThink(interval, lastExecution)
 	local players = overheatedZone:getPlayers()
 	for _, player in ipairs(players) do
-		if player:getHealth() <= 0 then goto continue end
+		if player:getHealth() <= 0 then
+			goto continue
+		end
 		local shields = tickShields(player)
 		if shields > 0 then
 			local effect = CONST_ME_BLACKSMOKE
@@ -201,9 +202,15 @@ end
 
 local chargedFlameAction = Action()
 function chargedFlameAction.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not player then return false end
-	if not target or not target:isItem() then return false end
-	if target:getId() ~= cooledCrystalId then return false end
+	if not player then
+		return false
+	end
+	if not target or not target:isItem() then
+		return false
+	end
+	if target:getId() ~= cooledCrystalId then
+		return false
+	end
 	target:transform(heatedCrystalId)
 	local positions = {
 		Position(toPosition.x - 1, toPosition.y, toPosition.z),
@@ -227,8 +234,12 @@ chargedFlameAction:register()
 local shieldField = MoveEvent()
 function shieldField.onStepIn(creature, item, position, fromPosition)
 	local player = creature:getPlayer()
-	if not player then return false end
-	if not encounter:isInZone(player:getPosition()) then return false end
+	if not player then
+		return false
+	end
+	if not encounter:isInZone(player:getPosition()) then
+		return false
+	end
 	item:remove()
 	addShieldStack(player)
 end
@@ -239,7 +250,9 @@ shieldField:register()
 
 local theEndOfDaysHealth = CreatureEvent("fight.magma-bubble.TheEndOfDaysHealth")
 function theEndOfDaysHealth.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType)
-	if not creature then return primaryDamage, primaryType, secondaryDamage, secondaryType end
+	if not creature then
+		return primaryDamage, primaryType, secondaryDamage, secondaryType
+	end
 	local newHealth = creature:getHealth() - primaryDamage - secondaryDamage
 	if newHealth <= creature:getMaxHealth() * 0.5 then
 		creature:setHealth(creature:getMaxHealth())
@@ -281,3 +294,24 @@ function magmaBubbleDeath.onDeath()
 end
 
 magmaBubbleDeath:register()
+
+local zoneEvent = ZoneEvent(bossZone)
+function zoneEvent.afterEnter(_zone, creature)
+	local player = creature:getPlayer()
+	if not player then
+		return false
+	end
+
+	player:setIcon("magma-bubble", CreatureIconCategory_Quests, CreatureIconQuests_GreenShield, 0)
+end
+
+function zoneEvent.afterLeave(_zone, creature)
+	local player = creature:getPlayer()
+	if not player then
+		return false
+	end
+
+	player:removeIcon("magma-bubble")
+end
+
+zoneEvent:register()

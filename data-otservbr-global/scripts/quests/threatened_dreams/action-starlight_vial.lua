@@ -5,7 +5,7 @@ local config = {
 		toPos = Position(33532, 32303, 4),
 		usablePeriod = "night",
 		failMessage = "You are rubbing the opaque glass of the vial but nothing happens.",
-		successMessage = "The vial is glittering with starlight now."
+		successMessage = "The vial is glittering with starlight now.",
 	},
 	[25732] = {
 		targetPos = {
@@ -13,13 +13,13 @@ local config = {
 			Position(33458, 32299, 7),
 			Position(33562, 32256, 7),
 			Position(33541, 32244, 7),
-			Position(33529, 32187, 7)
+			Position(33529, 32187, 7),
 		},
 		usablePeriod = "night",
 		failMessage = "The stars has to be glittering in order to strengthen the barrier. Wait for the night. ",
 		successMessage = {
 			"As soon as you're pouring out the vial over the dreambird tree the plant is infused with starlight. The barrier strengthens.",
-			"As soon as you're pouring out the vial over the dreambird tree the plant is infused with starlight. This was the last tree."
+			"As soon as you're pouring out the vial over the dreambird tree the plant is infused with starlight. This was the last tree.",
 		},
 		storageCounter = ThreatenedDreams.Mission02.ChargedStarlightVial,
 		storagePos = {
@@ -28,8 +28,8 @@ local config = {
 			ThreatenedDreams.Mission02.StarlightPos03,
 			ThreatenedDreams.Mission02.StarlightPos04,
 			ThreatenedDreams.Mission02.StarlightPos05,
-		}
-	}
+		},
+	},
 }
 
 local starlightVial = Action()
@@ -48,8 +48,7 @@ function starlightVial.onUse(player, item, fromPosition, target, toPosition, isH
 			return true
 		end
 
-		if player:getStorageValue(ThreatenedDreams.Mission02[1]) ~= 6
-				and player:getStorageValue(ThreatenedDreams.Mission02[1]) ~= 8 then
+		if player:getStorageValue(ThreatenedDreams.Mission02[1]) ~= 6 and player:getStorageValue(ThreatenedDreams.Mission02[1]) ~= 8 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, tool.failMessage)
 			return true
 		end
@@ -61,14 +60,12 @@ function starlightVial.onUse(player, item, fromPosition, target, toPosition, isH
 			item:transform(25976)
 		end
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, tool.successMessage)
-		iterateArea(
-			function(position)
-				local tile = Tile(position)
-				if tile then
-					position:sendMagicEffect(CONST_ME_HITAREA)
-				end
-			end,
-			tool.fromPos, tool.toPos)
+		iterateArea(function(position)
+			local tile = Tile(position)
+			if tile then
+				position:sendMagicEffect(CONST_ME_HITAREA)
+			end
+		end, tool.fromPos, tool.toPos)
 		return true
 	elseif item.itemid == 25732 then
 		if tool.usablePeriod ~= currentPeriod then

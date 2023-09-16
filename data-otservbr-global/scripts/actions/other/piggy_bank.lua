@@ -6,7 +6,7 @@ function piggyBank.onUse(player, item, fromPosition, target, toPosition, isHotke
 		item:transform(2996)
 
 		player:addItem(ITEM_GOLD_COIN, 1)
-		player:addAchievementProgress('Allowance Collector', 50)
+		player:addAchievementProgress("Allowance Collector", 50)
 	else
 		fromPosition:sendMagicEffect(CONST_ME_SOUND_YELLOW)
 		player:addItem(ITEM_PLATINUM_COIN, 1)

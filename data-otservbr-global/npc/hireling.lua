@@ -22,11 +22,11 @@ function createHirelingType(HirelingName)
 		lookBody = 34,
 		lookLegs = 3,
 		lookFeet = 116,
-		lookAddons = 0
+		lookAddons = 0,
 	}
 
 	npcConfig.flags = {
-		floorchange = false
+		floorchange = false,
 	}
 
 	npcConfig.shop = {
@@ -308,7 +308,7 @@ function createHirelingType(HirelingName)
 		{ itemName = "yellow footboard", clientId = 32485, buy = 40 },
 		{ itemName = "yellow headboard", clientId = 32476, buy = 40 },
 		{ itemName = "yellow pillow", clientId = 900, buy = 25 },
-		{ itemName = "yellow tapestry", clientId = 2650, buy = 25 }
+		{ itemName = "yellow tapestry", clientId = 2650, buy = 25 },
 	}
 	-- On buy npc shop message
 	npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -319,8 +319,7 @@ function createHirelingType(HirelingName)
 		player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 	end
 	-- On check npc shop message (look item)
-	npcType.onCheckItem = function(npc, player, clientId, subType)
-	end
+	npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 	local keywordHandler = KeywordHandler:new()
 	local npcHandler = NpcHandler:new(keywordHandler)
@@ -364,17 +363,17 @@ function createHirelingType(HirelingName)
 		SERVICES = 1100,
 		BANK = 1200,
 		FOOD = 1300,
-		GOODS = 1400
+		GOODS = 1400,
 	}
 
 	local TOPIC_FOOD = {
-		SKILL_CHOOSE = 1301
+		SKILL_CHOOSE = 1301,
 	}
 
 	local GREETINGS = {
 		BANK = "Alright! What can I do for you and your bank business, |PLAYERNAME|?",
 		FOOD = "Hmm, yes! A variety of fine food awaits! However, a small expense of 15000 gold is expected to make these delicious masterpieces happen. Shall I?",
-		STASH = "Of course, here is your stash! Well-maintained and neatly sorted for your convenience!"
+		STASH = "Of course, here is your stash! Well-maintained and neatly sorted for your convenience!",
 	}
 
 	local function getHirelingSkills()
@@ -435,12 +434,7 @@ function createHirelingType(HirelingName)
 		end
 
 		if profession then
-			message =
-					string.format(
-						"I'm not a %s and would not know how to help you with that, sorry. I can start a %s apprenticeship if you buy it for me in the store!",
-						profession,
-						profession
-					)
+			message = string.format("I'm not a %s and would not know how to help you with that, sorry. I can start a %s apprenticeship if you buy it for me in the store!", profession, profession)
 		end
 
 		npcHandler:say(message, npc, creature)
@@ -462,14 +456,11 @@ function createHirelingType(HirelingName)
 		elseif food_id == 29410 then
 			message = "Magnifique! A tiger meat that has been marinated for several hours in magic spices."
 		elseif food_id == 29411 then
-			message =
-			"Aaah, the beauty of the simple dishes! A delicate salad made of selected ingredients, capable of bring joy to the hearts of bravest warriors and their weapons."
+			message = "Aaah, the beauty of the simple dishes! A delicate salad made of selected ingredients, capable of bring joy to the hearts of bravest warriors and their weapons."
 		elseif food_id == 29412 then
-			message =
-			"Oh yes, very spicy chilly combined with delicious minced carniphila meat and a side dish of fine salad!"
+			message = "Oh yes, very spicy chilly combined with delicious minced carniphila meat and a side dish of fine salad!"
 		elseif food_id == 29413 then
-			message =
-			"Aaah, the northern cuisine! A catch of fresh salmon right from the coast Svargrond is the base of this extraordinary fish dish."
+			message = "Aaah, the northern cuisine! A catch of fresh salmon right from the coast Svargrond is the base of this extraordinary fish dish."
 		elseif food_id == 29414 then
 			message = "A traditional and classy meal. A beefy casserole which smells far better than it sounds!"
 		elseif food_id == 29415 then
@@ -489,7 +480,7 @@ function createHirelingType(HirelingName)
 
 		if player:getFreeCapacity() < itType:getWeight(1) then
 			npcHandler:say("Sorry, but you don't have enough capacity.", npc, creature)
-		elseif not inbox or inbox:getEmptySlots() == 0 then
+		elseif not inbox then
 			player:getPosition():sendMagicEffect(CONST_ME_POFF)
 			npcHandler:say("Sorry, you don't have enough room on your inbox", npc, creature)
 		elseif not player:removeMoneyBank(15000) then
@@ -508,11 +499,7 @@ function createHirelingType(HirelingName)
 		if random == 6 then
 			-- ask for preferred skill
 			npcHandler:setTopic(playerId, TOPIC_FOOD.SKILL_CHOOSE)
-			npcHandler:say(
-				"Yay! I have the ingredients to make a skill boost dish. Would you rather like to boost your {magic}, {melee}, {shielding} or {distance} skill?",
-				npc,
-				creature
-			)
+			npcHandler:say("Yay! I have the ingredients to make a skill boost dish. Would you rather like to boost your {magic}, {melee}, {shielding} or {distance} skill?", npc, creature)
 		else -- deliver the random generated index
 			deliverFood(npc, creature, HIRELING_FOODS[random])
 		end
@@ -537,11 +524,7 @@ function createHirelingType(HirelingName)
 			elseif MsgContains(message, "distance") then
 				deliverFood(npc, creature, HIRELING_FOODS_BOOST.DISTANCE)
 			else
-				npcHandler:say(
-					"Sorry, but you must choose a valid skill class. Would you like to boost your {magic}, {melee}, {shielding} or {distance} skill?",
-					npc,
-					creature
-				)
+				npcHandler:say("Sorry, but you must choose a valid skill class. Would you like to boost your {magic}, {melee}, {shielding} or {distance} skill?", npc, creature)
 			end
 		end
 	end
@@ -561,17 +544,13 @@ function createHirelingType(HirelingName)
 
 		-- roleplay
 		if MsgContains(message, "sword of fury") then
-			npcHandler:say(
-				"In my youth I dreamt to wield it! Now I wield the broom of... brooming. I guess that's the next best thing!",
-				npc,
-				creature
-			)
+			npcHandler:say("In my youth I dreamt to wield it! Now I wield the broom of... brooming. I guess that's the next best thing!", npc, creature)
 		elseif MsgContains(message, "rookgaard") then
 			npcHandler:say("What an uncivilised place without any culture.", npc, creature)
 		elseif MsgContains(message, "excalibug") then
 			-- end roleplay
 			npcHandler:say("I'll keep an eye open for it when cleaning up the things you brought home!", npc, creature)
-		elseif (MsgContains(message, "service")) then
+		elseif MsgContains(message, "service") then
 			npcHandler:setTopic(playerId, TOPIC.SERVICES)
 			local servicesMsg = getHirelingServiceString(creature)
 			npcHandler:say(servicesMsg, npc, creature)

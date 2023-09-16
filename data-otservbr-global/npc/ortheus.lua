@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 121,
 	lookLegs = 121,
 	lookFeet = 116,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -99,7 +99,9 @@ keywordHandler:addKeyword({ "lisander" }, StdModule.say, { npcHandler = npcHandl
 keywordHandler:addKeyword({ "serafin" }, StdModule.say, { npcHandler = npcHandler, text = "He sometimes delivers fruit and vegetables to this quarter." })
 keywordHandler:addKeyword({ "yalahar" }, StdModule.say, { npcHandler = npcHandler, text = "Though the city has seen better days, the quality of life is still much better than in most other cities." })
 keywordHandler:addKeyword({ "quarter" }, StdModule.say, { npcHandler = npcHandler, text = "I can't imagine a better place to live" })
-keywordHandler:addKeyword({ "alori mort" }, StdModule.say, { npcHandler = npcHandler, text = "Whatever that's supposed to mean." }, function(player) return player:getStorageValue(BloodBrothers.Mission03) == 1 end)
+keywordHandler:addKeyword({ "alori mort" }, StdModule.say, { npcHandler = npcHandler, text = "Whatever that's supposed to mean." }, function(player)
+	return player:getStorageValue(BloodBrothers.Mission03) == 1
+end)
 keywordHandler:addKeyword({ "reward" }, StdModule.say, { npcHandler = npcHandler, text = "I don't have anything that I could give you as a reward. Guess you aren't so selfless after all, huh?" })
 keywordHandler:addKeyword({ "augur" }, StdModule.say, { npcHandler = npcHandler, text = "They try to protect the city and do a decent job. Well - no, a poor job, I mean a poor job." })
 keywordHandler:addKeyword({ "mission" }, StdModule.say, { npcHandler = npcHandler, text = "You can bring me a mug of tea if you want to." })

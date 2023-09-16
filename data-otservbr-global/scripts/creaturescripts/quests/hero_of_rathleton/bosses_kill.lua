@@ -1,16 +1,19 @@
 local bosses = {
-	['deep terror'] = {
+	["deep terror"] = {
 		teleportPos = Position(33749, 31952, 14),
 		nextpos = Position(33740, 31940, 15),
-		globaltimer = GlobalStorage.HeroRathleton.DeepRunning },
-	['empowered glooth horror'] = {
+		globaltimer = GlobalStorage.HeroRathleton.DeepRunning,
+	},
+	["empowered glooth horror"] = {
 		teleportPos = Position(33545, 31955, 15),
 		nextpos = Position(33534, 31955, 15),
-		globaltimer = GlobalStorage.HeroRathleton.HorrorRunning },
-	['professor maxxen'] = {
+		globaltimer = GlobalStorage.HeroRathleton.HorrorRunning,
+	},
+	["professor maxxen"] = {
 		teleportPos = Position(33718, 32047, 15),
 		nextpos = Position(33707, 32107, 15),
-		globaltimer = GlobalStorage.HeroRathleton.MaxxenRunning }
+		globaltimer = GlobalStorage.HeroRathleton.MaxxenRunning,
+	},
 }
 
 local function checkHorror()
@@ -18,15 +21,15 @@ local function checkHorror()
 	for i = 1, #spectators do
 		local spectator = spectators[i]
 		if spectator:isMonster() then
-			if spectator:getName():lower() == 'empowered glooth horror' and spectator:getHealth() >= 1 then
+			if spectator:getName():lower() == "empowered glooth horror" and spectator:getHealth() >= 1 then
 				return true
-			elseif spectator:getName():lower() == 'strong glooth horror' and spectator:getHealth() >= 1 then
+			elseif spectator:getName():lower() == "strong glooth horror" and spectator:getHealth() >= 1 then
 				return true
-			elseif spectator:getName():lower() == 'feeble glooth horror' and spectator:getHealth() >= 1 then
+			elseif spectator:getName():lower() == "feeble glooth horror" and spectator:getHealth() >= 1 then
 				return true
-			elseif spectator:getName():lower() == 'weakened glooth horror' and spectator:getHealth() >= 1 then
+			elseif spectator:getName():lower() == "weakened glooth horror" and spectator:getHealth() >= 1 then
 				return true
-			elseif spectator:getName():lower() == 'glooth horror' and spectator:getHealth() >= 1 then
+			elseif spectator:getName():lower() == "glooth horror" and spectator:getHealth() >= 1 then
 				return true
 			end
 		end
@@ -52,7 +55,7 @@ function rathletonBossKill.onKill(creature, target)
 	if not bossConfig then
 		return true
 	end
-	if targetMonster:getName():lower() == 'empowered glooth horror' then
+	if targetMonster:getName():lower() == "empowered glooth horror" then
 		if checkHorror() == true then
 			return true
 		end

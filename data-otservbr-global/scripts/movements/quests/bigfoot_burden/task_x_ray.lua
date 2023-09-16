@@ -17,7 +17,7 @@ local xRay = {
 	{ x = 32764, y = 31763, z = 10 }, -- Endline
 	{ x = 32765, y = 31763, z = 10 },
 	{ x = 32766, y = 31763, z = 10 },
-	{ x = 32767, y = 31763, z = 10 }
+	{ x = 32767, y = 31763, z = 10 },
 }
 
 local condition = Condition(CONDITION_OUTFIT)

@@ -2,7 +2,7 @@ local positions = {
 	{ x = 32563, y = 31957, z = 1 },
 	{ x = 32565, y = 31957, z = 1 },
 	{ x = 32567, y = 31957, z = 1 },
-	{ x = 32569, y = 31957, z = 1 }
+	{ x = 32569, y = 31957, z = 1 },
 }
 
 local sacrificeSkulls = MoveEvent()

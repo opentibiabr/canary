@@ -1,7 +1,7 @@
 local config = {
-	[4641] = { storageKey = { Storage.GravediggerOfDrefia.Mission32, Storage.GravediggerOfDrefia.Mission32a }, message = 'Shadows rise and engulf the candle. The statue flickers in an unearthly light.' },
-	[4642] = { storageKey = { Storage.GravediggerOfDrefia.Mission32a, Storage.GravediggerOfDrefia.Mission32b }, message = 'The shadows of the statue swallow the candle hungrily.' },
-	[4643] = { storageKey = { Storage.GravediggerOfDrefia.Mission32b, Storage.GravediggerOfDrefia.Mission33 }, message = 'A shade emerges and snatches the candle from your hands.' }
+	[4641] = { storageKey = { Storage.GravediggerOfDrefia.Mission32, Storage.GravediggerOfDrefia.Mission32a }, message = "Shadows rise and engulf the candle. The statue flickers in an unearthly light." },
+	[4642] = { storageKey = { Storage.GravediggerOfDrefia.Mission32a, Storage.GravediggerOfDrefia.Mission32b }, message = "The shadows of the statue swallow the candle hungrily." },
+	[4643] = { storageKey = { Storage.GravediggerOfDrefia.Mission32b, Storage.GravediggerOfDrefia.Mission33 }, message = "A shade emerges and snatches the candle from your hands." },
 }
 
 local gravediggerMonks = Action()

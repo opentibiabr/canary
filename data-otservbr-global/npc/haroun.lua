@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 80
+	lookType = 80,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -54,36 +54,36 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if table.contains({ "enchanted chicken wing", "boots of haste" }, message) then
-		npcHandler:say('Do you want to trade Boots of haste for Enchanted Chicken Wing?', npc, creature)
+		npcHandler:say("Do you want to trade Boots of haste for Enchanted Chicken Wing?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif table.contains({ "warrior sweat", "warrior helmet" }, message) then
-		npcHandler:say('Do you want to trade 4 Warrior Helmet for Warrior Sweat?', npc, creature)
+		npcHandler:say("Do you want to trade 4 Warrior Helmet for Warrior Sweat?", npc, creature)
 		npcHandler:setTopic(playerId, 2)
 	elseif table.contains({ "fighting spirit", "royal helmet" }, message) then
-		npcHandler:say('Do you want to trade 2 Royal Helmet for Fighting Spirit', npc, creature)
+		npcHandler:say("Do you want to trade 2 Royal Helmet for Fighting Spirit", npc, creature)
 		npcHandler:setTopic(playerId, 3)
 	elseif table.contains({ "magic sulphur", "fire sword" }, message) then
-		npcHandler:say('Do you want to trade 3 Fire Sword for Magic Sulphur', npc, creature)
+		npcHandler:say("Do you want to trade 3 Fire Sword for Magic Sulphur", npc, creature)
 		npcHandler:setTopic(playerId, 4)
 	elseif table.contains({ "job", "items" }, message) then
-		npcHandler:say('I trade Enchanted Chicken Wing for Boots of Haste, Warrior Sweat for 4 Warrior Helmets, Fighting Spirit for 2 Royal Helmet Magic Sulphur for 3 Fire Swords', npc, creature)
+		npcHandler:say("I trade Enchanted Chicken Wing for Boots of Haste, Warrior Sweat for 4 Warrior Helmets, Fighting Spirit for 2 Royal Helmet Magic Sulphur for 3 Fire Swords", npc, creature)
 		npcHandler:setTopic(playerId, 0)
-	elseif MsgContains(message, 'yes') and npcHandler:getTopic(playerId) <= 4 and npcHandler:getTopic(playerId) >= 1 then
+	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) <= 4 and npcHandler:getTopic(playerId) >= 1 then
 		local trade = {
 			{ NeedItem = 3079, Ncount = 1, GiveItem = 5891, Gcount = 1 }, -- Enchanted Chicken Wing
 			{ NeedItem = 3369, Ncount = 4, GiveItem = 5885, Gcount = 1 }, -- Flask of Warrior's Sweat
 			{ NeedItem = 3392, Ncount = 2, GiveItem = 5884, Gcount = 1 }, -- Spirit Container
-			{ NeedItem = 3280, Ncount = 3, GiveItem = 5904, Gcount = 1 } -- Magic Sulphur
+			{ NeedItem = 3280, Ncount = 3, GiveItem = 5904, Gcount = 1 }, -- Magic Sulphur
 		}
 		if player:getItemCount(trade[npcHandler:getTopic(playerId)].NeedItem) >= trade[npcHandler:getTopic(playerId)].Ncount then
 			player:removeItem(trade[npcHandler:getTopic(playerId)].NeedItem, trade[npcHandler:getTopic(playerId)].Ncount)
 			player:addItem(trade[npcHandler:getTopic(playerId)].GiveItem, trade[npcHandler:getTopic(playerId)].Gcount)
-			return npcHandler:say('Here you are.', npc, creature)
+			return npcHandler:say("Here you are.", npc, creature)
 		else
-			npcHandler:say('Sorry but you don\'t have the item.', npc, creature)
+			npcHandler:say("Sorry but you don't have the item.", npc, creature)
 		end
-	elseif MsgContains(message, 'no') and (npcHandler:getTopic(playerId) >= 1 and npcHandler:getTopic(playerId) <= 5) then
-		npcHandler:say('Ok then.', npc, creature)
+	elseif MsgContains(message, "no") and (npcHandler:getTopic(playerId) >= 1 and npcHandler:getTopic(playerId) <= 5) then
+		npcHandler:say("Ok then.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 		npcHandler:removeInteraction(npc, creature)
 		npcHandler:resetNpc(creature)
@@ -95,7 +95,7 @@ local function onTradeRequest(npc, creature)
 	local player = Player(creature)
 
 	if player:getStorageValue(Storage.DjinnWar.MaridFaction.Mission03) ~= 3 then
-		npcHandler:say('I\'m sorry, human. But you need Gabel\'s permission to trade with me.', npc, creature)
+		npcHandler:say("I'm sorry, human. But you need Gabel's permission to trade with me.", npc, creature)
 		return false
 	end
 
@@ -105,7 +105,7 @@ end
 npcHandler:setMessage(MESSAGE_GREET, "Be greeted, human |PLAYERNAME|. How can a humble djinn be of service?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell! May the serene light of the enlightened one rest shine on your travels.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Farewell, human.")
-npcHandler:setMessage(MESSAGE_SENDTRADE, 'At your service, just browse through my wares.')
+npcHandler:setMessage(MESSAGE_SENDTRADE, "At your service, just browse through my wares.")
 
 npcHandler:setCallback(CALLBACK_ON_TRADE_REQUEST, onTradeRequest)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
@@ -134,7 +134,7 @@ npcConfig.shop = {
 	{ itemName = "wand of inferno", clientId = 3071, sell = 3000 },
 	{ itemName = "wand of starstorm", clientId = 8092, sell = 3600 },
 	{ itemName = "wand of voodoo", clientId = 8094, sell = 4400 },
-	{ itemName = "wand of vortex", clientId = 3074, sell = 100 }
+	{ itemName = "wand of vortex", clientId = 3074, sell = 100 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -145,7 +145,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

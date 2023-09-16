@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 94,
 	lookLegs = 66,
 	lookFeet = 121,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -50,10 +50,10 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addGreetKeyword({ 'hi' }, { npcHandler = npcHandler, text = 'Hello and welcome in the Gnomprona Gardens' })
-keywordHandler:addAliasKeyword({ 'hello' })
+keywordHandler:addGreetKeyword({ "hi" }, { npcHandler = npcHandler, text = "Hello and welcome in the Gnomprona Gardens" })
+keywordHandler:addAliasKeyword({ "hello" })
 
-npcHandler:setMessage(MESSAGE_GREET, 'Hello and welcome in the Gnomprona Gardens')
+npcHandler:setMessage(MESSAGE_GREET, "Hello and welcome in the Gnomprona Gardens")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 85,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1731
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Court of Winter, Dream Labyrinth."
+	Locations = "Court of Winter, Dream Labyrinth.",
 }
 
 monster.health = 5200
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -95,13 +95,13 @@ monster.loot = {
 	{ name = "glacier robe", chance = 1930 },
 	{ name = "cyan crystal fragment", chance = 2100 },
 	{ name = "elven amulet", chance = 1260 },
-	{ name = "blue gem", chance = 330 }
+	{ name = "blue gem", chance = 330 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -110, maxDamage = -400 },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -200, maxDamage = -300, radius = 3, effect = CONST_ME_ICEAREA, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -250, maxDamage = -300, range = 7, shootEffect = CONST_ANI_ICE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -250, maxDamage = -300, range = 7, shootEffect = CONST_ANI_ICE, target = false },
 }
 
 monster.defenses = {
@@ -111,7 +111,7 @@ monster.defenses = {
 }
 
 monster.reflects = {
-	{ type = COMBAT_ICEDAMAGE, percent = 70 }
+	{ type = COMBAT_ICEDAMAGE, percent = 70 },
 }
 
 monster.elements = {
@@ -131,7 +131,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

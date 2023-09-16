@@ -4,8 +4,7 @@ function theApeMiss9.onUse(player, item, fromPosition, target, toPosition, isHot
 		return false
 	end
 
-	if player:getStorageValue(Storage.TheApeCity.Questline) ~= 17
-			or player:getStorageValue(Storage.TheApeCity.SnakeDestroyer) == 1 then
+	if player:getStorageValue(Storage.TheApeCity.Questline) ~= 17 or player:getStorageValue(Storage.TheApeCity.SnakeDestroyer) == 1 then
 		return false
 	end
 

@@ -28,7 +28,7 @@ function craftHelmet.onAddItem(moveitem, tileitem, position)
 			return true
 		end
 
-		helmetItems[#helmetItems+1] = helmetItem
+		helmetItems[#helmetItems + 1] = helmetItem
 	end
 
 	for i = 1, #helmetItems do

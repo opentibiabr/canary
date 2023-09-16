@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 41,
 	lookFeet = 76,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1412
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Misguided Camp accessible via Outlaw Camp's portal."
+	Locations = "Misguided Camp accessible via Outlaw Camp's portal.",
 }
 
 monster.health = 2000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -82,19 +82,19 @@ monster.loot = {
 	{ id = 3031, chance = 100000, maxCount = 153 }, -- gold coin
 	{ id = 25296, chance = 5610 }, -- rubbish amulet
 	{ id = 9058, chance = 4930 }, -- gold ingot
-	{ id = 3041, chance = 4630 } -- blue gem
+	{ id = 3041, chance = 4630 }, -- blue gem
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -320 },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -180, maxDamage = -230, range = 7, shootEffect = CONST_ANI_SPEAR, target = true }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -180, maxDamage = -230, range = 7, shootEffect = CONST_ANI_SPEAR, target = true },
 }
 
 monster.defenses = {
 	defense = 35,
 	armor = 30,
 	mitigation = 1.32,
-	{ name = "heal monster", interval = 2000, chance = 20, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "heal monster", interval = 2000, chance = 20, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -114,7 +114,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

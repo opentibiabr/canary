@@ -18,7 +18,7 @@ function spell.onCastSpell(creature, var)
 			end
 		end
 	end
-	if (check < 10) then
+	if check < 10 then
 		local summon = Game.createMonster("Dreadbeast", creature:getPosition(), true, false)
 		if summon then
 		end

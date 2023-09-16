@@ -10,12 +10,14 @@ function callback.monsterOnDropLoot(monster, corpse)
 		msgSuffix = config.msgSuffix
 	end
 	local mType = monster:getType()
-	if not mType then return end
+	if not mType then
+		return
+	end
 
 	local charm = player and player:getCharmMonsterType(CHARM_GUT)
 	local gut = charm and charm:raceId() == mType:raceId()
 
-	local lootTable = mType:generateLootRoll({ factor = factor, gut = gut, }, {})
+	local lootTable = mType:generateLootRoll({ factor = factor, gut = gut }, {})
 	corpse:addLoot(lootTable)
 	for _, item in ipairs(lootTable) do
 		if item.gut then

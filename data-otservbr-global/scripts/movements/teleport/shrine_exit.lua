@@ -11,7 +11,7 @@ local exitDestination = {
 	{ x = 32628, y = 32743, z = 4 }, --Port Hope
 	{ x = 32213, y = 31132, z = 8 }, --Svargrond
 	{ x = 32786, y = 31245, z = 5 }, --Yalahar
-	{ x = 33594, y = 31899, z = 4 } --Oramond
+	{ x = 33594, y = 31899, z = 4 }, --Oramond
 }
 local exitFlamesPos = {
 	{ x = 32191, y = 31419, z = 2 }, --ice
@@ -26,7 +26,7 @@ local exitFlamesPos = {
 	{ x = 32907, y = 32342, z = 15 },
 	{ x = 33063, y = 32711, z = 5 }, --energy
 	{ x = 33063, y = 32716, z = 5 },
-	{ x = 33059, y = 32717, z = 5 }
+	{ x = 33059, y = 32717, z = 5 },
 }
 
 local shrineExit = MoveEvent()

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 19,
 	lookLegs = 57,
 	lookFeet = 95,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -52,7 +52,7 @@ end
 
 local function greetCallback(npc, creature)
 	local playerId = creature:getId()
-	npcHandler:say('Move on!', npc, creature)
+	npcHandler:say("Move on!", npc, creature)
 	npcHandler:removeInteraction(npc, creature)
 	npcHandler:resetNpc(creature)
 	return false

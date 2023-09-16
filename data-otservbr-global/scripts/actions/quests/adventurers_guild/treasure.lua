@@ -1,17 +1,17 @@
 local items = {
-	{ description = 'a platinum coins', items = { { id = ITEM_PLATINUM_COIN, count = 5 } } },
+	{ description = "a platinum coins", items = { { id = ITEM_PLATINUM_COIN, count = 5 } } },
 	{
-		description = 'some gems',
+		description = "some gems",
 		items = {
 			{ id = 3029, count = 1 },
 			{ id = 3032, count = 1 },
-			{ id = 3030, count = 1 }
-		}
+			{ id = 3030, count = 1 },
+		},
 	},
-	{ description = 'a life ring', items = { { id = 3089, count = 1 } } },
-	{ description = 'a red gem', items = { { id = 3039, count = 1 } } },
-	{ description = 'a mana potion', items = { { id = 237, count = 10 } } },
-	{ description = 'a health potion', items = { { id = 236, count = 8 } } }
+	{ description = "a life ring", items = { { id = 3089, count = 1 } } },
+	{ description = "a red gem", items = { { id = 3039, count = 1 } } },
+	{ description = "a mana potion", items = { { id = 237, count = 10 } } },
+	{ description = "a health potion", items = { { id = 236, count = 8 } } },
 }
 
 local adventurersTreasure = Action()
@@ -27,7 +27,7 @@ function adventurersTreasure.onUse(player, item, fromPosition, target, toPositio
 		player:setStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter, 0)
 
 		-- hoard of the dragon achievement
-		local achievement = getAchievementInfoByName('Hoard of the Dragon')
+		local achievement = getAchievementInfoByName("Hoard of the Dragon")
 		if not achievement or player:hasAchievement(achievement.id) then
 			return true
 		end

@@ -16,12 +16,11 @@ npcConfig.outfit = {
 	lookBody = 77,
 	lookLegs = 94,
 	lookFeet = 97,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
-
 
 npcType:register(npcConfig)

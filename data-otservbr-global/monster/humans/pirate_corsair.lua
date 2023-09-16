@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 250
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Nargor, Trade Quarter, Foreigner Quarter Dock, Krailos Steppe During a World Change."
+	Locations = "Nargor, Trade Quarter, Foreigner Quarter Dock, Krailos Steppe During a World Change.",
 }
 
 monster.health = 675
@@ -35,7 +35,7 @@ monster.manaCost = 775
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 15
+	chance = 15,
 }
 
 monster.strategiesTarget = {
@@ -92,13 +92,13 @@ monster.loot = {
 	{ name = "peg leg", chance = 600 },
 	{ name = "strong health potion", chance = 820 },
 	{ name = "compass", chance = 11050 },
-	{ name = "compass", chance = 11020 }
+	{ name = "compass", chance = 11020 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -170 },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -150, range = 3, shootEffect = CONST_ANI_THROWINGSTAR, target = false },
-	{ name = "pirate corsair skill reducer", interval = 2000, chance = 5, target = false }
+	{ name = "pirate corsair skill reducer", interval = 2000, chance = 5, target = false },
 }
 
 monster.defenses = {
@@ -124,7 +124,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

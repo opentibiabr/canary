@@ -139,7 +139,7 @@ void Decay::checkDecay() {
 void Decay::internalDecayItem(const std::shared_ptr<Item> &item) {
 	const ItemType &it = Item::items[item->getID()];
 	if (it.decayTo != 0) {
-		std::shared_ptr<Player> player = item->getHoldingPlayer();
+		const auto &player = item->getHoldingPlayer();
 		if (player) {
 			bool needUpdateSkills = false;
 			for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {

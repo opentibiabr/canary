@@ -414,7 +414,7 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 			SpectatorHashSet spectators;
 			g_game().map.getSpectators(spectators, monster->getPosition(), true);
 			for (std::shared_ptr<Creature> spectator : spectators) {
-				if (auto tmpPlayer = spectator->getPlayer()) {
+				if (const auto &tmpPlayer = spectator->getPlayer()) {
 					auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldownRaceId(tmpPlayer);
 					// If not have boss to update, then kill loop for economize resources
 					if (bossesOnTracker.size() == 0) {
@@ -611,7 +611,7 @@ int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
 int GameFunctions::luaGameGetNormalizedPlayerName(lua_State* L) {
 	// Game.getNormalizedPlayerName(name)
 	auto name = getString(L, 1);
-	std::shared_ptr<Player> player = g_game().getPlayerByName(name, true);
+	const auto player = g_game().getPlayerByName(name, true);
 	if (player) {
 		pushString(L, player->getName());
 		if (!player->isOnline()) {

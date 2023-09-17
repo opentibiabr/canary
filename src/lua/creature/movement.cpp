@@ -467,7 +467,7 @@ uint32_t MoveEvent::RemoveItemField(std::shared_ptr<Item>, std::shared_ptr<Item>
 	return 1;
 }
 
-uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool isCheck) {
+uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, const std::shared_ptr<Player> & player, std::shared_ptr<Item> item, Slots_t slot, bool isCheck) {
 	if (player == nullptr) {
 		g_logger().error("[MoveEvent::EquipItem] - Player is nullptr");
 		return 0;
@@ -581,7 +581,7 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 	return 1;
 }
 
-uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool) {
+uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, const std::shared_ptr<Player> & player, std::shared_ptr<Item> item, Slots_t slot, bool) {
 	if (player == nullptr) {
 		g_logger().error("[MoveEvent::EquipItem] - Player is nullptr");
 		return 0;
@@ -679,7 +679,7 @@ bool MoveEvent::executeStep(const std::shared_ptr<Creature> &creature, std::shar
 	// Check if the new position is the same as the old one
 	// If it is, log a warning and either teleport the player to their temple position if item type is an teleport
 	auto fromPosition = creature->getLastPosition();
-	if (auto player = creature->getPlayer(); item && fromPosition == pos && getEventType() == MOVE_EVENT_STEP_IN) {
+	if (const auto &player = creature->getPlayer(); item && fromPosition == pos && getEventType() == MOVE_EVENT_STEP_IN) {
 		if (const ItemType &itemType = Item::items[item->getID()]; player && itemType.isTeleport()) {
 			g_logger().warn("[{}] cannot teleport player: {}, to the same position: {} of fromPosition: {}", __FUNCTION__, player->getName(), pos.toString(), fromPosition.toString());
 			g_game().internalTeleport(player, player->getTemplePosition());

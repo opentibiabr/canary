@@ -24,7 +24,7 @@ void House::addTile(std::shared_ptr<HouseTile> tile) {
 	updateDoorDescription();
 }
 
-void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, std::shared_ptr<Player> player /* = nullptr*/) {
+void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, const std::shared_ptr<Player> & player /* = nullptr*/) {
 	if (updateDatabase && owner != guid) {
 		Database &db = Database::getInstance();
 
@@ -136,7 +136,7 @@ void House::updateDoorDescription() const {
 	}
 }
 
-AccessHouseLevel_t House::getHouseAccessLevel(std::shared_ptr<Player> player) {
+AccessHouseLevel_t House::getHouseAccessLevel(const std::shared_ptr<Player> & player) {
 	if (!player) {
 		return HOUSE_OWNER;
 	}
@@ -166,7 +166,7 @@ AccessHouseLevel_t House::getHouseAccessLevel(std::shared_ptr<Player> player) {
 	return HOUSE_NOT_INVITED;
 }
 
-bool House::kickPlayer(std::shared_ptr<Player> player, std::shared_ptr<Player> target) {
+bool House::kickPlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> & target) {
 	if (!target) {
 		return false;
 	}
@@ -207,7 +207,7 @@ void House::setAccessList(uint32_t listId, const std::string &textlist) {
 	for (std::shared_ptr<HouseTile> tile : houseTiles) {
 		if (CreatureVector* creatures = tile->getCreatures()) {
 			for (int32_t i = creatures->size(); --i >= 0;) {
-				std::shared_ptr<Player> player = (*creatures)[i]->getPlayer();
+				const auto &player = (*creatures)[i]->getPlayer();
 				if (player && !isInvited(player)) {
 					kickPlayer(nullptr, player);
 				}
@@ -221,11 +221,11 @@ bool House::transferToDepot() const {
 		return false;
 	}
 
-	std::shared_ptr<Player> player = g_game().getPlayerByGUID(owner);
+	const auto &player = g_game().getPlayerByGUID(owner);
 	if (player) {
 		transferToDepot(player);
 	} else {
-		std::shared_ptr<Player> tmpPlayer = std::make_shared<Player>(nullptr);
+		const auto &tmpPlayer = std::make_shared<Player>(nullptr);
 		if (!IOLoginData::loadPlayerById(tmpPlayer, owner)) {
 			return false;
 		}
@@ -236,7 +236,7 @@ bool House::transferToDepot() const {
 	return true;
 }
 
-bool House::transferToDepot(std::shared_ptr<Player> player) const {
+bool House::transferToDepot(const std::shared_ptr<Player> & player) const {
 	if (townId == 0 || owner == 0) {
 		return false;
 	}
@@ -261,7 +261,7 @@ bool House::transferToDepot(std::shared_ptr<Player> player) const {
 	return true;
 }
 
-void House::handleWrapableItem(ItemList &moveItemList, std::shared_ptr<Item> item, std::shared_ptr<Player> player, std::shared_ptr<HouseTile> houseTile) const {
+void House::handleWrapableItem(ItemList &moveItemList, std::shared_ptr<Item> item, const std::shared_ptr<Player> & player, std::shared_ptr<HouseTile> houseTile) const {
 	if (item->isWrapContainer()) {
 		handleContainer(moveItemList, item);
 	}
@@ -300,7 +300,7 @@ bool House::getAccessList(uint32_t listId, std::string &list) const {
 	return door->getAccessList(list);
 }
 
-bool House::isInvited(std::shared_ptr<Player> player) {
+bool House::isInvited(const std::shared_ptr<Player> & player) {
 	return getHouseAccessLevel(player) != HOUSE_NOT_INVITED;
 }
 
@@ -345,7 +345,7 @@ std::shared_ptr<Door> House::getDoorByPosition(const Position &pos) {
 	return nullptr;
 }
 
-bool House::canEditAccessList(uint32_t listId, std::shared_ptr<Player> player) {
+bool House::canEditAccessList(uint32_t listId, const std::shared_ptr<Player> & player) {
 	switch (getHouseAccessLevel(player)) {
 		case HOUSE_OWNER:
 			return true;
@@ -388,7 +388,7 @@ std::shared_ptr<HouseTransferItem> HouseTransferItem::createHouseTransferItem(Ho
 	return transferItem;
 }
 
-void HouseTransferItem::onTradeEvent(TradeEvents_t event, std::shared_ptr<Player> owner) {
+void HouseTransferItem::onTradeEvent(TradeEvents_t event, const std::shared_ptr<Player> & owner) {
 	if (event == ON_TRADE_TRANSFER) {
 		if (house) {
 			house->executeTransfer(static_self_cast<HouseTransferItem>(), owner);
@@ -402,7 +402,7 @@ void HouseTransferItem::onTradeEvent(TradeEvents_t event, std::shared_ptr<Player
 	}
 }
 
-bool House::executeTransfer(std::shared_ptr<HouseTransferItem> item, std::shared_ptr<Player> newOwner) {
+bool House::executeTransfer(std::shared_ptr<HouseTransferItem> item, const std::shared_ptr<Player> & newOwner) {
 	if (transferItem != item) {
 		return false;
 	}
@@ -454,7 +454,7 @@ void AccessList::parseList(const std::string &list) {
 }
 
 void AccessList::addPlayer(const std::string &name) {
-	std::shared_ptr<Player> player = g_game().getPlayerByName(name);
+	const auto &player = g_game().getPlayerByName(name);
 	if (player) {
 		playerList.insert(player->getGUID());
 	} else {
@@ -502,7 +502,7 @@ void AccessList::addGuildRank(const std::string &name, const std::string &guildN
 	}
 }
 
-bool AccessList::isInList(std::shared_ptr<Player> player) {
+bool AccessList::isInList(const std::shared_ptr<Player> & player) {
 	if (allowEveryone) {
 		return true;
 	}
@@ -548,7 +548,7 @@ void Door::setHouse(House* newHouse) {
 	}
 }
 
-bool Door::canUse(std::shared_ptr<Player> player) {
+bool Door::canUse(const std::shared_ptr<Player> & player) {
 	if (!house) {
 		return true;
 	}
@@ -668,7 +668,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 			continue;
 		}
 
-		std::shared_ptr<Player> player = std::make_shared<Player>(nullptr);
+		const auto &player = std::make_shared<Player>(nullptr);
 		if (!IOLoginData::loadPlayerById(player, ownerId)) {
 			// Player doesn't exist, reset house owner
 			house->setOwner(0);

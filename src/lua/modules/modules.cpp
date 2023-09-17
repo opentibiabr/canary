@@ -78,7 +78,7 @@ Module* Modules::getEventByRecvbyte(uint8_t recvbyte, bool force) {
 }
 
 void Modules::executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t byte) const {
-	std::shared_ptr<Player> player = g_game().getPlayerByID(playerId);
+	const auto &player = g_game().getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -152,7 +152,7 @@ void Module::clearEvent() {
 	loaded = false;
 }
 
-void Module::executeOnRecvbyte(std::shared_ptr<Player> player, NetworkMessage &msg) {
+void Module::executeOnRecvbyte(const std::shared_ptr<Player> & player, NetworkMessage &msg) {
 	// onRecvbyte(player, msg, recvbyte)
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("Call stack overflow. Too many lua script calls being nested {}", player->getName());

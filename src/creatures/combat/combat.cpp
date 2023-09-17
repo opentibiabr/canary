@@ -19,7 +19,7 @@
 #include "creatures/monsters/monsters.hpp"
 #include "items/weapons/weapons.hpp"
 
-int32_t Combat::getLevelFormula(std::shared_ptr<Player> player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const {
+int32_t Combat::getLevelFormula(const std::shared_ptr<Player> &player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
 		return 0;
 	}
@@ -47,7 +47,7 @@ CombatDamage Combat::getCombatDamage(std::shared_ptr<Creature> creature, std::sh
 	damage.runeSpellName = runeSpellName;
 	// Wheel of destiny
 	std::shared_ptr<Spell> wheelSpell = nullptr;
-	std::shared_ptr<Player> attackerPlayer = creature ? creature->getPlayer() : nullptr;
+	const std::shared_ptr<Player> &attackerPlayer = creature ? creature->getPlayer() : nullptr;
 	if (attackerPlayer) {
 		wheelSpell = attackerPlayer->wheel()->getCombatDataSpell(damage);
 	}
@@ -61,7 +61,7 @@ CombatDamage Combat::getCombatDamage(std::shared_ptr<Creature> creature, std::sh
 		int32_t min, max;
 		if (creature->getCombatValues(min, max)) {
 			damage.primary.value = normal_random(min, max);
-		} else if (std::shared_ptr<Player> player = creature->getPlayer()) {
+		} else if (const auto &player = creature->getPlayer()) {
 			if (params.valueCallback) {
 				params.valueCallback->getMinMaxValues(player, damage, params.useCharges);
 			} else if (formulaType == COMBAT_FORMULA_LEVELMAGIC) {
@@ -187,8 +187,8 @@ bool Combat::isPlayerCombat(std::shared_ptr<Creature> target) {
 	return false;
 }
 
-ReturnValue Combat::canTargetCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> target) {
-	if (player == target) {
+ReturnValue Combat::canTargetCreature(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target) {
+	if (!player || !target || player == target) {
 		return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 	}
 
@@ -260,7 +260,7 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> caster, std::shared_pt
 			return RETURNVALUE_FIRSTGOUPSTAIRS;
 		}
 
-		if (std::shared_ptr<Player> player = caster->getPlayer()) {
+		if (const auto &player = caster->getPlayer()) {
 			if (player->hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
 				return RETURNVALUE_NOERROR;
 			}
@@ -274,7 +274,11 @@ bool Combat::isInPvpZone(std::shared_ptr<Creature> attacker, std::shared_ptr<Cre
 	return attacker->getZoneType() == ZONE_PVP && target->getZoneType() == ZONE_PVP;
 }
 
-bool Combat::isProtected(std::shared_ptr<Player> attacker, std::shared_ptr<Player> target) {
+bool Combat::isProtected(const std::shared_ptr<Player> &attacker, const std::shared_ptr<Player> &target) {
+	if (!attacker || !target) {
+		return true;
+	}
+
 	uint32_t protectionLevel = g_configManager().getNumber(PROTECTION_LEVEL);
 	if (target->getLevel() < protectionLevel || attacker->getLevel() < protectionLevel) {
 		return true;
@@ -308,7 +312,7 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> attacker, std::shared_
 
 	if (attacker) {
 		const std::shared_ptr<Creature> attackerMaster = attacker->getMaster();
-		auto targetPlayer = target ? target->getPlayer() : nullptr;
+		const auto &targetPlayer = target ? target->getPlayer() : nullptr;
 		if (targetPlayer) {
 			if (targetPlayer->hasFlag(PlayerFlags_t::CannotBeAttacked)) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
@@ -316,7 +320,7 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> attacker, std::shared_
 
 			const std::shared_ptr<Tile> targetPlayerTile = targetPlayer->getTile();
 
-			if (const std::shared_ptr<Player> attackerPlayer = attacker->getPlayer()) {
+			if (const auto &attackerPlayer = attacker->getPlayer()) {
 				if (attackerPlayer->hasFlag(PlayerFlags_t::CannotAttackPlayer)) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 				}
@@ -339,7 +343,7 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> attacker, std::shared_
 			}
 
 			if (attackerMaster) {
-				if (const std::shared_ptr<Player> masterAttackerPlayer = attackerMaster->getPlayer()) {
+				if (const auto &masterAttackerPlayer = attackerMaster->getPlayer()) {
 					if (masterAttackerPlayer->hasFlag(PlayerFlags_t::CannotAttackPlayer)) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 					}
@@ -364,7 +368,7 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> attacker, std::shared_
 				return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 			}
 
-			if (const std::shared_ptr<Player> attackerPlayer = attacker->getPlayer()) {
+			if (const auto &attackerPlayer = attacker->getPlayer()) {
 				if (attackerPlayer->hasFlag(PlayerFlags_t::CannotAttackMonster)) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 				}
@@ -610,7 +614,10 @@ void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<
 	}
 }
 
-CombatDamage Combat::applyImbuementElementalDamage(std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Item> item, CombatDamage damage) {
+CombatDamage Combat::applyImbuementElementalDamage(const std::shared_ptr<Player> &attackerPlayer, std::shared_ptr<Item> item, CombatDamage damage) {
+	if (!attackerPlayer) {
+		return damage;
+	}
 	if (!item) {
 		return damage;
 	}
@@ -662,8 +669,8 @@ void Combat::CombatManaFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Cr
 	}
 }
 
-bool Combat::checkFearConditionAffected(std::shared_ptr<Player> player) {
-	if (player->isImmuneFear()) {
+bool Combat::checkFearConditionAffected(const std::shared_ptr<Player> &player) {
+	if (!player || player->isImmuneFear()) {
 		return false;
 	}
 
@@ -861,7 +868,7 @@ void Combat::addDistanceEffect(std::shared_ptr<Creature> caster, const Position 
 			return;
 		}
 
-		std::shared_ptr<Player> player = caster->getPlayer();
+		const auto &player = caster->getPlayer();
 		if (!player) {
 			return;
 		}
@@ -1071,7 +1078,7 @@ void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin
 	}
 
 	// Wheel of destiny get beam affected total
-	std::shared_ptr<Player> casterPlayer = caster ? caster->getPlayer() : nullptr;
+	const auto &casterPlayer = caster ? caster->getPlayer() : nullptr;
 	uint8_t beamAffectedTotal = casterPlayer ? casterPlayer->wheel()->getBeamAffectedTotal(tmpDamage) : 0;
 	uint8_t beamAffectedCurrent = 0;
 
@@ -1163,7 +1170,7 @@ void Combat::doCombatHealth(std::shared_ptr<Creature> caster, std::shared_ptr<Cr
 		}
 
 		// Fatal hit (onslaught)
-		if (auto playerWeapon = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
+		if (const auto &playerWeapon = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
 			playerWeapon != nullptr && playerWeapon->getTier()) {
 			double_t fatalChance = playerWeapon->getFatalChance();
 			double_t randomChance = uniform_random(0, 10000) / 100;
@@ -1204,7 +1211,7 @@ void Combat::doCombatHealth(std::shared_ptr<Creature> caster, const Position &po
 		}
 
 		// Fatal hit (onslaught)
-		if (auto playerWeapon = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
+		if (const auto &playerWeapon = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
 			playerWeapon != nullptr && playerWeapon->getTier() > 0) {
 			double_t fatalChance = playerWeapon->getFatalChance();
 			double_t randomChance = uniform_random(0, 10000) / 100;
@@ -1457,7 +1464,7 @@ bool Combat::isValidChainTarget(std::shared_ptr<Creature> caster, std::shared_pt
 
 //**********************************************************//
 
-uint32_t ValueCallback::getMagicLevelSkill(std::shared_ptr<Player> player, const CombatDamage &damage) const {
+uint32_t ValueCallback::getMagicLevelSkill(const std::shared_ptr<Player> &player, const CombatDamage &damage) const {
 	if (!player) {
 		return 0;
 	}
@@ -1477,7 +1484,7 @@ uint32_t ValueCallback::getMagicLevelSkill(std::shared_ptr<Player> player, const
 	return magicLevelSkill + player->getSpecializedMagicLevel(damage.primary.type, true);
 }
 
-void ValueCallback::getMinMaxValues(std::shared_ptr<Player> player, CombatDamage &damage, bool useCharges) const {
+void ValueCallback::getMinMaxValues(const std::shared_ptr<Player> &player, CombatDamage &damage, bool useCharges) const {
 	// onGetPlayerMinMaxValues(...)
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[ValueCallback::getMinMaxValues - Player {} formula {}] "
@@ -2068,9 +2075,9 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 				}
 			}
 
-			std::shared_ptr<Player> targetPlayer = creature->getPlayer();
+			const auto &targetPlayer = creature->getPlayer();
 			if (targetPlayer) {
-				const std::shared_ptr<Player> attackerPlayer = g_game().getPlayerByID(ownerId);
+				const auto &attackerPlayer = g_game().getPlayerByID(ownerId);
 				if (attackerPlayer) {
 					if (Combat::isProtected(attackerPlayer, targetPlayer)) {
 						harmfulField = false;

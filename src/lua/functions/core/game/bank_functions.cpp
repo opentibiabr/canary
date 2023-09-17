@@ -91,7 +91,7 @@ int BankFunctions::luaBankTransferToGuild(lua_State* L) {
 
 int BankFunctions::luaBankWithdraw(lua_State* L) {
 	// Bank.withdraw(player, amount[, source = player])
-	auto player = getPlayer(L, 1);
+	const auto &player = getPlayer(L, 1);
 	uint64_t amount = getNumber<uint64_t>(L, 2);
 	if (lua_gettop(L) == 2) {
 		if (!player) {
@@ -113,7 +113,7 @@ int BankFunctions::luaBankWithdraw(lua_State* L) {
 
 int BankFunctions::luaBankDeposit(lua_State* L) {
 	// Bank.deposit(player, amount[, destination = player])
-	auto player = getPlayer(L, 1);
+	const auto &player = getPlayer(L, 1);
 	if (!player) {
 		return 1;
 	}
@@ -150,7 +150,7 @@ std::shared_ptr<Bank> BankFunctions::getBank(lua_State* L, int32_t arg, bool isG
 		}
 		return std::make_shared<Bank>(guild);
 	}
-	std::shared_ptr<Player> player = getPlayer(L, arg, true);
+	const auto player = getPlayer(L, arg, true);
 	if (!player) {
 		return nullptr;
 	}

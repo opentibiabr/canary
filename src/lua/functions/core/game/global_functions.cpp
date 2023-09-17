@@ -22,7 +22,7 @@ class Creature;
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 	// doPlayerAddItem(cid, itemid, <optional: default: 1> count/subtype, <optional: default: 1> canDropOnMap)
 	// doPlayerAddItem(cid, itemid, <optional: default: 1> count, <optional: default: 1> canDropOnMap, <optional: default: 1>subtype)
-	std::shared_ptr<Player> player = getPlayer(L, 1);
+	const auto &player = getPlayer(L, 1);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -303,7 +303,7 @@ int GlobalFunctions::luaDoAreaCombatHealth(lua_State* L) {
 		damage.instantSpellName = getString(L, 9);
 		damage.runeSpellName = getString(L, 10);
 		if (creature) {
-			if (auto player = creature->getPlayer()) {
+			if (const auto &player = creature->getPlayer()) {
 				player->wheel()->getCombatDataSpell(damage);
 			}
 		}
@@ -347,7 +347,7 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 	damage.instantSpellName = getString(L, 9);
 	damage.runeSpellName = getString(L, 10);
 	if (creature) {
-		if (auto player = creature->getPlayer()) {
+		if (const auto &player = creature->getPlayer()) {
 			player->wheel()->getCombatDataSpell(damage);
 		}
 	}
@@ -385,7 +385,7 @@ int GlobalFunctions::luaDoAreaCombatMana(lua_State* L) {
 		damage.instantSpellName = getString(L, 8);
 		damage.runeSpellName = getString(L, 9);
 		if (creature) {
-			if (auto player = creature->getPlayer()) {
+			if (const auto &player = creature->getPlayer()) {
 				player->wheel()->getCombatDataSpell(damage);
 			}
 		}
@@ -430,7 +430,7 @@ int GlobalFunctions::luaDoTargetCombatMana(lua_State* L) {
 	damage.instantSpellName = getString(L, 7);
 	damage.runeSpellName = getString(L, 8);
 	if (creature) {
-		if (auto player = creature->getPlayer()) {
+		if (const auto &player = creature->getPlayer()) {
 			player->wheel()->getCombatDataSpell(damage);
 		}
 	}
@@ -742,14 +742,14 @@ int GlobalFunctions::luaDebugPrint(lua_State* L) {
 
 int GlobalFunctions::luaIsInWar(lua_State* L) {
 	// isInWar(cid, target)
-	std::shared_ptr<Player> player = getPlayer(L, 1);
+	const auto &player = getPlayer(L, 1);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
 		return 1;
 	}
 
-	std::shared_ptr<Player> targetPlayer = getPlayer(L, 2);
+	const auto &targetPlayer = getPlayer(L, 2);
 	if (!targetPlayer) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);

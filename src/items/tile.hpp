@@ -196,9 +196,9 @@ public:
 
 	std::string getDescription(int32_t lookDistance) override final;
 
-	int32_t getClientIndexOfCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature) const;
-	int32_t getStackposOfCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature) const;
-	int32_t getStackposOfItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item) const;
+	int32_t getClientIndexOfCreature(const std::shared_ptr<Player> & player, std::shared_ptr<Creature> creature) const;
+	int32_t getStackposOfCreature(const std::shared_ptr<Player> & player, std::shared_ptr<Creature> creature) const;
+	int32_t getStackposOfItem(const std::shared_ptr<Player> & player, std::shared_ptr<Item> item) const;
 
 	// cylinder implementations
 	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override;

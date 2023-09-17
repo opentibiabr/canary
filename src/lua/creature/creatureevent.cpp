@@ -55,7 +55,7 @@ std::shared_ptr<CreatureEvent> CreatureEvents::getEventByName(const std::string 
 	return nullptr;
 }
 
-bool CreatureEvents::playerLogin(std::shared_ptr<Player> player) const {
+bool CreatureEvents::playerLogin(const std::shared_ptr<Player> &player) const {
 	// fire global event if is registered
 	for (const auto &it : creatureEvents) {
 		if (it.second->getEventType() == CREATURE_EVENT_LOGIN) {
@@ -67,7 +67,7 @@ bool CreatureEvents::playerLogin(std::shared_ptr<Player> player) const {
 	return true;
 }
 
-bool CreatureEvents::playerLogout(std::shared_ptr<Player> player) const {
+bool CreatureEvents::playerLogout(const std::shared_ptr<Player> &player) const {
 	// fire global event if is registered
 	for (const auto &it : creatureEvents) {
 		if (it.second->getEventType() == CREATURE_EVENT_LOGOUT) {
@@ -80,7 +80,7 @@ bool CreatureEvents::playerLogout(std::shared_ptr<Player> player) const {
 }
 
 bool CreatureEvents::playerAdvance(
-	std::shared_ptr<Player> player,
+	const std::shared_ptr<Player> &player,
 	skills_t skill,
 	uint32_t oldLevel,
 	uint32_t newLevel
@@ -171,7 +171,7 @@ void CreatureEvent::clearEvent() {
 	loaded = false;
 }
 
-bool CreatureEvent::executeOnLogin(std::shared_ptr<Player> player) const {
+bool CreatureEvent::executeOnLogin(const std::shared_ptr<Player> &player) const {
 	// onLogin(player)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeOnLogin - Player {} event {}]"
@@ -191,7 +191,7 @@ bool CreatureEvent::executeOnLogin(std::shared_ptr<Player> player) const {
 	return getScriptInterface()->callFunction(1);
 }
 
-bool CreatureEvent::executeOnLogout(std::shared_ptr<Player> player) const {
+bool CreatureEvent::executeOnLogout(const std::shared_ptr<Player> &player) const {
 	// onLogout(player)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeOnLogout - Player {} event {}] "
@@ -302,7 +302,7 @@ bool CreatureEvent::executeOnDeath(std::shared_ptr<Creature> creature, std::shar
 	return getScriptInterface()->callFunction(6);
 }
 
-bool CreatureEvent::executeAdvance(std::shared_ptr<Player> player, skills_t skill, uint32_t oldLevel, uint32_t newLevel) const {
+bool CreatureEvent::executeAdvance(const std::shared_ptr<Player> &player, skills_t skill, uint32_t oldLevel, uint32_t newLevel) const {
 	// onAdvance(player, skill, oldLevel, newLevel)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeAdvance - Player {} event {}] "
@@ -349,7 +349,7 @@ void CreatureEvent::executeOnKill(std::shared_ptr<Creature> creature, std::share
 	getScriptInterface()->callVoidFunction(3);
 }
 
-void CreatureEvent::executeModalWindow(std::shared_ptr<Player> player, uint32_t modalWindowId, uint8_t buttonId, uint8_t choiceId) const {
+void CreatureEvent::executeModalWindow(const std::shared_ptr<Player> &player, uint32_t modalWindowId, uint8_t buttonId, uint8_t choiceId) const {
 	// onModalWindow(player, modalWindowId, buttonId, choiceId)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeModalWindow - "
@@ -375,7 +375,7 @@ void CreatureEvent::executeModalWindow(std::shared_ptr<Player> player, uint32_t 
 	getScriptInterface()->callVoidFunction(4);
 }
 
-bool CreatureEvent::executeTextEdit(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const std::string &text) const {
+bool CreatureEvent::executeTextEdit(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, const std::string &text) const {
 	// onTextEdit(player, item, text)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeTextEdit - Player {} event {}] "
@@ -484,7 +484,7 @@ void CreatureEvent::executeManaChange(std::shared_ptr<Creature> creature, std::s
 	getScriptInterface()->resetScriptEnv();
 }
 
-void CreatureEvent::executeExtendedOpcode(std::shared_ptr<Player> player, uint8_t opcode, const std::string &buffer) const {
+void CreatureEvent::executeExtendedOpcode(const std::shared_ptr<Player> &player, uint8_t opcode, const std::string &buffer) const {
 	// onExtendedOpcode(player, opcode, buffer)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeExtendedOpcode - "

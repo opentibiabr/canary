@@ -33,8 +33,8 @@ public:
 	 * @param damage The combat damage information.
 	 * @return The magic level skill of the player.
 	 */
-	uint32_t getMagicLevelSkill(std::shared_ptr<Player> player, const CombatDamage &damage) const;
-	void getMinMaxValues(std::shared_ptr<Player> player, CombatDamage &damage, bool useCharges) const;
+	uint32_t getMagicLevelSkill(const std::shared_ptr<Player> &player, const CombatDamage &damage) const;
+	void getMinMaxValues(const std::shared_ptr<Player> &player, CombatDamage &damage, bool useCharges) const;
 
 private:
 	formulaType_t type;
@@ -271,11 +271,11 @@ public:
 	static void getCombatArea(const Position &centerPos, const Position &targetPos, const AreaCombat* area, std::forward_list<std::shared_ptr<Tile>> &list);
 
 	static bool isInPvpZone(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target);
-	static bool isProtected(std::shared_ptr<Player> attacker, std::shared_ptr<Player> target);
+	static bool isProtected(const std::shared_ptr<Player> &attacker, const std::shared_ptr<Player> &target);
 	static bool isPlayerCombat(std::shared_ptr<Creature> target);
 	static CombatType_t ConditionToDamageType(ConditionType_t type);
 	static ConditionType_t DamageToConditionType(CombatType_t type);
-	static ReturnValue canTargetCreature(std::shared_ptr<Player> attacker, std::shared_ptr<Creature> target);
+	static ReturnValue canTargetCreature(const std::shared_ptr<Player> &attacker, const std::shared_ptr<Creature> &target);
 	static ReturnValue canDoCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Tile> tile, bool aggressive);
 	static ReturnValue canDoCombat(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, bool aggressive);
 	static void postCombatEffects(std::shared_ptr<Creature> caster, const Position &origin, const Position &pos, const CombatParams &params);
@@ -336,7 +336,7 @@ private:
 	static void CombatFunc(std::shared_ptr<Creature> caster, const Position &origin, const Position &pos, const AreaCombat* area, const CombatParams &params, CombatFunction func, CombatDamage* data);
 
 	static void CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data);
-	static CombatDamage applyImbuementElementalDamage(std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Item> item, CombatDamage damage);
+	static CombatDamage applyImbuementElementalDamage(const std::shared_ptr<Player> &attackerPlayer, std::shared_ptr<Item> item, CombatDamage damage);
 	static void CombatManaFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* damage);
 	/**
 	 * @brief Checks if a fear condition can be applied to a player.
@@ -352,7 +352,7 @@ private:
 	 * @param player Pointer to the Player object to be checked.
 	 * @return true if the fear condition can be applied, false otherwise.
 	 */
-	static bool checkFearConditionAffected(std::shared_ptr<Player> player);
+	static bool checkFearConditionAffected(const std::shared_ptr<Player> &player);
 	static void CombatConditionFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data);
 	static void CombatDispelFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data);
 	static void CombatNullFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data);
@@ -367,7 +367,7 @@ private:
 	 * @param damage The combat damage.
 	 * @return The calculated level formula.
 	 */
-	int32_t getLevelFormula(std::shared_ptr<Player> player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const;
+	int32_t getLevelFormula(const std::shared_ptr<Player> &player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const;
 	CombatDamage getCombatDamage(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) const;
 
 	bool doCombatChain(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, bool aggressive) const;

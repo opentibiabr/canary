@@ -707,7 +707,7 @@ int ItemFunctions::luaItemMoveToSlot(lua_State* L) {
 		return 1;
 	}
 
-	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 2);
+	const auto &player = getUserdataShared<Player>(L, 2);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;

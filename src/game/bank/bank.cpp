@@ -23,7 +23,7 @@ Bank::~Bank() {
 	if (bankable == nullptr || bankable->isOnline()) {
 		return;
 	}
-	std::shared_ptr<Player> player = bankable->getPlayer();
+	const auto &player = bankable->getPlayer();
 	if (player && !player->isOnline()) {
 		IOLoginData::savePlayer(player);
 
@@ -93,7 +93,7 @@ bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) 
 		return false;
 	}
 	if (destinationBankable->getPlayer() != nullptr) {
-		auto player = bankable->getPlayer();
+		const auto &player = bankable->getPlayer();
 		auto name = asLowerCaseString(player->getName());
 		replaceString(name, " ", "");
 		if (deniedNames.contains(name)) {
@@ -111,7 +111,7 @@ bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) 
 	return debit(amount) && destination->credit(amount);
 }
 
-bool Bank::withdraw(std::shared_ptr<Player> player, uint64_t amount) {
+bool Bank::withdraw(const std::shared_ptr<Player> &player, uint64_t amount) {
 	if (!debit(amount)) {
 		return false;
 	}
@@ -127,7 +127,7 @@ bool Bank::deposit(const std::shared_ptr<Bank> destination) {
 	if (bankable->getPlayer() == nullptr) {
 		return false;
 	}
-	auto amount = bankable->getPlayer()->getMoney();
+	const auto &amount = bankable->getPlayer()->getMoney();
 	return deposit(destination, amount);
 }
 

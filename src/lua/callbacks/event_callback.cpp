@@ -228,7 +228,7 @@ void EventCallback::creatureOnDrainHealth(std::shared_ptr<Creature> creature, st
 }
 
 // Party
-bool EventCallback::partyOnJoin(Party* party, std::shared_ptr<Player> player) const {
+bool EventCallback::partyOnJoin(Party* party, const std::shared_ptr<Player> &player) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::partyOnJoin - "
 						 "Player {}] "
@@ -252,7 +252,7 @@ bool EventCallback::partyOnJoin(Party* party, std::shared_ptr<Player> player) co
 	return getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::partyOnLeave(Party* party, std::shared_ptr<Player> player) const {
+bool EventCallback::partyOnLeave(Party* party, const std::shared_ptr<Player> &player) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::partyOnLeave - "
 						 "Player {}] "
@@ -324,7 +324,7 @@ void EventCallback::partyOnShareExperience(Party* party, uint64_t &exp) const {
 }
 
 // Player
-bool EventCallback::playerOnBrowseField(std::shared_ptr<Player> player, const Position &position) const {
+bool EventCallback::playerOnBrowseField(const std::shared_ptr<Player> &player, const Position &position) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnBrowseField - "
 						 "Player {}] "
@@ -347,7 +347,7 @@ bool EventCallback::playerOnBrowseField(std::shared_ptr<Player> player, const Po
 	return getScriptInterface()->callFunction(2);
 }
 
-void EventCallback::playerOnLook(std::shared_ptr<Player> player, const Position &position, std::shared_ptr<Thing> thing, uint8_t stackpos, int32_t lookDistance) const {
+void EventCallback::playerOnLook(const std::shared_ptr<Player> &player, const Position &position, std::shared_ptr<Thing> thing, uint8_t stackpos, int32_t lookDistance) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnLook - "
 						 "Player {}] "
@@ -381,7 +381,7 @@ void EventCallback::playerOnLook(std::shared_ptr<Player> player, const Position 
 	getScriptInterface()->callVoidFunction(4);
 }
 
-void EventCallback::playerOnLookInBattleList(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature, int32_t lookDistance) const {
+void EventCallback::playerOnLookInBattleList(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> creature, int32_t lookDistance) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnLookInBattleList - "
 						 "Player {}] "
@@ -407,7 +407,7 @@ void EventCallback::playerOnLookInBattleList(std::shared_ptr<Player> player, std
 	getScriptInterface()->callVoidFunction(3);
 }
 
-void EventCallback::playerOnLookInTrade(std::shared_ptr<Player> player, std::shared_ptr<Player> partner, std::shared_ptr<Item> item, int32_t lookDistance) const {
+void EventCallback::playerOnLookInTrade(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &partner, std::shared_ptr<Item> item, int32_t lookDistance) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnLookInTrade - "
 						 "Player {}] "
@@ -436,7 +436,7 @@ void EventCallback::playerOnLookInTrade(std::shared_ptr<Player> player, std::sha
 	getScriptInterface()->callVoidFunction(4);
 }
 
-bool EventCallback::playerOnLookInShop(std::shared_ptr<Player> player, const ItemType* itemType, uint8_t count) const {
+bool EventCallback::playerOnLookInShop(const std::shared_ptr<Player> &player, const ItemType* itemType, uint8_t count) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnLookInShop - "
 						 "Player {} itemType {}] "
@@ -462,7 +462,7 @@ bool EventCallback::playerOnLookInShop(std::shared_ptr<Player> player, const Ite
 	return getScriptInterface()->callFunction(3);
 }
 
-void EventCallback::playerOnRemoveCount(std::shared_ptr<Player> player, std::shared_ptr<Item> item) const {
+void EventCallback::playerOnRemoveCount(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnMove - "
 						 "Player {} item {}] "
@@ -486,7 +486,7 @@ void EventCallback::playerOnRemoveCount(std::shared_ptr<Player> player, std::sha
 	getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::playerOnMoveItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPos, const Position &toPos, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) const {
+bool EventCallback::playerOnMoveItem(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPos, const Position &toPos, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) const {
 	if (!getScriptInterface()) {
 		g_logger().error("script interface nullptr");
 		return false;
@@ -521,7 +521,7 @@ bool EventCallback::playerOnMoveItem(std::shared_ptr<Player> player, std::shared
 	return getScriptInterface()->callFunction(7);
 }
 
-void EventCallback::playerOnItemMoved(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) const {
+void EventCallback::playerOnItemMoved(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnItemMoved - "
 						 "Player {} item {}] "
@@ -552,7 +552,7 @@ void EventCallback::playerOnItemMoved(std::shared_ptr<Player> player, std::share
 	getScriptInterface()->callVoidFunction(7);
 }
 
-void EventCallback::playerOnChangeZone(std::shared_ptr<Player> player, ZoneType_t zone) const {
+void EventCallback::playerOnChangeZone(const std::shared_ptr<Player> &player, ZoneType_t zone) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnChangeZone - "
 						 "Player {}] "
@@ -574,7 +574,7 @@ void EventCallback::playerOnChangeZone(std::shared_ptr<Player> player, ZoneType_
 	getScriptInterface()->callVoidFunction(2);
 }
 
-bool EventCallback::playerOnMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature, const Position &fromPosition, const Position &toPosition) const {
+bool EventCallback::playerOnMoveCreature(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> creature, const Position &fromPosition, const Position &toPosition) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnMoveCreature - "
 						 "Player {} creature {}] "
@@ -601,7 +601,7 @@ bool EventCallback::playerOnMoveCreature(std::shared_ptr<Player> player, std::sh
 	return getScriptInterface()->callFunction(4);
 }
 
-void EventCallback::playerOnReportRuleViolation(std::shared_ptr<Player> player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) const {
+void EventCallback::playerOnReportRuleViolation(const std::shared_ptr<Player> &player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnReportRuleViolation - "
 						 "Player {}] "
@@ -630,7 +630,7 @@ void EventCallback::playerOnReportRuleViolation(std::shared_ptr<Player> player, 
 	getScriptInterface()->callVoidFunction(6);
 }
 
-void EventCallback::playerOnReportBug(std::shared_ptr<Player> player, const std::string &message, const Position &position, uint8_t category) const {
+void EventCallback::playerOnReportBug(const std::shared_ptr<Player> &player, const std::string &message, const Position &position, uint8_t category) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnReportBug - "
 						 "Player {}] "
@@ -655,7 +655,7 @@ void EventCallback::playerOnReportBug(std::shared_ptr<Player> player, const std:
 	getScriptInterface()->callFunction(4);
 }
 
-bool EventCallback::playerOnTurn(std::shared_ptr<Player> player, Direction direction) const {
+bool EventCallback::playerOnTurn(const std::shared_ptr<Player> &player, Direction direction) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnTurn - "
 						 "Player {}] "
@@ -678,7 +678,7 @@ bool EventCallback::playerOnTurn(std::shared_ptr<Player> player, Direction direc
 	return getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::playerOnTradeRequest(std::shared_ptr<Player> player, std::shared_ptr<Player> target, std::shared_ptr<Item> item) const {
+bool EventCallback::playerOnTradeRequest(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &target, std::shared_ptr<Item> item) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnTradeRequest - "
 						 "Player {} target {}] "
@@ -705,7 +705,7 @@ bool EventCallback::playerOnTradeRequest(std::shared_ptr<Player> player, std::sh
 	return getScriptInterface()->callFunction(3);
 }
 
-bool EventCallback::playerOnTradeAccept(std::shared_ptr<Player> player, std::shared_ptr<Player> target, std::shared_ptr<Item> item, std::shared_ptr<Item> targetItem) const {
+bool EventCallback::playerOnTradeAccept(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &target, std::shared_ptr<Item> item, std::shared_ptr<Item> targetItem) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnTradeAccept - "
 						 "Player {} target {}] "
@@ -735,7 +735,7 @@ bool EventCallback::playerOnTradeAccept(std::shared_ptr<Player> player, std::sha
 	return getScriptInterface()->callFunction(4);
 }
 
-void EventCallback::playerOnGainExperience(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, uint64_t &exp, uint64_t rawExp) const {
+void EventCallback::playerOnGainExperience(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> target, uint64_t &exp, uint64_t rawExp) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnGainExperience - "
 						 "Player {} target {}] "
@@ -773,7 +773,7 @@ void EventCallback::playerOnGainExperience(std::shared_ptr<Player> player, std::
 	getScriptInterface()->resetScriptEnv();
 }
 
-void EventCallback::playerOnLoseExperience(std::shared_ptr<Player> player, uint64_t &exp) const {
+void EventCallback::playerOnLoseExperience(const std::shared_ptr<Player> &player, uint64_t &exp) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnLoseExperience - "
 						 "Player {}] "
@@ -803,7 +803,7 @@ void EventCallback::playerOnLoseExperience(std::shared_ptr<Player> player, uint6
 	getScriptInterface()->resetScriptEnv();
 }
 
-void EventCallback::playerOnGainSkillTries(std::shared_ptr<Player> player, skills_t skill, uint64_t &tries) const {
+void EventCallback::playerOnGainSkillTries(const std::shared_ptr<Player> &player, skills_t skill, uint64_t &tries) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnGainSkillTries - "
 						 "Player {} skill {}] "
@@ -834,7 +834,7 @@ void EventCallback::playerOnGainSkillTries(std::shared_ptr<Player> player, skill
 	getScriptInterface()->resetScriptEnv();
 }
 
-void EventCallback::playerOnCombat(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, CombatDamage &damage) const {
+void EventCallback::playerOnCombat(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, CombatDamage &damage) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnCombat - "
 						 "Player {} target {}] "
@@ -896,7 +896,7 @@ void EventCallback::playerOnCombat(std::shared_ptr<Player> player, std::shared_p
 	getScriptInterface()->resetScriptEnv();
 }
 
-void EventCallback::playerOnRequestQuestLog(std::shared_ptr<Player> player) const {
+void EventCallback::playerOnRequestQuestLog(const std::shared_ptr<Player> &player) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnRequestQuestLog - "
 						 "Player {}] "
@@ -917,7 +917,7 @@ void EventCallback::playerOnRequestQuestLog(std::shared_ptr<Player> player) cons
 	getScriptInterface()->callVoidFunction(1);
 }
 
-void EventCallback::playerOnRequestQuestLine(std::shared_ptr<Player> player, uint16_t questId) const {
+void EventCallback::playerOnRequestQuestLine(const std::shared_ptr<Player> &player, uint16_t questId) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnRequestQuestLine - "
 						 "Player {} questId {}] "
@@ -940,7 +940,7 @@ void EventCallback::playerOnRequestQuestLine(std::shared_ptr<Player> player, uin
 	getScriptInterface()->callVoidFunction(2);
 }
 
-void EventCallback::playerOnInventoryUpdate(std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool equip) const {
+void EventCallback::playerOnInventoryUpdate(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, Slots_t slot, bool equip) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[{}] Call stack overflow", __FUNCTION__);
 		return;
@@ -964,7 +964,7 @@ void EventCallback::playerOnInventoryUpdate(std::shared_ptr<Player> player, std:
 	getScriptInterface()->callVoidFunction(4);
 }
 
-bool EventCallback::playerOnRotateItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const Position &position) const {
+bool EventCallback::playerOnRotateItem(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, const Position &position) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[{}] Call stack overflow", __FUNCTION__);
 		return false;
@@ -987,7 +987,7 @@ bool EventCallback::playerOnRotateItem(std::shared_ptr<Player> player, std::shar
 	return getScriptInterface()->callFunction(3);
 }
 
-void EventCallback::playerOnStorageUpdate(std::shared_ptr<Player> player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime) const {
+void EventCallback::playerOnStorageUpdate(const std::shared_ptr<Player> &player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::eventOnStorageUpdate - "
 						 "Player {} key {}] "

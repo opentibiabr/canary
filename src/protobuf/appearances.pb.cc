@@ -118,7 +118,7 @@ PROTOBUF_CONSTEXPR SpriteInfo::SpriteInfo(
   , /*decltype(_impl_.pattern_width_)*/0u
   , /*decltype(_impl_.pattern_height_)*/0u
   , /*decltype(_impl_.pattern_depth_)*/0u
-  , /*decltype(_impl_.layers_)*/0u
+  , /*decltype(_impl_.players_)*/0u
   , /*decltype(_impl_.bounding_square_)*/0u
   , /*decltype(_impl_.is_opaque_)*/false} {}
 struct SpriteInfoDefaultTypeInternal {
@@ -576,7 +576,7 @@ const uint32_t TableStruct_appearances_2eproto::offsets[] PROTOBUF_SECTION_VARIA
   PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::SpriteInfo, _impl_.pattern_width_),
   PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::SpriteInfo, _impl_.pattern_height_),
   PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::SpriteInfo, _impl_.pattern_depth_),
-  PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::SpriteInfo, _impl_.layers_),
+  PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::SpriteInfo, _impl_.players_),
   PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::SpriteInfo, _impl_.sprite_id_),
   PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::SpriteInfo, _impl_.bounding_square_),
   PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::SpriteInfo, _impl_.animation_),
@@ -989,147 +989,147 @@ const char descriptor_table_protodef_appearances_2eproto[] PROTOBUF_SECTION_VARI
   "\005 \001(\r\022>\n\014sprite_phase\030\006 \003(\0132(.Canary.pro"
   "tobuf.appearances.SpritePhase\":\n\003Box\022\t\n\001"
   "x\030\001 \001(\r\022\t\n\001y\030\002 \001(\r\022\r\n\005width\030\003 \001(\r\022\016\n\006hei"
-  "ght\030\004 \001(\r\"\250\002\n\nSpriteInfo\022\025\n\rpattern_widt"
+  "ght\030\004 \001(\r\"\251\002\n\nSpriteInfo\022\025\n\rpattern_widt"
   "h\030\001 \001(\r\022\026\n\016pattern_height\030\002 \001(\r\022\025\n\rpatte"
-  "rn_depth\030\003 \001(\r\022\016\n\006layers\030\004 \001(\r\022\021\n\tsprite"
-  "_id\030\005 \003(\r\022\027\n\017bounding_square\030\007 \001(\r\022\?\n\tan"
-  "imation\030\006 \001(\0132,.Canary.protobuf.appearan"
-  "ces.SpriteAnimation\022\021\n\tis_opaque\030\010 \001(\010\022D"
-  "\n\032bounding_box_per_direction\030\t \003(\0132 .Can"
-  "ary.protobuf.appearances.Box\"\241\001\n\nFrameGr"
-  "oup\022I\n\021fixed_frame_group\030\001 \001(\0162..Canary."
-  "protobuf.appearances.FIXED_FRAME_GROUP\022\n"
-  "\n\002id\030\002 \001(\r\022<\n\013sprite_info\030\003 \001(\0132\'.Canary"
-  ".protobuf.appearances.SpriteInfo\"\266\001\n\nApp"
-  "earance\022\n\n\002id\030\001 \001(\r\022<\n\013frame_group\030\002 \003(\013"
-  "2\'.Canary.protobuf.appearances.FrameGrou"
-  "p\022;\n\005flags\030\003 \001(\0132,.Canary.protobuf.appea"
-  "rances.AppearanceFlags\022\014\n\004name\030\004 \001(\014\022\023\n\013"
-  "description\030\005 \001(\014\"\256\017\n\017AppearanceFlags\022=\n"
-  "\004bank\030\001 \001(\0132/.Canary.protobuf.appearance"
-  "s.AppearanceFlagBank\022\014\n\004clip\030\002 \001(\010\022\016\n\006bo"
-  "ttom\030\003 \001(\010\022\013\n\003top\030\004 \001(\010\022\021\n\tcontainer\030\005 \001"
-  "(\010\022\022\n\ncumulative\030\006 \001(\010\022\016\n\006usable\030\007 \001(\010\022\020"
-  "\n\010forceuse\030\010 \001(\010\022\020\n\010multiuse\030\t \001(\010\022\?\n\005wr"
-  "ite\030\n \001(\01320.Canary.protobuf.appearances."
-  "AppearanceFlagWrite\022H\n\nwrite_once\030\013 \001(\0132"
-  "4.Canary.protobuf.appearances.Appearance"
-  "FlagWriteOnce\022\022\n\nliquidpool\030\014 \001(\010\022\016\n\006unp"
-  "ass\030\r \001(\010\022\016\n\006unmove\030\016 \001(\010\022\017\n\007unsight\030\017 \001"
-  "(\010\022\r\n\005avoid\030\020 \001(\010\022\035\n\025no_movement_animati"
-  "on\030\021 \001(\010\022\014\n\004take\030\022 \001(\010\022\027\n\017liquidcontaine"
-  "r\030\023 \001(\010\022\014\n\004hang\030\024 \001(\010\022=\n\004hook\030\025 \001(\0132/.Ca"
-  "nary.protobuf.appearances.AppearanceFlag"
-  "Hook\022\016\n\006rotate\030\026 \001(\010\022\?\n\005light\030\027 \001(\01320.Ca"
-  "nary.protobuf.appearances.AppearanceFlag"
-  "Light\022\021\n\tdont_hide\030\030 \001(\010\022\023\n\013translucent\030"
-  "\031 \001(\010\022\?\n\005shift\030\032 \001(\01320.Canary.protobuf.a"
-  "ppearances.AppearanceFlagShift\022A\n\006height"
-  "\030\033 \001(\01321.Canary.protobuf.appearances.App"
-  "earanceFlagHeight\022\024\n\014lying_object\030\034 \001(\010\022"
-  "\026\n\016animate_always\030\035 \001(\010\022C\n\007automap\030\036 \001(\013"
-  "22.Canary.protobuf.appearances.Appearanc"
-  "eFlagAutomap\022E\n\010lenshelp\030\037 \001(\01323.Canary."
-  "protobuf.appearances.AppearanceFlagLensh"
-  "elp\022\020\n\010fullbank\030  \001(\010\022\023\n\013ignore_look\030! \001"
-  "(\010\022C\n\007clothes\030\" \001(\01322.Canary.protobuf.ap"
-  "pearances.AppearanceFlagClothes\022P\n\016defau"
-  "lt_action\030# \001(\01328.Canary.protobuf.appear"
-  "ances.AppearanceFlagDefaultAction\022A\n\006mar"
-  "ket\030$ \001(\01321.Canary.protobuf.appearances."
-  "AppearanceFlagMarket\022\014\n\004wrap\030% \001(\010\022\016\n\006un"
-  "wrap\030& \001(\010\022\021\n\ttopeffect\030\' \001(\010\022C\n\013npcsale"
-  "data\030( \003(\0132..Canary.protobuf.appearances"
-  ".AppearanceFlagNPC\022S\n\017changedtoexpire\030) "
-  "\001(\0132:.Canary.protobuf.appearances.Appear"
-  "anceFlagChangedToExpire\022\016\n\006corpse\030* \001(\010\022"
-  "\025\n\rplayer_corpse\030+ \001(\010\022M\n\016cyclopediaitem"
-  "\030, \001(\01325.Canary.protobuf.appearances.App"
-  "earanceFlagCyclopedia\022\014\n\004ammo\030- \001(\010\022\027\n\017s"
-  "how_off_socket\030. \001(\010\022\022\n\nreportable\030/ \001(\010"
-  "\022_\n\025upgradeclassification\0300 \001(\0132@.Canary"
-  ".protobuf.appearances.AppearanceFlagUpgr"
-  "adeClassification\022\033\n\023reverse_addons_east"
-  "\0301 \001(\010\022\033\n\023reverse_addons_west\0302 \001(\010\022\034\n\024r"
-  "everse_addons_south\0303 \001(\010\022\034\n\024reverse_add"
-  "ons_north\0304 \001(\010\022\017\n\007wearout\0305 \001(\010\022\023\n\013cloc"
-  "kexpire\0306 \001(\010\022\016\n\006expire\0307 \001(\010\022\022\n\nexpires"
-  "top\0308 \001(\010\022\017\n\007wrapkit\0309 \001(\010\"E\n#Appearance"
-  "FlagUpgradeClassification\022\036\n\026upgrade_cla"
-  "ssification\030\001 \001(\r\"\'\n\022AppearanceFlagBank\022"
-  "\021\n\twaypoints\030\001 \001(\r\".\n\023AppearanceFlagWrit"
-  "e\022\027\n\017max_text_length\030\001 \001(\r\"7\n\027Appearance"
-  "FlagWriteOnce\022\034\n\024max_text_length_once\030\001 "
-  "\001(\r\"8\n\023AppearanceFlagLight\022\022\n\nbrightness"
-  "\030\001 \001(\r\022\r\n\005color\030\002 \001(\r\")\n\024AppearanceFlagH"
-  "eight\022\021\n\televation\030\001 \001(\r\"+\n\023AppearanceFl"
-  "agShift\022\t\n\001x\030\001 \001(\r\022\t\n\001y\030\002 \001(\r\"%\n\025Appeara"
-  "nceFlagClothes\022\014\n\004slot\030\001 \001(\r\"Y\n\033Appearan"
-  "ceFlagDefaultAction\022:\n\006action\030\001 \001(\0162*.Ca"
-  "nary.protobuf.appearances.PLAYER_ACTION\""
-  "\362\001\n\024AppearanceFlagMarket\022<\n\010category\030\001 \001"
-  "(\0162*.Canary.protobuf.appearances.ITEM_CA"
-  "TEGORY\022\032\n\022trade_as_object_id\030\002 \001(\r\022\031\n\021sh"
-  "ow_as_object_id\030\003 \001(\r\022N\n\026restrict_to_pro"
-  "fession\030\005 \003(\0162..Canary.protobuf.appearan"
-  "ces.PLAYER_PROFESSION\022\025\n\rminimum_level\030\006"
-  " \001(\r\"\245\001\n\021AppearanceFlagNPC\022\014\n\004name\030\001 \001(\014"
-  "\022\020\n\010location\030\002 \001(\014\022\022\n\nsale_price\030\003 \001(\r\022\021"
-  "\n\tbuy_price\030\004 \001(\r\022\037\n\027currency_object_typ"
-  "e_id\030\005 \001(\r\022(\n currency_quest_flag_displa"
-  "y_name\030\006 \001(\014\"&\n\025AppearanceFlagAutomap\022\r\n"
-  "\005color\030\001 \001(\r\"O\n\022AppearanceFlagHook\0229\n\tdi"
-  "rection\030\001 \001(\0162&.Canary.protobuf.appearan"
-  "ces.HOOK_TYPE\"$\n\026AppearanceFlagLenshelp\022"
-  "\n\n\002id\030\001 \001(\r\"=\n\035AppearanceFlagChangedToEx"
-  "pire\022\034\n\024former_object_typeid\030\001 \001(\r\"3\n\030Ap"
-  "pearanceFlagCyclopedia\022\027\n\017cyclopedia_typ"
-  "e\030\001 \001(\r\"\312\001\n\033SpecialMeaningAppearanceIds\022"
-  "\024\n\014gold_coin_id\030\001 \001(\r\022\030\n\020platinum_coin_i"
-  "d\030\002 \001(\r\022\027\n\017crystal_coin_id\030\003 \001(\r\022\025\n\rtibi"
-  "a_coin_id\030\004 \001(\r\022\031\n\021stamped_letter_id\030\005 \001"
-  "(\r\022\027\n\017supply_stash_id\030\006 \001(\r\022\027\n\017reward_ch"
-  "est_id\030\007 \001(\r*\224\001\n\rPLAYER_ACTION\022\026\n\022PLAYER"
-  "_ACTION_NONE\020\000\022\026\n\022PLAYER_ACTION_LOOK\020\001\022\025"
-  "\n\021PLAYER_ACTION_USE\020\002\022\026\n\022PLAYER_ACTION_O"
-  "PEN\020\003\022$\n PLAYER_ACTION_AUTOWALK_HIGHLIGH"
-  "T\020\004*\315\005\n\rITEM_CATEGORY\022\030\n\024ITEM_CATEGORY_A"
-  "RMORS\020\001\022\031\n\025ITEM_CATEGORY_AMULETS\020\002\022\027\n\023IT"
-  "EM_CATEGORY_BOOTS\020\003\022\034\n\030ITEM_CATEGORY_CON"
-  "TAINERS\020\004\022\034\n\030ITEM_CATEGORY_DECORATION\020\005\022"
-  "\026\n\022ITEM_CATEGORY_FOOD\020\006\022\036\n\032ITEM_CATEGORY"
-  "_HELMETS_HATS\020\007\022\026\n\022ITEM_CATEGORY_LEGS\020\010\022"
-  "\030\n\024ITEM_CATEGORY_OTHERS\020\t\022\031\n\025ITEM_CATEGO"
-  "RY_POTIONS\020\n\022\027\n\023ITEM_CATEGORY_RINGS\020\013\022\027\n"
-  "\023ITEM_CATEGORY_RUNES\020\014\022\031\n\025ITEM_CATEGORY_"
-  "SHIELDS\020\r\022\027\n\023ITEM_CATEGORY_TOOLS\020\016\022\033\n\027IT"
-  "EM_CATEGORY_VALUABLES\020\017\022\034\n\030ITEM_CATEGORY"
-  "_AMMUNITION\020\020\022\026\n\022ITEM_CATEGORY_AXES\020\021\022\027\n"
-  "\023ITEM_CATEGORY_CLUBS\020\022\022\"\n\036ITEM_CATEGORY_"
-  "DISTANCE_WEAPONS\020\023\022\030\n\024ITEM_CATEGORY_SWOR"
-  "DS\020\024\022\034\n\030ITEM_CATEGORY_WANDS_RODS\020\025\022!\n\035IT"
-  "EM_CATEGORY_PREMIUM_SCROLLS\020\026\022\035\n\031ITEM_CA"
-  "TEGORY_TIBIA_COINS\020\027\022#\n\037ITEM_CATEGORY_CR"
-  "EATURE_PRODUCTS\020\030\022\030\n\024ITEM_CATEGORY_QUIVE"
-  "R\020\031*\355\001\n\021PLAYER_PROFESSION\022\"\n\025PLAYER_PROF"
-  "ESSION_ANY\020\377\377\377\377\377\377\377\377\377\001\022\032\n\026PLAYER_PROFESSI"
-  "ON_NONE\020\000\022\034\n\030PLAYER_PROFESSION_KNIGHT\020\001\022"
-  "\035\n\031PLAYER_PROFESSION_PALADIN\020\002\022\036\n\032PLAYER"
-  "_PROFESSION_SORCERER\020\003\022\033\n\027PLAYER_PROFESS"
-  "ION_DRUID\020\004\022\036\n\032PLAYER_PROFESSION_PROMOTE"
-  "D\020\n*\203\001\n\023ANIMATION_LOOP_TYPE\022)\n\034ANIMATION"
-  "_LOOP_TYPE_PINGPONG\020\377\377\377\377\377\377\377\377\377\001\022 \n\034ANIMAT"
-  "ION_LOOP_TYPE_INFINITE\020\000\022\037\n\033ANIMATION_LO"
-  "OP_TYPE_COUNTED\020\001*4\n\tHOOK_TYPE\022\023\n\017HOOK_T"
-  "YPE_SOUTH\020\001\022\022\n\016HOOK_TYPE_EAST\020\002*\201\001\n\021FIXE"
-  "D_FRAME_GROUP\022!\n\035FIXED_FRAME_GROUP_OUTFI"
-  "T_IDLE\020\000\022#\n\037FIXED_FRAME_GROUP_OUTFIT_MOV"
-  "ING\020\001\022$\n FIXED_FRAME_GROUP_OBJECT_INITIA"
-  "L\020\002"
+  "rn_depth\030\003 \001(\r\022\017\n\007players\030\004 \001(\r\022\021\n\tsprit"
+  "e_id\030\005 \003(\r\022\027\n\017bounding_square\030\007 \001(\r\022\?\n\ta"
+  "nimation\030\006 \001(\0132,.Canary.protobuf.appeara"
+  "nces.SpriteAnimation\022\021\n\tis_opaque\030\010 \001(\010\022"
+  "D\n\032bounding_box_per_direction\030\t \003(\0132 .Ca"
+  "nary.protobuf.appearances.Box\"\241\001\n\nFrameG"
+  "roup\022I\n\021fixed_frame_group\030\001 \001(\0162..Canary"
+  ".protobuf.appearances.FIXED_FRAME_GROUP\022"
+  "\n\n\002id\030\002 \001(\r\022<\n\013sprite_info\030\003 \001(\0132\'.Canar"
+  "y.protobuf.appearances.SpriteInfo\"\266\001\n\nAp"
+  "pearance\022\n\n\002id\030\001 \001(\r\022<\n\013frame_group\030\002 \003("
+  "\0132\'.Canary.protobuf.appearances.FrameGro"
+  "up\022;\n\005flags\030\003 \001(\0132,.Canary.protobuf.appe"
+  "arances.AppearanceFlags\022\014\n\004name\030\004 \001(\014\022\023\n"
+  "\013description\030\005 \001(\014\"\256\017\n\017AppearanceFlags\022="
+  "\n\004bank\030\001 \001(\0132/.Canary.protobuf.appearanc"
+  "es.AppearanceFlagBank\022\014\n\004clip\030\002 \001(\010\022\016\n\006b"
+  "ottom\030\003 \001(\010\022\013\n\003top\030\004 \001(\010\022\021\n\tcontainer\030\005 "
+  "\001(\010\022\022\n\ncumulative\030\006 \001(\010\022\016\n\006usable\030\007 \001(\010\022"
+  "\020\n\010forceuse\030\010 \001(\010\022\020\n\010multiuse\030\t \001(\010\022\?\n\005w"
+  "rite\030\n \001(\01320.Canary.protobuf.appearances"
+  ".AppearanceFlagWrite\022H\n\nwrite_once\030\013 \001(\013"
+  "24.Canary.protobuf.appearances.Appearanc"
+  "eFlagWriteOnce\022\022\n\nliquidpool\030\014 \001(\010\022\016\n\006un"
+  "pass\030\r \001(\010\022\016\n\006unmove\030\016 \001(\010\022\017\n\007unsight\030\017 "
+  "\001(\010\022\r\n\005avoid\030\020 \001(\010\022\035\n\025no_movement_animat"
+  "ion\030\021 \001(\010\022\014\n\004take\030\022 \001(\010\022\027\n\017liquidcontain"
+  "er\030\023 \001(\010\022\014\n\004hang\030\024 \001(\010\022=\n\004hook\030\025 \001(\0132/.C"
+  "anary.protobuf.appearances.AppearanceFla"
+  "gHook\022\016\n\006rotate\030\026 \001(\010\022\?\n\005light\030\027 \001(\01320.C"
+  "anary.protobuf.appearances.AppearanceFla"
+  "gLight\022\021\n\tdont_hide\030\030 \001(\010\022\023\n\013translucent"
+  "\030\031 \001(\010\022\?\n\005shift\030\032 \001(\01320.Canary.protobuf."
+  "appearances.AppearanceFlagShift\022A\n\006heigh"
+  "t\030\033 \001(\01321.Canary.protobuf.appearances.Ap"
+  "pearanceFlagHeight\022\024\n\014lying_object\030\034 \001(\010"
+  "\022\026\n\016animate_always\030\035 \001(\010\022C\n\007automap\030\036 \001("
+  "\01322.Canary.protobuf.appearances.Appearan"
+  "ceFlagAutomap\022E\n\010lenshelp\030\037 \001(\01323.Canary"
+  ".protobuf.appearances.AppearanceFlagLens"
+  "help\022\020\n\010fullbank\030  \001(\010\022\023\n\013ignore_look\030! "
+  "\001(\010\022C\n\007clothes\030\" \001(\01322.Canary.protobuf.a"
+  "ppearances.AppearanceFlagClothes\022P\n\016defa"
+  "ult_action\030# \001(\01328.Canary.protobuf.appea"
+  "rances.AppearanceFlagDefaultAction\022A\n\006ma"
+  "rket\030$ \001(\01321.Canary.protobuf.appearances"
+  ".AppearanceFlagMarket\022\014\n\004wrap\030% \001(\010\022\016\n\006u"
+  "nwrap\030& \001(\010\022\021\n\ttopeffect\030\' \001(\010\022C\n\013npcsal"
+  "edata\030( \003(\0132..Canary.protobuf.appearance"
+  "s.AppearanceFlagNPC\022S\n\017changedtoexpire\030)"
+  " \001(\0132:.Canary.protobuf.appearances.Appea"
+  "ranceFlagChangedToExpire\022\016\n\006corpse\030* \001(\010"
+  "\022\025\n\rplayer_corpse\030+ \001(\010\022M\n\016cyclopediaite"
+  "m\030, \001(\01325.Canary.protobuf.appearances.Ap"
+  "pearanceFlagCyclopedia\022\014\n\004ammo\030- \001(\010\022\027\n\017"
+  "show_off_socket\030. \001(\010\022\022\n\nreportable\030/ \001("
+  "\010\022_\n\025upgradeclassification\0300 \001(\0132@.Canar"
+  "y.protobuf.appearances.AppearanceFlagUpg"
+  "radeClassification\022\033\n\023reverse_addons_eas"
+  "t\0301 \001(\010\022\033\n\023reverse_addons_west\0302 \001(\010\022\034\n\024"
+  "reverse_addons_south\0303 \001(\010\022\034\n\024reverse_ad"
+  "dons_north\0304 \001(\010\022\017\n\007wearout\0305 \001(\010\022\023\n\013clo"
+  "ckexpire\0306 \001(\010\022\016\n\006expire\0307 \001(\010\022\022\n\nexpire"
+  "stop\0308 \001(\010\022\017\n\007wrapkit\0309 \001(\010\"E\n#Appearanc"
+  "eFlagUpgradeClassification\022\036\n\026upgrade_cl"
+  "assification\030\001 \001(\r\"\'\n\022AppearanceFlagBank"
+  "\022\021\n\twaypoints\030\001 \001(\r\".\n\023AppearanceFlagWri"
+  "te\022\027\n\017max_text_length\030\001 \001(\r\"7\n\027Appearanc"
+  "eFlagWriteOnce\022\034\n\024max_text_length_once\030\001"
+  " \001(\r\"8\n\023AppearanceFlagLight\022\022\n\nbrightnes"
+  "s\030\001 \001(\r\022\r\n\005color\030\002 \001(\r\")\n\024AppearanceFlag"
+  "Height\022\021\n\televation\030\001 \001(\r\"+\n\023AppearanceF"
+  "lagShift\022\t\n\001x\030\001 \001(\r\022\t\n\001y\030\002 \001(\r\"%\n\025Appear"
+  "anceFlagClothes\022\014\n\004slot\030\001 \001(\r\"Y\n\033Appeara"
+  "nceFlagDefaultAction\022:\n\006action\030\001 \001(\0162*.C"
+  "anary.protobuf.appearances.PLAYER_ACTION"
+  "\"\362\001\n\024AppearanceFlagMarket\022<\n\010category\030\001 "
+  "\001(\0162*.Canary.protobuf.appearances.ITEM_C"
+  "ATEGORY\022\032\n\022trade_as_object_id\030\002 \001(\r\022\031\n\021s"
+  "how_as_object_id\030\003 \001(\r\022N\n\026restrict_to_pr"
+  "ofession\030\005 \003(\0162..Canary.protobuf.appeara"
+  "nces.PLAYER_PROFESSION\022\025\n\rminimum_level\030"
+  "\006 \001(\r\"\245\001\n\021AppearanceFlagNPC\022\014\n\004name\030\001 \001("
+  "\014\022\020\n\010location\030\002 \001(\014\022\022\n\nsale_price\030\003 \001(\r\022"
+  "\021\n\tbuy_price\030\004 \001(\r\022\037\n\027currency_object_ty"
+  "pe_id\030\005 \001(\r\022(\n currency_quest_flag_displ"
+  "ay_name\030\006 \001(\014\"&\n\025AppearanceFlagAutomap\022\r"
+  "\n\005color\030\001 \001(\r\"O\n\022AppearanceFlagHook\0229\n\td"
+  "irection\030\001 \001(\0162&.Canary.protobuf.appeara"
+  "nces.HOOK_TYPE\"$\n\026AppearanceFlagLenshelp"
+  "\022\n\n\002id\030\001 \001(\r\"=\n\035AppearanceFlagChangedToE"
+  "xpire\022\034\n\024former_object_typeid\030\001 \001(\r\"3\n\030A"
+  "ppearanceFlagCyclopedia\022\027\n\017cyclopedia_ty"
+  "pe\030\001 \001(\r\"\312\001\n\033SpecialMeaningAppearanceIds"
+  "\022\024\n\014gold_coin_id\030\001 \001(\r\022\030\n\020platinum_coin_"
+  "id\030\002 \001(\r\022\027\n\017crystal_coin_id\030\003 \001(\r\022\025\n\rtib"
+  "ia_coin_id\030\004 \001(\r\022\031\n\021stamped_letter_id\030\005 "
+  "\001(\r\022\027\n\017supply_stash_id\030\006 \001(\r\022\027\n\017reward_c"
+  "hest_id\030\007 \001(\r*\224\001\n\rPLAYER_ACTION\022\026\n\022PLAYE"
+  "R_ACTION_NONE\020\000\022\026\n\022PLAYER_ACTION_LOOK\020\001\022"
+  "\025\n\021PLAYER_ACTION_USE\020\002\022\026\n\022PLAYER_ACTION_"
+  "OPEN\020\003\022$\n PLAYER_ACTION_AUTOWALK_HIGHLIG"
+  "HT\020\004*\315\005\n\rITEM_CATEGORY\022\030\n\024ITEM_CATEGORY_"
+  "ARMORS\020\001\022\031\n\025ITEM_CATEGORY_AMULETS\020\002\022\027\n\023I"
+  "TEM_CATEGORY_BOOTS\020\003\022\034\n\030ITEM_CATEGORY_CO"
+  "NTAINERS\020\004\022\034\n\030ITEM_CATEGORY_DECORATION\020\005"
+  "\022\026\n\022ITEM_CATEGORY_FOOD\020\006\022\036\n\032ITEM_CATEGOR"
+  "Y_HELMETS_HATS\020\007\022\026\n\022ITEM_CATEGORY_LEGS\020\010"
+  "\022\030\n\024ITEM_CATEGORY_OTHERS\020\t\022\031\n\025ITEM_CATEG"
+  "ORY_POTIONS\020\n\022\027\n\023ITEM_CATEGORY_RINGS\020\013\022\027"
+  "\n\023ITEM_CATEGORY_RUNES\020\014\022\031\n\025ITEM_CATEGORY"
+  "_SHIELDS\020\r\022\027\n\023ITEM_CATEGORY_TOOLS\020\016\022\033\n\027I"
+  "TEM_CATEGORY_VALUABLES\020\017\022\034\n\030ITEM_CATEGOR"
+  "Y_AMMUNITION\020\020\022\026\n\022ITEM_CATEGORY_AXES\020\021\022\027"
+  "\n\023ITEM_CATEGORY_CLUBS\020\022\022\"\n\036ITEM_CATEGORY"
+  "_DISTANCE_WEAPONS\020\023\022\030\n\024ITEM_CATEGORY_SWO"
+  "RDS\020\024\022\034\n\030ITEM_CATEGORY_WANDS_RODS\020\025\022!\n\035I"
+  "TEM_CATEGORY_PREMIUM_SCROLLS\020\026\022\035\n\031ITEM_C"
+  "ATEGORY_TIBIA_COINS\020\027\022#\n\037ITEM_CATEGORY_C"
+  "REATURE_PRODUCTS\020\030\022\030\n\024ITEM_CATEGORY_QUIV"
+  "ER\020\031*\355\001\n\021PLAYER_PROFESSION\022\"\n\025PLAYER_PRO"
+  "FESSION_ANY\020\377\377\377\377\377\377\377\377\377\001\022\032\n\026PLAYER_PROFESS"
+  "ION_NONE\020\000\022\034\n\030PLAYER_PROFESSION_KNIGHT\020\001"
+  "\022\035\n\031PLAYER_PROFESSION_PALADIN\020\002\022\036\n\032PLAYE"
+  "R_PROFESSION_SORCERER\020\003\022\033\n\027PLAYER_PROFES"
+  "SION_DRUID\020\004\022\036\n\032PLAYER_PROFESSION_PROMOT"
+  "ED\020\n*\203\001\n\023ANIMATION_LOOP_TYPE\022)\n\034ANIMATIO"
+  "N_LOOP_TYPE_PINGPONG\020\377\377\377\377\377\377\377\377\377\001\022 \n\034ANIMA"
+  "TION_LOOP_TYPE_INFINITE\020\000\022\037\n\033ANIMATION_L"
+  "OOP_TYPE_COUNTED\020\001*4\n\tHOOK_TYPE\022\023\n\017HOOK_"
+  "TYPE_SOUTH\020\001\022\022\n\016HOOK_TYPE_EAST\020\002*\201\001\n\021FIX"
+  "ED_FRAME_GROUP\022!\n\035FIXED_FRAME_GROUP_OUTF"
+  "IT_IDLE\020\000\022#\n\037FIXED_FRAME_GROUP_OUTFIT_MO"
+  "VING\020\001\022$\n FIXED_FRAME_GROUP_OBJECT_INITI"
+  "AL\020\002"
   ;
 static ::_pbi::once_flag descriptor_table_appearances_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_appearances_2eproto = {
-    false, false, 6243, descriptor_table_protodef_appearances_2eproto,
+    false, false, 6244, descriptor_table_protodef_appearances_2eproto,
     "appearances.proto",
     &descriptor_table_appearances_2eproto_once, nullptr, 0, 26,
     schemas, file_default_instances, TableStruct_appearances_2eproto::offsets,
@@ -2777,7 +2777,7 @@ class SpriteInfo::_Internal {
   static void set_has_pattern_depth(HasBits* has_bits) {
     (*has_bits)[0] |= 8u;
   }
-  static void set_has_layers(HasBits* has_bits) {
+  static void set_has_players(HasBits* has_bits) {
     (*has_bits)[0] |= 16u;
   }
   static void set_has_bounding_square(HasBits* has_bits) {
@@ -2814,7 +2814,7 @@ SpriteInfo::SpriteInfo(const SpriteInfo& from)
     , decltype(_impl_.pattern_width_){}
     , decltype(_impl_.pattern_height_){}
     , decltype(_impl_.pattern_depth_){}
-    , decltype(_impl_.layers_){}
+    , decltype(_impl_.players_){}
     , decltype(_impl_.bounding_square_){}
     , decltype(_impl_.is_opaque_){}};
 
@@ -2841,7 +2841,7 @@ inline void SpriteInfo::SharedCtor(
     , decltype(_impl_.pattern_width_){0u}
     , decltype(_impl_.pattern_height_){0u}
     , decltype(_impl_.pattern_depth_){0u}
-    , decltype(_impl_.layers_){0u}
+    , decltype(_impl_.players_){0u}
     , decltype(_impl_.bounding_square_){0u}
     , decltype(_impl_.is_opaque_){false}
   };
@@ -2923,11 +2923,11 @@ const char* SpriteInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 layers = 4;
+      // optional uint32 players = 4;
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
-          _Internal::set_has_layers(&has_bits);
-          _impl_.layers_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _Internal::set_has_players(&has_bits);
+          _impl_.players_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -3036,10 +3036,10 @@ uint8_t* SpriteInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_pattern_depth(), target);
   }
 
-  // optional uint32 layers = 4;
+  // optional uint32 players = 4;
   if (cached_has_bits & 0x00000010u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(4, this->_internal_layers(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(4, this->_internal_players(), target);
   }
 
   // repeated uint32 sprite_id = 5;
@@ -3131,9 +3131,9 @@ size_t SpriteInfo::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_pattern_depth());
     }
 
-    // optional uint32 layers = 4;
+    // optional uint32 players = 4;
     if (cached_has_bits & 0x00000010u) {
-      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_layers());
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_players());
     }
 
     // optional uint32 bounding_square = 7;
@@ -3183,7 +3183,7 @@ void SpriteInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PRO
       _this->_impl_.pattern_depth_ = from._impl_.pattern_depth_;
     }
     if (cached_has_bits & 0x00000010u) {
-      _this->_impl_.layers_ = from._impl_.layers_;
+      _this->_impl_.players_ = from._impl_.players_;
     }
     if (cached_has_bits & 0x00000020u) {
       _this->_impl_.bounding_square_ = from._impl_.bounding_square_;

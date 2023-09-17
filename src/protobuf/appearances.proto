@@ -98,7 +98,7 @@ message SpriteInfo {
 	optional uint32 pattern_width = 1;
 	optional uint32 pattern_height = 2;
 	optional uint32 pattern_depth = 3;
-	optional uint32 layers = 4;
+	optional uint32 players = 4;
 	repeated uint32 sprite_id = 5;
 	optional uint32 bounding_square = 7;
 	optional SpriteAnimation animation = 6;

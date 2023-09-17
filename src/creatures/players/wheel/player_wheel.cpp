@@ -632,7 +632,7 @@ bool PlayerWheel::getSpellAdditionalArea(const std::string &spellName) const {
 		return false;
 	}
 
-	auto vocationEnum = getPlayerVocationEnum();
+	const auto &vocationEnum = getPlayerVocationEnum();
 	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 		return checkSpellArea(g_game().getIOWheel()->getWheelBonusData().spells.knight, spellName, stage);
 	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
@@ -652,7 +652,7 @@ int PlayerWheel::getSpellAdditionalTarget(const std::string &spellName) const {
 		return 0;
 	}
 
-	auto vocationEnum = getPlayerVocationEnum();
+	const auto &vocationEnum = getPlayerVocationEnum();
 	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 		return checkSpellAdditionalTarget(g_game().getIOWheel()->getWheelBonusData().spells.knight, spellName, stage);
 	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
@@ -672,7 +672,7 @@ int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const 
 		return 0;
 	}
 
-	auto vocationEnum = getPlayerVocationEnum();
+	const auto &vocationEnum = getPlayerVocationEnum();
 	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 		return checkSpellAdditionalDuration(g_game().getIOWheel()->getWheelBonusData().spells.knight, spellName, stage);
 	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
@@ -1376,7 +1376,7 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 void PlayerWheel::loadDedicationAndConvictionPerks() {
 	using VocationBonusFunction = std::function<void(const std::shared_ptr<Player> &, uint16_t, uint8_t, PlayerWheelMethodsBonusData &)>;
 	auto &wheelFunctions = g_game().getIOWheel()->getWheelMapFunctions();
-	auto vocationCipId = getPlayerVocationEnum();
+	const auto &vocationCipId = getPlayerVocationEnum();
 	if (vocationCipId < VOCATION_KNIGHT_CIP || vocationCipId > VOCATION_DRUID_CIP) {
 		return;
 	}
@@ -1421,7 +1421,7 @@ void PlayerWheel::loadRevelationPerks() {
 		m_playerBonusData.stats.healing += statsHealing;
 
 		auto redStageValue = static_cast<uint8_t>(redStageEnum);
-		auto vocationEnum = getPlayerVocationEnum();
+		const auto &vocationEnum = getPlayerVocationEnum();
 		if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
 			m_playerBonusData.stages.blessingOfTheGrove = redStageValue;
 		} else if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
@@ -1448,7 +1448,7 @@ void PlayerWheel::loadRevelationPerks() {
 		m_playerBonusData.stats.healing += statsHealing;
 
 		auto purpleStage = static_cast<uint8_t>(purpleStageEnum);
-		auto vocationEnum = getPlayerVocationEnum();
+		const auto &vocationEnum = getPlayerVocationEnum();
 		if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 			m_playerBonusData.avatar.steel = purpleStage;
 			for (uint8_t i = 0; i < purpleStage; ++i) {
@@ -1479,7 +1479,7 @@ void PlayerWheel::loadRevelationPerks() {
 		m_playerBonusData.stats.healing += statsHealing;
 
 		auto blueStage = static_cast<uint8_t>(blueStageEnum);
-		auto vocationEnum = getPlayerVocationEnum();
+		const auto &vocationEnum = getPlayerVocationEnum();
 		if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 			m_playerBonusData.stages.combatMastery = blueStage;
 		} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {

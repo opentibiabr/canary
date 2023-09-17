@@ -171,7 +171,7 @@ int ZoneFunctions::luaZoneGetPlayers(lua_State* L) {
 		pushBoolean(L, false);
 		return 1;
 	}
-	auto players = zone->getPlayers();
+	const auto &players = zone->getPlayers();
 	lua_createtable(L, static_cast<int>(players.size()), 0);
 
 	int index = 0;

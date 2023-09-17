@@ -120,7 +120,7 @@ int_fast32_t AStarNodes::getTileWalkCost(const std::shared_ptr<Creature> &creatu
 		/**
 		 * Make player try to avoid magic fields, when calculating pathing
 		 */
-		std::shared_ptr<Player> player = creature->getPlayer();
+		const auto &player = creature->getPlayer();
 		if (player && !field->isBlocking() && field->getDamage() != 0) {
 			cost += MAP_NORMALWALKCOST * 18;
 		}

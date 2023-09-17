@@ -1523,7 +1523,7 @@ class SpriteInfo final :
     kPatternWidthFieldNumber = 1,
     kPatternHeightFieldNumber = 2,
     kPatternDepthFieldNumber = 3,
-    kLayersFieldNumber = 4,
+    kPlayersFieldNumber = 4,
     kBoundingSquareFieldNumber = 7,
     kIsOpaqueFieldNumber = 8,
   };
@@ -1624,17 +1624,17 @@ class SpriteInfo final :
   void _internal_set_pattern_depth(uint32_t value);
   public:
 
-  // optional uint32 layers = 4;
-  bool has_layers() const;
+  // optional uint32 players = 4;
+  bool has_players() const;
   private:
-  bool _internal_has_layers() const;
+  bool _internal_has_players() const;
   public:
-  void clear_layers();
-  uint32_t layers() const;
-  void set_layers(uint32_t value);
+  void clear_players();
+  uint32_t players() const;
+  void set_players(uint32_t value);
   private:
-  uint32_t _internal_layers() const;
-  void _internal_set_layers(uint32_t value);
+  uint32_t _internal_players() const;
+  void _internal_set_players(uint32_t value);
   public:
 
   // optional uint32 bounding_square = 7;
@@ -1679,7 +1679,7 @@ class SpriteInfo final :
     uint32_t pattern_width_;
     uint32_t pattern_height_;
     uint32_t pattern_depth_;
-    uint32_t layers_;
+    uint32_t players_;
     uint32_t bounding_square_;
     bool is_opaque_;
   };
@@ -6993,32 +6993,32 @@ inline void SpriteInfo::set_pattern_depth(uint32_t value) {
   // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.SpriteInfo.pattern_depth)
 }
 
-// optional uint32 layers = 4;
-inline bool SpriteInfo::_internal_has_layers() const {
+// optional uint32 players = 4;
+inline bool SpriteInfo::_internal_has_players() const {
   bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
-inline bool SpriteInfo::has_layers() const {
-  return _internal_has_layers();
+inline bool SpriteInfo::has_players() const {
+  return _internal_has_players();
 }
-inline void SpriteInfo::clear_layers() {
-  _impl_.layers_ = 0u;
+inline void SpriteInfo::clear_players() {
+  _impl_.players_ = 0u;
   _impl_._has_bits_[0] &= ~0x00000010u;
 }
-inline uint32_t SpriteInfo::_internal_layers() const {
-  return _impl_.layers_;
+inline uint32_t SpriteInfo::_internal_players() const {
+  return _impl_.players_;
 }
-inline uint32_t SpriteInfo::layers() const {
-  // @@protoc_insertion_point(field_get:Canary.protobuf.appearances.SpriteInfo.layers)
-  return _internal_layers();
+inline uint32_t SpriteInfo::players() const {
+  // @@protoc_insertion_point(field_get:Canary.protobuf.appearances.SpriteInfo.players)
+  return _internal_players();
 }
-inline void SpriteInfo::_internal_set_layers(uint32_t value) {
+inline void SpriteInfo::_internal_set_players(uint32_t value) {
   _impl_._has_bits_[0] |= 0x00000010u;
-  _impl_.layers_ = value;
+  _impl_.players_ = value;
 }
-inline void SpriteInfo::set_layers(uint32_t value) {
-  _internal_set_layers(value);
-  // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.SpriteInfo.layers)
+inline void SpriteInfo::set_players(uint32_t value) {
+  _internal_set_players(value);
+  // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.SpriteInfo.players)
 }
 
 // repeated uint32 sprite_id = 5;

@@ -1238,7 +1238,7 @@ bool Creature::setMaster(std::shared_ptr<Creature> newMaster, bool reloadCreatur
 	m_master = newMaster;
 
 	if (oldMaster) {
-		auto summon = getSummon(getID());
+		auto summon = oldMaster->getSummon(getID());
 		if (summon) {
 			oldMaster->removeSummon(summon);
 		}

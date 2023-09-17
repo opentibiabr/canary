@@ -335,11 +335,11 @@ public:
 		return m_summons;
 	}
 
-	const std::shared_ptr<Creature> &getSummon(uint32_t creatureId) {
-		if (!m_summons.contains(creatureId)) {
-			return nullptr;
+	std::shared_ptr<Creature> getSummon(uint32_t creatureId) {
+		if (m_summons.contains(creatureId)) {
+			return m_summons.at(creatureId);
 		}
-		return m_summons.at(creatureId);
+		return nullptr;
 	}
 
 	void removeSummon(const std::shared_ptr<Creature> &summon) {

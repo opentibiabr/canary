@@ -32,10 +32,10 @@ public:
 		return m_leader.lock();
 	}
 	std::vector<std::shared_ptr<Player>> getMembers() {
-		return weak::lock(memberList);
+		return memberList;
 	}
 	std::vector<std::shared_ptr<Player>> getInvitees() {
-		return weak::lock(inviteList);
+		return inviteList;
 	}
 	size_t getMemberCount() const {
 		return memberList.size();
@@ -124,8 +124,8 @@ private:
 
 	std::map<uint32_t, int64_t> ticksMap;
 
-	weak::vector<Player> memberList;
-	weak::vector<Player> inviteList;
+	std::vector<std::shared_ptr<Player>> memberList;
+	std::vector<std::shared_ptr<Player>> inviteList;
 
 	std::weak_ptr<Player> m_leader;
 

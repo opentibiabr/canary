@@ -104,14 +104,14 @@ bool Party::leaveParty(std::shared_ptr<Player> player) {
 			if (memberList.size() == 1 && inviteList.empty()) {
 				missingLeader = true;
 			} else {
-				auto newLeader = memberList.front().lock();
+				auto newLeader = memberList.front();
 				while (!newLeader) {
 					memberList.erase(memberList.begin());
 					if (memberList.empty()) {
 						missingLeader = true;
 						break;
 					}
-					newLeader = memberList.front().lock();
+					newLeader = memberList.front();
 				}
 				if (newLeader) {
 					passPartyLeadership(newLeader);
@@ -123,7 +123,10 @@ bool Party::leaveParty(std::shared_ptr<Player> player) {
 	}
 
 	// since we already passed the leadership, we remove the player from the list
-	weak::erase(memberList, player);
+	auto it = std::find(memberList.begin(), memberList.end(), player);
+	if (it != memberList.end()) {
+		memberList.erase(it);
+	}
 
 	player->setParty(nullptr);
 	player->sendClosePrivate(CHANNEL_PARTY);
@@ -166,7 +169,10 @@ bool Party::passPartyLeadership(std::shared_ptr<Player> player) {
 	}
 
 	// Remove it before to broadcast the message correctly
-	weak::erase(memberList, player);
+	auto it = std::find(memberList.begin(), memberList.end(), player);
+	if (it != memberList.end()) {
+		memberList.erase(it);
+	}
 
 	std::ostringstream ss;
 	ss << player->getName() << " is now the leader of the party.";
@@ -211,7 +217,7 @@ bool Party::joinParty(const std::shared_ptr<Player> &player) {
 		return false;
 	}
 
-	auto it = weak::find(inviteList, player);
+	auto it = std::find(inviteList.begin(), inviteList.end(), player);
 	if (it == inviteList.end()) {
 		return false;
 	}
@@ -258,7 +264,7 @@ bool Party::removeInvite(const std::shared_ptr<Player> &player, bool removeFromP
 		return false;
 	}
 
-	auto it = weak::find(inviteList, player);
+	auto it = std::find(inviteList.begin(), inviteList.end(), player);
 	if (it == inviteList.end()) {
 		return false;
 	}
@@ -343,7 +349,7 @@ bool Party::invitePlayer(const std::shared_ptr<Player> &player) {
 }
 
 bool Party::isPlayerInvited(const std::shared_ptr<Player> &player) const {
-	return weak::find(inviteList, player) != inviteList.end();
+	return std::find(inviteList.begin(), inviteList.end(), player) != inviteList.end();
 }
 
 void Party::updateAllPartyIcons() {

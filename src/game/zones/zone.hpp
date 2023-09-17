@@ -94,24 +94,24 @@ public:
 	void addArea(Area area);
 	void subtractArea(Area area);
 	bool isPositionInZone(const Position &position) const;
-	Position getRemoveDestination(std::shared_ptr<Creature> creature = nullptr) const;
+	Position getRemoveDestination(const std::shared_ptr<Creature> &creature = nullptr) const;
 	void setRemoveDestination(const Position &position) {
 		removeDestination = position;
 	}
 
 	const phmap::parallel_flat_hash_set<Position> &getPositions() const;
-	const phmap::parallel_flat_hash_set<std::shared_ptr<Tile>> &getTiles() const;
+	const phmap::parallel_flat_hash_set<const std::shared_ptr<Tile> &> &getTiles() const;
 	const phmap::parallel_flat_hash_set<std::shared_ptr<Creature>> &getCreatures() const;
 	const phmap::parallel_flat_hash_set<std::shared_ptr<Player>> &getPlayers() const;
 	const phmap::parallel_flat_hash_set<std::shared_ptr<Monster>> &getMonsters() const;
 	const phmap::parallel_flat_hash_set<std::shared_ptr<Npc>> &getNpcs() const;
 	const phmap::parallel_flat_hash_set<std::shared_ptr<Item>> &getItems() const;
 
-	void creatureAdded(std::shared_ptr<Creature> creature);
-	void creatureRemoved(std::shared_ptr<Creature> creature);
-	void thingAdded(std::shared_ptr<Thing> thing);
-	void itemAdded(std::shared_ptr<Item> item);
-	void itemRemoved(std::shared_ptr<Item> item);
+	void creatureAdded(const std::shared_ptr<Creature> &creature);
+	void creatureRemoved(const std::shared_ptr<Creature> &creature);
+	void thingAdded(const std::shared_ptr<Thing> &thing);
+	void itemAdded(const std::shared_ptr<Item> &item);
+	void itemRemoved(const std::shared_ptr<Item> &item);
 
 	void removePlayers() const;
 	void removeMonsters() const;
@@ -128,7 +128,7 @@ private:
 	std::string name;
 	phmap::parallel_flat_hash_set<Position> positions;
 
-	weak::parallel_flat_hash_set<Item> itemsCache;
+	phmap::parallel_flat_hash_set<std ::shared_ptr<Item>> itemsCache;
 	phmap::parallel_flat_hash_set<uint32_t> creaturesCache;
 	phmap::parallel_flat_hash_set<uint32_t> monstersCache;
 	phmap::parallel_flat_hash_set<uint32_t> npcsCache;

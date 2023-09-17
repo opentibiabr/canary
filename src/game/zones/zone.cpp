@@ -66,7 +66,7 @@ bool Zone::isPositionInZone(const Position &pos) const {
 	return positions.contains(pos);
 }
 
-Position Zone::getRemoveDestination(std::shared_ptr<Creature> creature /* = nullptr */) const {
+Position Zone::getRemoveDestination(const std::shared_ptr<Creature> &creature /* = nullptr */) const {
 	if (!creature || !creature->getPlayer()) {
 		return Position();
 	}
@@ -87,11 +87,11 @@ const phmap::parallel_flat_hash_set<Position> &Zone::getPositions() const {
 	return positions;
 }
 
-const phmap::parallel_flat_hash_set<std::shared_ptr<Tile>> &Zone::getTiles() const {
-	static phmap::parallel_flat_hash_set<std::shared_ptr<Tile>> tiles;
+const phmap::parallel_flat_hash_set<const std::shared_ptr<Tile> &> &Zone::getTiles() const {
+	static phmap::parallel_flat_hash_set<const std::shared_ptr<Tile> &> tiles;
 	tiles.clear();
 	for (const auto &position : positions) {
-		std::shared_ptr<Tile> tile = g_game().map.getTile(position);
+		const auto &tile = g_game().map.getTile(position);
 		if (tile) {
 			tiles.insert(tile);
 		}
@@ -103,7 +103,7 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Creature>> &Zone::getCreatur
 	static phmap::parallel_flat_hash_set<std::shared_ptr<Creature>> creatures;
 	creatures.clear();
 	for (const auto creatureId : creaturesCache) {
-		auto creature = g_game().getCreatureByID(creatureId);
+		const auto &creature = g_game().getCreatureByID(creatureId);
 		if (creature) {
 			creatures.insert(creature);
 		}
@@ -115,7 +115,7 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Player>> &Zone::getPlayers()
 	static phmap::parallel_flat_hash_set<std::shared_ptr<Player>> players;
 	players.clear();
 	for (const auto playerId : playersCache) {
-		auto player = g_game().getPlayerByID(playerId);
+		const auto &player = g_game().getPlayerByID(playerId);
 		if (player) {
 			players.insert(player);
 		}
@@ -127,7 +127,7 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Monster>> &Zone::getMonsters
 	static phmap::parallel_flat_hash_set<std::shared_ptr<Monster>> monsters;
 	monsters.clear();
 	for (const auto monsterId : monstersCache) {
-		auto monster = g_game().getMonsterByID(monsterId);
+		const auto &monster = g_game().getMonsterByID(monsterId);
 		if (monster) {
 			monsters.insert(monster);
 		}
@@ -139,7 +139,7 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Npc>> &Zone::getNpcs() const
 	static phmap::parallel_flat_hash_set<std::shared_ptr<Npc>> npcs;
 	npcs.clear();
 	for (const auto npcId : npcsCache) {
-		auto npc = g_game().getNpcByID(npcId);
+		const auto &npc = g_game().getNpcByID(npcId);
 		if (npc) {
 			npcs.insert(npc);
 		}
@@ -148,14 +148,7 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Npc>> &Zone::getNpcs() const
 }
 
 const phmap::parallel_flat_hash_set<std::shared_ptr<Item>> &Zone::getItems() const {
-	static phmap::parallel_flat_hash_set<std::shared_ptr<Item>> items;
-	items.clear();
-	for (const auto &item : itemsCache) {
-		if (auto itemPtr = item.lock()) {
-			items.insert(itemPtr);
-		}
-	}
-	return items;
+	return itemsCache;
 }
 
 void Zone::removePlayers() const {
@@ -201,7 +194,7 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &Zone::getZones() {
 	return zonesSet;
 }
 
-void Zone::creatureAdded(std::shared_ptr<Creature> creature) {
+void Zone::creatureAdded(const std::shared_ptr<Creature> &creature) {
 	if (!creature) {
 		return;
 	}
@@ -234,7 +227,7 @@ void Zone::creatureAdded(std::shared_ptr<Creature> creature) {
 	}
 }
 
-void Zone::creatureRemoved(std::shared_ptr<Creature> creature) {
+void Zone::creatureRemoved(const std::shared_ptr<Creature> &creature) {
 	if (!creature) {
 		return;
 	}
@@ -250,7 +243,7 @@ void Zone::creatureRemoved(std::shared_ptr<Creature> creature) {
 	}
 }
 
-void Zone::thingAdded(std::shared_ptr<Thing> thing) {
+void Zone::thingAdded(const std::shared_ptr<Thing> &thing) {
 	if (!thing) {
 		return;
 	}
@@ -262,17 +255,16 @@ void Zone::thingAdded(std::shared_ptr<Thing> thing) {
 	}
 }
 
-void Zone::itemAdded(std::shared_ptr<Item> item) {
+void Zone::itemAdded(const std::shared_ptr<Item> &item) {
 	if (!item) {
 		return;
 	}
 	itemsCache.insert(item);
 }
 
-void Zone::itemRemoved(std::shared_ptr<Item> item) {
+void Zone::itemRemoved(const std::shared_ptr<Item> &item) {
 	if (!item) {
 		return;
 	}
-	std::weak_ptr<Item> weakItem = item;
-	itemsCache.erase(weakItem);
+	itemsCache.erase(item);
 }

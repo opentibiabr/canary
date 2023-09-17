@@ -103,8 +103,8 @@ public:
 	bool executeCastSpell(std::shared_ptr<Creature> creature, const LuaVariant &var) const;
 
 	bool loadScriptCombat();
-	std::shared_ptr<Combat> getCombat() {
-		return m_combat.lock();
+	std::shared_ptr<Combat> getCombat() const {
+		return m_combat;
 	}
 
 private:
@@ -112,7 +112,7 @@ private:
 		return "onCastSpell";
 	}
 
-	std::weak_ptr<Combat> m_combat;
+	std::shared_ptr<Combat> m_combat;
 
 	bool needDirection;
 	bool needTarget;

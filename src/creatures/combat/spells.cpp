@@ -246,7 +246,7 @@ CombatSpell::CombatSpell(const std::shared_ptr<Combat> newCombat, bool newNeedTa
 
 bool CombatSpell::loadScriptCombat() {
 	m_combat = g_luaEnvironment().getCombatObject(g_luaEnvironment().lastCombatId);
-	return !m_combat.expired();
+	return m_combat != nullptr;
 }
 
 bool CombatSpell::castSpell(std::shared_ptr<Creature> creature) {

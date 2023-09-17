@@ -114,9 +114,10 @@ void Decay::checkDecay() {
 
 		// Iterating here is unsafe so let's copy our items into temporary vector
 		auto &decayItems = it->second;
-		tempItems.reserve(tempItems.size() + decayItems.size());
-		for (auto &decayItem : decayItems) {
-			tempItems.push_back(decayItem.lock());
+		auto lockedDecayItems = weak::lock(decayItems);
+		tempItems.reserve(tempItems.size() + lockedDecayItems.size());
+		for (auto &decayItem : lockedDecayItems) {
+			tempItems.push_back(decayItem);
 		}
 		it = decayMap.erase(it);
 	}

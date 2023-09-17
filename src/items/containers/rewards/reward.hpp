@@ -32,6 +32,6 @@ public:
 
 	std::shared_ptr<Cylinder> getParent() final;
 	std::shared_ptr<Cylinder> getRealParent() final {
-		return parent.lock();
+		return m_parent.lock();
 	}
 };

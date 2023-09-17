@@ -57,7 +57,7 @@ std::shared_ptr<Container> Container::create(std::shared_ptr<Tile> tile) {
 Container::~Container() {
 	if (getID() == ITEM_BROWSEFIELD) {
 		for (std::shared_ptr<Item> item : itemlist) {
-			item->setParent(parent);
+			item->setParent(m_parent);
 		}
 	}
 }

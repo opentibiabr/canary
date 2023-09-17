@@ -564,18 +564,22 @@ public:
 	bool hasMarketAttributes() const;
 
 	std::shared_ptr<Cylinder> getParent() override {
-		return parent.lock();
+		return m_parent.lock();
 	}
 	void setParent(std::weak_ptr<Cylinder> cylinder) override {
-		parent = cylinder;
+		m_parent = cylinder;
 	}
 	void resetParent() {
-		parent.reset();
+		m_parent.reset();
 	}
 	std::shared_ptr<Cylinder> getTopParent();
 	std::shared_ptr<Tile> getTile() override;
 	bool isRemoved() override {
-		return parent.expired() || getParent()->isRemoved();
+		auto parent = getParent();
+		if (parent) {
+			return parent->isRemoved();
+		}
+		return true;
 	}
 
 	bool isInsideDepot(bool includeInbox = false);
@@ -676,7 +680,7 @@ public:
 	void checkDecayMapItemOnMove();
 
 protected:
-	std::weak_ptr<Cylinder> parent;
+	std::weak_ptr<Cylinder> m_parent;
 
 	uint16_t id; // the same id as in ItemType
 	uint8_t count = 1; // number of stacked items

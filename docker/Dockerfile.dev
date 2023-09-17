@@ -2,37 +2,55 @@
 FROM ubuntu:23.04 AS dependencies
 
 RUN --mount=type=cache,target=/var/cache/apt \
-	apt-get update && apt-get install -y --no-install-recommends cmake git \
-	unzip build-essential ca-certificates curl zip unzip tar \
-	pkg-config ninja-build autoconf automake libtool \
-	&& apt-get clean \
-	&& rm -rf /var/lib/apt/lists/*
+        apt-get update && apt-get install -y --no-install-recommends snap cmake git \
+        unzip build-essential ca-certificates curl zip unzip tar \
+        pkg-config ninja-build autoconf automake libtool \
+        && apt-get clean \
+        && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
-COPY vcpkg.json /opt
-RUN vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ') \
-	&& echo "vcpkg commit ID: $vcpkgCommitId" \
-	&& git clone https://github.com/Microsoft/vcpkg.git \
-	&& cd vcpkg \
-	&& git checkout "$vcpkgCommitId" \
-	&& ./bootstrap-vcpkg.sh
-
-WORKDIR /opt/vcpkg
-COPY vcpkg.json /opt/vcpkg/
-RUN --mount=type=cache,target=/var/cache/vcpkg \
-	/opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install
+RUN git clone https://github.com/Microsoft/vcpkg.git \
+        && cd vcpkg \
+        && export VCPKG_FORCE_SYSTEM_BINARIES=1 \
+        && ./bootstrap-vcpkg.sh
 
 # Stage 2: create build
 FROM dependencies AS build
+
 WORKDIR /srv/build
-COPY src ./src
-COPY cmake ./cmake
-COPY recompile.sh CMakeLists.txt CMakePresets.json vcpkg.json ./
-RUN ./recompile.sh "/opt"
+
+RUN chmod -R 644 /srv/build
+
+COPY src /srv/src
+COPY cmake /srv/cmake
+COPY recompile.sh CMakeLists.txt CMakePresets.json vcpkg.json /srv
+
+ENV CMAKE_MAKE_PROGRAM=make
+ENV CMAKE_C_COMPILER=gcc
+ENV CMAKE_CXX_COMPILER=g++
+ENV VCPKG_FORCE_SYSTEM_BINARIES=1
+
+RUN cmake -DCMAKE_TOOLCHAIN_FILE=/opt/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release \
+        && cmake --build linux-release
 
 # Stage 3: execute
-FROM ubuntu:23.04 AS prod
-COPY --from=build /srv/build/build/linux-release/bin/canary /bin/canary
-WORKDIR /srv/canary
-ENTRYPOINT ["/srv/canary/start.sh", "canary"]
+FROM ubuntu:23.04
 
+VOLUME [ "/data" ]
+
+COPY --from=build /srv/build/linux-release/bin/canary /canary/canary
+COPY LICENSE *.sql key.pem /canary/
+COPY data /canary/data
+COPY data-canary /canary/data-canary
+COPY data-otservbr-global /canary/data-otservbr-global
+COPY config.lua.dist /canary/config.lua
+
+WORKDIR /canary
+
+RUN apt-get update && apt-get install -y sudo mariadb-client mariadb-server \
+	libluajit-5.1-dev libluajit-5.1-common wget nano htop curl \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/*
+	
+COPY docker/data/start.sh start.sh
+ENTRYPOINT ["/canary/start.sh"]

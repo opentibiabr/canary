@@ -13716,8 +13716,17 @@
 		<attribute key="primarytype" value="musical instruments"/>
 		<attribute key="weight" value="100"/>
 	</item>
-	<item fromid="5787" toid="5788" article="a" name="training dummy">
+	<item fromid="5780" toid="5786" article="a" name="training dummy">
 		<attribute key="primarytype" value="tools (objects)"/>
+	</item>
+	<item id="5787" article="a" name="training dummy">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="description" value="You can train your skills by using training weapons with this exercise dummy."/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="5788"/>
+		<attribute key="type" value="dummy">
+			<attribute key="rate" value="100"/>
+		</attribute>
 	</item>
 	<item fromid="5789" toid="5790" article="a" name="stuck axe">
 		<attribute key="primarytype" value="tools (objects)"/>
@@ -42611,8 +42620,8 @@
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="850"/>
 	</item>
-	<item id="23721" article="a" name="gold pouch">
-		<attribute key="description" value="A infinity bag where you can hold coins."/>
+	<item id="23721" article="a" name="loot pouch">
+		<attribute key="description" value="A infinity bag where you can hold everything."/>
 		<attribute key="containersize" value="20"/>
 		<attribute key="moveable" value="0"/>
 	</item>
@@ -56575,12 +56584,22 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="32786" article="a" name="Ferumbras' snowman">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="description" value="You can train your skills by using training weapons with this expert exercise dummy"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="32787"/>
+		<attribute key="type" value="dummy">
+			<attribute key="rate" value="100"/>
+		</attribute>
 	</item>
 	<item id="32787" article="a" name="Ferumbras' snowman">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="description" value="You can train your skills by using training weapons with this expert exercise dummy"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="32786"/>
+		<attribute key="type" value="dummy">
+			<attribute key="rate" value="100"/>
+		</attribute>
 	</item>
 	<item id="32788" article="a" name="baby seal">
 		<attribute key="primarytype" value="decoration"/>

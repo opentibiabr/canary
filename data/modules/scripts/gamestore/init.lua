@@ -34,6 +34,7 @@ GameStore.OfferTypes = {
 	OFFER_TYPE_HIRELING_OUTFIT = 24,
 	OFFER_TYPE_HUNTINGSLOT = 25,
 	OFFER_TYPE_ITEM_BED = 26,
+	OFFER_TYPE_CHARMS_POINTS = 27,
 }
 
 GameStore.SubActions = {
@@ -445,6 +446,8 @@ function parseBuyStoreOffer(playerId, msg)
 			GameStore.processItemPurchase(player, offer.itemtype, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS then
 			GameStore.processInstantRewardAccess(player, offer.count)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_CHARMS_POINTS then
+			GameStore.processCharmsPointsPurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_CHARMS then
 			GameStore.processCharmsPurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_BLESSINGS then
@@ -1558,6 +1561,10 @@ function GameStore.processCharmsPurchase(player)
 	player:charmExpansion(true)
 end
 
+function GameStore.processCharmsPointsPurchase(player)
+	player:addCharmPoints(500)
+end
+
 function GameStore.processPremiumPurchase(player, offerId)
 	player:addPremiumDays(offerId - 3000)
 	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
@@ -1692,7 +1699,6 @@ function GameStore.processMountPurchase(player, offerId)
 	if player:hasMount(offerId) then
 		return error({ code = 0, message = "You already own this mount." })
 	end
-
 	player:addMount(offerId)
 end
 

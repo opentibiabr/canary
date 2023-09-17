@@ -140,6 +140,7 @@ Storage = {
 	PremiumAccount = 30058,
 	BattleAxeQuest = 30059,
 	ShrineEntrance = 30060,
+	SupremeCubeTimer = 30061,
 
 	--[[
 	Old storages
@@ -2864,6 +2865,10 @@ Storage = {
 					MagmaBubbleKilled = 47853,
 					ThePrimalMenaceTimer = 47854,
 					ThePrimalMenaceKilled = 47855,
+				},
+				Reward = {
+					Hazard6 = 47859,
+					Hazard13 = 47860,
 				},
 			},
 			WithinTheTides = {

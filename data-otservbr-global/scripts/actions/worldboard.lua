@@ -27,5 +27,5 @@ function worldBoard.onUse(player, item, fromPosition, target, toPosition, isHotk
 	return true
 end
 
-worldBoard:id(19236)
+worldBoard:id(19236, 19245)
 worldBoard:register()

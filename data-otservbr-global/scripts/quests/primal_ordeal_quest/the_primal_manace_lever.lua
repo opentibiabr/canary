@@ -15,7 +15,7 @@ local config = {
 		from = Position(33547, 32749, 15),
 		to = Position(33570, 32769, 15),
 	},
-	exit = Position(33520, 32871, 15),
+	exit = Position(33519, 32872, 15),
 	storage = Storage.Quest.U12_90.PrimalOrdeal.Bosses.ThePrimalMenaceTimer,
 }
 

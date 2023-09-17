@@ -58,6 +58,20 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+local function greetCallback(npc, creature, message)
+	local player = Player(creature)
+	local playerId = player:getId()
+
+	if player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Reward.Hazard6) < 1 and player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Hazard.Max) >= 6 then
+		npcHandler:setMessage(MESSAGE_GREET, "Hello! Your defiance of hazards is astounding. Maybe an endemic {mount} will help you face even greater challenges.?")
+	elseif player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Reward.Hazard13) < 1 and player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Hazard.Max) >= 13 then
+		npcHandler:setMessage(MESSAGE_GREET, "You are pumped with hazard energy! I think this deserves a special {reward}!")
+	else
+		npcHandler:setMessage(MESSAGE_GREET, "Hello and welcome in the Gnomprona Gardens. If you want to change your {hazard} level, I'm who you're looking for.")
+	end
+	return true
+end
+
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -88,13 +102,23 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 	end
+	if MsgContains(message, 'mount') then
+		if player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Reward.Hazard6) < 1 and player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Hazard.Max) >= 6 then
+			player:addMount(202)
+			player:setStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Reward.Hazard6, 1)
+		npcHandler:say('In one of my experiments I surprisingly tamed a noxious ripptor which will be a good companion. Take care of him!', npc, creature)
+		end
+	elseif MsgContains(message, 'reward') then
+		if player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Reward.Hazard13) < 1 and player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Hazard.Max) >= 13 then
+			player:addItem(39546, 1)
+			player:setStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Reward.Hazard13, 1)
+			npcHandler:say('Here, take this reward as a token of gratitude for helping in my experiments.', npc, creature)
+		end
+	end
 	return true
 end
 
-keywordHandler:addGreetKeyword({ "hi" }, { npcHandler = npcHandler, text = "Hello and welcome in the Gnomprona Gardens. If you want to change your {hazard} level, I 'm who you're looking for." })
-keywordHandler:addAliasKeyword({ "hello" })
-
-npcHandler:setMessage(MESSAGE_GREET, "Hello and welcome in the Gnomprona Gardens")
+npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

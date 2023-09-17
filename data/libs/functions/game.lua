@@ -137,5 +137,5 @@ function Game.setStorageValue(key, value)
 		return
 	end
 
-	addedValue = value
+	globalStorageTable[key] = value
 end

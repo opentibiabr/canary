@@ -331,28 +331,18 @@ public:
 		return m_master.lock();
 	}
 
-	const weak::list<Creature> &getSummons() const {
+	const phmap::flat_hash_map<uint32_t, std::shared_ptr<Creature>> &getSummons() const {
 		return m_summons;
 	}
 
-	std::shared_ptr<Creature> getSummon(uint32_t creatureId) {
-		for (const auto &summon : m_summons) {
-			if (summon.expired()) {
-				continue;
-			}
-
-			if (summon.lock()->getID() == creatureId) {
-				return summon.lock();
-			}
-		}
-
-		return nullptr;
+	const std::shared_ptr<Creature> &getSummon(uint32_t creatureId) {
+		return m_summons.at(creatureId);
 	}
 
-	void removeSummon(std::shared_ptr<Creature> summon) {
-		m_summons.remove_if([&summon](const std::weak_ptr<Creature> &weakSummon) {
-			return weakSummon.expired() || weakSummon.lock() == summon;
-		});
+	void removeSummon(const std::shared_ptr<Creature> &summon) {
+		if (summon) {
+			m_summons.erase(summon->getID());
+		}
 	}
 
 	virtual int32_t getArmor() const {
@@ -675,7 +665,7 @@ protected:
 
 	CountMap damageMap;
 
-	weak::list<Creature> m_summons;
+	phmap::flat_hash_map<uint32_t, std::shared_ptr<Creature>> m_summons;
 	CreatureEventList eventsList;
 	ConditionList conditions;
 

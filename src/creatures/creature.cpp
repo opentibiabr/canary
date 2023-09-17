@@ -26,11 +26,7 @@ Creature::Creature() {
 }
 
 Creature::~Creature() {
-	for (auto summonPtr : m_summons) {
-		auto summon = summonPtr.lock();
-		if (!summon) {
-			continue;
-		}
+	for (auto &[_, summon] : m_summons) {
 		summon->setAttackedCreature(nullptr);
 		summon->removeMaster();
 	}
@@ -429,14 +425,9 @@ void Creature::onAttackedCreatureChangeZone(ZoneType_t zone) {
 void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 	if (hasSummons()) {
 		std::vector<std::shared_ptr<Creature>> despawnMonsterList;
-		for (auto summonPtr : getSummons()) {
-			auto creature = summonPtr.lock();
-			if (!creature) {
-				continue;
-			}
-
-			const Position &pos = creature->getPosition();
-			std::shared_ptr<Monster> monster = creature->getMonster();
+		for (auto &[_, summon] : getSummons()) {
+			const Position &pos = summon->getPosition();
+			std::shared_ptr<Monster> monster = summon->getMonster();
 			auto tile = getTile();
 			bool protectionZoneCheck = tile ? tile->hasFlag(TILESTATE_PROTECTIONZONE) : false;
 			// Check if any of our summons is out of range (+/- 0 floors or 15 tiles away)
@@ -445,7 +436,7 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 			bool checkRemoveDist = Position::getDistanceZ(newPos, pos) > 2 || (std::max<int32_t>(Position::getDistanceX(newPos, pos), Position::getDistanceY(newPos, pos)) > 30);
 
 			if (monster && monster->isFamiliar() && checkSummonDist || teleportSummon && !protectionZoneCheck && checkSummonDist) {
-				auto creatureMaster = creature->getMaster();
+				auto creatureMaster = summon->getMaster();
 				if (!creatureMaster) {
 					continue;
 				}
@@ -454,14 +445,14 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 					if (masterTile->hasFlag(TILESTATE_TELEPORT)) {
 						g_logger().warn("[{}] cannot teleport summon, position has teleport. {}", __FUNCTION__, creatureMaster->getPosition().toString());
 					} else {
-						g_game().internalTeleport(creature, creatureMaster->getPosition(), true);
+						g_game().internalTeleport(summon, creatureMaster->getPosition(), true);
 						continue;
 					}
 				}
 			}
 
 			if (monster && monster->isSummon() && !monster->isFamiliar() && !teleportSummon && checkRemoveDist) {
-				despawnMonsterList.push_back(creature);
+				despawnMonsterList.push_back(summon);
 			}
 		}
 
@@ -954,11 +945,7 @@ bool Creature::setAttackedCreature(std::shared_ptr<Creature> creature) {
 		m_attackedCreature.reset();
 	}
 
-	for (auto summonPtr : m_summons) {
-		auto summon = summonPtr.lock();
-		if (!summon) {
-			continue;
-		}
+	for (auto &[_, summon] : m_summons) {
 		summon->setAttackedCreature(creature);
 	}
 	return true;
@@ -1245,7 +1232,7 @@ bool Creature::setMaster(std::shared_ptr<Creature> newMaster, bool reloadCreatur
 		g_game().reloadCreature(static_self_cast<Creature>());
 	}
 	if (newMaster) {
-		newMaster->m_summons.push_back(static_self_cast<Creature>());
+		newMaster->m_summons.try_emplace(getID(), static_self_cast<Creature>());
 	}
 
 	m_master = newMaster;

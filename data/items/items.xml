@@ -48715,13 +48715,13 @@
 		<attribute key="fluidsource" value="blood"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="decayTo" value="28664"/>
-		<attribute key="containersize" value="20"/>
+		<attribute key="containersize" value="32"/>
 	</item>
 	<item id="28664" article="a" name="dead true dawnfire asura">
 		<attribute key="fluidsource" value="blood"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28665"/>
-		<attribute key="containersize" value="20"/>
+		<attribute key="containersize" value="32"/>
 	</item>
 	<item id="28665" article="a" name="dead true dawnfire asura">
 		<attribute key="duration" value="300"/>
@@ -48736,13 +48736,13 @@
 		<attribute key="fluidsource" value="blood"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="decayTo" value="28668"/>
-		<attribute key="containersize" value="20"/>
+		<attribute key="containersize" value="32"/>
 	</item>
 	<item id="28668" article="a" name="dead true frost flower asura">
 		<attribute key="fluidsource" value="blood"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28669"/>
-		<attribute key="containersize" value="20"/>
+		<attribute key="containersize" value="32"/>
 	</item>
 	<item id="28669" article="a" name="dead true frost flower asura">
 		<attribute key="duration" value="300"/>

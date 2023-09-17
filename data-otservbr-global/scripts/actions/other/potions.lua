@@ -222,7 +222,7 @@ local potions = {
 local flaskPotion = Action()
 
 function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if type(target) == "userdata" and not target:isPlayer() then
+	if not target or type(target) == "userdata" and not target:isPlayer() then
 		return false
 	end
 

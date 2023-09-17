@@ -32,7 +32,7 @@ function Container:addLoot(loot)
 				tmpItem:setText(item.text)
 			end
 		else
-			Spdlog.warn(("Container:addLoot: failed to add item: %s"):format(ItemType(itemId):getName()))
+			logger.warn("Container:addLoot: failed to add item: {}, to corpse {} with id {}", ItemType(itemId):getName(), self:getName(), self:getId())
 		end
 
 		::continue::

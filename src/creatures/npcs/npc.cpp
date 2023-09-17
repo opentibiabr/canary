@@ -110,7 +110,7 @@ void Npc::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) {
 		spawnNpc->startSpawnNpcCheck();
 	}
 
-	shopPlayerSet.clear();
+	shopPlayerMap.clear();
 }
 
 void Npc::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport) {
@@ -643,25 +643,28 @@ bool Npc::getRandomStep(Direction &moveDirection) {
 	return false;
 }
 
-void Npc::addShopPlayer(std::shared_ptr<Player> player) {
-	shopPlayerSet.insert(player);
-}
-
-void Npc::removeShopPlayer(std::shared_ptr<Player> player) {
+void Npc::addShopPlayer(const std::shared_ptr<Player> &player) {
 	if (!player) {
 		return;
 	}
-	weak::erase(shopPlayerSet, player);
+	shopPlayerMap.try_emplace(player->getID(), player);
+}
+
+void Npc::removeShopPlayer(const std::shared_ptr<Player> &player) {
+	if (!player) {
+		return;
+	}
+	shopPlayerMap.erase(player->getID());
 }
 
 void Npc::closeAllShopWindows() {
-	for (auto shopPlayerPtr : shopPlayerSet) {
-		auto shopPlayer = shopPlayerPtr.lock();
+	for (auto &[_, playerPtr] : shopPlayerMap) {
+		auto shopPlayer = playerPtr.lock();
 		if (shopPlayer) {
 			shopPlayer->closeShopWindow();
 		}
 	}
-	shopPlayerSet.clear();
+	shopPlayerMap.clear();
 }
 
 void Npc::handlePlayerMove(std::shared_ptr<Player> player, const Position &newPos) {

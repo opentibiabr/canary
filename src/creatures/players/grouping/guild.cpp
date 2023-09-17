@@ -12,23 +12,18 @@
 #include "creatures/players/grouping/guild.hpp"
 #include "game/game.hpp"
 
-void Guild::addMember(std::shared_ptr<Player> player) {
+void Guild::addMember(const std::shared_ptr<Player> &player) {
 	membersOnline.push_back(player);
 	for (auto member : getMembersOnline()) {
 		g_game().updatePlayerHelpers(member);
 	}
 }
 
-void Guild::removeMember(std::shared_ptr<Player> player) {
+void Guild::removeMember(const std::shared_ptr<Player> &player) {
 	// loop over to udpate all members and delete the player from the list
-	for (auto it = membersOnline.begin(); it != membersOnline.end(); ++it) {
-		if (auto member = it->lock()) {
-			if (member == player) {
-				it = membersOnline.erase(it);
-			} else {
-				g_game().updatePlayerHelpers(member);
-			}
-		}
+	membersOnline.remove(player);
+	for (const auto &member : membersOnline) {
+		g_game().updatePlayerHelpers(member);
 	}
 
 	g_game().updatePlayerHelpers(player);

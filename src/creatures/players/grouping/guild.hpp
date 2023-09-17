@@ -29,8 +29,8 @@ public:
 	Guild(uint32_t initId, std::string initName) :
 		name(std::move(initName)), id(initId) { }
 
-	void addMember(std::shared_ptr<Player> player);
-	void removeMember(std::shared_ptr<Player> player);
+	void addMember(const std::shared_ptr<Player> &player);
+	void removeMember(const std::shared_ptr<Player> &player);
 
 	bool isGuild() {
 		return true;
@@ -48,12 +48,8 @@ public:
 	const std::string &getName() const {
 		return name;
 	}
-	std::vector<std::shared_ptr<Player>> getMembersOnline() const {
-		auto result = std::vector<std::shared_ptr<Player>>(membersOnline.size());
-		std::transform(membersOnline.begin(), membersOnline.end(), result.begin(), [](const std::weak_ptr<Player> &weak) {
-			return weak.lock();
-		});
-		return result;
+	std::list<std::shared_ptr<Player>> getMembersOnline() const {
+		return membersOnline;
 	}
 	uint32_t getMemberCountOnline() const {
 		return membersOnline.size();
@@ -88,7 +84,7 @@ public:
 	}
 
 private:
-	weak::list<Player> membersOnline;
+	std::list<std::shared_ptr<Player>> membersOnline;
 	std::vector<GuildRank_ptr> ranks;
 	std::string name;
 	uint64_t bankBalance = 0;

@@ -156,8 +156,8 @@ public:
 		internalLight = npcType->info.light;
 	}
 
-	void addShopPlayer(std::shared_ptr<Player> player);
-	void removeShopPlayer(std::shared_ptr<Player> player);
+	void addShopPlayer(const std::shared_ptr<Player> &player);
+	void removeShopPlayer(const std::shared_ptr<Player> &player);
 	void closeAllShopWindows();
 
 	static uint32_t npcAutoID;
@@ -175,7 +175,7 @@ private:
 
 	std::map<uint32_t, uint16_t> playerInteractions;
 
-	weak::parallel_flat_hash_set<Player> shopPlayerSet;
+	phmap::flat_hash_map<uint32_t, std::weak_ptr<Player>> shopPlayerMap;
 
 	NpcType* npcType;
 	SpawnNpc* spawnNpc = nullptr;

@@ -152,7 +152,7 @@ void Module::clearEvent() {
 	loaded = false;
 }
 
-void Module::executeOnRecvbyte(const std::shared_ptr<Player> & player, NetworkMessage &msg) {
+void Module::executeOnRecvbyte(const std::shared_ptr<Player> &player, NetworkMessage &msg) {
 	// onRecvbyte(player, msg, recvbyte)
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("Call stack overflow. Too many lua script calls being nested {}", player->getName());

@@ -37,20 +37,20 @@ public:
 		house = h;
 	}
 
-	bool canUse(const std::shared_ptr<Player> & player);
+	bool canUse(const std::shared_ptr<Player> &player);
 
-	bool trySleep(const std::shared_ptr<Player> & player);
-	bool sleep(const std::shared_ptr<Player> & player);
-	void wakeUp(const std::shared_ptr<Player> & player);
+	bool trySleep(const std::shared_ptr<Player> &player);
+	bool sleep(const std::shared_ptr<Player> &player);
+	void wakeUp(const std::shared_ptr<Player> &player);
 
 	std::shared_ptr<BedItem> getNextBedItem();
 
 	friend class MapCache;
 
 private:
-	void updateAppearance(const std::shared_ptr<Player> & player);
-	void regeneratePlayer(const std::shared_ptr<Player> & player) const;
-	void internalSetSleeper(const std::shared_ptr<Player> & player);
+	void updateAppearance(const std::shared_ptr<Player> &player);
+	void regeneratePlayer(const std::shared_ptr<Player> &player) const;
+	void internalSetSleeper(const std::shared_ptr<Player> &player);
 	void internalRemoveSleeper();
 
 	House* house = nullptr;

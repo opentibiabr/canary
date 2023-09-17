@@ -150,10 +150,10 @@ private:
 
 	bool disableDefense = false;
 
-	void updatePercentStats(const std::shared_ptr<Player> & player);
-	void updateStats(const std::shared_ptr<Player> & player);
-	void updatePercentSkills(const std::shared_ptr<Player> & player);
-	void updateSkills(const std::shared_ptr<Player> & player);
+	void updatePercentStats(const std::shared_ptr<Player> &player);
+	void updateStats(const std::shared_ptr<Player> &player);
+	void updatePercentSkills(const std::shared_ptr<Player> &player);
+	void updateSkills(const std::shared_ptr<Player> &player);
 	void updateBuffs(std::shared_ptr<Creature> creature);
 
 	// 12.72 mechanics

@@ -89,7 +89,7 @@ int PartyFunctions::luaPartyGetMembers(lua_State* L) {
 
 	int index = 0;
 	lua_createtable(L, party->getMemberCount(), 0);
-	for (const std::shared_ptr<Player> & player : party->getMembers()) {
+	for (const std::shared_ptr<Player> &player : party->getMembers()) {
 		pushUserdata<Player>(L, player);
 		setMetatable(L, -1, "Player");
 		lua_rawseti(L, -2, ++index);
@@ -115,7 +115,7 @@ int PartyFunctions::luaPartyGetInvitees(lua_State* L) {
 		lua_createtable(L, party->getInvitationCount(), 0);
 
 		int index = 0;
-		for (const std::shared_ptr<Player> & player : party->getInvitees()) {
+		for (const std::shared_ptr<Player> &player : party->getInvitees()) {
 			pushUserdata<Player>(L, player);
 			setMetatable(L, -1, "Player");
 			lua_rawseti(L, -2, ++index);

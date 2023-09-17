@@ -166,7 +166,7 @@ bool Actions::registerLuaEvent(const std::shared_ptr<Action> action) {
 	return false;
 }
 
-ReturnValue Actions::canUse(const std::shared_ptr<Player> & player, const Position &pos) {
+ReturnValue Actions::canUse(const std::shared_ptr<Player> &player, const Position &pos) {
 	if (pos.x != 0xFFFF) {
 		const Position &playerPos = player->getPosition();
 		if (playerPos.z != pos.z) {
@@ -180,7 +180,7 @@ ReturnValue Actions::canUse(const std::shared_ptr<Player> & player, const Positi
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Actions::canUse(const std::shared_ptr<Player> & player, const Position &pos, std::shared_ptr<Item> item) {
+ReturnValue Actions::canUse(const std::shared_ptr<Player> &player, const Position &pos, std::shared_ptr<Item> item) {
 	const std::shared_ptr<Action> action = getAction(item);
 	if (action != nullptr) {
 		return action->canExecuteAction(player, pos);
@@ -247,7 +247,7 @@ std::shared_ptr<Action> Actions::getAction(std::shared_ptr<Item> item) {
 	return g_spells().getRuneSpell(item->getID());
 }
 
-ReturnValue Actions::internalUseItem(const std::shared_ptr<Player> & player, const Position &pos, uint8_t index, std::shared_ptr<Item> item, bool isHotkey) {
+ReturnValue Actions::internalUseItem(const std::shared_ptr<Player> &player, const Position &pos, uint8_t index, std::shared_ptr<Item> item, bool isHotkey) {
 	if (std::shared_ptr<Door> door = item->getDoor()) {
 		if (!door->canUse(player)) {
 			return RETURNVALUE_CANNOTUSETHISOBJECT;
@@ -383,7 +383,7 @@ ReturnValue Actions::internalUseItem(const std::shared_ptr<Player> & player, con
 	return RETURNVALUE_CANNOTUSETHISOBJECT;
 }
 
-bool Actions::useItem(const std::shared_ptr<Player> & player, const Position &pos, uint8_t index, std::shared_ptr<Item> item, bool isHotkey) {
+bool Actions::useItem(const std::shared_ptr<Player> &player, const Position &pos, uint8_t index, std::shared_ptr<Item> item, bool isHotkey) {
 	const ItemType &it = Item::items[item->getID()];
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 		if (player->walkExhausted()) {
@@ -415,7 +415,7 @@ bool Actions::useItem(const std::shared_ptr<Player> & player, const Position &po
 	return true;
 }
 
-bool Actions::useItemEx(const std::shared_ptr<Player> & player, const Position &fromPos, const Position &toPos, uint8_t toStackPos, std::shared_ptr<Item> item, bool isHotkey, std::shared_ptr<Creature> creature /* = nullptr*/) {
+bool Actions::useItemEx(const std::shared_ptr<Player> &player, const Position &fromPos, const Position &toPos, uint8_t toStackPos, std::shared_ptr<Item> item, bool isHotkey, std::shared_ptr<Creature> creature /* = nullptr*/) {
 	const ItemType &it = Item::items[item->getID()];
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 		if (player->walkExhausted()) {
@@ -467,7 +467,7 @@ bool Actions::useItemEx(const std::shared_ptr<Player> & player, const Position &
 	return true;
 }
 
-void Actions::showUseHotkeyMessage(const std::shared_ptr<Player> & player, std::shared_ptr<Item> item, uint32_t count) {
+void Actions::showUseHotkeyMessage(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, uint32_t count) {
 	std::ostringstream ss;
 
 	const ItemType &it = Item::items[item->getID()];
@@ -491,7 +491,7 @@ void Actions::showUseHotkeyMessage(const std::shared_ptr<Player> & player, std::
 Action::Action(LuaScriptInterface* interface) :
 	Script(interface) { }
 
-ReturnValue Action::canExecuteAction(const std::shared_ptr<Player> & player, const Position &toPos) {
+ReturnValue Action::canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos) {
 	if (!allowFarUse) {
 		return g_actions().canUse(player, toPos);
 	}
@@ -499,14 +499,14 @@ ReturnValue Action::canExecuteAction(const std::shared_ptr<Player> & player, con
 	return g_actions().canUseFar(player, toPos, checkLineOfSight, checkFloor);
 }
 
-std::shared_ptr<Thing> Action::getTarget(const std::shared_ptr<Player> & player, std::shared_ptr<Creature> targetCreature, const Position &toPosition, uint8_t toStackPos) const {
+std::shared_ptr<Thing> Action::getTarget(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> targetCreature, const Position &toPosition, uint8_t toStackPos) const {
 	if (targetCreature != nullptr) {
 		return targetCreature;
 	}
 	return g_game().internalGetThing(player, toPosition, toStackPos, 0, STACKPOS_USETARGET);
 }
 
-bool Action::executeUse(const std::shared_ptr<Player> & player, std::shared_ptr<Item> item, const Position &fromPosition, std::shared_ptr<Thing> target, const Position &toPosition, bool isHotkey) {
+bool Action::executeUse(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, const Position &fromPosition, std::shared_ptr<Thing> target, const Position &toPosition, bool isHotkey) {
 	// onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[Action::executeUse - Player {}, on item {}] "

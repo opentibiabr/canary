@@ -421,7 +421,7 @@ void Events::eventCreatureOnDrainHealth(std::shared_ptr<Creature> creature, std:
 }
 
 // Party
-bool Events::eventPartyOnJoin(Party* party, const std::shared_ptr<Player> & player) {
+bool Events::eventPartyOnJoin(Party* party, const std::shared_ptr<Player> &player) {
 	// Party:onJoin(player) or Party.onJoin(self, player)
 	if (info.partyOnJoin == -1) {
 		return true;
@@ -450,7 +450,7 @@ bool Events::eventPartyOnJoin(Party* party, const std::shared_ptr<Player> & play
 	return scriptInterface.callFunction(2);
 }
 
-bool Events::eventPartyOnLeave(Party* party, const std::shared_ptr<Player> & player) {
+bool Events::eventPartyOnLeave(Party* party, const std::shared_ptr<Player> &player) {
 	// Party:onLeave(player) or Party.onLeave(self, player)
 	if (info.partyOnLeave == -1) {
 		return true;
@@ -537,7 +537,7 @@ void Events::eventPartyOnShareExperience(Party* party, uint64_t &exp) {
 }
 
 // Player
-bool Events::eventPlayerOnBrowseField(const std::shared_ptr<Player> & player, const Position &position) {
+bool Events::eventPlayerOnBrowseField(const std::shared_ptr<Player> &player, const Position &position) {
 	// Player:onBrowseField(position) or Player.onBrowseField(self, position)
 	if (info.playerOnBrowseField == -1) {
 		return true;
@@ -565,7 +565,7 @@ bool Events::eventPlayerOnBrowseField(const std::shared_ptr<Player> & player, co
 	return scriptInterface.callFunction(2);
 }
 
-void Events::eventPlayerOnLook(const std::shared_ptr<Player> & player, const Position &position, std::shared_ptr<Thing> thing, uint8_t stackpos, int32_t lookDistance) {
+void Events::eventPlayerOnLook(const std::shared_ptr<Player> &player, const Position &position, std::shared_ptr<Thing> thing, uint8_t stackpos, int32_t lookDistance) {
 	// Player:onLook(thing, position, distance) or Player.onLook(self, thing, position, distance)
 	if (info.playerOnLook == -1) {
 		return;
@@ -604,7 +604,7 @@ void Events::eventPlayerOnLook(const std::shared_ptr<Player> & player, const Pos
 	scriptInterface.callVoidFunction(4);
 }
 
-void Events::eventPlayerOnLookInBattleList(const std::shared_ptr<Player> & player, std::shared_ptr<Creature> creature, int32_t lookDistance) {
+void Events::eventPlayerOnLookInBattleList(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> creature, int32_t lookDistance) {
 	// Player:onLookInBattleList(creature, position, distance) or Player.onLookInBattleList(self, creature, position, distance)
 	if (info.playerOnLookInBattleList == -1) {
 		return;
@@ -635,7 +635,7 @@ void Events::eventPlayerOnLookInBattleList(const std::shared_ptr<Player> & playe
 	scriptInterface.callVoidFunction(3);
 }
 
-void Events::eventPlayerOnLookInTrade(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> & partner, std::shared_ptr<Item> item, int32_t lookDistance) {
+void Events::eventPlayerOnLookInTrade(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &partner, std::shared_ptr<Item> item, int32_t lookDistance) {
 	// Player:onLookInTrade(partner, item, distance) or Player.onLookInTrade(self, partner, item, distance)
 	if (info.playerOnLookInTrade == -1) {
 		return;
@@ -669,7 +669,7 @@ void Events::eventPlayerOnLookInTrade(const std::shared_ptr<Player> &player, con
 	scriptInterface.callVoidFunction(4);
 }
 
-bool Events::eventPlayerOnLookInShop(const std::shared_ptr<Player> & player, const ItemType* itemType, uint8_t count) {
+bool Events::eventPlayerOnLookInShop(const std::shared_ptr<Player> &player, const ItemType* itemType, uint8_t count) {
 	// Player:onLookInShop(itemType, count) or Player.onLookInShop(self, itemType, count)
 	if (info.playerOnLookInShop == -1) {
 		return true;
@@ -700,7 +700,7 @@ bool Events::eventPlayerOnLookInShop(const std::shared_ptr<Player> & player, con
 	return scriptInterface.callFunction(3);
 }
 
-bool Events::eventPlayerOnRemoveCount(const std::shared_ptr<Player> & player, std::shared_ptr<Item> item) {
+bool Events::eventPlayerOnRemoveCount(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item) {
 	// Player:onMove()
 	if (info.playerOnRemoveCount == -1) {
 		return true;
@@ -729,7 +729,7 @@ bool Events::eventPlayerOnRemoveCount(const std::shared_ptr<Player> & player, st
 	return scriptInterface.callFunction(2);
 }
 
-bool Events::eventPlayerOnMoveItem(const std::shared_ptr<Player> & player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) {
+bool Events::eventPlayerOnMoveItem(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) {
 	// Player:onMoveItem(item, count, fromPosition, toPosition) or Player.onMoveItem(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
 	if (info.playerOnMoveItem == -1) {
 		return true;
@@ -765,7 +765,7 @@ bool Events::eventPlayerOnMoveItem(const std::shared_ptr<Player> & player, std::
 	return scriptInterface.callFunction(7);
 }
 
-void Events::eventPlayerOnItemMoved(const std::shared_ptr<Player> & player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) {
+void Events::eventPlayerOnItemMoved(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) {
 	// Player:onItemMoved(item, count, fromPosition, toPosition) or Player.onItemMoved(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
 	if (info.playerOnItemMoved == -1) {
 		return;
@@ -801,7 +801,7 @@ void Events::eventPlayerOnItemMoved(const std::shared_ptr<Player> & player, std:
 	scriptInterface.callVoidFunction(7);
 }
 
-void Events::eventPlayerOnChangeZone(const std::shared_ptr<Player> & player, ZoneType_t zone) {
+void Events::eventPlayerOnChangeZone(const std::shared_ptr<Player> &player, ZoneType_t zone) {
 	// Player:onChangeZone(zone)
 	if (info.playerOnChangeZone == -1) {
 		return;
@@ -828,7 +828,7 @@ void Events::eventPlayerOnChangeZone(const std::shared_ptr<Player> & player, Zon
 	scriptInterface.callVoidFunction(2);
 }
 
-bool Events::eventPlayerOnMoveCreature(const std::shared_ptr<Player> & player, std::shared_ptr<Creature> creature, const Position &fromPosition, const Position &toPosition) {
+bool Events::eventPlayerOnMoveCreature(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> creature, const Position &fromPosition, const Position &toPosition) {
 	// Player:onMoveCreature(creature, fromPosition, toPosition) or Player.onMoveCreature(self, creature, fromPosition, toPosition)
 	if (info.playerOnMoveCreature == -1) {
 		return true;
@@ -860,7 +860,7 @@ bool Events::eventPlayerOnMoveCreature(const std::shared_ptr<Player> & player, s
 	return scriptInterface.callFunction(4);
 }
 
-void Events::eventPlayerOnReportRuleViolation(const std::shared_ptr<Player> & player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) {
+void Events::eventPlayerOnReportRuleViolation(const std::shared_ptr<Player> &player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) {
 	// Player:onReportRuleViolation(targetName, reportType, reportReason, comment, translation)
 	if (info.playerOnReportRuleViolation == -1) {
 		return;
@@ -894,7 +894,7 @@ void Events::eventPlayerOnReportRuleViolation(const std::shared_ptr<Player> & pl
 	scriptInterface.callVoidFunction(6);
 }
 
-bool Events::eventPlayerOnReportBug(const std::shared_ptr<Player> & player, const std::string &message, const Position &position, uint8_t category) {
+bool Events::eventPlayerOnReportBug(const std::shared_ptr<Player> &player, const std::string &message, const Position &position, uint8_t category) {
 	// Player:onReportBug(message, position, category)
 	if (info.playerOnReportBug == -1) {
 		return true;
@@ -924,7 +924,7 @@ bool Events::eventPlayerOnReportBug(const std::shared_ptr<Player> & player, cons
 	return scriptInterface.callFunction(4);
 }
 
-bool Events::eventPlayerOnTurn(const std::shared_ptr<Player> & player, Direction direction) {
+bool Events::eventPlayerOnTurn(const std::shared_ptr<Player> &player, Direction direction) {
 	// Player:onTurn(direction) or Player.onTurn(self, direction)
 	if (info.playerOnTurn == -1) {
 		return true;
@@ -952,7 +952,7 @@ bool Events::eventPlayerOnTurn(const std::shared_ptr<Player> & player, Direction
 	return scriptInterface.callFunction(2);
 }
 
-bool Events::eventPlayerOnTradeRequest(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> & target, std::shared_ptr<Item> item) {
+bool Events::eventPlayerOnTradeRequest(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &target, std::shared_ptr<Item> item) {
 	// Player:onTradeRequest(target, item)
 	if (info.playerOnTradeRequest == -1) {
 		return true;
@@ -984,7 +984,7 @@ bool Events::eventPlayerOnTradeRequest(const std::shared_ptr<Player> &player, co
 	return scriptInterface.callFunction(3);
 }
 
-bool Events::eventPlayerOnTradeAccept(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> & target, std::shared_ptr<Item> item, std::shared_ptr<Item> targetItem) {
+bool Events::eventPlayerOnTradeAccept(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &target, std::shared_ptr<Item> item, std::shared_ptr<Item> targetItem) {
 	// Player:onTradeAccept(target, item, targetItem)
 	if (info.playerOnTradeAccept == -1) {
 		return true;
@@ -1019,7 +1019,7 @@ bool Events::eventPlayerOnTradeAccept(const std::shared_ptr<Player> &player, con
 	return scriptInterface.callFunction(4);
 }
 
-void Events::eventPlayerOnGainExperience(const std::shared_ptr<Player> & player, std::shared_ptr<Creature> target, uint64_t &exp, uint64_t rawExp) {
+void Events::eventPlayerOnGainExperience(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> target, uint64_t &exp, uint64_t rawExp) {
 	// Player:onGainExperience(target, exp, rawExp)
 	// rawExp gives the original exp which is not multiplied
 	if (info.playerOnGainExperience == -1) {
@@ -1063,7 +1063,7 @@ void Events::eventPlayerOnGainExperience(const std::shared_ptr<Player> & player,
 	scriptInterface.resetScriptEnv();
 }
 
-void Events::eventPlayerOnLoseExperience(const std::shared_ptr<Player> & player, uint64_t &exp) {
+void Events::eventPlayerOnLoseExperience(const std::shared_ptr<Player> &player, uint64_t &exp) {
 	// Player:onLoseExperience(exp)
 	if (info.playerOnLoseExperience == -1) {
 		return;
@@ -1098,7 +1098,7 @@ void Events::eventPlayerOnLoseExperience(const std::shared_ptr<Player> & player,
 	scriptInterface.resetScriptEnv();
 }
 
-void Events::eventPlayerOnGainSkillTries(const std::shared_ptr<Player> & player, skills_t skill, uint64_t &tries) {
+void Events::eventPlayerOnGainSkillTries(const std::shared_ptr<Player> &player, skills_t skill, uint64_t &tries) {
 	// Player:onGainSkillTries(skill, tries)
 	if (info.playerOnGainSkillTries == -1) {
 		return;
@@ -1134,7 +1134,7 @@ void Events::eventPlayerOnGainSkillTries(const std::shared_ptr<Player> & player,
 	scriptInterface.resetScriptEnv();
 }
 
-void Events::eventPlayerOnCombat(const std::shared_ptr<Player> & player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, CombatDamage &damage) {
+void Events::eventPlayerOnCombat(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, CombatDamage &damage) {
 	// Player:onCombat(target, item, primaryDamage, primaryType, secondaryDamage, secondaryType)
 	if (info.playerOnCombat == -1) {
 		return;
@@ -1191,7 +1191,7 @@ void Events::eventPlayerOnCombat(const std::shared_ptr<Player> & player, std::sh
 	scriptInterface.resetScriptEnv();
 }
 
-void Events::eventPlayerOnRequestQuestLog(const std::shared_ptr<Player> & player) {
+void Events::eventPlayerOnRequestQuestLog(const std::shared_ptr<Player> &player) {
 	// Player:onRequestQuestLog()
 	if (info.playerOnRequestQuestLog == -1) {
 		return;
@@ -1217,7 +1217,7 @@ void Events::eventPlayerOnRequestQuestLog(const std::shared_ptr<Player> & player
 	scriptInterface.callVoidFunction(1);
 }
 
-void Events::eventPlayerOnRequestQuestLine(const std::shared_ptr<Player> & player, uint16_t questId) {
+void Events::eventPlayerOnRequestQuestLine(const std::shared_ptr<Player> &player, uint16_t questId) {
 	// Player::onRequestQuestLine()
 	if (info.playerOnRequestQuestLine == -1) {
 		return;
@@ -1245,7 +1245,7 @@ void Events::eventPlayerOnRequestQuestLine(const std::shared_ptr<Player> & playe
 	scriptInterface.callVoidFunction(2);
 }
 
-void Events::eventPlayerOnInventoryUpdate(const std::shared_ptr<Player> & player, std::shared_ptr<Item> item, Slots_t slot, bool equip) {
+void Events::eventPlayerOnInventoryUpdate(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, Slots_t slot, bool equip) {
 	// Player:onInventoryUpdate(item, slot, equip)
 	if (info.playerOnInventoryUpdate == -1) {
 		return;
@@ -1274,7 +1274,7 @@ void Events::eventPlayerOnInventoryUpdate(const std::shared_ptr<Player> & player
 	scriptInterface.callVoidFunction(4);
 }
 
-void Events::eventOnStorageUpdate(const std::shared_ptr<Player> & player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime) {
+void Events::eventOnStorageUpdate(const std::shared_ptr<Player> &player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime) {
 	// Player::onStorageUpdate(key, value, oldValue, currentTime)
 	if (info.playerOnStorageUpdate == -1) {
 		return;

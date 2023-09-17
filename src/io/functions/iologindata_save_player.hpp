@@ -13,20 +13,20 @@
 
 class IOLoginDataSave : public IOLoginData {
 public:
-	static bool savePlayerFirst(const std::shared_ptr<Player> & player);
-	static bool savePlayerStash(const std::shared_ptr<Player> & player);
-	static bool savePlayerSpells(const std::shared_ptr<Player> & player);
-	static bool savePlayerKills(const std::shared_ptr<Player> & player);
-	static bool savePlayerBestiarySystem(const std::shared_ptr<Player> & player);
-	static bool savePlayerItem(const std::shared_ptr<Player> & player);
-	static bool savePlayerDepotItems(const std::shared_ptr<Player> & player);
-	static bool saveRewardItems(const std::shared_ptr<Player> & player);
-	static bool savePlayerInbox(const std::shared_ptr<Player> & player);
-	static bool savePlayerPreyClass(const std::shared_ptr<Player> & player);
-	static bool savePlayerTaskHuntingClass(const std::shared_ptr<Player> & player);
-	static bool savePlayerForgeHistory(const std::shared_ptr<Player> & player);
-	static bool savePlayerBosstiary(const std::shared_ptr<Player> & player);
-	static bool savePlayerStorage(const std::shared_ptr<Player> & palyer);
+	static bool savePlayerFirst(const std::shared_ptr<Player> &player);
+	static bool savePlayerStash(const std::shared_ptr<Player> &player);
+	static bool savePlayerSpells(const std::shared_ptr<Player> &player);
+	static bool savePlayerKills(const std::shared_ptr<Player> &player);
+	static bool savePlayerBestiarySystem(const std::shared_ptr<Player> &player);
+	static bool savePlayerItem(const std::shared_ptr<Player> &player);
+	static bool savePlayerDepotItems(const std::shared_ptr<Player> &player);
+	static bool saveRewardItems(const std::shared_ptr<Player> &player);
+	static bool savePlayerInbox(const std::shared_ptr<Player> &player);
+	static bool savePlayerPreyClass(const std::shared_ptr<Player> &player);
+	static bool savePlayerTaskHuntingClass(const std::shared_ptr<Player> &player);
+	static bool savePlayerForgeHistory(const std::shared_ptr<Player> &player);
+	static bool savePlayerBosstiary(const std::shared_ptr<Player> &player);
+	static bool savePlayerStorage(const std::shared_ptr<Player> &palyer);
 
 protected:
 	using ItemBlockList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;
@@ -34,5 +34,5 @@ protected:
 	using ItemRewardList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;
 	using ItemInboxList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;
 
-	static bool saveItems(const std::shared_ptr<Player> & player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &stream);
+	static bool saveItems(const std::shared_ptr<Player> &player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &stream);
 };

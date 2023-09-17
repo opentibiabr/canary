@@ -22,15 +22,15 @@ public:
 		return inject<Decay>();
 	}
 
-	void startDecay(std::shared_ptr<Item> item);
-	void stopDecay(std::shared_ptr<Item> item);
+	void startDecay(const std::shared_ptr<Item> &item);
+	void stopDecay(const std::shared_ptr<Item> &item);
 
 private:
 	void checkDecay();
-	void internalDecayItem(std::shared_ptr<Item> item);
+	void internalDecayItem(const std::shared_ptr<Item> &item);
 
 	uint32_t eventId { 0 };
-	std::map<int64_t, weak::vector<Item>> decayMap;
+	phmap::flat_hash_map<int64_t, std::vector<std::shared_ptr<Item>>> decayMap;
 };
 
 constexpr auto g_decay = Decay::getInstance;

@@ -100,7 +100,7 @@ public:
 	}
 
 	const phmap::parallel_flat_hash_set<Position> &getPositions() const;
-	const phmap::parallel_flat_hash_set<const std::shared_ptr<Tile> &> &getTiles() const;
+	const phmap::parallel_flat_hash_set<std::shared_ptr<Tile>> &getTiles() const;
 	const phmap::parallel_flat_hash_set<std::shared_ptr<Creature>> &getCreatures() const;
 	const phmap::parallel_flat_hash_set<std::shared_ptr<Player>> &getPlayers() const;
 	const phmap::parallel_flat_hash_set<std::shared_ptr<Monster>> &getMonsters() const;

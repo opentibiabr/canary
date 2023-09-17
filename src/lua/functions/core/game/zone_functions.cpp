@@ -135,7 +135,7 @@ int ZoneFunctions::luaZoneGetTiles(lua_State* L) {
 	int index = 0;
 	for (auto tile : tiles) {
 		index++;
-		pushUserdata<Tile>(L, tile);
+		pushUserdata<Tile>(L, tile.get());
 		setMetatable(L, -1, "Tile");
 		lua_rawseti(L, -2, index);
 	}

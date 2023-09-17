@@ -13,7 +13,7 @@
 #include "game/game.hpp"
 #include "game/scheduling/scheduler.hpp"
 
-void Decay::startDecay(std::shared_ptr<Item> item) {
+void Decay::startDecay(const std::shared_ptr<Item> &item) {
 	if (!item) {
 		return;
 	}
@@ -55,7 +55,7 @@ void Decay::startDecay(std::shared_ptr<Item> item) {
 	}
 }
 
-void Decay::stopDecay(std::shared_ptr<Item> item) {
+void Decay::stopDecay(const std::shared_ptr<Item> &item) {
 	if (item->hasAttribute(ItemAttribute_t::DECAYSTATE)) {
 		auto timestamp = item->getAttribute<int64_t>(ItemAttribute_t::DURATION_TIMESTAMP);
 		if (item->hasAttribute(ItemAttribute_t::DURATION_TIMESTAMP)) {
@@ -64,7 +64,7 @@ void Decay::stopDecay(std::shared_ptr<Item> item) {
 				auto &decayItems = it->second;
 
 				size_t i = 0, end = decayItems.size();
-				auto decayItem = decayItems[i].lock();
+				auto decayItem = decayItems[i];
 				if (end == 1) {
 					if (item == decayItem) {
 						if (item->hasAttribute(ItemAttribute_t::DURATION)) {
@@ -78,7 +78,7 @@ void Decay::stopDecay(std::shared_ptr<Item> item) {
 					return;
 				}
 				while (i < end) {
-					decayItem = decayItems[i].lock();
+					decayItem = decayItems[i];
 					if (item == decayItem) {
 						if (item->hasAttribute(ItemAttribute_t::DURATION)) {
 							// Incase we removed duration attribute don't assign new duration
@@ -114,15 +114,14 @@ void Decay::checkDecay() {
 
 		// Iterating here is unsafe so let's copy our items into temporary vector
 		auto &decayItems = it->second;
-		auto lockedDecayItems = weak::lock(decayItems);
-		tempItems.reserve(tempItems.size() + lockedDecayItems.size());
-		for (auto &decayItem : lockedDecayItems) {
+		tempItems.reserve(tempItems.size() + decayItems.size());
+		for (auto &decayItem : decayItems) {
 			tempItems.push_back(decayItem);
 		}
 		it = decayMap.erase(it);
 	}
 
-	for (auto item : tempItems) {
+	for (const auto &item : tempItems) {
 		if (!item->canDecay()) {
 			item->setDuration(item->getDuration());
 			item->setDecaying(DECAYING_FALSE);
@@ -137,7 +136,7 @@ void Decay::checkDecay() {
 	}
 }
 
-void Decay::internalDecayItem(std::shared_ptr<Item> item) {
+void Decay::internalDecayItem(const std::shared_ptr<Item> &item) {
 	const ItemType &it = Item::items[item->getID()];
 	if (it.decayTo != 0) {
 		std::shared_ptr<Player> player = item->getHoldingPlayer();

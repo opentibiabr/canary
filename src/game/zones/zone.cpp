@@ -87,8 +87,8 @@ const phmap::parallel_flat_hash_set<Position> &Zone::getPositions() const {
 	return positions;
 }
 
-const phmap::parallel_flat_hash_set<const std::shared_ptr<Tile> &> &Zone::getTiles() const {
-	static phmap::parallel_flat_hash_set<const std::shared_ptr<Tile> &> tiles;
+const phmap::parallel_flat_hash_set<std::shared_ptr<Tile>> &Zone::getTiles() const {
+	static phmap::parallel_flat_hash_set<std::shared_ptr<Tile>> tiles;
 	tiles.clear();
 	for (const auto &position : positions) {
 		const auto &tile = g_game().map.getTile(position);

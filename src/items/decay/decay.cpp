@@ -13,18 +13,14 @@
 #include "game/game.hpp"
 #include "game/scheduling/scheduler.hpp"
 
-void Decay::startDecay(const std::shared_ptr<Item> &item) {
-	if (!item) {
+void Decay::startDecay(std::shared_ptr<Item> item) {
+	if (!item || !item->canDecay() || item->getDecaying() == DECAYING_TRUE) {
 		return;
 	}
 
 	const auto decayState = item->getDecaying();
 	if (decayState == DECAYING_STOPPING || (!item->canDecay() && decayState == DECAYING_TRUE)) {
 		stopDecay(item);
-		return;
-	}
-
-	if (!item->canDecay() || decayState == DECAYING_TRUE) {
 		return;
 	}
 
@@ -55,55 +51,57 @@ void Decay::startDecay(const std::shared_ptr<Item> &item) {
 	}
 }
 
-void Decay::stopDecay(const std::shared_ptr<Item> &item) {
-	if (item->hasAttribute(ItemAttribute_t::DECAYSTATE)) {
+void Decay::stopDecay(std::shared_ptr<Item> item) {
+	if (!item->hasAttribute(ItemAttribute_t::DECAYSTATE)) {
+		return;
+	}
+
+	if (item->hasAttribute(ItemAttribute_t::DURATION_TIMESTAMP)) {
 		auto timestamp = item->getAttribute<int64_t>(ItemAttribute_t::DURATION_TIMESTAMP);
-		if (item->hasAttribute(ItemAttribute_t::DURATION_TIMESTAMP)) {
-			auto it = decayMap.find(timestamp);
-			if (it != decayMap.end()) {
-				auto &decayItems = it->second;
+		auto it = decayMap.find(timestamp);
+		if (it != decayMap.end()) {
+			auto &decayItems = it->second;
 
-				size_t i = 0, end = decayItems.size();
-				auto decayItem = decayItems[i];
-				if (end == 1) {
-					if (item == decayItem) {
-						if (item->hasAttribute(ItemAttribute_t::DURATION)) {
-							// Incase we removed duration attribute don't assign new duration
-							item->setDuration(item->getDuration());
-						}
-						item->removeAttribute(ItemAttribute_t::DECAYSTATE);
-
-						decayMap.erase(it);
+			size_t i = 0, end = decayItems.size();
+			auto decayItem = decayItems[i];
+			if (end == 1) {
+				if (item == decayItem) {
+					if (item->hasAttribute(ItemAttribute_t::DURATION)) {
+						// Incase we removed duration attribute don't assign new duration
+						item->setDuration(item->getDuration());
 					}
+					item->removeAttribute(ItemAttribute_t::DECAYSTATE);
+
+					decayMap.erase(it);
+				}
+				return;
+			}
+			while (i < end) {
+				decayItem = decayItems[i];
+				if (item == decayItem) {
+					if (item->hasAttribute(ItemAttribute_t::DURATION)) {
+						// Incase we removed duration attribute don't assign new duration
+						item->setDuration(item->getDuration());
+					}
+					item->removeAttribute(ItemAttribute_t::DECAYSTATE);
+
+					decayItems[i] = decayItems.back();
+					decayItems.pop_back();
 					return;
 				}
-				while (i < end) {
-					decayItem = decayItems[i];
-					if (item == decayItem) {
-						if (item->hasAttribute(ItemAttribute_t::DURATION)) {
-							// Incase we removed duration attribute don't assign new duration
-							item->setDuration(item->getDuration());
-						}
-						item->removeAttribute(ItemAttribute_t::DECAYSTATE);
-
-						decayItems[i] = decayItems.back();
-						decayItems.pop_back();
-						return;
-					}
-					++i;
-				}
+				++i;
 			}
-			item->removeAttribute(ItemAttribute_t::DURATION_TIMESTAMP);
-		} else {
-			item->removeAttribute(ItemAttribute_t::DECAYSTATE);
 		}
+		item->removeAttribute(ItemAttribute_t::DURATION_TIMESTAMP);
+	} else {
+		item->removeAttribute(ItemAttribute_t::DECAYSTATE);
 	}
 }
 
 void Decay::checkDecay() {
 	int64_t timestamp = OTSYS_TIME();
-
 	std::vector<std::shared_ptr<Item>> tempItems;
+
 	tempItems.reserve(32); // Small preallocation
 
 	auto it = decayMap.begin(), end = decayMap.end();
@@ -138,53 +136,51 @@ void Decay::checkDecay() {
 
 void Decay::internalDecayItem(const std::shared_ptr<Item> &item) {
 	const ItemType &it = Item::items[item->getID()];
-	if (it.decayTo != 0) {
-		const auto &player = item->getHoldingPlayer();
-		if (player) {
-			bool needUpdateSkills = false;
-			for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-				if (it.abilities && it.abilities->skills[i] != 0) {
-					needUpdateSkills = true;
-					player->setVarSkill(static_cast<skills_t>(i), -it.abilities->skills[i]);
-				}
-			}
 
-			if (needUpdateSkills) {
-				player->sendSkills();
-			}
-
-			bool needUpdateStats = false;
-			for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
-				if (it.abilities && it.abilities->stats[s] != 0) {
-					needUpdateStats = true;
-					needUpdateSkills = true;
-					player->setVarStats(static_cast<stats_t>(s), -it.abilities->stats[s]);
-				}
-				if (it.abilities && it.abilities->statsPercent[s] != 0) {
-					needUpdateStats = true;
-					player->setVarStats(static_cast<stats_t>(s), -static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
-				}
-			}
-
-			if (needUpdateStats) {
-				player->sendStats();
-			}
-
-			if (needUpdateSkills) {
-				player->sendSkills();
-			}
-		}
-		g_game().transformItem(item, static_cast<uint16_t>(it.decayTo));
-	} else {
-		if (item->isLoadedFromMap()) {
-			return;
-		}
-
+	if (it.decayTo == 0 && !item->isLoadedFromMap()) {
 		ReturnValue ret = g_game().internalRemoveItem(item);
 		if (ret != RETURNVALUE_NOERROR) {
 			g_logger().error("[Decay::internalDecayItem] - internalDecayItem failed, "
 							 "error code: {}, item id: {}",
 							 static_cast<uint32_t>(ret), item->getID());
 		}
+		return;
 	}
+
+	const auto &player = item->getHoldingPlayer();
+	if (player) {
+		bool needUpdateSkills = false;
+		for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
+			if (it.abilities && it.abilities->skills[i] != 0) {
+				needUpdateSkills = true;
+				player->setVarSkill(static_cast<skills_t>(i), -it.abilities->skills[i]);
+			}
+		}
+
+		if (needUpdateSkills) {
+			player->sendSkills();
+		}
+
+		bool needUpdateStats = false;
+		for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
+			if (it.abilities && it.abilities->stats[s] != 0) {
+				needUpdateStats = true;
+				needUpdateSkills = true;
+				player->setVarStats(static_cast<stats_t>(s), -it.abilities->stats[s]);
+			}
+			if (it.abilities && it.abilities->statsPercent[s] != 0) {
+				needUpdateStats = true;
+				player->setVarStats(static_cast<stats_t>(s), -static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
+			}
+		}
+
+		if (needUpdateStats) {
+			player->sendStats();
+		}
+
+		if (needUpdateSkills) {
+			player->sendSkills();
+		}
+	}
+	g_game().transformItem(item, static_cast<uint16_t>(it.decayTo));
 }

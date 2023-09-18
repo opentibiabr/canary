@@ -759,8 +759,8 @@
 	<npc centerx="32319" centery="32208" centerz="6" radius="1">
 		<npc name="Guide Luke" x="0" y="0" z="6" spawntime="60" />
 	</npc>
-	<npc centerx="32310" centery="32210" centerz="6" radius="1">
-		<npc name="Captain Bluebear" x="0" y="-1" z="6" spawntime="60" />
+	<npc centerx="32310" centery="32209" centerz="6" radius="1">
+		<npc name="Captain Bluebear" x="0" y="0" z="6" spawntime="60" />
 	</npc>
 	<npc centerx="32363" centery="32210" centerz="6" radius="1">
 		<npc name="Todd" x="0" y="0" z="6" spawntime="60" />
@@ -1743,6 +1743,10 @@
 	<npc centerx="32398" centery="32222" centerz="7" radius="1">
 		<npc name="Xodet" x="0" y="0" z="7" spawntime="60" />
 	</npc>
+	<npc centerx="33504" centery="32222" centerz="7" radius="1">
+		<npc name="Valindara" x="0" y="0" z="7" spawntime="60" />
+		<npc name="Talila" x="1" y="1" z="7" spawntime="60" />
+	</npc>
 	<npc centerx="32066" centery="32225" centerz="7" radius="1">
 		<npc name="Lily" x="0" y="0" z="7" spawntime="60" />
 	</npc>
@@ -2545,7 +2549,7 @@
 	<npc centerx="32633" centery="32402" centerz="10" radius="1">
 		<npc name="Angelina" x="0" y="0" z="10" spawntime="60" />
 	</npc>
-	<npc centerx="32855" centery="32426" centerz="10" radius="1">
+	<npc centerx="32860" centery="32425" centerz="10" radius="1">
 		<npc name="The Gate Keeper" x="0" y="0" z="10" spawntime="60" />
 	</npc>
 	<npc centerx="33170" centery="31231" centerz="11" radius="1">

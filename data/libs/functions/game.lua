@@ -131,8 +131,7 @@ function Game.getStorageValue(key)
 end
 
 function Game.setStorageValue(key, value)
-	local addedValue = globalStorageTable[key]
-	if addedValue == nil then
+	if key == nil then
 		logger.error("[Game.setStorageValue] Key is nil")
 		return
 	end

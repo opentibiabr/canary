@@ -21599,7 +21599,9 @@
 		<attribute key="primarytype" value="metals"/>
 		<attribute key="weight" value="250"/>
 	</item>
-	<item id="9116" article="a" name="ladder"/>
+	<item id="9116" article="a" name="ladder">
+		<attribute key="type" value="ladder"/>
+	</item>
 	<item id="9117" article="a" name="unknown item"/>
 	<item id="9118" name="RESERVED SPRITE"/>
 	<item id="9119" article="a" name="crucible">

@@ -68783,7 +68783,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="criticalhitdamage" value="12"/>
 		<attribute key="criticalhitchance" value="10"/>
-		<attribute key="ammotype" value="arrow"/>
+		<attribute key="ammotype" value="bolt"/>
 		<attribute key="absorbpercentfire" value="6"/>
 		<attribute key="skilldist" value="4"/>
 		<attribute key="hitchance" value="7"/>
@@ -68804,7 +68804,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="criticalhitdamage" value="12"/>
 		<attribute key="criticalhitchance" value="10"/>
-		<attribute key="ammotype" value="arrow"/>
+		<attribute key="ammotype" value="bolt"/>
 		<attribute key="absorbpercentfire" value="6"/>
 		<attribute key="skilldist" value="4"/>
 		<attribute key="hitchance" value="7"/>

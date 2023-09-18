@@ -10,6 +10,7 @@
 #include "pch.hpp"
 
 #include "io/iomapserialize.hpp"
+#include "io/iologindata.hpp"
 #include "game/game.hpp"
 #include "items/bed.hpp"
 
@@ -258,15 +259,30 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> til
 bool IOMapSerialize::loadHouseInfo() {
 	Database &db = Database::getInstance();
 
-	DBResult_ptr result = db.storeQuery("SELECT `id`, `owner`, `paid`, `warnings` FROM `houses`");
+	DBResult_ptr result = db.storeQuery("SELECT `id`, `owner`, `new_owner`, `paid`, `warnings` FROM `houses`");
 	if (!result) {
 		return false;
 	}
 
 	do {
-		const auto &house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("id"));
+		auto houseId = result->getNumber<uint32_t>("id");
+		const auto &house = g_game().map.houses.getHouse(houseId);
 		if (house) {
-			house->setOwner(result->getNumber<uint32_t>("owner"), false);
+			uint32_t owner = result->getNumber<uint32_t>("owner");
+			int32_t newOwner = result->getNumber<int32_t>("new_owner");
+			// Transfer house owner
+			if (newOwner >= 0) {
+				g_game().setTransferPlayerHouseItems(houseId, owner);
+				if (newOwner == 0) {
+					g_logger().debug("Removing house id '{}' owner", houseId);
+					house->setOwner(0);
+				} else {
+					g_logger().debug("Setting house id '{}' owner to player GUID '{}'", houseId, newOwner);
+					house->setOwner(newOwner);
+				}
+			} else {
+				house->setOwner(owner, false);
+			}
 			house->setPaidUntil(result->getNumber<time_t>("paid"));
 			house->setPayRentWarnings(result->getNumber<uint32_t>("warnings"));
 		}

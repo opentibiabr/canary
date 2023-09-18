@@ -1037,7 +1037,6 @@
 	<item id="622" name="water">
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="623" toid="624" article="a" name="beach chair">
 		<attribute key="primarytype" value="constructions"/>
@@ -1054,7 +1053,6 @@
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="635" toid="636" article="a" name="parchment">
 		<attribute key="primarytype" value="documents and papers"/>
@@ -1678,7 +1676,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="fire"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item id="731" article="a" name="bed">
 		<attribute key="primarytype" value="constructions"/>
@@ -2354,7 +2351,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="poff"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item id="841" article="a" name="peanut" plural="peanuts">
 		<attribute key="primarytype" value="food"/>
@@ -2473,7 +2469,6 @@
 	<item fromid="880" toid="891" name="shallow water">
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="fluidsource" value="water"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item id="892" article="a" name="package of potions">
 		<attribute key="description" value="It contains 5 health and 5 mana potions"/>
@@ -12140,7 +12135,6 @@
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="4603" toid="4608" name="grass"/>
 	<item fromid="4609" toid="4611" name="shallow water">
@@ -12149,14 +12143,12 @@
 		<attribute key="description" value="You see the silvery movement of fish."/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item id="4612" name="shallow water">
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 		<attribute key="duration" value="1200"/>
 		<attribute key="decayTo" value="4597"/>
 	</item>
@@ -12165,7 +12157,6 @@
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 		<attribute key="duration" value="1200"/>
 		<attribute key="decayTo" value="4598"/>
 	</item>
@@ -12174,7 +12165,6 @@
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 		<attribute key="duration" value="1200"/>
 		<attribute key="decayTo" value="4599"/>
 	</item>
@@ -12185,7 +12175,6 @@
 	<item fromid="4633" toid="4652" name="shallow water">
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="fluidsource" value="water"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item id="4653" name="RESERVED SPRITE"/>
 	<item fromid="4654" toid="4655" name="shallow water">
@@ -12196,7 +12185,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="greenbubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="4702" toid="4737" name="swamp">
 		<attribute key="primarytype" value="natural tiles"/>
@@ -12205,7 +12193,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="greenbubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="4745" toid="4746" name="grass"/>
 	<item fromid="4747" toid="4748" name="earth"/>
@@ -12218,7 +12205,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="4815" toid="4816" article="a" name="mountain">
 		<attribute key="primarytype" value="rocks"/>
@@ -12228,7 +12214,6 @@
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="4821" toid="4822" name="dirt"/>
 	<item fromid="4823" toid="4826" name="stairs">
@@ -20480,7 +20465,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="greenbubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item id="8717" article="the" name="dust of Boreth">
 		<attribute key="description" value="Julius might be interested in the ashes of this vampire lord"/>
@@ -31380,7 +31364,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="greenbubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="16311" toid="16332" article="a" name="bog wart"/>
 	<item fromid="16333" toid="16376" article="a" name="muddy stone wall"/>
@@ -32745,7 +32728,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="greenbubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="17951" toid="17956" article="a" name="portrait of the merchant"/>
 	<item fromid="17957" toid="17958" article="a" name="statue of the merchant"/>
@@ -34725,7 +34707,6 @@
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="blood"/>
 		<attribute key="effect" value="redspark"/>
-		<attribute key="allowpickUpAble" value="1"/>
 		<attribute key="weight" value="180"/>
 	</item>
 	<item id="18620" name="blood">
@@ -38299,7 +38280,6 @@
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item id="21323" article="an" name="imported water pipe">
 		<attribute key="primarytype" value="utilities"/>
@@ -38706,7 +38686,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="fire"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="21478" toid="21499" article="a" name="lava">
 		<attribute key="primarytype" value="natural tiles"/>

@@ -9847,6 +9847,42 @@ const std::unique_ptr<IOWheel> &Game::getIOWheel() const {
 	return m_IOWheel;
 }
 
+void Game::transferHouseItemsToDepot() {
+	if (!transferHouseItemsToPlayer.empty()) {
+		g_logger().info("Initializing house transfer items");
+	}
+
+	uint16_t transferSuccess = 0;
+	for (const auto &[houseId, playerGuid] : transferHouseItemsToPlayer) {
+		auto house = map.houses.getHouse(houseId);
+		if (house) {
+			auto offlinePlayer = std::make_shared<Player>(nullptr);
+			if (!IOLoginData::loadPlayerById(offlinePlayer, playerGuid)) {
+				continue;
+			}
+
+			if (!offlinePlayer) {
+				continue;
+			}
+
+			g_logger().info("Tranfering items to the inbox from player '{}'", offlinePlayer->getName());
+			if (house->tryTransferOwnership(offlinePlayer, true)) {
+				transferSuccess++;
+				house->setNewOwnerGuid(-1, true);
+			}
+		}
+	}
+	if (transferSuccess > 0) {
+		g_logger().info("Finished house transfer items from '{}' players", transferSuccess);
+		transferHouseItemsToPlayer.clear();
+		Map::save();
+	}
+}
+
+void Game::setTransferPlayerHouseItems(uint32_t houseId, uint32_t playerId) {
+	transferHouseItemsToPlayer[houseId] = playerId;
+}
+
 template <typename T>
 phmap::parallel_flat_hash_set<T> setDifference(const phmap::parallel_flat_hash_set<T> &setA, const phmap::parallel_flat_hash_set<T> &setB) {
 	phmap::parallel_flat_hash_set<T> setResult;

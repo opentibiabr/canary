@@ -130,6 +130,22 @@ public:
 		return houseName;
 	}
 
+	/**
+	 * @brief Set the new owner's GUID for the house.
+	 *
+	 * This function updates the new owner's GUID in the database.
+	 * It also sets the `hasNewOwnerOnStartup` flag if the given guid is positive.
+	 *
+	 * @param guid The new owner's GUID. Default value is 0.
+	 * @param serverStartup If set to false, further changes to ownership will be blocked.
+	 *
+	 * @note The guid "0" is used when the player uses the "leavehouse" command,
+	 * indicating that the house is not being transferred to anyone.
+	 * @note The guid "-1" represents the default value and will not execute any actions.
+	 * @note The actual transfer of ownership will occur upon server restart if `serverStartup` is set to false.
+	 */
+	void setNewOwnerGuid(int32_t newOwnerGuid, bool serverStartup);
+	bool tryTransferOwnership(std::shared_ptr<Player> player, bool serverStartup);
 	void setOwner(uint32_t guid, bool updateDatabase = true, std::shared_ptr<Player> player = nullptr);
 	uint32_t getOwner() const {
 		return owner;
@@ -207,9 +223,14 @@ public:
 		return maxBeds;
 	}
 
+	bool transferToDepot(std::shared_ptr<Player> player) const;
+
+	bool hasItemOnTile() const;
+	bool hasNewOwnership() const;
+	void setNewOwnership();
+
 private:
 	bool transferToDepot() const;
-	bool transferToDepot(std::shared_ptr<Player> player) const;
 
 	AccessList guestList;
 	AccessList subOwnerList;
@@ -222,6 +243,8 @@ private:
 
 	std::string houseName;
 	std::string ownerName;
+
+	bool hasNewOwnerOnStartup = false;
 
 	std::shared_ptr<HouseTransferItem> transferItem = nullptr;
 

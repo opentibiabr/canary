@@ -22,7 +22,13 @@ local function revertHorror()
 end
 
 local function changeHorror()
-	local melting = Tile(Position(32267, 31071, 14)):getTopCreature()
+	local meltingTile = Tile(Position(32267, 31071, 14))
+	if not meltingTile then
+		logger.error("Tile not exist on position '{}'", Position(32267, 31071, 14):toString())
+		return
+	end
+
+	local meltingCreature = meltingTile:getTopCreature()
 	local pos = 0
 	local specs, spec = Game.getSpectators(Position(32269, 31091, 14), false, false, 12, 12, 12, 12)
 	for i = 1, #specs do
@@ -30,7 +36,7 @@ local function changeHorror()
 		if spec:isMonster() and spec:getName():lower() == "solid frozen horror" then
 			pos = spec:getPosition()
 			spec:teleportTo(Position(32267, 31071, 14))
-			melting:teleportTo(pos)
+			meltingCreature:teleportTo(pos)
 		end
 	end
 	addEvent(revertHorror, 20 * 1000)

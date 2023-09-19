@@ -117,6 +117,7 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 	Container* container = getUserdata<Container>(L, 1);
 	if (!container) {
 		lua_pushnil(L);
+		reportErrorFunc("Container is nullptr");
 		return 1;
 	}
 
@@ -127,6 +128,7 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 		itemId = Item::items.getItemIdByName(getString(L, 2));
 		if (itemId == 0) {
 			lua_pushnil(L);
+			reportErrorFunc("Item id is wrong");
 			return 1;
 		}
 	}
@@ -140,6 +142,7 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 	Item* item = Item::CreateItem(itemId, count);
 	if (!item) {
 		lua_pushnil(L);
+		reportErrorFunc("Item is nullptr");
 		return 1;
 	}
 
@@ -151,6 +154,7 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 		pushUserdata<Item>(L, item);
 		setItemMetatable(L, -1, item);
 	} else {
+		reportErrorFunc(fmt::format("Cannot add item to container, error code: '{}'", getReturnMessage(ret)));
 		delete item;
 		lua_pushnil(L);
 	}

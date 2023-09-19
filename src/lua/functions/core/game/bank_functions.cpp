@@ -59,11 +59,13 @@ int BankFunctions::luaBankTransfer(lua_State* L) {
 	// Bank.transfer(fromPlayerOrGuild, toPlayerOrGuild, amount)
 	auto source = getBank(L, 1);
 	if (source == nullptr) {
+		g_logger().debug("BankFunctions::luaBankTransfer: source is null");
 		lua_pushnil(L);
 		return 1;
 	}
 	std::shared_ptr<Bank> destination = getBank(L, 2);
 	if (destination == nullptr) {
+		g_logger().debug("BankFunctions::luaBankTransfer: destination is null");
 		lua_pushnil(L);
 		return 1;
 	}

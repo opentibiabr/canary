@@ -779,13 +779,13 @@ std::shared_ptr<Player> Game::getPlayerByName(const std::string &s, bool loadTmp
 	}
 
 	auto it = mappedPlayerNames.find(asLowerCaseString(s));
-	if (it == mappedPlayerNames.end()) {
+	if (it == mappedPlayerNames.end() || it->second.expired()) {
 		if (!loadTmp) {
 			return nullptr;
 		}
 		std::shared_ptr<Player> tmpPlayer = std::make_shared<Player>(nullptr);
 		if (!IOLoginData::loadPlayerByName(tmpPlayer, s)) {
-
+			g_logger().error("Failed to load player {} from database", s);
 			return nullptr;
 		}
 		tmpPlayer->setOnline(false);

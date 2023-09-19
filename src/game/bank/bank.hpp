@@ -49,7 +49,7 @@ public:
 
 private:
 	std::shared_ptr<Bankable> getBankable() const {
-		return m_bankable.lock();
+		return m_bankable;
 	}
-	std::weak_ptr<Bankable> m_bankable;
+	std::shared_ptr<Bankable> m_bankable;
 };

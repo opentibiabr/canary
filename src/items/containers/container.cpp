@@ -300,7 +300,7 @@ phmap::flat_hash_set<ContainerCategory_t> Container::getStoreInboxValidCategorie
 }
 
 std::shared_ptr<Item> Container::getFilteredItemByIndex(size_t index) const {
-	const auto &filteredItems = getStoreInboxFilteredItems();
+	const auto filteredItems = getStoreInboxFilteredItems();
 	if (index >= filteredItems.size()) {
 		return nullptr;
 	}

@@ -883,7 +883,7 @@ bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
 	DBInsert insertWheelData("INSERT INTO `player_wheeldata` (`player_id`, `slot`) VALUES ");
 	insertWheelData.upsert({ "slot" });
 	PropWriteStream stream;
-	const auto &wheelSlots = getSlots();
+	const auto wheelSlots = getSlots();
 	for (uint8_t i = 1; i < wheelSlots.size(); ++i) {
 		auto value = wheelSlots[i];
 		if (value == 0) {
@@ -935,7 +935,7 @@ uint16_t PlayerWheel::getWheelPoints(bool includeExtraPoints /* = true*/) const 
 	auto totalPoints = std::max(0u, (level - m_minLevelToStartCountPoints)) * m_pointsPerLevel;
 
 	if (includeExtraPoints) {
-		const auto &extraPoints = getExtraPoints();
+		const auto extraPoints = getExtraPoints();
 		totalPoints += extraPoints;
 	}
 
@@ -1375,7 +1375,7 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 
 void PlayerWheel::loadDedicationAndConvictionPerks() {
 	using VocationBonusFunction = std::function<void(const std::shared_ptr<Player> &, uint16_t, uint8_t, PlayerWheelMethodsBonusData &)>;
-	auto &wheelFunctions = g_game().getIOWheel()->getWheelMapFunctions();
+	auto wheelFunctions = g_game().getIOWheel()->getWheelMapFunctions();
 	auto vocationCipId = getPlayerVocationEnum();
 	if (vocationCipId < VOCATION_KNIGHT_CIP || vocationCipId > VOCATION_DRUID_CIP) {
 		return;
@@ -1794,8 +1794,25 @@ bool PlayerWheel::checkDivineEmpowerment() {
 	setOnThinkTimer(WheelOnThink_t::DIVINE_EMPOWERMENT, OTSYS_TIME() + 2000);
 
 	const auto tile = m_player.getTile();
-	if (tile && tile->getItemTypeCount(ITEM_DIVINE_EMPOWERMENT) > 0) {
-		int32_t damageBonus = 0;
+	if (!tile) {
+		return updateClient;
+	}
+
+	const auto items = tile->getItemList();
+	if (!items) {
+		return updateClient;
+	}
+
+	int32_t damageBonus = 0;
+	bool isOwner = false;
+	for (const auto &item : *items) {
+		if (item->getID() == ITEM_DIVINE_EMPOWERMENT && item->getAttribute<uint32_t>(ItemAttribute_t::OWNER) == m_player.getID()) {
+			isOwner = true;
+			break;
+		}
+	}
+
+	if (isOwner) {
 		uint8_t stage = getStage(WheelStage_t::DIVINE_EMPOWERMENT);
 		if (stage >= 3) {
 			damageBonus = 12;

@@ -27,7 +27,7 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 	int32_t runningId = 100;
 
 	// Loop through each item in itemList
-	const auto &openContainers = player->getOpenContainers();
+	const auto openContainers = player->getOpenContainers();
 	for (const auto &it : itemList) {
 		int32_t pid = it.first;
 		std::shared_ptr<Item> item = it.second;

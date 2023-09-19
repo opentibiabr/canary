@@ -384,7 +384,7 @@ void Map::getSpectatorsInternal(SpectatorHashSet &spectators, const Position &ce
 		leafE = leafS;
 		for (int_fast32_t nx = startx1; nx <= endx2; nx += FLOOR_SIZE) {
 			if (leafE) {
-				const auto &node_list = (onlyPlayers ? leafE->player_list : leafE->creature_list);
+				const auto node_list = (onlyPlayers ? leafE->player_list : leafE->creature_list);
 				for (std::shared_ptr<Creature> creature : node_list) {
 					const Position &cpos = creature->getPosition();
 					if (minRangeZ > cpos.z || maxRangeZ < cpos.z) {

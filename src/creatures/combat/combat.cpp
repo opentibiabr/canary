@@ -1215,7 +1215,7 @@ void Combat::doCombatHealth(std::shared_ptr<Creature> caster, const Position &po
 			}
 		}
 	}
-	const auto &origin = caster ? caster->getPosition() : Position();
+	const auto origin = caster ? caster->getPosition() : Position();
 	CombatFunc(caster, origin, position, area, params, CombatHealthFunc, &damage);
 }
 
@@ -1269,12 +1269,12 @@ void Combat::doCombatMana(std::shared_ptr<Creature> caster, const Position &posi
 			damage.secondary.value += (damage.secondary.value * (caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + damage.criticalDamage)) / 100;
 		}
 	}
-	const auto &origin = caster ? caster->getPosition() : Position();
+	const auto origin = caster ? caster->getPosition() : Position();
 	CombatFunc(caster, origin, position, area, params, CombatManaFunc, &damage);
 }
 
 void Combat::doCombatCondition(std::shared_ptr<Creature> caster, const Position &position, const AreaCombat* area, const CombatParams &params) {
-	const auto &origin = caster ? caster->getPosition() : Position();
+	const auto origin = caster ? caster->getPosition() : Position();
 	CombatFunc(caster, origin, position, area, params, CombatConditionFunc, nullptr);
 }
 
@@ -1303,7 +1303,7 @@ void Combat::doCombatCondition(std::shared_ptr<Creature> caster, std::shared_ptr
 }
 
 void Combat::doCombatDispel(std::shared_ptr<Creature> caster, const Position &position, const AreaCombat* area, const CombatParams &params) {
-	const auto &origin = caster ? caster->getPosition() : Position();
+	const auto origin = caster ? caster->getPosition() : Position();
 	CombatFunc(caster, origin, position, area, params, CombatDispelFunc, nullptr);
 }
 

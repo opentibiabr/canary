@@ -1326,7 +1326,7 @@ void Player::onApplyImbuement(Imbuement* imbuement, std::shared_ptr<Item> item, 
 		return;
 	}
 
-	const auto &items = imbuement->getItems();
+	const auto items = imbuement->getItems();
 	for (auto &[key, value] : items) {
 		const ItemType &itemType = Item::items[key];
 		if (static_self_cast<Player>()->getItemTypeCount(key) + this->getStashItemCount(itemType.id) < value) {
@@ -5909,10 +5909,10 @@ uint16_t Player::getHelpers() const {
 		const auto guildMembers = guild->getMembersOnline();
 		helperSet.insert(guildMembers.begin(), guildMembers.end());
 
-		const auto &partyMembers = party->getMembers();
+		const auto partyMembers = party->getMembers();
 		helperSet.insert(partyMembers.begin(), partyMembers.end());
 
-		const auto &partyInvitees = party->getInvitees();
+		const auto partyInvitees = party->getInvitees();
 		helperSet.insert(partyInvitees.begin(), partyInvitees.end());
 
 		helperSet.insert(party->getLeader());

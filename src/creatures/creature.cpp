@@ -739,14 +739,17 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 			corpse->startDecaying();
 			bool corpses = corpse->isRewardCorpse() || (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
 			if (corpse->getContainer() && mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
-				auto player = mostDamageCreature->getPlayer();
-				std::ostringstream lootMessage;
-				lootMessage << "Loot of " << getNameDescription() << ": " << corpse->getContainer()->getContentDescription(player->getProtocolVersion() < 1200);
-				auto suffix = corpse->getContainer()->getAttribute<std::string>(ItemAttribute_t::LOOTMESSAGE_SUFFIX);
-				if (!suffix.empty()) {
-					lootMessage << suffix;
+				const auto player = mostDamageCreature->getPlayer();
+				auto monster = getMonster();
+				if (monster && !monster->isRewardBoss()) {
+					std::ostringstream lootMessage;
+					lootMessage << "Loot of " << getNameDescription() << ": " << corpse->getContainer()->getContentDescription(player->getProtocolVersion() < 1200);
+					auto suffix = corpse->getContainer()->getAttribute<std::string>(ItemAttribute_t::LOOTMESSAGE_SUFFIX);
+					if (!suffix.empty()) {
+						lootMessage << suffix;
+					}
+					player->sendLootMessage(lootMessage.str());
 				}
-				player->sendLootMessage(lootMessage.str());
 
 				if (player->checkAutoLoot()) {
 					int32_t pos = tile->getStackposOfItem(player, corpse);

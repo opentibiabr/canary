@@ -192,7 +192,7 @@ int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 
 int GameFunctions::luaGameGetTowns(lua_State* L) {
 	// Game.getTowns()
-	const auto &towns = g_game().map.towns.getTowns();
+	const auto towns = g_game().map.towns.getTowns();
 	lua_createtable(L, towns.size(), 0);
 
 	int index = 0;
@@ -206,7 +206,7 @@ int GameFunctions::luaGameGetTowns(lua_State* L) {
 
 int GameFunctions::luaGameGetHouses(lua_State* L) {
 	// Game.getHouses()
-	const auto &houses = g_game().map.houses.getHouses();
+	const auto houses = g_game().map.houses.getHouses();
 	lua_createtable(L, houses.size(), 0);
 
 	int index = 0;
@@ -494,7 +494,7 @@ int GameFunctions::luaGameCreateTile(lua_State* L) {
 
 int GameFunctions::luaGameGetBestiaryCharm(lua_State* L) {
 	// Game.getBestiaryCharm()
-	const auto &c_list = g_game().getCharmList();
+	const auto c_list = g_game().getCharmList();
 	lua_createtable(L, c_list.size(), 0);
 
 	int index = 0;
@@ -533,7 +533,7 @@ int GameFunctions::luaGameStartRaid(lua_State* L) {
 	// Game.startRaid(raidName)
 	const std::string &raidName = getString(L, 1);
 
-	const auto &raid = g_game().raids.getRaidByName(raidName);
+	const auto raid = g_game().raids.getRaidByName(raidName);
 	if (!raid || !raid->isLoaded()) {
 		lua_pushnumber(L, RETURNVALUE_NOSUCHRAIDEXISTS);
 		return 1;
@@ -693,7 +693,7 @@ int GameFunctions::luaGameGetDummies(lua_State* L) {
 		local rate = dummies[1] -- Retrieve dummy rate
 	*/
 
-	const auto &dummies = Item::items.getDummys();
+	const auto dummies = Item::items.getDummys();
 	lua_createtable(L, dummies.size(), 0);
 	for (const auto &[dummyId, rate] : dummies) {
 		lua_pushnumber(L, static_cast<lua_Number>(rate));
@@ -741,7 +741,7 @@ int GameFunctions::luaGameGetBoostedBoss(lua_State* L) {
 
 int GameFunctions::luaGameGetTalkActions(lua_State* L) {
 	// Game.getTalkActions()
-	const auto &talkactionsMap = g_talkActions().getTalkActionsMap();
+	const auto talkactionsMap = g_talkActions().getTalkActionsMap();
 	lua_createtable(L, static_cast<int>(talkactionsMap.size()), 0);
 
 	for (const auto &[talkName, talkactionSharedPtr] : talkactionsMap) {

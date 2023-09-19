@@ -101,7 +101,7 @@ std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &Bas
 }
 
 std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y) {
-	const auto &cachedTile = floor->getTileCache(x, y);
+	const auto cachedTile = floor->getTileCache(x, y);
 	if (!cachedTile) {
 		return floor->getTile(x, y);
 	}
@@ -147,7 +147,7 @@ void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared
 		return;
 	}
 
-	const auto &tile = static_tryGetTileFromCache(newTile);
+	const auto tile = static_tryGetTileFromCache(newTile);
 	if (const auto leaf = QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y)) {
 		leaf->createFloor(z)->setTileCache(x, y, tile);
 	} else {
@@ -267,14 +267,14 @@ void BasicItem::readAttr(FileStream &stream) {
 			} break;
 
 			case ATTR_TEXT: {
-				const auto &str = stream.getString();
+				const auto str = stream.getString();
 				if (!str.empty()) {
 					text = str;
 				}
 			} break;
 
 			case ATTR_DESC: {
-				const auto &str = stream.getString();
+				const auto str = stream.getString();
 				// if (!str.empty())
 				//	text = str;
 			} break;

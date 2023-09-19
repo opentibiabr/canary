@@ -920,7 +920,7 @@ std::shared_ptr<Cylinder> Tile::queryDestination(int32_t &, const std::shared_pt
 }
 
 std::vector<std::shared_ptr<Tile>> Tile::getSurroundingTiles() {
-	const auto &position = getPosition();
+	const auto position = getPosition();
 	return {
 		g_game().map.getTile(position.x - 1, position.y, position.z),
 		g_game().map.getTile(position.x + 1, position.y, position.z),

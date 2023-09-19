@@ -91,7 +91,7 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Tile>> &Zone::getTiles() con
 	static phmap::parallel_flat_hash_set<std::shared_ptr<Tile>> tiles;
 	tiles.clear();
 	for (const auto &position : positions) {
-		const auto &tile = g_game().map.getTile(position);
+		const auto tile = g_game().map.getTile(position);
 		if (tile) {
 			tiles.insert(tile);
 		}
@@ -103,7 +103,7 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Creature>> &Zone::getCreatur
 	static phmap::parallel_flat_hash_set<std::shared_ptr<Creature>> creatures;
 	creatures.clear();
 	for (const auto creatureId : creaturesCache) {
-		const auto &creature = g_game().getCreatureByID(creatureId);
+		const auto creature = g_game().getCreatureByID(creatureId);
 		if (creature) {
 			creatures.insert(creature);
 		}
@@ -115,7 +115,7 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Player>> &Zone::getPlayers()
 	static phmap::parallel_flat_hash_set<std::shared_ptr<Player>> players;
 	players.clear();
 	for (const auto playerId : playersCache) {
-		const auto &player = g_game().getPlayerByID(playerId);
+		const auto player = g_game().getPlayerByID(playerId);
 		if (player) {
 			players.insert(player);
 		}
@@ -127,7 +127,7 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Monster>> &Zone::getMonsters
 	static phmap::parallel_flat_hash_set<std::shared_ptr<Monster>> monsters;
 	monsters.clear();
 	for (const auto monsterId : monstersCache) {
-		const auto &monster = g_game().getMonsterByID(monsterId);
+		const auto monster = g_game().getMonsterByID(monsterId);
 		if (monster) {
 			monsters.insert(monster);
 		}
@@ -139,7 +139,7 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Npc>> &Zone::getNpcs() const
 	static phmap::parallel_flat_hash_set<std::shared_ptr<Npc>> npcs;
 	npcs.clear();
 	for (const auto npcId : npcsCache) {
-		const auto &npc = g_game().getNpcByID(npcId);
+		const auto npc = g_game().getNpcByID(npcId);
 		if (npc) {
 			npcs.insert(npc);
 		}

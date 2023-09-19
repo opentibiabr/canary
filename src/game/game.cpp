@@ -205,7 +205,7 @@ void Game::resetNpcs() const {
 
 void Game::loadBoostedCreature() {
 	auto &db = Database::getInstance();
-	const auto &result = db.storeQuery("SELECT * FROM `boosted_creature`");
+	const auto result = db.storeQuery("SELECT * FROM `boosted_creature`");
 	if (!result) {
 		g_logger().warn("[Game::loadBoostedCreature] - "
 						"Failed to detect boosted creature database. (CODE 01)");
@@ -222,7 +222,7 @@ void Game::loadBoostedCreature() {
 	}
 
 	const uint16_t oldRace = result->getNumber<uint16_t>("raceid");
-	const auto &monsterlist = getBestiaryList();
+	const auto monsterlist = getBestiaryList();
 
 	struct MonsterRace {
 		uint16_t raceId { 0 };
@@ -460,7 +460,7 @@ void Game::loadCustomMaps(const std::filesystem::path &customMapPath) {
 
 	int customMapIndex = 0;
 	for (const auto &entry : fs::directory_iterator(customMapPath)) {
-		const auto &realPath = entry.path();
+		const auto realPath = entry.path();
 
 		if (realPath.extension() != ".otbm") {
 			continue;
@@ -1625,7 +1625,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 			}
 		}
 	} else if (toCylinder->getTile()) {
-		std::shared_ptr<HouseTile> toHouseTile = std::dynamic_pointer_cast<HouseTile>(toCylinder->getTile());
+		const auto toHouseTile = std::dynamic_pointer_cast<HouseTile>(toCylinder->getTile());
 		if (fromCylinder->getContainer()) {
 			if (item->isStoreItem()) {
 				if (!toHouseTile || toHouseTile && toHouseTile->getHouse()->getOwner() != player->getGUID()) {
@@ -5319,7 +5319,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 		outfit.lookMount = randomMount->clientId;
 	}
 
-	const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
+	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
 	if (!playerOutfit) {
 		outfit.lookMount = 0;
 	}
@@ -6321,7 +6321,7 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 		}
 
 		if (damage.origin != ORIGIN_NONE) {
-			const auto &events = target->getCreatureEvents(CREATURE_EVENT_HEALTHCHANGE);
+			const auto events = target->getCreatureEvents(CREATURE_EVENT_HEALTHCHANGE);
 			if (!events.empty()) {
 				for (const auto creatureEvent : events) {
 					creatureEvent->executeHealthChange(target, attacker, damage);
@@ -6551,7 +6551,7 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 			}
 			if (manaDamage != 0) {
 				if (damage.origin != ORIGIN_NONE) {
-					const auto &events = target->getCreatureEvents(CREATURE_EVENT_MANACHANGE);
+					const auto events = target->getCreatureEvents(CREATURE_EVENT_MANACHANGE);
 					if (!events.empty()) {
 						for (const auto creatureEvent : events) {
 							creatureEvent->executeManaChange(target, attacker, damage);
@@ -6649,7 +6649,7 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 		}
 
 		if (damage.origin != ORIGIN_NONE) {
-			const auto &events = target->getCreatureEvents(CREATURE_EVENT_HEALTHCHANGE);
+			const auto events = target->getCreatureEvents(CREATURE_EVENT_HEALTHCHANGE);
 			if (!events.empty()) {
 				for (const auto creatureEvent : events) {
 					creatureEvent->executeHealthChange(target, attacker, damage);
@@ -6956,7 +6956,7 @@ void Game::applyLifeLeech(
 	if (targetMonster) {
 		if (uint16_t playerCharmRaceidVamp = attackerPlayer->parseRacebyCharm(CHARM_VAMP, false, 0);
 			playerCharmRaceidVamp != 0 && playerCharmRaceidVamp == targetMonster->getRaceId()) {
-			if (const auto &lifec = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
+			if (const auto lifec = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
 				lifeSkill += lifec->percent;
 			}
 		}
@@ -6994,7 +6994,7 @@ bool Game::combatChangeMana(std::shared_ptr<Creature> attacker, std::shared_ptr<
 		}
 
 		if (damage.origin != ORIGIN_NONE) {
-			const auto &events = target->getCreatureEvents(CREATURE_EVENT_MANACHANGE);
+			const auto events = target->getCreatureEvents(CREATURE_EVENT_MANACHANGE);
 			if (!events.empty()) {
 				for (const auto creatureEvent : events) {
 					creatureEvent->executeManaChange(target, attacker, damage);
@@ -7091,7 +7091,7 @@ bool Game::combatChangeMana(std::shared_ptr<Creature> attacker, std::shared_ptr<
 		}
 
 		if (damage.origin != ORIGIN_NONE) {
-			const auto &events = target->getCreatureEvents(CREATURE_EVENT_MANACHANGE);
+			const auto events = target->getCreatureEvents(CREATURE_EVENT_MANACHANGE);
 			if (!events.empty()) {
 				for (const auto creatureEvent : events) {
 					creatureEvent->executeManaChange(target, attacker, damage);
@@ -7921,7 +7921,7 @@ void Game::playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type
 		if (vocation != 0xFFFFFFFF) {
 			bool firstVocation = true;
 
-			const auto &vocationsMap = g_vocations().getVocations();
+			const auto vocationsMap = g_vocations().getVocations();
 			for (const auto &it : vocationsMap) {
 				const Vocation &voc = it.second;
 				if (voc.getFromVocation() == vocation) {
@@ -7941,7 +7941,7 @@ void Game::playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type
 		if (vocation != 0xFFFFFFFF) {
 			bool firstVocation = true;
 
-			const auto &vocationsMap = g_vocations().getVocations();
+			const auto vocationsMap = g_vocations().getVocations();
 			for (const auto &it : vocationsMap) {
 				const Vocation &voc = it.second;
 				if (voc.getFromVocation() == vocation) {
@@ -8929,7 +8929,7 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 		return;
 	}
 
-	const auto &[podiumVisible, monsterVisible] = podiumAndMonsterVisible;
+	const auto [podiumVisible, monsterVisible] = podiumAndMonsterVisible;
 	bool changeTentuglyName = false;
 	if (auto monsterOutfit = mType->info.outfit;
 		(monsterOutfit.lookType != 0 || monsterOutfit.lookTypeEx != 0) && monsterVisible) {

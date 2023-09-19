@@ -210,7 +210,7 @@ bool Raid::loadFromXml(const std::string &filename) {
 }
 
 void Raid::startRaid() {
-	const auto &raidEvent = getNextRaidEvent();
+	const auto raidEvent = getNextRaidEvent();
 	if (raidEvent) {
 		state = RAIDSTATE_EXECUTING;
 		nextEventEvent = g_scheduler().addEvent(raidEvent->getDelay(), std::bind(&Raid::executeRaidEvent, this, raidEvent), "Raid::executeRaidEvent");
@@ -223,7 +223,7 @@ void Raid::startRaid() {
 void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> raidEvent) {
 	if (raidEvent->executeEvent()) {
 		nextEvent++;
-		const auto &newRaidEvent = getNextRaidEvent();
+		const auto newRaidEvent = getNextRaidEvent();
 
 		if (newRaidEvent) {
 			uint32_t ticks = static_cast<uint32_t>(std::max<int32_t>(RAID_MINTICKS, newRaidEvent->getDelay() - raidEvent->getDelay()));

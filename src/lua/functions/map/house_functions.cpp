@@ -182,7 +182,7 @@ int HouseFunctions::luaHouseGetBeds(lua_State* L) {
 		return 1;
 	}
 
-	const auto &beds = house->getBeds();
+	const auto beds = house->getBeds();
 	lua_createtable(L, beds.size(), 0);
 
 	int index = 0;
@@ -213,7 +213,7 @@ int HouseFunctions::luaHouseGetDoors(lua_State* L) {
 		return 1;
 	}
 
-	const auto &doors = house->getDoors();
+	const auto doors = house->getDoors();
 	lua_createtable(L, doors.size(), 0);
 
 	int index = 0;
@@ -261,7 +261,7 @@ int HouseFunctions::luaHouseGetTiles(lua_State* L) {
 		return 1;
 	}
 
-	const auto &tiles = house->getTiles();
+	const auto tiles = house->getTiles();
 	lua_newtable(L);
 
 	int index = 0;
@@ -281,7 +281,7 @@ int HouseFunctions::luaHouseGetItems(lua_State* L) {
 		return 1;
 	}
 
-	const auto &tiles = house->getTiles();
+	const auto tiles = house->getTiles();
 	lua_newtable(L);
 
 	int index = 0;

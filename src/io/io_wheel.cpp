@@ -59,7 +59,7 @@ namespace InternalPlayerWheel {
 		if (spell) {
 			g_logger().debug("[{}] registering instant spell with name {}", __FUNCTION__, spell->getName());
 			// Increase data
-			const auto &increaseData = spellData.increase;
+			const auto increaseData = spellData.increase;
 			if (increaseData.damage > 0) {
 				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE, gradeType, increaseData.damage);
 			}
@@ -74,7 +74,7 @@ namespace InternalPlayerWheel {
 			}
 
 			// Decrease data
-			const auto &decreaseData = spellData.decrease;
+			const auto decreaseData = spellData.decrease;
 			if (decreaseData.cooldown > 0) {
 				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, gradeType, decreaseData.cooldown * 1000);
 			}
@@ -85,7 +85,7 @@ namespace InternalPlayerWheel {
 				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, gradeType, decreaseData.secondaryGroupCooldown * 1000);
 			}
 			// Leech data
-			const auto &leechData = spellData.leech;
+			const auto leechData = spellData.leech;
 			if (leechData.mana > 0) {
 				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::MANA_LEECH, gradeType, leechData.mana * 100);
 			}
@@ -124,7 +124,7 @@ bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 	// Register spells for druid
 	for (const auto &data : getWheelBonusData().spells.druid) {
 		for (size_t i = 1; i < 3; ++i) {
-			const auto &grade = data.grade[i];
+			const auto grade = data.grade[i];
 			InternalPlayerWheel::registerWheelSpellTable(grade, data.name, static_cast<WheelSpellGrade_t>(i));
 		}
 	}

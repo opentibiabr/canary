@@ -311,7 +311,7 @@ uint32_t MoveEvents::onCreatureMove(const std::shared_ptr<Creature> &creature, c
 }
 
 uint32_t MoveEvents::onPlayerEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool isCheck) {
-	const auto &moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot);
+	const auto moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot);
 	if (!moveEvent) {
 		return 1;
 	}
@@ -321,7 +321,7 @@ uint32_t MoveEvents::onPlayerEquip(const std::shared_ptr<Player> &player, const 
 }
 
 uint32_t MoveEvents::onPlayerDeEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot) {
-	const auto &moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot);
+	const auto moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot);
 	if (!moveEvent) {
 		return 1;
 	}

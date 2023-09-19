@@ -1676,7 +1676,7 @@ int PlayerFunctions::luaPlayerSetBankBalance(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetStorageValue(lua_State* L) {
 	// player:getStorageValue(key)
-	const auto &player = getUserdataShared<Player>(L, 1);
+	const auto player = getUserdataShared<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
@@ -2702,7 +2702,7 @@ int PlayerFunctions::luaPlayerCanLearnSpell(lua_State* L) {
 		return 1;
 	}
 
-	const auto &vocMap = spell->getVocMap();
+	const auto vocMap = spell->getVocMap();
 	if (vocMap.count(player->getVocationId()) == 0) {
 		pushBoolean(L, false);
 	} else if (player->getLevel() < spell->getLevel()) {
@@ -3778,7 +3778,7 @@ int PlayerFunctions::luaPlayerGetLoyaltyBonus(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetLoyaltyPoints(lua_State* L) {
 	// player:getLoyaltyPoints()
-	const auto &player = getUserdataShared<Player>(L, 1);
+	const auto player = getUserdataShared<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;

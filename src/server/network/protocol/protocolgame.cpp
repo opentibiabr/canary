@@ -2093,7 +2093,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addString("(all)"); // All Vocations - hardcoded
 
 	uint32_t selectedVocation = 0xFFFFFFFF;
-	const auto &vocationsMap = g_vocations().getVocations();
+	const auto vocationsMap = g_vocations().getVocations();
 	for (const auto &it : vocationsMap) {
 		const Vocation &vocation = it.second;
 		if (vocation.getFromVocation() == static_cast<uint32_t>(vocation.getId())) {
@@ -2367,7 +2367,7 @@ void ProtocolGame::parseCyclopediaMonsterTracker(NetworkMessage &msg) {
 	}
 
 	// Bestiary tracker logic
-	const auto &bestiaryMonsters = g_game().getBestiaryList();
+	const auto bestiaryMonsters = g_game().getBestiaryList();
 	auto it = bestiaryMonsters.find(monsterRaceId);
 	if (it != bestiaryMonsters.end()) {
 		const auto mtype = g_monsters().getMonsterType(it->second);
@@ -2772,7 +2772,7 @@ void ProtocolGame::refreshCyclopediaMonsterTracker(const phmap::parallel_flat_ha
 	msg.addByte(trackerSet.size());
 	for (const auto mtype : trackerSet) {
 		auto raceId = mtype->info.raceid;
-		const auto &stages = g_ioBosstiary().getBossRaceKillStages(mtype->info.bosstiaryRace);
+		const auto stages = g_ioBosstiary().getBossRaceKillStages(mtype->info.bosstiaryRace);
 		if (isBoss && (stages.empty() || stages.size() != 3)) {
 			return;
 		}
@@ -3177,7 +3177,7 @@ void ProtocolGame::addCreatureIcon(NetworkMessage &msg, std::shared_ptr<Creature
 	const auto count = icons.size() > 3 ? 3 : icons.size();
 	msg.addByte(count);
 	for (uint8_t i = 0; i < count; ++i) {
-		const auto &icon = icons[i];
+		const auto icon = icons[i];
 		msg.addByte(icon.serialize());
 		msg.addByte(static_cast<uint8_t>(icon.category));
 		msg.add<uint16_t>(icon.count);
@@ -3673,7 +3673,7 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 	auto startOutfits = msg.getBufferPosition();
 	msg.skipBytes(2);
 
-	const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
+	const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
 	for (const auto &outfit : outfits) {
 		uint8_t addons;
 		if (!player->getOutfitAddons(outfit, addons)) {
@@ -3735,7 +3735,7 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 	uint16_t familiarsSize = 0;
 	auto startFamiliars = msg.getBufferPosition();
 	msg.skipBytes(2);
-	const auto &familiars = Familiars::getInstance().getFamiliars(player->getVocationId());
+	const auto familiars = Familiars::getInstance().getFamiliars(player->getVocationId());
 	for (const Familiar &familiar : familiars) {
 		const std::string type = familiar.type;
 		if (!player->getFamiliar(familiar)) {
@@ -3844,7 +3844,7 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 	// Outfit description
 	playerDescriptionSize++;
 	msg.addString("Outfit");
-	if (const auto &outfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), player->getDefaultOutfit().lookType)) {
+	if (const auto outfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), player->getDefaultOutfit().lookType)) {
 		msg.addString(outfit->name);
 	} else {
 		msg.addString("unknown");
@@ -4853,7 +4853,7 @@ void ProtocolGame::sendForgingData() {
 
 	std::map<uint8_t, uint16_t> tierCorePrices;
 
-	const auto &classifications = g_game().getItemsClassifications();
+	const auto classifications = g_game().getItemsClassifications();
 	msg.addByte(classifications.size());
 	for (const auto &classification : classifications) {
 		msg.addByte(classification->id);
@@ -6456,7 +6456,7 @@ void ProtocolGame::sendOutfitWindow() {
 			protocolOutfits.emplace_back(communityManager, 302, 0);
 		}
 
-		const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
+		const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
 		protocolOutfits.reserve(outfits.size());
 		for (const auto &outfit : outfits) {
 			uint8_t addons;
@@ -6537,7 +6537,7 @@ void ProtocolGame::sendOutfitWindow() {
 		++outfitSize;
 	}
 
-	const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
+	const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
 
 	for (const auto &outfit : outfits) {
 		uint8_t addons;
@@ -6613,7 +6613,7 @@ void ProtocolGame::sendOutfitWindow() {
 	uint16_t familiarSize = 0;
 	msg.skipBytes(2);
 
-	const auto &familiars = Familiars::getInstance().getFamiliars(player->getVocationId());
+	const auto familiars = Familiars::getInstance().getFamiliars(player->getVocationId());
 
 	for (const Familiar &familiar : familiars) {
 		if (!player->getFamiliar(familiar)) {
@@ -6677,7 +6677,7 @@ void ProtocolGame::sendPodiumWindow(std::shared_ptr<Item> podium, const Position
 	uint16_t outfitSize = 0;
 	msg.skipBytes(2);
 
-	const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
+	const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
 	for (const auto &outfit : outfits) {
 		uint8_t addons;
 		if (!player->getOutfitAddons(outfit, addons)) {
@@ -7243,7 +7243,7 @@ void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) c
 
 	msg.addByte(imbuement->isPremium() ? 0x01 : 0x00);
 
-	const auto &items = imbuement->getItems();
+	const auto items = imbuement->getItems();
 	msg.addByte(items.size());
 
 	for (const auto &itm : items) {
@@ -7294,7 +7294,7 @@ void ProtocolGame::openImbuementWindow(std::shared_ptr<Item> item) {
 	for (const Imbuement* imbuement : imbuements) {
 		addImbuementInfo(msg, imbuement->getID());
 
-		const auto &items = imbuement->getItems();
+		const auto items = imbuement->getItems();
 		for (const auto &itm : items) {
 			if (!needItems.count(itm.first)) {
 				needItems[itm.first] = player->getItemTypeCount(itm.first);
@@ -8418,10 +8418,10 @@ void ProtocolGame::sendMonsterPodiumWindow(std::shared_ptr<Item> podium, const P
 	bool isBossPodium = podium->getID() == ITEM_PODIUM_OF_VIGOUR;
 	msg.addByte(isBossPodium ? 0x01 : 0x00); // Bosstiary or bestiary
 	if (isBossPodium) {
-		const auto &unlockedBosses = g_ioBosstiary().getBosstiaryFinished(player, 2);
+		const auto unlockedBosses = g_ioBosstiary().getBosstiaryFinished(player, 2);
 		sendPodiumDetails(msg, unlockedBosses, true);
 	} else {
-		const auto &unlockedMonsters = g_iobestiary().getBestiaryFinished(player);
+		const auto unlockedMonsters = g_iobestiary().getBestiaryFinished(player);
 		sendPodiumDetails(msg, unlockedMonsters, false);
 	}
 

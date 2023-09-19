@@ -222,7 +222,7 @@ int MonsterFunctions::luaMonsterGetFriendList(lua_State* L) {
 		return 1;
 	}
 
-	const auto &friendList = monster->getFriendList();
+	const auto friendList = monster->getFriendList();
 	lua_createtable(L, friendList.size(), 0);
 
 	int index = 0;
@@ -281,7 +281,7 @@ int MonsterFunctions::luaMonsterGetTargetList(lua_State* L) {
 		return 1;
 	}
 
-	const auto &targetList = monster->getTargetList();
+	const auto targetList = monster->getTargetList();
 	lua_createtable(L, targetList.size(), 0);
 
 	int index = 0;

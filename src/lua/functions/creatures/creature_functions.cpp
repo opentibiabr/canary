@@ -49,7 +49,7 @@ int CreatureFunctions::luaCreatureGetEvents(lua_State* L) {
 	}
 
 	CreatureEventType_t eventType = getNumber<CreatureEventType_t>(L, 2);
-	const auto &eventList = creature->getCreatureEvents(eventType);
+	const auto eventList = creature->getCreatureEvents(eventType);
 	lua_createtable(L, static_cast<int>(eventList.size()), 0);
 
 	int index = 0;
@@ -971,7 +971,7 @@ int CreatureFunctions::luaCreatureGetZones(lua_State* L) {
 		return 1;
 	}
 
-	const auto &zones = creature->getZones();
+	const auto zones = creature->getZones();
 	lua_createtable(L, static_cast<int>(zones.size()), 0);
 	int index = 0;
 	for (auto zone : zones) {

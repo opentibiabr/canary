@@ -14,13 +14,17 @@
 #include "game/scheduling/scheduler.hpp"
 
 void Decay::startDecay(std::shared_ptr<Item> item) {
-	if (!item || !item->canDecay() || item->getDecaying() == DECAYING_TRUE) {
+	if (!item) {
 		return;
 	}
 
 	const auto decayState = item->getDecaying();
 	if (decayState == DECAYING_STOPPING || (!item->canDecay() && decayState == DECAYING_TRUE)) {
 		stopDecay(item);
+		return;
+	}
+
+	if (!item->canDecay() || decayState == DECAYING_TRUE) {
 		return;
 	}
 
@@ -52,6 +56,7 @@ void Decay::startDecay(std::shared_ptr<Item> item) {
 }
 
 void Decay::stopDecay(std::shared_ptr<Item> item) {
+	g_logger().debug("[Decay::stopDecay] - Stopping decay for item id: {}", item->getID());
 	if (!item->hasAttribute(ItemAttribute_t::DECAYSTATE)) {
 		return;
 	}

@@ -945,7 +945,7 @@ bool Game::removeCreature(std::shared_ptr<Creature> creature, bool isLogout /* =
 
 	removeCreatureCheck(creature);
 
-	for (auto &[_, summon] : creature->m_summons) {
+	for (const auto &summon : creature->m_summons) {
 		summon->setSkillLoss(false);
 		removeCreature(summon);
 	}

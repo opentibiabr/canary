@@ -859,7 +859,7 @@ int CreatureFunctions::luaCreatureGetSummons(lua_State* L) {
 	lua_createtable(L, creature->getSummonCount(), 0);
 
 	int index = 0;
-	for (auto &[_, summon] : creature->getSummons()) {
+	for (const auto &summon : creature->getSummons()) {
 		if (summon) {
 			pushUserdata<Creature>(L, summon);
 			setCreatureMetatable(L, -1, summon);

@@ -26,7 +26,7 @@ Creature::Creature() {
 }
 
 Creature::~Creature() {
-	for (auto &[_, summon] : m_summons) {
+	for (const auto &summon : m_summons) {
 		summon->setAttackedCreature(nullptr);
 		summon->removeMaster();
 	}
@@ -425,7 +425,7 @@ void Creature::onAttackedCreatureChangeZone(ZoneType_t zone) {
 void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 	if (hasSummons()) {
 		std::vector<std::shared_ptr<Creature>> despawnMonsterList;
-		for (auto &[_, summon] : getSummons()) {
+		for (const auto &summon : getSummons()) {
 			const Position &pos = summon->getPosition();
 			std::shared_ptr<Monster> monster = summon->getMonster();
 			auto tile = getTile();
@@ -945,7 +945,7 @@ bool Creature::setAttackedCreature(std::shared_ptr<Creature> creature) {
 		m_attackedCreature.reset();
 	}
 
-	for (auto &[_, summon] : m_summons) {
+	for (const auto &summon : m_summons) {
 		summon->setAttackedCreature(creature);
 	}
 	return true;
@@ -1223,25 +1223,23 @@ bool Creature::setMaster(std::shared_ptr<Creature> newMaster, bool reloadCreatur
 	if (!newMaster && !oldMaster) {
 		return false;
 	}
+	const auto &self = getCreature();
 
 	// Reloading summon icon/knownCreature and reset informations (follow/dropLoot/skillLoss)
 	if (reloadCreature) {
 		setFollowCreature(nullptr);
 		setDropLoot(false);
 		setSkillLoss(false);
-		g_game().reloadCreature(static_self_cast<Creature>());
+		g_game().reloadCreature(self);
 	}
 	if (newMaster) {
-		newMaster->m_summons.try_emplace(getID(), static_self_cast<Creature>());
+		newMaster->m_summons.insert(self);
 	}
 
 	m_master = newMaster;
 
 	if (oldMaster) {
-		auto summon = oldMaster->getSummon(getID());
-		if (summon) {
-			oldMaster->removeSummon(summon);
-		}
+		oldMaster->m_summons.erase(self);
 	}
 	return true;
 }

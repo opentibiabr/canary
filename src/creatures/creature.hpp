@@ -331,21 +331,8 @@ public:
 		return m_master.lock();
 	}
 
-	const phmap::flat_hash_map<uint32_t, std::shared_ptr<Creature>> &getSummons() const {
+	const phmap::flat_hash_set<std::shared_ptr<Creature>> &getSummons() const {
 		return m_summons;
-	}
-
-	std::shared_ptr<Creature> getSummon(uint32_t creatureId) {
-		if (m_summons.contains(creatureId)) {
-			return m_summons.at(creatureId);
-		}
-		return nullptr;
-	}
-
-	void removeSummon(const std::shared_ptr<Creature> &summon) {
-		if (summon) {
-			m_summons.erase(summon->getID());
-		}
 	}
 
 	virtual int32_t getArmor() const {
@@ -668,7 +655,7 @@ protected:
 
 	CountMap damageMap;
 
-	phmap::flat_hash_map<uint32_t, std::shared_ptr<Creature>> m_summons;
+	phmap::flat_hash_set<std::shared_ptr<Creature>> m_summons;
 	CreatureEventList eventsList;
 	ConditionList conditions;
 

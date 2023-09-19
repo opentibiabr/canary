@@ -95,7 +95,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		SpectatorHashSet spectators;
 		g_game().map.getSpectators(spectators, monster->getPosition(), true);
 		for (auto spectator : spectators) {
-			if (const auto &tmpPlayer = spectator->getPlayer()) {
+			if (auto tmpPlayer = spectator->getPlayer()) {
 				tmpPlayer->sendCreatureReload(monster);
 			}
 		}

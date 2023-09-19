@@ -15,7 +15,7 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 
-Party::Party(const std::shared_ptr<Player> &initLeader) :
+Party::Party(std::shared_ptr<Player> initLeader) :
 	m_leader(initLeader) {
 	initLeader->setParty(this);
 	if (g_configManager().getBoolean(PARTY_AUTO_SHARE_EXPERIENCE)) {
@@ -76,7 +76,7 @@ void Party::disband() {
 	membersData.clear();
 }
 
-bool Party::leaveParty(const std::shared_ptr<Player> &player) {
+bool Party::leaveParty(std::shared_ptr<Player> player) {
 	if (!player) {
 		return false;
 	}
@@ -162,7 +162,7 @@ bool Party::leaveParty(const std::shared_ptr<Player> &player) {
 	return true;
 }
 
-bool Party::passPartyLeadership(const std::shared_ptr<Player> &player) {
+bool Party::passPartyLeadership(std::shared_ptr<Player> player) {
 	auto leader = getLeader();
 	if (!leader || !player || leader == player || player->getParty() != this) {
 		return false;
@@ -415,7 +415,7 @@ const char* Party::getSharedExpReturnMessage(SharedExpStatus_t value) {
 	}
 }
 
-bool Party::setSharedExperience(const std::shared_ptr<Player> &player, bool newSharedExpActive, bool silent /*= false*/) {
+bool Party::setSharedExperience(std::shared_ptr<Player> player, bool newSharedExpActive, bool silent /*= false*/) {
 	auto leader = getLeader();
 	if (!player || leader != player) {
 		return false;
@@ -459,11 +459,11 @@ void Party::shareExperience(uint64_t experience, std::shared_ptr<Creature> targe
 	leader->onGainSharedExperience(shareExperience, target);
 }
 
-bool Party::canUseSharedExperience(const std::shared_ptr<Player> &player) {
+bool Party::canUseSharedExperience(std::shared_ptr<Player> player) {
 	return getMemberSharedExperienceStatus(player) == SHAREDEXP_OK;
 }
 
-SharedExpStatus_t Party::getMemberSharedExperienceStatus(const std::shared_ptr<Player> &player) {
+SharedExpStatus_t Party::getMemberSharedExperienceStatus(std::shared_ptr<Player> player) {
 	auto leader = getLeader();
 	if (!leader) {
 		return SHAREDEXP_EMPTYPARTY;
@@ -527,7 +527,7 @@ uint32_t Party::getMaxLevel() {
 	return static_cast<uint32_t>(std::floor((static_cast<float>(getLowestLevel()) * 3) / 2));
 }
 
-bool Party::isPlayerActive(const std::shared_ptr<Player> &player) {
+bool Party::isPlayerActive(std::shared_ptr<Player> player) {
 	auto it = ticksMap.find(player->getID());
 	if (it == ticksMap.end()) {
 		return false;
@@ -556,14 +556,14 @@ SharedExpStatus_t Party::getSharedExperienceStatus() {
 	return SHAREDEXP_OK;
 }
 
-void Party::updatePlayerTicks(const std::shared_ptr<Player> &player, uint32_t points) {
+void Party::updatePlayerTicks(std::shared_ptr<Player> player, uint32_t points) {
 	if (points != 0 && !player->hasFlag(PlayerFlags_t::NotGainInFight)) {
 		ticksMap[player->getID()] = OTSYS_TIME();
 		updateSharedExperience();
 	}
 }
 
-void Party::clearPlayerPoints(const std::shared_ptr<Player> &player) {
+void Party::clearPlayerPoints(std::shared_ptr<Player> player) {
 	auto it = ticksMap.find(player->getID());
 	if (it != ticksMap.end()) {
 		ticksMap.erase(it);
@@ -577,13 +577,13 @@ bool Party::canOpenCorpse(uint32_t ownerId) const {
 		return false;
 	}
 
-	if (const auto &player = g_game().getPlayerByID(ownerId)) {
+	if (std::shared_ptr<Player> player = g_game().getPlayerByID(ownerId)) {
 		return leader->getID() == ownerId || player->getParty() == this;
 	}
 	return false;
 }
 
-void Party::showPlayerStatus(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &member, bool showStatus) {
+void Party::showPlayerStatus(std::shared_ptr<Player> player, std::shared_ptr<Player> member, bool showStatus) {
 	player->sendPartyCreatureShowStatus(member, showStatus);
 	member->sendPartyCreatureShowStatus(player, showStatus);
 	if (showStatus) {
@@ -609,7 +609,7 @@ void Party::showPlayerStatus(const std::shared_ptr<Player> &player, const std::s
 	}
 }
 
-void Party::updatePlayerStatus(const std::shared_ptr<Player> &player) {
+void Party::updatePlayerStatus(std::shared_ptr<Player> player) {
 	auto leader = getLeader();
 	if (!leader) {
 		return;
@@ -632,7 +632,7 @@ void Party::updatePlayerStatus(const std::shared_ptr<Player> &player) {
 	}
 }
 
-void Party::updatePlayerStatus(const std::shared_ptr<Player> &player, const Position &oldPos, const Position &newPos) {
+void Party::updatePlayerStatus(std::shared_ptr<Player> player, const Position &oldPos, const Position &newPos) {
 	auto leader = getLeader();
 	if (!leader) {
 		return;
@@ -660,7 +660,7 @@ void Party::updatePlayerStatus(const std::shared_ptr<Player> &player, const Posi
 	}
 }
 
-void Party::updatePlayerHealth(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> target, uint8_t healthPercent) {
+void Party::updatePlayerHealth(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, uint8_t healthPercent) {
 	auto leader = getLeader();
 	if (!leader) {
 		return;
@@ -682,7 +682,7 @@ void Party::updatePlayerHealth(const std::shared_ptr<Player> &player, std::share
 	}
 }
 
-void Party::updatePlayerMana(const std::shared_ptr<Player> &player, uint8_t manaPercent) {
+void Party::updatePlayerMana(std::shared_ptr<Player> player, uint8_t manaPercent) {
 	auto leader = getLeader();
 	if (!leader) {
 		return;
@@ -701,7 +701,7 @@ void Party::updatePlayerMana(const std::shared_ptr<Player> &player, uint8_t mana
 	}
 }
 
-void Party::updatePlayerVocation(const std::shared_ptr<Player> &player) {
+void Party::updatePlayerVocation(std::shared_ptr<Player> player) {
 	auto leader = getLeader();
 	if (!leader) {
 		return;
@@ -733,7 +733,7 @@ void Party::updateTrackerAnalyzer() {
 	leader->updatePartyTrackerAnalyzer();
 }
 
-void Party::addPlayerLoot(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item) {
+void Party::addPlayerLoot(std::shared_ptr<Player> player, std::shared_ptr<Item> item) {
 	auto leader = getLeader();
 	if (!leader) {
 		return;
@@ -761,7 +761,7 @@ void Party::addPlayerLoot(const std::shared_ptr<Player> &player, std::shared_ptr
 	updateTrackerAnalyzer();
 }
 
-void Party::addPlayerSupply(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item) {
+void Party::addPlayerSupply(std::shared_ptr<Player> player, std::shared_ptr<Item> item) {
 	auto leader = getLeader();
 	if (!leader) {
 		return;
@@ -788,7 +788,7 @@ void Party::addPlayerSupply(const std::shared_ptr<Player> &player, std::shared_p
 	updateTrackerAnalyzer();
 }
 
-void Party::addPlayerDamage(const std::shared_ptr<Player> &player, uint64_t amount) {
+void Party::addPlayerDamage(std::shared_ptr<Player> player, uint64_t amount) {
 	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
 		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
@@ -799,7 +799,7 @@ void Party::addPlayerDamage(const std::shared_ptr<Player> &player, uint64_t amou
 	updateTrackerAnalyzer();
 }
 
-void Party::addPlayerHealing(const std::shared_ptr<Player> &player, uint64_t amount) {
+void Party::addPlayerHealing(std::shared_ptr<Player> player, uint64_t amount) {
 	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
 		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());

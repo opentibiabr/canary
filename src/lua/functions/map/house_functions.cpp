@@ -131,8 +131,8 @@ int HouseFunctions::luaHouseSetOwnerGuid(lua_State* L) {
 int HouseFunctions::luaHouseStartTrade(lua_State* L) {
 	// house:startTrade(player, tradePartner)
 	House* house = getUserdata<House>(L, 1);
-	const auto &player = getUserdataShared<Player>(L, 2);
-	const auto &tradePartner = getUserdataShared<Player>(L, 3);
+	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 2);
+	std::shared_ptr<Player> tradePartner = getUserdataShared<Player>(L, 3);
 
 	if (!player || !tradePartner || !house) {
 		lua_pushnil(L);
@@ -318,7 +318,7 @@ int HouseFunctions::luaHouseCanEditAccessList(lua_State* L) {
 	}
 
 	uint32_t listId = getNumber<uint32_t>(L, 2);
-	const auto &player = getPlayer(L, 3);
+	std::shared_ptr<Player> player = getPlayer(L, 3);
 
 	pushBoolean(L, house->canEditAccessList(listId, player));
 	return 1;
@@ -377,7 +377,7 @@ int HouseFunctions::luaHouseIsInvited(lua_State* L) {
 		return 1;
 	}
 
-	const auto &player = getPlayer(L, 2);
+	std::shared_ptr<Player> player = getPlayer(L, 2);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;

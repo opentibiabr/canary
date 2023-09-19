@@ -44,7 +44,7 @@ public:
 
 	std::shared_ptr<InstantSpell> getInstantSpellById(uint16_t spellId);
 
-	TalkActionResult_t playerSaySpell(const std::shared_ptr<Player> &player, std::string &words);
+	TalkActionResult_t playerSaySpell(std::shared_ptr<Player> player, std::string &words);
 
 	static Position getCasterPosition(std::shared_ptr<Creature> creature, Direction dir);
 
@@ -73,7 +73,7 @@ private:
 
 constexpr auto g_spells = Spells::getInstance;
 
-using RuneSpellFunction = std::function<bool(const std::shared_ptr<RuneSpell> spell, const std::shared_ptr<Player> &player, const Position &posTo)>;
+using RuneSpellFunction = std::function<bool(const std::shared_ptr<RuneSpell> spell, std::shared_ptr<Player> player, const Position &posTo)>;
 
 class BaseSpell {
 public:
@@ -135,14 +135,14 @@ public:
 		spellId = id;
 	}
 
-	void postCastSpell(const std::shared_ptr<Player> &player, bool finishedCast = true, bool payCost = true) const;
-	static void postCastSpell(const std::shared_ptr<Player> &player, uint32_t manaCost, uint32_t soulCost);
+	void postCastSpell(std::shared_ptr<Player> player, bool finishedCast = true, bool payCost = true) const;
+	static void postCastSpell(std::shared_ptr<Player> player, uint32_t manaCost, uint32_t soulCost);
 	[[nodiscard]] virtual bool isInstant() const = 0;
 	[[nodiscard]] bool isLearnable() const {
 		return learnable;
 	}
 
-	uint32_t getManaCost(const std::shared_ptr<Player> &player) const;
+	uint32_t getManaCost(std::shared_ptr<Player> player) const;
 	[[nodiscard]] uint32_t getSoulCost() const {
 		return soul;
 	}
@@ -338,10 +338,10 @@ public:
 	}
 
 protected:
-	void applyCooldownConditions(const std::shared_ptr<Player> &player) const;
-	bool playerSpellCheck(const std::shared_ptr<Player> &player) const;
-	bool playerInstantSpellCheck(const std::shared_ptr<Player> &player, const Position &toPos) const;
-	bool playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Position &toPos);
+	void applyCooldownConditions(std::shared_ptr<Player> player) const;
+	bool playerSpellCheck(std::shared_ptr<Player> player) const;
+	bool playerInstantSpellCheck(std::shared_ptr<Player> player, const Position &toPos) const;
+	bool playerRuneSpellCheck(std::shared_ptr<Player> player, const Position &toPos);
 
 	VocSpellMap vocSpellMap;
 
@@ -388,7 +388,7 @@ class InstantSpell final : public Script, public Spell {
 public:
 	using Script::Script;
 
-	virtual bool playerCastInstant(const std::shared_ptr<Player> &player, std::string &param);
+	virtual bool playerCastInstant(std::shared_ptr<Player> player, std::string &param);
 
 	bool castSpell(std::shared_ptr<Creature> creature) override;
 	bool castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) override;
@@ -429,7 +429,7 @@ public:
 	void setBlockWalls(bool w) {
 		checkLineOfSight = w;
 	}
-	bool canCast(const std::shared_ptr<Player> &player) const;
+	bool canCast(std::shared_ptr<Player> player) const;
 	bool canThrowSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) const;
 
 private:
@@ -448,15 +448,15 @@ class RuneSpell final : public Action, public Spell {
 public:
 	using Action::Action;
 
-	ReturnValue canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos) override;
+	ReturnValue canExecuteAction(std::shared_ptr<Player> player, const Position &toPos) override;
 	bool hasOwnErrorHandler() override {
 		return true;
 	}
-	std::shared_ptr<Thing> getTarget(const std::shared_ptr<Player> &, std::shared_ptr<Creature> targetCreature, const Position &, uint8_t) const override {
+	std::shared_ptr<Thing> getTarget(std::shared_ptr<Player>, std::shared_ptr<Creature> targetCreature, const Position &, uint8_t) const override {
 		return targetCreature;
 	}
 
-	bool executeUse(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, const Position &fromPosition, std::shared_ptr<Thing> target, const Position &toPosition, bool isHotkey) override;
+	bool executeUse(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const Position &fromPosition, std::shared_ptr<Thing> target, const Position &toPosition, bool isHotkey) override;
 
 	bool castSpell(std::shared_ptr<Creature> creature) override;
 	bool castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) override;

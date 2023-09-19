@@ -117,7 +117,7 @@ public:
 	}
 
 	void setPlayerInteraction(uint32_t playerId, uint16_t topicId = 0);
-	void removePlayerInteraction(const std::shared_ptr<Player> &player);
+	void removePlayerInteraction(std::shared_ptr<Player> player);
 	void resetPlayerInteractions();
 
 	bool isInteractingWithPlayer(uint32_t playerId) {
@@ -140,11 +140,11 @@ public:
 	void onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport) override;
 	void onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text) override;
 	void onThink(uint32_t interval) override;
-	void onPlayerBuyItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, bool inBackpacks);
+	void onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, bool inBackpacks);
 	void onPlayerSellAllLoot(uint32_t playerId, uint16_t itemid, bool ignore, uint64_t totalPrice);
-	void onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore);
-	void onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, uint64_t &totalPrice, std::shared_ptr<Cylinder> parent = nullptr);
-	void onPlayerCheckItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count);
+	void onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore);
+	void onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, uint64_t &totalPrice, std::shared_ptr<Cylinder> parent = nullptr);
+	void onPlayerCheckItem(std::shared_ptr<Player> player, uint16_t itemid, uint8_t count);
 	void onPlayerCloseChannel(std::shared_ptr<Creature> creature);
 	void onPlacedCreature() override;
 
@@ -194,10 +194,10 @@ private:
 	friend class LuaScriptInterface;
 	friend class Map;
 
-	void onPlayerAppear(const std::shared_ptr<Player> &player);
-	void onPlayerDisappear(const std::shared_ptr<Player> &player);
+	void onPlayerAppear(std::shared_ptr<Player> player);
+	void onPlayerDisappear(std::shared_ptr<Player> player);
 	void manageIdle();
-	void handlePlayerMove(const std::shared_ptr<Player> &player, const Position &newPos);
+	void handlePlayerMove(std::shared_ptr<Player> player, const Position &newPos);
 	void loadPlayerSpectators();
 };
 

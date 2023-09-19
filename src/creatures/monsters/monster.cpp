@@ -386,7 +386,7 @@ void Monster::onCreatureEnter(std::shared_ptr<Creature> creature) {
 
 bool Monster::isFriend(std::shared_ptr<Creature> creature) const {
 	if (isSummon() && getMaster()->getPlayer()) {
-		const auto &masterPlayer = getMaster()->getPlayer();
+		std::shared_ptr<Player> masterPlayer = getMaster()->getPlayer();
 		std::shared_ptr<Player> tmpPlayer = nullptr;
 
 		if (creature->getPlayer()) {
@@ -620,7 +620,7 @@ BlockType_t Monster::blockHit(std::shared_ptr<Creature> attacker, CombatType_t c
 		}
 
 		// Wheel of destiny
-		const auto &player = attacker ? attacker->getPlayer() : nullptr;
+		std::shared_ptr<Player> player = attacker ? attacker->getPlayer() : nullptr;
 		if (player && player->wheel()->getInstant("Ballistic Mastery")) {
 			elementMod -= player->wheel()->checkElementSensitiveReduction(combatType);
 		}
@@ -2048,7 +2048,7 @@ bool Monster::challengeCreature(std::shared_ptr<Creature> creature, int targetCh
 		challengeFocusDuration = targetChangeCooldown;
 		targetChangeTicks = 0;
 		// Wheel of destiny
-		const auto &player = creature ? creature->getPlayer() : nullptr;
+		std::shared_ptr<Player> player = creature ? creature->getPlayer() : nullptr;
 		if (player && !player->isRemoved()) {
 			player->wheel()->healIfBattleHealingActive();
 		}

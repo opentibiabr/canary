@@ -248,8 +248,8 @@ public:
 	static uint32_t AddItemField(std::shared_ptr<Item> item, std::shared_ptr<Item> tileItem, const Position &pos);
 	static uint32_t RemoveItemField(std::shared_ptr<Item> item, std::shared_ptr<Item> tileItem, const Position &pos);
 
-	static uint32_t EquipItem(const std::shared_ptr<MoveEvent> moveEvent, const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, Slots_t slot, bool boolean);
-	static uint32_t DeEquipItem(const std::shared_ptr<MoveEvent> moveEvent, const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, Slots_t slot, bool boolean);
+	static uint32_t EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool boolean);
+	static uint32_t DeEquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool boolean);
 
 private:
 	std::string getScriptTypeName() const override;

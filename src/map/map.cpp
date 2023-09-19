@@ -297,7 +297,7 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 
 	std::vector<int32_t> oldStackPosVector;
 	for (std::shared_ptr<Creature> spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (auto tmpPlayer = spectator->getPlayer()) {
 			if (tmpPlayer->canSeeCreature(creature)) {
 				oldStackPosVector.push_back(oldTile->getClientIndexOfCreature(tmpPlayer, creature));
 			} else {
@@ -338,7 +338,7 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	// send to client
 	size_t i = 0;
 	for (auto spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (auto tmpPlayer = spectator->getPlayer()) {
 			// Use the correct stackpos
 			int32_t stackpos = oldStackPosVector[i++];
 			if (stackpos != -1) {

@@ -213,7 +213,7 @@ int ModalWindowFunctions::luaModalWindowSetPriority(lua_State* L) {
 
 int ModalWindowFunctions::luaModalWindowSendToPlayer(lua_State* L) {
 	// modalWindow:sendToPlayer(player)
-	const auto &player = getPlayer(L, 2);
+	std::shared_ptr<Player> player = getPlayer(L, 2);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;

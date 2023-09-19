@@ -27,7 +27,7 @@ public:
 
 private:
 	void checkDecay();
-	void internalDecayItem(const std::shared_ptr<Item> &item);
+	void internalDecayItem(std::shared_ptr<Item> item);
 
 	uint32_t eventId { 0 };
 	// order is important, so we use an std::map

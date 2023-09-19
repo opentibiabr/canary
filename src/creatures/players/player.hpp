@@ -257,7 +257,7 @@ public:
 		guildRank = newGuildRank;
 	}
 
-	bool isGuildMate(const std::shared_ptr<Player> &player) const;
+	bool isGuildMate(std::shared_ptr<Player> player) const;
 
 	[[nodiscard]] const std::string &getGuildNick() const {
 		return guildNick;
@@ -266,7 +266,7 @@ public:
 		guildNick = nick;
 	}
 
-	bool isInWar(const std::shared_ptr<Player> &player) const;
+	bool isInWar(std::shared_ptr<Player> player) const;
 	bool isInWarList(uint32_t guild_id) const;
 
 	void setLastWalkthroughAttempt(int64_t walkthroughAttempt) {
@@ -383,17 +383,17 @@ public:
 
 	int32_t getReflectFlat(CombatType_t combat, bool useCharges = false) const override;
 
-	PartyShields_t getPartyShield(const std::shared_ptr<Player> &player);
-	bool isInviting(const std::shared_ptr<Player> &player) const;
-	bool isPartner(const std::shared_ptr<Player> &player) const;
-	void sendPlayerPartyIcons(const std::shared_ptr<Player> &player);
+	PartyShields_t getPartyShield(std::shared_ptr<Player> player);
+	bool isInviting(std::shared_ptr<Player> player) const;
+	bool isPartner(std::shared_ptr<Player> player) const;
+	void sendPlayerPartyIcons(std::shared_ptr<Player> player);
 	bool addPartyInvitation(Party* party);
 	void removePartyInvitation(Party* party);
 	void clearPartyInvitations();
 
 	void sendUnjustifiedPoints();
 
-	GuildEmblems_t getGuildEmblem(const std::shared_ptr<Player> &player) const;
+	GuildEmblems_t getGuildEmblem(std::shared_ptr<Player> player) const;
 
 	uint64_t getSpentMana() const {
 		return manaSpent;
@@ -787,7 +787,7 @@ public:
 	}
 
 	// V.I.P. functions
-	void notifyStatusChange(const std::shared_ptr<Player> &player, VipStatus_t status, bool message = true);
+	void notifyStatusChange(std::shared_ptr<Player> player, VipStatus_t status, bool message = true);
 	bool removeVIP(uint32_t vipGuid);
 	bool addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t status);
 	bool addVIPInternal(uint32_t vipGuid);
@@ -919,11 +919,11 @@ public:
 		skullTicks = ticks;
 	}
 
-	bool hasAttacked(const std::shared_ptr<Player> &attacked) const;
-	void addAttacked(const std::shared_ptr<Player> &attacked);
-	void removeAttacked(const std::shared_ptr<Player> &attacked);
+	bool hasAttacked(std::shared_ptr<Player> attacked) const;
+	void addAttacked(std::shared_ptr<Player> attacked);
+	void removeAttacked(std::shared_ptr<Player> attacked);
 	void clearAttacked();
-	void addUnjustifiedDead(const std::shared_ptr<Player> &attacked);
+	void addUnjustifiedDead(std::shared_ptr<Player> attacked);
 	void sendCreatureEmblem(std::shared_ptr<Creature> creature) const {
 		if (client) {
 			client->sendCreatureEmblem(creature);
@@ -952,7 +952,7 @@ public:
 
 	bool canLogout();
 
-	bool hasKilled(const std::shared_ptr<Player> &player) const;
+	bool hasKilled(std::shared_ptr<Player> player) const;
 
 	size_t getMaxVIPEntries() const;
 	size_t getMaxDepotItems() const;
@@ -1042,7 +1042,7 @@ public:
 			client->reloadCreature(creature);
 		}
 	}
-	void sendPrivateMessage(const std::shared_ptr<Player> &speaker, SpeakClasses type, const std::string &text) {
+	void sendPrivateMessage(std::shared_ptr<Player> speaker, SpeakClasses type, const std::string &text) {
 		if (client) {
 			client->sendPrivateMessage(speaker, type, text);
 		}
@@ -1277,7 +1277,7 @@ public:
 			client->sendPartyCreatureHealth(creature, healthPercent);
 		}
 	}
-	void sendPartyPlayerMana(const std::shared_ptr<Player> &player, uint8_t manaPercent) const {
+	void sendPartyPlayerMana(std::shared_ptr<Player> player, uint8_t manaPercent) const {
 		if (client) {
 			client->sendPartyPlayerMana(player, manaPercent);
 		}
@@ -1287,12 +1287,12 @@ public:
 			client->sendPartyCreatureShowStatus(creature, showStatus);
 		}
 	}
-	void sendPartyPlayerVocation(const std::shared_ptr<Player> &player) const {
+	void sendPartyPlayerVocation(std::shared_ptr<Player> player) const {
 		if (client) {
 			client->sendPartyPlayerVocation(player);
 		}
 	}
-	void sendPlayerVocation(const std::shared_ptr<Player> &player) const {
+	void sendPlayerVocation(std::shared_ptr<Player> player) const {
 		if (client) {
 			client->sendPlayerVocation(player);
 		}

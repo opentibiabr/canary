@@ -229,7 +229,7 @@ std::shared_ptr<Creature> Tile::getBottomCreature() const {
 std::shared_ptr<Creature> Tile::getTopVisibleCreature(std::shared_ptr<Creature> creature) const {
 	if (const CreatureVector* creatures = getCreatures()) {
 		if (creature) {
-			const auto &player = creature->getPlayer();
+			std::shared_ptr<Player> player = creature->getPlayer();
 			if (player && player->isAccessPlayer()) {
 				return getTopCreature();
 			}
@@ -242,7 +242,7 @@ std::shared_ptr<Creature> Tile::getTopVisibleCreature(std::shared_ptr<Creature> 
 		} else {
 			for (auto &tileCreature : *creatures) {
 				if (!tileCreature->isInvisible()) {
-					const auto &player = tileCreature->getPlayer();
+					std::shared_ptr<Player> player = tileCreature->getPlayer();
 					if (!player || !player->isInGhostMode()) {
 						return tileCreature;
 					}
@@ -256,7 +256,7 @@ std::shared_ptr<Creature> Tile::getTopVisibleCreature(std::shared_ptr<Creature> 
 std::shared_ptr<Creature> Tile::getBottomVisibleCreature(std::shared_ptr<Creature> creature) const {
 	if (const CreatureVector* creatures = getCreatures()) {
 		if (creature) {
-			const auto &player = creature->getPlayer();
+			std::shared_ptr<Player> player = creature->getPlayer();
 			if (player && player->isAccessPlayer()) {
 				return getBottomCreature();
 			}
@@ -269,7 +269,7 @@ std::shared_ptr<Creature> Tile::getBottomVisibleCreature(std::shared_ptr<Creatur
 		} else {
 			for (auto it = creatures->rbegin(), end = creatures->rend(); it != end; ++it) {
 				if (!(*it)->isInvisible()) {
-					const auto &player = (*it)->getPlayer();
+					std::shared_ptr<Player> player = (*it)->getPlayer();
 					if (!player || !player->isInGhostMode()) {
 						return *it;
 					}
@@ -357,7 +357,7 @@ void Tile::onAddTileItem(std::shared_ptr<Item> item) {
 
 	// send to client
 	for (std::shared_ptr<Creature> spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (std::shared_ptr<Player> tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendAddTileItem(static_self_cast<Tile>(), cylinderMapPos, item);
 		}
 	}
@@ -442,7 +442,7 @@ void Tile::onUpdateTileItem(std::shared_ptr<Item> oldItem, const ItemType &oldTy
 
 	// send to client
 	for (std::shared_ptr<Creature> spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (std::shared_ptr<Player> tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendUpdateTileItem(static_self_cast<Tile>(), cylinderMapPos, newItem);
 		}
 	}
@@ -475,7 +475,7 @@ void Tile::onRemoveTileItem(const SpectatorHashSet &spectators, const std::vecto
 	// send to client
 	size_t i = 0;
 	for (std::shared_ptr<Creature> spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (std::shared_ptr<Player> tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendRemoveTileThing(cylinderMapPos, oldStackPosVector[i++]);
 		}
 	}
@@ -636,7 +636,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 		}
 
 		const CreatureVector* creatures = getCreatures();
-		if (const auto &player = creature->getPlayer()) {
+		if (std::shared_ptr<Player> player = creature->getPlayer()) {
 			if (creatures && !creatures->empty() && !hasBitSet(FLAG_IGNOREBLOCKCREATURE, tileFlags) && !player->isAccessPlayer()) {
 				for (std::shared_ptr<Creature> tileCreature : *creatures) {
 					if (!player->canWalkthrough(tileCreature)) {
@@ -1185,7 +1185,7 @@ void Tile::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 		SpectatorHashSet spectators;
 		g_game().map.getSpectators(spectators, getPosition(), true);
 		for (std::shared_ptr<Creature> spectator : spectators) {
-			if (const auto &tmpPlayer = spectator->getPlayer()) {
+			if (std::shared_ptr<Player> tmpPlayer = spectator->getPlayer()) {
 				oldStackPosVector.push_back(getStackposOfItem(tmpPlayer, item));
 			}
 		}
@@ -1210,7 +1210,7 @@ void Tile::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 			SpectatorHashSet spectators;
 			g_game().map.getSpectators(spectators, getPosition(), true);
 			for (std::shared_ptr<Creature> spectator : spectators) {
-				if (const auto &tmpPlayer = spectator->getPlayer()) {
+				if (std::shared_ptr<Player> tmpPlayer = spectator->getPlayer()) {
 					oldStackPosVector.push_back(getStackposOfItem(tmpPlayer, item));
 				}
 			}
@@ -1279,7 +1279,7 @@ int32_t Tile::getThingIndex(std::shared_ptr<Thing> thing) const {
 	return -1;
 }
 
-int32_t Tile::getClientIndexOfCreature(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> creature) const {
+int32_t Tile::getClientIndexOfCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature) const {
 	int32_t n;
 	if (ground) {
 		n = 1;
@@ -1304,7 +1304,7 @@ int32_t Tile::getClientIndexOfCreature(const std::shared_ptr<Player> &player, st
 	return -1;
 }
 
-int32_t Tile::getStackposOfCreature(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> creature) const {
+int32_t Tile::getStackposOfCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature) const {
 	int32_t n;
 	if (ground) {
 		n = 1;
@@ -1334,7 +1334,7 @@ int32_t Tile::getStackposOfCreature(const std::shared_ptr<Player> &player, std::
 	return -1;
 }
 
-int32_t Tile::getStackposOfItem(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item) const {
+int32_t Tile::getStackposOfItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item) const {
 	int32_t n = 0;
 	if (ground) {
 		if (ground == item) {

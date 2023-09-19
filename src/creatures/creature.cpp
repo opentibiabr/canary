@@ -173,7 +173,7 @@ void Creature::onCreatureWalk() {
 		if (getNextStep(dir, flags)) {
 			ReturnValue ret = g_game().internalMoveCreature(static_self_cast<Creature>(), dir, flags);
 			if (ret != RETURNVALUE_NOERROR) {
-				if (const auto &player = getPlayer()) {
+				if (std::shared_ptr<Player> player = getPlayer()) {
 					player->sendCancelMessage(ret);
 					player->sendCancelWalk();
 				}
@@ -487,7 +487,7 @@ void Creature::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_pt
 			handleLostSummon(configTeleportSummons);
 		}
 
-		if (const auto &player = creature->getPlayer()) {
+		if (std::shared_ptr<Player> player = creature->getPlayer()) {
 			if (player->isExerciseTraining()) {
 				player->setTraining(false);
 			}
@@ -650,7 +650,7 @@ void Creature::onDeath() {
 
 			if (attacker != getCreature()) {
 				uint64_t gainExp = getGainedExperience(attacker);
-				if (const auto &attackerPlayer = attacker->getPlayer()) {
+				if (std::shared_ptr<Player> attackerPlayer = attacker->getPlayer()) {
 					attackerPlayer->removeAttacked(getPlayer());
 
 					Party* party = attackerPlayer->getParty();
@@ -739,7 +739,7 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 			corpse->startDecaying();
 			bool corpses = corpse->isRewardCorpse() || (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
 			if (corpse->getContainer() && mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
-				const auto &player = mostDamageCreature->getPlayer();
+				auto player = mostDamageCreature->getPlayer();
 				std::ostringstream lootMessage;
 				lootMessage << "Loot of " << getNameDescription() << ": " << corpse->getContainer()->getContentDescription(player->getProtocolVersion() < 1200);
 				auto suffix = corpse->getContainer()->getAttribute<std::string>(ItemAttribute_t::LOOTMESSAGE_SUFFIX);
@@ -1804,7 +1804,7 @@ void Creature::iconChanged() {
 			continue;
 		}
 
-		const auto &player = spectator->getPlayer();
+		auto player = spectator->getPlayer();
 		if (player) {
 			player->sendCreatureIcon(getCreature());
 		}

@@ -62,7 +62,7 @@ void HouseTile::updateHouse(std::shared_ptr<Item> item) {
 
 ReturnValue HouseTile::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t tileFlags, std::shared_ptr<Creature> actor /* = nullptr*/) {
 	if (std::shared_ptr<Creature> creature = thing->getCreature()) {
-		if (const auto &player = creature->getPlayer()) {
+		if (std::shared_ptr<Player> player = creature->getPlayer()) {
 			if (!house->isInvited(player)) {
 				return RETURNVALUE_PLAYERISNOTINVITED;
 			}
@@ -79,7 +79,7 @@ ReturnValue HouseTile::queryAdd(int32_t index, const std::shared_ptr<Thing> &thi
 			}
 		}
 	} else if (thing->getItem() && actor) {
-		const auto &actorPlayer = actor->getPlayer();
+		std::shared_ptr<Player> actorPlayer = actor->getPlayer();
 		if (house && (!house->isInvited(actorPlayer) || house->getHouseAccessLevel(actorPlayer) == HOUSE_GUEST) && g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
 			return RETURNVALUE_CANNOTTHROW;
 		}
@@ -89,7 +89,7 @@ ReturnValue HouseTile::queryAdd(int32_t index, const std::shared_ptr<Thing> &thi
 
 std::shared_ptr<Cylinder> HouseTile::queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item>* destItem, uint32_t &tileFlags) {
 	if (std::shared_ptr<Creature> creature = thing->getCreature()) {
-		if (const auto &player = creature->getPlayer()) {
+		if (std::shared_ptr<Player> player = creature->getPlayer()) {
 			if (!house->isInvited(player)) {
 				const Position &entryPos = house->getEntryPosition();
 				std::shared_ptr<Tile> destTile = g_game().map.getTile(entryPos);
@@ -121,7 +121,7 @@ ReturnValue HouseTile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t
 	}
 
 	if (actor && g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
-		const auto &actorPlayer = actor->getPlayer();
+		std::shared_ptr<Player> actorPlayer = actor->getPlayer();
 		if (house && !house->isInvited(actorPlayer)) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		} else if (house && house->getHouseAccessLevel(actorPlayer) == HOUSE_GUEST) {

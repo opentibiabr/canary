@@ -19,10 +19,7 @@
 Spells::Spells() = default;
 Spells::~Spells() = default;
 
-TalkActionResult_t Spells::playerSaySpell(const std::shared_ptr<Player> &player, std::string &words) {
-	if (!player) {
-		return TALKACTION_FAILED;
-	}
+TalkActionResult_t Spells::playerSaySpell(std::shared_ptr<Player> player, std::string &words) {
 	std::string str_words = words;
 
 	if (player->hasCondition(CONDITION_FEARED)) {
@@ -360,8 +357,8 @@ bool CombatSpell::executeCastSpell(std::shared_ptr<Creature> creature, const Lua
 	return getScriptInterface()->callFunction(2);
 }
 
-bool Spell::playerSpellCheck(const std::shared_ptr<Player> &player) const {
-	if (!player || player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
+bool Spell::playerSpellCheck(std::shared_ptr<Player> player) const {
+	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return false;
 	}
 
@@ -464,10 +461,7 @@ bool Spell::playerSpellCheck(const std::shared_ptr<Player> &player) const {
 	return true;
 }
 
-bool Spell::playerInstantSpellCheck(const std::shared_ptr<Player> &player, const Position &toPos) const {
-	if (!player) {
-		return false;
-	}
+bool Spell::playerInstantSpellCheck(std::shared_ptr<Player> player, const Position &toPos) const {
 	if (toPos.x == 0xFFFF) {
 		return true;
 	}
@@ -507,7 +501,7 @@ bool Spell::playerInstantSpellCheck(const std::shared_ptr<Player> &player, const
 	return true;
 }
 
-bool Spell::playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Position &toPos) {
+bool Spell::playerRuneSpellCheck(std::shared_ptr<Player> player, const Position &toPos) {
 	if (!playerSpellCheck(player)) {
 		return false;
 	}
@@ -565,7 +559,7 @@ bool Spell::playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Po
 	}
 
 	if (aggressive && needTarget && topVisibleCreature && player->hasSecureMode()) {
-		const auto &targetPlayer = topVisibleCreature->getPlayer();
+		const std::shared_ptr<Player> targetPlayer = topVisibleCreature->getPlayer();
 		if (targetPlayer && targetPlayer != player && player->getSkullClient(targetPlayer) == SKULL_NONE && !Combat::isInPvpZone(player, targetPlayer)) {
 			player->sendCancelMessage(RETURNVALUE_TURNSECUREMODETOATTACKUNMARKEDPLAYERS);
 			g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
@@ -612,10 +606,7 @@ void Spell::setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t gr
 	}
 }
 
-void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const {
-	if (!player) {
-		return;
-	}
+void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 	WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
 	bool isUpgraded = getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0;
 	auto rate_cooldown = (int32_t)g_configManager().getFloat(RATE_SPELL_COOLDOWN);
@@ -653,10 +644,7 @@ void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const
 	}
 }
 
-void Spell::postCastSpell(const std::shared_ptr<Player> &player, bool finishedCast /*= true*/, bool payCost /*= true*/) const {
-	if (!player) {
-		return;
-	}
+void Spell::postCastSpell(std::shared_ptr<Player> player, bool finishedCast /*= true*/, bool payCost /*= true*/) const {
 	if (finishedCast) {
 		if (!player->hasFlag(PlayerFlags_t::HasNoExhaustion)) {
 			applyCooldownConditions(player);
@@ -676,10 +664,7 @@ void Spell::postCastSpell(const std::shared_ptr<Player> &player, bool finishedCa
 	}
 }
 
-void Spell::postCastSpell(const std::shared_ptr<Player> &player, uint32_t manaCost, uint32_t soulCost) {
-	if (!player) {
-		return;
-	}
+void Spell::postCastSpell(std::shared_ptr<Player> player, uint32_t manaCost, uint32_t soulCost) {
 	if (manaCost > 0) {
 		player->addManaSpent(manaCost);
 		player->changeMana(-static_cast<int32_t>(manaCost));
@@ -692,10 +677,7 @@ void Spell::postCastSpell(const std::shared_ptr<Player> &player, uint32_t manaCo
 	}
 }
 
-uint32_t Spell::getManaCost(const std::shared_ptr<Player> &player) const {
-	if (!player) {
-		return 0;
-	}
+uint32_t Spell::getManaCost(std::shared_ptr<Player> player) const {
 	if (mana != 0) {
 		WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
 		if (getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0) {
@@ -725,7 +707,7 @@ uint32_t Spell::getManaCost(const std::shared_ptr<Player> &player) const {
 	return 0;
 }
 
-bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) {
+bool InstantSpell::playerCastInstant(std::shared_ptr<Player> player, std::string &param) {
 	if (!playerSpellCheck(player)) {
 		return false;
 	}
@@ -919,11 +901,7 @@ bool InstantSpell::executeCastSpell(std::shared_ptr<Creature> creature, const Lu
 	return getScriptInterface()->callFunction(2);
 }
 
-bool InstantSpell::canCast(const std::shared_ptr<Player> &player) const {
-	if (!player) {
-		return false;
-	}
-
+bool InstantSpell::canCast(std::shared_ptr<Player> player) const {
 	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return false;
 	}
@@ -945,10 +923,7 @@ bool InstantSpell::canCast(const std::shared_ptr<Player> &player) const {
 	return false;
 }
 
-ReturnValue RuneSpell::canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos) {
-	if (!player) {
-		return RETURNVALUE_NOTPOSSIBLE;
-	}
+ReturnValue RuneSpell::canExecuteAction(std::shared_ptr<Player> player, const Position &toPos) {
 	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return RETURNVALUE_CANNOTUSETHISOBJECT;
 	}
@@ -969,7 +944,7 @@ ReturnValue RuneSpell::canExecuteAction(const std::shared_ptr<Player> &player, c
 	return RETURNVALUE_NOERROR;
 }
 
-bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, const Position &, std::shared_ptr<Thing> target, const Position &toPosition, bool isHotkey) {
+bool RuneSpell::executeUse(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const Position &, std::shared_ptr<Thing> target, const Position &toPosition, bool isHotkey) {
 	if (!playerRuneSpellCheck(player, toPosition)) {
 		return false;
 	}

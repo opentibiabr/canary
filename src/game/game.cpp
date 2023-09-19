@@ -91,7 +91,7 @@ namespace InternalGame {
 		}
 	}
 
-	bool playerCanUseItemOnHouseTile(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item) {
+	bool playerCanUseItemOnHouseTile(std::shared_ptr<Player> player, std::shared_ptr<Item> item) {
 		if (!player || !item) {
 			return false;
 		}
@@ -124,7 +124,7 @@ namespace InternalGame {
 		return true;
 	}
 
-	bool playerCanUseItemWithOnHouseTile(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, const Position &toPos, int toStackPos, int toItemId) {
+	bool playerCanUseItemWithOnHouseTile(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const Position &toPos, int toStackPos, int toItemId) {
 		if (!player || !item) {
 			return false;
 		}
@@ -499,7 +499,7 @@ void Game::loadMap(const std::string &path, const Position &pos) {
 	map.loadMap(path, false, false, false, false, pos);
 }
 
-std::shared_ptr<Cylinder> Game::internalGetCylinder(const std::shared_ptr<Player> &player, const Position &pos) {
+std::shared_ptr<Cylinder> Game::internalGetCylinder(std::shared_ptr<Player> player, const Position &pos) {
 	if (pos.x != 0xFFFF) {
 		return map.getTile(pos);
 	}
@@ -514,7 +514,7 @@ std::shared_ptr<Cylinder> Game::internalGetCylinder(const std::shared_ptr<Player
 	return player;
 }
 
-std::shared_ptr<Thing> Game::internalGetThing(const std::shared_ptr<Player> &player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type) {
+std::shared_ptr<Thing> Game::internalGetThing(std::shared_ptr<Player> player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type) {
 	if (pos.x != 0xFFFF) {
 		std::shared_ptr<Tile> tile = map.getTile(pos);
 		if (!tile) {
@@ -661,7 +661,7 @@ void Game::internalGetPosition(std::shared_ptr<Item> item, Position &pos, uint8_
 
 	std::shared_ptr<Cylinder> topParent = item->getTopParent();
 	if (topParent) {
-		if (const auto &player = std::dynamic_pointer_cast<Player>(topParent)) {
+		if (std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(topParent)) {
 			pos.x = 0xFFFF;
 
 			std::shared_ptr<Container> container = std::dynamic_pointer_cast<Container>(item->getParent());
@@ -783,7 +783,7 @@ std::shared_ptr<Player> Game::getPlayerByName(const std::string &s, bool loadTmp
 		if (!loadTmp) {
 			return nullptr;
 		}
-		const auto &tmpPlayer = std::make_shared<Player>(nullptr);
+		std::shared_ptr<Player> tmpPlayer = std::make_shared<Player>(nullptr);
 		if (!IOLoginData::loadPlayerByName(tmpPlayer, s)) {
 
 			return nullptr;
@@ -794,7 +794,7 @@ std::shared_ptr<Player> Game::getPlayerByName(const std::string &s, bool loadTmp
 	return it->second.lock();
 }
 
-std::shared_ptr<Player> Game::getPlayerByGUID(const uint32_t &guid, bool loadTmp /* = false */) {
+std::shared_ptr<Player> Game::getPlayerByGUID(const uint32_t &guid) {
 	if (guid == 0) {
 		return nullptr;
 	}
@@ -803,16 +803,7 @@ std::shared_ptr<Player> Game::getPlayerByGUID(const uint32_t &guid, bool loadTmp
 			return it.second;
 		}
 	}
-	if (!loadTmp) {
-		return nullptr;
-	}
-
-	const auto &tmpPlayer = std::make_shared<Player>(nullptr);
-	if (!IOLoginData::loadPlayerById(tmpPlayer, guid)) {
-		return nullptr;
-	}
-	tmpPlayer->setOnline(false);
-	return tmpPlayer;
+	return nullptr;
 }
 
 ReturnValue Game::getPlayerByNameWildcard(const std::string &s, std::shared_ptr<Player> &player) {
@@ -883,7 +874,7 @@ bool Game::placeCreature(std::shared_ptr<Creature> creature, const Position &pos
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true);
 	for (std::shared_ptr<Creature> spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (std::shared_ptr<Player> tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendCreatureAppear(creature, creature->getPosition(), true);
 			hasPlayerSpectators = true;
 		}
@@ -911,7 +902,7 @@ bool Game::removeCreature(std::shared_ptr<Creature> creature, bool isLogout /* =
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, tile->getPosition(), true);
 	for (auto spectator : spectators) {
-		if (const auto &player = spectator->getPlayer()) {
+		if (auto player = spectator->getPlayer()) {
 			oldStackPosVector.push_back(player->canSeeCreature(creature) ? tile->getStackposOfCreature(player, creature) : -1);
 		}
 	}
@@ -923,7 +914,7 @@ bool Game::removeCreature(std::shared_ptr<Creature> creature, bool isLogout /* =
 	// send to client
 	size_t i = 0;
 	for (auto spectator : spectators) {
-		if (const auto &player = spectator->getPlayer()) {
+		if (auto player = spectator->getPlayer()) {
 			player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
 		}
 	}
@@ -951,7 +942,7 @@ bool Game::removeCreature(std::shared_ptr<Creature> creature, bool isLogout /* =
 	}
 
 	if (creature->getPlayer() && isLogout) {
-		const auto &it = teamFinderMap.find(creature->getPlayer()->getGUID());
+		auto it = teamFinderMap.find(creature->getPlayer()->getGUID());
 		if (it != teamFinderMap.end()) {
 			teamFinderMap.erase(it);
 		}
@@ -969,7 +960,7 @@ void Game::executeDeath(uint32_t creatureId) {
 }
 
 void Game::playerTeleport(uint32_t playerId, const Position &newPosition) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || !player->hasFlag(PlayerFlags_t::CanMapClickTeleport)) {
 		return;
 	}
@@ -980,7 +971,7 @@ void Game::playerTeleport(uint32_t playerId, const Position &newPosition) {
 	}
 }
 
-void Game::playerInspectItem(const std::shared_ptr<Player> &player, const Position &pos) {
+void Game::playerInspectItem(std::shared_ptr<Player> player, const Position &pos) {
 	std::shared_ptr<Thing> thing = internalGetThing(player, pos, 0, 0, STACKPOS_TOPDOWN_ITEM);
 	if (!thing) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
@@ -996,7 +987,7 @@ void Game::playerInspectItem(const std::shared_ptr<Player> &player, const Positi
 	player->sendItemInspection(item->getID(), static_cast<uint8_t>(item->getItemCount()), item, false);
 }
 
-void Game::playerInspectItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t itemCount, bool cyclopedia) {
+void Game::playerInspectItem(std::shared_ptr<Player> player, uint16_t itemId, uint8_t itemCount, bool cyclopedia) {
 	player->sendItemInspection(itemId, itemCount, nullptr, cyclopedia);
 }
 
@@ -1050,7 +1041,7 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 }
 
 void Game::playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -1112,7 +1103,7 @@ void Game::playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t 
 }
 
 void Game::playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, const Position &movingCreatureOrigPos, const Position &toPos) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -1131,7 +1122,7 @@ void Game::playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, 
 	playerMoveCreature(player, movingCreature, movingCreatureOrigPos, toTile);
 }
 
-void Game::playerMoveCreature(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> movingCreature, const Position &movingCreatureOrigPos, std::shared_ptr<Tile> toTile) {
+void Game::playerMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> movingCreature, const Position &movingCreatureOrigPos, std::shared_ptr<Tile> toTile) {
 	if (!player->canDoAction()) {
 		uint32_t delay = 600;
 		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerMoveCreatureByID, this, player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()), "Game::playerMoveCreatureByID");
@@ -1228,7 +1219,7 @@ ReturnValue Game::internalMoveCreature(std::shared_ptr<Creature> creature, Direc
 	creature->setLastPosition(creature->getPosition());
 	const Position &currentPos = creature->getPosition();
 	Position destPos = getNextPosition(direction, currentPos);
-	const auto &player = creature->getPlayer();
+	std::shared_ptr<Player> player = creature->getPlayer();
 
 	bool diagonalMovement = (direction & DIRECTION_DIAGONAL_MASK) != 0;
 	if (player && !diagonalMovement) {
@@ -1338,14 +1329,14 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 }
 
 void Game::playerMoveItemByPlayerID(uint32_t playerId, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 	playerMoveItem(player, fromPos, itemId, fromStackPos, toPos, count, nullptr, nullptr);
 }
 
-void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, std::shared_ptr<Item> item, std::shared_ptr<Cylinder> toCylinder) {
+void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, std::shared_ptr<Item> item, std::shared_ptr<Cylinder> toCylinder) {
 	if (!player->canDoAction()) {
 		uint32_t delay = player->getNextActionTime();
 		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerMoveItemByPlayerID, this, player->getID(), fromPos, itemId, fromStackPos, toPos, count), "Game::playerMoveItemByPlayerID");
@@ -1565,7 +1556,7 @@ bool Game::isTryingToStow(const Position &toPos, std::shared_ptr<Cylinder> toCyl
 	return toCylinder->getContainer() && toCylinder->getItem()->getID() == ITEM_LOCKER && toPos.getZ() == ITEM_SUPPLY_STASH_INDEX;
 }
 
-ReturnValue Game::checkMoveItemToCylinder(const std::shared_ptr<Player> &player, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder, std::shared_ptr<Item> item, Position toPos) {
+ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder, std::shared_ptr<Item> item, Position toPos) {
 	if (!player || !toCylinder || !item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -1871,7 +1862,7 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 
 	auto fromContainer = fromCylinder ? fromCylinder->getContainer() : nullptr;
 	auto toContainer = toCylinder ? toCylinder->getContainer() : nullptr;
-	const auto &player = actor ? actor->getPlayer() : nullptr;
+	auto player = actor ? actor->getPlayer() : nullptr;
 	if (player) {
 		// Update containers
 		player->onSendContainer(toContainer);
@@ -1884,7 +1875,7 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 			return ret;
 		}
 
-		if (const auto &player = actor->getPlayer()) {
+		if (std::shared_ptr<Player> player = actor->getPlayer()) {
 			// Refresh depot search window if necessary
 			if (player->isDepotSearchOpenOnItem(item->getID()) && ((fromCylinder->getItem() && fromCylinder->getItem()->isInsideDepot(true)) || (toCylinder->getItem() && toCylinder->getItem()->isInsideDepot(true)))) {
 				player->requestDepotSearchItem(item->getID(), item->getTier());
@@ -2055,7 +2046,7 @@ ReturnValue Game::internalRemoveItem(std::shared_ptr<Item> item, int32_t count /
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Game::internalPlayerAddItem(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, bool dropOnMap /*= true*/, Slots_t slot /*= CONST_SLOT_WHEREEVER*/) {
+ReturnValue Game::internalPlayerAddItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, bool dropOnMap /*= true*/, Slots_t slot /*= CONST_SLOT_WHEREEVER*/) {
 	uint32_t remainderCount = 0;
 	ReturnValue ret = internalAddItem(player, item, static_cast<int32_t>(slot), 0, false, remainderCount);
 	if (remainderCount != 0) {
@@ -2172,7 +2163,7 @@ bool Game::removeMoney(std::shared_ptr<Cylinder> cylinder, uint64_t money, uint3
 		}
 	}
 
-	const auto &player = useBalance ? std::dynamic_pointer_cast<Player>(cylinder) : nullptr;
+	std::shared_ptr<Player> player = useBalance ? std::dynamic_pointer_cast<Player>(cylinder) : nullptr;
 	uint64_t balance = 0;
 	if (useBalance && player) {
 		balance = player->getBankBalance();
@@ -2414,7 +2405,7 @@ ReturnValue Game::internalTeleport(std::shared_ptr<Thing> thing, const Position 
 	return RETURNVALUE_NOTPOSSIBLE;
 }
 
-void Game::internalQuickLootCorpse(const std::shared_ptr<Player> &player, std::shared_ptr<Container> corpse) {
+void Game::internalQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr<Container> corpse) {
 	if (!player || !corpse) {
 		return;
 	}
@@ -2557,7 +2548,7 @@ void Game::internalQuickLootCorpse(const std::shared_ptr<Player> &player, std::s
 	player->lastQuickLootNotification = OTSYS_TIME();
 }
 
-std::shared_ptr<Container> Game::findLootContainer(const std::shared_ptr<Player> &player, bool &fallbackConsumed, ObjectCategory_t category) {
+std::shared_ptr<Container> Game::findLootContainer(std::shared_ptr<Player> player, bool &fallbackConsumed, ObjectCategory_t category) {
 	auto lootContainer = player->getLootContainer(category);
 	if (!lootContainer && player->quickLootFallbackToMainContainer && !fallbackConsumed) {
 		auto fallbackItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
@@ -2598,7 +2589,7 @@ std::shared_ptr<Container> Game::findNextAvailableContainer(ContainerIterator &c
 	return nullptr;
 }
 
-bool Game::handleFallbackLogic(const std::shared_ptr<Player> &player, std::shared_ptr<Container> &lootContainer, ContainerIterator &containerIterator, const bool &fallbackConsumed) {
+bool Game::handleFallbackLogic(std::shared_ptr<Player> player, std::shared_ptr<Container> &lootContainer, ContainerIterator &containerIterator, const bool &fallbackConsumed) {
 	if (fallbackConsumed || !player->quickLootFallbackToMainContainer) {
 		return false;
 	}
@@ -2614,7 +2605,7 @@ bool Game::handleFallbackLogic(const std::shared_ptr<Player> &player, std::share
 	return true;
 }
 
-ReturnValue Game::processMoveOrAddItemToLootContainer(std::shared_ptr<Item> item, std::shared_ptr<Container> lootContainer, uint32_t &remainderCount, const std::shared_ptr<Player> &player) {
+ReturnValue Game::processMoveOrAddItemToLootContainer(std::shared_ptr<Item> item, std::shared_ptr<Container> lootContainer, uint32_t &remainderCount, std::shared_ptr<Player> player) {
 	std::shared_ptr<Item> moveItem = nullptr;
 	ReturnValue ret;
 	if (item->getParent()) {
@@ -2628,7 +2619,7 @@ ReturnValue Game::processMoveOrAddItemToLootContainer(std::shared_ptr<Item> item
 	return ret;
 }
 
-ReturnValue Game::processLootItems(const std::shared_ptr<Player> &player, std::shared_ptr<Container> lootContainer, std::shared_ptr<Item> item, bool &fallbackConsumed) {
+ReturnValue Game::processLootItems(std::shared_ptr<Player> player, std::shared_ptr<Container> lootContainer, std::shared_ptr<Item> item, bool &fallbackConsumed) {
 	std::shared_ptr<Container> lastSubContainer = nullptr;
 	uint32_t remainderCount = item->getItemCount();
 	ContainerIterator containerIterator = lootContainer->iterator();
@@ -2650,7 +2641,7 @@ ReturnValue Game::processLootItems(const std::shared_ptr<Player> &player, std::s
 	return ret;
 }
 
-ReturnValue Game::internalCollectLootItems(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, ObjectCategory_t category /* = OBJECTCATEGORY_DEFAULT*/) {
+ReturnValue Game::internalCollectLootItems(std::shared_ptr<Player> player, std::shared_ptr<Item> item, ObjectCategory_t category /* = OBJECTCATEGORY_DEFAULT*/) {
 	if (!player || !item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -2687,7 +2678,7 @@ ReturnValue Game::internalCollectLootItems(const std::shared_ptr<Player> &player
 	return processLootItems(player, lootContainer, item, fallbackConsumed);
 }
 
-ReturnValue Game::collectRewardChestItems(const std::shared_ptr<Player> &player, uint32_t maxMoveItems /* = 0*/) {
+ReturnValue Game::collectRewardChestItems(std::shared_ptr<Player> player, uint32_t maxMoveItems /* = 0*/) {
 	// Check if have item on player reward chest
 	std::shared_ptr<RewardChest> rewardChest = player->getRewardChest();
 	if (rewardChest->empty()) {
@@ -2863,7 +2854,7 @@ Slots_t getSlotType(const ItemType &it) {
 
 // Implementation of player invoked events
 void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* = false*/, uint8_t tier /* = 0*/) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -2907,7 +2898,7 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 }
 
 void Game::playerMove(uint32_t playerId, Direction direction) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -2920,7 +2911,7 @@ void Game::playerMove(uint32_t playerId, Direction direction) {
 }
 
 void Game::forcePlayerMove(uint32_t playerId, Direction direction) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -2932,7 +2923,7 @@ void Game::forcePlayerMove(uint32_t playerId, Direction direction) {
 	player->startAutoWalk(std::forward_list<Direction> { direction }, true);
 }
 
-bool Game::playerBroadcastMessage(const std::shared_ptr<Player> &player, const std::string &text) const {
+bool Game::playerBroadcastMessage(std::shared_ptr<Player> player, const std::string &text) const {
 	if (!player->hasFlag(PlayerFlags_t::CanBroadcast)) {
 		return false;
 	}
@@ -2947,7 +2938,7 @@ bool Game::playerBroadcastMessage(const std::shared_ptr<Player> &player, const s
 }
 
 void Game::playerCreatePrivateChannel(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || !player->isPremium()) {
 		return;
 	}
@@ -2961,7 +2952,7 @@ void Game::playerCreatePrivateChannel(uint32_t playerId) {
 }
 
 void Game::playerChannelInvite(uint32_t playerId, const std::string &name) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -2971,7 +2962,7 @@ void Game::playerChannelInvite(uint32_t playerId, const std::string &name) {
 		return;
 	}
 
-	const auto &invitePlayer = getPlayerByName(name);
+	std::shared_ptr<Player> invitePlayer = getPlayerByName(name);
 	if (!invitePlayer) {
 		return;
 	}
@@ -2984,7 +2975,7 @@ void Game::playerChannelInvite(uint32_t playerId, const std::string &name) {
 }
 
 void Game::playerChannelExclude(uint32_t playerId, const std::string &name) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -2994,7 +2985,7 @@ void Game::playerChannelExclude(uint32_t playerId, const std::string &name) {
 		return;
 	}
 
-	const auto &excludePlayer = getPlayerByName(name);
+	std::shared_ptr<Player> excludePlayer = getPlayerByName(name);
 	if (!excludePlayer) {
 		return;
 	}
@@ -3007,7 +2998,7 @@ void Game::playerChannelExclude(uint32_t playerId, const std::string &name) {
 }
 
 void Game::playerRequestChannels(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3016,7 +3007,7 @@ void Game::playerRequestChannels(uint32_t playerId) {
 }
 
 void Game::playerOpenChannel(uint32_t playerId, uint16_t channelId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3038,7 +3029,7 @@ void Game::playerOpenChannel(uint32_t playerId, uint16_t channelId) {
 }
 
 void Game::playerCloseChannel(uint32_t playerId, uint16_t channelId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3047,7 +3038,7 @@ void Game::playerCloseChannel(uint32_t playerId, uint16_t channelId) {
 }
 
 void Game::playerOpenPrivateChannel(uint32_t playerId, std::string &receiver) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3066,7 +3057,7 @@ void Game::playerOpenPrivateChannel(uint32_t playerId, std::string &receiver) {
 }
 
 void Game::playerCloseNpcChannel(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3081,7 +3072,7 @@ void Game::playerCloseNpcChannel(uint32_t playerId) {
 }
 
 void Game::playerReceivePing(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3090,7 +3081,7 @@ void Game::playerReceivePing(uint32_t playerId) {
 }
 
 void Game::playerReceivePingBack(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3099,7 +3090,7 @@ void Game::playerReceivePingBack(uint32_t playerId) {
 }
 
 void Game::playerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3110,7 +3101,7 @@ void Game::playerAutoWalk(uint32_t playerId, const std::forward_list<Direction> 
 }
 
 void Game::forcePlayerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3127,7 +3118,7 @@ void Game::forcePlayerAutoWalk(uint32_t playerId, const std::forward_list<Direct
 }
 
 void Game::playerStopAutoWalk(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3136,7 +3127,7 @@ void Game::playerStopAutoWalk(uint32_t playerId) {
 }
 
 void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t fromStackPos, uint16_t fromItemId, const Position &toPos, uint8_t toStackPos, uint16_t toItemId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3265,7 +3256,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 }
 
 void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3359,7 +3350,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 }
 
 void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uint8_t fromStackPos, uint32_t creatureId, uint16_t itemId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3488,7 +3479,7 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 }
 
 void Game::playerCloseContainer(uint32_t playerId, uint8_t cid) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3498,7 +3489,7 @@ void Game::playerCloseContainer(uint32_t playerId, uint8_t cid) {
 }
 
 void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3545,7 +3536,7 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
 }
 
 void Game::playerUpdateContainer(uint32_t playerId, uint8_t cid) {
-	const auto &player = getPlayerByGUID(playerId);
+	std::shared_ptr<Player> player = getPlayerByGUID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3559,7 +3550,7 @@ void Game::playerUpdateContainer(uint32_t playerId, uint8_t cid) {
 }
 
 void Game::playerRotateItem(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3599,7 +3590,7 @@ void Game::playerRotateItem(uint32_t playerId, const Position &pos, uint8_t stac
 }
 
 void Game::playerConfigureShowOffSocket(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || pos.x == 0xFFFF) {
 		return;
 	}
@@ -3641,7 +3632,7 @@ void Game::playerConfigureShowOffSocket(uint32_t playerId, const Position &pos, 
 }
 
 void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t podiumVisible, uint8_t direction) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || pos.x == 0xFFFF) {
 		return;
 	}
@@ -3757,14 +3748,14 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 
 	// Send to client
 	for (auto spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (auto tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendUpdateTileItem(tile, pos, item);
 		}
 	}
 }
 
 void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3870,7 +3861,7 @@ std::shared_ptr<Item> Game::wrapItem(std::shared_ptr<Item> item, House* house) {
 	return newItem;
 }
 
-void Game::unwrapItem(std::shared_ptr<Item> item, uint16_t unWrapId, House* house, const std::shared_ptr<Player> &player) {
+void Game::unwrapItem(std::shared_ptr<Item> item, uint16_t unWrapId, House* house, std::shared_ptr<Player> player) {
 	auto hiddenCharges = item->getAttribute<uint16_t>(DATE);
 	const ItemType &newiType = Item::items.getItemType(unWrapId);
 	if (player != nullptr && house != nullptr && newiType.isBed() && house->getMaxBeds() > -1 && house->getBedCount() >= house->getMaxBeds()) {
@@ -3896,7 +3887,7 @@ void Game::unwrapItem(std::shared_ptr<Item> item, uint16_t unWrapId, House* hous
 }
 
 void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::string &text) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -3916,7 +3907,7 @@ void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::
 
 	std::shared_ptr<Cylinder> topParent = writeItem->getTopParent();
 
-	const auto &owner = std::dynamic_pointer_cast<Player>(topParent);
+	std::shared_ptr<Player> owner = std::dynamic_pointer_cast<Player>(topParent);
 	if (owner && owner != player) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
@@ -3955,7 +3946,7 @@ void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::
 }
 
 void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4013,7 +4004,7 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 }
 
 void Game::playerStowItem(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackpos, uint8_t count, bool allItems) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4049,7 +4040,7 @@ void Game::playerStowItem(uint32_t playerId, const Position &pos, uint16_t itemI
 }
 
 void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t count, uint8_t) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4122,7 +4113,7 @@ void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t coun
 }
 
 void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index, uint8_t containerCategory) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4147,7 +4138,7 @@ void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_
 }
 
 void Game::playerUpdateHouseWindow(uint32_t playerId, uint8_t listId, uint32_t windowTextId, const std::string &text) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4164,12 +4155,12 @@ void Game::playerUpdateHouseWindow(uint32_t playerId, uint8_t listId, uint32_t w
 }
 
 void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t stackPos, uint32_t tradePlayerId, uint16_t itemId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 
-	const auto &tradePartner = getPlayerByID(tradePlayerId);
+	std::shared_ptr<Player> tradePartner = getPlayerByID(tradePlayerId);
 	if (!tradePartner || tradePartner == player) {
 		player->sendTextMessage(MESSAGE_FAILURE, "Sorry, not possible.");
 		return;
@@ -4296,7 +4287,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 	internalStartTrade(player, tradePartner, tradeItem);
 }
 
-bool Game::internalStartTrade(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &tradePartner, std::shared_ptr<Item> tradeItem) {
+bool Game::internalStartTrade(std::shared_ptr<Player> player, std::shared_ptr<Player> tradePartner, std::shared_ptr<Item> tradeItem) {
 	if (player->tradeState != TRADE_NONE && !(player->tradeState == TRADE_ACKNOWLEDGE && player->tradePartner == tradePartner)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREALREADYTRADING);
 		return false;
@@ -4328,7 +4319,7 @@ bool Game::internalStartTrade(const std::shared_ptr<Player> &player, const std::
 }
 
 void Game::playerAcceptTrade(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4337,7 +4328,7 @@ void Game::playerAcceptTrade(uint32_t playerId) {
 		return;
 	}
 
-	const auto &tradePartner = player->tradePartner;
+	std::shared_ptr<Player> tradePartner = player->tradePartner;
 	if (!tradePartner) {
 		return;
 	}
@@ -4461,12 +4452,12 @@ std::string Game::getTradeErrorDescription(ReturnValue ret, std::shared_ptr<Item
 }
 
 void Game::playerLookInTrade(uint32_t playerId, bool lookAtCounterOffer, uint8_t index) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 
-	const auto &tradePartner = player->tradePartner;
+	std::shared_ptr<Player> tradePartner = player->tradePartner;
 	if (!tradePartner) {
 		return;
 	}
@@ -4520,7 +4511,7 @@ void Game::playerLookInTrade(uint32_t playerId, bool lookAtCounterOffer, uint8_t
 }
 
 void Game::playerCloseTrade(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4528,8 +4519,8 @@ void Game::playerCloseTrade(uint32_t playerId) {
 	internalCloseTrade(player);
 }
 
-void Game::internalCloseTrade(const std::shared_ptr<Player> &player) {
-	const auto &tradePartner = player->tradePartner;
+void Game::internalCloseTrade(std::shared_ptr<Player> player) {
+	std::shared_ptr<Player> tradePartner = player->tradePartner;
 	if ((tradePartner && tradePartner->getTradeState() == TRADE_TRANSFER) || player->getTradeState() == TRADE_TRANSFER) {
 		return;
 	}
@@ -4574,7 +4565,7 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 		return;
 	}
 
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4612,7 +4603,7 @@ void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uin
 		return;
 	}
 
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4642,7 +4633,7 @@ void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uin
 }
 
 void Game::playerCloseShop(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4651,7 +4642,7 @@ void Game::playerCloseShop(uint32_t playerId) {
 }
 
 void Game::playerLookInShop(uint32_t playerId, uint16_t itemId, uint8_t count) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4681,7 +4672,7 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t itemId, uint8_t count) {
 }
 
 void Game::playerLookAt(uint32_t playerId, uint16_t itemId, const Position &pos, uint8_t stackPos) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4716,7 +4707,7 @@ void Game::playerLookAt(uint32_t playerId, uint16_t itemId, const Position &pos,
 }
 
 void Game::playerLookInBattleList(uint32_t playerId, uint32_t creatureId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4751,7 +4742,7 @@ void Game::playerLookInBattleList(uint32_t playerId, uint32_t creatureId) {
 }
 
 void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, std::shared_ptr<Item> defaultItem, bool lootAllCorpses, bool autoLoot) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4881,7 +4872,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 	}
 }
 
-void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Position &pos, bool lootAllCorpses) {
+void Game::playerLootAllCorpses(std::shared_ptr<Player> player, const Position &pos, bool lootAllCorpses) {
 	if (lootAllCorpses) {
 		std::shared_ptr<Tile> tile = g_game().map.getTile(pos.x, pos.y, pos.z);
 		if (!tile) {
@@ -4931,7 +4922,7 @@ void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Pos
 }
 
 void Game::playerSetLootContainer(uint32_t playerId, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || pos.x != 0xffff) {
 		return;
 	}
@@ -4970,7 +4961,7 @@ void Game::playerSetLootContainer(uint32_t playerId, ObjectCategory_t category, 
 }
 
 void Game::playerClearLootContainer(uint32_t playerId, ObjectCategory_t category) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -4987,7 +4978,7 @@ void Game::playerClearLootContainer(uint32_t playerId, ObjectCategory_t category
 }
 
 void Game::playerOpenLootContainer(uint32_t playerId, ObjectCategory_t category) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5001,7 +4992,7 @@ void Game::playerOpenLootContainer(uint32_t playerId, ObjectCategory_t category)
 }
 
 void Game::playerSetQuickLootFallback(uint32_t playerId, bool fallback) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5010,7 +5001,7 @@ void Game::playerSetQuickLootFallback(uint32_t playerId, bool fallback) {
 }
 
 void Game::playerQuickLootBlackWhitelist(uint32_t playerId, QuickLootFilter_t filter, const std::vector<uint16_t> itemIds) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5023,7 +5014,7 @@ void Game::playerQuickLootBlackWhitelist(uint32_t playerId, QuickLootFilter_t fi
  * Depot search system
  ******************************************************************************/
 void Game::playerRequestDepotItems(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || !player->isDepotSearchAvailable()) {
 		return;
 	}
@@ -5038,7 +5029,7 @@ void Game::playerRequestDepotItems(uint32_t playerId) {
 }
 
 void Game::playerRequestCloseDepotSearch(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || !player->isDepotSearchOpen()) {
 		return;
 	}
@@ -5048,7 +5039,7 @@ void Game::playerRequestCloseDepotSearch(uint32_t playerId) {
 }
 
 void Game::playerRequestDepotSearchItem(uint32_t playerId, uint16_t itemId, uint8_t tier) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || !player->isDepotSearchOpen()) {
 		return;
 	}
@@ -5063,7 +5054,7 @@ void Game::playerRequestDepotSearchItem(uint32_t playerId, uint16_t itemId, uint
 }
 
 void Game::playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, uint8_t tier, uint8_t type) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || !player->isDepotSearchOpenOnItem(itemId)) {
 		return;
 	}
@@ -5078,7 +5069,7 @@ void Game::playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, 
 }
 
 void Game::playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position &pos) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || !player->isDepotSearchOpen()) {
 		return;
 	}
@@ -5093,7 +5084,7 @@ void Game::playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Po
 }
 
 void Game::playerCancelAttackAndFollow(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5104,7 +5095,7 @@ void Game::playerCancelAttackAndFollow(uint32_t playerId) {
 }
 
 void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5135,7 +5126,7 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
 }
 
 void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5146,7 +5137,7 @@ void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
 }
 
 void Game::playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool chaseMode, bool secureMode) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5161,12 +5152,12 @@ void Game::playerRequestAddVip(uint32_t playerId, const std::string &name) {
 		return;
 	}
 
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 
-	const auto &vipPlayer = getPlayerByName(name);
+	std::shared_ptr<Player> vipPlayer = getPlayerByName(name);
 	if (!vipPlayer) {
 		uint32_t guid;
 		bool specialVip;
@@ -5197,7 +5188,7 @@ void Game::playerRequestAddVip(uint32_t playerId, const std::string &name) {
 }
 
 void Game::playerRequestRemoveVip(uint32_t playerId, uint32_t guid) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5206,7 +5197,7 @@ void Game::playerRequestRemoveVip(uint32_t playerId, uint32_t guid) {
 }
 
 void Game::playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string &description, uint32_t icon, bool notify) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5215,7 +5206,7 @@ void Game::playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::str
 }
 
 void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t slot, bool protectionCharm) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5244,7 +5235,7 @@ void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t
 }
 
 void Game::playerClearImbuement(uint32_t playerid, uint8_t slot) {
-	const auto &player = getPlayerByID(playerid);
+	std::shared_ptr<Player> player = getPlayerByID(playerid);
 	if (!player) {
 		return;
 	}
@@ -5262,7 +5253,7 @@ void Game::playerClearImbuement(uint32_t playerid, uint8_t slot) {
 }
 
 void Game::playerCloseImbuementWindow(uint32_t playerid) {
-	const auto &player = getPlayerByID(playerid);
+	std::shared_ptr<Player> player = getPlayerByID(playerid);
 	if (!player) {
 		return;
 	}
@@ -5272,7 +5263,7 @@ void Game::playerCloseImbuementWindow(uint32_t playerid) {
 }
 
 void Game::playerTurn(uint32_t playerId, Direction dir) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5294,7 +5285,7 @@ void Game::playerRequestOutfit(uint32_t playerId) {
 		return;
 	}
 
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5303,7 +5294,7 @@ void Game::playerRequestOutfit(uint32_t playerId) {
 }
 
 void Game::playerToggleMount(uint32_t playerId, bool mount) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5316,7 +5307,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 		return;
 	}
 
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5378,7 +5369,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 }
 
 void Game::playerShowQuestLog(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5388,7 +5379,7 @@ void Game::playerShowQuestLog(uint32_t playerId) {
 }
 
 void Game::playerShowQuestLine(uint32_t playerId, uint16_t questId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5398,7 +5389,7 @@ void Game::playerShowQuestLine(uint32_t playerId, uint16_t questId) {
 }
 
 void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, const std::string &receiver, const std::string &text) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5462,7 +5453,7 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, c
 	}
 }
 
-bool Game::playerSaySpell(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &text) {
+bool Game::playerSaySpell(std::shared_ptr<Player> player, SpeakClasses type, const std::string &text) {
 	if (player->walkExhausted()) {
 		return true;
 	}
@@ -5491,13 +5482,13 @@ bool Game::playerSaySpell(const std::shared_ptr<Player> &player, SpeakClasses ty
 	return false;
 }
 
-void Game::playerWhisper(const std::shared_ptr<Player> &player, const std::string &text) {
+void Game::playerWhisper(std::shared_ptr<Player> player, const std::string &text) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, player->getPosition(), false, false, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_Y, MAP_MAX_CLIENT_VIEW_PORT_Y);
 
 	// send to client
 	for (auto spectator : spectators) {
-		if (const auto &spectatorPlayer = spectator->getPlayer()) {
+		if (auto spectatorPlayer = spectator->getPlayer()) {
 			if (!Position::areInRange<1, 1>(player->getPosition(), spectatorPlayer->getPosition())) {
 				spectatorPlayer->sendCreatureSay(player, TALKTYPE_WHISPER, "pspsps");
 			} else {
@@ -5512,7 +5503,7 @@ void Game::playerWhisper(const std::shared_ptr<Player> &player, const std::strin
 	}
 }
 
-bool Game::playerYell(const std::shared_ptr<Player> &player, const std::string &text) {
+bool Game::playerYell(std::shared_ptr<Player> player, const std::string &text) {
 	if (player->getLevel() == 1) {
 		player->sendTextMessage(MESSAGE_FAILURE, "You may not yell as long as you are on level 1.");
 		return false;
@@ -5532,8 +5523,8 @@ bool Game::playerYell(const std::shared_ptr<Player> &player, const std::string &
 	return true;
 }
 
-bool Game::playerSpeakTo(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &receiver, const std::string &text) {
-	const auto &toPlayer = getPlayerByName(receiver);
+bool Game::playerSpeakTo(std::shared_ptr<Player> player, SpeakClasses type, const std::string &receiver, const std::string &text) {
+	std::shared_ptr<Player> toPlayer = getPlayerByName(receiver);
 	if (!toPlayer) {
 		player->sendTextMessage(MESSAGE_FAILURE, "A player with this name is not online.");
 		return false;
@@ -5558,7 +5549,7 @@ bool Game::playerSpeakTo(const std::shared_ptr<Player> &player, SpeakClasses typ
 	return true;
 }
 
-void Game::playerSpeakToNpc(const std::shared_ptr<Player> &player, const std::string &text) {
+void Game::playerSpeakToNpc(std::shared_ptr<Player> player, const std::string &text) {
 	if (player == nullptr) {
 		g_logger().error("[Game::playerSpeakToNpc] - Player is nullptr");
 		return;
@@ -5599,7 +5590,7 @@ bool Game::internalCreatureTurn(std::shared_ptr<Creature> creature, Direction di
 		return false;
 	}
 
-	if (const auto &player = creature->getPlayer()) {
+	if (std::shared_ptr<Player> player = creature->getPlayer()) {
 		player->cancelPush();
 	}
 	creature->setDirection(dir);
@@ -5608,7 +5599,7 @@ bool Game::internalCreatureTurn(std::shared_ptr<Creature> creature, Direction di
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true, true);
 	for (auto spectator : spectators) {
-		const auto &tmpPlayer = spectator->getPlayer();
+		auto tmpPlayer = spectator->getPlayer();
 		if (!tmpPlayer) {
 			continue;
 		}
@@ -5644,7 +5635,7 @@ bool Game::internalCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses 
 
 	// send to client
 	for (auto spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (auto tmpPlayer = spectator->getPlayer()) {
 			if (!ghostMode || tmpPlayer->canSeeCreature(creature)) {
 				tmpPlayer->sendCreatureSay(creature, type, text, pos);
 			}
@@ -5769,7 +5760,7 @@ void Game::changePlayerSpeed(const std::shared_ptr<Player> &player, int32_t varS
 			continue;
 		}
 
-		const auto &playerSpectator = creatureSpectator->getPlayer();
+		std::shared_ptr<Player> playerSpectator = creatureSpectator->getPlayer();
 		if (playerSpectator == nullptr) {
 			g_logger().error("[Game::changePlayerSpeed] - Player spectator is nullptr");
 			continue;
@@ -5838,7 +5829,7 @@ void Game::reloadCreature(std::shared_ptr<Creature> creature) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), false, true);
 	for (auto spectator : spectators) {
-		const auto &tmpPlayer = spectator->getPlayer();
+		auto tmpPlayer = spectator->getPlayer();
 		if (!tmpPlayer) {
 			continue;
 		}
@@ -5854,7 +5845,7 @@ void Game::sendSingleSoundEffect(const Position &pos, SoundEffect_t soundId, std
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, pos, false, true);
 	for (auto spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (auto tmpPlayer = spectator->getPlayer()) {
 			SourceEffect_t source = SourceEffect_t::CREATURES;
 			if (!actor || actor->getNpc()) {
 				source = SourceEffect_t::GLOBAL;
@@ -5878,7 +5869,7 @@ void Game::sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundEff
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, pos, false, true);
 	for (auto spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (auto tmpPlayer = spectator->getPlayer()) {
 			SourceEffect_t source = SourceEffect_t::CREATURES;
 			if (!actor || actor->getNpc()) {
 				source = SourceEffect_t::GLOBAL;
@@ -5907,8 +5898,8 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 	}
 
 	// Skill dodge (ruse)
-	if (const auto &targetPlayer = target->getPlayer()) {
-		if (const auto &playerArmor = targetPlayer->getInventoryItem(CONST_SLOT_ARMOR);
+	if (std::shared_ptr<Player> targetPlayer = target->getPlayer()) {
+		if (auto playerArmor = targetPlayer->getInventoryItem(CONST_SLOT_ARMOR);
 			playerArmor != nullptr && playerArmor->getTier()) {
 			double_t chance = playerArmor->getDodgeChance();
 			double_t randomChance = uniform_random(0, 10000) / 100;
@@ -5932,7 +5923,7 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 	CombatParams damageReflectedParams;
 
 	BlockType_t primaryBlockType, secondaryBlockType;
-	const auto &targetPlayer = target->getPlayer();
+	std::shared_ptr<Player> targetPlayer = target->getPlayer();
 
 	if (damage.primary.type != COMBAT_NONE) {
 		// Damage reflection primary
@@ -6189,7 +6180,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, std::shared_ptr<Creature> 
 }
 
 // Hazard combat helpers
-void Game::handleHazardSystemAttack(CombatDamage &damage, const std::shared_ptr<Player> &player, std::shared_ptr<Monster> monster, bool isPlayerAttacker) {
+void Game::handleHazardSystemAttack(CombatDamage &damage, std::shared_ptr<Player> player, std::shared_ptr<Monster> monster, bool isPlayerAttacker) {
 	if (damage.primary.value != 0 && monster->getHazard()) {
 		if (isPlayerAttacker) {
 			player->parseAttackDealtHazardSystem(damage, monster);
@@ -6199,14 +6190,14 @@ void Game::handleHazardSystemAttack(CombatDamage &damage, const std::shared_ptr<
 	}
 }
 
-void Game::notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, const std::shared_ptr<Player> &attackerPlayer, std::shared_ptr<Monster> targetMonster) {
+void Game::notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Monster> targetMonster) {
 	if (!spectators.empty()) {
 		for (auto spectator : spectators) {
 			if (!spectator) {
 				continue;
 			}
 
-			const auto &tmpPlayer = spectator->getPlayer();
+			const auto tmpPlayer = spectator->getPlayer();
 			if (!tmpPlayer || tmpPlayer->getPosition().z != targetPos.z) {
 				continue;
 			}
@@ -6228,7 +6219,7 @@ void Game::notifySpectators(const SpectatorHashSet &spectators, const Position &
 }
 
 // Wheel of destiny combat helpers
-void Game::applyWheelOfDestinyHealing(CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer, std::shared_ptr<Creature> target) {
+void Game::applyWheelOfDestinyHealing(CombatDamage &damage, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Creature> target) {
 	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100.;
 
 	if (attackerPlayer) {
@@ -6251,7 +6242,7 @@ void Game::applyWheelOfDestinyHealing(CombatDamage &damage, const std::shared_pt
 	}
 }
 
-void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer, std::shared_ptr<Creature> target) const {
+void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Creature> target) const {
 	// If damage is 0, it means the target is immune to the damage type, or that we missed.
 	if (damage.primary.value == 0 && damage.secondary.value == 0) {
 		return;
@@ -6288,7 +6279,7 @@ int32_t Game::applyHealthChange(CombatDamage &damage, std::shared_ptr<Creature> 
 	int32_t targetHealth = target->getHealth();
 
 	// Wheel of destiny (Gift of Life)
-	if (const auto &targetPlayer = target->getPlayer()) {
+	if (std::shared_ptr<Player> targetPlayer = target->getPlayer()) {
 		if (targetPlayer->wheel()->getInstant("Gift of Life") && targetPlayer->wheel()->getGiftOfCooldown() == 0 && (damage.primary.value + damage.secondary.value) >= targetHealth) {
 			int32_t overkillMultiplier = (damage.primary.value + damage.secondary.value) - targetHealth;
 			overkillMultiplier = (overkillMultiplier * 100) / targetPlayer->getMaxHealth();
@@ -6324,7 +6315,7 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 			attackerPlayer = nullptr;
 		}
 
-		const auto &targetPlayer = target->getPlayer();
+		auto targetPlayer = target->getPlayer();
 		if (attackerPlayer && targetPlayer && attackerPlayer->getSkull() == SKULL_BLACK && attackerPlayer->getSkullClient(targetPlayer) == SKULL_NONE) {
 			return false;
 		}
@@ -6372,7 +6363,7 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 			SpectatorHashSet spectators;
 			map.getSpectators(spectators, targetPos, false, true);
 			for (auto spectator : spectators) {
-				const auto &tmpPlayer = spectator->getPlayer();
+				auto tmpPlayer = spectator->getPlayer();
 
 				if (!tmpPlayer) {
 					continue;
@@ -6432,7 +6423,7 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 			attackerPlayer = nullptr;
 		}
 
-		const auto &targetPlayer = target->getPlayer();
+		auto targetPlayer = target->getPlayer();
 		if (attackerPlayer && targetPlayer && attackerPlayer->getSkull() == SKULL_BLACK && attackerPlayer->getSkullClient(targetPlayer) == SKULL_NONE) {
 			return false;
 		}
@@ -6593,7 +6584,7 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 						continue;
 					}
 
-					const auto &tmpPlayer = spectator->getPlayer();
+					std::shared_ptr<Player> tmpPlayer = spectator->getPlayer();
 					if (!tmpPlayer) {
 						continue;
 					}
@@ -6730,7 +6721,7 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 	return true;
 }
 
-void Game::updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, const std::shared_ptr<Player> &player) const {
+void Game::updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, std::shared_ptr<Player> player) const {
 	if (!player) {
 		return;
 	}
@@ -6796,7 +6787,7 @@ void Game::sendMessages(
 	std::string spectatorMessage;
 
 	for (std::shared_ptr<Creature> spectator : spectators) {
-		const auto &tmpPlayer = spectator->getPlayer();
+		std::shared_ptr<Player> tmpPlayer = spectator->getPlayer();
 		if (tmpPlayer->getPosition().z != targetPos.z) {
 			continue;
 		}
@@ -6901,7 +6892,7 @@ void Game::sendEffects(
 }
 
 void Game::applyCharmRune(
-	std::shared_ptr<Monster> targetMonster, const std::shared_ptr<Player> &attackerPlayer, std::shared_ptr<Creature> target, const int32_t &realDamage
+	std::shared_ptr<Monster> targetMonster, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Creature> target, const int32_t &realDamage
 ) const {
 	if (!targetMonster || !attackerPlayer) {
 		return;
@@ -6997,7 +6988,7 @@ bool Game::combatChangeMana(std::shared_ptr<Creature> attacker, std::shared_ptr<
 			attackerPlayer = nullptr;
 		}
 
-		const auto &targetPlayer = target->getPlayer();
+		auto targetPlayer = target->getPlayer();
 		if (attackerPlayer && targetPlayer && attackerPlayer->getSkull() == SKULL_BLACK && attackerPlayer->getSkullClient(targetPlayer) == SKULL_NONE) {
 			return false;
 		}
@@ -7043,7 +7034,7 @@ bool Game::combatChangeMana(std::shared_ptr<Creature> attacker, std::shared_ptr<
 			SpectatorHashSet spectators;
 			map.getSpectators(spectators, targetPos, false, true);
 			for (auto spectator : spectators) {
-				const auto &tmpPlayer = spectator->getPlayer();
+				auto tmpPlayer = spectator->getPlayer();
 
 				if (!tmpPlayer) {
 					continue;
@@ -7083,7 +7074,7 @@ bool Game::combatChangeMana(std::shared_ptr<Creature> attacker, std::shared_ptr<
 			attackerPlayer = nullptr;
 		}
 
-		const auto &targetPlayer = target->getPlayer();
+		auto targetPlayer = target->getPlayer();
 		if (attackerPlayer && targetPlayer && attackerPlayer->getSkull() == SKULL_BLACK && attackerPlayer->getSkullClient(targetPlayer) == SKULL_NONE) {
 			return false;
 		}
@@ -7143,7 +7134,7 @@ bool Game::combatChangeMana(std::shared_ptr<Creature> attacker, std::shared_ptr<
 		SpectatorHashSet spectators;
 		map.getSpectators(spectators, targetPos, false, true);
 		for (auto spectator : spectators) {
-			const auto &tmpPlayer = spectator->getPlayer();
+			auto tmpPlayer = spectator->getPlayer();
 
 			if (!tmpPlayer) {
 				continue;
@@ -7199,32 +7190,32 @@ void Game::addCreatureHealth(std::shared_ptr<Creature> target) {
 
 void Game::addCreatureHealth(const SpectatorHashSet &spectators, std::shared_ptr<Creature> target) {
 	uint8_t healthPercent = std::ceil((static_cast<double>(target->getHealth()) / std::max<int32_t>(target->getMaxHealth(), 1)) * 100);
-	if (const auto &targetPlayer = target->getPlayer()) {
+	if (std::shared_ptr<Player> targetPlayer = target->getPlayer()) {
 		if (Party* party = targetPlayer->getParty()) {
 			party->updatePlayerHealth(targetPlayer, target, healthPercent);
 		}
 	} else if (std::shared_ptr<Creature> master = target->getMaster()) {
-		if (const auto &masterPlayer = master->getPlayer()) {
+		if (std::shared_ptr<Player> masterPlayer = master->getPlayer()) {
 			if (Party* party = masterPlayer->getParty()) {
 				party->updatePlayerHealth(masterPlayer, target, healthPercent);
 			}
 		}
 	}
 	for (std::shared_ptr<Creature> spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (std::shared_ptr<Player> tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendCreatureHealth(target);
 		}
 	}
 }
 
-void Game::addPlayerMana(const std::shared_ptr<Player> &target) {
+void Game::addPlayerMana(std::shared_ptr<Player> target) {
 	if (Party* party = target->getParty()) {
 		uint8_t manaPercent = std::ceil((static_cast<double>(target->getMana()) / std::max<int32_t>(target->getMaxMana(), 1)) * 100);
 		party->updatePlayerMana(target, manaPercent);
 	}
 }
 
-void Game::addPlayerVocation(const std::shared_ptr<Player> &target) {
+void Game::addPlayerVocation(std::shared_ptr<Player> target) {
 	if (Party* party = target->getParty()) {
 		party->updatePlayerVocation(target);
 	}
@@ -7233,7 +7224,7 @@ void Game::addPlayerVocation(const std::shared_ptr<Player> &target) {
 	map.getSpectators(spectators, target->getPosition(), true, true);
 
 	for (auto spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (auto tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendPlayerVocation(target);
 		}
 	}
@@ -7247,7 +7238,7 @@ void Game::addMagicEffect(const Position &pos, uint16_t effect) {
 
 void Game::addMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint16_t effect) {
 	for (auto spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (auto tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendMagicEffect(pos, effect);
 		}
 	}
@@ -7261,7 +7252,7 @@ void Game::removeMagicEffect(const Position &pos, uint16_t effect) {
 
 void Game::removeMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint16_t effect) {
 	for (auto spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (const auto tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->removeMagicEffect(pos, effect);
 		}
 	}
@@ -7276,7 +7267,7 @@ void Game::addDistanceEffect(const Position &fromPos, const Position &toPos, uin
 
 void Game::addDistanceEffect(const SpectatorHashSet &spectators, const Position &fromPos, const Position &toPos, uint16_t effect) {
 	for (auto spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (auto tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendDistanceShoot(fromPos, toPos, effect);
 		}
 	}
@@ -7426,7 +7417,7 @@ void Game::updateCreatureWalkthrough(std::shared_ptr<Creature> creature) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true, true);
 	for (auto spectator : spectators) {
-		const auto &tmpPlayer = spectator->getPlayer();
+		auto tmpPlayer = spectator->getPlayer();
 		tmpPlayer->sendCreatureWalkthrough(creature, tmpPlayer->canWalkthroughEx(creature));
 	}
 }
@@ -7443,7 +7434,7 @@ void Game::updateCreatureSkull(std::shared_ptr<Creature> creature) {
 	}
 }
 
-void Game::updatePlayerShield(const std::shared_ptr<Player> &player) {
+void Game::updatePlayerShield(std::shared_ptr<Player> player) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, player->getPosition(), true, true);
 	for (auto spectator : spectators) {
@@ -7476,7 +7467,7 @@ void Game::updateCreatureType(std::shared_ptr<Creature> creature) {
 	map.getSpectators(spectators, creature->getPosition(), true, true);
 	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
 		for (auto spectator : spectators) {
-			const auto &player = spectator->getPlayer();
+			auto player = spectator->getPlayer();
 			if (!player) {
 				continue;
 			}
@@ -7489,7 +7480,7 @@ void Game::updateCreatureType(std::shared_ptr<Creature> creature) {
 		}
 	} else {
 		for (auto spectator : spectators) {
-			if (const auto &player = spectator->getPlayer()) {
+			if (auto player = spectator->getPlayer()) {
 				player->sendCreatureType(creature, creatureType);
 			}
 		}
@@ -7567,12 +7558,12 @@ void Game::playerInviteToParty(uint32_t playerId, uint32_t invitedId) {
 		return;
 	}
 
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 
-	const auto &invitedPlayer = getPlayerByID(invitedId);
+	std::shared_ptr<Player> invitedPlayer = getPlayerByID(invitedId);
 	if (!invitedPlayer || invitedPlayer->isInviting(player)) {
 		return;
 	}
@@ -7594,7 +7585,7 @@ void Game::playerInviteToParty(uint32_t playerId, uint32_t invitedId) {
 	party->invitePlayer(invitedPlayer);
 }
 
-void Game::updatePlayerHelpers(const std::shared_ptr<Player> &player) {
+void Game::updatePlayerHelpers(std::shared_ptr<Player> player) {
 	if (!player) {
 		return;
 	}
@@ -7613,12 +7604,12 @@ void Game::updatePlayerHelpers(const std::shared_ptr<Player> &player) {
 }
 
 void Game::playerJoinParty(uint32_t playerId, uint32_t leaderId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 
-	const auto &leader = getPlayerByID(leaderId);
+	std::shared_ptr<Player> leader = getPlayerByID(leaderId);
 	if (!leader || !leader->isInviting(player)) {
 		return;
 	}
@@ -7637,7 +7628,7 @@ void Game::playerJoinParty(uint32_t playerId, uint32_t leaderId) {
 }
 
 void Game::playerRevokePartyInvitation(uint32_t playerId, uint32_t invitedId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -7647,7 +7638,7 @@ void Game::playerRevokePartyInvitation(uint32_t playerId, uint32_t invitedId) {
 		return;
 	}
 
-	const auto &invitedPlayer = getPlayerByID(invitedId);
+	std::shared_ptr<Player> invitedPlayer = getPlayerByID(invitedId);
 	if (!invitedPlayer || !player->isInviting(invitedPlayer)) {
 		return;
 	}
@@ -7656,7 +7647,7 @@ void Game::playerRevokePartyInvitation(uint32_t playerId, uint32_t invitedId) {
 }
 
 void Game::playerPassPartyLeadership(uint32_t playerId, uint32_t newLeaderId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -7666,7 +7657,7 @@ void Game::playerPassPartyLeadership(uint32_t playerId, uint32_t newLeaderId) {
 		return;
 	}
 
-	const auto &newLeader = getPlayerByID(newLeaderId);
+	std::shared_ptr<Player> newLeader = getPlayerByID(newLeaderId);
 	if (!newLeader || !player->isPartner(newLeader)) {
 		return;
 	}
@@ -7675,7 +7666,7 @@ void Game::playerPassPartyLeadership(uint32_t playerId, uint32_t newLeaderId) {
 }
 
 void Game::playerLeaveParty(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -7689,7 +7680,7 @@ void Game::playerLeaveParty(uint32_t playerId) {
 }
 
 void Game::playerEnableSharedPartyExperience(uint32_t playerId, bool sharedExpActive) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -7704,7 +7695,7 @@ void Game::playerEnableSharedPartyExperience(uint32_t playerId, bool sharedExpAc
 }
 
 void Game::sendGuildMotd(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -7716,7 +7707,7 @@ void Game::sendGuildMotd(uint32_t playerId) {
 }
 
 void Game::kickPlayer(uint32_t playerId, bool displayEffect) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -7724,7 +7715,7 @@ void Game::kickPlayer(uint32_t playerId, bool displayEffect) {
 	player->removePlayer(displayEffect);
 }
 
-void Game::playerCyclopediaCharacterInfo(const std::shared_ptr<Player> &player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page) {
+void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page) {
 	uint32_t playerGUID = player->getGUID();
 	if (characterID != playerGUID) {
 		// For now allow viewing only our character since we don't have tournaments supported
@@ -7749,7 +7740,7 @@ void Game::playerCyclopediaCharacterInfo(const std::shared_ptr<Player> &player, 
 
 			uint32_t playerID = player->getID();
 			std::function<void(DBResult_ptr, bool)> callback = [playerID, page, entriesPerPage](DBResult_ptr result, bool) {
-				const auto &player = g_game().getPlayerByID(playerID);
+				std::shared_ptr<Player> player = g_game().getPlayerByID(playerID);
 				if (!player) {
 					return;
 				}
@@ -7814,7 +7805,7 @@ void Game::playerCyclopediaCharacterInfo(const std::shared_ptr<Player> &player, 
 
 			uint32_t playerID = player->getID();
 			std::function<void(DBResult_ptr, bool)> callback = [playerID, page, entriesPerPage](DBResult_ptr result, bool) {
-				const auto &player = g_game().getPlayerByID(playerID);
+				std::shared_ptr<Player> player = g_game().getPlayerByID(playerID);
 				if (!player) {
 					return;
 				}
@@ -7884,7 +7875,7 @@ void Game::playerCyclopediaCharacterInfo(const std::shared_ptr<Player> &player, 
 	}
 }
 
-void Game::playerHighscores(const std::shared_ptr<Player> &player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &, uint16_t page, uint8_t entriesPerPage) {
+void Game::playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &, uint16_t page, uint8_t entriesPerPage) {
 	if (player->hasAsyncOngoingTask(PlayerAsyncTask_Highscore)) {
 		return;
 	}
@@ -7968,7 +7959,7 @@ void Game::playerHighscores(const std::shared_ptr<Player> &player, HighscoreType
 
 	uint32_t playerID = player->getID();
 	std::function<void(DBResult_ptr, bool)> callback = [playerID, category, vocation, entriesPerPage](DBResult_ptr result, bool) {
-		const auto &player = g_game().getPlayerByID(playerID);
+		std::shared_ptr<Player> player = g_game().getPlayerByID(playerID);
 		if (!player) {
 			return;
 		}
@@ -8003,7 +7994,7 @@ void Game::playerHighscores(const std::shared_ptr<Player> &player, HighscoreType
 }
 
 void Game::playerReportRuleViolationReport(uint32_t playerId, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8013,7 +8004,7 @@ void Game::playerReportRuleViolationReport(uint32_t playerId, const std::string 
 }
 
 void Game::playerReportBug(uint32_t playerId, const std::string &message, const Position &position, uint8_t category) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8023,7 +8014,7 @@ void Game::playerReportBug(uint32_t playerId, const std::string &message, const 
 }
 
 void Game::playerDebugAssert(uint32_t playerId, const std::string &assertLine, const std::string &date, const std::string &description, const std::string &comment) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8038,7 +8029,7 @@ void Game::playerDebugAssert(uint32_t playerId, const std::string &assertLine, c
 }
 
 void Game::playerPreyAction(uint32_t playerId, uint8_t slot, uint8_t action, uint8_t option, int8_t index, uint16_t raceId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8047,7 +8038,7 @@ void Game::playerPreyAction(uint32_t playerId, uint8_t slot, uint8_t action, uin
 }
 
 void Game::playerTaskHuntingAction(uint32_t playerId, uint8_t slot, uint8_t action, bool upgrade, uint16_t raceId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8056,7 +8047,7 @@ void Game::playerTaskHuntingAction(uint32_t playerId, uint8_t slot, uint8_t acti
 }
 
 void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8080,7 +8071,7 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
 }
 
 void Game::playerLeaveMarket(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8089,7 +8080,7 @@ void Game::playerLeaveMarket(uint32_t playerId) {
 }
 
 void Game::playerBrowseMarket(uint32_t playerId, uint16_t itemId, uint8_t tier) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8114,7 +8105,7 @@ void Game::playerBrowseMarket(uint32_t playerId, uint16_t itemId, uint8_t tier) 
 }
 
 void Game::playerBrowseMarketOwnOffers(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8129,7 +8120,7 @@ void Game::playerBrowseMarketOwnOffers(uint32_t playerId) {
 }
 
 void Game::playerBrowseMarketOwnHistory(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8215,7 +8206,7 @@ namespace {
 	}
 } // namespace
 
-bool checkCanInitCreateMarketOffer(const std::shared_ptr<Player> &player, uint8_t type, const ItemType &it, uint16_t amount, uint64_t price, std::ostringstream &offerStatus) {
+bool checkCanInitCreateMarketOffer(std::shared_ptr<Player> player, uint8_t type, const ItemType &it, uint16_t amount, uint64_t price, std::ostringstream &offerStatus) {
 	if (!player) {
 		offerStatus << "Failed to load player";
 		return false;
@@ -8281,7 +8272,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	// Initialize variables
 	// Before creating the offer we will compare it with the RETURN VALUE ERROR
 	std::ostringstream offerStatus;
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	const ItemType &it = Item::items[itemId];
 
 	// Make sure everything is ok before the create market offer starts
@@ -8373,7 +8364,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 }
 
 void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || !player->getAccount()) {
 		return;
 	}
@@ -8457,7 +8448,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount) {
 	std::ostringstream offerStatus;
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || !player->getAccount()) {
 		offerStatus << "Failed to load player";
 		return;
@@ -8501,10 +8492,14 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			return;
 		}
 
-		const auto buyerPlayer = getPlayerByGUID(offer.playerId, true);
+		std::shared_ptr<Player> buyerPlayer = getPlayerByGUID(offer.playerId);
 		if (!buyerPlayer) {
-			offerStatus << "Failed to load buyer player " << player->getName();
-			return;
+			buyerPlayer = std::make_shared<Player>(nullptr);
+			if (!IOLoginData::loadPlayerById(buyerPlayer, offer.playerId)) {
+
+				offerStatus << "Failed to load buyer player " << player->getName();
+				return;
+			}
 		}
 
 		if (!buyerPlayer->getAccount()) {
@@ -8602,10 +8597,14 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			IOLoginData::savePlayer(buyerPlayer);
 		}
 	} else if (offer.type == MARKETACTION_SELL) {
-		const auto sellerPlayer = getPlayerByGUID(offer.playerId, true);
+		std::shared_ptr<Player> sellerPlayer = getPlayerByGUID(offer.playerId);
 		if (!sellerPlayer) {
-			offerStatus << "Failed to load seller player";
-			return;
+			sellerPlayer = std::make_shared<Player>(nullptr);
+			if (!IOLoginData::loadPlayerById(sellerPlayer, offer.playerId)) {
+				offerStatus << "Failed to load seller player";
+
+				return;
+			}
 		}
 
 		if (player == sellerPlayer || player->getAccount() == sellerPlayer->getAccount()) {
@@ -8724,7 +8723,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 }
 
 void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string &buffer) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8743,7 +8742,7 @@ void Game::forceRemoveCondition(uint32_t creatureId, ConditionType_t conditionTy
 	creature->removeCondition(conditionType, conditionId, true);
 }
 
-void Game::sendOfflineTrainingDialog(const std::shared_ptr<Player> &player) {
+void Game::sendOfflineTrainingDialog(std::shared_ptr<Player> player) {
 	if (!player) {
 		return;
 	}
@@ -8754,7 +8753,7 @@ void Game::sendOfflineTrainingDialog(const std::shared_ptr<Player> &player) {
 }
 
 void Game::playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, uint8_t button, uint8_t choice) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8788,7 +8787,7 @@ void Game::playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, ui
 }
 
 void Game::playerForgeFuseItems(uint32_t playerId, uint16_t itemId, uint8_t tier, bool usedCore, bool reduceTierLoss) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8813,7 +8812,7 @@ void Game::playerForgeFuseItems(uint32_t playerId, uint16_t itemId, uint8_t tier
 }
 
 void Game::playerForgeTransferItemTier(uint32_t playerId, uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8822,7 +8821,7 @@ void Game::playerForgeTransferItemTier(uint32_t playerId, uint16_t donorItemId, 
 }
 
 void Game::playerForgeResourceConversion(uint32_t playerId, uint8_t action) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8837,7 +8836,7 @@ void Game::playerForgeResourceConversion(uint32_t playerId, uint8_t action) {
 }
 
 void Game::playerBrowseForgeHistory(uint32_t playerId, uint8_t page) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8852,7 +8851,7 @@ void Game::playerBrowseForgeHistory(uint32_t playerId, uint8_t page) {
 }
 
 void Game::playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selectedBossId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -8878,7 +8877,7 @@ void Game::playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selec
 }
 
 void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, const std::pair<uint8_t, uint8_t> &podiumAndMonsterVisible) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || pos.x == 0xFFFF) {
 		return;
 	}
@@ -8974,14 +8973,14 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 
 	// Send to client
 	for (auto spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (auto tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendUpdateTileItem(tile, pos, item);
 		}
 	}
 }
 
 void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -9066,7 +9065,7 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 }
 
 void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || player->isRemoved()) {
 		return;
 	}
@@ -9098,7 +9097,7 @@ void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpe
 }
 
 void Game::playerOpenWheel(uint32_t playerId, uint32_t ownerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -9118,7 +9117,7 @@ void Game::playerOpenWheel(uint32_t playerId, uint32_t ownerId) {
 }
 
 void Game::playerSaveWheel(uint32_t playerId, NetworkMessage &msg) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -9136,7 +9135,7 @@ void Game::playerSaveWheel(uint32_t playerId, NetworkMessage &msg) {
 ********************/
 
 void Game::updatePlayerSaleItems(uint32_t playerId) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -9146,14 +9145,14 @@ void Game::updatePlayerSaleItems(uint32_t playerId) {
 	player->setScheduledSaleUpdate(false);
 }
 
-void Game::addPlayer(const std::shared_ptr<Player> &player) {
+void Game::addPlayer(std::shared_ptr<Player> player) {
 	const std::string &lowercase_name = asLowerCaseString(player->getName());
 	mappedPlayerNames[lowercase_name] = player;
 	wildcardTree.insert(lowercase_name);
 	players[player->getID()] = player;
 }
 
-void Game::removePlayer(const std::shared_ptr<Player> &player) {
+void Game::removePlayer(std::shared_ptr<Player> player) {
 	const std::string &lowercase_name = asLowerCaseString(player->getName());
 	mappedPlayerNames.erase(lowercase_name);
 	wildcardTree.remove(lowercase_name);
@@ -9329,7 +9328,7 @@ void Game::sendUpdateCreature(std::shared_ptr<Creature> creature) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true);
 	for (auto spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (const auto tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendUpdateCreature(creature);
 		}
 	}
@@ -9641,7 +9640,7 @@ bool Game::addInfluencedMonster(std::shared_ptr<Monster> monster) {
 	return false;
 }
 
-bool Game::addItemStoreInbox(const std::shared_ptr<Player> &player, uint32_t itemId) {
+bool Game::addItemStoreInbox(std::shared_ptr<Player> player, uint32_t itemId) {
 	std::shared_ptr<Item> decoKit = Item::CreateItem(ITEM_DECORATION_KIT, 1);
 	if (!decoKit) {
 		return false;
@@ -9673,7 +9672,7 @@ bool Game::addItemStoreInbox(const std::shared_ptr<Player> &player, uint32_t ite
 	return true;
 }
 
-void Game::addPlayerUniqueLogin(const std::shared_ptr<Player> &player) {
+void Game::addPlayerUniqueLogin(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().error("Attempted to add null player to unique player names list");
 		return;
@@ -9703,7 +9702,7 @@ void Game::removePlayerUniqueLogin(const std::string &playerName) {
 	m_uniqueLoginPlayerNames.erase(lowercase_name);
 }
 
-void Game::removePlayerUniqueLogin(const std::shared_ptr<Player> &player) {
+void Game::removePlayerUniqueLogin(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().error("Attempted to remove null player from unique player names list.");
 		return;
@@ -9714,7 +9713,7 @@ void Game::removePlayerUniqueLogin(const std::shared_ptr<Player> &player) {
 }
 
 void Game::playerCheckActivity(const std::string &playerName, int interval) {
-	const auto &player = getPlayerUniqueLogin(playerName);
+	std::shared_ptr<Player> player = getPlayerUniqueLogin(playerName);
 	if (!player) {
 		return;
 	}
@@ -9747,7 +9746,7 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 }
 
 void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems /* = 0*/) {
-	const auto &player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -9789,7 +9788,7 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 	}
 }
 
-bool Game::tryRetrieveStashItems(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item) {
+bool Game::tryRetrieveStashItems(std::shared_ptr<Player> player, std::shared_ptr<Item> item) {
 	return internalCollectLootItems(player, item, OBJECTCATEGORY_STASHRETRIEVE) == RETURNVALUE_NOERROR;
 }
 

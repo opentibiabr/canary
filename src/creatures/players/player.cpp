@@ -917,7 +917,7 @@ bool Player::canWalkthrough(std::shared_ptr<Creature> creature) {
 		return true;
 	}
 
-	const auto &player = creature->getPlayer();
+	std::shared_ptr<Player> player = creature->getPlayer();
 	std::shared_ptr<Monster> monster = creature->getMonster();
 	std::shared_ptr<Npc> npc = creature->getNpc();
 	if (monster) {
@@ -938,7 +938,7 @@ bool Player::canWalkthrough(std::shared_ptr<Creature> creature) {
 			return false;
 		}
 
-		const auto &thisPlayer = getPlayer();
+		std::shared_ptr<Player> thisPlayer = getPlayer();
 		if ((OTSYS_TIME() - lastWalkthroughAttempt) > 2000) {
 			thisPlayer->setLastWalkthroughAttempt(OTSYS_TIME());
 			return false;
@@ -973,7 +973,7 @@ bool Player::canWalkthroughEx(std::shared_ptr<Creature> creature) {
 		return true;
 	}
 
-	const auto &player = creature->getPlayer();
+	std::shared_ptr<Player> player = creature->getPlayer();
 	std::shared_ptr<Npc> npc = creature->getNpc();
 	if (player) {
 		std::shared_ptr<Tile> playerTile = player->getTile();
@@ -2539,7 +2539,7 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 		for (const auto &it : damageMap) {
 			CountBlock_t cb = it.second;
 			if ((OTSYS_TIME() - cb.ticks) <= inFightTicks) {
-				const auto &damageDealer = g_game().getPlayerByID(it.first);
+				std::shared_ptr<Player> damageDealer = g_game().getPlayerByID(it.first);
 				if (damageDealer) {
 					playerDmg += cb.total;
 					sumLevels += damageDealer->getLevel();
@@ -2764,7 +2764,7 @@ bool Player::spawn() {
 			continue;
 		}
 
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (std::shared_ptr<Player> tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendCreatureAppear(static_self_cast<Player>(), pos, true);
 		}
 
@@ -2808,10 +2808,10 @@ void Player::despawn() {
 			continue;
 		}
 
-		if (const auto &player = spectator->getPlayer()) {
+		if (const auto player = spectator->getPlayer()) {
 			oldStackPosVector.push_back(player->canSeeCreature(static_self_cast<Player>()) ? tile->getStackposOfCreature(player, getPlayer()) : -1);
 		}
-		if (const auto &player = spectator->getPlayer()) {
+		if (auto player = spectator->getPlayer()) {
 			player->sendRemoveTileThing(tile->getPosition(), oldStackPosVector[i++]);
 		}
 
@@ -2901,7 +2901,7 @@ void Player::removePlayer(bool displayEffect, bool forced /*= true*/) {
 	}
 }
 
-void Player::notifyStatusChange(const std::shared_ptr<Player> &loginPlayer, VipStatus_t status, bool message) {
+void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t status, bool message) {
 	if (!client) {
 		return;
 	}
@@ -4253,7 +4253,7 @@ void Player::doAttacking(uint32_t) {
 
 uint64_t Player::getGainedExperience(std::shared_ptr<Creature> attacker) const {
 	if (g_configManager().getBoolean(EXPERIENCE_FROM_PLAYERS)) {
-		const auto &attackerPlayer = attacker->getPlayer();
+		auto attackerPlayer = attacker->getPlayer();
 		if (attackerPlayer && attackerPlayer.get() != this && skillLoss && std::abs(static_cast<int32_t>(attackerPlayer->getLevel() - level)) <= g_configManager().getNumber(EXP_FROM_PLAYERS_LEVEL_RANGE)) {
 			return std::max<uint64_t>(0, std::floor(getLostExperience() * getDamageRatio(attacker) * 0.75));
 		}
@@ -4469,7 +4469,7 @@ void Player::onAttackedCreature(std::shared_ptr<Creature> target) {
 		return;
 	}
 
-	const auto &targetPlayer = target->getPlayer();
+	auto targetPlayer = target->getPlayer();
 	if (targetPlayer && !isPartner(targetPlayer) && !isGuildMate(targetPlayer)) {
 		if (!pzLocked && g_game().getWorldType() == WORLD_TYPE_PVP_ENFORCED) {
 			pzLocked = true;
@@ -4546,7 +4546,7 @@ void Player::onTargetCreatureGainHealth(std::shared_ptr<Creature> target, int32_
 		if (isPartner(tmpPlayer) && (tmpPlayer != getPlayer())) {
 			tmpPlayer = target->getPlayer();
 		} else if (std::shared_ptr<Creature> targetMaster = target->getMaster()) {
-			if (const auto &targetMasterPlayer = targetMaster->getPlayer()) {
+			if (std::shared_ptr<Player> targetMasterPlayer = targetMaster->getPlayer()) {
 				tmpPlayer = targetMasterPlayer;
 			}
 		}
@@ -4566,7 +4566,7 @@ bool Player::onKilledCreature(std::shared_ptr<Creature> target, bool lastHit /* 
 
 	Creature::onKilledCreature(target, lastHit);
 
-	if (const auto &targetPlayer = target->getPlayer()) {
+	if (auto targetPlayer = target->getPlayer()) {
 		if (targetPlayer && targetPlayer->getZoneType() == ZONE_PVP) {
 			targetPlayer->setDropLoot(false);
 			targetPlayer->setSkillLoss(false);
@@ -4576,7 +4576,7 @@ bool Player::onKilledCreature(std::shared_ptr<Creature> target, bool lastHit /* 
 					for (auto &kill : targetPlayer->unjustifiedKills) {
 						if (kill.target == getGUID() && kill.unavenged) {
 							kill.unavenged = false;
-							const auto &it = attackedSet.find(targetPlayer->guid);
+							auto it = attackedSet.find(targetPlayer->guid);
 							attackedSet.erase(it);
 							break;
 						}
@@ -4596,7 +4596,7 @@ bool Player::onKilledCreature(std::shared_ptr<Creature> target, bool lastHit /* 
 	} else if (std::shared_ptr<Monster> monster = target->getMonster()) {
 		// Access to the monster's map damage to check if the player attacked it
 		for (auto [playerId, damage] : monster->getDamageMap()) {
-			const auto &damagePlayer = g_game().getPlayerByID(playerId);
+			auto damagePlayer = g_game().getPlayerByID(playerId);
 			if (!damagePlayer) {
 				continue;
 			}
@@ -4924,7 +4924,7 @@ Skulls_t Player::getSkullClient(std::shared_ptr<Creature> creature) {
 		return SKULL_NONE;
 	}
 
-	const auto &player = creature->getPlayer();
+	std::shared_ptr<Player> player = creature->getPlayer();
 	if (player && player->getSkull() == SKULL_NONE) {
 		if (player.get() == this) {
 			for (const auto &kill : unjustifiedKills) {
@@ -4949,7 +4949,7 @@ Skulls_t Player::getSkullClient(std::shared_ptr<Creature> creature) {
 	return Creature::getSkullClient(creature);
 }
 
-bool Player::hasKilled(const std::shared_ptr<Player> &player) const {
+bool Player::hasKilled(std::shared_ptr<Player> player) const {
 	for (const auto &kill : unjustifiedKills) {
 		if (kill.target == player->getGUID() && (time(nullptr) - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60 && kill.unavenged) {
 			return true;
@@ -4959,7 +4959,7 @@ bool Player::hasKilled(const std::shared_ptr<Player> &player) const {
 	return false;
 }
 
-bool Player::hasAttacked(const std::shared_ptr<Player> &attacked) const {
+bool Player::hasAttacked(std::shared_ptr<Player> attacked) const {
 	if (hasFlag(PlayerFlags_t::NotGainInFight) || !attacked) {
 		return false;
 	}
@@ -4967,7 +4967,7 @@ bool Player::hasAttacked(const std::shared_ptr<Player> &attacked) const {
 	return attackedSet.find(attacked->guid) != attackedSet.end();
 }
 
-void Player::addAttacked(const std::shared_ptr<Player> &attacked) {
+void Player::addAttacked(std::shared_ptr<Player> attacked) {
 	if (hasFlag(PlayerFlags_t::NotGainInFight) || !attacked || attacked == getPlayer()) {
 		return;
 	}
@@ -4975,7 +4975,7 @@ void Player::addAttacked(const std::shared_ptr<Player> &attacked) {
 	attackedSet.insert(attacked->guid);
 }
 
-void Player::removeAttacked(const std::shared_ptr<Player> &attacked) {
+void Player::removeAttacked(std::shared_ptr<Player> attacked) {
 	if (!attacked || attacked == getPlayer()) {
 		return;
 	}
@@ -4990,7 +4990,7 @@ void Player::clearAttacked() {
 	attackedSet.clear();
 }
 
-void Player::addUnjustifiedDead(const std::shared_ptr<Player> &attacked) {
+void Player::addUnjustifiedDead(std::shared_ptr<Player> attacked) {
 	if (hasFlag(PlayerFlags_t::NotGainInFight) || attacked == getPlayer() || g_game().getWorldType() == WORLD_TYPE_PVP_ENFORCED) {
 		return;
 	}
@@ -5112,7 +5112,7 @@ bool Player::hasLearnedInstantSpell(const std::string &spellName) const {
 	return false;
 }
 
-bool Player::isInWar(const std::shared_ptr<Player> &player) const {
+bool Player::isInWar(std::shared_ptr<Player> player) const {
 	if (!player || !guild) {
 		return false;
 	}
@@ -5391,7 +5391,7 @@ void Player::setTransferableTibiaCoins(int32_t v) {
 	coinTransferableBalance = v;
 }
 
-PartyShields_t Player::getPartyShield(const std::shared_ptr<Player> &player) {
+PartyShields_t Player::getPartyShield(std::shared_ptr<Player> player) {
 	if (!player) {
 		return SHIELD_NONE;
 	}
@@ -5445,28 +5445,28 @@ PartyShields_t Player::getPartyShield(const std::shared_ptr<Player> &player) {
 	return SHIELD_NONE;
 }
 
-bool Player::isInviting(const std::shared_ptr<Player> &player) const {
+bool Player::isInviting(std::shared_ptr<Player> player) const {
 	if (!player || !party || party->getLeader().get() != this) {
 		return false;
 	}
 	return party->isPlayerInvited(player);
 }
 
-bool Player::isPartner(const std::shared_ptr<Player> &player) const {
+bool Player::isPartner(std::shared_ptr<Player> player) const {
 	if (!player || !party || player.get() == this) {
 		return false;
 	}
 	return party == player->party;
 }
 
-bool Player::isGuildMate(const std::shared_ptr<Player> &player) const {
+bool Player::isGuildMate(std::shared_ptr<Player> player) const {
 	if (!player || !guild) {
 		return false;
 	}
 	return guild == player->guild;
 }
 
-void Player::sendPlayerPartyIcons(const std::shared_ptr<Player> &player) {
+void Player::sendPlayerPartyIcons(std::shared_ptr<Player> player) {
 	sendPartyCreatureShield(player);
 	sendPartyCreatureSkull(player);
 }
@@ -5492,7 +5492,7 @@ void Player::clearPartyInvitations() {
 	invitePartyList.clear();
 }
 
-GuildEmblems_t Player::getGuildEmblem(const std::shared_ptr<Player> &player) const {
+GuildEmblems_t Player::getGuildEmblem(std::shared_ptr<Player> player) const {
 	if (!player) {
 		return GUILDEMBLEM_NONE;
 	}
@@ -6798,7 +6798,7 @@ bool Player::saySpell(
 	int32_t valueEmote = 0;
 	// Send to client
 	for (std::shared_ptr<Creature> spectator : spectators) {
-		if (const auto &tmpPlayer = spectator->getPlayer()) {
+		if (std::shared_ptr<Player> tmpPlayer = spectator->getPlayer()) {
 			valueEmote = tmpPlayer->getStorageValue(STORAGEVALUE_EMOTE);
 			if (!ghostMode || tmpPlayer->canSeeCreature(static_self_cast<Player>())) {
 				if (valueEmote == 1) {
@@ -6812,7 +6812,7 @@ bool Player::saySpell(
 
 	// Execute lua event method
 	for (std::shared_ptr<Creature> spectator : spectators) {
-		const auto &tmpPlayer = spectator->getPlayer();
+		auto tmpPlayer = spectator->getPlayer();
 		if (!tmpPlayer) {
 			continue;
 		}

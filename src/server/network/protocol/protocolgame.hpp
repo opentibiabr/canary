@@ -233,7 +233,7 @@ private:
 	void sendOpenPrivateChannel(const std::string &receiver);
 	void sendExperienceTracker(int64_t rawExp, int64_t finalExp);
 	void sendToChannel(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, uint16_t channelId);
-	void sendPrivateMessage(const std::shared_ptr<Player> &speaker, SpeakClasses type, const std::string &text);
+	void sendPrivateMessage(std::shared_ptr<Player> speaker, SpeakClasses type, const std::string &text);
 	void sendIcons(uint32_t icons);
 	void sendFYIBox(const std::string &message);
 
@@ -281,10 +281,10 @@ private:
 	void sendPartyCreatureShield(std::shared_ptr<Creature> target);
 	void sendPartyCreatureSkull(std::shared_ptr<Creature> target);
 	void sendPartyCreatureHealth(std::shared_ptr<Creature> target, uint8_t healthPercent);
-	void sendPartyPlayerMana(const std::shared_ptr<Player> &target, uint8_t manaPercent);
+	void sendPartyPlayerMana(std::shared_ptr<Player> target, uint8_t manaPercent);
 	void sendPartyCreatureShowStatus(std::shared_ptr<Creature> target, bool showStatus);
-	void sendPartyPlayerVocation(const std::shared_ptr<Player> &target);
-	void sendPlayerVocation(const std::shared_ptr<Player> &target);
+	void sendPartyPlayerVocation(std::shared_ptr<Player> target);
+	void sendPlayerVocation(std::shared_ptr<Player> target);
 	void sendSkills();
 	void sendPing();
 	void sendPingBack();

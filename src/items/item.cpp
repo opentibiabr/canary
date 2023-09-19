@@ -87,7 +87,7 @@ void Item::setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
 }
 
 void Item::addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
-	const auto &player = getHoldingPlayer();
+	std::shared_ptr<Player> player = getHoldingPlayer();
 	if (!player) {
 		return;
 	}

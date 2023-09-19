@@ -21,7 +21,7 @@ public:
 	explicit Action(LuaScriptInterface* interface);
 
 	// Scripting
-	virtual bool executeUse(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, const Position &fromPosition, std::shared_ptr<Thing> target, const Position &toPosition, bool isHotkey);
+	virtual bool executeUse(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const Position &fromPosition, std::shared_ptr<Thing> target, const Position &toPosition, bool isHotkey);
 
 	bool getAllowFarUse() const {
 		return allowFarUse;
@@ -96,13 +96,13 @@ public:
 		positions.emplace_back(pos);
 	}
 
-	virtual ReturnValue canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos);
+	virtual ReturnValue canExecuteAction(std::shared_ptr<Player> player, const Position &toPos);
 
 	virtual bool hasOwnErrorHandler() {
 		return false;
 	}
 
-	virtual std::shared_ptr<Thing> getTarget(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> targetCreature, const Position &toPosition, uint8_t toStackPos) const;
+	virtual std::shared_ptr<Thing> getTarget(std::shared_ptr<Player> player, std::shared_ptr<Creature> targetCreature, const Position &toPosition, uint8_t toStackPos) const;
 
 private:
 	std::string getScriptTypeName() const override {
@@ -143,11 +143,11 @@ public:
 		return inject<Actions>();
 	}
 
-	bool useItem(const std::shared_ptr<Player> &player, const Position &pos, uint8_t index, std::shared_ptr<Item> item, bool isHotkey);
-	bool useItemEx(const std::shared_ptr<Player> &player, const Position &fromPos, const Position &toPos, uint8_t toStackPos, std::shared_ptr<Item> item, bool isHotkey, std::shared_ptr<Creature> creature = nullptr);
+	bool useItem(std::shared_ptr<Player> player, const Position &pos, uint8_t index, std::shared_ptr<Item> item, bool isHotkey);
+	bool useItemEx(std::shared_ptr<Player> player, const Position &fromPos, const Position &toPos, uint8_t toStackPos, std::shared_ptr<Item> item, bool isHotkey, std::shared_ptr<Creature> creature = nullptr);
 
-	ReturnValue canUse(const std::shared_ptr<Player> &player, const Position &pos);
-	ReturnValue canUse(const std::shared_ptr<Player> &player, const Position &pos, std::shared_ptr<Item> item);
+	ReturnValue canUse(std::shared_ptr<Player> player, const Position &pos);
+	ReturnValue canUse(std::shared_ptr<Player> player, const Position &pos, std::shared_ptr<Item> item);
 	ReturnValue canUseFar(std::shared_ptr<Creature> creature, const Position &toPos, bool checkLineOfSight, bool checkFloor);
 
 	bool registerLuaItemEvent(const std::shared_ptr<Action> action);
@@ -211,8 +211,8 @@ private:
 		actionItemMap.try_emplace(actionId, action);
 	}
 
-	ReturnValue internalUseItem(const std::shared_ptr<Player> &player, const Position &pos, uint8_t index, std::shared_ptr<Item> item, bool isHotkey);
-	static void showUseHotkeyMessage(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, uint32_t count);
+	ReturnValue internalUseItem(std::shared_ptr<Player> player, const Position &pos, uint8_t index, std::shared_ptr<Item> item, bool isHotkey);
+	static void showUseHotkeyMessage(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint32_t count);
 
 	using ActionUseMap = std::map<uint16_t, std::shared_ptr<Action>>;
 	ActionUseMap useItemMap;

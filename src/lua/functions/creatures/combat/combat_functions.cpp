@@ -188,7 +188,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 		}
 
 		case VARIANT_STRING: {
-			const auto &target = g_game().getPlayerByName(variant.text);
+			std::shared_ptr<Player> target = g_game().getPlayerByName(variant.text);
 			if (!target) {
 				pushBoolean(L, false);
 				return 1;

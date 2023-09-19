@@ -106,7 +106,7 @@ namespace {
 	 * @param msg The network message to which the imbuement damage should be added.
 	 * @param player Pointer to the player for whom the imbuement damage should be handled.
 	 */
-	void handleImbuementDamage(NetworkMessage &msg, const std::shared_ptr<Player> &player) {
+	void handleImbuementDamage(NetworkMessage &msg, std::shared_ptr<Player> player) {
 		bool imbueDmg = false;
 		std::shared_ptr<Item> weapon = player->getWeapon();
 		if (weapon) {
@@ -144,7 +144,7 @@ namespace {
 	 *
 	 * @param[in] player The pointer to the player whose equipped items are considered.
 	 */
-	void calculateAbsorbValues(const std::shared_ptr<Player> &player, NetworkMessage &msg, uint8_t &combats) {
+	void calculateAbsorbValues(std::shared_ptr<Player> player, NetworkMessage &msg, uint8_t &combats) {
 		alignas(16) uint16_t damageReduction[COMBAT_COUNT] = { 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100 };
 
 		for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
@@ -472,7 +472,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	}
 
 	// dispatcher thread
-	const auto &foundPlayer = g_game().getPlayerUniqueLogin(name);
+	std::shared_ptr<Player> foundPlayer = g_game().getPlayerUniqueLogin(name);
 	if (!foundPlayer) {
 		player = std::make_shared<Player>(getThis());
 		player->setName(name);
@@ -598,7 +598,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t operatingSystem) {
 	eventConnect = 0;
 
-	const auto &foundPlayer = g_game().getPlayerUniqueLogin(playerName);
+	std::shared_ptr<Player> foundPlayer = g_game().getPlayerUniqueLogin(playerName);
 	if (!foundPlayer) {
 		disconnectClient("You are already logged in.");
 		return;
@@ -730,7 +730,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 
 	std::string characterName = msg.getString();
 
-	const auto &foundPlayer = g_game().getPlayerUniqueLogin(characterName);
+	std::shared_ptr<Player> foundPlayer = g_game().getPlayerUniqueLogin(characterName);
 	if (foundPlayer && foundPlayer->client) {
 		foundPlayer->client->disconnectClient("You are already connected through another client. Please use only one client at a time!");
 	}
@@ -2395,7 +2395,7 @@ void ProtocolGame::sendTeamFinderList() {
 	std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 	msg.add<uint16_t>(teamFinder.size());
 	for (auto it : teamFinder) {
-		const auto &leader = g_game().getPlayerByGUID(it.first);
+		std::shared_ptr<Player> leader = g_game().getPlayerByGUID(it.first);
 		if (!leader) {
 			return;
 		}
@@ -2414,7 +2414,7 @@ void ProtocolGame::sendTeamFinderList() {
 		msg.addByte(teamAssemble->vocationIDs);
 		msg.add<uint16_t>(teamAssemble->teamSlots);
 		for (auto itt : teamAssemble->membersMap) {
-			const auto &member = g_game().getPlayerByGUID(it.first);
+			std::shared_ptr<Player> member = g_game().getPlayerByGUID(it.first);
 			if (member) {
 				if (itt.first == player->getGUID()) {
 					status = itt.second;
@@ -2506,14 +2506,14 @@ void ProtocolGame::sendLeaderTeamFinder(bool reset) {
 
 	uint16_t membersSize = 1;
 	for (auto memberPair : teamAssemble->membersMap) {
-		const auto &member = g_game().getPlayerByGUID(memberPair.first);
+		std::shared_ptr<Player> member = g_game().getPlayerByGUID(memberPair.first);
 		if (member) {
 			membersSize += 1;
 		}
 	}
 
 	msg.add<uint16_t>(membersSize);
-	const auto &leader = g_game().getPlayerByGUID(teamAssemble->leaderGuid);
+	std::shared_ptr<Player> leader = g_game().getPlayerByGUID(teamAssemble->leaderGuid);
 	if (!leader) {
 		return;
 	}
@@ -2525,7 +2525,7 @@ void ProtocolGame::sendLeaderTeamFinder(bool reset) {
 	msg.addByte(3);
 
 	for (auto memberPair : teamAssemble->membersMap) {
-		const auto &member = g_game().getPlayerByGUID(memberPair.first);
+		std::shared_ptr<Player> member = g_game().getPlayerByGUID(memberPair.first);
 		if (!member) {
 			continue;
 		}
@@ -2598,7 +2598,7 @@ void ProtocolGame::createLeaderTeamFinder(NetworkMessage &msg) {
 	teamAssemble->leaderGuid = player->getGUID();
 
 	if (teamAssemble->partyBool && player->getParty()) {
-		for (const std::shared_ptr<Player> &member : player->getParty()->getMembers()) {
+		for (std::shared_ptr<Player> member : player->getParty()->getMembers()) {
 			if (member && member->getGUID() != player->getGUID()) {
 				members.insert({ member->getGUID(), 3 });
 			}
@@ -2655,7 +2655,7 @@ void ProtocolGame::parseLeaderFinderWindow(NetworkMessage &msg) {
 		}
 		case 2: {
 			uint32_t memberID = msg.get<uint32_t>();
-			const auto &member = g_game().getPlayerByGUID(memberID);
+			std::shared_ptr<Player> member = g_game().getPlayerByGUID(memberID);
 			if (!member) {
 				return;
 			}
@@ -2719,7 +2719,7 @@ void ProtocolGame::parseMemberFinderWindow(NetworkMessage &msg) {
 		player->sendTeamFinderList();
 	} else {
 		uint32_t leaderID = msg.get<uint32_t>();
-		const auto &leader = g_game().getPlayerByGUID(leaderID);
+		std::shared_ptr<Player> leader = g_game().getPlayerByGUID(leaderID);
 		if (!leader) {
 			return;
 		}
@@ -3872,7 +3872,7 @@ void ProtocolGame::sendCyclopediaCharacterBadges() {
 	msg.addByte(0x01);
 	// if ShowAccountInformation show IsOnline, IsPremium, character title, badges
 	// IsOnline
-	const auto &loggedPlayer = g_game().getPlayerUniqueLogin(player->getName());
+	const auto loggedPlayer = g_game().getPlayerUniqueLogin(player->getName());
 	msg.addByte(loggedPlayer ? 0x01 : 0x00);
 	// IsPremium (GOD has always 'Premium')
 	msg.addByte(player->isPremium() ? 0x01 : 0x00);
@@ -4599,7 +4599,7 @@ void ProtocolGame::updateCoinBalance() {
 	g_dispatcher().addTask(
 		std::bind(
 			[](uint32_t playerId) {
-				const auto &threadPlayer = g_game().getPlayerByID(playerId);
+				auto threadPlayer = g_game().getPlayerByID(playerId);
 				if (threadPlayer && threadPlayer->getAccount()) {
 					auto [coins, errCoin] = threadPlayer->getAccount()->getCoins(account::CoinType::COIN);
 					auto [transferCoins, errTCoin] = threadPlayer->getAccount()->getCoins(account::CoinType::TRANSFERABLE);
@@ -5582,7 +5582,7 @@ void ProtocolGame::sendCreatureSay(std::shared_ptr<Creature> creature, SpeakClas
 	}
 
 	// Add level only for players
-	if (const auto &speaker = creature->getPlayer()) {
+	if (std::shared_ptr<Player> speaker = creature->getPlayer()) {
 		msg.add<uint16_t>(speaker->getLevel());
 	} else {
 		msg.add<uint16_t>(0x00);
@@ -5628,7 +5628,7 @@ void ProtocolGame::sendToChannel(std::shared_ptr<Creature> creature, SpeakClasse
 		}
 
 		// Add level only for players
-		if (const auto &speaker = creature->getPlayer()) {
+		if (std::shared_ptr<Player> speaker = creature->getPlayer()) {
 			msg.add<uint16_t>(speaker->getLevel());
 		} else {
 			msg.add<uint16_t>(0x00);
@@ -5646,7 +5646,7 @@ void ProtocolGame::sendToChannel(std::shared_ptr<Creature> creature, SpeakClasse
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendPrivateMessage(const std::shared_ptr<Player> &speaker, SpeakClasses type, const std::string &text) {
+void ProtocolGame::sendPrivateMessage(std::shared_ptr<Player> speaker, SpeakClasses type, const std::string &text) {
 	NetworkMessage msg;
 	msg.addByte(0xAA);
 	static uint32_t statementId = 0;
@@ -5896,7 +5896,7 @@ void ProtocolGame::sendPartyCreatureHealth(std::shared_ptr<Creature> target, uin
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendPartyPlayerMana(const std::shared_ptr<Player> &target, uint8_t manaPercent) {
+void ProtocolGame::sendPartyPlayerMana(std::shared_ptr<Player> target, uint8_t manaPercent) {
 	uint32_t cid = target->getID();
 	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
 		sendPartyCreatureUpdate(target);
@@ -5932,7 +5932,7 @@ void ProtocolGame::sendPartyCreatureShowStatus(std::shared_ptr<Creature> target,
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendPartyPlayerVocation(const std::shared_ptr<Player> &target) {
+void ProtocolGame::sendPartyPlayerVocation(std::shared_ptr<Player> target) {
 	uint32_t cid = target->getID();
 	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
 		sendPartyCreatureUpdate(target);
@@ -5951,7 +5951,7 @@ void ProtocolGame::sendPartyPlayerVocation(const std::shared_ptr<Player> &target
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendPlayerVocation(const std::shared_ptr<Player> &target) {
+void ProtocolGame::sendPlayerVocation(std::shared_ptr<Player> target) {
 	if (!player || oldProtocol) {
 		return;
 	}
@@ -6100,7 +6100,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 		writeToOutputBuffer(msg);
 
 		if (isLogin) {
-			if (const auto &creaturePlayer = creature->getPlayer()) {
+			if (std::shared_ptr<Player> creaturePlayer = creature->getPlayer()) {
 				if (!creaturePlayer->isAccessPlayer() || creaturePlayer->getAccountType() == account::ACCOUNT_TYPE_NORMAL) {
 					sendMagicEffect(pos, CONST_ME_TELEPORT);
 				}
@@ -6182,7 +6182,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 		for (const VIPEntry &entry : vipEntries) {
 			VipStatus_t vipStatus;
 
-			const auto &vipPlayer = g_game().getPlayerByGUID(entry.guid);
+			std::shared_ptr<Player> vipPlayer = g_game().getPlayerByGUID(entry.guid);
 			if (!vipPlayer) {
 				vipStatus = VIPSTATUS_OFFLINE;
 			} else {
@@ -6195,7 +6195,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 		for (const VIPEntry &entry : vipEntries) {
 			VipStatus_t vipStatus;
 
-			const auto &vipPlayer = g_game().getPlayerByGUID(entry.guid);
+			std::shared_ptr<Player> vipPlayer = g_game().getPlayerByGUID(entry.guid);
 			if (!vipPlayer || vipPlayer->isInGhostMode()) {
 				vipStatus = VIPSTATUS_OFFLINE;
 			} else {
@@ -6989,7 +6989,7 @@ void ProtocolGame::sendModalWindow(const ModalWindow &modalWindow) {
 ////////////// Add common messages
 void ProtocolGame::AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> creature, bool known, uint32_t remove) {
 	CreatureType_t creatureType = creature->getType();
-	const auto &otherPlayer = creature->getPlayer();
+	std::shared_ptr<Player> otherPlayer = creature->getPlayer();
 
 	if (known) {
 		msg.add<uint16_t>(0x62);
@@ -7058,7 +7058,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> cr
 
 	if (!oldProtocol && creatureType == CREATURETYPE_MONSTER) {
 		if (std::shared_ptr<Creature> master = creature->getMaster()) {
-			if (const auto &masterPlayer = master->getPlayer()) {
+			if (std::shared_ptr<Player> masterPlayer = master->getPlayer()) {
 				creatureType = CREATURETYPE_SUMMON_PLAYER;
 			}
 		}
@@ -7079,7 +7079,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> cr
 	}
 
 	if (!oldProtocol && creatureType == CREATURETYPE_PLAYER) {
-		if (const auto &otherCreature = creature->getPlayer()) {
+		if (std::shared_ptr<Player> otherCreature = creature->getPlayer()) {
 			msg.addByte(otherCreature->getVocation()->getClientId());
 		} else {
 			msg.addByte(0);
@@ -7371,7 +7371,7 @@ void ProtocolGame::updatePartyTrackerAnalyzer(const Party* party) {
 	msg.addByte(static_cast<uint8_t>(party->membersData.size()));
 	for (const PartyAnalyzer* analyzer : party->membersData) {
 		msg.add<uint32_t>(analyzer->id);
-		if (const auto &member = g_game().getPlayerByID(analyzer->id);
+		if (std::shared_ptr<Player> member = g_game().getPlayerByID(analyzer->id);
 			!member || !member->getParty() || member->getParty() != party) {
 			msg.addByte(0);
 		} else {
@@ -7512,14 +7512,14 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot) {
 	} else if (slot->state == PreyTaskDataState_Inactive) {
 		// Empty
 	} else if (slot->state == PreyTaskDataState_Selection) {
-		const auto &user = player;
+		std::shared_ptr<Player> user = player;
 		msg.add<uint16_t>(static_cast<uint16_t>(slot->raceIdList.size()));
 		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg, user](uint16_t raceid) {
 			msg.add<uint16_t>(raceid);
 			msg.addByte(user->isCreatureUnlockedOnTaskHunting(g_monsters().getMonsterTypeByRaceId(raceid)) ? 0x01 : 0x00);
 		});
 	} else if (slot->state == PreyTaskDataState_ListSelection) {
-		const auto &user = player;
+		std::shared_ptr<Player> user = player;
 		const std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 		msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg, user](auto mType) {

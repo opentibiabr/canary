@@ -12,7 +12,7 @@
 #include "io/functions/iologindata_save_player.hpp"
 #include "game/game.hpp"
 
-bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
+bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -148,7 +148,7 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
+bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -313,7 +313,7 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerStash(const std::shared_ptr<Player> &player) {
+bool IOLoginDataSave::savePlayerStash(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -339,7 +339,7 @@ bool IOLoginDataSave::savePlayerStash(const std::shared_ptr<Player> &player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerSpells(const std::shared_ptr<Player> &player) {
+bool IOLoginDataSave::savePlayerSpells(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -368,7 +368,7 @@ bool IOLoginDataSave::savePlayerSpells(const std::shared_ptr<Player> &player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerKills(const std::shared_ptr<Player> &player) {
+bool IOLoginDataSave::savePlayerKills(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -397,7 +397,7 @@ bool IOLoginDataSave::savePlayerKills(const std::shared_ptr<Player> &player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerBestiarySystem(const std::shared_ptr<Player> &player) {
+bool IOLoginDataSave::savePlayerBestiarySystem(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -447,7 +447,7 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const std::shared_ptr<Player> &pl
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerItem(const std::shared_ptr<Player> &player) {
+bool IOLoginDataSave::savePlayerItem(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -479,7 +479,7 @@ bool IOLoginDataSave::savePlayerItem(const std::shared_ptr<Player> &player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerDepotItems(const std::shared_ptr<Player> &player) {
+bool IOLoginDataSave::savePlayerDepotItems(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -514,7 +514,7 @@ bool IOLoginDataSave::savePlayerDepotItems(const std::shared_ptr<Player> &player
 	return true;
 }
 
-bool IOLoginDataSave::saveRewardItems(const std::shared_ptr<Player> &player) {
+bool IOLoginDataSave::saveRewardItems(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -548,7 +548,7 @@ bool IOLoginDataSave::saveRewardItems(const std::shared_ptr<Player> &player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerInbox(const std::shared_ptr<Player> &player) {
+bool IOLoginDataSave::savePlayerInbox(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -576,7 +576,7 @@ bool IOLoginDataSave::savePlayerInbox(const std::shared_ptr<Player> &player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerPreyClass(const std::shared_ptr<Player> &player) {
+bool IOLoginDataSave::savePlayerPreyClass(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -631,7 +631,7 @@ bool IOLoginDataSave::savePlayerPreyClass(const std::shared_ptr<Player> &player)
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &player) {
+bool IOLoginDataSave::savePlayerTaskHuntingClass(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -684,7 +684,7 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerForgeHistory(const std::shared_ptr<Player> &player) {
+bool IOLoginDataSave::savePlayerForgeHistory(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -718,7 +718,7 @@ bool IOLoginDataSave::savePlayerForgeHistory(const std::shared_ptr<Player> &play
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player) {
+bool IOLoginDataSave::savePlayerBosstiary(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
@@ -762,7 +762,7 @@ bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player)
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerStorage(const std::shared_ptr<Player> &player) {
+bool IOLoginDataSave::savePlayerStorage(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;

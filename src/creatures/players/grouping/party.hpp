@@ -26,7 +26,7 @@ class Party;
 
 class Party {
 public:
-	explicit Party(const std::shared_ptr<Player> &leader);
+	explicit Party(std::shared_ptr<Player> leader);
 
 	std::shared_ptr<Player> getLeader() const {
 		return m_leader.lock();
@@ -48,8 +48,8 @@ public:
 	bool invitePlayer(const std::shared_ptr<Player> &player);
 	bool joinParty(const std::shared_ptr<Player> &player);
 	void revokeInvitation(const std::shared_ptr<Player> &player);
-	bool passPartyLeadership(const std::shared_ptr<Player> &player);
-	bool leaveParty(const std::shared_ptr<Player> &player);
+	bool passPartyLeadership(std::shared_ptr<Player> player);
+	bool leaveParty(std::shared_ptr<Player> player);
 
 	bool removeInvite(const std::shared_ptr<Player> &player, bool removeFromPlayer = true);
 
@@ -62,32 +62,32 @@ public:
 	bool canOpenCorpse(uint32_t ownerId) const;
 
 	void shareExperience(uint64_t experience, std::shared_ptr<Creature> target = nullptr);
-	bool setSharedExperience(const std::shared_ptr<Player> &player, bool sharedExpActive, bool silent = false);
+	bool setSharedExperience(std::shared_ptr<Player> player, bool sharedExpActive, bool silent = false);
 	bool isSharedExperienceActive() const {
 		return sharedExpActive;
 	}
 	bool isSharedExperienceEnabled() const {
 		return sharedExpEnabled;
 	}
-	bool canUseSharedExperience(const std::shared_ptr<Player> &player);
-	SharedExpStatus_t getMemberSharedExperienceStatus(const std::shared_ptr<Player> &player);
+	bool canUseSharedExperience(std::shared_ptr<Player> player);
+	SharedExpStatus_t getMemberSharedExperienceStatus(std::shared_ptr<Player> player);
 	void updateSharedExperience();
 
-	void updatePlayerTicks(const std::shared_ptr<Player> &player, uint32_t points);
-	void clearPlayerPoints(const std::shared_ptr<Player> &player);
+	void updatePlayerTicks(std::shared_ptr<Player> player, uint32_t points);
+	void clearPlayerPoints(std::shared_ptr<Player> player);
 
-	void showPlayerStatus(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &member, bool showStatus);
-	void updatePlayerStatus(const std::shared_ptr<Player> &player);
-	void updatePlayerStatus(const std::shared_ptr<Player> &player, const Position &oldPos, const Position &newPos);
-	void updatePlayerHealth(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> target, uint8_t healthPercent);
-	void updatePlayerMana(const std::shared_ptr<Player> &player, uint8_t manaPercent);
-	void updatePlayerVocation(const std::shared_ptr<Player> &player);
+	void showPlayerStatus(std::shared_ptr<Player> player, std::shared_ptr<Player> member, bool showStatus);
+	void updatePlayerStatus(std::shared_ptr<Player> player);
+	void updatePlayerStatus(std::shared_ptr<Player> player, const Position &oldPos, const Position &newPos);
+	void updatePlayerHealth(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, uint8_t healthPercent);
+	void updatePlayerMana(std::shared_ptr<Player> player, uint8_t manaPercent);
+	void updatePlayerVocation(std::shared_ptr<Player> player);
 
 	void updateTrackerAnalyzer();
-	void addPlayerLoot(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item);
-	void addPlayerSupply(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item);
-	void addPlayerDamage(const std::shared_ptr<Player> &player, uint64_t amount);
-	void addPlayerHealing(const std::shared_ptr<Player> &player, uint64_t amount);
+	void addPlayerLoot(std::shared_ptr<Player> player, std::shared_ptr<Item> item);
+	void addPlayerSupply(std::shared_ptr<Player> player, std::shared_ptr<Item> item);
+	void addPlayerDamage(std::shared_ptr<Player> player, uint64_t amount);
+	void addPlayerHealing(std::shared_ptr<Player> player, uint64_t amount);
 	void switchAnalyzerPriceType();
 	void resetAnalyzer();
 	void reloadPrices();
@@ -115,7 +115,7 @@ public:
 
 private:
 	const char* getSharedExpReturnMessage(SharedExpStatus_t value);
-	bool isPlayerActive(const std::shared_ptr<Player> &player);
+	bool isPlayerActive(std::shared_ptr<Player> player);
 	SharedExpStatus_t getSharedExperienceStatus();
 	uint32_t getHighestLevel();
 	uint32_t getLowestLevel();

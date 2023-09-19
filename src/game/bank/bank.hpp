@@ -43,13 +43,13 @@ public:
 	uint64_t balance();
 	bool hasBalance(uint64_t amount);
 	bool transferTo(const std::shared_ptr<Bank> destination, uint64_t amount);
-	bool withdraw(const std::shared_ptr<Player> &player, uint64_t amount);
+	bool withdraw(std::shared_ptr<Player> player, uint64_t amount);
 	bool deposit(const std::shared_ptr<Bank> destination);
 	bool deposit(const std::shared_ptr<Bank> destination, uint64_t amount);
 
 private:
 	std::shared_ptr<Bankable> getBankable() const {
-		return m_bankable;
+		return m_bankable.lock();
 	}
-	std::shared_ptr<Bankable> m_bankable;
+	std::weak_ptr<Bankable> m_bankable;
 };

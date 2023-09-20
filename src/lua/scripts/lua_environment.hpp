@@ -82,6 +82,8 @@ public:
 		return shuttingDown;
 	}
 
+	void collectGarbage() const;
+
 private:
 	void executeTimerEvent(uint32_t eventIndex);
 

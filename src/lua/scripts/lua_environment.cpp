@@ -182,3 +182,19 @@ void LuaEnvironment::executeTimerEvent(uint32_t eventIndex) {
 		luaL_unref(luaState, LUA_REGISTRYINDEX, parameter);
 	}
 }
+
+void LuaEnvironment::collectGarbage() const {
+	// prevents recursive collects
+	static bool collecting = false;
+	if (!collecting) {
+		collecting = true;
+
+		// we must collect two times because __gc metamethod
+		// is called on uservalues only the second time
+		for (int i = -1; ++i < 2;) {
+			lua_gc(luaState, LUA_GCCOLLECT, 0);
+		}
+
+		collecting = false;
+	}
+}

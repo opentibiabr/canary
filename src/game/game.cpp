@@ -7383,6 +7383,8 @@ void Game::shutdown() {
 
 	ConnectionManager::getInstance().closeAll();
 
+	g_luaEnvironment().collectGarbage();
+
 	g_logger().info("Done!");
 }
 
@@ -8402,7 +8404,6 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				int32_t stackCount = std::min<int32_t>(it.stackSize, tmpAmount);
 				std::shared_ptr<Item> item = Item::CreateItem(it.id, stackCount);
 				if (internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
-
 					break;
 				}
 
@@ -8423,7 +8424,6 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			for (uint16_t i = 0; i < offer.amount; ++i) {
 				std::shared_ptr<Item> item = Item::CreateItem(it.id, subType);
 				if (internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
-
 					break;
 				}
 
@@ -8496,7 +8496,6 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (!buyerPlayer) {
 			buyerPlayer = std::make_shared<Player>(nullptr);
 			if (!IOLoginData::loadPlayerById(buyerPlayer, offer.playerId)) {
-
 				offerStatus << "Failed to load buyer player " << player->getName();
 				return;
 			}

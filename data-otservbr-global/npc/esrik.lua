@@ -127,7 +127,7 @@ npcConfig.shop = {
 	{ itemName = "lasting exercise club", clientId = 35287, buy = 7560000, count = 14400 },
 	{ itemName = "lasting exercise sword", clientId = 35285, buy = 7560000, count = 14400 },
 	-- 3 tomes
-	{ itemName = "lizard weapon rack kit", clientId = 10209, buy = 500, storageKey = tomes, storageValue = 3 },
+	{ itemName = "lizard weapon rack kit", clientId = 10210, buy = 500, storageKey = tomes, storageValue = 3 },
 	-- 9 tomes
 	{ itemName = "broken halberd", clientId = 10418, sell = 100, storageKey = tomes, storageValue = 9 },
 	{ itemName = "spiked iron ball", clientId = 10408, sell = 100, storageKey = tomes, storageValue = 9 },

@@ -883,6 +883,7 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 	registerEnum(L, ITEM_FORGE_SLIVER);
 	registerEnum(L, ITEM_FORGE_CORE);
 	registerEnum(L, ITEM_PRIMAL_POD);
+	registerEnum(L, ITEM_DECORATION_KIT);
 
 	registerEnum(L, ItemID_t::HIRELING_LAMP);
 }

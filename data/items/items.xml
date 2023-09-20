@@ -4651,7 +4651,6 @@
 	<item id="2526" article="a" name="dustbin">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="type" value="trashholder"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="2527" toid="2534" article="a" name="big wine cask">
 		<attribute key="primarytype" value="casks"/>

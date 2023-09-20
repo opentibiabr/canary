@@ -262,7 +262,7 @@ bool House::transferToDepot(std::shared_ptr<Player> player) const {
 	ItemList moveItemList;
 	for (std::shared_ptr<HouseTile> tile : houseTiles) {
 		if (const TileItemVector* items = tile->getItemList()) {
-			for (auto &item : *items) {
+			for (const std::shared_ptr<Item> &item : *items) {
 				if (item->isWrapable()) {
 					handleWrapableItem(moveItemList, item, player, tile);
 				} else if (item->isPickupable()) {
@@ -293,13 +293,16 @@ bool House::hasItemOnTile() const {
 
 				if (item->isWrapable()) {
 					foundItem = true;
+					g_logger().error("It is not possible to purchase a house with wrap item inside: id '{}', name '{}'", item->getID(), item->getName());
 					break;
 				} else if (item->isPickupable()) {
 					foundItem = true;
+					g_logger().error("It is not possible to purchase a house with pickupable item inside: id '{}', name '{}'", item->getID(), item->getName());
 					break;
 				} else {
-					if (const std::shared_ptr<Container>& container = item->getContainer()) {
+					if (item->getContainer() && (!item->isPickupable() || !item->isWrapable())) {
 						foundItem = true;
+						g_logger().error("It is not possible to purchase a house with container item inside: id '{}', name '{}'", item->getID(), item->getName());
 						break;
 					}
 				}

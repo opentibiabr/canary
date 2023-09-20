@@ -934,6 +934,7 @@ Storage = {
 		DeeplingAnchor = 51023,
 		FirstOrientalAddon = 51024,
 		SecondOrientalAddon = 51025,
+		RoyalCostumeOutfit = 51026,
 	},
 	TheAncientTombs = {
 		-- Reserved storage from 50940 - 51059

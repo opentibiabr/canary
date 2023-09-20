@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 58,
 	lookBody = 119,
 	lookLegs = 81,
-	lookFeet = 114
+	lookFeet = 114,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -74,7 +74,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			player:setStorageValue(Storage.HiddenCityOfBeregar.SweetAsChocolateCake, 3)
 			player:setStorageValue(Storage.HiddenCityOfBeregar.DoorWestMine, 1)
-		npcHandler:say("Great! That's my breakthrough. Now she can't refuse to go out with me. I grant you access to the western part of the mine.", npc, creature)
+			npcHandler:say("Great! That's my breakthrough. Now she can't refuse to go out with me. I grant you access to the western part of the mine.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end

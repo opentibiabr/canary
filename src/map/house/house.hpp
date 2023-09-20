@@ -145,12 +145,18 @@ public:
 		return paidUntil;
 	}
 
+	void setSize(uint32_t newSize) {
+		this->size = newSize;
+	}
+	uint32_t getSize() const {
+		return size;
+	}
+	uint32_t getPrice() const;
+
 	void setRent(uint32_t newRent) {
 		this->rent = newRent;
 	}
-	uint32_t getRent() const {
-		return rent;
-	}
+	uint32_t getRent() const;
 
 	void setPayRentWarnings(uint32_t warnings) {
 		rentWarnings = warnings;
@@ -192,8 +198,8 @@ public:
 	const HouseBedItemList &getBeds() const {
 		return bedsList;
 	}
-	uint32_t getBedCount() {
-		return static_cast<uint32_t>(std::floor(bedsList.size() / 2.));
+	uint32_t getBedCount() const {
+		return static_cast<uint32_t>(std::floor(static_cast<double>(bedsList.size()) / 2.));
 	}
 
 	void setMaxBeds(int32_t count) {
@@ -229,6 +235,7 @@ private:
 	uint32_t ownerAccountId = 0;
 	uint32_t rentWarnings = 0;
 	uint32_t rent = 0;
+	uint32_t size = 0;
 	uint32_t townId = 0;
 	uint32_t maxBeds = 4;
 	int32_t bedsCount = -1;
@@ -257,12 +264,11 @@ public:
 	Houses &operator=(const Houses &) = delete;
 
 	House* addHouse(uint32_t id) {
-		auto it = houseMap.find(id);
-		if (it != houseMap.end()) {
+		if (auto it = houseMap.find(id); it != houseMap.end()) {
 			return it->second;
 		}
 
-		House* house = new House(id);
+		auto house = new House(id);
 		houseMap[id] = house;
 		return house;
 	}

@@ -57,6 +57,7 @@ public:
 			case ItemAttribute_t::PLURALNAME:
 			case ItemAttribute_t::SPECIAL:
 			case ItemAttribute_t::LOOTMESSAGE_SUFFIX:
+			case ItemAttribute_t::STORE_INBOX_CATEGORY:
 				return true;
 			default:
 				return false;
@@ -114,7 +115,7 @@ public:
 		return emptyValue;
 	}
 
-	const std::shared_ptr<std::string> &getString() const {
+	const std::shared_ptr<std::string> getString() const {
 		if (std::holds_alternative<std::shared_ptr<std::string>>(value)) {
 			return std::get<std::shared_ptr<std::string>>(value);
 		}

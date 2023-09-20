@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 57,
 	lookBody = 87,
 	lookLegs = 59,
-	lookFeet = 114
+	lookFeet = 114,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -57,7 +57,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	if MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.HiddenCityOfBeregar.JusticeForAll) < 1 then
 			npcHandler:say("I don't see how you could help me. I'm in deep, deep trouble. I'm accused of having stolen a {ring} from Rerun, but I haven't.", npc, creature)
@@ -71,7 +70,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say({
 				"He said he still had it after work. On that evening, {Grombur}, {Rerun} and me opened a cask of beer in one of the mine tunnels. We had a fun evening there. ...",
-				"On the next day, the guards brought me to emperor {Rehal}, and Rerun was there, too. He said I had stolen his ring. I'd never steal, you have to believe me."
+				"On the next day, the guards brought me to emperor {Rehal}, and Rerun was there, too. He said I had stolen his ring. I'd never steal, you have to believe me.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end

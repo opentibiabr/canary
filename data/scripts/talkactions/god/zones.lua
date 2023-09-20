@@ -1,16 +1,5 @@
 local zones = TalkAction("/zones")
 
-local function randomZonePosition(zone)
-	local positions = zone:getPositions()
-	local destination = positions[math.random(1, #positions)]
-	local tile = destination:getTile()
-	while not tile or not tile:isWalkable(false, false, false, false, true) do
-		destination = positions[math.random(1, #positions)]
-		tile = destination:getTile()
-	end
-	return destination
-end
-
 function zones.onSay(player, words, param)
 	local params = string.split(param, ",")
 	local cmd = params[1]
@@ -24,7 +13,7 @@ function zones.onSay(player, words, param)
 		for _, zone in ipairs(Zone.getAll()) do
 			table.insert(list, zone:getName())
 		end
-		player:sendTextMessage(MESSAGE_HEALED, "Zones: " .. table.concat(list, ", "))
+		player:sendTextMessage(MESSAGE_HEALED, "Zones:\n" .. table.concat(list, "\n "))
 		return true
 	end
 
@@ -44,7 +33,7 @@ function zones.onSay(player, words, param)
 
 	local commands = {
 		["goto"] = function(zone)
-			local pos = randomZonePosition(zone)
+			local pos = zone:randomPosition()
 			if not pos then
 				player:sendTextMessage(MESSAGE_HEALED, "No position found.")
 				return false
@@ -69,11 +58,7 @@ function zones.onSay(player, words, param)
 			player:sendTextMessage(MESSAGE_HEALED, "Zone " .. zone:getName() .. " NPCs: " .. #npcs .. ".")
 		end,
 		kickPlayers = function(zone)
-			local players = zone:getPlayers()
-			for _, player in ipairs(players) do
-				player:teleportTo(player:getTown():getTemplePosition())
-				player:sendTextMessage(MESSAGE_HEALED, "You have been kicked from " .. zone:getName() .. ".")
-			end
+			zone:removePlayers()
 			player:sendTextMessage(MESSAGE_HEALED, "Players kicked from " .. zone:getName() .. ".")
 		end,
 		listPlayers = function(zone)
@@ -100,7 +85,9 @@ function zones.onSay(player, words, param)
 		return false
 	end
 	local zone = zoneFromParam()
-	if not zone then return false end
+	if not zone then
+		return false
+	end
 	return command(zone)
 end
 

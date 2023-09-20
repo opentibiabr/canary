@@ -176,6 +176,7 @@ void Items::loadFromProtobuf() {
 		iType.clockExpire = object.flags().clockexpire();
 		iType.expire = object.flags().expire();
 		iType.expireStop = object.flags().expirestop();
+		iType.isWrapKit = object.flags().wrapkit();
 
 		if (!iType.name.empty()) {
 			nameToItems.insert({ asLowerCaseString(iType.name),
@@ -321,8 +322,9 @@ const ItemType &Items::getItemType(size_t id) const {
 uint16_t Items::getItemIdByName(const std::string &name) {
 	auto result = nameToItems.find(asLowerCaseString(name));
 
-	if (result == nameToItems.end())
+	if (result == nameToItems.end()) {
 		return 0;
+	}
 
 	return result->second;
 }

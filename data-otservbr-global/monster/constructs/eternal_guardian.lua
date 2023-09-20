@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 615
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "North-east Muggy Plains, Deeper Banuta."
-	}
+	Locations = "North-east Muggy Plains, Deeper Banuta.",
+}
 
 monster.health = 2500
 monster.maxHealth = 2500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -61,66 +61,67 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Zzrrkrrch!", yell = false},
-	{text = "<crackle>", yell = false}
+	{ text = "Zzrrkrrch!", yell = false },
+	{ text = "<crackle>", yell = false },
 }
 
 monster.loot = {
-	{name = "small stone", chance = 30230, maxCount = 10},
-	{name = "gold coin", chance = 99930, maxCount = 100},
-	{name = "platinum coin", chance = 99540, maxCount = 4},
-	{name = "guardian halberd", chance = 560},
-	{name = "tower shield", chance = 820},
-	{name = "iron ore", chance = 1700},
-	{name = "ancient stone", chance = 20020},
-	{name = "shiny stone", chance = 800},
-	{name = "zaoan sword", chance = 100},
-	{name = "zaoan halberd", chance = 1860},
-	{name = "spiked iron ball", chance = 9960},
-	{name = "clay lump", chance = 720},
-	{name = "piece of marble rock", chance = 430},
-	{id = 12600, chance = 400} -- coal
+	{ name = "small stone", chance = 30230, maxCount = 10 },
+	{ name = "gold coin", chance = 99930, maxCount = 100 },
+	{ name = "platinum coin", chance = 99540, maxCount = 4 },
+	{ name = "guardian halberd", chance = 560 },
+	{ name = "tower shield", chance = 820 },
+	{ name = "iron ore", chance = 1700 },
+	{ name = "ancient stone", chance = 20020 },
+	{ name = "shiny stone", chance = 800 },
+	{ name = "zaoan sword", chance = 100 },
+	{ name = "zaoan halberd", chance = 1860 },
+	{ name = "spiked iron ball", chance = 9960 },
+	{ name = "clay lump", chance = 720 },
+	{ name = "piece of marble rock", chance = 430 },
+	{ id = 12600, chance = 400 }, -- coal
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300 },
 }
 
 monster.defenses = {
 	defense = 40,
-	armor = 40
+	armor = 62,
+	mitigation = 1.18,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 20},
-	{type = COMBAT_ENERGYDAMAGE, percent = 10},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 70},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = 20},
-	{type = COMBAT_DEATHDAMAGE , percent = 20}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 20 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 70 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 20 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

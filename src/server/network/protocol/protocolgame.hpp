@@ -72,7 +72,7 @@ private:
 	template <typename Callable, typename... Args>
 	void addGameTask(Callable function, Args &&... args);
 	template <typename Callable, typename... Args>
-	void addGameTaskTimed(uint32_t delay, Callable function, Args &&... args);
+	void addGameTaskTimed(uint32_t delay, std::string context, Callable function, Args &&... args);
 
 	ProtocolGame_ptr getThis() {
 		return std::static_pointer_cast<ProtocolGame>(shared_from_this());
@@ -497,12 +497,10 @@ private:
 	void sendSpecialContainersAvailable();
 	void addBless();
 	void parsePacketDead(uint8_t recvbyte);
+	void addCreatureIcon(NetworkMessage &msg, const Creature* creature);
 
 	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
-
-	// Hazard system
-	void reloadHazardSystemIcon();
 
 	uint8_t m_playerDeathTime = 0;
 

@@ -11,6 +11,7 @@
 
 #include "creatures/players/player.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "lib/di/container.hpp"
 
 enum SharedExpStatus_t : uint8_t {
 	SHAREDEXP_OK,
@@ -63,7 +64,7 @@ public:
 	bool canOpenCorpse(uint32_t ownerId) const;
 
 	void shareExperience(uint64_t experience, Creature* target = nullptr);
-	bool setSharedExperience(Player* player, bool sharedExpActive);
+	bool setSharedExperience(Player* player, bool sharedExpActive, bool silent = false);
 	bool isSharedExperienceActive() const {
 		return sharedExpActive;
 	}
@@ -116,7 +117,12 @@ public:
 
 private:
 	const char* getSharedExpReturnMessage(SharedExpStatus_t value);
+	bool isPlayerActive(const Player* player) const;
 	SharedExpStatus_t getSharedExperienceStatus();
+	uint32_t getHighestLevel() const;
+	uint32_t getLowestLevel() const;
+	uint32_t getMinLevel() const;
+	uint32_t getMaxLevel() const;
 
 	std::map<uint32_t, int64_t> ticksMap;
 

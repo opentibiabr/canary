@@ -1,6 +1,6 @@
 local setting = {
-	[50390] = {effectTeleport = CONST_ME_GREEN_RINGS, newPosition = Position(33651, 31942, 7)},
-	[50391] = {effectTeleport = CONST_ME_STONES, newPosition = Position(32172, 32439, 8)},
+	[50390] = { effectTeleport = CONST_ME_GREEN_RINGS, newPosition = Position(33651, 31942, 7) },
+	[50391] = { effectTeleport = CONST_ME_STONES, newPosition = Position(32172, 32439, 8) },
 }
 
 local fibula = MoveEvent()

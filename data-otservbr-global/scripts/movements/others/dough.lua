@@ -1,6 +1,6 @@
 local pastries = {
 	[3604] = 3600,
-	[6276] = 6277
+	[6276] = 6277,
 }
 
 local dough = MoveEvent()

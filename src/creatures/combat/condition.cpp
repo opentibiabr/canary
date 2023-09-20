@@ -1334,10 +1334,11 @@ bool ConditionManaShield::setParam(ConditionParam_t param, int32_t value) {
 
 uint32_t ConditionManaShield::getIcons() const {
 	uint32_t icons = Condition::getIcons();
-	if (manaShield != 0)
+	if (manaShield != 0) {
 		icons |= ICON_NEWMANASHIELD;
-	else
+	} else {
 		icons |= ICON_MANASHIELD;
+	}
 	return icons;
 }
 
@@ -2039,7 +2040,7 @@ bool ConditionFeared::executeCondition(Creature* creature, int32_t interval) {
 		}
 
 		if (getFleePath(creature, currentPos, listDir)) {
-			g_dispatcher().addTask(std::bind(&Game::forcePlayerAutoWalk, &g_game(), creature->getID(), listDir), true);
+			g_dispatcher().addTask(std::bind(&Game::forcePlayerAutoWalk, &g_game(), creature->getID(), listDir), "ConditionFeared::executeCondition");
 			g_logger().debug("[ConditionFeared::executeCondition] Walking Scheduled");
 		}
 	}
@@ -2262,7 +2263,7 @@ bool ConditionOutfit::startCondition(Creature* creature) {
 	}
 
 	if ((outfit.lookType == 0 && outfit.lookTypeEx == 0) && !monsterName.empty()) {
-		const auto &monsterType = g_monsters().getMonsterType(monsterName);
+		const auto monsterType = g_monsters().getMonsterType(monsterName);
 		if (monsterType) {
 			setOutfit(monsterType->info.outfit);
 		} else {
@@ -2298,7 +2299,7 @@ void ConditionOutfit::addCondition(Creature* creature, const Condition* addCondi
 
 		const ConditionOutfit &conditionOutfit = static_cast<const ConditionOutfit &>(*addCondition);
 		if (!conditionOutfit.monsterName.empty() && conditionOutfit.monsterName.compare(monsterName) != 0) {
-			const auto &monsterType = g_monsters().getMonsterType(conditionOutfit.monsterName);
+			const auto monsterType = g_monsters().getMonsterType(conditionOutfit.monsterName);
 			if (monsterType) {
 				setOutfit(monsterType->info.outfit);
 			} else {

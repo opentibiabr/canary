@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Usurper Commander")
 local monster = {}
 
 monster.description = "an usurper commander"
-monster.experience = 0
+monster.experience = 7200
 monster.outfit = {
 	lookType = 1317,
 	lookHead = 40,
@@ -10,39 +10,30 @@ monster.outfit = {
 	lookLegs = 40,
 	lookFeet = 95,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
-monster.events = {
-	"usurperCommanderDeath"
-}
-
-monster.health = 15200
-monster.maxHealth = 15200
+monster.health = 8500
+monster.maxHealth = 8500
 monster.race = "blood"
 monster.corpse = 0
 monster.speed = 125
+monster.manaCost = 0
 
 monster.faction = FACTION_LIONUSURPERS
-monster.enemyFactions = {FACTION_LION, FACTION_PLAYER}
-monster.targetPreferPlayer = true
-
-monster.summon = {
-	maxSummons = 6,
-	summons = {
-		{name = "hardened usurper archer", chance = 0, interval = 600000, count = 2},
-		{name = "hardened usurper warlock", chance = 0, interval = 600000, count = 2},
-		{name = "hardened usurper knight", chance = 0, interval = 600000, count = 2}
-	}
-}
+monster.enemyFactions = { FACTION_LION, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
 	nearest = 100,
+}
+
+monster.events = {
+	"usurperCommanderDeath",
 }
 
 monster.flags = {
@@ -62,67 +53,71 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
+}
+
+monster.summon = {
+	maxSummons = 5,
+	summons = {
+		{ name = "hardened usurper archer", chance = 0, interval = 600000, count = 2 },
+		{ name = "hardened usurper warlock", chance = 0, interval = 600000, count = 2 },
+		{ name = "hardened usurper knight", chance = 0, interval = 600000, count = 2 },
+	},
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "This town is ours now!", yell = false},
-	{text = "You don't deserv Bounac!", yell = false},
-	{text = "My power is fueled by a just cause!", yell = false},
-	{text = "This will be the last thing you witness!", yell = false},
-	{text = "Change of guard! High time ...!", yell = false},
-	{text = "Do you really think you can stand?", yell = false},
-	{text = "'Holding breath'", yell = false},
-	{text = "Die in the flames of true righteousness.", yell = false}
+	{ text = "FORMATION!", yell = true },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -500, effect = CONST_ME_DRAWBLOOD},
-	{name ="combat", interval = 4000, chance = 14, type = COMBAT_DEATHDAMAGE, minDamage = -150, maxDamage = -300, radius = 3, effect = CONST_ME_MORTAREA, target = false},
-	{name ="combat", interval = 4000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -150, maxDamage = -400, length = 4, spread = 0, effect = CONST_ME_ICEATTACK, target = false},
-	{name ="singlecloudchain", interval = 6000, chance = 17, minDamage = -200, maxDamage = -450, range = 4, effect = CONST_ME_ENERGYHIT, target = true},
-	{name ="singledeathchain", interval = 6000, chance = 15, minDamage = -250, maxDamage = -530, range = 5, effect = CONST_ME_MORTAREA, target = true},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -500, effect = CONST_ME_DRAWBLOOD },
+	{ name = "combat", interval = 4000, chance = 14, type = COMBAT_DEATHDAMAGE, minDamage = -150, maxDamage = -300, radius = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 4000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -150, maxDamage = -400, length = 4, spread = 0, effect = CONST_ME_ICEATTACK, target = false },
+	{ name = "singlecloudchain", interval = 6000, chance = 17, minDamage = -200, maxDamage = -450, range = 4, effect = CONST_ME_ENERGYHIT, target = true },
+	{ name = "singledeathchain", interval = 6000, chance = 15, minDamage = -250, maxDamage = -530, range = 5, effect = CONST_ME_MORTAREA, target = true },
 }
 
 monster.defenses = {
 	defense = 86,
-	armor = 86
+	armor = 86,
+	--	mitigation = ???,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 35},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 20},
-	{type = COMBAT_HOLYDAMAGE , percent = 15},
-	{type = COMBAT_DEATHDAMAGE , percent = -15}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 1 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 1 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -1 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType.onAppear = function(monster, creature)
-	if monster ~= creature then return true end
+	if monster ~= creature then
+		return true
+	end
 	local sum
-	for i=1, 5 do
+	for i = 1, 5 do
 		sum = Game.createMonster(monster:getType():getSummonList()[math.random(1, #monster:getType():getSummonList())].name, monster:getPosition(), true)
 		if sum then
 			monster:setSummon(sum)

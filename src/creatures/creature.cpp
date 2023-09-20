@@ -142,8 +142,8 @@ void Creature::onThink(uint32_t interval) {
 
 	// scripting event - onThink
 	const CreatureEventList &thinkEvents = getCreatureEvents(CREATURE_EVENT_THINK);
-	for (const auto &thinkEvent : thinkEvents) {
-		thinkEvent->executeOnThink(this, interval);
+	for (const auto creatureEventPtr : thinkEvents) {
+		creatureEventPtr->executeOnThink(this, interval);
 	}
 }
 
@@ -260,7 +260,10 @@ void Creature::addEventWalk(bool firstStep) {
 		g_game().checkCreatureWalk(getID());
 	}
 
-	eventWalk = g_scheduler().addEvent(static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), getID()));
+	eventWalk = g_scheduler().addEvent(
+		static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), getID()),
+		"Creature::checkCreatureWalk"
+	);
 }
 
 void Creature::stopEventWalk() {
@@ -593,7 +596,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 	if (followCreature && (creature == this || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
-			g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID()));
+			g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
 		}
 
 		if (newPos.z != oldPos.z || !canSee(followCreature->getPosition())) {
@@ -607,7 +610,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 		} else {
 			if (hasExtraSwing()) {
 				// our target is moving lets see if we can get in hit
-				g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
+				g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
 			}
 
 			if (newTile->getZoneType() != oldTile->getZoneType()) {
@@ -695,8 +698,8 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 		if (master) {
 			// Scripting event onDeath
 			const CreatureEventList &deathEvents = getCreatureEvents(CREATURE_EVENT_DEATH);
-			for (const auto &deathEvent : deathEvents) {
-				deathEvent->executeOnDeath(this, nullptr, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
+			for (const auto deathEventPtr : deathEvents) {
+				deathEventPtr->executeOnDeath(this, nullptr, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
 			}
 		}
 
@@ -745,15 +748,18 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 
 				if (player->checkAutoLoot()) {
 					int32_t pos = tile->getStackposOfItem(player, corpse);
-					g_dispatcher().addTask(std::bind(&Game::playerQuickLoot, &g_game(), mostDamageCreature->getID(), this->getPosition(), corpse->getID(), pos - 1, nullptr, false, true));
+					g_dispatcher().addTask(
+						std::bind(&Game::playerQuickLoot, &g_game(), mostDamageCreature->getID(), this->getPosition(), corpse->getID(), pos - 1, nullptr, false, true),
+						"Game::playerQuickLoot"
+					);
 				}
 			}
 		}
 
 		// Scripting event onDeath
-		for (const auto &deathEvent : getCreatureEvents(CREATURE_EVENT_DEATH)) {
-			if (deathEvent) {
-				deathEvent->executeOnDeath(this, corpse, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
+		for (const auto deathEventPtr : getCreatureEvents(CREATURE_EVENT_DEATH)) {
+			if (deathEventPtr) {
+				deathEventPtr->executeOnDeath(this, corpse, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
 			}
 		}
 	}
@@ -789,7 +795,7 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = tru
 		g_game().addCreatureHealth(this);
 	}
 	if (health <= 0) {
-		g_dispatcher().addTask(std::bind(&Game::executeDeath, &g_game(), getID()));
+		g_dispatcher().addTask(std::bind(&Game::executeDeath, &g_game(), getID()), "Game::executeDeath");
 	}
 }
 
@@ -1162,8 +1168,8 @@ bool Creature::onKilledCreature(Creature* target, bool lastHit) {
 
 	// scripting event - onKill
 	const CreatureEventList &killEvents = getCreatureEvents(CREATURE_EVENT_KILL);
-	for (const auto &killEvent : killEvents) {
-		killEvent->executeOnKill(this, target, lastHit);
+	for (const auto killEventPtr : killEvents) {
+		killEventPtr->executeOnKill(this, target, lastHit);
 	}
 	return false;
 }
@@ -1295,7 +1301,11 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 		if (!force && conditionType == CONDITION_PARALYZE) {
 			int32_t walkDelay = getWalkDelay();
 			if (walkDelay > 0) {
-				g_scheduler().addEvent(walkDelay, std::bind(&Game::forceRemoveCondition, &g_game(), getID(), conditionType, conditionId));
+				g_scheduler().addEvent(
+					walkDelay,
+					std::bind(&Game::forceRemoveCondition, &g_game(), getID(), conditionType, conditionId),
+					"Game::forceRemoveCondition"
+				);
 				return;
 			}
 		}
@@ -1478,15 +1488,15 @@ void Creature::setNormalCreatureLight() {
 }
 
 bool Creature::registerCreatureEvent(const std::string &name) {
-	const auto &event = g_creatureEvents().getEventByName(name);
+	const auto event = g_creatureEvents().getEventByName(name);
 	if (!event) {
 		return false;
 	}
 
 	CreatureEventType_t type = event->getEventType();
 	if (hasEventRegistered(type)) {
-		for (const auto &creatureEvent : eventsList) {
-			if (creatureEvent == event) {
+		for (const auto creatureEventPtr : eventsList) {
+			if (creatureEventPtr == event) {
 				return false;
 			}
 		}
@@ -1499,7 +1509,7 @@ bool Creature::registerCreatureEvent(const std::string &name) {
 }
 
 bool Creature::unregisterCreatureEvent(const std::string &name) {
-	const auto &event = g_creatureEvents().getEventByName(name);
+	const auto event = g_creatureEvents().getEventByName(name);
 	if (!event) {
 		return false;
 	}
@@ -1513,7 +1523,7 @@ bool Creature::unregisterCreatureEvent(const std::string &name) {
 
 	auto it = eventsList.begin(), end = eventsList.end();
 	while (it != end) {
-		const auto &curEvent = *it;
+		const auto curEvent = *it;
 		if (curEvent == event) {
 			it = eventsList.erase(it);
 			continue;
@@ -1538,9 +1548,9 @@ CreatureEventList Creature::getCreatureEvents(CreatureEventType_t type) {
 		return tmpEventList;
 	}
 
-	for (const auto &creatureEvent : eventsList) {
-		if (creatureEvent->getEventType() == type) {
-			tmpEventList.push_back(creatureEvent);
+	for (const auto creatureEventPtr : eventsList) {
+		if (creatureEventPtr->getEventType() == type) {
+			tmpEventList.push_back(creatureEventPtr);
 		}
 	}
 
@@ -1776,4 +1786,23 @@ void Creature::setIncreasePercent(CombatType_t combat, int32_t value) {
 
 const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Creature::getZones() {
 	return Zone::getZones(getPosition());
+}
+
+void Creature::iconChanged() const {
+	if (!tile) {
+		return;
+	}
+
+	SpectatorHashSet spectators;
+	g_game().map.getSpectators(spectators, tile->getPosition(), true);
+	for (Creature* spectator : spectators) {
+		if (!spectator) {
+			continue;
+		}
+
+		Player* player = spectator->getPlayer();
+		if (player) {
+			player->sendCreatureIcon(this);
+		}
+	}
 }

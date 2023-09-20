@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 781
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 1,
-	Locations = "Fiehonja, Krailos Steppe underwater cave."
-	}
+	Locations = "Fiehonja, Krailos Steppe underwater cave.",
+}
 
 monster.health = 55
 monster.maxHealth = 55
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -53,7 +53,7 @@ monster.flags = {
 	pushable = false,
 	rewardBoss = false,
 	illusionable = true,
-	canPushItems = true,
+	canPushItems = false,
 	canPushCreatures = true,
 	staticAttackChance = 80,
 	targetDistance = 1,
@@ -62,52 +62,53 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 5,
+	color = 65,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Luuurrrp!", yell = false}
+	{ text = "Luuurrrp!", yell = false },
 }
 
 monster.loot = {
-	{name = "shrimp", chance = 8333, maxCount = 2}
+	{ name = "shrimp", chance = 8333, maxCount = 2 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10, effect = CONST_ME_DRAWBLOOD}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10, effect = CONST_ME_DRAWBLOOD },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10,
-	{name ="invisible", interval = 2000, chance = 15}
+	armor = 11,
+	mitigation = 0.30,
+	{ name = "invisible", interval = 2000, chance = 15 },
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -5},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -5 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -5 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

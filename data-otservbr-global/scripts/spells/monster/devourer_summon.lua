@@ -8,12 +8,11 @@ combat:setArea(area)
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-
-	local creatures = {"Greed", "Frenzy", "Disruption"}
+	local creatures = { "Greed", "Frenzy", "Disruption" }
 	local monster = creatures[math.random(#creatures)]
 
 	if devourerSummon < 3 then
-		Game.createMonster(monster, {x=creature:getPosition().x+math.random(-1, 1), y=creature:getPosition().y+math.random(-1, 1), z=creature:getPosition().z}, false, true)
+		Game.createMonster(monster, { x = creature:getPosition().x + math.random(-1, 1), y = creature:getPosition().y + math.random(-1, 1), z = creature:getPosition().z }, false, true)
 		devourerSummon = devourerSummon + 1
 	end
 

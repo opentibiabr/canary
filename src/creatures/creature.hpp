@@ -222,9 +222,40 @@ public:
 		varBuffs[buff] += modifier;
 	}
 
-	virtual CreatureIcon_t getIcon() const {
-		return CREATUREICON_NONE;
+	virtual std::vector<CreatureIcon> getIcons() const {
+		std::vector<CreatureIcon> icons;
+		icons.reserve(creatureIcons.size());
+		for (const auto &[_, icon] : creatureIcons) {
+			if (icon.isSet()) {
+				icons.push_back(icon);
+			}
+		}
+		return icons;
 	}
+
+	virtual CreatureIcon getIcon(const std::string &key) const {
+		if (!creatureIcons.contains(key)) {
+			return CreatureIcon();
+		}
+		return creatureIcons.at(key);
+	}
+
+	void setIcon(const std::string &key, CreatureIcon icon) {
+		creatureIcons[key] = icon;
+		iconChanged();
+	}
+
+	void removeIcon(const std::string &key) {
+		creatureIcons.erase(key);
+		iconChanged();
+	}
+
+	void clearIcons() {
+		creatureIcons.clear();
+		iconChanged();
+	}
+
+	void iconChanged() const;
 
 	const Outfit_t getCurrentOutfit() const {
 		return currentOutfit;
@@ -719,6 +750,9 @@ protected:
 	int8_t charmChanceModifier = 0;
 
 	uint8_t wheelOfDestinyDrainBodyDebuff = 0;
+
+	// use map here instead of phmap to keep the keys in a predictable order
+	std::map<std::string, CreatureIcon> creatureIcons = {};
 
 	// creature script events
 	bool hasEventRegistered(CreatureEventType_t event) const {

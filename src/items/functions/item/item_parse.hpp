@@ -155,6 +155,7 @@ const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttribut
 	{ "cleavepercent", ITEM_PARSE_CLEAVEPERCENT },
 	{ "reflectdamage", ITEM_PARSE_REFLECTDAMAGE },
 	{ "reflectpercentall", ITEM_PARSE_REFLECTPERCENTALL },
+	{ "primarytype", ITEM_PARSE_PRIMARYTYPE },
 	{ "script", ITEM_PARSE_SCRIPT },
 };
 
@@ -309,6 +310,7 @@ private:
 	static void parseCleavePercent(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseReflectDamage(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseTransformOnUse(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
+	static void parsePrimaryType(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseUnscriptedItems(const std::string_view &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType);
 
 private:

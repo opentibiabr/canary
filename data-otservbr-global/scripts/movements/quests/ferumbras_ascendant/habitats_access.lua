@@ -2,8 +2,8 @@ local config = {
 	[34323] = {
 		toPosition = Position(33630, 32651, 12),
 		backPosition = Position(33630, 32651, 12),
-		timer = Storage.FerumbrasAscension.HabitatsTimer
-	}
+		timer = Storage.FerumbrasAscension.HabitatsTimer,
+	},
 }
 
 local habitatsAccess = MoveEvent()
@@ -25,18 +25,18 @@ function habitatsAccess.onStepIn(creature, item, position, fromPosition)
 				player:teleportTo(setting.toPosition)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			else
+				local pos = position
+				pos.y = pos.y + 2
+				player:teleportTo(pos)
+				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+				player:say("You have to wait to challenge this enemy again!", TALKTYPE_MONSTER_SAY)
+				return true
+			end
+		else
 			local pos = position
 			pos.y = pos.y + 2
 			player:teleportTo(pos)
-			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			player:say('You have to wait to challenge this enemy again!', TALKTYPE_MONSTER_SAY)
-			return true
-		end
-			else
-			local pos = position
-			pos.y = pos.y + 2
-			player:teleportTo(pos)
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You not proven your worth. There is no escape for you here.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You not proven your worth. There is no escape for you here.")
 			item:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			return true
 		end

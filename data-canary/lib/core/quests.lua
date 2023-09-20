@@ -11,9 +11,9 @@ if not Quests then
 					missionId = 1,
 					startValue = 1,
 					endValue = 1,
-					description = "You broke the first seal."
-				}
-			}
-		}
+					description = "You broke the first seal.",
+				},
+			},
+		},
 	}
 end

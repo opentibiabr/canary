@@ -34,7 +34,6 @@ redSkullDuration = 1
 blackSkullDuration = 3
 orangeSkullDuration = 7
 
-onlyInvitedCanMoveHouseItems = true
 cleanProtectionZones = false
 
 -- Connection Config
@@ -161,6 +160,7 @@ wheelPointsPerLevel = 1
 -- Only change it here if you know what you are doing or to make testing easier with familiars
 familiarTime = 30
 
+partyAutoShareExperience = true
 partyShareLootBoosts = false
 partyShareLootBoostsDimishingFactor = 0.7
 
@@ -234,6 +234,7 @@ saveIntervalTime = 1
 
 -- Imbuement
 toggleImbuementShrineStorage = false
+toggleImbuementNonAggressiveFightOnly = false
 
 -- Free quests
 -- Add quest access to player when logging in
@@ -253,10 +254,15 @@ deathLosePercent = -1
 -- NOTE: set housePriceEachSQM to -1 to disable the ingame buy house functionality
 -- NOTE: set houseBuyLevel to 0 to disable the min level purchase functionality.
 -- Periods: daily/weekly/monthly/yearly/never
+-- Base: sqm,rent,sqm+rent
+housePriceRentMultiplier = 0.0
 housePriceEachSQM = 1000
 houseRentPeriod = "never"
+houseRentRate = 1.0
 houseOwnedByAccount = false
 houseBuyLevel = 100
+housePurchasedShowPrice = false
+onlyInvitedCanMoveHouseItems = true
 
 -- Item Usage
 timeBetweenActions = 200

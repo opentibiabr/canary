@@ -23,9 +23,9 @@ function ModalWindow.new(self, ...)
 end
 
 setmetatable(ModalWindow, {
-	__call = function (self, ...)
+	__call = function(self, ...)
 		return ModalWindow.new(...)
-	end
+	end,
 })
 
 function ModalWindow:setTitle(title)
@@ -148,7 +148,7 @@ function ModalWindow:callChoice(text, player, button, choice)
 		text = tostring(text)
 	end
 
-	local newChoice= self.choices[text]
+	local newChoice = self.choices[text]
 	if not newChoice then
 		io.write("ModalWindow: Choice with text '" .. text .. "' does not exist.")
 		return false

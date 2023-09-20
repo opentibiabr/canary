@@ -8,7 +8,7 @@ end
 function Container:addLoot(loot)
 	for itemId, item in pairs(loot) do
 		logger.debug("[Container:addLoot] - Adding loot item id: {} to container id: {}", itemId, self:getId())
-		local tmpItem = self:addItem(itemId, item.count)
+		local tmpItem = self:addItem(itemId, item.count, INDEX_WHEREEVER, FLAG_NOLIMIT)
 		if tmpItem then
 			if tmpItem:isContainer() and item.childLoot then
 				if not tmpItem:addLoot(item.childLoot) then
@@ -31,6 +31,8 @@ function Container:addLoot(loot)
 			if item.text and item.text ~= "" then
 				tmpItem:setText(item.text)
 			end
+		else
+			logger.warn("Container:addLoot: failed to add item: {}, to corpse {} with id {}", ItemType(itemId):getName(), self:getName(), self:getId())
 		end
 
 		::continue::

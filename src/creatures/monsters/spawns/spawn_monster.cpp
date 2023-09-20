@@ -143,7 +143,7 @@ bool SpawnsMonster::isInZone(const Position &centerPos, int32_t radius, const Po
 
 void SpawnMonster::startSpawnMonsterCheck() {
 	if (checkSpawnMonsterEvent == 0) {
-		checkSpawnMonsterEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this));
+		checkSpawnMonsterEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this), "SpawnMonster::checkSpawnMonster");
 	}
 }
 
@@ -170,7 +170,7 @@ bool SpawnMonster::isInSpawnMonsterZone(const Position &pos) {
 	return SpawnsMonster::isInZone(centerPos, radius, pos);
 }
 
-bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, const std::shared_ptr<MonsterType> &monsterType, const Position &pos, Direction dir, bool startup /*= false*/) {
+bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, const std::shared_ptr<MonsterType> monsterType, const Position &pos, Direction dir, bool startup /*= false*/) {
 	std::unique_ptr<Monster> monster_ptr(new Monster(monsterType));
 	if (startup) {
 		// No need to send out events to the surrounding since there is no one out there to listen!
@@ -242,7 +242,7 @@ void SpawnMonster::checkSpawnMonster() {
 	}
 
 	if (spawnedMonsterMap.size() < spawnMonsterMap.size()) {
-		checkSpawnMonsterEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this));
+		checkSpawnMonsterEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this), "SpawnMonster::checkSpawnMonster");
 	}
 }
 
@@ -251,7 +251,7 @@ void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, uint
 		spawnMonster(spawnMonsterId, sb.monsterType, sb.pos, sb.direction);
 	} else {
 		g_game().addMagicEffect(sb.pos, CONST_ME_TELEPORT);
-		g_scheduler().addEvent(1400, std::bind(&SpawnMonster::scheduleSpawn, this, spawnMonsterId, sb, interval - NONBLOCKABLE_SPAWN_MONSTER_INTERVAL));
+		g_scheduler().addEvent(1400, std::bind(&SpawnMonster::scheduleSpawn, this, spawnMonsterId, sb, interval - NONBLOCKABLE_SPAWN_MONSTER_INTERVAL), "SpawnMonster::scheduleSpawn");
 	}
 }
 
@@ -271,7 +271,7 @@ void SpawnMonster::cleanup() {
 }
 
 bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t scheduleInterval) {
-	const auto &monsterType = g_monsters().getMonsterType(name);
+	const auto monsterType = g_monsters().getMonsterType(name);
 	if (!monsterType) {
 		g_logger().error("Can not find {}", name);
 		return false;

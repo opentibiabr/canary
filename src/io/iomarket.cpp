@@ -207,7 +207,7 @@ void IOMarket::checkExpiredOffers() {
 		return;
 	}
 
-	g_scheduler().addEvent(checkExpiredMarketOffersEachMinutes * 60 * 1000, IOMarket::checkExpiredOffers);
+	g_scheduler().addEvent(checkExpiredMarketOffersEachMinutes * 60 * 1000, IOMarket::checkExpiredOffers, __FUNCTION__);
 }
 
 uint32_t IOMarket::getPlayerOfferCount(uint32_t playerId) {

@@ -1,6 +1,6 @@
 local config = {
-	[2772] = {position = {Position(32623, 32188, 9), Position(32623, 32189, 9)}},
-	[2773] = {position = {Position(32623, 32189, 9), Position(32623, 32188, 9)}}
+	[2772] = { position = { Position(32623, 32188, 9), Position(32623, 32189, 9) } },
+	[2773] = { position = { Position(32623, 32189, 9), Position(32623, 32188, 9) } },
 }
 
 local theOutlawOven = Action()
@@ -10,9 +10,8 @@ function theOutlawOven.onUse(player, item, fromPosition, target, toPosition, isH
 		return true
 	end
 
-
 	local oven = Tile(useItem.position[1]):getTopTopItem()
-	if oven and table.contains({2535, 2536}, oven.itemid) then
+	if oven and table.contains({ 2535, 2536 }, oven.itemid) then
 		oven:moveTo(useItem.position[2])
 	end
 

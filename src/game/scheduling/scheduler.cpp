@@ -9,6 +9,7 @@
 
 #include "pch.hpp"
 
+#include "lib/di/container.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/scheduler.hpp"
@@ -21,11 +22,11 @@ Scheduler &Scheduler::getInstance() {
 	return inject<Scheduler>();
 }
 
-uint64_t Scheduler::addEvent(uint32_t delay, std::function<void(void)> f) {
-	return addEvent(std::make_shared<Task>(std::move(f), delay));
+uint64_t Scheduler::addEvent(uint32_t delay, std::function<void(void)> f, std::string context) {
+	return addEvent(std::make_shared<Task>(std::move(f), std::move(context), delay));
 }
 
-uint64_t Scheduler::addEvent(const std::shared_ptr<Task> &task) {
+uint64_t Scheduler::addEvent(const std::shared_ptr<Task> task) {
 	if (task->getEventId() == 0) {
 		task->setEventId(++lastEventId);
 	}
@@ -43,6 +44,12 @@ uint64_t Scheduler::addEvent(const std::shared_ptr<Task> &task) {
 
 			if (error == asio::error::operation_aborted || threadPool.getIoContext().stopped()) {
 				return;
+			}
+
+			if (task->hasTraceableContext()) {
+				g_logger().trace("Dispatching scheduled task {}.", task->getContext());
+			} else {
+				g_logger().debug("Dispatching scheduled task {}.", task->getContext());
 			}
 
 			g_dispatcher().addTask(task);

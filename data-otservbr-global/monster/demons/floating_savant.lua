@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 78,
 	lookFeet = 78,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1637
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "The Extension Site"
-	}
+	Locations = "The Extension Site",
+}
 
 monster.health = 8000
 monster.maxHealth = 8000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -59,69 +59,71 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{name = "Lava Lurker Attendant", chance = 70, interval = 2000, count = 1}
-	}
+		{ name = "Lava Lurker Attendant", chance = 70, interval = 2000, count = 1 },
+	},
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "tssooosh tsoooosh tssoooosh!", yell = false}
+	{ text = "tssooosh tsoooosh tssoooosh!", yell = false },
+	{ text = "We didn't stop the fire!", yell = false },
 }
 
 monster.loot = {
-	{name = "small enchanted ruby", chance = 10000, maxCount = 5},
-	{name = "red crystal fragment", chance = 10000, maxCount = 2},
-	{id= 3039, chance = 10000, maxCount = 3}, -- red gem
-	{name = "red piece of cloth", chance = 10000, maxCount = 3},
-	{name = "flask of demonic blood", chance = 12000, maxCount = 5},
-	{name = "demonic essence", chance = 10000, maxCount = 5},
-	{id = 3456, chance = 10000}, -- pick
-	{name = "sample of monster blood", chance = 10000, maxCount = 5}
+	{ name = "small enchanted ruby", chance = 10000, maxCount = 5 },
+	{ name = "red crystal fragment", chance = 10000, maxCount = 2 },
+	{ id = 3039, chance = 10000, maxCount = 3 }, -- red gem
+	{ name = "red piece of cloth", chance = 10000, maxCount = 3 },
+	{ name = "flask of demonic blood", chance = 12000, maxCount = 5 },
+	{ name = "demonic essence", chance = 10000, maxCount = 5 },
+	{ id = 3456, chance = 10000 }, -- pick
+	{ name = "sample of monster blood", chance = 10000, maxCount = 5 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -200},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -390, maxDamage = -480, range = 7, shootEffect = CONST_ANI_FIRE, target = false},
-	{name ="combat", interval = 2000, chance = 14, type = COMBAT_ENERGYDAMAGE, minDamage = -390, maxDamage = -480, range = 7, shootEffect = CONST_ANI_ENERGY, target = false},
-	{name ="combat", interval = 2000, chance = 12, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -400, radius = 3, effect = CONST_ME_EXPLOSIONAREA, target = false},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -490, maxDamage = -630, length = 4, spread = 3, effect = CONST_ME_HITBYFIRE, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -200 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -390, maxDamage = -480, range = 7, shootEffect = CONST_ANI_FIRE, target = false },
+	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_ENERGYDAMAGE, minDamage = -390, maxDamage = -480, range = 7, shootEffect = CONST_ANI_ENERGY, target = false },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -400, radius = 3, effect = CONST_ME_EXPLOSIONAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -490, maxDamage = -630, length = 4, spread = 3, effect = CONST_ME_HITBYFIRE, target = false },
 }
 
 monster.defenses = {
 	defense = 40,
-	armor = 82
+	armor = 74,
+	mitigation = 1.96,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -10},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 50}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

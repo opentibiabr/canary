@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1264
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Otherworld."
-	}
+	Locations = "Otherworld Dwarf Bridge",
+}
 
 monster.health = 1900
 monster.maxHealth = 1900
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -61,71 +61,72 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Zzing!", yell = false},
-	{text = "Frizzle!", yell = false}
+	{ text = "Zzing!", yell = false },
+	{ text = "Frizzle!", yell = false },
 }
 
 monster.loot = {
-	{id = 3031, chance = 100000, maxCount = 100}, -- gold coin
-	{id = 3035, chance = 20000}, -- platinum coin
-	{id = 23502, chance = 6000}, -- sparkion claw
-	{id = 23545, chance = 4900}, -- energy drink
-	{id = 7642, chance = 4800}, -- great spirit potion
-	{id = 238, chance = 4400}, -- great mana potion
-	{id = 239, chance = 4200}, -- great health potion
-	{id = 23535, chance = 4200}, -- energy bar
-	{id = 23503, chance = 4000}, -- sparkion tail
-	{id = 23504, chance = 4000}, -- sparkion legs
-	{id = 23505, chance = 3500}, -- sparkion stings
-	{id = 16124, chance = 2600}, -- blue crystal splinter
-	{id = 16119, chance = 2100} -- blue crystal shard
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- gold coin
+	{ id = 3035, chance = 20000 }, -- platinum coin
+	{ id = 23502, chance = 6000 }, -- sparkion claw
+	{ id = 23545, chance = 4900 }, -- energy drink
+	{ id = 7642, chance = 4800 }, -- great spirit potion
+	{ id = 238, chance = 4400 }, -- great mana potion
+	{ id = 239, chance = 4200 }, -- great health potion
+	{ id = 23535, chance = 4200 }, -- energy bar
+	{ id = 23503, chance = 4000 }, -- sparkion tail
+	{ id = 23504, chance = 4000 }, -- sparkion legs
+	{ id = 23505, chance = 3500 }, -- sparkion stings
+	{ id = 16124, chance = 2600 }, -- blue crystal splinter
+	{ id = 16119, chance = 2100 }, -- blue crystal shard
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -250},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -250, maxDamage = -350, length = 6, spread = 3, effect = CONST_ME_GROUNDSHAKER, target = false},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -200, range = 5, shootEffect = CONST_ANI_ENERGYBALL, effect = CONST_ME_ENERGYHIT, target = true},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -250 },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -250, maxDamage = -350, length = 6, spread = 3, effect = CONST_ME_GROUNDSHAKER, target = false },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -200, range = 5, shootEffect = CONST_ANI_ENERGYBALL, effect = CONST_ME_ENERGYHIT, target = true },
 	-- energy damage
-	{name ="condition", type = CONDITION_ENERGY, interval = 2000, chance = 20, minDamage = -300, maxDamage = -600, range = 6, radius = 4, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_PURPLEENERGY, target = true}
+	{ name = "condition", type = CONDITION_ENERGY, interval = 2000, chance = 20, minDamage = -300, maxDamage = -600, range = 6, radius = 4, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_PURPLEENERGY, target = true },
 }
 
 monster.defenses = {
 	defense = 35,
-	armor = 35,
-	{name ="speed", interval = 2000, chance = 10, speedChange = 360, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000},
-	{name ="combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false}
+	armor = 37,
+	mitigation = 1.18,
+	{ name = "speed", interval = 2000, chance = 10, speedChange = 360, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 5},
-	{type = COMBAT_ENERGYDAMAGE, percent = 80},
-	{type = COMBAT_EARTHDAMAGE, percent = -15},
-	{type = COMBAT_FIREDAMAGE, percent = 20},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 60},
-	{type = COMBAT_HOLYDAMAGE , percent = 5},
-	{type = COMBAT_DEATHDAMAGE , percent = 5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 5 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 80 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -15 },
+	{ type = COMBAT_FIREDAMAGE, percent = 20 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 60 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 5 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 5 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

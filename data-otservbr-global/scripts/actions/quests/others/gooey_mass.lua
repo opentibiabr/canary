@@ -1,68 +1,68 @@
 local UniqueTable = {
 	[40011] = {
 		storage = Storage.InsectoidCell.Reward1,
-		reward = 14172
+		reward = 14172,
 	},
 	[40012] = {
 		storage = Storage.InsectoidCell.Reward2,
-		reward = 14172
+		reward = 14172,
 	},
 	[40013] = {
 		storage = Storage.InsectoidCell.Reward3,
-		reward = 14172
+		reward = 14172,
 	},
 	[40014] = {
 		storage = Storage.InsectoidCell.Reward4,
-		reward = 14172
+		reward = 14172,
 	},
 	[40015] = {
 		storage = Storage.InsectoidCell.Reward5,
-		reward = 14172
+		reward = 14172,
 	},
 	[40016] = {
 		storage = Storage.InsectoidCell.Reward6,
-		reward = 14172
+		reward = 14172,
 	},
 	[40017] = {
 		storage = Storage.InsectoidCell.Reward7,
-		reward = 14172
+		reward = 14172,
 	},
 	[40018] = {
 		storage = Storage.InsectoidCell.Reward8,
-		reward = 14172
+		reward = 14172,
 	},
 	[40019] = {
 		storage = Storage.InsectoidCell.Reward9,
-		reward = 14172
+		reward = 14172,
 	},
 	[40020] = {
 		storage = Storage.InsectoidCell.Reward10,
-		reward = 14172
+		reward = 14172,
 	},
 	[40021] = {
 		storage = Storage.InsectoidCell.Reward11,
-		reward = 14172
+		reward = 14172,
 	},
 	[40022] = {
 		storage = Storage.InsectoidCell.Reward12,
-		reward = 14172
+		reward = 14172,
 	},
 	[40023] = {
 		storage = Storage.InsectoidCell.Reward13,
-		reward = 14172
+		reward = 14172,
 	},
 	[40024] = {
 		storage = Storage.InsectoidCell.Reward14,
-		reward = 14172
+		reward = 14172,
 	},
 	[40025] = {
 		storage = Storage.InsectoidCell.Reward15,
-		reward = 14172
+		reward = 14172,
 	},
 	[40026] = {
 		storage = Storage.InsectoidCell.Reward16,
-		reward = 14172
-	}
+		reward = 14172,
+	},
 }
 
 local gooeyMass = Action()
@@ -85,7 +85,7 @@ function gooeyMass.onUse(player, item, fromPosition, target, toPosition, isHotke
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a " .. getItemName(setting.reward) .. ", but you have no room to take it")
 			end
 		else
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The ".. getItemName(setting.itemId) .. " is empty.")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. getItemName(setting.itemId) .. " is empty.")
 		end
 	end
 	return true

@@ -1,16 +1,19 @@
 local teleports = {
-	{position = {x = 33306, y = 31349, z = 8}, destination = Position(33349, 31346, 8)},
-	{position = {x = 33310, y = 31325, z = 8}, access = Storage.TheSecretLibrary.OberonAccess, destination = Position(33329, 31332, 9)},
-	{position = {x = 33329, y = 31333, z = 9}, destination = Position(33308, 31325, 8)},
-	{positions = {
-		{x = 33296, y = 31287, z = 9},
-		{x = 33297, y = 31287, z = 9},
-		{x = 33298, y = 31287, z = 9},
-		{x = 33296, y = 31288, z = 9},
-		{x = 33298, y = 31288, z = 9},
-		{x = 33298, y = 31289, z = 9},
-		{x = 33297, y = 31289, z = 9}
-	}, timer = Storage.TheSecretLibrary.TheOrderOfTheFalcon.OberonTimer, destination = Position(33363, 31342, 9)}
+	{ position = { x = 33306, y = 31349, z = 8 }, destination = Position(33349, 31346, 8) },
+	{ position = { x = 33310, y = 31325, z = 8 }, access = Storage.TheSecretLibrary.OberonAccess, destination = Position(33329, 31332, 9) },
+	{ position = { x = 33329, y = 31333, z = 9 }, destination = Position(33308, 31325, 8) },
+	{
+		positions = {
+			{ x = 33296, y = 31287, z = 9 },
+			{ x = 33297, y = 31287, z = 9 },
+			{ x = 33298, y = 31287, z = 9 },
+			{ x = 33296, y = 31288, z = 9 },
+			{ x = 33298, y = 31288, z = 9 },
+			{ x = 33298, y = 31289, z = 9 },
+			{ x = 33297, y = 31289, z = 9 },
+		},
+		destination = Position(33363, 31342, 9),
+	},
 }
 
 local falconCastle = MoveEvent()

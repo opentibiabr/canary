@@ -1,16 +1,16 @@
 local bosses = {
 	-- bosses
-	["lady tenebris"] = {storage = Storage.ForgottenKnowledge.LadyTenebrisKilled},
-	["the enraged thorn knight"] = {storage = Storage.ForgottenKnowledge.ThornKnightKilled},
-	["lloyd"] = {storage = Storage.ForgottenKnowledge.LloydKilled},
-	["soul of dragonking zyrtarch"] = {storage = Storage.ForgottenKnowledge.DragonkingKilled},
-	["melting frozen horror"] = {storage = Storage.ForgottenKnowledge.HorrorKilled},
-	["the time guardian"] = {storage = Storage.ForgottenKnowledge.TimeGuardianKilled},
-	["the blazing time guardian"] = {storage = Storage.ForgottenKnowledge.TimeGuardianKilled},
-	["the freezing time guardian"] = {storage = Storage.ForgottenKnowledge.TimeGuardianKilled},
-	["the last lore keeper"] = {storage = Storage.ForgottenKnowledge.LastLoreKilled},
+	["lady tenebris"] = { storage = Storage.ForgottenKnowledge.LadyTenebrisKilled },
+	["the enraged thorn knight"] = { storage = Storage.ForgottenKnowledge.ThornKnightKilled },
+	["lloyd"] = { storage = Storage.ForgottenKnowledge.LloydKilled },
+	["soul of dragonking zyrtarch"] = { storage = Storage.ForgottenKnowledge.DragonkingKilled },
+	["melting frozen horror"] = { storage = Storage.ForgottenKnowledge.HorrorKilled },
+	["the time guardian"] = { storage = Storage.ForgottenKnowledge.TimeGuardianKilled },
+	["the blazing time guardian"] = { storage = Storage.ForgottenKnowledge.TimeGuardianKilled },
+	["the freezing time guardian"] = { storage = Storage.ForgottenKnowledge.TimeGuardianKilled },
+	["the last lore keeper"] = { storage = Storage.ForgottenKnowledge.LastLoreKilled },
 	-- IA interactions
-	["an astral glyph"] = {}
+	["an astral glyph"] = {},
 }
 
 local bossesForgottenKill = CreatureEvent("BossesForgottenKill")
@@ -49,4 +49,5 @@ function bossesForgottenKill.onKill(creature, target)
 	end
 	return true
 end
+
 bossesForgottenKill:register()

@@ -9,12 +9,12 @@
 
 #pragma once
 
+#include "lib/di/container.hpp"
 #include "lua/scripts/luascript.hpp"
 
 class Scripts {
 public:
 	Scripts();
-	~Scripts();
 
 	// non-copyable
 	Scripts(const Scripts &) = delete;

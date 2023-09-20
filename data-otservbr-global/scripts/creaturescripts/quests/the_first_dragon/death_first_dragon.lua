@@ -15,7 +15,7 @@ local destinations = {
 	Position(33618, 31023, 13),
 	Position(33616, 31024, 13),
 	Position(33617, 31024, 13),
-	Position(33618, 31024, 13)
+	Position(33618, 31024, 13),
 }
 
 function deathFirstDragon.onDeath(creature, corpse, lasthitkiller, mostdamagekiller, lasthitunjustified, mostdamageunjustified)

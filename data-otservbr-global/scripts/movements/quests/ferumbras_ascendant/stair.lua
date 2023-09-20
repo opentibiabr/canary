@@ -1,11 +1,11 @@
 local config = {
-	[1] = {storage = Storage.FerumbrasAscension.Razzagorn},
-	[2] = {storage = Storage.FerumbrasAscension.Ragiaz},
-	[3] = {storage = Storage.FerumbrasAscension.Zamulosh},
-	[4] = {storage = Storage.FerumbrasAscension.Mazoran},
-	[5] = {storage = Storage.FerumbrasAscension.Tarbaz},
-	[6] = {storage = Storage.FerumbrasAscension.Shulgrax},
-	[7] = {storage = Storage.FerumbrasAscension.Plagirath}
+	[1] = { storage = Storage.FerumbrasAscension.Razzagorn },
+	[2] = { storage = Storage.FerumbrasAscension.Ragiaz },
+	[3] = { storage = Storage.FerumbrasAscension.Zamulosh },
+	[4] = { storage = Storage.FerumbrasAscension.Mazoran },
+	[5] = { storage = Storage.FerumbrasAscension.Tarbaz },
+	[6] = { storage = Storage.FerumbrasAscension.Shulgrax },
+	[7] = { storage = Storage.FerumbrasAscension.Plagirath },
 }
 
 local stair = MoveEvent()

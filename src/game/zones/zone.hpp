@@ -17,6 +17,7 @@ class Monster;
 class Player;
 class Npc;
 class Item;
+class Thing;
 
 struct Area {
 	constexpr Area() = default;
@@ -90,9 +91,14 @@ public:
 		return name;
 	}
 	void addArea(Area area);
+	void subtractArea(Area area);
 	bool isPositionInZone(const Position &position) const;
+	Position getRemoveDestination(Creature* creature = nullptr) const;
+	void setRemoveDestination(const Position &position) {
+		removeDestination = position;
+	}
 
-	const std::set<Position> &getPositions() const;
+	const phmap::parallel_flat_hash_set<Position> &getPositions() const;
 	const phmap::parallel_flat_hash_set<Tile*> &getTiles() const;
 	const phmap::parallel_flat_hash_set<Creature*> &getCreatures() const;
 	const phmap::parallel_flat_hash_set<Player*> &getPlayers() const;
@@ -102,28 +108,30 @@ public:
 
 	void creatureAdded(Creature* creature);
 	void creatureRemoved(Creature* creature);
+	void thingAdded(Thing* thing);
 	void itemAdded(Item* item);
 	void itemRemoved(Item* item);
 
+	void removePlayers() const;
 	void removeMonsters() const;
 	void removeNpcs() const;
 
-	const static std::shared_ptr<Zone> &addZone(const std::string &name);
-	const static std::shared_ptr<Zone> &getZone(const std::string &name);
-	static phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones(const Position &position);
+	static std::shared_ptr<Zone> addZone(const std::string &name);
+	static std::shared_ptr<Zone> getZone(const std::string &name);
+	static phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones(const Position position);
 	const static phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &getZones();
 	static void clearZones();
 
 private:
+	Position removeDestination = Position();
 	std::string name;
-	std::set<Position> positions;
-	phmap::parallel_flat_hash_set<Tile*> tiles;
-	phmap::parallel_flat_hash_set<Item*> items;
-	phmap::parallel_flat_hash_set<Creature*> creatures;
-	phmap::parallel_flat_hash_set<Monster*> monsters;
-	phmap::parallel_flat_hash_set<Npc*> npcs;
-	phmap::parallel_flat_hash_set<Player*> players;
+	phmap::parallel_flat_hash_set<Position> positions;
 
-	static std::mutex zonesMutex;
-	static std::map<std::string, std::shared_ptr<Zone>> zones;
+	phmap::parallel_flat_hash_set<Item*> itemsCache;
+	phmap::parallel_flat_hash_set<uint32_t> creaturesCache;
+	phmap::parallel_flat_hash_set<uint32_t> monstersCache;
+	phmap::parallel_flat_hash_set<uint32_t> npcsCache;
+	phmap::parallel_flat_hash_set<uint32_t> playersCache;
+
+	static phmap::parallel_flat_hash_map<std::string, std::shared_ptr<Zone>> zones;
 };

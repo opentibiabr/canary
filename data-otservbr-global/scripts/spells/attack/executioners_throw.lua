@@ -6,7 +6,7 @@ combat:setParameter(COMBAT_PARAM_BLOCKARMOR, 1)
 function onGetFormulaValues(player, skill, attack, factor)
 	local skillTotal = skill * attack
 	local levelTotal = player:getLevel() / 5
-	return -(((skillTotal * 0.17) + 17) + (levelTotal)) * 1.28, -(((skillTotal * 0.20) + 40) + (levelTotal)) * 1.28
+	return -(((skillTotal * 0.17) + 17) + levelTotal) * 1.28, -(((skillTotal * 0.20) + 40) + levelTotal) * 1.28
 end
 
 combat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
@@ -39,7 +39,6 @@ function spell.onCastSpell(creature, var)
 	end
 
 	local grade = creature:revelationStageWOD("Executioner's Throw")
-	Spdlog.info(grade)
 	if grade == 0 then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
@@ -58,7 +57,7 @@ function spell.onCastSpell(creature, var)
 	var.instantName = "Executioner's Throw"
 	if combat:execute(creature, var) then
 		local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 261)
-		condition:setTicks((cooldown * 1000)/configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+		condition:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 		creature:addCondition(condition)
 		return true
 	end

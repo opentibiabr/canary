@@ -10,7 +10,7 @@ function login.onLogin(player)
 			player:sendTextMessage(MESSAGE_LOGIN, loginStr)
 		end
 
-		player:sendTextMessage(MESSAGE_LOGIN, string.format("Your last visit in ".. SERVER_NAME ..": %s.", os.date("%d. %b %Y %X", player:getLastLoginSaved())))
+		player:sendTextMessage(MESSAGE_LOGIN, string.format("Your last visit in " .. SERVER_NAME .. ": %s.", os.date("%d. %b %Y %X", player:getLastLoginSaved())))
 	end
 
 	-- Stamina
@@ -35,7 +35,6 @@ function login.onLogin(player)
 	player:registerEvent("DropLoot")
 	player:registerEvent("BossParticipation")
 
-
 	if onExerciseTraining[player:getId()] then -- onLogin & onLogout
 		stopEvent(onExerciseTraining[player:getId()].event)
 		onExerciseTraining[player:getId()] = nil
@@ -52,8 +51,11 @@ function login.onLogin(player)
 
 	if SCHEDULE_EXP_RATE ~= 100 then
 		if SCHEDULE_EXP_RATE > 100 then
-			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Exp Rate Event! Monsters yield more experience points than usual \
-			Happy Hunting!")
+			player:sendTextMessage(
+				MESSAGE_BOOSTED_CREATURE,
+				"Exp Rate Event! Monsters yield more experience points than usual \
+			Happy Hunting!"
+			)
 		else
 			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Exp Rate Decreased! Monsters yield less experience points than usual.")
 		end
@@ -61,8 +63,11 @@ function login.onLogin(player)
 
 	if SCHEDULE_SPAWN_RATE ~= 100 then
 		if SCHEDULE_SPAWN_RATE > 100 then
-			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Spawn Rate Event! Monsters respawn at a faster rate \
-			Happy Hunting!")
+			player:sendTextMessage(
+				MESSAGE_BOOSTED_CREATURE,
+				"Spawn Rate Event! Monsters respawn at a faster rate \
+			Happy Hunting!"
+			)
 		else
 			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Spawn Rate Decreased! Monsters respawn at a slower rate.")
 		end
@@ -70,8 +75,11 @@ function login.onLogin(player)
 
 	if SCHEDULE_LOOT_RATE ~= 100 then
 		if SCHEDULE_LOOT_RATE > 100 then
-			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Loot Rate Event! Monsters carry more loot than usual \
-			Happy Hunting!")
+			player:sendTextMessage(
+				MESSAGE_BOOSTED_CREATURE,
+				"Loot Rate Event! Monsters carry more loot than usual \
+			Happy Hunting!"
+			)
 		else
 			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Loot Rate Decreased! Monsters carry less loot than usual.")
 		end
@@ -79,8 +87,11 @@ function login.onLogin(player)
 
 	if SCHEDULE_SKILL_RATE ~= 100 then
 		if SCHEDULE_SKILL_RATE > 100 then
-			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Skill Rate Event! Your skills progresses at a higher rate \
-			Happy Hunting!")
+			player:sendTextMessage(
+				MESSAGE_BOOSTED_CREATURE,
+				"Skill Rate Event! Your skills progresses at a higher rate \
+			Happy Hunting!"
+			)
 		else
 			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Skill Rate Decreased! Your skills progresses at a lower rate.")
 		end
@@ -97,7 +108,16 @@ function login.onLogin(player)
 	-- Set Client XP Gain Rate --
 	if configManager.getBoolean(configKeys.XP_DISPLAY_MODE) then
 		local baseRate = player:getFinalBaseRateExperience()
-		player:setBaseXpGain(baseRate * 100)
+		baseRate = baseRate * 100
+		if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+			local vipBonusExp = configManager.getNumber(configKeys.VIP_BONUS_EXP)
+			if vipBonusExp > 0 and player:isVip() then
+				vipBonusExp = (vipBonusExp > 100 and 100) or vipBonusExp
+				baseRate = baseRate * (1 + (vipBonusExp / 100))
+				player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Normal base xp is: " .. baseRate .. "%, because you are VIP, bonus of " .. vipBonusExp .. "%")
+			end
+		end
+		player:setBaseXpGain(baseRate)
 	end
 
 	local staminaBonus = player:getFinalBonusStamina()

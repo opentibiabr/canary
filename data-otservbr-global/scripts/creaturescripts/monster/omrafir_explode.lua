@@ -13,7 +13,7 @@ function boom(cid)
 	Game.setStorageValue(112416, Game.getStorageValue(112416) + 1)
 	creature:getPosition():sendMagicEffect(CONST_ME_FIREATTACK)
 	for i = 1, 9 do
-		Game.createMonster("Hellfire Fighter", Position(33589 + math.random(-8,8), 32379 + math.random(-9,9), 12), true, true)
+		Game.createMonster("Hellfire Fighter", Position(33589 + math.random(-8, 8), 32379 + math.random(-9, 9), 12), true, true)
 		creature:remove()
 	end
 	return true
@@ -21,10 +21,9 @@ end
 
 local omrafirExplode = CreatureEvent("OmrafirExplode")
 function omrafirExplode.onThink(creature)
-	local hp = (creature:getHealth()/creature:getMaxHealth())*100
+	local hp = (creature:getHealth() / creature:getMaxHealth()) * 100
 	local summons = creature:getSummons()
-	if hp <= 50 and #summons < 4 and not creature:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT, 88888) and
-				Game.getStorageValue(112416) < 2 then
+	if hp <= 50 and #summons < 4 and not creature:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT, 88888) and Game.getStorageValue(112416) < 2 then
 		addEvent(boom, 10, creature:getId())
 		addEvent(function(cid)
 			Game.createMonster("Omrafir", Position(33586, 32379, 12), false, true)
@@ -38,4 +37,5 @@ function omrafirExplode.onThink(creature)
 	end
 	return true
 end
+
 omrafirExplode:register()

@@ -794,6 +794,17 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 			break;
 		}
 
+		case ATTR_STORE_INBOX_CATEGORY: {
+			std::string category;
+			if (!propStream.readString(category)) {
+				g_logger().error("[{}] failed to read store inbox category from item {}", __FUNCTION__, getName());
+				return ATTR_READ_ERROR;
+			}
+
+			setAttribute(ItemAttribute_t::STORE_INBOX_CATEGORY, category);
+			break;
+		}
+
 		default:
 			return ATTR_READ_ERROR;
 	}
@@ -954,6 +965,10 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<uint8_t>(ATTR_AMOUNT);
 		propWriteStream.write<uint16_t>(getAttribute<uint16_t>(AMOUNT));
 	}
+	if (hasAttribute(STORE_INBOX_CATEGORY)) {
+		propWriteStream.write<uint8_t>(ATTR_STORE_INBOX_CATEGORY);
+		propWriteStream.writeString(getString(ItemAttribute_t::STORE_INBOX_CATEGORY));
+	}
 
 	// Serialize custom attributes, only serialize if the map not is empty
 	if (hasCustomAttribute()) {
@@ -1006,8 +1021,9 @@ bool Item::canBeMoved() const {
 }
 
 void Item::checkDecayMapItemOnMove() {
-	if (getDuration() > 0 && getLoadedFromMap() && canBeMoved()) {
-		setLoadedFromMap(false);
+	if (getDuration() > 0 && isDecayDisabled() && canBeMoved()) {
+		decayDisabled = false;
+		loadedFromMap = false;
 		startDecaying();
 	}
 }
@@ -1842,6 +1858,11 @@ std::string Item::parseImbuementDescription(const Item* item) {
 	return s.str();
 }
 
+bool Item::isSavedToHouses() const {
+	const auto &it = items[id];
+	return it.moveable || it.isWrappable() || it.isCarpet() || getDoor() || (getContainer() && !getContainer()->empty()) || it.canWriteText || getBed() || it.m_transformOnUse;
+}
+
 SoundEffect_t Item::getMovementSound(Cylinder* toCylinder) const {
 	if (!toCylinder) {
 		return SoundEffect_t::ITEM_MOVE_DEFAULT;
@@ -2216,7 +2237,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 
 	if (it.isRune()) {
 		if (it.runeLevel > 0 || it.runeMagLevel > 0) {
-			if (const auto &rune = g_spells().getRuneSpell(it.id)) {
+			if (const auto rune = g_spells().getRuneSpell(it.id)) {
 				int32_t tmpSubType = subType;
 				if (item) {
 					tmpSubType = item->getSubType();
@@ -3033,7 +3054,7 @@ void Item::addUniqueId(uint16_t uniqueId) {
 }
 
 bool Item::canDecay() const {
-	if (isRemoved()) {
+	if (isRemoved() || isDecayDisabled()) {
 		return false;
 	}
 
@@ -3066,17 +3087,19 @@ uint32_t Item::getWorth() const {
 }
 
 uint32_t Item::getForgeSlivers() const {
-	if (getID() == ITEM_FORGE_SLIVER)
+	if (getID() == ITEM_FORGE_SLIVER) {
 		return getItemCount();
-	else
+	} else {
 		return 0;
+	}
 }
 
 uint32_t Item::getForgeCores() const {
-	if (getID() == ITEM_FORGE_CORE)
+	if (getID() == ITEM_FORGE_CORE) {
 		return getItemCount();
-	else
+	} else {
 		return 0;
+	}
 }
 
 LightInfo Item::getLightInfo() const {

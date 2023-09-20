@@ -1,12 +1,10 @@
 registerItemClassification = {}
-setmetatable(registerItemClassification,
-{
-	__call =
-	function(self, itemClass, mask)
-		for _,parse in pairs(self) do
+setmetatable(registerItemClassification, {
+	__call = function(self, itemClass, mask)
+		for _, parse in pairs(self) do
 			parse(itemClass, mask)
 		end
-	end
+	end,
 })
 
 ItemClassification.register = function(self, mask)

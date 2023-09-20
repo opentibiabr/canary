@@ -57,7 +57,6 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseMagicLevelPoint(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseFieldAbsorbPercent(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseAbsorbPercent(tmpStrValue, valueAttribute, itemType);
-
 	ItemParse::parseSupressDrunk(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseField(tmpStrValue, attributeNode, valueAttribute, itemType);
 	ItemParse::parseReplaceable(tmpStrValue, valueAttribute, itemType);
@@ -74,6 +73,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseCleavePercent(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseTransformOnUse(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parsePrimaryType(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseUnscriptedItems(tmpStrValue, attributeNode, valueAttribute, itemType);
 }
 
@@ -940,6 +940,12 @@ void ItemParse::parseReflectDamage(const std::string &tmpStrValue, pugi::xml_att
 void ItemParse::parseTransformOnUse(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (tmpStrValue == "transformonuse") {
 		itemType.m_transformOnUse = pugi::cast<uint16_t>(valueAttribute.value());
+	}
+}
+
+void ItemParse::parsePrimaryType(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+	if (tmpStrValue == "primarytype") {
+		itemType.m_primaryType = asLowerCaseString(valueAttribute.as_string());
 	}
 }
 

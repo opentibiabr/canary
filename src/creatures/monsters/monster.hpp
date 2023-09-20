@@ -26,7 +26,7 @@ public:
 	static int32_t despawnRange;
 	static int32_t despawnRadius;
 
-	explicit Monster(const std::shared_ptr<MonsterType> &mType);
+	explicit Monster(const std::shared_ptr<MonsterType> mType);
 	~Monster();
 
 	// non-copyable
@@ -88,14 +88,16 @@ public:
 	}
 
 	Faction_t getFaction() const override {
-		if (master)
+		if (master) {
 			return master->getFaction();
+		}
 		return mType->info.faction;
 	}
 
 	bool isEnemyFaction(Faction_t faction) const {
-		if (master && master->getMonster())
+		if (master && master->getMonster()) {
 			return master->getMonster()->isEnemyFaction(faction);
+		}
 		return mType->info.enemyFactions.empty() ? false : mType->info.enemyFactions.find(faction) != mType->info.enemyFactions.end();
 	}
 
@@ -154,66 +156,24 @@ public:
 	bool challengeCreature(Creature* creature, int targetChangeCooldown) override;
 
 	bool changeTargetDistance(int32_t distance, uint32_t duration = 12000);
-
-	CreatureIcon_t getIcon() const override {
-		if (challengeMeleeDuration > 0 && mType->info.targetDistance > targetDistance) {
-			return CREATUREICON_TURNEDMELEE;
-		} else if (varBuffs[BUFF_DAMAGERECEIVED] > 100) {
-			return CREATUREICON_HIGHERRECEIVEDDAMAGE;
-		} else if (varBuffs[BUFF_DAMAGEDEALT] < 100) {
-			return CREATUREICON_LOWERDEALTDAMAGE;
-		}
-		switch (iconNumber) {
-			case 1:
-				return CREATUREICON_HIGHERRECEIVEDDAMAGE;
-			case 2:
-				return CREATUREICON_LOWERDEALTDAMAGE;
-			case 3:
-				return CREATUREICON_TURNEDMELEE;
-			case 4:
-				return CREATUREICON_GREENBALL;
-			case 5:
-				return CREATUREICON_REDBALL;
-			case 6:
-				return CREATUREICON_GREENSHIELD;
-			case 7:
-				return CREATUREICON_YELLOWSHIELD;
-			case 8:
-				return CREATUREICON_BLUESHIELD;
-			case 9:
-				return CREATUREICON_PURPLESHIELD;
-			case 10:
-				return CREATUREICON_REDSHIELD;
-			case 11:
-				return CREATUREICON_PIGEON;
-			case 12:
-				return CREATUREICON_PURPLESTAR;
-			case 13:
-				return CREATUREICON_POISONDROP;
-			case 14:
-				return CREATUREICON_WATERDROP;
-			case 15:
-				return CREATUREICON_FIREDROP;
-			case 16:
-				return CREATUREICON_ICEFLOWER;
-			case 17:
-				return CREATUREICON_ARROWUP;
-			case 18:
-				return CREATUREICON_ARROWDOWN;
-			case 19:
-				return CREATUREICON_EXCLAMATIONMARK;
-			case 20:
-				return CREATUREICON_QUESTIONMARK;
-			case 21:
-				return CREATUREICON_CANCELMARK;
-			default:
-				return CREATUREICON_NONE;
-		}
-
-		return CREATUREICON_NONE;
+	bool isChallenged() const {
+		return challengeFocusDuration > 0;
 	}
 
-	void setMonsterIcon(uint16_t iconcount, uint16_t iconnumber);
+	std::vector<CreatureIcon> getIcons() const override {
+		const auto creatureIcons = Creature::getIcons();
+		if (!creatureIcons.empty()) {
+			return creatureIcons;
+		}
+		if (challengeMeleeDuration > 0 && mType->info.targetDistance > targetDistance) {
+			return { CreatureIcon(CreatureIconModifications_t::TurnedMelee) };
+		} else if (varBuffs[BUFF_DAMAGERECEIVED] > 100) {
+			return { CreatureIcon(CreatureIconModifications_t::HigherDamageReceived) };
+		} else if (varBuffs[BUFF_DAMAGEDEALT] < 100) {
+			return { CreatureIcon(CreatureIconModifications_t::LowerDamageDealt) };
+		}
+		return {};
+	}
 
 	void setNormalCreatureLight() override;
 	bool getCombatValues(int32_t &min, int32_t &max) override;
@@ -334,7 +294,7 @@ public:
 		return timeToChangeFiendish;
 	}
 
-	const std::shared_ptr<MonsterType> &getMonsterType() const {
+	const std::shared_ptr<MonsterType> getMonsterType() const {
 		return mType;
 	}
 
@@ -347,9 +307,6 @@ public:
 private:
 	CreatureHashSet friendList;
 	CreatureList targetList;
-
-	uint16_t iconCount = 0;
-	uint32_t iconNumber = 0;
 
 	time_t timeToChangeFiendish = 0;
 
@@ -457,4 +414,14 @@ private:
 	void doRandomStep(Direction &nextDirection, bool &result);
 
 	void onConditionStatusChange(const ConditionType_t &type);
+
+	float getAttackMultiplier() const {
+		float multiplier = mType->getAttackMultiplier();
+		return multiplier * std::pow(1.03f, getForgeStack());
+	}
+
+	float getDefenseMultiplier() const {
+		float multiplier = mType->getAttackMultiplier();
+		return multiplier * std::pow(1.01f, getForgeStack());
+	}
 };

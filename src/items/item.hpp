@@ -275,6 +275,8 @@ public:
 		return nullptr;
 	}
 
+	bool isSavedToHouses() const;
+
 	SoundEffect_t getMovementSound(Cylinder* toCylinder) const;
 
 	void setIsLootTrackeable(bool value) {
@@ -465,6 +467,9 @@ public:
 	bool isWrapable() const {
 		return items[id].wrapable && items[id].wrapableTo;
 	}
+	bool isAmmo() const {
+		return items[id].isAmmo();
+	}
 	bool hasWalkStack() const {
 		return items[id].walkStack;
 	}
@@ -485,6 +490,10 @@ public:
 	}
 	bool canReceiveAutoCarpet() const {
 		return isBlocking() && isAlwaysOnTop() && !items[id].hasHeight;
+	}
+
+	bool isDecayDisabled() const {
+		return decayDisabled;
 	}
 
 	const std::string &getName() const {
@@ -565,13 +574,10 @@ public:
 
 	Item* transform(uint16_t itemId, uint16_t itemCount = -1);
 
-	bool getLoadedFromMap() const {
+	bool isLoadedFromMap() const {
 		return loadedFromMap;
 	}
 
-	void setLoadedFromMap(bool value) {
-		loadedFromMap = value;
-	}
 	bool isCleanable() const {
 		return !loadedFromMap && canRemove() && isPickupable() && !hasAttribute(ItemAttribute_t::UNIQUEID) && !hasAttribute(ItemAttribute_t::ACTIONID);
 	}
@@ -708,6 +714,7 @@ protected:
 
 	bool loadedFromMap = false;
 	bool isLootTrackeable = false;
+	bool decayDisabled = false;
 
 private:
 	void setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration);
@@ -715,6 +722,7 @@ private:
 	std::string getWeightDescription(uint32_t weight) const;
 
 	friend class Decay;
+	friend class MapCache;
 };
 
 using ItemList = std::list<Item*>;

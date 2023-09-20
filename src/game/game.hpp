@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "creatures/players/account/account.hpp"
+#include "account/account.hpp"
 #include "creatures/combat/combat.hpp"
 #include "items/containers/container.hpp"
 #include "creatures/players/grouping/groups.hpp"
@@ -23,7 +23,7 @@
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.hpp"
 #include "items/items_classification.hpp"
-#include "protobuf/appearances.pb.hpp"
+#include "protobuf/appearances.pb.h"
 
 class ServiceManager;
 class Creature;
@@ -69,15 +69,14 @@ public:
 	 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
 	 * \returns true if the custom map was loaded successfully
 	 */
-	bool loadMainMap(const std::string &filename);
+	void loadMainMap(const std::string &filename);
 	/**
 	 * Load the custom map
 	 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
 	 * \returns true if the custom map was loaded successfully
 	 */
-	bool loadCustomMaps(const std::string &customMapPath);
-	bool loadCustomMap(const std::string &filename);
-	void loadMap(const std::string &path, const Position &pos = Position(), bool unload = false);
+	void loadCustomMaps(const std::filesystem::path &customMapPath);
+	void loadMap(const std::string &path, const Position &pos = Position());
 
 	void getMapDimensions(uint32_t &width, uint32_t &height) const {
 		width = map.width;
@@ -178,7 +177,7 @@ public:
 	ReturnValue internalMoveCreature(Creature &creature, Tile &toTile, uint32_t flags = 0);
 
 	ReturnValue checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder, Cylinder* toCylinder, Item* item, Position toPos);
-	ReturnValue internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index, Item* item, uint32_t count, Item** internalMoveItem, uint32_t flags = 0, Creature* actor = nullptr, Item* tradeItem = nullptr);
+	ReturnValue internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index, Item* item, uint32_t count, Item** movedItem, uint32_t flags = 0, Creature* actor = nullptr, Item* tradeItem = nullptr, bool checkTile = true);
 
 	ReturnValue internalAddItem(Cylinder* toCylinder, Item* item, int32_t index = INDEX_WHEREEVER, uint32_t flags = 0, bool test = false);
 	ReturnValue internalAddItem(Cylinder* toCylinder, Item* item, int32_t index, uint32_t flags, bool test, uint32_t &remainderCount);
@@ -296,7 +295,7 @@ public:
 	void playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId);
 	void playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::string &text);
 	void playerBrowseField(uint32_t playerId, const Position &pos);
-	void playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index);
+	void playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index, uint8_t containerCategory);
 	void playerUpdateHouseWindow(uint32_t playerId, uint8_t listId, uint32_t windowTextId, const std::string &text);
 	void playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t stackPos, uint32_t tradePlayerId, uint16_t itemId);
 	void playerAcceptTrade(uint32_t playerId);
@@ -494,7 +493,7 @@ public:
 
 	std::shared_ptr<Guild> getGuild(uint32_t id, bool allowOffline = false) const;
 	std::shared_ptr<Guild> getGuildByName(const std::string &name, bool allowOffline = false) const;
-	void addGuild(const std::shared_ptr<Guild> &guild);
+	void addGuild(const std::shared_ptr<Guild> guild);
 	void removeGuild(uint32_t guildId);
 	void decreaseBrowseFieldRef(const Position &pos);
 
@@ -535,7 +534,7 @@ public:
 	void playerInspectItem(Player* player, const Position &pos);
 	void playerInspectItem(Player* player, uint16_t itemId, uint8_t itemCount, bool cyclopedia);
 
-	void addCharmRune(const std::shared_ptr<Charm> &charm) {
+	void addCharmRune(const std::shared_ptr<Charm> charm) {
 		CharmList.push_back(charm);
 		CharmList.shrink_to_fit();
 	}
@@ -635,6 +634,9 @@ public:
 	 */
 	bool tryRetrieveStashItems(Player* player, Item* item);
 
+	ReturnValue beforeCreatureZoneChange(Creature* creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones, bool force = false) const;
+	void afterCreatureZoneChange(Creature* creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones) const;
+
 	std::unique_ptr<IOWheel> &getIOWheel();
 	const std::unique_ptr<IOWheel> &getIOWheel() const;
 
@@ -648,7 +650,7 @@ private:
 	bool playerYell(Player* player, const std::string &text);
 	bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
 	void playerSpeakToNpc(Player* player, const std::string &text);
-	std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f);
+	std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, std::string context) const;
 
 	/**
 	 * Player wants to loot a corpse
@@ -852,8 +854,6 @@ private:
 	) const;
 
 	void unwrapItem(Item* item, uint16_t unWrapId, House* house, Player* player);
-
-	ReturnValue onCreatureZoneChange(Creature* creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones);
 
 	// Variable members (m_)
 	std::unique_ptr<IOWheel> m_IOWheel;

@@ -5,8 +5,8 @@ local data = {
 	},
 	coins = {
 		[ITEM_GOLD_COIN] = ITEM_PLATINUM_COIN,
-		[ITEM_PLATINUM_COIN] = ITEM_CRYSTAL_COIN
-	}
+		[ITEM_PLATINUM_COIN] = ITEM_CRYSTAL_COIN,
+	},
 }
 
 local function findItem(self, cylinder, converterItem)
@@ -46,7 +46,7 @@ local function startConversion(playerId, itemId)
 	local player = Player(playerId)
 	if player ~= nil then
 		local converting = addEvent(startConversion, 300, playerId, itemId)
-		local item = player:getItemById(itemId,true)
+		local item = player:getItemById(itemId, true)
 		if player:getItemCount(itemId) >= 1 then
 			if item:hasAttribute(ITEM_ATTRIBUTE_CHARGES) then
 				local charges_n = item:getAttribute(ITEM_ATTRIBUTE_CHARGES)

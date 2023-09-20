@@ -101,7 +101,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", RATE_MAGIC);
 	registerEnumIn(L, "configKeys", RATE_SPAWN);
 	registerEnumIn(L, "configKeys", RATE_KILLING_IN_THE_NAME_OF_POINTS);
-	registerEnumIn(L, "configKeys", HOUSE_PRICE);
+	registerEnumIn(L, "configKeys", HOUSE_PRICE_PER_SQM);
 	registerEnumIn(L, "configKeys", HOUSE_BUY_LEVEL);
 	registerEnumIn(L, "configKeys", MAX_MESSAGEBUFFER);
 	registerEnumIn(L, "configKeys", ACTIONS_DELAY_INTERVAL);
@@ -169,6 +169,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", SAVE_INTERVAL_TIME);
 	registerEnumIn(L, "configKeys", RATE_USE_STAGES);
 	registerEnumIn(L, "configKeys", TOGGLE_IMBUEMENT_SHRINE_STORAGE);
+	registerEnumIn(L, "configKeys", TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY);
 	registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_TIME);
 	registerEnumIn(L, "configKeys", DATA_DIRECTORY);
 	registerEnumIn(L, "configKeys", CORE_DIRECTORY);

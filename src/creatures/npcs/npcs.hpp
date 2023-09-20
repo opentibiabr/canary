@@ -10,6 +10,7 @@
 #pragma once
 
 #include "creatures/creature.hpp"
+#include "lib/di/container.hpp"
 
 class Shop {
 public:

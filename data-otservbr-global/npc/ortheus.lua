@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 121,
 	lookLegs = 121,
 	lookFeet = 116,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -86,24 +86,26 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 end
 --Basic
-keywordHandler:addKeyword({"magicians"}, StdModule.say, {npcHandler = npcHandler, text = "I can't imagine a better place to live."})
-keywordHandler:addKeyword({"live"}, StdModule.say, {npcHandler = npcHandler, text = "Though the city has seen better days, the quality of life is still much better than in most other cities."})
-keywordHandler:addKeyword({"job"}, StdModule.say, {npcHandler = npcHandler, text = "Hm, good question. Maybe old, wise man?"})
-keywordHandler:addKeyword({"name"}, StdModule.say, {npcHandler = npcHandler, text = "I'm used to being called old man. Simple as that."})
-keywordHandler:addKeyword({"vampire"}, StdModule.say, {npcHandler = npcHandler, text = "I don't know what you're talking about."})
-keywordHandler:addKeyword({"blood"}, StdModule.say, {npcHandler = npcHandler, text = "Yes, it's a bit messy down there. Sorry."})
-keywordHandler:addKeyword({"julius"}, StdModule.say, {npcHandler = npcHandler, text = "Doesn't ring a bell."})
-keywordHandler:addKeyword({"armenius"}, StdModule.say, {npcHandler = npcHandler, text = "He rarely comes here."})
-keywordHandler:addKeyword({"maris"}, StdModule.say, {npcHandler = npcHandler, text = "A man of the seas."})
-keywordHandler:addKeyword({"lisander"}, StdModule.say, {npcHandler = npcHandler, text = "He used to visit me for a chat, but ever since that new tavern opened I haven't seen him much anymore."})
-keywordHandler:addKeyword({"serafin"}, StdModule.say, {npcHandler = npcHandler, text = "He sometimes delivers fruit and vegetables to this quarter."})
-keywordHandler:addKeyword({"yalahar"}, StdModule.say, {npcHandler = npcHandler, text = "Though the city has seen better days, the quality of life is still much better than in most other cities."})
-keywordHandler:addKeyword({"quarter"}, StdModule.say, {npcHandler = npcHandler, text = "I can't imagine a better place to live"})
-keywordHandler:addKeyword({"alori mort"}, StdModule.say, {npcHandler = npcHandler, text = "Whatever that's supposed to mean."}, function(player) return player:getStorageValue(BloodBrothers.Mission03) == 1 end)
-keywordHandler:addKeyword({"reward"}, StdModule.say, {npcHandler = npcHandler, text = "I don't have anything that I could give you as a reward. Guess you aren't so selfless after all, huh?"})
-keywordHandler:addKeyword({"augur"}, StdModule.say, {npcHandler = npcHandler, text = "They try to protect the city and do a decent job. Well - no, a poor job, I mean a poor job."})
-keywordHandler:addKeyword({"mission"}, StdModule.say, {npcHandler = npcHandler, text = "You can bring me a mug of tea if you want to."})
-keywordHandler:addAliasKeyword({"quest"})
+keywordHandler:addKeyword({ "magicians" }, StdModule.say, { npcHandler = npcHandler, text = "I can't imagine a better place to live." })
+keywordHandler:addKeyword({ "live" }, StdModule.say, { npcHandler = npcHandler, text = "Though the city has seen better days, the quality of life is still much better than in most other cities." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "Hm, good question. Maybe old, wise man?" })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I'm used to being called old man. Simple as that." })
+keywordHandler:addKeyword({ "vampire" }, StdModule.say, { npcHandler = npcHandler, text = "I don't know what you're talking about." })
+keywordHandler:addKeyword({ "blood" }, StdModule.say, { npcHandler = npcHandler, text = "Yes, it's a bit messy down there. Sorry." })
+keywordHandler:addKeyword({ "julius" }, StdModule.say, { npcHandler = npcHandler, text = "Doesn't ring a bell." })
+keywordHandler:addKeyword({ "armenius" }, StdModule.say, { npcHandler = npcHandler, text = "He rarely comes here." })
+keywordHandler:addKeyword({ "maris" }, StdModule.say, { npcHandler = npcHandler, text = "A man of the seas." })
+keywordHandler:addKeyword({ "lisander" }, StdModule.say, { npcHandler = npcHandler, text = "He used to visit me for a chat, but ever since that new tavern opened I haven't seen him much anymore." })
+keywordHandler:addKeyword({ "serafin" }, StdModule.say, { npcHandler = npcHandler, text = "He sometimes delivers fruit and vegetables to this quarter." })
+keywordHandler:addKeyword({ "yalahar" }, StdModule.say, { npcHandler = npcHandler, text = "Though the city has seen better days, the quality of life is still much better than in most other cities." })
+keywordHandler:addKeyword({ "quarter" }, StdModule.say, { npcHandler = npcHandler, text = "I can't imagine a better place to live" })
+keywordHandler:addKeyword({ "alori mort" }, StdModule.say, { npcHandler = npcHandler, text = "Whatever that's supposed to mean." }, function(player)
+	return player:getStorageValue(BloodBrothers.Mission03) == 1
+end)
+keywordHandler:addKeyword({ "reward" }, StdModule.say, { npcHandler = npcHandler, text = "I don't have anything that I could give you as a reward. Guess you aren't so selfless after all, huh?" })
+keywordHandler:addKeyword({ "augur" }, StdModule.say, { npcHandler = npcHandler, text = "They try to protect the city and do a decent job. Well - no, a poor job, I mean a poor job." })
+keywordHandler:addKeyword({ "mission" }, StdModule.say, { npcHandler = npcHandler, text = "You can bring me a mug of tea if you want to." })
+keywordHandler:addAliasKeyword({ "quest" })
 
 npcHandler:setMessage(MESSAGE_GREET, "What's your business here with the {magicians}, |PLAYERNAME|?")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

@@ -1,7 +1,7 @@
 local config = {
 	-- ordered by chance, the last chance being 100
-	{chance = 30, monster = 'Enraged White Deer', message = 'The white deer summons all his strength and turns to fight!'},
-	{chance = 100, monster = 'Desperate White Deer', message = 'The white deer desperately tries to escape!'}
+	{ chance = 30, monster = "Enraged White Deer", message = "The white deer summons all his strength and turns to fight!" },
+	{ chance = 100, monster = "Desperate White Deer", message = "The white deer desperately tries to escape!" },
 }
 
 local whiteDeerDeath = CreatureEvent("WhiteDeerDeath")
@@ -24,4 +24,5 @@ function whiteDeerDeath.onDeath(creature, corpse, killer, mostDamageKiller, unju
 	end
 	return true
 end
+
 whiteDeerDeath:register()

@@ -1,12 +1,10 @@
 registerCharm = {}
-setmetatable(registerCharm,
-{
-	__call =
-	function(self, charm, mask)
-		for _,parse in pairs(self) do
+setmetatable(registerCharm, {
+	__call = function(self, charm, mask)
+		for _, parse in pairs(self) do
 			parse(charm, mask)
 		end
-	end
+	end,
 })
 
 Charm.register = function(self, mask)

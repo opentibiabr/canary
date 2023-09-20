@@ -29,9 +29,6 @@ struct BasicItem {
 	std::string text;
 	// size_t description { 0 };
 
-	uint32_t guid { 0 };
-	uint32_t sleepStart { 0 };
-
 	uint16_t id { 0 };
 
 	uint16_t charges { 0 }; // Runecharges and Count Too
@@ -68,8 +65,8 @@ struct BasicTile {
 
 	bool isStatic { false };
 
-	bool isEmpty() const {
-		return flags == 0 && ground == nullptr && items.empty();
+	bool isEmpty(bool ignoreFlag = false) const {
+		return (ignoreFlag || flags == 0) && ground == nullptr && items.empty();
 	}
 
 	bool isHouse() const {

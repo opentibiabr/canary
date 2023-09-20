@@ -1,41 +1,41 @@
 local targetIdList = {
 	--health potions casks
-	[25879] = {itemId = 285, transform = 266}, -- Health Potion --
-	[25880] = {itemId = 283, transform = 236}, -- Strong Health --
-	[25881] = {itemId = 284, transform = 239}, -- Great Health --
-	[25882] = {itemId = 284, transform = 7643}, -- Ultimate Health --
-	[25883] = {itemId = 284, transform = 23375}, -- Supreme Health --
+	[25879] = { itemId = 285, transform = 266 }, -- Health Potion --
+	[25880] = { itemId = 283, transform = 236 }, -- Strong Health --
+	[25881] = { itemId = 284, transform = 239 }, -- Great Health --
+	[25882] = { itemId = 284, transform = 7643 }, -- Ultimate Health --
+	[25883] = { itemId = 284, transform = 23375 }, -- Supreme Health --
 	--mana potions casks
-	[25889] = {itemId = 285, transform = 268}, -- Mana Potion --
-	[25890] = {itemId = 283, transform = 237}, -- Strong Mana --
-	[25891] = {itemId = 284, transform = 238}, -- Great Mana --
-	[25892] = {itemId = 284, transform = 23373}, -- Ultimate Mana --
+	[25889] = { itemId = 285, transform = 268 }, -- Mana Potion --
+	[25890] = { itemId = 283, transform = 237 }, -- Strong Mana --
+	[25891] = { itemId = 284, transform = 238 }, -- Great Mana --
+	[25892] = { itemId = 284, transform = 23373 }, -- Ultimate Mana --
 	--spirit potions caks
-	[25899] = {itemId = 284, transform = 7642}, -- Great Spirit --
-	[25900] = {itemId = 284, transform = 23374}, --Ultimate Spirit --
+	[25899] = { itemId = 284, transform = 7642 }, -- Great Spirit --
+	[25900] = { itemId = 284, transform = 23374 }, --Ultimate Spirit --
 
 	--health potions kegs
-	[25903] = {itemId = 285, transform = 266}, -- Health Potion --
-	[25904] = {itemId = 283, transform = 236}, -- Strong Health --
-	[25905] = {itemId = 284, transform = 239}, -- Great Health --
-	[25906] = {itemId = 284, transform = 7643}, -- Ultimate Health --
-	[25907] = {itemId = 284, transform = 23375}, -- Supreme Health --
+	[25903] = { itemId = 285, transform = 266 }, -- Health Potion --
+	[25904] = { itemId = 283, transform = 236 }, -- Strong Health --
+	[25905] = { itemId = 284, transform = 239 }, -- Great Health --
+	[25906] = { itemId = 284, transform = 7643 }, -- Ultimate Health --
+	[25907] = { itemId = 284, transform = 23375 }, -- Supreme Health --
 
 	--mana potion kegs
-	[25908] = {itemId = 285, transform = 268}, -- Mana Potion --
-	[25909] = {itemId = 283, transform = 237}, -- Strong Mana --
-	[25910] = {itemId = 284, transform = 238}, -- Great Mana --
-	[25911] = {itemId = 284, transform = 23373}, -- Ultimate Mana --
+	[25908] = { itemId = 285, transform = 268 }, -- Mana Potion --
+	[25909] = { itemId = 283, transform = 237 }, -- Strong Mana --
+	[25910] = { itemId = 284, transform = 238 }, -- Great Mana --
+	[25911] = { itemId = 284, transform = 23373 }, -- Ultimate Mana --
 
 	--spirit potions kegs
-	[25913] = {itemId = 284, transform = 7642}, -- Great Spirit --
-	[25914] = {itemId = 284, transform = 23374} --Ultimate Spirit --
+	[25913] = { itemId = 284, transform = 7642 }, -- Great Spirit --
+	[25914] = { itemId = 284, transform = 23374 }, --Ultimate Spirit --
 }
 
 local flasks = Action()
 
 function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not target or not player:getTile():getHouse() then
+	if not target or not target:getItem() then
 		return false
 	end
 

@@ -6,33 +6,28 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#ifndef CANARY_CONTAINER_HPP
-#define CANARY_CONTAINER_HPP
+#pragma once
 
+#include "account/account_repository_db.hpp"
+#include "lib/di/injector.hpp"
 #include "lib/logging/logger.hpp"
 #include "lib/logging/log_with_spd_log.hpp"
+#include "kv/kv_sql.hpp"
 
 namespace di = boost::di;
 
 class DI final {
 private:
-	inline static auto &container() {
-		static auto injector = di::make_injector(
-			di::bind<Logger>().to<LogWithSpdLog>().in(di::singleton)
-		);
-
-		return injector;
-	}
+	inline static di::extension::injector<>* testContainer;
+	const inline static auto defaultContainer = di::make_injector(
+		di::bind<account::AccountRepository>().to<account::AccountRepositoryDB>().in(di::singleton),
+		di::bind<KVStore>().to<KVSQL>().in(di::singleton),
+		di::bind<Logger>().to<LogWithSpdLog>().in(di::singleton)
+	);
 
 public:
-	/**
-	 * Get returns you a reference of a instance that the DI contains.
-	 * It will always return the same instance, it's used for singletons shared instances.
-	 * Instances acquired with get are managed by the DI and can be merely references.
-	 */
-	template <class T>
-	inline static T &get() {
-		return DI::container().create<T &>();
+	inline static void setTestContainer(di::extension::injector<>* container) {
+		testContainer = container;
 	}
 
 	/**
@@ -42,7 +37,17 @@ public:
 	 */
 	template <class T>
 	inline static T create() {
-		return DI::container().create<T>();
+		return testContainer ? testContainer->create<T>() : defaultContainer.create<T>();
+	}
+
+	/**
+	 * Get returns you a reference of a instance that the DI contains.
+	 * It will always return the same instance, it's used for singletons shared instances.
+	 * Instances acquired with get are managed by the DI and can be merely references.
+	 */
+	template <class T>
+	inline static T &get() {
+		return create<T &>();
 	}
 };
 
@@ -55,5 +60,3 @@ template <typename Type>
 inline Type &inject() {
 	return DI::get<Type>();
 }
-
-#endif // CANARY_CONTAINER_HPP

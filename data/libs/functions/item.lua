@@ -31,7 +31,7 @@ function Item.isTile(self)
 end
 
 function Item.setDescription(self, description)
-	if description ~= '' then
+	if description ~= "" then
 		self:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, description)
 	else
 		self:removeAttribute(ITEM_ATTRIBUTE_DESCRIPTION)
@@ -39,7 +39,7 @@ function Item.setDescription(self, description)
 end
 
 function Item.setText(self, text)
-	if text ~= '' then
+	if text ~= "" then
 		self:setAttribute(ITEM_ATTRIBUTE_TEXT, text)
 	else
 		self:removeAttribute(ITEM_ATTRIBUTE_TEXT)
@@ -47,7 +47,7 @@ function Item.setText(self, text)
 end
 
 function Item.setName(self, name)
-	if name ~= '' then
+	if name ~= "" then
 		self:setAttribute(ITEM_ATTRIBUTE_NAME, name)
 	else
 		self:removeAttribute(ITEM_ATTRIBUTE_NAME)
@@ -55,9 +55,21 @@ function Item.setName(self, name)
 end
 
 function Item.setUniqueId(self, uniqueId)
-	if type(uniqueId) ~= 'number' or uniqueId < 0 or uniqueId > 65535 then
+	if type(uniqueId) ~= "number" or uniqueId < 0 or uniqueId > 65535 then
 		return false
 	end
 
 	self:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, uniqueId)
+end
+
+function Item.getDuration(self)
+	return self:getAttribute(ITEM_ATTRIBUTE_DURATION)
+end
+
+function Item.setDurationAttr(self, duration)
+	return self:setAttribute(ITEM_ATTRIBUTE_DURATION, duration)
+end
+
+function Item.stopDecay(self)
+	return self:setAttribute(ITEM_ATTRIBUTE_DECAYSTATE, DECAYING_FALSE)
 end

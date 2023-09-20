@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 258
+	lookType = 258,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -67,7 +67,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 npcHandler:setMessage(MESSAGE_WALKAWAY, "")
-keywordHandler:addGreetKeyword({"sniffler"}, {npcHandler = npcHandler, text = "<sniff>"})
+keywordHandler:addGreetKeyword({ "sniffler" }, { npcHandler = npcHandler, text = "<sniff>" })
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2337
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 1,
-	Locations = "Ingol"
-	}
+	Locations = "Ingol",
+}
 
 monster.health = 9150
 monster.maxHealth = 9150
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -59,42 +59,42 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Ungh! Ungh!", yell = false},
-	{text = "Klack klack!", yell = false},
-	{text = "Hugah!", yell = false},
+	{ text = "Ungh! Ungh!", yell = false },
+	{ text = "Klack klack!", yell = false },
+	{ text = "Hugah!", yell = false },
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 71540, maxCount = 26},
-	{name = "guardian halberd", chance = 5310},
-	{name = "crab man claws", chance = 5210, maxCount = 2},
-	{name = "green gem", chance = 3010},
-	{name = "great health potion", chance = 2000, maxCount = 5},
-	{id = 281, chance = 1700}, -- giant shimmering pearl (green)
-	{name = "lightning legs", chance = 1200},
-	{name = "warrior's shield", chance = 1200},
-	{name = "glacier kilt", chance = 1000},
-	{name = "noble axe", chance = 900},
-	{name = "hammer of wrath", chance = 600},
-	{name = "ring of the sky", chance = 300},
+	{ name = "platinum coin", chance = 71540, maxCount = 26 },
+	{ name = "guardian halberd", chance = 5310 },
+	{ name = "crab man claws", chance = 5210, maxCount = 2 },
+	{ name = "green gem", chance = 3010 },
+	{ name = "great health potion", chance = 2000, maxCount = 5 },
+	{ id = 281, chance = 1700 }, -- giant shimmering pearl (green)
+	{ name = "lightning legs", chance = 1200 },
+	{ name = "warrior's shield", chance = 1200 },
+	{ name = "glacier kilt", chance = 1000 },
+	{ name = "noble axe", chance = 900 },
+	{ name = "hammer of wrath", chance = 600 },
+	{ name = "ring of the sky", chance = 300 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -498},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -120, maxDamage = -320, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, target = true},
-	{name ="combat", interval = 2000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -330, maxDamage = -380, range = 7, radius = 4, shootEffect = CONST_ANI_ENERGYBALL, effect = CONST_ME_PURPLEENERGY, target = true},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -311, maxDamage = -370, length = 3, spread = 3, effect = CONST_ME_ENERGYHIT, target = false},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -498 },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -120, maxDamage = -320, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, target = true },
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -330, maxDamage = -380, range = 7, radius = 4, shootEffect = CONST_ANI_ENERGYBALL, effect = CONST_ME_PURPLEENERGY, target = true },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -311, maxDamage = -370, length = 3, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
 }
 
 monster.defenses = {
@@ -103,23 +103,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 25},
-	{type = COMBAT_ENERGYDAMAGE, percent = 10},
-	{type = COMBAT_EARTHDAMAGE, percent = 5},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -5},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 25 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 5 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -5 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 5 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

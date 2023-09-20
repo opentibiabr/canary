@@ -324,7 +324,8 @@ public:
 
 private:
 	static void doChainEffect(const Position &origin, const Position &pos, uint8_t effect);
-	static void pickChainTargets(Creature* caster, std::vector<Creature*> &targets, std::set<uint32_t> &targetSet, std::set<uint32_t> &visited, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive);
+	static std::vector<std::pair<Position, std::vector<uint32_t>>> pickChainTargets(Creature* caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool aggressive, bool backtracking, Creature* initialTarget = nullptr);
+	static bool isValidChainTarget(Creature* caster, Creature* currentTarget, Creature* potentialTarget, const CombatParams &params, bool aggressive);
 
 	static void doCombatDefault(Creature* caster, Creature* target, const CombatParams &params);
 
@@ -366,7 +367,7 @@ private:
 	 * @param damage The combat damage.
 	 * @return The calculated level formula.
 	 */
-	int32_t getLevelFormula(const Player* player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const;
+	int32_t getLevelFormula(const Player* player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const;
 	CombatDamage getCombatDamage(Creature* creature, Creature* target) const;
 
 	bool doCombatChain(Creature* caster, Creature* target, bool aggressive) const;

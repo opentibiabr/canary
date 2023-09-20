@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 0,
 	lookFeet = 0,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,34 +58,32 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
-	if MsgContains(message, 'cookie') then
-		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31
-				and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.Lorbas) ~= 1 then
-			npcHandler:say('You want me to eat this cookie?', npc, creature)
+	if MsgContains(message, "cookie") then
+		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31 and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.Lorbas) ~= 1 then
+			npcHandler:say("You want me to eat this cookie?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
-	elseif MsgContains(message, 'yes') then
+	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if not player:removeItem(130, 1) then
-				npcHandler:say('You have no cookie that I\'d like.', npc, creature)
+				npcHandler:say("You have no cookie that I'd like.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true
 			end
 
 			player:setStorageValue(Storage.WhatAFoolish.CookieDelivery.Lorbas, 1)
 			if player:getCookiesDelivered() == 10 then
-				player:addAchievement('Allow Cookies?')
+				player:addAchievement("Allow Cookies?")
 			end
 
 			npc:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
-			npcHandler:say('Well, you don\'t mind if I play around with this antidote rune a bit ... UHHH, YOU LOU ... uhm that was so ... funny, haha ... ha. Mhm, you better leave now.', npc, creature)
+			npcHandler:say("Well, you don't mind if I play around with this antidote rune a bit ... UHHH, YOU LOU ... uhm that was so ... funny, haha ... ha. Mhm, you better leave now.", npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		end
-	elseif MsgContains(message, 'no') then
+	elseif MsgContains(message, "no") then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say('I see.', npc, creature)
+			npcHandler:say("I see.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end

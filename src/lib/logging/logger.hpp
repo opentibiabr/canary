@@ -6,21 +6,32 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#ifndef CANARY_LOGGER_HPP
-#define CANARY_LOGGER_HPP
+#pragma once
 
 #define LOG_LEVEL_TRACE \
-	std::string { "trace" }
+	std::string {       \
+		"trace"         \
+	}
 #define LOG_LEVEL_DEBUG \
-	std::string { "debug" }
+	std::string {       \
+		"debug"         \
+	}
 #define LOG_LEVEL_INFO \
-	std::string { "info" }
+	std::string {      \
+		"info"         \
+	}
 #define LOG_LEVEL_WARNING \
-	std::string { "warning" }
+	std::string {         \
+		"warning"         \
+	}
 #define LOG_LEVEL_ERROR \
-	std::string { "error" }
+	std::string {       \
+		"error"         \
+	}
 #define LOG_LEVEL_CRITICAL \
-	std::string { "critical" }
+	std::string {          \
+		"critical"         \
+	}
 
 class Logger {
 public:
@@ -95,5 +106,3 @@ public:
 		log(LOG_LEVEL_CRITICAL, msg);
 	}
 };
-
-#endif // CANARY_LOGGER_HPP

@@ -16,13 +16,15 @@ function eradicatorTransform.onThink(creature)
 				return false
 			end
 			monster:addHealth(-monster:getHealth() + health, COMBAT_PHYSICALDAMAGE)
-			Game.createMonster("spark of destruction", {x = 32304, y = 31282, z = 14}, false, true)
-			Game.createMonster("spark of destruction", {x = 32305, y = 31287, z = 14}, false, true)
-			Game.createMonster("spark of destruction", {x = 32312, y = 31287, z = 14}, false, true)
-			Game.createMonster("spark of destruction", {x = 32314, y = 31282, z = 14}, false, true)
+			Game.createMonster("spark of destruction", { x = 32304, y = 31282, z = 14 }, false, true)
+			Game.createMonster("spark of destruction", { x = 32305, y = 31287, z = 14 }, false, true)
+			Game.createMonster("spark of destruction", { x = 32312, y = 31287, z = 14 }, false, true)
+			Game.createMonster("spark of destruction", { x = 32314, y = 31282, z = 14 }, false, true)
 			eradicatorWeak = 1 -- Eradicator form
 			eradicatorReleaseT = false -- Release spell
-			areaEradicator2 = addEvent(function() eradicatorReleaseT = true end, 9000)
+			areaEradicator2 = addEvent(function()
+				eradicatorReleaseT = true
+			end, 9000)
 		elseif eradicatorWeak == 1 then
 			local pos = creature:getPosition()
 			local health = creature:getHealth()
@@ -37,7 +39,9 @@ function eradicatorTransform.onThink(creature)
 			monster:addHealth(-monster:getHealth() + health, COMBAT_PHYSICALDAMAGE)
 			eradicatorWeak = 0
 			eradicatorReleaseT = false -- Release spell
-			areaEradicator2 = addEvent(function() eradicatorReleaseT = true end, 74000)
+			areaEradicator2 = addEvent(function()
+				eradicatorReleaseT = true
+			end, 74000)
 		end
 	end
 	return true

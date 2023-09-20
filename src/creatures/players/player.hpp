@@ -107,7 +107,7 @@ public:
 		return this;
 	}
 
-	static std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f);
+	static std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, std::string context);
 
 	void setID() override;
 
@@ -149,7 +149,7 @@ public:
 	bool toggleMount(bool mount);
 	bool tameMount(uint8_t mountId);
 	bool untameMount(uint8_t mountId);
-	bool hasMount(const std::shared_ptr<Mount> &mount) const;
+	bool hasMount(const std::shared_ptr<Mount> mount) const;
 	bool hasAnyMount() const;
 	uint8_t getRandomMountId() const;
 	void dismount();
@@ -251,7 +251,7 @@ public:
 	[[nodiscard]] std::shared_ptr<Guild> getGuild() const {
 		return guild;
 	}
-	void setGuild(const std::shared_ptr<Guild> &guild);
+	void setGuild(const std::shared_ptr<Guild> guild);
 
 	[[nodiscard]] GuildRank_ptr getGuildRank() const {
 		return guildRank;
@@ -293,7 +293,7 @@ public:
 		return isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
 	}
 
-	void addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> &mtype, bool isBoss, bool reloadClient = false);
+	void addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient = false);
 
 	void removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient = false);
 
@@ -303,8 +303,8 @@ public:
 		}
 	}
 
-	void refreshBestiaryMonsterTracker() const {
-		refreshCyclopediaMonsterTracker(getCyclopediaMonsterTrackerSet(false), false);
+	void refreshCyclopediaMonsterTracker(bool isBoss = false) const {
+		refreshCyclopediaMonsterTracker(getCyclopediaMonsterTrackerSet(isBoss), isBoss);
 	}
 
 	void refreshCyclopediaMonsterTracker(const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {
@@ -313,7 +313,7 @@ public:
 		}
 	}
 
-	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const;
+	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> monsterType) const;
 
 	Vocation* getVocation() const {
 		return vocation;
@@ -357,10 +357,11 @@ public:
 		int32_t actualDamage = getPerfectShotDamage(range);
 		bool aboveZero = (actualDamage != 0);
 		actualDamage += damage;
-		if (actualDamage == 0 && aboveZero)
+		if (actualDamage == 0 && aboveZero) {
 			perfectShot.erase(range);
-		else
+		} else {
 			perfectShot[range] = actualDamage;
+		}
 	}
 
 	int32_t getSpecializedMagicLevel(CombatType_t combat, bool useCharges = false) const;
@@ -473,6 +474,10 @@ public:
 	int32_t getStorageValueByName(const std::string &storageName) const;
 	void addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin = false);
 
+	std::shared_ptr<KVStore> kv() const {
+		return g_kv().scoped("player")->scoped(getID());
+	}
+
 	void genReservedStorageRange();
 
 	void setGroup(Group* newGroup) {
@@ -547,13 +552,6 @@ public:
 	void switchGhostMode() {
 		ghostMode = !ghostMode;
 	}
-
-	uint32_t getAccount() const {
-		return accountNumber;
-	}
-	account::AccountType getAccountType() const {
-		return accountType;
-	}
 	uint32_t getLevel() const {
 		return level;
 	}
@@ -579,11 +577,10 @@ public:
 	}
 	bool isPremium() const;
 	uint32_t getPremiumDays() const {
-		return premiumDays;
+		return account->getPremiumRemainingDays();
 	}
-	void setPremiumDays(uint32_t v);
 	time_t getPremiumLastDay() const {
-		return premiumLastDay;
+		return account->getPremiumLastDay();
 	}
 
 	bool isVip() const {
@@ -603,7 +600,26 @@ public:
 	PlayerSex_t getSex() const {
 		return sex;
 	}
+	PlayerPronoun_t getPronoun() const {
+		return pronoun;
+	}
+	std::string getObjectPronoun() const {
+		return getPlayerObjectPronoun(pronoun, sex, name);
+	}
+	std::string getSubjectPronoun() const {
+		return getPlayerSubjectPronoun(pronoun, sex, name);
+	}
+	std::string getPossessivePronoun() const {
+		return getPlayerPossessivePronoun(pronoun, sex, name);
+	}
+	std::string getReflexivePronoun() const {
+		return getPlayerReflexivePronoun(pronoun, sex, name);
+	}
+	std::string getSubjectVerb(bool past = false) const {
+		return getVerbForPronoun(pronoun, past);
+	}
 	void setSex(PlayerSex_t);
+	void setPronoun(PlayerPronoun_t);
 	uint64_t getExperience() const {
 		return experience;
 	}
@@ -927,7 +943,7 @@ public:
 	void addOutfit(uint16_t lookType, uint8_t addons);
 	bool removeOutfit(uint16_t lookType);
 	bool removeOutfitAddon(uint16_t lookType, uint8_t addons);
-	bool getOutfitAddons(const std::shared_ptr<Outfit> &outfit, uint8_t &addons) const;
+	bool getOutfitAddons(const std::shared_ptr<Outfit> outfit, uint8_t &addons) const;
 
 	bool canFamiliar(uint16_t lookType) const;
 	void addFamiliar(uint16_t lookType);
@@ -1081,7 +1097,7 @@ public:
 		}
 	}
 	void sendCreatureIcon(const Creature* creature) {
-		if (client) {
+		if (client && !client->oldProtocol) {
 			client->sendCreatureIcon(creature);
 		}
 	}
@@ -1998,15 +2014,33 @@ public:
 
 	bool canAutoWalk(const Position &toPosition, const std::function<void()> &function, uint32_t delay = 500);
 
-	// Interfaces
-	// Account
-	error_t SetAccountInterface(account::Account* account);
-	error_t GetAccountInterface(account::Account* account);
-
 	void sendMessageDialog(const std::string &message) const {
 		if (client) {
 			client->sendMessageDialog(message);
 		}
+	}
+
+	// Account
+	bool setAccount(uint32_t accountId) {
+		if (account) {
+			g_logger().warn("Account was already set!");
+			return true;
+		}
+
+		account = std::make_shared<account::Account>(accountId);
+		return account::ERROR_NO == account->load();
+	}
+
+	account::AccountType getAccountType() const {
+		return account ? account->getAccountType() : account::AccountType::ACCOUNT_TYPE_NORMAL;
+	}
+
+	uint32_t getAccountId() const {
+		return account ? account->getID() : 0;
+	}
+
+	std::shared_ptr<account::Account> getAccount() const {
+		return account;
 	}
 
 	// Prey system
@@ -2116,7 +2150,7 @@ public:
 
 	// Task hunting system
 	void initializeTaskHunting();
-	bool isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> &mtype) const;
+	bool isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> mtype) const;
 
 	bool setTaskHuntingSlotClass(std::unique_ptr<TaskHuntingSlot> slot) {
 		if (getTaskHuntingSlotById(slot->id)) {
@@ -2214,7 +2248,7 @@ public:
 		return nullptr;
 	}
 
-	uint16_t getLoyaltyPoints() const {
+	uint32_t getLoyaltyPoints() const {
 		return loyaltyPoints;
 	}
 
@@ -2367,19 +2401,21 @@ public:
 	}
 
 	void setSlotBossId(uint8_t slotId, uint32_t bossId) {
-		if (slotId == 1)
+		if (slotId == 1) {
 			bossIdSlotOne = bossId;
-		else
+		} else {
 			bossIdSlotTwo = bossId;
+		}
 		if (client) {
 			client->parseSendBosstiarySlots();
 		}
 	}
 	uint32_t getSlotBossId(uint8_t slotId) const {
-		if (slotId == 1)
+		if (slotId == 1) {
 			return bossIdSlotOne;
-		else
+		} else {
 			return bossIdSlotTwo;
+		}
 	}
 
 	void addRemoveTime() {
@@ -2428,7 +2464,6 @@ public:
 		return static_cast<uint16_t>(std::max<int32_t>(0, std::min<int32_t>(0xFFFF, points)));
 	}
 
-	void reloadHazardSystemIcon();
 	/*******************************************************************************/
 
 	// Concoction system
@@ -2655,7 +2690,6 @@ private:
 	uint32_t walkTaskEvent = 0;
 	uint32_t MessageBufferTicks = 0;
 	uint32_t lastIP = 0;
-	uint32_t accountNumber = 0;
 	uint32_t guid = 0;
 	uint32_t loyaltyPoints = 0;
 	uint8_t isDailyReward = DAILY_REWARD_NOTCOLLECTED;
@@ -2666,8 +2700,6 @@ private:
 	int32_t varStats[STAT_LAST + 1] = {};
 	int32_t shopCallback = -1;
 	int32_t MessageBufferCount = 0;
-	uint32_t premiumDays = 0;
-	time_t premiumLastDay = 0;
 	int32_t bloodHitCount = 0;
 	int32_t shieldBlockCount = 0;
 	int8_t offlineTrainingSkill = SKILL_NONE;
@@ -2735,9 +2767,9 @@ private:
 	TradeState_t tradeState = TRADE_NONE;
 	FightMode_t fightMode = FIGHTMODE_ATTACK;
 	Faction_t faction = FACTION_PLAYER;
-	account::AccountType accountType = account::AccountType::ACCOUNT_TYPE_NORMAL;
 	QuickLootFilter_t quickLootFilter;
 	VipStatus_t statusVipList = VIPSTATUS_ONLINE;
+	PlayerPronoun_t pronoun = PLAYERPRONOUN_THEY;
 
 	bool chaseMode = false;
 	bool secureMode = true;
@@ -2851,7 +2883,7 @@ private:
 
 	std::mutex quickLootMutex;
 
-	account::Account* account_;
+	std::shared_ptr<account::Account> account;
 	bool online = true;
 
 	bool hasQuiverEquipped() const;

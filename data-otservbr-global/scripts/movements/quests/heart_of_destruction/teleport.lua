@@ -8,7 +8,7 @@ local setting = {
 	[48066] = Position(32159, 31294, 7), -- to svargrond
 	[48067] = Position(32113, 31386, 11), -- from svargrond
 	[48068] = Position(33026, 31367, 8), -- to farmine
-	[48069] = Position(32117, 31355, 13) -- from farmine
+	[48069] = Position(32117, 31355, 13), -- from farmine
 }
 
 local teleport = MoveEvent()

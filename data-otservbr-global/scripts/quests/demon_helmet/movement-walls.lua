@@ -1,12 +1,12 @@
 local tilesPositions = {
-	{x = 33190, y = 31629, z = 13},
-	{x = 33191, y = 31629, z = 13}
+	{ x = 33190, y = 31629, z = 13 },
+	{ x = 33191, y = 31629, z = 13 },
 }
 
 local wallsPositions = {
-	{x = 33210, y = 31630, z = 13},
-	{x = 33211, y = 31630, z = 13},
-	{x = 33212, y = 31630, z = 13}
+	{ x = 33210, y = 31630, z = 13 },
+	{ x = 33211, y = 31630, z = 13 },
+	{ x = 33212, y = 31630, z = 13 },
 }
 
 local walls = MoveEvent()
@@ -50,7 +50,7 @@ function walls.onStepOut(creature, item, position, fromPosition)
 		wall = Tile(wallsPositions[i]):getItemById(1295)
 		-- Check there is no walls before create new ones
 		if not wall then
-			Position(wallsPositions[i]):hasCreature({x = 33211, y = 31631, z = 13})
+			Position(wallsPositions[i]):hasCreature({ x = 33211, y = 31631, z = 13 })
 			Game.createItem(1295, 1, wallsPositions[i])
 		end
 	end

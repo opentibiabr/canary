@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 47,
 	lookLegs = 105,
 	lookFeet = 105,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -57,7 +57,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	if not npcHandler:checkInteraction(npc, creature) then
 		return false
 	end
-
 
 	if MsgContains(message, "weapons") then
 		if player:getStorageValue(Storage.SecretService.AVINMission06) == 1 then

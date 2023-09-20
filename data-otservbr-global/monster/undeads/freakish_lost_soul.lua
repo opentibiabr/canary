@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Freakish Lost Soul")
 local monster = {}
 
-monster.description = "Freakish Lost Soul"
+monster.description = "a freakish lost soul"
 monster.experience = 7020
 monster.outfit = {
 	lookType = 1268,
@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 83,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1866
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Brain Grounds, Netherworld, Zarganash."
-	}
+	Locations = "Brain Grounds, Netherworld, Zarganash.",
+}
 
 monster.health = 7000
 monster.maxHealth = 7000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -73,49 +73,50 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 10000, maxCount = 3},
-	{name = "lost soul", chance = 45240},
-	{name = "death toll", chance = 6250},
-	{name = "emerald bangle", chance = 5980},
-	{name = "gemmed figurine", chance = 3800},
-	{name = "ensouled essence", chance = 2720},
-	{id = 23529, chance = 1220}, -- ring of blue plasma
-	{name = "silver hand mirror", chance = 1090},
-	{name = "ornate crossbow", chance = 1090},
-	{name = "crystal crossbow", chance = 270}
+	{ name = "platinum coin", chance = 10000, maxCount = 3 },
+	{ name = "lost soul", chance = 45240 },
+	{ name = "death toll", chance = 6250 },
+	{ name = "emerald bangle", chance = 5980 },
+	{ name = "gemmed figurine", chance = 3800 },
+	{ name = "ensouled essence", chance = 2720 },
+	{ id = 23529, chance = 1220 }, -- ring of blue plasma
+	{ name = "silver hand mirror", chance = 1090 },
+	{ name = "ornate crossbow", chance = 1090 },
+	{ name = "crystal crossbow", chance = 270 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -500},
-	{name ="combat", interval = 1700, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -300, maxDamage = -550, radius = 3, shootEffect = CONST_ANI_ENVENOMEDARROW, target = true},
-	{name ="combat", interval = 1700, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -550, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false},
-	{name ="combat", interval = 1700, chance = 35, type = COMBAT_DEATHDAMAGE, minDamage = -150, maxDamage = -550, radius = 4, effect = CONST_ME_MORTAREA, target = false},
-	{name ="combat", interval = 1700, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -550, radius = 4, effect = CONST_ME_ENERGYAREA, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -500 },
+	{ name = "combat", interval = 1700, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -300, maxDamage = -550, radius = 3, shootEffect = CONST_ANI_ENVENOMEDARROW, target = true },
+	{ name = "combat", interval = 1700, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -550, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
+	{ name = "combat", interval = 1700, chance = 35, type = COMBAT_DEATHDAMAGE, minDamage = -150, maxDamage = -550, radius = 4, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 1700, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -550, radius = 4, effect = CONST_ME_ENERGYAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 40,
-	armor = 82
+	armor = 85,
+	mitigation = 2.60,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 60},
-	{type = COMBAT_ENERGYDAMAGE, percent = 35},
-	{type = COMBAT_EARTHDAMAGE, percent = 70},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = -40},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 60 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 35 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 70 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -40 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

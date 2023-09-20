@@ -11,7 +11,7 @@ function spell.onCastSpell(creature, var)
 		creature:remove()
 		return true
 	end, 14000, creature:getId())
-return true
+	return true
 end
 
 spell:name("glooth-generator summon")

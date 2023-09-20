@@ -1,6 +1,5 @@
 local loginEvents = CreatureEvent("LoginEvents")
 function loginEvents.onLogin(player)
-
 	local events = {
 		--Monster
 		"LowerRoshamuul",
@@ -122,7 +121,7 @@ function loginEvents.onLogin(player)
 		-- Concoctions
 		"ConcoctionsOnLogin",
 		-- Hazard System
-		"PrimalHazardKill"
+		"PrimalHazardKill",
 	}
 
 	for i = 1, #events do
@@ -130,4 +129,5 @@ function loginEvents.onLogin(player)
 	end
 	return true
 end
+
 loginEvents:register()

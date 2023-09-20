@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 43,
 	lookLegs = 38,
 	lookFeet = 76,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -88,10 +88,10 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.Postman.Mission05) == 3 then
 			npcHandler:say("Splendid, I knew we could trust you. I would like to ask for your help in another matter. Are you interested?", npc, creature)
 			npcHandler:setTopic(playerId, 16)
-		elseif player:getStorageValue(Storage.Postman.Mission07) ==  7 then
+		elseif player:getStorageValue(Storage.Postman.Mission07) == 7 then
 			npcHandler:say("Once more you have impressed me! Are you willing to do another job?", npc, creature)
 			npcHandler:setTopic(playerId, 21)
-		elseif player:getStorageValue(Storage.Postman.Mission06) >= 1	and	player:getStorageValue(Storage.Postman.Mission06) < 10 then
+		elseif player:getStorageValue(Storage.Postman.Mission06) >= 1 and player:getStorageValue(Storage.Postman.Mission06) < 10 then
 			npcHandler:say("First you need to complete your current mission.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(Storage.Postman.Mission06) == 12 then
@@ -112,19 +112,19 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("You have delivered that letter? You are a true postofficer. All over the land bards shallpraise your name. There are no missions for you left right now.", npc, creature)
 			player:setStorageValue(Storage.Postman.Mission10, 3)
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.Postman.Mission10) == 3	and player:getStorageValue(Storage.Postman.Rank) == 5 then
+		elseif player:getStorageValue(Storage.Postman.Mission10) == 3 and player:getStorageValue(Storage.Postman.Rank) == 5 then
 			npcHandler:say("There are no missions for you left right now. You already have the title of Archpostman.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.Postman.Mission10) == 3	and player:getStorageValue(Storage.Postman.Rank) == 4 then
+		elseif player:getStorageValue(Storage.Postman.Mission10) == 3 and player:getStorageValue(Storage.Postman.Rank) == 4 then
 			npcHandler:say("There are no missions for you left right now. But you are worthy indeed. Do you want to advance in our guild?", npc, creature)
 			npcHandler:setTopic(playerId, 27)
 		elseif player:getStorageValue(Storage.Postman.Mission08) == 3 and player:getStorageValue(Storage.Postman.Rank) == 3 then
 			npcHandler:say("So are you ready for another mission?", npc, creature)
 			npcHandler:setTopic(playerId, 28)
-		elseif player:getStorageValue(Storage.Postman.Mission08) == 3	and player:getStorageValue(Storage.Postman.Rank) == 4 then
+		elseif player:getStorageValue(Storage.Postman.Mission08) == 3 and player:getStorageValue(Storage.Postman.Rank) == 4 then
 			npcHandler:say("So are you ready for another mission?", npc, creature)
 			npcHandler:setTopic(playerId, 25)
-		elseif player:getStorageValue(Storage.Postman.Rank) == 4	or	player:getStorageValue(Storage.Postman.Rank) == 3 and player:getStorageValue(Storage.Postman.Mission09) == 0 then
+		elseif player:getStorageValue(Storage.Postman.Rank) == 4 or player:getStorageValue(Storage.Postman.Rank) == 3 and player:getStorageValue(Storage.Postman.Mission09) == 0 then
 			npcHandler:say("So are you ready for another mission?", npc, creature)
 			npcHandler:setTopic(playerId, 25)
 		elseif player:getStorageValue(Storage.Postman.Mission06) == 13 and player:getStorageValue(Storage.Postman.Rank) == 3 then
@@ -142,10 +142,10 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.Postman.Mission03) == 3 and player:getStorageValue(Storage.Postman.Mission04) == 0 then
 			npcHandler:say("You truly got him? Quite impressive. You are a very promising candidate! I think I have another mission for you. Are you interested?", npc, creature)
 			npcHandler:setTopic(playerId, 11)
-		elseif player:getStorageValue(Storage.Postman.Rank) == 1	 and player:getStorageValue(Storage.Postman.Mission03) == 3 then
+		elseif player:getStorageValue(Storage.Postman.Rank) == 1 and player:getStorageValue(Storage.Postman.Mission03) == 3 then
 			npcHandler:say("So are you ready for another mission?", npc, creature)
 			npcHandler:setTopic(playerId, 11)
-		elseif player:getStorageValue(Storage.Postman.Mission02) == 3	and player:getStorageValue(Storage.Postman.Rank) == 1 then
+		elseif player:getStorageValue(Storage.Postman.Mission02) == 3 and player:getStorageValue(Storage.Postman.Rank) == 1 then
 			npcHandler:say("So are you ready for another mission?", npc, creature)
 			npcHandler:setTopic(playerId, 10)
 		end
@@ -268,10 +268,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 23 then
 			if player:removeItem(3219, 1) then
-			npcHandler:say("Thank you. We will honour this. Your next mission will be a very special one. Good thing you are a special person as well. Are you ready?", npc, creature)
-			player:setStorageValue(Storage.Postman.Mission08, 3)
-			player:setStorageValue(Storage.Postman.Mission09, 0)
-			npcHandler:setTopic(playerId, 28)
+				npcHandler:say("Thank you. We will honour this. Your next mission will be a very special one. Good thing you are a special person as well. Are you ready?", npc, creature)
+				player:setStorageValue(Storage.Postman.Mission08, 3)
+				player:setStorageValue(Storage.Postman.Mission09, 0)
+				npcHandler:setTopic(playerId, 28)
 			end
 		elseif npcHandler:getTopic(playerId) == 24 then
 			npcHandler:say("From now on you are a grand postman for special operations. You are an honoured member of our guild and earned the privilege of your own post horn. Here, take it.", npc, creature)
@@ -292,7 +292,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("I grant you the title of Archpostman. You are a legend in our guild. As privilege of your newly aquired status you are allowed to make use of certain mailboxes in dangerous areas. Just look out for them and you'll see.", npc, creature)
 			player:setStorageValue(Storage.Postman.Rank, 5)
 			player:setStorageValue(Storage.Postman.Door, 1)
-			player:addAchievement('Archpostman')
+			player:addAchievement("Archpostman")
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 28 then
 			npcHandler:say("Your eagerness is a virtue, young one, but first let's talk about advancement", npc, creature)

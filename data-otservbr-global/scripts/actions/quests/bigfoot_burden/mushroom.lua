@@ -16,7 +16,7 @@ function bigfootMushroom.onUse(player, item, fromPosition, target, toPosition, i
 	if spore then
 		spore:decay()
 		item:setActionId(100)
-		addEvent(revertAid, math.random(2,4) * 60 * 1000, toPosition)
+		addEvent(revertAid, math.random(2, 4) * 60 * 1000, toPosition)
 	end
 	return true
 end

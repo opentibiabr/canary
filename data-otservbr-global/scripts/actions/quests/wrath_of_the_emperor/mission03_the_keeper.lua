@@ -12,8 +12,8 @@ function wrathEmperorMiss3Keeper.onUse(player, item, fromPosition, target, toPos
 			player:removeItem(11364, 1)
 			Game.setStorageValue(Storage.WrathoftheEmperor.Mission03, 6)
 			toPosition:sendMagicEffect(CONST_ME_YELLOW_RINGS)
-			Game.createMonster('the keeper', {x = 33171, y = 31058, z = 11})
-			Position({x = 33171, y = 31058, z = 11}):sendMagicEffect(CONST_ME_TELEPORT)
+			Game.createMonster("the keeper", { x = 33171, y = 31058, z = 11 })
+			Position({ x = 33171, y = 31058, z = 11 }):sendMagicEffect(CONST_ME_TELEPORT)
 			addEvent(revertKeeperstorage, 60 * 1000)
 		end
 	elseif item.itemid == 11360 then
@@ -26,5 +26,5 @@ function wrathEmperorMiss3Keeper.onUse(player, item, fromPosition, target, toPos
 	return true
 end
 
-wrathEmperorMiss3Keeper:id(11360,11364)
+wrathEmperorMiss3Keeper:id(11360, 11364)
 wrathEmperorMiss3Keeper:register()

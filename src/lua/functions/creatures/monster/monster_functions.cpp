@@ -317,6 +317,17 @@ int MonsterFunctions::luaMonsterChangeTargetDistance(lua_State* L) {
 	return 1;
 }
 
+int MonsterFunctions::luaMonsterIsChallenged(lua_State* L) {
+	// monster:isChallenged()
+	Monster* monster = getUserdata<Monster>(L, 1);
+	if (monster) {
+		pushBoolean(L, monster->isChallenged());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int MonsterFunctions::luaMonsterSelectTarget(lua_State* L) {
 	// monster:selectTarget(creature)
 	Monster* monster = getUserdata<Monster>(L, 1);
@@ -456,7 +467,10 @@ int MonsterFunctions::luaMonsterSetForgeStack(lua_State* L) {
 	}
 
 	monster->setForgeStack(stack);
-	// Update new stack icon
+	auto icon = stack < 15
+		? CreatureIconModifications_t::Influenced
+		: CreatureIconModifications_t::Fiendish;
+	monster->setIcon("forge", CreatureIcon(icon, icon == CreatureIconModifications_t::Influenced ? static_cast<uint8_t>(stack) : 0));
 	g_game().updateCreatureIcon(monster);
 	g_game().sendUpdateCreature(monster);
 	return 1;

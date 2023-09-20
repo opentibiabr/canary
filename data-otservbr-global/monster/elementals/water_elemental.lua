@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 236
@@ -25,8 +25,8 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Water Elemental Cave in Port Hope, Water Elemental Dungeon, Deeper Banuta, Malada, Ramoa, \z
 		Talahu, Folda (7 spawn on the 3rd floor), Water Elemental Cave in Outlaw Camp (only during the Down the \z
-		Drain Mini World Change), Krailos Steppe underwater cave."
-	}
+		Drain Mini World Change), Krailos Steppe underwater cave.",
+}
 
 monster.health = 550
 monster.maxHealth = 550
@@ -37,7 +37,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -64,67 +64,68 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 3,
+	color = 143,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Splish splash", yell = false}
+	{ text = "Splish splash", yell = false },
 }
 
 monster.loot = {
-	{name = "small diamond", chance = 2500},
-	{name = "gold coin", chance = 100000, maxCount = 100},
-	{name = "small emerald", chance = 2500, maxCount = 2},
-	{name = "platinum coin", chance = 25000},
-	{id = 3051, chance = 950}, -- energy ring
-	{id = 3052, chance = 930}, -- life ring
-	{id = 3578, chance = 20000}, -- fish
-	{name = "rainbow trout", chance = 940},
-	{name = "green perch", chance = 1050},
-	{name = "strong health potion", chance = 10000},
-	{name = "strong mana potion", chance = 10000}
+	{ name = "small diamond", chance = 2500 },
+	{ name = "gold coin", chance = 100000, maxCount = 100 },
+	{ name = "small emerald", chance = 2500, maxCount = 2 },
+	{ name = "platinum coin", chance = 25000 },
+	{ id = 3051, chance = 950 }, -- energy ring
+	{ id = 3052, chance = 930 }, -- life ring
+	{ id = 3578, chance = 20000 }, -- fish
+	{ name = "rainbow trout", chance = 940 },
+	{ name = "green perch", chance = 1050 },
+	{ name = "strong health potion", chance = 10000 },
+	{ name = "strong mana potion", chance = 10000 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -160, condition = {type = CONDITION_POISON, totalDamage = 60, interval = 4000}},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_DROWNDAMAGE, minDamage = -125, maxDamage = -235, range = 7, radius = 2, effect = CONST_ME_LOSEENERGY, target = true},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -88, maxDamage = -150, range = 7, shootEffect = CONST_ANI_SMALLICE, target = false},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -160, condition = { type = CONDITION_POISON, totalDamage = 60, interval = 4000 } },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_DROWNDAMAGE, minDamage = -125, maxDamage = -235, range = 7, radius = 2, effect = CONST_ME_LOSEENERGY, target = true },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -88, maxDamage = -150, range = 7, shootEffect = CONST_ANI_SMALLICE, target = false },
 	-- poison
-	{name ="condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -225, maxDamage = -260, radius = 5, effect = CONST_ME_POISONAREA, target = false}
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -225, maxDamage = -260, radius = 5, effect = CONST_ME_POISONAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 37,
-	{name ="combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false},
-	{name ="speed", interval = 2000, chance = 15, speedChange = 300, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000}
+	mitigation = 0.88,
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false },
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 300, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 30},
-	{type = COMBAT_ENERGYDAMAGE, percent = -25},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 50},
-	{type = COMBAT_DEATHDAMAGE , percent = 50}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 30 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -25 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 50 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

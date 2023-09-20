@@ -8,8 +8,7 @@ local function startWaves()
 	elseif Game.getStorageValue(GlobalStorage.HeroRathleton.DevourerWave) == 9 then
 		Game.createMonster("feeble glooth horror", Position(33555, 31956, 15), true, true)
 	end
-	Game.setStorageValue(GlobalStorage.HeroRathleton.DevourerWave,
-	Game.getStorageValue(GlobalStorage.HeroRathleton.DevourerWave) + 1)
+	Game.setStorageValue(GlobalStorage.HeroRathleton.DevourerWave, Game.getStorageValue(GlobalStorage.HeroRathleton.DevourerWave) + 1)
 	if Game.getStorageValue(GlobalStorage.HeroRathleton.DevourerWave) > 9 then
 		return true
 	end
@@ -47,15 +46,14 @@ function gloothHorror.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 	if Game.getStorageValue(GlobalStorage.HeroRathleton.HorrorRunning) == 1 then
-		player:say("Has someone fighting against Glooth Horror. \nTry again later.",
-		TALKTYPE_MONSTER_SAY, false, nil, position)
+		player:say("Has someone fighting against Glooth Horror. \nTry again later.", TALKTYPE_MONSTER_SAY, false, nil, position)
 		player:teleportTo(Position(33571, 31947, 15))
 		position:sendMagicEffect(CONST_ME_TELEPORT)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		return true
 	end
 	if Game.getStorageValue(GlobalStorage.HeroRathleton.SecondMachines) < 8 then
-		player:say("No energy enough to use this teleport!", TALKTYPE_MONSTER_SAY, false, nil, position)
+		player:say("Not enough energy to use this teleport!", TALKTYPE_MONSTER_SAY, false, nil, position)
 		player:teleportTo(Position(33571, 31947, 15))
 		position:sendMagicEffect(CONST_ME_TELEPORT)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

@@ -1,11 +1,10 @@
-local config = { 
+local config = {
 	antlers = 10297,
-	antler_talisman = 22008
+	antler_talisman = 22008,
 }
 
 local starHerb = Action()
 function starHerb.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-
 	if target.itemid == config.antlers then
 		item:transform(config.antler_talisman)
 		item:remove(1)

@@ -5,7 +5,7 @@ local voices = {
 	"I can bring your beloved back from the dead, just release me!",
 	"What a nice shiny golden armor. Come to me and you can have it!",
 	"Find a way in here and release me! Pleeeease hurry!",
-	"You can have my demon set, if you help me get out of here!"
+	"You can have my demon set, if you help me get out of here!",
 }
 
 local squares = MoveEvent()

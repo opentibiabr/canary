@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 103
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Mal'ouquah, Deeper Banuta, Goromas Cult Cave (in the classroom), Magician Quarter."
+	Locations = "Mal'ouquah, Deeper Banuta, Goromas Cult Cave (in the classroom), Magician Quarter.",
 }
 
 monster.health = 550
@@ -34,11 +34,11 @@ monster.speed = 117
 monster.manaCost = 0
 
 monster.faction = FACTION_EFREET
-monster.enemyFactions = {FACTION_MARID, FACTION_PLAYER}
+monster.enemyFactions = { FACTION_MARID, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,82 +62,86 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{name = "green djinn", chance = 10, interval = 2000, count = 2}
-	}
+		{ name = "green djinn", chance = 10, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "I grant you a deathwish!", yell = false},
-	{text = "Good wishes are for fairytales", yell = false}
+	{ text = "I grant you a deathwish!", yell = false },
+	{ text = "I wish you a merry trip to hell!", yell = false },
+	{ text = "Good wishes are for fairytales", yell = false },
+	{ text = "Muhahahaha!", yell = false },
+	{ text = "Tell me your last wish!", yell = false },
 }
 
 monster.loot = {
-	{id = 2647, chance = 2200}, -- green tapestry
-	{name = "small oil lamp", chance = 160},
-	{name = "gold coin", chance = 50000, maxCount = 75},
-	{name = "gold coin", chance = 60000, maxCount = 50},
-	{name = "small emerald", chance = 7000},
-	{name = "green gem", chance = 200},
-	{name = "wand of inferno", chance = 390},
-	{name = "heavy machete", chance = 5000},
-	{name = "mystic turban", chance = 160},
-	{name = "pear", chance = 9390, maxCount = 5},
-	{name = "green piece of cloth", chance = 3000},
-	{name = "royal spear", chance = 15570, maxCount = 3},
-	{name = "strong mana potion", chance = 3500},
-	{name = "magma monocle", chance = 360},
-	{name = "jewelled belt", chance = 8540},
-	{name = "noble turban", chance = 1130}
+	{ id = 2647, chance = 2200 }, -- green tapestry
+	{ name = "small oil lamp", chance = 160 },
+	{ name = "gold coin", chance = 50000, maxCount = 75 },
+	{ name = "gold coin", chance = 60000, maxCount = 50 },
+	{ name = "small emerald", chance = 7000 },
+	{ name = "green gem", chance = 200 },
+	{ name = "wand of inferno", chance = 390 },
+	{ name = "heavy machete", chance = 5000 },
+	{ name = "mystic turban", chance = 160 },
+	{ name = "pear", chance = 9390, maxCount = 5 },
+	{ name = "green piece of cloth", chance = 3000 },
+	{ name = "royal spear", chance = 15570, maxCount = 3 },
+	{ name = "strong mana potion", chance = 3500 },
+	{ name = "magma monocle", chance = 360 },
+	{ name = "jewelled belt", chance = 8540 },
+	{ name = "noble turban", chance = 1130 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -40, maxDamage = -110, range = 7, shootEffect = CONST_ANI_FIRE, target = false},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -30, maxDamage = -90, radius = 3, effect = CONST_ME_ENERGYHIT, target = false},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -65, maxDamage = -120, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = false},
-	{name ="speed", interval = 2000, chance = 15, speedChange = -650, range = 7, effect = CONST_ME_MAGIC_RED, target = false, duration = 15000},
-	{name ="drunk", interval = 2000, chance = 10, range = 7, shootEffect = CONST_ANI_ENERGY, target = false, duration = 6000},
-	{name ="outfit", interval = 2000, chance = 1, range = 7, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 4000, outfitMonster = "rat"},
-	{name ="djinn electrify", interval = 2000, chance = 15, range = 5, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -40, maxDamage = -110, range = 7, shootEffect = CONST_ANI_FIRE, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -30, maxDamage = -90, radius = 3, effect = CONST_ME_ENERGYHIT, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -65, maxDamage = -120, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = false },
+	{ name = "speed", interval = 2000, chance = 15, speedChange = -650, range = 7, effect = CONST_ME_MAGIC_RED, target = false, duration = 15000 },
+	{ name = "drunk", interval = 2000, chance = 10, range = 7, shootEffect = CONST_ANI_ENERGY, target = false, duration = 6000 },
+	{ name = "outfit", interval = 2000, chance = 1, range = 7, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 4000, outfitMonster = "rat" },
+	{ name = "djinn electrify", interval = 2000, chance = 15, range = 5, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
-	armor = 20,
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false}
+	armor = 24,
+	mitigation = 0.91,
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 60},
-	{type = COMBAT_EARTHDAMAGE, percent = 10},
-	{type = COMBAT_FIREDAMAGE, percent = 90},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -5},
-	{type = COMBAT_HOLYDAMAGE , percent = -8},
-	{type = COMBAT_DEATHDAMAGE , percent = 20}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 60 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 10 },
+	{ type = COMBAT_FIREDAMAGE, percent = 90 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -5 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -8 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 20 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

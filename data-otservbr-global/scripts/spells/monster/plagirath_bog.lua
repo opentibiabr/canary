@@ -3,21 +3,20 @@ combat2:setParameter(COMBAT_PARAM_TYPE, COMBAT_EARTHDAMAGE)
 combat2:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_POISON)
 combat2:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_POISON)
 
-
 arr = {
-{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-{0, 0, 1, 1, 1, 1, 3, 1, 1, 1, 1, 0, 0},
-{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-{0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+	{ 0, 0, 1, 1, 1, 1, 3, 1, 1, 1, 1, 0, 0 },
+	{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 }
 
 local area = createCombatArea(arr)
@@ -48,7 +47,7 @@ combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_POISON)
 
 local condition = Condition(CONDITION_OUTFIT)
 condition:setParameter(CONDITION_PARAM_TICKS, 10000)
-condition:setOutfit({lookType = 299})
+condition:setOutfit({ lookType = 299 })
 combat:addCondition(condition)
 
 local spell = Spell("instant")
@@ -58,6 +57,7 @@ function spell.onCastSpell(creature, var)
 	addEvent(spellDamage, 10 * 1000, creature:getId(), target:getId(), var)
 	return combat:execute(creature, var)
 end
+
 spell:name("plagirath bog")
 spell:words("###443")
 spell:isAggressive(true)

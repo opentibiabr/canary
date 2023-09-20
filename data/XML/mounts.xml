@@ -212,4 +212,9 @@
 	<mount id="210" clientid="1615" name="Frostbringer" speed="10" premium="no" type="store" />
 	<mount id="211" clientid="1616" name="Winterstride" speed="10" premium="no" type="store" />
 	<mount id="212" clientid="1617" name="Icebreacher" speed="10" premium="no" type="store" />
+	<mount id="213" clientid="1672" name="Boisterous Bull" speed="10" premium="no" type="store" />
+	<mount id="214" clientid="1673" name="Surly Steer" speed="10" premium="no" type="store" />
+	<mount id="215" clientid="1674" name="Obstinate Ox" speed="10" premium="no" type="store" />
+	<mount id="216" clientid="1677" name="Darkfire Devourer" speed="10" premium="no" type="store" />
+	<mount id="217" clientid="1682" name="Spirit of Purity" speed="10" premium="yes" type="quest" />
 </mounts>

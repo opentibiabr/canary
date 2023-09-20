@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 79,
 	lookLegs = 117,
 	lookFeet = 76,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -59,10 +59,10 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "measurements") then
-		if player:getStorageValue(Storage.Postman.Mission07) >= 1 and	player:getStorageValue(Storage.Postman.MeasurementsOlrik) ~= 1 then
+		if player:getStorageValue(Storage.Postman.Mission07) >= 1 and player:getStorageValue(Storage.Postman.MeasurementsOlrik) ~= 1 then
 			npcHandler:say("My measurements? Listen, lets make that a bit more exciting ... No, no, not what you think! I mean let's gamble. I will roll a dice. If I roll a 6 you win and I'll tell you what you need to know, else I win and get 5 gold. Deal? ", npc, creature)
 			npcHandler:setTopic(playerId, 1)
-	else
+		else
 			npcHandler:say("...", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
@@ -92,7 +92,7 @@ npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 npcConfig.shop = {
 	{ itemName = "label", clientId = 3507, buy = 1 },
 	{ itemName = "letter", clientId = 3505, buy = 8 },
-	{ itemName = "parcel", clientId = 3503, buy = 15 }
+	{ itemName = "parcel", clientId = 3503, buy = 15 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -103,7 +103,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

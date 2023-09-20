@@ -1,12 +1,12 @@
 local config = {
-	[2127] = {text = 'This mission stinks ... and now you do as well!', condition = true, transformId = 9170},
-	[6065] = {text = 'You carefully gather the quara ink', transformId = 9149},
-	[18233] = {text = 'You carefully gather the stalker blood.', transformId = 125}
+	[2127] = { text = "This mission stinks ... and now you do as well!", condition = true, transformId = 9170 },
+	[6065] = { text = "You carefully gather the quara ink", transformId = 9149 },
+	[18233] = { text = "You carefully gather the stalker blood.", transformId = 125 },
 }
 
 local poisonField = Condition(CONDITION_OUTFIT)
 poisonField:setTicks(8000)
-poisonField:setOutfit({lookTypeEx = 1496})
+poisonField:setOutfit({ lookTypeEx = 1496 })
 
 local whatFoolishFlask = Action()
 function whatFoolishFlask.onUse(player, item, fromPosition, target, toPosition, isHotkey)

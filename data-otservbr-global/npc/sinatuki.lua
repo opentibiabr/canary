@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 0,
 	lookBody = 0,
 	lookLegs = 0,
-	lookFeet = 0
+	lookFeet = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -49,34 +49,33 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({'Chuqua'}, StdModule.say, {npcHandler = npcHandler, text = "Chuqua jamjam!! Tiyopa Sinatuki?"})
+keywordHandler:addKeyword({ "Chuqua" }, StdModule.say, { npcHandler = npcHandler, text = "Chuqua jamjam!! Tiyopa Sinatuki?" })
 
-local fishsID = {7158,7159}
+local fishsID = { 7158, 7159 }
 
 local function creatureSayCallback(npc, creature, type, message)
+	local player = Player(creature)
 
-local player = Player(creature)
-
-	if MsgContains(message, 'Nupi') then
-	if player:getStorageValue(Storage.BarbarianTest.Questline) >= 3 and player:getStorageValue(Storage.TheIceIslands.Questline) >=5 then
-		for i=1, #fishsID do
-			if player:getItemCount(fishsID[i]) >= 100 then
-				player:removeItem(fishsID[i], 100)
-				player:addItem(7290, 5)
-				npcHandler:say("Jinuma, suvituka siq chuqua!! Nguraka, nguraka! <happily takes the food from you and gives you five glimmering crystals>", npc, creature)
-			break
-			elseif player:getItemCount(fishsID[i]) >= 99 then
-				player:removeItem(fishsID[i], 99)
-				player:addItem(7290, 5)
-				npcHandler:say("Jinuma, suvituka siq chuqua!! Nguraka, nguraka! <happily takes the food from you>", npc, creature)
-			break
-			else
-				npcHandler:say("Kisavuta! <giggles>", npc, creature)
+	if MsgContains(message, "Nupi") then
+		if player:getStorageValue(Storage.BarbarianTest.Questline) >= 3 and player:getStorageValue(Storage.TheIceIslands.Questline) >= 5 then
+			for i = 1, #fishsID do
+				if player:getItemCount(fishsID[i]) >= 100 then
+					player:removeItem(fishsID[i], 100)
+					player:addItem(7290, 5)
+					npcHandler:say("Jinuma, suvituka siq chuqua!! Nguraka, nguraka! <happily takes the food from you and gives you five glimmering crystals>", npc, creature)
+					break
+				elseif player:getItemCount(fishsID[i]) >= 99 then
+					player:removeItem(fishsID[i], 99)
+					player:addItem(7290, 5)
+					npcHandler:say("Jinuma, suvituka siq chuqua!! Nguraka, nguraka! <happily takes the food from you>", npc, creature)
+					break
+				else
+					npcHandler:say("Kisavuta! <giggles>", npc, creature)
+				end
 			end
 		end
 	end
-	end
-return true
+	return true
 end
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

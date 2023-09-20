@@ -1,5 +1,5 @@
 local config = {
-	{position = Position(32396, 31806, 8), itemId = 1295}
+	{ position = Position(32396, 31806, 8), itemId = 1295 },
 }
 
 local cultsOfTibiaTouch = Action()
@@ -15,7 +15,7 @@ function cultsOfTibiaTouch.onUse(player, item, fromPosition, target, toPosition,
 				wallItem:remove()
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You hear a loud grinding sound not very far from you. something very heavy seems to have moved.")
 				Game.setStorageValue(12345, os.time() + 306)
-				addEvent(Game.createItem, 300000, 1295, 1,  Position(32396, 31806, 8))
+				addEvent(Game.createItem, 300000, 1295, 1, Position(32396, 31806, 8))
 			end
 		end
 	end

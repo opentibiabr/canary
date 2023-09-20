@@ -602,7 +602,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 			lua_rawgeti(L, -1, 't');
 
 			LuaData_t type = getNumber<LuaData_t>(L, -1);
-			if (type != LuaData_t::Unknown && type != LuaData_t::Tile && type != LuaData_t::Position) {
+			if (type != LuaData_t::Unknown && type <= LuaData_t::Npc) {
 				indexes.push_back({ i, type });
 			}
 			lua_pop(globalState, 2);
@@ -681,7 +681,9 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 
 	auto &lastTimerEventId = g_luaEnvironment().lastEventTimerId;
 	eventDesc.eventId = g_scheduler().addEvent(
-		delay, std::bind(&LuaEnvironment::executeTimerEvent, &g_luaEnvironment(), lastTimerEventId)
+		delay,
+		std::bind(&LuaEnvironment::executeTimerEvent, &g_luaEnvironment(), lastTimerEventId),
+		"LuaEnvironment::executeTimerEvent"
 	);
 
 	g_luaEnvironment().timerEvents.emplace(lastTimerEventId, std::move(eventDesc));

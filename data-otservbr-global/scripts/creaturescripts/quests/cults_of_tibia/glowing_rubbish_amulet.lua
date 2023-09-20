@@ -23,13 +23,13 @@ function glowingRubbishAmulet.onKill(creature, killed)
 	local eStg = math.max(player:getStorageValue(Storage.CultsOfTibia.Misguided.Exorcisms), 0)
 	if monster:getName():lower() == "misguided shadow" then
 		if eStg < 5 then
-			player:setStorageValue(Storage.CultsOfTibia.Misguided.Exorcisms, eStg+1)
+			player:setStorageValue(Storage.CultsOfTibia.Misguided.Exorcisms, eStg + 1)
 		end
 		return true
 	end
 
 	if monster:getName():lower() == "misguided bully" or monster:getName():lower() == "misguided thief" then
-		player:setStorageValue(Storage.CultsOfTibia.Misguided.Monsters, mStg+1)
+		player:setStorageValue(Storage.CultsOfTibia.Misguided.Monsters, mStg + 1)
 		if player:getStorageValue(Storage.CultsOfTibia.Misguided.Monsters) >= 10 then
 			amulet:remove()
 			local it = player:addItem(25297, 1)

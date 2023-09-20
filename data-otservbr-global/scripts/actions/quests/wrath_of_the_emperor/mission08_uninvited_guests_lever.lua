@@ -1,6 +1,6 @@
 local config = {
 	[3184] = Position(33082, 31110, 2),
-	[3185] = Position(33078, 31080, 13)
+	[3185] = Position(33078, 31080, 13),
 }
 
 local wrathEmperorMiss8Uninvited = Action()
@@ -28,5 +28,5 @@ function wrathEmperorMiss8Uninvited.onUse(player, item, fromPosition, target, to
 	return true
 end
 
-wrathEmperorMiss8Uninvited:uid(3184,3185)
+wrathEmperorMiss8Uninvited:uid(3184, 3185)
 wrathEmperorMiss8Uninvited:register()

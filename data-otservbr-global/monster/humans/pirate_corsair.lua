@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 250
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Nargor, Trade Quarter, Foreigner Quarter (Dock), Krailos Steppe."
-	}
+	Locations = "Nargor, Trade Quarter, Foreigner Quarter Dock, Krailos Steppe During a World Change.",
+}
 
 monster.health = 675
 monster.maxHealth = 675
@@ -35,7 +35,7 @@ monster.manaCost = 775
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 15
+	chance = 15,
 }
 
 monster.strategiesTarget = {
@@ -50,7 +50,7 @@ monster.flags = {
 	pushable = false,
 	rewardBoss = false,
 	illusionable = true,
-	canPushItems = true,
+	canPushItems = false,
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
@@ -59,71 +59,72 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Give up!", yell = false},
-	{text = "Hiyaa!", yell = false},
-	{text = "Plundeeeeer!", yell = false}
+	{ text = "Hiyaa!", yell = false },
+	{ text = "Give up!", yell = false },
+	{ text = "Plundeeeeer!", yell = false },
 }
 
 monster.loot = {
-	{name = "piggy bank", chance = 150},
-	{name = "gold coin", chance = 50000, maxCount = 88},
-	{name = "sabre", chance = 10000},
-	{name = "throwing star", chance = 8400, maxCount = 12},
-	{name = "dark armor", chance = 1650},
-	{name = "dark shield", chance = 1000},
-	{name = "pirate boots", chance = 220},
-	{name = "rum flask", chance = 130},
-	{id = 5813, chance = 130}, -- skull candle
-	{name = "pirate backpack", chance = 930},
-	{name = "pirate hat", chance = 1150},
-	{name = "hook", chance = 600},
-	{name = "eye patch", chance = 500},
-	{name = "peg leg", chance = 600},
-	{name = "strong health potion", chance = 820},
-	{name = "compass", chance = 11050},
-	{name = "compass", chance = 11020}
+	{ name = "piggy bank", chance = 150 },
+	{ name = "gold coin", chance = 50000, maxCount = 88 },
+	{ name = "sabre", chance = 10000 },
+	{ name = "throwing star", chance = 8400, maxCount = 12 },
+	{ name = "dark armor", chance = 1650 },
+	{ name = "dark shield", chance = 1000 },
+	{ name = "pirate boots", chance = 220 },
+	{ name = "rum flask", chance = 130 },
+	{ id = 5813, chance = 130 }, -- skull candle
+	{ name = "pirate backpack", chance = 930 },
+	{ name = "pirate hat", chance = 1150 },
+	{ name = "hook", chance = 600 },
+	{ name = "eye patch", chance = 500 },
+	{ name = "peg leg", chance = 600 },
+	{ name = "strong health potion", chance = 820 },
+	{ name = "compass", chance = 11050 },
+	{ name = "compass", chance = 11020 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -170},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -150, range = 7, shootEffect = CONST_ANI_THROWINGSTAR, target = false},
-	{name ="pirate corsair skill reducer", interval = 2000, chance = 5, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -170 },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -150, range = 3, shootEffect = CONST_ANI_THROWINGSTAR, target = false },
+	{ name = "pirate corsair skill reducer", interval = 2000, chance = 5, target = false },
 }
 
 monster.defenses = {
 	defense = 35,
-	armor = 35
+	armor = 20,
+	mitigation = 1.46,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 20},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -5},
-	{type = COMBAT_HOLYDAMAGE , percent = 10},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 20 },
+	{ type = COMBAT_FIREDAMAGE, percent = -10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -5 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

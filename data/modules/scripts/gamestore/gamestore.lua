@@ -6,12 +6,12 @@ OFFER_TYPE_ALLBLESSINGS
 ]]
 
 -- Parser
-dofile(CORE_DIRECTORY .. '/modules/scripts/gamestore/init.lua')
+dofile(CORE_DIRECTORY .. "/modules/scripts/gamestore/init.lua")
 -- Config
 
 HomeBanners = {
 	images = { "home/banner_armouredarcher.png", "home/banner_podiumoftenacity.png" },
-	delay = 10
+	delay = 10,
 }
 
 local premiumCategoryName = "Premium Time"
@@ -21,7 +21,8 @@ if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
 	premiumOfferName = "VIP"
 end
 
-local premiumDescription = "<i>Enhance your gaming experience by gaining additional abilities and advantages:</i>\n\n&#8226; access to Premium areas\n&#8226; use Tibia's transport system (ships, carpet)\n&#8226; more spells\n&#8226; rent houses\n&#8226; found guilds\n&#8226; offline training\n&#8226; larger depots\n&#8226; and many more\n\n{usablebyallicon} valid for all characters on this account\n{activated}"
+local premiumDescription =
+	"<i>Enhance your gaming experience by gaining additional abilities and advantages:</i>\n\n&#8226; access to Premium areas\n&#8226; use Tibia's transport system (ships, carpet)\n&#8226; more spells\n&#8226; rent houses\n&#8226; found guilds\n&#8226; offline training\n&#8226; larger depots\n&#8226; and many more\n\n{usablebyallicon} valid for all characters on this account\n{activated}"
 if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
 	local vipBonusExp = configManager.getNumber(configKeys.VIP_BONUS_EXP)
 	local vipBonusLoot = configManager.getNumber(configKeys.VIP_BONUS_LOOT)
@@ -6213,7 +6214,7 @@ GameStore.Categories = {
 				description = "<i>Purchase a boost that increases the experience points your character gains from hunting by 50%!</i>\n\n{character}\n{info} lasts for 1 hour hunting time\n{info} paused if stamina falls under 14 hours\n{info} can be purchased up to 5 times between 2 server saves\n{info} price increases with every purchase\n{info} cannot be purchased if an XP boost is already active",
 				type = GameStore.OfferTypes.OFFER_TYPE_EXPBOOST,
 			},
-		}
+		},
 	},
 	-- Extras
 	{
@@ -6263,7 +6264,7 @@ GameStore.Categories = {
 				id = GameStore.SubActions.PREY_WILDCARD,
 				count = 5,
 				description = "<i>Use Prey Wildcards to reroll the bonus of an active prey, to lock your active prey or to select a prey of your choice.</i>\n\n{character}\n{info} added directly to Prey dialog\n{info} maximum amount that can be owned by character: 50",
-				type = GameStore.OfferTypes.OFFER_TYPE_PREYBONUS
+				type = GameStore.OfferTypes.OFFER_TYPE_PREYBONUS,
 			},
 			{
 				icons = { "Instant_Reward_Access.png" },
@@ -6272,7 +6273,7 @@ GameStore.Categories = {
 				id = GameStore.SubActions.INSTANT_REWARD,
 				count = 1,
 				description = "<i>No matter where you are in Tibia, claim your daily reward on the spot!</i>\n\n{character}\n{info} added to your reward wall\n{info} maximum amount that can be owned by character: 90",
-				type = GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS
+				type = GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS,
 			},
 			{
 				icons = { "Charm_Expansion_Offer.png" },
@@ -6280,7 +6281,7 @@ GameStore.Categories = {
 				price = 450,
 				id = GameStore.SubActions.CHARM_EXPANSION,
 				description = "<i>Assign as many of your unlocked Charms as you like and get a 25% discount whenever you are removing a Charm from a creature!</i>\n\n{character}\n{once}",
-				type = GameStore.OfferTypes.OFFER_TYPE_CHARMS
+				type = GameStore.OfferTypes.OFFER_TYPE_CHARMS,
 			},
 			{
 				icons = { "Permanent_Prey_Slot.png" },
@@ -6288,7 +6289,7 @@ GameStore.Categories = {
 				price = 900,
 				id = GameStore.SubActions.PREY_THIRDSLOT_REDIRECT,
 				description = "<i>Get an additional prey slot to activate additional prey!</i>\n\n{character}\n{info} maximum amount that can be owned by character: 3\n{info} added directly to Prey dialog",
-				type = GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
+				type = GameStore.OfferTypes.OFFER_TYPE_PREYSLOT,
 			},
 			{
 				icons = { "Permanent_Hunting_Task_Slot.png" },
@@ -6296,7 +6297,7 @@ GameStore.Categories = {
 				price = 900,
 				id = GameStore.SubActions.TASKHUNTING_THIRDSLOT,
 				description = "<i>Get an additional hunting tasks slot to activate additional hunting task!</i>\n\n{character}\n{info} maximum amount that can be owned by character: 3\n{info} added directly to Hunting Task dialog",
-				type = GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT
+				type = GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT,
 			},
 			{
 				icons = { "Gold_Converter.png" },
@@ -6314,7 +6315,7 @@ GameStore.Categories = {
 				itemtype = 23721,
 				count = 1,
 				description = "<i>Carries as many gold, platinum or crystal coins as your capacity allows, however, no other items.</i>\n\n{character}\n{storeinbox}\n{once}\n{useicon} use it to open it\n{info} always placed on the first position of your Store inbox",
-				type = GameStore.OfferTypes.OFFER_TYPE_POUNCH,
+				type = GameStore.OfferTypes.OFFER_TYPE_POUCH,
 			},
 			{
 				icons = { "Magic_Gold_Converter.png" },

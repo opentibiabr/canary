@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1105
@@ -19,12 +19,12 @@ monster.Bestiary = {
 	race = BESTY_RACE_AQUATIC,
 	toKill = 500,
 	FirstUnlock = 25,
-	SecondUnlock = 50,
+	SecondUnlock = 250,
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Seacrest Grounds."
-	}
+	Locations = "Seacrest Grounds.",
+}
 
 monster.health = 300
 monster.maxHealth = 300
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -73,42 +73,41 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3581, chance = 9680}, -- shrimp
-	{id = 3578, chance = 10770}, -- fish
-	{name = "black pearl", chance = 1500, maxCount = 1},
-	{name = "white pearl", chance = 830, maxCount = 1},
-	{name = "small sapphire", chance = 250, maxCount = 3},
-	{name = "small ruby", chance = 500, maxCount = 3},
-	{name = "small amethyst", chance = 750, maxCount = 3}
+	{ id = 3581, chance = 9680 }, -- shrimp
+	{ id = 3578, chance = 10770 }, -- fish
+	{ name = "black pearl", chance = 1500, maxCount = 1 },
+	{ name = "white pearl", chance = 830, maxCount = 1 },
+	{ name = "small sapphire", chance = 250, maxCount = 3 },
+	{ name = "small ruby", chance = 500, maxCount = 3 },
+	{ name = "small amethyst", chance = 750, maxCount = 3 },
 }
 
-monster.attacks = {
-	{name ="drunk", interval = 2000, chance = 10, range = 2, target = false, duration = 5000}
-}
+monster.attacks = {}
 
 monster.defenses = {
 	defense = 13,
-	armor = 13
+	armor = 12,
+	mitigation = 0.36,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -5},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -5 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -5 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

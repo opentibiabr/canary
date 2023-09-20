@@ -14,11 +14,11 @@
 #include "game/scheduling/scheduler.hpp"
 
 void Decay::startDecay(Item* item) {
-	if (!item || item->getLoadedFromMap()) {
+	if (!item) {
 		return;
 	}
 
-	auto decayState = item->getDecaying();
+	const auto decayState = item->getDecaying();
 	if (decayState == DECAYING_STOPPING || (!item->canDecay() && decayState == DECAYING_TRUE)) {
 		stopDecay(item);
 		return;
@@ -41,11 +41,11 @@ void Decay::startDecay(Item* item) {
 
 		int64_t timestamp = OTSYS_TIME() + duration;
 		if (decayMap.empty()) {
-			eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this));
+			eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
 		} else {
 			if (timestamp < decayMap.begin()->first) {
 				g_scheduler().stopEvent(eventId);
-				eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this));
+				eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
 			}
 		}
 
@@ -132,7 +132,7 @@ void Decay::checkDecay() {
 	}
 
 	if (it != end) {
-		eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this));
+		eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
 	}
 }
 
@@ -176,7 +176,7 @@ void Decay::internalDecayItem(Item* item) {
 		}
 		g_game().transformItem(item, static_cast<uint16_t>(it.decayTo));
 	} else {
-		if (item->getLoadedFromMap()) {
+		if (item->isLoadedFromMap()) {
 			return;
 		}
 

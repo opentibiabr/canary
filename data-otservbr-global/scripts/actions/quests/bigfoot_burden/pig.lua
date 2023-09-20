@@ -15,7 +15,7 @@ function bigfootPig.onUse(player, item, fromPosition, target, toPosition, isHotk
 	end
 
 	player:setStorageValue(Storage.BigfootBurden.MushroomCount, mushroomCount + 1)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The little pig happily eats the truffles.')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The little pig happily eats the truffles.")
 	target:transform(15701)
 	toPosition:sendMagicEffect(CONST_ME_GROUNDSHAKER)
 	return true

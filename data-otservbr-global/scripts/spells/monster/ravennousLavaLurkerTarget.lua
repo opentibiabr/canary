@@ -3,20 +3,20 @@ combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_FIREDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_FIREATTACK)
 
 combat:setArea(createCombatArea({
-{0, 0, 0, 0, 0, 0, 0},
-{0, 0, 1, 1, 1, 0, 0},
-{0, 1, 1, 1, 1, 1, 0},
-{1, 1, 1, 1, 1, 1, 1},
-{1, 1, 1, 3, 1, 1, 1},
-{1, 1, 1, 1, 1, 1, 1},
-{0, 1, 1, 1, 1, 1, 0},
-{0, 0, 1, 1, 1, 0, 0},
-{0, 0, 0, 0, 0, 0, 0},
+	{ 0, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 1, 1, 1, 0, 0 },
+	{ 0, 1, 1, 1, 1, 1, 0 },
+	{ 1, 1, 1, 1, 1, 1, 1 },
+	{ 1, 1, 1, 3, 1, 1, 1 },
+	{ 1, 1, 1, 1, 1, 1, 1 },
+	{ 0, 1, 1, 1, 1, 1, 0 },
+	{ 0, 0, 1, 1, 1, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0 },
 }))
 
 local monsters = {
 	"lost gnome",
-	"gnome pack crawler"
+	"gnome pack crawler",
 }
 
 function onTargetTile(cid, pos)

@@ -1,12 +1,12 @@
 local range = {
 	-- Only the Demon Skeletons killed on this area count
 	from = Position(32008, 32522, 8),
-	to = Position(32365, 32759, 10)
+	to = Position(32365, 32759, 10),
 }
 
 local upperSpikeKill = CreatureEvent("UpperSpikeKill")
 function upperSpikeKill.onKill(creature, target)
-	if not table.contains({-1, 7}, creature:getStorageValue(SPIKE_UPPER_KILL_MAIN)) then
+	if not table.contains({ -1, 7 }, creature:getStorageValue(SPIKE_UPPER_KILL_MAIN)) then
 		if creature:getPosition():isInRange(range.from, range.to) then
 			if target:isMonster() and (target:getMaster() == nil) and (target:getName():lower() == "demon skeleton") then
 				local sum = creature:getStorageValue(SPIKE_UPPER_KILL_MAIN) + 1

@@ -34,12 +34,7 @@ void EventCallbackFunctions::init(lua_State* luaState) {
 }
 
 int EventCallbackFunctions::luaEventCallbackCreate(lua_State* luaState) {
-	const auto &eventCallback = std::make_shared<EventCallback>(getScriptEnv()->getScriptInterface());
-	if (!eventCallback) {
-		reportErrorFunc("EventCallback is nil");
-		return 0;
-	}
-
+	const auto eventCallback = std::make_shared<EventCallback>(getScriptEnv()->getScriptInterface());
 	pushUserdata<EventCallback>(luaState, eventCallback);
 	setMetatable(luaState, -1, "EventCallback");
 	return 1;

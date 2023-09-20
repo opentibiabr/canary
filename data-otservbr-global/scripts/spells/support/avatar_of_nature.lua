@@ -1,5 +1,5 @@
 local condition = Condition(CONDITION_OUTFIT)
-condition:setOutfit({lookType = 1596}) -- Avatar of Nature lookType
+condition:setOutfit({ lookType = 1596 }) -- Avatar of Nature lookType
 
 local spell = Spell("instant")
 
@@ -26,7 +26,7 @@ function spell.onCastSpell(creature, variant)
 	local duration = 15000
 	condition:setTicks(duration)
 	local conditionCooldown = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 267)
-	conditionCooldown:setTicks((cooldown * 1000 * 60)/configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+	conditionCooldown:setTicks((cooldown * 1000 * 60) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 	-- creature:getPosition():sendMagicEffect(CONST_ME_AVATAR_APPEAR)
 	creature:addCondition(conditionCooldown)
 	creature:addCondition(condition)

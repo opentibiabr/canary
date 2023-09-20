@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 66,
 	lookLegs = 34,
 	lookFeet = 53,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.TheShatteredIsles.TheGovernorDaughter) < 1 then
 			npcHandler:say({
 				"My ring was stolen by a parrot, directly from my dressing table near the window. It flew to the nearby mountains and I fear my ring will be lost forever. Whoever returns it to me will be rewarded generously. ...",
-				"I guess that evil parrot hid the ring somewhere on a high tree or a rock so that you might need a rake to get it."
+				"I guess that evil parrot hid the ring somewhere on a high tree or a rock so that you might need a rake to get it.",
 			}, npc, creature)
 			player:setStorageValue(Storage.TheShatteredIsles.DefaultStart, 1)
 			player:setStorageValue(Storage.TheShatteredIsles.TheGovernorDaughter, 1)
@@ -107,7 +107,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addMoney(150)
 				npcHandler:say({
 					"Ahh, now I understand... One of my suitors - a real chicken-heart - just brought back my ring. I was really surprised. Suddenly he shows brave attitude. But... It seems you lost it and he tries to take advantage. ...",
-					"Thanks a lot anyways and take this gold as a reward. By the way, I would need some help in another matter. It is only a small errand. Are you interested?"
+					"Thanks a lot anyways and take this gold as a reward. By the way, I would need some help in another matter. It is only a small errand. Are you interested?",
 				}, npc, creature)
 				player:setStorageValue(Storage.TheShatteredIsles.TheGovernorDaughter, 3)
 				npcHandler:setTopic(playerId, 2)
@@ -127,7 +127,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"However, recently we lost contact. I don't know what has happened to him and fear the worst ...",
 				"We always have been aware that something terrible might happen to him due to his lifestyle. But perhaps there is a harmless explanation for the absence of messages <holds her tears back>. I have arranged a passage for you to Ray's hiding place ...",
 				"Contact Captain Waverider, the old fisherman, and tell him the secret word 'peg leg'. He will make sure that you arrive safely ...",
-				"Please look for Ray and find out what happened to him and why he was not able to answer. Return to me as soon as you have found something out. I wish you a good journey."
+				"Please look for Ray and find out what happened to him and why he was not able to answer. Return to me as soon as you have found something out. I wish you a good journey.",
 			}, npc, creature)
 			player:setStorageValue(Storage.TheShatteredIsles.TheErrand, 4)
 			player:setStorageValue(Storage.TheShatteredIsles.AccessToMeriana, 1)

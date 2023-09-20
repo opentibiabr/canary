@@ -15,28 +15,28 @@ local settingTable = {
 	[42501] = {
 		position = Position(32647, 32216, 7),
 		removeItem = 12183,
-		createItem = 6474
+		createItem = 6474,
 	},
 	[42502] = {
 		position = Position(32660, 32213, 7),
 		removeItem = 12183,
-		createItem = 6474
+		createItem = 6474,
 	},
 	[42503] = {
 		position = Position(32644, 32183, 6),
 		removeItem = 12185,
-		createItem = 6473
+		createItem = 6473,
 	},
 	[42504] = {
 		position = Position(32660, 32201, 7),
 		removeItem = 12184,
-		createItem = 6473
+		createItem = 6473,
 	},
 	[42505] = {
 		position = Position(32652, 32200, 5),
 		removeItem = 12185,
-		createItem = 6473
-	}
+		createItem = 6473,
+	},
 }
 
 local hammer = Action()
@@ -59,7 +59,7 @@ function hammer.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			Game.createItem(5770, 1, position):setActionId(40021)
 		end
 		return true
-	-- Lay down the rails
+		-- Lay down the rails
 	elseif targetActionId == 40021 and tile:getItemById(5770) then
 		if player:getItemCount(9114) >= 1 and player:getItemCount(9115) >= 2 and player:getItemCount(953) >= 3 then
 			player:removeItem(9114, 1)
@@ -83,7 +83,7 @@ function hammer.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				addEvent(createWooden, 2 * 60 * 1000, setting.position, setting.removeItem, setting.createItem, setting)
 			end
 
-			player:setStorageValue(Storage.RottinWoodAndMaried.RottinStart, player:getStorageValue(Storage.RottinWoodAndMaried.RottinStart) +1)
+			player:setStorageValue(Storage.RottinWoodAndMaried.RottinStart, player:getStorageValue(Storage.RottinWoodAndMaried.RottinStart) + 1)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You fixed this broken wall.")
 			return true
 		end

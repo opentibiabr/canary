@@ -4,8 +4,9 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HOLYDAMAGE)
 combat:setParameter(COMBAT_PARAM_CHAIN_EFFECT, CONST_ME_HOLYDAMAGE)
 
 function getChainValue(creature)
-	return 5, 7, false
+	return 3, 3, false
 end
+
 combat:setCallback(CALLBACK_PARAM_CHAINVALUE, "getChainValue")
 
 local spell = Spell("instant")

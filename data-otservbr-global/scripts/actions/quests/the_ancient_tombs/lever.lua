@@ -1,21 +1,20 @@
 local config = {
 	bridgePositions = {
-		{position = Position(33119, 32794, 14), groundId = 727},
-		{position = Position(33119, 32795, 14), groundId = 727},
-		{position = Position(33120, 32794, 14), groundId = 727},
-		{position = Position(33120, 32795, 14), groundId = 727},
-		{position = Position(33121, 32794, 14), groundId = 727},
-		{position = Position(33121, 32795, 14), groundId = 727}
-
+		{ position = Position(33119, 32794, 14), groundId = 727 },
+		{ position = Position(33119, 32795, 14), groundId = 727 },
+		{ position = Position(33120, 32794, 14), groundId = 727 },
+		{ position = Position(33120, 32795, 14), groundId = 727 },
+		{ position = Position(33121, 32794, 14), groundId = 727 },
+		{ position = Position(33121, 32795, 14), groundId = 727 },
 	},
 	leverPositions = {
-	Position(33115, 32797, 14),
+		Position(33115, 32797, 14),
 		Position(33118, 32790, 14),
-		Position(33122, 32790, 14)
+		Position(33122, 32790, 14),
 	},
 	relocatePosition = Position(33120, 2791, 14),
 	relocateMonsterPosition = Position(33120, 32799, 14),
-	bridgeId = 5770
+	bridgeId = 5770,
 }
 
 local theAncientLever = Action()
@@ -55,7 +54,6 @@ function theAncientLever.onUse(player, item, fromPosition, target, toPosition, i
 			tile:getGround():transform(bridge.groundId)
 			Game.createItem(bridge.itemId, 1, bridge.position)
 		end
-
 	end
 	return true
 end

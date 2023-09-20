@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 0,
 	lookFeet = 0,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -70,7 +70,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "sail") and player:getStorageValue(Storage.Quest.U12_60.APiratesTail.TentuglyKilled) == 1 then
-		npcHandler:say("There are two different routes. The dangerous one will be available once a day and it is likely that a seemonster will attack the ship once again. ...", npc, creature)
+		npcHandler:say("There are two different routes. The dangerous one will be available once a day and it is likely that a seemonster will attack the ship once again. And a {safe} route that we can take directly there.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "safe") and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:say("Do you want to take the safe route?", npc, creature)

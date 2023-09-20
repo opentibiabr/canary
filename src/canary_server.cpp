@@ -101,7 +101,8 @@ int CanaryServer::run() {
 
 			loaderSignal.notify_all();
 		}
-	});
+	},
+						   "CanaryServer::run");
 
 	loaderSignal.wait(loaderUniqueLock, [this] { return loaderDone || loadFailed; });
 
@@ -139,19 +140,16 @@ void CanaryServer::setWorldType() {
 	logger.debug("World type set as {}", asUpperCaseString(worldType));
 }
 
-void CanaryServer::loadMaps() {
-	logger.info("Loading main map...");
-	if (!g_game().loadMainMap(g_configManager().getString(MAP_NAME))) {
-		throw FailedToInitializeCanary("Failed to load main map");
-	}
+void CanaryServer::loadMaps() const {
+	try {
+		g_game().loadMainMap(g_configManager().getString(MAP_NAME));
 
-	// If "mapCustomEnabled" is true on config.lua, then load the custom map
-	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
-		logger.debug("Loading custom maps...");
-		std::string customMapPath = g_configManager().getString(DATA_DIRECTORY) + "/world/custom/";
-		if (!g_game().loadCustomMaps(customMapPath)) {
-			throw FailedToInitializeCanary("Failed to load custom maps");
+		// If "mapCustomEnabled" is true on config.lua, then load the custom map
+		if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
+			g_game().loadCustomMaps(g_configManager().getString(DATA_DIRECTORY) + "/world/custom/");
 		}
+	} catch (const std::exception &err) {
+		throw FailedToInitializeCanary(err.what());
 	}
 }
 

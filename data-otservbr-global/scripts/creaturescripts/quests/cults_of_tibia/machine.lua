@@ -30,11 +30,11 @@ function machineDeath.onDeath(creature, attacker)
 		DestruirRaio1(Position(33134, 31863, 15), Position(33139, 31863, 15), 6116, 1)
 		DestruirRaio1(Position(33140, 31857, 15), Position(33140, 31862, 15), 6117, 2)
 		DestruirRaio1(Position(33133, 31857, 15), Position(33133, 31862, 15), 6117, 2)
-		local itensToMonster = {--8633
+		local itensToMonster = { --8633
 			Position(33133, 31856, 15),
 			Position(33140, 31856, 15),
 			Position(33140, 31863, 15),
-			Position(33133, 31863, 15)
+			Position(33133, 31863, 15),
 		}
 		for _, position in pairs(itensToMonster) do
 			local tile = Tile(position)
@@ -48,7 +48,7 @@ function machineDeath.onDeath(creature, attacker)
 			end
 		end
 	elseif name == "containment crystal" then
-		Game.createItem(7809,1, creaturePosition)
+		Game.createItem(7809, 1, creaturePosition)
 	elseif name == "the armored voidborn" then
 		Game.createMonster("The Unarmored Voidborn", creaturePosition):registerEvent("bossesMission") --to fix/check
 	end
@@ -65,9 +65,9 @@ function machineHealth.onHealthChange(creature, attacker, primaryDamage, primary
 
 	if creature:getName():lower() == "containment crystal" then
 		local bossid = 0
-		for _x= frompos.x, topos.x, 1 do
-			for _y= frompos.y, topos.y, 1 do
-				for _z= frompos.z, topos.z, 1 do
+		for _x = frompos.x, topos.x, 1 do
+			for _y = frompos.y, topos.y, 1 do
+				for _z = frompos.z, topos.z, 1 do
 					local tile = Tile(Position(_x, _y, _z))
 					if tile and tile:getTopCreature() and tile:getTopCreature():isMonster() and tile:getTopCreature():getName():lower() == "the armored voidborn" then
 						bossid = tile:getTopCreature():getId()
@@ -81,13 +81,13 @@ function machineHealth.onHealthChange(creature, attacker, primaryDamage, primary
 		end
 		local hasdano = false
 		local maxheal = creature:getMaxHealth()
-		if creature:getHealth() > (maxheal*60)/100 and creature:getHealth() < (maxheal*65)/100 then
+		if creature:getHealth() > (maxheal * 60) / 100 and creature:getHealth() < (maxheal * 65) / 100 then
 			boss:addHealth(-7000)
 			hasdano = true
 		end
-		for _x= frompos.x, topos.x, 1 do
-			for _y= frompos.y, topos.y, 1 do
-				for _z= frompos.z, topos.z, 1 do
+		for _x = frompos.x, topos.x, 1 do
+			for _y = frompos.y, topos.y, 1 do
+				for _z = frompos.z, topos.z, 1 do
 					local tile = Tile(Position(_x, _y, _z))
 					if tile and tile:getTopCreature() and tile:getTopCreature():isMonster() and tile:getTopCreature():getName():lower() == "voidshard" then
 						hasdano = false
@@ -96,10 +96,9 @@ function machineHealth.onHealthChange(creature, attacker, primaryDamage, primary
 			end
 		end
 		if hasdano then
-			Game.createMonster("Voidshard", boss:getPosition() )
-			Game.createMonster("Voidshard", boss:getPosition() )
+			Game.createMonster("Voidshard", boss:getPosition())
+			Game.createMonster("Voidshard", boss:getPosition())
 		end
-
 	end
 	return primaryDamage, primaryType, secondaryDamage, secondaryType
 end

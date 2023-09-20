@@ -34,4 +34,3 @@ viperStar:breakChance(9)
 viperStar:shootType(CONST_ANI_GREENSTAR)
 viperStar:maxHitChance(76)
 viperStar:register()
-

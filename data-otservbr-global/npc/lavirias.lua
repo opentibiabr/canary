@@ -15,11 +15,11 @@ npcConfig.outfit = {
 	lookHead = 19,
 	lookBody = 41,
 	lookLegs = 117,
-	lookFeet = 116
+	lookFeet = 116,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -50,9 +50,9 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Greeting message
-keywordHandler:addGreetKeyword({"ashari"}, {npcHandler = npcHandler, text = "Greetings, |PLAYERNAME|."})
+keywordHandler:addGreetKeyword({ "ashari" }, { npcHandler = npcHandler, text = "Greetings, |PLAYERNAME|." })
 --Farewell message
-keywordHandler:addFarewellKeyword({"asgha thrazi"}, {npcHandler = npcHandler, text = "Goodbye, |PLAYERNAME|."})
+keywordHandler:addFarewellKeyword({ "asgha thrazi" }, { npcHandler = npcHandler, text = "Goodbye, |PLAYERNAME|." })
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye!")
 

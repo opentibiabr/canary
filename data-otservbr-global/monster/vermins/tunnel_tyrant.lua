@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1545
@@ -23,11 +23,11 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Warzone 5."
-	}
+	Locations = "Warzone 5",
+}
 
-monster.health = 6400
-monster.maxHealth = 6400
+monster.health = 5200
+monster.maxHealth = 5200
 monster.race = "blood"
 monster.corpse = 27555
 monster.speed = 120
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 10000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,66 +62,66 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "naps naps naps!", yell = false}
 }
 
 monster.loot = {
-	{name = "small enchanted sapphire", chance = 11910},
-	{name = "small enchanted ruby", chance = 9040},
-	{name = "violet gem", chance = 7750},
-	{name = "lump of dirt", chance = 10190},
-	{name = "tunnel tyrant head", chance = 24100},
-	{name = "tunnel tyrant shell", chance = 12480},
-	{name = "green gem", chance = 2300},
-	{name = "blue gem", chance = 3010},
-	{name = "crystal mace", chance = 1580},
-	{id = 23508, chance = 3010}, -- energy vein
-	{name = "crystalline armor", chance = 860},
-	{name = "suspicious device", chance = 1290}
+	{ name = "small enchanted sapphire", chance = 11910 },
+	{ name = "small enchanted ruby", chance = 9040 },
+	{ name = "violet gem", chance = 7750 },
+	{ name = "lump of dirt", chance = 10190 },
+	{ name = "tunnel tyrant head", chance = 24100 },
+	{ name = "tunnel tyrant shell", chance = 12480 },
+	{ name = "green gem", chance = 2300 },
+	{ name = "blue gem", chance = 3010 },
+	{ name = "crystal mace", chance = 1580 },
+	{ id = 23508, chance = 3010 }, -- energy vein
+	{ name = "crystalline armor", chance = 860 },
+	{ name = "suspicious device", chance = 1290 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400},
-	{name ="stalagmite rune", interval = 2000, chance = 15, minDamage = -190, maxDamage = -300, range = 7, length = 6, spread = 3, shootEffect = CONST_ANI_POISON, target = false},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -70, maxDamage = -160, range = 3, length = 6, spread = 3, effect = CONST_ME_MORTAREA, target = false},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -90, maxDamage = -160, range = 3, length = 6, spread = 3, effect = CONST_ME_HITBYFIRE, target = false},
-	{name ="stone shower rune", interval = 2000, chance = 10, minDamage = -230, maxDamage = -450, range = 7, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },
+	{ name = "stalagmite rune", interval = 2000, chance = 15, minDamage = -190, maxDamage = -300, range = 7, length = 6, spread = 3, shootEffect = CONST_ANI_POISON, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -70, maxDamage = -160, range = 3, length = 6, spread = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -90, maxDamage = -160, range = 3, length = 6, spread = 3, effect = CONST_ME_HITBYFIRE, target = false },
+	{ name = "stone shower rune", interval = 2000, chance = 10, minDamage = -230, maxDamage = -450, range = 7, target = false },
 }
 
 monster.defenses = {
 	defense = 5,
-	armor = 10
+	armor = 76,
+	mitigation = 1.82,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 20},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -30},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 20 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -30 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

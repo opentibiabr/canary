@@ -49,10 +49,7 @@ function riddleTeleport.onStepIn(creature, item, position, fromPosition)
 		return false
 	end
 
-	if checkPillows(arenaPosition.x, arenaPosition.y, 2394)
-	and checkPillows(arenaPosition.x + 3, arenaPosition.y, 2396)
-	and checkPillows(arenaPosition.x, arenaPosition.y + 3, 2395)
-	and (checkPillows(arenaPosition.x + 3, arenaPosition.y + 3, 2397) or checkPillows(arenaPosition.x + 3, arenaPosition.y + 3, 900)) then
+	if checkPillows(arenaPosition.x, arenaPosition.y, 2394) and checkPillows(arenaPosition.x + 3, arenaPosition.y, 2396) and checkPillows(arenaPosition.x, arenaPosition.y + 3, 2395) and (checkPillows(arenaPosition.x + 3, arenaPosition.y + 3, 2397) or checkPillows(arenaPosition.x + 3, arenaPosition.y + 3, 900)) then
 		player:teleportTo(Position(32766, 32275, 14))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		doResetPillows()

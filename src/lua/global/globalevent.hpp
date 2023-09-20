@@ -36,12 +36,12 @@ public:
 
 	GlobalEventMap getEventMap(GlobalEvent_t type);
 
-	bool registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEvent);
+	bool registerLuaEvent(const std::shared_ptr<GlobalEvent> globalEvent);
 	void clear();
 
 private:
 	GlobalEventMap thinkMap, serverMap, timerMap;
-	int32_t thinkEventId = 0, timerEventId = 0;
+	uint64_t thinkEventId = 0, timerEventId = 0;
 };
 
 constexpr auto g_globalEvents = GlobalEvents::getInstance;

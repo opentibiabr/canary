@@ -3,13 +3,13 @@ combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_LIFEDRAIN)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_DRAWBLOOD)
 
 local combatArea = {
-	{0, 0, 1, 1, 1, 0, 0},
-	{0, 1, 0, 0, 0, 1, 0},
-	{1, 0, 0, 2, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 1},
-	{0, 1, 0, 0, 0, 1, 0},
-	{0, 0, 1, 1, 1, 0, 0}
+	{ 0, 0, 1, 1, 1, 0, 0 },
+	{ 0, 1, 0, 0, 0, 1, 0 },
+	{ 1, 0, 0, 2, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 0, 1 },
+	{ 0, 1, 0, 0, 0, 1, 0 },
+	{ 0, 0, 1, 1, 1, 0, 0 },
 }
 
 combat:setArea(createCombatArea(combatArea))

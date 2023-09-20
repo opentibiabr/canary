@@ -11,7 +11,7 @@ local charms = {
 		messageCancel = "You wounded the monster.",
 		messageServerLog = "[Wound charm]",
 		effect = CONST_ME_HITAREA,
-		points = 600
+		points = 600,
 	},
 	-- Enflame charm
 	[2] = {
@@ -25,7 +25,7 @@ local charms = {
 		messageCancel = "You enflamed the monster.",
 		messageServerLog = "[Enflame charm]",
 		effect = CONST_ME_HITBYFIRE,
-		points = 1000
+		points = 1000,
 	},
 	-- Poison charm
 	[3] = {
@@ -39,7 +39,7 @@ local charms = {
 		messageCancel = "You poisoned the monster.",
 		messageServerLog = "[Poison charm]",
 		effect = CONST_ME_GREEN_RINGS,
-		points = 600
+		points = 600,
 	},
 	-- Freeze charm
 	[4] = {
@@ -53,7 +53,7 @@ local charms = {
 		messageCancel = "You frozen the monster.",
 		messageServerLog = "[Freeze charm]",
 		effect = CONST_ME_ICEATTACK,
-		points = 800
+		points = 800,
 	},
 	--Zap charm
 	[5] = {
@@ -67,7 +67,7 @@ local charms = {
 		messageCancel = "You eletrocuted the monster.",
 		messageServerLog = "[Zap charm]",
 		effect = CONST_ME_ENERGYHIT,
-		points = 800
+		points = 800,
 	},
 	--Curse charm
 	[6] = {
@@ -81,7 +81,7 @@ local charms = {
 		messageCancel = "You curse the monster.",
 		messageServerLog = "[Curse charm]",
 		effect = CONST_ME_SMALLCLOUDS,
-		points = 900
+		points = 900,
 	},
 	-- Cripple charm
 	[7] = {
@@ -90,7 +90,7 @@ local charms = {
 		type = CHARM_OFFENSIVE,
 		chance = 10,
 		messageCancel = "You cripple the monster.",
-		points = 500
+		points = 500,
 	},
 	-- Parry charm
 	[8] = {
@@ -102,7 +102,7 @@ local charms = {
 		messageCancel = "You parry the attack.",
 		messageServerLog = "[Parry charm]",
 		effect = CONST_ME_EXPLOSIONAREA,
-		points = 1000
+		points = 1000,
 	},
 	-- Dodge charm
 	[9] = {
@@ -112,7 +112,7 @@ local charms = {
 		chance = 10,
 		messageCancel = "You dodge the attack.",
 		effect = CONST_ME_POFF,
-		points = 600
+		points = 600,
 	},
 	-- Adrenaline burst charm
 	[10] = {
@@ -122,7 +122,7 @@ local charms = {
 		type = CHARM_DEFENSIVE,
 		chance = 10,
 		messageCancel = "Your movements where bursted.",
-		points = 500
+		points = 500,
 	},
 	-- Numb charm
 	[11] = {
@@ -131,7 +131,7 @@ local charms = {
 		type = CHARM_DEFENSIVE,
 		chance = 10,
 		messageCancel = "You numb the monster.",
-		points = 500
+		points = 500,
 	},
 	-- Cleanse charm
 	[12] = {
@@ -141,7 +141,7 @@ local charms = {
 		type = CHARM_DEFENSIVE,
 		chance = 10,
 		messageCancel = "You purified the attack.",
-		points = 700
+		points = 700,
 	},
 	-- Bless charm
 	[13] = {
@@ -150,7 +150,7 @@ local charms = {
 		type = CHARM_PASSIVE,
 		percent = 10,
 		chance = 100,
-		points = 800
+		points = 800,
 	},
 	-- Scavenge charm
 	[14] = {
@@ -159,7 +159,7 @@ local charms = {
 		type = CHARM_PASSIVE,
 		percent = 25,
 		chance = 100,
-		points = 800
+		points = 800,
 	},
 	-- Gut charm
 	[15] = {
@@ -177,7 +177,7 @@ local charms = {
 		type = CHARM_PASSIVE,
 		percent = 8,
 		chance = 100,
-		points = 2000
+		points = 2000,
 	},
 	-- Divine wrath charm
 	[17] = {
@@ -191,7 +191,7 @@ local charms = {
 		messageCancel = "You divine the monster.",
 		messageServerLog = "[Divine charm]",
 		effect = CONST_ME_HOLYDAMAGE,
-		points = 1500
+		points = 1500,
 	},
 	-- Vampiric embrace charm
 	[18] = {
@@ -200,7 +200,7 @@ local charms = {
 		type = CHARM_PASSIVE,
 		percent = 400,
 		chance = 100,
-		points = 1500
+		points = 1500,
 	},
 	-- Void's call charm
 	[19] = {
@@ -209,8 +209,8 @@ local charms = {
 		type = CHARM_PASSIVE,
 		percent = 200,
 		chance = 100,
-		points = 1500
-	}
+		points = 1500,
+	},
 }
 
 for charmId, charmsTable in ipairs(charms) do

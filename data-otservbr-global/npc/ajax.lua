@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 101,
 	lookLegs = 120,
 	lookFeet = 94,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -93,7 +93,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Please? What you mean please? Like I say please you say bye? Please?", npc, creature)
 			npcHandler:setTopic(playerId, 5)
 		end
-	-- OUTFIT
+		-- OUTFIT
 	elseif MsgContains(message, "gelagos") then
 		if player:getStorageValue(Storage.OutfitQuest.BarbarianAddon) == 4 then
 			npcHandler:say("Annoying kid. Bro hates him, but talking no help. Bro needs {fighting spirit}!", npc, creature)
@@ -137,11 +137,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:addOutfitAddon(147, 1)
 			player:addOutfitAddon(143, 1)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			player:addAchievement('Brutal Politeness')
+			player:addAchievement("Brutal Politeness")
 		else
 			npcHandler:say("Axe is not done yet!", npc, creature)
 		end
-	-- OUTFIT
+		-- OUTFIT
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 5 then
 			npcHandler:say("Oh. Easy. Okay. Please is good. Now don't say anything. Head aches. ", npc, creature)
@@ -157,7 +157,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"Good! Me make shiny weapon. If you help me, I make one for you too. Like axe I wear. I need stuff. Listen. ...",
 				"Me need 100 iron ore. Then need crude iron. Then after that 50 behemoth fangs. And 50 lizard leather. You understand?",
-				"Help me yes or no?"
+				"Help me yes or no?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 7)
 		elseif npcHandler:getTopic(playerId) == 7 then

@@ -15,6 +15,6 @@ function amazon.onStepIn(creature, item, position, fromPosition)
 end
 
 amazon:type("stepin")
-amazon:position({x= 32328, y = 31802, z = 8})
-amazon:position({x= 32328, y = 31803, z = 8})
+amazon:position({ x = 32328, y = 31802, z = 8 })
+amazon:position({ x = 32328, y = 31803, z = 8 })
 amazon:register()

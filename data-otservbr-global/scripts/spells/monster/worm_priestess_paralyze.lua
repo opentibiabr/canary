@@ -6,16 +6,15 @@ condition:setParameter(CONDITION_PARAM_TICKS, 10000)
 condition:setFormula(-0.4, 0, -0.7, 0)
 combat:addCondition(condition)
 
-	arr = {
-		{0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
-		{0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0}
-	}
+arr = {
+	{ 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0 },
+}
 
 local area = createCombatArea(arr)
-	combat:setArea(area)
-	combat:addCondition(condition)
-
+combat:setArea(area)
+combat:addCondition(condition)
 
 local spell = Spell("instant")
 

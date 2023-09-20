@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 562
@@ -23,19 +23,19 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 1,
-	Locations = "Isle of Evil."
-	}
+	Locations = "Isle of Evil.",
+}
 
 monster.health = 360
 monster.maxHealth = 360
 monster.race = "blood"
 monster.corpse = 6056
 monster.speed = 160
-monster.manaCost = 250
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -59,58 +59,59 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "ISHH THAT THE BESHHT YOU HAVE TO OFFERRR, TIBIANSHH?", yell = false},
-	{text = "YOU ARRRRRE DOOMED!", yell = false},
-	{text = "I SHHMELL FEEAARRR!", yell = false},
-	{text = "MY SHHEED IS FEARRR AND MY HARRRVEST ISHH YOURRR SHHOUL!", yell = false},
-	{text = "Your shhoooul will be mineee!", yell = false}
+	{ text = "ISHH THAT THE BESHHT YOU HAVE TO OFFERRR, TIBIANSHH?", yell = true },
+	{ text = "YOU ARRRRRE DOOMED!", yell = true },
+	{ text = "I SHHMELL FEEAARRR!", yell = true },
+	{ text = "MY SHHEED IS FEARRR AND MY HARRRVEST ISHH YOURRR SHHOUL!", yell = true },
+	{ text = "Your shhoooul will be mineee!", yell = false },
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 81630, maxCount = 99}
+	{ name = "gold coin", chance = 81630, maxCount = 99 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 1200, chance = 100, minDamage = 0, maxDamage = -100},
-	{name ="drunk", interval = 1000, chance = 30, length = 5, spread = 3, effect = CONST_ME_SOUND_RED, target = false},
-	{name ="combat", interval = 1000, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -25, maxDamage = -45, range = 5, shootEffect = CONST_ANI_SUDDENDEATH, target = false},
-	{name ="combat", interval = 1000, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -15, maxDamage = -45, range = 1, target = false}
+	{ name = "melee", interval = 1200, chance = 100, minDamage = 0, maxDamage = -100 },
+	{ name = "drunk", interval = 1000, chance = 30, length = 5, spread = 3, effect = CONST_ME_SOUND_RED, target = false },
+	{ name = "combat", interval = 1000, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -25, maxDamage = -45, range = 5, shootEffect = CONST_ANI_SUDDENDEATH, target = false },
+	{ name = "combat", interval = 1000, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -15, maxDamage = -45, range = 1, target = false },
 }
 
 monster.defenses = {
 	defense = 18,
-	armor = 18
+	armor = 18,
+	mitigation = 0.48,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

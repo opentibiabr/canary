@@ -35,11 +35,15 @@ class Map : protected MapCache {
 public:
 	static uint32_t clean();
 
+	std::filesystem::path getPath() const {
+		return path;
+	}
+
 	/**
 	 * Load a map.
 	 * \returns true if the map was loaded successfully
 	 */
-	bool load(const std::string &identifier, const Position &pos = Position(), bool unload = false);
+	void load(const std::string &identifier, const Position &pos = Position());
 	/**
 	 * Load the main map
 	 * \param identifier Is the main map name (name of file .otbm)
@@ -48,7 +52,7 @@ public:
 	 * \param loadNpcs if true, the main map npcs is loaded
 	 * \returns true if the main map was loaded successfully
 	 */
-	bool loadMap(const std::string &identifier, bool mainMap = false, bool loadHouses = false, bool loadMonsters = false, bool loadNpcs = false, const Position &pos = Position(), bool unload = false);
+	void loadMap(const std::string &identifier, bool mainMap = false, bool loadHouses = false, bool loadMonsters = false, bool loadNpcs = false, const Position &pos = Position());
 	/**
 	 * Load the custom map
 	 * \param identifier Is the map custom folder
@@ -57,7 +61,7 @@ public:
 	 * \param loadNpcs if true, the map custom npcs is loaded
 	 * \returns true if the custom map was loaded successfully
 	 */
-	bool loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMonsters, bool loadNpcs, const int customMapIndex);
+	void loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMonsters, bool loadNpcs, const int customMapIndex);
 
 	void loadHouseInfo();
 
@@ -153,6 +157,7 @@ private:
 	SpectatorCache spectatorCache;
 	SpectatorCache playersSpectatorCache;
 
+	std::filesystem::path path;
 	std::string monsterfile;
 	std::string housefile;
 	std::string npcfile;

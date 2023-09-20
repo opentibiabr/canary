@@ -10,8 +10,8 @@
 #include "lib/di/soft_singleton.hpp"
 #include "utils/tools.hpp"
 
-SoftSingleton::SoftSingleton(Logger &logger, std::string id) :
-	logger(logger), id(std::move(id)) { }
+SoftSingleton::SoftSingleton(std::string id) :
+	id(std::move(id)) { }
 
 void SoftSingleton::increment() {
 	instance_count++;

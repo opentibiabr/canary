@@ -13,9 +13,6 @@ local function teleport(fromPosition, toPosition)
 	end
 end
 
-
-
-
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)

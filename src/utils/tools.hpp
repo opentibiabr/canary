@@ -33,6 +33,7 @@ std::string toCamelCase(const std::string &str);
 std::string toPascalCase(const std::string &str);
 std::string toSnakeCase(const std::string &str);
 std::string toKebabCase(const std::string &str);
+std::string toStartCaseWithSpace(const std::string &str);
 
 using StringVector = std::vector<std::string>;
 using IntegerVector = std::vector<int32_t>;
@@ -176,3 +177,11 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 			return CIPBIA_ELEMENTAL_UNDEFINED;
 	}
 }
+
+std::string formatNumber(uint64_t number);
+
+std::string getPlayerSubjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
+std::string getPlayerObjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
+std::string getPlayerPossessivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
+std::string getPlayerReflexivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
+std::string getVerbForPronoun(PlayerPronoun_t pronoun, bool pastTense = false);

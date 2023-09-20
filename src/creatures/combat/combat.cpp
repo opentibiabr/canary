@@ -19,7 +19,7 @@
 #include "creatures/monsters/monsters.hpp"
 #include "items/weapons/weapons.hpp"
 
-int32_t Combat::getLevelFormula(const Player* player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const {
+int32_t Combat::getLevelFormula(const Player* player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
 		return 0;
 	}
@@ -708,9 +708,9 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 			} else if (caster && caster->getMonster()) {
 				uint16_t playerCharmRaceid = player->parseRacebyCharm(CHARM_CLEANSE, false, 0);
 				if (playerCharmRaceid != 0) {
-					const auto &mType = g_monsters().getMonsterType(caster->getName());
+					const auto mType = g_monsters().getMonsterType(caster->getName());
 					if (mType && playerCharmRaceid == mType->info.raceid) {
-						const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_CLEANSE);
+						const auto charm = g_iobestiary().getBestiaryCharm(CHARM_CLEANSE);
 						if (charm && (charm->chance > normal_random(0, 100))) {
 							if (player->hasCondition(condition->getType())) {
 								player->removeCondition(condition->getType());
@@ -878,6 +878,14 @@ void Combat::addDistanceEffect(Creature* caster, const Position &fromPos, const 
 			case WEAPON_CLUB:
 				effect = CONST_ANI_WHIRLWINDCLUB;
 				break;
+			case WEAPON_MISSILE: {
+				auto weapon = player->getWeapon();
+				if (weapon) {
+					const auto &iType = Item::items[weapon->getID()];
+					effect = iType.shootType;
+				}
+				break;
+			}
 			default:
 				effect = CONST_ANI_NONE;
 				break;
@@ -908,36 +916,33 @@ void Combat::doChainEffect(const Position &origin, const Position &dest, uint8_t
 }
 
 bool Combat::doCombatChain(Creature* caster, Creature* target, bool aggressive) const {
-	auto targets = std::vector<Creature*>();
-	auto targetSet = std::set<uint32_t>();
-	auto visitedChain = std::set<uint32_t>();
-	if (target != nullptr) {
-		targets.push_back(target);
-		targetSet.insert(target->getID());
-	}
-	if (caster != nullptr) {
-		visitedChain.insert(caster->getID());
-	}
-	if (params.chainCallback) {
-		uint8_t maxTargets, chainDistance;
-		bool backtracking = false;
-		params.chainCallback->onChainCombat(caster, maxTargets, chainDistance, backtracking);
-		pickChainTargets(caster, targets, targetSet, visitedChain, params, chainDistance, maxTargets, backtracking, aggressive);
-	}
-	if (targets.empty() || targets.size() == 1 && targets[0] == caster) {
+	if (!params.chainCallback) {
 		return false;
 	}
-	Creature* previousTarget = caster;
-	for (auto currentTarget : targets) {
-		if (currentTarget == caster) {
-			continue;
-		}
-		g_logger().debug("Combat: {} -> {}", previousTarget ? previousTarget->getName() : "none", currentTarget ? currentTarget->getName() : "none");
-		auto origin = previousTarget != nullptr ? previousTarget->getPosition() : Position();
-		doChainEffect(origin, currentTarget->getPosition(), params.chainEffect);
-		doCombat(caster, currentTarget, origin);
-		previousTarget = currentTarget;
+
+	uint8_t maxTargets;
+	uint8_t chainDistance;
+	bool backtracking = false;
+	params.chainCallback->onChainCombat(caster, maxTargets, chainDistance, backtracking);
+	auto targets = pickChainTargets(caster, params, chainDistance, maxTargets, backtracking, aggressive, target);
+
+	g_logger().debug("[{}] Chain targets: {}", __FUNCTION__, targets.size());
+	if (targets.empty() || targets.size() == 1 && targets.begin()->second.empty()) {
+		return false;
 	}
+
+	for (const auto &[from, toVector] : targets) {
+		auto combat = this;
+		for (auto to : toVector) {
+			auto nextTarget = g_game().getCreatureByID(to);
+			if (!nextTarget) {
+				continue;
+			}
+			combat->doChainEffect(from, nextTarget->getPosition(), combat->params.chainEffect);
+			combat->doCombat(caster, nextTarget, from);
+		}
+	}
+
 	return true;
 }
 
@@ -1143,9 +1148,9 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, const Position &
 		if (target && target->getMonster() && damage.primary.type != COMBAT_HEALING) {
 			uint16_t playerCharmRaceid = caster->getPlayer()->parseRacebyCharm(CHARM_LOW, false, 0);
 			if (playerCharmRaceid != 0) {
-				const auto &mType = g_monsters().getMonsterType(target->getName());
+				const auto mType = g_monsters().getMonsterType(target->getName());
 				if (mType && playerCharmRaceid == mType->info.raceid) {
-					const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
+					const auto charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
 					if (charm) {
 						chance += charm->percent;
 						g_game().sendDoubleSoundEffect(target->getPosition(), charm->soundCastEffect, charm->soundImpactEffect, caster);
@@ -1372,55 +1377,84 @@ void Combat::setRuneSpellName(const std::string &value) {
 	runeSpellName = value;
 }
 
-void Combat::pickChainTargets(Creature* caster, std::vector<Creature*> &targets, std::set<uint32_t> &targetSet, std::set<uint32_t> &visited, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive) {
-	if (maxTargets == 0 || targets.size() > maxTargets) {
-		return;
-	}
-	// we need a target to chain from
-	if (targets.empty()) {
-		return;
+std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets(Creature* caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive, Creature* initialTarget /* = nullptr */) {
+	if (!caster) {
+		return {};
 	}
 
-	auto currentTarget = targets.back();
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, currentTarget->getPosition(), false, false, chainDistance, chainDistance, chainDistance, chainDistance);
-	g_logger().debug("Combat::pickChainTargets: currentTarget: {}, spectators: {}", currentTarget->getName(), spectators.size());
-	auto maxBacktrackingAttempts = 10;
-	for (auto attempts = 0; targets.size() <= maxTargets && attempts < maxBacktrackingAttempts; ++attempts) {
-		auto closestDistance = std::numeric_limits<uint16_t>::max();
+	std::vector<std::pair<Position, std::vector<uint32_t>>> resultMap;
+	std::vector<Creature*> targets;
+	std::set<uint32_t> visited;
+
+	if (initialTarget && initialTarget != caster) {
+		targets.push_back(initialTarget);
+		visited.insert(initialTarget->getID());
+		resultMap.push_back({ caster->getPosition(), { initialTarget->getID() } });
+	} else {
+		targets.push_back(caster);
+		maxTargets++;
+	}
+
+	const int maxBacktrackingAttempts = 10; // Can be adjusted as needed
+	while (!targets.empty() && targets.size() <= maxTargets) {
+		Creature* currentTarget = targets.back();
+		SpectatorHashSet spectators;
+		g_game().map.getSpectators(spectators, currentTarget->getPosition(), false, false, chainDistance, chainDistance, chainDistance, chainDistance);
+		g_logger().debug("Combat::pickChainTargets: currentTarget: {}, spectators: {}", currentTarget->getName(), spectators.size());
+
+		double closestDistance = std::numeric_limits<double>::max();
 		Creature* closestSpectator = nullptr;
-		for (auto spectator : spectators) {
-			Creature* creature = spectator;
-			if (creature == nullptr || visited.contains(creature->getID())) {
+		for (Creature* spectator : spectators) {
+			if (!spectator || visited.contains(spectator->getID())) {
 				continue;
 			}
-			bool canCombat = canDoCombat(caster, creature, aggressive) == RETURNVALUE_NOERROR;
-			bool pick = params.chainPickerCallback ? params.chainPickerCallback->onChainCombat(caster, creature) : true;
-			bool hasSight = g_game().isSightClear(currentTarget->getPosition(), creature->getPosition(), true);
-			if (!canCombat || !pick || !hasSight) {
-				visited.insert(creature->getID());
+			if (!isValidChainTarget(caster, currentTarget, spectator, params, aggressive)) {
+				visited.insert(spectator->getID());
 				continue;
 			}
 
-			auto distance = Position::getDiagonalDistance(currentTarget->getPosition(), creature->getPosition());
+			double distance = Position::getEuclideanDistance(currentTarget->getPosition(), spectator->getPosition());
 			if (distance < closestDistance) {
 				closestDistance = distance;
 				closestSpectator = spectator;
 			}
 		}
 
-		if (closestSpectator != nullptr) {
+		if (closestSpectator) {
 			g_logger().debug("Combat::pickChainTargets: closestSpectator: {}", closestSpectator->getName());
-			targets.push_back(closestSpectator);
-			targetSet.insert(closestSpectator->getID());
-			visited.insert(closestSpectator->getID());
-			pickChainTargets(caster, targets, targetSet, visited, params, chainDistance, maxTargets, backtracking, aggressive);
-		}
 
-		if (!backtracking || closestSpectator == nullptr) {
-			break;
+			bool found = false;
+			for (auto &[pos, vec] : resultMap) {
+				if (pos == currentTarget->getPosition()) {
+					vec.push_back(closestSpectator->getID());
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				resultMap.push_back({ currentTarget->getPosition(), { closestSpectator->getID() } });
+			}
+
+			targets.push_back(closestSpectator);
+			visited.insert(closestSpectator->getID());
+			continue;
+		} else if (backtracking) {
+			targets.pop_back();
+			if (targets.size() <= maxBacktrackingAttempts) {
+				continue;
+			}
 		}
+		break;
 	}
+
+	return resultMap;
+}
+
+bool Combat::isValidChainTarget(Creature* caster, Creature* currentTarget, Creature* potentialTarget, const CombatParams &params, bool aggressive) {
+	bool canCombat = canDoCombat(caster, potentialTarget, aggressive) == RETURNVALUE_NOERROR;
+	bool pick = params.chainPickerCallback ? params.chainPickerCallback->onChainCombat(caster, potentialTarget) : true;
+	bool hasSight = g_game().isSightClear(currentTarget->getPosition(), potentialTarget->getPosition(), true);
+	return canCombat && pick && hasSight;
 }
 
 //**********************************************************//
@@ -1433,9 +1467,9 @@ uint32_t ValueCallback::getMagicLevelSkill(const Player* player, const CombatDam
 	uint32_t magicLevelSkill = player->getMagicLevel();
 	// Wheel of destiny
 	if (player && player->wheel()->getInstant("Runic Mastery") && damage.instantSpellName.empty()) {
-		const std::shared_ptr<Spell> &spell = g_spells().getRuneSpellByName(damage.runeSpellName);
+		const std::shared_ptr<Spell> spell = g_spells().getRuneSpellByName(damage.runeSpellName);
 		// Rune conjuring spell have the same name as the rune item spell.
-		const std::shared_ptr<InstantSpell> &conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
+		const std::shared_ptr<InstantSpell> conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
 		if (spell && conjuringSpell && conjuringSpell != spell && normal_random(0, 100) <= 25) {
 			uint32_t castResult = conjuringSpell->canCast(player) ? 20 : 10;
 			magicLevelSkill += magicLevelSkill * castResult / 100;

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 100
@@ -24,8 +24,8 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Ankrahmun Tombs, Trapwood, Ramoa, Hellgate, Helheim, Mount Sternum Undead Cave, Deeper Catacombs, \z
-		Cemetery Quarter, Treasure Island, Upper Spike, Lion's Rock."
-	}
+		Cemetery Quarter, Treasure Island, Upper Spike, Lion's Rock.",
+}
 
 monster.health = 330
 monster.maxHealth = 330
@@ -36,7 +36,7 @@ monster.manaCost = 580
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -61,65 +61,66 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Aaaaahhhh!", yell = false},
-	{text = "Hoooohhh!", yell = false},
-	{text = "Uhhhhhhh!", yell = false},
-	{text = "Chhhhhhh!", yell = false}
+	{ text = "Aaaaahhhh!", yell = false },
+	{ text = "Hoooohhh!", yell = false },
+	{ text = "Uhhhhhhh!", yell = false },
+	{ text = "Chhhhhhh!", yell = false },
 }
 
 monster.loot = {
-	{name = "small diamond", chance = 510},
-	{name = "gold coin", chance = 57000, maxCount = 55},
-	{name = "rotten meat", chance = 1850},
-	{id = 3115, chance = 5000}, -- bone
-	{name = "throwing star", chance = 910, maxCount = 3},
-	{name = "bone sword", chance = 1000},
-	{name = "iron helmet", chance = 2130},
-	{name = "iron helmet", chance = 2000},
-	{name = "bone shield", chance = 1000},
-	{name = "worm", chance = 9000, maxCount = 10},
-	{name = "half-digested piece of meat", chance = 5000}
+	{ name = "small diamond", chance = 510 },
+	{ name = "gold coin", chance = 57000, maxCount = 55 },
+	{ name = "rotten meat", chance = 1850 },
+	{ id = 3115, chance = 5000 }, -- bone
+	{ name = "throwing star", chance = 910, maxCount = 3 },
+	{ name = "bone sword", chance = 1000 },
+	{ name = "iron helmet", chance = 2130 },
+	{ name = "iron helmet", chance = 2000 },
+	{ name = "bone shield", chance = 1000 },
+	{ name = "worm", chance = 9000, maxCount = 10 },
+	{ name = "half-digested piece of meat", chance = 5000 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -140},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -28, maxDamage = -55, range = 1, target = true}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -140 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -28, maxDamage = -55, range = 1, target = true },
 }
 
 monster.defenses = {
 	defense = 25,
-	armor = 25
+	armor = 30,
+	mitigation = 0.64,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = -25},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -25 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -3,7 +3,7 @@ local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {
 	amountMoney = 100, --1kk
 	amountLevel = 100,
-	maxLevel = 800
+	maxLevel = 800,
 }
 
 npcConfig.name = internalNpcName
@@ -20,11 +20,11 @@ npcConfig.outfit = {
 	lookBody = 24,
 	lookLegs = 38,
 	lookFeet = 0,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -61,16 +61,16 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'money') or MsgContains(message, "gold") then
-		npcHandler:say('There you have', npc, creature)
+	if MsgContains(message, "money") or MsgContains(message, "gold") then
+		npcHandler:say("There you have", npc, creature)
 		player:addItem(3043, npcConfig.amountMoney)
 	end
 
 	if MsgContains(message, "exp") or MsgContains(message, "experience") then
 		if player:getLevel() > npcConfig.maxLevel then
-			npcHandler:say('You can not take it anymore', npc, creature)
+			npcHandler:say("You can not take it anymore", npc, creature)
 		else
-			npcHandler:say('Here you are |PLAYERNAME|.', npc, creature)
+			npcHandler:say("Here you are |PLAYERNAME|.", npc, creature)
 			local level = player:getLevel() + npcConfig.amountLevel - 1
 			local experience = ((50 * level * level * level) - (150 * level * level) + (400 * level)) / 3
 			player:addExperience(experience - player:getExperience(), true, true)
@@ -79,7 +79,9 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "bless") or MsgContains(message, "blessing") then
 		local hasToF = Blessings.Config.HasToF and player:hasBlessing(1) or true
-		donthavefilter = function(p, b) return not p:hasBlessing(b) end
+		donthavefilter = function(p, b)
+			return not p:hasBlessing(b)
+		end
 		local missingBless = player:getBlessings(nil, donthavefilter)
 		local missingBlessAmt = #missingBless + (hasToF and 0 or 1)
 
@@ -103,7 +105,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			local experience = ((50 * level * level * level) - (150 * level * level) + (400 * level)) / 3
 			player:removeExperience(player:getExperience() - experience)
 		else
-			npcHandler:say('You can not take it anymore', npc, creature)
+			npcHandler:say("You can not take it anymore", npc, creature)
 		end
 	end
 
@@ -111,8 +113,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
-npcHandler:setMessage(MESSAGE_GREET, "Hey |PLAYERNAME|. I'm Testserver Assistant and I can give {money}, {experience} and {blessing} which will be useful for testing on "
-	.. configManager.getString(configKeys.SERVER_NAME) .. " server." .. " You can too to back to level 8 with {reset}.")
+npcHandler:setMessage(MESSAGE_GREET, "Hey |PLAYERNAME|. I'm Testserver Assistant and I can give {money}, {experience} and {blessing} which will be useful for testing on " .. configManager.getString(configKeys.SERVER_NAME) .. " server." .. " You can too to back to level 8 with {reset}.")
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

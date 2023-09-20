@@ -1,5 +1,5 @@
- local spiritMagical = Action()
- function spiritMagical.onUse(cid, item, fromPosition, itemEx, toPosition)
+local spiritMagical = Action()
+function spiritMagical.onUse(cid, item, fromPosition, itemEx, toPosition)
 	local player = Player(cid)
 	if item:getId() == 4049 then
 		if itemEx.itemid == 1979 then
@@ -7,11 +7,11 @@
 				qStorage = player:getStorageValue(Storage.SpiritHunters.TombUse)
 				if qStorage < 3 then
 					position = player:getPosition()
-					player:say('An incredibly slimy substance oozes out of every crack in the old gravestone. It seems to attack you.', TALKTYPE_MONSTER_SAY)
-					player:setStorageValue(Storage.SpiritHunters.TombUse, qStorage+1)
-					Game.createMonster('Squidgy Slime', Position(position.x+1, position.y, position.z), false, false)
+					player:say("An incredibly slimy substance oozes out of every crack in the old gravestone. It seems to attack you.", TALKTYPE_MONSTER_SAY)
+					player:setStorageValue(Storage.SpiritHunters.TombUse, qStorage + 1)
+					Game.createMonster("Squidgy Slime", Position(position.x + 1, position.y, position.z), false, false)
 				elseif qStorage == 4 then
-					player:say('You have used items in gravestone.', TALKTYPE_MONSTER_SAY)
+					player:say("You have used items in gravestone.", TALKTYPE_MONSTER_SAY)
 				end
 			end
 		end
@@ -37,7 +37,7 @@
 			toPosition:sendMagicEffect(CONST_ME_MAGIC_GREEN)
 		end
 	end
- end
+end
 
- spiritMagical:id(4049,4050)
- spiritMagical:register()
+spiritMagical:id(4049, 4050)
+spiritMagical:register()

@@ -25,12 +25,14 @@ local config = {
 	onUseExtra = function(player)
 		addEvent(function()
 			local nictros = Tile(nictrosPosition):getTopCreature()
-			if not nictros then return end
+			if not nictros then
+				return
+			end
 			nictros:teleportTo(Position(33427, 31436, 13))
 		end, 5 * 1000)
 	end,
 	exit = Position(33290, 32474, 9),
-	storage = Storage.Quest.U12_20.GraveDanger.Bosses.BaelocNictrosTimer
+	storage = Storage.Quest.U12_20.GraveDanger.Bosses.BaelocNictrosTimer,
 }
 
 local lever = BossLever(config)

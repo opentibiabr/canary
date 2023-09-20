@@ -1,6 +1,5 @@
 local tinderReward = Action()
 function tinderReward.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-
 	if player:getStorageValue(12450) >= os.time() then
 		return player:sendCancelMessage("The pile of bones is empty.")
 	end

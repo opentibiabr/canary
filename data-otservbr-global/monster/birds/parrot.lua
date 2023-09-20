@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 217
@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "In the jungle of Tiquanda, Liberty Bay, the Shattered Isles, and as a house pet in Meriana."
-	}
+	Locations = "In the jungle of Tiquanda, Liberty Bay, the Shattered Isles, and as a house pet in Meriana.",
+}
 
 monster.health = 25
 monster.maxHealth = 25
@@ -35,7 +35,7 @@ monster.manaCost = 250
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -47,10 +47,10 @@ monster.flags = {
 	attackable = true,
 	hostile = false,
 	convinceable = true,
-	pushable = true,
+	pushable = false,
 	rewardBoss = false,
 	illusionable = true,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 90,
 	targetDistance = 1,
@@ -59,63 +59,62 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "BR? PL? SWE?", yell = false},
-	{text = "Screeech!", yell = false},
-	{text = "Neeewbiiieee!", yell = false},
-	{text = "You advanshed, you advanshed!", yell = false},
-	{text = "Hope you die and loooosh it!", yell = false},
-	{text = "Hunterrr ish PK!", yell = false},
-	{text = "Shhtop whining! Rraaah!", yell = false},
-	{text = "I'm heeerrre! Screeeech!", yell = false},
-	{text = "Leeave orrr hunted!!", yell = false},
-	{text = "Blesshhh my stake! Screeech!", yell = false},
-	{text = "Tarrrrp?", yell = false},
-	{text = "You are corrrrupt! Corrrrupt!", yell = false},
-	{text = "You powerrrrrrabuserrrrr!", yell = false},
-	{text = "You advanshed, you advanshed!", yell = false}
+	{ text = "You advanshed, you advanshed!", yell = false },
+	{ text = "Neeewbiiieee!", yell = false },
+	{ text = "Screeech!", yell = false },
+	{ text = "Hunterrr ish PK!", yell = false },
+	{ text = "BR? PL? SWE?", yell = true },
+	{ text = "Hope you die and loooosh it!", yell = false },
+	{ text = "You powerrrrrrabuserrrrr!", yell = false },
+	{ text = "You are corrrrupt! Corrrrupt!", yell = false },
+	{ text = "Tarrrrp?", yell = false },
+	{ text = "Blesshhh my stake! Screeech!", yell = false },
+	{ text = "Leeave orrr hunted!!", yell = false },
+	{ text = "Shhtop whining! Rraaah!", yell = false },
+	{ text = "I'm heeerrre! Screeeech!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -5}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -5 },
 }
 
 monster.defenses = {
 	defense = 5,
-	armor = 2
+	armor = 2,
+	mitigation = 0.15,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -27,7 +27,7 @@ local fluidMessage = {
 	[15] = "Mmmh.", -- coconut milk
 	[16] = "Aah...", -- mead
 	[17] = "Gulp.", -- tea
-	[18] = "Urgh!" -- ink
+	[18] = "Urgh!", -- ink
 }
 
 local fluid = Action()
@@ -50,7 +50,7 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		if item.type == 0 then
 			player:sendTextMessage(MESSAGE_FAILURE, "It is empty.")
 		elseif target.uid == player.uid then
-			if table.contains({3, 15, 43}, item.type) then
+			if table.contains({ 3, 15, 43 }, item.type) then
 				player:addCondition(drunk)
 			elseif item.type == 4 then
 				player:addCondition(poison)

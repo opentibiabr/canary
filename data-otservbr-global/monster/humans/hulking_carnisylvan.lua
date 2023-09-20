@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 20,
 	lookFeet = 57,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2107
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Forest of Life"
+	Locations = "Forest of Life.",
 }
 
 monster.health = 8600
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -59,67 +59,67 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Gaaahnnnh.", yell = false},
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 70000, maxCount = 30},
-	{id = 3115, chance = 27670, maxCount = 1}, -- bone
-	{name = "great health potion", chance = 14990, maxCount = 4},
-	{name = "carnisylvan bark", chance = 12100, maxCount = 1},
-	{name = "carnisylvan finger", chance = 10090, maxCount = 2},
-	{name = "terra hood", chance = 7200},
-	{name = "terra boots", chance = 4900},
-	{name = "knight axe", chance = 3460},
-	{name = "lightning headband", chance = 3460},
-	{name = "dragonbone staff", chance = 5190},
-	{name = "diamond sceptre", chance = 4320},
-	{name = "epee", chance = 2590},
-	{name = "war hammer", chance = 3750},
-	{name = "human teeth", chance = 580}
+	{ name = "platinum coin", chance = 70000, maxCount = 30 },
+	{ id = 3115, chance = 27670, maxCount = 1 }, -- bone
+	{ name = "great health potion", chance = 14990, maxCount = 4 },
+	{ name = "carnisylvan bark", chance = 12100, maxCount = 1 },
+	{ name = "carnisylvan finger", chance = 10090, maxCount = 2 },
+	{ name = "terra hood", chance = 7200 },
+	{ name = "terra boots", chance = 4900 },
+	{ name = "knight axe", chance = 3460 },
+	{ name = "lightning headband", chance = 3460 },
+	{ name = "dragonbone staff", chance = 5190 },
+	{ name = "diamond sceptre", chance = 4320 },
+	{ name = "epee", chance = 2590 },
+	{ name = "war hammer", chance = 3750 },
+	{ name = "human teeth", chance = 580 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300},
-	{name ="combat", interval = 2000, chance = 60, type = COMBAT_EARTHDAMAGE, minDamage = -350, maxDamage = -450, range = 5, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_POISONAREA, target = true},
-	{name ="combat", interval = 2000, chance = 40, type = COMBAT_PHYSICALDAMAGE, minDamage = -600, maxDamage = -800, radius = 4, effect = CONST_ME_EXPLOSIONHIT, target = false},
-	{name ="combat", interval = 2000, chance = 30, type = COMBAT_PHYSICALDAMAGE, minDamage = -350, maxDamage = -400, length = 4, spread = 0, effect = CONST_ME_EXPLOSIONHIT, target = false},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300 },
+	{ name = "combat", interval = 2000, chance = 60, type = COMBAT_EARTHDAMAGE, minDamage = -350, maxDamage = -450, range = 5, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_POISONAREA, target = true },
+	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_PHYSICALDAMAGE, minDamage = -600, maxDamage = -800, radius = 4, effect = CONST_ME_EXPLOSIONHIT, target = false },
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_PHYSICALDAMAGE, minDamage = -350, maxDamage = -400, length = 4, spread = 0, effect = CONST_ME_EXPLOSIONHIT, target = false },
 }
 
 monster.defenses = {
 	defense = 51,
-	armor = 51
+	armor = 51,
+	mitigation = 1.32,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 15},
-	{type = COMBAT_EARTHDAMAGE, percent = 20},
-	{type = COMBAT_FIREDAMAGE, percent = -20},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -10},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 10}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 15 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 20 },
+	{ type = COMBAT_FIREDAMAGE, percent = -20 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

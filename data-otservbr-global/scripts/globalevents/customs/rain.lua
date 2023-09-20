@@ -4,9 +4,9 @@ if configManager.getBoolean(configKeys.WEATHER_RAIN) then
 	function weatherStartup.onStartup()
 		local rain = math.random(100)
 		if rain > 95 then
-			Game.setStorageValue('Weather', 1)
+			Game.setStorageValue("Weather", 1)
 		else
-			Game.setStorageValue('Weather', 0)
+			Game.setStorageValue("Weather", 0)
 		end
 		return true
 	end
@@ -18,9 +18,9 @@ if configManager.getBoolean(configKeys.WEATHER_RAIN) then
 	function weather.onThink(interval, lastExecution)
 		local rain = math.random(100)
 		if rain > 95 then
-			Game.setStorageValue('Weather', 1)
+			Game.setStorageValue("Weather", 1)
 		else
-			Game.setStorageValue('Weather', 0)
+			Game.setStorageValue("Weather", 0)
 		end
 		return true
 	end
@@ -31,7 +31,7 @@ if configManager.getBoolean(configKeys.WEATHER_RAIN) then
 	local weatherRain = GlobalEvent("WeatherRain")
 
 	function weatherRain.onThink(interval, lastExecution)
-		if Game.getStorageValue('Weather') == 1 then
+		if Game.getStorageValue("Weather") == 1 then
 			local players = Game.getPlayers()
 			if #players == 0 then
 				return true

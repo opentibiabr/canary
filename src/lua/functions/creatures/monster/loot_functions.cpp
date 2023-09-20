@@ -14,19 +14,15 @@
 
 int LootFunctions::luaCreateLoot(lua_State* L) {
 	// Loot() will create a new loot item
-	const auto &loot = std::make_shared<Loot>();
-	if (loot) {
-		pushUserdata<Loot>(L, loot);
-		setMetatable(L, -1, "Loot");
-	} else {
-		lua_pushnil(L);
-	}
+	const auto loot = std::make_shared<Loot>();
+	pushUserdata<Loot>(L, loot);
+	setMetatable(L, -1, "Loot");
 	return 1;
 }
 
 int LootFunctions::luaLootSetId(lua_State* L) {
 	// loot:setId(id)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		if (isNumber(L, 2)) {
 			loot->lootBlock.id = getNumber<uint16_t>(L, 2);
@@ -44,7 +40,7 @@ int LootFunctions::luaLootSetId(lua_State* L) {
 
 int LootFunctions::luaLootSetIdFromName(lua_State* L) {
 	// loot:setIdFromName(name)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot && isString(L, 2)) {
 		auto name = getString(L, 2);
 		auto ids = Item::items.nameToItems.equal_range(asLowerCaseString(name));
@@ -77,7 +73,7 @@ int LootFunctions::luaLootSetIdFromName(lua_State* L) {
 
 int LootFunctions::luaLootSetSubType(lua_State* L) {
 	// loot:setSubType(type)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.subType = getNumber<uint16_t>(L, 2);
 		pushBoolean(L, true);
@@ -89,7 +85,7 @@ int LootFunctions::luaLootSetSubType(lua_State* L) {
 
 int LootFunctions::luaLootSetChance(lua_State* L) {
 	// loot:setChance(chance)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.chance = getNumber<uint32_t>(L, 2);
 		pushBoolean(L, true);
@@ -101,7 +97,7 @@ int LootFunctions::luaLootSetChance(lua_State* L) {
 
 int LootFunctions::luaLootSetMinCount(lua_State* L) {
 	// loot:setMinCount(min)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.countmin = getNumber<uint32_t>(L, 2);
 		pushBoolean(L, true);
@@ -113,7 +109,7 @@ int LootFunctions::luaLootSetMinCount(lua_State* L) {
 
 int LootFunctions::luaLootSetMaxCount(lua_State* L) {
 	// loot:setMaxCount(max)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.countmax = getNumber<uint32_t>(L, 2);
 		pushBoolean(L, true);
@@ -125,7 +121,7 @@ int LootFunctions::luaLootSetMaxCount(lua_State* L) {
 
 int LootFunctions::luaLootSetActionId(lua_State* L) {
 	// loot:setActionId(actionid)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.actionId = getNumber<uint32_t>(L, 2);
 		pushBoolean(L, true);
@@ -137,7 +133,7 @@ int LootFunctions::luaLootSetActionId(lua_State* L) {
 
 int LootFunctions::luaLootSetText(lua_State* L) {
 	// loot:setText(text)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.text = getString(L, 2);
 		pushBoolean(L, true);
@@ -149,7 +145,7 @@ int LootFunctions::luaLootSetText(lua_State* L) {
 
 int LootFunctions::luaLootSetNameItem(lua_State* L) {
 	// loot:setNameItem(name)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.name = getString(L, 2);
 		pushBoolean(L, true);
@@ -161,7 +157,7 @@ int LootFunctions::luaLootSetNameItem(lua_State* L) {
 
 int LootFunctions::luaLootSetArticle(lua_State* L) {
 	// loot:setArticle(article)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.article = getString(L, 2);
 		pushBoolean(L, true);
@@ -173,7 +169,7 @@ int LootFunctions::luaLootSetArticle(lua_State* L) {
 
 int LootFunctions::luaLootSetAttack(lua_State* L) {
 	// loot:setAttack(attack)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.attack = getNumber<uint32_t>(L, 2);
 		pushBoolean(L, true);
@@ -185,7 +181,7 @@ int LootFunctions::luaLootSetAttack(lua_State* L) {
 
 int LootFunctions::luaLootSetDefense(lua_State* L) {
 	// loot:setDefense(defense)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.defense = getNumber<uint32_t>(L, 2);
 		pushBoolean(L, true);
@@ -197,7 +193,7 @@ int LootFunctions::luaLootSetDefense(lua_State* L) {
 
 int LootFunctions::luaLootSetExtraDefense(lua_State* L) {
 	// loot:setExtraDefense(defense)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.extraDefense = getNumber<uint32_t>(L, 2);
 		pushBoolean(L, true);
@@ -209,7 +205,7 @@ int LootFunctions::luaLootSetExtraDefense(lua_State* L) {
 
 int LootFunctions::luaLootSetArmor(lua_State* L) {
 	// loot:setArmor(armor)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.armor = getNumber<uint32_t>(L, 2);
 		pushBoolean(L, true);
@@ -221,7 +217,7 @@ int LootFunctions::luaLootSetArmor(lua_State* L) {
 
 int LootFunctions::luaLootSetShootRange(lua_State* L) {
 	// loot:setShootRange(range)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.shootRange = getNumber<uint32_t>(L, 2);
 		pushBoolean(L, true);
@@ -233,7 +229,7 @@ int LootFunctions::luaLootSetShootRange(lua_State* L) {
 
 int LootFunctions::luaLootSetHitChance(lua_State* L) {
 	// loot:setHitChance(chance)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.hitChance = getNumber<uint32_t>(L, 2);
 		pushBoolean(L, true);
@@ -245,7 +241,7 @@ int LootFunctions::luaLootSetHitChance(lua_State* L) {
 
 int LootFunctions::luaLootSetUnique(lua_State* L) {
 	// loot:setUnique(bool)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		if (lua_gettop(L) == 1) {
 			pushBoolean(L, loot->lootBlock.unique);
@@ -261,7 +257,7 @@ int LootFunctions::luaLootSetUnique(lua_State* L) {
 
 int LootFunctions::luaLootAddChildLoot(lua_State* L) {
 	// loot:addChildLoot(loot)
-	const auto &loot = getUserdataShared<Loot>(L, 1);
+	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
 		loot->lootBlock.childLoot.push_back(getUserdata<Loot>(L, 2)->lootBlock);
 	} else {

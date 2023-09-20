@@ -31,4 +31,5 @@ function bestiaryOnKill.onKill(player, creature, lastHit)
 
 	return true
 end
+
 bestiaryOnKill:register()

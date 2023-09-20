@@ -12,6 +12,7 @@
 #include "database/databasetasks.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "lib/thread/thread_pool.hpp"
+#include "lib/di/container.hpp"
 
 DatabaseTasks::DatabaseTasks(ThreadPool &threadPool, Database &db) :
 	db(db), threadPool(threadPool) {
@@ -24,15 +25,17 @@ DatabaseTasks &DatabaseTasks::getInstance() {
 void DatabaseTasks::execute(const std::string &query, std::function<void(DBResult_ptr, bool)> callback /* nullptr */) {
 	threadPool.addLoad([this, query, callback]() {
 		bool success = db.executeQuery(query);
-		if (callback != nullptr)
-			g_dispatcher().addTask([callback, success]() { callback(nullptr, success); });
+		if (callback != nullptr) {
+			g_dispatcher().addTask([callback, success]() { callback(nullptr, success); }, "DatabaseTasks::execute");
+		}
 	});
 }
 
 void DatabaseTasks::store(const std::string &query, std::function<void(DBResult_ptr, bool)> callback /* nullptr */) {
 	threadPool.addLoad([this, query, callback]() {
 		DBResult_ptr result = db.storeQuery(query);
-		if (callback != nullptr)
-			g_dispatcher().addTask([callback, result]() { callback(result, true); });
+		if (callback != nullptr) {
+			g_dispatcher().addTask([callback, result]() { callback(result, true); }, "DatabaseTasks::store");
+		}
 	});
 }

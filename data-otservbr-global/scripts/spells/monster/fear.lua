@@ -7,20 +7,15 @@ combat:addCondition(condition)
 
 local spell = Spell("instant")
 
-local function executeCombat(cid, var)
-	local creature = Creature(cid)
-	if not creature then return end
+function spell.onCastSpell(creature, var)
+	if not creature then
+		return
+	end
 	return combat:execute(creature, var)
 end
 
-function spell.onCastSpell(creature, var)
-	creature:getPosition():sendMagicEffect(CONST_ME_GHOST_SMOKE)
-	addEvent(executeCombat, 2000, creature:getId(), var)
-	return true
-end
-
-spell:name("root")
-spell:words("###611")
+spell:name("fear")
+spell:words("###613")
 spell:blockWalls(true)
 spell:needTarget(true)
 spell:needLearn(true)

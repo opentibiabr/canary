@@ -2597,14 +2597,16 @@ void ProtocolGame::createLeaderTeamFinder(NetworkMessage &msg) {
 	teamAssemble->questID = questID;
 	teamAssemble->leaderGuid = player->getGUID();
 
-	if (teamAssemble->partyBool && player->getParty()) {
-		for (std::shared_ptr<Player> member : player->getParty()->getMembers()) {
+	auto party = player->getParty();
+	if (teamAssemble->partyBool && party) {
+		for (std::shared_ptr<Player> member : party->getMembers()) {
 			if (member && member->getGUID() != player->getGUID()) {
 				members.insert({ member->getGUID(), 3 });
 			}
 		}
-		if (player->getParty()->getLeader()->getGUID() != player->getGUID()) {
-			members.insert({ player->getParty()->getLeader()->getGUID(), 3 });
+		auto partyLeader = party->getLeader();
+		if (partyLeader && partyLeader->getGUID() != player->getGUID()) {
+			members.insert({ partyLeader->getGUID(), 3 });
 		}
 	}
 	teamAssemble->membersMap = members;

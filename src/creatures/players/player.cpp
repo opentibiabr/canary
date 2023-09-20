@@ -7666,7 +7666,9 @@ void Player::sendLootMessage(const std::string &message) const {
 		return;
 	}
 
-	party->getLeader()->sendTextMessage(MESSAGE_LOOT, message);
+	if (auto partyLeader = party->getLeader()) {
+		partyLeader->sendTextMessage(MESSAGE_LOOT, message);
+	}
 	for (const auto partyMember : party->getMembers()) {
 		if (partyMember) {
 			partyMember->sendTextMessage(MESSAGE_LOOT, message);

@@ -280,7 +280,7 @@ bool EventCallback::partyOnDisband(Party* party) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::partyOnDisband - Party leader {}] Call stack "
 						 "overflow. Too many lua script calls being nested.",
-						 party->getLeader()->getName());
+						 party->getLeader() ? party->getLeader()->getName() : "unknown");
 		return false;
 	}
 
@@ -298,7 +298,7 @@ bool EventCallback::partyOnDisband(Party* party) const {
 
 void EventCallback::partyOnShareExperience(Party* party, uint64_t &exp) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
-		g_logger().error("Party leader {}. Call stack overflow. Too many lua script calls being nested.", party->getLeader()->getName());
+		g_logger().error("Party leader {}. Call stack overflow. Too many lua script calls being nested.", party->getLeader() ? party->getLeader()->getName() : "unknown");
 		return;
 	}
 

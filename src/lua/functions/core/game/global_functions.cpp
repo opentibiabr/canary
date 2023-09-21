@@ -105,7 +105,7 @@ int GlobalFunctions::luaDoSetCreatureLight(lua_State* L) {
 	uint16_t level = getNumber<uint16_t>(L, 2);
 	uint16_t color = getNumber<uint16_t>(L, 3);
 	uint32_t time = getNumber<uint32_t>(L, 4);
-	Condition* condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_LIGHT, time, level | (color << 8));
+	std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_LIGHT, time, level | (color << 8));
 	creature->addCondition(condition);
 	pushBoolean(L, true);
 	return 1;
@@ -449,7 +449,7 @@ int GlobalFunctions::luaDoAreaCombatCondition(lua_State* L) {
 		return 1;
 	}
 
-	const Condition* condition = getUserdata<Condition>(L, 4);
+	const std::shared_ptr<Condition> condition = getUserdataShared<Condition>(L, 4);
 	if (!condition) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_CONDITION_NOT_FOUND));
 		pushBoolean(L, false);
@@ -487,7 +487,7 @@ int GlobalFunctions::luaDoTargetCombatCondition(lua_State* L) {
 		return 1;
 	}
 
-	const Condition* condition = getUserdata<Condition>(L, 3);
+	const std::shared_ptr<Condition> condition = getUserdataShared<Condition>(L, 3);
 	if (!condition) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_CONDITION_NOT_FOUND));
 		pushBoolean(L, false);

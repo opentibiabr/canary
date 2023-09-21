@@ -520,12 +520,12 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 
 	if (it.abilities) {
 		if (it.abilities->invisible) {
-			Condition* condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_INVISIBLE, -1, 0);
+			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_INVISIBLE, -1, 0);
 			player->addCondition(condition);
 		}
 
 		if (it.abilities->manaShield) {
-			Condition* condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_MANASHIELD, -1, 0);
+			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_MANASHIELD, -1, 0);
 			player->addCondition(condition);
 		}
 
@@ -537,7 +537,7 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 		player->sendIcons();
 
 		if (it.abilities->regeneration) {
-			Condition* condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_REGENERATION, -1, 0);
+			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_REGENERATION, -1, 0);
 
 			if (it.abilities->getHealthGain() != 0) {
 				condition->setParam(CONDITION_PARAM_HEALTHGAIN, it.abilities->getHealthGain());

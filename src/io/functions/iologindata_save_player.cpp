@@ -227,7 +227,7 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 
 	// serialize conditions
 	PropWriteStream propWriteStream;
-	for (Condition* condition : player->conditions) {
+	for (const auto &condition : player->conditions) {
 		if (condition->isPersistent()) {
 			condition->serialize(propWriteStream);
 			propWriteStream.write<uint8_t>(CONDITIONATTR_END);

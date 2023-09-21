@@ -5521,7 +5521,7 @@ bool Game::playerYell(std::shared_ptr<Player> player, const std::string &text) {
 	}
 
 	if (player->getAccountType() < account::AccountType::ACCOUNT_TYPE_GAMEMASTER) {
-		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_YELLTICKS, 30000, 0);
+		auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_YELLTICKS, 30000, 0);
 		player->addCondition(condition);
 	}
 

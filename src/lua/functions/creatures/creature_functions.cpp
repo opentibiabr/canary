@@ -645,7 +645,7 @@ int CreatureFunctions::luaCreatureGetCondition(lua_State* L) {
 	ConditionId_t conditionId = getNumber<ConditionId_t>(L, 3, CONDITIONID_COMBAT);
 	uint32_t subId = getNumber<uint32_t>(L, 4, 0);
 
-	const Condition* condition = creature->getCondition(conditionType, conditionId, subId);
+	const std::shared_ptr<Condition> condition = creature->getCondition(conditionType, conditionId, subId);
 	if (condition) {
 		pushUserdata<const Condition>(L, condition);
 		setWeakMetatable(L, -1, "Condition");
@@ -658,7 +658,7 @@ int CreatureFunctions::luaCreatureGetCondition(lua_State* L) {
 int CreatureFunctions::luaCreatureAddCondition(lua_State* L) {
 	// creature:addCondition(condition)
 	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
-	Condition* condition = getUserdata<Condition>(L, 2);
+	std::shared_ptr<Condition> condition = getUserdataShared<Condition>(L, 2);
 	if (creature && condition) {
 		pushBoolean(L, creature->addCondition(condition->clone()));
 	} else {
@@ -678,7 +678,7 @@ int CreatureFunctions::luaCreatureRemoveCondition(lua_State* L) {
 	ConditionType_t conditionType = getNumber<ConditionType_t>(L, 2);
 	ConditionId_t conditionId = getNumber<ConditionId_t>(L, 3, CONDITIONID_COMBAT);
 	uint32_t subId = getNumber<uint32_t>(L, 4, 0);
-	const Condition* condition = creature->getCondition(conditionType, conditionId, subId);
+	const std::shared_ptr<Condition> condition = creature->getCondition(conditionType, conditionId, subId);
 	if (condition) {
 		bool force = getBoolean(L, 5, false);
 		creature->removeCondition(conditionType, conditionId, force);
@@ -713,7 +713,7 @@ int CreatureFunctions::luaCreatureIsImmune(lua_State* L) {
 
 	if (isNumber(L, 2)) {
 		pushBoolean(L, creature->isImmune(getNumber<ConditionType_t>(L, 2)));
-	} else if (Condition* condition = getUserdata<Condition>(L, 2)) {
+	} else if (auto condition = getUserdataShared<Condition>(L, 2)) {
 		pushBoolean(L, creature->isImmune(condition->getType()));
 	} else {
 		lua_pushnil(L);

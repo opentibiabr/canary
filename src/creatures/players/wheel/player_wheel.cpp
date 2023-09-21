@@ -2088,7 +2088,7 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 }
 
 void PlayerWheel::reduceAllSpellsCooldownTimer(int32_t value) {
-	for (Condition* condition : m_player.getConditionsByType(CONDITION_SPELLCOOLDOWN)) {
+	for (const auto &condition : m_player.getConditionsByType(CONDITION_SPELLCOOLDOWN)) {
 		if (condition->getTicks() <= value) {
 			m_player.sendSpellCooldown(condition->getSubId(), 0);
 			condition->endCondition(m_player.getPlayer());

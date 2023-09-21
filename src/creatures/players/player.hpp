@@ -893,7 +893,7 @@ public:
 	void onAddCondition(ConditionType_t type) override;
 	void onAddCombatCondition(ConditionType_t type) override;
 	void onEndCondition(ConditionType_t type) override;
-	void onCombatRemoveCondition(Condition* condition) override;
+	void onCombatRemoveCondition(std::shared_ptr<Condition> condition) override;
 	void onAttackedCreature(std::shared_ptr<Creature> target) override;
 	void onAttacked() override;
 	void onAttackedCreatureDrainHealth(std::shared_ptr<Creature> target, int32_t points) override;
@@ -2504,7 +2504,7 @@ private:
 	static uint32_t playerFirstID;
 	static uint32_t playerLastID;
 
-	std::forward_list<Condition*> getMuteConditions() const;
+	std::forward_list<std::shared_ptr<Condition>> getMuteConditions() const;
 
 	void checkTradeState(std::shared_ptr<Item> item);
 	bool hasCapacity(std::shared_ptr<Item> item, uint32_t count) const;
@@ -2602,7 +2602,7 @@ private:
 	std::forward_list<uint32_t> modalWindows;
 	std::forward_list<std::string> learnedInstantSpellList;
 	// TODO: This variable is only temporarily used when logging in, get rid of it somehow.
-	std::forward_list<Condition*> storedConditionList;
+	std::forward_list<std::shared_ptr<Condition>> storedConditionList;
 
 	phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> m_bestiaryMonsterTracker;
 	phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;

@@ -25,7 +25,7 @@ bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> charm, std::share
 	CombatDamage charmDamage;
 	if (charm->type == CHARM_OFFENSIVE) {
 		if (charm->id == CHARM_CRIPPLE) {
-			ConditionSpeed* cripple = static_cast<ConditionSpeed*>(Condition::createCondition(CONDITIONID_COMBAT, CONDITION_PARALYZE, 10000, 0));
+			std::shared_ptr<ConditionSpeed> cripple = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_PARALYZE, 10000, 0)->static_self_cast<ConditionSpeed>();
 			cripple->setFormulaVars(-1, 81, -1, 81);
 			target->addCondition(cripple);
 			player->sendCancelMessage(charm->cancelMsg);
@@ -69,14 +69,14 @@ bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> charm, std::share
 				return true;
 			}
 			case CHARM_ADRENALINE: {
-				ConditionSpeed* adrenaline = static_cast<ConditionSpeed*>(Condition::createCondition(CONDITIONID_COMBAT, CONDITION_HASTE, 10000, 0));
+				std::shared_ptr<ConditionSpeed> adrenaline = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_HASTE, 10000, 0)->static_self_cast<ConditionSpeed>();
 				adrenaline->setFormulaVars(1.5, -0, 1.5, -0);
 				player->addCondition(adrenaline);
 				player->sendCancelMessage(charm->cancelMsg);
 				return false;
 			}
 			case CHARM_NUMB: {
-				ConditionSpeed* numb = static_cast<ConditionSpeed*>(Condition::createCondition(CONDITIONID_COMBAT, CONDITION_PARALYZE, 10000, 0));
+				std::shared_ptr<ConditionSpeed> numb = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_PARALYZE, 10000, 0)->static_self_cast<ConditionSpeed>();
 				numb->setFormulaVars(-1, 81, -1, 81);
 				target->addCondition(numb);
 				player->sendCancelMessage(charm->cancelMsg);

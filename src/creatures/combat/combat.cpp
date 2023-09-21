@@ -729,7 +729,7 @@ void Combat::CombatConditionFunc(std::shared_ptr<Creature> caster, std::shared_p
 		}
 
 		if (caster == target || target && !target->isImmune(condition->getType())) {
-			Condition* conditionCopy = condition->clone();
+			auto conditionCopy = condition->clone();
 			if (caster) {
 				conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
 				conditionCopy->setPositionParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
@@ -2054,7 +2054,7 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 
 	const ItemType &it = items[getID()];
 	if (it.conditionDamage) {
-		Condition* conditionCopy = it.conditionDamage->clone();
+		auto conditionCopy = it.conditionDamage->clone();
 		auto ownerId = getAttribute<uint32_t>(ItemAttribute_t::OWNER);
 		if (ownerId) {
 			bool harmfulField = true;

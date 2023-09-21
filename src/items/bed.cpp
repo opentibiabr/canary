@@ -209,7 +209,7 @@ void BedItem::wakeUp(std::shared_ptr<Player> player) {
 void BedItem::regeneratePlayer(std::shared_ptr<Player> player) const {
 	const uint32_t sleptTime = time(nullptr) - sleepStart;
 
-	Condition* condition = player->getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
+	std::shared_ptr<Condition> condition = player->getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
 	if (condition != nullptr) {
 		uint32_t regen;
 		if (condition->getTicks() != -1) {

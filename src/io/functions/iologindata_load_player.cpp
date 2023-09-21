@@ -230,7 +230,7 @@ void IOLoginDataLoad::loadPlayerConditions(std::shared_ptr<Player> player, DBRes
 	PropStream propStream;
 	propStream.init(attr, attrSize);
 
-	Condition* condition = Condition::createCondition(propStream);
+	auto condition = Condition::createCondition(propStream);
 	while (condition) {
 		if (condition->unserialize(propStream)) {
 			player->storedConditionList.push_front(condition);

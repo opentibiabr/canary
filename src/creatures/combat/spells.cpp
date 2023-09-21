@@ -616,7 +616,7 @@ void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 			spellCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, spellGrade);
 		}
 		if (spellCooldown > 0) {
-			Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rate_cooldown, 0, false, spellId);
+			std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rate_cooldown, 0, false, spellId);
 			player->addCondition(condition);
 		}
 	}
@@ -627,7 +627,7 @@ void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 			spellGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::GROUP_COOLDOWN, spellGrade);
 		}
 		if (spellGroupCooldown > 0) {
-			Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellGroupCooldown / rate_cooldown, 0, false, group);
+			std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellGroupCooldown / rate_cooldown, 0, false, group);
 			player->addCondition(condition);
 		}
 	}
@@ -638,7 +638,7 @@ void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 			spellSecondaryGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, spellGrade);
 		}
 		if (spellSecondaryGroupCooldown > 0) {
-			Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellSecondaryGroupCooldown / rate_cooldown, 0, false, secondaryGroup);
+			std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellSecondaryGroupCooldown / rate_cooldown, 0, false, secondaryGroup);
 			player->addCondition(condition);
 		}
 	}

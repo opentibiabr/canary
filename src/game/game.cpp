@@ -297,6 +297,12 @@ void Game::start(ServiceManager* manager) {
 	g_scheduler().addEvent(EVENT_MS, std::bind_front(&Game::updateForgeableMonsters, this), "Game::updateForgeableMonsters");
 	g_scheduler().addEvent(EVENT_MS + 1000, std::bind_front(&Game::createFiendishMonsters, this), "Game::createFiendishMonsters");
 	g_scheduler().addEvent(EVENT_MS + 1000, std::bind_front(&Game::createInfluencedMonsters, this), "Game::createInfluencedMonsters");
+
+	static const std::function<void()> &LUA_GC = [] {
+		g_scheduler().addEvent(EVENT_LUA_GARBAGE_COLLECTION, LUA_GC, "Calling GC");
+		g_luaEnvironment().collectGarbage();
+	};
+	LUA_GC();
 }
 
 GameState_t Game::getGameState() const {

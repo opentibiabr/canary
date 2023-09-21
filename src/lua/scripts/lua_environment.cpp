@@ -117,7 +117,7 @@ void LuaEnvironment::clearCombatObjects(LuaScriptInterface* interface) {
 	combatMap.clear();
 }
 
-AreaCombat* LuaEnvironment::getAreaObject(uint32_t id) const {
+const std::unique_ptr<AreaCombat> &LuaEnvironment::getAreaObject(uint32_t id) const {
 	auto it = areaMap.find(id);
 	if (it == areaMap.end()) {
 		return nullptr;
@@ -126,7 +126,7 @@ AreaCombat* LuaEnvironment::getAreaObject(uint32_t id) const {
 }
 
 uint32_t LuaEnvironment::createAreaObject(LuaScriptInterface* interface) {
-	areaMap[++lastAreaId] = new AreaCombat;
+	areaMap[++lastAreaId] = std::make_unique<AreaCombat>();
 	areaIdMap[interface].push_back(lastAreaId);
 	return lastAreaId;
 }
@@ -140,7 +140,6 @@ void LuaEnvironment::clearAreaObjects(LuaScriptInterface* interface) {
 	for (uint32_t id : it->second) {
 		auto itt = areaMap.find(id);
 		if (itt != areaMap.end()) {
-			delete itt->second;
 			areaMap.erase(itt);
 		}
 	}

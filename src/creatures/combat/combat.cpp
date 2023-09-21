@@ -99,7 +99,7 @@ CombatDamage Combat::getCombatDamage(std::shared_ptr<Creature> creature, std::sh
 	return damage;
 }
 
-void Combat::getCombatArea(const Position &centerPos, const Position &targetPos, const AreaCombat* area, std::forward_list<std::shared_ptr<Tile>> &list) {
+void Combat::getCombatArea(const Position &centerPos, const Position &targetPos, const std::unique_ptr<AreaCombat> &area, std::forward_list<std::shared_ptr<Tile>> &list) {
 	if (targetPos.z >= MAP_MAX_LAYERS) {
 		return;
 	}
@@ -977,19 +977,19 @@ bool Combat::doCombat(std::shared_ptr<Creature> caster, const Position &position
 	if (params.combatType != COMBAT_NONE) {
 		CombatDamage damage = getCombatDamage(caster, nullptr);
 		if (damage.primary.type != COMBAT_MANADRAIN) {
-			doCombatHealth(caster, position, area.get(), damage, params);
+			doCombatHealth(caster, position, area, damage, params);
 		} else {
-			doCombatMana(caster, position, area.get(), damage, params);
+			doCombatMana(caster, position, area, damage, params);
 		}
 	} else {
 		auto origin = caster != nullptr ? caster->getPosition() : Position();
-		CombatFunc(caster, origin, position, area.get(), params, CombatNullFunc, nullptr);
+		CombatFunc(caster, origin, position, area, params, CombatNullFunc, nullptr);
 	}
 
 	return true;
 }
 
-void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin, const Position &pos, const AreaCombat* area, const CombatParams &params, CombatFunction func, CombatDamage* data) {
+void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin, const Position &pos, const std::unique_ptr<AreaCombat> &area, const CombatParams &params, CombatFunction func, CombatDamage* data) {
 	std::forward_list<std::shared_ptr<Tile>> tileList;
 
 	if (caster) {
@@ -1193,7 +1193,7 @@ void Combat::doCombatHealth(std::shared_ptr<Creature> caster, std::shared_ptr<Cr
 	}
 }
 
-void Combat::doCombatHealth(std::shared_ptr<Creature> caster, const Position &position, const AreaCombat* area, CombatDamage &damage, const CombatParams &params) {
+void Combat::doCombatHealth(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, CombatDamage &damage, const CombatParams &params) {
 	if (caster && caster->getPlayer()) {
 		// Critical damage
 		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + (uint16_t)damage.criticalChance;
@@ -1259,7 +1259,7 @@ void Combat::doCombatMana(std::shared_ptr<Creature> caster, std::shared_ptr<Crea
 	}
 }
 
-void Combat::doCombatMana(std::shared_ptr<Creature> caster, const Position &position, const AreaCombat* area, CombatDamage &damage, const CombatParams &params) {
+void Combat::doCombatMana(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, CombatDamage &damage, const CombatParams &params) {
 	if (caster && caster->getPlayer()) {
 		// Critical damage
 		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + (uint16_t)damage.criticalChance;
@@ -1273,7 +1273,7 @@ void Combat::doCombatMana(std::shared_ptr<Creature> caster, const Position &posi
 	CombatFunc(caster, origin, position, area, params, CombatManaFunc, &damage);
 }
 
-void Combat::doCombatCondition(std::shared_ptr<Creature> caster, const Position &position, const AreaCombat* area, const CombatParams &params) {
+void Combat::doCombatCondition(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, const CombatParams &params) {
 	const auto origin = caster ? caster->getPosition() : Position();
 	CombatFunc(caster, origin, position, area, params, CombatConditionFunc, nullptr);
 }
@@ -1302,7 +1302,7 @@ void Combat::doCombatCondition(std::shared_ptr<Creature> caster, std::shared_ptr
 	}
 }
 
-void Combat::doCombatDispel(std::shared_ptr<Creature> caster, const Position &position, const AreaCombat* area, const CombatParams &params) {
+void Combat::doCombatDispel(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, const CombatParams &params) {
 	const auto origin = caster ? caster->getPosition() : Position();
 	CombatFunc(caster, origin, position, area, params, CombatDispelFunc, nullptr);
 }

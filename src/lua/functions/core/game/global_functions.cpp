@@ -71,7 +71,6 @@ int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 
 		ReturnValue ret = g_game().internalPlayerAddItem(player, newItem, canDropOnMap);
 		if (ret != RETURNVALUE_NOERROR) {
-
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -176,7 +175,6 @@ int GlobalFunctions::luaDoAddContainerItem(lua_State* L) {
 
 		ReturnValue ret = g_game().internalAddItem(container, newItem);
 		if (ret != RETURNVALUE_NOERROR) {
-
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -250,7 +248,7 @@ int GlobalFunctions::luaCreateCombatArea(lua_State* L) {
 	}
 
 	uint32_t areaId = g_luaEnvironment().createAreaObject(env->getScriptInterface());
-	AreaCombat* area = g_luaEnvironment().getAreaObject(areaId);
+	const auto &area = g_luaEnvironment().getAreaObject(areaId);
 
 	int parameters = lua_gettop(L);
 	if (parameters >= 2) {
@@ -287,7 +285,7 @@ int GlobalFunctions::luaDoAreaCombatHealth(lua_State* L) {
 	}
 
 	uint32_t areaId = getNumber<uint32_t>(L, 4);
-	const AreaCombat* area = g_luaEnvironment().getAreaObject(areaId);
+	const auto &area = g_luaEnvironment().getAreaObject(areaId);
 	if (area || areaId == 0) {
 		CombatType_t combatType = getNumber<CombatType_t>(L, 2);
 
@@ -372,7 +370,7 @@ int GlobalFunctions::luaDoAreaCombatMana(lua_State* L) {
 	}
 
 	uint32_t areaId = getNumber<uint32_t>(L, 3);
-	const AreaCombat* area = g_luaEnvironment().getAreaObject(areaId);
+	const auto &area = g_luaEnvironment().getAreaObject(areaId);
 	if (area || areaId == 0) {
 		CombatParams params;
 		params.impactEffect = getNumber<uint16_t>(L, 6);
@@ -457,7 +455,7 @@ int GlobalFunctions::luaDoAreaCombatCondition(lua_State* L) {
 	}
 
 	uint32_t areaId = getNumber<uint32_t>(L, 3);
-	const AreaCombat* area = g_luaEnvironment().getAreaObject(areaId);
+	const auto &area = g_luaEnvironment().getAreaObject(areaId);
 	if (area || areaId == 0) {
 		CombatParams params;
 		params.impactEffect = getNumber<uint16_t>(L, 5);
@@ -512,7 +510,7 @@ int GlobalFunctions::luaDoAreaCombatDispel(lua_State* L) {
 	}
 
 	uint32_t areaId = getNumber<uint32_t>(L, 3);
-	const AreaCombat* area = g_luaEnvironment().getAreaObject(areaId);
+	const auto &area = g_luaEnvironment().getAreaObject(areaId);
 	if (area || areaId == 0) {
 		CombatParams params;
 		params.impactEffect = getNumber<uint16_t>(L, 5);

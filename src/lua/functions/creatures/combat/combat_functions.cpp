@@ -67,7 +67,7 @@ int CombatFunctions::luaCombatSetArea(lua_State* L) {
 		return 1;
 	}
 
-	const AreaCombat* area = g_luaEnvironment().getAreaObject(getNumber<uint32_t>(L, 2));
+	const std::unique_ptr<AreaCombat> &area = g_luaEnvironment().getAreaObject(getNumber<uint32_t>(L, 2));
 	if (!area) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_AREA_NOT_FOUND));
 		lua_pushnil(L);
@@ -76,7 +76,8 @@ int CombatFunctions::luaCombatSetArea(lua_State* L) {
 
 	Combat* combat = getUserdata<Combat>(L, 1);
 	if (combat) {
-		combat->setArea(new AreaCombat(*area));
+		auto areaClone = area->clone();
+		combat->setArea(areaClone);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

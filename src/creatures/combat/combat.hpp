@@ -205,6 +205,10 @@ public:
 	void setupExtArea(const std::list<uint32_t> &list, uint32_t rows);
 	void clear();
 
+	std::unique_ptr<AreaCombat> clone() {
+		return std::make_unique<AreaCombat>(*this);
+	}
+
 private:
 	MatrixArea* createArea(const std::list<uint32_t> &list, uint32_t rows);
 	void copyArea(const MatrixArea* input, MatrixArea* output, MatrixOperation_t op) const;
@@ -257,18 +261,18 @@ public:
 	Combat &operator=(const Combat &) = delete;
 
 	static void doCombatHealth(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, CombatDamage &damage, const CombatParams &params);
-	static void doCombatHealth(std::shared_ptr<Creature> caster, const Position &position, const AreaCombat* area, CombatDamage &damage, const CombatParams &params);
+	static void doCombatHealth(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, CombatDamage &damage, const CombatParams &params);
 
 	static void doCombatMana(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, CombatDamage &damage, const CombatParams &params);
-	static void doCombatMana(std::shared_ptr<Creature> caster, const Position &position, const AreaCombat* area, CombatDamage &damage, const CombatParams &params);
+	static void doCombatMana(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, CombatDamage &damage, const CombatParams &params);
 
 	static void doCombatCondition(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params);
-	static void doCombatCondition(std::shared_ptr<Creature> caster, const Position &position, const AreaCombat* area, const CombatParams &params);
+	static void doCombatCondition(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, const CombatParams &params);
 
 	static void doCombatDispel(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params);
-	static void doCombatDispel(std::shared_ptr<Creature> caster, const Position &position, const AreaCombat* area, const CombatParams &params);
+	static void doCombatDispel(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, const CombatParams &params);
 
-	static void getCombatArea(const Position &centerPos, const Position &targetPos, const AreaCombat* area, std::forward_list<std::shared_ptr<Tile>> &list);
+	static void getCombatArea(const Position &centerPos, const Position &targetPos, const std::unique_ptr<AreaCombat> &area, std::forward_list<std::shared_ptr<Tile>> &list);
 
 	static bool isInPvpZone(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target);
 	static bool isProtected(std::shared_ptr<Player> attacker, std::shared_ptr<Player> target);
@@ -290,8 +294,8 @@ public:
 	CallBack* getCallback(CallBackParam_t key);
 
 	bool setParam(CombatParam_t param, uint32_t value);
-	void setArea(AreaCombat* newArea) {
-		this->area.reset(newArea);
+	void setArea(std::unique_ptr<AreaCombat> &newArea) {
+		this->area = std::move(newArea);
 	}
 	bool hasArea() const {
 		return area != nullptr;
@@ -333,7 +337,7 @@ private:
 	static void doCombatMana(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, CombatDamage &damage, const CombatParams &params);
 	static void doCombatDefault(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, const CombatParams &params);
 
-	static void CombatFunc(std::shared_ptr<Creature> caster, const Position &origin, const Position &pos, const AreaCombat* area, const CombatParams &params, CombatFunction func, CombatDamage* data);
+	static void CombatFunc(std::shared_ptr<Creature> caster, const Position &origin, const Position &pos, const std::unique_ptr<AreaCombat> &area, const CombatParams &params, CombatFunction func, CombatDamage* data);
 
 	static void CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data);
 	static CombatDamage applyImbuementElementalDamage(std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Item> item, CombatDamage damage);

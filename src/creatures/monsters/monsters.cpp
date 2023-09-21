@@ -83,7 +83,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 	if (spell->length > 0) {
 		spell->spread = std::max<int32_t>(0, spell->spread);
 
-		AreaCombat* area = new AreaCombat();
+		auto area = std::make_unique<AreaCombat>();
 		area->setupArea(spell->length, spell->spread);
 		combatPtr->setArea(area);
 
@@ -91,7 +91,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 	}
 
 	if (spell->radius > 0) {
-		AreaCombat* area = new AreaCombat();
+		auto area = std::make_unique<AreaCombat>();
 		area->setupArea(spell->radius);
 		combatPtr->setArea(area);
 	}

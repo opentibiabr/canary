@@ -41,8 +41,8 @@ public:
 	static int32_t getMaxMeleeDamage(int32_t attackSkill, int32_t attackValue);
 	static int32_t getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t attackValue, float attackFactor, bool isMelee);
 
-	bool registerLuaEvent(Weapon* event);
-	void clear();
+	bool registerLuaEvent(Weapon* event, bool fromXML = false);
+	void clear(bool isFromXML = false);
 
 private:
 	std::map<uint32_t, Weapon*> weapons;
@@ -173,6 +173,14 @@ public:
 		vocationString = str;
 	}
 
+	void setFromXML(bool newFromXML) {
+		m_fromXML = newFromXML;
+	}
+
+	bool isFromXML() const {
+		return m_fromXML;
+	}
+
 protected:
 	void internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier, int32_t cleavePercent = 0) const;
 	void internalUseWeapon(Player* player, Item* item, Tile* tile) const;
@@ -211,11 +219,14 @@ private:
 	WeaponType_t weaponType;
 	std::map<uint16_t, bool> vocWeaponMap;
 
+	bool m_fromXML = false;
+
 	friend class Combat;
 	friend class WeaponWand;
 	friend class WeaponMelee;
 	friend class WeaponDistance;
 	friend class WeaponFunctions;
+	friend class ItemParse;
 };
 
 class WeaponMelee final : public Weapon {

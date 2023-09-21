@@ -96,6 +96,8 @@ std::string ucwords(std::string str);
 bool booleanString(const std::string &str);
 
 std::string getWeaponName(WeaponType_t weaponType);
+WeaponType_t getWeaponType(const std::string &name);
+MoveEvent_t getMoveEventType(const std::string &name);
 
 std::string getCombatName(CombatType_t combatType);
 CombatType_t getCombatTypeByName(const std::string &combatname);

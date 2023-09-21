@@ -12,6 +12,7 @@
 #include "items/functions/item/item_parse.hpp"
 #include "items/items.hpp"
 #include "items/weapons/weapons.hpp"
+#include "lua/creature/movement.hpp"
 #include "game/game.hpp"
 #include "utils/pugicast.hpp"
 
@@ -22,6 +23,8 @@ void Items::clear() {
 	ladders.clear();
 	dummys.clear();
 	nameToItems.clear();
+	g_moveEvents().clear(true);
+	g_weapons().clear(true);
 }
 
 using LootTypeNames = phmap::flat_hash_map<std::string, ItemTypes_t>;

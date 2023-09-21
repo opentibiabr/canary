@@ -10,6 +10,7 @@
 #include "pch.hpp"
 
 #include "items/functions/item/item_parse.hpp"
+#include "items/weapons/weapons.hpp"
 #include "lua/creature/movement.hpp"
 #include "utils/pugicast.hpp"
 
@@ -949,16 +950,45 @@ void ItemParse::parsePrimaryType(const std::string_view &tmpStrValue, pugi::xml_
 	}
 }
 
-void ItemParse::createAndRegisterMoveEvent(MoveEvent_t eventType, const ItemType &itemType, pugi::xml_node attributeNode) {
-	auto moveevent = std::make_shared<MoveEvent>(nullptr);
-	moveevent->setItemId(itemType.id);
-	moveevent->setEventType(eventType);
-	if (eventType == MOVE_EVENT_EQUIP) {
-		moveevent->equipFunction = moveevent->EquipItem;
-	} else if (eventType == MOVE_EVENT_DEEQUIP) {
-		moveevent->equipFunction = moveevent->DeEquipItem;
+void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attributeNode, MoveEvent_t eventType /*= MOVE_EVENT_NONE*/, WeaponType_t weaponType /*= WEAPON_NONE*/) {
+	std::shared_ptr<MoveEvent> moveevent;
+	if (eventType != MOVE_EVENT_NONE) {
+		moveevent = std::make_shared<MoveEvent>(&g_moveEvents().getScriptInterface());
+		moveevent->setItemId(itemType.id);
+		moveevent->setEventType(eventType);
+		moveevent->setFromXML(true);
+
+		if (eventType == MOVE_EVENT_EQUIP) {
+			moveevent->equipFunction = moveevent->EquipItem;
+		} else if (eventType == MOVE_EVENT_DEEQUIP) {
+			moveevent->equipFunction = moveevent->DeEquipItem;
+		} else if (eventType == MOVE_EVENT_STEP_IN) {
+			moveevent->stepFunction = moveevent->StepInField;
+		} else if (eventType == MOVE_EVENT_STEP_OUT) {
+			moveevent->stepFunction = moveevent->StepOutField;
+		} else if (eventType == MOVE_EVENT_ADD_ITEM_ITEMTILE) {
+			moveevent->moveFunction = moveevent->AddItemField;
+		} else if (eventType == MOVE_EVENT_REMOVE_ITEM) {
+			moveevent->moveFunction = moveevent->RemoveItemField;
+		}
 	}
 
+	Weapon* weapon = nullptr;
+	if (weaponType != WEAPON_NONE) {
+		if (weaponType == WEAPON_DISTANCE || weaponType == WEAPON_AMMO || weaponType == WEAPON_MISSILE) {
+			weapon = new WeaponDistance(&g_weapons().getScriptInterface());
+		} else if (weaponType == WEAPON_WAND) {
+			weapon = new WeaponWand(&g_weapons().getScriptInterface());
+		} else {
+			weapon = new WeaponMelee(&g_weapons().getScriptInterface());
+		}
+		weapon->weaponType = weaponType;
+		itemType.weaponType = weapon->weaponType;
+		weapon->configureWeapon(itemType);
+		g_logger().debug("Created weapon with type '{}'", getWeaponName(weaponType));
+	}
+	uint32_t fromDamage = 0;
+	uint32_t toDamage = 0;
 	for (auto subAttributeNode : attributeNode.children()) {
 		pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
 		if (!subKeyAttribute) {
@@ -972,7 +1002,7 @@ void ItemParse::createAndRegisterMoveEvent(MoveEvent_t eventType, const ItemType
 
 		auto stringKey = asLowerCaseString(subKeyAttribute.as_string());
 		if (stringKey == "slot") {
-			if (moveevent->getEventType() == MOVE_EVENT_EQUIP || moveevent->getEventType() == MOVE_EVENT_DEEQUIP) {
+			if (moveevent && (moveevent->getEventType() == MOVE_EVENT_EQUIP || moveevent->getEventType() == MOVE_EVENT_DEEQUIP)) {
 				auto slotName = asLowerCaseString(subValueAttribute.as_string());
 				if (slotName == "head") {
 					moveevent->setSlot(SLOTP_HEAD);
@@ -997,13 +1027,29 @@ void ItemParse::createAndRegisterMoveEvent(MoveEvent_t eventType, const ItemType
 				} else if (slotName == "ammo") {
 					moveevent->setSlot(SLOTP_AMMO);
 				} else {
-					g_logger().warn("[{}] unknown slot type: {}", __FUNCTION__, slotName);
+					g_logger().warn("[{}] unknown slot type '{}'", __FUNCTION__, slotName);
+				}
+			} else if (weapon) {
+				uint16_t id = weapon->getID();
+				ItemType &it = Item::items.getItemType(id);
+				auto slotName = asLowerCaseString(subValueAttribute.as_string());
+				if (slotName == "two-handed") {
+					it.slotPosition = SLOTP_TWO_HAND;
+				} else {
+					it.slotPosition = SLOTP_HAND;
 				}
 			}
 		} else if (stringKey == "level") {
 			auto numberValue = subValueAttribute.as_uint();
-			moveevent->setRequiredLevel(numberValue);
-			moveevent->setWieldInfo(WIELDINFO_LEVEL);
+			if (moveevent) {
+				g_logger().debug("Added required moveevent level '{}'", numberValue);
+				moveevent->setRequiredLevel(numberValue);
+				moveevent->setWieldInfo(WIELDINFO_LEVEL);
+			} else if (weapon) {
+				g_logger().debug("Added required weapon level '{}'", numberValue);
+				weapon->setRequiredLevel(numberValue);
+				weapon->setWieldInfo(WIELDINFO_LEVEL);
+			}
 		} else if (stringKey == "vocation") {
 			auto vocations = subValueAttribute.as_string();
 			std::string tmp;
@@ -1028,14 +1074,20 @@ void ItemParse::createAndRegisterMoveEvent(MoveEvent_t eventType, const ItemType
 				std::getline(inner_ss, showInDescriptionStr, ';');
 				showInDescription = showInDescriptionStr == "true";
 
-				moveevent->addVocEquipMap(v1);
-				moveevent->setWieldInfo(WIELDINFO_VOCREQ);
+				if (moveevent) {
+					moveevent->addVocEquipMap(v1);
+					moveevent->setWieldInfo(WIELDINFO_VOCREQ);
+				}
 
 				if (showInDescription) {
-					if (moveevent->getVocationString().empty()) {
+					if (moveevent && moveevent->getVocationString().empty()) {
 						tmp = asLowerCaseString(v1);
 						tmp += "s";
 						moveevent->setVocationString(tmp);
+					} else if (weapon && weapon->getVocationString().empty()) {
+						tmp = asLowerCaseString(v1);
+						tmp += "s";
+						weapon->setVocationString(tmp);
 					} else {
 						tmp += ", ";
 						tmp += asLowerCaseString(v1);
@@ -1047,12 +1099,69 @@ void ItemParse::createAndRegisterMoveEvent(MoveEvent_t eventType, const ItemType
 			size_t lastComma = tmp.rfind(',');
 			if (lastComma != std::string::npos) {
 				tmp.replace(lastComma, 1, " and");
-				moveevent->setVocationString(tmp);
+				if (moveevent) {
+					moveevent->setVocationString(tmp);
+				} else if (weapon) {
+					weapon->setVocationString(tmp);
+				}
+			}
+		} else if (stringKey == "removecount" && weapon) {
+			weapon->action = WEAPONACTION_REMOVECOUNT;
+		} else if (stringKey == "removecharge" && weapon) {
+			weapon->action = WEAPONACTION_REMOVECHARGE;
+		} else if (stringKey == "move" && weapon) {
+			weapon->action = WEAPONACTION_MOVE;
+		} else if (stringKey == "breakchance" && weapon) {
+			weapon->setBreakChance(subValueAttribute.as_uint());
+		} else if (stringKey == "mana" && weapon) {
+			weapon->setMana(subValueAttribute.as_uint());
+		} else if (stringKey == "unproperly" && weapon) {
+			weapon->setWieldUnproperly(subValueAttribute.as_bool());
+		} else if (stringKey == "fromdamage" && weapon) {
+			fromDamage = subValueAttribute.as_uint();
+		} else if (stringKey == "todamage" && weapon) {
+			toDamage = subValueAttribute.as_uint();
+		} else if (stringKey == "wandtype" && weapon) {
+			std::string elementName = asLowerCaseString(subValueAttribute.as_string());
+			if (elementName == "earth") {
+				weapon->params.combatType = COMBAT_EARTHDAMAGE;
+			} else if (elementName == "ice") {
+				weapon->params.combatType = COMBAT_ICEDAMAGE;
+			} else if (elementName == "energy") {
+				weapon->params.combatType = COMBAT_ENERGYDAMAGE;
+			} else if (elementName == "fire") {
+				weapon->params.combatType = COMBAT_FIREDAMAGE;
+			} else if (elementName == "death") {
+				weapon->params.combatType = COMBAT_DEATHDAMAGE;
+			} else if (elementName == "holy") {
+				weapon->params.combatType = COMBAT_HOLYDAMAGE;
+			} else {
+				g_logger().warn("[{}] - wandtype '{}' does not exist", __FUNCTION__, elementName);
 			}
 		}
 	}
 
-	if (!g_moveEvents().registerLuaItemEvent(moveevent)) {
+	if (weapon) {
+		if (auto weaponWand = dynamic_cast<WeaponWand*>(weapon)) {
+			g_logger().debug("Added weapon damage from '{}', to '{}'", fromDamage, toDamage);
+			weaponWand->setMinChange(fromDamage);
+			weaponWand->setMaxChange(toDamage);
+		}
+
+		if (weapon->getWieldInfo() != 0) {
+			itemType.wieldInfo = weapon->getWieldInfo();
+			itemType.vocationString = weapon->getVocationString();
+			itemType.minReqLevel = weapon->getReqLevel();
+			itemType.minReqMagicLevel = weapon->getReqMagLv();
+		}
+
+		if (!g_weapons().registerLuaEvent(weapon, true)) {
+			g_logger().error("[{}] failed to register weapon from item name {}", __FUNCTION__, itemType.name);
+			delete weapon;
+		}
+	}
+
+	if (moveevent && !g_moveEvents().registerLuaItemEvent(moveevent)) {
 		g_logger().error("[{}] failed to register moveevent from item name {}", __FUNCTION__, itemType.name);
 	}
 }
@@ -1064,10 +1173,58 @@ void ItemParse::parseUnscriptedItems(const std::string_view &tmpStrValue, pugi::
 		std::vector<std::shared_ptr<MoveEvent>> events;
 		for (const auto &token : tokens) {
 			if (token == "moveevent") {
-				createAndRegisterMoveEvent(MOVE_EVENT_EQUIP, itemType, attributeNode);
-				createAndRegisterMoveEvent(MOVE_EVENT_DEEQUIP, itemType, attributeNode);
-			} else if ((token == "weapon")) {
-				// TODO: add weapon logic
+				g_logger().debug("Registering moveevent for item id '{}', name '{}'", itemType.id, itemType.name);
+				MoveEvent_t eventType = MOVE_EVENT_NONE;
+				for (auto subAttributeNode : attributeNode.children()) {
+					pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
+					if (!subKeyAttribute) {
+						continue;
+					}
+
+					pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
+					if (!subValueAttribute) {
+						continue;
+					}
+
+					auto stringKey = asLowerCaseString(subKeyAttribute.as_string());
+					if (stringKey == "eventtype") {
+						const auto &eventTypeName = asLowerCaseString(subValueAttribute.as_string());
+						eventType = getMoveEventType(eventTypeName);
+						g_logger().debug("Found event type '{}'", eventTypeName);
+						break;
+					}
+				}
+
+				// Event type stepin/out need to be registered both at same time
+				if (eventType == MOVE_EVENT_NONE) {
+					createAndRegisterScript(itemType, attributeNode, MOVE_EVENT_EQUIP);
+					createAndRegisterScript(itemType, attributeNode, MOVE_EVENT_DEEQUIP);
+				} else {
+					createAndRegisterScript(itemType, attributeNode, eventType);
+				}
+			} else if (token == "weapon") {
+				WeaponType_t weaponType;
+				g_logger().debug("Registering weapon for item id '{}', name '{}'", itemType.id, itemType.name);
+				for (auto subAttributeNode : attributeNode.children()) {
+					pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
+					if (!subKeyAttribute) {
+						continue;
+					}
+
+					pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
+					if (!subValueAttribute) {
+						continue;
+					}
+
+					auto stringKey = asLowerCaseString(subKeyAttribute.as_string());
+					if (stringKey == "weapontype") {
+						weaponType = getWeaponType(subValueAttribute.as_string());
+						g_logger().debug("Found weapon type '{}''", subValueAttribute.as_string());
+						break;
+					}
+				}
+
+				createAndRegisterScript(itemType, attributeNode, MOVE_EVENT_NONE, weaponType);
 			}
 		}
 	}

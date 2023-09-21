@@ -29,12 +29,34 @@ const Weapon* Weapons::getWeapon(const Item* item) const {
 	return it->second;
 }
 
-void Weapons::clear() {
+void Weapons::clear(bool isFromXML /*= false*/) {
+	if (isFromXML) {
+		int numRemoved = 0;
+		for (auto it = weapons.begin(); it != weapons.end();) {
+			if (it->second && it->second->isFromXML()) {
+				g_logger().debug("Weapon with id '{}' is from XML and will be removed.", it->first);
+				it = weapons.erase(it);
+				++numRemoved;
+			} else {
+				++it;
+			}
+		}
+
+		if (numRemoved > 0) {
+			g_logger().debug("Removed '{}' Weapon from XML.", numRemoved);
+		}
+
+		return;
+	}
+
 	weapons.clear();
 }
 
-bool Weapons::registerLuaEvent(Weapon* event) {
+bool Weapons::registerLuaEvent(Weapon* event, bool fromXML /*= false*/) {
 	weapons[event->getID()] = event;
+	if (fromXML) {
+		event->setFromXML(fromXML);
+	}
 	return true;
 }
 

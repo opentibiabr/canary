@@ -318,5 +318,5 @@ private:
 	static std::tuple<ConditionId_t, ConditionType_t> parseFieldConditions(std::string lowerStringValue, pugi::xml_attribute valueAttribute);
 	static CombatType_t parseFieldCombatType(std::string string, pugi::xml_attribute valueAttribute);
 	static void parseFieldCombatDamage(ConditionDamage* conditionDamage, std::string stringValue, pugi::xml_node attributeNode);
-	static void createAndRegisterMoveEvent(MoveEvent_t eventType, const ItemType &itemType, pugi::xml_node attributeNode);
+	static void createAndRegisterScript(ItemType &itemType, pugi::xml_node attributeNode, MoveEvent_t eventType = MOVE_EVENT_NONE, WeaponType_t weaponType = WEAPON_NONE);
 };

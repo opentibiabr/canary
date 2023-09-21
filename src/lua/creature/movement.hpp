@@ -112,7 +112,7 @@ public:
 	bool registerLuaUniqueEvent(const std::shared_ptr<MoveEvent> moveEvent);
 	bool registerLuaPositionEvent(const std::shared_ptr<MoveEvent> moveEvent);
 	bool registerLuaEvent(const std::shared_ptr<MoveEvent> event);
-	void clear();
+	void clear(bool isFromXML = false);
 
 private:
 	void clearMap(std::map<int32_t, MoveEventList> &map) const;
@@ -251,8 +251,12 @@ public:
 	static uint32_t EquipItem(const std::shared_ptr<MoveEvent> moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
 	static uint32_t DeEquipItem(const std::shared_ptr<MoveEvent> moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
 
-	void setFromLua(bool newFromLua) {
-		m_fromLua = newFromLua;
+	void setFromXML(bool newFromXML) {
+		m_fromXML = newFromXML;
+	}
+
+	bool isFromXML() const {
+		return m_fromXML;
 	}
 
 private:
@@ -294,7 +298,7 @@ private:
 	std::map<uint16_t, bool> vocEquipMap;
 	bool tileItem = false;
 
-	bool m_fromLua = true;
+	bool m_fromXML = false;
 
 	std::vector<uint32_t> itemIdVector;
 	std::vector<uint32_t> actionIdVector;

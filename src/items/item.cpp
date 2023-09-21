@@ -207,7 +207,7 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 Item::Item(const std::shared_ptr<Item> &i) :
 	Thing(), id(i->id), count(i->count), loadedFromMap(i->loadedFromMap) {
 	if (i->attributePtr) {
-		attributePtr.reset(new ItemAttribute(*i->attributePtr));
+		attributePtr = std::make_unique<ItemAttribute>(*i->attributePtr);
 	}
 }
 
@@ -219,7 +219,7 @@ std::shared_ptr<Item> Item::clone() const {
 	}
 
 	if (attributePtr) {
-		item->attributePtr.reset(new ItemAttribute(*attributePtr));
+		item->attributePtr = std::make_unique<ItemAttribute>(*attributePtr);
 	}
 
 	return item;

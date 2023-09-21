@@ -105,9 +105,7 @@ public:
 	static const std::shared_ptr<Tile> &nullptr_tile;
 	Tile(uint16_t x, uint16_t y, uint8_t z) :
 		tilePos(x, y, z) { }
-	virtual ~Tile() {
-
-	};
+	virtual ~Tile() {};
 
 	// non-copyable
 	Tile(const Tile &) = delete;
@@ -325,7 +323,7 @@ public:
 	}
 	TileItemVector* makeItemList() override {
 		if (!items) {
-			items.reset(new TileItemVector);
+			items = std::make_unique<TileItemVector>();
 		}
 		return items.get();
 	}
@@ -338,7 +336,7 @@ public:
 	}
 	CreatureVector* makeCreatures() override {
 		if (!creatures) {
-			creatures.reset(new CreatureVector);
+			creatures = std::make_unique<CreatureVector>();
 		}
 		return creatures.get();
 	}

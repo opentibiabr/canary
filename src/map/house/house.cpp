@@ -466,7 +466,6 @@ void AccessList::addPlayer(const std::string &name) {
 }
 
 namespace {
-
 	std::shared_ptr<Guild> getGuildByName(const std::string &name) {
 		uint32_t guildId = IOGuild::getGuildIdByName(name);
 		if (guildId == 0) {
@@ -480,7 +479,6 @@ namespace {
 
 		return IOGuild::loadGuild(guildId);
 	}
-
 }
 
 void AccessList::addGuild(const std::string &name) {
@@ -544,7 +542,7 @@ void Door::setHouse(House* newHouse) {
 	this->house = newHouse;
 
 	if (!accessList) {
-		accessList.reset(new AccessList());
+		accessList = std::make_unique<AccessList>();
 	}
 }
 
@@ -562,7 +560,7 @@ bool Door::canUse(std::shared_ptr<Player> player) {
 
 void Door::setAccessList(const std::string &textlist) {
 	if (!accessList) {
-		accessList.reset(new AccessList());
+		accessList = std::make_unique<AccessList>();
 	}
 
 	accessList->parseList(textlist);

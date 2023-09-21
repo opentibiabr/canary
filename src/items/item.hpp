@@ -159,14 +159,14 @@ public:
 protected:
 	std::unique_ptr<ItemAttribute> &initAttributePtr() {
 		if (!attributePtr) {
-			attributePtr.reset(new ItemAttribute());
+			attributePtr = std::make_unique<ItemAttribute>();
 		}
 
 		return attributePtr;
 	}
 	const std::unique_ptr<ItemAttribute> &initAttributePtr() const {
 		if (!attributePtr) {
-			std::bit_cast<ItemProperties*>(this)->attributePtr.reset(new ItemAttribute());
+			std::bit_cast<ItemProperties*>(this)->attributePtr = std::make_unique<ItemAttribute>();
 		}
 
 		return attributePtr;

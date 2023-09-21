@@ -21,6 +21,7 @@ public:
 
 	virtual ~QTreeNode() {
 		for (auto* ptr : child) {
+			delete ptr;
 		}
 	};
 

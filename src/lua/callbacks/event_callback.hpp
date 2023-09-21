@@ -86,10 +86,10 @@ public:
 	void creatureOnDrainHealth(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) const;
 
 	// Party
-	bool partyOnJoin(Party* party, std::shared_ptr<Player> player) const;
-	bool partyOnLeave(Party* party, std::shared_ptr<Player> player) const;
-	bool partyOnDisband(Party* party) const;
-	void partyOnShareExperience(Party* party, uint64_t &exp) const;
+	bool partyOnJoin(std::shared_ptr<Party> party, std::shared_ptr<Player> player) const;
+	bool partyOnLeave(std::shared_ptr<Party> party, std::shared_ptr<Player> player) const;
+	bool partyOnDisband(std::shared_ptr<Party> party) const;
+	void partyOnShareExperience(std::shared_ptr<Party> party, uint64_t &exp) const;
 
 	// Player
 	bool playerOnBrowseField(std::shared_ptr<Player> player, const Position &position) const;

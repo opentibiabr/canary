@@ -641,7 +641,7 @@ void Creature::onDeath() {
 	int32_t mostDamage = 0;
 	std::map<std::shared_ptr<Creature>, uint64_t> experienceMap;
 	for (const auto &it : damageMap) {
-		if (std::shared_ptr<Creature> attacker = g_game().getCreatureByID(it.first)) {
+		if (auto attacker = g_game().getCreatureByID(it.first)) {
 			CountBlock_t cb = it.second;
 			if ((cb.total > mostDamage && (timeNow - cb.ticks <= inFightTicks))) {
 				mostDamage = cb.total;
@@ -650,10 +650,10 @@ void Creature::onDeath() {
 
 			if (attacker != getCreature()) {
 				uint64_t gainExp = getGainedExperience(attacker);
-				if (std::shared_ptr<Player> attackerPlayer = attacker->getPlayer()) {
+				if (auto attackerPlayer = attacker->getPlayer()) {
 					attackerPlayer->removeAttacked(getPlayer());
 
-					Party* party = attackerPlayer->getParty();
+					auto party = attackerPlayer->getParty();
 					if (party && party->getLeader() && party->isSharedExperienceActive() && party->isSharedExperienceEnabled()) {
 						attacker = party->getLeader();
 						mostDamageCreature = attacker;

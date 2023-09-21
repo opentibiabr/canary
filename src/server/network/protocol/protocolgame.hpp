@@ -344,7 +344,7 @@ private:
 	void sendMarketDetail(uint16_t itemId, uint8_t tier);
 	void sendTradeItemRequest(const std::string &traderName, std::shared_ptr<Item> item, bool ack);
 	void sendCloseTrade();
-	void updatePartyTrackerAnalyzer(const Party* party);
+	void updatePartyTrackerAnalyzer(const std::shared_ptr<Party> party);
 
 	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 	void sendTextWindow(uint32_t windowTextId, std::shared_ptr<Item> item, uint16_t maxlen, bool canWrite);

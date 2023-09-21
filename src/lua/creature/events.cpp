@@ -421,7 +421,7 @@ void Events::eventCreatureOnDrainHealth(std::shared_ptr<Creature> creature, std:
 }
 
 // Party
-bool Events::eventPartyOnJoin(Party* party, std::shared_ptr<Player> player) {
+bool Events::eventPartyOnJoin(std::shared_ptr<Party> party, std::shared_ptr<Player> player) {
 	// Party:onJoin(player) or Party.onJoin(self, player)
 	if (info.partyOnJoin == -1) {
 		return true;
@@ -450,7 +450,7 @@ bool Events::eventPartyOnJoin(Party* party, std::shared_ptr<Player> player) {
 	return scriptInterface.callFunction(2);
 }
 
-bool Events::eventPartyOnLeave(Party* party, std::shared_ptr<Player> player) {
+bool Events::eventPartyOnLeave(std::shared_ptr<Party> party, std::shared_ptr<Player> player) {
 	// Party:onLeave(player) or Party.onLeave(self, player)
 	if (info.partyOnLeave == -1) {
 		return true;
@@ -479,7 +479,7 @@ bool Events::eventPartyOnLeave(Party* party, std::shared_ptr<Player> player) {
 	return scriptInterface.callFunction(2);
 }
 
-bool Events::eventPartyOnDisband(Party* party) {
+bool Events::eventPartyOnDisband(std::shared_ptr<Party> party) {
 	// Party:onDisband() or Party.onDisband(self)
 	if (info.partyOnDisband == -1) {
 		return true;
@@ -504,7 +504,7 @@ bool Events::eventPartyOnDisband(Party* party) {
 	return scriptInterface.callFunction(1);
 }
 
-void Events::eventPartyOnShareExperience(Party* party, uint64_t &exp) {
+void Events::eventPartyOnShareExperience(std::shared_ptr<Party> party, uint64_t &exp) {
 	// Party:onShareExperience(exp) or Party.onShareExperience(self, exp)
 	if (info.partyOnShareExperience == -1) {
 		return;

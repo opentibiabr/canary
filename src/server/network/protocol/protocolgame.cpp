@@ -2618,7 +2618,7 @@ void ProtocolGame::parsePartyAnalyzerAction(NetworkMessage &msg) const {
 		return;
 	}
 
-	Party* party = player->getParty();
+	std::shared_ptr<Party> party = player->getParty();
 	if (!party || !party->getLeader() || party->getLeader()->getID() != player->getID()) {
 		return;
 	}
@@ -7359,7 +7359,7 @@ void ProtocolGame::sendSpecialContainersAvailable() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::updatePartyTrackerAnalyzer(const Party* party) {
+void ProtocolGame::updatePartyTrackerAnalyzer(const std::shared_ptr<Party> party) {
 	if (oldProtocol || !player || !party || !party->getLeader()) {
 		return;
 	}
@@ -7371,7 +7371,7 @@ void ProtocolGame::updatePartyTrackerAnalyzer(const Party* party) {
 	msg.addByte(static_cast<uint8_t>(party->priceType));
 
 	msg.addByte(static_cast<uint8_t>(party->membersData.size()));
-	for (const PartyAnalyzer* analyzer : party->membersData) {
+	for (const std::shared_ptr<PartyAnalyzer> analyzer : party->membersData) {
 		msg.add<uint32_t>(analyzer->id);
 		if (std::shared_ptr<Player> member = g_game().getPlayerByID(analyzer->id);
 			!member || !member->getParty() || member->getParty() != party) {
@@ -7390,7 +7390,7 @@ void ProtocolGame::updatePartyTrackerAnalyzer(const Party* party) {
 	msg.addByte(showNames ? 0x01 : 0x00);
 	if (showNames) {
 		msg.addByte(static_cast<uint8_t>(party->membersData.size()));
-		for (const PartyAnalyzer* analyzer : party->membersData) {
+		for (const std::shared_ptr<PartyAnalyzer> analyzer : party->membersData) {
 			msg.add<uint32_t>(analyzer->id);
 			msg.addString(analyzer->name);
 		}

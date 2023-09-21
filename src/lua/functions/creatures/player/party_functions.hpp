@@ -14,7 +14,7 @@
 class PartyFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "Party", "", PartyFunctions::luaPartyCreate);
+		registerSharedClass(L, "Party", "", PartyFunctions::luaPartyCreate);
 		registerMetaMethod(L, "Party", "__eq", PartyFunctions::luaUserdataCompare);
 		registerMethod(L, "Party", "disband", PartyFunctions::luaPartyDisband);
 		registerMethod(L, "Party", "getLeader", PartyFunctions::luaPartyGetLeader);

@@ -6350,7 +6350,7 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 			}
 
 			// Party hunt analyzer
-			if (Party* party = attackerPlayer ? attackerPlayer->getParty() : nullptr) {
+			if (auto party = attackerPlayer ? attackerPlayer->getParty() : nullptr) {
 				party->addPlayerHealing(attackerPlayer, realHealthChange);
 			}
 
@@ -6732,7 +6732,7 @@ void Game::updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, std::shared
 		return;
 	}
 
-	if (Party* party = player->getParty()) {
+	if (auto party = player->getParty()) {
 		if (damage.primary.value != 0) {
 			party->addPlayerDamage(player, damage.primary.value);
 		}
@@ -7197,12 +7197,12 @@ void Game::addCreatureHealth(std::shared_ptr<Creature> target) {
 void Game::addCreatureHealth(const SpectatorHashSet &spectators, std::shared_ptr<Creature> target) {
 	uint8_t healthPercent = std::ceil((static_cast<double>(target->getHealth()) / std::max<int32_t>(target->getMaxHealth(), 1)) * 100);
 	if (std::shared_ptr<Player> targetPlayer = target->getPlayer()) {
-		if (Party* party = targetPlayer->getParty()) {
+		if (std::shared_ptr<Party> party = targetPlayer->getParty()) {
 			party->updatePlayerHealth(targetPlayer, target, healthPercent);
 		}
 	} else if (std::shared_ptr<Creature> master = target->getMaster()) {
 		if (std::shared_ptr<Player> masterPlayer = master->getPlayer()) {
-			if (Party* party = masterPlayer->getParty()) {
+			if (std::shared_ptr<Party> party = masterPlayer->getParty()) {
 				party->updatePlayerHealth(masterPlayer, target, healthPercent);
 			}
 		}
@@ -7215,14 +7215,14 @@ void Game::addCreatureHealth(const SpectatorHashSet &spectators, std::shared_ptr
 }
 
 void Game::addPlayerMana(std::shared_ptr<Player> target) {
-	if (Party* party = target->getParty()) {
+	if (std::shared_ptr<Party> party = target->getParty()) {
 		uint8_t manaPercent = std::ceil((static_cast<double>(target->getMana()) / std::max<int32_t>(target->getMaxMana(), 1)) * 100);
 		party->updatePlayerMana(target, manaPercent);
 	}
 }
 
 void Game::addPlayerVocation(std::shared_ptr<Player> target) {
-	if (Party* party = target->getParty()) {
+	if (auto party = target->getParty()) {
 		party->updatePlayerVocation(target);
 	}
 
@@ -7583,9 +7583,9 @@ void Game::playerInviteToParty(uint32_t playerId, uint32_t invitedId) {
 		return;
 	}
 
-	Party* party = player->getParty();
+	std::shared_ptr<Party> party = player->getParty();
 	if (!party) {
-		party = new Party(player);
+		party = std::make_shared<Party>(player);
 	} else if (party->getLeader() != player) {
 		return;
 	}
@@ -7622,7 +7622,7 @@ void Game::playerJoinParty(uint32_t playerId, uint32_t leaderId) {
 		return;
 	}
 
-	Party* party = leader->getParty();
+	auto party = leader->getParty();
 	if (!party || party->getLeader() != leader) {
 		return;
 	}
@@ -7641,7 +7641,7 @@ void Game::playerRevokePartyInvitation(uint32_t playerId, uint32_t invitedId) {
 		return;
 	}
 
-	Party* party = player->getParty();
+	std::shared_ptr<Party> party = player->getParty();
 	if (!party || party->getLeader() != player) {
 		return;
 	}
@@ -7660,7 +7660,7 @@ void Game::playerPassPartyLeadership(uint32_t playerId, uint32_t newLeaderId) {
 		return;
 	}
 
-	Party* party = player->getParty();
+	std::shared_ptr<Party> party = player->getParty();
 	if (!party || party->getLeader() != player) {
 		return;
 	}
@@ -7679,7 +7679,7 @@ void Game::playerLeaveParty(uint32_t playerId) {
 		return;
 	}
 
-	Party* party = player->getParty();
+	std::shared_ptr<Party> party = player->getParty();
 	if (!party || player->hasCondition(CONDITION_INFIGHT)) {
 		return;
 	}

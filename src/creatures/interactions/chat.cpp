@@ -341,7 +341,7 @@ ChatChannel* Chat::createChannel(const std::shared_ptr<Player> &player, uint16_t
 		}
 
 		case CHANNEL_PARTY: {
-			Party* party = player->getParty();
+			auto party = player->getParty();
 			if (party != nullptr) {
 				auto ret = partyChannels.emplace(std::make_pair(party, ChatChannel(channelId, "Party")));
 				return &ret.first->second;
@@ -391,7 +391,7 @@ bool Chat::deleteChannel(const std::shared_ptr<Player> &player, uint16_t channel
 		}
 
 		case CHANNEL_PARTY: {
-			Party* party = player->getParty();
+			auto party = player->getParty();
 			if (party == nullptr) {
 				return false;
 			}
@@ -558,7 +558,7 @@ ChatChannel* Chat::getChannel(const std::shared_ptr<Player> &player, uint16_t ch
 		}
 
 		case CHANNEL_PARTY: {
-			Party* party = player->getParty();
+			auto party = player->getParty();
 			if (party != nullptr) {
 				auto it = partyChannels.find(party);
 				if (it != partyChannels.end()) {

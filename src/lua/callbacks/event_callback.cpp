@@ -228,7 +228,7 @@ void EventCallback::creatureOnDrainHealth(std::shared_ptr<Creature> creature, st
 }
 
 // Party
-bool EventCallback::partyOnJoin(Party* party, std::shared_ptr<Player> player) const {
+bool EventCallback::partyOnJoin(std::shared_ptr<Party> party, std::shared_ptr<Player> player) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::partyOnJoin - "
 						 "Player {}] "
@@ -252,7 +252,7 @@ bool EventCallback::partyOnJoin(Party* party, std::shared_ptr<Player> player) co
 	return getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::partyOnLeave(Party* party, std::shared_ptr<Player> player) const {
+bool EventCallback::partyOnLeave(std::shared_ptr<Party> party, std::shared_ptr<Player> player) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::partyOnLeave - "
 						 "Player {}] "
@@ -276,7 +276,7 @@ bool EventCallback::partyOnLeave(Party* party, std::shared_ptr<Player> player) c
 	return getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::partyOnDisband(Party* party) const {
+bool EventCallback::partyOnDisband(std::shared_ptr<Party> party) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::partyOnDisband - Party leader {}] Call stack "
 						 "overflow. Too many lua script calls being nested.",
@@ -296,7 +296,7 @@ bool EventCallback::partyOnDisband(Party* party) const {
 	return getScriptInterface()->callFunction(1);
 }
 
-void EventCallback::partyOnShareExperience(Party* party, uint64_t &exp) const {
+void EventCallback::partyOnShareExperience(std::shared_ptr<Party> party, uint64_t &exp) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("Party leader {}. Call stack overflow. Too many lua script calls being nested.", party->getLeader() ? party->getLeader()->getName() : "unknown");
 		return;

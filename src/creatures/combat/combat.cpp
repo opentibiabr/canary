@@ -671,7 +671,7 @@ bool Combat::checkFearConditionAffected(std::shared_ptr<Player> player) {
 		return false;
 	}
 
-	Party* party = player->getParty();
+	auto party = player->getParty();
 	if (party) {
 		auto affectedCount = (party->getMemberCount() + 5) / 5;
 		g_logger().debug("[{}] Player is member of a party, {} members can be feared", __FUNCTION__, affectedCount);

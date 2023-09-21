@@ -31,7 +31,7 @@ bool Tile::hasProperty(ItemProperty prop) const {
 	}
 
 	if (const TileItemVector* items = getItemList()) {
-		for (std::shared_ptr<Item> item : *items) {
+		for (auto &item : *items) {
 			if (item->hasProperty(prop)) {
 				return true;
 			}
@@ -48,7 +48,7 @@ bool Tile::hasProperty(std::shared_ptr<Item> exclude, ItemProperty prop) const {
 	}
 
 	if (const TileItemVector* items = getItemList()) {
-		for (std::shared_ptr<Item> item : *items) {
+		for (auto &item : *items) {
 			if (item != exclude && item->hasProperty(prop)) {
 				return true;
 			}
@@ -72,7 +72,7 @@ bool Tile::hasHeight(uint32_t n) const {
 	}
 
 	if (const TileItemVector* items = getItemList()) {
-		for (std::shared_ptr<Item> item : *items) {
+		for (auto &item : *items) {
 			if (item->hasProperty(CONST_PROP_HASHEIGHT)) {
 				++height;
 			}
@@ -593,7 +593,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 					}
 				}
 			} else if (creatures && !creatures->empty()) {
-				for (std::shared_ptr<Creature> tileCreature : *creatures) {
+				for (auto &tileCreature : *creatures) {
 					if (!tileCreature->isInGhostMode()) {
 						return RETURNVALUE_NOTENOUGHROOM;
 					}
@@ -638,7 +638,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 		const CreatureVector* creatures = getCreatures();
 		if (std::shared_ptr<Player> player = creature->getPlayer()) {
 			if (creatures && !creatures->empty() && !hasBitSet(FLAG_IGNOREBLOCKCREATURE, tileFlags) && !player->isAccessPlayer()) {
-				for (std::shared_ptr<Creature> tileCreature : *creatures) {
+				for (auto &tileCreature : *creatures) {
 					if (!player->canWalkthrough(tileCreature)) {
 						return RETURNVALUE_NOTPOSSIBLE;
 					}
@@ -672,7 +672,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 				}
 			}
 		} else if (creatures && !creatures->empty() && !hasBitSet(FLAG_IGNOREBLOCKCREATURE, tileFlags)) {
-			for (std::shared_ptr<Creature> tileCreature : *creatures) {
+			for (auto &tileCreature : *creatures) {
 				if (!tileCreature->isInGhostMode()) {
 					return RETURNVALUE_NOTENOUGHROOM;
 				}
@@ -707,7 +707,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 			}
 
 			if (const auto items = getItemList()) {
-				for (std::shared_ptr<Item> item : *items) {
+				for (auto &item : *items) {
 					const ItemType &iiType = Item::items[item->getID()];
 					if (iiType.blockSolid && (!iiType.moveable || item->hasAttribute(ItemAttribute_t::UNIQUEID))) {
 						return RETURNVALUE_NOTPOSSIBLE;
@@ -728,7 +728,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 
 		const CreatureVector* creatures = getCreatures();
 		if (creatures && !creatures->empty() && item->isBlocking() && !hasBitSet(FLAG_IGNOREBLOCKCREATURE, tileFlags)) {
-			for (std::shared_ptr<Creature> tileCreature : *creatures) {
+			for (auto &tileCreature : *creatures) {
 				if (!tileCreature->isInGhostMode()) {
 					return RETURNVALUE_NOTENOUGHROOM;
 				}
@@ -737,7 +737,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 
 		if (itemIsHangable && hasFlag(TILESTATE_SUPPORTS_HANGABLE)) {
 			if (items) {
-				for (std::shared_ptr<Item> tileItem : *items) {
+				for (auto &tileItem : *items) {
 					if (tileItem->isHangable()) {
 						return RETURNVALUE_NEEDEXCHANGE;
 					}
@@ -760,7 +760,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 			}
 
 			if (items) {
-				for (std::shared_ptr<Item> tileItem : *items) {
+				for (auto &tileItem : *items) {
 					const ItemType &iiType = Item::items[tileItem->getID()];
 					if (!iiType.blockSolid) {
 						continue;
@@ -1362,7 +1362,7 @@ int32_t Tile::getStackposOfItem(std::shared_ptr<Player> player, std::shared_ptr<
 	}
 
 	if (const CreatureVector* creatures = getCreatures()) {
-		for (std::shared_ptr<Creature> creature : *creatures) {
+		for (auto &creature : *creatures) {
 			if (player->canSeeCreature(creature)) {
 				if (++n >= 10) {
 					return -1;
@@ -1399,7 +1399,7 @@ uint32_t Tile::getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/) const
 
 	const TileItemVector* items = getItemList();
 	if (items) {
-		for (std::shared_ptr<Item> item : *items) {
+		for (auto &item : *items) {
 			if (item->getID() == itemId) {
 				count += Item::countByType(item, subType);
 			}

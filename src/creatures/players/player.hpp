@@ -335,10 +335,10 @@ public:
 		return secureMode;
 	}
 
-	void setParty(Party* newParty) {
+	void setParty(std::shared_ptr<Party> newParty) {
 		this->party = newParty;
 	}
-	Party* getParty() const {
+	std::shared_ptr<Party> getParty() const {
 		return party;
 	}
 
@@ -387,8 +387,8 @@ public:
 	bool isInviting(std::shared_ptr<Player> player) const;
 	bool isPartner(std::shared_ptr<Player> player) const;
 	void sendPlayerPartyIcons(std::shared_ptr<Player> player);
-	bool addPartyInvitation(Party* party);
-	void removePartyInvitation(Party* party);
+	bool addPartyInvitation(std::shared_ptr<Party> party);
+	void removePartyInvitation(std::shared_ptr<Party> party);
 	void clearPartyInvitations();
 
 	void sendUnjustifiedPoints();
@@ -2598,7 +2598,7 @@ private:
 
 	GuildWarVector guildWarVector;
 
-	std::forward_list<Party*> invitePartyList;
+	std::forward_list<std::shared_ptr<Party>> invitePartyList;
 	std::forward_list<uint32_t> modalWindows;
 	std::forward_list<std::string> learnedInstantSpellList;
 	// TODO: This variable is only temporarily used when logging in, get rid of it somehow.
@@ -2658,7 +2658,7 @@ private:
 	std::shared_ptr<Item> writeItem = nullptr;
 	House* editHouse = nullptr;
 	std::shared_ptr<Npc> shopOwner = nullptr;
-	Party* party = nullptr;
+	std::shared_ptr<Party> party = nullptr;
 	std::shared_ptr<Player> tradePartner = nullptr;
 	ProtocolGame_ptr client;
 	std::shared_ptr<Task> walkTask;

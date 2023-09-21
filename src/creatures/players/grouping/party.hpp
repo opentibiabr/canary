@@ -24,9 +24,13 @@ enum SharedExpStatus_t : uint8_t {
 class Player;
 class Party;
 
-class Party {
+class Party : public SharedObject {
 public:
 	explicit Party(std::shared_ptr<Player> leader);
+
+	std::shared_ptr<Party> getParty() {
+		return static_self_cast<Party>();
+	}
 
 	std::shared_ptr<Player> getLeader() const {
 		return m_leader.lock();
@@ -92,8 +96,8 @@ public:
 	void resetAnalyzer();
 	void reloadPrices();
 
-	PartyAnalyzer* getPlayerPartyAnalyzerStruct(uint32_t playerId) const {
-		if (auto it = std::find_if(membersData.begin(), membersData.end(), [playerId](const PartyAnalyzer* preyIt) {
+	std::shared_ptr<PartyAnalyzer> getPlayerPartyAnalyzerStruct(uint32_t playerId) const {
+		if (auto it = std::find_if(membersData.begin(), membersData.end(), [playerId](const std::shared_ptr<PartyAnalyzer> preyIt) {
 				return preyIt->id == playerId;
 			});
 			it != membersData.end()) {
@@ -111,7 +115,7 @@ public:
 	// Party analyzer
 	time_t trackerTime = time(nullptr);
 	PartyAnalyzer_t priceType = MARKET_PRICE;
-	std::vector<PartyAnalyzer*> membersData;
+	std::vector<std::shared_ptr<PartyAnalyzer>> membersData;
 
 private:
 	const char* getSharedExpReturnMessage(SharedExpStatus_t value);

@@ -2193,7 +2193,7 @@ int PlayerFunctions::luaPlayerGetParty(lua_State* L) {
 		return 1;
 	}
 
-	Party* party = player->getParty();
+	std::shared_ptr<Party> party = player->getParty();
 	if (party) {
 		pushUserdata<Party>(L, party);
 		setMetatable(L, -1, "Party");

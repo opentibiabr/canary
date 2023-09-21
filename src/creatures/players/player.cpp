@@ -5471,7 +5471,7 @@ void Player::sendPlayerPartyIcons(std::shared_ptr<Player> player) {
 	sendPartyCreatureSkull(player);
 }
 
-bool Player::addPartyInvitation(Party* newParty) {
+bool Player::addPartyInvitation(std::shared_ptr<Party> newParty) {
 	auto it = std::find(invitePartyList.begin(), invitePartyList.end(), newParty);
 	if (it != invitePartyList.end()) {
 		return false;
@@ -5481,12 +5481,12 @@ bool Player::addPartyInvitation(Party* newParty) {
 	return true;
 }
 
-void Player::removePartyInvitation(Party* remParty) {
+void Player::removePartyInvitation(std::shared_ptr<Party> remParty) {
 	invitePartyList.remove(remParty);
 }
 
 void Player::clearPartyInvitations() {
-	for (Party* invitingParty : invitePartyList) {
+	for (const auto &invitingParty : invitePartyList) {
 		invitingParty->removeInvite(getPlayer(), false);
 	}
 	invitePartyList.clear();

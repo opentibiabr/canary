@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 430
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -81,11 +81,11 @@ monster.loot = {
 	{ name = "war hammer", chance = 5000 },
 	{ name = "ham", chance = 50000 },
 	{ id = 6570, chance = 5538 }, -- surprise bag
-	{ id = 6571, chance = 1538 } -- surprise bag
+	{ id = 6571, chance = 1538 }, -- surprise bag
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 1000, chance = 100, minDamage = 0, maxDamage = -83 }
+	{ name = "melee", interval = 1000, chance = 100, minDamage = 0, maxDamage = -83 },
 }
 
 monster.defenses = {
@@ -93,7 +93,7 @@ monster.defenses = {
 	armor = 15,
 	mitigation = 0.36,
 	{ name = "speed", interval = 1000, chance = 15, speedChange = 290, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
-	{ name = "outfit", interval = 10000, chance = 15, effect = CONST_ME_MAGIC_RED, target = false, duration = 500, outfitMonster = "pig" }
+	{ name = "outfit", interval = 10000, chance = 15, effect = CONST_ME_MAGIC_RED, target = false, duration = 500, outfitMonster = "pig" },
 }
 
 monster.elements = {
@@ -113,7 +113,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 623
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Zzaion, Zao Palace and its antechambers, Muggy Plains, Corruption Hole, Razachai, \z
-		Temple of Equilibrium, Northern Zao Plantations."
+		Temple of Equilibrium, Northern Zao Plantations.",
 }
 
 monster.health = 1450
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -71,8 +71,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "Dragon Hatchling", chance = 20, interval = 2000, count = 2 }
-	}
+		{ name = "Dragon Hatchling", chance = 20, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -98,14 +98,14 @@ monster.loot = {
 	{ name = "bunch of ripe rice", chance = 960 },
 	{ name = "zaoan shoes", chance = 450 },
 	{ name = "zaoan robe", chance = 300 },
-	{ name = "dragon priest's wandtip", chance = 9910 }
+	{ name = "dragon priest's wandtip", chance = 9910 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -125, maxDamage = -190, range = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREATTACK, target = true },
 	-- poison
-	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -320, maxDamage = -400, range = 7, radius = 1, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = true }
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -320, maxDamage = -400, range = 7, radius = 1, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = true },
 }
 
 monster.defenses = {
@@ -113,7 +113,7 @@ monster.defenses = {
 	armor = 22,
 	mitigation = 0.78,
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HEALING, minDamage = 200, maxDamage = 300, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -133,7 +133,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

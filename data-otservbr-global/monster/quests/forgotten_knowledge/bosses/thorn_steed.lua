@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 20000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -62,16 +62,15 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 100, attack = 250 }
+	{ name = "melee", interval = 2000, chance = 100, skill = 100, attack = 250 },
 }
 
 monster.defenses = {
 	defense = 10,
-	armor = 10
+	armor = 10,
 	--	mitigation = ???,
 }
 
@@ -89,14 +88,14 @@ monster.elements = {
 }
 
 monster.heals = {
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

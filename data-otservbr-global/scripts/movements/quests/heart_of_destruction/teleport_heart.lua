@@ -19,19 +19,19 @@ local accessVortex = {
 	[14323] = {
 		position = Position(32246, 31252, 14),
 		storage = 14320,
-		storageTime = 14321
+		storageTime = 14321,
 	},
 	-- Rupture enter
 	[14342] = {
 		position = Position(32305, 31249, 14),
 		storage = 14322,
-		storageTime = 14323
+		storageTime = 14323,
 	},
 	-- Realityquake enter
 	[14344] = {
 		position = Position(32181, 31240, 14),
 		storage = 14324,
-		storageTime = 14325
+		storageTime = 14325,
 	},
 }
 
@@ -42,7 +42,7 @@ local finalBosses = {
 		storage1 = 14326,
 		storage2 = 14327,
 		storage3 = 14328,
-		storageTime = 14329
+		storageTime = 14329,
 	},
 	-- Outburst enter
 	[14349] = {
@@ -50,8 +50,8 @@ local finalBosses = {
 		storage1 = 14326,
 		storage2 = 14327,
 		storage3 = 14328,
-		storageTime = 14331
-	}
+		storageTime = 14331,
+	},
 }
 
 local teleportHeart = MoveEvent()
@@ -80,9 +80,7 @@ function teleportHeart.onStepIn(creature, item, position, fromPosition)
 			player:sendTextMessage(19, "You don't have access to this portal.")
 		end
 	elseif uBosses then
-		if player:getStorageValue(uBosses.storage1) >= 1
-				and player:getStorageValue(uBosses.storage2) >= 1
-				and player:getStorageValue(uBosses.storage3) >= 1 then
+		if player:getStorageValue(uBosses.storage1) >= 1 and player:getStorageValue(uBosses.storage2) >= 1 and player:getStorageValue(uBosses.storage3) >= 1 then
 			if player:getStorageValue(uBosses.storageTime) < os.time() then
 				player:teleportTo(uBosses.position)
 			else
@@ -94,8 +92,7 @@ function teleportHeart.onStepIn(creature, item, position, fromPosition)
 			player:sendTextMessage(19, "You don't have access to this portal.")
 		end
 	elseif item.actionid == 14351 then
-		if player:getStorageValue(14330) >= 1
-				and player:getStorageValue(14332) >= 1 then
+		if player:getStorageValue(14330) >= 1 and player:getStorageValue(14332) >= 1 then
 			if player:getStorageValue(14333) < os.time() then
 				player:teleportTo(Position(32272, 31384, 14))
 			else

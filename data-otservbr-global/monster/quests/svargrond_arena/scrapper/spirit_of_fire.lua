@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 2210
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 0,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -64,18 +64,17 @@ monster.voices = {
 	{ text = "I will turn you into ashes.", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300 },
 	{ name = "firefield", interval = 1000, chance = 15, range = 7, radius = 4, shootEffect = CONST_ANI_FIRE, target = true },
-	{ name = "combat", interval = 1000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -650, maxDamage = -315, range = 7, shootEffect = CONST_ANI_FIRE, target = false }
+	{ name = "combat", interval = 1000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -650, maxDamage = -315, range = 7, shootEffect = CONST_ANI_FIRE, target = false },
 }
 
 monster.defenses = {
 	defense = 0,
-	armor = 0
+	armor = 0,
 	--	mitigation = ???,
 }
 
@@ -96,7 +95,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 40,
 	lookFeet = 94,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2089
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 1,
-	Locations = "Dwelling of the Forgotten"
+	Locations = "Dwelling of the Forgotten",
 }
 
 monster.health = 11500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 10000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -95,7 +95,7 @@ monster.loot = {
 	{ name = "warrior's shield", chance = 1820 },
 	{ name = "elven amulet", chance = 2730 },
 	{ name = "focus cape", chance = 1820 },
-	{ name = "glacier robe", chance = 4555 }
+	{ name = "glacier robe", chance = 4555 },
 }
 
 monster.attacks = {
@@ -128,7 +128,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

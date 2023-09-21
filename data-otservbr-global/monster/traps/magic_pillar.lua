@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a magic pillar"
 monster.experience = 0
 monster.outfit = {
-	lookTypeEx = 2190
+	lookTypeEx = 2190,
 }
 
 monster.health = 1
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -51,8 +51,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "Demon", chance = 7, interval = 2000, count = 2 }
-	}
+		{ name = "Demon", chance = 7, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -60,9 +60,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
-
+monster.loot = {}
 
 monster.defenses = {
 	defense = 1,
@@ -87,7 +85,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = true }
+	{ type = "bleed", condition = true },
 }
 
 mType:register(monster)

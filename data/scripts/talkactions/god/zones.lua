@@ -85,7 +85,9 @@ function zones.onSay(player, words, param)
 		return false
 	end
 	local zone = zoneFromParam()
-	if not zone then return false end
+	if not zone then
+		return false
+	end
 	return command(zone)
 end
 

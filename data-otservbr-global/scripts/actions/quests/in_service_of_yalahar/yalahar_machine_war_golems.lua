@@ -5,8 +5,8 @@ local config = {
 			{ x = 32882, y = 31323, z = 10 },
 			{ x = 32882, y = 31320, z = 10 },
 			{ x = 32882, y = 31318, z = 10 },
-			{ x = 32882, y = 31316, z = 10 }
-		}
+			{ x = 32882, y = 31316, z = 10 },
+		},
 	},
 	[23701] = {
 		storage = GlobalStorage.InServiceOfYalahar.WarGolemsMachine2,
@@ -14,9 +14,9 @@ local config = {
 			{ x = 32869, y = 31322, z = 10 },
 			{ x = 32869, y = 31320, z = 10 },
 			{ x = 32869, y = 31318, z = 10 },
-			{ x = 32869, y = 31316, z = 10 }
-		}
-	}
+			{ x = 32869, y = 31316, z = 10 },
+		},
+	},
 }
 
 local function disableMachine(storage)
@@ -35,7 +35,7 @@ function inServiceYalaharWarGolem.onUse(player, item, fromPosition, target, toPo
 	end
 
 	if player:getItemCount(8775) < 4 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You don\'t have enough gear wheels to activate the machine.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You don't have enough gear wheels to activate the machine.")
 		return true
 	end
 
@@ -43,10 +43,10 @@ function inServiceYalaharWarGolem.onUse(player, item, fromPosition, target, toPo
 	addEvent(disableMachine, 60 * 60 * 1000, machineGroup.storage)
 	player:removeItem(8775, 4)
 	for i = 1, #machineGroup.machines do
-		player:say('*CLICK*', TALKTYPE_MONSTER_YELL, false, player, machineGroup.machines[i])
+		player:say("*CLICK*", TALKTYPE_MONSTER_YELL, false, player, machineGroup.machines[i])
 	end
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You insert all 4 gear wheels, them adjusting the teleporter to transport you to the deeper floor')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You insert all 4 gear wheels, them adjusting the teleporter to transport you to the deeper floor")
 	return true
 end
 

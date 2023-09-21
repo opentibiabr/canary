@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 30,
 	lookLegs = 40,
 	lookFeet = 50,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,16 +58,16 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'package for rashid') then
+	if MsgContains(message, "package for rashid") then
 		if player:getStorageValue(Storage.TravellingTrader.Mission02) >= 1 and player:getStorageValue(Storage.TravellingTrader.Mission02) < 3 then
-			npcHandler:say('So you\'re the delivery boy? Go ahead, but I warn you, it\'s quite heavy. You can take it from the box over there.', npc, creature)
+			npcHandler:say("So you're the delivery boy? Go ahead, but I warn you, it's quite heavy. You can take it from the box over there.", npc, creature)
 			player:setStorageValue(Storage.TravellingTrader.Mission02, 3)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif MsgContains(message, 'documents') then
+	elseif MsgContains(message, "documents") then
 		if player:getStorageValue(Storage.ThievesGuild.Mission04) == 1 then
 			player:setStorageValue(Storage.ThievesGuild.Mission04, 2)
-			npcHandler:say('Funny thing that everyone thinks we have forgers for fake documents here. But no, we don\'t. The best forger is old Ahmet in Ankrahmun.', npc, creature)
+			npcHandler:say("Funny thing that everyone thinks we have forgers for fake documents here. But no, we don't. The best forger is old Ahmet in Ankrahmun.", npc, creature)
 		end
 	end
 	return true
@@ -81,7 +81,7 @@ npcConfig.shop = {
 	{ itemName = "fish", clientId = 3578, buy = 5 },
 	{ itemName = "meat", clientId = 3577, buy = 6 },
 	{ itemName = "mug of beer", clientId = 2880, buy = 5, count = 3 },
-	{ itemName = "mug of wine", clientId = 2880, buy = 6, count = 2 }
+	{ itemName = "mug of wine", clientId = 2880, buy = 6, count = 2 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -92,7 +92,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

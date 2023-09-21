@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1569
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Gnome Deep Hub in the Gnomish area."
+	Locations = "Gnome Deep Hub in the Gnomish area.",
 }
 
 monster.health = 5000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -76,13 +76,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small enchanted ruby", chance = 14620 }
+	{ name = "small enchanted ruby", chance = 14620 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -150 },
 	{ name = "ravennouslavalurkerwave", interval = 2000, chance = 15, minDamage = 0, maxDamage = -400, target = false },
-	{ name = "ravennouslavalurkertarget", interval = 2000, chance = 40, minDamage = 0, maxDamage = -400, target = true }
+	{ name = "ravennouslavalurkertarget", interval = 2000, chance = 40, minDamage = 0, maxDamage = -400, target = true },
 }
 
 monster.defenses = {
@@ -108,7 +108,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 13000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 6
+	chance = 6,
 }
 
 monster.strategiesTarget = {
@@ -87,7 +87,7 @@ monster.loot = {
 	{ id = 12304, chance = 6780 }, -- maxilla maximus
 	{ id = 5741, chance = 5000 }, -- skull helmet
 	{ id = 8057, chance = 3390 }, -- divine plate
-	{ id = 3392, chance = 1690 } -- royal helmet
+	{ id = 3392, chance = 1690 }, -- royal helmet
 }
 
 monster.attacks = {
@@ -99,14 +99,14 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -150, maxDamage = -690, length = 8, spread = 3, effect = CONST_ME_POISONAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -700, length = 8, spread = 3, effect = CONST_ME_MAGIC_RED, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -200, radius = 3, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "undead dragon curse", interval = 2000, chance = 10, target = false }
+	{ name = "undead dragon curse", interval = 2000, chance = 10, target = false },
 }
 
 monster.defenses = {
 	defense = 40,
 	armor = 40,
 	mitigation = 1.94,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -126,7 +126,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

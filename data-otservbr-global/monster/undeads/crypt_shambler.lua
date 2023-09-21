@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 100
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Ankrahmun Tombs, Trapwood, Ramoa, Hellgate, Helheim, Mount Sternum Undead Cave, Deeper Catacombs, \z
-		Cemetery Quarter, Treasure Island, Upper Spike, Lion's Rock."
+		Cemetery Quarter, Treasure Island, Upper Spike, Lion's Rock.",
 }
 
 monster.health = 330
@@ -36,7 +36,7 @@ monster.manaCost = 580
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -89,12 +89,12 @@ monster.loot = {
 	{ name = "iron helmet", chance = 2000 },
 	{ name = "bone shield", chance = 1000 },
 	{ name = "worm", chance = 9000, maxCount = 10 },
-	{ name = "half-digested piece of meat", chance = 5000 }
+	{ name = "half-digested piece of meat", chance = 5000 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -140 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -28, maxDamage = -55, range = 1, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -28, maxDamage = -55, range = 1, target = true },
 }
 
 monster.defenses = {
@@ -120,7 +120,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

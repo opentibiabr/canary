@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 57,
 	lookLegs = 78,
 	lookFeet = 76,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if (MsgContains(message, "mission") and player:getStorageValue(Storage.BigfootBurden.QuestLineComplete) >= 2) then
+	if MsgContains(message, "mission") and player:getStorageValue(Storage.BigfootBurden.QuestLineComplete) >= 2 then
 		if player:getStorageValue(Storage.BigfootBurden.Rank) >= 120 and player:getStorageValue(Storage.BigfootBurden.Rank) < 480 then
 			npcHandler:say("For your rank there are two missions available: {matchmaker} and golem {repair}. You can undertake each mission, but you can turn in a specific mission only once every 20 hours. ", npc, creature)
 			npcHandler:setTopic(playerId, 0)
@@ -78,7 +78,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say({
 					"You will have to find a lonely crystal a perfect match. I don't understand the specifics but the gnomes told me that even crystals need a mate to produce offspring. ...",
 					"Be that as it may, in this package you'll find a crystal. Take it out of the package and go to the crystal caves to find it a mate. Just look out for huge red crystals and try your luck. ...",
-					"They should look like one of those seen in your soul melody test. You will find them in the crystal grounds. {Report} back to me when you are done."
+					"They should look like one of those seen in your soul melody test. You will find them in the crystal grounds. {Report} back to me when you are done.",
 				}, npc, creature)
 				player:setStorageValue(Storage.BigfootBurden.MissionMatchmaker, 1)
 				player:setStorageValue(Storage.BigfootBurden.MatchmakerStatus, 0)
@@ -95,7 +95,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					player:setStorageValue(Storage.BigfootBurden.MatchmakerStatus, -1)
 					player:setStorageValue(Storage.BigfootBurden.MatchmakerIdNeeded, -1)
 					player:setStorageValue(Storage.BigfootBurden.MatchmakerTimeout, os.time() + 72000)
-					player:addAchievement('Crystals in Love')
+					player:addAchievement("Crystals in Love")
 					player:checkGnomeRank()
 					npcHandler:say("Gnomo arigato |PLAYERNAME|! You did well. That will help us a lot. Take your tokens and this gnomish supply package as a reward. ", npc, creature)
 					npcHandler:setTopic(playerId, 0)
@@ -121,7 +121,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say({
 					"I'm no expert on how those golems work, but it seems that when the crystals of the golems get out of harmony, they do as they please and even sometimes become violent. The violent ones are lost. ...",
 					"Don't bother with them, though you may decide to kill some to get rid of them. The others can be repaired, but to recall them to the workshops, the golems have to be put into a specific resonance. ...",
-					"Use the bell I gave you on the golems, so the gnomes can recall them to their workshops. Getting four of them should be enough for now. Report back when you are ready."
+					"Use the bell I gave you on the golems, so the gnomes can recall them to their workshops. Getting four of them should be enough for now. Report back when you are ready.",
 				}, npc, creature)
 				player:setStorageValue(Storage.BigfootBurden.MissionTinkersBell, 1)
 				player:setStorageValue(Storage.BigfootBurden.GolemCount, 0)
@@ -137,7 +137,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					player:setStorageValue(Storage.BigfootBurden.MissionTinkersBell, 0)
 					player:setStorageValue(Storage.BigfootBurden.GolemCount, -1)
 					player:setStorageValue(Storage.BigfootBurden.TinkerBellTimeout, os.time() + 72000)
-					player:addAchievement('Substitute Tinker')
+					player:addAchievement("Substitute Tinker")
 					player:checkGnomeRank()
 					npcHandler:say("Gnomo arigato |PLAYERNAME|! You did well. That will help us a lot. Take your tokens and this gnomish supply package as a reward. ", npc, creature)
 					npcHandler:setTopic(playerId, 0)
@@ -162,7 +162,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say({
 					"We gnomes want you to gather a special collection of spores. All you have to do is use a puffball mushroom and use the spore gathering kit I gave you to gather the spores. ...",
 					"There is a catch though. You need to collect different spores in a specific sequence to fill your gathering kit. If you mix the spores in the wrong way, you ruin your collection and have to start over. ...",
-					"You have to gather them in this sequence: red, green, blue and yellow. You can see on your kit what is required next."
+					"You have to gather them in this sequence: red, green, blue and yellow. You can see on your kit what is required next.",
 				}, npc, creature)
 				player:setStorageValue(Storage.BigfootBurden.MissionSporeGathering, 1)
 				player:setStorageValue(Storage.BigfootBurden.SporeCount, 0)
@@ -179,7 +179,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					player:setStorageValue(Storage.BigfootBurden.MissionSporeGathering, 0)
 					player:setStorageValue(Storage.BigfootBurden.SporeCount, -1)
 					player:setStorageValue(Storage.BigfootBurden.SporeGatheringTimeout, os.time() + 72000)
-					player:addAchievement('Spore Hunter')
+					player:addAchievement("Spore Hunter")
 					player:checkGnomeRank()
 					npcHandler:say("Gnomo arigato |PLAYERNAME|! You did well. That will help us a lot. Take your tokens and this gnomish supply package as a reward. ", npc, creature)
 					npcHandler:setTopic(playerId, 0)
@@ -203,7 +203,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getStorageValue(Storage.BigfootBurden.MissionGrindstoneHunt) < 1 and player:getStorageValue(Storage.BigfootBurden.GrindstoneTimeout) < os.time() then
 				npcHandler:say({
 					"We gnomes need some special grindstones to cut and polish specific crystals. The thing is, they can only be found in a quite dangerous lava cave full of vile monsters. You'll reach it via the hot spot teleporter. ...",
-					"It will be your task to get one such grindstone and bring it back to me."
+					"It will be your task to get one such grindstone and bring it back to me.",
 				}, npc, creature)
 				player:setStorageValue(Storage.BigfootBurden.MissionGrindstoneHunt, 1)
 				player:setStorageValue(Storage.BigfootBurden.GrindstoneStatus, 0)
@@ -219,7 +219,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					player:setStorageValue(Storage.BigfootBurden.MissionGrindstoneHunt, 0)
 					player:setStorageValue(Storage.BigfootBurden.GrindstoneStatus, -1)
 					player:setStorageValue(Storage.BigfootBurden.GrindstoneTimeout, os.time() + 72000)
-					player:addAchievement('Grinding Again')
+					player:addAchievement("Grinding Again")
 					player:checkGnomeRank()
 					npcHandler:say("Gnomo arigato |PLAYERNAME|! You did well. That will help us a lot. Take your tokens and this gnomish supply package as a reward. ", npc, creature)
 					npcHandler:setTopic(playerId, 0)
@@ -236,7 +236,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Sorry, you do have not have the required rank to undertake this mission.", npc, creature)
 		end
 		-- Grindstone Hunt
-	elseif (MsgContains(message, "report")) then
+	elseif MsgContains(message, "report") then
 		if player:getStorageValue(Storage.BigfootBurden.Rank) >= 120 and player:getStorageValue(Storage.BigfootBurden.Rank) < 480 then
 			npcHandler:say("Which mission do you want to report: {matchmaker}, golem {repair}?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
@@ -248,7 +248,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_GREET, 'Hello there recruit!')
+npcHandler:setMessage(MESSAGE_GREET, "Hello there recruit!")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

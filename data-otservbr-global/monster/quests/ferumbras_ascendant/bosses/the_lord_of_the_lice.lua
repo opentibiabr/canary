@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -81,7 +81,7 @@ monster.loot = {
 	{ id = 239, chance = 94830, maxCount = 10 }, -- great health potion
 	{ id = 3098, chance = 100000 }, -- ring of healing
 	{ id = 3326, chance = 25860 }, -- epee
-	{ id = 811, chance = 86200 } -- terra mantle
+	{ id = 811, chance = 86200 }, -- terra mantle
 }
 
 monster.attacks = {
@@ -92,14 +92,14 @@ monster.attacks = {
 	-- poison
 	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -80, maxDamage = -80, radius = 3, effect = CONST_ME_POISONAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -420, range = 7, radius = 7, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "mutated rat paralyze", interval = 2000, chance = 20, range = 7, target = false }
+	{ name = "mutated rat paralyze", interval = 2000, chance = 20, range = 7, target = false },
 }
 
 monster.defenses = {
 	defense = 30,
 	armor = 30,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 9, type = COMBAT_HEALING, minDamage = 250, maxDamage = 550, effect = CONST_ME_HITBYPOISON, target = false }
+	{ name = "combat", interval = 2000, chance = 9, type = COMBAT_HEALING, minDamage = 250, maxDamage = 550, effect = CONST_ME_HITBYPOISON, target = false },
 }
 
 monster.elements = {
@@ -119,7 +119,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

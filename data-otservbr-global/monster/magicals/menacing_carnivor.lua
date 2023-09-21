@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 83,
 	lookFeet = 91,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1723
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Carnivora's Rocks."
+	Locations = "Carnivora's Rocks.",
 }
 
 monster.health = 3500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -97,25 +97,25 @@ monster.loot = {
 	{ name = "onyx chip", chance = 9800 },
 	{ name = "opal", chance = 2000 },
 	{ name = "tiger eye", chance = 3000 },
-	{ name = "wand of decay", chance = 8700 }
+	{ name = "wand of decay", chance = 8700 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -300, maxDamage = -450 },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -180, length = 4, spread = 3, effect = CONST_ME_SMOKE, target = false },
 	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -200, length = 4, spread = 3, effect = CONST_ME_POISONAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -150, maxDamage = -330, radius = 4, effect = CONST_ME_GROUNDSHAKER, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -150, maxDamage = -330, radius = 4, effect = CONST_ME_GROUNDSHAKER, target = false },
 }
 
 monster.defenses = {
 	defense = 0,
 	armor = 68,
 	mitigation = 1.88,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 150, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 150, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.reflects = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 100 }
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 100 },
 }
 
 monster.elements = {
@@ -135,7 +135,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 2700
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 10,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -73,7 +73,7 @@ monster.loot = {
 	{ id = 7427, chance = 120 }, -- chaos mace
 	{ id = 9028, chance = 130 }, -- crystal of balance
 	{ id = 3007, chance = 1030 }, -- crystal ring
-	{ id = 8042, chance = 520 } -- spirit cloak
+	{ id = 8042, chance = 520 }, -- spirit cloak
 }
 
 monster.attacks = {
@@ -81,7 +81,7 @@ monster.attacks = {
 	{ name = "nightstalker paralyze", interval = 2000, chance = 19, range = 7, target = false },
 	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_MANADRAIN, minDamage = -100, maxDamage = -200, range = 1, effect = CONST_ME_HOLYAREA, target = true },
 	{ name = "speed", interval = 2000, chance = 40, speedChange = -600, range = 6, shootEffect = CONST_ANI_SNOWBALL, effect = CONST_ME_ICEAREA, target = true, duration = 20000 },
-	{ name = "silencer skill reducer", interval = 2000, chance = 30, range = 4, effect = CONST_ME_POFF, target = false }
+	{ name = "silencer skill reducer", interval = 2000, chance = 30, range = 4, effect = CONST_ME_POFF, target = false },
 }
 
 monster.defenses = {
@@ -89,7 +89,7 @@ monster.defenses = {
 	armor = 30,
 	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 13, type = COMBAT_HEALING, minDamage = 60, maxDamage = 130, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_YELLOW_RINGS }
+	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_YELLOW_RINGS },
 }
 
 monster.elements = {
@@ -109,7 +109,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

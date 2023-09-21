@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -89,7 +89,7 @@ monster.loot = {
 	{ name = "bar of chocolate", chance = 1000 },
 	{ id = 6570, chance = 1000 }, -- surprise bag
 	{ id = 6571, chance = 1000 }, -- surprise bag
-	{ id = 2977, chance = 1000 } -- pumpkinhead
+	{ id = 2977, chance = 1000 }, -- pumpkinhead
 }
 
 monster.attacks = {
@@ -100,14 +100,14 @@ monster.attacks = {
 	{ name = "combat", interval = 1000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -30, maxDamage = -300, radius = 8, effect = CONST_ME_POFF, target = false },
 	{ name = "combat", interval = 3000, chance = 12, type = COMBAT_EARTHDAMAGE, minDamage = -100, maxDamage = -300, length = 8, spread = 3, effect = CONST_ME_PLANTATTACK, target = false },
 	{ name = "combat", interval = 1000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -400, length = 6, spread = 3, effect = CONST_ME_HITBYPOISON, target = false },
-	{ name = "outfit", interval = 1000, chance = 2, radius = 8, effect = CONST_ME_LOSEENERGY, target = false, duration = 5000, outfitMonster = "The Mutated Pumpkin" }
+	{ name = "outfit", interval = 1000, chance = 2, radius = 8, effect = CONST_ME_LOSEENERGY, target = false, duration = 5000, outfitMonster = "The Mutated Pumpkin" },
 }
 
 monster.defenses = {
 	defense = 60,
 	armor = 60,
 	mitigation = 1.00,
-	{ name = "combat", interval = 4000, chance = 15, type = COMBAT_HEALING, minDamage = 2000, maxDamage = 2900, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 4000, chance = 15, type = COMBAT_HEALING, minDamage = 2000, maxDamage = 2900, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -127,11 +127,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -139,13 +138,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

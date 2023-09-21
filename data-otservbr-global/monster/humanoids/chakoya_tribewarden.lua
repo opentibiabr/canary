@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 319
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Inukaya, Chyllfroest, Chakoya Iceberg, Nibelor (during a quest)."
+	Locations = "Inukaya, Chyllfroest, Chakoya Iceberg, Nibelor (during a quest).",
 }
 
 monster.health = 68
@@ -35,7 +35,7 @@ monster.manaCost = 305
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -85,11 +85,11 @@ monster.loot = {
 	{ name = "rainbow trout", chance = 50 },
 	{ name = "green perch", chance = 100 },
 	{ name = "mammoth whopper", chance = 130 },
-	{ name = "fireproof horn", chance = 350 }
+	{ name = "fireproof horn", chance = 350 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30 },
 }
 
 monster.defenses = {
@@ -115,7 +115,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

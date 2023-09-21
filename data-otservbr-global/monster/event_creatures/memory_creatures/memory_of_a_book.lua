@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 3670
 monster.maxHealth = 3670
@@ -23,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -67,12 +66,12 @@ monster.loot = {
 	{ name = "great spirit potion", chance = 26400 },
 	{ name = "ultimate health potion", chance = 15390 },
 	{ name = "bottle of champagne", chance = 8300 },
-	{ name = "green crystal shard", chance = 7200 }
+	{ name = "green crystal shard", chance = 7200 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 },
-	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -50, maxDamage = -150, range = 7, shootEffect = CONST_ANI_ICE, target = false }
+	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -50, maxDamage = -150, range = 7, shootEffect = CONST_ANI_ICE, target = false },
 }
 
 monster.defenses = {
@@ -98,7 +97,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

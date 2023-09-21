@@ -1,6 +1,3 @@
-CONTAINER_WEIGHT_CHECK = true -- true = enable / false = disable
-CONTAINER_WEIGHT_MAX = 1000000 -- 1000000 = 10k = 10000.00 oz
-
 local storeItemID = {
 	-- registered item ids here are not tradable with players
 	-- these items can be set to moveable at items.xml
@@ -211,10 +208,10 @@ function Player:onLookInBattleList(creature, distance)
 	local description = "You see " .. creature:getDescription(distance)
 	if creature:isMonster() then
 		local master = creature:getMaster()
-		local summons = { 'sorcerer familiar', 'knight familiar', 'druid familiar', 'paladin familiar' }
+		local summons = { "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar" }
 		if master and table.contains(summons, creature:getName():lower()) then
-			description = description .. ' (Master: ' .. master:getName() .. '). \z
-				It will disappear in ' .. getTimeInWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
+			description = description .. " (Master: " .. master:getName() .. "). \z
+				It will disappear in " .. getTimeInWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
 		end
 	end
 	if self:getGroup():getAccess() then
@@ -225,11 +222,7 @@ function Player:onLookInBattleList(creature, distance)
 		description = string.format(str, description, creature:getHealth(), creature:getMaxHealth()) .. "."
 
 		local position = creature:getPosition()
-		description = string.format(
-			"%s\nPosition: %d, %d, %d",
-			description, position.x, position.y, position.z
-
-		)
+		description = string.format("%s\nPosition: %d, %d, %d", description, position.x, position.y, position.z)
 
 		if creature:isPlayer() then
 			description = string.format("%s\nIP: %s", description, Game.convertIpToString(creature:getIp()))
@@ -244,17 +237,10 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		return false
 	end
 
-	-- No move if item count > 20 items
+	-- No move if tile item count > 20 items
 	local tile = Tile(toPosition)
 	if tile and tile:getItemCount() > 20 then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-		return false
-	end
-
-	-- No move parcel very heavy
-	if CONTAINER_WEIGHT_CHECK and ItemType(item:getId()):isContainer()
-			and item:getWeight() > CONTAINER_WEIGHT_MAX then
-		self:sendCancelMessage("Your cannot move this item too heavy.")
 		return false
 	end
 
@@ -270,8 +256,7 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 
 	-- SSA exhaust
 	local exhaust = {}
-	if toPosition.x == CONTAINER_POSITION and toPosition.y == CONST_SLOT_NECKLACE
-			and item:getId() == ITEM_STONE_SKIN_AMULET then
+	if toPosition.x == CONTAINER_POSITION and toPosition.y == CONST_SLOT_NECKLACE and item:getId() == ITEM_STONE_SKIN_AMULET then
 		local pid = self:getId()
 		if exhaust[pid] then
 			self:sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED)
@@ -385,21 +370,21 @@ function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder,
 		if self:getPosition():isInRange(frompos, topos) and item:getId() == 23729 then
 			local tileBoss = Tile(toPosition)
 			if tileBoss and tileBoss:getTopCreature() and tileBoss:getTopCreature():isMonster() then
-				if tileBoss:getTopCreature():getName():lower() == 'the remorseless corruptor' then
+				if tileBoss:getTopCreature():getName():lower() == "the remorseless corruptor" then
 					tileBoss:getTopCreature():addHealth(-17000)
 					tileBoss:getTopCreature():remove()
-					local monster = Game.createMonster('The Corruptor of Souls', toPosition)
+					local monster = Game.createMonster("The Corruptor of Souls", toPosition)
 					if not monster then
 						return false
 					end
 					removeItem = true
-					monster:registerEvent('CheckTile')
-					if Game.getStorageValue('healthSoul') > 0 then
-						monster:addHealth(-(monster:getHealth() - Game.getStorageValue('healthSoul')))
+					monster:registerEvent("CheckTile")
+					if Game.getStorageValue("healthSoul") > 0 then
+						monster:addHealth(-(monster:getHealth() - Game.getStorageValue("healthSoul")))
 					end
-					Game.setStorageValue('CheckTile', os.time() + 30)
-				elseif tileBoss:getTopCreature():getName():lower() == 'the corruptor of souls' then
-					Game.setStorageValue('CheckTile', os.time() + 30)
+					Game.setStorageValue("CheckTile", os.time() + 30)
+				elseif tileBoss:getTopCreature():getName():lower() == "the corruptor of souls" then
+					Game.setStorageValue("CheckTile", os.time() + 30)
 					removeItem = true
 				end
 			end
@@ -440,8 +425,7 @@ function Player:onReportRuleViolation(targetName, reportType, reportReason, comm
 
 	local file = io.open(string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType), "a")
 	if not file then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			"There was an error when processing your report, please contact a gamemaster.")
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There was an error when processing your report, please contact a gamemaster.")
 		return
 	end
 
@@ -457,8 +441,15 @@ function Player:onReportRuleViolation(targetName, reportType, reportReason, comm
 	end
 	io.write("------------------------------\n")
 	io.close(file)
-	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Thank you for reporting %s. Your report \z
-	will be processed by %s team as soon as possible.", targetName, configManager.getString(configKeys.SERVER_NAME)))
+	self:sendTextMessage(
+		MESSAGE_EVENT_ADVANCE,
+		string.format(
+			"Thank you for reporting %s. Your report \z
+	will be processed by %s team as soon as possible.",
+			targetName,
+			configManager.getString(configKeys.SERVER_NAME)
+		)
+	)
 	return
 end
 
@@ -467,8 +458,7 @@ function Player:onReportBug(message, position, category)
 	local file = io.open(string.format("%s/reports/bugs/%s/report.txt", CORE_DIRECTORY, name), "a")
 
 	if not file then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			"There was an error when processing your report, please contact a gamemaster.")
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There was an error when processing your report, please contact a gamemaster.")
 		return true
 	end
 
@@ -483,8 +473,7 @@ function Player:onReportBug(message, position, category)
 	io.write("Comment: " .. message .. "\n")
 	io.close(file)
 
-	self:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-		"Your report has been sent to " .. configManager.getString(configKeys.SERVER_NAME) .. ".")
+	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your report has been sent to " .. configManager.getString(configKeys.SERVER_NAME) .. ".")
 	return true
 end
 
@@ -557,7 +546,7 @@ function Player:onGainExperience(target, exp, rawExp)
 
 	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
 		local vipBonusExp = configManager.getNumber(configKeys.VIP_BONUS_EXP)
-		if (vipBonusExp > 0 and self:isVip()) then
+		if vipBonusExp > 0 and self:isVip() then
 			vipBonusExp = (vipBonusExp > 100 and 100) or vipBonusExp
 			exp = exp * (1 + (vipBonusExp / 100))
 		end
@@ -591,7 +580,7 @@ function Player:onGainSkillTries(skill, tries)
 	SKILL_DEFAULT = self:getSkillLevel(skill)
 	RATE_DEFAULT = configManager.getNumber(configKeys.RATE_SKILL)
 
-	if (skill == SKILL_MAGLEVEL) then
+	if skill == SKILL_MAGLEVEL then
 		-- Magic Level
 		if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
 			STAGES_DEFAULT = magicLevelStages
@@ -610,7 +599,7 @@ function Player:onGainSkillTries(skill, tries)
 
 	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
 		local vipBoost = configManager.getNumber(configKeys.VIP_BONUS_SKILL)
-		if (vipBoost > 0 and self:isVip()) then
+		if vipBoost > 0 and self:isVip() then
 			vipBoost = (vipBoost > 100 and 100) or vipBoost
 			skillOrMagicRate = skillOrMagicRate + (skillOrMagicRate * (vipBoost / 100))
 		end
@@ -648,17 +637,18 @@ function Player:onChangeZone(zone)
 							delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY)
 						end
 
-						local message = string.format("In protection zone. Every %i minutes, gain %i stamina.",
-							delay, configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
-						)
+						local message = string.format("In protection zone. Every %i minutes, gain %i stamina.", delay, configManager.getNumber(configKeys.STAMINA_PZ_GAIN))
 						self:sendTextMessage(MESSAGE_STATUS, message)
 						staminaBonus.eventsPz[self:getId()] = addEvent(addStamina, delay * 60 * 1000, nil, self:getId(), delay * 60 * 1000)
 					end
 				end
 			else
 				if event then
-					self:sendTextMessage(MESSAGE_STATUS, "You are no longer refilling stamina, \z
-                                         since you left a regeneration zone.")
+					self:sendTextMessage(
+						MESSAGE_STATUS,
+						"You are no longer refilling stamina, \z
+                                         since you left a regeneration zone."
+					)
 					stopEvent(event)
 					staminaBonus.eventsPz[self:getId()] = nil
 				end
@@ -669,5 +659,4 @@ function Player:onChangeZone(zone)
 	return false
 end
 
-function Player:onInventoryUpdate(item, slot, equip)
-end
+function Player:onInventoryUpdate(item, slot, equip) end

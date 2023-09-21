@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2088
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Grotto of the Lost."
+	Locations = "Grotto of the Lost.",
 }
 
 monster.health = 7500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -90,7 +90,7 @@ monster.loot = {
 	{ name = "warrior helmet", chance = 1560 },
 	{ name = "wand of voodoo", chance = 1560 },
 	{ name = "crusader helmet", chance = 1560 },
-	{ name = "strange helmet", chance = 500 }
+	{ name = "strange helmet", chance = 500 },
 }
 
 monster.attacks = {
@@ -123,7 +123,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

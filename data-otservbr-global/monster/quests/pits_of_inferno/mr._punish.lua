@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -71,16 +71,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 6537, chance = 100000 } -- mr. punish's handcuffs
+	{ id = 6537, chance = 100000 }, -- mr. punish's handcuffs
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -660, maxDamage = -1280 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -660, maxDamage = -1280 },
 }
 
 monster.defenses = {
 	defense = 72,
-	armor = 64
+	armor = 64,
 	--	mitigation = ???,
 }
 
@@ -101,7 +101,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

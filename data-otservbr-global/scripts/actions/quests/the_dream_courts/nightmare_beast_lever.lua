@@ -1,7 +1,7 @@
 local config = {
 	boss = {
 		name = "The Nightmare Beast",
-		position = Position(32208, 32046, 15)
+		position = Position(32208, 32046, 15),
 	},
 	requiredLevel = 250,
 
@@ -15,14 +15,14 @@ local config = {
 		{ pos = Position(32211, 32071, 15), teleport = Position(32208, 32052, 15), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32212, 32071, 15), teleport = Position(32208, 32052, 15), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32213, 32071, 15), teleport = Position(32208, 32052, 15), effect = CONST_ME_TELEPORT },
-		{ pos = Position(32214, 32071, 15), teleport = Position(32208, 32052, 15), effect = CONST_ME_TELEPORT }
+		{ pos = Position(32214, 32071, 15), teleport = Position(32208, 32052, 15), effect = CONST_ME_TELEPORT },
 	},
 	specPos = {
 		from = Position(32195, 32035, 15),
-		to = Position(32220, 32055, 15)
+		to = Position(32220, 32055, 15),
 	},
 	exit = Position(32211, 32084, 15),
-	storage = Storage.Quest.U12_00.TheDreamCourts.NightmareBeastTimer
+	storage = Storage.Quest.U12_00.TheDreamCourts.NightmareBeastTimer,
 }
 
 local lever = BossLever(config)

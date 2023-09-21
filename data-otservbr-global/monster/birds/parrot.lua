@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 217
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "In the jungle of Tiquanda, Liberty Bay, the Shattered Isles, and as a house pet in Meriana."
+	Locations = "In the jungle of Tiquanda, Liberty Bay, the Shattered Isles, and as a house pet in Meriana.",
 }
 
 monster.health = 25
@@ -35,7 +35,7 @@ monster.manaCost = 250
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -85,11 +85,10 @@ monster.voices = {
 	{ text = "I'm heeerrre! Screeeech!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -5 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -5 },
 }
 
 monster.defenses = {
@@ -115,7 +114,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

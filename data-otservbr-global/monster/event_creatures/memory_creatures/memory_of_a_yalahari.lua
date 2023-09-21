@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 3540
 monster.maxHealth = 3540
@@ -23,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -65,11 +64,11 @@ monster.loot = {
 	{ id = 37531, chance = 5155 }, -- candy floss
 	{ name = "bottle of champagne", chance = 7280 },
 	{ name = "special fx box", chance = 1500 },
-	{ name = "violet crystal shard", chance = 5000 }
+	{ name = "violet crystal shard", chance = 5000 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -160 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -160 },
 }
 
 monster.defenses = {
@@ -95,7 +94,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

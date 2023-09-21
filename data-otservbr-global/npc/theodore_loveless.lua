@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 95,
 	lookLegs = 76,
 	lookFeet = 114,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,10 +58,10 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'cigar') then
-		npcHandler:say('Oh my. Have you gotten an exquisite cigar for me, my young friend?', npc, creature)
+	if MsgContains(message, "cigar") then
+		npcHandler:say("Oh my. Have you gotten an exquisite cigar for me, my young friend?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif MsgContains(message, 'yes') and npcHandler:getTopic(playerId) == 1 then
+	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
 		local player = Player(creature)
 		if not player:removeItem(141, 1) then
 			npcHandler:setTopic(playerId, 0)
@@ -71,12 +71,12 @@ local function creatureSayCallback(npc, creature, type, message)
 		player:setStorageValue(Storage.WhatAFoolish.Cigar, 1)
 		npc:getPosition():sendMagicEffect(CONST_ME_EXPLOSIONHIT)
 		npcHandler:say({
-			'Ah what a fine blend. I really ...',
-			'OUCH! What have you done you fool? How dare you???'
+			"Ah what a fine blend. I really ...",
+			"OUCH! What have you done you fool? How dare you???",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
-	elseif MsgContains(message, 'no') and npcHandler:getTopic(playerId) == 1 then
-		npcHandler:say('Oh, then there must be a misunderstanding.', npc, creature)
+	elseif MsgContains(message, "no") and npcHandler:getTopic(playerId) == 1 then
+		npcHandler:say("Oh, then there must be a misunderstanding.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	end
 

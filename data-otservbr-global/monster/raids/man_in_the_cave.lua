@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 20,
 	lookFeet = 76,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -65,8 +65,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 5,
 	summons = {
-		{ name = "Monk", chance = 20, interval = 2000, count = 2 }
-	}
+		{ name = "Monk", chance = 20, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -85,12 +85,12 @@ monster.loot = {
 	{ id = 5913, chance = 30000 }, -- brown piece of cloth
 	{ id = 3031, chance = 30000, maxCount = 39 }, -- gold coin
 	{ id = 7458, chance = 15000 }, -- fur cap
-	{ id = 7290, chance = 8000 } -- shard
+	{ id = 7290, chance = 8000 }, -- shard
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -62 },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -95, range = 7, shootEffect = CONST_ANI_SMALLSTONE, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -95, range = 7, shootEffect = CONST_ANI_SMALLSTONE, target = false },
 }
 
 monster.defenses = {
@@ -98,7 +98,7 @@ monster.defenses = {
 	armor = 15,
 	mitigation = 1.00,
 	{ name = "speed", interval = 2000, chance = 12, speedChange = 250, effect = CONST_ME_MAGIC_RED, target = false, duration = 4000 },
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 10, maxDamage = 50, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 10, maxDamage = 50, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -118,7 +118,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

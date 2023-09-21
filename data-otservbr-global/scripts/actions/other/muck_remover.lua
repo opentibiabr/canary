@@ -7,7 +7,7 @@ local config = {
 	{ from = 7673, to = 9083, itemId = 16119, count = 10 },
 	{ from = 9084, to = 9577, itemId = 3333 },
 	{ from = 9578, to = 9873, itemId = 8050 },
-	{ from = 9874, to = 9999, itemId = 16160 }
+	{ from = 9874, to = 9999, itemId = 16160 },
 }
 
 local muckRemover = Action()

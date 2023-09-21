@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1931
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 100,
 	Stars = 5,
 	Occurrence = 0,
-	Locations = "Rotten Wasteland."
+	Locations = "Rotten Wasteland.",
 }
 
 monster.health = 27000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -103,7 +103,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 22, type = COMBAT_EARTHDAMAGE, minDamage = -1000, maxDamage = -1280, radius = 4, effect = CONST_ME_SMALLPLANTS, target = true },
 	{ name = "combat", interval = 2000, chance = 22, type = COMBAT_HOLYDAMAGE, minDamage = -1100, maxDamage = -1250, radius = 4, effect = CONST_ME_HOLYDAMAGE, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HOLYDAMAGE, minDamage = -1100, maxDamage = -1400, range = 7, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYAREA, target = true },
-	{ name = "root", interval = 2000, chance = 1, target = true }
+	{ name = "root", interval = 2000, chance = 1, target = true },
 }
 
 monster.defenses = {
@@ -129,7 +129,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

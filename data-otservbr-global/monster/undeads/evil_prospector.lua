@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 34,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1885
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Barren Drift"
+	Locations = "Barren Drift",
 }
 
 monster.health = 8500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -80,7 +80,7 @@ monster.loot = {
 	{ name = "emerald bangle", chance = 3950 },
 	{ name = "strange talisman", chance = 2630 },
 	{ name = "wand of defiance", chance = 2630 },
-	{ name = "lightning headband", chance = 1320 }
+	{ name = "lightning headband", chance = 1320 },
 }
 
 monster.attacks = {
@@ -89,7 +89,7 @@ monster.attacks = {
 	{ name = "combat", interval = 1700, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -250, maxDamage = -550, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
 	{ name = "combat", interval = 1700, chance = 35, type = COMBAT_DEATHDAMAGE, minDamage = -250, maxDamage = -550, radius = 3, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "combat", interval = 1700, chance = 35, type = COMBAT_HOLYDAMAGE, minDamage = -250, maxDamage = -400, radius = 3, effect = CONST_ME_HOLYAREA, target = false },
-	{ name = "combat", interval = 1700, chance = 13, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -450, range = 4, radius = 4, effect = CONST_ME_ENERGYAREA, target = true }
+	{ name = "combat", interval = 1700, chance = 13, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -450, range = 4, radius = 4, effect = CONST_ME_ENERGYAREA, target = true },
 }
 
 monster.defenses = {
@@ -115,7 +115,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -470,12 +470,7 @@ int MonsterFunctions::luaMonsterSetForgeStack(lua_State* L) {
 	auto icon = stack < 15
 		? CreatureIconModifications_t::Influenced
 		: CreatureIconModifications_t::Fiendish;
-	monster->setIcon(CreatureIcon(
-		icon,
-		icon == CreatureIconModifications_t::Influenced
-			? static_cast<uint8_t>(stack)
-			: 0 // don't show the stack for fiendish
-	));
+	monster->setIcon("forge", CreatureIcon(icon, icon == CreatureIconModifications_t::Influenced ? static_cast<uint8_t>(stack) : 0));
 	g_game().updateCreatureIcon(monster);
 	g_game().sendUpdateCreature(monster);
 	return 1;

@@ -1,13 +1,13 @@
 local bosses = {
-	['the lord of the lice'] = { teleportPos = Position(33226, 31478, 12), godbreakerPos = Position(33237, 31477, 13) },
-	['tarbaz'] = { teleportPos = Position(33460, 32853, 11), godbreakerPos = Position(33427, 32852, 13), timer = Storage.FerumbrasAscension.TarbazTimer },
-	['ragiaz'] = { teleportPos = Position(33482, 32345, 13), godbreakerPos = Position(33466, 32392, 13), timer = Storage.FerumbrasAscension.RagiazTimer },
-	['plagirath'] = { teleportPos = Position(33174, 31511, 13), godbreakerPos = Position(33204, 31510, 13), timer = Storage.FerumbrasAscension.PlagirathTimer },
-	['razzagorn'] = { teleportPos = Position(33413, 32467, 14), godbreakerPos = Position(33357, 32440, 13), timer = Storage.FerumbrasAscension.RazzagornTimer },
-	['zamulosh'] = { teleportPos = Position(33644, 32764, 11), godbreakerPos = Position(33678, 32758, 13), timer = Storage.FerumbrasAscension.ZamuloshTimer },
-	['mazoran'] = { teleportPos = Position(33585, 32699, 14), godbreakerPos = Position(33614, 32679, 15), timer = Storage.FerumbrasAscension.MazoranTimer },
-	['shulgrax'] = { teleportPos = Position(33486, 32796, 13), godbreakerPos = Position(33459, 32820, 14), timer = Storage.FerumbrasAscension.ShulgraxTimer },
-	['ferumbras mortal shell'] = { teleportPos = Position(33392, 31485, 14), godbreakerPos = Position(33388, 31414, 14), timer = Storage.FerumbrasAscension.FerumbrasTimer }
+	["the lord of the lice"] = { teleportPos = Position(33226, 31478, 12), godbreakerPos = Position(33237, 31477, 13) },
+	["tarbaz"] = { teleportPos = Position(33460, 32853, 11), godbreakerPos = Position(33427, 32852, 13), timer = Storage.FerumbrasAscension.TarbazTimer },
+	["ragiaz"] = { teleportPos = Position(33482, 32345, 13), godbreakerPos = Position(33466, 32392, 13), timer = Storage.FerumbrasAscension.RagiazTimer },
+	["plagirath"] = { teleportPos = Position(33174, 31511, 13), godbreakerPos = Position(33204, 31510, 13), timer = Storage.FerumbrasAscension.PlagirathTimer },
+	["razzagorn"] = { teleportPos = Position(33413, 32467, 14), godbreakerPos = Position(33357, 32440, 13), timer = Storage.FerumbrasAscension.RazzagornTimer },
+	["zamulosh"] = { teleportPos = Position(33644, 32764, 11), godbreakerPos = Position(33678, 32758, 13), timer = Storage.FerumbrasAscension.ZamuloshTimer },
+	["mazoran"] = { teleportPos = Position(33585, 32699, 14), godbreakerPos = Position(33614, 32679, 15), timer = Storage.FerumbrasAscension.MazoranTimer },
+	["shulgrax"] = { teleportPos = Position(33486, 32796, 13), godbreakerPos = Position(33459, 32820, 14), timer = Storage.FerumbrasAscension.ShulgraxTimer },
+	["ferumbras mortal shell"] = { teleportPos = Position(33392, 31485, 14), godbreakerPos = Position(33388, 31414, 14), timer = Storage.FerumbrasAscension.FerumbrasTimer },
 }
 
 local crystals = {
@@ -18,7 +18,7 @@ local crystals = {
 	[5] = { crystalPosition = Position(33394, 31478, 14), globalStorage = GlobalStorage.FerumbrasAscendant.Crystals.Crystal5 },
 	[6] = { crystalPosition = Position(33390, 31478, 14), globalStorage = GlobalStorage.FerumbrasAscendant.Crystals.Crystal6 },
 	[7] = { crystalPosition = Position(33387, 31475, 14), globalStorage = GlobalStorage.FerumbrasAscendant.Crystals.Crystal7 },
-	[8] = { crystalPosition = Position(33387, 31471, 14), globalStorage = GlobalStorage.FerumbrasAscendant.Crystals.Crystal8 }
+	[8] = { crystalPosition = Position(33387, 31471, 14), globalStorage = GlobalStorage.FerumbrasAscendant.Crystals.Crystal8 },
 }
 local function transformCrystal()
 	for c = 1, #crystals do
@@ -55,11 +55,11 @@ function ascendantBossesKill.onKill(creature, target)
 	for player, _ in pairs(targetMonster:getDamageMap()) do
 		local attackerPlayer = Player(player)
 		if attackerPlayer then
-			if targetMonster:getName():lower() == 'ferumbras mortal shell' then
+			if targetMonster:getName():lower() == "ferumbras mortal shell" then
 				if bossConfig.timer then
 					attackerPlayer:setStorageValue(bossConfig.timer, os.time() + 60 * 60 * 14 * 24)
 				end
-			elseif targetMonster:getName():lower() == 'the lord of the lice' then
+			elseif targetMonster:getName():lower() == "the lord of the lice" then
 				attackerPlayer:setStorageValue(Storage.FerumbrasAscension.TheLordOfTheLiceAccess, 1)
 			end
 		end
@@ -77,7 +77,7 @@ function ascendantBossesKill.onKill(creature, target)
 		addEvent(revertTeleport, 2 * 60 * 1000, bossConfig.teleportPos, 22761, 1949, Position(33319, 32318, 13))
 	end
 
-	if targetMonster:getName():lower() == 'ferumbras mortal shell' then
+	if targetMonster:getName():lower() == "ferumbras mortal shell" then
 		addEvent(transformCrystal, 2 * 60 * 1000)
 	end
 	return true

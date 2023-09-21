@@ -4,7 +4,8 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_WATERSPLASH)
 combat:setArea(createCombatArea({
 	{ 0, 1, 0 },
 	{ 1, 3, 1 },
-	{ 0, 1, 0 } }))
+	{ 0, 1, 0 },
+}))
 
 local combat2 = Combat()
 combat2:setParameter(COMBAT_PARAM_TYPE, COMBAT_ICEDAMAGE)
@@ -14,7 +15,8 @@ combat2:setArea(createCombatArea({
 	{ 1, 1, 0, 1, 1 },
 	{ 1, 0, 2, 0, 1 },
 	{ 1, 1, 0, 1, 1 },
-	{ 0, 1, 1, 1, 0 } }))
+	{ 0, 1, 1, 1, 0 },
+}))
 
 local combat3 = Combat()
 combat3:setParameter(COMBAT_PARAM_TYPE, COMBAT_ICEDAMAGE)
@@ -28,8 +30,8 @@ combat3:setArea(createCombatArea({
 	{ 1, 1, 0, 0, 0, 0, 0, 1, 1 },
 	{ 0, 1, 1, 0, 0, 0, 1, 1, 0 },
 	{ 0, 0, 1, 1, 1, 1, 1, 0, 0 },
-	{ 0, 0, 0, 1, 1, 1, 0, 0, 0 } }))
-
+	{ 0, 0, 0, 1, 1, 1, 0, 0, 0 },
+}))
 
 local spell = Spell("instant")
 

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 7000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 9
+	chance = 9,
 }
 
 monster.strategiesTarget = {
@@ -62,17 +62,16 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 35, type = COMBAT_FIREDAMAGE, minDamage = -700, maxDamage = -1025, length = 8, spread = 3, effect = CONST_ME_FIREAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 35, type = COMBAT_FIREDAMAGE, minDamage = 0, maxDamage = -395, range = 7, radius = 7, effect = CONST_ME_FIREAREA, target = false }
+	{ name = "combat", interval = 2000, chance = 35, type = COMBAT_FIREDAMAGE, minDamage = 0, maxDamage = -395, range = 7, radius = 7, effect = CONST_ME_FIREAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 25,
-	armor = 25
+	armor = 25,
 	--	mitigation = ???,
 }
 
@@ -93,7 +92,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

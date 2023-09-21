@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 39,
 	lookLegs = 96,
 	lookFeet = 118,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Stop by and rest a while, tired adventurer! Have a look at my wares!' }
+	{ text = "Stop by and rest a while, tired adventurer! Have a look at my wares!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -64,21 +64,18 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	-- Citizen outfit addon
 	local addonProgress = player:getStorageValue(Storage.OutfitQuest.Citizen.AddonBackpack)
-	if MsgContains(message, 'addon') or MsgContains(message, 'outfit')
-			or (addonProgress == 1 and MsgContains(message, 'leather'))
-			or ((addonProgress == 1 or addonProgress == 2) and MsgContains(message, 'backpack')) then
+	if MsgContains(message, "addon") or MsgContains(message, "outfit") or (addonProgress == 1 and MsgContains(message, "leather")) or ((addonProgress == 1 or addonProgress == 2) and MsgContains(message, "backpack")) then
 		if addonProgress < 1 then
-			npcHandler:say('Sorry, the backpack I wear is not for sale. It\'s handmade from rare minotaur leather.', npc, creature)
+			npcHandler:say("Sorry, the backpack I wear is not for sale. It's handmade from rare minotaur leather.", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif addonProgress == 1 then
-			npcHandler:say('Ah, right, almost forgot about the backpack! Have you brought me 100 pieces of minotaur leather as requested?', npc, creature)
+			npcHandler:say("Ah, right, almost forgot about the backpack! Have you brought me 100 pieces of minotaur leather as requested?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif addonProgress == 2 then
 			if player:getStorageValue(Storage.OutfitQuest.Citizen.AddonBackpackTimer) < os.time() then
-				npcHandler:say('Just in time! Your backpack is finished. Here you go, I hope you like it.', npc, creature)
+				npcHandler:say("Just in time! Your backpack is finished. Here you go, I hope you like it.", npc, creature)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:setStorageValue(Storage.OutfitQuest.Ref, math.min(0, player:getStorageValue(Storage.OutfitQuest.Ref) - 1))
 				player:setStorageValue(Storage.OutfitQuest.Citizen.MissionBackpack, 0)
@@ -87,35 +84,35 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addOutfitAddon(136, 1)
 				player:addOutfitAddon(128, 1)
 			else
-				npcHandler:say('Uh... I didn\'t expect you to return that early. Sorry, but I\'m not finished yet with your backpack. I\'m doing the best I can, promised.', npc, creature)
+				npcHandler:say("Uh... I didn't expect you to return that early. Sorry, but I'm not finished yet with your backpack. I'm doing the best I can, promised.", npc, creature)
 			end
 		elseif addonProgress == 3 then
-			npcHandler:say('Sorry, but I can only make one backpack per person, else I\'d have to close my shop and open a leather manufactory.', npc, creature)
+			npcHandler:say("Sorry, but I can only make one backpack per person, else I'd have to close my shop and open a leather manufactory.", npc, creature)
 		end
 		return true
 	end
 	if npcHandler:getTopic(playerId) == 1 then
-		if MsgContains(message, 'backpack') or MsgContains(message, 'minotaur') or MsgContains(message, 'leather') then
-			npcHandler:say('Well, if you really like this backpack, I could make one for you, but minotaur leather is hard to come by these days. Are you willing to put some work into this?', npc, creature)
+		if MsgContains(message, "backpack") or MsgContains(message, "minotaur") or MsgContains(message, "leather") then
+			npcHandler:say("Well, if you really like this backpack, I could make one for you, but minotaur leather is hard to come by these days. Are you willing to put some work into this?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
 	elseif npcHandler:getTopic(playerId) == 2 then
-		if MsgContains(message, 'yes') then
+		if MsgContains(message, "yes") then
 			player:setStorageValue(Storage.OutfitQuest.Ref, math.max(0, player:getStorageValue(Storage.OutfitQuest.Ref)) + 1)
 			player:setStorageValue(Storage.OutfitQuest.Citizen.AddonBackpack, 1)
 			player:setStorageValue(Storage.OutfitQuest.Citizen.MissionBackpack, 1)
-			npcHandler:say('Alright then, if you bring me 100 pieces of fine minotaur leather I will see what I can do for you. You probably have to kill really many minotaurs though... so good luck!', npc, creature)
+			npcHandler:say("Alright then, if you bring me 100 pieces of fine minotaur leather I will see what I can do for you. You probably have to kill really many minotaurs though... so good luck!", npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 		else
-			npcHandler:say('Sorry, but I don\'t run a welfare office, you know... no pain, no gain.', npc, creature)
+			npcHandler:say("Sorry, but I don't run a welfare office, you know... no pain, no gain.", npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
 	elseif npcHandler:getTopic(playerId) == 3 then
-		if MsgContains(message, 'yes') then
+		if MsgContains(message, "yes") then
 			if player:getItemCount(5878) < 100 then
-				npcHandler:say('Sorry, but that\'s not enough leather yet to make one of these backpacks. Would you rather like to buy a normal backpack for 10 gold?', npc, creature)
+				npcHandler:say("Sorry, but that's not enough leather yet to make one of these backpacks. Would you rather like to buy a normal backpack for 10 gold?", npc, creature)
 			else
-				npcHandler:say('Great! Alright, I need a while to finish this backpack for you. Come ask me later, okay?', npc, creature)
+				npcHandler:say("Great! Alright, I need a while to finish this backpack for you. Come ask me later, okay?", npc, creature)
 
 				player:removeItem(5878, 100)
 
@@ -124,7 +121,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.OutfitQuest.Citizen.AddonBackpackTimer, os.time() + 2 * 60 * 60)
 			end
 		else
-			npcHandler:say('I know, it\'s quite some work... don\'t lose heart, just keep killing minotaurs and you\'ll eventually get lucky. Would you rather like to buy a normal backpack for 10 gold?', npc, creature)
+			npcHandler:say("I know, it's quite some work... don't lose heart, just keep killing minotaurs and you'll eventually get lucky. Would you rather like to buy a normal backpack for 10 gold?", npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
 	end
@@ -150,18 +147,18 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = 'I am selling equipment for adventurers. If you need anything, let me know.' })
-keywordHandler:addKeyword({ 'dog' }, StdModule.say, { npcHandler = npcHandler, text = 'This is Ruffy my dog, please don\'t do him any harm.' })
-keywordHandler:addKeyword({ 'offer' }, StdModule.say, { npcHandler = npcHandler, text = 'I sell torches, fishing rods, worms, ropes, water hoses, backpacks, apples, and maps.' })
-keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = 'I am Lubo, the owner of this shop.' })
-keywordHandler:addKeyword({ 'maps' }, StdModule.say, { npcHandler = npcHandler, text = 'Oh! I\'m sorry, I sold the last one just five minutes ago.' })
-keywordHandler:addKeyword({ 'hat' }, StdModule.say, { npcHandler = npcHandler, text = 'My hat? Hanna made this one for me.' })
-keywordHandler:addKeyword({ 'finger' }, StdModule.say, { npcHandler = npcHandler, text = 'Oh, you sure mean this old story about the mage Dago, who lost two fingers when he conjured a dragon.' })
-keywordHandler:addKeyword({ 'pet' }, StdModule.say, { npcHandler = npcHandler, text = 'There are some strange stories about a magicians pet names. Ask Hoggle about it.' })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am selling equipment for adventurers. If you need anything, let me know." })
+keywordHandler:addKeyword({ "dog" }, StdModule.say, { npcHandler = npcHandler, text = "This is Ruffy my dog, please don't do him any harm." })
+keywordHandler:addKeyword({ "offer" }, StdModule.say, { npcHandler = npcHandler, text = "I sell torches, fishing rods, worms, ropes, water hoses, backpacks, apples, and maps." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I am Lubo, the owner of this shop." })
+keywordHandler:addKeyword({ "maps" }, StdModule.say, { npcHandler = npcHandler, text = "Oh! I'm sorry, I sold the last one just five minutes ago." })
+keywordHandler:addKeyword({ "hat" }, StdModule.say, { npcHandler = npcHandler, text = "My hat? Hanna made this one for me." })
+keywordHandler:addKeyword({ "finger" }, StdModule.say, { npcHandler = npcHandler, text = "Oh, you sure mean this old story about the mage Dago, who lost two fingers when he conjured a dragon." })
+keywordHandler:addKeyword({ "pet" }, StdModule.say, { npcHandler = npcHandler, text = "There are some strange stories about a magicians pet names. Ask Hoggle about it." })
 
-npcHandler:setMessage(MESSAGE_GREET, 'Welcome to my adventurer shop, |PLAYERNAME|! What do you need? Ask me for a {trade} to look at my wares.')
-npcHandler:setMessage(MESSAGE_FAREWELL, 'Good bye, |PLAYERNAME|.')
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Good bye.')
+npcHandler:setMessage(MESSAGE_GREET, "Welcome to my adventurer shop, |PLAYERNAME|! What do you need? Ask me for a {trade} to look at my wares.")
+npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye, |PLAYERNAME|.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
@@ -188,7 +185,7 @@ npcConfig.shop = {
 	{ itemName = "watch", clientId = 2906, buy = 20, sell = 6 },
 	{ itemName = "waterskin of water", clientId = 2901, buy = 10, count = 1 },
 	{ itemName = "wooden hammer", clientId = 3459, sell = 15 },
-	{ itemName = "worm", clientId = 3492, buy = 1 }
+	{ itemName = "worm", clientId = 3492, buy = 1 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -199,7 +196,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

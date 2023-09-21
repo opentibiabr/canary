@@ -160,18 +160,19 @@ public:
 		return challengeFocusDuration > 0;
 	}
 
-	CreatureIcon getIcon() const override {
-		if (creatureIcon.isSet()) {
-			return creatureIcon;
+	std::vector<CreatureIcon> getIcons() const override {
+		const auto creatureIcons = Creature::getIcons();
+		if (!creatureIcons.empty()) {
+			return creatureIcons;
 		}
 		if (challengeMeleeDuration > 0 && mType->info.targetDistance > targetDistance) {
-			return CreatureIcon(CreatureIconModifications_t::TurnedMelee);
+			return { CreatureIcon(CreatureIconModifications_t::TurnedMelee) };
 		} else if (varBuffs[BUFF_DAMAGERECEIVED] > 100) {
-			return CreatureIcon(CreatureIconModifications_t::HigherDamageReceived);
+			return { CreatureIcon(CreatureIconModifications_t::HigherDamageReceived) };
 		} else if (varBuffs[BUFF_DAMAGEDEALT] < 100) {
-			return CreatureIcon(CreatureIconModifications_t::LowerDamageDealt);
+			return { CreatureIcon(CreatureIconModifications_t::LowerDamageDealt) };
 		}
-		return CreatureIcon();
+		return {};
 	}
 
 	void setNormalCreatureLight() override;

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 772
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Fiehonja."
+	Locations = "Fiehonja.",
 }
 
 monster.health = 850
@@ -38,7 +38,7 @@ monster.enemyFactions = { FACTION_DEATHLING, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -93,7 +93,7 @@ monster.loot = {
 	{ name = "deepling staff", chance = 2020 },
 	{ name = "necklace of the deep", chance = 790 },
 	{ name = "fish fin", chance = 520 },
-	{ name = "ornate crossbow", chance = 220 }
+	{ name = "ornate crossbow", chance = 220 },
 }
 
 monster.attacks = {
@@ -102,7 +102,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DROWNDAMAGE, minDamage = -90, maxDamage = -130, radius = 4, effect = CONST_ME_BUBBLES, target = true },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -60, maxDamage = -140, range = 7, effect = CONST_ME_SMALLPLANTS, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -60, maxDamage = -140, range = 7, effect = CONST_ME_SMALLPLANTS, target = false },
-	{ name = "deepling spellsinger skill reducer", interval = 2000, chance = 5, range = 5, target = false }
+	{ name = "deepling spellsinger skill reducer", interval = 2000, chance = 5, range = 5, target = false },
 }
 
 monster.defenses = {
@@ -128,7 +128,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

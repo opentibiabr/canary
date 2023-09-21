@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 24,
 	lookFeet = 78,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 8500
@@ -25,7 +25,7 @@ monster.enemyFactions = { FACTION_LIONUSURPERS }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -62,8 +62,8 @@ monster.summon = {
 	summons = {
 		{ name = "lion archer", chance = 0, interval = 600000, count = 2 },
 		{ name = "lion knight", chance = 0, interval = 600000, count = 2 },
-		{ name = "lion warlock", chance = 0, interval = 600000, count = 2 }
-	}
+		{ name = "lion warlock", chance = 0, interval = 600000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -71,8 +71,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -550, effect = CONST_ME_DRAWBLOOD },
@@ -84,7 +83,7 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 86,
-	armor = 86
+	armor = 86,
 	--	mitigation = ???,
 }
 
@@ -105,11 +104,13 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType.onAppear = function(monster, creature)
-	if monster ~= creature then return true end
+	if monster ~= creature then
+		return true
+	end
 	for i = 1, 5 do
 		local sum = Game.createMonster(monster:getType():getSummonList()[math.random(1, #monster:getType():getSummonList())].name, monster:getPosition(), true)
 		if sum then

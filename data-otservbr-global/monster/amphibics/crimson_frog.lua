@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 77,
 	lookFeet = 112,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 270
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Meriana, Laguna Islands, and other Shattered Isles."
+	Locations = "Meriana, Laguna Islands, and other Shattered Isles.",
 }
 
 monster.health = 60
@@ -35,7 +35,7 @@ monster.manaCost = 305
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -76,11 +76,11 @@ monster.voices = {
 
 monster.loot = {
 	{ name = "gold coin", chance = 76000, maxCount = 11 },
-	{ name = "worm", chance = 10000 }
+	{ name = "worm", chance = 10000 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -24, effect = CONST_ME_DRAWBLOOD }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -24, effect = CONST_ME_DRAWBLOOD },
 }
 
 monster.defenses = {
@@ -106,7 +106,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

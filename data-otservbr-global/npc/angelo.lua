@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 114,
 	lookLegs = 120,
 	lookFeet = 101,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -73,7 +73,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	if not npcHandler:checkInteraction(npc, creature) then
 		return false
 	end
-
 
 	-- Sequência para pegar a quest
 	if MsgContains(message, "project") then
@@ -160,7 +159,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Well, bye then.')
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)

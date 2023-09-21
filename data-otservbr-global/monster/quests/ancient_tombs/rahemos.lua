@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 3700
@@ -22,12 +22,12 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.bosstiary = {
 	bossRaceId = 88,
-	bossRace = RARITY_BANE
+	bossRace = RARITY_BANE,
 }
 
 monster.strategiesTarget = {
@@ -53,19 +53,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{ name = "Demon", chance = 12, interval = 1000, count = 1 }
-	}
+		{ name = "Demon", chance = 12, interval = 1000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -76,7 +76,7 @@ monster.voices = {
 	{ text = "Nothing hidden in my wrappings.", yell = false },
 	{ text = "It's not a trick, it's Rahemos.", yell = false },
 	{ text = "Meet my friend from hell!", yell = false },
-	{ text = "I will make you believe in magic.", yell = false }
+	{ text = "I will make you believe in magic.", yell = false },
 }
 
 monster.loot = {
@@ -91,7 +91,7 @@ monster.loot = {
 	{ name = "ancient rune", chance = 100000 },
 	{ name = "twin axe", chance = 200 },
 	{ name = "magician hat", chance = 300 },
-	{ name = "great mana potion", chance = 7000 }
+	{ name = "great mana potion", chance = 7000 },
 }
 
 monster.attacks = {
@@ -101,14 +101,14 @@ monster.attacks = {
 	{ name = "combat", interval = 3000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -60, maxDamage = -600, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "speed", interval = 1000, chance = 12, speedChange = -650, radius = 6, effect = CONST_ME_POISONAREA, target = false, duration = 60000 },
 	{ name = "drunk", interval = 1000, chance = 8, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYAREA, target = false },
-	{ name = "outfit", interval = 1000, chance = 15, range = 7, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 12000, outfitMonster = "pig" }
+	{ name = "outfit", interval = 1000, chance = 15, range = 7, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 12000, outfitMonster = "pig" },
 }
 
 monster.defenses = {
 	defense = 35,
 	armor = 30,
 	{ name = "combat", interval = 1000, chance = 20, type = COMBAT_HEALING, minDamage = 200, maxDamage = 500, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "outfit", interval = 1000, chance = 5, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 4000, outfitMonster = "demon" }
+	{ name = "outfit", interval = 1000, chance = 5, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 4000, outfitMonster = "demon" },
 }
 
 monster.elements = {
@@ -121,14 +121,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -25 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

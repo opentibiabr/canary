@@ -5,7 +5,7 @@ local throneStorages = {
 	Storage.PitsOfInferno.ThroneApocalypse,
 	Storage.PitsOfInferno.ThroneBazir,
 	Storage.PitsOfInferno.ThroneAshfalor,
-	Storage.PitsOfInferno.ThronePumin
+	Storage.PitsOfInferno.ThronePumin,
 }
 
 local function hasTouchedOneThrone(player)
@@ -25,8 +25,7 @@ function entrance.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if hasTouchedOneThrone(player) and player:getLevel() >= 100
-			and player:getStorageValue(Storage.TheInquisition.Questline) >= 20 then
+	if hasTouchedOneThrone(player) and player:getLevel() >= 100 and player:getStorageValue(Storage.TheInquisition.Questline) >= 20 then
 		local destination = Position(33168, 31683, 15)
 		player:teleportTo(destination)
 		position:sendMagicEffect(CONST_ME_TELEPORT)

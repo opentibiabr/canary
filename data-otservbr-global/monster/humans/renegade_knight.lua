@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 76,
 	lookFeet = 98,
 	lookAddons = 2,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1146
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Old Fortress (north of Edron), Old Masonry, Forbidden Temple (Carlin)."
+	Locations = "Old Fortress (north of Edron), Old Masonry, Forbidden Temple (Carlin).",
 }
 
 monster.health = 1450
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.strategiesTarget = {
@@ -98,18 +98,18 @@ monster.loot = {
 	{ id = 2815, chance = 910 }, -- scroll
 	{ id = 11510, chance = 910 }, -- scroll of heroic deeds
 	{ id = 11450, chance = 910 }, -- small notebook
-	{ id = 3004, chance = 510 } -- wedding ring
+	{ id = 3004, chance = 510 }, -- wedding ring
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 10, maxDamage = -175 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 10, maxDamage = -175 },
 }
 
 monster.defenses = {
 	defense = 50,
 	armor = 38,
 	mitigation = 1.46,
-	{ name = "combat", interval = 4000, chance = 25, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 4000, chance = 25, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -129,7 +129,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

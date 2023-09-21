@@ -25,7 +25,7 @@ function rentedMounts.onThink(interval)
 		end
 
 		player:setStorageValue(Storage.RentedHorseTimer, -1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Your contract with your horse expired and it returned back to the horse station.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your contract with your horse expired and it returned back to the horse station.")
 	end
 	return true
 end

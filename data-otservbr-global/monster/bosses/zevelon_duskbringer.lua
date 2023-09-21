@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -65,8 +65,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 3,
 	summons = {
-		{ name = "Vampire", chance = 40, interval = 3000, count = 3 }
-	}
+		{ name = "Vampire", chance = 40, interval = 3000, count = 3 },
+	},
 }
 
 monster.voices = {
@@ -87,13 +87,13 @@ monster.loot = {
 	{ id = 8192, chance = 100000 }, -- vampire lord token
 	{ id = 3035, chance = 50000, maxCount = 5 }, -- platinum coin
 	{ id = 3031, chance = 100000, maxCount = 75 }, -- gold coin
-	{ id = 3434, chance = 4500 } -- vampire shield
+	{ id = 3434, chance = 4500 }, -- vampire shield
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 65, attack = 75 },
 	{ name = "combat", interval = 1000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -200, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true },
-	{ name = "speed", interval = 2000, chance = 15, target = true }
+	{ name = "speed", interval = 2000, chance = 15, target = true },
 }
 
 monster.defenses = {
@@ -101,7 +101,7 @@ monster.defenses = {
 	armor = 30,
 	--	mitigation = ???,
 	{ name = "combat", interval = 1000, chance = 12, type = COMBAT_HEALING, minDamage = 100, maxDamage = 235, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 3000, chance = 25, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 3000, chance = 25, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -121,11 +121,10 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -133,13 +132,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

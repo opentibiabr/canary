@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 121,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 918
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Venore Corym Cave, Tiquanda Corym Cave, Corym Black Market, \z
-		Carlin Corym Cave/Dwarf Mines Diggers Depths Mine, Upper Spike."
+		Carlin Corym Cave/Dwarf Mines Diggers Depths Mine, Upper Spike.",
 }
 
 monster.health = 700
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -91,20 +91,20 @@ monster.loot = {
 	{ name = "rat cheese", chance = 14285 },
 	{ name = "rat god doll", chance = 14 },
 	{ name = "leather harness", chance = 1612 },
-	{ name = "spiky club", chance = 3225 }
+	{ name = "spiky club", chance = 3225 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -140 },
 	{ name = "corym vanguard wave", interval = 2000, chance = 10, minDamage = -50, maxDamage = -100, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -40, maxDamage = -70, radius = 4, effect = CONST_ME_MORTAREA, target = true }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -40, maxDamage = -70, radius = 4, effect = CONST_ME_MORTAREA, target = true },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 29,
 	mitigation = 0.99,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 30, maxDamage = 60, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 30, maxDamage = 60, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -124,7 +124,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

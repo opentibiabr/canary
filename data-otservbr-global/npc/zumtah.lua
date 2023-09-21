@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 51
+	lookType = 51,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -75,18 +75,17 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("No, I really can't remember. I enjoyed my stay here so much that I forgot how it looks outside of this hole. Outside. The air, the sky, the light. Oh well... well.", npc, creature)
 				npcHandler:setTopic(playerId, 12)
 			elseif npcHandler:getTopic(playerId) == 12 then
-				npcHandler:say({ "Oh yes, yes. I... I never really thought about how you creatures feel in here I guess. I... just watched all these beings die here. ...",
-					"I... enjoyed this torture so much that I forgot time and everything around me. ...",
-					"I feel - sorry. Yes, sorry." }, npc, creature)
+				npcHandler:say({ "Oh yes, yes. I... I never really thought about how you creatures feel in here I guess. I... just watched all these beings die here. ...", "I... enjoyed this torture so much that I forgot time and everything around me. ...", "I feel - sorry. Yes, sorry." }, npc, creature)
 				npcHandler:setTopic(playerId, 13)
 			elseif npcHandler:getTopic(playerId) == 13 then
-				npcHandler:say({ "Oh, excuse me of course, you... wanted to go. Like all... the others. I am sorry, so sorry. You... you can leave. Yes. You can go. You are free. I shall stay here and help every poor soul which ever gets thrown in here from this day onward. ...",
+				npcHandler:say({
+					"Oh, excuse me of course, you... wanted to go. Like all... the others. I am sorry, so sorry. You... you can leave. Yes. You can go. You are free. I shall stay here and help every poor soul which ever gets thrown in here from this day onward. ...",
 					"Yes, I will redeem myself. Maybe in another 278 years. ...",
-					"If you want to go, just ask for an {exit} and I will transform you into a creature small enough to fit through that hole over there." }, npc, creature)
+					"If you want to go, just ask for an {exit} and I will transform you into a creature small enough to fit through that hole over there.",
+				}, npc, creature)
 				npcHandler:setTopic(playerId, 14)
 			elseif npcHandler:getTopic(playerId) == 14 then
-				npcHandler:say({ "Alright, as I said you are free now. There will not be an outside for the next three centuries, but you - go. ...",
-					"Oh and I recovered the strange crate you where hiding in, it will wait for you at the exit since you can't carry it as... a beetle, muhaha. Yes, you shall now crawl through the passage as a beetle. There you go." }, npc, creature)
+				npcHandler:say({ "Alright, as I said you are free now. There will not be an outside for the next three centuries, but you - go. ...", "Oh and I recovered the strange crate you where hiding in, it will wait for you at the exit since you can't carry it as... a beetle, muhaha. Yes, you shall now crawl through the passage as a beetle. There you go." }, npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				player:setStorageValue(Storage.WrathoftheEmperor.ZumtahStatus, 1)
 				player:setStorageValue(Storage.WrathoftheEmperor.PrisonReleaseStatus, 1)

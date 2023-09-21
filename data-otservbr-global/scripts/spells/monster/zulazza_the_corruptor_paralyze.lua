@@ -11,7 +11,6 @@ local area = createCombatArea(AREA_CIRCLE2X2)
 combat:setArea(area)
 combat:addCondition(condition)
 
-
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)

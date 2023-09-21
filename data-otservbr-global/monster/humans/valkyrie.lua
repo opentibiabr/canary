@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 76,
 	lookFeet = 96,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 12
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Amazon Camp (Venore), Amazon Camp (Carlin), Amazonia, \z
-		single respawn to the north west of Thais, Foreigner Quarter in Yalahar."
+		single respawn to the north west of Thais, Foreigner Quarter in Yalahar.",
 }
 
 monster.health = 190
@@ -36,7 +36,7 @@ monster.manaCost = 450
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -92,12 +92,12 @@ monster.loot = {
 	{ id = 3114, chance = 760 }, -- skull
 	{ name = "health potion", chance = 500 },
 	{ name = "double axe", chance = 430 },
-	{ name = "small diamond", chance = 130 }
+	{ name = "small diamond", chance = 130 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -50, range = 5, shootEffect = CONST_ANI_SPEAR, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -50, range = 5, shootEffect = CONST_ANI_SPEAR, target = false },
 }
 
 monster.defenses = {
@@ -123,7 +123,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

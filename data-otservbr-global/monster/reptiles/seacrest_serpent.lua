@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1096
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 2,
-	Locations = "Seacrest Grounds when Quara Renegades are not spawning."
+	Locations = "Seacrest Grounds when Quara Renegades are not spawning.",
 }
 
 monster.health = 3000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 9
+	chance = 9,
 }
 
 monster.strategiesTarget = {
@@ -97,7 +97,7 @@ monster.loot = {
 	{ id = 823, chance = 3680 }, -- glacier kilt
 	{ id = 819, chance = 3010 }, -- glacier shoes
 	{ id = 16096, chance = 670 }, -- wand of defiance
-	{ id = 8093, chance = 670 } -- wand of draconia
+	{ id = 8093, chance = 670 }, -- wand of draconia
 }
 
 monster.attacks = {
@@ -105,7 +105,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 7, type = COMBAT_DEATHDAMAGE, minDamage = -200, maxDamage = -260, range = 7, shootEffect = CONST_ANI_EARTH, effect = CONST_ME_SOUND_RED, target = true },
 	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_LIFEDRAIN, minDamage = -200, maxDamage = -285, radius = 3, effect = CONST_ME_MAGIC_RED, target = false },
 	{ name = "seacrest serpent wave", interval = 2000, chance = 30, minDamage = 0, maxDamage = -284, target = false },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -300, length = 4, spread = 3, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -300, length = 4, spread = 3, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.defenses = {
@@ -113,7 +113,7 @@ monster.defenses = {
 	armor = 51,
 	mitigation = 1.21,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 145, maxDamage = 200, effect = CONST_ME_SOUND_BLUE, target = false },
-	{ name = "melee", interval = 2000, chance = 10, minDamage = 0, maxDamage = 0 }
+	{ name = "melee", interval = 2000, chance = 10, minDamage = 0, maxDamage = 0 },
 }
 
 monster.elements = {
@@ -133,7 +133,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

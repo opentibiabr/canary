@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a rift fragment"
 monster.experience = 0
 monster.outfit = {
-	lookTypeEx = 2122
+	lookTypeEx = 2122,
 }
 
 monster.health = 7200
@@ -16,7 +16,7 @@ monster.manaCost = 50
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -56,18 +56,17 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 50, attack = 13 },
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_DROWNDAMAGE, minDamage = -260, maxDamage = -320, radius = 6, effect = CONST_ME_BUBBLES, target = false },
-	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_DROWNDAMAGE, minDamage = -160, maxDamage = -320, range = 6, effect = CONST_ME_BUBBLES, target = false }
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_DROWNDAMAGE, minDamage = -160, maxDamage = -320, range = 6, effect = CONST_ME_BUBBLES, target = false },
 }
 
 monster.defenses = {
 	defense = 65,
-	armor = 40
+	armor = 40,
 	--	mitigation = ???,
 }
 
@@ -88,7 +87,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

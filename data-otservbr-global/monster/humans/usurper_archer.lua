@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 76,
 	lookFeet = 95,
 	lookAddons = 2,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1973
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Bounac, the Order of the Lion settlement."
+	Locations = "Bounac, the Order of the Lion settlement.",
 }
 
 monster.health = 7300
@@ -38,7 +38,7 @@ monster.enemyFactions = { FACTION_LION, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -97,14 +97,14 @@ monster.loot = {
 	{ name = "ornate crossbow", chance = 946 },
 	{ name = "emerald bangle", chance = 811 },
 	{ name = "wood cape", chance = 405 },
-	{ name = "elvish bow", chance = 270 }
+	{ name = "elvish bow", chance = 270 },
 }
 
 monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 100, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -430, range = 7, shootEffect = CONST_ANI_BURSTARROW, target = true },
 	{ name = "combat", interval = 6000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -160, maxDamage = -485, range = 7, shootEffect = CONST_ANI_SMALLHOLY, target = true },
 	{ name = "combat", interval = 4000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -160, maxDamage = -545, range = 7, effect = CONST_ME_MORTAREA, shootEffect = CONST_ANI_SUDDENDEATH, target = true },
-	{ name = "combat", interval = 4000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -150, maxDamage = -425, radius = 3, effect = CONST_ME_ICEAREA, target = true }
+	{ name = "combat", interval = 4000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -150, maxDamage = -425, radius = 3, effect = CONST_ME_ICEAREA, target = true },
 }
 
 monster.defenses = {
@@ -130,7 +130,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

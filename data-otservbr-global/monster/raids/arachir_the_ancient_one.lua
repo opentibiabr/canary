@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -66,7 +66,7 @@ monster.summon = {
 	maxSummons = 2,
 	summons = {
 		{ name = "Lich", chance = 100, interval = 9000, count = 2 },
-	}
+	},
 }
 
 monster.voices = {
@@ -86,13 +86,13 @@ monster.loot = {
 	{ id = 8192, chance = 100000 }, -- vampire lord token
 	{ id = 3035, chance = 50000, maxCount = 5 }, -- platinum coin
 	{ id = 3434, chance = 6300 }, -- vampire shield
-	{ id = 3027, chance = 8980 } -- black pearl
+	{ id = 3027, chance = 8980 }, -- black pearl
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 70, attack = 95 },
 	{ name = "combat", interval = 9000, chance = 100, type = COMBAT_DEATHDAMAGE, minDamage = -120, maxDamage = -300, radius = 3, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 1000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -120, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true }
+	{ name = "combat", interval = 1000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -120, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true },
 }
 
 monster.defenses = {
@@ -101,7 +101,7 @@ monster.defenses = {
 	mitigation = 1.04,
 	{ name = "combat", interval = 1000, chance = 12, type = COMBAT_HEALING, minDamage = 100, maxDamage = 235, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "invisible", interval = 3000, chance = 25, effect = CONST_ME_MAGIC_BLUE },
-	{ name = "outfit", interval = 4500, chance = 30, target = false, duration = 4000, outfitMonster = "bat" }
+	{ name = "outfit", interval = 4500, chance = 30, target = false, duration = 4000, outfitMonster = "bat" },
 }
 
 monster.elements = {
@@ -121,7 +121,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

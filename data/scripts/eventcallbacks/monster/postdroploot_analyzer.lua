@@ -2,10 +2,16 @@ local callback = EventCallback()
 
 function callback.monsterPostDropLoot(monster, corpse)
 	local player = Player(corpse:getCorpseOwner())
-	if not player then return end
-	if player:getStamina() <= 840 then return end
+	if not player then
+		return
+	end
+	if player:getStamina() <= 840 then
+		return
+	end
 	local mType = monster:getType()
-	if not mType then return end
+	if not mType then
+		return
+	end
 
 	local participants = { player }
 	local party = player:getParty()

@@ -4,13 +4,13 @@ function gravediggerSacrifice.onUse(player, item, fromPosition, target, toPositi
 		local skullItem = Tile(Position(33015, 32418, 11)):getItemById(19160)
 		if skullItem then
 			skullItem:remove()
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The scroll burns to dust. The magic stutters. Omrabas\' soul flees to his old hideaway.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The scroll burns to dust. The magic stutters. Omrabas' soul flees to his old hideaway.")
 			player:removeItem(18934, 1)
 			player:setStorageValue(Storage.GravediggerOfDrefia.Mission74, 1)
 			Game.createMonster("Chicken", Position(33015, 32418, 11))
 		end
 	else
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Teste')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Teste")
 	end
 	return true
 end

@@ -15,17 +15,17 @@ npcConfig.outfit = {
 	lookHead = 3,
 	lookBody = 86,
 	lookLegs = 87,
-	lookFeet = 76
+	lookFeet = 76,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Come and take a look at the finest gems in the lands of Tibia.' }
+	{ text = "Come and take a look at the finest gems in the lands of Tibia." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -68,7 +68,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"Rashid sent you, I suppose. Before I sell you that vase, one word of advice. ...",
 				"Make room in your backpack so that I can place the vase carefully inside it. If it falls to the floor, it will most likely shatter or break if you try to pick it up again. ...",
-				"This vase it not meant to be touched by human hands, so just keep your hands off it. Are you ready to buy that vase for 1000 gold?"
+				"This vase it not meant to be touched by human hands, so just keep your hands off it. Are you ready to buy that vase for 1000 gold?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -149,7 +149,7 @@ npcConfig.shop = {
 	{ itemName = "violet crystal shard", clientId = 16120, sell = 1500 },
 	{ itemName = "wedding ring", clientId = 3004, buy = 990 },
 	{ itemName = "white silk flower", clientId = 34008, sell = 9000 },
-	{ itemName = "white pearl", clientId = 3026, buy = 320 }
+	{ itemName = "white pearl", clientId = 3026, buy = 320 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -160,7 +160,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

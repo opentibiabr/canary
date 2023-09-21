@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 119,
 	lookLegs = 120,
 	lookFeet = 121,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -76,7 +76,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.InServiceofYalahar.Questline) == 29 then
 			npcHandler:say({
 				"Why should I do something for another human being? I have been on my own for all those years. Hmm, but actually there is something I could need some assistance with. ... ",
-				"If you help me to solve my problems, I will help you with your mission. Do you accept?"
+				"If you help me to solve my problems, I will help you with your mission. Do you accept?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(Storage.InServiceofYalahar.Questline) == 32 then

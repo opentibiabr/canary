@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1224
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Otherworld"
+	Locations = "Otherworld",
 }
 
 monster.health = 3900
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 25
+	chance = 25,
 }
 
 monster.strategiesTarget = {
@@ -98,7 +98,7 @@ monster.loot = {
 	{ id = 3036, chance = 370 }, -- violet gem
 	{ id = 23529, chance = 370 }, -- ring of blue plasma
 	{ id = 23544, chance = 300 }, -- collar of red plasma
-	{ id = 23531, chance = 220 } -- ring of green plasma
+	{ id = 23531, chance = 220 }, -- ring of green plasma
 }
 
 monster.attacks = {
@@ -106,7 +106,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -180, maxDamage = -400, range = 5, radius = 5, shootEffect = CONST_ANI_ENERGYBALL, effect = CONST_ME_PURPLEENERGY, target = true },
 	{ name = "reality reaver wave", interval = 2000, chance = 20, minDamage = -200, maxDamage = -500, target = false },
 	-- energy damage
-	{ name = "condition", type = CONDITION_ENERGY, interval = 2000, chance = 20, minDamage = -400, maxDamage = -800, radius = 5, effect = CONST_ME_STUN, target = false }
+	{ name = "condition", type = CONDITION_ENERGY, interval = 2000, chance = 20, minDamage = -400, maxDamage = -800, radius = 5, effect = CONST_ME_STUN, target = false },
 }
 
 monster.defenses = {
@@ -114,7 +114,7 @@ monster.defenses = {
 	armor = 51,
 	mitigation = 1.76,
 	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_POFF },
-	{ name = "speed", interval = 2000, chance = 10, speedChange = 380, effect = CONST_ME_HITAREA, target = false, duration = 8000 }
+	{ name = "speed", interval = 2000, chance = 10, speedChange = 380, effect = CONST_ME_HITAREA, target = false, duration = 8000 },
 }
 
 monster.elements = {
@@ -134,7 +134,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

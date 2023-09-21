@@ -4,7 +4,6 @@ local positions = {
 	{ tptimiraPos = { x = 33802, y = 32700, z = 8 }, tpPos = { x = 33804, y = 32702, z = 7 } },
 
 	{ tptimiraPos = { x = 33816, y = 32710, z = 9 }, tpPos = { x = 33810, y = 32699, z = 8 } },
-
 }
 
 local TpTimira = MoveEvent()

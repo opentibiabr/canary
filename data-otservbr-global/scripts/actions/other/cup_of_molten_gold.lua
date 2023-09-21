@@ -10,7 +10,7 @@ function cupOfMoltenGold.onUse(cid, item, fromPosition, itemEx, toPosition)
 	if itemEx.itemid == 3614 or itemEx.itemid == 19111 then
 		doRemoveItem(item.uid, 1)
 		for i = 0, #items do
-			if (items[i].chance > math.random(1, 100)) then
+			if items[i].chance > math.random(1, 100) then
 				doPlayerAddItem(cid, items[i].id, items[i].count)
 				doSendMagicEffect(toPosition, CONST_ME_EXPLOSIONAREA)
 			end

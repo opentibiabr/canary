@@ -12,7 +12,7 @@ function lastFightTeleport.onStepIn(creature, item, position, fromPosition)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				player:teleportTo(Position(32783, 31174, 10))
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				player:say('The apparatus in the centre looks odd! You should inspect it.', TALKTYPE_MONSTER_SAY)
+				player:say("The apparatus in the centre looks odd! You should inspect it.", TALKTYPE_MONSTER_SAY)
 			end
 		else
 			player:teleportTo(fromPosition)

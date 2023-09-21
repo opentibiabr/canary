@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 21,
 	lookLegs = 54,
 	lookFeet = 94,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -61,8 +61,12 @@ local function creatureSayCallback(npc, creature, type, message)
 	-- Mad mage room quest
 	if MsgContains(message, "riddle") then
 		if player:getStorageValue(Storage.Quest.U7_24.MadMageRoom.APrisoner) ~= 1 then
-			npcHandler:say("Great riddle, isn't it? If you can tell me the correct answer, \z
-				I will give you something. Hehehe!", npc, creature)
+			npcHandler:say(
+				"Great riddle, isn't it? If you can tell me the correct answer, \z
+				I will give you something. Hehehe!",
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "PD-D-KS-P-PD") then
@@ -100,8 +104,12 @@ local function creatureSayCallback(npc, creature, type, message)
 	-- The paradox tower quest
 	if MsgContains(message, "math") then
 		if player:getStorageValue(Storage.Quest.U7_24.TheParadoxTower.Mathemagics) < 1 then
-			npcHandler:say("My surreal numbers are based on astonishing facts. \z
-				Are you interested in learning the secret of mathemagics?", npc, creature)
+			npcHandler:say(
+				"My surreal numbers are based on astonishing facts. \z
+				Are you interested in learning the secret of mathemagics?",
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 6)
 		else
 			npcHandler:say("You already know the secrets of mathemagics! Now go and use them to learn.", npc, creature)

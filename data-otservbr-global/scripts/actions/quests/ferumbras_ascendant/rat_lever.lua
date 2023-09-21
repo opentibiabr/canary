@@ -6,9 +6,9 @@ local config = {
 		Position(33198, 31475, 11),
 		Position(33199, 31475, 11),
 		Position(33200, 31475, 11),
-		Position(33201, 31475, 11)
+		Position(33201, 31475, 11),
 	},
-	newPosition = Position(33215, 31470, 12)
+	newPosition = Position(33215, 31470, 12),
 }
 
 local ferumbrasAscendantRatLever = Action()

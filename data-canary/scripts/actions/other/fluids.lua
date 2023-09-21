@@ -27,7 +27,7 @@ local fluidMessage = {
 	[15] = "Mmmh.", -- coconut milk
 	[16] = "Aah...", -- mead
 	[17] = "Gulp.", -- tea
-	[18] = "Urgh!" -- ink
+	[18] = "Urgh!", -- ink
 }
 
 local fluid = Action()

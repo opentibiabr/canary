@@ -55,7 +55,7 @@ local setting = {
 	[14756] = 14755,
 	[17974] = 18015,
 	[17975] = 18017,
-	[17977] = 18019
+	[17977] = 18019,
 }
 
 local constructionKits = Action()
@@ -73,7 +73,7 @@ function constructionKits.onUse(player, item, fromPosition, target, toPosition, 
 	else
 		item:transform(kit)
 		fromPosition:sendMagicEffect(CONST_ME_POFF)
-		player:addAchievementProgress('Interior Decorator', 1000)
+		player:addAchievementProgress("Interior Decorator", 1000)
 	end
 	return true
 end

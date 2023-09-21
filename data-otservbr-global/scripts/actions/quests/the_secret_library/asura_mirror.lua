@@ -12,7 +12,7 @@ function asuraMirror.onUse(creature, item, position, fromPosition, pos, target, 
 		player:teleportTo(goPos)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	else
-		player:sendCancelMessage('You do not have enough level.')
+		player:sendCancelMessage("You do not have enough level.")
 	end
 	return true
 end

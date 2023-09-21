@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 8500
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -63,8 +63,7 @@ monster.voices = {
 	{ text = "More blood! More!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -240, condition = { type = CONDITION_POISON, totalDamage = 6, interval = 4000 } },
@@ -72,14 +71,14 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DROWNDAMAGE, minDamage = -130, maxDamage = -237, radius = 6, effect = CONST_ME_SOUND_WHITE, target = false },
 	{ name = "mutated bat curse", interval = 2000, chance = 10, target = false },
 	-- poison
-	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -12, maxDamage = -12, length = 4, spread = 3, effect = CONST_ME_POISONAREA, target = false }
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -12, maxDamage = -12, length = 4, spread = 3, effect = CONST_ME_POISONAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 30,
 	armor = 30,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 80, maxDamage = 95, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 80, maxDamage = 95, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -99,7 +98,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

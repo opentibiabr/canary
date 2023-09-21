@@ -3,19 +3,24 @@ local ThreatenedDreams = Storage.Quest.U11_40.ThreatenedDreams
 local config = {
 	[25024] = {
 		message = "You found some more feathers on the grass near the wheat. Now you should have enough for an entire cloak.", -- Edron
-		storage = ThreatenedDreams.Mission01.Feathers1 },
+		storage = ThreatenedDreams.Mission01.Feathers1,
+	},
 	[25025] = {
 		message = "You found some beautiful swan feathers in the dustbin.", -- Darasha in City
-		storage = ThreatenedDreams.Mission01.Feathers2 },
+		storage = ThreatenedDreams.Mission01.Feathers2,
+	},
 	[25026] = {
 		message = "You found some beautiful swan feathers entangled in the cactus stings.", -- Darashia Nort of City
-		storage = ThreatenedDreams.Mission01.Feathers3 },
+		storage = ThreatenedDreams.Mission01.Feathers3,
+	},
 	[25027] = {
 		message = "You found some beautiful swan feathers beneath the dragon skull.", -- Darashia Nort + Far of City
-		storage = ThreatenedDreams.Mission01.Feathers4 },
+		storage = ThreatenedDreams.Mission01.Feathers4,
+	},
 	[25028] = {
 		message = "You found some more feaathers under the dead tree. Now you should have enough for an entire cloak.", -- Darashia Nort + Far of City
-		storage = ThreatenedDreams.Mission01.Feathers5 }
+		storage = ThreatenedDreams.Mission01.Feathers5,
+	},
 }
 
 local swanFeathers = MoveEvent()

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 81,
 	lookLegs = 95,
 	lookFeet = 114,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -121,7 +121,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"I am pleased to hear that. On the isle of Tyrsung foreign hunters have set up camp. They are hunting the animals there with no mercy. We will haveto find something that distracts them from hunting ...",
 				"Take this jug here and travel to the jungle of Tiquanda. There you will find a race of wood eating ants called termites. Use the jug on one of their hills to catch some of them ...",
-				"Then find someone in Svargrond that brings you to Tyrsung. There, release the termites on the bottom of a mast in the hull of the hunters' ship. If you are done, report to me about your mission."
+				"Then find someone in Svargrond that brings you to Tyrsung. There, release the termites on the bottom of a mast in the hull of the hunters' ship. If you are done, report to me about your mission.",
 			}, npc, creature)
 			player:setStorageValue(Storage.TheIceIslands.Questline, 6)
 			player:setStorageValue(Storage.TheIceIslands.Mission03, 1) -- Questlog The Ice Islands Quest, Nibelor 2: Ecological Terrorism
@@ -275,7 +275,7 @@ npcConfig.shop = {
 	{ itemName = "wand of inferno", clientId = 3071, buy = 15000 },
 	{ itemName = "wand of starstorm", clientId = 8092, buy = 18000 },
 	{ itemName = "wand of voodoo", clientId = 8094, buy = 22000 },
-	{ itemName = "wand of vortex", clientId = 3074, buy = 500 }
+	{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -286,7 +286,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

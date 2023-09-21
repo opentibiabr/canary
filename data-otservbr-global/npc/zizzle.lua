@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 114
+	lookType = 114,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -53,7 +53,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if (MsgContains(message, "mission")) then
+	if MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.WrathoftheEmperor.Questline) == 25 then
 			npcHandler:say("You made it! Az zoon az you are prepared, I will brief you for your nexzt mizzion. ", npc, creature)
 			player:setStorageValue(Storage.WrathoftheEmperor.Mission08, 2) --Questlog, Wrath of the Emperor "Mission 08: Uninvited Guests"
@@ -69,7 +69,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Dizabling ze cryztalz will probably alert ze emperor. It will likely be too late for him to intervene in perzon but a creature of hiz power might have ozer wayz to intervene. ...",
 				"But zere iz more. To reach ze emperor, you will need accezz to hiz inner realmz. Ze zecret to enter iz guarded by a dragon. ...",
 				"But ziz iz not ze catch - ze catch iz, zat ze key iz buried in hiz vazt mind. Ze emperor haz bound ze dragon to himzelf, forzing him into an eternal zlumber. ...",
-				"A zignificant part of ze emperor'z power iz uzed to reztrain ze dragon. Ze only way to free him will be to enter hiz dreamz. Are you prepared for ziz?"
+				"A zignificant part of ze emperor'z power iz uzed to reztrain ze dragon. Ze only way to free him will be to enter hiz dreamz. Are you prepared for ziz?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(Storage.WrathoftheEmperor.Questline) == 29 then
@@ -82,7 +82,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					"Uzing ze zeptre will forze a part of ze emperor'z willpower out of ze cryztal. You will have to kill zoze manifeztationz. ...",
 					"Zen uze your zeptre on ze remainz to deztroy ze emperor'z influenze over ze cryztal. ...",
 					"I recommend not to go alone becauze it will be very dangerouz - but ALL of you will have to uze zeir zeptre replicaz on ze emperor'z remainz to prozeed! ...",
-					"You will need it. Now go to the north of Sleeping Dragon room, {dont need talk} with he! Good luck."
+					"You will need it. Now go to the north of Sleeping Dragon room, {dont need talk} with he! Good luck.",
 				}, npc, creature)
 				player:setStorageValue(Storage.WrathoftheEmperor.TeleportAccess.InnerSanctum, 1)
 				player:setStorageValue(Storage.WrathoftheEmperor.Questline, 30)
@@ -99,7 +99,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"Didn't exzpect anyzing lezz from you. Alright, zankz to your effortz to build an effective reziztanze, our comradez zalvaged ziz potion and ze formula you need to utter to breach hiz zubconzciouznezz. ...",
 				"Drink it and when you are cloze to ze dragon zpeak: Z...z.. well, juzt take ze sheet wiz ze word and read it yourzelf. A lot of rebelz have died to retrieve ziz information, uze it wizely. ...",
-				"Now go and try to find a way to reach ze emperor and to free ze land from it'z opprezzor. Onze you have found a way, return to me and I will explain what to do wiz ze cryztalz. May ze Great Znake guide you!"
+				"Now go and try to find a way to reach ze emperor and to free ze land from it'z opprezzor. Onze you have found a way, return to me and I will explain what to do wiz ze cryztalz. May ze Great Znake guide you!",
 			}, npc, creature)
 			player:setStorageValue(Storage.WrathoftheEmperor.TeleportAccess.SleepingDragon, 1)
 			player:setStorageValue(Storage.WrathoftheEmperor.Mission09, 1) --Questlog, Wrath of the Emperor "Mission 08: Uninvited Guests"

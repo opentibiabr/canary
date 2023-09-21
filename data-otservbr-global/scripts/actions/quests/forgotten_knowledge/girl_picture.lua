@@ -4,7 +4,7 @@ function forgottenKnowledgeGirl.onUse(player, item, fromPosition, target, toPosi
 		return false
 	end
 	player:setStorageValue(Storage.ForgottenKnowledge.GirlPicture, 1)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Seems that an old silver key appears in the drower.')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Seems that an old silver key appears in the drower.")
 	item:remove()
 	return true
 end

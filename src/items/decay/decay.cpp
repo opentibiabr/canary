@@ -132,7 +132,7 @@ void Decay::checkDecay() {
 	}
 
 	if (it != end) {
-		eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this), __FUNCTION__);
+		eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
 	}
 }
 

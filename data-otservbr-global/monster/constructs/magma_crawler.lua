@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 885
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Warzone 2."
+	Locations = "Warzone 2.",
 }
 
 monster.health = 4800
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -101,7 +101,7 @@ monster.loot = {
 	{ name = "green crystal fragment", chance = 7000 },
 	{ name = "magma clump", chance = 11600 },
 	{ name = "blazing bone", chance = 11500 },
-	{ name = "blazing bone", chance = 12220 }
+	{ name = "blazing bone", chance = 12220 },
 }
 
 monster.attacks = {
@@ -111,14 +111,14 @@ monster.attacks = {
 	{ name = "magma crawler soulfire", interval = 2000, chance = 20, target = false },
 	{ name = "soulfire rune", interval = 2000, chance = 10, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -140, maxDamage = -180, radius = 3, effect = CONST_ME_HITBYFIRE, target = false },
-	{ name = "speed", interval = 2000, chance = 10, speedChange = -800, radius = 2, effect = CONST_ME_MAGIC_RED, target = false, duration = 20000 }
+	{ name = "speed", interval = 2000, chance = 10, speedChange = -800, radius = 2, effect = CONST_ME_MAGIC_RED, target = false, duration = 20000 },
 }
 
 monster.defenses = {
 	defense = 45,
 	armor = 84,
 	mitigation = 2.51,
-	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -138,7 +138,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

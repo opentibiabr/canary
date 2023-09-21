@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 446
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Island of Destiny, Drefia, Ghostland and beneath Fenrock."
+	Locations = "Island of Destiny, Drefia, Ghostland and beneath Fenrock.",
 }
 
 monster.health = 65
@@ -35,7 +35,7 @@ monster.manaCost = 350
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -79,12 +79,12 @@ monster.loot = {
 	{ name = "mace", chance = 2000 },
 	{ name = "white mushroom", chance = 24000, maxCount = 3 },
 	{ name = "brown mushroom", chance = 1700 },
-	{ name = "pelvis bone", chance = 10630 }
+	{ name = "pelvis bone", chance = 10630 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -7, maxDamage = -13, range = 1, effect = CONST_ME_MAGIC_RED, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -7, maxDamage = -13, range = 1, effect = CONST_ME_MAGIC_RED, target = false },
 }
 
 monster.defenses = {
@@ -110,7 +110,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

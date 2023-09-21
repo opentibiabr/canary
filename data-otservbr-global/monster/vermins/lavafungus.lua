@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2095
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Grotto of the Lost."
+	Locations = "Grotto of the Lost.",
 }
 
 monster.health = 7200
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -96,7 +96,7 @@ monster.loot = {
 	{ name = "focus cape", chance = 2330 },
 	{ name = "wand of starstorm", chance = 2330 },
 	{ name = "crystal mace", chance = 1700 },
-	{ id = 3097, chance = 2330 } -- dwarven ring
+	{ id = 3097, chance = 2330 }, -- dwarven ring
 }
 
 monster.attacks = {
@@ -112,7 +112,7 @@ monster.defenses = {
 	defense = 70,
 	armor = 70,
 	mitigation = 1.60,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 270, maxDamage = 530, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 270, maxDamage = 530, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -132,7 +132,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

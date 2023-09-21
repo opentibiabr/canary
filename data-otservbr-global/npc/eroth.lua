@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 63
+	lookType = 63,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -45,13 +45,13 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I am the leader of the Cenath caste." })
-keywordHandler:addKeyword({ 'kuridai' }, StdModule.say, { npcHandler = npcHandler, text = "The Kuridai are aggressive and victims of their instincts. Without our help they would surely die in a foolish war." })
-keywordHandler:addKeyword({ 'crunor' }, StdModule.say, { npcHandler = npcHandler, text = "Gods are for the weak. We will master the world on our own. We need no gods." })
-keywordHandler:addKeyword({ 'deraisim' }, StdModule.say, { npcHandler = npcHandler, text = "They lack the understanding of unity. We are keeping them together and prevent them from being slaughtered one by one." })
-keywordHandler:addKeyword({ 'cenath' }, StdModule.say, { npcHandler = npcHandler, text = "We are the shepherds of our people. The other castes need our guidance." })
-keywordHandler:addKeyword({ 'magic' }, StdModule.say, { npcHandler = npcHandler, text = "Magic comes almost naturally to the Cenath. We keep the secrets of ages." })
-keywordHandler:addKeyword({ 'spell' }, StdModule.say, { npcHandler = npcHandler, text = "I can teach the spells 'magic shield', 'destroy field', 'creature illusion', 'chameleon', 'convince creature', and 'summon creature'." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am the leader of the Cenath caste." })
+keywordHandler:addKeyword({ "kuridai" }, StdModule.say, { npcHandler = npcHandler, text = "The Kuridai are aggressive and victims of their instincts. Without our help they would surely die in a foolish war." })
+keywordHandler:addKeyword({ "crunor" }, StdModule.say, { npcHandler = npcHandler, text = "Gods are for the weak. We will master the world on our own. We need no gods." })
+keywordHandler:addKeyword({ "deraisim" }, StdModule.say, { npcHandler = npcHandler, text = "They lack the understanding of unity. We are keeping them together and prevent them from being slaughtered one by one." })
+keywordHandler:addKeyword({ "cenath" }, StdModule.say, { npcHandler = npcHandler, text = "We are the shepherds of our people. The other castes need our guidance." })
+keywordHandler:addKeyword({ "magic" }, StdModule.say, { npcHandler = npcHandler, text = "Magic comes almost naturally to the Cenath. We keep the secrets of ages." })
+keywordHandler:addKeyword({ "spell" }, StdModule.say, { npcHandler = npcHandler, text = "I can teach the spells 'magic shield', 'destroy field', 'creature illusion', 'chameleon', 'convince creature', and 'summon creature'." })
 
 -- Greeting message
 keywordHandler:addGreetKeyword({ "ashari" }, { npcHandler = npcHandler, text = "I greet thee, outsider." })

@@ -1,7 +1,7 @@
 local config = {
 	[897] = 9598, -- TBI
 	[898] = 9596, -- CGB
-	[899] = 9594 -- AVIN
+	[899] = 9594, -- AVIN
 }
 
 local secretServiceTools = Action()
@@ -12,7 +12,7 @@ function secretServiceTools.onUse(player, item, fromPosition, target, toPosition
 	end
 
 	player:addItem(useItem)
-	player:say('You\'ve found a useful little tool for secret agents in the parcel.', TALKTYPE_MONSTER_SAY)
+	player:say("You've found a useful little tool for secret agents in the parcel.", TALKTYPE_MONSTER_SAY)
 
 	item:remove()
 	return true

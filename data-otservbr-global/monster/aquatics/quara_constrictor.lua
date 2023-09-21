@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 239
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Calassa, Frozen Trench underwater sites, Yalahar (Sunken Quarter)."
+	Locations = "Calassa, Frozen Trench underwater sites, Yalahar (Sunken Quarter).",
 }
 
 monster.health = 450
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -83,7 +83,7 @@ monster.loot = {
 	{ name = "shrimp", chance = 5140, maxCount = 5 },
 	{ name = "brass armor", chance = 4810 },
 	{ name = "small amethyst", chance = 3060 },
-	{ name = "fish fin", chance = 490 }
+	{ name = "fish fin", chance = 490 },
 }
 
 monster.attacks = {
@@ -91,7 +91,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -50, maxDamage = -90, radius = 3, effect = CONST_ME_HITAREA, target = false },
 	{ name = "quara constrictor freeze", interval = 2000, chance = 10, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -40, maxDamage = -70, range = 7, radius = 4, effect = CONST_ME_ICEATTACK, target = false },
-	{ name = "quara constrictor electrify", interval = 2000, chance = 10, range = 1, target = false }
+	{ name = "quara constrictor electrify", interval = 2000, chance = 10, range = 1, target = false },
 }
 
 monster.defenses = {
@@ -117,7 +117,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 1500
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -66,7 +66,7 @@ monster.loot = {
 	{ id = 3035, chance = 100000, maxCount = 4 }, -- platinum coin
 	{ id = 236, chance = 25000 }, -- strong health potion
 	{ id = 5878, chance = 25000 }, -- minotaur leather
-	{ id = 3029, chance = 25000 } -- small sapphire
+	{ id = 3029, chance = 25000 }, -- small sapphire
 }
 
 monster.attacks = {
@@ -97,7 +97,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

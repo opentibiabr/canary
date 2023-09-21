@@ -237,12 +237,8 @@ void IOBestiary::addBestiaryKill(Player* player, const std::shared_ptr<MonsterTy
 		}
 	}
 
-	const auto &trackerUnorderedSet = player->getCyclopediaMonsterTrackerSet(false);
-	for (const auto mType : trackerUnorderedSet) {
-		if (raceid == mType->info.raceid) {
-			player->refreshCyclopediaMonsterTracker(trackerUnorderedSet, false);
-		}
-	}
+	// Reload bestiary tracker
+	player->refreshCyclopediaMonsterTracker();
 }
 
 charmRune_t IOBestiary::getCharmFromTarget(Player* player, const std::shared_ptr<MonsterType> mtype) {

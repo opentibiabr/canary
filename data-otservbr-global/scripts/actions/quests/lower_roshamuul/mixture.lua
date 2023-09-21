@@ -1,6 +1,6 @@
 local buckets = {
 	[20053] = 20054,
-	[20054] = 20053
+	[20054] = 20053,
 }
 
 local lowerRoshamuulMixtune = Action()

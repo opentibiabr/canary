@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "lost time"
 monster.experience = 0
 monster.outfit = {
-	lookTypeEx = 24963
+	lookTypeEx = 24963,
 }
 
 monster.health = 2000
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -56,12 +56,11 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 50, attack = 25 },
-	{ name = "white shade paralyze", interval = 2000, chance = 18, target = false }
+	{ name = "white shade paralyze", interval = 2000, chance = 18, target = false },
 }
 
 monster.defenses = {
@@ -87,7 +86,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

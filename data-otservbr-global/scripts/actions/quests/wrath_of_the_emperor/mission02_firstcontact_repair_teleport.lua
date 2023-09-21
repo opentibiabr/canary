@@ -4,7 +4,7 @@ local waterpos = {
 	Position({ x = 33283, y = 31037, z = 10 }),
 	Position({ x = 33283, y = 31036, z = 10 }),
 	Position({ x = 33283, y = 31038, z = 10 }),
-	Position({ x = 33283, y = 31035, z = 10 })
+	Position({ x = 33283, y = 31035, z = 10 }),
 }
 
 local function revertWater(position)

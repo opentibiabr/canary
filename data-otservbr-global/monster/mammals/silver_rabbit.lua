@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 327
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "A lot of places on the Ice Islands and one on Rookgaard (unreachable)."
+	Locations = "A lot of places on the Ice Islands and one on Rookgaard (unreachable).",
 }
 
 monster.health = 15
@@ -35,7 +35,7 @@ monster.manaCost = 220
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -75,7 +75,7 @@ monster.voices = {
 monster.loot = {
 	{ name = "meat", chance = 86170, maxCount = 2 },
 	{ id = 3595, chance = 11150 }, -- carrot
-	{ name = "silky fur", chance = 28670 }
+	{ name = "silky fur", chance = 28670 },
 }
 
 monster.defenses = {
@@ -101,7 +101,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 94,
 	lookLegs = 114,
 	lookFeet = 115,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -61,8 +61,8 @@ local config = {
 		["port hope"] = TOWNS_LIST.PORT_HOPE,
 		["ankrahmun"] = TOWNS_LIST.ANKRAHMUN,
 		["darashia"] = TOWNS_LIST.DARASHIA,
-		["edron"] = TOWNS_LIST.EDRON
-	}
+		["edron"] = TOWNS_LIST.EDRON,
+	},
 }
 
 local function greetCallback(npc, creature)
@@ -74,9 +74,12 @@ local function greetCallback(npc, creature)
 		npcHandler:resetNpc(creature)
 		return false
 	else
-		npcHandler:setMessage(MESSAGE_GREET, "Hello young friend! I can attune you to a city of your choice. \z
+		npcHandler:setMessage(
+			MESSAGE_GREET,
+			"Hello young friend! I can attune you to a city of your choice. \z
 		If you step to the teleporter here you will not appear in the city you came from as usual, \z
-		but the city of your choice. Is it what you wish?")
+		but the city of your choice. Is it what you wish?"
+		)
 	end
 	return true
 end
@@ -99,8 +102,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif npcHandler:getTopic(playerId) == 1 then
 		local cityTable = config.towns[message:lower()]
 		if cityTable then
-			player:setStorageValue(Storage.AdventurersGuild.CharosTrav,
-				player:getStorageValue(Storage.AdventurersGuild.CharosTrav) + 1)
+			player:setStorageValue(Storage.AdventurersGuild.CharosTrav, player:getStorageValue(Storage.AdventurersGuild.CharosTrav) + 1)
 			player:setStorageValue(Storage.AdventurersGuild.Stone, cityTable)
 			npcHandler:say("Goodbye traveler!", npc, creature)
 		else

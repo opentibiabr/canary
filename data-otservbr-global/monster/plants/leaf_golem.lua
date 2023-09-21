@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 979
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Leaf dungeon in Hellgate, Lair of the Treeling Witch, Forest Fury Camp and in the \z
-		Forest Fury version of the Forsaken Mine."
+		Forest Fury version of the Forsaken Mine.",
 }
 
 monster.health = 90
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -84,13 +84,13 @@ monster.loot = {
 	{ name = "dowser", chance = 12190 },
 	{ name = "swampling club", chance = 5130 },
 	{ name = "white mushroom", chance = 4920, maxCount = 3 },
-	{ name = "small emerald", chance = 950 }
+	{ name = "small emerald", chance = 950 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -15, range = 7, shootEffect = CONST_ANI_SMALLSTONE, target = true },
-	{ name = "speed", interval = 2000, chance = 20, speedChange = -600, radius = 3, effect = CONST_ME_SMALLPLANTS, target = false, duration = 9000 }
+	{ name = "speed", interval = 2000, chance = 20, speedChange = -600, radius = 3, effect = CONST_ME_SMALLPLANTS, target = false, duration = 9000 },
 }
 
 monster.defenses = {
@@ -116,7 +116,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

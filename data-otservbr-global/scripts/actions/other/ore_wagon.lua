@@ -8,7 +8,7 @@ local config = {
 	[1048] = { destination = Position(32494, 31831, 9) },
 	[1049] = { destination = Position(32514, 31805, 9) },
 	[1050] = { destination = Position(32497, 31805, 9) },
-	[1051] = { destination = Position(32518, 31827, 9) }
+	[1051] = { destination = Position(32518, 31827, 9) },
 }
 
 local oreWagon = Action()

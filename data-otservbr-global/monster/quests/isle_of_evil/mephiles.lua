@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -78,12 +78,12 @@ monster.loot = {
 	{ id = 9376, chance = 1000 }, -- stale bread of ancientness
 	{ id = 9387, chance = 1000 }, -- poet's fencing quill
 	{ id = 9400, chance = 1000 }, -- rain coat
-	{ id = 3537, chance = 1000 } -- white knight
+	{ id = 3537, chance = 1000 }, -- white knight
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 1200, chance = 100, minDamage = 0, maxDamage = -35 },
-	{ name = "combat", interval = 1500, chance = 70, type = COMBAT_FIREDAMAGE, minDamage = -15, maxDamage = -45, range = 7, radius = 2, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true }
+	{ name = "combat", interval = 1500, chance = 70, type = COMBAT_FIREDAMAGE, minDamage = -15, maxDamage = -45, range = 7, radius = 2, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
 }
 
 monster.defenses = {
@@ -91,7 +91,7 @@ monster.defenses = {
 	armor = 30,
 	mitigation = 0.40,
 	{ name = "speed", interval = 1000, chance = 40, speedChange = 400, effect = CONST_ME_MAGIC_RED, target = false, duration = 40000 },
-	{ name = "invisible", interval = 4000, chance = 50, effect = CONST_ME_MAGIC_RED }
+	{ name = "invisible", interval = 4000, chance = 50, effect = CONST_ME_MAGIC_RED },
 }
 
 monster.elements = {
@@ -111,7 +111,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1677
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Ancient Ancestorial Grounds and Sunken Temple."
+	Locations = "Ancient Ancestorial Grounds and Sunken Temple.",
 }
 
 monster.health = 7200
@@ -38,7 +38,7 @@ monster.enemyFactions = { FACTION_DEEPLING, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -73,8 +73,8 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "BOQOL\"°", yell = false },
-	{ text = "QOL\" VBOXCL°", yell = false }
+	{ text = 'BOQOL"°', yell = false },
+	{ text = 'QOL" VBOXCL°', yell = false },
 }
 
 monster.loot = {
@@ -95,14 +95,14 @@ monster.loot = {
 	{ name = "warrior's axe", chance = 2950 },
 	{ name = "small enchanted sapphire", chance = 2220, maxCount = 4 },
 	{ id = 3052, chance = 2010 }, -- life ring
-	{ name = "necklace of the deep", chance = 200 }
+	{ name = "necklace of the deep", chance = 200 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300, effect = CONST_ME_DRAWBLOOD },
 	{ name = "combat", interval = 4000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -400, range = 5, shootEffect = CONST_ANI_HUNTINGSPEAR, target = false },
 	{ name = "combat", interval = 4000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -150, maxDamage = -300, range = 5, shootEffect = CONST_ANI_LARGEROCK, target = false },
-	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_HOLYDAMAGE, minDamage = -400, maxDamage = -700, length = 8, spread = 3, effect = CONST_ME_BLOCKHIT, target = false }
+	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_HOLYDAMAGE, minDamage = -400, maxDamage = -700, length = 8, spread = 3, effect = CONST_ME_BLOCKHIT, target = false },
 }
 
 monster.defenses = {
@@ -128,7 +128,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

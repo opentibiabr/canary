@@ -3,19 +3,19 @@
 local missionTiles = {
 	[50337] = {
 		message = "Go down the stairs to reach the vault. It smells like fire down there. Make sure you are healthy!",
-		arrowPosition = { x = 32089, y = 32154, z = 9 }
+		arrowPosition = { x = 32089, y = 32154, z = 9 },
 	},
 	[50338] = {
-		message = "The vault is on fire! There is almost no air in here. You don't have much time to find the book. Hurry!"
+		message = "The vault is on fire! There is almost no air in here. You don't have much time to find the book. Hurry!",
 	},
 	[50340] = {
 		message = "This must be the chest with the book - but it's covered in flames!",
-		arrowPosition = { x = 32083, y = 32141, z = 10 }
+		arrowPosition = { x = 32083, y = 32141, z = 10 },
 	},
 	[50341] = {
 		message = "Right-click on the grey rune on the table and then left-click on the fire! You can't take the rune, but it works.",
-		arrowPosition = { x = 32082, y = 32143, z = 10 }
-	}
+		arrowPosition = { x = 32082, y = 32143, z = 10 },
+	},
 }
 
 -- Mission tutorial tiles

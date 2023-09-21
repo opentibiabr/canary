@@ -236,7 +236,7 @@ bool ConfigManager::load() {
 	integer[WHITE_SKULL_TIME] = getGlobalNumber(L, "whiteSkullTime", 15 * 60 * 1000);
 	integer[STAIRHOP_DELAY] = getGlobalNumber(L, "stairJumpExhaustion", 2000);
 	integer[MAX_CONTAINER] = getGlobalNumber(L, "maxContainer", 500);
-	integer[MAX_ITEM] = getGlobalNumber(L, "maxItem", 10000);
+	integer[MAX_CONTAINER_ITEM] = getGlobalNumber(L, "maxItem", 5000);
 	integer[EXP_FROM_PLAYERS_LEVEL_RANGE] = getGlobalNumber(L, "expFromPlayersLevelRange", 75);
 	integer[CHECK_EXPIRED_MARKET_OFFERS_EACH_MINUTES] = getGlobalNumber(L, "checkExpiredMarketOffersEachMinutes", 60);
 	integer[MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER] = getGlobalNumber(L, "maxMarketOffersAtATimePerPlayer", 100);

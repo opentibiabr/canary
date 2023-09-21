@@ -353,7 +353,7 @@ local dimension = {
 	{ itemid = 417, position = Position(33637, 32716, 12) },
 	{ itemid = 417, position = Position(33634, 32712, 12) },
 	{ itemid = 12084, position = Position(33640, 32718, 12) },
-	{ itemid = 12084, position = Position(33640, 32717, 12) }
+	{ itemid = 12084, position = Position(33640, 32717, 12) },
 }
 
 local function transformArea()
@@ -394,10 +394,10 @@ local ferumbrasAscendantHabitatDimension = Action()
 function ferumbrasAscendantHabitatDimension.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 9125 then
 		if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Dimension) >= 1 then
-			player:say('The lever are stuck, need some time to it can be moveable again.', TALKTYPE_MONSTER_SAY)
+			player:say("The lever are stuck, need some time to it can be moveable again.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
-		Game.createMonster('lovely souleater', Position(33642, 32722, 12), true, true)
+		Game.createMonster("lovely souleater", Position(33642, 32722, 12), true, true)
 		addEvent(transformArea, 2 * 1000)
 		item:transform(9126)
 		local basin = Tile(Position(33631, 32721, 12)):getItemById(11114)
@@ -407,7 +407,7 @@ function ferumbrasAscendantHabitatDimension.onUse(player, item, fromPosition, ta
 		end
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Dimension, 1)
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats, Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats) + 1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The room transforms into a completely different landscape.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The room transforms into a completely different landscape.")
 		if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats) >= 8 then
 			addEvent(function()
 				resetFerumbrasAscendantHabitats()

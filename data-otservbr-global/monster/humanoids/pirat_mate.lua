@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 95,
 	lookFeet = 113,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2039
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "The Wreckoning"
+	Locations = "The Wreckoning",
 }
 
 monster.health = 3200
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -90,20 +90,20 @@ monster.loot = {
 	{ name = "yellow gem", chance = 3000 },
 	{ name = "ice rapier", chance = 3000 },
 	{ name = "green crystal shard", chance = 2000 },
-	{ name = "small treasure chest", chance = 2000 }
+	{ name = "small treasure chest", chance = 2000 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },
 	{ name = "energy beam", interval = 2000, chance = 10, minDamage = -150, maxDamage = -210, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYAREA, target = false },
-	{ name = "energy wave", interval = 2000, chance = 10, minDamage = -140, maxDamage = -80, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYAREA, target = false }
+	{ name = "energy wave", interval = 2000, chance = 10, minDamage = -140, maxDamage = -80, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 75,
 	mitigation = 1.94,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 30, maxDamage = 60, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 30, maxDamage = 60, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -123,7 +123,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

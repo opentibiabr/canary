@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1546
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Warzone 4"
+	Locations = "Warzone 4",
 }
 
 monster.health = 4500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -89,7 +89,7 @@ monster.loot = {
 	{ name = "green crystal shard", chance = 7850 },
 	{ name = "violet crystal shard", chance = 4690 },
 	{ name = "mushroom backpack", chance = 610 },
-	{ name = "suspicious device", chance = 520 }
+	{ name = "suspicious device", chance = 520 },
 }
 
 monster.attacks = {
@@ -100,7 +100,7 @@ monster.attacks = {
 	{ name = "explosion rune", interval = 2000, chance = 15, minDamage = -50, maxDamage = -170, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -40, maxDamage = -60, range = 7, target = false },
 	{ name = "stone shower rune", interval = 2000, chance = 10, minDamage = -70, maxDamage = -140, range = 7, target = false },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -70, maxDamage = -140, length = 3, spread = 3, effect = CONST_ME_PLANTATTACK, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -70, maxDamage = -140, length = 3, spread = 3, effect = CONST_ME_PLANTATTACK, target = false },
 }
 
 monster.defenses = {
@@ -126,7 +126,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

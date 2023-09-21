@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -85,14 +85,14 @@ monster.loot = {
 	{ id = 3415, chance = 15400 }, -- guardian shield
 	{ id = 826, chance = 15380 }, -- magma coat
 	{ id = 3033, chance = 30770, maxCount = 4 }, -- small amethyst
-	{ id = 3030, chance = 7690, maxCount = 4 } -- small ruby
+	{ id = 3030, chance = 7690, maxCount = 4 }, -- small ruby
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 90, attack = 100, condition = { type = CONDITION_POISON, totalDamage = 280, interval = 4000 } },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -100, maxDamage = -350, range = 7, radius = 4, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
 	{ name = "combat", interval = 2500, chance = 12, type = COMBAT_FIREDAMAGE, minDamage = -100, maxDamage = -460, range = 7, radius = 2, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREATTACK, target = true },
-	{ name = "diabolic imp skill reducer", interval = 2000, chance = 10, range = 7, target = false }
+	{ name = "diabolic imp skill reducer", interval = 2000, chance = 10, range = 7, target = false },
 }
 
 monster.defenses = {
@@ -102,7 +102,7 @@ monster.defenses = {
 	{ name = "combat", interval = 2000, chance = 35, type = COMBAT_HEALING, minDamage = 275, maxDamage = 840, effect = CONST_ME_MAGIC_RED, target = false },
 	{ name = "the imperor summon", interval = 2000, chance = 21, target = false },
 	{ name = "speed", interval = 2000, chance = 12, speedChange = 1496, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
-	{ name = "invisible", interval = 2000, chance = 11, effect = CONST_ME_TELEPORT }
+	{ name = "invisible", interval = 2000, chance = 11, effect = CONST_ME_TELEPORT },
 }
 
 monster.elements = {
@@ -122,7 +122,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

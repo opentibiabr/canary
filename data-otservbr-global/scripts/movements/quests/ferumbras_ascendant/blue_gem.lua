@@ -50,20 +50,19 @@ function blueGem.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 	if item.itemid == 8647 then
-		local leverFirst = Tile(Position(33671, 32638, 13)):getItemById(9110)
-				or Tile(Position(33671, 32638, 13)):getItemById(9111) -- lever blue
-		local leverSecond = Tile(Position(33613, 32691, 13)):getItemById(9110)
-				or Tile(Position(33613, 32691, 13)):getItemById(9111) -- lever green
-		local leverThird = Tile(Position(33651, 32661, 13)):getItemById(9110)
-				or Tile(Position(33651, 32661, 13)):getItemById(9111) -- lever red
-		local leverFour = Tile(Position(33672, 32688, 13)):getItemById(9110)
-				or Tile(Position(33672, 32688, 13)):getItemById(9111) -- lever green
+		local leverFirst = Tile(Position(33671, 32638, 13)):getItemById(9110) or Tile(Position(33671, 32638, 13)):getItemById(9111) -- lever blue
+		local leverSecond = Tile(Position(33613, 32691, 13)):getItemById(9110) or Tile(Position(33613, 32691, 13)):getItemById(9111) -- lever green
+		local leverThird = Tile(Position(33651, 32661, 13)):getItemById(9110) or Tile(Position(33651, 32661, 13)):getItemById(9111) -- lever red
+		local leverFour = Tile(Position(33672, 32688, 13)):getItemById(9110) or Tile(Position(33672, 32688, 13)):getItemById(9111) -- lever green
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Elements.First, 3) -- blue
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Elements.Second, 2) -- green
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Elements.Third, 1) -- red
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Elements.Four, 5) -- grass
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You hear a whisper: \z
-		'You will not be guided but your path shines in the colours blue, green and red. Heed this hierarchy.'")
+		player:sendTextMessage(
+			MESSAGE_EVENT_ADVANCE,
+			"You hear a whisper: \z
+		'You will not be guided but your path shines in the colours blue, green and red. Heed this hierarchy.'"
+		)
 		if not leverFirst or not leverSecond or not leverThird or not leverFour then
 			return false
 		end

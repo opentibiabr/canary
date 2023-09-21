@@ -1,11 +1,11 @@
 local sacrificialPosition = {
 	Position(32111, 31933, 8),
-	Position(32112, 31933, 8)
+	Position(32112, 31933, 8),
 }
 
 local effectPosition = {
 	Position(32110, 31933, 8),
-	Position(32113, 31933, 8)
+	Position(32113, 31933, 8),
 }
 
 local sacredSnake = Action()

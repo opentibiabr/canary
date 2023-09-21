@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 9
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "All the Tombs, Lich Hell, Drefia, Medusa Shield Quest room, Old Fortress, Old Masonry, \z
-		beneath Fenrock, Cemetery Quarter and Magician Quarter."
+		beneath Fenrock, Cemetery Quarter and Magician Quarter.",
 }
 
 monster.health = 580
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -73,8 +73,8 @@ monster.summon = {
 	summons = {
 		{ name = "Ghoul", chance = 15, interval = 2000, count = 1 },
 		{ name = "Ghost", chance = 5, interval = 2000, count = 1 },
-		{ name = "Mummy", chance = 5, interval = 2000, count = 1 }
-	}
+		{ name = "Mummy", chance = 5, interval = 2000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -96,20 +96,20 @@ monster.loot = {
 	{ name = "strong mana potion", chance = 300 },
 	{ name = "spellbook of warding", chance = 130 },
 	{ name = "book of necromantic rituals", chance = 10130 },
-	{ name = "necromantic robe", chance = 1001 }
+	{ name = "necromantic robe", chance = 1001 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -80, condition = { type = CONDITION_POISON, totalDamage = 160, interval = 4000 } },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -60, maxDamage = -120, range = 1, shootEffect = CONST_ANI_DEATH, effect = CONST_ME_SMALLCLOUDS, target = true },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -65, maxDamage = -120, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -65, maxDamage = -120, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 25,
 	armor = 50,
 	mitigation = 1.04,
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -129,7 +129,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

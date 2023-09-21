@@ -2,7 +2,7 @@ local config = {
 	[57535] = { tileId = 416, positionTo = { x = 33829, y = 31635, z = 9 } },
 	[57536] = { tileId = 417, positionTo = { x = 33831, y = 31635, z = 9 } },
 	[57537] = { tileId = 418, positionTo = { x = 33833, y = 31635, z = 9 } },
-	[57538] = { tileId = 423, positionTo = { x = 33835, y = 31635, z = 9 } }
+	[57538] = { tileId = 423, positionTo = { x = 33835, y = 31635, z = 9 } },
 }
 
 local destination = { x = 33826, y = 31611, z = 9 }

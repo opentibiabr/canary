@@ -1,10 +1,10 @@
 local config = {
-	bossName = 'Cave Spider', -- boss name
+	bossName = "Cave Spider", -- boss name
 	bossPos = Position(33034, 32107, 12), -- Boss Position
 	tarantulasPos = { -- Tarantulas Spawn
 		Position(33029, 32103, 12),
 		Position(33029, 32107, 12),
-		Position(33029, 32111, 12)
+		Position(33029, 32111, 12),
 	},
 	centerPos = Position(33031, 32107, 12), -- Boss Position
 	newPos = Position(33023, 32106, 12), -- Where to teleport player when entering the room
@@ -12,7 +12,7 @@ local config = {
 	rangeX = 20, -- Range in X
 	rangeY = 10, -- Range in Y
 	time = 5, -- time in minutes to remove the player
-	access = Storage.Quest.U11_50.HiddenThreats.CorymRescueMission -- Quest level to access the room
+	access = Storage.Quest.U11_50.HiddenThreats.CorymRescueMission, -- Quest level to access the room
 }
 
 local caveSpiderRoom = MoveEvent()
@@ -44,7 +44,9 @@ function caveSpiderRoom.onStepIn(creature, item, position, fromPosition)
 
 	clearRoom(room.centerPos, room.rangeX, room.rangeY, fromPosition)
 	local monster = Game.createMonster(room.bossName, room.bossPos, true, true)
-	for i = 1, 3 do Game.createMonster("Tarantula", room.tarantulasPos[i], true, true) end
+	for i = 1, 3 do
+		Game.createMonster("Tarantula", room.tarantulasPos[i], true, true)
+	end
 	if not monster then
 		return true
 	end

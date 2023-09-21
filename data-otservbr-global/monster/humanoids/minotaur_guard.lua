@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 29
@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Ancient Temple, Mintwallin, Minotaur Pyramid, Maze of Lost Souls, Folda, Cyclopolis, \z
 		Deeper Fibula Dungeon (level 50+ to open the door), Hero Cave, underground of Elvenbane, \z
-		Plains of Havoc, Kazordoon Minotaur Cave, Foreigner Quarter."
+		Plains of Havoc, Kazordoon Minotaur Cave, Foreigner Quarter.",
 }
 
 monster.health = 185
@@ -37,7 +37,7 @@ monster.manaCost = 550
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -89,11 +89,11 @@ monster.loot = {
 	{ id = 7401, chance = 80 }, -- minotaur trophy
 	{ name = "health potion", chance = 400 },
 	{ name = "minotaur horn", chance = 8330, maxCount = 2 },
-	{ name = "piece of warrior armor", chance = 5040 }
+	{ name = "piece of warrior armor", chance = 5040 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 },
 }
 
 monster.defenses = {
@@ -119,7 +119,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

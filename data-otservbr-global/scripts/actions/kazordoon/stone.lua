@@ -2,7 +2,7 @@ local config = {
 	{ position = Position(32604, 31904, 3), itemId = 1787 },
 	{ position = Position(32605, 31904, 3), itemId = 1788 },
 	{ position = Position(32604, 31905, 3), itemId = 1789 },
-	{ position = Position(32605, 31905, 3), itemId = 1790 }
+	{ position = Position(32605, 31905, 3), itemId = 1790 },
 }
 
 local stone = Action()

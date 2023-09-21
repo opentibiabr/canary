@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 1500
 monster.maxHealth = 1500
@@ -23,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -67,7 +66,7 @@ monster.loot = {
 	{ name = "gold coin", chance = 12500, maxCount = 65 },
 	{ name = "gold coin", chance = 12500, maxCount = 60 },
 	{ name = "glimmering soil", chance = 2500 },
-	{ name = "wand of draconia", chance = 1250 }
+	{ name = "wand of draconia", chance = 1250 },
 }
 
 monster.attacks = {
@@ -75,12 +74,12 @@ monster.attacks = {
 	{ name = "combat", interval = 1000, chance = 11, type = COMBAT_FIREDAMAGE, minDamage = -65, maxDamage = -510, length = 7, spread = 3, target = false },
 	-- fire
 	{ name = "condition", type = CONDITION_FIRE, interval = 1000, chance = 12, minDamage = -50, maxDamage = -200, radius = 6, effect = CONST_ME_FIREAREA, target = false },
-	{ name = "firefield", interval = 1000, chance = 15, range = 7, radius = 3, shootEffect = CONST_ANI_FIRE, target = true }
+	{ name = "firefield", interval = 1000, chance = 15, range = 7, radius = 3, shootEffect = CONST_ANI_FIRE, target = true },
 }
 
 monster.defenses = {
 	defense = 20,
-	armor = 20
+	armor = 20,
 	--	mitigation = ???,
 }
 
@@ -101,7 +100,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

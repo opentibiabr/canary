@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1930
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 100,
 	Stars = 5,
 	Occurrence = 0,
-	Locations = "Claustrophobic Inferno."
+	Locations = "Claustrophobic Inferno.",
 }
 
 monster.health = 25000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -99,7 +99,7 @@ monster.loot = {
 	{ name = "mastermind shield", chance = 420 },
 	{ name = "assassin dagger", chance = 340 },
 	{ name = "alloy legs", chance = 170 },
-	{ id = 34109, chance = 20 } -- bag you desire
+	{ id = 34109, chance = 20 }, -- bag you desire
 }
 
 monster.attacks = {
@@ -133,7 +133,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

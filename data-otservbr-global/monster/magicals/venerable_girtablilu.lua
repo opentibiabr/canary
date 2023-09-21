@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 114,
 	lookFeet = 2,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2098
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Ruins of Nuur"
+	Locations = "Ruins of Nuur",
 }
 
 monster.health = 8500
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -97,7 +97,7 @@ monster.loot = {
 	{ name = "wood cape", chance = 1340 },
 	{ name = "necrotic rod", chance = 1040 },
 	{ name = "springsprout rod", chance = 1040 },
-	{ name = "wand of decay", chance = 1040 }
+	{ name = "wand of decay", chance = 1040 },
 }
 
 monster.attacks = {
@@ -112,7 +112,7 @@ monster.defenses = {
 	defense = 80,
 	armor = 80,
 	mitigation = 2.16,
-	{ name = "speed", interval = 1000, chance = 10, speedChange = 160, effect = CONST_ME_POFF, target = false, duration = 4000 }
+	{ name = "speed", interval = 1000, chance = 10, speedChange = 160, effect = CONST_ME_POFF, target = false, duration = 4000 },
 }
 
 monster.elements = {
@@ -132,7 +132,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

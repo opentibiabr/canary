@@ -6,8 +6,7 @@ function mission4ParchmentDecyphering.onStepIn(creature, item, position, fromPos
 		return true
 	end
 
-	if player:getStorageValue(Storage.TheApeCity.Questline) == 7
-			and player:getStorageValue(Storage.TheApeCity.ParchmentDecyphering) ~= 1 then
+	if player:getStorageValue(Storage.TheApeCity.Questline) == 7 and player:getStorageValue(Storage.TheApeCity.ParchmentDecyphering) ~= 1 then
 		player:setStorageValue(Storage.TheApeCity.ParchmentDecyphering, 1)
 	end
 

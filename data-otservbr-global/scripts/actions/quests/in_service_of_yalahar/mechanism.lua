@@ -10,25 +10,25 @@ local mechanisms = {
 	[3099] = { pos = { x = 32874, y = 31202, z = 5 }, value = 41 }, -- Sunken
 	[3100] = { pos = { x = 32869, y = 31202, z = 5 }, value = 41 },
 	[3101] = { pos = { x = 32856, y = 31251, z = 5 }, value = 45 }, -- Factory
-	[3102] = { pos = { x = 32854, y = 31248, z = 5 }, value = 45 }
+	[3102] = { pos = { x = 32854, y = 31248, z = 5 }, value = 45 },
 }
 
 local mechanisms2 = {
 	[1018] = { pos = { x = 32773, y = 31116, z = 7 } },
-	[1019] = { pos = { x = 32780, y = 31115, z = 7 } }
+	[1019] = { pos = { x = 32780, y = 31115, z = 7 } },
 }
 
 local inServiceYalaharMechanism = Action()
 function inServiceYalaharMechanism.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if (mechanisms[item.uid]) then
-		if (player:getStorageValue(Storage.InServiceofYalahar.Questline) >= mechanisms[item.uid].value) then
+	if mechanisms[item.uid] then
+		if player:getStorageValue(Storage.InServiceofYalahar.Questline) >= mechanisms[item.uid].value then
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			player:teleportTo(mechanisms[item.uid].pos)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The gate mechanism won't move. You probably have to find a way around until you figure out how to operate the gate.")
 		end
-	elseif (mechanisms2[item.uid]) then
+	elseif mechanisms2[item.uid] then
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:teleportTo(mechanisms2[item.uid].pos)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

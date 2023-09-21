@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 93,
 	lookFeet = 114,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -65,8 +65,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "Zombie", chance = 10, interval = 2000, count = 2 }
-	}
+		{ name = "Zombie", chance = 10, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
@@ -84,21 +84,21 @@ monster.loot = {
 	{ id = 9399, chance = 1000 }, -- mighty helm of green sparks
 	{ id = 9372, chance = 1000 }, -- meat shield
 	{ id = 9373, chance = 1000 }, -- glutton's mace
-	{ id = 9383, chance = 1000 } -- trousers of the ancients
+	{ id = 9383, chance = 1000 }, -- trousers of the ancients
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -43 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DROWNDAMAGE, minDamage = -17, maxDamage = -55, range = 5, radius = 3, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_LOSEENERGY, target = true },
 	-- poison
-	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -20, maxDamage = -40, range = 7, shootEffect = CONST_ANI_POISON, target = false }
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -20, maxDamage = -40, range = 7, shootEffect = CONST_ANI_POISON, target = false },
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 15,
 	mitigation = 0.30,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 10, maxDamage = 30, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 10, maxDamage = 30, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -118,7 +118,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

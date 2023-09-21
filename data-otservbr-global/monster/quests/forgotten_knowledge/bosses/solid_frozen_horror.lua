@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 70000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -63,8 +63,7 @@ monster.voices = {
 	{ text = "Chrrrrrk! Chrrrk!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -0, maxDamage = -677 },
@@ -72,14 +71,14 @@ monster.attacks = {
 	{ name = "hirintror freeze", interval = 2000, chance = 15, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -0, maxDamage = -268, range = 7, radius = 3, shootEffect = CONST_ANI_ICE, effect = CONST_ME_BLOCKHIT, target = true },
 	{ name = "ice golem paralyze", interval = 2000, chance = 11, target = false },
-	{ name = "hirintror skill reducer", interval = 2000, chance = 10, target = false }
+	{ name = "hirintror skill reducer", interval = 2000, chance = 10, target = false },
 }
 
 monster.defenses = {
 	defense = 60,
 	armor = 60,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, radius = 7, effect = CONST_ME_BLOCKHIT, target = false }
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, radius = 7, effect = CONST_ME_BLOCKHIT, target = false },
 }
 
 monster.elements = {
@@ -99,7 +98,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 1600
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -72,7 +72,7 @@ monster.loot = {
 	{ id = 3429, chance = 92000 }, -- black shield
 	{ id = 3027, chance = 85000, maxCount = 5 }, -- black pearl
 	{ id = 7386, chance = 25000 }, -- mercenary sword
-	{ id = 9103, chance = 16000 } -- batwing hat
+	{ id = 9103, chance = 16000 }, -- batwing hat
 }
 
 monster.attacks = {
@@ -81,14 +81,14 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DROWNDAMAGE, minDamage = -130, maxDamage = -237, radius = 6, effect = CONST_ME_SOUND_WHITE, target = false },
 	{ name = "mutated bat curse", interval = 2000, chance = 10, target = false },
 	-- poison
-	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -12, maxDamage = -12, length = 4, spread = 3, effect = CONST_ME_POISONAREA, target = false }
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -12, maxDamage = -12, length = 4, spread = 3, effect = CONST_ME_POISONAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 20,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 80, maxDamage = 95, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 80, maxDamage = 95, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -108,7 +108,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

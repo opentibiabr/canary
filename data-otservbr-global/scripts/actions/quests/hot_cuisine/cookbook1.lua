@@ -8,14 +8,14 @@ local config = {
 	[7] = "Filled Jalape�o Peppers\n- 10 Jalape�o peppers\n- 2 Cheese\n- 1 Troll green\n- 1 Shadow herb\n- 1 Vial of mead\n- 2 Eggs\n\n",
 	[8] = "Blessed Steak\n- 1 Piece of ham\n- 5 Plums\n- 1 Onions\n- 2 Beetroot\n- 1 Pumpkin\n- 2 Jalape�o peppers\n\n",
 	[9] = "Northern Fishburger\n- 1 Northern pike\n- 1 Rainbow trout\n- 1 Green perch\n- 5 Shrimps\n- 2 Rolls- 1 Fern\n\n",
-	[10] = "Carrot Cake\n- 5 Carrots\n- 1 Vial of milk\n- 1 Lemon\n- 10 Ounces of flour\n- 2 Eggs\n- 10 Cookies\n- 2 Peanuts"
+	[10] = "Carrot Cake\n- 5 Carrots\n- 1 Vial of milk\n- 1 Lemon\n- 10 Ounces of flour\n- 2 Eggs\n- 10 Cookies\n- 2 Peanuts",
 }
 
 local hotCuisineCook1 = Action()
 function hotCuisineCook1.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local text = {}
 	for i = 1, 10 do
-		text[#text+1] = config[i]
+		text[#text + 1] = config[i]
 	end
 	player:showTextDialog(item.itemid, table.concat(text))
 	return true

@@ -57,6 +57,6 @@ function MonsterType.getBossReward(self, lootFactor, topScore, equipmentOnly, lo
 				return not unique and isEquipment(itemType)
 			end
 			return true
-		end
+		end,
 	}, lootTable)
 end

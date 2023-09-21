@@ -100,7 +100,7 @@ local setting = {
 	[22185] = { 12, "Yum." }, -- prickly pear
 	[22187] = { 60, "Chomp." }, -- roasted meat
 	[23535] = { 30, "Mmmm." }, -- energy bar
-	[23545] = { 18, "Mmmm." } -- energy drink
+	[23545] = { 18, "Mmmm." }, -- energy drink
 }
 
 local food = Action()

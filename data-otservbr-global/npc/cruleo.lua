@@ -15,19 +15,19 @@ npcConfig.outfit = {
 	lookHead = 94,
 	lookBody = 115,
 	lookLegs = 97,
-	lookFeet = 97
+	lookFeet = 97,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = '<gulp gulp>' },
-	{ text = 'This will earn me some handsome amount of gold!' },
-	{ text = 'Muhahaha!' }
+	{ text = "<gulp gulp>" },
+	{ text = "This will earn me some handsome amount of gold!" },
+	{ text = "Muhahaha!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -60,7 +60,7 @@ npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
 	{ itemName = "white deer antlers", clientId = 12544, sell = 400 },
-	{ itemName = "white deer skin", clientId = 12545, sell = 245 }
+	{ itemName = "white deer skin", clientId = 12545, sell = 245 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -71,7 +71,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

@@ -17,8 +17,7 @@ function destroyPies.onStepIn(creature, item, position, fromPosition)
 
 	pieBox:transform(3135)
 	player:getPosition():sendMagicEffect(CONST_ME_POFF)
-	player:say("Stand still! These pies are confiscated!",
-		TALKTYPE_MONSTER_SAY, false, player, Position(33189, 31788, 7))
+	player:say("Stand still! These pies are confiscated!", TALKTYPE_MONSTER_SAY, false, player, Position(33189, 31788, 7))
 	player:say("Dirty pie smuggler!", TALKTYPE_MONSTER_SAY, false, player, Position(33193, 31788, 7))
 	return true
 end

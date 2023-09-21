@@ -62,6 +62,11 @@ struct Position {
 	static int32_t getDiagonalDistance(const Position &p1, const Position &p2) {
 		return std::max(Position::getDistanceX(p1, p2), Position::getDistanceY(p1, p2));
 	}
+	static double getEuclideanDistance(const Position &p1, const Position &p2) {
+		int32_t dx = Position::getDistanceX(p1, p2);
+		int32_t dy = Position::getDistanceY(p1, p2);
+		return std::sqrt(dx * dx + dy * dy);
+	}
 
 	static Direction getRandomDirection();
 

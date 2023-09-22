@@ -15,12 +15,14 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 
-Party::Party(std::shared_ptr<Player> initLeader) :
-	m_leader(initLeader) {
-	initLeader->setParty(getParty());
+std::shared_ptr<Party> Party::create(std::shared_ptr<Player> leader) {
+	auto party = std::make_shared<Party>();
+	party->m_leader = leader;
+	leader->setParty(party);
 	if (g_configManager().getBoolean(PARTY_AUTO_SHARE_EXPERIENCE)) {
-		setSharedExperience(initLeader, true);
+		party->setSharedExperience(leader, true);
 	}
+	return party;
 }
 
 void Party::disband() {

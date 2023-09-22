@@ -7585,7 +7585,7 @@ void Game::playerInviteToParty(uint32_t playerId, uint32_t invitedId) {
 
 	std::shared_ptr<Party> party = player->getParty();
 	if (!party) {
-		party = std::make_shared<Party>(player);
+		party = Party::create(player);
 	} else if (party->getLeader() != player) {
 		return;
 	}

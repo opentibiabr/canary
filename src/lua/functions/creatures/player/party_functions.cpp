@@ -24,7 +24,7 @@ int32_t PartyFunctions::luaPartyCreate(lua_State* L) {
 
 	std::shared_ptr<Party> party = player->getParty();
 	if (!party) {
-		party = std::make_shared<Party>(player);
+		party = Party::create(player);
 		g_game().updatePlayerShield(player);
 		player->sendCreatureSkull(player);
 		pushUserdata<Party>(L, party);

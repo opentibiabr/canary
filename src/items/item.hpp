@@ -275,6 +275,8 @@ public:
 		return nullptr;
 	}
 
+	bool isSavedToHouses() const;
+
 	SoundEffect_t getMovementSound(Cylinder* toCylinder) const;
 
 	void setIsLootTrackeable(bool value) {

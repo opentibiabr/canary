@@ -119,7 +119,7 @@ void House::updateDoorDescription() const {
 		ss << "It belongs to house '" << houseName << "'. Nobody owns this house.";
 	}
 
-	ss << " It is " << houseTiles.size() << " square meters.";
+	ss << " It is " << getSize() << " square meters.";
 	const int32_t housePrice = getPrice();
 	if (housePrice != -1) {
 		if (g_configManager().getBoolean(HOUSE_PURSHASED_SHOW_PRICE) || owner == 0) {
@@ -636,6 +636,7 @@ bool Houses::loadHousesXML(const std::string &filename) {
 		house->setEntryPos(entryPos);
 
 		house->setRent(pugi::cast<uint32_t>(houseNode.attribute("rent").value()));
+		house->setSize(pugi::cast<uint32_t>(houseNode.attribute("size").value()));
 		house->setTownId(pugi::cast<uint32_t>(houseNode.attribute("townid").value()));
 		auto maxBedsAttr = houseNode.attribute("beds");
 		int32_t maxBeds = -1;
@@ -748,7 +749,7 @@ uint32_t House::getRent() const {
 }
 
 uint32_t House::getPrice() const {
-	uint32_t sqmPrice = static_cast<uint32_t>(g_configManager().getNumber(HOUSE_PRICE_PER_SQM)) * getSize();
-	uint32_t rentPrice = static_cast<uint32_t>(static_cast<float>(getRent()) * g_configManager().getFloat(HOUSE_PRICE_RENT_MULTIPLIER));
+	auto sqmPrice = static_cast<uint32_t>(g_configManager().getNumber(HOUSE_PRICE_PER_SQM)) * getSize();
+	auto rentPrice = static_cast<uint32_t>(static_cast<float>(getRent()) * g_configManager().getFloat(HOUSE_PRICE_RENT_MULTIPLIER));
 	return sqmPrice + rentPrice;
 }

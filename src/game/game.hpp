@@ -89,12 +89,28 @@ public:
 		return worldType;
 	}
 
-	std::map<uint32_t, TeamFinder*> getTeamFinderList() const {
+	const std::map<uint32_t, std::unique_ptr<TeamFinder>> &getTeamFinderList() const {
 		return teamFinderMap;
 	}
-	void registerTeamFinderAssemble(uint32_t leaderGuid, TeamFinder* teamFinder) {
-		teamFinderMap[leaderGuid] = teamFinder;
+
+	const std::unique_ptr<TeamFinder> &getTeamFinder(const std::shared_ptr<Player> &player) const {
+		auto it = teamFinderMap.find(player->getGUID());
+		if (it != teamFinderMap.end()) {
+			return it->second;
+		}
+
+		return TeamFinderNull;
 	}
+
+	const std::unique_ptr<TeamFinder> &getOrCreateTeamFinder(const std::shared_ptr<Player> &player) {
+		auto it = teamFinderMap.find(player->getGUID());
+		if (it != teamFinderMap.end()) {
+			return it->second;
+		}
+
+		return teamFinderMap[player->getGUID()] = std::make_unique<TeamFinder>();
+	}
+
 	void removeTeamFinderListed(uint32_t leaderGuid) {
 		teamFinderMap.erase(leaderGuid);
 	}
@@ -765,7 +781,7 @@ private:
 	std::map<uint32_t, std::shared_ptr<Monster>> monsters;
 	std::vector<uint32_t> forgeableMonsters;
 
-	std::map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*
+	std::map<uint32_t, std::unique_ptr<TeamFinder>> teamFinderMap; // [leaderGUID] = TeamFinder*
 
 	// list of items that are in trading state, mapped to the player
 	std::map<std::shared_ptr<Item>, uint32_t> tradeItems;

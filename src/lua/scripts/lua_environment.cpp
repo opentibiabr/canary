@@ -16,6 +16,8 @@
 
 bool LuaEnvironment::shuttingDown = false;
 
+static const std::unique_ptr<AreaCombat> &AreaCombatNull {};
+
 LuaEnvironment::LuaEnvironment() :
 	LuaScriptInterface("Main Interface") { }
 
@@ -120,7 +122,7 @@ void LuaEnvironment::clearCombatObjects(LuaScriptInterface* interface) {
 const std::unique_ptr<AreaCombat> &LuaEnvironment::getAreaObject(uint32_t id) const {
 	auto it = areaMap.find(id);
 	if (it == areaMap.end()) {
-		return nullptr;
+		return AreaCombatNull;
 	}
 	return it->second;
 }

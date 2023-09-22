@@ -1770,21 +1770,18 @@ bool ChainPickerCallback::onChainCombat(std::shared_ptr<Creature> creature, std:
 //**********************************************************//
 
 void AreaCombat::clear() {
-	for (const auto &it : areas) {
-		delete it.second;
-	}
 	areas.clear();
 }
 
 AreaCombat::AreaCombat(const AreaCombat &rhs) {
 	hasExtArea = rhs.hasExtArea;
 	for (const auto &it : rhs.areas) {
-		areas[it.first] = new MatrixArea(*it.second);
+		areas[it.first] = it.second->clone();
 	}
 }
 
 void AreaCombat::getList(const Position &centerPos, const Position &targetPos, std::forward_list<std::shared_ptr<Tile>> &list) const {
-	const MatrixArea* area = getArea(centerPos, targetPos);
+	const std::unique_ptr<MatrixArea> &area = getArea(centerPos, targetPos);
 	if (!area) {
 		return;
 	}
@@ -1806,7 +1803,7 @@ void AreaCombat::getList(const Position &centerPos, const Position &targetPos, s
 	}
 }
 
-void AreaCombat::copyArea(const MatrixArea* input, MatrixArea* output, MatrixOperation_t op) const {
+void AreaCombat::copyArea(const std::unique_ptr<MatrixArea> &input, const std::unique_ptr<MatrixArea> &output, MatrixOperation_t op) const {
 	uint32_t centerY, centerX;
 	input->getCenter(centerY, centerX);
 
@@ -1887,7 +1884,7 @@ void AreaCombat::copyArea(const MatrixArea* input, MatrixArea* output, MatrixOpe
 	}
 }
 
-MatrixArea* AreaCombat::createArea(const std::list<uint32_t> &list, uint32_t rows) {
+std::unique_ptr<MatrixArea> AreaCombat::createArea(const std::list<uint32_t> &list, uint32_t rows) {
 	uint32_t cols;
 	if (rows == 0) {
 		cols = 0;
@@ -1895,7 +1892,7 @@ MatrixArea* AreaCombat::createArea(const std::list<uint32_t> &list, uint32_t row
 		cols = list.size() / rows;
 	}
 
-	MatrixArea* area = new MatrixArea(rows, cols);
+	auto area = std::make_unique<MatrixArea>(rows, cols);
 
 	uint32_t x = 0;
 	uint32_t y = 0;
@@ -1920,27 +1917,23 @@ MatrixArea* AreaCombat::createArea(const std::list<uint32_t> &list, uint32_t row
 }
 
 void AreaCombat::setupArea(const std::list<uint32_t> &list, uint32_t rows) {
-	MatrixArea* area = createArea(list, rows);
+	auto northArea = createArea(list, rows);
 
-	// NORTH
-	areas[DIRECTION_NORTH] = area;
+	const uint32_t maxOutput = std::max<uint32_t>(northArea->getCols(), northArea->getRows()) * 2;
 
-	uint32_t maxOutput = std::max<uint32_t>(area->getCols(), area->getRows()) * 2;
+	auto southArea = std::make_unique<MatrixArea>(maxOutput, maxOutput);
+	copyArea(northArea, southArea, MATRIXOPERATION_ROTATE180);
 
-	// SOUTH
-	MatrixArea* southArea = new MatrixArea(maxOutput, maxOutput);
-	copyArea(area, southArea, MATRIXOPERATION_ROTATE180);
-	areas[DIRECTION_SOUTH] = southArea;
+	auto eastArea = std::make_unique<MatrixArea>(maxOutput, maxOutput);
+	copyArea(northArea, eastArea, MATRIXOPERATION_ROTATE90);
 
-	// EAST
-	MatrixArea* eastArea = new MatrixArea(maxOutput, maxOutput);
-	copyArea(area, eastArea, MATRIXOPERATION_ROTATE90);
-	areas[DIRECTION_EAST] = eastArea;
+	auto westArea = std::make_unique<MatrixArea>(maxOutput, maxOutput);
+	copyArea(northArea, westArea, MATRIXOPERATION_ROTATE270);
 
-	// WEST
-	MatrixArea* westArea = new MatrixArea(maxOutput, maxOutput);
-	copyArea(area, westArea, MATRIXOPERATION_ROTATE270);
-	areas[DIRECTION_WEST] = westArea;
+	areas[DIRECTION_NORTH] = std::move(northArea);
+	areas[DIRECTION_SOUTH] = std::move(southArea);
+	areas[DIRECTION_EAST] = std::move(eastArea);
+	areas[DIRECTION_WEST] = std::move(westArea);
 }
 
 void AreaCombat::setupArea(int32_t length, int32_t spread) {
@@ -2017,27 +2010,28 @@ void AreaCombat::setupExtArea(const std::list<uint32_t> &list, uint32_t rows) {
 	}
 
 	hasExtArea = true;
-	MatrixArea* area = createArea(list, rows);
 
 	// NORTH-WEST
-	areas[DIRECTION_NORTHWEST] = area;
+	auto nwArea = createArea(list, rows);
 
-	uint32_t maxOutput = std::max<uint32_t>(area->getCols(), area->getRows()) * 2;
+	const uint32_t maxOutput = std::max<uint32_t>(nwArea->getCols(), nwArea->getRows()) * 2;
 
 	// NORTH-EAST
-	MatrixArea* neArea = new MatrixArea(maxOutput, maxOutput);
-	copyArea(area, neArea, MATRIXOPERATION_MIRROR);
-	areas[DIRECTION_NORTHEAST] = neArea;
+	auto neArea = std::make_unique<MatrixArea>(maxOutput, maxOutput);
+	copyArea(nwArea, neArea, MATRIXOPERATION_MIRROR);
 
 	// SOUTH-WEST
-	MatrixArea* swArea = new MatrixArea(maxOutput, maxOutput);
-	copyArea(area, swArea, MATRIXOPERATION_FLIP);
-	areas[DIRECTION_SOUTHWEST] = swArea;
+	auto swArea = std::make_unique<MatrixArea>(maxOutput, maxOutput);
+	copyArea(nwArea, swArea, MATRIXOPERATION_FLIP);
 
 	// SOUTH-EAST
-	MatrixArea* seArea = new MatrixArea(maxOutput, maxOutput);
+	auto seArea = std::make_unique<MatrixArea>(maxOutput, maxOutput);
 	copyArea(swArea, seArea, MATRIXOPERATION_MIRROR);
-	areas[DIRECTION_SOUTHEAST] = seArea;
+
+	areas[DIRECTION_NORTHWEST] = std::move(nwArea);
+	areas[DIRECTION_SOUTHWEST] = std::move(swArea);
+	areas[DIRECTION_NORTHEAST] = std::move(neArea);
+	areas[DIRECTION_SOUTHEAST] = std::move(seArea);
 }
 
 //**********************************************************//

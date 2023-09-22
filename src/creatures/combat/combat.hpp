@@ -19,6 +19,9 @@ class Creature;
 class Item;
 class Spell;
 class Player;
+class MatrixArea;
+
+static const std::unique_ptr<MatrixArea> &MatrixAreaNull {};
 
 // for luascript callback
 class ValueCallback final : public CallBack {
@@ -138,6 +141,10 @@ public:
 		delete[] data_;
 	}
 
+	std::unique_ptr<MatrixArea> clone() const {
+		return std::make_unique<MatrixArea>(*this);
+	}
+
 	// non-assignable
 	MatrixArea &operator=(const MatrixArea &) = delete;
 
@@ -205,15 +212,15 @@ public:
 	void setupExtArea(const std::list<uint32_t> &list, uint32_t rows);
 	void clear();
 
-	std::unique_ptr<AreaCombat> clone() {
+	std::unique_ptr<AreaCombat> clone() const {
 		return std::make_unique<AreaCombat>(*this);
 	}
 
 private:
-	MatrixArea* createArea(const std::list<uint32_t> &list, uint32_t rows);
-	void copyArea(const MatrixArea* input, MatrixArea* output, MatrixOperation_t op) const;
+	std::unique_ptr<MatrixArea> createArea(const std::list<uint32_t> &list, uint32_t rows);
+	void copyArea(const std::unique_ptr<MatrixArea> &input, const std::unique_ptr<MatrixArea> &output, MatrixOperation_t op) const;
 
-	MatrixArea* getArea(const Position &centerPos, const Position &targetPos) const {
+	const std::unique_ptr<MatrixArea> &getArea(const Position &centerPos, const Position &targetPos) const {
 		int32_t dx = Position::getOffsetX(targetPos, centerPos);
 		int32_t dy = Position::getOffsetY(targetPos, centerPos);
 
@@ -242,13 +249,13 @@ private:
 
 		auto it = areas.find(dir);
 		if (it == areas.end()) {
-			return nullptr;
+			return MatrixAreaNull;
 		}
 
 		return it->second;
 	}
 
-	std::map<Direction, MatrixArea*> areas;
+	std::map<Direction, std::unique_ptr<MatrixArea>> areas;
 	bool hasExtArea = false;
 };
 

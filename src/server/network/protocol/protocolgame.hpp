@@ -374,8 +374,8 @@ private:
 
 	void sendCoinBalance();
 
-	void sendPreyTimeLeft(const PreySlot* slot);
-	void sendPreyData(const PreySlot* slot);
+	void sendPreyTimeLeft(const std::unique_ptr<PreySlot>&  slot);
+	void sendPreyData(const std::unique_ptr<PreySlot>&  slot);
 	void sendPreyPrices();
 
 	// tiles

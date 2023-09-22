@@ -586,7 +586,6 @@ void IOLoginDataLoad::loadPlayerDepotItems(std::shared_ptr<Player> player, DBRes
 	std::ostringstream query;
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_depotitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
 	if ((result = db.storeQuery(query.str()))) {
-
 		loadItems(depotItems, result, player);
 		for (ItemsMap::const_reverse_iterator it = depotItems.rbegin(), end = depotItems.rend(); it != end; ++it) {
 			const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
@@ -625,7 +624,6 @@ void IOLoginDataLoad::loadPlayerInboxItems(std::shared_ptr<Player> player, DBRes
 	std::ostringstream query;
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_inboxitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
 	if ((result = db.storeQuery(query.str()))) {
-
 		ItemsMap inboxItems;
 		loadItems(inboxItems, result, player);
 
@@ -725,7 +723,7 @@ void IOLoginDataLoad::loadPlayerPreyClass(std::shared_ptr<Player> player, DBResu
 					slot->raceIdList.push_back(raceId);
 				}
 
-				player->setPreySlotClass(std::move(slot));
+				player->setPreySlotClass(slot);
 			} while (result->next());
 		}
 	}

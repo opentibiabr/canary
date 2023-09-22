@@ -232,7 +232,6 @@ namespace {
 			msg.addString(toStartCaseWithSpace(magic_enum::enum_name(value).data()));
 		}
 	}
-
 } // namespace
 
 ProtocolGame::ProtocolGame(Connection_ptr initConnection) :
@@ -6809,7 +6808,7 @@ void ProtocolGame::sendUseItemCooldown(uint32_t time) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendPreyTimeLeft(const PreySlot* slot) {
+void ProtocolGame::sendPreyTimeLeft(const std::unique_ptr<PreySlot> &slot) {
 	if (!player || !slot) {
 		return;
 	}
@@ -6823,7 +6822,7 @@ void ProtocolGame::sendPreyTimeLeft(const PreySlot* slot) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendPreyData(const PreySlot* slot) {
+void ProtocolGame::sendPreyData(const std::unique_ptr<PreySlot> &slot) {
 	if (!player) {
 		return;
 	}

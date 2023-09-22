@@ -137,6 +137,8 @@ public:
 	int64_t freeRerollTimeStamp = 0;
 };
 
+static const std::unique_ptr<PreySlot> &PreySlotNull {};
+
 class TaskHuntingSlot {
 public:
 	TaskHuntingSlot() = default;

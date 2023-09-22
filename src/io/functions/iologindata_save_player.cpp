@@ -586,8 +586,7 @@ bool IOLoginDataSave::savePlayerPreyClass(std::shared_ptr<Player> player) {
 	if (g_configManager().getBoolean(PREY_ENABLED)) {
 		std::ostringstream query;
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			PreySlot* slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
-			if (slot) {
+			if (const auto &slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId))) {
 				query.str(std::string());
 				query << "INSERT INTO player_prey (`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, `bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) "
 					  << "VALUES (" << player->getGUID() << ", "

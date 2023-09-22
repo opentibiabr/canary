@@ -2714,7 +2714,6 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 
 				condition->endCondition(static_self_cast<Player>());
 				onEndCondition(condition->getType());
-
 			} else {
 				++it;
 			}
@@ -2730,7 +2729,6 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 
 				condition->endCondition(static_self_cast<Player>());
 				onEndCondition(condition->getType());
-
 			} else {
 				++it;
 			}
@@ -6343,21 +6341,15 @@ void Player::initializePrey() {
 				slot->reloadMonsterGrid(getPreyBlackList(), getLevel());
 			}
 
-			if (!setPreySlotClass(std::move(slot))) {
-				slot.reset();
-			}
+			setPreySlotClass(slot);
 		}
 	}
 }
 
 void Player::removePreySlotById(PreySlot_t slotid) {
-	auto it = std::remove_if(preys.begin(), preys.end(), [slotid](const PreySlot* preyIt) {
+	auto it = std::remove_if(preys.begin(), preys.end(), [slotid](const std::unique_ptr<PreySlot> &preyIt) {
 		return preyIt->id == slotid;
 	});
-
-	for (auto i = it; i != preys.end(); ++i) {
-		delete *i;
-	}
 
 	preys.erase(it, preys.end());
 }
@@ -7384,15 +7376,12 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 		);
 	} else if (history.actionType == ForgeConversion_t::FORGE_ACTION_DUSTTOSLIVERS) {
 		detailsResponse << fmt::format("Converted {:d} dust to {:d} slivers.", history.cost, history.gained);
-
 	} else if (history.actionType == ForgeConversion_t::FORGE_ACTION_SLIVERSTOCORES) {
 		history.actionType = ForgeConversion_t::FORGE_ACTION_DUSTTOSLIVERS;
 		detailsResponse << fmt::format("Converted {:d} slivers to {:d} exalted core.", history.cost, history.gained);
-
 	} else if (history.actionType == ForgeConversion_t::FORGE_ACTION_INCREASELIMIT) {
 		history.actionType = ForgeConversion_t::FORGE_ACTION_DUSTTOSLIVERS;
 		detailsResponse << fmt::format("Spent {:d} dust to increase the dust limit to {:d}.", history.cost, history.gained + 1);
-
 	} else {
 		detailsResponse << "(unknown)";
 	}

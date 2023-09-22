@@ -252,7 +252,7 @@ void IOPrey::CheckPlayerPreys(std::shared_ptr<Player> player, uint8_t amount) co
 	}
 
 	for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-		if (PreySlot* slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
+		if (const auto &slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
 			slot && slot->isOccupied()) {
 			if (slot->bonusTimeLeft <= amount) {
 				if (slot->option == PreyOption_AutomaticReroll) {
@@ -290,7 +290,7 @@ void IOPrey::CheckPlayerPreys(std::shared_ptr<Player> player, uint8_t amount) co
 }
 
 void IOPrey::ParsePreyAction(std::shared_ptr<Player> player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const {
-	PreySlot* slot = player->getPreySlotById(slotId);
+	const auto &slot = player->getPreySlotById(slotId);
 	if (!slot || slot->state == PreyDataState_Locked) {
 		player->sendMessageDialog("To unlock this prey slot first you must buy it on store.");
 		return;

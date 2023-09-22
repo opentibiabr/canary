@@ -491,7 +491,6 @@ public:
 		return inMarket;
 	}
 	void setSpecialMenuAvailable(bool supplyStashBool, bool marketMenuBool, bool depotSearchBool) {
-
 		// Closing depot search when player have special container disabled and it's still open.
 		if (isDepotSearchOpen() && !depotSearchBool && depotSearch) {
 			depotSearchOnItem = { 0, 0 };
@@ -2042,7 +2041,7 @@ public:
 
 	void sendPreyData() const {
 		if (client) {
-			for (const PreySlot* slot : preys) {
+			for (const std::unique_ptr<PreySlot> &slot : preys) {
 				client->sendPreyData(slot);
 			}
 
@@ -2050,7 +2049,7 @@ public:
 		}
 	}
 
-	void sendPreyTimeLeft(const PreySlot* slot) const {
+	void sendPreyTimeLeft(const std::unique_ptr<PreySlot> &slot) const {
 		if (g_configManager().getBoolean(PREY_ENABLED) && client) {
 			client->sendPreyTimeLeft(slot);
 		}
@@ -2063,23 +2062,23 @@ public:
 		}
 	}
 
-	PreySlot* getPreySlotById(PreySlot_t slotid) {
-		if (auto it = std::find_if(preys.begin(), preys.end(), [slotid](const PreySlot* preyIt) {
+	const std::unique_ptr<PreySlot> &getPreySlotById(PreySlot_t slotid) {
+		if (auto it = std::find_if(preys.begin(), preys.end(), [slotid](const std::unique_ptr<PreySlot> &preyIt) {
 				return preyIt->id == slotid;
 			});
 			it != preys.end()) {
 			return *it;
 		}
 
-		return nullptr;
+		return PreySlotNull;
 	}
 
-	bool setPreySlotClass(std::unique_ptr<PreySlot> slot) {
+	bool setPreySlotClass(std::unique_ptr<PreySlot> &slot) {
 		if (getPreySlotById(slot->id)) {
 			return false;
 		}
 
-		preys.emplace_back(slot.release());
+		preys.emplace_back(std::move(slot));
 		return true;
 	}
 
@@ -2112,7 +2111,7 @@ public:
 
 	std::vector<uint16_t> getPreyBlackList() const {
 		std::vector<uint16_t> rt;
-		for (const PreySlot* slot : preys) {
+		for (const std::unique_ptr<PreySlot> &slot : preys) {
 			if (slot) {
 				if (slot->isOccupied()) {
 					rt.push_back(slot->selectedRaceId);
@@ -2126,19 +2125,19 @@ public:
 		return rt;
 	}
 
-	PreySlot* getPreyWithMonster(uint16_t raceId) const {
+	const std::unique_ptr<PreySlot> &getPreyWithMonster(uint16_t raceId) const {
 		if (!g_configManager().getBoolean(PREY_ENABLED)) {
-			return nullptr;
+			return PreySlotNull;
 		}
 
-		if (auto it = std::find_if(preys.begin(), preys.end(), [raceId](const PreySlot* it) {
+		if (auto it = std::find_if(preys.begin(), preys.end(), [raceId](const std::unique_ptr<PreySlot> &it) {
 				return it->selectedRaceId == raceId;
 			});
 			it != preys.end()) {
 			return *it;
 		}
 
-		return nullptr;
+		return PreySlotNull;
 	}
 
 	// Task hunting system
@@ -2593,7 +2592,7 @@ private:
 	std::vector<OutfitEntry> outfits;
 	std::vector<FamiliarEntry> familiars;
 
-	std::vector<PreySlot*> preys;
+	std::vector<std::unique_ptr<PreySlot>> preys;
 	std::vector<TaskHuntingSlot*> taskHunting;
 
 	GuildWarVector guildWarVector;

@@ -397,7 +397,7 @@ int PlayerFunctions::luaPlayerGetPreyCards(lua_State* L) {
 int PlayerFunctions::luaPlayerGetPreyExperiencePercentage(lua_State* L) {
 	// player:getPreyExperiencePercentage(raceId)
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1)) {
-		if (const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
+		if (const std::unique_ptr<PreySlot> &slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
 			slot && slot->isOccupied() && slot->bonus == PreyBonus_Experience && slot->bonusTimeLeft > 0) {
 			lua_pushnumber(L, static_cast<lua_Number>(100 + slot->bonusPercentage));
 		} else {
@@ -447,7 +447,7 @@ int PlayerFunctions::luaPlayerAddTaskHuntingPoints(lua_State* L) {
 int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 	// player:getPreyLootPercentage(raceid)
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1)) {
-		if (const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
+		if (const std::unique_ptr<PreySlot> &slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
 			slot && slot->isOccupied() && slot->bonus == PreyBonus_Loot) {
 			lua_pushnumber(L, slot->bonusPercentage);
 		} else {
@@ -462,8 +462,10 @@ int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 int PlayerFunctions::luaPlayerPreyThirdSlot(lua_State* L) {
 	// get: player:preyThirdSlot() set: player:preyThirdSlot(bool)
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
-		PreySlot* slot = player->getPreySlotById(PreySlot_Three)) {
-		if (lua_gettop(L) == 1) {
+		const auto &slot = player->getPreySlotById(PreySlot_Three)) {
+		if (!slot) {
+			lua_pushnil(L);
+		} else if (lua_gettop(L) == 1) {
 			pushBoolean(L, slot->state != PreyDataState_Locked);
 		} else {
 			if (getBoolean(L, 2, false)) {
@@ -480,6 +482,7 @@ int PlayerFunctions::luaPlayerPreyThirdSlot(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+
 	return 1;
 }
 
@@ -1810,7 +1813,6 @@ int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 
 		ReturnValue ret = g_game().internalPlayerAddItem(player, item, canDropOnMap, slot);
 		if (ret != RETURNVALUE_NOERROR) {
-
 			if (!hasTable) {
 				lua_pushnil(L);
 			}

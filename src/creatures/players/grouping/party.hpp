@@ -26,7 +26,7 @@ class Party;
 
 class Party : public SharedObject {
 public:
-	explicit Party(std::shared_ptr<Player> leader);
+	static std::shared_ptr<Party> create(std::shared_ptr<Player> leader);
 
 	std::shared_ptr<Party> getParty() {
 		return static_self_cast<Party>();

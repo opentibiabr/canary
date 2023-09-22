@@ -14,10 +14,8 @@
 class ModalWindowFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "ModalWindow", "", ModalWindowFunctions::luaModalWindowCreate);
+		registerSharedClass(L, "ModalWindow", "", ModalWindowFunctions::luaModalWindowCreate);
 		registerMetaMethod(L, "ModalWindow", "__eq", ModalWindowFunctions::luaUserdataCompare);
-		registerMetaMethod(L, "ModalWindow", "__gc", ModalWindowFunctions::luaModalWindowDelete);
-		registerMethod(L, "ModalWindow", "delete", ModalWindowFunctions::luaModalWindowDelete);
 
 		registerMethod(L, "ModalWindow", "getId", ModalWindowFunctions::luaModalWindowGetId);
 		registerMethod(L, "ModalWindow", "getTitle", ModalWindowFunctions::luaModalWindowGetTitle);
@@ -46,7 +44,6 @@ public:
 
 private:
 	static int luaModalWindowCreate(lua_State* L);
-	static int luaModalWindowDelete(lua_State* L);
 
 	static int luaModalWindowGetId(lua_State* L);
 	static int luaModalWindowGetTitle(lua_State* L);

@@ -461,8 +461,8 @@ int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 
 int PlayerFunctions::luaPlayerPreyThirdSlot(lua_State* L) {
 	// get: player:preyThirdSlot() set: player:preyThirdSlot(bool)
-	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
-		const auto &slot = player->getPreySlotById(PreySlot_Three)) {
+	if (const auto &player = getUserdataShared<Player>(L, 1)) {
+		const auto &slot = player->getPreySlotById(PreySlot_Three);
 		if (!slot) {
 			lua_pushnil(L);
 		} else if (lua_gettop(L) == 1) {

@@ -23,7 +23,7 @@ struct spawnBlockNpc_t {
 	Direction direction;
 };
 
-class SpawnNpc {
+class SpawnNpc : public SharedObject {
 public:
 	SpawnNpc(Position initPos, int32_t initRadius) :
 		centerPos(std::move(initPos)), radius(initRadius) { }
@@ -94,12 +94,12 @@ public:
 		return fileName = setName;
 	}
 
-	std::forward_list<SpawnNpc> &getSpawnNpcList() {
+	std::forward_list<std::shared_ptr<SpawnNpc>> &getSpawnNpcList() {
 		return spawnNpcList;
 	}
 
 private:
-	std::forward_list<SpawnNpc> spawnNpcList;
+	std::forward_list<std::shared_ptr<SpawnNpc>> spawnNpcList;
 	std::string fileName;
 	bool loaded = false;
 	bool started = false;

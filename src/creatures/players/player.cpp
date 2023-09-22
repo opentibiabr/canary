@@ -580,7 +580,7 @@ void Player::updateInventoryImbuement() {
 	bool nonAggressiveFightOnly = g_configManager().getBoolean(TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY);
 
 	// Iterate through all items in the player's inventory
-	for (auto item : getAllInventoryItems()) {
+	for (auto [key, item] : getAllSlotItems()) {
 		// Iterate through all imbuement slots on the item
 
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
@@ -627,6 +627,20 @@ void Player::updateInventoryImbuement() {
 			}
 		}
 	}
+}
+
+phmap::flat_hash_map<uint8_t, Item*> Player::getAllSlotItems() const {
+	phmap::flat_hash_map<uint8_t, Item*> itemVector;
+	for (uint8_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
+		Item* item = inventory[i];
+		if (!item) {
+			continue;
+		}
+
+		itemVector[i] = item;
+	}
+
+	return itemVector;
 }
 
 void Player::setTraining(bool value) {

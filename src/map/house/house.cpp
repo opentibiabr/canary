@@ -172,7 +172,7 @@ bool House::kickPlayer(std::shared_ptr<Player> player, std::shared_ptr<Player> t
 	}
 
 	std::shared_ptr<HouseTile> houseTile = std::dynamic_pointer_cast<HouseTile>(target->getTile());
-	if (!houseTile || houseTile->getHouse() != this) {
+	if (!houseTile || houseTile->getHouse() != static_self_cast<House>()) {
 		return false;
 	}
 
@@ -306,7 +306,7 @@ bool House::isInvited(std::shared_ptr<Player> player) {
 
 void House::addDoor(std::shared_ptr<Door> door) {
 	doorList.push_back(door);
-	door->setHouse(this);
+	door->setHouse(static_self_cast<House>());
 	updateDoorDescription();
 }
 
@@ -319,7 +319,7 @@ void House::removeDoor(std::shared_ptr<Door> door) {
 
 void House::addBed(std::shared_ptr<BedItem> bed) {
 	bedsList.push_back(bed);
-	bed->setHouse(this);
+	bed->setHouse(static_self_cast<House>());
 }
 
 void House::removeBed(std::shared_ptr<BedItem> bed) {
@@ -364,7 +364,7 @@ std::shared_ptr<HouseTransferItem> House::getTransferItem() {
 	}
 
 	transfer_container.resetParent();
-	transferItem = HouseTransferItem::createHouseTransferItem(this);
+	transferItem = HouseTransferItem::createHouseTransferItem(static_self_cast<House>());
 	transfer_container.addThing(transferItem);
 	return transferItem;
 }
@@ -378,7 +378,7 @@ void House::resetTransferItem() {
 	}
 }
 
-std::shared_ptr<HouseTransferItem> HouseTransferItem::createHouseTransferItem(House* house) {
+std::shared_ptr<HouseTransferItem> HouseTransferItem::createHouseTransferItem(std::shared_ptr<House> house) {
 	std::shared_ptr<HouseTransferItem> transferItem = std::make_shared<HouseTransferItem>(house);
 	transferItem->setID(ITEM_DOCUMENT_RO);
 	transferItem->setSubType(1);
@@ -534,7 +534,7 @@ Attr_ReadValue Door::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	return Item::readAttr(attr, propStream);
 }
 
-void Door::setHouse(House* newHouse) {
+void Door::setHouse(std::shared_ptr<House> newHouse) {
 	if (this->house != nullptr) {
 		return;
 	}
@@ -583,7 +583,7 @@ void Door::onRemoved() {
 	}
 }
 
-House* Houses::getHouseByPlayerId(uint32_t playerId) {
+std::shared_ptr<House> Houses::getHouseByPlayerId(uint32_t playerId) {
 	for (const auto &it : houseMap) {
 		if (it.second->getOwner() == playerId) {
 			return it.second;
@@ -608,7 +608,7 @@ bool Houses::loadHousesXML(const std::string &filename) {
 
 		int32_t houseId = pugi::cast<int32_t>(houseIdAttribute.value());
 
-		House* house = getHouse(houseId);
+		std::shared_ptr<House> house = getHouse(houseId);
 		if (!house) {
 			g_logger().error("[Houses::loadHousesXML] - Unknown house, id: {}", houseId);
 			return false;
@@ -650,7 +650,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 
 	time_t currentTime = time(nullptr);
 	for (const auto &it : houseMap) {
-		House* house = it.second;
+		std::shared_ptr<House> house = it.second;
 		if (house->getOwner() == 0) {
 			continue;
 		}

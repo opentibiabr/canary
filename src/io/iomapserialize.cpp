@@ -141,7 +141,6 @@ bool IOMapSerialize::loadItem(PropStream &propStream, std::shared_ptr<Cylinder> 
 			if (item->unserializeAttr(propStream)) {
 				std::shared_ptr<Container> container = item->getContainer();
 				if (container && !loadContainer(propStream, container)) {
-
 					return false;
 				}
 
@@ -265,7 +264,7 @@ bool IOMapSerialize::loadHouseInfo() {
 	}
 
 	do {
-		House* house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("id"));
+		const auto &house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("id"));
 		if (house) {
 			house->setOwner(result->getNumber<uint32_t>("owner"), false);
 			house->setPaidUntil(result->getNumber<time_t>("paid"));
@@ -276,7 +275,7 @@ bool IOMapSerialize::loadHouseInfo() {
 	result = db.storeQuery("SELECT `house_id`, `listid`, `list` FROM `house_lists`");
 	if (result) {
 		do {
-			House* house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("house_id"));
+			const auto &house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("house_id"));
 			if (house) {
 				house->setAccessList(result->getNumber<uint32_t>("listid"), result->getString("list"));
 			}

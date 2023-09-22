@@ -102,7 +102,7 @@ namespace InternalGame {
 		}
 
 		if (std::shared_ptr<HouseTile> houseTile = std::dynamic_pointer_cast<HouseTile>(itemTile)) {
-			House* house = houseTile->getHouse();
+			const auto &house = houseTile->getHouse();
 			if (!house || !house->isInvited(player)) {
 				return false;
 			}
@@ -136,7 +136,7 @@ namespace InternalGame {
 
 		if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
 			if (std::shared_ptr<HouseTile> houseTile = std::dynamic_pointer_cast<HouseTile>(itemTile)) {
-				House* house = houseTile->getHouse();
+				const auto &house = houseTile->getHouse();
 				std::shared_ptr<Thing> targetThing = g_game().internalGetThing(player, toPos, toStackPos, toItemId, STACKPOS_FIND_THING);
 				auto targetItem = targetThing ? targetThing->getItem() : nullptr;
 				uint16_t targetId = targetItem ? targetItem->getID() : 0;
@@ -3392,7 +3392,7 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 
 	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
 		if (std::shared_ptr<HouseTile> houseTile = std::dynamic_pointer_cast<HouseTile>(item->getTile())) {
-			House* house = houseTile->getHouse();
+			const auto &house = houseTile->getHouse();
 			if (house && item->getRealParent() && item->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST)) {
 				player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
 				return;
@@ -3766,7 +3766,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 		return;
 	}
 
-	House* house = map.houses.getHouseByPlayerId(player->getGUID());
+	const auto &house = map.houses.getHouseByPlayerId(player->getGUID());
 	if (!house) {
 		player->sendCancelMessage("You don't own a house, you need own a house to use this.");
 		return;
@@ -3843,7 +3843,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 	addMagicEffect(pos, CONST_ME_POFF);
 }
 
-std::shared_ptr<Item> Game::wrapItem(std::shared_ptr<Item> item, House* house) {
+std::shared_ptr<Item> Game::wrapItem(std::shared_ptr<Item> item, std::shared_ptr<House> house) {
 	uint16_t hiddenCharges = 0;
 	uint16_t amount = item->getItemCount();
 	if (isCaskItem(item->getID())) {
@@ -3867,7 +3867,7 @@ std::shared_ptr<Item> Game::wrapItem(std::shared_ptr<Item> item, House* house) {
 	return newItem;
 }
 
-void Game::unwrapItem(std::shared_ptr<Item> item, uint16_t unWrapId, House* house, std::shared_ptr<Player> player) {
+void Game::unwrapItem(std::shared_ptr<Item> item, uint16_t unWrapId, std::shared_ptr<House> house, std::shared_ptr<Player> player) {
 	auto hiddenCharges = item->getAttribute<uint16_t>(DATE);
 	const ItemType &newiType = Item::items.getItemType(unWrapId);
 	if (player != nullptr && house != nullptr && newiType.isBed() && house->getMaxBeds() > -1 && house->getBedCount() >= house->getMaxBeds()) {
@@ -4152,7 +4152,7 @@ void Game::playerUpdateHouseWindow(uint32_t playerId, uint8_t listId, uint32_t w
 	uint32_t internalWindowTextId;
 	uint32_t internalListId;
 
-	House* house = player->getEditHouse(internalWindowTextId, internalListId);
+	const auto &house = player->getEditHouse(internalWindowTextId, internalListId);
 	if (house && house->canEditAccessList(internalListId, player) && internalWindowTextId == windowTextId && listId == 0) {
 		house->setAccessList(internalListId, text);
 	}
@@ -4198,7 +4198,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 
 	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
 		if (std::shared_ptr<HouseTile> houseTile = std::dynamic_pointer_cast<HouseTile>(tradeItem->getTile())) {
-			House* house = houseTile->getHouse();
+			const auto &house = houseTile->getHouse();
 			if (house && tradeItem->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST)) {
 				player->sendCancelMessage(RETURNVALUE_NOTMOVEABLE);
 				return;

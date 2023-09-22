@@ -118,7 +118,7 @@ public:
 	virtual CreatureVector* getCreatures() = 0;
 	virtual const CreatureVector* getCreatures() const = 0;
 	virtual CreatureVector* makeCreatures() = 0;
-	virtual House* getHouse() {
+	virtual std::shared_ptr<House> getHouse() {
 		return nullptr;
 	}
 

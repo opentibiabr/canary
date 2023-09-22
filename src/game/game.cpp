@@ -5736,7 +5736,12 @@ void Game::changeSpeed(std::shared_ptr<Creature> creature, int32_t varSpeedDelta
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), false, true);
 	for (auto spectator : spectators) {
-		spectator->getPlayer()->sendChangeSpeed(creature, creature->getStepSpeed());
+		auto player = spectator->getPlayer();
+		if (!player) {
+			continue;
+		}
+
+		player->sendChangeSpeed(creature, creature->getStepSpeed());
 	}
 }
 
@@ -5747,7 +5752,12 @@ void Game::setCreatureSpeed(std::shared_ptr<Creature> creature, int32_t speed) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), false, true);
 	for (auto spectator : spectators) {
-		spectator->getPlayer()->sendChangeSpeed(creature, creature->getStepSpeed());
+		auto player = spectator->getPlayer();
+		if (!player) {
+			continue;
+		}
+
+		player->sendChangeSpeed(creature, creature->getStepSpeed());
 	}
 }
 
@@ -5795,7 +5805,12 @@ void Game::internalCreatureChangeOutfit(std::shared_ptr<Creature> creature, cons
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true, true);
 	for (auto spectator : spectators) {
-		spectator->getPlayer()->sendCreatureChangeOutfit(creature, outfit);
+		auto player = spectator->getPlayer();
+		if (!player) {
+			continue;
+		}
+
+		player->sendCreatureChangeOutfit(creature, outfit);
 	}
 }
 
@@ -5804,7 +5819,12 @@ void Game::internalCreatureChangeVisible(std::shared_ptr<Creature> creature, boo
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true, true);
 	for (auto spectator : spectators) {
-		spectator->getPlayer()->sendCreatureChangeVisible(creature, visible);
+		auto player = spectator->getPlayer();
+		if (!player) {
+			continue;
+		}
+
+		player->sendCreatureChangeVisible(creature, visible);
 	}
 }
 
@@ -5813,7 +5833,12 @@ void Game::changeLight(std::shared_ptr<Creature> creature) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true, true);
 	for (auto spectator : spectators) {
-		spectator->getPlayer()->sendCreatureLight(creature);
+		auto player = spectator->getPlayer();
+		if (!player) {
+			continue;
+		}
+
+		player->sendCreatureLight(creature);
 	}
 }
 
@@ -5822,7 +5847,12 @@ void Game::updateCreatureIcon(std::shared_ptr<Creature> creature) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true, true);
 	for (auto spectator : spectators) {
-		spectator->getPlayer()->sendCreatureIcon(creature);
+		auto player = spectator->getPlayer();
+		if (!player) {
+			continue;
+		}
+
+		player->sendCreatureIcon(creature);
 	}
 }
 
@@ -6370,7 +6400,6 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 			map.getSpectators(spectators, targetPos, false, true);
 			for (auto spectator : spectators) {
 				auto tmpPlayer = spectator->getPlayer();
-
 				if (!tmpPlayer) {
 					continue;
 				}
@@ -6794,7 +6823,7 @@ void Game::sendMessages(
 
 	for (std::shared_ptr<Creature> spectator : spectators) {
 		std::shared_ptr<Player> tmpPlayer = spectator->getPlayer();
-		if (tmpPlayer->getPosition().z != targetPos.z) {
+		if (!tmpPlayer || tmpPlayer->getPosition().z != targetPos.z) {
 			continue;
 		}
 
@@ -7041,7 +7070,6 @@ bool Game::combatChangeMana(std::shared_ptr<Creature> attacker, std::shared_ptr<
 			map.getSpectators(spectators, targetPos, false, true);
 			for (auto spectator : spectators) {
 				auto tmpPlayer = spectator->getPlayer();
-
 				if (!tmpPlayer) {
 					continue;
 				}
@@ -7141,7 +7169,6 @@ bool Game::combatChangeMana(std::shared_ptr<Creature> attacker, std::shared_ptr<
 		map.getSpectators(spectators, targetPos, false, true);
 		for (auto spectator : spectators) {
 			auto tmpPlayer = spectator->getPlayer();
-
 			if (!tmpPlayer) {
 				continue;
 			}
@@ -7426,6 +7453,10 @@ void Game::updateCreatureWalkthrough(std::shared_ptr<Creature> creature) {
 	map.getSpectators(spectators, creature->getPosition(), true, true);
 	for (auto spectator : spectators) {
 		auto tmpPlayer = spectator->getPlayer();
+		if (!tmpPlayer) {
+			continue;
+		}
+
 		tmpPlayer->sendCreatureWalkthrough(creature, tmpPlayer->canWalkthroughEx(creature));
 	}
 }
@@ -7438,7 +7469,12 @@ void Game::updateCreatureSkull(std::shared_ptr<Creature> creature) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true, true);
 	for (auto spectator : spectators) {
-		spectator->getPlayer()->sendCreatureSkull(creature);
+		auto player = spectator->getPlayer();
+		if (!player) {
+			continue;
+		}
+
+		player->sendCreatureSkull(creature);
 	}
 }
 
@@ -7446,7 +7482,12 @@ void Game::updatePlayerShield(std::shared_ptr<Player> player) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, player->getPosition(), true, true);
 	for (auto spectator : spectators) {
-		spectator->getPlayer()->sendCreatureShield(player);
+		auto player = spectator->getPlayer();
+		if (!player) {
+			continue;
+		}
+
+		player->sendCreatureShield(player);
 	}
 }
 
@@ -7603,11 +7644,12 @@ void Game::updatePlayerHelpers(std::shared_ptr<Player> player) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, player->getPosition(), true, true);
 	for (auto spectator : spectators) {
-		if (!spectator || !spectator->getPlayer()) {
+		auto specPlayer = spectator->getPlayer();
+		if (!specPlayer) {
 			continue;
 		}
 
-		spectator->getPlayer()->sendCreatureHelpers(player->getID(), helpers);
+		specPlayer->sendCreatureHelpers(player->getID(), helpers);
 	}
 }
 

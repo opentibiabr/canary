@@ -17,7 +17,7 @@ class NpcType;
 
 struct spawnBlockNpc_t {
 	Position pos;
-	NpcType* npcType;
+	std::shared_ptr<NpcType> npcType;
 	int64_t lastSpawnNpc;
 	uint32_t interval;
 	Direction direction;
@@ -63,7 +63,7 @@ private:
 	uint32_t checkSpawnNpcEvent = 0;
 
 	static bool findPlayer(const Position &pos);
-	bool spawnNpc(uint32_t spawnId, NpcType* npcType, const Position &pos, Direction dir, bool startup = false);
+	bool spawnNpc(uint32_t spawnId, const std::shared_ptr<NpcType> &npcType, const Position &pos, Direction dir, bool startup = false);
 	void checkSpawnNpc();
 	void scheduleSpawnNpc(uint32_t spawnId, spawnBlockNpc_t &sb, uint16_t interval);
 };

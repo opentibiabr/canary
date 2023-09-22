@@ -157,7 +157,7 @@ bool SpawnNpc::isInSpawnNpcZone(const Position &pos) {
 	return SpawnsNpc::isInZone(centerPos, radius, pos);
 }
 
-bool SpawnNpc::spawnNpc(uint32_t spawnId, NpcType* npcType, const Position &pos, Direction dir, bool startup /*= false*/) {
+bool SpawnNpc::spawnNpc(uint32_t spawnId, const std::shared_ptr<NpcType> &npcType, const Position &pos, Direction dir, bool startup /*= false*/) {
 	auto npc = std::make_shared<Npc>(npcType);
 	if (startup) {
 		// No need to send out events to the surrounding since there is no one out there to listen!
@@ -246,7 +246,7 @@ void SpawnNpc::cleanup() {
 }
 
 bool SpawnNpc::addNpc(const std::string &name, const Position &pos, Direction dir, uint32_t scheduleInterval) {
-	NpcType* npcType = g_npcs().getNpcType(name);
+	const auto &npcType = g_npcs().getNpcType(name);
 	if (!npcType) {
 		g_logger().error("Can not find {}", name);
 		return false;

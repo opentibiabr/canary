@@ -634,10 +634,10 @@ public:
 	const Position &getTemplePosition() const {
 		return town->getTemplePosition();
 	}
-	Town* getTown() const {
+	std::shared_ptr<Town> getTown() const {
 		return town;
 	}
-	void setTown(Town* newTown) {
+	void setTown(const std::shared_ptr<Town> &newTown) {
 		this->town = newTown;
 	}
 
@@ -2661,7 +2661,7 @@ private:
 	std::shared_ptr<Player> tradePartner = nullptr;
 	ProtocolGame_ptr client;
 	std::shared_ptr<Task> walkTask;
-	Town* town = nullptr;
+	std::shared_ptr<Town> town;
 	Vocation* vocation = nullptr;
 	std::shared_ptr<RewardChest> rewardChest = nullptr;
 

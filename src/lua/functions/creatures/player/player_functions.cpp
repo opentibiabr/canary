@@ -1444,7 +1444,7 @@ int PlayerFunctions::luaPlayerGetTown(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSetTown(lua_State* L) {
 	// player:setTown(town)
-	Town* town = getUserdata<Town>(L, 2);
+	const auto &town = getUserdataShared<Town>(L, 2);
 	if (!town) {
 		pushBoolean(L, false);
 		return 1;

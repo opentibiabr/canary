@@ -58,8 +58,7 @@ int HouseFunctions::luaHouseGetTown(lua_State* L) {
 		return 1;
 	}
 
-	Town* town = g_game().map.towns.getTown(house->getTownId());
-	if (town) {
+	if (const auto &town = g_game().map.towns.getTown(house->getTownId())) {
 		pushUserdata<Town>(L, town);
 		setMetatable(L, -1, "Town");
 	} else {

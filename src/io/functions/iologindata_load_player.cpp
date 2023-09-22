@@ -162,7 +162,7 @@ bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_p
 	player->offlineTrainingTime = result->getNumber<int32_t>("offlinetraining_time") * 1000;
 	auto skill = result->getInt8FromString(result->getString("offlinetraining_skill"), __FUNCTION__);
 	player->setOfflineTrainingSkill(skill);
-	Town* town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
+	const auto &town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
 	if (!town) {
 		g_logger().error("Player {} has town id {} which doesn't exist", player->name, result->getNumber<uint16_t>("town_id"));
 		return false;

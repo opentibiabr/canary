@@ -4606,12 +4606,12 @@ bool Player::onKilledCreature(std::shared_ptr<Creature> target, bool lastHit /* 
 				continue;
 			}
 
-			TaskHuntingSlot* taskSlot = damagePlayer->getTaskHuntingWithCreature(monster->getRaceId());
+			const auto &taskSlot = damagePlayer->getTaskHuntingWithCreature(monster->getRaceId());
 			if (!taskSlot || monster->isSummon()) {
 				continue;
 			}
 
-			if (const TaskHuntingOption* option = g_ioprey().GetTaskRewardOption(taskSlot)) {
+			if (const auto &option = g_ioprey().getTaskRewardOption(taskSlot)) {
 				taskSlot->currentKills += 1;
 				if ((taskSlot->upgrade && taskSlot->currentKills >= option->secondKills) || (!taskSlot->upgrade && taskSlot->currentKills >= option->firstKills)) {
 					taskSlot->state = PreyTaskDataState_Completed;
@@ -6369,14 +6369,12 @@ void Player::initializeTaskHunting() {
 				slot->reloadMonsterGrid(getTaskHuntingBlackList(), getLevel());
 			}
 
-			if (!setTaskHuntingSlotClass(std::move(slot))) {
-				slot.reset();
-			}
+			setTaskHuntingSlotClass(slot);
 		}
 	}
 
 	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && !client->oldProtocol) {
-		client->writeToOutputBuffer(g_ioprey().GetTaskHuntingBaseDate());
+		client->writeToOutputBuffer(g_ioprey().getTaskHuntingBaseDate());
 	}
 }
 

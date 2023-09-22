@@ -352,7 +352,7 @@ void CanaryServer::loadModules() {
 
 	g_game().loadBoostedCreature();
 	g_ioBosstiary().loadBoostedBoss();
-	g_ioprey().InitializeTaskHuntOptions();
+	g_ioprey().initializeTaskHuntOptions();
 }
 
 void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {

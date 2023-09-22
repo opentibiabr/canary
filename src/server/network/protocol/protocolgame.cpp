@@ -7499,7 +7499,7 @@ void ProtocolGame::sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, st
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot) {
+void ProtocolGame::sendTaskHuntingData(const std::unique_ptr<TaskHuntingSlot> &slot) {
 	if (!player || oldProtocol) {
 		return;
 	}
@@ -7528,7 +7528,7 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot) {
 			msg.addByte(user->isCreatureUnlockedOnTaskHunting(g_monsters().getMonsterType(mType.second)) ? 0x01 : 0x00);
 		});
 	} else if (slot->state == PreyTaskDataState_Active) {
-		if (const TaskHuntingOption* option = g_ioprey().GetTaskRewardOption(slot)) {
+		if (const auto &option = g_ioprey().getTaskRewardOption(slot)) {
 			msg.add<uint16_t>(slot->selectedRaceId);
 			if (slot->upgrade) {
 				msg.addByte(0x01);
@@ -7544,7 +7544,7 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot) {
 			return;
 		}
 	} else if (slot->state == PreyTaskDataState_Completed) {
-		if (const TaskHuntingOption* option = g_ioprey().GetTaskRewardOption(slot)) {
+		if (const auto &option = g_ioprey().getTaskRewardOption(slot)) {
 			msg.add<uint16_t>(slot->selectedRaceId);
 			if (slot->upgrade) {
 				msg.addByte(0x01);

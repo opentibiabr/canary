@@ -374,8 +374,8 @@ private:
 
 	void sendCoinBalance();
 
-	void sendPreyTimeLeft(const std::unique_ptr<PreySlot>&  slot);
-	void sendPreyData(const std::unique_ptr<PreySlot>&  slot);
+	void sendPreyTimeLeft(const std::unique_ptr<PreySlot> &slot);
+	void sendPreyData(const std::unique_ptr<PreySlot> &slot);
 	void sendPreyPrices();
 
 	// tiles
@@ -440,7 +440,7 @@ private:
 	// tiles
 	static void RemoveTileThing(NetworkMessage &msg, const Position &pos, uint32_t stackpos);
 
-	void sendTaskHuntingData(const TaskHuntingSlot* slot);
+	void sendTaskHuntingData(const std::unique_ptr<TaskHuntingSlot> &slot);
 
 	void MoveUpCreature(NetworkMessage &msg, std::shared_ptr<Creature> creature, const Position &newPos, const Position &oldPos);
 	void MoveDownCreature(NetworkMessage &msg, std::shared_ptr<Creature> creature, const Position &newPos, const Position &oldPos);

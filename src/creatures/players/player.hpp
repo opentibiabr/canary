@@ -2144,12 +2144,12 @@ public:
 	void initializeTaskHunting();
 	bool isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> mtype) const;
 
-	bool setTaskHuntingSlotClass(std::unique_ptr<TaskHuntingSlot> slot) {
+	bool setTaskHuntingSlotClass(std::unique_ptr<TaskHuntingSlot> &slot) {
 		if (getTaskHuntingSlotById(slot->id)) {
 			return false;
 		}
 
-		taskHunting.emplace_back(slot.release());
+		taskHunting.emplace_back(std::move(slot));
 		return true;
 	}
 
@@ -2160,21 +2160,21 @@ public:
 		}
 	}
 
-	TaskHuntingSlot* getTaskHuntingSlotById(PreySlot_t slotid) {
-		if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const TaskHuntingSlot* itTask) {
+	const std::unique_ptr<TaskHuntingSlot> &getTaskHuntingSlotById(PreySlot_t slotid) {
+		if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const std::unique_ptr<TaskHuntingSlot> &itTask) {
 				return itTask->id == slotid;
 			});
 			it != taskHunting.end()) {
 			return *it;
 		}
 
-		return nullptr;
+		return TaskHuntingSlotNull;
 	}
 
 	std::vector<uint16_t> getTaskHuntingBlackList() const {
 		std::vector<uint16_t> rt;
 
-		std::for_each(taskHunting.begin(), taskHunting.end(), [&rt](const TaskHuntingSlot* slot) {
+		std::for_each(taskHunting.begin(), taskHunting.end(), [&rt](const std::unique_ptr<TaskHuntingSlot> &slot) {
 			if (slot->isOccupied()) {
 				rt.push_back(slot->selectedRaceId);
 			} else {
@@ -2190,7 +2190,7 @@ public:
 	void sendTaskHuntingData() const {
 		if (client) {
 			client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
-			for (const TaskHuntingSlot* slot : taskHunting) {
+			for (const std::unique_ptr<TaskHuntingSlot> &slot : taskHunting) {
 				if (slot) {
 					client->sendTaskHuntingData(slot);
 				}
@@ -2225,19 +2225,19 @@ public:
 		return getLevel() * g_configManager().getNumber(TASK_HUNTING_REROLL_PRICE_LEVEL);
 	}
 
-	TaskHuntingSlot* getTaskHuntingWithCreature(uint16_t raceId) const {
+	const std::unique_ptr<TaskHuntingSlot> &getTaskHuntingWithCreature(uint16_t raceId) const {
 		if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
-			return nullptr;
+			return TaskHuntingSlotNull;
 		}
 
-		if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const TaskHuntingSlot* itTask) {
+		if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const std::unique_ptr<TaskHuntingSlot> &itTask) {
 				return itTask->selectedRaceId == raceId;
 			});
 			it != taskHunting.end()) {
 			return *it;
 		}
 
-		return nullptr;
+		return TaskHuntingSlotNull;
 	}
 
 	uint32_t getLoyaltyPoints() const {
@@ -2593,7 +2593,7 @@ private:
 	std::vector<FamiliarEntry> familiars;
 
 	std::vector<std::unique_ptr<PreySlot>> preys;
-	std::vector<TaskHuntingSlot*> taskHunting;
+	std::vector<std::unique_ptr<TaskHuntingSlot>> taskHunting;
 
 	GuildWarVector guildWarVector;
 

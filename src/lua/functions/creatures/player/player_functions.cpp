@@ -365,7 +365,7 @@ int PlayerFunctions::luaPlayerRemovePreyStamina(lua_State* L) {
 	// player:removePreyStamina(amount)
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (player) {
-		g_ioprey().CheckPlayerPreys(player, getNumber<uint8_t>(L, 2, 1));
+		g_ioprey().checkPlayerPreys(player, getNumber<uint8_t>(L, 2, 1));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -489,7 +489,7 @@ int PlayerFunctions::luaPlayerPreyThirdSlot(lua_State* L) {
 int PlayerFunctions::luaPlayerTaskThirdSlot(lua_State* L) {
 	// get: player:taskHuntingThirdSlot() set: player:taskHuntingThirdSlot(bool)
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
-		TaskHuntingSlot* slot = player->getTaskHuntingSlotById(PreySlot_Three)) {
+		const auto &slot = player->getTaskHuntingSlotById(PreySlot_Three)) {
 		if (lua_gettop(L) == 1) {
 			pushBoolean(L, slot->state != PreyTaskDataState_Locked);
 		} else {

@@ -773,7 +773,7 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(std::shared_ptr<Player> player,
 					slot->state = PreyTaskDataState_Selection;
 				}
 
-				player->setTaskHuntingSlotClass(std::move(slot));
+				player->setTaskHuntingSlotClass(slot);
 			} while (result->next());
 		}
 	}

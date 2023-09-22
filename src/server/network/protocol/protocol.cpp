@@ -14,6 +14,12 @@
 #include "security/rsa.hpp"
 #include "game/scheduling/dispatcher.hpp"
 
+Protocol::~Protocol() {
+	if (compreesionEnabled) {
+		deflateEnd(defStream.get());
+	}
+}
+
 void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {
 		uint32_t sendMessageChecksum = 0;

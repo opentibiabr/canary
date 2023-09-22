@@ -17,7 +17,7 @@ public:
 	explicit Protocol(Connection_ptr initConnection) :
 		connectionPtr(initConnection) { }
 
-	virtual ~Protocol() = default;
+	virtual ~Protocol();
 
 	// non-copyable
 	Protocol(const Protocol &) = delete;

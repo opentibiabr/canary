@@ -14,7 +14,6 @@
 #include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
-#include "game/scheduling/dispatcher.hpp"
 
 std::shared_ptr<Party> Party::create(std::shared_ptr<Player> leader) {
 	auto party = std::make_shared<Party>();

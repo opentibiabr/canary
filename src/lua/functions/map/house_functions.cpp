@@ -138,12 +138,7 @@ int HouseFunctions::luaHouseSetNewOwnerGuid(lua_State* L) {
 		}
 
 		uint32_t guid = getNumber<uint32_t>(L, 2, 0);
-		if (isTransferOnRestart) {
-			house->setNewOwnerGuid(guid, false);
-		} else {
-			bool updateDatabase = getBoolean(L, 3, true);
-			house->setOwner(guid, updateDatabase);
-		}
+		house->setNewOwnerGuid(guid, false);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

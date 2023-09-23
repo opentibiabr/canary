@@ -25,6 +25,12 @@ void House::addTile(std::shared_ptr<HouseTile> tile) {
 }
 
 void House::setNewOwnerGuid(int32_t newOwnerGuid, bool serverStartup) {
+	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+	if (!isTransferOnRestart) {
+		setOwner(newOwnerGuid, true);
+		return;
+	}
+
 	std::ostringstream query;
 	query << "UPDATE `houses` SET `new_owner` = " << newOwnerGuid << " WHERE `id` = " << id;
 
@@ -36,6 +42,13 @@ void House::setNewOwnerGuid(int32_t newOwnerGuid, bool serverStartup) {
 }
 
 bool House::tryTransferOwnership(std::shared_ptr<Player> player, bool serverStartup) {
+	bool transferSuccess = false;
+	if (player) {
+		transferSuccess = transferToDepot(player);
+	} else {
+		transferSuccess = transferToDepot();
+	}
+
 	for (auto tile : houseTiles) {
 		if (const CreatureVector* creatures = tile->getCreatures()) {
 			for (int32_t i = creatures->size(); --i >= 0;) {
@@ -62,13 +75,6 @@ bool House::tryTransferOwnership(std::shared_ptr<Player> player, bool serverStar
 
 	for (auto door : doorList) {
 		door->setAccessList("");
-	}
-
-	bool transferSuccess = false;
-	if (player) {
-		transferSuccess = transferToDepot(player);
-	} else {
-		transferSuccess = transferToDepot();
 	}
 
 	return transferSuccess;
@@ -259,6 +265,7 @@ bool House::transferToDepot(std::shared_ptr<Player> player) const {
 	if (townId == 0 || !player) {
 		return false;
 	}
+
 	ItemList moveItemList;
 	for (std::shared_ptr<HouseTile> tile : houseTiles) {
 		if (const TileItemVector* items = tile->getItemList()) {
@@ -284,9 +291,9 @@ bool House::transferToDepot(std::shared_ptr<Player> player) const {
 
 bool House::hasItemOnTile() const {
 	bool foundItem = false;
-	for (const std::shared_ptr<HouseTile>& tile : houseTiles) {
+	for (const std::shared_ptr<HouseTile> &tile : houseTiles) {
 		if (const auto &items = tile->getItemList()) {
-			for (const std::shared_ptr<Item>& item : *items) {
+			for (const std::shared_ptr<Item> &item : *items) {
 				if (!item) {
 					continue;
 				}
@@ -300,7 +307,7 @@ bool House::hasItemOnTile() const {
 					g_logger().error("It is not possible to purchase a house with pickupable item inside: id '{}', name '{}'", item->getID(), item->getName());
 					break;
 				} else {
-					if (item->getContainer() && (!item->isPickupable() || !item->isWrapable())) {
+					if (item->getContainer() && (item->isPickupable() || item->isWrapable())) {
 						foundItem = true;
 						g_logger().error("It is not possible to purchase a house with container item inside: id '{}', name '{}'", item->getID(), item->getName());
 						break;
@@ -436,7 +443,6 @@ void House::resetTransferItem() {
 		transferItem = nullptr;
 		transfer_container->resetParent();
 		transfer_container->removeThing(tmpItem, tmpItem->getItemCount());
-		transfer_container = nullptr;
 	}
 }
 
@@ -453,10 +459,16 @@ std::shared_ptr<HouseTransferItem> HouseTransferItem::createHouseTransferItem(st
 void HouseTransferItem::onTradeEvent(TradeEvents_t event, std::shared_ptr<Player> owner) {
 	if (event == ON_TRADE_TRANSFER) {
 		if (house) {
-			owner->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have successfully bought the house. The ownership will be transferred upon server restart.");
+			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+			auto ownershipTransferMessage = " The ownership will be transferred upon server restart.";
+			auto boughtMessage = fmt::format("You have successfully bought the house.{}", isTransferOnRestart ? ownershipTransferMessage : "");
+			auto soldMessage = fmt::format("You have successfully sold your house.{}", isTransferOnRestart ? ownershipTransferMessage : "");
+
+			owner->sendTextMessage(MESSAGE_EVENT_ADVANCE, boughtMessage);
+
 			auto oldOwner = g_game().getPlayerByGUID(house->getOwner());
 			if (oldOwner) {
-				oldOwner->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have successfully sold your house. The ownership will be transferred upon server restart.");
+				oldOwner->sendTextMessage(MESSAGE_EVENT_ADVANCE, soldMessage);
 			}
 			house->executeTransfer(static_self_cast<HouseTransferItem>(), owner);
 		}
@@ -474,11 +486,16 @@ bool House::executeTransfer(std::shared_ptr<HouseTransferItem> item, std::shared
 		return false;
 	}
 
-	if (hasNewOwnerOnStartup) {
-		return false;
-	}
+	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+	if (isTransferOnRestart) {
+		if (hasNewOwnerOnStartup) {
+			return false;
+		}
 
-	setNewOwnerGuid(newOwner->getGUID(), false);
+		setNewOwnerGuid(newOwner->getGUID(), false);
+	} else {
+		setOwner(newOwner->getGUID());
+	}
 	transferItem = nullptr;
 	return true;
 }

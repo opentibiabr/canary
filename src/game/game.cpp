@@ -9848,6 +9848,10 @@ const std::unique_ptr<IOWheel> &Game::getIOWheel() const {
 }
 
 void Game::transferHouseItemsToDepot() {
+	if (!g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART)) {
+		return;
+	}
+
 	if (!transferHouseItemsToPlayer.empty()) {
 		g_logger().info("Initializing house transfer items");
 	}

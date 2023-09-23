@@ -210,7 +210,7 @@ bool Raid::loadFromXml(const std::string &filename) {
 }
 
 void Raid::startRaid() {
-	const auto &raidEvent = getNextRaidEvent();
+	const auto raidEvent = getNextRaidEvent();
 	if (raidEvent) {
 		state = RAIDSTATE_EXECUTING;
 		nextEventEvent = g_scheduler().addEvent(raidEvent->getDelay(), std::bind(&Raid::executeRaidEvent, this, raidEvent), "Raid::executeRaidEvent");
@@ -223,7 +223,7 @@ void Raid::startRaid() {
 void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> raidEvent) {
 	if (raidEvent->executeEvent()) {
 		nextEvent++;
-		const auto &newRaidEvent = getNextRaidEvent();
+		const auto newRaidEvent = getNextRaidEvent();
 
 		if (newRaidEvent) {
 			uint32_t ticks = static_cast<uint32_t>(std::max<int32_t>(RAID_MINTICKS, newRaidEvent->getDelay() - raidEvent->getDelay()));
@@ -365,14 +365,14 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 }
 
 bool SingleSpawnEvent::executeEvent() {
-	Monster* monster = Monster::createMonster(monsterName);
+	std::shared_ptr<Monster> monster = Monster::createMonster(monsterName);
 	if (!monster) {
 		g_logger().error("{} - Cant create monster {}", __FUNCTION__, monsterName);
 		return false;
 	}
 
 	if (!g_game().placeCreature(monster, position, false, true)) {
-		delete monster;
+
 		g_logger().error("{} - Cant create monster {}", __FUNCTION__, monsterName);
 		return false;
 	}
@@ -529,7 +529,7 @@ bool AreaSpawnEvent::executeEvent() {
 	for (const MonsterSpawn &spawn : spawnMonsterList) {
 		uint32_t amount = uniform_random(spawn.minAmount, spawn.maxAmount);
 		for (uint32_t i = 0; i < amount; ++i) {
-			Monster* monster = Monster::createMonster(spawn.name);
+			std::shared_ptr<Monster> monster = Monster::createMonster(spawn.name);
 			if (!monster) {
 				g_logger().error("{} - Can't create monster {}", __FUNCTION__, spawn.name);
 				return false;
@@ -537,7 +537,7 @@ bool AreaSpawnEvent::executeEvent() {
 
 			bool success = false;
 			for (int32_t tries = 0; tries < MAXIMUM_TRIES_PER_MONSTER; tries++) {
-				const Tile* tile = g_game().map.getTile(static_cast<uint16_t>(uniform_random(fromPos.x, toPos.x)), static_cast<uint16_t>(uniform_random(fromPos.y, toPos.y)), static_cast<uint8_t>(uniform_random(fromPos.z, toPos.z)));
+				std::shared_ptr<Tile> tile = g_game().map.getTile(static_cast<uint16_t>(uniform_random(fromPos.x, toPos.x)), static_cast<uint16_t>(uniform_random(fromPos.y, toPos.y)), static_cast<uint8_t>(uniform_random(fromPos.z, toPos.z)));
 				if (tile && !tile->isMoveableBlocking() && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && tile->getTopCreature() == nullptr && g_game().placeCreature(monster, tile->getPosition(), false, true)) {
 					success = true;
 					monster->setForgeMonster(false);
@@ -546,7 +546,6 @@ bool AreaSpawnEvent::executeEvent() {
 			}
 
 			if (!success) {
-				delete monster;
 			}
 		}
 	}

@@ -37,11 +37,11 @@ public:
 	static void reportError(const char* function, const std::string &error_desc, bool stack_trace = false);
 	static int luaErrorHandler(lua_State* L);
 
-	static void pushThing(lua_State* L, Thing* thing);
+	static void pushThing(lua_State* L, std::shared_ptr<Thing> thing);
 	static void pushVariant(lua_State* L, const LuaVariant &var);
 	static void pushString(lua_State* L, const std::string &value);
 	static void pushCallback(lua_State* L, int32_t callback);
-	static void pushCylinder(lua_State* L, Cylinder* cylinder);
+	static void pushCylinder(lua_State* L, std::shared_ptr<Cylinder> cylinder);
 
 	static std::string popString(lua_State* L);
 	static int32_t popCallback(lua_State* L);
@@ -54,8 +54,8 @@ public:
 
 	static void setMetatable(lua_State* L, int32_t index, const std::string &name);
 	static void setWeakMetatable(lua_State* L, int32_t index, const std::string &name);
-	static void setItemMetatable(lua_State* L, int32_t index, const Item* item);
-	static void setCreatureMetatable(lua_State* L, int32_t index, const Creature* creature);
+	static void setItemMetatable(lua_State* L, int32_t index, std::shared_ptr<Item> item);
+	static void setCreatureMetatable(lua_State* L, int32_t index, std::shared_ptr<Creature> creature);
 
 	template <typename T>
 	static typename std::enable_if<std::is_enum<T>::value, T>::type
@@ -107,9 +107,9 @@ public:
 	static Outfit_t getOutfit(lua_State* L, int32_t arg);
 	static LuaVariant getVariant(lua_State* L, int32_t arg);
 
-	static Thing* getThing(lua_State* L, int32_t arg);
-	static Creature* getCreature(lua_State* L, int32_t arg);
-	static Player* getPlayer(lua_State* L, int32_t arg, bool allowOffline = false);
+	static std::shared_ptr<Thing> getThing(lua_State* L, int32_t arg);
+	static std::shared_ptr<Creature> getCreature(lua_State* L, int32_t arg);
+	static std::shared_ptr<Player> getPlayer(lua_State* L, int32_t arg, bool allowOffline = false);
 	static std::shared_ptr<Guild> getGuild(lua_State* L, int32_t arg, bool allowOffline = false);
 
 	template <typename T>
@@ -215,10 +215,8 @@ protected:
 	static void registerGlobalString(lua_State* L, const std::string &variable, const std::string &name);
 
 	static int luaUserdataCompare(lua_State* L);
+	static int luaGarbageCollection(lua_State* L);
 
 	static ScriptEnvironment scriptEnv[16];
 	static int32_t scriptEnvIndex;
-
-private:
-	static int luaGarbageCollection(lua_State* L);
 };

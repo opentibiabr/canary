@@ -28,8 +28,8 @@
 
 Items Item::items;
 
-Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/, Position* itemPosition /*= nullptr*/) {
-	Item* newItem = nullptr;
+std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/, Position* itemPosition /*= nullptr*/) {
+	std::shared_ptr<Item> newItem = nullptr;
 
 	const ItemType &it = Item::items[type];
 	if (it.stackable && count == 0) {
@@ -38,33 +38,31 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/, Position* it
 
 	if (it.id != 0) {
 		if (it.isDepot()) {
-			newItem = new DepotLocker(type, 4);
+			newItem = std::make_shared<DepotLocker>(type, 4);
 		} else if (it.isRewardChest()) {
-			newItem = new RewardChest(type);
+			newItem = std::make_shared<RewardChest>(type);
 		} else if (it.isContainer()) {
-			newItem = new Container(type);
+			newItem = std::make_shared<Container>(type);
 		} else if (it.isTeleport()) {
-			newItem = new Teleport(type);
+			newItem = std::make_shared<Teleport>(type);
 		} else if (it.isMagicField()) {
-			newItem = new MagicField(type);
+			newItem = std::make_shared<MagicField>(type);
 		} else if (it.isDoor()) {
-			newItem = new Door(type);
+			newItem = std::make_shared<Door>(type);
 		} else if (it.isTrashHolder()) {
-			newItem = new TrashHolder(type);
+			newItem = std::make_shared<TrashHolder>(type);
 		} else if (it.isMailbox()) {
-			newItem = new Mailbox(type);
+			newItem = std::make_shared<Mailbox>(type);
 		} else if (it.isBed()) {
-			newItem = new BedItem(type);
+			newItem = std::make_shared<BedItem>(type);
 		} else {
 			auto itemMap = ItemTransformationMap.find(static_cast<ItemID_t>(it.id));
 			if (itemMap != ItemTransformationMap.end()) {
-				newItem = new Item(itemMap->second, count);
+				newItem = std::make_shared<Item>(itemMap->second, count);
 			} else {
-				newItem = new Item(type, count);
+				newItem = std::make_shared<Item>(type, count);
 			}
 		}
-
-		newItem->incrementReferenceCounter();
 	} else if (type > 0 && itemPosition) {
 		auto position = *itemPosition;
 		g_logger().warn("[Item::CreateItem] Item with id '{}', in position '{}' not exists in the appearances.dat and cannot be created.", type, position.toString());
@@ -89,7 +87,7 @@ void Item::setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
 }
 
 void Item::addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
-	Player* player = getHoldingPlayer();
+	std::shared_ptr<Player> player = getHoldingPlayer();
 	if (!player) {
 		return;
 	}
@@ -129,7 +127,7 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 	return false;
 }
 
-Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size) {
+std::shared_ptr<Container> Item::CreateItemAsContainer(const uint16_t type, uint16_t size) {
 	if (const ItemType &it = Item::items[type];
 		it.id == 0
 		|| it.stackable
@@ -142,12 +140,11 @@ Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size) {
 		return nullptr;
 	}
 
-	Container* newItem = new Container(type, size);
-	newItem->incrementReferenceCounter();
+	std::shared_ptr<Container> newItem = std::make_shared<Container>(type, size);
 	return newItem;
 }
 
-Item* Item::CreateItem(uint16_t itemId, Position &itemPosition) {
+std::shared_ptr<Item> Item::CreateItem(uint16_t itemId, Position &itemPosition) {
 	switch (itemId) {
 		case ITEM_FIREFIELD_PVP_FULL:
 			itemId = ITEM_FIREFIELD_PERSISTENT_FULL;
@@ -207,28 +204,28 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 	setDefaultDuration();
 }
 
-Item::Item(const Item &i) :
-	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap) {
-	if (i.attributePtr) {
-		attributePtr.reset(new ItemAttribute(*i.attributePtr));
+Item::Item(const std::shared_ptr<Item> &i) :
+	Thing(), id(i->id), count(i->count), loadedFromMap(i->loadedFromMap) {
+	if (i->attributePtr) {
+		attributePtr = std::make_unique<ItemAttribute>(*i->attributePtr);
 	}
 }
 
-Item* Item::clone() const {
-	Item* item = Item::CreateItem(id, count);
+std::shared_ptr<Item> Item::clone() const {
+	std::shared_ptr<Item> item = Item::CreateItem(id, count);
 	if (item == nullptr) {
 		g_logger().error("[{}] item is nullptr", __FUNCTION__);
 		return nullptr;
 	}
 
 	if (attributePtr) {
-		item->attributePtr.reset(new ItemAttribute(*attributePtr));
+		item->attributePtr = std::make_unique<ItemAttribute>(*attributePtr);
 	}
 
 	return item;
 }
 
-bool Item::equals(const Item* compareItem) const {
+bool Item::equals(std::shared_ptr<Item> compareItem) const {
 	if (!compareItem) {
 		return false;
 	}
@@ -276,7 +273,7 @@ void Item::setDefaultSubtype() {
 }
 
 void Item::onRemoved() {
-	ScriptEnvironment::removeTempItem(this);
+	ScriptEnvironment::removeTempItem(static_self_cast<Item>());
 
 	if (hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		g_game().removeUniqueItem(getAttribute<uint16_t>(ItemAttribute_t::UNIQUEID));
@@ -284,6 +281,7 @@ void Item::onRemoved() {
 }
 
 void Item::setID(uint16_t newid) {
+	g_logger().debug("[Item::setID] - Setting item id from {} to {}", id, newid);
 	const ItemType &prevIt = Item::items[id];
 	id = newid;
 
@@ -308,9 +306,9 @@ void Item::setID(uint16_t newid) {
 	}
 }
 
-Cylinder* Item::getTopParent() {
-	Cylinder* aux = getParent();
-	Cylinder* prevaux = dynamic_cast<Cylinder*>(this);
+std::shared_ptr<Cylinder> Item::getTopParent() {
+	std::shared_ptr<Cylinder> aux = getParent();
+	std::shared_ptr<Cylinder> prevaux = std::dynamic_pointer_cast<Cylinder>(shared_from_this());
 	if (!aux) {
 		return prevaux;
 	}
@@ -326,40 +324,13 @@ Cylinder* Item::getTopParent() {
 	return aux;
 }
 
-const Cylinder* Item::getTopParent() const {
-	const Cylinder* aux = getParent();
-	const Cylinder* prevaux = dynamic_cast<const Cylinder*>(this);
-	if (!aux) {
-		return prevaux;
-	}
-
-	while (aux && aux->getParent() != nullptr) {
-		prevaux = aux;
-		aux = aux->getParent();
-	}
-
-	if (prevaux) {
-		return prevaux;
-	}
-	return aux;
-}
-
-Tile* Item::getTile() {
-	Cylinder* cylinder = getTopParent();
+std::shared_ptr<Tile> Item::getTile() {
+	std::shared_ptr<Cylinder> cylinder = getTopParent();
 	// get root cylinder
 	if (cylinder && cylinder->getParent()) {
 		cylinder = cylinder->getParent();
 	}
-	return dynamic_cast<Tile*>(cylinder);
-}
-
-const Tile* Item::getTile() const {
-	const Cylinder* cylinder = getTopParent();
-	// get root cylinder
-	if (cylinder && cylinder->getParent()) {
-		cylinder = cylinder->getParent();
-	}
-	return dynamic_cast<const Tile*>(cylinder);
+	return std::dynamic_pointer_cast<Tile>(cylinder);
 }
 
 uint16_t Item::getSubType() const {
@@ -374,8 +345,8 @@ uint16_t Item::getSubType() const {
 	return static_cast<uint16_t>(count);
 }
 
-Player* Item::getHoldingPlayer() const {
-	Cylinder* p = getParent();
+std::shared_ptr<Player> Item::getHoldingPlayer() {
+	std::shared_ptr<Cylinder> p = getParent();
 	while (p) {
 		if (p->getCreature()) {
 			return p->getCreature()->getPlayer();
@@ -1037,7 +1008,7 @@ uint32_t Item::getWeight() const {
 }
 
 std::vector<std::pair<std::string, std::string>>
-Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
+Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr*/) {
 	std::ostringstream ss;
 	std::vector<std::pair<std::string, std::string>> descriptions;
 	bool isTradeable = true;
@@ -1319,7 +1290,7 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 			for (uint8_t i = 0; i < item->getImbuementSlot(); ++i) {
 				slotName = fmt::format("Imbuement Slot {}", i + 1);
 				ss.str("");
-				const auto &castItem = item;
+				const auto castItem = item;
 				if (!castItem) {
 					continue;
 				}
@@ -1826,7 +1797,7 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 	return descriptions;
 }
 
-std::string Item::parseImbuementDescription(const Item* item) {
+std::string Item::parseImbuementDescription(std::shared_ptr<Item> item) {
 	std::ostringstream s;
 	if (item && item->getImbuementSlot() >= 1) {
 		s << std::endl
@@ -1858,17 +1829,17 @@ std::string Item::parseImbuementDescription(const Item* item) {
 	return s.str();
 }
 
-bool Item::isSavedToHouses() const {
+bool Item::isSavedToHouses() {
 	const auto &it = items[id];
 	return it.moveable || it.isWrappable() || it.isCarpet() || getDoor() || (getContainer() && !getContainer()->empty()) || it.canWriteText || getBed() || it.m_transformOnUse;
 }
 
-SoundEffect_t Item::getMovementSound(Cylinder* toCylinder) const {
+SoundEffect_t Item::getMovementSound(std::shared_ptr<Cylinder> toCylinder) const {
 	if (!toCylinder) {
 		return SoundEffect_t::ITEM_MOVE_DEFAULT;
 	}
 
-	if (const Container* toContainer = toCylinder->getContainer();
+	if (std::shared_ptr<Container> toContainer = toCylinder->getContainer();
 		toContainer && toContainer->getHoldingPlayer()) {
 		return SoundEffect_t::ITEM_MOVE_BACKPACK;
 	}
@@ -1925,7 +1896,7 @@ SoundEffect_t Item::getMovementSound(Cylinder* toCylinder) const {
 	return SoundEffect_t::ITEM_MOVE_DEFAULT;
 }
 
-std::string Item::parseClassificationDescription(const Item* item) {
+std::string Item::parseClassificationDescription(std::shared_ptr<Item> item) {
 	std::ostringstream string;
 	if (item && item->getClassification() >= 1) {
 		string << std::endl
@@ -1956,7 +1927,7 @@ std::string Item::parseShowDurationSpeed(int32_t speed, bool &begin) {
 	return description.str();
 }
 
-std::string Item::parseShowDuration(const Item* item) {
+std::string Item::parseShowDuration(std::shared_ptr<Item> item) {
 	if (!item) {
 		return {};
 	}
@@ -1999,7 +1970,7 @@ std::string Item::parseShowDuration(const Item* item) {
 	return description.str();
 }
 
-std::string Item::parseShowAttributesDescription(const Item* item, const uint16_t itemId) {
+std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, const uint16_t itemId) {
 	std::ostringstream itemDescription;
 	const ItemType &itemType = Item::items[itemId];
 	if (itemType.armor != 0 || (item && item->getArmor() != 0) || itemType.showAttributes) {
@@ -2225,7 +2196,7 @@ std::string Item::parseShowAttributesDescription(const Item* item, const uint16_
 	return itemDescription.str();
 }
 
-std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const Item* item /*= nullptr*/, int32_t subType /*= -1*/, bool addArticle /*= true*/) {
+std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::shared_ptr<Item> item /*= nullptr*/, int32_t subType /*= -1*/, bool addArticle /*= true*/) {
 	std::string text = "";
 
 	std::ostringstream s;
@@ -2967,12 +2938,12 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 	return s.str();
 }
 
-std::string Item::getDescription(int32_t lookDistance) const {
+std::string Item::getDescription(int32_t lookDistance) {
 	const ItemType &it = items[id];
-	return getDescription(it, lookDistance, this);
+	return getDescription(it, lookDistance, getItem());
 }
 
-std::string Item::getNameDescription(const ItemType &it, const Item* item /*= nullptr*/, int32_t subType /*= -1*/, bool addArticle /*= true*/) {
+std::string Item::getNameDescription(const ItemType &it, std::shared_ptr<Item> item /*= nullptr*/, int32_t subType /*= -1*/, bool addArticle /*= true*/) {
 	if (item) {
 		subType = item->getSubType();
 	}
@@ -3003,9 +2974,9 @@ std::string Item::getNameDescription(const ItemType &it, const Item* item /*= nu
 	return s.str();
 }
 
-std::string Item::getNameDescription() const {
+std::string Item::getNameDescription() {
 	const ItemType &it = items[id];
-	return getNameDescription(it, this);
+	return getNameDescription(it, getItem());
 }
 
 std::string Item::getWeightDescription(const ItemType &it, uint32_t weight, uint32_t count /*= 1*/) {
@@ -3048,12 +3019,12 @@ void Item::addUniqueId(uint16_t uniqueId) {
 		return;
 	}
 
-	if (g_game().addUniqueItem(uniqueId, this)) {
+	if (g_game().addUniqueItem(uniqueId, static_self_cast<Item>())) {
 		setAttribute(ItemAttribute_t::UNIQUEID, uniqueId);
 	}
 }
 
-bool Item::canDecay() const {
+bool Item::canDecay() {
 	if (isRemoved() || isDecayDisabled()) {
 		return false;
 	}
@@ -3108,36 +3079,37 @@ LightInfo Item::getLightInfo() const {
 }
 
 void Item::startDecaying() {
-	g_decay().startDecay(this);
+	g_decay().startDecay(static_self_cast<Item>());
 }
 
 void Item::stopDecaying() {
-	g_decay().stopDecay(this);
+	g_logger().debug("Item::stopDecaying");
+	g_decay().stopDecay(static_self_cast<Item>());
 }
 
-Item* Item::transform(uint16_t itemId, uint16_t itemCount /*= -1*/) {
-	Cylinder* cylinder = getParent();
+std::shared_ptr<Item> Item::transform(uint16_t itemId, uint16_t itemCount /*= -1*/) {
+	std::shared_ptr<Cylinder> cylinder = getParent();
 	if (cylinder == nullptr) {
 		g_logger().info("[{}] failed to transform item {}, cylinder is nullptr", __FUNCTION__, getID());
 		return nullptr;
 	}
 
-	Tile* fromTile = cylinder->getTile();
+	std::shared_ptr<Tile> fromTile = cylinder->getTile();
 	if (fromTile) {
 		auto it = g_game().browseFields.find(fromTile);
-		if (it != g_game().browseFields.end() && it->second == cylinder) {
+		if (it != g_game().browseFields.end() && it->second.lock() == cylinder) {
 			cylinder = fromTile;
 		}
 	}
 
-	Item* newItem;
+	std::shared_ptr<Item> newItem;
 	if (itemCount == -1) {
 		newItem = Item::CreateItem(itemId, 1);
 	} else {
 		newItem = Item::CreateItem(itemId, itemCount);
 	}
 
-	int32_t itemIndex = cylinder->getThingIndex(this);
+	int32_t itemIndex = cylinder->getThingIndex(static_self_cast<Item>());
 	auto duration = getDuration();
 	if (duration > 0) {
 		newItem->setDuration(duration);
@@ -3146,10 +3118,9 @@ Item* Item::transform(uint16_t itemId, uint16_t itemCount /*= -1*/) {
 	cylinder->replaceThing(itemIndex, newItem);
 	cylinder->postAddNotification(newItem, cylinder, itemIndex);
 
-	setParent(nullptr);
-	cylinder->postRemoveNotification(this, cylinder, itemIndex);
+	resetParent();
+	cylinder->postRemoveNotification(static_self_cast<Item>(), cylinder, itemIndex);
 	stopDecaying();
-	g_game().ReleaseItem(this);
 	newItem->startDecaying();
 	return newItem;
 }
@@ -3180,17 +3151,17 @@ bool Item::hasMarketAttributes() const {
 	return true;
 }
 
-bool Item::isInsideDepot(bool includeInbox /* = false*/) const {
-	if (const Container* thisContainer = getContainer(); thisContainer && (thisContainer->getDepotLocker() || thisContainer->isDepotChest() || (includeInbox && thisContainer->isInbox()))) {
+bool Item::isInsideDepot(bool includeInbox /* = false*/) {
+	if (std::shared_ptr<Container> thisContainer = getContainer(); thisContainer && (thisContainer->getDepotLocker() || thisContainer->isDepotChest() || (includeInbox && thisContainer->isInbox()))) {
 		return true;
 	}
 
-	const Cylinder* cylinder = getParent();
+	std::shared_ptr<Cylinder> cylinder = getParent();
 	if (!cylinder) {
 		return false;
 	}
 
-	const Container* container = cylinder->getContainer();
+	std::shared_ptr<Container> container = cylinder->getContainer();
 	if (!container) {
 		return false;
 	}
@@ -3208,6 +3179,6 @@ bool Item::isInsideDepot(bool includeInbox /* = false*/) const {
 
 void Item::updateTileFlags() {
 	if (auto tile = getTile()) {
-		tile->updateTileFlags(this);
+		tile->updateTileFlags(static_self_cast<Item>());
 	}
 }

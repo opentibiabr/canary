@@ -13,7 +13,7 @@
 #include "io/functions/iologindata_load_player.hpp"
 #include "game/game.hpp"
 
-void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, Player &player) {
+void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, const std::shared_ptr<Player> &player) {
 	try {
 		do {
 			uint32_t sid = result->getNumber<uint32_t>("sid");
@@ -26,18 +26,18 @@ void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, Player 
 			propStream.init(attr, attrSize);
 
 			try {
-				Item* item = Item::CreateItem(type, count);
+				std::shared_ptr<Item> item = Item::CreateItem(type, count);
 				if (item) {
 					if (!item->unserializeAttr(propStream)) {
-						g_logger().warn("[{}] - Failed to deserialize item attributes {}, from player {}, from account id {}", __FUNCTION__, item->getID(), player.getName(), player.getAccountId());
-						savePlayer(&player);
+						g_logger().warn("[{}] - Failed to deserialize item attributes {}, from player {}, from account id {}", __FUNCTION__, item->getID(), player->getName(), player->getAccountId());
+						savePlayer(player);
 						g_logger().info("[{}] - Deleting wrong item: {}", __FUNCTION__, item->getID());
-						delete item;
+
 						continue;
 					}
 					itemsMap[sid] = std::make_pair(item, pid);
 				} else {
-					g_logger().warn("[{}] - Failed to create item of type {} for player {}, from account id {}", __FUNCTION__, type, player.getName(), player.getAccountId());
+					g_logger().warn("[{}] - Failed to create item of type {} for player {}, from account id {}", __FUNCTION__, type, player->getName(), player->getAccountId());
 				}
 			} catch (const std::exception &e) {
 				g_logger().warn("[{}] - Exception during the creation or deserialization of the item: {}", __FUNCTION__, e.what());
@@ -49,7 +49,7 @@ void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, Player 
 	}
 }
 
-bool IOLoginDataLoad::preLoadPlayer(Player* player, const std::string &name) {
+bool IOLoginDataLoad::preLoadPlayer(std::shared_ptr<Player> player, const std::string &name) {
 	Database &db = Database::getInstance();
 
 	std::ostringstream query;
@@ -103,7 +103,7 @@ bool IOLoginDataLoad::preLoadPlayer(Player* player, const std::string &name) {
 	return true;
 }
 
-bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
+bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return false;
@@ -162,7 +162,7 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 	player->offlineTrainingTime = result->getNumber<int32_t>("offlinetraining_time") * 1000;
 	auto skill = result->getInt8FromString(result->getString("offlinetraining_skill"), __FUNCTION__);
 	player->setOfflineTrainingSkill(skill);
-	Town* town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
+	const auto &town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
 	if (!town) {
 		g_logger().error("Player {} has town id {} which doesn't exist", player->name, result->getNumber<uint16_t>("town_id"));
 		return false;
@@ -183,7 +183,7 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 	return true;
 }
 
-void IOLoginDataLoad::loadPlayerExperience(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerExperience(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -206,7 +206,7 @@ void IOLoginDataLoad::loadPlayerExperience(Player* player, DBResult_ptr result) 
 	}
 }
 
-void IOLoginDataLoad::loadPlayerBlessings(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerBlessings(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -219,7 +219,7 @@ void IOLoginDataLoad::loadPlayerBlessings(Player* player, DBResult_ptr result) {
 	}
 }
 
-void IOLoginDataLoad::loadPlayerConditions(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerConditions(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -230,7 +230,7 @@ void IOLoginDataLoad::loadPlayerConditions(Player* player, DBResult_ptr result) 
 	PropStream propStream;
 	propStream.init(attr, attrSize);
 
-	Condition* condition = Condition::createCondition(propStream);
+	auto condition = Condition::createCondition(propStream);
 	while (condition) {
 		if (condition->unserialize(propStream)) {
 			player->storedConditionList.push_front(condition);
@@ -239,7 +239,7 @@ void IOLoginDataLoad::loadPlayerConditions(Player* player, DBResult_ptr result) 
 	}
 }
 
-void IOLoginDataLoad::loadPlayerDefaultOutfit(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -270,7 +270,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(Player* player, DBResult_ptr resul
 	player->currentOutfit = player->defaultOutfit;
 }
 
-void IOLoginDataLoad::loadPlayerSkullSystem(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerSkullSystem(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -292,7 +292,7 @@ void IOLoginDataLoad::loadPlayerSkullSystem(Player* player, DBResult_ptr result)
 	}
 }
 
-void IOLoginDataLoad::loadPlayerSkill(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerSkill(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -314,7 +314,7 @@ void IOLoginDataLoad::loadPlayerSkill(Player* player, DBResult_ptr result) {
 	}
 }
 
-void IOLoginDataLoad::loadPlayerKills(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerKills(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -333,7 +333,7 @@ void IOLoginDataLoad::loadPlayerKills(Player* player, DBResult_ptr result) {
 	}
 }
 
-void IOLoginDataLoad::loadPlayerGuild(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerGuild(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -383,7 +383,7 @@ void IOLoginDataLoad::loadPlayerGuild(Player* player, DBResult_ptr result) {
 	}
 }
 
-void IOLoginDataLoad::loadPlayerStashItems(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerStashItems(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -399,7 +399,7 @@ void IOLoginDataLoad::loadPlayerStashItems(Player* player, DBResult_ptr result) 
 	}
 }
 
-void IOLoginDataLoad::loadPlayerBestiaryCharms(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerBestiaryCharms(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -452,7 +452,7 @@ void IOLoginDataLoad::loadPlayerBestiaryCharms(Player* player, DBResult_ptr resu
 	}
 }
 
-void IOLoginDataLoad::loadPlayerInstantSpellList(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerInstantSpellList(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
 		return;
@@ -468,7 +468,7 @@ void IOLoginDataLoad::loadPlayerInstantSpellList(Player* player, DBResult_ptr re
 	}
 }
 
-void IOLoginDataLoad::loadPlayerInventoryItems(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerInventoryItems(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -480,15 +480,15 @@ void IOLoginDataLoad::loadPlayerInventoryItems(Player* player, DBResult_ptr resu
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_items` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
 
 	ItemsMap inventoryItems;
-	std::vector<std::pair<uint8_t, Container*>> openContainersList;
+	std::vector<std::pair<uint8_t, std::shared_ptr<Container>>> openContainersList;
 
 	try {
 		if ((result = db.storeQuery(query.str()))) {
-			loadItems(inventoryItems, result, *player);
+			loadItems(inventoryItems, result, player);
 
 			for (ItemsMap::const_reverse_iterator it = inventoryItems.rbegin(), end = inventoryItems.rend(); it != end; ++it) {
-				const std::pair<Item*, int32_t> &pair = it->second;
-				Item* item = pair.first;
+				const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
+				std::shared_ptr<Item> item = pair.first;
 				if (!item) {
 					continue;
 				}
@@ -504,14 +504,14 @@ void IOLoginDataLoad::loadPlayerInventoryItems(Player* player, DBResult_ptr resu
 						continue;
 					}
 
-					Container* container = it2->second.first->getContainer();
+					std::shared_ptr<Container> container = it2->second.first->getContainer();
 					if (container) {
 						container->internalAddThing(item);
 						item->startDecaying();
 					}
 				}
 
-				Container* itemContainer = item->getContainer();
+				std::shared_ptr<Container> itemContainer = item->getContainer();
 				if (itemContainer) {
 					if (!oldProtocol) {
 						auto cid = item->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER);
@@ -532,7 +532,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(Player* player, DBResult_ptr resu
 		}
 
 		if (!oldProtocol) {
-			std::ranges::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
+			std::ranges::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, std::shared_ptr<Container>> &left, const std::pair<uint8_t, std::shared_ptr<Container>> &right) {
 				return left.first < right.first;
 			});
 
@@ -546,7 +546,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(Player* player, DBResult_ptr resu
 	}
 }
 
-void IOLoginDataLoad::loadPlayerStoreInbox(Player* player) {
+void IOLoginDataLoad::loadPlayerStoreInbox(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
 		return;
@@ -557,7 +557,7 @@ void IOLoginDataLoad::loadPlayerStoreInbox(Player* player) {
 	}
 }
 
-void IOLoginDataLoad::loadRewardItems(Player* player) {
+void IOLoginDataLoad::loadRewardItems(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
 		return;
@@ -569,13 +569,13 @@ void IOLoginDataLoad::loadRewardItems(Player* player) {
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_rewards` WHERE `player_id` = "
 		  << player->getGUID() << " ORDER BY `pid`, `sid` ASC";
 	if (auto result = Database::getInstance().storeQuery(query.str())) {
-		loadItems(rewardItems, result, *player);
+		loadItems(rewardItems, result, player);
 		bindRewardBag(player, rewardItems);
 		insertItemsIntoRewardBag(rewardItems);
 	}
 }
 
-void IOLoginDataLoad::loadPlayerDepotItems(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerDepotItems(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -586,15 +586,14 @@ void IOLoginDataLoad::loadPlayerDepotItems(Player* player, DBResult_ptr result) 
 	std::ostringstream query;
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_depotitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
 	if ((result = db.storeQuery(query.str()))) {
-
-		loadItems(depotItems, result, *player);
+		loadItems(depotItems, result, player);
 		for (ItemsMap::const_reverse_iterator it = depotItems.rbegin(), end = depotItems.rend(); it != end; ++it) {
-			const std::pair<Item*, int32_t> &pair = it->second;
-			Item* item = pair.first;
+			const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
+			std::shared_ptr<Item> item = pair.first;
 
 			int32_t pid = pair.second;
 			if (pid >= 0 && pid < 100) {
-				DepotChest* depotChest = player->getDepotChest(pid, true);
+				std::shared_ptr<DepotChest> depotChest = player->getDepotChest(pid, true);
 				if (depotChest) {
 					depotChest->internalAddThing(item);
 					item->startDecaying();
@@ -605,7 +604,7 @@ void IOLoginDataLoad::loadPlayerDepotItems(Player* player, DBResult_ptr result) 
 					continue;
 				}
 
-				Container* container = it2->second.first->getContainer();
+				std::shared_ptr<Container> container = it2->second.first->getContainer();
 				if (container) {
 					container->internalAddThing(item);
 					item->startDecaying();
@@ -615,7 +614,7 @@ void IOLoginDataLoad::loadPlayerDepotItems(Player* player, DBResult_ptr result) 
 	}
 }
 
-void IOLoginDataLoad::loadPlayerInboxItems(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerInboxItems(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -625,13 +624,12 @@ void IOLoginDataLoad::loadPlayerInboxItems(Player* player, DBResult_ptr result) 
 	std::ostringstream query;
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_inboxitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
 	if ((result = db.storeQuery(query.str()))) {
-
 		ItemsMap inboxItems;
-		loadItems(inboxItems, result, *player);
+		loadItems(inboxItems, result, player);
 
 		for (ItemsMap::const_reverse_iterator it = inboxItems.rbegin(), end = inboxItems.rend(); it != end; ++it) {
-			const std::pair<Item*, int32_t> &pair = it->second;
-			Item* item = pair.first;
+			const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
+			std::shared_ptr<Item> item = pair.first;
 			int32_t pid = pair.second;
 			if (pid >= 0 && pid < 100) {
 				player->getInbox()->internalAddThing(item);
@@ -642,7 +640,7 @@ void IOLoginDataLoad::loadPlayerInboxItems(Player* player, DBResult_ptr result) 
 					continue;
 				}
 
-				Container* container = it2->second.first->getContainer();
+				std::shared_ptr<Container> container = it2->second.first->getContainer();
 				if (container) {
 					container->internalAddThing(item);
 					item->startDecaying();
@@ -652,7 +650,7 @@ void IOLoginDataLoad::loadPlayerInboxItems(Player* player, DBResult_ptr result) 
 	}
 }
 
-void IOLoginDataLoad::loadPlayerStorageMap(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerStorageMap(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -668,7 +666,7 @@ void IOLoginDataLoad::loadPlayerStorageMap(Player* player, DBResult_ptr result) 
 	}
 }
 
-void IOLoginDataLoad::loadPlayerVip(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerVip(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -684,7 +682,7 @@ void IOLoginDataLoad::loadPlayerVip(Player* player, DBResult_ptr result) {
 	}
 }
 
-void IOLoginDataLoad::loadPlayerPreyClass(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerPreyClass(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -725,13 +723,13 @@ void IOLoginDataLoad::loadPlayerPreyClass(Player* player, DBResult_ptr result) {
 					slot->raceIdList.push_back(raceId);
 				}
 
-				player->setPreySlotClass(std::move(slot));
+				player->setPreySlotClass(slot);
 			} while (result->next());
 		}
 	}
 }
 
-void IOLoginDataLoad::loadPlayerTaskHuntingClass(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerTaskHuntingClass(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -775,13 +773,13 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(Player* player, DBResult_ptr re
 					slot->state = PreyTaskDataState_Selection;
 				}
 
-				player->setTaskHuntingSlotClass(std::move(slot));
+				player->setTaskHuntingSlotClass(slot);
 			} while (result->next());
 		}
 	}
 }
 
-void IOLoginDataLoad::loadPlayerForgeHistory(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerForgeHistory(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -802,7 +800,7 @@ void IOLoginDataLoad::loadPlayerForgeHistory(Player* player, DBResult_ptr result
 	}
 }
 
-void IOLoginDataLoad::loadPlayerBosstiary(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerBosstiary(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
@@ -834,7 +832,7 @@ void IOLoginDataLoad::loadPlayerBosstiary(Player* player, DBResult_ptr result) {
 	}
 }
 
-void IOLoginDataLoad::bindRewardBag(Player* player, ItemsMap &rewardItemsMap) {
+void IOLoginDataLoad::bindRewardBag(std::shared_ptr<Player> player, ItemsMap &rewardItemsMap) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
 		return;
@@ -845,7 +843,7 @@ void IOLoginDataLoad::bindRewardBag(Player* player, ItemsMap &rewardItemsMap) {
 		if (pid == 0) {
 			auto reward = player->getReward(item->getAttribute<uint64_t>(ItemAttribute_t::DATE), true);
 			if (reward) {
-				itemPair = std::pair<Item*, int32_t>(reward->getItem(), player->getRewardChest()->getID());
+				itemPair = std::pair<std::shared_ptr<Item>, int32_t>(reward->getItem(), player->getRewardChest()->getID());
 			}
 		} else {
 			break;
@@ -855,8 +853,8 @@ void IOLoginDataLoad::bindRewardBag(Player* player, ItemsMap &rewardItemsMap) {
 
 void IOLoginDataLoad::insertItemsIntoRewardBag(const ItemsMap &rewardItemsMap) {
 	for (const auto &it : std::views::reverse(rewardItemsMap)) {
-		const std::pair<Item*, int32_t> &pair = it.second;
-		Item* item = pair.first;
+		const std::pair<std::shared_ptr<Item>, int32_t> &pair = it.second;
+		std::shared_ptr<Item> item = pair.first;
 		int32_t pid = pair.second;
 		if (pid == 0) {
 			break;
@@ -867,14 +865,14 @@ void IOLoginDataLoad::insertItemsIntoRewardBag(const ItemsMap &rewardItemsMap) {
 			continue;
 		}
 
-		Container* container = it2->second.first->getContainer();
+		std::shared_ptr<Container> container = it2->second.first->getContainer();
 		if (container) {
 			container->internalAddThing(item);
 		}
 	}
 }
 
-void IOLoginDataLoad::loadPlayerInitializeSystem(Player* player) {
+void IOLoginDataLoad::loadPlayerInitializeSystem(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
 		return;
@@ -888,7 +886,7 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(Player* player) {
 	player->initializeTaskHunting();
 }
 
-void IOLoginDataLoad::loadPlayerUpdateSystem(Player* player) {
+void IOLoginDataLoad::loadPlayerUpdateSystem(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
 		return;

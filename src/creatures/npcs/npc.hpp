@@ -10,6 +10,7 @@
 #pragma once
 
 #include "creatures/npcs/npcs.hpp"
+#include "creatures/players/player.hpp"
 #include "declarations.hpp"
 #include "items/tile.hpp"
 #include "lib/di/container.hpp"
@@ -20,27 +21,24 @@ class SpawnNpc;
 
 class Npc final : public Creature {
 public:
-	static Npc* createNpc(const std::string &name);
+	static std::shared_ptr<Npc> createNpc(const std::string &name);
 	static int32_t despawnRange;
 	static int32_t despawnRadius;
 
-	explicit Npc(NpcType* npcType);
+	explicit Npc(const std::shared_ptr<NpcType> &npcType);
 	Npc() = default;
 	~Npc();
 
 	// Singleton - ensures we don't accidentally copy it
 	Npc(const Npc &) = delete;
-	void operator=(const Npc &) = delete;
+	void operator=(const std::shared_ptr<Npc> &) = delete;
 
 	static Npc &getInstance() {
 		return inject<Npc>();
 	}
 
-	Npc* getNpc() override {
-		return this;
-	}
-	const Npc* getNpc() const override {
-		return this;
+	std::shared_ptr<Npc> getNpc() override {
+		return static_self_cast<Npc>();
 	}
 
 	void setID() override {
@@ -62,7 +60,7 @@ public:
 	const std::string &getNameDescription() const override {
 		return npcType->nameDescription;
 	}
-	std::string getDescription(int32_t) const override {
+	std::string getDescription(int32_t) override {
 		return strDescription + '.';
 	}
 
@@ -99,7 +97,7 @@ public:
 		return npcType->info.shopItemVector;
 	}
 
-	bool isPushable() const override {
+	bool isPushable() override {
 		return npcType->info.pushable;
 	}
 
@@ -107,19 +105,19 @@ public:
 		return false;
 	}
 
-	bool canInteract(const Position &pos, uint32_t range = 4) const;
+	bool canInteract(const Position &pos, uint32_t range = 4);
 	bool canSeeInvisibility() const override {
 		return true;
 	}
 	RespawnType getRespawnType() const {
 		return npcType->info.respawnType;
 	}
-	void setSpawnNpc(SpawnNpc* newSpawn) {
-		this->spawnNpc = newSpawn;
+	void setSpawnNpc(const std::shared_ptr<SpawnNpc> &newSpawn) {
+		spawnNpc = newSpawn;
 	}
 
 	void setPlayerInteraction(uint32_t playerId, uint16_t topicId = 0);
-	void removePlayerInteraction(Player* player);
+	void removePlayerInteraction(std::shared_ptr<Player> player);
 	void resetPlayerInteractions();
 
 	bool isInteractingWithPlayer(uint32_t playerId) {
@@ -137,29 +135,29 @@ public:
 		return it->second == topicId;
 	}
 
-	void onCreatureAppear(Creature* creature, bool isLogin) override;
-	void onRemoveCreature(Creature* creature, bool isLogout) override;
-	void onCreatureMove(Creature* creature, const Tile* newTile, const Position &newPos, const Tile* oldTile, const Position &oldPos, bool teleport) override;
-	void onCreatureSay(Creature* creature, SpeakClasses type, const std::string &text) override;
+	void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) override;
+	void onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) override;
+	void onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport) override;
+	void onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text) override;
 	void onThink(uint32_t interval) override;
-	void onPlayerBuyItem(Player* player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, bool inBackpacks);
+	void onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, bool inBackpacks);
 	void onPlayerSellAllLoot(uint32_t playerId, uint16_t itemid, bool ignore, uint64_t totalPrice);
-	void onPlayerSellItem(Player* player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore);
-	void onPlayerSellItem(Player* player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, uint64_t &totalPrice, Cylinder* parent = nullptr);
-	void onPlayerCheckItem(Player* player, uint16_t itemid, uint8_t count);
-	void onPlayerCloseChannel(Creature* creature);
+	void onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore);
+	void onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, uint64_t &totalPrice, std::shared_ptr<Cylinder> parent = nullptr);
+	void onPlayerCheckItem(std::shared_ptr<Player> player, uint16_t itemid, uint8_t count);
+	void onPlayerCloseChannel(std::shared_ptr<Creature> creature);
 	void onPlacedCreature() override;
 
-	bool canWalkTo(const Position &fromPos, Direction dir) const;
+	bool canWalkTo(const Position &fromPos, Direction dir);
 	bool getNextStep(Direction &nextDirection, uint32_t &flags) override;
-	bool getRandomStep(Direction &moveDirection) const;
+	bool getRandomStep(Direction &moveDirection);
 
 	void setNormalCreatureLight() override {
 		internalLight = npcType->info.light;
 	}
 
-	void addShopPlayer(Player* player);
-	void removeShopPlayer(Player* player);
+	void addShopPlayer(const std::shared_ptr<Player> &player);
+	void removeShopPlayer(const std::shared_ptr<Player> &player);
 	void closeAllShopWindows();
 
 	static uint32_t npcAutoID;
@@ -177,10 +175,10 @@ private:
 
 	std::map<uint32_t, uint16_t> playerInteractions;
 
-	std::set<Player*> shopPlayerSet;
+	phmap::flat_hash_map<uint32_t, std::weak_ptr<Player>> shopPlayerMap;
 
-	NpcType* npcType;
-	SpawnNpc* spawnNpc = nullptr;
+	std::shared_ptr<NpcType> npcType;
+	std::shared_ptr<SpawnNpc> spawnNpc;
 
 	uint8_t speechBubble;
 
@@ -196,10 +194,10 @@ private:
 	friend class LuaScriptInterface;
 	friend class Map;
 
-	void onPlayerAppear(Player* player);
-	void onPlayerDisappear(Player* player);
+	void onPlayerAppear(std::shared_ptr<Player> player);
+	void onPlayerDisappear(std::shared_ptr<Player> player);
 	void manageIdle();
-	void handlePlayerMove(Player* player, const Position &newPos);
+	void handlePlayerMove(std::shared_ptr<Player> player, const Position &newPos);
 	void loadPlayerSpectators();
 };
 

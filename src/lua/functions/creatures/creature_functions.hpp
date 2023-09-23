@@ -18,7 +18,7 @@
 class CreatureFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "Creature", "", CreatureFunctions::luaCreatureCreate);
+		registerSharedClass(L, "Creature", "", CreatureFunctions::luaCreatureCreate);
 		registerMetaMethod(L, "Creature", "__eq", CreatureFunctions::luaUserdataCompare);
 		registerMethod(L, "Creature", "getEvents", CreatureFunctions::luaCreatureGetEvents);
 		registerMethod(L, "Creature", "registerEvent", CreatureFunctions::luaCreatureRegisterEvent);

@@ -846,7 +846,7 @@ int ItemFunctions::luaItemIsInsideDepot(lua_State* L) {
 
 int ItemFunctions::luaItemIsContainer(lua_State* L) {
 	// item:isContainer()
-	const auto item = getUserdata<const Item>(L, 1);
+	const auto item = getUserdataShared<const Item>(L, 1);
 	if (!item) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
 		pushBoolean(L, false);

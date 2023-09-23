@@ -35,7 +35,7 @@ public:
 	void copyEvent(Module* creatureEvent);
 
 	// scripting
-	void executeOnRecvbyte(Player* player, NetworkMessage &msg);
+	void executeOnRecvbyte(std::shared_ptr<Player> player, NetworkMessage &msg);
 	//
 
 	uint8_t getRecvbyte() {

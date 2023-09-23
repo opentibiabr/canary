@@ -19,7 +19,7 @@
 class PlayerFunctions final : LuaScriptInterface {
 private:
 	static void init(lua_State* L) {
-		registerClass(L, "Player", "Creature", PlayerFunctions::luaPlayerCreate);
+		registerSharedClass(L, "Player", "Creature", PlayerFunctions::luaPlayerCreate);
 		registerMetaMethod(L, "Player", "__eq", PlayerFunctions::luaUserdataCompare);
 
 		registerMethod(L, "Player", "resetCharmsBestiary", PlayerFunctions::luaPlayerResetCharmsMonsters);

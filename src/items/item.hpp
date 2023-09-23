@@ -159,14 +159,14 @@ public:
 protected:
 	std::unique_ptr<ItemAttribute> &initAttributePtr() {
 		if (!attributePtr) {
-			attributePtr.reset(new ItemAttribute());
+			attributePtr = std::make_unique<ItemAttribute>();
 		}
 
 		return attributePtr;
 	}
 	const std::unique_ptr<ItemAttribute> &initAttributePtr() const {
 		if (!attributePtr) {
-			std::bit_cast<ItemProperties*>(this)->attributePtr.reset(new ItemAttribute());
+			std::bit_cast<ItemProperties*>(this)->attributePtr = std::make_unique<ItemAttribute>();
 		}
 
 		return attributePtr;
@@ -212,72 +212,51 @@ private:
 	friend class Item;
 };
 
-class Item : virtual public Thing, public ItemProperties {
+class Item : virtual public Thing, public ItemProperties, public SharedObject {
 public:
 	// Factory member to create item of right type based on type
-	static Item* CreateItem(const uint16_t type, uint16_t count = 0, Position* itemPosition = nullptr);
-	static Container* CreateItemAsContainer(const uint16_t type, uint16_t size);
-	static Item* CreateItem(uint16_t itemId, Position &itemPosition);
+	static std::shared_ptr<Item> CreateItem(const uint16_t type, uint16_t count = 0, Position* itemPosition = nullptr);
+	static std::shared_ptr<Container> CreateItemAsContainer(const uint16_t type, uint16_t size);
+	static std::shared_ptr<Item> CreateItem(uint16_t itemId, Position &itemPosition);
 	static Items items;
 
 	// Constructor for items
 	Item(const uint16_t type, uint16_t count = 0);
-	Item(const Item &i);
-	virtual Item* clone() const;
+	Item(const std::shared_ptr<Item> &i);
+	virtual std::shared_ptr<Item> clone() const;
 
 	virtual ~Item() = default;
 
 	// non-assignable
 	Item &operator=(const Item &) = delete;
 
-	bool equals(const Item* compareItem) const;
+	bool equals(std::shared_ptr<Item> compareItem) const;
 
-	Item* getItem() override final {
-		return this;
+	std::shared_ptr<Item> getItem() override final {
+		return static_self_cast<Item>();
 	}
-	const Item* getItem() const override final {
-		return this;
-	}
-	virtual Teleport* getTeleport() {
+	virtual std::shared_ptr<Teleport> getTeleport() {
 		return nullptr;
 	}
-	virtual const Teleport* getTeleport() const {
+	virtual std::shared_ptr<TrashHolder> getTrashHolder() {
 		return nullptr;
 	}
-	virtual TrashHolder* getTrashHolder() {
+	virtual std::shared_ptr<Mailbox> getMailbox() {
 		return nullptr;
 	}
-	virtual const TrashHolder* getTrashHolder() const {
+	virtual std::shared_ptr<Door> getDoor() {
 		return nullptr;
 	}
-	virtual Mailbox* getMailbox() {
+	virtual std::shared_ptr<MagicField> getMagicField() {
 		return nullptr;
 	}
-	virtual const Mailbox* getMailbox() const {
-		return nullptr;
-	}
-	virtual Door* getDoor() {
-		return nullptr;
-	}
-	virtual const Door* getDoor() const {
-		return nullptr;
-	}
-	virtual MagicField* getMagicField() {
-		return nullptr;
-	}
-	virtual const MagicField* getMagicField() const {
-		return nullptr;
-	}
-	virtual BedItem* getBed() {
-		return nullptr;
-	}
-	virtual const BedItem* getBed() const {
+	virtual std::shared_ptr<BedItem> getBed() {
 		return nullptr;
 	}
 
-	bool isSavedToHouses() const;
+	bool isSavedToHouses();
 
-	SoundEffect_t getMovementSound(Cylinder* toCylinder) const;
+	SoundEffect_t getMovementSound(std::shared_ptr<Cylinder> toCylinder) const;
 
 	void setIsLootTrackeable(bool value) {
 		isLootTrackeable = value;
@@ -287,19 +266,19 @@ public:
 		return isLootTrackeable;
 	}
 
-	static std::string parseImbuementDescription(const Item* item);
+	static std::string parseImbuementDescription(std::shared_ptr<Item> item);
 	static std::string parseShowDurationSpeed(int32_t speed, bool &begin);
-	static std::string parseShowDuration(const Item* item);
-	static std::string parseShowAttributesDescription(const Item* item, const uint16_t itemId);
-	static std::string parseClassificationDescription(const Item* item);
+	static std::string parseShowDuration(std::shared_ptr<Item> item);
+	static std::string parseShowAttributesDescription(std::shared_ptr<Item> item, const uint16_t itemId);
+	static std::string parseClassificationDescription(std::shared_ptr<Item> item);
 
-	static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType &it, const Item* item = nullptr);
-	static std::string getDescription(const ItemType &it, int32_t lookDistance, const Item* item = nullptr, int32_t subType = -1, bool addArticle = true);
-	static std::string getNameDescription(const ItemType &it, const Item* item = nullptr, int32_t subType = -1, bool addArticle = true);
+	static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType &it, std::shared_ptr<Item> item = nullptr);
+	static std::string getDescription(const ItemType &it, int32_t lookDistance, std::shared_ptr<Item> item = nullptr, int32_t subType = -1, bool addArticle = true);
+	static std::string getNameDescription(const ItemType &it, std::shared_ptr<Item> item = nullptr, int32_t subType = -1, bool addArticle = true);
 	static std::string getWeightDescription(const ItemType &it, uint32_t weight, uint32_t count = 1);
 
-	std::string getDescription(int32_t lookDistance) const override final;
-	std::string getNameDescription() const;
+	std::string getDescription(int32_t lookDistance) override final;
+	std::string getNameDescription();
 	std::string getWeightDescription() const;
 
 	// serialization
@@ -309,7 +288,7 @@ public:
 
 	virtual void serializeAttr(PropWriteStream &propWriteStream) const;
 
-	bool isPushable() const override final {
+	bool isPushable() override final {
 		return isMoveable();
 	}
 	int32_t getThrowRange() const override final {
@@ -322,7 +301,7 @@ public:
 	void setID(uint16_t newid);
 
 	// Returns the player that is holding this item in his inventory
-	Player* getHoldingPlayer() const;
+	std::shared_ptr<Player> getHoldingPlayer();
 
 	WeaponType_t getWeaponType() const {
 		return items[id].weaponType;
@@ -534,7 +513,7 @@ public:
 		count = n;
 	}
 
-	static uint32_t countByType(const Item* item, int32_t subType) {
+	static uint32_t countByType(std::shared_ptr<Item> item, int32_t subType) {
 		if (subType == -1 || subType == item->getSubType()) {
 			return item->getItemCount();
 		}
@@ -558,7 +537,7 @@ public:
 		return items[id].decayTime * 1000;
 	}
 
-	bool canDecay() const;
+	bool canDecay();
 
 	virtual bool canRemove() const {
 		return true;
@@ -567,12 +546,12 @@ public:
 		return true;
 	}
 	virtual void onRemoved();
-	virtual void onTradeEvent(TradeEvents_t, Player*) { }
+	virtual void onTradeEvent(TradeEvents_t, std::shared_ptr<Player>) { }
 
 	virtual void startDecaying();
 	virtual void stopDecaying();
 
-	Item* transform(uint16_t itemId, uint16_t itemCount = -1);
+	std::shared_ptr<Item> transform(uint16_t itemId, uint16_t itemCount = -1);
 
 	bool isLoadedFromMap() const {
 		return loadedFromMap;
@@ -584,30 +563,26 @@ public:
 
 	bool hasMarketAttributes() const;
 
-	void incrementReferenceCounter() {
-		++referenceCounter;
+	std::shared_ptr<Cylinder> getParent() override {
+		return m_parent.lock();
 	}
-	void decrementReferenceCounter() {
-		if (--referenceCounter == 0) {
-			delete this;
+	void setParent(std::weak_ptr<Cylinder> cylinder) override {
+		m_parent = cylinder;
+	}
+	void resetParent() {
+		m_parent.reset();
+	}
+	std::shared_ptr<Cylinder> getTopParent();
+	std::shared_ptr<Tile> getTile() override;
+	bool isRemoved() override {
+		auto parent = getParent();
+		if (parent) {
+			return parent->isRemoved();
 		}
+		return true;
 	}
 
-	Cylinder* getParent() const override {
-		return parent;
-	}
-	void setParent(Cylinder* cylinder) override {
-		parent = cylinder;
-	}
-	Cylinder* getTopParent();
-	const Cylinder* getTopParent() const;
-	Tile* getTile() override;
-	const Tile* getTile() const override;
-	bool isRemoved() const override {
-		return !parent || parent->isRemoved();
-	}
-
-	bool isInsideDepot(bool includeInbox = false) const;
+	bool isInsideDepot(bool includeInbox = false);
 
 	/**
 	 * @brief Get the Imbuement Info object
@@ -705,9 +680,7 @@ public:
 	void checkDecayMapItemOnMove();
 
 protected:
-	Cylinder* parent = nullptr;
-
-	uint32_t referenceCounter = 0;
+	std::weak_ptr<Cylinder> m_parent;
 
 	uint16_t id; // the same id as in ItemType
 	uint8_t count = 1; // number of stacked items
@@ -725,6 +698,6 @@ private:
 	friend class MapCache;
 };
 
-using ItemList = std::list<Item*>;
-using ItemDeque = std::deque<Item*>;
-using StashContainerList = std::vector<std::pair<Item*, uint32_t>>;
+using ItemList = std::list<std::shared_ptr<Item>>;
+using ItemDeque = std::deque<std::shared_ptr<Item>>;
+using StashContainerList = std::vector<std::pair<std::shared_ptr<Item>, uint32_t>>;

@@ -31,28 +31,28 @@ void Teleport::serializeAttr(PropWriteStream &propWriteStream) const {
 	propWriteStream.write<uint8_t>(destPos.z);
 }
 
-ReturnValue Teleport::queryAdd(int32_t, const Thing &, uint32_t, uint32_t, Creature*) const {
+ReturnValue Teleport::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature>) {
 	return RETURNVALUE_NOTPOSSIBLE;
 }
 
-ReturnValue Teleport::queryMaxCount(int32_t, const Thing &, uint32_t, uint32_t &, uint32_t) const {
+ReturnValue Teleport::queryMaxCount(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t &, uint32_t) {
 	return RETURNVALUE_NOTPOSSIBLE;
 }
 
-ReturnValue Teleport::queryRemove(const Thing &, uint32_t, uint32_t, Creature* /*= nullptr */) const {
+ReturnValue Teleport::queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature> /*= nullptr */) {
 	return RETURNVALUE_NOERROR;
 }
 
-Cylinder* Teleport::queryDestination(int32_t &, const Thing &, Item**, uint32_t &) {
-	return this;
+std::shared_ptr<Cylinder> Teleport::queryDestination(int32_t &, const std::shared_ptr<Thing> &, std::shared_ptr<Item>*, uint32_t &) {
+	return getTeleport();
 }
 
-bool Teleport::checkInfinityLoop(Tile* destTile) {
+bool Teleport::checkInfinityLoop(std::shared_ptr<Tile> destTile) {
 	if (!destTile) {
 		return false;
 	}
 
-	if (Teleport* teleport = destTile->getTeleportItem()) {
+	if (std::shared_ptr<Teleport> teleport = destTile->getTeleportItem()) {
 		const Position &nextDestPos = teleport->getDestPos();
 		if (getPosition() == nextDestPos) {
 			return true;
@@ -62,16 +62,16 @@ bool Teleport::checkInfinityLoop(Tile* destTile) {
 	return false;
 }
 
-void Teleport::addThing(Thing* thing) {
+void Teleport::addThing(std::shared_ptr<Thing> thing) {
 	return addThing(0, thing);
 }
 
-void Teleport::addThing(int32_t, Thing* thing) {
+void Teleport::addThing(int32_t, std::shared_ptr<Thing> thing) {
 	if (!thing) {
 		return;
 	}
 
-	Tile* destTile = g_game().map.getTile(destPos);
+	std::shared_ptr<Tile> destTile = g_game().map.getTile(destPos);
 	if (!destTile) {
 		return;
 	}
@@ -87,15 +87,15 @@ void Teleport::addThing(int32_t, Thing* thing) {
 
 	const MagicEffectClasses effect = Item::items[id].magicEffect;
 
-	if (Creature* creature = thing->getCreature()) {
+	if (std::shared_ptr<Creature> creature = thing->getCreature()) {
 		Position origPos = creature->getPosition();
 		g_game().internalCreatureTurn(creature, origPos.x > destPos.x ? DIRECTION_WEST : DIRECTION_EAST);
-		g_game().map.moveCreature(*creature, *destTile);
+		g_game().map.moveCreature(creature, destTile);
 		if (effect != CONST_ME_NONE) {
 			g_game().addMagicEffect(origPos, effect);
 			g_game().addMagicEffect(destTile->getPosition(), effect);
 		}
-	} else if (Item* item = thing->getItem()) {
+	} else if (std::shared_ptr<Item> item = thing->getItem()) {
 		if (effect != CONST_ME_NONE) {
 			g_game().addMagicEffect(destTile->getPosition(), effect);
 			g_game().addMagicEffect(item->getPosition(), effect);
@@ -104,22 +104,22 @@ void Teleport::addThing(int32_t, Thing* thing) {
 	}
 }
 
-void Teleport::updateThing(Thing*, uint16_t, uint32_t) {
+void Teleport::updateThing(std::shared_ptr<Thing>, uint16_t, uint32_t) {
 	//
 }
 
-void Teleport::replaceThing(uint32_t, Thing*) {
+void Teleport::replaceThing(uint32_t, std::shared_ptr<Thing>) {
 	//
 }
 
-void Teleport::removeThing(Thing*, uint32_t) {
+void Teleport::removeThing(std::shared_ptr<Thing>, uint32_t) {
 	//
 }
 
-void Teleport::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t) {
+void Teleport::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t) {
 	getParent()->postAddNotification(thing, oldParent, index, LINK_PARENT);
 }
 
-void Teleport::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t) {
+void Teleport::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t) {
 	getParent()->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 }

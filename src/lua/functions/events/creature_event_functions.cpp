@@ -24,7 +24,7 @@ int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 
 int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 	// creatureevent:type(callback)
-	const auto &creatureEvent = getUserdataShared<CreatureEvent>(L, 1);
+	const auto creatureEvent = getUserdataShared<CreatureEvent>(L, 1);
 	if (creatureEvent) {
 		std::string typeName = getString(L, 2);
 		std::string tmpStr = asLowerCaseString(typeName);

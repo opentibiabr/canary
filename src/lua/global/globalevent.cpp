@@ -71,7 +71,7 @@ void GlobalEvents::timer() {
 
 	auto it = timerMap.begin();
 	while (it != timerMap.end()) {
-		const auto &globalEvent = it->second;
+		const auto globalEvent = it->second;
 
 		int64_t nextExecutionTime = globalEvent->getNextExecution() - now;
 		if (nextExecutionTime > 0) {
@@ -108,7 +108,7 @@ void GlobalEvents::think() {
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
 	for (auto &it : thinkMap) {
-		const auto &globalEvent = it.second;
+		const auto globalEvent = it.second;
 
 		int64_t nextExecutionTime = globalEvent->getNextExecution() - now;
 		if (nextExecutionTime > 0) {
@@ -142,7 +142,7 @@ void GlobalEvents::think() {
 
 void GlobalEvents::execute(GlobalEvent_t type) const {
 	for (const auto &it : serverMap) {
-		const auto &globalEvent = it.second;
+		const auto globalEvent = it.second;
 		if (globalEvent->getEventType() == type) {
 			globalEvent->executeEvent();
 		}

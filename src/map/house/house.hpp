@@ -25,7 +25,7 @@ public:
 	void addGuild(const std::string &name);
 	void addGuildRank(const std::string &name, const std::string &rankName);
 
-	bool isInList(const Player* player);
+	bool isInList(std::shared_ptr<Player> player);
 
 	void getList(std::string &list) const;
 
@@ -44,14 +44,11 @@ public:
 	Door(const Door &) = delete;
 	Door &operator=(const Door &) = delete;
 
-	Door* getDoor() override {
-		return this;
-	}
-	const Door* getDoor() const override {
-		return this;
+	std::shared_ptr<Door> getDoor() override {
+		return static_self_cast<Door>();
 	}
 
-	House* getHouse() {
+	std::shared_ptr<House> getHouse() {
 		return house;
 	}
 
@@ -66,7 +63,7 @@ public:
 		return getAttribute<uint32_t>(ItemAttribute_t::DOORID);
 	}
 
-	bool canUse(const Player* player);
+	bool canUse(std::shared_ptr<Player> player);
 
 	void setAccessList(const std::string &textlist);
 	bool getAccessList(std::string &list) const;
@@ -74,50 +71,50 @@ public:
 	void onRemoved() override;
 
 private:
-	void setHouse(House* house);
+	void setHouse(std::shared_ptr<House> house);
 
-	House* house = nullptr;
+	std::shared_ptr<House> house = nullptr;
 	std::unique_ptr<AccessList> accessList;
 	friend class House;
 };
 
-using HouseTileList = std::list<HouseTile*>;
-using HouseBedItemList = std::list<BedItem*>;
+using HouseTileList = std::list<std::shared_ptr<HouseTile>>;
+using HouseBedItemList = std::list<std::shared_ptr<BedItem>>;
 
 class HouseTransferItem final : public Item {
 public:
-	static HouseTransferItem* createHouseTransferItem(House* house);
+	static std::shared_ptr<HouseTransferItem> createHouseTransferItem(std::shared_ptr<House> house);
 
-	explicit HouseTransferItem(House* newHouse) :
+	explicit HouseTransferItem(std::shared_ptr<House> newHouse) :
 		Item(0), house(newHouse) { }
 
-	void onTradeEvent(TradeEvents_t event, Player* owner) override;
+	void onTradeEvent(TradeEvents_t event, std::shared_ptr<Player> owner) override;
 	bool canTransform() const override {
 		return false;
 	}
 
 private:
-	House* house;
+	std::shared_ptr<House> house;
 };
 
-class House {
+class House : public SharedObject {
 public:
 	explicit House(uint32_t houseId);
 
-	void addTile(HouseTile* tile);
+	void addTile(std::shared_ptr<HouseTile> tile);
 	void updateDoorDescription() const;
 
-	bool canEditAccessList(uint32_t listId, const Player* player);
+	bool canEditAccessList(uint32_t listId, std::shared_ptr<Player> player);
 	// listId special = values:
 	// GUEST_LIST = guest list
 	// SUBOWNER_LIST = subowner list
 	void setAccessList(uint32_t listId, const std::string &textlist);
 	bool getAccessList(uint32_t listId, std::string &list) const;
 
-	bool isInvited(const Player* player);
+	bool isInvited(std::shared_ptr<Player> player);
 
-	AccessHouseLevel_t getHouseAccessLevel(const Player* player);
-	bool kickPlayer(Player* player, Player* target);
+	AccessHouseLevel_t getHouseAccessLevel(std::shared_ptr<Player> player);
+	bool kickPlayer(std::shared_ptr<Player> player, std::shared_ptr<Player> target);
 
 	void setEntryPos(Position pos) {
 		posEntry = pos;
@@ -133,7 +130,7 @@ public:
 		return houseName;
 	}
 
-	void setOwner(uint32_t guid, bool updateDatabase = true, Player* player = nullptr);
+	void setOwner(uint32_t guid, bool updateDatabase = true, std::shared_ptr<Player> player = nullptr);
 	uint32_t getOwner() const {
 		return owner;
 	}
@@ -176,25 +173,25 @@ public:
 		return id;
 	}
 
-	void addDoor(Door* door);
-	void removeDoor(Door* door);
-	Door* getDoorByNumber(uint32_t doorId) const;
-	Door* getDoorByPosition(const Position &pos);
+	void addDoor(std::shared_ptr<Door> door);
+	void removeDoor(std::shared_ptr<Door> door);
+	std::shared_ptr<Door> getDoorByNumber(uint32_t doorId) const;
+	std::shared_ptr<Door> getDoorByPosition(const Position &pos);
 
-	HouseTransferItem* getTransferItem();
+	std::shared_ptr<HouseTransferItem> getTransferItem();
 	void resetTransferItem();
-	bool executeTransfer(HouseTransferItem* item, Player* player);
+	bool executeTransfer(std::shared_ptr<HouseTransferItem> item, std::shared_ptr<Player> player);
 
 	const HouseTileList &getTiles() const {
 		return houseTiles;
 	}
 
-	const std::list<Door*> &getDoors() const {
+	const std::list<std::shared_ptr<Door>> &getDoors() const {
 		return doorList;
 	}
 
-	void addBed(BedItem* bed);
-	void removeBed(BedItem* bed);
+	void addBed(std::shared_ptr<BedItem> bed);
+	void removeBed(std::shared_ptr<BedItem> bed);
 	const HouseBedItemList &getBeds() const {
 		return bedsList;
 	}
@@ -212,21 +209,21 @@ public:
 
 private:
 	bool transferToDepot() const;
-	bool transferToDepot(Player* player) const;
+	bool transferToDepot(std::shared_ptr<Player> player) const;
 
 	AccessList guestList;
 	AccessList subOwnerList;
 
-	Container transfer_container { ITEM_LOCKER };
+	std::shared_ptr<Container> transfer_container = std::make_shared<Container>(ITEM_LOCKER);
 
 	HouseTileList houseTiles;
-	std::list<Door*> doorList;
+	std::list<std::shared_ptr<Door>> doorList;
 	HouseBedItemList bedsList;
 
 	std::string houseName;
 	std::string ownerName;
 
-	HouseTransferItem* transferItem = nullptr;
+	std::shared_ptr<HouseTransferItem> transferItem = nullptr;
 
 	time_t paidUntil = 0;
 
@@ -244,36 +241,30 @@ private:
 
 	bool isLoaded = false;
 
-	void handleContainer(ItemList &moveItemList, Item* item) const;
-	void handleWrapableItem(ItemList &moveItemList, Item* item, Player* player, HouseTile* houseTile) const;
+	void handleContainer(ItemList &moveItemList, std::shared_ptr<Item> item) const;
+	void handleWrapableItem(ItemList &moveItemList, std::shared_ptr<Item> item, std::shared_ptr<Player> player, std::shared_ptr<HouseTile> houseTile) const;
 };
 
-using HouseMap = std::map<uint32_t, House*>;
+using HouseMap = std::map<uint32_t, std::shared_ptr<House>>;
 
 class Houses {
 public:
 	Houses() = default;
-	~Houses() {
-		for (const auto &it : houseMap) {
-			delete it.second;
-		}
-	}
+	~Houses() = default;
 
 	// non-copyable
 	Houses(const Houses &) = delete;
 	Houses &operator=(const Houses &) = delete;
 
-	House* addHouse(uint32_t id) {
+	std::shared_ptr<House> addHouse(uint32_t id) {
 		if (auto it = houseMap.find(id); it != houseMap.end()) {
 			return it->second;
 		}
 
-		auto house = new House(id);
-		houseMap[id] = house;
-		return house;
+		return houseMap[id] = std::make_shared<House>(id);
 	}
 
-	House* getHouse(uint32_t houseId) {
+	std::shared_ptr<House> getHouse(uint32_t houseId) {
 		auto it = houseMap.find(houseId);
 		if (it == houseMap.end()) {
 			return nullptr;
@@ -281,7 +272,7 @@ public:
 		return it->second;
 	}
 
-	House* getHouseByPlayerId(uint32_t playerId);
+	std::shared_ptr<House> getHouseByPlayerId(uint32_t playerId);
 
 	bool loadHousesXML(const std::string &filename);
 

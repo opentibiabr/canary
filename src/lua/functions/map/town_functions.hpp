@@ -14,7 +14,7 @@
 class TownFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "Town", "", TownFunctions::luaTownCreate);
+		registerSharedClass(L, "Town", "", TownFunctions::luaTownCreate);
 		registerMetaMethod(L, "Town", "__eq", TownFunctions::luaUserdataCompare);
 
 		registerMethod(L, "Town", "getId", TownFunctions::luaTownGetId);

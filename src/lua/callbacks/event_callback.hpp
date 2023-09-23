@@ -79,57 +79,57 @@ public:
 	 */
 
 	// Creature
-	bool creatureOnChangeOutfit(Creature* creature, const Outfit_t &outfit) const;
-	ReturnValue creatureOnAreaCombat(Creature* creature, Tile* tile, bool aggressive) const;
-	ReturnValue creatureOnTargetCombat(Creature* creature, Creature* target) const;
-	void creatureOnHear(Creature* creature, Creature* speaker, const std::string &words, SpeakClasses type) const;
-	void creatureOnDrainHealth(Creature* creature, Creature* attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) const;
+	bool creatureOnChangeOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit) const;
+	ReturnValue creatureOnAreaCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> tile, bool aggressive) const;
+	ReturnValue creatureOnTargetCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) const;
+	void creatureOnHear(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> speaker, const std::string &words, SpeakClasses type) const;
+	void creatureOnDrainHealth(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) const;
 
 	// Party
-	bool partyOnJoin(Party* party, Player* player) const;
-	bool partyOnLeave(Party* party, Player* player) const;
-	bool partyOnDisband(Party* party) const;
-	void partyOnShareExperience(Party* party, uint64_t &exp) const;
+	bool partyOnJoin(std::shared_ptr<Party> party, std::shared_ptr<Player> player) const;
+	bool partyOnLeave(std::shared_ptr<Party> party, std::shared_ptr<Player> player) const;
+	bool partyOnDisband(std::shared_ptr<Party> party) const;
+	void partyOnShareExperience(std::shared_ptr<Party> party, uint64_t &exp) const;
 
 	// Player
-	bool playerOnBrowseField(Player* player, const Position &position) const;
-	void playerOnLook(Player* player, const Position &position, Thing* thing, uint8_t stackpos, int32_t lookDistance) const;
-	void playerOnLookInBattleList(Player* player, Creature* creature, int32_t lookDistance) const;
-	void playerOnLookInTrade(Player* player, Player* partner, Item* item, int32_t lookDistance) const;
-	bool playerOnLookInShop(Player* player, const ItemType* itemType, uint8_t count) const;
-	bool playerOnMoveItem(Player* player, Item* item, uint16_t count, const Position &fromPosition, const Position &toPosition, Cylinder* fromCylinder, Cylinder* toCylinder) const;
-	void playerOnItemMoved(Player* player, Item* item, uint16_t count, const Position &fromPosition, const Position &toPosition, Cylinder* fromCylinder, Cylinder* toCylinder) const;
-	void playerOnChangeZone(Player* player, ZoneType_t zone) const;
-	bool playerOnMoveCreature(Player* player, Creature* creature, const Position &fromPosition, const Position &toPosition) const;
-	void playerOnReportRuleViolation(Player* player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) const;
-	void playerOnReportBug(Player* player, const std::string &message, const Position &position, uint8_t category) const;
-	bool playerOnTurn(Player* player, Direction direction) const;
-	bool playerOnTradeRequest(Player* player, Player* target, Item* item) const;
-	bool playerOnTradeAccept(Player* player, Player* target, Item* item, Item* targetItem) const;
-	void playerOnGainExperience(Player* player, Creature* target, uint64_t &exp, uint64_t rawExp) const;
-	void playerOnLoseExperience(Player* player, uint64_t &exp) const;
-	void playerOnGainSkillTries(Player* player, skills_t skill, uint64_t &tries) const;
-	void playerOnRemoveCount(Player* player, Item* item) const;
-	void playerOnRequestQuestLog(Player* player) const;
-	void playerOnRequestQuestLine(Player* player, uint16_t questId) const;
-	void playerOnStorageUpdate(Player* player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime) const;
-	void playerOnCombat(Player* player, Creature* target, Item* item, CombatDamage &damage) const;
-	void playerOnInventoryUpdate(Player* player, Item* item, Slots_t slot, bool equip) const;
-	bool playerOnRotateItem(Player* player, Item* item, const Position &position) const;
+	bool playerOnBrowseField(std::shared_ptr<Player> player, const Position &position) const;
+	void playerOnLook(std::shared_ptr<Player> player, const Position &position, std::shared_ptr<Thing> thing, uint8_t stackpos, int32_t lookDistance) const;
+	void playerOnLookInBattleList(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature, int32_t lookDistance) const;
+	void playerOnLookInTrade(std::shared_ptr<Player> player, std::shared_ptr<Player> partner, std::shared_ptr<Item> item, int32_t lookDistance) const;
+	bool playerOnLookInShop(std::shared_ptr<Player> player, const ItemType* itemType, uint8_t count) const;
+	bool playerOnMoveItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) const;
+	void playerOnItemMoved(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) const;
+	void playerOnChangeZone(std::shared_ptr<Player> player, ZoneType_t zone) const;
+	bool playerOnMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature, const Position &fromPosition, const Position &toPosition) const;
+	void playerOnReportRuleViolation(std::shared_ptr<Player> player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) const;
+	void playerOnReportBug(std::shared_ptr<Player> player, const std::string &message, const Position &position, uint8_t category) const;
+	bool playerOnTurn(std::shared_ptr<Player> player, Direction direction) const;
+	bool playerOnTradeRequest(std::shared_ptr<Player> player, std::shared_ptr<Player> target, std::shared_ptr<Item> item) const;
+	bool playerOnTradeAccept(std::shared_ptr<Player> player, std::shared_ptr<Player> target, std::shared_ptr<Item> item, std::shared_ptr<Item> targetItem) const;
+	void playerOnGainExperience(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, uint64_t &exp, uint64_t rawExp) const;
+	void playerOnLoseExperience(std::shared_ptr<Player> player, uint64_t &exp) const;
+	void playerOnGainSkillTries(std::shared_ptr<Player> player, skills_t skill, uint64_t &tries) const;
+	void playerOnRemoveCount(std::shared_ptr<Player> player, std::shared_ptr<Item> item) const;
+	void playerOnRequestQuestLog(std::shared_ptr<Player> player) const;
+	void playerOnRequestQuestLine(std::shared_ptr<Player> player, uint16_t questId) const;
+	void playerOnStorageUpdate(std::shared_ptr<Player> player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime) const;
+	void playerOnCombat(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, CombatDamage &damage) const;
+	void playerOnInventoryUpdate(std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool equip) const;
+	bool playerOnRotateItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const Position &position) const;
 
 	// Monster
-	void monsterOnDropLoot(Monster* monster, Container* corpse) const;
-	void monsterPostDropLoot(Monster* monster, Container* corpse) const;
-	void monsterOnSpawn(Monster* monster, const Position &position) const;
+	void monsterOnDropLoot(std::shared_ptr<Monster> monster, std::shared_ptr<Container> corpse) const;
+	void monsterPostDropLoot(std::shared_ptr<Monster> monster, std::shared_ptr<Container> corpse) const;
+	void monsterOnSpawn(std::shared_ptr<Monster> monster, const Position &position) const;
 
 	// Npc
-	void npcOnSpawn(Npc* npc, const Position &position) const;
+	void npcOnSpawn(std::shared_ptr<Npc> npc, const Position &position) const;
 
 	// Zone
-	bool zoneBeforeCreatureEnter(std::shared_ptr<Zone> zone, Creature* creature) const;
-	bool zoneBeforeCreatureLeave(std::shared_ptr<Zone> zone, Creature* creature) const;
-	void zoneAfterCreatureEnter(std::shared_ptr<Zone> zone, Creature* creature) const;
-	void zoneAfterCreatureLeave(std::shared_ptr<Zone> zone, Creature* creature) const;
+	bool zoneBeforeCreatureEnter(std::shared_ptr<Zone> zone, std::shared_ptr<Creature> creature) const;
+	bool zoneBeforeCreatureLeave(std::shared_ptr<Zone> zone, std::shared_ptr<Creature> creature) const;
+	void zoneAfterCreatureEnter(std::shared_ptr<Zone> zone, std::shared_ptr<Creature> creature) const;
+	void zoneAfterCreatureLeave(std::shared_ptr<Zone> zone, std::shared_ptr<Creature> creature) const;
 
 	/**
 	 * @note here end the lua binder functions }

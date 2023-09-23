@@ -327,6 +327,7 @@ resetSessionsOnStartup = false
 -- Misc.
 -- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate
 allowChangeOutfit = true
+toggleMountInProtectionZone = false
 freePremium = false
 kickIdlePlayerAfterMinutes = 15
 maxMessageBuffer = 4

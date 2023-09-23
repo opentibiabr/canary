@@ -16,6 +16,7 @@ class Protocol : public std::enable_shared_from_this<Protocol> {
 public:
 	explicit Protocol(Connection_ptr initConnection) :
 		connectionPtr(initConnection) { }
+
 	virtual ~Protocol();
 
 	// non-copyable

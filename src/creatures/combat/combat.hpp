@@ -19,6 +19,9 @@ class Creature;
 class Item;
 class Spell;
 class Player;
+class MatrixArea;
+
+static const std::unique_ptr<MatrixArea> &MatrixAreaNull {};
 
 // for luascript callback
 class ValueCallback final : public CallBack {
@@ -33,8 +36,8 @@ public:
 	 * @param damage The combat damage information.
 	 * @return The magic level skill of the player.
 	 */
-	uint32_t getMagicLevelSkill(const Player* player, const CombatDamage &damage) const;
-	void getMinMaxValues(Player* player, CombatDamage &damage, bool useCharges) const;
+	uint32_t getMagicLevelSkill(std::shared_ptr<Player> player, const CombatDamage &damage) const;
+	void getMinMaxValues(std::shared_ptr<Player> player, CombatDamage &damage, bool useCharges) const;
 
 private:
 	formulaType_t type;
@@ -42,7 +45,7 @@ private:
 
 class TileCallback final : public CallBack {
 public:
-	void onTileCombat(Creature* creature, Tile* tile) const;
+	void onTileCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> tile) const;
 
 protected:
 	formulaType_t type;
@@ -50,7 +53,7 @@ protected:
 
 class TargetCallback final : public CallBack {
 public:
-	void onTargetCombat(Creature* creature, Creature* target) const;
+	void onTargetCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) const;
 
 protected:
 	formulaType_t type;
@@ -58,16 +61,16 @@ protected:
 
 class ChainCallback final : public CallBack {
 public:
-	void onChainCombat(Creature* creature, uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking) const;
+	void onChainCombat(std::shared_ptr<Creature> creature, uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking) const;
 };
 
 class ChainPickerCallback final : public CallBack {
 public:
-	bool onChainCombat(Creature* creature, Creature* target) const;
+	bool onChainCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) const;
 };
 
 struct CombatParams {
-	std::forward_list<std::unique_ptr<const Condition>> conditionList;
+	std::forward_list<std::shared_ptr<Condition>> conditionList;
 
 	std::unique_ptr<ValueCallback> valueCallback;
 	std::unique_ptr<TileCallback> tileCallback;
@@ -96,7 +99,7 @@ struct CombatParams {
 	uint8_t chainEffect = CONST_ME_NONE;
 };
 
-using CombatFunction = std::function<void(Creature*, Creature*, const CombatParams &, CombatDamage*)>;
+using CombatFunction = std::function<void(std::shared_ptr<Creature>, std::shared_ptr<Creature>, const CombatParams &, CombatDamage*)>;
 
 class MatrixArea {
 public:
@@ -136,6 +139,10 @@ public:
 		}
 
 		delete[] data_;
+	}
+
+	std::unique_ptr<MatrixArea> clone() const {
+		return std::make_unique<MatrixArea>(*this);
 	}
 
 	// non-assignable
@@ -197,7 +204,7 @@ public:
 	// non-assignable
 	AreaCombat &operator=(const AreaCombat &) = delete;
 
-	void getList(const Position &centerPos, const Position &targetPos, std::forward_list<Tile*> &list) const;
+	void getList(const Position &centerPos, const Position &targetPos, std::forward_list<std::shared_ptr<Tile>> &list) const;
 
 	void setupArea(const std::list<uint32_t> &list, uint32_t rows);
 	void setupArea(int32_t length, int32_t spread);
@@ -205,11 +212,15 @@ public:
 	void setupExtArea(const std::list<uint32_t> &list, uint32_t rows);
 	void clear();
 
-private:
-	MatrixArea* createArea(const std::list<uint32_t> &list, uint32_t rows);
-	void copyArea(const MatrixArea* input, MatrixArea* output, MatrixOperation_t op) const;
+	std::unique_ptr<AreaCombat> clone() const {
+		return std::make_unique<AreaCombat>(*this);
+	}
 
-	MatrixArea* getArea(const Position &centerPos, const Position &targetPos) const {
+private:
+	std::unique_ptr<MatrixArea> createArea(const std::list<uint32_t> &list, uint32_t rows);
+	void copyArea(const std::unique_ptr<MatrixArea> &input, const std::unique_ptr<MatrixArea> &output, MatrixOperation_t op) const;
+
+	const std::unique_ptr<MatrixArea> &getArea(const Position &centerPos, const Position &targetPos) const {
 		int32_t dx = Position::getOffsetX(targetPos, centerPos);
 		int32_t dy = Position::getOffsetY(targetPos, centerPos);
 
@@ -238,13 +249,13 @@ private:
 
 		auto it = areas.find(dir);
 		if (it == areas.end()) {
-			return nullptr;
+			return MatrixAreaNull;
 		}
 
 		return it->second;
 	}
 
-	std::map<Direction, MatrixArea*> areas;
+	std::map<Direction, std::unique_ptr<MatrixArea>> areas;
 	bool hasExtArea = false;
 };
 
@@ -256,51 +267,51 @@ public:
 	Combat(const Combat &) = delete;
 	Combat &operator=(const Combat &) = delete;
 
-	static void doCombatHealth(Creature* caster, Creature* target, CombatDamage &damage, const CombatParams &params);
-	static void doCombatHealth(Creature* caster, const Position &position, const AreaCombat* area, CombatDamage &damage, const CombatParams &params);
+	static void doCombatHealth(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, CombatDamage &damage, const CombatParams &params);
+	static void doCombatHealth(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, CombatDamage &damage, const CombatParams &params);
 
-	static void doCombatMana(Creature* caster, Creature* target, CombatDamage &damage, const CombatParams &params);
-	static void doCombatMana(Creature* caster, const Position &position, const AreaCombat* area, CombatDamage &damage, const CombatParams &params);
+	static void doCombatMana(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, CombatDamage &damage, const CombatParams &params);
+	static void doCombatMana(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, CombatDamage &damage, const CombatParams &params);
 
-	static void doCombatCondition(Creature* caster, Creature* target, const CombatParams &params);
-	static void doCombatCondition(Creature* caster, const Position &position, const AreaCombat* area, const CombatParams &params);
+	static void doCombatCondition(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params);
+	static void doCombatCondition(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, const CombatParams &params);
 
-	static void doCombatDispel(Creature* caster, Creature* target, const CombatParams &params);
-	static void doCombatDispel(Creature* caster, const Position &position, const AreaCombat* area, const CombatParams &params);
+	static void doCombatDispel(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params);
+	static void doCombatDispel(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, const CombatParams &params);
 
-	static void getCombatArea(const Position &centerPos, const Position &targetPos, const AreaCombat* area, std::forward_list<Tile*> &list);
+	static void getCombatArea(const Position &centerPos, const Position &targetPos, const std::unique_ptr<AreaCombat> &area, std::forward_list<std::shared_ptr<Tile>> &list);
 
-	static bool isInPvpZone(const Creature* attacker, const Creature* target);
-	static bool isProtected(const Player* attacker, const Player* target);
-	static bool isPlayerCombat(const Creature* target);
+	static bool isInPvpZone(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target);
+	static bool isProtected(std::shared_ptr<Player> attacker, std::shared_ptr<Player> target);
+	static bool isPlayerCombat(std::shared_ptr<Creature> target);
 	static CombatType_t ConditionToDamageType(ConditionType_t type);
 	static ConditionType_t DamageToConditionType(CombatType_t type);
-	static ReturnValue canTargetCreature(Player* attacker, Creature* target);
-	static ReturnValue canDoCombat(Creature* caster, Tile* tile, bool aggressive);
-	static ReturnValue canDoCombat(Creature* attacker, Creature* target, bool aggressive);
-	static void postCombatEffects(Creature* caster, const Position &origin, const Position &pos, const CombatParams &params);
+	static ReturnValue canTargetCreature(std::shared_ptr<Player> attacker, std::shared_ptr<Creature> target);
+	static ReturnValue canDoCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Tile> tile, bool aggressive);
+	static ReturnValue canDoCombat(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, bool aggressive);
+	static void postCombatEffects(std::shared_ptr<Creature> caster, const Position &origin, const Position &pos, const CombatParams &params);
 
-	static void addDistanceEffect(Creature* caster, const Position &fromPos, const Position &toPos, uint16_t effect);
+	static void addDistanceEffect(std::shared_ptr<Creature> caster, const Position &fromPos, const Position &toPos, uint16_t effect);
 
-	bool doCombat(Creature* caster, Creature* target) const;
-	bool doCombat(Creature* caster, Creature* target, const Position &origin) const;
-	bool doCombat(Creature* caster, const Position &pos) const;
+	bool doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target) const;
+	bool doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin) const;
+	bool doCombat(std::shared_ptr<Creature> caster, const Position &pos) const;
 
 	bool setCallback(CallBackParam_t key);
 	CallBack* getCallback(CallBackParam_t key);
 
 	bool setParam(CombatParam_t param, uint32_t value);
-	void setArea(AreaCombat* newArea) {
-		this->area.reset(newArea);
+	void setArea(std::unique_ptr<AreaCombat> &newArea) {
+		this->area = std::move(newArea);
 	}
 	bool hasArea() const {
 		return area != nullptr;
 	}
-	void addCondition(const Condition* condition) {
+	void addCondition(const std::shared_ptr<Condition> condition) {
 		params.conditionList.emplace_front(condition);
 	}
 	void setPlayerCombatValues(formulaType_t formulaType, double mina, double minb, double maxa, double maxb);
-	void postCombatEffects(Creature* caster, const Position &origin, const Position &pos) const {
+	void postCombatEffects(std::shared_ptr<Creature> caster, const Position &origin, const Position &pos) const {
 		postCombatEffects(caster, origin, pos, params);
 	}
 
@@ -324,20 +335,20 @@ public:
 
 private:
 	static void doChainEffect(const Position &origin, const Position &pos, uint8_t effect);
-	static std::vector<std::pair<Position, std::vector<uint32_t>>> pickChainTargets(Creature* caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool aggressive, bool backtracking, Creature* initialTarget = nullptr);
-	static bool isValidChainTarget(Creature* caster, Creature* currentTarget, Creature* potentialTarget, const CombatParams &params, bool aggressive);
+	static std::vector<std::pair<Position, std::vector<uint32_t>>> pickChainTargets(std::shared_ptr<Creature> caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool aggressive, bool backtracking, std::shared_ptr<Creature> initialTarget = nullptr);
+	static bool isValidChainTarget(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> currentTarget, std::shared_ptr<Creature> potentialTarget, const CombatParams &params, bool aggressive);
 
-	static void doCombatDefault(Creature* caster, Creature* target, const CombatParams &params);
+	static void doCombatDefault(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params);
 
-	static void doCombatHealth(Creature* caster, Creature* target, const Position &origin, CombatDamage &damage, const CombatParams &params);
-	static void doCombatMana(Creature* caster, Creature* target, const Position &origin, CombatDamage &damage, const CombatParams &params);
-	static void doCombatDefault(Creature* caster, Creature* target, const Position &origin, const CombatParams &params);
+	static void doCombatHealth(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, CombatDamage &damage, const CombatParams &params);
+	static void doCombatMana(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, CombatDamage &damage, const CombatParams &params);
+	static void doCombatDefault(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, const CombatParams &params);
 
-	static void CombatFunc(Creature* caster, const Position &origin, const Position &pos, const AreaCombat* area, const CombatParams &params, CombatFunction func, CombatDamage* data);
+	static void CombatFunc(std::shared_ptr<Creature> caster, const Position &origin, const Position &pos, const std::unique_ptr<AreaCombat> &area, const CombatParams &params, CombatFunction func, CombatDamage* data);
 
-	static void CombatHealthFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data);
-	static CombatDamage applyImbuementElementalDamage(Player* attackerPlayer, Item* item, CombatDamage damage);
-	static void CombatManaFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* damage);
+	static void CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data);
+	static CombatDamage applyImbuementElementalDamage(std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Item> item, CombatDamage damage);
+	static void CombatManaFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* damage);
 	/**
 	 * @brief Checks if a fear condition can be applied to a player.
 	 *
@@ -352,12 +363,12 @@ private:
 	 * @param player Pointer to the Player object to be checked.
 	 * @return true if the fear condition can be applied, false otherwise.
 	 */
-	static bool checkFearConditionAffected(Player* player);
-	static void CombatConditionFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data);
-	static void CombatDispelFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data);
-	static void CombatNullFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data);
+	static bool checkFearConditionAffected(std::shared_ptr<Player> player);
+	static void CombatConditionFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data);
+	static void CombatDispelFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data);
+	static void CombatNullFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data);
 
-	static void combatTileEffects(const SpectatorHashSet &spectators, Creature* caster, Tile* tile, const CombatParams &params);
+	static void combatTileEffects(const SpectatorHashSet &spectators, std::shared_ptr<Creature> caster, std::shared_ptr<Tile> tile, const CombatParams &params);
 
 	/**
 	 * @brief Calculate the level formula for combat.
@@ -367,10 +378,10 @@ private:
 	 * @param damage The combat damage.
 	 * @return The calculated level formula.
 	 */
-	int32_t getLevelFormula(const Player* player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const;
-	CombatDamage getCombatDamage(Creature* creature, Creature* target) const;
+	int32_t getLevelFormula(std::shared_ptr<Player> player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const;
+	CombatDamage getCombatDamage(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) const;
 
-	bool doCombatChain(Creature* caster, Creature* target, bool aggressive) const;
+	bool doCombatChain(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, bool aggressive) const;
 
 	// configureable
 	CombatParams params;
@@ -393,11 +404,8 @@ public:
 	explicit MagicField(uint16_t type) :
 		Item(type), createTime(OTSYS_TIME()) { }
 
-	MagicField* getMagicField() override {
-		return this;
-	}
-	const MagicField* getMagicField() const override {
-		return this;
+	std::shared_ptr<MagicField> getMagicField() override {
+		return static_self_cast<MagicField>();
 	}
 
 	bool isReplaceable() const {
@@ -414,7 +422,7 @@ public:
 		}
 		return 0;
 	}
-	void onStepInField(Creature &creature);
+	void onStepInField(const std::shared_ptr<Creature> &creature);
 
 private:
 	int64_t createTime;

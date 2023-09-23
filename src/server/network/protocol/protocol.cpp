@@ -14,7 +14,11 @@
 #include "security/rsa.hpp"
 #include "game/scheduling/dispatcher.hpp"
 
-Protocol::~Protocol() = default;
+Protocol::~Protocol() {
+	if (compreesionEnabled) {
+		deflateEnd(defStream.get());
+	}
+}
 
 void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {
@@ -205,20 +209,25 @@ uint32_t Protocol::getIP() const {
 }
 
 void Protocol::enableCompression() {
+	if (compreesionEnabled) {
+		return;
+	}
+
+	int32_t compressionLevel = g_configManager().getNumber(COMPRESSION_LEVEL);
+	if (compressionLevel <= 0) {
+		return;
+	}
+
+	defStream = std::make_unique<z_stream>();
+	defStream->zalloc = nullptr;
+	defStream->zfree = nullptr;
+	defStream->opaque = nullptr;
+
+	compreesionEnabled = deflateInit2(defStream.get(), compressionLevel, Z_DEFLATED, -15, 9, Z_DEFAULT_STRATEGY) == Z_OK;
+
 	if (!compreesionEnabled) {
-		int32_t compressionLevel = g_configManager().getNumber(COMPRESSION_LEVEL);
-		if (compressionLevel != 0) {
-			defStream.reset(new z_stream);
-			defStream->zalloc = Z_NULL;
-			defStream->zfree = Z_NULL;
-			defStream->opaque = Z_NULL;
-			if (deflateInit2(defStream.get(), compressionLevel, Z_DEFLATED, -15, 9, Z_DEFAULT_STRATEGY) != Z_OK) {
-				defStream.reset();
-				g_logger().error("[Protocol::enableCompression()] - Zlib deflateInit2 error: {}", (defStream->msg ? defStream->msg : " unknown error"));
-			} else {
-				compreesionEnabled = true;
-			}
-		}
+		defStream.reset();
+		g_logger().error("[Protocol::enableCompression()] - Zlib deflateInit2 error: {}", (defStream->msg ? defStream->msg : " unknown error"));
 	}
 }
 

@@ -622,7 +622,7 @@ int MonsterTypeFunctions::luaMonsterTypeBestiaryrace(lua_State* L) {
 
 int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 	// get: monsterType:combatImmunities() set: monsterType:combatImmunities(immunity)
-	const auto &monsterType = getUserdataShared<MonsterType>(L, 1);
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (!monsterType) {
 		pushBoolean(L, false);
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));
@@ -678,7 +678,7 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 
 int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 	// get: monsterType:conditionImmunities() set: monsterType:conditionImmunities(immunity)
-	const auto &monsterType = getUserdataShared<MonsterType>(L, 1);
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (!monsterType) {
 		pushBoolean(L, false);
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));

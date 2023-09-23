@@ -51,3 +51,5 @@ public:
 	// list: player:getGuid(), player status
 	std::map<uint32_t, uint8_t> membersMap = {};
 };
+
+static const std::unique_ptr<TeamFinder> &TeamFinderNull {};

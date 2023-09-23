@@ -14,7 +14,7 @@
 class TeleportFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "Teleport", "Item", TeleportFunctions::luaTeleportCreate);
+		registerSharedClass(L, "Teleport", "Item", TeleportFunctions::luaTeleportCreate);
 		registerMetaMethod(L, "Teleport", "__eq", TeleportFunctions::luaUserdataCompare);
 
 		registerMethod(L, "Teleport", "getDestination", TeleportFunctions::luaTeleportGetDestination);

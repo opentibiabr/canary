@@ -18,11 +18,8 @@ class BedItem final : public Item {
 public:
 	explicit BedItem(uint16_t id);
 
-	BedItem* getBed() override {
-		return this;
-	}
-	const BedItem* getBed() const override {
-		return this;
+	std::shared_ptr<BedItem> getBed() override {
+		return static_self_cast<BedItem>();
 	}
 
 	Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
@@ -36,27 +33,27 @@ public:
 		return sleeperGUID;
 	}
 
-	void setHouse(House* h) {
+	void setHouse(const std::shared_ptr<House> &h) {
 		house = h;
 	}
 
-	bool canUse(Player* player);
+	bool canUse(std::shared_ptr<Player> player);
 
-	bool trySleep(Player* player);
-	bool sleep(Player* player);
-	void wakeUp(Player* player);
+	bool trySleep(std::shared_ptr<Player> player);
+	bool sleep(std::shared_ptr<Player> player);
+	void wakeUp(std::shared_ptr<Player> player);
 
-	BedItem* getNextBedItem() const;
+	std::shared_ptr<BedItem> getNextBedItem();
 
 	friend class MapCache;
 
 private:
-	void updateAppearance(const Player* player);
-	void regeneratePlayer(Player* player) const;
-	void internalSetSleeper(const Player* player);
+	void updateAppearance(std::shared_ptr<Player> player);
+	void regeneratePlayer(std::shared_ptr<Player> player) const;
+	void internalSetSleeper(std::shared_ptr<Player> player);
 	void internalRemoveSleeper();
 
-	House* house = nullptr;
+	std::shared_ptr<House> house;
 	uint64_t sleepStart;
 	uint32_t sleeperGUID;
 };

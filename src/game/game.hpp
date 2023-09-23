@@ -595,7 +595,7 @@ public:
 
 	bool addInfluencedMonster(std::shared_ptr<Monster> monster);
 	void sendUpdateCreature(std::shared_ptr<Creature> creature);
-	std::shared_ptr<Item> wrapItem(std::shared_ptr<Item> item, House* house);
+	std::shared_ptr<Item> wrapItem(std::shared_ptr<Item> item, std::shared_ptr<House> house);
 
 	/**
 	 * @brief Adds a player to the unique login map.
@@ -865,7 +865,7 @@ private:
 		const std::string &damageString, std::string &spectatorMessage
 	) const;
 
-	void unwrapItem(std::shared_ptr<Item> item, uint16_t unWrapId, House* house, std::shared_ptr<Player> player);
+	void unwrapItem(std::shared_ptr<Item> item, uint16_t unWrapId, std::shared_ptr<House> house, std::shared_ptr<Player> player);
 
 	// Variable members (m_)
 	std::unique_ptr<IOWheel> m_IOWheel;

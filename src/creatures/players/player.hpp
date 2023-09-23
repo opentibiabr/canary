@@ -634,10 +634,10 @@ public:
 	const Position &getTemplePosition() const {
 		return town->getTemplePosition();
 	}
-	Town* getTown() const {
+	std::shared_ptr<Town> getTown() const {
 		return town;
 	}
-	void setTown(Town* newTown) {
+	void setTown(const std::shared_ptr<Town> &newTown) {
 		this->town = newTown;
 	}
 
@@ -1301,7 +1301,7 @@ public:
 			client->sendDistanceShoot(from, to, type);
 		}
 	}
-	void sendHouseWindow(House* house, uint32_t listId) const;
+	void sendHouseWindow(std::shared_ptr<House> house, uint32_t listId) const;
 	void sendCreatePrivateChannel(uint16_t channelId, const std::string &channelName) {
 		if (client) {
 			client->sendCreatePrivateChannel(channelId, channelName);
@@ -1669,8 +1669,8 @@ public:
 	std::shared_ptr<Item> getWriteItem(uint32_t &windowTextId, uint16_t &maxWriteLen);
 	void setWriteItem(std::shared_ptr<Item> item, uint16_t maxWriteLen = 0);
 
-	House* getEditHouse(uint32_t &windowTextId, uint32_t &listId);
-	void setEditHouse(House* house, uint32_t listId = 0);
+	std::shared_ptr<House> getEditHouse(uint32_t &windowTextId, uint32_t &listId);
+	void setEditHouse(std::shared_ptr<House> house, uint32_t listId = 0);
 
 	void learnInstantSpell(const std::string &spellName);
 	void forgetInstantSpell(const std::string &spellName);
@@ -2655,13 +2655,13 @@ private:
 	std::shared_ptr<Item> tradeItem = nullptr;
 	std::shared_ptr<Item> inventory[CONST_SLOT_LAST + 1] = {};
 	std::shared_ptr<Item> writeItem = nullptr;
-	House* editHouse = nullptr;
+	std::shared_ptr<House> editHouse = nullptr;
 	std::shared_ptr<Npc> shopOwner = nullptr;
 	std::shared_ptr<Party> party = nullptr;
 	std::shared_ptr<Player> tradePartner = nullptr;
 	ProtocolGame_ptr client;
 	std::shared_ptr<Task> walkTask;
-	Town* town = nullptr;
+	std::shared_ptr<Town> town;
 	Vocation* vocation = nullptr;
 	std::shared_ptr<RewardChest> rewardChest = nullptr;
 

@@ -25,7 +25,7 @@ public:
 	static int32_t despawnRange;
 	static int32_t despawnRadius;
 
-	explicit Npc(NpcType* npcType);
+	explicit Npc(const std::shared_ptr<NpcType> &npcType);
 	Npc() = default;
 	~Npc();
 
@@ -112,8 +112,8 @@ public:
 	RespawnType getRespawnType() const {
 		return npcType->info.respawnType;
 	}
-	void setSpawnNpc(SpawnNpc* newSpawn) {
-		this->spawnNpc = newSpawn;
+	void setSpawnNpc(const std::shared_ptr<SpawnNpc> &newSpawn) {
+		spawnNpc = newSpawn;
 	}
 
 	void setPlayerInteraction(uint32_t playerId, uint16_t topicId = 0);
@@ -177,8 +177,8 @@ private:
 
 	phmap::flat_hash_map<uint32_t, std::weak_ptr<Player>> shopPlayerMap;
 
-	NpcType* npcType;
-	SpawnNpc* spawnNpc = nullptr;
+	std::shared_ptr<NpcType> npcType;
+	std::shared_ptr<SpawnNpc> spawnNpc;
 
 	uint8_t speechBubble;
 

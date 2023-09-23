@@ -56,8 +56,7 @@ bool SpawnsNpc::loadFromXml(const std::string &fileNpcName) {
 			continue;
 		}
 
-		spawnNpcList.emplace_front(centerPos, radius);
-		SpawnNpc &spawnNpc = spawnNpcList.front();
+		const auto &spawnNpc = spawnNpcList.emplace_front(std::make_shared<SpawnNpc>(centerPos, radius));
 
 		for (auto childNode : spawnNode.children()) {
 			if (strcasecmp(childNode.name(), "npc") == 0) {
@@ -84,7 +83,7 @@ bool SpawnsNpc::loadFromXml(const std::string &fileNpcName) {
 				);
 				int64_t interval = pugi::cast<int64_t>(childNode.attribute("spawntime").value()) * 1000;
 				if (interval >= MINSPAWN_INTERVAL && interval <= MAXSPAWN_INTERVAL) {
-					spawnNpc.addNpc(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
+					spawnNpc->addNpc(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
 				} else {
 					if (interval <= MINSPAWN_INTERVAL) {
 						g_logger().warn("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be less than {} seconds", nameAttribute.as_string(), pos.toString(), MINSPAWN_INTERVAL / 1000);
@@ -103,16 +102,16 @@ void SpawnsNpc::startup() {
 		return;
 	}
 
-	for (SpawnNpc &spawnNpc : spawnNpcList) {
-		spawnNpc.startup();
+	for (const auto &spawnNpc : spawnNpcList) {
+		spawnNpc->startup();
 	}
 
 	setStarted(true);
 }
 
 void SpawnsNpc::clear() {
-	for (SpawnNpc &spawnNpc : spawnNpcList) {
-		spawnNpc.stopEvent();
+	for (const auto &spawnNpc : spawnNpcList) {
+		spawnNpc->stopEvent();
 	}
 	spawnNpcList.clear();
 
@@ -137,8 +136,7 @@ void SpawnNpc::startSpawnNpcCheck() {
 
 SpawnNpc::~SpawnNpc() {
 	for (const auto &it : spawnedNpcMap) {
-		auto npc = it.second;
-		npc->setSpawnNpc(nullptr);
+		it.second->setSpawnNpc(nullptr);
 	}
 }
 
@@ -157,7 +155,7 @@ bool SpawnNpc::isInSpawnNpcZone(const Position &pos) {
 	return SpawnsNpc::isInZone(centerPos, radius, pos);
 }
 
-bool SpawnNpc::spawnNpc(uint32_t spawnId, NpcType* npcType, const Position &pos, Direction dir, bool startup /*= false*/) {
+bool SpawnNpc::spawnNpc(uint32_t spawnId, const std::shared_ptr<NpcType> &npcType, const Position &pos, Direction dir, bool startup /*= false*/) {
 	auto npc = std::make_shared<Npc>(npcType);
 	if (startup) {
 		// No need to send out events to the surrounding since there is no one out there to listen!
@@ -171,7 +169,7 @@ bool SpawnNpc::spawnNpc(uint32_t spawnId, NpcType* npcType, const Position &pos,
 	}
 
 	npc->setDirection(dir);
-	npc->setSpawnNpc(this);
+	npc->setSpawnNpc(static_self_cast<SpawnNpc>());
 	npc->setMasterPos(pos);
 
 	spawnedNpcMap.insert(spawned_pair(spawnId, npc));
@@ -246,7 +244,7 @@ void SpawnNpc::cleanup() {
 }
 
 bool SpawnNpc::addNpc(const std::string &name, const Position &pos, Direction dir, uint32_t scheduleInterval) {
-	NpcType* npcType = g_npcs().getNpcType(name);
+	const auto &npcType = g_npcs().getNpcType(name);
 	if (!npcType) {
 		g_logger().error("Can not find {}", name);
 		return false;

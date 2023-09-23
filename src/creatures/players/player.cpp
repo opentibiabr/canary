@@ -1291,19 +1291,19 @@ void Player::setWriteItem(std::shared_ptr<Item> item, uint16_t maxWriteLength /*
 	}
 }
 
-House* Player::getEditHouse(uint32_t &retWindowTextId, uint32_t &retListId) {
+std::shared_ptr<House> Player::getEditHouse(uint32_t &retWindowTextId, uint32_t &retListId) {
 	retWindowTextId = this->windowTextId;
 	retListId = this->editListId;
 	return editHouse;
 }
 
-void Player::setEditHouse(House* house, uint32_t listId /*= 0*/) {
+void Player::setEditHouse(std::shared_ptr<House> house, uint32_t listId /*= 0*/) {
 	windowTextId++;
 	editHouse = house;
 	editListId = listId;
 }
 
-void Player::sendHouseWindow(House* house, uint32_t listId) const {
+void Player::sendHouseWindow(std::shared_ptr<House> house, uint32_t listId) const {
 	if (!client) {
 		return;
 	}

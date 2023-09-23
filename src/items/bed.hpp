@@ -33,7 +33,7 @@ public:
 		return sleeperGUID;
 	}
 
-	void setHouse(House* h) {
+	void setHouse(const std::shared_ptr<House> &h) {
 		house = h;
 	}
 
@@ -53,7 +53,7 @@ private:
 	void internalSetSleeper(std::shared_ptr<Player> player);
 	void internalRemoveSleeper();
 
-	House* house = nullptr;
+	std::shared_ptr<House> house;
 	uint64_t sleepStart;
 	uint32_t sleeperGUID;
 };

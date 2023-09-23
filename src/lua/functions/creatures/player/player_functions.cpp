@@ -1444,7 +1444,7 @@ int PlayerFunctions::luaPlayerGetTown(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSetTown(lua_State* L) {
 	// player:setTown(town)
-	Town* town = getUserdata<Town>(L, 2);
+	const auto &town = getUserdataShared<Town>(L, 2);
 	if (!town) {
 		pushBoolean(L, false);
 		return 1;
@@ -2878,7 +2878,7 @@ int PlayerFunctions::luaPlayerGetHouse(lua_State* L) {
 		return 1;
 	}
 
-	House* house = g_game().map.houses.getHouseByPlayerId(player->getGUID());
+	const auto &house = g_game().map.houses.getHouseByPlayerId(player->getGUID());
 	if (house) {
 		pushUserdata<House>(L, house);
 		setMetatable(L, -1, "House");
@@ -2896,7 +2896,7 @@ int PlayerFunctions::luaPlayerSendHouseWindow(lua_State* L) {
 		return 1;
 	}
 
-	House* house = getUserdata<House>(L, 2);
+	const auto &house = getUserdataShared<House>(L, 2);
 	if (!house) {
 		lua_pushnil(L);
 		return 1;
@@ -2916,7 +2916,7 @@ int PlayerFunctions::luaPlayerSetEditHouse(lua_State* L) {
 		return 1;
 	}
 
-	House* house = getUserdata<House>(L, 2);
+	const auto &house = getUserdataShared<House>(L, 2);
 	if (!house) {
 		lua_pushnil(L);
 		return 1;

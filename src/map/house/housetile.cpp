@@ -15,7 +15,7 @@
 #include "map/house/house.hpp"
 #include "game/game.hpp"
 
-HouseTile::HouseTile(int32_t initX, int32_t initY, int32_t initZ, House* initHouse) :
+HouseTile::HouseTile(int32_t initX, int32_t initY, int32_t initZ, std::shared_ptr<House> initHouse) :
 	DynamicTile(initX, initY, initZ), house(initHouse) { }
 
 void HouseTile::addThing(int32_t index, std::shared_ptr<Thing> thing) {

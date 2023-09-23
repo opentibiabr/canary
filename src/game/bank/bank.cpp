@@ -15,17 +15,18 @@
 #include "io/iologindata.hpp"
 
 Bank::Bank(const std::shared_ptr<Bankable> bankable) :
-	bankable(bankable) {
+	m_bankable(bankable) {
 }
 
 Bank::~Bank() {
+	auto bankable = getBankable();
 	if (bankable == nullptr || bankable->isOnline()) {
 		return;
 	}
-	Player* player = bankable->getPlayer();
+	std::shared_ptr<Player> player = bankable->getPlayer();
 	if (player && !player->isOnline()) {
 		IOLoginData::savePlayer(player);
-		delete player;
+
 		return;
 	}
 	if (bankable->isGuild()) {
@@ -48,7 +49,8 @@ bool Bank::debit(uint64_t amount) {
 }
 
 bool Bank::balance(uint64_t amount) const {
-	if (bankable == nullptr) {
+	auto bankable = getBankable();
+	if (!bankable) {
 		return 0;
 	}
 	bankable->setBankBalance(amount);
@@ -56,7 +58,8 @@ bool Bank::balance(uint64_t amount) const {
 }
 
 uint64_t Bank::balance() {
-	if (bankable == nullptr) {
+	auto bankable = getBankable();
+	if (!bankable) {
 		return 0;
 	}
 	return bankable->getBankBalance();
@@ -78,29 +81,38 @@ const std::set<std::string> deniedNames = {
 const uint32_t minTownId = 3;
 
 bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) {
-	if (destination == nullptr) {
+	if (!destination) {
+		g_logger().error("Bank::transferTo: destination is nullptr");
 		return false;
 	}
-	if (destination->bankable->getPlayer() != nullptr) {
+	auto bankable = getBankable();
+	if (!bankable) {
+		g_logger().error("Bank::transferTo: bankable is nullptr");
+		return false;
+	}
+	auto destinationBankable = destination->getBankable();
+	if (!destinationBankable) {
+		g_logger().error("Bank::transferTo: destinationBankable is nullptr");
+		return false;
+	}
+	if (destinationBankable->getPlayer() != nullptr) {
 		auto player = bankable->getPlayer();
 		auto name = asLowerCaseString(player->getName());
 		replaceString(name, " ", "");
 		if (deniedNames.contains(name)) {
+			g_logger().warn("Bank::transferTo: denied name: {}", name);
 			return false;
 		}
 		if (player->getTown()->getID() < minTownId) {
+			g_logger().warn("Bank::transferTo: denied town: {}", player->getTown()->getID());
 			return false;
 		}
-	}
-
-	if (!hasBalance(amount)) {
-		return false;
 	}
 
 	return debit(amount) && destination->credit(amount);
 }
 
-bool Bank::withdraw(Player* player, uint64_t amount) {
+bool Bank::withdraw(std::shared_ptr<Player> player, uint64_t amount) {
 	if (!debit(amount)) {
 		return false;
 	}
@@ -109,6 +121,10 @@ bool Bank::withdraw(Player* player, uint64_t amount) {
 }
 
 bool Bank::deposit(const std::shared_ptr<Bank> destination) {
+	auto bankable = getBankable();
+	if (!bankable) {
+		return false;
+	}
 	if (bankable->getPlayer() == nullptr) {
 		return false;
 	}
@@ -117,7 +133,11 @@ bool Bank::deposit(const std::shared_ptr<Bank> destination) {
 }
 
 bool Bank::deposit(const std::shared_ptr<Bank> destination, uint64_t amount) {
-	if (destination == nullptr) {
+	if (!destination) {
+		return false;
+	}
+	auto bankable = getBankable();
+	if (!bankable) {
 		return false;
 	}
 	if (!g_game().removeMoney(bankable->getPlayer(), amount)) {

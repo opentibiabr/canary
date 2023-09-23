@@ -59,7 +59,7 @@ std::size_t WaitingList::getTime(std::size_t slot) {
 	}
 }
 
-bool WaitingList::clientLogin(const Player* player) {
+bool WaitingList::clientLogin(std::shared_ptr<Player> player) {
 	if (player->hasFlag(PlayerFlags_t::CanAlwaysLogin) || player->getAccountType() >= account::ACCOUNT_TYPE_GAMEMASTER) {
 		return true;
 	}
@@ -85,7 +85,7 @@ bool WaitingList::clientLogin(const Player* player) {
 	return false;
 }
 
-void WaitingList::addPlayerToList(const Player* player) {
+void WaitingList::addPlayerToList(std::shared_ptr<Player> player) {
 	auto it = info->playerReferences.find(player->getGUID());
 	if (it != info->playerReferences.end()) {
 		std::size_t slot;
@@ -111,7 +111,7 @@ void WaitingList::addPlayerToList(const Player* player) {
 	}
 }
 
-std::size_t WaitingList::getClientSlot(const Player* player) {
+std::size_t WaitingList::getClientSlot(std::shared_ptr<Player> player) {
 	auto it = info->playerReferences.find(player->getGUID());
 	if (it == info->playerReferences.end()) {
 		return 0;

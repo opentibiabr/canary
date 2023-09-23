@@ -20,10 +20,10 @@ public:
 	}
 
 	// cylinder implementations
-	ReturnValue queryAdd(int32_t index, const Thing &thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
+	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override;
 
-	void postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
-	void postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 
 	bool isInbox() const override {
 		return true;
@@ -33,13 +33,13 @@ public:
 	bool canRemove() const override {
 		return false;
 	}
-	bool isRemoved() const override {
+	bool isRemoved() override {
 		return false;
 	}
 
-	Cylinder* getParent() const override;
-	Cylinder* getRealParent() const override {
-		return parent;
+	std::shared_ptr<Cylinder> getParent() override;
+	std::shared_ptr<Cylinder> getRealParent() override {
+		return m_parent.lock();
 	}
 
 private:

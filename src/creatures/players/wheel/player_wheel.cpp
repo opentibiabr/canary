@@ -883,7 +883,7 @@ bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
 	DBInsert insertWheelData("INSERT INTO `player_wheeldata` (`player_id`, `slot`) VALUES ");
 	insertWheelData.upsert({ "slot" });
 	PropWriteStream stream;
-	const auto &wheelSlots = getSlots();
+	const auto wheelSlots = getSlots();
 	for (uint8_t i = 1; i < wheelSlots.size(); ++i) {
 		auto value = wheelSlots[i];
 		if (value == 0) {
@@ -935,7 +935,7 @@ uint16_t PlayerWheel::getWheelPoints(bool includeExtraPoints /* = true*/) const 
 	auto totalPoints = std::max(0u, (level - m_minLevelToStartCountPoints)) * m_pointsPerLevel;
 
 	if (includeExtraPoints) {
-		const auto &extraPoints = getExtraPoints();
+		const auto extraPoints = getExtraPoints();
 		totalPoints += extraPoints;
 	}
 
@@ -1074,7 +1074,7 @@ void PlayerWheel::reloadPlayerData() {
 	m_player.sendStats();
 	m_player.sendBasicData();
 	sendGiftOfLifeCooldown();
-	g_game().reloadCreature(&m_player);
+	g_game().reloadCreature(m_player.getPlayer());
 }
 
 void PlayerWheel::registerPlayerBonusData() {
@@ -1216,7 +1216,7 @@ void PlayerWheel::registerPlayerBonusData() {
 
 	if (m_player.getHealth() > m_player.getMaxHealth()) {
 		m_player.health = std::min<int32_t>(m_player.getMaxHealth(), m_player.healthMax);
-		g_game().addCreatureHealth(&m_player);
+		g_game().addCreatureHealth(m_player.getPlayer());
 	}
 
 	if (m_player.getMana() > m_player.getMaxMana()) {
@@ -1374,8 +1374,8 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 }
 
 void PlayerWheel::loadDedicationAndConvictionPerks() {
-	using VocationBonusFunction = std::function<void(Player &, uint16_t, uint8_t, PlayerWheelMethodsBonusData &)>;
-	auto &wheelFunctions = g_game().getIOWheel()->getWheelMapFunctions();
+	using VocationBonusFunction = std::function<void(const std::shared_ptr<Player> &, uint16_t, uint8_t, PlayerWheelMethodsBonusData &)>;
+	auto wheelFunctions = g_game().getIOWheel()->getWheelMapFunctions();
 	auto vocationCipId = getPlayerVocationEnum();
 	if (vocationCipId < VOCATION_KNIGHT_CIP || vocationCipId > VOCATION_DRUID_CIP) {
 		return;
@@ -1392,7 +1392,7 @@ void PlayerWheel::loadDedicationAndConvictionPerks() {
 			if (internalData == nullptr) {
 				g_logger().warn("[{}] 'internalData' cannot be null on slot type: {}, for player: {}", __FUNCTION__, i, m_player.getName());
 			} else {
-				internalData(m_player, points, vocationCipId, m_playerBonusData);
+				internalData(m_player.getPlayer(), points, vocationCipId, m_playerBonusData);
 			}
 		}
 	}
@@ -1612,13 +1612,13 @@ bool PlayerWheel::checkBattleInstinct() {
 				m_player.getPosition().y + offsetY,
 				m_player.getPosition().z
 			);
-			const Tile* tile = g_game().map.getTile(playerPositionOffSet);
+			std::shared_ptr<Tile> tile = g_game().map.getTile(playerPositionOffSet);
 			if (!tile) {
 				continue;
 			}
 
-			const Creature* creature = tile->getTopVisibleCreature(&m_player);
-			if (!creature || creature == &m_player || (creature->getMaster() && creature->getMaster()->getPlayer() == &m_player)) {
+			std::shared_ptr<Creature> creature = tile->getTopVisibleCreature(m_player.getPlayer());
+			if (!creature || creature == m_player.getPlayer() || (creature->getMaster() && creature->getMaster()->getPlayer() == m_player.getPlayer())) {
 				continue;
 			}
 
@@ -1660,13 +1660,13 @@ bool PlayerWheel::checkPositionalTatics() {
 				m_player.getPosition().y + offsetY,
 				m_player.getPosition().z
 			);
-			const Tile* tile = g_game().map.getTile(playerPositionOffSet);
+			std::shared_ptr<Tile> tile = g_game().map.getTile(playerPositionOffSet);
 			if (!tile) {
 				continue;
 			}
 
-			const Creature* creature = tile->getTopVisibleCreature(&m_player);
-			if (!creature || creature == &m_player || !creature->getMonster() || (creature->getMaster() && creature->getMaster()->getPlayer())) {
+			std::shared_ptr<Creature> creature = tile->getTopVisibleCreature(m_player.getPlayer());
+			if (!creature || creature == m_player.getPlayer() || !creature->getMonster() || (creature->getMaster() && creature->getMaster()->getPlayer())) {
 				continue;
 			}
 
@@ -1707,7 +1707,7 @@ bool PlayerWheel::checkBallisticMastery() {
 	uint16_t newHolyBonus = 2; // 2%
 	uint16_t newPhysicalBonus = 2; // 2%
 
-	const Item* item = m_player.getWeapon();
+	std::shared_ptr<Item> item = m_player.getWeapon();
 	if (item && item->getAmmoType() == AMMO_BOLT) {
 		if (getMajorStat(WheelMajor_t::CRITICAL_DMG) != newCritical) {
 			setMajorStat(WheelMajor_t::CRITICAL_DMG, newCritical);
@@ -1748,7 +1748,7 @@ bool PlayerWheel::checkCombatMastery() {
 	bool updateClient = false;
 	uint8_t stage = getStage(WheelStage_t::COMBAT_MASTERY);
 
-	const Item* item = m_player.getWeapon();
+	std::shared_ptr<Item> item = m_player.getWeapon();
 	if (item && item->getSlotPosition() & SLOTP_TWO_HAND) {
 		int32_t criticalSkill = 0;
 		if (stage >= 3) {
@@ -1793,9 +1793,26 @@ bool PlayerWheel::checkDivineEmpowerment() {
 	bool updateClient = false;
 	setOnThinkTimer(WheelOnThink_t::DIVINE_EMPOWERMENT, OTSYS_TIME() + 2000);
 
-	const Tile* tile = m_player.getTile();
-	if (tile && tile->getItemTypeCount(ITEM_DIVINE_EMPOWERMENT) > 0) {
-		int32_t damageBonus = 0;
+	const auto tile = m_player.getTile();
+	if (!tile) {
+		return updateClient;
+	}
+
+	const auto items = tile->getItemList();
+	if (!items) {
+		return updateClient;
+	}
+
+	int32_t damageBonus = 0;
+	bool isOwner = false;
+	for (const auto &item : *items) {
+		if (item->getID() == ITEM_DIVINE_EMPOWERMENT && item->getAttribute<uint32_t>(ItemAttribute_t::OWNER) == m_player.getID()) {
+			isOwner = true;
+			break;
+		}
+	}
+
+	if (isOwner) {
 		uint8_t stage = getStage(WheelStage_t::DIVINE_EMPOWERMENT);
 		if (stage >= 3) {
 			damageBonus = 12;
@@ -1821,7 +1838,7 @@ void PlayerWheel::checkGiftOfLife() {
 	giftDamage.primary.type = COMBAT_HEALING;
 	m_player.sendTextMessage(MESSAGE_EVENT_ADVANCE, "That was close! Fortunately, your were saved by the Gift of Life.");
 	g_game().addMagicEffect(m_player.getPosition(), CONST_ME_WATER_DROP);
-	g_game().combatChangeHealth(&m_player, &m_player, giftDamage);
+	g_game().combatChangeHealth(m_player.getPlayer(), m_player.getPlayer(), giftDamage);
 	// Condition cooldown reduction
 	uint16_t reductionTimer = 60000;
 	reduceAllSpellsCooldownTimer(reductionTimer);
@@ -1831,8 +1848,8 @@ void PlayerWheel::checkGiftOfLife() {
 	sendGiftOfLifeCooldown();
 }
 
-int32_t PlayerWheel::checkBlessingGroveHealingByTarget(const Creature* target) const {
-	if (!target || target == &m_player) {
+int32_t PlayerWheel::checkBlessingGroveHealingByTarget(std::shared_ptr<Creature> target) const {
+	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
 
@@ -1860,8 +1877,8 @@ int32_t PlayerWheel::checkBlessingGroveHealingByTarget(const Creature* target) c
 	return healingBonus;
 }
 
-int32_t PlayerWheel::checkTwinBurstByTarget(const Creature* target) const {
-	if (!target || target == &m_player) {
+int32_t PlayerWheel::checkTwinBurstByTarget(std::shared_ptr<Creature> target) const {
+	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
 
@@ -1881,8 +1898,8 @@ int32_t PlayerWheel::checkTwinBurstByTarget(const Creature* target) const {
 	return damageBonus;
 }
 
-int32_t PlayerWheel::checkExecutionersThrow(const Creature* target) const {
-	if (!target || target == &m_player) {
+int32_t PlayerWheel::checkExecutionersThrow(std::shared_ptr<Creature> target) const {
+	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
 
@@ -1916,7 +1933,7 @@ int32_t PlayerWheel::checkBeamMasteryDamage() const {
 	return damageBoost;
 }
 
-int32_t PlayerWheel::checkDrainBodyLeech(const Creature* target, skills_t skill) const {
+int32_t PlayerWheel::checkDrainBodyLeech(std::shared_ptr<Creature> target, skills_t skill) const {
 	if (!target || !target->getMonster() || target->getWheelOfDestinyDrainBodyDebuff() == 0) {
 		return 0;
 	}
@@ -2036,7 +2053,7 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 			}
 			m_player.sendSkills();
 			m_player.sendStats();
-			g_game().reloadCreature(&m_player);
+			g_game().reloadCreature(m_player.getPlayer());
 		}
 		return;
 	}
@@ -2071,10 +2088,10 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 }
 
 void PlayerWheel::reduceAllSpellsCooldownTimer(int32_t value) {
-	for (Condition* condition : m_player.getConditionsByType(CONDITION_SPELLCOOLDOWN)) {
+	for (const auto &condition : m_player.getConditionsByType(CONDITION_SPELLCOOLDOWN)) {
 		if (condition->getTicks() <= value) {
 			m_player.sendSpellCooldown(condition->getSubId(), 0);
-			condition->endCondition(&m_player);
+			condition->endCondition(m_player.getPlayer());
 		} else {
 			condition->setTicks(condition->getTicks() - value);
 			m_player.sendSpellCooldown(condition->getSubId(), condition->getTicks());
@@ -2612,7 +2629,7 @@ void PlayerWheel::healIfBattleHealingActive() const {
 		CombatDamage damage;
 		damage.primary.value = checkBattleHealingAmount();
 		damage.primary.type = COMBAT_HEALING;
-		g_game().combatChangeHealth(&m_player, &m_player, damage);
+		g_game().combatChangeHealth(m_player.getPlayer(), m_player.getPlayer(), damage);
 	}
 }
 
@@ -2628,8 +2645,8 @@ void PlayerWheel::adjustDamageBasedOnResistanceAndSkill(int32_t &damage, CombatT
 float PlayerWheel::calculateMitigation() const {
 	int32_t skill = m_player.getSkillLevel(SKILL_SHIELD);
 	int32_t defenseValue = 0;
-	const Item* weapon = m_player.inventory[CONST_SLOT_LEFT];
-	const Item* shield = m_player.inventory[CONST_SLOT_RIGHT];
+	std::shared_ptr<Item> weapon = m_player.inventory[CONST_SLOT_LEFT];
+	std::shared_ptr<Item> shield = m_player.inventory[CONST_SLOT_RIGHT];
 
 	float fightFactor = 1.0f;
 	float shieldFactor = 1.0f;

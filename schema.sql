@@ -404,6 +404,7 @@ CREATE TABLE IF NOT EXISTS `guild_membership` (
 CREATE TABLE IF NOT EXISTS `houses` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `owner` int(11) NOT NULL,
+    `new_owner` int(11) NOT NULL DEFAULT '-1',
     `paid` int(10) UNSIGNED NOT NULL DEFAULT '0',
     `warnings` int(11) NOT NULL DEFAULT '0',
     `name` varchar(255) NOT NULL,

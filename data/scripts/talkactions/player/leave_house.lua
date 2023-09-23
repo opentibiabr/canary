@@ -16,6 +16,12 @@ function leaveHouse.onSay(player, words, param)
 		return false
 	end
 
+	if house:hasNewOwnership() then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You cannot leave this house. Ownership is already scheduled to be transferred upon the next server restart.")
+		playerPosition:sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
+
 	-- Move hireling back to lamp
 	local tiles = house:getTiles()
 	if tiles then
@@ -30,7 +36,7 @@ function leaveHouse.onSay(player, words, param)
 		end
 	end
 
-	house:setOwnerGuid(0)
+	house:setNewOwnerGuid(0)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have successfully left your house.")
 	playerPosition:sendMagicEffect(CONST_ME_POFF)
 	return false

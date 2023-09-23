@@ -89,7 +89,7 @@ npcConfig.shop = {
 	{ itemName = "flower bowl", clientId = 2983, buy = 6 },
 	{ itemName = "god flowers", clientId = 2981, buy = 5 },
 	{ itemName = "honey flower", clientId = 2984, buy = 5 },
-	{ itemName = "indoor plant kit", clientId = 2811, buy = 8 },
+	{ itemName = "indoor plant kit", clientId = 2982, buy = 8 },
 	{ itemName = "potted flower", clientId = 2985, buy = 5 },
 }
 -- On buy npc shop message

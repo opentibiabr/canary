@@ -26,7 +26,17 @@ function removeThing.onSay(player, words, param)
 			player:sendCancelMessage("You may not remove a ground tile.")
 			return true
 		end
-		thing:remove(tonumber(param) or -1)
+		if param == "all" then
+			local items = tile:getItems()
+			if items then
+				for i = 1, #items do
+					local item = items[i]
+					item:remove()
+				end
+			end
+		else
+			thing:remove(tonumber(param) or -1)
+		end
 	end
 
 	position:sendMagicEffect(CONST_ME_MAGIC_RED)

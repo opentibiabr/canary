@@ -606,18 +606,18 @@ void Player::updateInventoryImbuement() {
 	}
 }
 
-phmap::flat_hash_map<uint8_t, Item*> Player::getAllSlotItems() const {
-	phmap::flat_hash_map<uint8_t, Item*> itemVector;
+phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> Player::getAllSlotItems() const {
+	phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> itemMap;
 	for (uint8_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
-		Item* item = inventory[i];
+		std::shared_ptr<Item> item = inventory[i];
 		if (!item) {
 			continue;
 		}
 
-		itemVector[i] = item;
+		itemMap[i] = item;
 	}
 
-	return itemVector;
+	return itemMap;
 }
 
 void Player::setTraining(bool value) {

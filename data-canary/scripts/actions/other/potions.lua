@@ -159,7 +159,7 @@ local setting = {
 local potions = Action()
 
 function potions.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if type(target) == "userdata" and not target:isPlayer() then
+	if not target or type(target) == "userdata" and not target:isPlayer() then
 		return false
 	end
 

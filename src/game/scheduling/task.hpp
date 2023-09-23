@@ -63,6 +63,7 @@ public:
 			"ProtocolGame::parsePacketFromDispatcher",
 			"Raids::checkRaids",
 			"SpawnMonster::checkSpawnMonster",
+			"SpawnMonster::scheduleSpawn",
 			"SpawnNpc::checkSpawnNpc",
 			"Webhook::run",
 			"sendRecvMessageCallback",

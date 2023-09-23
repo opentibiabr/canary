@@ -75,7 +75,7 @@ int GameFunctions::luaGameGetSpectators(lua_State* L) {
 	lua_createtable(L, spectators.size(), 0);
 
 	int index = 0;
-	for (Creature* creature : spectators) {
+	for (std::shared_ptr<Creature> creature : spectators) {
 		pushUserdata<Creature>(L, creature);
 		setCreatureMetatable(L, -1, creature);
 		lua_rawseti(L, -2, ++index);
@@ -192,7 +192,7 @@ int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 
 int GameFunctions::luaGameGetTowns(lua_State* L) {
 	// Game.getTowns()
-	const auto &towns = g_game().map.towns.getTowns();
+	const auto towns = g_game().map.towns.getTowns();
 	lua_createtable(L, towns.size(), 0);
 
 	int index = 0;
@@ -206,7 +206,7 @@ int GameFunctions::luaGameGetTowns(lua_State* L) {
 
 int GameFunctions::luaGameGetHouses(lua_State* L) {
 	// Game.getHouses()
-	const auto &houses = g_game().map.houses.getHouses();
+	const auto houses = g_game().map.houses.getHouses();
 	lua_createtable(L, houses.size(), 0);
 
 	int index = 0;
@@ -301,7 +301,7 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 			subType -= stackCount;
 		}
 
-		Item* item = Item::CreateItem(itemId, stackCount);
+		std::shared_ptr<Item> item = Item::CreateItem(itemId, stackCount);
 		if (!item) {
 			if (!hasTable) {
 				lua_pushnil(L);
@@ -310,9 +310,9 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 		}
 
 		if (position.x != 0) {
-			Tile* tile = g_game().map.getTile(position);
+			std::shared_ptr<Tile> tile = g_game().map.getTile(position);
 			if (!tile) {
-				delete item;
+
 				if (!hasTable) {
 					lua_pushnil(L);
 				}
@@ -321,7 +321,7 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 
 			ReturnValue ret = g_game().internalAddItem(tile, item, INDEX_WHEREEVER, FLAG_NOLIMIT);
 			if (ret != RETURNVALUE_NOERROR) {
-				delete item;
+
 				if (!hasTable) {
 					lua_pushnil(L);
 				}
@@ -360,7 +360,7 @@ int GameFunctions::luaGameCreateContainer(lua_State* L) {
 		}
 	}
 
-	Container* container = Item::CreateItemAsContainer(id, size);
+	std::shared_ptr<Container> container = Item::CreateItemAsContainer(id, size);
 	if (!container) {
 		lua_pushnil(L);
 		return 1;
@@ -368,9 +368,9 @@ int GameFunctions::luaGameCreateContainer(lua_State* L) {
 
 	if (lua_gettop(L) >= 3) {
 		const Position &position = getPosition(L, 3);
-		Tile* tile = g_game().map.getTile(position);
+		std::shared_ptr<Tile> tile = g_game().map.getTile(position);
 		if (!tile) {
-			delete container;
+
 			lua_pushnil(L);
 			return 1;
 		}
@@ -388,7 +388,7 @@ int GameFunctions::luaGameCreateContainer(lua_State* L) {
 
 int GameFunctions::luaGameCreateMonster(lua_State* L) {
 	// Game.createMonster(monsterName, position[, extended = false[, force = false[, master = nil]]])
-	Monster* monster = Monster::createMonster(getString(L, 1));
+	std::shared_ptr<Monster> monster = Monster::createMonster(getString(L, 1));
 	if (!monster) {
 		lua_pushnil(L);
 		return 1;
@@ -396,7 +396,7 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 
 	bool isSummon = false;
 	if (lua_gettop(L) >= 5) {
-		Creature* master = getCreature(L, 5);
+		std::shared_ptr<Creature> master = getCreature(L, 5);
 		if (master) {
 			monster->setMaster(master, true);
 			isSummon = true;
@@ -413,8 +413,8 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 		if (mtype && mtype->info.raceid > 0 && mtype->info.bosstiaryRace == BosstiaryRarity_t::RARITY_ARCHFOE) {
 			SpectatorHashSet spectators;
 			g_game().map.getSpectators(spectators, monster->getPosition(), true);
-			for (Creature* spectator : spectators) {
-				if (Player* tmpPlayer = spectator->getPlayer()) {
+			for (std::shared_ptr<Creature> spectator : spectators) {
+				if (auto tmpPlayer = spectator->getPlayer()) {
 					auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldownRaceId(tmpPlayer);
 					// If not have boss to update, then kill loop for economize resources
 					if (bossesOnTracker.size() == 0) {
@@ -432,7 +432,6 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 		if (isSummon) {
 			monster->setMaster(nullptr);
 		} else {
-			delete monster;
 		}
 		lua_pushnil(L);
 	}
@@ -441,7 +440,7 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 
 int GameFunctions::luaGameGenerateNpc(lua_State* L) {
 	// Game.generateNpc(npcName)
-	Npc* npc = Npc::createNpc(getString(L, 1));
+	std::shared_ptr<Npc> npc = Npc::createNpc(getString(L, 1));
 	if (!npc) {
 		lua_pushnil(L);
 		return 1;
@@ -454,7 +453,7 @@ int GameFunctions::luaGameGenerateNpc(lua_State* L) {
 
 int GameFunctions::luaGameCreateNpc(lua_State* L) {
 	// Game.createNpc(npcName, position[, extended = false[, force = false]])
-	Npc* npc = Npc::createNpc(getString(L, 1));
+	std::shared_ptr<Npc> npc = Npc::createNpc(getString(L, 1));
 	if (!npc) {
 		lua_pushnil(L);
 		return 1;
@@ -467,7 +466,7 @@ int GameFunctions::luaGameCreateNpc(lua_State* L) {
 		pushUserdata<Npc>(L, npc);
 		setMetatable(L, -1, "Npc");
 	} else {
-		delete npc;
+
 		lua_pushnil(L);
 	}
 	return 1;
@@ -495,7 +494,7 @@ int GameFunctions::luaGameCreateTile(lua_State* L) {
 
 int GameFunctions::luaGameGetBestiaryCharm(lua_State* L) {
 	// Game.getBestiaryCharm()
-	const auto &c_list = g_game().getCharmList();
+	const auto c_list = g_game().getCharmList();
 	lua_createtable(L, c_list.size(), 0);
 
 	int index = 0;
@@ -534,7 +533,7 @@ int GameFunctions::luaGameStartRaid(lua_State* L) {
 	// Game.startRaid(raidName)
 	const std::string &raidName = getString(L, 1);
 
-	const auto &raid = g_game().raids.getRaidByName(raidName);
+	const auto raid = g_game().raids.getRaidByName(raidName);
 	if (!raid || !raid->isLoaded()) {
 		lua_pushnumber(L, RETURNVALUE_NOSUCHRAIDEXISTS);
 		return 1;
@@ -598,9 +597,8 @@ int GameFunctions::luaGameHasDistanceEffect(lua_State* L) {
 int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
 	uint32_t playerId = getNumber<uint32_t>(L, 1);
 
-	Player* offlinePlayer = new Player(nullptr);
+	auto offlinePlayer = std::make_shared<Player>(nullptr);
 	if (!IOLoginData::loadPlayerById(offlinePlayer, playerId)) {
-		delete offlinePlayer;
 		lua_pushnil(L);
 	} else {
 		pushUserdata<Player>(L, offlinePlayer);
@@ -613,11 +611,10 @@ int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
 int GameFunctions::luaGameGetNormalizedPlayerName(lua_State* L) {
 	// Game.getNormalizedPlayerName(name)
 	auto name = getString(L, 1);
-	Player* player = g_game().getPlayerByName(name, true);
+	std::shared_ptr<Player> player = g_game().getPlayerByName(name, true);
 	if (player) {
 		pushString(L, player->getName());
 		if (!player->isOnline()) {
-			delete player;
 		}
 	} else {
 		lua_pushnil(L);
@@ -639,7 +636,7 @@ int GameFunctions::luaGameGetNormalizedGuildName(lua_State* L) {
 
 int GameFunctions::luaGameAddInfluencedMonster(lua_State* L) {
 	// Game.addInfluencedMonster(monster)
-	Monster* monster = getUserdata<Monster>(L, 1);
+	std::shared_ptr<Monster> monster = getUserdataShared<Monster>(L, 1);
 	if (!monster) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -696,7 +693,7 @@ int GameFunctions::luaGameGetDummies(lua_State* L) {
 		local rate = dummies[1] -- Retrieve dummy rate
 	*/
 
-	const auto &dummies = Item::items.getDummys();
+	const auto dummies = Item::items.getDummys();
 	lua_createtable(L, dummies.size(), 0);
 	for (const auto &[dummyId, rate] : dummies) {
 		lua_pushnumber(L, static_cast<lua_Number>(rate));
@@ -744,7 +741,7 @@ int GameFunctions::luaGameGetBoostedBoss(lua_State* L) {
 
 int GameFunctions::luaGameGetTalkActions(lua_State* L) {
 	// Game.getTalkActions()
-	const auto &talkactionsMap = g_talkActions().getTalkActionsMap();
+	const auto talkactionsMap = g_talkActions().getTalkActionsMap();
 	lua_createtable(L, static_cast<int>(talkactionsMap.size()), 0);
 
 	for (const auto &[talkName, talkactionSharedPtr] : talkactionsMap) {

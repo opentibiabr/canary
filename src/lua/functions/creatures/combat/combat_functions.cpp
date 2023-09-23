@@ -67,7 +67,7 @@ int CombatFunctions::luaCombatSetArea(lua_State* L) {
 		return 1;
 	}
 
-	const AreaCombat* area = g_luaEnvironment().getAreaObject(getNumber<uint32_t>(L, 2));
+	const std::unique_ptr<AreaCombat> &area = g_luaEnvironment().getAreaObject(getNumber<uint32_t>(L, 2));
 	if (!area) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_AREA_NOT_FOUND));
 		lua_pushnil(L);
@@ -76,7 +76,8 @@ int CombatFunctions::luaCombatSetArea(lua_State* L) {
 
 	Combat* combat = getUserdata<Combat>(L, 1);
 	if (combat) {
-		combat->setArea(new AreaCombat(*area));
+		auto areaClone = area->clone();
+		combat->setArea(areaClone);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -86,7 +87,7 @@ int CombatFunctions::luaCombatSetArea(lua_State* L) {
 
 int CombatFunctions::luaCombatSetCondition(lua_State* L) {
 	// combat:addCondition(condition)
-	Condition* condition = getUserdata<Condition>(L, 2);
+	std::shared_ptr<Condition> condition = getUserdataShared<Condition>(L, 2);
 	Combat* combat = getUserdata<Combat>(L, 1);
 	if (combat && condition) {
 		combat->addCondition(condition->clone());
@@ -150,7 +151,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 		}
 	}
 
-	Creature* creature = getCreature(L, 2);
+	std::shared_ptr<Creature> creature = getCreature(L, 2);
 
 	const LuaVariant &variant = getVariant(L, 3);
 	combat->setInstantSpellName(variant.instantName);
@@ -158,7 +159,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 	bool result = true;
 	switch (variant.type) {
 		case VARIANT_NUMBER: {
-			Creature* target = g_game().getCreatureByID(variant.number);
+			std::shared_ptr<Creature> target = g_game().getCreatureByID(variant.number);
 			if (!target) {
 				pushBoolean(L, false);
 				return 1;
@@ -188,7 +189,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 		}
 
 		case VARIANT_STRING: {
-			Player* target = g_game().getPlayerByName(variant.text);
+			std::shared_ptr<Player> target = g_game().getPlayerByName(variant.text);
 			if (!target) {
 				pushBoolean(L, false);
 				return 1;

@@ -2,4 +2,4 @@
 
 using namespace boost::ut;
 
-int main() {}
+int main() { }

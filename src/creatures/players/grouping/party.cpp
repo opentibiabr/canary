@@ -15,25 +15,30 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 
-Party::Party(Player* initLeader) :
-	leader(initLeader) {
-	leader->setParty(this);
+std::shared_ptr<Party> Party::create(std::shared_ptr<Player> leader) {
+	auto party = std::make_shared<Party>();
+	party->m_leader = leader;
+	leader->setParty(party);
 	if (g_configManager().getBoolean(PARTY_AUTO_SHARE_EXPERIENCE)) {
-		setSharedExperience(initLeader, true);
+		party->setSharedExperience(leader, true);
 	}
+	return party;
 }
 
 void Party::disband() {
-	if (!g_events().eventPartyOnDisband(this)) {
+	if (!g_events().eventPartyOnDisband(getParty())) {
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::partyOnDisband, &EventCallback::partyOnDisband, this)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnDisband, &EventCallback::partyOnDisband, getParty())) {
 		return;
 	}
 
-	Player* currentLeader = leader;
-	leader = nullptr;
+	auto currentLeader = getLeader();
+	if (!currentLeader) {
+		return;
+	}
+	m_leader.reset();
 
 	currentLeader->setParty(nullptr);
 	currentLeader->sendClosePrivate(CHANNEL_PARTY);
@@ -42,22 +47,23 @@ void Party::disband() {
 	currentLeader->sendCreatureSkull(currentLeader);
 	currentLeader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Your party has been disbanded.");
 
-	for (Player* invitee : inviteList) {
-		invitee->removePartyInvitation(this);
+	for (auto invitee : getInvitees()) {
+		invitee->removePartyInvitation(getParty());
 		currentLeader->sendCreatureShield(invitee);
 	}
 	inviteList.clear();
 
-	for (Player* member : memberList) {
+	auto members = getMembers();
+	for (auto member : members) {
 		member->setParty(nullptr);
 		member->sendClosePrivate(CHANNEL_PARTY);
 		member->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Your party has been disbanded.");
 	}
 
-	for (Player* member : memberList) {
+	for (auto member : members) {
 		g_game().updatePlayerShield(member);
 
-		for (Player* otherMember : memberList) {
+		for (auto otherMember : members) {
 			otherMember->sendCreatureSkull(member);
 		}
 
@@ -66,28 +72,28 @@ void Party::disband() {
 		g_game().updatePlayerHelpers(member);
 	}
 	memberList.clear();
-
-	for (PartyAnalyzer* analyzer : membersData) {
-		delete analyzer;
-	}
 	membersData.clear();
-	delete this;
 }
 
-bool Party::leaveParty(Player* player) {
+bool Party::leaveParty(std::shared_ptr<Player> player) {
 	if (!player) {
 		return false;
 	}
 
-	if (player->getParty() != this && leader != player) {
+	auto leader = getLeader();
+	if (!leader) {
 		return false;
 	}
 
-	if (!g_events().eventPartyOnLeave(this, player)) {
+	if (player->getParty().get() != this && leader != player) {
 		return false;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::partyOnLeave, &EventCallback::partyOnLeave, this, player)) {
+	if (!g_events().eventPartyOnLeave(getParty(), player)) {
+		return false;
+	}
+
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnLeave, &EventCallback::partyOnLeave, getParty(), player)) {
 		return false;
 	}
 
@@ -97,7 +103,18 @@ bool Party::leaveParty(Player* player) {
 			if (memberList.size() == 1 && inviteList.empty()) {
 				missingLeader = true;
 			} else {
-				passPartyLeadership(memberList.front());
+				auto newLeader = memberList.front();
+				while (!newLeader) {
+					memberList.erase(memberList.begin());
+					if (memberList.empty()) {
+						missingLeader = true;
+						break;
+					}
+					newLeader = memberList.front();
+				}
+				if (newLeader) {
+					passPartyLeadership(newLeader);
+				}
 			}
 		} else {
 			missingLeader = true;
@@ -115,7 +132,7 @@ bool Party::leaveParty(Player* player) {
 	g_game().updatePlayerShield(player);
 	g_game().updatePlayerHelpers(player);
 
-	for (Player* member : memberList) {
+	for (auto member : getMembers()) {
 		member->sendCreatureSkull(player);
 		player->sendPlayerPartyIcons(member);
 		member->sendPartyCreatureUpdate(player);
@@ -144,8 +161,9 @@ bool Party::leaveParty(Player* player) {
 	return true;
 }
 
-bool Party::passPartyLeadership(Player* player) {
-	if (!player || leader == player || player->getParty() != this) {
+bool Party::passPartyLeadership(std::shared_ptr<Player> player) {
+	auto leader = getLeader();
+	if (!leader || !player || leader == player || player->getParty().get() != this) {
 		return false;
 	}
 
@@ -159,20 +177,20 @@ bool Party::passPartyLeadership(Player* player) {
 	ss << player->getName() << " is now the leader of the party.";
 	broadcastPartyMessage(MESSAGE_PARTY_MANAGEMENT, ss.str(), true);
 
-	Player* oldLeader = leader;
-	leader = player;
+	auto oldLeader = leader;
+	m_leader = player;
 
 	memberList.insert(memberList.begin(), oldLeader);
 
 	updateSharedExperience();
 	updateTrackerAnalyzer();
 
-	for (Player* member : memberList) {
+	for (auto member : getMembers()) {
 		member->sendPartyCreatureShield(oldLeader);
 		member->sendPartyCreatureShield(leader);
 	}
 
-	for (Player* invitee : inviteList) {
+	for (auto invitee : getInvitees()) {
 		invitee->sendCreatureShield(oldLeader);
 		invitee->sendCreatureShield(leader);
 	}
@@ -184,16 +202,21 @@ bool Party::passPartyLeadership(Player* player) {
 	return true;
 }
 
-bool Party::joinParty(Player &player) {
-	if (!g_events().eventPartyOnJoin(this, &player)) {
+bool Party::joinParty(const std::shared_ptr<Player> &player) {
+	auto leader = getLeader();
+	if (!leader) {
 		return false;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::partyOnJoin, &EventCallback::partyOnJoin, this, &player)) {
+	if (!g_events().eventPartyOnJoin(getParty(), player)) {
 		return false;
 	}
 
-	auto it = std::find(inviteList.begin(), inviteList.end(), &player);
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnJoin, &EventCallback::partyOnJoin, getParty(), player)) {
+		return false;
+	}
+
+	auto it = std::find(inviteList.begin(), inviteList.end(), player);
 	if (it == inviteList.end()) {
 		return false;
 	}
@@ -201,58 +224,63 @@ bool Party::joinParty(Player &player) {
 	inviteList.erase(it);
 
 	std::ostringstream ss;
-	ss << player.getName() << " has joined the party.";
+	ss << player->getName() << " has joined the party.";
 	broadcastPartyMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
 
-	player.setParty(this);
+	player->setParty(getParty());
 
-	g_game().updatePlayerShield(&player);
+	g_game().updatePlayerShield(player);
 
-	for (Player* member : memberList) {
-		member->sendCreatureSkull(&player);
-		player.sendPlayerPartyIcons(member);
+	for (auto member : getMembers()) {
+		member->sendCreatureSkull(player);
+		player->sendPlayerPartyIcons(member);
 	}
 
-	player.sendCreatureSkull(&player);
-	leader->sendCreatureSkull(&player);
-	player.sendPlayerPartyIcons(leader);
+	player->sendCreatureSkull(player);
+	leader->sendCreatureSkull(player);
+	player->sendPlayerPartyIcons(leader);
 
-	memberList.push_back(&player);
+	memberList.push_back(player);
 
-	g_game().updatePlayerHelpers(&player);
+	g_game().updatePlayerHelpers(player);
 
-	updatePlayerStatus(&player);
+	updatePlayerStatus(player);
 
-	player.removePartyInvitation(this);
+	player->removePartyInvitation(getParty());
 	updateSharedExperience();
 
 	const std::string &leaderName = leader->getName();
 	ss.str(std::string());
 	ss << "You have joined " << leaderName << "'" << (leaderName.back() == 's' ? "" : "s") << " party. Open the party channel to communicate with your companions.";
-	player.sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
+	player->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
 	updateTrackerAnalyzer();
 	return true;
 }
 
-bool Party::removeInvite(Player &player, bool removeFromPlayer /* = true*/) {
-	auto it = std::find(inviteList.begin(), inviteList.end(), &player);
+bool Party::removeInvite(const std::shared_ptr<Player> &player, bool removeFromPlayer /* = true*/) {
+	auto leader = getLeader();
+	if (!leader) {
+		return false;
+	}
+
+	auto it = std::find(inviteList.begin(), inviteList.end(), player);
 	if (it == inviteList.end()) {
 		return false;
 	}
 
 	inviteList.erase(it);
 
-	leader->sendCreatureShield(&player);
-	player.sendCreatureShield(leader);
+	leader->sendCreatureShield(player);
+	player->sendCreatureShield(leader);
 
 	if (removeFromPlayer) {
-		player.removePartyInvitation(this);
+		player->removePartyInvitation(getParty());
 	}
 
 	if (empty()) {
 		disband();
 	} else {
-		for (Player* member : memberList) {
+		for (auto member : getMembers()) {
 			g_game().updatePlayerHelpers(member);
 		}
 
@@ -262,25 +290,35 @@ bool Party::removeInvite(Player &player, bool removeFromPlayer /* = true*/) {
 	return true;
 }
 
-void Party::revokeInvitation(Player &player) {
+void Party::revokeInvitation(const std::shared_ptr<Player> &player) {
+	auto leader = getLeader();
+	if (!leader) {
+		return;
+	}
+
 	std::ostringstream ss;
 	ss << leader->getName() << " has revoked " << leader->getPossessivePronoun() << " invitation.";
-	player.sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
+	player->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
 
 	ss.str(std::string());
-	ss << "Invitation for " << player.getName() << " has been revoked.";
+	ss << "Invitation for " << player->getName() << " has been revoked.";
 	leader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
 
 	removeInvite(player);
 }
 
-bool Party::invitePlayer(Player &player) {
-	if (isPlayerInvited(&player)) {
+bool Party::invitePlayer(const std::shared_ptr<Player> &player) {
+	auto leader = getLeader();
+	if (!leader) {
+		return false;
+	}
+
+	if (isPlayerInvited(player)) {
 		return false;
 	}
 
 	std::ostringstream ss;
-	ss << player.getName() << " has been invited to join the party (Share range: " << getMinLevel() << "-" << getMaxLevel() << ").";
+	ss << player->getName() << " has been invited to join the party (Share range: " << getMinLevel() << "-" << getMaxLevel() << ").";
 
 	if (empty()) {
 		ss << " Open the party channel to communicate with your members.";
@@ -290,32 +328,37 @@ bool Party::invitePlayer(Player &player) {
 
 	leader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
 
-	inviteList.push_back(&player);
+	inviteList.push_back(player);
 
-	for (Player* member : memberList) {
+	for (auto member : getMembers()) {
 		g_game().updatePlayerHelpers(member);
 	}
 
 	g_game().updatePlayerHelpers(leader);
-	leader->sendCreatureShield(&player);
-	player.sendCreatureShield(leader);
+	leader->sendCreatureShield(player);
+	player->sendCreatureShield(leader);
 
-	player.addPartyInvitation(this);
+	player->addPartyInvitation(getParty());
 
 	ss.str(std::string());
 	ss << leader->getName() << " has invited you to " << leader->getPossessivePronoun() << " party (Share range: " << getMinLevel() << "-" << getMaxLevel() << ").";
-	player.sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
+	player->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
 
 	return true;
 }
 
-bool Party::isPlayerInvited(const Player* player) const {
+bool Party::isPlayerInvited(const std::shared_ptr<Player> &player) const {
 	return std::find(inviteList.begin(), inviteList.end(), player) != inviteList.end();
 }
 
 void Party::updateAllPartyIcons() {
-	for (Player* member : memberList) {
-		for (Player* otherMember : memberList) {
+	auto leader = getLeader();
+	if (!leader) {
+		return;
+	}
+	auto members = getMembers();
+	for (auto member : members) {
+		for (auto otherMember : members) {
 			member->sendPartyCreatureShield(otherMember);
 		}
 
@@ -327,14 +370,18 @@ void Party::updateAllPartyIcons() {
 }
 
 void Party::broadcastPartyMessage(MessageClasses msgClass, const std::string &msg, bool sendToInvitations /*= false*/) {
-	for (Player* member : memberList) {
+	auto leader = getLeader();
+	if (!leader) {
+		return;
+	}
+	for (auto member : getMembers()) {
 		member->sendTextMessage(msgClass, msg);
 	}
 
 	leader->sendTextMessage(msgClass, msg);
 
 	if (sendToInvitations) {
-		for (Player* invitee : inviteList) {
+		for (auto invitee : getInvitees()) {
 			invitee->sendTextMessage(msgClass, msg);
 		}
 	}
@@ -367,7 +414,8 @@ const char* Party::getSharedExpReturnMessage(SharedExpStatus_t value) {
 	}
 }
 
-bool Party::setSharedExperience(Player* player, bool newSharedExpActive, bool silent /*= false*/) {
+bool Party::setSharedExperience(std::shared_ptr<Player> player, bool newSharedExpActive, bool silent /*= false*/) {
+	auto leader = getLeader();
 	if (!player || leader != player) {
 		return false;
 	}
@@ -394,22 +442,31 @@ bool Party::setSharedExperience(Player* player, bool newSharedExpActive, bool si
 	return true;
 }
 
-void Party::shareExperience(uint64_t experience, Creature* target /* = nullptr*/) {
-	uint64_t shareExperience = experience;
-	g_events().eventPartyOnShareExperience(this, shareExperience);
-	g_callbacks().executeCallback(EventCallback_t::partyOnShareExperience, &EventCallback::partyOnShareExperience, this, shareExperience);
+void Party::shareExperience(uint64_t experience, std::shared_ptr<Creature> target /* = nullptr*/) {
+	auto leader = getLeader();
+	if (!leader) {
+		return;
+	}
 
-	for (Player* member : memberList) {
+	uint64_t shareExperience = experience;
+	g_events().eventPartyOnShareExperience(getParty(), shareExperience);
+	g_callbacks().executeCallback(EventCallback_t::partyOnShareExperience, &EventCallback::partyOnShareExperience, getParty(), shareExperience);
+
+	for (auto member : getMembers()) {
 		member->onGainSharedExperience(shareExperience, target);
 	}
 	leader->onGainSharedExperience(shareExperience, target);
 }
 
-bool Party::canUseSharedExperience(const Player* player) const {
+bool Party::canUseSharedExperience(std::shared_ptr<Player> player) {
 	return getMemberSharedExperienceStatus(player) == SHAREDEXP_OK;
 }
 
-SharedExpStatus_t Party::getMemberSharedExperienceStatus(const Player* player) const {
+SharedExpStatus_t Party::getMemberSharedExperienceStatus(std::shared_ptr<Player> player) {
+	auto leader = getLeader();
+	if (!leader) {
+		return SHAREDEXP_EMPTYPARTY;
+	}
 	if (memberList.empty()) {
 		return SHAREDEXP_EMPTYPARTY;
 	}
@@ -432,9 +489,14 @@ SharedExpStatus_t Party::getMemberSharedExperienceStatus(const Player* player) c
 	return SHAREDEXP_OK;
 }
 
-uint32_t Party::getHighestLevel() const {
+uint32_t Party::getHighestLevel() {
+	auto leader = getLeader();
+	if (!leader) {
+		return 0;
+	}
+
 	uint32_t highestLevel = leader->getLevel();
-	for (Player* member : memberList) {
+	for (auto member : getMembers()) {
 		if (member->getLevel() > highestLevel) {
 			highestLevel = member->getLevel();
 		}
@@ -442,13 +504,17 @@ uint32_t Party::getHighestLevel() const {
 	return highestLevel;
 }
 
-uint32_t Party::getMinLevel() const {
+uint32_t Party::getMinLevel() {
 	return static_cast<uint32_t>(std::ceil((static_cast<float>(getHighestLevel()) * 2) / 3));
 }
 
-uint32_t Party::getLowestLevel() const {
+uint32_t Party::getLowestLevel() {
+	auto leader = getLeader();
+	if (!leader) {
+		return 0;
+	}
 	uint32_t lowestLevel = leader->getLevel();
-	for (Player* member : memberList) {
+	for (auto member : getMembers()) {
 		if (member->getLevel() < lowestLevel) {
 			lowestLevel = member->getLevel();
 		}
@@ -456,11 +522,11 @@ uint32_t Party::getLowestLevel() const {
 	return lowestLevel;
 }
 
-uint32_t Party::getMaxLevel() const {
+uint32_t Party::getMaxLevel() {
 	return static_cast<uint32_t>(std::floor((static_cast<float>(getLowestLevel()) * 3) / 2));
 }
 
-bool Party::isPlayerActive(const Player* player) const {
+bool Party::isPlayerActive(std::shared_ptr<Player> player) {
 	auto it = ticksMap.find(player->getID());
 	if (it == ticksMap.end()) {
 		return false;
@@ -471,12 +537,16 @@ bool Party::isPlayerActive(const Player* player) const {
 }
 
 SharedExpStatus_t Party::getSharedExperienceStatus() {
+	auto leader = getLeader();
+	if (!leader) {
+		return SHAREDEXP_EMPTYPARTY;
+	}
 	SharedExpStatus_t leaderStatus = getMemberSharedExperienceStatus(leader);
 	if (leaderStatus != SHAREDEXP_OK) {
 		return leaderStatus;
 	}
 
-	for (Player* member : memberList) {
+	for (auto member : getMembers()) {
 		SharedExpStatus_t memberStatus = getMemberSharedExperienceStatus(member);
 		if (memberStatus != SHAREDEXP_OK) {
 			return memberStatus;
@@ -485,14 +555,14 @@ SharedExpStatus_t Party::getSharedExperienceStatus() {
 	return SHAREDEXP_OK;
 }
 
-void Party::updatePlayerTicks(Player* player, uint32_t points) {
+void Party::updatePlayerTicks(std::shared_ptr<Player> player, uint32_t points) {
 	if (points != 0 && !player->hasFlag(PlayerFlags_t::NotGainInFight)) {
 		ticksMap[player->getID()] = OTSYS_TIME();
 		updateSharedExperience();
 	}
 }
 
-void Party::clearPlayerPoints(Player* player) {
+void Party::clearPlayerPoints(std::shared_ptr<Player> player) {
 	auto it = ticksMap.find(player->getID());
 	if (it != ticksMap.end()) {
 		ticksMap.erase(it);
@@ -501,21 +571,26 @@ void Party::clearPlayerPoints(Player* player) {
 }
 
 bool Party::canOpenCorpse(uint32_t ownerId) const {
-	if (const Player* player = g_game().getPlayerByID(ownerId)) {
-		return leader->getID() == ownerId || player->getParty() == this;
+	auto leader = getLeader();
+	if (!leader) {
+		return false;
+	}
+
+	if (std::shared_ptr<Player> player = g_game().getPlayerByID(ownerId)) {
+		return leader->getID() == ownerId || player->getParty().get() == this;
 	}
 	return false;
 }
 
-void Party::showPlayerStatus(Player* player, Player* member, bool showStatus) {
+void Party::showPlayerStatus(std::shared_ptr<Player> player, std::shared_ptr<Player> member, bool showStatus) {
 	player->sendPartyCreatureShowStatus(member, showStatus);
 	member->sendPartyCreatureShowStatus(player, showStatus);
 	if (showStatus) {
-		for (Creature* summon : member->getSummons()) {
+		for (const auto &summon : member->getSummons()) {
 			player->sendPartyCreatureShowStatus(summon, showStatus);
 			player->sendPartyCreatureHealth(summon, std::ceil((static_cast<double>(summon->getHealth()) / std::max<int32_t>(summon->getMaxHealth(), 1)) * 100));
 		}
-		for (Creature* summon : player->getSummons()) {
+		for (const auto &summon : player->getSummons()) {
 			member->sendPartyCreatureShowStatus(summon, showStatus);
 			member->sendPartyCreatureHealth(summon, std::ceil((static_cast<double>(summon->getHealth()) / std::max<int32_t>(summon->getMaxHealth(), 1)) * 100));
 		}
@@ -524,18 +599,23 @@ void Party::showPlayerStatus(Player* player, Player* member, bool showStatus) {
 		player->sendPartyPlayerMana(member, std::ceil((static_cast<double>(member->getMana()) / std::max<int32_t>(member->getMaxMana(), 1)) * 100));
 		member->sendPartyPlayerMana(player, std::ceil((static_cast<double>(player->getMana()) / std::max<int32_t>(player->getMaxMana(), 1)) * 100));
 	} else {
-		for (Creature* summon : player->getSummons()) {
+		for (const auto &summon : player->getSummons()) {
 			member->sendPartyCreatureShowStatus(summon, showStatus);
 		}
-		for (Creature* summon : member->getSummons()) {
+		for (const auto &summon : member->getSummons()) {
 			player->sendPartyCreatureShowStatus(summon, showStatus);
 		}
 	}
 }
 
-void Party::updatePlayerStatus(Player* player) {
+void Party::updatePlayerStatus(std::shared_ptr<Player> player) {
+	auto leader = getLeader();
+	if (!leader) {
+		return;
+	}
+
 	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
-	for (Player* member : memberList) {
+	for (auto member : getMembers()) {
 		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
 		if (condition) {
 			showPlayerStatus(player, member, true);
@@ -551,10 +631,15 @@ void Party::updatePlayerStatus(Player* player) {
 	}
 }
 
-void Party::updatePlayerStatus(Player* player, const Position &oldPos, const Position &newPos) {
+void Party::updatePlayerStatus(std::shared_ptr<Player> player, const Position &oldPos, const Position &newPos) {
+	auto leader = getLeader();
+	if (!leader) {
+		return;
+	}
+
 	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
 	if (maxDistance != 0) {
-		for (Player* member : memberList) {
+		for (auto member : getMembers()) {
 			bool condition1 = (Position::getDistanceX(oldPos, member->getPosition()) <= maxDistance && Position::getDistanceY(oldPos, member->getPosition()) <= maxDistance);
 			bool condition2 = (Position::getDistanceX(newPos, member->getPosition()) <= maxDistance && Position::getDistanceY(newPos, member->getPosition()) <= maxDistance);
 			if (condition1 && !condition2) {
@@ -574,23 +659,36 @@ void Party::updatePlayerStatus(Player* player, const Position &oldPos, const Pos
 	}
 }
 
-void Party::updatePlayerHealth(const Player* player, const Creature* target, uint8_t healthPercent) {
+void Party::updatePlayerHealth(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, uint8_t healthPercent) {
+	auto leader = getLeader();
+	if (!leader) {
+		return;
+	}
+
 	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
-	for (Player* member : memberList) {
-		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
+	auto playerPosition = player->getPosition();
+	auto leaderPosition = leader->getPosition();
+	for (auto member : getMembers()) {
+		auto memberPosition = member->getPosition();
+		bool condition = (maxDistance == 0 || (Position::getDistanceX(playerPosition, memberPosition) <= maxDistance && Position::getDistanceY(playerPosition, memberPosition) <= maxDistance));
 		if (condition) {
 			member->sendPartyCreatureHealth(target, healthPercent);
 		}
 	}
-	bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), leader->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), leader->getPosition()) <= maxDistance));
+	bool condition = (maxDistance == 0 || (Position::getDistanceX(playerPosition, leaderPosition) <= maxDistance && Position::getDistanceY(playerPosition, leaderPosition) <= maxDistance));
 	if (condition) {
 		leader->sendPartyCreatureHealth(target, healthPercent);
 	}
 }
 
-void Party::updatePlayerMana(const Player* player, uint8_t manaPercent) {
+void Party::updatePlayerMana(std::shared_ptr<Player> player, uint8_t manaPercent) {
+	auto leader = getLeader();
+	if (!leader) {
+		return;
+	}
+
 	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
-	for (Player* member : memberList) {
+	for (auto member : getMembers()) {
 		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
 		if (condition) {
 			member->sendPartyPlayerMana(player, manaPercent);
@@ -602,9 +700,14 @@ void Party::updatePlayerMana(const Player* player, uint8_t manaPercent) {
 	}
 }
 
-void Party::updatePlayerVocation(const Player* player) {
+void Party::updatePlayerVocation(std::shared_ptr<Player> player) {
+	auto leader = getLeader();
+	if (!leader) {
+		return;
+	}
+
 	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
-	for (Player* member : memberList) {
+	for (auto member : getMembers()) {
 		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
 		if (condition) {
 			member->sendPartyPlayerVocation(player);
@@ -616,20 +719,28 @@ void Party::updatePlayerVocation(const Player* player) {
 	}
 }
 
-void Party::updateTrackerAnalyzer() const {
-	for (const Player* member : memberList) {
+void Party::updateTrackerAnalyzer() {
+	auto leader = getLeader();
+	if (!leader) {
+		return;
+	}
+
+	for (auto member : getMembers()) {
 		member->updatePartyTrackerAnalyzer();
 	}
 
-	if (leader) {
-		leader->updatePartyTrackerAnalyzer();
-	}
+	leader->updatePartyTrackerAnalyzer();
 }
 
-void Party::addPlayerLoot(const Player* player, const Item* item) {
-	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
+void Party::addPlayerLoot(std::shared_ptr<Player> player, std::shared_ptr<Item> item) {
+	auto leader = getLeader();
+	if (!leader) {
+		return;
+	}
+
+	auto playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
-		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
+		playerAnalyzer = std::make_shared<PartyAnalyzer>(player->getID(), player->getName());
 		membersData.push_back(playerAnalyzer);
 	}
 
@@ -649,10 +760,15 @@ void Party::addPlayerLoot(const Player* player, const Item* item) {
 	updateTrackerAnalyzer();
 }
 
-void Party::addPlayerSupply(const Player* player, const Item* item) {
-	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
+void Party::addPlayerSupply(std::shared_ptr<Player> player, std::shared_ptr<Item> item) {
+	auto leader = getLeader();
+	if (!leader) {
+		return;
+	}
+
+	std::shared_ptr<PartyAnalyzer> playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
-		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
+		playerAnalyzer = std::make_shared<PartyAnalyzer>(player->getID(), player->getName());
 		membersData.push_back(playerAnalyzer);
 	}
 
@@ -671,10 +787,10 @@ void Party::addPlayerSupply(const Player* player, const Item* item) {
 	updateTrackerAnalyzer();
 }
 
-void Party::addPlayerDamage(const Player* player, uint64_t amount) {
-	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
+void Party::addPlayerDamage(std::shared_ptr<Player> player, uint64_t amount) {
+	auto playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
-		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
+		playerAnalyzer = std::make_shared<PartyAnalyzer>(player->getID(), player->getName());
 		membersData.push_back(playerAnalyzer);
 	}
 
@@ -682,10 +798,10 @@ void Party::addPlayerDamage(const Player* player, uint64_t amount) {
 	updateTrackerAnalyzer();
 }
 
-void Party::addPlayerHealing(const Player* player, uint64_t amount) {
-	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
+void Party::addPlayerHealing(std::shared_ptr<Player> player, uint64_t amount) {
+	auto playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
-		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
+		playerAnalyzer = std::make_shared<PartyAnalyzer>(player->getID(), player->getName());
 		membersData.push_back(playerAnalyzer);
 	}
 
@@ -694,7 +810,8 @@ void Party::addPlayerHealing(const Player* player, uint64_t amount) {
 }
 
 void Party::switchAnalyzerPriceType() {
-	if (leader == nullptr) {
+	auto leader = getLeader();
+	if (!leader) {
 		return;
 	}
 
@@ -705,16 +822,17 @@ void Party::switchAnalyzerPriceType() {
 
 void Party::resetAnalyzer() {
 	trackerTime = time(nullptr);
-	for (PartyAnalyzer* analyzer : membersData) {
-		delete analyzer;
-	}
-
 	membersData.clear();
 	updateTrackerAnalyzer();
 }
 
 void Party::reloadPrices() {
-	for (PartyAnalyzer* analyzer : membersData) {
+	auto leader = getLeader();
+	if (!leader) {
+		return;
+	}
+
+	for (const auto &analyzer : membersData) {
 		if (priceType == MARKET_PRICE) {
 			analyzer->lootPrice = g_game().getItemMarketPrice(analyzer->lootMap, false);
 			analyzer->supplyPrice = g_game().getItemMarketPrice(analyzer->supplyMap, true);

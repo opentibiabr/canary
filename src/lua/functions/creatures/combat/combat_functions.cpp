@@ -16,14 +16,14 @@
 
 int CombatFunctions::luaCombatCreate(lua_State* L) {
 	// Combat()
-	pushUserdata<Combat>(L, g_luaEnvironment().createCombatObject(getScriptEnv()->getScriptInterface()).get());
+	pushUserdata<Combat>(L, g_luaEnvironment().createCombatObject(getScriptEnv()->getScriptInterface()));
 	setMetatable(L, -1, "Combat");
 	return 1;
 }
 
 int CombatFunctions::luaCombatSetParameter(lua_State* L) {
 	// combat:setParameter(key, value)
-	Combat* combat = getUserdata<Combat>(L, 1);
+	const auto &combat = getUserdataShared<Combat>(L, 1);
 	if (!combat) {
 		lua_pushnil(L);
 		return 1;
@@ -43,7 +43,7 @@ int CombatFunctions::luaCombatSetParameter(lua_State* L) {
 
 int CombatFunctions::luaCombatSetFormula(lua_State* L) {
 	// combat:setFormula(type, mina, minb, maxa, maxb)
-	Combat* combat = getUserdata<Combat>(L, 1);
+	const auto &combat = getUserdataShared<Combat>(L, 1);
 	if (!combat) {
 		lua_pushnil(L);
 		return 1;
@@ -74,7 +74,7 @@ int CombatFunctions::luaCombatSetArea(lua_State* L) {
 		return 1;
 	}
 
-	Combat* combat = getUserdata<Combat>(L, 1);
+	const auto &combat = getUserdataShared<Combat>(L, 1);
 	if (combat) {
 		auto areaClone = area->clone();
 		combat->setArea(areaClone);
@@ -88,7 +88,7 @@ int CombatFunctions::luaCombatSetArea(lua_State* L) {
 int CombatFunctions::luaCombatSetCondition(lua_State* L) {
 	// combat:addCondition(condition)
 	std::shared_ptr<Condition> condition = getUserdataShared<Condition>(L, 2);
-	Combat* combat = getUserdata<Combat>(L, 1);
+	const auto &combat = getUserdataShared<Combat>(L, 1);
 	if (combat && condition) {
 		combat->addCondition(condition->clone());
 		pushBoolean(L, true);
@@ -100,7 +100,7 @@ int CombatFunctions::luaCombatSetCondition(lua_State* L) {
 
 int CombatFunctions::luaCombatSetCallback(lua_State* L) {
 	// combat:setCallback(key, function)
-	Combat* combat = getUserdata<Combat>(L, 1);
+	const auto &combat = getUserdataShared<Combat>(L, 1);
 	if (!combat) {
 		lua_pushnil(L);
 		return 1;
@@ -125,7 +125,7 @@ int CombatFunctions::luaCombatSetCallback(lua_State* L) {
 
 int CombatFunctions::luaCombatSetOrigin(lua_State* L) {
 	// combat:setOrigin(origin)
-	Combat* combat = getUserdata<Combat>(L, 1);
+	const auto &combat = getUserdataShared<Combat>(L, 1);
 	if (combat) {
 		combat->setOrigin(getNumber<CombatOrigin>(L, 2));
 		pushBoolean(L, true);
@@ -137,7 +137,7 @@ int CombatFunctions::luaCombatSetOrigin(lua_State* L) {
 
 int CombatFunctions::luaCombatExecute(lua_State* L) {
 	// combat:execute(creature, variant)
-	Combat* combat = getUserdata<Combat>(L, 1);
+	const auto &combat = getUserdataShared<Combat>(L, 1);
 	if (!combat) {
 		pushBoolean(L, false);
 		return 1;

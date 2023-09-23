@@ -2074,7 +2074,7 @@ int PlayerFunctions::luaPlayerSendTextMessage(lua_State* L) {
 	TextMessage message(getNumber<MessageClasses>(L, 2), getString(L, 3));
 	if (parameters == 4) {
 		uint16_t channelId = getNumber<uint16_t>(L, 4);
-		ChatChannel* channel = g_chat().getChannel(player, channelId);
+		const auto &channel = g_chat().getChannel(player, channelId);
 		if (!channel || !channel->hasUser(player)) {
 			pushBoolean(L, false);
 			return 1;

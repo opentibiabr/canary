@@ -2949,7 +2949,7 @@ void Game::playerCreatePrivateChannel(uint32_t playerId) {
 		return;
 	}
 
-	ChatChannel* channel = g_chat().createChannel(player, CHANNEL_PRIVATE);
+	const auto &channel = g_chat().createChannel(player, CHANNEL_PRIVATE);
 	if (!channel || !channel->addUser(player)) {
 		return;
 	}
@@ -2963,7 +2963,7 @@ void Game::playerChannelInvite(uint32_t playerId, const std::string &name) {
 		return;
 	}
 
-	PrivateChatChannel* channel = g_chat().getPrivateChannel(player);
+	const auto &channel = g_chat().getPrivateChannel(player);
 	if (!channel) {
 		return;
 	}
@@ -2986,7 +2986,7 @@ void Game::playerChannelExclude(uint32_t playerId, const std::string &name) {
 		return;
 	}
 
-	PrivateChatChannel* channel = g_chat().getPrivateChannel(player);
+	const auto &channel = g_chat().getPrivateChannel(player);
 	if (!channel) {
 		return;
 	}
@@ -3018,7 +3018,7 @@ void Game::playerOpenChannel(uint32_t playerId, uint16_t channelId) {
 		return;
 	}
 
-	const ChatChannel* channel = g_chat().addUserToChannel(player, channelId);
+	const auto &channel = g_chat().addUserToChannel(player, channelId);
 	if (!channel) {
 		return;
 	}

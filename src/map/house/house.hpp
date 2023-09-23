@@ -214,6 +214,8 @@ private:
 	AccessList guestList;
 	AccessList subOwnerList;
 
+	std::shared_ptr<Container> transfer_container = std::make_shared<Container>(ITEM_LOCKER);
+
 	HouseTileList houseTiles;
 	std::list<std::shared_ptr<Door>> doorList;
 	HouseBedItemList bedsList;

@@ -75,13 +75,13 @@ public:
 	 * Get a single tile.
 	 * \returns A pointer to that tile.
 	 */
-	Tile* getTile(uint16_t x, uint16_t y, uint8_t z);
-	Tile* getTile(const Position &pos) {
+	std::shared_ptr<Tile> getTile(uint16_t x, uint16_t y, uint8_t z);
+	std::shared_ptr<Tile> getTile(const Position &pos) {
 		return getTile(pos.x, pos.y, pos.z);
 	}
 
-	Tile* getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic = false);
-	Tile* getOrCreateTile(const Position &pos, bool isDynamic = false) {
+	std::shared_ptr<Tile> getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic = false);
+	std::shared_ptr<Tile> getOrCreateTile(const Position &pos, bool isDynamic = false) {
 		return getOrCreateTile(pos.x, pos.y, pos.z, isDynamic);
 	}
 
@@ -92,9 +92,9 @@ public:
 	 * \param extendedPos If true, the creature will in first-hand be placed 2 tiles away
 	 * \param forceLogin If true, placing the creature will not fail becase of obstacles (creatures/chests)
 	 */
-	bool placeCreature(const Position &centerPos, Creature* creature, bool extendedPos = false, bool forceLogin = false);
+	bool placeCreature(const Position &centerPos, std::shared_ptr<Creature> creature, bool extendedPos = false, bool forceLogin = false);
 
-	void moveCreature(Creature &creature, Tile &newTile, bool forceTeleport = false);
+	void moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport = false);
 
 	void getSpectators(SpectatorHashSet &spectators, const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
 
@@ -122,9 +122,9 @@ public:
 	bool isSightClear(const Position &fromPos, const Position &toPos, bool floorCheck);
 	bool checkSightLine(const Position &fromPos, const Position &toPos);
 
-	const Tile* canWalkTo(const Creature &creature, const Position &pos);
+	std::shared_ptr<Tile> canWalkTo(const std::shared_ptr<Creature> &creature, const Position &pos);
 
-	bool getPathMatching(const Creature &creature, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
+	bool getPathMatching(const std::shared_ptr<Creature> &creature, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
 
 	bool getPathMatching(const Position &startPos, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
 
@@ -149,8 +149,8 @@ private:
 	/**
 	 * Set a single tile.
 	 */
-	void setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile);
-	void setTile(const Position &pos, Tile* newTile) {
+	void setTile(uint16_t x, uint16_t y, uint8_t z, std::shared_ptr<Tile> newTile);
+	void setTile(const Position &pos, std::shared_ptr<Tile> newTile) {
 		setTile(pos.x, pos.y, pos.z, newTile);
 	}
 

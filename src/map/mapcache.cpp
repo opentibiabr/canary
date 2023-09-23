@@ -22,14 +22,14 @@
 
 #include "io/iomap.hpp"
 
-static phmap::flat_hash_map<size_t, BasicItemPtr> items;
-static phmap::flat_hash_map<size_t, BasicTilePtr> tiles;
+static phmap::flat_hash_map<size_t, std::shared_ptr<BasicItem>> items;
+static phmap::flat_hash_map<size_t, std::shared_ptr<BasicTile>> tiles;
 
-BasicItemPtr static_tryGetItemFromCache(const BasicItemPtr &ref) {
+std::shared_ptr<BasicItem> static_tryGetItemFromCache(const std::shared_ptr<BasicItem> &ref) {
 	return ref ? items.try_emplace(ref->hash(), ref).first->second : nullptr;
 }
 
-BasicTilePtr static_tryGetTileFromCache(const BasicTilePtr &ref) {
+std::shared_ptr<BasicTile> static_tryGetTileFromCache(const std::shared_ptr<BasicTile> &ref) {
 	return ref ? tiles.try_emplace(ref->hash(), ref).first->second : nullptr;
 }
 
@@ -38,7 +38,7 @@ void MapCache::flush() {
 	tiles.clear();
 }
 
-void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
+void MapCache::parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, std::shared_ptr<Item> item) {
 	if (BasicItem->charges > 0) {
 		item->setSubType(BasicItem->charges);
 	}
@@ -72,7 +72,7 @@ void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
 		item->setAttribute(ItemAttribute_t::DESCRIPTION, STRING_CACHE[BasicItem.description]);*/
 }
 
-Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {
+std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &BasicItem, Position position) {
 	auto item = Item::CreateItem(BasicItem->id, position);
 	if (!item) {
 		return nullptr;
@@ -100,8 +100,8 @@ Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {
 	return item;
 }
 
-Tile* MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y) {
-	const auto &cachedTile = floor->getTileCache(x, y);
+std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y) {
+	const auto cachedTile = floor->getTileCache(x, y);
 	if (!cachedTile) {
 		return floor->getTile(x, y);
 	}
@@ -110,15 +110,15 @@ Tile* MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, ui
 
 	auto map = static_cast<Map*>(this);
 
-	Tile* tile = nullptr;
+	std::shared_ptr<Tile> tile = nullptr;
 	if (cachedTile->isHouse()) {
 		const auto house = map->houses.getHouse(cachedTile->houseId);
-		tile = new HouseTile(x, y, z, house);
-		house->addTile(static_cast<HouseTile*>(tile));
+		tile = std::make_shared<HouseTile>(x, y, z, house);
+		house->addTile(std::static_pointer_cast<HouseTile>(tile));
 	} else if (cachedTile->isStatic) {
-		tile = new StaticTile(x, y, z);
+		tile = std::make_shared<StaticTile>(x, y, z);
 	} else {
-		tile = new DynamicTile(x, y, z);
+		tile = std::make_shared<DynamicTile>(x, y, z);
 	}
 
 	auto pos = Position(x, y, z);
@@ -141,13 +141,13 @@ Tile* MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, ui
 	return tile;
 }
 
-void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePtr &newTile) {
+void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<BasicTile> &newTile) {
 	if (z >= MAP_MAX_LAYERS) {
 		g_logger().error("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;
 	}
 
-	const auto &tile = static_tryGetTileFromCache(newTile);
+	const auto tile = static_tryGetTileFromCache(newTile);
 	if (const auto leaf = QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y)) {
 		leaf->createFloor(z)->setTileCache(x, y, tile);
 	} else {
@@ -155,7 +155,7 @@ void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePt
 	}
 }
 
-BasicItemPtr MapCache::tryReplaceItemFromCache(const BasicItemPtr &ref) {
+std::shared_ptr<BasicItem> MapCache::tryReplaceItemFromCache(const std::shared_ptr<BasicItem> &ref) {
 	return static_tryGetItemFromCache(ref);
 }
 
@@ -267,14 +267,14 @@ void BasicItem::readAttr(FileStream &stream) {
 			} break;
 
 			case ATTR_TEXT: {
-				const auto &str = stream.getString();
+				const auto str = stream.getString();
 				if (!str.empty()) {
 					text = str;
 				}
 			} break;
 
 			case ATTR_DESC: {
-				const auto &str = stream.getString();
+				const auto str = stream.getString();
 				// if (!str.empty())
 				//	text = str;
 			} break;

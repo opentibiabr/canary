@@ -8,14 +8,14 @@ using namespace boost::ut;
 
 suite<"utils"> replaceStringTest = [] {
 	struct ReplaceStringTestCase {
-			std::string subject, search, replace, expected;
+		std::string subject, search, replace, expected;
 
-			[[nodiscard]] std::string toString() const {
-				return fmt::format("replace {} in {} by {}", search, subject, replace);
-			}
+		[[nodiscard]] std::string toString() const {
+			return fmt::format("replace {} in {} by {}", search, subject, replace);
+		}
 	};
 
-	std::vector replaceStringTestCases{
+	std::vector replaceStringTestCases {
 		ReplaceStringTestCase { "", "", "", "" },
 		ReplaceStringTestCase { "all together", " ", "_", "all_together" },
 		ReplaceStringTestCase { "beautiful", "u", "", "beatifl" },
@@ -26,7 +26,7 @@ suite<"utils"> replaceStringTest = [] {
 
 	for (const auto &replaceStringTestCase : replaceStringTestCases) {
 		test(replaceStringTestCase.toString()) = [&replaceStringTestCase] {
-			auto [subject, search, replace,  expected] = replaceStringTestCase;
+			auto [subject, search, replace, expected] = replaceStringTestCase;
 			replaceString(subject, search, replace);
 			expect(eq(expected, subject)) << fmt::format("{} != {}", expected, subject);
 		};

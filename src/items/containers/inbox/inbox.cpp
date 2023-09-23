@@ -17,19 +17,19 @@ Inbox::Inbox(uint16_t type) :
 	maxInboxItems = std::numeric_limits<uint16_t>::max();
 }
 
-ReturnValue Inbox::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t flags, Creature*) const {
+ReturnValue Inbox::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t flags, std::shared_ptr<Creature>) {
 	int32_t addCount = 0;
 
 	if (!hasBitSet(FLAG_NOLIMIT, flags)) {
 		return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 	}
 
-	const Item* item = thing.getItem();
+	std::shared_ptr<Item> item = thing->getItem();
 	if (!item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	if (item == this) {
+	if (item.get() == this) {
 		return RETURNVALUE_THISISIMPOSSIBLE;
 	}
 
@@ -37,8 +37,8 @@ ReturnValue Inbox::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t flag
 		return RETURNVALUE_CANNOTPICKUP;
 	}
 
-	if (item->getTopParent() != this) { // MY
-		if (const Container* container = item->getContainer()) {
+	if (item->getTopParent().get() != this) { // MY
+		if (std::shared_ptr<Container> container = item->getContainer()) {
 			addCount = container->getItemHoldingCount() + 1;
 		} else {
 			addCount = 1;
@@ -52,23 +52,24 @@ ReturnValue Inbox::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t flag
 	return RETURNVALUE_NOERROR;
 }
 
-void Inbox::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t) {
-	Cylinder* localParent = getParent();
+void Inbox::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t) {
+	std::shared_ptr<Cylinder> localParent = getParent();
 	if (localParent != nullptr) {
 		localParent->postAddNotification(thing, oldParent, index, LINK_PARENT);
 	}
 }
 
-void Inbox::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t) {
-	Cylinder* localParent = getParent();
+void Inbox::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t) {
+	std::shared_ptr<Cylinder> localParent = getParent();
 	if (localParent != nullptr) {
 		localParent->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 	}
 }
 
-Cylinder* Inbox::getParent() const {
-	if (parent) {
-		return parent->getParent();
+std::shared_ptr<Cylinder> Inbox::getParent() {
+	auto parentLocked = m_parent.lock();
+	if (parentLocked) {
+		return parentLocked->getParent();
 	}
 	return nullptr;
 }

@@ -60,7 +60,7 @@ public:
 
 	BaseImbuement* getBaseByID(uint16_t id);
 	CategoryImbuement* getCategoryByID(uint16_t id);
-	std::vector<Imbuement*> getImbuements(const Player* player, Item* item);
+	std::vector<Imbuement*> getImbuements(std::shared_ptr<Player> player, std::shared_ptr<Item> item);
 
 protected:
 	friend class Imbuement;

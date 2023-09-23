@@ -14,7 +14,7 @@
 class HouseFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "House", "", HouseFunctions::luaHouseCreate);
+		registerSharedClass(L, "House", "", HouseFunctions::luaHouseCreate);
 		registerMetaMethod(L, "House", "__eq", HouseFunctions::luaUserdataCompare);
 
 		registerMethod(L, "House", "getId", HouseFunctions::luaHouseGetId);

@@ -44,7 +44,7 @@ public:
 	}
 
 	// scripting
-	bool executeSay(Player* player, const std::string &words, const std::string &param, SpeakClasses type) const;
+	bool executeSay(std::shared_ptr<Player> player, const std::string &words, const std::string &param, SpeakClasses type) const;
 	//
 
 	void setGroupType(account::GroupType newGroupType) {
@@ -78,8 +78,8 @@ public:
 		return inject<TalkActions>();
 	}
 
-	bool checkWord(Player* player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const;
-	TalkActionResult_t checkPlayerCanSayTalkAction(Player* player, SpeakClasses type, const std::string &words) const;
+	bool checkWord(std::shared_ptr<Player> player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const;
+	TalkActionResult_t checkPlayerCanSayTalkAction(std::shared_ptr<Player> player, SpeakClasses type, const std::string &words) const;
 
 	bool registerLuaEvent(const TalkAction_ptr &talkAction);
 	void clear();

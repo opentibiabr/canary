@@ -16,7 +16,7 @@ int VariantFunctions::luaVariantCreate(lua_State* L) {
 	// Variant(number or string or position or thing)
 	LuaVariant variant;
 	if (isUserdata(L, 2)) {
-		if (Thing* thing = getThing(L, 2)) {
+		if (std::shared_ptr<Thing> thing = getThing(L, 2)) {
 			variant.type = VARIANT_TARGETPOSITION;
 			variant.pos = thing->getPosition();
 		}

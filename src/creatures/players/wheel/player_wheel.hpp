@@ -158,12 +158,13 @@ public:
 	bool checkBallisticMastery();
 	bool checkCombatMastery();
 	bool checkDivineEmpowerment();
-	int32_t checkDrainBodyLeech(const Creature* target, skills_t skill) const;
+	int32_t checkDrainBodyLeech(std::shared_ptr<Creature> target, skills_t skill) const;
 	int32_t checkBeamMasteryDamage() const;
 	int32_t checkBattleHealingAmount() const;
-	int32_t checkBlessingGroveHealingByTarget(const Creature* target) const;
-	int32_t checkTwinBurstByTarget(const Creature* target) const;
-	int32_t checkExecutionersThrow(const Creature* target) const;
+	int32_t checkBlessingGroveHealingByTarget(std::shared_ptr<Creature> target) const;
+	int32_t checkTwinBurstByTarget(std::shared_ptr<Creature> target) const;
+	int32_t checkExecutionersThrow(std::shared_ptr<Creature> target) const;
+	int32_t checkDivineGrenade(std::shared_ptr<Creature> target) const;
 	int32_t checkAvatarSkill(WheelAvatarSkill_t skill) const;
 	int32_t checkFocusMasteryDamage();
 	int32_t checkElementSensitiveReduction(CombatType_t type) const;

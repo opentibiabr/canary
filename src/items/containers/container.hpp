@@ -26,10 +26,10 @@ public:
 	}
 
 	void advance();
-	Item* operator*();
+	std::shared_ptr<Item> operator*();
 
 private:
-	std::list<const Container*> over;
+	std::list<std::shared_ptr<Container>> over;
 	ItemDeque::const_iterator cur;
 
 	friend class Container;
@@ -39,42 +39,33 @@ class Container : public Item, public Cylinder {
 public:
 	explicit Container(uint16_t type);
 	Container(uint16_t type, uint16_t size, bool unlocked = true, bool pagination = false);
-	explicit Container(Tile* type);
 	~Container();
+
+	static std::shared_ptr<Container> create(uint16_t type);
+	static std::shared_ptr<Container> create(uint16_t type, uint16_t size, bool unlocked = true, bool pagination = false);
+	static std::shared_ptr<Container> create(std::shared_ptr<Tile> type);
 
 	// non-copyable
 	Container(const Container &) = delete;
 	Container &operator=(const Container &) = delete;
 
-	Item* clone() const override final;
+	std::shared_ptr<Item> clone() const override final;
 
-	Container* getContainer() override final {
-		return this;
-	}
-	const Container* getContainer() const override final {
-		return this;
+	std::shared_ptr<Container> getContainer() override final {
+		return static_self_cast<Container>();
 	}
 
-	Container* getRootContainer() const;
+	std::shared_ptr<Container> getRootContainer();
 
-	virtual DepotLocker* getDepotLocker() {
-		return nullptr;
-	}
-	virtual const DepotLocker* getDepotLocker() const {
+	virtual std::shared_ptr<DepotLocker> getDepotLocker() {
 		return nullptr;
 	}
 
-	virtual RewardChest* getRewardChest() {
-		return nullptr;
-	}
-	virtual const RewardChest* getRewardChest() const {
+	virtual std::shared_ptr<RewardChest> getRewardChest() {
 		return nullptr;
 	}
 
-	virtual Reward* getReward() {
-		return nullptr;
-	}
-	virtual const Reward* getReward() const {
+	virtual std::shared_ptr<Reward> getReward() {
 		return nullptr;
 	}
 	virtual bool isInbox() const {
@@ -86,7 +77,7 @@ public:
 
 	Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
 	bool unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream, Position &itemPosition) override;
-	std::string getContentDescription(bool oldProtocol) const;
+	std::string getContentDescription(bool oldProtocol);
 
 	size_t size() const {
 		return itemlist.size();
@@ -98,7 +89,7 @@ public:
 		return maxSize;
 	}
 
-	ContainerIterator iterator() const;
+	ContainerIterator iterator();
 
 	const ItemDeque &getItemList() const {
 		return itemlist;
@@ -112,21 +103,21 @@ public:
 	}
 
 	bool countsToLootAnalyzerBalance();
-	bool hasParent() const;
-	void addItem(Item* item);
+	bool hasParent();
+	void addItem(std::shared_ptr<Item> item);
 	StashContainerList getStowableItems() const;
 	bool isStoreInbox() const;
 	bool isStoreInboxFiltered() const;
-	std::deque<Item*> getStoreInboxFilteredItems() const;
+	std::deque<std::shared_ptr<Item>> getStoreInboxFilteredItems() const;
 	phmap::flat_hash_set<ContainerCategory_t> getStoreInboxValidCategories() const;
-	Item* getFilteredItemByIndex(size_t index) const;
-	Item* getItemByIndex(size_t index) const;
-	bool isHoldingItem(const Item* item) const;
-	bool isHoldingItemWithId(const uint16_t id) const;
+	std::shared_ptr<Item> getFilteredItemByIndex(size_t index) const;
+	std::shared_ptr<Item> getItemByIndex(size_t index) const;
+	bool isHoldingItem(std::shared_ptr<Item> item);
+	bool isHoldingItemWithId(const uint16_t id);
 
-	uint32_t getItemHoldingCount() const;
-	uint32_t getContainerHoldingCount() const;
-	uint16_t getFreeSlots() const;
+	uint32_t getItemHoldingCount();
+	uint32_t getContainerHoldingCount();
+	uint16_t getFreeSlots();
 	uint32_t getWeight() const override final;
 
 	bool isUnlocked() const {
@@ -137,41 +128,41 @@ public:
 	}
 
 	// cylinder implementations
-	virtual ReturnValue queryAdd(int32_t index, const Thing &thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
-	ReturnValue queryMaxCount(int32_t index, const Thing &thing, uint32_t count, uint32_t &maxQueryCount, uint32_t flags) const override final;
-	ReturnValue queryRemove(const Thing &thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override final;
-	Cylinder* queryDestination(int32_t &index, const Thing &thing, Item** destItem, uint32_t &flags) override final;
+	virtual ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override;
+	ReturnValue queryMaxCount(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t &maxQueryCount, uint32_t flags) override final;
+	ReturnValue queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override final;
+	std::shared_ptr<Cylinder> queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item>* destItem, uint32_t &flags) override final;
 
-	void addThing(Thing* thing) override final;
-	void addThing(int32_t index, Thing* thing) override final;
-	void addItemBack(Item* item);
+	void addThing(std::shared_ptr<Thing> thing) override final;
+	void addThing(int32_t index, std::shared_ptr<Thing> thing) override final;
+	void addItemBack(std::shared_ptr<Item> item);
 
-	void updateThing(Thing* thing, uint16_t itemId, uint32_t count) override final;
-	void replaceThing(uint32_t index, Thing* thing) override final;
+	void updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t count) override final;
+	void replaceThing(uint32_t index, std::shared_ptr<Thing> thing) override final;
 
-	void removeThing(Thing* thing, uint32_t count) override final;
+	void removeThing(std::shared_ptr<Thing> thing, uint32_t count) override final;
 
-	int32_t getThingIndex(const Thing* thing) const override final;
+	int32_t getThingIndex(std::shared_ptr<Thing> thing) const override final;
 	size_t getFirstIndex() const override final;
 	size_t getLastIndex() const override final;
 	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override final;
 	std::map<uint32_t, uint32_t> &getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const override final;
-	Thing* getThing(size_t index) const override final;
+	std::shared_ptr<Thing> getThing(size_t index) const override final;
 
-	ItemVector getItems(bool recursive = false) const;
+	ItemVector getItems(bool recursive = false);
 
-	void postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
-	void postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 
-	void internalAddThing(Thing* thing) override final;
-	void internalAddThing(uint32_t index, Thing* thing) override final;
+	void internalAddThing(std::shared_ptr<Thing> thing) override final;
+	void internalAddThing(uint32_t index, std::shared_ptr<Thing> thing) override final;
 	void startDecaying() override;
 	void stopDecaying() override;
 
-	virtual void removeItem(Thing* thing, bool sendUpdateToClient = false);
+	virtual void removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient = false);
 
 protected:
-	std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol) const;
+	std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol);
 
 	uint32_t m_maxItems;
 	uint32_t maxSize;
@@ -185,12 +176,12 @@ protected:
 	friend class MapCache;
 
 private:
-	void onAddContainerItem(Item* item);
-	void onUpdateContainerItem(uint32_t index, Item* oldItem, Item* newItem);
-	void onRemoveContainerItem(uint32_t index, Item* item);
+	void onAddContainerItem(std::shared_ptr<Item> item);
+	void onUpdateContainerItem(uint32_t index, std::shared_ptr<Item> oldItem, std::shared_ptr<Item> newItem);
+	void onRemoveContainerItem(uint32_t index, std::shared_ptr<Item> item);
 
-	Container* getParentContainer();
-	Container* getTopParentContainer() const;
+	std::shared_ptr<Container> getParentContainer();
+	std::shared_ptr<Container> getTopParentContainer();
 	void updateItemWeight(int32_t diff);
 
 	friend class ContainerIterator;

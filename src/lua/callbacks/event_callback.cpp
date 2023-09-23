@@ -49,7 +49,7 @@ void EventCallback::setType(EventCallback_t type) {
 
 // Lua functions
 // Creature
-bool EventCallback::creatureOnChangeOutfit(Creature* creature, const Outfit_t &outfit) const {
+bool EventCallback::creatureOnChangeOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::creatureOnChangeOutfit - Creature {}] "
 						 "Call stack overflow. Too many lua script calls being nested.",
@@ -71,7 +71,7 @@ bool EventCallback::creatureOnChangeOutfit(Creature* creature, const Outfit_t &o
 	return getScriptInterface()->callFunction(2);
 }
 
-ReturnValue EventCallback::creatureOnAreaCombat(Creature* creature, Tile* tile, bool aggressive) const {
+ReturnValue EventCallback::creatureOnAreaCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> tile, bool aggressive) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::creatureOnAreaCombat - "
 						 "Creature {} on tile position {}] "
@@ -111,7 +111,7 @@ ReturnValue EventCallback::creatureOnAreaCombat(Creature* creature, Tile* tile, 
 	return returnValue;
 }
 
-ReturnValue EventCallback::creatureOnTargetCombat(Creature* creature, Creature* target) const {
+ReturnValue EventCallback::creatureOnTargetCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::creatureOnTargetCombat - "
 						 "Creature {} target {}] "
@@ -149,7 +149,7 @@ ReturnValue EventCallback::creatureOnTargetCombat(Creature* creature, Creature* 
 	return returnValue;
 }
 
-void EventCallback::creatureOnHear(Creature* creature, Creature* speaker, const std::string &words, SpeakClasses type) const {
+void EventCallback::creatureOnHear(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> speaker, const std::string &words, SpeakClasses type) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::creatureOnHear - "
 						 "Creature {} speaker {}] "
@@ -176,7 +176,7 @@ void EventCallback::creatureOnHear(Creature* creature, Creature* speaker, const 
 	getScriptInterface()->callVoidFunction(4);
 }
 
-void EventCallback::creatureOnDrainHealth(Creature* creature, Creature* attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) const {
+void EventCallback::creatureOnDrainHealth(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::creatureOnDrainHealth - "
 						 "Creature {} attacker {}] "
@@ -228,7 +228,7 @@ void EventCallback::creatureOnDrainHealth(Creature* creature, Creature* attacker
 }
 
 // Party
-bool EventCallback::partyOnJoin(Party* party, Player* player) const {
+bool EventCallback::partyOnJoin(std::shared_ptr<Party> party, std::shared_ptr<Player> player) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::partyOnJoin - "
 						 "Player {}] "
@@ -252,7 +252,7 @@ bool EventCallback::partyOnJoin(Party* party, Player* player) const {
 	return getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::partyOnLeave(Party* party, Player* player) const {
+bool EventCallback::partyOnLeave(std::shared_ptr<Party> party, std::shared_ptr<Player> player) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::partyOnLeave - "
 						 "Player {}] "
@@ -276,11 +276,11 @@ bool EventCallback::partyOnLeave(Party* party, Player* player) const {
 	return getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::partyOnDisband(Party* party) const {
+bool EventCallback::partyOnDisband(std::shared_ptr<Party> party) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::partyOnDisband - Party leader {}] Call stack "
 						 "overflow. Too many lua script calls being nested.",
-						 party->getLeader()->getName());
+						 party->getLeader() ? party->getLeader()->getName() : "unknown");
 		return false;
 	}
 
@@ -296,9 +296,9 @@ bool EventCallback::partyOnDisband(Party* party) const {
 	return getScriptInterface()->callFunction(1);
 }
 
-void EventCallback::partyOnShareExperience(Party* party, uint64_t &exp) const {
+void EventCallback::partyOnShareExperience(std::shared_ptr<Party> party, uint64_t &exp) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
-		g_logger().error("Party leader {}. Call stack overflow. Too many lua script calls being nested.", party->getLeader()->getName());
+		g_logger().error("Party leader {}. Call stack overflow. Too many lua script calls being nested.", party->getLeader() ? party->getLeader()->getName() : "unknown");
 		return;
 	}
 
@@ -324,7 +324,7 @@ void EventCallback::partyOnShareExperience(Party* party, uint64_t &exp) const {
 }
 
 // Player
-bool EventCallback::playerOnBrowseField(Player* player, const Position &position) const {
+bool EventCallback::playerOnBrowseField(std::shared_ptr<Player> player, const Position &position) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnBrowseField - "
 						 "Player {}] "
@@ -347,7 +347,7 @@ bool EventCallback::playerOnBrowseField(Player* player, const Position &position
 	return getScriptInterface()->callFunction(2);
 }
 
-void EventCallback::playerOnLook(Player* player, const Position &position, Thing* thing, uint8_t stackpos, int32_t lookDistance) const {
+void EventCallback::playerOnLook(std::shared_ptr<Player> player, const Position &position, std::shared_ptr<Thing> thing, uint8_t stackpos, int32_t lookDistance) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnLook - "
 						 "Player {}] "
@@ -365,10 +365,10 @@ void EventCallback::playerOnLook(Player* player, const Position &position, Thing
 	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
-	if (Creature* creature = thing->getCreature()) {
+	if (std::shared_ptr<Creature> creature = thing->getCreature()) {
 		LuaScriptInterface::pushUserdata<Creature>(L, creature);
 		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
-	} else if (Item* item = thing->getItem()) {
+	} else if (std::shared_ptr<Item> item = thing->getItem()) {
 		LuaScriptInterface::pushUserdata<Item>(L, item);
 		LuaScriptInterface::setItemMetatable(L, -1, item);
 	} else {
@@ -381,7 +381,7 @@ void EventCallback::playerOnLook(Player* player, const Position &position, Thing
 	getScriptInterface()->callVoidFunction(4);
 }
 
-void EventCallback::playerOnLookInBattleList(Player* player, Creature* creature, int32_t lookDistance) const {
+void EventCallback::playerOnLookInBattleList(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature, int32_t lookDistance) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnLookInBattleList - "
 						 "Player {}] "
@@ -407,7 +407,7 @@ void EventCallback::playerOnLookInBattleList(Player* player, Creature* creature,
 	getScriptInterface()->callVoidFunction(3);
 }
 
-void EventCallback::playerOnLookInTrade(Player* player, Player* partner, Item* item, int32_t lookDistance) const {
+void EventCallback::playerOnLookInTrade(std::shared_ptr<Player> player, std::shared_ptr<Player> partner, std::shared_ptr<Item> item, int32_t lookDistance) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnLookInTrade - "
 						 "Player {}] "
@@ -436,7 +436,7 @@ void EventCallback::playerOnLookInTrade(Player* player, Player* partner, Item* i
 	getScriptInterface()->callVoidFunction(4);
 }
 
-bool EventCallback::playerOnLookInShop(Player* player, const ItemType* itemType, uint8_t count) const {
+bool EventCallback::playerOnLookInShop(std::shared_ptr<Player> player, const ItemType* itemType, uint8_t count) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnLookInShop - "
 						 "Player {} itemType {}] "
@@ -462,7 +462,7 @@ bool EventCallback::playerOnLookInShop(Player* player, const ItemType* itemType,
 	return getScriptInterface()->callFunction(3);
 }
 
-void EventCallback::playerOnRemoveCount(Player* player, Item* item) const {
+void EventCallback::playerOnRemoveCount(std::shared_ptr<Player> player, std::shared_ptr<Item> item) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnMove - "
 						 "Player {} item {}] "
@@ -486,7 +486,7 @@ void EventCallback::playerOnRemoveCount(Player* player, Item* item) const {
 	getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::playerOnMoveItem(Player* player, Item* item, uint16_t count, const Position &fromPos, const Position &toPos, Cylinder* fromCylinder, Cylinder* toCylinder) const {
+bool EventCallback::playerOnMoveItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPos, const Position &toPos, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) const {
 	if (!getScriptInterface()) {
 		g_logger().error("script interface nullptr");
 		return false;
@@ -521,7 +521,7 @@ bool EventCallback::playerOnMoveItem(Player* player, Item* item, uint16_t count,
 	return getScriptInterface()->callFunction(7);
 }
 
-void EventCallback::playerOnItemMoved(Player* player, Item* item, uint16_t count, const Position &fromPosition, const Position &toPosition, Cylinder* fromCylinder, Cylinder* toCylinder) const {
+void EventCallback::playerOnItemMoved(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnItemMoved - "
 						 "Player {} item {}] "
@@ -552,7 +552,7 @@ void EventCallback::playerOnItemMoved(Player* player, Item* item, uint16_t count
 	getScriptInterface()->callVoidFunction(7);
 }
 
-void EventCallback::playerOnChangeZone(Player* player, ZoneType_t zone) const {
+void EventCallback::playerOnChangeZone(std::shared_ptr<Player> player, ZoneType_t zone) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnChangeZone - "
 						 "Player {}] "
@@ -574,7 +574,7 @@ void EventCallback::playerOnChangeZone(Player* player, ZoneType_t zone) const {
 	getScriptInterface()->callVoidFunction(2);
 }
 
-bool EventCallback::playerOnMoveCreature(Player* player, Creature* creature, const Position &fromPosition, const Position &toPosition) const {
+bool EventCallback::playerOnMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature, const Position &fromPosition, const Position &toPosition) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnMoveCreature - "
 						 "Player {} creature {}] "
@@ -601,7 +601,7 @@ bool EventCallback::playerOnMoveCreature(Player* player, Creature* creature, con
 	return getScriptInterface()->callFunction(4);
 }
 
-void EventCallback::playerOnReportRuleViolation(Player* player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) const {
+void EventCallback::playerOnReportRuleViolation(std::shared_ptr<Player> player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnReportRuleViolation - "
 						 "Player {}] "
@@ -630,7 +630,7 @@ void EventCallback::playerOnReportRuleViolation(Player* player, const std::strin
 	getScriptInterface()->callVoidFunction(6);
 }
 
-void EventCallback::playerOnReportBug(Player* player, const std::string &message, const Position &position, uint8_t category) const {
+void EventCallback::playerOnReportBug(std::shared_ptr<Player> player, const std::string &message, const Position &position, uint8_t category) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnReportBug - "
 						 "Player {}] "
@@ -655,7 +655,7 @@ void EventCallback::playerOnReportBug(Player* player, const std::string &message
 	getScriptInterface()->callFunction(4);
 }
 
-bool EventCallback::playerOnTurn(Player* player, Direction direction) const {
+bool EventCallback::playerOnTurn(std::shared_ptr<Player> player, Direction direction) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnTurn - "
 						 "Player {}] "
@@ -678,7 +678,7 @@ bool EventCallback::playerOnTurn(Player* player, Direction direction) const {
 	return getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::playerOnTradeRequest(Player* player, Player* target, Item* item) const {
+bool EventCallback::playerOnTradeRequest(std::shared_ptr<Player> player, std::shared_ptr<Player> target, std::shared_ptr<Item> item) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnTradeRequest - "
 						 "Player {} target {}] "
@@ -705,7 +705,7 @@ bool EventCallback::playerOnTradeRequest(Player* player, Player* target, Item* i
 	return getScriptInterface()->callFunction(3);
 }
 
-bool EventCallback::playerOnTradeAccept(Player* player, Player* target, Item* item, Item* targetItem) const {
+bool EventCallback::playerOnTradeAccept(std::shared_ptr<Player> player, std::shared_ptr<Player> target, std::shared_ptr<Item> item, std::shared_ptr<Item> targetItem) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnTradeAccept - "
 						 "Player {} target {}] "
@@ -735,7 +735,7 @@ bool EventCallback::playerOnTradeAccept(Player* player, Player* target, Item* it
 	return getScriptInterface()->callFunction(4);
 }
 
-void EventCallback::playerOnGainExperience(Player* player, Creature* target, uint64_t &exp, uint64_t rawExp) const {
+void EventCallback::playerOnGainExperience(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, uint64_t &exp, uint64_t rawExp) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnGainExperience - "
 						 "Player {} target {}] "
@@ -773,7 +773,7 @@ void EventCallback::playerOnGainExperience(Player* player, Creature* target, uin
 	getScriptInterface()->resetScriptEnv();
 }
 
-void EventCallback::playerOnLoseExperience(Player* player, uint64_t &exp) const {
+void EventCallback::playerOnLoseExperience(std::shared_ptr<Player> player, uint64_t &exp) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnLoseExperience - "
 						 "Player {}] "
@@ -803,7 +803,7 @@ void EventCallback::playerOnLoseExperience(Player* player, uint64_t &exp) const 
 	getScriptInterface()->resetScriptEnv();
 }
 
-void EventCallback::playerOnGainSkillTries(Player* player, skills_t skill, uint64_t &tries) const {
+void EventCallback::playerOnGainSkillTries(std::shared_ptr<Player> player, skills_t skill, uint64_t &tries) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnGainSkillTries - "
 						 "Player {} skill {}] "
@@ -834,7 +834,7 @@ void EventCallback::playerOnGainSkillTries(Player* player, skills_t skill, uint6
 	getScriptInterface()->resetScriptEnv();
 }
 
-void EventCallback::playerOnCombat(Player* player, Creature* target, Item* item, CombatDamage &damage) const {
+void EventCallback::playerOnCombat(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, CombatDamage &damage) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnCombat - "
 						 "Player {} target {}] "
@@ -896,7 +896,7 @@ void EventCallback::playerOnCombat(Player* player, Creature* target, Item* item,
 	getScriptInterface()->resetScriptEnv();
 }
 
-void EventCallback::playerOnRequestQuestLog(Player* player) const {
+void EventCallback::playerOnRequestQuestLog(std::shared_ptr<Player> player) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnRequestQuestLog - "
 						 "Player {}] "
@@ -917,7 +917,7 @@ void EventCallback::playerOnRequestQuestLog(Player* player) const {
 	getScriptInterface()->callVoidFunction(1);
 }
 
-void EventCallback::playerOnRequestQuestLine(Player* player, uint16_t questId) const {
+void EventCallback::playerOnRequestQuestLine(std::shared_ptr<Player> player, uint16_t questId) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnRequestQuestLine - "
 						 "Player {} questId {}] "
@@ -940,7 +940,7 @@ void EventCallback::playerOnRequestQuestLine(Player* player, uint16_t questId) c
 	getScriptInterface()->callVoidFunction(2);
 }
 
-void EventCallback::playerOnInventoryUpdate(Player* player, Item* item, Slots_t slot, bool equip) const {
+void EventCallback::playerOnInventoryUpdate(std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool equip) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[{}] Call stack overflow", __FUNCTION__);
 		return;
@@ -964,7 +964,7 @@ void EventCallback::playerOnInventoryUpdate(Player* player, Item* item, Slots_t 
 	getScriptInterface()->callVoidFunction(4);
 }
 
-bool EventCallback::playerOnRotateItem(Player* player, Item* item, const Position &position) const {
+bool EventCallback::playerOnRotateItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const Position &position) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[{}] Call stack overflow", __FUNCTION__);
 		return false;
@@ -987,7 +987,7 @@ bool EventCallback::playerOnRotateItem(Player* player, Item* item, const Positio
 	return getScriptInterface()->callFunction(3);
 }
 
-void EventCallback::playerOnStorageUpdate(Player* player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime) const {
+void EventCallback::playerOnStorageUpdate(std::shared_ptr<Player> player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::eventOnStorageUpdate - "
 						 "Player {} key {}] "
@@ -1014,7 +1014,7 @@ void EventCallback::playerOnStorageUpdate(Player* player, const uint32_t key, co
 }
 
 // Monster
-void EventCallback::monsterOnDropLoot(Monster* monster, Container* corpse) const {
+void EventCallback::monsterOnDropLoot(std::shared_ptr<Monster> monster, std::shared_ptr<Container> corpse) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::monsterOnDropLoot - "
 						 "Monster corpse {}] "
@@ -1038,7 +1038,7 @@ void EventCallback::monsterOnDropLoot(Monster* monster, Container* corpse) const
 	return getScriptInterface()->callVoidFunction(2);
 }
 
-void EventCallback::monsterPostDropLoot(Monster* monster, Container* corpse) const {
+void EventCallback::monsterPostDropLoot(std::shared_ptr<Monster> monster, std::shared_ptr<Container> corpse) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::monsterPostDropLoot - "
 						 "Monster corpse {}] "
@@ -1062,7 +1062,7 @@ void EventCallback::monsterPostDropLoot(Monster* monster, Container* corpse) con
 	return getScriptInterface()->callVoidFunction(2);
 }
 
-void EventCallback::monsterOnSpawn(Monster* monster, const Position &position) const {
+void EventCallback::monsterOnSpawn(std::shared_ptr<Monster> monster, const Position &position) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("{} - "
 						 "Position {}"
@@ -1091,7 +1091,7 @@ void EventCallback::monsterOnSpawn(Monster* monster, const Position &position) c
 }
 
 // Npc
-void EventCallback::npcOnSpawn(Npc* npc, const Position &position) const {
+void EventCallback::npcOnSpawn(std::shared_ptr<Npc> npc, const Position &position) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("{} - "
 						 "Position {}"
@@ -1119,7 +1119,7 @@ void EventCallback::npcOnSpawn(Npc* npc, const Position &position) const {
 	getScriptInterface()->resetScriptEnv();
 }
 
-bool EventCallback::zoneBeforeCreatureEnter(std::shared_ptr<Zone> zone, Creature* creature) const {
+bool EventCallback::zoneBeforeCreatureEnter(std::shared_ptr<Zone> zone, std::shared_ptr<Creature> creature) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::zoneBeforeCreatureEnter - "
 						 "Zone {} Creature {}] "
@@ -1143,7 +1143,7 @@ bool EventCallback::zoneBeforeCreatureEnter(std::shared_ptr<Zone> zone, Creature
 	return getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::zoneBeforeCreatureLeave(std::shared_ptr<Zone> zone, Creature* creature) const {
+bool EventCallback::zoneBeforeCreatureLeave(std::shared_ptr<Zone> zone, std::shared_ptr<Creature> creature) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::zoneBeforeCreatureLeave - "
 						 "Zone {} Creature {}] "
@@ -1167,7 +1167,7 @@ bool EventCallback::zoneBeforeCreatureLeave(std::shared_ptr<Zone> zone, Creature
 	return getScriptInterface()->callFunction(2);
 }
 
-void EventCallback::zoneAfterCreatureEnter(std::shared_ptr<Zone> zone, Creature* creature) const {
+void EventCallback::zoneAfterCreatureEnter(std::shared_ptr<Zone> zone, std::shared_ptr<Creature> creature) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::zoneAfterCreatureEnter - "
 						 "Zone {} Creature {}] "
@@ -1191,7 +1191,7 @@ void EventCallback::zoneAfterCreatureEnter(std::shared_ptr<Zone> zone, Creature*
 	getScriptInterface()->callVoidFunction(2);
 }
 
-void EventCallback::zoneAfterCreatureLeave(std::shared_ptr<Zone> zone, Creature* creature) const {
+void EventCallback::zoneAfterCreatureLeave(std::shared_ptr<Zone> zone, std::shared_ptr<Creature> creature) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::zoneAfterCreatureLeave - "
 						 "Zone {} Creature {}] "

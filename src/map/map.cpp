@@ -133,13 +133,13 @@ bool Map::save() {
 	return false;
 }
 
-Tile* Map::getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic) {
+std::shared_ptr<Tile> Map::getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic) {
 	auto tile = getTile(x, y, z);
 	if (!tile) {
 		if (isDynamic) {
-			tile = new DynamicTile(x, y, z);
+			tile = std::make_shared<DynamicTile>(x, y, z);
 		} else {
-			tile = new StaticTile(x, y, z);
+			tile = std::make_shared<StaticTile>(x, y, z);
 		}
 
 		setTile(x, y, z, tile);
@@ -148,7 +148,7 @@ Tile* Map::getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic) {
 	return tile;
 }
 
-Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
+std::shared_ptr<Tile> Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 	if (z >= MAP_MAX_LAYERS) {
 		return nullptr;
 	}
@@ -167,7 +167,7 @@ Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 	return tile ? tile : getOrCreateTileFromCache(floor, x, y);
 }
 
-void Map::setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile) {
+void Map::setTile(uint16_t x, uint16_t y, uint8_t z, std::shared_ptr<Tile> newTile) {
 	if (z >= MAP_MAX_LAYERS) {
 		g_logger().error("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;
@@ -180,8 +180,8 @@ void Map::setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile) {
 	}
 }
 
-bool Map::placeCreature(const Position &centerPos, Creature* creature, bool extendedPos /* = false*/, bool forceLogin /* = false*/) {
-	Monster* monster = creature->getMonster();
+bool Map::placeCreature(const Position &centerPos, std::shared_ptr<Creature> creature, bool extendedPos /* = false*/, bool forceLogin /* = false*/) {
+	auto monster = creature->getMonster();
 	if (monster) {
 		monster->ignoreFieldDamage = true;
 	}
@@ -189,10 +189,10 @@ bool Map::placeCreature(const Position &centerPos, Creature* creature, bool exte
 	bool foundTile;
 	bool placeInPZ;
 
-	Tile* tile = getTile(centerPos.x, centerPos.y, centerPos.z);
+	std::shared_ptr<Tile> tile = getTile(centerPos.x, centerPos.y, centerPos.z);
 	if (tile) {
 		placeInPZ = tile->hasFlag(TILESTATE_PROTECTIONZONE);
-		ReturnValue ret = tile->queryAdd(0, *creature, 1, FLAG_IGNOREBLOCKITEM | FLAG_IGNOREFIELDDAMAGE);
+		ReturnValue ret = tile->queryAdd(0, creature, 1, FLAG_IGNOREBLOCKITEM | FLAG_IGNOREFIELDDAMAGE);
 		foundTile = forceLogin || ret == RETURNVALUE_NOERROR || ret == RETURNVALUE_PLAYERISNOTINVITED;
 		if (monster) {
 			monster->ignoreFieldDamage = false;
@@ -248,7 +248,7 @@ bool Map::placeCreature(const Position &centerPos, Creature* creature, bool exte
 				monster->ignoreFieldDamage = true;
 			}
 
-			if (tile->queryAdd(0, *creature, 1, FLAG_IGNOREBLOCKITEM | FLAG_IGNOREFIELDDAMAGE) == RETURNVALUE_NOERROR) {
+			if (tile->queryAdd(0, creature, 1, FLAG_IGNOREBLOCKITEM | FLAG_IGNOREFIELDDAMAGE) == RETURNVALUE_NOERROR) {
 				if (!extendedPos || isSightClear(centerPos, tryPos, false)) {
 					foundTile = true;
 					break;
@@ -267,9 +267,9 @@ bool Map::placeCreature(const Position &centerPos, Creature* creature, bool exte
 
 	int32_t index = 0;
 	uint32_t flags = 0;
-	Item* toItem = nullptr;
+	std::shared_ptr<Item> toItem = nullptr;
 
-	Cylinder* toCylinder = tile->queryDestination(index, *creature, &toItem, flags);
+	auto toCylinder = tile->queryDestination(index, creature, &toItem, flags);
 	toCylinder->internalAddThing(creature);
 
 	const Position &dest = toCylinder->getPosition();
@@ -277,29 +277,29 @@ bool Map::placeCreature(const Position &centerPos, Creature* creature, bool exte
 	return true;
 }
 
-void Map::moveCreature(Creature &creature, Tile &newTile, bool forceTeleport /* = false*/) {
-	Tile &oldTile = *creature.getTile();
+void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport /* = false*/) {
+	auto oldTile = creature->getTile();
 
-	Position oldPos = oldTile.getPosition();
-	Position newPos = newTile.getPosition();
+	Position oldPos = oldTile->getPosition();
+	Position newPos = newTile->getPosition();
 
-	auto fromZones = oldTile.getZones();
-	auto toZones = newTile.getZones();
-	if (auto ret = g_game().beforeCreatureZoneChange(&creature, fromZones, toZones); ret != RETURNVALUE_NOERROR) {
+	auto fromZones = oldTile->getZones();
+	auto toZones = newTile->getZones();
+	if (auto ret = g_game().beforeCreatureZoneChange(creature, fromZones, toZones); ret != RETURNVALUE_NOERROR) {
 		return;
 	}
 
-	bool teleport = forceTeleport || !newTile.getGround() || !Position::areInRange<1, 1, 0>(oldPos, newPos);
+	bool teleport = forceTeleport || !newTile->getGround() || !Position::areInRange<1, 1, 0>(oldPos, newPos);
 
 	SpectatorHashSet spectators;
 	getSpectators(spectators, oldPos, true);
 	getSpectators(spectators, newPos, true);
 
 	std::vector<int32_t> oldStackPosVector;
-	for (Creature* spectator : spectators) {
-		if (Player* tmpPlayer = spectator->getPlayer()) {
-			if (tmpPlayer->canSeeCreature(&creature)) {
-				oldStackPosVector.push_back(oldTile.getClientIndexOfCreature(tmpPlayer, &creature));
+	for (std::shared_ptr<Creature> spectator : spectators) {
+		if (auto tmpPlayer = spectator->getPlayer()) {
+			if (tmpPlayer->canSeeCreature(creature)) {
+				oldStackPosVector.push_back(oldTile->getClientIndexOfCreature(tmpPlayer, creature));
 			} else {
 				oldStackPosVector.push_back(-1);
 			}
@@ -307,54 +307,54 @@ void Map::moveCreature(Creature &creature, Tile &newTile, bool forceTeleport /* 
 	}
 
 	// remove the creature
-	oldTile.removeThing(&creature, 0);
+	oldTile->removeThing(creature, 0);
 
 	auto leaf = getQTNode(oldPos.x, oldPos.y);
 	auto new_leaf = getQTNode(newPos.x, newPos.y);
 
 	// Switch the node ownership
 	if (leaf != new_leaf) {
-		leaf->removeCreature(&creature);
-		new_leaf->addCreature(&creature);
+		leaf->removeCreature(creature);
+		new_leaf->addCreature(creature);
 	}
 
 	// add the creature
-	newTile.addThing(&creature);
+	newTile->addThing(creature);
 
 	if (!teleport) {
 		if (oldPos.y > newPos.y) {
-			creature.setDirection(DIRECTION_NORTH);
+			creature->setDirection(DIRECTION_NORTH);
 		} else if (oldPos.y < newPos.y) {
-			creature.setDirection(DIRECTION_SOUTH);
+			creature->setDirection(DIRECTION_SOUTH);
 		}
 
 		if (oldPos.x < newPos.x) {
-			creature.setDirection(DIRECTION_EAST);
+			creature->setDirection(DIRECTION_EAST);
 		} else if (oldPos.x > newPos.x) {
-			creature.setDirection(DIRECTION_WEST);
+			creature->setDirection(DIRECTION_WEST);
 		}
 	}
 
 	// send to client
 	size_t i = 0;
-	for (Creature* spectator : spectators) {
-		if (Player* tmpPlayer = spectator->getPlayer()) {
+	for (auto spectator : spectators) {
+		if (auto tmpPlayer = spectator->getPlayer()) {
 			// Use the correct stackpos
 			int32_t stackpos = oldStackPosVector[i++];
 			if (stackpos != -1) {
-				tmpPlayer->sendCreatureMove(&creature, newPos, newTile.getStackposOfCreature(tmpPlayer, &creature), oldPos, stackpos, teleport);
+				tmpPlayer->sendCreatureMove(creature, newPos, newTile->getStackposOfCreature(tmpPlayer, creature), oldPos, stackpos, teleport);
 			}
 		}
 	}
 
 	// event method
-	for (Creature* spectator : spectators) {
-		spectator->onCreatureMove(&creature, &newTile, newPos, &oldTile, oldPos, teleport);
+	for (std::shared_ptr<Creature> spectator : spectators) {
+		spectator->onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 	}
 
-	oldTile.postRemoveNotification(&creature, &newTile, 0);
-	newTile.postAddNotification(&creature, &oldTile, 0);
-	g_game().afterCreatureZoneChange(&creature, fromZones, toZones);
+	oldTile->postRemoveNotification(creature, newTile, 0);
+	newTile->postAddNotification(creature, oldTile, 0);
+	g_game().afterCreatureZoneChange(creature, fromZones, toZones);
 }
 
 void Map::getSpectatorsInternal(SpectatorHashSet &spectators, const Position &centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const {
@@ -384,8 +384,8 @@ void Map::getSpectatorsInternal(SpectatorHashSet &spectators, const Position &ce
 		leafE = leafS;
 		for (int_fast32_t nx = startx1; nx <= endx2; nx += FLOOR_SIZE) {
 			if (leafE) {
-				const auto &node_list = (onlyPlayers ? leafE->player_list : leafE->creature_list);
-				for (Creature* creature : node_list) {
+				const auto node_list = (onlyPlayers ? leafE->player_list : leafE->creature_list);
+				for (std::shared_ptr<Creature> creature : node_list) {
 					const Position &cpos = creature->getPosition();
 					if (minRangeZ > cpos.z || maxRangeZ < cpos.z) {
 						continue;
@@ -452,7 +452,7 @@ void Map::getSpectators(SpectatorHashSet &spectators, const Position &centerPos,
 					}
 				} else {
 					const SpectatorHashSet &cachedSpectators = it->second;
-					for (Creature* spectator : cachedSpectators) {
+					for (std::shared_ptr<Creature> spectator : cachedSpectators) {
 						if (spectator->getPlayer()) {
 							spectators.insert(spectator);
 						}
@@ -567,7 +567,7 @@ bool Map::checkSightLine(const Position &fromPos, const Position &toPos) {
 			start.x += mx;
 		}
 
-		const Tile* tile = getTile(start.x, start.y, start.z);
+		const std::shared_ptr<Tile> tile = getTile(start.x, start.y, start.z);
 		if (tile && tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
 			return false;
 		}
@@ -575,7 +575,7 @@ bool Map::checkSightLine(const Position &fromPos, const Position &toPos) {
 
 	// now we need to perform a jump between floors to see if everything is clear (literally)
 	while (start.z != destination.z) {
-		const Tile* tile = getTile(start.x, start.y, start.z);
+		const std::shared_ptr<Tile> tile = getTile(start.x, start.y, start.z);
 		if (tile && tile->getThingCount() > 0) {
 			return false;
 		}
@@ -595,8 +595,8 @@ bool Map::isSightClear(const Position &fromPos, const Position &toPos, bool floo
 	return checkSightLine(fromPos, toPos) || checkSightLine(toPos, fromPos);
 }
 
-const Tile* Map::canWalkTo(const Creature &creature, const Position &pos) {
-	int32_t walkCache = creature.getWalkCache(pos);
+std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, const Position &pos) {
+	int32_t walkCache = creature->getWalkCache(pos);
 	if (walkCache == 0) {
 		return nullptr;
 	} else if (walkCache == 1) {
@@ -604,8 +604,8 @@ const Tile* Map::canWalkTo(const Creature &creature, const Position &pos) {
 	}
 
 	// used for non-cached tiles
-	Tile* tile = getTile(pos.x, pos.y, pos.z);
-	if (creature.getTile() != tile) {
+	std::shared_ptr<Tile> tile = getTile(pos.x, pos.y, pos.z);
+	if (creature->getTile() != tile) {
 		if (!tile || tile->queryAdd(0, creature, 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) != RETURNVALUE_NOERROR) {
 			return nullptr;
 		}
@@ -613,8 +613,8 @@ const Tile* Map::canWalkTo(const Creature &creature, const Position &pos) {
 	return tile;
 }
 
-bool Map::getPathMatching(const Creature &creature, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
-	Position pos = creature.getPosition();
+bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+	Position pos = creature->getPosition();
 	Position endPos;
 
 	AStarNodes nodes(pos.x, pos.y);
@@ -706,7 +706,7 @@ bool Map::getPathMatching(const Creature &creature, std::forward_list<Direction>
 				continue;
 			}
 
-			const Tile* tile;
+			std::shared_ptr<Tile> tile;
 			AStarNode* neighborNode = nodes.getNodeByPosition(pos.x, pos.y);
 			if (neighborNode) {
 				tile = getTile(pos.x, pos.y, pos.z);
@@ -732,7 +732,7 @@ bool Map::getPathMatching(const Creature &creature, std::forward_list<Direction>
 				neighborNode->parent = n;
 				nodes.openNode(neighborNode);
 			} else {
-				// Does not exist in the open/closed list, create a new node
+				// Does not exist in the open/closed list, create a std::make_shared<node>
 				neighborNode = nodes.createOpenNode(n, pos.x, pos.y, newf);
 				if (!neighborNode) {
 					if (found) {
@@ -880,7 +880,7 @@ bool Map::getPathMatching(const Position &start, std::forward_list<Direction> &d
 				continue;
 			}
 
-			const Tile* tile;
+			std::shared_ptr<Tile> tile;
 			AStarNode* neighborNode = nodes.getNodeByPosition(pos.x, pos.y);
 			if (neighborNode) {
 				tile = getTile(pos.x, pos.y, pos.z);
@@ -906,7 +906,7 @@ bool Map::getPathMatching(const Position &start, std::forward_list<Direction> &d
 				neighborNode->parent = n;
 				nodes.openNode(neighborNode);
 			} else {
-				// Does not exist in the open/closed list, create a new node
+				// Does not exist in the open/closed list, create a std::make_shared<node>
 				neighborNode = nodes.createOpenNode(n, pos.x, pos.y, newf);
 				if (!neighborNode) {
 					if (found) {
@@ -969,7 +969,7 @@ uint32_t Map::clean() {
 		g_game().setGameState(GAME_STATE_MAINTAIN);
 	}
 
-	std::vector<Item*> toRemove;
+	std::vector<std::shared_ptr<Item>> toRemove;
 	for (auto tile : g_game().getTilesToClean()) {
 		if (!tile) {
 			continue;

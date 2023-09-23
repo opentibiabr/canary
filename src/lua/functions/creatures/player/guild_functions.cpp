@@ -54,11 +54,11 @@ int GuildFunctions::luaGuildGetMembersOnline(lua_State* L) {
 		return 1;
 	}
 
-	const auto &members = guild->getMembersOnline();
+	const auto members = guild->getMembersOnline();
 	lua_createtable(L, members.size(), 0);
 
 	int index = 0;
-	for (Player* player : members) {
+	for (std::shared_ptr<Player> player : members) {
 		pushUserdata<Player>(L, player);
 		setMetatable(L, -1, "Player");
 		lua_rawseti(L, -2, ++index);

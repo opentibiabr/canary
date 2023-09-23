@@ -272,7 +272,7 @@ public:
 	std::map<std::string, std::shared_ptr<MonsterType>> monsters;
 
 private:
-	ConditionDamage* getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval);
+	std::shared_ptr<ConditionDamage> getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval);
 };
 
 constexpr auto g_monsters = Monsters::getInstance;

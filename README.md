@@ -96,6 +96,12 @@ other open-source initiatives.
 
 [![JetBrains](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://jb.gg/OpenSourceSupport/?from=https://github.com/opentibiabr/canary)
 
+## Project supported by [TNT Cloud](https://tntcloudbr.com.br/)
+
+Thanks for supporting our open-source project with your game cloud hosting services.
+
+[![TNT Cloud - Game Hosting](https://tntcloudbr.com.br/logo.png)](https://tntcloudbr.com.br/)
+
 ### Partners
 
 [![Supported by OTServ Brasil](https://raw.githubusercontent.com/otbr/otserv-brasil/main/otbr.png)](https://forums.otserv.com.br)

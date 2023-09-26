@@ -1,4 +1,4 @@
-local internalNpcName = "The Lootmonger"
+local internalNpcName = "Primo do Rashid"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}
 
@@ -1373,7 +1373,7 @@ npcConfig.shop = {
 	{ itemName = "zaogun flag", clientId = 10413, sell = 600 },
 	{ itemName = "zaogun's shoulderplates", clientId = 10414, sell = 150 },
 
-	{ itemName = "all loot in pouch", clientId = ITEM_GOLD_POUCH, sell = 1 },
+	{ itemName = "Loot Pouch", clientId = ITEM_GOLD_POUCH, sell = 1 },
 }
 
 -- On buy npc shop message

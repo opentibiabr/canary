@@ -68893,4 +68893,174 @@
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="weight" value="20"/>
 	</item>
+	<item id="44030" article="a" name="mask of the defiler">
+		<attribute key="description" value="A dark and mystic aura surrounds this sculpture.."/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44033"/>
+	</item>
+	<item id="44033" article="a" name="mask of the defiler">
+		<attribute key="description" value="A dark and mystic aura surrounds this sculpture.."/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44030"/>
+	</item>
+	<item id="44031" article="a" name="mask of the defiler">
+		<attribute key="description" value="A dark and mystic aura surrounds this sculpture.."/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44034"/>
+	</item>
+	<item id="44034" article="a" name="mask of the defiler">
+		<attribute key="description" value="A dark and mystic aura surrounds this sculpture.."/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44031"/>
+	</item>
+	<item id="43675" article="a" name="table with candles">
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43676" article="a" name="table with burning candles">
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43701" article="a" name="witchcraft summoning circle">
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43702" article="a" name="witchcraft summoning circle">
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43687" article="a" name="witchcraft cabinet">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43688"/>
+	</item>
+	<item id="43688" article="a" name="witchcraft cabinet">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43687"/>
+	</item>
+	<item id="43707" article="a" name="witchcraft cage">
+		<attribute key="description" value="Something is wreathing inside."/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43687"/>
+	</item>
+	<item id="43708" article="a" name="witchcraft cage">
+		<attribute key="description" value="Something is wreathing inside."/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43687"/>
+	</item>
+	<item id="43693" article="a" name="witchcraft fireplace">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43694"/>
+	</item>
+	<item id="43694" article="a" name="witchcraft fireplace">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43693"/>
+	</item>
+	<item id="43695" article="a" name="witchcraft fireplace">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43696"/>
+	</item>
+	<item id="43696" article="a" name="witchcraft fireplace">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43695"/>
+	</item>
+	<item id="43713" article="a" name="witchcraft forest herbs">
+		<attribute key="primarytype" value="trophies"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43711" article="a" name="witchcraft sweet herbs">
+		<attribute key="primarytype" value="trophies"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43709" article="a" name="witchcraft scroll">
+		<attribute key="primarytype" value="trophies"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43699" article="a" name="witchcraft cupboard">
+		<attribute key="primarytype" value="trophies"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43689" article="a" name="witchcraft portal">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43690"/>
+	</item>
+	<item id="43690" article="a" name="witchcraft portal">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43689"/>
+	</item>
+	<item id="43691" article="a" name="witchcraft portal">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43692"/>
+	</item>
+	<item id="43692" article="a" name="witchcraft portal">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43691"/>
+	</item>
+	<item id="43703" article="a" name="witchcraft bookstand">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43704"/>
+	</item>
+	<item id="43704" article="a" name="witchcraft bookstand">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43703"/>
+	</item>
+	<item id="43705" article="a" name="witchcraft bookstand">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43706"/>
+	</item>
+	<item id="43706" article="a" name="witchcraft bookstand">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43705"/>
+	</item>
+	<item id="43683" article="a" name="witchcraft chair">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43684"/>
+	</item>
+	<item id="43684" article="a" name="witchcraft chair">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43681"/>
+	</item>
+	<item id="43681" article="a" name="witchcraft chair">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43682"/>
+	</item>
+	<item id="43682" article="a" name="witchcraft chair">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43683"/>
+	</item>
+	<item id="43678" article="a" name="chest full of witchcraft">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43679"/>
+	</item>
+	<item id="43679" article="a" name="chest full of witchcraft">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43680"/>
+	</item>
+	<item id="43680" article="a" name="chest full of witchcraft">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43677"/>
+	</item>
+	<item id="43677" article="a" name="chest full of witchcraft">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43678"/>
+	</item>
+	<item id="43672" article="a" name="cauldron (witchcraft)">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43678"/>
+	</item>
+	<item id="43725" name="witchcraft bed">
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="35862"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="femaletransformto" value="43721"/>
+		<attribute key="maletransformto" value="43717"/>
+		<attribute key="rotateTo" value="43723"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43726" name="witchcraft bed">
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="35861"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="femaletransformto" value="43722"/>
+		<attribute key="maletransformto" value="43718"/>
+		<attribute key="rotateTo" value="43724"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
 </items>

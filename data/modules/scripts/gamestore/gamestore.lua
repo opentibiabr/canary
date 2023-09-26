@@ -1048,7 +1048,7 @@ GameStore.Categories = {
 		icons = { "Category_Cosmetics.png" },
 		name = "Cosmetics",
 		rookgaard = true,
-		subclasses = { "Mounts", "Tournament Mounts", "Common Outfits", "Store Outfits", "Tournament Outfits"},
+		subclasses = { "Mounts", "Common Outfits", "Store Outfits", "Tournament Cosmetics"},
 	},
 	-- Cosmetics ~ Mounts
 	{
@@ -2149,31 +2149,6 @@ GameStore.Categories = {
 		},
 	},
 	{
-		icons = { "Category_Tickets.png" },
-		name = "Tournament Mounts",
-		parent = "Cosmetics",
-		rookgaard = true,
-		state = GameStore.States.STATE_TIMED,
-		offers = {
-			{
-				icons = { "Cerberus_Champion.png" },
-				name = "Cerberus Champion",
-				price = 1250,
-				id = 146,
-				description = "{info} usable by all characters of the account\n{speedboost}\n\n<i>A fierce and grim guardian of the underworld has risen to fight side by side with the bravest warriors in order to send evil creatures into the realm of the dead. The three headed Cerberus Champion is constantly baying for blood and using its sharp fangs it easily rips apart even the strongest armour and shield.",
-				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
-			},
-			{
-				icons = { "Jousting_Eagle.png" },
-				name = "Jousting Eagle",
-				price = 1250,
-				id = 145,
-				description = "{info} usable by all characters of the account\n{speedboost}\n\n<i>High above the clouds far away from dry land, the training of giant eagles takes place. Only the cream of the crop is able to survive in such harsh environment long enough to call themselves Jousting Eagles while the weaklings find themselves at the bottom of the sea. The tough ones become noble and graceful mounts that are well known for their agility and endurance.</i>",
-				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
-			},
-		},
-	},
-	{
 		icons = { "Category_Outfits.png" },
 		name = "Store Outfits",
 		parent = "Cosmetics",
@@ -3115,7 +3090,7 @@ GameStore.Categories = {
 	},
 	{
 		icons = { "Category_Outfits.png" },
-		name = "Tournament Outfits",
+		name = "Tournament Content",
 		parent = "Cosmetics",
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
@@ -3155,6 +3130,22 @@ GameStore.Categories = {
 				addon = 3,
 				description = "{info} usable by all characters of the account\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>The souls of countless slain dragons have been fused over the years with this armour, wrought from the impervious scales of the ancestors of those very same beings, wicked and wise, winged and wild. The Dragon Slayer Outfit has seen an unfathomable amount of bloodshed, but it pales in comparison to the untold lives lost in the strife over the armour itself. Only the mightiest warriors can even begin to dream of ever owning this exceedingly rare token of power.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+			},
+			{
+				icons = { "Cerberus_Champion.png" },
+				name = "Cerberus Champion",
+				price = 750,
+				id = 146,
+				description = "{info} usable by all characters of the account\n{speedboost}\n\n<i>A fierce and grim guardian of the underworld has risen to fight side by side with the bravest warriors in order to send evil creatures into the realm of the dead. The three headed Cerberus Champion is constantly baying for blood and using its sharp fangs it easily rips apart even the strongest armour and shield.",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+			},
+			{
+				icons = { "Jousting_Eagle.png" },
+				name = "Jousting Eagle",
+				price = 750,
+				id = 145,
+				description = "{info} usable by all characters of the account\n{speedboost}\n\n<i>High above the clouds far away from dry land, the training of giant eagles takes place. Only the cream of the crop is able to survive in such harsh environment long enough to call themselves Jousting Eagles while the weaklings find themselves at the bottom of the sea. The tough ones become noble and graceful mounts that are well known for their agility and endurance.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
 		},
 	},
@@ -6816,7 +6807,7 @@ GameStore.Categories = {
 		offers = {
 			{
 				icons = { "Gold_Pouch.png" },
-				name = "Loot Pouch",
+				name = "Gold Pouch",
 				price = 900,
 				itemtype = 23721,
 				count = 1,
@@ -6835,11 +6826,11 @@ GameStore.Categories = {
 			},
 			{
 				icons = { "Temple_Teleport.png" },
-				name = "House Teleport Scroll",
+				name = "Infinite Food",
 				price = 15,
-				itemtype = 400,
+				itemtype = 30006,
 				count = 1,
-				description = "<i>Teleports you instantly to your house.</i>\n\n{character}\n{useicon} use it to teleport you to your house</i>\n{battlesign}\n{info} does not work in no-logout zones.",
+				description = "<i>Fed your character and remove all conditions.</i>\n{storeinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM,
 			},
 		},

@@ -1,4 +1,4 @@
-local internalNpcName = "Yana"
+local internalNpcName = "NPC BETA"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}
 
@@ -23,36 +23,6 @@ npcConfig.flags = {
 	floorchange = false,
 }
 
-npcConfig.voices = {
-	interval = 15000,
-	chance = 50,
-	{ text = "Trading tokens! First-class equipment available!" },
-}
-
-npcConfig.currency = 22721
-
-npcConfig.shop = {
-	{ name = "axe of desctruction", clientId = 27451, buy = 50 },
-	{ name = "blade of desctruction", clientId = 27449, buy = 50 },
-	{ name = "bow of desctruction", clientId = 27455, buy = 50 },
-	{ name = "chopper of desctruction", clientId = 27452, buy = 50 },
-	{ name = "crossbow of desctruction", clientId = 27456, buy = 50 },
-	{ name = "hammer of desctruction", clientId = 27454, buy = 50 },
-	{ name = "mace of desctruction", clientId = 27453, buy = 50 },
-	{ name = "rod of desctruction", clientId = 27458, buy = 50 },
-	{ name = "slayer of desctruction", clientId = 27450, buy = 50 },
-	{ name = "wand of desctruction", clientId = 27457, buy = 50 },
-}
--- On buy npc shop message
-npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
-	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
-end
--- On sell npc shop message
-npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
-end
--- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local products = {
 	["strike"] = {
@@ -133,6 +103,266 @@ local products = {
 			value = 6,
 		},
 	},
+	["epiphany"] = {
+		["basic"] = {
+			text = "The basic bundle for the void imbuement consists of 25 elvish talismans. Would you like to buy it for 2 gold tokens??",
+			itens = {
+				[1] = { id = 9635, amount = 25},
+			},
+			value = 2,
+		},
+		["intricate"] = {
+			text = "The intricate bundle for the void imbuement consists of 25 elvish talismans and 15 broken shamanic staffs. Would you like to buy it for 4 gold tokens??.",
+			itens = {
+				[1] = { id = 9635, amount = 25 },
+				[2] = { id = 11452, amount = 25 },
+			},
+			value = 4,
+		},
+		["powerful"] = {
+			text = "The powerful bundle for the void imbuement consists of 25 elvish talismans and 15 broken shamanic staffs and 15 strands of medusa hair. Would you like to buy it for 6 gold tokens??",
+			itens = {
+				[1] = { id = 9635, amount = 25 },
+				[2] = { id = 11452, amount = 25 },
+				[3] = { id = 10309, amount = 5 },
+			},
+			value = 6,
+		},
+	},
+	["axe"] = {
+		["basic"] = {
+			text = "The basic bundle for the void imbuement consists of 20 orc teeth. Would you like to buy it for 2 gold tokens??",
+			itens = {
+				[1] = { id = 10196, amount = 20},
+			},
+			value = 2,
+		},
+		["intricate"] = {
+			text = "The intricate bundle for the void imbuement consists of 20 orc teeth and 25 battle stones. Would you like to buy it for 4 gold tokens??.",
+			itens = {
+				[1] = { id = 10196, amount = 20 },
+				[2] = { id = 11447, amount = 25 },
+			},
+			value = 4,
+		},
+		["powerful"] = {
+			text = "The powerful bundle for the void imbuement consists of 20 orc teeth and 25 battle stones and 20 moohtant horns. Would you like to buy it for 6 gold tokens??",
+			itens = {
+				[1] = { id = 10196, amount = 20 },
+				[2] = { id = 11447, amount = 25 },
+				[3] = { id = 21200, amount = 20 },
+			},
+			value = 6,
+		},
+	},
+	["distance"] = {
+		["basic"] = {
+			text = "The basic bundle for the void imbuement consists of 25 elven scouting glasses. Would you like to buy it for 2 gold tokens??",
+			itens = {
+				[1] = { id = 11464, amount = 25},
+			},
+			value = 2,
+		},
+		["intricate"] = {
+			text = "The intricate bundle for the void imbuement consists of 25 elven scouting glasses and 20 elven hoofs. Would you like to buy it for 4 gold tokens??.",
+			itens = {
+				[1] = { id = 11464, amount = 25 },
+				[2] = { id = 18994, amount = 20 },
+			},
+			value = 4,
+		},
+		["powerful"] = {
+			text = "The powerful bundle for the void imbuement consists of 25 elven scouting glasses and 20 elven hoofs and 10 metal spikes. Would you like to buy it for 6 gold tokens??",
+			itens = {
+				[1] = { id = 11464, amount = 20 },
+				[2] = { id = 18994, amount = 20 },
+				[3] = { id = 10298, amount = 10 },
+			},
+			value = 6,
+		},
+	},
+	["shielding"] = {
+		["basic"] = {
+			text = "The basic bundle for the void imbuement consists of 20 pieces of scarab shell. Would you like to buy it for 2 gold tokens??",
+			itens = {
+				[1] = { id = 9641, amount = 20},
+			},
+			value = 2,
+		},
+		["intricate"] = {
+			text = "The intricate bundle for the void imbuement consists of 20 pieces of scarab shell and 25 brimstone shells. Would you like to buy it for 4 gold tokens??.",
+			itens = {
+				[1] = { id = 9641, amount = 20 },
+				[2] = { id = 11703, amount = 25 },
+			},
+			value = 4,
+		},
+		["powerful"] = {
+			text = "The powerful bundle for the void imbuement consists of 20 pieces of scarab shell and 25 brimstone shells and 25 frazzle skins. Would you like to buy it for 6 gold tokens??",
+			itens = {
+				[1] = { id = 9641, amount = 20 },
+				[2] = { id = 11703, amount = 25 },
+				[3] = { id = 20199, amount = 25 },
+			},
+			value = 6,
+		},
+	},
+	["club"] = {
+		["basic"] = {
+			text = "The basic bundle for the void imbuement consists of 20 cyclops toes. Would you like to buy it for 2 gold tokens??",
+			itens = {
+				[1] = { id = 9657, amount = 20},
+			},
+			value = 2,
+		},
+		["intricate"] = {
+			text = "The intricate bundle for the void imbuement consists of 20 cyclops toes and 15 ogre nose rings. Would you like to buy it for 4 gold tokens??.",
+			itens = {
+				[1] = { id = 9657, amount = 20 },
+				[2] = { id = 11447, amount = 15 },
+			},
+			value = 4,
+		},
+		["powerful"] = {
+			text = "The powerful bundle for the void imbuement consists of 20 cyclops toes and 15 ogre nose rings and 10 warmaster's wristguards. Would you like to buy it for 6 gold tokens??",
+			itens = {
+				[1] = { id = 9657, amount = 20 },
+				[2] = { id = 11447, amount = 25 },
+				[3] = { id = 10405, amount = 10 },
+			},
+			value = 6,
+		},
+	},
+	["sword"] = {
+		["basic"] = {
+			text = "The basic bundle for the void imbuement consists of 25 lion's mane. Would you like to buy it for 2 gold tokens??",
+			itens = {
+				[1] = { id = 9691, amount = 25},
+			},
+			value = 2,
+		},
+		["intricate"] = {
+			text = "The intricate bundle for the void imbuement consists of 25 lion's mane and 25 mooh'tah shells. Would you like to buy it for 4 gold tokens??.",
+			itens = {
+				[1] = { id = 9691, amount = 25 },
+				[2] = { id = 21202, amount = 25 },
+			},
+			value = 4,
+		},
+		["powerful"] = {
+			text = "The powerful bundle for the void imbuement consists of 25 lion's mane and 25 mooh'tah shells and 5 war crystals. Would you like to buy it for 6 gold tokens??",
+			itens = {
+				[1] = { id = 9691, amount = 25 },
+				[2] = { id = 21202, amount = 25 },
+				[3] = { id = 9654, amount = 5 },
+			},
+			value = 6,
+		},
+	},
+	["capacity"] = {
+		["basic"] = {
+			text = "The basic bundle for the void imbuement consists of 20 fairy wings. Would you like to buy it for 2 gold tokens??",
+			itens = {
+				[1] = { id = 25694, amount = 20},
+			},
+			value = 2,
+		},
+		["intricate"] = {
+			text = "The intricate bundle for the void imbuement consists of 20 fairy wings and 10 little bowls of myrrh. Would you like to buy it for 4 gold tokens??.",
+			itens = {
+				[1] = { id = 25694, amount = 20 },
+				[2] = { id = 25702, amount = 10 },
+			},
+			value = 4,
+		},
+		["capacity"] = {
+			text = "The powerful bundle for the void imbuement consists of 20 fairy wings and 10 little bowls of myrrh and 5 goosebump leather. Would you like to buy it for 6 gold tokens??",
+			itens = {
+				[1] = { id = 25694, amount = 20 },
+				[2] = { id = 25702, amount = 10 },
+				[3] = { id = 20205, amount = 5 },
+			},
+			value = 6,
+		},
+	},
+	["speed"] = {
+		["basic"] = {
+			text = "The basic bundle for the void imbuement consists of 15 damselfly wings. Would you like to buy it for 2 gold tokens??",
+			itens = {
+				[1] = { id = 17458, amount = 15},
+			},
+			value = 2,
+		},
+		["intricate"] = {
+			text = "The intricate bundle for the void imbuement consists of 15 damselfly wings and 25 compasses. Would you like to buy it for 4 gold tokens??.",
+			itens = {
+				[1] = { id = 17458, amount = 15 },
+				[2] = { id = 10302, amount = 25 },
+			},
+			value = 4,
+		},
+		["capacity"] = {
+			text = "The powerful bundle for the void imbuement consists of 15 damselfly wings and 25 compasses and 20 waspoid wings. Would you like to buy it for 6 gold tokens??",
+			itens = {
+				[1] = { id = 25694, amount = 15 },
+				[2] = { id = 10302, amount = 25 },
+				[3] = { id = 14081, amount = 20 },
+			},
+			value = 6,
+		},
+	},
+	["death protection"] = {
+		["basic"] = {
+			text = "The basic bundle for the void imbuement consists of 25 flasks of embalming fluid. Would you like to buy it for 2 gold tokens??",
+			itens = {
+				[1] = { id = 11466, amount = 25},
+			},
+			value = 2,
+		},
+		["intricate"] = {
+			text = "The intricate bundle for the void imbuement consists of 25 flasks of embalming fluid and 20 gloom wolf furs. Would you like to buy it for 4 gold tokens??.",
+			itens = {
+				[1] = { id = 11466, amount = 25 },
+				[2] = { id = 22007, amount = 20 },
+			},
+			value = 4,
+		},
+		["capacity"] = {
+			text = "The powerful bundle for the void imbuement consists of 25 flasks of embalming fluid and 20 gloom wolf furs and 5 mystical hourglasses. Would you like to buy it for 6 gold tokens??",
+			itens = {
+				[1] = { id = 11466, amount = 25 },
+				[2] = { id = 22007, amount = 20 },
+				[3] = { id = 9660, amount = 5 },
+			},
+			value = 6,
+		},
+	},
+	["earth protection"] = {
+		["basic"] = {
+			text = "The basic bundle for the void imbuement consists of 25 pieces of swampling wood. Would you like to buy it for 2 gold tokens??",
+			itens = {
+				[1] = { id = 17823, amount = 25},
+			},
+			value = 2,
+		},
+		["intricate"] = {
+			text = "The intricate bundle for the void imbuement consists of 25 pieces of swampling wood and 20 snake skins. Would you like to buy it for 4 gold tokens??.",
+			itens = {
+				[1] = { id = 17823, amount = 25 },
+				[2] = { id = 9694, amount = 20 },
+			},
+			value = 4,
+		},
+		["capacity"] = {
+			text = "The powerful bundle for the void imbuement consists oof 25 pieces of swampling wood and 20 snake skins and 10 brimstone fangs. Would you like to buy it for 6 gold tokens??",
+			itens = {
+				[1] = { id = 17823, amount = 25 },
+				[2] = { id = 9694, amount = 20 },
+				[3] = { id = 11702, amount = 5 },
+			},
+			value = 6,
+		},
+	},
 }
 
 local answerType = {}
@@ -165,12 +395,6 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local function greetCallback(npc, creature)
-	local playerId = creature:getId()
-	npcHandler:setTopic(playerId, 0)
-	return true
-end
-
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -179,17 +403,18 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "information") then
-		npcHandler:say({ "{Tokens} are small objects made of metal or other materials. You can use them to buy superior equipment from token traders like me.", "There are several ways to obtain the tokens I'm interested in - killing certain bosses, for example. In exchange for a certain amount of tokens, I can offer you some first-class items." }, npc, creature)
-	elseif MsgContains(message, "worth") then
-		-- to do: check if Heart of Destruction was killed
-		-- after kill message: 'You disrupted the Heart of Destruction, defeated the World Devourer and bought our world some time. You have proven your worth.'
-		npcHandler:say({ "Disrupt the Heart of Destruction, fell the World Devourer to prove your worth and you will be granted the power to imbue 'Powerful Strike', 'Powerful Void' and --'Powerful Vampirism'." }, npc, creature)
-	elseif MsgContains(message, "tokens") then
-		npc:openShopWindow(creature)
-		npcHandler:say("If you have any gold tokens with you, let's have a look! These are my offers.", npc, creature)
-	elseif MsgContains(message, "trade") then
+	-- Axe, Sword, Club, Distance, Magic Level, Shielding
+	if MsgContains(message, "attack") then
 		npcHandler:say({ "I have creature products for the imbuements {strike}, {vampirism} and {void}. Make your choice, please!" }, npc, creature)
+		npcHandler:setTopic(playerId, 1)
+	elseif MsgContains(message, "skill") then
+		npcHandler:say({ "I have creature products for the imbuements {axe}, {sword}, {club}, {distance}, {magic level}, {shielding}. Make your choice, please!" }, npc, creature)
+		npcHandler:setTopic(playerId, 1)
+	elseif MsgContains(message, "support") then
+		npcHandler:say({ "I have creature products for the imbuements {capacity}, {speed}. Make your choice, please!" }, npc, creature)
+		npcHandler:setTopic(playerId, 1)
+	elseif MsgContains(message, "protective") then
+		npcHandler:say({ "I have creature products for the imbuements {death protection}, {earth protection}, {fire protection}, {ice protection}, {energy protection}, {holy protection}. Make your choice, please!" }, npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif npcHandler:getTopic(playerId) == 1 then
 		local imbueType = products[message:lower()]
@@ -237,10 +462,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
-npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)
 
-npcHandler:setCallback(CALLBACK_GREET, greetCallback)
+npcHandler:setMessage(MESSAGE_GREET, "Hello, adventurers! I can offer a wide range of imbuement items, including {Attack Imbuements}, {Support Imbuements}, {Protective Imbuements}, {Skill Imbuements} all available for gold tokens. These enhancements will grant you significant advantages in combat, exploration, and overall gameplay. Ready to boost your power?")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, false)
 

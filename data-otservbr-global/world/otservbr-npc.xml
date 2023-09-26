@@ -2277,6 +2277,9 @@
 	<npc centerx="32255" centery="32216" centerz="8" radius="1">
 		<npc name="Victor" x="0" y="0" z="8" spawntime="60" />
 	</npc>
+	<npc centerx="32405" centery="32246" centerz="8" radius="1">
+		<npc name="Erick Jacquin" x="0" y="0" z="8" spawntime="60" />
+	</npc>
 	<npc centerx="32699" centery="32247" centerz="8" radius="1">
 		<npc name="Stricken Soul" x="0" y="0" z="8" spawntime="60" />
 	</npc>
@@ -2598,9 +2601,6 @@
 	</npc>
 	<npc centerx="32931" centery="32075" centerz="11" radius="1">
 		<npc name="Asrak" x="0" y="0" z="11" spawntime="60" />
-	</npc>
-	<npc centerx="32251" centery="32207" centerz="11" radius="1">
-		<npc name="Xodet" x="0" y="0" z="11" spawntime="60" />
 	</npc>
 	<npc centerx="32854" centery="32327" centerz="11" radius="1">
 		<npc name="A Ghostly Knight" x="0" y="0" z="11" spawntime="60" />

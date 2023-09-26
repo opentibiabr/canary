@@ -745,3 +745,17 @@ enum BedItemPart_t : uint8_t {
 	BED_PILLOW_PART,
 	BED_BLANKET_PART,
 };
+
+enum class AttrSubId_t {
+	None,
+	TrainParty,
+	ProtectParty,
+	EnchantParty,
+	JeanPierreMagic,
+	JeanPierreMelee,
+	JeanPierreDistance,
+	JeanPierreDefense,
+	JeanPierreFishing,
+	BloodRageProtector,
+	Sharpshooter,
+};

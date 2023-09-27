@@ -76,7 +76,7 @@ public:
 		return array[z];
 	}
 
-	void addCreature(std::shared_ptr<Creature> c);
+	void addCreature(const std::shared_ptr<Creature> &c);
 	void removeCreature(std::shared_ptr<Creature> c);
 
 private:

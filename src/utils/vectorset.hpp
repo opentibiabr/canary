@@ -97,7 +97,7 @@ namespace stdext {
 
 	private:
 		void update() noexcept {
-			if (!needUpdate || container.empty()) {
+			if (!needUpdate) {
 				return;
 			}
 

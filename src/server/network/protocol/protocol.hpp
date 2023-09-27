@@ -83,7 +83,7 @@ protected:
 private:
 	struct ZStream {
 		ZStream() {
-			int32_t compressionLevel = g_configManager().getNumber(COMPRESSION_LEVEL);
+			const int32_t compressionLevel = g_configManager().getNumber(COMPRESSION_LEVEL);
 			if (compressionLevel <= 0) {
 				return;
 			}

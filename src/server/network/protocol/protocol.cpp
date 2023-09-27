@@ -200,15 +200,18 @@ uint32_t Protocol::getIP() const {
 }
 
 bool Protocol::compression(OutputMessage &msg) const {
-	const auto outputMessageSize = msg.getLength();
-	if (outputMessageSize > NETWORKMESSAGE_MAXSIZE) {
-		g_logger().error("[NetworkMessage::compression] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, outputMessageSize);
+	if (checksumMethod != CHECKSUM_METHOD_SEQUENCE) {
 		return false;
 	}
 
 	static const thread_local std::unique_ptr<ZStream> compress = std::make_unique<ZStream>();
-
 	if (!compress->stream) {
+		return false;
+	}
+
+	const auto outputMessageSize = msg.getLength();
+	if (outputMessageSize > NETWORKMESSAGE_MAXSIZE) {
+		g_logger().error("[NetworkMessage::compression] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, outputMessageSize);
 		return false;
 	}
 

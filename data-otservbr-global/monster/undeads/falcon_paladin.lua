@@ -74,31 +74,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 90000, maxCount = 5 },
-	{ name = "small diamond", chance = 41000, maxCount = 2 },
-	{ name = "great spirit potion", chance = 41000, maxCount = 2 },
-	{ name = "small emerald", chance = 40000, maxCount = 2 },
-	{ name = "small amethyst", chance = 40000, maxCount = 3 },
-	{ name = "assassin star", chance = 25700, maxCount = 10 },
-	{ name = "small ruby", chance = 20700, maxCount = 2 },
-	{ name = "small topaz", chance = 20100, maxCount = 2 },
-	{ name = "onyx arrow", chance = 14000, maxCount = 15 },
-	{ id = 3039, chance = 7500, maxCount = 3 }, -- red gem
-	{ name = "green gem", chance = 4880 },
-	{ name = "violet gem", chance = 4180 },
-	{ id = 282, chance = 2260 }, -- giant shimmering pearl (brown)
+	{ name = "platinum coin", chance = 90000, maxCount = 6 },
+	{ name = "small emerald", chance = 46000, maxCount = 2 },
+	{ name = "small topaz", chance = 23570, maxCount = 3 },
+	{ name = "small diamond", chance = 48120, maxCount = 2 },
+	{ name = "small ruby", chance = 23490, maxCount = 3 },
+	{ name = "small amethyst", chance = 47470, maxCount = 2 },
+	{ name = "great spirit potion", chance = 48390, maxCount = 2 },
+	{ name = "green gem", chance = 5720 },
+	{ name = "violet gem", chance = 5320 },
+	{ name = "assassin star", chance = 30000, maxCount = 10 },
+	{ name = "onyx arrow", chance = 18380, maxCount = 15 },
+	{ id = 3039, chance = 8880, maxCount = 3 }, -- red gem
+	{ id = 282, chance = 2003 }, -- giant shimmering pearl (brown)
 	{ name = "damaged armor plates", chance = 1120 },
-	{ name = "falcon crest", chance = 730 },
-	{ name = "golden armor", chance = 310 },
-	{ name = "mastermind shield", chance = 310 },
+	{ name = "falcon crest", chance = 970 },
+	{ name = "golden armor", chance = 340 },
+	{ name = "mastermind shield", chance = 400 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -250 },
-	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_PHYSICALDAMAGE, minDamage = -400, maxDamage = -550, range = 5, shootEffect = CONST_ANI_ROYALSPEAR, target = true },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = 500, range = 5, shootEffect = CONST_ANI_BOLT, target = true },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -350, maxDamage = -450, range = 7, radius = 2, shootEffect = CONST_ANI_POWERBOLT, effect = CONST_ME_ENERGYHIT, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -250, maxDamage = -350, length = 5, spread = 3, effect = CONST_ME_PURPLEENERGY, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = -400, maxDamage = -550, range = 5, shootEffect = CONST_ANI_ROYALSPEAR, target = true },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = 500, range = 5, shootEffect = CONST_ANI_BOLT, target = true },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -350, maxDamage = -530, range = 7, radius = 3, shootEffect = CONST_ANI_POWERBOLT, effect = CONST_ME_ENERGYAREA, target = true },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -250, maxDamage = -350, length = 4, effect = CONST_ME_ENERGYHIT, target = false },
 }
 
 monster.defenses = {

@@ -70,28 +70,31 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "No, No, No!!", yell = false },
+	{ text = "Wee wee weeoo!", yell = false },
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 10000, maxCount = 3 },
-	{ name = "lost soul", chance = 45240 },
-	{ name = "death toll", chance = 6250 },
-	{ name = "emerald bangle", chance = 5980 },
-	{ name = "gemmed figurine", chance = 3800 },
-	{ name = "ensouled essence", chance = 2720 },
-	{ id = 23529, chance = 1220 }, -- ring of blue plasma
-	{ name = "silver hand mirror", chance = 1090 },
-	{ name = "ornate crossbow", chance = 1090 },
-	{ name = "crystal crossbow", chance = 270 },
+	{ name = "platinum coin", chance = 100000, maxCount = 3 },
+	{ name = "lost soul", chance = 45850 },
+	{ name = "death toll", chance = 5590 },
+	{ name = "emerald bangle", chance = 7550 },
+	{ name = "gemmed figurine", chance = 5180 },
+	{ name = "ensouled essence", chance = 3770 },
+	{ id = 23529, chance = 1630 }, -- ring of blue plasma
+	{ name = "silver hand mirror", chance = 1410 },
+	{ name = "ornate crossbow", chance = 850 },
+	{ name = "crystal crossbow", chance = 780 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -500 },
-	{ name = "combat", interval = 1700, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -300, maxDamage = -550, radius = 3, shootEffect = CONST_ANI_ENVENOMEDARROW, target = true },
-	{ name = "combat", interval = 1700, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -550, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
-	{ name = "combat", interval = 1700, chance = 35, type = COMBAT_DEATHDAMAGE, minDamage = -150, maxDamage = -550, radius = 4, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 1700, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -550, radius = 4, effect = CONST_ME_ENERGYAREA, target = false },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -650 },
+	{ name = "combat", interval = 1700, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -0, maxDamage = -400, radius = 3, shootEffect = CONST_ANI_SNIPERARROW, target = true },
+	{ name = "combat", interval = 1700, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -620, length = 5, effect = CONST_ME_ENERGYHIT, target = false },
+	{ name = "combat", interval = 1700, chance = 35, type = COMBAT_DEATHDAMAGE, minDamage = -150, maxDamage = -600, radius = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 1700, chance = 35, type = COMBAT_LIFEDRAIN, minDamage = -450, maxDamage = -800, target = true },
 }
+
 
 monster.defenses = {
 	defense = 40,

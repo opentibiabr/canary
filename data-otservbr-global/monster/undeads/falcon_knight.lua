@@ -74,38 +74,38 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3582, chance = 70080, maxCount = 8 }, -- ham
-	{ name = "soul orb", chance = 35000 },
-	{ name = "great mana potion", chance = 33000, maxCount = 3 },
+	{ id = 3582, chance = 83920, maxCount = 8 }, -- ham
+	{ name = "soul orb", chance = 41160 },
+	{ name = "great mana potion", chance = 24000, maxCount = 3 },
 	{ name = "great health potion", chance = 33000, maxCount = 3 },
-	{ name = "flask of demonic blood", chance = 30000, maxCount = 4 },
-	{ name = "small amethyst", chance = 24950, maxCount = 3 },
+	{ name = "flask of demonic blood", chance = 36130, maxCount = 4 },
+	{ name = "small amethyst", chance = 30420, maxCount = 3 },
 	{ name = "assassin star", chance = 24670, maxCount = 10 },
-	{ name = "small diamond", chance = 15700, maxCount = 3 },
+	{ name = "small diamond", chance = 18000, maxCount = 3 },
 	{ name = "small ruby", chance = 15333, maxCount = 3 },
 	{ name = "small emerald", chance = 15110, maxCount = 3 },
-	{ name = "onyx arrow", chance = 14480, maxCount = 15 },
-	{ name = "small topaz", chance = 4580, maxCount = 3 },
-	{ name = "titan axe", chance = 3000 },
-	{ id = 282, chance = 3000 }, -- giant shimmering pearl (brown)
-	{ name = "spiked squelcher", chance = 2200 },
-	{ name = "knight armor", chance = 1980 },
-	{ name = "falcon crest", chance = 1250 },
-	{ name = "war axe", chance = 1230 },
-	{ name = "violet gem", chance = 1060 },
-	{ name = "damaged armor plates", chance = 990 },
-	{ name = "green gem", chance = 880 },
-	{ name = "golden armor", chance = 840 },
-	{ name = "mastermind shield", chance = 620 },
-	{ name = "heavy mace", chance = 460 },
-	{ id = 3481, chance = 370 }, -- closed trap
-	{ id = 3019, chance = 100 }, -- demonbone amulet
+	{ name = "onyx arrow", chance = 18080, maxCount = 15 },
+	{ name = "small topaz", chance = 5680, maxCount = 3 },
+	{ name = "titan axe", chance = 3820 },
+	{ id = 282, chance = 3470 }, -- giant shimmering pearl (brown)
+	{ name = "spiked squelcher", chance = 2620 },
+	{ name = "knight armor", chance = 2160 },
+	{ name = "falcon crest", chance = 1500 },
+	{ name = "war axe", chance = 1110 },
+	{ name = "violet gem", chance = 1260 },
+	{ name = "damaged armor plates", chance = 1280 },
+	{ name = "green gem", chance = 1140 },
+	{ name = "golden armor", chance = 1170 },
+	{ name = "mastermind shield", chance = 940 },
+	{ name = "heavy mace", chance = 300 },
+	{ id = 3481, chance = 510 }, -- closed trap
+	{ id = 3019, chance = 290 }, -- demonbone amulet
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },
-	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_EARTHDAMAGE, minDamage = -400, maxDamage = -500, radius = 2, effect = CONST_ME_GROUNDSHAKER, target = false },
-	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_HOLYDAMAGE, minDamage = -290, maxDamage = -360, length = 5, spread = 3, effect = CONST_ME_BLOCKHIT, target = false },
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_EARTHDAMAGE, minDamage = -400, maxDamage = -500, radius = 3, effect = CONST_ME_GROUNDSHAKER, target = false },
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HOLYDAMAGE, minDamage = -290, maxDamage = -360, length = 4, effect = CONST_ME_HOLYDAMAGE, target = false },
 }
 
 monster.defenses = {

@@ -42,6 +42,14 @@ monster.strategiesTarget = {
 	nearest = 100,
 }
 
+monster.voices = {
+	interval = 5000,
+	chance = 10,
+	{ text = "Woo woo!", yell = false },
+	{ text = "cheeuu, cheeuuu!", yell = false },
+	{ text = "Help! Help!", yell = false },
+}
+
 monster.flags = {
 	summonable = false,
 	attackable = true,
@@ -67,32 +75,29 @@ monster.light = {
 	color = 0,
 }
 
-monster.voices = {
-	interval = 5000,
-	chance = 10,
-}
-
 monster.loot = {
 	{ name = "platinum coin", chance = 100000, maxCount = 2 },
-	{ name = "lost soul", chance = 30300 },
-	{ name = "wand of cosmic energy", chance = 5220 },
-	{ name = "springsprout rod", chance = 3830 },
-	{ name = "death toll", chance = 3540 },
-	{ name = "terra rod", chance = 3030 },
-	{ name = "hailstorm rod", chance = 2830 },
-	{ name = "ensouled essence", chance = 2260 },
-	{ name = "necklace of the deep", chance = 1760 },
-	{ name = "cursed bone", chance = 1570 },
-	{ name = "wand of starstorm", chance = 1520 },
-	{ name = "glacial rod", chance = 960 },
-	{ name = "wand of voodoo", chance = 330 },
+	{ name = "lost soul", chance = 30100 },
+	{ name = "wand of cosmic energy", chance = 6740 },
+	{ name = "springsprout rod", chance = 4620 },
+	{ name = "death toll", chance = 3980 },
+	{ name = "terra rod", chance = 3610 },
+	{ name = "hailstorm rod", chance = 3300 },
+	{ name = "ensouled essence", chance = 2601 },
+	{ name = "necklace of the deep", chance = 2050 },
+	{ name = "cursed bone", chance = 1780 },
+	{ name = "wand of starstorm", chance = 1760 },
+	{ name = "glacial rod", chance = 1140 },
+	{ name = "wand of voodoo", chance = 340 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -500 },
-	{ name = "combat", interval = 1700, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -150, maxDamage = -550, radius = 3, shootEffect = CONST_ANI_ENVENOMEDARROW, target = true },
-	{ name = "combat", interval = 1700, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -150, maxDamage = -550, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -350 },
+	{ name = "combat", interval = 1700, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -200, maxDamage = -350, radius = 3, shootEffect = CONST_ANI_SNIPERARROW, target = true },
+	{ name = "combat", interval = 1700, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -350, effect = CONST_ME_CARNIPHILA, target = true },
+	{ name = "combat", interval = 1700, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -420, length = 5, effect = CONST_ME_ENERGYHIT, target = false },
 	{ name = "combat", interval = 1700, chance = 35, type = COMBAT_DEATHDAMAGE, minDamage = -150, maxDamage = -550, radius = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 1700, chance = 35, type = COMBAT_LIFEDRAIN, minDamage = -320, maxDamage = -450, target = true },
 }
 
 monster.defenses = {

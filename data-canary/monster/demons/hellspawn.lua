@@ -82,26 +82,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 60000, maxCount = 100 }, -- gold coin
-	{ id = 3031, chance = 60000, maxCount = 100 }, -- gold coin
-	{ id = 3031, chance = 60000, maxCount = 36 }, -- gold coin
-	{ id = 3282, chance = 10000 }, -- morning star
-	{ id = 3369, chance = 1886 }, -- warrior helmet
-	{ id = 3371, chance = 3030 }, -- knight legs
-	{ id = 3724, chance = 7692, maxCount = 2 }, -- red mushroom
-	{ id = 6499, chance = 9090 }, -- demonic essence
-	{ id = 7368, chance = 9090, maxCount = 2 }, -- assassin star
-	{ id = 7421, chance = 103 }, -- onyx flail
-	{ id = 7439, chance = 934 }, -- berserk potion
-	{ id = 7452, chance = 970 }, -- spiked squelcher
-	{ id = 239, chance = 40333 }, -- great health potion
-	{ id = 7643, chance = 9090 }, -- ultimate health potion
-	{ id = 8895, chance = 3125 }, -- rusted armor
-	{ id = 8896, chance = 3125 }, -- slightly rusted armor
-	{ id = 9034, chance = 140 }, -- dracoyle statue
-	{ id = 9056, chance = 151 }, -- black skull
-	{ id = 9057, chance = 5882, maxCount = 3 }, -- small topaz
-	{ id = 10304, chance = 20000 }, -- hellspawn tail
+	{ name = "gold coin", chance = 92560, maxCount = 100 },
+	{ name = "gold coin", chance = 92560, maxCount = 100 },
+	{ name = "gold coin", chance = 92560, maxCount = 36 },
+	{ name = "battle shield", chance = 7750},
+	{ name = "morning star", chance = 7260},
+	{ name = "knight legs", chance = 2260},
+	{ name = "berserker potion", chance = 660},
+	{ name = "greath health potion", chance = 30070},
+	{ name = "assassin star", chance = 7420, maxCount = 2},
+	{ name = "red mushroom", chance = 5460, maxCount = 2},
+	{ name = "rusted armor", chance = 2160},
+	{ name = "spiked squelcher", chance = 610},
+	{ name = "hellspawn tail", chance = 14570},
+	{ name = "demonic essence", chance = 7830},
+	{ name = "ultimate health potion", chance = 7400},
+	{ name = "small topaz", chance = 4360, maxCount = 3},
+	{ name = "warrior helmet", chance = 1200},
+	{ name = "black skull", chance = 17},
+	{ id = 7421, chance = 30},
+	{ name = "dracoyle statue", chance = 40},
 }
 
 monster.attacks = {
@@ -113,7 +113,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 40,
 	armor = 40,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 120, maxDamage = 230, effect = CONST_ME_MAGIC_BLUE, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 150, maxDamage = 220, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 270, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 

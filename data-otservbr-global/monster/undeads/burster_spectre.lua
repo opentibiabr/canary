@@ -73,31 +73,31 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "We came tooo thiiiiss wooorld to... get youuu!", yell = false },
+	{ text = "We came tooo thiiiiss wooorld to... get youuu!", yell = false }
+	{ text = "WuuuuAhhhhh!!!", yell = false },
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 7 },
-	{ name = "great spirit potion", chance = 100000, maxCount = 3 },
-	{ name = "protection amulet", chance = 15000 },
-	{ name = "life crystal", chance = 12050 },
-	{ name = "silver amulet", chance = 15000 },
-	{ name = "wand of voodoo", chance = 11050 },
-	{ name = "wand of cosmic energy", chance = 11800 },
-	{ name = "dragon necklace", chance = 16600 },
-	{ name = "stone skin amulet", chance = 8860 },
-	{ id = 30082, chance = 15600 }, -- blue ectoplasm
-	{ name = "glacier amulet", chance = 16890 },
-	{ name = "orb", chance = 18980 },
-	{ name = "hailstorm rod", chance = 17550 },
-	{ name = "elven amulet", chance = 1800 },
-	{ name = "garlic necklace", chance = 2640 },
-	{ name = "platinum amulet", chance = 2600 },
-	{ name = "mind stone", chance = 1800 },
-	{ name = "glacial rod", chance = 520 },
-	{ name = "shockwave amulet", chance = 620 },
-	{ name = "strange symbol", chance = 720 },
-	{ name = "hexagonal ruby", chance = 480 },
+	{ name = "platinum coin", chance = 75000, maxCount = 7 },
+	{ name = "great spirit potion", chance = 22000, maxCount = 3 },
+	{ name = "protection amulet", chance = 7350 },
+	{ name = "life crystal", chance = 9300 },
+	{ name = "wand of voodoo", chance = 4930 },
+	{ name = "wand of cosmic energy", chance = 4000 },
+	{ name = "dragon necklace", chance = 2580 },
+	{ name = "stone skin amulet", chance = 2200 },
+	{ id = 30082, chance = 1830 }, -- blue ectoplasm
+	{ name = "glacier amulet", chance = 2130 },
+	{ name = "orb", chance = 1290 },
+	{ name = "hailstorm rod", chance = 900 },
+	{ name = "elven amulet", chance = 500 },
+	{ name = "garlic necklace", chance = 400 },
+	{ name = "platinum amulet", chance = 1490 },
+	{ name = "mind stone", chance = 150 },
+	{ name = "glacial rod", chance = 560 },
+	{ name = "shockwave amulet", chance = 360 },
+	{ name = "strange symbol", chance = 110 },
+	{ name = "hexagonal ruby", chance = 640 },
 }
 
 monster.attacks = {
@@ -117,7 +117,7 @@ monster.defenses = {
 }
 
 monster.reflects = {
-	{ type = COMBAT_ICEDAMAGE, percent = 133 },
+	{ type = COMBAT_ICEDAMAGE, percent = 166 },
 }
 
 monster.elements = {

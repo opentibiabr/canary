@@ -89,16 +89,17 @@ monster.loot = {
 	{ name = "great health potion", chance = 7070 },
 	{ name = "red lantern", chance = 1220 },
 	{ name = "bunch of ripe rice", chance = 4950 },
-	{ name = "zaoan armor", chance = 80 },
+	{ name = "zaoan armor", chance = 800 },
 	{ name = "zaoan shoes", chance = 700 },
-	{ name = "zaoan legs", chance = 720 },
+	{ name = "zaoan legs", chance = 730 },
 	{ name = "spiked iron ball", chance = 7000 },
 	{ name = "high guard flag", chance = 2990 },
 	{ name = "high guard shoulderplates", chance = 8150 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -306 },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -261 }
+	{ name = "combat", interval = 2000, chance = 15, type=COMBAT_LIFEDRAIN, range = 2, minDamage = 60, maxDamage = -120, target = true},
 }
 
 monster.defenses = {

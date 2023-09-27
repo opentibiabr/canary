@@ -762,7 +762,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 			if (items) {
 				for (auto &tileItem : *items) {
 					const ItemType &iiType = Item::items[tileItem->getID()];
-					if (!iiType.blockSolid) {
+					if (!iiType.blockSolid || iiType.type == ITEM_TYPE_TRASHHOLDER) {
 						continue;
 					}
 

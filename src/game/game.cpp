@@ -1606,7 +1606,9 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 
 		if (item->isStoreItem()) {
 			bool isValidMoveItem = false;
-			if (auto fromHouseTile = fromCylinder->getTile()->dynamic_self_cast<HouseTile>(); fromHouseTile && fromHouseTile->getHouse()->getOwner() != player->getGUID()) {
+			auto fromHouseTile = fromCylinder->getTile();
+			auto house = fromHouseTile ? fromHouseTile->getHouse() : nullptr;
+			if (house && house->getHouseAccessLevel(player) < HOUSE_OWNER) {
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
 
@@ -1631,10 +1633,11 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 			}
 		}
 	} else if (toCylinder->getTile()) {
-		const auto toHouseTile = std::dynamic_pointer_cast<HouseTile>(toCylinder->getTile());
+		const auto toHouseTile = toCylinder->getTile();
+		auto house = toHouseTile ? toHouseTile->getHouse() : nullptr;
 		if (fromCylinder->getContainer()) {
 			if (item->isStoreItem()) {
-				if (!toHouseTile || toHouseTile && toHouseTile->getHouse()->getOwner() != player->getGUID()) {
+				if (house && house->getHouseAccessLevel(player) < HOUSE_OWNER) {
 					return RETURNVALUE_NOTPOSSIBLE;
 				}
 			}
@@ -1646,11 +1649,11 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 				}
 			}
 
-			return RETURNVALUE_NOERROR;
-		}
+			if (item->isStoreItem() && !toHouseTile) {
+				return RETURNVALUE_NOTPOSSIBLE;
+			}
 
-		if (item->isStoreItem() && !toHouseTile) {
-			return RETURNVALUE_NOTPOSSIBLE;
+			return RETURNVALUE_NOERROR;
 		}
 	}
 

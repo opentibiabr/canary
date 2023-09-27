@@ -6796,19 +6796,26 @@ void ProtocolGame::sendPreyData(const std::unique_ptr<PreySlot> &slot) {
 		return;
 	}
 
+	NetworkMessage msg;
+	msg.addByte(0xE8);
 	std::vector<uint16_t> validRaceIds;
 	for (auto raceId : slot->raceIdList) {
 		if (g_monsters().getMonsterTypeByRaceId(raceId)) {
 			validRaceIds.push_back(raceId);
 		} else {
 			g_logger().error("[ProtocolGame::sendPreyData] - Unknown monster type raceid: {}, removing prey slot from player {}", raceId, player->getName());
-			g_logger().warn("[ProtocolGame::sendPreyData] - Remove the prey monster from player");
+			// Remove wrong raceid from slot
+			slot->removeMonsterType(raceId);
+			// Send empty bytes (do not debug client)
+			msg.addByte(0);
+			msg.addByte(1);
+			msg.add<uint32_t>(0);
+			msg.addByte(0);
+			writeToOutputBuffer(msg);
 			return;
 		}
 	}
 
-	NetworkMessage msg;
-	msg.addByte(0xE8);
 	msg.addByte(static_cast<uint8_t>(slot->id));
 	msg.addByte(static_cast<uint8_t>(slot->state));
 

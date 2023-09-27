@@ -16,6 +16,7 @@
 // Utils
 #include "utils/definitions.hpp"
 #include "utils/simd.hpp"
+#include "utils/vectorset.hpp"
 
 // --------------------
 // STL Includes

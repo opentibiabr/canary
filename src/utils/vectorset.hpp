@@ -20,16 +20,12 @@ namespace stdext {
 	template <typename T>
 	class vector_set {
 	public:
-		bool contains(const T v) {
+		bool contains(const T &v) {
 			update();
 			return v && std::lower_bound(container.begin(), container.end(), v) != container.end();
 		}
 
-		bool erase(const T v) {
-			if (!v) {
-				return false;
-			}
-
+		bool erase(const T &v) {
 			update();
 
 			const auto &it = std::lower_bound(container.begin(), container.end(), v);
@@ -47,14 +43,15 @@ namespace stdext {
 			return std::erase_if(container, std::move(fnc)) > 0;
 		}
 
-		void push_back(const T v) {
+		void push_back(const T &v) {
 			needUpdate = true;
 			return container.push_back(v);
 		}
 
-		auto emplace_back(const T v) {
+		template <class... _Valty>
+		auto emplace_back(_Valty &&... v) {
 			needUpdate = true;
-			return container.emplace_back(v);
+			return container.emplace_back(v...);
 		}
 
 		auto insertAll(const vector_set<T> &list) {

@@ -92,4 +92,5 @@ private:
 	friend class Map;
 	friend class MapCache;
 	friend class QTreeNode;
+	friend class Spectators;
 };

@@ -22,13 +22,13 @@ namespace stdext {
 	public:
 		bool contains(const T &v) {
 			update();
-			return v && std::lower_bound(container.begin(), container.end(), v) != container.end();
+			return v && std::ranges::binary_search(container, v);
 		}
 
 		bool erase(const T &v) {
 			update();
 
-			const auto &it = std::lower_bound(container.begin(), container.end(), v);
+			const auto &it = std::ranges::lower_bound(container, v);
 			if (it == container.end()) {
 				return false;
 			}

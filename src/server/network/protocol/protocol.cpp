@@ -204,7 +204,7 @@ bool Protocol::compression(OutputMessage &msg) const {
 		return false;
 	}
 
-	static const thread_local std::unique_ptr<ZStream> compress = std::make_unique<ZStream>();
+	static const thread_local auto &compress = std::make_unique<ZStream>();
 	if (!compress->stream) {
 		return false;
 	}
@@ -217,22 +217,23 @@ bool Protocol::compression(OutputMessage &msg) const {
 
 	compress->stream->next_in = msg.getOutputBuffer();
 	compress->stream->avail_in = outputMessageSize;
-	compress->stream->next_out = (Bytef*)compress->buffer.data();
+	compress->stream->next_out = reinterpret_cast<Bytef*>(compress->buffer.data());
 	compress->stream->avail_out = NETWORKMESSAGE_MAXSIZE;
 
-	if (int32_t ret = deflate(compress->stream.get(), Z_FINISH);
-		ret != Z_OK && ret != Z_STREAM_END) {
+	const int32_t ret = deflate(compress->stream.get(), Z_FINISH);
+	if (ret != Z_OK && ret != Z_STREAM_END) {
 		return false;
 	}
 
-	auto totalSize = static_cast<uint32_t>(compress->stream->total_out);
+	const auto totalSize = compress->stream->total_out;
 	deflateReset(compress->stream.get());
+
 	if (totalSize == 0) {
 		return false;
 	}
 
 	msg.reset();
-	auto charData = static_cast<char*>(static_cast<void*>(compress->buffer.data()));
-	msg.addBytes(charData, static_cast<size_t>(totalSize));
+	msg.addBytes(compress->buffer.data(), totalSize);
+
 	return true;
 }

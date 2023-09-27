@@ -82,7 +82,7 @@ protected:
 
 private:
 	struct ZStream {
-		ZStream() {
+		ZStream() noexcept {
 			const int32_t compressionLevel = g_configManager().getNumber(COMPRESSION_LEVEL);
 			if (compressionLevel <= 0) {
 				return;
@@ -104,7 +104,7 @@ private:
 		}
 
 		std::unique_ptr<z_stream> stream;
-		std::array<uint8_t, NETWORKMESSAGE_MAXSIZE> buffer;
+		std::array<char, NETWORKMESSAGE_MAXSIZE> buffer {};
 	};
 
 	void XTEA_encrypt(OutputMessage &msg) const;

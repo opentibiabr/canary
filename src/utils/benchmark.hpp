@@ -11,9 +11,7 @@
 
 #include <ctime>
 #include <cstdint>
-#include <vector>
 #include <chrono>
-#include <numeric>
 
 class Benchmark {
 public:

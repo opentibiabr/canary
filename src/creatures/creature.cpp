@@ -460,7 +460,7 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 	}
 }
 
-void Creature::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport) {
+void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
 	if (creature == getCreature()) {
 		lastStep = OTSYS_TIME();
 		lastStepCost = 1;
@@ -508,7 +508,7 @@ void Creature::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_pt
 
 					// update 0
 					for (int32_t x = -maxWalkCacheWidth; x <= maxWalkCacheWidth; ++x) {
-						std::shared_ptr<Tile> cacheTile = g_game().map.getTile(static_cast<uint16_t>(myPos.getX() + x), static_cast<uint16_t>(myPos.getY() - maxWalkCacheHeight), myPos.z);
+						const auto &cacheTile = g_game().map.getTile(static_cast<uint16_t>(myPos.getX() + x), static_cast<uint16_t>(myPos.getY() - maxWalkCacheHeight), myPos.z);
 						updateTileCache(cacheTile, x, -maxWalkCacheHeight);
 					}
 				} else if (oldPos.y < newPos.y) { // south
@@ -519,7 +519,7 @@ void Creature::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_pt
 
 					// update mapWalkHeight - 1
 					for (int32_t x = -maxWalkCacheWidth; x <= maxWalkCacheWidth; ++x) {
-						std::shared_ptr<Tile> cacheTile = g_game().map.getTile(static_cast<uint16_t>(myPos.getX() + x), static_cast<uint16_t>(myPos.getY() + maxWalkCacheHeight), myPos.z);
+						const auto &cacheTile = g_game().map.getTile(static_cast<uint16_t>(myPos.getX() + x), static_cast<uint16_t>(myPos.getY() + maxWalkCacheHeight), myPos.z);
 						updateTileCache(cacheTile, x, maxWalkCacheHeight);
 					}
 				}
@@ -544,7 +544,7 @@ void Creature::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_pt
 
 					// update mapWalkWidth - 1
 					for (int32_t y = -maxWalkCacheHeight; y <= maxWalkCacheHeight; ++y) {
-						std::shared_ptr<Tile> cacheTile = g_game().map.getTile(myPos.x + maxWalkCacheWidth, static_cast<uint16_t>(myPos.y + y), myPos.z);
+						const auto &cacheTile = g_game().map.getTile(myPos.x + maxWalkCacheWidth, static_cast<uint16_t>(myPos.y + y), myPos.z);
 						updateTileCache(cacheTile, maxWalkCacheWidth, y);
 					}
 				} else if (oldPos.x > newPos.x) { // west
@@ -589,7 +589,7 @@ void Creature::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_pt
 		}
 	}
 
-	auto followCreature = getFollowCreature();
+	const auto &followCreature = getFollowCreature();
 	if (followCreature && (creature == getCreature() || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
@@ -601,7 +601,7 @@ void Creature::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_pt
 		}
 	}
 
-	auto attackedCreature = getAttackedCreature();
+	const auto &attackedCreature = getAttackedCreature();
 	if (attackedCreature && (creature == attackedCreature || creature == getCreature())) {
 		if (newPos.z != oldPos.z || !canSee(attackedCreature->getPosition())) {
 			onCreatureDisappear(attackedCreature, false);
@@ -992,10 +992,8 @@ void Creature::goToFollowCreature() {
 						return;
 					}
 
-					hasFollowPath = true;
-
 					// transfer the action to main dispatch so that there is no concurrency problem.
-					g_dispatcher().addTask([this, list] { startAutoWalk(list); }, "Creature::goToFollowCreature::getPathMatchingAsync::onSuccess");
+					g_dispatcher().addTask([this, list] { hasFollowPath = true; startAutoWalk(list); }, "Creature::goToFollowCreature::getPathMatchingAsync::onSuccess");
 				},
 				[&]() { hasFollowPath = false; }
 			);
@@ -1024,11 +1022,13 @@ void Creature::goToFollowCreature() {
 				return;
 			}
 
-			hasFollowPath = true;
-
 			// transfer the action to main dispatch so that there is no concurrency problem.
 			g_dispatcher().addTask([this, list, followCreature] {
-					startAutoWalk(list); onFollowCreatureComplete(followCreature); }, "Creature::goToFollowCreature::getPathMatchingAsync::onSuccess");
+				hasFollowPath = true;
+				startAutoWalk(list);
+				onFollowCreatureComplete(followCreature);
+			},
+								   "Creature::goToFollowCreature::getPathMatchingAsync::onSuccess");
 		},
 		[&]() { hasFollowPath = false; }
 	);

@@ -18,7 +18,6 @@
 class Benchmark {
 public:
 	Benchmark() noexcept {
-		times.reserve(20);
 		start();
 	}
 
@@ -43,7 +42,8 @@ public:
 			maxTime = last;
 		}
 
-		times.push_back(last);
+		total += last;
+		++totalExecs;
 	}
 
 	double duration() noexcept {
@@ -63,7 +63,7 @@ public:
 	}
 
 	double avg() const noexcept {
-		return std::accumulate(times.begin(), times.end(), 0.) / times.size();
+		return total / totalExecs;
 	}
 
 	void reset() noexcept {
@@ -71,7 +71,8 @@ public:
 		minTime = -1;
 		maxTime = -1;
 		last = -1;
-		times.clear();
+		total = 0;
+		totalExecs = 0;
 	}
 
 private:
@@ -83,6 +84,6 @@ private:
 	double minTime = -1;
 	double maxTime = -1;
 	double last = -1;
-
-	std::vector<double> times;
+	double total = 0;
+	uint_fast32_t totalExecs = 0;
 };

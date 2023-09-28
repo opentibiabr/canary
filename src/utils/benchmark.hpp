@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <vector>
 #include <chrono>
+#include <numeric>
 
 class Benchmark {
 public:
@@ -30,8 +31,7 @@ public:
 			return;
 		}
 
-		endTime = time();
-		last = static_cast<double>(endTime - startTime) / 1000.f;
+		last = static_cast<double>(time() - startTime) / 1000.f;
 
 		startTime = -1;
 
@@ -63,17 +63,11 @@ public:
 	}
 
 	double avg() const noexcept {
-		double total = 0.0;
-		for (const auto v : times) {
-			total += v;
-		}
-
-		return total / times.size();
+		return std::accumulate(times.begin(), times.end(), 0.) / times.size();
 	}
 
 	void reset() noexcept {
 		startTime = -1;
-		endTime = -1;
 		minTime = -1;
 		maxTime = -1;
 		last = -1;
@@ -84,8 +78,8 @@ private:
 	int64_t time() const noexcept {
 		return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	}
+
 	int64_t startTime = -1;
-	int64_t endTime = -1;
 	double minTime = -1;
 	double maxTime = -1;
 	double last = -1;

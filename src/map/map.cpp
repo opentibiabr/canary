@@ -627,10 +627,9 @@ void Map::getPathMatchingAsync(const std::shared_ptr<Creature> &creature, const 
 	inject<ThreadPool>().addLoad([=, this, startPos = creature->getPosition()]() {
 		std::forward_list<Direction> list;
 		if (getPathMatching(creature, startPos, list, pathCondition, fpp)) {
-			// transfer the action to main dispatch so that there is no concurrency problem.
-			g_dispatcher().addTask([=] { onSuccess(startPos, pathCondition.getTargetPos(), list); }, "Map::getPathMatchingAsync::onSuccess");
+			onSuccess(startPos, pathCondition.getTargetPos(), list);
 		} else if (onFail) {
-			g_dispatcher().addTask([=] { onFail(); }, "Map::getPathMatchingAsync::onFail");
+			onFail();
 		}
 	});
 }

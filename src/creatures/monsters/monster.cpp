@@ -591,12 +591,13 @@ void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature
 	if (!creature) {
 		return;
 	}
+
 	auto it = std::find(targetIDList.begin(), targetIDList.end(), creature->getID());
-	if (it != targetIDList.end()) {
-		auto target = targetListMap[*it].lock();
-		if (!target) {
-			return;
-		}
+	if (it == targetIDList.end()) {
+		return;
+	}
+
+	if (const auto &target = targetListMap[*it].lock()) {
 		targetIDList.erase(it);
 
 		if (hasFollowPath) {
@@ -879,7 +880,7 @@ void Monster::doAttacking(uint32_t interval) {
 	}
 }
 
-bool Monster::canUseAttack(const Position &pos, std::shared_ptr<Creature> target) const {
+bool Monster::canUseAttack(const Position &pos, const std::shared_ptr<Creature> &target) const {
 	if (isHostile()) {
 		const Position &targetPos = target->getPosition();
 		uint32_t distance = std::max<uint32_t>(Position::getDistanceX(pos, targetPos), Position::getDistanceY(pos, targetPos));
@@ -2082,7 +2083,7 @@ bool Monster::isImmune(CombatType_t combatType) const {
 	return mType->info.m_damageImmunities[combatTypeToIndex(combatType)];
 }
 
-void Monster::getPathSearchParams(std::shared_ptr<Creature> creature, FindPathParams &fpp) {
+void Monster::getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) {
 	Creature::getPathSearchParams(creature, fpp);
 
 	fpp.minTargetDist = 1;

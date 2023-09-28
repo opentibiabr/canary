@@ -233,7 +233,7 @@ void Creature::startAutoWalk(const std::forward_list<Direction> &listDir, bool i
 
 	size_t size = 0;
 	for (auto it = listDir.begin(); it != listDir.end() && size <= 1; ++it) {
-		size++;
+		++size;
 	}
 	addEventWalk(size == 1);
 }
@@ -249,7 +249,7 @@ void Creature::addEventWalk(bool firstStep) {
 		return;
 	}
 
-	int64_t ticks = getEventStepTicks(firstStep);
+	const int64_t ticks = getEventStepTicks(firstStep);
 	if (ticks <= 0) {
 		return;
 	}
@@ -950,7 +950,7 @@ bool Creature::setAttackedCreature(std::shared_ptr<Creature> creature) {
 	return true;
 }
 
-void Creature::getPathSearchParams(std::shared_ptr<Creature>, FindPathParams &fpp) {
+void Creature::getPathSearchParams(const std::shared_ptr<Creature> &, FindPathParams &fpp) {
 	fpp.fullPathSearch = !hasFollowPath;
 	fpp.clearSight = true;
 	fpp.maxSearchDist = 12;
@@ -986,12 +986,16 @@ void Creature::goToFollowCreature() {
 				followCreature->getPosition(), fpp,
 				[&](const Position &startPos, const Position &targetPos, const std::forward_list<Direction> &list) {
 					const auto &followCreature = getFollowCreature();
+
+					// validate that input data is still the same after executing Creature::getPathTo
 					if (!followCreature || getPosition() != startPos || followCreature->getPosition() != targetPos) {
 						return;
 					}
 
 					hasFollowPath = true;
-					startAutoWalk(listWalkDir = list);
+
+					// transfer the action to main dispatch so that there is no concurrency problem.
+					g_dispatcher().addTask([this, list] { startAutoWalk(list); }, "Creature::goToFollowCreature::getPathMatchingAsync::onSuccess");
 				},
 				[&]() { hasFollowPath = false; }
 			);
@@ -1001,33 +1005,33 @@ void Creature::goToFollowCreature() {
 
 		if (dir != DIRECTION_NONE) {
 			listWalkDir.clear();
-			listWalkDir.push_front(dir);
-
 			hasFollowPath = true;
-			startAutoWalk(listWalkDir);
+			startAutoWalk({ dir });
 		}
-	} else {
-		listWalkDir.clear();
 
-		getPathToAsync(
-			followCreature->getPosition(), fpp,
-			[&](const Position &startPos, const Position &targetPos, const std::forward_list<Direction> &list) {
-				const auto &followCreature = getFollowCreature();
-				if (!followCreature || getPosition() != startPos || followCreature->getPosition() != targetPos) {
-					return;
-				}
-
-				hasFollowPath = true;
-				startAutoWalk(listWalkDir = list);
-				onFollowCreatureComplete(followCreature);
-			},
-			[&]() { hasFollowPath = false; }
-		);
-
+		onFollowCreatureComplete(followCreature);
 		return;
 	}
 
-	onFollowCreatureComplete(followCreature);
+	listWalkDir.clear();
+	getPathToAsync(
+		followCreature->getPosition(), fpp,
+		[&](const Position &startPos, const Position &targetPos, const std::forward_list<Direction> &list) {
+			const auto &followCreature = getFollowCreature();
+
+			// validate that input data is still the same after executing Creature::getPathTo
+			if (!followCreature || getPosition() != startPos || followCreature->getPosition() != targetPos) {
+				return;
+			}
+
+			hasFollowPath = true;
+
+			// transfer the action to main dispatch so that there is no concurrency problem.
+			g_dispatcher().addTask([this, list, followCreature] {
+					startAutoWalk(list); onFollowCreatureComplete(followCreature); }, "Creature::goToFollowCreature::getPathMatchingAsync::onSuccess");
+		},
+		[&]() { hasFollowPath = false; }
+	);
 }
 
 bool Creature::canFollowMaster() {

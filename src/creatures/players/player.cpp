@@ -4209,7 +4209,7 @@ void Player::goToFollowCreature() {
 	}
 }
 
-void Player::getPathSearchParams(std::shared_ptr<Creature> creature, FindPathParams &fpp) {
+void Player::getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) {
 	Creature::getPathSearchParams(creature, fpp);
 	fpp.fullPathSearch = true;
 }

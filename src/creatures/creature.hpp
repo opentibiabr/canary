@@ -761,7 +761,7 @@ protected:
 	virtual uint16_t getLookCorpse() const {
 		return 0;
 	}
-	virtual void getPathSearchParams(std::shared_ptr<Creature> creature, FindPathParams &fpp);
+	virtual void getPathSearchParams(const std::shared_ptr<Creature> &, FindPathParams &fpp);
 	virtual void death(std::shared_ptr<Creature>) { }
 	virtual bool dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified);
 	virtual std::shared_ptr<Item> getCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature);

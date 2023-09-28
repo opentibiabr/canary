@@ -623,13 +623,16 @@ std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, 
 	return tile;
 }
 
-void Map::getPathMatchingAsync(const std::shared_ptr<Creature> &creature, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp, const std::function<void(const Position &, const Position &, const std::forward_list<Direction> &)> &onSuccess, const std::function<void()> &onFail) {
-	inject<ThreadPool>().addLoad([=, this, startPos = creature->getPosition()]() {
+void Map::getPathMatchingAsync(const std::shared_ptr<Creature> &creature, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp, std::function<bool(const Position &, const Position &)> executeRule, std::function<void(const Position &, const Position &, const std::forward_list<Direction> &)> onSuccess, std::function<void()> onFail) {
+	inject<ThreadPool>().addLoad([=, this, startPos = creature->getPosition(), executeRule = std::move(executeRule), onSuccess = std::move(onSuccess), onFail = std::move(onFail)]() {
 		std::forward_list<Direction> list;
 		if (getPathMatching(creature, startPos, list, pathCondition, fpp)) {
-			onSuccess(startPos, pathCondition.getTargetPos(), list);
-		} else if (onFail) {
-			onFail();
+			if (executeRule(startPos, pathCondition.getTargetPos())) {
+				// transfer the action to main dispatch so that there is no concurrency problem.
+				g_dispatcher().addTask([=, this, startPos = std::move(startPos), onSuccess = std::move(onSuccess)] { onSuccess(startPos, pathCondition.getTargetPos(), list); }, "Map::getPathMatchingAsync::onSuccess");
+			}
+		} else if (onFail && executeRule(startPos, pathCondition.getTargetPos())) {
+			g_dispatcher().addTask([this, onFail = std::move(onFail)] { onFail(); }, "Map::getPathMatchingAsync::onFail");
 		}
 	});
 }

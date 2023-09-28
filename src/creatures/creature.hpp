@@ -528,7 +528,7 @@ public:
 	double getDamageRatio(std::shared_ptr<Creature> attacker) const;
 
 	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, const FindPathParams &fpp);
-	void getPathToAsync(const Position &targetPos, const FindPathParams &fpp, const std::function<void(const Position &, const Position &, const std::forward_list<Direction> &)> &onSuccess, const std::function<void()> &onFail = nullptr);
+	void getPathToAsync(const Position &targetPos, const FindPathParams &fpp, std::function<bool(const Position &, const Position &)> executeRule, std::function<void(const Position &, const Position &, const std::forward_list<Direction> &)> onSuccess, std::function<void()> onFail = nullptr);
 
 	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
 

@@ -36,6 +36,8 @@ public:
 
 	virtual std::optional<ValueWrapper> get(const std::string &key, bool forceLoad = false);
 
+	void remove(const std::string &key);
+
 	template <typename T>
 	T get(const std::string &key, bool forceLoad = false);
 
@@ -64,6 +66,7 @@ protected:
 	}
 	virtual std::optional<ValueWrapper> load(const std::string &key) = 0;
 	virtual bool save(const std::string &key, const ValueWrapper &value) = 0;
+
 	Logger &logger;
 
 private:

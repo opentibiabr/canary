@@ -4233,7 +4233,7 @@ void Player::doAttacking(uint32_t) {
 		bool result = false;
 
 		std::shared_ptr<Item> tool = getWeapon();
-		const Weapon* weapon = g_weapons().getWeapon(tool);
+		const WeaponShared_ptr weapon = g_weapons().getWeapon(tool);
 		uint32_t delay = getAttackSpeed();
 		bool classicSpeed = g_configManager().getBoolean(CLASSIC_ATTACK_SPEED);
 

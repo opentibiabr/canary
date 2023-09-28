@@ -72,7 +72,7 @@ CombatDamage Combat::getCombatDamage(std::shared_ptr<Creature> creature, std::sh
 				);
 			} else if (formulaType == COMBAT_FORMULA_SKILL) {
 				std::shared_ptr<Item> tool = player->getWeapon();
-				const Weapon* weapon = g_weapons().getWeapon(tool);
+				const WeaponShared_ptr weapon = g_weapons().getWeapon(tool);
 				if (weapon) {
 					damage.primary.value = normal_random(
 						static_cast<int32_t>(minb),
@@ -1516,7 +1516,7 @@ void ValueCallback::getMinMaxValues(std::shared_ptr<Player> player, CombatDamage
 		case COMBAT_FORMULA_SKILL: {
 			// onGetPlayerMinMaxValues(player, attackSkill, attackValue, attackFactor)
 			std::shared_ptr<Item> tool = player->getWeapon();
-			const Weapon* weapon = g_weapons().getWeapon(tool);
+			const WeaponShared_ptr weapon = g_weapons().getWeapon(tool);
 			std::shared_ptr<Item> item = nullptr;
 
 			if (weapon) {

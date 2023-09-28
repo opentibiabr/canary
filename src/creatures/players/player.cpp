@@ -4273,7 +4273,7 @@ uint64_t Player::getGainedExperience(std::shared_ptr<Creature> attacker) const {
 	return 0;
 }
 
-void Player::onFollowCreature(std::shared_ptr<Creature> creature) {
+void Player::onFollowCreature(const std::shared_ptr<Creature> &creature) {
 	if (!creature) {
 		stopWalk();
 	}

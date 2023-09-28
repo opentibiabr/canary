@@ -587,7 +587,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	return false;
 }
 
-void Monster::onFollowCreatureComplete(std::shared_ptr<Creature> creature) {
+void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature) {
 	if (!creature) {
 		return;
 	}

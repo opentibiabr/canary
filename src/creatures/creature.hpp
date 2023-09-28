@@ -43,6 +43,10 @@ public:
 
 	bool isInRange(const Position &startPos, const Position &testPos, const FindPathParams &fpp) const;
 
+	Position getTargetPos() const {
+		return targetPos;
+	}
+
 private:
 	Position targetPos;
 };
@@ -283,8 +287,8 @@ public:
 	virtual bool setFollowCreature(std::shared_ptr<Creature> creature);
 
 	// follow events
-	virtual void onFollowCreature(std::shared_ptr<Creature>) { }
-	virtual void onFollowCreatureComplete(std::shared_ptr<Creature>) { }
+	virtual void onFollowCreature(const std::shared_ptr<Creature> &) { }
+	virtual void onFollowCreatureComplete(const std::shared_ptr<Creature> &) { }
 
 	// combat functions
 	std::shared_ptr<Creature> getAttackedCreature() {
@@ -524,6 +528,8 @@ public:
 	double getDamageRatio(std::shared_ptr<Creature> attacker) const;
 
 	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, const FindPathParams &fpp);
+	void getPathToAsync(const Position &targetPos, const FindPathParams &fpp, const std::function<void(const Position &, const Position &, const std::forward_list<Direction> &)> &onSuccess, const std::function<void()> &onFail = nullptr);
+
 	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
 
 	struct CountBlock_t {

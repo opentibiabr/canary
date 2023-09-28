@@ -320,11 +320,7 @@ int32_t Creature::getWalkCache(const Position &pos) {
 	if (std::abs(dx) <= maxWalkCacheWidth) {
 		int32_t dy = Position::getOffsetY(pos, myPos);
 		if (std::abs(dy) <= maxWalkCacheHeight) {
-			if (localMapCache[maxWalkCacheHeight + dy][maxWalkCacheWidth + dx]) {
-				return 1;
-			} else {
-				return 0;
-			}
+			return localMapCache[maxWalkCacheHeight + dy][maxWalkCacheWidth + dx];
 		}
 	}
 
@@ -963,51 +959,72 @@ void Creature::getPathSearchParams(std::shared_ptr<Creature>, FindPathParams &fp
 }
 
 void Creature::goToFollowCreature() {
-	auto followCreature = getFollowCreature();
-	if (followCreature) {
-		if (isSummon() && !getMonster()->isFamiliar() && !canFollowMaster()) {
-			hasFollowPath = false;
+	const auto &followCreature = getFollowCreature();
+	if (!followCreature) {
+		return;
+	}
+
+	if (isSummon() && !getMonster()->isFamiliar() && !canFollowMaster()) {
+		hasFollowPath = false;
+		return;
+	}
+
+	FindPathParams fpp;
+	getPathSearchParams(followCreature, fpp);
+	const auto &monster = getMonster();
+
+	if (monster && !monster->getMaster() && (monster->isFleeing() || fpp.maxTargetDist > 1)) {
+		Direction dir = DIRECTION_NONE;
+
+		if (monster->isFleeing()) {
+			monster->getDistanceStep(followCreature->getPosition(), dir, true);
+		} else if (!monster->getDistanceStep(followCreature->getPosition(), dir)) { // maxTargetDist > 1
+			// if we can't get anything then let the A* calculate
+			listWalkDir.clear();
+
+			getPathToAsync(
+				followCreature->getPosition(), fpp,
+				[&](const Position &startPos, const Position &targetPos, const std::forward_list<Direction> &list) {
+					const auto &followCreature = getFollowCreature();
+					if (!followCreature || getPosition() != startPos || followCreature->getPosition() != targetPos) {
+						return;
+					}
+
+					hasFollowPath = true;
+					startAutoWalk(listWalkDir = list);
+				},
+				[&]() { hasFollowPath = false; }
+			);
+
 			return;
 		}
 
-		FindPathParams fpp;
-		getPathSearchParams(followCreature, fpp);
-		std::shared_ptr<Monster> monster = getMonster();
-		if (monster && !monster->getMaster() && (monster->isFleeing() || fpp.maxTargetDist > 1)) {
-			Direction dir = DIRECTION_NONE;
+		if (dir != DIRECTION_NONE) {
+			listWalkDir.clear();
+			listWalkDir.push_front(dir);
 
-			if (monster->isFleeing()) {
-				monster->getDistanceStep(followCreature->getPosition(), dir, true);
-			} else { // maxTargetDist > 1
-				if (!monster->getDistanceStep(followCreature->getPosition(), dir)) {
-					// if we can't get anything then let the A* calculate
-					listWalkDir.clear();
-					if (getPathTo(followCreature->getPosition(), listWalkDir, fpp)) {
-						hasFollowPath = true;
-						startAutoWalk(listWalkDir);
-					} else {
-						hasFollowPath = false;
-					}
+			hasFollowPath = true;
+			startAutoWalk(listWalkDir);
+		}
+	} else {
+		listWalkDir.clear();
+
+		getPathToAsync(
+			followCreature->getPosition(), fpp,
+			[&](const Position &startPos, const Position &targetPos, const std::forward_list<Direction> &list) {
+				const auto &followCreature = getFollowCreature();
+				if (!followCreature || getPosition() != startPos || followCreature->getPosition() != targetPos) {
 					return;
 				}
-			}
-
-			if (dir != DIRECTION_NONE) {
-				listWalkDir.clear();
-				listWalkDir.push_front(dir);
 
 				hasFollowPath = true;
-				startAutoWalk(listWalkDir);
-			}
-		} else {
-			listWalkDir.clear();
-			if (getPathTo(followCreature->getPosition(), listWalkDir, fpp)) {
-				hasFollowPath = true;
-				startAutoWalk(listWalkDir);
-			} else {
-				hasFollowPath = false;
-			}
-		}
+				startAutoWalk(listWalkDir = list);
+				onFollowCreatureComplete(followCreature);
+			},
+			[&]() { hasFollowPath = false; }
+		);
+
+		return;
 	}
 
 	onFollowCreatureComplete(followCreature);
@@ -1647,6 +1664,10 @@ bool Creature::isInvisible() const {
 
 bool Creature::getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, const FindPathParams &fpp) {
 	return g_game().map.getPathMatching(getCreature(), dirList, FrozenPathingConditionCall(targetPos), fpp);
+}
+
+void Creature::getPathToAsync(const Position &targetPos, const FindPathParams &fpp, const std::function<void(const Position &, const Position &, const std::forward_list<Direction> &)> &onSuccess, const std::function<void()> &onFail) {
+	g_game().map.getPathMatchingAsync(getCreature(), FrozenPathingConditionCall(targetPos), fpp, onSuccess, onFail);
 }
 
 bool Creature::getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch /*= true*/, bool clearSight /*= true*/, int32_t maxSearchDist /*= 7*/) {

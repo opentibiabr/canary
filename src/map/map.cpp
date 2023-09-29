@@ -735,14 +735,15 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 
 			AStarNode* neighborNode = nodes.getNodeByPosition(pos.x, pos.y);
 
-			const auto &tile = neighborNode || !creature ? getTile(pos.x, pos.y, pos.z) : canWalkTo(creature, pos);
+			const bool withoutCreature = creature == nullptr;
+			const auto &tile = neighborNode || withoutCreature ? getTile(pos.x, pos.y, pos.z) : canWalkTo(creature, pos);
 
-			if (!tile || !neighborNode && !creature && tile->hasFlag(TILESTATE_BLOCKSOLID)) {
+			if (!tile || !neighborNode && withoutCreature && tile->hasFlag(TILESTATE_BLOCKSOLID)) {
 				continue;
 			}
 
 			// The cost (g) for this neighbor
-			const int_fast32_t cost = AStarNodes::getMapWalkCost(n, pos);
+			const int_fast32_t cost = AStarNodes::getMapWalkCost(n, pos, withoutCreature);
 			const int_fast32_t extraCost = AStarNodes::getTileWalkCost(creature, tile);
 			const int_fast32_t newf = f + cost + extraCost;
 

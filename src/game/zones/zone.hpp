@@ -117,6 +117,8 @@ public:
 	void removeMonsters() const;
 	void removeNpcs() const;
 
+	void refresh();
+
 	static std::shared_ptr<Zone> addZone(const std::string &name);
 	static std::shared_ptr<Zone> getZone(const std::string &name);
 	static phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones(const Position position);

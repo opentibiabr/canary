@@ -960,8 +960,8 @@ bool Game::removeCreature(std::shared_ptr<Creature> creature, bool isLogout /* =
 void Game::executeDeath(uint32_t creatureId) {
 	std::shared_ptr<Creature> creature = getCreatureByID(creatureId);
 	if (creature && !creature->isRemoved()) {
-		creature->onDeath();
 		afterCreatureZoneChange(creature, creature->getZones(), {});
+		creature->onDeath();
 	}
 }
 
@@ -5715,6 +5715,7 @@ void Game::checkCreatures(size_t index) {
 				creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
 				creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
 			} else {
+				afterCreatureZoneChange(creature, creature->getZones(), {});
 				creature->onDeath();
 			}
 			++it;

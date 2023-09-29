@@ -40,13 +40,18 @@ function buyHouse.onSay(player, words, param)
 		return false
 	end
 
+	if house:hasItemOnTile() then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You cannot buy this house, as there are items inside it. Please, contact an administrator.")
+		return false
+	end
+
 	local price = house:getPrice()
 	if not player:removeMoneyBank(price) then
 		player:sendCancelMessage("You do not have enough money.")
 		return false
 	end
 
-	house:setOwnerGuid(player:getGuid())
+	house:setHouseOwner(player:getGuid())
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have successfully bought this house, be sure to have the money for the rent in the bank.")
 	return false
 end

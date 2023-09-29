@@ -162,6 +162,10 @@ void Items::loadFromProtobuf() {
 		iType.pickupable = object.flags().take();
 		iType.rotatable = object.flags().rotate();
 		iType.wrapContainer = object.flags().wrap() || object.flags().unwrap();
+		if (iType.wrapContainer) {
+			iType.wrapableTo = ITEM_DECORATION_KIT;
+			iType.wrapable = true;
+		}
 		iType.multiUse = object.flags().multiuse();
 		iType.moveable = object.flags().unmove() == false;
 		iType.canReadText = (object.flags().has_lenshelp() && object.flags().lenshelp().id() == 1112) || (object.flags().has_write() && object.flags().write().max_text_length() != 0) || (object.flags().has_write_once() && object.flags().write_once().max_text_length_once() != 0);

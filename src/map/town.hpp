@@ -39,26 +39,22 @@ private:
 	Position templePosition;
 };
 
-using TownMap = std::map<uint32_t, Town*>;
+using TownMap = std::map<uint32_t, std::shared_ptr<Town>>;
 
 class Towns {
 public:
 	Towns() = default;
-	~Towns() {
-		for (const auto &it : townMap) {
-			delete it.second;
-		}
-	}
+	~Towns() = default;
 
 	// non-copyable
 	Towns(const Towns &) = delete;
 	Towns &operator=(const Towns &) = delete;
 
-	bool addTown(uint32_t townId, Town* town) {
+	bool addTown(uint32_t townId, const std::shared_ptr<Town> &town) {
 		return townMap.emplace(townId, town).second;
 	}
 
-	Town* getTown(const std::string &townName) const {
+	std::shared_ptr<Town> getTown(const std::string &townName) const {
 		for (const auto &it : townMap) {
 			if (strcasecmp(townName.c_str(), it.second->getName().c_str()) == 0) {
 				return it.second;
@@ -67,7 +63,7 @@ public:
 		return nullptr;
 	}
 
-	Town* getTown(uint32_t townId) const {
+	std::shared_ptr<Town> getTown(uint32_t townId) const {
 		auto it = townMap.find(townId);
 		if (it == townMap.end()) {
 			return nullptr;
@@ -75,11 +71,10 @@ public:
 		return it->second;
 	}
 
-	Town* getOrCreateTown(uint32_t townId) {
+	std::shared_ptr<Town> getOrCreateTown(uint32_t townId) {
 		auto town = getTown(townId);
 		if (!town) {
-			town = new Town(townId);
-			addTown(townId, town);
+			addTown(townId, town = std::make_shared<Town>(townId));
 		}
 		return town;
 	}

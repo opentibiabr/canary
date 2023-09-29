@@ -52,25 +52,25 @@ public:
 
 	void getEventInfo(int32_t &scriptId, LuaScriptInterface*&scriptInterface, int32_t &callbackId, bool &timerEvent) const;
 
-	void addTempItem(Item* item);
-	static void removeTempItem(Item* item);
-	uint32_t addThing(Thing* thing);
-	void insertItem(uint32_t uid, Item* item);
+	void addTempItem(std::shared_ptr<Item> item);
+	static void removeTempItem(std::shared_ptr<Item> item);
+	uint32_t addThing(std::shared_ptr<Thing> thing);
+	void insertItem(uint32_t uid, std::shared_ptr<Item> item);
 
 	static DBResult_ptr getResultByID(uint32_t id);
 	static uint32_t addResult(DBResult_ptr res);
 	static bool removeResult(uint32_t id);
 
-	void setNpc(Npc* npc) {
+	void setNpc(std::shared_ptr<Npc> npc) {
 		curNpc = npc;
 	}
-	Npc* getNpc() const {
+	std::shared_ptr<Npc> getNpc() const {
 		return curNpc;
 	}
 
-	Thing* getThingByUID(uint32_t uid);
-	Item* getItemByUID(uint32_t uid);
-	Container* getContainerByUID(uint32_t uid);
+	std::shared_ptr<Thing> getThingByUID(uint32_t uid);
+	std::shared_ptr<Item> getItemByUID(uint32_t uid);
+	std::shared_ptr<Container> getContainerByUID(uint32_t uid);
 	void removeItemByUID(uint32_t uid);
 
 private:
@@ -81,13 +81,13 @@ private:
 	LuaScriptInterface* interface;
 
 	// for npc scripts
-	Npc* curNpc = nullptr;
+	std::shared_ptr<Npc> curNpc = nullptr;
 
 	// temporary item list
-	static std::multimap<ScriptEnvironment*, Item*> tempItems;
+	static std::multimap<ScriptEnvironment*, std::shared_ptr<Item>> tempItems;
 
 	// local item map
-	phmap::flat_hash_map<uint32_t, Item*> localMap;
+	phmap::flat_hash_map<uint32_t, std::shared_ptr<Item>> localMap;
 	uint32_t lastUID = std::numeric_limits<uint16_t>::max();
 
 	// script file id

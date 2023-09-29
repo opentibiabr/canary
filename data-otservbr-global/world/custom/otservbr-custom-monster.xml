@@ -1,2 +1,199 @@
 <?xml version="1.0"?>
-<monsters />
+<monsters>
+	<monster centerx="1227" centery="909" centerz="0" radius="2">
+		<monster name="Sparkion" x="0" y="-2" z="0" spawntime="90" direction="1" />
+		<monster name="Breach Brood" x="0" y="0" z="0" spawntime="90" direction="1" />
+		<monster name="Dread Intruder" x="0" y="2" z="0" spawntime="90" direction="1" />
+	</monster>
+	<monster centerx="1227" centery="913" centerz="0" radius="2">
+		<monster name="Breach Brood" x="0" y="0" z="0" spawntime="90" direction="1" />
+		<monster name="Sparkion" x="0" y="2" z="0" spawntime="90" direction="1" />
+	</monster>
+	<monster centerx="1225" centery="929" centerz="0" radius="2">
+		<monster name="Shulgrax" x="-2" y="0" z="0" spawntime="90" />
+		<monster name="Zamulosh" x="0" y="0" z="0" spawntime="90" />
+		<monster name="Tarbaz" x="2" y="0" z="0" spawntime="90" />
+	</monster>
+	<monster centerx="1230" centery="929" centerz="0" radius="2">
+		<monster name="Plagirath" x="0" y="0" z="0" spawntime="90" />
+		<monster name="Mazoran" x="2" y="0" z="0" spawntime="90" />
+	</monster>
+	<monster centerx="1234" centery="929" centerz="0" radius="2">
+		<monster name="Ragiaz" x="0" y="0" z="0" spawntime="90" />
+		<monster name="Razzagorn" x="2" y="0" z="0" spawntime="90" />
+	</monster>
+	<monster centerx="1227" centery="910" centerz="1" radius="2">
+		<monster name="Medusa" x="0" y="-2" z="1" spawntime="90" direction="1" />
+		<monster name="Demon" x="0" y="1" z="1" spawntime="90" direction="1" />
+	</monster>
+	<monster centerx="1227" centery="913" centerz="1" radius="2">
+		<monster name="Fury" x="0" y="1" z="1" spawntime="60" direction="1" />
+	</monster>
+	<monster centerx="1207" centery="922" centerz="1" radius="2">
+		<monster name="Draken Abomination" x="1" y="0" z="1" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1213" centery="922" centerz="1" radius="2">
+		<monster name="Waspoid" x="-2" y="0" z="1" spawntime="90" direction="2" />
+		<monster name="Weakened Frazzlemaw" x="1" y="0" z="1" spawntime="60" />
+	</monster>
+	<monster centerx="1219" centery="922" centerz="1" radius="2">
+		<monster name="Dark Faun" x="-2" y="0" z="1" spawntime="60" direction="2" />
+		<monster name="Ghastly Dragon" x="1" y="0" z="1" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1241" centery="922" centerz="1" radius="2">
+		<monster name="Lava Lurker" x="-2" y="0" z="1" spawntime="60" />
+		<monster name="Demon" x="1" y="0" z="1" spawntime="60" direction="2" />
+	</monster>
+	<monster centerx="1247" centery="922" centerz="1" radius="2">
+		<monster name="Medusa" x="-2" y="0" z="1" spawntime="90" direction="2" />
+		<monster name="Spidris" x="1" y="0" z="1" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1252" centery="922" centerz="1" radius="2">
+		<monster name="Hideous Fungus" x="-1" y="0" z="1" spawntime="60" direction="2" />
+	</monster>
+	<monster centerx="1227" centery="910" centerz="2" radius="2">
+		<monster name="Sea Serpent" x="0" y="-2" z="2" spawntime="90" direction="1" />
+		<monster name="Wereboar" x="0" y="1" z="2" spawntime="90" direction="1" />
+	</monster>
+	<monster centerx="1227" centery="913" centerz="2" radius="2">
+		<monster name="Rustheap Golem" x="0" y="1" z="2" spawntime="60" direction="1" />
+	</monster>
+	<monster centerx="1207" centery="922" centerz="2" radius="2">
+		<monster name="Dragon Lord" x="1" y="0" z="2" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1213" centery="922" centerz="2" radius="2">
+		<monster name="Elder Wyrm" x="-2" y="0" z="2" spawntime="90" direction="2" />
+		<monster name="Frost Dragon" x="1" y="0" z="2" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1219" centery="922" centerz="2" radius="2">
+		<monster name="Hellfire Fighter" x="-2" y="0" z="2" spawntime="90" direction="2" />
+		<monster name="Brimstone Bug" x="1" y="0" z="2" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1241" centery="922" centerz="2" radius="2">
+		<monster name="Vulcongra" x="-2" y="0" z="2" spawntime="90" direction="2" />
+		<monster name="Ghastly Dragon" x="1" y="0" z="2" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1247" centery="922" centerz="2" radius="2">
+		<monster name="Behemoth" x="-2" y="0" z="2" spawntime="90" direction="2" />
+		<monster name="Enslaved Dwarf" x="1" y="0" z="2" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1252" centery="922" centerz="2" radius="2">
+		<monster name="Draken Spellweaver" x="-1" y="0" z="2" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1227" centery="910" centerz="3" radius="2">
+		<monster name="Grim Reaper" x="0" y="-2" z="3" spawntime="90" direction="1" />
+		<monster name="Orclops Doomhauler" x="0" y="1" z="3" spawntime="60" direction="1" />
+	</monster>
+	<monster centerx="1227" centery="913" centerz="3" radius="2">
+		<monster name="Yielothax" x="0" y="1" z="3" spawntime="90" direction="1" />
+	</monster>
+	<monster centerx="1207" centery="922" centerz="3" radius="2">
+		<monster name="Frost Dragon" x="1" y="0" z="3" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1213" centery="922" centerz="3" radius="2">
+		<monster name="Nightmare" x="-2" y="0" z="3" spawntime="90" direction="2" />
+		<monster name="Ogre Savage" x="1" y="0" z="3" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1219" centery="922" centerz="3" radius="2">
+		<monster name="Undead Dragon" x="-2" y="0" z="3" spawntime="90" direction="2" />
+		<monster name="Crystal Spider" x="1" y="0" z="3" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1241" centery="922" centerz="3" radius="2">
+		<monster name="Orc Warlord" x="-2" y="0" z="3" spawntime="90" direction="2" />
+		<monster name="Hydra" x="1" y="0" z="3" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1247" centery="922" centerz="3" radius="2">
+		<monster name="Lizard Chosen" x="-2" y="0" z="3" spawntime="90" direction="2" />
+		<monster name="Quara Predator" x="1" y="0" z="3" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1252" centery="922" centerz="3" radius="2">
+		<monster name="Draken Warmaster" x="-1" y="0" z="3" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1227" centery="910" centerz="4" radius="2">
+		<monster name="Ancient Scarab" x="0" y="-2" z="4" spawntime="90" direction="1" />
+		<monster name="Gargoyle" x="0" y="1" z="4" spawntime="90" direction="1" />
+	</monster>
+	<monster centerx="1227" centery="913" centerz="4" radius="2">
+		<monster name="Vampire" x="0" y="1" z="4" spawntime="90" direction="1" />
+	</monster>
+	<monster centerx="1207" centery="922" centerz="4" radius="2">
+		<monster name="Demon Skeleton" x="1" y="0" z="4" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1213" centery="922" centerz="4" radius="2">
+		<monster name="Vampire" x="-2" y="0" z="4" spawntime="90" direction="2" />
+		<monster name="Ancient Scarab" x="1" y="0" z="4" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1219" centery="922" centerz="4" radius="2">
+		<monster name="Vampire" x="-2" y="0" z="4" spawntime="90" direction="2" />
+		<monster name="Lich" x="1" y="0" z="4" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1241" centery="922" centerz="4" radius="2">
+		<monster name="Giant Spider" x="-2" y="0" z="4" spawntime="90" direction="2" />
+		<monster name="Ice Witch" x="1" y="0" z="4" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1247" centery="922" centerz="4" radius="2">
+		<monster name="Quara Predator Scout" x="-2" y="0" z="4" spawntime="90" direction="2" />
+		<monster name="Lizard Legionnaire" x="1" y="0" z="4" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1252" centery="922" centerz="4" radius="2">
+		<monster name="Wyrm" x="-1" y="0" z="4" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1227" centery="910" centerz="5" radius="2">
+		<monster name="Shaburak Demon" x="0" y="-2" z="5" spawntime="90" direction="1" />
+		<monster name="Enraged Crystal Golem" x="0" y="1" z="5" spawntime="60" direction="1" />
+	</monster>
+	<monster centerx="1227" centery="913" centerz="5" radius="2">
+		<monster name="Dragon" x="0" y="1" z="5" spawntime="90" direction="1" />
+	</monster>
+	<monster centerx="1207" centery="922" centerz="5" radius="2">
+		<monster name="Water Elemental" x="1" y="0" z="5" spawntime="60" direction="2" />
+	</monster>
+	<monster centerx="1213" centery="922" centerz="5" radius="2">
+		<monster name="Water Elemental" x="-2" y="0" z="5" spawntime="60" direction="2" />
+		<monster name="Quara Constrictor" x="1" y="0" z="5" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1219" centery="922" centerz="5" radius="2">
+		<monster name="Frost Dragon" x="-2" y="0" z="5" spawntime="90" direction="2" />
+		<monster name="Quara Mantassin Scout" x="1" y="0" z="5" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1241" centery="922" centerz="5" radius="2">
+		<monster name="Ancient Scarab" x="-2" y="0" z="5" spawntime="90" direction="2" />
+		<monster name="Vampire" x="1" y="0" z="5" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1247" centery="922" centerz="5" radius="2">
+		<monster name="Hero" x="-2" y="0" z="5" spawntime="90" direction="2" />
+		<monster name="Schiach" x="1" y="0" z="5" spawntime="60" direction="2" />
+	</monster>
+	<monster centerx="1252" centery="922" centerz="5" radius="2">
+		<monster name="Dragon" x="-1" y="0" z="5" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1227" centery="910" centerz="6" radius="2">
+		<monster name="Dragon" x="0" y="-2" z="6" spawntime="90" direction="1" />
+		<monster name="Bog Raider" x="0" y="1" z="6" spawntime="60" direction="1" />
+	</monster>
+	<monster centerx="1227" centery="913" centerz="6" radius="2">
+		<monster name="Cyclops" x="0" y="1" z="6" spawntime="90" direction="1" />
+	</monster>
+	<monster centerx="1207" centery="922" centerz="6" radius="2">
+		<monster name="Zombie" x="1" y="0" z="6" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1213" centery="922" centerz="6" radius="2">
+		<monster name="Damaged Worker Golem" x="-2" y="0" z="6" spawntime="90" direction="2" />
+		<monster name="Elf" x="1" y="0" z="6" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1219" centery="922" centerz="6" radius="2">
+		<monster name="Minotaur" x="-2" y="0" z="6" spawntime="90" direction="2" />
+		<monster name="Bandit" x="1" y="0" z="6" spawntime="60" direction="2" />
+	</monster>
+	<monster centerx="1241" centery="922" centerz="6" radius="2">
+		<monster name="Dragon" x="-2" y="0" z="6" spawntime="90" direction="2" />
+		<monster name="Dragon" x="1" y="0" z="6" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1247" centery="922" centerz="6" radius="2">
+		<monster name="Dragon" x="-2" y="0" z="6" spawntime="90" direction="2" />
+		<monster name="Dragon" x="1" y="0" z="6" spawntime="90" direction="2" />
+	</monster>
+	<monster centerx="1252" centery="922" centerz="6" radius="2">
+		<monster name="Dragon" x="-1" y="0" z="6" spawntime="90" direction="2" />
+	</monster>
+</monsters>

@@ -675,7 +675,6 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
 	} else if (operatingSystem <= CLIENTOS_OTCLIENT_MAC) {
 		setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
-		enableCompression();
 	}
 
 	clientVersion = static_cast<int32_t>(msg.get<uint32_t>());

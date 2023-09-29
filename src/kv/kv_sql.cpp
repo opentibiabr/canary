@@ -42,28 +42,36 @@ std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 }
 
 bool KVSQL::save(const std::string &key, const ValueWrapper &value) {
+	auto update = dbUpdate();
+	prepareSave(key, value, update);
+	return update.execute();
+}
+
+bool KVSQL::prepareSave(const std::string &key, const ValueWrapper &value, DBInsert &update) {
 	auto protoValue = ProtoSerializable<ValueWrapper>::toProto(value);
 	std::string data;
 	if (!protoValue.SerializeToString(&data)) {
 		return false;
 	}
-	auto query = fmt::format(
-		"REPLACE INTO `kv_store` (`key_name`, `timestamp`, `value`) VALUES ({}, {}, {})",
-		db.escapeString(key),
-		getTimeMsNow(),
-		db.escapeString(data)
-	);
-	return db.executeQuery(query);
+	if (value.isDeleted()) {
+		auto query = fmt::format("DELETE FROM `kv_store` WHERE `key_name` = {}", db.escapeString(key));
+		return db.executeQuery(query);
+	}
+
+	update.upsert({ "timestamp", "value" });
+	update.addRow(fmt::format("({}, {}, {})", db.escapeString(key), getTimeMsNow(), db.escapeString(data)));
+	return true;
 }
 
 bool KVSQL::saveAll() {
 	auto store = getStore();
 	bool success = DBTransaction::executeWithinTransaction([this, &store]() {
-		return std::ranges::all_of(store, [this](const auto &kv) {
+		auto update = dbUpdate();
+		return std::ranges::all_of(store, [this, &update](const auto &kv) {
 			const auto &[key, value] = kv;
-			return save(key, value.first);
+			return prepareSave(key, value.first, update);
 		});
-		return true;
+		return update.execute();
 	});
 
 	if (!success) {

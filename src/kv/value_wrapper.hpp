@@ -39,6 +39,12 @@ public:
 	explicit(false) ValueWrapper(const phmap::flat_hash_map<std::string, ValueWrapper> &value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(const std::initializer_list<std::pair<const std::string, ValueWrapper>> &init_list, uint64_t timestamp = 0);
 
+	static ValueWrapper deleted() {
+		static ValueWrapper wrapper;
+		wrapper.setDeleted(true);
+		return wrapper;
+	}
+
 	template <typename T>
 	T get() const {
 		return std::get<T>(data_);
@@ -63,6 +69,14 @@ public:
 
 	void setTimestamp(uint64_t timestamp) {
 		timestamp_ = timestamp;
+	}
+
+	void setDeleted(bool deleted) {
+		deleted_ = deleted;
+	}
+
+	bool isDeleted() const {
+		return deleted_;
 	}
 
 	bool operator==(const ValueWrapper &rhs) const;
@@ -90,6 +104,7 @@ public:
 private:
 	ValueVariant data_;
 	uint64_t timestamp_ = 0;
+	bool deleted_ = false;
 
 	template <typename Iter>
 	static MapType createMapFromRange(Iter begin, Iter end, uint64_t timestamp) {

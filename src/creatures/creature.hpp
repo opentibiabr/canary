@@ -17,7 +17,7 @@
 #include "game/movement/position.hpp"
 #include "items/tile.hpp"
 
-using ConditionList = std::list<Condition*>;
+using ConditionList = std::list<std::shared_ptr<Condition>>;
 using CreatureEventList = std::list<std::shared_ptr<CreatureEvent>>;
 
 class Map;
@@ -51,7 +51,7 @@ private:
 // Defines the Base class for all creatures and base functions which
 // every creature has
 
-class Creature : virtual public Thing {
+class Creature : virtual public Thing, public SharedObject {
 protected:
 	Creature();
 
@@ -64,28 +64,16 @@ public:
 	Creature(const Creature &) = delete;
 	Creature &operator=(const Creature &) = delete;
 
-	Creature* getCreature() override final {
-		return this;
+	std::shared_ptr<Creature> getCreature() override final {
+		return static_self_cast<Creature>();
 	}
-	const Creature* getCreature() const override final {
-		return this;
-	}
-	virtual Player* getPlayer() {
+	virtual std::shared_ptr<Player> getPlayer() {
 		return nullptr;
 	}
-	virtual const Player* getPlayer() const {
+	virtual std::shared_ptr<Npc> getNpc() {
 		return nullptr;
 	}
-	virtual Npc* getNpc() {
-		return nullptr;
-	}
-	virtual const Npc* getNpc() const {
-		return nullptr;
-	}
-	virtual Monster* getMonster() {
-		return nullptr;
-	}
-	virtual const Monster* getMonster() const {
+	virtual std::shared_ptr<Monster> getMonster() {
 		return nullptr;
 	}
 
@@ -107,8 +95,8 @@ public:
 	virtual void removeList() = 0;
 	virtual void addList() = 0;
 
-	virtual bool canSee(const Position &pos) const;
-	virtual bool canSeeCreature(const Creature* creature) const;
+	virtual bool canSee(const Position &pos);
+	virtual bool canSeeCreature(std::shared_ptr<Creature> creature) const;
 
 	virtual RaceType_t getRace() const {
 		return RACE_NONE;
@@ -116,7 +104,7 @@ public:
 	virtual Skulls_t getSkull() const {
 		return skull;
 	}
-	virtual Skulls_t getSkullClient(const Creature* creature) const {
+	virtual Skulls_t getSkullClient(std::shared_ptr<Creature> creature) {
 		return creature->getSkull();
 	}
 	void setSkull(Skulls_t newSkull);
@@ -144,10 +132,10 @@ public:
 	int32_t getThrowRange() const override final {
 		return 1;
 	}
-	bool isPushable() const override {
+	bool isPushable() override {
 		return getWalkDelay() <= 0;
 	}
-	bool isRemoved() const override final {
+	bool isRemoved() override final {
 		return isInternalRemoved;
 	}
 	virtual bool canSeeInvisibility() const {
@@ -159,13 +147,13 @@ public:
 
 	int32_t getWalkSize();
 
-	int32_t getWalkDelay(Direction dir) const;
-	int32_t getWalkDelay() const;
+	int32_t getWalkDelay(Direction dir);
+	int32_t getWalkDelay();
 	int64_t getTimeSinceLastMove() const;
 
-	int64_t getEventStepTicks(bool onlyDelay = false) const;
-	int64_t getStepDuration(Direction dir) const;
-	int64_t getStepDuration() const;
+	int64_t getEventStepTicks(bool onlyDelay = false);
+	int64_t getStepDuration(Direction dir);
+	int64_t getStepDuration();
 	virtual uint16_t getStepSpeed() const {
 		return getSpeed();
 	}
@@ -255,7 +243,7 @@ public:
 		iconChanged();
 	}
 
-	void iconChanged() const;
+	void iconChanged();
 
 	const Outfit_t getCurrentOutfit() const {
 		return currentOutfit;
@@ -267,9 +255,9 @@ public:
 		return defaultOutfit;
 	}
 	bool isInvisible() const;
-	ZoneType_t getZoneType() const {
+	ZoneType_t getZoneType() {
 		if (getTile()) {
-			return tile->getZoneType();
+			return getTile()->getZoneType();
 		}
 
 		return ZONE_NORMAL;
@@ -289,20 +277,20 @@ public:
 	virtual void onWalkComplete() { }
 
 	// follow functions
-	Creature* getFollowCreature() const {
-		return followCreature;
+	std::shared_ptr<Creature> getFollowCreature() const {
+		return m_followCreature.lock();
 	}
-	virtual bool setFollowCreature(Creature* creature);
+	virtual bool setFollowCreature(std::shared_ptr<Creature> creature);
 
 	// follow events
-	virtual void onFollowCreature(const Creature*) { }
-	virtual void onFollowCreatureComplete(const Creature*) { }
+	virtual void onFollowCreature(std::shared_ptr<Creature>) { }
+	virtual void onFollowCreatureComplete(std::shared_ptr<Creature>) { }
 
 	// combat functions
-	Creature* getAttackedCreature() {
-		return attackedCreature;
+	std::shared_ptr<Creature> getAttackedCreature() {
+		return m_attackedCreature.lock();
 	}
-	virtual bool setAttackedCreature(Creature* creature);
+	virtual bool setAttackedCreature(std::shared_ptr<Creature> creature);
 
 	/**
 	 * @brief Mitigates damage inflicted on a creature.
@@ -317,21 +305,20 @@ public:
 	 * @param damage Reference to the amount of damage inflicted, which will be reduced by the creature's mitigation factor.
 	 */
 	void mitigateDamage(const CombatType_t &combatType, BlockType_t &blockType, int32_t &damage) const;
-	virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false);
+	virtual BlockType_t blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false);
 
-	void applyAbsorbDamageModifications(const Creature* attacker, int32_t &damage, CombatType_t combatType) const;
+	void applyAbsorbDamageModifications(std::shared_ptr<Creature> attacker, int32_t &damage, CombatType_t combatType) const;
 
-	bool setMaster(Creature* newMaster, bool reloadCreature = false);
+	bool setMaster(std::shared_ptr<Creature> newMaster, bool reloadCreature = false);
 
 	void removeMaster() {
-		if (master) {
-			master = nullptr;
-			decrementReferenceCounter();
+		if (getMaster()) {
+			m_master.reset();
 		}
 	}
 
 	bool isSummon() const {
-		return master != nullptr;
+		return !m_master.expired();
 	}
 
 	/**
@@ -340,12 +327,12 @@ public:
 	bool hasBeenSummoned() const {
 		return summoned;
 	}
-	Creature* getMaster() const {
-		return master;
+	std::shared_ptr<Creature> getMaster() const {
+		return m_master.lock();
 	}
 
-	const std::list<Creature*> &getSummons() const {
-		return summons;
+	const phmap::flat_hash_set<std::shared_ptr<Creature>> &getSummons() const {
+		return m_summons;
 	}
 
 	virtual int32_t getArmor() const {
@@ -368,15 +355,15 @@ public:
 		return SPEECHBUBBLE_NONE;
 	}
 
-	bool addCondition(Condition* condition);
-	bool addCombatCondition(Condition* condition);
+	bool addCondition(std::shared_ptr<Condition> condition);
+	bool addCombatCondition(std::shared_ptr<Condition> condition);
 	void removeCondition(ConditionType_t conditionType, ConditionId_t conditionId, bool force = false);
 	void removeCondition(ConditionType_t type);
-	void removeCondition(Condition* condition);
+	void removeCondition(std::shared_ptr<Condition> condition);
 	void removeCombatCondition(ConditionType_t type);
-	Condition* getCondition(ConditionType_t type) const;
-	Condition* getCondition(ConditionType_t type, ConditionId_t conditionId, uint32_t subId = 0) const;
-	std::vector<Condition*> getConditionsByType(ConditionType_t type) const;
+	std::shared_ptr<Condition> getCondition(ConditionType_t type) const;
+	std::shared_ptr<Condition> getCondition(ConditionType_t type, ConditionId_t conditionId, uint32_t subId = 0) const;
+	std::vector<std::shared_ptr<Condition>> getConditionsByType(ConditionType_t type) const;
 	void executeConditions(uint32_t interval);
 	bool hasCondition(ConditionType_t type, uint32_t subId = 0) const;
 
@@ -400,17 +387,17 @@ public:
 	virtual void changeHealth(int32_t healthChange, bool sendHealthChange = true);
 	virtual void changeMana(int32_t manaChange);
 
-	void gainHealth(Creature* attacker, int32_t healthGain);
-	virtual void drainHealth(Creature* attacker, int32_t damage);
-	virtual void drainMana(Creature* attacker, int32_t manaLoss);
+	void gainHealth(std::shared_ptr<Creature> attacker, int32_t healthGain);
+	virtual void drainHealth(std::shared_ptr<Creature> attacker, int32_t damage);
+	virtual void drainMana(std::shared_ptr<Creature> attacker, int32_t manaLoss);
 
-	virtual bool challengeCreature(Creature*, int targetChangeCooldown) {
+	virtual bool challengeCreature(std::shared_ptr<Creature>, int targetChangeCooldown) {
 		return false;
 	}
 
 	void onDeath();
-	virtual uint64_t getGainedExperience(Creature* attacker) const;
-	void addDamagePoints(Creature* attacker, int32_t damagePoints);
+	virtual uint64_t getGainedExperience(std::shared_ptr<Creature> attacker) const;
+	void addDamagePoints(std::shared_ptr<Creature> attacker, int32_t damagePoints);
 	bool hasBeenAttacked(uint32_t attackerId);
 
 	// combat event functions
@@ -418,14 +405,14 @@ public:
 	virtual void onAddCombatCondition(ConditionType_t type);
 	virtual void onEndCondition(ConditionType_t type);
 	void onTickCondition(ConditionType_t type, bool &bRemove);
-	virtual void onCombatRemoveCondition(Condition* condition);
-	virtual void onAttackedCreature(Creature*) { }
+	virtual void onCombatRemoveCondition(std::shared_ptr<Condition> condition);
+	virtual void onAttackedCreature(std::shared_ptr<Creature>) { }
 	virtual void onAttacked();
-	virtual void onAttackedCreatureDrainHealth(Creature* target, int32_t points);
-	virtual void onTargetCreatureGainHealth(Creature*, int32_t) { }
-	void onAttackedCreatureKilled(Creature* target);
-	virtual bool onKilledCreature(Creature* target, bool lastHit = true);
-	virtual void onGainExperience(uint64_t gainExp, Creature* target);
+	virtual void onAttackedCreatureDrainHealth(std::shared_ptr<Creature> target, int32_t points);
+	virtual void onTargetCreatureGainHealth(std::shared_ptr<Creature>, int32_t) { }
+	void onAttackedCreatureKilled(std::shared_ptr<Creature> target);
+	virtual bool onKilledCreature(std::shared_ptr<Creature> target, bool lastHit = true);
+	virtual void onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target);
 	virtual void onAttackedCreatureBlockHit(BlockType_t) { }
 	virtual void onBlockHit() { }
 	virtual void onChangeZone(ZoneType_t zone);
@@ -441,14 +428,14 @@ public:
 	virtual void onCreatureWalk();
 	virtual bool getNextStep(Direction &dir, uint32_t &flags);
 
-	virtual void turnToCreature(Creature* creature);
+	virtual void turnToCreature(std::shared_ptr<Creature> creature);
 
-	void onAddTileItem(const Tile* tile, const Position &pos);
-	virtual void onUpdateTileItem(const Tile* tile, const Position &pos, const Item* oldItem, const ItemType &oldType, const Item* newItem, const ItemType &newType);
-	virtual void onRemoveTileItem(const Tile* tile, const Position &pos, const ItemType &iType, const Item* item);
+	void onAddTileItem(std::shared_ptr<Tile> tile, const Position &pos);
+	virtual void onUpdateTileItem(std::shared_ptr<Tile> tile, const Position &pos, std::shared_ptr<Item> oldItem, const ItemType &oldType, std::shared_ptr<Item> newItem, const ItemType &newType);
+	virtual void onRemoveTileItem(std::shared_ptr<Tile> tile, const Position &pos, const ItemType &iType, std::shared_ptr<Item> item);
 
-	virtual void onCreatureAppear(Creature* creature, bool isLogin);
-	virtual void onRemoveCreature(Creature* creature, bool isLogout);
+	virtual void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin);
+	virtual void onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout);
 
 	/**
 	 * @brief Check if the summon can move/spawn and if the familiar can teleport to the master
@@ -458,13 +445,13 @@ public:
 	 * @return true
 	 * @return false
 	 */
-	void checkSummonMove(const Position &newPos, bool teleportSummon = false) const;
-	virtual void onCreatureMove(Creature* creature, const Tile* newTile, const Position &newPos, const Tile* oldTile, const Position &oldPos, bool teleport);
+	void checkSummonMove(const Position &newPos, bool teleportSummon = false);
+	virtual void onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport);
 
 	virtual void onAttackedCreatureDisappear(bool) { }
 	virtual void onFollowCreatureDisappear(bool) { }
 
-	virtual void onCreatureSay(Creature*, SpeakClasses, const std::string &) { }
+	virtual void onCreatureSay(std::shared_ptr<Creature>, SpeakClasses, const std::string &) { }
 
 	virtual void onPlacedCreature() { }
 
@@ -473,7 +460,7 @@ public:
 	}
 
 	size_t getSummonCount() const {
-		return summons.size();
+		return m_summons.size();
 	}
 
 	/**
@@ -483,7 +470,7 @@ public:
 	 * @return false = empty
 	 */
 	bool hasSummons() const {
-		if (!summons.empty()) {
+		if (!m_summons.empty()) {
 			return true;
 		}
 		return false;
@@ -503,26 +490,27 @@ public:
 	bool registerCreatureEvent(const std::string &name);
 	bool unregisterCreatureEvent(const std::string &name);
 
-	Cylinder* getParent() const override final {
-		return tile;
+	std::shared_ptr<Cylinder> getParent() override final {
+		return getTile();
 	}
-	void setParent(Cylinder* cylinder) override final {
-		tile = static_cast<Tile*>(cylinder);
-		position = tile->getPosition();
+	void setParent(std::weak_ptr<Cylinder> cylinder) override final {
+		auto lockedCylinder = cylinder.lock();
+		if (lockedCylinder) {
+			auto newParent = lockedCylinder->getTile();
+			position = newParent->getPosition();
+			m_tile = newParent;
+		}
 	}
 
-	const Position &getPosition() const override final {
+	const Position &getPosition() override final {
 		return position;
 	}
 
-	Tile* getTile() override final {
-		return tile;
-	}
-	const Tile* getTile() const override final {
-		return tile;
+	std::shared_ptr<Tile> getTile() override final {
+		return m_tile.lock();
 	}
 
-	int32_t getWalkCache(const Position &pos) const;
+	int32_t getWalkCache(const Position &pos);
 
 	const Position &getLastPosition() const {
 		return lastPosition;
@@ -533,19 +521,11 @@ public:
 
 	static bool canSee(const Position &myPos, const Position &pos, int32_t viewRangeX, int32_t viewRangeY);
 
-	double getDamageRatio(Creature* attacker) const;
+	double getDamageRatio(std::shared_ptr<Creature> attacker) const;
 
-	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, const FindPathParams &fpp) const;
-	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7) const;
+	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, const FindPathParams &fpp);
+	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
 
-	void incrementReferenceCounter() {
-		++referenceCounter;
-	}
-	void decrementReferenceCounter() {
-		if (--referenceCounter == 0) {
-			delete this;
-		}
-	}
 	struct CountBlock_t {
 		int32_t total;
 		int64_t ticks;
@@ -675,16 +655,16 @@ protected:
 
 	CountMap damageMap;
 
-	std::list<Creature*> summons;
+	phmap::flat_hash_set<std::shared_ptr<Creature>> m_summons;
 	CreatureEventList eventsList;
 	ConditionList conditions;
 
 	std::forward_list<Direction> listWalkDir;
 
-	Tile* tile = nullptr;
-	Creature* attackedCreature = nullptr;
-	Creature* master = nullptr;
-	Creature* followCreature = nullptr;
+	std::weak_ptr<Tile> m_tile;
+	std::weak_ptr<Creature> m_attackedCreature;
+	std::weak_ptr<Creature> m_master;
+	std::weak_ptr<Creature> m_followCreature;
 
 	/**
 	 * We need to persist if this creature is summon or not because when we
@@ -697,7 +677,6 @@ protected:
 	bool summoned = false;
 
 	uint64_t lastStep = 0;
-	uint32_t referenceCounter = 0;
 	uint32_t id = 0;
 	uint32_t scriptEventsBitField = 0;
 	uint32_t eventWalk = 0;
@@ -761,9 +740,9 @@ protected:
 	CreatureEventList getCreatureEvents(CreatureEventType_t type);
 
 	void updateMapCache();
-	void updateTileCache(const Tile* tile, int32_t dx, int32_t dy);
-	void updateTileCache(const Tile* tile, const Position &pos);
-	void onCreatureDisappear(const Creature* creature, bool isLogout);
+	void updateTileCache(std::shared_ptr<Tile> tile, int32_t dx, int32_t dy);
+	void updateTileCache(std::shared_ptr<Tile> tile, const Position &pos);
+	void onCreatureDisappear(std::shared_ptr<Creature> creature, bool isLogout);
 	virtual void doAttacking(uint32_t) { }
 	virtual bool hasExtraSwing() {
 		return false;
@@ -772,21 +751,21 @@ protected:
 	virtual uint64_t getLostExperience() const {
 		return 0;
 	}
-	virtual void dropLoot(Container*, Creature*) { }
+	virtual void dropLoot(std::shared_ptr<Container>, std::shared_ptr<Creature>) { }
 	virtual uint16_t getLookCorpse() const {
 		return 0;
 	}
-	virtual void getPathSearchParams(const Creature* creature, FindPathParams &fpp) const;
-	virtual void death(Creature*) { }
-	virtual bool dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified);
-	virtual Item* getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature);
+	virtual void getPathSearchParams(std::shared_ptr<Creature> creature, FindPathParams &fpp);
+	virtual void death(std::shared_ptr<Creature>) { }
+	virtual bool dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified);
+	virtual std::shared_ptr<Item> getCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature);
 
 	friend class Game;
 	friend class Map;
 	friend class CreatureFunctions;
 
 private:
-	bool canFollowMaster() const;
-	bool isLostSummon() const;
+	bool canFollowMaster();
+	bool isLostSummon();
 	void handleLostSummon(bool teleportSummons);
 };

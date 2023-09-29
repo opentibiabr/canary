@@ -43,18 +43,18 @@ public:
 	void copyEvent(const std::shared_ptr<CreatureEvent> creatureEvent);
 
 	// scripting
-	bool executeOnLogin(Player* player) const;
-	bool executeOnLogout(Player* player) const;
-	bool executeOnThink(Creature* creature, uint32_t interval) const;
-	bool executeOnPrepareDeath(Creature* creature, Creature* killer) const;
-	bool executeOnDeath(Creature* creature, Item* corpse, Creature* killer, Creature* mostDamageKiller, bool lastHitUnjustified, bool mostDamageUnjustified) const;
-	void executeOnKill(Creature* creature, Creature* target, bool lastHit) const;
-	bool executeAdvance(Player* player, skills_t, uint32_t, uint32_t) const;
-	void executeModalWindow(Player* player, uint32_t modalWindowId, uint8_t buttonId, uint8_t choiceId) const;
-	bool executeTextEdit(Player* player, Item* item, const std::string &text) const;
-	void executeHealthChange(Creature* creature, Creature* attacker, CombatDamage &damage) const;
-	void executeManaChange(Creature* creature, Creature* attacker, CombatDamage &damage) const;
-	void executeExtendedOpcode(Player* player, uint8_t opcode, const std::string &buffer) const;
+	bool executeOnLogin(std::shared_ptr<Player> player) const;
+	bool executeOnLogout(std::shared_ptr<Player> player) const;
+	bool executeOnThink(std::shared_ptr<Creature> creature, uint32_t interval) const;
+	bool executeOnPrepareDeath(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> killer) const;
+	bool executeOnDeath(std::shared_ptr<Creature> creature, std::shared_ptr<Item> corpse, std::shared_ptr<Creature> killer, std::shared_ptr<Creature> mostDamageKiller, bool lastHitUnjustified, bool mostDamageUnjustified) const;
+	void executeOnKill(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target, bool lastHit) const;
+	bool executeAdvance(std::shared_ptr<Player> player, skills_t, uint32_t, uint32_t) const;
+	void executeModalWindow(std::shared_ptr<Player> player, uint32_t modalWindowId, uint8_t buttonId, uint8_t choiceId) const;
+	bool executeTextEdit(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const std::string &text) const;
+	void executeHealthChange(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatDamage &damage) const;
+	void executeManaChange(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatDamage &damage) const;
+	void executeExtendedOpcode(std::shared_ptr<Player> player, uint8_t opcode, const std::string &buffer) const;
 	//
 
 private:
@@ -78,9 +78,9 @@ public:
 	}
 
 	// global events
-	bool playerLogin(Player* player) const;
-	bool playerLogout(Player* player) const;
-	bool playerAdvance(Player* player, skills_t, uint32_t, uint32_t) const;
+	bool playerLogin(std::shared_ptr<Player> player) const;
+	bool playerLogout(std::shared_ptr<Player> player) const;
+	bool playerAdvance(std::shared_ptr<Player> player, skills_t, uint32_t, uint32_t) const;
 
 	std::shared_ptr<CreatureEvent> getEventByName(const std::string &name, bool forceLoaded = true);
 

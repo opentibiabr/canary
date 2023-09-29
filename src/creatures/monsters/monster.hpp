@@ -17,27 +17,26 @@ class Creature;
 class Game;
 class Spawn;
 
-using CreatureHashSet = phmap::flat_hash_set<Creature*>;
-using CreatureList = std::list<Creature*>;
+using CreatureHashSet = phmap::flat_hash_set<std::shared_ptr<Creature>>;
+using CreatureList = std::list<std::shared_ptr<Creature>>;
+
+using CreatureWeakHashMap = phmap::flat_hash_map<uint32_t, std::weak_ptr<Creature>>;
+using CreatureIDList = std::list<uint32_t>;
 
 class Monster final : public Creature {
 public:
-	static Monster* createMonster(const std::string &name);
+	static std::shared_ptr<Monster> createMonster(const std::string &name);
 	static int32_t despawnRange;
 	static int32_t despawnRadius;
 
 	explicit Monster(const std::shared_ptr<MonsterType> mType);
-	~Monster();
 
 	// non-copyable
 	Monster(const Monster &) = delete;
 	Monster &operator=(const Monster &) = delete;
 
-	Monster* getMonster() override {
-		return this;
-	}
-	const Monster* getMonster() const override {
-		return this;
+	std::shared_ptr<Monster> getMonster() override {
+		return static_self_cast<Monster>();
 	}
 
 	void setID() override {
@@ -59,7 +58,7 @@ public:
 	const std::string &getNameDescription() const override {
 		return mType->nameDescription;
 	}
-	std::string getDescription(int32_t) const override {
+	std::string getDescription(int32_t) override {
 		return strDescription + '.';
 	}
 
@@ -88,20 +87,22 @@ public:
 	}
 
 	Faction_t getFaction() const override {
-		if (master) {
-			return master->getFaction();
+		auto master = getMaster();
+		if (getMaster()) {
+			return getMaster()->getFaction();
 		}
 		return mType->info.faction;
 	}
 
 	bool isEnemyFaction(Faction_t faction) const {
+		auto master = getMaster();
 		if (master && master->getMonster()) {
 			return master->getMonster()->isEnemyFaction(faction);
 		}
 		return mType->info.enemyFactions.empty() ? false : mType->info.enemyFactions.find(faction) != mType->info.enemyFactions.end();
 	}
 
-	bool isPushable() const override {
+	bool isPushable() override {
 		return mType->info.pushable && baseSpeed != 0;
 	}
 	bool isAttackable() const override {
@@ -141,19 +142,19 @@ public:
 	bool canWalkOnFieldType(CombatType_t combatType) const;
 	void onAttackedCreatureDisappear(bool isLogout) override;
 
-	void onCreatureAppear(Creature* creature, bool isLogin) override;
-	void onRemoveCreature(Creature* creature, bool isLogout) override;
-	void onCreatureMove(Creature* creature, const Tile* newTile, const Position &newPos, const Tile* oldTile, const Position &oldPos, bool teleport) override;
-	void onCreatureSay(Creature* creature, SpeakClasses type, const std::string &text) override;
+	void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) override;
+	void onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) override;
+	void onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport) override;
+	void onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text) override;
 
-	void drainHealth(Creature* attacker, int32_t damage) override;
+	void drainHealth(std::shared_ptr<Creature> attacker, int32_t damage) override;
 	void changeHealth(int32_t healthChange, bool sendHealthChange = true) override;
 	bool getNextStep(Direction &direction, uint32_t &flags) override;
-	void onFollowCreatureComplete(const Creature* creature) override;
+	void onFollowCreatureComplete(std::shared_ptr<Creature> creature) override;
 
 	void onThink(uint32_t interval) override;
 
-	bool challengeCreature(Creature* creature, int targetChangeCooldown) override;
+	bool challengeCreature(std::shared_ptr<Creature> creature, int targetChangeCooldown) override;
 
 	bool changeTargetDistance(int32_t distance, uint32_t duration = 12000);
 	bool isChallenged() const {
@@ -184,16 +185,36 @@ public:
 	}
 
 	bool searchTarget(TargetSearchType_t searchType = TARGETSEARCH_DEFAULT);
-	bool selectTarget(Creature* creature);
+	bool selectTarget(std::shared_ptr<Creature> creature);
 
-	const CreatureList &getTargetList() const {
-		return targetList;
+	CreatureList getTargetList() {
+		std::list<std::shared_ptr<Creature>> list;
+		for (auto it = targetIDList.begin(); it != targetIDList.end();) {
+			auto cid = *it;
+			if (auto targetCreature = targetListMap[cid].lock()) {
+				list.push_back(targetCreature);
+				++it;
+			} else {
+				it = targetIDList.erase(it);
+				targetListMap.erase(cid);
+			}
+		}
+		return list;
 	}
-	const CreatureHashSet &getFriendList() const {
-		return friendList;
+	CreatureHashSet getFriendList() {
+		CreatureHashSet set;
+		for (auto it = friendList.begin(); it != friendList.end();) {
+			if (auto friendCreature = it->second.lock()) {
+				set.insert(friendCreature);
+				++it;
+			} else {
+				it = friendList.erase(it);
+			}
+		}
+		return set;
 	}
 
-	bool isTarget(const Creature* creature) const;
+	bool isTarget(std::shared_ptr<Creature> creature);
 	bool isFleeing() const {
 		return !isSummon() && getHealth() <= runAwayHealth && challengeFocusDuration <= 0 && challengeMeleeDuration <= 0;
 	}
@@ -252,7 +273,7 @@ public:
 	void clearTargetList();
 	void clearFriendList();
 
-	BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
+	BlockType_t blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 
 	static uint32_t monsterAutoID;
 
@@ -305,8 +326,9 @@ public:
 	bool isImmune(CombatType_t combatType) const override;
 
 private:
-	CreatureHashSet friendList;
-	CreatureList targetList;
+	CreatureWeakHashMap friendList;
+	CreatureIDList targetIDList;
+	CreatureWeakHashMap targetListMap;
 
 	time_t timeToChangeFiendish = 0;
 
@@ -350,19 +372,19 @@ private:
 	bool hazardDodge = false;
 	bool hazardDamageBoost = false;
 
-	void onCreatureEnter(Creature* creature);
-	void onCreatureLeave(Creature* creature);
-	void onCreatureFound(Creature* creature, bool pushFront = false);
+	void onCreatureEnter(std::shared_ptr<Creature> creature);
+	void onCreatureLeave(std::shared_ptr<Creature> creature);
+	void onCreatureFound(std::shared_ptr<Creature> creature, bool pushFront = false);
 
 	void updateLookDirection();
 
-	void addFriend(Creature* creature);
-	void removeFriend(Creature* creature);
-	void addTarget(Creature* creature, bool pushFront = false);
-	void removeTarget(Creature* creature);
+	void addFriend(std::shared_ptr<Creature> creature);
+	void removeFriend(std::shared_ptr<Creature> creature);
+	void addTarget(std::shared_ptr<Creature> creature, bool pushFront = false);
+	void removeTarget(std::shared_ptr<Creature> creature);
 
-	void death(Creature* lastHitCreature) override;
-	Item* getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature) override;
+	void death(std::shared_ptr<Creature> lastHitCreature) override;
+	std::shared_ptr<Item> getCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature) override;
 
 	void setIdle(bool idle);
 	void updateIdleStatus();
@@ -373,25 +395,25 @@ private:
 	void onAddCondition(ConditionType_t type) override;
 	void onEndCondition(ConditionType_t type) override;
 
-	bool canUseAttack(const Position &pos, const Creature* target) const;
+	bool canUseAttack(const Position &pos, std::shared_ptr<Creature> target) const;
 	bool canUseSpell(const Position &pos, const Position &targetPos, const spellBlock_t &sb, uint32_t interval, bool &inRange, bool &resetTicks);
-	bool getRandomStep(const Position &creaturePos, Direction &direction) const;
+	bool getRandomStep(const Position &creaturePos, Direction &direction);
 	bool getDanceStep(const Position &creaturePos, Direction &direction, bool keepAttack = true, bool keepDistance = true);
 	bool isInSpawnRange(const Position &pos) const;
-	bool canWalkTo(Position pos, Direction direction) const;
+	bool canWalkTo(Position pos, Direction direction);
 
-	static bool pushItem(Item* item, const Direction &nextDirection);
-	static void pushItems(Tile* tile, const Direction &nextDirection);
-	static bool pushCreature(Creature* creature);
-	static void pushCreatures(Tile* tile);
+	static bool pushItem(std::shared_ptr<Item> item, const Direction &nextDirection);
+	static void pushItems(std::shared_ptr<Tile> tile, const Direction &nextDirection);
+	static bool pushCreature(std::shared_ptr<Creature> creature);
+	static void pushCreatures(std::shared_ptr<Tile> tile);
 
 	void onThinkTarget(uint32_t interval);
 	void onThinkYell(uint32_t interval);
 	void onThinkDefense(uint32_t interval);
 	void onThinkSound(uint32_t interval);
 
-	bool isFriend(const Creature* creature) const;
-	bool isOpponent(const Creature* creature) const;
+	bool isFriend(std::shared_ptr<Creature> creature) const;
+	bool isOpponent(std::shared_ptr<Creature> creature) const;
 
 	uint64_t getLostExperience() const override {
 		return skillLoss ? mType->info.experience : 0;
@@ -399,8 +421,8 @@ private:
 	uint16_t getLookCorpse() const override {
 		return mType->info.lookcorpse;
 	}
-	void dropLoot(Container* corpse, Creature* lastHitCreature) override;
-	void getPathSearchParams(const Creature* creature, FindPathParams &fpp) const override;
+	void dropLoot(std::shared_ptr<Container> corpse, std::shared_ptr<Creature> lastHitCreature) override;
+	void getPathSearchParams(std::shared_ptr<Creature> creature, FindPathParams &fpp) override;
 	bool useCacheMap() const override {
 		return !randomStepping;
 	}

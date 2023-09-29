@@ -283,7 +283,7 @@ local function processItemInboxPurchase(player, name, id)
 
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
 	if inbox then
-		local decoKit = inbox:addItem(23398, 1)
+		local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
 		if decoKit then
 			decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item with the Walter Jaeger.\nUnwrap it in your own house to create a <" .. name .. ">.")
 			decoKit:setCustomAttribute("unWrapId", id)

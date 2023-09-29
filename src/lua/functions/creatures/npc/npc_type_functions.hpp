@@ -14,7 +14,7 @@
 class NpcTypeFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "NpcType", "", NpcTypeFunctions::luaNpcTypeCreate);
+		registerSharedClass(L, "NpcType", "", NpcTypeFunctions::luaNpcTypeCreate);
 		registerMetaMethod(L, "NpcType", "__eq", NpcTypeFunctions::luaUserdataCompare);
 
 		registerMethod(L, "NpcType", "isPushable", NpcTypeFunctions::luaNpcTypeIsPushable);

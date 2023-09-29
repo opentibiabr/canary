@@ -21,12 +21,12 @@ Dispatcher &Dispatcher::getInstance() {
 	return inject<Dispatcher>();
 }
 
-void Dispatcher::addTask(std::function<void(void)> f, std::string context) {
-	addTask(std::make_shared<Task>(std::move(f), std::move(context)));
+void Dispatcher::addTask(std::function<void(void)> f, const std::string &context) {
+	addTask(std::make_shared<Task>(std::move(f), context));
 }
 
-void Dispatcher::addTask(std::function<void(void)> f, std::string context, uint32_t expiresAfterMs) {
-	addTask(std::make_shared<Task>(std::move(f), std::move(context)), expiresAfterMs);
+void Dispatcher::addTask(std::function<void(void)> f, const std::string &context, uint32_t expiresAfterMs) {
+	addTask(std::make_shared<Task>(std::move(f), context), expiresAfterMs);
 }
 
 void Dispatcher::addTask(const std::shared_ptr<Task> task) {

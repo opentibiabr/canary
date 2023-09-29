@@ -1037,7 +1037,6 @@
 	<item id="622" name="water">
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="623" toid="624" article="a" name="beach chair">
 		<attribute key="primarytype" value="constructions"/>
@@ -1054,7 +1053,6 @@
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="635" toid="636" article="a" name="parchment">
 		<attribute key="primarytype" value="documents and papers"/>
@@ -1678,7 +1676,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="fire"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item id="731" article="a" name="bed">
 		<attribute key="primarytype" value="constructions"/>
@@ -2354,7 +2351,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="poff"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item id="841" article="a" name="peanut" plural="peanuts">
 		<attribute key="primarytype" value="food"/>
@@ -2473,7 +2469,6 @@
 	<item fromid="880" toid="891" name="shallow water">
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="fluidsource" value="water"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item id="892" article="a" name="package of potions">
 		<attribute key="description" value="It contains 5 health and 5 mana potions"/>
@@ -4656,7 +4651,6 @@
 	<item id="2526" article="a" name="dustbin">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="type" value="trashholder"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="2527" toid="2534" article="a" name="big wine cask">
 		<attribute key="primarytype" value="casks"/>
@@ -5532,10 +5526,18 @@
 		<attribute key="primarytype" value="tools"/>
 		<attribute key="weight" value="50"/>
 	</item>
-	<item id="2907" article="a" name="wall lamp"/>
-	<item id="2908" article="a" name="lit wall lamp"/>
-	<item id="2909" article="a" name="wall lamp"/>
-	<item id="2910" article="a" name="lit wall lamp"/>
+	<item id="2907" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="2908"/>
+	</item>
+	<item id="2908" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="2907"/>
+	</item>
+	<item id="2909" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="2910"/>
+	</item>
+	<item id="2910" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="2909"/>
+	</item>
 	<item id="2911" article="a" name="candelabrum">
 		<attribute key="primarytype" value="light sources"/>
 		<attribute key="stopduration" value="1"/>
@@ -5647,10 +5649,18 @@
 		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="2935" article="a" name="lit table lamp"/>
-	<item id="2936" article="a" name="wall lamp"/>
-	<item id="2937" article="a" name="lit wall lamp"/>
-	<item id="2938" article="a" name="wall lamp"/>
-	<item id="2939" article="a" name="lit wall lamp"/>
+	<item id="2936" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="2937"/>
+	</item>
+	<item id="2937" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="2936"/>
+	</item>
+	<item id="2938" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="2939"/>
+	</item>
+	<item id="2939" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="2938"/>
+	</item>
 	<item id="2940" article="a" name="torch bearer">
 		<attribute key="primarytype" value="wall hangings"/>
 	</item>
@@ -5663,10 +5673,18 @@
 	<item id="2943" article="a" name="lit torch bearer">
 		<attribute key="primarytype" value="wall hangings"/>
 	</item>
-	<item id="2944" article="a" name="wall lamp"/>
-	<item id="2945" article="a" name="lit wall lamp"/>
-	<item id="2946" article="a" name="wall lamp"/>
-	<item id="2947" article="a" name="lit wall lamp"/>
+	<item id="2944" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="2945"/>
+	</item>
+	<item id="2945" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="2944"/>
+	</item>
+	<item id="2946" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="2947"/>
+	</item>
+	<item id="2947" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="2946"/>
+	</item>
 	<item id="2948" article="a" name="wooden flute">
 		<attribute key="primarytype" value="musical instruments"/>
 		<attribute key="weight" value="200"/>
@@ -12116,7 +12134,6 @@
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="4603" toid="4608" name="grass"/>
 	<item fromid="4609" toid="4611" name="shallow water">
@@ -12125,14 +12142,12 @@
 		<attribute key="description" value="You see the silvery movement of fish."/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item id="4612" name="shallow water">
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 		<attribute key="duration" value="1200"/>
 		<attribute key="decayTo" value="4597"/>
 	</item>
@@ -12141,7 +12156,6 @@
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 		<attribute key="duration" value="1200"/>
 		<attribute key="decayTo" value="4598"/>
 	</item>
@@ -12150,7 +12164,6 @@
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 		<attribute key="duration" value="1200"/>
 		<attribute key="decayTo" value="4599"/>
 	</item>
@@ -12161,7 +12174,6 @@
 	<item fromid="4633" toid="4652" name="shallow water">
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="fluidsource" value="water"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item id="4653" name="RESERVED SPRITE"/>
 	<item fromid="4654" toid="4655" name="shallow water">
@@ -12172,7 +12184,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="greenbubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="4702" toid="4737" name="swamp">
 		<attribute key="primarytype" value="natural tiles"/>
@@ -12181,7 +12192,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="greenbubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="4745" toid="4746" name="grass"/>
 	<item fromid="4747" toid="4748" name="earth"/>
@@ -12194,7 +12204,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="4815" toid="4816" article="a" name="mountain">
 		<attribute key="primarytype" value="rocks"/>
@@ -12204,7 +12213,6 @@
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="4821" toid="4822" name="dirt"/>
 	<item fromid="4823" toid="4826" name="stairs">
@@ -20456,7 +20464,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="greenbubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item id="8717" article="the" name="dust of Boreth">
 		<attribute key="description" value="Julius might be interested in the ashes of this vampire lord"/>
@@ -21575,7 +21582,9 @@
 		<attribute key="primarytype" value="metals"/>
 		<attribute key="weight" value="250"/>
 	</item>
-	<item id="9116" article="a" name="ladder"/>
+	<item id="9116" article="a" name="ladder">
+		<attribute key="type" value="ladder"/>
+	</item>
 	<item id="9117" article="a" name="unknown item"/>
 	<item id="9118" name="RESERVED SPRITE"/>
 	<item id="9119" article="a" name="crucible">
@@ -31354,7 +31363,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="greenbubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="16311" toid="16332" article="a" name="bog wart"/>
 	<item fromid="16333" toid="16376" article="a" name="muddy stone wall"/>
@@ -32719,7 +32727,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="greenbubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="17951" toid="17956" article="a" name="portrait of the merchant"/>
 	<item fromid="17957" toid="17958" article="a" name="statue of the merchant"/>
@@ -34699,7 +34706,6 @@
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="blood"/>
 		<attribute key="effect" value="redspark"/>
-		<attribute key="allowpickUpAble" value="1"/>
 		<attribute key="weight" value="180"/>
 	</item>
 	<item id="18620" name="blood">
@@ -38273,7 +38279,6 @@
 		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item id="21323" article="an" name="imported water pipe">
 		<attribute key="primarytype" value="utilities"/>
@@ -38680,7 +38685,6 @@
 		<attribute key="primarytype" value="natural tiles"/>
 		<attribute key="type" value="trashholder"/>
 		<attribute key="effect" value="fire"/>
-		<attribute key="allowpickUpAble" value="1"/>
 	</item>
 	<item fromid="21478" toid="21499" article="a" name="lava">
 		<attribute key="primarytype" value="natural tiles"/>
@@ -48691,13 +48695,13 @@
 		<attribute key="fluidsource" value="blood"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="decayTo" value="28664"/>
-		<attribute key="containersize" value="20"/>
+		<attribute key="containersize" value="32"/>
 	</item>
 	<item id="28664" article="a" name="dead true dawnfire asura">
 		<attribute key="fluidsource" value="blood"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28665"/>
-		<attribute key="containersize" value="20"/>
+		<attribute key="containersize" value="32"/>
 	</item>
 	<item id="28665" article="a" name="dead true dawnfire asura">
 		<attribute key="duration" value="300"/>
@@ -48712,13 +48716,13 @@
 		<attribute key="fluidsource" value="blood"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="decayTo" value="28668"/>
-		<attribute key="containersize" value="20"/>
+		<attribute key="containersize" value="32"/>
 	</item>
 	<item id="28668" article="a" name="dead true frost flower asura">
 		<attribute key="fluidsource" value="blood"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28669"/>
-		<attribute key="containersize" value="20"/>
+		<attribute key="containersize" value="32"/>
 	</item>
 	<item id="28669" article="a" name="dead true frost flower asura">
 		<attribute key="duration" value="300"/>
@@ -64974,20 +64978,44 @@
 	<item fromid="38522" toid="38525" article="a" name="naga lamp"/>
 	<item id="38526" article="a" name="basin with a glowing flower"/>
 	<item id="38528" article="a" name="basin with flower"/>
-	<item id="38529" article="a" name="wall lamp"/>
-	<item id="38530" article="a" name="lit wall lamp"/>
-	<item id="38531" article="a" name="wall lamp"/>
-	<item id="38532" article="a" name="lit wall lamp"/>
-	<item id="38533" article="a" name="wall lamp"/>
-	<item id="38534" article="a" name="lit wall lamp"/>
-	<item id="38535" article="a" name="wall lamp"/>
-	<item id="38536" article="a" name="lit wall lamp"/>
+	<item id="38529" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="38530"/>
+	</item>
+	<item id="38530" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="38529"/>
+	</item>
+	<item id="38531" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="38532"/>
+	</item>
+	<item id="38532" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="38531"/>
+	</item>
+	<item id="38533" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="38534"/>
+	</item>
+	<item id="38534" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="38533"/>
+	</item>
+	<item id="38535" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="38536"/>
+	</item>
+	<item id="38536" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="38535"/>
+	</item>
 	<item fromid="38537" toid="38613" article="a" name="big naga statue"/>
 	<item fromid="38614" toid="38622" name="mangrove branches"/>
-	<item id="38623" article="a" name="wall lamp"/>
-	<item id="38624" article="a" name="lit wall lamp"/>
-	<item id="38625" article="a" name="wall lamp"/>
-	<item id="38626" article="a" name="lit wall lamp"/>
+	<item id="38623" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="38624"/>
+	</item>
+	<item id="38624" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="38623"/>
+	</item>
+	<item id="38625" article="a" name="wall lamp">
+		<attribute key="transformOnUse" value="38626"/>
+	</item>
+	<item id="38626" article="a" name="lit wall lamp">
+		<attribute key="transformOnUse" value="38625"/>
+	</item>
 	<item id="38633" name="peacock feather">
 		<attribute key="primarytype" value="quest items"/>
 		<attribute key="weight" value="20"/>
@@ -66632,19 +66660,23 @@
 	</item>
 	<item id="39446" article="a" name="knightly wall lamp">
 		<attribute key="primarytype" value="furniture"/>
+		<attribute key="transformOnUse" value="39447"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="39447" article="a" name="knightly wall lamp">
 		<attribute key="primarytype" value="furniture"/>
+		<attribute key="transformOnUse" value="39446"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item fromid="39484" toid="39495" name="some crystals"/>
 	<item id="39496" article="a" name="knightly sword lamp">
 		<attribute key="primarytype" value="furniture"/>
+		<attribute key="transformOnUse" value="39497"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="39497" article="a" name="knightly sword lamp">
 		<attribute key="primarytype" value="furniture"/>
+		<attribute key="transformOnUse" value="39496"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="39498" article="a" name="knightly candelabra">
@@ -68731,7 +68763,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="criticalhitdamage" value="12"/>
 		<attribute key="criticalhitchance" value="10"/>
-		<attribute key="ammotype" value="arrow"/>
+		<attribute key="ammotype" value="bolt"/>
 		<attribute key="absorbpercentfire" value="6"/>
 		<attribute key="skilldist" value="4"/>
 		<attribute key="hitchance" value="7"/>
@@ -68752,7 +68784,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="criticalhitdamage" value="12"/>
 		<attribute key="criticalhitchance" value="10"/>
-		<attribute key="ammotype" value="arrow"/>
+		<attribute key="ammotype" value="bolt"/>
 		<attribute key="absorbpercentfire" value="6"/>
 		<attribute key="skilldist" value="4"/>
 		<attribute key="hitchance" value="7"/>
@@ -68873,5 +68905,29 @@
 	<item id="43895" article="a" name="bag you covet">
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="weight" value="20"/>
+	</item>
+	<item id="44064" article="an" name="training shield">
+		<attribute key="primarytype" value="training weapons"/>
+		<attribute key="showCharges" value="1"/>
+		<attribute key="charges" value="50"/>
+		<attribute key="weight" value="1000"/>
+	</item>
+	<item id="44065" article="an" name="exercise shield">
+		<attribute key="primarytype" value="exercise weapons"/>
+		<attribute key="showCharges" value="1"/>
+		<attribute key="charges" value="500"/>
+		<attribute key="weight" value="1000"/>
+	</item>
+	<item id="44066" article="an" name="durable exercise shield">
+		<attribute key="primarytype" value="exercise weapons"/>
+		<attribute key="showCharges" value="1"/>
+		<attribute key="charges" value="1800"/>
+		<attribute key="weight" value="1000"/>
+	</item>
+	<item id="44067" article="an" name="lasting exercise shield">
+		<attribute key="primarytype" value="exercise weapons"/>
+		<attribute key="showCharges" value="1"/>
+		<attribute key="charges" value="14400"/>
+		<attribute key="weight" value="1000"/>
 	</item>
 </items>

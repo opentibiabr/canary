@@ -88,8 +88,8 @@ int SpellFunctions::luaSpellOnCastSpell(lua_State* L) {
 	const auto spell = getUserdataShared<Spell>(L, 1);
 	if (spell) {
 		if (spell->spellType == SPELL_INSTANT) {
-			const auto &spellBase = getUserdataShared<Spell>(L, 1);
-			const auto &instant = std::static_pointer_cast<InstantSpell>(spellBase);
+			const auto spellBase = getUserdataShared<Spell>(L, 1);
+			const auto instant = std::static_pointer_cast<InstantSpell>(spellBase);
 			if (!instant->loadCallback()) {
 				pushBoolean(L, false);
 				return 1;
@@ -122,16 +122,16 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 	}
 
 	if (spell->spellType == SPELL_INSTANT) {
-		const auto &spellBase = getUserdataShared<Spell>(L, 1);
-		const auto &instant = std::static_pointer_cast<InstantSpell>(spellBase);
+		const auto spellBase = getUserdataShared<Spell>(L, 1);
+		const auto instant = std::static_pointer_cast<InstantSpell>(spellBase);
 		if (!instant->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}
 		pushBoolean(L, g_spells().registerInstantLuaEvent(instant));
 	} else if (spell->spellType == SPELL_RUNE) {
-		const auto &spellBase = getUserdataShared<Spell>(L, 1);
-		const auto &rune = std::static_pointer_cast<RuneSpell>(spellBase);
+		const auto spellBase = getUserdataShared<Spell>(L, 1);
+		const auto rune = std::static_pointer_cast<RuneSpell>(spellBase);
 		if (rune->getMagicLevel() != 0 || rune->getLevel() != 0) {
 			// Change information in the ItemType to get accurate description
 			ItemType &iType = Item::items.getItemType(rune->getRuneItemId());
@@ -636,7 +636,7 @@ int SpellFunctions::luaSpellVocation(lua_State* L) {
 // only for InstantSpells
 int SpellFunctions::luaSpellWords(lua_State* L) {
 	// spell:words(words[, separator = ""])
-	const auto &spellBase = getUserdataShared<Spell>(L, 1);
+	const auto spellBase = getUserdataShared<Spell>(L, 1);
 	const auto spell = std::static_pointer_cast<InstantSpell>(spellBase);
 	if (spell) {
 		// if spell != SPELL_INSTANT, it means that this actually is no InstantSpell, so we return nil
@@ -667,7 +667,7 @@ int SpellFunctions::luaSpellWords(lua_State* L) {
 // only for InstantSpells
 int SpellFunctions::luaSpellNeedDirection(lua_State* L) {
 	// spell:needDirection(bool)
-	const auto &spellBase = getUserdataShared<Spell>(L, 1);
+	const auto spellBase = getUserdataShared<Spell>(L, 1);
 	const auto spell = std::static_pointer_cast<InstantSpell>(spellBase);
 	if (spell) {
 		// if spell != SPELL_INSTANT, it means that this actually is no InstantSpell, so we return nil
@@ -691,7 +691,7 @@ int SpellFunctions::luaSpellNeedDirection(lua_State* L) {
 // only for InstantSpells
 int SpellFunctions::luaSpellHasParams(lua_State* L) {
 	// spell:hasParams(bool)
-	const auto &spellBase = getUserdataShared<Spell>(L, 1);
+	const auto spellBase = getUserdataShared<Spell>(L, 1);
 	const auto spell = std::static_pointer_cast<InstantSpell>(spellBase);
 	if (spell) {
 		// if spell != SPELL_INSTANT, it means that this actually is no InstantSpell, so we return nil
@@ -715,7 +715,7 @@ int SpellFunctions::luaSpellHasParams(lua_State* L) {
 // only for InstantSpells
 int SpellFunctions::luaSpellHasPlayerNameParam(lua_State* L) {
 	// spell:hasPlayerNameParam(bool)
-	const auto &spellBase = getUserdataShared<Spell>(L, 1);
+	const auto spellBase = getUserdataShared<Spell>(L, 1);
 	const auto spell = std::static_pointer_cast<InstantSpell>(spellBase);
 	if (spell) {
 		// if spell != SPELL_INSTANT, it means that this actually is no InstantSpell, so we return nil
@@ -739,7 +739,7 @@ int SpellFunctions::luaSpellHasPlayerNameParam(lua_State* L) {
 // only for InstantSpells
 int SpellFunctions::luaSpellNeedCasterTargetOrDirection(lua_State* L) {
 	// spell:needCasterTargetOrDirection(bool)
-	const auto &spellBase = getUserdataShared<Spell>(L, 1);
+	const auto spellBase = getUserdataShared<Spell>(L, 1);
 	const auto spell = std::static_pointer_cast<InstantSpell>(spellBase);
 	if (spell) {
 		// if spell != SPELL_INSTANT, it means that this actually is no InstantSpell, so we return nil
@@ -763,7 +763,7 @@ int SpellFunctions::luaSpellNeedCasterTargetOrDirection(lua_State* L) {
 // only for InstantSpells
 int SpellFunctions::luaSpellIsBlockingWalls(lua_State* L) {
 	// spell:blockWalls(bool)
-	const auto &spellBase = getUserdataShared<Spell>(L, 1);
+	const auto spellBase = getUserdataShared<Spell>(L, 1);
 	const auto spell = std::static_pointer_cast<InstantSpell>(spellBase);
 	if (spell) {
 		// if spell != SPELL_INSTANT, it means that this actually is no InstantSpell, so we return nil
@@ -787,7 +787,7 @@ int SpellFunctions::luaSpellIsBlockingWalls(lua_State* L) {
 // only for RuneSpells
 int SpellFunctions::luaSpellRuneId(lua_State* L) {
 	// spell:runeId(id)
-	const auto &spellBase = getUserdataShared<Spell>(L, 1);
+	const auto spellBase = getUserdataShared<Spell>(L, 1);
 	const auto spell = std::static_pointer_cast<RuneSpell>(spellBase);
 	if (spell) {
 		// if spell != SPELL_RUNE, it means that this actually is no RuneSpell, so we return nil
@@ -811,7 +811,7 @@ int SpellFunctions::luaSpellRuneId(lua_State* L) {
 // only for RuneSpells
 int SpellFunctions::luaSpellCharges(lua_State* L) {
 	// spell:charges(charges)
-	const auto &spellBase = getUserdataShared<Spell>(L, 1);
+	const auto spellBase = getUserdataShared<Spell>(L, 1);
 	const auto spell = std::static_pointer_cast<RuneSpell>(spellBase);
 	if (spell) {
 		// if spell != SPELL_RUNE, it means that this actually is no RuneSpell, so we return nil
@@ -835,7 +835,7 @@ int SpellFunctions::luaSpellCharges(lua_State* L) {
 // only for RuneSpells
 int SpellFunctions::luaSpellAllowFarUse(lua_State* L) {
 	// spell:allowFarUse(bool)
-	const auto &spellBase = getUserdataShared<Spell>(L, 1);
+	const auto spellBase = getUserdataShared<Spell>(L, 1);
 	const auto spell = std::static_pointer_cast<RuneSpell>(spellBase);
 	if (spell) {
 		// if spell != SPELL_RUNE, it means that this actually is no RuneSpell, so we return nil
@@ -859,7 +859,7 @@ int SpellFunctions::luaSpellAllowFarUse(lua_State* L) {
 // only for RuneSpells
 int SpellFunctions::luaSpellBlockWalls(lua_State* L) {
 	// spell:blockWalls(bool)
-	const auto &spellBase = getUserdataShared<Spell>(L, 1);
+	const auto spellBase = getUserdataShared<Spell>(L, 1);
 	const auto spell = std::static_pointer_cast<RuneSpell>(spellBase);
 	if (spell) {
 		// if spell != SPELL_RUNE, it means that this actually is no RuneSpell, so we return nil
@@ -883,7 +883,7 @@ int SpellFunctions::luaSpellBlockWalls(lua_State* L) {
 // only for RuneSpells
 int SpellFunctions::luaSpellCheckFloor(lua_State* L) {
 	// spell:checkFloor(bool)
-	const auto &spellBase = getUserdataShared<Spell>(L, 1);
+	const auto spellBase = getUserdataShared<Spell>(L, 1);
 	const auto spell = std::static_pointer_cast<RuneSpell>(spellBase);
 	if (spell) {
 		// if spell != SPELL_RUNE, it means that this actually is no RuneSpell, so we return nil

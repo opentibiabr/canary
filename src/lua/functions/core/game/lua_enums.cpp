@@ -110,6 +110,7 @@ void LuaEnums::init(lua_State* L) {
 	initBosstiaryEnums(L);
 	initSoundEnums(L);
 	initWheelEnums(L);
+	initAttributeConditionSubIdEnums(L);
 }
 
 void LuaEnums::initOthersEnums(lua_State* L) {
@@ -439,6 +440,13 @@ void LuaEnums::initConditionParamEnums(lua_State* L) {
 	registerEnum(L, CONDITION_PARAM_INCREASE_MANADRAINPERCENT);
 	registerEnum(L, CONDITION_PARAM_INCREASE_DROWNPERCENT);
 	registerEnum(L, CONDITION_PARAM_CHARM_CHANCE_MODIFIER);
+}
+
+void LuaEnums::initAttributeConditionSubIdEnums(lua_State* L) {
+	std::string luaNamespace = "AttrSubId_";
+	for (auto value : magic_enum::enum_values<AttrSubId_t>()) {
+		registerEnumClassNamespace(L, luaNamespace, value);
+	}
 }
 
 void LuaEnums::initConstMeEnums(lua_State* L) {
@@ -883,6 +891,7 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 	registerEnum(L, ITEM_FORGE_SLIVER);
 	registerEnum(L, ITEM_FORGE_CORE);
 	registerEnum(L, ITEM_PRIMAL_POD);
+	registerEnum(L, ITEM_DECORATION_KIT);
 
 	registerEnum(L, ItemID_t::HIRELING_LAMP);
 }

@@ -249,6 +249,8 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", VIP_AUTOLOOT_VIP_ONLY);
 	registerEnumIn(L, "configKeys", VIP_STAY_ONLINE);
 	registerEnumIn(L, "configKeys", VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION);
+
+	registerEnumIn(L, "configKeys", TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
 #undef registerEnumIn
 }
 

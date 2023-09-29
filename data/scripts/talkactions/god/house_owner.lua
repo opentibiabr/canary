@@ -12,7 +12,7 @@ function houseOwner.onSay(player, words, param)
 	end
 
 	if param == "" or param == "none" then
-		house:setOwnerGuid(0)
+		house:setHouseOwner(0)
 		return true
 	end
 
@@ -22,7 +22,7 @@ function houseOwner.onSay(player, words, param)
 		return true
 	end
 
-	house:setOwnerGuid(targetPlayer:getGuid())
+	house:setHouseOwner(targetPlayer:getGuid())
 	return true
 end
 

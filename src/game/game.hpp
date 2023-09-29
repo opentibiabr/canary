@@ -42,6 +42,7 @@ static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
 static constexpr int32_t EVENT_DECAYINTERVAL = 250;
 static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
 static constexpr int32_t EVENT_FORGEABLEMONSTERCHECKINTERVAL = 300000;
+static constexpr int32_t EVENT_LUA_GARBAGE_COLLECTION = 60000 * 10; // 10min
 
 class Game {
 public:
@@ -88,51 +89,67 @@ public:
 		return worldType;
 	}
 
-	std::map<uint32_t, TeamFinder*> getTeamFinderList() const {
+	const std::map<uint32_t, std::unique_ptr<TeamFinder>> &getTeamFinderList() const {
 		return teamFinderMap;
 	}
-	void registerTeamFinderAssemble(uint32_t leaderGuid, TeamFinder* teamFinder) {
-		teamFinderMap[leaderGuid] = teamFinder;
+
+	const std::unique_ptr<TeamFinder> &getTeamFinder(const std::shared_ptr<Player> &player) const {
+		auto it = teamFinderMap.find(player->getGUID());
+		if (it != teamFinderMap.end()) {
+			return it->second;
+		}
+
+		return TeamFinderNull;
 	}
+
+	const std::unique_ptr<TeamFinder> &getOrCreateTeamFinder(const std::shared_ptr<Player> &player) {
+		auto it = teamFinderMap.find(player->getGUID());
+		if (it != teamFinderMap.end()) {
+			return it->second;
+		}
+
+		return teamFinderMap[player->getGUID()] = std::make_unique<TeamFinder>();
+	}
+
 	void removeTeamFinderListed(uint32_t leaderGuid) {
 		teamFinderMap.erase(leaderGuid);
 	}
 
-	Cylinder* internalGetCylinder(Player* player, const Position &pos);
-	Thing* internalGetThing(Player* player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type);
-	static void internalGetPosition(Item* item, Position &pos, uint8_t &stackpos);
+	std::shared_ptr<Cylinder> internalGetCylinder(std::shared_ptr<Player> player, const Position &pos);
+	std::shared_ptr<Thing> internalGetThing(std::shared_ptr<Player> player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type);
+	static void internalGetPosition(std::shared_ptr<Item> item, Position &pos, uint8_t &stackpos);
 
-	static std::string getTradeErrorDescription(ReturnValue ret, Item* item);
+	static std::string getTradeErrorDescription(ReturnValue ret, std::shared_ptr<Item> item);
 
-	Creature* getCreatureByID(uint32_t id);
+	std::shared_ptr<Creature> getCreatureByID(uint32_t id);
 
-	Monster* getMonsterByID(uint32_t id);
+	std::shared_ptr<Monster> getMonsterByID(uint32_t id);
 
-	Npc* getNpcByID(uint32_t id);
+	std::shared_ptr<Npc> getNpcByID(uint32_t id);
 
-	Creature* getCreatureByName(const std::string &s);
+	std::shared_ptr<Creature> getCreatureByName(const std::string &s);
 
-	Npc* getNpcByName(const std::string &s);
+	std::shared_ptr<Npc> getNpcByName(const std::string &s);
 
-	Player* getPlayerByID(uint32_t id, bool allowOffline = false);
+	std::shared_ptr<Player> getPlayerByID(uint32_t id, bool allowOffline = false);
 
-	Player* getPlayerByName(const std::string &s, bool allowOffline = false);
+	std::shared_ptr<Player> getPlayerByName(const std::string &s, bool allowOffline = false);
 
-	Player* getPlayerByGUID(const uint32_t &guid);
+	std::shared_ptr<Player> getPlayerByGUID(const uint32_t &guid);
 
-	ReturnValue getPlayerByNameWildcard(const std::string &s, Player*&player);
+	ReturnValue getPlayerByNameWildcard(const std::string &s, std::shared_ptr<Player> &player);
 
-	Player* getPlayerByAccount(uint32_t acc);
+	std::shared_ptr<Player> getPlayerByAccount(uint32_t acc);
 
-	bool internalPlaceCreature(Creature* creature, const Position &pos, bool extendedPos = false, bool forced = false, bool creatureCheck = false);
+	bool internalPlaceCreature(std::shared_ptr<Creature> creature, const Position &pos, bool extendedPos = false, bool forced = false, bool creatureCheck = false);
 
-	bool placeCreature(Creature* creature, const Position &pos, bool extendedPos = false, bool force = false);
+	bool placeCreature(std::shared_ptr<Creature> creature, const Position &pos, bool extendedPos = false, bool force = false);
 
-	bool removeCreature(Creature* creature, bool isLogout = true);
+	bool removeCreature(std::shared_ptr<Creature> creature, bool isLogout = true);
 	void executeDeath(uint32_t creatureId);
 
-	void addCreatureCheck(Creature* creature);
-	static void removeCreatureCheck(Creature* creature);
+	void addCreatureCheck(std::shared_ptr<Creature> creature);
+	static void removeCreatureCheck(std::shared_ptr<Creature> creature);
 
 	size_t getPlayersOnline() const {
 		return players.size();
@@ -173,43 +190,43 @@ public:
 
 	bool gameIsDay();
 
-	ReturnValue internalMoveCreature(Creature* creature, Direction direction, uint32_t flags = 0);
-	ReturnValue internalMoveCreature(Creature &creature, Tile &toTile, uint32_t flags = 0);
+	ReturnValue internalMoveCreature(std::shared_ptr<Creature> creature, Direction direction, uint32_t flags = 0);
+	ReturnValue internalMoveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &toTile, uint32_t flags = 0);
 
-	ReturnValue checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder, Cylinder* toCylinder, Item* item, Position toPos);
-	ReturnValue internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index, Item* item, uint32_t count, Item** movedItem, uint32_t flags = 0, Creature* actor = nullptr, Item* tradeItem = nullptr, bool checkTile = true);
+	ReturnValue checkMoveItemToCylinder(std::shared_ptr<Player> player, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder, std::shared_ptr<Item> item, Position toPos);
+	ReturnValue internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder, int32_t index, std::shared_ptr<Item> item, uint32_t count, std::shared_ptr<Item>* movedItem, uint32_t flags = 0, std::shared_ptr<Creature> actor = nullptr, std::shared_ptr<Item> tradeItem = nullptr, bool checkTile = true);
 
-	ReturnValue internalAddItem(Cylinder* toCylinder, Item* item, int32_t index = INDEX_WHEREEVER, uint32_t flags = 0, bool test = false);
-	ReturnValue internalAddItem(Cylinder* toCylinder, Item* item, int32_t index, uint32_t flags, bool test, uint32_t &remainderCount);
-	ReturnValue internalRemoveItem(Item* item, int32_t count = -1, bool test = false, uint32_t flags = 0, bool force = false);
+	ReturnValue internalAddItem(std::shared_ptr<Cylinder> toCylinder, std::shared_ptr<Item> item, int32_t index = INDEX_WHEREEVER, uint32_t flags = 0, bool test = false);
+	ReturnValue internalAddItem(std::shared_ptr<Cylinder> toCylinder, std::shared_ptr<Item> item, int32_t index, uint32_t flags, bool test, uint32_t &remainderCount);
+	ReturnValue internalRemoveItem(std::shared_ptr<Item> item, int32_t count = -1, bool test = false, uint32_t flags = 0, bool force = false);
 
-	ReturnValue internalPlayerAddItem(Player* player, Item* item, bool dropOnMap = true, Slots_t slot = CONST_SLOT_WHEREEVER);
+	ReturnValue internalPlayerAddItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, bool dropOnMap = true, Slots_t slot = CONST_SLOT_WHEREEVER);
 
-	Item* findItemOfType(const Cylinder* cylinder, uint16_t itemId, bool depthSearch = true, int32_t subType = -1) const;
+	std::shared_ptr<Item> findItemOfType(std::shared_ptr<Cylinder> cylinder, uint16_t itemId, bool depthSearch = true, int32_t subType = -1) const;
 
 	void createLuaItemsOnMap();
 
-	bool removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags = 0, bool useBank = false);
+	bool removeMoney(std::shared_ptr<Cylinder> cylinder, uint64_t money, uint32_t flags = 0, bool useBank = false);
 
-	void addMoney(Cylinder* cylinder, uint64_t money, uint32_t flags = 0);
+	void addMoney(std::shared_ptr<Cylinder> cylinder, uint64_t money, uint32_t flags = 0);
 
-	Item* transformItem(Item* item, uint16_t newId, int32_t newCount = -1);
+	std::shared_ptr<Item> transformItem(std::shared_ptr<Item> item, uint16_t newId, int32_t newCount = -1);
 
-	ReturnValue internalTeleport(Thing* thing, const Position &newPos, bool pushMove = true, uint32_t flags = 0);
+	ReturnValue internalTeleport(std::shared_ptr<Thing> thing, const Position &newPos, bool pushMove = true, uint32_t flags = 0);
 
-	bool internalCreatureTurn(Creature* creature, Direction dir);
+	bool internalCreatureTurn(std::shared_ptr<Creature> creature, Direction dir);
 
-	bool internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, SpectatorHashSet* spectatorsPtr = nullptr, const Position* pos = nullptr);
+	bool internalCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, bool ghostMode, SpectatorHashSet* spectatorsPtr = nullptr, const Position* pos = nullptr);
 
-	ObjectCategory_t getObjectCategory(const Item* item);
+	ObjectCategory_t getObjectCategory(const std::shared_ptr<Item> item);
 
 	uint64_t getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, bool buyPrice) const;
 
 	void loadPlayersRecord();
 	void checkPlayersRecord();
 
-	void sendSingleSoundEffect(const Position &pos, SoundEffect_t soundId, Creature* actor = nullptr);
-	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundEffect, SoundEffect_t secondarySoundEffect, Creature* actor = nullptr);
+	void sendSingleSoundEffect(const Position &pos, SoundEffect_t soundId, std::shared_ptr<Creature> actor = nullptr);
+	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundEffect, SoundEffect_t secondarySoundEffect, std::shared_ptr<Creature> actor = nullptr);
 
 	void sendGuildMotd(uint32_t playerId);
 	void kickPlayer(uint32_t playerId, bool displayEffect);
@@ -241,30 +258,30 @@ public:
 
 	void playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen);
 
-	bool addItemStoreInbox(const Player* player, uint32_t itemId);
+	bool addItemStoreInbox(std::shared_ptr<Player> player, uint32_t itemId);
 
 	void playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems = 0);
 
 	void playerReportRuleViolationReport(uint32_t playerId, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation);
 
-	void playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
+	void playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
 
-	void playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
+	void playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
 
 	void updatePlayerSaleItems(uint32_t playerId);
 
-	bool internalStartTrade(Player* player, Player* partner, Item* tradeItem);
-	void internalCloseTrade(Player* player);
-	bool playerBroadcastMessage(Player* player, const std::string &text) const;
+	bool internalStartTrade(std::shared_ptr<Player> player, std::shared_ptr<Player> partner, std::shared_ptr<Item> tradeItem);
+	void internalCloseTrade(std::shared_ptr<Player> player);
+	bool playerBroadcastMessage(std::shared_ptr<Player> player, const std::string &text) const;
 	void broadcastMessage(const std::string &text, MessageClasses type) const;
 
 	// Implementation of player invoked events
 	void playerTeleport(uint32_t playerId, const Position &pos);
 	void playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count);
 	void playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, const Position &movingCreatureOrigPos, const Position &toPos);
-	void playerMoveCreature(Player* playerId, Creature* movingCreature, const Position &movingCreatureOrigPos, Tile* toTile);
+	void playerMoveCreature(std::shared_ptr<Player> playerId, std::shared_ptr<Creature> movingCreature, const Position &movingCreatureOrigPos, std::shared_ptr<Tile> toTile);
 	void playerMoveItemByPlayerID(uint32_t playerId, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count);
-	void playerMoveItem(Player* player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, Item* item, Cylinder* toCylinder);
+	void playerMoveItem(std::shared_ptr<Player> player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, std::shared_ptr<Item> item, std::shared_ptr<Cylinder> toCylinder);
 	void playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier = false, uint8_t tier = 0);
 	void playerMove(uint32_t playerId, Direction direction);
 	void forcePlayerMove(uint32_t playerId, Direction direction);
@@ -311,8 +328,8 @@ public:
 	void playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool chaseMode, bool secureMode);
 	void playerLookAt(uint32_t playerId, uint16_t itemId, const Position &pos, uint8_t stackPos);
 	void playerLookInBattleList(uint32_t playerId, uint32_t creatureId);
-	void playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, Item* defaultItem = nullptr, bool lootAllCorpses = false, bool autoLoot = false);
-	void playerLootAllCorpses(Player* player, const Position &pos, bool lootAllCorpses);
+	void playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, std::shared_ptr<Item> defaultItem = nullptr, bool lootAllCorpses = false, bool autoLoot = false);
+	void playerLootAllCorpses(std::shared_ptr<Player> player, const Position &pos, bool lootAllCorpses);
 	void playerSetLootContainer(uint32_t playerId, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos);
 	void playerClearLootContainer(uint32_t playerId, ObjectCategory_t category);
 	;
@@ -325,7 +342,7 @@ public:
 	void playerRequestDepotSearchItem(uint32_t playerId, uint16_t itemId, uint8_t tier);
 	void playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, uint8_t tier, uint8_t type);
 	void playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position &pos);
-	void playerMoveThingFromDepotSearch(Player* player, uint16_t itemId, uint8_t tier, uint8_t count, const Position &fromPos, const Position &toPos, bool allItems = false);
+	void playerMoveThingFromDepotSearch(std::shared_ptr<Player> player, uint16_t itemId, uint8_t tier, uint8_t count, const Position &fromPos, const Position &toPos, bool allItems = false);
 
 	void playerRequestAddVip(uint32_t playerId, const std::string &name);
 	void playerRequestRemoveVip(uint32_t playerId, uint32_t guid);
@@ -359,13 +376,11 @@ public:
 	void playerOpenWheel(uint32_t playerId, uint32_t ownerId);
 	void playerSaveWheel(uint32_t playerId, NetworkMessage &msg);
 
-	void updatePlayerHelpers(Player* player);
+	void updatePlayerHelpers(std::shared_ptr<Player> player);
 
 	void cleanup();
 	void shutdown();
 	void dieSafely(std::string errorMsg);
-	void ReleaseCreature(Creature* creature);
-	void ReleaseItem(Item* item);
 	void addBestiaryList(uint16_t raceid, std::string name);
 	const std::map<uint16_t, std::string> &getBestiaryList() const {
 		return BestiaryList;
@@ -383,18 +398,18 @@ public:
 	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
 	bool isSightClear(const Position &fromPos, const Position &toPos, bool sameFloor);
 
-	void changeSpeed(Creature* creature, int32_t varSpeedDelta);
-	void setCreatureSpeed(Creature* creature, int32_t speed); // setCreatureSpeed
-	void changePlayerSpeed(Player &player, int32_t varSpeedDelta);
-	void internalCreatureChangeOutfit(Creature* creature, const Outfit_t &oufit);
-	void internalCreatureChangeVisible(Creature* creature, bool visible);
-	void changeLight(const Creature* creature);
-	void updateCreatureIcon(const Creature* creature);
-	void reloadCreature(const Creature* creature);
-	void updateCreatureSkull(const Creature* player);
-	void updatePlayerShield(Player* player);
-	void updateCreatureType(Creature* creature);
-	void updateCreatureWalkthrough(const Creature* creature);
+	void changeSpeed(std::shared_ptr<Creature> creature, int32_t varSpeedDelta);
+	void setCreatureSpeed(std::shared_ptr<Creature> creature, int32_t speed); // setCreatureSpeed
+	void changePlayerSpeed(const std::shared_ptr<Player> &player, int32_t varSpeedDelta);
+	void internalCreatureChangeOutfit(std::shared_ptr<Creature> creature, const Outfit_t &oufit);
+	void internalCreatureChangeVisible(std::shared_ptr<Creature> creature, bool visible);
+	void changeLight(const std::shared_ptr<Creature> creature);
+	void updateCreatureIcon(const std::shared_ptr<Creature> creature);
+	void reloadCreature(const std::shared_ptr<Creature> creature);
+	void updateCreatureSkull(std::shared_ptr<Creature> player);
+	void updatePlayerShield(std::shared_ptr<Player> player);
+	void updateCreatureType(std::shared_ptr<Creature> creature);
+	void updateCreatureWalkthrough(const std::shared_ptr<Creature> creature);
 
 	GameState_t getGameState() const;
 	void setGameState(GameState_t newState);
@@ -407,37 +422,37 @@ public:
 	void checkCreatures(size_t index);
 	void checkLight();
 
-	bool combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* target, bool checkDefense, bool checkArmor, bool field);
+	bool combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, bool checkDefense, bool checkArmor, bool field);
 
-	void combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint16_t &effect);
+	void combatGetTypeInfo(CombatType_t combatType, std::shared_ptr<Creature> target, TextColor_t &color, uint16_t &effect);
 
 	// Hazard combat helpers
-	void handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker);
-	void notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, Player* attackerPlayer, Monster* targetMonster);
+	void handleHazardSystemAttack(CombatDamage &damage, std::shared_ptr<Player> player, const std::shared_ptr<Monster> monster, bool isPlayerAttacker);
+	void notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Monster> targetMonster);
 
 	// Wheel of destiny combat helpers
-	void applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, const Creature* target);
-	void applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const Player* attackerPlayer, const Creature* target) const;
-	int32_t applyHealthChange(CombatDamage &damage, const Creature* target) const;
+	void applyWheelOfDestinyHealing(CombatDamage &damage, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Creature> target);
+	void applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Creature> target) const;
+	int32_t applyHealthChange(CombatDamage &damage, std::shared_ptr<Creature> target) const;
 
-	bool combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent = false);
-	void applyCharmRune(const Monster* targetMonster, Player* attackerPlayer, Creature* target, const int32_t &realDamage) const;
+	bool combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, CombatDamage &damage, bool isEvent = false);
+	void applyCharmRune(std::shared_ptr<Monster> targetMonster, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Creature> target, const int32_t &realDamage) const;
 	void applyManaLeech(
-		Player* attackerPlayer, const Monster* targetMonster,
-		Creature* target, const CombatDamage &damage, const int32_t &realDamage
+		std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Monster> targetMonster,
+		std::shared_ptr<Creature> target, const CombatDamage &damage, const int32_t &realDamage
 	) const;
 	void applyLifeLeech(
-		Player* attackerPlayer, const Monster* targetMonster,
-		Creature* target, const CombatDamage &damage, const int32_t &realDamage
+		std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Monster> targetMonster,
+		std::shared_ptr<Creature> target, const CombatDamage &damage, const int32_t &realDamage
 	) const;
 	int32_t calculateLeechAmount(const int32_t &realDamage, const uint16_t &skillAmount, int targetsAffected) const;
-	bool combatChangeMana(Creature* attacker, Creature* target, CombatDamage &damage);
+	bool combatChangeMana(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, CombatDamage &damage);
 
 	// Animation help functions
-	void addCreatureHealth(const Creature* target);
-	static void addCreatureHealth(const SpectatorHashSet &spectators, const Creature* target);
-	void addPlayerMana(const Player* target);
-	void addPlayerVocation(const Player* target);
+	void addCreatureHealth(const std::shared_ptr<Creature> target);
+	static void addCreatureHealth(const SpectatorHashSet &spectators, const std::shared_ptr<Creature> target);
+	void addPlayerMana(const std::shared_ptr<Player> target);
+	void addPlayerVocation(const std::shared_ptr<Player> target);
 	void addMagicEffect(const Position &pos, uint16_t effect);
 	static void addMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint16_t effect);
 	void removeMagicEffect(const Position &pos, uint16_t effect);
@@ -463,18 +478,18 @@ public:
 		motdNum++;
 	}
 
-	void sendOfflineTrainingDialog(Player* player);
+	void sendOfflineTrainingDialog(std::shared_ptr<Player> player);
 
 	const std::map<uint16_t, std::map<uint8_t, uint64_t>> &getItemsPrice() const {
 		return itemsPriceMap;
 	}
-	const phmap::flat_hash_map<uint32_t, Player*> &getPlayers() const {
+	const phmap::flat_hash_map<uint32_t, std::shared_ptr<Player>> &getPlayers() const {
 		return players;
 	}
-	const std::map<uint32_t, Monster*> &getMonsters() const {
+	const std::map<uint32_t, std::shared_ptr<Monster>> &getMonsters() const {
 		return monsters;
 	}
-	const std::map<uint32_t, Npc*> &getNpcs() const {
+	const std::map<uint32_t, std::shared_ptr<Npc>> &getNpcs() const {
 		return npcs;
 	}
 
@@ -482,31 +497,30 @@ public:
 		return itemsClassifications;
 	}
 
-	void addPlayer(Player* player);
-	void removePlayer(Player* player);
+	void addPlayer(std::shared_ptr<Player> player);
+	void removePlayer(std::shared_ptr<Player> player);
 
-	void addNpc(Npc* npc);
-	void removeNpc(Npc* npc);
+	void addNpc(std::shared_ptr<Npc> npc);
+	void removeNpc(std::shared_ptr<Npc> npc);
 
-	void addMonster(Monster* npc);
-	void removeMonster(Monster* npc);
+	void addMonster(std::shared_ptr<Monster> npc);
+	void removeMonster(std::shared_ptr<Monster> npc);
 
 	std::shared_ptr<Guild> getGuild(uint32_t id, bool allowOffline = false) const;
 	std::shared_ptr<Guild> getGuildByName(const std::string &name, bool allowOffline = false) const;
 	void addGuild(const std::shared_ptr<Guild> guild);
 	void removeGuild(uint32_t guildId);
-	void decreaseBrowseFieldRef(const Position &pos);
 
-	phmap::flat_hash_map<Tile*, Container*> browseFields;
+	phmap::flat_hash_map<std::shared_ptr<Tile>, std::weak_ptr<Container>> browseFields;
 
-	void internalRemoveItems(const std::vector<Item*> itemVector, uint32_t amount, bool stackable);
+	void internalRemoveItems(const std::vector<std::shared_ptr<Item>> &itemVector, uint32_t amount, bool stackable);
 
-	BedItem* getBedBySleeper(uint32_t guid) const;
-	void setBedSleeper(BedItem* bed, uint32_t guid);
+	std::shared_ptr<BedItem> getBedBySleeper(uint32_t guid) const;
+	void setBedSleeper(std::shared_ptr<BedItem> bed, uint32_t guid);
 	void removeBedSleeper(uint32_t guid);
 
-	Item* getUniqueItem(uint16_t uniqueId);
-	bool addUniqueItem(uint16_t uniqueId, Item* item);
+	std::shared_ptr<Item> getUniqueItem(uint16_t uniqueId);
+	bool addUniqueItem(uint16_t uniqueId, std::shared_ptr<Item> item);
 	void removeUniqueItem(uint16_t uniqueId);
 
 	bool hasEffect(uint16_t effectId);
@@ -518,21 +532,21 @@ public:
 	Raids raids;
 	Canary::protobuf::appearances::Appearances appearances;
 
-	phmap::flat_hash_set<Tile*> getTilesToClean() const {
+	phmap::flat_hash_set<std::shared_ptr<Tile>> getTilesToClean() const {
 		return tilesToClean;
 	}
-	void addTileToClean(Tile* tile) {
+	void addTileToClean(std::shared_ptr<Tile> tile) {
 		tilesToClean.emplace(tile);
 	}
-	void removeTileToClean(Tile* tile) {
+	void removeTileToClean(std::shared_ptr<Tile> tile) {
 		tilesToClean.erase(tile);
 	}
 	void clearTilesToClean() {
 		tilesToClean.clear();
 	}
 
-	void playerInspectItem(Player* player, const Position &pos);
-	void playerInspectItem(Player* player, uint16_t itemId, uint8_t itemCount, bool cyclopedia);
+	void playerInspectItem(std::shared_ptr<Player> player, const Position &pos);
+	void playerInspectItem(std::shared_ptr<Player> player, uint16_t itemId, uint8_t itemCount, bool cyclopedia);
 
 	void addCharmRune(const std::shared_ptr<Charm> charm) {
 		CharmList.push_back(charm);
@@ -579,9 +593,9 @@ public:
 	uint32_t makeFiendishMonster(uint32_t forgeableMonsterId = 0, bool createForgeableMonsters = false);
 	uint32_t makeInfluencedMonster();
 
-	bool addInfluencedMonster(Monster* monster);
-	void sendUpdateCreature(const Creature* creature);
-	Item* wrapItem(Item* item, House* house);
+	bool addInfluencedMonster(std::shared_ptr<Monster> monster);
+	void sendUpdateCreature(std::shared_ptr<Creature> creature);
+	std::shared_ptr<Item> wrapItem(std::shared_ptr<Item> item, std::shared_ptr<House> house);
 
 	/**
 	 * @brief Adds a player to the unique login map.
@@ -590,7 +604,7 @@ public:
 	 *
 	 * @param player A pointer to the Player object to add.
 	 */
-	void addPlayerUniqueLogin(Player* player);
+	void addPlayerUniqueLogin(std::shared_ptr<Player> player);
 
 	/**
 	 * @brief Gets a player from the unique login map using their name.
@@ -601,7 +615,7 @@ public:
 	 * @param playerName The name of the player to search for.
 	 * @return A pointer to the Player object if found, null otherwise.
 	 */
-	Player* getPlayerUniqueLogin(const std::string &playerName) const;
+	std::shared_ptr<Player> getPlayerUniqueLogin(const std::string &playerName) const;
 
 	/**
 	 * @brief Removes a player from the unique login map using their name.
@@ -619,7 +633,7 @@ public:
 	 *
 	 * @param player A pointer to the Player object to remove.
 	 */
-	void removePlayerUniqueLogin(Player* player);
+	void removePlayerUniqueLogin(std::shared_ptr<Player> player);
 	void playerCheckActivity(const std::string &playerName, int interval);
 
 	/**
@@ -632,24 +646,27 @@ public:
 	 * @param item Pointer to the item to be checked.
 	 * @return True if stash items can be retrieved, false otherwise.
 	 */
-	bool tryRetrieveStashItems(Player* player, Item* item);
+	bool tryRetrieveStashItems(std::shared_ptr<Player> player, std::shared_ptr<Item> item);
 
-	ReturnValue beforeCreatureZoneChange(Creature* creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones, bool force = false) const;
-	void afterCreatureZoneChange(Creature* creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones) const;
+	ReturnValue beforeCreatureZoneChange(std::shared_ptr<Creature> creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones, bool force = false) const;
+	void afterCreatureZoneChange(std::shared_ptr<Creature> creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones) const;
 
 	std::unique_ptr<IOWheel> &getIOWheel();
 	const std::unique_ptr<IOWheel> &getIOWheel() const;
+
+	void setTransferPlayerHouseItems(uint32_t houseId, uint32_t playerId);
+	void transferHouseItemsToDepot();
 
 private:
 	std::map<uint32_t, int32_t> forgeMonsterEventIds;
 	std::set<uint32_t> fiendishMonsters;
 	std::set<uint32_t> influencedMonsters;
 	void checkImbuements();
-	bool playerSaySpell(Player* player, SpeakClasses type, const std::string &text);
-	void playerWhisper(Player* player, const std::string &text);
-	bool playerYell(Player* player, const std::string &text);
-	bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
-	void playerSpeakToNpc(Player* player, const std::string &text);
+	bool playerSaySpell(std::shared_ptr<Player> player, SpeakClasses type, const std::string &text);
+	void playerWhisper(std::shared_ptr<Player> player, const std::string &text);
+	bool playerYell(std::shared_ptr<Player> player, const std::string &text);
+	bool playerSpeakTo(std::shared_ptr<Player> player, SpeakClasses type, const std::string &receiver, const std::string &text);
+	void playerSpeakToNpc(std::shared_ptr<Player> player, const std::string &text);
 	std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, std::string context) const;
 
 	/**
@@ -657,7 +674,7 @@ private:
 	 * \param player Player pointer
 	 * \param corpse Container pointer to be looted
 	 */
-	void internalQuickLootCorpse(Player* player, Container* corpse);
+	void internalQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr<Container> corpse);
 
 	/**
 	 * @brief Finds the container for loot based on the given parameters.
@@ -671,7 +688,7 @@ private:
 	 *
 	 * @return Pointer to the loot container or nullptr if not found.
 	 */
-	Container* findLootContainer(Player* player, bool &fallbackConsumed, ObjectCategory_t category);
+	std::shared_ptr<Container> findLootContainer(std::shared_ptr<Player> player, bool &fallbackConsumed, ObjectCategory_t category);
 
 	/**
 	 * @brief Finds the next available sub-container within a container.
@@ -681,7 +698,7 @@ private:
 	 * @param lootContainer Reference to the loot container being used.
 	 * @return Pointer to the next available container or nullptr if not found.
 	 */
-	Container* findNextAvailableContainer(ContainerIterator &containerIterator, Container*&lastSubContainer, Container*&lootContainer);
+	std::shared_ptr<Container> findNextAvailableContainer(ContainerIterator &containerIterator, std::shared_ptr<Container> &lastSubContainer, std::shared_ptr<Container> &lootContainer);
 
 	/**
 	 * @brief Handles the fallback logic for loot containers.
@@ -692,7 +709,7 @@ private:
 	 * @param fallbackConsumed Reference to a boolean flag indicating whether a fallback has been consumed.
 	 * @return True if fallback logic was handled, false otherwise.
 	 */
-	bool handleFallbackLogic(const Player* player, Container*&lootContainer, ContainerIterator &containerIterator, const bool &fallbackConsumed);
+	bool handleFallbackLogic(std::shared_ptr<Player> player, std::shared_ptr<Container> &lootContainer, ContainerIterator &containerIterator, const bool &fallbackConsumed);
 
 	/**
 	 * @brief Processes the movement or addition of an item to a loot container.
@@ -703,7 +720,7 @@ private:
 	 * @param player Pointer to the player object.
 	 * @return Return value indicating success or error.
 	 */
-	ReturnValue processMoveOrAddItemToLootContainer(Item* item, Container* lootContainer, uint32_t &remainderCount, Player* player);
+	ReturnValue processMoveOrAddItemToLootContainer(std::shared_ptr<Item> item, std::shared_ptr<Container> lootContainer, uint32_t &remainderCount, std::shared_ptr<Player> player);
 
 	/**
 	 * @brief Processes loot items and places them into the appropriate containers.
@@ -714,7 +731,7 @@ private:
 	 * @param fallbackConsumed Reference to a boolean flag indicating whether a fallback has been consumed.
 	 * @return Return value indicating success or error.
 	 */
-	ReturnValue processLootItems(Player* player, Container* lootContainer, Item* item, bool &fallbackConsumed);
+	ReturnValue processLootItems(std::shared_ptr<Player> player, std::shared_ptr<Container> lootContainer, std::shared_ptr<Item> item, bool &fallbackConsumed);
 
 	/**
 	 * @brief Internally collects loot items from a given item and places them into the loot container.
@@ -724,7 +741,7 @@ private:
 	 * @param category Category of the item (default is OBJECTCATEGORY_DEFAULT).
 	 * @return Return value indicating success or error.
 	 */
-	ReturnValue internalCollectLootItems(Player* player, Item* item, ObjectCategory_t category = OBJECTCATEGORY_DEFAULT);
+	ReturnValue internalCollectLootItems(std::shared_ptr<Player> player, std::shared_ptr<Item> item, ObjectCategory_t category = OBJECTCATEGORY_DEFAULT);
 
 	/**
 	 * @brief Collects items from the reward chest.
@@ -733,13 +750,13 @@ private:
 	 * @param maxMoveItems Maximum number of items to move (default is 0, which means no limit).
 	 * @return Return value indicating success or error.
 	 */
-	ReturnValue collectRewardChestItems(Player* player, uint32_t maxMoveItems = 0);
+	ReturnValue collectRewardChestItems(std::shared_ptr<Player> player, uint32_t maxMoveItems = 0);
 
-	phmap::flat_hash_map<std::string, Player*> m_uniqueLoginPlayerNames;
-	phmap::flat_hash_map<uint32_t, Player*> players;
-	phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
+	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> m_uniqueLoginPlayerNames;
+	phmap::flat_hash_map<uint32_t, std::shared_ptr<Player>> players;
+	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> mappedPlayerNames;
 	phmap::flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
-	phmap::flat_hash_map<uint16_t, Item*> uniqueItems;
+	phmap::flat_hash_map<uint16_t, std::shared_ptr<Item>> uniqueItems;
 	std::map<uint32_t, uint32_t> stages;
 
 	/* Items stored from the lua scripts positions
@@ -752,9 +769,7 @@ private:
 	std::string boostedCreature = "";
 
 	std::vector<std::shared_ptr<Charm>> CharmList;
-	std::vector<Creature*> ToReleaseCreatures;
-	std::vector<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
-	std::vector<Item*> ToReleaseItems;
+	std::vector<std::shared_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 	std::vector<uint16_t> registeredMagicEffects;
 	std::vector<uint16_t> registeredDistanceEffects;
@@ -765,18 +780,20 @@ private:
 
 	WildcardTreeNode wildcardTree { false };
 
-	std::map<uint32_t, Npc*> npcs;
-	std::map<uint32_t, Monster*> monsters;
+	std::map<uint32_t, std::shared_ptr<Npc>> npcs;
+	std::map<uint32_t, std::shared_ptr<Monster>> monsters;
 	std::vector<uint32_t> forgeableMonsters;
 
-	std::map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*
+	std::map<uint32_t, std::unique_ptr<TeamFinder>> teamFinderMap; // [leaderGUID] = TeamFinder*
+
+	std::map<uint32_t, uint32_t> transferHouseItemsToPlayer;
 
 	// list of items that are in trading state, mapped to the player
-	std::map<Item*, uint32_t> tradeItems;
+	std::map<std::shared_ptr<Item>, uint32_t> tradeItems;
 
-	std::map<uint32_t, BedItem*> bedSleepersMap;
+	std::map<uint32_t, std::shared_ptr<BedItem>> bedSleepersMap;
 
-	phmap::flat_hash_set<Tile*> tilesToClean;
+	phmap::flat_hash_set<std::shared_ptr<Tile>> tilesToClean;
 
 	ModalWindow offlineTrainingWindow { std::numeric_limits<uint32_t>::max(), "Choose a Skill", "Please choose a skill:" };
 
@@ -813,47 +830,47 @@ private:
 
 	std::vector<ItemClassification*> itemsClassifications;
 
-	bool isTryingToStow(const Position &toPos, Cylinder* toCylinder) const;
+	bool isTryingToStow(const Position &toPos, std::shared_ptr<Cylinder> toCylinder) const;
 
 	void sendDamageMessageAndEffects(
-		const Creature* attacker, Creature* target, const CombatDamage &damage, const Position &targetPos,
-		Player* attackerPlayer, Player* targetPlayer, TextMessage &message,
+		std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, const CombatDamage &damage, const Position &targetPos,
+		std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Player> targetPlayer, TextMessage &message,
 		const SpectatorHashSet &spectators, int32_t realDamage
 	);
 
-	void updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, const Player* player) const;
+	void updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, std::shared_ptr<Player> player) const;
 
 	void sendEffects(
-		Creature* target, const CombatDamage &damage, const Position &targetPos,
+		std::shared_ptr<Creature> target, const CombatDamage &damage, const Position &targetPos,
 		TextMessage &message, const SpectatorHashSet &spectators
 	);
 
 	void sendMessages(
-		const Creature* attacker, const Creature* target, const CombatDamage &damage,
-		const Position &targetPos, Player* attackerPlayer, Player* targetPlayer,
+		std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, const CombatDamage &damage,
+		const Position &targetPos, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Player> targetPlayer,
 		TextMessage &message, const SpectatorHashSet &spectators, int32_t realDamage
 	) const;
 
 	bool shouldSendMessage(const TextMessage &message) const;
 
 	void buildMessageAsAttacker(
-		const Creature* target, const CombatDamage &damage, TextMessage &message,
+		std::shared_ptr<Creature> target, const CombatDamage &damage, TextMessage &message,
 		std::stringstream &ss, const std::string &damageString
 	) const;
 
 	void buildMessageAsTarget(
-		const Creature* attacker, const CombatDamage &damage, const Player* attackerPlayer,
-		const Player* targetPlayer, TextMessage &message, std::stringstream &ss,
+		std::shared_ptr<Creature> attacker, const CombatDamage &damage, std::shared_ptr<Player> attackerPlayer,
+		std::shared_ptr<Player> targetPlayer, TextMessage &message, std::stringstream &ss,
 		const std::string &damageString
 	) const;
 
 	void buildMessageAsSpectator(
-		const Creature* attacker, const Creature* target, const CombatDamage &damage,
-		const Player* targetPlayer, TextMessage &message, std::stringstream &ss,
+		std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, const CombatDamage &damage,
+		std::shared_ptr<Player> targetPlayer, TextMessage &message, std::stringstream &ss,
 		const std::string &damageString, std::string &spectatorMessage
 	) const;
 
-	void unwrapItem(Item* item, uint16_t unWrapId, House* house, Player* player);
+	void unwrapItem(std::shared_ptr<Item> item, uint16_t unWrapId, std::shared_ptr<House> house, std::shared_ptr<Player> player);
 
 	// Variable members (m_)
 	std::unique_ptr<IOWheel> m_IOWheel;

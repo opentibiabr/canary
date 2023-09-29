@@ -34,13 +34,13 @@ class WaitingList {
 public:
 	WaitingList();
 	static WaitingList &getInstance();
-	bool clientLogin(const Player* player);
-	std::size_t getClientSlot(const Player* player);
+	bool clientLogin(std::shared_ptr<Player> player);
+	std::size_t getClientSlot(std::shared_ptr<Player> player);
 	static std::size_t getTime(std::size_t slot);
 
 private:
 	void cleanupList(WaitList &list);
 	std::size_t getTimeout(std::size_t slot);
-	void addPlayerToList(const Player* player);
+	void addPlayerToList(std::shared_ptr<Player> player);
 	std::unique_ptr<WaitListInfo> info;
 };

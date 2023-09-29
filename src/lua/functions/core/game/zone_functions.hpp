@@ -26,6 +26,7 @@ public:
 		registerMethod(L, "Zone", "removePlayers", ZoneFunctions::luaZoneRemovePlayers);
 		registerMethod(L, "Zone", "removeMonsters", ZoneFunctions::luaZoneRemoveMonsters);
 		registerMethod(L, "Zone", "removeNpcs", ZoneFunctions::luaZoneRemoveNpcs);
+		registerMethod(L, "Zone", "refresh", ZoneFunctions::luaZoneRefresh);
 
 		// static methods
 		registerMethod(L, "Zone", "getByPosition", ZoneFunctions::luaZoneGetByPosition);

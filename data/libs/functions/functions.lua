@@ -1020,3 +1020,122 @@ function FormatNumber(number)
 	int = int:reverse():gsub("(%d%d%d)", "%1,")
 	return minus .. int:reverse():gsub("^,", "") .. fraction
 end
+
+--- Get the next occurrence of a time string
+---@param timeStr string The time string in the format HH:MM:SS
+---@return number|nil The timestamp of the next occurrence, or nil if the string is invalid
+function GetNextOccurrence(timeStr)
+	local hours, minutes, seconds = string.match(timeStr, "(%d+):(%d+):(%d+)")
+	if not hours or not minutes or not seconds then
+		error("Invalid time string format.")
+		return nil
+	end
+
+	hours = tonumber(hours)
+	minutes = tonumber(minutes)
+	seconds = tonumber(seconds)
+
+	local currentTime = os.time()
+	local dateTable = os.date("*t", currentTime)
+
+	dateTable.hour = hours
+	dateTable.min = minutes
+	dateTable.sec = seconds
+
+	local nextTime = os.time(dateTable)
+
+	if nextTime <= currentTime then
+		nextTime = nextTime + (24 * 60 * 60)
+	end
+
+	return nextTime
+end
+
+--- Parse a duration string into milliseconds
+---@param duration string|number The duration string to parse or a number of milliseconds (for idempotency)
+---@return number|nil The duration in milliseconds, or nil if the string is invalid
+function ParseDuration(duration)
+	if not duration then
+		return nil
+	end
+
+	if type(duration) == "number" then
+		return duration
+	end
+
+	local multipliers = {
+		w = 7 * 24 * 60 * 60 * 1000,
+		d = 24 * 60 * 60 * 1000,
+		h = 60 * 60 * 1000,
+		m = 60 * 1000,
+		s = 1000,
+		ms = 1,
+	}
+
+	local total = 0
+
+	for numStr, unit in string.gmatch(duration, "([%d%.]+)(%a+)") do
+		local num = tonumber(numStr)
+		if not num then
+			error("Invalid numeric part in duration string")
+		end
+
+		local multiplier = multipliers[unit]
+		if not multiplier then
+			error("Invalid unit in duration string")
+		end
+
+		total = total + (num * multiplier)
+	end
+
+	if total == 0 then
+		error("Invalid duration string")
+	end
+
+	return total
+end
+
+--- Convert a duration in milliseconds into a string
+---@param duration number The duration in milliseconds
+---@return string The string representation of the duration
+function FormatDuration(duration)
+	if type(duration) == "string" then
+		duration = ParseDuration(duration)
+	end
+	if not duration or type(duration) ~= "number" then
+		return ""
+	end
+
+	local units = {
+		{ "w", 7 * 24 * 60 * 60 * 1000 },
+		{ "d", 24 * 60 * 60 * 1000 },
+		{ "h", 60 * 60 * 1000 },
+		{ "m", 60 * 1000 },
+		{ "s", 1000 },
+		{ "ms", 1 },
+	}
+
+	local remaining = duration
+	local parts = {}
+
+	for _, unitInfo in ipairs(units) do
+		local unit = unitInfo[1]
+		local multiplier = unitInfo[2]
+
+		local count = math.floor(remaining / multiplier)
+		if count > 0 then
+			table.insert(parts, tostring(count) .. unit)
+			remaining = remaining - (count * multiplier)
+		end
+	end
+
+	if #parts == 0 then
+		return "0ms"
+	end
+
+	return table.concat(parts)
+end
+
+function toKey(str)
+	return str:lower():gsub(" ", "-"):gsub("%s+", "")
+end

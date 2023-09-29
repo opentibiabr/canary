@@ -15,7 +15,7 @@
 #include "items/bed.hpp"
 
 void IOMapSerialize::loadHouseItems(Map* map) {
-	int64_t start = OTSYS_TIME();
+	Benchmark bm_context;
 
 	DBResult_ptr result = Database::getInstance().storeQuery("SELECT `data` FROM `tile_store`");
 	if (!result) {
@@ -49,7 +49,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 			loadItem(propStream, tile, true);
 		}
 	} while (result->next());
-	g_logger().info("Loaded house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
+	g_logger().info("Loaded house items in {} seconds", bm_context.duration());
 }
 bool IOMapSerialize::saveHouseItems() {
 	bool success = DBTransaction::executeWithinTransaction([]() {
@@ -64,7 +64,8 @@ bool IOMapSerialize::saveHouseItems() {
 }
 
 bool IOMapSerialize::SaveHouseItemsGuard() {
-	int64_t start = OTSYS_TIME();
+	Benchmark bm_context;
+
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 
@@ -97,7 +98,7 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 		return false;
 	}
 
-	g_logger().info("Saved house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
+	g_logger().info("Saved house items in {} seconds", bm_context.duration());
 	return true;
 }
 

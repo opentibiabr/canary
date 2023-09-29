@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <parallel_hashmap/phmap.h>
+
 class SharedObject;
 using SharedObjectPtr = std::shared_ptr<SharedObject>;
 

@@ -15,22 +15,19 @@ class RewardChest final : public Container {
 public:
 	explicit RewardChest(uint16_t type);
 
-	RewardChest* getRewardChest() final {
-		return this;
-	}
-	const RewardChest* getRewardChest() const final {
-		return this;
+	std::shared_ptr<RewardChest> getRewardChest() final {
+		return static_self_cast<RewardChest>();
 	}
 
 	// cylinder implementations
-	ReturnValue queryAdd(int32_t index, const Thing &thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const final;
+	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) final;
 
-	void postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) final;
-	void postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t link = LINK_OWNER) final;
+	void postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) final;
+	void postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t link = LINK_OWNER) final;
 
 	bool canRemove() const final {
 		return false;
 	}
 
-	void removeItem(Thing* thing, bool sendToClient = false) override;
+	void removeItem(std::shared_ptr<Thing> thing, bool sendToClient = false) override;
 };

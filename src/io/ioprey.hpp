@@ -12,6 +12,14 @@
 #include "lib/di/container.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 
+class PreySlot;
+class TaskHuntingSlot;
+class TaskHuntingOption;
+
+static const std::unique_ptr<PreySlot> &PreySlotNull {};
+static const std::unique_ptr<TaskHuntingSlot> &TaskHuntingSlotNull {};
+static const std::unique_ptr<TaskHuntingOption> &TaskHuntingOptionNull {};
+
 enum PreySlot_t : uint8_t {
 	PreySlot_One = 0,
 	PreySlot_Two = 1,
@@ -217,24 +225,20 @@ public:
 		return inject<IOPrey>();
 	}
 
-	void CheckPlayerPreys(Player* player, uint8_t amount) const;
-	void ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const;
+	void checkPlayerPreys(std::shared_ptr<Player> player, uint8_t amount) const;
+	void parsePreyAction(std::shared_ptr<Player> player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const;
 
-	void ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const;
+	void parseTaskHuntingAction(std::shared_ptr<Player> player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const;
 
-	void InitializeTaskHuntOptions();
-	TaskHuntingOption* GetTaskRewardOption(const TaskHuntingSlot* slot) const;
+	void initializeTaskHuntOptions();
+	const std::unique_ptr<TaskHuntingOption> &getTaskRewardOption(const std::unique_ptr<TaskHuntingSlot> &slot) const;
 
-	std::vector<TaskHuntingOption*> GetTaskOptions() const {
-		return taskOption;
-	}
-
-	NetworkMessage GetTaskHuntingBaseDate() const {
+	NetworkMessage getTaskHuntingBaseDate() const {
 		return baseDataMessage;
 	}
 
 	NetworkMessage baseDataMessage;
-	std::vector<TaskHuntingOption*> taskOption;
+	std::vector<std::unique_ptr<TaskHuntingOption>> taskOption;
 };
 
 constexpr auto g_ioprey = IOPrey::getInstance;

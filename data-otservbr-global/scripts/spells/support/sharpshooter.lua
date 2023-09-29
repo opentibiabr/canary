@@ -19,7 +19,7 @@ local spell = Spell("instant")
 function spell.onCastSpell(creature, variant)
 	if combat:execute(creature, variant) then
 		local skill = Condition(CONDITION_ATTRIBUTES)
-		skill:setParameter(CONDITION_PARAM_SUBID, 6)
+		skill:setParameter(CONDITION_PARAM_SUBID, AttrSubId_Sharpshooter)
 		skill:setParameter(CONDITION_PARAM_TICKS, spellDuration)
 		local grade = creature:upgradeSpellsWOD("Sharpshooter")
 		if grade == WHEEL_GRADE_NONE then

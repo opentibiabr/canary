@@ -12,44 +12,44 @@
 #include "items/trashholder.hpp"
 #include "game/game.hpp"
 
-ReturnValue TrashHolder::queryAdd(int32_t, const Thing &, uint32_t, uint32_t, Creature*) const {
+ReturnValue TrashHolder::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature>) {
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue TrashHolder::queryMaxCount(int32_t, const Thing &, uint32_t queryCount, uint32_t &maxQueryCount, uint32_t) const {
+ReturnValue TrashHolder::queryMaxCount(int32_t, const std::shared_ptr<Thing> &, uint32_t queryCount, uint32_t &maxQueryCount, uint32_t) {
 	maxQueryCount = std::max<uint32_t>(1, queryCount);
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue TrashHolder::queryRemove(const Thing &, uint32_t, uint32_t, Creature* /*= nullptr*/) const {
+ReturnValue TrashHolder::queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature> /*= nullptr*/) {
 	return RETURNVALUE_NOTPOSSIBLE;
 }
 
-Cylinder* TrashHolder::queryDestination(int32_t &, const Thing &, Item**, uint32_t &) {
-	return this;
+std::shared_ptr<Cylinder> TrashHolder::queryDestination(int32_t &, const std::shared_ptr<Thing> &, std::shared_ptr<Item>*, uint32_t &) {
+	return static_self_cast<TrashHolder>();
 }
 
-void TrashHolder::addThing(Thing* thing) {
+void TrashHolder::addThing(std::shared_ptr<Thing> thing) {
 	return addThing(0, thing);
 }
 
-void TrashHolder::addThing(int32_t, Thing* thing) {
+void TrashHolder::addThing(int32_t, std::shared_ptr<Thing> thing) {
 	if (!thing) {
 		return;
 	}
 
-	Item* item = thing->getItem();
+	std::shared_ptr<Item> item = thing->getItem();
 	if (!item) {
 		return;
 	}
 
-	if (item == this || !item->hasProperty(CONST_PROP_MOVEABLE)) {
+	if (item.get() == this || !item->hasProperty(CONST_PROP_MOVEABLE)) {
 		return;
 	}
 
 	const ItemType &it = Item::items[id];
 	if (item->isHangable() && it.isGroundTile()) {
-		Tile* tile = dynamic_cast<Tile*>(getParent());
+		std::shared_ptr<Tile> tile = std::dynamic_pointer_cast<Tile>(getParent());
 		if (tile && tile->hasFlag(TILESTATE_SUPPORTS_HANGABLE)) {
 			return;
 		}
@@ -65,22 +65,22 @@ void TrashHolder::addThing(int32_t, Thing* thing) {
 	}
 }
 
-void TrashHolder::updateThing(Thing*, uint16_t, uint32_t) {
+void TrashHolder::updateThing(std::shared_ptr<Thing>, uint16_t, uint32_t) {
 	//
 }
 
-void TrashHolder::replaceThing(uint32_t, Thing*) {
+void TrashHolder::replaceThing(uint32_t, std::shared_ptr<Thing>) {
 	//
 }
 
-void TrashHolder::removeThing(Thing*, uint32_t) {
+void TrashHolder::removeThing(std::shared_ptr<Thing>, uint32_t) {
 	//
 }
 
-void TrashHolder::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t) {
+void TrashHolder::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t) {
 	getParent()->postAddNotification(thing, oldParent, index, LINK_PARENT);
 }
 
-void TrashHolder::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t) {
+void TrashHolder::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t) {
 	getParent()->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 }

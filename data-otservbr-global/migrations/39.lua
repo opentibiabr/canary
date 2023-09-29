@@ -1,3 +1,5 @@
 function onUpdateDatabase()
-	return false -- true = There are others migrations file | false = this is the last migration file
+	logger.info("Updating database to version 40 (house transfer ownership on startup)")
+	db.query("ALTER TABLE `houses` ADD `new_owner` int(11) NOT NULL DEFAULT '-1';")
+	return true
 end

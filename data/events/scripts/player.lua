@@ -8,6 +8,7 @@ local storeItemID = {
 	28555, -- exercise bow
 	28556, -- exercise rod
 	28557, -- exercise wand
+	44065, -- exercise shield
 
 	-- 50 charges exercise weapons
 	28540, -- training sword
@@ -16,6 +17,7 @@ local storeItemID = {
 	28543, -- training bow
 	28544, -- training wand
 	28545, -- training club
+	44064, -- training shield
 
 	-- magic gold and magic converter (activated/deactivated)
 	28525, -- magic gold converter

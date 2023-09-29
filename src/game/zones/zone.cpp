@@ -268,3 +268,24 @@ void Zone::itemRemoved(const std::shared_ptr<Item> &item) {
 	}
 	itemsCache.erase(item);
 }
+
+void Zone::refresh() {
+	creaturesCache.clear();
+	monstersCache.clear();
+	npcsCache.clear();
+	playersCache.clear();
+	itemsCache.clear();
+
+	for (const auto &position : positions) {
+		const auto tile = g_game().map.getTile(position);
+		if (!tile) {
+			continue;
+		}
+		for (const auto &item : *tile->getItemList()) {
+			itemAdded(item);
+		}
+		for (const auto &creature : *tile->getCreatures()) {
+			creatureAdded(creature);
+		}
+	}
+}

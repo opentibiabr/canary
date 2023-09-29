@@ -434,15 +434,18 @@ END
 DELIMITER ;
 
 -- Table structure `house_lists`
+
 CREATE TABLE IF NOT EXISTS `house_lists` (
-    `house_id` int(11) NOT NULL,
-    `listid` int(11) NOT NULL,
-    `list` text NOT NULL,
-    INDEX `house_id` (`house_id`),
-    CONSTRAINT `houses_list_house_fk`
-        FOREIGN KEY (`house_id`) REFERENCES `houses` (`id`)
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `house_id` int NOT NULL,
+  `listid` int NOT NULL,
+  `version` int NOT NULL DEFAULT '0',
+  `list` text NOT NULL,
+  PRIMARY KEY (`house_id`, `listid`),
+  KEY `house_id_index` (`house_id`),
+  KEY `version` (`version`),
+  CONSTRAINT `houses_list_house_fk` FOREIGN KEY (`house_id`) REFERENCES `houses` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
 
 -- Table structure `ip_bans`
 CREATE TABLE IF NOT EXISTS `ip_bans` (

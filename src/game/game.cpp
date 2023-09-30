@@ -7929,6 +7929,157 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 	}
 }
 
+std::string Game::generateHighscoreQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation) {
+	std::ostringstream query;
+	uint32_t startPage = (static_cast<uint32_t>(page - 1) * static_cast<uint32_t>(entriesPerPage));
+	uint32_t endPage = startPage + static_cast<uint32_t>(entriesPerPage);
+
+	query << "SELECT *, @row AS `entries`, " << page << " AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn` FROM (SELECT `id`, `name`, `level`, `vocation`, `"
+		  << categoryName << "` AS `points`, @curRank := IF(@prevRank = `" << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName
+		  << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0) `r` WHERE `group_id` < "
+		  << static_cast<int>(account::GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
+
+	if (vocation != 0xFFFFFFFF) {
+		query << generateVocationConditionHighscore(vocation);
+	}
+	query << ") `T` WHERE `rn` > " << startPage << " AND `rn` <= " << endPage;
+
+	return query.str();
+}
+
+std::string Game::generateHighscoreQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation) {
+	std::ostringstream query;
+	std::string entriesStr = std::to_string(entriesPerPage);
+
+	query << "SELECT *, @row AS `entries`, (@ourRow DIV " << entriesStr << ") + 1 AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn`, @ourRow := IF(`id` = "
+		  << playerGUID << ", @row - 1, @ourRow) AS `rw` FROM (SELECT `id`, `name`, `level`, `vocation`, `" << categoryName << "` AS `points`, @curRank := IF(@prevRank = `"
+		  << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0, @ourRow := 0) `r` WHERE `group_id` < "
+		  << static_cast<int>(account::GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
+
+	if (vocation != 0xFFFFFFFF) {
+		query << generateVocationConditionHighscore(vocation);
+	}
+	query << ") `T` WHERE `rn` > ((@ourRow DIV " << entriesStr << ") * " << entriesStr << ") AND `rn` <= (((@ourRow DIV " << entriesStr << ") * " << entriesStr << ") + " << entriesStr << ")";
+
+	return query.str();
+}
+
+std::string Game::generateVocationConditionHighscore(uint32_t vocation) {
+	std::ostringstream queryPart;
+	bool firstVocation = true;
+
+	const auto vocationsMap = g_vocations().getVocations();
+	for (const auto &it : vocationsMap) {
+		const auto &voc = it.second;
+		if (voc.getFromVocation() == vocation) {
+			if (firstVocation) {
+				queryPart << " WHERE `vocation` = " << voc.getId();
+				firstVocation = false;
+			} else {
+				queryPart << " OR `vocation` = " << voc.getId();
+			}
+		}
+	}
+
+	return queryPart.str();
+}
+
+void Game::processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage) {
+	std::shared_ptr<Player> player = g_game().getPlayerByID(playerID);
+	if (!player) {
+		return;
+	}
+
+	player->resetAsyncOngoingTask(PlayerAsyncTask_Highscore);
+
+	if (!result) {
+		player->sendHighscoresNoData();
+		return;
+	}
+
+	uint16_t page = result->getNumber<uint16_t>("page");
+	uint32_t pages = result->getNumber<uint32_t>("entries");
+	pages += entriesPerPage - 1;
+	pages /= entriesPerPage;
+
+	std::ostringstream cacheKeyStream;
+	cacheKeyStream << "Highscore_" << static_cast<int>(category) << "_" << static_cast<int>(vocation) << "_" << static_cast<int>(entriesPerPage);
+	std::string cacheKey = cacheKeyStream.str();
+
+	auto it = highscoreCache.find(cacheKey);
+	auto now = std::chrono::steady_clock::now();
+	if (it != highscoreCache.end() && (now - it->second.timestamp < HIGHSCORE_CACHE_EXPIRATION_TIME)) {
+		auto &cacheEntry = it->second;
+		player->sendHighscores(cacheEntry.characters, category, vocation, page, static_cast<uint16_t>(pages));
+	} else {
+		std::vector<HighscoreCharacter> characters;
+		characters.reserve(result->countResults());
+		if (result) {
+			do {
+				uint8_t characterVocation;
+				const auto &voc = g_vocations().getVocation(result->getNumber<uint16_t>("vocation"));
+				if (voc) {
+					characterVocation = voc->getClientId();
+				} else {
+					characterVocation = 0;
+				}
+				characters.emplace_back(std::move(result->getString("name")), result->getNumber<uint64_t>("points"), result->getNumber<uint32_t>("id"), result->getNumber<uint32_t>("rank"), result->getNumber<uint16_t>("level"), characterVocation);
+			} while (result->next());
+		}
+
+		player->sendHighscores(characters, category, vocation, page, static_cast<uint16_t>(pages));
+		highscoreCache[cacheKey] = { characters, now };
+	}
+}
+
+std::string Game::getCachedQueryHighscore(const std::string &key) {
+	auto it = queryCache.find(key);
+	if (it != queryCache.end()) {
+		auto now = std::chrono::steady_clock::now();
+		if (now - it->second.timestamp < CACHE_EXPIRATION_TIME) {
+			return it->second.query;
+		}
+	}
+	return "";
+}
+
+void Game::cacheQueryHighscore(const std::string &key, const std::string &query) {
+	auto now = std::chrono::steady_clock::now();
+	queryCache[key] = { query, now };
+}
+
+std::string Game::generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation) {
+	std::ostringstream cacheKeyStream;
+	cacheKeyStream << "Entries_" << categoryName << "_" << page << "_" << static_cast<int>(entriesPerPage) << "_" << vocation;
+	std::string cacheKey = cacheKeyStream.str();
+
+	std::string cachedQuery = getCachedQueryHighscore(cacheKey);
+	if (!cachedQuery.empty()) {
+		return cachedQuery;
+	}
+
+	std::string newQuery = generateHighscoreQueryForEntries(categoryName, page, entriesPerPage, vocation);
+	cacheQueryHighscore(cacheKey, newQuery);
+
+	return newQuery;
+}
+
+std::string Game::generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation) {
+	std::ostringstream cacheKeyStream;
+	cacheKeyStream << "OurRank_" << categoryName << "_" << static_cast<int>(entriesPerPage) << "_" << playerGUID << "_" << vocation;
+	std::string cacheKey = cacheKeyStream.str();
+
+	std::string cachedQuery = getCachedQueryHighscore(cacheKey);
+	if (!cachedQuery.empty()) {
+		return cachedQuery;
+	}
+
+	std::string newQuery = generateHighscoreQueryForOurRank(categoryName, entriesPerPage, playerGUID, vocation);
+	cacheQueryHighscore(cacheKey, newQuery);
+
+	return newQuery;
+}
+
 void Game::playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &, uint16_t page, uint8_t entriesPerPage) {
 	if (player->hasAsyncOngoingTask(PlayerAsyncTask_Highscore)) {
 		return;
@@ -7967,83 +8118,19 @@ void Game::playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type
 		}
 	}
 
-	std::ostringstream query;
+	std::string query;
 	if (type == HIGHSCORE_GETENTRIES) {
-		uint32_t startPage = (static_cast<uint32_t>(page - 1) * static_cast<uint32_t>(entriesPerPage));
-		uint32_t endPage = startPage + static_cast<uint32_t>(entriesPerPage);
-		query << "SELECT *, @row AS `entries`, " << page << " AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn` FROM (SELECT `id`, `name`, `level`, `vocation`, `" << categoryName << "` AS `points`, @curRank := IF(@prevRank = `" << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0) `r` WHERE `group_id` < " << static_cast<int>(account::GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
-		if (vocation != 0xFFFFFFFF) {
-			bool firstVocation = true;
-
-			const auto vocationsMap = g_vocations().getVocations();
-			for (const auto &it : vocationsMap) {
-				const Vocation &voc = it.second;
-				if (voc.getFromVocation() == vocation) {
-					if (firstVocation) {
-						query << " WHERE `vocation` = " << voc.getId();
-						firstVocation = false;
-					} else {
-						query << " OR `vocation` = " << voc.getId();
-					}
-				}
-			}
-		}
-		query << ") `T` WHERE `rn` > " << startPage << " AND `rn` <= " << endPage;
+		query = generateHighscoreOrGetCachedQueryForEntries(categoryName, page, entriesPerPage, vocation);
 	} else if (type == HIGHSCORE_OURRANK) {
-		std::string entriesStr = std::to_string(entriesPerPage);
-		query << "SELECT *, @row AS `entries`, (@ourRow DIV " << entriesStr << ") + 1 AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn`, @ourRow := IF(`id` = " << player->getGUID() << ", @row - 1, @ourRow) AS `rw` FROM (SELECT `id`, `name`, `level`, `vocation`, `" << categoryName << "` AS `points`, @curRank := IF(@prevRank = `" << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0, @ourRow := 0) `r` WHERE `group_id` < " << static_cast<int>(account::GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
-		if (vocation != 0xFFFFFFFF) {
-			bool firstVocation = true;
-
-			const auto vocationsMap = g_vocations().getVocations();
-			for (const auto &it : vocationsMap) {
-				const Vocation &voc = it.second;
-				if (voc.getFromVocation() == vocation) {
-					if (firstVocation) {
-						query << " WHERE `vocation` = " << voc.getId();
-						firstVocation = false;
-					} else {
-						query << " OR `vocation` = " << voc.getId();
-					}
-				}
-			}
-		}
-		query << ") `T` WHERE `rn` > ((@ourRow DIV " << entriesStr << ") * " << entriesStr << ") AND `rn` <= (((@ourRow DIV " << entriesStr << ") * " << entriesStr << ") + " << entriesStr << ")";
+		query = generateHighscoreOrGetCachedQueryForOurRank(categoryName, entriesPerPage, player->getGUID(), vocation);
 	}
 
 	uint32_t playerID = player->getID();
-	std::function<void(DBResult_ptr, bool)> callback = [playerID, category, vocation, entriesPerPage](DBResult_ptr result, bool) {
-		std::shared_ptr<Player> player = g_game().getPlayerByID(playerID);
-		if (!player) {
-			return;
-		}
-
-		player->resetAsyncOngoingTask(PlayerAsyncTask_Highscore);
-		if (!result) {
-			player->sendHighscoresNoData();
-			return;
-		}
-
-		uint16_t page = result->getNumber<uint16_t>("page");
-		uint32_t pages = result->getNumber<uint32_t>("entries");
-		pages += entriesPerPage - 1;
-		pages /= entriesPerPage;
-
-		std::vector<HighscoreCharacter> characters;
-		characters.reserve(result->countResults());
-		do {
-			uint8_t characterVocation;
-			const Vocation* voc = g_vocations().getVocation(result->getNumber<uint16_t>("vocation"));
-			if (voc) {
-				characterVocation = voc->getClientId();
-			} else {
-				characterVocation = 0;
-			}
-			characters.emplace_back(std::move(result->getString("name")), result->getNumber<uint64_t>("points"), result->getNumber<uint32_t>("id"), result->getNumber<uint32_t>("rank"), result->getNumber<uint16_t>("level"), characterVocation);
-		} while (result->next());
-		player->sendHighscores(characters, category, vocation, page, static_cast<uint16_t>(pages));
+	std::function<void(DBResult_ptr, bool)> callback = [this, playerID, category, vocation, entriesPerPage](DBResult_ptr result, bool) {
+		processHighscoreResults(result, playerID, category, vocation, entriesPerPage);
 	};
-	g_databaseTasks().store(query.str(), callback);
+
+	g_databaseTasks().store(query, callback);
 	player->addAsyncOngoingTask(PlayerAsyncTask_Highscore);
 }
 

@@ -389,6 +389,10 @@ bool ConfigManager::load() {
 	boolean[REWARD_CHEST_COLLECT_ENABLED] = getGlobalBoolean(L, "rewardChestCollectEnabled", true);
 	integer[REWARD_CHEST_MAX_COLLECT_ITEMS] = getGlobalNumber(L, "rewardChestMaxCollectItems", 200);
 
+	boolean[TOGGLE_MOUNT_IN_PZ] = getGlobalBoolean(L, "toggleMountInProtectionZone", false);
+
+	boolean[TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART] = getGlobalBoolean(L, "togglehouseTransferOnRestart", false);
+
 	loaded = true;
 	lua_close(L);
 	return true;

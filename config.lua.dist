@@ -253,6 +253,11 @@ deathLosePercent = -1
 -- Houses
 -- NOTE: set housePriceEachSQM to -1 to disable the ingame buy house functionality
 -- NOTE: set houseBuyLevel to 0 to disable the min level purchase functionality.
+--[[ NOTE: The togglehouseTransferOnRestart setting controls whether house transfers/leave are true/false upon server restart.
+• When set to true, the transfers will only occur during a server restart.
+Setting this to false may pose risks; if a house is abandoned and contains a large number of items on the floor, those items will be transferred to the player's depot instantly.
+• This could potentially freeze the server due to the heavy operation. It's advised to keep this setting enabled (true) to minimize risks.
+]]
 -- Periods: daily/weekly/monthly/yearly/never
 -- Base: sqm,rent,sqm+rent
 housePriceRentMultiplier = 0.0
@@ -263,6 +268,7 @@ houseOwnedByAccount = false
 houseBuyLevel = 100
 housePurchasedShowPrice = false
 onlyInvitedCanMoveHouseItems = true
+togglehouseTransferOnRestart = true
 
 -- Item Usage
 timeBetweenActions = 200
@@ -327,6 +333,7 @@ resetSessionsOnStartup = false
 -- Misc.
 -- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate
 allowChangeOutfit = true
+toggleMountInProtectionZone = false
 freePremium = false
 kickIdlePlayerAfterMinutes = 15
 maxMessageBuffer = 4

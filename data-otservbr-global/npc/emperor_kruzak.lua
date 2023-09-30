@@ -82,7 +82,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				if player:getMoney() + player:getBankBalance() >= 500000000 then
 					local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
 					if inbox then
-						local decoKit = inbox:addItem(23398, 1)
+						local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
 						local decoItemName = ItemType(31510):getName()
 						decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a " .. decoItemName .. ".")
 						decoKit:setActionId(36345)

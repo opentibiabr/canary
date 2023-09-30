@@ -85,23 +85,24 @@ void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
 }
 
 // The boolean "disable" will desactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
-bool IOLoginData::loadPlayerById(Player* player, uint32_t id, bool disable /* = true*/) {
+bool IOLoginData::loadPlayerById(std::shared_ptr<Player> player, uint32_t id, bool disable /* = true*/) {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT * FROM `players` WHERE `id` = " << id;
 	return loadPlayer(player, db.storeQuery(query.str()), disable);
 }
 
-bool IOLoginData::loadPlayerByName(Player* player, const std::string &name, bool disable /* = true*/) {
+bool IOLoginData::loadPlayerByName(std::shared_ptr<Player> player, const std::string &name, bool disable /* = true*/) {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT * FROM `players` WHERE `name` = " << db.escapeString(name);
 	return loadPlayer(player, db.storeQuery(query.str()), disable);
 }
 
-bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /* = false*/) {
+bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result, bool disable /* = false*/) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Resultnullptr: {}", __FUNCTION__);
+		std::string nullptrType = !result ? "Result" : "Player";
+		g_logger().warn("[{}] - {} is nullptr", __FUNCTION__, nullptrType);
 		return false;
 	}
 
@@ -185,7 +186,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /
 	}
 }
 
-bool IOLoginData::savePlayer(Player* player) {
+bool IOLoginData::savePlayer(std::shared_ptr<Player> player) {
 	bool success = DBTransaction::executeWithinTransaction([player]() {
 		return savePlayerGuard(player);
 	});
@@ -197,7 +198,7 @@ bool IOLoginData::savePlayer(Player* player) {
 	return success;
 }
 
-bool IOLoginData::savePlayerGuard(Player* player) {
+bool IOLoginData::savePlayerGuard(std::shared_ptr<Player> player) {
 	if (!player) {
 		throw DatabaseException("Player nullptr in function: " + std::string(__FUNCTION__));
 	}

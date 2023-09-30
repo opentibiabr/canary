@@ -43,8 +43,6 @@ DIRECTIONS_TABLE = {
 	DIRECTION_NORTHEAST,
 }
 
-STORAGEVALUE_PROMOTION = 30018
-
 SERVER_NAME = configManager.getString(configKeys.SERVER_NAME)
 SERVER_MOTD = configManager.getString(configKeys.SERVER_MOTD)
 
@@ -85,16 +83,16 @@ ropeSpots = { 386, 421, 386, 7762, 12202, 12936, 14238, 17238, 23363, 21965, 219
 specialRopeSpots = { 12935 }
 
 -- Impact Analyser
--- Every 2 seconds
-updateInterval = 2
 if not GlobalBosses then
 	GlobalBosses = {}
 end
+
 -- Healing
 -- Global table to insert data
 if healingImpact == nil then
 	healingImpact = {}
 end
+
 -- Damage
 -- Global table to insert data
 if damageImpact == nil then

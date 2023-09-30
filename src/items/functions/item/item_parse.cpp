@@ -1104,12 +1104,15 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 					weapon->setVocationString(tmp);
 				}
 			}
-		} else if (stringKey == "removecount" && weapon) {
-			weapon->action = WEAPONACTION_REMOVECOUNT;
-		} else if (stringKey == "removecharge" && weapon) {
-			weapon->action = WEAPONACTION_REMOVECHARGE;
-		} else if (stringKey == "move" && weapon) {
-			weapon->action = WEAPONACTION_MOVE;
+		} else if (stringKey == "action" && weapon) {
+			auto action = asLowerCaseString(subValueAttribute.as_string());
+			if (action == "removecharge") {
+				weapon->action = WEAPONACTION_REMOVECHARGE;
+			} else if (action == "removecount") {
+				weapon->action = WEAPONACTION_REMOVECOUNT;
+			} else if (action == "move") {
+				weapon->action = WEAPONACTION_MOVE;
+			}
 		} else if (stringKey == "breakchance" && weapon) {
 			weapon->setBreakChance(subValueAttribute.as_uint());
 		} else if (stringKey == "mana" && weapon) {

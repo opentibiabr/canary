@@ -1190,7 +1190,7 @@
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="5000"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="slot" value="hand"/>
 		</attribute>
@@ -1203,7 +1203,7 @@
 		<attribute key="defense" value="24"/>
 		<attribute key="weight" value="4800"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="50"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -1218,7 +1218,7 @@
 		<attribute key="defense" value="25"/>
 		<attribute key="weight" value="3500"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -1232,7 +1232,7 @@
 		<attribute key="defense" value="22"/>
 		<attribute key="weight" value="5900"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -1247,7 +1247,7 @@
 		<attribute key="defense" value="28"/>
 		<attribute key="weight" value="8200"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="45"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -1263,7 +1263,7 @@
 		<attribute key="defense" value="18"/>
 		<attribute key="weight" value="5100"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -1278,7 +1278,7 @@
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="5900"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="25"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -1293,7 +1293,7 @@
 		<attribute key="defense" value="24"/>
 		<attribute key="weight" value="6100"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -1307,7 +1307,7 @@
 		<attribute key="defense" value="20"/>
 		<attribute key="weight" value="4500"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -1322,7 +1322,7 @@
 		<attribute key="defense" value="10"/>
 		<attribute key="weight" value="6150"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="65"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -1338,7 +1338,7 @@
 		<attribute key="defense" value="15"/>
 		<attribute key="weight" value="5800"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -1353,7 +1353,7 @@
 		<attribute key="defense" value="16"/>
 		<attribute key="weight" value="8000"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -1368,7 +1368,7 @@
 		<attribute key="defense" value="20"/>
 		<attribute key="weight" value="7800"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -1382,7 +1382,7 @@
 		<attribute key="defense" value="18"/>
 		<attribute key="weight" value="5400"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -1396,7 +1396,7 @@
 		<attribute key="defense" value="10"/>
 		<attribute key="weight" value="8500"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="50"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -1428,7 +1428,7 @@
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="5000"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="slot" value="hand"/>
 		</attribute>
@@ -1441,7 +1441,7 @@
 		<attribute key="defense" value="24"/>
 		<attribute key="weight" value="4800"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="50"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -1456,7 +1456,7 @@
 		<attribute key="defense" value="25"/>
 		<attribute key="weight" value="3500"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -1470,7 +1470,7 @@
 		<attribute key="defense" value="22"/>
 		<attribute key="weight" value="5900"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -1485,7 +1485,7 @@
 		<attribute key="defense" value="28"/>
 		<attribute key="weight" value="8200"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="45"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -1501,7 +1501,7 @@
 		<attribute key="defense" value="18"/>
 		<attribute key="weight" value="5100"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -1516,7 +1516,7 @@
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="5900"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="25"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -1531,7 +1531,7 @@
 		<attribute key="defense" value="24"/>
 		<attribute key="weight" value="6100"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -1545,7 +1545,7 @@
 		<attribute key="defense" value="20"/>
 		<attribute key="weight" value="4500"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -1560,7 +1560,7 @@
 		<attribute key="defense" value="10"/>
 		<attribute key="weight" value="6150"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="65"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -1576,7 +1576,7 @@
 		<attribute key="defense" value="15"/>
 		<attribute key="weight" value="5800"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -1591,7 +1591,7 @@
 		<attribute key="defense" value="16"/>
 		<attribute key="weight" value="8000"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -1606,7 +1606,7 @@
 		<attribute key="defense" value="20"/>
 		<attribute key="weight" value="7800"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -1620,7 +1620,7 @@
 		<attribute key="defense" value="18"/>
 		<attribute key="weight" value="5400"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -1634,7 +1634,7 @@
 		<attribute key="defense" value="10"/>
 		<attribute key="weight" value="8500"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="50"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -2075,7 +2075,7 @@
 		<attribute key="attack" value="14"/>
 		<attribute key="weight" value="70"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -2092,7 +2092,7 @@
 		<attribute key="attack" value="14"/>
 		<attribute key="weight" value="70"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -2109,7 +2109,7 @@
 		<attribute key="attack" value="14"/>
 		<attribute key="weight" value="70"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -2182,7 +2182,7 @@
 		<attribute key="attack" value="14"/>
 		<attribute key="weight" value="70"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -2205,7 +2205,7 @@
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="5000"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="slot" value="hand"/>
 		</attribute>
@@ -2218,7 +2218,7 @@
 		<attribute key="defense" value="24"/>
 		<attribute key="weight" value="4800"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="50"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -2233,7 +2233,7 @@
 		<attribute key="defense" value="25"/>
 		<attribute key="weight" value="3500"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -2247,7 +2247,7 @@
 		<attribute key="defense" value="22"/>
 		<attribute key="weight" value="5900"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -2262,7 +2262,7 @@
 		<attribute key="defense" value="28"/>
 		<attribute key="weight" value="8200"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="45"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -2278,7 +2278,7 @@
 		<attribute key="defense" value="18"/>
 		<attribute key="weight" value="5100"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -2293,7 +2293,7 @@
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="5900"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="25"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -2308,7 +2308,7 @@
 		<attribute key="defense" value="24"/>
 		<attribute key="weight" value="6100"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -2322,7 +2322,7 @@
 		<attribute key="defense" value="20"/>
 		<attribute key="weight" value="4500"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -2337,7 +2337,7 @@
 		<attribute key="defense" value="10"/>
 		<attribute key="weight" value="6150"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="65"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -2353,7 +2353,7 @@
 		<attribute key="defense" value="15"/>
 		<attribute key="weight" value="5800"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -2368,7 +2368,7 @@
 		<attribute key="defense" value="16"/>
 		<attribute key="weight" value="8000"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -2383,7 +2383,7 @@
 		<attribute key="defense" value="20"/>
 		<attribute key="weight" value="7800"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -2397,7 +2397,7 @@
 		<attribute key="defense" value="18"/>
 		<attribute key="weight" value="5400"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -2411,7 +2411,7 @@
 		<attribute key="defense" value="10"/>
 		<attribute key="weight" value="8500"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="50"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -2426,7 +2426,7 @@
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="5000"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="slot" value="hand"/>
 		</attribute>
@@ -2439,7 +2439,7 @@
 		<attribute key="defense" value="24"/>
 		<attribute key="weight" value="4800"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="50"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -2454,7 +2454,7 @@
 		<attribute key="defense" value="25"/>
 		<attribute key="weight" value="3500"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -2468,7 +2468,7 @@
 		<attribute key="defense" value="22"/>
 		<attribute key="weight" value="5900"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -2483,7 +2483,7 @@
 		<attribute key="defense" value="28"/>
 		<attribute key="weight" value="8200"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="45"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -2503,7 +2503,7 @@
 		<attribute key="defense" value="18"/>
 		<attribute key="weight" value="5100"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -2518,7 +2518,7 @@
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="5900"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="25"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -2533,7 +2533,7 @@
 		<attribute key="defense" value="24"/>
 		<attribute key="weight" value="6100"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -2547,7 +2547,7 @@
 		<attribute key="defense" value="20"/>
 		<attribute key="weight" value="4500"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -2562,7 +2562,7 @@
 		<attribute key="defense" value="10"/>
 		<attribute key="weight" value="6150"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="65"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -2578,7 +2578,7 @@
 		<attribute key="defense" value="15"/>
 		<attribute key="weight" value="5800"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -2593,7 +2593,7 @@
 		<attribute key="defense" value="16"/>
 		<attribute key="weight" value="8000"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -2608,7 +2608,7 @@
 		<attribute key="defense" value="20"/>
 		<attribute key="weight" value="7800"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -2622,7 +2622,7 @@
 		<attribute key="defense" value="18"/>
 		<attribute key="weight" value="5400"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -2636,7 +2636,7 @@
 		<attribute key="defense" value="10"/>
 		<attribute key="weight" value="8500"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="50"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -6580,7 +6580,7 @@
 		<attribute key="range" value="6"/>
 		<attribute key="weight" value="80"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="weaponType" value="missile"/>
 			<attribute key="slot" value="hand"/>
 		</attribute>
@@ -8536,7 +8536,7 @@
 		<attribute key="defense" value="1"/>
 		<attribute key="weight" value="1500"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="slot" value="hand"/>
 		</attribute>
@@ -10757,7 +10757,7 @@
 		<attribute key="attack" value="30"/>
 		<attribute key="weight" value="80"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="weaponType" value="ammo"/>
 			<attribute key="slot" value="ammo"/>
 		</attribute>
@@ -10771,7 +10771,7 @@
 		<attribute key="attack" value="25"/>
 		<attribute key="weight" value="70"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="weaponType" value="ammo"/>
 			<attribute key="slot" value="ammo"/>
 		</attribute>
@@ -10803,7 +10803,7 @@
 		<attribute key="attack" value="40"/>
 		<attribute key="weight" value="90"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="55"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -18000,7 +18000,7 @@
 		<attribute key="attack" value="72"/>
 		<attribute key="weight" value="90"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="110"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -19212,7 +19212,7 @@
 		<attribute key="attack" value="33"/>
 		<attribute key="weight" value="80"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="30"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -19228,7 +19228,7 @@
 		<attribute key="attack" value="28"/>
 		<attribute key="weight" value="70"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -19244,7 +19244,7 @@
 		<attribute key="attack" value="38"/>
 		<attribute key="weight" value="70"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="40"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -32722,7 +32722,7 @@
 		<attribute key="attack" value="33"/>
 		<attribute key="weight" value="70"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="30"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -32738,7 +32738,7 @@
 		<attribute key="attack" value="36"/>
 		<attribute key="weight" value="80"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="40"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -33579,7 +33579,7 @@
 		<attribute key="attack" value="36"/>
 		<attribute key="weight" value="80"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="weaponType" value="ammo"/>
 			<attribute key="slot" value="ammo"/>
 		</attribute>
@@ -33593,7 +33593,7 @@
 		<attribute key="attack" value="65"/>
 		<attribute key="weight" value="75"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="90"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -34434,7 +34434,7 @@
 		<attribute key="attack" value="66"/>
 		<attribute key="weight" value="85"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="90"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -34450,7 +34450,7 @@
 		<attribute key="attack" value="56"/>
 		<attribute key="weight" value="80"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="70"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -34467,7 +34467,7 @@
 		<attribute key="attack" value="27"/>
 		<attribute key="weight" value="70"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="70"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -42009,7 +42009,7 @@
 		<attribute key="defense" value="1"/>
 		<attribute key="weight" value="1900"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="75"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
@@ -42027,7 +42027,7 @@
 		<attribute key="defense" value="1"/>
 		<attribute key="weight" value="1900"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="75"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
@@ -42045,7 +42045,7 @@
 		<attribute key="defense" value="1"/>
 		<attribute key="weight" value="1900"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecharge&quot;"/>
+			<attribute key="action" value="removecharge"/>
 			<attribute key="level" value="75"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
@@ -42697,7 +42697,7 @@ My sad story is told by few living humans but many dead warriors"/>
 		<attribute key="attack" value="20"/>
 		<attribute key="weight" value="60"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="weaponType" value="ammo"/>
 			<attribute key="slot" value="ammo"/>
 		</attribute>
@@ -48984,7 +48984,7 @@ TibiaTome.com"/>
 		<attribute key="attack" value="78"/>
 		<attribute key="weight" value="90"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="150"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>
@@ -66673,7 +66673,7 @@ former students at the Noodles Academy. Awarded by TibiaLabs.com"/>
 		<attribute key="attack" value="78"/>
 		<attribute key="weight" value="90"/>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="action" value="&quot;removecount&quot;"/>
+			<attribute key="action" value="removecount"/>
 			<attribute key="level" value="150"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="ammo"/>

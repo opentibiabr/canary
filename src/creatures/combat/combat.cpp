@@ -1770,13 +1770,15 @@ bool ChainPickerCallback::onChainCombat(std::shared_ptr<Creature> creature, std:
 //**********************************************************//
 
 void AreaCombat::clear() {
-	areas.clear();
+	std::ranges::fill(areas, nullptr);
 }
 
 AreaCombat::AreaCombat(const AreaCombat &rhs) {
 	hasExtArea = rhs.hasExtArea;
-	for (const auto &it : rhs.areas) {
-		areas[it.first] = it.second->clone();
+	for (uint_fast8_t i = 0; i <= Direction::DIRECTION_LAST; ++i) {
+		if (const auto &area = rhs.areas[i]) {
+			areas[i] = area->clone();
+		}
 	}
 }
 

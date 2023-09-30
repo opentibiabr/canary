@@ -10,7 +10,6 @@
 #include "pch.hpp"
 
 #include "items/item.hpp"
-#include "items/functions/item/item_parse.hpp"
 #include "items/containers/container.hpp"
 #include "items/decay/decay.hpp"
 #include "game/movement/teleport.hpp"

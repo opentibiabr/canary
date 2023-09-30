@@ -19,7 +19,6 @@
 #include "lua/creature/movement.hpp"
 #include "game/movement/teleport.hpp"
 #include "items/trashholder.hpp"
-#include "map/house/housetile.hpp"
 #include "io/iomap.hpp"
 
 auto real_nullptr_tile = std::make_shared<StaticTile>(0xFFFF, 0xFFFF, 0xFF);

@@ -14,7 +14,6 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "creatures/players/player.hpp"
-#include "game/scheduling/dispatcher.hpp"
 
 phmap::parallel_flat_hash_map<std::string, std::shared_ptr<Zone>> Zone::zones = {};
 const static std::shared_ptr<Zone> nullZone = nullptr;

@@ -13,8 +13,8 @@
 #include "lib/di/container.hpp"
 #include "utils/tools.hpp"
 
-KVStore &KVStore::getInstance() {
-	return inject<KVStore>();
+KV &KV::getInstance() {
+	return inject<KV>();
 }
 
 void KVStore::set(const std::string &key, const std::initializer_list<ValueWrapper> &init_list) {
@@ -73,6 +73,11 @@ std::optional<ValueWrapper> KVStore::get(const std::string &key, bool forceLoad 
 	return value;
 }
 
-void KVStore::remove(const std::string &key) {
+void KV::remove(const std::string &key) {
 	set(key, ValueWrapper::deleted());
+}
+
+std::shared_ptr<KV> KVStore::scoped(const std::string &scope) {
+	logger.debug("KVStore::scoped({})", scope);
+	return std::make_shared<ScopedKV>(logger, *this, scope);
 }

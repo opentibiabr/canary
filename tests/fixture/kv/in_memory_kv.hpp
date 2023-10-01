@@ -22,7 +22,7 @@ namespace di = boost::di;
 class KVMemory final : public KVStore {
 public:
 	static di::extension::injector<> &install(di::extension::injector<> &injector) {
-		injector.install(di::bind<KVStore>.to<KVMemory>().in(di::singleton));
+		injector.install(di::bind<KV>.to<KVMemory>().in(di::singleton));
 		return injector;
 	}
 
@@ -44,6 +44,6 @@ protected:
 };
 
 template <>
-struct TestInjection<KVStore> {
+struct TestInjection<KV> {
 	using type = KVMemory;
 };

@@ -4089,7 +4089,7 @@ int PlayerFunctions::luaPlayerKV(lua_State* L) {
 		return 1;
 	}
 
-	pushUserdata<KVStore>(L, player->kv());
-	setMetatable(L, -1, "KVStore");
+	pushUserdata<KV>(L, player->kv());
+	setMetatable(L, -1, "KV");
 	return 1;
 }

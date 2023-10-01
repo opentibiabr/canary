@@ -471,8 +471,8 @@ public:
 	int32_t getStorageValueByName(const std::string &storageName) const;
 	void addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin = false);
 
-	std::shared_ptr<KVStore> kv() const {
-		return g_kv().scoped("player")->scoped(getID());
+	std::shared_ptr<KV> kv() const {
+		return g_kv().scoped("player")->scoped(fmt::format("{}", getID()));
 	}
 
 	void genReservedStorageRange();

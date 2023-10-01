@@ -58,8 +58,7 @@ bool KVSQL::prepareSave(const std::string &key, const ValueWrapper &value, DBIns
 		return db.executeQuery(query);
 	}
 
-	update.upsert({ "timestamp", "value" });
-	update.addRow(fmt::format("({}, {}, {})", db.escapeString(key), getTimeMsNow(), db.escapeString(data)));
+	update.addRow(fmt::format("{}, {}, {}", db.escapeString(key), getTimeMsNow(), db.escapeString(data)));
 	return true;
 }
 
@@ -67,10 +66,12 @@ bool KVSQL::saveAll() {
 	auto store = getStore();
 	bool success = DBTransaction::executeWithinTransaction([this, &store]() {
 		auto update = dbUpdate();
-		return std::ranges::all_of(store, [this, &update](const auto &kv) {
-			const auto &[key, value] = kv;
-			return prepareSave(key, value.first, update);
-		});
+		if (!std::ranges::all_of(store, [this, &update](const auto &kv) {
+				const auto &[key, value] = kv;
+				return prepareSave(key, value.first, update);
+			})) {
+			return false;
+		}
 		return update.execute();
 	});
 

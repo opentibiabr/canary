@@ -45,7 +45,7 @@ struct InjectionFixture {
 	}
 
 	KVMemory &kv() const {
-		return getImpl<KV>();
+		return getImpl<KVStore>();
 	}
 
 private:

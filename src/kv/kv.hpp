@@ -20,8 +20,6 @@
 
 class KV : public std::enable_shared_from_this<KV> {
 public:
-	static KV &getInstance();
-
 	virtual void set(const std::string &key, const std::initializer_list<ValueWrapper> &init_list) = 0;
 	virtual void set(const std::string &key, const std::initializer_list<std::pair<const std::string, ValueWrapper>> &init_list) = 0;
 	virtual void set(const std::string &key, const ValueWrapper &value) = 0;
@@ -44,6 +42,7 @@ public:
 class KVStore : public KV {
 public:
 	static constexpr size_t MAX_SIZE = 10000;
+	static KVStore &getInstance();
 
 	explicit KVStore(Logger &logger) :
 		logger(logger) { }

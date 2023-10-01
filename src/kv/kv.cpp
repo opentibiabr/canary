@@ -13,8 +13,8 @@
 #include "lib/di/container.hpp"
 #include "utils/tools.hpp"
 
-KV &KV::getInstance() {
-	return inject<KV>();
+KVStore &KVStore::getInstance() {
+	return inject<KVStore>();
 }
 
 void KVStore::set(const std::string &key, const std::initializer_list<ValueWrapper> &init_list) {

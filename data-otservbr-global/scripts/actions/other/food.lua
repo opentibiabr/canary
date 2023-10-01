@@ -114,7 +114,6 @@ local foods = {
 	[24948] = { 10, "Slurp." }, -- bottle of tibian wine
 	[25692] = { 15, "Mmmmm!" }, -- fresh fruit
 	[30198] = { 40, "Mmmmm!" }, -- meringue cake
-	[30202] = { 15, "Slurp." }, -- winterberry liquor
 	[31560] = { 40, "Slurp." }, -- goanna meat
 	[32069] = { 15, "Slurp." }, -- candy floss
 	[37530] = { 10, "Slurp." }, -- bottle of champagne

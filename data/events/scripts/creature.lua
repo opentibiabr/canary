@@ -1,5 +1,5 @@
-local function removeCombatProtection(playerUid)
-	local player = Player(playerUid)
+local function removeCombatProtection(cid)
+	local player = Player(cid)
 	if not player then
 		return true
 	end
@@ -14,20 +14,28 @@ local function removeCombatProtection(playerUid)
 	end
 
 	player:setStorageValue(Global.Storage.CombatProtectionStorage, 2)
-	addEvent(function(playerFuncUid)
-		local playerEvent = Player(playerFuncUid)
-		if not playerEvent then
+	addEvent(function(cid)
+		local player = Player(cid)
+		if not player then
 			return
 		end
 
-		playerEvent:setStorageValue(Global.Storage.CombatProtectionStorage, 0)
-		playerEvent:remove()
-	end, time * 1000, playerUid)
+		player:setStorageValue(Global.Storage.CombatProtectionStorage, 0)
+		player:remove()
+	end, time * 1000, cid)
 end
 
+picIf = {}
 function Creature:onTargetCombat(target)
 	if not self then
 		return true
+	end
+
+	if not picIf[target.uid] then
+		if target:isMonster() then
+			target:registerEvent("RewardSystemSlogan")
+			picIf[target.uid] = {}
+		end
 	end
 
 	if target:isPlayer() then

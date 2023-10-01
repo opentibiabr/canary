@@ -1,4 +1,4 @@
-local internalNpcName = "Imbuement Assistant"
+local internalNpcName = "Imbuement Seller"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}
 
@@ -11,23 +11,23 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 141,
-	lookHead = 41,
-	lookBody = 72,
-	lookLegs = 39,
-	lookFeet = 96,
+	lookType = 130,
+	lookHead = 0,
+	lookBody = 57,
+	lookLegs = 125,
+	lookFeet = 3,
 	lookAddons = 3,
-	lookMount = 688,
+	lookMount = 0
 }
 
 npcConfig.flags = {
-	floorchange = false,
+	floorchange = false
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = "Hello adventurer, looking for Imbuement items? Just ask me!" },
+	{text = 'Hello adventurer, looking for Imbuement items? Just ask me!'}
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -59,7 +59,7 @@ end
 
 -- Basic
 
-keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "Currently I have been working selling items for imbuement." })
+keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "Currently I have been working selling items for imbuement."})
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to Imbuement's shop!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye and come again.")
@@ -136,7 +136,7 @@ npcConfig.shop = {
 	{ itemName = "wereboar hooves", clientId = 22053, buy = 175 },
 	{ itemName = "winter wolf fur", clientId = 10295, buy = 20 },
 	{ itemName = "wyrm scale", clientId = 9665, buy = 400 },
-	{ itemName = "wyvern talisman", clientId = 9644, buy = 265 },
+	{ itemName = "wyvern talisman", clientId = 9644, buy = 265 }
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -147,6 +147,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType) end
+npcType.onCheckItem = function(npc, player, clientId, subType)
+end
 
 npcType:register(npcConfig)

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <items>
+
 	<!-- Liquids -->
 	<!-- Fluid type 0 is same as water (id="1") -->
 	<item id="1" name="water"/>
@@ -34860,8 +34861,7 @@
 		<attribute key="description" value="A scroll of parchment, inscribed with an arcane incantation rite"/>
 		<attribute key="weight" value="10"/>
 	</item>
-	<item id="18935" article="a" name="vampire's signet ring">
-		<attribute key="description" value="A ring with a massive, faintly glowing seal, containing the blood of a vampire"/>
+	<item id="18935" article="a" name="NPC Ring">
 		<attribute key="weight" value="10"/>
 	</item>
 	<item id="18936" article="the" name="Vampire Count's medal">
@@ -35842,9 +35842,11 @@
 		</attribute>
 	</item>
 	<item id="19364" name="RESERVED SPRITE"/>
-	<item id="19365" article="a" name="trapped lightning">
-		<attribute key="primarytype" value="light sources"/>
-		<attribute key="weight" value="100"/>
+	<item id="19365" article="a" name="Atenas Slime">
+			<attribute key="description" value="+10% critical damage, +2% critical chance"/>
+	<attribute key="criticalhitdamage" value="10"/>
+		<attribute key="criticalhitchance" value="5"/>
+		<attribute key="weight" value="10"/>
 	</item>
 	<item id="19366" name="icy culottes">
 		<attribute key="primarytype" value="legs"/>
@@ -35854,8 +35856,8 @@
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item fromid="19367" toid="19368" name="RESERVED SPRITE"/>
-	<item id="19369" article="an" name="eye of the storm">
-		<attribute key="weight" value="150"/>
+	<item id="19369" article="an" name="Pocket Teleport">
+		<attribute key="weight" value="100"/>
 	</item>
 	<item id="19370" name="RESERVED SPRITE"/>
 	<item id="19371" article="a" name="glass of goo">
@@ -42423,10 +42425,9 @@
 		<attribute key="description" value="Souvenir from Thais Museum"/>
 		<attribute key="weight" value="1000"/>
 	</item>
-	<item id="23681" article="a" name="golden newspaper">
-		<attribute key="primarytype" value="documents and papers"/>
-		<attribute key="description" value="Souvenir from Thais Museum"/>
-		<attribute key="weight" value="2400"/>
+	<item id="23681" article="a" name="Summon Upgrade">
+		
+		<attribute key="weight" value="24"/>
 	</item>
 	<item id="23682" article="a" name="bag of oriental spices">
 		<attribute key="description" value="Souvenir from Thais Museum"/>
@@ -68906,28 +68907,50 @@
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="weight" value="20"/>
 	</item>
-	<item id="44064" article="an" name="training shield">
-		<attribute key="primarytype" value="training weapons"/>
-		<attribute key="showCharges" value="1"/>
-		<attribute key="charges" value="50"/>
-		<attribute key="weight" value="1000"/>
+	<item id="49605" article="a" name="Atenas backpack">
+		<attribute key="description" value="Regen extra de 60 de vida e 60 de mana a cada 10 segundos"/>
+		<attribute key="manaticks" value="1000"/>
+		<attribute key="managain" value="60"/>
+		<attribute key="healthticks" value="1000"/>
+		<attribute key="healthgain" value="60"/>
+		<attribute key="containersize" value="30"/>
+		<attribute key="weight" value="10"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="increase capacity" value="3"/>
+		</attribute>
 	</item>
-	<item id="44065" article="an" name="exercise shield">
-		<attribute key="primarytype" value="exercise weapons"/>
-		<attribute key="showCharges" value="1"/>
-		<attribute key="charges" value="500"/>
-		<attribute key="weight" value="1000"/>
+	<item id="49605" article="a" name="roulete coin" plural="roulete coins">
+		<attribute key="weight" value="5"/>
 	</item>
-	<item id="44066" article="an" name="durable exercise shield">
-		<attribute key="primarytype" value="exercise weapons"/>
-		<attribute key="showCharges" value="1"/>
-		<attribute key="charges" value="1800"/>
-		<attribute key="weight" value="1000"/>
+		<item id="49698" article="a" name="beast exercise dummy">
+		<attribute key="description" value="You can train your skills by using training weapons with this expert exercise dummy"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49699"/>
+		<attribute key="type" value="dummy">
+			<attribute key="rate" value="100"/>
+		</attribute>
 	</item>
-	<item id="44067" article="an" name="lasting exercise shield">
-		<attribute key="primarytype" value="exercise weapons"/>
-		<attribute key="showCharges" value="1"/>
-		<attribute key="charges" value="14400"/>
-		<attribute key="weight" value="1000"/>
+		<item id="49699" article="a" name="beast exercise dummy">
+		<attribute key="description" value="You can train your skills by using training weapons with this expert exercise dummy"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49698"/>
+	</item>
+	<item id="49691" article="a" name="factory imbuing shrine">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49692"/>
+	</item>
+	<item id="49692" article="a" name="factory imbuing shrine">
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49691"/>
+	</item>
+		<item id="49689" article="a" name="demonic reward shrine">
+		<attribute key="description" value="It depicts the two suns of Tibia, symbolising the course of a day"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49690"/>
+	</item>
+	<item id="49690" article="a" name="demonic reward shrine">
+		<attribute key="description" value="It depicts the two suns of Tibia, symbolising the course of a day"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49689"/>
 	</item>
 </items>

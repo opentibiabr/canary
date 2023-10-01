@@ -119,6 +119,8 @@ bool Database::executeQuery(const std::string_view &query) {
 		return false;
 	}
 
+	g_logger().trace("Executing Query: {}", query);
+
 	std::scoped_lock lock { databaseLock };
 
 	bool success = retryQuery(query, 10);
@@ -132,6 +134,7 @@ DBResult_ptr Database::storeQuery(const std::string_view &query) {
 		g_logger().error("Database not initialized!");
 		return nullptr;
 	}
+	g_logger().trace("Storing Query: {}", query);
 
 	std::scoped_lock lock { databaseLock };
 
@@ -312,17 +315,46 @@ bool DBInsert::execute() {
 		return true;
 	}
 
-	std::ostringstream query;
-	query << this->query << " " << values;
+	std::string baseQuery = this->query;
+	std::string upsertQuery;
 
 	if (!upsertColumns.empty()) {
-		query << " ON DUPLICATE KEY UPDATE ";
+		std::ostringstream upsertStream;
+		upsertStream << " ON DUPLICATE KEY UPDATE ";
 		for (size_t i = 0; i < upsertColumns.size(); ++i) {
-			query << "`" << upsertColumns[i] << "` = VALUES(`" << upsertColumns[i] << "`)";
+			upsertStream << "`" << upsertColumns[i] << "` = VALUES(`" << upsertColumns[i] << "`)";
 			if (i < upsertColumns.size() - 1) {
-				query << ", ";
+				upsertStream << ", ";
 			}
 		}
+		upsertQuery = upsertStream.str();
 	}
-	return Database::getInstance().executeQuery(query.str());
+
+	std::string currentBatch = values;
+	while (!currentBatch.empty()) {
+		size_t cutPos = Database::MAX_QUERY_SIZE - baseQuery.size() - upsertQuery.size();
+		if (cutPos < currentBatch.size()) {
+			cutPos = currentBatch.rfind("),(", cutPos);
+			if (cutPos == std::string::npos) {
+				return false;
+			}
+			cutPos += 2;
+		} else {
+			cutPos = currentBatch.size();
+		}
+
+		std::string batchValues = currentBatch.substr(0, cutPos);
+		if (batchValues.back() == ',') {
+			batchValues.pop_back();
+		}
+		currentBatch = currentBatch.substr(cutPos);
+
+		std::ostringstream query;
+		query << baseQuery << " " << batchValues << upsertQuery;
+		if (!Database::getInstance().executeQuery(query.str())) {
+			return false;
+		}
+	}
+
+	return true;
 }

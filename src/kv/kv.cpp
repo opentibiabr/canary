@@ -64,7 +64,15 @@ std::optional<ValueWrapper> KVStore::get(const std::string &key, bool forceLoad 
 		return value;
 	}
 
-	auto &[value, timestamp] = store_[key];
-	lruQueue_.splice(lruQueue_.begin(), lruQueue_, timestamp);
+	auto &[value, lruIt] = store_[key];
+	if (value.isDeleted()) {
+		lruQueue_.splice(lruQueue_.end(), lruQueue_, lruIt);
+		return std::nullopt;
+	}
+	lruQueue_.splice(lruQueue_.begin(), lruQueue_, lruIt);
 	return value;
+}
+
+void KVStore::remove(const std::string &key) {
+	set(key, ValueWrapper::deleted());
 }

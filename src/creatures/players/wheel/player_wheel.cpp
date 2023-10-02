@@ -83,7 +83,6 @@ namespace {
 		{ 43949, "wheel.scroll.extended", 13 },
 		{ 43950, "wheel.scroll.advanced", 20 },
 	};
-
 } // namespace
 
 PlayerWheel::PlayerWheel(Player &initPlayer) :
@@ -784,7 +783,8 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 		return;
 	}
 
-	auto startSaveTime = OTSYS_TIME();
+	Benchmark bm_saveSlot;
+
 	if (!canOpenWheel()) {
 		return;
 	}
@@ -849,7 +849,7 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 	initializePlayerData();
 	registerPlayerBonusData();
 
-	g_logger().debug("Player: {} is saved the all slots info in: {} seconds", m_player.getName(), (OTSYS_TIME() - startSaveTime) / (1000.));
+	g_logger().debug("Player: {} is saved the all slots info in: {} seconds", m_player.getName(), bm_saveSlot.duration());
 }
 
 /*

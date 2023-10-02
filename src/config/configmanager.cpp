@@ -391,6 +391,8 @@ bool ConfigManager::load() {
 
 	boolean[TOGGLE_MOUNT_IN_PZ] = getGlobalBoolean(L, "toggleMountInProtectionZone", false);
 
+	boolean[TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART] = getGlobalBoolean(L, "togglehouseTransferOnRestart", false);
+
 	loaded = true;
 	lua_close(L);
 	return true;

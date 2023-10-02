@@ -25,7 +25,10 @@ public:
 		registerMethod(L, "House", "getPrice", HouseFunctions::luaHouseGetPrice);
 
 		registerMethod(L, "House", "getOwnerGuid", HouseFunctions::luaHouseGetOwnerGuid);
-		registerMethod(L, "House", "setOwnerGuid", HouseFunctions::luaHouseSetOwnerGuid);
+		registerMethod(L, "House", "setHouseOwner", HouseFunctions::luaHouseSetHouseOwner);
+		registerMethod(L, "House", "setNewOwnerGuid", HouseFunctions::luaHouseSetNewOwnerGuid);
+		registerMethod(L, "House", "hasItemOnTile", HouseFunctions::luaHouseHasItemOnTile);
+		registerMethod(L, "House", "hasNewOwnership", HouseFunctions::luaHouseHasNewOwnership);
 		registerMethod(L, "House", "startTrade", HouseFunctions::luaHouseStartTrade);
 
 		registerMethod(L, "House", "getBeds", HouseFunctions::luaHouseGetBeds);
@@ -58,7 +61,10 @@ private:
 	static int luaHouseGetPrice(lua_State* L);
 
 	static int luaHouseGetOwnerGuid(lua_State* L);
-	static int luaHouseSetOwnerGuid(lua_State* L);
+	static int luaHouseSetHouseOwner(lua_State* L);
+	static int luaHouseSetNewOwnerGuid(lua_State* L);
+	static int luaHouseHasItemOnTile(lua_State* L);
+	static int luaHouseHasNewOwnership(lua_State* L);
 	static int luaHouseStartTrade(lua_State* L);
 
 	static int luaHouseGetBeds(lua_State* L);

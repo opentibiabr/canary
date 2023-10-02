@@ -2484,6 +2484,9 @@ public:
 	// This get all player inventory items
 	std::vector<std::shared_ptr<Item>> getAllInventoryItems(bool ignoreEquiped = false, bool ignoreItemWithTier = false) const;
 
+	// This get all players slot items
+	phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> getAllSlotItems() const;
+
 	/**
 	 * @brief Get the equipped items of the player->
 	 * @details This function returns a vector containing the items currently equipped by the player

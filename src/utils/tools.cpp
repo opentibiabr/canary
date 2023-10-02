@@ -476,6 +476,11 @@ std::time_t getTimeMsNow() {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
 }
 
+std::time_t getTimeUsNow() {
+	auto duration = std::chrono::system_clock::now().time_since_epoch();
+	return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+}
+
 BedItemPart_t getBedPart(const std::string_view string) {
 	if (string == "pillow" || string == "1") {
 		return BED_PILLOW_PART;

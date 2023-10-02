@@ -557,7 +557,7 @@ void Player::updateInventoryImbuement() {
 	bool nonAggressiveFightOnly = g_configManager().getBoolean(TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY);
 
 	// Iterate through all items in the player's inventory
-	for (auto item : getAllInventoryItems()) {
+	for (auto [key, item] : getAllSlotItems()) {
 		// Iterate through all imbuement slots on the item
 
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
@@ -604,6 +604,20 @@ void Player::updateInventoryImbuement() {
 			}
 		}
 	}
+}
+
+phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> Player::getAllSlotItems() const {
+	phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> itemMap;
+	for (uint8_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
+		std::shared_ptr<Item> item = inventory[i];
+		if (!item) {
+			continue;
+		}
+
+		itemMap[i] = item;
+	}
+
+	return itemMap;
 }
 
 void Player::setTraining(bool value) {
@@ -847,12 +861,13 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 	}
 
 	if (value != -1) {
+		int32_t oldValue = getStorageValue(key);
 		storageMap[key] = value;
 
 		if (!isLogin) {
 			auto currentFrameTime = g_dispatcher().getDispatcherCycle();
-			g_events().eventOnStorageUpdate(static_self_cast<Player>(), key, value, getStorageValue(key), currentFrameTime);
-			g_callbacks().executeCallback(EventCallback_t::playerOnStorageUpdate, &EventCallback::playerOnStorageUpdate, getPlayer(), key, value, getStorageValue(key), currentFrameTime);
+			g_events().eventOnStorageUpdate(static_self_cast<Player>(), key, value, oldValue, currentFrameTime);
+			g_callbacks().executeCallback(EventCallback_t::playerOnStorageUpdate, &EventCallback::playerOnStorageUpdate, getPlayer(), key, value, oldValue, currentFrameTime);
 		}
 	} else {
 		storageMap.erase(key);

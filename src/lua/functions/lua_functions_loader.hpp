@@ -215,10 +215,8 @@ protected:
 	static void registerGlobalString(lua_State* L, const std::string &variable, const std::string &name);
 
 	static int luaUserdataCompare(lua_State* L);
+	static int luaGarbageCollection(lua_State* L);
 
 	static ScriptEnvironment scriptEnv[16];
 	static int32_t scriptEnvIndex;
-
-private:
-	static int luaGarbageCollection(lua_State* L);
 };

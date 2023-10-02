@@ -253,7 +253,7 @@ private:
 	void onRemoveTileItem(const SpectatorHashSet &spectators, const std::vector<int32_t> &oldStackPosVector, std::shared_ptr<Item> item);
 	void onUpdateTile(const SpectatorHashSet &spectators);
 
-	void setTileFlags(const std::shared_ptr<Item>& item);
+	void setTileFlags(const std::shared_ptr<Item> &item);
 	void resetTileFlags(const std::shared_ptr<Item> &item);
 	bool hasHarmfulField() const;
 	ReturnValue checkNpcCanWalkIntoTile() const;

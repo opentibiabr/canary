@@ -6039,11 +6039,7 @@ void ProtocolGame::sendAllowBugReport() {
 
 	NetworkMessage msg;
 	msg.addByte(0x1A);
-	if (player->getAccountType() >= account::ACCOUNT_TYPE_NORMAL) {
-		msg.addByte(0x01);
-	} else {
-		msg.addByte(0x00);
-	}
+	msg.addByte(0x00); // 0x01 = DISABLE bug report
 	writeToOutputBuffer(msg);
 }
 

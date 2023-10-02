@@ -30,7 +30,6 @@ void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, const s
 				if (item) {
 					if (!item->unserializeAttr(propStream)) {
 						g_logger().warn("[{}] - Failed to deserialize item attributes {}, from player {}, from account id {}", __FUNCTION__, item->getID(), player->getName(), player->getAccountId());
-						savePlayer(player);
 						g_logger().info("[{}] - Deleting wrong item: {}", __FUNCTION__, item->getID());
 
 						continue;

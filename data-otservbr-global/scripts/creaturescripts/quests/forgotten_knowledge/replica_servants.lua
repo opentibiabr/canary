@@ -43,4 +43,5 @@ function replicaServant.onKill(creature, target)
 	return true
 end
 
+replicaServant:setMonster("golden servant replica", "diamond servant replica")
 replicaServant:register()

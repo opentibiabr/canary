@@ -38,4 +38,5 @@ function astralPower.onKill(creature, target)
 	return true
 end
 
+astralPower:setMonster("bound astral power")
 astralPower:register()

@@ -17,4 +17,5 @@ function nomadKill.onKill(creature, target)
 	return true
 end
 
+nomadKill:setMonster("nomad")
 nomadKill:register()

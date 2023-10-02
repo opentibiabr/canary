@@ -30,4 +30,5 @@ function elementalSpheresOver.onKill(creature, target)
 	return true
 end
 
+elementalSpheresOver:setMonster("energy overlord", "fire overlord", "ice overlord", "earth overlord", "lord of the elements")
 elementalSpheresOver:register()

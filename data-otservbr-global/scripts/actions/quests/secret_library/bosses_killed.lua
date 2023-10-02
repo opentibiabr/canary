@@ -36,4 +36,5 @@ function bossesSecretLibrary.onKill(player, target)
 	return true
 end
 
+bossesSecretLibrary:setMonster("ghulosh", "gorzindel", "lokathmor", "mazzinor", "scourge of oblivion")
 bossesSecretLibrary:register()

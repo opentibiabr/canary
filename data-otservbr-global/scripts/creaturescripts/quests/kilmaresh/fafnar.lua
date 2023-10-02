@@ -22,4 +22,5 @@ function fafnar.onKill(creature, target)
 	return true
 end
 
+fafnar:setMonster("burning gladiator", "priestess of the wild sun")
 fafnar:register()

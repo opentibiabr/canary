@@ -25,4 +25,5 @@ function theRavager.onKill(creature, target)
 	return true
 end
 
+theRavager:setMonster("the ravager")
 theRavager:register()

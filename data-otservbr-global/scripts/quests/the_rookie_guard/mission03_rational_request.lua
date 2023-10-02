@@ -20,4 +20,5 @@ function ratKill.onKill(player, target)
 	return true
 end
 
+ratKill:setMonster("rat")
 ratKill:register()

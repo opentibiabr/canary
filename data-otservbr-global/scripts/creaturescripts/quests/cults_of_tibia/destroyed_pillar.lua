@@ -73,4 +73,5 @@ function destroyedPillar.onKill(creature, target)
 	return true
 end
 
+destroyedPillar:setMonster("pillar of summoning", "pillar of death", "pillar of protection", "pillar of healing", "pillar of draining")
 destroyedPillar:register()

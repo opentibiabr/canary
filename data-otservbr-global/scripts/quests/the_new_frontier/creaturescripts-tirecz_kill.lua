@@ -44,4 +44,5 @@ function tireczKill.onKill(creature, target)
 	return true
 end
 
+tireczKill:setMonster("tirecz")
 tireczKill:register()

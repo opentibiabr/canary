@@ -46,4 +46,5 @@ function versperothKill.onKill(creature, target)
 	return true
 end
 
+versperothKill:setMonster("versperoth")
 versperothKill:register()

@@ -19,4 +19,5 @@ function shardOfCorruptionKill.onKill(creature, target)
 	return true
 end
 
+shardOfCorruptionKill:setMonster("shard of corruption")
 shardOfCorruptionKill:register()

@@ -14,4 +14,5 @@ function bragrumol.onKill(cid, target, damage, flags, corpse)
 	return true
 end
 
+bragrumol:setMonster(bragrumol)
 bragrumol:register()

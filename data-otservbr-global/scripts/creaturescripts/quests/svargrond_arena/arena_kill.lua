@@ -40,4 +40,17 @@ function svargrondArenaKill.onKill(creature, target)
 	return true
 end
 
+local monsters = "";
+
+for i = 1, 3 do
+    for _, monsterArena in pairs(ARENA[i].creatures) do
+        monsters = monsters .. '"' .. monsterArena .. '", '
+    end
+end
+
+if #monsters > 0 then
+    monsters = monsters:sub(1, -3) -- Remove a última vírgula e o espaço
+end
+
+svargrondArenaKill:setMonster(monsters)
 svargrondArenaKill:register()

@@ -14,4 +14,5 @@ function xogixath.onKill(cid, target, damage, flags, corpse)
 	return true
 end
 
+xogixath:setMonster("xogixath")
 xogixath:register()

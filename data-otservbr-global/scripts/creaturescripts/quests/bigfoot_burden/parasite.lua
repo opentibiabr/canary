@@ -77,4 +77,5 @@ function parasiteWarzone.onKill(player, target)
 	return true
 end
 
+parasiteWarzone:setMonster("parasite")
 parasiteWarzone:register()

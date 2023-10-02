@@ -22,4 +22,5 @@ function vortexCarlin.onKill(creature, target, item)
 	return true
 end
 
+vortexCarlin:setMonster("cult enforcer", "cult believer", "cult scholar")
 vortexCarlin:register()

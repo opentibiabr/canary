@@ -15,4 +15,5 @@ function goblinKill.onKill(player, target)
 	return true
 end
 
+goblinKill:setMonster("muglex clan footman")
 goblinKill:register()

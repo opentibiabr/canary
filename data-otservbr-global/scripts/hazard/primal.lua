@@ -123,4 +123,5 @@ function primalKill.onKill(_player, creature)
 	return true
 end
 
+primalKill:setMonster("sulphur spourter", "sulphider", "stalking stalk", "undertaker", "nighthunter", "mercurial menace", "headpecker", "shrieking cry-stal", "mantosaurus", "noxious ripptor", "emerald tortoise", "gore horn", "gorerilla", "sabretooth", "hulking prehemoth")
 primalKill:register()

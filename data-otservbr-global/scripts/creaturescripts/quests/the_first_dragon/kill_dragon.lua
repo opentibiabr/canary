@@ -16,4 +16,5 @@ function killDragon.onKill(player, target)
 	return true
 end
 
+killDragon:setMonster("dragon")
 killDragon:register()

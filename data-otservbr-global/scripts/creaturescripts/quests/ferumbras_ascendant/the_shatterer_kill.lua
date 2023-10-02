@@ -110,4 +110,5 @@ function theShattererKill.onKill(creature, target)
 	return true
 end
 
+theShattererKill:setMonster("the shatterer")
 theShattererKill:register()

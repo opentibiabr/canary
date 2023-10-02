@@ -14,4 +14,5 @@ function energyPrismDeath.onKill(creature, target)
 	return true
 end
 
+energyPrismDeath:setMonster("cosmic energy prism a", "cosmic energy prism b", "cosmic energy prism c", "cosmic energy prism d")
 energyPrismDeath:register()

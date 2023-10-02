@@ -34,4 +34,5 @@ function inquisitionBossKill.onKill(player, target)
 	return true
 end
 
+inquisitionBossKill:setMonster("ushuriel", "zugurosh", "madareth", "latrivan", "golgordan", "annihilon", "hellgorak")
 inquisitionBossKill:register()

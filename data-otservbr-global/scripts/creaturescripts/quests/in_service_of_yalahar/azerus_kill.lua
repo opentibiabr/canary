@@ -36,4 +36,5 @@ function azerus.onKill(creature, target)
 	return true
 end
 
+azerus:setMonster("azerus")
 azerus:register()

@@ -42,4 +42,5 @@ function bossesMissionDepth.onKill(creature, creature)
 	return true
 end
 
+bossesMissionDepth:setMonster("the count of the core", "the duke of the depths", "the baron from below")
 bossesMissionDepth:register()

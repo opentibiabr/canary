@@ -1,5 +1,5 @@
 local setting = {
-	["frazzlemaw"] = roshamuul_killed_frazzlemaws,
+	["frazzlemaw"] = ROSHAMUUL_KILLED_FRAZZLEMAWS,
 	["silencer"] = ROSHAMUUL_KILLED_SILENCERS,
 }
 
@@ -12,4 +12,5 @@ function lowerRoshamuul.onKill(creature, target)
 	return true
 end
 
+lowerRoshamuul:setMonster("frazzlemaw", "silencer")
 lowerRoshamuul:register()

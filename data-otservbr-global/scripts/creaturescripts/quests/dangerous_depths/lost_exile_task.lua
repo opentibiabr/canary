@@ -41,4 +41,5 @@ function lostExileKill.onKill(creature, target)
 	return true
 end
 
+lostExileKill:setMonster("lost exile", "deepworm", "diremaw", "makeshift home")
 lostExileKill:register()

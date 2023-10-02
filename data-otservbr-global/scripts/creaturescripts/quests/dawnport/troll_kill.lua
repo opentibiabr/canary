@@ -15,4 +15,5 @@ function trollKill.onKill(player, target)
 	return true
 end
 
+trollKill:setMonster("mountain troll")
 trollKill:register()

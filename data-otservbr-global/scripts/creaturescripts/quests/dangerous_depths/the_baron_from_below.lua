@@ -83,4 +83,5 @@ function organicMatterKill.onKill(player, creature)
 	end
 end
 
+organicMatterKill:setMonster("organic matter")
 organicMatterKill:register()

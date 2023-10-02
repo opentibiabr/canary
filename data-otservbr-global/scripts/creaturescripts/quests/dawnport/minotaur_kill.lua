@@ -15,4 +15,5 @@ function minotaurKill.onKill(player, target)
 	return true
 end
 
+minotaurKill:setMonster("minotaur bruiser")
 minotaurKill:register()

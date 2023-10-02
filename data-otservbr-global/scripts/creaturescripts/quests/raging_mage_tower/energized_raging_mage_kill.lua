@@ -21,4 +21,5 @@ function energizedRagingMageKill.onKill(player, creature, damage, flags)
 	return true
 end
 
+energizedRagingMageKill:setMonster("energized raging mage")
 energizedRagingMageKill:register()

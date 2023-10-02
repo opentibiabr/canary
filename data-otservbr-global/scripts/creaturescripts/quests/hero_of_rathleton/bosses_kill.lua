@@ -79,4 +79,5 @@ function rathletonBossKill.onKill(creature, target)
 	return true
 end
 
+rathletonBossKill:setMonster("deep terror", "empowered glooth horror", "professor maxxen")
 rathletonBossKill:register()

@@ -29,4 +29,5 @@ function adventurersGuildHunt.onKill(creature, target)
 	return true
 end
 
+adventurersGuildHunt:setMonster("dragon lord", "dragon")
 adventurersGuildHunt:register()

@@ -11,4 +11,5 @@ function huskyKill.onKill(player, target)
 	return true
 end
 
+huskyKill:setMonster("husky")
 huskyKill:register()

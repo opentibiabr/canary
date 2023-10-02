@@ -11,4 +11,5 @@ function keeperKill.onKill(creature, target)
 	return true
 end
 
+keeperKill:setMonster("the keeper")
 keeperKill:register()

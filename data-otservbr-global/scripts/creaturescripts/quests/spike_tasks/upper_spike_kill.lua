@@ -20,4 +20,5 @@ function upperSpikeKill.onKill(creature, target)
 	end
 end
 
+upperSpikeKill:setMonster("demon skeleton")
 upperSpikeKill:register()

@@ -36,4 +36,5 @@ function deathPriestShargon.onKill(creature, target)
 	return true
 end
 
+deathPriestShargon:setMonster("death priest shargon")
 deathPriestShargon:register()

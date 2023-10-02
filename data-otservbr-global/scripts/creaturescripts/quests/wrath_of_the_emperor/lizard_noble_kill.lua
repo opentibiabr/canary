@@ -18,4 +18,5 @@ function lizardNobleKill.onKill(creature, target)
 	return true
 end
 
+lizardNobleKill:setMonster("lizard noble")
 lizardNobleKill:register()

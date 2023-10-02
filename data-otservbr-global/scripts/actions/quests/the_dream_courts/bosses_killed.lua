@@ -28,4 +28,5 @@ function bossesDreamCourts.onKill(creature, target)
 	return true
 end
 
+bossesDreamCourts:setMonster("plagueroot", "malofur mangrinder", "maxxenius", "alptramun", "izcandar the banished", "the nightmare beast")
 bossesDreamCourts:register()

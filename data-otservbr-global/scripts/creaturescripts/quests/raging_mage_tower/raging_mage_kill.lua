@@ -23,4 +23,5 @@ function ragingMageKill.onKill(cid, target, damage, flags, corpse)
 	return true
 end
 
+ragingMageKill:setMonster("raging mage")
 ragingMageKill:register()

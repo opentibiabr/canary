@@ -28,4 +28,5 @@ function quaraLeadersKill.onKill(creature, target)
 	return true
 end
 
+quaraLeadersKill:setMonster("inky", "sharptooth", "splasher")
 quaraLeadersKill:register()

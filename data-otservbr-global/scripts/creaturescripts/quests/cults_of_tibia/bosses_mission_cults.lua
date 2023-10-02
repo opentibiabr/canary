@@ -58,4 +58,5 @@ function bossesCults.onKill(player, creature)
 	return true
 end
 
+bossesCults:setMonster("ravenous hunger", "the souldespoiler", "essence of malice", "the unarmored voidborn", "the false god", "the sandking", "the corruptor of souls", "the source of corruption")
 bossesCults:register()

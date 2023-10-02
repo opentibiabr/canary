@@ -37,4 +37,5 @@ function bossesGraveDanger.onKill(creature, target)
 	return true
 end
 
+bossesGraveDanger:setMonster("sir baelocr", "count vlarkorth", "duke krule", "earl osam", "lord azaram", "king zelos")
 bossesGraveDanger:register()

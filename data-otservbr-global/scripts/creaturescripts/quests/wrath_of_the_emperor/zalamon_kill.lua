@@ -46,4 +46,5 @@ function zalamonKill.onKill(player, target)
 	return true
 end
 
+zalamonKill:setMonster("snake god essence", "snake thing", "lizard abomination", "mutated zalamon")
 zalamonKill:register()

@@ -26,4 +26,5 @@ function bossesFeasterOfSouls.onKill(creature, target)
 	return true
 end
 
+bossesFeasterOfSouls:setMonster("the fear feaster", "the dread maiden", "the unwelcome", "the pale worm")
 bossesFeasterOfSouls:register()

@@ -83,4 +83,5 @@ function ascendantBossesKill.onKill(creature, target)
 	return true
 end
 
+ascendantBossesKill:setMonster("ferumbras mortal shell", "the lord of the lice")
 ascendantBossesKill:register()

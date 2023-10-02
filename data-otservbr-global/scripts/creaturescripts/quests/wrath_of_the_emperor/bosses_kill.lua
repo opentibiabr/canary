@@ -40,4 +40,5 @@ function bossesKill.onKill(creature, target)
 	return true
 end
 
+bossesKill:setMonster("fury of the emperor", "wrath of the emperor", "scorn of the emperor", "spite of the emperor")
 bossesKill:register()

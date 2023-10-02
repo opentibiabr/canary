@@ -32,4 +32,5 @@ function bossesWarzone.onKill(creature, target)
 	end
 end
 
+bossesWarzone:setMonster("deathstrike", "gnomevil", "abyssador")
 bossesWarzone:register()

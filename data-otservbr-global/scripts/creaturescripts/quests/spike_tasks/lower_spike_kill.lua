@@ -20,4 +20,5 @@ function lowerSpikeKill.onKill(creature, target)
 	end
 end
 
+lowerSpikeKill:setMonster("drillworm")
 lowerSpikeKill:register()

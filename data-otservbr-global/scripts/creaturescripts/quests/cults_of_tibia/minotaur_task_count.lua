@@ -15,4 +15,5 @@ function minotaurTask.onKill(creature, target)
 	return true
 end
 
+minotaurTask:setMonster("minotaur cult follower", "minotaur cult zealot", "minotaur cult prophet")
 minotaurTask:register()

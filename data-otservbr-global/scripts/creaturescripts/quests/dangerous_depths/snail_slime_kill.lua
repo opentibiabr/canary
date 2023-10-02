@@ -81,4 +81,5 @@ function snailSlimeKill.onKill(player, creature)
 	return true
 end
 
+snailSlimeKill:setMonster("snail slime")
 snailSlimeKill:register()

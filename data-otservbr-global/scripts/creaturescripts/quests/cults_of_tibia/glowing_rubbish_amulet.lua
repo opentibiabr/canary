@@ -41,4 +41,5 @@ function glowingRubbishAmulet.onKill(creature, killed)
 	return true
 end
 
+glowingRubbishAmulet:setMonster("misguided shadow", "misguided bully")
 glowingRubbishAmulet:register()

@@ -25,4 +25,5 @@ function essenceOfMalice.onKill(creature, target)
 	return true
 end
 
+essenceOfMalice:setMonster("eshtaba the conjurer", "mezlon the defiler", "eliz the unyielding", "malkhar deathbringer", "dorokoll the mystic")
 essenceOfMalice:register()

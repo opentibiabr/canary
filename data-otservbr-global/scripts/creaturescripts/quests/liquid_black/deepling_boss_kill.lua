@@ -27,4 +27,5 @@ function deeplingBosses.onKill(creature, target)
 	end
 end
 
+deeplingBosses:setMonster("jaul", "tanjis", "obujos")
 deeplingBosses:register()

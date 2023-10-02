@@ -17,4 +17,5 @@ function blackKnightKill.onKill(creature, target)
 	return true
 end
 
+blackKnightKill:setMonster("black knight")
 blackKnightKill:register()

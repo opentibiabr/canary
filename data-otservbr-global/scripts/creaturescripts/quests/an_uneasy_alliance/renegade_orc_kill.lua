@@ -14,4 +14,5 @@ function renegadeOrcKill.onKill(creature, target)
 	return true
 end
 
+renegadeOrcKill:setMonster("renegade orc")
 renegadeOrcKill:register()

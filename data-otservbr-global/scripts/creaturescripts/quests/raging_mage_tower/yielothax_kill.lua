@@ -8,4 +8,5 @@ function yielothaxKill.onKill(cid, target, damage, flags)
 	return true
 end
 
+yielothaxKill:setMonster("yielothax")
 yielothaxKill:register()

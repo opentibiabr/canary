@@ -18,4 +18,5 @@ function ungreezKill.onKill(creature, target)
 	return true
 end
 
+ungreezKill:setMonster("ungreez")
 ungreezKill:register()

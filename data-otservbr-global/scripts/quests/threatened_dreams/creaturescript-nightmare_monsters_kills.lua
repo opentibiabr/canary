@@ -30,4 +30,5 @@ function threatenedDreamsNightmareMonstersKills.onKill(player, target)
 	return true
 end
 
+threatenedDreamsNightmareMonstersKills:setMonster("enfeebled silencer", "weakened frazzlemaw", "kroazur")
 threatenedDreamsNightmareMonstersKills:register()

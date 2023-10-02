@@ -18,4 +18,5 @@ function lizardMagistratusKill.onKill(creature, target)
 	return true
 end
 
+lizardMagistratusKill:setMonster("lizard magistratus")
 lizardMagistratusKill:register()

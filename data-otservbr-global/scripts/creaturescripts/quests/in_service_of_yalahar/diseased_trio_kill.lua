@@ -28,4 +28,5 @@ function diseasedTrioKill.onKill(creature, target)
 	return true
 end
 
+diseasedTrioKill:setMonster("diseased bill", "diseased dan", "diseased fred")
 diseasedTrioKill:register()

@@ -20,4 +20,5 @@ function middleSpikeKill.onKill(creature, target)
 	end
 end
 
+middleSpikeKill:setMonster("crystalcrusher")
 middleSpikeKill:register()

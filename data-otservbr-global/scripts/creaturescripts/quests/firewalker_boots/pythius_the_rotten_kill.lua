@@ -11,4 +11,5 @@ function firewalkerBootsKill.onKill(player, target)
 	return true
 end
 
+firewalkerBootsKill:setMonster("pythius the rotten")
 firewalkerBootsKill:register()

@@ -17,4 +17,5 @@ function wigglerKill.onKill(creature, target)
 	return true
 end
 
+wigglerKill:setMonster("wiggler")
 wigglerKill:register()

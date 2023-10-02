@@ -50,4 +50,5 @@ function bossesForgottenKill.onKill(creature, target)
 	return true
 end
 
+bossesForgottenKill:setMonster("lady tenebris", "the enraged thorn knight", "lloyd", "soul of dragonking zyrtarch", "melting frozen horror", "the time guardian", "the blazing time guardian", "the freezing time guardian", "the last lore keeper", "an astral glyph", "the enraged thorn knight", "melting frozen horror")
 bossesForgottenKill:register()

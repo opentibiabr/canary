@@ -28,4 +28,5 @@ function bossesSoulWar.onKill(creature, target)
 	return true
 end
 
+bossesSoulWar:setMonster("goshnar's malice", "goshnar's hatred", "goshnar's spite", "goshnar's cruelty", "goshnar's greed", "goshnar's megalomania")
 bossesSoulWar:register()

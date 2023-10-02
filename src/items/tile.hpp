@@ -209,7 +209,7 @@ public:
 	void addThing(std::shared_ptr<Thing> thing) override final;
 	void addThing(int32_t index, std::shared_ptr<Thing> thing) override;
 
-	void updateTileFlags(std::shared_ptr<Item> item);
+	void updateTileFlags(const std::shared_ptr<Item> &item);
 	void updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t count) override final;
 	void replaceThing(uint32_t index, std::shared_ptr<Thing> thing) override final;
 
@@ -253,15 +253,15 @@ private:
 	void onRemoveTileItem(const SpectatorHashSet &spectators, const std::vector<int32_t> &oldStackPosVector, std::shared_ptr<Item> item);
 	void onUpdateTile(const SpectatorHashSet &spectators);
 
-	void setTileFlags(std::shared_ptr<Item> item);
-	void resetTileFlags(std::shared_ptr<Item> item);
+	void setTileFlags(const std::shared_ptr<Item>& item);
+	void resetTileFlags(const std::shared_ptr<Item> &item);
 	bool hasHarmfulField() const;
 	ReturnValue checkNpcCanWalkIntoTile() const;
 
 protected:
 	std::shared_ptr<Item> ground = nullptr;
 	Position tilePos;
-	uint32_t flags = 0;
+	std::atomic_uint32_t flags = 0;
 	std::shared_ptr<Zone> zone;
 };
 

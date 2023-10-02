@@ -118,5 +118,38 @@ function killingInTheNameOfKill.onKill(player, target)
 	return true
 end
 
-killingInTheNameOfKill:setMonster("the snapper", "hide", "deathbine", "the bloodtusk", "shardhead", "esmeralda", "fleshcrawler", "ribstride", "the bloodweb", "thul", "the old widow", "hemming", "tormentor", "flameborn", "fazzrah", "tromphonyte", "sulphur scuttler", "bruise payne", "the many", "the noxious spawn", "gorgo", "stonecracker", "leviathan", "kerberos", "ethershreck", "paiz the pauperizer", "bretzecutioner", "zanakeph", "tiquandas revenge", "demodras", "necropharus", "the horned fox")
+killingInTheNameOfKill:setMonster(
+	"the snapper",
+	"hide",
+	"deathbine",
+	"the bloodtusk",
+	"shardhead",
+	"esmeralda",
+	"fleshcrawler",
+	"ribstride",
+	"the bloodweb",
+	"thul",
+	"the old widow",
+	"hemming",
+	"tormentor",
+	"flameborn",
+	"fazzrah",
+	"tromphonyte",
+	"sulphur scuttler",
+	"bruise payne",
+	"the many",
+	"the noxious spawn",
+	"gorgo",
+	"stonecracker",
+	"leviathan",
+	"kerberos",
+	"ethershreck",
+	"paiz the pauperizer",
+	"bretzecutioner",
+	"zanakeph",
+	"tiquandas revenge",
+	"demodras",
+	"necropharus",
+	"the horned fox"
+)
 killingInTheNameOfKill:register()

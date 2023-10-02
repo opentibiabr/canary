@@ -31,6 +31,12 @@ public:
 	const std::string &getName() const {
 		return eventName;
 	}
+	void addMonsterMap(std::string n) {
+		monsterMap.emplace(n);
+	}
+	[[nodiscard]] const MonsterMap &getMonsterMap() const {
+		return monsterMap;
+	}
 	void setName(const std::string &name) {
 		eventName = name;
 	}
@@ -63,6 +69,8 @@ private:
 	std::string getScriptTypeName() const override;
 
 	std::string eventName;
+	MonsterMap monsterMap;
+
 	CreatureEventType_t type = CREATURE_EVENT_NONE;
 	bool loaded = false;
 };
@@ -90,20 +98,10 @@ public:
 	void removeInvalidEvents();
 	void clear();
 
-	[[nodiscard]] const MonsterMap &getMonsterMap() const {
-		return monsterMap;
-	}
-
-	void addMonsterMap(std::string n) {
-		monsterMap.emplace(n);
-	}
-
 private:
 	// creature events
 	using CreatureEventMap = std::map<std::string, std::shared_ptr<CreatureEvent>>;
 	CreatureEventMap creatureEvents;
-
-	MonsterMap monsterMap;
 };
 
 constexpr auto g_creatureEvents = CreatureEvents::getInstance;

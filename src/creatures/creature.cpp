@@ -1180,10 +1180,11 @@ bool Creature::onKilledCreature(std::shared_ptr<Creature> target, bool lastHit) 
 	}
 
 	// scripting event - onKill
-	const MonsterMap &monsterMap = g_creatureEvents().getMonsterMap();
 	const CreatureEventList &killEvents = getCreatureEvents(CREATURE_EVENT_KILL);
 	for (const auto &killEventPtr : killEvents) {
 		std::string eventName = killEventPtr->getName();
+		MonsterMap monsterMap = killEventPtr->getMonsterMap();
+
 		if (monsterMap.find(target->getName()) != monsterMap.end() || eventName == "BosstiaryOnKill" || eventName == "BossesKill" || eventName == "BestiaryOnKill") {
 			killEventPtr->executeOnKill(static_self_cast<Creature>(), target, lastHit);
 		}

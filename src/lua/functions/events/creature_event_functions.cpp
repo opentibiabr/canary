@@ -106,8 +106,9 @@ int CreatureEventFunctions::luaCreatureEventSetMonster(lua_State* L) {
 			if (!monsterName.empty()) {
 				monsterName[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(monsterName[0])));
 				std::transform(monsterName.begin() + 1, monsterName.end(), monsterName.begin() + 1, ::tolower);
+
+				creatureEvent->addMonsterMap(monsterName);
 			}
-			g_creatureEvents().addMonsterMap(monsterName);
 		}
 		pushBoolean(L, true);
 	} else {

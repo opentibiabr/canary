@@ -641,7 +641,7 @@ void Map::getPathMatchingAsync(const std::shared_ptr<Creature> &creature, const 
 				g_dispatcher().addTask([=, list = std::move(list)] { onSuccess(startPos, pathCondition.getTargetPos(), list); }, "Map::getPathMatchingAsync::onSuccess");
 			}
 		} else if (onFail && executeRule(startPos, pathCondition.getTargetPos())) {
-			g_dispatcher().addTask([onFail = onFail] { onFail(); }, "Map::getPathMatchingAsync::onFail");
+			g_dispatcher().addTask([onFail] { onFail(); }, "Map::getPathMatchingAsync::onFail");
 		}
 	});
 }

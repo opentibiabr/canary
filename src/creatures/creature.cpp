@@ -984,12 +984,12 @@ void Creature::goToFollowCreature() {
 
 			getPathToAsync(
 				followCreature->getPosition(), fpp,
-				[this](const Position &startPos, const Position &targetPos) { return getFollowCreature() && getPosition() == startPos && getFollowCreature()->getPosition() == targetPos; },
-				[this](const Position &startPos, const Position &targetPos, const std::forward_list<Direction> &list) {
-					hasFollowPath = true;
-					startAutoWalk(list);
+				[self = getCreature()](const Position &startPos, const Position &targetPos) { return self->getFollowCreature() && !self->getFollowCreature()->isRemoved() && self->getFollowCreature()->getPosition() == targetPos && self->getPosition() == startPos; },
+				[self = getCreature()](const Position &startPos, const Position &targetPos, const std::forward_list<Direction> &list) {
+					self->hasFollowPath = true;
+					self->startAutoWalk(list);
 				},
-				[this]() { hasFollowPath = false; }
+				[self = getCreature()]() { self->hasFollowPath = false; }
 			);
 
 			return;
@@ -1008,13 +1008,13 @@ void Creature::goToFollowCreature() {
 	listWalkDir.clear();
 	getPathToAsync(
 		followCreature->getPosition(), fpp,
-		[this](const Position &startPos, const Position &targetPos) { return getFollowCreature() && getPosition() == startPos && getFollowCreature()->getPosition() == targetPos; },
-		[this](const Position &startPos, const Position &targetPos, const std::forward_list<Direction> &list) {
-			hasFollowPath = true;
-			startAutoWalk(list);
-			onFollowCreatureComplete(getFollowCreature());
+		[self = getCreature()](const Position &startPos, const Position &targetPos) { return self->getFollowCreature() && !self->getFollowCreature()->isRemoved() && self->getFollowCreature()->getPosition() == targetPos && self->getPosition() == startPos; },
+		[self = getCreature()](const Position &startPos, const Position &targetPos, const std::forward_list<Direction> &list) {
+			self->hasFollowPath = true;
+			self->startAutoWalk(list);
+			self->onFollowCreatureComplete(self->getFollowCreature());
 		},
-		[this]() { hasFollowPath = false; }
+		[self = getCreature()]() { self->hasFollowPath = false; }
 	);
 }
 
@@ -1654,8 +1654,8 @@ bool Creature::getPathTo(const Position &targetPos, std::forward_list<Direction>
 	return g_game().map.getPathMatching(getCreature(), dirList, FrozenPathingConditionCall(targetPos), fpp);
 }
 
-void Creature::getPathToAsync(const Position &targetPos, const FindPathParams &fpp, std::function<bool(const Position &, const Position &)> executeRule, std::function<void(const Position &, const Position &, const std::forward_list<Direction> &)> onSuccess, std::function<void()> onFail) {
-	g_game().map.getPathMatchingAsync(getCreature(), FrozenPathingConditionCall(targetPos), fpp, executeRule, onSuccess, onFail);
+void Creature::getPathToAsync(const Position &targetPos, const FindPathParams &fpp, std::function<bool(const Position &, const Position &)> &&executeRule, std::function<void(const Position &, const Position &, const std::forward_list<Direction> &)> &&onSuccess, std::function<void()> &&onFail) {
+	g_game().map.getPathMatchingAsync(getCreature(), FrozenPathingConditionCall(targetPos), fpp, std::move(executeRule), std::move(onSuccess), std::move(onFail));
 }
 
 bool Creature::getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch /*= true*/, bool clearSight /*= true*/, int32_t maxSearchDist /*= 7*/) {

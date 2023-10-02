@@ -44,6 +44,19 @@ static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
 static constexpr int32_t EVENT_FORGEABLEMONSTERCHECKINTERVAL = 300000;
 static constexpr int32_t EVENT_LUA_GARBAGE_COLLECTION = 60000 * 10; // 10min
 
+static constexpr std::chrono::minutes CACHE_EXPIRATION_TIME { 10 }; // 10min
+static constexpr std::chrono::minutes HIGHSCORE_CACHE_EXPIRATION_TIME { 10 }; // 10min
+
+struct QueryHighscoreCacheEntry {
+	std::string query;
+	std::chrono::time_point<std::chrono::steady_clock> timestamp;
+};
+
+struct HighscoreCacheEntry {
+	std::vector<HighscoreCharacter> characters;
+	std::chrono::time_point<std::chrono::steady_clock> timestamp;
+};
+
 class Game {
 public:
 	Game();
@@ -752,6 +765,9 @@ private:
 	 */
 	ReturnValue collectRewardChestItems(std::shared_ptr<Player> player, uint32_t maxMoveItems = 0);
 
+	phmap::flat_hash_map<std::string, QueryHighscoreCacheEntry> queryCache;
+	phmap::flat_hash_map<std::string, HighscoreCacheEntry> highscoreCache;
+
 	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> m_uniqueLoginPlayerNames;
 	phmap::flat_hash_map<uint32_t, std::shared_ptr<Player>> players;
 	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> mappedPlayerNames;
@@ -874,6 +890,16 @@ private:
 
 	// Variable members (m_)
 	std::unique_ptr<IOWheel> m_IOWheel;
+
+	void cacheQueryHighscore(const std::string &key, const std::string &query);
+	void processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
+
+	std::string getCachedQueryHighscore(const std::string &key);
+	std::string generateVocationConditionHighscore(uint32_t vocation);
+	std::string generateHighscoreQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
+	std::string generateHighscoreQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
+	std::string generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
+	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 };
 
 constexpr auto g_game = Game::getInstance;

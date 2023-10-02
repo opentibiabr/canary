@@ -22,6 +22,7 @@
 // STL Includes
 // --------------------
 
+#include <algorithm>
 #include <bitset>
 #include <charconv>
 #include <filesystem>

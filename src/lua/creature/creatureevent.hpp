@@ -14,6 +14,8 @@
 #include "lua/scripts/luascript.hpp"
 #include "lua/scripts/scripts.hpp"
 
+using MonsterMap = phmap::flat_hash_set<std::string>;
+
 class CreatureEvent;
 
 class CreatureEvent final : public Script {
@@ -88,10 +90,20 @@ public:
 	void removeInvalidEvents();
 	void clear();
 
+	[[nodiscard]] const MonsterMap &getMonsterMap() const {
+		return monsterMap;
+	}
+
+	void addMonsterMap(std::string n) {
+		monsterMap.emplace(n);
+	}
+
 private:
 	// creature events
 	using CreatureEventMap = std::map<std::string, std::shared_ptr<CreatureEvent>>;
 	CreatureEventMap creatureEvents;
+
+	MonsterMap monsterMap;
 };
 
 constexpr auto g_creatureEvents = CreatureEvents::getInstance;

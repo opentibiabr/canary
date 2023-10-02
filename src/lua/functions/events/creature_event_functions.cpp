@@ -95,3 +95,23 @@ int CreatureEventFunctions::luaCreatureEventOnCallback(lua_State* L) {
 	}
 	return 1;
 }
+
+int CreatureEventFunctions::luaCreatureEventSetMonster(lua_State* L) {
+	// creatureevent:setMonster("monster", "monster")
+	const auto creatureEvent = getUserdataShared<CreatureEvent>(L, 1);
+	if (creatureEvent) {
+		int parameters = lua_gettop(L) - 1;
+		for (int i = 0; i < parameters; ++i) {
+			std::string monsterName = getString(L, 2 + i);
+			if (!monsterName.empty()) {
+				monsterName[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(monsterName[0])));
+				std::transform(monsterName.begin() + 1, monsterName.end(), monsterName.begin() + 1, ::tolower);
+			}
+			g_creatureEvents().addMonsterMap(monsterName);
+		}
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}

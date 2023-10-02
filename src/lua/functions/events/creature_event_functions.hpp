@@ -29,6 +29,7 @@ public:
 		registerMethod(L, "CreatureEvent", "onHealthChange", CreatureEventFunctions::luaCreatureEventOnCallback);
 		registerMethod(L, "CreatureEvent", "onManaChange", CreatureEventFunctions::luaCreatureEventOnCallback);
 		registerMethod(L, "CreatureEvent", "onExtendedOpcode", CreatureEventFunctions::luaCreatureEventOnCallback);
+		registerMethod(L, "CreatureEvent", "setMonster", CreatureEventFunctions::luaCreatureEventSetMonster);
 	}
 
 private:
@@ -36,4 +37,5 @@ private:
 	static int luaCreatureEventType(lua_State* L);
 	static int luaCreatureEventRegister(lua_State* L);
 	static int luaCreatureEventOnCallback(lua_State* L);
+	static int luaCreatureEventSetMonster(lua_State* L);
 };

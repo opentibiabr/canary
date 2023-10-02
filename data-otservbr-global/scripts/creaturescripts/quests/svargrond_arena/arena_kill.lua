@@ -40,17 +40,5 @@ function svargrondArenaKill.onKill(creature, target)
 	return true
 end
 
-local monsters = ""
-
-for i = 1, 3 do
-	for _, monsterArena in pairs(ARENA[i].creatures) do
-		monsters = monsters .. '"' .. monsterArena .. '", '
-	end
-end
-
-if #monsters > 0 then
-	monsters = monsters:sub(1, -3) -- Remove a última vírgula e o espaço
-end
-
-svargrondArenaKill:setMonster(monsters)
+svargrondArenaKill:setMonster("frostfur", "bloodpaw", "bovinus", "achad", "colerian the barbarian", "the hairy one", "axeitus headbanger", "rocky", "cursed gladiator", "orcus the cruel", "avalanche", "kreebosh the exile", "the dark dancer", "the hag", "slim", "grimgor guteater", "drasilla", "spirit of earth", "spirit of water", "spirit of fire", "webster", "darakan the executioner", "norgle glacierbeard", "the pit lord", "svoren the mad", "the masked marauder", "gnorre chyllson", "fallen mooh'tah master ghar", "deathbringer", "the obliverator")
 svargrondArenaKill:register()

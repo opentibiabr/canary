@@ -631,12 +631,12 @@ void Map::getPathMatchingAsync(const std::shared_ptr<Creature> &creature, const 
 
 		std::forward_list<Direction> list;
 		if (getPathMatching(creature, startPos, list, pathCondition, fpp)) {
-			if (executeRule(startPos, pathCondition.getTargetPos())) {
-				// check again
-				if (creature && creature->isRemoved()) {
-					return;
-				}
+			// check again
+			if (creature && creature->isRemoved()) {
+				return;
+			}
 
+			if (executeRule(startPos, pathCondition.getTargetPos())) {
 				// transfer the action to main dispatch so that there is no concurrency problem.
 				g_dispatcher().addTask([=, list = std::move(list)] { onSuccess(startPos, pathCondition.getTargetPos(), list); }, "Map::getPathMatchingAsync::onSuccess");
 			}

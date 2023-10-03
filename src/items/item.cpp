@@ -281,7 +281,6 @@ void Item::onRemoved() {
 }
 
 void Item::setID(uint16_t newid) {
-	g_logger().debug("[Item::setID] - Setting item id from {} to {}", id, newid);
 	const ItemType &prevIt = Item::items[id];
 	id = newid;
 

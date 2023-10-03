@@ -16,6 +16,7 @@
 #include "creatures/monsters/monster.hpp"
 #include "game/scheduling/scheduler.hpp"
 #include "game/zones/zone.hpp"
+#include "map/spectators.hpp"
 
 double Creature::speedA = 857.36;
 double Creature::speedB = 261.29;
@@ -1201,8 +1202,7 @@ void Creature::onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> targ
 	master->onGainExperience(gainExp, target);
 
 	if (!m->isFamiliar()) {
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, position, false, true);
+		auto spectators = Spectators().find<Player>(position);
 		if (spectators.empty()) {
 			return;
 		}
@@ -1212,7 +1212,7 @@ void Creature::onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> targ
 		message.primary.color = TEXTCOLOR_WHITE_EXP;
 		message.primary.value = gainExp;
 
-		for (std::shared_ptr<Creature> spectator : spectators) {
+		for (const auto &spectator : spectators) {
 			spectator->getPlayer()->sendTextMessage(message);
 		}
 	}
@@ -1800,16 +1800,7 @@ void Creature::iconChanged() {
 		return;
 	}
 
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, tile->getPosition(), true);
-	for (auto spectator : spectators) {
-		if (!spectator) {
-			continue;
-		}
-
-		auto player = spectator->getPlayer();
-		if (player) {
-			player->sendCreatureIcon(getCreature());
-		}
+	for (const auto &spectator : Spectators().find<Player>(tile->getPosition(), true)) {
+		spectator->getPlayer()->sendCreatureIcon(getCreature());
 	}
 }

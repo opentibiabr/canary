@@ -36,6 +36,7 @@ class IOWheel;
 class ItemClassification;
 class Guild;
 class Mounts;
+class Spectators;
 
 static constexpr int32_t EVENT_MS = 10000;
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
@@ -229,7 +230,7 @@ public:
 
 	bool internalCreatureTurn(std::shared_ptr<Creature> creature, Direction dir);
 
-	bool internalCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, bool ghostMode, SpectatorHashSet* spectatorsPtr = nullptr, const Position* pos = nullptr);
+	bool internalCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, bool ghostMode, Spectators* spectatorsPtr = nullptr, const Position* pos = nullptr);
 
 	ObjectCategory_t getObjectCategory(const std::shared_ptr<Item> item);
 
@@ -441,7 +442,7 @@ public:
 
 	// Hazard combat helpers
 	void handleHazardSystemAttack(CombatDamage &damage, std::shared_ptr<Player> player, const std::shared_ptr<Monster> monster, bool isPlayerAttacker);
-	void notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Monster> targetMonster);
+	void notifySpectators(const CreatureVector &spectators, const Position &targetPos, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Monster> targetMonster);
 
 	// Wheel of destiny combat helpers
 	void applyWheelOfDestinyHealing(CombatDamage &damage, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Creature> target);
@@ -463,15 +464,15 @@ public:
 
 	// Animation help functions
 	void addCreatureHealth(const std::shared_ptr<Creature> target);
-	static void addCreatureHealth(const SpectatorHashSet &spectators, const std::shared_ptr<Creature> target);
+	static void addCreatureHealth(const CreatureVector &spectators, const std::shared_ptr<Creature> target);
 	void addPlayerMana(const std::shared_ptr<Player> target);
 	void addPlayerVocation(const std::shared_ptr<Player> target);
 	void addMagicEffect(const Position &pos, uint16_t effect);
-	static void addMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint16_t effect);
+	static void addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect);
 	void removeMagicEffect(const Position &pos, uint16_t effect);
-	static void removeMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint16_t effect);
+	static void removeMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect);
 	void addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect);
-	static void addDistanceEffect(const SpectatorHashSet &spectators, const Position &fromPos, const Position &toPos, uint16_t effect);
+	static void addDistanceEffect(const CreatureVector &spectators, const Position &fromPos, const Position &toPos, uint16_t effect);
 
 	int32_t getLightHour() const {
 		return lightHour;
@@ -851,20 +852,20 @@ private:
 	void sendDamageMessageAndEffects(
 		std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, const CombatDamage &damage, const Position &targetPos,
 		std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Player> targetPlayer, TextMessage &message,
-		const SpectatorHashSet &spectators, int32_t realDamage
+		const CreatureVector &spectators, int32_t realDamage
 	);
 
 	void updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, std::shared_ptr<Player> player) const;
 
 	void sendEffects(
 		std::shared_ptr<Creature> target, const CombatDamage &damage, const Position &targetPos,
-		TextMessage &message, const SpectatorHashSet &spectators
+		TextMessage &message, const CreatureVector &spectators
 	);
 
 	void sendMessages(
 		std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, const CombatDamage &damage,
 		const Position &targetPos, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Player> targetPlayer,
-		TextMessage &message, const SpectatorHashSet &spectators, int32_t realDamage
+		TextMessage &message, const CreatureVector &spectators, int32_t realDamage
 	) const;
 
 	bool shouldSendMessage(const TextMessage &message) const;

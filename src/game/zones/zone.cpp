@@ -35,16 +35,8 @@ std::shared_ptr<Zone> Zone::addZone(const std::string &name) {
 void Zone::addArea(Area area) {
 	for (const Position &pos : area) {
 		positions.insert(pos);
-		std::shared_ptr<Tile> tile = g_game().map.getTile(pos);
-		if (tile) {
-			for (auto item : *tile->getItemList()) {
-				itemAdded(item);
-			}
-			for (auto creature : *tile->getCreatures()) {
-				creatureAdded(creature);
-			}
-		}
 	}
+	refresh();
 }
 
 void Zone::subtractArea(Area area) {
@@ -267,4 +259,33 @@ void Zone::itemRemoved(const std::shared_ptr<Item> &item) {
 		return;
 	}
 	itemsCache.erase(item);
+}
+
+void Zone::refresh() {
+	creaturesCache.clear();
+	monstersCache.clear();
+	npcsCache.clear();
+	playersCache.clear();
+	itemsCache.clear();
+
+	for (const auto &position : positions) {
+		const auto tile = g_game().map.getTile(position);
+		if (!tile) {
+			continue;
+		}
+		const auto &items = tile->getItemList();
+		if (!items) {
+			continue;
+		}
+		for (const auto &item : *items) {
+			itemAdded(item);
+		}
+		const auto &creatures = tile->getCreatures();
+		if (!creatures) {
+			continue;
+		}
+		for (const auto &creature : *creatures) {
+			creatureAdded(creature);
+		}
+	}
 }

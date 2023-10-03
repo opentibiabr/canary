@@ -31,8 +31,8 @@ local tomes = Storage.Quest.U8_54.TheNewFrontier.TomeofKnowledge
 npcConfig.shop = {
 	{ itemName = "didgeridoo", clientId = 2965, buy = 5000, storageKey = tomes, storageValue = 6 },
 	{ itemName = "war drum", clientId = 2966, buy = 1000, storageKey = tomes, storageValue = 6 },
-	{ itemName = "Dragon Statue Kit", clientId = 10216, buy = 2500, storageKey = tomes, storageValue = 11 },
-	{ itemName = "Dragon Throne Kit", clientId = 10288, buy = 5000, storageKey = tomes, storageValue = 12 },
+	{ itemName = "Dragon Statue Kit", clientId = 10212, buy = 2500, storageKey = tomes, storageValue = 11 },
+	{ itemName = "Dragon Throne Kit", clientId = 10286, buy = 5000, storageKey = tomes, storageValue = 12 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -317,7 +317,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 65 then
 		if player:removeItem(10289, 1) then
-			player:addItem(10216, 1)
+			player:addItem(10212, 1)
 			npcHandler:say("Let's put this little lantern here.. there you go. I wrap it up for you, just unwrap it in your house again!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		else
@@ -331,7 +331,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 66 then
 		if player:removeItem(5911, 1) then
-			player:addItem(10288, 1)
+			player:addItem(10286, 1)
 			npcHandler:say("Let's put this cloth over the seat.. there you go. I wrap it up for you, just unwrap it in your house again!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		else

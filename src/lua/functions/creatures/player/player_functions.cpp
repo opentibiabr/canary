@@ -19,6 +19,7 @@
 #include "io/ioprey.hpp"
 #include "items/item.hpp"
 #include "lua/functions/creatures/player/player_functions.hpp"
+#include "map/spectators.hpp"
 
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 	// player:sendInventory()
@@ -2947,10 +2948,8 @@ int PlayerFunctions::luaPlayerSetGhostMode(lua_State* L) {
 	std::shared_ptr<Tile> tile = player->getTile();
 	const Position &position = player->getPosition();
 
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, position, true, true);
-	for (auto spectator : spectators) {
-		auto tmpPlayer = spectator->getPlayer();
+	for (const auto &spectator : Spectators().find<Player>(position, true)) {
+		const auto &tmpPlayer = spectator->getPlayer();
 		if (tmpPlayer != player && !tmpPlayer->isAccessPlayer()) {
 			if (enabled) {
 				tmpPlayer->sendRemoveTileThing(position, tile->getStackposOfCreature(tmpPlayer, player));
@@ -4089,7 +4088,7 @@ int PlayerFunctions::luaPlayerKV(lua_State* L) {
 		return 1;
 	}
 
-	pushUserdata<KVStore>(L, player->kv());
-	setMetatable(L, -1, "KVStore");
+	pushUserdata<KV>(L, player->kv());
+	setMetatable(L, -1, "KV");
 	return 1;
 }

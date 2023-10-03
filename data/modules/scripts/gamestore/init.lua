@@ -1639,7 +1639,7 @@ function GameStore.processHouseRelatedPurchase(player, offer)
 	end
 	if inbox then
 		for _, itemId in ipairs(itemIds) do
-			local decoKit = inbox:addItem(23398, 1)
+			local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
 			if decoKit then
 				decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(itemId):getName() .. ">.")
 				decoKit:setCustomAttribute("unWrapId", itemId)

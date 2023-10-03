@@ -4120,7 +4120,7 @@ void ProtocolGame::sendChannelsDialog() {
 
 	const ChannelList &list = g_chat().getChannelList(player);
 	msg.addByte(list.size());
-	for (ChatChannel* channel : list) {
+	for (const auto &channel : list) {
 		msg.add<uint16_t>(channel->getId());
 		msg.addString(channel->getName());
 	}

@@ -18,42 +18,48 @@
 #include "lib/logging/logger.hpp"
 #include "kv/value_wrapper.hpp"
 
-class KVStore {
+class KV : public std::enable_shared_from_this<KV> {
 public:
-	static constexpr size_t MAX_SIZE = 10000;
+	virtual void set(const std::string &key, const std::initializer_list<ValueWrapper> &init_list) = 0;
+	virtual void set(const std::string &key, const std::initializer_list<std::pair<const std::string, ValueWrapper>> &init_list) = 0;
+	virtual void set(const std::string &key, const ValueWrapper &value) = 0;
 
-	static KVStore &getInstance();
-
-	explicit KVStore(Logger &logger) :
-		logger(logger) { }
-	virtual ~KVStore() = default;
-
-	template <typename T>
-	void set(const std::string &key, const std::vector<T> &vec);
-	virtual void set(const std::string &key, const std::initializer_list<ValueWrapper> &init_list);
-	virtual void set(const std::string &key, const std::initializer_list<std::pair<const std::string, ValueWrapper>> &init_list);
-	virtual void set(const std::string &key, const ValueWrapper &value);
-
-	virtual std::optional<ValueWrapper> get(const std::string &key, bool forceLoad = false);
-
-	void remove(const std::string &key);
-
-	template <typename T>
-	T get(const std::string &key, bool forceLoad = false);
+	virtual std::optional<ValueWrapper> get(const std::string &key, bool forceLoad = false) = 0;
 
 	virtual bool saveAll() {
 		return true;
 	}
 
-	template <typename T>
-	std::shared_ptr<KVStore> scoped(const T &scope);
+	virtual std::shared_ptr<KV> scoped(const std::string &scope) = 0;
 
-	friend class ScopedKV;
+	void remove(const std::string &key);
 
-	void flush() {
+	virtual void flush() {
 		saveAll();
+	}
+};
+
+class KVStore : public KV {
+public:
+	static constexpr size_t MAX_SIZE = 10000;
+	static KVStore &getInstance();
+
+	explicit KVStore(Logger &logger) :
+		logger(logger) { }
+
+	void set(const std::string &key, const std::initializer_list<ValueWrapper> &init_list) override;
+	void set(const std::string &key, const std::initializer_list<std::pair<const std::string, ValueWrapper>> &init_list) override;
+	void set(const std::string &key, const ValueWrapper &value) override;
+
+	std::optional<ValueWrapper> get(const std::string &key, bool forceLoad = false) override;
+
+	void flush() override {
+		std::scoped_lock lock(mutex_);
+		KV::flush();
 		store_.clear();
 	}
+
+	std::shared_ptr<KV> scoped(const std::string &scope) override final;
 
 protected:
 	phmap::parallel_flat_hash_map<std::string, std::pair<ValueWrapper, std::list<std::string>::iterator>> getStore() {
@@ -64,10 +70,12 @@ protected:
 		}
 		return copy;
 	}
+
+protected:
+	Logger &logger;
+
 	virtual std::optional<ValueWrapper> load(const std::string &key) = 0;
 	virtual bool save(const std::string &key, const ValueWrapper &value) = 0;
-
-	Logger &logger;
 
 private:
 	void setLocked(const std::string &key, const ValueWrapper &value);
@@ -77,42 +85,23 @@ private:
 	std::mutex mutex_;
 };
 
-template <typename T>
-void KVStore::set(const std::string &key, const std::vector<T> &vec) {
-	ValueWrapper wrapped(vec);
-	set(key, wrapped);
-}
-
-template <typename T>
-T KVStore::get(const std::string &key, bool forceLoad /*= false */) {
-	auto optValue = get(key, forceLoad);
-	if (optValue.has_value()) {
-		return optValue->get<T>();
-	}
-	return T {};
-}
-
-class ScopedKV final : public KVStore {
+class ScopedKV final : public KV {
 public:
-	ScopedKV(KVStore &parentKV, const std::string &prefix) :
-		KVStore(parentKV.logger), parentKV_(parentKV), prefix_(prefix) { }
+	ScopedKV(Logger &logger, KVStore &rootKV, const std::string &prefix) :
+		logger(logger), rootKV_(rootKV), prefix_(prefix) { }
 
-	template <typename T>
-	void set(const std::string &key, const std::vector<T> &vec) {
-		parentKV_.set(buildKey(key), vec);
-	}
 	void set(const std::string &key, const std::initializer_list<ValueWrapper> &init_list) override {
-		parentKV_.set(buildKey(key), init_list);
+		rootKV_.set(buildKey(key), init_list);
 	}
 	void set(const std::string &key, const std::initializer_list<std::pair<const std::string, ValueWrapper>> &init_list) override {
-		parentKV_.set(buildKey(key), init_list);
+		rootKV_.set(buildKey(key), init_list);
 	}
 	void set(const std::string &key, const ValueWrapper &value) override {
-		parentKV_.set(buildKey(key), value);
+		rootKV_.set(buildKey(key), value);
 	}
 
 	std::optional<ValueWrapper> get(const std::string &key, bool forceLoad = false) override {
-		return parentKV_.get(buildKey(key), forceLoad);
+		return rootKV_.get(buildKey(key), forceLoad);
 	}
 
 	template <typename T>
@@ -125,29 +114,22 @@ public:
 	}
 
 	bool saveAll() override {
-		return parentKV_.saveAll();
+		return rootKV_.saveAll();
 	}
 
-protected:
-	std::optional<ValueWrapper> load(const std::string &key) override {
-		return parentKV_.load(buildKey(key));
-	}
-	bool save(const std::string &key, const ValueWrapper &value) override {
-		return parentKV_.save(buildKey(key), value);
+	std::shared_ptr<KV> scoped(const std::string &scope) override final {
+		logger.debug("ScopedKV::scoped({})", buildKey(scope));
+		return std::make_shared<ScopedKV>(logger, rootKV_, buildKey(scope));
 	}
 
 private:
 	std::string buildKey(const std::string &key) const {
-		return prefix_ + "." + key;
+		return fmt::format("{}.{}", prefix_, key);
 	}
 
-	KVStore &parentKV_;
+	Logger &logger;
+	KVStore &rootKV_;
 	std::string prefix_;
 };
-
-template <typename T>
-std::shared_ptr<KVStore> KVStore::scoped(const T &scope) {
-	return std::make_shared<ScopedKV>(*this, fmt::format("{}", scope));
-}
 
 constexpr auto g_kv = KVStore::getInstance;

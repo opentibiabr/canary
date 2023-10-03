@@ -626,7 +626,7 @@ std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, 
 void Map::getPathMatchingAsync(const std::shared_ptr<Creature> &creature, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp, std::function<bool(const Position &, const Position &)> &&executeRule, std::function<void(const Position &, const Position &, const std::forward_list<Direction> &)> &&onSuccess, std::function<void()> &&onFail) {
 	inject<ThreadPool>().addLoad([=, this, startPos = creature->getPosition(), executeRule = std::move(executeRule), onSuccess = std::move(onSuccess), onFail = std::move(onFail)]() {
 		std::forward_list<Direction> list;
-		const auto &finded = getPathMatching(creature, startPos, list, pathCondition, fpp);
+		const bool finded = getPathMatching(creature, startPos, list, pathCondition, fpp);
 
 		if (creature && creature->isRemoved()) {
 			return;

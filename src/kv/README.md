@@ -21,10 +21,10 @@ The Canary KV Library is designed to offer a simple, efficient, persistent, and 
 #include <kv/kv.h>
 
 // In your class constructor
-MyClass(KVStore &kv) : kv(kv) {}
+MyClass(KV &kv) : kv(kv) {}
 
 // Or use the global singleton
-KVStore &kv = g_kv();
+KV &kv = g_kv();
 ```
 
 ### Basic Usage

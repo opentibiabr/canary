@@ -22,22 +22,30 @@
 class ValueWrapper;
 
 using StringType = std::string;
+using BooleanType = bool;
 using IntType = int;
 using DoubleType = double;
 using ArrayType = std::vector<ValueWrapper>;
 using MapType = phmap::flat_hash_map<std::string, std::shared_ptr<ValueWrapper>>;
 
-using ValueVariant = std::variant<StringType, IntType, DoubleType, ArrayType, MapType>;
+using ValueVariant = std::variant<StringType, BooleanType, IntType, DoubleType, ArrayType, MapType>;
 
 class ValueWrapper {
 public:
 	explicit ValueWrapper(uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(const ValueVariant &value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(const std::string &value, uint64_t timestamp = 0);
+	explicit(false) ValueWrapper(bool value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(int value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(double value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(const phmap::flat_hash_map<std::string, ValueWrapper> &value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(const std::initializer_list<std::pair<const std::string, ValueWrapper>> &init_list, uint64_t timestamp = 0);
+
+	static ValueWrapper deleted() {
+		static ValueWrapper wrapper;
+		wrapper.setDeleted(true);
+		return wrapper;
+	}
 
 	template <typename T>
 	T get() const {
@@ -65,10 +73,22 @@ public:
 		timestamp_ = timestamp;
 	}
 
+	void setDeleted(bool deleted) {
+		deleted_ = deleted;
+	}
+
+	bool isDeleted() const {
+		return deleted_;
+	}
+
 	bool operator==(const ValueWrapper &rhs) const;
 
 	explicit(false) operator std::string() const {
 		return get<StringType>();
+	}
+
+	explicit(false) operator bool() const {
+		return get<BooleanType>();
 	}
 
 	explicit(false) operator int() const {
@@ -90,6 +110,7 @@ public:
 private:
 	ValueVariant data_;
 	uint64_t timestamp_ = 0;
+	bool deleted_ = false;
 
 	template <typename Iter>
 	static MapType createMapFromRange(Iter begin, Iter end, uint64_t timestamp) {

@@ -12,6 +12,7 @@
 #include "items/containers/mailbox/mailbox.hpp"
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
+#include "map/spectators.hpp"
 
 ReturnValue Mailbox::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, std::shared_ptr<Creature>) {
 	std::shared_ptr<Item> item = thing->getItem();
@@ -81,12 +82,8 @@ bool Mailbox::sendItem(std::shared_ptr<Item> item) const {
 	}
 
 	if (item && item->getContainer() && item->getTile()) {
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, item->getTile()->getPosition(), false, true);
-		for (auto spectator : spectators) {
-			if (spectator && spectator->getPlayer()) {
-				spectator->getPlayer()->autoCloseContainers(item->getContainer());
-			}
+		for (const auto &spectator : Spectators().find<Player>(item->getTile()->getPosition())) {
+			spectator->getPlayer()->autoCloseContainers(item->getContainer());
 		}
 	}
 

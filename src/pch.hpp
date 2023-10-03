@@ -14,8 +14,10 @@
 // --------------------
 
 // Utils
+#include "utils/benchmark.hpp"
 #include "utils/definitions.hpp"
 #include "utils/simd.hpp"
+#include "utils/vectorset.hpp"
 
 // --------------------
 // STL Includes

@@ -1231,7 +1231,7 @@ end
 
 function setHouseOwner(id, guid)
 	local h = House(id)
-	return h and h:setOwnerGuid(guid) or false
+	return h and h:setHouseOwner(guid) or false
 end
 
 function getHouseRent(id)

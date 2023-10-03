@@ -223,3 +223,14 @@ function Creature.getKillers(self, onlyPlayers)
 	end
 	return killers
 end
+
+function Creature:addEventStamina(target)
+	local player = self:getPlayer()
+	local monster = target:getMonster()
+	if player and monster and monster:getName() == staminaBonus.target then
+		local playerId = player:getId()
+		if not staminaBonus.eventsTrainer[playerId] then
+			staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)
+		end
+	end
+end

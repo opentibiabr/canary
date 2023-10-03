@@ -1260,12 +1260,15 @@ bool Creature::addCondition(std::shared_ptr<Condition> condition) {
 	std::shared_ptr<Condition> prevCond = getCondition(condition->getType(), condition->getId(), condition->getSubId());
 	if (prevCond) {
 		prevCond->addCondition(getCreature(), condition);
-
 		return true;
 	}
 
 	if (condition->startCondition(getCreature())) {
-		conditions.push_back(condition);
+		{
+			std::scoped_lock l(conditionMutex);
+			conditions.push_back(condition);
+		}
+
 		onAddCondition(condition->getType());
 		return true;
 	}
@@ -1294,7 +1297,10 @@ void Creature::removeCondition(ConditionType_t type) {
 			continue;
 		}
 
-		it = conditions.erase(it);
+		{
+			std::scoped_lock l(conditionMutex);
+			it = conditions.erase(it);
+		}
 
 		condition->endCondition(getCreature());
 
@@ -1323,7 +1329,10 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 			}
 		}
 
-		it = conditions.erase(it);
+		{
+			std::scoped_lock l(conditionMutex);
+			it = conditions.erase(it);
+		}
 
 		condition->endCondition(getCreature());
 
@@ -1350,7 +1359,10 @@ void Creature::removeCondition(std::shared_ptr<Condition> condition) {
 		return;
 	}
 
-	conditions.erase(it);
+	{
+		std::scoped_lock l(conditionMutex);
+		conditions.erase(it);
+	}
 
 	condition->endCondition(getCreature());
 	onEndCondition(condition->getType());
@@ -1391,7 +1403,10 @@ void Creature::executeConditions(uint32_t interval) {
 		if (!condition->executeCondition(getCreature(), interval)) {
 			ConditionType_t type = condition->getType();
 
-			it = conditions.erase(it);
+			{
+				std::scoped_lock l(conditionMutex);
+				it = conditions.erase(it);
+			}
 
 			condition->endCondition(getCreature());
 
@@ -1821,4 +1836,9 @@ void Creature::iconChanged() {
 			player->sendCreatureIcon(getCreature());
 		}
 	}
+}
+
+bool Creature::hasCondition_threadsafe(ConditionType_t type, uint32_t subId) {
+	std::scoped_lock l(conditionMutex);
+	return hasCondition(type, subId);
 }

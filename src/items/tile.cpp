@@ -961,6 +961,8 @@ void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
 	if (creature) {
 		g_game().map.clearSpectatorCache();
 		creature->setParent(static_self_cast<Tile>());
+
+		std::scoped_lock l(creaturesMutex);
 		CreatureVector* creatures = makeCreatures();
 		creatures->insert(creatures->begin(), creature);
 	} else {
@@ -1158,6 +1160,8 @@ void Tile::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 			auto it = std::find(creatures->begin(), creatures->end(), thing);
 			if (it != creatures->end()) {
 				g_game().map.clearSpectatorCache();
+
+				std::scoped_lock l(creaturesMutex);
 				creatures->erase(it);
 			}
 		}
@@ -1554,6 +1558,8 @@ void Tile::internalAddThing(uint32_t, std::shared_ptr<Thing> thing) {
 	std::shared_ptr<Creature> creature = thing->getCreature();
 	if (creature) {
 		g_game().map.clearSpectatorCache();
+
+		std::scoped_lock l(creaturesMutex);
 		CreatureVector* creatures = makeCreatures();
 		creatures->insert(creatures->begin(), creature);
 	} else {
@@ -1808,4 +1814,9 @@ std::shared_ptr<Item> Tile::getDoorItem() const {
 
 const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Tile::getZones() {
 	return Zone::getZones(getPosition());
+}
+
+std::shared_ptr<Creature> Tile::getTopVisibleCreature_threadsafe(const std::shared_ptr<Creature> &creature) {
+	std::scoped_lock l(creaturesMutex);
+	return getTopVisibleCreature(creature);
 }

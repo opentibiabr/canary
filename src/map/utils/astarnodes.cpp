@@ -110,7 +110,7 @@ int_fast32_t AStarNodes::getTileWalkCost(const std::shared_ptr<Creature> &creatu
 	}
 
 	int_fast32_t cost = 0;
-	if (tile->getTopVisibleCreature(creature) != nullptr) {
+	if (tile->getTopVisibleCreature_threadsafe(creature) != nullptr) {
 		// destroy creature cost
 		cost += MAP_NORMALWALKCOST * 3;
 	}
@@ -119,7 +119,7 @@ int_fast32_t AStarNodes::getTileWalkCost(const std::shared_ptr<Creature> &creatu
 		const CombatType_t combatType = field->getCombatType();
 		const auto &monster = creature->getMonster();
 
-		if (!creature->isImmune(combatType) && !creature->hasCondition(Combat::DamageToConditionType(combatType)) && (monster && !monster->canWalkOnFieldType(combatType))) {
+		if (!creature->isImmune(combatType) && !creature->hasCondition_threadsafe(Combat::DamageToConditionType(combatType)) && (monster && !monster->canWalkOnFieldType(combatType))) {
 			cost += MAP_NORMALWALKCOST * 18;
 		}
 		/**

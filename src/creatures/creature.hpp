@@ -370,6 +370,7 @@ public:
 	std::vector<std::shared_ptr<Condition>> getConditionsByType(ConditionType_t type) const;
 	void executeConditions(uint32_t interval);
 	bool hasCondition(ConditionType_t type, uint32_t subId = 0) const;
+	bool hasCondition_threadsafe(ConditionType_t type, uint32_t subId = 0);
 
 	virtual bool isImmune(CombatType_t type) const {
 		return false;
@@ -735,6 +736,8 @@ protected:
 	int8_t charmChanceModifier = 0;
 
 	uint8_t wheelOfDestinyDrainBodyDebuff = 0;
+
+	std::mutex conditionMutex;
 
 	// use map here instead of phmap to keep the keys in a predictable order
 	std::map<std::string, CreatureIcon> creatureIcons = {};

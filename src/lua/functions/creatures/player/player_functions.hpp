@@ -130,6 +130,7 @@ private:
 
 		registerMethod(L, "Player", "getVocation", PlayerFunctions::luaPlayerGetVocation);
 		registerMethod(L, "Player", "setVocation", PlayerFunctions::luaPlayerSetVocation);
+		registerMethod(L, "Player", "isPromoted", PlayerFunctions::luaPlayerIsPromoted);
 
 		registerMethod(L, "Player", "getSex", PlayerFunctions::luaPlayerGetSex);
 		registerMethod(L, "Player", "setSex", PlayerFunctions::luaPlayerSetSex);
@@ -469,6 +470,7 @@ private:
 
 	static int luaPlayerGetVocation(lua_State* L);
 	static int luaPlayerSetVocation(lua_State* L);
+	static int luaPlayerIsPromoted(lua_State* L);
 
 	static int luaPlayerGetSex(lua_State* L);
 	static int luaPlayerSetSex(lua_State* L);

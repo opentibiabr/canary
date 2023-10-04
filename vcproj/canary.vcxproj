@@ -194,6 +194,7 @@
     <ClInclude Include="..\src\map\mapcache.hpp" />
     <ClInclude Include="..\src\map\map_const.hpp" />
     <ClInclude Include="..\src\map\map_definitions.hpp" />
+    <ClInclude Include="..\src\map\spectators.hpp" />
     <ClInclude Include="..\src\map\town.hpp" />
     <ClInclude Include="..\src\map\utils\astarnodes.hpp" />
     <ClInclude Include="..\src\map\utils\qtreenode.hpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="..\src\utils\simd.hpp" />
     <ClInclude Include="..\src\utils\tools.hpp" />
     <ClInclude Include="..\src\utils\utils_definitions.hpp" />
+    <ClInclude Include="..\src\utils\vectorset.hpp" />
     <ClInclude Include="..\src\utils\wildcardtree.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -369,6 +371,7 @@
     <ClCompile Include="..\src\lua\scripts\script_environment.cpp" />
     <ClCompile Include="..\src\map\house\house.cpp" />
     <ClCompile Include="..\src\map\house\housetile.cpp" />
+    <ClCompile Include="..\src\map\spectators.cpp" />
     <ClCompile Include="..\src\map\utils\astarnodes.cpp" />
     <ClCompile Include="..\src\map\utils\qtreenode.cpp" />
     <ClCompile Include="..\src\map\map.cpp" />

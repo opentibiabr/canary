@@ -81,6 +81,9 @@ public:
 
 		registerMethod(L, "Game", "getTalkActions", GameFunctions::luaGameGetTalkActions);
 		registerMethod(L, "Game", "getEventCallbacks", GameFunctions::luaGameGetEventCallbacks);
+	
+		registerMethod(L, "Game", "getOutfits", GameFunctions::luaGameGetOutfits);
+		registerMethod(L, "Game", "getMounts", GameFunctions::luaGameGetMounts);
 	}
 
 private:
@@ -150,4 +153,7 @@ private:
 
 	static int luaGameGetTalkActions(lua_State* L);
 	static int luaGameGetEventCallbacks(lua_State* L);
+
+	static int luaGameGetOutfits(lua_State* L);
+	static int luaGameGetMounts(lua_State* L);
 };

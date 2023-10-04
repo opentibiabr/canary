@@ -767,3 +767,42 @@ int GameFunctions::luaGameGetEventCallbacks(lua_State* L) {
 	lua_pop(L, 1);
 	return 1;
 }
+
+int GameFunctions::luaGameGetOutfits(lua_State* L) {
+	// Game.getOutfits(playerSex)
+	if (!isNumber(L, 1)) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	PlayerSex_t playerSex = getNumber<PlayerSex_t>(L, 1);
+	if (playerSex > PLAYERSEX_LAST) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto outfits = Outfits::getInstance().getOutfits(playerSex);
+	lua_createtable(L, outfits.size(), 0);
+
+	int index = 0;
+	for (const auto& outfit : outfits) {
+		pushOutfit(L, &outfit);
+		lua_rawseti(L, -2, ++index);
+	}
+
+	return 1;
+}
+
+int GameFunctions::luaGameGetMounts(lua_State* L) {
+	// Game.getMounts()
+	const auto mounts = g_game().mounts.getMounts();
+	lua_createtable(L, mounts.size(), 0);
+
+	int index = 0;
+	for (const auto& mount : mounts) {
+		pushMount(L, &mount);
+		lua_rawseti(L, -2, ++index);
+	}
+
+	return 1;
+}

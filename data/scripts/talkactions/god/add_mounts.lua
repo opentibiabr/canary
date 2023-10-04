@@ -18,9 +18,7 @@ function mounts.onSay(player, words, param)
 		return true
 	end
 
-	for i = 1, 217 do
-		target:addMount(i)
-	end
+	target:addAllMounts()
 
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "All mounts unlocked for: " .. target:getName())
 	target:sendTextMessage(MESSAGE_EVENT_ADVANCE, "All of your mounts have been unlocked!")

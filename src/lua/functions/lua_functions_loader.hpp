@@ -18,13 +18,14 @@ class Combat;
 class Creature;
 class Cylinder;
 class Game;
+class Guild;
 class InstantSpell;
 class Item;
+class KV;
+class Mounts;
 class Player;
 class Thing;
-class Guild;
 class Zone;
-class KV;
 
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)
 
@@ -150,6 +151,7 @@ public:
 	static void pushInstantSpell(lua_State* L, const InstantSpell &spell);
 	static void pushPosition(lua_State* L, const Position &position, int32_t stackpos = 0);
 	static void pushOutfit(lua_State* L, const Outfit_t &outfit);
+	static void pushMount(lua_State* L, const Mount* mount);
 
 	static void setField(lua_State* L, const char* index, lua_Number value) {
 		lua_pushnumber(L, value);

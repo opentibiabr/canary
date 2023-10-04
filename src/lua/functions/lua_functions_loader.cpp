@@ -546,6 +546,16 @@ void LuaFunctionsLoader::pushOutfit(lua_State* L, const Outfit_t &outfit) {
 	setField(L, "lookFamiliarsType", outfit.lookFamiliarsType);
 }
 
+void LuaScriptInterface::pushMount(lua_State* L, const Mount* mount)
+{
+	lua_createtable(L, 0, 5);
+	setField(L, "name", mount->name);
+	setField(L, "speed", mount->speed);
+	setField(L, "clientId", mount->clientId);
+	setField(L, "id", mount->id);
+	setField(L, "premium", mount->premium);
+}
+
 void LuaFunctionsLoader::registerClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction /* = nullptr*/) {
 	// className = {}
 	lua_newtable(L);

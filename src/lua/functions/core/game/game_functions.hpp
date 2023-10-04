@@ -81,7 +81,7 @@ public:
 
 		registerMethod(L, "Game", "getTalkActions", GameFunctions::luaGameGetTalkActions);
 		registerMethod(L, "Game", "getEventCallbacks", GameFunctions::luaGameGetEventCallbacks);
-	
+
 		registerMethod(L, "Game", "getOutfits", GameFunctions::luaGameGetOutfits);
 		registerMethod(L, "Game", "getMounts", GameFunctions::luaGameGetMounts);
 	}

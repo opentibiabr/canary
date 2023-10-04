@@ -785,7 +785,7 @@ int GameFunctions::luaGameGetOutfits(lua_State* L) {
 	lua_createtable(L, outfits.size(), 0);
 
 	int index = 0;
-	for (const auto& outfit : outfits) {
+	for (const auto &outfit : outfits) {
 		pushOutfit(L, &outfit);
 		lua_rawseti(L, -2, ++index);
 	}
@@ -799,7 +799,7 @@ int GameFunctions::luaGameGetMounts(lua_State* L) {
 	lua_createtable(L, mounts.size(), 0);
 
 	int index = 0;
-	for (const auto& mount : mounts) {
+	for (const auto &mount : mounts) {
 		pushMount(L, &mount);
 		lua_rawseti(L, -2, ++index);
 	}

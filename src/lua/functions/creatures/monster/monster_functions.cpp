@@ -14,6 +14,7 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "lua/functions/creatures/monster/monster_functions.hpp"
+#include "map/spectators.hpp"
 
 int MonsterFunctions::luaMonsterCreate(lua_State* L) {
 	// Monster(id or userdata)
@@ -92,12 +93,8 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 			}
 		}
 		// Reload creature on spectators
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, monster->getPosition(), true);
-		for (auto spectator : spectators) {
-			if (auto tmpPlayer = spectator->getPlayer()) {
-				tmpPlayer->sendCreatureReload(monster);
-			}
+		for (const auto &spectator : Spectators().find<Player>(monster->getPosition(), true)) {
+			spectator->getPlayer()->sendCreatureReload(monster);
 		}
 		pushBoolean(L, true);
 	} else {

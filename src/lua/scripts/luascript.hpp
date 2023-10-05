@@ -23,7 +23,7 @@ public:
 	LuaScriptInterface &operator=(const LuaScriptInterface &) = delete;
 
 	virtual bool initState();
-	bool reInitState();
+	virtual bool reInitState();
 
 	int32_t loadFile(const std::string &file, const std::string &scriptName);
 

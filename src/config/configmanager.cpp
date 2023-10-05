@@ -12,7 +12,6 @@
 #include "config/configmanager.hpp"
 #include "declarations.hpp"
 #include "game/game.hpp"
-#include "lua/scripts/luajit_sync.hpp"
 #include "server/network/webhook/webhook.hpp"
 
 #if LUA_VERSION_NUM >= 502

@@ -445,8 +445,8 @@ public:
 	void notifySpectators(const CreatureVector &spectators, const Position &targetPos, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Monster> targetMonster);
 
 	// Custom PvP System combat helpers
-	void applyPvPDamage(CombatDamage &damage, Player* attacker, Player* target);
-	float pvpLevelDifferenceDamageMultiplier(Player* attacker, Player* target);
+	void applyPvPDamage(CombatDamage &damage, std::shared_ptr<Player> attacker, std::shared_ptr<Player> target);
+	float pvpLevelDifferenceDamageMultiplier(std::shared_ptr<Player> attacker, std::shared_ptr<Player> target);
 
 	// Wheel of destiny combat helpers
 	void applyWheelOfDestinyHealing(CombatDamage &damage, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Creature> target);

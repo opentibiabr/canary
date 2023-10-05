@@ -6165,7 +6165,7 @@ void Game::notifySpectators(const CreatureVector &spectators, const Position &ta
 }
 
 // Custom PvP System combat helpers
-void Game::applyPvPDamage(CombatDamage &damage, Player* attacker, Player* target) {
+void Game::applyPvPDamage(CombatDamage &damage, std::shared_ptr<Player> attacker, std::shared_ptr<Player> target) {
 	float targetDamageReceivedMultiplier = target->vocation->pvpDamageReceivedMultiplier;
 	float attackerDamageDealtMultiplier = attacker->vocation->pvpDamageDealtMultiplier;
 	float levelDifferenceDamageMultiplier = this->pvpLevelDifferenceDamageMultiplier(attacker, target);
@@ -6176,7 +6176,7 @@ void Game::applyPvPDamage(CombatDamage &damage, Player* attacker, Player* target
 	damage.secondary.value = std::round(damage.secondary.value * pvpDamageMultiplier);
 }
 
-float Game::pvpLevelDifferenceDamageMultiplier(Player* attacker, Player* target) {
+float Game::pvpLevelDifferenceDamageMultiplier(std::shared_ptr<Player> attacker, std::shared_ptr<Player> target) {
 	int32_t levelDifference = target->getLevel() - attacker->getLevel();
 	levelDifference = std::abs(levelDifference);
 	bool isLowerLevel = target->getLevel() < attacker->getLevel();

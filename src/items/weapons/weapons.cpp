@@ -17,7 +17,7 @@
 Weapons::Weapons() = default;
 Weapons::~Weapons() = default;
 
-const Weapon* Weapons::getWeapon(std::shared_ptr<Item> item) const {
+const WeaponShared_ptr Weapons::getWeapon(std::shared_ptr<Item> item) const {
 	if (!item) {
 		return nullptr;
 	}
@@ -33,7 +33,7 @@ void Weapons::clear() {
 	weapons.clear();
 }
 
-bool Weapons::registerLuaEvent(Weapon* event) {
+bool Weapons::registerLuaEvent(WeaponShared_ptr event) {
 	weapons[event->getID()] = event;
 	return true;
 }
@@ -524,7 +524,7 @@ bool WeaponDistance::useWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 	const ItemType &it = Item::items[id];
 	if (it.weaponType == WEAPON_AMMO) {
 		std::shared_ptr<Item> mainWeaponItem = player->getWeapon(true);
-		const Weapon* mainWeapon = g_weapons().getWeapon(mainWeaponItem);
+		const WeaponShared_ptr mainWeapon = g_weapons().getWeapon(mainWeaponItem);
 		if (mainWeapon) {
 			damageModifier = mainWeapon->playerWeaponCheck(player, target, mainWeaponItem->getShootRange());
 		} else {

@@ -5,4 +5,5 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     utils/qtreenode.cpp
     map.cpp
     mapcache.cpp
+    spectators.cpp
 )

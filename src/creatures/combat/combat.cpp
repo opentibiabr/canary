@@ -18,6 +18,7 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "items/weapons/weapons.hpp"
+#include "map/spectators.hpp"
 
 int32_t Combat::getLevelFormula(std::shared_ptr<Player> player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
@@ -754,7 +755,7 @@ void Combat::CombatNullFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Cr
 	CombatDispelFunc(caster, target, params, nullptr);
 }
 
-void Combat::combatTileEffects(const SpectatorHashSet &spectators, std::shared_ptr<Creature> caster, std::shared_ptr<Tile> tile, const CombatParams &params) {
+void Combat::combatTileEffects(const CreatureVector &spectators, std::shared_ptr<Creature> caster, std::shared_ptr<Tile> tile, const CombatParams &params) {
 	if (params.itemId != 0) {
 		uint16_t itemId = params.itemId;
 		switch (itemId) {
@@ -998,7 +999,6 @@ void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin
 		getCombatArea(pos, pos, area, tileList);
 	}
 
-	SpectatorHashSet spectators;
 	uint32_t maxX = 0;
 	uint32_t maxY = 0;
 
@@ -1019,7 +1019,6 @@ void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin
 
 	const int32_t rangeX = maxX + MAP_MAX_VIEW_PORT_X;
 	const int32_t rangeY = maxY + MAP_MAX_VIEW_PORT_Y;
-	g_game().map.getSpectators(spectators, pos, true, true, rangeX, rangeX, rangeY, rangeY);
 
 	int affected = 0;
 	for (std::shared_ptr<Tile> tile : tileList) {
@@ -1071,6 +1070,7 @@ void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin
 	}
 
 	// Wheel of destiny get beam affected total
+	auto spectators = Spectators().find<Player>(pos, true, rangeX, rangeX, rangeY, rangeY);
 	std::shared_ptr<Player> casterPlayer = caster ? caster->getPlayer() : nullptr;
 	uint8_t beamAffectedTotal = casterPlayer ? casterPlayer->wheel()->getBeamAffectedTotal(tmpDamage) : 0;
 	uint8_t beamAffectedCurrent = 0;
@@ -1110,7 +1110,7 @@ void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin
 				}
 			}
 		}
-		combatTileEffects(spectators, caster, tile, params);
+		combatTileEffects(spectators.data(), caster, tile, params);
 	}
 
 	// Wheel of destiny update beam mastery damage
@@ -1339,11 +1339,10 @@ void Combat::doCombatDefault(std::shared_ptr<Creature> caster, std::shared_ptr<C
 
 void Combat::doCombatDefault(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, const CombatParams &params) {
 	if (!params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR)) {
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, target->getPosition(), true, true);
+		auto spectators = Spectators().find<Player>(target->getPosition(), true);
 
 		CombatNullFunc(caster, target, params, nullptr);
-		combatTileEffects(spectators, caster, target->getTile(), params);
+		combatTileEffects(spectators.data(), caster, target->getTile(), params);
 
 		if (params.targetCallback) {
 			params.targetCallback->onTargetCombat(caster, target);
@@ -1396,13 +1395,12 @@ std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets
 	const int maxBacktrackingAttempts = 10; // Can be adjusted as needed
 	while (!targets.empty() && targets.size() <= maxTargets) {
 		auto currentTarget = targets.back();
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, currentTarget->getPosition(), false, false, chainDistance, chainDistance, chainDistance, chainDistance);
+		auto spectators = Spectators().find<Creature>(currentTarget->getPosition(), false, chainDistance, chainDistance, chainDistance, chainDistance);
 		g_logger().debug("Combat::pickChainTargets: currentTarget: {}, spectators: {}", currentTarget->getName(), spectators.size());
 
 		double closestDistance = std::numeric_limits<double>::max();
 		std::shared_ptr<Creature> closestSpectator = nullptr;
-		for (std::shared_ptr<Creature> spectator : spectators) {
+		for (const auto &spectator : spectators) {
 			if (!spectator || visited.contains(spectator->getID())) {
 				continue;
 			}

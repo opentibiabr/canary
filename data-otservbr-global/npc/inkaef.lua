@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 86,
 	lookLegs = 0,
 	lookFeet = 86,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -52,7 +52,7 @@ end
 
 local items = {
 	[VOCATION.BASE_ID.SORCERER] = 3074,
-	[VOCATION.BASE_ID.DRUID] = 3066
+	[VOCATION.BASE_ID.DRUID] = 3066,
 }
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -64,26 +64,26 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	local itemId = items[player:getVocation():getBaseId()]
-	if MsgContains(message, 'first rod') or MsgContains(message, 'first wand') then
+	if MsgContains(message, "first rod") or MsgContains(message, "first wand") then
 		if player:isMage() then
 			if player:getStorageValue(Storage.FirstMageWeapon) == -1 then
-				npcHandler:say('So you ask me for a {' .. ItemType(itemId):getName() .. '} to begin your adventure?', npc, creature)
+				npcHandler:say("So you ask me for a {" .. ItemType(itemId):getName() .. "} to begin your adventure?", npc, creature)
 				npcHandler:setTopic(playerId, 1)
 			else
-				npcHandler:say('What? I have already gave you one {' .. ItemType(itemId):getName() .. '}!', npc, creature)
+				npcHandler:say("What? I have already gave you one {" .. ItemType(itemId):getName() .. "}!", npc, creature)
 			end
 		else
-			npcHandler:say('Sorry, you aren\'t a druid either a sorcerer.', npc, creature)
+			npcHandler:say("Sorry, you aren't a druid either a sorcerer.", npc, creature)
 		end
-	elseif MsgContains(message, 'yes') then
+	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			player:addItem(itemId, 1)
-			npcHandler:say('Here you are young adept, take care yourself.', npc, creature)
+			npcHandler:say("Here you are young adept, take care yourself.", npc, creature)
 			player:setStorageValue(Storage.FirstMageWeapon, 1)
 		end
 		npcHandler:setTopic(playerId, 0)
-	elseif MsgContains(message, 'no') and npcHandler:getTopic(playerId) == 1 then
-		npcHandler:say('Ok then.', npc, creature)
+	elseif MsgContains(message, "no") and npcHandler:getTopic(playerId) == 1 then
+		npcHandler:say("Ok then.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	end
 	return true
@@ -94,49 +94,49 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
-	{ itemName = "armor rack", clientId = 6114, buy = 90 },
-	{ itemName = "barrel", clientId = 2793, buy = 12 },
-	{ itemName = "big table", clientId = 2785, buy = 30 },
-	{ itemName = "birdcage", clientId = 2796, buy = 50 },
-	{ itemName = "bookcase", clientId = 6372, buy = 70 },
+	{ itemName = "armor rack", clientId = 6111, buy = 90 },
+	{ itemName = "barrel", clientId = 2523, buy = 12 },
+	{ itemName = "big table", clientId = 2314, buy = 30 },
+	{ itemName = "birdcage", clientId = 2976, buy = 50 },
+	{ itemName = "bookcase", clientId = 6370, buy = 70 },
 	{ itemName = "box", clientId = 2469, buy = 10 },
 	{ itemName = "chest", clientId = 2472, buy = 10 },
-	{ itemName = "chest of drawers", clientId = 2789, buy = 18 },
-	{ itemName = "chimney", clientId = 7864, buy = 200 },
+	{ itemName = "chest of drawers", clientId = 2433, buy = 18 },
+	{ itemName = "chimney", clientId = 7860, buy = 200 },
 	{ itemName = "crate", clientId = 2471, buy = 10 },
 	{ itemName = "cuckoo clock", clientId = 2664, buy = 40 },
-	{ itemName = "dresser", clientId = 2790, buy = 25 },
+	{ itemName = "dresser", clientId = 2441, buy = 25 },
 	{ itemName = "empty goldfish bowl", clientId = 5928, buy = 50 },
 	{ itemName = "flower bowl", clientId = 2983, buy = 6 },
-	{ itemName = "globe", clientId = 2797, buy = 50 },
-	{ itemName = "goblin statue", clientId = 2804, buy = 50 },
+	{ itemName = "globe", clientId = 2979, buy = 50 },
+	{ itemName = "goblin statue", clientId = 2030, buy = 50 },
 	{ itemName = "god flowers", clientId = 2981, buy = 5 },
-	{ itemName = "green cushioned chair", clientId = 2775, buy = 40 },
+	{ itemName = "green cushioned chair", clientId = 2374, buy = 40 },
 	{ itemName = "green pillow", clientId = 2396, buy = 25 },
 	{ itemName = "green tapestry", clientId = 2647, buy = 25 },
-	{ itemName = "harp", clientId = 2808, buy = 50 },
+	{ itemName = "harp", clientId = 2963, buy = 50 },
 	{ itemName = "heart pillow", clientId = 2393, buy = 30 },
 	{ itemName = "honey flower", clientId = 2984, buy = 5 },
-	{ itemName = "indoor plant", clientId = 2811, buy = 8 },
-	{ itemName = "knight statue", clientId = 2802, buy = 50 },
-	{ itemName = "large amphora", clientId = 2805, buy = 50 },
-	{ itemName = "large trunk", clientId = 2794, buy = 10 },
-	{ itemName = "locker", clientId = 2791, buy = 30 },
-	{ itemName = "minotaur statue", clientId = 2803, buy = 50 },
+	{ itemName = "indoor plant", clientId = 2982, buy = 8 },
+	{ itemName = "knight statue", clientId = 2025, buy = 50 },
+	{ itemName = "large amphora", clientId = 2904, buy = 50 },
+	{ itemName = "large trunk", clientId = 2483, buy = 10 },
+	{ itemName = "locker", clientId = 2449, buy = 30 },
+	{ itemName = "minotaur statue", clientId = 2029, buy = 50 },
 	{ itemName = "orange tapestry", clientId = 2653, buy = 25 },
-	{ itemName = "oven", clientId = 6371, buy = 80 },
-	{ itemName = "pendulum clock", clientId = 2801, buy = 75 },
-	{ itemName = "piano", clientId = 2807, buy = 200 },
+	{ itemName = "oven", clientId = 6355, buy = 80 },
+	{ itemName = "pendulum clock", clientId = 2445, buy = 75 },
+	{ itemName = "piano", clientId = 2959, buy = 200 },
 	{ itemName = "picture", clientId = 2639, buy = 50 },
 	{ itemName = "picture", clientId = 2640, buy = 50 },
 	{ itemName = "picture", clientId = 2641, buy = 50 },
 	{ itemName = "potted flower", clientId = 2985, buy = 5 },
 	{ itemName = "purple tapestry", clientId = 2644, buy = 25 },
-	{ itemName = "red cushioned chair", clientId = 2775, buy = 40 },
+	{ itemName = "red cushioned chair", clientId = 2374, buy = 40 },
 	{ itemName = "red pillow", clientId = 2395, buy = 25 },
 	{ itemName = "red tapestry", clientId = 2656, buy = 25 },
-	{ itemName = "rocking chair", clientId = 2778, buy = 25 },
-	{ itemName = "rocking horse", clientId = 2800, buy = 30 },
+	{ itemName = "rocking chair", clientId = 2382, buy = 25 },
+	{ itemName = "rocking horse", clientId = 2998, buy = 30 },
 	{ itemName = "round blue pillow", clientId = 2398, buy = 25 },
 	{ itemName = "round purple pillow", clientId = 2400, buy = 25 },
 	{ itemName = "round red pillow", clientId = 2399, buy = 25 },
@@ -146,27 +146,27 @@ npcConfig.shop = {
 	{ itemName = "small orange pillow", clientId = 2390, buy = 20 },
 	{ itemName = "small purple pillow", clientId = 2386, buy = 20 },
 	{ itemName = "small red pillow", clientId = 2388, buy = 20 },
-	{ itemName = "small round table", clientId = 2783, buy = 25 },
-	{ itemName = "small table", clientId = 2782, buy = 20 },
+	{ itemName = "small round table", clientId = 2316, buy = 25 },
+	{ itemName = "small table", clientId = 2319, buy = 20 },
 	{ itemName = "small turquoise pillow", clientId = 2391, buy = 20 },
 	{ itemName = "small white pillow", clientId = 2392, buy = 20 },
-	{ itemName = "sofa chair", clientId = 2779, buy = 55 },
-	{ itemName = "square table", clientId = 2784, buy = 25 },
-	{ itemName = "table lamp", clientId = 2798, buy = 35 },
-	{ itemName = "telescope", clientId = 2799, buy = 70 },
+	{ itemName = "sofa chair", clientId = 2366, buy = 55 },
+	{ itemName = "square table", clientId = 2315, buy = 25 },
+	{ itemName = "table lamp", clientId = 2934, buy = 35 },
+	{ itemName = "telescope", clientId = 3485, buy = 70 },
 	{ itemName = "treasure quest", clientId = 2478, buy = 1000 },
 	{ itemName = "trophy stand", clientId = 872, buy = 50 },
-	{ itemName = "trough", clientId = 2792, buy = 7 },
-	{ itemName = "venorean cabinet", clientId = 17974, buy = 90 },
-	{ itemName = "venorean drawer", clientId = 17977, buy = 40 },
-	{ itemName = "venorean wardrobe", clientId = 17975, buy = 50 },
+	{ itemName = "trough", clientId = 2524, buy = 7 },
+	{ itemName = "venorean cabinet", clientId = 18015, buy = 90 },
+	{ itemName = "venorean drawer", clientId = 18019, buy = 40 },
+	{ itemName = "venorean wardrobe", clientId = 18017, buy = 50 },
 	{ itemName = "wall mirror", clientId = 2638, buy = 40 },
 	{ itemName = "water pipe", clientId = 2974, buy = 40 },
-	{ itemName = "weapon rack", clientId = 6115, buy = 90 },
+	{ itemName = "weapon rack", clientId = 6109, buy = 90 },
 	{ itemName = "white tapestry", clientId = 2667, buy = 25 },
-	{ itemName = "wooden chair", clientId = 2777, buy = 15 },
+	{ itemName = "wooden chair", clientId = 2360, buy = 15 },
 	{ itemName = "yellow pillow", clientId = 900, buy = 25 },
-	{ itemName = "yellow tapestry", clientId = 2650, buy = 25 }
+	{ itemName = "yellow tapestry", clientId = 2650, buy = 25 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -177,7 +177,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

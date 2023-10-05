@@ -14,7 +14,7 @@ local setting = {
 	[64125] = Position(33478, 32621, 10),
 	[64126] = Position(33484, 32629, 8),
 	[64127] = Position(33452, 32617, 11),
-	[64128] = Position(33419, 32589, 10)
+	[64128] = Position(33419, 32589, 10),
 }
 
 local teleportLadder = MoveEvent()

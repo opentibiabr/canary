@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 0,
 	lookFeet = 0,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -67,19 +67,22 @@ local randomMessages = {
 		"STRAIGHT AHED!! WHY DOES THIS TAKE SO LONG?!? HURRY UP!",
 		"LOOKOUT REPORTS SEA SERPENT ON SIGHT!! STRAIGHT AHEAD!!",
 		"GO GO GO, SEA SERPENT STRAIGHT AHEAD!!",
-		"SET FULL SAILS! SEA SERPENT RIGHT IN FRONT OF US!!" },
+		"SET FULL SAILS! SEA SERPENT RIGHT IN FRONT OF US!!",
+	},
 	starboard = {
 		"SET FULL SAILS! SEA SERPENT ON THE STARBOARD SIDE!!",
 		"LOOKOUT REPORTS SEA SERPENT ON SIGHT!! SEA SERPENT ON THE STARBOARD SIEDE!!",
 		"COME ON YOU LAZY FOOLS!! SEA SERPENT ON THE STARBOARD SIDE!!",
 		"GO GO GO, SEA SERPENT ON THE STARBOARD SIDE!!",
-		"CHANGE COURSE TO STARBOARD!! WHY DOES THIS TAKE SO LONG?!? HURRY UP!" },
+		"CHANGE COURSE TO STARBOARD!! WHY DOES THIS TAKE SO LONG?!? HURRY UP!",
+	},
 	larboard = {
 		"SET FULL SAILS! SEA SERPENT ON THE LARBOARD SIDE!!",
 		"SEA SERPENT AHEAD!! LARBOARD SIDE!!",
 		"SEA SERPENT ON SIGHT!! TO THE LARBOARD SIDE, FAST!",
 		"LARBOARD!! THY DOES THIS TAKE SO LONG?!? LET'S GET IT ON!",
-		"LET'S GO YOU LAZY FOOLS. WE GOT A SEA SERPENT TO CATCH! TO LARBOARD SIDE, GO, GO, GO!" }
+		"LET'S GO YOU LAZY FOOLS. WE GOT A SEA SERPENT TO CATCH! TO LARBOARD SIDE, GO, GO, GO!",
+	},
 }
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
@@ -94,7 +97,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say({
 			"A'right, first of all you need a bait which isn't for free, though. I sell them for 50 gold each. Use the bait on the crane over there when you see something in the telescope. ...",
 			"Then go up to the lookout and check the telescope for a sight of the sea serpent. ...",
-			"If you see it in front of ya, get down at once. And what d'ya gonna say to me?" }, npc, creature)
+			"If you see it in front of ya, get down at once. And what d'ya gonna say to me?",
+		}, npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif npcHandler:getTopic(playerId) == 1 and message:lower() ~= "straight" then
 		npcHandler:say("Harharhar, landlubber, no no!! The correct command would be STRAIGHT. Remember that! Next, what you gonna say when you see something to left?", npc, creature)
@@ -105,7 +109,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif npcHandler:getTopic(playerId) == 1 and message:lower() ~= "starboard" then
 		npcHandler:say({
 			"Ya gotta learn a lot! The correct command would be STARBOARD side. ...",
-			"After you told me about the direction, put a bait on the crane again and go up to the lookout! That would be all sailor, let's go hunt down the sea serpent!!" }, npc, creature)
+			"After you told me about the direction, put a bait on the crane again and go up to the lookout! That would be all sailor, let's go hunt down the sea serpent!!",
+		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message:lower(), "straight") then
 		randomMessagesResult = randomMessages.straight[math.random(#randomMessages.straight)]
@@ -174,7 +179,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
-	{ itemName = "bait", clientId = 939, buy = 50 }
+	{ itemName = "bait", clientId = 939, buy = 50 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -185,7 +190,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

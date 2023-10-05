@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 10,
 	lookLegs = 115,
 	lookFeet = 95,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = "Don't forget to deposit your money here in the Global Bank before you head out for adventure.", yell = false }
+	{ text = "Don't forget to deposit your money here in the Global Bank before you head out for adventure.", yell = false },
 }
 
 local keywordHandler = KeywordHandler:new()

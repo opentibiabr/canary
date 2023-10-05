@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 71
+	lookType = 71,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -117,17 +117,20 @@ npcConfig.shop = {
 	{ itemName = "exercise axe", clientId = 28553, buy = 262500, count = 500 },
 	{ itemName = "exercise bow", clientId = 28555, buy = 262500, count = 500 },
 	{ itemName = "exercise club", clientId = 28554, buy = 262500, count = 500 },
+	{ itemName = "exercise shield", clientId = 44065, buy = 262500, count = 500 },
 	{ itemName = "exercise sword", clientId = 28552, buy = 262500, count = 500 },
 	{ itemName = "durable exercise axe", clientId = 35280, buy = 945000, count = 1800 },
 	{ itemName = "durable exercise bow", clientId = 35282, buy = 945000, count = 1800 },
 	{ itemName = "durable exercise club", clientId = 35281, buy = 945000, count = 1800 },
+	{ itemName = "durable exercise shield", clientId = 44066, buy = 945000, count = 1800 },
 	{ itemName = "durable exercise sword", clientId = 35279, buy = 945000, count = 1800 },
 	{ itemName = "lasting exercise axe", clientId = 35286, buy = 7560000, count = 14400 },
 	{ itemName = "lasting exercise bow", clientId = 35288, buy = 7560000, count = 14400 },
 	{ itemName = "lasting exercise club", clientId = 35287, buy = 7560000, count = 14400 },
+	{ itemName = "lasting exercise shield", clientId = 44067, buy = 7560000, count = 14400 },
 	{ itemName = "lasting exercise sword", clientId = 35285, buy = 7560000, count = 14400 },
 	-- 3 tomes
-	{ itemName = "lizard weapon rack kit", clientId = 10209, buy = 500, storageKey = tomes, storageValue = 3 },
+	{ itemName = "lizard weapon rack kit", clientId = 10210, buy = 500, storageKey = tomes, storageValue = 3 },
 	-- 9 tomes
 	{ itemName = "broken halberd", clientId = 10418, sell = 100, storageKey = tomes, storageValue = 9 },
 	{ itemName = "spiked iron ball", clientId = 10408, sell = 100, storageKey = tomes, storageValue = 9 },
@@ -164,11 +167,10 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
-npcHandler:setMessage(MESSAGE_GREET, 'Hello, |PLAYERNAME| and welcome to my little forge.')
-npcHandler:setMessage(MESSAGE_FAREWELL, 'Bye.')
+npcHandler:setMessage(MESSAGE_GREET, "Hello, |PLAYERNAME| and welcome to my little forge.")
+npcHandler:setMessage(MESSAGE_FAREWELL, "Bye.")
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

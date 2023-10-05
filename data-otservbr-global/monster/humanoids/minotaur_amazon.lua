@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1045
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Underground Glooth Factory, Oramond Minotaur Camp, Oramond Dungeon"
+	Locations = "Underground Glooth Factory, Oramond Minotaur Camp, Oramond Dungeon",
 }
 
 monster.health = 2600
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 11
+	chance = 11,
 }
 
 monster.strategiesTarget = {
@@ -99,7 +99,7 @@ monster.loot = {
 	{ id = 3081, chance = 850 }, -- stone skin amulet
 	{ id = 3037, chance = 870 }, -- yellow gem
 	{ id = 3369, chance = 1160 }, -- warrior helmet
-	{ id = 7443, chance = 720 } -- bullseye potion
+	{ id = 7443, chance = 720 }, -- bullseye potion
 }
 
 monster.attacks = {
@@ -109,7 +109,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 22, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -150, range = 7, shootEffect = CONST_ANI_HUNTINGSPEAR, effect = CONST_ME_EXPLOSIONAREA, target = false },
 	-- bleed
 	{ name = "condition", type = CONDITION_BLEEDING, interval = 2000, chance = 40, minDamage = -300, maxDamage = -400, radius = 4, shootEffect = CONST_ANI_THROWINGKNIFE, target = true },
-	{ name = "minotaur amazon paralyze", interval = 2000, chance = 15, target = false }
+	{ name = "minotaur amazon paralyze", interval = 2000, chance = 15, target = false },
 }
 
 monster.defenses = {
@@ -135,7 +135,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

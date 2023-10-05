@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 0,
 	lookLegs = 0,
 	lookFeet = 3,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -61,7 +61,7 @@ local function greetCallback(npc, creature)
 			"The Cult of Fafnar is a serious problem for Issavi. The cultists are roaming the sewers and catacombs beneath the city now and again but this time they are really up to something. ...",
 			"As a member of the Sapphire Blade found out, they are planning to cause a major earthquake, that could severely damage or even destroy Issavi. You may wonder how. ...",
 			"Well, they want to activate five Fafnar statues which they have already enchanted. They are hidden in the catacombs underneath the city. Please go down and search for the statues. ...",
-			"Then use this sceptre to bless them in the name of Suon and Bastesh. This will destroy the disastrous enchantment and Issavi will be safe again."
+			"Then use this sceptre to bless them in the name of Suon and Bastesh. This will destroy the disastrous enchantment and Issavi will be safe again.",
 		})
 		player:setStorageValue(Storage.Kilmaresh.Sixth.Favor, 1)
 		player:setStorageValue(Storage.Kilmaresh.Sixth.FourMasks, 0)
@@ -73,18 +73,19 @@ local function greetCallback(npc, creature)
 	return true
 end
 
-local masksDialogue = keywordHandler:addKeyword(
-	{ "mission" }, StdModule.say, {
-		npcHandler = npcHandler,
-		text = "Did you take all the masks and enchant all the statues?"
-	},
-	function(player) return player:getStorageValue(Storage.Kilmaresh.Sixth.Favor) == 10 end
-)
+local masksDialogue = keywordHandler:addKeyword({ "mission" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Did you take all the masks and enchant all the statues?",
+}, function(player)
+	return player:getStorageValue(Storage.Kilmaresh.Sixth.Favor) == 10
+end)
 
 masksDialogue:addChildKeyword(
-	{ "yes" }, StdModule.say, {
+	{ "yes" },
+	StdModule.say,
+	{
 		npcHandler = npcHandler,
-		text = "Thank you."
+		text = "Thank you.",
 	},
 	nil,
 	function(player)
@@ -93,7 +94,7 @@ masksDialogue:addChildKeyword(
 	end
 )
 
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Well, bye then.')
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)

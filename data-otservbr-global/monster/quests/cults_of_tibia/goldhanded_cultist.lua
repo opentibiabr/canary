@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 62,
 	lookFeet = 94,
 	lookAddons = 2,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1481
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 1,
-	Locations = "Museum of Tibian Arts."
+	Locations = "Museum of Tibian Arts.",
 }
 
 monster.health = 3000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -86,21 +86,21 @@ monster.loot = {
 	{ name = "gold ingot", chance = 2860 },
 	{ name = "opal", chance = 11430 },
 	{ name = "yellow gem", chance = 5710 },
-	{ id = 2863, chance = 1430 } -- golden bag
+	{ id = 2863, chance = 1430 }, -- golden bag
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -250 },
 	{ name = "combat", interval = 3000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = 0, maxDamage = -150, radius = 5, target = false },
 	{ name = "combat", interval = 3000, chance = 10, type = COMBAT_MANADRAIN, minDamage = 0, maxDamage = -200, effect = CONST_ME_LOSEENERGY, target = true },
-	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = 0, maxDamage = -250, range = 5, radius = 2, target = true }
+	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = 0, maxDamage = -250, range = 5, radius = 2, target = true },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 30,
 	mitigation = 0.78,
-	{ name = "speed", interval = 2000, chance = 30, speedChange = 290, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 }
+	{ name = "speed", interval = 2000, chance = 30, speedChange = 290, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
 }
 
 monster.elements = {
@@ -120,7 +120,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

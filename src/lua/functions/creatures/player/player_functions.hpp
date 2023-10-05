@@ -19,7 +19,7 @@
 class PlayerFunctions final : LuaScriptInterface {
 private:
 	static void init(lua_State* L) {
-		registerClass(L, "Player", "Creature", PlayerFunctions::luaPlayerCreate);
+		registerSharedClass(L, "Player", "Creature", PlayerFunctions::luaPlayerCreate);
 		registerMetaMethod(L, "Player", "__eq", PlayerFunctions::luaUserdataCompare);
 
 		registerMethod(L, "Player", "resetCharmsBestiary", PlayerFunctions::luaPlayerResetCharmsMonsters);
@@ -111,6 +111,7 @@ private:
 		registerMethod(L, "Player", "getSkillTries", PlayerFunctions::luaPlayerGetSkillTries);
 		registerMethod(L, "Player", "addSkillTries", PlayerFunctions::luaPlayerAddSkillTries);
 
+		registerMethod(L, "Player", "setLevel", PlayerFunctions::luaPlayerSetLevel);
 		registerMethod(L, "Player", "setMagicLevel", PlayerFunctions::luaPlayerSetMagicLevel);
 		registerMethod(L, "Player", "setSkillLevel", PlayerFunctions::luaPlayerSetSkillLevel);
 
@@ -176,6 +177,7 @@ private:
 		registerMethod(L, "Player", "removeStashItem", PlayerFunctions::luaPlayerRemoveStashItem);
 		registerMethod(L, "Player", "removeItem", PlayerFunctions::luaPlayerRemoveItem);
 		registerMethod(L, "Player", "sendContainer", PlayerFunctions::luaPlayerSendContainer);
+		registerMethod(L, "Player", "sendUpdateContainer", PlayerFunctions::luaPlayerSendUpdateContainer);
 
 		registerMethod(L, "Player", "getMoney", PlayerFunctions::luaPlayerGetMoney);
 		registerMethod(L, "Player", "addMoney", PlayerFunctions::luaPlayerAddMoney);
@@ -314,6 +316,8 @@ private:
 		registerMethod(L, "Player", "getFaction", PlayerFunctions::luaPlayerGetFaction);
 
 		// Bosstiary Functions
+		registerMethod(L, "Player", "getBosstiaryLevel", PlayerFunctions::luaPlayerGetBosstiaryLevel);
+		registerMethod(L, "Player", "getBosstiaryKills", PlayerFunctions::luaPlayerGetBosstiaryKills);
 		registerMethod(L, "Player", "addBosstiaryKill", PlayerFunctions::luaPlayerAddBosstiaryKill);
 		registerMethod(L, "Player", "setBossPoints", PlayerFunctions::luaPlayerSetBossPoints);
 		registerMethod(L, "Player", "setRemoveBossTime", PlayerFunctions::luaPlayerSetRemoveBossTime);
@@ -345,6 +349,8 @@ private:
 		registerMethod(L, "Player", "isVip", PlayerFunctions::luaPlayerIsVip);
 		registerMethod(L, "Player", "getVipDays", PlayerFunctions::luaPlayerGetVipDays);
 		registerMethod(L, "Player", "getVipTime", PlayerFunctions::luaPlayerGetVipTime);
+
+		registerMethod(L, "Player", "kv", PlayerFunctions::luaPlayerKV);
 
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
@@ -444,6 +450,7 @@ private:
 	static int luaPlayerGetSkillTries(lua_State* L);
 	static int luaPlayerAddSkillTries(lua_State* L);
 
+	static int luaPlayerSetLevel(lua_State* L);
 	static int luaPlayerSetMagicLevel(lua_State* L);
 	static int luaPlayerSetSkillLevel(lua_State* L);
 
@@ -509,6 +516,7 @@ private:
 	static int luaPlayerRemoveStashItem(lua_State* L);
 	static int luaPlayerRemoveItem(lua_State* L);
 	static int luaPlayerSendContainer(lua_State* L);
+	static int luaPlayerSendUpdateContainer(lua_State* L);
 
 	static int luaPlayerGetMoney(lua_State* L);
 	static int luaPlayerAddMoney(lua_State* L);
@@ -651,6 +659,8 @@ private:
 	static int luaPlayerSetFaction(lua_State* L);
 	static int luaPlayerGetFaction(lua_State* L);
 
+	static int luaPlayerGetBosstiaryLevel(lua_State* L);
+	static int luaPlayerGetBosstiaryKills(lua_State* L);
 	static int luaPlayerAddBosstiaryKill(lua_State* L);
 	static int luaPlayerSetBossPoints(lua_State* L);
 	static int luaPlayerSetRemoveBossTime(lua_State* L);
@@ -685,6 +695,8 @@ private:
 	static int luaPlayerIsVip(lua_State* L);
 	static int luaPlayerGetVipDays(lua_State* L);
 	static int luaPlayerGetVipTime(lua_State* L);
+
+	static int luaPlayerKV(lua_State* L);
 
 	friend class CreatureFunctions;
 };

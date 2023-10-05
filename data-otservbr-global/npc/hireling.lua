@@ -22,28 +22,28 @@ function createHirelingType(HirelingName)
 		lookBody = 34,
 		lookLegs = 3,
 		lookFeet = 116,
-		lookAddons = 0
+		lookAddons = 0,
 	}
 
 	npcConfig.flags = {
-		floorchange = false
+		floorchange = false,
 	}
 
 	npcConfig.shop = {
 		{ itemName = "amphora", clientId = 2893, buy = 4 },
 		{ itemName = "animate dead rune", clientId = 3203, buy = 377 },
-		{ itemName = "armor rack kit", clientId = 6114, buy = 90 },
+		{ itemName = "armor rack kit", clientId = 6111, buy = 90 },
 		{ itemName = "arrow", clientId = 3447, buy = 2 },
 		{ itemName = "avalanche rune", clientId = 3161, buy = 57 },
 		{ itemName = "axe", clientId = 3274, sell = 7 },
-		{ itemName = "bamboo drawer kit", clientId = 2795, buy = 20 },
-		{ itemName = "bamboo table kit", clientId = 2788, buy = 25 },
-		{ itemName = "barrel kit", clientId = 2793, buy = 12 },
+		{ itemName = "bamboo drawer kit", clientId = 2465, buy = 20 },
+		{ itemName = "bamboo table kit", clientId = 2350, buy = 25 },
+		{ itemName = "barrel kit", clientId = 2523, buy = 12 },
 		{ itemName = "basket", clientId = 2855, buy = 6 },
 		{ itemName = "battle axe", clientId = 3266, sell = 80 },
 		{ itemName = "battle hammer", clientId = 3305, sell = 120 },
-		{ itemName = "big table kit", clientId = 2785, buy = 30 },
-		{ itemName = "birdcage kit", clientId = 2796, buy = 50 },
+		{ itemName = "big table kit", clientId = 2314, buy = 30 },
+		{ itemName = "birdcage kit", clientId = 2976, buy = 50 },
 		{ itemName = "blank rune", clientId = 3147, buy = 10 },
 		{ itemName = "blue footboard", clientId = 32482, buy = 40 },
 		{ itemName = "blue headboard", clientId = 32473, buy = 40 },
@@ -52,7 +52,7 @@ function createHirelingType(HirelingName)
 		{ itemName = "blue tapestry", clientId = 2659, buy = 25 },
 		{ itemName = "bolt", clientId = 3446, buy = 4 },
 		{ itemName = "bone sword", clientId = 3338, sell = 20 },
-		{ itemName = "bookcase kit", clientId = 6372, buy = 70 },
+		{ itemName = "bookcase kit", clientId = 6370, buy = 70 },
 		{ itemName = "bottle", clientId = 2875, buy = 3 },
 		{ itemName = "bow", clientId = 3350, sell = 100 },
 		{ itemName = "box", clientId = 2469, buy = 10 },
@@ -71,12 +71,12 @@ function createHirelingType(HirelingName)
 		{ itemName = "chain helmet", clientId = 3352, sell = 17 },
 		{ itemName = "chain legs", clientId = 3558, sell = 25 },
 		{ itemName = "chameleon rune", clientId = 3178, buy = 210 },
-		{ itemName = "chest of drawers", clientId = 2789, buy = 18 },
+		{ itemName = "chest of drawers", clientId = 2433, buy = 18 },
 		{ itemName = "chest", clientId = 2472, buy = 10 },
-		{ itemName = "chimney kit", clientId = 7864, buy = 200 },
+		{ itemName = "chimney kit", clientId = 7860, buy = 200 },
 		{ itemName = "closed trap", clientId = 3481, sell = 75 },
 		{ itemName = "club", clientId = 3270, sell = 1 },
-		{ itemName = "coal basin kit", clientId = 2806, buy = 25 },
+		{ itemName = "coal basin kit", clientId = 3513, buy = 25 },
 		{ itemName = "coat", clientId = 3562, sell = 1 },
 		{ itemName = "convince creature rune", clientId = 3177, buy = 80 },
 		{ itemName = "cookie", clientId = 3598, buy = 2 },
@@ -93,7 +93,7 @@ function createHirelingType(HirelingName)
 		{ itemName = "diamond arrow", clientId = 35901, buy = 100 },
 		{ itemName = "disintegrate rune", clientId = 3197, buy = 26 },
 		{ itemName = "doublet", clientId = 3379, sell = 3 },
-		{ itemName = "dresser kit", clientId = 2790, buy = 25 },
+		{ itemName = "dresser kit", clientId = 2441, buy = 25 },
 		{ itemName = "drill bolt", clientId = 16142, buy = 12 },
 		{ itemName = "dwarven shield", clientId = 3425, sell = 100 },
 		{ itemName = "earth arrow", clientId = 774, buy = 5 },
@@ -104,14 +104,27 @@ function createHirelingType(HirelingName)
 		{ itemName = "energy field rune", clientId = 3164, buy = 38 },
 		{ itemName = "energy wall rune", clientId = 3166, buy = 85 },
 		{ itemName = "envenomed arrow", clientId = 16143, buy = 12 },
-		{ itemName = "exercise axe", clientId = 28553 },
-		{ itemName = "exercise bow", clientId = 28555 },
-		{ itemName = "exercise club", clientId = 28554 },
+		{ itemName = "exercise axe", clientId = 28553, buy = 262500 },
+		{ itemName = "exercise bow", clientId = 28555, buy = 262500 },
+		{ itemName = "exercise club", clientId = 28554, buy = 262500 },
 		{ itemName = "exercise rod", clientId = 28556, buy = 262500 },
-		{ itemName = "exercise rod", clientId = 28556, buy = 262500 },
-		{ itemName = "exercise sword", clientId = 28552 },
+		{ itemName = "exercise shield", clientId = 44065, buy = 262500 },
+		{ itemName = "exercise sword", clientId = 28552, buy = 262500 },
 		{ itemName = "exercise wand", clientId = 28557, buy = 262500 },
-		{ itemName = "exercise wand", clientId = 28557, buy = 262500 },
+		{ itemName = "durable exercise axe", clientId = 35280, buy = 945000 },
+		{ itemName = "durable exercise bow", clientId = 35282, buy = 945000 },
+		{ itemName = "durable exercise club", clientId = 35281, buy = 945000 },
+		{ itemName = "durable exercise rod", clientId = 35283, buy = 945000 },
+		{ itemName = "durable exercise shield", clientId = 44066, buy = 945000 },
+		{ itemName = "durable exercise sword", clientId = 35279, buy = 945000 },
+		{ itemName = "durable exercise wand", clientId = 35284, buy = 945000 },
+		{ itemName = "lasting exercise axe", clientId = 35286, buy = 7560000 },
+		{ itemName = "lasting exercise bow", clientId = 35288, buy = 7560000 },
+		{ itemName = "lasting exercise club", clientId = 35287, buy = 7560000 },
+		{ itemName = "lasting exercise rod", clientId = 35289, buy = 7560000 },
+		{ itemName = "lasting exercise shield", clientId = 44067, buy = 7560000 },
+		{ itemName = "lasting exercise sword", clientId = 35285, buy = 7560000 },
+		{ itemName = "lasting exercise wand", clientId = 35290, buy = 7560000 },
 		{ itemName = "explosion rune", clientId = 3200, buy = 31 },
 		{ itemName = "fire bomb rune", clientId = 3192, buy = 147 },
 		{ itemName = "fire field rune", clientId = 3188, buy = 28 },
@@ -122,8 +135,8 @@ function createHirelingType(HirelingName)
 		{ itemName = "flaming arrow", clientId = 763, buy = 5 },
 		{ itemName = "flash arrow", clientId = 761, buy = 5 },
 		{ itemName = "flower bowl", clientId = 2983, buy = 6 },
-		{ itemName = "globe", clientId = 2797, buy = 50 },
-		{ itemName = "goblin statue kit", clientId = 2804, buy = 50 },
+		{ itemName = "globe", clientId = 2979, buy = 50 },
+		{ itemName = "goblin statue kit", clientId = 2030, buy = 50 },
 		{ itemName = "god flowers", clientId = 2981, buy = 5 },
 		{ itemName = "goldfish bowl", clientId = 5928, buy = 50 },
 		{ itemName = "great fireball rune", clientId = 3191, buy = 57 },
@@ -131,7 +144,7 @@ function createHirelingType(HirelingName)
 		{ itemName = "great mana potion", clientId = 238, buy = 144 },
 		{ itemName = "great spirit potion", clientId = 7642, buy = 228 },
 		{ itemName = "green balloons", clientId = 6577, buy = 500 },
-		{ itemName = "green cushioned chair kit", clientId = 2776, buy = 40 },
+		{ itemName = "green cushioned chair kit", clientId = 2378, buy = 40 },
 		{ itemName = "green footboard", clientId = 32483, buy = 40 },
 		{ itemName = "green headboard", clientId = 32474, buy = 40 },
 		{ itemName = "green pillow", clientId = 2396, buy = 25 },
@@ -141,49 +154,49 @@ function createHirelingType(HirelingName)
 		{ itemName = "hammock foot section", clientId = 32487, buy = 40 },
 		{ itemName = "hammock head section", clientId = 32478, buy = 40 },
 		{ itemName = "hand axe", clientId = 3268, sell = 4 },
-		{ itemName = "harp kit", clientId = 2808, buy = 50 },
+		{ itemName = "harp kit", clientId = 2963, buy = 50 },
 		{ itemName = "health potion", clientId = 266, buy = 50 },
 		{ itemName = "heart pillow", clientId = 2393, buy = 30 },
 		{ itemName = "heavy magic missile rune", clientId = 3198, buy = 12 },
 		{ itemName = "holy missile rune", clientId = 3182, buy = 16 },
 		{ itemName = "honey flower", clientId = 2984, buy = 5 },
 		{ itemName = "icicle rune", clientId = 3158, buy = 30 },
-		{ itemName = "indoor plant kit", clientId = 2811, buy = 8 },
+		{ itemName = "indoor plant kit", clientId = 2982, buy = 8 },
 		{ itemName = "intense healing rune", clientId = 3152, buy = 95 },
 		{ itemName = "iron helmet", clientId = 3353, sell = 150 },
-		{ itemName = "ivory chair kit", clientId = 2781, buy = 25 },
+		{ itemName = "ivory chair kit", clientId = 2422, buy = 25 },
 		{ itemName = "jacket", clientId = 3561, sell = 1 },
-		{ itemName = "knight statue kit", clientId = 2802, buy = 50 },
+		{ itemName = "knight statue kit", clientId = 2025, buy = 50 },
 		{ itemName = "label", clientId = 3507, buy = 1 },
-		{ itemName = "large amphora kit", clientId = 2805, buy = 50 },
-		{ itemName = "large trunk", clientId = 2794, buy = 10 },
+		{ itemName = "large amphora kit", clientId = 2904, buy = 50 },
+		{ itemName = "large trunk", clientId = 2483, buy = 10 },
 		{ itemName = "leather armor", clientId = 3361, sell = 12 },
 		{ itemName = "leather boots", clientId = 3552, sell = 2 },
 		{ itemName = "leather helmet", clientId = 3355, sell = 4 },
 		{ itemName = "leather legs", clientId = 3559, sell = 9 },
 		{ itemName = "letter", clientId = 3505, buy = 8 },
 		{ itemName = "light magic missile rune", clientId = 3174, buy = 4 },
-		{ itemName = "locker kit", clientId = 2791, buy = 30 },
+		{ itemName = "locker kit", clientId = 2449, buy = 30 },
 		{ itemName = "longsword", clientId = 3285, sell = 51 },
 		{ itemName = "mace", clientId = 3286, sell = 30 },
 		{ itemName = "machete", clientId = 3308, sell = 6 },
 		{ itemName = "magic wall rune", clientId = 3180, buy = 116 },
 		{ itemName = "mana potion", clientId = 268, buy = 56 },
 		{ itemName = "meat", clientId = 3577, buy = 5 },
-		{ itemName = "minotaur statue kit", clientId = 2803, buy = 50 },
+		{ itemName = "minotaur statue kit", clientId = 2029, buy = 50 },
 		{ itemName = "moonlight rod", clientId = 3070, buy = 1245 },
 		{ itemName = "morning star", clientId = 3282, sell = 100 },
 		{ itemName = "necrotic rod", clientId = 3069, buy = 4999 },
 		{ itemName = "northwind rod", clientId = 8083, buy = 7500 },
 		{ itemName = "onyx arrow", clientId = 7365, buy = 7 },
 		{ itemName = "orange tapestry", clientId = 2653, buy = 25 },
-		{ itemName = "oven kit", clientId = 6371, buy = 80 },
+		{ itemName = "oven kit", clientId = 6355, buy = 80 },
 		{ itemName = "paralyse rune", clientId = 3165, buy = 700 },
 		{ itemName = "parcel", clientId = 3503, buy = 15 },
 		{ itemName = "party hat", clientId = 6578, buy = 800 },
 		{ itemName = "party trumpet", clientId = 6572, buy = 500 },
-		{ itemName = "pendulum clock kit", clientId = 2801, buy = 75 },
-		{ itemName = "piano kit", clientId = 2807, buy = 200 },
+		{ itemName = "pendulum clock kit", clientId = 2445, buy = 75 },
+		{ itemName = "piano kit", clientId = 2959, buy = 200 },
 		{ itemName = "pick", clientId = 3456, sell = 15 },
 		{ itemName = "piercing bolt", clientId = 7363, buy = 5 },
 		{ itemName = "plate armor", clientId = 3357, sell = 400 },
@@ -199,13 +212,13 @@ function createHirelingType(HirelingName)
 		{ itemName = "quiver", clientId = 35562, buy = 400 },
 		{ itemName = "rapier", clientId = 3272, sell = 5 },
 		{ itemName = "red balloons", clientId = 6575, buy = 500 },
-		{ itemName = "red cushioned chair kit", clientId = 2775, buy = 40 },
+		{ itemName = "red cushioned chair kit", clientId = 2374, buy = 40 },
 		{ itemName = "red footboard", clientId = 32484, buy = 40 },
 		{ itemName = "red headboard", clientId = 32475, buy = 40 },
 		{ itemName = "red pillow", clientId = 2395, buy = 25 },
 		{ itemName = "red quiver", clientId = 35849, buy = 400 },
 		{ itemName = "red tapestry", clientId = 2656, buy = 25 },
-		{ itemName = "rocking horse", clientId = 2800, buy = 30 },
+		{ itemName = "rocking horse", clientId = 2998, buy = 30 },
 		{ itemName = "rope", clientId = 3003, sell = 15 },
 		{ itemName = "round blue pillow", clientId = 2398, buy = 25 },
 		{ itemName = "round purple pillow", clientId = 2400, buy = 25 },
@@ -227,14 +240,14 @@ function createHirelingType(HirelingName)
 		{ itemName = "small orange pillow", clientId = 2390, buy = 20 },
 		{ itemName = "small purple pillow", clientId = 2386, buy = 20 },
 		{ itemName = "small red pillow", clientId = 2388, buy = 20 },
-		{ itemName = "small round table", clientId = 2783, buy = 25 },
-		{ itemName = "small table kit", clientId = 2782, buy = 20 },
+		{ itemName = "small round table", clientId = 2316, buy = 25 },
+		{ itemName = "small table kit", clientId = 2319, buy = 20 },
 		{ itemName = "small trunk", clientId = 2426, buy = 20 },
 		{ itemName = "small turquoise pillow", clientId = 2391, buy = 20 },
 		{ itemName = "small white pillow", clientId = 2392, buy = 20 },
 		{ itemName = "snakebite rod", clientId = 3066, buy = 500 },
 		{ itemName = "sniper arrow", clientId = 7364, buy = 5 },
-		{ itemName = "sofa chair kit", clientId = 2779, buy = 55 },
+		{ itemName = "sofa chair kit", clientId = 2366, buy = 55 },
 		{ itemName = "soldier helmet", clientId = 3375, sell = 16 },
 		{ itemName = "soulfire rune", clientId = 3195, buy = 46 },
 		{ itemName = "spear", clientId = 3277, sell = 3 },
@@ -242,12 +255,12 @@ function createHirelingType(HirelingName)
 		{ itemName = "spellwand", clientId = 651, sell = 299 },
 		{ itemName = "spike sword", clientId = 3271, sell = 240 },
 		{ itemName = "springsprout rod", clientId = 8084, buy = 15468 },
-		{ itemName = "square table kit", clientId = 2784, buy = 25 },
+		{ itemName = "square table kit", clientId = 2315, buy = 25 },
 		{ itemName = "stalagmite rune", clientId = 3179, buy = 12 },
 		{ itemName = "steel helmet", clientId = 3351, sell = 293 },
 		{ itemName = "steel shield", clientId = 3409, sell = 80 },
 		{ itemName = "stone shower rune", clientId = 3175, buy = 37 },
-		{ itemName = "stone table kit", clientId = 2786, buy = 30 },
+		{ itemName = "stone table kit", clientId = 2347, buy = 30 },
 		{ itemName = "straw mat foot section", clientId = 32489, buy = 40 },
 		{ itemName = "straw mat head section", clientId = 32480, buy = 40 },
 		{ itemName = "strong health potion", clientId = 236, buy = 115 },
@@ -259,9 +272,9 @@ function createHirelingType(HirelingName)
 		{ itemName = "sudden death rune", clientId = 3155, buy = 135 },
 		{ itemName = "supreme health potion", clientId = 23375, buy = 625 },
 		{ itemName = "sword", clientId = 3264, sell = 25 },
-		{ itemName = "table lamp kit", clientId = 2798, buy = 35 },
+		{ itemName = "table lamp kit", clientId = 2934, buy = 35 },
 		{ itemName = "tarsal arrow", clientId = 14251, buy = 6 },
-		{ itemName = "telescope kit", clientId = 2799, buy = 70 },
+		{ itemName = "telescope kit", clientId = 3485, buy = 70 },
 		{ itemName = "terra rod", clientId = 3065, buy = 10000 },
 		{ itemName = "thick trunk", clientId = 2352, buy = 20 },
 		{ itemName = "throwing knife", clientId = 3298, sell = 2 },
@@ -270,9 +283,9 @@ function createHirelingType(HirelingName)
 		{ itemName = "torch", clientId = 2920, buy = 2 },
 		{ itemName = "treasure chest", clientId = 2478, buy = 1245 },
 		{ itemName = "trophy stand", clientId = 872, buy = 50 },
-		{ itemName = "trough kit", clientId = 2792, buy = 7 },
-		{ itemName = "tusk chair kit", clientId = 2780, buy = 25 },
-		{ itemName = "tusk table kit", clientId = 2787, buy = 25 },
+		{ itemName = "trough kit", clientId = 2524, buy = 7 },
+		{ itemName = "tusk chair kit", clientId = 2418, buy = 25 },
+		{ itemName = "tusk table kit", clientId = 2348, buy = 25 },
 		{ itemName = "two handed sword", clientId = 3265, sell = 456 },
 		{ itemName = "ultimate healing rune", clientId = 3160, buy = 175 },
 		{ itemName = "ultimate health potion", clientId = 7643, buy = 381 },
@@ -280,9 +293,9 @@ function createHirelingType(HirelingName)
 		{ itemName = "ultimate spirit potion", clientId = 23374, buy = 443 },
 		{ itemName = "underworld rod", clientId = 8082, buy = 19666 },
 		{ itemName = "vase", clientId = 2876, buy = 3 },
-		{ itemName = "venorean cabinet", clientId = 17974, buy = 90 },
-		{ itemName = "venorean drawer", clientId = 17977, buy = 40 },
-		{ itemName = "venorean wardrobe", clientId = 17975, buy = 50 },
+		{ itemName = "venorean cabinet", clientId = 18015, buy = 90 },
+		{ itemName = "venorean drawer", clientId = 18019, buy = 40 },
+		{ itemName = "venorean wardrobe", clientId = 18017, buy = 50 },
 		{ itemName = "vial", clientId = 2874, sell = 5 },
 		{ itemName = "viking helmet", clientId = 3367, sell = 66 },
 		{ itemName = "viking shield", clientId = 3431, sell = 85 },
@@ -299,16 +312,16 @@ function createHirelingType(HirelingName)
 		{ itemName = "war hammer", clientId = 3279, sell = 595 },
 		{ itemName = "watch", clientId = 2906, sell = 6 },
 		{ itemName = "water pipe", clientId = 2980, buy = 40 },
-		{ itemName = "weapon rack kit", clientId = 6115, buy = 90 },
+		{ itemName = "weapon rack kit", clientId = 6109, buy = 90 },
 		{ itemName = "white tapestry", clientId = 2667, buy = 25 },
 		{ itemName = "wild growth rune", clientId = 3156, buy = 160 },
-		{ itemName = "wooden chair kit", clientId = 2777, buy = 15 },
+		{ itemName = "wooden chair kit", clientId = 2360, buy = 15 },
 		{ itemName = "wooden shield", clientId = 3412, sell = 5 },
 		{ itemName = "worm", clientId = 3492, buy = 1 },
 		{ itemName = "yellow footboard", clientId = 32485, buy = 40 },
 		{ itemName = "yellow headboard", clientId = 32476, buy = 40 },
 		{ itemName = "yellow pillow", clientId = 900, buy = 25 },
-		{ itemName = "yellow tapestry", clientId = 2650, buy = 25 }
+		{ itemName = "yellow tapestry", clientId = 2650, buy = 25 },
 	}
 	-- On buy npc shop message
 	npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -319,8 +332,7 @@ function createHirelingType(HirelingName)
 		player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 	end
 	-- On check npc shop message (look item)
-	npcType.onCheckItem = function(npc, player, clientId, subType)
-	end
+	npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 	local keywordHandler = KeywordHandler:new()
 	local npcHandler = NpcHandler:new(keywordHandler)
@@ -364,17 +376,17 @@ function createHirelingType(HirelingName)
 		SERVICES = 1100,
 		BANK = 1200,
 		FOOD = 1300,
-		GOODS = 1400
+		GOODS = 1400,
 	}
 
 	local TOPIC_FOOD = {
-		SKILL_CHOOSE = 1301
+		SKILL_CHOOSE = 1301,
 	}
 
 	local GREETINGS = {
 		BANK = "Alright! What can I do for you and your bank business, |PLAYERNAME|?",
 		FOOD = "Hmm, yes! A variety of fine food awaits! However, a small expense of 15000 gold is expected to make these delicious masterpieces happen. Shall I?",
-		STASH = "Of course, here is your stash! Well-maintained and neatly sorted for your convenience!"
+		STASH = "Of course, here is your stash! Well-maintained and neatly sorted for your convenience!",
 	}
 
 	local function getHirelingSkills()
@@ -435,12 +447,7 @@ function createHirelingType(HirelingName)
 		end
 
 		if profession then
-			message =
-					string.format(
-						"I'm not a %s and would not know how to help you with that, sorry. I can start a %s apprenticeship if you buy it for me in the store!",
-						profession,
-						profession
-					)
+			message = string.format("I'm not a %s and would not know how to help you with that, sorry. I can start a %s apprenticeship if you buy it for me in the store!", profession, profession)
 		end
 
 		npcHandler:say(message, npc, creature)
@@ -462,14 +469,11 @@ function createHirelingType(HirelingName)
 		elseif food_id == 29410 then
 			message = "Magnifique! A tiger meat that has been marinated for several hours in magic spices."
 		elseif food_id == 29411 then
-			message =
-			"Aaah, the beauty of the simple dishes! A delicate salad made of selected ingredients, capable of bring joy to the hearts of bravest warriors and their weapons."
+			message = "Aaah, the beauty of the simple dishes! A delicate salad made of selected ingredients, capable of bring joy to the hearts of bravest warriors and their weapons."
 		elseif food_id == 29412 then
-			message =
-			"Oh yes, very spicy chilly combined with delicious minced carniphila meat and a side dish of fine salad!"
+			message = "Oh yes, very spicy chilly combined with delicious minced carniphila meat and a side dish of fine salad!"
 		elseif food_id == 29413 then
-			message =
-			"Aaah, the northern cuisine! A catch of fresh salmon right from the coast Svargrond is the base of this extraordinary fish dish."
+			message = "Aaah, the northern cuisine! A catch of fresh salmon right from the coast Svargrond is the base of this extraordinary fish dish."
 		elseif food_id == 29414 then
 			message = "A traditional and classy meal. A beefy casserole which smells far better than it sounds!"
 		elseif food_id == 29415 then
@@ -489,7 +493,7 @@ function createHirelingType(HirelingName)
 
 		if player:getFreeCapacity() < itType:getWeight(1) then
 			npcHandler:say("Sorry, but you don't have enough capacity.", npc, creature)
-		elseif not inbox or inbox:getEmptySlots() == 0 then
+		elseif not inbox then
 			player:getPosition():sendMagicEffect(CONST_ME_POFF)
 			npcHandler:say("Sorry, you don't have enough room on your inbox", npc, creature)
 		elseif not player:removeMoneyBank(15000) then
@@ -508,11 +512,7 @@ function createHirelingType(HirelingName)
 		if random == 6 then
 			-- ask for preferred skill
 			npcHandler:setTopic(playerId, TOPIC_FOOD.SKILL_CHOOSE)
-			npcHandler:say(
-				"Yay! I have the ingredients to make a skill boost dish. Would you rather like to boost your {magic}, {melee}, {shielding} or {distance} skill?",
-				npc,
-				creature
-			)
+			npcHandler:say("Yay! I have the ingredients to make a skill boost dish. Would you rather like to boost your {magic}, {melee}, {shielding} or {distance} skill?", npc, creature)
 		else -- deliver the random generated index
 			deliverFood(npc, creature, HIRELING_FOODS[random])
 		end
@@ -537,11 +537,7 @@ function createHirelingType(HirelingName)
 			elseif MsgContains(message, "distance") then
 				deliverFood(npc, creature, HIRELING_FOODS_BOOST.DISTANCE)
 			else
-				npcHandler:say(
-					"Sorry, but you must choose a valid skill class. Would you like to boost your {magic}, {melee}, {shielding} or {distance} skill?",
-					npc,
-					creature
-				)
+				npcHandler:say("Sorry, but you must choose a valid skill class. Would you like to boost your {magic}, {melee}, {shielding} or {distance} skill?", npc, creature)
 			end
 		end
 	end
@@ -561,17 +557,13 @@ function createHirelingType(HirelingName)
 
 		-- roleplay
 		if MsgContains(message, "sword of fury") then
-			npcHandler:say(
-				"In my youth I dreamt to wield it! Now I wield the broom of... brooming. I guess that's the next best thing!",
-				npc,
-				creature
-			)
+			npcHandler:say("In my youth I dreamt to wield it! Now I wield the broom of... brooming. I guess that's the next best thing!", npc, creature)
 		elseif MsgContains(message, "rookgaard") then
 			npcHandler:say("What an uncivilised place without any culture.", npc, creature)
 		elseif MsgContains(message, "excalibug") then
 			-- end roleplay
 			npcHandler:say("I'll keep an eye open for it when cleaning up the things you brought home!", npc, creature)
-		elseif (MsgContains(message, "service")) then
+		elseif MsgContains(message, "service") then
 			npcHandler:setTopic(playerId, TOPIC.SERVICES)
 			local servicesMsg = getHirelingServiceString(creature)
 			npcHandler:say(servicesMsg, npc, creature)

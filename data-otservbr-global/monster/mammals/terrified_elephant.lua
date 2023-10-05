@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 771
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "East of Port Hope, close to the Deeper Banuta shortcut, Mapper Coords128.84127.16872texthere."
+	Locations = "East of Port Hope, close to the Deeper Banuta shortcut, Mapper Coords128.84127.16872texthere.",
 }
 
 monster.health = 320
@@ -35,7 +35,7 @@ monster.manaCost = 500
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -79,18 +79,18 @@ monster.loot = {
 	{ name = "meat", chance = 40000, maxCount = 4 },
 	{ name = "ham", chance = 27000, maxCount = 9 },
 	{ name = "tusk", chance = 8510, maxCount = 2 },
-	{ name = "tusk shield", chance = 80 }
+	{ name = "tusk shield", chance = 80 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 },
 }
 
 monster.defenses = {
 	defense = 0,
 	armor = 20,
 	mitigation = 0.41,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 800, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 800, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -110,7 +110,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

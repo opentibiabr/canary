@@ -9,7 +9,7 @@ local config = {
 		{ { 60001, 90000 }, SCALE_ARMOR },
 		{ { 90001, 97000 }, BRASS_ARMOR },
 		{ { 97001, 99000 }, PLATE_ARMOR },
-		{ { 99001, 100000 }, KNIGHT_ARMOR }
+		{ { 99001, 100000 }, KNIGHT_ARMOR },
 	},
 
 	[8906] = { -- semi-rare rusty helmet
@@ -19,9 +19,8 @@ local config = {
 		{ { 70001, 81000 }, STEEL_HELMET },
 		{ { 81001, 94000 }, CROWN_HELMET },
 		{ { 94001, 98500 }, CRUSADER_HELMET },
-		{ { 98501, 100000 }, ROYAL_HELMET }
+		{ { 98501, 100000 }, ROYAL_HELMET },
 	},
-
 
 	[8895] = { -- semi-rare rusty armor
 		{ { 1, 35165 } },
@@ -31,7 +30,7 @@ local config = {
 		{ { 81001, 90000 }, PLATE_ARMOR },
 		{ { 90001, 96500 }, KNIGHT_ARMOR },
 		{ { 96501, 99500 }, PALADIN_ARMOR },
-		{ { 99501, 100000 }, CROWN_ARMOR }
+		{ { 99501, 100000 }, CROWN_ARMOR },
 	},
 	[8896] = { -- rare rusty armor
 		{ { 1, 50000 } },
@@ -44,7 +43,7 @@ local config = {
 		{ { 96000, 97000 }, CROWN_ARMOR },
 		{ { 96001, 98500 }, GOLDEN_ARMOR },
 		{ { 98501, 99500 }, DRAGON_SCALE_MAIL },
-		{ { 99501, 100000 }, MAGIC_PLATE_ARMOR }
+		{ { 99501, 100000 }, MAGIC_PLATE_ARMOR },
 	},
 	[8897] = { -- common rusty legs
 		{ { 1, 26764 } },
@@ -52,7 +51,7 @@ local config = {
 		{ { 60001, 85000 }, CHAIN_LEGS },
 		{ { 85001, 98000 }, BRASS_LEGS },
 		{ { 98001, 99500 }, PLATE_LEGS },
-		{ { 99501, 100000 }, KNIGHT_LEGS }
+		{ { 99501, 100000 }, KNIGHT_LEGS },
 	},
 	[8898] = { -- semi-rare rusty legs
 		{ { 1, 35165 } },
@@ -62,7 +61,7 @@ local config = {
 		{ { 87501, 95500 }, PLATE_LEGS },
 		{ { 95501, 98250 }, KNIGHT_LEGS },
 		{ { 98251, 99250 }, CROWN_LEGS },
-		{ { 99251, 100000 }, GOLDEN_LEGS }
+		{ { 99251, 100000 }, GOLDEN_LEGS },
 	},
 	[8899] = { -- rare rusty legs
 		{ { 1, 50000 } },
@@ -70,8 +69,8 @@ local config = {
 		{ { 75001, 90000 }, PLATE_LEGS },
 		{ { 90001, 97500 }, KNIGHT_LEGS },
 		{ { 97501, 99000 }, CROWN_LEGS },
-		{ { 99001, 100000 }, GOLDEN_LEGS }
-	}
+		{ { 99001, 100000 }, GOLDEN_LEGS },
+	},
 }
 
 local rustRemover = Action()

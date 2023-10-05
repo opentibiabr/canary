@@ -25,7 +25,7 @@ local loyaltySystem = {
 		{ minPoints = 3240, percentage = 45 },
 		{ minPoints = 3600, percentage = 50 },
 	},
-	messageTemplate = "Due to your long-term loyalty to " .. SERVER_NAME .. " you currently benefit from a ${bonusPercentage}% bonus on all of your skills. (You have ${loyaltyPoints} loyalty points)"
+	messageTemplate = "Due to your long-term loyalty to " .. SERVER_NAME .. " you currently benefit from a ${bonusPercentage}% bonus on all of your skills. (You have ${loyaltyPoints} loyalty points)",
 }
 
 function Player.initializeLoyaltySystem(self)

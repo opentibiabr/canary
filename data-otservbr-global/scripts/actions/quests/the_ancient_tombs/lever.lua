@@ -5,17 +5,16 @@ local config = {
 		{ position = Position(33120, 32794, 14), groundId = 727 },
 		{ position = Position(33120, 32795, 14), groundId = 727 },
 		{ position = Position(33121, 32794, 14), groundId = 727 },
-		{ position = Position(33121, 32795, 14), groundId = 727 }
-
+		{ position = Position(33121, 32795, 14), groundId = 727 },
 	},
 	leverPositions = {
 		Position(33115, 32797, 14),
 		Position(33118, 32790, 14),
-		Position(33122, 32790, 14)
+		Position(33122, 32790, 14),
 	},
 	relocatePosition = Position(33120, 2791, 14),
 	relocateMonsterPosition = Position(33120, 32799, 14),
-	bridgeId = 5770
+	bridgeId = 5770,
 }
 
 local theAncientLever = Action()

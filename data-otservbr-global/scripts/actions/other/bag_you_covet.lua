@@ -12,7 +12,7 @@ local rewards = {
 	{ id = 43882, name = "Sanguine Coil" },
 	{ id = 43884, name = "Sanguine Boots" },
 	{ id = 43885, name = "Sanguine Rod" },
-	{ id = 43887, name = "Sanguine Galoshes" }
+	{ id = 43887, name = "Sanguine Galoshes" },
 }
 
 local bagyouCovet = Action()
@@ -24,7 +24,7 @@ function bagyouCovet.onUse(player, item, fromPosition, target, toPosition, isHot
 	player:addItem(rewardItem.id, 1)
 	item:remove(1)
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You received a ' .. rewardItem.name .. '.')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You received a " .. rewardItem.name .. ".")
 	return true
 end
 

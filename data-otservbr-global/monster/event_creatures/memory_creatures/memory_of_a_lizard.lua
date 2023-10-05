@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 3520
 monster.maxHealth = 3520
@@ -23,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -72,18 +71,18 @@ monster.loot = {
 	{ name = "bunch of ripe rice", chance = 4950 },
 	{ name = "zaoan legs", chance = 720 },
 	{ name = "special fx box", chance = 1500 },
-	{ id = 37531, chance = 5155 } -- candy floss
+	{ id = 37531, chance = 5155 }, -- candy floss
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110 },
 }
 
 monster.defenses = {
 	defense = 35,
 	armor = 35,
 	mitigation = 1.30,
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 25, maxDamage = 75, effect = CONST_ME_MAGIC_GREEN, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 25, maxDamage = 75, effect = CONST_ME_MAGIC_GREEN, target = false },
 }
 
 monster.elements = {
@@ -103,7 +102,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

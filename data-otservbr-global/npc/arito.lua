@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 111,
 	lookLegs = 99,
 	lookFeet = 115,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -63,8 +63,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "nomads") then
 		if player:getStorageValue(Storage.TibiaTales.AritosTask) <= 0 and player:getItemCount(7533) >= 0 then
 			npcHandler:say({
-				'What?? My name on a deathlist which you retrieved from a nomad?? Show me!! ...',
-				'Oh my god! They found me! You must help me! Please !!!!'
+				"What?? My name on a deathlist which you retrieved from a nomad?? Show me!! ...",
+				"Oh my god! They found me! You must help me! Please !!!!",
 			}, npc, creature)
 			if player:getStorageValue(Storage.TibiaTales.DefaultStart) <= 0 then
 				player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
@@ -73,7 +73,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			-- END TASK
 		elseif player:getStorageValue(Storage.TibiaTales.AritosTask) == 2 then
 			npcHandler:say({
-				'These are great news!! Thank you for your help! I don\'t have much, but without you I wouldn\'t have anything so please take this as a reward.'
+				"These are great news!! Thank you for your help! I don't have much, but without you I wouldn't have anything so please take this as a reward.",
 			}, npc, creature)
 			player:setStorageValue(Storage.TibiaTales.AritosTask, 3)
 			player:addItem(3035, 50)
@@ -85,7 +85,7 @@ end
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Come in, have a drink and something to eat.' }
+	{ text = "Come in, have a drink and something to eat." },
 }
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
@@ -105,7 +105,7 @@ npcConfig.shop = {
 	{ itemName = "mug of beer", clientId = 2880, buy = 2, count = 3 },
 	{ itemName = "mug of lemonade", clientId = 2880, buy = 2, count = 12 },
 	{ itemName = "mug of water", clientId = 2880, buy = 1, count = 1 },
-	{ itemName = "mug of wine", clientId = 2880, buy = 3, count = 2 }
+	{ itemName = "mug of wine", clientId = 2880, buy = 3, count = 2 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -116,7 +116,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

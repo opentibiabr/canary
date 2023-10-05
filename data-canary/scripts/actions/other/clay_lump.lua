@@ -2,23 +2,23 @@ local setting = {
 	{
 		chance = { 0.0, 1.54 },
 		transformId = 10425,
-		description = "This little figurine of Brog, the raging Titan, was skillfully made by |PLAYERNAME|."
+		description = "This little figurine of Brog, the raging Titan, was skillfully made by |PLAYERNAME|.",
 	},
 	{
 		chance = { 1.54, 9.16 },
 		transformId = 10424,
-		description = "It was made by |PLAYERNAME| and is clearly a little figurine of.. hm, one does not recognise that yet."
+		description = "It was made by |PLAYERNAME| and is clearly a little figurine of.. hm, one does not recognise that yet.",
 	},
 	{
 		chance = { 9.16, 25.48 },
 		transformId = 10423,
-		description = "It was made by |PLAYERNAME|, whose potter skills could use some serious improvement."
+		description = "It was made by |PLAYERNAME|, whose potter skills could use some serious improvement.",
 	},
 	{
 		chance = { 25.48, 100.0 },
 		remove = true,
-		sound = "Aw man. That did not work out too well."
-	}
+		sound = "Aw man. That did not work out too well.",
+	},
 }
 
 local clayLump = Action()
@@ -38,7 +38,7 @@ function clayLump.onUse(player, item, fromPosition, target, toPosition, isHotkey
 				player:say(tmpItem.sound, TALKTYPE_MONSTER_SAY, false, player)
 			end
 			if tmpItem.description then
-				item:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, tmpItem.description:gsub('|PLAYERNAME|', player:getName()))
+				item:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, tmpItem.description:gsub("|PLAYERNAME|", player:getName()))
 			end
 			break
 		end

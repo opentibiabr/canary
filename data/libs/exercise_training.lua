@@ -12,6 +12,10 @@ ExerciseWeaponsTable = {
 	[28542] = { skill = SKILL_CLUB },
 	[35281] = { skill = SKILL_CLUB },
 	[35287] = { skill = SKILL_CLUB },
+	[44064] = { skill = SKILL_SHIELD },
+	[44065] = { skill = SKILL_SHIELD },
+	[44066] = { skill = SKILL_SHIELD },
+	[44067] = { skill = SKILL_SHIELD },
 	-- ROD
 	[28544] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_SMALLICE, allowFarUse = true },
 	[28556] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_SMALLICE, allowFarUse = true },
@@ -26,7 +30,7 @@ ExerciseWeaponsTable = {
 	[28545] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_FIRE, allowFarUse = true },
 	[28557] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_FIRE, allowFarUse = true },
 	[35284] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_FIRE, allowFarUse = true },
-	[35290] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_FIRE, allowFarUse = true }
+	[35290] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_FIRE, allowFarUse = true },
 }
 
 local dummies = Game.getDummies()
@@ -89,7 +93,9 @@ function ExerciseEvent(playerId, tilePosition, weaponId, dummyId)
 	end
 
 	local isMagic = ExerciseWeaponsTable[weaponId].skill == SKILL_MAGLEVEL
-	if not dummies[dummyId] then return false end
+	if not dummies[dummyId] then
+		return false
+	end
 	local rate = dummies[dummyId] / 100
 
 	if isMagic then

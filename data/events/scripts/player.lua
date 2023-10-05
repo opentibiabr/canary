@@ -1,6 +1,3 @@
-CONTAINER_WEIGHT_CHECK = true -- true = enable / false = disable
-CONTAINER_WEIGHT_MAX = 1000000 -- 1000000 = 10k = 10000.00 oz
-
 local storeItemID = {
 	-- registered item ids here are not tradable with players
 	-- these items can be set to moveable at items.xml
@@ -11,6 +8,7 @@ local storeItemID = {
 	28555, -- exercise bow
 	28556, -- exercise rod
 	28557, -- exercise wand
+	44065, -- exercise shield
 
 	-- 50 charges exercise weapons
 	28540, -- training sword
@@ -19,6 +17,7 @@ local storeItemID = {
 	28543, -- training bow
 	28544, -- training wand
 	28545, -- training club
+	44064, -- training shield
 
 	-- magic gold and magic converter (activated/deactivated)
 	28525, -- magic gold converter
@@ -41,64 +40,52 @@ local storeItemID = {
 -- Players cannot throw items on teleports if set to true
 local blockTeleportTrashing = true
 
-local titles = {
-	{ storageID = 14960, title = " Scout" },
-	{ storageID = 14961, title = " Sentinel" },
-	{ storageID = 14962, title = " Steward" },
-	{ storageID = 14963, title = " Warden" },
-	{ storageID = 14964, title = " Squire" },
-	{ storageID = 14965, title = " Warrior" },
-	{ storageID = 14966, title = " Keeper" },
-	{ storageID = 14967, title = " Guardian" },
-	{ storageID = 14968, title = " Sage" },
-	{ storageID = 14969, title = " Tutor" },
-	{ storageID = 14970, title = " Senior Tutor" },
-	{ storageID = 14971, title = " King" },
-}
-
 local config = {
 	maxItemsPerSeconds = 1,
 	exhaustTime = 2000,
 }
 
-if not pushDelay then
-	pushDelay = {}
-end
+local pushDelay = {}
 
-local function antiPush(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+local function antiPush(player, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+	if not player then
+		player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		return false
+	end
+
 	if toPosition.x == CONTAINER_POSITION then
 		return true
 	end
 
 	local tile = Tile(toPosition)
 	if not tile then
-		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
 	end
 
-	local cid = self:getId()
-	if not pushDelay[cid] then
-		pushDelay[cid] = { items = 0, time = 0 }
+	local playerId = player:getId()
+	if not pushDelay[playerId] then
+		pushDelay[playerId] = { items = 0, time = 0 }
 	end
 
-	pushDelay[cid].items = pushDelay[cid].items + 1
+	pushDelay[playerId].items = pushDelay[playerId].items + 1
 
 	local currentTime = systemTime()
-	if pushDelay[cid].time == 0 then
-		pushDelay[cid].time = currentTime
-	elseif pushDelay[cid].time == currentTime then
-		pushDelay[cid].items = pushDelay[cid].items + 1
-	elseif currentTime > pushDelay[cid].time then
-		pushDelay[cid].time = 0
-		pushDelay[cid].items = 0
+	if pushDelay[playerId].time == 0 then
+		pushDelay[playerId].time = currentTime
+	elseif pushDelay[playerId].time == currentTime then
+		pushDelay[playerId].items = pushDelay[playerId].items + 1
+	elseif currentTime > pushDelay[playerId].time then
+		pushDelay[playerId].time = 0
+		pushDelay[playerId].items = 0
 	end
 
-	if pushDelay[cid].items > config.maxItemsPerSeconds then
-		pushDelay[cid].time = currentTime + config.exhaustTime
+	if pushDelay[playerId].items > config.maxItemsPerSeconds then
+		pushDelay[playerId].time = currentTime + config.exhaustTime
 	end
 
-	if pushDelay[cid].time > currentTime then
-		self:sendCancelMessage("You can't move that item so fast.")
+	if pushDelay[playerId].time > currentTime then
+		player:sendCancelMessage("You can't move that item so fast.")
 		return false
 	end
 
@@ -211,10 +198,10 @@ function Player:onLookInBattleList(creature, distance)
 	local description = "You see " .. creature:getDescription(distance)
 	if creature:isMonster() then
 		local master = creature:getMaster()
-		local summons = { 'sorcerer familiar', 'knight familiar', 'druid familiar', 'paladin familiar' }
+		local summons = { "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar" }
 		if master and table.contains(summons, creature:getName():lower()) then
-			description = description .. ' (Master: ' .. master:getName() .. '). \z
-				It will disappear in ' .. getTimeInWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
+			description = description .. " (Master: " .. master:getName() .. "). \z
+				It will disappear in " .. getTimeInWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
 		end
 	end
 	if self:getGroup():getAccess() then
@@ -225,11 +212,7 @@ function Player:onLookInBattleList(creature, distance)
 		description = string.format(str, description, creature:getHealth(), creature:getMaxHealth()) .. "."
 
 		local position = creature:getPosition()
-		description = string.format(
-			"%s\nPosition: %d, %d, %d",
-			description, position.x, position.y, position.z
-
-		)
+		description = string.format("%s\nPosition: %d, %d, %d", description, position.x, position.y, position.z)
 
 		if creature:isPlayer() then
 			description = string.format("%s\nIP: %s", description, Game.convertIpToString(creature:getIp()))
@@ -244,17 +227,10 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		return false
 	end
 
-	-- No move if item count > 20 items
+	-- No move if tile item count > 20 items
 	local tile = Tile(toPosition)
 	if tile and tile:getItemCount() > 20 then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-		return false
-	end
-
-	-- No move parcel very heavy
-	if CONTAINER_WEIGHT_CHECK and ItemType(item:getId()):isContainer()
-			and item:getWeight() > CONTAINER_WEIGHT_MAX then
-		self:sendCancelMessage("Your cannot move this item too heavy.")
 		return false
 	end
 
@@ -270,19 +246,17 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 
 	-- SSA exhaust
 	local exhaust = {}
-	if toPosition.x == CONTAINER_POSITION and toPosition.y == CONST_SLOT_NECKLACE
-			and item:getId() == ITEM_STONE_SKIN_AMULET then
+	if toPosition.x == CONTAINER_POSITION and toPosition.y == CONST_SLOT_NECKLACE and item:getId() == ITEM_STONE_SKIN_AMULET then
 		local pid = self:getId()
 		if exhaust[pid] then
 			self:sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED)
 			return false
-		else
-			exhaust[pid] = true
-			addEvent(function()
-				exhaust[pid] = false
-			end, 2000, pid)
-			return true
 		end
+		exhaust[playerId] = true
+		addEvent(function()
+			exhaust[playerId] = false
+		end, 2000, playerId)
+		return true
 	end
 
 	-- Bath tube
@@ -317,9 +291,8 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 			if parent:getSize() == parent:getCapacity() then
 				self:sendTextMessage(MESSAGE_FAILURE, Game.getReturnMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM))
 				return false
-			else
-				return moveItem:moveTo(parent)
 			end
+			return moveItem:moveTo(parent)
 		end
 	end
 
@@ -383,24 +356,27 @@ function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder,
 		local topos = Position(33052, 31932, 15) -- Checagem
 		local removeItem = false
 		if self:getPosition():isInRange(frompos, topos) and item:getId() == 23729 then
-			local tileBoss = Tile(toPosition)
-			if tileBoss and tileBoss:getTopCreature() and tileBoss:getTopCreature():isMonster() then
-				if tileBoss:getTopCreature():getName():lower() == 'the remorseless corruptor' then
-					tileBoss:getTopCreature():addHealth(-17000)
-					tileBoss:getTopCreature():remove()
-					local monster = Game.createMonster('The Corruptor of Souls', toPosition)
-					if not monster then
-						return false
+			local tile = Tile(toPosition)
+			if tile then
+				local tileBoss = tile:getTopCreature()
+				if tileBoss and tileBoss:isMonster() then
+					if tileBoss:getName():lower() == "the remorseless corruptor" then
+						tileBoss:addHealth(-17000)
+						tileBoss:remove()
+						local monster = Game.createMonster("The Corruptor of Souls", toPosition)
+						if not monster then
+							return false
+						end
+						removeItem = true
+						monster:registerEvent("CheckTile")
+						if Game.getStorageValue("healthSoul") > 0 then
+							monster:addHealth(-(monster:getHealth() - Game.getStorageValue("healthSoul")))
+						end
+						Game.setStorageValue("CheckTile", os.time() + 30)
+					elseif tileBoss:getName():lower() == "the corruptor of souls" then
+						Game.setStorageValue("CheckTile", os.time() + 30)
+						removeItem = true
 					end
-					removeItem = true
-					monster:registerEvent('CheckTile')
-					if Game.getStorageValue('healthSoul') > 0 then
-						monster:addHealth(-(monster:getHealth() - Game.getStorageValue('healthSoul')))
-					end
-					Game.setStorageValue('CheckTile', os.time() + 30)
-				elseif tileBoss:getTopCreature():getName():lower() == 'the corruptor of souls' then
-					Game.setStorageValue('CheckTile', os.time() + 30)
-					removeItem = true
 				end
 			end
 			if removeItem then
@@ -414,7 +390,7 @@ end
 
 function Player:onMoveCreature(creature, fromPosition, toPosition)
 	local player = creature:getPlayer()
-	if player and onExerciseTraining[player:getId()] and self:getGroup():hasFlag(PlayerFlag_CanPushAllCreatures) == false then
+	if player and onExerciseTraining[player:getId()] and not self:getGroup():hasFlag(PlayerFlag_CanPushAllCreatures) then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
 	end
@@ -422,13 +398,12 @@ function Player:onMoveCreature(creature, fromPosition, toPosition)
 end
 
 local function hasPendingReport(name, targetName, reportType)
-	local f = io.open(string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType), "r")
-	if f then
-		io.close(f)
+	local file = io.open(string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType), "r")
+	if file then
+		io.close(file)
 		return true
-	else
-		return false
 	end
+	return false
 end
 
 function Player:onReportRuleViolation(targetName, reportType, reportReason, comment, translation)
@@ -440,8 +415,7 @@ function Player:onReportRuleViolation(targetName, reportType, reportReason, comm
 
 	local file = io.open(string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType), "a")
 	if not file then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			"There was an error when processing your report, please contact a gamemaster.")
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There was an error when processing your report, please contact a gamemaster.")
 		return
 	end
 
@@ -457,18 +431,25 @@ function Player:onReportRuleViolation(targetName, reportType, reportReason, comm
 	end
 	io.write("------------------------------\n")
 	io.close(file)
-	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Thank you for reporting %s. Your report \z
-	will be processed by %s team as soon as possible.", targetName, configManager.getString(configKeys.SERVER_NAME)))
+	self:sendTextMessage(
+		MESSAGE_EVENT_ADVANCE,
+		string.format(
+			"Thank you for reporting %s. Your report \z
+	will be processed by %s team as soon as possible.",
+			targetName,
+			configManager.getString(configKeys.SERVER_NAME)
+		)
+	)
 	return
 end
 
 function Player:onReportBug(message, position, category)
 	local name = self:getName()
+	FS.mkdir_p(string.format("%s/reports/bugs/%s", CORE_DIRECTORY, name))
 	local file = io.open(string.format("%s/reports/bugs/%s/report.txt", CORE_DIRECTORY, name), "a")
 
 	if not file then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			"There was an error when processing your report, please contact a gamemaster.")
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There was an error when processing your report, please contact a gamemaster.")
 		return true
 	end
 
@@ -483,8 +464,7 @@ function Player:onReportBug(message, position, category)
 	io.write("Comment: " .. message .. "\n")
 	io.close(file)
 
-	self:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-		"Your report has been sent to " .. configManager.getString(configKeys.SERVER_NAME) .. ".")
+	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your report has been sent to " .. configManager.getString(configKeys.SERVER_NAME) .. ".")
 	return true
 end
 
@@ -492,7 +472,6 @@ function Player:onTurn(direction)
 	if self:getGroup():getAccess() and self:getDirection() == direction then
 		local nextPosition = self:getPosition()
 		nextPosition:getNextPosition(direction)
-
 		self:teleportTo(nextPosition, true)
 	end
 
@@ -557,7 +536,7 @@ function Player:onGainExperience(target, exp, rawExp)
 
 	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
 		local vipBonusExp = configManager.getNumber(configKeys.VIP_BONUS_EXP)
-		if (vipBonusExp > 0 and self:isVip()) then
+		if vipBonusExp > 0 and self:isVip() then
 			vipBonusExp = (vipBonusExp > 100 and 100) or vipBonusExp
 			exp = exp * (1 + (vipBonusExp / 100))
 		end
@@ -578,31 +557,28 @@ function Player:onGainSkillTries(skill, tries)
 	if IsRunningGlobalDatapack() and isSkillGrowthLimited(self, skill) then
 		return 0
 	end
-	if APPLY_SKILL_MULTIPLIER == false then
+	if not APPLY_SKILL_MULTIPLIER then
 		return tries
 	end
 
 	-- Event scheduler skill rate
+	local STAGES_DEFAULT = nil
 	if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
 		STAGES_DEFAULT = skillsStages
-	else
-		STAGES_DEFAULT = nil
 	end
-	SKILL_DEFAULT = self:getSkillLevel(skill)
-	RATE_DEFAULT = configManager.getNumber(configKeys.RATE_SKILL)
+	local SKILL_DEFAULT = self:getSkillLevel(skill)
+	local RATE_DEFAULT = configManager.getNumber(configKeys.RATE_SKILL)
 
-	if (skill == SKILL_MAGLEVEL) then
+	if skill == SKILL_MAGLEVEL then
 		-- Magic Level
 		if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
 			STAGES_DEFAULT = magicLevelStages
-		else
-			STAGES_DEFAULT = nil
 		end
 		SKILL_DEFAULT = self:getBaseMagicLevel()
 		RATE_DEFAULT = configManager.getNumber(configKeys.RATE_MAGIC)
 	end
 
-	skillOrMagicRate = getRateFromTable(STAGES_DEFAULT, SKILL_DEFAULT, RATE_DEFAULT)
+	local skillOrMagicRate = getRateFromTable(STAGES_DEFAULT, SKILL_DEFAULT, RATE_DEFAULT)
 
 	if SCHEDULE_SKILL_RATE ~= 100 then
 		skillOrMagicRate = math.max(0, (skillOrMagicRate * SCHEDULE_SKILL_RATE) / 100)
@@ -610,7 +586,7 @@ function Player:onGainSkillTries(skill, tries)
 
 	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
 		local vipBoost = configManager.getNumber(configKeys.VIP_BONUS_SKILL)
-		if (vipBoost > 0 and self:isVip()) then
+		if vipBoost > 0 and self:isVip() then
 			vipBoost = (vipBoost > 100 and 100) or vipBoost
 			skillOrMagicRate = skillOrMagicRate + (skillOrMagicRate * (vipBoost / 100))
 		end
@@ -627,9 +603,8 @@ function Player:onCombat(target, item, primaryDamage, primaryType, secondaryDama
 	if ItemType(item:getId()):getWeaponType() == WEAPON_AMMO then
 		if table.contains({ ITEM_OLD_DIAMOND_ARROW, ITEM_DIAMOND_ARROW }, item:getId()) then
 			return primaryDamage, primaryType, secondaryDamage, secondaryType
-		else
-			item = self:getSlotItem(CONST_SLOT_LEFT)
 		end
+		item = self:getSlotItem(CONST_SLOT_LEFT)
 	end
 
 	return primaryDamage, primaryType, secondaryDamage, secondaryType
@@ -648,17 +623,18 @@ function Player:onChangeZone(zone)
 							delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY)
 						end
 
-						local message = string.format("In protection zone. Every %i minutes, gain %i stamina.",
-							delay, configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
-						)
+						local message = string.format("In protection zone. Every %i minutes, gain %i stamina.", delay, configManager.getNumber(configKeys.STAMINA_PZ_GAIN))
 						self:sendTextMessage(MESSAGE_STATUS, message)
 						staminaBonus.eventsPz[self:getId()] = addEvent(addStamina, delay * 60 * 1000, nil, self:getId(), delay * 60 * 1000)
 					end
 				end
 			else
 				if event then
-					self:sendTextMessage(MESSAGE_STATUS, "You are no longer refilling stamina, \z
-                                         since you left a regeneration zone.")
+					self:sendTextMessage(
+						MESSAGE_STATUS,
+						"You are no longer refilling stamina, \z
+                                         since you left a regeneration zone."
+					)
 					stopEvent(event)
 					staminaBonus.eventsPz[self:getId()] = nil
 				end
@@ -669,5 +645,4 @@ function Player:onChangeZone(zone)
 	return false
 end
 
-function Player:onInventoryUpdate(item, slot, equip)
-end
+function Player:onInventoryUpdate(item, slot, equip) end

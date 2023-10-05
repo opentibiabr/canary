@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 23,
 	lookFeet = 40,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 526
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
-	Locations = "Throughout the Foreigner, Factory, and Trade Quarters in Yalahar."
+	Locations = "Throughout the Foreigner, Factory, and Trade Quarters in Yalahar.",
 }
 
 monster.health = 295
@@ -35,7 +35,7 @@ monster.manaCost = 450
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -81,11 +81,11 @@ monster.loot = {
 	{ name = "gold coin", chance = 50110, maxCount = 30 },
 	{ id = 3093, chance = 740 }, -- club ring
 	{ name = "studded legs", chance = 5220 },
-	{ name = "leather legs", chance = 15330 }
+	{ name = "leather legs", chance = 15330 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 },
 }
 
 monster.defenses = {
@@ -111,7 +111,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

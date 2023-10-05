@@ -7,7 +7,7 @@ local arr = {
 	{ 1, 1, 1, 1, 1 },
 	{ 1, 1, 3, 1, 1 },
 	{ 1, 1, 1, 1, 1 },
-	{ 0, 1, 1, 1, 0 }
+	{ 0, 1, 1, 1, 0 },
 }
 
 combat:setArea(createCombatArea(arr))
@@ -30,7 +30,7 @@ local rooms = {
 	[6] = { fromPos = Position(33394, 32650, 6), toPos = Position(33398, 32654, 6) },
 	[7] = { fromPos = Position(33398, 32642, 6), toPos = Position(33402, 32646, 6) },
 	[8] = { fromPos = Position(33398, 32646, 6), toPos = Position(33402, 32650, 6) },
-	[9] = { fromPos = Position(33398, 32650, 6), toPos = Position(33402, 32654, 6) }
+	[9] = { fromPos = Position(33398, 32650, 6), toPos = Position(33402, 32654, 6) },
 }
 
 local function isMirrorsCorrect(fromPosition, toPosition)
@@ -54,7 +54,7 @@ local eventDoDamage = function(creatureid, attackerid, type)
 	end
 
 	local damage = creature:getMaxHealth() / 4
-	creature:say('AHHHHHHHHHHH!', TALKTYPE_MONSTER_SAY)
+	creature:say("AHHHHHHHHHHH!", TALKTYPE_MONSTER_SAY)
 	doTargetCombatHealth(attackerid, creature, type, -damage, -damage, CONST_ME_POFF, ORIGIN_NONE)
 
 	combat:execute(creature, Variant(creature:getPosition()))
@@ -82,7 +82,7 @@ local function changeScarlett(creatureid)
 		return
 	end
 
-	creature:say('Galthen... is that you?', TALKTYPE_MONSTER_SAY)
+	creature:say("Galthen... is that you?", TALKTYPE_MONSTER_SAY)
 	SCARLETT_MAY_DIE = 1
 	SCARLETT_MAY_TRANSFORM = 0
 	creature:setMoveLocked(true)

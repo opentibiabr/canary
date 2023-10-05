@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 99,
 	lookLegs = 60,
 	lookFeet = 117,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -56,11 +56,11 @@ npcConfig.shop = {
 	{ itemName = "christmas garland", clientId = 6502, buy = 25 },
 	{ itemName = "christmas present green", clientId = 6509, buy = 20 },
 	{ itemName = "christmas present red", clientId = 6505, buy = 20 },
-	{ itemName = "christmas tree package", clientId = 10207, buy = 50 },
+	{ itemName = "christmas tree package", clientId = 10208, buy = 50 },
 	{ itemName = "christmas wreath", clientId = 6501, buy = 45 },
 	{ itemName = "green christmas bundle", clientId = 6508, buy = 80 },
 	{ itemName = "red christmas bundle", clientId = 6506, buy = 70 },
-	{ itemName = "red christmas garland", clientId = 6503, buy = 25 }
+	{ itemName = "red christmas garland", clientId = 6503, buy = 25 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -71,7 +71,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

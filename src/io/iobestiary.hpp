@@ -55,28 +55,28 @@ public:
 	}
 
 	std::shared_ptr<Charm> getBestiaryCharm(charmRune_t activeCharm, bool force = false) const;
-	void addBestiaryKill(Player* player, const std::shared_ptr<MonsterType> mtype, uint32_t amount = 1);
-	bool parseCharmCombat(const std::shared_ptr<Charm> charm, Player* player, Creature* target, int32_t realDamage, bool dueToPotion = false, bool checkArmor = false);
-	void addCharmPoints(Player* player, uint16_t amount, bool negative = false);
-	void sendBuyCharmRune(Player* player, charmRune_t runeID, uint8_t action, uint16_t raceid);
-	void setCharmRuneCreature(Player* player, const std::shared_ptr<Charm> charm, uint16_t raceid);
-	void resetCharmRuneCreature(Player* player, const std::shared_ptr<Charm> charm);
+	void addBestiaryKill(std::shared_ptr<Player> player, const std::shared_ptr<MonsterType> mtype, uint32_t amount = 1);
+	bool parseCharmCombat(const std::shared_ptr<Charm> charm, std::shared_ptr<Player> player, std::shared_ptr<Creature> target, int32_t realDamage, bool dueToPotion = false, bool checkArmor = false);
+	void addCharmPoints(std::shared_ptr<Player> player, uint16_t amount, bool negative = false);
+	void sendBuyCharmRune(std::shared_ptr<Player> player, charmRune_t runeID, uint8_t action, uint16_t raceid);
+	void setCharmRuneCreature(std::shared_ptr<Player> player, const std::shared_ptr<Charm> charm, uint16_t raceid);
+	void resetCharmRuneCreature(std::shared_ptr<Player> player, const std::shared_ptr<Charm> charm);
 
 	int8_t calculateDifficult(uint32_t chance) const;
 	uint8_t getKillStatus(const std::shared_ptr<MonsterType> mtype, uint32_t killAmount) const;
 
-	uint16_t getBestiaryRaceUnlocked(Player* player, BestiaryType_t race) const;
+	uint16_t getBestiaryRaceUnlocked(std::shared_ptr<Player> player, BestiaryType_t race) const;
 
 	int32_t bitToggle(int32_t input, const std::shared_ptr<Charm> charm, bool on) const;
 
 	bool hasCharmUnlockedRuneBit(const std::shared_ptr<Charm> charm, int32_t input) const;
 
-	std::list<charmRune_t> getCharmUsedRuneBitAll(Player* player);
-	phmap::parallel_flat_hash_set<uint16_t> getBestiaryFinished(Player* player) const;
+	std::list<charmRune_t> getCharmUsedRuneBitAll(std::shared_ptr<Player> player);
+	phmap::parallel_flat_hash_set<uint16_t> getBestiaryFinished(std::shared_ptr<Player> player) const;
 
-	charmRune_t getCharmFromTarget(Player* player, const std::shared_ptr<MonsterType> mtype);
+	charmRune_t getCharmFromTarget(std::shared_ptr<Player> player, const std::shared_ptr<MonsterType> mtype);
 
-	std::map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(Player* player, std::map<uint16_t, std::string> mtype_list) const;
+	std::map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(std::shared_ptr<Player> player, std::map<uint16_t, std::string> mtype_list) const;
 	std::map<uint8_t, int16_t> getMonsterElements(const std::shared_ptr<MonsterType> mtype) const;
 	std::map<uint16_t, std::string> findRaceByName(const std::string &race, bool Onlystring = true, BestiaryType_t raceNumber = BESTY_RACE_NONE) const;
 

@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 43,
 	lookLegs = 38,
 	lookFeet = 76,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,25 +58,25 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if (MsgContains(message, "report")) then
-		if (player:getStorageValue(Storage.InServiceofYalahar.Questline) == 10 or player:getStorageValue(Storage.InServiceofYalahar.Questline) == 11) then
+	if MsgContains(message, "report") then
+		if player:getStorageValue(Storage.InServiceofYalahar.Questline) == 10 or player:getStorageValue(Storage.InServiceofYalahar.Questline) == 11 then
 			npcHandler:say("You have NO idea what we have to endure each day .. <gives a shocking and disturbing report>. ", npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, player:getStorageValue(Storage.InServiceofYalahar.Questline) + 1)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission02, player:getStorageValue(Storage.InServiceofYalahar.Mission02) + 1) -- StorageValue for Questlog "Mission 02: Watching the Watchmen"
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif (MsgContains(message, "pass")) then
+	elseif MsgContains(message, "pass") then
 		npcHandler:say("You can {pass} either to the {Cemetery Quarter} or {Magician Quarter}. Which one will it be?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif (MsgContains(message, "cemetery")) then
-		if (npcHandler:getTopic(playerId) == 1) then
+	elseif MsgContains(message, "cemetery") then
+		if npcHandler:getTopic(playerId) == 1 then
 			local destination = Position(32799, 31103, 7)
 			player:teleportTo(destination)
 			destination:sendMagicEffect(CONST_ME_TELEPORT)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif (MsgContains(message, "magician")) then
-		if (npcHandler:getTopic(playerId) == 1) then
+	elseif MsgContains(message, "magician") then
+		if npcHandler:getTopic(playerId) == 1 then
 			local destination = Position(32804, 31103, 7)
 			player:teleportTo(destination)
 			destination:sendMagicEffect(CONST_ME_TELEPORT)

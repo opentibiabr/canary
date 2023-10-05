@@ -35,7 +35,6 @@ local fourthTp = {
 	fireIdOff = 2114, -- id do fire off
 }
 
-
 local backPosition = { x = 33822, y = 31645, z = 9 } -- errou
 local finalPosition = { x = 33826, y = 31620, z = 9 } -- deu certo
 

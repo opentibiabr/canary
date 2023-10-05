@@ -35,7 +35,7 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> globalEve
 		auto result = timerMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			if (timerEventId == 0) {
-				timerEventId = g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&GlobalEvents::timer, this));
+				timerEventId = g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&GlobalEvents::timer, this), "GlobalEvents::timer");
 			}
 			return true;
 		}
@@ -48,7 +48,9 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> globalEve
 		auto result = thinkMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			if (thinkEventId == 0) {
-				thinkEventId = g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&GlobalEvents::think, this));
+				thinkEventId = g_scheduler().addEvent(
+					SCHEDULER_MINTICKS, [this] { think(); }, "GlobalEvents::think"
+				);
 			}
 			return true;
 		}
@@ -69,7 +71,7 @@ void GlobalEvents::timer() {
 
 	auto it = timerMap.begin();
 	while (it != timerMap.end()) {
-		const auto &globalEvent = it->second;
+		const auto globalEvent = it->second;
 
 		int64_t nextExecutionTime = globalEvent->getNextExecution() - now;
 		if (nextExecutionTime > 0) {
@@ -97,7 +99,7 @@ void GlobalEvents::timer() {
 	}
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
-		timerEventId = g_scheduler().addEvent(std::max<int64_t>(1000, nextScheduledTime * 1000), std::bind(&GlobalEvents::timer, this));
+		timerEventId = g_scheduler().addEvent(std::max<int64_t>(1000, nextScheduledTime * 1000), std::bind(&GlobalEvents::timer, this), __FUNCTION__);
 	}
 }
 
@@ -106,7 +108,7 @@ void GlobalEvents::think() {
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
 	for (auto &it : thinkMap) {
-		const auto &globalEvent = it.second;
+		const auto globalEvent = it.second;
 
 		int64_t nextExecutionTime = globalEvent->getNextExecution() - now;
 		if (nextExecutionTime > 0) {
@@ -115,6 +117,8 @@ void GlobalEvents::think() {
 			}
 			continue;
 		}
+
+		g_logger().trace("[GlobalEvents::think] - Executing event: {}", globalEvent->getName());
 
 		if (!globalEvent->executeEvent()) {
 			g_logger().error("[GlobalEvents::think] - "
@@ -132,13 +136,13 @@ void GlobalEvents::think() {
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
 		auto delay = static_cast<uint32_t>(nextScheduledTime);
-		thinkEventId = g_scheduler().addEvent(delay, std::bind(&GlobalEvents::think, this));
+		thinkEventId = g_scheduler().addEvent(delay, std::bind(&GlobalEvents::think, this), "GlobalEvents::think");
 	}
 }
 
 void GlobalEvents::execute(GlobalEvent_t type) const {
 	for (const auto &it : serverMap) {
-		const auto &globalEvent = it.second;
+		const auto globalEvent = it.second;
 		if (globalEvent->getEventType() == type) {
 			globalEvent->executeEvent();
 		}

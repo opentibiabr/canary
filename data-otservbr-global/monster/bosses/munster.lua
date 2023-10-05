@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 58
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 10000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -49,26 +49,26 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{ name = "Rat", chance = 20, interval = 2000, count = 2 }
-	}
+		{ name = "Rat", chance = 20, interval = 2000, count = 2 },
+	},
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Meep!", yell = false },
-	{ text = "Meeeeep!", yell = false }
+	{ text = "Meeeeep!", yell = false },
 }
 
 monster.loot = {
@@ -77,16 +77,16 @@ monster.loot = {
 	{ id = 3607, chance = 56000 }, -- cheese
 	{ id = 3492, chance = 51000, maxCount = 4 }, -- worm
 	{ id = 3598, chance = 2500, maxCount = 2 }, -- cookie
-	{ id = 5792, chance = 250 } -- die
+	{ id = 5792, chance = 250 }, -- die
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -15 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -15 },
 }
 
 monster.defenses = {
 	defense = 4,
-	armor = 2
+	armor = 2,
 }
 
 monster.elements = {
@@ -99,18 +99,17 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -118,13 +117,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

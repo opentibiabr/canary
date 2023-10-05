@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2090
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Dwelling of the Forgotten."
+	Locations = "Dwelling of the Forgotten.",
 }
 
 monster.health = 9000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -100,7 +100,7 @@ monster.loot = {
 	{ name = "wood cape", chance = 2650 },
 	{ name = "haunted blade", chance = 1370 },
 	{ name = "glacier kilt", chance = 880 },
-	{ name = "crown shield", chance = 880 }
+	{ name = "crown shield", chance = 880 },
 }
 
 monster.attacks = {
@@ -133,7 +133,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

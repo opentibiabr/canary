@@ -1,7 +1,7 @@
 local config = {
 	boss = {
 		name = "Count Vlarkorth",
-		position = Position(33456, 31434, 13)
+		position = Position(33456, 31434, 13),
 	},
 	requiredLevel = 250,
 
@@ -10,14 +10,14 @@ local config = {
 		{ pos = Position(33456, 31413, 13), teleport = Position(33454, 31445, 13), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33457, 31413, 13), teleport = Position(33454, 31445, 13), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33458, 31413, 13), teleport = Position(33454, 31445, 13), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33459, 31413, 13), teleport = Position(33454, 31445, 13), effect = CONST_ME_TELEPORT }
+		{ pos = Position(33459, 31413, 13), teleport = Position(33454, 31445, 13), effect = CONST_ME_TELEPORT },
 	},
 	specPos = {
 		from = Position(33448, 31428, 13),
-		to = Position(33464, 31446, 13)
+		to = Position(33464, 31446, 13),
 	},
 	exit = Position(33195, 31690, 8),
-	storage = Storage.Quest.U12_20.GraveDanger.Bosses.CountVlarkorthTimer
+	storage = Storage.Quest.U12_20.GraveDanger.Bosses.CountVlarkorthTimer,
 }
 
 local lever = BossLever(config)

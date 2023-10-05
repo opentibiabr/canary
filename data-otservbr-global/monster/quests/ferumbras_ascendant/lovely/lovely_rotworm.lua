@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 65
@@ -22,7 +22,7 @@ monster.manaCost = 305
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -49,12 +49,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -69,16 +69,16 @@ monster.loot = {
 	{ id = 9692, chance = 9990 }, -- lump of dirt
 	{ id = 3582, chance = 20130 }, -- ham
 	{ id = 3264, chance = 3110 }, -- sword
-	{ id = 3286, chance = 4540 } -- mace
+	{ id = 3286, chance = 4540 }, -- mace
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 30, attack = 20 }
+	{ name = "melee", interval = 2000, chance = 100, skill = 30, attack = 20 },
 }
 
 monster.defenses = {
 	defense = 11,
-	armor = 8
+	armor = 8,
 }
 
 monster.elements = {
@@ -91,14 +91,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

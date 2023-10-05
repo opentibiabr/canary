@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 85,
 	lookFeet = 105,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 2264
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 100,
 	Stars = 5,
 	Occurrence = 0,
-	Locations = "Monster Graveyard"
+	Locations = "Monster Graveyard",
 }
 
 monster.health = 21000
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -83,7 +83,7 @@ monster.loot = {
 	{ name = "Magma Boots", chance = 1600 },
 	{ name = "Crown Shield", chance = 1230 },
 	{ name = "Amber Staff", chance = 1150 },
-	{ name = "Amulet of Loss", chance = 850 }
+	{ name = "Amulet of Loss", chance = 850 },
 }
 
 monster.attacks = {
@@ -115,7 +115,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -1,5 +1,5 @@
-local function removeCombatProtection(cid)
-	local player = Player(cid)
+local function removeCombatProtection(playerUid)
+	local player = Player(playerUid)
 	if not player then
 		return true
 	end
@@ -14,28 +14,20 @@ local function removeCombatProtection(cid)
 	end
 
 	player:setStorageValue(Global.Storage.CombatProtectionStorage, 2)
-	addEvent(function(cid)
-		local player = Player(cid)
-		if not player then
+	addEvent(function(playerFuncUid)
+		local playerEvent = Player(playerFuncUid)
+		if not playerEvent then
 			return
 		end
 
-		player:setStorageValue(Global.Storage.CombatProtectionStorage, 0)
-		player:remove()
-	end, time * 1000, cid)
+		playerEvent:setStorageValue(Global.Storage.CombatProtectionStorage, 0)
+		playerEvent:remove()
+	end, time * 1000, playerUid)
 end
 
-picIf = {}
 function Creature:onTargetCombat(target)
 	if not self then
 		return true
-	end
-
-	if not picIf[target.uid] then
-		if target:isMonster() then
-			target:registerEvent("RewardSystemSlogan")
-			picIf[target.uid] = {}
-		end
 	end
 
 	if target:isPlayer() then
@@ -43,7 +35,9 @@ function Creature:onTargetCombat(target)
 			local protectionStorage = target:getStorageValue(Global.Storage.CombatProtectionStorage)
 
 			if target:getIp() == 0 then -- If player is disconnected, monster shall ignore to attack the player
-				if target:isPzLocked() then return true end
+				if target:isPzLocked() then
+					return true
+				end
 				if protectionStorage <= 0 then
 					addEvent(removeCombatProtection, 30 * 1000, target.uid)
 					target:setStorageValue(Global.Storage.CombatProtectionStorage, 1)
@@ -61,8 +55,7 @@ function Creature:onTargetCombat(target)
 		end
 	end
 
-	if ((target:isMonster() and self:isPlayer() and target:getMaster() == self)
-				or (self:isMonster() and target:isPlayer() and self:getMaster() == target)) then
+	if (target:isMonster() and self:isPlayer() and target:getMaster() == self) or (self:isMonster() and target:isPlayer() and self:getMaster() == target) then
 		return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE
 	end
 
@@ -107,13 +100,12 @@ function Creature:onChangeOutfit(outfit)
 	return true
 end
 
-function Creature:onDrainHealth(attacker, typePrimary, damagePrimary,
-	typeSecondary, damageSecondary, colorPrimary, colorSecondary)
-	if (not self) then
+function Creature:onDrainHealth(attacker, typePrimary, damagePrimary, typeSecondary, damageSecondary, colorPrimary, colorSecondary)
+	if not self then
 		return typePrimary, damagePrimary, typeSecondary, damageSecondary, colorPrimary, colorSecondary
 	end
 
-	if (not attacker) then
+	if not attacker then
 		return typePrimary, damagePrimary, typeSecondary, damageSecondary, colorPrimary, colorSecondary
 	end
 

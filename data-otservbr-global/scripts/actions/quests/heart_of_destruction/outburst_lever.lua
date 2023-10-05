@@ -11,8 +11,9 @@ local function doCheckArea()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
+						for _, creature in pairs(creatures) do
+							local player = Player(creature)
+							if player then
 								return true
 							end
 						end
@@ -36,11 +37,14 @@ local function clearArea()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
-								c:teleportTo({ x = 32208, y = 31372, z = 14 })
-							elseif isMonster(c) then
-								c:remove()
+						for _, creatureUid in pairs(creatures) do
+							local creature = Creature(creatureUid)
+							if creature then
+								if creature:isPlayer() then
+									creature:teleportTo({ x = 32208, y = 31372, z = 14 })
+								elseif creature:isMonster() then
+									creature:remove()
+								end
 							end
 						end
 					end
@@ -60,7 +64,7 @@ function heartDestructionOutburst.onUse(player, item, fromPosition, itemEx, toPo
 			Position(32207, 31285, 14),
 			Position(32207, 31286, 14),
 			Position(32207, 31287, 14),
-			Position(32207, 31288, 14)
+			Position(32207, 31288, 14),
 		},
 
 		newPos = { x = 32234, y = 31292, z = 14 },
@@ -71,11 +75,14 @@ function heartDestructionOutburst.onUse(player, item, fromPosition, itemEx, toPo
 	if item.actionid == 14331 then
 		if item.itemid == 8911 then
 			if player:getPosition().x == pushPos.x and player:getPosition().y == pushPos.y and player:getPosition().z == pushPos.z then
-				local storePlayers, playerTile = {}
+				local storePlayers = {}
 				for i = 1, #config.playerPositions do
-					playerTile = Tile(config.playerPositions[i]):getTopCreature()
-					if isPlayer(playerTile) then
-						storePlayers[#storePlayers+1] = playerTile
+					local tile = Tile(Position(config.playerPositions[i]))
+					if tile then
+						local playerTile = tile:getTopCreature()
+						if playerTile and playerTile:isPlayer() then
+							storePlayers[#storePlayers + 1] = playerTile
+						end
 					end
 				end
 

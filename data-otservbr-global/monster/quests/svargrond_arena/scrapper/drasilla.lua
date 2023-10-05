@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 1260
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 0,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -66,20 +66,19 @@ monster.voices = {
 	{ text = "YOU CAN'T KEEP ME HERE FOREVER", yell = true },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -120 },
 	{ name = "combat", interval = 6000, chance = 60, type = COMBAT_FIREDAMAGE, minDamage = -100, maxDamage = -180, length = 8, spread = 3, effect = CONST_ME_FIREAREA, target = false },
-	{ name = "combat", interval = 3000, chance = 50, type = COMBAT_FIREDAMAGE, minDamage = -70, maxDamage = -115, range = 10, radius = 5, effect = CONST_ME_FIREAREA, target = true }
+	{ name = "combat", interval = 3000, chance = 50, type = COMBAT_FIREDAMAGE, minDamage = -70, maxDamage = -115, range = 10, radius = 5, effect = CONST_ME_FIREAREA, target = true },
 }
 
 monster.defenses = {
 	defense = 33,
 	armor = 32,
 	--	mitigation = ???,
-	{ name = "combat", interval = 6000, chance = 65, type = COMBAT_HEALING, minDamage = 20, maxDamage = 50, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 6000, chance = 65, type = COMBAT_HEALING, minDamage = 20, maxDamage = 50, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -99,7 +98,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

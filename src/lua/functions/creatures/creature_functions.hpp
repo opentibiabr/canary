@@ -18,7 +18,7 @@
 class CreatureFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "Creature", "", CreatureFunctions::luaCreatureCreate);
+		registerSharedClass(L, "Creature", "", CreatureFunctions::luaCreatureCreate);
 		registerMetaMethod(L, "Creature", "__eq", CreatureFunctions::luaUserdataCompare);
 		registerMethod(L, "Creature", "getEvents", CreatureFunctions::luaCreatureGetEvents);
 		registerMethod(L, "Creature", "registerEvent", CreatureFunctions::luaCreatureRegisterEvent);
@@ -82,6 +82,9 @@ public:
 		registerMethod(L, "Creature", "getZones", CreatureFunctions::luaCreatureGetZones);
 		registerMethod(L, "Creature", "setIcon", CreatureFunctions::luaCreatureSetIcon);
 		registerMethod(L, "Creature", "getIcon", CreatureFunctions::luaCreatureGetIcon);
+		registerMethod(L, "Creature", "getIcons", CreatureFunctions::luaCreatureGetIcons);
+		registerMethod(L, "Creature", "removeIcon", CreatureFunctions::luaCreatureRemoveIcon);
+		registerMethod(L, "Creature", "clearIcons", CreatureFunctions::luaCreatureClearIcons);
 
 		CombatFunctions::init(L);
 		MonsterFunctions::init(L);
@@ -178,5 +181,8 @@ private:
 	static int luaCreatureGetZones(lua_State* L);
 
 	static int luaCreatureSetIcon(lua_State* L);
+	static int luaCreatureGetIcons(lua_State* L);
 	static int luaCreatureGetIcon(lua_State* L);
+	static int luaCreatureRemoveIcon(lua_State* L);
+	static int luaCreatureClearIcons(lua_State* L);
 };

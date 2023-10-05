@@ -1,24 +1,24 @@
 local text = {
-	[1] = 'first',
-	[2] = 'second',
-	[3] = 'third',
-	[4] = 'fourth',
-	[5] = 'fifth',
-	[6] = 'sixth',
-	[7] = 'seventh',
-	[8] = 'eighth',
-	[9] = 'ninth',
-	[10] = 'tenth',
-	[11] = 'eleventh',
-	[12] = 'twelfth',
-	[13] = 'thirteenth',
-	[14] = 'fourteenth',
-	[15] = 'fifteenth'
+	[1] = "first",
+	[2] = "second",
+	[3] = "third",
+	[4] = "fourth",
+	[5] = "fifth",
+	[6] = "sixth",
+	[7] = "seventh",
+	[8] = "eighth",
+	[9] = "ninth",
+	[10] = "tenth",
+	[11] = "eleventh",
+	[12] = "twelfth",
+	[13] = "thirteenth",
+	[14] = "fourteenth",
+	[15] = "fifteenth",
 }
 
 local stonePositions = {
 	Position(32851, 32333, 12),
-	Position(32852, 32333, 12)
+	Position(32852, 32333, 12),
 }
 
 local function createStones()
@@ -53,10 +53,10 @@ function pitsOfInfernoLevers.onUse(player, item, fromPosition, target, toPositio
 		end
 
 		Game.setStorageValue(GlobalStorage.PitsOfInfernoLevers, number)
-		player:say('You flipped the ' .. text[number] .. ' lever. Hurry up and find the next one!', TALKTYPE_MONSTER_SAY, false, player, toPosition)
+		player:say("You flipped the " .. text[number] .. " lever. Hurry up and find the next one!", TALKTYPE_MONSTER_SAY, false, player, toPosition)
 	elseif item.uid == 2065 then
 		if leverCount ~= 15 then
-			player:say('The final lever won\'t budge... yet.', TALKTYPE_MONSTER_SAY)
+			player:say("The final lever won't budge... yet.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
 

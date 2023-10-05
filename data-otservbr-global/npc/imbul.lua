@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 2,
 	lookLegs = 63,
 	lookFeet = 115,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -52,16 +52,16 @@ end
 
 -- Travel
 local function addTravelKeyword(keyword, text, cost, destination)
-	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = 'Do you seek a passage to the ' .. text .. ' for |TRAVELCOST|?', cost = cost })
-	travelKeyword:addChildKeyword({ 'yes' }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = cost, destination = destination })
-	travelKeyword:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, text = 'Maybe another time.', reset = true })
+	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "Do you seek a passage to the " .. text .. " for |TRAVELCOST|?", cost = cost })
+	travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = cost, destination = destination })
+	travelKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "Maybe another time.", reset = true })
 end
 
-addTravelKeyword('east', 'east end', 7, Position(32679, 32777, 7))
-addTravelKeyword('centre', 'centre', 7, Position(32628, 32771, 7))
+addTravelKeyword("east", "east end", 7, Position(32679, 32777, 7))
+addTravelKeyword("centre", "centre", 7, Position(32628, 32771, 7))
 
 -- Basic
-keywordHandler:addKeyword({ 'passage' }, StdModule.say, { npcHandler = npcHandler, text = 'I can bring you either to the {east} end of Port Hope or to the {centre} of the town, where would you like to go?' })
+keywordHandler:addKeyword({ "passage" }, StdModule.say, { npcHandler = npcHandler, text = "I can bring you either to the {east} end of Port Hope or to the {centre} of the town, where would you like to go?" })
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

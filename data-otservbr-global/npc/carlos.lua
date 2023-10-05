@@ -16,27 +16,27 @@ npcConfig.outfit = {
 	lookBody = 94,
 	lookLegs = 86,
 	lookFeet = 114,
-	lookAddons = 3
+	lookAddons = 3,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Hmm, we should do something about your outfit.' },
-	{ text = 'Ah, another adventurer. Let\'s talk a little.' },
-	{ text = 'Psst! Come over here for a little trade.' },
-	{ text = 'Hello, hello! Don\'t be shy, I don\'t bite.' },
-	{ text = 'By the way, if you want to look at old hints again, find the \'Help\' button near your inventory and select \'Tutorial Hints\'.' }
+	{ text = "Hmm, we should do something about your outfit." },
+	{ text = "Ah, another adventurer. Let's talk a little." },
+	{ text = "Psst! Come over here for a little trade." },
+	{ text = "Hello, hello! Don't be shy, I don't bite." },
+	{ text = "By the way, if you want to look at old hints again, find the 'Help' button near your inventory and select 'Tutorial Hints'." },
 }
 
 -- Npc shop
 npcConfig.shop = {
 	{ itemName = "ham", clientId = 3582, sell = 2, count = 1 },
-	{ itemName = "meat", clientId = 3577, sell = 2, count = 1 }
+	{ itemName = "meat", clientId = 3577, sell = 2, count = 1 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -47,8 +47,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -183,7 +182,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"Well, that's how trading with NPCs like me works. I think you are ready now to cross the bridge to Rookgaard, just follow the path to the northwest. Good luck, |PLAYERNAME|! ...",
 				"And by the way: if you thought all of this was boring and you'd rather skip the tutorial with your next character, just say 'skip tutorial' to Santiago. ...",
-				"Then you'll miss out on those nice items and experience though. Hehehe! It's your choice. Well, take care for now!"
+				"Then you'll miss out on those nice items and experience though. Hehehe! It's your choice. Well, take care for now!",
 			}, npc, creature)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosQuestLog, 7)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage, 8)
@@ -195,7 +194,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"Well, that's how trading with NPCs like me works. I think you are ready now to cross the bridge to Rookgaard, just follow the path to the northwest. Good luck, |PLAYERNAME|! ...",
 				"And by the way: if you thought all of this was boring and you'd rather skip the tutorial with your next character, just say 'skip tutorial' to Santiago. ...",
-				"Then you'll miss out on those nice items and experience though. Hehehe! It's your choice. Well, take care for now!"
+				"Then you'll miss out on those nice items and experience though. Hehehe! It's your choice. Well, take care for now!",
 			}, npc, creature)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosQuestLog, 7)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage, 8)
@@ -208,7 +207,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"Well, that's how trading with NPCs like me works. I think you are ready now to cross the bridge to Rookgaard, just follow the path to the northwest. Good luck, |PLAYERNAME|! ...",
 				"And by the way: if you thought all of this was boring and you'd rather skip the tutorial with your next character, just say 'skip tutorial' to Santiago. ...",
-				"Then you'll miss out on those nice items and experience though. Hehehe! It's your choice. Well, take care for now!"
+				"Then you'll miss out on those nice items and experience though. Hehehe! It's your choice. Well, take care for now!",
 			}, npc, creature)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosQuestLog, 7)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage, 8)

@@ -27,7 +27,8 @@ function onTargetTile(creature, pos)
 	if n ~= 0 then
 		local v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 		while v ~= 0 do
-			if isCreature(v) == true then
+			local creatureFromPos = Creature(v)
+			if creatureFromPos then
 				table.insert(creatureTable, v)
 				if n == #creatureTable then
 					break
@@ -42,13 +43,11 @@ function onTargetTile(creature, pos)
 			if creatureTable[r] ~= creature then
 				local min = 4000
 				local max = 8000
-				local player = Player(creatureTable[r])
-
-				if isPlayer(creatureTable[r]) == true
-						and table.contains({ VOCATION.BASE_ID.SORCERER }, player:getVocation():getBaseId()) then
-					doTargetCombatHealth(creature, creatureTable[r], COMBAT_DEATHDAMAGE, -min, -max, CONST_ME_NONE)
-				elseif isMonster(creatureTable[r]) == true then
-					doTargetCombatHealth(creature, creatureTable[r], COMBAT_DEATHDAMAGE, -min, -max, CONST_ME_NONE)
+				local creatureTarget = Creature(creatureTable[r])
+				if creatureTarget then
+					if (creatureTarget:isPlayer() and table.contains({ VOCATION.BASE_ID.SORCERER }, creatureTarget:getVocation():getBaseId())) or creatureTarget:isMonster() then
+						doTargetCombatHealth(creature, creatureTarget, COMBAT_DEATHDAMAGE, -min, -max, CONST_ME_NONE)
+					end
 				end
 			end
 		end
@@ -72,7 +71,7 @@ local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
 	local value = Game.getStorageValue(storage)
-	if (os.time() - value >= 4) then
+	if os.time() - value >= 4 then
 		creature:say("All SORCERERS must DIE!", TALKTYPE_ORANGE_1)
 		addEvent(delayedCastSpell, 4000, creature:getId(), var)
 		Game.setStorageValue(storage, os.time())

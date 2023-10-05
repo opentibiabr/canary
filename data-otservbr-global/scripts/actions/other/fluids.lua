@@ -27,7 +27,7 @@ local fluidMessage = {
 	[FLUID_FRUITJUICE] = "Mmmh.", -- coconut milk
 	[FLUID_COCONUTMILK] = "Aah...", -- mead
 	[FLUID_MEAD] = "Gulp.", -- tea
-	[FLUID_TEA] = "Urgh!" -- ink
+	[FLUID_TEA] = "Urgh!", -- ink
 }
 
 local function graveStoneTeleport(cid, fromPosition, toPosition)
@@ -37,7 +37,7 @@ local function graveStoneTeleport(cid, fromPosition, toPosition)
 	end
 
 	player:teleportTo(toPosition)
-	player:say('Muahahahaha..', TALKTYPE_MONSTER_SAY, false, player)
+	player:say("Muahahahaha..", TALKTYPE_MONSTER_SAY, false, player)
 	fromPosition:sendMagicEffect(CONST_ME_DRAWBLOOD)
 	toPosition:sendMagicEffect(CONST_ME_MORTAREA)
 end
@@ -45,7 +45,7 @@ end
 -- Special poison condition used on dawnport residents
 -- Doesnt allow poison yourself when health is <= 10 or your health go low than 10 due poison
 function dawnportPoisonCondition(player)
-	local health = player:getHealth();
+	local health = player:getHealth()
 	local minHealth = 10
 	-- Default poison values (not possible read condition parameters)
 	local startValue = 5
@@ -100,20 +100,20 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	end
 	if target.itemid == 26076 then
 		if item.type == 0 then
-			player:sendTextMessage(MESSAGE_FAILURE, 'It is empty.')
+			player:sendTextMessage(MESSAGE_FAILURE, "It is empty.")
 		elseif item.type == 1 then
 			toPosition:sendMagicEffect(CONST_ME_WATER_SPLASH)
 			target:transform(target.itemid + 1)
 			item:transform(item.itemid, 0)
 		else
-			player:sendTextMessage(MESSAGE_FAILURE, 'You need water.')
+			player:sendTextMessage(MESSAGE_FAILURE, "You need water.")
 		end
 		return true
 	end
 
 	if target.itemid == 1 then
 		if item.type == 0 then
-			player:sendTextMessage(MESSAGE_FAILURE, 'It is empty.')
+			player:sendTextMessage(MESSAGE_FAILURE, "It is empty.")
 		elseif target.uid == player.uid then
 			if table.contains({ 2, 3, 16 }, item.type) then
 				player:addCondition(drunk)
@@ -132,7 +132,7 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				fromPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			end
 
-			player:say(fluidMessage[item.type] or 'Gulp.', TALKTYPE_MONSTER_SAY)
+			player:say(fluidMessage[item.type] or "Gulp.", TALKTYPE_MONSTER_SAY)
 			item:transform(item.itemid, 0)
 		else
 			local pool = Game.createItem(2886, item.type, toPosition)
@@ -149,7 +149,7 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		if fluidSource ~= 0 then
 			item:transform(item.itemid, fluidSource)
 		elseif item.type == 0 then
-			player:sendTextMessage(MESSAGE_FAILURE, 'It is empty.')
+			player:sendTextMessage(MESSAGE_FAILURE, "It is empty.")
 		else
 			if item.type == 5 and target.actionid == 2023 then
 				toPosition.y = toPosition.y + 1

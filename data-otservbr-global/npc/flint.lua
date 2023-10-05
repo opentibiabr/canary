@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 57,
 	lookLegs = 76,
 	lookFeet = 39,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -80,12 +80,14 @@ npcConfig.shop = {
 	{ itemName = "durable exercise axe", clientId = 35280, buy = 945000, count = 1800 },
 	{ itemName = "durable exercise bow", clientId = 35282, buy = 945000, count = 1800 },
 	{ itemName = "durable exercise club", clientId = 35281, buy = 945000, count = 1800 },
+	{ itemName = "durable exercise shield", clientId = 44066, buy = 945000, count = 1800 },
 	{ itemName = "durable exercise sword", clientId = 35279, buy = 945000, count = 1800 },
 	{ itemName = "dwarven shield", clientId = 3425, buy = 500, sell = 100 },
 	{ itemName = "execowtioner axe", clientId = 21176, sell = 12000 },
 	{ itemName = "exercise axe", clientId = 28553, buy = 262500, count = 500 },
 	{ itemName = "exercise bow", clientId = 28555, buy = 262500, count = 500 },
 	{ itemName = "exercise club", clientId = 28554, buy = 262500, count = 500 },
+	{ itemName = "exercise shield", clientId = 44065, buy = 262500, count = 500 },
 	{ itemName = "exercise sword", clientId = 28552, buy = 262500, count = 500 },
 	{ itemName = "fire sword", clientId = 3280, sell = 1000 },
 	{ itemName = "gearwheel chain", clientId = 21170, sell = 5000 },
@@ -105,6 +107,7 @@ npcConfig.shop = {
 	{ itemName = "lasting exercise axe", clientId = 35286, buy = 7560000, count = 14400 },
 	{ itemName = "lasting exercise bow", clientId = 35288, buy = 7560000, count = 14400 },
 	{ itemName = "lasting exercise club", clientId = 35287, buy = 7560000, count = 14400 },
+	{ itemName = "lasting exercise shield", clientId = 44067, buy = 7560000, count = 14400 },
 	{ itemName = "lasting exercise sword", clientId = 35285, buy = 7560000, count = 14400 },
 	{ itemName = "leather armor", clientId = 3361, buy = 35, sell = 12 },
 	{ itemName = "leather boots", clientId = 3552, buy = 10, sell = 2 },
@@ -146,7 +149,7 @@ npcConfig.shop = {
 	{ itemName = "viking helmet", clientId = 3367, buy = 265 },
 	{ itemName = "viking shield", clientId = 3431, buy = 260 },
 	{ itemName = "war hammer", clientId = 3279, buy = 10000 },
-	{ itemName = "wooden shield", clientId = 3412, buy = 15 }
+	{ itemName = "wooden shield", clientId = 3412, buy = 15 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -157,7 +160,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

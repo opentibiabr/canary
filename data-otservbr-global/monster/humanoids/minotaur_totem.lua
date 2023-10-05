@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a minotaur totem"
 monster.experience = 500
 monster.outfit = {
-	lookTypeEx = 2299
+	lookTypeEx = 2299,
 }
 
 monster.health = 6000
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 16
+	chance = 16,
 }
 
 monster.strategiesTarget = {
@@ -53,17 +53,15 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
-monster.attacks = {
-}
+monster.attacks = {}
 
 monster.defenses = {
 	defense = 30,
 	armor = 30,
 	mitigation = 0.98,
-	{ name = "combat", interval = 4000, chance = 15, type = COMBAT_HEALING, minDamage = 0, maxDamage = 1000, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 4000, chance = 15, type = COMBAT_HEALING, minDamage = 0, maxDamage = 1000, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -83,7 +81,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

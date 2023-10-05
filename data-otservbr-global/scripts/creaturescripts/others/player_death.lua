@@ -24,7 +24,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 		end
 		killerName = killer:isMonster() and killer:getType():getNameDescription() or killer:getName()
 	else
-		killerName = 'field item'
+		killerName = "field item"
 	end
 
 	local byPlayerMostDamage = 0
@@ -41,13 +41,32 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 		end
 		mostDamageName = mostDamageKiller:isMonster() and mostDamageKiller:getType():getNameDescription() or mostDamageKiller:getName()
 	else
-		mostDamageName = 'field item'
+		mostDamageName = "field item"
 	end
 
 	local playerGuid = player:getGuid()
-	db.query('INSERT INTO `player_deaths` (`player_id`, `time`, `level`, `killed_by`, `is_player`, `mostdamage_by`, `mostdamage_is_player`, `unjustified`, `mostdamage_unjustified`) VALUES (' ..
-		playerGuid .. ', ' .. os.time() .. ', ' .. player:getLevel() .. ', ' .. db.escapeString(killerName) .. ', ' .. byPlayer .. ', ' .. db.escapeString(mostDamageName) .. ', ' .. byPlayerMostDamage .. ', ' .. (unjustified and 1 or 0) .. ', ' .. (mostDamageUnjustified and 1 or 0) .. ')')
-	local resultId = db.storeQuery('SELECT `player_id` FROM `player_deaths` WHERE `player_id` = ' .. playerGuid)
+	db.query(
+		"INSERT INTO `player_deaths` (`player_id`, `time`, `level`, `killed_by`, `is_player`, `mostdamage_by`, `mostdamage_is_player`, `unjustified`, `mostdamage_unjustified`) VALUES ("
+			.. playerGuid
+			.. ", "
+			.. os.time()
+			.. ", "
+			.. player:getLevel()
+			.. ", "
+			.. db.escapeString(killerName)
+			.. ", "
+			.. byPlayer
+			.. ", "
+			.. db.escapeString(mostDamageName)
+			.. ", "
+			.. byPlayerMostDamage
+			.. ", "
+			.. (unjustified and 1 or 0)
+			.. ", "
+			.. (mostDamageUnjustified and 1 or 0)
+			.. ")"
+	)
+	local resultId = db.storeQuery("SELECT `player_id` FROM `player_deaths` WHERE `player_id` = " .. playerGuid)
 	-- Start Webhook Player Death
 	local playerName = player:getName()
 	local playerLevel = player:getLevel()
@@ -80,18 +99,18 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 			killerGuild = killerGuild and killerGuild:getId() or 0
 			if killerGuild ~= 0 and targetGuild ~= killerGuild and isInWar(player:getId(), killer.uid) then
 				local warId = false
-				resultId = db.storeQuery('SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND \z
-					((`guild1` = ' .. killerGuild .. ' AND `guild2` = ' .. targetGuild .. ') OR \z
-					(`guild1` = ' .. targetGuild .. ' AND `guild2` = ' .. killerGuild .. '))')
+				resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND \z
+					((`guild1` = " .. killerGuild .. " AND `guild2` = " .. targetGuild .. ") OR \z
+					(`guild1` = " .. targetGuild .. " AND `guild2` = " .. killerGuild .. "))")
 				if resultId ~= false then
-					warId = Result.getNumber(resultId, 'id')
+					warId = Result.getNumber(resultId, "id")
 					Result.free(resultId)
 				end
 
 				if warId ~= false then
-					db.asyncQuery('INSERT INTO `guildwar_kills` (`killer`, `target`, `killerguild`, `targetguild`, `time`, `warid`) \z
-					VALUES (' .. db.escapeString(killerName) .. ', ' .. db.escapeString(player:getName()) .. ', ' .. killerGuild .. ', \z
-					' .. targetGuild .. ', ' .. os.time() .. ', ' .. warId .. ')')
+					db.asyncQuery("INSERT INTO `guildwar_kills` (`killer`, `target`, `killerguild`, `targetguild`, `time`, `warid`) \z
+					VALUES (" .. db.escapeString(killerName) .. ", " .. db.escapeString(player:getName()) .. ", " .. killerGuild .. ", \z
+					" .. targetGuild .. ", " .. os.time() .. ", " .. warId .. ")")
 				end
 			end
 		end

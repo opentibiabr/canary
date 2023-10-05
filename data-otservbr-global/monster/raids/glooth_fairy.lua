@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -27,7 +27,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 80
+	chance = 80,
 }
 
 monster.strategiesTarget = {
@@ -87,7 +87,7 @@ monster.loot = {
 	{ id = 3039, chance = 980 }, -- red gem
 	{ id = 21292, chance = 480 }, -- feedbag
 	{ id = 5880, chance = 980 }, -- iron ore
-	{ id = 21144, chance = 280 } -- bowl of glooth soup
+	{ id = 21144, chance = 280 }, -- bowl of glooth soup
 }
 
 monster.attacks = {
@@ -123,7 +123,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

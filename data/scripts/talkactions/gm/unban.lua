@@ -19,8 +19,7 @@ function unban.onSay(player, words, param)
 	Result.free(resultId)
 	local text = param .. " has been unbanned."
 	player:sendTextMessage(MESSAGE_ADMINISTRADOR, text)
-	Webhook.sendMessage("Player Unbanned", text .. " (by: " .. player:getName() .. ")",
-		WEBHOOK_COLOR_WARNING, announcementChannels["serverAnnouncements"])
+	Webhook.sendMessage("Player Unbanned", text .. " (by: " .. player:getName() .. ")", WEBHOOK_COLOR_WARNING, announcementChannels["serverAnnouncements"])
 	return true
 end
 

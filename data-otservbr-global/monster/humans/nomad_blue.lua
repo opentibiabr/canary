@@ -11,7 +11,7 @@ monster.outfit = {
 	lookLegs = 49,
 	lookFeet = 3,
 	lookAddons = 3,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 777
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 1,
-	Locations = "Drefia, Ankrahmun."
+	Locations = "Drefia, Ankrahmun.",
 }
 
 monster.health = 160
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -59,12 +59,12 @@ monster.flags = {
 	healthHidden = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -73,7 +73,7 @@ monster.voices = {
 	{ text = "I will leave your remains to the vultures!", yell = false },
 	{ text = "We are the true sons of the desert!", yell = false },
 	{ text = "We are swift as the wind of the desert!", yell = false },
-	{ text = "Your riches will be mine!", yell = false }
+	{ text = "Your riches will be mine!", yell = false },
 }
 
 monster.loot = {
@@ -86,17 +86,17 @@ monster.loot = {
 	{ id = 11456, chance = 2140 }, -- dirty turban
 	{ id = 3409, chance = 900 }, -- steel shield
 	{ id = 3353, chance = 660 }, -- iron helmet
-	{ id = 7533, chance = 210 } -- nomad parchment
+	{ id = 7533, chance = 210 }, -- nomad parchment
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -80 },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, effect = CONST_ME_SOUND_WHITE, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, effect = CONST_ME_SOUND_WHITE, target = false },
 }
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 15,
 }
 
 monster.elements = {
@@ -109,14 +109,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

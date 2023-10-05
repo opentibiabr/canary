@@ -3,26 +3,26 @@ local signs = {
 		pos = { x = 33095, y = 32244, z = 9 },
 		storage = Storage.LionsRock.InnerSanctum.SnakeSign,
 		message1 = "With the aid of the old scroll you translate the inscriptions on the floor: And the mighty lion defeated the jealous snake.",
-		message2 = "As a sign of victory he tooks its eye, yellow as envy and malevolence, and out of a foul creature created a precious treasure."
+		message2 = "As a sign of victory he tooks its eye, yellow as envy and malevolence, and out of a foul creature created a precious treasure.",
 	},
 	{
 		pos = { x = 33128, y = 32300, z = 9 },
 		storage = Storage.LionsRock.InnerSanctum.LizardSign,
 		message1 = "With the aid of the old scroll you translate the inscriptions on the floor: And the mighty lion defeated the lazy lizard.",
-		message2 = "As a sign of victory he tooks its egg, blue as sloth and conceit, and out of a foul creature created a precious treasure."
+		message2 = "As a sign of victory he tooks its egg, blue as sloth and conceit, and out of a foul creature created a precious treasure.",
 	},
 	{
 		pos = { x = 33109, y = 32329, z = 9 },
 		storage = Storage.LionsRock.InnerSanctum.ScorpionSign,
 		message1 = "With the aid of the old scroll you translate the inscriptions on the golden altar: And the mighty lion defeated the treacherous scorpion.",
-		message2 = "As a sign of victory he tooks its poison, violet as deceit and betrayal, and created a precious treasure."
+		message2 = "As a sign of victory he tooks its poison, violet as deceit and betrayal, and created a precious treasure.",
 	},
 	{
 		pos = { x = 33127, y = 32340, z = 9 },
 		storage = Storage.LionsRock.InnerSanctum.HyenaSign,
 		message1 = "With the aid of the old scroll you translate the inscriptions on the golden statue: And the mighty lion defeated the greedy hyaena.",
-		message2 = "As a sign of victory he tooks its blood, red as voracity and lust, and created a precious treasure."
-	}
+		message2 = "As a sign of victory he tooks its blood, red as voracity and lust, and created a precious treasure.",
+	},
 }
 
 -- Lions rock entrance
@@ -59,7 +59,7 @@ local checkPos = {
 	{ x = 33120, y = 32247, z = 9 },
 	{ x = 33118, y = 32248, z = 9 },
 	{ x = 33119, y = 32248, z = 9 },
-	{ x = 33120, y = 32248, z = 9 }
+	{ x = 33120, y = 32248, z = 9 },
 }
 local lionsRockTranslationScroll = MoveEvent()
 

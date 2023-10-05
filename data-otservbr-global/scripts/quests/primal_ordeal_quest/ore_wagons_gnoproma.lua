@@ -9,7 +9,6 @@ local carts = {
 	{ clickPos = { x = 33591, y = 32909, z = 15 }, destination = Position(33571, 32869, 15) },
 	{ clickPos = { x = 33597, y = 32914, z = 15 }, destination = Position(33662, 32976, 15) },
 	{ clickPos = { x = 33661, y = 32976, z = 15 }, destination = Position(33597, 32913, 15) },
-
 }
 
 local gnompronaCarts = Action()

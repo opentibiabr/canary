@@ -3,7 +3,7 @@ local fineChalk = {
 	{ x = 33199, y = 31762, z = 4 },
 	{ x = 33199, y = 31761, z = 4 },
 	{ x = 33200, y = 31761, z = 4 },
-	{ x = 33200, y = 31760, z = 4 }
+	{ x = 33200, y = 31760, z = 4 },
 }
 
 local lowerRoshamuulChalk = Action()

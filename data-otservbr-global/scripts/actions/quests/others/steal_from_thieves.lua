@@ -6,14 +6,14 @@ local othersSteal = Action()
 function othersSteal.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if chests[item.uid] then
 		if player:getStorageValue(Storage.QuestChests.StealFromThieves) > 1 then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'It\'s empty.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "It's empty.")
 			return true
 		end
 
 		local chest = chests[item.uid]
 		player:addItem(chest.itemid, 1)
 		player:setStorageValue(Storage.QuestChests.StealFromThieves, 2)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You found a bag.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You found a bag.")
 	end
 
 	return true

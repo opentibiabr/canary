@@ -33,6 +33,7 @@ std::string toCamelCase(const std::string &str);
 std::string toPascalCase(const std::string &str);
 std::string toSnakeCase(const std::string &str);
 std::string toKebabCase(const std::string &str);
+std::string toStartCaseWithSpace(const std::string &str);
 
 using StringVector = std::vector<std::string>;
 using IntegerVector = std::vector<int32_t>;
@@ -70,6 +71,7 @@ std::string formatTime(time_t time);
 std::string formatEnumName(std::string_view name);
 std::time_t getTimeNow();
 std::time_t getTimeMsNow();
+std::time_t getTimeUsNow();
 std::string convertIPToString(uint32_t ip);
 
 void trimString(std::string &str);

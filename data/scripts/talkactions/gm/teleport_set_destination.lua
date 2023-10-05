@@ -18,7 +18,7 @@ function teleportSetDestination.onSay(player, words, param)
 	if teleport then
 		local split = param:split(",") -- Split always return a table, even if it's empty
 		if #split ~= 3 then
-			player:sendCancelMessage("You need to declare the X, Y of Z of destination. Please use \"/teleport X, Y, Z\".")
+			player:sendCancelMessage('You need to declare the X, Y of Z of destination. Please use "/teleport X, Y, Z".')
 			return true
 		else
 			local destPosition = Position(split[1], split[2], split[3])

@@ -13,12 +13,12 @@
 #include "game/game.hpp"
 #include "game/scheduling/scheduler.hpp"
 
-void Decay::startDecay(Item* item) {
-	if (!item || item->getLoadedFromMap()) {
+void Decay::startDecay(std::shared_ptr<Item> item) {
+	if (!item) {
 		return;
 	}
 
-	auto decayState = item->getDecaying();
+	const auto decayState = item->getDecaying();
 	if (decayState == DECAYING_STOPPING || (!item->canDecay() && decayState == DECAYING_TRUE)) {
 		stopDecay(item);
 		return;
@@ -41,51 +41,50 @@ void Decay::startDecay(Item* item) {
 
 		int64_t timestamp = OTSYS_TIME() + duration;
 		if (decayMap.empty()) {
-			eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this));
+			eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
 		} else {
 			if (timestamp < decayMap.begin()->first) {
 				g_scheduler().stopEvent(eventId);
-				eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this));
+				eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
 			}
 		}
 
-		item->incrementReferenceCounter();
 		item->setDecaying(DECAYING_TRUE);
 		item->setAttribute(ItemAttribute_t::DURATION_TIMESTAMP, timestamp);
 		decayMap[timestamp].push_back(item);
 	}
 }
 
-void Decay::stopDecay(Item* item) {
+void Decay::stopDecay(std::shared_ptr<Item> item) {
 	if (item->hasAttribute(ItemAttribute_t::DECAYSTATE)) {
 		auto timestamp = item->getAttribute<int64_t>(ItemAttribute_t::DURATION_TIMESTAMP);
 		if (item->hasAttribute(ItemAttribute_t::DURATION_TIMESTAMP)) {
 			auto it = decayMap.find(timestamp);
 			if (it != decayMap.end()) {
-				std::vector<Item*> &decayItems = it->second;
+				auto &decayItems = it->second;
 
 				size_t i = 0, end = decayItems.size();
+				auto decayItem = decayItems[i];
 				if (end == 1) {
-					if (item == decayItems[i]) {
+					if (item == decayItem) {
 						if (item->hasAttribute(ItemAttribute_t::DURATION)) {
 							// Incase we removed duration attribute don't assign new duration
 							item->setDuration(item->getDuration());
 						}
 						item->removeAttribute(ItemAttribute_t::DECAYSTATE);
-						g_game().ReleaseItem(item);
 
 						decayMap.erase(it);
 					}
 					return;
 				}
 				while (i < end) {
-					if (item == decayItems[i]) {
+					decayItem = decayItems[i];
+					if (item == decayItem) {
 						if (item->hasAttribute(ItemAttribute_t::DURATION)) {
 							// Incase we removed duration attribute don't assign new duration
 							item->setDuration(item->getDuration());
 						}
 						item->removeAttribute(ItemAttribute_t::DECAYSTATE);
-						g_game().ReleaseItem(item);
 
 						decayItems[i] = decayItems.back();
 						decayItems.pop_back();
@@ -104,7 +103,7 @@ void Decay::stopDecay(Item* item) {
 void Decay::checkDecay() {
 	int64_t timestamp = OTSYS_TIME();
 
-	std::vector<Item*> tempItems;
+	std::vector<std::shared_ptr<Item>> tempItems;
 	tempItems.reserve(32); // Small preallocation
 
 	auto it = decayMap.begin(), end = decayMap.end();
@@ -114,12 +113,15 @@ void Decay::checkDecay() {
 		}
 
 		// Iterating here is unsafe so let's copy our items into temporary vector
-		std::vector<Item*> &decayItems = it->second;
-		tempItems.insert(tempItems.end(), decayItems.begin(), decayItems.end());
+		auto &decayItems = it->second;
+		tempItems.reserve(tempItems.size() + decayItems.size());
+		for (auto &decayItem : decayItems) {
+			tempItems.push_back(decayItem);
+		}
 		it = decayMap.erase(it);
 	}
 
-	for (Item* item : tempItems) {
+	for (const auto &item : tempItems) {
 		if (!item->canDecay()) {
 			item->setDuration(item->getDuration());
 			item->setDecaying(DECAYING_FALSE);
@@ -127,19 +129,17 @@ void Decay::checkDecay() {
 			item->setDecaying(DECAYING_FALSE);
 			internalDecayItem(item);
 		}
-
-		g_game().ReleaseItem(item);
 	}
 
 	if (it != end) {
-		eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this));
+		eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
 	}
 }
 
-void Decay::internalDecayItem(Item* item) {
+void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 	const ItemType &it = Item::items[item->getID()];
 	if (it.decayTo != 0) {
-		Player* player = item->getHoldingPlayer();
+		std::shared_ptr<Player> player = item->getHoldingPlayer();
 		if (player) {
 			bool needUpdateSkills = false;
 			for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
@@ -176,7 +176,7 @@ void Decay::internalDecayItem(Item* item) {
 		}
 		g_game().transformItem(item, static_cast<uint16_t>(it.decayTo));
 	} else {
-		if (item->getLoadedFromMap()) {
+		if (item->isLoadedFromMap()) {
 			return;
 		}
 

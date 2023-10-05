@@ -11,7 +11,7 @@ function sparkDevourerSpawn()
 		{ x = 32268, y = 31341, z = 14 },
 		{ x = 32275, y = 31342, z = 14 },
 		{ x = 32269, y = 31352, z = 14 },
-		{ x = 32277, y = 31351, z = 14 }
+		{ x = 32277, y = 31351, z = 14 },
 	}
 
 	if sparkSpawnCount > 0 then
@@ -34,8 +34,9 @@ local function doCheckArea()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
+						for _, creature in pairs(creatures) do
+							local player = Player(creature)
+							if player then
 								return true
 							end
 						end
@@ -227,11 +228,14 @@ local function clearHunger()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
-								c:teleportTo({ x = 32208, y = 31372, z = 14 })
-							elseif isMonster(c) and c:getName() ~= "Spark of Destruction" then
-								c:remove()
+						for _, creatureUid in pairs(creatures) do
+							local creature = Creature(creatureUid)
+							if creature then
+								if creature:isPlayer() then
+									creature:teleportTo({ x = 32208, y = 31372, z = 14 })
+								elseif creature:isMonster() and creature:getName() ~= "Spark of Destruction" then
+									creature:remove()
+								end
 							end
 						end
 					end
@@ -253,11 +257,14 @@ local function clearDestruction()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
-								c:teleportTo({ x = 32208, y = 31372, z = 14 })
-							elseif isMonster(c) and c:getName() ~= "Spark of Destruction" then
-								c:remove()
+						for _, creatureUid in pairs(creatures) do
+							local creature = Creature(creatureUid)
+							if creature then
+								if creature:isPlayer() then
+									creature:teleportTo({ x = 32208, y = 31372, z = 14 })
+								elseif creature:isMonster() and creature:getName() ~= "Spark of Destruction" then
+									creature:remove()
+								end
 							end
 						end
 					end
@@ -279,11 +286,14 @@ local function clearRage()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
-								c:teleportTo({ x = 32208, y = 31372, z = 14 })
-							elseif isMonster(c) and c:getName() ~= "Spark of Destruction" then
-								c:remove()
+						for _, creatureUid in pairs(creatures) do
+							local creature = Creature(creatureUid)
+							if creature then
+								if creature:isPlayer() then
+									creature:teleportTo({ x = 32208, y = 31372, z = 14 })
+								elseif creature:isMonster() and creature:getName() ~= "Spark of Destruction" then
+									creature:remove()
+								end
 							end
 						end
 					end
@@ -305,11 +315,14 @@ function clearDevourer()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
-								c:teleportTo({ x = 32208, y = 31372, z = 14 })
-							elseif isMonster(c) then
-								c:remove()
+						for _, creatureUid in pairs(creatures) do
+							local creature = Creature(creatureUid)
+							if creature then
+								if creature:isPlayer() then
+									creature:teleportTo({ x = 32208, y = 31372, z = 14 })
+								elseif creature:isMonster() then
+									creature:remove()
+								end
 							end
 						end
 					end
@@ -332,7 +345,7 @@ function heartDestructionFinal.onUse(player, item, fromPosition, itemEx, toPosit
 			Position(32271, 31375, 14),
 			Position(32271, 31376, 14),
 			Position(32271, 31377, 14),
-			Position(32271, 31378, 14)
+			Position(32271, 31378, 14),
 		},
 
 		destructionPositions = {
@@ -340,7 +353,7 @@ function heartDestructionFinal.onUse(player, item, fromPosition, itemEx, toPosit
 			Position(32272, 31375, 14),
 			Position(32272, 31376, 14),
 			Position(32272, 31377, 14),
-			Position(32272, 31378, 14)
+			Position(32272, 31378, 14),
 		},
 
 		ragePositions = {
@@ -348,7 +361,7 @@ function heartDestructionFinal.onUse(player, item, fromPosition, itemEx, toPosit
 			Position(32273, 31375, 14),
 			Position(32273, 31376, 14),
 			Position(32273, 31377, 14),
-			Position(32273, 31378, 14)
+			Position(32273, 31378, 14),
 		},
 
 		hungerNewPos = { x = 32244, y = 31381, z = 14 },
@@ -367,22 +380,22 @@ function heartDestructionFinal.onUse(player, item, fromPosition, itemEx, toPosit
 
 				for i = 1, #config.hungerPositions do
 					hungerTile = Tile(config.hungerPositions[i]):getTopCreature()
-					if isPlayer(hungerTile) then
-						storeHunger[#storeHunger+1] = hungerTile
+					if hungerTile and hungerTile:isPlayer() then
+						storeHunger[#storeHunger + 1] = hungerTile
 					end
 				end
 
 				for i = 1, #config.destructionPositions do
 					destructionTile = Tile(config.destructionPositions[i]):getTopCreature()
-					if isPlayer(destructionTile) then
-						storeDestruction[#storeDestruction+1] = destructionTile
+					if destructionTile and destructionTile:isPlayer() then
+						storeDestruction[#storeDestruction + 1] = destructionTile
 					end
 				end
 
 				for i = 1, #config.ragePositions do
 					rageTile = Tile(config.ragePositions[i]):getTopCreature()
-					if isPlayer(rageTile) then
-						storeRage[#storeRage+1] = rageTile
+					if rageTile and rageTile:isPlayer() then
+						storeRage[#storeRage + 1] = rageTile
 					end
 				end
 

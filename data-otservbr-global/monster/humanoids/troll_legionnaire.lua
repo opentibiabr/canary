@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 541
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Old Beregar mines. In group with Furious Trolls almost all the time."
+	Locations = "Old Beregar mines. In group with Furious Trolls almost all the time.",
 }
 
 monster.health = 210
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -78,12 +78,12 @@ monster.loot = {
 	{ name = "gold coin", chance = 92000, maxCount = 155 },
 	{ id = 3049, chance = 560 }, -- stealth ring
 	{ name = "throwing star", chance = 28000, maxCount = 10 },
-	{ name = "frosty ear of a troll", chance = 5120 }
+	{ name = "frosty ear of a troll", chance = 5120 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 },
-	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -130, range = 6, shootEffect = CONST_ANI_THROWINGSTAR, target = true }
+	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -130, range = 6, shootEffect = CONST_ANI_THROWINGSTAR, target = true },
 }
 
 monster.defenses = {
@@ -91,7 +91,7 @@ monster.defenses = {
 	armor = 12,
 	mitigation = 0.64,
 	{ name = "invisible", interval = 2000, chance = 18, effect = CONST_ME_MAGIC_BLUE },
-	{ name = "combat", interval = 2000, chance = 28, type = COMBAT_HEALING, minDamage = 17, maxDamage = 25, effect = CONST_ME_MAGIC_BLUE, target = false }
+	{ name = "combat", interval = 2000, chance = 28, type = COMBAT_HEALING, minDamage = 17, maxDamage = 25, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -111,7 +111,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -34,8 +34,7 @@ ACHIEVEMENTS_ACTION_BASE = 20000 --this storage will be used to save the process
 --(Ex: this storage + the id of achievement 'Allowance Collector' to save...
 -- ...how many piggy banks has been broken
 
-achievements =
-{
+achievements = {
 	--8.6
 	[1] = { name = "Allow Cookies?", grade = 1, points = 2, description = "With a perfectly harmless smile you fooled all of those wisecrackers into eating your exploding cookies. Consider a boy or girl scout outfit next time to make the trick even better." },
 	[2] = { name = "Allowance Collector", grade = 1, points = 2, secret = true, description = "You certainly have your ways when it comes to acquiring money. Many of them are pink and paved with broken fragments of porcelain." },
@@ -57,7 +56,7 @@ achievements =
 	[18] = { name = "Culinary Master", grade = 2, points = 4, description = "Simple hams and bread merely make you laugh. You're the master of the extra-ordinaire, melter of cheese, fryer of bat wings and shaker of shakes. Delicious!" },
 	[19] = { name = "Deep Sea Diver", grade = 2, points = 4, secret = true, description = "Under the sea - might not be your natural living space, but you're feeling quite comfortable on the ocean floor. Quara don't scare you anymore and sometimes you sleep with your helmet of the deep still equipped." },
 	[20] = { name = "Dread Lord", grade = 3, points = 8, secret = true, description = "You don't care for rules that others set up and shape the world to your liking. Having left behind meaningless conventions and morals, you prize only the power you wield. You're a master of your fate and battle to cleanse the world." },
-	[21] = { name = "Efreet Ally", grade = 1, points = 3, description = "Even though the welcomed you only reluctantly and viewed you as \"only a human\" for quite some time, you managed to impress Malor and gained his respect and trade options with the green djinns." },
+	[21] = { name = "Efreet Ally", grade = 1, points = 3, description = 'Even though the welcomed you only reluctantly and viewed you as "only a human" for quite some time, you managed to impress Malor and gained his respect and trade options with the green djinns.' },
 	[22] = { name = "Elite Hunter", grade = 2, points = 5, description = "You jump at every opportunity for a hunting challenge that's offered to you and carry out those tasks with deadly precision. You're a hunter at heart and a valuable member of the Paw &amp; Fur Society." },
 	[23] = { name = "Explorer", grade = 2, points = 4, description = "You've been to places most people don't even know the names of. Collecting botanic, zoologic and ectoplasmic samples is your daily business and you're always prepared to discover new horizons." },
 	[24] = { name = "Exquisite Taste", grade = 1, points = 2, secret = true, description = "You love fish - but preferably those caught in the cold north. Even though they're hard to come by you never get tired of picking holes in ice sheets and hanging your fishing rod in." },
@@ -297,7 +296,7 @@ achievements =
 	[247] = { name = "Exterminator", grade = 2, points = 4, description = "Efficient and lethal, you have gained significant experience in fighting the elite forces of the hive. Almost single-handed, you have slain the best of the Hive Born and live to tell the tale." },
 	[248] = { name = "Fire from the Earth", grade = 1, points = 2, description = "You've survived the Hellgorge eruption and found a way through the flames and lava. You've even managed to kill a few fireborn on the way." },
 	[249] = { name = "Gatherer", grade = 1, points = 2, description = "By killing creatures of the hive and gaining weapons for further missions, you started a quite effective way of war. You gathered a lot of dissolved chitin to resupply the war effort." },
-	[250] = { name = "Gem Cutter", grade = 1, points = 1, secret = true, description = "You cut your first gem - and it bears your own name! Now that would be a nice gift! This does not make it a \"true\" Heart of the Sea, however..." },
+	[250] = { name = "Gem Cutter", grade = 1, points = 1, secret = true, description = 'You cut your first gem - and it bears your own name! Now that would be a nice gift! This does not make it a "true" Heart of the Sea, however...' },
 	[251] = { name = "Goldhunter", grade = 1, points = 2, secret = true, description = "	If it wasn't for you, several banks in Tibia would've gotten bankrupt by now. Keep on chasing bank robbers and no one will have to worry about the Tibian economy!" },
 	[252] = { name = "Guard Killer", grade = 1, points = 2, description = "You have proven that you can beat the best of the hive. You have caused first promising breaches in the defence of the hive" },
 	[253] = { name = "Guardian Downfall", grade = 2, points = 4, description = "You ended the life of over three hundred Deepling Guards. Not quite the guardian of the Deeplings, are you?" },
@@ -557,7 +556,7 @@ achievements =
 
 	--12.20.9066
 	[465] = { name = "Do a Barrel Roll!", grade = 1, points = 3, description = "Riding a traditional beer barrel from the Orcsoberfest is a once-in-a-lifetime experience. Beer sold separately." },
-	[466] = { name = "Orcsoberfest Welcome", grade = 1, points = 3, secret = true, description = "The Orcsoberfest is not only known for its traditional food, beer and customs but also fun events and excitement! You took part in all of that and can now truly say: \"I survived!\"" },
+	[466] = { name = "Orcsoberfest Welcome", grade = 1, points = 3, secret = true, description = 'The Orcsoberfest is not only known for its traditional food, beer and customs but also fun events and excitement! You took part in all of that and can now truly say: "I survived!"' },
 	[467] = { name = "Traditionalist", grade = 2, points = 0, description = "You proudly wear the traditional Orcsoberfest garb, same as it ever was and as it always will be." },
 
 	--12.30
@@ -614,7 +613,7 @@ function getSecretAchievements()
 	local t = {}
 	for k, v in pairs(achievements) do
 		if v.secret then
-			t[#t+1] = k
+			t[#t + 1] = k
 		end
 	end
 	return t
@@ -624,7 +623,7 @@ function getPublicAchievements()
 	local t = {}
 	for k, v in pairs(achivements) do
 		if not v.secret then
-			t[#t+1] = k
+			t[#t + 1] = k
 		end
 	end
 	return t
@@ -666,7 +665,7 @@ function Player.getAchievements(self)
 	local t = {}
 	for k = 1, #achievements do
 		if self:hasAchievement(k) then
-			t[#t+1] = k
+			t[#t + 1] = k
 		end
 	end
 	return t
@@ -686,7 +685,7 @@ function Player.addAchievement(self, ach, denyMsg)
 	if not self:hasAchievement(achievement.id) then
 		self:setStorageValue(ACHIEVEMENTS_BASE + achievement.id, 1)
 		if not denyMsg then
-			self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Congratulations! You earned the achievement \"" .. achievement.name .. "\".")
+			self:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Congratulations! You earned the achievement "' .. achievement.name .. '".')
 		end
 	end
 	return true
@@ -729,7 +728,7 @@ function Player.getSecretAchievements(self)
 	local t = {}
 	for k, v in pairs(achievements) do
 		if self:hasAchievement(k) and v.secret then
-			t[#t+1] = k
+			t[#t + 1] = k
 		end
 	end
 	return t
@@ -739,7 +738,7 @@ function Player.getPublicAchievements(self)
 	local t = {}
 	for k, v in pairs(achievements) do
 		if self:hasAchievement(k) and not v.secret then
-			t[#t+1] = k
+			t[#t + 1] = k
 		end
 	end
 	return t

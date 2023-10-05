@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1979
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 5,
 	Stars = 1,
 	Occurrence = 0,
-	Locations = "Bounac, the Order of the Lion settlement."
+	Locations = "Bounac, the Order of the Lion settlement.",
 }
 
 monster.health = 15
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -76,7 +76,7 @@ monster.loot = {
 	{ name = "meat", chance = 2120, maxCount = 2 },
 	{ id = 3606, chance = 980, maxCount = 2 }, -- egg
 	{ name = "worm", chance = 11000, maxCount = 3 },
-	{ name = "chicken feather", chance = 19000, maxCount = 2 }
+	{ name = "chicken feather", chance = 19000, maxCount = 2 },
 }
 
 monster.defenses = {
@@ -102,7 +102,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

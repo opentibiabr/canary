@@ -7,7 +7,7 @@ local spheres = {
 	[675] = { VOCATION.BASE_ID.PALADIN },
 	[676] = { VOCATION.BASE_ID.SORCERER },
 	[677] = { VOCATION.BASE_ID.DRUID },
-	[678] = { VOCATION.BASE_ID.KNIGHT }
+	[678] = { VOCATION.BASE_ID.KNIGHT },
 }
 
 local enchantableGems = { 3030, 3029, 3032, 3033 }
@@ -17,7 +17,7 @@ local enchantingAltars = {
 	{ 146, 147, 148, 149 },
 	{ 150, 151, 152, 153 },
 	{ 158, 159, 160, 161 },
-	{ 154, 155, 156, 157 }
+	{ 154, 155, 156, 157 },
 }
 
 local enchantedGems = { 676, 675, 677, 678 }
@@ -38,19 +38,17 @@ local enchantedItems = {
 	[7392] = { 673, 692, 792, 809 },
 	[3279] = { 674, 693, 793, 810 },
 	[3447] = { 763, 762, 774, 761 },
-	[8077] = { 8078, 8079, 8081, 8080 }
+	[8077] = { 8078, 8079, 8081, 8080 },
 }
 
 local enchanting = Action()
 
 function enchanting.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({ 33268, 33269 }, toPosition.x)
-			and toPosition.y == 31830 and toPosition.z == 10
-			and player:getStorageValue(Storage.ElementalSphere.QuestLine) > 0 then
+	if table.contains({ 33268, 33269 }, toPosition.x) and toPosition.y == 31830 and toPosition.z == 10 and player:getStorageValue(Storage.ElementalSphere.QuestLine) > 0 then
 		if not table.contains(spheres[item.itemid], player:getVocation():getBaseId()) then
 			return false
 		elseif table.contains({ 842, 843 }, target.itemid) then
-			player:say('Turn off the machine first.', TALKTYPE_MONSTER_SAY)
+			player:say("Turn off the machine first.", TALKTYPE_MONSTER_SAY)
 			return true
 		else
 			player:setStorageValue(Storage.ElementalSphere.MachineGemCount, math.max(1, player:getStorageValue(Storage.ElementalSphere.MachineGemCount) + 1))
@@ -83,7 +81,7 @@ function enchanting.onUse(player, item, fromPosition, target, toPosition, isHotk
 
 		local mana = config.manaCost * subtype
 		if player:getMana() < mana then
-			player:say('Not enough mana, separate one gem in your backpack and try again.', TALKTYPE_MONSTER_SAY)
+			player:say("Not enough mana, separate one gem in your backpack and try again.", TALKTYPE_MONSTER_SAY)
 			return false
 		end
 

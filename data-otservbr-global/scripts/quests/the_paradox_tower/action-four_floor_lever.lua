@@ -4,7 +4,7 @@ local positions = {
 	{ x = 32478, y = 31900, z = 4 },
 	{ x = 32479, y = 31900, z = 4 },
 	{ x = 32480, y = 31900, z = 4 },
-	{ x = 32481, y = 31900, z = 4 }
+	{ x = 32481, y = 31900, z = 4 },
 }
 
 local fourFloorLever = Action()
@@ -20,12 +20,7 @@ function fourFloorLever.onUse(creature, item, position, fromPosition)
 
 	if item.itemid == 2772 then
 		-- Check if have all items
-		if Position(positions[1]):hasItem(3593)
-				and Position(positions[2]):hasItem(3587)
-				and Position(positions[3]):hasItem(3590)
-				and Position(positions[4]):hasItem(3585)
-				and Position(positions[5]):hasItem(3592)
-				and Position(positions[6]):hasItem(3589) then
+		if Position(positions[1]):hasItem(3593) and Position(positions[2]):hasItem(3587) and Position(positions[3]):hasItem(3590) and Position(positions[4]):hasItem(3585) and Position(positions[5]):hasItem(3592) and Position(positions[6]):hasItem(3589) then
 			-- If have all items, then remove it
 			Position(positions[1]):removeItem(3593)
 			Position(positions[2]):removeItem(3587)

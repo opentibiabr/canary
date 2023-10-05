@@ -2,14 +2,14 @@ local spheres = {
 	[8300] = VOCATION.BASE_ID.PALADIN,
 	[8304] = VOCATION.BASE_ID.SORCERER,
 	[8305] = VOCATION.BASE_ID.DRUID,
-	[8306] = VOCATION.BASE_ID.KNIGHT
+	[8306] = VOCATION.BASE_ID.KNIGHT,
 }
 
 local globalTable = {
 	[VOCATION.BASE_ID.SORCERER] = 10005,
 	[VOCATION.BASE_ID.DRUID] = 10006,
 	[VOCATION.BASE_ID.PALADIN] = 10007,
-	[VOCATION.BASE_ID.KNIGHT] = 10008
+	[VOCATION.BASE_ID.KNIGHT] = 10008,
 }
 
 local elementalSpheresSoils2 = Action()
@@ -27,7 +27,7 @@ function elementalSpheresSoils2.onUse(player, item, fromPosition, target, toPosi
 	end
 
 	if table.contains({ 7917, 7918 }, target.itemid) then
-		player:say('Turn off the machine first.', TALKTYPE_MONSTER_SAY)
+		player:say("Turn off the machine first.", TALKTYPE_MONSTER_SAY)
 		return true
 	end
 

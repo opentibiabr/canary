@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a cosmic energy prism D"
 monster.experience = 840
 monster.outfit = {
-	lookTypeEx = 2187
+	lookTypeEx = 2187,
 }
 
 monster.health = 1000
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -44,16 +44,12 @@ monster.flags = {
 }
 
 monster.events = {
-	"EnergyPrism"
+	"EnergyPrism",
 }
 
 monster.light = {
 	level = 0,
 	color = 0,
-}
-
-monster.events = {
-	"EnergyPrism"
 }
 
 monster.voices = {
@@ -62,8 +58,7 @@ monster.voices = {
 	{ text = "*Zap!*", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -0, maxDamage = -71 },
@@ -93,7 +88,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

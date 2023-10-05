@@ -1,12 +1,20 @@
 local callback = EventCallback()
 
 function callback.monsterOnDropLoot(monster, corpse)
-	if configManager.getNumber(configKeys.RATE_LOOT) == 0 then return end
+	if configManager.getNumber(configKeys.RATE_LOOT) == 0 then
+		return
+	end
 	local mType = monster:getType()
-	if mType:isRewardBoss() then return end
+	if mType:isRewardBoss() then
+		return
+	end
 	local player = Player(corpse:getCorpseOwner())
-	if not player then return end
-	if player:getStamina() <= 840 then return end
+	if not player then
+		return
+	end
+	if player:getStamina() <= 840 then
+		return
+	end
 
 	local factor = 1.0
 	local msgSuffix = ""
@@ -45,7 +53,9 @@ function callback.monsterOnDropLoot(monster, corpse)
 		rolls = math.floor(rolls)
 	end
 
-	if rolls == 0 then return end
+	if rolls == 0 then
+		return
+	end
 
 	if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) and rolls > 1 then
 		msgSuffix = msgSuffix .. " (active wealth duplex, " .. rolls .. " extra rolls)"
@@ -55,7 +65,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 
 	local lootTable = {}
 	for _ = 1, rolls do
-		lootTable = mType:generateLootRoll({ factor = factor, gut = false, }, lootTable)
+		lootTable = mType:generateLootRoll({ factor = factor, gut = false }, lootTable)
 	end
 	corpse:addLoot(lootTable)
 

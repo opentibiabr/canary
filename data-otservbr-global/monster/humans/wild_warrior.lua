@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 38,
 	lookFeet = 38,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 47
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Dark Cathedral, Outlaw Camp, North of Thais, Cyclopolis, in Edron Hero Cave and around it, \z
-		the small camp near Femor Hills, in Ghostlands disguised as a statue."
+		the small camp near Femor Hills, in Ghostlands disguised as a statue.",
 }
 
 monster.health = 135
@@ -36,7 +36,7 @@ monster.manaCost = 420
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -85,18 +85,18 @@ monster.loot = {
 	{ name = "brass armor", chance = 2540 },
 	{ name = "steel shield", chance = 910 },
 	{ name = "brass shield", chance = 17000 },
-	{ id = 3606, chance = 9730, maxCount = 2 } -- egg
+	{ id = 3606, chance = 9730, maxCount = 2 }, -- egg
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 8,
 	mitigation = 0.46,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 200, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 200, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {
@@ -116,7 +116,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

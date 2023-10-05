@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 101,
 	lookLegs = 120,
 	lookFeet = 120,
-	lookAddons = 2
+	lookAddons = 2,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -622,7 +622,7 @@ npcConfig.shop = {
 	{ itemName = "head", clientId = 33937, sell = 3200 },
 	{ itemName = "head", clientId = 33932, sell = 3500 },
 	{ itemName = "headchopper", clientId = 7380, sell = 6000 },
-	{ itemName = "headpecker beak", clientId = 39387, sell = 2800 },
+	{ itemName = "headpecker beak", clientId = 39387, sell = 2998 },
 	{ itemName = "headpecker feather", clientId = 39388, sell = 1300 },
 	{ itemName = "heat core", clientId = 21167, sell = 10000 },
 	{ itemName = "heaven blossom", clientId = 3657, sell = 50 },
@@ -769,7 +769,7 @@ npcConfig.shop = {
 	{ itemName = "mantassin tail", clientId = 11489, sell = 280 },
 	{ itemName = "manticore ear", clientId = 31440, sell = 310 },
 	{ itemName = "manticore tail", clientId = 31439, sell = 220 },
-	{ itemName = "mantosaurus jaw", clientId = 39386, sell = 2800 },
+	{ itemName = "mantosaurus jaw", clientId = 39386, sell = 2998 },
 	{ itemName = "marlin trophy", clientId = 902, sell = 5000 },
 	{ itemName = "marsh stalker beak", clientId = 17461, sell = 65 },
 	{ itemName = "marsh stalker feather", clientId = 17462, sell = 50 },
@@ -1385,7 +1385,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

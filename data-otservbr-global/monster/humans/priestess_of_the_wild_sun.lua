@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 94,
 	lookFeet = 3,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1799
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Issavi Sewers, Kilmaresh Mountains, Kilmaresh Catacombs."
+	Locations = "Issavi Sewers, Kilmaresh Mountains, Kilmaresh Catacombs.",
 }
 
 monster.health = 8500
@@ -38,7 +38,7 @@ monster.enemyFactions = { FACTION_ANUMA, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -91,7 +91,7 @@ monster.loot = {
 	{ name = "wand of everblazing", chance = 1290 },
 	{ name = "golden sickle", chance = 1250 },
 	{ name = "relic sword", chance = 1390 },
-	{ name = "war axe", chance = 1777 }
+	{ name = "war axe", chance = 1777 },
 }
 
 monster.attacks = {
@@ -99,7 +99,7 @@ monster.attacks = {
 	{ name = "targetfirering", interval = 2000, chance = 8, minDamage = -300, maxDamage = -500, target = true },
 	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_FIREDAMAGE, minDamage = -350, maxDamage = -500, radius = 2, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_EXPLOSIONHIT, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -250, maxDamage = -400, radius = 3, effect = CONST_ME_ENERGYAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_ENERGYDAMAGE, minDamage = -250, maxDamage = -350, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false }
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_ENERGYDAMAGE, minDamage = -250, maxDamage = -350, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
 }
 
 monster.defenses = {
@@ -125,7 +125,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -1,6 +1,6 @@
 local elevatorPosition = {
 	Position(33051, 32099, 6),
-	Position(33051, 32099, 7)
+	Position(33051, 32099, 7),
 }
 
 local config = {
@@ -11,11 +11,11 @@ local config = {
 		transform = {
 			position = { elevatorPosition[1], elevatorPosition[2] },
 			itemId = { 17939, 17939 },
-			transformId = { 17942, 17943 }
+			transformId = { 17942, 17943 },
 		},
-		sound = 'Srrrt!',
+		sound = "Srrrt!",
 		soundPosition = Position(33052, 32099, 6),
-		relocatePosition = Position(33051, 32098, 6)
+		relocatePosition = Position(33051, 32098, 6),
 	},
 	[2] = {
 		fromPosition = elevatorPosition[2],
@@ -26,15 +26,15 @@ local config = {
 			itemId = { 17942, 17943 },
 			transformId = { 17939, 17939 },
 		},
-		sound = 'Zrrrt!',
+		sound = "Zrrrt!",
 		soundPosition = Position(33052, 32099, 7),
-		relocatePosition = Position(33051, 32100, 7)
-	}
+		relocatePosition = Position(33051, 32100, 7),
+	},
 }
 
 local winch = {
 	[17940] = { config[2], config[1] },
-	[17944] = { config[1], config[2] }
+	[17944] = { config[1], config[2] },
 }
 
 local relocate = true
@@ -81,7 +81,7 @@ function rafzaneElevator.onUse(player, item, fromPosition, target, toPosition, i
 
 	local creature = tile:getTopCreature()
 	if not creature or creature.uid ~= player.uid then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Step inside the elevator to use it.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Step inside the elevator to use it.")
 		return true
 	end
 

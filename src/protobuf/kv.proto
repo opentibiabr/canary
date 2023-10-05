@@ -1,0 +1,32 @@
+ syntax = "proto3";
+
+package Canary.protobuf.kv;
+
+// Define a message for the ValueWrapper type
+message ValueWrapper {
+  // Define a oneof construct to ensure only one type can be set at a time
+  oneof value {
+    string str_value = 1;
+    int32 int_value = 2;
+    double double_value = 3;
+    ArrayType array_value = 4;
+    MapType map_value = 5;
+		bool bool_value = 6;
+  }
+}
+
+// Define a message to represent an array of ValueWrapper objects
+message ArrayType {
+  repeated ValueWrapper values = 1;
+}
+
+// Define a message to represent a key-value pair in a map
+message KeyValuePair {
+  string key = 1;
+  ValueWrapper value = 2;
+}
+
+// Define a message to represent a map of string to ValueWrapper objects
+message MapType {
+  repeated KeyValuePair items = 1;
+}

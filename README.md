@@ -38,7 +38,7 @@ source of the Canary, so that it will be the first repository to use this engine
 To connect to the server and to take a stable experience, you can
 use [mehah's otclient](https://github.com/mehah/otclient)
 or [tibia client](https://github.com/dudantas/tibia-client/releases/latest) and if you want to edit something, check
-our [customized tools](https://docs.opentibiabr.com/others/downloads/tools).
+our [customized tools](https://docs.opentibiabr.com/opentibiabr/downloads/tools).
 
 If you want edit the map, use the [own remere's map editor](https://github.com/opentibiabr/remeres-map-editor/).
 
@@ -94,7 +94,17 @@ See our [donate page](https://docs.opentibiabr.com/home/donate)
 We extend our heartfelt gratitude to Jetbrains for generously granting us licenses to collaborate on this and various
 other open-source initiatives.
 
-[![JetBrains](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://jb.gg/OpenSourceSupport/?from=https://github.com/opentibiabr/canary)
+<a href="https://jb.gg/OpenSourceSupport/?from=https://github.com/opentibiabr/canary/">
+  <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" alt="JetBrains" width="150" />
+</a>
+
+## Project supported by [TNT Cloud](https://tntcloudbr.com.br/)
+
+Thanks for supporting our open-source project with your game cloud hosting services.
+
+<a href="https://tntcloudbr.com.br/">
+  <img src="https://tntcloudbr.com.br/logo.png" alt="TNT Cloud - Game Hosting" width="300" />
+</a>
 
 ### Partners
 

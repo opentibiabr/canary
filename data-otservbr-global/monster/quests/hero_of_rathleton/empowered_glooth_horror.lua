@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 25000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 60000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -49,11 +49,11 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.events = {
-	"GloothHorror"
+	"GloothHorror",
 }
 
 monster.light = {
@@ -67,7 +67,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 21905, chance = 10000 } -- glooth glider hinge
+	{ id = 21905, chance = 10000 }, -- glooth glider hinge
 }
 
 monster.attacks = {
@@ -75,14 +75,14 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -400, maxDamage = -600, range = 1, shootEffect = CONST_ANI_POISON, target = true },
 	{ name = "drunk", interval = 2000, chance = 8, radius = 8, effect = CONST_ME_HITBYPOISON, target = false, duration = 15000 },
 	-- poison
-	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 12, minDamage = -600, maxDamage = -900, radius = 8, effect = CONST_ME_HITBYPOISON, target = false }
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 12, minDamage = -600, maxDamage = -900, radius = 8, effect = CONST_ME_HITBYPOISON, target = false },
 }
 
 monster.defenses = {
 	defense = 25,
 	armor = 15,
 	--	mitigation = ???,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 500, maxDamage = 700, effect = CONST_ME_MAGIC_GREEN, target = false }
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 500, maxDamage = 700, effect = CONST_ME_MAGIC_GREEN, target = false },
 }
 
 monster.elements = {
@@ -102,7 +102,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -5,15 +5,15 @@ function gravediggerBrain.onUse(player, item, fromPosition, target, toPosition, 
 	if player:getStorageValue(Storage.GravediggerOfDrefia.Mission08) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission09) < 1 then
 		if leftbrain:getItemById(9659) and rightbrain:getItemById(9659) then
 			player:setStorageValue(Storage.GravediggerOfDrefia.Mission09, 1)
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, '<brzzl> <frzzp> <fsssh>')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "<brzzl> <frzzp> <fsssh>")
 			leftbrain:getItemById(9659):remove()
 			rightbrain:getItemById(9659):remove()
 			Game.createItem(19078, 1, Position(33022, 32332, 10))
 		else
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'No brains')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "No brains")
 		end
 	else
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You have already got your brain')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have already got your brain")
 	end
 	return true
 end

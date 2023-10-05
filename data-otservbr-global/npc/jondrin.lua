@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 25,
 	lookLegs = 30,
 	lookFeet = 97,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -54,14 +54,14 @@ local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if (MsgContains(message, "necrometer")) then
+	if MsgContains(message, "necrometer") then
 		--[[if player:getStorageValue(Storage.Oramond.TaskProbing == 1) then
 		--for this mission is needed script of the npc Doubleday]]
 		npcHandler:say("A necrometer? Have you any idea how rare and expensive a necrometer is? There is no way I could justify giving a necrometer to an inexperienced adventurer. Hm, although ... if you weren't inexperienced that would be a different matter. ...", npc, creature)
 		npcHandler:say("Did you do any measuring task for Doubleday lately?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 		--end
-	elseif (MsgContains(message, "yes")) then
+	elseif MsgContains(message, "yes") then
 		if (npcHandler:getTopic(playerId) == 1) and player:getStorageValue(Storage.DarkTrails.Mission09) == 1 then
 			npcHandler:say("Indeed I heard you did a good job out there. <sigh> I guess that means I can hand you one of our necrometers. Handle it with care", npc, creature)
 			npcHandler:setTopic(playerId, 0)

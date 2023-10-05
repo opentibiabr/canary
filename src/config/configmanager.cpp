@@ -12,7 +12,6 @@
 #include "config/configmanager.hpp"
 #include "declarations.hpp"
 #include "game/game.hpp"
-#include "lua/scripts/luajit_sync.hpp"
 #include "server/network/webhook/webhook.hpp"
 
 #if LUA_VERSION_NUM >= 502
@@ -165,7 +164,6 @@ bool ConfigManager::load() {
 	boolean[HOUSE_OWNED_BY_ACCOUNT] = getGlobalBoolean(L, "houseOwnedByAccount", false);
 	boolean[CLEAN_PROTECTION_ZONES] = getGlobalBoolean(L, "cleanProtectionZones", false);
 	boolean[GLOBAL_SERVER_SAVE_SHUTDOWN] = getGlobalBoolean(L, "globalServerSaveShutdown", true);
-	boolean[ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS] = getGlobalBoolean(L, "onlyInvitedCanMoveHouseItems", true);
 	boolean[PUSH_WHEN_ATTACKING] = getGlobalBoolean(L, "pushWhenAttacking", false);
 
 	boolean[WEATHER_RAIN] = getGlobalBoolean(L, "weatherRain", false);
@@ -220,8 +218,12 @@ bool ConfigManager::load() {
 	integer[RATE_MAGIC] = getGlobalNumber(L, "rateMagic", 1);
 	integer[RATE_SPAWN] = getGlobalNumber(L, "rateSpawn", 1);
 	integer[RATE_KILLING_IN_THE_NAME_OF_POINTS] = getGlobalNumber(L, "rateKillingInTheNameOfPoints", 1);
+
 	integer[HOUSE_PRICE_PER_SQM] = getGlobalNumber(L, "housePriceEachSQM", 1000);
 	integer[HOUSE_BUY_LEVEL] = getGlobalNumber(L, "houseBuyLevel", 0);
+	boolean[HOUSE_PURSHASED_SHOW_PRICE] = getGlobalBoolean(L, "housePurchasedShowPrice", false);
+	boolean[ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS] = getGlobalBoolean(L, "onlyInvitedCanMoveHouseItems", true);
+
 	integer[ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenActions", 200);
 	integer[EX_ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenExActions", 1000);
 	integer[MAX_MESSAGEBUFFER] = getGlobalNumber(L, "maxMessageBuffer", 4);
@@ -233,7 +235,7 @@ bool ConfigManager::load() {
 	integer[WHITE_SKULL_TIME] = getGlobalNumber(L, "whiteSkullTime", 15 * 60 * 1000);
 	integer[STAIRHOP_DELAY] = getGlobalNumber(L, "stairJumpExhaustion", 2000);
 	integer[MAX_CONTAINER] = getGlobalNumber(L, "maxContainer", 500);
-	integer[MAX_ITEM] = getGlobalNumber(L, "maxItem", 10000);
+	integer[MAX_CONTAINER_ITEM] = getGlobalNumber(L, "maxItem", 5000);
 	integer[EXP_FROM_PLAYERS_LEVEL_RANGE] = getGlobalNumber(L, "expFromPlayersLevelRange", 75);
 	integer[CHECK_EXPIRED_MARKET_OFFERS_EACH_MINUTES] = getGlobalNumber(L, "checkExpiredMarketOffersEachMinutes", 60);
 	integer[MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER] = getGlobalNumber(L, "maxMarketOffersAtATimePerPlayer", 100);
@@ -390,6 +392,12 @@ bool ConfigManager::load() {
 	floating[PVP_RATE_DAMAGE_TAKEN_PER_LEVEL] = getGlobalFloat(L, "pvpRateDamageTakenPerLevel", 0.0);
 	floating[PVP_RATE_DAMAGE_REDUCTION_PER_LEVEL] = getGlobalFloat(L, "pvpRateDamageReductionPerLevel", 0.0);
 	integer[PVP_MAX_LEVEL_DIFFERENCE] = getGlobalNumber(L, "pvpMaxLevelDifference", 0);
+
+	boolean[TOGGLE_MOUNT_IN_PZ] = getGlobalBoolean(L, "toggleMountInProtectionZone", false);
+
+	boolean[TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART] = getGlobalBoolean(L, "togglehouseTransferOnRestart", false);
+
+	boolean[TOGGLE_RECEIVE_REWARD] = getGlobalBoolean(L, "toggleReceiveReward", false);
 
 	loaded = true;
 	lua_close(L);

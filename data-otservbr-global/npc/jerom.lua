@@ -16,19 +16,19 @@ npcConfig.outfit = {
 	lookBody = 78,
 	lookLegs = 78,
 	lookFeet = 114,
-	lookAddons = 1
+	lookAddons = 1,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'My house! Uahahahaha <sniffs>.' },
-	{ text = 'Dear gods! My precious house, DESTROYED!!' },
-	{ text = 'Oh no!! What am I supposed to do now?!?' }
+	{ text = "My house! Uahahahaha <sniffs>." },
+	{ text = "Dear gods! My precious house, DESTROYED!!" },
+	{ text = "Oh no!! What am I supposed to do now?!?" },
 }
 
 local keywordHandler = KeywordHandler:new()

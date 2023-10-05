@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 19,
 	lookLegs = 19,
 	lookFeet = 19,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -75,7 +75,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "It's my duty to protect the city." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "It's my duty to protect the city." })
 
 npcHandler:setMessage(MESSAGE_GREET, "LONG LIVE THE KING!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "LONG LIVE THE KING!")

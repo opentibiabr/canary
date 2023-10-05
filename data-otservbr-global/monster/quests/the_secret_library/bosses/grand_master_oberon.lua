@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 21,
 	lookFeet = 105,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.bosstiary = {
@@ -28,7 +28,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -88,14 +88,14 @@ monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1400 },
 	{ name = "combat", interval = 3000, chance = 40, type = COMBAT_HOLYDAMAGE, minDamage = -800, maxDamage = -1200, length = 8, effect = CONST_ME_HOLYAREA, target = false },
 	{ name = "combat", interval = 4250, chance = 35, type = COMBAT_EARTHDAMAGE, minDamage = -500, maxDamage = -1000, radius = 5, effect = CONST_ME_HITAREA, target = false },
-	{ name = "combat", interval = 5000, chance = 37, type = COMBAT_DEATHDAMAGE, minDamage = -500, maxDamage = -1000, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false }
+	{ name = "combat", interval = 5000, chance = 37, type = COMBAT_DEATHDAMAGE, minDamage = -500, maxDamage = -1000, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 60,
 	armor = 82,
 	--	mitigation = ???,
-	{ name = "speed", interval = 1000, chance = 10, speedChange = 180, effect = CONST_ME_POFF, target = false, duration = 4000 }
+	{ name = "speed", interval = 1000, chance = 10, speedChange = 180, effect = CONST_ME_POFF, target = false, duration = 4000 },
 }
 
 monster.elements = {
@@ -115,7 +115,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType.onThink = function(monster, interval)
@@ -137,11 +137,9 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
 mType.onSay = function(monster, creature, type, message)
 	local exhaust = GrandMasterOberonConfig.Storage.Exhaust
@@ -150,12 +148,12 @@ mType.onSay = function(monster, creature, type, message)
 
 		monster:setStorageValue(exhaust, os.time() + 1)
 		local asking_storage = monster:getStorageValue(GrandMasterOberonConfig.Storage.Asking)
-		local oberonMessagesTable = GrandMasterOberonResponses[asking_storage];
+		local oberonMessagesTable = GrandMasterOberonResponses[asking_storage]
 
 		if oberonMessagesTable then
 			if message == oberonMessagesTable.msg:lower() or message == oberonMessagesTable.msg2:lower() then
 				monster:say("GRRRAAANNGH!", TALKTYPE_MONSTER_SAY)
-				monster:unregisterEvent('OberonImmunity')
+				monster:unregisterEvent("OberonImmunity")
 			else
 				monster:say("HAHAHAHA!", TALKTYPE_MONSTER_SAY)
 			end

@@ -11,17 +11,17 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 39
+	lookType = 39,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'AHHHH THE PAIN OF AGESSS! THE PAIN!' }
+	{ text = "AHHHH THE PAIN OF AGESSS! THE PAIN!" },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -36,8 +36,8 @@ npcType.onDisappear = function(npc, creature)
 end
 
 npcType.onSay = function(npc, creature, type, message)
-	if not (MsgContains(message, 'hi') or MsgContains(message, 'hello')) then
-		npcHandler:say('LEAVE THE DRAGONS\' CEMETERY AT ONCE!', npc, creature)
+	if not (MsgContains(message, "hi") or MsgContains(message, "hello")) then
+		npcHandler:say("LEAVE THE DRAGONS' CEMETERY AT ONCE!", npc, creature)
 	end
 	npcHandler:onSay(npc, creature, type, message)
 end
@@ -59,18 +59,18 @@ local function greetCallback(npc, creature)
 	local playerId = player:getId()
 
 	if player:getStorageValue(Storage.Dragonfetish) == 1 then
-		npcHandler:say('LEAVE THE DRAGONS\' CEMETERY AT ONCE!', npc, creature)
+		npcHandler:say("LEAVE THE DRAGONS' CEMETERY AT ONCE!", npc, creature)
 		return false
 	end
 
 	if not player:removeItem(3723, 1) then
-		npcHandler:say('AHHHH THE PAIN OF AGESSS! I NEED MUSSSSHRROOOMSSS TO EASSSE MY PAIN! BRRRING ME MUSHRRROOOMSSS!', npc, creature)
+		npcHandler:say("AHHHH THE PAIN OF AGESSS! I NEED MUSSSSHRROOOMSSS TO EASSSE MY PAIN! BRRRING ME MUSHRRROOOMSSS!", npc, creature)
 		return false
 	end
 
 	player:setStorageValue(Storage.Dragonfetish, 1)
 	player:addItem(3206, 1)
-	npcHandler:say('AHHH MUSHRRROOOMSSS! NOW MY PAIN WILL BE EASSSED FOR A WHILE! TAKE THISS AND LEAVE THE DRAGONSSS\' CEMETERY AT ONCE!', npc, creature)
+	npcHandler:say("AHHH MUSHRRROOOMSSS! NOW MY PAIN WILL BE EASSSED FOR A WHILE! TAKE THISS AND LEAVE THE DRAGONSSS' CEMETERY AT ONCE!", npc, creature)
 	return false
 end
 

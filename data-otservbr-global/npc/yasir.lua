@@ -16,11 +16,11 @@ npcConfig.outfit = {
 	lookBody = 7,
 	lookLegs = 12,
 	lookFeet = 19,
-	lookAddons = 2
+	lookAddons = 2,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -302,7 +302,7 @@ npcConfig.shop = {
 	{ itemName = "hazardous heart", clientId = 34140, sell = 5000 },
 	{ itemName = "hazardous robe", clientId = 34147, sell = 3000 },
 	{ itemName = "head", clientId = 33937, sell = 3500 },
-	{ itemName = "headpecker beak", clientId = 39387, sell = 2800 },
+	{ itemName = "headpecker beak", clientId = 39387, sell = 2998 },
 	{ itemName = "headpecker feather", clientId = 39388, sell = 1300 },
 	{ itemName = "heaven blossom", clientId = 3657, sell = 50 },
 	{ itemName = "hellhound slobber", clientId = 9637, sell = 500 },
@@ -377,7 +377,7 @@ npcConfig.shop = {
 	{ itemName = "mantassin tail", clientId = 11489, sell = 280 },
 	{ itemName = "manticore ear", clientId = 31440, sell = 310 },
 	{ itemName = "manticore tail", clientId = 31439, sell = 220 },
-	{ itemName = "mantosaurus jaw", clientId = 39386, sell = 2800 },
+	{ itemName = "mantosaurus jaw", clientId = 39386, sell = 2998 },
 	{ itemName = "marsh stalker beak", clientId = 17461, sell = 65 },
 	{ itemName = "marsh stalker feather", clientId = 17462, sell = 50 },
 	{ itemName = "maxxenius head", clientId = 29942, sell = 500000 },
@@ -645,7 +645,7 @@ npcConfig.shop = {
 	{ itemName = "yirkas' egg", clientId = 34102, sell = 280 },
 	{ itemName = "young lich worm", clientId = 31590, sell = 25000 },
 	{ itemName = "zaogun flag", clientId = 10413, sell = 600 },
-	{ itemName = "zaogun shoulderplates", clientId = 10414, sell = 150 }
+	{ itemName = "zaogun shoulderplates", clientId = 10414, sell = 150 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -656,8 +656,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)

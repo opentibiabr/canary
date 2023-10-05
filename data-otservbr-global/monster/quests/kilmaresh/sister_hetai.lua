@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 94,
 	lookFeet = 78,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 25000
@@ -22,13 +22,13 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.bosstiary = {
 	bossRaceId = 2104,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Kilmaresh.SisterHetaiTimer
+	storageCooldown = Storage.Kilmaresh.SisterHetaiTimer,
 }
 
 monster.strategiesTarget = {
@@ -52,12 +52,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -97,7 +97,7 @@ monster.loot = {
 	{ name = "yellow gem", chance = 156 },
 	{ name = "lightning legs", chance = 104 },
 	{ name = "sea horse figurine", chance = 104 },
-	{ name = "tagralt-inlaid scabbard", chance = 52 }
+	{ name = "tagralt-inlaid scabbard", chance = 52 },
 }
 
 monster.attacks = {
@@ -122,14 +122,14 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -25 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

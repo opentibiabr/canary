@@ -16,17 +16,17 @@ npcConfig.outfit = {
 	lookBody = 3,
 	lookLegs = 93,
 	lookFeet = 12,
-	lookAddons = 0
+	lookAddons = 0,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'This weather is killing me. If I only had enough money to retire.' }
+	{ text = "This weather is killing me. If I only had enough money to retire." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -61,10 +61,10 @@ local function greetCallback(npc, creature)
 	local playerId = player:getId()
 
 	if player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) == -1 then
-		npcHandler:setMessage(MESSAGE_GREET, 'Hello! Tell me what\'s on your mind. Time is money.')
+		npcHandler:setMessage(MESSAGE_GREET, "Hello! Tell me what's on your mind. Time is money.")
 		player:setStorageValue(Storage.SearoutesAroundYalahar.TownsCounter, 0)
 	else
-		npcHandler:setMessage(MESSAGE_GREET, 'Hello! Tell me what\'s on your mind. Time is money.')
+		npcHandler:setMessage(MESSAGE_GREET, "Hello! Tell me what's on your mind. Time is money.")
 	end
 	return true
 end
@@ -81,27 +81,27 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) < 5 then
 			npcHandler:say({
 				"I see no reason to establish ship routes to other cities. There is nothing that would be worth the effort. ...",
-				"But since you won\'t stop bugging me, let\'s make a deal: If you can prove that at least five of your so-called \'cities\' are not worthless, I might reconsider my position. ...",
-				"Bring me something SPECIAL! The local bar tenders usually know what\'s interesting about their city.",
+				"But since you won't stop bugging me, let's make a deal: If you can prove that at least five of your so-called 'cities' are not worthless, I might reconsider my position. ...",
+				"Bring me something SPECIAL! The local bar tenders usually know what's interesting about their city.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) >= 5 then
 			npcHandler:say({
-				"For the sake of profit, we established ship routes to {Ab\'Dendriel}, {Darashia}, {Venore}, {Ankrahmun}, {Port Hope}, {Thais}, {Liberty Bay} and {Carlin}.",
+				"For the sake of profit, we established ship routes to {Ab'Dendriel}, {Darashia}, {Venore}, {Ankrahmun}, {Port Hope}, {Thais}, {Liberty Bay} and {Carlin}.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		else
 			return false
 		end
-	elseif MsgContains(message, "Ab\'Dendriel") then
+	elseif MsgContains(message, "Ab'Dendriel") then
 		if player:getStorageValue(Storage.SearoutesAroundYalahar.AbDendriel) ~= 1 and player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) < 5 then
 			npcHandler:say({
-				"I\'ve never been there. I doubt the elves there came up with something noteworthy. Or did you find something interesting there?",
+				"I've never been there. I doubt the elves there came up with something noteworthy. Or did you find something interesting there?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(Storage.SearoutesAroundYalahar.AbDendriel) == 1 or player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) >= 5 then
 			npcHandler:say({
-				"Do you want a passage to Ab\'Dendriel for 160 gold?", ---missing line
+				"Do you want a passage to Ab'Dendriel for 160 gold?", ---missing line
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 11)
 		else
@@ -128,7 +128,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif player:getStorageValue(Storage.SearoutesAroundYalahar.Venore) == 1 or player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) >= 5 then
-			npcHandler:say({ "The swamp spice will turn out very lucrative considering that it helps to make even the most disgusting dish taste good. Do you want a passage to Venore for 185 gold?", }, npc, creature)
+			npcHandler:say({ "The swamp spice will turn out very lucrative considering that it helps to make even the most disgusting dish taste good. Do you want a passage to Venore for 185 gold?" }, npc, creature)
 			npcHandler:setTopic(playerId, 13)
 		else
 			return false
@@ -220,7 +220,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.SearoutesAroundYalahar.TownsCounter, player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) + 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 4 and player:removeItem(8761, 1) then
-			npcHandler:say("I can hardly imagine that someone is interested in embalming fluid, but I\'ll give it a try.", npc, creature)
+			npcHandler:say("I can hardly imagine that someone is interested in embalming fluid, but I'll give it a try.", npc, creature)
 			player:setStorageValue(Storage.SearoutesAroundYalahar.Ankrahmun, 1)
 			player:setStorageValue(Storage.SearoutesAroundYalahar.TownsCounter, player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) + 1)
 			npcHandler:setTopic(playerId, 0)
@@ -251,7 +251,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say("You don\'t have enough money.", npc, creature)
+				npcHandler:say("You don't have enough money.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 12 then
@@ -261,7 +261,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say("You don\'t have enough money.", npc, creature)
+				npcHandler:say("You don't have enough money.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 13 then
@@ -271,7 +271,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say("You don\'t have enough money.", npc, creature)
+				npcHandler:say("You don't have enough money.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 14 then
@@ -281,7 +281,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say("You don\'t have enough money.", npc, creature)
+				npcHandler:say("You don't have enough money.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 15 then
@@ -291,7 +291,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say("You don\'t have enough money.", npc, creature)
+				npcHandler:say("You don't have enough money.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 16 then
@@ -301,7 +301,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say("You don\'t have enough money.", npc, creature)
+				npcHandler:say("You don't have enough money.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 17 then
@@ -311,7 +311,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say("You don\'t have enough money.", npc, creature)
+				npcHandler:say("You don't have enough money.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 18 then
@@ -321,31 +321,31 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say("You don\'t have enough money.", npc, creature)
+				npcHandler:say("You don't have enough money.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 		else
-			npcHandler:say("Don\'t waste my time.", npc, creature)
+			npcHandler:say("Don't waste my time.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "no") then
-		npcHandler:say({ "Then no.", }, npc, creature)
+		npcHandler:say({ "Then no." }, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	end
 	return true
 end
 
 -- Kick
-keywordHandler:addKeyword({ 'kick' }, StdModule.kick, { npcHandler = npcHandler, destination = { Position(32811, 31267, 6), Position(32811, 31270, 6), Position(32811, 31273, 6) } })
+keywordHandler:addKeyword({ "kick" }, StdModule.kick, { npcHandler = npcHandler, destination = { Position(32811, 31267, 6), Position(32811, 31270, 6), Position(32811, 31273, 6) } })
 
 -- Basic
-keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = 'I am the captain of this ship.' })
-keywordHandler:addKeyword({ 'captain' }, StdModule.say, { npcHandler = npcHandler, text = 'I am the captain of this ship.' })
-keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = 'I\'m Karith. I don\'t belong to a caste any longer, and only serve the Yalahari.' })
-keywordHandler:addKeyword({ 'yalahar' }, StdModule.say, { npcHandler = npcHandler, text = 'The city was a marvel to behold. It is certain that it have been the many foreigners that ruined it.' })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am the captain of this ship." })
+keywordHandler:addKeyword({ "captain" }, StdModule.say, { npcHandler = npcHandler, text = "I am the captain of this ship." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I'm Karith. I don't belong to a caste any longer, and only serve the Yalahari." })
+keywordHandler:addKeyword({ "yalahar" }, StdModule.say, { npcHandler = npcHandler, text = "The city was a marvel to behold. It is certain that it have been the many foreigners that ruined it." })
 
 -- Greeting message
-keywordHandler:addGreetKeyword({ "ashari" }, { npcHandler = npcHandler, text = "Hello! Tell me what\'s on your mind. Time is money." })
+keywordHandler:addGreetKeyword({ "ashari" }, { npcHandler = npcHandler, text = "Hello! Tell me what's on your mind. Time is money." })
 --Farewell message
 keywordHandler:addFarewellKeyword({ "asgha thrazi" }, { npcHandler = npcHandler, text = "Goodbye, |PLAYERNAME|." })
 

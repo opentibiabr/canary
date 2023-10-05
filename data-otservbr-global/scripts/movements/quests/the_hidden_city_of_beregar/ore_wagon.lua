@@ -8,8 +8,7 @@ function oreWagon.onStepIn(creature, item, position, fromPosition)
 
 	if player:getStorageValue(Storage.HiddenCityOfBeregar.OreWagon) ~= 1 then
 		player:setStorageValue(Storage.HiddenCityOfBeregar.OreWagon, 1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			"You have found the entrance to the hidden city of Beregar and may now use the ore wagon.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found the entrance to the hidden city of Beregar and may now use the ore wagon.")
 	end
 	return true
 end

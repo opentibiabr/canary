@@ -1,6 +1,6 @@
 local destination = {
 	[64017] = Position(32881, 32474, 9), --Entrance
-	[64018] = Position(32870, 32510, 7) --Exit
+	[64018] = Position(32870, 32510, 7), --Exit
 }
 
 local portHopeDeathling = MoveEvent()

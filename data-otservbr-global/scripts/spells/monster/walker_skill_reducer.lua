@@ -20,14 +20,14 @@ for i = 45, 60 do
 	local area = createCombatArea(AREA_CIRCLE3X3)
 	combat[i]:setArea(area)
 
-
 	function onTargetTile(creature, pos)
 		local creatureTable = {}
 		local n, i = Tile({ x = pos.x, y = pos.y, z = pos.z }).creatures, 1
 		if n ~= 0 then
 			local v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 			while v ~= 0 do
-				if isCreature(v) == true then
+				local creatureFromPos = Creature(v)
+				if creatureFromPos then
 					table.insert(creatureTable, v)
 					if n == #creatureTable then
 						break

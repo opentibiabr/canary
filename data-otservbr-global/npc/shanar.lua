@@ -15,18 +15,18 @@ npcConfig.outfit = {
 	lookHead = 0,
 	lookBody = 94,
 	lookLegs = 105,
-	lookFeet = 76
+	lookFeet = 76,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Fine elven armor and weapons. Have a look.' },
-	{ text = 'Looking for protective spells for druids? I can teach you.' }
+	{ text = "Fine elven armor and weapons. Have a look." },
+	{ text = "Looking for protective spells for druids? I can teach you." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -86,10 +86,12 @@ npcConfig.shop = {
 	{ itemName = "durable exercise axe", clientId = 35280, buy = 945000, count = 1800 },
 	{ itemName = "durable exercise bow", clientId = 35282, buy = 945000, count = 1800 },
 	{ itemName = "durable exercise club", clientId = 35281, buy = 945000, count = 1800 },
+	{ itemName = "durable exercise shield", clientId = 44066, buy = 945000, count = 1800 },
 	{ itemName = "durable exercise sword", clientId = 35279, buy = 945000, count = 1800 },
 	{ itemName = "exercise axe", clientId = 28553, buy = 262500, count = 500 },
 	{ itemName = "exercise bow", clientId = 28555, buy = 262500, count = 500 },
 	{ itemName = "exercise club", clientId = 28554, buy = 262500, count = 500 },
+	{ itemName = "exercise shield", clientId = 44065, buy = 262500, count = 500 },
 	{ itemName = "exercise sword", clientId = 28552, buy = 262500, count = 500 },
 	{ itemName = "fire sword", clientId = 3280, sell = 1000 },
 	{ itemName = "guardian shield", clientId = 3415, sell = 180 },
@@ -99,6 +101,7 @@ npcConfig.shop = {
 	{ itemName = "lasting exercise axe", clientId = 35286, buy = 7560000, count = 14400 },
 	{ itemName = "lasting exercise bow", clientId = 35288, buy = 7560000, count = 14400 },
 	{ itemName = "lasting exercise club", clientId = 35287, buy = 7560000, count = 14400 },
+	{ itemName = "lasting exercise shield", clientId = 44067, buy = 7560000, count = 14400 },
 	{ itemName = "lasting exercise sword", clientId = 35285, buy = 7560000, count = 14400 },
 	{ itemName = "leather armor", clientId = 3361, buy = 35, sell = 12 },
 	{ itemName = "leather helmet", clientId = 3355, buy = 12, sell = 4 },
@@ -112,7 +115,7 @@ npcConfig.shop = {
 	{ itemName = "staff", clientId = 3289, buy = 40 },
 	{ itemName = "steel shield", clientId = 3409, buy = 240 },
 	{ itemName = "throwing knife", clientId = 3298, buy = 25 },
-	{ itemName = "wooden shield", clientId = 3412, buy = 15 }
+	{ itemName = "wooden shield", clientId = 3412, buy = 15 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -123,7 +126,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

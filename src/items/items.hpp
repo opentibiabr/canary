@@ -159,6 +159,9 @@ public:
 	bool isBed() const {
 		return (type == ITEM_TYPE_BED);
 	}
+	bool isWrappable() const {
+		return (wrapableTo > 0);
+	}
 	bool isRune() const {
 		return (type == ITEM_TYPE_RUNE);
 	}
@@ -170,6 +173,9 @@ public:
 	}
 	bool isQuiver() const {
 		return (type == ITEM_TYPE_QUIVER);
+	}
+	bool isAmmo() const {
+		return (type == ITEM_TYPE_AMMO);
 	}
 	bool isLadder() const {
 		return (type == ITEM_TYPE_LADDER);
@@ -198,7 +204,7 @@ public:
 
 	Abilities &getAbilities() {
 		if (!abilities) {
-			abilities.reset(new Abilities());
+			abilities = std::make_unique<Abilities>();
 		}
 		return *abilities;
 	}
@@ -233,9 +239,10 @@ public:
 	std::string description;
 	std::string runeSpellName;
 	std::string vocationString;
+	std::string m_primaryType;
 
 	std::unique_ptr<Abilities> abilities;
-	std::unique_ptr<ConditionDamage> conditionDamage;
+	std::shared_ptr<ConditionDamage> conditionDamage;
 
 	uint32_t levelDoor = 0;
 	uint32_t decayTime = 0;
@@ -334,6 +341,7 @@ public:
 	bool isCorpse = false;
 	bool loaded = false;
 	bool spellbook = false;
+	bool isWrapKit = false;
 };
 
 class Items {

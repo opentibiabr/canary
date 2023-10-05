@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 325
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 1,
 	Stars = 0,
 	Occurence = 1,
-	Locations = "Svargrond and Nibelor."
+	Locations = "Svargrond and Nibelor.",
 }
 
 monster.health = 140
@@ -33,10 +33,9 @@ monster.corpse = 7316
 monster.speed = 132
 monster.manaCost = 420
 
-
 monster.changeTarget = {
 	interval = 4000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -76,8 +75,7 @@ monster.voices = {
 	{ text = "Ruff, ruff!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.defenses = {
 	defense = 5,
@@ -102,7 +100,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

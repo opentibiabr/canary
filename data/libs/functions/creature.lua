@@ -19,8 +19,7 @@ function Creature.getClosestFreePosition(self, position, maxRadius, mustBeReacha
 			end
 
 			local tile = Tile(checkPosition)
-			if tile and tile:getCreatureCount() == 0 and not tile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) and
-					(not mustBeReachable or self:getPathTo(checkPosition)) then
+			if tile and tile:getCreatureCount() == 0 and not tile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) and (not mustBeReachable or self:getPathTo(checkPosition)) then
 				return checkPosition
 			end
 		end
@@ -90,7 +89,7 @@ function Creature:setItemOutfit(item, time)
 
 	local condition = Condition(CONDITION_OUTFIT)
 	condition:setOutfit({
-		lookTypeEx = itemType:getId()
+		lookTypeEx = itemType:getId(),
 	})
 	condition:setTicks(time)
 	self:addCondition(condition)
@@ -194,6 +193,37 @@ function Creature.checkCreatureInsideDoor(player, toPosition)
 	end
 end
 
+function Creature:canAccessPz()
+	if self:isMonster() or (self:isPlayer() and self:isPzLocked()) then
+		return false
+	end
+	return true
+end
+
+function Creature.getKillers(self, onlyPlayers)
+	local killers = {}
+	local inFightTicks = configManager.getNumber(configKeys.PZ_LOCKED)
+	local timeNow = os.mtime()
+	local getCreature = onlyPlayers and Player or Creature
+	for cid, cb in pairs(self:getDamageMap()) do
+		local creature = getCreature(cid)
+		if creature and creature ~= self and (timeNow - cb.ticks) <= inFightTicks then
+			killers[#killers + 1] = {
+				creature = creature,
+				damage = cb.total,
+			}
+		end
+	end
+
+	table.sort(killers, function(a, b)
+		return a.damage > b.damage
+	end)
+	for i, killer in pairs(killers) do
+		killers[i] = killer.creature
+	end
+	return killers
+end
+
 function Creature:addEventStamina(target)
 	local player = self:getPlayer()
 	local monster = target:getMonster()
@@ -203,8 +233,4 @@ function Creature:addEventStamina(target)
 			staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)
 		end
 	end
-end
-
-function Creature:clearIcon()
-	self:setIcon(0, 0)
 end

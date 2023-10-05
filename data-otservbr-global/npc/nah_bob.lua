@@ -11,11 +11,11 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 80
+	lookType = 80,
 }
 
 npcConfig.flags = {
-	floorchange = false
+	floorchange = false,
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -53,34 +53,32 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
-	if MsgContains(message, 'cookie') then
-		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31
-				and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.Djinn) ~= 1 then
-			npcHandler:say('You brought cookies! How nice of you! Can I have one?', npc, creature)
+	if MsgContains(message, "cookie") then
+		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31 and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.Djinn) ~= 1 then
+			npcHandler:say("You brought cookies! How nice of you! Can I have one?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
-	elseif MsgContains(message, 'yes') then
+	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if not player:removeItem(130, 1) then
-				npcHandler:say('You have no cookie that I\'d like.', npc, creature)
+				npcHandler:say("You have no cookie that I'd like.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true
 			end
 
 			player:setStorageValue(Storage.WhatAFoolish.CookieDelivery.Djinn, 1)
 			if player:getCookiesDelivered() == 10 then
-				player:addAchievement('Allow Cookies?')
+				player:addAchievement("Allow Cookies?")
 			end
 
 			npc:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
-			npcHandler:say('You see, good deeds like this will ... YOU ... YOU SPAWN OF EVIL! I WILL MAKE SURE THE MASTER LEARNS ABOUT THIS!', npc, creature)
+			npcHandler:say("You see, good deeds like this will ... YOU ... YOU SPAWN OF EVIL! I WILL MAKE SURE THE MASTER LEARNS ABOUT THIS!", npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		end
-	elseif MsgContains(message, 'no') then
+	elseif MsgContains(message, "no") then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say('I see.', npc, creature)
+			npcHandler:say("I see.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end
@@ -92,7 +90,7 @@ local function onTradeRequest(npc, creature)
 	local playerId = player:getId()
 
 	if player:getStorageValue(Storage.DjinnWar.MaridFaction.Mission03) ~= 3 then
-		npcHandler:say('I\'m sorry, human. But you need Gabel\'s permission to trade with me.', npc, creature)
+		npcHandler:say("I'm sorry, human. But you need Gabel's permission to trade with me.", npc, creature)
 		return false
 	end
 
@@ -102,7 +100,7 @@ end
 npcHandler:setMessage(MESSAGE_GREET, "<Sighs> Another {customer}! I've only just sat down! What is it, |PLAYERNAME|?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Bye now, Neutrala |PLAYERNAME|. Visit old Bob again one day!")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Bye then.")
-npcHandler:setMessage(MESSAGE_SENDTRADE, 'At your service, just browse through my wares.')
+npcHandler:setMessage(MESSAGE_SENDTRADE, "At your service, just browse through my wares.")
 
 npcHandler:setCallback(CALLBACK_ON_TRADE_REQUEST, onTradeRequest)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
@@ -135,7 +133,7 @@ npcConfig.shop = {
 	{ itemName = "shadow sceptre", clientId = 7451, sell = 10000 },
 	{ itemName = "spike sword", clientId = 3271, buy = 8000, sell = 1000 },
 	{ itemName = "thaian sword", clientId = 7391, sell = 16000 },
-	{ itemName = "war hammer", clientId = 3279, buy = 10000, sell = 1200 }
+	{ itemName = "war hammer", clientId = 3279, buy = 10000, sell = 1200 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -146,7 +144,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

@@ -2,9 +2,9 @@ local function removeBosst(fromArea1, fromArea2, bossName)
 	for x = fromArea1.x, fromArea2.x do
 		for y = fromArea1.y, fromArea2.y do
 			for z = fromArea1.z, fromArea2.z do
-				if (getTopCreature({ x = x, y = y, z = z, stackpos = 255 }).uid > 0) then
-					if (isMonster(getTopCreature({ x = x, y = y, z = z, stackpos = 255 }).uid)) then
-						if (string.lower(getCreatureName(getTopCreature({ x = x, y = y, z = z, stackpos = 255 }).uid)) == bossName) then
+				if getTopCreature({ x = x, y = y, z = z, stackpos = 255 }).uid > 0 then
+					if isMonster(getTopCreature({ x = x, y = y, z = z, stackpos = 255 }).uid) then
+						if string.lower(getCreatureName(getTopCreature({ x = x, y = y, z = z, stackpos = 255 }).uid)) == bossName then
 							doRemoveCreature(getTopCreature({ x = x, y = y, z = z, stackpos = 255 }).uid)
 						end
 					end
@@ -19,10 +19,12 @@ local function teleportAllPlayersFromAreat(fromArea1, fromArea2, toPos)
 	for x = fromArea1.x, fromArea2.x do
 		for y = fromArea1.y, fromArea2.y do
 			for z = fromArea1.z, fromArea2.z do
-				if (getTopCreature({ x = x, y = y, z = z, stackpos = 255 }).uid > 0) then
-					if (isPlayer(getTopCreature({ x = x, y = y, z = z, stackpos = 255 }).uid)) then
-						doTeleportThing(getTopCreature({ x = x, y = y, z = z, stackpos = 255 }).uid, toPos)
-						doSendMagicEffect(toPos, CONST_ME_TELEPORT)
+				local tile = Tile(Position({ x = x, y = y, z = z }))
+				if tile then
+					local player = tile:getTopCreature()
+					if player and player:isPlayer() then
+						player:teleportTo(toPos)
+						player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 					end
 				end
 			end
@@ -55,7 +57,7 @@ function oramondGloothLever.onUse(player, item, fromPosition, target, toPosition
 			spec:remove()
 		end
 		setGlobalStorageValue(18081, os.time() + 15 * 60)
-		player:say("Everyone in this place will be teleported into Glooth Fairy\'s hideout in one minute. No way back!!!", TALKTYPE_MONSTER_SAY)
+		player:say("Everyone in this place will be teleported into Glooth Fairy's hideout in one minute. No way back!!!", TALKTYPE_MONSTER_SAY)
 		addEvent(PrepareEnter, 60 * 1000)
 	end
 

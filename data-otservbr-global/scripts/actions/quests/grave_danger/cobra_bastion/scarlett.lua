@@ -12,19 +12,21 @@ local info = {
 local entry = {
 	metalWallId = 31449,
 	roomEntryPos = Position(33395, 32666, 6),
-	roomExitPos = Position(33395, 32668, 6)
+	roomExitPos = Position(33395, 32668, 6),
 }
 
 local transformTo = {
 	[31474] = 31475,
 	[31475] = 31476,
 	[31476] = 31477,
-	[31477] = 31474
+	[31477] = 31474,
 }
 
 local function createArmor(id, amount, pos)
 	local armor = Game.createItem(id, amount, pos)
-	if armor then armor:setActionId(40003) end
+	if armor then
+		armor:setActionId(40003)
+	end
 end
 
 local graveScarlettUid = Action()
@@ -40,7 +42,7 @@ function graveScarlettUid.onUse(player, item, fromPosition, target, toPosition, 
 						if player_ and player_:isPlayer() then
 							if player_:getStorageValue(info.timer) > os.time() then
 								player_:getPosition():sendMagicEffect(CONST_ME_POFF)
-								player_:sendCancelMessage('You are still exhausted from your last battle.')
+								player_:sendCancelMessage("You are still exhausted from your last battle.")
 								return true
 							end
 							table.insert(playersTable, player_:getId())
@@ -58,8 +60,8 @@ function graveScarlettUid.onUse(player, item, fromPosition, target, toPosition, 
 			end
 			local scarlett = Game.createMonster("Scarlett Etzel", Position(33396, 32640, 6))
 			if scarlett then
-				scarlett:registerEvent('scarlettThink')
-				scarlett:registerEvent('scarlettHealth')
+				scarlett:registerEvent("scarlettThink")
+				scarlett:registerEvent("scarlettHealth")
 				scarlett:setStorageValue(Storage.GraveDanger.CobraBastion.Questline, 1)
 			end
 			SCARLETT_MAY_TRANSFORM = 0
@@ -72,11 +74,10 @@ end
 graveScarlettUid:uid(40028)
 graveScarlettUid:register()
 
-
 local mirror = {
 	fromPos = Position(33389, 32641, 6),
 	toPos = Position(33403, 32655, 6),
-	mirrors = { 31474, 31475, 31476, 31477 }
+	mirrors = { 31474, 31475, 31476, 31477 },
 }
 
 local function backMirror()
@@ -96,7 +97,7 @@ local function backMirror()
 	end
 end
 
-local graveScarlettAid = Action();
+local graveScarlettAid = Action()
 function graveScarlettAid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.actionid == 40003 then
 		if table.contains(transformTo, item.itemid) then

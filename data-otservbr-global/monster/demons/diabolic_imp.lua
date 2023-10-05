@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 288
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Inquisition, Pits of Inferno, Fenrock, Fury Dungeon and inside the Hellgore volcano \z
-	on Goroma during the Fire from the Earth Mini World Change."
+	on Goroma during the Fire from the Earth Mini World Change.",
 }
 
 monster.health = 1950
@@ -36,7 +36,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -96,14 +96,14 @@ monster.loot = {
 	{ name = "demonic essence", chance = 8000 },
 	{ name = "flask of demonic blood", chance = 25000, maxCount = 2 },
 	{ name = "magma coat", chance = 250 },
-	{ name = "magma monocle", chance = 430 }
+	{ name = "magma monocle", chance = 430 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -240, condition = { type = CONDITION_POISON, totalDamage = 160, interval = 4000 } },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -100, maxDamage = -240, range = 7, radius = 4, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -430, range = 7, radius = 2, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREATTACK, target = true },
-	{ name = "diabolic imp skill reducer", interval = 2000, chance = 5, range = 5, target = false }
+	{ name = "diabolic imp skill reducer", interval = 2000, chance = 5, range = 5, target = false },
 }
 
 monster.defenses = {
@@ -112,7 +112,7 @@ monster.defenses = {
 	mitigation = 1.46,
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 650, maxDamage = 800, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 800, effect = CONST_ME_MAGIC_RED, target = false, duration = 2000 },
-	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_TELEPORT }
+	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_TELEPORT },
 }
 
 monster.elements = {
@@ -132,7 +132,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

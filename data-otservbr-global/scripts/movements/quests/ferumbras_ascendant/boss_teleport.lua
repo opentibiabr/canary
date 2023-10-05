@@ -5,7 +5,7 @@ local config = {
 	[24833] = { storage = Storage.FerumbrasAscension.Mazoran },
 	[24834] = { storage = Storage.FerumbrasAscension.Tarbaz },
 	[24835] = { storage = Storage.FerumbrasAscension.Shulgrax },
-	[24836] = { storage = Storage.FerumbrasAscension.Plagirath }
+	[24836] = { storage = Storage.FerumbrasAscension.Plagirath },
 }
 
 local bossTeleport = MoveEvent()

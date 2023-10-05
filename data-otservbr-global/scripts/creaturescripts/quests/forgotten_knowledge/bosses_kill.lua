@@ -10,7 +10,7 @@ local bosses = {
 	["the freezing time guardian"] = { storage = Storage.ForgottenKnowledge.TimeGuardianKilled },
 	["the last lore keeper"] = { storage = Storage.ForgottenKnowledge.LastLoreKilled },
 	-- IA interactions
-	["an astral glyph"] = {}
+	["an astral glyph"] = {},
 }
 
 local bossesForgottenKill = CreatureEvent("BossesForgottenKill")

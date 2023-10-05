@@ -56,7 +56,6 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseMagicLevelPoint(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseFieldAbsorbPercent(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseAbsorbPercent(tmpStrValue, valueAttribute, itemType);
-
 	ItemParse::parseSupressDrunk(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseField(tmpStrValue, attributeNode, valueAttribute, itemType);
 	ItemParse::parseReplaceable(tmpStrValue, valueAttribute, itemType);
@@ -73,6 +72,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseCleavePercent(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseTransformOnUse(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parsePrimaryType(tmpStrValue, valueAttribute, itemType);
 }
 
 void ItemParse::parseDummyRate(pugi::xml_node attributeNode, ItemType &itemType) {
@@ -653,7 +653,7 @@ CombatType_t ItemParse::parseFieldCombatType(std::string lowerStringValue, pugi:
 	return COMBAT_NONE;
 }
 
-void ItemParse::parseFieldCombatDamage(ConditionDamage* conditionDamage, std::string stringValue, pugi::xml_node attributeNode) {
+void ItemParse::parseFieldCombatDamage(std::shared_ptr<ConditionDamage> conditionDamage, std::string stringValue, pugi::xml_node attributeNode) {
 	uint32_t combatTicks = 0;
 	int32_t combatDamage = 0;
 	int32_t combatStart = 0;
@@ -697,7 +697,7 @@ void ItemParse::parseFieldCombatDamage(ConditionDamage* conditionDamage, std::st
 void ItemParse::parseField(const std::string &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (tmpStrValue == "field") {
 		CombatType_t combatType = COMBAT_NONE;
-		ConditionDamage* conditionDamage = nullptr;
+		std::shared_ptr<ConditionDamage> conditionDamage = nullptr;
 
 		// Parse fields conditions (fire/energy/poison/drown/physical)
 		combatType = parseFieldCombatType(tmpStrValue, valueAttribute);
@@ -705,13 +705,12 @@ void ItemParse::parseField(const std::string &tmpStrValue, pugi::xml_node attrib
 
 		if (combatType != COMBAT_NONE) {
 			if (conditionDamage) {
-				delete conditionDamage;
 			}
 
-			conditionDamage = new ConditionDamage(conditionId, conditionType);
+			conditionDamage = std::make_shared<ConditionDamage>(conditionId, conditionType);
 
 			itemType.combatType = combatType;
-			itemType.conditionDamage.reset(conditionDamage);
+			itemType.conditionDamage = conditionDamage;
 
 			parseFieldCombatDamage(conditionDamage, tmpStrValue, attributeNode);
 
@@ -938,5 +937,11 @@ void ItemParse::parseReflectDamage(const std::string &tmpStrValue, pugi::xml_att
 void ItemParse::parseTransformOnUse(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (tmpStrValue == "transformonuse") {
 		itemType.m_transformOnUse = pugi::cast<uint16_t>(valueAttribute.value());
+	}
+}
+
+void ItemParse::parsePrimaryType(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+	if (tmpStrValue == "primarytype") {
+		itemType.m_primaryType = asLowerCaseString(valueAttribute.as_string());
 	}
 }

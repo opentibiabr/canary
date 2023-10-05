@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 3,
 	lookFeet = 3,
 	lookAddons = 1,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 1798
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Issavi Sewers, Kilmaresh Catacombs and Kilmaresh Mountains above and under ground."
+	Locations = "Issavi Sewers, Kilmaresh Catacombs and Kilmaresh Mountains above and under ground.",
 }
 
 monster.health = 10000
@@ -38,7 +38,7 @@ monster.enemyFactions = { FACTION_ANUMA, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -96,7 +96,7 @@ monster.loot = {
 	{ name = "lightning boots", chance = 1400 },
 	{ name = "spellweaver's robe", chance = 850 },
 	{ id = 31369, chance = 570 }, -- gryphon mask
-	{ name = "sea horse figurine", chance = 140 }
+	{ name = "sea horse figurine", chance = 140 },
 }
 
 monster.attacks = {
@@ -104,7 +104,7 @@ monster.attacks = {
 	{ name = "firering", interval = 2000, chance = 10, minDamage = -300, maxDamage = -500, target = false },
 	{ name = "firex", interval = 2000, chance = 15, minDamage = -300, maxDamage = -500, target = false },
 	{ name = "combat", interval = 2000, chance = 17, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -500, radius = 2, effect = CONST_ME_FIREATTACK, target = false },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -500, length = 3, spread = 0, effect = CONST_ME_ENERGYHIT, target = false }
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -500, length = 3, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },
 }
 
 monster.defenses = {
@@ -130,7 +130,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

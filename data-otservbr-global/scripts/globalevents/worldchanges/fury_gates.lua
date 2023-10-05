@@ -3,13 +3,13 @@ local gates = {
 	[1] = {
 		city = "Ab'dendriel",
 		mapName = "abdendriel",
-		exitPosition = Position(32680, 31720, 7)
+		exitPosition = Position(32680, 31720, 7),
 	},
 	-- Ankrahmun
 	[2] = {
 		city = "Ankrahmun",
 		mapName = "ankrahmun",
-		exitPosition = Position(33269, 32841, 7)
+		exitPosition = Position(33269, 32841, 7),
 	},
 	-- Carlin
 	[3] = {
@@ -19,8 +19,8 @@ local gates = {
 		burntItems = {
 			{ position = Position(32266, 31842, 7), itemId = 6217 },
 			{ position = Position(32258, 31843, 7), itemId = 6218 },
-			{ position = Position(32264, 31843, 7), itemId = 3917 }
-		}
+			{ position = Position(32264, 31843, 7), itemId = 3917 },
+		},
 	},
 	-- Darashia
 	[4] = {
@@ -28,14 +28,14 @@ local gates = {
 		mapName = "darashia",
 		exitPosition = Position(33304, 32371, 7),
 		burntItems = {
-			{ position = Position(33300, 32366, 7), itemId = 6217 }
-		}
+			{ position = Position(33300, 32366, 7), itemId = 6217 },
+		},
 	},
 	-- Edron
 	[5] = {
 		city = "Edron",
 		mapName = "edron",
-		exitPosition = Position(33221, 31923, 7)
+		exitPosition = Position(33221, 31923, 7),
 	},
 	-- Kazordoon
 	[6] = {
@@ -47,14 +47,14 @@ local gates = {
 			{ position = Position(32573, 31977, 7), itemId = 6218 },
 			{ position = Position(32569, 31984, 7), itemId = 6217 },
 			{ position = Position(32572, 31984, 7), itemId = 6217 },
-			{ position = Position(32572, 31985, 7), itemId = 6218 }
-		}
+			{ position = Position(32572, 31985, 7), itemId = 6218 },
+		},
 	},
 	-- Liberty Bay
 	[7] = {
 		city = "Liberty Bay",
 		mapName = "libertybay",
-		exitPosition = Position(32348, 32693, 7)
+		exitPosition = Position(32348, 32693, 7),
 	},
 	-- Port Hope
 	[8] = {
@@ -62,8 +62,8 @@ local gates = {
 		mapName = "porthope",
 		exitPosition = Position(32530, 32712, 7),
 		burntItems = {
-			{ position = Position(32532, 32719, 7), itemId = 3696 }
-		}
+			{ position = Position(32532, 32719, 7), itemId = 3696 },
+		},
 	},
 	-- Thais
 	[9] = {
@@ -72,8 +72,8 @@ local gates = {
 		exitPosition = Position(32265, 32164, 7),
 		burntItems = {
 			{ position = Position(32269, 32157, 7), itemId = 6218 },
-			{ position = Position(32274, 32165, 7), itemId = 6218 }
-		}
+			{ position = Position(32274, 32165, 7), itemId = 6218 },
+		},
 	},
 	-- Venore
 	[10] = {
@@ -95,9 +95,9 @@ local gates = {
 			{ position = Position(32836, 32087, 7), itemId = 3686 },
 			{ position = Position(32838, 32087, 7), itemId = 3696 },
 			{ position = Position(32835, 32089, 7), itemId = 6217 },
-			{ position = Position(32836, 32091, 7), itemId = 3689 }
-		}
-	}
+			{ position = Position(32836, 32091, 7), itemId = 3689 },
+		},
+	},
 }
 
 local function Furywebhook(message) -- New local function that runs on delay to send webhook message.
@@ -125,13 +125,12 @@ function furygates.onStartup(interval)
 		end
 	end
 
-	Game.loadMap(DATA_DIRECTORY .. '/world/world_changes/fury_gates/' .. gates[gateId].mapName .. '.otbm')
+	Game.loadMap(DATA_DIRECTORY .. "/world/world_changes/fury_gates/" .. gates[gateId].mapName .. ".otbm")
 
 	setGlobalStorageValue(GlobalStorage.FuryGates, gateId)
 
 	logger.info("Fury Gate will be active in {} today", gates[gateId].city)
-	local message = (string.format("Fury Gate will be active in %s today",
-		gates[gateId].city)) -- Declaring the message to send to webhook.
+	local message = (string.format("Fury Gate will be active in %s today", gates[gateId].city)) -- Declaring the message to send to webhook.
 	addEvent(Furywebhook, 60000, message) -- Event with 1 minute delay to send webhook message after server starts.
 
 	return true

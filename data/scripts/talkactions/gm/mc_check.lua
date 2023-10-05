@@ -16,7 +16,7 @@ function mcCheck.onSay(player, words, param)
 				ipList[ip] = {}
 				list = ipList[ip]
 			end
-			list[#list+1] = tmpPlayer
+			list[#list + 1] = tmpPlayer
 		end
 	end
 

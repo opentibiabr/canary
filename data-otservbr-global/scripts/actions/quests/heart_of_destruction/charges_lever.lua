@@ -26,8 +26,9 @@ local function doCheckArea()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
+						for _, creature in pairs(creatures) do
+							local player = Player(creature)
+							if player then
 								return true
 							end
 						end
@@ -49,8 +50,9 @@ local function doCheckArea()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
+						for _, creature in pairs(creatures) do
+							local player = Player(creature)
+							if player then
 								return true
 							end
 						end
@@ -80,11 +82,14 @@ local function clearArea()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
-								c:teleportTo({ x = 32092, y = 31330, z = 12 })
-							elseif isMonster(c) then
-								c:remove()
+						for _, creatureUid in pairs(creatures) do
+							local creature = Creature(creatureUid)
+							if creature then
+								if creature:isPlayer() then
+									creature:teleportTo({ x = 32092, y = 31330, z = 12 })
+								elseif creature:isMonster() then
+									creature:remove()
+								end
 							end
 						end
 					end
@@ -105,11 +110,14 @@ local function clearArea()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
-								c:teleportTo({ x = 32092, y = 31330, z = 12 })
-							elseif isMonster(c) then
-								c:remove()
+						for _, creatureUid in pairs(creatures) do
+							local creature = Creature(creatureUid)
+							if creature then
+								if creature:isPlayer() then
+									creature:teleportTo({ x = 32092, y = 31330, z = 12 })
+								elseif creature:isMonster() then
+									creature:remove()
+								end
 							end
 						end
 					end
@@ -165,9 +173,10 @@ function teleportToCharger()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							if isPlayer(c) then
-								c:teleportTo({ x = c:getPosition().x, y = c:getPosition().y, z = c:getPosition().z - 1 })
+						for _, creature in pairs(creatures) do
+							local player = Player(creature)
+							if player then
+								player:teleportTo({ x = player:getPosition().x, y = player:getPosition().y, z = player:getPosition().z - 1 })
 							end
 						end
 					end
@@ -188,7 +197,7 @@ function heartDestructionCharges.onUse(player, item, fromPosition, itemEx, toPos
 			Position(32092, 31327, 12),
 			Position(32093, 31327, 12),
 			Position(32094, 31327, 12),
-			Position(32095, 31327, 12)
+			Position(32095, 31327, 12),
 		},
 
 		newPos = { x = 32135, y = 31363, z = 14 },
@@ -199,11 +208,14 @@ function heartDestructionCharges.onUse(player, item, fromPosition, itemEx, toPos
 	if item.actionid == 14320 then
 		if item.itemid == 8911 then
 			if player:getPosition().x == pushPos.x and player:getPosition().y == pushPos.y and player:getPosition().z == pushPos.z then
-				local storePlayers, playerTile = {}
+				local storePlayers = {}
 				for i = 1, #config.playerPositions do
-					playerTile = Tile(config.playerPositions[i]):getTopCreature()
-					if isPlayer(playerTile) then
-						storePlayers[#storePlayers+1] = playerTile
+					local tile = Tile(Position(config.playerPositions[i]))
+					if tile then
+						local playerTile = tile:getTopCreature()
+						if playerTile and playerTile:isPlayer() then
+							storePlayers[#storePlayers + 1] = playerTile
+						end
 					end
 				end
 

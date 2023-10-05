@@ -213,7 +213,7 @@ local positions = {
 	{ x = 33347, y = 31074, z = 8 },
 	{ x = 33347, y = 31075, z = 8 },
 	-- check
-	{ x = 33323, y = 31080, z = 7 }
+	{ x = 33323, y = 31080, z = 7 },
 }
 
 function catchPlayer(player)
@@ -225,15 +225,14 @@ function catchPlayer(player)
 	return true
 end
 
-local trapDoors =
-{
+local trapDoors = {
 	{ doorPos = Position(33385, 31139, 8) },
 	{ doorPos = Position(33385, 31134, 8) },
 	{ doorPos = Position(33385, 31126, 8) },
 	{ doorPos = Position(33385, 31119, 8) },
 	{ doorPos = Position(33385, 31118, 8) },
 	{ doorPos = Position(33380, 31093, 8) },
-	{ doorPos = Position(33380, 31085, 8) }
+	{ doorPos = Position(33380, 31085, 8) },
 }
 
 local crate = MoveEvent()

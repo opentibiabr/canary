@@ -1,6 +1,8 @@
 function getGlobalStorage(key)
 	local keyNumber = tonumber(key)
-	if not keyNumber then key = "'" .. key .. "'" end
+	if not keyNumber then
+		key = "'" .. key .. "'"
+	end
 	local resultId = db.storeQuery("SELECT `value` FROM `global_storage` WHERE `key` = " .. key)
 	if resultId ~= false then
 		local isNumber = tonumber(Result.getString(resultId, "value"))
@@ -19,9 +21,13 @@ end
 
 function setGlobalStorage(key, value)
 	local keyNumber = tonumber(key)
-	if not keyNumber then key = "'" .. key .. "'" end
+	if not keyNumber then
+		key = "'" .. key .. "'"
+	end
 	local valueNumber = tonumber(value)
-	if not valueNumber then value = "'" .. value .. "'" end
+	if not valueNumber then
+		value = "'" .. value .. "'"
+	end
 	db.query("INSERT INTO `global_storage` (`key`, `value`) VALUES (" .. key .. ", " .. value .. ") ON DUPLICATE KEY UPDATE `value` = " .. value)
 end
 
@@ -38,12 +44,7 @@ end
 function Game.convertIpToString(ip)
 	local band = bit.band
 	local rshift = bit.rshift
-	return string.format("%d.%d.%d.%d",
-		band(ip, 0xFF),
-		band(rshift(ip, 8), 0xFF),
-		band(rshift(ip, 16), 0xFF),
-		rshift(ip, 24)
-	)
+	return string.format("%d.%d.%d.%d", band(ip, 0xFF), band(rshift(ip, 8), 0xFF), band(rshift(ip, 16), 0xFF), rshift(ip, 24))
 end
 
 function Game.getHouseByPlayerGUID(playerGUID)
@@ -63,21 +64,23 @@ function Game.getPlayersByAccountNumber(accountNumber)
 	for i = 1, #players do
 		player = players[i]
 		if player:getAccountId() == accountNumber then
-			result[#result+1] = player
+			result[#result + 1] = player
 		end
 	end
 	return result
 end
 
 function Game.getPlayersByIPAddress(ip, mask)
-	if not mask then mask = 0xFFFFFFFF end
+	if not mask then
+		mask = 0xFFFFFFFF
+	end
 	local masked = bit.band(ip, mask)
 	local result = {}
 	local players, player = Game.getPlayers()
 	for i = 1, #players do
 		player = players[i]
 		if bit.band(player:getIp(), mask) == masked then
-			result[#result+1] = player
+			result[#result + 1] = player
 		end
 	end
 	return result
@@ -128,5 +131,10 @@ function Game.getStorageValue(key)
 end
 
 function Game.setStorageValue(key, value)
+	if key == nil then
+		logger.error("[Game.setStorageValue] Key is nil")
+		return
+	end
+
 	globalStorageTable[key] = value
 end

@@ -2,7 +2,7 @@ local vocation = {
 	VOCATION.BASE_ID.SORCERER,
 	VOCATION.BASE_ID.DRUID,
 	VOCATION.BASE_ID.PALADIN,
-	VOCATION.BASE_ID.KNIGHT
+	VOCATION.BASE_ID.KNIGHT,
 }
 
 local condition = Condition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
@@ -38,7 +38,8 @@ function onTargetTile(creature, pos)
 	if n ~= 0 then
 		local v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 		while v ~= 0 do
-			if isCreature(v) == true then
+			local creatureFromPos = Creature(v)
+			if creatureFromPos then
 				table.insert(creatureTable, v)
 				if n == #creatureTable then
 					break
@@ -53,12 +54,11 @@ function onTargetTile(creature, pos)
 			if creatureTable[r] ~= creature then
 				local min = 1500
 				local max = 1700
-				local player = Player(creatureTable[r])
-
-				if isPlayer(creatureTable[r]) == true and table.contains(vocation, player:getVocation():getBaseId()) then
-					doTargetCombatHealth(creature, creatureTable[r], COMBAT_FIREDAMAGE, -min, -max, CONST_ME_NONE)
-				elseif isMonster(creatureTable[r]) == true then
-					doTargetCombatHealth(creature, creatureTable[r], COMBAT_FIREDAMAGE, -min, -max, CONST_ME_NONE)
+				local creatureTarget = Creature(creatureTable[r])
+				if creatureTarget then
+					if (creatureTarget:isPlayer() and table.contains({ vocation }, creatureTarget:getVocation():getBaseId())) or creatureTarget:isMonster() then
+						doTargetCombatHealth(creature, creatureTarget, COMBAT_FIREDAMAGE, -min, -max, CONST_ME_NONE)
+					end
 				end
 			end
 		end

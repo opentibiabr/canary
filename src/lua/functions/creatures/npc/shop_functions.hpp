@@ -14,10 +14,7 @@
 class ShopFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "Shop", "", ShopFunctions::luaCreateShop);
-		registerMetaMethod(L, "Shop", "__gc", ShopFunctions::luaDeleteShop);
-		registerMethod(L, "Shop", "delete", ShopFunctions::luaDeleteShop);
-
+		registerSharedClass(L, "Shop", "", ShopFunctions::luaCreateShop);
 		registerMethod(L, "Shop", "setId", ShopFunctions::luaShopSetId);
 		registerMethod(L, "Shop", "setIdFromName", ShopFunctions::luaShopSetIdFromName);
 		registerMethod(L, "Shop", "setNameItem", ShopFunctions::luaShopSetNameItem);
@@ -31,7 +28,6 @@ public:
 
 private:
 	static int luaCreateShop(lua_State* L);
-	static int luaDeleteShop(lua_State* L);
 	static int luaShopSetId(lua_State* L);
 	static int luaShopSetIdFromName(lua_State* L);
 	static int luaShopSetNameItem(lua_State* L);

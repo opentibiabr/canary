@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 704
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 2,
-	Locations = "Horestis Tomb."
+	Locations = "Horestis Tomb.",
 }
 
 monster.health = 400
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -79,19 +79,19 @@ monster.loot = {
 	{ name = "gold coin", chance = 89000, maxCount = 40 },
 	{ name = "meat", chance = 51060, maxCount = 3 },
 	{ name = "worm", chance = 65000, maxCount = 7 },
-	{ name = "health potion", chance = 19840 }
+	{ name = "health potion", chance = 19840 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -112, condition = { type = CONDITION_POISON, totalDamage = 10, interval = 4000 } }, -- poison
-	{ name = "ghoulish hyaena wave", interval = 2000, chance = 15, target = false }
+	{ name = "ghoulish hyaena wave", interval = 2000, chance = 15, target = false },
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 21,
 	mitigation = 0.80,
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 3000, target = false, duration = 2000 }
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 3000, target = false, duration = 2000 },
 }
 
 monster.elements = {
@@ -111,7 +111,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

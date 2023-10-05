@@ -1,7 +1,7 @@
 local altars = {
 	Position(32777, 31982, 9),
 	Position(32779, 31977, 9),
-	Position(32781, 31982, 9)
+	Position(32781, 31982, 9),
 }
 
 local inquisitionVampire = Action()
@@ -16,7 +16,7 @@ function inquisitionVampire.onUse(player, item, fromPosition, target, toPosition
 				Game.createMonster("The Count", toPosition)
 				return true
 			else
-				k[#k+1] = tmp
+				k[#k + 1] = tmp
 			end
 		end
 		for i = 1, #k do

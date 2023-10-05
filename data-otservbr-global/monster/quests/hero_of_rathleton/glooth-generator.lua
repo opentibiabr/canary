@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a glooth-generator"
 monster.experience = 0
 monster.outfit = {
-	lookTypeEx = 20710
+	lookTypeEx = 20710,
 }
 
 monster.health = 12000
@@ -16,7 +16,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 5
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -56,18 +56,17 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_ENERGYDAMAGE, minDamage = -200, maxDamage = -600, radius = 2, effect = CONST_ME_ENERGYAREA, target = false }
+	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_ENERGYDAMAGE, minDamage = -200, maxDamage = -600, radius = 2, effect = CONST_ME_ENERGYAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 50,
 	armor = 50,
 	--	mitigation = ???,
-	{ name = "glooth-generator summon", interval = 1000, chance = 100, target = false }
+	{ name = "glooth-generator summon", interval = 1000, chance = 100, target = false },
 }
 
 monster.elements = {
@@ -87,7 +86,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

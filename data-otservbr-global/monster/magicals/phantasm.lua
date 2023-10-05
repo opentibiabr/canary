@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 292
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Pits of Inferno, The Inquisition Quest, Deeper Banuta."
+	Locations = "Pits of Inferno, The Inquisition Quest, Deeper Banuta.",
 }
 
 monster.health = 3950
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -70,8 +70,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 4,
 	summons = {
-		{ name = "Phantasm Summon", chance = 20, interval = 2000, count = 4 }
-	}
+		{ name = "Phantasm Summon", chance = 20, interval = 2000, count = 4 },
+	},
 }
 
 monster.voices = {
@@ -102,7 +102,7 @@ monster.loot = {
 	{ name = "shadow sceptre", chance = 550 },
 	{ name = "great mana potion", chance = 32750, maxCount = 2 },
 	{ name = "ultimate health potion", chance = 14680 },
-	{ name = "small topaz", chance = 12810, maxCount = 3 }
+	{ name = "small topaz", chance = 12810, maxCount = 3 },
 }
 
 monster.attacks = {
@@ -110,7 +110,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -250, maxDamage = -610, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_SMALLCLOUDS, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_MANADRAIN, minDamage = -5, maxDamage = -80, radius = 3, effect = CONST_ME_YELLOW_RINGS, target = false },
 	{ name = "phantasm drown", interval = 2000, chance = 15, target = false },
-	{ name = "drunk", interval = 2000, chance = 15, radius = 5, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 }
+	{ name = "drunk", interval = 2000, chance = 15, radius = 5, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
 }
 
 monster.defenses = {
@@ -119,7 +119,7 @@ monster.defenses = {
 	mitigation = 1.10,
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HEALING, minDamage = 228, maxDamage = 449, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 10, speedChange = 500, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
-	{ name = "invisible", interval = 2000, chance = 25, effect = CONST_ME_MAGIC_BLUE }
+	{ name = "invisible", interval = 2000, chance = 25, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -139,7 +139,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

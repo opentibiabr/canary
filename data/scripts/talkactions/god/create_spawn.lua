@@ -16,8 +16,8 @@ function createMonster.onSay(player, words, param)
 			spawntime = tonumber(parameter[2]) or 60,
 			monster = parameter[1],
 			pos = player:getPosition(),
-			status = true
-		}
+			status = true,
+		},
 	}
 	spawn:setPositions(config)
 	spawn:executeSpawn()

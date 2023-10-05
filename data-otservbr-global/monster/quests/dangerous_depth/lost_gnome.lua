@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 15,
 	lookFeet = 7,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 10000
@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 8
+	chance = 8,
 }
 
 monster.strategiesTarget = {
@@ -66,13 +66,12 @@ monster.voices = {
 
 monster.loot = {
 	{ name = "gold coin", chance = 10000, maxCount = 2 },
-	{ name = "heavy old tome", chance = 10000, maxCount = 2 }
+	{ name = "heavy old tome", chance = 10000, maxCount = 2 },
 }
-
 
 monster.defenses = {
 	defense = 33,
-	armor = 45
+	armor = 45,
 	--	mitigation = ???,
 }
 
@@ -93,7 +92,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

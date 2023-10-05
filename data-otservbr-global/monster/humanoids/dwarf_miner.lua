@@ -10,9 +10,8 @@ monster.outfit = {
 	lookLegs = 97,
 	lookFeet = 115,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
-
 
 monster.health = 120
 monster.maxHealth = 120
@@ -23,7 +22,7 @@ monster.manaCost = 420
 
 monster.changeTarget = {
 	interval = 0,
-	chance = 0
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -74,11 +73,11 @@ monster.loot = {
 	{ id = 3456, chance = 11111 }, -- pick
 	{ name = "leather legs", chance = 9090 },
 	{ name = "meat", chance = 3846 },
-	{ name = "iron ore", chance = 793 }
+	{ name = "iron ore", chance = 793 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 },
 }
 
 monster.defenses = {
@@ -104,7 +103,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

@@ -16,11 +16,8 @@ public:
 	explicit Teleport(uint16_t type) :
 		Item(type) {};
 
-	Teleport* getTeleport() override {
-		return this;
-	}
-	const Teleport* getTeleport() const override {
-		return this;
+	std::shared_ptr<Teleport> getTeleport() override {
+		return static_self_cast<Teleport>();
 	}
 
 	// serialization
@@ -34,24 +31,24 @@ public:
 		destPos = std::move(pos);
 	}
 
-	bool checkInfinityLoop(Tile* destTile);
+	bool checkInfinityLoop(std::shared_ptr<Tile> destTile);
 
 	// cylinder implementations
-	ReturnValue queryAdd(int32_t index, const Thing &thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
-	ReturnValue queryMaxCount(int32_t index, const Thing &thing, uint32_t count, uint32_t &maxQueryCount, uint32_t flags) const override;
-	ReturnValue queryRemove(const Thing &thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
-	Cylinder* queryDestination(int32_t &index, const Thing &thing, Item** destItem, uint32_t &flags) override;
+	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override;
+	ReturnValue queryMaxCount(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t &maxQueryCount, uint32_t flags) override;
+	ReturnValue queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override;
+	std::shared_ptr<Cylinder> queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item>* destItem, uint32_t &flags) override;
 
-	void addThing(Thing* thing) override;
-	void addThing(int32_t index, Thing* thing) override;
+	void addThing(std::shared_ptr<Thing> thing) override;
+	void addThing(int32_t index, std::shared_ptr<Thing> thing) override;
 
-	void updateThing(Thing* thing, uint16_t itemId, uint32_t count) override;
-	void replaceThing(uint32_t index, Thing* thing) override;
+	void updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t count) override;
+	void replaceThing(uint32_t index, std::shared_ptr<Thing> thing) override;
 
-	void removeThing(Thing* thing, uint32_t count) override;
+	void removeThing(std::shared_ptr<Thing> thing, uint32_t count) override;
 
-	void postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
-	void postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 
 private:
 	Position destPos;

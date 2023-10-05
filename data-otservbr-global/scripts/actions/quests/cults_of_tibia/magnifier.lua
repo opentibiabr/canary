@@ -15,7 +15,7 @@ function cultsOfTibiaMagnifier.onUse(player, item, fromPosition, target, toPosit
 		return false
 	end
 
-	if (table.contains({ 2622, 2601, 2596, 2612, 2618 }, target:getId())) then
+	if table.contains({ 2622, 2601, 2596, 2612, 2618 }, target:getId()) then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Nothing special. This picture looks genuine.")
 		target:getPosition():sendMagicEffect(CONST_ME_POFF)
 	elseif target:getPosition() == sqm and target:getId() == 2613 and player:getStorageValue(Storage.CultsOfTibia.MotA.Mission) == 8 then

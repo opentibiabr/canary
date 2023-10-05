@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.raceId = 261
@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Goroma (beyond electric barrier), Laguna Islands, Shattered Isles, Underground Port Hope, \z
-		Mistrock, Treasure Island. There is also one underwater next to The Tibianic, however it is unreachable."
+		Mistrock, Treasure Island. There is also one underwater next to The Tibianic, however it is unreachable.",
 }
 
 monster.health = 290
@@ -36,7 +36,7 @@ monster.manaCost = 505
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -79,11 +79,11 @@ monster.loot = {
 	{ name = "bloody pincers", chance = 6190 },
 	{ name = "chain armor", chance = 5240 },
 	{ name = "brass legs", chance = 2120 },
-	{ name = "white pearl", chance = 530 }
+	{ name = "white pearl", chance = 530 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110, effect = CONST_ME_DRAWBLOOD }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110, effect = CONST_ME_DRAWBLOOD },
 }
 
 monster.defenses = {
@@ -109,7 +109,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
-	{ type = "bleed", condition = false }
+	{ type = "bleed", condition = false },
 }
 
 mType:register(monster)

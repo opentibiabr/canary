@@ -29,13 +29,13 @@ local targetIdList = {
 
 	--spirit potions kegs
 	[25913] = { itemId = 284, transform = 7642 }, -- Great Spirit --
-	[25914] = { itemId = 284, transform = 23374 } --Ultimate Spirit --
+	[25914] = { itemId = 284, transform = 23374 }, --Ultimate Spirit --
 }
 
 local flasks = Action()
 
 function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not target then
+	if not target or not target:getItem() then
 		return false
 	end
 

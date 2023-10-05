@@ -16,8 +16,8 @@
 class Party;
 class Player;
 
-using UsersMap = std::map<uint32_t, Player*>;
-using InvitedMap = std::map<uint32_t, const Player*>;
+using UsersMap = std::map<uint32_t, std::shared_ptr<Player>>;
+using InvitedMap = std::map<uint32_t, std::shared_ptr<Player>>;
 
 class ChatChannel {
 public:
@@ -28,11 +28,11 @@ public:
 
 	virtual ~ChatChannel() = default;
 
-	bool addUser(Player &player);
-	bool removeUser(const Player &player);
-	bool hasUser(const Player &player);
+	bool addUser(const std::shared_ptr<Player> &player);
+	bool removeUser(const std::shared_ptr<Player> &player);
+	bool hasUser(const std::shared_ptr<Player> &player);
 
-	bool talk(const Player &fromPlayer, SpeakClasses type, const std::string &text);
+	bool talk(const std::shared_ptr<Player> &fromPlayer, SpeakClasses type, const std::string &text);
 	void sendToAll(const std::string &message, SpeakClasses type) const;
 
 	const std::string &getName() const {
@@ -56,10 +56,10 @@ public:
 		return publicChannel;
 	}
 
-	bool executeOnJoinEvent(const Player &player);
-	bool executeCanJoinEvent(const Player &player);
-	bool executeOnLeaveEvent(const Player &player);
-	bool executeOnSpeakEvent(const Player &player, SpeakClasses &type, const std::string &message);
+	bool executeOnJoinEvent(const std::shared_ptr<Player> &player);
+	bool executeCanJoinEvent(const std::shared_ptr<Player> &player);
+	bool executeOnLeaveEvent(const std::shared_ptr<Player> &player);
+	bool executeOnSpeakEvent(const std::shared_ptr<Player> &player, SpeakClasses &type, const std::string &message);
 
 protected:
 	UsersMap users;
@@ -91,14 +91,14 @@ public:
 
 	bool isInvited(uint32_t guid) const;
 
-	void invitePlayer(const Player &player, Player &invitePlayer);
-	void excludePlayer(const Player &player, Player &excludePlayer);
+	void invitePlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &invitePlayer);
+	void excludePlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &excludePlayer);
 
 	bool removeInvite(uint32_t guid);
 
 	void closeChannel() const;
 
-	const InvitedMap* getInvitedUsers() const override {
+	[[nodiscard]] const InvitedMap* getInvitedUsers() const override {
 		return &invites;
 	}
 
@@ -107,7 +107,7 @@ private:
 	uint32_t owner = 0;
 };
 
-using ChannelList = std::list<ChatChannel*>;
+using ChannelList = std::list<std::shared_ptr<ChatChannel>>;
 
 class Chat {
 public:
@@ -123,35 +123,35 @@ public:
 
 	bool load();
 
-	ChatChannel* createChannel(const Player &player, uint16_t channelId);
-	bool deleteChannel(const Player &player, uint16_t channelId);
+	std::shared_ptr<ChatChannel> createChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
+	bool deleteChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
 
-	ChatChannel* addUserToChannel(Player &player, uint16_t channelId);
-	bool removeUserFromChannel(const Player &player, uint16_t channelId);
-	void removeUserFromAllChannels(const Player &player);
+	std::shared_ptr<ChatChannel> addUserToChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
+	bool removeUserFromChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
+	void removeUserFromAllChannels(const std::shared_ptr<Player> &player);
 
-	bool talkToChannel(const Player &player, SpeakClasses type, const std::string &text, uint16_t channelId);
+	bool talkToChannel(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &text, uint16_t channelId);
 
-	ChannelList getChannelList(const Player &player);
+	ChannelList getChannelList(const std::shared_ptr<Player> &player);
 
-	ChatChannel* getChannel(const Player &player, uint16_t channelId);
-	ChatChannel* getChannelById(uint16_t channelId);
-	ChatChannel* getGuildChannelById(uint32_t guildId);
-	PrivateChatChannel* getPrivateChannel(const Player &player);
+	std::shared_ptr<ChatChannel> getChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
+	std::shared_ptr<ChatChannel> getChannelById(uint16_t channelId);
+	std::shared_ptr<ChatChannel> getGuildChannelById(uint32_t guildId);
+	std::shared_ptr<PrivateChatChannel> getPrivateChannel(const std::shared_ptr<Player> &player);
 
 	LuaScriptInterface* getScriptInterface() {
 		return &scriptInterface;
 	}
 
 private:
-	std::map<uint16_t, ChatChannel> normalChannels;
-	std::map<uint16_t, PrivateChatChannel> privateChannels;
-	std::map<Party*, ChatChannel> partyChannels;
-	std::map<uint32_t, ChatChannel> guildChannels;
+	std::map<uint16_t, std::shared_ptr<ChatChannel>> normalChannels;
+	std::map<uint16_t, std::shared_ptr<PrivateChatChannel>> privateChannels;
+	std::map<std::shared_ptr<Party>, std::shared_ptr<ChatChannel>> partyChannels;
+	std::map<uint32_t, std::shared_ptr<ChatChannel>> guildChannels;
 
 	LuaScriptInterface scriptInterface;
 
-	PrivateChatChannel dummyPrivate;
+	std::shared_ptr<PrivateChatChannel> dummyPrivate;
 };
 
 constexpr auto g_chat = Chat::getInstance;

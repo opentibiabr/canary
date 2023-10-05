@@ -4,6 +4,7 @@
 ---@field private createBoss function
 ---@field private timeToFightAgain number
 ---@field private timeToDefeat number
+---@field private timeAfterKill number
 ---@field private requiredLevel number
 ---@field private storage number
 ---@field private disabled boolean
@@ -59,6 +60,7 @@ setmetatable(BossLever, {
 			bossPosition = boss.position,
 			timeToFightAgain = config.timeToFightAgain or configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN),
 			timeToDefeat = config.timeToDefeat or configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_DEFEAT),
+			timeAfterKill = config.timeAfterKill or 0,
 			requiredLevel = config.requiredLevel or 0,
 			createBoss = boss.createFunction,
 			storage = config.storage,
@@ -72,7 +74,7 @@ setmetatable(BossLever, {
 			_uid = nil,
 			_aid = nil,
 		}, { __index = BossLever })
-	end
+	end,
 })
 
 ---@param self BossLever
@@ -167,10 +169,12 @@ function BossLever:onUse(player)
 				return true
 			end
 		elseif self.bossPosition then
+			logger.debug("BossLever:onUse - creating boss: {}", self.name)
 			local monster = Game.createMonster(self.name, self.bossPosition, true, true)
 			if not monster then
 				return true
 			end
+			monster:registerEvent("BossLeverOnDeath")
 		end
 		lever:teleportPlayers()
 		lever:setStorageAllPlayers(self.storage, os.time() + self.timeToFightAgain)
@@ -178,13 +182,12 @@ function BossLever:onUse(player)
 			stopEvent(self.timeoutEvent)
 			self.timeoutEvent = nil
 		end
-		self.timeoutEvent = addEvent(zone.removePlayers, self.timeToDefeat * 1000, zone)
+		self.timeoutEvent = addEvent(function(zone)
+			zone:refresh()
+			zone:removePlayers()
+		end, self.timeToDefeat * 1000, zone)
 	end
 	return true
-end
-
-local function toKey(str)
-	return str:lower():gsub(" ", "-"):gsub("%s+", "")
 end
 
 ---@param Zone
@@ -196,12 +199,24 @@ end
 ---@return boolean
 function BossLever:register()
 	local missingParams = {}
-	if not self.name then table.insert(missingParams, "boss.name") end
-	if not self.storage then table.insert(missingParams, "storage") end
-	if not self.playerPositions then table.insert(missingParams, "playerPositions") end
-	if not self.area then table.insert(missingParams, "specPos") end
-	if not self.exit then table.insert(missingParams, "exit") end
-	if not self._position and not self._uid and not self._aid then table.insert(missingParams, "position or uid or aid") end
+	if not self.name then
+		table.insert(missingParams, "boss.name")
+	end
+	if not self.storage then
+		table.insert(missingParams, "storage")
+	end
+	if not self.playerPositions then
+		table.insert(missingParams, "playerPositions")
+	end
+	if not self.area then
+		table.insert(missingParams, "specPos")
+	end
+	if not self.exit then
+		table.insert(missingParams, "exit")
+	end
+	if not self._position and not self._uid and not self._aid then
+		table.insert(missingParams, "position or uid or aid")
+	end
 	if #missingParams > 0 then
 		local name = self.name or "unknown"
 		logger.error("BossLever:register() - boss with name {} missing parameters: {}", name, table.concat(missingParams, ", "))
@@ -215,7 +230,9 @@ function BossLever:register()
 	zone:setRemoveDestination(self.exit)
 
 	local action = Action()
-	action.onUse = function(player) self:onUse(player) end
+	action.onUse = function(player)
+		self:onUse(player)
+	end
 	if self._position then
 		action:position(self._position)
 	end
@@ -226,5 +243,6 @@ function BossLever:register()
 		action:aid(self._aid)
 	end
 	action:register()
+	BossLever[self.name] = self
 	return true
 end

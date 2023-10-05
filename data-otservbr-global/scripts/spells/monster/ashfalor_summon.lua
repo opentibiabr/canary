@@ -17,7 +17,7 @@ local summons = {
 	[16] = { name = "Souleater" },
 	[17] = { name = "Tarnished Spirit" },
 	[18] = { name = "White Shade" },
-	[19] = { name = "Vicious Manbat" }
+	[19] = { name = "Vicious Manbat" },
 }
 
 local combat = Combat()

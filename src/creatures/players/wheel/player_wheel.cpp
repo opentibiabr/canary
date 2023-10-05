@@ -1399,9 +1399,7 @@ void PlayerWheel::loadDedicationAndConvictionPerks() {
 }
 
 void PlayerWheel::addSpellToVector(const std::string &spellName) {
-	if (std::ranges::find(m_playerBonusData.spells.begin(), m_playerBonusData.spells.end(), spellName) == m_playerBonusData.spells.end()) {
-		m_playerBonusData.spells.emplace_back(spellName);
-	}
+	m_playerBonusData.spells.emplace_back(spellName);
 }
 
 void PlayerWheel::loadRevelationPerks() {

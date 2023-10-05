@@ -12,7 +12,6 @@
 #include "server/network/connection/connection.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "server/network/protocol/protocol.hpp"
-#include "server/network/protocol/protocolgame.hpp"
 #include "game/scheduling/scheduler.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "server/server.hpp"

@@ -10,7 +10,6 @@
 #include "pch.hpp"
 
 #include "items/item.hpp"
-#include "items/functions/item/item_parse.hpp"
 #include "items/containers/container.hpp"
 #include "items/decay/decay.hpp"
 #include "game/movement/teleport.hpp"
@@ -281,7 +280,6 @@ void Item::onRemoved() {
 }
 
 void Item::setID(uint16_t newid) {
-	g_logger().debug("[Item::setID] - Setting item id from {} to {}", id, newid);
 	const ItemType &prevIt = Item::items[id];
 	id = newid;
 

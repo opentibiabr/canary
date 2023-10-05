@@ -30,6 +30,7 @@
 #include "items/bed.hpp"
 #include "items/weapons/weapons.hpp"
 #include "core.hpp"
+#include "map/spectators.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -2244,8 +2245,7 @@ void Player::addExperience(std::shared_ptr<Creature> target, uint64_t exp, bool 
 		message.primary.color = TEXTCOLOR_WHITE_EXP;
 		sendTextMessage(message);
 
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, position, false, true);
+		auto spectators = Spectators().find<Player>(position);
 		spectators.erase(static_self_cast<Player>());
 		if (!spectators.empty()) {
 			message.type = MESSAGE_EXPERIENCE_OTHERS;
@@ -2338,8 +2338,7 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 		message.primary.color = TEXTCOLOR_RED;
 		sendTextMessage(message);
 
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, position, false, true);
+		auto spectators = Spectators().find<Player>(position);
 		spectators.erase(static_self_cast<Player>());
 		if (!spectators.empty()) {
 			message.type = MESSAGE_EXPERIENCE_OTHERS;
@@ -2770,14 +2769,9 @@ bool Player::spawn() {
 		return false;
 	}
 
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, position, true);
-	for (std::shared_ptr<Creature> spectator : spectators) {
-		if (!spectator) {
-			continue;
-		}
-
-		if (std::shared_ptr<Player> tmpPlayer = spectator->getPlayer()) {
+	auto spectators = Spectators().find<Creature>(position, true);
+	for (const auto &spectator : spectators) {
+		if (const auto &tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendCreatureAppear(static_self_cast<Player>(), pos, true);
 		}
 
@@ -2813,18 +2807,13 @@ void Player::despawn() {
 
 	std::vector<int32_t> oldStackPosVector;
 
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, tile->getPosition(), true);
+	auto spectators = Spectators().find<Creature>(tile->getPosition(), true);
 	size_t i = 0;
-	for (std::shared_ptr<Creature> spectator : spectators) {
-		if (!spectator) {
-			continue;
-		}
-
-		if (const auto player = spectator->getPlayer()) {
+	for (const auto &spectator : spectators) {
+		if (const auto &player = spectator->getPlayer()) {
 			oldStackPosVector.push_back(player->canSeeCreature(static_self_cast<Player>()) ? tile->getStackposOfCreature(player, getPlayer()) : -1);
 		}
-		if (auto player = spectator->getPlayer()) {
+		if (const auto &player = spectator->getPlayer()) {
 			player->sendRemoveTileThing(tile->getPosition(), oldStackPosVector[i++]);
 		}
 
@@ -4233,7 +4222,7 @@ void Player::doAttacking(uint32_t) {
 		bool result = false;
 
 		std::shared_ptr<Item> tool = getWeapon();
-		const Weapon* weapon = g_weapons().getWeapon(tool);
+		const WeaponShared_ptr weapon = g_weapons().getWeapon(tool);
 		uint32_t delay = getAttackSpeed();
 		bool classicSpeed = g_configManager().getBoolean(CLASSIC_ATTACK_SPEED);
 
@@ -6772,7 +6761,7 @@ bool Player::saySpell(
 	SpeakClasses type,
 	const std::string &text,
 	bool ghostMode,
-	SpectatorHashSet* spectatorsPtr /* = nullptr*/,
+	Spectators* spectatorsPtr /* = nullptr*/,
 	const Position* pos /* = nullptr*/
 ) {
 	if (text.empty()) {
@@ -6784,17 +6773,17 @@ bool Player::saySpell(
 		pos = &getPosition();
 	}
 
-	SpectatorHashSet spectators;
+	Spectators spectators;
 
 	if (!spectatorsPtr || spectatorsPtr->empty()) {
-		// This somewhat complex construct ensures that the cached SpectatorHashSet
+		// This somewhat complex construct ensures that the cached Spectators
 		// is used if available and if it can be used, else a local vector is
 		// used (hopefully the compiler will optimize away the construction of
 		// the temporary when it's not used).
 		if (type != TALKTYPE_YELL && type != TALKTYPE_MONSTER_YELL) {
-			g_game().map.getSpectators(spectators, *pos, false, false, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_Y, MAP_MAX_CLIENT_VIEW_PORT_Y);
+			spectators.find<Creature>(*pos, false, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_Y, MAP_MAX_CLIENT_VIEW_PORT_Y);
 		} else {
-			g_game().map.getSpectators(spectators, *pos, true, false, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2);
+			spectators.find<Creature>(*pos, true, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2);
 		}
 	} else {
 		spectators = (*spectatorsPtr);

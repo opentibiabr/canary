@@ -14,7 +14,6 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "creatures/players/player.hpp"
-#include "game/scheduling/dispatcher.hpp"
 
 phmap::parallel_flat_hash_map<std::string, std::shared_ptr<Zone>> Zone::zones = {};
 const static std::shared_ptr<Zone> nullZone = nullptr;
@@ -35,16 +34,8 @@ std::shared_ptr<Zone> Zone::addZone(const std::string &name) {
 void Zone::addArea(Area area) {
 	for (const Position &pos : area) {
 		positions.insert(pos);
-		std::shared_ptr<Tile> tile = g_game().map.getTile(pos);
-		if (tile) {
-			for (auto item : *tile->getItemList()) {
-				itemAdded(item);
-			}
-			for (auto creature : *tile->getCreatures()) {
-				creatureAdded(creature);
-			}
-		}
 	}
+	refresh();
 }
 
 void Zone::subtractArea(Area area) {
@@ -281,10 +272,18 @@ void Zone::refresh() {
 		if (!tile) {
 			continue;
 		}
-		for (const auto &item : *tile->getItemList()) {
+		const auto &items = tile->getItemList();
+		if (!items) {
+			continue;
+		}
+		for (const auto &item : *items) {
 			itemAdded(item);
 		}
-		for (const auto &creature : *tile->getCreatures()) {
+		const auto &creatures = tile->getCreatures();
+		if (!creatures) {
+			continue;
+		}
+		for (const auto &creature : *creatures) {
 			creatureAdded(creature);
 		}
 	}

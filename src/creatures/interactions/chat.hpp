@@ -98,7 +98,7 @@ public:
 
 	void closeChannel() const;
 
-	const InvitedMap* getInvitedUsers() const override {
+	[[nodiscard]] const InvitedMap* getInvitedUsers() const override {
 		return &invites;
 	}
 
@@ -107,7 +107,7 @@ private:
 	uint32_t owner = 0;
 };
 
-using ChannelList = std::list<ChatChannel*>;
+using ChannelList = std::list<std::shared_ptr<ChatChannel>>;
 
 class Chat {
 public:
@@ -123,10 +123,10 @@ public:
 
 	bool load();
 
-	ChatChannel* createChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
+	std::shared_ptr<ChatChannel> createChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
 	bool deleteChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
 
-	ChatChannel* addUserToChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
+	std::shared_ptr<ChatChannel> addUserToChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
 	bool removeUserFromChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
 	void removeUserFromAllChannels(const std::shared_ptr<Player> &player);
 
@@ -134,24 +134,24 @@ public:
 
 	ChannelList getChannelList(const std::shared_ptr<Player> &player);
 
-	ChatChannel* getChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
-	ChatChannel* getChannelById(uint16_t channelId);
-	ChatChannel* getGuildChannelById(uint32_t guildId);
-	PrivateChatChannel* getPrivateChannel(const std::shared_ptr<Player> &player);
+	std::shared_ptr<ChatChannel> getChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
+	std::shared_ptr<ChatChannel> getChannelById(uint16_t channelId);
+	std::shared_ptr<ChatChannel> getGuildChannelById(uint32_t guildId);
+	std::shared_ptr<PrivateChatChannel> getPrivateChannel(const std::shared_ptr<Player> &player);
 
 	LuaScriptInterface* getScriptInterface() {
 		return &scriptInterface;
 	}
 
 private:
-	std::map<uint16_t, ChatChannel> normalChannels;
-	std::map<uint16_t, PrivateChatChannel> privateChannels;
-	std::map<std::shared_ptr<Party>, ChatChannel> partyChannels;
-	std::map<uint32_t, ChatChannel> guildChannels;
+	std::map<uint16_t, std::shared_ptr<ChatChannel>> normalChannels;
+	std::map<uint16_t, std::shared_ptr<PrivateChatChannel>> privateChannels;
+	std::map<std::shared_ptr<Party>, std::shared_ptr<ChatChannel>> partyChannels;
+	std::map<uint32_t, std::shared_ptr<ChatChannel>> guildChannels;
 
 	LuaScriptInterface scriptInterface;
 
-	PrivateChatChannel dummyPrivate;
+	std::shared_ptr<PrivateChatChannel> dummyPrivate;
 };
 
 constexpr auto g_chat = Chat::getInstance;

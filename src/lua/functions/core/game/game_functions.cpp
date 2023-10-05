@@ -23,10 +23,10 @@
 #include "lua/creature/talkaction.hpp"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "lua/scripts/scripts.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+#include "map/spectators.hpp"
 
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
@@ -69,8 +69,13 @@ int GameFunctions::luaGameGetSpectators(lua_State* L) {
 	int32_t minRangeY = getNumber<int32_t>(L, 6, 0);
 	int32_t maxRangeY = getNumber<int32_t>(L, 7, 0);
 
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, position, multifloor, onlyPlayers, minRangeX, maxRangeX, minRangeY, maxRangeY);
+	Spectators spectators;
+
+	if (onlyPlayers) {
+		spectators.find<Player>(position, multifloor, minRangeX, maxRangeX, minRangeY, maxRangeY);
+	} else {
+		spectators.find<Creature>(position, multifloor, minRangeX, maxRangeX, minRangeY, maxRangeY);
+	}
 
 	lua_createtable(L, spectators.size(), 0);
 
@@ -312,7 +317,6 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 		if (position.x != 0) {
 			std::shared_ptr<Tile> tile = g_game().map.getTile(position);
 			if (!tile) {
-
 				if (!hasTable) {
 					lua_pushnil(L);
 				}
@@ -321,7 +325,6 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 
 			ReturnValue ret = g_game().internalAddItem(tile, item, INDEX_WHEREEVER, FLAG_NOLIMIT);
 			if (ret != RETURNVALUE_NOERROR) {
-
 				if (!hasTable) {
 					lua_pushnil(L);
 				}
@@ -370,7 +373,6 @@ int GameFunctions::luaGameCreateContainer(lua_State* L) {
 		const Position &position = getPosition(L, 3);
 		std::shared_ptr<Tile> tile = g_game().map.getTile(position);
 		if (!tile) {
-
 			lua_pushnil(L);
 			return 1;
 		}
@@ -388,7 +390,7 @@ int GameFunctions::luaGameCreateContainer(lua_State* L) {
 
 int GameFunctions::luaGameCreateMonster(lua_State* L) {
 	// Game.createMonster(monsterName, position[, extended = false[, force = false[, master = nil]]])
-	std::shared_ptr<Monster> monster = Monster::createMonster(getString(L, 1));
+	const auto &monster = Monster::createMonster(getString(L, 1));
 	if (!monster) {
 		lua_pushnil(L);
 		return 1;
@@ -396,8 +398,7 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 
 	bool isSummon = false;
 	if (lua_gettop(L) >= 5) {
-		std::shared_ptr<Creature> master = getCreature(L, 5);
-		if (master) {
+		if (const auto &master = getCreature(L, 5)) {
 			monster->setMaster(master, true);
 			isSummon = true;
 		}
@@ -409,13 +410,11 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 	if (g_game().placeCreature(monster, position, extended, force)) {
 		g_events().eventMonsterOnSpawn(monster, position);
 		g_callbacks().executeCallback(EventCallback_t::monsterOnSpawn, &EventCallback::monsterOnSpawn, monster, position);
-		auto mtype = monster->getMonsterType();
+		const auto &mtype = monster->getMonsterType();
 		if (mtype && mtype->info.raceid > 0 && mtype->info.bosstiaryRace == BosstiaryRarity_t::RARITY_ARCHFOE) {
-			SpectatorHashSet spectators;
-			g_game().map.getSpectators(spectators, monster->getPosition(), true);
-			for (std::shared_ptr<Creature> spectator : spectators) {
-				if (auto tmpPlayer = spectator->getPlayer()) {
-					auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldownRaceId(tmpPlayer);
+			for (const auto &spectator : Spectators().find<Player>(monster->getPosition(), true)) {
+				if (const auto &tmpPlayer = spectator->getPlayer()) {
+					const auto &bossesOnTracker = g_ioBosstiary().getBosstiaryCooldownRaceId(tmpPlayer);
 					// If not have boss to update, then kill loop for economize resources
 					if (bossesOnTracker.size() == 0) {
 						break;
@@ -466,7 +465,6 @@ int GameFunctions::luaGameCreateNpc(lua_State* L) {
 		pushUserdata<Npc>(L, npc);
 		setMetatable(L, -1, "Npc");
 	} else {
-
 		lua_pushnil(L);
 	}
 	return 1;

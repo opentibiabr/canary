@@ -23,8 +23,6 @@ class Map;
 
 struct FindPathParams;
 
-using SpectatorCache = std::map<Position, SpectatorHashSet>;
-
 class FrozenPathingConditionCall;
 
 /**
@@ -96,10 +94,6 @@ public:
 
 	void moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport = false);
 
-	void getSpectators(SpectatorHashSet &spectators, const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
-
-	void clearSpectatorCache();
-
 	/**
 	 * Checks if you can throw an object to that position
 	 *	\param fromPos from Source point
@@ -154,9 +148,6 @@ private:
 		setTile(pos.x, pos.y, pos.z, newTile);
 	}
 
-	SpectatorCache spectatorCache;
-	SpectatorCache playersSpectatorCache;
-
 	std::filesystem::path path;
 	std::string monsterfile;
 	std::string housefile;
@@ -164,9 +155,6 @@ private:
 
 	uint32_t width = 0;
 	uint32_t height = 0;
-
-	// Actually scans the map for spectators
-	void getSpectatorsInternal(SpectatorHashSet &spectators, const Position &centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const;
 
 	friend class Game;
 	friend class IOMap;

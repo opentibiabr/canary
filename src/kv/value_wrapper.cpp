@@ -9,6 +9,9 @@ ValueWrapper::ValueWrapper(const ValueVariant &value, uint64_t timestamp) :
 ValueWrapper::ValueWrapper(const std::string &value, uint64_t timestamp) :
 	data_(value), timestamp_(timestamp) { }
 
+ValueWrapper::ValueWrapper(bool value, uint64_t timestamp) :
+	data_(value), timestamp_(timestamp) { }
+
 ValueWrapper::ValueWrapper(int value, uint64_t timestamp) :
 	data_(value), timestamp_(timestamp) { }
 

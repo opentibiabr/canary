@@ -35,6 +35,8 @@ public:
 		registerMethod(L, "MonsterType", "canPushItems", MonsterTypeFunctions::luaMonsterTypeCanPushItems);
 		registerMethod(L, "MonsterType", "canPushCreatures", MonsterTypeFunctions::luaMonsterTypeCanPushCreatures);
 
+		registerMethod(L, "MonsterType", "critChance", MonsterTypeFunctions::luaMonsterTypeCritChance);
+
 		registerMethod(L, "MonsterType", "name", MonsterTypeFunctions::luaMonsterTypeName);
 
 		registerMethod(L, "MonsterType", "nameDescription", MonsterTypeFunctions::luaMonsterTypeNameDescription);
@@ -260,10 +262,5 @@ private:
 	static int luaMonsterTypeAddSound(lua_State* L);
 	static int luaMonsterTypeGetSounds(lua_State* L);
 	static int luaMonsterTypedeathSound(lua_State* L);
-
-	// Hazard system
-	static int luaMonsterTypeHazardSystemCrit(lua_State* L);
-	static int luaMonsterTypeHazardSystemDodge(lua_State* L);
-	static int luaMonsterTypeHazardSystemSpawnPod(lua_State* L);
-	static int luaMonsterTypeHazardSystemDamageBoost(lua_State* L);
+	static int luaMonsterTypeCritChance(lua_State* L);
 };

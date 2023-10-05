@@ -814,12 +814,6 @@ void Monster::doAttacking(uint32_t interval) {
 	bool resetTicks = interval != 0;
 	attackTicks += interval;
 
-	float forgeAttackBonus = 0;
-	if (monsterForgeClassification > ForgeClassifications_t::FORGE_NORMAL_MONSTER) {
-		uint16_t damageBase = 3;
-		forgeAttackBonus = static_cast<float>(damageBase + 100) / 100.f;
-	}
-
 	const Position &myPos = getPosition();
 	const Position &targetPos = attackedCreature->getPosition();
 
@@ -837,20 +831,8 @@ void Monster::doAttacking(uint32_t interval) {
 					updateLook = false;
 				}
 
-				float multiplier;
-				if (maxCombatValue > 0) { // Defense
-					multiplier = getDefenseMultiplier();
-				} else { // Attack
-					multiplier = getAttackMultiplier();
-				}
-
-				minCombatValue = spellBlock.minCombatValue * multiplier;
-				maxCombatValue = spellBlock.maxCombatValue * multiplier;
-
-				if (maxCombatValue <= 0 && forgeAttackBonus > 0) {
-					minCombatValue *= static_cast<int32_t>(forgeAttackBonus);
-					maxCombatValue *= static_cast<int32_t>(forgeAttackBonus);
-				}
+				minCombatValue = spellBlock.minCombatValue;
+				maxCombatValue = spellBlock.maxCombatValue;
 
 				if (spellBlock.spell == nullptr) {
 					continue;
@@ -1915,15 +1897,8 @@ bool Monster::getCombatValues(int32_t &min, int32_t &max) {
 		return false;
 	}
 
-	float multiplier;
-	if (maxCombatValue > 0) { // Defense
-		multiplier = getDefenseMultiplier();
-	} else { // Attack
-		multiplier = getAttackMultiplier();
-	}
-
-	min = minCombatValue * multiplier;
-	max = maxCombatValue * multiplier;
+	min = minCombatValue;
+	max = maxCombatValue;
 	return true;
 }
 

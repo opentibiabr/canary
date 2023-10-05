@@ -16,11 +16,20 @@
 #include "lua/scripts/lua_environment.hpp"
 
 int KVFunctions::luaKVScoped(lua_State* L) {
-	// KV.scoped(key)
+	// KV.scoped(key) | KV:scoped(key)
 	auto key = getString(L, -1);
+
+	if (isUserdata(L, 1)) {
+		auto scopedKV = getUserdataShared<KV>(L, 1);
+		auto newScope = scopedKV->scoped(key);
+		pushUserdata<KV>(L, newScope);
+		setMetatable(L, -1, "KV");
+		return 1;
+	}
+
 	auto scopedKV = g_kv().scoped(key);
-	pushUserdata<KVStore>(L, scopedKV);
-	setMetatable(L, -1, "KVStore");
+	pushUserdata<KV>(L, scopedKV);
+	setMetatable(L, -1, "KV");
 	return 1;
 }
 
@@ -36,7 +45,7 @@ int KVFunctions::luaKVSet(lua_State* L) {
 	}
 
 	if (isUserdata(L, 1)) {
-		auto scopedKV = getUserdata<KVStore>(L, 1);
+		auto scopedKV = getUserdataShared<KV>(L, 1);
 		scopedKV->set(key, valueWrapper.value());
 		pushBoolean(L, true);
 		return 1;
@@ -57,7 +66,7 @@ int KVFunctions::luaKVGet(lua_State* L) {
 		key = getString(L, -2);
 	}
 	if (isUserdata(L, 1)) {
-		auto scopedKV = getUserdata<KVStore>(L, 1);
+		auto scopedKV = getUserdataShared<KV>(L, 1);
 		valueWrapper = scopedKV->get(key, forceLoad);
 	} else {
 		valueWrapper = g_kv().get(key, forceLoad);
@@ -72,14 +81,14 @@ int KVFunctions::luaKVGet(lua_State* L) {
 }
 
 std::optional<ValueWrapper> KVFunctions::getValueWrapper(lua_State* L) {
-	if (isString(L, -1)) {
-		return ValueWrapper(getString(L, -1));
+	if (isBoolean(L, -1)) {
+		return ValueWrapper(getBoolean(L, -1));
 	}
 	if (isNumber(L, -1)) {
 		return ValueWrapper(getNumber<double>(L, -1));
 	}
-	if (isBoolean(L, -1)) {
-		return ValueWrapper(getBoolean(L, -1));
+	if (isString(L, -1)) {
+		return ValueWrapper(getString(L, -1));
 	}
 
 	if (isTable(L, -1) && lua_objlen(L, -1) > 0) {
@@ -154,6 +163,8 @@ void KVFunctions::pushValueWrapper(lua_State* L, const ValueWrapper &valueWrappe
 			using T = std::decay_t<decltype(arg)>;
 			if constexpr (std::is_same_v<T, StringType>) {
 				pushStringValue(L, arg);
+			} else if constexpr (std::is_same_v<T, BooleanType>) {
+				pushBoolean(L, arg);
 			} else if constexpr (std::is_same_v<T, IntType>) {
 				pushIntValue(L, arg);
 			} else if constexpr (std::is_same_v<T, DoubleType>) {

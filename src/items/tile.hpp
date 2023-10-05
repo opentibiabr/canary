@@ -25,7 +25,6 @@ class Zone;
 
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 using ItemVector = std::vector<std::shared_ptr<Item>>;
-using SpectatorHashSet = phmap::flat_hash_set<std::shared_ptr<Creature>>;
 
 class TileItemVector : private ItemVector {
 public:
@@ -250,8 +249,8 @@ public:
 private:
 	void onAddTileItem(std::shared_ptr<Item> item);
 	void onUpdateTileItem(std::shared_ptr<Item> oldItem, const ItemType &oldType, std::shared_ptr<Item> newItem, const ItemType &newType);
-	void onRemoveTileItem(const SpectatorHashSet &spectators, const std::vector<int32_t> &oldStackPosVector, std::shared_ptr<Item> item);
-	void onUpdateTile(const SpectatorHashSet &spectators);
+	void onRemoveTileItem(const CreatureVector &spectators, const std::vector<int32_t> &oldStackPosVector, std::shared_ptr<Item> item);
+	void onUpdateTile(const CreatureVector &spectators);
 
 	void setTileFlags(std::shared_ptr<Item> item);
 	void resetTileFlags(std::shared_ptr<Item> item);

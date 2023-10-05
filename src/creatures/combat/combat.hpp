@@ -21,8 +21,6 @@ class Spell;
 class Player;
 class MatrixArea;
 
-static const std::unique_ptr<MatrixArea> &MatrixAreaNull {};
-
 // for luascript callback
 class ValueCallback final : public CallBack {
 public:
@@ -247,15 +245,10 @@ private:
 			}
 		}
 
-		auto it = areas.find(dir);
-		if (it == areas.end()) {
-			return MatrixAreaNull;
-		}
-
-		return it->second;
+		return areas[dir];
 	}
 
-	std::map<Direction, std::unique_ptr<MatrixArea>> areas;
+	std::array<std::unique_ptr<MatrixArea>, Direction::DIRECTION_LAST + 1> areas {};
 	bool hasExtArea = false;
 };
 
@@ -368,7 +361,7 @@ private:
 	static void CombatDispelFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data);
 	static void CombatNullFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data);
 
-	static void combatTileEffects(const SpectatorHashSet &spectators, std::shared_ptr<Creature> caster, std::shared_ptr<Tile> tile, const CombatParams &params);
+	static void combatTileEffects(const CreatureVector &spectators, std::shared_ptr<Creature> caster, std::shared_ptr<Tile> tile, const CombatParams &params);
 
 	/**
 	 * @brief Calculate the level formula for combat.

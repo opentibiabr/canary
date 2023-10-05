@@ -445,6 +445,7 @@ end
 
 function Player:onReportBug(message, position, category)
 	local name = self:getName()
+	FS.mkdir_p(string.format("%s/reports/bugs/%s", CORE_DIRECTORY, name))
 	local file = io.open(string.format("%s/reports/bugs/%s/report.txt", CORE_DIRECTORY, name), "a")
 
 	if not file then

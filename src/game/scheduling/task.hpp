@@ -8,6 +8,7 @@
  */
 
 #pragma once
+#include "utils/tools.hpp"
 
 class Task {
 public:
@@ -18,14 +19,16 @@ public:
 	}
 
 	Task(std::function<void(void)> &&f, std::string context, uint32_t delay) :
-		delay(delay), context(std::move(context)), func(std::move(f)) {
+		delay(delay), utime(OTSYS_TIME() + delay), context(std::move(context)), func(std::move(f)) {
+		assert(!this->context.empty() && "Context cannot be empty!");
+	}
+
+	Task(std::function<void(void)> &&f, std::string context, uint32_t delay, bool cycle) :
+		delay(delay), utime(OTSYS_TIME() + delay), cycle(cycle), context(std::move(context)), func(std::move(f)) {
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
 	virtual ~Task() = default;
-	void operator()() {
-		func();
-	}
 
 	void setEventId(uint64_t id) {
 		eventId = id;
@@ -43,8 +46,35 @@ public:
 		return context;
 	}
 
+	time_t getTime() const {
+		return utime;
+	}
+
+	bool isCycle() const {
+		return cycle;
+	}
+
+	bool isCanceled() const {
+		return canceled;
+	}
+
+	void cancel() {
+		canceled = true;
+		func = nullptr;
+	}
+
+	void execute() {
+		if (func) {
+			func();
+
+			if (cycle) {
+				utime = OTSYS_TIME() + delay;
+			}
+		}
+	}
+
 	bool hasTraceableContext() const {
-		return std::set<std::string> {
+		const static auto tasksContext = phmap::flat_hash_set<std::string>({
 			"Creature::checkCreatureWalk",
 			"Decay::checkDecay",
 			"Game::checkCreatureAttack",
@@ -67,12 +97,23 @@ public:
 			"SpawnNpc::checkSpawnNpc",
 			"Webhook::run",
 			"sendRecvMessageCallback",
-		}
-			.contains(context);
+		});
+
+		return tasksContext.contains(context);
 	}
 
+	struct Compare {
+		bool operator()(const std::shared_ptr<Task> &a, const std::shared_ptr<Task> &b) const {
+			return b->utime < a->utime;
+		}
+	};
+
 private:
+	bool canceled = false;
+	bool cycle = false;
+
 	uint32_t delay = 0;
+	time_t utime = 0;
 	uint64_t eventId = 0;
 	std::string context {};
 	std::function<void(void)> func {};

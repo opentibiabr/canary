@@ -46,12 +46,21 @@ CanaryServer::CanaryServer(
 	std::set_new_handler(badAllocationHandler);
 	srand(static_cast<unsigned int>(OTSYS_TIME()));
 
+	g_dispatcher().init();
+
 #ifdef _WIN32
 	SetConsoleTitleA(STATUS_SERVER_NAME);
 #endif
 }
 
 int CanaryServer::run() {
+	g_dispatcher().scheduleEvent(
+		5000, [] {
+			g_logger().info("teste");
+		},
+		"teste"
+	);
+
 	g_dispatcher().addTask(
 		[this] {
 			try {
@@ -365,4 +374,5 @@ void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {
 
 void CanaryServer::shutdown() {
 	inject<ThreadPool>().shutdown();
+	g_dispatcher().shutdown();
 }

@@ -27,7 +27,7 @@ local function sendExerciseRewardModal(player)
 				if inbox and inbox:getEmptySlots() > 0 then
 					local item = inbox:addItem(it.id, it.charges)
 					if item then
-						item:setActionId(IMMOVABLE_ACTION_ID)
+						item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 					else
 						player:sendTextMessage(MESSAGE_LOOK, "You need to have capacity and empty slots to receive.")
 						return
@@ -47,8 +47,8 @@ local function sendExerciseRewardModal(player)
 	window:sendToPlayer(player)
 end
 
-local exercise_reward_modal = TalkAction("!reward")
-function exercise_reward_modal.onSay(player, words, param)
+local exerciseRewardModal = TalkAction("!reward")
+function exerciseRewardModal.onSay(player, words, param)
 	if player:getStorageValue(config.storage) > 0 then
 		player:sendTextMessage(MESSAGE_LOOK, "You already received your exercise weapon reward!")
 		return true
@@ -57,6 +57,6 @@ function exercise_reward_modal.onSay(player, words, param)
 	return true
 end
 
-exercise_reward_modal:separator(" ")
-exercise_reward_modal:groupType("normal")
-exercise_reward_modal:register()
+exerciseRewardModal:separator(" ")
+exerciseRewardModal:groupType("normal")
+exerciseRewardModal:register()

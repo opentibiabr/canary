@@ -11,10 +11,10 @@ local config = {
 }
 
 local function sendExerciseRewardModal(player)
-	local window = ModalWindow {
+	local window = ModalWindow({
 		title = "Exercise Reward",
-		message = 'choose a item'
-	}
+		message = "choose a item",
+	})
 	for _, it in pairs(config.items) do
 		local iType = ItemType(it.id)
 		if iType then
@@ -49,6 +49,9 @@ end
 
 local exerciseRewardModal = TalkAction("!reward")
 function exerciseRewardModal.onSay(player, words, param)
+	if not configManager.getBoolean(configKeys.TOGGLE_RECEIVE_REWARD) then
+		return true
+	end
 	if player:getStorageValue(config.storage) > 0 then
 		player:sendTextMessage(MESSAGE_LOOK, "You already received your exercise weapon reward!")
 		return true

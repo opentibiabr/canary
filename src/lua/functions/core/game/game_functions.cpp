@@ -784,8 +784,8 @@ int GameFunctions::luaGameGetOutfits(lua_State* L) {
 	lua_createtable(L, outfits.size(), 0);
 
 	int index = 0;
-	for (const auto &outfit : outfits) {
-		pushOutfit(L, &outfit);
+	for (const auto outfit : outfits) {
+		pushOutfit(L, outfit);
 		lua_rawseti(L, -2, ++index);
 	}
 

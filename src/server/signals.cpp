@@ -52,21 +52,21 @@ void Signals::asyncWait() {
 void Signals::dispatchSignalHandler(int signal) {
 	switch (signal) {
 		case SIGINT: // Shuts the server down
-			g_dispatcher().addTask(sigintHandler, "sigintHandler");
+			g_dispatcher().addEvent(sigintHandler, "sigintHandler");
 			break;
 		case SIGTERM: // Shuts the server down
-			g_dispatcher().addTask(sigtermHandler, "sigtermHandler");
+			g_dispatcher().addEvent(sigtermHandler, "sigtermHandler");
 			break;
 #ifndef _WIN32
 		case SIGHUP: // Reload config/data
-			g_dispatcher().addTask(sighupHandler, "sighupHandler");
+			g_dispatcher().addEvent(sighupHandler, "sighupHandler");
 			break;
 		case SIGUSR1: // Saves game state
-			g_dispatcher().addTask(sigusr1Handler, "sigusr1Handler");
+			g_dispatcher().addEvent(sigusr1Handler, "sigusr1Handler");
 			break;
 #else
 		case SIGBREAK: // Shuts the server down
-			g_dispatcher().addTask(sigbreakHandler, "sigbreakHandler");
+			g_dispatcher().addEvent(sigbreakHandler, "sigbreakHandler");
 			// hold the thread until other threads end
 			inject<ThreadPool>().shutdown();
 			break;

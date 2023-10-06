@@ -54,14 +54,7 @@ CanaryServer::CanaryServer(
 }
 
 int CanaryServer::run() {
-	g_dispatcher().scheduleEvent(
-		5000, [] {
-			g_logger().info("teste");
-		},
-		"teste"
-	);
-
-	g_dispatcher().addTask(
+	g_dispatcher().addEvent(
 		[this] {
 			try {
 				loadConfigLua();

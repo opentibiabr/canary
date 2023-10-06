@@ -20,83 +20,116 @@ Dispatcher &Dispatcher::getInstance() {
 }
 
 void Dispatcher::init() {
-	thread = std::jthread([&](std::stop_token stoken) {
-		while (!stoken.stop_requested()) {
-			if (taskQueue.state == TaskState::HAS_VALUE) {
-				{
-					std::scoped_lock l(taskQueue.mutex);
-					tasks.insert(tasks.end(), make_move_iterator(taskQueue.list.begin()), make_move_iterator(taskQueue.list.end()));
-					taskQueue.list.clear();
-					taskQueue.state = TaskState::EMPTY;
-				}
+	tasks.thread = std::jthread([&](std::stop_token stoken) {
+		std::unique_lock lock(mutex);
+		tasks.signal.wait(lock, [&]() -> bool {
+			tasks.busy = true;
 
-				for (const auto &task : tasks) {
-					if (task->hasTraceableContext()) {
-						g_logger().trace("Executing task {}.", task->getContext());
-					} else {
-						g_logger().debug("Executing task {}.", task->getContext());
-					}
-
-					++dispatcherCycle;
-
-					task->execute();
-				}
-				tasks.clear();
+			if (!tasks.waitingList.empty()) {
+				tasks.list.insert(tasks.list.end(), make_move_iterator(tasks.waitingList.begin()), make_move_iterator(tasks.waitingList.end()));
+				tasks.waitingList.clear();
 			}
 
-			std::scoped_lock l(scheduledTaskQueue.mutex);
-			const auto currentTime = OTSYS_TIME();
-			for (uint_fast64_t i = 0, max = scheduledTaskQueue.list.size(); i < max && !scheduledTaskQueue.list.empty(); ++i) {
-				const auto &task = scheduledTaskQueue.list.top();
+			for (const auto &task : tasks.list) {
+				if (task->hasTraceableContext()) {
+					g_logger().trace("Executing task {}.", task->getContext());
+				} else {
+					g_logger().debug("Executing task {}.", task->getContext());
+				}
+
+				++dispatcherCycle;
+
+				task->execute();
+			}
+
+			tasks.list.clear();
+
+			try_notify();
+
+			tasks.busy = false;
+
+			return stoken.stop_requested();
+		});
+	});
+
+	scheduledtasks.thread = std::jthread([&](std::stop_token stoken) {
+		std::unique_lock lock(scheduledtasks.mutex);
+
+		scheduledtasks.notify(100);
+
+		scheduledtasks.signal.wait_until(lock, scheduledtasks.cycle, [&]() -> bool {
+			const auto currentTime = std::chrono::system_clock::now();
+			for (uint_fast64_t i = 0, max = scheduledtasks.list.size(); i < max && !scheduledtasks.list.empty(); ++i) {
+				const auto &task = scheduledtasks.list.top();
 				if (task->getTime() > currentTime) {
+					scheduledtasks.cycle = task->getTime() + std::chrono::milliseconds(100);
 					break;
 				}
 
-				task->execute();
-				if (task->isCycle()) {
-					scheduledTaskQueue.list.emplace(task);
+				addTask(task);
+
+				if (!task->isCanceled() && task->isCycle()) {
+					scheduledtasks.list.emplace(task);
 				} else {
-					scheduledTaskQueue.map.erase(task->getEventId());
+					scheduledtasks.map.erase(task->getEventId());
 				}
 
-				scheduledTaskQueue.list.pop();
+				scheduledtasks.list.pop();
 			}
 
-			std::this_thread::sleep_for(std::chrono::milliseconds(50));
-		}
+			return stoken.stop_requested();
+		});
+		g_logger().info("hehe");
 	});
 }
 
 void Dispatcher::addEvent(std::function<void(void)> f, const std::string &context) {
-	std::scoped_lock l(taskQueue.mutex);
-
-	taskQueue.state = TaskState::BUSY;
-
-	taskQueue.list.emplace_back(std::make_unique<Task>(std::move(f), context));
-
-	taskQueue.state = TaskState::HAS_VALUE;
+	addTask(std::make_shared<Task>(std::move(f), context));
 }
 
-uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> f, std::string context, bool cycle) {
-	std::scoped_lock l(scheduledTaskQueue.mutex);
+void Dispatcher::addTask(const std::shared_ptr<Task> &task) {
+	if (tasks.busy) {
+		tasks.waitingList.emplace_back(task);
+		return;
+	}
 
-	const auto &task = std::make_shared<Task>(std::move(f), std::move(context), delay, cycle);
+	std::scoped_lock l(tasks.mutex);
+
+	const bool doSignal = tasks.list.empty();
+	tasks.list.emplace_back(task);
+
+	if (doSignal) {
+		tasks.signal.notify_all();
+	}
+}
+
+uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> task) {
+	std::scoped_lock l(scheduledtasks.mutex);
+
 	task->setEventId(++lastEventId);
 
-	scheduledTaskQueue.list.emplace(task);
-	scheduledTaskQueue.map.emplace(task->getEventId(), task);
+	scheduledtasks.list.emplace(task);
+	scheduledtasks.map.emplace(task->getEventId(), task);
+
+	scheduledtasks.notify(scheduledtasks.list.top()->getDelay());
+	scheduledtasks.signal.notify_one();
 
 	return task->getEventId();
 }
 
-void Dispatcher::stopEvent(uint64_t eventId) {
-	std::scoped_lock l(scheduledTaskQueue.mutex);
+uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> f, std::string context, bool cycle) {
+	const auto &task = std::make_shared<Task>(std::move(f), std::move(context), delay, cycle);
+	return scheduleEvent(task);
+}
 
-	auto it = scheduledTaskQueue.map.find(eventId);
-	if (it == scheduledTaskQueue.map.end()) {
+void Dispatcher::stopEvent(uint64_t eventId) {
+	std::scoped_lock l(scheduledtasks.mutex);
+
+	auto it = scheduledtasks.map.find(eventId);
+	if (it == scheduledtasks.map.end()) {
 		return;
 	}
 
 	it->second->cancel();
-	scheduledTaskQueue.map.erase(it);
+	scheduledtasks.map.erase(it);
 }

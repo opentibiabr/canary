@@ -19,12 +19,12 @@ public:
 	}
 
 	Task(std::function<void(void)> &&f, std::string context, uint32_t delay) :
-		delay(delay), utime(OTSYS_TIME() + delay), context(std::move(context)), func(std::move(f)) {
+		delay(delay), utime(std::chrono::system_clock::now() + std::chrono::milliseconds(delay)), context(std::move(context)), func(std::move(f)) {
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
 	Task(std::function<void(void)> &&f, std::string context, uint32_t delay, bool cycle) :
-		delay(delay), utime(OTSYS_TIME() + delay), cycle(cycle), context(std::move(context)), func(std::move(f)) {
+		delay(delay), utime(std::chrono::system_clock::now() + std::chrono::milliseconds(delay)), cycle(cycle), context(std::move(context)), func(std::move(f)) {
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
@@ -46,7 +46,7 @@ public:
 		return context;
 	}
 
-	time_t getTime() const {
+	std::chrono::system_clock::time_point getTime() const {
 		return utime;
 	}
 
@@ -68,7 +68,7 @@ public:
 			func();
 
 			if (cycle) {
-				utime = OTSYS_TIME() + delay;
+				utime = std::chrono::system_clock::now() + std::chrono::milliseconds(delay);
 			}
 		}
 	}
@@ -113,7 +113,7 @@ private:
 	bool cycle = false;
 
 	uint32_t delay = 0;
-	time_t utime = 0;
+	std::chrono::system_clock::time_point utime;
 	uint64_t eventId = 0;
 	std::string context {};
 	std::function<void(void)> func {};

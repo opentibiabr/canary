@@ -13,7 +13,8 @@
 
 class Task;
 
-const int DISPATCHER_TASK_EXPIRATION = 2000;
+static constexpr uint16_t DISPATCHER_TASK_EXPIRATION = 2000;
+static constexpr uint16_t SCHEDULER_MINTICKS = 50;
 
 /**
  * Dispatcher allow you to dispatch a task async to be executed
@@ -23,8 +24,8 @@ const int DISPATCHER_TASK_EXPIRATION = 2000;
 class Dispatcher {
 public:
 	Dispatcher() {
-		tasks.reserve(1000);
-		taskQueue.list.reserve(1000);
+		tasks.list.reserve(1000);
+		tasks.waitingList.reserve(1000);
 	};
 
 	// Ensures that we don't accidentally copy it
@@ -35,7 +36,8 @@ public:
 
 	void init();
 	void shutdown() {
-		thread.get_stop_source().request_stop();
+		tasks.thread.get_stop_source().request_stop();
+		scheduledtasks.thread.get_stop_source().request_stop();
 	}
 
 	void addEvent(std::function<void(void)> f, const std::string &context);
@@ -46,8 +48,16 @@ public:
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> f, std::string context) {
 		return scheduleEvent(delay, f, context, false);
 	}
+
+	uint64_t scheduleEvent(const std::shared_ptr<Task> task);
+
 	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> f, std::string context) {
 		return scheduleEvent(delay, f, context, true);
+	}
+
+	void addTask(const std::shared_ptr<Task> &task);
+	void addTask(const std::shared_ptr<Task> &task, uint32_t expiresAfterMs) {
+		addTask(task);
 	}
 
 	[[nodiscard]] uint64_t getDispatcherCycle() const {
@@ -58,6 +68,13 @@ public:
 
 private:
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> f, std::string context, bool cycle);
+	void try_notify() {
+		if (tasks.busy && !tasks.waitingList.empty()) {
+			scheduleEvent(
+				50, [&] { tasks.signal.notify_one(); }, "waitingList::notify"
+			);
+		}
+	}
 
 	enum TaskState : uint8_t {
 		EMPTY,
@@ -68,20 +85,33 @@ private:
 	uint64_t dispatcherCycle = 0;
 	std::atomic_uint64_t lastEventId { 0 };
 
-	std::jthread thread;
-	std::vector<std::unique_ptr<Task>> tasks;
+	std::mutex mutex;
+	struct {
+		bool busy { false };
+
+		std::jthread thread;
+		std::condition_variable signal;
+
+		std::mutex mutex;
+
+		std::vector<std::shared_ptr<Task>> list;
+		std::vector<std::shared_ptr<Task>> waitingList;
+	} tasks;
 
 	struct {
-		std::atomic_uint8_t state = TaskState::EMPTY;
-		std::recursive_mutex mutex;
-		std::vector<std::unique_ptr<Task>> list;
-	} taskQueue;
+		void notify(uint16_t ms) {
+			cycle = std::chrono::system_clock::now() + std::chrono::milliseconds(ms);
+		}
 
-	struct {
-		std::recursive_mutex mutex;
+		std::jthread thread;
+		std::condition_variable signal;
+
+		std::mutex mutex;
 		std::priority_queue<std::shared_ptr<Task>, std::deque<std::shared_ptr<Task>>, Task::Compare> list;
 		phmap::flat_hash_map<uint64_t, std::shared_ptr<Task>> map;
-	} scheduledTaskQueue;
+
+		std::chrono::system_clock::time_point cycle;
+	} scheduledtasks;
 };
 
 constexpr auto g_dispatcher = Dispatcher::getInstance;

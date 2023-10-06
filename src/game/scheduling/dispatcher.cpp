@@ -25,7 +25,6 @@ void Dispatcher::init() {
 
 		while (!stoken.stop_requested()) {
 			signal.wait_until(lock, scheduledtasks.cycle);
-
 			{
 				std::scoped_lock l(tasks.mutex);
 
@@ -61,6 +60,12 @@ void Dispatcher::init() {
 					if (task->getTime() > currentTime) {
 						scheduledtasks.cycle = task->getTime();
 						break;
+					}
+
+					if (task->hasTraceableContext()) {
+						g_logger().trace("Executing task {}.", task->getContext());
+					} else {
+						g_logger().debug("Executing task {}.", task->getContext());
 					}
 
 					task->execute();

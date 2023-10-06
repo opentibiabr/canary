@@ -285,18 +285,16 @@ void Game::start(ServiceManager* manager) {
 	int minutes = tms->tm_min;
 	lightHour = (minutes * LIGHT_DAY_LENGTH) / 60;
 
-	g_dispatcher().scheduleEvent(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this), "Game::checkLight");
-	g_dispatcher().scheduleEvent(EVENT_CREATURE_THINK_INTERVAL, std::bind(&Game::checkCreatures, this, 0), "Game::checkCreatures");
-	g_dispatcher().scheduleEvent(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this), "Game::checkImbuements");
-	g_dispatcher().scheduleEvent(EVENT_MS, std::bind_front(&Game::updateForgeableMonsters, this), "Game::updateForgeableMonsters");
 	g_dispatcher().scheduleEvent(EVENT_MS + 1000, std::bind_front(&Game::createFiendishMonsters, this), "Game::createFiendishMonsters");
 	g_dispatcher().scheduleEvent(EVENT_MS + 1000, std::bind_front(&Game::createInfluencedMonsters, this), "Game::createInfluencedMonsters");
 
-	static const std::function<void()> &LUA_GC = [] {
-		g_dispatcher().scheduleEvent(EVENT_LUA_GARBAGE_COLLECTION, LUA_GC, "Calling GC");
-		g_luaEnvironment().collectGarbage();
-	};
-	LUA_GC();
+	g_dispatcher().cycleEvent(EVENT_MS, std::bind_front(&Game::updateForgeableMonsters, this), "Game::updateForgeableMonsters");
+	g_dispatcher().cycleEvent(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this), "Game::checkLight");
+	g_dispatcher().cycleEvent(EVENT_CREATURE_THINK_INTERVAL, std::bind(&Game::checkCreatures, this), "Game::checkCreatures");
+	g_dispatcher().cycleEvent(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this), "Game::checkImbuements");
+	g_dispatcher().cycleEvent(
+		EVENT_LUA_GARBAGE_COLLECTION, [this] { g_luaEnvironment().collectGarbage(); }, "Calling GC"
+	);
 }
 
 GameState_t Game::getGameState() const {
@@ -5674,8 +5672,8 @@ void Game::removeCreatureCheck(std::shared_ptr<Creature> creature) {
 	}
 }
 
-void Game::checkCreatures(size_t index) {
-	g_dispatcher().scheduleEvent(EVENT_CHECK_CREATURE_INTERVAL, std::bind(&Game::checkCreatures, this, (index + 1) % EVENT_CREATURECOUNT), "Game::checkCreatures");
+void Game::checkCreatures() {
+	static size_t index = 0;
 
 	auto &checkCreatureList = checkCreatureLists[index];
 	size_t it = 0, end = checkCreatureList.size();
@@ -5700,6 +5698,8 @@ void Game::checkCreatures(size_t index) {
 		}
 	}
 	cleanup();
+
+	index = (index + 1) % EVENT_CREATURECOUNT;
 }
 
 void Game::changeSpeed(std::shared_ptr<Creature> creature, int32_t varSpeedDelta) {
@@ -7186,8 +7186,6 @@ void Game::addDistanceEffect(const CreatureVector &spectators, const Position &f
 }
 
 void Game::checkImbuements() {
-	g_dispatcher().scheduleEvent(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this), "Game::checkImbuements");
-
 	for (const auto &[mapPlayerId, mapPlayer] : getPlayers()) {
 		if (!mapPlayer) {
 			continue;
@@ -7198,8 +7196,6 @@ void Game::checkImbuements() {
 }
 
 void Game::checkLight() {
-	g_dispatcher().scheduleEvent(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this), "Game::checkLight");
-
 	lightHour += lightHourDelta;
 
 	if (lightHour > LIGHT_DAY_LENGTH) {
@@ -9517,7 +9513,6 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 }
 
 void Game::updateForgeableMonsters() {
-	g_dispatcher().scheduleEvent(EVENT_FORGEABLEMONSTERCHECKINTERVAL, std::bind_front(&Game::updateForgeableMonsters, this), "Game::updateForgeableMonsters");
 	forgeableMonsters.clear();
 	for (auto [monsterId, monster] : monsters) {
 		auto monsterTile = monster->getTile();

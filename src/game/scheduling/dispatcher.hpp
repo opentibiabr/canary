@@ -69,12 +69,6 @@ public:
 private:
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> f, std::string context, bool cycle);
 
-	enum TaskState : uint8_t {
-		EMPTY,
-		BUSY,
-		HAS_VALUE
-	};
-
 	uint64_t dispatcherCycle = 0;
 	std::atomic_uint64_t lastEventId { 0 };
 

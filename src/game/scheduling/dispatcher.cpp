@@ -94,9 +94,11 @@ void Dispatcher::addTask(const std::shared_ptr<Task> &task) {
 	}
 
 	std::scoped_lock l(tasks.mutexList);
+
+	const bool notify = tasks.list.empty();
 	tasks.list.emplace_back(task);
 
-	if (tasks.list.front() == task) {
+	if (notify) {
 		signal.notify_one();
 	}
 }

@@ -100,7 +100,9 @@ void Dispatcher::addEvent(const std::shared_ptr<Task> &task) {
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	std::scoped_lock l(scheduledtasks.mutex);
 
-	task->setEventId(++lastEventId);
+	if (task->getEventId() == 0) {
+		task->setEventId(++lastEventId);
+	}
 
 	scheduledtasks.list.emplace(task);
 	scheduledtasks.map.emplace(task->getEventId(), task);

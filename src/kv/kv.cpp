@@ -11,7 +11,6 @@
 
 #include "kv/kv.hpp"
 #include "lib/di/container.hpp"
-#include "utils/tools.hpp"
 
 KVStore &KVStore::getInstance() {
 	return inject<KVStore>();

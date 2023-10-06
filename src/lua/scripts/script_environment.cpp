@@ -9,7 +9,6 @@
 
 #include "pch.hpp"
 
-#include "declarations.hpp"
 #include "game/game.hpp"
 #include "lua/scripts/luascript.hpp"
 #include "lua/scripts/script_environment.hpp"

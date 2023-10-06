@@ -10,7 +10,6 @@
 #include "pch.hpp"
 
 #include "creatures/creature.hpp"
-#include "map/mapcache.hpp"
 #include "qtreenode.hpp"
 
 bool QTreeLeafNode::newLeaf = false;
@@ -71,7 +70,7 @@ QTreeLeafNode* QTreeNode::getBestLeaf(uint32_t x, uint32_t y, uint32_t level) {
 	return tempLeaf;
 }
 
-void QTreeLeafNode::addCreature(std::shared_ptr<Creature> c) {
+void QTreeLeafNode::addCreature(const std::shared_ptr<Creature> &c) {
 	creature_list.push_back(c);
 
 	if (c->getPlayer()) {

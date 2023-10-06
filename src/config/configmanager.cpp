@@ -12,7 +12,6 @@
 #include "config/configmanager.hpp"
 #include "declarations.hpp"
 #include "game/game.hpp"
-#include "lua/scripts/luajit_sync.hpp"
 #include "server/network/webhook/webhook.hpp"
 
 #if LUA_VERSION_NUM >= 502
@@ -392,6 +391,8 @@ bool ConfigManager::load() {
 	boolean[TOGGLE_MOUNT_IN_PZ] = getGlobalBoolean(L, "toggleMountInProtectionZone", false);
 
 	boolean[TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART] = getGlobalBoolean(L, "togglehouseTransferOnRestart", false);
+
+	boolean[TOGGLE_RECEIVE_REWARD] = getGlobalBoolean(L, "toggleReceiveReward", false);
 
 	loaded = true;
 	lua_close(L);

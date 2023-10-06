@@ -39,24 +39,25 @@ public:
 		signal.notify_one();
 	}
 
-	void addEvent(std::function<void(void)> &&f, std::string &&context);
+	void addEvent(std::function<void(void)> &&f, std::string &&context) {
+		addEvent(std::make_shared<Task>(std::move(f), std::move(context)));
+	}
 	void addEvent(std::function<void(void)> &&f, std::string &&context, uint32_t expiresAfterMs) {
 		addEvent(std::move(f), std::move(context));
 	}
 
+	void addEvent(const std::shared_ptr<Task> &task);
+	void addEvent(const std::shared_ptr<Task> &task, uint32_t expiresAfterMs) {
+		addEvent(task);
+	}
+
+	uint64_t scheduleEvent(const std::shared_ptr<Task> &task);
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string &&context) {
 		return scheduleEvent(delay, std::move(f), std::move(context), false);
 	}
 
-	uint64_t scheduleEvent(const std::shared_ptr<Task> &task);
-
 	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> &&f, std::string &&context) {
 		return scheduleEvent(delay, std::move(f), std::move(context), true);
-	}
-
-	void addTask(const std::shared_ptr<Task> &task);
-	void addTask(const std::shared_ptr<Task> &task, uint32_t expiresAfterMs) {
-		addTask(task);
 	}
 
 	[[nodiscard]] uint64_t getDispatcherCycle() const {
@@ -67,6 +68,9 @@ public:
 
 private:
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string &&context, bool cycle);
+	void waitFor(const std::shared_ptr<Task> &task) {
+		waitTime = task->getTime();
+	}
 
 	ThreadPool &threadPool;
 	std::mutex mutex;

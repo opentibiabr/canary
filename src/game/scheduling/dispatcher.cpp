@@ -8,12 +8,10 @@
  */
 
 #include "pch.hpp"
-#include <thread>
 
-#include "lib/di/container.hpp"
-#include "lib/thread/thread_pool.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "game/scheduling/task.hpp"
+#include "lib/thread/thread_pool.hpp"
+#include "lib/di/container.hpp"
 
 Dispatcher &Dispatcher::getInstance() {
 	return inject<Dispatcher>();
@@ -49,7 +47,7 @@ void Dispatcher::init() {
 				for (uint_fast64_t i = 0, max = scheduledtasks.list.size(); i < max && !scheduledtasks.list.empty(); ++i) {
 					const auto &task = scheduledtasks.list.top();
 					if (task->getTime() > currentTime) {
-						waitTime = task->getTime();
+						waitFor(task);
 						break;
 					}
 
@@ -82,11 +80,7 @@ void Dispatcher::init() {
 	});
 }
 
-void Dispatcher::addEvent(std::function<void(void)> &&f, std::string &&context) {
-	addTask(std::make_shared<Task>(std::move(f), std::move(context)));
-}
-
-void Dispatcher::addTask(const std::shared_ptr<Task> &task) {
+void Dispatcher::addEvent(const std::shared_ptr<Task> &task) {
 	if (busy) {
 		std::scoped_lock l(tasks.mutexWaitingList);
 		tasks.waitingList.emplace_back(task);
@@ -111,7 +105,7 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	scheduledtasks.list.emplace(task);
 	scheduledtasks.map.emplace(task->getEventId(), task);
 
-	waitTime = scheduledtasks.list.top()->getTime();
+	waitFor(scheduledtasks.list.top());
 
 	return task->getEventId();
 }

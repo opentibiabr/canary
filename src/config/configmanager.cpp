@@ -392,6 +392,8 @@ bool ConfigManager::load() {
 
 	boolean[TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART] = getGlobalBoolean(L, "togglehouseTransferOnRestart", false);
 
+	boolean[TOGGLE_RECEIVE_REWARD] = getGlobalBoolean(L, "toggleReceiveReward", false);
+
 	loaded = true;
 	lua_close(L);
 	return true;

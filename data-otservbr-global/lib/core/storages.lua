@@ -140,7 +140,7 @@ Storage = {
 	PremiumAccount = 30058,
 	BattleAxeQuest = 30059,
 	ShrineEntrance = 30060,
-
+	PlayerWeaponReward = 30061,
 	--[[
 	Old storages
 	Over time, this will be dropped and replaced by the table above

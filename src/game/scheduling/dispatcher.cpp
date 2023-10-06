@@ -20,66 +20,61 @@ Dispatcher &Dispatcher::getInstance() {
 }
 
 void Dispatcher::init() {
-	tasks.thread = std::jthread([&](std::stop_token stoken) {
+	thread = std::jthread([&](std::stop_token stoken) {
 		std::unique_lock lock(mutex);
-		tasks.signal.wait(lock, [&]() -> bool {
-			tasks.busy = true;
 
-			if (!tasks.waitingList.empty()) {
-				tasks.list.insert(tasks.list.end(), make_move_iterator(tasks.waitingList.begin()), make_move_iterator(tasks.waitingList.end()));
-				tasks.waitingList.clear();
-			}
+		while (!stoken.stop_requested()) {
+			signal.wait_until(lock, scheduledtasks.cycle);
 
-			for (const auto &task : tasks.list) {
-				if (task->hasTraceableContext()) {
-					g_logger().trace("Executing task {}.", task->getContext());
-				} else {
-					g_logger().debug("Executing task {}.", task->getContext());
+			{
+				std::scoped_lock l(tasks.mutex);
+
+				tasks.busy = true;
+
+				if (!tasks.waitingList.empty()) {
+					tasks.list.insert(tasks.list.end(), make_move_iterator(tasks.waitingList.begin()), make_move_iterator(tasks.waitingList.end()));
+					tasks.waitingList.clear();
 				}
 
-				++dispatcherCycle;
+				for (const auto &task : tasks.list) {
+					if (task->hasTraceableContext()) {
+						g_logger().trace("Executing task {}.", task->getContext());
+					} else {
+						g_logger().debug("Executing task {}.", task->getContext());
+					}
 
-				task->execute();
+					++dispatcherCycle;
+
+					task->execute();
+				}
+
+				tasks.list.clear();
+
+				tasks.busy = false;
 			}
 
-			tasks.list.clear();
-
-			try_notify();
-
-			tasks.busy = false;
-
-			return stoken.stop_requested();
-		});
-	});
-
-	scheduledtasks.thread = std::jthread([&](std::stop_token stoken) {
-		std::unique_lock lock(scheduledtasks.mutex);
-
-		scheduledtasks.notify(100);
-
-		scheduledtasks.signal.wait_until(lock, scheduledtasks.cycle, [&]() -> bool {
 			const auto currentTime = std::chrono::system_clock::now();
-			for (uint_fast64_t i = 0, max = scheduledtasks.list.size(); i < max && !scheduledtasks.list.empty(); ++i) {
-				const auto &task = scheduledtasks.list.top();
-				if (task->getTime() > currentTime) {
-					scheduledtasks.cycle = task->getTime() + std::chrono::milliseconds(100);
-					break;
+			if (currentTime >= scheduledtasks.cycle) {
+				std::scoped_lock l(scheduledtasks.mutex);
+				for (uint_fast64_t i = 0, max = scheduledtasks.list.size(); i < max && !scheduledtasks.list.empty(); ++i) {
+					const auto &task = scheduledtasks.list.top();
+					if (task->getTime() > currentTime) {
+						scheduledtasks.cycle = task->getTime();
+						break;
+					}
+
+					task->execute();
+
+					if (!task->isCanceled() && task->isCycle()) {
+						scheduledtasks.list.emplace(task);
+					} else {
+						scheduledtasks.map.erase(task->getEventId());
+					}
+
+					scheduledtasks.list.pop();
 				}
-
-				addTask(task);
-
-				if (!task->isCanceled() && task->isCycle()) {
-					scheduledtasks.list.emplace(task);
-				} else {
-					scheduledtasks.map.erase(task->getEventId());
-				}
-
-				scheduledtasks.list.pop();
 			}
-
-			return stoken.stop_requested();
-		});
-		g_logger().info("hehe");
+		}
 	});
 }
 
@@ -99,7 +94,7 @@ void Dispatcher::addTask(const std::shared_ptr<Task> &task) {
 	tasks.list.emplace_back(task);
 
 	if (doSignal) {
-		tasks.signal.notify_all();
+		signal.notify_one();
 	}
 }
 
@@ -112,7 +107,6 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> task) {
 	scheduledtasks.map.emplace(task->getEventId(), task);
 
 	scheduledtasks.notify(scheduledtasks.list.top()->getDelay());
-	scheduledtasks.signal.notify_one();
 
 	return task->getEventId();
 }

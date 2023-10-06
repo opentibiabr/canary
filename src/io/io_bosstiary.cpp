@@ -70,7 +70,7 @@ void IOBosstiary::loadBoostedBoss() {
 		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossInfo.size()));
 		auto it = std::next(bossInfo.begin(), randomIndex);
 		if (it == bossInfo.end()) {
-			continue;
+			break;
 		}
 
 		const auto &[randomBossId, randomBossName] = *it;

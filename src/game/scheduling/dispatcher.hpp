@@ -36,8 +36,8 @@ public:
 
 	void init();
 	void shutdown() {
-		tasks.thread.get_stop_source().request_stop();
-		scheduledtasks.thread.get_stop_source().request_stop();
+		thread.get_stop_source().request_stop();
+		signal.notify_one();
 	}
 
 	void addEvent(std::function<void(void)> f, const std::string &context);
@@ -68,13 +68,6 @@ public:
 
 private:
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> f, std::string context, bool cycle);
-	void try_notify() {
-		if (tasks.busy && !tasks.waitingList.empty()) {
-			scheduleEvent(
-				50, [&] { tasks.signal.notify_one(); }, "waitingList::notify"
-			);
-		}
-	}
 
 	enum TaskState : uint8_t {
 		EMPTY,
@@ -86,14 +79,12 @@ private:
 	std::atomic_uint64_t lastEventId { 0 };
 
 	std::mutex mutex;
+	std::jthread thread;
+	std::condition_variable signal;
+
 	struct {
 		bool busy { false };
-
-		std::jthread thread;
-		std::condition_variable signal;
-
 		std::mutex mutex;
-
 		std::vector<std::shared_ptr<Task>> list;
 		std::vector<std::shared_ptr<Task>> waitingList;
 	} tasks;
@@ -103,10 +94,7 @@ private:
 			cycle = std::chrono::system_clock::now() + std::chrono::milliseconds(ms);
 		}
 
-		std::jthread thread;
-		std::condition_variable signal;
-
-		std::mutex mutex;
+		std::recursive_mutex mutex;
 		std::priority_queue<std::shared_ptr<Task>, std::deque<std::shared_ptr<Task>>, Task::Compare> list;
 		phmap::flat_hash_map<uint64_t, std::shared_ptr<Task>> map;
 

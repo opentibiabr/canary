@@ -20,10 +20,9 @@ Dispatcher &Dispatcher::getInstance() {
 }
 
 void Dispatcher::init() {
-	thread = std::jthread([&](std::stop_token stoken) {
+	threadPool.addLoad([this] {
 		std::unique_lock lock(mutex);
-
-		while (!stoken.stop_requested()) {
+		while (!threadPool.getIoContext().stopped()) {
 			signal.wait_until(lock, scheduledtasks.cycle);
 			{
 				std::scoped_lock l(tasks.mutex);

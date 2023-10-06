@@ -8,10 +8,9 @@
  */
 
 #pragma once
-// #include <queue>
-#include "task.hpp"
 
-class Task;
+#include "task.hpp"
+#include "lib/thread/thread_pool.hpp"
 
 static constexpr uint16_t DISPATCHER_TASK_EXPIRATION = 2000;
 static constexpr uint16_t SCHEDULER_MINTICKS = 50;
@@ -23,7 +22,8 @@ static constexpr uint16_t SCHEDULER_MINTICKS = 50;
  */
 class Dispatcher {
 public:
-	Dispatcher() {
+	explicit Dispatcher(ThreadPool &threadPool) :
+		threadPool(threadPool) {
 		tasks.list.reserve(1000);
 		tasks.waitingList.reserve(1000);
 	};
@@ -36,7 +36,6 @@ public:
 
 	void init();
 	void shutdown() {
-		thread.get_stop_source().request_stop();
 		signal.notify_one();
 	}
 
@@ -69,12 +68,12 @@ public:
 private:
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> f, std::string context, bool cycle);
 
-	uint64_t dispatcherCycle = 0;
-	std::atomic_uint64_t lastEventId { 0 };
-
+	ThreadPool &threadPool;
 	std::mutex mutex;
-	std::jthread thread;
 	std::condition_variable signal;
+
+	uint64_t dispatcherCycle = 0;
+	size_t lastEventId { 0 };
 
 	struct {
 		bool busy { false };

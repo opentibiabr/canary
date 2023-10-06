@@ -798,7 +798,7 @@ int GameFunctions::luaGameGetMounts(lua_State* L) {
 	lua_createtable(L, mounts.size(), 0);
 
 	int index = 0;
-	for (const auto &mount : mounts) {
+	for (auto mount : mounts) {
 		pushMount(L, &mount);
 		lua_rawseti(L, -2, ++index);
 	}

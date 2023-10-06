@@ -23,7 +23,8 @@ void Dispatcher::init() {
 	threadPool.addLoad([this] {
 		std::unique_lock lock(mutex);
 		while (!threadPool.getIoContext().stopped()) {
-			signal.wait_until(lock, scheduledtasks.cycle);
+			signal.wait_until(lock, waitTime);
+
 			{
 				std::scoped_lock l(tasks.mutex);
 
@@ -52,12 +53,12 @@ void Dispatcher::init() {
 			}
 
 			const auto currentTime = std::chrono::system_clock::now();
-			if (currentTime >= scheduledtasks.cycle) {
+			if (currentTime >= waitTime) {
 				std::scoped_lock l(scheduledtasks.mutex);
 				for (uint_fast64_t i = 0, max = scheduledtasks.list.size(); i < max && !scheduledtasks.list.empty(); ++i) {
 					const auto &task = scheduledtasks.list.top();
 					if (task->getTime() > currentTime) {
-						scheduledtasks.cycle = task->getTime();
+						waitTime = task->getTime();
 						break;
 					}
 
@@ -77,6 +78,10 @@ void Dispatcher::init() {
 
 					scheduledtasks.list.pop();
 				}
+			}
+
+			if (!tasks.waitingList.empty()) {
+				signal.notify_one();
 			}
 		}
 	});
@@ -110,7 +115,7 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> task) {
 	scheduledtasks.list.emplace(task);
 	scheduledtasks.map.emplace(task->getEventId(), task);
 
-	scheduledtasks.notify(scheduledtasks.list.top()->getDelay());
+	waitTime = scheduledtasks.list.top()->getTime();
 
 	return task->getEventId();
 }

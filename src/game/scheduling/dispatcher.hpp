@@ -68,9 +68,14 @@ public:
 private:
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> f, std::string context, bool cycle);
 
+	void notify(uint16_t ms) {
+		waitTime = std::chrono::system_clock::now() + std::chrono::milliseconds(ms);
+	}
+
 	ThreadPool &threadPool;
 	std::mutex mutex;
 	std::condition_variable signal;
+	std::chrono::system_clock::time_point waitTime;
 
 	uint64_t dispatcherCycle = 0;
 	size_t lastEventId { 0 };
@@ -83,15 +88,9 @@ private:
 	} tasks;
 
 	struct {
-		void notify(uint16_t ms) {
-			cycle = std::chrono::system_clock::now() + std::chrono::milliseconds(ms);
-		}
-
 		std::recursive_mutex mutex;
 		std::priority_queue<std::shared_ptr<Task>, std::deque<std::shared_ptr<Task>>, Task::Compare> list;
 		phmap::flat_hash_map<uint64_t, std::shared_ptr<Task>> map;
-
-		std::chrono::system_clock::time_point cycle;
 	} scheduledtasks;
 };
 

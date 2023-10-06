@@ -59,7 +59,6 @@
     <ClInclude Include="..\src\game\movement\position.hpp" />
     <ClInclude Include="..\src\game\movement\teleport.hpp" />
     <ClInclude Include="..\src\game\scheduling\events_scheduler.hpp" />
-    <ClInclude Include="..\src\game\scheduling\scheduler.hpp" />
     <ClInclude Include="..\src\game\scheduling\dispatcher.hpp" />
     <ClInclude Include="..\src\game\scheduling\task.hpp" />
     <ClInclude Include="..\src\io\fileloader.hpp" />
@@ -261,7 +260,6 @@
     <ClCompile Include="..\src\game\movement\position.cpp" />
     <ClCompile Include="..\src\game\movement\teleport.cpp" />
     <ClCompile Include="..\src\game\scheduling\events_scheduler.cpp" />
-    <ClCompile Include="..\src\game\scheduling\scheduler.cpp" />
     <ClCompile Include="..\src\game\scheduling\dispatcher.cpp" />
     <ClCompile Include="..\src\io\fileloader.cpp" />
     <ClCompile Include="..\src\io\filestream.cpp" />

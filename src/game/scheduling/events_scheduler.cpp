@@ -12,7 +12,6 @@
 #include "config/configmanager.hpp"
 #include "game/scheduling/events_scheduler.hpp"
 #include "lua/scripts/scripts.hpp"
-#include "utils/pugicast.hpp"
 
 bool EventsScheduler::loadScheduleEventFromXml() {
 	pugi::xml_document doc;

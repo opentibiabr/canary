@@ -24,8 +24,8 @@ class Dispatcher {
 public:
 	explicit Dispatcher(ThreadPool &threadPool) :
 		threadPool(threadPool) {
-		tasks.list.reserve(1000);
-		tasks.waitingList.reserve(1000);
+		tasks.list.reserve(2000);
+		tasks.waitingList.reserve(2000);
 	};
 
 	// Ensures that we don't accidentally copy it
@@ -39,19 +39,19 @@ public:
 		signal.notify_one();
 	}
 
-	void addEvent(std::function<void(void)> f, const std::string &context);
-	void addEvent(std::function<void(void)> f, const std::string &context, uint32_t expiresAfterMs) {
-		addEvent(f, context);
+	void addEvent(std::function<void(void)> &&f, std::string &&context);
+	void addEvent(std::function<void(void)> &&f, std::string &&context, uint32_t expiresAfterMs) {
+		addEvent(std::move(f), std::move(context));
 	}
 
-	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> f, std::string context) {
-		return scheduleEvent(delay, f, context, false);
+	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string &&context) {
+		return scheduleEvent(delay, std::move(f), std::move(context), false);
 	}
 
-	uint64_t scheduleEvent(const std::shared_ptr<Task> task);
+	uint64_t scheduleEvent(const std::shared_ptr<Task> &task);
 
-	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> f, std::string context) {
-		return scheduleEvent(delay, f, context, true);
+	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> &&f, std::string &&context) {
+		return scheduleEvent(delay, std::move(f), std::move(context), true);
 	}
 
 	void addTask(const std::shared_ptr<Task> &task);
@@ -66,23 +66,21 @@ public:
 	void stopEvent(uint64_t eventId);
 
 private:
-	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> f, std::string context, bool cycle);
-
-	void notify(uint16_t ms) {
-		waitTime = std::chrono::system_clock::now() + std::chrono::milliseconds(ms);
-	}
+	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string &&context, bool cycle);
 
 	ThreadPool &threadPool;
 	std::mutex mutex;
 	std::condition_variable signal;
 	std::chrono::system_clock::time_point waitTime;
 
-	uint64_t dispatcherCycle = 0;
-	size_t lastEventId { 0 };
+	std::atomic_bool busy { false };
+
+	uint_fast64_t dispatcherCycle = 0;
+	uint_fast64_t lastEventId { 0 };
 
 	struct {
-		bool busy { false };
-		std::mutex mutex;
+		std::mutex mutexList;
+		std::mutex mutexWaitingList;
 		std::vector<std::shared_ptr<Task>> list;
 		std::vector<std::shared_ptr<Task>> waitingList;
 	} tasks;

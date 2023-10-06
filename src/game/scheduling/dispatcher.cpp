@@ -25,16 +25,9 @@ void Dispatcher::init() {
 		while (!threadPool.getIoContext().stopped()) {
 			signal.wait_until(lock, waitTime);
 
+			busy = true;
 			{
-				std::scoped_lock l(tasks.mutex);
-
-				tasks.busy = true;
-
-				if (!tasks.waitingList.empty()) {
-					tasks.list.insert(tasks.list.end(), make_move_iterator(tasks.waitingList.begin()), make_move_iterator(tasks.waitingList.end()));
-					tasks.waitingList.clear();
-				}
-
+				std::scoped_lock l(tasks.mutexList);
 				for (const auto &task : tasks.list) {
 					if (task->hasTraceableContext()) {
 						g_logger().trace("Executing task {}.", task->getContext());
@@ -46,11 +39,9 @@ void Dispatcher::init() {
 
 					task->execute();
 				}
-
 				tasks.list.clear();
-
-				tasks.busy = false;
 			}
+			busy = false;
 
 			const auto currentTime = std::chrono::system_clock::now();
 			if (currentTime >= waitTime) {
@@ -81,33 +72,36 @@ void Dispatcher::init() {
 			}
 
 			if (!tasks.waitingList.empty()) {
+				// Transfer Waiting List data to List
+				tasks.list.insert(tasks.list.end(), make_move_iterator(tasks.waitingList.begin()), make_move_iterator(tasks.waitingList.end()));
+				tasks.waitingList.clear();
+
 				signal.notify_one();
 			}
 		}
 	});
 }
 
-void Dispatcher::addEvent(std::function<void(void)> f, const std::string &context) {
-	addTask(std::make_shared<Task>(std::move(f), context));
+void Dispatcher::addEvent(std::function<void(void)> &&f, std::string &&context) {
+	addTask(std::make_shared<Task>(std::move(f), std::move(context)));
 }
 
 void Dispatcher::addTask(const std::shared_ptr<Task> &task) {
-	if (tasks.busy) {
+	if (busy) {
+		std::scoped_lock l(tasks.mutexWaitingList);
 		tasks.waitingList.emplace_back(task);
 		return;
 	}
 
-	std::scoped_lock l(tasks.mutex);
-
-	const bool doSignal = tasks.list.empty();
+	std::scoped_lock l(tasks.mutexList);
 	tasks.list.emplace_back(task);
 
-	if (doSignal) {
+	if (tasks.list.front() == task) {
 		signal.notify_one();
 	}
 }
 
-uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> task) {
+uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	std::scoped_lock l(scheduledtasks.mutex);
 
 	task->setEventId(++lastEventId);
@@ -120,7 +114,7 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> task) {
 	return task->getEventId();
 }
 
-uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> f, std::string context, bool cycle) {
+uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string &&context, bool cycle) {
 	const auto &task = std::make_shared<Task>(std::move(f), std::move(context), delay, cycle);
 	return scheduleEvent(task);
 }

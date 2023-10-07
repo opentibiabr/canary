@@ -140,8 +140,12 @@ Storage = {
 	PremiumAccount = 30058,
 	BattleAxeQuest = 30059,
 	ShrineEntrance = 30060,
+<<<<<<< HEAD
 	SupremeCubeTimer = 30061,
 
+=======
+	PlayerWeaponReward = 30061,
+>>>>>>> e133007fbbfe489b10a71dffd342db48862d4b2e
 	--[[
 	Old storages
 	Over time, this will be dropped and replaced by the table above

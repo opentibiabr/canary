@@ -128,6 +128,7 @@ class MonsterType {
 		int32_t changeTargetChance = 0;
 		int32_t defense = 0;
 		int32_t armor = 0;
+		uint16_t critChance = 0;
 		int32_t strategiesTargetNearest = 0;
 		int32_t strategiesTargetHealth = 0;
 		int32_t strategiesTargetDamage = 0;
@@ -272,7 +273,7 @@ public:
 	std::map<std::string, std::shared_ptr<MonsterType>> monsters;
 
 private:
-	ConditionDamage* getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval);
+	std::shared_ptr<ConditionDamage> getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval);
 };
 
 constexpr auto g_monsters = Monsters::getInstance;

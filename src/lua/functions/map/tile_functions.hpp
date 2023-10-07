@@ -14,7 +14,7 @@
 class TileFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "Tile", "", TileFunctions::luaTileCreate);
+		registerSharedClass(L, "Tile", "", TileFunctions::luaTileCreate);
 		registerMetaMethod(L, "Tile", "__eq", TileFunctions::luaUserdataCompare);
 
 		registerMethod(L, "Tile", "getPosition", TileFunctions::luaTileGetPosition);

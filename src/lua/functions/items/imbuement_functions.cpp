@@ -9,7 +9,6 @@
 
 #include "pch.hpp"
 
-#include "items/item.hpp"
 #include "items/weapons/weapons.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/functions/items/imbuement_functions.hpp"
@@ -58,7 +57,7 @@ int ImbuementFunctions::luaImbuementGetItems(lua_State* L) {
 		return 1;
 	}
 
-	const auto &items = imbuement->getItems();
+	const auto items = imbuement->getItems();
 
 	lua_createtable(L, items.size(), 0);
 	for (const auto &itm : items) {

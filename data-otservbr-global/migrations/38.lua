@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 38 (create kv store)")
+	logger.info("Updating database to version 39 (create kv store)")
 	db.query([[
 		CREATE TABLE IF NOT EXISTS `kv_store` (
 			`key_name` varchar(191) NOT NULL,

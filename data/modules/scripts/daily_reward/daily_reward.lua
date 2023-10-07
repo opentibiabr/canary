@@ -138,7 +138,7 @@ DailyReward = {
 		[6] = {
 			type = DAILY_REWARD_TYPE_ITEM,
 			systemType = DAILY_REWARD_SYSTEM_TYPE_ONE,
-			items = { 28540, 28541, 28542, 28543, 28544, 28545 },
+			items = { 28540, 28541, 28542, 28543, 28544, 28545, 44064 },
 			freeAccount = 1,
 			premiumAccount = 2,
 			itemCharges = 50,
@@ -463,7 +463,7 @@ function Player.selectDailyReward(self, msg)
 
 		-- Adding items to store inbox
 		local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
-		if inbox then
+		if not inbox then
 			self:sendError("You do not have enough space in your store inbox.")
 			return false
 		end

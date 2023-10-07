@@ -11,7 +11,6 @@
 
 #include "kv/kv.hpp"
 #include "lib/di/container.hpp"
-#include "utils/tools.hpp"
 
 KVStore &KVStore::getInstance() {
 	return inject<KVStore>();
@@ -64,7 +63,20 @@ std::optional<ValueWrapper> KVStore::get(const std::string &key, bool forceLoad 
 		return value;
 	}
 
-	auto &[value, timestamp] = store_[key];
-	lruQueue_.splice(lruQueue_.begin(), lruQueue_, timestamp);
+	auto &[value, lruIt] = store_[key];
+	if (value.isDeleted()) {
+		lruQueue_.splice(lruQueue_.end(), lruQueue_, lruIt);
+		return std::nullopt;
+	}
+	lruQueue_.splice(lruQueue_.begin(), lruQueue_, lruIt);
 	return value;
+}
+
+void KV::remove(const std::string &key) {
+	set(key, ValueWrapper::deleted());
+}
+
+std::shared_ptr<KV> KVStore::scoped(const std::string &scope) {
+	logger.debug("KVStore::scoped({})", scope);
+	return std::make_shared<ScopedKV>(logger, *this, scope);
 }

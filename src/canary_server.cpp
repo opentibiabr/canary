@@ -52,57 +52,60 @@ CanaryServer::CanaryServer(
 }
 
 int CanaryServer::run() {
-	g_dispatcher().addTask([this] {
-		try {
-			loadConfigLua();
+	g_dispatcher().addTask(
+		[this] {
+			try {
+				loadConfigLua();
 
-			logger.info("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");
+				logger.info("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");
 
-			rsa.start();
-			initializeDatabase();
-			loadModules();
-			setWorldType();
-			loadMaps();
+				rsa.start();
+				initializeDatabase();
+				loadModules();
+				setWorldType();
+				loadMaps();
 
-			logger.info("Initializing gamestate...");
-			g_game().setGameState(GAME_STATE_INIT);
+				logger.info("Initializing gamestate...");
+				g_game().setGameState(GAME_STATE_INIT);
 
-			setupHousesRent();
+				setupHousesRent();
+				g_game().transferHouseItemsToDepot();
 
-			IOMarket::checkExpiredOffers();
-			IOMarket::getInstance().updateStatistics();
+				IOMarket::checkExpiredOffers();
+				IOMarket::getInstance().updateStatistics();
 
-			logger.info("Loaded all modules, server starting up...");
+				logger.info("Loaded all modules, server starting up...");
 
 #ifndef _WIN32
-			if (getuid() == 0 || geteuid() == 0) {
-				logger.warn("{} has been executed as root user, "
-							"please consider running it as a normal user",
-							STATUS_SERVER_NAME);
-			}
+				if (getuid() == 0 || geteuid() == 0) {
+					logger.warn("{} has been executed as root user, "
+								"please consider running it as a normal user",
+								STATUS_SERVER_NAME);
+				}
 #endif
 
-			g_game().start(&serviceManager);
-			g_game().setGameState(GAME_STATE_NORMAL);
+				g_game().start(&serviceManager);
+				g_game().setGameState(GAME_STATE_NORMAL);
 
-			g_webhook().sendMessage("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE);
+				g_webhook().sendMessage("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE);
 
-			loaderDone = true;
-			loaderSignal.notify_all();
-		} catch (FailedToInitializeCanary &err) {
-			loadFailed = true;
-			logger.error(err.what());
+				loaderDone = true;
+				loaderSignal.notify_all();
+			} catch (FailedToInitializeCanary &err) {
+				loadFailed = true;
+				logger.error(err.what());
 
-			logger.error("The program will close after pressing the enter key...");
+				logger.error("The program will close after pressing the enter key...");
 
-			if (isatty(STDIN_FILENO)) {
-				getchar();
+				if (isatty(STDIN_FILENO)) {
+					getchar();
+				}
+
+				loaderSignal.notify_all();
 			}
-
-			loaderSignal.notify_all();
-		}
-	},
-						   "CanaryServer::run");
+		},
+		"CanaryServer::run"
+	);
 
 	loaderSignal.wait(loaderUniqueLock, [this] { return loaderDone || loadFailed; });
 
@@ -350,7 +353,7 @@ void CanaryServer::loadModules() {
 
 	g_game().loadBoostedCreature();
 	g_ioBosstiary().loadBoostedBoss();
-	g_ioprey().InitializeTaskHuntOptions();
+	g_ioprey().initializeTaskHuntOptions();
 }
 
 void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {

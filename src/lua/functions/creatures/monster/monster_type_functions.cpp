@@ -280,6 +280,20 @@ int MonsterTypeFunctions::luaMonsterTypeCanPushCreatures(lua_State* L) {
 	return 1;
 }
 
+int MonsterTypeFunctions::luaMonsterTypeCritChance(lua_State* L) {
+	// get: monsterType:critChance() set: monsterType:critChance(int)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 2) {
+			monsterType->info.critChance = getNumber<uint16_t>(L, 2);
+		}
+		lua_pushnumber(L, monsterType->info.critChance);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int32_t MonsterTypeFunctions::luaMonsterTypeName(lua_State* L) {
 	// get: monsterType:name() set: monsterType:name(name)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
@@ -622,7 +636,7 @@ int MonsterTypeFunctions::luaMonsterTypeBestiaryrace(lua_State* L) {
 
 int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 	// get: monsterType:combatImmunities() set: monsterType:combatImmunities(immunity)
-	const auto &monsterType = getUserdataShared<MonsterType>(L, 1);
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (!monsterType) {
 		pushBoolean(L, false);
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));
@@ -678,7 +692,7 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 
 int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 	// get: monsterType:conditionImmunities() set: monsterType:conditionImmunities(immunity)
-	const auto &monsterType = getUserdataShared<MonsterType>(L, 1);
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (!monsterType) {
 		pushBoolean(L, false);
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));

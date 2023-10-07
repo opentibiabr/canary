@@ -11,7 +11,6 @@
 
 #include "declarations.hpp"
 #include "creatures/combat/combat.hpp"
-#include "creatures/creature.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/npcs/npcs.hpp"
@@ -73,7 +72,7 @@ bool NpcType::loadCallback(LuaScriptInterface* scriptInterface) {
 	return true;
 }
 
-void NpcType::loadShop(NpcType* npcType, ShopBlock shopBlock) {
+void NpcType::loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBlock) {
 	ItemType &iType = Item::items.getItemType(shopBlock.itemId);
 
 	// Registering item prices globaly.
@@ -134,7 +133,7 @@ bool Npcs::reload() {
 	return false;
 }
 
-NpcType* Npcs::getNpcType(const std::string &name, bool create /* = false*/) {
+std::shared_ptr<NpcType> Npcs::getNpcType(const std::string &name, bool create /* = false*/) {
 	std::string key = asLowerCaseString(name);
 	auto it = npcs.find(key);
 
@@ -142,11 +141,5 @@ NpcType* Npcs::getNpcType(const std::string &name, bool create /* = false*/) {
 		return it->second;
 	}
 
-	if (!create) {
-		return nullptr;
-	}
-
-	npcs[key] = new NpcType(name);
-
-	return npcs[key];
+	return create ? npcs[key] = std::make_shared<NpcType>(name) : nullptr;
 }

@@ -1,16 +1,19 @@
 local berserk = Condition(CONDITION_ATTRIBUTES)
 berserk:setParameter(CONDITION_PARAM_TICKS, 10 * 60 * 1000)
+berserk:setParameter(CONDITION_PARAM_SUBID, AttrSubId_JeanPierreMelee)
 berserk:setParameter(CONDITION_PARAM_SKILL_MELEE, 5)
 berserk:setParameter(CONDITION_PARAM_SKILL_SHIELD, -10)
 berserk:setParameter(CONDITION_PARAM_BUFF_SPELL, true)
 
 local mastermind = Condition(CONDITION_ATTRIBUTES)
 mastermind:setParameter(CONDITION_PARAM_TICKS, 10 * 60 * 1000)
+mastermind:setParameter(CONDITION_PARAM_SUBID, AttrSubId_JeanPierreMagic)
 mastermind:setParameter(CONDITION_PARAM_STAT_MAGICPOINTS, 3)
 mastermind:setParameter(CONDITION_PARAM_BUFF_SPELL, true)
 
 local bullseye = Condition(CONDITION_ATTRIBUTES)
 bullseye:setParameter(CONDITION_PARAM_TICKS, 10 * 60 * 1000)
+bullseye:setParameter(CONDITION_PARAM_SUBID, AttrSubId_JeanPierreDistance)
 bullseye:setParameter(CONDITION_PARAM_SKILL_DISTANCE, 5)
 bullseye:setParameter(CONDITION_PARAM_SKILL_SHIELD, -10)
 bullseye:setParameter(CONDITION_PARAM_BUFF_SPELL, true)
@@ -159,7 +162,7 @@ local setting = {
 local potions = Action()
 
 function potions.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if type(target) == "userdata" and not target:isPlayer() then
+	if not target or type(target) == "userdata" and not target:isPlayer() then
 		return false
 	end
 

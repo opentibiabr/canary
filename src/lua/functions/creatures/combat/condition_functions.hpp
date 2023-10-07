@@ -14,7 +14,7 @@
 class ConditionFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "Condition", "", ConditionFunctions::luaConditionCreate);
+		registerSharedClass(L, "Condition", "", ConditionFunctions::luaConditionCreate);
 		registerMetaMethod(L, "Condition", "__eq", ConditionFunctions::luaUserdataCompare);
 		registerMetaMethod(L, "Condition", "__gc", ConditionFunctions::luaConditionDelete);
 		registerMethod(L, "Condition", "delete", ConditionFunctions::luaConditionDelete);

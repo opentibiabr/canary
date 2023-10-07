@@ -18,6 +18,7 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "utils/pugicast.hpp"
+#include "map/spectators.hpp"
 
 static constexpr int32_t MONSTER_MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MONSTER_MAXSPAWN_INTERVAL = 86400000; // 1 day
@@ -149,16 +150,14 @@ void SpawnMonster::startSpawnMonsterCheck() {
 
 SpawnMonster::~SpawnMonster() {
 	for (const auto &it : spawnedMonsterMap) {
-		Monster* monster = it.second;
+		std::shared_ptr<Monster> monster = it.second;
 		monster->setSpawnMonster(nullptr);
-		monster->decrementReferenceCounter();
 	}
 }
 
 bool SpawnMonster::findPlayer(const Position &pos) {
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, pos, false, true);
-	for (Creature* spectator : spectators) {
+	auto spectators = Spectators().find<Player>(pos);
+	for (const auto &spectator : spectators) {
 		if (!spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
 			return true;
 		}
@@ -171,23 +170,21 @@ bool SpawnMonster::isInSpawnMonsterZone(const Position &pos) {
 }
 
 bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, const std::shared_ptr<MonsterType> monsterType, const Position &pos, Direction dir, bool startup /*= false*/) {
-	std::unique_ptr<Monster> monster_ptr(new Monster(monsterType));
+	auto monster = std::make_shared<Monster>(monsterType);
 	if (startup) {
 		// No need to send out events to the surrounding since there is no one out there to listen!
-		if (!g_game().internalPlaceCreature(monster_ptr.get(), pos, true)) {
+		if (!g_game().internalPlaceCreature(monster, pos, true)) {
 			return false;
 		}
 	} else {
-		if (!g_game().placeCreature(monster_ptr.get(), pos, false, true)) {
+		if (!g_game().placeCreature(monster, pos, false, true)) {
 			return false;
 		}
 	}
 
-	Monster* monster = monster_ptr.release();
 	monster->setDirection(dir);
 	monster->setSpawnMonster(this);
 	monster->setMasterPos(pos);
-	monster->incrementReferenceCounter();
 
 	spawnedMonsterMap.insert(spawned_pair(spawnMonsterId, monster));
 	spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
@@ -242,7 +239,7 @@ void SpawnMonster::checkSpawnMonster() {
 	}
 
 	if (spawnedMonsterMap.size() < spawnMonsterMap.size()) {
-		checkSpawnMonsterEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this), __FUNCTION__);
+		checkSpawnMonsterEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this), "SpawnMonster::checkSpawnMonster");
 	}
 }
 
@@ -251,7 +248,7 @@ void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, uint
 		spawnMonster(spawnMonsterId, sb.monsterType, sb.pos, sb.direction);
 	} else {
 		g_game().addMagicEffect(sb.pos, CONST_ME_TELEPORT);
-		g_scheduler().addEvent(1400, std::bind(&SpawnMonster::scheduleSpawn, this, spawnMonsterId, sb, interval - NONBLOCKABLE_SPAWN_MONSTER_INTERVAL), __FUNCTION__);
+		g_scheduler().addEvent(1400, std::bind(&SpawnMonster::scheduleSpawn, this, spawnMonsterId, sb, interval - NONBLOCKABLE_SPAWN_MONSTER_INTERVAL), "SpawnMonster::scheduleSpawn");
 	}
 }
 
@@ -259,10 +256,9 @@ void SpawnMonster::cleanup() {
 	auto it = spawnedMonsterMap.begin();
 	while (it != spawnedMonsterMap.end()) {
 		uint32_t spawnMonsterId = it->first;
-		Monster* monster = it->second;
+		std::shared_ptr<Monster> monster = it->second;
 		if (monster->isRemoved()) {
 			spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
-			monster->decrementReferenceCounter();
 			it = spawnedMonsterMap.erase(it);
 		} else {
 			++it;
@@ -291,10 +287,9 @@ bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Dire
 	return true;
 }
 
-void SpawnMonster::removeMonster(Monster* monster) {
+void SpawnMonster::removeMonster(std::shared_ptr<Monster> monster) {
 	for (auto it = spawnedMonsterMap.begin(), end = spawnedMonsterMap.end(); it != end; ++it) {
 		if (it->second == monster) {
-			monster->decrementReferenceCounter();
 			spawnedMonsterMap.erase(it);
 			break;
 		}

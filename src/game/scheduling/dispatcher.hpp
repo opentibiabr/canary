@@ -30,8 +30,8 @@ public:
 
 	static Dispatcher &getInstance();
 
-	void addTask(std::function<void(void)> f, std::string context);
-	void addTask(std::function<void(void)> f, std::string context, uint32_t expiresAfterMs);
+	void addTask(std::function<void(void)> f, const std::string &context);
+	void addTask(std::function<void(void)> f, const std::string &context, uint32_t expiresAfterMs);
 
 	void addTask(const std::shared_ptr<Task> task);
 	void addTask(const std::shared_ptr<Task> task, uint32_t expiresAfterMs);

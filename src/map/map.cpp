@@ -17,7 +17,6 @@
 #include "game/zones/zone.hpp"
 #include "io/iomap.hpp"
 #include "io/iomapserialize.hpp"
-#include <lib/thread/thread_pool.hpp>
 #include "game/scheduling/dispatcher.hpp"
 #include "map/spectators.hpp"
 

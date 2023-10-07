@@ -47,6 +47,7 @@ class PreySlot;
 class TaskHuntingSlot;
 class Spell;
 class PlayerWheel;
+class Spectators;
 
 enum class ForgeConversion_t : uint8_t {
 	FORGE_ACTION_FUSION = 0,
@@ -471,8 +472,8 @@ public:
 	int32_t getStorageValueByName(const std::string &storageName) const;
 	void addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin = false);
 
-	std::shared_ptr<KVStore> kv() const {
-		return g_kv().scoped("player")->scoped(getID());
+	std::shared_ptr<KV> kv() const {
+		return g_kv().scoped("player")->scoped(fmt::format("{}", getID()));
 	}
 
 	void genReservedStorageRange();
@@ -2285,7 +2286,7 @@ public:
 		SpeakClasses type,
 		const std::string &text,
 		bool ghostMode,
-		SpectatorHashSet* spectatorsPtr = nullptr,
+		Spectators* spectatorsPtr = nullptr,
 		const Position* pos = nullptr
 	);
 

@@ -9,7 +9,6 @@
 
 #include "pch.hpp"
 
-#include "declarations.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/player.hpp"
 #include "config/configmanager.hpp"

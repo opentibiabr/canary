@@ -31,6 +31,10 @@ namespace ProtoHelpers {
 		protoValue.set_str_value(arg);
 	}
 
+	void setProtoBooleanValue(Canary::protobuf::kv::ValueWrapper &protoValue, const BooleanType &arg) {
+		protoValue.set_bool_value(arg);
+	}
+
 	void setProtoIntValue(Canary::protobuf::kv::ValueWrapper &protoValue, const IntType &arg) {
 		protoValue.set_int_value(arg);
 	}
@@ -64,6 +68,8 @@ inline Canary::protobuf::kv::ValueWrapper ProtoSerializable<ValueWrapper>::toPro
 			using T = std::decay_t<decltype(arg)>;
 			if constexpr (std::is_same_v<T, StringType>) {
 				ProtoHelpers::setProtoStringValue(protoValue, arg);
+			} else if constexpr (std::is_same_v<T, BooleanType>) {
+				ProtoHelpers::setProtoBooleanValue(protoValue, arg);
 			} else if constexpr (std::is_same_v<T, IntType>) {
 				ProtoHelpers::setProtoIntValue(protoValue, arg);
 			} else if constexpr (std::is_same_v<T, DoubleType>) {
@@ -85,6 +91,9 @@ inline ValueWrapper ProtoSerializable<ValueWrapper>::fromProto(const Canary::pro
 	switch (protoValue.value_case()) {
 		case Canary::protobuf::kv::ValueWrapper::kStrValue:
 			data = protoValue.str_value();
+			break;
+		case Canary::protobuf::kv::ValueWrapper::kBoolValue:
+			data = protoValue.bool_value();
 			break;
 		case Canary::protobuf::kv::ValueWrapper::kIntValue:
 			data = protoValue.int_value();

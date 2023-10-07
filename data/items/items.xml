@@ -15098,7 +15098,6 @@
 	</item>
 	<item fromid="6116" toid="6117" name="electric sparks">
 		<attribute key="primarytype" value="walls"/>
-		<attribute key="blocking" value="1"/>
 		<attribute key="blockProjectile" value="1"/>
 	</item>
 	<item id="6118" article="a" name="treasure map">

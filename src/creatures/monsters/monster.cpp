@@ -14,9 +14,9 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+#include "map/spectators.hpp"
 
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
@@ -349,11 +349,8 @@ void Monster::updateTargetList() {
 		}
 	}
 
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, position, true);
-	spectators.erase(this);
-	for (auto spectator : spectators) {
-		if (canSee(spectator->getPosition())) {
+	for (const auto &spectator : Spectators().find<Creature>(position, true)) {
+		if (spectator.get() != this && canSee(spectator->getPosition())) {
 			onCreatureFound(spectator);
 		}
 	}
@@ -815,12 +812,6 @@ void Monster::doAttacking(uint32_t interval) {
 	bool resetTicks = interval != 0;
 	attackTicks += interval;
 
-	float forgeAttackBonus = 0;
-	if (monsterForgeClassification > ForgeClassifications_t::FORGE_NORMAL_MONSTER) {
-		uint16_t damageBase = 3;
-		forgeAttackBonus = static_cast<float>(damageBase + 100) / 100.f;
-	}
-
 	const Position &myPos = getPosition();
 	const Position &targetPos = attackedCreature->getPosition();
 
@@ -838,20 +829,8 @@ void Monster::doAttacking(uint32_t interval) {
 					updateLook = false;
 				}
 
-				float multiplier;
-				if (maxCombatValue > 0) { // Defense
-					multiplier = getDefenseMultiplier();
-				} else { // Attack
-					multiplier = getAttackMultiplier();
-				}
-
-				minCombatValue = spellBlock.minCombatValue * multiplier;
-				maxCombatValue = spellBlock.maxCombatValue * multiplier;
-
-				if (maxCombatValue <= 0 && forgeAttackBonus > 0) {
-					minCombatValue *= static_cast<int32_t>(forgeAttackBonus);
-					maxCombatValue *= static_cast<int32_t>(forgeAttackBonus);
-				}
+				minCombatValue = spellBlock.minCombatValue;
+				maxCombatValue = spellBlock.maxCombatValue;
 
 				if (spellBlock.spell == nullptr) {
 					continue;
@@ -1916,15 +1895,8 @@ bool Monster::getCombatValues(int32_t &min, int32_t &max) {
 		return false;
 	}
 
-	float multiplier;
-	if (maxCombatValue > 0) { // Defense
-		multiplier = getDefenseMultiplier();
-	} else { // Attack
-		multiplier = getAttackMultiplier();
-	}
-
-	min = minCombatValue * multiplier;
-	max = maxCombatValue * multiplier;
+	min = minCombatValue;
+	max = maxCombatValue;
 	return true;
 }
 

@@ -22,18 +22,20 @@
 class ValueWrapper;
 
 using StringType = std::string;
+using BooleanType = bool;
 using IntType = int;
 using DoubleType = double;
 using ArrayType = std::vector<ValueWrapper>;
 using MapType = phmap::flat_hash_map<std::string, std::shared_ptr<ValueWrapper>>;
 
-using ValueVariant = std::variant<StringType, IntType, DoubleType, ArrayType, MapType>;
+using ValueVariant = std::variant<StringType, BooleanType, IntType, DoubleType, ArrayType, MapType>;
 
 class ValueWrapper {
 public:
 	explicit ValueWrapper(uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(const ValueVariant &value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(const std::string &value, uint64_t timestamp = 0);
+	explicit(false) ValueWrapper(bool value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(int value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(double value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(const phmap::flat_hash_map<std::string, ValueWrapper> &value, uint64_t timestamp = 0);
@@ -83,6 +85,10 @@ public:
 
 	explicit(false) operator std::string() const {
 		return get<StringType>();
+	}
+
+	explicit(false) operator bool() const {
+		return get<BooleanType>();
 	}
 
 	explicit(false) operator int() const {
@@ -173,7 +179,10 @@ inline bool operator==(const ValueVariant &lhs, const ValueVariant &rhs) {
 					return b.contains(key) && value.get() == b.at(key).get();
 				});
 			}
-			return a == b;
+			// Compares a and b if types A and B are the same, at compile-time
+			if constexpr (std::is_same_v<A, B>) {
+				return a == b;
+			}
 		},
 		lhs, rhs
 	);

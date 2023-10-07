@@ -382,6 +382,7 @@ bool ConfigManager::load() {
 	integer[VIP_BONUS_EXP] = getGlobalNumber(L, "vipBonusExp", 0);
 	integer[VIP_BONUS_LOOT] = getGlobalNumber(L, "vipBonusLoot", 0);
 	integer[VIP_BONUS_SKILL] = getGlobalNumber(L, "vipBonusSkill", 0);
+	integer[VIP_BONUS_DUMMY] = getGlobalNumber(L, "vipBonusExercise", 0);
 	boolean[VIP_AUTOLOOT_VIP_ONLY] = getGlobalBoolean(L, "vipAutoLootVipOnly", false);
 	boolean[VIP_STAY_ONLINE] = getGlobalBoolean(L, "vipStayOnline", false);
 	integer[VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION] = getGlobalNumber(L, "vipFamiliarTimeCooldownReduction", 0);

@@ -73,7 +73,7 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "We came tooo thiiiiss wooorld to... get youuu!", yell = false }
+	{ text = "We came tooo thiiiiss wooorld to... get youuu!", yell = false },
 	{ text = "WuuuuAhhhhh!!!", yell = false },
 }
 

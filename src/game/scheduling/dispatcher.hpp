@@ -43,12 +43,7 @@ public:
 		addEvent(std::make_shared<Task>(std::move(f), std::move(context)));
 	}
 	void addEvent(std::function<void(void)> &&f, std::string &&context, uint32_t expiresAfterMs) {
-		addEvent(std::move(f), std::move(context));
-	}
-
-	void addEvent(const std::shared_ptr<Task> &task);
-	void addEvent(const std::shared_ptr<Task> &task, uint32_t expiresAfterMs) {
-		addEvent(task);
+		addEvent(std::make_shared<Task>(expiresAfterMs, std::move(f), std::move(context)));
 	}
 
 	uint64_t scheduleEvent(const std::shared_ptr<Task> &task);
@@ -68,6 +63,7 @@ public:
 
 private:
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string &&context, bool cycle);
+	void addEvent(const std::shared_ptr<Task> &task);
 	void waitFor(const std::shared_ptr<Task> &task) {
 		waitTime = task->getTime();
 	}

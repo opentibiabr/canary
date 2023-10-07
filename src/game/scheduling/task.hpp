@@ -10,21 +10,25 @@
 #pragma once
 #include "utils/tools.hpp"
 
+static constexpr auto SYSTEM_TIME_ZERO = std::chrono::system_clock::time_point(std::chrono::milliseconds(0));
+
 class Task {
 public:
+	static std::chrono::system_clock::time_point TIME_NOW;
+
 	// DO NOT allocate this class on the stack
 	Task(std::function<void(void)> &&f, std::string context) :
 		context(std::move(context)), func(std::move(f)) {
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
-	Task(std::function<void(void)> &&f, std::string context, uint32_t delay) :
-		delay(delay), utime(std::chrono::system_clock::now() + std::chrono::milliseconds(delay)), context(std::move(context)), func(std::move(f)) {
+	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string context) :
+		expiration(TIME_NOW + std::chrono::milliseconds(expiresAfterMs)), context(std::move(context)), func(std::move(f)) {
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
-	Task(std::function<void(void)> &&f, std::string context, uint32_t delay, bool cycle) :
-		delay(delay), utime(std::chrono::system_clock::now() + std::chrono::milliseconds(delay)), cycle(cycle), context(std::move(context)), func(std::move(f)) {
+	Task(std::function<void(void)> &&f, std::string context, uint32_t delay, bool cycle = false) :
+		delay(delay), utime(TIME_NOW + std::chrono::milliseconds(delay)), cycle(cycle), context(std::move(context)), func(std::move(f)) {
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
@@ -46,8 +50,12 @@ public:
 		return context;
 	}
 
-	std::chrono::system_clock::time_point getTime() const {
+	auto getTime() const {
 		return utime;
+	}
+
+	bool hasExpired() const {
+		return expiration != SYSTEM_TIME_ZERO && expiration < TIME_NOW;
 	}
 
 	bool isCycle() const {
@@ -68,7 +76,7 @@ public:
 			func();
 
 			if (cycle) {
-				utime = std::chrono::system_clock::now() + std::chrono::milliseconds(delay);
+				utime = TIME_NOW + std::chrono::milliseconds(delay);
 			}
 		}
 	}
@@ -113,7 +121,10 @@ private:
 	bool cycle = false;
 
 	uint32_t delay = 0;
-	std::chrono::system_clock::time_point utime;
+
+	std::chrono::system_clock::time_point utime = SYSTEM_TIME_ZERO;
+	std::chrono::system_clock::time_point expiration = SYSTEM_TIME_ZERO;
+
 	uint64_t eventId = 0;
 	std::string context {};
 	std::function<void(void)> func {};

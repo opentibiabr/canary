@@ -13,15 +13,21 @@
 #include "lib/thread/thread_pool.hpp"
 #include "lib/di/container.hpp"
 
+std::chrono::system_clock::time_point Task::TIME_NOW = SYSTEM_TIME_ZERO;
+
 Dispatcher &Dispatcher::getInstance() {
 	return inject<Dispatcher>();
 }
 
 void Dispatcher::init() {
+	Task::TIME_NOW = std::chrono::system_clock::now();
+
 	threadPool.addLoad([this] {
 		std::unique_lock lock(mutex);
 		while (!threadPool.getIoContext().stopped()) {
 			signal.wait_until(lock, waitTime);
+
+			Task::TIME_NOW = std::chrono::system_clock::now();
 
 			busy = true;
 			{
@@ -33,20 +39,20 @@ void Dispatcher::init() {
 						g_logger().debug("Executing task {}.", task->getContext());
 					}
 
-					++dispatcherCycle;
-
-					task->execute();
+					if (!task->hasExpired()) {
+						++dispatcherCycle;
+						task->execute();
+					}
 				}
 				tasks.list.clear();
 			}
 			busy = false;
 
-			const auto currentTime = std::chrono::system_clock::now();
-			if (currentTime >= waitTime) {
+			if (Task::TIME_NOW >= waitTime) {
 				std::scoped_lock l(scheduledtasks.mutex);
 				for (uint_fast64_t i = 0, max = scheduledtasks.list.size(); i < max && !scheduledtasks.list.empty(); ++i) {
 					const auto &task = scheduledtasks.list.top();
-					if (task->getTime() > currentTime) {
+					if (task->getTime() > Task::TIME_NOW) {
 						waitFor(task);
 						break;
 					}
@@ -101,7 +107,11 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	std::scoped_lock l(scheduledtasks.mutex);
 
 	if (task->getEventId() == 0) {
-		task->setEventId(++lastEventId);
+		if (++lastEventId == 0) {
+			lastEventId = 1;
+		}
+
+		task->setEventId(lastEventId);
 	}
 
 	scheduledtasks.list.emplace(task);

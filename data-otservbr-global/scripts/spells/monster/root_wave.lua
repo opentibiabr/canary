@@ -1,7 +1,7 @@
 local combat = Combat()
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ROOTS)
 
-local area = createCombatArea(AREA_WAVE11)
+local area = createCombatArea(AREA_SQUAREWAVE5)
 combat:setArea(area)
 
 local spell = Spell("instant")
@@ -16,7 +16,9 @@ end
 
 spell:name("root wave")
 spell:words("###691")
+spell:isAggressive(true)
 spell:blockWalls(true)
-spell:needTarget(true)
 spell:needLearn(true)
+spell:needTarget(false)
+spell:needDirection(true)
 spell:register()

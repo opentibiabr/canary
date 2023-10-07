@@ -3001,6 +3001,7 @@ Storage = {
 			TimeLeft = 64038,
 			LastActivatedAt = 64039,
 		},
+		PlayerSession = 64040,
 	},
 
 	VipSystem = {
@@ -3156,6 +3157,7 @@ GlobalStorage = {
 	NightmareIsle = 65015,
 	IceCrack = 65016,
 	UglyMonster = 65017,
+	Powergamers = 65018,
 	KeysUpdate = 40000, -- Reserved storage from 40000 - 40000
 }
 
@@ -3189,6 +3191,7 @@ startupGlobalStorages = {
 	GlobalStorage.FerumbrasAscendant.Elements.Second,
 	GlobalStorage.FerumbrasAscendant.Elements.Third,
 	GlobalStorage.FerumbrasAscendant.Elements.Done,
+	GlobalStorage.Powergamers,
 }
 
 -- Values extraction function

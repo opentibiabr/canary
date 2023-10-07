@@ -1549,7 +1549,7 @@ void Tile::internalAddThing(uint32_t, std::shared_ptr<Thing> thing) {
 	std::shared_ptr<Creature> creature = thing->getCreature();
 	if (creature) {
 		Spectators::clearCache();
-		
+
 		std::scoped_lock l(creaturesMutex);
 		CreatureVector* creatures = makeCreatures();
 		creatures->insert(creatures->begin(), creature);

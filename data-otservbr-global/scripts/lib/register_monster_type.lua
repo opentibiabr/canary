@@ -199,6 +199,9 @@ registerMonsterType.flags = function(mtype, mask)
 		if mask.flags.canPushCreatures ~= nil then
 			mtype:canPushCreatures(mask.flags.canPushCreatures)
 		end
+		if mask.flags.critChance ~= nil then
+			mtype:critChance(mask.flags.critChance)
+		end
 		if mask.flags.targetDistance then
 			mtype:targetDistance(math.max(1, mask.flags.targetDistance))
 		end

@@ -27,11 +27,11 @@ local function clearArena(player)
 	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, 'All your magic fields have been deleted.')
 end
 
-CleanArena = MoveEvent()
+-- CleanArena = MoveEvent()
 
-function CleanArena.onStepIn(player, item, position, fromPosition)
-	clearArena(player)
-end
+-- function CleanArena.onStepIn(player, item, position, fromPosition)
+	-- clearArena(player)
+-- end
 
 CleanArena:type('stepin')
 for index, value in pairs(positionLever) do
@@ -43,8 +43,8 @@ ArenaLever = Action()
 
 function ArenaLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 
-	if player:getStorageValue(Storage)
-
+	if player:getStorageValue(Storage.Tibiadrome.PlayerSession) > os.time() then
+		clearArena()
 end
 
 ArenaLever:register()

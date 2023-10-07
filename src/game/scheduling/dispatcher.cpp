@@ -33,15 +33,15 @@ void Dispatcher::init() {
 			{
 				std::scoped_lock l(tasks.mutexList);
 				for (const auto &task : tasks.list) {
-					if (task->hasTraceableContext()) {
-						g_logger().trace("Executing task {}.", task->getContext());
+					if (task.hasTraceableContext()) {
+						g_logger().trace("Executing task {}.", task.getContext());
 					} else {
-						g_logger().debug("Executing task {}.", task->getContext());
+						g_logger().debug("Executing task {}.", task.getContext());
 					}
 
-					if (!task->hasExpired()) {
+					if (!task.hasExpired()) {
 						++dispatcherCycle;
-						task->execute();
+						task.execute();
 					}
 				}
 				tasks.list.clear();
@@ -86,17 +86,18 @@ void Dispatcher::init() {
 	});
 }
 
-void Dispatcher::addEvent(const std::shared_ptr<Task> &task) {
+void Dispatcher::addEvent(std::function<void(void)> &&f, std::string &&context, uint32_t expiresAfterMs) {
 	if (busy) {
 		std::scoped_lock l(tasks.mutexWaitingList);
-		tasks.waitingList.emplace_back(task);
+		tasks.waitingList.emplace_back(expiresAfterMs, f, context);
 		return;
 	}
 
 	std::scoped_lock l(tasks.mutexList);
 
 	const bool notify = tasks.list.empty();
-	tasks.list.emplace_back(task);
+
+	tasks.list.emplace_back(expiresAfterMs, f, context);
 
 	if (notify) {
 		signal.notify_one();

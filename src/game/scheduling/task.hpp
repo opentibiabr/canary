@@ -16,14 +16,9 @@ class Task {
 public:
 	static std::chrono::system_clock::time_point TIME_NOW;
 
-	// DO NOT allocate this class on the stack
-	Task(std::function<void(void)> &&f, std::string context) :
+	Task(uint32_t expiresAfterMs, std::function<void(void)> &f, std::string context) :
+		expiration(expiresAfterMs > 0 ? TIME_NOW + std::chrono::milliseconds(expiresAfterMs) : SYSTEM_TIME_ZERO),
 		context(std::move(context)), func(std::move(f)) {
-		assert(!this->context.empty() && "Context cannot be empty!");
-	}
-
-	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string context) :
-		expiration(TIME_NOW + std::chrono::milliseconds(expiresAfterMs)), context(std::move(context)), func(std::move(f)) {
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
@@ -69,6 +64,12 @@ public:
 	void cancel() {
 		canceled = true;
 		func = nullptr;
+	}
+
+	void execute() const {
+		if (func) {
+			func();
+		}
 	}
 
 	void execute() {

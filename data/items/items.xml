@@ -42173,7 +42173,7 @@
 		<attribute key="primarytype" value="containers"/>
 		<attribute key="containersize" value="24"/>
 		<attribute key="weight" value="2160"/>
-		<attribute key="imbuementslot" value="1">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="increase capacity" value="3"/>
 		</attribute>
 	</item>
@@ -65481,7 +65481,7 @@
 	<item id="39164" article="a" name="dawnfire sherwani">
 		<attribute key="primarytype" value="armors"/>
 		<attribute key="absorbpercentfire" value="10"/>
-		<attribute key="absorbpercentearth" value="-2"/>
+		<attribute key="absorbpercentpoison" value="-2"/>
 		<attribute key="magiclevelpoints" value="4"/>
 		<attribute key="armor" value="16"/>
 		<attribute key="weight" value="2800"/>
@@ -65538,7 +65538,7 @@
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentphysical" value="8"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="skillclub" value="3"/>
@@ -65556,7 +65556,7 @@
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentphysical" value="2"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="showattributes" value="1"/>
@@ -65573,7 +65573,7 @@
 	<item id="39181" article="a" name="charged alicorn ring">
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="absorbpercentholy" value="4"/>
@@ -65591,7 +65591,7 @@
 	<item id="39182" article="an" name="alicorn ring">
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="holymagiclevelpoints" value="1"/>
@@ -65609,7 +65609,7 @@
 	<item id="39184" article="a" name="charged arcanomancer sigil">
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
@@ -65627,7 +65627,7 @@
 	<item id="39185" article="an" name="arcanomancer sigil">
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
@@ -65646,7 +65646,7 @@
 	<item id="39187" article="a" name="charged arboreal ring">
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="healingmagiclevelpoints" value="2"/>
@@ -65662,7 +65662,7 @@
 	<item id="39188" article="an" name="arboreal ring">
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="healingmagiclevelpoints" value="2"/>
@@ -68710,7 +68710,7 @@
 		<attribute key="criticalhitdamage" value="12"/>
 		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="ammotype" value="arrow"/>
-		<attribute key="absorbpercentearth" value="6"/>
+		<attribute key="absorbpercentpoison" value="6"/>
 		<attribute key="skilldist" value="4"/>
 		<attribute key="hitchance" value="6"/>
 		<attribute key="range" value="6"/>
@@ -68731,7 +68731,7 @@
 		<attribute key="criticalhitdamage" value="12"/>
 		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="ammotype" value="arrow"/>
-		<attribute key="absorbpercentearth" value="6"/>
+		<attribute key="absorbpercentpoison" value="6"/>
 		<attribute key="skilldist" value="4"/>
 		<attribute key="hitchance" value="6"/>
 		<attribute key="range" value="6"/>
@@ -68800,7 +68800,7 @@
 		<attribute key="primarytype" value="wands"/>
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="energy"/>
-		<attribute key="absorbpercentearth" value="7"/>
+		<attribute key="absorbpercentpoison" value="7"/>
 		<attribute key="magiclevelpoints" value="5"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
 		<attribute key="energymagiclevelpoints" value="1"/>
@@ -68817,7 +68817,7 @@
 		<attribute key="primarytype" value="wands"/>
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="energy"/>
-		<attribute key="absorbpercentearth" value="7"/>
+		<attribute key="absorbpercentpoison" value="7"/>
 		<attribute key="magiclevelpoints" value="5"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
 		<attribute key="energymagiclevelpoints" value="1"/>
@@ -69063,5 +69063,21 @@
 		<attribute key="maletransformto" value="43718"/>
 		<attribute key="rotateTo" value="43724"/>
 		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43740" article="a" name="scarab ocarina">
+		<attribute key="primarytype" value="quest items"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="absorbpercentpoison" value="2"/>
+		<attribute key="weight" value="120"/>
+	</item>
+	<item id="43863" article="a" name="conch shell horn">
+		<attribute key="primarytype" value="quest items"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="absorbpercentice" value="2"/>
+		<attribute key="weight" value="150"/>
+	</item>
+	<item id="43729" article="a" name="werecrocodile tongue">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="280"/>
 	</item>
 </items>

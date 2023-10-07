@@ -6,7 +6,7 @@ local config = {
 	expirationMessageType = MESSAGE_STATUS_WARNING,
 
 	outfits = {},
-	mounts = {},
+	mounts = {170, 168, 169},
 }
 
 function Player.onRemoveVip(self)

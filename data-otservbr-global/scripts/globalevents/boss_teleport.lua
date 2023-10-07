@@ -14,7 +14,7 @@ local bosses = {
 	["Sir Baeloc"] = {
 		position = Position(33425, 31408, 13),
 	},
-	["King Zelus"] = {
+	["King Zelos"] = {
 		position = Position(33490, 31546, 13),
 	},
 	-- Random

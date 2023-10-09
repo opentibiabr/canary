@@ -75,12 +75,15 @@ void Dispatcher::init() {
 				}
 			}
 
-			if (!tasks.waitingList.empty()) {
-				// Transfer Waiting List data to List
-				tasks.list.insert(tasks.list.end(), make_move_iterator(tasks.waitingList.begin()), make_move_iterator(tasks.waitingList.end()));
-				tasks.waitingList.clear();
+			{
+				std::scoped_lock l(tasks.mutexWaitingList);
+				if (!tasks.waitingList.empty()) {
+					// Transfer Waiting List data to List
+					tasks.list.insert(tasks.list.end(), make_move_iterator(tasks.waitingList.begin()), make_move_iterator(tasks.waitingList.end()));
+					tasks.waitingList.clear();
 
-				signal.notify_one();
+					signal.notify_one();
+				}
 			}
 		}
 	});

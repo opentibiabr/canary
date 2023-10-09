@@ -1009,7 +1009,7 @@ void Creature::goToFollowCreature() {
 	listWalkDir.clear();
 	getPathToAsync(
 		followCreature->getPosition(), fpp,
-		[self = getCreature()](const Position &startPos, const Position &targetPos) { return self->getFollowCreature() && !self->getFollowCreature()->isRemoved() && self->getFollowCreature()->getPosition() == targetPos && self->getPosition() == startPos; },
+		[self = getCreature()](const Position &startPos, const Position &targetPos) { return self->getFollowCreature() && !self->getFollowCreature()->isRemoved(); },
 		[self = getCreature()](const Position &startPos, const Position &targetPos, const std::forward_list<Direction> &list) {
 			self->hasFollowPath = true;
 			self->startAutoWalk(list);

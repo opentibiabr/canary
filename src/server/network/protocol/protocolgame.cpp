@@ -240,12 +240,12 @@ ProtocolGame::ProtocolGame(Connection_ptr initConnection) :
 }
 
 template <typename Callable, typename... Args>
-void ProtocolGame::addGameTaskWithStats(Callable function, const std::string& function_str, const std::string& extra_info, Args &&... args) {
+void ProtocolGame::addGameTaskWithStats(Callable function, const std::string &function_str, const std::string &extra_info, Args &&... args) {
 	g_dispatcher().addTaskWithStats(std::bind(function, &g_game(), std::forward<Args>(args)...), "ProtocolGame::addGameTaskWithStats", function_str, extra_info);
 }
 
 template <typename Callable, typename... Args>
-void ProtocolGame::addGameTaskTimedWithStats(uint32_t delay, std::string context, Callable function, const std::string& function_str, const std::string& extra_info, Args &&... args) {
+void ProtocolGame::addGameTaskTimedWithStats(uint32_t delay, std::string context, Callable function, const std::string &function_str, const std::string &extra_info, Args &&... args) {
 	g_dispatcher().addTaskWithStats(std::bind(function, &g_game(), std::forward<Args>(args)...), context, delay, function_str, extra_info);
 }
 

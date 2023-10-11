@@ -185,7 +185,7 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 	const ItemType &it = items[id];
 	auto itemCharges = it.charges;
 	if (it.isFluidContainer() || it.isSplash()) {
-		setAttribute(ItemAttribute_t::FLUIDTYPE, itemCount);
+		setAttribute(ItemAttribute_t::FLUIDTYPE, itemCount * (itemCount < sizeof(Fluids_t)));
 	} else if (it.stackable) {
 		if (itemCount != 0) {
 			setItemCount(static_cast<uint8_t>(itemCount));

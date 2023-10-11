@@ -27,7 +27,7 @@ public:
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
-	virtual ~Task() = default;
+	~Task() = default;
 
 	void setEventId(uint64_t id) {
 		eventId = id;
@@ -68,20 +68,30 @@ public:
 
 	void execute() const {
 		if (func) {
+			if (hasTraceableContext()) {
+				g_logger().trace("Executing task {}.", getContext());
+			} else {
+				g_logger().debug("Executing task {}.", getContext());
+			}
 			func();
 		}
 	}
 
 	void execute() {
-		if (func) {
-			func();
+		func();
 
-			if (cycle) {
-				utime = TIME_NOW + std::chrono::milliseconds(delay);
-			}
+		if (cycle && !canceled) {
+			utime = TIME_NOW + std::chrono::milliseconds(delay);
 		}
 	}
 
+	struct Compare {
+		bool operator()(const std::shared_ptr<Task> &a, const std::shared_ptr<Task> &b) const {
+			return b->utime < a->utime;
+		}
+	};
+
+private:
 	bool hasTraceableContext() const {
 		const static auto tasksContext = phmap::flat_hash_set<std::string>({
 			"Creature::checkCreatureWalk",
@@ -111,22 +121,15 @@ public:
 		return tasksContext.contains(context);
 	}
 
-	struct Compare {
-		bool operator()(const std::shared_ptr<Task> &a, const std::shared_ptr<Task> &b) const {
-			return b->utime < a->utime;
-		}
-	};
-
-private:
 	bool canceled = false;
 	bool cycle = false;
 
 	uint32_t delay = 0;
+	uint64_t eventId = 0;
 
 	std::chrono::system_clock::time_point utime = SYSTEM_TIME_ZERO;
 	std::chrono::system_clock::time_point expiration = SYSTEM_TIME_ZERO;
 
-	uint64_t eventId = 0;
-	std::string context {};
-	std::function<void(void)> func {};
+	std::string context;
+	std::function<void(void)> func = nullptr;
 };

@@ -70,10 +70,10 @@ private:
 	std::condition_variable signal;
 	std::chrono::system_clock::time_point waitTime;
 
-	std::atomic_bool busy { false };
+	std::atomic_bool busy = false;
 
 	uint_fast64_t dispatcherCycle = 0;
-	uint_fast64_t lastEventId { 0 };
+	uint_fast64_t lastEventId = 0;
 
 	struct {
 		std::mutex mutexList;

@@ -33,12 +33,6 @@ void Dispatcher::init() {
 			{
 				std::scoped_lock l(tasks.mutexList);
 				for (const auto &task : tasks.list) {
-					if (task.hasTraceableContext()) {
-						g_logger().trace("Executing task {}.", task.getContext());
-					} else {
-						g_logger().debug("Executing task {}.", task.getContext());
-					}
-
 					if (!task.hasExpired()) {
 						++dispatcherCycle;
 						task.execute();
@@ -55,12 +49,6 @@ void Dispatcher::init() {
 					if (task->getTime() > Task::TIME_NOW) {
 						waitFor(task);
 						break;
-					}
-
-					if (task->hasTraceableContext()) {
-						g_logger().trace("Executing task {}.", task->getContext());
-					} else {
-						g_logger().debug("Executing task {}.", task->getContext());
 					}
 
 					task->execute();

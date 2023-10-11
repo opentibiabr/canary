@@ -365,9 +365,9 @@ void Game::setGameState(GameState_t newState) {
 
 			g_dispatcher().addTask(std::bind(&Game::shutdown, this), "Game::shutdown");
 
-		#ifdef STATS_ENABLED
+#ifdef STATS_ENABLED
 			g_stats.stop();
-		#endif
+#endif
 
 			break;
 		}

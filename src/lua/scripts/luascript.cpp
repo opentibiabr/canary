@@ -165,16 +165,14 @@ const std::string &LuaScriptInterface::getFileById(int32_t scriptId) {
 	return it->second;
 }
 
-const std::string &LuaScriptInterface::getFileByIdForStats(int32_t scriptId)
-{
+const std::string &LuaScriptInterface::getFileByIdForStats(int32_t scriptId) {
 	auto it = cacheFiles.find(scriptId);
 	if (it == cacheFiles.end()) {
-		static const std::string& unk = "(Unknown scriptfile)";
+		static const std::string &unk = "(Unknown scriptfile)";
 		return unk;
 	}
 	return it->second;
 }
-
 
 std::string LuaScriptInterface::getStackTrace(const std::string &error_desc) {
 	lua_getglobal(luaState, "debug");

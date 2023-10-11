@@ -13,8 +13,6 @@
 #include "lib/thread/thread_pool.hpp"
 #include "lib/di/container.hpp"
 
-std::chrono::system_clock::time_point Task::TIME_NOW = SYSTEM_TIME_ZERO;
-
 Dispatcher &Dispatcher::getInstance() {
 	return inject<Dispatcher>();
 }

@@ -66,16 +66,7 @@ public:
 		func = nullptr;
 	}
 
-	void execute() const {
-		if (func) {
-			if (hasTraceableContext()) {
-				g_logger().trace("Executing task {}.", getContext());
-			} else {
-				g_logger().debug("Executing task {}.", getContext());
-			}
-			func();
-		}
-	}
+	void execute() const;
 
 	void execute() {
 		func();

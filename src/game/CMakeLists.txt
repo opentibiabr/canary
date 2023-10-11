@@ -6,5 +6,6 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     movement/teleport.cpp
     scheduling/events_scheduler.cpp
     scheduling/dispatcher.cpp
+    scheduling/task.cpp
     zones/zone.cpp
 )

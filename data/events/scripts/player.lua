@@ -398,7 +398,7 @@ function Player:onMoveCreature(creature, fromPosition, toPosition)
 end
 
 local function hasPendingReport(name, targetName, reportType)
-	local name = self:getName():gsub("%s+", "_")
+	name = self:getName():gsub("%s+", "_")
 	FS.mkdir_p(string.format("%s/reports/players/%s", CORE_DIRECTORY, name))
 	local file = io.open(string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType), "r")
 	if file then
@@ -409,7 +409,7 @@ local function hasPendingReport(name, targetName, reportType)
 end
 
 function Player:onReportRuleViolation(targetName, reportType, reportReason, comment, translation)
-	local name = self:getName()
+	name = self:getName()
 	if hasPendingReport(name, targetName, reportType) then
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your report is being processed.")
 		return

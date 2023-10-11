@@ -70,9 +70,9 @@ public:
 private:
 	// Helpers so we don't need to bind every time
 	template <typename Callable, typename... Args>
-	void addGameTask(Callable function, Args &&... args);
+	void addGameTaskWithStats(Callable function, const std::string& function_str, const std::string& extra_info, Args &&... args);
 	template <typename Callable, typename... Args>
-	void addGameTaskTimed(uint32_t delay, std::string context, Callable function, Args &&... args);
+	void addGameTaskTimedWithStats(uint32_t delay, std::string context, Callable function, const std::string& function_str, const std::string& extra_info, Args &&... args);
 
 	ProtocolGame_ptr getThis() {
 		return std::static_pointer_cast<ProtocolGame>(shared_from_this());

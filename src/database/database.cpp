@@ -12,6 +12,7 @@
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
 #include "lib/di/container.hpp"
+#include "utils\stats.hpp"
 
 Database::~Database() {
 	if (handle != nullptr) {
@@ -123,7 +124,16 @@ bool Database::executeQuery(const std::string_view &query) {
 
 	std::scoped_lock lock { databaseLock };
 
+#ifdef STATS_ENABLED
+	std::chrono::high_resolution_clock::time_point time_point = std::chrono::high_resolution_clock::now();
+#endif
+
 	bool success = retryQuery(query, 10);
+
+#ifdef STATS_ENABLED
+	uint64_t ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - time_point).count();
+	g_stats.addSqlStats(new Stat(ns, query.substr(0, 100), query.substr(0, 256)));
+#endif
 
 	mysql_free_result(mysql_store_result(handle));
 	return success;
@@ -138,6 +148,10 @@ DBResult_ptr Database::storeQuery(const std::string_view &query) {
 
 	std::scoped_lock lock { databaseLock };
 
+#ifdef STATS_ENABLED
+	std::chrono::high_resolution_clock::time_point time_point = std::chrono::high_resolution_clock::now();
+#endif
+
 retry:
 	if (mysql_query(handle, query.data()) != 0) {
 		g_logger().error("Query: {}", query);
@@ -148,6 +162,11 @@ retry:
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 		goto retry;
 	}
+
+#ifdef STATS_ENABLED
+	uint64_t ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - time_point).count();
+	g_stats.addSqlStats(new Stat(ns, query.substr(0, 100), query.substr(0, 256)));
+#endif
 
 	// Retrieving results of query
 	MYSQL_RES* res = mysql_store_result(handle);

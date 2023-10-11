@@ -218,6 +218,7 @@
     <ClInclude Include="..\src\utils\hash.hpp" />
     <ClInclude Include="..\src\utils\pugicast.hpp" />
     <ClInclude Include="..\src\utils\simd.hpp" />
+	<ClInclude Include="..\src\utils\stats.hpp" />
     <ClInclude Include="..\src\utils\tools.hpp" />
     <ClInclude Include="..\src\utils\utils_definitions.hpp" />
     <ClInclude Include="..\src\utils\vectorset.hpp" />
@@ -398,6 +399,7 @@
     <ClCompile Include="..\src\server\network\webhook\webhook.cpp" />
     <ClCompile Include="..\src\server\server.cpp" />
     <ClCompile Include="..\src\server\signals.cpp" />
+	<ClCompile Include="..\src\utils\stats.cpp" />
     <ClCompile Include="..\src\utils\pugicast.cpp" />
     <ClCompile Include="..\src\utils\tools.cpp" />
     <ClCompile Include="..\src\utils\wildcardtree.cpp" />

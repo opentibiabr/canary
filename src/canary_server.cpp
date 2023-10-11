@@ -28,6 +28,7 @@
 #include "server/network/webhook/webhook.hpp"
 #include "io/ioprey.hpp"
 #include "io/io_bosstiary.hpp"
+#include "utils\stats.hpp"
 
 #include "core.hpp"
 
@@ -64,6 +65,10 @@ int CanaryServer::run() {
 				loadModules();
 				setWorldType();
 				loadMaps();
+
+#ifdef STATS_ENABLED
+				g_stats.start();
+#endif
 
 				logger.info("Initializing gamestate...");
 				g_game().setGameState(GAME_STATE_INIT);
@@ -111,6 +116,9 @@ int CanaryServer::run() {
 
 	if (loadFailed || !serviceManager.is_running()) {
 		logger.error("No services running. The server is NOT online!");
+#ifdef STATS_ENABLED
+		g_stats.shutdown();
+#endif
 		shutdown();
 		return EXIT_FAILURE;
 	}
@@ -118,6 +126,10 @@ int CanaryServer::run() {
 	logger.info("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
 
 	serviceManager.run();
+
+#ifdef STATS_ENABLED
+	g_stats.join();
+#endif
 
 	shutdown();
 	return EXIT_SUCCESS;

@@ -365,6 +365,10 @@ void Game::setGameState(GameState_t newState) {
 
 			g_dispatcher().addTask(std::bind(&Game::shutdown, this), "Game::shutdown");
 
+		#ifdef STATS_ENABLED
+			g_stats.stop();
+		#endif
+
 			break;
 		}
 
@@ -5701,6 +5705,9 @@ void Game::checkCreatures(size_t index) {
 		}
 	}
 	cleanup();
+#ifdef STATS_ENABLED
+	g_stats.playersOnline = getPlayersOnline();
+#endif
 }
 
 void Game::changeSpeed(std::shared_ptr<Creature> creature, int32_t varSpeedDelta) {
@@ -7287,7 +7294,9 @@ void Game::shutdown() {
 	map.spawnsMonster.clear();
 	map.spawnsNpc.clear();
 	raids.clear();
-
+#ifdef STATS_ENABLED
+	g_stats.shutdown();
+#endif
 	cleanup();
 
 	if (serviceManager) {

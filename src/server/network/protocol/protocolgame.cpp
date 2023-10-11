@@ -240,13 +240,13 @@ ProtocolGame::ProtocolGame(Connection_ptr initConnection) :
 }
 
 template <typename Callable, typename... Args>
-void ProtocolGame::addGameTask(Callable function, Args &&... args) {
-	g_dispatcher().addTask(std::bind(function, &g_game(), std::forward<Args>(args)...), "ProtocolGame::addGameTask");
+void ProtocolGame::addGameTaskWithStats(Callable function, const std::string& function_str, const std::string& extra_info, Args &&... args) {
+	g_dispatcher().addTaskWithStats(std::bind(function, &g_game(), std::forward<Args>(args)...), "ProtocolGame::addGameTaskWithStats", function_str, extra_info);
 }
 
 template <typename Callable, typename... Args>
-void ProtocolGame::addGameTaskTimed(uint32_t delay, std::string context, Callable function, Args &&... args) {
-	g_dispatcher().addTask(std::bind(function, &g_game(), std::forward<Args>(args)...), context, delay);
+void ProtocolGame::addGameTaskTimedWithStats(uint32_t delay, std::string context, Callable function, const std::string& function_str, const std::string& extra_info, Args &&... args) {
+	g_dispatcher().addTaskWithStats(std::bind(function, &g_game(), std::forward<Args>(args)...), context, delay, function_str, extra_info);
 }
 
 void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier) {

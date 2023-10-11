@@ -394,6 +394,10 @@ bool ConfigManager::load() {
 
 	boolean[TOGGLE_RECEIVE_REWARD] = getGlobalBoolean(L, "toggleReceiveReward", false);
 
+	integer[STATS_DUMP_INTERVAL] = getGlobalNumber(L, "statsDumpInterval", 30000);
+	integer[STATS_SLOW_LOG_TIME] = getGlobalNumber(L, "statsSlowLogTime", 10);
+	integer[STATS_VERY_SLOW_LOG_TIME] = getGlobalNumber(L, "statsVerySlowLogTime", 50);
+
 	loaded = true;
 	lua_close(L);
 	return true;

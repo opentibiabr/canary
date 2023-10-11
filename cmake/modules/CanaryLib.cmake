@@ -57,6 +57,14 @@ if(SPEED_UP_BUILD_UNITY)
     log_option_enabled("Build unity for speed up compilation")
 endif()
 
+# === OTS Statistics ===
+if(NOT DEFINED DISABLE_STATS OR NOT DISABLE_STATS)
+    message(STATUS "OTS stats enabled. Run 'cmake -DDISABLE_STATS=1 ..' to disable")
+    add_definitions(-DSTATS_ENABLED)
+else()
+    message(STATUS "OTS stats disabled. Run 'cmake -DDISABLE_STATS=0 ..' to enable")
+endif()
+
 # *****************************************************************************
 # Target include directories - to allow #include
 # *****************************************************************************

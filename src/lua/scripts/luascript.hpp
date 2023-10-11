@@ -28,6 +28,7 @@ public:
 	int32_t loadFile(const std::string &file, const std::string &scriptName);
 
 	const std::string &getFileById(int32_t scriptId);
+	const std::string &getFileByIdForStats(int32_t scriptId);
 	int32_t getEvent(const std::string &eventName);
 	int32_t getEvent();
 	int32_t getMetaEvent(const std::string &globalName, const std::string &eventName);

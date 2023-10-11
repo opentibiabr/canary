@@ -17,22 +17,16 @@
 #include "server/server.hpp"
 
 Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort) {
-	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
-
 	auto connection = std::make_shared<Connection>(io_service, servicePort);
 	connections.insert(connection);
 	return connection;
 }
 
 void ConnectionManager::releaseConnection(const Connection_ptr &connection) {
-	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
-
 	connections.erase(connection);
 }
 
 void ConnectionManager::closeAll() {
-	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
-
 	for (const auto &connection : connections) {
 		try {
 			std::error_code error;

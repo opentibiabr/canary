@@ -398,6 +398,8 @@ function Player:onMoveCreature(creature, fromPosition, toPosition)
 end
 
 local function hasPendingReport(name, targetName, reportType)
+	local name = self:getName():gsub("%s+", "_")
+	FS.mkdir_p(string.format("%s/reports/players/%s", CORE_DIRECTORY, name))
 	local file = io.open(string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType), "r")
 	if file then
 		io.close(file)
@@ -444,7 +446,7 @@ function Player:onReportRuleViolation(targetName, reportType, reportReason, comm
 end
 
 function Player:onReportBug(message, position, category)
-	local name = self:getName()
+	local name = self:getName():gsub("%s+", "_")
 	FS.mkdir_p(string.format("%s/reports/bugs/%s", CORE_DIRECTORY, name))
 	local file = io.open(string.format("%s/reports/bugs/%s/report.txt", CORE_DIRECTORY, name), "a")
 

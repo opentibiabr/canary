@@ -43,15 +43,15 @@ public:
 		asyncTasks_cv.notify_all();
 	}
 
-	void addEvent(std::function<void(void)> &&f, std::string &&context, uint32_t expiresAfterMs = 0);
+	void addEvent(std::function<void(void)> &&f, const std::string_view context, uint32_t expiresAfterMs = 0);
 	void addEvent_async(std::function<void(void)> &&f, AsyncEventContext context = AsyncEventContext::First);
 
 	uint64_t scheduleEvent(const std::shared_ptr<Task> &task);
-	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string &&context) {
-		return scheduleEvent(delay, std::move(f), std::move(context), false);
+	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, const std::string_view context) {
+		return scheduleEvent(delay, std::move(f), context, false);
 	}
-	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> &&f, std::string &&context) {
-		return scheduleEvent(delay, std::move(f), std::move(context), true);
+	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> &&f, const std::string_view context) {
+		return scheduleEvent(delay, std::move(f), context, true);
 	}
 
 	[[nodiscard]] uint64_t getDispatcherCycle() const {
@@ -61,6 +61,11 @@ public:
 	void stopEvent(uint64_t eventId);
 
 private:
+	// Update Time Cache
+	static void updateClock() {
+		Task::TIME_NOW = std::chrono::system_clock::now();
+	}
+
 	static int16_t getThreadId() {
 		static std::atomic_int16_t lastId = -1;
 		thread_local static int16_t id = -1;
@@ -73,7 +78,7 @@ private:
 		return id;
 	};
 
-	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string &&context, bool cycle);
+	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, const std::string_view context, bool cycle);
 
 	inline void mergeEvents();
 	inline void executeEvents();

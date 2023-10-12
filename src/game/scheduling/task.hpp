@@ -16,14 +16,14 @@ class Task {
 public:
 	static std::chrono::system_clock::time_point TIME_NOW;
 
-	Task(uint32_t expiresAfterMs, std::function<void(void)> &f, std::string context) :
+	Task(uint32_t expiresAfterMs, std::function<void(void)> &f, const std::string_view context) :
 		expiration(expiresAfterMs > 0 ? TIME_NOW + std::chrono::milliseconds(expiresAfterMs) : SYSTEM_TIME_ZERO),
-		context(std::move(context)), func(std::move(f)) {
+		context(std::string(context)), func(std::move(f)) {
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
-	Task(std::function<void(void)> &&f, std::string context, uint32_t delay, bool cycle = false) :
-		delay(delay), utime(TIME_NOW + std::chrono::milliseconds(delay)), cycle(cycle), context(std::move(context)), func(std::move(f)) {
+	Task(std::function<void(void)> &&f, const std::string_view context, uint32_t delay, bool cycle = false) :
+		cycle(cycle), delay(delay), utime(TIME_NOW + std::chrono::milliseconds(delay)), context(std::string(context)), func(std::move(f)) {
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 

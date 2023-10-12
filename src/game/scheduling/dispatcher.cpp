@@ -12,22 +12,23 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lib/di/container.hpp"
+#include "utils/tools.hpp"
 
 constexpr static auto ASYNC_TIME_OUT = std::chrono::seconds(15);
+constexpr static auto SLEEP_TIME_MS = 15;
 
 Dispatcher &Dispatcher::getInstance() {
 	return inject<Dispatcher>();
 }
 
 void Dispatcher::init() {
-	Task::TIME_NOW = std::chrono::system_clock::now();
+	updateClock();
 
 	threadPool.addLoad([this] {
 		std::unique_lock asyncLock(mutex);
 
 		while (!threadPool.getIoContext().stopped()) {
-			// Current Time Cache
-			Task::TIME_NOW = std::chrono::system_clock::now();
+			updateClock();
 
 			// Execute all asynchronous events separately by context
 			for (uint_fast8_t i = 0; i < static_cast<uint8_t>(AsyncEventContext::Last); ++i) {
@@ -43,12 +44,12 @@ void Dispatcher::init() {
 			// Merge all events that were created by events and scheduled events
 			mergeEvents();
 
-			std::this_thread::sleep_for(std::chrono::milliseconds(15));
+			sleep_for(SLEEP_TIME_MS);
 		}
 	});
 }
 
-void Dispatcher::addEvent(std::function<void(void)> &&f, std::string &&context, uint32_t expiresAfterMs) {
+void Dispatcher::addEvent(std::function<void(void)> &&f, const std::string_view context, uint32_t expiresAfterMs) {
 	threads[getThreadId()].tasks.emplace_back(expiresAfterMs, f, context);
 }
 
@@ -61,8 +62,8 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	return scheduledtasksRef.emplace(task->generateId(), task).first->first;
 }
 
-uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string &&context, bool cycle) {
-	const auto &task = std::make_shared<Task>(std::move(f), std::move(context), delay, cycle);
+uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> &&f, const std::string_view context, bool cycle) {
+	const auto &task = std::make_shared<Task>(std::move(f), context, delay, cycle);
 	return scheduleEvent(task);
 }
 
@@ -91,16 +92,15 @@ void Dispatcher::executeAsyncEvents(const uint8_t contextId, std::unique_lock<st
 		return;
 	}
 
-	const size_t sizeEventAsync = asyncTasks.size();
 	std::atomic_uint_fast64_t executedTasks = 0;
 
 	// Execute Async Task
 	for (const auto &task : asyncTasks) {
-		threadPool.addLoad([&] {
+		threadPool.addLoad([this, &task, &executedTasks, totalTaskSize = asyncTasks.size()] {
 			task.execute();
 
 			executedTasks.fetch_add(1);
-			if (executedTasks.load() == sizeEventAsync) {
+			if (executedTasks.load() == totalTaskSize) {
 				asyncTasks_cv.notify_one();
 			}
 		});
@@ -122,9 +122,7 @@ void Dispatcher::executeScheduledEvents() {
 			break;
 		}
 
-		task->execute();
-
-		if (!task->isCanceled() && task->isCycle()) {
+		if (task->execute() && task->isCycle()) {
 			task->updateTime();
 			scheduledtasks.emplace(task);
 		} else {

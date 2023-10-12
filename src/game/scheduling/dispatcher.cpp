@@ -30,18 +30,18 @@ void Dispatcher::init() {
 			Task::TIME_NOW = std::chrono::system_clock::now();
 
 			// Execute all asynchronous events separately by context
-			for (uint_fast8_t i = 0; i < static_cast<uint8_t>(AsyncEventContext::LAST); ++i) {
-				execute_async_events(i, asyncLock);
+			for (uint_fast8_t i = 0; i < static_cast<uint8_t>(AsyncEventContext::Last); ++i) {
+				executeAsyncEvents(i, asyncLock);
 			}
 
 			// Merge all events that were created by async events
-			merge_events();
+			mergeEvents();
 
-			execute_events();
-			execute_scheduled_events();
+			executeEvents();
+			executeScheduledEvents();
 
 			// Merge all events that were created by events and scheduled events
-			merge_events();
+			mergeEvents();
 
 			std::this_thread::sleep_for(std::chrono::milliseconds(15));
 		}
@@ -76,7 +76,7 @@ void Dispatcher::stopEvent(uint64_t eventId) {
 	scheduledtasksRef.erase(it);
 }
 
-void Dispatcher::execute_events() {
+void Dispatcher::executeEvents() {
 	for (const auto &task : eventTasks) {
 		if (task.execute()) {
 			++dispatcherCycle;
@@ -85,7 +85,7 @@ void Dispatcher::execute_events() {
 	eventTasks.clear();
 }
 
-void Dispatcher::execute_async_events(const uint8_t contextId, std::unique_lock<std::mutex> &asyncLock) {
+void Dispatcher::executeAsyncEvents(const uint8_t contextId, std::unique_lock<std::mutex> &asyncLock) {
 	auto &asyncTasks = asyncEventTasks[contextId];
 	if (asyncTasks.empty()) {
 		return;
@@ -101,13 +101,13 @@ void Dispatcher::execute_async_events(const uint8_t contextId, std::unique_lock<
 
 			executedTasks.fetch_add(1);
 			if (executedTasks.load() == sizeEventAsync) {
-				task_async_signal.notify_one();
+				asyncTasks_cv.notify_one();
 			}
 		});
 	}
 
 	// Wait for all the tasks in the current context to be executed.
-	if (task_async_signal.wait_for(asyncLock, ASYNC_TIME_OUT) == std::cv_status::timeout) {
+	if (asyncTasks_cv.wait_for(asyncLock, ASYNC_TIME_OUT) == std::cv_status::timeout) {
 		g_logger().warn("A timeout occurred when executing the async dispatch in the context({}).", contextId);
 	}
 
@@ -115,7 +115,7 @@ void Dispatcher::execute_async_events(const uint8_t contextId, std::unique_lock<
 	asyncTasks.clear();
 }
 
-void Dispatcher::execute_scheduled_events() {
+void Dispatcher::executeScheduledEvents() {
 	for (uint_fast64_t i = 0, max = scheduledtasks.size(); i < max && !scheduledtasks.empty(); ++i) {
 		const auto &task = scheduledtasks.top();
 		if (task->getTime() > Task::TIME_NOW) {
@@ -136,14 +136,14 @@ void Dispatcher::execute_scheduled_events() {
 }
 
 // Merge thread events with main dispatch events
-void Dispatcher::merge_events() {
+void Dispatcher::mergeEvents() {
 	for (auto &thread : threads) {
 		if (!thread.tasks.empty()) {
 			eventTasks.insert(eventTasks.end(), make_move_iterator(thread.tasks.begin()), make_move_iterator(thread.tasks.end()));
 			thread.tasks.clear();
 		}
 
-		for (uint_fast8_t i = 0; i < static_cast<uint8_t>(AsyncEventContext::LAST); ++i) {
+		for (uint_fast8_t i = 0; i < static_cast<uint8_t>(AsyncEventContext::Last); ++i) {
 			auto &context = thread.asyncTasks[i];
 			if (!context.empty()) {
 				asyncEventTasks[i].insert(asyncEventTasks[i].end(), make_move_iterator(context.begin()), make_move_iterator(context.end()));

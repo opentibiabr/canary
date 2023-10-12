@@ -105,7 +105,8 @@ void Dispatcher::execute_async_events(const std::vector<Task> &taskList) {
 		threadPool.addLoad([&] {
 			task.execute();
 
-			if (++executedTasks == sizeEventAsync) {
+			executedTasks.fetch_add(1);
+			if (executedTasks.load() == sizeEventAsync) {
 				task_async_signal.notify_one();
 			}
 		});

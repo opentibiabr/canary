@@ -64,7 +64,13 @@ private:
 	static int16_t getThreadId() {
 		static std::atomic_int16_t last_id = -1;
 		thread_local static int16_t id = -1;
-		return id > -1 ? id : (id = ++last_id);
+
+		if (id == -1) {
+			last_id.fetch_add(1);
+			id = last_id.load();
+		}
+
+		return id;
 	};
 
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string &&context, bool cycle);

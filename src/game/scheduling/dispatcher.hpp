@@ -43,14 +43,14 @@ public:
 		asyncTasks_cv.notify_all();
 	}
 
-	void addEvent(std::function<void(void)> &&f, const std::string_view context, uint32_t expiresAfterMs = 0);
+	void addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0);
 	void addEvent_async(std::function<void(void)> &&f, AsyncEventContext context = AsyncEventContext::First);
 
 	uint64_t scheduleEvent(const std::shared_ptr<Task> &task);
-	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, const std::string_view context) {
+	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context) {
 		return scheduleEvent(delay, std::move(f), context, false);
 	}
-	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> &&f, const std::string_view context) {
+	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context) {
 		return scheduleEvent(delay, std::move(f), context, true);
 	}
 
@@ -78,7 +78,7 @@ private:
 		return id;
 	};
 
-	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, const std::string_view context, bool cycle);
+	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle);
 
 	inline void mergeEvents();
 	inline void executeEvents();

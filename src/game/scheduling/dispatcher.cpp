@@ -49,7 +49,7 @@ void Dispatcher::init() {
 	});
 }
 
-void Dispatcher::addEvent(std::function<void(void)> &&f, const std::string_view context, uint32_t expiresAfterMs) {
+void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
 	threads[getThreadId()].tasks.emplace_back(expiresAfterMs, f, context);
 }
 
@@ -62,7 +62,7 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	return scheduledtasksRef.emplace(task->generateId(), task).first->first;
 }
 
-uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> &&f, const std::string_view context, bool cycle) {
+uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle) {
 	const auto &task = std::make_shared<Task>(std::move(f), context, delay, cycle);
 	return scheduleEvent(task);
 }

@@ -77,7 +77,7 @@ private:
 
 	inline void merge_events();
 	inline void execute_events();
-	inline void execute_async_events(const std::vector<Task> &taskList);
+	inline void execute_async_events(const uint8_t contextId, std::unique_lock<std::mutex> &asyncLock);
 	inline void execute_scheduled_events();
 
 	uint_fast64_t dispatcherCycle = 0;

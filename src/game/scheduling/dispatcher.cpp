@@ -31,18 +31,7 @@ void Dispatcher::init() {
 
 			// Execute all asynchronous events separately by context
 			for (uint_fast8_t i = 0; i < static_cast<uint8_t>(AsyncEventContext::LAST); ++i) {
-				auto &asyncTasks = asyncEventTasks[i];
-				if (!asyncTasks.empty()) {
-					execute_async_events(asyncTasks);
-
-					// Wait for all the tasks in the current context to be executed.
-					if (task_async_signal.wait_for(asyncLock, ASYNC_TIME_OUT) == std::cv_status::timeout) {
-						g_logger().warn("A timeout occurred when executing the async dispatch in the '{}' context.", i);
-					}
-
-					// Clear all async tasks
-					asyncTasks.clear();
-				}
+				execute_async_events(i, asyncLock);
 			}
 
 			// Merge all events that were created by async events
@@ -96,12 +85,17 @@ void Dispatcher::execute_events() {
 	eventTasks.clear();
 }
 
-void Dispatcher::execute_async_events(const std::vector<Task> &taskList) {
-	const size_t sizeEventAsync = taskList.size();
+void Dispatcher::execute_async_events(const uint8_t contextId, std::unique_lock<std::mutex> &asyncLock) {
+	auto &asyncTasks = asyncEventTasks[contextId];
+	if (asyncTasks.empty()) {
+		return;
+	}
+
+	const size_t sizeEventAsync = asyncTasks.size();
 	std::atomic_uint_fast64_t executedTasks = 0;
 
 	// Execute Async Task
-	for (const auto &task : taskList) {
+	for (const auto &task : asyncTasks) {
 		threadPool.addLoad([&] {
 			task.execute();
 
@@ -111,6 +105,14 @@ void Dispatcher::execute_async_events(const std::vector<Task> &taskList) {
 			}
 		});
 	}
+
+	// Wait for all the tasks in the current context to be executed.
+	if (task_async_signal.wait_for(asyncLock, ASYNC_TIME_OUT) == std::cv_status::timeout) {
+		g_logger().warn("A timeout occurred when executing the async dispatch in the context({}).", contextId);
+	}
+
+	// Clear all async tasks
+	asyncTasks.clear();
 }
 
 void Dispatcher::execute_scheduled_events() {

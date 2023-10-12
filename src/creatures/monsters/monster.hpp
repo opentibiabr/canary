@@ -77,13 +77,13 @@ public:
 		return mType->info.race;
 	}
 	float getMitigation() const override {
-		return mType->info.mitigation;
+		return mType->info.mitigation * getDefenseMultiplier();
 	}
 	int32_t getArmor() const override {
-		return mType->info.armor;
+		return mType->info.armor * getDefenseMultiplier();
 	}
 	int32_t getDefense() const override {
-		return mType->info.defense;
+		return mType->info.defense * getDefenseMultiplier();
 	}
 
 	Faction_t getFaction() const override {
@@ -125,6 +125,9 @@ public:
 	}
 	bool canSeeInvisibility() const override {
 		return isImmune(CONDITION_INVISIBLE);
+	}
+	uint16_t critChance() const {
+		return mType->info.critChance;
 	}
 	uint32_t getManaCost() const {
 		return mType->info.manaCost;
@@ -325,6 +328,16 @@ public:
 	bool isImmune(ConditionType_t conditionType) const override;
 	bool isImmune(CombatType_t combatType) const override;
 
+	float getAttackMultiplier() const {
+		float multiplier = mType->getAttackMultiplier();
+		return multiplier * std::pow(1.03f, getForgeStack());
+	}
+
+	float getDefenseMultiplier() const {
+		float multiplier = mType->getDefenseMultiplier();
+		return multiplier * std::pow(1.01f, getForgeStack());
+	}
+
 private:
 	CreatureWeakHashMap friendList;
 	CreatureIDList targetIDList;
@@ -436,14 +449,4 @@ private:
 	void doRandomStep(Direction &nextDirection, bool &result);
 
 	void onConditionStatusChange(const ConditionType_t &type);
-
-	float getAttackMultiplier() const {
-		float multiplier = mType->getAttackMultiplier();
-		return multiplier * std::pow(1.03f, getForgeStack());
-	}
-
-	float getDefenseMultiplier() const {
-		float multiplier = mType->getAttackMultiplier();
-		return multiplier * std::pow(1.01f, getForgeStack());
-	}
 };

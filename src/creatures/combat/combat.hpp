@@ -260,6 +260,8 @@ public:
 	Combat(const Combat &) = delete;
 	Combat &operator=(const Combat &) = delete;
 
+	static void applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, CombatDamage &damage, const CombatParams &params);
+
 	static void doCombatHealth(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, CombatDamage &damage, const CombatParams &params);
 	static void doCombatHealth(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, CombatDamage &damage, const CombatParams &params);
 

@@ -16,7 +16,7 @@ class Task {
 public:
 	static std::chrono::system_clock::time_point TIME_NOW;
 
-	Task(uint32_t expiresAfterMs, std::function<void(void)> &f, std::string_view context) :
+	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context) :
 		expiration(expiresAfterMs > 0 ? TIME_NOW + std::chrono::milliseconds(expiresAfterMs) : SYSTEM_TIME_ZERO),
 		context(std::string(context)), func(std::move(f)) {
 		assert(!this->context.empty() && "Context cannot be empty!");
@@ -94,31 +94,31 @@ private:
 	static std::atomic_uint_fast64_t LAST_EVENT_ID;
 
 	bool hasTraceableContext() const {
-		const static auto tasksContext = phmap::flat_hash_set<std::string>(
-			{ "Creature::checkCreatureWalk",
-			  "Decay::checkDecay",
-			  "Dispatcher::addEvent_async",
-			  "Game::checkCreatureAttack",
-			  "Game::checkCreatures",
-			  "Game::checkImbuements",
-			  "Game::checkLight",
-			  "Game::createFiendishMonsters",
-			  "Game::createInfluencedMonsters",
-			  "Game::updateCreatureWalk",
-			  "Game::updateForgeableMonsters",
-			  "GlobalEvents::think",
-			  "LuaEnvironment::executeTimerEvent",
-			  "Modules::executeOnRecvbyte",
-			  "OutputMessagePool::sendAll",
-			  "ProtocolGame::addGameTask",
-			  "ProtocolGame::parsePacketFromDispatcher",
-			  "Raids::checkRaids",
-			  "SpawnMonster::checkSpawnMonster",
-			  "SpawnMonster::scheduleSpawn",
-			  "SpawnNpc::checkSpawnNpc",
-			  "Webhook::run",
-			  "sendRecvMessageCallback" }
-		);
+		const static auto tasksContext = phmap::flat_hash_set<std::string>({
+			"Creature::checkCreatureWalk",
+			"Decay::checkDecay",
+			"Dispatcher::addEvent_async",
+			"Game::checkCreatureAttack",
+			"Game::checkCreatures",
+			"Game::checkImbuements",
+			"Game::checkLight",
+			"Game::createFiendishMonsters",
+			"Game::createInfluencedMonsters",
+			"Game::updateCreatureWalk",
+			"Game::updateForgeableMonsters",
+			"GlobalEvents::think",
+			"LuaEnvironment::executeTimerEvent",
+			"Modules::executeOnRecvbyte",
+			"OutputMessagePool::sendAll",
+			"ProtocolGame::addGameTask",
+			"ProtocolGame::parsePacketFromDispatcher",
+			"Raids::checkRaids",
+			"SpawnMonster::checkSpawnMonster",
+			"SpawnMonster::scheduleSpawn",
+			"SpawnNpc::checkSpawnNpc",
+			"Webhook::run",
+			"sendRecvMessageCallback"
+			});
 
 		return tasksContext.contains(context);
 	}

@@ -50,11 +50,11 @@ void Dispatcher::init() {
 }
 
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
-	threads[getThreadId()].tasks.emplace_back(expiresAfterMs, f, context);
+	threads[getThreadId()].tasks.emplace_back(expiresAfterMs, std::move(f), context);
 }
 
 void Dispatcher::addEvent_async(std::function<void(void)> &&f, AsyncEventContext context) {
-	threads[getThreadId()].asyncTasks[static_cast<uint8_t>(context)].emplace_back(0, f, "Dispatcher::addEvent_async");
+	threads[getThreadId()].asyncTasks[static_cast<uint8_t>(context)].emplace_back(0, std::move(f), "Dispatcher::addEvent_async");
 }
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {

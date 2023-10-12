@@ -94,31 +94,29 @@ private:
 	static std::atomic_uint_fast64_t LAST_EVENT_ID;
 
 	bool hasTraceableContext() const {
-		const static auto tasksContext = phmap::flat_hash_set<std::string>({
-			"Creature::checkCreatureWalk",
-			"Decay::checkDecay",
-			"Dispatcher::addEvent_async",
-			"Game::checkCreatureAttack",
-			"Game::checkCreatures",
-			"Game::checkImbuements",
-			"Game::checkLight",
-			"Game::createFiendishMonsters",
-			"Game::createInfluencedMonsters",
-			"Game::updateCreatureWalk",
-			"Game::updateForgeableMonsters",
-			"GlobalEvents::think",
-			"LuaEnvironment::executeTimerEvent",
-			"Modules::executeOnRecvbyte",
-			"OutputMessagePool::sendAll",
-			"ProtocolGame::addGameTask",
-			"ProtocolGame::parsePacketFromDispatcher",
-			"Raids::checkRaids",
-			"SpawnMonster::checkSpawnMonster",
-			"SpawnMonster::scheduleSpawn",
-			"SpawnNpc::checkSpawnNpc",
-			"Webhook::run",
-			"sendRecvMessageCallback"
-			});
+		const static auto tasksContext = phmap::flat_hash_set<std::string>({ "Creature::checkCreatureWalk",
+																			 "Decay::checkDecay",
+																			 "Dispatcher::addEvent_async",
+																			 "Game::checkCreatureAttack",
+																			 "Game::checkCreatures",
+																			 "Game::checkImbuements",
+																			 "Game::checkLight",
+																			 "Game::createFiendishMonsters",
+																			 "Game::createInfluencedMonsters",
+																			 "Game::updateCreatureWalk",
+																			 "Game::updateForgeableMonsters",
+																			 "GlobalEvents::think",
+																			 "LuaEnvironment::executeTimerEvent",
+																			 "Modules::executeOnRecvbyte",
+																			 "OutputMessagePool::sendAll",
+																			 "ProtocolGame::addGameTask",
+																			 "ProtocolGame::parsePacketFromDispatcher",
+																			 "Raids::checkRaids",
+																			 "SpawnMonster::checkSpawnMonster",
+																			 "SpawnMonster::scheduleSpawn",
+																			 "SpawnNpc::checkSpawnNpc",
+																			 "Webhook::run",
+																			 "sendRecvMessageCallback" });
 
 		return tasksContext.contains(context);
 	}

@@ -41,7 +41,7 @@ public:
 		return delay;
 	}
 
-	std::string getContext() const {
+	std::string_view getContext() const {
 		return context;
 	}
 

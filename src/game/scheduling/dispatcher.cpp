@@ -15,6 +15,7 @@
 #include "utils/tools.hpp"
 
 constexpr static auto ASYNC_TIME_OUT = std::chrono::seconds(15);
+thread_local DispatcherContext Dispatcher::dispacherContext;
 static std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.
 
 Dispatcher &Dispatcher::getInstance() {
@@ -97,20 +98,32 @@ void Dispatcher::stopEvent(uint64_t eventId) {
 }
 
 void Dispatcher::executeSerialEvents(std::vector<Task> &tasks) {
+	dispacherContext.groupId = TaskGroup::Serial;
+	dispacherContext.type = DispatcherType::Event;
+
 	for (const auto &task : tasks) {
+		dispacherContext.taskName = task.getContext();
 		if (task.execute()) {
 			++dispatcherCycle;
 		}
 	}
 	tasks.clear();
+
+	dispacherContext.reset();
 }
 
 void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock) {
 	std::atomic_uint_fast64_t executedTasks = 0;
 
 	for (const auto &task : tasks) {
-		threadPool.addLoad([this, &task, &executedTasks, totalTaskSize = tasks.size()] {
+		threadPool.addLoad([this, &task, &executedTasks, groupId, totalTaskSize = tasks.size()] {
+			dispacherContext.type = DispatcherType::AsyncEvent;
+			dispacherContext.groupId = static_cast<TaskGroup>(groupId);
+			dispacherContext.taskName = task.getContext();
+
 			task.execute();
+
+			dispacherContext.reset();
 
 			executedTasks.fetch_add(1);
 			if (executedTasks.load() == totalTaskSize) {
@@ -145,6 +158,10 @@ void Dispatcher::executeScheduledEvents() {
 			break;
 		}
 
+		dispacherContext.type = task->isCycle() ? DispatcherType::CycleEvent : DispatcherType::ScheduledEvent;
+		dispacherContext.groupId = TaskGroup::Serial;
+		dispacherContext.taskName = task->getContext();
+
 		if (task->execute() && task->isCycle()) {
 			task->updateTime();
 			scheduledTasks.emplace(task);
@@ -154,6 +171,8 @@ void Dispatcher::executeScheduledEvents() {
 
 		scheduledTasks.pop();
 	}
+
+	dispacherContext.reset();
 }
 
 // Merge thread events with main dispatch events

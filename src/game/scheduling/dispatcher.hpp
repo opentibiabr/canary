@@ -15,10 +15,54 @@
 static constexpr uint16_t DISPATCHER_TASK_EXPIRATION = 2000;
 static constexpr uint16_t SCHEDULER_MINTICKS = 50;
 
-enum class TaskGroup : uint8_t {
-	Serial,
+enum class TaskGroup : int8_t {
+	ThreadPool = -1,
+	Serial = 0,
 	GenericParallel,
 	Last
+};
+
+enum class DispatcherType : uint8_t {
+	None,
+	Event,
+	AsyncEvent,
+	ScheduledEvent,
+	CycleEvent
+};
+
+struct DispatcherContext {
+	bool isGroup(const TaskGroup group) const {
+		return groupId == group;
+	}
+
+	bool isAsync() const {
+		return groupId != TaskGroup::Serial;
+	}
+
+	auto getGroup() const {
+		return groupId;
+	}
+
+	auto getName() const {
+		return taskName;
+	}
+
+	auto getType() const {
+		return type;
+	}
+
+private:
+	void reset() {
+		groupId = TaskGroup::ThreadPool;
+		type = DispatcherType::None;
+		taskName = "";
+	}
+
+	DispatcherType type = DispatcherType::None;
+	TaskGroup groupId = TaskGroup::ThreadPool;
+	std::string_view taskName;
+
+	friend class Dispatcher;
 };
 
 /**
@@ -48,7 +92,7 @@ public:
 	}
 
 	void addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0);
-	void asyncEvent(std::function<void(void)> &&f, TaskGroup group = TaskGroup::Serial);
+	void asyncEvent(std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel);
 
 	uint64_t scheduleEvent(const std::shared_ptr<Task> &task);
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context) {
@@ -64,7 +108,13 @@ public:
 
 	void stopEvent(uint64_t eventId);
 
+	const auto &context() const {
+		return dispacherContext;
+	}
+
 private:
+	thread_local static DispatcherContext dispacherContext;
+
 	// Update Time Cache
 	static void updateClock() {
 		Task::TIME_NOW = std::chrono::system_clock::now();

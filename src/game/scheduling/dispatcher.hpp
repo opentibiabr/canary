@@ -84,12 +84,15 @@ private:
 	inline void executeEvents();
 	inline void executeAsyncEvents(const uint8_t contextId, std::unique_lock<std::mutex> &asyncLock);
 	inline void executeScheduledEvents();
+	inline std::chrono::milliseconds timeUntilNextScheduledTask();
 
 	uint_fast64_t dispatcherCycle = 0;
 
 	ThreadPool &threadPool;
 	std::mutex mutex;
 	std::condition_variable asyncTasks_cv;
+	std::condition_variable cv;
+	bool hasPendingTasks = false;
 
 	// Thread Events
 	struct ThreadTask {

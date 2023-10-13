@@ -44,17 +44,20 @@ void Dispatcher::init() {
 			// Merge all events that were created by events and scheduled events
 			mergeEvents();
 
-			sleep_for(SLEEP_TIME_MS);
+			auto waitDuration = timeUntilNextScheduledTask();
+			cv.wait_for(asyncLock, waitDuration);
 		}
 	});
 }
 
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
 	threads[getThreadId()].tasks.emplace_back(expiresAfterMs, std::move(f), context);
+	cv.notify_one();
 }
 
 void Dispatcher::addEvent_async(std::function<void(void)> &&f, AsyncEventContext context) {
 	threads[getThreadId()].asyncTasks[static_cast<uint8_t>(context)].emplace_back(0, std::move(f), "Dispatcher::addEvent_async");
+	cv.notify_one();
 }
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
@@ -157,4 +160,17 @@ void Dispatcher::mergeEvents() {
 			thread.scheduledtasks.clear();
 		}
 	}
+}
+
+std::chrono::milliseconds Dispatcher::timeUntilNextScheduledTask() {
+	if (scheduledtasks.empty()) {
+		return std::chrono::milliseconds::max();
+	}
+
+	const auto &task = scheduledtasks.top();
+	auto timeRemaining = task->getTime() - Task::TIME_NOW;
+	if (timeRemaining < std::chrono::milliseconds(0)) {
+		return std::chrono::milliseconds(0);
+	}
+	return std::chrono::duration_cast<std::chrono::milliseconds>(timeRemaining);
 }

@@ -29,7 +29,10 @@ class Dispatcher {
 public:
 	explicit Dispatcher(ThreadPool &threadPool) :
 		threadPool(threadPool) {
-		threads.resize(std::thread::hardware_concurrency() + 1);
+		threads.reserve(std::thread::hardware_concurrency() + 1);
+		for (uint_fast16_t i = 0; i < std::thread::hardware_concurrency() + 1; ++i) {
+			threads.emplace_back(std::make_unique<ThreadTask>());
+		}
 	};
 
 	// Ensures that we don't accidentally copy it
@@ -84,7 +87,7 @@ private:
 	inline void executeEvents();
 	inline void executeAsyncEvents(const uint8_t contextId, std::unique_lock<std::mutex> &asyncLock);
 	inline void executeScheduledEvents();
-	inline std::chrono::milliseconds timeUntilNextScheduledTask();
+	inline std::chrono::nanoseconds timeUntilNextScheduledTask();
 
 	uint_fast64_t dispatcherCycle = 0;
 
@@ -98,20 +101,21 @@ private:
 	struct ThreadTask {
 		ThreadTask() {
 			tasks.reserve(2000);
-			scheduledtasks.reserve(2000);
+			scheduledTasks.reserve(2000);
 		}
 
 		std::vector<Task> tasks;
 		std::array<std::vector<Task>, static_cast<uint8_t>(AsyncEventContext::Last)> asyncTasks;
-		std::vector<std::shared_ptr<Task>> scheduledtasks;
+		std::vector<std::shared_ptr<Task>> scheduledTasks;
+		std::mutex mutex;
 	};
-	std::vector<ThreadTask> threads;
+	std::vector<std::unique_ptr<ThreadTask>> threads;
 
 	// Main Events
 	std::vector<Task> eventTasks;
 	std::array<std::vector<Task>, static_cast<uint8_t>(AsyncEventContext::Last)> asyncEventTasks;
-	std::priority_queue<std::shared_ptr<Task>, std::deque<std::shared_ptr<Task>>, Task::Compare> scheduledtasks;
-	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledtasksRef;
+	std::priority_queue<std::shared_ptr<Task>, std::deque<std::shared_ptr<Task>>, Task::Compare> scheduledTasks;
+	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef;
 };
 
 constexpr auto g_dispatcher = Dispatcher::getInstance;

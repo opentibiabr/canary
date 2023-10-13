@@ -51,18 +51,25 @@ void Dispatcher::init() {
 }
 
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
-	threads[getThreadId()].tasks.emplace_back(expiresAfterMs, std::move(f), context);
+	auto &thread = threads[getThreadId()];
+	std::scoped_lock lock(thread->mutex);
+	thread->tasks.emplace_back(expiresAfterMs, std::move(f), context);
 	cv.notify_one();
 }
 
 void Dispatcher::addEvent_async(std::function<void(void)> &&f, AsyncEventContext context) {
-	threads[getThreadId()].asyncTasks[static_cast<uint8_t>(context)].emplace_back(0, std::move(f), "Dispatcher::addEvent_async");
+	auto &thread = threads[getThreadId()];
+	std::scoped_lock lock(thread->mutex);
+	thread->asyncTasks[static_cast<uint8_t>(context)].emplace_back(0, std::move(f), "Dispatcher::addEvent_async");
 	cv.notify_one();
 }
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
-	threads[getThreadId()].scheduledtasks.emplace_back(task);
-	return scheduledtasksRef.emplace(task->generateId(), task).first->first;
+	auto &thread = threads[getThreadId()];
+	std::scoped_lock lock(thread->mutex);
+	thread->scheduledTasks.emplace_back(task);
+	cv.notify_one();
+	return scheduledTasksRef.emplace(task->generateId(), task).first->first;
 }
 
 uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle) {
@@ -71,13 +78,13 @@ uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> &&f
 }
 
 void Dispatcher::stopEvent(uint64_t eventId) {
-	auto it = scheduledtasksRef.find(eventId);
-	if (it == scheduledtasksRef.end()) {
+	auto it = scheduledTasksRef.find(eventId);
+	if (it == scheduledTasksRef.end()) {
 		return;
 	}
 
 	it->second->cancel();
-	scheduledtasksRef.erase(it);
+	scheduledTasksRef.erase(it);
 }
 
 void Dispatcher::executeEvents() {
@@ -102,8 +109,7 @@ void Dispatcher::executeAsyncEvents(const uint8_t contextId, std::unique_lock<st
 		threadPool.addLoad([this, &task, &executedTasks, totalTaskSize = asyncTasks.size()] {
 			task.execute();
 
-			executedTasks.fetch_add(1);
-			if (executedTasks.load() == totalTaskSize) {
+			if (executedTasks.fetch_add(1) == totalTaskSize) {
 				asyncTasks_cv.notify_one();
 			}
 		});
@@ -119,58 +125,59 @@ void Dispatcher::executeAsyncEvents(const uint8_t contextId, std::unique_lock<st
 }
 
 void Dispatcher::executeScheduledEvents() {
-	for (uint_fast64_t i = 0, max = scheduledtasks.size(); i < max && !scheduledtasks.empty(); ++i) {
-		const auto &task = scheduledtasks.top();
+	for (uint_fast64_t i = 0, max = scheduledTasks.size(); i < max && !scheduledTasks.empty(); ++i) {
+		const auto &task = scheduledTasks.top();
 		if (task->getTime() > Task::TIME_NOW) {
 			break;
 		}
 
 		if (task->execute() && task->isCycle()) {
 			task->updateTime();
-			scheduledtasks.emplace(task);
+			scheduledTasks.emplace(task);
 		} else {
-			scheduledtasksRef.erase(task->getEventId());
+			scheduledTasksRef.erase(task->getEventId());
 		}
 
-		scheduledtasks.pop();
+		scheduledTasks.pop();
 	}
 }
 
 // Merge thread events with main dispatch events
 void Dispatcher::mergeEvents() {
 	for (auto &thread : threads) {
-		if (!thread.tasks.empty()) {
-			eventTasks.insert(eventTasks.end(), make_move_iterator(thread.tasks.begin()), make_move_iterator(thread.tasks.end()));
-			thread.tasks.clear();
+		std::scoped_lock lock(thread->mutex);
+		if (!thread->tasks.empty()) {
+			eventTasks.insert(eventTasks.end(), make_move_iterator(thread->tasks.begin()), make_move_iterator(thread->tasks.end()));
+			thread->tasks.clear();
 		}
 
 		for (uint_fast8_t i = 0; i < static_cast<uint8_t>(AsyncEventContext::Last); ++i) {
-			auto &context = thread.asyncTasks[i];
+			auto &context = thread->asyncTasks[i];
 			if (!context.empty()) {
 				asyncEventTasks[i].insert(asyncEventTasks[i].end(), make_move_iterator(context.begin()), make_move_iterator(context.end()));
 				context.clear();
 			}
 		}
 
-		if (!thread.scheduledtasks.empty()) {
-			for (auto &task : thread.scheduledtasks) {
-				scheduledtasks.emplace(task);
-				scheduledtasksRef.emplace(task->getEventId(), task);
+		if (!thread->scheduledTasks.empty()) {
+			for (auto &task : thread->scheduledTasks) {
+				scheduledTasks.emplace(task);
+				scheduledTasksRef.emplace(task->getEventId(), task);
 			}
-			thread.scheduledtasks.clear();
+			thread->scheduledTasks.clear();
 		}
 	}
 }
 
-std::chrono::milliseconds Dispatcher::timeUntilNextScheduledTask() {
-	if (scheduledtasks.empty()) {
+std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() {
+	if (scheduledTasks.empty()) {
 		return std::chrono::milliseconds::max();
 	}
 
-	const auto &task = scheduledtasks.top();
+	const auto &task = scheduledTasks.top();
 	auto timeRemaining = task->getTime() - Task::TIME_NOW;
-	if (timeRemaining < std::chrono::milliseconds(0)) {
-		return std::chrono::milliseconds(0);
+	if (timeRemaining < std::chrono::nanoseconds(0)) {
+		return std::chrono::nanoseconds(0);
 	}
-	return std::chrono::duration_cast<std::chrono::milliseconds>(timeRemaining);
+	return timeRemaining;
 }

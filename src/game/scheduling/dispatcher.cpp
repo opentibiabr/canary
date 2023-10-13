@@ -49,36 +49,24 @@ void Dispatcher::init() {
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
 	auto &thread = threads[getThreadId()];
 	std::scoped_lock lock(thread->mutex);
-	bool notify = !hasPendingTasks;
 	thread->tasks[static_cast<uint8_t>(TaskGroup::Serial)].emplace_back(expiresAfterMs, std::move(f), context);
-	if (notify && !hasPendingTasks) {
-		hasPendingTasks = true;
-		signalSchedule.notify_one();
-	}
+	notify();
 }
 
 void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
 	auto &thread = threads[getThreadId()];
 	std::scoped_lock lock(thread->mutex);
-	bool notify = !hasPendingTasks;
 	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), "Dispatcher::asyncEvent");
-	if (notify && !hasPendingTasks) {
-		hasPendingTasks = true;
-		signalSchedule.notify_one();
-	}
+	notify();
 }
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	auto &thread = threads[getThreadId()];
 	std::scoped_lock lock(thread->mutex);
 	thread->scheduledTasks.emplace_back(task);
-	bool notify = !hasPendingTasks;
-	signalSchedule.notify_one();
 	auto eventId = scheduledTasksRef.emplace(task->generateId(), task).first->first;
-	if (notify && !hasPendingTasks) {
-		hasPendingTasks = true;
-		signalSchedule.notify_one();
-	}
+	notify();
+
 	return eventId;
 }
 
@@ -195,7 +183,7 @@ void Dispatcher::mergeEvents() {
 		}
 	}
 
-	checkPedingTasks();
+	checkPendingTasks();
 }
 
 std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() {
@@ -204,9 +192,6 @@ std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() {
 	}
 
 	const auto &task = scheduledTasks.top();
-	auto timeRemaining = task->getTime() - Task::TIME_NOW;
-	if (timeRemaining < std::chrono::nanoseconds(0)) {
-		return std::chrono::nanoseconds(0);
-	}
-	return timeRemaining;
+	const auto timeRemaining = task->getTime() - Task::TIME_NOW;
+	return timeRemaining >= std::chrono::nanoseconds(0) ? timeRemaining : std::chrono::nanoseconds(0);
 }

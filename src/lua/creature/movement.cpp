@@ -147,7 +147,7 @@ bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> moveEvent, int32
 	}
 }
 
-std::shared_ptr<MoveEvent> MoveEvents::getEvent(Item &item, MoveEvent_t eventType, Slots_t slot) {
+std::shared_ptr<MoveEvent> MoveEvents::getEvent(const std::shared_ptr<Item> &item, MoveEvent_t eventType, Slots_t slot) {
 	uint32_t slotp;
 	switch (slot) {
 		case CONST_SLOT_HEAD:
@@ -185,8 +185,8 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(Item &item, MoveEvent_t eventTyp
 			break;
 	}
 
-	if (item.hasAttribute(ItemAttribute_t::ACTIONID)) {
-		std::map<int32_t, MoveEventList>::iterator it = actionIdMap.find(item.getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
+	if (item->hasAttribute(ItemAttribute_t::ACTIONID)) {
+		std::map<int32_t, MoveEventList>::iterator it = actionIdMap.find(item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
 		if (it != actionIdMap.end()) {
 			std::list<std::shared_ptr<MoveEvent>> moveEventList = it->second.moveEvent[eventType];
 			for (const auto &moveEvent : moveEventList) {
@@ -197,7 +197,7 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(Item &item, MoveEvent_t eventTyp
 		}
 	}
 
-	auto it = itemIdMap.find(item.getID());
+	auto it = itemIdMap.find(item->getID());
 	if (it != itemIdMap.end()) {
 		std::list<std::shared_ptr<MoveEvent>> &moveEventList = it->second.moveEvent[eventType];
 		for (const auto &moveEvent : moveEventList) {
@@ -209,10 +209,10 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(Item &item, MoveEvent_t eventTyp
 	return nullptr;
 }
 
-std::shared_ptr<MoveEvent> MoveEvents::getEvent(Item &item, MoveEvent_t eventType) {
+std::shared_ptr<MoveEvent> MoveEvents::getEvent(const std::shared_ptr<Item> &item, MoveEvent_t eventType) {
 	std::map<int32_t, MoveEventList>::iterator it;
-	if (item.hasAttribute(ItemAttribute_t::UNIQUEID)) {
-		it = uniqueIdMap.find(item.getAttribute<uint16_t>(ItemAttribute_t::UNIQUEID));
+	if (item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
+		it = uniqueIdMap.find(item->getAttribute<uint16_t>(ItemAttribute_t::UNIQUEID));
 		if (it != uniqueIdMap.end()) {
 			std::list<std::shared_ptr<MoveEvent>> &moveEventList = it->second.moveEvent[eventType];
 			if (!moveEventList.empty()) {
@@ -221,8 +221,8 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(Item &item, MoveEvent_t eventTyp
 		}
 	}
 
-	if (item.hasAttribute(ItemAttribute_t::ACTIONID)) {
-		it = actionIdMap.find(item.getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
+	if (item->hasAttribute(ItemAttribute_t::ACTIONID)) {
+		it = actionIdMap.find(item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
 		if (it != actionIdMap.end()) {
 			std::list<std::shared_ptr<MoveEvent>> &moveEventList = it->second.moveEvent[eventType];
 			if (!moveEventList.empty()) {
@@ -231,7 +231,7 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(Item &item, MoveEvent_t eventTyp
 		}
 	}
 
-	it = itemIdMap.find(item.getID());
+	it = itemIdMap.find(item->getID());
 	if (it != itemIdMap.end()) {
 		std::list<std::shared_ptr<MoveEvent>> &moveEventList = it->second.moveEvent[eventType];
 		if (!moveEventList.empty()) {
@@ -265,8 +265,8 @@ bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> moveEvent, const
 	}
 }
 
-std::shared_ptr<MoveEvent> MoveEvents::getEvent(Tile &tile, MoveEvent_t eventType) {
-	if (auto it = positionsMap.find(tile.getPosition());
+std::shared_ptr<MoveEvent> MoveEvents::getEvent(const std::shared_ptr<Tile> &tile, MoveEvent_t eventType) {
+	if (auto it = positionsMap.find(tile->getPosition());
 		it != positionsMap.end()) {
 		std::list<std::shared_ptr<MoveEvent>> &moveEventList = it->second.moveEvent[eventType];
 		if (!moveEventList.empty()) {
@@ -276,8 +276,8 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(Tile &tile, MoveEvent_t eventTyp
 	return nullptr;
 }
 
-uint32_t MoveEvents::onCreatureMove(Creature &creature, Tile &tile, MoveEvent_t eventType) {
-	const Position &pos = tile.getPosition();
+uint32_t MoveEvents::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile, MoveEvent_t eventType) {
+	const Position &pos = tile->getPosition();
 
 	uint32_t ret = 1;
 
@@ -286,18 +286,18 @@ uint32_t MoveEvents::onCreatureMove(Creature &creature, Tile &tile, MoveEvent_t 
 		ret &= moveEvent->fireStepEvent(creature, nullptr, pos);
 	}
 
-	for (size_t i = tile.getFirstIndex(), j = tile.getLastIndex(); i < j; ++i) {
-		Thing* thing = tile.getThing(i);
+	for (size_t i = tile->getFirstIndex(), j = tile->getLastIndex(); i < j; ++i) {
+		std::shared_ptr<Thing> thing = tile->getThing(i);
 		if (!thing) {
 			continue;
 		}
 
-		Item* tileItem = thing->getItem();
+		std::shared_ptr<Item> tileItem = thing->getItem();
 		if (!tileItem) {
 			continue;
 		}
 
-		moveEvent = getEvent(*tileItem, eventType);
+		moveEvent = getEvent(tileItem, eventType);
 		if (moveEvent) {
 			auto step = moveEvent->fireStepEvent(creature, tileItem, pos);
 			// If there is any problem in the function, we will kill the loop
@@ -310,27 +310,27 @@ uint32_t MoveEvents::onCreatureMove(Creature &creature, Tile &tile, MoveEvent_t 
 	return ret;
 }
 
-uint32_t MoveEvents::onPlayerEquip(Player &player, Item &item, Slots_t slot, bool isCheck) {
-	const auto &moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot);
+uint32_t MoveEvents::onPlayerEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool isCheck) {
+	const auto moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot);
 	if (!moveEvent) {
 		return 1;
 	}
-	g_events().eventPlayerOnInventoryUpdate(&player, &item, slot, true);
-	g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, &EventCallback::playerOnInventoryUpdate, &player, &item, slot, true);
+	g_events().eventPlayerOnInventoryUpdate(player, item, slot, true);
+	g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, &EventCallback::playerOnInventoryUpdate, player, item, slot, true);
 	return moveEvent->fireEquip(player, item, slot, isCheck);
 }
 
-uint32_t MoveEvents::onPlayerDeEquip(Player &player, Item &item, Slots_t slot) {
-	const auto &moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot);
+uint32_t MoveEvents::onPlayerDeEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot) {
+	const auto moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot);
 	if (!moveEvent) {
 		return 1;
 	}
-	g_events().eventPlayerOnInventoryUpdate(&player, &item, slot, false);
-	g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, &EventCallback::playerOnInventoryUpdate, &player, &item, slot, false);
+	g_events().eventPlayerOnInventoryUpdate(player, item, slot, false);
+	g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, &EventCallback::playerOnInventoryUpdate, player, item, slot, false);
 	return moveEvent->fireEquip(player, item, slot, false);
 }
 
-uint32_t MoveEvents::onItemMove(Item &item, Tile &tile, bool isAdd) {
+uint32_t MoveEvents::onItemMove(const std::shared_ptr<Item> &item, const std::shared_ptr<Tile> &tile, bool isAdd) {
 	MoveEvent_t eventType1, eventType2;
 	if (isAdd) {
 		eventType1 = MOVE_EVENT_ADD_ITEM;
@@ -344,29 +344,29 @@ uint32_t MoveEvents::onItemMove(Item &item, Tile &tile, bool isAdd) {
 	auto moveEvent = getEvent(tile, eventType1);
 	if (moveEvent) {
 		// No tile item
-		ret &= moveEvent->fireAddRemItem(item, tile.getPosition());
+		ret &= moveEvent->fireAddRemItem(item, tile->getPosition());
 	}
 
 	moveEvent = getEvent(item, eventType1);
 	if (moveEvent) {
 		// No tile item
-		ret &= moveEvent->fireAddRemItem(item, tile.getPosition());
+		ret &= moveEvent->fireAddRemItem(item, tile->getPosition());
 	}
 
-	for (size_t i = tile.getFirstIndex(), j = tile.getLastIndex(); i < j; ++i) {
-		Thing* thing = tile.getThing(i);
+	for (size_t i = tile->getFirstIndex(), j = tile->getLastIndex(); i < j; ++i) {
+		std::shared_ptr<Thing> thing = tile->getThing(i);
 		if (!thing) {
 			continue;
 		}
 
-		Item* tileItem = thing->getItem();
+		std::shared_ptr<Item> tileItem = thing->getItem();
 		if (!tileItem) {
 			continue;
 		}
 
-		moveEvent = getEvent(*tileItem, eventType2);
+		moveEvent = getEvent(tileItem, eventType2);
 		if (moveEvent) {
-			auto moveItem = moveEvent->fireAddRemItem(item, *tileItem, tile.getPosition());
+			auto moveItem = moveEvent->fireAddRemItem(item, tileItem, tile->getPosition());
 			// If there is any problem in the function, we will kill the loop
 			if (moveItem == 0) {
 				break;
@@ -409,7 +409,7 @@ std::string MoveEvent::getScriptTypeName() const {
 	}
 }
 
-uint32_t MoveEvent::StepInField(Creature* creature, Item* item, const Position &) {
+uint32_t MoveEvent::StepInField(std::shared_ptr<Creature> creature, std::shared_ptr<Item> item, const Position &) {
 	if (creature == nullptr) {
 		g_logger().error("[MoveEvent::StepInField] - Creature is nullptr");
 		return 0;
@@ -420,27 +420,27 @@ uint32_t MoveEvent::StepInField(Creature* creature, Item* item, const Position &
 		return 0;
 	}
 
-	MagicField* field = item->getMagicField();
+	std::shared_ptr<MagicField> field = item->getMagicField();
 	if (field) {
-		field->onStepInField(*creature);
+		field->onStepInField(creature);
 		return 1;
 	}
 
 	return LUA_ERROR_ITEM_NOT_FOUND;
 }
 
-uint32_t MoveEvent::StepOutField(Creature*, Item*, const Position &) {
+uint32_t MoveEvent::StepOutField(std::shared_ptr<Creature>, std::shared_ptr<Item>, const Position &) {
 	return 1;
 }
 
-uint32_t MoveEvent::AddItemField(Item* item, Item*, const Position &) {
+uint32_t MoveEvent::AddItemField(std::shared_ptr<Item> item, std::shared_ptr<Item>, const Position &) {
 	if (item == nullptr) {
 		g_logger().error("[MoveEvent::AddItemField] - Item is nullptr");
 		return 0;
 	}
 
-	if (MagicField* field = item->getMagicField()) {
-		Tile* tile = item->getTile();
+	if (std::shared_ptr<MagicField> field = item->getMagicField()) {
+		std::shared_ptr<Tile> tile = item->getTile();
 		if (tile == nullptr) {
 			g_logger().debug("[MoveEvent::AddItemField] - Tile is nullptr");
 			return 0;
@@ -450,24 +450,24 @@ uint32_t MoveEvent::AddItemField(Item* item, Item*, const Position &) {
 			g_logger().debug("[MoveEvent::AddItemField] - Creatures is nullptr");
 			return 0;
 		}
-		for (Creature* creature : *creatures) {
+		for (auto &creature : *creatures) {
 			if (field == nullptr) {
 				g_logger().debug("[MoveEvent::AddItemField] - MagicField is nullptr");
 				return 0;
 			}
 
-			field->onStepInField(*creature);
+			field->onStepInField(creature);
 		}
 		return 1;
 	}
 	return LUA_ERROR_ITEM_NOT_FOUND;
 }
 
-uint32_t MoveEvent::RemoveItemField(Item*, Item*, const Position &) {
+uint32_t MoveEvent::RemoveItemField(std::shared_ptr<Item>, std::shared_ptr<Item>, const Position &) {
 	return 1;
 }
 
-uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, Player* player, Item* item, Slots_t slot, bool isCheck) {
+uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool isCheck) {
 	if (player == nullptr) {
 		g_logger().error("[MoveEvent::EquipItem] - Player is nullptr");
 		return 0;
@@ -520,24 +520,24 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, Player
 
 	if (it.abilities) {
 		if (it.abilities->invisible) {
-			Condition* condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_INVISIBLE, -1, 0);
+			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_INVISIBLE, -1, 0);
 			player->addCondition(condition);
 		}
 
 		if (it.abilities->manaShield) {
-			Condition* condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_MANASHIELD, -1, 0);
+			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_MANASHIELD, -1, 0);
 			player->addCondition(condition);
 		}
 
 		if (it.abilities->speed != 0) {
-			g_game().changePlayerSpeed(*player, it.abilities->speed);
+			g_game().changePlayerSpeed(player, it.abilities->speed);
 		}
 
 		player->addConditionSuppressions(it.abilities->conditionSuppressions);
 		player->sendIcons();
 
 		if (it.abilities->regeneration) {
-			Condition* condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_REGENERATION, -1, 0);
+			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_REGENERATION, -1, 0);
 
 			if (it.abilities->getHealthGain() != 0) {
 				condition->setParam(CONDITION_PARAM_HEALTHGAIN, it.abilities->getHealthGain());
@@ -581,7 +581,7 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, Player
 	return 1;
 }
 
-uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, Player* player, Item* item, Slots_t slot, bool) {
+uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool) {
 	if (player == nullptr) {
 		g_logger().error("[MoveEvent::EquipItem] - Player is nullptr");
 		return 0;
@@ -623,7 +623,7 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, Play
 		}
 
 		if (it.abilities->speed != 0) {
-			g_game().changePlayerSpeed(*player, -it.abilities->speed);
+			g_game().changePlayerSpeed(player, -it.abilities->speed);
 		}
 
 		player->removeConditionSuppressions();
@@ -664,22 +664,22 @@ void MoveEvent::setEventType(MoveEvent_t type) {
 	eventType = type;
 }
 
-uint32_t MoveEvent::fireStepEvent(Creature &creature, Item* item, const Position &pos) const {
+uint32_t MoveEvent::fireStepEvent(const std::shared_ptr<Creature> &creature, std::shared_ptr<Item> item, const Position &pos) const {
 	if (isLoadedCallback()) {
 		return executeStep(creature, item, pos);
 	} else {
-		return stepFunction(&creature, item, pos);
+		return stepFunction(creature, item, pos);
 	}
 }
 
-bool MoveEvent::executeStep(Creature &creature, Item* item, const Position &pos) const {
+bool MoveEvent::executeStep(const std::shared_ptr<Creature> &creature, std::shared_ptr<Item> item, const Position &pos) const {
 	// onStepIn(creature, item, pos, fromPosition)
 	// onStepOut(creature, item, pos, fromPosition)
 
 	// Check if the new position is the same as the old one
 	// If it is, log a warning and either teleport the player to their temple position if item type is an teleport
-	auto fromPosition = creature.getLastPosition();
-	if (auto player = creature.getPlayer(); item && fromPosition == pos && getEventType() == MOVE_EVENT_STEP_IN) {
+	auto fromPosition = creature->getLastPosition();
+	if (auto player = creature->getPlayer(); item && fromPosition == pos && getEventType() == MOVE_EVENT_STEP_IN) {
 		if (const ItemType &itemType = Item::items[item->getID()]; player && itemType.isTeleport()) {
 			g_logger().warn("[{}] cannot teleport player: {}, to the same position: {} of fromPosition: {}", __FUNCTION__, player->getName(), pos.toString(), fromPosition.toString());
 			g_game().internalTeleport(player, player->getTemplePosition());
@@ -694,11 +694,11 @@ bool MoveEvent::executeStep(Creature &creature, Item* item, const Position &pos)
 		if (item != nullptr) {
 			g_logger().error("[MoveEvent::executeStep - Creature {} item {}, position {}] "
 							 "Call stack overflow. Too many lua script calls being nested.",
-							 creature.getName(), item->getName(), pos.toString());
+							 creature->getName(), item->getName(), pos.toString());
 		} else {
 			g_logger().error("[MoveEvent::executeStep - Creature {}, position {}] "
 							 "Call stack overflow. Too many lua script calls being nested.",
-							 creature.getName(), pos.toString());
+							 creature->getName(), pos.toString());
 		}
 		return false;
 	}
@@ -709,8 +709,8 @@ bool MoveEvent::executeStep(Creature &creature, Item* item, const Position &pos)
 	lua_State* L = getScriptInterface()->getLuaState();
 
 	getScriptInterface()->pushFunction(getScriptId());
-	LuaScriptInterface::pushUserdata<Creature>(L, &creature);
-	LuaScriptInterface::setCreatureMetatable(L, -1, &creature);
+	LuaScriptInterface::pushUserdata<Creature>(L, creature);
+	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
 	LuaScriptInterface::pushThing(L, item);
 	LuaScriptInterface::pushPosition(L, pos);
 	LuaScriptInterface::pushPosition(L, fromPosition);
@@ -718,26 +718,26 @@ bool MoveEvent::executeStep(Creature &creature, Item* item, const Position &pos)
 	return getScriptInterface()->callFunction(4);
 }
 
-uint32_t MoveEvent::fireEquip(Player &player, Item &item, Slots_t toSlot, bool isCheck) {
+uint32_t MoveEvent::fireEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t toSlot, bool isCheck) {
 	if (isLoadedCallback()) {
-		if (!equipFunction || equipFunction(static_self_cast<MoveEvent>(), &player, &item, toSlot, isCheck) == 1) {
+		if (!equipFunction || equipFunction(static_self_cast<MoveEvent>(), player, item, toSlot, isCheck) == 1) {
 			if (executeEquip(player, item, toSlot, isCheck)) {
 				return 1;
 			}
 		}
 		return 0;
 	} else {
-		return equipFunction(static_self_cast<MoveEvent>(), &player, &item, toSlot, isCheck);
+		return equipFunction(static_self_cast<MoveEvent>(), player, item, toSlot, isCheck);
 	}
 }
 
-bool MoveEvent::executeEquip(Player &player, Item &item, Slots_t onSlot, bool isCheck) const {
+bool MoveEvent::executeEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t onSlot, bool isCheck) const {
 	// onEquip(player, item, slot, isCheck)
 	// onDeEquip(player, item, slot, isCheck)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[MoveEvent::executeEquip - Player {} item {}] "
 						 "Call stack overflow. Too many lua script calls being nested.",
-						 player.getName(), item.getName());
+						 player->getName(), item->getName());
 		return false;
 	}
 
@@ -747,31 +747,31 @@ bool MoveEvent::executeEquip(Player &player, Item &item, Slots_t onSlot, bool is
 	lua_State* L = getScriptInterface()->getLuaState();
 
 	getScriptInterface()->pushFunction(getScriptId());
-	LuaScriptInterface::pushUserdata<Player>(L, &player);
+	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
-	LuaScriptInterface::pushThing(L, &item);
+	LuaScriptInterface::pushThing(L, item);
 	lua_pushnumber(L, onSlot);
 	LuaScriptInterface::pushBoolean(L, isCheck);
 
 	return getScriptInterface()->callFunction(4);
 }
 
-uint32_t MoveEvent::fireAddRemItem(Item &item, Item &fromTile, const Position &pos) const {
+uint32_t MoveEvent::fireAddRemItem(const std::shared_ptr<Item> &item, const std::shared_ptr<Item> &fromTile, const Position &pos) const {
 	if (isLoadedCallback()) {
 		return executeAddRemItem(item, fromTile, pos);
 	} else {
-		return moveFunction(&item, &fromTile, pos);
+		return moveFunction(item, fromTile, pos);
 	}
 }
 
-bool MoveEvent::executeAddRemItem(Item &item, Item &fromTile, const Position &pos) const {
+bool MoveEvent::executeAddRemItem(const std::shared_ptr<Item> &item, const std::shared_ptr<Item> &fromTile, const Position &pos) const {
 	// onAddItem(moveitem, tileitem, pos)
 	// onRemoveItem(moveitem, tileitem, pos)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[MoveEvent::executeAddRemItem - "
 						 "Item {} item on tile x: {} y: {} z: {}] "
 						 "Call stack overflow. Too many lua script calls being nested.",
-						 item.getName(), pos.getX(), pos.getY(), pos.getZ());
+						 item->getName(), pos.getX(), pos.getY(), pos.getZ());
 		return false;
 	}
 
@@ -781,29 +781,29 @@ bool MoveEvent::executeAddRemItem(Item &item, Item &fromTile, const Position &po
 	lua_State* L = getScriptInterface()->getLuaState();
 
 	getScriptInterface()->pushFunction(getScriptId());
-	LuaScriptInterface::pushThing(L, &item);
-	LuaScriptInterface::pushThing(L, &fromTile);
+	LuaScriptInterface::pushThing(L, item);
+	LuaScriptInterface::pushThing(L, fromTile);
 	LuaScriptInterface::pushPosition(L, pos);
 
 	return getScriptInterface()->callFunction(3);
 }
 
-uint32_t MoveEvent::fireAddRemItem(Item &item, const Position &pos) const {
+uint32_t MoveEvent::fireAddRemItem(const std::shared_ptr<Item> &item, const Position &pos) const {
 	if (isLoadedCallback()) {
 		return executeAddRemItem(item, pos);
 	} else {
-		return moveFunction(&item, nullptr, pos);
+		return moveFunction(item, nullptr, pos);
 	}
 }
 
-bool MoveEvent::executeAddRemItem(Item &item, const Position &pos) const {
+bool MoveEvent::executeAddRemItem(const std::shared_ptr<Item> &item, const Position &pos) const {
 	// onaddItem(moveitem, pos)
 	// onRemoveItem(moveitem, pos)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[MoveEvent::executeAddRemItem - "
 						 "Item {} item on tile x: {} y: {} z: {}] "
 						 "Call stack overflow. Too many lua script calls being nested.",
-						 item.getName(), pos.getX(), pos.getY(), pos.getZ());
+						 item->getName(), pos.getX(), pos.getY(), pos.getZ());
 		return false;
 	}
 
@@ -813,7 +813,7 @@ bool MoveEvent::executeAddRemItem(Item &item, const Position &pos) const {
 	lua_State* L = getScriptInterface()->getLuaState();
 
 	getScriptInterface()->pushFunction(getScriptId());
-	LuaScriptInterface::pushThing(L, &item);
+	LuaScriptInterface::pushThing(L, item);
 	LuaScriptInterface::pushPosition(L, pos);
 
 	return getScriptInterface()->callFunction(2);

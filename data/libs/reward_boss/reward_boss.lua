@@ -52,6 +52,21 @@ function InsertItems(buffer, info, parent, items)
 	return info.running - start
 end
 
+function Container:addRewardBossItems(itemList)
+	for itemId, lootInfo in pairs(itemList) do
+		local itemType = ItemType(itemId)
+		if itemType then
+			local itemCount = lootInfo.count
+			local charges = itemType:getCharges()
+			if charges > 0 then
+				itemCount = charges
+				logger.debug("Adding item with 'id' to the reward container, item charges {}", itemType:getId(), charges)
+			end
+			self:addItem(itemId, itemCount)
+		end
+	end
+end
+
 function InsertRewardItems(playerGuid, timestamp, itemList)
 	local maxSidQueryResult = db.query("select max(`sid`) as max_sid from `player_rewards` where player_id = " .. playerGuid .. ";")
 	local bagSid = (Result.getNumber(maxSidQueryResult, "max_sid") or 0) + 1
@@ -64,9 +79,7 @@ function InsertRewardItems(playerGuid, timestamp, itemList)
 	local bag = Game.createItem(ITEM_REWARD_CONTAINER)
 	bag:setAttribute(ITEM_ATTRIBUTE_DATE, timestamp)
 	if itemList then
-		for _, p in ipairs(itemList) do
-			bag:addItem(p[1], p[2])
-		end
+		bag:addRewardBossItems(itemList)
 	end
 	local total = InsertItems(buffer, info, bagSid, { bag })
 

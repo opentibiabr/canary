@@ -20,10 +20,6 @@ class Item;
 class Position;
 class FileStream;
 
-using TilePtr = std::unique_ptr<Tile>;
-using BasicItemPtr = std::shared_ptr<BasicItem>;
-using BasicTilePtr = std::shared_ptr<BasicTile>;
-
 #pragma pack(1)
 struct BasicItem {
 	std::string text;
@@ -39,7 +35,7 @@ struct BasicItem {
 
 	uint8_t destZ { 0 };
 
-	std::vector<BasicItemPtr> items;
+	std::vector<std::shared_ptr<BasicItem>> items;
 
 	bool unserializeItemNode(FileStream &propStream, uint16_t x, uint16_t y, uint8_t z);
 	void readAttr(FileStream &propStream);
@@ -57,8 +53,8 @@ private:
 };
 
 struct BasicTile {
-	BasicItemPtr ground { nullptr };
-	std::vector<BasicItemPtr> items;
+	std::shared_ptr<BasicItem> ground { nullptr };
+	std::vector<std::shared_ptr<BasicItem>> items;
 
 	uint32_t flags { 0 }, houseId { 0 };
 	uint8_t type { TILESTATE_NONE };
@@ -89,19 +85,19 @@ struct Floor {
 	explicit Floor(uint8_t z) :
 		z(z) {};
 
-	Tile* getTile(uint16_t x, uint16_t y) const {
-		return tiles[x & FLOOR_MASK][y & FLOOR_MASK].first.get();
+	std::shared_ptr<Tile> getTile(uint16_t x, uint16_t y) const {
+		return tiles[x & FLOOR_MASK][y & FLOOR_MASK].first;
 	}
 
-	void setTile(uint16_t x, uint16_t y, Tile* tile) {
-		tiles[x & FLOOR_MASK][y & FLOOR_MASK].first.reset(tile);
+	void setTile(uint16_t x, uint16_t y, std::shared_ptr<Tile> tile) {
+		tiles[x & FLOOR_MASK][y & FLOOR_MASK].first = tile;
 	}
 
-	BasicTilePtr getTileCache(uint16_t x, uint16_t y) const {
+	std::shared_ptr<BasicTile> getTileCache(uint16_t x, uint16_t y) const {
 		return tiles[x & FLOOR_MASK][y & FLOOR_MASK].second;
 	}
 
-	void setTileCache(uint16_t x, uint16_t y, const BasicTilePtr &newTile) {
+	void setTileCache(uint16_t x, uint16_t y, const std::shared_ptr<BasicTile> &newTile) {
 		tiles[x & FLOOR_MASK][y & FLOOR_MASK].second = newTile;
 	}
 
@@ -110,7 +106,7 @@ struct Floor {
 	}
 
 private:
-	std::pair<TilePtr, BasicTilePtr> tiles[FLOOR_SIZE][FLOOR_SIZE] = {};
+	std::pair<std::shared_ptr<Tile>, std::shared_ptr<BasicTile>> tiles[FLOOR_SIZE][FLOOR_SIZE] = {};
 	uint8_t z { 0 };
 };
 
@@ -118,18 +114,18 @@ class MapCache {
 public:
 	virtual ~MapCache() = default;
 
-	void setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePtr &BasicTile);
+	void setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<BasicTile> &BasicTile);
 
-	BasicItemPtr tryReplaceItemFromCache(const BasicItemPtr &ref);
+	std::shared_ptr<BasicItem> tryReplaceItemFromCache(const std::shared_ptr<BasicItem> &ref);
 
 	void flush();
 
 protected:
-	Tile* getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y);
+	std::shared_ptr<Tile> getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y);
 
 	QTreeNode root;
 
 private:
-	void parseItemAttr(const BasicItemPtr &BasicItem, Item* item);
-	Item* createItem(const BasicItemPtr &BasicItem, Position position);
+	void parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, std::shared_ptr<Item> item);
+	std::shared_ptr<Item> createItem(const std::shared_ptr<BasicItem> &BasicItem, Position position);
 };

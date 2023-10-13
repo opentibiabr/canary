@@ -15,7 +15,7 @@ class ContainerFunctions final : LuaScriptInterface {
 public:
 private:
 	static void init(lua_State* L) {
-		registerClass(L, "Container", "Item", ContainerFunctions::luaContainerCreate);
+		registerSharedClass(L, "Container", "Item", ContainerFunctions::luaContainerCreate);
 		registerMetaMethod(L, "Container", "__eq", ContainerFunctions::luaUserdataCompare);
 
 		registerMethod(L, "Container", "getSize", ContainerFunctions::luaContainerGetSize);

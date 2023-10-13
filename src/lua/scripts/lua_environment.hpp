@@ -25,7 +25,7 @@ public:
 	static bool shuttingDown;
 
 	LuaEnvironment();
-	~LuaEnvironment();
+	~LuaEnvironment() override;
 
 	lua_State* getLuaState() override;
 
@@ -38,7 +38,7 @@ public:
 	}
 
 	bool initState() override;
-	bool reInitState();
+	bool reInitState() override;
 	bool closeState() override;
 
 	LuaScriptInterface* getTestInterface();
@@ -50,7 +50,7 @@ public:
 	template <typename T>
 	std::shared_ptr<T> createWeaponObject(LuaScriptInterface* interface) {
 		auto weapon = std::make_shared<T>(interface);
-		int weaponId = ++lastWeaponId;
+		auto weaponId = ++lastWeaponId;
 		weaponMap[weaponId] = weapon;
 		weaponIdMap[interface].push_back(weaponId);
 		return weapon;
@@ -75,12 +75,14 @@ public:
 		weaponMap.clear();
 	}
 
-	AreaCombat* getAreaObject(uint32_t id) const;
+	const std::unique_ptr<AreaCombat> &getAreaObject(uint32_t id) const;
 	uint32_t createAreaObject(LuaScriptInterface* interface);
 	void clearAreaObjects(LuaScriptInterface* interface);
 	static bool isShuttingDown() {
 		return shuttingDown;
 	}
+
+	void collectGarbage() const;
 
 private:
 	void executeTimerEvent(uint32_t eventIndex);
@@ -88,7 +90,7 @@ private:
 	phmap::flat_hash_map<uint32_t, LuaTimerEventDesc> timerEvents;
 	uint32_t lastEventTimerId = 1;
 
-	phmap::flat_hash_map<uint32_t, AreaCombat*> areaMap;
+	phmap::flat_hash_map<uint32_t, std::unique_ptr<AreaCombat>> areaMap;
 	phmap::flat_hash_map<LuaScriptInterface*, std::vector<uint32_t>> areaIdMap;
 	uint32_t lastAreaId = 0;
 

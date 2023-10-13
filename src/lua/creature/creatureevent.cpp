@@ -55,7 +55,7 @@ std::shared_ptr<CreatureEvent> CreatureEvents::getEventByName(const std::string 
 	return nullptr;
 }
 
-bool CreatureEvents::playerLogin(Player* player) const {
+bool CreatureEvents::playerLogin(std::shared_ptr<Player> player) const {
 	// fire global event if is registered
 	for (const auto &it : creatureEvents) {
 		if (it.second->getEventType() == CREATURE_EVENT_LOGIN) {
@@ -67,7 +67,7 @@ bool CreatureEvents::playerLogin(Player* player) const {
 	return true;
 }
 
-bool CreatureEvents::playerLogout(Player* player) const {
+bool CreatureEvents::playerLogout(std::shared_ptr<Player> player) const {
 	// fire global event if is registered
 	for (const auto &it : creatureEvents) {
 		if (it.second->getEventType() == CREATURE_EVENT_LOGOUT) {
@@ -80,7 +80,7 @@ bool CreatureEvents::playerLogout(Player* player) const {
 }
 
 bool CreatureEvents::playerAdvance(
-	Player* player,
+	std::shared_ptr<Player> player,
 	skills_t skill,
 	uint32_t oldLevel,
 	uint32_t newLevel
@@ -171,7 +171,7 @@ void CreatureEvent::clearEvent() {
 	loaded = false;
 }
 
-bool CreatureEvent::executeOnLogin(Player* player) const {
+bool CreatureEvent::executeOnLogin(std::shared_ptr<Player> player) const {
 	// onLogin(player)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeOnLogin - Player {} event {}]"
@@ -191,7 +191,7 @@ bool CreatureEvent::executeOnLogin(Player* player) const {
 	return getScriptInterface()->callFunction(1);
 }
 
-bool CreatureEvent::executeOnLogout(Player* player) const {
+bool CreatureEvent::executeOnLogout(std::shared_ptr<Player> player) const {
 	// onLogout(player)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeOnLogout - Player {} event {}] "
@@ -211,7 +211,7 @@ bool CreatureEvent::executeOnLogout(Player* player) const {
 	return getScriptInterface()->callFunction(1);
 }
 
-bool CreatureEvent::executeOnThink(Creature* creature, uint32_t interval) const {
+bool CreatureEvent::executeOnThink(std::shared_ptr<Creature> creature, uint32_t interval) const {
 	// onThink(creature, interval)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeOnThink - Creature {} event {}] "
@@ -233,7 +233,7 @@ bool CreatureEvent::executeOnThink(Creature* creature, uint32_t interval) const 
 	return getScriptInterface()->callFunction(2);
 }
 
-bool CreatureEvent::executeOnPrepareDeath(Creature* creature, Creature* killer) const {
+bool CreatureEvent::executeOnPrepareDeath(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> killer) const {
 	// onPrepareDeath(creature, killer)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeOnPrepareDeath - Creature {} killer {}"
@@ -262,7 +262,7 @@ bool CreatureEvent::executeOnPrepareDeath(Creature* creature, Creature* killer) 
 	return getScriptInterface()->callFunction(2);
 }
 
-bool CreatureEvent::executeOnDeath(Creature* creature, Item* corpse, Creature* killer, Creature* mostDamageKiller, bool lastHitUnjustified, bool mostDamageUnjustified) const {
+bool CreatureEvent::executeOnDeath(std::shared_ptr<Creature> creature, std::shared_ptr<Item> corpse, std::shared_ptr<Creature> killer, std::shared_ptr<Creature> mostDamageKiller, bool lastHitUnjustified, bool mostDamageUnjustified) const {
 	// onDeath(creature, corpse, lasthitkiller, mostdamagekiller, lasthitunjustified, mostdamageunjustified)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeOnDeath - Creature {} killer {} event {}] "
@@ -302,7 +302,7 @@ bool CreatureEvent::executeOnDeath(Creature* creature, Item* corpse, Creature* k
 	return getScriptInterface()->callFunction(6);
 }
 
-bool CreatureEvent::executeAdvance(Player* player, skills_t skill, uint32_t oldLevel, uint32_t newLevel) const {
+bool CreatureEvent::executeAdvance(std::shared_ptr<Player> player, skills_t skill, uint32_t oldLevel, uint32_t newLevel) const {
 	// onAdvance(player, skill, oldLevel, newLevel)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeAdvance - Player {} event {}] "
@@ -326,7 +326,7 @@ bool CreatureEvent::executeAdvance(Player* player, skills_t skill, uint32_t oldL
 	return getScriptInterface()->callFunction(4);
 }
 
-void CreatureEvent::executeOnKill(Creature* creature, Creature* target, bool lastHit) const {
+void CreatureEvent::executeOnKill(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target, bool lastHit) const {
 	// onKill(creature, target, lastHit)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeOnKill - Creature {} target {} event {}] "
@@ -349,7 +349,7 @@ void CreatureEvent::executeOnKill(Creature* creature, Creature* target, bool las
 	getScriptInterface()->callVoidFunction(3);
 }
 
-void CreatureEvent::executeModalWindow(Player* player, uint32_t modalWindowId, uint8_t buttonId, uint8_t choiceId) const {
+void CreatureEvent::executeModalWindow(std::shared_ptr<Player> player, uint32_t modalWindowId, uint8_t buttonId, uint8_t choiceId) const {
 	// onModalWindow(player, modalWindowId, buttonId, choiceId)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeModalWindow - "
@@ -375,7 +375,7 @@ void CreatureEvent::executeModalWindow(Player* player, uint32_t modalWindowId, u
 	getScriptInterface()->callVoidFunction(4);
 }
 
-bool CreatureEvent::executeTextEdit(Player* player, Item* item, const std::string &text) const {
+bool CreatureEvent::executeTextEdit(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const std::string &text) const {
 	// onTextEdit(player, item, text)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeTextEdit - Player {} event {}] "
@@ -399,7 +399,7 @@ bool CreatureEvent::executeTextEdit(Player* player, Item* item, const std::strin
 	return getScriptInterface()->callFunction(3);
 }
 
-void CreatureEvent::executeHealthChange(Creature* creature, Creature* attacker, CombatDamage &damage) const {
+void CreatureEvent::executeHealthChange(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatDamage &damage) const {
 	// onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeHealthChange - "
@@ -444,7 +444,7 @@ void CreatureEvent::executeHealthChange(Creature* creature, Creature* attacker, 
 	getScriptInterface()->resetScriptEnv();
 }
 
-void CreatureEvent::executeManaChange(Creature* creature, Creature* attacker, CombatDamage &damage) const {
+void CreatureEvent::executeManaChange(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatDamage &damage) const {
 	// onManaChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeManaChange - "
@@ -484,7 +484,7 @@ void CreatureEvent::executeManaChange(Creature* creature, Creature* attacker, Co
 	getScriptInterface()->resetScriptEnv();
 }
 
-void CreatureEvent::executeExtendedOpcode(Player* player, uint8_t opcode, const std::string &buffer) const {
+void CreatureEvent::executeExtendedOpcode(std::shared_ptr<Player> player, uint8_t opcode, const std::string &buffer) const {
 	// onExtendedOpcode(player, opcode, buffer)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeExtendedOpcode - "

@@ -194,13 +194,8 @@ void Dispatcher::mergeEvents() {
 			thread->scheduledTasks.clear();
 		}
 	}
-	hasPendingTasks = false;
-	for (uint_fast8_t i = 0; i < static_cast<uint8_t>(TaskGroup::Last); ++i) {
-		if (!m_tasks[i].empty()) {
-			hasPendingTasks = true;
-			break;
-		}
-	}
+
+	checkPedingTasks();
 }
 
 std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() {

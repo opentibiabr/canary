@@ -15,8 +15,9 @@
 static constexpr uint16_t DISPATCHER_TASK_EXPIRATION = 2000;
 static constexpr uint16_t SCHEDULER_MINTICKS = 50;
 
-enum class AsyncEventContext : uint8_t {
-	First,
+enum class TaskGroup : uint8_t {
+	Serial,
+	GenericParallel,
 	Last
 };
 
@@ -43,11 +44,11 @@ public:
 
 	void init();
 	void shutdown() {
-		asyncTasks_cv.notify_all();
+		signalAsync.notify_all();
 	}
 
 	void addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0);
-	void addEvent_async(std::function<void(void)> &&f, AsyncEventContext context = AsyncEventContext::First);
+	void addEvent_async(std::function<void(void)> &&f, TaskGroup group = TaskGroup::Serial);
 
 	uint64_t scheduleEvent(const std::shared_ptr<Task> &task);
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context) {
@@ -84,36 +85,37 @@ private:
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle);
 
 	inline void mergeEvents();
-	inline void executeEvents();
-	inline void executeAsyncEvents(const uint8_t contextId, std::unique_lock<std::mutex> &asyncLock);
+	inline void executeEvents(const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock);
 	inline void executeScheduledEvents();
+
+	inline void executeSerialEvents(std::vector<Task> &tasks);
+	inline void executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock);
 	inline std::chrono::nanoseconds timeUntilNextScheduledTask();
 
 	uint_fast64_t dispatcherCycle = 0;
 
 	ThreadPool &threadPool;
-	std::mutex mutex;
-	std::condition_variable asyncTasks_cv;
-	std::condition_variable cv;
-	bool hasPendingTasks = false;
+	std::condition_variable signalAsync;
+	std::condition_variable signalSchedule;
+	std::atomic_bool hasPendingTasks = false;
 
 	// Thread Events
 	struct ThreadTask {
 		ThreadTask() {
-			tasks.reserve(2000);
+			for (auto &task : tasks) {
+				task.reserve(2000);
+			}
 			scheduledTasks.reserve(2000);
 		}
 
-		std::vector<Task> tasks;
-		std::array<std::vector<Task>, static_cast<uint8_t>(AsyncEventContext::Last)> asyncTasks;
+		std::array<std::vector<Task>, static_cast<uint8_t>(TaskGroup::Last)> tasks;
 		std::vector<std::shared_ptr<Task>> scheduledTasks;
 		std::mutex mutex;
 	};
 	std::vector<std::unique_ptr<ThreadTask>> threads;
 
 	// Main Events
-	std::vector<Task> eventTasks;
-	std::array<std::vector<Task>, static_cast<uint8_t>(AsyncEventContext::Last)> asyncEventTasks;
+	std::array<std::vector<Task>, static_cast<uint8_t>(TaskGroup::Last)> m_tasks;
 	std::priority_queue<std::shared_ptr<Task>, std::deque<std::shared_ptr<Task>>, Task::Compare> scheduledTasks;
 	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef;
 };

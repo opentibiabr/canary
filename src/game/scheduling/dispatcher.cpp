@@ -15,7 +15,7 @@
 #include "utils/tools.hpp"
 
 constexpr static auto ASYNC_TIME_OUT = std::chrono::seconds(15);
-constexpr static auto SLEEP_TIME_MS = 15;
+static std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.
 
 Dispatcher &Dispatcher::getInstance() {
 	return inject<Dispatcher>();
@@ -25,27 +25,22 @@ void Dispatcher::init() {
 	updateClock();
 
 	threadPool.addLoad([this] {
-		std::unique_lock asyncLock(mutex);
+		std::unique_lock asyncLock(dummyMutex);
 
 		while (!threadPool.getIoContext().stopped()) {
 			updateClock();
 
-			// Execute all asynchronous events separately by context
-			for (uint_fast8_t i = 0; i < static_cast<uint8_t>(AsyncEventContext::Last); ++i) {
-				executeAsyncEvents(i, asyncLock);
+			for (uint_fast8_t i = 0; i < static_cast<uint8_t>(TaskGroup::Last); ++i) {
+				executeEvents(i, asyncLock);
 			}
 
-			// Merge all events that were created by async events
-			mergeEvents();
-
-			executeEvents();
 			executeScheduledEvents();
-
-			// Merge all events that were created by events and scheduled events
 			mergeEvents();
 
-			auto waitDuration = timeUntilNextScheduledTask();
-			cv.wait_for(asyncLock, waitDuration);
+			if (!hasPendingTasks) {
+				auto waitDuration = timeUntilNextScheduledTask();
+				signalSchedule.wait_for(asyncLock, waitDuration);
+			}
 		}
 	});
 }
@@ -53,23 +48,37 @@ void Dispatcher::init() {
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
 	auto &thread = threads[getThreadId()];
 	std::scoped_lock lock(thread->mutex);
-	thread->tasks.emplace_back(expiresAfterMs, std::move(f), context);
-	cv.notify_one();
+	bool notify = !hasPendingTasks;
+	thread->tasks[static_cast<uint8_t>(TaskGroup::Serial)].emplace_back(expiresAfterMs, std::move(f), context);
+	if (notify && !hasPendingTasks) {
+		hasPendingTasks = true;
+		signalSchedule.notify_one();
+	}
 }
 
-void Dispatcher::addEvent_async(std::function<void(void)> &&f, AsyncEventContext context) {
+void Dispatcher::addEvent_async(std::function<void(void)> &&f, TaskGroup group) {
 	auto &thread = threads[getThreadId()];
 	std::scoped_lock lock(thread->mutex);
-	thread->asyncTasks[static_cast<uint8_t>(context)].emplace_back(0, std::move(f), "Dispatcher::addEvent_async");
-	cv.notify_one();
+	bool notify = !hasPendingTasks;
+	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), "Dispatcher::addEvent_async");
+	if (notify && !hasPendingTasks) {
+		hasPendingTasks = true;
+		signalSchedule.notify_one();
+	}
 }
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	auto &thread = threads[getThreadId()];
 	std::scoped_lock lock(thread->mutex);
 	thread->scheduledTasks.emplace_back(task);
-	cv.notify_one();
-	return scheduledTasksRef.emplace(task->generateId(), task).first->first;
+	bool notify = !hasPendingTasks;
+	signalSchedule.notify_one();
+	auto eventId = scheduledTasksRef.emplace(task->generateId(), task).first->first;
+	if (notify && !hasPendingTasks) {
+		hasPendingTasks = true;
+		signalSchedule.notify_one();
+	}
+	return eventId;
 }
 
 uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle) {
@@ -87,41 +96,46 @@ void Dispatcher::stopEvent(uint64_t eventId) {
 	scheduledTasksRef.erase(it);
 }
 
-void Dispatcher::executeEvents() {
-	for (const auto &task : eventTasks) {
+void Dispatcher::executeSerialEvents(std::vector<Task> &tasks) {
+	for (const auto &task : tasks) {
 		if (task.execute()) {
 			++dispatcherCycle;
 		}
 	}
-	eventTasks.clear();
+	tasks.clear();
 }
 
-void Dispatcher::executeAsyncEvents(const uint8_t contextId, std::unique_lock<std::mutex> &asyncLock) {
-	auto &asyncTasks = asyncEventTasks[contextId];
-	if (asyncTasks.empty()) {
-		return;
-	}
-
+void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock) {
 	std::atomic_uint_fast64_t executedTasks = 0;
 
-	// Execute Async Task
-	for (const auto &task : asyncTasks) {
-		threadPool.addLoad([this, &task, &executedTasks, totalTaskSize = asyncTasks.size()] {
+	for (const auto &task : tasks) {
+		threadPool.addLoad([this, &task, &executedTasks, totalTaskSize = tasks.size()] {
 			task.execute();
 
-			if (executedTasks.fetch_add(1) == totalTaskSize) {
-				asyncTasks_cv.notify_one();
+			executedTasks.fetch_add(1);
+			if (executedTasks.load() == totalTaskSize) {
+				signalAsync.notify_one();
 			}
 		});
 	}
 
-	// Wait for all the tasks in the current context to be executed.
-	if (asyncTasks_cv.wait_for(asyncLock, ASYNC_TIME_OUT) == std::cv_status::timeout) {
-		g_logger().warn("A timeout occurred when executing the async dispatch in the context({}).", contextId);
+	if (signalAsync.wait_for(asyncLock, ASYNC_TIME_OUT) == std::cv_status::timeout) {
+		g_logger().warn("A timeout occurred when executing the async dispatch in the context({}).", groupId);
+	}
+	tasks.clear();
+}
+
+void Dispatcher::executeEvents(const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock) {
+	auto &tasks = m_tasks[groupId];
+	if (tasks.empty()) {
+		return;
 	}
 
-	// Clear all async tasks
-	asyncTasks.clear();
+	if (groupId == static_cast<uint8_t>(TaskGroup::Serial)) {
+		executeSerialEvents(tasks);
+	} else {
+		executeParallelEvents(tasks, groupId, asyncLock);
+	}
 }
 
 void Dispatcher::executeScheduledEvents() {
@@ -147,15 +161,9 @@ void Dispatcher::mergeEvents() {
 	for (auto &thread : threads) {
 		std::scoped_lock lock(thread->mutex);
 		if (!thread->tasks.empty()) {
-			eventTasks.insert(eventTasks.end(), make_move_iterator(thread->tasks.begin()), make_move_iterator(thread->tasks.end()));
-			thread->tasks.clear();
-		}
-
-		for (uint_fast8_t i = 0; i < static_cast<uint8_t>(AsyncEventContext::Last); ++i) {
-			auto &context = thread->asyncTasks[i];
-			if (!context.empty()) {
-				asyncEventTasks[i].insert(asyncEventTasks[i].end(), make_move_iterator(context.begin()), make_move_iterator(context.end()));
-				context.clear();
+			for (uint_fast8_t i = 0; i < static_cast<uint8_t>(TaskGroup::Last); ++i) {
+				m_tasks[i].insert(m_tasks[i].end(), make_move_iterator(thread->tasks[i].begin()), make_move_iterator(thread->tasks[i].end()));
+				thread->tasks[i].clear();
 			}
 		}
 
@@ -165,6 +173,13 @@ void Dispatcher::mergeEvents() {
 				scheduledTasksRef.emplace(task->getEventId(), task);
 			}
 			thread->scheduledTasks.clear();
+		}
+	}
+	hasPendingTasks = false;
+	for (uint_fast8_t i = 0; i < static_cast<uint8_t>(TaskGroup::Last); ++i) {
+		if (!m_tasks[i].empty()) {
+			hasPendingTasks = true;
+			break;
 		}
 	}
 }

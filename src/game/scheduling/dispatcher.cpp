@@ -56,11 +56,11 @@ void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view contex
 	}
 }
 
-void Dispatcher::addEvent_async(std::function<void(void)> &&f, TaskGroup group) {
+void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
 	auto &thread = threads[getThreadId()];
 	std::scoped_lock lock(thread->mutex);
 	bool notify = !hasPendingTasks;
-	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), "Dispatcher::addEvent_async");
+	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), "Dispatcher::asyncEvent");
 	if (notify && !hasPendingTasks) {
 		hasPendingTasks = true;
 		signalSchedule.notify_one();

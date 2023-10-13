@@ -48,7 +48,7 @@ public:
 	}
 
 	void addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0);
-	void addEvent_async(std::function<void(void)> &&f, TaskGroup group = TaskGroup::Serial);
+	void asyncEvent(std::function<void(void)> &&f, TaskGroup group = TaskGroup::Serial);
 
 	uint64_t scheduleEvent(const std::shared_ptr<Task> &task);
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context) {

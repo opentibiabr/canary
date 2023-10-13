@@ -97,7 +97,7 @@ private:
 		const static auto tasksContext = phmap::flat_hash_set<std::string>({
 			"Creature::checkCreatureWalk",
 			"Decay::checkDecay",
-			"Dispatcher::addEvent_async",
+			"Dispatcher::asyncEvent",
 			"Game::checkCreatureAttack",
 			"Game::checkCreatures",
 			"Game::checkImbuements",

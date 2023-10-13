@@ -20,8 +20,8 @@ function login.onLogin(player)
 	local vocation = player:getVocation()
 	local promotion = vocation:getPromotion()
 	if player:isPremium() then
-		local value = player:getStorageValue(Storage.Promotion)
-		if not promotion and value ~= 1 then
+		local value = player:getStorageValue(STORAGEVALUE_PROMOTION)
+		if promotion and value ~= 1 then
 			player:setStorageValue(STORAGEVALUE_PROMOTION, 1)
 		elseif value == 1 then
 			player:setVocation(promotion)

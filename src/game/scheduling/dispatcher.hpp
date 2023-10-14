@@ -150,10 +150,12 @@ private:
 		return id;
 	};
 
-	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle, bool log = true);
+	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle, bool log = true) {
+		return scheduleEvent(std::make_shared<Task>(std::move(f), context, delay, cycle, log));
+	}
 
 	inline void mergeEvents();
-	inline void executeEvents(const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock);
+	inline void executeEvents(std::unique_lock<std::mutex> &asyncLock);
 	inline void executeScheduledEvents();
 
 	inline void executeSerialEvents(std::vector<Task> &tasks);

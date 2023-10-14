@@ -30,16 +30,12 @@ void Dispatcher::init() {
 		while (!threadPool.getIoContext().stopped()) {
 			updateClock();
 
-			for (uint_fast8_t i = 0; i < static_cast<uint8_t>(TaskGroup::Last); ++i) {
-				executeEvents(i, asyncLock);
-			}
-
+			executeEvents(asyncLock);
 			executeScheduledEvents();
 			mergeEvents();
 
 			if (!hasPendingTasks) {
-				auto waitDuration = timeUntilNextScheduledTask();
-				signalSchedule.wait_for(asyncLock, waitDuration);
+				signalSchedule.wait_for(asyncLock, timeUntilNextScheduledTask());
 			}
 		}
 	});
@@ -86,16 +82,18 @@ void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t g
 	tasks.clear();
 }
 
-void Dispatcher::executeEvents(const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock) {
-	auto &tasks = m_tasks[groupId];
-	if (tasks.empty()) {
-		return;
-	}
+void Dispatcher::executeEvents(std::unique_lock<std::mutex> &asyncLock) {
+	for (uint_fast8_t groupId = 0; groupId < static_cast<uint8_t>(TaskGroup::Last); ++groupId) {
+		auto &tasks = m_tasks[groupId];
+		if (tasks.empty()) {
+			return;
+		}
 
-	if (groupId == static_cast<uint8_t>(TaskGroup::Serial)) {
-		executeSerialEvents(tasks);
-	} else {
-		executeParallelEvents(tasks, groupId, asyncLock);
+		if (groupId == static_cast<uint8_t>(TaskGroup::Serial)) {
+			executeSerialEvents(tasks);
+		} else {
+			executeParallelEvents(tasks, groupId, asyncLock);
+		}
 	}
 }
 
@@ -147,13 +145,16 @@ void Dispatcher::mergeEvents() {
 }
 
 std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() const {
+	static constexpr auto CHRONO_NANO_0 = std::chrono::nanoseconds(0);
+	static constexpr auto CHRONO_MILI_MAX = std::chrono::milliseconds::max();
+
 	if (scheduledTasks.empty()) {
-		return std::chrono::milliseconds::max();
+		return CHRONO_MILI_MAX;
 	}
 
 	const auto &task = scheduledTasks.top();
 	const auto timeRemaining = task->getTime() - Task::TIME_NOW;
-	return timeRemaining >= std::chrono::nanoseconds(0) ? timeRemaining : std::chrono::nanoseconds(0);
+	return timeRemaining >= CHRONO_NANO_0 ? timeRemaining : CHRONO_NANO_0;
 }
 
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
@@ -165,21 +166,13 @@ void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view contex
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	const auto &thread = threads[getThreadId()];
-
 	std::scoped_lock lock(thread->mutex);
-	auto eventId = scheduledTasksRef.emplace(
-										task->generateId(),
-										thread->scheduledTasks.emplace_back(task)
-	)
+	auto eventId = scheduledTasksRef
+					   .emplace(task->generateId(), thread->scheduledTasks.emplace_back(task))
 					   .first->first;
 
 	notify();
-
 	return eventId;
-}
-
-uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle, bool log) {
-	return scheduleEvent(std::make_shared<Task>(std::move(f), context, delay, cycle, log));
 }
 
 void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {

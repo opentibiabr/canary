@@ -56,7 +56,7 @@ void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view contex
 void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
 	auto &thread = threads[getThreadId()];
 	std::scoped_lock lock(thread->mutex);
-	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), "Dispatcher::asyncEvent");
+	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);
 	notify();
 }
 

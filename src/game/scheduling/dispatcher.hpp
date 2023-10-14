@@ -31,6 +31,10 @@ enum class DispatcherType : uint8_t {
 };
 
 struct DispatcherContext {
+	bool isOn() const {
+		return Task::TIME_NOW != SYSTEM_TIME_ZERO;
+	}
+
 	bool isGroup(const TaskGroup group) const {
 		return groupId == group;
 	}

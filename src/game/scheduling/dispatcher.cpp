@@ -25,7 +25,6 @@ void Dispatcher::init() {
 	updateClock();
 
 	threadPool.addLoad([this] {
-		std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.
 		std::unique_lock asyncLock(dummyMutex);
 
 		while (!threadPool.getIoContext().stopped()) {
@@ -53,11 +52,8 @@ void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view contex
 	notify();
 }
 
-void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
-	const auto &thread = threads[getThreadId()];
-	std::scoped_lock lock(thread->mutex);
-	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);
-	notify();
+uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle) {
+	return scheduleEvent(std::make_shared<Task>(std::move(f), context, delay, cycle));
 }
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
@@ -70,9 +66,19 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	return eventId;
 }
 
-uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle) {
-	const auto &task = std::make_shared<Task>(std::move(f), context, delay, cycle);
-	return scheduleEvent(task);
+void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
+	const auto &thread = threads[getThreadId()];
+	std::scoped_lock lock(thread->mutex);
+	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);
+	notify();
+}
+
+uint64_t Dispatcher::asyncCycleEvent(uint32_t delay, std::function<void(void)> &&f, TaskGroup group) {
+	return scheduleEvent(std::make_shared<Task>([this, f = std::move(f), group] { asyncEvent([f] { f(); }, group); }, dispacherContext.taskName, delay, true, false));
+}
+
+uint64_t Dispatcher::asyncScheduleEvent(uint32_t delay, std::function<void(void)> &&f, TaskGroup group) {
+	return scheduleEvent(std::make_shared<Task>([this, f = std::move(f), group] { asyncEvent([f] { f(); }, group); }, dispacherContext.taskName, delay, false, false));
 }
 
 void Dispatcher::stopEvent(uint64_t eventId) {

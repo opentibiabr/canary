@@ -97,15 +97,19 @@ public:
 	}
 
 	void addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0);
-	void asyncEvent(std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel);
+
+	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context) {
+		return scheduleEvent(delay, std::move(f), context, true);
+	}
 
 	uint64_t scheduleEvent(const std::shared_ptr<Task> &task);
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context) {
 		return scheduleEvent(delay, std::move(f), context, false);
 	}
-	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context) {
-		return scheduleEvent(delay, std::move(f), context, true);
-	}
+
+	void asyncEvent(std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel);
+	uint64_t asyncCycleEvent(uint32_t delay, std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel);
+	uint64_t asyncScheduleEvent(uint32_t delay, std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel);
 
 	[[nodiscard]] uint64_t getDispatcherCycle() const {
 		return dispatcherCycle;
@@ -170,6 +174,7 @@ private:
 	std::condition_variable signalAsync;
 	std::condition_variable signalSchedule;
 	std::atomic_bool hasPendingTasks = false;
+	std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.
 
 	// Thread Events
 	struct ThreadTask {

@@ -18,11 +18,12 @@ bool Task::execute() const {
 	if (!func || hasExpired()) {
 		return false;
 	}
-
-	if (hasTraceableContext()) {
-		g_logger().trace("Executing task {}.", getContext());
-	} else {
-		g_logger().debug("Executing task {}.", getContext());
+	if (log) {
+		if (hasTraceableContext()) {
+			g_logger().trace("Executing task {}.", getContext());
+		} else {
+			g_logger().debug("Executing task {}.", getContext());
+		}
 	}
 
 	func();

@@ -22,8 +22,8 @@ public:
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
-	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false) :
-		cycle(cycle), delay(delay), utime(TIME_NOW + std::chrono::milliseconds(delay)), context(context), func(std::move(f)) {
+	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true) :
+		cycle(cycle), log(log), delay(delay), utime(TIME_NOW + std::chrono::milliseconds(delay)), context(context), func(std::move(f)) {
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
@@ -125,6 +125,7 @@ private:
 
 	bool canceled = false;
 	bool cycle = false;
+	bool log = true;
 
 	uint32_t delay = 0;
 	uint64_t eventId = 0;

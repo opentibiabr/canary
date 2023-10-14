@@ -18,7 +18,6 @@ static constexpr uint16_t SCHEDULER_MINTICKS = 50;
 enum class TaskGroup : int8_t {
 	ThreadPool = -1,
 	Serial,
-	CheckCreatures,
 	GenericParallel,
 	Last
 };
@@ -108,8 +107,18 @@ public:
 	}
 
 	void asyncEvent(std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel);
-	uint64_t asyncCycleEvent(uint32_t delay, std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel);
-	uint64_t asyncScheduleEvent(uint32_t delay, std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel);
+
+	uint64_t asyncCycleEvent(uint32_t delay, std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel) {
+		return scheduleEvent(
+			delay, [this, f = std::move(f), group] { asyncEvent([f] { f(); }, group); }, dispacherContext.taskName, true, false
+		);
+	}
+
+	uint64_t asyncScheduleEvent(uint32_t delay, std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel) {
+		return scheduleEvent(
+			delay, [this, f = std::move(f), group] { asyncEvent([f] { f(); }, group); }, dispacherContext.taskName, false, false
+		);
+	}
 
 	[[nodiscard]] uint64_t getDispatcherCycle() const {
 		return dispatcherCycle;
@@ -141,7 +150,7 @@ private:
 		return id;
 	};
 
-	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle);
+	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle, bool log = true);
 
 	inline void mergeEvents();
 	inline void executeEvents(const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock);

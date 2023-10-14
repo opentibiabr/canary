@@ -45,52 +45,6 @@ void Dispatcher::init() {
 	});
 }
 
-void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
-	const auto &thread = threads[getThreadId()];
-	std::scoped_lock lock(thread->mutex);
-	thread->tasks[static_cast<uint8_t>(TaskGroup::Serial)].emplace_back(expiresAfterMs, std::move(f), context);
-	notify();
-}
-
-uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle) {
-	return scheduleEvent(std::make_shared<Task>(std::move(f), context, delay, cycle));
-}
-
-uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
-	const auto &thread = threads[getThreadId()];
-	std::scoped_lock lock(thread->mutex);
-	thread->scheduledTasks.emplace_back(task);
-	auto eventId = scheduledTasksRef.emplace(task->generateId(), task).first->first;
-	notify();
-
-	return eventId;
-}
-
-void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
-	const auto &thread = threads[getThreadId()];
-	std::scoped_lock lock(thread->mutex);
-	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);
-	notify();
-}
-
-uint64_t Dispatcher::asyncCycleEvent(uint32_t delay, std::function<void(void)> &&f, TaskGroup group) {
-	return scheduleEvent(std::make_shared<Task>([this, f = std::move(f), group] { asyncEvent([f] { f(); }, group); }, dispacherContext.taskName, delay, true, false));
-}
-
-uint64_t Dispatcher::asyncScheduleEvent(uint32_t delay, std::function<void(void)> &&f, TaskGroup group) {
-	return scheduleEvent(std::make_shared<Task>([this, f = std::move(f), group] { asyncEvent([f] { f(); }, group); }, dispacherContext.taskName, delay, false, false));
-}
-
-void Dispatcher::stopEvent(uint64_t eventId) {
-	auto it = scheduledTasksRef.find(eventId);
-	if (it == scheduledTasksRef.end()) {
-		return;
-	}
-
-	it->second->cancel();
-	scheduledTasksRef.erase(it);
-}
-
 void Dispatcher::executeSerialEvents(std::vector<Task> &tasks) {
 	dispacherContext.groupId = TaskGroup::Serial;
 	dispacherContext.type = DispatcherType::Event;
@@ -200,4 +154,46 @@ std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() const {
 	const auto &task = scheduledTasks.top();
 	const auto timeRemaining = task->getTime() - Task::TIME_NOW;
 	return timeRemaining >= std::chrono::nanoseconds(0) ? timeRemaining : std::chrono::nanoseconds(0);
+}
+
+void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
+	const auto &thread = threads[getThreadId()];
+	std::scoped_lock lock(thread->mutex);
+	thread->tasks[static_cast<uint8_t>(TaskGroup::Serial)].emplace_back(expiresAfterMs, std::move(f), context);
+	notify();
+}
+
+uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
+	const auto &thread = threads[getThreadId()];
+
+	std::scoped_lock lock(thread->mutex);	
+	auto eventId = scheduledTasksRef.emplace(
+		task->generateId(),
+		thread->scheduledTasks.emplace_back(task)
+	).first->first;
+
+	notify();
+
+	return eventId;
+}
+
+uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle, bool log) {
+	return scheduleEvent(std::make_shared<Task>(std::move(f), context, delay, cycle, log));
+}
+
+void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
+	const auto &thread = threads[getThreadId()];
+	std::scoped_lock lock(thread->mutex);
+	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);
+	notify();
+}
+
+void Dispatcher::stopEvent(uint64_t eventId) {
+	auto it = scheduledTasksRef.find(eventId);
+	if (it == scheduledTasksRef.end()) {
+		return;
+	}
+
+	it->second->cancel();
+	scheduledTasksRef.erase(it);
 }

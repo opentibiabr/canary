@@ -16,7 +16,6 @@
 
 constexpr static auto ASYNC_TIME_OUT = std::chrono::seconds(15);
 thread_local DispatcherContext Dispatcher::dispacherContext;
-static std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.
 
 Dispatcher &Dispatcher::getInstance() {
 	return inject<Dispatcher>();
@@ -26,6 +25,7 @@ void Dispatcher::init() {
 	updateClock();
 
 	threadPool.addLoad([this] {
+		std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.
 		std::unique_lock asyncLock(dummyMutex);
 
 		while (!threadPool.getIoContext().stopped()) {
@@ -47,21 +47,21 @@ void Dispatcher::init() {
 }
 
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
-	auto &thread = threads[getThreadId()];
+	const auto &thread = threads[getThreadId()];
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(TaskGroup::Serial)].emplace_back(expiresAfterMs, std::move(f), context);
 	notify();
 }
 
 void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
-	auto &thread = threads[getThreadId()];
+	const auto &thread = threads[getThreadId()];
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);
 	notify();
 }
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
-	auto &thread = threads[getThreadId()];
+	const auto &thread = threads[getThreadId()];
 	std::scoped_lock lock(thread->mutex);
 	thread->scheduledTasks.emplace_back(task);
 	auto eventId = scheduledTasksRef.emplace(task->generateId(), task).first->first;
@@ -165,7 +165,7 @@ void Dispatcher::executeScheduledEvents() {
 
 // Merge thread events with main dispatch events
 void Dispatcher::mergeEvents() {
-	for (auto &thread : threads) {
+	for (const auto &thread : threads) {
 		std::scoped_lock lock(thread->mutex);
 		if (!thread->tasks.empty()) {
 			for (uint_fast8_t i = 0; i < static_cast<uint8_t>(TaskGroup::Last); ++i) {
@@ -186,7 +186,7 @@ void Dispatcher::mergeEvents() {
 	checkPendingTasks();
 }
 
-std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() {
+std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() const {
 	if (scheduledTasks.empty()) {
 		return std::chrono::milliseconds::max();
 	}

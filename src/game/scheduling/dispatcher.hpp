@@ -17,7 +17,8 @@ static constexpr uint16_t SCHEDULER_MINTICKS = 50;
 
 enum class TaskGroup : int8_t {
 	ThreadPool = -1,
-	Serial = 0,
+	Serial,
+	CheckCreatures,
 	GenericParallel,
 	Last
 };
@@ -59,7 +60,7 @@ private:
 	void reset() {
 		groupId = TaskGroup::ThreadPool;
 		type = DispatcherType::None;
-		taskName = "";
+		taskName = "ThreadPool::call";
 	}
 
 	DispatcherType type = DispatcherType::None;
@@ -144,7 +145,7 @@ private:
 
 	inline void executeSerialEvents(std::vector<Task> &tasks);
 	inline void executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock);
-	inline std::chrono::nanoseconds timeUntilNextScheduledTask();
+	inline std::chrono::nanoseconds timeUntilNextScheduledTask() const;
 
 	inline void checkPendingTasks() {
 		hasPendingTasks = false;

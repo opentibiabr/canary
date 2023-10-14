@@ -91,7 +91,7 @@ std::string LuaFunctionsLoader::getErrorDesc(ErrorCode_t code) {
 }
 
 int LuaFunctionsLoader::protectedCall(lua_State* L, int nargs, int nresults) {
-	if (const int ret = checkIsAsyncContext("protectedCall"); ret != 0) {
+	if (const int ret = validateDispatcherContext(__FUNCTION__); ret != 0) {
 		return ret;
 	}
 
@@ -125,7 +125,7 @@ int LuaFunctionsLoader::luaErrorHandler(lua_State* L) {
 }
 
 void LuaFunctionsLoader::pushVariant(lua_State* L, const LuaVariant &var) {
-	if (checkIsAsyncContext("pushVariant")) {
+	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
@@ -153,7 +153,7 @@ void LuaFunctionsLoader::pushVariant(lua_State* L, const LuaVariant &var) {
 }
 
 void LuaFunctionsLoader::pushThing(lua_State* L, std::shared_ptr<Thing> thing) {
-	if (checkIsAsyncContext("pushThing")) {
+	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
@@ -178,7 +178,7 @@ void LuaFunctionsLoader::pushThing(lua_State* L, std::shared_ptr<Thing> thing) {
 }
 
 void LuaFunctionsLoader::pushCylinder(lua_State* L, std::shared_ptr<Cylinder> cylinder) {
-	if (checkIsAsyncContext("pushCylinder")) {
+	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
@@ -199,7 +199,7 @@ void LuaFunctionsLoader::pushCylinder(lua_State* L, std::shared_ptr<Cylinder> cy
 }
 
 void LuaFunctionsLoader::pushString(lua_State* L, const std::string &value) {
-	if (checkIsAsyncContext("pushString")) {
+	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
@@ -207,7 +207,7 @@ void LuaFunctionsLoader::pushString(lua_State* L, const std::string &value) {
 }
 
 void LuaFunctionsLoader::pushCallback(lua_State* L, int32_t callback) {
-	if (checkIsAsyncContext("pushCallback")) {
+	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
@@ -230,7 +230,7 @@ int32_t LuaFunctionsLoader::popCallback(lua_State* L) {
 
 // Metatables
 void LuaFunctionsLoader::setMetatable(lua_State* L, int32_t index, const std::string &name) {
-	if (checkIsAsyncContext("setMetatable")) {
+	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
@@ -239,7 +239,7 @@ void LuaFunctionsLoader::setMetatable(lua_State* L, int32_t index, const std::st
 }
 
 void LuaFunctionsLoader::setWeakMetatable(lua_State* L, int32_t index, const std::string &name) {
-	if (checkIsAsyncContext("setWeakMetatable")) {
+	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
@@ -277,7 +277,7 @@ void LuaFunctionsLoader::setWeakMetatable(lua_State* L, int32_t index, const std
 }
 
 void LuaFunctionsLoader::setItemMetatable(lua_State* L, int32_t index, std::shared_ptr<Item> item) {
-	if (checkIsAsyncContext("setItemMetatable")) {
+	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
@@ -292,7 +292,7 @@ void LuaFunctionsLoader::setItemMetatable(lua_State* L, int32_t index, std::shar
 }
 
 void LuaFunctionsLoader::setCreatureMetatable(lua_State* L, int32_t index, std::shared_ptr<Creature> creature) {
-	if (checkIsAsyncContext("setCreatureMetatable")) {
+	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
@@ -533,7 +533,7 @@ std::string LuaFunctionsLoader::getUserdataTypeName(LuaData_t userType) {
 
 // Push
 void LuaFunctionsLoader::pushBoolean(lua_State* L, bool value) {
-	if (checkIsAsyncContext("pushBoolean")) {
+	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
@@ -541,7 +541,7 @@ void LuaFunctionsLoader::pushBoolean(lua_State* L, bool value) {
 }
 
 void LuaFunctionsLoader::pushCombatDamage(lua_State* L, const CombatDamage &damage) {
-	if (checkIsAsyncContext("pushCombatDamage")) {
+	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
@@ -553,7 +553,7 @@ void LuaFunctionsLoader::pushCombatDamage(lua_State* L, const CombatDamage &dama
 }
 
 void LuaFunctionsLoader::pushInstantSpell(lua_State* L, const InstantSpell &spell) {
-	if (checkIsAsyncContext("pushInstantSpell")) {
+	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
@@ -570,7 +570,7 @@ void LuaFunctionsLoader::pushInstantSpell(lua_State* L, const InstantSpell &spel
 }
 
 void LuaFunctionsLoader::pushPosition(lua_State* L, const Position &position, int32_t stackpos /* = 0*/) {
-	if (checkIsAsyncContext("pushPosition")) {
+	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
@@ -585,7 +585,7 @@ void LuaFunctionsLoader::pushPosition(lua_State* L, const Position &position, in
 }
 
 void LuaFunctionsLoader::pushOutfit(lua_State* L, const Outfit_t &outfit) {
-	if (checkIsAsyncContext("pushOutfit")) {
+	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
@@ -753,7 +753,7 @@ int LuaFunctionsLoader::luaGarbageCollection(lua_State* L) {
 	return 0;
 }
 
-int LuaFunctionsLoader::checkIsAsyncContext(std::string_view fncName) {
+int LuaFunctionsLoader::validateDispatcherContext(std::string_view fncName) {
 	if (g_dispatcher().context().isOn() && g_dispatcher().context().isAsync()) {
 		g_logger().warn("[{}] The call to lua was ignored because the '{}' task is trying to communicate while in async mode.", fncName, g_dispatcher().context().getName());
 		return LUA_ERRRUN;

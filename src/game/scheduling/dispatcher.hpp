@@ -90,11 +90,6 @@ public:
 
 	static Dispatcher &getInstance();
 
-	void init();
-	void shutdown() {
-		signalAsync.notify_all();
-	}
-
 	void addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0);
 
 	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context) {
@@ -154,6 +149,11 @@ private:
 		return scheduleEvent(std::make_shared<Task>(std::move(f), context, delay, cycle, log));
 	}
 
+	void init();
+	void shutdown() {
+		signalAsync.notify_all();
+	}
+
 	inline void mergeEvents();
 	inline void executeEvents(std::unique_lock<std::mutex> &asyncLock);
 	inline void executeScheduledEvents();
@@ -206,6 +206,8 @@ private:
 	std::array<std::vector<Task>, static_cast<uint8_t>(TaskGroup::Last)> m_tasks;
 	std::priority_queue<std::shared_ptr<Task>, std::deque<std::shared_ptr<Task>>, Task::Compare> scheduledTasks;
 	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef;
+
+	friend class CanaryServer;
 };
 
 constexpr auto g_dispatcher = Dispatcher::getInstance;

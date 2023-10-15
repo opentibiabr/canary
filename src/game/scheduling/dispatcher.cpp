@@ -42,7 +42,7 @@ void Dispatcher::init() {
 }
 
 void Dispatcher::executeSerialEvents(std::vector<Task> &tasks) {
-	dispacherContext.groupId = TaskGroup::Serial;
+	dispacherContext.group = TaskGroup::Serial;
 	dispacherContext.type = DispatcherType::Event;
 
 	for (const auto &task : tasks) {
@@ -62,7 +62,7 @@ void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t g
 	for (const auto &task : tasks) {
 		threadPool.addLoad([this, &task, &executedTasks, groupId, totalTaskSize = tasks.size()] {
 			dispacherContext.type = DispatcherType::AsyncEvent;
-			dispacherContext.groupId = static_cast<TaskGroup>(groupId);
+			dispacherContext.group = static_cast<TaskGroup>(groupId);
 			dispacherContext.taskName = task.getContext();
 
 			task.execute();
@@ -105,7 +105,7 @@ void Dispatcher::executeScheduledEvents() {
 		}
 
 		dispacherContext.type = task->isCycle() ? DispatcherType::CycleEvent : DispatcherType::ScheduledEvent;
-		dispacherContext.groupId = TaskGroup::Serial;
+		dispacherContext.group = TaskGroup::Serial;
 		dispacherContext.taskName = task->getContext();
 
 		if (task->execute() && task->isCycle()) {
@@ -154,7 +154,7 @@ std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() const {
 
 	const auto &task = scheduledTasks.top();
 	const auto timeRemaining = task->getTime() - Task::TIME_NOW;
-	return timeRemaining >= CHRONO_NANO_0 ? timeRemaining : CHRONO_NANO_0;
+	return std::max<std::chrono::nanoseconds>(timeRemaining, CHRONO_NANO_0);
 }
 
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
@@ -184,10 +184,8 @@ void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
 
 void Dispatcher::stopEvent(uint64_t eventId) {
 	auto it = scheduledTasksRef.find(eventId);
-	if (it == scheduledTasksRef.end()) {
-		return;
+	if (it != scheduledTasksRef.end()) {
+		it->second->cancel();
+		scheduledTasksRef.erase(it);
 	}
-
-	it->second->cancel();
-	scheduledTasksRef.erase(it);
 }

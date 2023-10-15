@@ -36,15 +36,15 @@ struct DispatcherContext {
 	}
 
 	bool isGroup(const TaskGroup group) const {
-		return groupId == group;
+		return group == group;
 	}
 
 	bool isAsync() const {
-		return groupId != TaskGroup::Serial;
+		return group != TaskGroup::Serial;
 	}
 
 	auto getGroup() const {
-		return groupId;
+		return group;
 	}
 
 	auto getName() const {
@@ -57,13 +57,13 @@ struct DispatcherContext {
 
 private:
 	void reset() {
-		groupId = TaskGroup::ThreadPool;
+		group = TaskGroup::ThreadPool;
 		type = DispatcherType::None;
 		taskName = "ThreadPool::call";
 	}
 
 	DispatcherType type = DispatcherType::None;
-	TaskGroup groupId = TaskGroup::ThreadPool;
+	TaskGroup group = TaskGroup::ThreadPool;
 	std::string_view taskName = "";
 
 	friend class Dispatcher;

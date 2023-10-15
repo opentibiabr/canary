@@ -35,8 +35,8 @@ struct DispatcherContext {
 		return Task::TIME_NOW != SYSTEM_TIME_ZERO;
 	}
 
-	bool isGroup(const TaskGroup group) const {
-		return group == group;
+	bool isGroup(const TaskGroup _group) const {
+		return group == _group;
 	}
 
 	bool isAsync() const {

@@ -60,12 +60,6 @@ namespace stdext {
 			return backContainer.front();
 		}
 
-		// Very Slow
-		/* void pop_front() {
-			update();
-			backContainer.erase(backContainer.begin());
-		}*/
-
 		void pop_back() {
 			update();
 			backContainer.pop_back();

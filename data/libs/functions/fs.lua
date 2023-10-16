@@ -13,7 +13,7 @@ function FS.mkdir(path)
 	if FS.exists(path) then
 		return true
 	end
-	local success, err = os.execute("mkdir " .. path)
+	local success, err = os.execute('mkdir "' .. path .. '"')
 	if not success then
 		return false, err
 	end

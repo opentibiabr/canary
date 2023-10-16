@@ -1798,3 +1798,15 @@ std::string formatNumber(uint64_t number) {
 void sleep_for(uint64_t ms) {
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
+
+/**
+ * @brief Formats a string to be used as KV key (lowercase, spaces replaced with -, no whitespace)
+ * @param str The string to format
+ * @return The formatted string
+ */
+std::string toKey(const std::string &str) {
+	std::string key = asLowerCaseString(str);
+	std::replace(key.begin(), key.end(), ' ', '-');
+	key.erase(std::remove_if(key.begin(), key.end(), [](char c) { return std::isspace(c); }), key.end());
+	return key;
+}

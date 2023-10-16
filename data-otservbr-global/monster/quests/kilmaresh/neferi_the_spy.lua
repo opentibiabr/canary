@@ -28,7 +28,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 2105,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Kilmaresh.NeferiTheSpyTimer,
 }
 
 monster.strategiesTarget = {

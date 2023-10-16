@@ -16,7 +16,6 @@ monster.outfit = {
 monster.bosstiary = {
 	bossRaceId = 1576,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.TheSecretLibrary.TheOrderOfTheFalcon.OberonTimer,
 }
 
 monster.health = 60000

@@ -13,21 +13,25 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 1800
-monster.maxHealth = 1800
+monster.health = 120000
+monster.maxHealth = 120000
 monster.race = "blood"
 monster.corpse = 18074
-monster.speed = 125
+monster.speed = 180
 monster.manaCost = 0
+
+monster.events = {
+	"DoctorMarrowHealth",
+}
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10,
+	chance = 15,
 }
 
 monster.strategiesTarget = {
-	nearest = 80,
-	health = 10,
+	nearest = 60,
+	health = 30,
 	damage = 10,
 }
 

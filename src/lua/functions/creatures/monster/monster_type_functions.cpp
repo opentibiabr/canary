@@ -1570,27 +1570,6 @@ int MonsterTypeFunctions::luaMonsterTypeBossRaceId(lua_State* L) {
 	return 1;
 }
 
-int MonsterTypeFunctions::luaMonsterTypeBossStorageCooldown(lua_State* L) {
-	// set: monsterType:bossStorageCooldown(storage)
-	// get: monsterType:bossStorageCooldown()
-	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
-	if (!monsterType) {
-		pushBoolean(L, false);
-		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));
-		return 0;
-	}
-
-	auto bossStorageCooldown = getNumber<uint32_t>(L, 2, 0);
-	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.bossStorageCooldown));
-	} else {
-		monsterType->info.bossStorageCooldown = bossStorageCooldown;
-		pushBoolean(L, true);
-	}
-
-	return 1;
-}
-
 int MonsterTypeFunctions::luaMonsterTypeSoundChance(lua_State* L) {
 	// get: monsterType:soundChance() set: monsterType:soundChance(chance)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);

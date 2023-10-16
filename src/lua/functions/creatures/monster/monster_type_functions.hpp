@@ -133,7 +133,6 @@ public:
 
 		registerMethod(L, "MonsterType", "bossRace", MonsterTypeFunctions::luaMonsterTypeBossRace);
 		registerMethod(L, "MonsterType", "bossRaceId", MonsterTypeFunctions::luaMonsterTypeBossRaceId);
-		registerMethod(L, "MonsterType", "bossStorageCooldown", MonsterTypeFunctions::luaMonsterTypeBossStorageCooldown);
 
 		registerMethod(L, "MonsterType", "soundChance", MonsterTypeFunctions::luaMonsterTypeSoundChance);
 		registerMethod(L, "MonsterType", "soundSpeedTicks", MonsterTypeFunctions::luaMonsterTypeSoundSpeedTicks);
@@ -255,7 +254,6 @@ private:
 
 	static int luaMonsterTypeBossRace(lua_State* L);
 	static int luaMonsterTypeBossRaceId(lua_State* L);
-	static int luaMonsterTypeBossStorageCooldown(lua_State* L);
 
 	static int luaMonsterTypeSoundChance(lua_State* L);
 	static int luaMonsterTypeSoundSpeedTicks(lua_State* L);

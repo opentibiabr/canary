@@ -6,7 +6,6 @@
 ---@field private timeToDefeat number
 ---@field private timeAfterKill number
 ---@field private requiredLevel number
----@field private storage number
 ---@field private disabled boolean
 ---@field private onUseExtra function
 ---@field private _position Position
@@ -43,7 +42,6 @@ local config = {
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	end,
 	exit = Position(33618, 32523, 15),
-	storage = Storage.Quest.U12_00.TheDreamCourts.FacelessBaneTime
 }
 ]]
 setmetatable(BossLever, {
@@ -63,7 +61,6 @@ setmetatable(BossLever, {
 			timeAfterKill = config.timeAfterKill or 0,
 			requiredLevel = config.requiredLevel or 0,
 			createBoss = boss.createFunction,
-			storage = config.storage,
 			disabled = config.disabled,
 			playerPositions = config.playerPositions,
 			onUseExtra = config.onUseExtra or function() end,
@@ -101,6 +98,44 @@ function BossLever:aid(aid)
 	return self
 end
 
+function BossLever:kvScope()
+	local mType = MonsterType(self.name)
+	if not mType then
+		error("BossLever: boss name is invalid")
+	end
+	return "boss.cooldown." .. toKey(tostring(mType:raceId()))
+end
+
+---@param self BossLever
+---@param player Player
+---@return number
+function BossLever:lastEncounterTime(player)
+	if not player then
+		return 0
+	end
+	return player:getBossCooldown(self.name)
+end
+
+---@param self BossLever
+---@param time number
+---@return boolean
+function BossLever:setLastEncounterTime(time)
+	local info = self.lever:getInfoPositions()
+	if not info then
+		logger.error("BossLever:setLastEncounterTime - lever:getInfoPositions() returned nil")
+		return false
+	end
+	for _, v in pairs(info) do
+		if v.creature then
+			local player = v.creature:getPlayer()
+			if player then
+				player:setBossCooldown(self.name, time)
+			end
+		end
+	end
+	return true
+end
+
 ---@param player Player
 ---@return boolean
 function BossLever:onUse(player)
@@ -125,7 +160,8 @@ function BossLever:onUse(player)
 		return true
 	end
 
-	local lever = Lever()
+	self.lever = Lever()
+	local lever = self.lever
 	lever:setPositions(self.playerPositions)
 	lever:setCondition(function(creature)
 		if not creature or not creature:isPlayer() then
@@ -137,13 +173,13 @@ function BossLever:onUse(player)
 			return false
 		end
 
-		if creature:getStorageValue(self.storage) > os.time() then
+		if self:lastEncounterTime(creature) > os.time() then
 			local info = lever:getInfoPositions()
 			for _, v in pairs(info) do
 				local newPlayer = v.creature
 				if newPlayer then
 					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. self.timeToFightAgain / 60 / 60 .. " hours to face " .. self.name .. " again!")
-					if newPlayer:getStorageValue(self.storage) > os.time() then
+					if self:lastEncounterTime(newPlayer) > os.time() then
 						newPlayer:getPosition():sendMagicEffect(CONST_ME_POFF)
 					end
 				end
@@ -177,7 +213,11 @@ function BossLever:onUse(player)
 			monster:registerEvent("BossLeverOnDeath")
 		end
 		lever:teleportPlayers()
-		lever:setStorageAllPlayers(self.storage, os.time() + self.timeToFightAgain)
+		if self.encounter then
+			local encounter = Encounter(self.encounter)
+			encounter:start()
+		end
+		self:setLastEncounterTime(os.time() + self.timeToFightAgain)
 		if self.timeoutEvent then
 			stopEvent(self.timeoutEvent)
 			self.timeoutEvent = nil
@@ -201,9 +241,6 @@ function BossLever:register()
 	local missingParams = {}
 	if not self.name then
 		table.insert(missingParams, "boss.name")
-	end
-	if not self.storage then
-		table.insert(missingParams, "storage")
 	end
 	if not self.playerPositions then
 		table.insert(missingParams, "playerPositions")

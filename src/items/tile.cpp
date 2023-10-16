@@ -19,7 +19,6 @@
 #include "lua/creature/movement.hpp"
 #include "game/movement/teleport.hpp"
 #include "items/trashholder.hpp"
-#include "map/house/housetile.hpp"
 #include "io/iomap.hpp"
 #include "map/spectators.hpp"
 

@@ -70,14 +70,14 @@ void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t g
 			dispacherContext.reset();
 
 			executedTasks.fetch_add(1);
-			if (executedTasks.load() == totalTaskSize) {
+			if (executedTasks.load() >= totalTaskSize) {
 				signalAsync.notify_one();
 			}
 		});
 	}
 
 	if (signalAsync.wait_for(asyncLock, ASYNC_TIME_OUT) == std::cv_status::timeout) {
-		g_logger().warn("A timeout occurred when executing the async dispatch in the context({}).", groupId);
+		g_logger().warn("A timeout occurred when executing the async dispatch in the context({}). Executed Tasks: {}/{}.", groupId, executedTasks.load(), tasks.size());
 	}
 	tasks.clear();
 }

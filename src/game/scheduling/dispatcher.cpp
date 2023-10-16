@@ -57,10 +57,11 @@ void Dispatcher::executeSerialEvents(std::vector<Task> &tasks) {
 }
 
 void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock) {
+	const size_t totalTaskSize = tasks.size();
 	std::atomic_uint_fast64_t executedTasks = 0;
 
 	for (const auto &task : tasks) {
-		threadPool.addLoad([this, &task, &executedTasks, groupId, totalTaskSize = tasks.size()] {
+		threadPool.addLoad([this, &task, &executedTasks, groupId, totalTaskSize] {
 			dispacherContext.type = DispatcherType::AsyncEvent;
 			dispacherContext.group = static_cast<TaskGroup>(groupId);
 			dispacherContext.taskName = task.getContext();
@@ -77,7 +78,7 @@ void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t g
 	}
 
 	if (signalAsync.wait_for(asyncLock, ASYNC_TIME_OUT) == std::cv_status::timeout) {
-		g_logger().warn("A timeout occurred when executing the async dispatch in the context({}). Executed Tasks: {}/{}.", groupId, executedTasks.load(), tasks.size());
+		g_logger().warn("A timeout occurred when executing the async dispatch in the context({}). Executed Tasks: {}/{}.", groupId, executedTasks.load(), totalTaskSize);
 	}
 	tasks.clear();
 }

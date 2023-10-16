@@ -17,30 +17,25 @@
 #include "server/server.hpp"
 
 Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort) {
-	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
-
 	auto connection = std::make_shared<Connection>(io_service, servicePort);
-	connections.insert(connection);
+	connections.emplace(connection);
 	return connection;
 }
 
 void ConnectionManager::releaseConnection(const Connection_ptr &connection) {
-	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
-
 	connections.erase(connection);
 }
 
 void ConnectionManager::closeAll() {
-	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
-
-	for (const auto &connection : connections) {
+	connections.for_each([](const Connection_ptr &connection) {
 		try {
 			std::error_code error;
 			connection->socket.shutdown(asio::ip::tcp::socket::shutdown_both, error);
 		} catch (const std::system_error &systemError) {
 			g_logger().error("[ConnectionManager::closeAll] - Failed to close connection, system error code {}", systemError.what());
 		}
-	}
+	});
+
 	connections.clear();
 }
 

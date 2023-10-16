@@ -403,7 +403,7 @@ int32_t normal_random(int32_t minNumber, int32_t maxNumber) {
 		v = normalRand(getRandomGenerator());
 	} while (v < 0.0 || v > 1.0);
 
-	auto&& [a, b] = std::minmax(minNumber, maxNumber);
+	auto &&[a, b] = std::minmax(minNumber, maxNumber);
 	return a + std::lround(v * (b - a));
 }
 

@@ -245,7 +245,7 @@ void ProtocolGame::addGameTask(Callable function, Args &&... args) {
 
 template <typename Callable, typename... Args>
 void ProtocolGame::addGameTaskTimed(uint32_t delay, std::string_view context, Callable function, Args &&... args) {
-	g_dispatcher().addEvent(std::bind(function, &g_game(), std::forward<Args>(args)...), std::move(context), delay);
+	g_dispatcher().addEvent(std::bind(function, &g_game(), std::forward<Args>(args)...), context, delay);
 }
 
 void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier) {

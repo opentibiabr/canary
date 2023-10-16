@@ -9,7 +9,6 @@
 
 #include "pch.hpp"
 
-#include "items/item.hpp"
 #include "items/weapons/weapons.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/functions/items/imbuement_functions.hpp"

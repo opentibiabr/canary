@@ -244,7 +244,7 @@ void ProtocolGame::addGameTask(Callable function, Args &&... args) {
 }
 
 template <typename Callable, typename... Args>
-void ProtocolGame::addGameTaskTimed(uint32_t delay, std::string context, Callable function, Args &&... args) {
+void ProtocolGame::addGameTaskTimed(uint32_t delay, std::string_view context, Callable function, Args &&... args) {
 	g_dispatcher().addEvent(std::bind(function, &g_game(), std::forward<Args>(args)...), std::move(context), delay);
 }
 

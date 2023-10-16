@@ -38,6 +38,17 @@ namespace stdext {
 			return true;
 		}
 
+		bool erase(const size_t begin, const size_t end) {
+			update();
+
+			if (begin > size() || end > size()) {
+				return false;
+			}
+
+			backContainer.erase(backContainer.begin() + begin, backContainer.begin() + end);
+			return true;
+		}
+
 		template <class F>
 		bool erase_if(F fnc) {
 			update();

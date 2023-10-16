@@ -335,7 +335,7 @@ uint32_t Connection::getIP() {
 	// IP-address is expressed in network byte order
 	std::error_code error;
 	const asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
-	ip = error ? 0 : htonl(endpoint.address().to_v4().to_ulong());
+	ip = error ? 0 : htonl(endpoint.address().to_v4().to_uint());
 	return ip;
 }
 

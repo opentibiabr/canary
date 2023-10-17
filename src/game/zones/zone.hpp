@@ -11,6 +11,7 @@
 
 #include "game/movement/position.hpp"
 #include "items/item.hpp"
+#include <unordered_set>
 
 class Tile;
 class Creature;

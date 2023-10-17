@@ -2569,8 +2569,8 @@ private:
 	void internalAddThing(std::shared_ptr<Thing> thing) override;
 	void internalAddThing(uint32_t index, std::shared_ptr<Thing> thing) override;
 
-	stdext::vector_set<uint32_t> attackedSet;
-	stdext::vector_set<uint32_t> VIPList;
+	phmap::flat_hash_set<uint32_t> attackedSet;
+	phmap::flat_hash_set<uint32_t> VIPList;
 
 	std::map<uint8_t, OpenContainer> openContainers;
 	std::map<uint32_t, std::shared_ptr<DepotLocker>> depotLockerMap;

@@ -2921,10 +2921,11 @@ void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t
 }
 
 bool Player::removeVIP(uint32_t vipGuid) {
-	if (!VIPList.erase(vipGuid)) {
+	if (!VIPList.contains(vipGuid)) {
 		return false;
 	}
 
+	VIPList.erase(vipGuid);
 	if (account) {
 		IOLoginData::removeVIPEntry(account->getID(), vipGuid);
 	}
@@ -5900,12 +5901,13 @@ void Player::clearModalWindows() {
 
 uint16_t Player::getHelpers() const {
 	if (guild && party) {
-		stdext::vector_set<std::shared_ptr<Player>> helperSet;
-		const auto guildMembers = guild->getMembersOnline();
-		helperSet.insert(helperSet.end(), guildMembers.begin(), guildMembers.end());
+		const auto &guildMembers = guild->getMembersOnline();
 
+		stdext::vector_set<std::shared_ptr<Player>> helperSet;
+		helperSet.insert(helperSet.end(), guildMembers.begin(), guildMembers.end());
 		helperSet.insertAll(party->getMembers());
 		helperSet.insertAll(party->getInvitees());
+
 		helperSet.emplace(party->getLeader());
 
 		return helperSet.size();

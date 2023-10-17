@@ -42427,8 +42427,8 @@
 		<attribute key="description" value="Souvenir from Thais Museum"/>
 		<attribute key="weight" value="2400"/>
 	</item>
-	<item id="23682" article="a" name="bag of oriental spices">
-		<attribute key="description" value="Souvenir from Thais Museum"/>
+	<item id="23682" article="a" name="bag of forge dusts">
+		<attribute key="description" value="Use this item to get 100 forge dusts"/>
 		<attribute key="weight" value="1508"/>
 	</item>
 	<item id="23683" name="imortus">
@@ -65488,7 +65488,7 @@
 	<item id="39164" article="a" name="dawnfire sherwani">
 		<attribute key="primarytype" value="armors"/>
 		<attribute key="absorbpercentfire" value="10"/>
-		<attribute key="absorbpercentearth" value="-2"/>
+		<attribute key="absorbpercentpoison" value="-2"/>
 		<attribute key="magiclevelpoints" value="4"/>
 		<attribute key="armor" value="16"/>
 		<attribute key="weight" value="2800"/>
@@ -65545,7 +65545,7 @@
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentphysical" value="8"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="skillclub" value="3"/>
@@ -65563,7 +65563,7 @@
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentphysical" value="2"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="showattributes" value="1"/>
@@ -65580,7 +65580,7 @@
 	<item id="39181" article="a" name="charged alicorn ring">
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="absorbpercentholy" value="4"/>
@@ -65598,7 +65598,7 @@
 	<item id="39182" article="an" name="alicorn ring">
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="holymagiclevelpoints" value="1"/>
@@ -65616,7 +65616,7 @@
 	<item id="39184" article="a" name="charged arcanomancer sigil">
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
@@ -65634,7 +65634,7 @@
 	<item id="39185" article="an" name="arcanomancer sigil">
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
@@ -65653,7 +65653,7 @@
 	<item id="39187" article="a" name="charged arboreal ring">
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="healingmagiclevelpoints" value="2"/>
@@ -65669,7 +65669,7 @@
 	<item id="39188" article="an" name="arboreal ring">
 		<attribute key="primarytype" value="rings"/>
 		<attribute key="absorbpercentfire" value="4"/>
-		<attribute key="absorbpercentearth" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="healingmagiclevelpoints" value="2"/>
@@ -68721,7 +68721,7 @@
 		<attribute key="criticalhitdamage" value="12"/>
 		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="ammotype" value="arrow"/>
-		<attribute key="absorbpercentearth" value="6"/>
+		<attribute key="absorbpercentpoison" value="6"/>
 		<attribute key="skilldist" value="4"/>
 		<attribute key="hitchance" value="6"/>
 		<attribute key="range" value="6"/>
@@ -68742,7 +68742,7 @@
 		<attribute key="criticalhitdamage" value="12"/>
 		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="ammotype" value="arrow"/>
-		<attribute key="absorbpercentearth" value="6"/>
+		<attribute key="absorbpercentpoison" value="6"/>
 		<attribute key="skilldist" value="4"/>
 		<attribute key="hitchance" value="6"/>
 		<attribute key="range" value="6"/>
@@ -68811,7 +68811,7 @@
 		<attribute key="primarytype" value="wands"/>
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="energy"/>
-		<attribute key="absorbpercentearth" value="7"/>
+		<attribute key="absorbpercentpoison" value="7"/>
 		<attribute key="magiclevelpoints" value="5"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
 		<attribute key="energymagiclevelpoints" value="1"/>
@@ -68828,7 +68828,7 @@
 		<attribute key="primarytype" value="wands"/>
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="energy"/>
-		<attribute key="absorbpercentearth" value="7"/>
+		<attribute key="absorbpercentpoison" value="7"/>
 		<attribute key="magiclevelpoints" value="5"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
 		<attribute key="energymagiclevelpoints" value="1"/>

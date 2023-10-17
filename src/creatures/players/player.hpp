@@ -919,7 +919,7 @@ public:
 		skullTicks = ticks;
 	}
 
-	bool hasAttacked(std::shared_ptr<Player> attacked);
+	bool hasAttacked(std::shared_ptr<Player> attacked) const;
 	void addAttacked(std::shared_ptr<Player> attacked);
 	void removeAttacked(std::shared_ptr<Player> attacked);
 	void clearAttacked();

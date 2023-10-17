@@ -2921,7 +2921,7 @@ void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t
 }
 
 bool Player::removeVIP(uint32_t vipGuid) {
-	if (!VIPList.contains(vipGuid)) {
+	if (!VIPList.erase(vipGuid)) {
 		return false;
 	}
 
@@ -2939,12 +2939,11 @@ bool Player::addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t st
 		return false;
 	}
 
-	if (VIPList.contains(vipGuid)) {
+	if (!VIPList.insert(vipGuid).second) {
 		sendTextMessage(MESSAGE_FAILURE, "This player is already in your list.");
 		return false;
 	}
 
-	VIPList.emplace(vipGuid);
 	if (account) {
 		IOLoginData::addVIPEntry(account->getID(), vipGuid, "", 0, false);
 	}
@@ -2965,8 +2964,7 @@ bool Player::addVIPInternal(uint32_t vipGuid) {
 		return false;
 	}
 
-	VIPList.emplace(vipGuid);
-	return true;
+	return VIPList.insert(vipGuid).second;
 }
 
 bool Player::editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) {
@@ -4961,7 +4959,7 @@ bool Player::hasKilled(std::shared_ptr<Player> player) const {
 	return false;
 }
 
-bool Player::hasAttacked(std::shared_ptr<Player> attacked) {
+bool Player::hasAttacked(std::shared_ptr<Player> attacked) const {
 	if (hasFlag(PlayerFlags_t::NotGainInFight) || !attacked) {
 		return false;
 	}

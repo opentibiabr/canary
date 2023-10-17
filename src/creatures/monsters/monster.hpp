@@ -205,17 +205,17 @@ public:
 	}
 
 	std::vector<std::shared_ptr<Creature>> getFriendList() {
-		stdext::vector_set<std::shared_ptr<Creature>> set;
+		std::vector<std::shared_ptr<Creature>> list;
 
 		for (auto it = friendList.begin(); it != friendList.end();) {
 			if (auto friendCreature = it->second.lock()) {
-				set.emplace(friendCreature);
+				list.emplace_back(friendCreature);
 				++it;
 			} else {
 				it = friendList.erase(it);
 			}
 		}
-		return set.data();
+		return list;
 	}
 
 	bool isTarget(std::shared_ptr<Creature> creature);

@@ -22,13 +22,13 @@ namespace stdext {
 	public:
 		bool contains(const T &v) {
 			update();
-			return std::ranges::binary_search(container.begin(), container.end(), v, std::less());
+			return std::ranges::binary_search(container, v);
 		}
 
 		bool erase(const T &v) {
 			update();
 
-			const auto it = std::ranges::lower_bound(container.begin(), container.end(), v, std::less());
+			const auto it = std::ranges::lower_bound(container, v);
 			if (it == container.end()) {
 				return false;
 			}
@@ -74,7 +74,7 @@ namespace stdext {
 			return container.insert(_Where, std::move(_Val));
 		}
 
-		template <class _Iter, std::enable_if_t<std::_Is_iterator_v<_Iter>, int> = 0>
+		template <class _Iter>
 		constexpr auto insert(std::vector<T>::const_iterator _Where, _Iter _First, _Iter _Last) {
 			return container.insert(_Where, _First, _Last);
 		}
@@ -123,7 +123,7 @@ namespace stdext {
 
 			needUpdate = false;
 			std::ranges::sort(container.begin(), container.end(), std::less());
-			const auto &[f, l] = std::ranges::unique(container.begin(), container.end(), std::less());
+			const auto &[f, l] = std::ranges::unique(container);
 			container.erase(f, l);
 		}
 

@@ -278,8 +278,8 @@ std::deque<std::shared_ptr<Item>> Container::getStoreInboxFilteredItems() const 
 	return storeInboxFilteredList;
 }
 
-phmap::flat_hash_set<ContainerCategory_t> Container::getStoreInboxValidCategories() const {
-	phmap::flat_hash_set<ContainerCategory_t> validCategories;
+std::vector<ContainerCategory_t> Container::getStoreInboxValidCategories() const {
+	stdext::vector_set<ContainerCategory_t> validCategories;
 	for (const auto &item : itemlist) {
 		auto itemId = item->getID();
 		auto attribute = item->getCustomAttribute("unWrapId");
@@ -297,7 +297,7 @@ phmap::flat_hash_set<ContainerCategory_t> Container::getStoreInboxValidCategorie
 		}
 	}
 
-	return validCategories;
+	return validCategories.data();
 }
 
 std::shared_ptr<Item> Container::getFilteredItemByIndex(size_t index) const {

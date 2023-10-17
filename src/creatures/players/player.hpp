@@ -287,8 +287,8 @@ public:
 		return guildWarVector;
 	}
 
-	const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) const {
-		return isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
+	const std::vector<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) {
+		return (isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker).data();
 	}
 
 	void addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient = false);
@@ -301,17 +301,17 @@ public:
 		}
 	}
 
-	void refreshCyclopediaMonsterTracker(bool isBoss = false) const {
+	void refreshCyclopediaMonsterTracker(bool isBoss = false) {
 		refreshCyclopediaMonsterTracker(getCyclopediaMonsterTrackerSet(isBoss), isBoss);
 	}
 
-	void refreshCyclopediaMonsterTracker(const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {
+	void refreshCyclopediaMonsterTracker(const std::vector<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {
 		if (client) {
 			client->refreshCyclopediaMonsterTracker(trackerList, isBoss);
 		}
 	}
 
-	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> monsterType) const;
+	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType);
 
 	Vocation* getVocation() const {
 		return vocation;
@@ -919,7 +919,7 @@ public:
 		skullTicks = ticks;
 	}
 
-	bool hasAttacked(std::shared_ptr<Player> attacked) const;
+	bool hasAttacked(std::shared_ptr<Player> attacked);
 	void addAttacked(std::shared_ptr<Player> attacked);
 	void removeAttacked(std::shared_ptr<Player> attacked);
 	void clearAttacked();
@@ -2569,9 +2569,8 @@ private:
 	void internalAddThing(std::shared_ptr<Thing> thing) override;
 	void internalAddThing(uint32_t index, std::shared_ptr<Thing> thing) override;
 
-	phmap::flat_hash_set<uint32_t> attackedSet;
-
-	phmap::flat_hash_set<uint32_t> VIPList;
+	stdext::vector_set<uint32_t> attackedSet;
+	stdext::vector_set<uint32_t> VIPList;
 
 	std::map<uint8_t, OpenContainer> openContainers;
 	std::map<uint32_t, std::shared_ptr<DepotLocker>> depotLockerMap;
@@ -2607,8 +2606,8 @@ private:
 	// TODO: This variable is only temporarily used when logging in, get rid of it somehow.
 	std::forward_list<std::shared_ptr<Condition>> storedConditionList;
 
-	phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> m_bestiaryMonsterTracker;
-	phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;
+	stdext::vector_set<std::shared_ptr<MonsterType>> m_bestiaryMonsterTracker;
+	stdext::vector_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;
 
 	std::string name;
 	std::string guildNick;

@@ -263,7 +263,7 @@ public:
 		return ZONE_NORMAL;
 	}
 
-	const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones();
+	const std::vector<std::shared_ptr<Zone>> getZones();
 
 	// walk functions
 	void startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions = false);
@@ -331,8 +331,8 @@ public:
 		return m_master.lock();
 	}
 
-	const phmap::flat_hash_set<std::shared_ptr<Creature>> &getSummons() const {
-		return m_summons;
+	const auto &getSummons() {
+		return m_summons.data();
 	}
 
 	virtual int32_t getArmor() const {
@@ -459,7 +459,7 @@ public:
 		return false;
 	}
 
-	size_t getSummonCount() const {
+	size_t getSummonCount() {
 		return m_summons.size();
 	}
 
@@ -655,7 +655,7 @@ protected:
 
 	CountMap damageMap;
 
-	phmap::flat_hash_set<std::shared_ptr<Creature>> m_summons;
+	stdext::vector_set<std::shared_ptr<Creature>> m_summons;
 	CreatureEventList eventsList;
 	ConditionList conditions;
 

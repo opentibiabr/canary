@@ -1732,6 +1732,6 @@ std::shared_ptr<Item> Tile::getDoorItem() const {
 	return nullptr;
 }
 
-const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Tile::getZones() {
+const std::vector<std::shared_ptr<Zone>> Tile::getZones() {
 	return Zone::getZones(getPosition());
 }

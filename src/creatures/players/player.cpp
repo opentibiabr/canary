@@ -488,20 +488,20 @@ void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType
 		uint16_t raceId = mtype ? mtype->info.raceid : 0;
 		// Bostiary tracker logic
 		if (isBoss) {
-			m_bosstiaryMonsterTracker.insert(mtype);
+			m_bosstiaryMonsterTracker.emplace(mtype);
 			if (reloadClient && raceId != 0) {
 				client->parseSendBosstiary();
 			}
-			client->refreshCyclopediaMonsterTracker(m_bosstiaryMonsterTracker, true);
+			client->refreshCyclopediaMonsterTracker(m_bosstiaryMonsterTracker.data(), true);
 			return;
 		}
 
 		// Bestiary tracker logic
-		m_bestiaryMonsterTracker.insert(mtype);
+		m_bestiaryMonsterTracker.emplace(mtype);
 		if (reloadClient && raceId != 0) {
 			client->sendBestiaryEntryChanged(raceId);
 		}
-		client->refreshCyclopediaMonsterTracker(m_bestiaryMonsterTracker, false);
+		client->refreshCyclopediaMonsterTracker(m_bestiaryMonsterTracker.data(), false);
 	}
 }
 
@@ -514,7 +514,7 @@ void Player::removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType>
 			if (reloadClient && raceId != 0) {
 				client->parseSendBosstiary();
 			}
-			client->refreshCyclopediaMonsterTracker(m_bosstiaryMonsterTracker, true);
+			client->refreshCyclopediaMonsterTracker(m_bosstiaryMonsterTracker.data(), true);
 			return;
 		}
 
@@ -523,15 +523,12 @@ void Player::removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType>
 		if (reloadClient && raceId != 0) {
 			client->sendBestiaryEntryChanged(raceId);
 		}
-		client->refreshCyclopediaMonsterTracker(m_bestiaryMonsterTracker, false);
+		client->refreshCyclopediaMonsterTracker(m_bestiaryMonsterTracker.data(), false);
 	}
 }
 
-bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> monsterType) const {
-	if (!monsterType) {
-		return false;
-	}
-	return m_bosstiaryMonsterTracker.contains(monsterType);
+bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) {
+	return monsterType ? m_bosstiaryMonsterTracker.contains(monsterType) : false;
 }
 
 void Player::updateInventoryWeight() {
@@ -2908,8 +2905,7 @@ void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t
 		return;
 	}
 
-	auto it = VIPList.find(loginPlayer->guid);
-	if (it == VIPList.end()) {
+	if (!VIPList.contains(loginPlayer->guid)) {
 		return;
 	}
 
@@ -2925,7 +2921,7 @@ void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t
 }
 
 bool Player::removeVIP(uint32_t vipGuid) {
-	if (VIPList.erase(vipGuid) == 0) {
+	if (!VIPList.erase(vipGuid)) {
 		return false;
 	}
 
@@ -2942,12 +2938,12 @@ bool Player::addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t st
 		return false;
 	}
 
-	auto result = VIPList.insert(vipGuid);
-	if (!result.second) {
+	if (VIPList.contains(vipGuid)) {
 		sendTextMessage(MESSAGE_FAILURE, "This player is already in your list.");
 		return false;
 	}
 
+	VIPList.emplace(vipGuid);
 	if (account) {
 		IOLoginData::addVIPEntry(account->getID(), vipGuid, "", 0, false);
 	}
@@ -2964,12 +2960,16 @@ bool Player::addVIPInternal(uint32_t vipGuid) {
 		return false;
 	}
 
-	return VIPList.insert(vipGuid).second;
+	if (VIPList.contains(vipGuid)) {
+		return false;
+	}
+
+	VIPList.emplace(vipGuid);
+	return true;
 }
 
 bool Player::editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) {
-	auto it = VIPList.find(vipGuid);
-	if (it == VIPList.end()) {
+	if (!VIPList.contains(vipGuid)) {
 		return false; // player is not in VIP
 	}
 
@@ -4578,8 +4578,7 @@ bool Player::onKilledCreature(std::shared_ptr<Creature> target, bool lastHit /* 
 					for (auto &kill : targetPlayer->unjustifiedKills) {
 						if (kill.target == getGUID() && kill.unavenged) {
 							kill.unavenged = false;
-							auto it = attackedSet.find(targetPlayer->guid);
-							attackedSet.erase(it);
+							attackedSet.erase(targetPlayer->guid);
 							break;
 						}
 					}
@@ -4961,12 +4960,12 @@ bool Player::hasKilled(std::shared_ptr<Player> player) const {
 	return false;
 }
 
-bool Player::hasAttacked(std::shared_ptr<Player> attacked) const {
+bool Player::hasAttacked(std::shared_ptr<Player> attacked) {
 	if (hasFlag(PlayerFlags_t::NotGainInFight) || !attacked) {
 		return false;
 	}
 
-	return attackedSet.find(attacked->guid) != attackedSet.end();
+	return attackedSet.contains(attacked->guid);
 }
 
 void Player::addAttacked(std::shared_ptr<Player> attacked) {
@@ -4974,7 +4973,7 @@ void Player::addAttacked(std::shared_ptr<Player> attacked) {
 		return;
 	}
 
-	attackedSet.insert(attacked->guid);
+	attackedSet.emplace(attacked->guid);
 }
 
 void Player::removeAttacked(std::shared_ptr<Player> attacked) {
@@ -4982,10 +4981,7 @@ void Player::removeAttacked(std::shared_ptr<Player> attacked) {
 		return;
 	}
 
-	auto it = attackedSet.find(attacked->guid);
-	if (it != attackedSet.end()) {
-		attackedSet.erase(it);
-	}
+	attackedSet.erase(attacked->guid);
 }
 
 void Player::clearAttacked() {
@@ -5903,32 +5899,27 @@ void Player::clearModalWindows() {
 }
 
 uint16_t Player::getHelpers() const {
-	uint16_t helpers;
-
 	if (guild && party) {
-		phmap::flat_hash_set<std::shared_ptr<Player>> helperSet;
-
+		stdext::vector_set<std::shared_ptr<Player>> helperSet;
 		const auto guildMembers = guild->getMembersOnline();
-		helperSet.insert(guildMembers.begin(), guildMembers.end());
+		helperSet.insert(helperSet.end(), guildMembers.begin(), guildMembers.end());
 
-		const auto partyMembers = party->getMembers();
-		helperSet.insert(partyMembers.begin(), partyMembers.end());
+		helperSet.insertAll(party->getMembers());
+		helperSet.insertAll(party->getInvitees());
+		helperSet.emplace(party->getLeader());
 
-		const auto partyInvitees = party->getInvitees();
-		helperSet.insert(partyInvitees.begin(), partyInvitees.end());
-
-		helperSet.insert(party->getLeader());
-
-		helpers = helperSet.size();
-	} else if (guild) {
-		helpers = guild->getMemberCountOnline();
-	} else if (party) {
-		helpers = party->getMemberCount() + party->getInvitationCount() + 1;
-	} else {
-		helpers = 0;
+		return helperSet.size();
 	}
 
-	return helpers;
+	if (guild) {
+		return guild->getMemberCountOnline();
+	}
+
+	if (party) {
+		return party->getMemberCount() + party->getInvitationCount() + 1;
+	}
+
+	return 0;
 }
 
 void Player::sendClosePrivate(uint16_t channelId) {

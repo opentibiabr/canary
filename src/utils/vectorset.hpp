@@ -22,7 +22,7 @@ namespace stdext {
 	public:
 		bool contains(const T &v) {
 			update();
-			return v && std::ranges::binary_search(container, v);
+			return std::ranges::binary_search(container, v);
 		}
 
 		bool erase(const T &v) {
@@ -43,13 +43,13 @@ namespace stdext {
 			return std::erase_if(container, std::move(fnc)) > 0;
 		}
 
-		void push_back(const T &v) {
+		void insert(const T &v) {
 			needUpdate = true;
 			return container.push_back(v);
 		}
 
 		template <class... _Valty>
-		auto emplace_back(_Valty &&... v) {
+		auto emplace(_Valty &&... v) {
 			needUpdate = true;
 			return container.emplace_back(v...);
 		}
@@ -62,6 +62,21 @@ namespace stdext {
 		auto insertAll(const std::vector<T> &list) {
 			needUpdate = true;
 			return container.insert(container.end(), list.begin(), list.end());
+		}
+
+		constexpr auto insert(std::vector<T>::const_iterator _Where, const T &_Val) {
+			needUpdate = true;
+			return container.insert(_Where, _Val);
+		}
+
+		constexpr auto insert(std::vector<T>::const_iterator _Where, T &&_Val) {
+			needUpdate = true;
+			return container.insert(_Where, std::move(_Val));
+		}
+
+		template <class _Iter, std::enable_if_t<std::_Is_iterator_v<_Iter>, int> = 0>
+		constexpr auto insert(std::vector<T>::const_iterator _Where, _Iter _First, _Iter _Last) {
+			return container.insert(_Where, _First, _Last);
 		}
 
 		bool empty() const noexcept {

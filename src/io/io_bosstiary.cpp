@@ -191,7 +191,6 @@ void IOBosstiary::addBosstiaryKill(std::shared_ptr<Player> player, const std::sh
 
 	int32_t value = player->getStorageValue(STORAGEVALUE_PODIUM);
 	if (value != 1 && newBossLevel == 2) {
-
 		auto returnValue = g_game().addItemStoreInbox(player, ITEM_PODIUM_OF_VIGOUR);
 		if (!returnValue) {
 			return;
@@ -231,14 +230,13 @@ uint32_t IOBosstiary::calculateBossPoints(uint16_t lootBonus) const {
 	return static_cast<uint32_t>((2.5 * lootBonus * lootBonus) - (477.5 * lootBonus) + 24000);
 }
 
-phmap::parallel_flat_hash_set<uint16_t> IOBosstiary::getBosstiaryFinished(std::shared_ptr<Player> player, uint8_t level /* = 1*/) const {
-	phmap::parallel_flat_hash_set<uint16_t> unlockedMonsters;
+std::vector<uint16_t> IOBosstiary::getBosstiaryFinished(const std::shared_ptr<Player> &player, uint8_t level /* = 1*/) const {
 	if (!player) {
-		return unlockedMonsters;
+		return {};
 	}
 
-	for (std::map<uint16_t, std::string> bossesMap = getBosstiaryMap();
-		 const auto &[bossId, bossName] : bossesMap) {
+	stdext::vector_set<uint16_t> unlockedMonsters;
+	for (const auto &[bossId, bossName] : getBosstiaryMap()) {
 		uint32_t bossKills = player->getBestiaryKillCount(bossId);
 		if (bossKills == 0) {
 			continue;
@@ -255,14 +253,14 @@ phmap::parallel_flat_hash_set<uint16_t> IOBosstiary::getBosstiaryFinished(std::s
 			const std::vector<LevelInfo> &infoForCurrentRace = it->second;
 			auto levelKills = infoForCurrentRace.at(level - 1).kills;
 			if (bossKills >= levelKills) {
-				unlockedMonsters.insert(bossId);
+				unlockedMonsters.emplace(bossId);
 			}
 		} else {
 			g_logger().warn("[{}] boss with id {} and name {} not found in bossRace", __FUNCTION__, bossId, bossName);
 		}
 	}
 
-	return unlockedMonsters;
+	return unlockedMonsters.data();
 }
 
 uint8_t IOBosstiary::getBossCurrentLevel(std::shared_ptr<Player> player, uint16_t bossId) const {

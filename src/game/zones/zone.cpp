@@ -164,25 +164,25 @@ void Zone::clearZones() {
 	zones.clear();
 }
 
-phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Zone::getZones(const Position postion) {
-	phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> zonesSet;
+std::vector<std::shared_ptr<Zone>> Zone::getZones(const Position postion) {
+	stdext::vector_set<std::shared_ptr<Zone>> zonesSet;
 	for (const auto &[_, zone] : zones) {
 		if (zone && zone->isPositionInZone(postion)) {
-			zonesSet.insert(zone);
+			zonesSet.emplace(zone);
 		}
 	}
-	return zonesSet;
+	return zonesSet.data();
 }
 
-const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &Zone::getZones() {
-	static phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> zonesSet;
+const std::vector<std::shared_ptr<Zone>> &Zone::getZones() {
+	static stdext::vector_set<std::shared_ptr<Zone>> zonesSet;
 	zonesSet.clear();
 	for (const auto &[_, zone] : zones) {
 		if (zone) {
-			zonesSet.insert(zone);
+			zonesSet.emplace(zone);
 		}
 	}
-	return zonesSet;
+	return zonesSet.data();
 }
 
 void Zone::creatureAdded(const std::shared_ptr<Creature> &creature) {

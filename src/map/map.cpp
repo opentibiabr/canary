@@ -284,8 +284,8 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	Position oldPos = oldTile->getPosition();
 	Position newPos = newTile->getPosition();
 
-	auto fromZones = oldTile->getZones();
-	auto toZones = newTile->getZones();
+	const auto &fromZones = oldTile->getZones();
+	const auto &toZones = newTile->getZones();
 	if (auto ret = g_game().beforeCreatureZoneChange(creature, fromZones, toZones); ret != RETURNVALUE_NOERROR) {
 		return;
 	}

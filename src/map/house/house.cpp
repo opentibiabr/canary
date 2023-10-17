@@ -593,13 +593,12 @@ bool AccessList::isInList(std::shared_ptr<Player> player) {
 		return true;
 	}
 
-	auto playerIt = playerList.find(player->getGUID());
-	if (playerIt != playerList.end()) {
+	if (playerList.contains(player->getGUID())) {
 		return true;
 	}
 
-	GuildRank_ptr rank = player->getGuildRank();
-	return rank && guildRankList.find(rank->id) != guildRankList.end();
+	const auto &rank = player->getGuildRank();
+	return rank && guildRankList.contains(rank->id);
 }
 
 void AccessList::getList(std::string &retList) const {

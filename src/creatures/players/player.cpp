@@ -2960,10 +2960,6 @@ bool Player::addVIPInternal(uint32_t vipGuid) {
 		return false;
 	}
 
-	if (VIPList.contains(vipGuid)) {
-		return false;
-	}
-
 	return VIPList.insert(vipGuid).second;
 }
 

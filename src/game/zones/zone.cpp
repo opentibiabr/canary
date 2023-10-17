@@ -75,19 +75,21 @@ std::shared_ptr<Zone> Zone::getZone(const std::string &name) {
 }
 
 const std::vector<std::shared_ptr<Tile>> &Zone::getTiles() const {
-	static stdext::vector_set<std::shared_ptr<Tile>> tiles;
-	tiles.clear();
+	std::vector<std::shared_ptr<Tile>> tiles;
+	tiles.reserve(positions.size());
+
 	for (const auto &position : positions) {
 		if (const auto &tile = g_game().map.getTile(position)) {
-			tiles.insert(tile);
+			tiles.emplace_back(tile);
 		}
 	}
-	return tiles.data();
+	return tiles;
 }
 
 const std::vector<std::shared_ptr<Creature>> &Zone::getCreatures() const {
-	static std::vector<std::shared_ptr<Creature>> creatures;
-	creatures.clear();
+	std::vector<std::shared_ptr<Creature>> creatures;
+	creatures.reserve(creaturesCache.size());
+
 	for (const auto creatureId : creaturesCache) {
 		if (const auto &creature = g_game().getCreatureByID(creatureId)) {
 			creatures.emplace_back(creature);
@@ -97,8 +99,9 @@ const std::vector<std::shared_ptr<Creature>> &Zone::getCreatures() const {
 }
 
 const std::vector<std::shared_ptr<Player>> &Zone::getPlayers() const {
-	static std::vector<std::shared_ptr<Player>> players;
-	players.clear();
+	std::vector<std::shared_ptr<Player>> players;
+	players.reserve(playersCache.size());
+
 	for (const auto playerId : playersCache) {
 		if (const auto &player = g_game().getPlayerByID(playerId)) {
 			players.emplace_back(player);
@@ -108,8 +111,9 @@ const std::vector<std::shared_ptr<Player>> &Zone::getPlayers() const {
 }
 
 const std::vector<std::shared_ptr<Monster>> &Zone::getMonsters() const {
-	static std::vector<std::shared_ptr<Monster>> monsters;
-	monsters.clear();
+	std::vector<std::shared_ptr<Monster>> monsters;
+	monsters.reserve(monstersCache.size());
+
 	for (const auto monsterId : monstersCache) {
 		if (const auto &monster = g_game().getMonsterByID(monsterId)) {
 			monsters.emplace_back(monster);
@@ -119,8 +123,9 @@ const std::vector<std::shared_ptr<Monster>> &Zone::getMonsters() const {
 }
 
 const std::vector<std::shared_ptr<Npc>> &Zone::getNpcs() const {
-	static std::vector<std::shared_ptr<Npc>> npcs;
-	npcs.clear();
+	std::vector<std::shared_ptr<Npc>> npcs;
+	npcs.reserve(npcsCache.size());
+
 	for (const auto npcId : npcsCache) {
 		if (const auto &npc = g_game().getNpcByID(npcId)) {
 			npcs.emplace_back(npc);
@@ -153,6 +158,8 @@ void Zone::clearZones() {
 
 std::vector<std::shared_ptr<Zone>> Zone::getZones(const Position postion) {
 	stdext::vector_set<std::shared_ptr<Zone>> zonesSet;
+	zonesSet.reserve(zones.size());
+
 	for (const auto &[_, zone] : zones) {
 		if (zone && zone->isPositionInZone(postion)) {
 			zonesSet.emplace(zone);
@@ -162,8 +169,9 @@ std::vector<std::shared_ptr<Zone>> Zone::getZones(const Position postion) {
 }
 
 const std::vector<std::shared_ptr<Zone>> &Zone::getZones() {
-	static stdext::vector_set<std::shared_ptr<Zone>> zonesSet;
-	zonesSet.clear();
+	stdext::vector_set<std::shared_ptr<Zone>> zonesSet;
+	zonesSet.reserve(zones.size());
+
 	for (const auto &[_, zone] : zones) {
 		if (zone) {
 			zonesSet.emplace(zone);

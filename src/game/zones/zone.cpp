@@ -74,12 +74,16 @@ std::shared_ptr<Zone> Zone::getZone(const std::string &name) {
 	return zones[name];
 }
 
+const phmap::parallel_flat_hash_set<std::shared_ptr<Item>> &Zone::getItems() const {
+	return itemsCache;
+}
+
 const phmap::parallel_flat_hash_set<Position> &Zone::getPositions() const {
 	return positions;
 }
 
-const phmap::parallel_flat_hash_set<std::shared_ptr<Tile>> &Zone::getTiles() const {
-	static phmap::parallel_flat_hash_set<std::shared_ptr<Tile>> tiles;
+const std::vector<std::shared_ptr<Tile>> &Zone::getTiles() const {
+	static stdext::vector_set<std::shared_ptr<Tile>> tiles;
 	tiles.clear();
 	for (const auto &position : positions) {
 		const auto tile = g_game().map.getTile(position);
@@ -87,11 +91,11 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Tile>> &Zone::getTiles() con
 			tiles.insert(tile);
 		}
 	}
-	return tiles;
+	return tiles.data();
 }
 
-const phmap::parallel_flat_hash_set<std::shared_ptr<Creature>> &Zone::getCreatures() const {
-	static phmap::parallel_flat_hash_set<std::shared_ptr<Creature>> creatures;
+const std::vector<std::shared_ptr<Creature>> &Zone::getCreatures() const {
+	static stdext::vector_set<std::shared_ptr<Creature>> creatures;
 	creatures.clear();
 	for (const auto creatureId : creaturesCache) {
 		const auto creature = g_game().getCreatureByID(creatureId);
@@ -99,11 +103,11 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Creature>> &Zone::getCreatur
 			creatures.insert(creature);
 		}
 	}
-	return creatures;
+	return creatures.data();
 }
 
-const phmap::parallel_flat_hash_set<std::shared_ptr<Player>> &Zone::getPlayers() const {
-	static phmap::parallel_flat_hash_set<std::shared_ptr<Player>> players;
+const std::vector<std::shared_ptr<Player>> &Zone::getPlayers() const {
+	static stdext::vector_set<std::shared_ptr<Player>> players;
 	players.clear();
 	for (const auto playerId : playersCache) {
 		const auto player = g_game().getPlayerByID(playerId);
@@ -111,11 +115,11 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Player>> &Zone::getPlayers()
 			players.insert(player);
 		}
 	}
-	return players;
+	return players.data();
 }
 
-const phmap::parallel_flat_hash_set<std::shared_ptr<Monster>> &Zone::getMonsters() const {
-	static phmap::parallel_flat_hash_set<std::shared_ptr<Monster>> monsters;
+const std::vector<std::shared_ptr<Monster>> &Zone::getMonsters() const {
+	static stdext::vector_set<std::shared_ptr<Monster>> monsters;
 	monsters.clear();
 	for (const auto monsterId : monstersCache) {
 		const auto monster = g_game().getMonsterByID(monsterId);
@@ -123,11 +127,11 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Monster>> &Zone::getMonsters
 			monsters.insert(monster);
 		}
 	}
-	return monsters;
+	return monsters.data();
 }
 
-const phmap::parallel_flat_hash_set<std::shared_ptr<Npc>> &Zone::getNpcs() const {
-	static phmap::parallel_flat_hash_set<std::shared_ptr<Npc>> npcs;
+const std::vector<std::shared_ptr<Npc>> &Zone::getNpcs() const {
+	static stdext::vector_set<std::shared_ptr<Npc>> npcs;
 	npcs.clear();
 	for (const auto npcId : npcsCache) {
 		const auto npc = g_game().getNpcByID(npcId);
@@ -135,11 +139,7 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Npc>> &Zone::getNpcs() const
 			npcs.insert(npc);
 		}
 	}
-	return npcs;
-}
-
-const phmap::parallel_flat_hash_set<std::shared_ptr<Item>> &Zone::getItems() const {
-	return itemsCache;
+	return npcs.data();
 }
 
 void Zone::removePlayers() const {

@@ -74,8 +74,9 @@ namespace stdext {
 			return container.insert(_Where, std::move(_Val));
 		}
 
-		template <class _Iter>
+		template <std::forward_iterator _Iter>
 		constexpr auto insert(std::vector<T>::const_iterator _Where, _Iter _First, _Iter _Last) {
+			needUpdate = true;
 			return container.insert(_Where, _First, _Last);
 		}
 

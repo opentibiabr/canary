@@ -108,11 +108,11 @@ public:
 		return positions;
 	}
 
-	const std::vector<std::shared_ptr<Tile>> &getTiles() const;
-	const std::vector<std::shared_ptr<Creature>> &getCreatures() const;
-	const std::vector<std::shared_ptr<Player>> &getPlayers() const;
-	const std::vector<std::shared_ptr<Monster>> &getMonsters() const;
-	const std::vector<std::shared_ptr<Npc>> &getNpcs() const;
+	std::vector<std::shared_ptr<Tile>> getTiles() const;
+	std::vector<std::shared_ptr<Creature>> getCreatures() const;
+	std::vector<std::shared_ptr<Player>> getPlayers() const;
+	std::vector<std::shared_ptr<Monster>> getMonsters() const;
+	std::vector<std::shared_ptr<Npc>> getNpcs() const;
 
 	void creatureAdded(const std::shared_ptr<Creature> &creature);
 	void creatureRemoved(const std::shared_ptr<Creature> &creature);
@@ -129,7 +129,7 @@ public:
 	static std::shared_ptr<Zone> addZone(const std::string &name);
 	static std::shared_ptr<Zone> getZone(const std::string &name);
 	static std::vector<std::shared_ptr<Zone>> getZones(const Position position);
-	const static std::vector<std::shared_ptr<Zone>> &getZones();
+	static std::vector<std::shared_ptr<Zone>> getZones();
 	static void clearZones();
 
 private:

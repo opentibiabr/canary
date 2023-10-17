@@ -63,7 +63,7 @@ public:
 		return getAttribute<uint32_t>(ItemAttribute_t::DOORID);
 	}
 
-	bool canUse(std::shared_ptr<Player> player);
+	bool canUse(std::shared_ptr<Player> player) const;
 
 	void setAccessList(const std::string &textlist);
 	bool getAccessList(std::string &list) const;
@@ -113,7 +113,7 @@ public:
 
 	bool isInvited(std::shared_ptr<Player> player);
 
-	AccessHouseLevel_t getHouseAccessLevel(std::shared_ptr<Player> player);
+	AccessHouseLevel_t getHouseAccessLevel(std::shared_ptr<Player> player) const;
 	bool kickPlayer(std::shared_ptr<Player> player, std::shared_ptr<Player> target);
 
 	void setEntryPos(Position pos) {

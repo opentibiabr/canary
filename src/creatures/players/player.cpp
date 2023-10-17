@@ -2900,7 +2900,7 @@ void Player::removePlayer(bool displayEffect, bool forced /*= true*/) {
 	}
 }
 
-void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t status, bool message) {
+void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t status, bool message) const {
 	if (!client) {
 		return;
 	}
@@ -2963,7 +2963,7 @@ bool Player::addVIPInternal(uint32_t vipGuid) {
 	return VIPList.insert(vipGuid).second;
 }
 
-bool Player::editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) {
+bool Player::editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) const {
 	if (!VIPList.contains(vipGuid)) {
 		return false; // player is not in VIP
 	}

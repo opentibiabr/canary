@@ -787,11 +787,11 @@ public:
 	}
 
 	// V.I.P. functions
-	void notifyStatusChange(std::shared_ptr<Player> player, VipStatus_t status, bool message = true);
+	void notifyStatusChange(std::shared_ptr<Player> player, VipStatus_t status, bool message = true) const;
 	bool removeVIP(uint32_t vipGuid);
 	bool addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t status);
 	bool addVIPInternal(uint32_t vipGuid);
-	bool editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify);
+	bool editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) const;
 
 	// follow functions
 	bool setFollowCreature(std::shared_ptr<Creature> creature) override;

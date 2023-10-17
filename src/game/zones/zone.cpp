@@ -74,7 +74,7 @@ std::shared_ptr<Zone> Zone::getZone(const std::string &name) {
 	return zones[name];
 }
 
-const std::vector<std::shared_ptr<Tile>> &Zone::getTiles() const {
+std::vector<std::shared_ptr<Tile>> Zone::getTiles() const {
 	std::vector<std::shared_ptr<Tile>> tiles;
 	tiles.reserve(positions.size());
 
@@ -86,7 +86,7 @@ const std::vector<std::shared_ptr<Tile>> &Zone::getTiles() const {
 	return tiles;
 }
 
-const std::vector<std::shared_ptr<Creature>> &Zone::getCreatures() const {
+std::vector<std::shared_ptr<Creature>> Zone::getCreatures() const {
 	std::vector<std::shared_ptr<Creature>> creatures;
 	creatures.reserve(creaturesCache.size());
 
@@ -98,7 +98,7 @@ const std::vector<std::shared_ptr<Creature>> &Zone::getCreatures() const {
 	return creatures;
 }
 
-const std::vector<std::shared_ptr<Player>> &Zone::getPlayers() const {
+std::vector<std::shared_ptr<Player>> Zone::getPlayers() const {
 	std::vector<std::shared_ptr<Player>> players;
 	players.reserve(playersCache.size());
 
@@ -110,7 +110,7 @@ const std::vector<std::shared_ptr<Player>> &Zone::getPlayers() const {
 	return players;
 }
 
-const std::vector<std::shared_ptr<Monster>> &Zone::getMonsters() const {
+std::vector<std::shared_ptr<Monster>> Zone::getMonsters() const {
 	std::vector<std::shared_ptr<Monster>> monsters;
 	monsters.reserve(monstersCache.size());
 
@@ -122,7 +122,7 @@ const std::vector<std::shared_ptr<Monster>> &Zone::getMonsters() const {
 	return monsters;
 }
 
-const std::vector<std::shared_ptr<Npc>> &Zone::getNpcs() const {
+std::vector<std::shared_ptr<Npc>> Zone::getNpcs() const {
 	std::vector<std::shared_ptr<Npc>> npcs;
 	npcs.reserve(npcsCache.size());
 
@@ -168,7 +168,7 @@ std::vector<std::shared_ptr<Zone>> Zone::getZones(const Position postion) {
 	return zonesSet.data();
 }
 
-const std::vector<std::shared_ptr<Zone>> &Zone::getZones() {
+std::vector<std::shared_ptr<Zone>> Zone::getZones() {
 	stdext::vector_set<std::shared_ptr<Zone>> zonesSet;
 	zonesSet.reserve(zones.size());
 

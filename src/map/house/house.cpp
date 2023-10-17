@@ -162,7 +162,7 @@ void House::updateDoorDescription() const {
 	}
 }
 
-AccessHouseLevel_t House::getHouseAccessLevel(std::shared_ptr<Player> player) {
+AccessHouseLevel_t House::getHouseAccessLevel(std::shared_ptr<Player> player) const {
 	if (!player) {
 		return HOUSE_OWNER;
 	}
@@ -633,7 +633,7 @@ void Door::setHouse(std::shared_ptr<House> newHouse) {
 	}
 }
 
-bool Door::canUse(std::shared_ptr<Player> player) {
+bool Door::canUse(std::shared_ptr<Player> player) const {
 	if (!house) {
 		return true;
 	}

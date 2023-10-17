@@ -42427,8 +42427,8 @@
 		<attribute key="description" value="Souvenir from Thais Museum"/>
 		<attribute key="weight" value="2400"/>
 	</item>
-	<item id="23682" article="a" name="bag of forge dusts">
-		<attribute key="description" value="Use this item to get 100 forge dusts"/>
+	<item id="23682" article="a" name="bag of oriental spices">
+		<attribute key="description" value="Souvenir from Thais Museum"/>
 		<attribute key="weight" value="1508"/>
 	</item>
 	<item id="23683" name="imortus">

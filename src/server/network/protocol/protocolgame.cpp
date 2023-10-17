@@ -5822,7 +5822,7 @@ void ProtocolGame::sendPartyCreatureUpdate(std::shared_ptr<Creature> target) {
 
 void ProtocolGame::sendPartyCreatureShield(std::shared_ptr<Creature> target) {
 	uint32_t cid = target->getID();
-	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+	if (!knownCreatureSet.contains(cid)) {
 		sendPartyCreatureUpdate(target);
 		return;
 	}
@@ -5840,7 +5840,7 @@ void ProtocolGame::sendPartyCreatureSkull(std::shared_ptr<Creature> target) {
 	}
 
 	uint32_t cid = target->getID();
-	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+	if (!knownCreatureSet.contains(cid)) {
 		sendPartyCreatureUpdate(target);
 		return;
 	}
@@ -5854,7 +5854,7 @@ void ProtocolGame::sendPartyCreatureSkull(std::shared_ptr<Creature> target) {
 
 void ProtocolGame::sendPartyCreatureHealth(std::shared_ptr<Creature> target, uint8_t healthPercent) {
 	uint32_t cid = target->getID();
-	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+	if (!knownCreatureSet.contains(cid)) {
 		sendPartyCreatureUpdate(target);
 		return;
 	}
@@ -5868,7 +5868,7 @@ void ProtocolGame::sendPartyCreatureHealth(std::shared_ptr<Creature> target, uin
 
 void ProtocolGame::sendPartyPlayerMana(std::shared_ptr<Player> target, uint8_t manaPercent) {
 	uint32_t cid = target->getID();
-	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+	if (!knownCreatureSet.contains(cid)) {
 		sendPartyCreatureUpdate(target);
 	}
 
@@ -5886,7 +5886,7 @@ void ProtocolGame::sendPartyPlayerMana(std::shared_ptr<Player> target, uint8_t m
 
 void ProtocolGame::sendPartyCreatureShowStatus(std::shared_ptr<Creature> target, bool showStatus) {
 	uint32_t cid = target->getID();
-	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+	if (!knownCreatureSet.contains(cid)) {
 		sendPartyCreatureUpdate(target);
 	}
 
@@ -5904,7 +5904,7 @@ void ProtocolGame::sendPartyCreatureShowStatus(std::shared_ptr<Creature> target,
 
 void ProtocolGame::sendPartyPlayerVocation(std::shared_ptr<Player> target) {
 	uint32_t cid = target->getID();
-	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+	if (!knownCreatureSet.contains(cid)) {
 		sendPartyCreatureUpdate(target);
 		return;
 	}

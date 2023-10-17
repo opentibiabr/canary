@@ -263,7 +263,7 @@ public:
 		return ZONE_NORMAL;
 	}
 
-	const std::vector<std::shared_ptr<Zone>> getZones();
+	std::vector<std::shared_ptr<Zone>> getZones();
 
 	// walk functions
 	void startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions = false);
@@ -331,7 +331,7 @@ public:
 		return m_master.lock();
 	}
 
-	const auto &getSummons() {
+	const auto &getSummons() const {
 		return m_summons;
 	}
 
@@ -459,7 +459,7 @@ public:
 		return false;
 	}
 
-	size_t getSummonCount() {
+	size_t getSummonCount() const {
 		return m_summons.size();
 	}
 

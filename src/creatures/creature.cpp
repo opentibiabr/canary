@@ -1793,7 +1793,7 @@ void Creature::setIncreasePercent(CombatType_t combat, int32_t value) {
 	}
 }
 
-const std::vector<std::shared_ptr<Zone>> Creature::getZones() {
+std::vector<std::shared_ptr<Zone>> Creature::getZones() {
 	return Zone::getZones(getPosition());
 }
 

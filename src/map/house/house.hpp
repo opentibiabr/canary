@@ -25,7 +25,7 @@ public:
 	void addGuild(const std::string &name);
 	void addGuildRank(const std::string &name, const std::string &rankName);
 
-	bool isInList(std::shared_ptr<Player> player);
+	bool isInList(std::shared_ptr<Player> player) const;
 
 	void getList(std::string &list) const;
 

@@ -7487,8 +7487,7 @@ void Game::updatePlayerHelpers(std::shared_ptr<Player> player) {
 		return;
 	}
 
-	uint16_t helpers = player->getHelpers();
-
+	const uint16_t helpers = player->getHelpers();
 	for (const auto &spectator : Spectators().find<Player>(player->getPosition(), true)) {
 		spectator->getPlayer()->sendCreatureHelpers(player->getID(), helpers);
 	}

@@ -588,7 +588,7 @@ void AccessList::addGuildRank(const std::string &name, const std::string &guildN
 	}
 }
 
-bool AccessList::isInList(std::shared_ptr<Player> player) {
+bool AccessList::isInList(std::shared_ptr<Player> player) const {
 	if (allowEveryone) {
 		return true;
 	}

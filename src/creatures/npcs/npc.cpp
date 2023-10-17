@@ -532,7 +532,7 @@ void Npc::onThinkWalk(uint32_t interval) {
 
 void Npc::onCreatureWalk() {
 	Creature::onCreatureWalk();
-	playerSpectators.erase_if([this](const auto &creature) { return !this->canSee(creature->getPosition()); });
+	phmap::erase_if(playerSpectators, [this](const auto &creature) { return !this->canSee(creature->getPosition()); });
 }
 
 void Npc::onPlacedCreature() {

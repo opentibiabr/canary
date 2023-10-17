@@ -12,6 +12,7 @@
 #include "server/network/protocol/protocol.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/creature.hpp"
+#include <unordered_set>
 
 class NetworkMessage;
 class Player;
@@ -471,7 +472,7 @@ private:
 	friend class Player;
 	friend class PlayerWheel;
 
-	phmap::flat_hash_set<uint32_t> knownCreatureSet;
+	std::unordered_set<uint32_t> knownCreatureSet;
 	std::shared_ptr<Player> player = nullptr;
 
 	uint32_t eventConnect = 0;

@@ -99,8 +99,13 @@ public:
 		removeDestination = position;
 	}
 
-	const phmap::parallel_flat_hash_set<Position> &getPositions() const;
-	const phmap::parallel_flat_hash_set<std::shared_ptr<Item>> &getItems() const;
+	const auto &getItems() const {
+		return itemsCache;
+	}
+
+	const auto &getPositions() const {
+		return positions;
+	}
 
 	const std::vector<std::shared_ptr<Tile>> &getTiles() const;
 	const std::vector<std::shared_ptr<Creature>> &getCreatures() const;
@@ -130,12 +135,12 @@ private:
 	Position removeDestination = Position();
 	std::string name;
 
-	phmap::parallel_flat_hash_set<Position> positions;
-	phmap::parallel_flat_hash_set<std ::shared_ptr<Item>> itemsCache;
-	phmap::parallel_flat_hash_set<uint32_t> creaturesCache;
-	phmap::parallel_flat_hash_set<uint32_t> monstersCache;
-	phmap::parallel_flat_hash_set<uint32_t> npcsCache;
-	phmap::parallel_flat_hash_set<uint32_t> playersCache;
+	std::unordered_set<Position> positions;
+	std::unordered_set<std ::shared_ptr<Item>> itemsCache;
+	std::unordered_set<uint32_t> creaturesCache;
+	std::unordered_set<uint32_t> monstersCache;
+	std::unordered_set<uint32_t> npcsCache;
+	std::unordered_set<uint32_t> playersCache;
 
 	static phmap::parallel_flat_hash_map<std::string, std::shared_ptr<Zone>> zones;
 };

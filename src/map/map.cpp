@@ -818,13 +818,13 @@ uint32_t Map::clean() {
 	}
 
 	std::vector<std::shared_ptr<Item>> toRemove;
-	for (auto tile : g_game().getTilesToClean()) {
+	for (const auto &tile : g_game().getTilesToClean()) {
 		if (!tile) {
 			continue;
 		}
-		if (auto items = tile->getItemList()) {
+		if (const auto items = tile->getItemList()) {
 			++tiles;
-			for (auto item : *items) {
+			for (const auto &item : *items) {
 				if (item->isCleanable()) {
 					toRemove.emplace_back(item);
 				}
@@ -832,7 +832,7 @@ uint32_t Map::clean() {
 		}
 	}
 
-	for (auto item : toRemove) {
+	for (const auto &item : toRemove) {
 		g_game().internalRemoveItem(item, -1);
 	}
 

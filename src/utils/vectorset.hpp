@@ -22,13 +22,13 @@ namespace stdext {
 	public:
 		bool contains(const T &v) {
 			update();
-			return std::ranges::binary_search(container, v);
+			return std::ranges::binary_search(container.begin(), container.end(), v, std::less());
 		}
 
 		bool erase(const T &v) {
 			update();
 
-			const auto &it = std::ranges::lower_bound(container, v);
+			const auto it = std::ranges::lower_bound(container.begin(), container.end(), v, std::less());
 			if (it == container.end()) {
 				return false;
 			}
@@ -110,6 +110,11 @@ namespace stdext {
 			return container;
 		}
 
+		T &operator[](const size_t i) {
+			update();
+			return container[i];
+		}
+
 	private:
 		void update() noexcept {
 			if (!needUpdate) {
@@ -117,8 +122,8 @@ namespace stdext {
 			}
 
 			needUpdate = false;
-			std::ranges::sort(container);
-			const auto &[f, l] = std::ranges::unique(container);
+			std::ranges::sort(container.begin(), container.end(), std::less());
+			const auto &[f, l] = std::ranges::unique(container.begin(), container.end(), std::less());
 			container.erase(f, l);
 		}
 

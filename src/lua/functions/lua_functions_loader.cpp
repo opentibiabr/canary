@@ -210,7 +210,7 @@ void LuaFunctionsLoader::setMetatable(lua_State* L, int32_t index, const std::st
 }
 
 void LuaFunctionsLoader::setWeakMetatable(lua_State* L, int32_t index, const std::string &name) {
-	static std::set<std::string> weakObjectTypes;
+	static phmap::flat_hash_set<std::string> weakObjectTypes;
 	const std::string &weakName = name + "_weak";
 
 	auto result = weakObjectTypes.emplace(name);

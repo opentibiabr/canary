@@ -332,7 +332,7 @@ public:
 	}
 
 	const auto &getSummons() {
-		return m_summons.data();
+		return m_summons;
 	}
 
 	virtual int32_t getArmor() const {
@@ -655,7 +655,7 @@ protected:
 
 	CountMap damageMap;
 
-	stdext::vector_set<std::shared_ptr<Creature>> m_summons;
+	std::vector<std::shared_ptr<Creature>> m_summons;
 	CreatureEventList eventsList;
 	ConditionList conditions;
 

@@ -1236,13 +1236,16 @@ bool Creature::setMaster(std::shared_ptr<Creature> newMaster, bool reloadCreatur
 		g_game().reloadCreature(self);
 	}
 	if (newMaster) {
-		newMaster->m_summons.emplace(self);
+		newMaster->m_summons.emplace_back(self);
 	}
 
 	m_master = newMaster;
 
 	if (oldMaster) {
-		oldMaster->m_summons.erase(self);
+		const auto &it = std::ranges::find(oldMaster->m_summons, self);
+		if (it != oldMaster->m_summons.end()) {
+			oldMaster->m_summons.erase(it);
+		}
 	}
 	return true;
 }

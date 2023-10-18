@@ -42,8 +42,7 @@ public:
 	void closeAll();
 
 private:
-	phmap::flat_hash_set<Connection_ptr> connections;
-	std::mutex connectionManagerLock;
+	phmap::parallel_flat_hash_set_m<Connection_ptr> connections;
 };
 
 class Connection : public std::enable_shared_from_this<Connection> {

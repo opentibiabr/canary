@@ -74,80 +74,88 @@ std::shared_ptr<Zone> Zone::getZone(const std::string &name) {
 	return zones[name];
 }
 
-std::vector<std::shared_ptr<Tile>> Zone::getTiles() const {
-	std::vector<std::shared_ptr<Tile>> tiles;
-	tiles.reserve(positions.size());
+const phmap::parallel_flat_hash_set<Position> &Zone::getPositions() const {
+	return positions;
+}
 
+const phmap::parallel_flat_hash_set<std::shared_ptr<Tile>> &Zone::getTiles() const {
+	static phmap::parallel_flat_hash_set<std::shared_ptr<Tile>> tiles;
+	tiles.clear();
 	for (const auto &position : positions) {
-		if (const auto &tile = g_game().map.getTile(position)) {
-			tiles.emplace_back(tile);
+		const auto tile = g_game().map.getTile(position);
+		if (tile) {
+			tiles.insert(tile);
 		}
 	}
 	return tiles;
 }
 
-std::vector<std::shared_ptr<Creature>> Zone::getCreatures() const {
-	std::vector<std::shared_ptr<Creature>> creatures;
-	creatures.reserve(creaturesCache.size());
-
+const phmap::parallel_flat_hash_set<std::shared_ptr<Creature>> &Zone::getCreatures() const {
+	static phmap::parallel_flat_hash_set<std::shared_ptr<Creature>> creatures;
+	creatures.clear();
 	for (const auto creatureId : creaturesCache) {
-		if (const auto &creature = g_game().getCreatureByID(creatureId)) {
-			creatures.emplace_back(creature);
+		const auto creature = g_game().getCreatureByID(creatureId);
+		if (creature) {
+			creatures.insert(creature);
 		}
 	}
 	return creatures;
 }
 
-std::vector<std::shared_ptr<Player>> Zone::getPlayers() const {
-	std::vector<std::shared_ptr<Player>> players;
-	players.reserve(playersCache.size());
-
+const phmap::parallel_flat_hash_set<std::shared_ptr<Player>> &Zone::getPlayers() const {
+	static phmap::parallel_flat_hash_set<std::shared_ptr<Player>> players;
+	players.clear();
 	for (const auto playerId : playersCache) {
-		if (const auto &player = g_game().getPlayerByID(playerId)) {
-			players.emplace_back(player);
+		const auto player = g_game().getPlayerByID(playerId);
+		if (player) {
+			players.insert(player);
 		}
 	}
 	return players;
 }
 
-std::vector<std::shared_ptr<Monster>> Zone::getMonsters() const {
-	std::vector<std::shared_ptr<Monster>> monsters;
-	monsters.reserve(monstersCache.size());
-
+const phmap::parallel_flat_hash_set<std::shared_ptr<Monster>> &Zone::getMonsters() const {
+	static phmap::parallel_flat_hash_set<std::shared_ptr<Monster>> monsters;
+	monsters.clear();
 	for (const auto monsterId : monstersCache) {
-		if (const auto &monster = g_game().getMonsterByID(monsterId)) {
-			monsters.emplace_back(monster);
+		const auto monster = g_game().getMonsterByID(monsterId);
+		if (monster) {
+			monsters.insert(monster);
 		}
 	}
 	return monsters;
 }
 
-std::vector<std::shared_ptr<Npc>> Zone::getNpcs() const {
-	std::vector<std::shared_ptr<Npc>> npcs;
-	npcs.reserve(npcsCache.size());
-
+const phmap::parallel_flat_hash_set<std::shared_ptr<Npc>> &Zone::getNpcs() const {
+	static phmap::parallel_flat_hash_set<std::shared_ptr<Npc>> npcs;
+	npcs.clear();
 	for (const auto npcId : npcsCache) {
-		if (const auto &npc = g_game().getNpcByID(npcId)) {
-			npcs.emplace_back(npc);
+		const auto npc = g_game().getNpcByID(npcId);
+		if (npc) {
+			npcs.insert(npc);
 		}
 	}
 	return npcs;
 }
 
+const phmap::parallel_flat_hash_set<std::shared_ptr<Item>> &Zone::getItems() const {
+	return itemsCache;
+}
+
 void Zone::removePlayers() const {
-	for (const auto &player : getPlayers()) {
+	for (auto player : getPlayers()) {
 		g_game().internalTeleport(player, getRemoveDestination(player));
 	}
 }
 
 void Zone::removeMonsters() const {
-	for (const auto &monster : getMonsters()) {
+	for (auto monster : getMonsters()) {
 		g_game().removeCreature(monster);
 	}
 }
 
 void Zone::removeNpcs() const {
-	for (const auto &npc : getNpcs()) {
+	for (auto npc : getNpcs()) {
 		g_game().removeCreature(npc);
 	}
 }
@@ -156,28 +164,25 @@ void Zone::clearZones() {
 	zones.clear();
 }
 
-std::vector<std::shared_ptr<Zone>> Zone::getZones(const Position postion) {
-	stdext::vector_set<std::shared_ptr<Zone>> zonesSet;
-	zonesSet.reserve(zones.size());
-
+phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Zone::getZones(const Position postion) {
+	phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> zonesSet;
 	for (const auto &[_, zone] : zones) {
 		if (zone && zone->isPositionInZone(postion)) {
-			zonesSet.emplace(zone);
+			zonesSet.insert(zone);
 		}
 	}
-	return zonesSet.data();
+	return zonesSet;
 }
 
-std::vector<std::shared_ptr<Zone>> Zone::getZones() {
-	stdext::vector_set<std::shared_ptr<Zone>> zonesSet;
-	zonesSet.reserve(zones.size());
-
+const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &Zone::getZones() {
+	static phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> zonesSet;
+	zonesSet.clear();
 	for (const auto &[_, zone] : zones) {
 		if (zone) {
-			zonesSet.emplace(zone);
+			zonesSet.insert(zone);
 		}
 	}
-	return zonesSet.data();
+	return zonesSet;
 }
 
 void Zone::creatureAdded(const std::shared_ptr<Creature> &creature) {

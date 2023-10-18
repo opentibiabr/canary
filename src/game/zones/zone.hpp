@@ -11,7 +11,6 @@
 
 #include "game/movement/position.hpp"
 #include "items/item.hpp"
-#include <unordered_set>
 
 class Tile;
 class Creature;
@@ -100,19 +99,13 @@ public:
 		removeDestination = position;
 	}
 
-	const auto &getItems() const {
-		return itemsCache;
-	}
-
-	const auto &getPositions() const {
-		return positions;
-	}
-
-	std::vector<std::shared_ptr<Tile>> getTiles() const;
-	std::vector<std::shared_ptr<Creature>> getCreatures() const;
-	std::vector<std::shared_ptr<Player>> getPlayers() const;
-	std::vector<std::shared_ptr<Monster>> getMonsters() const;
-	std::vector<std::shared_ptr<Npc>> getNpcs() const;
+	const phmap::parallel_flat_hash_set<Position> &getPositions() const;
+	const phmap::parallel_flat_hash_set<std::shared_ptr<Tile>> &getTiles() const;
+	const phmap::parallel_flat_hash_set<std::shared_ptr<Creature>> &getCreatures() const;
+	const phmap::parallel_flat_hash_set<std::shared_ptr<Player>> &getPlayers() const;
+	const phmap::parallel_flat_hash_set<std::shared_ptr<Monster>> &getMonsters() const;
+	const phmap::parallel_flat_hash_set<std::shared_ptr<Npc>> &getNpcs() const;
+	const phmap::parallel_flat_hash_set<std::shared_ptr<Item>> &getItems() const;
 
 	void creatureAdded(const std::shared_ptr<Creature> &creature);
 	void creatureRemoved(const std::shared_ptr<Creature> &creature);
@@ -128,20 +121,20 @@ public:
 
 	static std::shared_ptr<Zone> addZone(const std::string &name);
 	static std::shared_ptr<Zone> getZone(const std::string &name);
-	static std::vector<std::shared_ptr<Zone>> getZones(const Position position);
-	static std::vector<std::shared_ptr<Zone>> getZones();
+	static phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones(const Position position);
+	const static phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &getZones();
 	static void clearZones();
 
 private:
 	Position removeDestination = Position();
 	std::string name;
+	phmap::parallel_flat_hash_set<Position> positions;
 
-	std::unordered_set<Position> positions;
-	std::unordered_set<std ::shared_ptr<Item>> itemsCache;
-	std::unordered_set<uint32_t> creaturesCache;
-	std::unordered_set<uint32_t> monstersCache;
-	std::unordered_set<uint32_t> npcsCache;
-	std::unordered_set<uint32_t> playersCache;
+	phmap::parallel_flat_hash_set<std ::shared_ptr<Item>> itemsCache;
+	phmap::parallel_flat_hash_set<uint32_t> creaturesCache;
+	phmap::parallel_flat_hash_set<uint32_t> monstersCache;
+	phmap::parallel_flat_hash_set<uint32_t> npcsCache;
+	phmap::parallel_flat_hash_set<uint32_t> playersCache;
 
 	static phmap::parallel_flat_hash_map<std::string, std::shared_ptr<Zone>> zones;
 };

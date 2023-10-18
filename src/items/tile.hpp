@@ -173,7 +173,7 @@ public:
 		this->flags &= ~flag;
 	}
 
-	const std::vector<std::shared_ptr<Zone>> getZones();
+	phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones();
 
 	ZoneType_t getZoneType() const {
 		if (hasFlag(TILESTATE_PROTECTIONZONE)) {

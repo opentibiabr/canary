@@ -12,7 +12,6 @@
 #include "server/network/connection/connection.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "server/network/protocol/protocol.hpp"
-#include "game/scheduling/scheduler.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "server/server.hpp"
 
@@ -61,7 +60,7 @@ void Connection::close(bool force) {
 	connectionState = CONNECTION_STATE_CLOSED;
 
 	if (protocol) {
-		g_dispatcher().addTask(std::bind_front(&Protocol::release, protocol), "Protocol::release", 1000);
+		g_dispatcher().addEvent(std::bind_front(&Protocol::release, protocol), "Protocol::release", 1000);
 	}
 
 	if (messageQueue.empty() || force) {
@@ -88,7 +87,7 @@ void Connection::closeSocket() {
 void Connection::accept(Protocol_ptr protocolPtr) {
 	this->connectionState = CONNECTION_STATE_IDENTIFYING;
 	this->protocol = protocolPtr;
-	g_dispatcher().addTask(std::bind_front(&Protocol::onConnect, protocolPtr), "Protocol::onConnect", 1000);
+	g_dispatcher().addEvent(std::bind_front(&Protocol::onConnect, protocolPtr), "Protocol::onConnect", 1000);
 
 	// Call second accept for not duplicate code
 	accept(false);

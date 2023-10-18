@@ -340,12 +340,21 @@ void Monster::updateTargetList() {
 
 	auto targetIterator = targetIDList.begin();
 	while (targetIterator != targetIDList.end()) {
-		auto creature = targetListMap[*targetIterator].lock();
-		if (!creature || creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
-			targetIterator = targetIDList.erase(targetIterator);
-			targetListMap.erase(*targetIterator);
+		const uint32_t targetId = *targetIterator;
+
+		auto itTLM = targetListMap.find(targetId);
+		const bool existTarget = itTLM != targetListMap.end();
+
+		if (existTarget) {
+			const auto &creature = itTLM->second.lock();
+			if (!creature || creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
+				targetIterator = targetIDList.erase(targetIterator);
+				targetListMap.erase(itTLM);
+			} else {
+				++targetIterator;
+			}
 		} else {
-			++targetIterator;
+			targetIterator = targetIDList.erase(targetIterator);
 		}
 	}
 
@@ -662,7 +671,7 @@ bool Monster::selectTarget(std::shared_ptr<Creature> creature) {
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
-			g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
+			g_dispatcher().addEvent(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
 		}
 	}
 	return setFollowCreature(creature);

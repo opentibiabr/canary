@@ -834,7 +834,6 @@ AmmoTypeNames ammoTypeNames = {
 	{ "throwingknife", AMMO_THROWINGKNIFE },
 	{ "diamondarrow", AMMO_ARROW },
 	{ "spectralbolt", AMMO_BOLT },
-
 };
 
 WeaponActionNames weaponActionNames = {
@@ -1794,4 +1793,8 @@ std::string formatNumber(uint64_t number) {
 		pos -= 3;
 	}
 	return formattedNumber;
+}
+
+void sleep_for(uint64_t ms) {
+	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }

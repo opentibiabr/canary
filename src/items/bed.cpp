@@ -12,7 +12,7 @@
 #include "items/bed.hpp"
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
-#include "game/scheduling/scheduler.hpp"
+#include "game/scheduling/dispatcher.hpp"
 
 BedItem::BedItem(uint16_t id) :
 	Item(id) {
@@ -153,7 +153,7 @@ bool BedItem::sleep(std::shared_ptr<Player> player) {
 	g_game().addMagicEffect(player->getPosition(), CONST_ME_SLEEP);
 
 	// logout player after he sees himself walk onto the bed and it change id
-	g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&ProtocolGame::logout, player->client, false, false), "ProtocolGame::logout");
+	g_dispatcher().scheduleEvent(SCHEDULER_MINTICKS, std::bind(&ProtocolGame::logout, player->client, false, false), "ProtocolGame::logout");
 
 	// change self and partner's appearance
 	updateAppearance(player);

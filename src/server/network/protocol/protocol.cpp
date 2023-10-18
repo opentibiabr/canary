@@ -44,16 +44,14 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 		return false;
 	}
 
-	auto protocolWeak = std::weak_ptr<Protocol>(shared_from_this());
-	std::function<void(void)> callback = [protocolWeak, &msg]() {
+	g_dispatcher().addEvent([&msg, protocolWeak = std::weak_ptr<Protocol>(shared_from_this())]() {
 		if (auto protocol = protocolWeak.lock()) {
 			if (auto protocolConnection = protocol->getConnection()) {
 				protocol->parsePacket(msg);
 				protocolConnection->resumeWork();
 			}
-		}
-	};
-	g_dispatcher().addTask(callback, __FUNCTION__);
+		} }, __FUNCTION__);
+
 	return true;
 }
 

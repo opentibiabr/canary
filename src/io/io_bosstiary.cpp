@@ -69,6 +69,10 @@ void IOBosstiary::loadBoostedBoss() {
 	while (true) {
 		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossInfo.size()));
 		auto it = std::next(bossInfo.begin(), randomIndex);
+		if (it == bossInfo.end()) {
+			break;
+		}
+
 		const auto &[randomBossId, randomBossName] = *it;
 		if (randomBossId == oldBossRace) {
 			continue;
@@ -191,7 +195,6 @@ void IOBosstiary::addBosstiaryKill(std::shared_ptr<Player> player, const std::sh
 
 	int32_t value = player->getStorageValue(STORAGEVALUE_PODIUM);
 	if (value != 1 && newBossLevel == 2) {
-
 		auto returnValue = g_game().addItemStoreInbox(player, ITEM_PODIUM_OF_VIGOUR);
 		if (!returnValue) {
 			return;

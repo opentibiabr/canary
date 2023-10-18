@@ -3081,8 +3081,8 @@ GameStore.Categories = {
 			{
 				icons = { "Demon_Statue.png" },
 				name = "Demon Statue",
-				price = 34058,
-				itemtype = 31212,
+				price = 25,
+				itemtype = 34058,
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,

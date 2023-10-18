@@ -433,7 +433,7 @@ public:
 	void checkCreatureWalk(uint32_t creatureId);
 	void updateCreatureWalk(uint32_t creatureId);
 	void checkCreatureAttack(uint32_t creatureId);
-	void checkCreatures(size_t index);
+	void checkCreatures();
 	void checkLight();
 
 	bool combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, bool checkDefense, bool checkArmor, bool field);

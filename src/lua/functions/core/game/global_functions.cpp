@@ -11,7 +11,7 @@
 
 #include "creatures/interactions/chat.hpp"
 #include "game/game.hpp"
-#include "game/scheduling/scheduler.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "lua/functions/core/game/global_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/script_environment.hpp"
@@ -678,7 +678,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 	eventDesc.scriptName = getScriptEnv()->getScriptInterface()->getLoadingScriptName();
 
 	auto &lastTimerEventId = g_luaEnvironment().lastEventTimerId;
-	eventDesc.eventId = g_scheduler().addEvent(
+	eventDesc.eventId = g_dispatcher().scheduleEvent(
 		delay,
 		std::bind(&LuaEnvironment::executeTimerEvent, &g_luaEnvironment(), lastTimerEventId),
 		"LuaEnvironment::executeTimerEvent"
@@ -710,7 +710,7 @@ int GlobalFunctions::luaStopEvent(lua_State* L) {
 	LuaTimerEventDesc timerEventDesc = std::move(it->second);
 	timerEvents.erase(it);
 
-	g_scheduler().stopEvent(timerEventDesc.eventId);
+	g_dispatcher().stopEvent(timerEventDesc.eventId);
 	luaL_unref(globalState, LUA_REGISTRYINDEX, timerEventDesc.function);
 
 	for (auto parameter : timerEventDesc.parameters) {

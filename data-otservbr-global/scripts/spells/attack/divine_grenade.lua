@@ -9,7 +9,7 @@ function onGetFormulaValues(player, level, maglevel)
 
 	local multiplier = 1.0
 	if grade ~= WHEEL_GRADE_NONE then
-		local multiplierByGrade = {1.3, 1.6, 2.0}
+		local multiplierByGrade = { 1.3, 1.6, 2.0 }
 		multiplier = multiplierByGrade[grade]
 	end
 
@@ -68,7 +68,7 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 
-	local cooldownByGrade= {26, 20, 14}
+	local cooldownByGrade = { 26, 20, 14 }
 	local cooldown = cooldownByGrade[grade]
 
 	var.instantName = "Divine Grenade Cast"

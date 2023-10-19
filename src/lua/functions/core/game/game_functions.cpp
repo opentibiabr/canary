@@ -63,9 +63,9 @@ int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 		monsterType->variantName = variant;
 		monsterType->nameDescription = "a " + name;
 
-		for (const auto &name : names) {
-			if (!g_monsters().tryAddMonsterType(name, monsterType)) {
-				lua_pushstring(L, fmt::format("The monster with name {} already registered", name).c_str());
+		for (const auto &alternateName : names) {
+			if (!g_monsters().tryAddMonsterType(alternateName, monsterType)) {
+				lua_pushstring(L, fmt::format("The monster with name {} already registered", alternateName).c_str());
 				lua_error(L);
 				return 1;
 			}

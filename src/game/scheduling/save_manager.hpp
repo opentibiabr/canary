@@ -37,8 +37,6 @@ private:
 	std::atomic<std::chrono::steady_clock::time_point> m_scheduledAt;
 	phmap::parallel_flat_hash_map<uint32_t, std::chrono::steady_clock::time_point> m_playerMap;
 
-	void addLoad(std::function<void(void)> f);
-
 	ThreadPool &threadPool;
 	KVStore &kv;
 	Logger &logger;

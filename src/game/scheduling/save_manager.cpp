@@ -35,7 +35,7 @@ void SaveManager::scheduleAll() {
 	auto scheduledAt = std::chrono::steady_clock::now();
 	m_scheduledAt = scheduledAt;
 
-	addLoad([this, scheduledAt]() {
+	threadPool.addLoad([this, scheduledAt]() {
 		if (m_scheduledAt.load() != scheduledAt) {
 			logger.warn("Skipping save for server because another save has been scheduled.");
 			return;
@@ -45,14 +45,14 @@ void SaveManager::scheduleAll() {
 }
 
 void SaveManager::schedulePlayer(std::weak_ptr<Player> playerPtr) {
-	auto player = playerPtr.lock();
-	if (!player) {
+	auto playerToSave = playerPtr.lock();
+	if (!playerToSave) {
 		logger.debug("Skipping save for player because player is no longer online.");
 		return;
 	}
-	logger.debug("Scheduling player {} for saving.", player->getName());
+	logger.debug("Scheduling player {} for saving.", playerToSave->getName());
 	auto scheduledAt = std::chrono::steady_clock::now();
-	m_playerMap[player->getGUID()] = scheduledAt;
+	m_playerMap[playerToSave->getGUID()] = scheduledAt;
 	addLoad([this, playerPtr, scheduledAt]() {
 		auto player = playerPtr.lock();
 		if (!player) {
@@ -141,10 +141,4 @@ void SaveManager::saveKV() {
 	} else {
 		logger.debug("Key-value store saved in {} milliseconds.", bm_saveKV.duration());
 	}
-}
-
-void SaveManager::addLoad(std::function<void(void)> f) {
-	threadPool.addLoad([this, f]() {
-		f();
-	});
 }

@@ -2046,7 +2046,7 @@ ReturnValue Game::internalRemoveItem(std::shared_ptr<Item> item, int32_t count /
 	return RETURNVALUE_NOERROR;
 }
 
-std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared_ptr<Cylinder> &toCylinder, std::vector<std::shared_ptr<Item>> items, uint32_t flags /* = 0 */, bool dropOnMap /* = true */, uint32_t autoContainerId /* = 0 */) {
+std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared_ptr<Cylinder> &toCylinder, const std::vector<std::shared_ptr<Item>>& items, uint32_t flags /* = 0 */, bool dropOnMap /* = true */, uint32_t autoContainerId /* = 0 */) {
 	const auto player = toCylinder->getPlayer();
 	bool dropping = false;
 	ReturnValue ret = RETURNVALUE_NOTPOSSIBLE;
@@ -2062,7 +2062,7 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 			g_logger().error("[{}] Failed to create auto container", __FUNCTION__);
 			return toCylinder;
 		}
-		if (internalAddItem(toCylinder, autoContainer, CONST_SLOT_WHEREEVER) != RETURNVALUE_NOERROR) {
+		if (internalAddItem(toCylinder, autoContainer, CONST_SLOT_WHEREEVER, flags) != RETURNVALUE_NOERROR) {
 			if (internalAddItem(toCylinder->getTile(), autoContainer, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 				g_logger().error("[{}] Failed to add auto container", __FUNCTION__);
 				return toCylinder;
@@ -2085,7 +2085,7 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 		}
 		if (!dropping) {
 			uint32_t remainderCount = 0;
-			ret = internalAddItem(destination, item, CONST_SLOT_WHEREEVER, 0, false, remainderCount);
+			ret = internalAddItem(destination, item, CONST_SLOT_WHEREEVER, flags, false, remainderCount);
 			if (remainderCount != 0) {
 				std::shared_ptr<Item> remainderItem = Item::CreateItem(item->getID(), remainderCount);
 				ReturnValue remaindRet = internalAddItem(destination->getTile(), remainderItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
@@ -2113,7 +2113,7 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 	return std::make_tuple(ret, totalAdded, containersCreated);
 }
 
-std::tuple<ReturnValue, uint32_t, uint32_t> Game::createItemBatch(const std::shared_ptr<Cylinder> &toCylinder, std::vector<std::tuple<uint16_t, uint32_t, uint16_t>> itemCounts, uint32_t flags /* = 0 */, bool dropOnMap /* = true */, uint32_t autoContainerId /* = 0 */) {
+std::tuple<ReturnValue, uint32_t, uint32_t> Game::createItemBatch(const std::shared_ptr<Cylinder> &toCylinder, const std::vector<std::tuple<uint16_t, uint32_t, uint16_t>>& itemCounts, uint32_t flags /* = 0 */, bool dropOnMap /* = true */, uint32_t autoContainerId /* = 0 */) {
 	std::vector<std::shared_ptr<Item>> items;
 	for (const auto &[itemId, count, subType] : itemCounts) {
 		const auto &itemType = Item::items[itemId];

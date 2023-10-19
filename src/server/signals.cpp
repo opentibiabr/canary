@@ -11,6 +11,7 @@
 
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/save_manager.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/scripts/lua_environment.hpp"
@@ -91,7 +92,7 @@ void Signals::sigtermHandler() {
 void Signals::sigusr1Handler() {
 	// Dispatcher thread
 	g_logger().info("SIGUSR1 received, saving the game state...");
-	g_game().saveGameState();
+	g_saveManager().scheduleAll();
 }
 
 void Signals::sighupHandler() {

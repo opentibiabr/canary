@@ -19,6 +19,7 @@
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/task.hpp"
+#include "game/scheduling/save_manager.hpp"
 #include "grouping/familiars.hpp"
 #include "lua/creature/creatureevent.hpp"
 #include "lua/creature/events.hpp"
@@ -1715,17 +1716,18 @@ void Player::onAttackedCreatureChangeZone(ZoneType_t zone) {
 
 void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) {
 	Creature::onRemoveCreature(creature, isLogout);
+	auto player = getPlayer();
 
-	if (creature == getPlayer()) {
+	if (creature == player) {
 		if (isLogout) {
 			if (party) {
-				party->leaveParty(static_self_cast<Player>());
+				party->leaveParty(player);
 			}
 			if (guild) {
-				guild->removeMember(static_self_cast<Player>());
+				guild->removeMember(player);
 			}
 
-			g_game().removePlayerUniqueLogin(static_self_cast<Player>());
+			g_game().removePlayerUniqueLogin(player);
 			loginPosition = getPosition();
 			lastLogout = time(nullptr);
 			g_logger().info("{} has logged out", getName());
@@ -1739,16 +1741,12 @@ void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout)
 		}
 
 		if (tradePartner) {
-			g_game().internalCloseTrade(static_self_cast<Player>());
+			g_game().internalCloseTrade(player);
 		}
 
 		closeShopWindow();
 
-		for (uint32_t tries = 0; tries < 3; ++tries) {
-			if (IOLoginData::savePlayer(static_self_cast<Player>())) {
-				break;
-			}
-		}
+		g_saveManager().savePlayer(player);
 	}
 
 	if (creature == shopOwner) {
@@ -4048,7 +4046,9 @@ void Player::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_pt
 		assert(i ? i->getContainer() != nullptr : true);
 
 		if (i) {
-			requireListUpdate = i->getContainer()->getHoldingPlayer() != getPlayer();
+			if (auto container = i->getContainer()) {
+				requireListUpdate = container->getHoldingPlayer() != getPlayer();
+			}
 		} else {
 			requireListUpdate = newParent != getPlayer();
 		}

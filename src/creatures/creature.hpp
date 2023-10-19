@@ -493,6 +493,7 @@ public:
 	std::shared_ptr<Cylinder> getParent() override final {
 		return getTile();
 	}
+
 	void setParent(std::weak_ptr<Cylinder> cylinder) override final {
 		auto lockedCylinder = cylinder.lock();
 		if (lockedCylinder) {

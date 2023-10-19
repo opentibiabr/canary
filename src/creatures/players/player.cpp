@@ -7651,7 +7651,6 @@ const std::unique_ptr<PlayerWheel> &Player::wheel() const {
 }
 
 void Player::sendLootMessage(const std::string &message) const {
-	auto party = getParty();
 	if (!party) {
 		sendTextMessage(MESSAGE_LOOT, message);
 		return;

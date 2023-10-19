@@ -219,4 +219,5 @@ protected:
 
 	static ScriptEnvironment scriptEnv[16];
 	static int32_t scriptEnvIndex;
+	static int validateDispatcherContext(std::string_view fncName);
 };

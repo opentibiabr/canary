@@ -61,6 +61,7 @@
     <ClInclude Include="..\src\game\scheduling\events_scheduler.hpp" />
     <ClInclude Include="..\src\game\scheduling\dispatcher.hpp" />
     <ClInclude Include="..\src\game\scheduling\task.hpp" />
+    <ClInclude Include="..\src\game\scheduling\save_manager.hpp" />
     <ClInclude Include="..\src\io\fileloader.hpp" />
     <ClInclude Include="..\src\io\filestream.hpp" />
     <ClInclude Include="..\src\io\functions\iologindata_load_player.hpp" />
@@ -258,6 +259,7 @@
     <ClCompile Include="..\src\game\game.cpp" />
     <ClCompile Include="..\src\game\bank\bank.cpp" />
     <ClCompile Include="..\src\game\scheduling\task.cpp" />
+    <ClCompile Include="..\src\game\scheduling\save_manager.cpp" />
     <ClCompile Include="..\src\game\zones\zone.cpp" />
     <ClCompile Include="..\src\game\movement\position.cpp" />
     <ClCompile Include="..\src\game\movement\teleport.cpp" />

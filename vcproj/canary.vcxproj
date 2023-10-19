@@ -379,7 +379,6 @@
     <ClCompile Include="..\src\map\utils\qtreenode.cpp" />
     <ClCompile Include="..\src\map\map.cpp" />
     <ClCompile Include="..\src\map\mapcache.cpp" />
-    <ClCompile Include="..\src\map\utils\qtreenode.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\canary_server.cpp" />
     <ClCompile Include="..\src\protobuf\appearances.pb.cc">

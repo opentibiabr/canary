@@ -427,7 +427,6 @@ public:
 
 	GameState_t getGameState() const;
 	void setGameState(GameState_t newState);
-	void saveGameState();
 
 	// Events
 	void checkCreatureWalk(uint32_t creatureId);
@@ -497,7 +496,10 @@ public:
 	const std::map<uint16_t, std::map<uint8_t, uint64_t>> &getItemsPrice() const {
 		return itemsPriceMap;
 	}
-	const phmap::flat_hash_map<uint32_t, std::shared_ptr<Player>> &getPlayers() const {
+	const phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Guild>> &getGuilds() const {
+		return guilds;
+	}
+	const phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Player>> &getPlayers() const {
 		return players;
 	}
 	const std::map<uint32_t, std::shared_ptr<Monster>> &getMonsters() const {
@@ -770,10 +772,11 @@ private:
 	phmap::flat_hash_map<std::string, HighscoreCacheEntry> highscoreCache;
 
 	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> m_uniqueLoginPlayerNames;
-	phmap::flat_hash_map<uint32_t, std::shared_ptr<Player>> players;
+	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Player>> players;
 	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> mappedPlayerNames;
-	phmap::flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
+	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
 	phmap::flat_hash_map<uint16_t, std::shared_ptr<Item>> uniqueItems;
+	phmap::parallel_flat_hash_map<uint32_t, std::string> m_playerNameCache;
 	std::map<uint32_t, uint32_t> stages;
 
 	/* Items stored from the lua scripts positions

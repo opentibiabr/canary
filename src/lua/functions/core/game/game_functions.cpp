@@ -152,7 +152,7 @@ int GameFunctions::luaGameGetPlayers(lua_State* L) {
 int GameFunctions::luaGameLoadMap(lua_State* L) {
 	// Game.loadMap(path)
 	const std::string &path = getString(L, 1);
-	g_dispatcher().addTask([path]() { g_game().loadMap(path); }, "GameFunctions::luaGameLoadMap");
+	g_dispatcher().addEvent([path]() { g_game().loadMap(path); }, "GameFunctions::luaGameLoadMap");
 	return 0;
 }
 
@@ -160,7 +160,7 @@ int GameFunctions::luaGameloadMapChunk(lua_State* L) {
 	// Game.loadMapChunk(path, position, remove)
 	const std::string &path = getString(L, 1);
 	const Position &position = getPosition(L, 2);
-	g_dispatcher().addTask([path, position]() { g_game().loadMap(path, position); }, "GameFunctions::luaGameloadMapChunk");
+	g_dispatcher().addEvent([path, position]() { g_game().loadMap(path, position); }, "GameFunctions::luaGameloadMapChunk");
 	return 0;
 }
 

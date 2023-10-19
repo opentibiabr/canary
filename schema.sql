@@ -438,7 +438,7 @@ DELIMITER ;
 CREATE TABLE IF NOT EXISTS `house_lists` (
   `house_id` int NOT NULL,
   `listid` int NOT NULL,
-  `version` int NOT NULL DEFAULT '0',
+  `version` bigint NOT NULL DEFAULT '0',
   `list` text NOT NULL,
   PRIMARY KEY (`house_id`, `listid`),
   KEY `house_id_index` (`house_id`),

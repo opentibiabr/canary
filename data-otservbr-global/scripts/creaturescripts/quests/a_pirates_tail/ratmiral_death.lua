@@ -2,6 +2,9 @@ local event = CreatureEvent("RatmiralBlackwhiskersDeath")
 local outfits = { 1371, 1372 }
 
 function event.onDeath(creature, corpse, killer, mostDamage, unjustified, mostDamage_unjustified)
+	if not creature or not creature:getMonster() then
+		return
+	end
 	local damageMap = creature:getMonster():getDamageMap()
 
 	for key, _ in pairs(damageMap) do

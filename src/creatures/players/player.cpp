@@ -1277,6 +1277,7 @@ void Player::sendPing() {
 	}
 
 	if (noPongTime >= 60000 && canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
+		g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
 		if (client) {
 			client->logout(true, true);
 		} else {
@@ -1596,6 +1597,11 @@ void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) 
 			}
 		}
 
+		// Refresh bosstiary tracker onLogin
+		refreshCyclopediaMonsterTracker(true);
+		// Refresh bestiary tracker onLogin
+		refreshCyclopediaMonsterTracker(false);
+
 		for (const auto &condition : storedConditionList) {
 			addCondition(condition);
 		}
@@ -1718,7 +1724,7 @@ void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout)
 	Creature::onRemoveCreature(creature, isLogout);
 	auto player = getPlayer();
 
-	if (creature == player) {
+	if (auto player = getPlayer(); player == creature) {
 		if (isLogout) {
 			if (party) {
 				party->leaveParty(player);
@@ -1731,7 +1737,7 @@ void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout)
 			loginPosition = getPosition();
 			lastLogout = time(nullptr);
 			g_logger().info("{} has logged out", getName());
-			g_chat().removeUserFromAllChannels(getPlayer());
+			g_chat().removeUserFromAllChannels(player);
 			clearPartyInvitations();
 			IOLoginData::updateOnlineStatus(guid, false);
 		}
@@ -4854,8 +4860,8 @@ bool Player::canFamiliar(uint16_t lookType) const {
 	}
 
 	for (const FamiliarEntry &familiarEntry : familiars) {
-		if (familiarEntry.lookType != lookType) {
-			continue;
+		if (familiarEntry.lookType == lookType) {
+			return true;
 		}
 	}
 	return false;

@@ -30,23 +30,47 @@
 
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
-	// Game.createMonsterType(name)
+	// Game.createMonsterType(name[, variant = ""[, alternateName = ""]])
 	if (isString(L, 1)) {
-		std::string name = getString(L, 1);
+		const auto name = getString(L, 1);
+		std::string uniqueName = name;
+		auto variant = getString(L, 2, "");
+		const auto alternateName = getString(L, 3, "");
+		std::set<std::string> names;
 		auto monsterType = std::make_shared<MonsterType>(name);
-		if (!g_monsters().tryAddMonsterType(name, monsterType)) {
-			lua_pushstring(L, fmt::format("The monster with name {} already registered", name).c_str());
-			lua_error(L);
-			return 1;
-		}
-
 		if (!monsterType) {
 			lua_pushstring(L, "MonsterType is nullptr");
 			lua_error(L);
 			return 1;
 		}
 
+		// if variant starts with !, then it's the only variant for this monster, so we register it with both names
+		if (variant.starts_with("!")) {
+			names.insert(name);
+			variant = variant.substr(1);
+		}
+		if (!variant.empty()) {
+			uniqueName = variant + "|" + name;
+		}
+		names.insert(uniqueName);
+
+		monsterType->name = name;
+		if (!alternateName.empty()) {
+			names.insert(alternateName);
+			monsterType->name = alternateName;
+		}
+
+		monsterType->variantName = variant;
 		monsterType->nameDescription = "a " + name;
+
+		for (const auto &name : names) {
+			if (!g_monsters().tryAddMonsterType(name, monsterType)) {
+				lua_pushstring(L, fmt::format("The monster with name {} already registered", name).c_str());
+				lua_error(L);
+				return 1;
+			}
+		}
+
 		pushUserdata<MonsterType>(L, monsterType);
 		setMetatable(L, -1, "MonsterType");
 	} else {

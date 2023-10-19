@@ -490,7 +490,7 @@ public:
 	void addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin = false);
 
 	std::shared_ptr<KV> kv() const {
-		return g_kv().scoped("player")->scoped(fmt::format("{}", getID()));
+		return g_kv().scoped("player")->scoped(fmt::format("{}", getGUID()));
 	}
 
 	void genReservedStorageRange();

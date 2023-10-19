@@ -99,8 +99,6 @@
 	<!-- Thais -->
 	<raid name="Cyclops" file="thais/cyclops.xml" interval2="500" margin="30" />
 	<raid name="OrcsThais" file="thais/orcs.xml" interval2="500" margin="70" />
-	<raid name="RatsThais" file="thais/rats.xml" interval2="500" margin="80" />
-	<raid name="Wild Horses" file="thais/wild_horses.xml" interval2="500" margin="80" />
 	<!-- Venore -->
 	<raid name="Dharalion" file="venore/dharalion.xml" interval2="500" margin="70" />
 	<raid name="Elves" file="venore/elves.xml" interval2="500" margin="80" />

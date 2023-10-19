@@ -220,6 +220,7 @@
     <ClInclude Include="..\src\utils\tools.hpp" />
     <ClInclude Include="..\src\utils\utils_definitions.hpp" />
     <ClInclude Include="..\src\utils\vectorset.hpp" />
+    <ClInclude Include="..\src\utils\vectorsort.hpp" />
     <ClInclude Include="..\src\utils\wildcardtree.hpp" />
   </ItemGroup>
   <ItemGroup>

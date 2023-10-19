@@ -55,7 +55,6 @@ public:
 		registerMethod(L, "Tile", "addItemEx", TileFunctions::luaTileAddItemEx);
 
 		registerMethod(L, "Tile", "getHouse", TileFunctions::luaTileGetHouse);
-		registerMethod(L, "Tile", "sweep", TileFunctions::luaTileSweep);
 	}
 
 private:
@@ -99,5 +98,4 @@ private:
 	static int luaTileAddItemEx(lua_State* L);
 
 	static int luaTileGetHouse(lua_State* L);
-	static int luaTileSweep(lua_State* L);
 };

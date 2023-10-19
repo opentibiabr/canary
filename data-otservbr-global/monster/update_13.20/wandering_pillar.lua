@@ -1,27 +1,47 @@
 local mType = Game.createMonsterType("Wandering Pillar")
 local monster = {}
 
-monster.description = "Wandering Pillar"
-monster.experience = 24300
+monster.description = "a Wandering Pillar"
+monster.experience = 23200
 monster.outfit = {
 	lookType = 1657,
+	lookHead = 0,
+	lookBody = 0,
+	lookLegs = 0,
+	lookFeet = 0,
+	lookAddons = 0,
+	lookMount = 0
 }
 
 monster.health = 37000
 monster.maxHealth = 37000
-monster.race = "blood"
-monster.corpse = 26133
-monster.speed = 585
+monster.race = "undead"
+monster.corpse = 43828
+monster.speed = 120
 monster.manaCost = 0
-monster.maxSummons = 8
 
 monster.changeTarget = {
-	interval = 5000,
-	chance = 8,
+	interval = 4000,
+	chance = 10
 }
 
+monster.raceId = 2395
+monster.Bestiary = {
+	class = "Construct",
+	race = BESTY_RACE_CONSTRUCT,
+	toKill = 5000,
+	FirstUnlock = 25,
+	SecondUnlock = 3394,
+	CharmsPoints = 100,
+	Stars = 5,
+	Occurrence = 0,
+	Locations = "Sanctuary."
+	}
+
 monster.strategiesTarget = {
-	nearest = 100,
+	nearest = 80,
+	health = 10,
+	damage = 10,
 }
 
 monster.flags = {
@@ -40,72 +60,52 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false,
+	canWalkOnFire = true,
+	canWalkOnPoison = true
 }
 
 monster.light = {
 	level = 0,
-	color = 0,
-}
-
-monster.summon = {
+	color = 0
 }
 
 monster.voices = {
-	interval = 5000,
-	chance = 10,
+
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 12284, maxCount = 1 },
-	{ name = "darklight obsidian axe", chance = 11325, maxCount = 1 },
-	{ name = "basalt crumb", chance = 10903, maxCount = 1 },
-	{ name = "sulphurous stone", chance = 6944, maxCount = 1 },
-	{ name = "magma boots", chance = 10262, maxCount = 1 },
-	{ name = "coal", chance = 14093, maxCount = 4 },
-	{ name = "dark helmet", chance = 12961, maxCount = 1 },
-	{ name = "magma coat", chance = 14890, maxCount = 1 },
-	{ name = "onyx chip", chance = 7210, maxCount = 2 },
-	{ name = "darklight core (object)", chance = 12637, maxCount = 1 },
-	{ name = "fire sword", chance = 8572, maxCount = 1 },
-	{ name = "magma clump", chance = 11579, maxCount = 1 },
-	{ id = 3039, chance = 11620, maxCount = 1 }, -- red gem
-	{ name = "green gem", chance = 6308, maxCount = 1 },
-	{ name = "basalt core", chance = 6038, maxCount = 1 },
+
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -400, maxDamage = -1300 },
-	{ name = "combat", interval = 1500, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -300, maxDamage = -1000, radius = 3, shootEffect = CONST_ANI_ENVENOMEDARROW, target = true },
-	{ name = "combat", interval = 1500, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -950, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
-	{ name = "combat", interval = 1500, chance = 35, type = COMBAT_DEATHDAMAGE, minDamage = -400, maxDamage = -950, radius = 4, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 1500, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -200, maxDamage = -950, radius = 4, effect = CONST_ME_FIREAREA, target = false },
+	{name ="combat", interval = 3000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -650, maxDamage = -1000, radius = 4, effect = CONST_ME_GREEN_RINGS, target = false},
+	{name ="combat", interval = 3000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -650, maxDamage = -1000, range = 7, radius = 4, shootEffect = CONST_ANI_POISON, effect = CONST_ME_SMALLPLANTS, target = true},
+	{name ="combat", interval = 2000, chance = 25, type = COMBAT_HOLYDAMAGE, minDamage = -800, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYDAMAGE, target = true}
 }
 
 monster.defenses = {
-	defense = 30,
-	armor = 62,
+	defense = 120,
+	armor = 120
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
-	{ type = COMBAT_FIREDAMAGE, percent = 50 },
-	{ type = COMBAT_LIFEDRAIN, percent = 0 },
-	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 10 },
-	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
+	{type = COMBAT_PHYSICALDAMAGE, percent = -15},
+	{type = COMBAT_ENERGYDAMAGE, percent = -10},
+	{type = COMBAT_EARTHDAMAGE, percent = 0},
+	{type = COMBAT_FIREDAMAGE, percent = 60},
+	{type = COMBAT_LIFEDRAIN, percent = 0},
+	{type = COMBAT_MANADRAIN, percent = 0},
+	{type = COMBAT_DROWNDAMAGE, percent = 0},
+	{type = COMBAT_ICEDAMAGE, percent = 0},
+	{type = COMBAT_HOLYDAMAGE , percent = 50},
+	{type = COMBAT_DEATHDAMAGE , percent = -15}
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
-	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false },
+	{type = "paralyze", condition = true},
+	{type = "outfit", condition = false},
+	{type = "invisible", condition = true},
+	{type = "bleed", condition = false}
 }
 
 mType:register(monster)

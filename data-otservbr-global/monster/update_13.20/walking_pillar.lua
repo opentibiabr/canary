@@ -1,28 +1,48 @@
 local mType = Game.createMonsterType("Walking Pillar")
 local monster = {}
 
-monster.description = "Walking Pillar"
-monster.experience = 24500
+monster.description = "a Walking Pillar"
+monster.experience = 24300
 monster.outfit = {
 	lookType = 1656,
+	lookHead = 0,
+	lookBody = 0,
+	lookLegs = 0,
+	lookFeet = 0,
+	lookAddons = 0,
+	lookMount = 0
 }
 
 monster.health = 38000
 monster.maxHealth = 38000
-monster.race = "blood"
-monster.corpse = 26133
-monster.speed = 585
+monster.race = "undead"
+monster.corpse = 43824
+monster.speed = 120
 monster.manaCost = 0
-monster.maxSummons = 8
 
 monster.changeTarget = {
-	interval = 5000,
-	chance = 8,
+	interval = 4000,
+	chance = 10
 }
 
 monster.strategiesTarget = {
-	nearest = 100,
+	nearest = 80,
+	health = 10,
+	damage = 10,
 }
+
+monster.raceId = 2394
+monster.Bestiary = {
+	class = "Construct",
+	race = BESTY_RACE_CONSTRUCT,
+	toKill = 5000,
+	FirstUnlock = 25,
+	SecondUnlock = 3394,
+	CharmsPoints = 100,
+	Stars = 5,
+	Occurrence = 0,
+	Locations = "Sanctuary."
+	}
 
 monster.flags = {
 	summonable = false,
@@ -40,70 +60,56 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false,
+	canWalkOnFire = true,
+	canWalkOnPoison = true
 }
 
 monster.light = {
 	level = 0,
-	color = 0,
-}
-
-monster.summon = {
+	color = 0
 }
 
 monster.voices = {
-	interval = 5000,
-	chance = 10,
+
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 8652, maxCount = 1 },
-	{ name = "yellow darklight matter", chance = 10852, maxCount = 1 },
-	{ name = "magma clump", chance = 14776, maxCount = 1 },
-	{ name = "darklight core (object)", chance = 7392, maxCount = 1 },
-	{ name = "coal", chance = 7685, maxCount = 4 },
-	{ name = "darklight basalt chunk", chance = 10889, maxCount = 1 },
-	{ name = "onyx chip", chance = 13682, maxCount = 2 },
-	{ name = "strange helmet", chance = 14177, maxCount = 1 },
-	{ name = "fire sword", chance = 5736, maxCount = 1 },
-	{ name = "ultimate mana potion", chance = 10723, maxCount = 3 },
-	{ name = "blue gem", chance = 11373, maxCount = 1 },
-	{ name = "magma legs", chance = 5411, maxCount = 1 },
-	{ name = "white gem", chance = 11098, maxCount = 1 },
+
 }
 
+
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -330, maxDamage = -1300 },
-	{ name = "combat", interval = 1500, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -330, maxDamage = -900, radius = 3, shootEffect = CONST_ANI_ENVENOMEDARROW, target = true },
-	{ name = "combat", interval = 1500, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -330, maxDamage = -950, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
-	{ name = "combat", interval = 1500, chance = 35, type = COMBAT_DEATHDAMAGE, minDamage = -330, maxDamage = -950, radius = 4, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 1500, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -330, maxDamage = -550, radius = 4, effect = CONST_ME_FIREAREA, target = false },
+	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -800},
+	{name ="combat", interval = 2000, chance = 13, type = COMBAT_ICEDAMAGE, minDamage = -750, maxDamage = -1000, range = 7, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_BIGCLOUDS, target = true},
+	{name ="combat", interval = 2000, chance = 17, type = COMBAT_HOLYDAMAGE, minDamage = -750, maxDamage = -1000, radius = 4, effect = CONST_ME_HOLYAREA, target = false},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -650, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true},
+	{name ="combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -550, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = true},
+	{name ="combat", interval = 2000, chance = 13, type = COMBAT_PHYSICALDAMAGE, minDamage = -650, maxDamage = -900, range = 7, shootEffect = CONST_ANI_DIAMONDARROW, effect = CONST_ME_DRAWBLOOD, target = true}
 }
 
 monster.defenses = {
-	defense = 20,
-	armor = 42,
+	defense = 120,
+	armor = 120
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
-	{ type = COMBAT_FIREDAMAGE, percent = 50 },
-	{ type = COMBAT_LIFEDRAIN, percent = 0 },
-	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 10 },
-	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
+	{type = COMBAT_PHYSICALDAMAGE, percent = -10},
+	{type = COMBAT_ENERGYDAMAGE, percent = 60},
+	{type = COMBAT_EARTHDAMAGE, percent = -15},
+	{type = COMBAT_FIREDAMAGE, percent = -15},
+	{type = COMBAT_LIFEDRAIN, percent = 0},
+	{type = COMBAT_MANADRAIN, percent = 0},
+	{type = COMBAT_DROWNDAMAGE, percent = 0},
+	{type = COMBAT_ICEDAMAGE, percent = 45},
+	{type = COMBAT_HOLYDAMAGE , percent = 0},
+	{type = COMBAT_DEATHDAMAGE , percent = 10}
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
-	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false },
+	{type = "paralyze", condition = true},
+	{type = "outfit", condition = false},
+	{type = "invisible", condition = true},
+	{type = "bleed", condition = false}
 }
 
 mType:register(monster)

@@ -1,27 +1,47 @@
 local mType = Game.createMonsterType("Darklight Source")
 local monster = {}
 
-monster.description = "Darklight Source"
-monster.experience = 24800
+monster.description = "a Darklight Source"
+monster.experience = 22465
 monster.outfit = {
 	lookType = 1660,
+	lookHead = 0,
+	lookBody = 0,
+	lookLegs = 0,
+	lookFeet = 0,
+	lookAddons = 0,
+	lookMount = 0
 }
+
+monster.raceId = 2398
+monster.Bestiary = {
+	class = "Construct",
+	race = BESTY_RACE_CONSTRUCT,
+	toKill = 5000,
+	FirstUnlock = 25,
+	SecondUnlock = 3394,
+	CharmsPoints = 100,
+	Stars = 5,
+	Occurrence = 0,
+	Locations = "Sanctuary."
+	}
 
 monster.health = 31550
 monster.maxHealth = 31550
-monster.race = "blood"
-monster.corpse = 26133
-monster.speed = 585
+monster.race = "undead"
+monster.corpse = 43840
+monster.speed = 220
 monster.manaCost = 0
-monster.maxSummons = 8
 
 monster.changeTarget = {
-	interval = 5000,
-	chance = 8,
+	interval = 4000,
+	chance = 10
 }
 
 monster.strategiesTarget = {
-	nearest = 100,
+	nearest = 80,
+	health = 10,
+	damage = 10,
 }
 
 monster.flags = {
@@ -40,65 +60,60 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false,
+	canWalkOnFire = true,
+	canWalkOnPoison = true
 }
 
 monster.light = {
 	level = 0,
-	color = 0,
-}
-
-monster.summon = {
+	color = 0
 }
 
 monster.voices = {
-	interval = 5000,
-	chance = 10,
+
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 7024, maxCount = 1 },
-	{ name = "yellow darklight matter", chance = 12833, maxCount = 1 },
-	{ name = "dark obsidian splinter", chance = 8040, maxCount = 1 },
-	{ name = "darklight core (object)", chance = 14959, maxCount = 1 },
-	{ name = "small sapphire", chance = 9661, maxCount = 2 },
-	{ name = "blue gem", chance = 11925, maxCount = 1 },
-	{ name = "twiceslicer", chance = 9251, maxCount = 1 },
-	{ name = "white gem", chance = 12489, maxCount = 1 },
+	{name = "crystal coin", chance = 70540, maxCount = 1 },
+	{name = "small sapphire", chance = 3628, maxCount = 1 },
+	{ name = "yellow darklight matter", chance = 1303, maxCount = 1 },
+	{ name = "dark obsidian splinter", chance = 3310, maxCount = 1 },
+	{ name = "darklight core", chance = 3624, maxCount = 1 },
+	{ name = "blue gem", chance = 3624, maxCount = 1 },
+	{ name = "crystalline armor", chance = 1583, maxCount = 1 },
+	{ name = "crystalline sword", chance = 3324, maxCount = 1 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -220, maxDamage = -1000 },
-	{ name = "combat", interval = 1500, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -220, maxDamage = -900, radius = 3, shootEffect = CONST_ANI_ENVENOMEDARROW, target = true },
-	{ name = "combat", interval = 1500, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -220, maxDamage = -1150, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
-	{ name = "combat", interval = 1500, chance = 35, type = COMBAT_DEATHDAMAGE, minDamage = -220, maxDamage = -850, radius = 4, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 1500, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -220, maxDamage = -850, radius = 4, effect = CONST_ME_FIREAREA, target = false },
+	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1000},
+	{name ="combat", interval = 2000, chance = 17, type = COMBAT_ENERGYDAMAGE, minDamage = -700, maxDamage = -1100, radius = 4, shootEffect = CONST_ANI_ETHEREALSPEAR, effect = CONST_ME_ENERGYAREA, target = true},
+	{name ="combat", interval = 3000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -700, maxDamage = -1100, radius = 4, effect = CONST_ME_ENERGYHIT, target = false},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -550, maxDamage = -900, range = 7, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYDAMAGE, target = true}
 }
 
 monster.defenses = {
-	defense = 20,
-	armor = 42,
+	defense = 115,
+	armor = 115
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
-	{ type = COMBAT_FIREDAMAGE, percent = 50 },
-	{ type = COMBAT_LIFEDRAIN, percent = 0 },
-	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 10 },
-	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
+	{type = COMBAT_PHYSICALDAMAGE, percent = -10},
+	{type = COMBAT_ENERGYDAMAGE, percent = 55},
+	{type = COMBAT_EARTHDAMAGE, percent = -10},
+	{type = COMBAT_FIREDAMAGE, percent = -15},
+	{type = COMBAT_LIFEDRAIN, percent = 0},
+	{type = COMBAT_MANADRAIN, percent = 0},
+	{type = COMBAT_DROWNDAMAGE, percent = 0},
+	{type = COMBAT_ICEDAMAGE, percent = 40},
+	{type = COMBAT_HOLYDAMAGE , percent = 0},
+	{type = COMBAT_DEATHDAMAGE , percent = 0}
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
-	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false },
+	{type = "paralyze", condition = true},
+	{type = "outfit", condition = false},
+	{type = "invisible", condition = true},
+	{type = "bleed", condition = false}
 }
 
 mType:register(monster)

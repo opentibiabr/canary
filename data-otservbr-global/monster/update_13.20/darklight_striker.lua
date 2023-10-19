@@ -1,27 +1,47 @@
 local mType = Game.createMonsterType("Darklight Striker")
 local monster = {}
 
-monster.description = "Darklight Striker"
-monster.experience = 24550
+monster.description = "a Darklight Striker"
+monster.experience = 22200
 monster.outfit = {
 	lookType = 1661,
+	lookHead = 0,
+	lookBody = 0,
+	lookLegs = 0,
+	lookFeet = 0,
+	lookAddons = 0,
+	lookMount = 0
 }
 
 monster.health = 29700
 monster.maxHealth = 29700
-monster.race = "blood"
-monster.corpse = 26133
-monster.speed = 585
+monster.race = "undead"
+monster.corpse = 43844
+monster.speed = 220
 monster.manaCost = 0
-monster.maxSummons = 8
+
+monster.raceId = 2399
+monster.Bestiary = {
+	class = "Construct",
+	race = BESTY_RACE_CONSTRUCT,
+	toKill = 5000,
+	FirstUnlock = 25,
+	SecondUnlock = 3394,
+	CharmsPoints = 100,
+	Stars = 5,
+	Occurrence = 0,
+	Locations = "Sanctuary."
+	}
 
 monster.changeTarget = {
-	interval = 5000,
-	chance = 8,
+	interval = 4000,
+	chance = 10
 }
 
 monster.strategiesTarget = {
-	nearest = 100,
+	nearest = 80,
+	health = 10,
+	damage = 10,
 }
 
 monster.flags = {
@@ -40,66 +60,61 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false,
+	canWalkOnFire = true,
+	canWalkOnPoison = true
 }
 
 monster.light = {
 	level = 0,
-	color = 0,
-}
-
-monster.summon = {
+	color = 0
 }
 
 monster.voices = {
-	interval = 5000,
-	chance = 10,
+
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 5424, maxCount = 1 },
-	{ name = "unstable darklight matter", chance = 12587, maxCount = 1 },
-	{ name = "darklight core (object)", chance = 10632, maxCount = 1 },
-	{ name = "small topaz", chance = 14232, maxCount = 3 },
-	{ name = "ice rapier", chance = 12494, maxCount = 1 },
-	{ name = "dark obsidian splinter", chance = 9513, maxCount = 1 },
-	{ name = "blue gem", chance = 11882, maxCount = 1 },
-	{ name = "crystal mace", chance = 5960, maxCount = 1 },
-	{ name = "zaoan helmet", chance = 6454, maxCount = 1 },
+	{name = "crystal coin", chance = 70540, maxCount = 1 },
+	{ name = "small topaz", chance = 2988, maxCount = 1 },
+	{ name = "unstable darklight matter", chance = 2603, maxCount = 1 },
+	{ name = "darklight core", chance = 1501, maxCount = 1 },
+	{ name = "ice rapier", chance = 1501, maxCount = 1 },
+	{ name = "crystal mace", chance = 2793, maxCount = 1 },
+	{ name = "dark obsidian splinter", chance = 2793, maxCount = 1 },
+	{ name = "blue gem", chance = 1372, maxCount = 1 },
+	{ name = "zaoan helmet", chance = 2549, maxCount = 1 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -220, maxDamage = -1000 },
-	{ name = "combat", interval = 1500, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -220, maxDamage = -900, radius = 3, shootEffect = CONST_ANI_ENVENOMEDARROW, target = true },
-	{ name = "combat", interval = 1500, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -220, maxDamage = -850, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
-	{ name = "combat", interval = 1500, chance = 35, type = COMBAT_DEATHDAMAGE, minDamage = -220, maxDamage = -950, radius = 4, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 1500, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -220, maxDamage = -950, radius = 4, effect = CONST_ME_FIREAREA, target = false },
+	{name ="combat", interval = 2000, chance = 17, type = COMBAT_ICEDAMAGE, minDamage = -600, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_FLASHARROW, effect = CONST_ME_GROUNDSHAKER, target = true},
+	{name ="combat", interval = 2000, chance = 15, type = COMBAT_HOLYDAMAGE, minDamage = -700, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYDAMAGE, target = true},
+	{name ="combat", interval = 3000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -650, maxDamage = -900, radius = 4, effect = CONST_ME_EXPLOSIONHIT, target = false},
+	{name ="combat", interval = 2000, chance = 25, type = COMBAT_ICEDAMAGE, minDamage = -600, maxDamage = -1000, range = 7, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICETORNADO, target = true}
 }
 
 monster.defenses = {
-	defense = 20,
-	armor = 42,
+	defense = 112,
+	armor = 112
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
-	{ type = COMBAT_FIREDAMAGE, percent = 50 },
-	{ type = COMBAT_LIFEDRAIN, percent = 0 },
-	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 10 },
-	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
+	{type = COMBAT_PHYSICALDAMAGE, percent = 10},
+	{type = COMBAT_ENERGYDAMAGE, percent = 35},
+	{type = COMBAT_EARTHDAMAGE, percent = -15},
+	{type = COMBAT_FIREDAMAGE, percent = -25},
+	{type = COMBAT_LIFEDRAIN, percent = 0},
+	{type = COMBAT_MANADRAIN, percent = 0},
+	{type = COMBAT_DROWNDAMAGE, percent = 0},
+	{type = COMBAT_ICEDAMAGE, percent = 30},
+	{type = COMBAT_HOLYDAMAGE , percent = 10},
+	{type = COMBAT_DEATHDAMAGE , percent = 0}
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
-	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = true },
-	{ type = "bleed", condition = false },
+	{type = "paralyze", condition = true},
+	{type = "outfit", condition = false},
+	{type = "invisible", condition = true},
+	{type = "bleed", condition = false}
 }
 
 mType:register(monster)

@@ -1,7 +1,8 @@
 local bless = TalkAction("!bless")
 
 function bless.onSay(player, words, param)
-	return Blessings.BuyAllBlesses(player)
+	Blessings.BuyAllBlesses(player)
+	return true
 end
 
 bless:groupType("normal")

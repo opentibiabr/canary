@@ -4,7 +4,7 @@ local config = {
 		bossName = "Bloodback",
 		timeToFightAgain = 10, -- In hour
 		timeToDefeat = 10, -- In minutes
-		destination = Position(33180, 32012, 8),
+		destination = Position(33182, 32012, 8),
 		bossPosition = Position(33184, 32016, 8),
 		specPos = {
 			from = Position(33174, 32007, 8),
@@ -32,7 +32,7 @@ local config = {
 		bossName = "Sharpclaw",
 		timeToFightAgain = 10, -- In hour
 		timeToDefeat = 10, -- In minutes
-		destination = Position(33120, 31997, 9),
+		destination = Position(33121, 31998, 9),
 		bossPosition = Position(33120, 32002, 9),
 		specPos = {
 			from = Position(33113, 31994, 9),
@@ -60,7 +60,7 @@ local config = {
 		bossName = "Black Vixen",
 		timeToFightAgain = 10, -- In hour
 		timeToDefeat = 10, -- In minutes
-		destination = Position(33447, 32040, 9),
+		destination = Position(33448, 32038, 9),
 		bossPosition = Position(33450, 32034, 9),
 		specPos = {
 			from = Position(33442, 32027, 9),
@@ -74,7 +74,7 @@ local config = {
 		exitPosition = Position(33167, 31978, 8),
 	},
 	[7] = {
-		teleportPosition = { x = 33055, y = 31888, z = 9 },
+		teleportPosition = { x = 33056, y = 31890, z = 9 },
 		exitPosition = Position(33055, 31911, 9),
 	},
 	[8] = {

@@ -67,7 +67,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
-	elseif MsgContains(message, "advancement") then
+	elseif MsgContains(message, "advancement") or MsgContains(message, "demonic") or MsgContains(message, "essence") then
 		if player:getStorageValue(Storage.OutfitQuest.NightmareOutfit) == 1 then
 			npcHandler:say("So you want to advance to a {Initiate} rank? Did you bring 500 demonic essences with you?", npc, creature)
 			npcHandler:setTopic(playerId, 3)

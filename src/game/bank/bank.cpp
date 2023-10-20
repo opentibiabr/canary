@@ -13,6 +13,7 @@
 #include "game/game.hpp"
 #include "creatures/players/player.hpp"
 #include "io/iologindata.hpp"
+#include "game/scheduling/save_manager.hpp"
 
 Bank::Bank(const std::shared_ptr<Bankable> bankable) :
 	m_bankable(bankable) {
@@ -25,14 +26,14 @@ Bank::~Bank() {
 	}
 	std::shared_ptr<Player> player = bankable->getPlayer();
 	if (player && !player->isOnline()) {
-		IOLoginData::savePlayer(player);
+		g_saveManager().savePlayer(player);
 
 		return;
 	}
 	if (bankable->isGuild()) {
 		const auto guild = static_self_cast<Guild>(bankable);
 		if (guild && !guild->isOnline()) {
-			IOGuild::saveGuild(guild);
+			g_saveManager().saveGuild(guild);
 		}
 	}
 }

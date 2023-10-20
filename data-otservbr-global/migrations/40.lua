@@ -9,9 +9,9 @@ function onUpdateDatabase()
 		]])
 
 	db.query([[
-		ALTER TABLE house_lists 
-		CHANGE version version BIGINT(20) 
-		NOT NULL DEFAULT '0';
+		ALTER TABLE `house_lists` 
+		MODIFY `version` bigint(20) NOT NULL DEFAULT '0';
 	]])
+	
 	return true
 end

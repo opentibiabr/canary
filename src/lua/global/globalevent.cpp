@@ -12,16 +12,16 @@
 #include "lua/global/globalevent.hpp"
 #include "utils/tools.hpp"
 #include "game/game.hpp"
-#include "game/scheduling/scheduler.hpp"
+#include "game/scheduling/dispatcher.hpp"
 
 GlobalEvents::GlobalEvents() = default;
 GlobalEvents::~GlobalEvents() = default;
 
 void GlobalEvents::clear() {
 	// Stop events
-	g_scheduler().stopEvent(thinkEventId);
+	g_dispatcher().stopEvent(thinkEventId);
 	thinkEventId = 0;
-	g_scheduler().stopEvent(timerEventId);
+	g_dispatcher().stopEvent(timerEventId);
 	timerEventId = 0;
 
 	// Clear maps
@@ -35,7 +35,7 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> globalEve
 		auto result = timerMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			if (timerEventId == 0) {
-				timerEventId = g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&GlobalEvents::timer, this), "GlobalEvents::timer");
+				timerEventId = g_dispatcher().scheduleEvent(SCHEDULER_MINTICKS, std::bind(&GlobalEvents::timer, this), "GlobalEvents::timer");
 			}
 			return true;
 		}
@@ -48,7 +48,7 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> globalEve
 		auto result = thinkMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			if (thinkEventId == 0) {
-				thinkEventId = g_scheduler().addEvent(
+				thinkEventId = g_dispatcher().scheduleEvent(
 					SCHEDULER_MINTICKS, [this] { think(); }, "GlobalEvents::think"
 				);
 			}
@@ -99,7 +99,7 @@ void GlobalEvents::timer() {
 	}
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
-		timerEventId = g_scheduler().addEvent(std::max<int64_t>(1000, nextScheduledTime * 1000), std::bind(&GlobalEvents::timer, this), __FUNCTION__);
+		timerEventId = g_dispatcher().scheduleEvent(std::max<int64_t>(1000, nextScheduledTime * 1000), std::bind(&GlobalEvents::timer, this), __FUNCTION__);
 	}
 }
 
@@ -136,7 +136,7 @@ void GlobalEvents::think() {
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
 		auto delay = static_cast<uint32_t>(nextScheduledTime);
-		thinkEventId = g_scheduler().addEvent(delay, std::bind(&GlobalEvents::think, this), "GlobalEvents::think");
+		thinkEventId = g_dispatcher().scheduleEvent(delay, std::bind(&GlobalEvents::think, this), "GlobalEvents::think");
 	}
 }
 

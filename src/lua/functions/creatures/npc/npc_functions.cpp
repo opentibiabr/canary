@@ -524,85 +524,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 		}
 	}
 
-	uint32_t itemsPurchased = 0;
-	uint8_t backpacksPurchased = 0;
-	uint8_t internalCount = it.stackable ? it.stackSize : 1;
-	auto remainingAmount = static_cast<uint32_t>(amount);
-	if (inBackpacks) {
-		while (remainingAmount > 0) {
-			std::shared_ptr<Item> container = Item::CreateItem(ITEM_SHOPPING_BAG);
-			if (!container) {
-				break;
-			}
-
-			if (g_game().internalPlayerAddItem(player, container, ignoreCap, CONST_SLOT_WHEREEVER) != RETURNVALUE_NOERROR) {
-				break;
-			}
-
-			backpacksPurchased++;
-			uint8_t internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
-			const ItemType &iType = Item::items[itemId];
-			std::shared_ptr<Item> item;
-			if (iType.isWrappable()) {
-				item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
-				item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
-				item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
-			} else {
-				item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
-			}
-			if (actionId != 0) {
-				item->setAttribute(ItemAttribute_t::ACTIONID, actionId);
-			}
-
-			while (remainingAmount > 0) {
-				if (g_game().internalAddItem(container->getContainer(), item, INDEX_WHEREEVER, 0) != RETURNVALUE_NOERROR) {
-					break;
-				}
-
-				itemsPurchased += internalAmount;
-				remainingAmount -= internalAmount;
-				internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
-				if (iType.isWrappable()) {
-					item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
-					item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
-					item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
-				} else {
-					item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
-				}
-			}
-		}
-	} else {
-		uint8_t internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
-		const ItemType &iType = Item::items[itemId];
-		std::shared_ptr<Item> item;
-		if (iType.isWrappable()) {
-			item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
-			item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
-			item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
-		} else {
-			item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
-		}
-		if (actionId != 0) {
-			item->setAttribute(ItemAttribute_t::ACTIONID, actionId);
-		}
-
-		while (remainingAmount > 0) {
-			if (g_game().internalPlayerAddItem(player, item, ignoreCap, CONST_SLOT_WHEREEVER) != RETURNVALUE_NOERROR) {
-				break;
-			}
-
-			itemsPurchased += internalAmount;
-			remainingAmount -= internalAmount;
-			internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
-			if (iType.isWrappable()) {
-				item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
-				item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
-				item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
-			} else {
-				item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
-			}
-		}
-	}
+	const auto &[_, itemsPurchased, backpacksPurchased] = g_game().createItem(player, itemId, amount, subType, actionId, ignoreCap, inBackpacks ? ITEM_SHOPPING_BAG : 0);
 
 	std::stringstream ss;
 	uint64_t itemCost = itemsPurchased * pricePerUnit;
@@ -610,7 +532,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 	if (npc->getCurrency() == ITEM_GOLD_COIN) {
 		if (!g_game().removeMoney(player, itemCost + backpackCost, 0, true)) {
 			g_logger().error("[NpcFunctions::luaNpcSellItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npc->getName());
-			g_logger().debug("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, npc->getName(), player->getPosition().toString());
+			g_logger().debug("[Information] Player {} bought {} x item {} on shop for npc {}, at position {}", player->getName(), itemsPurchased, itemId, npc->getName(), player->getPosition().toString());
 		} else if (backpacksPurchased > 0) {
 			ss << "Bought " << std::to_string(itemsPurchased) << "x " << it.name << " and " << std::to_string(backpacksPurchased);
 			if (backpacksPurchased > 1) {

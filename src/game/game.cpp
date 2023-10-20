@@ -6294,6 +6294,13 @@ void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, std::shared_
 				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
 			}
 		}
+		if (damage.instantSpellName == "Divine Grenade") {
+			int32_t damageBonus = attackerPlayer->wheel()->checkDivineGrenade(target);
+			if (damageBonus != 0) {
+				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
+				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
+			}
+		}
 	}
 }
 

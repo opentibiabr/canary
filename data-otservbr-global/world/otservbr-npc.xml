@@ -117,6 +117,9 @@
 	<npc centerx="32138" centery="32172" centerz="3" radius="1">
 		<npc name="Hyacinth" x="0" y="0" z="3" spawntime="60" />
 	</npc>
+	<npc centerx="32443" centery="32487" centerz="3" radius="1">
+		<npc name="John (Bounac)" x="0" y="0" z="3" spawntime="60" />
+	</npc>
 	<npc centerx="33099" centery="32522" centerz="3" radius="1">
 		<npc name="Djema" x="0" y="0" z="3" spawntime="60" />
 	</npc>
@@ -2222,6 +2225,9 @@
 	</npc>
 	<npc centerx="33571" centery="31908" centerz="8" radius="1">
 		<npc name="Elliott" x="0" y="0" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="32619" centery="31917" centerz="8" radius="1">
+		<npc name="Iwar" x="0" y="0" z="8" spawntime="60" />
 	</npc>
 	<npc centerx="32618" centery="31938" centerz="8" radius="1">
 		<npc name="Duria" x="0" y="0" z="8" spawntime="60" />

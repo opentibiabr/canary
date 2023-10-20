@@ -849,7 +849,7 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 	initializePlayerData();
 	registerPlayerBonusData();
 
-	g_logger().debug("Player: {} is saved the all slots info in: {} seconds", m_player.getName(), bm_saveSlot.duration());
+	g_logger().debug("Player: {} is saved the all slots info in: {} milliseconds", m_player.getName(), bm_saveSlot.duration());
 }
 
 /*

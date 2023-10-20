@@ -54,6 +54,7 @@ void Connection::close(bool force) {
 	ConnectionManager::getInstance().releaseConnection(shared_from_this());
 
 	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
+	ip = 0;
 	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
@@ -319,16 +320,17 @@ void Connection::internalWorker() {
 }
 
 uint32_t Connection::getIP() {
+	if (ip != 1) {
+		return ip;
+	}
+
 	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
 
 	// IP-address is expressed in network byte order
 	std::error_code error;
 	const asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
-	if (error) {
-		return 0;
-	}
-
-	return htonl(endpoint.address().to_v4().to_ulong());
+	ip = error ? 0 : htonl(endpoint.address().to_v4().to_uint());
+	return ip;
 }
 
 void Connection::internalSend(const OutputMessage_ptr &outputMessage) {

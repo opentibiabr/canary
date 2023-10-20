@@ -48,7 +48,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 					playersOnDummy = playersOnDummy + 1
 				end
 
-				if playersOnDummy == maxAllowedOnADummy then
+				if playersOnDummy >= maxAllowedOnADummy then
 					player:sendTextMessage(MESSAGE_FAILURE, "That exercise dummy is busy.")
 					return true
 				end

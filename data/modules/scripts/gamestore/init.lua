@@ -319,15 +319,16 @@ function parseRequestStoreOffers(playerId, msg)
 
 	local actionType = msg:getByte()
 	local oldProtocol = player:getClient().version < 1200
-	local categoryName = msg:getString()
 
 	if oldProtocol then
 		local category = GameStore.getCategoryByName(categoryName)
+		local categoryName = msg:getString()
 		if category then
 			addPlayerEvent(sendShowStoreOffersOnOldProtocol, 350, playerId, category)
 		end
 	elseif actionType == GameStore.ActionType.OPEN_CATEGORY then
 		local category = GameStore.getCategoryByName(categoryName)
+		local categoryName = msg:getString()
 		if category then
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category)
 		end

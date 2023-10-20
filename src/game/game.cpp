@@ -27,6 +27,7 @@
 #include "creatures/monsters/monster.hpp"
 #include "lua/creature/movement.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/save_manager.hpp"
 #include "server/server.hpp"
 #include "creatures/combat/spells.hpp"
 #include "lua/creature/talkaction.hpp"
@@ -358,7 +359,7 @@ void Game::setGameState(GameState_t newState) {
 			}
 
 			saveMotdNum();
-			saveGameState();
+			g_saveManager().saveAll();
 
 			g_dispatcher().addEvent(std::bind(&Game::shutdown, this), "Game::shutdown");
 
@@ -377,37 +378,12 @@ void Game::setGameState(GameState_t newState) {
 				}
 			}
 
-			saveGameState();
+			g_saveManager().saveAll();
 			break;
 		}
 
 		default:
 			break;
-	}
-}
-
-void Game::saveGameState() {
-	if (gameState == GAME_STATE_NORMAL) {
-		setGameState(GAME_STATE_MAINTAIN);
-	}
-
-	g_logger().info("Saving server...");
-
-	for (const auto &it : players) {
-		it.second->loginPosition = it.second->getPosition();
-		IOLoginData::savePlayer(it.second);
-	}
-
-	for (const auto &it : guilds) {
-		IOGuild::saveGuild(it.second);
-	}
-
-	Map::save();
-
-	g_kv().saveAll();
-
-	if (gameState == GAME_STATE_MAINTAIN) {
-		setGameState(GAME_STATE_NORMAL);
 	}
 }
 
@@ -3839,9 +3815,10 @@ std::shared_ptr<Item> Game::wrapItem(std::shared_ptr<Item> item, std::shared_ptr
 		house->removeBed(item->getBed());
 	}
 	uint16_t oldItemID = item->getID();
+	auto itemName = item->getName();
 	std::shared_ptr<Item> newItem = transformItem(item, ITEM_DECORATION_KIT);
 	newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
-	item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + item->getName() + ">.");
+	item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + itemName + ">.");
 	if (hiddenCharges > 0) {
 		newItem->setAttribute(DATE, hiddenCharges);
 	}
@@ -4764,7 +4741,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 		return;
 	}
 
-	std::lock_guard<std::mutex> lock(player->quickLootMutex);
+	Player::PlayerLock lock(player);
 	if (!autoLoot) {
 		player->setNextActionTask(nullptr);
 	}
@@ -8333,7 +8310,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 	// Exhausted for create offert in the market
 	player->updateUIExhausted();
-	IOLoginData::savePlayer(player);
+	g_saveManager().savePlayer(player);
 }
 
 void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter) {
@@ -8414,7 +8391,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	player->sendMarketEnter(player->getLastDepotId());
 	// Exhausted for cancel offer in the market
 	player->updateUIExhausted();
-	IOLoginData::savePlayer(player);
+	g_saveManager().savePlayer(player);
 }
 
 void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount) {
@@ -8564,7 +8541,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (buyerPlayer->isOffline()) {
-			IOLoginData::savePlayer(buyerPlayer);
+			g_saveManager().savePlayer(buyerPlayer);
 		}
 	} else if (offer.type == MARKETACTION_SELL) {
 		std::shared_ptr<Player> sellerPlayer = getPlayerByGUID(offer.playerId);
@@ -8658,7 +8635,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (sellerPlayer->isOffline()) {
-			IOLoginData::savePlayer(sellerPlayer);
+			g_saveManager().savePlayer(sellerPlayer);
 		}
 	}
 
@@ -8689,7 +8666,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	player->sendMarketAcceptOffer(offer);
 	// Exhausted for accept offer in the market
 	player->updateUIExhausted();
-	IOLoginData::savePlayer(player);
+	g_saveManager().savePlayer(player);
 }
 
 void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string &buffer) {
@@ -9172,7 +9149,7 @@ void Game::addGuild(const std::shared_ptr<Guild> guild) {
 void Game::removeGuild(uint32_t guildId) {
 	auto it = guilds.find(guildId);
 	if (it != guilds.end()) {
-		IOGuild::saveGuild(it->second);
+		g_saveManager().saveGuild(it->second);
 	}
 	guilds.erase(guildId);
 }
@@ -9729,7 +9706,7 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 
 	// Updates the parent of the reward chest and reward containers to avoid memory usage after cleaning
 	auto playerRewardChest = player->getRewardChest();
-	if (playerRewardChest->empty()) {
+	if (playerRewardChest && playerRewardChest->empty()) {
 		player->sendCancelMessage(RETURNVALUE_REWARDCHESTISEMPTY);
 		return;
 	}

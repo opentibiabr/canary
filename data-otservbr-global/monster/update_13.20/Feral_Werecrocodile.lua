@@ -5,10 +5,10 @@ monster.description = "a Feral Werecrocodile"
 monster.experience = 5430
 monster.outfit = {
 	lookType = 1647,
-	lookHead = 1,
-	lookBody = 1,
-	lookLegs = 78,
-	lookFeet = 0,
+	lookHead = 116,
+	lookBody = 95,
+	lookLegs = 19,
+	lookFeet = 21,
 	lookAddons = 0,
 	lookMount = 0
 }

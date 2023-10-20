@@ -67964,6 +67964,23 @@
 		<attribute key="duration" value="10"/>
 		<attribute key="fluidSource" value="blood"/>
 	</item>
+	<item id="42249" article="a" name="dead the monster">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="42248" article="a" name="dead the monster">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="42249"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="42247" article="a" name="dead the monster">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="42248"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
 	<item id="42267" name="seafarer chair">
 		<attribute key="primarytype" value="furniture"/>
 		<attribute key="wrapableto" value="23398"/>
@@ -68500,6 +68517,121 @@
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="6800"/>
 	</item>
+	<item id="43665" article="a" name="dead elder bloodjaw">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43667" article="a" name="dead elder bloodjaw">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43666"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44038" article="a" name="dead elder bloodjaw">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43667"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43669" article="a" name="dead elder bloodjaw">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43668"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43751" article="a" name="dead werecrocodile">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43752" article="a" name="dead werecrocodile">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43751"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43753" article="a" name="dead werecrocodile">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43752"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43754" article="a" name="dead werecrocodile">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43753"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43755" article="a" name="dead werepanther">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43756" article="a" name="dead werepanther">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43755"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43757" article="a" name="dead werepanther">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43756"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43758" article="a" name="dead werepanther">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43757"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43764" article="a" name="dead feral werecrocodile">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43765" article="a" name="dead feral werecrocodile">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43764"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43766" article="a" name="dead feral werecrocodile">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43765"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43767" article="a" name="dead feral werecrocodile">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43766"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43813" article="a" name="dead bloated man-maggot">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43814" article="a" name="dead bloated man-maggot">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43813"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43815" article="a" name="dead bloated man-maggot">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43814"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43816" article="a" name="dead bloated man-maggot">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43815"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
 	<item id="43864" article="a" name="sanguine blade">
 		<attribute key="primarytype" value="sword weapons"/>
 		<attribute key="weaponType" value="sword"/>
@@ -68904,6 +69036,29 @@
 	<item id="43895" article="a" name="bag you covet">
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="weight" value="20"/>
+	</item>
+	<item id="44036" article="a" name="dead ayana the crimson curse">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44037" article="a" name="dead ayana the crimson curse">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44036"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44038" article="a" name="dead ayana the crimson curse">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44037"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44039" article="a" name="dead ayana the crimson curse">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44038"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
 	</item>
 	<item id="44064" article="an" name="training shield">
 		<attribute key="primarytype" value="training weapons"/>

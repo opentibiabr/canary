@@ -24,9 +24,27 @@ function FS.mkdir_p(path)
 	if path == "" then
 		return true
 	end
-	if FS.exists(path) then
-		return true
+
+	local components = {}
+	for component in path:gmatch("[^/\\]+") do
+		table.insert(components, component)
 	end
-	FS.mkdir_p(path:match("(.*[/\\])"))
-	return FS.mkdir(path)
+
+	local currentPath = ""
+	for i, component in ipairs(components) do
+		currentPath = currentPath .. component
+
+		if not FS.exists(currentPath) then
+			local success, err = FS.mkdir(currentPath)
+			if not success then
+				return false, err
+			end
+		end
+
+		if i < #components then
+			currentPath = currentPath .. "/"
+		end
+	end
+
+	return true
 end

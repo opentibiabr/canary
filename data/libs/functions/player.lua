@@ -203,7 +203,15 @@ function Player.transferMoneyTo(self, target, amount)
 	if not target then
 		return false
 	end
-	return Bank.transfer(self, target, amount)
+	if not Bank.transfer(self, target, amount) then
+		return false
+	end
+
+	local targetPlayer = Player(target)
+	if targetPlayer then
+		targetPlayer:sendTextMessage(MESSAGE_LOOK, self:getName() .. " has transferred " .. FormatNumber(amount) .. " gold coins to you.")
+	end
+	return true
 end
 
 function Player.withdrawMoney(self, amount)

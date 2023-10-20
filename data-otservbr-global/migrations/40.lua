@@ -8,7 +8,6 @@ function onUpdateDatabase()
 			ADD PRIMARY KEY (`house_id`, `listid`);
 		]])
 
-
 	db.query([[
 		ALTER TABLE house_lists 
 		CHANGE version version BIGINT(20) 

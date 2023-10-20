@@ -14,6 +14,7 @@
 #include "io/iologindata.hpp"
 #include "game/game.hpp"
 #include "items/bed.hpp"
+#include "game/scheduling/save_manager.hpp"
 
 House::House(uint32_t houseId) :
 	id(houseId) { }
@@ -285,7 +286,7 @@ bool House::transferToDepot(std::shared_ptr<Player> player) const {
 		g_logger().debug("[{}] moving item '{}' to depot", __FUNCTION__, item->getName());
 		g_game().internalMoveItem(item->getParent(), player->getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT);
 	}
-	IOLoginData::savePlayer(player);
+	g_saveManager().savePlayer(player);
 	return true;
 }
 
@@ -821,7 +822,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 			}
 		}
 
-		IOLoginData::savePlayer(player);
+		g_saveManager().savePlayer(player);
 	}
 }
 

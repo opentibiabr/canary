@@ -225,6 +225,9 @@ void Monster::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr
 		}
 
 		updateIdleStatus();
+		if (!m_attackedCreature.expired()) {
+			return;
+		}
 
 		if (!isSummon()) {
 			auto followCreature = getFollowCreature();
@@ -792,7 +795,7 @@ void Monster::onThink(uint32_t interval) {
 					// This happens just after a master orders an attack, so lets follow it aswell.
 					setFollowCreature(attackedCreature);
 				}
-			} else if (!targetIDList.empty()) {
+			} else if (!attackedCreature && !targetIDList.empty()) {
 				if (!followCreature || !hasFollowPath) {
 					searchTarget(TARGETSEARCH_NEAREST);
 				} else if (isFleeing()) {

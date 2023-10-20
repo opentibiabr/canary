@@ -94,6 +94,23 @@ static constexpr int32_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
 class Player final : public Creature, public Cylinder, public Bankable {
 public:
+	class PlayerLock {
+	public:
+		explicit PlayerLock(const std::shared_ptr<Player> &p) :
+			player(p) {
+			player->mutex.lock();
+		}
+
+		PlayerLock(const PlayerLock &) = delete;
+
+		~PlayerLock() {
+			player->mutex.unlock();
+		}
+
+	private:
+		const std::shared_ptr<Player> &player;
+	};
+
 	explicit Player(ProtocolGame_ptr p);
 	~Player();
 
@@ -2504,6 +2521,9 @@ public:
 	std::shared_ptr<Container> getLootPouch();
 
 private:
+	friend class PlayerLock;
+	std::mutex mutex;
+
 	static uint32_t playerFirstID;
 	static uint32_t playerLastID;
 
@@ -2862,6 +2882,7 @@ private:
 	void clearCooldowns();
 
 	friend class Game;
+	friend class SaveManager;
 	friend class Npc;
 	friend class PlayerFunctions;
 	friend class NetworkMessageFunctions;

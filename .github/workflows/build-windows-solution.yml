@@ -19,7 +19,7 @@ env:
 
 jobs:
   cancel-runs:
-    if: github.ref != 'refs/heads/main'
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
     - name: Cancel Previous Runs

@@ -28,7 +28,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1873,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_30.FeasterOfSouls.FearFeasterTimer,
 }
 
 monster.strategiesTarget = {

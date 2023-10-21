@@ -28,7 +28,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1727,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_00.TheDreamCourts.FacelessBaneTime,
 }
 
 monster.strategiesTarget = {

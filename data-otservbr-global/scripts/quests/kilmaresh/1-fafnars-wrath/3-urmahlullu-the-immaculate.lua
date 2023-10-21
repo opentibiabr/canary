@@ -13,6 +13,7 @@ local config = {
 	},
 	teleportPosition = Position(33918, 31657, 8),
 	bossPosition = Position(33918, 31641, 8),
+	bossName = "Urmahlullu the Immaculate",
 }
 
 local leverboss = Action()
@@ -39,7 +40,7 @@ function leverboss.onUse(player, item, fromPosition, target, toPosition, isHotke
 				end
 
 				-- Check participant boss timer
-				if config.daily and participant:getStorageValue(Storage.Kilmaresh.UrmahlulluTimer) > os.time() then
+				if config.daily and not participant:canFightBoss(config.bossName) then
 					player:getPosition():sendMagicEffect(CONST_ME_POFF)
 					player:sendCancelMessage("Not all players are ready yet from last battle.")
 					return true
@@ -69,7 +70,7 @@ function leverboss.onUse(player, item, fromPosition, target, toPosition, isHotke
 			team[i]:getPosition():sendMagicEffect(CONST_ME_POFF)
 			team[i]:teleportTo(config.teleportPosition)
 			-- Assign boss timer
-			team[i]:setStorageValue(Storage.Kilmaresh.UrmahlulluTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN)) -- 20 hours
+			team[i]:setBossCooldown(config.bossName, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN)) -- 20 hours
 		end
 
 		config.teleportPosition:sendMagicEffect(CONST_ME_ENERGYAREA)

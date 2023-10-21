@@ -12,10 +12,9 @@ local config = {
 	},
 	specPos = {
 		from = Position(33630, 32887, 15),
-		to = Position(Position(33672, 32921, 15)),
+		to = Position(33672, 32921, 15),
 	},
 	exit = Position(33659, 32897, 14),
-	storage = Storage.Quest.U12_90.PrimalOrdeal.Bosses.MagmaBubbleTimer,
 }
 
 local lever = BossLever(config)

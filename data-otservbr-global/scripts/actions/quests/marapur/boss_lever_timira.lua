@@ -16,7 +16,6 @@ local config = {
 		to = Position(33828, 32715, 9),
 	},
 	exit = Position(33810, 32699, 8),
-	storage = Storage.Quest.U12_90.WithinTheTides.TimiraTimer,
 }
 
 local lever = BossLever(config)

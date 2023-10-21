@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '38'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '41'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -438,7 +438,7 @@ DELIMITER ;
 CREATE TABLE IF NOT EXISTS `house_lists` (
   `house_id` int NOT NULL,
   `listid` int NOT NULL,
-  `version` int NOT NULL DEFAULT '0',
+  `version` bigint NOT NULL DEFAULT '0',
   `list` text NOT NULL,
   PRIMARY KEY (`house_id`, `listid`),
   KEY `house_id_index` (`house_id`),

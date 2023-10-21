@@ -16,7 +16,6 @@ monster.outfit = {
 monster.bosstiary = {
 	bossRaceId = 2055,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_70.TooHotToHandle.BrainstealerTimer,
 }
 
 monster.health = 300000

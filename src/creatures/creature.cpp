@@ -738,8 +738,8 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 			dropLoot(corpse->getContainer(), lastHitCreature);
 			corpse->startDecaying();
 			bool corpses = corpse->isRewardCorpse() || (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
-			if (corpse->getContainer() && mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
-				const auto player = mostDamageCreature->getPlayer();
+			const auto player = mostDamageCreature ? mostDamageCreature->getPlayer() : nullptr;
+			if (corpse->getContainer() && player && !corpses) {
 				auto monster = getMonster();
 				if (monster && !monster->isRewardBoss()) {
 					std::ostringstream lootMessage;
@@ -1789,8 +1789,12 @@ void Creature::setIncreasePercent(CombatType_t combat, int32_t value) {
 	}
 }
 
-const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Creature::getZones() {
-	return Zone::getZones(getPosition());
+phmap::flat_hash_set<std::shared_ptr<Zone>> Creature::getZones() {
+	auto tile = getTile();
+	if (tile) {
+		return tile->getZones();
+	}
+	return {};
 }
 
 void Creature::iconChanged() {

@@ -18,6 +18,8 @@
 #include "utils/definitions.hpp"
 #include "utils/simd.hpp"
 #include "utils/vectorset.hpp"
+#include "utils/arraylist.hpp"
+#include "utils/vectorsort.hpp"
 
 // --------------------
 // STL Includes

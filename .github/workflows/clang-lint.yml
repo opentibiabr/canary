@@ -8,6 +8,15 @@ on:
     paths:
       - 'src/**'
 jobs:
+    cancel-runs:
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Cancel Previous Runs
+      uses: styfle/cancel-workflow-action@0.9.1
+      with:
+        access_token: ${{ github.token }}
+
   build:
     runs-on: ubuntu-latest
     steps:

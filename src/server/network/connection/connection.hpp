@@ -101,6 +101,7 @@ private:
 
 	time_t timeConnected;
 	uint32_t packetsSent = 0;
+	uint32_t ip = 1;
 
 	std::underlying_type_t<ConnectionState_t> connectionState = CONNECTION_STATE_OPEN;
 	bool receivedFirst = false;

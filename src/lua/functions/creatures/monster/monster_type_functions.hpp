@@ -140,6 +140,8 @@ public:
 		registerMethod(L, "MonsterType", "addSound", MonsterTypeFunctions::luaMonsterTypeAddSound);
 		registerMethod(L, "MonsterType", "getSounds", MonsterTypeFunctions::luaMonsterTypeGetSounds);
 		registerMethod(L, "MonsterType", "deathSound", MonsterTypeFunctions::luaMonsterTypedeathSound);
+
+		registerMethod(L, "MonsterType", "variant", MonsterTypeFunctions::luaMonsterTypeVariant);
 	}
 
 private:
@@ -263,4 +265,6 @@ private:
 	static int luaMonsterTypeGetSounds(lua_State* L);
 	static int luaMonsterTypedeathSound(lua_State* L);
 	static int luaMonsterTypeCritChance(lua_State* L);
+
+	static int luaMonsterTypeVariant(lua_State* L);
 };

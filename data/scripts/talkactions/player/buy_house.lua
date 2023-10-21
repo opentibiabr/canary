@@ -8,13 +8,13 @@ function buyHouse.onSay(player, words, param)
 
 	if not player:isPremium() then
 		player:sendCancelMessage("You need a premium account.")
-		return false
+		return true
 	end
 
 	local houseBuyLevel = configManager.getNumber(configKeys.HOUSE_BUY_LEVEL)
 	if player:getLevel() < houseBuyLevel then
 		player:sendCancelMessage("You need to be level " .. houseBuyLevel .. " to buy a house.")
-		return false
+		return true
 	end
 
 	local position = player:getPosition()
@@ -27,17 +27,17 @@ function buyHouse.onSay(player, words, param)
 
 	if not house or playerPos ~= houseEntry then
 		player:sendCancelMessage("You have to be looking at the door of the house you would like to buy.")
-		return false
+		return true
 	end
 
 	if house:getOwnerGuid() > 0 then
 		player:sendCancelMessage("This house already has an owner.")
-		return false
+		return true
 	end
 
 	if player:getHouse() then
 		player:sendCancelMessage("You are already the owner of a house.")
-		return false
+		return true
 	end
 
 	if house:hasItemOnTile() then
@@ -48,12 +48,12 @@ function buyHouse.onSay(player, words, param)
 	local price = house:getPrice()
 	if not player:removeMoneyBank(price) then
 		player:sendCancelMessage("You do not have enough money.")
-		return false
+		return true
 	end
 
 	house:setHouseOwner(player:getGuid())
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have successfully bought this house, be sure to have the money for the rent in the bank.")
-	return false
+	return true
 end
 
 buyHouse:separator(" ")

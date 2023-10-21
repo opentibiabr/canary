@@ -138,6 +138,18 @@ void Decay::checkDecay() {
 
 void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 	const ItemType &it = Item::items[item->getID()];
+	// Remove the item and halt the decay process if a player triggers a bug where the item's decay ID matches its equip or de-equip transformation ID
+	if (it.id == it.transformEquipTo || it.id == it.transformDeEquipTo) {
+		g_game().internalRemoveItem(item);
+		auto player = item->getHoldingPlayer();
+		if (player) {
+			g_logger().error("[{}] - internalDecayItem failed to player {}, item id is same from transform equip/deequip, "
+							 " item id: {}, equip to id: '{}', deequip to id '{}'",
+							 __FUNCTION__, player->getName(), it.id, it.transformEquipTo, it.transformDeEquipTo);
+		}
+		return;
+	}
+
 	if (it.decayTo != 0) {
 		std::shared_ptr<Player> player = item->getHoldingPlayer();
 		if (player) {

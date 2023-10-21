@@ -461,7 +461,7 @@ void Tile::onRemoveTileItem(const CreatureVector &spectators, const std::vector<
 			}
 		}
 	}
-	for (const auto zone : getZones()) {
+	for (auto &zone : getZones()) {
 		zone->itemRemoved(item);
 	}
 
@@ -1732,6 +1732,47 @@ std::shared_ptr<Item> Tile::getDoorItem() const {
 	return nullptr;
 }
 
-const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Tile::getZones() {
-	return Zone::getZones(getPosition());
+phmap::flat_hash_set<std::shared_ptr<Zone>> Tile::getZones() {
+	return zones;
+}
+
+void Tile::addZone(std::shared_ptr<Zone> zone) {
+	zones.insert(zone);
+	const auto &items = getItemList();
+	if (items) {
+		for (const auto &item : *items) {
+			zone->itemAdded(item);
+		}
+	}
+	const auto &creatures = getCreatures();
+	if (creatures) {
+		for (const auto &creature : *creatures) {
+			zone->creatureAdded(creature);
+		}
+	}
+}
+
+void Tile::clearZones() {
+	phmap::flat_hash_set<std::shared_ptr<Zone>> zonesToRemove;
+	for (const auto &zone : zones) {
+		if (zone->isStatic()) {
+			continue;
+		}
+		zonesToRemove.insert(zone);
+		const auto &items = getItemList();
+		if (items) {
+			for (const auto &item : *items) {
+				zone->itemRemoved(item);
+			}
+		}
+		const auto &creatures = getCreatures();
+		if (creatures) {
+			for (const auto &creature : *creatures) {
+				zone->creatureRemoved(creature);
+			}
+		}
+	}
+	for (const auto &zone : zonesToRemove) {
+		zones.erase(zone);
+	}
 }

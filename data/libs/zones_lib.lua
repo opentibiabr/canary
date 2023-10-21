@@ -11,6 +11,10 @@
 
 function Zone:randomPosition()
 	local positions = self:getPositions()
+	if #positions == 0 then
+		logger.error("Zone:randomPosition() - Zone {} has no positions", self:getName())
+		return nil
+	end
 	local destination = positions[math.random(1, #positions)]
 	local tile = destination:getTile()
 	while not tile or not tile:isWalkable(false, false, false, false, true) do
@@ -71,6 +75,7 @@ end
 ---@field public beforeLeave function
 ---@field public afterEnter function
 ---@field public afterLeave function
+---@field public onSpawn function
 ZoneEvent = {}
 
 setmetatable(ZoneEvent, {
@@ -79,8 +84,6 @@ setmetatable(ZoneEvent, {
 		local obj = {}
 		setmetatable(obj, { __index = ZoneEvent })
 		obj.zone = zone
-		obj.onEnter = nil
-		obj.onLeave = nil
 		return obj
 	end,
 })
@@ -133,6 +136,22 @@ function ZoneEvent:register()
 
 		afterLeave:register()
 	end
+
+	if self.onSpawn then
+		local afterEnter = EventCallback()
+		function afterEnter.zoneAfterCreatureEnter(zone, creature)
+			if zone ~= self.zone then
+				return true
+			end
+			local monster = creature:getMonster()
+			if not monster then
+				return true
+			end
+			self.onSpawn(monster, monster:getPosition())
+		end
+
+		afterEnter:register()
+	end
 end
 
 function Zone:blockFamiliars()
@@ -150,6 +169,18 @@ function Zone:trapMonsters()
 	function event.beforeLeave(_zone, creature)
 		local monster = creature:getMonster()
 		return not monster
+	end
+
+	event:register()
+end
+
+function Zone:monsterIcon(category, icon, count)
+	local event = ZoneEvent(self)
+	function event.afterEnter(_zone, creature)
+		if not creature:isMonster() then
+			return
+		end
+		creature:setIcon(category, icon, count)
 	end
 
 	event:register()

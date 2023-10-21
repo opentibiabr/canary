@@ -2085,8 +2085,9 @@ void ConditionSpeed::setFormulaVars(float NewMina, float NewMinb, float NewMaxa,
 }
 
 void ConditionSpeed::getFormulaValues(int32_t var, int32_t &min, int32_t &max) const {
-	min = (var * mina) + minb;
-	max = (var * maxa) + maxb;
+	int32_t difference = var - 40;
+	min = mina * difference + minb;
+	max = maxa * difference + maxb;
 }
 
 bool ConditionSpeed::setParam(ConditionParam_t param, int32_t value) {
@@ -2145,9 +2146,19 @@ bool ConditionSpeed::startCondition(std::shared_ptr<Creature> creature) {
 	}
 
 	if (speedDelta == 0) {
-		int32_t min, max;
-		getFormulaValues(creature->getBaseSpeed(), min, max);
+		int32_t min;
+		int32_t max;
+		auto baseSpeed = creature->getBaseSpeed();
+		getFormulaValues(baseSpeed, min, max);
 		speedDelta = uniform_random(min, max);
+
+		if (conditionType == CONDITION_HASTE) {
+			speedDelta = speedDelta - baseSpeed;
+		}
+
+		if (conditionType == CONDITION_PARALYZE && speedDelta < baseSpeed - 40) {
+			speedDelta = 40 - baseSpeed;
+		}
 	}
 
 	g_game().changeSpeed(creature, speedDelta);
@@ -2173,7 +2184,7 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 
 	setTicks(addCondition->getTicks());
 
-	const std::shared_ptr<ConditionSpeed> &conditionSpeed = addCondition->static_self_cast<ConditionSpeed>();
+	const auto &conditionSpeed = addCondition->static_self_cast<ConditionSpeed>();
 	int32_t oldSpeedDelta = speedDelta;
 	speedDelta = conditionSpeed->speedDelta;
 	mina = conditionSpeed->mina;
@@ -2184,8 +2195,17 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 	if (speedDelta == 0) {
 		int32_t min;
 		int32_t max;
-		getFormulaValues(creature->getBaseSpeed(), min, max);
+		auto baseSpeed = creature->getBaseSpeed();
+		getFormulaValues(baseSpeed, min, max);
 		speedDelta = uniform_random(min, max);
+
+		if (conditionType == CONDITION_HASTE) {
+			speedDelta = speedDelta - baseSpeed;
+		}
+
+		if (conditionType == CONDITION_PARALYZE && speedDelta < baseSpeed - 40) {
+			speedDelta = 40 - baseSpeed;
+		}
 	}
 
 	int32_t newSpeedChange = (speedDelta - oldSpeedDelta);

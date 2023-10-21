@@ -225,6 +225,9 @@ void Monster::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr
 		}
 
 		updateIdleStatus();
+		if (!m_attackedCreature.expired()) {
+			return;
+		}
 
 		if (!isSummon()) {
 			auto followCreature = getFollowCreature();
@@ -340,12 +343,21 @@ void Monster::updateTargetList() {
 
 	auto targetIterator = targetIDList.begin();
 	while (targetIterator != targetIDList.end()) {
-		auto creature = targetListMap[*targetIterator].lock();
-		if (!creature || creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
-			targetIterator = targetIDList.erase(targetIterator);
-			targetListMap.erase(*targetIterator);
+		const uint32_t targetId = *targetIterator;
+
+		auto itTLM = targetListMap.find(targetId);
+		const bool existTarget = itTLM != targetListMap.end();
+
+		if (existTarget) {
+			const auto &creature = itTLM->second.lock();
+			if (!creature || creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
+				targetIterator = targetIDList.erase(targetIterator);
+				targetListMap.erase(itTLM);
+			} else {
+				++targetIterator;
+			}
 		} else {
-			++targetIterator;
+			targetIterator = targetIDList.erase(targetIterator);
 		}
 	}
 
@@ -662,7 +674,7 @@ bool Monster::selectTarget(std::shared_ptr<Creature> creature) {
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
-			g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
+			g_dispatcher().addEvent(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
 		}
 	}
 	return setFollowCreature(creature);
@@ -783,7 +795,7 @@ void Monster::onThink(uint32_t interval) {
 					// This happens just after a master orders an attack, so lets follow it aswell.
 					setFollowCreature(attackedCreature);
 				}
-			} else if (!targetIDList.empty()) {
+			} else if (!attackedCreature && !targetIDList.empty()) {
 				if (!followCreature || !hasFollowPath) {
 					searchTarget(TARGETSEARCH_NEAREST);
 				} else if (isFleeing()) {
@@ -811,12 +823,6 @@ void Monster::doAttacking(uint32_t interval) {
 	bool resetTicks = interval != 0;
 	attackTicks += interval;
 
-	float forgeAttackBonus = 0;
-	if (monsterForgeClassification > ForgeClassifications_t::FORGE_NORMAL_MONSTER) {
-		uint16_t damageBase = 3;
-		forgeAttackBonus = static_cast<float>(damageBase + 100) / 100.f;
-	}
-
 	const Position &myPos = getPosition();
 	const Position &targetPos = attackedCreature->getPosition();
 
@@ -834,20 +840,8 @@ void Monster::doAttacking(uint32_t interval) {
 					updateLook = false;
 				}
 
-				float multiplier;
-				if (maxCombatValue > 0) { // Defense
-					multiplier = getDefenseMultiplier();
-				} else { // Attack
-					multiplier = getAttackMultiplier();
-				}
-
-				minCombatValue = spellBlock.minCombatValue * multiplier;
-				maxCombatValue = spellBlock.maxCombatValue * multiplier;
-
-				if (maxCombatValue <= 0 && forgeAttackBonus > 0) {
-					minCombatValue *= static_cast<int32_t>(forgeAttackBonus);
-					maxCombatValue *= static_cast<int32_t>(forgeAttackBonus);
-				}
+				minCombatValue = spellBlock.minCombatValue;
+				maxCombatValue = spellBlock.maxCombatValue;
 
 				if (spellBlock.spell == nullptr) {
 					continue;
@@ -1912,15 +1906,8 @@ bool Monster::getCombatValues(int32_t &min, int32_t &max) {
 		return false;
 	}
 
-	float multiplier;
-	if (maxCombatValue > 0) { // Defense
-		multiplier = getDefenseMultiplier();
-	} else { // Attack
-		multiplier = getAttackMultiplier();
-	}
-
-	min = minCombatValue * multiplier;
-	max = maxCombatValue * multiplier;
+	min = minCombatValue;
+	max = maxCombatValue;
 	return true;
 }
 

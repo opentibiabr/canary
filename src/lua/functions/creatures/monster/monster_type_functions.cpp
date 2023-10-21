@@ -280,6 +280,20 @@ int MonsterTypeFunctions::luaMonsterTypeCanPushCreatures(lua_State* L) {
 	return 1;
 }
 
+int MonsterTypeFunctions::luaMonsterTypeCritChance(lua_State* L) {
+	// get: monsterType:critChance() set: monsterType:critChance(int)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 2) {
+			monsterType->info.critChance = getNumber<uint16_t>(L, 2);
+		}
+		lua_pushnumber(L, monsterType->info.critChance);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int32_t MonsterTypeFunctions::luaMonsterTypeName(lua_State* L) {
 	// get: monsterType:name() set: monsterType:name(name)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
@@ -1659,6 +1673,25 @@ int MonsterTypeFunctions::luaMonsterTypedeathSound(lua_State* L) {
 		lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.deathSound));
 	} else {
 		monsterType->info.deathSound = getNumber<SoundEffect_t>(L, 2);
+		pushBoolean(L, true);
+	}
+
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeVariant(lua_State* L) {
+	// get: monsterType:variant() set: monsterType:variant(variantName)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (!monsterType) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		pushString(L, monsterType->variantName);
+	} else {
+		monsterType->variantName = getString(L, 2);
 		pushBoolean(L, true);
 	}
 

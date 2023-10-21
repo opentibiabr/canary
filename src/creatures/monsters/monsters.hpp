@@ -128,6 +128,7 @@ class MonsterType {
 		int32_t changeTargetChance = 0;
 		int32_t defense = 0;
 		int32_t armor = 0;
+		uint16_t critChance = 0;
 		int32_t strategiesTargetNearest = 0;
 		int32_t strategiesTargetHealth = 0;
 		int32_t strategiesTargetDamage = 0;
@@ -161,7 +162,7 @@ class MonsterType {
 public:
 	MonsterType() = default;
 	explicit MonsterType(const std::string &initName) :
-		name(initName), typeName(initName), nameDescription(initName) {};
+		name(initName), typeName(initName), nameDescription(initName), variantName("") {};
 
 	// non-copyable
 	MonsterType(const MonsterType &) = delete;
@@ -172,6 +173,7 @@ public:
 	std::string name;
 	std::string typeName;
 	std::string nameDescription;
+	std::string variantName;
 
 	MonsterInfo info;
 
@@ -263,7 +265,7 @@ public:
 		monsters.clear();
 	}
 
-	std::shared_ptr<MonsterType> getMonsterType(const std::string &name);
+	std::shared_ptr<MonsterType> getMonsterType(const std::string &name, bool silent = false) const;
 	std::shared_ptr<MonsterType> getMonsterTypeByRaceId(uint16_t raceId, bool isBoss = false) const;
 	bool tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> mType);
 	bool deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spellBlock_t &sb, const std::string &description = "");

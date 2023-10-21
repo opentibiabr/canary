@@ -101,6 +101,13 @@ public:
 
 	static std::string getFormatedLoggerMessage(lua_State* L);
 	static std::string getString(lua_State* L, int32_t arg);
+	static std::string getString(lua_State* L, int32_t arg, std::string defaultValue) {
+		const auto parameters = lua_gettop(L);
+		if (parameters == 0 || arg > parameters) {
+			return defaultValue;
+		}
+		return getString(L, arg);
+	}
 	static CombatDamage getCombatDamage(lua_State* L);
 	static Position getPosition(lua_State* L, int32_t arg, int32_t &stackpos);
 	static Position getPosition(lua_State* L, int32_t arg);
@@ -219,4 +226,5 @@ protected:
 
 	static ScriptEnvironment scriptEnv[16];
 	static int32_t scriptEnvIndex;
+	static int validateDispatcherContext(std::string_view fncName);
 };

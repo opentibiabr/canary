@@ -179,7 +179,10 @@ inline bool operator==(const ValueVariant &lhs, const ValueVariant &rhs) {
 					return b.contains(key) && value.get() == b.at(key).get();
 				});
 			}
-			return a == b;
+			// Compares a and b if types A and B are the same, at compile-time
+			if constexpr (std::is_same_v<A, B>) {
+				return a == b;
+			}
 		},
 		lhs, rhs
 	);

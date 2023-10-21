@@ -1,27 +1,30 @@
 local rewards = {
-	{ id = 34082, name = "Soulcutter" },
-	{ id = 34083, name = "Soulshredder" },
-	{ id = 34084, name = "Soulbiter" },
-	{ id = 34085, name = "Souleater" },
-	{ id = 34086, name = "Soulcrusher" },
-	{ id = 34087, name = "Soulmaimer" },
-	{ id = 34088, name = "Soulbleeder" },
-	{ id = 34089, name = "Soulpiercer" },
-	{ id = 34090, name = "Soultainter" },
-	{ id = 34091, name = "Soulhexer" },
-	{ id = 34092, name = "Soulshanks" },
-	{ id = 34093, name = "Soulstrider" },
-	{ id = 34094, name = "Soulshell" },
-	{ id = 34095, name = "Soulmantle" },
-	{ id = 34096, name = "Soulshroud" },
-	{ id = 34097, name = "Pair of Soulwalkers" },
-	{ id = 34098, name = "Pair of Soulstalkers" },
-	{ id = 34099, name = "Soulbastion" },
+	{ id = 34082, name = "soulcutter" },
+	{ id = 34083, name = "soulshredder" },
+	{ id = 34084, name = "soulbiter" },
+	{ id = 34085, name = "souleater" },
+	{ id = 34086, name = "soulcrusher" },
+	{ id = 34087, name = "soulmaimer" },
+	{ id = 34097, name = "pair of soulwalkers" },
+	{ id = 34099, name = "soulbastion" },
+	{ id = 34088, name = "soulbleeder" },
+	{ id = 34089, name = "soulpiercer" },
+	{ id = 34094, name = "soulshell" },
+	{ id = 34098, name = "pair of soulstalkers" },
+	{ id = 34090, name = "soultainter" },
+	{ id = 34092, name = "soulshanks" },
+	{ id = 34095, name = "soulmantle" },
+	{ id = 34091, name = "soulhexer" },
+	{ id = 34093, name = "soulstrider" },
+	{ id = 34096, name = "soulshroud" },
 }
 
 local bagyouDesire = Action()
 
 function bagyouDesire.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	if not player then
+		return false
+	end
 	local randId = math.random(1, #rewards)
 	local rewardItem = rewards[randId]
 

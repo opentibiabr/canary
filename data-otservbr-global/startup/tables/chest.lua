@@ -653,7 +653,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 33078, y = 31656, z = 11 },
 		container = 2853,
-		reward = { { 3098, 1 }, { 3085, 200 }, { 3028, 7 } },
+		reward = { { 3098, 1 }, { 3085, 200 }, { 3028, 7 }, { 3320, 1 } },
 		weight = 27,
 		storage = Storage.Quest.U6_4.FireAxe.Rewards.Bag,
 	},

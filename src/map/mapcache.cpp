@@ -16,6 +16,7 @@
 #include "io/iologindata.hpp"
 #include "items/item.hpp"
 #include "game/game.hpp"
+#include "game/zones/zone.hpp"
 #include "map/map.hpp"
 #include "utils/hash.hpp"
 #include "io/filestream.hpp"
@@ -132,6 +133,9 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 	}
 
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
+	for (const auto &zone : Zone::getZones(pos)) {
+		tile->addZone(zone);
+	}
 
 	floor->setTile(x, y, tile);
 

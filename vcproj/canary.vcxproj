@@ -59,9 +59,9 @@
     <ClInclude Include="..\src\game\movement\position.hpp" />
     <ClInclude Include="..\src\game\movement\teleport.hpp" />
     <ClInclude Include="..\src\game\scheduling\events_scheduler.hpp" />
-    <ClInclude Include="..\src\game\scheduling\scheduler.hpp" />
     <ClInclude Include="..\src\game\scheduling\dispatcher.hpp" />
     <ClInclude Include="..\src\game\scheduling\task.hpp" />
+    <ClInclude Include="..\src\game\scheduling\save_manager.hpp" />
     <ClInclude Include="..\src\io\fileloader.hpp" />
     <ClInclude Include="..\src\io\filestream.hpp" />
     <ClInclude Include="..\src\io\functions\iologindata_load_player.hpp" />
@@ -212,6 +212,7 @@
     <ClInclude Include="..\src\server\server.hpp" />
     <ClInclude Include="..\src\server\server_definitions.hpp" />
     <ClInclude Include="..\src\server\signals.hpp" />
+    <ClInclude Include="..\src\utils\arraylist.hpp" />
     <ClInclude Include="..\src\utils\benchmark.hpp" />
     <ClInclude Include="..\src\utils\const.hpp" />
     <ClInclude Include="..\src\utils\definitions.hpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="..\src\utils\tools.hpp" />
     <ClInclude Include="..\src\utils\utils_definitions.hpp" />
     <ClInclude Include="..\src\utils\vectorset.hpp" />
+    <ClInclude Include="..\src\utils\vectorsort.hpp" />
     <ClInclude Include="..\src\utils\wildcardtree.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -257,11 +259,12 @@
     <ClCompile Include="..\src\game\functions\game_reload.cpp" />
     <ClCompile Include="..\src\game\game.cpp" />
     <ClCompile Include="..\src\game\bank\bank.cpp" />
+    <ClCompile Include="..\src\game\scheduling\task.cpp" />
+    <ClCompile Include="..\src\game\scheduling\save_manager.cpp" />
     <ClCompile Include="..\src\game\zones\zone.cpp" />
     <ClCompile Include="..\src\game\movement\position.cpp" />
     <ClCompile Include="..\src\game\movement\teleport.cpp" />
     <ClCompile Include="..\src\game\scheduling\events_scheduler.cpp" />
-    <ClCompile Include="..\src\game\scheduling\scheduler.cpp" />
     <ClCompile Include="..\src\game\scheduling\dispatcher.cpp" />
     <ClCompile Include="..\src\io\fileloader.cpp" />
     <ClCompile Include="..\src\io\filestream.cpp" />
@@ -470,7 +473,7 @@
     <TargetName>$(ProjectName)-sln</TargetName>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
-    <VcpkgEnableManifest>false</VcpkgEnableManifest>
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
     <VcpkgAutoLink>false</VcpkgAutoLink>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

@@ -1678,3 +1678,22 @@ int MonsterTypeFunctions::luaMonsterTypedeathSound(lua_State* L) {
 
 	return 1;
 }
+
+int MonsterTypeFunctions::luaMonsterTypeVariant(lua_State* L) {
+	// get: monsterType:variant() set: monsterType:variant(variantName)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (!monsterType) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		pushString(L, monsterType->variantName);
+	} else {
+		monsterType->variantName = getString(L, 2);
+		pushBoolean(L, true);
+	}
+
+	return 1;
+}

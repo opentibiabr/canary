@@ -12,7 +12,7 @@
 #include "lua/creature/raids.hpp"
 #include "utils/pugicast.hpp"
 #include "game/game.hpp"
-#include "game/scheduling/scheduler.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "server/network/webhook/webhook.hpp"
 
@@ -102,7 +102,7 @@ bool Raids::startup() {
 
 	setLastRaidEnd(OTSYS_TIME());
 
-	checkRaidsEvent = g_scheduler().addEvent(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this), "Raids::checkRaids");
+	checkRaidsEvent = g_dispatcher().scheduleEvent(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this), "Raids::checkRaids");
 
 	started = true;
 	return started;
@@ -131,11 +131,11 @@ void Raids::checkRaids() {
 		}
 	}
 
-	checkRaidsEvent = g_scheduler().addEvent(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this), "Raids::checkRaids");
+	checkRaidsEvent = g_dispatcher().scheduleEvent(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this), "Raids::checkRaids");
 }
 
 void Raids::clear() {
-	g_scheduler().stopEvent(checkRaidsEvent);
+	g_dispatcher().stopEvent(checkRaidsEvent);
 	checkRaidsEvent = 0;
 
 	for (const auto &raid : raidList) {
@@ -213,7 +213,7 @@ void Raid::startRaid() {
 	const auto raidEvent = getNextRaidEvent();
 	if (raidEvent) {
 		state = RAIDSTATE_EXECUTING;
-		nextEventEvent = g_scheduler().addEvent(raidEvent->getDelay(), std::bind(&Raid::executeRaidEvent, this, raidEvent), "Raid::executeRaidEvent");
+		nextEventEvent = g_dispatcher().scheduleEvent(raidEvent->getDelay(), std::bind(&Raid::executeRaidEvent, this, raidEvent), "Raid::executeRaidEvent");
 	} else {
 		g_logger().warn("[raids] Raid {} has no events", name);
 		resetRaid();
@@ -227,7 +227,7 @@ void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> raidEvent) {
 
 		if (newRaidEvent) {
 			uint32_t ticks = static_cast<uint32_t>(std::max<int32_t>(RAID_MINTICKS, newRaidEvent->getDelay() - raidEvent->getDelay()));
-			nextEventEvent = g_scheduler().addEvent(ticks, std::bind(&Raid::executeRaidEvent, this, newRaidEvent), __FUNCTION__);
+			nextEventEvent = g_dispatcher().scheduleEvent(ticks, std::bind(&Raid::executeRaidEvent, this, newRaidEvent), __FUNCTION__);
 		} else {
 			resetRaid();
 		}
@@ -245,7 +245,7 @@ void Raid::resetRaid() {
 
 void Raid::stopEvents() {
 	if (nextEventEvent != 0) {
-		g_scheduler().stopEvent(nextEventEvent);
+		g_dispatcher().stopEvent(nextEventEvent);
 		nextEventEvent = 0;
 	}
 }
@@ -372,7 +372,6 @@ bool SingleSpawnEvent::executeEvent() {
 	}
 
 	if (!g_game().placeCreature(monster, position, false, true)) {
-
 		g_logger().error("{} - Cant create monster {}", __FUNCTION__, monsterName);
 		return false;
 	}

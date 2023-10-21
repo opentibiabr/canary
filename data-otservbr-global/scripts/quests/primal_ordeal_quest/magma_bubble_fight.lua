@@ -25,71 +25,67 @@ spawnZone:addArea({ x = 33647, y = 32900, z = 15 }, { x = 33659, y = 32913, z = 
 local encounter = Encounter("Magma Bubble", {
 	zone = bossZone,
 	spawnZone = spawnZone,
-	timeToSpawnMonsters = 2,
+	timeToSpawnMonsters = "2s",
 })
 
-encounter:addStage({
-	prepare = function()
-		encounter:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You've entered the volcano.")
-	end,
+function encounter:onReset(position)
+	encounter:removeMonsters()
+end
 
-	start = function()
-		encounter:spawnMonsters({
-			name = "The End of Days",
-			amount = 3,
-			event = "fight.magma-bubble.TheEndOfDaysHealth",
-		})
-		encounter:spawnMonsters({
-			name = "Magma Crystal",
-			event = "fight.magma-bubble.MagmaCrystalDeath",
-			positions = {
-				Position(33647, 32891, 15),
-				Position(33647, 32926, 15),
-				Position(33670, 32898, 15),
-			},
-		})
-	end,
+encounter:addRemoveMonsters():autoAdvance()
+encounter:addBroadcast("You've entered the volcano."):autoAdvance("1s")
 
-	finish = function()
-		encounter:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The whole Volcano starts to vibrate! Prepare yourself!")
-	end,
+encounter:addSpawnMonsters({
+	{
+		name = "The End of Days",
+		amount = 3,
+		event = "fight.magma-bubble.TheEndOfDaysHealth",
+	},
+	{
+		name = "Magma Crystal",
+		event = "fight.magma-bubble.MagmaCrystalDeath",
+		positions = {
+			Position(33647, 32891, 15),
+			Position(33647, 32926, 15),
+			Position(33670, 32898, 15),
+		},
+	},
 })
 
-encounter:addIntermission(3000)
+encounter:addRemoveMonsters():autoAdvance()
+encounter:addBroadcast("The whole Volcano starts to vibrate! Prepare yourself!"):autoAdvance("3s")
 
-encounter:addStage({
-	start = function()
-		encounter:spawnMonsters({
-			name = "The End of Days",
-			amount = 8,
-			event = "fight.magma-bubble.TheEndOfDaysDeath",
-		})
-	end,
-
-	finish = function()
-		encounter:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You've upset the volcano and now it's going to take its revenge!")
-	end,
+encounter:addSpawnMonsters({
+	{
+		name = "The End of Days",
+		amount = 8,
+		event = "fight.magma-bubble.TheEndOfDaysDeath",
+	},
 })
 
-encounter:addIntermission(3000)
+encounter:addRemoveMonsters():autoAdvance()
+encounter:addBroadcast("You've upset the volcano and now it's going to take its revenge!"):autoAdvance("3s")
 
-encounter:addStage({
-	start = function()
-		encounter:spawnMonsters({
+encounter
+	:addSpawnMonsters({
+		{
 			name = "Magma Bubble",
 			event = "fight.magma-bubble.MagmaBubbleDeath",
 			positions = {
 				Position(33654, 32909, 15),
 			},
-		})
-		for i = 0, 4 do
-			table.insert(encounter.events, addEvent(encounter.spawnMonsters, (45 * i + 10) * 1000, encounter, { name = "Unchained Fire", amount = 5 }))
-		end
-	end,
-})
+		},
+	})
+	:autoAdvance("10s")
 
-function encounter.beforeEach()
-	encounter:removeMonsters()
+for i = 0, 4 do
+	local stage = encounter:addSpawnMonsters({
+		{ name = "Unchained Fire", amount = 5 },
+	})
+
+	if i < 4 then
+		stage:autoAdvance("45s")
+	end
 end
 
 encounter:register()
@@ -139,7 +135,7 @@ function overheatedDamage.onThink(interval, lastExecution)
 			player:getPosition():sendMagicEffect(effect)
 		else
 			local damage = player:getMaxHealth() * 0.6 * -1
-			doTargetCombatHealth(0, player, COMBAT_NEUTRALDAMAGE, damage, damage, CONST_ME_NONE)
+			doTargetCombatHealth(0, player, COMBAT_AGONYDAMAGE, damage, damage, CONST_ME_NONE)
 		end
 		::continue::
 	end
@@ -224,7 +220,8 @@ function chargedFlameAction.onUse(player, item, fromPosition, target, toPosition
 	}
 	local position = randomPosition(positions)
 	position:sendMagicEffect(CONST_ME_FIREAREA)
-	Game.createItem(magicFieldId, 1, position)
+	local field = Game.createItem(magicFieldId, 1, position)
+	field:decay()
 	item:remove()
 end
 
@@ -271,7 +268,7 @@ function magmaCrystalDeath.onDeath()
 	if crystals == 0 then
 		encounter:nextStage()
 	else
-		encounter:sendTextMessage(MESSAGE_EVENT_ADVANCE, "A magma crystal has been destroyed! " .. crystals .. " remaining.")
+		encounter:broadcast(MESSAGE_EVENT_ADVANCE, "A magma crystal has been destroyed! " .. crystals .. " remaining.")
 	end
 end
 

@@ -13,7 +13,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 	local monsterType = creature:getType()
 	-- Make sure it is a boss
 	if monsterType and monsterType:isRewardBoss() then
-		if not corpse:isContainer() then
+		if not corpse.isContainer or not corpse:isContainer() then
 			logger.warn("[bossDeath.onDeath] Corpse (id: {}) for reward boss {} is not a container.", corpse:getId(), creature:getName())
 		end
 		corpse:registerReward()
@@ -83,12 +83,12 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 				local rolls = 1
 				local isBoostedBoss = creature:getName():lower() == (Game.getBoostedBoss()):lower()
 				local bossRaceIds = { player:getSlotBossId(1), player:getSlotBossId(2) }
-				local isBoss = table.contains(bossRaceIds, monsterType:bossRaceId()) or isBoostedBoss
-				if isBoss and monsterType:bossRaceId() ~= 0 then
-					if monsterType:bossRaceId() == player:getSlotBossId(1) then
-						rolls = rolls + player:getBossBonus(1) / 100
-					elseif monsterType:bossRaceId() == player:getSlotBossId(2) then
-						rolls = rolls + player:getBossBonus(2) / 100
+				local isBoss = table.contains(bossRaceIds, monsterType:raceId()) or isBoostedBoss
+				if isBoss and monsterType:raceId() ~= 0 then
+					if monsterType:raceId() == player:getSlotBossId(1) then
+						rolls = rolls + player:getBossBonus(1) / 100.0
+					elseif monsterType:raceId() == player:getSlotBossId(2) then
+						rolls = rolls + player:getBossBonus(2) / 100.0
 					else
 						rolls = rolls + configManager.getNumber(configKeys.BOOSTED_BOSS_LOOT_BONUS) / 100
 					end

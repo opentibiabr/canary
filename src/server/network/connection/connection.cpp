@@ -12,35 +12,29 @@
 #include "server/network/connection/connection.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "server/network/protocol/protocol.hpp"
-#include "game/scheduling/scheduler.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "server/server.hpp"
 
 Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort) {
-	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
-
 	auto connection = std::make_shared<Connection>(io_service, servicePort);
-	connections.insert(connection);
+	connections.emplace(connection);
 	return connection;
 }
 
 void ConnectionManager::releaseConnection(const Connection_ptr &connection) {
-	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
-
 	connections.erase(connection);
 }
 
 void ConnectionManager::closeAll() {
-	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
-
-	for (const auto &connection : connections) {
+	connections.for_each([](const Connection_ptr &connection) {
 		try {
 			std::error_code error;
 			connection->socket.shutdown(asio::ip::tcp::socket::shutdown_both, error);
 		} catch (const std::system_error &systemError) {
 			g_logger().error("[ConnectionManager::closeAll] - Failed to close connection, system error code {}", systemError.what());
 		}
-	}
+	});
+
 	connections.clear();
 }
 
@@ -60,13 +54,14 @@ void Connection::close(bool force) {
 	ConnectionManager::getInstance().releaseConnection(shared_from_this());
 
 	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
+	ip = 0;
 	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
 	connectionState = CONNECTION_STATE_CLOSED;
 
 	if (protocol) {
-		g_dispatcher().addTask(std::bind_front(&Protocol::release, protocol), "Protocol::release", 1000);
+		g_dispatcher().addEvent(std::bind_front(&Protocol::release, protocol), "Protocol::release", 1000);
 	}
 
 	if (messageQueue.empty() || force) {
@@ -93,7 +88,7 @@ void Connection::closeSocket() {
 void Connection::accept(Protocol_ptr protocolPtr) {
 	this->connectionState = CONNECTION_STATE_IDENTIFYING;
 	this->protocol = protocolPtr;
-	g_dispatcher().addTask(std::bind_front(&Protocol::onConnect, protocolPtr), "Protocol::onConnect", 1000);
+	g_dispatcher().addEvent(std::bind_front(&Protocol::onConnect, protocolPtr), "Protocol::onConnect", 1000);
 
 	// Call second accept for not duplicate code
 	accept(false);
@@ -325,16 +320,17 @@ void Connection::internalWorker() {
 }
 
 uint32_t Connection::getIP() {
+	if (ip != 1) {
+		return ip;
+	}
+
 	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
 
 	// IP-address is expressed in network byte order
 	std::error_code error;
 	const asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
-	if (error) {
-		return 0;
-	}
-
-	return htonl(endpoint.address().to_v4().to_ulong());
+	ip = error ? 0 : htonl(endpoint.address().to_v4().to_uint());
+	return ip;
 }
 
 void Connection::internalSend(const OutputMessage_ptr &outputMessage) {

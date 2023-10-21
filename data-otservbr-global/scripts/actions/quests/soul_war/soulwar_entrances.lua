@@ -9,7 +9,7 @@ local config = {
 	{ position = { x = 34022, y = 31091, z = 11 }, destination = { x = 33685, y = 31599, z = 14 } }, -- goshnar's malice entrance
 	{ position = { x = 33856, y = 31884, z = 5 }, destination = { x = 33857, y = 31865, z = 6 } }, -- goshnar's cruelty entrance
 	{ position = { x = 33889, y = 31873, z = 3 }, destination = { x = 33830, y = 31881, z = 4 } }, -- 1st to 2nd floor cloak
-	{ position = { x = 33829, y = 31880, z = 4 }, destination = { x = 33856, y = 31890, z = 5 } }, -- 2nd to 3rd floor cloak
+	{ position = { x = 33829, y = 31880, z = 4 }, destination = { x = 33856, y = 31889, z = 5 } }, -- 2nd to 3rd floor cloak
 }
 
 local portal = { position = { x = 33914, y = 31032, z = 12 }, destination = { x = 33780, y = 31601, z = 14 } } -- goshnar's hatred entrance

@@ -5,8 +5,6 @@
 ---@field finish function
 EncounterStage = {}
 
-local unstarted = 0
-
 setmetatable(EncounterStage, {
 	---@param self EncounterStage
 	---@param config table
@@ -20,18 +18,35 @@ setmetatable(EncounterStage, {
 	end,
 })
 
+---Automatically advances to the next stage after the given delay
+---@param delay number|string The delay time to advance to the next stage
+function EncounterStage:autoAdvance(delay)
+	local originalStart = self.start
+	function self.start()
+		delay = delay or 50 -- 50ms is minimum delay; used here for close to instant advance
+		originalStart()
+		self.encounter:debug("Encounter[{}]:autoAdvance | next stage in: {}", self.encounter.name, delay == 50 and "instant" or delay)
+		self.encounter:addEvent(function()
+			self.encounter:nextStage()
+		end, delay)
+	end
+end
+
 ---@class Encounter
 ---@field name string
----@field private zone Zone
----@field private spawnZone Zone
----@field private stages EncounterStage[]
----@field private currentStage number
----@field private events table
----@field private registered boolean
----@field private timeToSpawnMonsters number
----@field beforeEach function
+---@field protected zone Zone
+---@field protected spawnZone Zone
+---@field protected stages EncounterStage[]
+---@field protected currentStage number
+---@field protected events table
+---@field protected registered boolean
+---@field protected global boolean
+---@field protected timeToSpawnMonsters number|string
+---@field onReset function
 Encounter = {
 	registry = {},
+	unstarted = 0,
+	enableDebug = true,
 }
 
 setmetatable(Encounter, {
@@ -57,17 +72,17 @@ setmetatable(Encounter, {
 	end,
 })
 
+---@alias EncounterConfig { zone: Zone, spawnZone: Zone, global: boolean, timeToSpawnMonsters: number }
 ---Resets the encounter configuration
----@param config table The new configuration
+---@param config EncounterConfig The new configuration
 function Encounter:resetConfig(config)
 	self.zone = config.zone
 	self.spawnZone = config.spawnZone or config.zone
 	self.stages = {}
-	self.currentStage = unstarted
-	self.beforeEach = config.beforeEach
+	self.currentStage = Encounter.unstarted
 	self.registered = false
 	self.global = config.global or false
-	self.timeToSpawnMonsters = config.timeToSpawnMonsters or 3
+	self.timeToSpawnMonsters = ParseDuration(config.timeToSpawnMonsters or "3s")
 	self.events = {}
 end
 
@@ -78,7 +93,7 @@ function Encounter:addEvent(callable, delay, ...)
 	local event = addEvent(function(callable, ...)
 		pcall(callable, ...)
 		table.remove(self.events, index)
-	end, delay, callable, ...)
+	end, ParseDuration(delay), callable, ...)
 	table.insert(self.events, index, event)
 end
 
@@ -102,6 +117,7 @@ end
 ---@param abort boolean? A flag to determine whether to abort the current stage without calling the finish function. Optional.
 ---@return boolean True if the stage is entered successfully, false otherwise
 function Encounter:enterStage(stageNumber, abort)
+	self:debug("Encounter[{}]:enterStage | stageNumber: {} | abort: {}", self.name, stageNumber, abort)
 	if not abort then
 		local currentStage = self:getStage(self.currentStage)
 		if currentStage and currentStage.finish then
@@ -110,12 +126,9 @@ function Encounter:enterStage(stageNumber, abort)
 	end
 
 	self:cancelEvents()
-	if self.beforeEach then
-		self:beforeEach()
-	end
 
-	if stageNumber == unstarted then
-		self.currentStage = unstarted
+	if stageNumber == Encounter.unstarted then
+		self.currentStage = Encounter.unstarted
 		return true
 	end
 
@@ -133,8 +146,10 @@ function Encounter:enterStage(stageNumber, abort)
 	return true
 end
 
+---@alias SpawnMonsterConfig { name: string, amount: number, event: string?, timeLimit: number?, position: Position|table?, positions: Position|table[]?, spawn: function? }
+
 ---Spawns monsters based on the given configuration
----@param config {name: string, amount: number, event: string?, timeLimit: number?, position: Position|table?, positions: Position|table[]?, spawn: function?} The configuration for spawning monsters
+---@param config SpawnMonsterConfig The configuration for spawning monsters
 function Encounter:spawnMonsters(config)
 	local positions = config.positions
 	local amount = config.amount
@@ -155,7 +170,7 @@ function Encounter:spawnMonsters(config)
 		end
 	end
 	for _, position in ipairs(positions) do
-		for i = 1, self.timeToSpawnMonsters do
+		for i = 1, self.timeToSpawnMonsters / 1000 do
 			self:addEvent(function(position)
 				position:sendMagicEffect(CONST_ME_TELEPORT)
 			end, i * 1000, position)
@@ -180,15 +195,19 @@ function Encounter:spawnMonsters(config)
 					monster:remove()
 				end, config.timeLimit, monster:getID())
 			end
-		end, self.timeToSpawnMonsters * 1000, config.name, position, config.event, config.spawn, config.timeLimit)
+		end, self.timeToSpawnMonsters, config.name, position, config.event, config.spawn, config.timeLimit)
 	end
 end
 
 ---Broadcasts a message to all players
 function Encounter:broadcast(...)
-	for _, player in ipairs(Game.getPlayers()) do
-		player:sendTextMessage(...)
+	if self.global then
+		for _, player in ipairs(Game.getPlayers()) do
+			player:sendTextMessage(...)
+		end
+		return
 	end
+	self.zone:sendTextMessage(...)
 end
 
 ---Counts the number of monsters with the given name in the encounter zone
@@ -204,11 +223,6 @@ function Encounter:countPlayers()
 	return self.zone:countPlayers(IgnoredByMonsters)
 end
 
----Sends a text message to all creatures in the encounter zone
-function Encounter:sendTextMessage(...)
-	self.zone:sendTextMessage(...)
-end
-
 ---Removes all monsters from the encounter zone
 function Encounter:removeMonsters()
 	self.zone:removeMonsters()
@@ -217,10 +231,14 @@ end
 ---Resets the encounter to its initial state
 ---@return boolean True if the encounter is reset successfully, false otherwise
 function Encounter:reset()
-	if self.currentStage == unstarted then
+	if self.currentStage == Encounter.unstarted then
 		return true
 	end
-	return self:enterStage(unstarted)
+	self:debug("Encounter[{}]:reset", self.name)
+	if self.onReset then
+		self:onReset()
+	end
+	return self:enterStage(Encounter.unstarted)
 end
 
 ---Checks if a position is inside the encounter zone
@@ -248,23 +266,25 @@ end
 ---Starts the encounter
 ---@return boolean True if the encounter is started successfully, false otherwise
 function Encounter:start()
-	Encounter.registerTickEvent()
-	if self.currentStage ~= unstarted then
+	if self.currentStage ~= Encounter.unstarted then
 		return false
 	end
+	self:debug("Encounter[{}]:start", self.name)
 	return self:enterStage(1)
 end
 
 ---Adds a new stage to the encounter
----@param stage table The stage to add
+---@param config table The stage to add
 ---@return boolean True if the stage is added successfully, false otherwise
-function Encounter:addStage(stage)
-	table.insert(self.stages, EncounterStage(stage))
-	return true
+function Encounter:addStage(config)
+	local stage = EncounterStage(config)
+	stage.encounter = self
+	table.insert(self.stages, stage)
+	return stage
 end
 
 ---Adds an intermission stage to the encounter
----@param interval number The duration of the intermission
+---@param interval number|string The duration of the intermission
 ---@return boolean True if the intermission stage is added successfully, false otherwise
 function Encounter:addIntermission(interval)
 	return self:addStage({
@@ -272,6 +292,47 @@ function Encounter:addIntermission(interval)
 			self:addEvent(function()
 				self:nextStage()
 			end, interval)
+		end,
+	})
+end
+
+---Adds a stage that just sends a message to all players
+---@param message string The message to send
+---@return boolean True if the message stage is added successfully, false otherwise
+function Encounter:addBroadcast(message, type)
+	type = type or MESSAGE_EVENT_ADVANCE
+	return self:addStage({
+		start = function()
+			self:broadcast(type, message)
+		end,
+	})
+end
+
+---Adds a stage that spawns monsters
+---@param configs SpawnMonsterConfig[] The configurations for spawning monsters
+---@return boolean True if the spawn monsters stage is added successfully, false otherwise
+function Encounter:addSpawnMonsters(configs)
+	if not configs then
+		return false
+	end
+	if not configs[1] then
+		configs = { configs }
+	end -- convert single config to array
+	return self:addStage({
+		start = function()
+			for _, config in ipairs(configs) do
+				self:spawnMonsters(config)
+			end
+		end,
+	})
+end
+
+---Adds a stage that removes all monsters from the encounter zone
+---@return boolean True if the remove monsters stage is added successfully, false otherwise
+function Encounter:addRemoveMonsters()
+	return self:addStage({
+		start = function()
+			self:removeMonsters()
 		end,
 	})
 end
@@ -321,21 +382,9 @@ function Encounter:register()
 	return true
 end
 
-function Encounter.registerTickEvent()
-	if Encounter.tick then
+function Encounter:debug(...)
+	if not Encounter.enableDebug then
 		return
 	end
-	Encounter.tick = GlobalEvent("encounter.ticks.onThink")
-	function Encounter.tick.onThink(interval, lastExecution)
-		for _, encounter in pairs(Encounter.registry) do
-			local stage = encounter:getStage()
-			if stage and stage.tick then
-				stage.tick(encounter, interval, lastExecution)
-			end
-		end
-		return true
-	end
-
-	Encounter.tick:interval(1000)
-	Encounter.tick:register()
+	logger.debug(...)
 end

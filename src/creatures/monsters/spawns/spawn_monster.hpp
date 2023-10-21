@@ -47,6 +47,12 @@ public:
 	bool isInSpawnMonsterZone(const Position &pos);
 	void cleanup();
 
+	const Position &getCenterPos() const {
+		return centerPos;
+	}
+
+	void setMonsterVariant(const std::string &variant);
+
 private:
 	// map of the spawned creatures
 	using SpawnedMap = std::multimap<uint32_t, std::shared_ptr<Monster>>;

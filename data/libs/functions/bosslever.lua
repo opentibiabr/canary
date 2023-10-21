@@ -16,6 +16,7 @@
 ---@field private area {from: Position, to: Position}
 ---@field private monsters {name: string, pos: Position}[]
 ---@field private exit Position
+---@field private encounter Encounter
 ---@field private timeoutEvent Event
 BossLever = {}
 
@@ -151,10 +152,6 @@ function BossLever:onUse(player)
 			return false
 		end
 		self.onUseExtra(creature)
-		if self.encounter then
-			local encounter = Encounter(self.encounter)
-			encounter:start()
-		end
 		return true
 	end)
 
@@ -177,6 +174,10 @@ function BossLever:onUse(player)
 			monster:registerEvent("BossLeverOnDeath")
 		end
 		lever:teleportPlayers()
+		if self.encounter then
+			local encounter = Encounter(self.encounter)
+			encounter:start()
+		end
 		lever:setStorageAllPlayers(self.storage, os.time() + self.timeToFightAgain)
 		if self.timeoutEvent then
 			stopEvent(self.timeoutEvent)

@@ -18,6 +18,7 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "utils/pugicast.hpp"
+#include "game/zones/zone.hpp"
 #include "map/spectators.hpp"
 
 static constexpr int32_t MONSTER_MINSPAWN_INTERVAL = 1000; // 1 second
@@ -257,7 +258,7 @@ void SpawnMonster::cleanup() {
 	while (it != spawnedMonsterMap.end()) {
 		uint32_t spawnMonsterId = it->first;
 		std::shared_ptr<Monster> monster = it->second;
-		if (monster->isRemoved()) {
+		if (!monster || monster->isRemoved()) {
 			spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
 			it = spawnedMonsterMap.erase(it);
 		} else {
@@ -267,7 +268,14 @@ void SpawnMonster::cleanup() {
 }
 
 bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t scheduleInterval) {
-	const auto monsterType = g_monsters().getMonsterType(name);
+	std::string variant = "";
+	for (const auto &zone : Zone::getZones(pos)) {
+		if (!zone->getMonsterVariant().empty()) {
+			variant = zone->getMonsterVariant() + "|";
+			break;
+		}
+	}
+	const auto monsterType = g_monsters().getMonsterType(variant + name);
 	if (!monsterType) {
 		g_logger().error("Can not find {}", name);
 		return false;
@@ -293,6 +301,14 @@ void SpawnMonster::removeMonster(std::shared_ptr<Monster> monster) {
 			spawnedMonsterMap.erase(it);
 			break;
 		}
+	}
+}
+
+void SpawnMonster::setMonsterVariant(const std::string &variant) {
+	for (auto &it : spawnMonsterMap) {
+		auto variantName = variant + it.second.monsterType->typeName;
+		auto variantType = g_monsters().getMonsterType(variantName, false);
+		it.second.monsterType = variantType ? variantType : it.second.monsterType;
 	}
 }
 

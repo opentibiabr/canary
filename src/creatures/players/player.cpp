@@ -19,6 +19,7 @@
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/task.hpp"
+#include "game/scheduling/save_manager.hpp"
 #include "grouping/familiars.hpp"
 #include "lua/creature/creatureevent.hpp"
 #include "lua/creature/events.hpp"
@@ -1276,6 +1277,7 @@ void Player::sendPing() {
 	}
 
 	if (noPongTime >= 60000 && canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
+		g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
 		if (client) {
 			client->logout(true, true);
 		} else {
@@ -1595,6 +1597,11 @@ void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) 
 			}
 		}
 
+		// Refresh bosstiary tracker onLogin
+		refreshCyclopediaMonsterTracker(true);
+		// Refresh bestiary tracker onLogin
+		refreshCyclopediaMonsterTracker(false);
+
 		for (const auto &condition : storedConditionList) {
 			addCondition(condition);
 		}
@@ -1716,20 +1723,20 @@ void Player::onAttackedCreatureChangeZone(ZoneType_t zone) {
 void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) {
 	Creature::onRemoveCreature(creature, isLogout);
 
-	if (creature == getPlayer()) {
+	if (auto player = getPlayer(); player == creature) {
 		if (isLogout) {
 			if (party) {
-				party->leaveParty(static_self_cast<Player>());
+				party->leaveParty(player);
 			}
 			if (guild) {
-				guild->removeMember(static_self_cast<Player>());
+				guild->removeMember(player);
 			}
 
-			g_game().removePlayerUniqueLogin(static_self_cast<Player>());
+			g_game().removePlayerUniqueLogin(player);
 			loginPosition = getPosition();
 			lastLogout = time(nullptr);
 			g_logger().info("{} has logged out", getName());
-			g_chat().removeUserFromAllChannels(getPlayer());
+			g_chat().removeUserFromAllChannels(player);
 			clearPartyInvitations();
 			IOLoginData::updateOnlineStatus(guid, false);
 		}
@@ -1739,16 +1746,12 @@ void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout)
 		}
 
 		if (tradePartner) {
-			g_game().internalCloseTrade(static_self_cast<Player>());
+			g_game().internalCloseTrade(player);
 		}
 
 		closeShopWindow();
 
-		for (uint32_t tries = 0; tries < 3; ++tries) {
-			if (IOLoginData::savePlayer(static_self_cast<Player>())) {
-				break;
-			}
-		}
+		g_saveManager().savePlayer(player);
 	}
 
 	if (creature == shopOwner) {
@@ -4048,7 +4051,9 @@ void Player::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_pt
 		assert(i ? i->getContainer() != nullptr : true);
 
 		if (i) {
-			requireListUpdate = i->getContainer()->getHoldingPlayer() != getPlayer();
+			if (auto container = i->getContainer()) {
+				requireListUpdate = container->getHoldingPlayer() != getPlayer();
+			}
 		} else {
 			requireListUpdate = newParent != getPlayer();
 		}
@@ -4854,8 +4859,8 @@ bool Player::canFamiliar(uint16_t lookType) const {
 	}
 
 	for (const FamiliarEntry &familiarEntry : familiars) {
-		if (familiarEntry.lookType != lookType) {
-			continue;
+		if (familiarEntry.lookType == lookType) {
+			return true;
 		}
 	}
 	return false;

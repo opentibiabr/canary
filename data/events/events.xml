@@ -15,6 +15,7 @@ Therefore, we strongly encourage avoiding the use of this file when possible, as
 	<event class="Party" method="onJoin" enabled="1" />
 	<event class="Party" method="onLeave" enabled="1" />
 	<event class="Party" method="onShareExperience" enabled="1" />
+	<event class="Party" method="onDisband" enabled="1" />
 
 	<!-- Player Methods -->
 	<event class="Player" method="onChangeZone" enabled="1" />

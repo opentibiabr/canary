@@ -24,6 +24,11 @@ registerMonsterType.description = function(mtype, mask)
 		mtype:nameDescription(mask.description)
 	end
 end
+registerMonsterType.variant = function(mtype, mask)
+	if mask.variant then
+		mtype:variant(mask.variant)
+	end
+end
 registerMonsterType.experience = function(mtype, mask)
 	if mask.experience then
 		mtype:experience(mask.experience)

@@ -8,6 +8,7 @@ local function decayFlower(tile)
 end
 
 local function bloom()
+	-- 1/7 chance of blooming
 	if math.random(7) ~= 1 then
 		addEvent(bloom, 60 * 60 * 1000)
 		return
@@ -17,6 +18,7 @@ local function bloom()
 	if not tile then
 		return false
 	end
+
 	local item = tile:getItemById(5687)
 	if item then
 		item:transform(5658)

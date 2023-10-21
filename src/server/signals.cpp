@@ -11,6 +11,7 @@
 
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/save_manager.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/scripts/lua_environment.hpp"
@@ -52,21 +53,21 @@ void Signals::asyncWait() {
 void Signals::dispatchSignalHandler(int signal) {
 	switch (signal) {
 		case SIGINT: // Shuts the server down
-			g_dispatcher().addTask(sigintHandler, "sigintHandler");
+			g_dispatcher().addEvent(sigintHandler, "sigintHandler");
 			break;
 		case SIGTERM: // Shuts the server down
-			g_dispatcher().addTask(sigtermHandler, "sigtermHandler");
+			g_dispatcher().addEvent(sigtermHandler, "sigtermHandler");
 			break;
 #ifndef _WIN32
 		case SIGHUP: // Reload config/data
-			g_dispatcher().addTask(sighupHandler, "sighupHandler");
+			g_dispatcher().addEvent(sighupHandler, "sighupHandler");
 			break;
 		case SIGUSR1: // Saves game state
-			g_dispatcher().addTask(sigusr1Handler, "sigusr1Handler");
+			g_dispatcher().addEvent(sigusr1Handler, "sigusr1Handler");
 			break;
 #else
 		case SIGBREAK: // Shuts the server down
-			g_dispatcher().addTask(sigbreakHandler, "sigbreakHandler");
+			g_dispatcher().addEvent(sigbreakHandler, "sigbreakHandler");
 			// hold the thread until other threads end
 			inject<ThreadPool>().shutdown();
 			break;
@@ -91,7 +92,7 @@ void Signals::sigtermHandler() {
 void Signals::sigusr1Handler() {
 	// Dispatcher thread
 	g_logger().info("SIGUSR1 received, saving the game state...");
-	g_game().saveGameState();
+	g_saveManager().scheduleAll();
 }
 
 void Signals::sighupHandler() {

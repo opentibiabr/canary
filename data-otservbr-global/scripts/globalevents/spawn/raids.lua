@@ -1,10 +1,4 @@
 local raids = {
-	-- Weekly
-	--Segunda-Feira
-	["Monday"] = {
-		["06:00"] = { raidName = "RatsThais" },
-	},
-
 	--Terça-Feira
 	["Tuesday"] = {
 		["16:00"] = { raidName = "Midnight Panther" },

@@ -75,7 +75,7 @@ public:
 
 private:
 	int64_t time() const noexcept {
-		return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	}
 
 	int64_t startTime = -1;

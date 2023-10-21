@@ -1139,3 +1139,14 @@ end
 function toKey(str)
 	return str:lower():gsub(" ", "-"):gsub("%s+", "")
 end
+
+function toboolean(value)
+	if type(value) == "boolean" then
+		return value
+	end
+	if value == "true" then
+		return true
+	elseif value == "false" then
+		return false
+	end
+end

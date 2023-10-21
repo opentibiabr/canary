@@ -137,7 +137,8 @@ void SpawnNpc::startSpawnNpcCheck() {
 
 SpawnNpc::~SpawnNpc() {
 	for (const auto &it : spawnedNpcMap) {
-		it.second->setSpawnNpc(nullptr);
+		auto npc = it.second;
+		npc->setSpawnNpc(nullptr);
 	}
 }
 

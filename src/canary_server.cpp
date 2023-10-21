@@ -16,6 +16,7 @@
 #include "creatures/players/storages/storages.hpp"
 #include "database/databasemanager.hpp"
 #include "game/game.hpp"
+#include "game/zones/zone.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/events_scheduler.hpp"
 #include "io/iomarket.hpp"
@@ -153,6 +154,7 @@ void CanaryServer::loadMaps() const {
 		if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
 			g_game().loadCustomMaps(g_configManager().getString(DATA_DIRECTORY) + "/world/custom/");
 		}
+		Zone::refreshAll();
 	} catch (const std::exception &err) {
 		throw FailedToInitializeCanary(err.what());
 	}

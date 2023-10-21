@@ -16,7 +16,6 @@ monster.outfit = {
 monster.bosstiary = {
 	bossRaceId = 1406,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.CultsOfTibia.Orcs.BossTimer,
 }
 
 monster.health = 60000

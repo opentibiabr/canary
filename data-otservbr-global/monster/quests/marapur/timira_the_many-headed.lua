@@ -12,7 +12,6 @@ monster.outfit = {
 monster.bosstiary = {
 	bossRaceId = 2250,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_90.WithinTheTides.TimiraTimer,
 }
 
 monster.health = 75000

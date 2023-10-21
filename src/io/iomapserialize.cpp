@@ -77,7 +77,7 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 	PropWriteStream stream;
 	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
 		// save house items
-		for (std::shared_ptr<HouseTile> tile : house->getTiles()) {
+		for (const auto &tile : house->getTiles()) {
 			saveTile(stream, tile);
 
 			size_t attributesSize;
@@ -233,7 +233,12 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> til
 	std::forward_list<std::shared_ptr<Item>> items;
 	uint16_t count = 0;
 	for (auto &item : *tileItems) {
-		if (!item->isSavedToHouses()) {
+		if (item->getID() == ITEM_BATHTUB_FILLED_NOTMOVABLE) {
+			std::shared_ptr<Item> tub = Item::CreateItem(ITEM_BATHTUB_FILLED);
+			items.push_front(tub);
+			++count;
+			continue;
+		} else if (!item->isSavedToHouses()) {
 			continue;
 		}
 

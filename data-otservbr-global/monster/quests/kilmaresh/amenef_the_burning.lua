@@ -16,7 +16,6 @@ monster.outfit = {
 monster.bosstiary = {
 	bossRaceId = 2103,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Kilmaresh.AmenefTimer,
 }
 
 monster.health = 26000

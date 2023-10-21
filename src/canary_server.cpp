@@ -181,12 +181,12 @@ void CanaryServer::setupHousesRent() {
 
 void CanaryServer::logInfos() {
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE
-	logger.debug("{} - Version [{}] dated [{}]", STATUS_SERVER_NAME, STATUS_SERVER_VERSION, GIT_COMMIT_DATE_ISO8601);
+	logger.debug("{} - Version [{}] dated [{}]", STATUS_SERVER_NAME, SERVER_RELEASE_VERSION, GIT_COMMIT_DATE_ISO8601);
 	#if GIT_IS_DIRTY
 	logger.debug("DIRTY - NOT OFFICIAL RELEASE");
 	#endif
 #else
-	logger.info("{} - Version {}", STATUS_SERVER_NAME, STATUS_SERVER_VERSION);
+	logger.info("{} - Version {}", STATUS_SERVER_NAME, SERVER_RELEASE_VERSION);
 #endif
 
 	logger.debug("Compiled with {}, on {} {}, for platform {}\n", getCompiler(), __DATE__, __TIME__, getPlatform());

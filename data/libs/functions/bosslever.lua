@@ -15,6 +15,7 @@
 ---@field private area {from: Position, to: Position}
 ---@field private monsters {name: string, pos: Position}[]
 ---@field private exit Position
+---@field private encounter Encounter
 ---@field private timeoutEvent Event
 BossLever = {}
 
@@ -187,10 +188,6 @@ function BossLever:onUse(player)
 			return false
 		end
 		self.onUseExtra(creature)
-		if self.encounter then
-			local encounter = Encounter(self.encounter)
-			encounter:start()
-		end
 		return true
 	end)
 

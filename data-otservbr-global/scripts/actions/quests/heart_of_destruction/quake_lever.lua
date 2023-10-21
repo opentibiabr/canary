@@ -109,7 +109,6 @@ function heartDestructionQuake.onUse(player, item, fromPosition, itemEx, toPosit
 
 					foreshockHealth = 105000
 					aftershockHealth = 105000
-					realityQuakeStage = 0
 					foreshockStage = 0
 					aftershockStage = 0
 

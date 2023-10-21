@@ -13,6 +13,7 @@
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/save_manager.hpp"
 
 BedItem::BedItem(uint16_t id) :
 	Item(id) {
@@ -178,7 +179,7 @@ void BedItem::wakeUp(std::shared_ptr<Player> player) {
 			auto regenPlayer = std::make_shared<Player>(nullptr);
 			if (IOLoginData::loadPlayerById(regenPlayer, sleeperGUID)) {
 				regeneratePlayer(regenPlayer);
-				IOLoginData::savePlayer(regenPlayer);
+				g_saveManager().savePlayer(regenPlayer);
 			}
 		} else {
 			regeneratePlayer(player);

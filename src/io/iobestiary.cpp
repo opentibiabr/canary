@@ -403,7 +403,7 @@ phmap::parallel_flat_hash_set<uint16_t> IOBestiary::getBestiaryFinished(std::sha
 	for (const auto &[monsterTypeRaceId, monsterTypeName] : bestiaryMap) {
 		uint32_t thisKilled = player->getBestiaryKillCount(monsterTypeRaceId);
 		auto mtype = g_monsters().getMonsterType(monsterTypeName);
-		if (mtype && thisKilled >= mtype->info.bestiaryFirstUnlock) {
+		if (mtype && thisKilled >= mtype->info.bestiaryToUnlock) {
 			finishedMonsters.insert(monsterTypeRaceId);
 		}
 	}

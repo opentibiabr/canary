@@ -47,6 +47,7 @@ class PreySlot;
 class TaskHuntingSlot;
 class Spell;
 class PlayerWheel;
+class Spectators;
 
 enum class ForgeConversion_t : uint8_t {
 	FORGE_ACTION_FUSION = 0,
@@ -93,6 +94,23 @@ static constexpr int32_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
 class Player final : public Creature, public Cylinder, public Bankable {
 public:
+	class PlayerLock {
+	public:
+		explicit PlayerLock(const std::shared_ptr<Player> &p) :
+			player(p) {
+			player->mutex.lock();
+		}
+
+		PlayerLock(const PlayerLock &) = delete;
+
+		~PlayerLock() {
+			player->mutex.unlock();
+		}
+
+	private:
+		const std::shared_ptr<Player> &player;
+	};
+
 	explicit Player(ProtocolGame_ptr p);
 	~Player();
 
@@ -471,8 +489,8 @@ public:
 	int32_t getStorageValueByName(const std::string &storageName) const;
 	void addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin = false);
 
-	std::shared_ptr<KVStore> kv() const {
-		return g_kv().scoped("player")->scoped(getID());
+	std::shared_ptr<KV> kv() const {
+		return g_kv().scoped("player")->scoped(fmt::format("{}", getGUID()));
 	}
 
 	void genReservedStorageRange();
@@ -2285,7 +2303,7 @@ public:
 		SpeakClasses type,
 		const std::string &text,
 		bool ghostMode,
-		SpectatorHashSet* spectatorsPtr = nullptr,
+		Spectators* spectatorsPtr = nullptr,
 		const Position* pos = nullptr
 	);
 
@@ -2503,6 +2521,9 @@ public:
 	std::shared_ptr<Container> getLootPouch();
 
 private:
+	friend class PlayerLock;
+	std::mutex mutex;
+
 	static uint32_t playerFirstID;
 	static uint32_t playerLastID;
 
@@ -2861,6 +2882,7 @@ private:
 	void clearCooldowns();
 
 	friend class Game;
+	friend class SaveManager;
 	friend class Npc;
 	friend class PlayerFunctions;
 	friend class NetworkMessageFunctions;

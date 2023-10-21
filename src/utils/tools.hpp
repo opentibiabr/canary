@@ -123,6 +123,7 @@ ItemAttribute_t stringToItemAttribute(const std::string &str);
 
 const char* getReturnMessage(ReturnValue value);
 
+void sleep_for(uint64_t ms);
 void capitalizeWords(std::string &source);
 void consoleHandlerExit();
 std::string validateNameHouse(const std::string &name);
@@ -186,3 +187,5 @@ std::string getPlayerObjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, con
 std::string getPlayerPossessivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
 std::string getPlayerReflexivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
 std::string getVerbForPronoun(PlayerPronoun_t pronoun, bool pastTense = false);
+
+std::string toKey(const std::string &str);

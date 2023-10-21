@@ -157,21 +157,10 @@ function Lever.teleportPlayers(self) -- It will teleport all players to the posi
 	end
 end
 
---[[
-    lever:setPositions(key, value)
-
-    | Method | Type | Usage   | Default |
-    |--------|------|---------|---------|
-    | key    | int  | Storage | nil     |
-    | value  | int  | Value   | nil     |
-
-    lever:setStorageAllPlayers(10000, 1)
-]]
----@generic Storage
----@param key Storage
+---@param bossName string
 ---@param value number
 ---@return nil
-function Lever.setStorageAllPlayers(self, key, value) -- Will set storage on all players
+function Lever.setCooldownAllPlayers(self, bossName, value)
 	local info = self:getInfoPositions()
 	if not info then
 		error("Necessary information from players")
@@ -182,8 +171,7 @@ function Lever.setStorageAllPlayers(self, key, value) -- Will set storage on all
 		if v.creature then
 			local player = v.creature:getPlayer()
 			if player then
-				player:setStorageValue(key, value)
-				player:sendBosstiaryCooldownTimer()
+				player:setBossCooldown(bossName, value)
 			end
 		end
 	end

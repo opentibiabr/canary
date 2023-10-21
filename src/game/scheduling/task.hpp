@@ -8,24 +8,26 @@
  */
 
 #pragma once
+#include "utils/tools.hpp"
+
+static constexpr auto SYSTEM_TIME_ZERO = std::chrono::system_clock::time_point(std::chrono::milliseconds(0));
 
 class Task {
 public:
-	// DO NOT allocate this class on the stack
-	Task(std::function<void(void)> &&f, std::string context) :
-		context(std::move(context)), func(std::move(f)) {
+	static std::chrono::system_clock::time_point TIME_NOW;
+
+	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context) :
+		expiration(expiresAfterMs > 0 ? TIME_NOW + std::chrono::milliseconds(expiresAfterMs) : SYSTEM_TIME_ZERO),
+		context(context), func(std::move(f)) {
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
-	Task(std::function<void(void)> &&f, std::string context, uint32_t delay) :
-		delay(delay), context(std::move(context)), func(std::move(f)) {
+	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true) :
+		cycle(cycle), log(log), delay(delay), utime(TIME_NOW + std::chrono::milliseconds(delay)), context(context), func(std::move(f)) {
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
-	virtual ~Task() = default;
-	void operator()() {
-		func();
-	}
+	~Task() = default;
 
 	void setEventId(uint64_t id) {
 		eventId = id;
@@ -39,14 +41,63 @@ public:
 		return delay;
 	}
 
-	std::string getContext() const {
+	std::string_view getContext() const {
 		return context;
 	}
 
+	auto getTime() const {
+		return utime;
+	}
+
+	bool hasExpired() const {
+		return expiration != SYSTEM_TIME_ZERO && expiration < TIME_NOW;
+	}
+
+	bool isCycle() const {
+		return cycle;
+	}
+
+	bool isCanceled() const {
+		return canceled;
+	}
+
+	void cancel() {
+		canceled = true;
+		func = nullptr;
+	}
+
+	bool execute() const;
+
+	void updateTime() {
+		utime = TIME_NOW + std::chrono::milliseconds(delay);
+	}
+
+	uint64_t generateId() {
+		if (eventId == 0) {
+			if (++LAST_EVENT_ID == 0) {
+				LAST_EVENT_ID = 1;
+			}
+
+			eventId = LAST_EVENT_ID;
+		}
+
+		return eventId;
+	}
+
+	struct Compare {
+		bool operator()(const std::shared_ptr<Task> &a, const std::shared_ptr<Task> &b) const {
+			return b->utime < a->utime;
+		}
+	};
+
+private:
+	static std::atomic_uint_fast64_t LAST_EVENT_ID;
+
 	bool hasTraceableContext() const {
-		return std::set<std::string> {
+		const static auto tasksContext = phmap::flat_hash_set<std::string>({
 			"Creature::checkCreatureWalk",
 			"Decay::checkDecay",
+			"Dispatcher::asyncEvent",
 			"Game::checkCreatureAttack",
 			"Game::checkCreatures",
 			"Game::checkImbuements",
@@ -66,14 +117,22 @@ public:
 			"SpawnMonster::scheduleSpawn",
 			"SpawnNpc::checkSpawnNpc",
 			"Webhook::run",
-			"sendRecvMessageCallback",
-		}
-			.contains(context);
+			"Protocol::sendRecvMessageCallback",
+		});
+
+		return tasksContext.contains(context);
 	}
 
-private:
+	bool canceled = false;
+	bool cycle = false;
+	bool log = true;
+
 	uint32_t delay = 0;
 	uint64_t eventId = 0;
-	std::string context {};
-	std::function<void(void)> func {};
+
+	std::chrono::system_clock::time_point utime = SYSTEM_TIME_ZERO;
+	std::chrono::system_clock::time_point expiration = SYSTEM_TIME_ZERO;
+
+	std::string_view context;
+	std::function<void(void)> func = nullptr;
 };

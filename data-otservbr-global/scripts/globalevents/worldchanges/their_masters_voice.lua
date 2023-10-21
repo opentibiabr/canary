@@ -12,7 +12,7 @@ function theirmastersvoice.onStartup()
 					if item then
 						local slimeChance = math.random(100)
 						if slimeChance <= 30 then
-							item:transform(math.random(13585, 13589))
+							item:transform(math.random(12059, 12063))
 							position:sendMagicEffect(CONST_ME_YELLOW_RINGS)
 						end
 					end

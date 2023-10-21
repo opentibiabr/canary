@@ -24,7 +24,6 @@ local config = {
 		to = Position(32229, 32055, 14),
 	},
 	exit = Position(32210, 32035, 13),
-	storage = Storage.Quest.U12_00.TheDreamCourts.ArenaTimer,
 }
 
 local dreamCourtsLever = Action()
@@ -74,7 +73,7 @@ function dreamCourtsLever.onUse(player, item, fromPosition, target, toPosition, 
 			return true
 		end
 		lever:teleportPlayers()
-		lever:setStorageAllPlayers(config.storage, os.time() + config.timeToFightAgain * 3600)
+		lever:setCooldownAllPlayers(config.bossName, os.time() + config.timeToFightAgain * 3600)
 		addEvent(function()
 			local old_players = lever:getInfoPositions()
 			spec:clearCreaturesCache()

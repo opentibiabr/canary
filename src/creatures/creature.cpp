@@ -14,8 +14,8 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
-#include "game/scheduling/scheduler.hpp"
 #include "game/zones/zone.hpp"
+#include "map/spectators.hpp"
 
 double Creature::speedA = 857.36;
 double Creature::speedB = 261.29;
@@ -259,7 +259,7 @@ void Creature::addEventWalk(bool firstStep) {
 		g_game().checkCreatureWalk(getID());
 	}
 
-	eventWalk = g_scheduler().addEvent(
+	eventWalk = g_dispatcher().scheduleEvent(
 		static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), getID()),
 		"Creature::checkCreatureWalk"
 	);
@@ -267,7 +267,7 @@ void Creature::addEventWalk(bool firstStep) {
 
 void Creature::stopEventWalk() {
 	if (eventWalk != 0) {
-		g_scheduler().stopEvent(eventWalk);
+		g_dispatcher().stopEvent(eventWalk);
 		eventWalk = 0;
 	}
 }
@@ -597,7 +597,7 @@ void Creature::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_pt
 	if (followCreature && (creature == getCreature() || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
-			g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
+			g_dispatcher().addEvent(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
 		}
 
 		if (newPos.z != oldPos.z || !canSee(followCreature->getPosition())) {
@@ -612,7 +612,7 @@ void Creature::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_pt
 		} else {
 			if (hasExtraSwing()) {
 				// our target is moving lets see if we can get in hit
-				g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
+				g_dispatcher().addEvent(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
 			}
 
 			if (newTile->getZoneType() != oldTile->getZoneType()) {
@@ -738,8 +738,8 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 			dropLoot(corpse->getContainer(), lastHitCreature);
 			corpse->startDecaying();
 			bool corpses = corpse->isRewardCorpse() || (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
-			if (corpse->getContainer() && mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
-				const auto player = mostDamageCreature->getPlayer();
+			const auto player = mostDamageCreature ? mostDamageCreature->getPlayer() : nullptr;
+			if (corpse->getContainer() && player && !corpses) {
 				auto monster = getMonster();
 				if (monster && !monster->isRewardBoss()) {
 					std::ostringstream lootMessage;
@@ -753,7 +753,7 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 
 				if (player->checkAutoLoot()) {
 					int32_t pos = tile->getStackposOfItem(player, corpse);
-					g_dispatcher().addTask(
+					g_dispatcher().addEvent(
 						std::bind(&Game::playerQuickLoot, &g_game(), mostDamageCreature->getID(), this->getPosition(), corpse->getID(), pos - 1, nullptr, false, true),
 						"Game::playerQuickLoot"
 					);
@@ -800,7 +800,7 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = tru
 		g_game().addCreatureHealth(static_self_cast<Creature>());
 	}
 	if (health <= 0) {
-		g_dispatcher().addTask(std::bind(&Game::executeDeath, &g_game(), getID()), "Game::executeDeath");
+		g_dispatcher().addEvent(std::bind(&Game::executeDeath, &g_game(), getID()), "Game::executeDeath");
 	}
 }
 
@@ -1201,8 +1201,7 @@ void Creature::onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> targ
 	master->onGainExperience(gainExp, target);
 
 	if (!m->isFamiliar()) {
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, position, false, true);
+		auto spectators = Spectators().find<Player>(position);
 		if (spectators.empty()) {
 			return;
 		}
@@ -1212,7 +1211,7 @@ void Creature::onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> targ
 		message.primary.color = TEXTCOLOR_WHITE_EXP;
 		message.primary.value = gainExp;
 
-		for (std::shared_ptr<Creature> spectator : spectators) {
+		for (const auto &spectator : spectators) {
 			spectator->getPlayer()->sendTextMessage(message);
 		}
 	}
@@ -1309,7 +1308,7 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 		if (!force && conditionType == CONDITION_PARALYZE) {
 			int32_t walkDelay = getWalkDelay();
 			if (walkDelay > 0) {
-				g_scheduler().addEvent(
+				g_dispatcher().scheduleEvent(
 					walkDelay,
 					std::bind(&Game::forceRemoveCondition, &g_game(), getID(), conditionType, conditionId),
 					"Game::forceRemoveCondition"
@@ -1790,8 +1789,12 @@ void Creature::setIncreasePercent(CombatType_t combat, int32_t value) {
 	}
 }
 
-const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Creature::getZones() {
-	return Zone::getZones(getPosition());
+phmap::flat_hash_set<std::shared_ptr<Zone>> Creature::getZones() {
+	auto tile = getTile();
+	if (tile) {
+		return tile->getZones();
+	}
+	return {};
 }
 
 void Creature::iconChanged() {
@@ -1800,16 +1803,7 @@ void Creature::iconChanged() {
 		return;
 	}
 
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, tile->getPosition(), true);
-	for (auto spectator : spectators) {
-		if (!spectator) {
-			continue;
-		}
-
-		auto player = spectator->getPlayer();
-		if (player) {
-			player->sendCreatureIcon(getCreature());
-		}
+	for (const auto &spectator : Spectators().find<Player>(tile->getPosition(), true)) {
+		spectator->getPlayer()->sendCreatureIcon(getCreature());
 	}
 }

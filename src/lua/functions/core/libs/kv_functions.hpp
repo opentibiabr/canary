@@ -19,10 +19,10 @@ public:
 		registerMethod(L, "kv", "set", KVFunctions::luaKVSet);
 		registerMethod(L, "kv", "get", KVFunctions::luaKVGet);
 
-		registerClass(L, "KVStore", "");
-		registerMethod(L, "KVStore", "scoped", KVFunctions::luaKVScoped);
-		registerMethod(L, "KVStore", "set", KVFunctions::luaKVSet);
-		registerMethod(L, "KVStore", "get", KVFunctions::luaKVGet);
+		registerClass(L, "KV", "");
+		registerMethod(L, "KV", "scoped", KVFunctions::luaKVScoped);
+		registerMethod(L, "KV", "set", KVFunctions::luaKVSet);
+		registerMethod(L, "KV", "get", KVFunctions::luaKVGet);
 	}
 
 private:

@@ -29,8 +29,10 @@ private:
 	bool save(const std::string &key, const ValueWrapper &value) override;
 	bool prepareSave(const std::string &key, const ValueWrapper &value, DBInsert &update);
 
-	DBInsert dbUpdate() const {
-		return DBInsert("INSERT INTO `kv_store` (`key_name`, `timestamp`, `value`) VALUES");
+	DBInsert dbUpdate() {
+		auto insert = DBInsert("INSERT INTO `kv_store` (`key_name`, `timestamp`, `value`) VALUES");
+		insert.upsert({ "key_name", "timestamp", "value" });
+		return insert;
 	}
 
 	Database &db;

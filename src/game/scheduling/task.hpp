@@ -28,6 +28,18 @@ public:
 
 	~Task() = default;
 
+	uint64_t getId() {
+		if (id == 0) {
+			if (++LAST_EVENT_ID == 0) {
+				LAST_EVENT_ID = 1;
+			}
+
+			id = LAST_EVENT_ID;
+		}
+
+		return id;
+	}
+
 	uint32_t getDelay() const {
 		return delay;
 	}
@@ -58,30 +70,12 @@ public:
 
 	bool execute() const;
 
+private:
+	static std::atomic_uint_fast64_t LAST_EVENT_ID;
+
 	void updateTime() {
 		utime = TIME_NOW + std::chrono::milliseconds(delay);
 	}
-
-	uint64_t getId() {
-		if (id == 0) {
-			if (++LAST_EVENT_ID == 0) {
-				LAST_EVENT_ID = 1;
-			}
-
-			id = LAST_EVENT_ID;
-		}
-
-		return id;
-	}
-
-	struct Compare {
-		bool operator()(const std::shared_ptr<Task> &a, const std::shared_ptr<Task> &b) const {
-			return a->utime < b->utime;
-		}
-	};
-
-private:
-	static std::atomic_uint_fast64_t LAST_EVENT_ID;
 
 	bool hasTraceableContext() const {
 		const static auto tasksContext = phmap::flat_hash_set<std::string>({
@@ -113,6 +107,12 @@ private:
 		return tasksContext.contains(context);
 	}
 
+	struct Compare {
+		bool operator()(const std::shared_ptr<Task> &a, const std::shared_ptr<Task> &b) const {
+			return a->utime < b->utime;
+		}
+	};
+
 	std::function<void(void)> func = nullptr;
 	std::string_view context;
 
@@ -124,4 +124,6 @@ private:
 
 	bool cycle = false;
 	bool log = true;
+
+	friend class Dispatcher;
 };

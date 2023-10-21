@@ -94,7 +94,7 @@ function heartDestructionRupture.onUse(player, item, fromPosition, itemEx, toPos
 						players = storePlayers[i]
 						config.playerPositions[i]:sendMagicEffect(CONST_ME_POFF)
 						players:teleportTo(config.newPos)
-						players:setStorageValue(14323, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
+						players:setBossCooldown("Rupture", os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
 					end
 					Position(config.newPos):sendMagicEffect(11)
 

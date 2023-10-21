@@ -16,7 +16,6 @@ monster.outfit = {
 monster.bosstiary = {
 	bossRaceId = 1227,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = 14331,
 }
 
 monster.health = 290000

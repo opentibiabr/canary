@@ -16,7 +16,6 @@ local config = {
 		to = Position(33736, 31190, 7),
 	},
 	exit = Position(33799, 31356, 7),
-	storage = Storage.Quest.U12_60.APiratesTail.TentuglyTimer,
 }
 
 local lever = BossLever(config)

@@ -105,7 +105,6 @@ class MonsterType {
 		BestiaryType_t bestiaryRace = BESTY_RACE_NONE; // Number (addByte)
 
 		// Bosstiary
-		uint32_t bossStorageCooldown = 0;
 		BosstiaryRarity_t bosstiaryRace = BosstiaryRarity_t::BOSS_INVALID;
 		std::string bosstiaryClass;
 

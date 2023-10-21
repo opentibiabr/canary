@@ -361,6 +361,29 @@ bool Container::isHoldingItemWithId(const uint16_t id) {
 	return false;
 }
 
+bool Container::isInsideContainerWithId(const uint16_t id) {
+	auto nextParent = getParent();
+	while (nextParent != nullptr && nextParent->getContainer()) {
+		if (nextParent->getContainer()->getID() == id) {
+			return true;
+		}
+		nextParent = nextParent->getRealParent();
+	}
+	return false;
+}
+
+bool Container::isAnyKindOfRewardChest() {
+	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER && getParent() && getParent()->getContainer() && getParent()->getContainer()->getID() == ITEM_REWARD_CHEST || isBrowseFieldAndHoldsRewardChest();
+}
+
+bool Container::isAnyKindOfRewardContainer() {
+	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER || isHoldingItemWithId(ITEM_REWARD_CONTAINER) || isInsideContainerWithId(ITEM_REWARD_CONTAINER);
+}
+
+bool Container::isBrowseFieldAndHoldsRewardChest() {
+	return getID() == ITEM_BROWSEFIELD && isHoldingItemWithId(ITEM_REWARD_CHEST);
+}
+
 void Container::onAddContainerItem(std::shared_ptr<Item> item) {
 	auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 

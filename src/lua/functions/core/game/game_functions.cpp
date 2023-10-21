@@ -438,12 +438,6 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 		if (mtype && mtype->info.raceid > 0 && mtype->info.bosstiaryRace == BosstiaryRarity_t::RARITY_ARCHFOE) {
 			for (const auto &spectator : Spectators().find<Player>(monster->getPosition(), true)) {
 				if (const auto &tmpPlayer = spectator->getPlayer()) {
-					const auto &bossesOnTracker = g_ioBosstiary().getBosstiaryCooldownRaceId(tmpPlayer);
-					// If not have boss to update, then kill loop for economize resources
-					if (bossesOnTracker.size() == 0) {
-						break;
-					}
-
 					tmpPlayer->sendBosstiaryCooldownTimer();
 				}
 			}

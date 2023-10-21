@@ -16,7 +16,6 @@ monster.outfit = {
 monster.bosstiary = {
 	bossRaceId = 892,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.BigfootBurden.BossWarzone1,
 }
 
 monster.health = 200000

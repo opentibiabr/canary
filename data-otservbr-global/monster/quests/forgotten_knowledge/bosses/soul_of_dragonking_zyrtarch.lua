@@ -16,7 +16,6 @@ monster.outfit = {
 monster.bosstiary = {
 	bossRaceId = 1289,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.ForgottenKnowledge.DragonkingTimer,
 }
 
 monster.health = 150000

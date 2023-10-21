@@ -11,7 +11,6 @@ local config = {
 			to = Position(33191, 32020, 8),
 		},
 		exitPosition = Position(33167, 31978, 8),
-		storage = Storage.Quest.U10_80.Grimvale.BloodbackTimer,
 	},
 	[2] = {
 		teleportPosition = { x = 33055, y = 31910, z = 9 },
@@ -25,7 +24,6 @@ local config = {
 			to = Position(33066, 31896, 9),
 		},
 		exitPosition = Position(33055, 31911, 9),
-		storage = Storage.Quest.U10_80.Grimvale.DarkfangTimer,
 	},
 	[3] = {
 		teleportPosition = { x = 33128, y = 31971, z = 9 },
@@ -39,7 +37,6 @@ local config = {
 			to = Position(33126, 32007, 9),
 		},
 		exitPosition = Position(33128, 31972, 9),
-		storage = Storage.Quest.U10_80.Grimvale.SharpclawTimer,
 	},
 	[4] = {
 		teleportPosition = { x = 33402, y = 32097, z = 9 },
@@ -53,7 +50,6 @@ local config = {
 			to = Position(33396, 32119, 9),
 		},
 		exitPosition = Position(33403, 32097, 9),
-		storage = Storage.Quest.U10_80.Grimvale.ShadowpeltTimer,
 	},
 	[5] = {
 		teleportPosition = { x = 33442, y = 32051, z = 9 },
@@ -67,7 +63,6 @@ local config = {
 			to = Position(33456, 32041, 9),
 		},
 		exitPosition = Position(33442, 32052, 9),
-		storage = Storage.Quest.U10_80.Grimvale.BlackVixenTimer,
 	},
 	[6] = {
 		teleportPosition = { x = 33180, y = 32011, z = 8 },
@@ -114,7 +109,7 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 				creature:say("There's someone fighting with " .. value.bossName .. ".", TALKTYPE_MONSTER_SAY)
 				return true
 			end
-			if creature:getStorageValue(value.storage) > os.time() then
+			if not creature:canFightBoss(value.bossName) then
 				creature:teleportTo(fromPosition, true)
 				creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. value.timeToFightAgain .. " hours to face " .. value.bossName .. " again!")
@@ -127,7 +122,7 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 			end
 			creature:teleportTo(value.destination)
 			creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			creature:setStorageValue(value.storage, os.time() + value.timeToFightAgain * 3600)
+			creature:setBossCooldown(value.bossName, os.time() + value.timeToFightAgain * 3600)
 			creature:sendBosstiaryCooldownTimer()
 			addEvent(function()
 				spec:clearCreaturesCache()

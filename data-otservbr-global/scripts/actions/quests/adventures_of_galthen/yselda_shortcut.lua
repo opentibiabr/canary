@@ -9,7 +9,7 @@ function entranceYselda.onUse(creature, item, position, fromPosition)
 	if not player then
 		return false
 	end
-	if player:getStorageValue(Storage.Quest.U12_70.AdventuresOfGalthen.MegasylvanYseldaTimer) < 0 then
+	if not player:canFightBoss("Megasylvan Yselda") then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This root seems to thicken and wreathe the moment you try to grab it.")
 		player:teleportTo(fromPosition, true)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

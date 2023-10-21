@@ -8,7 +8,7 @@ function forgottenKnowledgeMachine.onUse(player, item, fromPosition, target, toP
 	end
 
 	if player:getPosition() == Position(32870, 32723, 14) then
-		if player:getStorageValue(Storage.ForgottenKnowledge.TimeGuardianTimer) < os.time() then
+		if player:canFightBoss("The Time Guardian") then
 			player:teleportTo(Position(32870, 32724, 15))
 			player:getPosition():sendMagicEffect(CONST_ME_ENERGYHIT)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The mechanism takes you back in time.")

@@ -28,7 +28,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1304,
 	bossRace = RARITY_NEMESIS,
-	storageCooldown = Storage.ForgottenKnowledge.LastLoreTimer,
 }
 
 monster.strategiesTarget = {

@@ -13,7 +13,8 @@
 #include "database/databasetasks.hpp"
 #include "io/iologindata.hpp"
 #include "game/game.hpp"
-#include "game/scheduling/scheduler.hpp"
+#include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/save_manager.hpp"
 
 uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {
 	auto tier = static_cast<uint8_t>(std::atoi(string.c_str()));
@@ -135,7 +136,6 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool) {
 			if (!player) {
 				player = std::make_shared<Player>(nullptr);
 				if (!IOLoginData::loadPlayerById(player, playerId)) {
-
 					continue;
 				}
 			}
@@ -168,7 +168,6 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool) {
 				for (uint16_t i = 0; i < amount; ++i) {
 					std::shared_ptr<Item> item = Item::CreateItem(itemType.id, subType);
 					if (g_game().internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
-
 						break;
 					}
 
@@ -179,7 +178,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool) {
 			}
 
 			if (player->isOffline()) {
-				IOLoginData::savePlayer(player);
+				g_saveManager().savePlayer(player);
 			}
 		} else {
 			uint64_t totalPrice = result->getNumber<uint64_t>("price") * amount;
@@ -206,7 +205,7 @@ void IOMarket::checkExpiredOffers() {
 		return;
 	}
 
-	g_scheduler().addEvent(checkExpiredMarketOffersEachMinutes * 60 * 1000, IOMarket::checkExpiredOffers, __FUNCTION__);
+	g_dispatcher().scheduleEvent(checkExpiredMarketOffersEachMinutes * 60 * 1000, IOMarket::checkExpiredOffers, __FUNCTION__);
 }
 
 uint32_t IOMarket::getPlayerOfferCount(uint32_t playerId) {

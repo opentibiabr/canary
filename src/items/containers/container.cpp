@@ -13,6 +13,7 @@
 #include "items/decay/decay.hpp"
 #include "io/iomap.hpp"
 #include "game/game.hpp"
+#include "map/spectators.hpp"
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
@@ -57,7 +58,7 @@ std::shared_ptr<Container> Container::create(std::shared_ptr<Tile> tile) {
 Container::~Container() {
 	if (getID() == ITEM_BROWSEFIELD) {
 		for (std::shared_ptr<Item> item : itemlist) {
-			item->setParent(m_parent);
+			item->setParent(getParent());
 		}
 	}
 }
@@ -384,46 +385,43 @@ bool Container::isBrowseFieldAndHoldsRewardChest() {
 }
 
 void Container::onAddContainerItem(std::shared_ptr<Item> item) {
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send to client
-	for (std::shared_ptr<Creature> spectator : spectators) {
+	for (const auto &spectator : spectators) {
 		spectator->getPlayer()->sendAddContainerItem(getContainer(), item);
 	}
 
 	// event methods
-	for (std::shared_ptr<Creature> spectator : spectators) {
+	for (const auto &spectator : spectators) {
 		spectator->getPlayer()->onAddContainerItem(item);
 	}
 }
 
 void Container::onUpdateContainerItem(uint32_t index, std::shared_ptr<Item> oldItem, std::shared_ptr<Item> newItem) {
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send to client
-	for (std::shared_ptr<Creature> spectator : spectators) {
+	for (const auto &spectator : spectators) {
 		spectator->getPlayer()->sendUpdateContainerItem(getContainer(), index, newItem);
 	}
 
 	// event methods
-	for (std::shared_ptr<Creature> spectator : spectators) {
+	for (const auto &spectator : spectators) {
 		spectator->getPlayer()->onUpdateContainerItem(getContainer(), oldItem, newItem);
 	}
 }
 
 void Container::onRemoveContainerItem(uint32_t index, std::shared_ptr<Item> item) {
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send change to client
-	for (std::shared_ptr<Creature> spectator : spectators) {
+	for (const auto &spectator : spectators) {
 		spectator->getPlayer()->sendRemoveContainerItem(getContainer(), index);
 	}
 
 	// event methods
-	for (std::shared_ptr<Creature> spectator : spectators) {
+	for (const auto &spectator : spectators) {
 		spectator->getPlayer()->onRemoveContainerItem(getContainer(), item);
 	}
 }

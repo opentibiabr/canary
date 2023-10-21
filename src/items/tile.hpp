@@ -25,7 +25,6 @@ class Zone;
 
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 using ItemVector = std::vector<std::shared_ptr<Item>>;
-using SpectatorHashSet = phmap::flat_hash_set<std::shared_ptr<Creature>>;
 
 class TileItemVector : private ItemVector {
 public:
@@ -173,8 +172,10 @@ public:
 	void resetFlag(uint32_t flag) {
 		this->flags &= ~flag;
 	}
+	void addZone(std::shared_ptr<Zone> zone);
+	void clearZones();
 
-	const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones();
+	phmap::flat_hash_set<std::shared_ptr<Zone>> getZones();
 
 	ZoneType_t getZoneType() const {
 		if (hasFlag(TILESTATE_PROTECTIONZONE)) {
@@ -250,8 +251,8 @@ public:
 private:
 	void onAddTileItem(std::shared_ptr<Item> item);
 	void onUpdateTileItem(std::shared_ptr<Item> oldItem, const ItemType &oldType, std::shared_ptr<Item> newItem, const ItemType &newType);
-	void onRemoveTileItem(const SpectatorHashSet &spectators, const std::vector<int32_t> &oldStackPosVector, std::shared_ptr<Item> item);
-	void onUpdateTile(const SpectatorHashSet &spectators);
+	void onRemoveTileItem(const CreatureVector &spectators, const std::vector<int32_t> &oldStackPosVector, std::shared_ptr<Item> item);
+	void onUpdateTile(const CreatureVector &spectators);
 
 	void setTileFlags(std::shared_ptr<Item> item);
 	void resetTileFlags(std::shared_ptr<Item> item);
@@ -262,7 +263,7 @@ protected:
 	std::shared_ptr<Item> ground = nullptr;
 	Position tilePos;
 	uint32_t flags = 0;
-	std::shared_ptr<Zone> zone;
+	phmap::flat_hash_set<std::shared_ptr<Zone>> zones;
 };
 
 // Used for walkable tiles, where there is high likeliness of

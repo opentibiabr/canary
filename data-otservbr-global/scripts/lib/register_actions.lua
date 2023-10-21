@@ -465,8 +465,7 @@ function onUseShovel(player, item, fromPosition, target, toPosition, isHotkey)
 	if table.contains(holes, target.itemid) then
 		target:transform(target.itemid + 1)
 		target:decay()
-		toPosition:moveDownstairs()
-		toPosition.y = toPosition.y - 1
+		toPosition.z = toPosition.z + 1
 		if Tile(toPosition):hasFlag(TILESTATE_PROTECTIONZONE) and player:isPzLocked() then
 			player:sendCancelMessage(RETURNVALUE_PLAYERISPZLOCKED)
 			return true

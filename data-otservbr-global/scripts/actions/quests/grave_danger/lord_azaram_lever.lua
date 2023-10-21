@@ -17,7 +17,6 @@ local config = {
 		to = Position(33432, 31481, 13),
 	},
 	exit = Position(32192, 31819, 8),
-	storage = Storage.Quest.U12_20.GraveDanger.Bosses.LordAzaramTimer,
 }
 
 local lever = BossLever(config)

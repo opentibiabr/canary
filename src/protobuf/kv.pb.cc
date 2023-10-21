@@ -96,6 +96,7 @@ const uint32_t TableStruct_kv_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(proto
   ::_pbi::kInvalidFieldOffsetTag,
   ::_pbi::kInvalidFieldOffsetTag,
   ::_pbi::kInvalidFieldOffsetTag,
+  ::_pbi::kInvalidFieldOffsetTag,
   PROTOBUF_FIELD_OFFSET(::Canary::protobuf::kv::ValueWrapper, _impl_.value_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Canary::protobuf::kv::ArrayType, _internal_metadata_),
@@ -122,9 +123,9 @@ const uint32_t TableStruct_kv_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(proto
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Canary::protobuf::kv::ValueWrapper)},
-  { 12, -1, -1, sizeof(::Canary::protobuf::kv::ArrayType)},
-  { 19, -1, -1, sizeof(::Canary::protobuf::kv::KeyValuePair)},
-  { 27, -1, -1, sizeof(::Canary::protobuf::kv::MapType)},
+  { 13, -1, -1, sizeof(::Canary::protobuf::kv::ArrayType)},
+  { 20, -1, -1, sizeof(::Canary::protobuf::kv::KeyValuePair)},
+  { 28, -1, -1, sizeof(::Canary::protobuf::kv::MapType)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -135,21 +136,22 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_kv_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\010kv.proto\022\022Canary.protobuf.kv\"\301\001\n\014Value"
+  "\n\010kv.proto\022\022Canary.protobuf.kv\"\327\001\n\014Value"
   "Wrapper\022\023\n\tstr_value\030\001 \001(\tH\000\022\023\n\tint_valu"
   "e\030\002 \001(\005H\000\022\026\n\014double_value\030\003 \001(\001H\000\0224\n\013arr"
   "ay_value\030\004 \001(\0132\035.Canary.protobuf.kv.Arra"
   "yTypeH\000\0220\n\tmap_value\030\005 \001(\0132\033.Canary.prot"
-  "obuf.kv.MapTypeH\000B\007\n\005value\"=\n\tArrayType\022"
-  "0\n\006values\030\001 \003(\0132 .Canary.protobuf.kv.Val"
-  "ueWrapper\"L\n\014KeyValuePair\022\013\n\003key\030\001 \001(\t\022/"
-  "\n\005value\030\002 \001(\0132 .Canary.protobuf.kv.Value"
-  "Wrapper\":\n\007MapType\022/\n\005items\030\001 \003(\0132 .Cana"
-  "ry.protobuf.kv.KeyValuePairb\006proto3"
+  "obuf.kv.MapTypeH\000\022\024\n\nbool_value\030\006 \001(\010H\000B"
+  "\007\n\005value\"=\n\tArrayType\0220\n\006values\030\001 \003(\0132 ."
+  "Canary.protobuf.kv.ValueWrapper\"L\n\014KeyVa"
+  "luePair\022\013\n\003key\030\001 \001(\t\022/\n\005value\030\002 \001(\0132 .Ca"
+  "nary.protobuf.kv.ValueWrapper\":\n\007MapType"
+  "\022/\n\005items\030\001 \003(\0132 .Canary.protobuf.kv.Key"
+  "ValuePairb\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_kv_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_kv_2eproto = {
-    false, false, 435, descriptor_table_protodef_kv_2eproto,
+    false, false, 457, descriptor_table_protodef_kv_2eproto,
     "kv.proto",
     &descriptor_table_kv_2eproto_once, nullptr, 0, 4,
     schemas, file_default_instances, TableStruct_kv_2eproto::offsets,
@@ -251,6 +253,10 @@ ValueWrapper::ValueWrapper(const ValueWrapper& from)
           from._internal_map_value());
       break;
     }
+    case kBoolValue: {
+      _this->_internal_set_bool_value(from._internal_bool_value());
+      break;
+    }
     case VALUE_NOT_SET: {
       break;
     }
@@ -317,6 +323,10 @@ void ValueWrapper::clear_value() {
       }
       break;
     }
+    case kBoolValue: {
+      // No need to clear
+      break;
+    }
     case VALUE_NOT_SET: {
       break;
     }
@@ -379,6 +389,14 @@ const char* ValueWrapper::_InternalParse(const char* ptr, ::_pbi::ParseContext* 
       case 5:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
           ptr = ctx->ParseMessage(_internal_mutable_map_value(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool bool_value = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
+          _internal_set_bool_value(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr));
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -448,6 +466,12 @@ uint8_t* ValueWrapper::_InternalSerialize(
         _Internal::map_value(this).GetCachedSize(), target, stream);
   }
 
+  // bool bool_value = 6;
+  if (_internal_has_bool_value()) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(6, this->_internal_bool_value(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -496,6 +520,11 @@ size_t ValueWrapper::ByteSizeLong() const {
           *_impl_.value_.map_value_);
       break;
     }
+    // bool bool_value = 6;
+    case kBoolValue: {
+      total_size += 1 + 1;
+      break;
+    }
     case VALUE_NOT_SET: {
       break;
     }
@@ -539,6 +568,10 @@ void ValueWrapper::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::P
     case kMapValue: {
       _this->_internal_mutable_map_value()->::Canary::protobuf::kv::MapType::MergeFrom(
           from._internal_map_value());
+      break;
+    }
+    case kBoolValue: {
+      _this->_internal_set_bool_value(from._internal_bool_value());
       break;
     }
     case VALUE_NOT_SET: {

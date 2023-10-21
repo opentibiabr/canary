@@ -14,7 +14,7 @@
 class WeaponFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "Weapon", "", WeaponFunctions::luaCreateWeapon);
+		registerSharedClass(L, "Weapon", "", WeaponFunctions::luaCreateWeapon);
 		registerMethod(L, "Weapon", "action", WeaponFunctions::luaWeaponAction);
 		registerMethod(L, "Weapon", "register", WeaponFunctions::luaWeaponRegister);
 		registerMethod(L, "Weapon", "id", WeaponFunctions::luaWeaponId);

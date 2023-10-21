@@ -28,7 +28,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1389,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.FirstDragon.KalyassaTimer,
 }
 
 monster.strategiesTarget = {

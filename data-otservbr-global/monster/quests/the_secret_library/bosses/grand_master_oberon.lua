@@ -16,7 +16,6 @@ monster.outfit = {
 monster.bosstiary = {
 	bossRaceId = 1576,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.TheSecretLibrary.TheOrderOfTheFalcon.OberonTimer,
 }
 
 monster.health = 60000
@@ -142,6 +141,9 @@ mType.onDisappear = function(monster, creature) end
 mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
 mType.onSay = function(monster, creature, type, message)
+	if type ~= TALKTYPE_SAY then
+		return false
+	end
 	local exhaust = GrandMasterOberonConfig.Storage.Exhaust
 	if creature:isPlayer() and monster:getStorageValue(exhaust) <= os.time() then
 		message = message:lower()

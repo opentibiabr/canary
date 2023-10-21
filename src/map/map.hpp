@@ -23,8 +23,6 @@ class Map;
 
 struct FindPathParams;
 
-using SpectatorCache = std::map<Position, SpectatorHashSet>;
-
 class FrozenPathingConditionCall;
 
 /**
@@ -52,7 +50,7 @@ public:
 	 * \param loadNpcs if true, the main map npcs is loaded
 	 * \returns true if the main map was loaded successfully
 	 */
-	void loadMap(const std::string &identifier, bool mainMap = false, bool loadHouses = false, bool loadMonsters = false, bool loadNpcs = false, const Position &pos = Position());
+	void loadMap(const std::string &identifier, bool mainMap = false, bool loadHouses = false, bool loadMonsters = false, bool loadNpcs = false, bool loadZones = false, const Position &pos = Position());
 	/**
 	 * Load the custom map
 	 * \param identifier Is the map custom folder
@@ -61,7 +59,7 @@ public:
 	 * \param loadNpcs if true, the map custom npcs is loaded
 	 * \returns true if the custom map was loaded successfully
 	 */
-	void loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMonsters, bool loadNpcs, const int customMapIndex);
+	void loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMonsters, bool loadNpcs, bool loadZones, const int customMapIndex);
 
 	void loadHouseInfo();
 
@@ -80,6 +78,11 @@ public:
 		return getTile(pos.x, pos.y, pos.z);
 	}
 
+	void refreshZones(uint16_t x, uint16_t y, uint8_t z);
+	void refreshZones(const Position &pos) {
+		refreshZones(pos.x, pos.y, pos.z);
+	}
+
 	std::shared_ptr<Tile> getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic = false);
 	std::shared_ptr<Tile> getOrCreateTile(const Position &pos, bool isDynamic = false) {
 		return getOrCreateTile(pos.x, pos.y, pos.z, isDynamic);
@@ -95,10 +98,6 @@ public:
 	bool placeCreature(const Position &centerPos, std::shared_ptr<Creature> creature, bool extendedPos = false, bool forceLogin = false);
 
 	void moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport = false);
-
-	void getSpectators(SpectatorHashSet &spectators, const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
-
-	void clearSpectatorCache();
 
 	/**
 	 * Checks if you can throw an object to that position
@@ -153,20 +152,16 @@ private:
 	void setTile(const Position &pos, std::shared_ptr<Tile> newTile) {
 		setTile(pos.x, pos.y, pos.z, newTile);
 	}
-
-	SpectatorCache spectatorCache;
-	SpectatorCache playersSpectatorCache;
+	std::shared_ptr<Tile> getLoadedTile(uint16_t x, uint16_t y, uint8_t z);
 
 	std::filesystem::path path;
 	std::string monsterfile;
 	std::string housefile;
 	std::string npcfile;
+	std::string zonesfile;
 
 	uint32_t width = 0;
 	uint32_t height = 0;
-
-	// Actually scans the map for spectators
-	void getSpectatorsInternal(SpectatorHashSet &spectators, const Position &centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const;
 
 	friend class Game;
 	friend class IOMap;

@@ -18,8 +18,8 @@
 #include "creatures/players/storages/storages.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "game/scheduling/scheduler.hpp"
 #include "game/scheduling/task.hpp"
+#include "game/scheduling/save_manager.hpp"
 #include "grouping/familiars.hpp"
 #include "lua/creature/creatureevent.hpp"
 #include "lua/creature/events.hpp"
@@ -30,6 +30,7 @@
 #include "items/bed.hpp"
 #include "items/weapons/weapons.hpp"
 #include "core.hpp"
+#include "map/spectators.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -1296,6 +1297,7 @@ void Player::sendPing() {
 	}
 
 	if (noPongTime >= 60000 && canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
+		g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
 		if (client) {
 			client->logout(true, true);
 		} else {
@@ -1615,6 +1617,11 @@ void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) 
 			}
 		}
 
+		// Refresh bosstiary tracker onLogin
+		refreshCyclopediaMonsterTracker(true);
+		// Refresh bestiary tracker onLogin
+		refreshCyclopediaMonsterTracker(false);
+
 		for (const auto &condition : storedConditionList) {
 			addCondition(condition);
 		}
@@ -1736,20 +1743,20 @@ void Player::onAttackedCreatureChangeZone(ZoneType_t zone) {
 void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) {
 	Creature::onRemoveCreature(creature, isLogout);
 
-	if (creature == getPlayer()) {
+	if (auto player = getPlayer(); player == creature) {
 		if (isLogout) {
 			if (party) {
-				party->leaveParty(static_self_cast<Player>());
+				party->leaveParty(player);
 			}
 			if (guild) {
-				guild->removeMember(static_self_cast<Player>());
+				guild->removeMember(player);
 			}
 
-			g_game().removePlayerUniqueLogin(static_self_cast<Player>());
+			g_game().removePlayerUniqueLogin(player);
 			loginPosition = getPosition();
 			lastLogout = time(nullptr);
 			g_logger().info("{} has logged out", getName());
-			g_chat().removeUserFromAllChannels(getPlayer());
+			g_chat().removeUserFromAllChannels(player);
 			clearPartyInvitations();
 			IOLoginData::updateOnlineStatus(guid, false);
 		}
@@ -1759,16 +1766,12 @@ void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout)
 		}
 
 		if (tradePartner) {
-			g_game().internalCloseTrade(static_self_cast<Player>());
+			g_game().internalCloseTrade(player);
 		}
 
 		closeShopWindow();
 
-		for (uint32_t tries = 0; tries < 3; ++tries) {
-			if (IOLoginData::savePlayer(static_self_cast<Player>())) {
-				break;
-			}
-		}
+		g_saveManager().savePlayer(player);
 	}
 
 	if (creature == shopOwner) {
@@ -1833,7 +1836,7 @@ void Player::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<
 	auto followCreature = getFollowCreature();
 	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
 		isUpdatingPath = false;
-		g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
+		g_dispatcher().addEvent(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
 	}
 
 	if (creature != getPlayer()) {
@@ -1986,7 +1989,7 @@ void Player::checkTradeState(std::shared_ptr<Item> item) {
 
 void Player::setNextWalkActionTask(std::shared_ptr<Task> task) {
 	if (walkTaskEvent != 0) {
-		g_scheduler().stopEvent(walkTaskEvent);
+		g_dispatcher().stopEvent(walkTaskEvent);
 		walkTaskEvent = 0;
 	}
 
@@ -1995,19 +1998,19 @@ void Player::setNextWalkActionTask(std::shared_ptr<Task> task) {
 
 void Player::setNextWalkTask(std::shared_ptr<Task> task) {
 	if (nextStepEvent != 0) {
-		g_scheduler().stopEvent(nextStepEvent);
+		g_dispatcher().stopEvent(nextStepEvent);
 		nextStepEvent = 0;
 	}
 
 	if (task) {
-		nextStepEvent = g_scheduler().addEvent(task);
+		nextStepEvent = g_dispatcher().scheduleEvent(task);
 		resetIdleTime();
 	}
 }
 
 void Player::setNextActionTask(std::shared_ptr<Task> task, bool resetIdleTime /*= true */) {
 	if (actionTaskEvent != 0) {
-		g_scheduler().stopEvent(actionTaskEvent);
+		g_dispatcher().stopEvent(actionTaskEvent);
 		actionTaskEvent = 0;
 	}
 
@@ -2016,7 +2019,7 @@ void Player::setNextActionTask(std::shared_ptr<Task> task, bool resetIdleTime /*
 	}
 
 	if (task) {
-		actionTaskEvent = g_scheduler().addEvent(task);
+		actionTaskEvent = g_dispatcher().scheduleEvent(task);
 		if (resetIdleTime) {
 			this->resetIdleTime();
 		}
@@ -2025,25 +2028,25 @@ void Player::setNextActionTask(std::shared_ptr<Task> task, bool resetIdleTime /*
 
 void Player::setNextActionPushTask(std::shared_ptr<Task> task) {
 	if (actionTaskEventPush != 0) {
-		g_scheduler().stopEvent(actionTaskEventPush);
+		g_dispatcher().stopEvent(actionTaskEventPush);
 		actionTaskEventPush = 0;
 	}
 
 	if (task) {
-		actionTaskEventPush = g_scheduler().addEvent(task);
+		actionTaskEventPush = g_dispatcher().scheduleEvent(task);
 	}
 }
 
 void Player::setNextPotionActionTask(std::shared_ptr<Task> task) {
 	if (actionPotionTaskEvent != 0) {
-		g_scheduler().stopEvent(actionPotionTaskEvent);
+		g_dispatcher().stopEvent(actionPotionTaskEvent);
 		actionPotionTaskEvent = 0;
 	}
 
 	cancelPush();
 
 	if (task) {
-		actionPotionTaskEvent = g_scheduler().addEvent(task);
+		actionPotionTaskEvent = g_dispatcher().scheduleEvent(task);
 		// resetIdleTime();
 	}
 }
@@ -2058,7 +2061,7 @@ uint32_t Player::getNextPotionActionTime() const {
 
 void Player::cancelPush() {
 	if (actionTaskEventPush != 0) {
-		g_scheduler().stopEvent(actionTaskEventPush);
+		g_dispatcher().stopEvent(actionTaskEventPush);
 		actionTaskEventPush = 0;
 		inEventMovePush = false;
 	}
@@ -2264,8 +2267,7 @@ void Player::addExperience(std::shared_ptr<Creature> target, uint64_t exp, bool 
 		message.primary.color = TEXTCOLOR_WHITE_EXP;
 		sendTextMessage(message);
 
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, position, false, true);
+		auto spectators = Spectators().find<Player>(position);
 		spectators.erase(static_self_cast<Player>());
 		if (!spectators.empty()) {
 			message.type = MESSAGE_EXPERIENCE_OTHERS;
@@ -2358,8 +2360,7 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 		message.primary.color = TEXTCOLOR_RED;
 		sendTextMessage(message);
 
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, position, false, true);
+		auto spectators = Spectators().find<Player>(position);
 		spectators.erase(static_self_cast<Player>());
 		if (!spectators.empty()) {
 			message.type = MESSAGE_EXPERIENCE_OTHERS;
@@ -2790,14 +2791,9 @@ bool Player::spawn() {
 		return false;
 	}
 
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, position, true);
-	for (std::shared_ptr<Creature> spectator : spectators) {
-		if (!spectator) {
-			continue;
-		}
-
-		if (std::shared_ptr<Player> tmpPlayer = spectator->getPlayer()) {
+	auto spectators = Spectators().find<Creature>(position, true);
+	for (const auto &spectator : spectators) {
+		if (const auto &tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendCreatureAppear(static_self_cast<Player>(), pos, true);
 		}
 
@@ -2833,18 +2829,13 @@ void Player::despawn() {
 
 	std::vector<int32_t> oldStackPosVector;
 
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, tile->getPosition(), true);
+	auto spectators = Spectators().find<Creature>(tile->getPosition(), true);
 	size_t i = 0;
-	for (std::shared_ptr<Creature> spectator : spectators) {
-		if (!spectator) {
-			continue;
-		}
-
-		if (const auto player = spectator->getPlayer()) {
+	for (const auto &spectator : spectators) {
+		if (const auto &player = spectator->getPlayer()) {
 			oldStackPosVector.push_back(player->canSeeCreature(static_self_cast<Player>()) ? tile->getStackposOfCreature(player, getPlayer()) : -1);
 		}
-		if (auto player = spectator->getPlayer()) {
+		if (const auto &player = spectator->getPlayer()) {
 			player->sendRemoveTileThing(tile->getPosition(), oldStackPosVector[i++]);
 		}
 
@@ -4080,7 +4071,9 @@ void Player::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_pt
 		assert(i ? i->getContainer() != nullptr : true);
 
 		if (i) {
-			requireListUpdate = i->getContainer()->getHoldingPlayer() != getPlayer();
+			if (auto container = i->getContainer()) {
+				requireListUpdate = container->getHoldingPlayer() != getPlayer();
+			}
 		} else {
 			requireListUpdate = newParent != getPlayer();
 		}
@@ -4140,7 +4133,7 @@ bool Player::updateSaleShopList(std::shared_ptr<Item> item) {
 		return true;
 	}
 
-	g_dispatcher().addTask(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID()), "updatePlayerSaleItems");
+	g_dispatcher().addEvent(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID()), "updatePlayerSaleItems");
 	scheduledSaleUpdate = true;
 	return true;
 }
@@ -4211,7 +4204,7 @@ bool Player::setAttackedCreature(std::shared_ptr<Creature> creature) {
 	}
 
 	if (creature) {
-		g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
+		g_dispatcher().addEvent(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
 	}
 	return true;
 }
@@ -4253,7 +4246,7 @@ void Player::doAttacking(uint32_t) {
 		bool result = false;
 
 		std::shared_ptr<Item> tool = getWeapon();
-		const Weapon* weapon = g_weapons().getWeapon(tool);
+		const WeaponShared_ptr weapon = g_weapons().getWeapon(tool);
 		uint32_t delay = getAttackSpeed();
 		bool classicSpeed = g_configManager().getBoolean(CLASSIC_ATTACK_SPEED);
 
@@ -4275,7 +4268,7 @@ void Player::doAttacking(uint32_t) {
 		if (!classicSpeed) {
 			setNextActionTask(task, false);
 		} else {
-			g_scheduler().addEvent(task);
+			g_dispatcher().scheduleEvent(task);
 		}
 
 		if (result) {
@@ -4338,7 +4331,7 @@ void Player::onWalkComplete() {
 	}
 
 	if (walkTask) {
-		walkTaskEvent = g_scheduler().addEvent(walkTask);
+		walkTaskEvent = g_dispatcher().scheduleEvent(walkTask);
 		walkTask = nullptr;
 	}
 }
@@ -4886,8 +4879,8 @@ bool Player::canFamiliar(uint16_t lookType) const {
 	}
 
 	for (const FamiliarEntry &familiarEntry : familiars) {
-		if (familiarEntry.lookType != lookType) {
-			continue;
+		if (familiarEntry.lookType == lookType) {
+			return true;
 		}
 	}
 	return false;
@@ -6792,7 +6785,7 @@ bool Player::saySpell(
 	SpeakClasses type,
 	const std::string &text,
 	bool ghostMode,
-	SpectatorHashSet* spectatorsPtr /* = nullptr*/,
+	Spectators* spectatorsPtr /* = nullptr*/,
 	const Position* pos /* = nullptr*/
 ) {
 	if (text.empty()) {
@@ -6804,17 +6797,17 @@ bool Player::saySpell(
 		pos = &getPosition();
 	}
 
-	SpectatorHashSet spectators;
+	Spectators spectators;
 
 	if (!spectatorsPtr || spectatorsPtr->empty()) {
-		// This somewhat complex construct ensures that the cached SpectatorHashSet
+		// This somewhat complex construct ensures that the cached Spectators
 		// is used if available and if it can be used, else a local vector is
 		// used (hopefully the compiler will optimize away the construction of
 		// the temporary when it's not used).
 		if (type != TALKTYPE_YELL && type != TALKTYPE_MONSTER_YELL) {
-			g_game().map.getSpectators(spectators, *pos, false, false, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_Y, MAP_MAX_CLIENT_VIEW_PORT_Y);
+			spectators.find<Creature>(*pos, false, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_Y, MAP_MAX_CLIENT_VIEW_PORT_Y);
 		} else {
-			g_game().map.getSpectators(spectators, *pos, true, false, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2);
+			spectators.find<Creature>(*pos, true, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2);
 		}
 	} else {
 		spectators = (*spectatorsPtr);
@@ -7538,7 +7531,7 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 		// Check if can walk to the toPosition and send event to use function
 		std::forward_list<Direction> listDir;
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
-			g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir), __FUNCTION__);
+			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir), __FUNCTION__);
 
 			std::shared_ptr<Task> task = createPlayerTask(delay, function, __FUNCTION__);
 			setNextWalkActionTask(task);

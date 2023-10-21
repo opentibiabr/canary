@@ -9,6 +9,7 @@
 
 #pragma once
 #include "utils/tools.hpp"
+#include <unordered_set>
 
 static constexpr auto SYSTEM_TIME_ZERO = std::chrono::system_clock::time_point(std::chrono::milliseconds(0));
 
@@ -78,7 +79,7 @@ private:
 	}
 
 	bool hasTraceableContext() const {
-		const static auto tasksContext = std::set<std::string_view>({
+		const static auto tasksContext = std::unordered_set<std::string_view>({
 			"Creature::checkCreatureWalk",
 			"Decay::checkDecay",
 			"Dispatcher::asyncEvent",

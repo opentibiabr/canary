@@ -263,7 +263,7 @@ public:
 		return ZONE_NORMAL;
 	}
 
-	const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones();
+	phmap::flat_hash_set<std::shared_ptr<Zone>> getZones();
 
 	// walk functions
 	void startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions = false);
@@ -493,6 +493,7 @@ public:
 	std::shared_ptr<Cylinder> getParent() override final {
 		return getTile();
 	}
+
 	void setParent(std::weak_ptr<Cylinder> cylinder) override final {
 		auto lockedCylinder = cylinder.lock();
 		if (lockedCylinder) {

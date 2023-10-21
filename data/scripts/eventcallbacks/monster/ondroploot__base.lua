@@ -11,6 +11,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 	end
 	local mType = monster:getType()
 	if not mType then
+		logger.warning("monsterOnDropLoot: monster has no type")
 		return
 	end
 

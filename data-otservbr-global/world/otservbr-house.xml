@@ -341,7 +341,7 @@
 	<house name="Mercenary Tower" houseid="3010" entryx="32208" entryy="32437" entryz="7" rent="250000" guildhall="true" townid="8" size="619" clientid="0" beds="26" />
 	<house name="Snake Tower" houseid="3011" entryx="32435" entryy="32359" entryz="7" rent="500000" guildhall="true" townid="8" size="627" clientid="0" beds="21" />
 	<house name="Southern Thais Guildhall" houseid="3012" entryx="32401" entryy="32254" entryz="7" rent="1000000" guildhall="true" townid="8" size="374" clientid="0" beds="16" />
-	<house name="Spiritkeep" houseid="3013" entryx="32265" entryy="32316" entryz="7" rent="500000" guildhall="true" townid="8" size="181" clientid="0" beds="23" />
+	<house name="Spiritkeep" houseid="3013" entryx="32265" entryy="32316" entryz="7" rent="500000" guildhall="true" townid="8" size="289" clientid="0" beds="23" />
 	<house name="Thais Clanhall" houseid="3014" entryx="32326" entryy="32272" entryz="7" rent="500000" guildhall="true" townid="8" size="206" clientid="0" beds="10" />
 	<house name="The Lair" houseid="3015" entryx="32993" entryy="32152" entryz="7" rent="200000" townid="9" size="259" clientid="0" beds="3" />
 	<house name="Silver Street 4" houseid="3016" entryx="32997" entryy="32077" entryz="6" rent="300000" townid="9" size="119" clientid="0" beds="2" />
@@ -455,7 +455,7 @@
 	<house name="Edron Flats, Flat 23" houseid="3131" entryx="33183" entryy="31845" entryz="5" rent="80000" townid="11" size="24" clientid="0" beds="2" />
 	<house name="Castle Shop 1" houseid="3133" entryx="33205" entryy="31794" entryz="7" rent="400000" townid="11" size="38" clientid="0" beds="1" />
 	<house name="Castle Shop 2" houseid="3134" entryx="33205" entryy="31801" entryz="7" rent="400000" townid="11" size="38" clientid="0" beds="1" />
-	<house name="Castle Shop 3" houseid="3135" entryx="33205" entryy="31808" entryz="7" rent="300000" townid="11" size="39" clientid="0" beds="1" />
+	<house name="Castle Shop 3" houseid="3135" entryx="33205" entryy="31808" entryz="7" rent="300000" townid="11" size="38" clientid="0" beds="1" />
 	<house name="Central Circle 1" houseid="3136" entryx="33203" entryy="31841" entryz="7" rent="800000" townid="11" size="76" clientid="0" beds="2" />
 	<house name="Central Circle 2" houseid="3137" entryx="33210" entryy="31841" entryz="7" rent="800000" townid="11" size="90" clientid="0" beds="2" />
 	<house name="Central Circle 3" houseid="3138" entryx="33201" entryy="31848" entryz="7" rent="800000" townid="11" size="99" clientid="0" beds="5" />
@@ -507,28 +507,28 @@
 	<house name="Stonehome Village 9" houseid="3188" entryx="33324" entryy="31755" entryz="7" rent="50000" townid="11" size="19" clientid="0" beds="1" />
 	<house name="Stonehome Clanhall" houseid="3189" entryx="33333" entryy="31760" entryz="7" rent="250000" guildhall="true" townid="11" size="205" clientid="0" beds="10" />
 	<house name="Mad Scientist's Lab" houseid="3190" entryx="32754" entryy="31245" entryz="7" rent="600000" townid="17" size="63" clientid="0" beds="6" />
-	<house name="Radiant Plaza 4" houseid="3191" entryx="32769" entryy="31231" entryz="7" rent="800000" townid="17" size="189" clientid="0" beds="3" />
-	<house name="Radiant Plaza 3" houseid="3192" entryx="32766" entryy="31224" entryz="7" rent="800000" townid="17" size="120" clientid="0" beds="2" />
-	<house name="Radiant Plaza 2" houseid="3193" entryx="32770" entryy="31222" entryz="7" rent="600000" townid="17" size="93" clientid="0" beds="2" />
-	<house name="Radiant Plaza 1" houseid="3194" entryx="32771" entryy="31224" entryz="7" rent="800000" townid="17" size="133" clientid="0" beds="4" />
-	<house name="Aureate Court 3" houseid="3195" entryx="32766" entryy="31185" entryz="7" rent="400000" townid="17" size="124" clientid="0" beds="2" />
-	<house name="Aureate Court 4" houseid="3196" entryx="32763" entryy="31183" entryz="7" rent="400000" townid="17" size="100" clientid="0" beds="4" />
+	<house name="Radiant Plaza 4" houseid="3191" entryx="32769" entryy="31231" entryz="7" rent="800000" townid="17" size="197" clientid="0" beds="3" />
+	<house name="Radiant Plaza 3" houseid="3192" entryx="32766" entryy="31224" entryz="7" rent="800000" townid="17" size="126" clientid="0" beds="2" />
+	<house name="Radiant Plaza 2" houseid="3193" entryx="32770" entryy="31222" entryz="7" rent="600000" townid="17" size="99" clientid="0" beds="2" />
+	<house name="Radiant Plaza 1" houseid="3194" entryx="32771" entryy="31224" entryz="7" rent="800000" townid="17" size="138" clientid="0" beds="4" />
+	<house name="Aureate Court 3" houseid="3195" entryx="32766" entryy="31185" entryz="7" rent="400000" townid="17" size="131" clientid="0" beds="2" />
+	<house name="Aureate Court 4" houseid="3196" entryx="32763" entryy="31183" entryz="7" rent="400000" townid="17" size="104" clientid="0" beds="4" />
 	<house name="Aureate Court 5" houseid="3197" entryx="32774" entryy="31200" entryz="7" rent="600000" townid="17" size="138" clientid="0" beds="6" />
-	<house name="Aureate Court 2" houseid="3198" entryx="32768" entryy="31185" entryz="7" rent="400000" townid="17" size="120" clientid="0" beds="2" />
-	<house name="Aureate Court 1" houseid="3199" entryx="32767" entryy="31181" entryz="7" rent="600000" townid="17" size="125" clientid="0" beds="3" />
-	<house name="Halls of Serenity" houseid="3205" entryx="32783" entryy="31167" entryz="7" rent="5000000" guildhall="true" townid="17" size="508" clientid="0" beds="33" />
-	<house name="Fortune Wing 3" houseid="3206" entryx="32822" entryy="31171" entryz="7" rent="600000" townid="17" size="141" clientid="0" beds="2" />
-	<house name="Fortune Wing 4" houseid="3207" entryx="32825" entryy="31172" entryz="7" rent="600000" townid="17" size="141" clientid="0" beds="4" />
-	<house name="Fortune Wing 2" houseid="3208" entryx="32819" entryy="31179" entryz="7" rent="600000" townid="17" size="137" clientid="0" beds="2" />
-	<house name="Fortune Wing 1" houseid="3209" entryx="32844" entryy="31173" entryz="7" rent="800000" townid="17" size="247" clientid="0" beds="4" />
-	<house name="Cascade Towers" houseid="3211" entryx="32844" entryy="31195" entryz="7" rent="5000000" guildhall="true" townid="17" size="404" clientid="0" beds="34" />
-	<house name="Luminous Arc 5" houseid="3212" entryx="32858" entryy="31199" entryz="7" rent="800000" townid="17" size="135" clientid="0" beds="6" />
-	<house name="Luminous Arc 2" houseid="3213" entryx="32840" entryy="31217" entryz="7" rent="600000" townid="17" size="156" clientid="0" beds="4" />
-	<house name="Luminous Arc 1" houseid="3214" entryx="32849" entryy="31229" entryz="7" rent="800000" townid="17" size="161" clientid="0" beds="2" />
-	<house name="Luminous Arc 3" houseid="3215" entryx="32834" entryy="31220" entryz="7" rent="600000" townid="17" size="130" clientid="0" beds="3" />
-	<house name="Luminous Arc 4" houseid="3216" entryx="32834" entryy="31243" entryz="7" rent="800000" townid="17" size="190" clientid="0" beds="5" />
-	<house name="Harbour Promenade 1" houseid="3217" entryx="32780" entryy="31259" entryz="6" rent="800000" townid="17" size="132" clientid="0" beds="5" />
-	<house name="Sun Palace" houseid="3218" entryx="32760" entryy="31209" entryz="7" rent="5000000" guildhall="true" townid="17" size="525" clientid="0" beds="27" />
+	<house name="Aureate Court 2" houseid="3198" entryx="32768" entryy="31185" entryz="7" rent="400000" townid="17" size="125" clientid="0" beds="2" />
+	<house name="Aureate Court 1" houseid="3199" entryx="32767" entryy="31181" entryz="7" rent="600000" townid="17" size="131" clientid="0" beds="3" />
+	<house name="Halls of Serenity" houseid="3205" entryx="32783" entryy="31167" entryz="7" rent="5000000" guildhall="true" townid="17" size="517" clientid="0" beds="33" />
+	<house name="Fortune Wing 3" houseid="3206" entryx="32822" entryy="31171" entryz="7" rent="600000" townid="17" size="148" clientid="0" beds="2" />
+	<house name="Fortune Wing 4" houseid="3207" entryx="32825" entryy="31172" entryz="7" rent="600000" townid="17" size="147" clientid="0" beds="4" />
+	<house name="Fortune Wing 2" houseid="3208" entryx="32819" entryy="31179" entryz="7" rent="600000" townid="17" size="148" clientid="0" beds="2" />
+	<house name="Fortune Wing 1" houseid="3209" entryx="32844" entryy="31173" entryz="7" rent="800000" townid="17" size="254" clientid="0" beds="4" />
+	<house name="Cascade Towers" houseid="3211" entryx="32844" entryy="31195" entryz="7" rent="5000000" guildhall="true" townid="17" size="419" clientid="0" beds="34" />
+	<house name="Luminous Arc 5" houseid="3212" entryx="32858" entryy="31199" entryz="7" rent="800000" townid="17" size="145" clientid="0" beds="6" />
+	<house name="Luminous Arc 2" houseid="3213" entryx="32840" entryy="31217" entryz="7" rent="600000" townid="17" size="161" clientid="0" beds="4" />
+	<house name="Luminous Arc 1" houseid="3214" entryx="32849" entryy="31229" entryz="7" rent="800000" townid="17" size="167" clientid="0" beds="2" />
+	<house name="Luminous Arc 3" houseid="3215" entryx="32834" entryy="31220" entryz="7" rent="600000" townid="17" size="139" clientid="0" beds="3" />
+	<house name="Luminous Arc 4" houseid="3216" entryx="32834" entryy="31243" entryz="7" rent="800000" townid="17" size="200" clientid="0" beds="5" />
+	<house name="Harbour Promenade 1" houseid="3217" entryx="32780" entryy="31259" entryz="6" rent="800000" townid="17" size="137" clientid="0" beds="5" />
+	<house name="Sun Palace" houseid="3218" entryx="32760" entryy="31209" entryz="7" rent="5000000" guildhall="true" townid="17" size="533" clientid="0" beds="27" />
 	<house name="Haggler's Hangout 3" houseid="3219" entryx="32612" entryy="32739" entryz="7" rent="300000" townid="15" size="186" clientid="0" beds="4" />
 	<house name="Haggler's Hangout 7" houseid="3220" entryx="32614" entryy="32728" entryz="7" rent="400000" townid="15" size="155" clientid="0" beds="7" />
 	<house name="Big Game Hunter's Lodge" houseid="3221" entryx="32627" entryy="32731" entryz="7" rent="600000" townid="15" size="164" clientid="0" beds="8" />
@@ -624,78 +624,78 @@
 	<house name="Raven Corner 1" houseid="3311" entryx="32234" entryy="31154" entryz="7" rent="80000" townid="16" size="22" clientid="0" beds="1" />
 	<house name="Raven Corner 3" houseid="3312" entryx="32234" entryy="31157" entryz="7" rent="100000" townid="16" size="22" clientid="0" beds="1" />
 	<house name="Mammoth Belly" houseid="3313" entryx="32241" entryy="31174" entryz="7" rent="1000000" guildhall="true" townid="16" size="404" clientid="0" beds="30" />
-	<house name="Darashia 3, Flat 01" houseid="3314" entryx="33229" entryy="32442" entryz="7" rent="150000" townid="13" size="25" clientid="0" beds="2" />
-	<house name="Darashia 3, Flat 05" houseid="3315" entryx="33230" entryy="32442" entryz="7" rent="150000" townid="13" size="25" clientid="0" beds="1" />
-	<house name="Darashia 3, Flat 02" houseid="3316" entryx="33227" entryy="32447" entryz="7" rent="200000" townid="13" size="38" clientid="0" beds="2" />
-	<house name="Darashia 3, Flat 04" houseid="3317" entryx="33232" entryy="32447" entryz="7" rent="150000" townid="13" size="38" clientid="0" beds="2" />
-	<house name="Darashia 3, Flat 03" houseid="3318" entryx="33230" entryy="32449" entryz="7" rent="150000" townid="13" size="25" clientid="0" beds="2" />
-	<house name="Darashia 3, Flat 12" houseid="3319" entryx="33227" entryy="32446" entryz="6" rent="200000" townid="13" size="55" clientid="0" beds="5" />
-	<house name="Darashia 3, Flat 11" houseid="3320" entryx="33228" entryy="32445" entryz="6" rent="100000" townid="13" size="25" clientid="0" beds="1" />
-	<house name="Darashia 3, Flat 14" houseid="3321" entryx="33232" entryy="32449" entryz="6" rent="200000" townid="13" size="55" clientid="0" beds="3" />
-	<house name="Darashia 3, Flat 13" houseid="3322" entryx="33232" entryy="32449" entryz="6" rent="100000" townid="13" size="25" clientid="0" beds="2" />
-	<house name="Darashia 8, Flat 01" houseid="3323" entryx="33251" entryy="32442" entryz="7" rent="300000" townid="13" size="53" clientid="0" beds="2" />
-	<house name="Darashia 8, Flat 05" houseid="3325" entryx="33252" entryy="32442" entryz="7" rent="300000" townid="13" size="57" clientid="0" beds="2" />
-	<house name="Darashia 8, Flat 04" houseid="3326" entryx="33254" entryy="32447" entryz="7" rent="200000" townid="13" size="61" clientid="0" beds="2" />
-	<house name="Darashia 8, Flat 03" houseid="3327" entryx="33252" entryy="32449" entryz="7" rent="300000" townid="13" size="100" clientid="0" beds="3" />
-	<house name="Darashia 8, Flat 12" houseid="3328" entryx="33249" entryy="32446" entryz="6" rent="150000" townid="13" size="38" clientid="0" beds="2" />
-	<house name="Darashia 8, Flat 11" houseid="3329" entryx="33250" entryy="32445" entryz="6" rent="200000" townid="13" size="42" clientid="0" beds="2" />
-	<house name="Darashia 8, Flat 14" houseid="3330" entryx="33254" entryy="32449" entryz="6" rent="150000" townid="13" size="38" clientid="0" beds="2" />
-	<house name="Darashia 8, Flat 13" houseid="3331" entryx="33254" entryy="32449" entryz="6" rent="150000" townid="13" size="42" clientid="0" beds="2" />
-	<house name="Darashia, Villa" houseid="3332" entryx="33266" entryy="32453" entryz="7" rent="800000" townid="13" size="115" clientid="0" beds="4" />
-	<house name="Darashia, Eastern Guildhall" houseid="3333" entryx="33232" entryy="32470" entryz="7" rent="1000000" guildhall="true" townid="13" size="250" clientid="0" beds="16" />
-	<house name="Darashia, Western Guildhall" houseid="3334" entryx="33228" entryy="32470" entryz="7" rent="500000" guildhall="true" townid="13" size="203" clientid="0" beds="14" />
-	<house name="Darashia 2, Flat 03" houseid="3335" entryx="33204" entryy="32435" entryz="7" rent="100000" townid="13" size="29" clientid="0" beds="1" />
-	<house name="Darashia 2, Flat 02" houseid="3336" entryx="33207" entryy="32434" entryz="7" rent="100000" townid="13" size="25" clientid="0" beds="1" />
-	<house name="Darashia 2, Flat 01" houseid="3337" entryx="33212" entryy="32436" entryz="7" rent="150000" townid="13" size="27" clientid="0" beds="1" />
-	<house name="Darashia 2, Flat 04" houseid="3338" entryx="33204" entryy="32438" entryz="7" rent="80000" townid="13" size="13" clientid="0" beds="1" />
-	<house name="Darashia 2, Flat 05" houseid="3339" entryx="33205" entryy="32439" entryz="7" rent="150000" townid="13" size="29" clientid="0" beds="2" />
-	<house name="Darashia 2, Flat 06" houseid="3340" entryx="33208" entryy="32439" entryz="7" rent="80000" townid="13" size="13" clientid="0" beds="1" />
-	<house name="Darashia 2, Flat 07" houseid="3341" entryx="33212" entryy="32437" entryz="7" rent="150000" townid="13" size="27" clientid="0" beds="1" />
-	<house name="Darashia 2, Flat 13" houseid="3342" entryx="33205" entryy="32434" entryz="6" rent="100000" townid="13" size="29" clientid="0" beds="1" />
-	<house name="Darashia 2, Flat 14" houseid="3343" entryx="33204" entryy="32435" entryz="6" rent="50000" townid="13" size="13" clientid="0" beds="1" />
-	<house name="Darashia 2, Flat 15" houseid="3344" entryx="33204" entryy="32439" entryz="6" rent="100000" townid="13" size="29" clientid="0" beds="2" />
-	<house name="Darashia 2, Flat 16" houseid="3345" entryx="33205" entryy="32439" entryz="6" rent="80000" townid="13" size="17" clientid="0" beds="1" />
-	<house name="Darashia 2, Flat 17" houseid="3346" entryx="33209" entryy="32439" entryz="6" rent="100000" townid="13" size="25" clientid="0" beds="1" />
+	<house name="Darashia 3, Flat 01" houseid="3314" entryx="33229" entryy="32442" entryz="7" rent="150000" townid="13" size="27" clientid="0" beds="2" />
+	<house name="Darashia 3, Flat 05" houseid="3315" entryx="33230" entryy="32442" entryz="7" rent="150000" townid="13" size="26" clientid="0" beds="1" />
+	<house name="Darashia 3, Flat 02" houseid="3316" entryx="33227" entryy="32447" entryz="7" rent="200000" townid="13" size="41" clientid="0" beds="2" />
+	<house name="Darashia 3, Flat 04" houseid="3317" entryx="33232" entryy="32447" entryz="7" rent="150000" townid="13" size="39" clientid="0" beds="2" />
+	<house name="Darashia 3, Flat 03" houseid="3318" entryx="33230" entryy="32449" entryz="7" rent="150000" townid="13" size="28" clientid="0" beds="2" />
+	<house name="Darashia 3, Flat 12" houseid="3319" entryx="33227" entryy="32446" entryz="6" rent="200000" townid="13" size="56" clientid="0" beds="5" />
+	<house name="Darashia 3, Flat 11" houseid="3320" entryx="33228" entryy="32445" entryz="6" rent="100000" townid="13" size="27" clientid="0" beds="1" />
+	<house name="Darashia 3, Flat 14" houseid="3321" entryx="33232" entryy="32449" entryz="6" rent="200000" townid="13" size="59" clientid="0" beds="3" />
+	<house name="Darashia 3, Flat 13" houseid="3322" entryx="33232" entryy="32449" entryz="6" rent="100000" townid="13" size="27" clientid="0" beds="2" />
+	<house name="Darashia 8, Flat 01" houseid="3323" entryx="33251" entryy="32442" entryz="7" rent="300000" townid="13" size="55" clientid="0" beds="2" />
+	<house name="Darashia 8, Flat 05" houseid="3325" entryx="33252" entryy="32442" entryz="7" rent="300000" townid="13" size="58" clientid="0" beds="2" />
+	<house name="Darashia 8, Flat 04" houseid="3326" entryx="33254" entryy="32447" entryz="7" rent="200000" townid="13" size="63" clientid="0" beds="2" />
+	<house name="Darashia 8, Flat 03" houseid="3327" entryx="33252" entryy="32449" entryz="7" rent="300000" townid="13" size="105" clientid="0" beds="3" />
+	<house name="Darashia 8, Flat 12" houseid="3328" entryx="33249" entryy="32446" entryz="6" rent="150000" townid="13" size="39" clientid="0" beds="2" />
+	<house name="Darashia 8, Flat 11" houseid="3329" entryx="33250" entryy="32445" entryz="6" rent="200000" townid="13" size="46" clientid="0" beds="2" />
+	<house name="Darashia 8, Flat 14" houseid="3330" entryx="33254" entryy="32449" entryz="6" rent="150000" townid="13" size="42" clientid="0" beds="2" />
+	<house name="Darashia 8, Flat 13" houseid="3331" entryx="33254" entryy="32449" entryz="6" rent="150000" townid="13" size="46" clientid="0" beds="2" />
+	<house name="Darashia, Villa" houseid="3332" entryx="33266" entryy="32453" entryz="7" rent="800000" townid="13" size="120" clientid="0" beds="4" />
+	<house name="Darashia, Eastern Guildhall" houseid="3333" entryx="33232" entryy="32470" entryz="7" rent="1000000" guildhall="true" townid="13" size="272" clientid="0" beds="16" />
+	<house name="Darashia, Western Guildhall" houseid="3334" entryx="33228" entryy="32470" entryz="7" rent="500000" guildhall="true" townid="13" size="223" clientid="0" beds="14" />
+	<house name="Darashia 2, Flat 03" houseid="3335" entryx="33204" entryy="32435" entryz="7" rent="100000" townid="13" size="31" clientid="0" beds="1" />
+	<house name="Darashia 2, Flat 02" houseid="3336" entryx="33207" entryy="32434" entryz="7" rent="100000" townid="13" size="26" clientid="0" beds="1" />
+	<house name="Darashia 2, Flat 01" houseid="3337" entryx="33212" entryy="32436" entryz="7" rent="150000" townid="13" size="29" clientid="0" beds="1" />
+	<house name="Darashia 2, Flat 04" houseid="3338" entryx="33204" entryy="32438" entryz="7" rent="80000" townid="13" size="14" clientid="0" beds="1" />
+	<house name="Darashia 2, Flat 05" houseid="3339" entryx="33205" entryy="32439" entryz="7" rent="150000" townid="13" size="31" clientid="0" beds="2" />
+	<house name="Darashia 2, Flat 06" houseid="3340" entryx="33208" entryy="32439" entryz="7" rent="80000" townid="13" size="14" clientid="0" beds="1" />
+	<house name="Darashia 2, Flat 07" houseid="3341" entryx="33212" entryy="32437" entryz="7" rent="150000" townid="13" size="29" clientid="0" beds="1" />
+	<house name="Darashia 2, Flat 13" houseid="3342" entryx="33205" entryy="32434" entryz="6" rent="100000" townid="13" size="31" clientid="0" beds="1" />
+	<house name="Darashia 2, Flat 14" houseid="3343" entryx="33204" entryy="32435" entryz="6" rent="50000" townid="13" size="14" clientid="0" beds="1" />
+	<house name="Darashia 2, Flat 15" houseid="3344" entryx="33204" entryy="32439" entryz="6" rent="100000" townid="13" size="30" clientid="0" beds="2" />
+	<house name="Darashia 2, Flat 16" houseid="3345" entryx="33205" entryy="32439" entryz="6" rent="80000" townid="13" size="18" clientid="0" beds="1" />
+	<house name="Darashia 2, Flat 17" houseid="3346" entryx="33209" entryy="32439" entryz="6" rent="100000" townid="13" size="27" clientid="0" beds="1" />
 	<house name="Darashia 2, Flat 18" houseid="3347" entryx="33209" entryy="32439" entryz="6" rent="100000" townid="13" size="17" clientid="0" beds="1" />
-	<house name="Darashia 2, Flat 11" houseid="3348" entryx="33209" entryy="32434" entryz="6" rent="100000" townid="13" size="25" clientid="0" beds="1" />
+	<house name="Darashia 2, Flat 11" houseid="3348" entryx="33209" entryy="32434" entryz="6" rent="100000" townid="13" size="27" clientid="0" beds="1" />
 	<house name="Darashia 2, Flat 12" houseid="3349" entryx="33208" entryy="32434" entryz="6" rent="80000" townid="13" size="13" clientid="0" beds="1" />
-	<house name="Darashia 1, Flat 03" houseid="3350" entryx="33201" entryy="32414" entryz="7" rent="300000" townid="13" size="59" clientid="0" beds="4" />
-	<house name="Darashia 1, Flat 04" houseid="3351" entryx="33202" entryy="32416" entryz="7" rent="100000" townid="13" size="25" clientid="0" beds="1" />
-	<house name="Darashia 1, Flat 02" houseid="3352" entryx="33202" entryy="32411" entryz="7" rent="100000" townid="13" size="25" clientid="0" beds="1" />
-	<house name="Darashia 1, Flat 01" houseid="3353" entryx="33210" entryy="32413" entryz="7" rent="100000" townid="13" size="27" clientid="0" beds="2" />
-	<house name="Darashia 1, Flat 05" houseid="3354" entryx="33210" entryy="32414" entryz="7" rent="100000" townid="13" size="27" clientid="0" beds="2" />
-	<house name="Darashia 1, Flat 12" houseid="3355" entryx="33201" entryy="32412" entryz="6" rent="150000" townid="13" size="42" clientid="0" beds="2" />
-	<house name="Darashia 1, Flat 13" houseid="3356" entryx="33206" entryy="32416" entryz="6" rent="150000" townid="13" size="46" clientid="0" beds="2" />
-	<house name="Darashia 1, Flat 14" houseid="3357" entryx="33206" entryy="32416" entryz="6" rent="200000" townid="13" size="67" clientid="0" beds="5" />
-	<house name="Darashia 1, Flat 11" houseid="3358" entryx="33202" entryy="32411" entryz="6" rent="100000" townid="13" size="25" clientid="0" beds="2" />
-	<house name="Darashia 5, Flat 02" houseid="3359" entryx="33254" entryy="32403" entryz="7" rent="150000" townid="13" size="38" clientid="0" beds="2" />
-	<house name="Darashia 5, Flat 01" houseid="3360" entryx="33256" entryy="32409" entryz="7" rent="150000" townid="13" size="27" clientid="0" beds="1" />
-	<house name="Darashia 5, Flat 05" houseid="3361" entryx="33257" entryy="32409" entryz="7" rent="100000" townid="13" size="27" clientid="0" beds="1" />
-	<house name="Darashia 5, Flat 04" houseid="3362" entryx="33259" entryy="32403" entryz="7" rent="150000" townid="13" size="38" clientid="0" beds="2" />
-	<house name="Darashia 5, Flat 03" houseid="3363" entryx="33256" entryy="32401" entryz="7" rent="150000" townid="13" size="25" clientid="0" beds="1" />
-	<house name="Darashia 5, Flat 11" houseid="3364" entryx="33255" entryy="32401" entryz="6" rent="150000" townid="13" size="42" clientid="0" beds="2" />
-	<house name="Darashia 5, Flat 12" houseid="3365" entryx="33254" entryy="32402" entryz="6" rent="150000" townid="13" size="38" clientid="0" beds="2" />
+	<house name="Darashia 1, Flat 03" houseid="3350" entryx="33201" entryy="32414" entryz="7" rent="300000" townid="13" size="65" clientid="0" beds="4" />
+	<house name="Darashia 1, Flat 04" houseid="3351" entryx="33202" entryy="32416" entryz="7" rent="100000" townid="13" size="28" clientid="0" beds="1" />
+	<house name="Darashia 1, Flat 02" houseid="3352" entryx="33202" entryy="32411" entryz="7" rent="100000" townid="13" size="26" clientid="0" beds="1" />
+	<house name="Darashia 1, Flat 01" houseid="3353" entryx="33210" entryy="32413" entryz="7" rent="100000" townid="13" size="29" clientid="0" beds="2" />
+	<house name="Darashia 1, Flat 05" houseid="3354" entryx="33210" entryy="32414" entryz="7" rent="100000" townid="13" size="29" clientid="0" beds="2" />
+	<house name="Darashia 1, Flat 12" houseid="3355" entryx="33201" entryy="32412" entryz="6" rent="150000" townid="13" size="46" clientid="0" beds="2" />
+	<house name="Darashia 1, Flat 13" houseid="3356" entryx="33206" entryy="32416" entryz="6" rent="150000" townid="13" size="50" clientid="0" beds="2" />
+	<house name="Darashia 1, Flat 14" houseid="3357" entryx="33206" entryy="32416" entryz="6" rent="200000" townid="13" size="69" clientid="0" beds="5" />
+	<house name="Darashia 1, Flat 11" houseid="3358" entryx="33202" entryy="32411" entryz="6" rent="100000" townid="13" size="27" clientid="0" beds="2" />
+	<house name="Darashia 5, Flat 02" houseid="3359" entryx="33254" entryy="32403" entryz="7" rent="150000" townid="13" size="41" clientid="0" beds="2" />
+	<house name="Darashia 5, Flat 01" houseid="3360" entryx="33256" entryy="32409" entryz="7" rent="150000" townid="13" size="29" clientid="0" beds="1" />
+	<house name="Darashia 5, Flat 05" houseid="3361" entryx="33257" entryy="32409" entryz="7" rent="100000" townid="13" size="29" clientid="0" beds="1" />
+	<house name="Darashia 5, Flat 04" houseid="3362" entryx="33259" entryy="32403" entryz="7" rent="150000" townid="13" size="42" clientid="0" beds="2" />
+	<house name="Darashia 5, Flat 03" houseid="3363" entryx="33256" entryy="32401" entryz="7" rent="150000" townid="13" size="27" clientid="0" beds="1" />
+	<house name="Darashia 5, Flat 11" houseid="3364" entryx="33255" entryy="32401" entryz="6" rent="150000" townid="13" size="46" clientid="0" beds="2" />
+	<house name="Darashia 5, Flat 12" houseid="3365" entryx="33254" entryy="32402" entryz="6" rent="150000" townid="13" size="39" clientid="0" beds="2" />
 	<house name="Darashia 5, Flat 13" houseid="3366" entryx="33259" entryy="32405" entryz="6" rent="150000" townid="13" size="42" clientid="0" beds="2" />
 	<house name="Darashia 5, Flat 14" houseid="3367" entryx="33259" entryy="32405" entryz="6" rent="150000" townid="13" size="38" clientid="0" beds="2" />
 	<house name="Darashia 6a" houseid="3368" entryx="33273" entryy="32405" entryz="7" rent="300000" townid="13" size="67" clientid="0" beds="2" />
-	<house name="Darashia 6b" houseid="3369" entryx="33273" entryy="32406" entryz="7" rent="300000" townid="13" size="76" clientid="0" beds="2" />
-	<house name="Darashia 4, Flat 02" houseid="3370" entryx="33244" entryy="32422" entryz="7" rent="200000" townid="13" size="42" clientid="0" beds="2" />
-	<house name="Darashia 4, Flat 03" houseid="3371" entryx="33241" entryy="32425" entryz="7" rent="150000" townid="13" size="25" clientid="0" beds="1" />
-	<house name="Darashia 4, Flat 04" houseid="3372" entryx="33244" entryy="32427" entryz="7" rent="200000" townid="13" size="42" clientid="0" beds="2" />
-	<house name="Darashia 4, Flat 05" houseid="3373" entryx="33250" entryy="32425" entryz="7" rent="150000" townid="13" size="27" clientid="0" beds="2" />
-	<house name="Darashia 4, Flat 01" houseid="3374" entryx="33250" entryy="32424" entryz="7" rent="100000" townid="13" size="28" clientid="0" beds="1" />
-	<house name="Darashia 4, Flat 12" houseid="3375" entryx="33241" entryy="32423" entryz="6" rent="200000" townid="13" size="59" clientid="0" beds="3" />
-	<house name="Darashia 4, Flat 11" houseid="3376" entryx="33242" entryy="32422" entryz="6" rent="100000" townid="13" size="25" clientid="0" beds="1" />
-	<house name="Darashia 4, Flat 13" houseid="3377" entryx="33246" entryy="32427" entryz="6" rent="200000" townid="13" size="42" clientid="0" beds="2" />
-	<house name="Darashia 4, Flat 14" houseid="3378" entryx="33246" entryy="32427" entryz="6" rent="150000" townid="13" size="42" clientid="0" beds="2" />
-	<house name="Darashia 7, Flat 01" houseid="3379" entryx="33259" entryy="32424" entryz="7" rent="100000" townid="13" size="25" clientid="0" beds="1" />
-	<house name="Darashia 7, Flat 02" houseid="3380" entryx="33265" entryy="32422" entryz="7" rent="100000" townid="13" size="25" clientid="0" beds="1" />
-	<house name="Darashia 7, Flat 03" houseid="3381" entryx="33267" entryy="32425" entryz="7" rent="200000" townid="13" size="59" clientid="0" beds="4" />
-	<house name="Darashia 7, Flat 05" houseid="3382" entryx="33259" entryy="32425" entryz="7" rent="150000" townid="13" size="25" clientid="0" beds="2" />
-	<house name="Darashia 7, Flat 04" houseid="3383" entryx="33265" entryy="32427" entryz="7" rent="150000" townid="13" size="25" clientid="0" beds="1" />
-	<house name="Darashia 7, Flat 12" houseid="3384" entryx="33262" entryy="32423" entryz="6" rent="200000" townid="13" size="59" clientid="0" beds="4" />
-	<house name="Darashia 7, Flat 11" houseid="3385" entryx="33263" entryy="32422" entryz="6" rent="100000" townid="13" size="25" clientid="0" beds="1" />
-	<house name="Darashia 7, Flat 14" houseid="3386" entryx="33267" entryy="32427" entryz="6" rent="200000" townid="13" size="59" clientid="0" beds="4" />
+	<house name="Darashia 6b" houseid="3369" entryx="33273" entryy="32406" entryz="7" rent="300000" townid="13" size="80" clientid="0" beds="2" />
+	<house name="Darashia 4, Flat 02" houseid="3370" entryx="33244" entryy="32422" entryz="7" rent="200000" townid="13" size="44" clientid="0" beds="2" />
+	<house name="Darashia 4, Flat 03" houseid="3371" entryx="33241" entryy="32425" entryz="7" rent="150000" townid="13" size="27" clientid="0" beds="1" />
+	<house name="Darashia 4, Flat 04" houseid="3372" entryx="33244" entryy="32427" entryz="7" rent="200000" townid="13" size="45" clientid="0" beds="2" />
+	<house name="Darashia 4, Flat 05" houseid="3373" entryx="33250" entryy="32425" entryz="7" rent="150000" townid="13" size="30" clientid="0" beds="2" />
+	<house name="Darashia 4, Flat 01" houseid="3374" entryx="33250" entryy="32424" entryz="7" rent="100000" townid="13" size="31" clientid="0" beds="1" />
+	<house name="Darashia 4, Flat 12" houseid="3375" entryx="33241" entryy="32423" entryz="6" rent="200000" townid="13" size="64" clientid="0" beds="3" />
+	<house name="Darashia 4, Flat 11" houseid="3376" entryx="33242" entryy="32422" entryz="6" rent="100000" townid="13" size="26" clientid="0" beds="1" />
+	<house name="Darashia 4, Flat 13" houseid="3377" entryx="33246" entryy="32427" entryz="6" rent="200000" townid="13" size="44" clientid="0" beds="2" />
+	<house name="Darashia 4, Flat 14" houseid="3378" entryx="33246" entryy="32427" entryz="6" rent="150000" townid="13" size="46" clientid="0" beds="2" />
+	<house name="Darashia 7, Flat 01" houseid="3379" entryx="33259" entryy="32424" entryz="7" rent="100000" townid="13" size="26" clientid="0" beds="1" />
+	<house name="Darashia 7, Flat 02" houseid="3380" entryx="33265" entryy="32422" entryz="7" rent="100000" townid="13" size="27" clientid="0" beds="1" />
+	<house name="Darashia 7, Flat 03" houseid="3381" entryx="33267" entryy="32425" entryz="7" rent="200000" townid="13" size="65" clientid="0" beds="4" />
+	<house name="Darashia 7, Flat 05" houseid="3382" entryx="33259" entryy="32425" entryz="7" rent="150000" townid="13" size="27" clientid="0" beds="2" />
+	<house name="Darashia 7, Flat 04" houseid="3383" entryx="33265" entryy="32427" entryz="7" rent="150000" townid="13" size="27" clientid="0" beds="1" />
+	<house name="Darashia 7, Flat 12" houseid="3384" entryx="33262" entryy="32423" entryz="6" rent="200000" townid="13" size="60" clientid="0" beds="4" />
+	<house name="Darashia 7, Flat 11" houseid="3385" entryx="33263" entryy="32422" entryz="6" rent="100000" townid="13" size="26" clientid="0" beds="1" />
+	<house name="Darashia 7, Flat 14" houseid="3386" entryx="33267" entryy="32427" entryz="6" rent="200000" townid="13" size="60" clientid="0" beds="4" />
 	<house name="Darashia 7, Flat 13" houseid="3387" entryx="33267" entryy="32427" entryz="6" rent="100000" townid="13" size="25" clientid="0" beds="1" />
 	<house name="Pirate Shipwreck 1" houseid="3388" entryx="33278" entryy="32422" entryz="7" rent="800000" townid="13" size="187" clientid="0" beds="6" />
 	<house name="Pirate Shipwreck 2" houseid="3389" entryx="33281" entryy="32431" entryz="7" rent="800000" townid="13" size="276" clientid="0" beds="6" />
@@ -741,22 +741,22 @@
 	<house name="Harvester's Haven, Flat 08" houseid="3431" entryx="32276" entryy="32783" entryz="6" rent="50000" townid="14" size="19" clientid="0" beds="2" />
 	<house name="Harvester's Haven, Flat 10" houseid="3432" entryx="32276" entryy="32786" entryz="6" rent="50000" townid="14" size="18" clientid="0" beds="2" />
 	<house name="Harvester's Haven, Flat 12" houseid="3433" entryx="32276" entryy="32791" entryz="6" rent="25000" townid="14" size="19" clientid="0" beds="2" />
-	<house name="Marble Lane 3" houseid="3434" entryx="32301" entryy="32782" entryz="7" rent="600000" townid="14" size="142" clientid="0" beds="4" />
-	<house name="Marble Lane 2" houseid="3435" entryx="32298" entryy="32782" entryz="7" rent="400000" townid="14" size="128" clientid="0" beds="3" />
-	<house name="Marble Lane 4" houseid="3436" entryx="32298" entryy="32792" entryz="7" rent="400000" townid="14" size="131" clientid="0" beds="4" />
-	<house name="Admiral's Avenue 1" houseid="3437" entryx="32309" entryy="32805" entryz="7" rent="400000" townid="14" size="92" clientid="0" beds="2" />
-	<house name="Admiral's Avenue 2" houseid="3438" entryx="32326" entryy="32806" entryz="7" rent="400000" townid="14" size="95" clientid="0" beds="4" />
-	<house name="Admiral's Avenue 3" houseid="3439" entryx="32336" entryy="32806" entryz="7" rent="300000" townid="14" size="86" clientid="0" beds="2" />
-	<house name="Ivory Circle 1" houseid="3440" entryx="32347" entryy="32799" entryz="7" rent="400000" townid="14" size="88" clientid="0" beds="2" />
+	<house name="Marble Lane 3" houseid="3434" entryx="32301" entryy="32782" entryz="7" rent="600000" townid="14" size="163" clientid="0" beds="4" />
+	<house name="Marble Lane 2" houseid="3435" entryx="32298" entryy="32782" entryz="7" rent="400000" townid="14" size="141" clientid="0" beds="3" />
+	<house name="Marble Lane 4" houseid="3436" entryx="32298" entryy="32792" entryz="7" rent="400000" townid="14" size="134" clientid="0" beds="4" />
+	<house name="Admiral's Avenue 1" houseid="3437" entryx="32309" entryy="32805" entryz="7" rent="400000" townid="14" size="97" clientid="0" beds="2" />
+	<house name="Admiral's Avenue 2" houseid="3438" entryx="32326" entryy="32806" entryz="7" rent="400000" townid="14" size="111" clientid="0" beds="4" />
+	<house name="Admiral's Avenue 3" houseid="3439" entryx="32336" entryy="32806" entryz="7" rent="300000" townid="14" size="99" clientid="0" beds="2" />
+	<house name="Ivory Circle 1" houseid="3440" entryx="32347" entryy="32799" entryz="7" rent="400000" townid="14" size="101" clientid="0" beds="2" />
 	<house name="Sugar Street 5" houseid="3441" entryx="32301" entryy="32811" entryz="7" rent="150000" townid="14" size="25" clientid="0" beds="2" />
 	<house name="Freedom Street 1" houseid="3442" entryx="32323" entryy="32812" entryz="7" rent="200000" townid="14" size="47" clientid="0" beds="2" />
 	<house name="Trader's Point 1" houseid="3443" entryx="32306" entryy="32826" entryz="7" rent="200000" townid="14" size="42" clientid="0" beds="2" />
 	<house name="Trader's Point 2 (Shop)" houseid="3444" entryx="32330" entryy="32826" entryz="7" rent="600000" townid="14" size="122" clientid="0" beds="2" />
 	<house name="Trader's Point 3 (Shop)" houseid="3445" entryx="32344" entryy="32826" entryz="7" rent="600000" townid="14" size="130" clientid="0" beds="2" />
-	<house name="Ivory Mansion" houseid="3446" entryx="32345" entryy="32843" entryz="7" rent="800000" townid="14" size="302" clientid="0" beds="7" />
-	<house name="Ivory Circle 2" houseid="3447" entryx="32364" entryy="32818" entryz="7" rent="400000" townid="14" size="127" clientid="0" beds="2" />
+	<house name="Ivory Mansion" houseid="3446" entryx="32345" entryy="32843" entryz="7" rent="800000" townid="14" size="319" clientid="0" beds="7" />
+	<house name="Ivory Circle 2" houseid="3447" entryx="32364" entryy="32818" entryz="7" rent="400000" townid="14" size="142" clientid="0" beds="2" />
 	<house name="Ivy Cottage" houseid="3448" entryx="32277" entryy="32775" entryz="7" rent="500000" guildhall="true" townid="14" size="587" clientid="0" beds="26" />
-	<house name="Marble Lane 1" houseid="3449" entryx="32300" entryy="32772" entryz="7" rent="600000" townid="14" size="213" clientid="0" beds="6" />
+	<house name="Marble Lane 1" houseid="3449" entryx="32300" entryy="32772" entryz="7" rent="600000" townid="14" size="228" clientid="0" beds="6" />
 	<house name="Freedom Street 2" houseid="3450" entryx="32325" entryy="32812" entryz="7" rent="400000" townid="14" size="123" clientid="0" beds="4" />
 	<house name="Meriana Beach" houseid="3452" entryx="32383" entryy="32584" entryz="7" rent="150000" townid="14" size="172" clientid="0" beds="3" />
 	<house name="The Tavern 1a" houseid="3453" entryx="32295" entryy="32837" entryz="6" rent="150000" townid="14" size="52" clientid="0" beds="4" />
@@ -769,7 +769,7 @@
 	<house name="The Tavern 2c" houseid="3460" entryx="32302" entryy="32838" entryz="5" rent="50000" townid="14" size="20" clientid="0" beds="1" />
 	<house name="The Yeah Beach Project" houseid="3461" entryx="32294" entryy="32555" entryz="6" rent="150000" townid="14" size="157" clientid="0" beds="3" />
 	<house name="Mountain Hideout" houseid="3462" entryx="32392" entryy="32705" entryz="6" rent="500000" guildhall="true" townid="14" size="321" clientid="0" beds="17" />
-	<house name="Darashia 8, Flat 02" houseid="3463" entryx="33249" entryy="32447" entryz="7" rent="300000" townid="13" size="73" clientid="0" beds="2" />
+	<house name="Darashia 8, Flat 02" houseid="3463" entryx="33249" entryy="32447" entryz="7" rent="300000" townid="13" size="76" clientid="0" beds="2" />
 	<house name="Castle, Basement, Flat 01" houseid="3464" entryx="33204" entryy="31790" entryz="8" rent="50000" townid="11" size="13" clientid="0" beds="1" />
 	<house name="Castle, Basement, Flat 02" houseid="3465" entryx="33204" entryy="31791" entryz="8" rent="50000" townid="11" size="13" clientid="0" beds="1" />
 	<house name="Castle, Basement, Flat 03" houseid="3466" entryx="33208" entryy="31791" entryz="8" rent="50000" townid="11" size="13" clientid="0" beds="1" />
@@ -952,7 +952,7 @@
 	<house name="Wallside Lane 2" houseid="3651" entryx="33637" entryy="31928" entryz="6" rent="600000" townid="20" size="227" clientid="0" beds="4" />
 	<house name="Vanward Flats B" houseid="3652" entryx="33614" entryy="31935" entryz="6" rent="400000" townid="20" size="179" clientid="0" beds="4" />
 	<house name="Vanward Flats A" houseid="3653" entryx="33621" entryy="31935" entryz="6" rent="400000" townid="20" size="189" clientid="0" beds="4" />
-	<house name="Bronze Brothers Bastion" houseid="3654" entryx="33599" entryy="31933" entryz="6" rent="5000000" guildhall="true" townid="20" size="977" clientid="0" beds="16" />
+	<house name="Bronze Brothers Bastion" houseid="3654" entryx="33599" entryy="31933" entryz="6" rent="5000000" guildhall="true" townid="20" size="976" clientid="0" beds="16" />
 	<house name="Cistern Ave" houseid="3655" entryx="33588" entryy="31926" entryz="6" rent="300000" townid="20" size="111" clientid="0" beds="2" />
 	<house name="Antimony Lane 4" houseid="3656" entryx="33614" entryy="31922" entryz="6" rent="400000" townid="20" size="159" clientid="0" beds="3" />
 	<house name="Antimony Lane 3" houseid="3657" entryx="33630" entryy="31921" entryz="6" rent="400000" townid="20" size="101" clientid="0" beds="3" />

@@ -49,7 +49,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 			loadItem(propStream, tile, true);
 		}
 	} while (result->next());
-	g_logger().info("Loaded house items in {} seconds", bm_context.duration());
+	g_logger().info("Loaded house items in {} milliseconds", bm_context.duration());
 }
 bool IOMapSerialize::saveHouseItems() {
 	bool success = DBTransaction::executeWithinTransaction([]() {
@@ -64,8 +64,6 @@ bool IOMapSerialize::saveHouseItems() {
 }
 
 bool IOMapSerialize::SaveHouseItemsGuard() {
-	Benchmark bm_context;
-
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 
@@ -79,7 +77,7 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 	PropWriteStream stream;
 	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
 		// save house items
-		for (std::shared_ptr<HouseTile> tile : house->getTiles()) {
+		for (const auto &tile : house->getTiles()) {
 			saveTile(stream, tile);
 
 			size_t attributesSize;
@@ -98,7 +96,6 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 		return false;
 	}
 
-	g_logger().info("Saved house items in {} seconds", bm_context.duration());
 	return true;
 }
 
@@ -236,7 +233,12 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> til
 	std::forward_list<std::shared_ptr<Item>> items;
 	uint16_t count = 0;
 	for (auto &item : *tileItems) {
-		if (!item->isSavedToHouses()) {
+		if (item->getID() == ITEM_BATHTUB_FILLED_NOTMOVABLE) {
+			std::shared_ptr<Item> tub = Item::CreateItem(ITEM_BATHTUB_FILLED);
+			items.push_front(tub);
+			++count;
+			continue;
+		} else if (!item->isSavedToHouses()) {
 			continue;
 		}
 

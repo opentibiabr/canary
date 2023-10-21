@@ -608,7 +608,7 @@ int CreatureFunctions::luaCreatureGetOutfit(lua_State* L) {
 	// creature:getOutfit()
 	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
 	if (creature) {
-		pushOutfit(L, creature->getCurrentOutfit());
+		pushOutfitType(L, creature->getCurrentOutfit());
 	} else {
 		lua_pushnil(L);
 	}

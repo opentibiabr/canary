@@ -1149,7 +1149,7 @@ int MonsterTypeFunctions::luaMonsterTypeOutfit(lua_State* L) {
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (monsterType) {
 		if (lua_gettop(L) == 1) {
-			pushOutfit(L, monsterType->info.outfit);
+			pushOutfitType(L, monsterType->info.outfit);
 		} else {
 			Outfit_t outfit = getOutfit(L, 2);
 			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {

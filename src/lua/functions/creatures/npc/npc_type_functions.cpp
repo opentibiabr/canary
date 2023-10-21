@@ -305,7 +305,7 @@ int NpcTypeFunctions::luaNpcTypeOutfit(lua_State* L) {
 	const auto &npcType = getUserdataShared<NpcType>(L, 1);
 	if (npcType) {
 		if (lua_gettop(L) == 1) {
-			pushOutfit(L, npcType->info.outfit);
+			pushOutfitType(L, npcType->info.outfit);
 		} else {
 			Outfit_t outfit = getOutfit(L, 2);
 			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {

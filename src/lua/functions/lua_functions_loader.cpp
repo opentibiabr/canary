@@ -527,7 +527,7 @@ void LuaFunctionsLoader::pushPosition(lua_State* L, const Position &position, in
 	setMetatable(L, -1, "Position");
 }
 
-void LuaFunctionsLoader::pushOutfit(lua_State* L, const Outfit_t &outfit) {
+void LuaFunctionsLoader::pushOutfitType(lua_State* L, const Outfit_t &outfit) {
 	lua_createtable(L, 0, 13);
 	setField(L, "lookType", outfit.lookType);
 	setField(L, "lookTypeEx", outfit.lookTypeEx);
@@ -542,6 +542,15 @@ void LuaFunctionsLoader::pushOutfit(lua_State* L, const Outfit_t &outfit) {
 	setField(L, "lookMountLegs", outfit.lookMountLegs);
 	setField(L, "lookMountFeet", outfit.lookMountFeet);
 	setField(L, "lookFamiliarsType", outfit.lookFamiliarsType);
+}
+
+void LuaFunctionsLoader::pushOutfit(lua_State* L, const std::shared_ptr<Outfit> outfit) {
+	lua_createtable(L, 0, 5);
+	setField(L, "name", outfit->name);
+	setField(L, "looktype", outfit->lookType);
+	setField(L, "premium", outfit->premium);
+	setField(L, "unlocked", outfit->unlocked);
+	setField(L, "from", outfit->from);
 }
 
 void LuaFunctionsLoader::pushMount(lua_State* L, const std::shared_ptr<Mount> mount) {

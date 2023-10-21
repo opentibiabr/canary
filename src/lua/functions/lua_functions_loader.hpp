@@ -23,6 +23,7 @@ class InstantSpell;
 class Item;
 class KV;
 class Mount;
+class Outfit;
 class Player;
 class Thing;
 class Zone;
@@ -150,7 +151,8 @@ public:
 	static void pushCombatDamage(lua_State* L, const CombatDamage &damage);
 	static void pushInstantSpell(lua_State* L, const InstantSpell &spell);
 	static void pushPosition(lua_State* L, const Position &position, int32_t stackpos = 0);
-	static void pushOutfit(lua_State* L, const Outfit_t &outfit);
+	static void pushOutfitType(lua_State* L, const Outfit_t &outfit);
+	static void pushOutfit(lua_State* L, const std::shared_ptr<Outfit> outfit);
 	static void pushMount(lua_State* L, const std::shared_ptr<Mount> mount);
 
 	static void setField(lua_State* L, const char* index, lua_Number value) {

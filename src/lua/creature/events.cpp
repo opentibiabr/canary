@@ -240,7 +240,7 @@ bool Events::eventCreatureOnChangeOutfit(std::shared_ptr<Creature> creature, con
 	LuaScriptInterface::pushUserdata<Creature>(L, creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
 
-	LuaScriptInterface::pushOutfit(L, outfit);
+	LuaScriptInterface::pushOutfitType(L, outfit);
 
 	return scriptInterface.callFunction(2);
 }

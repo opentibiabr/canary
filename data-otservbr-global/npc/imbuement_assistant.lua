@@ -60,20 +60,44 @@ end
 -- start of sales of imbuement packages
 keywordHandler:addKeyword({"imbuement packages"}, StdModule.say, {npcHandler = npcHandler, text = "Skill Increase: {Bash}, {Blockade}, {Chop}, {Epiphany}, {Precision}, {Slash}. Additional Attributes: {Featherweight}, {Strike}, {Swiftness}, {Vampirism}, {Vibrancy}, {Void}. Elemental Damage: {Electrify}, {Frost}, {Reap}, {Scorch}, {Venom}. Elemental Protection: {Cloud Fabric}, {Demon Presence}, {Dragon Hide}, {Lich Shroud}, {Quara Scale}, {Snake Skin}."})
 
--- skill increase packages
-local stoneKeyword = keywordHandler:addKeyword({"bash"}, StdModule.say, {npcHandler = npcHandler, text = "Do you want to buy items for skill club imbuement for 6250 gold?"})
-stoneKeyword:addChildKeyword({"yes"}, StdModule.say, {npcHandler = npcHandler, text = "You have successfully completed your purchase of the items.", reset = true},
-    function(player) return player:getMoney() + player:getBankBalance() >= 6250 end,
-    function(player)
-        if player:removeMoneyBank(6250) then
-            local shoppingBag = player:addItem(2856, 1) -- present box
-            shoppingBag:addItem(9657, 20) -- cyclops toe
-            shoppingBag:addItem(22189, 15) -- ogre nose ring
-            shoppingBag:addItem(10405, 10) -- warmaster's wristguards
-        end
-    end
-)
-stoneKeyword:addChildKeyword({"yes"}, StdModule.say, {npcHandler = npcHandler, text = "Sorry, you don't have enough money.", reset = true})
+function addItemsToShoppingBag(player, moneyRequired, itemList)
+	if player:removeMoneyBank(moneyRequired) then
+		local shoppingBag = player:addItem(2856, 1) -- present box
+		for _, item in pairs(itemList) do
+			shoppingBag:addItem(item.itemId, item.count)
+		end
+		return true
+	end
+	return false
+end
+
+local function purchaseItems(keyword, text, moneyRequired, itemList)
+	local stoneKeyword = keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = "Do you want to " .. text .. " for " .. moneyRequired .. " gold?"})
+	stoneKeyword:addChildKeyword({"yes"}, StdModule.say, {npcHandler = npcHandler, text = "You have successfully completed your purchase of the items.", reset = true},
+		function(player) return player:getMoney() + player:getBankBalance() >= moneyRequired end,
+		function(player) return addItemsToShoppingBag(player, moneyRequired, itemList) end
+	)
+	stoneKeyword:addChildKeyword({"yes"}, StdModule.say, {npcHandler = npcHandler, text = "Sorry, you don't have enough money.", reset = true})
+end
+
+
+function addKeywordForImbuement(keyword, description, cost, items)
+	local stoneKeyword = keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = "Do you want to buy items for " .. description .. " imbuement for " .. cost .. " gold?"})
+	
+	stoneKeyword:addChildKeyword({"yes"}, StdModule.say, {npcHandler = npcHandler, text = "You have successfully completed your purchase of the items.", reset = true},
+		function(player) return player:getMoney() + player:getBankBalance() >= cost end,
+		function(player)
+			if player:removeMoneyBank(cost) then
+				local shoppingBag = player:addItem(2856, 1) -- present box
+				for itemID, itemCount in pairs(items) do
+					shoppingBag:addItem(itemID, itemCount)
+				end
+			end
+		end
+	)
+	
+	stoneKeyword:addChildKeyword({"yes"}, StdModule.say, {npcHandler = npcHandler, text = "Sorry, you don't have enough money.", reset = true})
+end
 
 -- Skill increase packages
 purchaseItems("bash", "buy items for skill club imbuement", 6250, {

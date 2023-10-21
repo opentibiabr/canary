@@ -6687,6 +6687,20 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 					damage.secondary.value = std::max<int32_t>(0, damage.secondary.value + damage.primary.value);
 					damage.primary.value = 0;
 				}
+
+				if (attackerPlayer) {
+					attackerPlayer->updateImpactTracker(damage.primary.type, damage.primary.value);
+					if (damage.secondary.type != COMBAT_NONE) {
+						attackerPlayer->updateImpactTracker(damage.secondary.type, damage.secondary.value);
+					}
+				}
+
+				if (targetPlayer) {
+					targetPlayer->updateImpactTracker(damage.primary.type, manaDamage);
+					if (damage.secondary.type != COMBAT_NONE) {
+						targetPlayer->updateImpactTracker(damage.secondary.type, damage.secondary.value);
+					}
+				}
 			}
 		}
 

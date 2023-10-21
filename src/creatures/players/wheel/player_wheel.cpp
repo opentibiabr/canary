@@ -957,7 +957,7 @@ bool PlayerWheel::canOpenWheel() const {
 		return false;
 	}
 
-	if (m_player.getVocation()->getId() <= 4 && m_player.getStorageValue(STORAGEVALUE_PROMOTION) == -1) {
+	if (!m_player.isPromoted()) {
 		return false;
 	}
 
@@ -1146,6 +1146,14 @@ void PlayerWheel::registerPlayerBonusData() {
 		setSpellInstant("Divine Empowerment", false);
 	}
 
+	if (m_playerBonusData.stages.divineGrenade > 0) {
+		for (int i = 0; i < m_playerBonusData.stages.divineGrenade; ++i) {
+			setSpellInstant("Divine Grenade", true);
+		}
+	} else {
+		setSpellInstant("Divine Grenade", false);
+	}
+
 	if (m_playerBonusData.stages.drainBody > 0) {
 		for (int i = 0; i < m_playerBonusData.stages.drainBody; ++i) {
 			setSpellInstant("Drain Body", true);
@@ -1328,6 +1336,9 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 	if (bonusData.stages.divineEmpowerment > 0) {
 		g_logger().debug("  divineEmpowerment: {}", bonusData.stages.divineEmpowerment);
 	}
+	if (bonusData.stages.divineGrenade > 0) {
+		g_logger().debug("  divineGrenade: {}", bonusData.stages.divineGrenade);
+	}
 	if (bonusData.stages.blessingOfTheGrove > 0) {
 		g_logger().debug("  blessingOfTheGrove: {}", bonusData.stages.blessingOfTheGrove);
 	}
@@ -1399,9 +1410,7 @@ void PlayerWheel::loadDedicationAndConvictionPerks() {
 }
 
 void PlayerWheel::addSpellToVector(const std::string &spellName) {
-	if (std::ranges::find(m_playerBonusData.spells.begin(), m_playerBonusData.spells.end(), spellName) == m_playerBonusData.spells.end()) {
-		m_playerBonusData.spells.emplace_back(spellName);
-	}
+	m_playerBonusData.spells.emplace_back(spellName);
 }
 
 void PlayerWheel::loadRevelationPerks() {
@@ -1435,6 +1444,7 @@ void PlayerWheel::loadRevelationPerks() {
 				addSpellToVector("Great Death Beam");
 			}
 		} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
+			m_playerBonusData.stages.divineGrenade = redStageValue;
 			for (uint8_t i = 0; i < redStageValue; ++i) {
 				addSpellToVector("Divine Grenade");
 			}
@@ -1791,7 +1801,7 @@ bool PlayerWheel::checkCombatMastery() {
 
 bool PlayerWheel::checkDivineEmpowerment() {
 	bool updateClient = false;
-	setOnThinkTimer(WheelOnThink_t::DIVINE_EMPOWERMENT, OTSYS_TIME() + 2000);
+	setOnThinkTimer(WheelOnThink_t::DIVINE_EMPOWERMENT, OTSYS_TIME() + 1000);
 
 	const auto tile = m_player.getTile();
 	if (!tile) {
@@ -1821,14 +1831,32 @@ bool PlayerWheel::checkDivineEmpowerment() {
 		} else if (stage >= 1) {
 			damageBonus = 8;
 		}
-
-		if (damageBonus != getMajorStat(WheelMajor_t::DAMAGE)) {
-			setMajorStat(WheelMajor_t::DAMAGE, damageBonus);
-			updateClient = true;
-		}
+	}
+	if (damageBonus != getMajorStat(WheelMajor_t::DAMAGE)) {
+		setMajorStat(WheelMajor_t::DAMAGE, damageBonus);
+		updateClient = true;
 	}
 
 	return updateClient;
+}
+
+int32_t PlayerWheel::checkDivineGrenade(std::shared_ptr<Creature> target) const {
+	if (!target || target == m_player.getPlayer()) {
+		return 0;
+	}
+
+	int32_t damageBonus = 0;
+	uint8_t stage = getStage(WheelStage_t::DIVINE_GRENADE);
+
+	if (stage >= 3) {
+		damageBonus = 100;
+	} else if (stage >= 2) {
+		damageBonus = 60;
+	} else if (stage >= 1) {
+		damageBonus = 30;
+	}
+
+	return damageBonus;
 }
 
 void PlayerWheel::checkGiftOfLife() {
@@ -2055,7 +2083,9 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 			m_player.sendStats();
 			g_game().reloadCreature(m_player.getPlayer());
 		}
-		return;
+		if (!force) {
+			return;
+		}
 	}
 	// Battle Instinct
 	if (getInstant("Battle Instinct") && (force || getOnThinkTimer(WheelOnThink_t::BATTLE_INSTINCT) < OTSYS_TIME()) && checkBattleInstinct()) {
@@ -2297,6 +2327,12 @@ void PlayerWheel::setSpellInstant(const std::string &name, bool value) {
 		} else {
 			setStage(WheelStage_t::DIVINE_EMPOWERMENT, 0);
 		}
+	} else if (name == "Divine Grenade") {
+		if (value) {
+			setStage(WheelStage_t::DIVINE_GRENADE, getStage(WheelStage_t::DIVINE_GRENADE) + 1);
+		} else {
+			setStage(WheelStage_t::DIVINE_GRENADE, 0);
+		}
 	} else if (name == "Twin Burst") {
 		if (value) {
 			setStage(WheelStage_t::TWIN_BURST, getStage(WheelStage_t::TWIN_BURST) + 1);
@@ -2380,6 +2416,8 @@ uint8_t PlayerWheel::getStage(const std::string name) const {
 		return PlayerWheel::getStage(WheelStage_t::DRAIN_BODY);
 	} else if (name == "Divine Empowerment") {
 		return PlayerWheel::getStage(WheelStage_t::DIVINE_EMPOWERMENT);
+	} else if (name == "Divine Grenade") {
+		return PlayerWheel::getStage(WheelStage_t::DIVINE_GRENADE);
 	} else if (name == "Twin Burst") {
 		return PlayerWheel::getStage(WheelStage_t::TWIN_BURST);
 	} else if (name == "Executioner's Throw") {
@@ -2502,6 +2540,8 @@ bool PlayerWheel::getInstant(const std::string name) const {
 		return PlayerWheel::getStage(WheelStage_t::DRAIN_BODY);
 	} else if (name == "Divine Empowerment") {
 		return PlayerWheel::getStage(WheelStage_t::DIVINE_EMPOWERMENT);
+	} else if (name == "Divine Grenade") {
+		return PlayerWheel::getStage(WheelStage_t::DIVINE_GRENADE);
 	} else if (name == "Twin Burst") {
 		return PlayerWheel::getStage(WheelStage_t::TWIN_BURST);
 	} else if (name == "Executioner's Throw") {

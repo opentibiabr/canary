@@ -26,7 +26,6 @@ local config = {
 		to = Position(32280, 31102, 14),
 	},
 	exit = Position(32271, 31097, 14),
-	storage = Storage.ForgottenKnowledge.HorrorTimer,
 }
 
 local lever = BossLever(config)

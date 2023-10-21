@@ -490,7 +490,7 @@ public:
 	void addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin = false);
 
 	std::shared_ptr<KV> kv() const {
-		return g_kv().scoped("player")->scoped(fmt::format("{}", getID()));
+		return g_kv().scoped("player")->scoped(fmt::format("{}", getGUID()));
 	}
 
 	void genReservedStorageRange();
@@ -2915,4 +2915,7 @@ private:
 	void updateDamageReductionFromItemImbuement(std::array<double_t, COMBAT_COUNT> &combatReductionMap, std::shared_ptr<Item> item, uint16_t combatTypeIndex) const;
 	void updateDamageReductionFromItemAbility(std::array<double_t, COMBAT_COUNT> &combatReductionMap, std::shared_ptr<Item> item, uint16_t combatTypeIndex) const;
 	double_t calculateDamageReduction(double_t currentTotal, int16_t resistance) const;
+
+	void removeEmptyRewards();
+	bool hasOtherRewardContainerOpen(const std::shared_ptr<Container> container) const;
 };

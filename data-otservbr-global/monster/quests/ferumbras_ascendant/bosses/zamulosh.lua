@@ -28,7 +28,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1181,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.FerumbrasAscension.ZamuloshTimer,
 }
 
 monster.strategiesTarget = {

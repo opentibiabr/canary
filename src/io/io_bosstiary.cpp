@@ -303,34 +303,6 @@ uint32_t IOBosstiary::calculteRemoveBoss(uint8_t removeTimes) const {
 	return 300000 * removeTimes - 500000;
 }
 
-std::vector<uint16_t> IOBosstiary::getBosstiaryCooldownRaceId(std::shared_ptr<Player> player) const {
-	std::vector<uint16_t> bossesCooldownRaceId;
-	if (!player) {
-		return bossesCooldownRaceId;
-	}
-
-	for (std::map<uint16_t, std::string> bossesMap = getBosstiaryMap();
-		 const auto &[bossId, bossName] : bossesMap) {
-		uint32_t bossKills = player->getBestiaryKillCount(bossId);
-
-		const auto mType = g_monsters().getMonsterType(bossName);
-		if (!mType) {
-			continue;
-		}
-
-		auto bossStorage = mType->info.bossStorageCooldown;
-		if (bossStorage == 0) {
-			continue;
-		}
-
-		if (bossKills >= 1 || player->getStorageValue(bossStorage) > 0) {
-			bossesCooldownRaceId.push_back(bossId);
-		}
-	}
-
-	return bossesCooldownRaceId;
-}
-
 const std::vector<LevelInfo> &IOBosstiary::getBossRaceKillStages(BosstiaryRarity_t race) const {
 	auto it = levelInfos.find(race);
 	if (it != levelInfos.end()) {

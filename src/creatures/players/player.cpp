@@ -802,14 +802,13 @@ void Player::removeEmptyRewards() {
 		auto [id, reward] = rewardBag;
 		if (reward->empty()) {
 			getRewardChest()->removeItem(reward);
-			reward->decrementReferenceCounter();
 			return true;
 		}
 		return false;
 	});
 }
 
-bool Player::hasOtherRewardContainerOpen(const Container* container) const {
+bool Player::hasOtherRewardContainerOpen(const std::shared_ptr<Container> container) const {
 	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [container](const auto &containerPair) {
 		return containerPair.second.container != container && containerPair.second.container->isAnyKindOfRewardContainer();
 	});

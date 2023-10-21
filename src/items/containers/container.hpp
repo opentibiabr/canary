@@ -161,10 +161,10 @@ public:
 
 	virtual void removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient = false);
 
-	bool isAnyKindOfRewardChest() const;
-	bool isAnyKindOfRewardContainer() const;
-	bool isBrowseFieldAndHoldsRewardChest() const;
-	bool isInsideContainerWithId(const uint16_t id) const;
+	bool isAnyKindOfRewardChest();
+	bool isAnyKindOfRewardContainer();
+	bool isBrowseFieldAndHoldsRewardChest();
+	bool isInsideContainerWithId(const uint16_t id);
 
 protected:
 	std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol);

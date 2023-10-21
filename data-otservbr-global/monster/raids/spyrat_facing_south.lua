@@ -8,19 +8,6 @@ monster.outfit = {
 	lookTypeEx = 30377,
 }
 
-monster.raceId = 2037
-monster.Bestiary = {
-	class = "Humanoid",
-	race = BESTY_RACE_HUMANOID,
-	toKill = 1000,
-	FirstUnlock = 50,
-	SecondUnlock = 500,
-	CharmsPoints = 0,
-	Stars = 0,
-	Occurrence = 0,
-	Locations = "Raids in Darashia, Krailos, Liberty Bay.",
-}
-
 monster.health = 3000
 monster.maxHealth = 3000
 monster.race = "blood"

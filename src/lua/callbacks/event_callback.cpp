@@ -11,8 +11,6 @@
 
 #include "lua/callbacks/event_callback.hpp"
 
-#include "lua/callbacks/event_callback.hpp"
-#include "lua/callbacks/events_callbacks.hpp"
 #include "utils/tools.hpp"
 #include "items/item.hpp"
 #include "creatures/players/player.hpp"

@@ -15098,7 +15098,6 @@
 	</item>
 	<item fromid="6116" toid="6117" name="electric sparks">
 		<attribute key="primarytype" value="walls"/>
-		<attribute key="blocking" value="1"/>
 		<attribute key="blockProjectile" value="1"/>
 	</item>
 	<item id="6118" article="a" name="treasure map">
@@ -68905,5 +68904,29 @@
 	<item id="43895" article="a" name="bag you covet">
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="weight" value="20"/>
+	</item>
+	<item id="44064" article="an" name="training shield">
+		<attribute key="primarytype" value="training weapons"/>
+		<attribute key="showCharges" value="1"/>
+		<attribute key="charges" value="50"/>
+		<attribute key="weight" value="1000"/>
+	</item>
+	<item id="44065" article="an" name="exercise shield">
+		<attribute key="primarytype" value="exercise weapons"/>
+		<attribute key="showCharges" value="1"/>
+		<attribute key="charges" value="500"/>
+		<attribute key="weight" value="1000"/>
+	</item>
+	<item id="44066" article="an" name="durable exercise shield">
+		<attribute key="primarytype" value="exercise weapons"/>
+		<attribute key="showCharges" value="1"/>
+		<attribute key="charges" value="1800"/>
+		<attribute key="weight" value="1000"/>
+	</item>
+	<item id="44067" article="an" name="lasting exercise shield">
+		<attribute key="primarytype" value="exercise weapons"/>
+		<attribute key="showCharges" value="1"/>
+		<attribute key="charges" value="14400"/>
+		<attribute key="weight" value="1000"/>
 	</item>
 </items>

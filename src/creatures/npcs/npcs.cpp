@@ -11,7 +11,6 @@
 
 #include "declarations.hpp"
 #include "creatures/combat/combat.hpp"
-#include "creatures/creature.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/npcs/npcs.hpp"

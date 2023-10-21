@@ -566,7 +566,7 @@ bool IOLoginDataSave::savePlayerInbox(std::shared_ptr<Player> player) {
 	query.str("");
 	DBInsert inboxQuery("INSERT INTO `player_inboxitems` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
 
-	for (std::shared_ptr<Item> item : player->getInbox()->getItemList()) {
+	for (const auto &item : player->getInbox()->getItemList()) {
 		inboxList.emplace_back(0, item);
 	}
 

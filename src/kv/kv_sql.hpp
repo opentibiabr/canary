@@ -24,10 +24,16 @@ public:
 
 	bool saveAll() override;
 
-protected:
+private:
 	std::optional<ValueWrapper> load(const std::string &key) override;
 	bool save(const std::string &key, const ValueWrapper &value) override;
+	bool prepareSave(const std::string &key, const ValueWrapper &value, DBInsert &update);
 
-private:
+	DBInsert dbUpdate() {
+		auto insert = DBInsert("INSERT INTO `kv_store` (`key_name`, `timestamp`, `value`) VALUES");
+		insert.upsert({ "key_name", "timestamp", "value" });
+		return insert;
+	}
+
 	Database &db;
 };

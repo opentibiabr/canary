@@ -15,7 +15,7 @@
 #include "game/game.hpp"
 #include "lua/callbacks/creaturecallback.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "game/scheduling/scheduler.hpp"
+#include "map/spectators.hpp"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -151,7 +151,7 @@ void Npc::onPlayerAppear(std::shared_ptr<Player> player) {
 	if (player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(player)) {
 		return;
 	}
-	playerSpectators.insert(player);
+	playerSpectators.emplace_back(player);
 	manageIdle();
 }
 
@@ -249,7 +249,7 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 	if (std::shared_ptr<Tile> tile = ignore ? player->getTile() : nullptr; tile) {
 		double slotsNedeed = 0;
 		if (itemType.stackable) {
-			slotsNedeed = inBackpacks ? std::ceil(std::ceil(static_cast<double>(amount) / 100) / shoppingBagSlots) : std::ceil(static_cast<double>(amount) / 100);
+			slotsNedeed = inBackpacks ? std::ceil(std::ceil(static_cast<double>(amount) / itemType.stackSize) / shoppingBagSlots) : std::ceil(static_cast<double>(amount) / itemType.stackSize);
 		} else {
 			slotsNedeed = inBackpacks ? std::ceil(static_cast<double>(amount) / shoppingBagSlots) : static_cast<double>(amount);
 		}
@@ -271,7 +271,7 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 	uint32_t totalCost = buyPrice * amount;
 	uint32_t bagsCost = 0;
 	if (inBackpacks && itemType.stackable) {
-		bagsCost = shoppingBagPrice * static_cast<uint32_t>(std::ceil(std::ceil(static_cast<double>(amount) / 100) / shoppingBagSlots));
+		bagsCost = shoppingBagPrice * static_cast<uint32_t>(std::ceil(std::ceil(static_cast<double>(amount) / itemType.stackSize) / shoppingBagSlots));
 	} else if (inBackpacks && !itemType.stackable) {
 		bagsCost = shoppingBagPrice * static_cast<uint32_t>(std::ceil(static_cast<double>(amount) / shoppingBagSlots));
 	}
@@ -349,7 +349,7 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 			return;
 		}
 		if (hasMore) {
-			g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, totalPrice), __FUNCTION__);
+			g_dispatcher().scheduleEvent(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, totalPrice), __FUNCTION__);
 			return;
 		}
 		ss << "You sold all of the items from your loot pouch for ";
@@ -364,7 +364,7 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 		return;
 	}
 	if (itemId == ITEM_GOLD_POUCH) {
-		g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, 0), __FUNCTION__);
+		g_dispatcher().scheduleEvent(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, 0), __FUNCTION__);
 		return;
 	}
 
@@ -531,7 +531,7 @@ void Npc::onThinkWalk(uint32_t interval) {
 
 void Npc::onCreatureWalk() {
 	Creature::onCreatureWalk();
-	phmap::erase_if(playerSpectators, [this](const auto &creature) { return !this->canSee(creature->getPosition()); });
+	playerSpectators.erase_if([this](const auto &creature) { return !this->canSee(creature->getPosition()); });
 }
 
 void Npc::onPlacedCreature() {
@@ -539,11 +539,10 @@ void Npc::onPlacedCreature() {
 }
 
 void Npc::loadPlayerSpectators() {
-	SpectatorHashSet spec;
-	g_game().map.getSpectators(spec, position, true, true);
-	for (auto creature : spec) {
-		if (creature->getPlayer() || creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
-			playerSpectators.insert(creature);
+	auto spec = Spectators().find<Player>(position, true);
+	for (const auto &creature : spec) {
+		if (!creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
+			playerSpectators.emplace_back(creature->getPlayer());
 		}
 	}
 }

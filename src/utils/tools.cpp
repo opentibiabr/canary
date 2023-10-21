@@ -476,6 +476,11 @@ std::time_t getTimeMsNow() {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
 }
 
+std::time_t getTimeUsNow() {
+	auto duration = std::chrono::system_clock::now().time_since_epoch();
+	return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+}
+
 BedItemPart_t getBedPart(const std::string_view string) {
 	if (string == "pillow" || string == "1") {
 		return BED_PILLOW_PART;
@@ -829,7 +834,6 @@ AmmoTypeNames ammoTypeNames = {
 	{ "throwingknife", AMMO_THROWINGKNIFE },
 	{ "diamondarrow", AMMO_ARROW },
 	{ "spectralbolt", AMMO_BOLT },
-
 };
 
 WeaponActionNames weaponActionNames = {
@@ -1789,4 +1793,8 @@ std::string formatNumber(uint64_t number) {
 		pos -= 3;
 	}
 	return formattedNumber;
+}
+
+void sleep_for(uint64_t ms) {
+	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }

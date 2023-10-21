@@ -132,6 +132,10 @@ function Player.allowMovement(self, allow)
 	return self:setStorageValue(Global.Storage.BlockMovementStorage, allow and -1 or 1)
 end
 
+function Player.hasAllowMovement(self)
+	return self:getStorageValue(Global.Storage.BlockMovementStorage) ~= 1
+end
+
 function Player.checkGnomeRank(self)
 	if not IsRunningGlobalDatapack() then
 		return true
@@ -199,7 +203,15 @@ function Player.transferMoneyTo(self, target, amount)
 	if not target then
 		return false
 	end
-	return Bank.transfer(self, target, amount)
+	if not Bank.transfer(self, target, amount) then
+		return false
+	end
+
+	local targetPlayer = Player(target)
+	if targetPlayer then
+		targetPlayer:sendTextMessage(MESSAGE_LOOK, self:getName() .. " has transferred " .. FormatNumber(amount) .. " gold coins to you.")
+	end
+	return true
 end
 
 function Player.withdrawMoney(self, amount)
@@ -236,17 +248,12 @@ function Player:removeMoneyBank(amount)
 
 			self:sendTextMessage(MESSAGE_TRADE, ("Paid %s from inventory and %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(moneyCount), FormatNumber(amount - moneyCount), FormatNumber(self:getBankBalance())))
 			return true
-		else
-			self:setBankBalance(bankCount - amount)
-			self:sendTextMessage(MESSAGE_TRADE, ("Paid %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(amount), FormatNumber(self:getBankBalance())))
-			return true
 		end
+		self:setBankBalance(bankCount - amount)
+		self:sendTextMessage(MESSAGE_TRADE, ("Paid %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(amount), FormatNumber(self:getBankBalance())))
+		return true
 	end
 	return false
-end
-
-function Player.hasAllowMovement(self)
-	return self:getStorageValue(Global.Storage.BlockMovementStorage) ~= 1
 end
 
 function Player.hasRookgaardShield(self)

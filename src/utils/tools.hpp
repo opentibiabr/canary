@@ -71,6 +71,7 @@ std::string formatTime(time_t time);
 std::string formatEnumName(std::string_view name);
 std::time_t getTimeNow();
 std::time_t getTimeMsNow();
+std::time_t getTimeUsNow();
 std::string convertIPToString(uint32_t ip);
 
 void trimString(std::string &str);
@@ -122,6 +123,7 @@ ItemAttribute_t stringToItemAttribute(const std::string &str);
 
 const char* getReturnMessage(ReturnValue value);
 
+void sleep_for(uint64_t ms);
 void capitalizeWords(std::string &source);
 void consoleHandlerExit();
 std::string validateNameHouse(const std::string &name);

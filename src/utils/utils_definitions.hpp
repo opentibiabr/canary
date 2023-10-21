@@ -655,6 +655,9 @@ enum ItemID_t : uint16_t {
 	ITEM_PRIMAL_POD = 39176,
 	ITEM_DIVINE_EMPOWERMENT = 40450,
 
+	ITEM_BATHTUB_FILLED = 26077,
+	ITEM_BATHTUB_FILLED_NOTMOVABLE = 26100,
+
 	ITEM_NONE = 0
 };
 
@@ -744,4 +747,18 @@ enum BedItemPart_t : uint8_t {
 	BED_NONE_PART,
 	BED_PILLOW_PART,
 	BED_BLANKET_PART,
+};
+
+enum class AttrSubId_t {
+	None,
+	TrainParty,
+	ProtectParty,
+	EnchantParty,
+	JeanPierreMagic,
+	JeanPierreMelee,
+	JeanPierreDistance,
+	JeanPierreDefense,
+	JeanPierreFishing,
+	BloodRageProtector,
+	Sharpshooter,
 };

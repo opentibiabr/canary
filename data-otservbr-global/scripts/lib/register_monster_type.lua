@@ -24,6 +24,11 @@ registerMonsterType.description = function(mtype, mask)
 		mtype:nameDescription(mask.description)
 	end
 end
+registerMonsterType.variant = function(mtype, mask)
+	if mask.variant then
+		mtype:variant(mask.variant)
+	end
+end
 registerMonsterType.experience = function(mtype, mask)
 	if mask.experience then
 		mtype:experience(mask.experience)
@@ -198,6 +203,9 @@ registerMonsterType.flags = function(mtype, mask)
 		end
 		if mask.flags.canPushCreatures ~= nil then
 			mtype:canPushCreatures(mask.flags.canPushCreatures)
+		end
+		if mask.flags.critChance ~= nil then
+			mtype:critChance(mask.flags.critChance)
 		end
 		if mask.flags.targetDistance then
 			mtype:targetDistance(math.max(1, mask.flags.targetDistance))

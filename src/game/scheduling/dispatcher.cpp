@@ -99,8 +99,10 @@ void Dispatcher::executeEvents(std::unique_lock<std::mutex> &asyncLock) {
 }
 
 void Dispatcher::executeScheduledEvents() {
-	for (uint_fast64_t i = 0, max = scheduledTasks.size(); i < max && !scheduledTasks.empty(); ++i) {
-		const auto &task = scheduledTasks.top();
+	while (!scheduledTasks.empty()) {
+		const auto &it = scheduledTasks.begin();
+		const auto &task = *it;
+
 		if (task->getTime() > Task::TIME_NOW) {
 			break;
 		}
@@ -113,10 +115,10 @@ void Dispatcher::executeScheduledEvents() {
 			task->updateTime();
 			scheduledTasks.emplace(task);
 		} else {
-			scheduledTasksRef.erase(task->getEventId());
+			scheduledTasksRef.erase(task->getId());
 		}
 
-		scheduledTasks.pop();
+		scheduledTasks.erase(it);
 	}
 
 	dispacherContext.reset();
@@ -134,10 +136,7 @@ void Dispatcher::mergeEvents() {
 		}
 
 		if (!thread->scheduledTasks.empty()) {
-			for (auto &task : thread->scheduledTasks) {
-				scheduledTasks.emplace(task);
-				scheduledTasksRef.emplace(task->getEventId(), task);
-			}
+			scheduledTasks.insert(make_move_iterator(thread->scheduledTasks.begin()), make_move_iterator(thread->scheduledTasks.end()));
 			thread->scheduledTasks.clear();
 		}
 	}
@@ -153,7 +152,7 @@ std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() const {
 		return CHRONO_MILI_MAX;
 	}
 
-	const auto &task = scheduledTasks.top();
+	const auto &task = *scheduledTasks.begin();
 	const auto timeRemaining = task->getTime() - Task::TIME_NOW;
 	return std::max<std::chrono::nanoseconds>(timeRemaining, CHRONO_NANO_0);
 }
@@ -168,8 +167,9 @@ void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view contex
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	const auto &thread = threads[getThreadId()];
 	std::scoped_lock lock(thread->mutex);
+
 	auto eventId = scheduledTasksRef
-					   .emplace(task->generateId(), thread->scheduledTasks.emplace_back(task))
+					   .emplace(task->getId(), thread->scheduledTasks.emplace_back(task))
 					   .first->first;
 
 	notify();
@@ -184,7 +184,7 @@ void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
 }
 
 void Dispatcher::stopEvent(uint64_t eventId) {
-	auto it = scheduledTasksRef.find(eventId);
+	const auto &it = scheduledTasksRef.find(eventId);
 	if (it != scheduledTasksRef.end()) {
 		it->second->cancel();
 		scheduledTasksRef.erase(it);

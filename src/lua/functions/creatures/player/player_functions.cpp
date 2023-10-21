@@ -1389,6 +1389,17 @@ int PlayerFunctions::luaPlayerSetVocation(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerIsPromoted(lua_State* L) {
+	// player:isPromoted()
+	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
+	if (player) {
+		pushBoolean(L, player->isPromoted());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerGetSex(lua_State* L) {
 	// player:getSex()
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);

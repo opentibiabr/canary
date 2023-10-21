@@ -96,7 +96,8 @@ if Modules == nil then
 
 		if player:isPremium() or not parameters.premium then
 			local promotion = player:getVocation():getPromotion()
-			if player:isPromoted() or not promotion then
+			local hasPromotion = player:kv():get("promoted")
+			if not promotion or hasPromotion then
 				npcHandler:say("You are already promoted!", npc, player)
 			elseif player:getLevel() < parameters.level then
 				npcHandler:say(string.format("I am sorry, but I can only promote you once you have reached level %d.", parameters.level), npc, player)

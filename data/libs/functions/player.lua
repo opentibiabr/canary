@@ -45,14 +45,6 @@ function Player.isPremium(self)
 	return self:getPremiumDays() > 0 or configManager.getBoolean(configKeys.FREE_PREMIUM)
 end
 
-function Player.isPromoted(self)
-	local vocation = self:getVocation()
-	local promotedVocation = vocation:getPromotion()
-	promotedVocation = promotedVocation and promotedVocation:getId() or 0
-
-	return promotedVocation == 0 and vocation:getId() ~= promotedVocation
-end
-
 function Player.sendCancelMessage(self, message)
 	if type(message) == "number" then
 		message = Game.getReturnMessage(message)

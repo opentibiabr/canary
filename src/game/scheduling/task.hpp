@@ -78,7 +78,7 @@ private:
 	}
 
 	bool hasTraceableContext() const {
-		const static auto tasksContext = phmap::flat_hash_set<std::string>({
+		const static auto tasksContext = std::set<std::string_view>({
 			"Creature::checkCreatureWalk",
 			"Decay::checkDecay",
 			"Dispatcher::asyncEvent",

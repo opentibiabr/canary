@@ -790,9 +790,29 @@ void Player::closeContainer(uint8_t cid) {
 	OpenContainer openContainer = it->second;
 	std::shared_ptr<Container> container = openContainer.container;
 
+	if (container && container->isAnyKindOfRewardChest() && !hasOtherRewardContainerOpen(container)) {
+		removeEmptyRewards();
+	}
 	openContainers.erase(it);
 	if (container && container->getID() == ITEM_BROWSEFIELD) {
 	}
+}
+
+void Player::removeEmptyRewards() {
+	std::erase_if(rewardMap, [this](const auto &rewardBag) {
+		auto [id, reward] = rewardBag;
+		if (reward->empty()) {
+			getRewardChest()->removeItem(reward);
+			return true;
+		}
+		return false;
+	});
+}
+
+bool Player::hasOtherRewardContainerOpen(const std::shared_ptr<Container> container) const {
+	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [container](const auto &containerPair) {
+		return containerPair.second.container != container && containerPair.second.container->isAnyKindOfRewardContainer();
+	});
 }
 
 void Player::setContainerIndex(uint8_t cid, uint16_t index) {

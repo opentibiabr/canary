@@ -38,7 +38,6 @@ void Party::disband() {
 	if (!currentLeader) {
 		return;
 	}
-	m_leader.reset();
 
 	currentLeader->setParty(nullptr);
 	currentLeader->sendClosePrivate(CHANNEL_PARTY);

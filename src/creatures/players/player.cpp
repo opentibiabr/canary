@@ -1722,7 +1722,6 @@ void Player::onAttackedCreatureChangeZone(ZoneType_t zone) {
 
 void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) {
 	Creature::onRemoveCreature(creature, isLogout);
-	auto player = getPlayer();
 
 	if (auto player = getPlayer(); player == creature) {
 		if (isLogout) {

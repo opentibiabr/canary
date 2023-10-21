@@ -144,7 +144,8 @@ void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 		auto player = item->getHoldingPlayer();
 		if (player) {
 			g_logger().error("[{}] - internalDecayItem failed to player {}, item id is same from transform equip/deequip, "
-							 " item id: {}, equip to id: '{}', deequip to id '{}'", __FUNCTION__, player->getName(), it.id, it.transformEquipTo, it.transformDeEquipTo);
+							 " item id: {}, equip to id: '{}', deequip to id '{}'",
+							 __FUNCTION__, player->getName(), it.id, it.transformEquipTo, it.transformDeEquipTo);
 		}
 		return;
 	}

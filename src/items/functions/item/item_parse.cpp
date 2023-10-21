@@ -385,8 +385,7 @@ void ItemParse::parseTransform(const std::string &tmpStrValue, pugi::xml_attribu
 	if (stringValue == "transformequipto") {
 		itemType.transformEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
 		if (itemType.transformEquipTo == itemType.decayTo) {
-			g_logger().warn("[{}] item with id {} is transforming on equip to the same id of decay to '{}'", 
-						 __FUNCTION__, itemType.id, itemType.decayTo);
+			g_logger().warn("[{}] item with id {} is transforming on equip to the same id of decay to '{}'", __FUNCTION__, itemType.id, itemType.decayTo);
 			itemType.decayTo = 0;
 		}
 		if (ItemType &transform = Item::items.getItemType(itemType.transformEquipTo);
@@ -395,8 +394,7 @@ void ItemParse::parseTransform(const std::string &tmpStrValue, pugi::xml_attribu
 		}
 	} else if (stringValue == "transformdeequipto") {
 		if (itemType.transformDeEquipTo == itemType.decayTo) {
-			g_logger().warn("[{}] item with id {} is transforming on de-equip to the same id of decay to '{}'", 
-						 __FUNCTION__, itemType.id, itemType.decayTo);
+			g_logger().warn("[{}] item with id {} is transforming on de-equip to the same id of decay to '{}'", __FUNCTION__, itemType.id, itemType.decayTo);
 			itemType.decayTo = 0;
 		}
 

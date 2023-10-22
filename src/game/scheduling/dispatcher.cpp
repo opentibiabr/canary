@@ -99,10 +99,11 @@ void Dispatcher::executeEvents(std::unique_lock<std::mutex> &asyncLock) {
 }
 
 void Dispatcher::executeScheduledEvents() {
-	while (!scheduledTasks.empty()) {
-		const auto &it = scheduledTasks.begin();
-		const auto &task = *it;
+	auto &threadScheduledTasks = threads[getThreadId()]->scheduledTasks;
 
+	auto it = scheduledTasks.begin();
+	while (it != scheduledTasks.end()) {
+		const auto &task = *it;
 		if (task->getTime() > Task::TIME_NOW) {
 			break;
 		}
@@ -113,12 +114,16 @@ void Dispatcher::executeScheduledEvents() {
 
 		if (task->execute() && task->isCycle()) {
 			task->updateTime();
-			scheduledTasks.emplace(task);
+			threadScheduledTasks.emplace_back(task);
 		} else {
 			scheduledTasksRef.erase(task->getId());
 		}
 
-		scheduledTasks.erase(it);
+		++it;
+	}
+
+	if (it != scheduledTasks.begin()) {
+		scheduledTasks.erase(scheduledTasks.begin(), it);
 	}
 
 	dispacherContext.reset();

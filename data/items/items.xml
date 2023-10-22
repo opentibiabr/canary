@@ -3690,7 +3690,7 @@
 	</item>
 	<item id="2126" article="an" name="energy field">
 		<attribute key="type" value="magicfield"/>
-		<attribute key="field" value="poison">
+		<attribute key="field" value="energy">
 			<attribute key="ticks" value="5000"/>
 			<attribute key="damage" value="100"/>
 			<attribute key="start" value="5"/>

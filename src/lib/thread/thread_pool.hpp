@@ -23,9 +23,15 @@ public:
 	asio::io_context &getIoContext();
 	void addLoad(const std::function<void(void)> &load);
 
+	uint16_t getNumberOfThreads() const {
+		return nThreads;
+	}
+
 private:
 	Logger &logger;
 	asio::io_context ioService;
 	std::vector<std::jthread> threads;
 	asio::io_context::work work { ioService };
+
+	uint16_t nThreads = 0;
 };

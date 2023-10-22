@@ -78,8 +78,8 @@ class Dispatcher {
 public:
 	explicit Dispatcher(ThreadPool &threadPool) :
 		threadPool(threadPool) {
-		threads.reserve(std::thread::hardware_concurrency() + 1);
-		for (uint_fast16_t i = 0; i < std::thread::hardware_concurrency() + 1; ++i) {
+		threads.reserve(threadPool.getNumberOfThreads() + 1);
+		for (uint_fast16_t i = 0; i < threads.capacity(); ++i) {
 			threads.emplace_back(std::make_unique<ThreadTask>());
 		}
 	};

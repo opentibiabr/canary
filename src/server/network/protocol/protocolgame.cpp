@@ -2029,8 +2029,8 @@ void ProtocolGame::parseHighscores(NetworkMessage &msg) {
 	uint32_t vocation = msg.get<uint32_t>();
 	uint16_t page = 1;
 	const std::string worldName = msg.getString();
-	msg.getByte(); // Game World Category
-	msg.getByte(); // BattlEye World Type
+	auto a = msg.getByte(); // Game World Category
+	auto b = msg.getByte(); // BattlEye World Type
 	if (type == HIGHSCORE_GETENTRIES) {
 		page = std::max<uint16_t>(1, msg.get<uint16_t>());
 	}
@@ -2066,7 +2066,7 @@ void ProtocolGame::sendHighscoresNoData() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages) {
+void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer) {
 	if (oldProtocol) {
 		return;
 	}
@@ -2145,8 +2145,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(0xFF); // ??
 	msg.addByte(0); // ??
 	msg.addByte(1); // ??
-	msg.add<uint32_t>(time(nullptr)); // Last Update
-
+	msg.add<uint32_t>(updateTimer); // Last Update
 	msg.setBufferPosition(vocationPosition);
 	msg.addByte(vocations);
 	writeToOutputBuffer(msg);

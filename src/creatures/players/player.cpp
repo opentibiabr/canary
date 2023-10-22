@@ -592,7 +592,7 @@ void Player::updateInventoryImbuement() {
 				continue;
 			}
 
-			g_logger().debug("Decaying imbuement {} from item {} of player {}", imbuement->getName(), item->getName(), getName());
+			g_logger().trace("Decaying imbuement {} from item {} of player {}", imbuement->getName(), item->getName(), getName());
 			// Calculate the new duration of the imbuement, making sure it doesn't go below 0
 			uint32_t duration = std::max<uint32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
 			// Update the imbuement's duration in the item

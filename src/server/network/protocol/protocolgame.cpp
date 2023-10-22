@@ -2029,8 +2029,8 @@ void ProtocolGame::parseHighscores(NetworkMessage &msg) {
 	uint32_t vocation = msg.get<uint32_t>();
 	uint16_t page = 1;
 	const std::string worldName = msg.getString();
-	auto a = msg.getByte(); // Game World Category
-	auto b = msg.getByte(); // BattlEye World Type
+	msg.getByte(); // Game World Category
+	msg.getByte(); // BattlEye World Type
 	if (type == HIGHSCORE_GETENTRIES) {
 		page = std::max<uint16_t>(1, msg.get<uint16_t>());
 	}

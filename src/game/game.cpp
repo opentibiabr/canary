@@ -9932,17 +9932,20 @@ void Game::setTransferPlayerHouseItems(uint32_t houseId, uint32_t playerId) {
 }
 
 template <typename T>
-phmap::parallel_flat_hash_set<T> setDifference(const phmap::flat_hash_set<T> &setA, const phmap::flat_hash_set<T> &setB) {
-	phmap::parallel_flat_hash_set<T> setResult;
+std::vector<T> setDifference(const std::unordered_set<T> &setA, const std::unordered_set<T> &setB) {
+	std::vector<T> setResult;
+	setResult.reserve(setA.size());
+
 	for (const auto &elem : setA) {
-		if (setB.find(elem) == setB.end()) {
-			setResult.insert(elem);
+		if (!setB.contains(elem)) {
+			setResult.emplace_back(elem);
 		}
 	}
+
 	return setResult;
 }
 
-ReturnValue Game::beforeCreatureZoneChange(std::shared_ptr<Creature> creature, const phmap::flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::flat_hash_set<std::shared_ptr<Zone>> &toZones, bool force /* = false*/) const {
+ReturnValue Game::beforeCreatureZoneChange(std::shared_ptr<Creature> creature, const std::unordered_set<std::shared_ptr<Zone>> &fromZones, const std::unordered_set<std::shared_ptr<Zone>> &toZones, bool force /* = false*/) const {
 	if (!creature) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -9972,7 +9975,7 @@ ReturnValue Game::beforeCreatureZoneChange(std::shared_ptr<Creature> creature, c
 	return RETURNVALUE_NOERROR;
 }
 
-void Game::afterCreatureZoneChange(std::shared_ptr<Creature> creature, const phmap::flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::flat_hash_set<std::shared_ptr<Zone>> &toZones) const {
+void Game::afterCreatureZoneChange(std::shared_ptr<Creature> creature, const std::unordered_set<std::shared_ptr<Zone>> &fromZones, const std::unordered_set<std::shared_ptr<Zone>> &toZones) const {
 	if (!creature) {
 		return;
 	}

@@ -12,7 +12,6 @@
 #include "server/network/protocol/protocol.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/creature.hpp"
-#include <unordered_set>
 
 class NetworkMessage;
 class Player;

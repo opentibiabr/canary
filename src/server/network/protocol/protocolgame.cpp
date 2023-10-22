@@ -2810,9 +2810,7 @@ void ProtocolGame::BestiarysendCharms() {
 	msg.addByte(4); // Unknown
 
 	auto finishedMonstersSet = g_iobestiary().getBestiaryFinished(player);
-	std::list<charmRune_t> usedRunes = g_iobestiary().getCharmUsedRuneBitAll(player);
-
-	for (charmRune_t charmRune : usedRunes) {
+	for (charmRune_t charmRune : g_iobestiary().getCharmUsedRuneBitAll(player)) {
 		const auto tmpCharm = g_iobestiary().getBestiaryCharm(charmRune);
 		uint16_t tmp_raceid = player->parseRacebyCharm(tmpCharm->id, false, 0);
 

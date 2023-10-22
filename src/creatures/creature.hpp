@@ -263,7 +263,7 @@ public:
 		return ZONE_NORMAL;
 	}
 
-	phmap::flat_hash_set<std::shared_ptr<Zone>> getZones();
+	std::unordered_set<std::shared_ptr<Zone>> getZones();
 
 	// walk functions
 	void startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions = false);

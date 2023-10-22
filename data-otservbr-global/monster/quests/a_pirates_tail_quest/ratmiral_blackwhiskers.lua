@@ -28,7 +28,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 2006,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_60.APiratesTail.RatmiralTimer,
 }
 
 monster.strategiesTarget = {

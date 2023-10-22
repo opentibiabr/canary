@@ -8431,20 +8431,30 @@ void ProtocolGame::sendBosstiaryCooldownTimer() {
 	NetworkMessage msg;
 	msg.addByte(0xBD);
 
-	auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldownRaceId(player);
-	auto bossesOnTrackerSize = static_cast<uint16_t>(bossesOnTracker.size());
-	msg.add<uint16_t>(bossesOnTrackerSize); // Number of bosses on timer
-	for (const auto &bossRaceId : bossesOnTracker) {
+	auto startBosses = msg.getBufferPosition();
+	msg.skipBytes(2); // Boss count
+	uint16_t bossesCount = 0;
+	for (std::map<uint16_t, std::string> bossesMap = g_ioBosstiary().getBosstiaryMap();
+		 const auto &[bossRaceId, _] : bossesMap) {
 		const auto mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossRaceId);
 		if (!mType) {
 			continue;
 		}
 
-		int32_t timer = player->getStorageValue(mType->info.bossStorageCooldown);
+		auto timerValue = player->kv()->scoped("boss.cooldown")->get(toKey(std::to_string(bossRaceId)));
+		if (!timerValue || !timerValue.has_value()) {
+			continue;
+		}
+		auto timer = timerValue->getNumber();
 		uint64_t sendTimer = timer > 0 ? static_cast<uint64_t>(timer) : 0;
 		msg.add<uint32_t>(bossRaceId); // bossRaceId
 		msg.add<uint64_t>(sendTimer); // Boss cooldown in seconds
+		bossesCount++;
 	}
+	auto endBosses = msg.getBufferPosition();
+	msg.setBufferPosition(startBosses);
+	msg.add<uint16_t>(bossesCount);
+	msg.setBufferPosition(endBosses);
 
 	writeToOutputBuffer(msg);
 }

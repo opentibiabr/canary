@@ -32,7 +32,7 @@ void Map::load(const std::string &identifier, const Position &pos) {
 	}
 }
 
-void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool loadHouses /*= false*/, bool loadMonsters /*= false*/, bool loadNpcs /*= false*/, const Position &pos /*= Position()*/) {
+void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool loadHouses /*= false*/, bool loadMonsters /*= false*/, bool loadNpcs /*= false*/, bool loadZones /*= false*/, const Position &pos /*= Position()*/) {
 	// Only download map if is loading the main map and it is not already downloaded
 	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !std::filesystem::exists(identifier)) {
 		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
@@ -86,6 +86,10 @@ void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 		IOMap::loadNpcs(this);
 	}
 
+	if (loadZones) {
+		IOMap::loadZones(this);
+	}
+
 	// Files need to be cleaned up if custom map is enabled to open, or will try to load main map files
 	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
 		monsterfile.clear();
@@ -94,7 +98,7 @@ void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 	}
 }
 
-void Map::loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMonsters, bool loadNpcs, int customMapIndex) {
+void Map::loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMonsters, bool loadNpcs, bool loadZones, int customMapIndex) {
 	// Load the map
 	load(g_configManager().getString(DATA_DIRECTORY) + "/world/custom/" + mapName + ".otbm");
 
@@ -108,6 +112,10 @@ void Map::loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMo
 
 	if (loadNpcs && !IOMap::loadNpcsCustom(this, mapName, customMapIndex)) {
 		g_logger().warn("Failed to load npc custom spawn data");
+	}
+
+	if (loadZones && !IOMap::loadZonesCustom(this, mapName, customMapIndex)) {
+		g_logger().warn("Failed to load zones custom data");
 	}
 
 	// Files need to be cleaned up or will try to load previous map files again
@@ -149,6 +157,25 @@ std::shared_ptr<Tile> Map::getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bo
 	return tile;
 }
 
+std::shared_ptr<Tile> Map::getLoadedTile(uint16_t x, uint16_t y, uint8_t z) {
+	if (z >= MAP_MAX_LAYERS) {
+		return nullptr;
+	}
+
+	const auto leaf = getQTNode(x, y);
+	if (!leaf) {
+		return nullptr;
+	}
+
+	const auto &floor = leaf->getFloor(z);
+	if (!floor) {
+		return nullptr;
+	}
+
+	const auto tile = floor->getTile(x, y);
+	return tile;
+}
+
 std::shared_ptr<Tile> Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 	if (z >= MAP_MAX_LAYERS) {
 		return nullptr;
@@ -166,6 +193,19 @@ std::shared_ptr<Tile> Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 
 	const auto tile = floor->getTile(x, y);
 	return tile ? tile : getOrCreateTileFromCache(floor, x, y);
+}
+
+void Map::refreshZones(uint16_t x, uint16_t y, uint8_t z) {
+	const auto tile = getLoadedTile(x, y, z);
+	if (!tile) {
+		return;
+	}
+
+	tile->clearZones();
+	const auto &zones = Zone::getZones(tile->getPosition());
+	for (const auto &zone : zones) {
+		tile->addZone(zone);
+	}
 }
 
 void Map::setTile(uint16_t x, uint16_t y, uint8_t z, std::shared_ptr<Tile> newTile) {

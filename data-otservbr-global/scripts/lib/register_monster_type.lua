@@ -24,6 +24,11 @@ registerMonsterType.description = function(mtype, mask)
 		mtype:nameDescription(mask.description)
 	end
 end
+registerMonsterType.variant = function(mtype, mask)
+	if mask.variant then
+		mtype:variant(mask.variant)
+	end
+end
 registerMonsterType.experience = function(mtype, mask)
 	if mask.experience then
 		mtype:experience(mask.experience)
@@ -87,12 +92,6 @@ registerMonsterType.bosstiary = function(mtype, mask)
 			Spdlog.error(string.format("Attempting to register a bosstiary boss without a raceId. Boss name: %s", mtype:name()))
 		end
 		mtype:bossRace(mask.bosstiary.bossRace, bossClass)
-		local storage = mask.bosstiary.storageCooldown
-		if storage == nil then
-			logger.debug("[registerMonsterType.bosstiary] - Monster: {} has no cooldown defined.", mtype:name())
-		elseif storage ~= false then
-			mtype:bossStorageCooldown(storage)
-		end
 	end
 end
 registerMonsterType.skull = function(mtype, mask)

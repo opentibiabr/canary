@@ -66,7 +66,6 @@ public:
 	std::vector<uint16_t> getBosstiaryFinished(const std::shared_ptr<Player> &player, uint8_t level = 1) const;
 	uint8_t getBossCurrentLevel(std::shared_ptr<Player> player, uint16_t bossId) const;
 	uint32_t calculteRemoveBoss(uint8_t removeTimes) const;
-	std::vector<uint16_t> getBosstiaryCooldownRaceId(std::shared_ptr<Player> player) const;
 	const std::vector<LevelInfo> &getBossRaceKillStages(BosstiaryRarity_t race) const;
 
 private:

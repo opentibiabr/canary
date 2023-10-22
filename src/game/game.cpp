@@ -419,7 +419,7 @@ bool Game::loadItemsPrice() {
 void Game::loadMainMap(const std::string &filename) {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
-	map.loadMap(g_configManager().getString(DATA_DIRECTORY) + "/world/" + filename + ".otbm", true, true, true, true);
+	map.loadMap(g_configManager().getString(DATA_DIRECTORY) + "/world/" + filename + ".otbm", true, true, true, true, true);
 }
 
 void Game::loadCustomMaps(const std::filesystem::path &customMapPath) {
@@ -460,7 +460,7 @@ void Game::loadCustomMaps(const std::filesystem::path &customMapPath) {
 			continue;
 		}
 
-		map.loadMapCustom(filename, true, true, true, customMapIndex);
+		map.loadMapCustom(filename, true, true, true, true, customMapIndex);
 
 		customMapIndex++;
 	}
@@ -470,7 +470,7 @@ void Game::loadCustomMaps(const std::filesystem::path &customMapPath) {
 }
 
 void Game::loadMap(const std::string &path, const Position &pos) {
-	map.loadMap(path, false, false, false, false, pos);
+	map.loadMap(path, false, false, false, false, false, pos);
 }
 
 std::shared_ptr<Cylinder> Game::internalGetCylinder(std::shared_ptr<Player> player, const Position &pos) {
@@ -700,7 +700,7 @@ std::shared_ptr<Player> Game::getPlayerByID(uint32_t id, bool loadTmp /* = false
 	if (!loadTmp) {
 		return nullptr;
 	}
-	std::shared_ptr<Player> tmpPlayer(nullptr);
+	std::shared_ptr<Player> tmpPlayer = std::make_shared<Player>(nullptr);
 	if (!IOLoginData::loadPlayerById(tmpPlayer, id)) {
 		return nullptr;
 	}
@@ -768,7 +768,7 @@ std::shared_ptr<Player> Game::getPlayerByName(const std::string &s, bool loadTmp
 	return it->second.lock();
 }
 
-std::shared_ptr<Player> Game::getPlayerByGUID(const uint32_t &guid) {
+std::shared_ptr<Player> Game::getPlayerByGUID(const uint32_t &guid, bool loadTmp /* = false */) {
 	if (guid == 0) {
 		return nullptr;
 	}
@@ -777,7 +777,29 @@ std::shared_ptr<Player> Game::getPlayerByGUID(const uint32_t &guid) {
 			return it.second;
 		}
 	}
-	return nullptr;
+	if (!loadTmp) {
+		return nullptr;
+	}
+	std::shared_ptr<Player> tmpPlayer = std::make_shared<Player>(nullptr);
+	if (!IOLoginData::loadPlayerById(tmpPlayer, guid)) {
+		return nullptr;
+	}
+	return tmpPlayer;
+}
+
+std::string Game::getPlayerNameByGUID(const uint32_t &guid) {
+	if (guid == 0) {
+		return "";
+	}
+	if (m_playerNameCache.contains(guid)) {
+		return m_playerNameCache.at(guid);
+	}
+	auto player = getPlayerByGUID(guid, true);
+	auto name = player ? player->getName() : "";
+	if (!name.empty()) {
+		m_playerNameCache[guid] = name;
+	}
+	return name;
 }
 
 ReturnValue Game::getPlayerByNameWildcard(const std::string &s, std::shared_ptr<Player> &player) {
@@ -819,7 +841,11 @@ bool Game::internalPlaceCreature(std::shared_ptr<Creature> creature, const Posit
 	if (creature->getParent() != nullptr) {
 		return false;
 	}
-	auto toZones = Zone::getZones(pos);
+	const auto &tile = map.getTile(pos);
+	if (!tile) {
+		return false;
+	}
+	auto toZones = tile->getZones();
 	if (auto ret = beforeCreatureZoneChange(creature, {}, toZones); ret != RETURNVALUE_NOERROR) {
 		return false;
 	}
@@ -857,44 +883,52 @@ bool Game::placeCreature(std::shared_ptr<Creature> creature, const Position &pos
 		addCreatureCheck(creature);
 	}
 
-	creature->getParent()->postAddNotification(creature, nullptr, 0);
+	auto parent = creature->getParent();
+	if (parent) {
+		parent->postAddNotification(creature, nullptr, 0);
+	}
 	creature->onPlacedCreature();
 	return true;
 }
 
 bool Game::removeCreature(std::shared_ptr<Creature> creature, bool isLogout /* = true*/) {
-	if (creature->isRemoved()) {
+	if (!creature || creature->isRemoved()) {
 		return false;
 	}
 
 	std::shared_ptr<Tile> tile = creature->getTile();
-
-	std::vector<int32_t> oldStackPosVector;
-
-	auto spectators = Spectators().find<Creature>(tile->getPosition(), true);
-	auto playersSpectators = spectators.filter<Player>();
-
-	for (const auto &spectator : playersSpectators) {
-		if (const auto &player = spectator->getPlayer()) {
-			oldStackPosVector.push_back(player->canSeeCreature(creature) ? tile->getStackposOfCreature(player, creature) : -1);
-		}
+	if (!tile) {
+		g_logger().error("[{}] tile on position '{}' for creature '{}' not exist", __FUNCTION__, creature->getPosition().toString(), creature->getName());
 	}
+	auto fromZones = creature->getZones();
 
-	tile->removeCreature(creature);
+	if (tile) {
+		std::vector<int32_t> oldStackPosVector;
+		auto spectators = Spectators().find<Creature>(tile->getPosition(), true);
+		auto playersSpectators = spectators.filter<Player>();
 
-	const Position &tilePosition = tile->getPosition();
-
-	// Send to client
-	size_t i = 0;
-	for (const auto &spectator : playersSpectators) {
-		if (const auto &player = spectator->getPlayer()) {
-			player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
+		for (const auto &spectator : playersSpectators) {
+			if (const auto &player = spectator->getPlayer()) {
+				oldStackPosVector.push_back(player->canSeeCreature(creature) ? tile->getStackposOfCreature(player, creature) : -1);
+			}
 		}
-	}
 
-	// event method
-	for (auto spectator : spectators) {
-		spectator->onRemoveCreature(creature, isLogout);
+		tile->removeCreature(creature);
+
+		const Position &tilePosition = tile->getPosition();
+
+		// Send to client
+		size_t i = 0;
+		for (const auto &spectator : playersSpectators) {
+			if (const auto &player = spectator->getPlayer()) {
+				player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
+			}
+		}
+
+		// event method
+		for (auto spectator : spectators) {
+			spectator->onRemoveCreature(creature, isLogout);
+		}
 	}
 
 	if (creature->getMaster() && !creature->getMaster()->isRemoved()) {
@@ -902,14 +936,14 @@ bool Game::removeCreature(std::shared_ptr<Creature> creature, bool isLogout /* =
 	}
 
 	creature->getParent()->postRemoveNotification(creature, nullptr, 0);
-	afterCreatureZoneChange(creature, creature->getZones(), {});
+	afterCreatureZoneChange(creature, fromZones, {});
 
 	creature->removeList();
 	creature->setRemoved();
 
 	removeCreatureCheck(creature);
 
-	for (const auto &summon : creature->m_summons) {
+	for (auto summon : creature->getSummons()) {
 		summon->setSkillLoss(false);
 		removeCreature(summon);
 	}
@@ -1475,7 +1509,8 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		}
 	}
 
-	if ((Position::getDistanceX(playerPos, mapToPos) > item->getThrowRange()) || (Position::getDistanceY(playerPos, mapToPos) > item->getThrowRange()) || (Position::getDistanceZ(mapFromPos, mapToPos) * 4 > item->getThrowRange())) {
+	auto throwRange = item->getThrowRange();
+	if ((Position::getDistanceX(playerPos, mapToPos) > throwRange) || (Position::getDistanceY(playerPos, mapToPos) > throwRange) || (Position::getDistanceZ(mapFromPos, mapToPos) * 4 > throwRange)) {
 		player->sendCancelMessage(RETURNVALUE_DESTINATIONOUTOFREACH);
 		return;
 	}
@@ -6652,6 +6687,20 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 					damage.secondary.value = std::max<int32_t>(0, damage.secondary.value + damage.primary.value);
 					damage.primary.value = 0;
 				}
+
+				if (attackerPlayer) {
+					attackerPlayer->updateImpactTracker(damage.primary.type, damage.primary.value);
+					if (damage.secondary.type != COMBAT_NONE) {
+						attackerPlayer->updateImpactTracker(damage.secondary.type, damage.secondary.value);
+					}
+				}
+
+				if (targetPlayer) {
+					targetPlayer->updateImpactTracker(damage.primary.type, manaDamage);
+					if (damage.secondary.type != COMBAT_NONE) {
+						targetPlayer->updateImpactTracker(damage.secondary.type, damage.secondary.value);
+					}
+				}
 			}
 		}
 
@@ -9883,7 +9932,7 @@ void Game::setTransferPlayerHouseItems(uint32_t houseId, uint32_t playerId) {
 }
 
 template <typename T>
-phmap::parallel_flat_hash_set<T> setDifference(const phmap::parallel_flat_hash_set<T> &setA, const phmap::parallel_flat_hash_set<T> &setB) {
+phmap::parallel_flat_hash_set<T> setDifference(const phmap::flat_hash_set<T> &setA, const phmap::flat_hash_set<T> &setB) {
 	phmap::parallel_flat_hash_set<T> setResult;
 	for (const auto &elem : setA) {
 		if (setB.find(elem) == setB.end()) {
@@ -9893,7 +9942,7 @@ phmap::parallel_flat_hash_set<T> setDifference(const phmap::parallel_flat_hash_s
 	return setResult;
 }
 
-ReturnValue Game::beforeCreatureZoneChange(std::shared_ptr<Creature> creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones, bool force /* = false*/) const {
+ReturnValue Game::beforeCreatureZoneChange(std::shared_ptr<Creature> creature, const phmap::flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::flat_hash_set<std::shared_ptr<Zone>> &toZones, bool force /* = false*/) const {
 	if (!creature) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -9923,7 +9972,7 @@ ReturnValue Game::beforeCreatureZoneChange(std::shared_ptr<Creature> creature, c
 	return RETURNVALUE_NOERROR;
 }
 
-void Game::afterCreatureZoneChange(std::shared_ptr<Creature> creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones) const {
+void Game::afterCreatureZoneChange(std::shared_ptr<Creature> creature, const phmap::flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::flat_hash_set<std::shared_ptr<Zone>> &toZones) const {
 	if (!creature) {
 		return;
 	}

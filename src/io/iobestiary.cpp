@@ -394,16 +394,18 @@ std::map<uint16_t, uint32_t> IOBestiary::getBestiaryKillCountByMonsterIDs(std::s
 	return raceMonsters;
 }
 
-std::vector<uint16_t> IOBestiary::getBestiaryFinished(const std::shared_ptr<Player> &player) const {
-	stdext::vector_set<uint16_t> finishedMonsters;
-	for (const auto &[monsterTypeRaceId, monsterTypeName] : g_game().getBestiaryList()) {
+phmap::parallel_flat_hash_set<uint16_t> IOBestiary::getBestiaryFinished(std::shared_ptr<Player> player) const {
+	phmap::parallel_flat_hash_set<uint16_t> finishedMonsters;
+	auto bestiaryMap = g_game().getBestiaryList();
+
+	for (const auto &[monsterTypeRaceId, monsterTypeName] : bestiaryMap) {
 		uint32_t thisKilled = player->getBestiaryKillCount(monsterTypeRaceId);
 		auto mtype = g_monsters().getMonsterType(monsterTypeName);
-		if (mtype && thisKilled >= mtype->info.bestiaryFirstUnlock) {
-			finishedMonsters.emplace(monsterTypeRaceId);
+		if (mtype && thisKilled >= mtype->info.bestiaryToUnlock) {
+			finishedMonsters.insert(monsterTypeRaceId);
 		}
 	}
-	return finishedMonsters.data();
+	return finishedMonsters;
 }
 
 int8_t IOBestiary::calculateDifficult(uint32_t chance) const {

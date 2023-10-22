@@ -15,7 +15,6 @@ local config = {
 		to = Position(32830, 32855, 14),
 	},
 	exit = Position(32902, 31629, 14),
-	storage = Storage.ForgottenKnowledge.LadyTenebrisTimer,
 }
 
 local forgottenKnowledgeTenebris = Action()
@@ -69,7 +68,7 @@ function forgottenKnowledgeTenebris.onUse(player, item, fromPosition, target, to
 			return true
 		end
 		lever:teleportPlayers()
-		lever:setStorageAllPlayers(config.storage, os.time() + config.timeToFightAgain * 3600)
+		lever:setCooldownAllPlayers(config.bossName, os.time() + config.timeToFightAgain * 3600)
 		addEvent(function()
 			local old_players = lever:getInfoPositions()
 			spec:clearCreaturesCache()

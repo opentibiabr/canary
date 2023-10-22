@@ -20,7 +20,6 @@ monster.events = {
 monster.bosstiary = {
 	bossRaceId = 2242,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_90.PrimalOrdeal.Bosses.MagmaBubbleTimer,
 }
 
 monster.health = 450000

@@ -394,8 +394,8 @@ std::map<uint16_t, uint32_t> IOBestiary::getBestiaryKillCountByMonsterIDs(std::s
 	return raceMonsters;
 }
 
-std::vector<uint16_t> IOBestiary::getBestiaryFinished(const std::shared_ptr<Player>& player) const {
-	const auto& bestiaryMap = g_game().getBestiaryList();
+std::vector<uint16_t> IOBestiary::getBestiaryFinished(const std::shared_ptr<Player> &player) const {
+	const auto &bestiaryMap = g_game().getBestiaryList();
 
 	stdext::vector_set<uint16_t> finishedMonsters;
 	finishedMonsters.reserve(bestiaryMap.size());

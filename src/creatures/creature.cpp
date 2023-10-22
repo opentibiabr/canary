@@ -1793,7 +1793,7 @@ void Creature::setIncreasePercent(CombatType_t combat, int32_t value) {
 }
 
 std::unordered_set<std::shared_ptr<Zone>> Creature::getZones() {
-	if (const auto& tile = getTile()) {
+	if (const auto &tile = getTile()) {
 		return tile->getZones();
 	}
 	return {};

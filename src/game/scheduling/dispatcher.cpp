@@ -99,7 +99,7 @@ void Dispatcher::executeEvents(std::unique_lock<std::mutex> &asyncLock) {
 }
 
 void Dispatcher::executeScheduledEvents() {
-	auto &threadScheduledTasks = threads[getThreadId()]->scheduledTasks;
+	auto &threadScheduledTasks = getThreadTask()->scheduledTasks;
 
 	auto it = scheduledTasks.begin();
 	while (it != scheduledTasks.end()) {
@@ -163,14 +163,14 @@ std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() const {
 }
 
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
-	const auto &thread = threads[getThreadId()];
+	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(TaskGroup::Serial)].emplace_back(expiresAfterMs, std::move(f), context);
 	notify();
 }
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
-	const auto &thread = threads[getThreadId()];
+	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 
 	auto eventId = scheduledTasksRef
@@ -182,7 +182,7 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 }
 
 void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
-	const auto &thread = threads[getThreadId()];
+	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);
 	notify();

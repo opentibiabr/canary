@@ -133,17 +133,9 @@ private:
 		Task::TIME_NOW = std::chrono::system_clock::now();
 	}
 
-	static int16_t getThreadId() {
-		static std::atomic_int16_t lastId = -1;
-		thread_local static int16_t id = -1;
-
-		if (id == -1) {
-			lastId.fetch_add(1);
-			id = lastId.load();
-		}
-
-		return id;
-	};
+	const auto& getThreadTask() const {
+		return threads[ThreadPool::getThreadId()];
+	}
 
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle, bool log = true) {
 		return scheduleEvent(std::make_shared<Task>(std::move(f), context, delay, cycle, log));

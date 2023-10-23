@@ -12,7 +12,6 @@ local config = {
 			to = Position(33164, 32260, 12),
 		},
 		exitPosition = Position(33123, 32240, 12),
-		storage = Storage.Quest.U10_80.Grimvale.YirkasTimer,
 	},
 	[2] = {
 		teleportPosition = { x = 33131, y = 32252, z = 12 },
@@ -27,7 +26,6 @@ local config = {
 			to = Position(33127, 32290, 12),
 		},
 		exitPosition = Position(33130, 32252, 12),
-		storage = Storage.Quest.U10_80.Grimvale.SrezzTimer,
 	},
 	[3] = {
 		teleportPosition = { x = 33123, y = 32265, z = 12 },
@@ -42,7 +40,6 @@ local config = {
 			to = Position(33091, 32252, 12),
 		},
 		exitPosition = Position(33123, 32264, 12),
-		storage = Storage.Quest.U10_80.Grimvale.UtuaTimer,
 	},
 	[4] = {
 		teleportPosition = { x = 33114, y = 32252, z = 12 },
@@ -57,7 +54,6 @@ local config = {
 			to = Position(33159, 32293, 12),
 		},
 		exitPosition = Position(33115, 32252, 12),
-		storage = Storage.Quest.U10_80.Grimvale.KatexTimer,
 	},
 	[5] = {
 		teleportPosition = { x = 33154, y = 32245, z = 12 },
@@ -106,7 +102,7 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "All the players need to be level " .. value.requiredLevel .. " or higher.")
 				return true
 			end
-			if creature:getStorageValue(value.storage) > os.time() then
+			if not creature:canFightBoss(value.bossName) then
 				creature:teleportTo(fromPosition, true)
 				creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. value.timeToFightAgain .. " hours to face " .. value.bossName .. " again!")
@@ -119,7 +115,7 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 			end
 			creature:teleportTo(value.destination)
 			creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			creature:setStorageValue(value.storage, os.time() + value.timeToFightAgain * 3600)
+			creature:setBossCooldown(value.bossName, os.time() + value.timeToFightAgain * 3600)
 			addEvent(function()
 				spec:clearCreaturesCache()
 				spec:setOnlyPlayer(true)

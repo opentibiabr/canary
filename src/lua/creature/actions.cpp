@@ -310,6 +310,10 @@ ReturnValue Actions::internalUseItem(std::shared_ptr<Player> player, const Posit
 
 		// reward chest
 		if (container->getRewardChest() != nullptr && container->getParent()) {
+			if (!player->hasOtherRewardContainerOpen(container->getParent()->getContainer())) {
+				player->removeEmptyRewards();
+			}
+
 			std::shared_ptr<RewardChest> playerRewardChest = player->getRewardChest();
 			if (playerRewardChest->empty()) {
 				return RETURNVALUE_REWARDCHESTISEMPTY;

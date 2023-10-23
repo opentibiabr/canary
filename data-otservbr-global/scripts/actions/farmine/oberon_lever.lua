@@ -22,7 +22,6 @@ local config = {
 		{ name = "Oberon's Ire", pos = Position(33367, 31320, 9) },
 	},
 	exit = Position(33364, 31341, 9),
-	storage = Storage.TheSecretLibrary.TheOrderOfTheFalcon.OberonTimer,
 }
 
 local lever = BossLever(config)

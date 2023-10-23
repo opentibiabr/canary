@@ -94,6 +94,23 @@ static constexpr int32_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
 class Player final : public Creature, public Cylinder, public Bankable {
 public:
+	class PlayerLock {
+	public:
+		explicit PlayerLock(const std::shared_ptr<Player> &p) :
+			player(p) {
+			player->mutex.lock();
+		}
+
+		PlayerLock(const PlayerLock &) = delete;
+
+		~PlayerLock() {
+			player->mutex.unlock();
+		}
+
+	private:
+		const std::shared_ptr<Player> &player;
+	};
+
 	explicit Player(ProtocolGame_ptr p);
 	~Player();
 
@@ -473,7 +490,7 @@ public:
 	void addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin = false);
 
 	std::shared_ptr<KV> kv() const {
-		return g_kv().scoped("player")->scoped(fmt::format("{}", getID()));
+		return g_kv().scoped("player")->scoped(fmt::format("{}", getGUID()));
 	}
 
 	void genReservedStorageRange();
@@ -2504,6 +2521,9 @@ public:
 	std::shared_ptr<Container> getLootPouch();
 
 private:
+	friend class PlayerLock;
+	std::mutex mutex;
+
 	static uint32_t playerFirstID;
 	static uint32_t playerLastID;
 
@@ -2862,6 +2882,7 @@ private:
 	void clearCooldowns();
 
 	friend class Game;
+	friend class SaveManager;
 	friend class Npc;
 	friend class PlayerFunctions;
 	friend class NetworkMessageFunctions;
@@ -2894,4 +2915,7 @@ private:
 	void updateDamageReductionFromItemImbuement(std::array<double_t, COMBAT_COUNT> &combatReductionMap, std::shared_ptr<Item> item, uint16_t combatTypeIndex) const;
 	void updateDamageReductionFromItemAbility(std::array<double_t, COMBAT_COUNT> &combatReductionMap, std::shared_ptr<Item> item, uint16_t combatTypeIndex) const;
 	double_t calculateDamageReduction(double_t currentTotal, int16_t resistance) const;
+
+	void removeEmptyRewards();
+	bool hasOtherRewardContainerOpen(const std::shared_ptr<Container> container) const;
 };

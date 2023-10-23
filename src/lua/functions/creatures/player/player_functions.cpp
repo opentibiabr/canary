@@ -19,6 +19,7 @@
 #include "io/ioprey.hpp"
 #include "items/item.hpp"
 #include "lua/functions/creatures/player/player_functions.hpp"
+#include "game/scheduling/save_manager.hpp"
 #include "map/spectators.hpp"
 
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
@@ -1379,7 +1380,23 @@ int PlayerFunctions::luaPlayerSetVocation(lua_State* L) {
 	}
 
 	player->setVocation(vocation->getId());
+	player->sendSkills();
+	player->sendStats();
+	player->sendBasicData();
+	player->wheel()->sendGiftOfLifeCooldown();
+	g_game().reloadCreature(player);
 	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerIsPromoted(lua_State* L) {
+	// player:isPromoted()
+	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
+	if (player) {
+		pushBoolean(L, player->isPromoted());
+	} else {
+		lua_pushnil(L);
+	}
 	return 1;
 }
 
@@ -2824,10 +2841,7 @@ int PlayerFunctions::luaPlayerSave(lua_State* L) {
 		if (!player->isOffline()) {
 			player->loginPosition = player->getPosition();
 		}
-		pushBoolean(L, IOLoginData::savePlayer(player));
-		if (player->isOffline()) {
-			// avoiding memory leak
-		}
+		pushBoolean(L, g_saveManager().savePlayer(player));
 	} else {
 		lua_pushnil(L);
 	}

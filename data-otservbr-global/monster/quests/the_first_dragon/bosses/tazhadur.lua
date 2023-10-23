@@ -16,7 +16,6 @@ monster.outfit = {
 monster.bosstiary = {
 	bossRaceId = 1390,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.FirstDragon.TazhadurTimer,
 }
 
 monster.health = 10000

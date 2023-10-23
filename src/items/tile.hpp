@@ -140,7 +140,6 @@ public:
 	std::shared_ptr<Creature> getTopCreature() const;
 	std::shared_ptr<Creature> getBottomCreature() const;
 	std::shared_ptr<Creature> getTopVisibleCreature(std::shared_ptr<Creature> creature) const;
-	std::shared_ptr<Creature> getTopVisibleCreature_threadsafe(const std::shared_ptr<Creature> &creature);
 
 	std::shared_ptr<Creature> getBottomVisibleCreature(std::shared_ptr<Creature> creature) const;
 	std::shared_ptr<Item> getTopTopItem() const;

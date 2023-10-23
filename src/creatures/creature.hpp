@@ -370,7 +370,6 @@ public:
 	std::vector<std::shared_ptr<Condition>> getConditionsByType(ConditionType_t type) const;
 	void executeConditions(uint32_t interval);
 	bool hasCondition(ConditionType_t type, uint32_t subId = 0) const;
-	bool hasCondition_threadsafe(ConditionType_t type, uint32_t subId = 0);
 
 	virtual bool isImmune(CombatType_t type) const {
 		return false;
@@ -530,8 +529,6 @@ public:
 	double getDamageRatio(std::shared_ptr<Creature> attacker) const;
 
 	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, const FindPathParams &fpp);
-	void getPathToAsync(const Position &targetPos, const FindPathParams &fpp, std::function<bool(const Position &, const Position &)> &&executeRule, std::function<void(const Position &, const Position &, const std::forward_list<Direction> &)> &&onSuccess, std::function<void()> &&onFail = nullptr);
-
 	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
 
 	struct CountBlock_t {
@@ -738,7 +735,7 @@ protected:
 
 	uint8_t wheelOfDestinyDrainBodyDebuff = 0;
 
-	std::mutex conditionMutex;
+	std::atomic_uint_fast64_t pathFinderEventId = 0;
 
 	// use map here instead of phmap to keep the keys in a predictable order
 	std::map<std::string, CreatureIcon> creatureIcons = {};

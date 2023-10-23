@@ -510,28 +510,6 @@ std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, 
 	return tile;
 }
 
-void Map::getPathMatchingAsync(const std::shared_ptr<Creature> &creature, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp, std::function<bool(const Position &, const Position &)> &&executeRule, std::function<void(const Position &, const Position &, const std::forward_list<Direction> &)> &&onSuccess, std::function<void()> &&onFail) {
-	inject<ThreadPool>().addLoad([=, this, startPos = creature->getPosition(), executeRule = std::move(executeRule), onSuccess = std::move(onSuccess), onFail = std::move(onFail)]() {
-		std::forward_list<Direction> list;
-		const bool finded = getPathMatching(creature, startPos, list, pathCondition, fpp);
-
-		if (creature && creature->isRemoved()) {
-			return;
-		}
-
-		if (!executeRule(startPos, pathCondition.getTargetPos())) {
-			return;
-		}
-
-		// Transfer the action to main dispatch so that there is no concurrency problem. g_dispatcher().addTask()
-		if (finded) {
-			g_dispatcher().addTask([onSuccess, startPos, targetPos = pathCondition.getTargetPos(), list = std::move(list)] { onSuccess(startPos, targetPos, list); }, "Map::getPathMatchingAsync::onSuccess");
-		} else if (onFail) {
-			g_dispatcher().addTask([onFail] { onFail(); }, "Map::getPathMatchingAsync::onFail");
-		}
-	});
-}
-
 bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
 	return getPathMatching(creature, creature->getPosition(), dirList, pathCondition, fpp);
 }

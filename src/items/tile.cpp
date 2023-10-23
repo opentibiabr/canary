@@ -960,7 +960,6 @@ void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
 		Spectators::clearCache();
 		creature->setParent(static_self_cast<Tile>());
 
-		std::scoped_lock l(creaturesMutex);
 		CreatureVector* creatures = makeCreatures();
 		creatures->insert(creatures->begin(), creature);
 	} else {
@@ -1158,7 +1157,6 @@ void Tile::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 			auto it = std::find(creatures->begin(), creatures->end(), thing);
 			if (it != creatures->end()) {
 				Spectators::clearCache();
-				std::scoped_lock l(creaturesMutex);
 				creatures->erase(it);
 			}
 		}
@@ -1550,7 +1548,6 @@ void Tile::internalAddThing(uint32_t, std::shared_ptr<Thing> thing) {
 	if (creature) {
 		Spectators::clearCache();
 
-		std::scoped_lock l(creaturesMutex);
 		CreatureVector* creatures = makeCreatures();
 		creatures->insert(creatures->begin(), creature);
 	} else {
@@ -1846,9 +1843,4 @@ void Tile::clearZones() {
 	for (const auto &zone : zonesToRemove) {
 		zones.erase(zone);
 	}
-}
-
-std::shared_ptr<Creature> Tile::getTopVisibleCreature_threadsafe(const std::shared_ptr<Creature> &creature) {
-	std::scoped_lock l(creaturesMutex);
-	return getTopVisibleCreature(creature);
 }

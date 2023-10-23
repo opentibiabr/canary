@@ -136,5 +136,12 @@ function Game.setStorageValue(key, value)
 		return
 	end
 
+	if value == -1 then
+		if globalStorageTable[key] then
+			table.remove(globalStorageTable, key)
+		end
+		return
+	end
+
 	globalStorageTable[key] = value
 end

@@ -16,7 +16,6 @@ local config = {
 		to = Position(32506, 31132, 15),
 	},
 	exit = Position(32536, 31122, 15),
-	storage = Storage.Quest.U12_70.TooHotToHandle.BrainstealerTimer,
 }
 
 local lever = BossLever(config)

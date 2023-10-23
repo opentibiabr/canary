@@ -174,8 +174,10 @@ public:
 	void resetFlag(uint32_t flag) {
 		this->flags &= ~flag;
 	}
+	void addZone(std::shared_ptr<Zone> zone);
+	void clearZones();
 
-	const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones();
+	phmap::flat_hash_set<std::shared_ptr<Zone>> getZones();
 
 	ZoneType_t getZoneType() const {
 		if (hasFlag(TILESTATE_PROTECTIONZONE)) {
@@ -268,10 +270,8 @@ private:
 protected:
 	std::shared_ptr<Item> ground = nullptr;
 	Position tilePos;
-	std::atomic_uint32_t flags = 0;
-	std::shared_ptr<Zone> zone;
-
-	std::mutex creaturesMutex;
+	uint32_t flags = 0;
+	phmap::flat_hash_set<std::shared_ptr<Zone>> zones;
 };
 
 // Used for walkable tiles, where there is high likeliness of

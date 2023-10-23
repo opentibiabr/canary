@@ -16,7 +16,6 @@ local config = {
 		to = Position(33920, 31376, 15),
 	},
 	exit = Position(33891, 31197, 7),
-	storage = Storage.Quest.U12_60.APiratesTail.RatmiralTimer,
 }
 
 local lever = BossLever(config)

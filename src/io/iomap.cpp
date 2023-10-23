@@ -77,7 +77,7 @@ void IOMap::loadMap(Map* map, const Position &pos) {
 
 	map->flush();
 
-	g_logger().info("Map Loaded {} ({}x{}) in {} seconds", map->path.filename().string(), map->width, map->height, bm_mapLoad.duration());
+	g_logger().info("Map Loaded {} ({}x{}) in {} milliseconds", map->path.filename().string(), map->width, map->height, bm_mapLoad.duration());
 }
 
 void IOMap::parseMapDataAttributes(FileStream &stream, Map* map) {
@@ -101,6 +101,11 @@ void IOMap::parseMapDataAttributes(FileStream &stream, Map* map) {
 			case OTBM_ATTR_EXT_HOUSE_FILE: {
 				map->housefile = map->path.string().substr(0, map->path.string().rfind('/') + 1);
 				map->housefile += stream.getString();
+			} break;
+
+			case OTBM_ATTR_EXT_ZONE_FILE: {
+				map->zonesfile = map->path.string().substr(0, map->path.string().rfind('/') + 1);
+				map->zonesfile += stream.getString();
 			} break;
 
 			default:
@@ -182,36 +187,50 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 			}
 
 			while (stream.startNode()) {
-				if (stream.getU8() != OTBM_ITEM) {
-					throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not read item node.", x, y, z));
-				}
+				auto type = stream.getU8();
+				switch (type) {
+					case OTBM_ITEM: {
+						const uint16_t id = stream.getU16();
 
-				const uint16_t id = stream.getU16();
+						const auto &iType = Item::items[id];
 
-				const auto &iType = Item::items[id];
+						if (iType.blockSolid) {
+							tileIsStatic = true;
+						}
 
-				if (iType.blockSolid) {
-					tileIsStatic = true;
-				}
+						const auto item = std::make_shared<BasicItem>();
+						item->id = id;
 
-				const auto item = std::make_shared<BasicItem>();
-				item->id = id;
+						if (!item->unserializeItemNode(stream, x, y, z)) {
+							throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Failed to load item {}, Node Type.", x, y, z, id));
+						}
 
-				if (!item->unserializeItemNode(stream, x, y, z)) {
-					throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Failed to load item {}, Node Type.", x, y, z, id));
-				}
-
-				if (tile->isHouse() && iType.isBed()) {
-					// nothing
-				} else if (tile->isHouse() && iType.moveable) {
-					g_logger().warn("[IOMap::loadMap] - "
-									"Moveable item with ID: {}, in house: {}, "
-									"at position: x {}, y {}, z {}",
-									id, tile->houseId, x, y, z);
-				} else if (iType.isGroundTile()) {
-					tile->ground = map.tryReplaceItemFromCache(item);
-				} else {
-					tile->items.emplace_back(map.tryReplaceItemFromCache(item));
+						if (tile->isHouse() && iType.isBed()) {
+							// nothing
+						} else if (tile->isHouse() && iType.moveable) {
+							g_logger().warn("[IOMap::loadMap] - "
+											"Moveable item with ID: {}, in house: {}, "
+											"at position: x {}, y {}, z {}",
+											id, tile->houseId, x, y, z);
+						} else if (iType.isGroundTile()) {
+							tile->ground = map.tryReplaceItemFromCache(item);
+						} else {
+							tile->items.emplace_back(map.tryReplaceItemFromCache(item));
+						}
+					} break;
+					case OTBM_TILE_ZONE: {
+						const auto zoneCount = stream.getU16();
+						for (uint16_t i = 0; i < zoneCount; ++i) {
+							const auto zoneId = stream.getU16();
+							if (!zoneId) {
+								throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Invalid zone id.", x, y, z));
+							}
+							auto zone = Zone::getZone(zoneId);
+							zone->addPosition(Position(x, y, z));
+						}
+					} break;
+					default:
+						throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not read item/zone node.", x, y, z));
 				}
 
 				if (!stream.endNode()) {

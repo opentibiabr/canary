@@ -45,14 +45,6 @@ function Player.isPremium(self)
 	return self:getPremiumDays() > 0 or configManager.getBoolean(configKeys.FREE_PREMIUM)
 end
 
-function Player.isPromoted(self)
-	local vocation = self:getVocation()
-	local promotedVocation = vocation:getPromotion()
-	promotedVocation = promotedVocation and promotedVocation:getId() or 0
-
-	return promotedVocation == 0 and vocation:getId() ~= promotedVocation
-end
-
 function Player.sendCancelMessage(self, message)
 	if type(message) == "number" then
 		message = Game.getReturnMessage(message)
@@ -203,7 +195,15 @@ function Player.transferMoneyTo(self, target, amount)
 	if not target then
 		return false
 	end
-	return Bank.transfer(self, target, amount)
+	if not Bank.transfer(self, target, amount) then
+		return false
+	end
+
+	local targetPlayer = Player(target)
+	if targetPlayer then
+		targetPlayer:sendTextMessage(MESSAGE_LOOK, self:getName() .. " has transferred " .. FormatNumber(amount) .. " gold coins to you.")
+	end
+	return true
 end
 
 function Player.withdrawMoney(self, amount)
@@ -646,4 +646,39 @@ function Player:setFiendish()
 		monster:setFiendish(position, self)
 	end
 	return false
+end
+
+local function bossKVScope(bossNameOrId)
+	local mType = MonsterType(bossNameOrId)
+	if not mType then
+		logger.error("bossKVScope - Invalid boss name or id: " .. bossNameOrId)
+		return false
+	end
+	return "boss.cooldown." .. toKey(tostring(mType:raceId()))
+end
+
+function Player:getBossCooldown(bossNameOrId)
+	local scope = bossKVScope(bossNameOrId)
+	if not scope then
+		return false
+	end
+	return self:kv():get(scope) or 0
+end
+
+function Player:setBossCooldown(bossNameOrId, time)
+	local scope = bossKVScope(bossNameOrId)
+	if not scope then
+		return false
+	end
+	local result = self:kv():set(scope, time)
+	self:sendBosstiaryCooldownTimer()
+	return result
+end
+
+function Player:canFightBoss(bossNameOrId)
+	local cooldown = self:getBossCooldown(bossNameOrId)
+	if cooldown > os.time() then
+		return false
+	end
+	return true
 end

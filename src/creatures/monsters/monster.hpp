@@ -357,7 +357,6 @@ private:
 	int64_t lastMeleeAttack = 0;
 
 	uint32_t attackTicks = 0;
-	uint32_t targetTicks = 0;
 	uint32_t targetChangeTicks = 0;
 	uint32_t defenseTicks = 0;
 	uint32_t yellTicks = 0;

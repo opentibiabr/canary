@@ -16,7 +16,6 @@ monster.outfit = {
 monster.bosstiary = {
 	bossRaceId = 1199,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.FerumbrasAscension.PlagirathTimer,
 }
 
 monster.health = 290000

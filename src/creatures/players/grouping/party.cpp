@@ -139,11 +139,6 @@ bool Party::leaveParty(std::shared_ptr<Player> player) {
 		g_game().updatePlayerHelpers(member);
 	}
 
-	leader->sendCreatureSkull(player);
-	player->sendCreatureSkull(player);
-	player->sendPlayerPartyIcons(leader);
-	leader->sendPartyCreatureUpdate(player);
-
 	player->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "You have left the party.");
 
 	updateSharedExperience();
@@ -157,6 +152,11 @@ bool Party::leaveParty(std::shared_ptr<Player> player) {
 	if (missingLeader || empty()) {
 		disband();
 	}
+
+	player->sendCreatureSkull(player);
+	leader->sendCreatureSkull(player);
+	player->sendPlayerPartyIcons(leader);
+	leader->sendPartyCreatureUpdate(player);
 
 	return true;
 }
@@ -233,11 +233,13 @@ bool Party::joinParty(const std::shared_ptr<Player> &player) {
 
 	for (auto member : getMembers()) {
 		member->sendCreatureSkull(player);
+		member->sendPlayerPartyIcons(player);
 		player->sendPlayerPartyIcons(member);
 	}
 
-	player->sendCreatureSkull(player);
 	leader->sendCreatureSkull(player);
+	player->sendCreatureSkull(player);
+	leader->sendPlayerPartyIcons(player);
 	player->sendPlayerPartyIcons(leader);
 
 	memberList.push_back(player);

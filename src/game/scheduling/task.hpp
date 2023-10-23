@@ -118,7 +118,7 @@ private:
 			"SpawnMonster::scheduleSpawn",
 			"SpawnNpc::checkSpawnNpc",
 			"Webhook::run",
-			"sendRecvMessageCallback",
+			"Protocol::sendRecvMessageCallback",
 		});
 
 		return tasksContext.contains(context);

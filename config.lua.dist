@@ -150,10 +150,10 @@ loyaltyPointsPerPremiumDayPurchased = 0
 loyaltyBonusPercentageMultiplier = 1.0
 
 -- Custom PvP system
--- NOTE: Rate is additive for each level and applied multiplicative to totalDamage
+-- NOTE: Rate is additive percent for each level and applied multiplicative to totalDamage
 -- NOTE: Damage multipliers for each vocation are adjusted in data/XML/vocations.xml
-pvpRateDamageTakenPerLevel = 0.0 -- recommended below 0.001
-pvpRateDamageReductionPerLevel = 0.0 -- recommended below 0.001
+pvpRateDamageTakenPerLevel = 0.0 -- recommended to start with 0.1
+pvpRateDamageReductionPerLevel = 0.0 -- recommended to start with 0.1
 pvpMaxLevelDifference = 0
 
 

@@ -6297,10 +6297,10 @@ float Game::pvpLevelDifferenceDamageMultiplier(std::shared_ptr<Player> attacker,
 
 	float levelDiffRate = 1.0;
 	if (isLowerLevel) {
-		float rateDamageTakenByLevel = g_configManager().getFloat(PVP_RATE_DAMAGE_TAKEN_PER_LEVEL);
+		float rateDamageTakenByLevel = g_configManager().getFloat(PVP_RATE_DAMAGE_TAKEN_PER_LEVEL) / 100;
 		levelDiffRate += levelDifference * rateDamageTakenByLevel;
 	} else {
-		float rateDamageReductionByLevel = g_configManager().getFloat(PVP_RATE_DAMAGE_REDUCTION_PER_LEVEL);
+		float rateDamageReductionByLevel = g_configManager().getFloat(PVP_RATE_DAMAGE_REDUCTION_PER_LEVEL) / 100;
 		levelDiffRate -= levelDifference * rateDamageReductionByLevel;
 	}
 

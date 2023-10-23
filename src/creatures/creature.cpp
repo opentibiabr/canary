@@ -133,16 +133,23 @@ void Creature::onThink(uint32_t interval) {
 		}
 	}
 
+	auto onThink = [self = getCreature(), interval] {
+		// scripting event - onThink
+		const auto &thinkEvents = self->getCreatureEvents(CREATURE_EVENT_THINK);
+		for (const auto creatureEventPtr : thinkEvents) {
+			creatureEventPtr->executeOnThink(self->static_self_cast<Creature>(), interval);
+		}
+	};
+
 	if (isUpdatingPath) {
 		isUpdatingPath = false;
-		goToFollowCreature();
+		goToFollowCreature(onThink);
+	}
+	else {
+		onThink();
 	}
 
-	// scripting event - onThink
-	const CreatureEventList &thinkEvents = getCreatureEvents(CREATURE_EVENT_THINK);
-	for (const auto creatureEventPtr : thinkEvents) {
-		creatureEventPtr->executeOnThink(static_self_cast<Creature>(), interval);
-	}
+	
 }
 
 void Creature::onAttacking(uint32_t interval) {
@@ -225,17 +232,19 @@ bool Creature::getNextStep(Direction &dir, uint32_t &) {
 }
 
 void Creature::startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions /* = false*/) {
+	listWalkDir.clear();
+
 	if (!ignoreConditions && (hasCondition(CONDITION_ROOTED) || hasCondition(CONDITION_FEARED))) {
 		return;
 	}
 
 	listWalkDir = { listDir.begin(), listDir.end() };
 
-	size_t size = 0;
-	for (auto it = listDir.begin(); it != listDir.end() && size <= 1; ++it) {
-		++size;
+	if (listWalkDir.empty()) {
+		return;
 	}
-	addEventWalk(size == 1);
+
+	addEventWalk(listWalkDir.size() == 1);
 }
 
 void Creature::addEventWalk(bool firstStep) {
@@ -591,6 +600,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 
 	const auto &followCreature = getFollowCreature();
 	if (followCreature && (creature == getCreature() || creature == followCreature)) {
+		g_logger().info(hasFollowPath() ? "has follow" : "without folow");
 		if (hasFollowPath()) {
 			isUpdatingPath = true;
 			g_dispatcher().addEvent(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
@@ -950,6 +960,30 @@ bool Creature::setAttackedCreature(std::shared_ptr<Creature> creature) {
 	return true;
 }
 
+void Creature::executeAsyncPathTo(bool executeOnFollow, FindPathParams &fpp, std::function<void()> &&onComplete) {
+	pathFinderEventId.fetch_add(1);
+	g_dispatcher().asyncEvent([executeOnFollow, eventId = pathFinderEventId.load(), self = getCreature(), targetPos = getFollowCreature()->getPosition(), fpp = std::move(fpp), onComplete = std::move(onComplete)] {
+		if (eventId != self->pathFinderEventId.load()) {
+			return; // cancel pathfinder
+		}
+
+		stdext::arraylist<Direction> listDir(128);
+		self->getPathTo(targetPos, listDir, fpp);
+		g_dispatcher().addEvent([=, listDir = listDir.data()] {
+			self->startAutoWalk(listDir);
+
+			if (executeOnFollow) {
+				self->onFollowCreatureComplete(self->getFollowCreature());
+			}
+
+			if(onComplete){
+				onComplete();
+			}
+			}, "Creature::goToFollowCreature");
+	});
+
+}
+
 void Creature::getPathSearchParams(const std::shared_ptr<Creature> &, FindPathParams &fpp) {
 	fpp.fullPathSearch = !hasFollowPath();
 	fpp.clearSight = true;
@@ -958,7 +992,7 @@ void Creature::getPathSearchParams(const std::shared_ptr<Creature> &, FindPathPa
 	fpp.maxTargetDist = 1;
 }
 
-void Creature::goToFollowCreature() {
+void Creature::goToFollowCreature(std::function<void()> &&onComplete) {
 	const auto &followCreature = getFollowCreature();
 	if (!followCreature) {
 		return;
@@ -966,6 +1000,9 @@ void Creature::goToFollowCreature() {
 
 	if (isSummon() && !getMonster()->isFamiliar() && !canFollowMaster()) {
 		listWalkDir.clear();
+		if (onComplete) {
+			onComplete();
+		}
 		return;
 	}
 
@@ -980,43 +1017,24 @@ void Creature::goToFollowCreature() {
 			monster->getDistanceStep(followCreature->getPosition(), dir, true);
 		} else if (!monster->getDistanceStep(followCreature->getPosition(), dir)) { // maxTargetDist > 1
 			// if we can't get anything then let the A* calculate
-			listWalkDir.clear();
 
-			pathFinderEventId.fetch_add(1);
-			g_dispatcher().asyncEvent([eventId = pathFinderEventId.load(), self = getCreature(), targetPos = getFollowCreature()->getPosition(), fpp = std::move(fpp)] {
-				if (eventId != self->pathFinderEventId.load()) {
-					return; // cancel pathfinder
-				}
-
-				stdext::arraylist<Direction> listDir(128);
-				self->getPathTo(targetPos, listDir, fpp);
-				g_dispatcher().addEvent([self, listDir = listDir.data()] { self->startAutoWalk(listDir); }, "Creature::goToFollowCreature");
-			});
+			executeAsyncPathTo(false,fpp, std::move(onComplete));
 
 			return;
 		}
 
 		if (dir != DIRECTION_NONE) {
-			listWalkDir.clear();
 			startAutoWalk({ dir });
 		}
 
 		onFollowCreatureComplete(followCreature);
+		if (onComplete) { 
+			onComplete();
+		}
 		return;
 	}
 
-	listWalkDir.clear();
-
-	pathFinderEventId.fetch_add(1);
-	g_dispatcher().asyncEvent([eventId = pathFinderEventId.load(), self = getCreature(), targetPos = getFollowCreature()->getPosition(), fpp = std::move(fpp)] {
-		if (eventId != self->pathFinderEventId.load()) {
-			return; // cancel pathfinder
-		}
-
-		stdext::arraylist<Direction> listDir(128);
-		self->getPathTo(targetPos, listDir, fpp);
-		g_dispatcher().addEvent([self, listDir = listDir.data()] { self->startAutoWalk(listDir); }, "Creature::goToFollowCreature");
-	});
+	executeAsyncPathTo(true, fpp, std::move(onComplete));
 }
 
 bool Creature::canFollowMaster() {

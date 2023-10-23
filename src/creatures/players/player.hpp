@@ -812,7 +812,7 @@ public:
 
 	// follow functions
 	bool setFollowCreature(std::shared_ptr<Creature> creature) override;
-	void goToFollowCreature() override;
+	void goToFollowCreature(std::function<void()> &&onComplete = nullptr) override;
 
 	// follow events
 	void onFollowCreature(const std::shared_ptr<Creature> &) override;

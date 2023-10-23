@@ -277,7 +277,7 @@ public:
 	void startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions = false);
 	void addEventWalk(bool firstStep = false);
 	void stopEventWalk();
-	virtual void goToFollowCreature();
+	virtual void goToFollowCreature(std::function<void()>&& onComplete = nullptr);
 
 	// walk events
 	virtual void onWalk(Direction &dir);
@@ -778,4 +778,5 @@ private:
 	bool canFollowMaster();
 	bool isLostSummon();
 	void handleLostSummon(bool teleportSummons);
+	void executeAsyncPathTo(bool executeOnFollow, FindPathParams &fpp, std::function<void()> &&onComplete);
 };

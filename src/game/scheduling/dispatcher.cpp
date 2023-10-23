@@ -92,6 +92,7 @@ void Dispatcher::executeEvents(std::unique_lock<std::mutex> &asyncLock) {
 
 		if (groupId == static_cast<uint8_t>(TaskGroup::Serial)) {
 			executeSerialEvents(tasks);
+			mergeEvents(); // merge request, as there may be async event requests
 		} else {
 			executeParallelEvents(tasks, groupId, asyncLock);
 		}
@@ -133,8 +134,8 @@ void Dispatcher::executeScheduledEvents() {
 void Dispatcher::mergeEvents() {
 	for (const auto &thread : threads) {
 		std::scoped_lock lock(thread->mutex);
-		if (!thread->tasks.empty()) {
-			for (uint_fast8_t i = 0; i < static_cast<uint8_t>(TaskGroup::Last); ++i) {
+		for (uint_fast8_t i = 0; i < static_cast<uint8_t>(TaskGroup::Last); ++i) {
+			if (!thread->tasks[i].empty()) {
 				m_tasks[i].insert(m_tasks[i].end(), make_move_iterator(thread->tasks[i].begin()), make_move_iterator(thread->tasks[i].end()));
 				thread->tasks[i].clear();
 			}

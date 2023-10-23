@@ -224,7 +224,7 @@ bool Creature::getNextStep(Direction &dir, uint32_t &) {
 	return true;
 }
 
-void Creature::startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions /* = false*/) {
+void Creature::startAutoWalk(const std::deque<Direction> &listDir, bool ignoreConditions /* = false*/) {
 	if (!ignoreConditions && (hasCondition(CONDITION_ROOTED) || hasCondition(CONDITION_FEARED))) {
 		return;
 	}
@@ -988,7 +988,7 @@ void Creature::goToFollowCreature() {
 					return; // cancel pathfinder
 				}
 
-				std::forward_list<Direction> list;
+				std::deque<Direction> list;
 				if (self->hasFollowPath = self->getPathTo(targetPos, list, fpp)) {
 					g_dispatcher().addEvent([self, list = std::move(list)] { self->startAutoWalk(list); }, "Creature::goToFollowCreature");
 				}
@@ -1014,14 +1014,14 @@ void Creature::goToFollowCreature() {
 		if (eventId != self->pathFinderEventId.load()) {
 			return; // cancel pathfinder
 		}
-		std::forward_list<Direction> list;
+		std::deque<Direction> list;
 		if (self->hasFollowPath = self->getPathTo(targetPos, list, fpp)) {
 			if (eventId != self->pathFinderEventId.load()) {
 				g_logger().info("canceled");
 				return; // cancel pathfinder
 			}
 
-			std::forward_list<Direction> list;
+			std::deque<Direction> list;
 			if (self->hasFollowPath = self->getPathTo(targetPos, list, fpp)) {
 				g_dispatcher().addEvent([self, list = std::move(list)] { self->startAutoWalk(list); }, "Creature::goToFollowCreature");
 			}
@@ -1659,11 +1659,11 @@ bool Creature::isInvisible() const {
 		!= conditions.end();
 }
 
-bool Creature::getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, const FindPathParams &fpp) {
+bool Creature::getPathTo(const Position &targetPos, std::deque<Direction> &dirList, const FindPathParams &fpp) {
 	return g_game().map.getPathMatching(getCreature(), dirList, FrozenPathingConditionCall(targetPos), fpp);
 }
 
-bool Creature::getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch /*= true*/, bool clearSight /*= true*/, int32_t maxSearchDist /*= 7*/) {
+bool Creature::getPathTo(const Position &targetPos, std::deque<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch /*= true*/, bool clearSight /*= true*/, int32_t maxSearchDist /*= 7*/) {
 	FindPathParams fpp;
 	fpp.fullPathSearch = fullPathSearch;
 	fpp.maxSearchDist = maxSearchDist;

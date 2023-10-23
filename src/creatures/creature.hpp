@@ -270,7 +270,7 @@ public:
 	phmap::flat_hash_set<std::shared_ptr<Zone>> getZones();
 
 	// walk functions
-	void startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions = false);
+	void startAutoWalk(const std::deque<Direction> &listDir, bool ignoreConditions = false);
 	void addEventWalk(bool firstStep = false);
 	void stopEventWalk();
 	virtual void goToFollowCreature();
@@ -528,8 +528,8 @@ public:
 
 	double getDamageRatio(std::shared_ptr<Creature> attacker) const;
 
-	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, const FindPathParams &fpp);
-	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
+	bool getPathTo(const Position &targetPos, std::deque<Direction> &dirList, const FindPathParams &fpp);
+	bool getPathTo(const Position &targetPos, std::deque<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
 
 	struct CountBlock_t {
 		int32_t total;
@@ -664,7 +664,7 @@ protected:
 	CreatureEventList eventsList;
 	ConditionList conditions;
 
-	std::forward_list<Direction> listWalkDir;
+	std::deque<Direction> listWalkDir;
 
 	std::weak_ptr<Tile> m_tile;
 	std::weak_ptr<Creature> m_attackedCreature;

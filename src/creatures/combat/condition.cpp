@@ -1929,7 +1929,7 @@ bool ConditionFeared::getFleeDirection(std::shared_ptr<Creature> creature) {
 	return false;
 }
 
-bool ConditionFeared::getFleePath(std::shared_ptr<Creature> creature, const Position &pos, std::forward_list<Direction> &dirList) {
+bool ConditionFeared::getFleePath(std::shared_ptr<Creature> creature, const Position &pos, std::deque<Direction> &dirList) {
 	const std::vector<uint8_t> walkSize { 15, 9, 3, 1 };
 	bool found = false;
 	std::ptrdiff_t found_size = 0;
@@ -2030,7 +2030,7 @@ bool ConditionFeared::startCondition(std::shared_ptr<Creature> creature) {
 
 bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32_t interval) {
 	Position currentPos = creature->getPosition();
-	std::forward_list<Direction> listDir;
+	std::deque<Direction> listDir;
 
 	g_logger().debug("[ConditionFeared::executeCondition] Executing condition, current position is {}", currentPos.toString());
 

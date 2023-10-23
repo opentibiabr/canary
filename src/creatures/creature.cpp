@@ -144,12 +144,9 @@ void Creature::onThink(uint32_t interval) {
 	if (isUpdatingPath) {
 		isUpdatingPath = false;
 		goToFollowCreature(onThink);
-	}
-	else {
+	} else {
 		onThink();
 	}
-
-	
 }
 
 void Creature::onAttacking(uint32_t interval) {
@@ -976,12 +973,12 @@ void Creature::executeAsyncPathTo(bool executeOnFollow, FindPathParams &fpp, std
 				self->onFollowCreatureComplete(self->getFollowCreature());
 			}
 
-			if(onComplete){
+			if (onComplete) {
 				onComplete();
 			}
-			}, "Creature::goToFollowCreature");
+		},
+								"Creature::goToFollowCreature");
 	});
-
 }
 
 void Creature::getPathSearchParams(const std::shared_ptr<Creature> &, FindPathParams &fpp) {
@@ -1018,7 +1015,7 @@ void Creature::goToFollowCreature(std::function<void()> &&onComplete) {
 		} else if (!monster->getDistanceStep(followCreature->getPosition(), dir)) { // maxTargetDist > 1
 			// if we can't get anything then let the A* calculate
 
-			executeAsyncPathTo(false,fpp, std::move(onComplete));
+			executeAsyncPathTo(false, fpp, std::move(onComplete));
 
 			return;
 		}
@@ -1028,7 +1025,7 @@ void Creature::goToFollowCreature(std::function<void()> &&onComplete) {
 		}
 
 		onFollowCreatureComplete(followCreature);
-		if (onComplete) { 
+		if (onComplete) {
 			onComplete();
 		}
 		return;

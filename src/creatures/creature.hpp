@@ -277,7 +277,7 @@ public:
 	void startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions = false);
 	void addEventWalk(bool firstStep = false);
 	void stopEventWalk();
-	virtual void goToFollowCreature(std::function<void()>&& onComplete = nullptr);
+	virtual void goToFollowCreature(std::function<void()> &&onComplete = nullptr);
 
 	// walk events
 	virtual void onWalk(Direction &dir);

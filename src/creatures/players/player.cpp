@@ -4219,9 +4219,7 @@ void Player::goToFollowCreature(std::function<void()> &&onComplete) {
 			if (self->getFollowCreature() && !self->hasFollowPath()) {
 				self->lastFailedFollow = OTSYS_TIME();
 			}
-			});
-
-
+		});
 	}
 }
 

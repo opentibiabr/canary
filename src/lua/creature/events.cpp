@@ -37,7 +37,7 @@ bool Events::loadFromXml() {
 		}
 
 		const std::string &className = eventNode.attribute("class").as_string();
-		auto res = classes.insert(className);
+		auto res = classes.emplace(className);
 		if (res.second) {
 			const std::string &lowercase = asLowerCaseString(className);
 			const std::string &scriptName = lowercase + ".lua";

@@ -5928,18 +5928,18 @@ uint16_t Player::getHelpers() const {
 
 		helperSet.emplace(party->getLeader());
 
-		return helperSet.size();
+		return static_cast<uint16_t>(helperSet.size());
 	}
 
 	if (guild) {
-		return guild->getMemberCountOnline();
+		return static_cast<uint16_t>(guild->getMemberCountOnline());
 	}
 
 	if (party) {
-		return party->getMemberCount() + party->getInvitationCount() + 1;
+		return static_cast<uint16_t>(party->getMemberCount() + party->getInvitationCount() + 1);
 	}
 
-	return 0;
+	return 0u;
 }
 
 void Player::sendClosePrivate(uint16_t channelId) {

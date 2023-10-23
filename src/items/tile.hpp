@@ -175,7 +175,7 @@ public:
 	void addZone(std::shared_ptr<Zone> zone);
 	void clearZones();
 
-	auto getZones() {
+	auto getZones() const {
 		return zones;
 	}
 

@@ -369,10 +369,6 @@ bool House::getAccessList(uint32_t listId, std::string &list) const {
 	return door->getAccessList(list);
 }
 
-bool House::isInvited(std::shared_ptr<Player> player) {
-	return getHouseAccessLevel(player) != HOUSE_NOT_INVITED;
-}
-
 void House::addDoor(std::shared_ptr<Door> door) {
 	doorList.push_back(door);
 	door->setHouse(static_self_cast<House>());
@@ -414,7 +410,7 @@ std::shared_ptr<Door> House::getDoorByPosition(const Position &pos) {
 	return nullptr;
 }
 
-bool House::canEditAccessList(uint32_t listId, std::shared_ptr<Player> player) {
+bool House::canEditAccessList(uint32_t listId, const std::shared_ptr<Player> &player) const {
 	switch (getHouseAccessLevel(player)) {
 		case HOUSE_OWNER:
 			return true;

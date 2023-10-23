@@ -597,7 +597,6 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 
 	const auto &followCreature = getFollowCreature();
 	if (followCreature && (creature == getCreature() || creature == followCreature)) {
-		g_logger().info(hasFollowPath() ? "has follow" : "without folow");
 		if (hasFollowPath()) {
 			isUpdatingPath = true;
 			g_dispatcher().addEvent(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
@@ -961,7 +960,7 @@ void Creature::executeAsyncPathTo(bool executeOnFollow, FindPathParams &fpp, std
 	pathFinderEventId.fetch_add(1);
 	g_dispatcher().asyncEvent([executeOnFollow, eventId = pathFinderEventId.load(), self = getCreature(), targetPos = getFollowCreature()->getPosition(), fpp = std::move(fpp), onComplete = std::move(onComplete)] {
 		if (eventId != self->pathFinderEventId.load()) {
-			return; // cancel pathfinder
+			return; // cancel old async pathfinder
 		}
 
 		stdext::arraylist<Direction> listDir(128);

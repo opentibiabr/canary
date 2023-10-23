@@ -1834,7 +1834,7 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 
 	const auto &followCreature = getFollowCreature();
-	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
+	if (hasFollowPath() && (creature == followCreature || (creature.get() == this && followCreature))) {
 		isUpdatingPath = false;
 		g_dispatcher().addEvent(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
 	}
@@ -4217,7 +4217,7 @@ void Player::goToFollowCreature() {
 
 		Creature::goToFollowCreature();
 
-		if (getFollowCreature() && !hasFollowPath) {
+		if (getFollowCreature() && !hasFollowPath()) {
 			lastFailedFollow = OTSYS_TIME();
 		}
 	}
@@ -7529,9 +7529,9 @@ SoundEffect_t Player::getAttackSoundEffect() const {
 bool Player::canAutoWalk(const Position &toPosition, const std::function<void()> &function, uint32_t delay /* = 500*/) {
 	if (!Position::areInRange<1, 1>(getPosition(), toPosition)) {
 		// Check if can walk to the toPosition and send event to use function
-		std::deque<Direction> listDir;
+		stdext::arraylist<Direction> listDir(128);
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir), __FUNCTION__);
+			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir.data()), __FUNCTION__);
 
 			std::shared_ptr<Task> task = createPlayerTask(delay, function, __FUNCTION__);
 			setNextWalkActionTask(task);

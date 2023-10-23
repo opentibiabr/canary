@@ -1555,7 +1555,7 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 
 	msg.skipBytes(numdirs);
 
-	std::deque<Direction> path;
+	stdext::arraylist<Direction> path;
 	for (uint8_t i = 0; i < numdirs; ++i) {
 		uint8_t rawdir = msg.getPreviousByte();
 		switch (rawdir) {
@@ -1592,7 +1592,7 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 		return;
 	}
 
-	addGameTask(&Game::playerAutoWalk, player->getID(), path);
+	addGameTask(&Game::playerAutoWalk, player->getID(), path.data());
 }
 
 void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {

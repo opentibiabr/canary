@@ -510,11 +510,11 @@ std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, 
 	return tile;
 }
 
-bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, std::deque<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
 	return getPathMatching(creature, creature->getPosition(), dirList, pathCondition, fpp);
 }
 
-bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &startPos, std::deque<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &startPos, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
 	static int_fast32_t allNeighbors[8][2] = {
 		{ -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, -1 }, { 1, -1 }, { 1, 1 }, { -1, 1 }
 	};

@@ -119,6 +119,10 @@ public:
 		direction = dir;
 	}
 
+	bool hasFollowPath() const {
+		return !listWalkDir.empty();
+	}
+
 	bool isHealthHidden() const {
 		return hiddenHealth;
 	}
@@ -270,7 +274,7 @@ public:
 	phmap::flat_hash_set<std::shared_ptr<Zone>> getZones();
 
 	// walk functions
-	void startAutoWalk(const std::deque<Direction> &listDir, bool ignoreConditions = false);
+	void startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions = false);
 	void addEventWalk(bool firstStep = false);
 	void stopEventWalk();
 	virtual void goToFollowCreature();
@@ -528,8 +532,8 @@ public:
 
 	double getDamageRatio(std::shared_ptr<Creature> attacker) const;
 
-	bool getPathTo(const Position &targetPos, std::deque<Direction> &dirList, const FindPathParams &fpp);
-	bool getPathTo(const Position &targetPos, std::deque<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
+	bool getPathTo(const Position &targetPos, stdext::arraylist<Direction> &dirList, const FindPathParams &fpp);
+	bool getPathTo(const Position &targetPos, stdext::arraylist<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
 
 	struct CountBlock_t {
 		int32_t total;
@@ -725,7 +729,6 @@ protected:
 	bool skillLoss = true;
 	bool lootDrop = true;
 	bool cancelNextWalk = false;
-	bool hasFollowPath = false;
 	bool forceUpdateFollowPath = false;
 	bool hiddenHealth = false;
 	bool floorChange = false;

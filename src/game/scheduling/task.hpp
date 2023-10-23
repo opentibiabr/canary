@@ -108,7 +108,6 @@ private:
 			"Game::updateForgeableMonsters",
 			"GlobalEvents::think",
 			"LuaEnvironment::executeTimerEvent",
-			"Map::getPathMatchingAsync::onSuccess",
 			"Modules::executeOnRecvbyte",
 			"OutputMessagePool::sendAll",
 			"ProtocolGame::addGameTask",

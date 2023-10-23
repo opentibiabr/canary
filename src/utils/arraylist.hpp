@@ -22,11 +22,12 @@ namespace stdext {
 	class arraylist {
 	public:
 		arraylist() = default;
-		arraylist(size_t reserveSize) {
+
+		explicit arraylist(size_t reserveSize) {
 			reserve(reserveSize);
 		}
 
-		arraylist(std::initializer_list<T> _Ilist) {
+		explicit arraylist(std::initializer_list<T> _Ilist) {
 			backContainer.assign(_Ilist);
 		}
 

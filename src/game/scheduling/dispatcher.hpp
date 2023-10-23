@@ -133,7 +133,7 @@ private:
 		Task::TIME_NOW = std::chrono::system_clock::now();
 	}
 
-	const auto& getThreadTask() const {
+	const auto &getThreadTask() const {
 		return threads[ThreadPool::getThreadId()];
 	}
 

@@ -990,7 +990,7 @@ void Creature::goToFollowCreature() {
 
 				std::forward_list<Direction> list;
 				if (self->hasFollowPath = self->getPathTo(targetPos, list, fpp)) {
-					g_dispatcher().addEvent([self, list = std::move(list)] { self->startAutoWalk(list);	}, "Creature::goToFollowCreature");
+					g_dispatcher().addEvent([self, list = std::move(list)] { self->startAutoWalk(list); }, "Creature::goToFollowCreature");
 				}
 			});
 
@@ -1303,7 +1303,7 @@ void Creature::removeCondition(ConditionType_t type) {
 			continue;
 		}
 
-			it = conditions.erase(it);
+		it = conditions.erase(it);
 
 		condition->endCondition(getCreature());
 
@@ -1332,7 +1332,7 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 			}
 		}
 
-			it = conditions.erase(it);
+		it = conditions.erase(it);
 
 		condition->endCondition(getCreature());
 
@@ -1359,7 +1359,7 @@ void Creature::removeCondition(std::shared_ptr<Condition> condition) {
 		return;
 	}
 
-		conditions.erase(it);
+	conditions.erase(it);
 
 	condition->endCondition(getCreature());
 	onEndCondition(condition->getType());
@@ -1400,7 +1400,7 @@ void Creature::executeConditions(uint32_t interval) {
 		if (!condition->executeCondition(getCreature(), interval)) {
 			ConditionType_t type = condition->getType();
 
-				it = conditions.erase(it);
+			it = conditions.erase(it);
 
 			condition->endCondition(getCreature());
 

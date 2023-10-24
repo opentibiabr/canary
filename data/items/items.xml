@@ -51930,11 +51930,11 @@
 		<attribute key="defense" value="31"/>
 		<attribute key="weight" value="6300"/>
 		<attribute key="imbuementslot" value="2">
-			<attribute key="elemental damage" value="3"/>
-			<attribute key="life leech" value="3"/>
-			<attribute key="mana leech" value="3"/>
-			<attribute key="critical hit" value="3"/>
-			<attribute key="skillboost sword" value="3"/>
+		<attribute key="elemental damage" value="3"/>
+		<attribute key="life leech" value="3"/>
+		<attribute key="mana leech" value="3"/>
+		<attribute key="critical hit" value="3"/>
+		<attribute key="skillboost sword" value="3"/>
 		</attribute>
 	</item>
 	<item id="30399" name="cobra wand">

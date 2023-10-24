@@ -1511,17 +1511,6 @@ void consoleHandlerExit() {
 	return;
 }
 
-std::string validateNameHouse(const std::string &list) {
-	std::string result;
-	for (char c : list) {
-		if (isalpha(c) || c == ' ' || c == '\'' || c == '!' || c == '\n'
-			|| c == '?' || c == '#' || c == '@' || c == '*') {
-			result += c;
-		}
-	}
-	return result;
-}
-
 NameEval_t validateName(const std::string &name) {
 	StringVector prohibitedWords = { "owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "cm", "gm", "tutor", "counsellor", "god" };
 	StringVector toks;

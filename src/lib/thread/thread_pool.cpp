@@ -29,7 +29,7 @@ void ThreadPool::start() {
 	 * will make processing non-blocking in some way and that would allow
 	 * single core computers to process things concurrently, but not in parallel.
 	 */
-	int nThreads = std::max<int>(static_cast<int>(getNumberOfCores()), DEFAULT_NUMBER_OF_THREADS);
+	nThreads = std::max<uint16_t>(static_cast<int>(getNumberOfCores()), DEFAULT_NUMBER_OF_THREADS);
 
 	for (std::size_t i = 0; i < nThreads; ++i) {
 		threads.emplace_back([this] { ioService.run(); });

@@ -2066,7 +2066,7 @@ void ProtocolGame::sendHighscoresNoData() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages) {
+void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer) {
 	if (oldProtocol) {
 		return;
 	}
@@ -2145,8 +2145,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(0xFF); // ??
 	msg.addByte(0); // ??
 	msg.addByte(1); // ??
-	msg.add<uint32_t>(time(nullptr)); // Last Update
-
+	msg.add<uint32_t>(updateTimer); // Last Update
 	msg.setBufferPosition(vocationPosition);
 	msg.addByte(vocations);
 	writeToOutputBuffer(msg);

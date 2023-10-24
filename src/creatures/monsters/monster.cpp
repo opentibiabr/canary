@@ -567,12 +567,6 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	}
 
 	// lets just pick the first target in the list
-	for (const auto &target : getTargetList()) {
-		if (selectTarget(target)) {
-			return true;
-		}
-	}
-
 	return std::ranges::any_of(getTargetList(), [this](const std::shared_ptr<Creature> &creature) {
 		return selectTarget(creature);
 	});

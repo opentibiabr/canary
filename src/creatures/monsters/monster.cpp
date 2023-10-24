@@ -289,77 +289,68 @@ void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses typ
 	}
 }
 
-void Monster::addFriend(std::shared_ptr<Creature> creature) {
+void Monster::addFriend(const std::shared_ptr<Creature> &creature) {
 	assert(creature.get() != this);
-	friendList.try_emplace(creature->getID(), creature);
+
+	const auto &it = std::find_if(friendList.begin(), friendList.end(), [id = creature->getID()](const std::weak_ptr<Creature> &ref) {
+		const auto &creature = ref.lock();
+		return creature && creature->getID() == id;
+	});
+
+	if (it == friendList.end()) {
+		friendList.emplace_back(creature);
+	}
 }
 
-void Monster::removeFriend(std::shared_ptr<Creature> creature) {
-	friendList.erase(creature->getID());
+void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
+	std::erase_if(targetList, [id = creature->getID()](const std::weak_ptr<Creature> &ref) {
+		const auto &creature = ref.lock();
+		return !creature || creature->getID() == id;
+	});
 }
 
-void Monster::addTarget(std::shared_ptr<Creature> creature, bool pushFront /* = false*/) {
+void Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
 	assert(creature.get() != this);
-	auto cid = creature->getID();
-	targetListMap.try_emplace(cid, creature);
-	if (std::find(targetIDList.begin(), targetIDList.end(), cid) == targetIDList.end()) {
+
+	const auto &it = getTargetInterator(creature);
+	if (it == targetList.end()) {
 		if (pushFront) {
-			targetIDList.push_front(cid);
+			targetList.emplace_front(creature);
 		} else {
-			targetIDList.push_back(cid);
+			targetList.emplace_back(creature);
 		}
+
 		if (!getMaster() && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen++;
 		}
 	}
 }
 
-void Monster::removeTarget(std::shared_ptr<Creature> creature) {
+void Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 	if (!creature) {
 		return;
 	}
 
-	auto it = std::find(targetIDList.begin(), targetIDList.end(), creature->getID());
-	if (it != targetIDList.end()) {
+	const auto &it = getTargetInterator(creature);
+	if (it != targetList.end()) {
 		if (!getMaster() && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen--;
 		}
 
-		targetIDList.erase(it);
-		targetListMap.erase(creature->getID());
+		targetList.erase(it);
 	}
 }
 
 void Monster::updateTargetList() {
-	auto friendIterator = friendList.begin();
-	while (friendIterator != friendList.end()) {
-		auto creature = (*friendIterator).second.lock();
-		if (!creature || creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
-			friendIterator = friendList.erase(friendIterator);
-		} else {
-			++friendIterator;
-		}
-	}
+	std::erase_if(friendList, [&](const std::weak_ptr<Creature> &ref) {
+		const auto &creature = ref.lock();
+		return !creature || creature->getHealth() <= 0 || !canSee(creature->getPosition());
+	});
 
-	auto targetIterator = targetIDList.begin();
-	while (targetIterator != targetIDList.end()) {
-		const uint32_t targetId = *targetIterator;
-
-		auto itTLM = targetListMap.find(targetId);
-		const bool existTarget = itTLM != targetListMap.end();
-
-		if (existTarget) {
-			const auto &creature = itTLM->second.lock();
-			if (!creature || creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
-				targetIterator = targetIDList.erase(targetIterator);
-				targetListMap.erase(itTLM);
-			} else {
-				++targetIterator;
-			}
-		} else {
-			targetIterator = targetIDList.erase(targetIterator);
-		}
-	}
+	std::erase_if(targetList, [&](const std::weak_ptr<Creature> &ref) {
+		const auto &creature = ref.lock();
+		return !creature || creature->getHealth() <= 0 || !canSee(creature->getPosition());
+	});
 
 	for (const auto &spectator : Spectators().find<Creature>(position, true)) {
 		if (spectator.get() != this && canSee(spectator->getPosition())) {
@@ -369,8 +360,7 @@ void Monster::updateTargetList() {
 }
 
 void Monster::clearTargetList() {
-	targetIDList.clear();
-	targetListMap.clear();
+	targetList.clear();
 }
 
 void Monster::clearFriendList() {
@@ -446,7 +436,7 @@ void Monster::onCreatureLeave(std::shared_ptr<Creature> creature) {
 	// update targetList
 	if (isOpponent(creature)) {
 		removeTarget(creature);
-		if (targetIDList.empty()) {
+		if (targetList.empty()) {
 			updateIdleStatus();
 		}
 	}
@@ -473,11 +463,11 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 		}
 	}
 
-	std::list<std::shared_ptr<Creature>> resultList;
+	std::vector<std::shared_ptr<Creature>> resultList;
 	const Position &myPos = getPosition();
 
-	for (auto cid : targetIDList) {
-		auto creature = targetListMap[cid].lock();
+	for (const auto &cref : targetList) {
+		const auto &creature = cref.lock();
 		if (creature && isTarget(creature)) {
 			if ((static_self_cast<Monster>()->targetDistance == 1) || canUseAttack(myPos, creature)) {
 				resultList.push_back(creature);
@@ -600,20 +590,20 @@ void Monster::onFollowCreatureComplete(std::shared_ptr<Creature> creature) {
 	if (!creature) {
 		return;
 	}
-	auto it = std::find(targetIDList.begin(), targetIDList.end(), creature->getID());
-	if (it != targetIDList.end()) {
-		auto target = targetListMap[*it].lock();
+
+	const auto &it = getTargetInterator(creature);
+	if (it != targetList.end()) {
+		const auto &target = (*it).lock();
 		if (!target) {
 			return;
 		}
-		targetIDList.erase(it);
+
+		targetList.erase(it);
 
 		if (hasFollowPath) {
-			targetIDList.push_front(target->getID());
+			targetList.emplace_front(target);
 		} else if (!isSummon()) {
-			targetIDList.push_back(target->getID());
-		} else {
-			targetListMap.erase(target->getID());
+			targetList.emplace_back(target);
 		}
 	}
 }
@@ -666,8 +656,8 @@ bool Monster::selectTarget(std::shared_ptr<Creature> creature) {
 		return false;
 	}
 
-	auto it = std::find(targetIDList.begin(), targetIDList.end(), creature->getID());
-	if (it == targetIDList.end()) {
+	const auto &it = getTargetInterator(creature);
+	if (it == targetList.end()) {
 		// Target not found in our target list.
 		return false;
 	}
@@ -702,7 +692,7 @@ void Monster::updateIdleStatus() {
 	auto master = getMaster();
 
 	if (conditions.empty()) {
-		if (!isSummon() && targetIDList.empty()) {
+		if (!isSummon() && targetList.empty()) {
 			idle = true;
 		} else if (master && (!isSummon() && totalPlayersOnScreen == 0 || isSummon() && master->getMonster() && master->getMonster()->totalPlayersOnScreen == 0) && getFaction() != FACTION_DEFAULT) {
 			idle = true;
@@ -795,7 +785,7 @@ void Monster::onThink(uint32_t interval) {
 					// This happens just after a master orders an attack, so lets follow it aswell.
 					setFollowCreature(attackedCreature);
 				}
-			} else if (!attackedCreature && !targetIDList.empty()) {
+			} else if (!attackedCreature && !targetList.empty()) {
 				if (!followCreature || !hasFollowPath) {
 					searchTarget(TARGETSEARCH_NEAREST);
 				} else if (isFleeing()) {

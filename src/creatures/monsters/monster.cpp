@@ -578,12 +578,11 @@ void Monster::onFollowCreatureComplete(std::shared_ptr<Creature> creature) {
 	}
 
 	const auto &it = getTargetInterator(creature);
-	if (it != targetList.end()) {
-		const auto &target = (*it).lock();
-		if (!target) {
-			return;
-		}
+	if (it == targetList.end()) {
+		return;
+	}
 
+	if (const auto &target = (*it).lock()) {
 		targetList.erase(it);
 
 		if (hasFollowPath) {

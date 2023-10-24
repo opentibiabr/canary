@@ -75,7 +75,12 @@ local function purchaseItems(keyword, text, moneyRequired, itemList)
 	local stoneKeyword = keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = "Do you want to buy items for " .. text .. " imbuement for " .. moneyRequired .. " gold?"})
 	stoneKeyword:addChildKeyword({"yes"}, StdModule.say, {npcHandler = npcHandler, text = "You have successfully completed your purchase of the items.", reset = true},
 		function(player) return player:getMoney() + player:getBankBalance() >= moneyRequired end,
-		function(player) return addItemsToShoppingBag(player, moneyRequired, itemList) end
+		function(player)
+			local success, message = addItemsToShoppingBag(player, moneyRequired, itemList)
+			if not success then
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
+			end
+		end
 	)
 	stoneKeyword:addChildKeyword({"yes"}, StdModule.say, {npcHandler = npcHandler, text = "Sorry, you don't have enough money.", reset = true})
 end

@@ -118,7 +118,6 @@ private:
 			"SpawnNpc::checkSpawnNpc",
 			"Webhook::run",
 			"Protocol::sendRecvMessageCallback",
-			"sendRecvMessageCallback",
 		});
 
 		return tasksContext.contains(context);

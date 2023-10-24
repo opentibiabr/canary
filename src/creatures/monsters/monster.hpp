@@ -188,7 +188,7 @@ public:
 		CreatureVector list;
 		list.reserve(targetList.size());
 
-		std::erase_if(targetList, [&](const std::weak_ptr<Creature> &ref) {
+		std::erase_if(targetList, [&list](const std::weak_ptr<Creature> &ref) {
 			if (const auto &creature = ref.lock()) {
 				list.emplace_back(creature);
 				return false;
@@ -204,7 +204,7 @@ public:
 		CreatureVector list;
 		list.reserve(friendList.size());
 
-		std::erase_if(friendList, [&](const auto &it) {
+		std::erase_if(friendList, [&list](const auto &it) {
 			if (const auto &creature = it.second.lock()) {
 				list.emplace_back(creature);
 				return false;
@@ -339,9 +339,9 @@ public:
 
 private:
 	auto getTargetInterator(const std::shared_ptr<Creature> &creature) {
-		return std::find_if(targetList.begin(), targetList.end(), [id = creature->getID()](const std::weak_ptr<Creature> &ref) {
-			const auto &creature = ref.lock();
-			return creature && creature->getID() == id;
+		return std::ranges::find_if(targetList.begin(), targetList.end(), [id = creature->getID()](const std::weak_ptr<Creature> &ref) {
+			const auto &target = ref.lock();
+			return target && target->getID() == id;
 		});
 	}
 

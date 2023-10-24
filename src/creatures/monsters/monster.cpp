@@ -297,8 +297,8 @@ void Monster::addFriend(const std::shared_ptr<Creature> &creature) {
 
 void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
 	std::erase_if(targetList, [id = creature->getID()](const std::weak_ptr<Creature> &ref) {
-		const auto &creature = ref.lock();
-		return !creature || creature->getID() == id;
+		const auto &target = ref.lock();
+		return !target || target->getID() == id;
 	});
 }
 
@@ -335,14 +335,14 @@ void Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 }
 
 void Monster::updateTargetList() {
-	std::erase_if(friendList, [&](const auto &it) {
-		const auto &creature = it.second.lock();
-		return !creature || creature->getHealth() <= 0 || !canSee(creature->getPosition());
+	std::erase_if(friendList, [=](const auto &it) {
+		const auto &target = it.second.lock();
+		return !target || target->getHealth() <= 0 || !canSee(target->getPosition());
 	});
 
-	std::erase_if(targetList, [&](const std::weak_ptr<Creature> &ref) {
-		const auto &creature = ref.lock();
-		return !creature || creature->getHealth() <= 0 || !canSee(creature->getPosition());
+	std::erase_if(targetList, [=](const std::weak_ptr<Creature> &ref) {
+		const auto &target = ref.lock();
+		return !target || target->getHealth() <= 0 || !canSee(target->getPosition());
 	});
 
 	for (const auto &spectator : Spectators().find<Creature>(position, true)) {

@@ -12,13 +12,10 @@
 #include "creatures/monsters/monsters.hpp"
 #include "declarations.hpp"
 #include "items/tile.hpp"
-#include <unordered_set>
 
 class Creature;
 class Game;
 class Spawn;
-
-using CreatureHashSet = phmap::flat_hash_set<std::shared_ptr<Creature>>;
 
 class Monster final : public Creature {
 public:
@@ -207,8 +204,8 @@ public:
 		CreatureVector list;
 		list.reserve(friendList.size());
 
-		std::erase_if(friendList, [&](const std::weak_ptr<Creature> &ref) {
-			if (const auto &creature = ref.lock()) {
+		std::erase_if(friendList, [&](const auto &it) {
+			if (const auto &creature = it.second.lock()) {
 				list.emplace_back(creature);
 				return false;
 			}
@@ -341,23 +338,6 @@ public:
 	}
 
 private:
-	struct MHash {
-	public:
-		size_t operator()(const std::weak_ptr<Creature> &a) const {
-			uint64_t x = a.lock() ? a.lock()->getID() : 0;
-			x ^= x >> 33U;
-			x *= UINT64_C(0xff51afd7ed558ccd);
-			x ^= x >> 33U;
-			return static_cast<size_t>(x);
-		}
-	};
-	struct MCompare {
-		bool operator()(const std::weak_ptr<Creature> &a, const std::weak_ptr<Creature> &b) const {
-			const uint32_t idA = a.lock() ? a.lock()->getID() : 0;
-			const uint32_t idB = b.lock() ? b.lock()->getID() : 0;
-			return idA == idB;
-		}
-	};
 	auto getTargetInterator(const std::shared_ptr<Creature> &creature) {
 		return std::find_if(targetList.begin(), targetList.end(), [id = creature->getID()](const std::weak_ptr<Creature> &ref) {
 			const auto &creature = ref.lock();
@@ -365,7 +345,7 @@ private:
 		});
 	}
 
-	std::unordered_set<std::weak_ptr<Creature>, MHash, MCompare> friendList;
+	std::unordered_map<uint32_t, std::weak_ptr<Creature>> friendList;
 	std::deque<std::weak_ptr<Creature>> targetList;
 
 	time_t timeToChangeFiendish = 0;

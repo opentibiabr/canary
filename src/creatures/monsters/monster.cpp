@@ -292,7 +292,7 @@ void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses typ
 void Monster::addFriend(const std::shared_ptr<Creature> &creature) {
 	assert(creature.get() != this);
 
-	friendList.emplace(creature);
+	friendList.try_emplace(creature->getID(), creature);
 }
 
 void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
@@ -335,8 +335,8 @@ void Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 }
 
 void Monster::updateTargetList() {
-	std::erase_if(friendList, [&](const std::weak_ptr<Creature> &ref) {
-		const auto &creature = ref.lock();
+	std::erase_if(friendList, [&](const auto &it) {
+		const auto &creature = it.second.lock();
 		return !creature || creature->getHealth() <= 0 || !canSee(creature->getPosition());
 	});
 

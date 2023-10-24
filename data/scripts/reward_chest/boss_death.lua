@@ -13,8 +13,8 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 	local monsterType = creature:getType()
 	-- Make sure it is a boss
 	if monsterType and monsterType:isRewardBoss() then
-		if not corpse:isContainer() then
-			logger.warn("[bossDeath.onDeath] Corpse (id: {}) for reward boss {} is not a container.", corpse:getId(), creature:getName())
+		if not corpse.isContainer or not corpse:isContainer() then
+			logger.warn("[bossDeath.onDeath] Corpse (id: {}, name: {}) for reward boss {} is not a container.", corpse:getId(), corpse:getName(), creature:getName())
 		end
 		corpse:registerReward()
 		local bossId = creature:getId()

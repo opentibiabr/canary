@@ -61,14 +61,26 @@ end
 keywordHandler:addKeyword({"imbuement packages"}, StdModule.say, {npcHandler = npcHandler, text = "Skill Increase: {Bash}, {Blockade}, {Chop}, {Epiphany}, {Precision}, {Slash}. Additional Attributes: {Featherweight}, {Strike}, {Swiftness}, {Vampirism}, {Vibrancy}, {Void}. Elemental Damage: {Electrify}, {Frost}, {Reap}, {Scorch}, {Venom}. Elemental Protection: {Cloud Fabric}, {Demon Presence}, {Dragon Hide}, {Lich Shroud}, {Quara Scale}, {Snake Skin}."})
 
 function addItemsToShoppingBag(player, moneyRequired, itemList)
-	if player:removeMoneyBank(moneyRequired) then
-		local shoppingBag = player:addItem(2856, 1) -- present box
-		for _, item in pairs(itemList) do
-			shoppingBag:addItem(item.itemId, item.count)
-		end
-		return true
+	if not player:removeMoneyBank(moneyRequired) then
+		return false, "You not enough money."
 	end
-	return false
+
+	local totalWeight = 0
+	for _, item in pairs(itemList) do
+		local itemType = ItemType(item.itemId)
+		totalWeight = totalWeight + (itemType:getWeight() * item.count)
+	end
+
+	if player:getFreeCapacity() < totalWeight then
+		return false, "You not enough capacity."
+	end
+
+	local shoppingBag = player:addItem(2856, 1) -- present box
+	for _, item in pairs(itemList) do
+		shoppingBag:addItem(item.itemId, item.count)
+	end
+
+	return true
 end
 
 local function purchaseItems(keyword, text, moneyRequired, itemList)

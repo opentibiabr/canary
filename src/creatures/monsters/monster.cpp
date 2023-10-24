@@ -335,12 +335,12 @@ void Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 }
 
 void Monster::updateTargetList() {
-	std::erase_if(friendList, [=](const auto &it) {
+	std::erase_if(friendList, [this](const auto &it) {
 		const auto &target = it.second.lock();
 		return !target || target->getHealth() <= 0 || !canSee(target->getPosition());
 	});
 
-	std::erase_if(targetList, [=](const std::weak_ptr<Creature> &ref) {
+	std::erase_if(targetList, [this](const std::weak_ptr<Creature> &ref) {
 		const auto &target = ref.lock();
 		return !target || target->getHealth() <= 0 || !canSee(target->getPosition());
 	});

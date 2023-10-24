@@ -50,12 +50,16 @@ static constexpr std::chrono::minutes HIGHSCORE_CACHE_EXPIRATION_TIME { 10 }; //
 
 struct QueryHighscoreCacheEntry {
 	std::string query;
+	uint32_t page;
+	uint8_t entriesPerPage;
 	std::chrono::time_point<std::chrono::steady_clock> timestamp;
 };
 
 struct HighscoreCacheEntry {
 	std::vector<HighscoreCharacter> characters;
-	std::chrono::time_point<std::chrono::steady_clock> timestamp;
+	uint32_t page;
+	uint32_t entriesPerPage;
+	std::chrono::time_point<std::chrono::system_clock> timestamp;
 };
 
 class Game {
@@ -900,10 +904,9 @@ private:
 	// Variable members (m_)
 	std::unique_ptr<IOWheel> m_IOWheel;
 
-	void cacheQueryHighscore(const std::string &key, const std::string &query);
+	void cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage);
 	void processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
 
-	std::string getCachedQueryHighscore(const std::string &key);
 	std::string generateVocationConditionHighscore(uint32_t vocation);
 	std::string generateHighscoreQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
 	std::string generateHighscoreQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);

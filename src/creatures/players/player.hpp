@@ -1605,9 +1605,9 @@ public:
 			client->sendHighscoresNoData();
 		}
 	}
-	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages) {
+	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer) {
 		if (client) {
-			client->sendHighscores(characters, categoryId, vocationId, page, pages);
+			client->sendHighscores(characters, categoryId, vocationId, page, pages, updateTimer);
 		}
 	}
 	void addAsyncOngoingTask(uint64_t flags) {

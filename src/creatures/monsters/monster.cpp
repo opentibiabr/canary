@@ -292,14 +292,7 @@ void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses typ
 void Monster::addFriend(const std::shared_ptr<Creature> &creature) {
 	assert(creature.get() != this);
 
-	const auto &it = std::find_if(friendList.begin(), friendList.end(), [id = creature->getID()](const std::weak_ptr<Creature> &ref) {
-		const auto &creature = ref.lock();
-		return creature && creature->getID() == id;
-	});
-
-	if (it == friendList.end()) {
-		friendList.emplace_back(creature);
-	}
+	friendList.emplace(creature);
 }
 
 void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
@@ -383,16 +376,13 @@ void Monster::onCreatureEnter(std::shared_ptr<Creature> creature) {
 	onCreatureFound(creature, true);
 }
 
-bool Monster::isFriend(std::shared_ptr<Creature> creature) const {
+bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
 	if (isSummon() && getMaster()->getPlayer()) {
-		std::shared_ptr<Player> masterPlayer = getMaster()->getPlayer();
-		std::shared_ptr<Player> tmpPlayer = nullptr;
+		const auto &masterPlayer = getMaster()->getPlayer();
+		auto tmpPlayer = creature->getPlayer();
 
-		if (creature->getPlayer()) {
-			tmpPlayer = creature->getPlayer();
-		} else {
-			std::shared_ptr<Creature> creatureMaster = creature->getMaster();
-
+		if (!tmpPlayer) {
+			const auto &creatureMaster = creature->getMaster();
 			if (creatureMaster && creatureMaster->getPlayer()) {
 				tmpPlayer = creatureMaster->getPlayer();
 			}
@@ -401,27 +391,26 @@ bool Monster::isFriend(std::shared_ptr<Creature> creature) const {
 		if (tmpPlayer && (tmpPlayer == getMaster() || masterPlayer->isPartner(tmpPlayer))) {
 			return true;
 		}
-	} else if (creature->getMonster() && !creature->isSummon()) {
-		return true;
 	}
 
-	return false;
+	return creature->getMonster() && !creature->isSummon();
 }
 
-bool Monster::isOpponent(std::shared_ptr<Creature> creature) const {
+bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 	if (isSummon() && getMaster()->getPlayer()) {
-		if (creature != getMaster()) {
-			return true;
-		}
-	} else if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
+		return creature != getMaster();
+	}
+
+	if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
 		return false;
-	} else {
-		if (getFaction() != FACTION_DEFAULT) {
-			return isEnemyFaction(creature->getFaction()) || creature->getFaction() == FACTION_PLAYER;
-		}
-		if ((creature->getPlayer()) || (creature->getMaster() && creature->getMaster()->getPlayer())) {
-			return true;
-		}
+	}
+
+	if (getFaction() != FACTION_DEFAULT) {
+		return isEnemyFaction(creature->getFaction()) || creature->getFaction() == FACTION_PLAYER;
+	}
+
+	if ((creature->getPlayer()) || (creature->getMaster() && creature->getMaster()->getPlayer())) {
+		return true;
 	}
 
 	return false;
@@ -503,7 +492,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 				}
 			} else {
 				int32_t minRange = std::numeric_limits<int32_t>::max();
-				for (auto creature : getTargetList()) {
+				for (const auto &creature : getTargetList()) {
 					if (!isTarget(creature)) {
 						continue;
 					}
@@ -578,7 +567,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	}
 
 	// lets just pick the first target in the list
-	for (auto target : getTargetList()) {
+	for (const auto &target : getTargetList()) {
 		if (selectTarget(target)) {
 			return true;
 		}

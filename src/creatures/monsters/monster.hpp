@@ -12,6 +12,7 @@
 #include "creatures/monsters/monsters.hpp"
 #include "declarations.hpp"
 #include "items/tile.hpp"
+#include <unordered_set>
 
 class Creature;
 class Game;
@@ -340,6 +341,23 @@ public:
 	}
 
 private:
+	struct MHash {
+	public:
+		size_t operator()(const std::weak_ptr<Creature> &a) const {
+			uint64_t x = a.lock() ? a.lock()->getID() : 0;
+			x ^= x >> 33U;
+			x *= UINT64_C(0xff51afd7ed558ccd);
+			x ^= x >> 33U;
+			return static_cast<size_t>(x);
+		}
+	};
+	struct MCompare {
+		bool operator()(const std::weak_ptr<Creature> &a, const std::weak_ptr<Creature> &b) const {
+			const uint32_t idA = a.lock() ? a.lock()->getID() : 0;
+			const uint32_t idB = b.lock() ? b.lock()->getID() : 0;
+			return idA == idB;
+		}
+	};
 	auto getTargetInterator(const std::shared_ptr<Creature> &creature) {
 		return std::find_if(targetList.begin(), targetList.end(), [id = creature->getID()](const std::weak_ptr<Creature> &ref) {
 			const auto &creature = ref.lock();
@@ -347,7 +365,7 @@ private:
 		});
 	}
 
-	std::vector<std::weak_ptr<Creature>> friendList;
+	std::unordered_set<std::weak_ptr<Creature>, MHash, MCompare> friendList;
 	std::deque<std::weak_ptr<Creature>> targetList;
 
 	time_t timeToChangeFiendish = 0;
@@ -431,8 +449,8 @@ private:
 	void onThinkDefense(uint32_t interval);
 	void onThinkSound(uint32_t interval);
 
-	bool isFriend(std::shared_ptr<Creature> creature) const;
-	bool isOpponent(std::shared_ptr<Creature> creature) const;
+	bool isFriend(const std::shared_ptr<Creature> &creature) const;
+	bool isOpponent(const std::shared_ptr<Creature> &creature) const;
 
 	uint64_t getLostExperience() const override {
 		return skillLoss ? mType->info.experience : 0;

@@ -7968,14 +7968,18 @@ void Game::processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8
 	pages /= entriesPerPage;
 
 	std::ostringstream cacheKeyStream;
-	cacheKeyStream << "Highscore_" << static_cast<int>(category) << "_" << static_cast<int>(vocation) << "_" << static_cast<int>(entriesPerPage);
+	cacheKeyStream << "Highscore_" << static_cast<int>(category) << "_" << static_cast<int>(vocation) << "_" << static_cast<int>(entriesPerPage) << "_" << page;
 	std::string cacheKey = cacheKeyStream.str();
 
 	auto it = highscoreCache.find(cacheKey);
-	auto now = std::chrono::steady_clock::now();
+	auto now = std::chrono::system_clock::now();
 	if (it != highscoreCache.end() && (now - it->second.timestamp < HIGHSCORE_CACHE_EXPIRATION_TIME)) {
 		auto &cacheEntry = it->second;
-		player->sendHighscores(cacheEntry.characters, category, vocation, page, static_cast<uint16_t>(pages));
+		auto cachedTime = it->second.timestamp;
+		auto durationSinceEpoch = cachedTime.time_since_epoch();
+		auto secondsSinceEpoch = std::chrono::duration_cast<std::chrono::seconds>(durationSinceEpoch).count();
+		auto updateTimer = static_cast<uint32_t>(secondsSinceEpoch);
+		player->sendHighscores(cacheEntry.characters, category, vocation, cacheEntry.page, static_cast<uint16_t>(cacheEntry.entriesPerPage), updateTimer);
 	} else {
 		std::vector<HighscoreCharacter> characters;
 		characters.reserve(result->countResults());
@@ -7992,25 +7996,14 @@ void Game::processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8
 			} while (result->next());
 		}
 
-		player->sendHighscores(characters, category, vocation, page, static_cast<uint16_t>(pages));
-		highscoreCache[cacheKey] = { characters, now };
+		player->sendHighscores(characters, category, vocation, page, static_cast<uint16_t>(pages), getTimeNow());
+		highscoreCache[cacheKey] = { characters, page, pages, now };
 	}
 }
 
-std::string Game::getCachedQueryHighscore(const std::string &key) {
-	auto it = queryCache.find(key);
-	if (it != queryCache.end()) {
-		auto now = std::chrono::steady_clock::now();
-		if (now - it->second.timestamp < CACHE_EXPIRATION_TIME) {
-			return it->second.query;
-		}
-	}
-	return "";
-}
-
-void Game::cacheQueryHighscore(const std::string &key, const std::string &query) {
-	auto now = std::chrono::steady_clock::now();
-	queryCache[key] = { query, now };
+void Game::cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage) {
+	QueryHighscoreCacheEntry queryEntry { query, page, entriesPerPage, std::chrono::steady_clock::now() };
+	queryCache[key] = queryEntry;
 }
 
 std::string Game::generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation) {
@@ -8018,13 +8011,15 @@ std::string Game::generateHighscoreOrGetCachedQueryForEntries(const std::string 
 	cacheKeyStream << "Entries_" << categoryName << "_" << page << "_" << static_cast<int>(entriesPerPage) << "_" << vocation;
 	std::string cacheKey = cacheKeyStream.str();
 
-	std::string cachedQuery = getCachedQueryHighscore(cacheKey);
-	if (!cachedQuery.empty()) {
-		return cachedQuery;
+	if (queryCache.find(cacheKey) != queryCache.end()) {
+		const QueryHighscoreCacheEntry &cachedEntry = queryCache[cacheKey];
+		if (cachedEntry.page == page) {
+			return cachedEntry.query;
+		}
 	}
 
 	std::string newQuery = generateHighscoreQueryForEntries(categoryName, page, entriesPerPage, vocation);
-	cacheQueryHighscore(cacheKey, newQuery);
+	cacheQueryHighscore(cacheKey, newQuery, page, entriesPerPage);
 
 	return newQuery;
 }
@@ -8034,13 +8029,15 @@ std::string Game::generateHighscoreOrGetCachedQueryForOurRank(const std::string 
 	cacheKeyStream << "OurRank_" << categoryName << "_" << static_cast<int>(entriesPerPage) << "_" << playerGUID << "_" << vocation;
 	std::string cacheKey = cacheKeyStream.str();
 
-	std::string cachedQuery = getCachedQueryHighscore(cacheKey);
-	if (!cachedQuery.empty()) {
-		return cachedQuery;
+	if (queryCache.find(cacheKey) != queryCache.end()) {
+		const QueryHighscoreCacheEntry &cachedEntry = queryCache[cacheKey];
+		if (cachedEntry.page == entriesPerPage) {
+			return cachedEntry.query;
+		}
 	}
 
 	std::string newQuery = generateHighscoreQueryForOurRank(categoryName, entriesPerPage, playerGUID, vocation);
-	cacheQueryHighscore(cacheKey, newQuery);
+	cacheQueryHighscore(cacheKey, newQuery, entriesPerPage, entriesPerPage);
 
 	return newQuery;
 }
@@ -8092,7 +8089,7 @@ void Game::playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type
 
 	uint32_t playerID = player->getID();
 	std::function<void(DBResult_ptr, bool)> callback = [this, playerID, category, vocation, entriesPerPage](DBResult_ptr result, bool) {
-		processHighscoreResults(result, playerID, category, vocation, entriesPerPage);
+		processHighscoreResults(std::move(result), playerID, category, vocation, entriesPerPage);
 	};
 
 	g_databaseTasks().store(query, callback);

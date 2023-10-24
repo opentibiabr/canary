@@ -572,7 +572,10 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 			return true;
 		}
 	}
-	return false;
+
+	return std::ranges::any_of(getTargetList(), [this](const std::shared_ptr<Creature> &creature) {
+		return selectTarget(creature);
+	});
 }
 
 void Monster::onFollowCreatureComplete(std::shared_ptr<Creature> creature) {
@@ -640,7 +643,7 @@ bool Monster::isTarget(std::shared_ptr<Creature> creature) {
 	return true;
 }
 
-bool Monster::selectTarget(std::shared_ptr<Creature> creature) {
+bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 	if (!isTarget(creature)) {
 		return false;
 	}

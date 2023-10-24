@@ -182,7 +182,7 @@ public:
 	}
 
 	bool searchTarget(TargetSearchType_t searchType = TARGETSEARCH_DEFAULT);
-	bool selectTarget(std::shared_ptr<Creature> creature);
+	bool selectTarget(const std::shared_ptr<Creature> &creature);
 
 	auto getTargetList() {
 		CreatureVector list;

@@ -2768,6 +2768,7 @@ Storage = {
 				GoshnarMegalomaniaAccess = 47220,
 				GoshnarMegalomaniaKilled = 47222,
 				QuestReward = 47223,
+				OutfitReward = 47224
 			},
 		},
 		U12_60 = { -- update 12.60 - Reserved Storages 47501 - 47600

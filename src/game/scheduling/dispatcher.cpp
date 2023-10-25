@@ -92,6 +92,7 @@ void Dispatcher::executeEvents(std::unique_lock<std::mutex> &asyncLock) {
 
 		if (groupId == static_cast<uint8_t>(TaskGroup::Serial)) {
 			executeSerialEvents(tasks);
+			mergeEvents(); // merge request, as there may be async event requests
 		} else {
 			executeParallelEvents(tasks, groupId, asyncLock);
 		}
@@ -99,8 +100,11 @@ void Dispatcher::executeEvents(std::unique_lock<std::mutex> &asyncLock) {
 }
 
 void Dispatcher::executeScheduledEvents() {
-	for (uint_fast64_t i = 0, max = scheduledTasks.size(); i < max && !scheduledTasks.empty(); ++i) {
-		const auto &task = scheduledTasks.top();
+	auto &threadScheduledTasks = getThreadTask()->scheduledTasks;
+
+	auto it = scheduledTasks.begin();
+	while (it != scheduledTasks.end()) {
+		const auto &task = *it;
 		if (task->getTime() > Task::TIME_NOW) {
 			break;
 		}
@@ -111,12 +115,16 @@ void Dispatcher::executeScheduledEvents() {
 
 		if (task->execute() && task->isCycle()) {
 			task->updateTime();
-			scheduledTasks.emplace(task);
+			threadScheduledTasks.emplace_back(task);
 		} else {
-			scheduledTasksRef.erase(task->getEventId());
+			scheduledTasksRef.erase(task->getId());
 		}
 
-		scheduledTasks.pop();
+		++it;
+	}
+
+	if (it != scheduledTasks.begin()) {
+		scheduledTasks.erase(scheduledTasks.begin(), it);
 	}
 
 	dispacherContext.reset();
@@ -126,18 +134,15 @@ void Dispatcher::executeScheduledEvents() {
 void Dispatcher::mergeEvents() {
 	for (const auto &thread : threads) {
 		std::scoped_lock lock(thread->mutex);
-		if (!thread->tasks.empty()) {
-			for (uint_fast8_t i = 0; i < static_cast<uint8_t>(TaskGroup::Last); ++i) {
+		for (uint_fast8_t i = 0; i < static_cast<uint8_t>(TaskGroup::Last); ++i) {
+			if (!thread->tasks[i].empty()) {
 				m_tasks[i].insert(m_tasks[i].end(), make_move_iterator(thread->tasks[i].begin()), make_move_iterator(thread->tasks[i].end()));
 				thread->tasks[i].clear();
 			}
 		}
 
 		if (!thread->scheduledTasks.empty()) {
-			for (auto &task : thread->scheduledTasks) {
-				scheduledTasks.emplace(task);
-				scheduledTasksRef.emplace(task->getEventId(), task);
-			}
+			scheduledTasks.insert(make_move_iterator(thread->scheduledTasks.begin()), make_move_iterator(thread->scheduledTasks.end()));
 			thread->scheduledTasks.clear();
 		}
 	}
@@ -153,23 +158,24 @@ std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() const {
 		return CHRONO_MILI_MAX;
 	}
 
-	const auto &task = scheduledTasks.top();
+	const auto &task = *scheduledTasks.begin();
 	const auto timeRemaining = task->getTime() - Task::TIME_NOW;
 	return std::max<std::chrono::nanoseconds>(timeRemaining, CHRONO_NANO_0);
 }
 
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
-	const auto &thread = threads[getThreadId()];
+	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(TaskGroup::Serial)].emplace_back(expiresAfterMs, std::move(f), context);
 	notify();
 }
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
-	const auto &thread = threads[getThreadId()];
+	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
+
 	auto eventId = scheduledTasksRef
-					   .emplace(task->generateId(), thread->scheduledTasks.emplace_back(task))
+					   .emplace(task->getId(), thread->scheduledTasks.emplace_back(task))
 					   .first->first;
 
 	notify();
@@ -177,14 +183,14 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 }
 
 void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
-	const auto &thread = threads[getThreadId()];
+	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);
 	notify();
 }
 
 void Dispatcher::stopEvent(uint64_t eventId) {
-	auto it = scheduledTasksRef.find(eventId);
+	const auto &it = scheduledTasksRef.find(eventId);
 	if (it != scheduledTasksRef.end()) {
 		it->second->cancel();
 		scheduledTasksRef.erase(it);

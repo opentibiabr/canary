@@ -30,7 +30,7 @@ void Dispatcher::init() {
 		while (!threadPool.getIoContext().stopped()) {
 			updateClock();
 
-			executeEvents(asyncLock);
+			executeEvents();
 			executeScheduledEvents();
 			mergeEvents();
 
@@ -56,12 +56,12 @@ void Dispatcher::executeSerialEvents(std::vector<Task> &tasks) {
 	dispacherContext.reset();
 }
 
-void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock) {
-	const size_t totalTaskSize = tasks.size();
-	std::atomic_uint_fast64_t executedTasks = 0;
+void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId) {
+	std::atomic_uint_fast64_t totalTaskSize = tasks.size();
+	std::atomic_bool isTasksCompleted = false;
 
 	for (const auto &task : tasks) {
-		threadPool.addLoad([this, &task, &executedTasks, groupId, totalTaskSize] {
+		threadPool.addLoad([this, groupId, &task, &isTasksCompleted, &totalTaskSize] {
 			dispacherContext.type = DispatcherType::AsyncEvent;
 			dispacherContext.group = static_cast<TaskGroup>(groupId);
 			dispacherContext.taskName = task.getContext();
@@ -70,20 +70,20 @@ void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t g
 
 			dispacherContext.reset();
 
-			executedTasks.fetch_add(1);
-			if (executedTasks.load() >= totalTaskSize) {
-				signalAsync.notify_one();
+			totalTaskSize.fetch_sub(1);
+			if (totalTaskSize.load() == 0) {
+				isTasksCompleted.store(true);
+				isTasksCompleted.notify_one();
 			}
 		});
 	}
 
-	if (signalAsync.wait_for(asyncLock, ASYNC_TIME_OUT) == std::cv_status::timeout) {
-		g_logger().warn("A timeout occurred when executing the async dispatch in the context({}). Executed Tasks: {}/{}.", groupId, executedTasks.load(), totalTaskSize);
-	}
+	isTasksCompleted.wait(false);
+
 	tasks.clear();
 }
 
-void Dispatcher::executeEvents(std::unique_lock<std::mutex> &asyncLock) {
+void Dispatcher::executeEvents() {
 	for (uint_fast8_t groupId = 0; groupId < static_cast<uint8_t>(TaskGroup::Last); ++groupId) {
 		auto &tasks = m_tasks[groupId];
 		if (tasks.empty()) {
@@ -94,7 +94,7 @@ void Dispatcher::executeEvents(std::unique_lock<std::mutex> &asyncLock) {
 			executeSerialEvents(tasks);
 			mergeEvents(); // merge request, as there may be async event requests
 		} else {
-			executeParallelEvents(tasks, groupId, asyncLock);
+			executeParallelEvents(tasks, groupId);
 		}
 	}
 }

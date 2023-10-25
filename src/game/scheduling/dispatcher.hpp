@@ -143,15 +143,15 @@ private:
 
 	void init();
 	void shutdown() {
-		signalAsync.notify_all();
+		signalSchedule.notify_all();
 	}
 
 	inline void mergeEvents();
-	inline void executeEvents(std::unique_lock<std::mutex> &asyncLock);
+	inline void executeEvents();
 	inline void executeScheduledEvents();
 
 	inline void executeSerialEvents(std::vector<Task> &tasks);
-	inline void executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock);
+	inline void executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId);
 	inline std::chrono::nanoseconds timeUntilNextScheduledTask() const;
 
 	inline void checkPendingTasks() {
@@ -174,7 +174,6 @@ private:
 	uint_fast64_t dispatcherCycle = 0;
 
 	ThreadPool &threadPool;
-	std::condition_variable signalAsync;
 	std::condition_variable signalSchedule;
 	std::atomic_bool hasPendingTasks = false;
 	std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.

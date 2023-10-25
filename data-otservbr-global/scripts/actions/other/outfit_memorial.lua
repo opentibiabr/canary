@@ -1,36 +1,33 @@
-local CACHE_UPDATE_INTERVAL = 1 * 60 -- 1 minute for update cache
+local CACHE_UPDATE_INTERVAL = 60 -- 1 minute for update cache
+
+local goldenOutfitCache = { [1] = {}, [2] = {}, [3] = {} }
+local royalOutfitCache = { [1] = {}, [2] = {}, [3] = {} }
 local lastUpdatedGolden = 0
 local lastUpdatedRoyal = 0
 
-local function updateOutfitCache(storageKey, lastUpdated)
+local function updateOutfitCache(storageKey, cache, lastUpdated)
 	if os.time() < lastUpdated + CACHE_UPDATE_INTERVAL then
-		return nil
+		return cache, lastUpdated
 	end
 
-	local cache = { [1] = {}, [2] = {}, [3] = {} }
+	local newCache = { [1] = {}, [2] = {}, [3] = {} }
 
-	local query = "SELECT `name`, `value` FROM `player_storage` INNER JOIN `players` as `p` ON `p`.`id` = `player_id` WHERE `key` = " .. storageKey .. " AND `value` >= 1;"
-	local resultId = db.storeQuery(query)
-
+	local resultId = db.storeQuery("SELECT `name`, `value` FROM `player_storage` INNER JOIN `players` as `p` ON `p`.`id` = `player_id` WHERE `key` = " .. storageKey .. " AND `value` >= 1;")
 	if resultId then
 		repeat
-			table.insert(cache[Result.getNumber(resultId, "value")], Result.getString(resultId, "name"))
+			table.insert(newCache[Result.getNumber(resultId, "value")], Result.getString(resultId, "name"))
 		until not Result.next(resultId)
+		Result.free(resultId)
 	end
-	Result.free(resultId)
 
-	lastUpdated = os.time()
-	return cache
+	return newCache, os.time()
 end
-
-local goldenOutfitCache
-local royalOutfitCache
 
 local outfitMemorial = Action()
 
 function outfitMemorial.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	goldenOutfitCache, lastUpdatedGolden = updateOutfitCache(Storage.OutfitQuest.GoldenOutfit, lastUpdatedGolden)
-	royalOutfitCache, lastUpdatedRoyal = updateOutfitCache(Storage.OutfitQuest.RoyalCostumeOutfit, lastUpdatedRoyal)
+	goldenOutfitCache, lastUpdatedGolden = updateOutfitCache(Storage.OutfitQuest.GoldenOutfit, goldenOutfitCache, lastUpdatedGolden)
+	royalOutfitCache, lastUpdatedRoyal = updateOutfitCache(Storage.OutfitQuest.RoyalCostumeOutfit, royalOutfitCache, lastUpdatedRoyal)
 	local response = NetworkMessage()
 	response:addByte(0xB0)
 

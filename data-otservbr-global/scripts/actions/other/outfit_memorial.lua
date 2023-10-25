@@ -31,6 +31,7 @@ function outfitMemorial.onUse(player, item, fromPosition, target, toPosition, is
 	local response = NetworkMessage()
 	response:addByte(0xB0)
 
+	-- Golden outfit bytes
 	response:addU32(500000000) -- Armor price
 	response:addU32(750000000) -- Armor + helmet price
 	response:addU32(1000000000) -- Armor + helmet + boots price
@@ -42,6 +43,7 @@ function outfitMemorial.onUse(player, item, fromPosition, target, toPosition, is
 		end
 	end
 
+	-- Royal outfit bytes
 	for i = 1, 3 do
 		response:addU16(30000) -- price in silver tokens
 		response:addU16(25000) -- price in golden tokens

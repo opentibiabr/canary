@@ -965,7 +965,7 @@ void Creature::executeAsyncPathTo(bool executeOnFollow, FindPathParams &fpp, std
 
 		stdext::arraylist<Direction> listDir(128);
 		self->getPathTo(targetPos, listDir, fpp);
-		g_dispatcher().addEvent([=, listDir = listDir.data()] {
+		g_dispatcher().addEvent([self, executeOnFollow, onComplete, listDir = listDir.data()] {
 			self->startAutoWalk(listDir);
 
 			if (executeOnFollow) {

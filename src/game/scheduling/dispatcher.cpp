@@ -61,7 +61,7 @@ void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t g
 	std::atomic_bool isTasksCompleted = false;
 
 	for (const auto &task : tasks) {
-		threadPool.addLoad([this, groupId, &task, &isTasksCompleted, &totalTaskSize] {
+		threadPool.addLoad([groupId, &task, &isTasksCompleted, &totalTaskSize] {
 			dispacherContext.type = DispatcherType::AsyncEvent;
 			dispacherContext.group = static_cast<TaskGroup>(groupId);
 			dispacherContext.taskName = task.getContext();

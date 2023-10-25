@@ -291,8 +291,12 @@ public:
 	virtual bool setFollowCreature(std::shared_ptr<Creature> creature);
 
 	// follow events
-	virtual void onFollowCreature(const std::shared_ptr<Creature> &) { }
-	virtual void onFollowCreatureComplete(const std::shared_ptr<Creature> &) { }
+	virtual void onFollowCreature(const std::shared_ptr<Creature> &) {
+		/* empty */
+	}
+	virtual void onFollowCreatureComplete(const std::shared_ptr<Creature> &) {
+		/* empty */
+	}
 
 	// combat functions
 	std::shared_ptr<Creature> getAttackedCreature() {

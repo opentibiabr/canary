@@ -502,7 +502,20 @@ bool House::executeTransfer(std::shared_ptr<HouseTransferItem> item, std::shared
 }
 
 void AccessList::parseList(const std::string &list) {
-	std::string validList = validateNameHouse(list);
+	std::regex regexValidChars("[^a-zA-Z' \n*!@#]+");
+	std::string validList = std::regex_replace(list, regexValidChars, "");
+
+	// Remove empty lines
+	std::istringstream iss(validList);
+	std::ostringstream oss;
+	std::string line;
+	while (std::getline(iss, line)) {
+		if (!line.empty()) {
+			oss << line << '\n';
+		}
+	}
+	validList = oss.str();
+
 	playerList.clear();
 	guildRankList.clear();
 	allowEveryone = false;

@@ -1,7 +1,7 @@
 local bossDeath = CreatureEvent("BossDeath")
 
 function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)
-	if not corpse then
+	if not corpse or corpse == 0 then
 		return true
 	end
 	-- Deny summons and players

@@ -216,13 +216,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 
 	-- Handle options for armor, shield, and crown
-	elseif (MsgContains(message, "armor")) and npcHandler:getTopic(playerId) == 13 then
+	elseif MsgContains(message, "armor") and npcHandler:getTopic(playerId) == 13 then
 		npcHandler:say("Would you like to donate 15,000 silver tokens and 12,500 gold tokens for a unique red armor?", npc, creature)
 		npcHandler:setTopic(playerId, 14)
-	elseif (MsgContains(message, "shield")) and npcHandler:getTopic(playerId) == 13 then
+	elseif MsgContains(message, "shield") and npcHandler:getTopic(playerId) == 13 then
 		npcHandler:say("Would you like to donate 7,500 silver tokens and 6,250 gold tokens for a unique shield?", npc, creature)
 		npcHandler:setTopic(playerId, 15)
-	elseif (MsgContains(message, "crown")) and npcHandler:getTopic(playerId) == 13 then
+	elseif MsgContains(message, "crown") and npcHandler:getTopic(playerId) == 13 then
 		npcHandler:say("Would you like to donate 7,500 silver tokens and 6,250 gold tokens for a unique crown?", npc, creature)
 		npcHandler:setTopic(playerId, 16)
 	end

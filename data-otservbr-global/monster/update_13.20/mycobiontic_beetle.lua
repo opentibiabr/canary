@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Mycobiontic Beetle")
 local monster = {}
 
 monster.description = "a Mycobiontic Beetle"
-monster.experience = 21175
+monster.experience = 20360
 monster.outfit = {
 	lookType = 1620,
 	lookHead = 0,
@@ -57,7 +57,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -75,19 +75,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540, maxCount = 1 },
-	{ name = "ultimate health potion", chance = 3018, maxCount = 1 },
-	{ name = "glacier mask", chance = 3018, maxCount = 1 },
-	{ name = "small sapphire", chance = 3700, maxCount = 1 },
-	{ name = "serpent sword", chance = 3042, maxCount = 1 },
-	{ name = "organic acid", chance = 1485, maxCount = 1 },
-	{ name = "rotten roots", chance = 2180, maxCount = 1 },
-	{ name = "scarab coin", chance = 2180, maxCount = 1 },
-	{ name = "buckle", chance = 1425, maxCount = 1 },
-	{ name = "rotten vermin ichor", chance = 3170, maxCount = 1 },
-	{ name = "small ruby", chance = 3170, maxCount = 1 },
-	{ name = "violet gem", chance = 3499, maxCount = 1 },
-	{ name = "blue gem", chance = 1486, maxCount = 1 },
+	{name = "crystal coin", chance = 70540},
+	{name = "platinum coin", chance = 81920, maxCount = 33},
+	{name = "green gem", chance = 64560},
+	{name = "epee", chance = 31920},
+	{name = "ultimate health potion", chance = 71920, maxCount = 5},
+	{name = "violet gem", chance = 44560},
+	{name = "giant sword", chance = 25920},
+	{name = "crystal mace", chance = 22920},
+	{name = "crown shield", chance = 18920},
+	{name = "jade hammer", chance = 15920},
+	{id = 43861, chance = 18000},
+	{id = 43863, chance = 8000},
+	{id = 43847, chance = 13500},
 }
 
 monster.attacks = {

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Oozing Corpus")
 local monster = {}
 
 monster.description = "a Oozing Corpus"
-monster.experience = 20600
+monster.experience = 19800
 monster.outfit = {
 	lookType = 1625,
 	lookHead = 0,
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,7 +74,19 @@ monster.voices = {
 }
 
 monster.loot = {
-
+	{name = "crystal coin", chance = 70540},
+	{name = "great spirit potion", chance = 32220, maxCount = 7},
+	{name = "steel boots", chance = 2000},
+	{name = "dragonbone staff", chance = 15500},
+	{name = "giant sword", chance = 13500},
+	{name = "mercenary sword", chance = 11500},
+	{name = "fur armor", chance = 9500},
+	{name = "terra mantle", chance = 3500},
+	{name = "wood cape", chance = 2500},
+	{name = "rubber cap", chance = 1500},
+	{name = "stone skin amulet", chance = 2000},
+	{id = 43846, chance = 13000},
+	{id = 43736, chance = 4000}
 }
 
 monster.attacks = {

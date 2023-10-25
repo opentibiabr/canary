@@ -2,13 +2,13 @@ local mType = Game.createMonsterType("Feral Werecrocodile")
 local monster = {}
 
 monster.description = "a Feral Werecrocodile"
-monster.experience = 5430
+monster.experience = 5080
 monster.outfit = {
 	lookType = 1647,
-	lookHead = 116,
-	lookBody = 95,
-	lookLegs = 19,
-	lookFeet = 21,
+	lookHead = 1,
+	lookBody = 1,
+	lookLegs = 78,
+	lookFeet = 0,
 	lookAddons = 0,
 	lookMount = 0
 }
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,17 +74,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 11773, maxCount = 100 },
-	{ name = "platinum coin", chance = 13295, maxCount = 20 },
-	{ name = "werecrocodile tongue", chance = 2772, maxCount = 1 },
-	{ name = "violet gem", chance = 2772, maxCount = 1 },
-	{ name = "war hammer", chance = 2843, maxCount = 1 },
-	{ name = "ham", chance = 13741, maxCount = 2 },
-	{ name = "golden sun coin", chance = 2253, maxCount = 1 },
-	{ name = "sun brooch", chance = 2253, maxCount = 1 },
-	{ name = "terra mantle", chance = 1628, maxCount = 1 },
-	{ name = "ornate crossbow", chance = 1628, maxCount = 1 },
-	{ name = "swamplair armor", chance = 2806, maxCount = 1 },
+	{name = "platinum coin", chance = 43500, maxCount = 15},
+	{name = "white mushroom", chance = 24000, maxCount = 3},
+	{name = "soul orb", chance = 43500, maxCount = 5},
+	{name = "pelvis bone", chance = 2630, maxCount = 10},
+	{name = "unholy bone", chance = 2630, maxCount = 5},
+	{name = "ruthless axe", chance = 150},
+	{id = 43729, chance = 33500},
+	{id = 43585, chance = 5500},
+	{id = 43916, chance = 1500},
 
 }
 

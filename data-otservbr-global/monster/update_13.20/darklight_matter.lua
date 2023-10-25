@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Darklight Matter")
 local monster = {}
 
 monster.description = "a Darklight Matter"
-monster.experience = 22250
+monster.experience = 20600
 monster.outfit = {
 	lookType = 1624,
 	lookHead = 0,
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,16 +74,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540, maxCount = 1 },
-	{ name = "ultimate health potion", chance = 3573, maxCount = 1 },
-	{ name = "unstable darklight matter", chance = 2044, maxCount = 1 },
-	{ name = "darklight core", chance = 2491, maxCount = 1 },
-	{ id = 3039, chance = 2548, maxCount = 1 }, -- red gem
-	{ name = "shadow sceptre", chance = 2959, maxCount = 1 },
-	{ name = "rubber cap", chance = 3461, maxCount = 1 },
-	{ name = "darklight matter", chance = 1495, maxCount = 1 },
-	{ name = "green gem", chance = 1495, maxCount = 1 },
-	{ id = 23544, chance = 2008, maxCount = 1 }, -- collar of red plasma
+	{name = "crystal coin", chance = 70540},
+	{name = "ultimate health potion", chance = 32220, maxCount = 7},
+	{name = "wand of starstorm", chance = 74560},
+	{name = "violet gem", chance = 74560},
+	{name = "terra helmet", chance = 1190},
+	{name = "green gem", chance = 64560},
+	{name = "blue gem", chance = 54560},
+	{name = "golden armor", chance = 3000},
+	{name = "wand of voodoo", chance = 21920},
+	{name = "wand of defiance", chance = 10000, maxCount = 3},
+	{id = 43850, chance = 15000},
+	{id = 43851, chance = 13500},
+	{id = 43734, chance = 8500}
 }
 
 monster.attacks = {

@@ -2,14 +2,14 @@ local mType = Game.createMonsterType("White Weretiger")
 local monster = {}
 
 monster.description = "a White Weretiger"
-monster.experience = 5200
+monster.experience = 4860
 monster.outfit = {
 	lookType = 1646,
 	lookHead = 0,
-	lookBody = 40,
-	lookLegs = 113,
-	lookFeet = 124,
-	lookAddons = 2,
+	lookBody = 121,
+	lookLegs = 0,
+	lookFeet = 0,
+	lookAddons = 3,
 	lookMount = 0
 }
 
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,16 +74,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 14175, maxCount = 100 },
-	{ name = "platinum coin", chance = 11256, maxCount = 20 },
-	{ name = "weretiger teeth", chance = 1750, maxCount = 1 },
-	{ name = "beastslayer axe", chance = 1750, maxCount = 1 },
-	{ name = "ham", chance = 7843, maxCount = 2 },
-	{ name = "white gem", chance = 1903, maxCount = 1 },
-	{ name = "silver moon coin", chance = 1660, maxCount = 1 },
-	{ name = "moon pin", chance = 2124, maxCount = 1 },
-	{ name = "crystal mace", chance = 2124, maxCount = 1 },
-	{ name = "blue robe", chance = 1640, maxCount = 1 },
+	{name = "gold coin", chance = 50000, maxCount = 100},
+	{name = "gold coin", chance = 50000, maxCount = 90},
+	{name = "small emerald", chance = 5882, maxCount = 5},
+	{name = "platinum coin", chance = 35333, maxCount = 2},
+	{id = 3051, chance = 606},
+	{name = "brown mushroom", chance = 5263, maxCount = 5},
+	{name = "magic sulphur", chance = 620},
+	{name = "assassin star", chance = 70, maxCount = 5},
+	{name = "dreaded cleaver", chance = 30},
+	{name = "mastermind potion", chance = 750},
+	{name = "strong health potion", chance = 6250},
+	{name = "strong mana potion", chance = 7692},
+	{name = "terra mantle", chance = 70},
+	{name = "springsprout rod", chance = 1010},
+	{id = 43735, chance = 1000},
+	{id = 43730, chance = 7000, maxCount = 2},
+	{id = 43916, chance = 1500}
 }
 
 monster.attacks = {

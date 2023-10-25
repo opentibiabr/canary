@@ -2,13 +2,13 @@ local mType = Game.createMonsterType("Werecrocodile")
 local monster = {}
 
 monster.description = "a Werecrocodile"
-monster.experience = 4140
+monster.experience = 3900
 monster.outfit = {
 	lookType = 1647,
-	lookHead = 95,
-	lookBody = 117,
-	lookLegs = 38,
-	lookFeet = 116,
+	lookHead = 84,
+	lookBody = 84,
+	lookLegs = 84,
+	lookFeet = 78,
 	lookAddons = 0,
 	lookMount = 0
 }
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,18 +74,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 5858, maxCount = 100 },
-	{ name = "platinum coin", chance = 12777, maxCount = 10 },
-	{ name = "serpent sword", chance = 3588, maxCount = 1 },
-	{ name = "meat", chance = 7051, maxCount = 2 },
-	{ name = "moonlight crystals", chance = 2194, maxCount = 1 },
-	{ name = "werecrocodile tongue", chance = 1788, maxCount = 1 },
-	{ name = "crocodile boots", chance = 1788, maxCount = 1 },
-	{ name = "glorious axe", chance = 2728, maxCount = 1 },
-	{ name = "green crystal shard", chance = 2013, maxCount = 1 },
-	{ name = "bonebreaker", chance = 2013, maxCount = 1 },
-	{ name = "golden sun coin", chance = 1646, maxCount = 1 },
-	{ name = "werecrocodile trophy", chance = 1390, maxCount = 1 },
+	{name = "gold coin", chance = 100000, maxCount = 197},
+	{name = "platinum coin", chance = 100000, maxCount = 5},
+	{name = "dark helmet", chance = 5980},
+	{name = "blue robe", chance = 730},
+	{name = "brown crystal splinter", chance = 3000},
+	{id = 43916, chance = 1000},
+	{id = 43729, chance = 2000}
 }
 
 monster.attacks = {

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Rotten Man-Maggot")
 local monster = {}
 
 monster.description = "a Rotten Man-Maggot"
-monster.experience = 22625
+monster.experience = 20380
 monster.outfit = {
 	lookType = 1655,
 	lookHead = 0,
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,7 +74,21 @@ monster.voices = {
 }
 
 monster.loot = {
-
+	{name = "crystal coin", chance = 70540},
+	{name = "platinum coin", chance = 90540, maxCount = 50},
+	{name = "ultimate health potion", chance = 32220, maxCount = 7},
+	{name = "gold ingot", chance = 65560},
+	{name = "violet gem", chance = 25560},
+	{name = "blue gem", chance = 45560},
+	{name = "wood cape", chance = 16500},
+	{name = "crystalline armor", chance = 4500},
+	{name = "ancient shield", chance = 2000},
+	{name = "tower shield", chance = 17000},
+	{name = "mastermind shield", chance = 2500},
+	{name = "skull helmet", chance = 1800},
+	{id = 43861, chance = 14000},
+	{id = 43852, chance = 13000},
+	{id = 43847, chance = 9000},
 }
 
 monster.attacks = {

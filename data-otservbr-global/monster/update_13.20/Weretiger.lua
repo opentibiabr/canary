@@ -2,22 +2,22 @@ local mType = Game.createMonsterType("Weretiger")
 local monster = {}
 
 monster.description = "a Weretiger"
-monster.experience = 3920
+monster.experience = 3700
 monster.outfit = {
 	lookType = 1646,
-	lookHead = 78,
-	lookBody = 57,
-	lookLegs = 113,
-	lookFeet = 94,
-	lookAddons = 1,
+	lookHead = 120,
+	lookBody = 108,
+	lookLegs = 121,
+	lookFeet = 120,
+	lookAddons = 0,
 	lookMount = 0
 }
 
 monster.health = 5000
 monster.maxHealth = 5000
 monster.race = "undead"
-monster.corpse = 43982
-monster.speed = 125
+monster.corpse = 43669
+monster.speed = 210
 monster.manaCost = 0
 
 monster.changeTarget = {
@@ -25,7 +25,7 @@ monster.changeTarget = {
 	chance = 10
 }
 
-monster.raceId = 2386
+monster.raceId = 2391
 monster.Bestiary = {
 	class = "Lycanthrope",
 	race = BESTY_RACE_LYCANTHROPE,
@@ -33,7 +33,7 @@ monster.Bestiary = {
 	FirstUnlock = 25,
 	SecondUnlock = 1000,
 	CharmsPoints = 50,
-	Stars = 4,
+	Stars = 5,
 	Occurrence = 0,
 	Locations = "Sanctuary."
 	}
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,17 +74,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 14049, maxCount = 100 },
-	{ name = "platinum coin", chance = 11553, maxCount = 10 },
-	{ name = "furry club", chance = 2851, maxCount = 1 },
-	{ name = "moonlight crystals", chance = 2271, maxCount = 1 },
-	{ name = "weretiger teeth", chance = 2271, maxCount = 1 },
-	{ name = "knight armor", chance = 1602, maxCount = 1 },
-	{ name = "angelic axe", chance = 3518, maxCount = 1 },
-	{ name = "violet crystal shard", chance = 3518, maxCount = 1 },
-	{ name = "blue gem", chance = 3177, maxCount = 1 },
-	{ name = "silver moon coin", chance = 3197, maxCount = 1 },
-	{ name = "weretiger trophy", chance = 1681, maxCount = 1 },
+	{name = "gold coin", chance = 100000, maxCount = 197},
+	{name = "platinum coin", chance = 100000, maxCount = 5},
+	{id = 43730, chance = 5000, maxCount = 3},
+	{id = 43915, chance = 1500},
+	{id = 43735, chance = 1000},
+	{name = "steel shield", chance = 30000},
+	{name = "dwarven shield", chance = 4300},
+	{name = "ham", chance = 23000, maxCount = 2}
 }
 
 monster.attacks = {

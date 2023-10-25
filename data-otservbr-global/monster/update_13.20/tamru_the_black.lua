@@ -2,13 +2,13 @@ local mType = Game.createMonsterType("Tamru the Black")
 local monster = {}
 
 monster.description = "a Tamru the Black"
-monster.experience = 16800
+monster.experience = 11200
 monster.outfit = {
 	lookType = 1646,
-	lookHead = 76,
-	lookBody = 0,
-	lookLegs = 114,
-	lookFeet = 113,
+	lookHead = 95,
+	lookBody = 132,
+	lookLegs = 76,
+	lookFeet = 76,
 	lookAddons = 3,
 	lookMount = 0
 }
@@ -48,7 +48,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = true,
@@ -66,19 +66,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 13386, maxCount = 17 },
-	{ name = "lightning pendant", chance = 2333, maxCount = 1 },
-	{ name = "blue robe", chance = 1404, maxCount = 1 },
-	{ name = "white gem", chance = 3235, maxCount = 1 },
-	{ name = "silver moon coin", chance = 2146, maxCount = 1 },
-	{ name = "moon compass", chance = 3571, maxCount = 1 },
-	{ name = "small diamond", chance = 13406, maxCount = 2 },
-	{ name = "yellow gem", chance = 2380, maxCount = 1 },
-	{ name = "moonlight crystals", chance = 10452, maxCount = 3 },
-	{ name = "moon pin", chance = 1378, maxCount = 1 },
-	{ name = "weretiger teeth", chance = 1770, maxCount = 1 },
-	{ name = "crystal mace", chance = 2585, maxCount = 1 },
-	{ name = "noble axe", chance = 2585, maxCount = 1 },
+	{name = "gold coin", chance = 100000, maxCount = 197},
+	{name = "platinum coin", chance = 100000, maxCount = 5},
+	{name = "amulet of loss", chance = 120},
+	{name = "gold ring", chance = 1870},
+	{name = "diamond sceptre", chance = 5760},
+	{name = "war hammer", chance = 2160},
+	{name = "metal spats", chance = 1440},
+	{name = "devil helmet", chance = 1360},
+	{name = "magma legs", chance = 1150},
+	{id = 6299, chance = 1410}, 
+	{id = 43915, chance = 2500},
+	{id = 43730, chance = 15000, maxCount = 3},
+	{name = "soul orb", chance = 5000, maxCount = 2},
+	{name = "crystal sword", chance = 5000},
+	{name = "serpent sword", chance = 5000},
+	{name = "rapier", chance = 5000},
+	{name = "great mana potion", chance = 31360, maxCount = 3},
+	{name = "ultimate health potion", chance = 14720, maxCount = 2},
+	{name = "gold ingot", chance = 5270},
 }
 
 monster.attacks = {

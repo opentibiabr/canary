@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Meandering Mushroom")
 local monster = {}
 
 monster.description = "a Meandering Mushroom"
-monster.experience = 21980
+monster.experience = 19800
 monster.outfit = {
 	lookType = 1621,
 	lookHead = 0,
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -73,18 +73,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540, maxCount = 1 },
-	{name = "yellow gem", chance = 1500, maxCount = 1 },
-	{ id = 3039, chance = 2548, maxCount = 1 }, -- red gem
-	{ name = "wand of decay", chance = 1348, maxCount = 1 },
-	{ name = "white mushroom", chance = 1744, maxCount = 1 },
-	{ name = "brown mushroom", chance = 2396, maxCount = 1 },
-	{ name = "dark mushroom", chance = 3135, maxCount = 1 },
-	{ name = "lichen gobbler", chance = 2144, maxCount = 1 },
-	{ name = "worm sponge", chance = 3133, maxCount = 1 },
-	{ name = "rotten roots", chance = 2133, maxCount = 1 },
-	{name = "terra amulet", chance = 2133, maxCount = 1 },
-	{name = "assassin dagger", chance = 1416, maxCount = 1 },
+	{name = "crystal coin", chance = 70540},
+	{name = "platinum coin", chance = 90540, maxCount = 50},
+	{name = "ultimate health potion", chance = 32220, maxCount = 7},
+	{name = "small diamond", chance = 65560, maxCount = 7},
+	{name = "gold ingot", chance = 25560},
+	{name = "blue crystal splinter", chance = 25560},
+	{name = "cyan crystal fragment", chance = 25560},
+	{name = "red crystal fragment", chance = 25560},
+	{name = "giant sword", chance = 13500},
+	{name = "war axe", chance = 9500},
+	{name = "mercenary sword", chance = 11500},
+	{name = "green crystal fragment", chance = 9500},
+	{name = "onyx chip", chance = 7500},
+	{name = "crystal sword", chance = 4710},
+	{id = 43848, chance = 13000},
+	{id = 43849, chance = 16500},
+	{id = 43858, chance = 9000}
 }
 
 monster.attacks = {

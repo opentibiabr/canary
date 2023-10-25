@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Ichgahal")
 local monster = {}
 
 monster.description = "Ichgahal"
-monster.experience = 3250000
+monster.experience = 180000
 monster.outfit = {
 	lookType = 1665,
 	lookHead = 0,
@@ -13,41 +13,51 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.bosstiary = {
-	bossRaceId = 2364,
-	bossRace = RARITY_ARCHFOE
-}
-
-monster.health = 480000
-monster.maxHealth = 480000
-monster.runHealth = 0
-monster.race = "blood"
+monster.health = 350000
+monster.maxHealth = 350000
+monster.race = "undead"
 monster.corpse = 44018
-monster.speed = 222
-monster.summonCost = 0
+monster.speed = 250
+monster.manaCost = 0
 
 monster.changeTarget = {
-	interval = 2000,
-	chance = 0
+	interval = 10000,
+	chance = 20
+}
+
+monster.bosstiary = {
+	bossRaceId = 2364,
+	bossRace = RARITY_NEMESIS
+}
+
+monster.strategiesTarget = {
+	nearest = 70,
+	health = 10,
+	damage = 10,
+	random = 10,
 }
 
 monster.flags = {
+	summonable = false,
 	attackable = true,
 	hostile = true,
-	summonable = false,
 	convinceable = false,
-	illusionable = false,
-	boss = true,
-	ignoreSpawnBlock = false,
 	pushable = false,
+	rewardBoss = true,
+	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
-	staticAttackChance = 90,
+	staticAttackChance = 98,
 	targetDistance = 1,
+	runHealth = 0,
 	healthHidden = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	isBlockable = false,
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true
+}
+
+monster.events = {
 }
 
 monster.light = {
@@ -55,62 +65,107 @@ monster.light = {
 	color = 0
 }
 
+monster.summon = {
+}
+
 monster.voices = {
-	interval = 5000,
-	chance = 10,
-	{text = "Rott!", yell = false},
-	{text = "Putrefy!", yell = false},
-	{text = "Decay!", yell = false}
+}
+
+monster.loot = {
+	{id = 3043, chance = 10000, maxCount = 6}, 
+	{id = 16124, chance = 10000, maxCount = 15},
+	{id = 7368, chance = 10000, maxCount = 100}, 
+	{id = 6499, chance = 1000, maxCount = 2}, 
+	{id = 7643, chance = 10000, maxCount = 10}, 
+	{id = 31965, chance = 15000, maxCount = 1},
+	{id = 31966, chance = 10000, maxCount = 1},
+	{id = 238, chance = 10000, maxCount = 10}, 
+	{id = 7642, chance = 10000, maxCount = 10},
+	{id = 43855, chance = 3500},
+	{id = 43854, chance = 18500, maxCount = 2},
+	{id = 31990, chance = 15000, maxCount = 4},
+	{id = 43853, chance = 28500, maxCount = 3},
+	{id = 43964, chance = 500},
+	{id = 43851, chance = 22000, maxCount = 4},
+	{id = 32002, chance = 25000, maxCount = 2},
+	{id = 43855, chance = 3000},
+	{id = 43502, chance = 10000, maxCount = 2},
+	{id = 43853, chance = 4500, maxCount = 2},
+	{id = 43927, chance = 19500, maxCount = 2},
+	{id = 16119, chance = 8000, maxCount = 3},
+	{id = 16120, chance = 8000, maxCount = 3},
+	{id = 16121, chance = 8000, maxCount = 3}, 
+	{id = 3033, chance = 8000, maxCount = 10},
+	{id = 3028, chance = 8000, maxCount = 10}, 
+	{id = 9057, chance = 8000, maxCount = 10},
+	{id = 7427, chance = 13000}, 
+	{id = 23267, chance = 10000, maxCount = 5},
+	{id = 32005, chance = 10000, maxCount = 3},
+	{id = 32014, chance = 3000},
+	{id = 23234, chance = 3000, maxCount = 2},
+	{id = 23236, chance = 3000, maxCount = 3},
+	{id = 23238, chance = 3000, maxCount = 3},
+	{id = 7451, chance = 11000}, 
+	{id = 8073, chance = 9000}, 
+	{id = 23477, chance = 7600}, 
+	{id = 6553, chance = 5500}, 
+	{name = "elven mail", chance = 3500},
+	{name = "carapace shield", chance = 6500},
+	{name = "thaian sword", chance = 17000},
+	{name = "zaoan sword", chance = 6500},
+
+}
+
+monster.attacks = {
+	{name ="melee", interval = 3000, chance = 100, minDamage = -1500, maxDamage = -2300},
+	{name ="combat", interval = 1000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = -700, maxDamage = -1000, length = 12, spread = 3, effect = 249, target = false},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_MANADRAIN, minDamage = -2600, maxDamage = -2300, length = 12, spread = 3, effect = 193, target = false},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -900, maxDamage = -1500, length = 6, spread = 2, effect = CONST_ME_FIREAREA, target = false},
+	{name ="speed", interval = 2000, chance = 35, speedChange = -600, radius = 8, effect = CONST_ME_MAGIC_RED, target = false, duration = 15000}
+}
+
+monster.defenses = {
+	defense = 105,
+	armor = 105,
+	{name ="combat", interval = 3000, chance = 10, type = COMBAT_HEALING, minDamage = 800, maxDamage = 1200, effect = 236, target = false},
+}
+
+monster.elements = {
+	{type = COMBAT_PHYSICALDAMAGE, percent = 15},
+	{type = COMBAT_ENERGYDAMAGE, percent = 15},
+	{type = COMBAT_EARTHDAMAGE, percent = 15},
+	{type = COMBAT_FIREDAMAGE, percent = 15},
+	{type = COMBAT_LIFEDRAIN, percent = 0},
+	{type = COMBAT_MANADRAIN, percent = 0},
+	{type = COMBAT_DROWNDAMAGE, percent = 0},
+	{type = COMBAT_ICEDAMAGE, percent = 15},
+	{type = COMBAT_HOLYDAMAGE , percent = 15},
+	{type = COMBAT_DEATHDAMAGE , percent = 15}
 }
 
 monster.immunities = {
 	{type = "paralyze", condition = true},
 	{type = "outfit", condition = false},
 	{type = "invisible", condition = true},
-	{type = "drunk", condition = true},
 	{type = "bleed", condition = false}
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+mType.onThink = function(monster, interval)
+end
 
-monster.attacks = {
-}
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
 
-monster.defenses = {
-	defense = 5,
-	armor = 10
-}
+mType.onDisappear = function(monster, creature)
+end
 
-monster.loot = {
-	{ name = "crystal coin", chance = 9573, maxCount = 115 },
-	{ name = "ultimate spirit potion", chance = 5094, maxCount = 153 },
-	{ name = "mastermind potion", chance = 6589, maxCount = 45 },
-	{ name = "yellow gem", chance = 14663, maxCount = 5 },
-	{ name = "amber with a bug", chance = 10093, maxCount = 2 },
-	{ name = "ultimate mana potion", chance = 9622, maxCount = 179 },
-	{ name = "violet gem", chance = 6119, maxCount = 4 },
-	{ name = "raw watermelon tourmaline", chance = 9046, maxCount = 2 },
-	{ id = 3039, chance = 11248, maxCount = 1 }, -- red gem
-	{ name = "supreme health potion", chance = 13945, maxCount = 37 },
-	{ name = "berserk potion", chance = 5564, maxCount = 45 },
-	{ name = "amber with a dragonfly", chance = 7543, maxCount = 1 },
-	{ name = "gold ingot", chance = 10693, maxCount = 1 },
-	{ name = "blue gem", chance = 13070, maxCount = 1 },
-	{ name = "bullseye potion", chance = 9155, maxCount = 36 },
-	{ name = "putrefactive figurine", chance = 13208, maxCount = 1 },
-	{ name = "ichgahal's fungal infestation", chance = 7123, maxCount = 1 },
-	{ name = "white gem", chance = 12796, maxCount = 3 },
-}
+mType.onMove = function(monster, creature, fromPosition, toPosition)
+end
+
+mType.onSay = function(monster, creature, type, message)
+end
 
 mType:register(monster)

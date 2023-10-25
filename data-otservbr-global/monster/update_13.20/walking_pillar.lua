@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Walking Pillar")
 local monster = {}
 
 monster.description = "a Walking Pillar"
-monster.experience = 24300
+monster.experience = 22500
 monster.outfit = {
 	lookType = 1656,
 	lookHead = 0,
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,7 +74,24 @@ monster.voices = {
 }
 
 monster.loot = {
-
+	{name = "crystal coin", chance = 27000, maxCount = 2},
+    {name = "red crystal fragment", chance = 4000},
+    {name = "gemmed figurine", chance = 4000},
+    {name = "green crystal shard", chance = 3000},
+	{name = "cyan crystal fragment", chance = 3000},
+	{name = "small emerald", chance = 8000, maxCount = 2},
+	{name = "small amethyst", chance = 8000, maxCount = 2},
+    {name = "lightning boots", chance = 1880},
+	{name = "spellbook of mind control", chance = 3000},
+    {name = "stone skin amulet", chance = 1880},
+    {name = "cyan crystal fragment", chance = 4100},
+    {name = "warrior's axe", chance = 3000},
+    {name = "dream blossom staff", chance = 4100},
+    {name = "terra boots", chance = 3000},
+	{id = 43847, chance = 11000},
+	{id = 43888, chance = 12500},
+	{id = 43927, chance = 9500},
+	{id = 43857, chance = 9500},
 }
 
 

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Sopping Corpus")
 local monster = {}
 
 monster.description = "a Sopping Corpus"
-monster.experience = 23425
+monster.experience = 21600
 monster.outfit = {
 	lookType = 1659,
 	lookHead = 0,
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,19 +74,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 28000, maxCount = 1 },
-	{ name = "ultimate mana potion", chance = 2511, maxCount = 1 },
-	{ id = 860, chance = 2548, maxCount = 1 }, -- crimson sword
-	{ name = "ultimate health potion", chance = 2104, maxCount = 1 },
-	{ name = "organic acid", chance = 3628, maxCount = 1 },
-	{ name = "rotten roots", chance = 2061, maxCount = 1 },
-	{ name = "emerald bangle", chance = 2061, maxCount = 1 },
-	{ name = "underworld rod", chance = 2061, maxCount = 1 },
-	{ name = "violet gem", chance = 2288, maxCount = 1 },
-	{ name = "blue gem", chance = 1371, maxCount = 1 },
-	{ name = "relic sword", chance = 1833, maxCount = 1 },
-	{ name = "skullcracker armor", chance = 3470, maxCount = 1 },
-	{ id = 23531, chance = 3611, maxCount = 1 }, -- ring of green plasma
+	{name = "crystal coin", chance = 28000},
+	{name = "war axe", chance = 3090},
+	{name = "emerald bangle", chance = 780},
+	{name = "furry club", chance = 7000},
+	{name = "ultimate health potion", chance = 46000, maxCount = 6},
+	{name = "war hammer", chance = 4600},
+	{name = "silver brooch", chance = 1100},
+	{name = "crystal crossbow", chance = 1500},
+	{name = "rainbow quartz", chance = 4500},
+	{name = "amulet of loss", chance = 2000},
+	{id = 43732, chance = 3000},
+	{id = 43858, chance = 11500},
+	{name = "scarab ocarina", chance = 4000},
 }
 
 monster.attacks = {

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Oozing Carcass")
 local monster = {}
 
 monster.description = "a Oozing Carcass"
-monster.experience = 20980
+monster.experience = 18900
 monster.outfit = {
 	lookType = 1626,
 	lookHead = 0,
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 00,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,7 +74,20 @@ monster.voices = {
 }
 
 monster.loot = {
-
+	{name = "crystal coin", chance = 70540},
+	{name = "platinum coin", chance = 90540, maxCount = 32},
+	{name = "ultimate health potion", chance = 32220, maxCount = 7},
+	{name = "violet gem", chance = 74560},
+	{name = "green gem", chance = 64560},
+	{name = "blue gem", chance = 54560},
+	{name = "northwind rod", chance = 11920},
+	{name = "scarab ocarina", chance = 6000},
+	{name = "jade hat", chance = 4000},
+	{name = "mushroom backpack", chance = 3000},
+	{name = "solar axe", chance = 800},
+	{id = 43846, chance = 13000},
+	{id = 43927, chance = 9500},
+	{id = 43737, chance = 4000}
 }
 
 monster.attacks = {

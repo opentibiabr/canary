@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,7 +74,19 @@ monster.voices = {
 }
 
 monster.loot = {
-
+	{name = "crystal coin", chance = 70540},
+	{name = "platinum coin", chance = 82220, maxCount = 32},
+	{name = "great spirit potion", chance = 32220, maxCount = 7},
+	{name = "blue gem", chance = 54560},
+	{name = "gold ingot", chance = 54560},
+	{name = "violet gem", chance = 74560},
+	{name = "wood cape", chance = 21920},
+	{name = "fire sword", chance = 32000},
+	{name = "crown helmet", chance = 21920},
+	{name = "fur armor", chance = 18920},
+	{name = "crown shield", chance = 14500},
+	{id = 43850, chance = 15000},
+	{id = 43851, chance = 13500},
 }
 
 monster.attacks = {

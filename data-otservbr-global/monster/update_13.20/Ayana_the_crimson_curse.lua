@@ -5,18 +5,18 @@ monster.description = "Ayana the crimson curse"
 monster.experience = 12400
 monster.outfit = {
 	lookType = 1647,
-	lookHead = 57,
+	lookHead = 132,
 	lookBody = 132,
-	lookLegs = 2,
-	lookFeet = 95,
-	lookAddons = 2,
+	lookLegs = 57,
+	lookFeet = 76,
+	lookAddons = 0,
 	lookMount = 0
 }
 
 monster.health = 17000
 monster.maxHealth = 17000
 monster.race = "undead"
-monster.corpse = 44039
+monster.corpse = 43765
 monster.speed = 180
 monster.manaCost = 0
 
@@ -47,7 +47,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -65,18 +65,35 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 5681, maxCount = 17 },
-	{ name = "small ruby", chance = 8283, maxCount = 4 },
-	{ name = "magma amulet", chance = 2333, maxCount = 1 },
-	{ id = 3039, chance = 1695, maxCount = 1 }, -- red gem
-	{ name = "moonlight crystals", chance = 12444, maxCount = 2 },
-	{ name = "werecrocodile tongue", chance = 3098, maxCount = 1 },
-	{ name = "sun brooch", chance = 3102, maxCount = 1 },
-	{ name = "demonrage sword", chance = 2091, maxCount = 1 },
-	{ name = "golden sun coin", chance = 3157, maxCount = 1 },
-	{ name = "closed pocket sundial", chance = 1575, maxCount = 1 },
-	{ name = "ornate crossbow", chance = 1514, maxCount = 1 },
-	{ name = "violet gem", chance = 3586, maxCount = 1 },
+	{name = "gold coin", chance = 100000, maxCount = 197},
+	{name = "platinum coin", chance = 100000, maxCount = 5},
+	{name = "amulet of loss", chance = 120},
+	{name = "gold ring", chance = 1870},
+	{name = "hailstorm rod", chance = 10000},
+	{name = "garlic necklace", chance = 2050},
+	{name = "blank rune", chance = 26250, maxCount = 2},
+	{name = "golden sickle", chance = 350},
+	{name = "skull staff", chance = 1520},
+	{name = "scythe", chance = 3000},
+	{name = "bunch of wheat", chance = 50000},
+	{name = "soul orb", chance = 23720},
+	{id = 6299, chance = 1410}, 
+	{id = 43916, chance = 4000},
+	{id = 43729, chance = 22000, maxCount = 3},
+	{id = 43738, chance = 9000},
+	{id = 43849, chance = 10000},
+	{id = 43857, chance = 7000},
+	{name = "demonic essence", chance = 28000},
+	{name = "assassin star", chance = 5900, maxCount = 10},
+	{name = "great mana potion", chance = 31360, maxCount = 3},
+	{id = 281, chance = 4450}, 
+	{id = 282, chance = 4450}, 
+	{name = "seeds", chance = 4300},
+	{name = "terra mantle", chance = 1050},
+	{name = "terra legs", chance = 2500},
+	{name = "ultimate health potion", chance = 14720, maxCount = 2},
+	{name = "gold ingot", chance = 5270},
+	{name = "bundle of cursed straw", chance = 15000}
 }
 
 monster.attacks = {

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Bloated Man-Maggot")
 local monster = {}
 
 monster.description = "a Bloated Man-Maggot"
-monster.experience = 21570
+monster.experience = 20740
 monster.outfit = {
 	lookType = 1654,
 	lookHead = 0,
@@ -17,7 +17,7 @@ monster.health = 31700
 monster.maxHealth = 31700
 monster.race = "undead"
 monster.corpse = 43816
-monster.speed = 195
+monster.speed = 150
 monster.manaCost = 0
 
 monster.changeTarget = {
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,15 +74,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 2748, maxCount = 1 },
-	{ name = "organic acid", chance = 2748, maxCount = 1 },
-	{ name = "terra rod", chance = 2762, maxCount = 1 },
-	{ name = "small topaz", chance = 2765, maxCount = 10 },
-	{ name = "rotten roots", chance = 2089, maxCount = 10 },
-	{ name = "bloated maggot", chance = 2089, maxCount = 10 },
-	{ name = "butcher's axe", chance = 289, maxCount = 8 },
-	{ name = "blue gem", chance = 2320, maxCount = 5 },
-	{ name = "violet gem", chance = 2320, maxCount = 5 },
+	{name = "crystal coin", chance = 70540},
+	{name = "platinum coin", chance = 90540, maxCount = 32},
+	{name = "ultimate health potion", chance = 72220, maxCount = 7},
+	{name = "gold ingot", chance = 34920},
+	{name = "glacier kilt", chance = 12920},
+	{name = "northwind rod", chance = 11920},
+	{name = "wand of voodoo", chance = 14000},
+	{id = 43899, chance = 18000},
+	{id = 43856, chance = 14500},
+	{id = 43862, chance = 12500},
+	{name = "glacial rod", chance = 13450},
+	{name = "green crystal fragment", chance = 22920},
+	{name = "onyx chip", chance = 20000},
+	{name = "rainbow quartz", chance = 13660, maxCount = 2},
+	{name = "skullcracker armor", chance = 1680},
 }
 
 monster.attacks = {

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Darklight Source")
 local monster = {}
 
 monster.description = "a Darklight Source"
-monster.experience = 22465
+monster.experience = 20800
 monster.outfit = {
 	lookType = 1660,
 	lookHead = 0,
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,14 +74,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540, maxCount = 1 },
-	{name = "small sapphire", chance = 3628, maxCount = 1 },
-	{ name = "yellow darklight matter", chance = 1303, maxCount = 1 },
-	{ name = "dark obsidian splinter", chance = 3310, maxCount = 1 },
-	{ name = "darklight core", chance = 3624, maxCount = 1 },
-	{ name = "blue gem", chance = 3624, maxCount = 1 },
-	{ name = "crystalline armor", chance = 1583, maxCount = 1 },
-	{ name = "crystalline sword", chance = 3324, maxCount = 1 },
+	{name = "crystal coin", chance = 70540},
+	{name = "plate armor", chance = 75500},
+	{name = "ultimate health potion", chance = 52220, maxCount = 7},
+	{name = "medusa shield", chance = 55500},
+	{name = "knight legs", chance = 25500},
+	{name = "gold ring", chance = 13500},
+	{name = "jade hammer", chance = 11500},
+	{name = "twiceslicer", chance = 17500},
+	{name = "stone skin amulet", chance = 15500},
+	{name = "nightmare blade", chance = 9500},
+	{name = "demonrage sword", chance = 7500},
+	{name = "dreaded cleaver", chance = 2500},
+	{name = "butcher's axe", chance = 1500},
+	{id = 43894, chance = 19500},
+	{id = 43850, chance = 15000},
+	{id = 43851, chance = 13500},
 }
 
 monster.attacks = {

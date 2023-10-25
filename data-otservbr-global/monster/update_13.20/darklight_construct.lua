@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Darklight Construct")
 local monster = {}
 
 monster.description = "a Darklight Construct"
-monster.experience = 22050
+monster.experience = 21200
 monster.outfit = {
 	lookType = 1622,
 	lookHead = 0,
@@ -55,7 +55,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -73,16 +73,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540, maxCount = 1},
-	{name = "magma amulet", chance = 1645, maxCount = 1 },
-	{ name = "small ruby", chance = 3035, maxCount = 1 },
-	{ name = "small emerald", chance = 1418, maxCount = 1 },
-	{ id = 3039, chance = 2548, maxCount = 1 }, -- red gem
-	{ name = "darklight obsidian axe", chance = 2212, maxCount = 1 },
-	{ name = "dark obsidian splinter", chance = 2540, maxCount = 1 },
-	{ name = "darklight core", chance = 2540, maxCount = 1 },
-	{ name = "green gem", chance = 1623, maxCount = 1 },
-	{ name = "zaoan shoes", chance = 1728, maxCount = 1 },
+	{name = "crystal coin", chance = 70540},
+	{name = "ultimate health potion", chance = 32220, maxCount = 9},
+	{name = "gold ingot", chance = 65560},
+	{name = "terra legs", chance = 25560},
+	{name = "violet gem", chance = 60000},
+	{name = "green gem", chance = 70000},
+	{id = 43850, chance = 15000},
+	{id = 43851, chance = 13500},
+	{name = "blue gem", chance = 55000},
+	{name = "hammer of wrath", chance = 13500},
+	{name = "ruthless axe", chance = 17500},
+	{name = "nightmare blade", chance = 9500},
+	{name = "twiceslicer", chance = 7500},
+	{name = "crystal crossbow", chance = 6500},
+	{name = "crystalline sword", chance = 7500},
 }
 
 monster.attacks = {

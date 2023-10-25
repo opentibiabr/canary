@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Wandering Pillar")
 local monster = {}
 
 monster.description = "a Wandering Pillar"
-monster.experience = 23200
+monster.experience = 22300
 monster.outfit = {
 	lookType = 1657,
 	lookHead = 0,
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,7 +74,22 @@ monster.voices = {
 }
 
 monster.loot = {
-
+	{name = "crystal coin", chance = 100000, maxCount = 1},
+	{name = "platinum coin", chance = 100000, maxCount = 5},
+	{id = 3280, chance = 7000}, 
+	{id = 3281, chance = 1000},
+	{id = 9058, chance = 1500}, 
+	{id = 238, chance = 30000, maxCount = 3}, 
+	{id = 7642, chance = 20000},
+	{id = 3038, chance = 1000}, 
+	{id = 3582, chance = 30000, maxCount = 14},
+	{id = 5925, chance = 10000}, 
+	{id = 3318, chance = 7500},
+	{name = "demonic essence", chance = 28000},
+	{name = "assassin star", chance = 5900, maxCount = 10},
+	{name = "great mana potion", chance = 31360, maxCount = 3},
+	{name = "ultimate health potion", chance = 14720, maxCount = 2},
+	{name = "gold ingot", chance = 5270},
 }
 
 monster.attacks = {

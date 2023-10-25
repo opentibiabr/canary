@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Darklight Striker")
 local monster = {}
 
 monster.description = "a Darklight Striker"
-monster.experience = 22200
+monster.experience = 20550
 monster.outfit = {
 	lookType = 1661,
 	lookHead = 0,
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,15 +74,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540, maxCount = 1 },
-	{ name = "small topaz", chance = 2988, maxCount = 1 },
-	{ name = "unstable darklight matter", chance = 2603, maxCount = 1 },
-	{ name = "darklight core", chance = 1501, maxCount = 1 },
-	{ name = "ice rapier", chance = 1501, maxCount = 1 },
-	{ name = "crystal mace", chance = 2793, maxCount = 1 },
-	{ name = "dark obsidian splinter", chance = 2793, maxCount = 1 },
-	{ name = "blue gem", chance = 1372, maxCount = 1 },
-	{ name = "zaoan helmet", chance = 2549, maxCount = 1 },
+	{name = "crystal coin", chance = 70540},
+	{name = "platinum coin", chance = 81920, maxCount = 33},
+	{name = "great spirit potion", chance = 51920, maxCount = 8},
+	{name = "violet gem", chance = 74560},
+	{name = "spellbook of warding", chance = 41920},
+	{name = "umbral slayer", chance = 1500},
+	{name = "springsprout rod", chance = 28920},
+	{name = "umbral bow", chance = 1300},
+	{name = "gold ingot", chance = 54560},
+	{name = "blue robe", chance = 44560},
+	{id = 43850, chance = 15000},
+	{id = 43851, chance = 13500},
 }
 
 monster.attacks = {

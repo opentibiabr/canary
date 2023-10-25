@@ -2,14 +2,14 @@ local mType = Game.createMonsterType("Werepanther")
 local monster = {}
 
 monster.description = "a Werepanther"
-monster.experience = 3550
+monster.experience = 3380
 monster.outfit = {
 	lookType = 1648,
-	lookHead = 94,
-	lookBody = 95,
-	lookLegs = 86,
-	lookFeet = 81,
-	lookAddons = 1,
+	lookHead = 1,
+	lookBody = 1,
+	lookLegs = 1,
+	lookFeet = 45,
+	lookAddons = 3,
 	lookMount = 0
 }
 
@@ -56,7 +56,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 800,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -74,19 +74,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 14893, maxCount = 100 },
-	{ name = "platinum coin", chance = 12116, maxCount = 10 },
-	{ name = "moonlight crystals", chance = 2041, maxCount = 1 },
-	{ name = "werepanther claw", chance = 3742, maxCount = 1 },
-	{ name = "magma monocle", chance = 3742, maxCount = 1 },
-	{ name = "small ruby", chance = 2771, maxCount = 1 },
-	{ id = 3039, chance = 2548, maxCount = 1 }, -- red gem
-	{ name = "meat", chance = 2903, maxCount = 1 },
-	{ name = "magma amulet", chance = 1671, maxCount = 1 },
-	{ name = "ripper lance", chance = 2318, maxCount = 1 },
-	{ name = "fur armor", chance = 2734, maxCount = 1 },
-	{ name = "gemmed figurine", chance = 2022, maxCount = 1 },
-	{ name = "werepanther trophy", chance = 2022, maxCount = 1 },
+	{name = "gold coin", chance = 100000, maxCount = 197},
+	{name = "platinum coin", chance = 100000, maxCount = 5},
+	{name = "plate armor", chance = 13000},
+	{name = "halberd", chance = 21000},
+	{id = 43917, chance = 1500},
+	{id = 43731, chance = 5000, maxCount = 2}
 }
 
 monster.attacks = {

@@ -2,6 +2,9 @@ function PrettyString(tbl, indent)
 	if not indent then
 		indent = 0
 	end
+	if type(tbl) ~= "table" then
+		return tostring(tbl)
+	end
 	local toprint = string.rep(" ", indent) .. "{\n"
 	indent = indent + 2
 	for k, v in pairs(tbl) do
@@ -1138,4 +1141,15 @@ end
 
 function toKey(str)
 	return str:lower():gsub(" ", "-"):gsub("%s+", "")
+end
+
+function toboolean(value)
+	if type(value) == "boolean" then
+		return value
+	end
+	if value == "true" then
+		return true
+	elseif value == "false" then
+		return false
+	end
 end

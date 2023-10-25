@@ -95,7 +95,7 @@ function heartDestructionQuake.onUse(player, item, fromPosition, itemEx, toPosit
 						players = storePlayers[i]
 						config.playerPositions[i]:sendMagicEffect(CONST_ME_POFF)
 						players:teleportTo(config.newPos)
-						players:setStorageValue(14325, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
+						players:setBossCooldown("Realityquake", os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
 					end
 					Position(config.newPos):sendMagicEffect(11)
 
@@ -109,7 +109,6 @@ function heartDestructionQuake.onUse(player, item, fromPosition, itemEx, toPosit
 
 					foreshockHealth = 105000
 					aftershockHealth = 105000
-					realityQuakeStage = 0
 					foreshockStage = 0
 					aftershockStage = 0
 

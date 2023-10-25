@@ -1,7 +1,7 @@
 local config = {
 	boss = {
-		name = "Dragonking Zyrtarch",
-		position = Position(33357, 31182, 10),
+		name = "soul of dragonking zyrtarch",
+		position = Position(33359, 31182, 12),
 	},
 	playerPositions = {
 		{ pos = Position(33391, 31178, 10), teleport = Position(33359, 31186, 10) },
@@ -15,14 +15,13 @@ local config = {
 		{ name = "soulcatcher", pos = Position(33363, 31187, 10) },
 		{ name = "soulcatcher", pos = Position(33353, 31176, 10) },
 		{ name = "soulcatcher", pos = Position(33363, 31176, 10) },
-		{ name = "soul of dragonking zyrtarch", pos = Position(33359, 31182, 12) },
+		{ name = "dragonking zyrtarch", pos = Position(33357, 31182, 10) },
 	},
 	specPos = {
 		from = Position(33348, 31172, 10),
 		to = Position(33368, 31190, 12),
 	},
 	exit = Position(33407, 31172, 10),
-	storage = Storage.ForgottenKnowledge.DragonkingTimer,
 }
 
 local lever = BossLever(config)

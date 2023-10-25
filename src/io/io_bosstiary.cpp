@@ -69,6 +69,10 @@ void IOBosstiary::loadBoostedBoss() {
 	while (true) {
 		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossInfo.size()));
 		auto it = std::next(bossInfo.begin(), randomIndex);
+		if (it == bossInfo.end()) {
+			break;
+		}
+
 		const auto &[randomBossId, randomBossName] = *it;
 		if (randomBossId == oldBossRace) {
 			continue;
@@ -191,7 +195,6 @@ void IOBosstiary::addBosstiaryKill(std::shared_ptr<Player> player, const std::sh
 
 	int32_t value = player->getStorageValue(STORAGEVALUE_PODIUM);
 	if (value != 1 && newBossLevel == 2) {
-
 		auto returnValue = g_game().addItemStoreInbox(player, ITEM_PODIUM_OF_VIGOUR);
 		if (!returnValue) {
 			return;
@@ -298,34 +301,6 @@ uint32_t IOBosstiary::calculteRemoveBoss(uint8_t removeTimes) const {
 		return 0;
 	}
 	return 300000 * removeTimes - 500000;
-}
-
-std::vector<uint16_t> IOBosstiary::getBosstiaryCooldownRaceId(std::shared_ptr<Player> player) const {
-	std::vector<uint16_t> bossesCooldownRaceId;
-	if (!player) {
-		return bossesCooldownRaceId;
-	}
-
-	for (std::map<uint16_t, std::string> bossesMap = getBosstiaryMap();
-		 const auto &[bossId, bossName] : bossesMap) {
-		uint32_t bossKills = player->getBestiaryKillCount(bossId);
-
-		const auto mType = g_monsters().getMonsterType(bossName);
-		if (!mType) {
-			continue;
-		}
-
-		auto bossStorage = mType->info.bossStorageCooldown;
-		if (bossStorage == 0) {
-			continue;
-		}
-
-		if (bossKills >= 1 || player->getStorageValue(bossStorage) > 0) {
-			bossesCooldownRaceId.push_back(bossId);
-		}
-	}
-
-	return bossesCooldownRaceId;
 }
 
 const std::vector<LevelInfo> &IOBosstiary::getBossRaceKillStages(BosstiaryRarity_t race) const {

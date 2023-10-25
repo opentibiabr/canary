@@ -119,10 +119,6 @@ public:
 		direction = dir;
 	}
 
-	bool hasFollowPath() const {
-		return !listWalkDir.empty();
-	}
-
 	bool isHealthHidden() const {
 		return hiddenHealth;
 	}
@@ -738,6 +734,7 @@ protected:
 	bool floorChange = false;
 	bool canUseDefense = true;
 	bool moveLocked = false;
+	bool hasFollowPath = false;
 	int8_t charmChanceModifier = 0;
 
 	uint8_t wheelOfDestinyDrainBodyDebuff = 0;

@@ -1834,7 +1834,7 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 
 	const auto &followCreature = getFollowCreature();
-	if (hasFollowPath() && (creature == followCreature || (creature.get() == this && followCreature))) {
+	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
 		isUpdatingPath = false;
 		g_dispatcher().addEvent(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
 	}
@@ -4216,7 +4216,7 @@ void Player::goToFollowCreature(std::function<void()> &&onComplete) {
 		}
 
 		Creature::goToFollowCreature([self = getPlayer()] {
-			if (self->getFollowCreature() && !self->hasFollowPath()) {
+			if (self->getFollowCreature() && !self->hasFollowPath) {
 				self->lastFailedFollow = OTSYS_TIME();
 			}
 		});

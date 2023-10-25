@@ -55,6 +55,12 @@ struct DispatcherContext {
 		return type;
 	}
 
+	// postpone the event
+	void addEvent(std::function<void(void)> &&f) const;
+
+	// if the context is async, the event will be postponed, if not, it will be executed immediately.
+	void tryAddEvent(std::function<void(void)> &&f) const;
+
 private:
 	void reset() {
 		group = TaskGroup::ThreadPool;

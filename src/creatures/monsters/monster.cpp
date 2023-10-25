@@ -609,7 +609,7 @@ void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature
 	if (const auto &target = targetListMap[*it].lock()) {
 		targetIDList.erase(it);
 
-		if (hasFollowPath()) {
+		if (hasFollowPath) {
 			targetIDList.push_front(target->getID());
 		} else if (!isSummon()) {
 			targetIDList.push_back(target->getID());
@@ -797,7 +797,7 @@ void Monster::onThink(uint32_t interval) {
 					setFollowCreature(attackedCreature);
 				}
 			} else if (!attackedCreature && !targetIDList.empty()) {
-				if (!followCreature || !hasFollowPath()) {
+				if (!followCreature || !hasFollowPath) {
 					searchTarget(TARGETSEARCH_NEAREST);
 				} else if (isFleeing()) {
 					if (attackedCreature && !canUseAttack(getPosition(), attackedCreature)) {
@@ -988,7 +988,7 @@ void Monster::onThinkDefense(uint32_t interval) {
 		}
 	}
 
-	if (!isSummon() && m_summons.size() < mType->info.maxSummons && hasFollowPath()) {
+	if (!isSummon() && m_summons.size() < mType->info.maxSummons && hasFollowPath) {
 		for (const summonBlock_t &summonBlock : mType->info.summons) {
 			if (summonBlock.speed > defenseTicks) {
 				resetTicks = false;
@@ -1170,7 +1170,7 @@ bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 
 	bool result = false;
 
-	if (getFollowCreature() && hasFollowPath()) {
+	if (getFollowCreature() && hasFollowPath) {
 		doFollowCreature(flags, nextDirection, result);
 	} else {
 		doRandomStep(nextDirection, result);

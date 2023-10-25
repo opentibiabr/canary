@@ -195,3 +195,19 @@ void Dispatcher::stopEvent(uint64_t eventId) {
 		scheduledTasksRef.erase(it);
 	}
 }
+
+void DispatcherContext::addEvent(std::function<void(void)> &&f) const {
+	g_dispatcher().addEvent(std::move(f), taskName);
+}
+
+void DispatcherContext::tryAddEvent(std::function<void(void)> &&f) const {
+	if (!f) {
+		return;
+	}
+
+	if (isAsync()) {
+		g_dispatcher().addEvent(std::move(f), taskName);
+	} else {
+		f();
+	}
+}

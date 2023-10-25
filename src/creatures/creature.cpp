@@ -260,15 +260,17 @@ void Creature::addEventWalk(bool firstStep) {
 		return;
 	}
 
-	// Take first step right away, but still queue the next
-	if (ticks == 1) {
-		g_game().checkCreatureWalk(getID());
-	}
+	g_dispatcher().context().tryAddEvent([ticks, self = getCreature()]() {
+		// Take first step right away, but still queue the next
+		if (ticks == 1) {
+			g_game().checkCreatureWalk(self->getID());
+		}
 
-	eventWalk = g_dispatcher().scheduleEvent(
-		static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), getID()),
-		"Creature::checkCreatureWalk"
-	);
+		self->eventWalk = g_dispatcher().scheduleEvent(
+			static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), self->getID()),
+			"Creature::checkCreatureWalk"
+		);
+	});
 }
 
 void Creature::stopEventWalk() {
@@ -597,7 +599,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 
 	const auto &followCreature = getFollowCreature();
 	if (followCreature && (creature == getCreature() || creature == followCreature)) {
-		if (hasFollowPath()) {
+		if (hasFollowPath) {
 			isUpdatingPath = true;
 			g_dispatcher().addEvent(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
 		}
@@ -964,24 +966,22 @@ void Creature::executeAsyncPathTo(bool executeOnFollow, FindPathParams &fpp, std
 		}
 
 		stdext::arraylist<Direction> listDir(128);
-		self->getPathTo(targetPos, listDir, fpp);
-		g_dispatcher().addEvent([self, executeOnFollow, onComplete, listDir = listDir.data()] {
-			self->startAutoWalk(listDir);
+		self->hasFollowPath = self->getPathTo(targetPos, listDir, fpp);
+		self->startAutoWalk(listDir.data());
 
+		g_dispatcher().context().addEvent([self, executeOnFollow, onComplete] {
 			if (executeOnFollow) {
 				self->onFollowCreatureComplete(self->getFollowCreature());
 			}
-
 			if (onComplete) {
 				onComplete();
 			}
-		},
-								"Creature::goToFollowCreature");
+		});
 	});
 }
 
 void Creature::getPathSearchParams(const std::shared_ptr<Creature> &, FindPathParams &fpp) {
-	fpp.fullPathSearch = !hasFollowPath();
+	fpp.fullPathSearch = !hasFollowPath;
 	fpp.clearSight = true;
 	fpp.maxSearchDist = 12;
 	fpp.minTargetDist = 1;

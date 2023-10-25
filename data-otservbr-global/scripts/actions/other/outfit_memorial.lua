@@ -11,7 +11,7 @@ local function updateOutfitCache(storageKey, lastUpdated)
 
 	local query = "SELECT `name`, `value` FROM `player_storage` INNER JOIN `players` as `p` ON `p`.`id` = `player_id` WHERE `key` = " .. storageKey .. " AND `value` >= 1;"
 	local resultId = db.storeQuery(query)
-	
+
 	if resultId then
 		repeat
 			table.insert(cache[Result.getNumber(resultId, "value")], Result.getString(resultId, "name"))

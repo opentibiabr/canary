@@ -143,7 +143,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if npcHandler:getTopic(playerId) == 12 then
 			npcHandler:say({
 				"Great! To clarify, donating 30,000 silver tokens and 25,000 gold tokens will entitle you to a unique outfit. ...",
-				"For 15,000 silver tokens and 12,500 gold tokens, you will receive the armor. For an additional 7,500 silver tokens and 6,250 gold tokens each, you can also receive the shield and crown. ...",
+				"For 15,000 silver tokens and 12,500 gold tokens, you will receive the {armor}. For an additional 7,500 silver tokens and 6,250 gold tokens each, you can also receive the {shield} and {crown}. ...",
 				"What will you choose?"
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 13)

@@ -14,7 +14,6 @@
 #include "lib/di/container.hpp"
 #include "utils/tools.hpp"
 
-constexpr static auto ASYNC_TIME_OUT = std::chrono::seconds(15);
 thread_local DispatcherContext Dispatcher::dispacherContext;
 
 Dispatcher &Dispatcher::getInstance() {

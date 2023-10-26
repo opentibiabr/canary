@@ -127,8 +127,9 @@ void Dispatcher::executeScheduledEvents() {
 
 	dispacherContext.reset();
 
-	mergeEvents(); // merge request, as there may be async event requests from scheduled events
-	executeEvents(TaskGroup::GenericParallel); // execute asynchronous events requested by scheduled events
+	mergeEvents(); // merge events requested by scheduled events
+	executeEvents(TaskGroup::GenericParallel); // execute async events requested by scheduled events
+	mergeEvents(); // merge events requested by async events
 }
 
 // Merge thread events with main dispatch events

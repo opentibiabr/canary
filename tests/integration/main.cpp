@@ -84,7 +84,7 @@ int main() {
 		createAccount(db);
 
 		AccountInfo acc {};
-		accRepo.loadByEmailOrName("@test", acc);
+		accRepo.loadByEmailOrName(false, "@test", acc);
 		assertAccountLoad(acc);
 		expect(eq(acc.sessionExpires, 0));
 	});

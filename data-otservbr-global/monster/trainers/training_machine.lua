@@ -1,6 +1,7 @@
 local mType = Game.createMonsterType("Training Machine")
 local monster = {}
-monster.description = "Training Machine"
+
+monster.description = "a training machine"
 monster.experience = 0
 monster.outfit = {
 	lookType = 1142,

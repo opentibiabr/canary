@@ -50,7 +50,7 @@ function ferumbrasAscendantLever.onUse(player, item, fromPosition, target, toPos
 			for y = 31477, 31481 do
 				local playerTile = Tile(Position(x, y, 14)):getTopCreature()
 				if playerTile and playerTile:isPlayer() then
-					if playerTile:canFightBoss("Ferumbras Mortal Shell") then
+					if not playerTile:canFightBoss("Ferumbras Mortal Shell") then
 						player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait 5 days to face Ferumbras again!")
 						item:transform(8912)
 						return true

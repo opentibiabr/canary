@@ -1015,14 +1015,13 @@ void Creature::goToFollowCreature() {
 			executeOnFollow = false;
 		} else if (dir != DIRECTION_NONE) {
 			listDir.push_back(dir);
+			hasFollowPath = true;
 		}
 	}
 
 	if (listDir.empty()) {
-		getPathTo(getFollowCreature()->getPosition(), listDir, fpp);
+		hasFollowPath = getPathTo(getFollowCreature()->getPosition(), listDir, fpp);
 	}
-
-	hasFollowPath = !listDir.empty();
 
 	startAutoWalk(listDir.data());
 

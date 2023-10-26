@@ -19,8 +19,9 @@ namespace account {
 		return load(query, acc);
 	};
 
-	bool AccountRepositoryDB::loadByEmail(const std::string &email, AccountInfo &acc) {
-		auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `email` = {}", db.escapeString(email));
+	bool AccountRepositoryDB::loadByEmailOrName(bool oldProtocol, const std::string &emailOrName, AccountInfo &acc) {
+		auto identifier = oldProtocol ? "name" : "email";
+		auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `{}` = {}", identifier, db.escapeString(emailOrName));
 		return load(query, acc);
 	};
 

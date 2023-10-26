@@ -4209,17 +4209,17 @@ bool Player::setAttackedCreature(std::shared_ptr<Creature> creature) {
 	return true;
 }
 
-void Player::goToFollowCreature(std::function<void()> &&onComplete) {
+void Player::goToFollowCreature() {
 	if (!walkTask) {
 		if ((OTSYS_TIME() - lastFailedFollow) < 2000) {
 			return;
 		}
 
-		Creature::goToFollowCreature([self = getPlayer()] {
-			if (self->getFollowCreature() && !self->hasFollowPath) {
-				self->lastFailedFollow = OTSYS_TIME();
-			}
-		});
+		Creature::goToFollowCreature();
+
+		if (getFollowCreature() && !hasFollowPath) {
+			lastFailedFollow = OTSYS_TIME();
+		}
 	}
 }
 

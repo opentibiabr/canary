@@ -5755,7 +5755,7 @@ void Game::checkCreatureWalk(uint32_t creatureId) {
 void Game::updateCreatureWalk(uint32_t creatureId) {
 	const auto &creature = getCreatureByID(creatureId);
 	if (creature && creature->getHealth() > 0) {
-		creature->goToFollowCreature();
+		creature->goToFollowCreature_async();
 	}
 }
 

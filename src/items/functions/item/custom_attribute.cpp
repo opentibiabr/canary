@@ -118,7 +118,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 				g_logger().error("[{}] failed to read string, call function: {}", __FUNCTION__, function);
 				return false;
 			}
-			setValue(readString);
+			value = readString;
 			break;
 		}
 		case 2: {
@@ -127,7 +127,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 				g_logger().error("[{}] failed to read int64, call function: {}", __FUNCTION__, function);
 				return false;
 			}
-			setValue(readInt);
+			value = readInt;
 			break;
 		}
 		case 3: {
@@ -136,7 +136,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 				g_logger().error("[{}] failed to read double, call function: {}", __FUNCTION__, function);
 				return false;
 			}
-			setValue(readDouble);
+			value = readDouble;
 			break;
 		}
 		case 4: {
@@ -145,7 +145,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 				g_logger().error("[{}] failed to read boolean, call function: {}", __FUNCTION__, function);
 				return false;
 			}
-			setValue(readBoolean);
+			value = readBoolean;
 			break;
 		}
 		default:

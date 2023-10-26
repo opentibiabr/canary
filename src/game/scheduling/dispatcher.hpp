@@ -152,6 +152,7 @@ private:
 		signalSchedule.notify_all();
 	}
 
+	inline void mergeAsyncEvents();
 	inline void mergeEvents();
 	inline void executeEvents(const TaskGroup startGroup = TaskGroup::Serial);
 	inline void executeScheduledEvents();

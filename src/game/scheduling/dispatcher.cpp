@@ -31,7 +31,7 @@ void Dispatcher::init() {
 
 			executeEvents();
 			executeScheduledEvents();
-			checkPendingTasks();
+			mergeEvents();
 
 			if (!hasPendingTasks) {
 				signalSchedule.wait_for(asyncLock, timeUntilNextScheduledTask());
@@ -91,7 +91,7 @@ void Dispatcher::executeEvents(const TaskGroup startGroup) {
 
 		if (groupId == static_cast<uint8_t>(TaskGroup::Serial)) {
 			executeSerialEvents(tasks);
-			mergeEvents(); // merge request, as there may be async event requests
+			mergeAsyncEvents(); // merge request, as there may be async event requests
 		} else {
 			executeParallelEvents(tasks, groupId);
 		}
@@ -128,20 +128,35 @@ void Dispatcher::executeScheduledEvents() {
 
 	dispacherContext.reset();
 
-	mergeEvents(); // merge events requested by scheduled events
+	mergeAsyncEvents(); // merge events requested by scheduled events
 	executeEvents(TaskGroup::GenericParallel); // execute async events requested by scheduled events
-	mergeEvents(); // merge events requested by async events
 }
 
-// Merge thread events with main dispatch events
-void Dispatcher::mergeEvents() {
+// Merge only async thread events with main dispatch events
+void Dispatcher::mergeAsyncEvents() {
+	constexpr uint8_t start = static_cast<uint8_t>(TaskGroup::GenericParallel);
+	constexpr uint8_t end = static_cast<uint8_t>(TaskGroup::Last);
+
 	for (const auto &thread : threads) {
 		std::scoped_lock lock(thread->mutex);
-		for (uint_fast8_t i = 0; i < static_cast<uint8_t>(TaskGroup::Last); ++i) {
+		for (uint_fast8_t i = start; i < end; ++i) {
 			if (!thread->tasks[i].empty()) {
 				m_tasks[i].insert(m_tasks[i].end(), make_move_iterator(thread->tasks[i].begin()), make_move_iterator(thread->tasks[i].end()));
 				thread->tasks[i].clear();
 			}
+		}
+	}
+}
+
+// Merge thread events with main dispatch events
+void Dispatcher::mergeEvents() {
+	constexpr uint8_t serial = static_cast<uint8_t>(TaskGroup::Serial);
+
+	for (const auto &thread : threads) {
+		std::scoped_lock lock(thread->mutex);
+		if (!thread->tasks[serial].empty()) {
+			m_tasks[serial].insert(m_tasks[serial].end(), make_move_iterator(thread->tasks[serial].begin()), make_move_iterator(thread->tasks[serial].end()));
+			thread->tasks[serial].clear();
 		}
 
 		if (!thread->scheduledTasks.empty()) {

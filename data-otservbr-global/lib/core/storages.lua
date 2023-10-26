@@ -908,6 +908,7 @@ Storage = {
 		DeeplingAnchor = 51023,
 		FirstOrientalAddon = 51024,
 		SecondOrientalAddon = 51025,
+		RoyalCostumeOutfit = 51026,
 	},
 	TheAncientTombs = {
 		-- Reserved storage from 50940 - 51059
@@ -2767,6 +2768,7 @@ Storage = {
 				GoshnarMegalomaniaAccess = 47220,
 				GoshnarMegalomaniaKilled = 47222,
 				QuestReward = 47223,
+				OutfitReward = 47224,
 			},
 		},
 		U12_60 = { -- update 12.60 - Reserved Storages 47501 - 47600

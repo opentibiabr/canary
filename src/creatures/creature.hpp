@@ -741,7 +741,7 @@ protected:
 
 	uint8_t wheelOfDestinyDrainBodyDebuff = 0;
 
-	std::atomic_uint_fast64_t pathFinderEventId = 0;
+	std::atomic_bool pathfinderRunning = false;
 
 	// use map here instead of phmap to keep the keys in a predictable order
 	std::map<std::string, CreatureIcon> creatureIcons = {};

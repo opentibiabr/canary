@@ -31,7 +31,6 @@ void Dispatcher::init() {
 
 			executeEvents();
 			executeScheduledEvents();
-			mergeEvents();
 
 			if (!hasPendingTasks) {
 				signalSchedule.wait_for(asyncLock, timeUntilNextScheduledTask());
@@ -82,8 +81,8 @@ void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t g
 	tasks.clear();
 }
 
-void Dispatcher::executeEvents() {
-	for (uint_fast8_t groupId = 0; groupId < static_cast<uint8_t>(TaskGroup::Last); ++groupId) {
+void Dispatcher::executeEvents(const TaskGroup startGroup) {
+	for (uint_fast8_t groupId = static_cast<uint8_t>(startGroup); groupId < static_cast<uint8_t>(TaskGroup::Last); ++groupId) {
 		auto &tasks = m_tasks[groupId];
 		if (tasks.empty()) {
 			return;
@@ -127,6 +126,9 @@ void Dispatcher::executeScheduledEvents() {
 	}
 
 	dispacherContext.reset();
+
+	mergeEvents(); // merge request, as there may be async event requests from scheduled events
+	executeEvents(TaskGroup::GenericParallel); // execute asynchronous events requested by scheduled events
 }
 
 // Merge thread events with main dispatch events

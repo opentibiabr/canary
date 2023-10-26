@@ -970,20 +970,21 @@ void Creature::getPathSearchParams(const std::shared_ptr<Creature> &, FindPathPa
 }
 
 void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
-	pathFinderEventId.fetch_add(1);
-	g_dispatcher().asyncEvent([self = getCreature(), eventId = pathFinderEventId.load(), onComplete = std::move(onComplete)] {
-		if (eventId != self->pathFinderEventId.load()) {
-			return; // cancel old async pathfinder
-		}
+	if (pathfinderRunning.load()) {
+		return;
+	}
 
+	pathfinderRunning.store(true);
+	g_dispatcher().asyncEvent([self = getCreature(), onComplete = std::move(onComplete)] {
 		self->goToFollowCreature();
-
-		if (onComplete) {
-			g_dispatcher().context().addEvent([onComplete] {
-				onComplete();
-			});
-		}
+		self->pathfinderRunning.store(false);
 	});
+
+	if (onComplete) {
+		g_dispatcher().context().addEvent([onComplete] {
+			onComplete();
+		});
+	}
 }
 
 void Creature::goToFollowCreature() {

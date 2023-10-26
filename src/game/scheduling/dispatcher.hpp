@@ -153,7 +153,7 @@ private:
 	}
 
 	inline void mergeEvents();
-	inline void executeEvents();
+	inline void executeEvents(const TaskGroup startGroup = TaskGroup::Serial);
 	inline void executeScheduledEvents();
 
 	inline void executeSerialEvents(std::vector<Task> &tasks);

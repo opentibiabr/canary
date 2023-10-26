@@ -18,23 +18,19 @@ CustomAttribute::~CustomAttribute() = default;
 
 // Constructor for int64_t
 CustomAttribute::CustomAttribute(const std::string &initStringKey, const int64_t initInt64) :
-	stringKey(initStringKey) {
-	setValue(initInt64);
+	stringKey(initStringKey), value(initInt64) {
 }
 // Constructor for string
 CustomAttribute::CustomAttribute(const std::string &initStringKey, const std::string &initStringValue) :
-	stringKey(initStringKey) {
-	setValue(initStringValue);
+	stringKey(initStringKey), value(initStringValue) {
 }
 // Constructor for double
 CustomAttribute::CustomAttribute(const std::string &initStringKey, const double initDoubleValue) :
-	stringKey(initStringKey) {
-	setValue(initDoubleValue);
+	stringKey(initStringKey), value(initDoubleValue) {
 }
 // Constructor for boolean
 CustomAttribute::CustomAttribute(const std::string &initStringKey, const bool initBoolValue) :
-	stringKey(initStringKey) {
-	setValue(initBoolValue);
+	stringKey(initStringKey), value(initBoolValue) {
 }
 
 const std::string &CustomAttribute::getStringKey() const {

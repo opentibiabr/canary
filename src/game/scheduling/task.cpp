@@ -15,9 +15,15 @@ std::chrono::system_clock::time_point Task::TIME_NOW = SYSTEM_TIME_ZERO;
 std::atomic_uint_fast64_t Task::LAST_EVENT_ID = 0;
 
 bool Task::execute() const {
-	if (!func || hasExpired()) {
+	if (isCanceled()) {
 		return false;
 	}
+
+	if (hasExpired()) {
+		g_logger().info("The task '{}' has expired, it has not been executed in {} ms.", getContext(), expiration - utime);
+		return false;
+	}
+
 	if (log) {
 		if (hasTraceableContext()) {
 			g_logger().trace("Executing task {}.", getContext());

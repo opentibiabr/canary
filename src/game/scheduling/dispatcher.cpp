@@ -31,6 +31,7 @@ void Dispatcher::init() {
 
 			executeEvents();
 			executeScheduledEvents();
+			checkPendingTasks();
 
 			if (!hasPendingTasks) {
 				signalSchedule.wait_for(asyncLock, timeUntilNextScheduledTask());
@@ -148,8 +149,6 @@ void Dispatcher::mergeEvents() {
 			thread->scheduledTasks.clear();
 		}
 	}
-
-	checkPendingTasks();
 }
 
 std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() const {

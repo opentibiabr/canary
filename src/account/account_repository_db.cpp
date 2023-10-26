@@ -164,7 +164,7 @@ namespace account {
 		acc.premiumLastDay = result->getNumber<time_t>("lastday");
 		acc.sessionExpires = result->getNumber<time_t>("expires");
 		acc.premiumDaysPurchased = result->getNumber<uint32_t>("premdays_purchased");
-		acc.creationTime = result->getNumber<time_t>("creation");
+		acc.creationTime = result->getNumber<uint32_t>("creation");
 
 		setupLoyaltyInfo(acc);
 

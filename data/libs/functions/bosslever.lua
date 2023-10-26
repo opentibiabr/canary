@@ -14,9 +14,11 @@
 ---@field private playerPositions {pos: Position, teleport: Position}[]
 ---@field private area {from: Position, to: Position}
 ---@field private monsters {name: string, pos: Position}[]
+---@field private exitTeleporter Position
 ---@field private exit Position
 ---@field private encounter Encounter
 ---@field private timeoutEvent Event
+---@field private testMode boolean
 BossLever = {}
 
 --[[
@@ -65,9 +67,11 @@ setmetatable(BossLever, {
 			disabled = config.disabled,
 			playerPositions = config.playerPositions,
 			onUseExtra = config.onUseExtra or function() end,
+			exitTeleporter = config.exitTeleporter,
 			exit = config.exit,
 			area = config.specPos,
 			monsters = config.monsters or {},
+			testMode = config.testMode,
 			_position = nil,
 			_uid = nil,
 			_aid = nil,
@@ -111,7 +115,7 @@ end
 ---@param player Player
 ---@return number
 function BossLever:lastEncounterTime(player)
-	if not player then
+	if not player or self.testMode then
 		return 0
 	end
 	return player:getBossCooldown(self.name)
@@ -142,7 +146,7 @@ end
 function BossLever:onUse(player)
 	local isParticipant = false
 	for _, v in ipairs(self.playerPositions) do
-		if v.pos == player:getPosition() then
+		if Position(v.pos) == player:getPosition() then
 			isParticipant = true
 		end
 	end
@@ -212,6 +216,7 @@ function BossLever:onUse(player)
 		lever:teleportPlayers()
 		if self.encounter then
 			local encounter = Encounter(self.encounter)
+			encounter:reset()
 			encounter:start()
 		end
 		self:setLastEncounterTime(os.time() + self.timeToFightAgain)
@@ -278,5 +283,9 @@ function BossLever:register()
 	end
 	action:register()
 	BossLever[self.name] = self
+
+	if self.exitTeleporter then
+		SimpleTeleport(self.exitTeleporter, self.exit)
+	end
 	return true
 end

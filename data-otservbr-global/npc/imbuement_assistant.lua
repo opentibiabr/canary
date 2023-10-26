@@ -104,7 +104,7 @@ local function purchaseItems(npc, player, message, text, moneyRequired, itemList
 	if npcHandler:getTopic(player:getId()) == 1 then
 		npcHandler:say("Do you want to buy items for " .. text .. " imbuement for " .. moneyRequired .. " gold?", npc, player)
 		npcHandler:setTopic(player:getId(), 2)
-		
+
 		playerImbuementData[player:getId()] = {
 			moneyRequired = moneyRequired,
 			itemList = itemList
@@ -120,7 +120,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	local imbuementPackages = "Available imbuement packages: {bash}, {blockade}, {chop}, {epiphany}, {precision}, {slash}. additional attributes: {featherweight}, {strike}, {swiftness}, {vampirism}, {vibrancy}, {void}. elemental damage: {electrify}, {frost}, {reap}, {scorch}, {venom}. elemental protection: {cloud fabric}, {demon presence}, {dragon hide}, {lich shroud}, {quara scale}, {snake skin}."
-
 	if MsgContains(message, "imbuement packages") then
 		npcHandler:setTopic(playerId, 1)
 		npcHandler:say(imbuementPackages, npc, creature)
@@ -162,8 +161,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			{itemId = 21202, count = 25}, -- mooh'tah shell
 			{itemId = 9654, count = 5} -- war crystal
 		})
-
-	-- additional attributes packages
+	-- Additional attributes packages
 	elseif MsgContains(message, "featherweight") then
 		purchaseItems(npc, player, message, "capacity increase", 12250, {
 			{itemId = 25694, count = 20}, -- fairy wings
@@ -200,8 +198,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			{itemId = 20200, count = 25}, -- silencer claws
 			{itemId = 22730, count = 5} -- some grimeleech wings
 		})
-
-		-- elemental damage packages
+	-- Elemental damage packages
 	elseif MsgContains(message, "electrify") then
 		purchaseItems(npc, player, message, "energy damage", 3770, {
 			{itemId = 18993, count = 25}, -- rorc feather
@@ -233,7 +230,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			{itemId = 21194, count = 2} -- slime heart
 		})
 
-		-- elemental protection packages
+	-- Elemental protection packages
 	elseif MsgContains(message, "cloud fabric") then
 		purchaseItems(npc, player, message, "energy protection", 13775, {
 			{itemId = 9644, count = 20}, -- wyvern talisman

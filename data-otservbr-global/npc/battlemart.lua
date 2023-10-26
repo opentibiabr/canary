@@ -1,4 +1,4 @@
-local internalNpcName = "Imbuement Assistant"
+local internalNpcName = "Battlemart"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}
 

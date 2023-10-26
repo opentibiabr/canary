@@ -337,7 +337,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "imbuement packages") then
 		npcHandler:setTopic(playerId, 1)
 		npcHandler:say(imbuementPackages, npc, creature)
-	-- Skill increase packages
 	elseif imbuementPackagesData[message] then
 		purchaseItems(npc, player, message)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 2 then

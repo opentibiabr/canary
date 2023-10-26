@@ -981,9 +981,7 @@ void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
 	});
 
 	if (onComplete) {
-		g_dispatcher().context().addEvent([onComplete] {
-			onComplete();
-		});
+		g_dispatcher().context().addEvent(std::move(onComplete));
 	}
 }
 

@@ -74,7 +74,7 @@ int Webhook::sendRequest(const char* url, const char* payload, std::string* resp
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &Webhook::writeCallback);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, reinterpret_cast<void*>(response_body));
 	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-	curl_easy_setopt(curl, CURLOPT_USERAGENT, "canary (https://github.com/Hydractify/canary)");
+	curl_easy_setopt(curl, CURLOPT_USERAGENT, "canary (https://github.com/opentibiabr/canary)");
 
 	CURLcode res = curl_easy_perform(curl);
 

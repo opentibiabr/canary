@@ -164,6 +164,8 @@ void Dispatcher::mergeEvents() {
 			thread->scheduledTasks.clear();
 		}
 	}
+
+	checkPendingTasks();
 }
 
 std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() const {

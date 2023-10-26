@@ -975,7 +975,7 @@ void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
 	}
 
 	pathfinderRunning.store(true);
-	g_dispatcher().asyncEvent([self = getCreature(), onComplete = std::move(onComplete)] {
+	g_dispatcher().asyncEvent([self = getCreature()] {
 		self->goToFollowCreature();
 		self->pathfinderRunning.store(false);
 	});

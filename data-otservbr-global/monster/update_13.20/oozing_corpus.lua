@@ -74,26 +74,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540},
-	{name = "great spirit potion", chance = 32220, maxCount = 7},
-	{name = "steel boots", chance = 2000},
-	{name = "dragonbone staff", chance = 15500},
-	{name = "giant sword", chance = 13500},
-	{name = "mercenary sword", chance = 11500},
-	{name = "fur armor", chance = 9500},
-	{name = "terra mantle", chance = 3500},
-	{name = "wood cape", chance = 2500},
-	{name = "rubber cap", chance = 1500},
-	{name = "stone skin amulet", chance = 2000},
-	{id = 43846, chance = 13000},
-	{id = 43736, chance = 4000}
+	{ name = "crystal coin", chance = 70540 },
+	{ name = "great spirit potion", chance = 32220, maxCount = 7 },
+	{ name = "steel boots", chance = 2000 },
+	{ name = "dragonbone staff", chance = 15500 },
+	{ name = "giant sword", chance = 13500 },
+	{ name = "mercenary sword", chance = 11500 },
+	{ name = "fur armor", chance = 9500 },
+	{ name = "terra mantle", chance = 3500 },
+	{ name = "wood cape", chance = 2500 },
+	{ name = "rubber cap", chance = 1500 },
+	{ name = "stone skin amulet", chance = 2000 },
+	{ id = 43846, chance = 13000 },
+	{ id = 43736, chance = 4000}
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1050},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -750, maxDamage = -1000, radius = 4, effect = CONST_ME_MORTAREA, target = false},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -550, maxDamage = -900, range = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -800, maxDamage = -1250, length = 8, effect = CONST_ME_EXPLOSIONHIT, target = false}
+	{ name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1050 },
+	{ name ="combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -750, maxDamage = -1000, radius = 4, effect = CONST_ME_MORTAREA, target = false },
+	{ name ="combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -550, maxDamage = -900, range = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
+	{ name ="combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -800, maxDamage = -1250, length = 8, effect = CONST_ME_EXPLOSIONHIT, target = false }
 }
 
 monster.defenses = {
@@ -102,23 +102,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 30},
-	{type = COMBAT_ENERGYDAMAGE, percent = -25},
-	{type = COMBAT_EARTHDAMAGE, percent = 40},
-	{type = COMBAT_FIREDAMAGE, percent = 25},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -10},
-	{type = COMBAT_HOLYDAMAGE , percent = -10},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 30 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -25 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 40 },
+	{ type = COMBAT_FIREDAMAGE, percent = 25 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -10 },
+	{ type = COMBAT_HOLYDAMAGE , percent = -10 },
+	{ type = COMBAT_DEATHDAMAGE , percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

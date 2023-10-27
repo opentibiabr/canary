@@ -74,28 +74,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540},
-	{name = "platinum coin", chance = 90540, maxCount = 32},
-	{name = "ultimate health potion", chance = 32220, maxCount = 7},
-	{name = "violet gem", chance = 74560},
-	{name = "green gem", chance = 64560},
-	{name = "blue gem", chance = 54560},
-	{name = "northwind rod", chance = 11920},
-	{name = "scarab ocarina", chance = 6000},
-	{name = "jade hat", chance = 4000},
-	{name = "mushroom backpack", chance = 3000},
-	{name = "solar axe", chance = 800},
-	{id = 43846, chance = 13000},
-	{id = 43927, chance = 9500},
-	{id = 43737, chance = 4000}
+	{ name = "crystal coin", chance = 70540 },
+	{ name = "platinum coin", chance = 90540, maxCount = 32 },
+	{ name = "ultimate health potion", chance = 32220, maxCount = 7 },
+	{ name = "violet gem", chance = 74560 },
+	{ name = "green gem", chance = 64560 },
+	{ name = "blue gem", chance = 54560 },
+	{ name = "northwind rod", chance = 11920 },
+	{ name = "scarab ocarina", chance = 6000 },
+	{ name = "jade hat", chance = 4000 },
+	{ name = "mushroom backpack", chance = 3000 },
+	{ name = "solar axe", chance = 800 },
+	{ id = 43846, chance = 13000 },
+	{ id = 43927, chance = 9500 },
+	{ id = 43737, chance = 4000}
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900, effect = CONST_ME_DRAWBLOOD},
-	{name ="combat", interval = 6000, chance = 25, type = COMBAT_HOLYDAMAGE, minDamage = -650, maxDamage = -950, length = 8, spread = 3, effect = CONST_ME_HOLYAREA, target = false},
-	{name ="combat", interval = 2750, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -600, maxDamage = -1000, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false},
-	{name ="combat", interval = 2500, chance = 22, type = COMBAT_DEATHDAMAGE, minDamage = -600, maxDamage = -800, radius = 3, effect = CONST_ME_MORTAREA, target = false},
-	{name ="combat", interval = 3300, chance = 24, type = COMBAT_ICEDAMAGE, minDamage = -500, maxDamage = -700, length = 4, spread = 0, effect = CONST_ME_ICEATTACK, target = false},
+	{ name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900, effect = CONST_ME_DRAWBLOOD },
+	{ name ="combat", interval = 6000, chance = 25, type = COMBAT_HOLYDAMAGE, minDamage = -650, maxDamage = -950, length = 8, spread = 3, effect = CONST_ME_HOLYAREA, target = false },
+	{ name ="combat", interval = 2750, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -600, maxDamage = -1000, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false },
+	{ name ="combat", interval = 2500, chance = 22, type = COMBAT_DEATHDAMAGE, minDamage = -600, maxDamage = -800, radius = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name ="combat", interval = 3300, chance = 24, type = COMBAT_ICEDAMAGE, minDamage = -500, maxDamage = -700, length = 4, spread = 0, effect = CONST_ME_ICEATTACK, target = false },
 }
 
 monster.defenses = {
@@ -104,23 +104,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 25},
-	{type = COMBAT_EARTHDAMAGE, percent = -20},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 35},
-	{type = COMBAT_HOLYDAMAGE , percent = -25},
-	{type = COMBAT_DEATHDAMAGE , percent = 40}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 25 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -20 },
+	{ type = COMBAT_FIREDAMAGE, percent = -10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 35 },
+	{ type = COMBAT_HOLYDAMAGE , percent = -25 },
+	{ type = COMBAT_DEATHDAMAGE , percent = 40 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

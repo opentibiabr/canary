@@ -74,19 +74,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 100000, maxCount = 197},
-	{name = "platinum coin", chance = 100000, maxCount = 5},
-	{name = "plate armor", chance = 13000},
-	{name = "halberd", chance = 21000},
-	{id = 43917, chance = 1500},
-	{id = 43731, chance = 5000, maxCount = 2}
+	{ name = "gold coin", chance = 100000, maxCount = 197 },
+	{ name = "platinum coin", chance = 100000, maxCount = 5 },
+	{ name = "plate armor", chance = 13000 },
+	{ name = "halberd", chance = 21000 },
+	{ id = 43917, chance = 1500 },
+	{ id = 43731, chance = 5000, maxCount = 2}
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -250, effect = CONST_ME_DRAWBLOOD},
-	{name ="singledeathchain", interval = 6000, chance = 7, minDamage = -250, maxDamage = -530, range = 5, effect = CONST_ME_MORTAREA, target = true},
-	{name ="singleicechain", interval = 6000, chance = 8, minDamage = -150, maxDamage = -450, range = 5, effect = CONST_ME_ICEATTACK, target = true},
-	{name ="combat", interval = 4000, chance = 11, type = COMBAT_ICEDAMAGE, minDamage = -200, maxDamage = -450, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEATTACK, target = true} -- avalanche
+	{ name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -250, effect = CONST_ME_DRAWBLOOD },
+	{ name ="singledeathchain", interval = 6000, chance = 7, minDamage = -250, maxDamage = -530, range = 5, effect = CONST_ME_MORTAREA, target = true },
+	{ name ="singleicechain", interval = 6000, chance = 8, minDamage = -150, maxDamage = -450, range = 5, effect = CONST_ME_ICEATTACK, target = true },
+	{ name ="combat", interval = 4000, chance = 11, type = COMBAT_ICEDAMAGE, minDamage = -200, maxDamage = -450, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEATTACK, target = true } -- avalanche
 }
 
 monster.defenses = {
@@ -95,23 +95,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = -10},
-	{type = COMBAT_EARTHDAMAGE, percent = 10},
-	{type = COMBAT_FIREDAMAGE, percent = 20},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -15},
-	{type = COMBAT_HOLYDAMAGE , percent = -25},
-	{type = COMBAT_DEATHDAMAGE , percent = 20}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 10 },
+	{ type = COMBAT_FIREDAMAGE, percent = 20 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -15 },
+	{ type = COMBAT_HOLYDAMAGE , percent = -25 },
+	{ type = COMBAT_DEATHDAMAGE , percent = 20 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

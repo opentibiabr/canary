@@ -74,30 +74,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "ultimate spirit potion", chance = 31627, maxCount = 6},
-	{name = "royal star", chance = 31325, maxCount = 6},
-	{name = "bullseye potion", chance = 22590, maxCount = 10},
-	{name = "berserk potion", chance = 21988, maxCount = 10},
-	{name = "blue gem", chance = 21687, maxCount = 2},
-	{name = "mastermind potion", chance = 17771, maxCount = 10},
-	{name = "green gem", chance = 17470, maxCount = 2},
-	{name = "gold ingot", chance = 13253},
-	{name = "crystal coin", chance = 10241},
-	{name = "stone skin amulet", chance = 10241},
-	{name = "demon shield", chance = 2000},
-	{name = "assassin dagger", chance = 3000},
-	{id = 43732, chance = 3000},
-	{id = 43858, chance = 11500},
-	{name = "scarab ocarina", chance = 4000},
+	{ name = "ultimate spirit potion", chance = 31627, maxCount = 6 },
+	{ name = "royal star", chance = 31325, maxCount = 6 },
+	{ name = "bullseye potion", chance = 22590, maxCount = 10 },
+	{ name = "berserk potion", chance = 21988, maxCount = 10 },
+	{ name = "blue gem", chance = 21687, maxCount = 2 },
+	{ name = "mastermind potion", chance = 17771, maxCount = 10 },
+	{ name = "green gem", chance = 17470, maxCount = 2 },
+	{ name = "gold ingot", chance = 13253 },
+	{ name = "crystal coin", chance = 10241 },
+	{ name = "stone skin amulet", chance = 10241 },
+	{ name = "demon shield", chance = 2000 },
+	{ name = "assassin dagger", chance = 3000 },
+	{ id = 43732, chance = 3000 },
+	{ id = 43858, chance = 11500 },
+	{ name = "scarab ocarina", chance = 4000 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -800},
-	{name ="combat", interval = 2000, chance = 13, type = COMBAT_ICEDAMAGE, minDamage = -750, maxDamage = -900, range = 7, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_BIGCLOUDS, target = true},
-	{name ="combat", interval = 2000, chance = 17, type = COMBAT_HOLYDAMAGE, minDamage = -750, maxDamage = -900, radius = 4, effect = CONST_ME_HOLYAREA, target = false},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -750, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -750, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = true},
-	{name ="combat", interval = 2000, chance = 13, type = COMBAT_ICEDAMAGE, minDamage = -750, maxDamage = -900, radius = 3, effect = CONST_ME_ICEATTACK, target = false}
+	{ name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -800 },
+	{ name ="combat", interval = 2000, chance = 13, type = COMBAT_ICEDAMAGE, minDamage = -750, maxDamage = -900, range = 7, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_BIGCLOUDS, target = true },
+	{ name ="combat", interval = 2000, chance = 17, type = COMBAT_HOLYDAMAGE, minDamage = -750, maxDamage = -900, radius = 4, effect = CONST_ME_HOLYAREA, target = false },
+	{ name ="combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -750, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true },
+	{ name ="combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -750, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = true },
+	{ name ="combat", interval = 2000, chance = 13, type = COMBAT_ICEDAMAGE, minDamage = -750, maxDamage = -900, radius = 3, effect = CONST_ME_ICEATTACK, target = false }
 }
 
 monster.defenses = {
@@ -106,23 +106,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 35},
-	{type = COMBAT_EARTHDAMAGE, percent = -15},
-	{type = COMBAT_FIREDAMAGE, percent = -5},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 50},
-	{type = COMBAT_HOLYDAMAGE , percent = -20},
-	{type = COMBAT_DEATHDAMAGE , percent = 60}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 35 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -15 },
+	{ type = COMBAT_FIREDAMAGE, percent = -5 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 50 },
+	{ type = COMBAT_HOLYDAMAGE , percent = -20 },
+	{ type = COMBAT_DEATHDAMAGE , percent = 60 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

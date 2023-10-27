@@ -74,29 +74,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540},
-	{name = "platinum coin", chance = 90540, maxCount = 32},
-	{name = "ultimate health potion", chance = 72220, maxCount = 7},
-	{name = "gold ingot", chance = 34920},
-	{name = "glacier kilt", chance = 12920},
-	{name = "northwind rod", chance = 11920},
-	{name = "wand of voodoo", chance = 14000},
-	{id = 43899, chance = 18000},
-	{id = 43856, chance = 14500},
-	{id = 43862, chance = 12500},
-	{name = "glacial rod", chance = 13450},
-	{name = "green crystal fragment", chance = 22920},
-	{name = "onyx chip", chance = 20000},
-	{name = "rainbow quartz", chance = 13660, maxCount = 2},
-	{name = "skullcracker armor", chance = 1680},
+	{ name = "crystal coin", chance = 70540 },
+	{ name = "platinum coin", chance = 90540, maxCount = 32 },
+	{ name = "ultimate health potion", chance = 72220, maxCount = 7 },
+	{ name = "gold ingot", chance = 34920 },
+	{ name = "glacier kilt", chance = 12920 },
+	{ name = "northwind rod", chance = 11920 },
+	{ name = "wand of voodoo", chance = 14000 },
+	{ id = 43899, chance = 18000 },
+	{ id = 43856, chance = 14500 },
+	{ id = 43862, chance = 12500 },
+	{ name = "glacial rod", chance = 13450 },
+	{ name = "green crystal fragment", chance = 22920 },
+	{ name = "onyx chip", chance = 20000 },
+	{ name = "rainbow quartz", chance = 13660, maxCount = 2 },
+	{ name = "skullcracker armor", chance = 1680 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -600},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -550, maxDamage = -1100, length = 5, spread = 3, effect = CONST_ME_GROUNDSHAKER, target = false},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -1000, radius = 7, effect = CONST_ME_BIGCLOUDS, target = false},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -550, maxDamage = -1000, range = 7, shootEffect = CONST_ANI_SNOWBALL, effect = CONST_ME_ICEATTACK, target = true},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_ICEDAMAGE, minDamage = -300, maxDamage = -700, range = 7, radius = 5, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEAREA, target = true}
+	{ name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -600 },
+	{ name ="combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -550, maxDamage = -1100, length = 5, spread = 3, effect = CONST_ME_GROUNDSHAKER, target = false },
+	{ name ="combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -1000, radius = 7, effect = CONST_ME_BIGCLOUDS, target = false },
+	{ name ="combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -550, maxDamage = -1000, range = 7, shootEffect = CONST_ANI_SNOWBALL, effect = CONST_ME_ICEATTACK, target = true },
+	{ name ="combat", interval = 2000, chance = 25, type = COMBAT_ICEDAMAGE, minDamage = -300, maxDamage = -700, range = 7, radius = 5, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEAREA, target = true }
 }
 
 monster.defenses = {
@@ -105,23 +105,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 45},
-	{type = COMBAT_ENERGYDAMAGE, percent = -15},
-	{type = COMBAT_EARTHDAMAGE, percent = 40},
-	{type = COMBAT_FIREDAMAGE, percent = 25},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -15},
-	{type = COMBAT_HOLYDAMAGE , percent = -5},
-	{type = COMBAT_DEATHDAMAGE , percent = 5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 45 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -15 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 40 },
+	{ type = COMBAT_FIREDAMAGE, percent = 25 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -15 },
+	{ type = COMBAT_HOLYDAMAGE , percent = -5 },
+	{ type = COMBAT_DEATHDAMAGE , percent = 5 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

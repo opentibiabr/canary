@@ -74,28 +74,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 100000, maxCount = 1},
-	{name = "platinum coin", chance = 100000, maxCount = 5},
-	{id = 3280, chance = 7000}, 
-	{id = 3281, chance = 1000},
-	{id = 9058, chance = 1500}, 
-	{id = 238, chance = 30000, maxCount = 3}, 
-	{id = 7642, chance = 20000},
-	{id = 3038, chance = 1000}, 
-	{id = 3582, chance = 30000, maxCount = 14},
-	{id = 5925, chance = 10000}, 
-	{id = 3318, chance = 7500},
-	{name = "demonic essence", chance = 28000},
-	{name = "assassin star", chance = 5900, maxCount = 10},
-	{name = "great mana potion", chance = 31360, maxCount = 3},
-	{name = "ultimate health potion", chance = 14720, maxCount = 2},
-	{name = "gold ingot", chance = 5270},
+	{ name = "crystal coin", chance = 100000, maxCount = 1 },
+	{ name = "platinum coin", chance = 100000, maxCount = 5 },
+	{ id = 3280, chance = 7000 }, 
+	{ id = 3281, chance = 1000 },
+	{ id = 9058, chance = 1500 }, 
+	{ id = 238, chance = 30000, maxCount = 3 }, 
+	{ id = 7642, chance = 20000 },
+	{ id = 3038, chance = 1000 }, 
+	{ id = 3582, chance = 30000, maxCount = 14 },
+	{ id = 5925, chance = 10000 }, 
+	{ id = 3318, chance = 7500 },
+	{ name = "demonic essence", chance = 28000 },
+	{ name = "assassin star", chance = 5900, maxCount = 10 },
+	{ name = "great mana potion", chance = 31360, maxCount = 3 },
+	{ name = "ultimate health potion", chance = 14720, maxCount = 2 },
+	{ name = "gold ingot", chance = 5270 },
 }
 
 monster.attacks = {
-	{name ="combat", interval = 3000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -650, maxDamage = -1000, radius = 4, effect = CONST_ME_GREEN_RINGS, target = false},
-	{name ="combat", interval = 3000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -650, maxDamage = -1000, range = 7, radius = 4, shootEffect = CONST_ANI_POISON, effect = CONST_ME_SMALLPLANTS, target = true},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_HOLYDAMAGE, minDamage = -800, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYDAMAGE, target = true}
+	{ name ="combat", interval = 3000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -650, maxDamage = -1000, radius = 4, effect = CONST_ME_GREEN_RINGS, target = false },
+	{ name ="combat", interval = 3000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -650, maxDamage = -1000, range = 7, radius = 4, shootEffect = CONST_ANI_POISON, effect = CONST_ME_SMALLPLANTS, target = true },
+	{ name ="combat", interval = 2000, chance = 25, type = COMBAT_HOLYDAMAGE, minDamage = -800, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYDAMAGE, target = true }
 }
 
 monster.defenses = {
@@ -104,23 +104,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -15},
-	{type = COMBAT_ENERGYDAMAGE, percent = -10},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 60},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 50},
-	{type = COMBAT_DEATHDAMAGE , percent = -15}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -15 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 60 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE , percent = 50 },
+	{ type = COMBAT_DEATHDAMAGE , percent = -15 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

@@ -12,7 +12,7 @@
 #include "lib/di/container.hpp"
 
 LogWithSpdLog::LogWithSpdLog() {
-	setLevel("debug");
+	setLevel("info");
 	spdlog::set_pattern("[%Y-%d-%m %H:%M:%S.%e] [%^%l%$] %v ");
 
 #ifdef DEBUG_LOG
@@ -25,7 +25,7 @@ Logger &LogWithSpdLog::getInstance() {
 }
 
 void LogWithSpdLog::setLevel(const std::string &name) {
-	info("Setting log level to {}.", name);
+	debug("Setting log level to: {}.", name);
 	auto level = spdlog::level::from_str(name);
 	spdlog::set_level(level);
 }

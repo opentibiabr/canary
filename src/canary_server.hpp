@@ -40,7 +40,7 @@ public:
 	int run();
 
 private:
-	enum LoaderStatus : uint8_t {
+	enum class LoaderStatus : uint8_t {
 		LOADING,
 		LOADED,
 		FAILED

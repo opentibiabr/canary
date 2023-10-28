@@ -66,6 +66,7 @@ monster.outfit = {
 
 monster.events = {
 	"ThePrimalMenaceDeath",
+	"ThePrimeOrdealBossDeath",
 }
 
 monster.health = 400000

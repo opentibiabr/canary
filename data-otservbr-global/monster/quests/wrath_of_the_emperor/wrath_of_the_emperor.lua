@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"WrathOfTheEmperorBossDeath",
+}
+
 monster.health = 55000
 monster.maxHealth = 55000
 monster.race = "undead"

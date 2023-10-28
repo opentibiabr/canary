@@ -35,6 +35,14 @@ public:
 	std::shared_ptr<Player> getLeader() const {
 		return m_leader.lock();
 	}
+	std::vector<std::shared_ptr<Player>> getPlayers() const {
+		std::vector<std::shared_ptr<Player>> players;
+		for (auto &member : memberList) {
+			players.push_back(member);
+		}
+		players.push_back(getLeader());
+		return players;
+	}
 	std::vector<std::shared_ptr<Player>> getMembers() {
 		return memberList;
 	}
@@ -68,7 +76,7 @@ public:
 	void shareExperience(uint64_t experience, std::shared_ptr<Creature> target = nullptr);
 	bool setSharedExperience(std::shared_ptr<Player> player, bool sharedExpActive, bool silent = false);
 	bool isSharedExperienceActive() const {
-		return sharedExpActive;
+		return sharedExpEnabled && sharedExpActive;
 	}
 	bool isSharedExperienceEnabled() const {
 		return sharedExpEnabled;

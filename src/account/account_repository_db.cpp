@@ -19,8 +19,9 @@ namespace account {
 		return load(query, acc);
 	};
 
-	bool AccountRepositoryDB::loadByEmail(const std::string &email, AccountInfo &acc) {
-		auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `email` = {}", db.escapeString(email));
+	bool AccountRepositoryDB::loadByEmailOrName(bool oldProtocol, const std::string &emailOrName, AccountInfo &acc) {
+		auto identifier = oldProtocol ? "name" : "email";
+		auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `{}` = {}", identifier, db.escapeString(emailOrName));
 		return load(query, acc);
 	};
 
@@ -163,7 +164,7 @@ namespace account {
 		acc.premiumLastDay = result->getNumber<time_t>("lastday");
 		acc.sessionExpires = result->getNumber<time_t>("expires");
 		acc.premiumDaysPurchased = result->getNumber<uint32_t>("premdays_purchased");
-		acc.creationTime = result->getNumber<time_t>("creation");
+		acc.creationTime = result->getNumber<uint32_t>("creation");
 
 		setupLoyaltyInfo(acc);
 

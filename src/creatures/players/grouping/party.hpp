@@ -76,7 +76,7 @@ public:
 	void shareExperience(uint64_t experience, std::shared_ptr<Creature> target = nullptr);
 	bool setSharedExperience(std::shared_ptr<Player> player, bool sharedExpActive, bool silent = false);
 	bool isSharedExperienceActive() const {
-		return sharedExpEnabled && sharedExpActive;
+		return sharedExpActive;
 	}
 	bool isSharedExperienceEnabled() const {
 		return sharedExpEnabled;

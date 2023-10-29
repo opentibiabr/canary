@@ -4656,7 +4656,7 @@ bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster, bool lastH
 		return false;
 	}
 	auto party = getParty();
-	auto participants = party && party->isSharedExperienceActive() ? party->getPlayers() : std::vector<std::shared_ptr<Player>> { getPlayer() };
+	auto participants = party && party->isSharedExperienceEnabled() && party->isSharedExperienceActive() ? party->getPlayers() : std::vector<std::shared_ptr<Player>> { getPlayer() };
 	auto mType = monster->getMonsterType();
 	for (const auto &player : participants) {
 		player->addHuntingTaskKill(mType);

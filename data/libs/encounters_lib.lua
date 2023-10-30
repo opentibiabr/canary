@@ -205,14 +205,13 @@ function Encounter:spawnMonsters(config)
 end
 
 ---Broadcasts a message to all players
-function Encounter:broadcast(...)
+function Encounter:broadcast(message, type, webhook_title)
 	if self.global then
-		for _, player in ipairs(Game.getPlayers()) do
-			player:sendTextMessage(...)
-		end
+		broadcastMessage(message, type)
+		Webhook.sendMessage(webhook_title, message, type)
 		return
 	end
-	self.zone:sendTextMessage(...)
+	self.zone:sendTextMessage(message, type)
 end
 
 ---Counts the number of monsters with the given name in the encounter zone
@@ -303,27 +302,14 @@ end
 
 ---Adds a stage that just sends a message to all players
 ---@param message string The message to send
+---@param webhook_title string The message to send
 ---@return boolean True if the message stage is added successfully, false otherwise
-function Encounter:addBroadcast(message, type)
+function Encounter:addBroadcast(message, type, webhook_title)
 	type = type or MESSAGE_EVENT_ADVANCE
 	return self:addStage({
 		start = function()
-			self:broadcast(type, message)
+			self:broadcast(type, message, webhook_title)
 		end,
-	})
-end
-
----Adds a stage that message sends message to players and webhook for server events
----@param title string The title of the message
----@param message string The message to send
----@return boolean True if the message stage is added successfully, false otherwise
-function Encounter:addServerBroadcast(title, message, type)
-	type = type or MESSAGE_EVENT_ADVANCE
-	return self:addStage({
-		start = function()
-			broadcastMessage(message, type)
-			Webhook.sendMessage(title, message, WEBHOOK_COLOR_WARNING)
-		end
 	})
 end
 

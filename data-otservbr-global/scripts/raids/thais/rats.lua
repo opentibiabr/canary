@@ -10,7 +10,7 @@ local raid = Raid("thais.rats", {
 	minGapBetween = "36h",
 })
 
-raid:addBroadcast("Rat Plague in Thais!"):autoAdvance("5s")
+raid:addBroadcast("Rat Plague in Thais!", WEBHOOK_COLOR_RAID, "Incoming Raid!"):autoAdvance("5s")
 
 raid
 	:addSpawnMonsters({

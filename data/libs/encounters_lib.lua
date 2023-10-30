@@ -313,6 +313,21 @@ function Encounter:addBroadcast(message, type)
 	})
 end
 
+---Adds a stage that message sends message to players and webhook for server events
+---@param title string The title of the message
+---@param message string The message to send
+---@return boolean True if the message stage is added successfully, false otherwise
+function Encounter:addServerBroadcast(title, message, type)
+	type = type or MESSAGE_EVENT_ADVANCE
+	return self:addStage({
+		start = function()
+			broadcastMessage(message, type)
+			Webhook.sendMessage(title, message, WEBHOOK_COLOR_WARNING)
+		end
+	})
+end
+
+
 ---Adds a stage that spawns monsters
 ---@param configs SpawnMonsterConfig[] The configurations for spawning monsters
 ---@return boolean True if the spawn monsters stage is added successfully, false otherwise

@@ -205,7 +205,7 @@ function Encounter:spawnMonsters(config)
 end
 
 ---Broadcasts a message to all players
-function Encounter:broadcast(message, type, webhook_title)
+function Encounter:broadcast(type, message, webhook_title)
 	if self.global then
 		broadcastMessage(message, type)
 		Webhook.sendMessage(webhook_title, message, type)

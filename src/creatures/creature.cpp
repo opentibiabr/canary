@@ -17,10 +17,6 @@
 #include "game/zones/zone.hpp"
 #include "map/spectators.hpp"
 
-double Creature::speedA = 857.36;
-double Creature::speedB = 261.29;
-double Creature::speedC = -4795.01;
-
 Creature::Creature() {
 	onIdleStatus();
 }
@@ -1411,7 +1407,7 @@ uint16_t Creature::getStepDuration(Direction dir) {
 
 	if (walk.recache) {
 		double duration = std::floor(1000 * walk.groundSpeed / walk.calculatedStepSpeed);
-		uint16_t stepDuration = std::ceil(duration / 50) * 50;
+		uint16_t stepDuration = std::ceil(duration / SERVER_BEAT) * SERVER_BEAT;
 
 		walk.recache = false;
 		walk.duration = stepDuration;

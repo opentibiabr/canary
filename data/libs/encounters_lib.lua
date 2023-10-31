@@ -313,7 +313,6 @@ function Encounter:addBroadcast(message, type)
 	})
 end
 
-
 ---Adds a stage that spawns monsters
 ---@param configs SpawnMonsterConfig[] The configurations for spawning monsters
 ---@return boolean True if the spawn monsters stage is added successfully, false otherwise

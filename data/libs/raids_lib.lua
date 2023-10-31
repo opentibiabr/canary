@@ -152,8 +152,8 @@ function Raid:addBroadcast(message, type)
 	type = type or MESSAGE_EVENT_ADVANCE
 	return self:addStage({
 		start = function()
-				self:broadcast(type, message)
-				Webhook.sendMessage("Incoming raid", message, WEBHOOK_COLOR_RAID)
+			self:broadcast(type, message)
+			Webhook.sendMessage("Incoming raid", message, WEBHOOK_COLOR_RAID)
 		end,
 	})
 end

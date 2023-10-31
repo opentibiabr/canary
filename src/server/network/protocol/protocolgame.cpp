@@ -919,7 +919,7 @@ void ProtocolGame::addBless() {
 	std::ostringstream lostBlesses;
 	(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses << "You are still blessed with " << bless;
 	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
-	if (player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL)) {
+	if (player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL) && player->getVocationId() > VOCATION_NONE) {
 		for (uint8_t i = 2; i <= 6; i++) {
 			if (!player->hasBlessing(i)) {
 				player->addBlessing(i, 1);
@@ -2066,7 +2066,7 @@ void ProtocolGame::sendHighscoresNoData() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages) {
+void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer) {
 	if (oldProtocol) {
 		return;
 	}
@@ -2145,8 +2145,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(0xFF); // ??
 	msg.addByte(0); // ??
 	msg.addByte(1); // ??
-	msg.add<uint32_t>(time(nullptr)); // Last Update
-
+	msg.add<uint32_t>(updateTimer); // Last Update
 	msg.setBufferPosition(vocationPosition);
 	msg.addByte(vocations);
 	writeToOutputBuffer(msg);
@@ -3973,7 +3972,7 @@ void ProtocolGame::sendBlessStatus() {
 	if (oldProtocol) {
 		msg.add<uint16_t>(blessCount >= 5 ? 0x01 : 0x00);
 	} else {
-		bool glow = (g_configManager().getBoolean(INVENTORY_GLOW) && blessCount >= 5) || player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL);
+		bool glow = player->getVocationId() > VOCATION_NONE && ((g_configManager().getBoolean(INVENTORY_GLOW) && blessCount >= 5) || player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL));
 		msg.add<uint16_t>(glow ? 1 : 0); // Show up the glowing effect in items if you have all blesses or adventurer's blessing
 		msg.addByte((blessCount >= 7) ? 3 : ((blessCount >= 5) ? 2 : 1)); // 1 = Disabled | 2 = normal | 3 = green
 	}

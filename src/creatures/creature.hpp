@@ -503,7 +503,9 @@ public:
 
 			if (newParent->getGround()) {
 				const auto &it = Item::items[newParent->getGround()->getID()];
-				walk.groundSpeed = it.speed > 0 ? it.speed : walk.groundSpeed;
+				if (it.speed > 0) { 
+					walk.groundSpeed = it.speed;
+				}
 			}
 		}
 	}

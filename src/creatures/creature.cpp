@@ -1409,13 +1409,13 @@ uint16_t Creature::getStepDuration(Direction dir) {
 		return 0;
 	}
 
-	if (walk.recache) { 
+	if (walk.recache) {
 		double duration = std::floor(1000 * walk.groundSpeed / walk.calculatedStepSpeed);
 		uint16_t stepDuration = std::ceil(duration / 50) * 50;
 
 		walk.recache = false;
 		walk.duration = stepDuration;
-		walk.diagonalDuration = stepDuration * 3;		
+		walk.diagonalDuration = stepDuration * 3;
 	}
 
 	auto duration = (dir & DIRECTION_DIAGONAL_MASK) != 0 ? walk.diagonalDuration : walk.duration;

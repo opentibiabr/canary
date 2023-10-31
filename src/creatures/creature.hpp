@@ -780,7 +780,7 @@ private:
 		uint16_t calculatedStepSpeed { 1 };
 		uint16_t duration { 0 };
 		uint16_t diagonalDuration { 0 };
-		
+
 		bool recache = false;
 	} walk;
 

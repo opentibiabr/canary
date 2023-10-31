@@ -493,7 +493,7 @@ public:
 	}
 
 	void setParent(std::weak_ptr<Cylinder> cylinder) override final {
-		walk.recache = true;
+		const auto oldGroundSpeed = walk.groundSpeed;
 		walk.groundSpeed = 150;
 
 		if (const auto &lockedCylinder = cylinder.lock()) {
@@ -507,6 +507,10 @@ public:
 					walk.groundSpeed = it.speed;
 				}
 			}
+		}
+
+		if (walk.groundSpeed != oldGroundSpeed) {
+			walk.recache = true;
 		}
 	}
 
@@ -787,7 +791,7 @@ private:
 	} walk;
 
 	void updateCalculatedStepSpeed() {
-		const int32_t stepSpeed = getStepSpeed();
+		const auto stepSpeed = getStepSpeed();
 		walk.calculatedStepSpeed = std::max<uint32_t>(floor((Creature::speedA * log(stepSpeed + Creature::speedB) + Creature::speedC) + .5f), 1);
 		walk.calculatedStepSpeed = (stepSpeed > -Creature::speedB) ? walk.calculatedStepSpeed : 1;
 		walk.recache = true;

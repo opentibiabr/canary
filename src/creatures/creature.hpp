@@ -147,13 +147,11 @@ public:
 
 	int32_t getWalkSize();
 
-	int32_t getWalkDelay(Direction dir);
-	int32_t getWalkDelay();
+	int32_t getWalkDelay(Direction dir = DIRECTION_NONE);
 	int64_t getTimeSinceLastMove() const;
 
 	int64_t getEventStepTicks(bool onlyDelay = false);
-	int64_t getStepDuration(Direction dir);
-	int64_t getStepDuration();
+	uint16_t getStepDuration(Direction dir = DIRECTION_NONE);
 	virtual uint16_t getStepSpeed() const {
 		return getSpeed();
 	}
@@ -495,11 +493,18 @@ public:
 	}
 
 	void setParent(std::weak_ptr<Cylinder> cylinder) override final {
-		auto lockedCylinder = cylinder.lock();
-		if (lockedCylinder) {
-			auto newParent = lockedCylinder->getTile();
+		walk.recache = true;
+		walk.groundSpeed = 150;
+
+		if (const auto &lockedCylinder = cylinder.lock()) {
+			const auto &newParent = lockedCylinder->getTile();
 			position = newParent->getPosition();
 			m_tile = newParent;
+
+			if (newParent->getGround()) {
+				const auto &it = Item::items[newParent->getGround()->getID()];
+				walk.groundSpeed = it.speed > 0 ? it.speed : walk.groundSpeed;
+			}
 		}
 	}
 
@@ -769,4 +774,20 @@ private:
 	bool canFollowMaster();
 	bool isLostSummon();
 	void handleLostSummon(bool teleportSummons);
+
+	struct {
+		uint16_t groundSpeed { 0 };
+		uint16_t calculatedStepSpeed { 1 };
+		uint16_t duration { 0 };
+		uint16_t diagonalDuration { 0 };
+		
+		bool recache = false;
+	} walk;
+
+	void updateCalculatedStepSpeed() {
+		const int32_t stepSpeed = getStepSpeed();
+		walk.calculatedStepSpeed = std::max<uint32_t>(floor((Creature::speedA * log(stepSpeed + Creature::speedB) + Creature::speedC) + .5f), 1);
+		walk.calculatedStepSpeed = (stepSpeed > -Creature::speedB) ? walk.calculatedStepSpeed : 1;
+		walk.recache = true;
+	}
 };

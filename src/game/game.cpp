@@ -856,6 +856,7 @@ bool Game::internalPlaceCreature(std::shared_ptr<Creature> creature, const Posit
 
 	creature->setID();
 	creature->addList();
+	creature->updateCalculatedStepSpeed();
 
 	if (creatureCheck) {
 		addCreatureCheck(creature);

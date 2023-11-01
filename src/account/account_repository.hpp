@@ -17,7 +17,7 @@ namespace account {
 		virtual ~AccountRepository() = default;
 
 		virtual bool loadByID(const uint32_t &id, AccountInfo &acc) = 0;
-		virtual bool loadByEmail(const std::string &email, AccountInfo &acc) = 0;
+		virtual bool loadByEmailOrName(bool oldProtocol, const std::string &emailOrName, AccountInfo &acc) = 0;
 		virtual bool loadBySession(const std::string &email, AccountInfo &acc) = 0;
 		virtual bool save(const AccountInfo &accInfo) = 0;
 

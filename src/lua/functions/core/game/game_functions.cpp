@@ -630,8 +630,6 @@ int GameFunctions::luaGameGetNormalizedPlayerName(lua_State* L) {
 	std::shared_ptr<Player> player = g_game().getPlayerByName(name, true);
 	if (player) {
 		pushString(L, player->getName());
-		if (!player->isOnline()) {
-		}
 	} else {
 		lua_pushnil(L);
 	}

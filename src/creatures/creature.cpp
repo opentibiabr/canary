@@ -625,14 +625,6 @@ void Creature::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_pt
 void Creature::onDeath() {
 	bool lastHitUnjustified = false;
 	bool mostDamageUnjustified = false;
-	std::shared_ptr<Creature> lastHitCreature = g_game().getCreatureByID(lastHitCreatureId);
-	std::shared_ptr<Creature> lastHitCreatureMaster;
-	if (lastHitCreature) {
-		lastHitUnjustified = lastHitCreature->onKilledCreature(static_self_cast<Creature>(), true);
-		lastHitCreatureMaster = lastHitCreature->getMaster();
-	} else {
-		lastHitCreatureMaster = nullptr;
-	}
 
 	std::shared_ptr<Creature> mostDamageCreature = nullptr;
 
@@ -674,13 +666,15 @@ void Creature::onDeath() {
 		it.first->onGainExperience(it.second, getCreature());
 	}
 
+	std::shared_ptr<Creature> mostDamageCreatureMaster = nullptr;
 	if (mostDamageCreature) {
-		if (mostDamageCreature != lastHitCreature && mostDamageCreature != lastHitCreatureMaster) {
-			auto mostDamageCreatureMaster = mostDamageCreature->getMaster();
-			if (lastHitCreature != mostDamageCreatureMaster && (lastHitCreatureMaster == nullptr || mostDamageCreatureMaster != lastHitCreatureMaster)) {
-				mostDamageUnjustified = mostDamageCreature->onKilledCreature(static_self_cast<Creature>(), false);
-			}
-		}
+		mostDamageCreatureMaster = mostDamageCreature->getMaster();
+		mostDamageUnjustified = mostDamageCreature->onKilledCreature(getCreature(), false);
+	}
+
+	std::shared_ptr<Creature> lastHitCreature = g_game().getCreatureByID(lastHitCreatureId);
+	if (lastHitCreature && lastHitCreature != mostDamageCreature && lastHitCreature != mostDamageCreatureMaster) {
+		lastHitUnjustified = lastHitCreature->onKilledCreature(getCreature(), true);
 	}
 
 	bool droppedCorpse = dropCorpse(lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);

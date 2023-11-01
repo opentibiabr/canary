@@ -36,7 +36,7 @@ namespace account {
 			return ERROR_NO;
 		}
 
-		if (!m_descriptor.empty() && accountRepository.loadByEmail(m_descriptor, m_account)) {
+		if (!m_descriptor.empty() && accountRepository.loadByEmailOrName(getProtocolCompat(), m_descriptor, m_account)) {
 			m_accLoaded = true;
 			return ERROR_NO;
 		}

@@ -1,3 +1,11 @@
 function onUpdateDatabase()
-	return false -- true = There are others migrations file | false = this is the last migration file
+	logger.info("Updating database to version 42 (fix xpboost types)")
+
+	db.query([[
+		ALTER TABLE `players`
+    MODIFY `xpboost_stamina` smallint(5) UNSIGNED DEFAULT NULL,
+    MODIFY `xpboost_value` tinyint(4) UNSIGNED DEFAULT NULL
+	]])
+
+	return true
 end

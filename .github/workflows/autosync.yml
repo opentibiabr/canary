@@ -2,11 +2,10 @@ name: Auto - Sync Fork
 
 on:
   schedule:
-    - cron:  '0 */12 * * *'
-    # scheduled at 07:00 every Monday and Thursday
+    - cron: '0 */12 * * *'  # Agendado a cada 12 horas
+    # Agendado às 07:00 toda segunda e quinta-feira
 
-  workflow_dispatch:  # click the button on Github repo!
-
+  workflow_dispatch:  # Clique no botão no repositório do GitHub
 
 jobs:
   sync_with_upstream:
@@ -14,29 +13,45 @@ jobs:
     name: Sync main with upstream latest
 
     steps:
-    # Step 1: run a standard checkout action, provided by github
-    - name: Checkout main
-      uses: actions/checkout@v2
-      with:
-        ref: main
-        # submodules: 'recursive'     ### may be needed in your situation
+      # Passo 1: Executa uma ação de checkout padrão, fornecida pelo GitHub
+      - name: Checkout main
+        uses: actions/checkout@v2
+        with:
+          ref: main
+          # submodules: 'recursive'     ### pode ser necessário na sua situação
 
-    # Step 2: run this sync action - specify the upstream repo, upstream branch to sync with, and target sync branch
-    - name: Pull (Fast-Forward) upstream changes
-      id: sync
-      uses: aormsby/Fork-Sync-With-Upstream-action@v2.1
-      with:
-        upstream_repository: opentibiabr/canary
-        upstream_branch: main
-        target_branch: main
-        git_pull_args: --ff-only                    # optional arg use, defaults to simple 'pull'
-        github_token: ${{ secrets.GITHUB_TOKEN }}   # optional, for accessing repos that require authentication
+      # Passo 2: Executa a ação de sincronização - especifica o repositório upstream, branch upstream para sincronizar e branch de destino da sincronização
+      - name: Pull (Fast-Forward) upstream changes
+        id: sync
+        uses: aormsby/Fork-Sync-With-Upstream-action@v2.1
+        with:
+          upstream_repository: opentibiabr/canary
+          upstream_branch: main
+          target_branch: main
+          git_pull_args: --ff-only                    # argumento opcional, padrão para 'pull' simples
+          github_token: ${{ secrets.GITHUB_TOKEN }}   # opcional, para acessar repositórios que requerem autenticação
 
-    # Step 3: Display a message if 'sync' step had new commits (simple test)
-    - name: Check for new commits
-      if: steps.sync.outputs.has_new_commits
-      run: echo "There were new commits."
+      # Passo 3: Exibe uma mensagem se o passo 'sync' tiver novos commits (teste simples)
+      - name: Check for new commits
+        if: steps.sync.outputs.has_new_commits
+        run: echo "There were new commits."
 
-    # Step 4: Print a helpful timestamp for your records (not required, just nice)
-    - name: Timestamp
-      run: date
+      # Passo 4: Realiza o merge das alterações do repositório upstream na branch 'main'
+      - name: Merge upstream changes into main
+        run: |
+          git config user.name "LeoTKBR"
+          git config user.email "41605307+LeoTKBR@users.noreply.github.com"
+
+          git pull --unshallow
+          git remote add upstream https://github.com/opentibiabr/canary.git
+          git fetch upstream
+
+          git checkout main
+          git merge upstream/main --no-edit
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Passo 5: Exibe um carimbo de data e hora útil (não é necessário, apenas agradável)
+      - name: Timestamp
+        run: date

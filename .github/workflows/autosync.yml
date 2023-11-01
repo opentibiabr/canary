@@ -1,24 +1,40 @@
-# .github/workflows/autosync.yml
-
-name: Merge upstream to main
 on:
   schedule:
-    - cron: '0 */12 * * *'  # A cada 12 horas
+    - cron:  '0 */12 * * *'
+    # scheduled at 07:00 every Monday and Thursday
+
+  workflow_dispatch:  # click the button on Github repo!
+
 
 jobs:
-  merge:
+  sync_with_upstream:
     runs-on: ubuntu-latest
+    name: Sync main with upstream latest
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Merge upstream
-        run: |
-          git config --global user.name 'LeoTKBR'
-          git config --global user.email '41605307+LeoTKBR@users.noreply.github.com'
+    # Step 1: run a standard checkout action, provided by github
+    - name: Checkout main
+      uses: actions/checkout@v2
+      with:
+        ref: main
+        # submodules: 'recursive'     ### may be needed in your situation
 
-          git pull --unshallow
-          git remote add upstream https://github.com/opentibiabr/canary
-          git fetch upstream
+    # Step 2: run this sync action - specify the upstream repo, upstream branch to sync with, and target sync branch
+    - name: Pull (Fast-Forward) upstream changes
+      id: sync
+      uses: aormsby/Fork-Sync-With-Upstream-action@v2.1
+      with:
+        upstream_repository: opentibiabr/canary
+        upstream_branch: main
+        target_branch: main
+        git_pull_args: --ff-only                    # optional arg use, defaults to simple 'pull'
+        github_token: ${{ secrets.GITHUB_TOKEN }}   # optional, for accessing repos that require authentication
 
-          git checkout main
-          git merge --no-edit upstream/main
-          git push origin main
+    # Step 3: Display a message if 'sync' step had new commits (simple test)
+    - name: Check for new commits
+      if: steps.sync.outputs.has_new_commits
+      run: echo "There were new commits."
+
+    # Step 4: Print a helpful timestamp for your records (not required, just nice)
+    - name: Timestamp
+      run: date

@@ -1,50 +1,43 @@
 name: Auto - Sync Fork
 
+env:
+  # Required, URL to upstream (fork base)
+  UPSTREAM_URL: "https://github.com/opentibiabr/canary.git"
+  # Required, token to authenticate bot, could use ${{ secrets.GITHUB_TOKEN }} 
+  # Over here, we use a PAT instead to authenticate workflow file changes.
+  WORKFLOW_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+  # Optional, defaults to main
+  UPSTREAM_BRANCH: "main"
+  # Optional, defaults to UPSTREAM_BRANCH
+  DOWNSTREAM_BRANCH: ""
+  # Optional fetch arguments
+  FETCH_ARGS: ""
+  # Optional merge arguments
+  MERGE_ARGS: ""
+  # Optional push arguments
+  PUSH_ARGS: ""
+  # Optional toggle to spawn time logs (keeps action active) 
+  SPAWN_LOGS: "false" # "true" or "false"
+
+# This runs every day on 1801 UTC
 on:
   schedule:
-    - cron: '0 */12 * * *'  # Agendado a cada 12 horas
-    # Agendado às 07:00 toda segunda e quinta-feira
-
-  workflow_dispatch:  # Clique no botão no repositório do GitHub
+    - cron: '0 */12 * * *'
+  # Allows manual workflow run (must in default branch to work)
+  workflow_dispatch:
 
 jobs:
-  sync_with_upstream:
+  build:
     runs-on: ubuntu-latest
-    name: Sync main with upstream latest
-
     steps:
-      # Passo 1: Executa uma ação de checkout padrão, fornecida pelo GitHub
-      - name: Checkout main
-        uses: actions/checkout@v2
-        with:
-          ref: main
-          # submodules: 'recursive'     ### pode ser necessário na sua situação
-# Passo 4: Reorganiza seus commits locais sobre os commits do upstream
-      - name: Rebase local changes on top of upstream
-        run: |
-          git config user.name "LeoTKBR"
-          git config user.email "41605307+LeoTKBR@users.noreply.github.com"
-
-          git pull --rebase upstream main
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # Passo 2: Executa a ação de sincronização - especifica o repositório upstream, branch upstream para sincronizar e branch de destino da sincronização
-      - name: Pull (Fast-Forward) upstream changes
-        id: sync
-        uses: aormsby/Fork-Sync-With-Upstream-action@v2.1
-        with:
-          upstream_repository: opentibiabr/canary
-          upstream_branch: main
-          target_branch: main
-          git_pull_args: --ff-only                    # argumento opcional, padrão para 'pull' simples
-          github_token: ${{ secrets.GITHUB_TOKEN }}   # opcional, para acessar repositórios que requerem autenticação
-
-      # Passo 3: Display a message if 'sync' step had new commits (simple test)
-      - name: Check for new commits
-        if: steps.sync.outputs.has_new_commits
-        run: echo "There were new commits."
-
-# Passo 5: Exibe um carimbo de data e hora útil (não é necessário, apenas agradável)
-      - name: Timestamp
-        run: date
+      - name: GitHub Sync to Upstream Repository
+        uses: dabreadman/sync-upstream-repo@v1.3.0
+        with: 
+          upstream_repo: ${{ env.UPSTREAM_URL }}
+          upstream_branch: ${{ env.UPSTREAM_BRANCH }}
+          downstream_branch: ${{ env.DOWNSTREAM_BRANCH }}
+          token: ${{ env.WORKFLOW_TOKEN }}
+          fetch_args: ${{ env.FETCH_ARGS }}
+          merge_args: ${{ env.MERGE_ARGS }}
+          push_args: ${{ env.PUSH_ARGS }}
+          spawn_logs: ${{ env.SPAWN_LOGS }}

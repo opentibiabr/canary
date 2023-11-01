@@ -18,6 +18,16 @@ local rewards = {
 	{ id = 34098, name = "Pair of Soulstalkers" },
 	{ id = 34099, name = "Soulbastion" },
 }
+local outfits = { 1322, 1323 }
+
+local function addOutfits(player)
+	if player:getStorageValue(Storage.Quest.U12_40.SoulWar.OutfitReward) < 0 then
+		player:addOutfit(outfits[1], 0)
+		player:addOutfit(outfits[2], 0)
+		player:setStorageValue(Storage.Quest.U12_40.SoulWar.OutfitReward, 1)
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Congratulations you received the Revenant Outfit.")
+	end
+end
 
 local rewardSoulWar = Action()
 function rewardSoulWar.onUse(creature, item, fromPosition, target, toPosition, isHotkey)
@@ -31,8 +41,10 @@ function rewardSoulWar.onUse(creature, item, fromPosition, target, toPosition, i
 		player:addItem(rewardItem.id, 1)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a " .. rewardItem.name .. ".")
 		player:setStorageValue(Storage.Quest.U12_40.SoulWar.QuestReward, 1)
+		addOutfits(player)
 		return true
 	else
+		addOutfits(player)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have already collected your reward")
 		return false
 	end

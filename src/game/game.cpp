@@ -704,6 +704,7 @@ std::shared_ptr<Player> Game::getPlayerByID(uint32_t id, bool loadTmp /* = false
 	if (!IOLoginData::loadPlayerById(tmpPlayer, id)) {
 		return nullptr;
 	}
+	tmpPlayer->setOnline(false);
 	return tmpPlayer;
 }
 
@@ -784,6 +785,7 @@ std::shared_ptr<Player> Game::getPlayerByGUID(const uint32_t &guid, bool loadTmp
 	if (!IOLoginData::loadPlayerById(tmpPlayer, guid)) {
 		return nullptr;
 	}
+	tmpPlayer->setOnline(false);
 	return tmpPlayer;
 }
 
@@ -8593,13 +8595,10 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			return;
 		}
 
-		std::shared_ptr<Player> buyerPlayer = getPlayerByGUID(offer.playerId);
+		std::shared_ptr<Player> buyerPlayer = getPlayerByGUID(offer.playerId, true);
 		if (!buyerPlayer) {
-			buyerPlayer = std::make_shared<Player>(nullptr);
-			if (!IOLoginData::loadPlayerById(buyerPlayer, offer.playerId)) {
-				offerStatus << "Failed to load buyer player " << player->getName();
-				return;
-			}
+			offerStatus << "Failed to load buyer player " << player->getName();
+			return;
 		}
 
 		if (!buyerPlayer->getAccount()) {
@@ -8697,14 +8696,10 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			g_saveManager().savePlayer(buyerPlayer);
 		}
 	} else if (offer.type == MARKETACTION_SELL) {
-		std::shared_ptr<Player> sellerPlayer = getPlayerByGUID(offer.playerId);
+		std::shared_ptr<Player> sellerPlayer = getPlayerByGUID(offer.playerId, true);
 		if (!sellerPlayer) {
-			sellerPlayer = std::make_shared<Player>(nullptr);
-			if (!IOLoginData::loadPlayerById(sellerPlayer, offer.playerId)) {
-				offerStatus << "Failed to load seller player";
-
-				return;
-			}
+			offerStatus << "Failed to load seller player";
+			return;
 		}
 
 		if (player == sellerPlayer || player->getAccount() == sellerPlayer->getAccount()) {

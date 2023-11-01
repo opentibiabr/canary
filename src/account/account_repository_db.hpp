@@ -21,7 +21,7 @@ namespace account {
 			db(db), logger(logger) { }
 
 		bool loadByID(const uint32_t &id, AccountInfo &acc) override;
-		bool loadByEmail(const std::string &email, AccountInfo &acc) override;
+		bool loadByEmailOrName(bool oldProtocol, const std::string &emailOrName, AccountInfo &acc) override;
 		bool loadBySession(const std::string &esseionKey, AccountInfo &acc) override;
 		bool save(const AccountInfo &accInfo) override;
 

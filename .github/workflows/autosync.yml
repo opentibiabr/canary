@@ -24,7 +24,7 @@ jobs:
     # Step 2: run this sync action - specify the upstream repo, upstream branch to sync with, and target sync branch
     - name: Pull (Fast-Forward) upstream changes
       id: sync
-      uses: LeoTKBR/Fork-Sync-With-Upstream-action@v2.1
+      uses: aormsby/Fork-Sync-With-Upstream-action@v2.1
       with:
         upstream_repository: opentibiabr/canary
         upstream_branch: main

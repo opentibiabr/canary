@@ -143,3 +143,17 @@ function Raid:getActivePlayerCount()
 	end
 	return count
 end
+
+--Overrides Encounter:addBroadcast
+--Adds a stage that broadcasts raid information globally
+--@param message string The message to send
+--@return boolean True if the message stage is added successfully, false otherwise
+function Raid:addBroadcast(message, type)
+	type = type or MESSAGE_EVENT_ADVANCE
+	return self:addStage({
+		start = function()
+			self:broadcast(type, message)
+			Webhook.sendMessage("Incoming raid", message, WEBHOOK_COLOR_RAID)
+		end,
+	})
+end

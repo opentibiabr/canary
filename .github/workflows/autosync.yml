@@ -31,7 +31,7 @@ jobs:
           git_pull_args: --ff-only                    # argumento opcional, padrão para 'pull' simples
           github_token: ${{ secrets.GITHUB_TOKEN }}   # opcional, para acessar repositórios que requerem autenticação
 
-      # Passo 3: Exibe uma mensagem se o passo 'sync' tiver novos commits (teste simples)
+      # Passo 3: Display a message if 'sync' step had new commits (simple test)
       - name: Check for new commits
         if: steps.sync.outputs.has_new_commits
         run: echo "There were new commits."
@@ -43,11 +43,10 @@ jobs:
           git config user.email "41605307+LeoTKBR@users.noreply.github.com"
 
           git pull --unshallow
-          git remote add upstream https://github.com/opentibiabr/canary.git
           git fetch upstream
 
           git checkout main
-          git merge upstream/main --no-edit
+          git merge upstream/main --no-ff --no-edit
           git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

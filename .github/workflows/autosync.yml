@@ -1,3 +1,5 @@
+name: Auto - Sync Fork
+
 on:
   schedule:
     - cron:  '0 */12 * * *'

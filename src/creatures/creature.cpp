@@ -1405,16 +1405,15 @@ uint16_t Creature::getStepDuration(Direction dir) {
 		return 0;
 	}
 
-	if (walk.recache) {
+	if (walk.needRecache()) {
 		double duration = std::floor(1000 * walk.groundSpeed / walk.calculatedStepSpeed);
-		uint16_t stepDuration = std::ceil(duration / SERVER_BEAT) * SERVER_BEAT;
-
-		walk.recache = false;
-		walk.duration = stepDuration;
-		walk.diagonalDuration = stepDuration * 3;
+		walk.duration = std::ceil(duration / SERVER_BEAT) * SERVER_BEAT;
 	}
 
-	auto duration = (dir & DIRECTION_DIAGONAL_MASK) != 0 ? walk.diagonalDuration : walk.duration;
+	auto duration = walk.duration;
+	if ((dir & DIRECTION_DIAGONAL_MASK) != 0) {
+		duration *= 3;
+	}
 
 	if (const auto &monster = getMonster()) {
 		if (monster->isTargetNearby() && !monster->isFleeing() && !monster->getMaster()) {

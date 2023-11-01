@@ -510,7 +510,7 @@ public:
 		}
 
 		if (walk.groundSpeed != oldGroundSpeed) {
-			walk.recache = true;
+			walk.recache();
 		}
 	}
 
@@ -785,15 +785,19 @@ private:
 		uint16_t groundSpeed { 0 };
 		uint16_t calculatedStepSpeed { 1 };
 		uint16_t duration { 0 };
-		uint16_t diagonalDuration { 0 };
 
-		bool recache = false;
+		bool needRecache() {
+			return duration == 0;
+		}
+		void recache() {
+			duration = 0;
+		}
 	} walk;
 
 	void updateCalculatedStepSpeed() {
 		const auto stepSpeed = getStepSpeed();
 		walk.calculatedStepSpeed = std::max<uint32_t>(floor((Creature::speedA * log(stepSpeed + Creature::speedB) + Creature::speedC) + .5f), 1);
 		walk.calculatedStepSpeed = (stepSpeed > -Creature::speedB) ? walk.calculatedStepSpeed : 1;
-		walk.recache = true;
+		walk.recache();
 	}
 };

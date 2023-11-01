@@ -19,7 +19,16 @@ jobs:
         with:
           ref: main
           # submodules: 'recursive'     ### pode ser necessário na sua situação
+# Passo 4: Reorganiza seus commits locais sobre os commits do upstream
+      - name: Rebase local changes on top of upstream
+        run: |
+          git config user.name "LeoTKBR"
+          git config user.email "41605307+LeoTKBR@users.noreply.github.com"
 
+          git pull --rebase upstream main
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Passo 2: Executa a ação de sincronização - especifica o repositório upstream, branch upstream para sincronizar e branch de destino da sincronização
       - name: Pull (Fast-Forward) upstream changes
         id: sync
@@ -35,17 +44,6 @@ jobs:
       - name: Check for new commits
         if: steps.sync.outputs.has_new_commits
         run: echo "There were new commits."
-
-# Passo 4: Reorganiza seus commits locais sobre os commits do upstream
-      - name: Rebase local changes on top of upstream
-        run: |
-          git config user.name "LeoTKBR"
-          git config user.email "41605307+LeoTKBR@users.noreply.github.com"
-
-          git pull --rebase upstream main
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 # Passo 5: Exibe um carimbo de data e hora útil (não é necessário, apenas agradável)
       - name: Timestamp

@@ -145,7 +145,7 @@ private:
 	void parseBestiarysendCreatures(NetworkMessage &msg);
 	void BestiarysendCharms();
 	void sendBestiaryEntryChanged(uint16_t raceid);
-	void refreshCyclopediaMonsterTracker(const std::vector<std::shared_ptr<MonsterType>> &trackerSet, bool isBoss);
+	void refreshCyclopediaMonsterTracker(const std::unordered_set<std::shared_ptr<MonsterType>> &trackerSet, bool isBoss);
 	void sendTeamFinderList();
 	void sendLeaderTeamFinder(bool reset);
 	void createLeaderTeamFinder(NetworkMessage &msg);

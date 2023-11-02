@@ -304,8 +304,8 @@ public:
 		return guildWarVector;
 	}
 
-	const std::vector<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) {
-		return (isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker).data();
+	const std::unordered_set<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) {
+		return isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
 	}
 
 	void addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient = false);
@@ -322,13 +322,13 @@ public:
 		refreshCyclopediaMonsterTracker(getCyclopediaMonsterTrackerSet(isBoss), isBoss);
 	}
 
-	void refreshCyclopediaMonsterTracker(const std::vector<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {
+	void refreshCyclopediaMonsterTracker(const std::unordered_set<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {
 		if (client) {
 			client->refreshCyclopediaMonsterTracker(trackerList, isBoss);
 		}
 	}
 
-	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType);
+	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const;
 
 	Vocation* getVocation() const {
 		return vocation;
@@ -2645,8 +2645,8 @@ private:
 	// TODO: This variable is only temporarily used when logging in, get rid of it somehow.
 	std::forward_list<std::shared_ptr<Condition>> storedConditionList;
 
-	stdext::vector_set<std::shared_ptr<MonsterType>> m_bestiaryMonsterTracker;
-	stdext::vector_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;
+	std::unordered_set<std::shared_ptr<MonsterType>> m_bestiaryMonsterTracker;
+	std::unordered_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;
 
 	std::string name;
 	std::string guildNick;

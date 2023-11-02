@@ -43,6 +43,10 @@ public:
 
 	bool isInRange(const Position &startPos, const Position &testPos, const FindPathParams &fpp) const;
 
+	Position getTargetPos() const {
+		return targetPos;
+	}
+
 private:
 	Position targetPos;
 };
@@ -266,9 +270,11 @@ public:
 	phmap::flat_hash_set<std::shared_ptr<Zone>> getZones();
 
 	// walk functions
-	void startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions = false);
+	void startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions = false);
 	void addEventWalk(bool firstStep = false);
 	void stopEventWalk();
+
+	void goToFollowCreature_async(std::function<void()> &&onComplete = nullptr);
 	virtual void goToFollowCreature();
 
 	// walk events
@@ -283,8 +289,12 @@ public:
 	virtual bool setFollowCreature(std::shared_ptr<Creature> creature);
 
 	// follow events
-	virtual void onFollowCreature(std::shared_ptr<Creature>) { }
-	virtual void onFollowCreatureComplete(std::shared_ptr<Creature>) { }
+	virtual void onFollowCreature(const std::shared_ptr<Creature> &) {
+		/* empty */
+	}
+	virtual void onFollowCreatureComplete(const std::shared_ptr<Creature> &) {
+		/* empty */
+	}
 
 	// combat functions
 	std::shared_ptr<Creature> getAttackedCreature() {
@@ -446,7 +456,7 @@ public:
 	 * @return false
 	 */
 	void checkSummonMove(const Position &newPos, bool teleportSummon = false);
-	virtual void onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport);
+	virtual void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport);
 
 	virtual void onAttackedCreatureDisappear(bool) { }
 	virtual void onFollowCreatureDisappear(bool) { }
@@ -524,8 +534,8 @@ public:
 
 	double getDamageRatio(std::shared_ptr<Creature> attacker) const;
 
-	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, const FindPathParams &fpp);
-	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
+	bool getPathTo(const Position &targetPos, stdext::arraylist<Direction> &dirList, const FindPathParams &fpp);
+	bool getPathTo(const Position &targetPos, stdext::arraylist<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
 
 	struct CountBlock_t {
 		int32_t total;
@@ -660,7 +670,7 @@ protected:
 	CreatureEventList eventsList;
 	ConditionList conditions;
 
-	std::forward_list<Direction> listWalkDir;
+	std::deque<Direction> listWalkDir;
 
 	std::weak_ptr<Tile> m_tile;
 	std::weak_ptr<Creature> m_attackedCreature;
@@ -721,15 +731,17 @@ protected:
 	bool skillLoss = true;
 	bool lootDrop = true;
 	bool cancelNextWalk = false;
-	bool hasFollowPath = false;
 	bool forceUpdateFollowPath = false;
 	bool hiddenHealth = false;
 	bool floorChange = false;
 	bool canUseDefense = true;
 	bool moveLocked = false;
+	bool hasFollowPath = false;
 	int8_t charmChanceModifier = 0;
 
 	uint8_t wheelOfDestinyDrainBodyDebuff = 0;
+
+	std::atomic_bool pathfinderRunning = false;
 
 	// use map here instead of phmap to keep the keys in a predictable order
 	std::map<std::string, CreatureIcon> creatureIcons = {};
@@ -756,7 +768,7 @@ protected:
 	virtual uint16_t getLookCorpse() const {
 		return 0;
 	}
-	virtual void getPathSearchParams(std::shared_ptr<Creature> creature, FindPathParams &fpp);
+	virtual void getPathSearchParams(const std::shared_ptr<Creature> &, FindPathParams &fpp);
 	virtual void death(std::shared_ptr<Creature>) { }
 	virtual bool dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified);
 	virtual std::shared_ptr<Item> getCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature);
@@ -769,4 +781,5 @@ private:
 	bool canFollowMaster();
 	bool isLostSummon();
 	void handleLostSummon(bool teleportSummons);
+	void executeAsyncPathTo(bool executeOnFollow, FindPathParams &fpp, std::function<void()> &&onComplete);
 };

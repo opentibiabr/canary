@@ -1760,6 +1760,11 @@ public:
 	}
 
 	void setExpBoostStamina(uint16_t stamina) {
+		// only allow stamina boosts of 12 hours or less
+		if (stamina > 12 * 3600) {
+			expBoostStamina = 12 * 3600;
+			return;
+		}
 		expBoostStamina = stamina;
 	}
 
@@ -2487,6 +2492,14 @@ public:
 	std::map<uint16_t, uint16_t> getActiveConcoctions() const {
 		return activeConcoctions;
 	}
+	bool isConcoctionActive(Concoction_t concotion) const {
+		uint16_t itemId = static_cast<uint16_t>(concotion);
+		if (!activeConcoctions.contains(itemId)) {
+			return false;
+		}
+		auto timeLeft = activeConcoctions.at(itemId);
+		return timeLeft > 0;
+	}
 
 	bool checkAutoLoot() const {
 		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT) && getStorageValue(STORAGEVALUE_AUTO_LOOT) != 0;
@@ -2588,6 +2601,12 @@ private:
 
 	void internalAddThing(std::shared_ptr<Thing> thing) override;
 	void internalAddThing(uint32_t index, std::shared_ptr<Thing> thing) override;
+
+	void addHuntingTaskKill(const std::shared_ptr<MonsterType> &mType);
+	void addBestiaryKill(const std::shared_ptr<MonsterType> &mType);
+	void addBosstiaryKill(const std::shared_ptr<MonsterType> &mType);
+	bool onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit);
+	bool onKilledMonster(const std::shared_ptr<Monster> &target, bool lastHit);
 
 	phmap::flat_hash_set<uint32_t> attackedSet;
 

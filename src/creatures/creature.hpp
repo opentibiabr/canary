@@ -63,7 +63,9 @@ protected:
 	Creature();
 
 public:
-	static constexpr double speedA = 857.36, speedB = 261.29, speedC = -4795.01;
+	static constexpr double speedA = 857.36;
+	static constexpr double speedB = 261.29;
+	static constexpr double speedC = -4795.01;
 
 	virtual ~Creature();
 

@@ -62,8 +62,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	if not npcHandler:checkInteraction(npc, creature) then
 		return false
 	end
-	
-		-- Parse bank
+
+	-- Parse bank
 	npc:parseBank(message, npc, creature, npcHandler)
 	-- Parse guild bank
 	npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
@@ -95,7 +95,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say("No then.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	end
-
 
 	return true
 end

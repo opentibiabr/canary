@@ -26,6 +26,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.hpp"
 #include "server/network/protocol/protocollogin.hpp"
+#include "server/network/protocol/protocolstatus.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "io/ioprey.hpp"
 #include "io/io_bosstiary.hpp"
@@ -39,8 +40,7 @@ CanaryServer::CanaryServer(
 ) :
 	logger(logger),
 	rsa(rsa),
-	serviceManager(serviceManager),
-	loaderUniqueLock(loaderLock) {
+	serviceManager(serviceManager) {
 	logInfos();
 	toggleForceCloseButton();
 	g_game().setGameState(GAME_STATE_STARTUP);
@@ -50,7 +50,7 @@ CanaryServer::CanaryServer(
 	g_dispatcher().init();
 
 #ifdef _WIN32
-	SetConsoleTitleA(STATUS_SERVER_NAME);
+	SetConsoleTitleA(ProtocolStatus::SERVER_NAME.c_str());
 #endif
 }
 
@@ -83,7 +83,7 @@ int CanaryServer::run() {
 				if (getuid() == 0 || geteuid() == 0) {
 					logger.warn("{} has been executed as root user, "
 								"please consider running it as a normal user",
-								STATUS_SERVER_NAME);
+								ProtocolStatus::SERVER_NAME);
 				}
 #endif
 
@@ -92,10 +92,9 @@ int CanaryServer::run() {
 
 				g_webhook().sendMessage("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE);
 
-				loaderDone = true;
-				loaderSignal.notify_all();
+				loaderStatus = LoaderStatus::LOADED;
 			} catch (FailedToInitializeCanary &err) {
-				loadFailed = true;
+				loaderStatus = LoaderStatus::FAILED;
 				logger.error(err.what());
 
 				logger.error("The program will close after pressing the enter key...");
@@ -103,16 +102,16 @@ int CanaryServer::run() {
 				if (isatty(STDIN_FILENO)) {
 					getchar();
 				}
-
-				loaderSignal.notify_all();
 			}
+
+			loaderStatus.notify_one();
 		},
 		"CanaryServer::run"
 	);
 
-	loaderSignal.wait(loaderUniqueLock, [this] { return loaderDone || loadFailed; });
+	loaderStatus.wait(LoaderStatus::LOADING);
 
-	if (loadFailed || !serviceManager.is_running()) {
+	if (loaderStatus == LoaderStatus::FAILED || !serviceManager.is_running()) {
 		logger.error("No services running. The server is NOT online!");
 		shutdown();
 		return EXIT_FAILURE;
@@ -181,12 +180,12 @@ void CanaryServer::setupHousesRent() {
 
 void CanaryServer::logInfos() {
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE
-	logger.debug("{} - Version [{}] dated [{}]", STATUS_SERVER_NAME, SERVER_RELEASE_VERSION, GIT_COMMIT_DATE_ISO8601);
+	logger.debug("{} - Version [{}] dated [{}]", ProtocolStatus::SERVER_NAME, SERVER_RELEASE_VERSION, GIT_COMMIT_DATE_ISO8601);
 	#if GIT_IS_DIRTY
 	logger.debug("DIRTY - NOT OFFICIAL RELEASE");
 	#endif
 #else
-	logger.info("{} - Version {}", STATUS_SERVER_NAME, SERVER_RELEASE_VERSION);
+	logger.info("{} - Version {}", ProtocolStatus::SERVER_NAME, SERVER_RELEASE_VERSION);
 #endif
 
 	logger.debug("Compiled with {}, on {} {}, for platform {}\n", getCompiler(), __DATE__, __TIME__, getPlatform());
@@ -195,7 +194,7 @@ void CanaryServer::logInfos() {
 	logger.debug("Linked with {} for Lua support", LUAJIT_VERSION);
 #endif
 
-	logger.info("A server developed by: {}", STATUS_SERVER_DEVELOPERS);
+	logger.info("A server developed by: {}", ProtocolStatus::SERVER_DEVELOPERS);
 	logger.info("Visit our website for updates, support, and resources: "
 				"https://docs.opentibiabr.com/");
 }

@@ -815,7 +815,7 @@ public:
 	void goToFollowCreature() override;
 
 	// follow events
-	void onFollowCreature(std::shared_ptr<Creature> creature) override;
+	void onFollowCreature(const std::shared_ptr<Creature> &) override;
 
 	// walk events
 	void onWalk(Direction &dir) override;
@@ -1230,7 +1230,7 @@ public:
 
 	void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) override;
 	void onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) override;
-	void onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport) override;
+	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
 
 	void onAttackedCreatureDisappear(bool isLogout) override;
 	void onFollowCreatureDisappear(bool isLogout) override;
@@ -1760,6 +1760,11 @@ public:
 	}
 
 	void setExpBoostStamina(uint16_t stamina) {
+		// only allow stamina boosts of 12 hours or less
+		if (stamina > 12 * 3600) {
+			expBoostStamina = 12 * 3600;
+			return;
+		}
 		expBoostStamina = stamina;
 	}
 
@@ -2487,6 +2492,14 @@ public:
 	std::map<uint16_t, uint16_t> getActiveConcoctions() const {
 		return activeConcoctions;
 	}
+	bool isConcoctionActive(Concoction_t concotion) const {
+		uint16_t itemId = static_cast<uint16_t>(concotion);
+		if (!activeConcoctions.contains(itemId)) {
+			return false;
+		}
+		auto timeLeft = activeConcoctions.at(itemId);
+		return timeLeft > 0;
+	}
 
 	bool checkAutoLoot() const {
 		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT) && getStorageValue(STORAGEVALUE_AUTO_LOOT) != 0;
@@ -2588,6 +2601,12 @@ private:
 
 	void internalAddThing(std::shared_ptr<Thing> thing) override;
 	void internalAddThing(uint32_t index, std::shared_ptr<Thing> thing) override;
+
+	void addHuntingTaskKill(const std::shared_ptr<MonsterType> &mType);
+	void addBestiaryKill(const std::shared_ptr<MonsterType> &mType);
+	void addBosstiaryKill(const std::shared_ptr<MonsterType> &mType);
+	bool onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit);
+	bool onKilledMonster(const std::shared_ptr<Monster> &target, bool lastHit);
 
 	phmap::flat_hash_set<uint32_t> attackedSet;
 
@@ -2869,7 +2888,7 @@ private:
 	void addConditionSuppression(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addConditions);
 
 	uint16_t getLookCorpse() const override;
-	void getPathSearchParams(std::shared_ptr<Creature> creature, FindPathParams &fpp) override;
+	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
 
 	void setDead(bool isDead) {
 		dead = isDead;

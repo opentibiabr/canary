@@ -40,18 +40,17 @@ public:
 	int run();
 
 private:
+	enum class LoaderStatus : uint8_t {
+		LOADING,
+		LOADED,
+		FAILED
+	};
+
 	RSA &rsa;
 	Logger &logger;
 	ServiceManager &serviceManager;
 
-	std::mutex loaderLock;
-	std::condition_variable loaderSignal;
-	std::condition_variable mapSignal;
-	std::unique_lock<std::mutex> loaderUniqueLock;
-	std::string threadFailMsg;
-
-	bool loaderDone = false;
-	bool loadFailed = false;
+	std::atomic<LoaderStatus> loaderStatus = LoaderStatus::LOADING;
 
 	void logInfos();
 	static void toggleForceCloseButton();

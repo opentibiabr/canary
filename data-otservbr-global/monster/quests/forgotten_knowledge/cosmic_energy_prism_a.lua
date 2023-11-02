@@ -14,6 +14,11 @@ monster.corpse = 0
 monster.speed = 0
 monster.manaCost = 0
 
+monster.events = {
+	"EnergyPrismDeath",
+	"EnergyPrismHealthChange",
+}
+
 monster.changeTarget = {
 	interval = 2000,
 	chance = 0,
@@ -41,10 +46,6 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-}
-
-monster.events = {
-	"EnergyPrism",
 }
 
 monster.light = {

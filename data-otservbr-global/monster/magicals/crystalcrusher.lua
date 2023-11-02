@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"MiddleSpikeDeath",
+}
+
 monster.raceId = 869
 monster.Bestiary = {
 	class = "Magical",

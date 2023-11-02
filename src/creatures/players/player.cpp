@@ -494,8 +494,7 @@ void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType
 		if (reloadClient && raceId != 0) {
 			if (isBoss) {
 				client->parseSendBosstiary();
-			}
-			else {
+			} else {
 				client->sendBestiaryEntryChanged(raceId);
 			}
 		}

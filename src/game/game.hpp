@@ -169,8 +169,8 @@ public:
 	bool removeCreature(std::shared_ptr<Creature> creature, bool isLogout = true);
 	void executeDeath(uint32_t creatureId);
 
-	void addCreatureCheck(std::shared_ptr<Creature> creature);
-	static void removeCreatureCheck(std::shared_ptr<Creature> creature);
+	void addCreatureCheck(const std::shared_ptr<Creature> &creature);
+	static void removeCreatureCheck(const std::shared_ptr<Creature> &creature);
 
 	size_t getPlayersOnline() const {
 		return players.size();
@@ -321,8 +321,8 @@ public:
 	void playerCloseNpcChannel(uint32_t playerId);
 	void playerReceivePing(uint32_t playerId);
 	void playerReceivePingBack(uint32_t playerId);
-	void playerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
-	void forcePlayerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
+	void playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir);
+	void forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir);
 	void playerStopAutoWalk(uint32_t playerId);
 	void playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t fromStackPos, uint16_t fromItemId, const Position &toPos, uint8_t toStackPos, uint16_t toItemId);
 	void playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId);

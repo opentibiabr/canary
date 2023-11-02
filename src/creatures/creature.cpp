@@ -464,11 +464,9 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 
 		if (!teleport) {
 			if (oldPos.z != newPos.z) {
-				// floor change extra cost
-				lastStepCost = 2;
+				lastStepCost = WALK_FLOOR_CHANGE_EXTRA_COST;
 			} else if (Position::getDistanceX(newPos, oldPos) >= 1 && Position::getDistanceY(newPos, oldPos) >= 1) {
-				// diagonal extra cost
-				lastStepCost = 3;
+				lastStepCost = WALK_DIAGONAL_EXTRA_COST;
 			}
 		} else {
 			stopEventWalk();
@@ -1415,18 +1413,16 @@ uint16_t Creature::getStepDuration(Direction dir) {
 	}
 
 	if (walk.needRecache()) {
-		double duration = std::floor(1000 * walk.groundSpeed / walk.calculatedStepSpeed);
-		walk.duration = std::ceil(duration / SERVER_BEAT) * SERVER_BEAT;
+		auto duration = std::floor(1000 * walk.groundSpeed / walk.calculatedStepSpeed);
+		walk.duration = static_cast<uint16_t>(std::ceil(duration / SERVER_BEAT) * SERVER_BEAT);
 	}
 
 	auto duration = walk.duration;
 	if ((dir & DIRECTION_DIAGONAL_MASK) != 0) {
-		duration *= 3;
-	}
-
-	if (const auto &monster = getMonster()) {
+		duration *= WALK_DIAGONAL_EXTRA_COST;
+	}else if (const auto &monster = getMonster()) {
 		if (monster->isTargetNearby() && !monster->isFleeing() && !monster->getMaster()) {
-			duration *= 2;
+			duration *= WALK_TARGET_NEARBY_EXTRA_COST;
 		}
 	}
 

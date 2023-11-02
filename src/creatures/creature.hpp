@@ -30,7 +30,9 @@ class Item;
 class Tile;
 class Zone;
 
-static constexpr uint8_t FLOOR_CHANGE_EXTRA_COST = 2;
+static constexpr uint8_t WALK_TARGET_NEARBY_EXTRA_COST = 2;
+static constexpr uint8_t WALK_FLOOR_CHANGE_EXTRA_COST = 2;
+static constexpr uint8_t WALK_DIAGONAL_EXTRA_COST = 3;
 static constexpr int32_t EVENT_CREATURECOUNT = 10;
 static constexpr int32_t EVENT_CREATURE_THINK_INTERVAL = 1000;
 static constexpr int32_t EVENT_CHECK_CREATURE_INTERVAL = (EVENT_CREATURE_THINK_INTERVAL / EVENT_CREATURECOUNT);
@@ -156,7 +158,7 @@ public:
 	int64_t getTimeSinceLastMove() const;
 
 	int64_t getEventStepTicks(bool onlyDelay = false);
-	uint16_t getStepDuration();
+	uint16_t getStepDuration(Direction dir = DIRECTION_NONE);
 	virtual uint16_t getStepSpeed() const {
 		return getSpeed();
 	}
@@ -809,8 +811,12 @@ private:
 
 	void updateCalculatedStepSpeed() {
 		const auto stepSpeed = getStepSpeed();
-		walk.calculatedStepSpeed = std::max<uint32_t>(floor((Creature::speedA * log(stepSpeed + Creature::speedB) + Creature::speedC) + .5f), 1);
-		walk.calculatedStepSpeed = (stepSpeed > -Creature::speedB) ? walk.calculatedStepSpeed : 1;
+		walk.calculatedStepSpeed = 1;
+		if (stepSpeed > -Creature::speedB) {
+			const auto formula = std::floor((Creature::speedA * log(stepSpeed + Creature::speedB) + Creature::speedC) + .5);
+			walk.calculatedStepSpeed = static_cast<uint16_t>(std::max(formula, 1.));
+		}
+
 		walk.recache();
 	}
 };

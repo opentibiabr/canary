@@ -16,6 +16,10 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "server/network/message/outputmessage.hpp"
 
+std::string ProtocolStatus::SERVER_NAME = "Canary";
+std::string ProtocolStatus::SERVER_VERSION = "3.0";
+std::string ProtocolStatus::SERVER_DEVELOPERS = "OpenTibiaBR Organization";
+
 std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME();
 
@@ -78,12 +82,12 @@ void ProtocolStatus::sendStatusString() {
 	uint64_t uptime = (OTSYS_TIME() - ProtocolStatus::start) / 1000;
 	serverinfo.append_attribute("uptime") = std::to_string(uptime).c_str();
 	serverinfo.append_attribute("ip") = g_configManager().getString(IP).c_str();
-	serverinfo.append_attribute("servername") = g_configManager().getString(SERVER_NAME).c_str();
+	serverinfo.append_attribute("servername") = g_configManager().getString(stringConfig_t::SERVER_NAME).c_str();
 	serverinfo.append_attribute("port") = std::to_string(g_configManager().getNumber(LOGIN_PORT)).c_str();
 	serverinfo.append_attribute("location") = g_configManager().getString(LOCATION).c_str();
 	serverinfo.append_attribute("url") = g_configManager().getString(URL).c_str();
-	serverinfo.append_attribute("server") = STATUS_SERVER_NAME;
-	serverinfo.append_attribute("version") = STATUS_SERVER_VERSION;
+	serverinfo.append_attribute("server") = ProtocolStatus::SERVER_NAME.c_str();
+	serverinfo.append_attribute("version") = ProtocolStatus::SERVER_VERSION.c_str();
 	serverinfo.append_attribute("client") = fmt::format("{}.{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER).c_str();
 
 	pugi::xml_node owner = tsqp.append_child("owner");
@@ -150,7 +154,7 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 
 	if (requestedInfo & REQUEST_BASIC_SERVER_INFO) {
 		output->addByte(0x10);
-		output->addString(g_configManager().getString(SERVER_NAME));
+		output->addString(g_configManager().getString(stringConfig_t::SERVER_NAME));
 		output->addString(g_configManager().getString(IP));
 		output->addString(std::to_string(g_configManager().getNumber(LOGIN_PORT)));
 	}
@@ -208,8 +212,8 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 
 	if (requestedInfo & REQUEST_SERVER_SOFTWARE_INFO) {
 		output->addByte(0x23); // server software info
-		output->addString(STATUS_SERVER_NAME);
-		output->addString(STATUS_SERVER_VERSION);
+		output->addString(ProtocolStatus::SERVER_NAME);
+		output->addString(ProtocolStatus::SERVER_VERSION);
 		output->addString(fmt::format("{}.{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
 	}
 	send(output);

@@ -488,20 +488,20 @@ void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType
 		uint16_t raceId = mtype ? mtype->info.raceid : 0;
 		// Bostiary tracker logic
 		if (isBoss) {
-			m_bosstiaryMonsterTracker.emplace(mtype);
+			m_bosstiaryMonsterTracker.insert(mtype);
 			if (reloadClient && raceId != 0) {
 				client->parseSendBosstiary();
 			}
-			client->refreshCyclopediaMonsterTracker(m_bosstiaryMonsterTracker.data(), true);
+			client->refreshCyclopediaMonsterTracker(m_bosstiaryMonsterTracker, true);
 			return;
 		}
 
 		// Bestiary tracker logic
-		m_bestiaryMonsterTracker.emplace(mtype);
+		m_bestiaryMonsterTracker.insert(mtype);
 		if (reloadClient && raceId != 0) {
 			client->sendBestiaryEntryChanged(raceId);
 		}
-		client->refreshCyclopediaMonsterTracker(m_bestiaryMonsterTracker.data(), false);
+		client->refreshCyclopediaMonsterTracker(m_bestiaryMonsterTracker, false);
 	}
 }
 
@@ -514,7 +514,7 @@ void Player::removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType>
 			if (reloadClient && raceId != 0) {
 				client->parseSendBosstiary();
 			}
-			client->refreshCyclopediaMonsterTracker(m_bosstiaryMonsterTracker.data(), true);
+			client->refreshCyclopediaMonsterTracker(m_bosstiaryMonsterTracker, true);
 			return;
 		}
 
@@ -523,12 +523,15 @@ void Player::removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType>
 		if (reloadClient && raceId != 0) {
 			client->sendBestiaryEntryChanged(raceId);
 		}
-		client->refreshCyclopediaMonsterTracker(m_bestiaryMonsterTracker.data(), false);
+		client->refreshCyclopediaMonsterTracker(m_bestiaryMonsterTracker, false);
 	}
 }
 
-bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) {
-	return monsterType ? m_bosstiaryMonsterTracker.contains(monsterType) : false;
+bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> monsterType) const {
+	if (!monsterType) {
+		return false;
+	}
+	return m_bosstiaryMonsterTracker.contains(monsterType);
 }
 
 void Player::updateInventoryWeight() {
@@ -1827,10 +1830,10 @@ void Player::onWalk(Direction &dir) {
 	setNextAction(OTSYS_TIME() + getStepDuration(dir));
 }
 
-void Player::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport) {
+void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
 	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 
-	auto followCreature = getFollowCreature();
+	const auto &followCreature = getFollowCreature();
 	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
 		isUpdatingPath = false;
 		g_dispatcher().addEvent(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
@@ -1847,7 +1850,7 @@ void Player::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<
 		}
 
 		if (tradePartner && !Position::areInRange<2, 2, 0>(tradePartner->getPosition(), getPosition())) {
-			g_game().internalCloseTrade(static_self_cast<Player>());
+			g_game().internalCloseTrade(getPlayer());
 		}
 	}
 
@@ -1870,13 +1873,13 @@ void Player::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<
 
 	if (party) {
 		party->updateSharedExperience();
-		party->updatePlayerStatus(static_self_cast<Player>(), oldPos, newPos);
+		party->updatePlayerStatus(getPlayer(), oldPos, newPos);
 	}
 
 	if (teleport || oldPos.z != newPos.z) {
 		int32_t ticks = g_configManager().getNumber(STAIRHOP_DELAY);
 		if (ticks > 0) {
-			if (std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_PACIFIED, ticks, 0)) {
+			if (const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_PACIFIED, ticks, 0)) {
 				addCondition(condition);
 			}
 		}
@@ -2922,12 +2925,13 @@ void Player::removePlayer(bool displayEffect, bool forced /*= true*/) {
 	}
 }
 
-void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t status, bool message) const {
+void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t status, bool message) {
 	if (!client) {
 		return;
 	}
 
-	if (!VIPList.contains(loginPlayer->guid)) {
+	auto it = VIPList.find(loginPlayer->guid);
+	if (it == VIPList.end()) {
 		return;
 	}
 
@@ -2943,11 +2947,10 @@ void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t
 }
 
 bool Player::removeVIP(uint32_t vipGuid) {
-	if (!VIPList.erase(vipGuid)) {
+	if (VIPList.erase(vipGuid) == 0) {
 		return false;
 	}
 
-	VIPList.erase(vipGuid);
 	if (account) {
 		IOLoginData::removeVIPEntry(account->getID(), vipGuid);
 	}
@@ -2961,7 +2964,8 @@ bool Player::addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t st
 		return false;
 	}
 
-	if (!VIPList.insert(vipGuid).second) {
+	auto result = VIPList.insert(vipGuid);
+	if (!result.second) {
 		sendTextMessage(MESSAGE_FAILURE, "This player is already in your list.");
 		return false;
 	}
@@ -2985,8 +2989,9 @@ bool Player::addVIPInternal(uint32_t vipGuid) {
 	return VIPList.insert(vipGuid).second;
 }
 
-bool Player::editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) const {
-	if (!VIPList.contains(vipGuid)) {
+bool Player::editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) {
+	auto it = VIPList.find(vipGuid);
+	if (it == VIPList.end()) {
 		return false; // player is not in VIP
 	}
 
@@ -4218,7 +4223,7 @@ void Player::goToFollowCreature() {
 	}
 }
 
-void Player::getPathSearchParams(std::shared_ptr<Creature> creature, FindPathParams &fpp) {
+void Player::getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) {
 	Creature::getPathSearchParams(creature, fpp);
 	fpp.fullPathSearch = true;
 }
@@ -4282,7 +4287,7 @@ uint64_t Player::getGainedExperience(std::shared_ptr<Creature> attacker) const {
 	return 0;
 }
 
-void Player::onFollowCreature(std::shared_ptr<Creature> creature) {
+void Player::onFollowCreature(const std::shared_ptr<Creature> &creature) {
 	if (!creature) {
 		stopWalk();
 	}
@@ -4578,9 +4583,91 @@ void Player::onTargetCreatureGainHealth(std::shared_ptr<Creature> target, int32_
 	}
 }
 
-bool Player::onKilledCreature(std::shared_ptr<Creature> target, bool lastHit /* = true*/) {
+bool Player::onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit) {
 	bool unjustified = false;
+	if (target->getZoneType() == ZONE_PVP) {
+		target->setDropLoot(false);
+		target->setSkillLoss(false);
+	} else if (!hasFlag(PlayerFlags_t::NotGainInFight) && !isPartner(target)) {
+		if (!Combat::isInPvpZone(getPlayer(), target) && hasAttacked(target) && !target->hasAttacked(getPlayer()) && !isGuildMate(target) && target != getPlayer()) {
+			if (target->hasKilled(getPlayer())) {
+				for (auto &kill : target->unjustifiedKills) {
+					if (kill.target == getGUID() && kill.unavenged) {
+						kill.unavenged = false;
+						auto it = attackedSet.find(target->guid);
+						attackedSet.erase(it);
+						break;
+					}
+				}
+			} else if (target->getSkull() == SKULL_NONE && !isInWar(target)) {
+				unjustified = true;
+				addUnjustifiedDead(target);
+			}
 
+			if (lastHit && hasCondition(CONDITION_INFIGHT)) {
+				pzLocked = true;
+				std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(WHITE_SKULL_TIME), 0);
+				addCondition(condition);
+			}
+		}
+	}
+	return unjustified;
+}
+
+void Player::addHuntingTaskKill(const std::shared_ptr<MonsterType> &mType) {
+	const auto &taskSlot = getTaskHuntingWithCreature(mType->info.raceid);
+	if (!taskSlot) {
+		return;
+	}
+
+	if (const auto &option = g_ioprey().getTaskRewardOption(taskSlot)) {
+		taskSlot->currentKills += 1;
+		if ((taskSlot->upgrade && taskSlot->currentKills >= option->secondKills) || (!taskSlot->upgrade && taskSlot->currentKills >= option->firstKills)) {
+			taskSlot->state = PreyTaskDataState_Completed;
+			std::string message = "You succesfully finished your hunting task. Your reward is ready to be claimed!";
+			sendTextMessage(MESSAGE_STATUS, message);
+		}
+		reloadTaskSlot(taskSlot->id);
+	}
+}
+
+void Player::addBestiaryKill(const std::shared_ptr<MonsterType> &mType) {
+	if (mType->isBoss()) {
+		return;
+	}
+	uint32_t kills = g_configManager().getNumber(BESTIARY_KILL_MULTIPLIER);
+	if (isConcoctionActive(Concoction_t::BestiaryBetterment)) {
+		kills *= 2;
+	}
+	g_iobestiary().addBestiaryKill(getPlayer(), mType, kills);
+}
+
+void Player::addBosstiaryKill(const std::shared_ptr<MonsterType> &mType) {
+	if (!mType->isBoss()) {
+		return;
+	}
+	uint32_t kills = g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER);
+
+	g_ioBosstiary().addBosstiaryKill(getPlayer(), mType, kills);
+}
+
+bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster, bool lastHit) {
+	if (lastHit || monster->isSummon()) {
+		return false;
+	}
+	auto party = getParty();
+	auto participants = party && party->isSharedExperienceEnabled() && party->isSharedExperienceActive() ? party->getPlayers() : std::vector<std::shared_ptr<Player>> { getPlayer() };
+	auto mType = monster->getMonsterType();
+	for (const auto &player : participants) {
+		player->addHuntingTaskKill(mType);
+		player->addBestiaryKill(mType);
+		player->addBosstiaryKill(mType);
+	}
+
+	return false;
+}
+
+bool Player::onKilledCreature(std::shared_ptr<Creature> target, bool lastHit /* = true*/) {
 	if (hasFlag(PlayerFlags_t::NotGenerateLoot)) {
 		target->setDropLoot(false);
 	}
@@ -4588,64 +4675,12 @@ bool Player::onKilledCreature(std::shared_ptr<Creature> target, bool lastHit /* 
 	Creature::onKilledCreature(target, lastHit);
 
 	if (auto targetPlayer = target->getPlayer()) {
-		if (targetPlayer && targetPlayer->getZoneType() == ZONE_PVP) {
-			targetPlayer->setDropLoot(false);
-			targetPlayer->setSkillLoss(false);
-		} else if (!hasFlag(PlayerFlags_t::NotGainInFight) && !isPartner(targetPlayer)) {
-			if (!Combat::isInPvpZone(getPlayer(), targetPlayer) && hasAttacked(targetPlayer) && !targetPlayer->hasAttacked(getPlayer()) && !isGuildMate(targetPlayer) && targetPlayer != getPlayer()) {
-				if (targetPlayer->hasKilled(getPlayer())) {
-					for (auto &kill : targetPlayer->unjustifiedKills) {
-						if (kill.target == getGUID() && kill.unavenged) {
-							kill.unavenged = false;
-							attackedSet.erase(targetPlayer->guid);
-							break;
-						}
-					}
-				} else if (targetPlayer->getSkull() == SKULL_NONE && !isInWar(targetPlayer)) {
-					unjustified = true;
-					addUnjustifiedDead(targetPlayer);
-				}
-
-				if (lastHit && hasCondition(CONDITION_INFIGHT)) {
-					pzLocked = true;
-					std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(WHITE_SKULL_TIME), 0);
-					addCondition(condition);
-				}
-			}
-		}
-	} else if (std::shared_ptr<Monster> monster = target->getMonster()) {
-		// Access to the monster's map damage to check if the player attacked it
-		for (auto [playerId, damage] : monster->getDamageMap()) {
-			auto damagePlayer = g_game().getPlayerByID(playerId);
-			if (!damagePlayer) {
-				continue;
-			}
-
-			// If the player is not in a party and sharing exp active and enabled
-			// And it's not the player killing the creature, then we ignore everything else
-			auto damageParty = damagePlayer->getParty();
-			if (static_self_cast<Player>()->getID() != damagePlayer->getID() && (!damageParty || !damageParty->isSharedExperienceActive() || !damageParty->isSharedExperienceEnabled())) {
-				continue;
-			}
-
-			const auto &taskSlot = damagePlayer->getTaskHuntingWithCreature(monster->getRaceId());
-			if (!taskSlot || monster->isSummon()) {
-				continue;
-			}
-
-			if (const auto &option = g_ioprey().getTaskRewardOption(taskSlot)) {
-				taskSlot->currentKills += 1;
-				if ((taskSlot->upgrade && taskSlot->currentKills >= option->secondKills) || (!taskSlot->upgrade && taskSlot->currentKills >= option->firstKills)) {
-					taskSlot->state = PreyTaskDataState_Completed;
-					std::string message = "You succesfully finished your hunting task. Your reward is ready to be claimed!";
-					damagePlayer->sendTextMessage(MESSAGE_STATUS, message);
-				}
-				damagePlayer->reloadTaskSlot(taskSlot->id);
-			}
-		}
+		return onKilledPlayer(targetPlayer, lastHit);
+	} else if (auto targetMonster = target->getMonster()) {
+		return onKilledMonster(targetMonster, lastHit);
 	}
 
-	return unjustified;
+	return false;
 }
 
 void Player::gainExperience(uint64_t gainExp, std::shared_ptr<Creature> target) {
@@ -4984,7 +5019,7 @@ bool Player::hasAttacked(std::shared_ptr<Player> attacked) const {
 		return false;
 	}
 
-	return attackedSet.contains(attacked->guid);
+	return attackedSet.find(attacked->guid) != attackedSet.end();
 }
 
 void Player::addAttacked(std::shared_ptr<Player> attacked) {
@@ -4992,7 +5027,7 @@ void Player::addAttacked(std::shared_ptr<Player> attacked) {
 		return;
 	}
 
-	attackedSet.emplace(attacked->guid);
+	attackedSet.insert(attacked->guid);
 }
 
 void Player::removeAttacked(std::shared_ptr<Player> attacked) {
@@ -5000,7 +5035,10 @@ void Player::removeAttacked(std::shared_ptr<Player> attacked) {
 		return;
 	}
 
-	attackedSet.erase(attacked->guid);
+	auto it = attackedSet.find(attacked->guid);
+	if (it != attackedSet.end()) {
+		attackedSet.erase(it);
+	}
 }
 
 void Player::clearAttacked() {
@@ -5918,28 +5956,32 @@ void Player::clearModalWindows() {
 }
 
 uint16_t Player::getHelpers() const {
+	uint16_t helpers;
+
 	if (guild && party) {
-		const auto &guildMembers = guild->getMembersOnline();
+		phmap::flat_hash_set<std::shared_ptr<Player>> helperSet;
 
-		stdext::vector_set<std::shared_ptr<Player>> helperSet;
-		helperSet.insert(helperSet.end(), guildMembers.begin(), guildMembers.end());
-		helperSet.insertAll(party->getMembers());
-		helperSet.insertAll(party->getInvitees());
+		const auto guildMembers = guild->getMembersOnline();
+		helperSet.insert(guildMembers.begin(), guildMembers.end());
 
-		helperSet.emplace(party->getLeader());
+		const auto partyMembers = party->getMembers();
+		helperSet.insert(partyMembers.begin(), partyMembers.end());
 
-		return static_cast<uint16_t>(helperSet.size());
+		const auto partyInvitees = party->getInvitees();
+		helperSet.insert(partyInvitees.begin(), partyInvitees.end());
+
+		helperSet.insert(party->getLeader());
+
+		helpers = helperSet.size();
+	} else if (guild) {
+		helpers = guild->getMemberCountOnline();
+	} else if (party) {
+		helpers = party->getMemberCount() + party->getInvitationCount() + 1;
+	} else {
+		helpers = 0;
 	}
 
-	if (guild) {
-		return static_cast<uint16_t>(guild->getMemberCountOnline());
-	}
-
-	if (party) {
-		return static_cast<uint16_t>(party->getMemberCount() + party->getInvitationCount() + 1);
-	}
-
-	return 0u;
+	return helpers;
 }
 
 void Player::sendClosePrivate(uint16_t channelId) {
@@ -7516,9 +7558,9 @@ SoundEffect_t Player::getAttackSoundEffect() const {
 bool Player::canAutoWalk(const Position &toPosition, const std::function<void()> &function, uint32_t delay /* = 500*/) {
 	if (!Position::areInRange<1, 1>(getPosition(), toPosition)) {
 		// Check if can walk to the toPosition and send event to use function
-		std::forward_list<Direction> listDir;
+		stdext::arraylist<Direction> listDir(128);
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir), __FUNCTION__);
+			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir.data()), __FUNCTION__);
 
 			std::shared_ptr<Task> task = createPlayerTask(delay, function, __FUNCTION__);
 			setNextWalkActionTask(task);

@@ -305,7 +305,7 @@ void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
 void Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
 	assert(creature.get() != this);
 
-	const auto &it = getTargetInterator(creature);
+	const auto &it = getTargetIterator(creature);
 	if (it == targetList.end()) {
 		if (pushFront) {
 			targetList.emplace_front(creature);
@@ -324,7 +324,7 @@ void Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 		return;
 	}
 
-	const auto &it = getTargetInterator(creature);
+	const auto &it = getTargetIterator(creature);
 	if (it != targetList.end()) {
 		if (!getMaster() && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen--;
@@ -577,7 +577,7 @@ void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature
 		return;
 	}
 
-	const auto &it = getTargetInterator(creature);
+	const auto &it = getTargetIterator(creature);
 	if (it == targetList.end()) {
 		return;
 	}
@@ -641,7 +641,7 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
-	const auto &it = getTargetInterator(creature);
+	const auto &it = getTargetIterator(creature);
 	if (it == targetList.end()) {
 		// Target not found in our target list.
 		return false;

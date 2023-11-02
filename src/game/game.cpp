@@ -9864,7 +9864,7 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 		reward->setParent(playerRewardChest);
 	}
 
-	std::lock_guard<std::mutex> lock(player->quickLootMutex);
+	std::scoped_lock<std::mutex> lock(player->quickLootMutex);
 
 	ReturnValue returnValue = collectRewardChestItems(player, maxMoveItems);
 	if (returnValue != RETURNVALUE_NOERROR) {

@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"ElementalOverlordDeath",
+}
+
 monster.bosstiary = {
 	bossRaceId = 454,
 	bossRace = RARITY_ARCHFOE,

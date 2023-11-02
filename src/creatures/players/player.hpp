@@ -815,7 +815,7 @@ public:
 	void goToFollowCreature() override;
 
 	// follow events
-	void onFollowCreature(std::shared_ptr<Creature> creature) override;
+	void onFollowCreature(const std::shared_ptr<Creature> &) override;
 
 	// walk events
 	void onWalk(Direction &dir) override;
@@ -1230,7 +1230,7 @@ public:
 
 	void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) override;
 	void onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) override;
-	void onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport) override;
+	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
 
 	void onAttackedCreatureDisappear(bool isLogout) override;
 	void onFollowCreatureDisappear(bool isLogout) override;
@@ -2888,7 +2888,7 @@ private:
 	void addConditionSuppression(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addConditions);
 
 	uint16_t getLookCorpse() const override;
-	void getPathSearchParams(std::shared_ptr<Creature> creature, FindPathParams &fpp) override;
+	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
 
 	void setDead(bool isDead) {
 		dead = isDead;

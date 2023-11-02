@@ -14,6 +14,11 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"AscendantBossesDeath",
+	"ZamuloshClone",
+}
+
 monster.health = 1000
 monster.maxHealth = 1000
 monster.race = "undead"
@@ -51,10 +56,6 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-}
-
-monster.events = {
-	"ZamuloshClone",
 }
 
 monster.light = {

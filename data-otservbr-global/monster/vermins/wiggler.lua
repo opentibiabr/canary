@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"WigglerDeath",
+}
+
 monster.raceId = 899
 monster.Bestiary = {
 	class = "Vermin",

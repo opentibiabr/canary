@@ -1420,7 +1420,7 @@ uint16_t Creature::getStepDuration(Direction dir) {
 	auto duration = walk.duration;
 	if ((dir & DIRECTION_DIAGONAL_MASK) != 0) {
 		duration *= WALK_DIAGONAL_EXTRA_COST;
-	}else if (const auto &monster = getMonster()) {
+	} else if (const auto &monster = getMonster()) {
 		if (monster->isTargetNearby() && !monster->isFleeing() && !monster->getMaster()) {
 			duration *= WALK_TARGET_NEARBY_EXTRA_COST;
 		}

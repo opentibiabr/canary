@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"BossesWarzoneDeath",
+}
+
 monster.bosstiary = {
 	bossRaceId = 892,
 	bossRace = RARITY_ARCHFOE,

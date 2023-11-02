@@ -1,14 +1,18 @@
 local setting = {
-	["frazzlemaw"] = roshamuul_killed_frazzlemaws,
+	["frazzlemaw"] = ROSHAMUUL_KILLED_FRAZZLEMAWS,
 	["silencer"] = ROSHAMUUL_KILLED_SILENCERS,
 }
 
-local lowerRoshamuul = CreatureEvent("LowerRoshamuul")
-function lowerRoshamuul.onKill(creature, target)
-	local monster = setting[target:getName():lower()]
-	if monster then
-		creature:setStorageValue(monster, math.max(0, creature:getStorageValue(monster)) + 1)
+local lowerRoshamuul = CreatureEvent("RoshamuulKillsDeath")
+function lowerRoshamuul.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
+	local monster = setting[creature:getName():lower()]
+	if not monster then
+		return true
 	end
+
+	onDeathForParty(creature, mostDamageKiller, function(creature, player)
+		player:setStorageValue(monster, math.max(0, player:getStorageValue(monster)) + 1)
+	end)
 	return true
 end
 

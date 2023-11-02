@@ -8,24 +8,21 @@ local areas = {
 	{ from = Position(32993, 32632, 7), to = Position(33042, 32688, 7) },
 }
 
-local adventurersGuildHunt = CreatureEvent("TheGreatDragonHuntKill")
-function adventurersGuildHunt.onKill(creature, target)
-	if not creature or not creature:isPlayer() then
-		return true
-	end
-
-	if not target or not target:isMonster() then
-		return true
-	end
-
-	if table.contains({ "dragon lord", "dragon" }, target:getName():lower()) then
-		for _, area in ipairs(areas) do
-			if creature:getPosition():isInRange(area.from, area.to) then
-				creature:setStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter, creature:getStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter) + 1)
-				break
-			end
+local adventurersGuildHunt = CreatureEvent("TheGreatDragonHuntDeath")
+function adventurersGuildHunt.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
+	local valid = false
+	for _, area in ipairs(areas) do
+		if creature:getPosition():isInRange(area.from, area.to) then
+			valid = true
+			break
 		end
 	end
+	if not valid then
+		return true
+	end
+	onDeathForParty(creature, mostDamageKiller, function(creature, player)
+		player:setStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter, math.max(0, player:getStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter)) + 1)
+	end)
 	return true
 end
 

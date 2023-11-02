@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"BlackKnightDeath",
+}
+
 monster.bosstiary = {
 	bossRaceId = 46,
 	bossRace = RARITY_BANE,

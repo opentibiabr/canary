@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"ForgottenKnowledgeBossDeath",
+}
+
 monster.bosstiary = {
 	bossRaceId = 1289,
 	bossRace = RARITY_ARCHFOE,

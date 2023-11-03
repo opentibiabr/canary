@@ -15,7 +15,7 @@ local bosses = {
 
 local bossesForgottenKill = CreatureEvent("ForgottenKnowledgeBossDeath")
 function bossesForgottenKill.onDeath(creature)
-	local bossConfig = bosses[targetMonster:getName():lower()]
+	local bossConfig = bosses[creature:getName():lower()]
 	if not bossConfig then
 		return true
 	end

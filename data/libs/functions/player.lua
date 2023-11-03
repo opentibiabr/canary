@@ -45,14 +45,6 @@ function Player.isPremium(self)
 	return self:getPremiumDays() > 0 or configManager.getBoolean(configKeys.FREE_PREMIUM)
 end
 
-function Player.isPromoted(self)
-	local vocation = self:getVocation()
-	local promotedVocation = vocation:getPromotion()
-	promotedVocation = promotedVocation and promotedVocation:getId() or 0
-
-	return promotedVocation == 0 and vocation:getId() ~= promotedVocation
-end
-
 function Player.sendCancelMessage(self, message)
 	if type(message) == "number" then
 		message = Game.getReturnMessage(message)
@@ -654,6 +646,38 @@ function Player:setFiendish()
 		monster:setFiendish(position, self)
 	end
 	return false
+end
+
+local function bossKVScope(bossNameOrId)
+	local mType = MonsterType(bossNameOrId)
+	if not mType then
+		logger.error("bossKVScope - Invalid boss name or id: " .. bossNameOrId)
+		return false
+	end
+	return "boss.cooldown." .. toKey(tostring(mType:raceId()))
+end
+
+function Player:getBossCooldown(bossNameOrId)
+	local scope = bossKVScope(bossNameOrId)
+	if not scope then
+		return false
+	end
+	return self:kv():get(scope) or 0
+end
+
+function Player:setBossCooldown(bossNameOrId, time)
+	local scope = bossKVScope(bossNameOrId)
+	if not scope then
+		return false
+	end
+	local result = self:kv():set(scope, time)
+	self:sendBosstiaryCooldownTimer()
+	return result
+end
+
+function Player:canFightBoss(bossNameOrId)
+	local cooldown = self:getBossCooldown(bossNameOrId)
+	return cooldown > os.time() and false or true
 end
 
 function Player.addAddonToAllOutfits(self, addon)

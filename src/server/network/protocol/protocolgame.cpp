@@ -919,7 +919,7 @@ void ProtocolGame::addBless() {
 	std::ostringstream lostBlesses;
 	(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses << "You are still blessed with " << bless;
 	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
-	if (player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL)) {
+	if (player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL) && player->getVocationId() > VOCATION_NONE) {
 		for (uint8_t i = 2; i <= 6; i++) {
 			if (!player->hasBlessing(i)) {
 				player->addBlessing(i, 1);
@@ -1555,7 +1555,7 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 
 	msg.skipBytes(numdirs);
 
-	std::forward_list<Direction> path;
+	stdext::arraylist<Direction> path;
 	for (uint8_t i = 0; i < numdirs; ++i) {
 		uint8_t rawdir = msg.getPreviousByte();
 		switch (rawdir) {
@@ -1592,7 +1592,7 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 		return;
 	}
 
-	addGameTask(&Game::playerAutoWalk, player->getID(), path);
+	addGameTask(&Game::playerAutoWalk, player->getID(), path.data());
 }
 
 void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
@@ -2066,7 +2066,7 @@ void ProtocolGame::sendHighscoresNoData() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages) {
+void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer) {
 	if (oldProtocol) {
 		return;
 	}
@@ -2145,8 +2145,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(0xFF); // ??
 	msg.addByte(0); // ??
 	msg.addByte(1); // ??
-	msg.add<uint32_t>(time(nullptr)); // Last Update
-
+	msg.add<uint32_t>(updateTimer); // Last Update
 	msg.setBufferPosition(vocationPosition);
 	msg.addByte(vocations);
 	writeToOutputBuffer(msg);
@@ -3973,7 +3972,7 @@ void ProtocolGame::sendBlessStatus() {
 	if (oldProtocol) {
 		msg.add<uint16_t>(blessCount >= 5 ? 0x01 : 0x00);
 	} else {
-		bool glow = (g_configManager().getBoolean(INVENTORY_GLOW) && blessCount >= 5) || player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL);
+		bool glow = player->getVocationId() > VOCATION_NONE && ((g_configManager().getBoolean(INVENTORY_GLOW) && blessCount >= 5) || player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL));
 		msg.add<uint16_t>(glow ? 1 : 0); // Show up the glowing effect in items if you have all blesses or adventurer's blessing
 		msg.addByte((blessCount >= 7) ? 3 : ((blessCount >= 5) ? 2 : 1)); // 1 = Disabled | 2 = normal | 3 = green
 	}
@@ -8431,20 +8430,30 @@ void ProtocolGame::sendBosstiaryCooldownTimer() {
 	NetworkMessage msg;
 	msg.addByte(0xBD);
 
-	auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldownRaceId(player);
-	auto bossesOnTrackerSize = static_cast<uint16_t>(bossesOnTracker.size());
-	msg.add<uint16_t>(bossesOnTrackerSize); // Number of bosses on timer
-	for (const auto &bossRaceId : bossesOnTracker) {
+	auto startBosses = msg.getBufferPosition();
+	msg.skipBytes(2); // Boss count
+	uint16_t bossesCount = 0;
+	for (std::map<uint16_t, std::string> bossesMap = g_ioBosstiary().getBosstiaryMap();
+		 const auto &[bossRaceId, _] : bossesMap) {
 		const auto mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossRaceId);
 		if (!mType) {
 			continue;
 		}
 
-		int32_t timer = player->getStorageValue(mType->info.bossStorageCooldown);
+		auto timerValue = player->kv()->scoped("boss.cooldown")->get(toKey(std::to_string(bossRaceId)));
+		if (!timerValue || !timerValue.has_value()) {
+			continue;
+		}
+		auto timer = timerValue->getNumber();
 		uint64_t sendTimer = timer > 0 ? static_cast<uint64_t>(timer) : 0;
 		msg.add<uint32_t>(bossRaceId); // bossRaceId
 		msg.add<uint64_t>(sendTimer); // Boss cooldown in seconds
+		bossesCount++;
 	}
+	auto endBosses = msg.getBufferPosition();
+	msg.setBufferPosition(startBosses);
+	msg.add<uint16_t>(bossesCount);
+	msg.setBufferPosition(endBosses);
 
 	writeToOutputBuffer(msg);
 }

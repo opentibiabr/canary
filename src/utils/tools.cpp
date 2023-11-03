@@ -1511,17 +1511,6 @@ void consoleHandlerExit() {
 	return;
 }
 
-std::string validateNameHouse(const std::string &list) {
-	std::string result;
-	for (char c : list) {
-		if (isalpha(c) || c == ' ' || c == '\'' || c == '!' || c == '\n'
-			|| c == '?' || c == '#' || c == '@' || c == '*') {
-			result += c;
-		}
-	}
-	return result;
-}
-
 NameEval_t validateName(const std::string &name) {
 	StringVector prohibitedWords = { "owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "cm", "gm", "tutor", "counsellor", "god" };
 	StringVector toks;
@@ -1797,4 +1786,16 @@ std::string formatNumber(uint64_t number) {
 
 void sleep_for(uint64_t ms) {
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+}
+
+/**
+ * @brief Formats a string to be used as KV key (lowercase, spaces replaced with -, no whitespace)
+ * @param str The string to format
+ * @return The formatted string
+ */
+std::string toKey(const std::string &str) {
+	std::string key = asLowerCaseString(str);
+	std::replace(key.begin(), key.end(), ' ', '-');
+	key.erase(std::remove_if(key.begin(), key.end(), [](char c) { return std::isspace(c); }), key.end());
+	return key;
 }

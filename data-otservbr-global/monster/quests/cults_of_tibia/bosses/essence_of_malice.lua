@@ -13,10 +13,13 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"CultsOfTibiaBossDeath",
+}
+
 monster.bosstiary = {
 	bossRaceId = 1487,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.CultsOfTibia.Humans.BossTimer,
 }
 
 monster.health = 250000

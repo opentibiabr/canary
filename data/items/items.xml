@@ -67826,6 +67826,10 @@
 		<attribute key="duration" value="10"/>
 		<attribute key="fluidSource" value="blood"/>
 	</item>
+	<item id="42075" article="a" name="puddle of goo">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="10"/>
+	</item>
 	<item id="42207" article="a" name="dead crape man">
 		<attribute key="decayTo" value="0"/>
 		<attribute key="duration" value="60"/>
@@ -67963,6 +67967,20 @@
 		<attribute key="decayTo" value="42229"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="42247" article="a" name="dead monster">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="42248"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="42248" article="a" name="dead monster">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="42249"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="42249" article="a" name="dead monster">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="300"/>
 	</item>
 	<item id="42267" name="seafarer chair">
 		<attribute key="primarytype" value="furniture"/>

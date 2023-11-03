@@ -13,6 +13,11 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"RathletonBossDeath",
+	"GloothHorror",
+}
+
 monster.health = 25000
 monster.maxHealth = 25000
 monster.race = "venom"
@@ -50,10 +55,6 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-}
-
-monster.events = {
-	"GloothHorror",
 }
 
 monster.light = {

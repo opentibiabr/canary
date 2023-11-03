@@ -104,23 +104,28 @@ int_fast32_t AStarNodes::getMapWalkCost(AStarNode* node, const Position &neighbo
 	return MAP_NORMALWALKCOST;
 }
 
-int_fast32_t AStarNodes::getTileWalkCost(const std::shared_ptr<Creature> &creature, std::shared_ptr<Tile> tile) {
+int_fast32_t AStarNodes::getTileWalkCost(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile) {
+	if (!creature || !tile) {
+		return 0;
+	}
+
 	int_fast32_t cost = 0;
 	if (tile->getTopVisibleCreature(creature) != nullptr) {
 		// destroy creature cost
 		cost += MAP_NORMALWALKCOST * 3;
 	}
 
-	if (std::shared_ptr<MagicField> field = tile->getFieldItem()) {
-		CombatType_t combatType = field->getCombatType();
-		std::shared_ptr<Monster> monster = creature->getMonster();
+	if (const auto &field = tile->getFieldItem()) {
+		const CombatType_t combatType = field->getCombatType();
+		const auto &monster = creature->getMonster();
+
 		if (!creature->isImmune(combatType) && !creature->hasCondition(Combat::DamageToConditionType(combatType)) && (monster && !monster->canWalkOnFieldType(combatType))) {
 			cost += MAP_NORMALWALKCOST * 18;
 		}
 		/**
 		 * Make player try to avoid magic fields, when calculating pathing
 		 */
-		std::shared_ptr<Player> player = creature->getPlayer();
+		const auto &player = creature->getPlayer();
 		if (player && !field->isBlocking() && field->getDamage() != 0) {
 			cost += MAP_NORMALWALKCOST * 18;
 		}

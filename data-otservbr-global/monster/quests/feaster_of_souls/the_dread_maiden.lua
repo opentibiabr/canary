@@ -13,10 +13,13 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"FeasterOfSoulsBossDeath",
+}
+
 monster.bosstiary = {
 	bossRaceId = 1872,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_30.FeasterOfSouls.DreadMaidenTimer,
 }
 
 monster.health = 300000

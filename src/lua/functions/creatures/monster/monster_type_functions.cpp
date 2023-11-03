@@ -13,6 +13,7 @@
 #include "io/io_bosstiary.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "creatures/monsters/monster.hpp"
 #include "lua/functions/creatures/monster/monster_type_functions.hpp"
 #include "lua/scripts/scripts.hpp"
 
@@ -1002,7 +1003,13 @@ int MonsterTypeFunctions::luaMonsterTypeRegisterEvent(lua_State* L) {
 	// monsterType:registerEvent(name)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (monsterType) {
-		monsterType->info.scripts.push_back(getString(L, 2));
+		auto eventName = getString(L, 2);
+		monsterType->info.scripts.push_back(eventName);
+		for (const auto &[_, monster] : g_game().getMonsters()) {
+			if (monster->getMonsterType() == monsterType) {
+				monster->registerCreatureEvent(eventName);
+			}
+		}
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -1564,27 +1571,6 @@ int MonsterTypeFunctions::luaMonsterTypeBossRaceId(lua_State* L) {
 		auto raceId = getNumber<uint16_t>(L, 2, 0);
 		monsterType->info.raceid = raceId;
 		g_ioBosstiary().addBosstiaryMonster(raceId, monsterType->name);
-		pushBoolean(L, true);
-	}
-
-	return 1;
-}
-
-int MonsterTypeFunctions::luaMonsterTypeBossStorageCooldown(lua_State* L) {
-	// set: monsterType:bossStorageCooldown(storage)
-	// get: monsterType:bossStorageCooldown()
-	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
-	if (!monsterType) {
-		pushBoolean(L, false);
-		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));
-		return 0;
-	}
-
-	auto bossStorageCooldown = getNumber<uint32_t>(L, 2, 0);
-	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.bossStorageCooldown));
-	} else {
-		monsterType->info.bossStorageCooldown = bossStorageCooldown;
 		pushBoolean(L, true);
 	}
 

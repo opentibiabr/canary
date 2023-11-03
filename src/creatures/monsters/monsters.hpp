@@ -105,7 +105,6 @@ class MonsterType {
 		BestiaryType_t bestiaryRace = BESTY_RACE_NONE; // Number (addByte)
 
 		// Bosstiary
-		uint32_t bossStorageCooldown = 0;
 		BosstiaryRarity_t bosstiaryRace = BosstiaryRarity_t::BOSS_INVALID;
 		std::string bosstiaryClass;
 
@@ -186,15 +185,19 @@ public:
 	}
 
 	float getHealthMultiplier() const {
-		return info.bosstiaryClass.empty() ? g_configManager().getFloat(RATE_MONSTER_HEALTH) : g_configManager().getFloat(RATE_BOSS_HEALTH);
+		return isBoss() ? g_configManager().getFloat(RATE_BOSS_HEALTH) : g_configManager().getFloat(RATE_MONSTER_HEALTH);
 	}
 
 	float getAttackMultiplier() const {
-		return info.bosstiaryClass.empty() ? g_configManager().getFloat(RATE_MONSTER_ATTACK) : g_configManager().getFloat(RATE_BOSS_ATTACK);
+		return isBoss() ? g_configManager().getFloat(RATE_BOSS_ATTACK) : g_configManager().getFloat(RATE_MONSTER_ATTACK);
 	}
 
 	float getDefenseMultiplier() const {
-		return info.bosstiaryClass.empty() ? g_configManager().getFloat(RATE_MONSTER_DEFENSE) : g_configManager().getFloat(RATE_BOSS_DEFENSE);
+		return isBoss() ? g_configManager().getFloat(RATE_BOSS_DEFENSE) : g_configManager().getFloat(RATE_MONSTER_DEFENSE);
+	}
+
+	bool isBoss() const {
+		return !info.bosstiaryClass.empty();
 	}
 
 	void loadLoot(const std::shared_ptr<MonsterType> monsterType, LootBlock lootblock);

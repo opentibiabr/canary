@@ -23,7 +23,6 @@ local config = {
 		to = Position(33816, 31515, 14),
 	},
 	exit = Position(33572, 31451, 10),
-	storage = Storage.Quest.U12_30.FeasterOfSouls.PaleWormTimer,
 }
 
 local lever = BossLever(config)

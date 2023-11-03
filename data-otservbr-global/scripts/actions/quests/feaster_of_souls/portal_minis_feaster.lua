@@ -12,7 +12,6 @@ local config = {
 			to = Position(33474, 31408, 8),
 		},
 		exitPosition = Position(33493, 31400, 8),
-		storage = Storage.Quest.U12_30.FeasterOfSouls.IrgixTimer,
 	},
 	[2] = {
 		teleportPosition = { x = 33566, y = 31475, z = 8 },
@@ -27,7 +26,6 @@ local config = {
 			to = Position(33582, 31499, 8),
 		},
 		exitPosition = Position(33563, 31477, 8),
-		storage = Storage.Quest.U12_30.FeasterOfSouls.UnazTimer,
 	},
 	[3] = {
 		teleportPosition = { x = 33509, y = 31450, z = 9 },
@@ -42,7 +40,6 @@ local config = {
 			to = Position(33515, 31496, 9),
 		},
 		exitPosition = Position(33509, 31451, 9),
-		storage = Storage.Quest.U12_30.FeasterOfSouls.VokTimer,
 	},
 	[4] = {
 		teleportPosition = { x = 33467, y = 31396, z = 8 },
@@ -87,7 +84,7 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "All the players need to be level " .. value.requiredLevel .. " or higher.")
 				return true
 			end
-			if creature:getStorageValue(value.storage) > os.time() then
+			if not creature:canFightBoss(value.bossName) then
 				creature:teleportTo(fromPosition, true)
 				creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. value.timeToFightAgain .. " hours to face " .. value.bossName .. " again!")
@@ -100,7 +97,7 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 			end
 			creature:teleportTo(value.destination)
 			creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			creature:setStorageValue(value.storage, os.time() + value.timeToFightAgain * 3600)
+			creature:setBossCooldown(value.bossName, os.time() + value.timeToFightAgain * 3600)
 			creature:sendBosstiaryCooldownTimer()
 			addEvent(function()
 				spec:clearCreaturesCache()

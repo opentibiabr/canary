@@ -8,18 +8,8 @@ local servants = {
 		playerStorage = Storage.ForgottenKnowledge.DiamondServantCounter,
 	},
 }
-local replicaServant = CreatureEvent("ReplicaServant")
-function replicaServant.onKill(creature, target)
-	local player = creature:getPlayer()
-	if not player then
-		return true
-	end
-
-	local targetMonster = target:getMonster()
-	if not targetMonster or targetMonster:getMaster() then
-		return true
-	end
-
+local replicaServant = CreatureEvent("ReplicaServantDeath")
+function replicaServant.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
 	local bossConfig = servants[targetMonster:getName():lower()]
 	if not bossConfig then
 		return true
@@ -35,6 +25,10 @@ function replicaServant.onKill(creature, target)
 				teleport:setActionId(26665)
 			end
 		end
+	end
+	local player = Player(mostDamageKiller)
+	if not player then
+		return true
 	end
 	if player:getStorageValue(bossConfig.playerStorage) < 0 then
 		player:setStorageValue(bossConfig.playerStorage, 0)

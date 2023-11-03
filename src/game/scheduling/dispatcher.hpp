@@ -55,6 +55,12 @@ struct DispatcherContext {
 		return type;
 	}
 
+	// postpone the event
+	void addEvent(std::function<void(void)> &&f) const;
+
+	// if the context is async, the event will be postponed, if not, it will be executed immediately.
+	void tryAddEvent(std::function<void(void)> &&f) const;
+
 private:
 	void reset() {
 		group = TaskGroup::ThreadPool;
@@ -78,8 +84,8 @@ class Dispatcher {
 public:
 	explicit Dispatcher(ThreadPool &threadPool) :
 		threadPool(threadPool) {
-		threads.reserve(std::thread::hardware_concurrency() + 1);
-		for (uint_fast16_t i = 0; i < std::thread::hardware_concurrency() + 1; ++i) {
+		threads.reserve(threadPool.getNumberOfThreads() + 1);
+		for (uint_fast16_t i = 0; i < threads.capacity(); ++i) {
 			threads.emplace_back(std::make_unique<ThreadTask>());
 		}
 	};
@@ -133,17 +139,9 @@ private:
 		Task::TIME_NOW = std::chrono::system_clock::now();
 	}
 
-	static int16_t getThreadId() {
-		static std::atomic_int16_t lastId = -1;
-		thread_local static int16_t id = -1;
-
-		if (id == -1) {
-			lastId.fetch_add(1);
-			id = lastId.load();
-		}
-
-		return id;
-	};
+	const auto &getThreadTask() const {
+		return threads[ThreadPool::getThreadId()];
+	}
 
 	uint64_t scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle, bool log = true) {
 		return scheduleEvent(std::make_shared<Task>(std::move(f), context, delay, cycle, log));
@@ -151,15 +149,16 @@ private:
 
 	void init();
 	void shutdown() {
-		signalAsync.notify_all();
+		signalSchedule.notify_all();
 	}
 
+	inline void mergeAsyncEvents();
 	inline void mergeEvents();
-	inline void executeEvents(std::unique_lock<std::mutex> &asyncLock);
+	inline void executeEvents(const TaskGroup startGroup = TaskGroup::Serial);
 	inline void executeScheduledEvents();
 
 	inline void executeSerialEvents(std::vector<Task> &tasks);
-	inline void executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock);
+	inline void executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId);
 	inline std::chrono::nanoseconds timeUntilNextScheduledTask() const;
 
 	inline void checkPendingTasks() {
@@ -182,7 +181,6 @@ private:
 	uint_fast64_t dispatcherCycle = 0;
 
 	ThreadPool &threadPool;
-	std::condition_variable signalAsync;
 	std::condition_variable signalSchedule;
 	std::atomic_bool hasPendingTasks = false;
 	std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.
@@ -204,7 +202,7 @@ private:
 
 	// Main Events
 	std::array<std::vector<Task>, static_cast<uint8_t>(TaskGroup::Last)> m_tasks;
-	std::priority_queue<std::shared_ptr<Task>, std::deque<std::shared_ptr<Task>>, Task::Compare> scheduledTasks;
+	phmap::btree_multiset<std::shared_ptr<Task>, Task::Compare> scheduledTasks;
 	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef;
 
 	friend class CanaryServer;

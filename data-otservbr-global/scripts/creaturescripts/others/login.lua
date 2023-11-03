@@ -82,6 +82,18 @@ function playerLogin.onLogin(player)
 	end
 	-- End 'Premium Ends Teleport to Temple'
 
+	-- Promotion
+	local vocation = player:getVocation()
+	local promotion = vocation:getPromotion()
+	if player:isPremium() then
+		local hasPromotion = player:kv():get("promoted")
+		if not player:isPromoted() and hasPromotion then
+			player:setVocation(promotion)
+		end
+	elseif player:isPromoted() then
+		player:setVocation(vocation:getDemotion())
+	end
+
 	-- Recruiter system
 	local resultId = db.storeQuery("SELECT `recruiter` from `accounts` where `id`=" .. getAccountNumberByPlayerName(getPlayerName(player)))
 	local recruiterStatus = Result.getNumber(resultId, "recruiter")

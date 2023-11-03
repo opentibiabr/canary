@@ -1,18 +1,12 @@
-local killDragon = CreatureEvent("KillDragon")
+local killDragon = CreatureEvent("TheFirstDragonDragonTaskDeath")
 
-function killDragon.onKill(player, target)
-	if target:isPlayer() or target:getMaster() then
-		return true
-	end
-	if target:getName():lower() == "dragon" then
+function killDragon.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
+	onDeathForParty(creature, mostDamageKiller, function(creature, player)
 		local storage = player:getStorageValue(Storage.FirstDragon.DragonCounter)
 		if storage >= 0 and storage < 200 then
 			player:setStorageValue(Storage.FirstDragon.DragonCounter, player:getStorageValue(Storage.FirstDragon.DragonCounter) + 1)
 		end
-	end
-	if player:getStorageValue(Storage.FirstDragon.TazhadurTimer) >= os.time() then
-		return true
-	end
+	end)
 	return true
 end
 

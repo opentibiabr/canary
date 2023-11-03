@@ -7,9 +7,9 @@ local bosses = {
 	["the nightmare beast"] = { storage = Storage.Quest.U12_00.TheDreamCourts.NightmareBeastKilled },
 }
 
-local bossesDreamCourts = CreatureEvent("DreamCourtsKill")
-function bossesDreamCourts.onKill(creature, target)
-	local targetMonster = target:getMonster()
+local bossesDreamCourts = CreatureEvent("DreamCourtsBossDeath")
+function bossesDreamCourts.onDeath(creature)
+	local targetMonster = creature:getMonster()
 	if not targetMonster or targetMonster:getMaster() then
 		return true
 	end
@@ -17,14 +17,11 @@ function bossesDreamCourts.onKill(creature, target)
 	if not bossConfig then
 		return true
 	end
-	for key, value in pairs(targetMonster:getDamageMap()) do
-		local attackerPlayer = Player(key)
-		if attackerPlayer then
-			if bossConfig.storage then
-				attackerPlayer:setStorageValue(bossConfig.storage, 1)
-			end
+	onDeathForDamagingPlayers(creature, function(creature, player)
+		if bossConfig.storage then
+			player:setStorageValue(bossConfig.storage, 1)
 		end
-	end
+	end)
 	return true
 end
 

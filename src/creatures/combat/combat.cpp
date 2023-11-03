@@ -898,7 +898,7 @@ void Combat::addDistanceEffect(std::shared_ptr<Creature> caster, const Position 
 
 void Combat::doChainEffect(const Position &origin, const Position &dest, uint8_t effect) {
 	if (effect > 0) {
-		std::forward_list<Direction> dirList;
+		stdext::arraylist<Direction> dirList(128);
 		FindPathParams fpp;
 		fpp.minTargetDist = 0;
 		fpp.maxTargetDist = 1;
@@ -2016,7 +2016,7 @@ void Combat::applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<C
 		return;
 	}
 
-	g_logger().debug("[Combat::applyExtensions] - Applying extensions for {} on {}. Initial damage: {}", caster->getName(), target ? target->getName() : "null", damage.primary.value);
+	g_logger().trace("[Combat::applyExtensions] - Applying extensions for {} on {}. Initial damage: {}", caster->getName(), target ? target->getName() : "null", damage.primary.value);
 
 	// Critical hit
 	uint16_t chance = 0;

@@ -50,12 +50,16 @@ static constexpr std::chrono::minutes HIGHSCORE_CACHE_EXPIRATION_TIME { 10 }; //
 
 struct QueryHighscoreCacheEntry {
 	std::string query;
+	uint32_t page;
+	uint8_t entriesPerPage;
 	std::chrono::time_point<std::chrono::steady_clock> timestamp;
 };
 
 struct HighscoreCacheEntry {
 	std::vector<HighscoreCharacter> characters;
-	std::chrono::time_point<std::chrono::steady_clock> timestamp;
+	uint32_t page;
+	uint32_t entriesPerPage;
+	std::chrono::time_point<std::chrono::system_clock> timestamp;
 };
 
 class Game {
@@ -164,8 +168,8 @@ public:
 	bool removeCreature(std::shared_ptr<Creature> creature, bool isLogout = true);
 	void executeDeath(uint32_t creatureId);
 
-	void addCreatureCheck(std::shared_ptr<Creature> creature);
-	static void removeCreatureCheck(std::shared_ptr<Creature> creature);
+	void addCreatureCheck(const std::shared_ptr<Creature> &creature);
+	static void removeCreatureCheck(const std::shared_ptr<Creature> &creature);
 
 	size_t getPlayersOnline() const {
 		return players.size();
@@ -316,8 +320,8 @@ public:
 	void playerCloseNpcChannel(uint32_t playerId);
 	void playerReceivePing(uint32_t playerId);
 	void playerReceivePingBack(uint32_t playerId);
-	void playerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
-	void forcePlayerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
+	void playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir);
+	void forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir);
 	void playerStopAutoWalk(uint32_t playerId);
 	void playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t fromStackPos, uint16_t fromItemId, const Position &toPos, uint8_t toStackPos, uint16_t toItemId);
 	void playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId);
@@ -900,10 +904,9 @@ private:
 	// Variable members (m_)
 	std::unique_ptr<IOWheel> m_IOWheel;
 
-	void cacheQueryHighscore(const std::string &key, const std::string &query);
+	void cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage);
 	void processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
 
-	std::string getCachedQueryHighscore(const std::string &key);
 	std::string generateVocationConditionHighscore(uint32_t vocation);
 	std::string generateHighscoreQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
 	std::string generateHighscoreQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);

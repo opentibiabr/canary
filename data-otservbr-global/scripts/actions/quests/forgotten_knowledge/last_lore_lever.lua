@@ -34,7 +34,6 @@ local config = {
 		to = Position(32004, 32865, 15),
 	},
 	exit = Position(32035, 32859, 14),
-	storage = Storage.ForgottenKnowledge.LastLoreTimer,
 }
 
 local forgottenKnowledgeLastLore = Action()
@@ -89,7 +88,7 @@ function forgottenKnowledgeLastLore.onUse(player, item, fromPosition, target, to
 			return true
 		end
 		lever:teleportPlayers()
-		lever:setStorageAllPlayers(config.storage, os.time() + config.timeToFightAgain * 3600)
+		lever:setCooldownAllPlayers(config.bossName, os.time() + config.timeToFightAgain * 3600)
 		Game.setStorageValue(GlobalStorage.ForgottenKnowledge.AstralPowerCounter, 1)
 		Game.setStorageValue(GlobalStorage.ForgottenKnowledge.AstralGlyph, 0)
 		player:say("The Astral Glyph begins to draw upon bound astral power to expel you from the room!", TALKTYPE_MONSTER_SAY)

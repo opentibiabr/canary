@@ -9,7 +9,6 @@ local config = {
 		rangeX = 20, -- Range in X
 		rangeY = 20, -- Range in Y
 		time = 10, -- time in minutes to remove the player
-		timer = ThreatenedDreams.Mission02.KroazurTimer, -- Timer to allow joing the room next time
 		access = ThreatenedDreams.Mission02.KroazurAccess, -- Quest level to access the room
 	},
 }
@@ -42,7 +41,7 @@ function kroazurRoom.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(room.timer) > os.time() then
+	if not player:canFightBoss(room.bossName) then
 		position:sendMagicEffect(CONST_ME_TELEPORT)
 		player:teleportTo(fromPosition, true)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -69,7 +68,7 @@ function kroazurRoom.onStepIn(creature, item, position, fromPosition)
 	player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	player:say("You have ten minutes to kill and loot this boss, else you will lose that chance and will be kicked out.", TALKTYPE_MONSTER_SAY)
 	addEvent(clearBossRoom, 60 * room.time * 1000, player.uid, room.centerPos, room.rangeX, room.rangeY, room.exitPos)
-	player:setStorageValue(room.timer, os.time() + 2 * 3600)
+	player:setBossCooldown(room.bossName, os.time() + 2 * 3600)
 	return true
 end
 

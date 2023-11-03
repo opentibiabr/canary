@@ -14,7 +14,6 @@
 #include "lib/di/container.hpp"
 #include "utils/tools.hpp"
 
-constexpr static auto ASYNC_TIME_OUT = std::chrono::seconds(15);
 thread_local DispatcherContext Dispatcher::dispacherContext;
 
 Dispatcher &Dispatcher::getInstance() {
@@ -30,7 +29,7 @@ void Dispatcher::init() {
 		while (!threadPool.getIoContext().stopped()) {
 			updateClock();
 
-			executeEvents(asyncLock);
+			executeEvents();
 			executeScheduledEvents();
 			mergeEvents();
 
@@ -56,12 +55,12 @@ void Dispatcher::executeSerialEvents(std::vector<Task> &tasks) {
 	dispacherContext.reset();
 }
 
-void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock) {
-	const size_t totalTaskSize = tasks.size();
-	std::atomic_uint_fast64_t executedTasks = 0;
+void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId) {
+	std::atomic_uint_fast64_t totalTaskSize = tasks.size();
+	std::atomic_bool isTasksCompleted = false;
 
 	for (const auto &task : tasks) {
-		threadPool.addLoad([this, &task, &executedTasks, groupId, totalTaskSize] {
+		threadPool.addLoad([groupId, &task, &isTasksCompleted, &totalTaskSize] {
 			dispacherContext.type = DispatcherType::AsyncEvent;
 			dispacherContext.group = static_cast<TaskGroup>(groupId);
 			dispacherContext.taskName = task.getContext();
@@ -70,21 +69,21 @@ void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t g
 
 			dispacherContext.reset();
 
-			executedTasks.fetch_add(1);
-			if (executedTasks.load() >= totalTaskSize) {
-				signalAsync.notify_one();
+			totalTaskSize.fetch_sub(1);
+			if (totalTaskSize.load() == 0) {
+				isTasksCompleted.store(true);
+				isTasksCompleted.notify_one();
 			}
 		});
 	}
 
-	if (signalAsync.wait_for(asyncLock, ASYNC_TIME_OUT) == std::cv_status::timeout) {
-		g_logger().warn("A timeout occurred when executing the async dispatch in the context({}). Executed Tasks: {}/{}.", groupId, executedTasks.load(), totalTaskSize);
-	}
+	isTasksCompleted.wait(false);
+
 	tasks.clear();
 }
 
-void Dispatcher::executeEvents(std::unique_lock<std::mutex> &asyncLock) {
-	for (uint_fast8_t groupId = 0; groupId < static_cast<uint8_t>(TaskGroup::Last); ++groupId) {
+void Dispatcher::executeEvents(const TaskGroup startGroup) {
+	for (uint_fast8_t groupId = static_cast<uint8_t>(startGroup); groupId < static_cast<uint8_t>(TaskGroup::Last); ++groupId) {
 		auto &tasks = m_tasks[groupId];
 		if (tasks.empty()) {
 			return;
@@ -92,15 +91,19 @@ void Dispatcher::executeEvents(std::unique_lock<std::mutex> &asyncLock) {
 
 		if (groupId == static_cast<uint8_t>(TaskGroup::Serial)) {
 			executeSerialEvents(tasks);
+			mergeAsyncEvents();
 		} else {
-			executeParallelEvents(tasks, groupId, asyncLock);
+			executeParallelEvents(tasks, groupId);
 		}
 	}
 }
 
 void Dispatcher::executeScheduledEvents() {
-	for (uint_fast64_t i = 0, max = scheduledTasks.size(); i < max && !scheduledTasks.empty(); ++i) {
-		const auto &task = scheduledTasks.top();
+	auto &threadScheduledTasks = getThreadTask()->scheduledTasks;
+
+	auto it = scheduledTasks.begin();
+	while (it != scheduledTasks.end()) {
+		const auto &task = *it;
 		if (task->getTime() > Task::TIME_NOW) {
 			break;
 		}
@@ -111,33 +114,53 @@ void Dispatcher::executeScheduledEvents() {
 
 		if (task->execute() && task->isCycle()) {
 			task->updateTime();
-			scheduledTasks.emplace(task);
+			threadScheduledTasks.emplace_back(task);
 		} else {
-			scheduledTasksRef.erase(task->getEventId());
+			scheduledTasksRef.erase(task->getId());
 		}
 
-		scheduledTasks.pop();
+		++it;
+	}
+
+	if (it != scheduledTasks.begin()) {
+		scheduledTasks.erase(scheduledTasks.begin(), it);
 	}
 
 	dispacherContext.reset();
+
+	mergeAsyncEvents(); // merge async events requested by scheduled events
+	executeEvents(TaskGroup::GenericParallel); // execute async events requested by scheduled events
 }
 
-// Merge thread events with main dispatch events
-void Dispatcher::mergeEvents() {
+// Merge only async thread events with main dispatch events
+void Dispatcher::mergeAsyncEvents() {
+	constexpr uint8_t start = static_cast<uint8_t>(TaskGroup::GenericParallel);
+	constexpr uint8_t end = static_cast<uint8_t>(TaskGroup::Last);
+
 	for (const auto &thread : threads) {
 		std::scoped_lock lock(thread->mutex);
-		if (!thread->tasks.empty()) {
-			for (uint_fast8_t i = 0; i < static_cast<uint8_t>(TaskGroup::Last); ++i) {
+		for (uint_fast8_t i = start; i < end; ++i) {
+			if (!thread->tasks[i].empty()) {
 				m_tasks[i].insert(m_tasks[i].end(), make_move_iterator(thread->tasks[i].begin()), make_move_iterator(thread->tasks[i].end()));
 				thread->tasks[i].clear();
 			}
 		}
+	}
+}
+
+// Merge thread events with main dispatch events
+void Dispatcher::mergeEvents() {
+	constexpr uint8_t serial = static_cast<uint8_t>(TaskGroup::Serial);
+
+	for (const auto &thread : threads) {
+		std::scoped_lock lock(thread->mutex);
+		if (!thread->tasks[serial].empty()) {
+			m_tasks[serial].insert(m_tasks[serial].end(), make_move_iterator(thread->tasks[serial].begin()), make_move_iterator(thread->tasks[serial].end()));
+			thread->tasks[serial].clear();
+		}
 
 		if (!thread->scheduledTasks.empty()) {
-			for (auto &task : thread->scheduledTasks) {
-				scheduledTasks.emplace(task);
-				scheduledTasksRef.emplace(task->getEventId(), task);
-			}
+			scheduledTasks.insert(make_move_iterator(thread->scheduledTasks.begin()), make_move_iterator(thread->scheduledTasks.end()));
 			thread->scheduledTasks.clear();
 		}
 	}
@@ -153,23 +176,24 @@ std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() const {
 		return CHRONO_MILI_MAX;
 	}
 
-	const auto &task = scheduledTasks.top();
+	const auto &task = *scheduledTasks.begin();
 	const auto timeRemaining = task->getTime() - Task::TIME_NOW;
 	return std::max<std::chrono::nanoseconds>(timeRemaining, CHRONO_NANO_0);
 }
 
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
-	const auto &thread = threads[getThreadId()];
+	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(TaskGroup::Serial)].emplace_back(expiresAfterMs, std::move(f), context);
 	notify();
 }
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
-	const auto &thread = threads[getThreadId()];
+	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
+
 	auto eventId = scheduledTasksRef
-					   .emplace(task->generateId(), thread->scheduledTasks.emplace_back(task))
+					   .emplace(task->getId(), thread->scheduledTasks.emplace_back(task))
 					   .first->first;
 
 	notify();
@@ -177,16 +201,32 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 }
 
 void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
-	const auto &thread = threads[getThreadId()];
+	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);
 	notify();
 }
 
 void Dispatcher::stopEvent(uint64_t eventId) {
-	auto it = scheduledTasksRef.find(eventId);
+	const auto &it = scheduledTasksRef.find(eventId);
 	if (it != scheduledTasksRef.end()) {
 		it->second->cancel();
 		scheduledTasksRef.erase(it);
+	}
+}
+
+void DispatcherContext::addEvent(std::function<void(void)> &&f) const {
+	g_dispatcher().addEvent(std::move(f), taskName);
+}
+
+void DispatcherContext::tryAddEvent(std::function<void(void)> &&f) const {
+	if (!f) {
+		return;
+	}
+
+	if (isAsync()) {
+		g_dispatcher().addEvent(std::move(f), taskName);
+	} else {
+		f();
 	}
 }

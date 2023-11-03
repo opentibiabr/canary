@@ -28,7 +28,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 2104,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Kilmaresh.SisterHetaiTimer,
 }
 
 monster.strategiesTarget = {

@@ -11,7 +11,7 @@
 
 #include "items/decay/decay.hpp"
 #include "game/game.hpp"
-#include "game/scheduling/scheduler.hpp"
+#include "game/scheduling/dispatcher.hpp"
 
 void Decay::startDecay(std::shared_ptr<Item> item) {
 	if (!item) {
@@ -41,11 +41,11 @@ void Decay::startDecay(std::shared_ptr<Item> item) {
 
 		int64_t timestamp = OTSYS_TIME() + duration;
 		if (decayMap.empty()) {
-			eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
+			eventId = g_dispatcher().scheduleEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
 		} else {
 			if (timestamp < decayMap.begin()->first) {
-				g_scheduler().stopEvent(eventId);
-				eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
+				g_dispatcher().stopEvent(eventId);
+				eventId = g_dispatcher().scheduleEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
 			}
 		}
 
@@ -132,12 +132,24 @@ void Decay::checkDecay() {
 	}
 
 	if (it != end) {
-		eventId = g_scheduler().addEvent(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
+		eventId = g_dispatcher().scheduleEvent(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
 	}
 }
 
 void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 	const ItemType &it = Item::items[item->getID()];
+	// Remove the item and halt the decay process if a player triggers a bug where the item's decay ID matches its equip or de-equip transformation ID
+	if (it.id == it.transformEquipTo || it.id == it.transformDeEquipTo) {
+		g_game().internalRemoveItem(item);
+		auto player = item->getHoldingPlayer();
+		if (player) {
+			g_logger().error("[{}] - internalDecayItem failed to player {}, item id is same from transform equip/deequip, "
+							 " item id: {}, equip to id: '{}', deequip to id '{}'",
+							 __FUNCTION__, player->getName(), it.id, it.transformEquipTo, it.transformDeEquipTo);
+		}
+		return;
+	}
+
 	if (it.decayTo != 0) {
 		std::shared_ptr<Player> player = item->getHoldingPlayer();
 		if (player) {

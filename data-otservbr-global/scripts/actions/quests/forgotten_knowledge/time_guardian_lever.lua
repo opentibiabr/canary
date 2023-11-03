@@ -25,7 +25,6 @@ local config = {
 		to = Position(32989, 31677, 14),
 	},
 	exit = Position(32870, 32724, 14),
-	storage = Storage.ForgottenKnowledge.TimeGuardianTimer,
 }
 
 local forgottenKnowledgeGuardianLever = Action()
@@ -79,7 +78,7 @@ function forgottenKnowledgeGuardianLever.onUse(player, item, fromPosition, targe
 			end
 		end
 		lever:teleportPlayers()
-		lever:setStorageAllPlayers(config.storage, os.time() + config.timeToFightAgain * 3600)
+		lever:setCooldownAllPlayers(config.bossName, os.time() + config.timeToFightAgain * 3600)
 		addEvent(function()
 			local old_players = lever:getInfoPositions()
 			spec:clearCreaturesCache()

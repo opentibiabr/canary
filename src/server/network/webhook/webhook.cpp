@@ -11,7 +11,7 @@
 
 #include "server/network/webhook/webhook.hpp"
 #include "config/configmanager.hpp"
-#include "game/scheduling/scheduler.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "utils/tools.hpp"
 
 Webhook::Webhook(ThreadPool &threadPool) :
@@ -38,7 +38,7 @@ Webhook &Webhook::getInstance() {
 
 void Webhook::run() {
 	threadPool.addLoad([this] { sendWebhook(); });
-	g_scheduler().addEvent(
+	g_dispatcher().scheduleEvent(
 		g_configManager().getNumber(DISCORD_WEBHOOK_DELAY_MS), [this] { run(); }, "Webhook::run"
 	);
 }
@@ -74,7 +74,7 @@ int Webhook::sendRequest(const char* url, const char* payload, std::string* resp
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &Webhook::writeCallback);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, reinterpret_cast<void*>(response_body));
 	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-	curl_easy_setopt(curl, CURLOPT_USERAGENT, "canary (https://github.com/Hydractify/canary)");
+	curl_easy_setopt(curl, CURLOPT_USERAGENT, "canary (https://github.com/opentibiabr/canary)");
 
 	CURLcode res = curl_easy_perform(curl);
 

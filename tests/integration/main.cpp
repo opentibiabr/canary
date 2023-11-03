@@ -78,13 +78,13 @@ int main() {
 		expect(eq(acc.sessionExpires, 0));
 	});
 
-	test("AccountRepositoryDB::loadByEmail") = databaseTest(db, [&db] {
+	test("AccountRepositoryDB::loadByEmailOrName") = databaseTest(db, [&db] {
 		InMemoryLogger logger {};
 		AccountRepositoryDB accRepo { db, logger };
 		createAccount(db);
 
 		AccountInfo acc {};
-		accRepo.loadByEmail("@test", acc);
+		accRepo.loadByEmailOrName(false, "@test", acc);
 		assertAccountLoad(acc);
 		expect(eq(acc.sessionExpires, 0));
 	});

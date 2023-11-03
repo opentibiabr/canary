@@ -370,10 +370,7 @@ end
 
 local function startWarzoneIV()
 	addEvent(function()
-		local monstro = Game.createMonster("The Baron From Below", Position(33648, 32303, 15))
-		if monstro then
-			monstro:registerEvent("TheBaronFromBelowThink")
-		end
+		Game.createMonster("The Baron From Below", Position(33648, 32303, 15))
 		addEvent(sumonarLavasIV, 15 * 1000, 5)
 		addEvent(lavaHoles, 15 * 1000, 1)
 	end, 10 * 1000)
@@ -408,7 +405,7 @@ function dangerousDepthCrystals.onUse(player, item, fromPosition, target, toPosi
 		return true
 	end
 
-	if not target:isItem() then
+	if not target or not target:isItem() then
 		return false
 	end
 

@@ -92,8 +92,9 @@ enum class WheelStage_t : uint8_t {
 	AVATAR_OF_NATURE = 9,
 	AVATAR_OF_STEEL = 10,
 	AVATAR_OF_STORM = 11,
+	DIVINE_GRENADE = 12,
 
-	TOTAL_COUNT = 12
+	TOTAL_COUNT = 13
 };
 
 enum class WheelOnThink_t : uint8_t {
@@ -226,6 +227,7 @@ struct PlayerWheelMethodsBonusData {
 		int combatMastery = 0; // Knight
 		int giftOfLife = 0; // Knight/Paladin/Druid/Sorcerer
 		int divineEmpowerment = 0; // Paladin
+		int divineGrenade = 0; // Paladin
 		int blessingOfTheGrove = 0; // Druid
 		int drainBody = 0; // Sorcerer
 		int beamMastery = 0; // Sorcerer

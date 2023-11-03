@@ -28,7 +28,7 @@ function warzoneBoss.onStepIn(creature, item, pos, fromPosition)
 		return false
 	end
 
-	if creature:getStorageValue(warzone.storage) > os.time() then
+	if not creature:canFightBoss(warzone.boss) then
 		creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have already cleared this warzone in the last 20 hours.")
 		creature:teleportTo(fromPosition)
 		return false

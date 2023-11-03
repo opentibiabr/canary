@@ -14,6 +14,7 @@
 #include "game/game.hpp"
 #include "items/item.hpp"
 #include "items/decay/decay.hpp"
+#include "game/scheduling/save_manager.hpp"
 
 class Imbuement;
 

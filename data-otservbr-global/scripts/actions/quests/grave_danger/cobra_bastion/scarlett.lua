@@ -4,7 +4,6 @@ local info = {
 	fromPos = Position(33385, 32638, 6),
 	toPos = Position(33406, 32660, 6),
 	exitPos = Position(33395, 32670, 6),
-	timer = Storage.GraveDanger.CobraBastion.ScarlettTimer,
 	armorId = 31482,
 	armorPos = Position(33398, 32640, 6),
 }
@@ -40,7 +39,7 @@ function graveScarlettUid.onUse(player, item, fromPosition, target, toPosition, 
 					if sqm and sqm:getGround():getId() == 18013 then
 						local player_ = sqm:getTopCreature()
 						if player_ and player_:isPlayer() then
-							if player_:getStorageValue(info.timer) > os.time() then
+							if not player_:canFightBoss(info.bossName) then
 								player_:getPosition():sendMagicEffect(CONST_ME_POFF)
 								player_:sendCancelMessage("You are still exhausted from your last battle.")
 								return true
@@ -54,8 +53,7 @@ function graveScarlettUid.onUse(player, item, fromPosition, target, toPosition, 
 				local nPlayer = Player(p)
 				if nPlayer then
 					nPlayer:teleportTo(Position(33395, 32656, 6))
-					nPlayer:setStorageValue(info.timer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
-					nPlayer:sendBosstiaryCooldownTimer()
+					nPlayer:setBossCooldown(info.bossName, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
 				end
 			end
 			local scarlett = Game.createMonster("Scarlett Etzel", Position(33396, 32640, 6))

@@ -105,7 +105,6 @@ class MonsterType {
 		BestiaryType_t bestiaryRace = BESTY_RACE_NONE; // Number (addByte)
 
 		// Bosstiary
-		uint32_t bossStorageCooldown = 0;
 		BosstiaryRarity_t bosstiaryRace = BosstiaryRarity_t::BOSS_INVALID;
 		std::string bosstiaryClass;
 
@@ -162,7 +161,7 @@ class MonsterType {
 public:
 	MonsterType() = default;
 	explicit MonsterType(const std::string &initName) :
-		name(initName), typeName(initName), nameDescription(initName) {};
+		name(initName), typeName(initName), nameDescription(initName), variantName("") {};
 
 	// non-copyable
 	MonsterType(const MonsterType &) = delete;
@@ -173,6 +172,7 @@ public:
 	std::string name;
 	std::string typeName;
 	std::string nameDescription;
+	std::string variantName;
 
 	MonsterInfo info;
 
@@ -185,15 +185,19 @@ public:
 	}
 
 	float getHealthMultiplier() const {
-		return info.bosstiaryClass.empty() ? g_configManager().getFloat(RATE_MONSTER_HEALTH) : g_configManager().getFloat(RATE_BOSS_HEALTH);
+		return isBoss() ? g_configManager().getFloat(RATE_BOSS_HEALTH) : g_configManager().getFloat(RATE_MONSTER_HEALTH);
 	}
 
 	float getAttackMultiplier() const {
-		return info.bosstiaryClass.empty() ? g_configManager().getFloat(RATE_MONSTER_ATTACK) : g_configManager().getFloat(RATE_BOSS_ATTACK);
+		return isBoss() ? g_configManager().getFloat(RATE_BOSS_ATTACK) : g_configManager().getFloat(RATE_MONSTER_ATTACK);
 	}
 
 	float getDefenseMultiplier() const {
-		return info.bosstiaryClass.empty() ? g_configManager().getFloat(RATE_MONSTER_DEFENSE) : g_configManager().getFloat(RATE_BOSS_DEFENSE);
+		return isBoss() ? g_configManager().getFloat(RATE_BOSS_DEFENSE) : g_configManager().getFloat(RATE_MONSTER_DEFENSE);
+	}
+
+	bool isBoss() const {
+		return !info.bosstiaryClass.empty();
 	}
 
 	void loadLoot(const std::shared_ptr<MonsterType> monsterType, LootBlock lootblock);
@@ -264,7 +268,7 @@ public:
 		monsters.clear();
 	}
 
-	std::shared_ptr<MonsterType> getMonsterType(const std::string &name);
+	std::shared_ptr<MonsterType> getMonsterType(const std::string &name, bool silent = false) const;
 	std::shared_ptr<MonsterType> getMonsterTypeByRaceId(uint16_t raceId, bool isBoss = false) const;
 	bool tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> mType);
 	bool deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spellBlock_t &sb, const std::string &description = "");

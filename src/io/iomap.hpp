@@ -17,6 +17,7 @@
 #include "map/map.hpp"
 #include "creatures/monsters/spawns/spawn_monster.hpp"
 #include "creatures/npcs/spawns/spawn_npc.hpp"
+#include "game/zones/zone.hpp"
 
 class IOMap {
 public:
@@ -36,6 +37,22 @@ public:
 		}
 
 		return map->spawnsMonster.loadFromXML(map->monsterfile);
+	}
+
+	/**
+	 * Load main map zones
+	 * \param map Is the map class
+	 * \returns true if the zones spawn map was loaded successfully
+	 */
+	static bool loadZones(Map* map) {
+		if (map->zonesfile.empty()) {
+			// OTBM file doesn't tell us about the zonesfile,
+			// Lets guess it is mapname-zone.xml.
+			map->zonesfile = g_configManager().getString(MAP_NAME);
+			map->zonesfile += "-zones.xml";
+		}
+
+		return Zone::loadFromXML(map->zonesfile);
 	}
 
 	/**
@@ -83,6 +100,21 @@ public:
 			map->monsterfile += "-monster.xml";
 		}
 		return map->spawnsMonsterCustomMaps[customMapIndex].loadFromXML(map->monsterfile);
+	}
+
+	/**
+	 * Load custom  map zones
+	 * \param map Is the map class
+	 * \returns true if the zones spawn map custom was loaded successfully
+	 */
+	static bool loadZonesCustom(Map* map, const std::string &mapName, int customMapIndex) {
+		if (map->zonesfile.empty()) {
+			// OTBM file doesn't tell us about the zonesfile,
+			// Lets guess it is mapname-zones.xml.
+			map->zonesfile = mapName;
+			map->zonesfile += "-zones.xml";
+		}
+		return Zone::loadFromXML(map->zonesfile, customMapIndex);
 	}
 
 	/**

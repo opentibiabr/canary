@@ -58,6 +58,7 @@ function throne.onStepIn(creature, item, position, fromPosition)
 
 	if player:getStorageValue(throne.storage) ~= 1 then
 		player:setStorageValue(throne.storage, 1)
+		player:setStorageValue(Storage.PitsOfInferno.ShortcutHubDoor, 1)
 		player:getPosition():sendMagicEffect(throne.effect)
 		player:say(throne.text, TALKTYPE_MONSTER_SAY)
 	else

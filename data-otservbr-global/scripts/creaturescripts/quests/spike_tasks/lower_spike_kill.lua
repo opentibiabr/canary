@@ -4,20 +4,23 @@ local range = {
 	to = Position(32345, 32710, 15),
 }
 
-local lowerSpikeKill = CreatureEvent("LowerSpikeKill")
-function lowerSpikeKill.onKill(creature, target)
-	if not table.contains({ -1, 7 }, creature:getStorageValue(SPIKE_LOWER_KILL_MAIN)) then
-		if creature:getPosition():isInRange(range.from, range.to) then
-			if target:isMonster() and (target:getMaster() == nil) and (target:getName():lower() == "drillworm") then
-				local sum = creature:getStorageValue(SPIKE_LOWER_KILL_MAIN) + 1
-				creature:setStorageValue(SPIKE_LOWER_KILL_MAIN, sum)
-				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have slayed " .. sum .. " out of 7 Drillworms.")
-				if sum == 7 then
-					creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Report the task to Gnomargery.")
-				end
+local lowerSpikeKill = CreatureEvent("LowerSpikeDeath")
+function lowerSpikeKill.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
+	if not creature:getPosition():isInRange(range.from, range.to) then
+		return true
+	end
+
+	onDeathForParty(creature, mostDamageKiller, function(creature, player)
+		if not table.contains({ -1, 7 }, player:getStorageValue(SPIKE_LOWER_KILL_MAIN)) then
+			local sum = player:getStorageValue(SPIKE_LOWER_KILL_MAIN) + 1
+			player:setStorageValue(SPIKE_LOWER_KILL_MAIN, sum)
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have slayed " .. sum .. " out of 7 Drillworms.")
+			if sum == 7 then
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Report the task to Gnomargery.")
 			end
 		end
-	end
+	end)
+	return true
 end
 
 lowerSpikeKill:register()

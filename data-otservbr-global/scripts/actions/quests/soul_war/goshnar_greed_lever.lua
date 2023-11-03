@@ -17,7 +17,6 @@ local config = {
 		to = Position(33755, 31673, 14),
 	},
 	exit = Position(33621, 31427, 10),
-	storage = Storage.Quest.U12_40.SoulWar.GoshnarGreedTimer,
 }
 
 local lever = BossLever(config)

@@ -72,7 +72,7 @@ private:
 	template <typename Callable, typename... Args>
 	void addGameTask(Callable function, Args &&... args);
 	template <typename Callable, typename... Args>
-	void addGameTaskTimed(uint32_t delay, std::string context, Callable function, Args &&... args);
+	void addGameTaskTimed(uint32_t delay, std::string_view context, Callable function, Args &&... args);
 
 	ProtocolGame_ptr getThis() {
 		return std::static_pointer_cast<ProtocolGame>(shared_from_this());
@@ -132,7 +132,7 @@ private:
 	void parseHighscores(NetworkMessage &msg);
 	void parseTaskHuntingAction(NetworkMessage &msg);
 	void sendHighscoresNoData();
-	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages);
+	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer);
 
 	void parseGreet(NetworkMessage &msg);
 	void parseBugReport(NetworkMessage &msg);

@@ -15,23 +15,21 @@ local function removeTeleport(position)
 	end
 end
 
-local deathPriestShargon = CreatureEvent("ShargonKill")
-function deathPriestShargon.onKill(creature, target)
-	if target:isPlayer() or target:getMaster() or target:getName():lower() ~= "death priest shargon" then
-		return true
-	end
-
-	local position = target:getPosition()
+local deathPriestShargon = CreatureEvent("ShargonDeath")
+function deathPriestShargon.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
+	local position = creature:getPosition()
 	position:sendMagicEffect(CONST_ME_TELEPORT)
 	local item = Game.createItem(config.teleportId, 1, config.teleportPosition)
 	if item:isTeleport() then
 		item:setDestination(config.destinationPosition)
 	end
-	if config.storageKey ~= nil then
-		if creature:getStorageValue(config.storageKey) < config.getStorageValue then
-			creature:setStorageValue(config.storageKey, config.setStorageValue)
+	onDeathForParty(creature, mostDamageKiller, function(creature, player)
+		if config.storageKey ~= nil then
+			if player:getStorageValue(config.storageKey) < config.getStorageValue then
+				player:setStorageValue(config.storageKey, config.setStorageValue)
+			end
 		end
-	end
+	end)
 	addEvent(removeTeleport, 5 * 60 * 1000, position)
 	return true
 end

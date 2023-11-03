@@ -13,6 +13,11 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"ForgottenKnowledgeBossDeath",
+	"MeltingDeath",
+}
+
 monster.health = 70000
 monster.maxHealth = 70000
 monster.race = "undead"
@@ -28,7 +33,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1336,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.ForgottenKnowledge.HorrorTimer,
 }
 
 monster.strategiesTarget = {
@@ -56,10 +60,6 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-}
-
-monster.events = {
-	"MeltingDeath",
 }
 
 monster.light = {

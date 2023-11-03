@@ -15,7 +15,10 @@ local function revertLloyd(prismId)
 
 	local tile = Tile(monsters[prismId].pos)
 	if tile then
-		tile:getTopCreature():remove()
+		local creature = tile:getTopCreature()
+		if creature then
+			creature:remove()
+		end
 		Game.createMonster(monsters[prismId].cosmicInvu, Position(monsters[prismId].pos), true, true)
 	end
 end

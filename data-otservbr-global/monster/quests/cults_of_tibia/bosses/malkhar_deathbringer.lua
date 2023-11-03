@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"EssenceOfMaliceSpawnsDeath",
+}
+
 monster.health = 30000
 monster.maxHealth = 30000
 monster.race = "blood"

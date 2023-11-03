@@ -29,9 +29,9 @@ namespace extension {
 #if !defined(BOOST_DI_NOT_THREAD_SAFE)
 				//<<lock mutex so that move will be synchronized>>
 				explicit scope(scope &&other) noexcept :
-					scope(std::move(other), std::lock_guard<std::mutex>(other.mutex_)) { }
+					scope(std::move(other), std::scoped_lock<std::mutex>(other.mutex_)) { }
 				//<<synchronized move constructor>>
-				scope(scope &&other, const std::lock_guard<std::mutex> &) noexcept :
+				scope(scope &&other, const std::scoped_lock<std::mutex> &) noexcept :
 					object_(std::move(other.object_)) { }
 #endif
 
@@ -49,7 +49,7 @@ namespace extension {
 				wrappers::shared<shared, T> create(const TProvider &provider) & {
 					if (!object_) {
 #if !defined(BOOST_DI_NOT_THREAD_SAFE)
-						std::lock_guard<std::mutex> lock(mutex_);
+						std::scoped_lock<std::mutex> lock(mutex_);
 						if (!object_)
 #endif
 							object_ = std::shared_ptr<T> { provider.get() };
@@ -65,7 +65,7 @@ namespace extension {
 					auto &object = provider.cfg().template data<T>();
 					if (!object) {
 #if !defined(BOOST_DI_NOT_THREAD_SAFE)
-						std::lock_guard<std::mutex> lock(mutex_);
+						std::scoped_lock<std::mutex> lock(mutex_);
 						if (!object)
 #endif
 							object = std::shared_ptr<T> { provider.get() };

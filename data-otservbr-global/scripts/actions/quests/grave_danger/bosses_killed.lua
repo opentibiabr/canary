@@ -7,7 +7,7 @@ local bosses = {
 	["king zelos"] = { storage = Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosKilled },
 }
 
-local bossesGraveDanger = CreatureEvent("GraveDangerKillGraveDangerBossDeath")
+local bossesGraveDanger = CreatureEvent("GraveDangerBossDeath")
 function bossesGraveDanger.onDeath(creature)
 	local targetMonster = creature:getMonster()
 	if not targetMonster or targetMonster:getMaster() then

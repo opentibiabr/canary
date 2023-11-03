@@ -23,9 +23,6 @@ local function revertLloyd(prismId)
 				creature:remove()
 			end
 		end
-		if creature then
-			creature:remove()
-		end
 		Game.createMonster(monsters[prismId].cosmicInvu, Position(monsters[prismId].pos), true, true)
 	end
 end

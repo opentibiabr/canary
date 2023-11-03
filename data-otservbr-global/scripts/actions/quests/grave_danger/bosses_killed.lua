@@ -9,11 +9,7 @@ local bosses = {
 
 local bossesGraveDanger = CreatureEvent("GraveDangerBossDeath")
 function bossesGraveDanger.onDeath(creature)
-	local targetMonster = creature:getMonster()
-	if not targetMonster or targetMonster:getMaster() then
-		return true
-	end
-	local bossConfig = bosses[targetMonster:getName():lower()]
+	local bossConfig = bosses[creature:getName():lower()]
 	if not bossConfig then
 		return true
 	end

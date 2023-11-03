@@ -1,16 +1,11 @@
-local bragrumol = CreatureEvent("BragrumolKill")
+local bragrumol = CreatureEvent("BragrumolDeath")
 
-function bragrumol.onKill(cid, target, damage, flags, corpse)
-	if isMonster(target) then
-		if string.lower(getCreatureName(target)) == "bragrumol" then
-			for attackerUid, damage in pairs(target:getDamageMap()) do
-				local player = Player(attackerUid)
-				if player and player:getStorageValue(Storage.Kilmaresh.Twelve.Bragrumol) == 1 then
-					player:setStorageValue(Storage.Kilmaresh.Twelve.Bragrumol, 2)
-				end
-			end
+function bragrumol.onDeath(creature)
+	onDeathForDamagingPlayers(creature, function(creature, player)
+		if player:getStorageValue(Storage.Kilmaresh.Twelve.Bragrumol) == 1 then
+			player:setStorageValue(Storage.Kilmaresh.Twelve.Bragrumol, 2)
 		end
-	end
+	end)
 	return true
 end
 

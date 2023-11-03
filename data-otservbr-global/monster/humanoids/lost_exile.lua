@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"LastExileDeath",
+}
+
 monster.raceId = 1529
 monster.Bestiary = {
 	class = "Humanoid",

@@ -304,7 +304,7 @@ public:
 		return guildWarVector;
 	}
 
-	const std::unordered_set<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) {
+	const std::unordered_set<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) const {
 		return isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
 	}
 

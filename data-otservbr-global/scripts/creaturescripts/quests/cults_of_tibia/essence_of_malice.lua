@@ -1,6 +1,7 @@
-local essenceOfMalice = CreatureEvent("EssenceOfMalice")
-function essenceOfMalice.onKill(creature, target)
-	local boss = { "eshtaba the conjurer", "mezlon the defiler", "eliz the unyielding", "malkhar deathbringer", "dorokoll the mystic" }
+local boss = { "eshtaba the conjurer", "mezlon the defiler", "eliz the unyielding", "malkhar deathbringer", "dorokoll the mystic" }
+
+local essenceOfMalice = CreatureEvent("EssenceOfMaliceSpawnsDeath")
+function essenceOfMalice.onDeath(creature)
 	local newBoss = 0
 	local fromPos = Position(33087, 31909, 15)
 	local toPos = Position(33112, 31932, 15)
@@ -19,7 +20,7 @@ function essenceOfMalice.onKill(creature, target)
 			end
 		end
 	end
-	if table.contains(boss, target:getName():lower()) and newBoss == 1 then
+	if table.contains(boss, creature:getName():lower()) and newBoss == 1 then
 		Game.createMonster("Essence Of Malice", Position(33098, 31920, 15))
 	end
 	return true

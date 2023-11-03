@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"DreamCourtsBossDeath",
+}
+
 monster.health = 850000
 monster.maxHealth = 850000
 monster.race = "blood"

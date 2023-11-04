@@ -9,15 +9,19 @@ local function revertLloyd(prismId)
 	local lloydTile = Tile(Position(32799, 32826, 14))
 	if lloydTile then
 		local lloyd = lloydTile:getTopCreature()
-		lloyd:teleportTo(Position(32799, 32829, 14))
-		lloyd:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+		if lloyd then
+			lloyd:teleportTo(Position(32799, 32829, 14))
+			lloyd:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+		end
 	end
 
 	local tile = Tile(monsters[prismId].pos)
 	if tile then
-		local creature = tile:getTopCreature()
-		if creature then
-			creature:remove()
+		local creatures = tile:getCreatures()
+		for _, creature in ipairs(creatures) do
+			if creature:isMonster() then
+				creature:remove()
+			end
 		end
 		Game.createMonster(monsters[prismId].cosmicInvu, Position(monsters[prismId].pos), true, true)
 	end
@@ -25,11 +29,6 @@ end
 
 local lloydPrepareDeath = CreatureEvent("LloydPrepareDeath")
 function lloydPrepareDeath.onPrepareDeath(creature, lastHitKiller, mostDamageKiller)
-	local targetMonster = creature:getMonster()
-	if not creature or not targetMonster then
-		return true
-	end
-
 	local prismCount = 1
 	for m = 1, #monsters do
 		local cosmic = Tile(Position(monsters[m].pos)):getTopCreature()

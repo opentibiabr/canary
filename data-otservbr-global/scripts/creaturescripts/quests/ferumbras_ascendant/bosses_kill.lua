@@ -41,27 +41,19 @@ local function revertTeleport(position, itemId, transformId, destination)
 end
 
 local ascendantBossesKill = CreatureEvent("AscendantBossesKill")
-function ascendantBossesKill.onKill(creature, target)
-	local targetMonster = target:getMonster()
-	if not targetMonster or targetMonster:getMaster() then
-		return true
-	end
-
-	local bossConfig = bosses[targetMonster:getName():lower()]
+function ascendantBossesKill.onDeath(creature)
+	local bossConfig = bosses[creature:getName():lower()]
 	if not bossConfig then
 		return true
 	end
 
-	for player, _ in pairs(targetMonster:getDamageMap()) do
-		local attackerPlayer = Player(player)
-		if attackerPlayer then
-			if targetMonster:getName():lower() == "ferumbras mortal shell" then
-				attackerPlayer:setBossCooldown(targetMonster:getName(), os.time() + 60 * 60 * 14 * 24)
-			elseif targetMonster:getName():lower() == "the lord of the lice" then
-				attackerPlayer:setStorageValue(Storage.FerumbrasAscension.TheLordOfTheLiceAccess, 1)
-			end
+	onDeathForDamagingPlayers(creature, function(creature, player)
+		if creature:getName():lower() == "ferumbras mortal shell" then
+			player:setBossCooldown(creature:getName(), os.time() + 60 * 60 * 14 * 24)
+		elseif creature:getName():lower() == "the lord of the lice" then
+			player:setStorageValue(Storage.FerumbrasAscension.TheLordOfTheLiceAccess, 1)
 		end
-	end
+	end)
 
 	local teleport = Tile(bossConfig.teleportPos):getItemById(1949)
 	if not teleport then
@@ -70,12 +62,12 @@ function ascendantBossesKill.onKill(creature, target)
 
 	if teleport then
 		teleport:transform(22761)
-		targetMonster:getPosition():sendMagicEffect(CONST_ME_THUNDER)
+		creature:getPosition():sendMagicEffect(CONST_ME_THUNDER)
 		teleport:setDestination(bossConfig.godbreakerPos)
 		addEvent(revertTeleport, 2 * 60 * 1000, bossConfig.teleportPos, 22761, 1949, Position(33319, 32318, 13))
 	end
 
-	if targetMonster:getName():lower() == "ferumbras mortal shell" then
+	if creature:getName():lower() == "ferumbras mortal shell" then
 		addEvent(transformCrystal, 2 * 60 * 1000)
 	end
 	return true

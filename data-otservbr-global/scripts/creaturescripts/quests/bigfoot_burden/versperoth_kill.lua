@@ -15,18 +15,9 @@ local function transformTeleport(open)
 	end
 end
 
-local versperothKill = CreatureEvent("VersperothKill")
-function versperothKill.onKill(creature, target)
+local versperothKill = CreatureEvent("VersperothDeath")
+function versperothKill.onDeath(creature)
 	local config = warzoneConfig.findByName("Abyssador")
-	local targetMonster = target:getMonster()
-	if not targetMonster then
-		return true
-	end
-
-	if targetMonster:getName():lower() ~= "versperoth" then
-		return true
-	end
-
 	Game.setStorageValue(GlobalStorage.BigfootBurden.Versperoth.Battle, 2)
 	addEvent(Game.setStorageValue, 30 * 60 * 1000, GlobalStorage.BigfootBurden.Versperoth.Battle, 0)
 

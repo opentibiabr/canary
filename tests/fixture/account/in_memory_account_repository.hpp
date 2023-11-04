@@ -41,7 +41,7 @@ namespace account::tests {
 			return false;
 		}
 
-		bool loadByEmail(const std::string &email, AccountInfo &acc) final {
+		bool loadByEmailOrName(bool oldProtocol, const std::string &email, AccountInfo &acc) final {
 			auto account = accounts.find(email);
 
 			if (account == accounts.end()) {

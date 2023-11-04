@@ -1,13 +1,10 @@
-local huskyKill = CreatureEvent("HuskyKill")
+local huskyKill = CreatureEvent("HuskyDeath")
 
-function huskyKill.onKill(player, target)
-	if target:isPlayer() or target:getMaster() then
-		return true
-	end
-
-	if target:getName():lower() == "husky" then
-		player:setStorageValue(Storage.TheIceIslands.HuskyKill, player:getStorageValue(Storage.TheIceIslands.HuskyKill) + 1)
-	end
+function huskyKill.onDeath(creature)
+	onDeathForDamagingPlayers(creature, function(creature, player)
+		local value = player:getStorageValue(Storage.TheIceIslands.HuskyKill) or 0
+		player:setStorageValue(Storage.TheIceIslands.HuskyKill, value + 1)
+	end)
 	return true
 end
 

@@ -184,7 +184,12 @@ function Encounter:spawnMonsters(config)
 				spawn(monster)
 			end
 			if event then
-				monster:registerEvent(event)
+				if type(event) == "string" then
+					event = { event }
+				end
+				for _, event in ipairs(event) do
+					monster:registerEvent(event)
+				end
 			end
 			if timeLimit then
 				self:addEvent(function(monsterId)

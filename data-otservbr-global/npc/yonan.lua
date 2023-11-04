@@ -179,6 +179,24 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({ "Sorry." }, npc, creature) -- It needs to be revised, it's not the same as the global
 		end
 	end
+
+	if MsgContains(message, "regalia of suon") then
+		npcHandler:say({ "You have all parts of the famous Regalia of Suon! Only a few of them were ever forged, back in the times of the old empire. You are holding a very rare and precious treasure, my friend. ... As you have all four pieces, I could combine them into the full insignia. Shall I do this for you?" }, npc, creature)
+		npcHandler:setTopic(playerId, 5)
+	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 5 then
+		if player:getItemById(31572, 1) and player:getItemById(31573, 1) and player:getItemById(31574, 1) and player:getItemById(31575, 1) then
+			if player:addItem(31576, 1) then -- regalia of suon
+				player:removeItem(31572, 1) -- blue and golden cordon
+				player:removeItem(31573, 1) -- sun medal
+				player:removeItem(31574, 1) -- sunray emblem
+				player:removeItem(31575, 1) -- golden bijou
+				npcHandler:say({ "Well then, let me have a look." }, npc, creature)
+			end
+		else
+			npcHandler:say({ "Sorry, you dont have the necessary items." }, npc, creature) -- It needs to be revised, it's not the same as the global
+		end
+	end
+
 	return true
 end
 

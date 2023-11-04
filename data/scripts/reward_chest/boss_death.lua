@@ -1,7 +1,7 @@
 local bossDeath = CreatureEvent("BossDeath")
 
 function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)
-	if not corpse then
+	if not corpse or corpse == 0 then
 		return true
 	end
 	-- Deny summons and players
@@ -14,9 +14,14 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 	-- Make sure it is a boss
 	if monsterType and monsterType:isRewardBoss() then
 		if not corpse.isContainer or not corpse:isContainer() then
-			logger.warn("[bossDeath.onDeath] Corpse (id: {}) for reward boss {} is not a container.", corpse:getId(), creature:getName())
+			if corpse.getId then
+				logger.warn("[bossDeath.onDeath] Corpse (id: {}, name: {}) for reward boss {} is not a container.", corpse:getId(), corpse:getName(), creature:getName())
+			else
+				logger.warn("[bossDeath.onDeath] Error to get corpseId from boss: {}", creature:getName())
+			end
+		else
+			corpse:registerReward()
 		end
-		corpse:registerReward()
 		local bossId = creature:getId()
 		local rewardId = corpse:getAttribute(ITEM_ATTRIBUTE_DATE)
 

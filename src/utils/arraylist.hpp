@@ -21,6 +21,25 @@ namespace stdext {
 	template <typename T>
 	class arraylist {
 	public:
+		arraylist() = default;
+
+		explicit arraylist(size_t reserveSize) {
+			reserve(reserveSize);
+		}
+
+		explicit arraylist(std::initializer_list<T> _Ilist) {
+			backContainer.assign(_Ilist);
+		}
+
+		arraylist &operator=(std::initializer_list<T> _Ilist) {
+			backContainer.assign(_Ilist);
+			return *this;
+		}
+
+		void assign(std::initializer_list<T> _Ilist) {
+			backContainer.assign(_Ilist);
+		}
+
 		bool contains(const T &v) {
 			update();
 			return std::ranges::find(backContainer, v) != backContainer.end();
@@ -128,7 +147,7 @@ namespace stdext {
 
 		const auto &data() noexcept {
 			update();
-			return backContainer.data();
+			return backContainer;
 		}
 
 		T &operator[](const size_t i) {

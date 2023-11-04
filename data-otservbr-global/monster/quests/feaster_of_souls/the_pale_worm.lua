@@ -22,6 +22,7 @@ monster.manaCost = 0
 
 monster.events = {
 	"paleWormDeath",
+	"FeasterOfSoulsBossDeath",
 }
 
 monster.changeTarget = {
@@ -95,6 +96,8 @@ monster.loot = {
 	{ name = "bloody tears", chance = 1500 },
 	{ name = "ghost chestplate", chance = 150 },
 	{ name = "spooky hood", chance = 150 },
+	{ name = "pale worm's scalp", chance = 1200 },
+	{ name = "spectral scrap of cloth", chance = 250 },
 	{ name = "fabulous legs", chance = 150 },
 	{ name = "phantasmal axe", chance = 150 },
 	{ name = "ghost backpack", chance = 150 },

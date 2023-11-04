@@ -2502,7 +2502,7 @@ public:
 	}
 
 	bool checkAutoLoot() const {
-		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT) && getStorageValue(STORAGEVALUE_AUTO_LOOT) != 0;
+		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT) && getStorageValue(STORAGEVALUE_AUTO_LOOT) > 0;
 		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY)) {
 			return autoLoot && isVip();
 		}

@@ -898,7 +898,7 @@ void Combat::addDistanceEffect(std::shared_ptr<Creature> caster, const Position 
 
 void Combat::doChainEffect(const Position &origin, const Position &dest, uint8_t effect) {
 	if (effect > 0) {
-		std::forward_list<Direction> dirList;
+		stdext::arraylist<Direction> dirList(128);
 		FindPathParams fpp;
 		fpp.minTargetDist = 0;
 		fpp.maxTargetDist = 1;
@@ -1311,7 +1311,7 @@ std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets
 
 	std::vector<std::pair<Position, std::vector<uint32_t>>> resultMap;
 	std::vector<std::shared_ptr<Creature>> targets;
-	std::set<uint32_t> visited;
+	phmap::flat_hash_set<uint32_t> visited;
 
 	if (initialTarget && initialTarget != caster) {
 		targets.push_back(initialTarget);

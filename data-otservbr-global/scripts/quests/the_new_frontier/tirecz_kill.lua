@@ -14,18 +14,9 @@ local function clearArena()
 	end
 end
 
-local tireczKill = CreatureEvent("TireczKill")
+local tireczKill = CreatureEvent("TireczDeath")
 
-function tireczKill.onKill(creature, target)
-	local targetMonster = target:getMonster()
-	if not targetMonster then
-		return true
-	end
-
-	if targetMonster:getName():lower() ~= "tirecz" then
-		return true
-	end
-
+function tireczKill.onDeath(creature)
 	local spectators, spectator = Game.getSpectators(Position({ x = 33063, y = 31034, z = 3 }), false, true, 10, 10, 10, 10)
 	for i = 1, #spectators do
 		spectator = spectators[i]

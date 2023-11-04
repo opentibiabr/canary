@@ -40,8 +40,7 @@ CanaryServer::CanaryServer(
 ) :
 	logger(logger),
 	rsa(rsa),
-	serviceManager(serviceManager),
-	loaderUniqueLock(loaderLock) {
+	serviceManager(serviceManager) {
 	logInfos();
 	toggleForceCloseButton();
 	g_game().setGameState(GAME_STATE_STARTUP);
@@ -93,10 +92,9 @@ int CanaryServer::run() {
 
 				g_webhook().sendMessage("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE);
 
-				loaderDone = true;
-				loaderSignal.notify_all();
+				loaderStatus = LoaderStatus::LOADED;
 			} catch (FailedToInitializeCanary &err) {
-				loadFailed = true;
+				loaderStatus = LoaderStatus::FAILED;
 				logger.error(err.what());
 
 				logger.error("The program will close after pressing the enter key...");
@@ -104,16 +102,16 @@ int CanaryServer::run() {
 				if (isatty(STDIN_FILENO)) {
 					getchar();
 				}
-
-				loaderSignal.notify_all();
 			}
+
+			loaderStatus.notify_one();
 		},
 		"CanaryServer::run"
 	);
 
-	loaderSignal.wait(loaderUniqueLock, [this] { return loaderDone || loadFailed; });
+	loaderStatus.wait(LoaderStatus::LOADING);
 
-	if (loadFailed || !serviceManager.is_running()) {
+	if (loaderStatus == LoaderStatus::FAILED || !serviceManager.is_running()) {
 		logger.error("No services running. The server is NOT online!");
 		shutdown();
 		return EXIT_FAILURE;

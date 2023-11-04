@@ -140,6 +140,7 @@ public:
 	std::shared_ptr<Creature> getTopCreature() const;
 	std::shared_ptr<Creature> getBottomCreature() const;
 	std::shared_ptr<Creature> getTopVisibleCreature(std::shared_ptr<Creature> creature) const;
+
 	std::shared_ptr<Creature> getBottomVisibleCreature(std::shared_ptr<Creature> creature) const;
 	std::shared_ptr<Item> getTopTopItem() const;
 	std::shared_ptr<Item> getTopDownItem() const;
@@ -175,7 +176,9 @@ public:
 	void addZone(std::shared_ptr<Zone> zone);
 	void clearZones();
 
-	phmap::flat_hash_set<std::shared_ptr<Zone>> getZones();
+	auto getZones() const {
+		return zones;
+	}
 
 	ZoneType_t getZoneType() const {
 		if (hasFlag(TILESTATE_PROTECTIONZONE)) {
@@ -210,7 +213,7 @@ public:
 	void addThing(std::shared_ptr<Thing> thing) override final;
 	void addThing(int32_t index, std::shared_ptr<Thing> thing) override;
 
-	void updateTileFlags(std::shared_ptr<Item> item);
+	void updateTileFlags(const std::shared_ptr<Item> &item);
 	void updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t count) override final;
 	void replaceThing(uint32_t index, std::shared_ptr<Thing> thing) override final;
 
@@ -244,8 +247,14 @@ public:
 	std::shared_ptr<Item> getGround() const {
 		return ground;
 	}
-	void setGround(std::shared_ptr<Item> item) {
-		ground = item;
+	void setGround(const std::shared_ptr<Item> &item) {
+		if (ground) {
+			resetTileFlags(ground);
+		}
+
+		if (ground = item) {
+			setTileFlags(item);
+		}
 	}
 
 private:
@@ -254,8 +263,8 @@ private:
 	void onRemoveTileItem(const CreatureVector &spectators, const std::vector<int32_t> &oldStackPosVector, std::shared_ptr<Item> item);
 	void onUpdateTile(const CreatureVector &spectators);
 
-	void setTileFlags(std::shared_ptr<Item> item);
-	void resetTileFlags(std::shared_ptr<Item> item);
+	void setTileFlags(const std::shared_ptr<Item> &item);
+	void resetTileFlags(const std::shared_ptr<Item> &item);
 	bool hasHarmfulField() const;
 	ReturnValue checkNpcCanWalkIntoTile() const;
 
@@ -263,7 +272,7 @@ protected:
 	std::shared_ptr<Item> ground = nullptr;
 	Position tilePos;
 	uint32_t flags = 0;
-	phmap::flat_hash_set<std::shared_ptr<Zone>> zones;
+	std::unordered_set<std::shared_ptr<Zone>> zones;
 };
 
 // Used for walkable tiles, where there is high likeliness of

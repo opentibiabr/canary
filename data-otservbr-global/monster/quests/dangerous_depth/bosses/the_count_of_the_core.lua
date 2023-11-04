@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"DepthWarzoneBossDeath",
+}
+
 monster.health = 350000
 monster.maxHealth = 350000
 monster.race = "blood"

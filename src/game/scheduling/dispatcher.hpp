@@ -55,6 +55,12 @@ struct DispatcherContext {
 		return type;
 	}
 
+	// postpone the event
+	void addEvent(std::function<void(void)> &&f) const;
+
+	// if the context is async, the event will be postponed, if not, it will be executed immediately.
+	void tryAddEvent(std::function<void(void)> &&f) const;
+
 private:
 	void reset() {
 		group = TaskGroup::ThreadPool;
@@ -143,15 +149,16 @@ private:
 
 	void init();
 	void shutdown() {
-		signalAsync.notify_all();
+		signalSchedule.notify_all();
 	}
 
+	inline void mergeAsyncEvents();
 	inline void mergeEvents();
-	inline void executeEvents(std::unique_lock<std::mutex> &asyncLock);
+	inline void executeEvents(const TaskGroup startGroup = TaskGroup::Serial);
 	inline void executeScheduledEvents();
 
 	inline void executeSerialEvents(std::vector<Task> &tasks);
-	inline void executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId, std::unique_lock<std::mutex> &asyncLock);
+	inline void executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId);
 	inline std::chrono::nanoseconds timeUntilNextScheduledTask() const;
 
 	inline void checkPendingTasks() {
@@ -174,7 +181,6 @@ private:
 	uint_fast64_t dispatcherCycle = 0;
 
 	ThreadPool &threadPool;
-	std::condition_variable signalAsync;
 	std::condition_variable signalSchedule;
 	std::atomic_bool hasPendingTasks = false;
 	std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.

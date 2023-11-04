@@ -333,7 +333,7 @@ public:
 private:
 	bool canWalkTo(std::shared_ptr<Creature> creature, Position pos, Direction moveDirection) const;
 	bool getFleeDirection(std::shared_ptr<Creature> creature);
-	bool getFleePath(std::shared_ptr<Creature> creature, const Position &pos, std::forward_list<Direction> &dirList);
+	bool getFleePath(std::shared_ptr<Creature> creature, const Position &pos, stdext::arraylist<Direction> &dirList);
 	bool getRandomDirection(std::shared_ptr<Creature> creature, Position pos);
 	bool isStuck(std::shared_ptr<Creature> creature, Position pos) const;
 

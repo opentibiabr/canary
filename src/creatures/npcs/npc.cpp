@@ -113,7 +113,7 @@ void Npc::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) {
 	shopPlayerMap.clear();
 }
 
-void Npc::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport) {
+void Npc::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
 	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 
 	// onCreatureMove(self, creature, oldPosition, newPosition)
@@ -134,7 +134,7 @@ void Npc::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Til
 		closeAllShopWindows();
 	}
 
-	if (auto player = creature->getPlayer()) {
+	if (const auto &player = creature->getPlayer()) {
 		handlePlayerMove(player, newPos);
 	}
 }
@@ -151,7 +151,7 @@ void Npc::onPlayerAppear(std::shared_ptr<Player> player) {
 	if (player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(player)) {
 		return;
 	}
-	playerSpectators.emplace_back(player);
+	playerSpectators.emplace(player);
 	manageIdle();
 }
 
@@ -531,7 +531,7 @@ void Npc::onThinkWalk(uint32_t interval) {
 
 void Npc::onCreatureWalk() {
 	Creature::onCreatureWalk();
-	playerSpectators.erase_if([this](const auto &creature) { return !this->canSee(creature->getPosition()); });
+	phmap::erase_if(playerSpectators, [this](const auto &creature) { return !this->canSee(creature->getPosition()); });
 }
 
 void Npc::onPlacedCreature() {
@@ -542,7 +542,7 @@ void Npc::loadPlayerSpectators() {
 	auto spec = Spectators().find<Player>(position, true);
 	for (const auto &creature : spec) {
 		if (!creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
-			playerSpectators.emplace_back(creature->getPlayer());
+			playerSpectators.emplace(creature->getPlayer());
 		}
 	}
 }

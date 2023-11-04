@@ -22,6 +22,7 @@ monster.manaCost = 0
 
 monster.events = {
 	"paleWormDeath",
+	"FeasterOfSoulsBossDeath",
 }
 
 monster.changeTarget = {

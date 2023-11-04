@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"YielothaxDeath",
+}
+
 monster.raceId = 717
 monster.Bestiary = {
 	class = "Extra Dimensional",

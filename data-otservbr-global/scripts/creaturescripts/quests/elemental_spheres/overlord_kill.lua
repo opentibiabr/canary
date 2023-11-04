@@ -6,13 +6,9 @@ local overlords = {
 	["lord of the elements"] = {},
 }
 
-local elementalSpheresOver = CreatureEvent("OverlordKill")
-function elementalSpheresOver.onKill(creature, target)
-	if not target:isMonster() then
-		return true
-	end
-
-	local bossName = target:getName()
+local elementalSpheresOver = CreatureEvent("ElementalOverlordDeath")
+function elementalSpheresOver.onDeath(creature)
+	local bossName = creature:getName()
 	local bossConfig = overlords[bossName:lower()]
 	if not bossConfig then
 		return true
@@ -21,12 +17,17 @@ function elementalSpheresOver.onKill(creature, target)
 	if bossConfig.globalStorage then
 		Game.setStorageValue(bossConfig.globalStorage, 0)
 	end
-
-	if bossConfig.storage and creature:getStorageValue(bossConfig.storage) < 1 then
-		creature:setStorageValue(bossConfig.storage, 1)
+	if not bossConfig.storage then
+		return true
 	end
 
-	creature:say("You slayed " .. bossName .. ".", TALKTYPE_MONSTER_SAY)
+	onDeathForDamagingPlayers(creature, function(creature, player)
+		if player:getStorageValue(bossConfig.storage) < 1 then
+			player:setStorageValue(bossConfig.storage, 1)
+		end
+		player:say("You slayed " .. bossName .. ".", TALKTYPE_MONSTER_SAY)
+	end)
+
 	return true
 end
 

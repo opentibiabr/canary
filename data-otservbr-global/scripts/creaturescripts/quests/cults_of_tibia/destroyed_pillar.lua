@@ -1,28 +1,21 @@
+local pillar = {
+	[1] = "pillar of summoning",
+	[2] = "pillar of death",
+	[3] = "pillar of protection",
+	[4] = "pillar of healing",
+	[5] = "pillar of draining",
+}
+
 local destroyedPillar = CreatureEvent("DestroyedPillar")
-function destroyedPillar.onKill(creature, target)
-	if not creature or not creature:isPlayer() then
-		return true
-	end
-	if not target or not target:isMonster() then
-		return true
-	end
-
-	local pillar = {
-		[1] = "pillar of summoning",
-		[2] = "pillar of death",
-		[3] = "pillar of protection",
-		[4] = "pillar of healing",
-		[5] = "pillar of draining",
-	}
-
-	local monsterName = target:getName():lower()
+function destroyedPillar.onDeath(creature)
+	local monsterName = creature:getName():lower()
 	local summoning = "summoning"
 	local death = "death"
 	local healing = "healing"
 	local protection = "protection"
 	local draining = "draining"
 	for i = 1, #pillar do
-		local position = target:getPosition()
+		local position = creature:getPosition()
 		local pilar = ""
 		local newpos = {}
 		pilar = pillar[i]

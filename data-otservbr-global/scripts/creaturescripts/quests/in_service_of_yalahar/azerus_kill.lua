@@ -6,13 +6,8 @@ local function removeTeleport(position)
 	end
 end
 
-local azerus = CreatureEvent("Azerus")
-function azerus.onKill(creature, target)
-	local targetMonster = target:getMonster()
-	if not target or not targetMonster or targetMonster:getName():lower() ~= "azerus" then
-		return true
-	end
-
+local azerus = CreatureEvent("AzerusDeath")
+function azerus.onDeath(creature)
 	local position = targetMonster:getPosition()
 	position:sendMagicEffect(CONST_ME_TELEPORT)
 	local item = Game.createItem(1949, 1, position)

@@ -199,7 +199,7 @@ public:
 
 		return list;
 	}
-	
+
 	auto getFriendList() {
 		CreatureVector list;
 		list.reserve(friendList.size());

@@ -227,7 +227,6 @@ void IOBestiary::addBestiaryKill(std::shared_ptr<Player> player, const std::shar
 		(curCount < mtype->info.bestiaryFirstUnlock && (curCount + amount) >= mtype->info.bestiaryFirstUnlock) || // First kill stage reached
 		(curCount < mtype->info.bestiarySecondUnlock && (curCount + amount) >= mtype->info.bestiarySecondUnlock) || // Second kill stage reached
 		(curCount < mtype->info.bestiaryToUnlock && (curCount + amount) >= mtype->info.bestiaryToUnlock)) { // Final kill stage reached
-
 		ss << "You unlocked details for the creature '" << mtype->name << "'";
 		player->sendTextMessage(MESSAGE_STATUS, ss.str());
 		player->sendBestiaryEntryChanged(raceid);
@@ -305,7 +304,6 @@ void IOBestiary::sendBuyCharmRune(std::shared_ptr<Player> player, charmRune_t ru
 
 		int32_t value = bitToggle(player->getUnlockedRunesBit(), charm, true);
 		player->setUnlockedRunesBit(value);
-
 	} else if (action == 1) {
 		std::list<charmRune_t> usedRunes = getCharmUsedRuneBitAll(player);
 		uint16_t limitRunes = 0;
@@ -396,18 +394,21 @@ std::map<uint16_t, uint32_t> IOBestiary::getBestiaryKillCountByMonsterIDs(std::s
 	return raceMonsters;
 }
 
-phmap::parallel_flat_hash_set<uint16_t> IOBestiary::getBestiaryFinished(std::shared_ptr<Player> player) const {
-	phmap::parallel_flat_hash_set<uint16_t> finishedMonsters;
-	auto bestiaryMap = g_game().getBestiaryList();
+std::vector<uint16_t> IOBestiary::getBestiaryFinished(const std::shared_ptr<Player> &player) const {
+	const auto &bestiaryMap = g_game().getBestiaryList();
+
+	stdext::vector_set<uint16_t> finishedMonsters;
+	finishedMonsters.reserve(bestiaryMap.size());
 
 	for (const auto &[monsterTypeRaceId, monsterTypeName] : bestiaryMap) {
-		uint32_t thisKilled = player->getBestiaryKillCount(monsterTypeRaceId);
-		auto mtype = g_monsters().getMonsterType(monsterTypeName);
+		const auto &mtype = g_monsters().getMonsterType(monsterTypeName);
+		const uint32_t thisKilled = player->getBestiaryKillCount(monsterTypeRaceId);
+
 		if (mtype && thisKilled >= mtype->info.bestiaryToUnlock) {
 			finishedMonsters.insert(monsterTypeRaceId);
 		}
 	}
-	return finishedMonsters;
+	return finishedMonsters.data();
 }
 
 int8_t IOBestiary::calculateDifficult(uint32_t chance) const {

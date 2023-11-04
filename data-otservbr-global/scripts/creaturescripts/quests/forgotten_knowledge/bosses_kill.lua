@@ -15,7 +15,7 @@ local bosses = {
 
 local bossesForgottenKill = CreatureEvent("ForgottenKnowledgeBossDeath")
 function bossesForgottenKill.onDeath(creature)
-	local bossConfig = bosses[targetMonster:getName():lower()]
+	local bossConfig = bosses[creature:getName():lower()]
 	if not bossConfig then
 		return true
 	end
@@ -23,13 +23,13 @@ function bossesForgottenKill.onDeath(creature)
 	onDeathForDamagingPlayers(creature, function(creature, player)
 		if bossConfig.storage then
 			player:setStorageValue(bossConfig.storage, os.time() + 20 * 3600)
-		elseif targetMonster:getName():lower() == "the enraged thorn knight" then
+		elseif creature:getName():lower() == "the enraged thorn knight" then
 			player:setStorageValue(Storage.ForgottenKnowledge.PlantCounter, 0)
 			player:setStorageValue(Storage.ForgottenKnowledge.BirdCounter, 0)
 		end
 	end)
 
-	if targetMonster:getName():lower() == "melting frozen horror" then
+	if creature:getName():lower() == "melting frozen horror" then
 		local egg = Tile(Position(32269, 31084, 14)):getTopCreature()
 		if egg then
 			local pos = egg:getPosition()

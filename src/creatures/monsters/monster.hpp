@@ -17,7 +17,6 @@ class Creature;
 class Game;
 class Spawn;
 
-using CreatureHashSet = phmap::flat_hash_set<std::shared_ptr<Creature>>;
 using CreatureList = std::list<std::shared_ptr<Creature>>;
 
 using CreatureWeakHashMap = phmap::flat_hash_map<uint32_t, std::weak_ptr<Creature>>;
@@ -99,7 +98,7 @@ public:
 		if (master && master->getMonster()) {
 			return master->getMonster()->isEnemyFaction(faction);
 		}
-		return mType->info.enemyFactions.empty() ? false : mType->info.enemyFactions.find(faction) != mType->info.enemyFactions.end();
+		return mType->info.enemyFactions.empty() ? false : mType->info.enemyFactions.contains(faction);
 	}
 
 	bool isPushable() override {
@@ -204,17 +203,19 @@ public:
 		}
 		return list;
 	}
-	CreatureHashSet getFriendList() {
-		CreatureHashSet set;
+
+	std::vector<std::shared_ptr<Creature>> getFriendList() {
+		std::vector<std::shared_ptr<Creature>> list;
+
 		for (auto it = friendList.begin(); it != friendList.end();) {
 			if (auto friendCreature = it->second.lock()) {
-				set.insert(friendCreature);
+				list.emplace_back(friendCreature);
 				++it;
 			} else {
 				it = friendList.erase(it);
 			}
 		}
-		return set;
+		return list;
 	}
 
 	bool isTarget(std::shared_ptr<Creature> creature);

@@ -83,7 +83,6 @@ deathEvent:register()
 
 local serverstartup = GlobalEvent("KillingInTheNameOfMonsterDeathStartup")
 function serverstartup.onStartup()
-	logger.info("[KillingInTheNameOfMonsterDeathStartup] registering monsters")
 	local monsters = Set({}, { insensitive = true })
 	for _, task in pairs(tasks.GrizzlyAdams) do
 		monsters = monsters:union(task.creatures)

@@ -151,7 +151,7 @@ void Npc::onPlayerAppear(std::shared_ptr<Player> player) {
 	if (player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(player)) {
 		return;
 	}
-	playerSpectators.emplace_back(player);
+	playerSpectators.emplace(player);
 	manageIdle();
 }
 
@@ -531,7 +531,7 @@ void Npc::onThinkWalk(uint32_t interval) {
 
 void Npc::onCreatureWalk() {
 	Creature::onCreatureWalk();
-	playerSpectators.erase_if([this](const auto &creature) { return !this->canSee(creature->getPosition()); });
+	phmap::erase_if(playerSpectators, [this](const auto &creature) { return !this->canSee(creature->getPosition()); });
 }
 
 void Npc::onPlacedCreature() {
@@ -542,7 +542,7 @@ void Npc::loadPlayerSpectators() {
 	auto spec = Spectators().find<Player>(position, true);
 	for (const auto &creature : spec) {
 		if (!creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
-			playerSpectators.emplace_back(creature->getPlayer());
+			playerSpectators.emplace(creature->getPlayer());
 		}
 	}
 }

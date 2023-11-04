@@ -176,7 +176,9 @@ public:
 	void addZone(std::shared_ptr<Zone> zone);
 	void clearZones();
 
-	phmap::flat_hash_set<std::shared_ptr<Zone>> getZones();
+	auto getZones() const {
+		return zones;
+	}
 
 	ZoneType_t getZoneType() const {
 		if (hasFlag(TILESTATE_PROTECTIONZONE)) {
@@ -270,7 +272,7 @@ protected:
 	std::shared_ptr<Item> ground = nullptr;
 	Position tilePos;
 	uint32_t flags = 0;
-	phmap::flat_hash_set<std::shared_ptr<Zone>> zones;
+	std::unordered_set<std::shared_ptr<Zone>> zones;
 };
 
 // Used for walkable tiles, where there is high likeliness of

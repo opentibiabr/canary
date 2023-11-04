@@ -188,7 +188,7 @@ private:
 
 	bool ignoreHeight;
 
-	stdext::vector_set<std::shared_ptr<Player>> playerSpectators;
+	phmap::flat_hash_set<std::shared_ptr<Player>> playerSpectators;
 	Position masterPos;
 
 	friend class LuaScriptInterface;

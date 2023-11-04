@@ -484,54 +484,48 @@ uint32_t Player::getClientIcons() {
 }
 
 void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient /* = false */) {
-	if (client) {
-		uint16_t raceId = mtype ? mtype->info.raceid : 0;
-		// Bostiary tracker logic
-		if (isBoss) {
-			m_bosstiaryMonsterTracker.insert(mtype);
-			if (reloadClient && raceId != 0) {
+	if (!client) {
+		return;
+	}
+
+	const uint16_t raceId = mtype ? mtype->info.raceid : 0;
+	auto &tracker = isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
+	if (tracker.emplace(mtype).second) {
+		if (reloadClient && raceId != 0) {
+			if (isBoss) {
 				client->parseSendBosstiary();
+			} else {
+				client->sendBestiaryEntryChanged(raceId);
 			}
-			client->refreshCyclopediaMonsterTracker(m_bosstiaryMonsterTracker, true);
-			return;
 		}
 
-		// Bestiary tracker logic
-		m_bestiaryMonsterTracker.insert(mtype);
-		if (reloadClient && raceId != 0) {
-			client->sendBestiaryEntryChanged(raceId);
-		}
-		client->refreshCyclopediaMonsterTracker(m_bestiaryMonsterTracker, false);
+		client->refreshCyclopediaMonsterTracker(tracker, isBoss);
 	}
 }
 
 void Player::removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient /* = false */) {
-	if (client) {
-		uint16_t raceId = mtype ? mtype->info.raceid : 0;
-		// Bostiary tracker logic
-		if (isBoss) {
-			m_bosstiaryMonsterTracker.erase(mtype);
-			if (reloadClient && raceId != 0) {
+	if (!client) {
+		return;
+	}
+
+	const uint16_t raceId = mtype ? mtype->info.raceid : 0;
+	auto &tracker = isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
+
+	if (tracker.erase(mtype) > 0) {
+		if (reloadClient && raceId != 0) {
+			if (isBoss) {
 				client->parseSendBosstiary();
+			} else {
+				client->sendBestiaryEntryChanged(raceId);
 			}
-			client->refreshCyclopediaMonsterTracker(m_bosstiaryMonsterTracker, true);
-			return;
 		}
 
-		// Bestiary tracker logic
-		m_bestiaryMonsterTracker.erase(mtype);
-		if (reloadClient && raceId != 0) {
-			client->sendBestiaryEntryChanged(raceId);
-		}
-		client->refreshCyclopediaMonsterTracker(m_bestiaryMonsterTracker, false);
+		client->refreshCyclopediaMonsterTracker(tracker, isBoss);
 	}
 }
 
-bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> monsterType) const {
-	if (!monsterType) {
-		return false;
-	}
-	return m_bosstiaryMonsterTracker.contains(monsterType);
+bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const {
+	return monsterType ? m_bosstiaryMonsterTracker.contains(monsterType) : false;
 }
 
 void Player::updateInventoryWeight() {
@@ -2925,7 +2919,7 @@ void Player::removePlayer(bool displayEffect, bool forced /*= true*/) {
 	}
 }
 
-void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t status, bool message) {
+void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t status, bool message) const {
 	if (!client) {
 		return;
 	}
@@ -2989,7 +2983,7 @@ bool Player::addVIPInternal(uint32_t vipGuid) {
 	return VIPList.insert(vipGuid).second;
 }
 
-bool Player::editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) {
+bool Player::editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) const {
 	auto it = VIPList.find(vipGuid);
 	if (it == VIPList.end()) {
 		return false; // player is not in VIP

@@ -328,8 +328,7 @@ int PlayerFunctions::luaPlayerIsMonsterBestiaryUnlocked(lua_State* L) {
 		return 0;
 	}
 
-	for (auto finishedMonsters = g_iobestiary().getBestiaryFinished(player);
-		 uint16_t finishedRaceId : finishedMonsters) {
+	for (uint16_t finishedRaceId : g_iobestiary().getBestiaryFinished(player)) {
 		if (raceId == finishedRaceId) {
 			pushBoolean(L, true);
 			return 1;

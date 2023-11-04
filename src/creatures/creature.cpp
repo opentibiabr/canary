@@ -431,9 +431,9 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 	if (hasSummons()) {
 		std::vector<std::shared_ptr<Creature>> despawnMonsterList;
 		for (const auto &summon : getSummons()) {
-			const Position &pos = summon->getPosition();
-			std::shared_ptr<Monster> monster = summon->getMonster();
-			auto tile = getTile();
+			const auto &pos = summon->getPosition();
+			const auto &monster = summon->getMonster();
+			const auto &tile = getTile();
 			bool protectionZoneCheck = tile ? tile->hasFlag(TILESTATE_PROTECTIONZONE) : false;
 			// Check if any of our summons is out of range (+/- 0 floors or 15 tiles away)
 			bool checkSummonDist = Position::getDistanceZ(newPos, pos) > 0 || (std::max<int32_t>(Position::getDistanceX(newPos, pos), Position::getDistanceY(newPos, pos)) > 15);
@@ -441,12 +441,12 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 			bool checkRemoveDist = Position::getDistanceZ(newPos, pos) > 2 || (std::max<int32_t>(Position::getDistanceX(newPos, pos), Position::getDistanceY(newPos, pos)) > 30);
 
 			if (monster && monster->isFamiliar() && checkSummonDist || teleportSummon && !protectionZoneCheck && checkSummonDist) {
-				auto creatureMaster = summon->getMaster();
+				const auto &creatureMaster = summon->getMaster();
 				if (!creatureMaster) {
 					continue;
 				}
 
-				if (std::shared_ptr<Tile> masterTile = creatureMaster->getTile()) {
+				if (const auto &masterTile = creatureMaster->getTile()) {
 					if (masterTile->hasFlag(TILESTATE_TELEPORT)) {
 						g_logger().warn("[{}] cannot teleport summon, position has teleport. {}", __FUNCTION__, creatureMaster->getPosition().toString());
 					} else {
@@ -461,7 +461,7 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 			}
 		}
 
-		for (std::shared_ptr<Creature> despawnCreature : despawnMonsterList) {
+		for (const auto &despawnCreature : despawnMonsterList) {
 			if (!despawnMonsterList.empty()) {
 				g_game().removeCreature(despawnCreature, true);
 			}
@@ -1243,13 +1243,16 @@ bool Creature::setMaster(std::shared_ptr<Creature> newMaster, bool reloadCreatur
 		g_game().reloadCreature(self);
 	}
 	if (newMaster) {
-		newMaster->m_summons.insert(self);
+		newMaster->m_summons.emplace_back(self);
 	}
 
 	m_master = newMaster;
 
 	if (oldMaster) {
-		oldMaster->m_summons.erase(self);
+		const auto &it = std::ranges::find(oldMaster->m_summons, self);
+		if (it != oldMaster->m_summons.end()) {
+			oldMaster->m_summons.erase(it);
+		}
 	}
 	return true;
 }
@@ -1796,9 +1799,8 @@ void Creature::setIncreasePercent(CombatType_t combat, int32_t value) {
 	}
 }
 
-phmap::flat_hash_set<std::shared_ptr<Zone>> Creature::getZones() {
-	auto tile = getTile();
-	if (tile) {
+std::unordered_set<std::shared_ptr<Zone>> Creature::getZones() {
+	if (const auto &tile = getTile()) {
 		return tile->getZones();
 	}
 	return {};

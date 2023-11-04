@@ -304,7 +304,7 @@ public:
 		return guildWarVector;
 	}
 
-	const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) const {
+	const std::unordered_set<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) const {
 		return isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
 	}
 
@@ -318,17 +318,17 @@ public:
 		}
 	}
 
-	void refreshCyclopediaMonsterTracker(bool isBoss = false) const {
+	void refreshCyclopediaMonsterTracker(bool isBoss = false) {
 		refreshCyclopediaMonsterTracker(getCyclopediaMonsterTrackerSet(isBoss), isBoss);
 	}
 
-	void refreshCyclopediaMonsterTracker(const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {
+	void refreshCyclopediaMonsterTracker(const std::unordered_set<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {
 		if (client) {
 			client->refreshCyclopediaMonsterTracker(trackerList, isBoss);
 		}
 	}
 
-	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> monsterType) const;
+	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const;
 
 	Vocation* getVocation() const {
 		return vocation;
@@ -804,11 +804,11 @@ public:
 	}
 
 	// V.I.P. functions
-	void notifyStatusChange(std::shared_ptr<Player> player, VipStatus_t status, bool message = true);
+	void notifyStatusChange(std::shared_ptr<Player> player, VipStatus_t status, bool message = true) const;
 	bool removeVIP(uint32_t vipGuid);
 	bool addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t status);
 	bool addVIPInternal(uint32_t vipGuid);
-	bool editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify);
+	bool editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) const;
 
 	// follow functions
 	bool setFollowCreature(std::shared_ptr<Creature> creature) override;
@@ -2609,7 +2609,6 @@ private:
 	bool onKilledMonster(const std::shared_ptr<Monster> &target, bool lastHit);
 
 	phmap::flat_hash_set<uint32_t> attackedSet;
-
 	phmap::flat_hash_set<uint32_t> VIPList;
 
 	std::map<uint8_t, OpenContainer> openContainers;
@@ -2646,8 +2645,8 @@ private:
 	// TODO: This variable is only temporarily used when logging in, get rid of it somehow.
 	std::forward_list<std::shared_ptr<Condition>> storedConditionList;
 
-	phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> m_bestiaryMonsterTracker;
-	phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;
+	std::unordered_set<std::shared_ptr<MonsterType>> m_bestiaryMonsterTracker;
+	std::unordered_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;
 
 	std::string name;
 	std::string guildNick;

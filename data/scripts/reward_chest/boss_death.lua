@@ -14,7 +14,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 	-- Make sure it is a boss
 	if monsterType and monsterType:isRewardBoss() then
 		if not corpse.isContainer or not corpse:isContainer() then
-			if corpse.getId() then
+			if corpse.getId then
 				logger.warn("[bossDeath.onDeath] Corpse (id: {}, name: {}) for reward boss {} is not a container.", corpse:getId(), corpse:getName(), creature:getName())
 			else
 				logger.warn("[bossDeath.onDeath] Error to get corpseId from boss: {}", creature:getName())

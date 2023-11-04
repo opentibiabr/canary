@@ -63,6 +63,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
+	-- Parse bank
+	npc:parseBank(message, npc, creature, npcHandler)
+	-- Parse guild bank
+	npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
+	-- Normal messages
+	npc:parseBankMessages(message, npc, creature, npcHandler)
+
 	if MsgContains(message, "ticket") then
 		if Player(creature):getStorageValue(Storage.WagonTicket) >= os.time() then
 			npcHandler:say("Your weekly ticket is still valid. Would be a waste of money to purchase a second one", npc, creature)
@@ -89,12 +96,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, 0)
 	end
 
-	-- Parse bank
-	npc:parseBank(message, npc, creature, npcHandler)
-	-- Parse guild bank
-	npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
-	-- Normal messages
-	npc:parseBankMessages(message, npc, creature, npcHandler)
 	return true
 end
 

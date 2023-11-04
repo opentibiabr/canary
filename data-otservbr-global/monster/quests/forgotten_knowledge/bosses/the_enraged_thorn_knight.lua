@@ -13,6 +13,11 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"ForgottenKnowledgeBossDeath",
+	"HealthForgotten",
+}
+
 monster.bosstiary = {
 	bossRaceId = 1297,
 	bossRace = RARITY_ARCHFOE,
@@ -55,10 +60,6 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-}
-
-monster.events = {
-	"HealthForgotten",
 }
 
 monster.light = {

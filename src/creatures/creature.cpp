@@ -142,10 +142,8 @@ void Creature::onThink(uint32_t interval) {
 	};
 
 	if (isUpdatingPath) {
-		g_dispatcher().asyncEvent([self = getCreature(), onThink = std::move(onThink)] {
-			self->isUpdatingPath = false;
-			self->goToFollowCreature_async(onThink);
-		});
+		isUpdatingPath = false;
+		goToFollowCreature_async(onThink);
 		return;
 	}
 

@@ -14,12 +14,6 @@ local config = {
 		{ bossPosition = Position(32975, 31664, 13), bossName = "The Freezing Time Guardian" },
 		{ bossPosition = Position(32980, 31664, 13), bossName = "The Blazing Time Guardian" },
 	},
-	monsters = {
-		{ cosmic = "cosmic energy prism a invu", pos = Position(32801, 32827, 14) },
-		{ cosmic = "cosmic energy prism b invu", pos = Position(32798, 32827, 14) },
-		{ cosmic = "cosmic energy prism c invu", pos = Position(32803, 32826, 14) },
-		{ cosmic = "cosmic energy prism d invu", pos = Position(32796, 32826, 14) },
-	},
 	specPos = {
 		from = Position(32967, 31654, 13),
 		to = Position(32989, 31677, 14),

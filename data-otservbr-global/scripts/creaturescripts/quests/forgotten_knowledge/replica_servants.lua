@@ -10,7 +10,7 @@ local servants = {
 }
 local replicaServant = CreatureEvent("ReplicaServantDeath")
 function replicaServant.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
-	local bossConfig = servants[targetMonster:getName():lower()]
+	local bossConfig = servants[creature:getName():lower()]
 	if not bossConfig then
 		return true
 	end

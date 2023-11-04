@@ -1311,7 +1311,7 @@ std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets
 
 	std::vector<std::pair<Position, std::vector<uint32_t>>> resultMap;
 	std::vector<std::shared_ptr<Creature>> targets;
-	std::set<uint32_t> visited;
+	phmap::flat_hash_set<uint32_t> visited;
 
 	if (initialTarget && initialTarget != caster) {
 		targets.push_back(initialTarget);

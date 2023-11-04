@@ -93,7 +93,7 @@ public:
 		if (master && master->getMonster()) {
 			return master->getMonster()->isEnemyFaction(faction);
 		}
-		return mType->info.enemyFactions.empty() ? false : mType->info.enemyFactions.find(faction) != mType->info.enemyFactions.end();
+		return mType->info.enemyFactions.empty() ? false : mType->info.enemyFactions.contains(faction);
 	}
 
 	bool isPushable() override {
@@ -199,7 +199,7 @@ public:
 
 		return list;
 	}
-
+	
 	auto getFriendList() {
 		CreatureVector list;
 		list.reserve(friendList.size());

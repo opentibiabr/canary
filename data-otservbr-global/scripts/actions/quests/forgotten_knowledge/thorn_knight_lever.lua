@@ -68,7 +68,7 @@ function forgottenKnowledgeThorn.onUse(player, item, fromPosition, target, toPos
 			return true
 		end
 		lever:teleportPlayers()
-		lever:setCooldownAllPlayers(config.bossName, os.time() + config.timeToFightAgain * 3600)
+		lever:setCooldownAllPlayers("The Enraged Thorn Knight", os.time() + config.timeToFightAgain * 3600)
 		addEvent(function()
 			local old_players = lever:getInfoPositions()
 			spec:clearCreaturesCache()

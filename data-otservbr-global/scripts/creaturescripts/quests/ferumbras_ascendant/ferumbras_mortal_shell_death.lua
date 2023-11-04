@@ -1,7 +1,6 @@
 local ferumbrasMortalShell = CreatureEvent("FerumbrasMortalShell")
 function ferumbrasMortalShell.onDeath(creature, corpse, lasthitkiller, mostdamagekiller, lasthitunjustified, mostdamageunjustified)
-	local targetMonster = creature:getMonster()
-	if not targetMonster or targetMonster:getName():lower() ~= "destabilized ferumbras" then
+	if creature:getName():lower() ~= "destabilized ferumbras" then
 		return true
 	end
 

@@ -32,6 +32,7 @@
 #include <forward_list>
 #include <list>
 #include <map>
+#include <unordered_set>
 #include <queue>
 #include <random>
 #include <ranges>

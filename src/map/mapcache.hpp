@@ -107,10 +107,13 @@ struct Floor {
 		return z;
 	}
 
-	mutable std::shared_mutex mutex;
+	auto &getMutex() const {
+		return mutex;
+	}
 
 private:
 	std::pair<std::shared_ptr<Tile>, std::shared_ptr<BasicTile>> tiles[FLOOR_SIZE][FLOOR_SIZE] = {};
+	mutable std::shared_mutex mutex;
 	uint8_t z { 0 };
 };
 

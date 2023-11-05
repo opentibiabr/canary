@@ -91,7 +91,6 @@ struct Floor {
 	}
 
 	void setTile(uint16_t x, uint16_t y, std::shared_ptr<Tile> tile) {
-		std::unique_lock l(mutex);
 		tiles[x & FLOOR_MASK][y & FLOOR_MASK].first = tile;
 	}
 
@@ -101,7 +100,6 @@ struct Floor {
 	}
 
 	void setTileCache(uint16_t x, uint16_t y, const std::shared_ptr<BasicTile> &newTile) {
-		std::unique_lock l(mutex);
 		tiles[x & FLOOR_MASK][y & FLOOR_MASK].second = newTile;
 	}
 
@@ -109,9 +107,10 @@ struct Floor {
 		return z;
 	}
 
+	mutable std::shared_mutex mutex;
+
 private:
 	std::pair<std::shared_ptr<Tile>, std::shared_ptr<BasicTile>> tiles[FLOOR_SIZE][FLOOR_SIZE] = {};
-	mutable std::shared_mutex mutex;
 	uint8_t z { 0 };
 };
 

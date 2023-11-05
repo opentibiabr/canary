@@ -14,7 +14,6 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "map/spectators.hpp"
@@ -179,7 +178,7 @@ void Monster::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout
 	}
 }
 
-void Monster::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport) {
+void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
 	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 
 	if (mType->info.creatureMoveEvent != -1) {
@@ -226,6 +225,9 @@ void Monster::onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr
 		}
 
 		updateIdleStatus();
+		if (!m_attackedCreature.expired()) {
+			return;
+		}
 
 		if (!isSummon()) {
 			auto followCreature = getFollowCreature();
@@ -341,12 +343,21 @@ void Monster::updateTargetList() {
 
 	auto targetIterator = targetIDList.begin();
 	while (targetIterator != targetIDList.end()) {
-		auto creature = targetListMap[*targetIterator].lock();
-		if (!creature || creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
-			targetIterator = targetIDList.erase(targetIterator);
-			targetListMap.erase(*targetIterator);
+		const uint32_t targetId = *targetIterator;
+
+		auto itTLM = targetListMap.find(targetId);
+		const bool existTarget = itTLM != targetListMap.end();
+
+		if (existTarget) {
+			const auto &creature = itTLM->second.lock();
+			if (!creature || creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
+				targetIterator = targetIDList.erase(targetIterator);
+				targetListMap.erase(itTLM);
+			} else {
+				++targetIterator;
+			}
 		} else {
-			++targetIterator;
+			targetIterator = targetIDList.erase(targetIterator);
 		}
 	}
 
@@ -585,16 +596,17 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	return false;
 }
 
-void Monster::onFollowCreatureComplete(std::shared_ptr<Creature> creature) {
+void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature) {
 	if (!creature) {
 		return;
 	}
+
 	auto it = std::find(targetIDList.begin(), targetIDList.end(), creature->getID());
-	if (it != targetIDList.end()) {
-		auto target = targetListMap[*it].lock();
-		if (!target) {
-			return;
-		}
+	if (it == targetIDList.end()) {
+		return;
+	}
+
+	if (const auto &target = targetListMap[*it].lock()) {
 		targetIDList.erase(it);
 
 		if (hasFollowPath) {
@@ -663,7 +675,7 @@ bool Monster::selectTarget(std::shared_ptr<Creature> creature) {
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
-			g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
+			g_dispatcher().addEvent(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
 		}
 	}
 	return setFollowCreature(creature);
@@ -784,7 +796,7 @@ void Monster::onThink(uint32_t interval) {
 					// This happens just after a master orders an attack, so lets follow it aswell.
 					setFollowCreature(attackedCreature);
 				}
-			} else if (!targetIDList.empty()) {
+			} else if (!attackedCreature && !targetIDList.empty()) {
 				if (!followCreature || !hasFollowPath) {
 					searchTarget(TARGETSEARCH_NEAREST);
 				} else if (isFleeing()) {
@@ -812,12 +824,6 @@ void Monster::doAttacking(uint32_t interval) {
 	bool resetTicks = interval != 0;
 	attackTicks += interval;
 
-	float forgeAttackBonus = 0;
-	if (monsterForgeClassification > ForgeClassifications_t::FORGE_NORMAL_MONSTER) {
-		uint16_t damageBase = 3;
-		forgeAttackBonus = static_cast<float>(damageBase + 100) / 100.f;
-	}
-
 	const Position &myPos = getPosition();
 	const Position &targetPos = attackedCreature->getPosition();
 
@@ -835,20 +841,8 @@ void Monster::doAttacking(uint32_t interval) {
 					updateLook = false;
 				}
 
-				float multiplier;
-				if (maxCombatValue > 0) { // Defense
-					multiplier = getDefenseMultiplier();
-				} else { // Attack
-					multiplier = getAttackMultiplier();
-				}
-
-				minCombatValue = spellBlock.minCombatValue * multiplier;
-				maxCombatValue = spellBlock.maxCombatValue * multiplier;
-
-				if (maxCombatValue <= 0 && forgeAttackBonus > 0) {
-					minCombatValue *= static_cast<int32_t>(forgeAttackBonus);
-					maxCombatValue *= static_cast<int32_t>(forgeAttackBonus);
-				}
+				minCombatValue = spellBlock.minCombatValue;
+				maxCombatValue = spellBlock.maxCombatValue;
 
 				if (spellBlock.spell == nullptr) {
 					continue;
@@ -877,7 +871,7 @@ void Monster::doAttacking(uint32_t interval) {
 	}
 }
 
-bool Monster::canUseAttack(const Position &pos, std::shared_ptr<Creature> target) const {
+bool Monster::canUseAttack(const Position &pos, const std::shared_ptr<Creature> &target) const {
 	if (isHostile()) {
 		const Position &targetPos = target->getPosition();
 		uint32_t distance = std::max<uint32_t>(Position::getDistanceX(pos, targetPos), Position::getDistanceY(pos, targetPos));
@@ -1913,15 +1907,8 @@ bool Monster::getCombatValues(int32_t &min, int32_t &max) {
 		return false;
 	}
 
-	float multiplier;
-	if (maxCombatValue > 0) { // Defense
-		multiplier = getDefenseMultiplier();
-	} else { // Attack
-		multiplier = getAttackMultiplier();
-	}
-
-	min = minCombatValue * multiplier;
-	max = maxCombatValue * multiplier;
+	min = minCombatValue;
+	max = maxCombatValue;
 	return true;
 }
 
@@ -2080,7 +2067,7 @@ bool Monster::isImmune(CombatType_t combatType) const {
 	return mType->info.m_damageImmunities[combatTypeToIndex(combatType)];
 }
 
-void Monster::getPathSearchParams(std::shared_ptr<Creature> creature, FindPathParams &fpp) {
+void Monster::getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) {
 	Creature::getPathSearchParams(creature, fpp);
 
 	fpp.minTargetDist = 1;

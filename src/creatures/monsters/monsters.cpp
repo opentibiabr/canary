@@ -291,7 +291,7 @@ bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 	return true;
 }
 
-std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name) {
+std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name, bool silent /* = false*/) const {
 	std::string lowerCaseName = asLowerCaseString(name);
 	if (auto it = monsters.find(lowerCaseName);
 		it != monsters.end()
@@ -299,7 +299,9 @@ std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name) {
 		&& it->first.find(lowerCaseName) != it->first.npos) {
 		return it->second;
 	}
-	g_logger().error("[Monsters::getMonsterType] - Monster with name {} not exist", lowerCaseName);
+	if (!silent) {
+		g_logger().error("[Monsters::getMonsterType] - Monster with name {} not exist", lowerCaseName);
+	}
 	return nullptr;
 }
 

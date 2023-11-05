@@ -17,7 +17,6 @@ local config = {
 		to = Position(33464, 31446, 13),
 	},
 	exit = Position(33195, 31690, 8),
-	storage = Storage.Quest.U12_20.GraveDanger.Bosses.CountVlarkorthTimer,
 }
 
 local lever = BossLever(config)

@@ -384,11 +384,20 @@ void ItemParse::parseTransform(const std::string &tmpStrValue, pugi::xml_attribu
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "transformequipto") {
 		itemType.transformEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
+		if (itemType.transformEquipTo == itemType.decayTo) {
+			g_logger().warn("[{}] item with id {} is transforming on equip to the same id of decay to '{}'", __FUNCTION__, itemType.id, itemType.decayTo);
+			itemType.decayTo = 0;
+		}
 		if (ItemType &transform = Item::items.getItemType(itemType.transformEquipTo);
 			transform.type == ITEM_TYPE_NONE) {
 			transform.type = itemType.type;
 		}
 	} else if (stringValue == "transformdeequipto") {
+		if (itemType.transformDeEquipTo == itemType.decayTo) {
+			g_logger().warn("[{}] item with id {} is transforming on de-equip to the same id of decay to '{}'", __FUNCTION__, itemType.id, itemType.decayTo);
+			itemType.decayTo = 0;
+		}
+
 		itemType.transformDeEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
 	} else if (stringValue == "transformto") {
 		itemType.transformToFree = pugi::cast<uint16_t>(valueAttribute.value());
@@ -561,7 +570,7 @@ void ItemParse::parseAbsorbPercent(const std::string &tmpStrValue, pugi::xml_att
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentfire") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (stringValue == "absorbpercentpoison") {
+	} else if (stringValue == "absorbpercentpoison" || stringValue == "absorbpercentearth") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentice") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());

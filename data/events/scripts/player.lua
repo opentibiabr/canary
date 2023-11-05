@@ -247,8 +247,8 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	-- SSA exhaust
 	local exhaust = {}
 	if toPosition.x == CONTAINER_POSITION and toPosition.y == CONST_SLOT_NECKLACE and item:getId() == ITEM_STONE_SKIN_AMULET then
-		local pid = self:getId()
-		if exhaust[pid] then
+		local playerId = self:getId()
+		if exhaust[playerId] then
 			self:sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED)
 			return false
 		end
@@ -398,6 +398,8 @@ function Player:onMoveCreature(creature, fromPosition, toPosition)
 end
 
 local function hasPendingReport(name, targetName, reportType)
+	name = self:getName():gsub("%s+", "_")
+	FS.mkdir_p(string.format("%s/reports/players/%s", CORE_DIRECTORY, name))
 	local file = io.open(string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType), "r")
 	if file then
 		io.close(file)
@@ -407,7 +409,7 @@ local function hasPendingReport(name, targetName, reportType)
 end
 
 function Player:onReportRuleViolation(targetName, reportType, reportReason, comment, translation)
-	local name = self:getName()
+	name = self:getName()
 	if hasPendingReport(name, targetName, reportType) then
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your report is being processed.")
 		return
@@ -444,7 +446,8 @@ function Player:onReportRuleViolation(targetName, reportType, reportReason, comm
 end
 
 function Player:onReportBug(message, position, category)
-	local name = self:getName()
+	local name = self:getName():gsub("%s+", "_")
+	FS.mkdir_p(string.format("%s/reports/bugs/%s", CORE_DIRECTORY, name))
 	local file = io.open(string.format("%s/reports/bugs/%s/report.txt", CORE_DIRECTORY, name), "a")
 
 	if not file then

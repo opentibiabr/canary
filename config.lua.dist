@@ -10,7 +10,7 @@ coreDirectory = "data"
 -- Set log level
 -- It can be trace, debug, info, warning, error, critical, off (default: info).
 -- NOTE: Will only display logs with level higher or equal the one set.
-logLevel = "debug"
+logLevel = "info"
 
 -- Combat settings
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
@@ -186,6 +186,7 @@ onlyPremiumAccount = false
 -- NOTE: buyAolCommandFee will add fee when player buy aol by command (!aol), active changing value more than 0 (fee value. ex: 1 = 1gp  aol will be 50001)
 -- NOTE: buyBlessCommandFee will add fee when player buy bless by command (!bless), active changing value between 1 and 100 (fee percent. ex: 3 = 3%, 30 = 30%)
 -- NOTE: teleportPlayerToVocationRoom will enable oressa to teleport player to his/her room vocation
+-- NOTE: toggleReceiveReward = true, will enable players to choose one of reward exercise weapon by command !reward
 weatherRain = false
 thunderEffect = false
 allConsoleLog = false
@@ -200,6 +201,7 @@ toggleTravelsFree = false
 buyAolCommandFee = 0
 buyBlessCommandFee = 0
 teleportPlayerToVocationRoom = true
+toggleReceiveReward = false
 
 -- Teleport summon
 -- Set to true will never remove the summon
@@ -288,7 +290,7 @@ pushWhenAttacking = false
 -- NOTE: If a map with the name already exists in the world folder, the map will not be downloaded even if the toggleDownloadMap is true
 toggleDownloadMap = true
 mapName = "otservbr"
-mapDownloadUrl = "https://github.com/opentibiabr/canary/releases/download/v1.5.0/otservbr.otbm"
+mapDownloadUrl = "https://github.com/opentibiabr/canary/releases/download/v3.0.0/otservbr.otbm"
 mapAuthor = "OpenTibiaBR"
 
 -- Party List limitations

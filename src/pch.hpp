@@ -18,6 +18,8 @@
 #include "utils/definitions.hpp"
 #include "utils/simd.hpp"
 #include "utils/vectorset.hpp"
+#include "utils/arraylist.hpp"
+#include "utils/vectorsort.hpp"
 
 // --------------------
 // STL Includes
@@ -30,6 +32,7 @@
 #include <forward_list>
 #include <list>
 #include <map>
+#include <unordered_set>
 #include <queue>
 #include <random>
 #include <ranges>

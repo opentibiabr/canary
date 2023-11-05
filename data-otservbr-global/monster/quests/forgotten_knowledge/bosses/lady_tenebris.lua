@@ -13,10 +13,14 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"ForgottenKnowledgeBossDeath",
+	"HealthForgotten",
+}
+
 monster.bosstiary = {
 	bossRaceId = 1315,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.ForgottenKnowledge.LadyTenebrisTimer,
 }
 
 monster.health = 150000
@@ -56,10 +60,6 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-}
-
-monster.events = {
-	"HealthForgotten",
 }
 
 monster.light = {

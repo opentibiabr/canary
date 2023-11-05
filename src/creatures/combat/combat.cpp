@@ -73,7 +73,7 @@ CombatDamage Combat::getCombatDamage(std::shared_ptr<Creature> creature, std::sh
 				);
 			} else if (formulaType == COMBAT_FORMULA_SKILL) {
 				std::shared_ptr<Item> tool = player->getWeapon();
-				const Weapon* weapon = g_weapons().getWeapon(tool);
+				const WeaponShared_ptr weapon = g_weapons().getWeapon(tool);
 				if (weapon) {
 					damage.primary.value = normal_random(
 						static_cast<int32_t>(minb),
@@ -898,7 +898,7 @@ void Combat::addDistanceEffect(std::shared_ptr<Creature> caster, const Position 
 
 void Combat::doChainEffect(const Position &origin, const Position &dest, uint8_t effect) {
 	if (effect > 0) {
-		std::forward_list<Direction> dirList;
+		stdext::arraylist<Direction> dirList(128);
 		FindPathParams fpp;
 		fpp.minTargetDist = 0;
 		fpp.maxTargetDist = 1;
@@ -1139,41 +1139,7 @@ void Combat::doCombatHealth(std::shared_ptr<Creature> caster, std::shared_ptr<Cr
 		}
 	}
 
-	if (!damage.extension && caster && caster->getPlayer()) {
-		// Critical damage
-		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + (uint16_t)damage.criticalChance;
-		// Charm low blow rune)
-		if (target && target->getMonster() && damage.primary.type != COMBAT_HEALING) {
-			uint16_t playerCharmRaceid = caster->getPlayer()->parseRacebyCharm(CHARM_LOW, false, 0);
-			if (playerCharmRaceid != 0) {
-				const auto mType = g_monsters().getMonsterType(target->getName());
-				if (mType && playerCharmRaceid == mType->info.raceid) {
-					const auto charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
-					if (charm) {
-						chance += charm->percent;
-						g_game().sendDoubleSoundEffect(target->getPosition(), charm->soundCastEffect, charm->soundImpactEffect, caster);
-					}
-				}
-			}
-		}
-		if (chance != 0 && uniform_random(1, 100) <= chance) {
-			damage.critical = true;
-			damage.primary.value += (damage.primary.value * (caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + damage.criticalDamage)) / 100;
-			damage.secondary.value += (damage.secondary.value * (caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + damage.criticalDamage)) / 100;
-		}
-
-		// Fatal hit (onslaught)
-		if (auto playerWeapon = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
-			playerWeapon != nullptr && playerWeapon->getTier()) {
-			double_t fatalChance = playerWeapon->getFatalChance();
-			double_t randomChance = uniform_random(0, 10000) / 100;
-			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && randomChance < fatalChance) {
-				damage.fatal = true;
-				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
-				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));
-			}
-		}
-	}
+	applyExtensions(caster, target, damage, params);
 
 	if (canCombat) {
 		if (target && caster && params.distanceEffect != CONST_ANI_NONE) {
@@ -1194,27 +1160,7 @@ void Combat::doCombatHealth(std::shared_ptr<Creature> caster, std::shared_ptr<Cr
 }
 
 void Combat::doCombatHealth(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, CombatDamage &damage, const CombatParams &params) {
-	if (caster && caster->getPlayer()) {
-		// Critical damage
-		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + (uint16_t)damage.criticalChance;
-		if (damage.primary.type != COMBAT_HEALING && chance != 0 && uniform_random(1, 100) <= chance) {
-			damage.critical = true;
-			damage.primary.value += (damage.primary.value * (caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + damage.criticalDamage)) / 100;
-			damage.secondary.value += (damage.secondary.value * (caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + damage.criticalDamage)) / 100;
-		}
-
-		// Fatal hit (onslaught)
-		if (auto playerWeapon = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
-			playerWeapon != nullptr && playerWeapon->getTier() > 0) {
-			double_t fatalChance = playerWeapon->getFatalChance();
-			double_t randomChance = uniform_random(0, 10000) / 100;
-			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && randomChance < fatalChance) {
-				damage.fatal = true;
-				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
-				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));
-			}
-		}
-	}
+	applyExtensions(caster, nullptr, damage, params);
 	const auto origin = caster ? caster->getPosition() : Position();
 	CombatFunc(caster, origin, position, area, params, CombatHealthFunc, &damage);
 }
@@ -1231,15 +1177,7 @@ void Combat::doCombatMana(std::shared_ptr<Creature> caster, std::shared_ptr<Crea
 		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
-	if (caster && caster->getPlayer()) {
-		// Critical damage
-		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + (uint16_t)damage.criticalChance;
-		if (chance != 0 && uniform_random(1, 100) <= chance) {
-			damage.critical = true;
-			damage.primary.value += (damage.primary.value * (caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + damage.criticalDamage)) / 100;
-			damage.secondary.value += (damage.secondary.value * (caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + damage.criticalDamage)) / 100;
-		}
-	}
+	applyExtensions(caster, target, damage, params);
 
 	if (canCombat) {
 		if (caster && target && params.distanceEffect != CONST_ANI_NONE) {
@@ -1260,15 +1198,7 @@ void Combat::doCombatMana(std::shared_ptr<Creature> caster, std::shared_ptr<Crea
 }
 
 void Combat::doCombatMana(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, CombatDamage &damage, const CombatParams &params) {
-	if (caster && caster->getPlayer()) {
-		// Critical damage
-		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + (uint16_t)damage.criticalChance;
-		if (chance != 0 && uniform_random(1, 100) <= chance) {
-			damage.critical = true;
-			damage.primary.value += (damage.primary.value * (caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + damage.criticalDamage)) / 100;
-			damage.secondary.value += (damage.secondary.value * (caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + damage.criticalDamage)) / 100;
-		}
-	}
+	applyExtensions(caster, nullptr, damage, params);
 	const auto origin = caster ? caster->getPosition() : Position();
 	CombatFunc(caster, origin, position, area, params, CombatManaFunc, &damage);
 }
@@ -1381,7 +1311,7 @@ std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets
 
 	std::vector<std::pair<Position, std::vector<uint32_t>>> resultMap;
 	std::vector<std::shared_ptr<Creature>> targets;
-	std::set<uint32_t> visited;
+	phmap::flat_hash_set<uint32_t> visited;
 
 	if (initialTarget && initialTarget != caster) {
 		targets.push_back(initialTarget);
@@ -1514,7 +1444,7 @@ void ValueCallback::getMinMaxValues(std::shared_ptr<Player> player, CombatDamage
 		case COMBAT_FORMULA_SKILL: {
 			// onGetPlayerMinMaxValues(player, attackSkill, attackValue, attackFactor)
 			std::shared_ptr<Item> tool = player->getWeapon();
-			const Weapon* weapon = g_weapons().getWeapon(tool);
+			const WeaponShared_ptr weapon = g_weapons().getWeapon(tool);
 			std::shared_ptr<Item> item = nullptr;
 
 			if (weapon) {
@@ -1768,13 +1698,15 @@ bool ChainPickerCallback::onChainCombat(std::shared_ptr<Creature> creature, std:
 //**********************************************************//
 
 void AreaCombat::clear() {
-	areas.clear();
+	std::ranges::fill(areas, nullptr);
 }
 
 AreaCombat::AreaCombat(const AreaCombat &rhs) {
 	hasExtArea = rhs.hasExtArea;
-	for (const auto &it : rhs.areas) {
-		areas[it.first] = it.second->clone();
+	for (uint_fast8_t i = 0; i <= Direction::DIRECTION_LAST; ++i) {
+		if (const auto &area = rhs.areas[i]) {
+			areas[i] = area->clone();
+		}
 	}
 }
 
@@ -2076,5 +2008,66 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 		}
 
 		creature->addCondition(conditionCopy);
+	}
+}
+
+void Combat::applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, CombatDamage &damage, const CombatParams &params) {
+	if (damage.extension || !caster || damage.primary.type == COMBAT_HEALING) {
+		return;
+	}
+
+	g_logger().trace("[Combat::applyExtensions] - Applying extensions for {} on {}. Initial damage: {}", caster->getName(), target ? target->getName() : "null", damage.primary.value);
+
+	// Critical hit
+	uint16_t chance = 0;
+	int32_t multiplier = 50;
+	auto player = caster->getPlayer();
+	auto monster = caster->getMonster();
+	if (player) {
+		chance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
+		multiplier = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE);
+
+		if (target) {
+			uint16_t playerCharmRaceid = player->parseRacebyCharm(CHARM_LOW, false, 0);
+			if (playerCharmRaceid != 0) {
+				const auto mType = g_monsters().getMonsterType(target->getName());
+				if (mType && playerCharmRaceid == mType->info.raceid) {
+					const auto charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
+					if (charm) {
+						chance += charm->percent;
+						g_game().sendDoubleSoundEffect(target->getPosition(), charm->soundCastEffect, charm->soundImpactEffect, caster);
+					}
+				}
+			}
+		}
+	} else if (monster) {
+		chance = monster->critChance();
+	}
+
+	multiplier += damage.criticalDamage;
+	multiplier = 1 + multiplier / 100;
+	chance += (uint16_t)damage.criticalChance;
+
+	if (chance != 0 && uniform_random(1, 100) <= chance) {
+		damage.critical = true;
+		damage.primary.value *= multiplier;
+		damage.secondary.value *= multiplier;
+	}
+
+	if (player) {
+		// Fatal hit (onslaught)
+		if (auto playerWeapon = player->getInventoryItem(CONST_SLOT_LEFT);
+			playerWeapon != nullptr && playerWeapon->getTier() > 0) {
+			double_t fatalChance = playerWeapon->getFatalChance();
+			double_t randomChance = uniform_random(0, 10000) / 100;
+			if (fatalChance > 0 && randomChance < fatalChance) {
+				damage.fatal = true;
+				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
+				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));
+			}
+		}
+	} else if (monster) {
+		damage.primary.value *= monster->getAttackMultiplier();
+		damage.secondary.value *= monster->getAttackMultiplier();
 	}
 }

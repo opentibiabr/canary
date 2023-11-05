@@ -13,6 +13,7 @@
 #include "io/io_bosstiary.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "creatures/monsters/monster.hpp"
 #include "lua/functions/creatures/monster/monster_type_functions.hpp"
 #include "lua/scripts/scripts.hpp"
 
@@ -280,6 +281,20 @@ int MonsterTypeFunctions::luaMonsterTypeCanPushCreatures(lua_State* L) {
 	return 1;
 }
 
+int MonsterTypeFunctions::luaMonsterTypeCritChance(lua_State* L) {
+	// get: monsterType:critChance() set: monsterType:critChance(int)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 2) {
+			monsterType->info.critChance = getNumber<uint16_t>(L, 2);
+		}
+		lua_pushnumber(L, monsterType->info.critChance);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int32_t MonsterTypeFunctions::luaMonsterTypeName(lua_State* L) {
 	// get: monsterType:name() set: monsterType:name(name)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
@@ -411,13 +426,13 @@ int MonsterTypeFunctions::luaMonsterTypeEnemyFactions(lua_State* L) {
 			lua_createtable(L, monsterType->info.enemyFactions.size(), 0);
 			int index = 0;
 
-			for (auto faction : monsterType->info.enemyFactions) {
+			for (const auto &faction : monsterType->info.enemyFactions) {
 				lua_pushnumber(L, faction);
 				lua_rawseti(L, -2, ++index);
 			}
 		} else {
 			Faction_t faction = getNumber<Faction_t>(L, 2);
-			monsterType->info.enemyFactions.emplace(faction);
+			monsterType->info.enemyFactions.insert(faction);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -988,7 +1003,13 @@ int MonsterTypeFunctions::luaMonsterTypeRegisterEvent(lua_State* L) {
 	// monsterType:registerEvent(name)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (monsterType) {
-		monsterType->info.scripts.push_back(getString(L, 2));
+		auto eventName = getString(L, 2);
+		monsterType->info.scripts.push_back(eventName);
+		for (const auto &[_, monster] : g_game().getMonsters()) {
+			if (monster->getMonsterType() == monsterType) {
+				monster->registerCreatureEvent(eventName);
+			}
+		}
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -1556,27 +1577,6 @@ int MonsterTypeFunctions::luaMonsterTypeBossRaceId(lua_State* L) {
 	return 1;
 }
 
-int MonsterTypeFunctions::luaMonsterTypeBossStorageCooldown(lua_State* L) {
-	// set: monsterType:bossStorageCooldown(storage)
-	// get: monsterType:bossStorageCooldown()
-	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
-	if (!monsterType) {
-		pushBoolean(L, false);
-		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));
-		return 0;
-	}
-
-	auto bossStorageCooldown = getNumber<uint32_t>(L, 2, 0);
-	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.bossStorageCooldown));
-	} else {
-		monsterType->info.bossStorageCooldown = bossStorageCooldown;
-		pushBoolean(L, true);
-	}
-
-	return 1;
-}
-
 int MonsterTypeFunctions::luaMonsterTypeSoundChance(lua_State* L) {
 	// get: monsterType:soundChance() set: monsterType:soundChance(chance)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
@@ -1659,6 +1659,25 @@ int MonsterTypeFunctions::luaMonsterTypedeathSound(lua_State* L) {
 		lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.deathSound));
 	} else {
 		monsterType->info.deathSound = getNumber<SoundEffect_t>(L, 2);
+		pushBoolean(L, true);
+	}
+
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeVariant(lua_State* L) {
+	// get: monsterType:variant() set: monsterType:variant(variantName)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (!monsterType) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		pushString(L, monsterType->variantName);
+	} else {
+		monsterType->variantName = getString(L, 2);
 		pushBoolean(L, true);
 	}
 

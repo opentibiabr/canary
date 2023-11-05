@@ -50,12 +50,16 @@ static constexpr std::chrono::minutes HIGHSCORE_CACHE_EXPIRATION_TIME { 10 }; //
 
 struct QueryHighscoreCacheEntry {
 	std::string query;
+	uint32_t page;
+	uint8_t entriesPerPage;
 	std::chrono::time_point<std::chrono::steady_clock> timestamp;
 };
 
 struct HighscoreCacheEntry {
 	std::vector<HighscoreCharacter> characters;
-	std::chrono::time_point<std::chrono::steady_clock> timestamp;
+	uint32_t page;
+	uint32_t entriesPerPage;
+	std::chrono::time_point<std::chrono::system_clock> timestamp;
 };
 
 class Game {
@@ -149,7 +153,9 @@ public:
 
 	std::shared_ptr<Player> getPlayerByName(const std::string &s, bool allowOffline = false);
 
-	std::shared_ptr<Player> getPlayerByGUID(const uint32_t &guid);
+	std::shared_ptr<Player> getPlayerByGUID(const uint32_t &guid, bool allowOffline = false);
+
+	std::string getPlayerNameByGUID(const uint32_t &guid);
 
 	ReturnValue getPlayerByNameWildcard(const std::string &s, std::shared_ptr<Player> &player);
 
@@ -162,8 +168,8 @@ public:
 	bool removeCreature(std::shared_ptr<Creature> creature, bool isLogout = true);
 	void executeDeath(uint32_t creatureId);
 
-	void addCreatureCheck(std::shared_ptr<Creature> creature);
-	static void removeCreatureCheck(std::shared_ptr<Creature> creature);
+	void addCreatureCheck(const std::shared_ptr<Creature> &creature);
+	static void removeCreatureCheck(const std::shared_ptr<Creature> &creature);
 
 	size_t getPlayersOnline() const {
 		return players.size();
@@ -210,6 +216,9 @@ public:
 	ReturnValue checkMoveItemToCylinder(std::shared_ptr<Player> player, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder, std::shared_ptr<Item> item, Position toPos);
 	ReturnValue internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder, int32_t index, std::shared_ptr<Item> item, uint32_t count, std::shared_ptr<Item>* movedItem, uint32_t flags = 0, std::shared_ptr<Creature> actor = nullptr, std::shared_ptr<Item> tradeItem = nullptr, bool checkTile = true);
 
+	std::tuple<ReturnValue, uint32_t, uint32_t> addItemBatch(const std::shared_ptr<Cylinder> &toCylinder, const std::vector<std::shared_ptr<Item>> &items, uint32_t flags = 0, bool dropOnMap = true, uint32_t autoContainerId = 0);
+	std::tuple<ReturnValue, uint32_t, uint32_t> createItemBatch(const std::shared_ptr<Cylinder> &toCylinder, const std::vector<std::tuple<uint16_t, uint32_t, uint16_t>> &itemCounts, uint32_t flags = 0, bool dropOnMap = true, uint32_t autoContainerId = 0);
+	std::tuple<ReturnValue, uint32_t, uint32_t> createItem(const std::shared_ptr<Cylinder> &toCylinder, uint16_t itemId, uint32_t count, uint16_t subType, uint32_t flags = 0, bool dropOnMap = true, uint32_t autoContainerId = 0);
 	ReturnValue internalAddItem(std::shared_ptr<Cylinder> toCylinder, std::shared_ptr<Item> item, int32_t index = INDEX_WHEREEVER, uint32_t flags = 0, bool test = false);
 	ReturnValue internalAddItem(std::shared_ptr<Cylinder> toCylinder, std::shared_ptr<Item> item, int32_t index, uint32_t flags, bool test, uint32_t &remainderCount);
 	ReturnValue internalRemoveItem(std::shared_ptr<Item> item, int32_t count = -1, bool test = false, uint32_t flags = 0, bool force = false);
@@ -311,8 +320,8 @@ public:
 	void playerCloseNpcChannel(uint32_t playerId);
 	void playerReceivePing(uint32_t playerId);
 	void playerReceivePingBack(uint32_t playerId);
-	void playerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
-	void forcePlayerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
+	void playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir);
+	void forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir);
 	void playerStopAutoWalk(uint32_t playerId);
 	void playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t fromStackPos, uint16_t fromItemId, const Position &toPos, uint8_t toStackPos, uint16_t toItemId);
 	void playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId);
@@ -427,13 +436,12 @@ public:
 
 	GameState_t getGameState() const;
 	void setGameState(GameState_t newState);
-	void saveGameState();
 
 	// Events
 	void checkCreatureWalk(uint32_t creatureId);
 	void updateCreatureWalk(uint32_t creatureId);
 	void checkCreatureAttack(uint32_t creatureId);
-	void checkCreatures(size_t index);
+	void checkCreatures();
 	void checkLight();
 
 	bool combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, bool checkDefense, bool checkArmor, bool field);
@@ -497,7 +505,10 @@ public:
 	const std::map<uint16_t, std::map<uint8_t, uint64_t>> &getItemsPrice() const {
 		return itemsPriceMap;
 	}
-	const phmap::flat_hash_map<uint32_t, std::shared_ptr<Player>> &getPlayers() const {
+	const phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Guild>> &getGuilds() const {
+		return guilds;
+	}
+	const phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Player>> &getPlayers() const {
 		return players;
 	}
 	const std::map<uint32_t, std::shared_ptr<Monster>> &getMonsters() const {
@@ -546,7 +557,7 @@ public:
 	Raids raids;
 	Canary::protobuf::appearances::Appearances appearances;
 
-	phmap::flat_hash_set<std::shared_ptr<Tile>> getTilesToClean() const {
+	auto getTilesToClean() const {
 		return tilesToClean;
 	}
 	void addTileToClean(std::shared_ptr<Tile> tile) {
@@ -588,11 +599,11 @@ public:
 		mapLuaItemsStored[position] = itemId;
 	}
 
-	std::set<uint32_t> getFiendishMonsters() const {
+	auto getFiendishMonsters() const {
 		return fiendishMonsters;
 	}
 
-	std::set<uint32_t> getInfluencedMonsters() const {
+	auto getInfluencedMonsters() const {
 		return influencedMonsters;
 	}
 
@@ -662,8 +673,8 @@ public:
 	 */
 	bool tryRetrieveStashItems(std::shared_ptr<Player> player, std::shared_ptr<Item> item);
 
-	ReturnValue beforeCreatureZoneChange(std::shared_ptr<Creature> creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones, bool force = false) const;
-	void afterCreatureZoneChange(std::shared_ptr<Creature> creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones) const;
+	ReturnValue beforeCreatureZoneChange(std::shared_ptr<Creature> creature, const std::unordered_set<std::shared_ptr<Zone>> &fromZones, const std::unordered_set<std::shared_ptr<Zone>> &toZones, bool force = false) const;
+	void afterCreatureZoneChange(std::shared_ptr<Creature> creature, const std::unordered_set<std::shared_ptr<Zone>> &fromZones, const std::unordered_set<std::shared_ptr<Zone>> &toZones) const;
 
 	std::unique_ptr<IOWheel> &getIOWheel();
 	const std::unique_ptr<IOWheel> &getIOWheel() const;
@@ -673,8 +684,8 @@ public:
 
 private:
 	std::map<uint32_t, int32_t> forgeMonsterEventIds;
-	std::set<uint32_t> fiendishMonsters;
-	std::set<uint32_t> influencedMonsters;
+	std::unordered_set<uint32_t> fiendishMonsters;
+	std::unordered_set<uint32_t> influencedMonsters;
 	void checkImbuements();
 	bool playerSaySpell(std::shared_ptr<Player> player, SpeakClasses type, const std::string &text);
 	void playerWhisper(std::shared_ptr<Player> player, const std::string &text);
@@ -770,10 +781,11 @@ private:
 	phmap::flat_hash_map<std::string, HighscoreCacheEntry> highscoreCache;
 
 	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> m_uniqueLoginPlayerNames;
-	phmap::flat_hash_map<uint32_t, std::shared_ptr<Player>> players;
+	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Player>> players;
 	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> mappedPlayerNames;
-	phmap::flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
+	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
 	phmap::flat_hash_map<uint16_t, std::shared_ptr<Item>> uniqueItems;
+	phmap::parallel_flat_hash_map<uint32_t, std::string> m_playerNameCache;
 	std::map<uint32_t, uint32_t> stages;
 
 	/* Items stored from the lua scripts positions
@@ -810,7 +822,7 @@ private:
 
 	std::map<uint32_t, std::shared_ptr<BedItem>> bedSleepersMap;
 
-	phmap::flat_hash_set<std::shared_ptr<Tile>> tilesToClean;
+	std::unordered_set<std::shared_ptr<Tile>> tilesToClean;
 
 	ModalWindow offlineTrainingWindow { std::numeric_limits<uint32_t>::max(), "Choose a Skill", "Please choose a skill:" };
 
@@ -892,10 +904,9 @@ private:
 	// Variable members (m_)
 	std::unique_ptr<IOWheel> m_IOWheel;
 
-	void cacheQueryHighscore(const std::string &key, const std::string &query);
+	void cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage);
 	void processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
 
-	std::string getCachedQueryHighscore(const std::string &key);
 	std::string generateVocationConditionHighscore(uint32_t vocation);
 	std::string generateHighscoreQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
 	std::string generateHighscoreQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);

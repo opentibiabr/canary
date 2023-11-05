@@ -24,13 +24,6 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Cancel Previous Runs
-        if: github.ref != 'refs/heads/main'
-        uses: fkirc/skip-duplicate-actions@master
-        with:
-          concurrent_skipping: 'same_content'
-          cancel_others: true
-
       - uses: actions/checkout@v3
         if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
         with:

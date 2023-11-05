@@ -25,31 +25,21 @@ local function recreateCrystals(c)
 	end
 end
 
-local parasiteWarzone = CreatureEvent("ParasiteWarzone")
-function parasiteWarzone.onKill(player, target)
-	local targetMonster = target:getMonster()
-	if not targetMonster then
-		return false
-	end
-
-	local targetName = targetMonster:getName():lower()
-	if targetName ~= "parasite" then
-		return false
-	end
-
-	local master = targetMonster:getMaster()
+local parasiteWarzone = CreatureEvent("ParasiteDeath")
+function parasiteWarzone.onDeath(creature)
+	local master = creature:getMaster()
 	if not master or master:isPlayer() then
 		return false
 	end
 
-	local pos = targetMonster:getPosition()
+	local pos = creature:getPosition()
 	if pos.x ~= 33097 or pos.y > 31979 or pos.y < 31976 or pos.z ~= 11 then
 		return false
 	end
 
 	local config = warzoneConfig.findByName("Gnomevil")
 	if config.locked then
-		targetMonster:say("It seems that someone has already destroyed the walls in the last 30 minutes.", TALKTYPE_MONSTER_SAY)
+		creature:say("It seems that someone has already destroyed the walls in the last 30 minutes.", TALKTYPE_MONSTER_SAY)
 		return false
 	end
 

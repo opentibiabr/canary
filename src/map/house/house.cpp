@@ -14,6 +14,7 @@
 #include "io/iologindata.hpp"
 #include "game/game.hpp"
 #include "items/bed.hpp"
+#include "game/scheduling/save_manager.hpp"
 
 House::House(uint32_t houseId) :
 	id(houseId) { }
@@ -162,7 +163,7 @@ void House::updateDoorDescription() const {
 	}
 }
 
-AccessHouseLevel_t House::getHouseAccessLevel(std::shared_ptr<Player> player) {
+AccessHouseLevel_t House::getHouseAccessLevel(std::shared_ptr<Player> player) const {
 	if (!player) {
 		return HOUSE_OWNER;
 	}
@@ -285,7 +286,7 @@ bool House::transferToDepot(std::shared_ptr<Player> player) const {
 		g_logger().debug("[{}] moving item '{}' to depot", __FUNCTION__, item->getName());
 		g_game().internalMoveItem(item->getParent(), player->getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT);
 	}
-	IOLoginData::savePlayer(player);
+	g_saveManager().savePlayer(player);
 	return true;
 }
 
@@ -368,10 +369,6 @@ bool House::getAccessList(uint32_t listId, std::string &list) const {
 	return door->getAccessList(list);
 }
 
-bool House::isInvited(std::shared_ptr<Player> player) {
-	return getHouseAccessLevel(player) != HOUSE_NOT_INVITED;
-}
-
 void House::addDoor(std::shared_ptr<Door> door) {
 	doorList.push_back(door);
 	door->setHouse(static_self_cast<House>());
@@ -413,7 +410,7 @@ std::shared_ptr<Door> House::getDoorByPosition(const Position &pos) {
 	return nullptr;
 }
 
-bool House::canEditAccessList(uint32_t listId, std::shared_ptr<Player> player) {
+bool House::canEditAccessList(uint32_t listId, const std::shared_ptr<Player> &player) const {
 	switch (getHouseAccessLevel(player)) {
 		case HOUSE_OWNER:
 			return true;
@@ -501,7 +498,20 @@ bool House::executeTransfer(std::shared_ptr<HouseTransferItem> item, std::shared
 }
 
 void AccessList::parseList(const std::string &list) {
-	std::string validList = validateNameHouse(list);
+	std::regex regexValidChars("[^a-zA-Z' \n*!@#]+");
+	std::string validList = std::regex_replace(list, regexValidChars, "");
+
+	// Remove empty lines
+	std::istringstream iss(validList);
+	std::ostringstream oss;
+	std::string line;
+	while (std::getline(iss, line)) {
+		if (!line.empty()) {
+			oss << line << '\n';
+		}
+	}
+	validList = oss.str();
+
 	playerList.clear();
 	guildRankList.clear();
 	allowEveryone = false;
@@ -588,18 +598,17 @@ void AccessList::addGuildRank(const std::string &name, const std::string &guildN
 	}
 }
 
-bool AccessList::isInList(std::shared_ptr<Player> player) {
+bool AccessList::isInList(std::shared_ptr<Player> player) const {
 	if (allowEveryone) {
 		return true;
 	}
 
-	auto playerIt = playerList.find(player->getGUID());
-	if (playerIt != playerList.end()) {
+	if (playerList.contains(player->getGUID())) {
 		return true;
 	}
 
-	GuildRank_ptr rank = player->getGuildRank();
-	return rank && guildRankList.find(rank->id) != guildRankList.end();
+	const auto &rank = player->getGuildRank();
+	return rank && guildRankList.contains(rank->id);
 }
 
 void AccessList::getList(std::string &retList) const {
@@ -634,7 +643,7 @@ void Door::setHouse(std::shared_ptr<House> newHouse) {
 	}
 }
 
-bool Door::canUse(std::shared_ptr<Player> player) {
+bool Door::canUse(std::shared_ptr<Player> player) const {
 	if (!house) {
 		return true;
 	}
@@ -821,7 +830,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 			}
 		}
 
-		IOLoginData::savePlayer(player);
+		g_saveManager().savePlayer(player);
 	}
 }
 

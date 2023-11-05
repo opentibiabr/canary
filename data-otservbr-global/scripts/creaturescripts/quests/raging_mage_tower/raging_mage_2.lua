@@ -1,16 +1,11 @@
 local ragingMage2 = CreatureEvent("RagingMage2")
 function ragingMage2.onDeath(creature, corpse, killer, mostDamageKiller, unjustified, mostDamageUnjustified)
-	local targetMonster = creature:getMonster()
-	if not creature or not targetMonster or targetMonster:getName():lower() ~= "raging mage" then
-		return true
-	end
-
 	broadcastMessage(
 		"The remains of the Raging Mage are scattered on the floor of his Tower. \z
 	The dimensional portal quakes.",
 		MESSAGE_EVENT_ADVANCE
 	)
-	targetMonster:say(
+	creature:say(
 		"I WILL RETURN!! My death will just be a door to await my homecoming, \z
 	my physical hull will be... my... argh...",
 		TALKTYPE_MONSTER_SAY,

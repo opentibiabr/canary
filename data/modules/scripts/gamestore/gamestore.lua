@@ -349,7 +349,7 @@ GameStore.Categories = {
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
-				icons = { "Exercise_Axe.png" },
+				icons = { "Durable_Exercise_Axe.png" },
 				name = "Durable Exercise Axe",
 				price = 90,
 				itemtype = 35280,
@@ -358,7 +358,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Exercise_Bow.png" },
+				icons = { "Durable_Exercise_Bow.png" },
 				name = "Durable Exercise Bow",
 				price = 90,
 				itemtype = 35282,
@@ -367,7 +367,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Exercise_Club.png" },
+				icons = { "Durable_Exercise_Club.png" },
 				name = "Durable Exercise Club",
 				price = 90,
 				itemtype = 35281,
@@ -376,7 +376,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Exercise_Rod.png" },
+				icons = { "Durable_Exercise_Rod.png" },
 				name = "Durable Exercise Rod",
 				price = 90,
 				itemtype = 35283,
@@ -385,7 +385,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Exercise_Sword.png" },
+				icons = { "Durable_Exercise_Sword.png" },
 				name = "Durable Exercise Sword",
 				price = 90,
 				itemtype = 35279,
@@ -394,7 +394,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Exercise_Wand.png" },
+				icons = { "Durable_Exercise_Wand.png" },
 				name = "Durable Exercise Wand",
 				price = 90,
 				itemtype = 35284,
@@ -403,7 +403,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Exercise_Shield.png" },
+				icons = { "Durable_Exercise_Shield.png" },
 				name = "Durable Exercise Shield",
 				price = 90,
 				itemtype = 44066,
@@ -475,7 +475,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Exercise_Axe.png" },
+				icons = { "Lasting_Exercise_Axe.png" },
 				name = "Lasting Exercise Axe",
 				price = 720,
 				itemtype = 35286,
@@ -484,7 +484,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Exercise_Bow.png" },
+				icons = { "Lasting_Exercise_Bow.png" },
 				name = "Lasting Exercise Bow",
 				price = 720,
 				itemtype = 35288,
@@ -493,7 +493,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Exercise_Club.png" },
+				icons = { "Lasting_Exercise_Club.png" },
 				name = "Lasting Exercise Club",
 				price = 720,
 				itemtype = 35287,
@@ -502,7 +502,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Exercise_Rod.png" },
+				icons = { "Lasting_Exercise_Rod.png" },
 				name = "Lasting Exercise Rod",
 				price = 720,
 				itemtype = 35289,
@@ -511,7 +511,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Exercise_Sword.png" },
+				icons = { "Lasting_Exercise_Sword.png" },
 				name = "Lasting Exercise Sword",
 				price = 720,
 				itemtype = 35285,
@@ -520,7 +520,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Exercise_Wand.png" },
+				icons = { "Lasting_Exercise_Wand.png" },
 				name = "Lasting Exercise Wand",
 				price = 720,
 				itemtype = 35290,
@@ -529,7 +529,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Exercise_Shield.png" },
+				icons = { "Lasting_Exercise_Shield.png" },
 				name = "Lasting Exercise Shield",
 				price = 720,
 				itemtype = 44067,
@@ -2340,6 +2340,15 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 			},
 			{
+				icons = { "Outfit_Flamefury_Mage_Male_Addon_3.png", "Outfit_Flamefury_Mage_Female_Addon_3.png" },
+				name = "Full Flamefury Mage Outfit",
+				price = 870,
+				sexId = { female = 1681, male = 1680 },
+				addon = 3,
+				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Flame fury mages not only embraced the fury to fire, they became it! Relishing in purging destruction they don't just want to see the world burn, but be an active part in it. They just love the smell of sulphur in the morning!</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+			},
+			{
 				icons = { "Outfit_Forest_Warden_Male_Addon_3.png", "Outfit_Forest_Warden_Female_Addon_3.png" },
 				name = "Full Forest Warden Outfit",
 				price = 750,
@@ -2607,6 +2616,24 @@ GameStore.Categories = {
 				sexId = { female = 900, male = 899 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>You spend hours in the woods in search of wild and rare animals? Countless stuffed skulls of deer, wolves and other creatures are decorating your walls? Now you have the chance to present your trophies in public. Become a Trophy Hunter and cover your shoulders with the finest bear skulls!</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+			},
+			{
+				icons = { "Outfit_Veteran_Paladin_Male_Addon_3.png", "Outfit_Veteran_Paladin_Female_Addon_3.png" },
+				name = "Full Veteran Paladin Outfit",
+				price = 750,
+				sexId = { female = 1205, male = 1204 },
+				addon = 3,
+				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>A Veteran Paladin has mastered the art of distance fighting. No matter how far away his prey may be, a marksman like the Veteran Paladin will always hit with extraordinary precision. No one can escape his keen hawk-eyed vision and even small stones become deadly weapons in his hands.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+			},
+			{
+				icons = { "Outfit_Void_Master_Male_Addon_3.png", "Outfit_Void_Master_Female_Addon_3.png" },
+				name = "Full Void Master Outfit",
+				price = 750,
+				sexId = { female = 1203, male = 1202 },
+				addon = 3,
+				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>According to ancient rumours, the pulsating orb that the Void Master balances skilfully on the tip of his staff consists of powerful cosmic spheres. If you gaze too long into the infinite emptiness inside the orb, its powers will absorb your mind.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 			},
 			{
@@ -3081,8 +3108,8 @@ GameStore.Categories = {
 			{
 				icons = { "Demon_Statue.png" },
 				name = "Demon Statue",
-				price = 34058,
-				itemtype = 31212,
+				price = 25,
+				itemtype = 34058,
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
@@ -6655,15 +6682,6 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
 			{
-				icons = { "Outfit_Veteran_Paladin_Male_Addon_3.png", "Outfit_Veteran_Paladin_Female_Addon_3.png" },
-				name = "Full Veteran Paladin Outfit",
-				price = 1750,
-				sexId = { female = 1205, male = 1204 },
-				addon = 3,
-				description = "{info} usable by all characters of the account\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>A Veteran Paladin has mastered the art of distance fighting. No matter how far away his prey may be, a marksman like the Veteran Paladin will always hit with extraordinary precision. No one can escape his keen hawk-eyed vision and even small stones become deadly weapons in his hands.</i>",
-				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
-			},
-			{
 				icons = { "Vexclaw_Doll.png" },
 				name = "Vexclaw Doll",
 				price = 400,
@@ -6671,15 +6689,6 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Outfit_Void_Master_Male_Addon_3.png", "Outfit_Void_Master_Female_Addon_3.png" },
-				name = "Full Void Master Outfit",
-				price = 1750,
-				sexId = { female = 1203, male = 1202 },
-				addon = 3,
-				description = "{info} usable by all characters of the account\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>According to ancient rumours, the pulsating orb that the Void Master balances skilfully on the tip of his staff consists of powerful cosmic spheres. If you gaze too long into the infinite emptiness inside the orb, its powers will absorb your mind.</i>",
-				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 			},
 		},
 	},

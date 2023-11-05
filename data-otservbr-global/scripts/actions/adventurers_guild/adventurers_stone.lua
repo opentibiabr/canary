@@ -1,5 +1,5 @@
 local config = {
-	enableTemplaes = true,
+	enableTemples = true,
 	enableDepots = false,
 
 	Temples = {
@@ -47,7 +47,7 @@ local adventurersStone = Action()
 
 function adventurersStone.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local playerPos, allowed, townId = player:getPosition(), false
-	if config.enableTemplaes then
+	if config.enableTemples then
 		for _, temple in ipairs(config.Temples) do
 			if isInRangeIgnoreZ(playerPos, temple.fromPos, temple.toPos) then
 				allowed, townId = true, temple.townId
@@ -67,7 +67,7 @@ function adventurersStone.onUse(player, item, fromPosition, target, toPosition, 
 
 	if not allowed then
 		local enabledLocations = {}
-		if config.enableTemplaes then
+		if config.enableTemples then
 			table.insert(enabledLocations, "temple")
 		end
 		if config.enableDepots then

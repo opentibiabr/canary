@@ -25,7 +25,7 @@ public:
 	static bool shuttingDown;
 
 	LuaEnvironment();
-	~LuaEnvironment();
+	~LuaEnvironment() override;
 
 	lua_State* getLuaState() override;
 
@@ -38,7 +38,7 @@ public:
 	}
 
 	bool initState() override;
-	bool reInitState();
+	bool reInitState() override;
 	bool closeState() override;
 
 	LuaScriptInterface* getTestInterface();
@@ -50,7 +50,7 @@ public:
 	template <typename T>
 	std::shared_ptr<T> createWeaponObject(LuaScriptInterface* interface) {
 		auto weapon = std::make_shared<T>(interface);
-		int weaponId = ++lastWeaponId;
+		auto weaponId = ++lastWeaponId;
 		weaponMap[weaponId] = weapon;
 		weaponIdMap[interface].push_back(weaponId);
 		return weapon;

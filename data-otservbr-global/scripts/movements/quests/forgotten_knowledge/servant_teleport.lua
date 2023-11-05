@@ -6,7 +6,7 @@ function servantTeleport.onStepIn(creature, item, position, fromPosition)
 		return
 	end
 
-	if player:getStorageValue(Storage.ForgottenKnowledge.LloydTimer) >= os.time() then
+	if not player:canFightBoss("LLoyd") then
 		player:teleportTo(Position(32815, 32872, 13))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		position:sendMagicEffect(CONST_ME_TELEPORT)

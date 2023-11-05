@@ -12,7 +12,7 @@
 #include "creatures/npcs/spawns/spawn_npc.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "game/game.hpp"
-#include "game/scheduling/scheduler.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
@@ -131,13 +131,14 @@ bool SpawnsNpc::isInZone(const Position &centerPos, int32_t radius, const Positi
 
 void SpawnNpc::startSpawnNpcCheck() {
 	if (checkSpawnNpcEvent == 0) {
-		checkSpawnNpcEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this), "SpawnNpc::checkSpawnNpc");
+		checkSpawnNpcEvent = g_dispatcher().scheduleEvent(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this), "SpawnNpc::checkSpawnNpc");
 	}
 }
 
 SpawnNpc::~SpawnNpc() {
 	for (const auto &it : spawnedNpcMap) {
-		it.second->setSpawnNpc(nullptr);
+		auto npc = it.second;
+		npc->setSpawnNpc(nullptr);
 	}
 }
 
@@ -216,7 +217,7 @@ void SpawnNpc::checkSpawnNpc() {
 	}
 
 	if (spawnedNpcMap.size() < spawnNpcMap.size()) {
-		checkSpawnNpcEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this), __FUNCTION__);
+		checkSpawnNpcEvent = g_dispatcher().scheduleEvent(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this), __FUNCTION__);
 	}
 }
 
@@ -225,7 +226,7 @@ void SpawnNpc::scheduleSpawnNpc(uint32_t spawnId, spawnBlockNpc_t &sb, uint16_t 
 		spawnNpc(spawnId, sb.npcType, sb.pos, sb.direction);
 	} else {
 		g_game().addMagicEffect(sb.pos, CONST_ME_TELEPORT);
-		g_scheduler().addEvent(1400, std::bind(&SpawnNpc::scheduleSpawnNpc, this, spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL), __FUNCTION__);
+		g_dispatcher().scheduleEvent(1400, std::bind(&SpawnNpc::scheduleSpawnNpc, this, spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL), __FUNCTION__);
 	}
 }
 
@@ -275,7 +276,7 @@ void SpawnNpc::removeNpc(std::shared_ptr<Npc> npc) {
 
 void SpawnNpc::stopEvent() {
 	if (checkSpawnNpcEvent != 0) {
-		g_scheduler().stopEvent(checkSpawnNpcEvent);
+		g_dispatcher().stopEvent(checkSpawnNpcEvent);
 		checkSpawnNpcEvent = 0;
 	}
 }

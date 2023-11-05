@@ -11,15 +11,12 @@
 
 #include "lua/functions/core/game/lua_enums.hpp"
 
-#include "account/account.hpp"
 #include "creatures/players/wheel/wheel_definitions.hpp"
 #include "io/io_bosstiary.hpp"
 #include "config/configmanager.hpp"
 #include "creatures/creature.hpp"
-#include "lua/creature/creatureevent.hpp"
 #include "declarations.hpp"
 #include "game/functions/game_reload.hpp"
-#include "game/game.hpp"
 
 #define registerEnumClass(luaState, enumClassType)               \
 	{                                                            \
@@ -111,6 +108,7 @@ void LuaEnums::init(lua_State* L) {
 	initSoundEnums(L);
 	initWheelEnums(L);
 	initAttributeConditionSubIdEnums(L);
+	initConcoctionsEnum(L);
 }
 
 void LuaEnums::initOthersEnums(lua_State* L) {
@@ -447,6 +445,30 @@ void LuaEnums::initAttributeConditionSubIdEnums(lua_State* L) {
 	for (auto value : magic_enum::enum_values<AttrSubId_t>()) {
 		registerEnumClassNamespace(L, luaNamespace, value);
 	}
+}
+
+void LuaEnums::initConcoctionsEnum(lua_State* L) {
+	std::string luaNamespace = "Concoction_";
+	registerEnumNamespace(L, luaNamespace, Concoction_t::KooldownAid);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::StaminaExtension);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::StrikeEnhancement);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::CharmUpgrade);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::WealthDuplex);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::BestiaryBetterment);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::FireResilience);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::IceResilience);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::EarthResilience);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::EnergyResilience);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::HolyResilience);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::DeathResilience);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::PhysicalResilience);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::FireAmplification);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::IceAmplification);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::EarthAmplification);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::EnergyAmplification);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::HolyAmplification);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::DeathAmplification);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::PhysicalAmplification);
 }
 
 void LuaEnums::initConstMeEnums(lua_State* L) {

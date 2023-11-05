@@ -21,7 +21,8 @@ class WeaponMelee;
 class WeaponDistance;
 class WeaponWand;
 
-using Weapon_ptr = std::unique_ptr<Weapon>;
+using WeaponUnique_ptr = std::unique_ptr<Weapon>;
+using WeaponShared_ptr = std::shared_ptr<Weapon>;
 
 class Weapons final : public Scripts {
 public:
@@ -36,16 +37,16 @@ public:
 		return inject<Weapons>();
 	}
 
-	const Weapon* getWeapon(std::shared_ptr<Item> item) const;
+	const WeaponShared_ptr getWeapon(std::shared_ptr<Item> item) const;
 
 	static int32_t getMaxMeleeDamage(int32_t attackSkill, int32_t attackValue);
 	static int32_t getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t attackValue, float attackFactor, bool isMelee);
 
-	bool registerLuaEvent(Weapon* event);
+	bool registerLuaEvent(WeaponShared_ptr event);
 	void clear();
 
 private:
-	std::map<uint32_t, Weapon*> weapons;
+	std::map<uint32_t, WeaponShared_ptr> weapons;
 };
 
 constexpr auto g_weapons = Weapons::getInstance;

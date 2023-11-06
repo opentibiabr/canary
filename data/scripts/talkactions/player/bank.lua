@@ -79,6 +79,7 @@ function transfer.onSay(player, words, param)
 
 	local name = split[1]
 	if not name then
+		player:sendTextMessage(config.messageStyle, "Invalid name.")
 		return true
 	end
 	name = name:trim()

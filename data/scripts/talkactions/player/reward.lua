@@ -1,11 +1,11 @@
 local config = {
 	items = {
-		{ id = 35284, charges = 64000, cap = 10 },
-		{ id = 35279, charges = 64000, cap = 10 },
-		{ id = 35281, charges = 64000, cap = 10 },
-		{ id = 35283, charges = 64000, cap = 10 },
-		{ id = 35282, charges = 64000, cap = 10 },
-		{ id = 35280, charges = 64000, cap = 10 },
+		{ id = 35284, charges = 64000 },
+		{ id = 35279, charges = 64000 },
+		{ id = 35281, charges = 64000 },
+		{ id = 35283, charges = 64000 },
+		{ id = 35282, charges = 64000 },
+		{ id = 35280, charges = 64000 },
 	},
 	storage = tonumber(Storage.PlayerWeaponReward), -- storage key, player can only win once
 }
@@ -24,7 +24,7 @@ local function sendExerciseRewardModal(player)
 				end
 
 				local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-				if inbox and inbox:getEmptySlots() > 0 and player:getFreeCapacity() >= it.cap then
+				if inbox and inbox:getEmptySlots() > 0 and player:getFreeCapacity() >= iType:getWeight() then
 					local item = inbox:addItem(it.id, it.charges)
 					if item then
 						item:setActionId(IMMOVABLE_ACTION_ID)

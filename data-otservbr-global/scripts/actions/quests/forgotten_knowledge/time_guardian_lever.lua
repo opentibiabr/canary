@@ -11,8 +11,8 @@ local config = {
 		{ pos = Position(33010, 31664, 14), teleport = Position(32977, 31667, 14) },
 	},
 	monsters = {
-		{ name = "The Freezing Time Guardian", pos = Position(32975, 31664, 14) },
-		{ name = "The Blazing Time Guardian", pos = Position(32980, 31664, 14) },
+		{ name = "The Freezing Time Guardian", pos = Position(32975, 31664, 13) },
+		{ name = "The Blazing Time Guardian", pos = Position(32980, 31664, 13) },
 	},
 	specPos = {
 		from = Position(32967, 31654, 14),

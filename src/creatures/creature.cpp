@@ -1431,7 +1431,7 @@ uint16_t Creature::getStepDuration(Direction dir) {
 }
 
 int64_t Creature::getEventStepTicks(bool onlyDelay) {
-	int32_t ret = getWalkDelay();
+	int64_t ret = getWalkDelay();
 	if (ret <= 0) {
 		const uint16_t stepDuration = getStepDuration();
 		ret = onlyDelay && stepDuration > 0 ? 1 : stepDuration * lastStepCost;

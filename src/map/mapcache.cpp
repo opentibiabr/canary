@@ -107,6 +107,8 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 		return floor->getTile(x, y);
 	}
 
+	std::unique_lock l(floor->getMutex());
+
 	const uint8_t z = floor->getZ();
 
 	auto map = static_cast<Map*>(this);

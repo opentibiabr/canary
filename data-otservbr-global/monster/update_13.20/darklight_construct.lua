@@ -73,21 +73,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 70540 },
-	{ name = "ultimate health potion", chance = 32220, maxCount = 9 },
-	{ name = "gold ingot", chance = 65560 },
-	{ name = "terra legs", chance = 25560 },
-	{ name = "violet gem", chance = 60000 },
-	{ name = "green gem", chance = 70000 },
-	{ id = 43850, chance = 15000 },
-	{ id = 43851, chance = 13500 },
-	{ name = "blue gem", chance = 55000 },
-	{ name = "hammer of wrath", chance = 13500 },
-	{ name = "ruthless axe", chance = 17500 },
-	{ name = "nightmare blade", chance = 9500 },
-	{ name = "twiceslicer", chance = 7500 },
-	{ name = "crystal crossbow", chance = 6500 },
-	{ name = "crystalline sword", chance = 7500 },
+	{ name = "crystal coin", chance = 11290, maxCount = 1 },
+	{ name = "dark obsidian splinter", chance = 12735, maxCount = 1 },
+	{ id = 3039, chance = 8781, maxCount = 1 }, -- red gem
+	{ name = "small emerald", chance = 6646, maxCount = 3 },
+	{ name = "zaoan sho", chance = 8614, maxCount = 1 },
+	{ name = "darklight core", chance = 5659, maxCount = 1 },
+	{ name = "darklight obsidian axe", chance = 11129, maxCount = 1 },
+	{ name = "magma amulet", chance = 13240, maxCount = 1 },
+	{ name = "small ruby", chance = 12458, maxCount = 3 },
 }
 
 monster.attacks = {

@@ -74,22 +74,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 70540 },
-	{ name = "platinum coin", chance = 90540, maxCount = 50 },
-	{ name = "ultimate health potion", chance = 32220, maxCount = 7 },
-	{ name = "gold ingot", chance = 65560 },
-	{ name = "violet gem", chance = 25560 },
-	{ name = "blue gem", chance = 45560 },
-	{ name = "wood cape", chance = 16500 },
-	{ name = "crystalline armor", chance = 4500 },
-	{ name = "ancient shield", chance = 2000 },
-	{ name = "tower shield", chance = 17000 },
-	{ name = "mastermind shield", chance = 2500 },
-	{ name = "skull helmet", chance = 1800 },
-	{ id = 43861, chance = 14000 },
-	{ id = 43852, chance = 13000 },
-	{ id = 43847, chance = 9000 },
+	{ name = "crystal coin", chance = 10340, maxCount = 1 },
+	{ name = "small amethyst", chance = 7364, maxCount = 2 },
+	{ name = "lichen gobbler", chance = 8391, maxCount = 1 },
+	{ name = "rotten root", chance = 11619, maxCount = 1 },
+	{ name = "death ring", chance = 12591, maxCount = 1 },
+	{ name = "wood cape", chance = 14371, maxCount = 1 },
+	{ id = 3039, chance = 5155, maxCount = 1 }, -- red gem
+	{ name = "yellow gem", chance = 9564, maxCount = 1 },
+	{ name = "blooded worm", chance = 5096, maxCount = 1 },
 }
+
 
 monster.attacks = {
 	{ name ="melee", interval = 2000, chance = 100, minDamage = -150, maxDamage = -700 },

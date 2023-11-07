@@ -74,23 +74,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 90 },
-	{ name = "small emerald", chance = 5882, maxCount = 5 },
-	{ name = "platinum coin", chance = 35333, maxCount = 2 },
-	{ id = 3051, chance = 606 },
-	{ name = "brown mushroom", chance = 5263, maxCount = 5 },
-	{ name = "magic sulphur", chance = 620 },
-	{ name = "assassin star", chance = 70, maxCount = 5 },
-	{ name = "dreaded cleaver", chance = 30 },
-	{ name = "mastermind potion", chance = 750 },
-	{ name = "strong health potion", chance = 6250 },
-	{ name = "strong mana potion", chance = 7692 },
-	{ name = "terra mantle", chance = 70 },
-	{ name = "springsprout rod", chance = 1010 },
-	{ id = 43735, chance = 1000 },
-	{ id = 43730, chance = 7000, maxCount = 2 },
-	{ id = 43916, chance = 1500 }
+	{ name = "gold coin", chance = 12163, maxCount = 100 },
+	{ name = "platinum coin", chance = 11731, maxCount = 20 },
+	{ name = "weretiger tooth", chance = 13424, maxCount = 1 },
+	{ name = "moonlight crystal", chance = 6838, maxCount = 1 },
+	{ name = "ham", chance = 5229, maxCount = 2 },
+	{ name = "beastslayer axe", chance = 9764, maxCount = 1 },
+	{ name = "silver moon coin", chance = 5865, maxCount = 1 },
+	{ name = "white gem", chance = 7543, maxCount = 1 },
+	{ name = "blue robe", chance = 9050, maxCount = 1 },
+	{ name = "moon pin", chance = 9373, maxCount = 1 },
+	{ name = "crystal mace", chance = 14375, maxCount = 1 },
 }
 
 monster.attacks = {

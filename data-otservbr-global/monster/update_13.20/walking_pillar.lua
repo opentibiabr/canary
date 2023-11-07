@@ -74,24 +74,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 27000, maxCount = 2 },
-    { name = "red crystal fragment", chance = 4000 },
-    { name = "gemmed figurine", chance = 4000 },
-    { name = "green crystal shard", chance = 3000 },
-	{ name = "cyan crystal fragment", chance = 3000 },
-	{ name = "small emerald", chance = 8000, maxCount = 2 },
-	{ name = "small amethyst", chance = 8000, maxCount = 2 },
-    { name = "lightning boots", chance = 1880 },
-	{ name = "spellbook of mind control", chance = 3000 },
-    { name = "stone skin amulet", chance = 1880 },
-    { name = "cyan crystal fragment", chance = 4100 },
-    { name = "warrior's axe", chance = 3000 },
-    { name = "dream blossom staff", chance = 4100 },
-    { name = "terra boots", chance = 3000 },
-	{ id = 43847, chance = 11000 },
-	{ id = 43888, chance = 12500 },
-	{ id = 43927, chance = 9500 },
-	{ id = 43857, chance = 9500 },
+	{ name = "crystal coin", chance = 12186, maxCount = 1 },
+	{ name = "yellow darklight matter", chance = 5354, maxCount = 1 },
+	{ name = "magma clump", chance = 11440, maxCount = 1 },
+	{ name = "darklight core (object)", chance = 10276, maxCount = 1 },
+	{ name = "coal", chance = 8489, maxCount = 4 },
+	{ name = "darklight basalt chunk", chance = 12855, maxCount = 1 },
+	{ name = "onyx chip", chance = 12831, maxCount = 2 },
+	{ name = "strange helmet", chance = 11001, maxCount = 1 },
+	{ name = "fire sword", chance = 8347, maxCount = 1 },
+	{ name = "ultimate mana potion", chance = 9687, maxCount = 3 },
+	{ name = "blue gem", chance = 5868, maxCount = 1 },
+	{ name = "magma legs", chance = 14497, maxCount = 1 },
+	{ name = "white gem", chance = 9936, maxCount = 1 },
 }
 
 

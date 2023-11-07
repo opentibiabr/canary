@@ -66,26 +66,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 197 },
-	{ name = "platinum coin", chance = 100000, maxCount = 5 },
-	{ name = "amulet of loss", chance = 120 },
-	{ name = "gold ring", chance = 1870 },
-	{ name = "diamond sceptre", chance = 5760 },
-	{ name = "war hammer", chance = 2160 },
-	{ name = "metal spats", chance = 1440 },
-	{ name = "devil helmet", chance = 1360 },
-	{ name = "magma legs", chance = 1150 },
-	{ id = 6299, chance = 1410 }, 
-	{ id = 43915, chance = 2500 },
-	{ id = 43730, chance = 15000, maxCount = 3 },
-	{ name = "soul orb", chance = 5000, maxCount = 2 },
-	{ name = "crystal sword", chance = 5000 },
-	{ name = "serpent sword", chance = 5000 },
-	{ name = "rapier", chance = 5000 },
-	{ name = "great mana potion", chance = 31360, maxCount = 3 },
-	{ name = "ultimate health potion", chance = 14720, maxCount = 2 },
-	{ name = "gold ingot", chance = 5270 },
+	{ name = "platinum coin", chance = 11576, maxCount = 32 },
+	{ name = "small diamond", chance = 12440, maxCount = 3 },
+	{ name = "lightning pendant", chance = 10722, maxCount = 1 },
+	{ name = "moonlight crystal", chance = 12403, maxCount = 8 },
+	{ name = "silver moon coin", chance = 9617, maxCount = 1 },
+	{ name = "weretiger tooth", chance = 5986, maxCount = 1 },
+	{ name = "yellow gem", chance = 13110, maxCount = 1 },
+	{ name = "moon compa", chance = 10045, maxCount = 1 },
+	{ name = "moon pin", chance = 7275, maxCount = 1 },
+	{ name = "noble axe", chance = 6154, maxCount = 1 },
+	{ name = "white gem", chance = 6291, maxCount = 1 },
+	{ name = "crystal mace", chance = 11375, maxCount = 1 },
+	{ name = "blue gem", chance = 12692, maxCount = 1 },
+	{ name = "blue robe", chance = 5027, maxCount = 1 },
+	{ name = "giant sapphire", chance = 5011, maxCount = 1 },
 }
+
 
 monster.attacks = {
 	{ name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },

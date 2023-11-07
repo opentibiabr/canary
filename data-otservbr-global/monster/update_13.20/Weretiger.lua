@@ -74,14 +74,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 197 },
-	{ name = "platinum coin", chance = 100000, maxCount = 5 },
-	{ id = 43730, chance = 5000, maxCount = 3 },
-	{ id = 43915, chance = 1500 },
-	{ name = "steel shield", chance = 30000 },
-	{ name = "dwarven shield", chance = 4300 },
-	{ name = "ham", chance = 23000, maxCount = 2}
+	{ name = "gold coin", chance = 5019, maxCount = 100 },
+	{ name = "platinum coin", chance = 11510, maxCount = 13 },
+	{ name = "weretiger tooth", chance = 9948, maxCount = 1 },
+	{ name = "meat", chance = 13813, maxCount = 4 },
+	{ name = "furry club", chance = 8523, maxCount = 1 },
+	{ name = "violet crystal shard", chance = 6028, maxCount = 1 },
+	{ name = "knight armor", chance = 5692, maxCount = 1 },
+	{ name = "moonlight crystal", chance = 11494, maxCount = 1 },
+	{ name = "angelic axe", chance = 6617, maxCount = 1 },
+	{ name = "blue gem", chance = 5379, maxCount = 1 },
+	{ name = "weretiger trophy", chance = 7645, maxCount = 1 },
+	{ name = "silver moon coin", chance = 10566, maxCount = 1 },
 }
+
 
 monster.attacks = {
 	{ name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },

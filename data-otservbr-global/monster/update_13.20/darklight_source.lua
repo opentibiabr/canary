@@ -74,22 +74,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 70540 },
-	{ name = "plate armor", chance = 75500 },
-	{ name = "ultimate health potion", chance = 52220, maxCount = 7 },
-	{ name = "medusa shield", chance = 55500 },
-	{ name = "knight legs", chance = 25500 },
-	{ name = "gold ring", chance = 13500 },
-	{ name = "jade hammer", chance = 11500 },
-	{ name = "twiceslicer", chance = 17500 },
-	{ name = "stone skin amulet", chance = 15500 },
-	{ name = "nightmare blade", chance = 9500 },
-	{ name = "demonrage sword", chance = 7500 },
-	{ name = "dreaded cleaver", chance = 2500 },
-	{ name = "butcher's axe", chance = 1500 },
-	{ id = 43894, chance = 19500 },
-	{ id = 43850, chance = 15000 },
-	{ id = 43851, chance = 13500 },
+	{ name = "crystal coin", chance = 5214, maxCount = 1 },
+	{ name = "yellow darklight matter", chance = 9397, maxCount = 1 },
+	{ name = "dark obsidian splinter", chance = 13215, maxCount = 1 },
+	{ name = "darklight core (object)", chance = 7570, maxCount = 1 },
+	{ name = "small sapphire", chance = 5644, maxCount = 2 },
+	{ name = "blue gem", chance = 12909, maxCount = 1 },
+	{ name = "twiceslicer", chance = 11596, maxCount = 1 },
+	{ name = "white gem", chance = 13964, maxCount = 1 },
 }
 
 monster.attacks = {

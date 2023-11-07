@@ -74,19 +74,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 70540 },
-	{ name = "platinum coin", chance = 82220, maxCount = 32 },
-	{ name = "great spirit potion", chance = 32220, maxCount = 7 },
-	{ name = "blue gem", chance = 54560 },
-	{ name = "gold ingot", chance = 54560 },
-	{ name = "violet gem", chance = 74560 },
-	{ name = "wood cape", chance = 21920 },
-	{ name = "fire sword", chance = 32000 },
-	{ name = "crown helmet", chance = 21920 },
-	{ name = "fur armor", chance = 18920 },
-	{ name = "crown shield", chance = 14500 },
-	{ id = 43850, chance = 15000 },
-	{ id = 43851, chance = 13500 },
+	{ name = "crystal coin", chance = 12516, maxCount = 2 },
+	{ name = "darklight core (object)", chance = 13367, maxCount = 1 },
+	{ name = "darklight obsidian axe", chance = 10433, maxCount = 1 },
+	{ name = "zaoan armor", chance = 8574, maxCount = 1 },
+	{ name = "basalt crumb", chance = 5794, maxCount = 1 },
+	{ name = "small topaz", chance = 5784, maxCount = 3 },
+	{ name = "amber staff", chance = 6240, maxCount = 1 },
+	{ id = 3039, chance = 8459, maxCount = 1 }, -- red gem
 }
 
 monster.attacks = {

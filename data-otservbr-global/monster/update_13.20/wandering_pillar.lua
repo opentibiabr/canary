@@ -74,22 +74,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 100000, maxCount = 1 },
-	{ name = "platinum coin", chance = 100000, maxCount = 5 },
-	{ id = 3280, chance = 7000 }, 
-	{ id = 3281, chance = 1000 },
-	{ id = 9058, chance = 1500 }, 
-	{ id = 238, chance = 30000, maxCount = 3 }, 
-	{ id = 7642, chance = 20000 },
-	{ id = 3038, chance = 1000 }, 
-	{ id = 3582, chance = 30000, maxCount = 14 },
-	{ id = 5925, chance = 10000 }, 
-	{ id = 3318, chance = 7500 },
-	{ name = "demonic essence", chance = 28000 },
-	{ name = "assassin star", chance = 5900, maxCount = 10 },
-	{ name = "great mana potion", chance = 31360, maxCount = 3 },
-	{ name = "ultimate health potion", chance = 14720, maxCount = 2 },
-	{ name = "gold ingot", chance = 5270 },
+	{ name = "crystal coin", chance = 6629, maxCount = 1 },
+	{ name = "darklight obsidian axe", chance = 14652, maxCount = 1 },
+	{ name = "basalt crumb", chance = 8184, maxCount = 1 },
+	{ name = "sulphurous stone", chance = 5873, maxCount = 1 },
+	{ name = "magma boots", chance = 5080, maxCount = 1 },
+	{ name = "coal", chance = 9802, maxCount = 4 },
+	{ name = "dark helmet", chance = 7490, maxCount = 1 },
+	{ name = "magma coat", chance = 11753, maxCount = 1 },
+	{ name = "onyx chip", chance = 9311, maxCount = 2 },
+	{ name = "darklight core (object)", chance = 5957, maxCount = 1 },
+	{ name = "fire sword", chance = 8319, maxCount = 1 },
+	{ name = "magma clump", chance = 6260, maxCount = 1 },
+	{ id = 3039, chance = 9915, maxCount = 1 }, -- red gem
+	{ name = "green gem", chance = 12864, maxCount = 1 },
+	{ name = "basalt core", chance = 9037, maxCount = 1 },
 }
 
 monster.attacks = {

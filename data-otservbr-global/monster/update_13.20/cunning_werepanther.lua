@@ -74,18 +74,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 2506, maxCount = 1 },
-	{ name = "platinum coin", chance = 2506, maxCount = 1 },
-	{ name = "golden sickle", chance = 1948, maxCount = 1 },
-	{ name = "moonlight crystals", chance = 2078, maxCount = 1 },
-	{ name = "werepanther claw", chance = 2546, maxCount = 1 },
-	{ name = "lightning pendant", chance = 2455, maxCount = 1 },
-	{ name = "lightning headband", chance = 3401, maxCount = 1 },
-	{ name = "yellow gem", chance = 3495, maxCount = 1 },
-	{ name = "meat", chance = 2546, maxCount = 1 },
-	{ name = "small topaz", chance = 2546, maxCount = 1 },
-	{ name = "ripper lance", chance = 1681, maxCount = 1 },
-	{ name = "gemmed figurine", chance = 1657, maxCount = 1 },
+	{ name = "gold coin", chance = 10558, maxCount = 80 },
+	{ name = "platinum coin", chance = 8694, maxCount = 11 },
+	{ name = "werepanther claw", chance = 5485, maxCount = 1 },
+	{ name = "golden sickle", chance = 5970, maxCount = 1 },
+	{ name = "small topaz", chance = 7513, maxCount = 4 },
+	{ name = "meat", chance = 12545, maxCount = 2 },
+	{ name = "yellow gem", chance = 14190, maxCount = 1 },
+	{ name = "moonlight crystal", chance = 13613, maxCount = 1 },
+	{ name = "lightning headband", chance = 11638, maxCount = 1 },
+	{ name = "lightning pendant", chance = 5298, maxCount = 1 },
+	{ name = "ripper lance", chance = 6667, maxCount = 1 },
+	{ name = "fur armor", chance = 8253, maxCount = 1 },
+	{ name = "gemmed figurine", chance = 13628, maxCount = 1 },
+	{ name = "werepanther trophy", chance = 5424, maxCount = 1 },
 }
 
 monster.attacks = {

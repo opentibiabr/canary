@@ -5,10 +5,10 @@ monster.description = "a Werecrocodile"
 monster.experience = 3900
 monster.outfit = {
 	lookType = 1647,
-	lookHead = 84,
-	lookBody = 84,
-	lookLegs = 84,
-	lookFeet = 78,
+	lookHead = 95,
+	lookBody = 117,
+	lookLegs = 4,
+	lookFeet = 116,
 	lookAddons = 0,
 	lookMount = 0
 }
@@ -74,13 +74,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 197 },
-	{ name = "platinum coin", chance = 100000, maxCount = 5 },
-	{ name = "dark helmet", chance = 5980 },
-	{ name = "blue robe", chance = 730 },
-	{ name = "brown crystal splinter", chance = 3000 },
-	{ id = 43916, chance = 1000 },
-	{ id = 43729, chance = 2000}
+	{ name = "gold coin", chance = 13548, maxCount = 100 },
+	{ name = "platinum coin", chance = 12875, maxCount = 13 },
+	{ name = "werecrocodile tongue", chance = 11692, maxCount = 1 },
+	{ name = "serpent sword", chance = 6694, maxCount = 1 },
+	{ name = "crocodile boots", chance = 6240, maxCount = 1 },
+	{ name = "meat", chance = 12266, maxCount = 4 },
+	{ id = 3039, chance = 14768, maxCount = 1 }, -- red gem
+	{ name = "moonlight crystal", chance = 13193, maxCount = 1 },
+	{ name = "green crystal shard", chance = 11106, maxCount = 1 },
+	{ name = "glorious axe", chance = 13477, maxCount = 1 },
+	{ name = "golden sun coin", chance = 8290, maxCount = 1 },
+	{ name = "bonebreaker", chance = 9200, maxCount = 1 },
+	{ name = "werecrocodile trophy", chance = 13176, maxCount = 1 },
 }
 
 monster.attacks = {

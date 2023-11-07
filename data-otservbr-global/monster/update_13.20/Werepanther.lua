@@ -74,13 +74,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 197 },
-	{ name = "platinum coin", chance = 100000, maxCount = 5 },
-	{ name = "plate armor", chance = 13000 },
-	{ name = "halberd", chance = 21000 },
-	{ id = 43917, chance = 1500 },
-	{ id = 43731, chance = 5000, maxCount = 2}
+	{ name = "gold coin", chance = 12348, maxCount = 80 },
+	{ name = "platinum coin", chance = 6115, maxCount = 11 },
+	{ name = "werepanther claw", chance = 6104, maxCount = 1 },
+	{ name = "golden sickle", chance = 10866, maxCount = 1 },
+	{ name = "meat", chance = 9537, maxCount = 2 },
+	{ name = "small ruby", chance = 6497, maxCount = 3 },
+	{ name = "moonlight crystal", chance = 9974, maxCount = 1 },
+	{ id = 3039, chance = 8037, maxCount = 1 }, -- red gem
+	{ name = "magma monocle", chance = 14789, maxCount = 1 },
+	{ name = "ripper lance", chance = 5160, maxCount = 1 },
+	{ name = "gemmed figurine", chance = 5222, maxCount = 1 },
+	{ name = "magma amulet", chance = 11029, maxCount = 1 },
+	{ name = "fur armor", chance = 6985, maxCount = 1 },
+	{ name = "werepanther trophy", chance = 7092, maxCount = 1 },
 }
+
 
 monster.attacks = {
 	{ name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -250, effect = CONST_ME_DRAWBLOOD },

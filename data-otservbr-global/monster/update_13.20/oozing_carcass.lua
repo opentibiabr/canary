@@ -74,21 +74,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 70540 },
-	{ name = "platinum coin", chance = 90540, maxCount = 32 },
-	{ name = "ultimate health potion", chance = 32220, maxCount = 7 },
-	{ name = "violet gem", chance = 74560 },
-	{ name = "green gem", chance = 64560 },
-	{ name = "blue gem", chance = 54560 },
-	{ name = "northwind rod", chance = 11920 },
-	{ name = "scarab ocarina", chance = 6000 },
-	{ name = "jade hat", chance = 4000 },
-	{ name = "mushroom backpack", chance = 3000 },
-	{ name = "solar axe", chance = 800 },
-	{ id = 43846, chance = 13000 },
-	{ id = 43927, chance = 9500 },
-	{ id = 43737, chance = 4000}
+	{ name = "crystal coin", chance = 9000, maxCount = 1 },
+	{ name = "lichen gobbler", chance = 12369, maxCount = 1 },
+	{ name = "small emerald", chance = 12859, maxCount = 1 },
+	{ id = 3039, chance = 9808, maxCount = 1 }, -- red gem
+	{ name = "skull staff", chance = 12316, maxCount = 1 },
+	{ name = "bone shield", chance = 6752, maxCount = 1 },
+	{ name = "yellow gem", chance = 8634, maxCount = 1 },
+	{ name = "rotten root", chance = 13133, maxCount = 1 },
+	{ name = "decayed finger bone", chance = 6964, maxCount = 1 },
+	{ name = "ultimate health potion", chance = 10285, maxCount = 2 },
+	{ name = "bloody edge", chance = 12270, maxCount = 1 },
+	{ name = "spellbook of warding", chance = 5084, maxCount = 1 },
 }
+
 
 monster.attacks = {
 	{ name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900, effect = CONST_ME_DRAWBLOOD },

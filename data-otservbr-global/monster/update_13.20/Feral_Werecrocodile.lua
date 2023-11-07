@@ -5,10 +5,10 @@ monster.description = "a Feral Werecrocodile"
 monster.experience = 5080
 monster.outfit = {
 	lookType = 1647,
-	lookHead = 1,
-	lookBody = 1,
-	lookLegs = 78,
-	lookFeet = 0,
+	lookHead = 116,
+	lookBody = 95,
+	lookLegs = 19,
+	lookFeet = 21,
 	lookAddons = 0,
 	lookMount = 0
 }
@@ -74,16 +74,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 43500, maxCount = 15 },
-	{ name = "white mushroom", chance = 24000, maxCount = 3 },
-	{ name = "soul orb", chance = 43500, maxCount = 5 },
-	{ name = "pelvis bone", chance = 2630, maxCount = 10 },
-	{ name = "unholy bone", chance = 2630, maxCount = 5 },
-	{ name = "ruthless axe", chance = 150 },
-	{ id = 43729, chance = 33500 },
-	{ id = 43585, chance = 5500 },
-	{ id = 43916, chance = 1500 },
-
+	{ name = "gold coin", chance = 13222, maxCount = 100 },
+	{ name = "platinum coin", chance = 7601, maxCount = 21 },
+	{ name = "werecrocodile tongue", chance = 13336, maxCount = 1 },
+	{ name = "ham", chance = 9592, maxCount = 2 },
+	{ name = "war hammer", chance = 5086, maxCount = 1 },
+	{ name = "moonlight crystal", chance = 11701, maxCount = 1 },
+	{ name = "golden sun coin", chance = 7323, maxCount = 1 },
+	{ name = "violet gem", chance = 12362, maxCount = 1 },
+	{ name = "ornate crossbow", chance = 8599, maxCount = 1 },
+	{ name = "sun brooch", chance = 5825, maxCount = 1 },
+	{ name = "terra mantle", chance = 12902, maxCount = 1 },
+	{ name = "swamplair armor", chance = 10792, maxCount = 1 },
 }
 
 monster.attacks = {

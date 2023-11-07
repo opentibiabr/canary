@@ -39,7 +39,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = true,
+	rewardBoss = false,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -68,30 +68,6 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 10000, maxCount = 6 }, -- crystal coin
-	{ id = 16124, chance = 10000, maxCount = 3 }, -- blue crystal splinter
-	{ id = 6499, chance = 1000, maxCount = 2 }, -- demonic essence
-	{ id = 7643, chance = 10000, maxCount = 5 }, -- ultimate health potion
-	{ id = 238, chance = 10000, maxCount = 7 }, -- great mana potion
-	{ id = 7642, chance = 10000, maxCount = 6 }, -- great spirit potion
-	{ id = 3041, chance = 10000, maxCount = 2 }, -- blue gem
-	{ id = 16122, chance = 10000, maxCount = 3 }, -- green crystal splinter
-	{ id = 16120, chance = 10000, maxCount = 2 }, -- violet crystal shard
-	{ id = 40588, chance = 800 },
-	{ id = 31965, chance = 15000, maxCount = 1 },
-	{ id = 31966, chance = 10000, maxCount = 1 },
-	{ id = 32005, chance = 4000, maxCount = 2 },
-	{ id = 32014, chance = 3000 },
-	{ id = 23234, chance = 3000, maxCount = 2 },
-	{ id = 23236, chance = 3000, maxCount = 2 },
-	{ id = 23238, chance = 3000, maxCount = 2 },
-	{ id = 40589, chance = 800 },
-	{ id = 40591, chance = 800 },
-	{ id = 40592, chance = 800 },
-	{ id = 40593, chance = 800 },
-	{ id = 40594, chance = 800 },
-	{ id = 40595, chance = 800 }
-
 }
 
 monster.attacks = {
@@ -127,23 +103,5 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }
 }
-
-mType.onThink = function(monster, interval)
-end
-
-mType.onAppear = function(monster, creature)
-	if monster:getType():isRewardBoss() then
-		monster:setReward(true)
-	end
-end
-
-mType.onDisappear = function(monster, creature)
-end
-
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
-
-mType.onSay = function(monster, creature, type, message)
-end
 
 mType:register(monster)

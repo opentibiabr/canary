@@ -74,21 +74,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "ultimate spirit potion", chance = 31627, maxCount = 6 },
-	{ name = "royal star", chance = 31325, maxCount = 6 },
-	{ name = "bullseye potion", chance = 22590, maxCount = 10 },
-	{ name = "berserk potion", chance = 21988, maxCount = 10 },
-	{ name = "blue gem", chance = 21687, maxCount = 2 },
-	{ name = "mastermind potion", chance = 17771, maxCount = 10 },
-	{ name = "green gem", chance = 17470, maxCount = 2 },
-	{ name = "gold ingot", chance = 13253 },
-	{ name = "crystal coin", chance = 10241 },
-	{ name = "stone skin amulet", chance = 10241 },
-	{ name = "demon shield", chance = 2000 },
-	{ name = "assassin dagger", chance = 3000 },
-	{ id = 43732, chance = 3000 },
-	{ id = 43858, chance = 11500 },
-	{ name = "scarab ocarina", chance = 4000 },
+	{ name = "crystal coin", chance = 6961, maxCount = 1 },
+	{ name = "soul orb", chance = 10090, maxCount = 3 },
+	{ name = "lichen gobbler", chance = 8558, maxCount = 1 },
+	{ name = "decayed finger bone", chance = 10309, maxCount = 1 },
+	{ name = "rotten root", chance = 7678, maxCount = 1 },
+	{ name = "yellow gem", chance = 12992, maxCount = 1 },
+	{ name = "underworld rod", chance = 12980, maxCount = 1 },
+	{ id = 3039, chance = 11333, maxCount = 1 }, -- red gem
+	{ name = "ripper lance", chance = 8304, maxCount = 1 },
 }
 
 monster.attacks = {

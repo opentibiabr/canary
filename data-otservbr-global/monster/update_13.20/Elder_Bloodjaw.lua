@@ -62,22 +62,6 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 70540 },
-	{ name = "platinum coin", chance = 81920, maxCount = 33 },
-	{ name = "great mana potion", chance = 71920, maxCount = 5 },
-	{ name = "green gem", chance = 64560 },
-	{ name = "steel boots", chance = 5050 },
-	{ name = "stone skin amulet", chance = 31920 },
-	{ name = "small diamond", chance = 10000, maxCount = 5 },
-	{ name = "small sapphire", chance = 10000, maxCount = 5 },
-	{ name = "small ruby", chance = 12000, maxCount = 5 },
-	{ name = "platinum amulet", chance = 13920 },
-	{ name = "jewelled backpack", chance = 2100 },
-	{ name = "springsprout rod", chance = 14920 },
-	{ name = "vile axe", chance = 7000 }, 
-	{ id = 43927, chance = 13500 },
-	{ id = 43857, chance = 18000 },
-	{ id = 43739, chance = 16500 },
 }
 
 monster.attacks = {

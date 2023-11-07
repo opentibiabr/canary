@@ -73,24 +73,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 70540 },
-	{ name = "platinum coin", chance = 90540, maxCount = 50 },
-	{ name = "ultimate health potion", chance = 32220, maxCount = 7 },
-	{ name = "small diamond", chance = 65560, maxCount = 7 },
-	{ name = "gold ingot", chance = 25560 },
-	{ name = "blue crystal splinter", chance = 25560 },
-	{ name = "cyan crystal fragment", chance = 25560 },
-	{ name = "red crystal fragment", chance = 25560 },
-	{ name = "giant sword", chance = 13500 },
-	{ name = "war axe", chance = 9500 },
-	{ name = "mercenary sword", chance = 11500 },
-	{ name = "green crystal fragment", chance = 9500 },
-	{ name = "onyx chip", chance = 7500 },
-	{ name = "crystal sword", chance = 4710 },
-	{ id = 43848, chance = 13000 },
-	{ id = 43849, chance = 16500 },
-	{ id = 43858, chance = 9000 }
+	{ name = "crystal coin", chance = 6415, maxCount = 1 },
+	{ name = "lichen gobbler", chance = 9121, maxCount = 1 },
+	{ name = "white mushroom", chance = 12998, maxCount = 3 },
+	{ name = "rotten root", chance = 9791, maxCount = 1 },
+	{ name = "wand of decay", chance = 14668, maxCount = 1 },
+	{ id = 3039, chance = 10406, maxCount = 1 }, -- red gem
+	{ name = "worm sponge", chance = 10697, maxCount = 1 },
+	{ name = "dark mushroom", chance = 12313, maxCount = 3 },
+	{ name = "yellow gem", chance = 13520, maxCount = 1 },
+	{ name = "brown mushroom", chance = 6422, maxCount = 3 },
+	{ name = "terra amulet", chance = 13122, maxCount = 1 },
 }
+
 
 monster.attacks = {
 	{ name ="melee", interval = 2000, chance = 100, minDamage = -850, maxDamage = -1200 },

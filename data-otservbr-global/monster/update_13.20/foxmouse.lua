@@ -59,16 +59,6 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "great mana potion", chance = 44810 },
-	{ name = "wand of inferno", chance = 6500 },
-	{ id = 43733, chance = 3000 },
-	{ id = 43894,  chance = 6000 },
-	{ name = "crusader helmet", chance = 1550 },
-	{ name = "yellow piece of cloth", chance = 3230 },
-	{ name = "green piece of cloth", chance = 2880 },
-	{ name = "red piece of cloth", chance = 1500 },
-	{ id = 5909, chance = 1100 },
-	{ id = 3577, chance = 41450, maxCount = 3}
 }
 
 monster.attacks = {

@@ -74,24 +74,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 70540 },
-	{ name = "platinum coin", chance = 90540, maxCount = 32 },
-	{ name = "ultimate health potion", chance = 32220, maxCount = 7 },
-	{ name = "skull staff", chance = 65560 },
-	{ name = "epee", chance = 75560 },
-	{ name = "crystal mace", chance = 25560 },
-	{ name = "noble axe", chance = 8560 },
-	{ name = "spellbook of mind control", chance = 9000 },
-	{ name = "fire axe", chance = 13500 },
-	{ id = 43852, chance = 11000 },
-	{ id = 43738, chance = 13000 },
-	{ name = "royal helmet", chance = 15500 },
-	{ name = "mastermind shield", chance = 9500 },
-	{ name = "assassin dagger", chance = 8500 },
-	{ name = "butcher's axe", chance = 7500 },
-	{ name = "jade hammer", chance = 6500 },
-	{ name = "crystalline sword", chance = 5500 },
-	{ name = "metal bat", chance = 3500 },
+	{ name = "crystal coin", chance = 5230, maxCount = 1 },
+	{ name = "darklight obsidian axe", chance = 6963, maxCount = 1 },
+	{ name = "darklight matter (object)", chance = 6927, maxCount = 1 },
+	{ name = "darklight core (object)", chance = 10715, maxCount = 1 },
+	{ name = "wand of starstorm", chance = 8797, maxCount = 1 },
+	{ name = "blue gem", chance = 9372, maxCount = 1 },
+	{ name = "ultimate health potion", chance = 9851, maxCount = 5 },
+	{ name = "focus cape", chance = 6945, maxCount = 1 },
+	{ name = "white gem", chance = 14533, maxCount = 1 },
 }
 
 monster.attacks = {

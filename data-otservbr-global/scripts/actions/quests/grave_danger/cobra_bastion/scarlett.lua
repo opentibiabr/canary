@@ -1,5 +1,6 @@
 local armorId = 31482
 local armorPos = Position(33398, 32640, 6)
+local metalWallId = 31449
 
 local function createArmor(id, amount, pos)
 	local armor = Game.createItem(id, amount, pos)
@@ -11,7 +12,11 @@ end
 local config = {
 	boss = {
 		name = "Scarlett Etzel",
-		position = Position(33396, 32643, 6),
+		createFunction = function()
+			local scarlett = Game.createMonster("Scarlett Etzel", Position(33396, 32643, 6), true, true)
+			scarlett:setStorageValue(Storage.GraveDanger.CobraBastion.Questline, 1)
+			return scarlett
+		end,
 	},
 	timeAfterKill = 60,
 	playerPositions = {
@@ -28,7 +33,7 @@ local config = {
 	onUseExtra = function()
 		SCARLETT_MAY_TRANSFORM = 0
 	end,
-	exit = Position(33395, 32670, 6),
+	exit = Position(33395, 32665, 6),
 }
 
 local lever = BossLever(config)
@@ -82,12 +87,12 @@ function graveScarlettAid.onUse(player, item, fromPosition, target, toPosition, 
 		SCARLETT_MAY_TRANSFORM = 1
 		addEvent(function()
 			SCARLETT_MAY_TRANSFORM = 0
-		end, 1 * 1000)
-	elseif item.itemid == entry.metalWallId then
-		if player:getPosition().y == entry.roomExitPos.y then
-			player:teleportTo(entry.roomEntryPos)
+		end, 2000)
+	elseif item.itemid == metalWallId then
+		if player:getPosition().y == 32666 then
+			player:teleportTo(Position(33395, 32668, 6))
 		else
-			player:teleportTo(entry.roomExitPos)
+			player:teleportTo(Position(33395, 32666, 6))
 		end
 	end
 	return true

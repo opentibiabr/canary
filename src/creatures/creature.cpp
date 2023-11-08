@@ -630,16 +630,16 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 void Creature::onDeath() {
 	bool lastHitUnjustified = false;
 	bool mostDamageUnjustified = false;
-	std::shared_ptr<Creature> mostDamageCreatureMaster = nullptr;
-	std::shared_ptr<Creature> mostDamageCreature = nullptr;
-	if (mostDamageCreature) {
-		mostDamageCreatureMaster = mostDamageCreature->getMaster();
-		mostDamageUnjustified = mostDamageCreature->onKilledCreature(getCreature(), false);
-	}
 	std::shared_ptr<Creature> lastHitCreature = g_game().getCreatureByID(lastHitCreatureId);
-	if (lastHitCreature && lastHitCreature != mostDamageCreature && lastHitCreature != mostDamageCreatureMaster) {
-		lastHitUnjustified = lastHitCreature->onKilledCreature(getCreature(), true);
+	std::shared_ptr<Creature> lastHitCreatureMaster;
+	if (lastHitCreature) {
+		lastHitUnjustified = lastHitCreature->onKilledCreature(static_self_cast<Creature>(), true);
+		lastHitCreatureMaster = lastHitCreature->getMaster();
+	} else {
+		lastHitCreatureMaster = nullptr;
 	}
+
+	std::shared_ptr<Creature> mostDamageCreature = nullptr;
 
 	const int64_t timeNow = OTSYS_TIME();
 	const uint32_t inFightTicks = g_configManager().getNumber(PZ_LOCKED);
@@ -677,6 +677,13 @@ void Creature::onDeath() {
 
 	for (const auto &it : experienceMap) {
 		it.first->onGainExperience(it.second, getCreature());
+	}
+
+	if (mostDamageCreature && mostDamageCreature != lastHitCreature && mostDamageCreature != lastHitCreatureMaster) {
+		auto mostDamageCreatureMaster = mostDamageCreature->getMaster();
+		if (lastHitCreature != mostDamageCreatureMaster && (lastHitCreatureMaster == nullptr || mostDamageCreatureMaster != lastHitCreatureMaster)) {
+			mostDamageUnjustified = mostDamageCreature->onKilledCreature(static_self_cast<Creature>(), false);
+		}
 	}
 
 	bool droppedCorpse = dropCorpse(lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);

@@ -99,6 +99,8 @@ bool ConfigManager::load() {
 		boolean[BIND_ONLY_GLOBAL_ADDRESS] = getGlobalBoolean(L, "bindOnlyGlobalAddress", false);
 		boolean[OPTIMIZE_DATABASE] = getGlobalBoolean(L, "startupDatabaseOptimization", true);
 		boolean[TOGGLE_MAP_CUSTOM] = getGlobalBoolean(L, "toggleMapCustom", true);
+		boolean[TOGGLE_MAINTAIN_MODE] = getGlobalBoolean(L, "toggleMaintainMode", false);
+		string[MAINTAIN_MODE_MESSAGE] = getGlobalString(L, "maintainModeMessage", "");
 
 		string[IP] = getGlobalString(L, "ip", "127.0.0.1");
 		string[MAP_NAME] = getGlobalString(L, "mapName", "canary");

@@ -601,24 +601,28 @@ void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature
 		return;
 	}
 
-	if (!hasFollowPath && creature == getAttackedCreature() && targetIDList.size() > 1) {
-		setAttackedCreature(nullptr);
+	const auto &it = std::find(targetIDList.begin(), targetIDList.end(), creature->getID());
+	if (it != targetIDList.end()) {
+		if (const auto &target = targetListMap[*it].lock()) {
+			targetIDList.erase(it);
+
+			if (hasFollowPath) {
+				targetIDList.push_front(target->getID());
+			} else if (!isSummon()) {
+				targetIDList.push_back(target->getID());
+			} else {
+				targetListMap.erase(target->getID());
+			}
+		}
 	}
 
-	auto it = std::find(targetIDList.begin(), targetIDList.end(), creature->getID());
-	if (it == targetIDList.end()) {
-		return;
-	}
-
-	if (const auto &target = targetListMap[*it].lock()) {
-		targetIDList.erase(it);
-
-		if (hasFollowPath) {
-			targetIDList.push_front(target->getID());
-		} else if (!isSummon()) {
-			targetIDList.push_back(target->getID());
-		} else {
-			targetListMap.erase(target->getID());
+	// Change the target if necessary
+	if (!hasFollowPath && !isSummon() && !targetIDList.empty() && targetIDList.front() != creature->getID()) {
+		const auto &it = targetListMap.find(targetIDList.front());
+		if (it != targetListMap.end()) {
+			if (const auto &target = it->second.lock()) {
+				selectTarget(target);
+			}
 		}
 	}
 }

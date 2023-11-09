@@ -618,9 +618,9 @@ void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature
 
 	// Change the target if necessary
 	if (!hasFollowPath && !isSummon() && !targetIDList.empty() && targetIDList.front() != creature->getID()) {
-		const auto &it = targetListMap.find(targetIDList.front());
-		if (it != targetListMap.end()) {
-			if (const auto &target = it->second.lock()) {
+		const auto &itMap = targetListMap.find(targetIDList.front());
+		if (itMap != targetListMap.end()) {
+			if (const auto &target = itMap->second.lock()) {
 				selectTarget(target);
 			}
 		}

@@ -471,7 +471,14 @@ public:
 			client->disconnect();
 		}
 	}
-	uint32_t getIP() const;
+
+	uint32_t getIP() const {
+		return client ? client->getIP() : 0;
+	}
+
+	bool isDisconnected() const {
+		return getIP() == 0;
+	}
 
 	void addContainer(uint8_t cid, std::shared_ptr<Container> container);
 	void closeContainer(uint8_t cid);

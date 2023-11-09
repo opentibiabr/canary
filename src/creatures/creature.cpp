@@ -1014,7 +1014,9 @@ void Creature::goToFollowCreature() {
 		}
 	}
 
-	if (listDir.empty()) {
+	if (followCreature->getPlayer() && followCreature->getPlayer()->isDisconnected()) {
+		hasFollowPath = false;
+	}else if (listDir.empty()) {
 		hasFollowPath = getPathTo(getFollowCreature()->getPosition(), listDir, fpp);
 	}
 

@@ -2548,14 +2548,6 @@ BlockType_t Player::blockHit(std::shared_ptr<Creature> attacker, CombatType_t co
 	return blockType;
 }
 
-uint32_t Player::getIP() const {
-	if (client) {
-		return client->getIP();
-	}
-
-	return 0;
-}
-
 void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 	loginPosition = town->getTemplePosition();
 

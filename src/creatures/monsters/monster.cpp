@@ -601,6 +601,10 @@ void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature
 		return;
 	}
 
+	if (hasFollowPath && creature->getPlayer() && creature->getPlayer()->getIP() == 0) {
+		hasFollowPath = false;
+	}
+
 	const auto &it = std::find(targetIDList.begin(), targetIDList.end(), creature->getID());
 	if (it != targetIDList.end()) {
 		if (const auto &target = targetListMap[*it].lock()) {

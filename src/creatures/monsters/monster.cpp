@@ -601,6 +601,10 @@ void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature
 		return;
 	}
 
+	if (!hasFollowPath && creature == getAttackedCreature()) {
+		setAttackedCreature(nullptr);
+	}
+
 	auto it = std::find(targetIDList.begin(), targetIDList.end(), creature->getID());
 	if (it == targetIDList.end()) {
 		return;

@@ -103,7 +103,7 @@ function scarlettThink.onThink(creature)
 	for _, p in pairs(rooms) do
 		if creature:getPosition():isInRange(p.fromPos, p.toPos) then
 			if isMirrorsCorrect(p.fromPos, p.toPos) then
-				addEvent(changeScarlett, 0.5 * 1000, creature:getId())
+				addEvent(changeScarlett, 50, creature:getId())
 				return true
 			end
 		end

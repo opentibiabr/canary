@@ -13,11 +13,6 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.events = {
-	"scarlettThink",
-	"scarlettHealth",
-}
-
 monster.bosstiary = {
 	bossRaceId = 1804,
 	bossRace = RARITY_ARCHFOE,

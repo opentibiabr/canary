@@ -68947,4 +68947,9 @@
 		<attribute key="charges" value="14400"/>
 		<attribute key="weight" value="1000"/>
 	</item>
+	<item id="44183" article="a" name="Imbuiment Item">
+		<attribute key="primarytype" value="quest items"/>
+		<attribute key="weight" value="13"/>
+	</item>
+
 </items>

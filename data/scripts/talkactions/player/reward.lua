@@ -1,11 +1,11 @@
 local config = {
 	items = {
-		{ id = 35284, charges = 64000 },
-		{ id = 35279, charges = 64000 },
-		{ id = 35281, charges = 64000 },
-		{ id = 35283, charges = 64000 },
-		{ id = 35282, charges = 64000 },
-		{ id = 35280, charges = 64000 },
+		{ id = 35284, charges = 2400 },
+		{ id = 35279, charges = 2400 },
+		{ id = 35281, charges = 2400 },
+		{ id = 35283, charges = 2400 },
+		{ id = 35282, charges = 2400 },
+		{ id = 35280, charges = 2400 },
 	},
 	storage = tonumber(Storage.PlayerWeaponReward), -- storage key, player can only win once
 }
@@ -29,13 +29,13 @@ local function sendExerciseRewardModal(player)
 					if item then
 						item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 					else
-						player:sendTextMessage(MESSAGE_LOOK, "You need to have capacity and empty slots to receive.")
+						player:sendTextMessage(MESSAGE_LOOK, "Voce precisa ter capacidade e slots vazios para receber.")
 						return
 					end
-					player:sendTextMessage(MESSAGE_LOOK, string.format("Congratulations, you received a %s with %i charges in your store inbox.", iType:getName(), it.charges))
+					player:sendTextMessage(MESSAGE_LOOK, string.format("Parabens, voce recebeu %s com %i cobranças na caixa de entrada da sua loja.", iType:getName(), it.charges))
 					player:setStorageValue(config.storage, 1)
 				else
-					player:sendTextMessage(MESSAGE_LOOK, "You need to have capacity and empty slots to receive.")
+					player:sendTextMessage(MESSAGE_LOOK, "Voce precisa ter capacidade e slots vazios para receber.")
 				end
 			end)
 		end
@@ -53,7 +53,7 @@ function exerciseRewardModal.onSay(player, words, param)
 		return true
 	end
 	if player:getStorageValue(config.storage) > 0 then
-		player:sendTextMessage(MESSAGE_LOOK, "You already received your exercise weapon reward!")
+		player:sendTextMessage(MESSAGE_LOOK, "Voce ja recebeu sua recompensa de arma de exercicio!")
 		return true
 	end
 	sendExerciseRewardModal(player)

@@ -677,5 +677,5 @@ end
 
 function Player:canFightBoss(bossNameOrId)
 	local cooldown = self:getBossCooldown(bossNameOrId)
-	return cooldown <= os.time()
+	return cooldown > os.time() and false or true
 end

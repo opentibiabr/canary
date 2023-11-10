@@ -7,12 +7,7 @@ local config = {
 
 local gloothHorror = CreatureEvent("GloothHorror")
 function gloothHorror.onDeath(creature, corpse, killer, mostDamageKiller, unjustified, mostDamageUnjustified)
-	local targetMonster = creature:getMonster()
-	if not targetMonster or targetMonster:getMaster() then
-		return true
-	end
-
-	local name = targetMonster:getName()
+	local name = creature:getName()
 	for i = 1, #config do
 		if name == config[i].name then
 			for j = 1, 2 do

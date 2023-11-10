@@ -1800,12 +1800,8 @@ std::shared_ptr<Item> Tile::getDoorItem() const {
 	return nullptr;
 }
 
-phmap::flat_hash_set<std::shared_ptr<Zone>> Tile::getZones() {
-	return zones;
-}
-
 void Tile::addZone(std::shared_ptr<Zone> zone) {
-	zones.insert(zone);
+	zones.emplace(zone);
 	const auto &items = getItemList();
 	if (items) {
 		for (const auto &item : *items) {
@@ -1821,12 +1817,12 @@ void Tile::addZone(std::shared_ptr<Zone> zone) {
 }
 
 void Tile::clearZones() {
-	phmap::flat_hash_set<std::shared_ptr<Zone>> zonesToRemove;
+	std::vector<std::shared_ptr<Zone>> zonesToRemove;
 	for (const auto &zone : zones) {
 		if (zone->isStatic()) {
 			continue;
 		}
-		zonesToRemove.insert(zone);
+		zonesToRemove.emplace_back(zone);
 		const auto &items = getItemList();
 		if (items) {
 			for (const auto &item : *items) {

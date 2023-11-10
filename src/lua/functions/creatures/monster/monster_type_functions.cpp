@@ -426,13 +426,13 @@ int MonsterTypeFunctions::luaMonsterTypeEnemyFactions(lua_State* L) {
 			lua_createtable(L, monsterType->info.enemyFactions.size(), 0);
 			int index = 0;
 
-			for (auto faction : monsterType->info.enemyFactions) {
+			for (const auto &faction : monsterType->info.enemyFactions) {
 				lua_pushnumber(L, faction);
 				lua_rawseti(L, -2, ++index);
 			}
 		} else {
 			Faction_t faction = getNumber<Faction_t>(L, 2);
-			monsterType->info.enemyFactions.emplace(faction);
+			monsterType->info.enemyFactions.insert(faction);
 			pushBoolean(L, true);
 		}
 	} else {

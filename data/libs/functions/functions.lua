@@ -733,7 +733,7 @@ function isInteger(n)
 end
 
 -- Function for the reload talkaction
-local logFormat = "[%s] %s %s"
+local logFormat = "[%s] %s (params: %s)"
 
 function logCommand(player, words, param)
 	local file = io.open(CORE_DIRECTORY .. "/logs/" .. player:getName() .. " commands.log", "a")

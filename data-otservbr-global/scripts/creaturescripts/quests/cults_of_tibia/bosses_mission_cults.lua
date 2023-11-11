@@ -11,11 +11,8 @@ local bosses = {
 
 local bossesCults = CreatureEvent("CultsOfTibiaBossDeath")
 function bossesCults.onDeath(creature)
-	if not player:isPlayer() then
-		return true
-	end
-
-	if not creature:isMonster() or creature:getMaster() then
+	-- Deny summons and players
+	if not creature or creature:isPlayer() or creature:getMaster() then
 		return true
 	end
 

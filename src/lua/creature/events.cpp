@@ -30,14 +30,14 @@ bool Events::loadFromXml() {
 
 	info = {};
 
-	std::set<std::string> classes;
+	phmap::flat_hash_set<std::string> classes;
 	for (auto eventNode : doc.child("events").children()) {
 		if (!eventNode.attribute("enabled").as_bool()) {
 			continue;
 		}
 
 		const std::string &className = eventNode.attribute("class").as_string();
-		auto res = classes.insert(className);
+		auto res = classes.emplace(className);
 		if (res.second) {
 			const std::string &lowercase = asLowerCaseString(className);
 			const std::string &scriptName = lowercase + ".lua";

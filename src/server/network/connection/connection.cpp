@@ -53,7 +53,8 @@ void Connection::close(bool force) {
 	// any thread
 	ConnectionManager::getInstance().releaseConnection(shared_from_this());
 
-	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
+	std::scoped_lock<std::recursive_mutex> lockClass(connectionLock);
+	ip = 0;
 	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
@@ -113,7 +114,7 @@ void Connection::accept(bool toggleParseHeader /* = true */) {
 }
 
 void Connection::parseProxyIdentification(const std::error_code &error) {
-	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
+	std::scoped_lock<std::recursive_mutex> lockClass(connectionLock);
 	readTimer.cancel();
 
 	if (error) {
@@ -166,7 +167,7 @@ void Connection::parseProxyIdentification(const std::error_code &error) {
 }
 
 void Connection::parseHeader(const std::error_code &error) {
-	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
+	std::scoped_lock<std::recursive_mutex> lockClass(connectionLock);
 	readTimer.cancel();
 
 	if (error) {
@@ -208,7 +209,7 @@ void Connection::parseHeader(const std::error_code &error) {
 }
 
 void Connection::parsePacket(const std::error_code &error) {
-	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
+	std::scoped_lock<std::recursive_mutex> lockClass(connectionLock);
 	readTimer.cancel();
 
 	if (error) {
@@ -274,7 +275,7 @@ void Connection::parsePacket(const std::error_code &error) {
 }
 
 void Connection::resumeWork() {
-	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
+	std::scoped_lock<std::recursive_mutex> lockClass(connectionLock);
 
 	try {
 		// Wait to the next packet
@@ -286,7 +287,7 @@ void Connection::resumeWork() {
 }
 
 void Connection::send(const OutputMessage_ptr &outputMessage) {
-	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
+	std::scoped_lock<std::recursive_mutex> lockClass(connectionLock);
 	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
@@ -319,16 +320,17 @@ void Connection::internalWorker() {
 }
 
 uint32_t Connection::getIP() {
-	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
+	if (ip != 1) {
+		return ip;
+	}
+
+	std::scoped_lock<std::recursive_mutex> lockClass(connectionLock);
 
 	// IP-address is expressed in network byte order
 	std::error_code error;
 	const asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
-	if (error) {
-		return 0;
-	}
-
-	return htonl(endpoint.address().to_v4().to_ulong());
+	ip = error ? 0 : htonl(endpoint.address().to_v4().to_uint());
+	return ip;
 }
 
 void Connection::internalSend(const OutputMessage_ptr &outputMessage) {

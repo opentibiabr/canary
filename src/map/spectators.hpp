@@ -64,7 +64,7 @@ public:
 
 	Spectators insert(const std::shared_ptr<Creature> &creature) {
 		if (creature) {
-			creatures.emplace_back(creature);
+			creatures.emplace(creature);
 		}
 		return *this;
 	}

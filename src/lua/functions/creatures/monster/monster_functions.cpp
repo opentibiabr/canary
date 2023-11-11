@@ -219,11 +219,11 @@ int MonsterFunctions::luaMonsterGetFriendList(lua_State* L) {
 		return 1;
 	}
 
-	const auto friendList = monster->getFriendList();
+	const auto &friendList = monster->getFriendList();
 	lua_createtable(L, friendList.size(), 0);
 
 	int index = 0;
-	for (std::shared_ptr<Creature> creature : friendList) {
+	for (const auto &creature : friendList) {
 		pushUserdata<Creature>(L, creature);
 		setCreatureMetatable(L, -1, creature);
 		lua_rawseti(L, -2, ++index);

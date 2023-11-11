@@ -32,7 +32,6 @@ local config = {
 		end, 5 * 1000)
 	end,
 	exit = Position(33290, 32474, 9),
-	storage = Storage.Quest.U12_20.GraveDanger.Bosses.BaelocNictrosTimer,
 }
 
 local lever = BossLever(config)

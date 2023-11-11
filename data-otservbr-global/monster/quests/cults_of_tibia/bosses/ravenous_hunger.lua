@@ -13,10 +13,14 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"LeidenHeal",
+	"CultsOfTibiaBossDeath",
+}
+
 monster.bosstiary = {
 	bossRaceId = 1427,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.CultsOfTibia.Barkless.BossTimer,
 }
 
 monster.health = 100000
@@ -56,10 +60,6 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-}
-
-monster.events = {
-	"LeidenHeal",
 }
 
 monster.light = {

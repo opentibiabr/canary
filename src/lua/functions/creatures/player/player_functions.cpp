@@ -328,8 +328,7 @@ int PlayerFunctions::luaPlayerIsMonsterBestiaryUnlocked(lua_State* L) {
 		return 0;
 	}
 
-	for (auto finishedMonsters = g_iobestiary().getBestiaryFinished(player);
-		 uint16_t finishedRaceId : finishedMonsters) {
+	for (uint16_t finishedRaceId : g_iobestiary().getBestiaryFinished(player)) {
 		if (raceId == finishedRaceId) {
 			pushBoolean(L, true);
 			return 1;
@@ -1386,6 +1385,17 @@ int PlayerFunctions::luaPlayerSetVocation(lua_State* L) {
 	player->wheel()->sendGiftOfLifeCooldown();
 	g_game().reloadCreature(player);
 	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerIsPromoted(lua_State* L) {
+	// player:isPromoted()
+	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
+	if (player) {
+		pushBoolean(L, player->isPromoted());
+	} else {
+		lua_pushnil(L);
+	}
 	return 1;
 }
 

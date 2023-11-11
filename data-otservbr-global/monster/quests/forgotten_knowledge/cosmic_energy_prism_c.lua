@@ -44,7 +44,8 @@ monster.flags = {
 }
 
 monster.events = {
-	"EnergyPrism",
+	"EnergyPrismHealthChange",
+	"EnergyPrismDeath",
 }
 
 monster.light = {

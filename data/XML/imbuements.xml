@@ -242,23 +242,23 @@
 		<attribute key="effect" type="reduction" combat="ice" value="15" />
 		<attribute key="item" value="10295" count="25" />
 		<attribute key="item" value="10307" count="15" />
-		<attribute key="item" value="14012" count="5" />
+		<attribute key="item" value="14012" count="10" />
 	</imbuement>
 	<imbuement name="Cloud Fabric" base="1" category="8" iconid="31" premium="0" storage="0">
 		<attribute key="description" value="Reduces energy damage by 3%." />
 		<attribute key="effect" type="reduction" combat="energy" value="3" />
-		<attribute key="item" value="9644" count="25" />
+		<attribute key="item" value="9644" count="20" />
 	</imbuement>
 	<imbuement name="Cloud Fabric" base="2" category="8" iconid="31" premium="1" storage="0">
 		<attribute key="description" value="Reduces energy damage by 8%." />
 		<attribute key="effect" type="reduction" combat="energy" value="8" />
-		<attribute key="item" value="9644" count="25" />
+		<attribute key="item" value="9644" count="20" />
 		<attribute key="item" value="14079" count="15" />
 	</imbuement>
 	<imbuement name="Cloud Fabric" base="3" category="8" iconid="31" premium="1" storage="50490">
 		<attribute key="description" value="Reduces energy damage by 15%." />
 		<attribute key="effect" type="reduction" combat="energy" value="15" />
-		<attribute key="item" value="9644" count="25" />
+		<attribute key="item" value="9644" count="20" />
 		<attribute key="item" value="14079" count="15" />
 		<attribute key="item" value="9665" count="10" />
 	</imbuement>

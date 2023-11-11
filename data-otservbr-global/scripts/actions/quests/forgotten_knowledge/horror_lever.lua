@@ -1,7 +1,7 @@
 local eggPos = Position(32269, 31084, 14)
 local config = {
 	boss = {
-		name = "Frozen Horror",
+		name = "Melting Frozen Horror",
 		createFunction = function()
 			Tile(eggPos):getTopCreature():setHealth(1)
 			return Game.createMonster("solid frozen horror", Position(32269, 31091, 14), true, true)
@@ -26,7 +26,6 @@ local config = {
 		to = Position(32280, 31102, 14),
 	},
 	exit = Position(32271, 31097, 14),
-	storage = Storage.ForgottenKnowledge.HorrorTimer,
 }
 
 local lever = BossLever(config)

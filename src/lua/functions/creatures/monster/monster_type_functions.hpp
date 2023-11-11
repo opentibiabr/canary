@@ -133,13 +133,14 @@ public:
 
 		registerMethod(L, "MonsterType", "bossRace", MonsterTypeFunctions::luaMonsterTypeBossRace);
 		registerMethod(L, "MonsterType", "bossRaceId", MonsterTypeFunctions::luaMonsterTypeBossRaceId);
-		registerMethod(L, "MonsterType", "bossStorageCooldown", MonsterTypeFunctions::luaMonsterTypeBossStorageCooldown);
 
 		registerMethod(L, "MonsterType", "soundChance", MonsterTypeFunctions::luaMonsterTypeSoundChance);
 		registerMethod(L, "MonsterType", "soundSpeedTicks", MonsterTypeFunctions::luaMonsterTypeSoundSpeedTicks);
 		registerMethod(L, "MonsterType", "addSound", MonsterTypeFunctions::luaMonsterTypeAddSound);
 		registerMethod(L, "MonsterType", "getSounds", MonsterTypeFunctions::luaMonsterTypeGetSounds);
 		registerMethod(L, "MonsterType", "deathSound", MonsterTypeFunctions::luaMonsterTypedeathSound);
+
+		registerMethod(L, "MonsterType", "variant", MonsterTypeFunctions::luaMonsterTypeVariant);
 	}
 
 private:
@@ -255,7 +256,6 @@ private:
 
 	static int luaMonsterTypeBossRace(lua_State* L);
 	static int luaMonsterTypeBossRaceId(lua_State* L);
-	static int luaMonsterTypeBossStorageCooldown(lua_State* L);
 
 	static int luaMonsterTypeSoundChance(lua_State* L);
 	static int luaMonsterTypeSoundSpeedTicks(lua_State* L);
@@ -263,4 +263,6 @@ private:
 	static int luaMonsterTypeGetSounds(lua_State* L);
 	static int luaMonsterTypedeathSound(lua_State* L);
 	static int luaMonsterTypeCritChance(lua_State* L);
+
+	static int luaMonsterTypeVariant(lua_State* L);
 };

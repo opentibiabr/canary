@@ -16,6 +16,7 @@ class Cylinder;
 class Item;
 class Creature;
 class Container;
+class Player;
 
 class Thing {
 public:
@@ -47,6 +48,9 @@ public:
 	virtual int32_t getThrowRange() const = 0;
 	virtual bool isPushable() = 0;
 
+	virtual std::shared_ptr<Player> getPlayer() {
+		return nullptr;
+	}
 	virtual std::shared_ptr<Container> getContainer() {
 		return nullptr;
 	}

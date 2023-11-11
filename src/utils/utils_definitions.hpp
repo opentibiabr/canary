@@ -655,6 +655,9 @@ enum ItemID_t : uint16_t {
 	ITEM_PRIMAL_POD = 39176,
 	ITEM_DIVINE_EMPOWERMENT = 40450,
 
+	ITEM_BATHTUB_FILLED = 26077,
+	ITEM_BATHTUB_FILLED_NOTMOVABLE = 26100,
+
 	ITEM_NONE = 0
 };
 
@@ -758,4 +761,27 @@ enum class AttrSubId_t {
 	JeanPierreFishing,
 	BloodRageProtector,
 	Sharpshooter,
+};
+
+enum Concoction_t : uint16_t {
+	KooldownAid = 36723,
+	StaminaExtension = 36725,
+	StrikeEnhancement = 36724,
+	CharmUpgrade = 36726,
+	WealthDuplex = 36727,
+	BestiaryBetterment = 36728,
+	FireResilience = 36729,
+	IceResilience = 36730,
+	EarthResilience = 36731,
+	EnergyResilience = 36732,
+	HolyResilience = 36733,
+	DeathResilience = 36734,
+	PhysicalResilience = 36735,
+	FireAmplification = 36736,
+	IceAmplification = 36737,
+	EarthAmplification = 36738,
+	EnergyAmplification = 36739,
+	HolyAmplification = 36740,
+	DeathAmplification = 36741,
+	PhysicalAmplification = 36742,
 };

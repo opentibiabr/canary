@@ -50,7 +50,6 @@ function adventurersStone.onUse(player, item, fromPosition, target, toPosition, 
 
 	local tile = Tile(player:getPosition())
 	if tile:hasFlag(TILESTATE_PROTECTIONZONE) and not tile:hasFlag(TILESTATE_HOUSE) and not player:isPzLocked() and not player:getCondition(CONDITION_INFIGHT, CONDITIONID_DEFAULT) then
-
 		local playerPos, townId = player:getPosition(), player:getTown():getId()
 
 		if config.enableTemples then

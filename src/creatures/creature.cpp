@@ -1014,14 +1014,16 @@ void Creature::goToFollowCreature() {
 		}
 	}
 
-	if (listDir.empty()) {
-		hasFollowPath = getPathTo(getFollowCreature()->getPosition(), listDir, fpp);
+	if (followCreature->getPlayer() && followCreature->getPlayer()->isDisconnected()) {
+		hasFollowPath = false;
+	} else if (listDir.empty()) {
+		hasFollowPath = getPathTo(followCreature->getPosition(), listDir, fpp);
 	}
 
 	startAutoWalk(listDir.data());
 
 	if (executeOnFollow) {
-		onFollowCreatureComplete(getFollowCreature());
+		onFollowCreatureComplete(followCreature);
 	}
 }
 

@@ -23,7 +23,8 @@ function dreamerTicTacTeleport.onUse(player, item, fromPosition, target, toPosit
 		end
 	end, Position(32835, 32285, 14), Position(32838, 32285, 14))
 
-	local tokens, ticTacToeItem = true
+	local tokens = true
+	local ticTacToeItem = true
 	for i = 1, #config do
 		ticTacToeItem = Tile(config[i].position):getItemById(config[i].itemId)
 		if not ticTacToeItem then

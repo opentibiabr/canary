@@ -13,7 +13,8 @@ function exitTeleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	local correct, leverItem = true
+	local correct = true
+	local leverItem = true
 	for i = 1, #config do
 		leverItem = Tile(config[i].leverPosition):getItemById(config[i].leverId)
 		if not leverItem then

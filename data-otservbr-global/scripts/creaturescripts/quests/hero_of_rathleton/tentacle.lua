@@ -1,10 +1,12 @@
 local function checkTentacle()
 	local spectators = Game.getSpectators(Position(33740, 31953, 14), false, false, 13, 13, 13, 13)
-	local position = math.random(33736, 33746), math.random(31948, 31957), 14
+	local posX = math.random(33736, 33746)
+	local posY = math.random(31948, 31957)
+	local position = Position(posX, posY, 14)
 	for i = 1, #spectators do
 		local spec = spectators[i]
 		if spec:isMonster() and spec:getName():lower() == "tentacle of the deep terror" and spec:getHealth() >= 1 then
-			Game.createMonster("tentacle of the deep terror", Position(position), true, true)
+			Game.createMonster("tentacle of the deep terror", position, true, true)
 			return true
 		else
 			if Game.getStorageValue(GlobalStorage.HeroRathleton.DeepRunning) == 2 then

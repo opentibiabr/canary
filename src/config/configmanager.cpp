@@ -100,6 +100,7 @@ bool ConfigManager::load() {
 		boolean[OPTIMIZE_DATABASE] = getGlobalBoolean(L, "startupDatabaseOptimization", true);
 		boolean[TOGGLE_MAP_CUSTOM] = getGlobalBoolean(L, "toggleMapCustom", true);
 		boolean[TOGGLE_MAINTAIN_MODE] = getGlobalBoolean(L, "toggleMaintainMode", false);
+		boolean[RANDOM_MONSTER_SPAWN] = getGlobalBoolean(L, "randomMonsterSpawn", false);
 		string[MAINTAIN_MODE_MESSAGE] = getGlobalString(L, "maintainModeMessage", "");
 
 		string[IP] = getGlobalString(L, "ip", "127.0.0.1");

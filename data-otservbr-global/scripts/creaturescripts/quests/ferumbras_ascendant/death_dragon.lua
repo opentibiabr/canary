@@ -1,7 +1,6 @@
 local deathDragon = CreatureEvent("DeathDragon")
 function deathDragon.onDeath(creature, corpse, lasthitkiller, mostdamagekiller, lasthitunjustified, mostdamageunjustified)
-	local targetMonster = creature:getMonster()
-	if not targetMonster or targetMonster:getName():lower() ~= "death dragon" then
+	if not targetMonster or creature:getName():lower() ~= "death dragon" then
 		return true
 	end
 
@@ -10,7 +9,7 @@ function deathDragon.onDeath(creature, corpse, lasthitkiller, mostdamagekiller, 
 		return true
 	end
 
-	local spectators = Game.getSpectators(targetMonster:getPosition(), false, false, 10, 10, 10, 10)
+	local spectators = Game.getSpectators(creature:getPosition(), false, false, 10, 10, 10, 10)
 	for i = 1, #spectators do
 		local spectator = spectators[i]
 		if spectator:isMonster() and spectator:getName():lower() == "ragiaz" then

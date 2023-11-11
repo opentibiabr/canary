@@ -304,7 +304,7 @@ public:
 		return guildWarVector;
 	}
 
-	const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) const {
+	const std::unordered_set<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) const {
 		return isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
 	}
 
@@ -318,17 +318,17 @@ public:
 		}
 	}
 
-	void refreshCyclopediaMonsterTracker(bool isBoss = false) const {
+	void refreshCyclopediaMonsterTracker(bool isBoss = false) {
 		refreshCyclopediaMonsterTracker(getCyclopediaMonsterTrackerSet(isBoss), isBoss);
 	}
 
-	void refreshCyclopediaMonsterTracker(const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {
+	void refreshCyclopediaMonsterTracker(const std::unordered_set<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {
 		if (client) {
 			client->refreshCyclopediaMonsterTracker(trackerList, isBoss);
 		}
 	}
 
-	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> monsterType) const;
+	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const;
 
 	Vocation* getVocation() const {
 		return vocation;
@@ -471,7 +471,14 @@ public:
 			client->disconnect();
 		}
 	}
-	uint32_t getIP() const;
+
+	uint32_t getIP() const {
+		return client ? client->getIP() : 0;
+	}
+
+	bool isDisconnected() const {
+		return getIP() == 0;
+	}
 
 	void addContainer(uint8_t cid, std::shared_ptr<Container> container);
 	void closeContainer(uint8_t cid);
@@ -804,18 +811,18 @@ public:
 	}
 
 	// V.I.P. functions
-	void notifyStatusChange(std::shared_ptr<Player> player, VipStatus_t status, bool message = true);
+	void notifyStatusChange(std::shared_ptr<Player> player, VipStatus_t status, bool message = true) const;
 	bool removeVIP(uint32_t vipGuid);
 	bool addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t status);
 	bool addVIPInternal(uint32_t vipGuid);
-	bool editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify);
+	bool editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) const;
 
 	// follow functions
 	bool setFollowCreature(std::shared_ptr<Creature> creature) override;
 	void goToFollowCreature() override;
 
 	// follow events
-	void onFollowCreature(std::shared_ptr<Creature> creature) override;
+	void onFollowCreature(const std::shared_ptr<Creature> &) override;
 
 	// walk events
 	void onWalk(Direction &dir) override;
@@ -1230,7 +1237,7 @@ public:
 
 	void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) override;
 	void onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) override;
-	void onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport) override;
+	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
 
 	void onAttackedCreatureDisappear(bool isLogout) override;
 	void onFollowCreatureDisappear(bool isLogout) override;
@@ -1760,6 +1767,11 @@ public:
 	}
 
 	void setExpBoostStamina(uint16_t stamina) {
+		// only allow stamina boosts of 12 hours or less
+		if (stamina > 12 * 3600) {
+			expBoostStamina = 12 * 3600;
+			return;
+		}
 		expBoostStamina = stamina;
 	}
 
@@ -2487,9 +2499,17 @@ public:
 	std::map<uint16_t, uint16_t> getActiveConcoctions() const {
 		return activeConcoctions;
 	}
+	bool isConcoctionActive(Concoction_t concotion) const {
+		uint16_t itemId = static_cast<uint16_t>(concotion);
+		if (!activeConcoctions.contains(itemId)) {
+			return false;
+		}
+		auto timeLeft = activeConcoctions.at(itemId);
+		return timeLeft > 0;
+	}
 
 	bool checkAutoLoot() const {
-		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT) && getStorageValue(STORAGEVALUE_AUTO_LOOT) != 0;
+		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT) && getStorageValue(STORAGEVALUE_AUTO_LOOT) > 0;
 		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY)) {
 			return autoLoot && isVip();
 		}
@@ -2589,8 +2609,13 @@ private:
 	void internalAddThing(std::shared_ptr<Thing> thing) override;
 	void internalAddThing(uint32_t index, std::shared_ptr<Thing> thing) override;
 
-	phmap::flat_hash_set<uint32_t> attackedSet;
+	void addHuntingTaskKill(const std::shared_ptr<MonsterType> &mType);
+	void addBestiaryKill(const std::shared_ptr<MonsterType> &mType);
+	void addBosstiaryKill(const std::shared_ptr<MonsterType> &mType);
+	bool onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit);
+	bool onKilledMonster(const std::shared_ptr<Monster> &target, bool lastHit);
 
+	phmap::flat_hash_set<uint32_t> attackedSet;
 	phmap::flat_hash_set<uint32_t> VIPList;
 
 	std::map<uint8_t, OpenContainer> openContainers;
@@ -2627,8 +2652,8 @@ private:
 	// TODO: This variable is only temporarily used when logging in, get rid of it somehow.
 	std::forward_list<std::shared_ptr<Condition>> storedConditionList;
 
-	phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> m_bestiaryMonsterTracker;
-	phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;
+	std::unordered_set<std::shared_ptr<MonsterType>> m_bestiaryMonsterTracker;
+	std::unordered_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;
 
 	std::string name;
 	std::string guildNick;
@@ -2869,7 +2894,7 @@ private:
 	void addConditionSuppression(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addConditions);
 
 	uint16_t getLookCorpse() const override;
-	void getPathSearchParams(std::shared_ptr<Creature> creature, FindPathParams &fpp) override;
+	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
 
 	void setDead(bool isDead) {
 		dead = isDead;

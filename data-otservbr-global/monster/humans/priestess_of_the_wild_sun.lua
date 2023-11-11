@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"FafnarMissionsDeath",
+}
+
 monster.raceId = 1799
 monster.Bestiary = {
 	class = "Human",

@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"CultsOfTibiaBossDeath",
+}
+
 monster.bosstiary = {
 	bossRaceId = 1500,
 	bossRace = RARITY_ARCHFOE,

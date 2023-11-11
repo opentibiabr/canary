@@ -40,8 +40,7 @@ CanaryServer::CanaryServer(
 ) :
 	logger(logger),
 	rsa(rsa),
-	serviceManager(serviceManager),
-	loaderUniqueLock(loaderLock) {
+	serviceManager(serviceManager) {
 	logInfos();
 	toggleForceCloseButton();
 	g_game().setGameState(GAME_STATE_STARTUP);
@@ -90,13 +89,18 @@ int CanaryServer::run() {
 
 				g_game().start(&serviceManager);
 				g_game().setGameState(GAME_STATE_NORMAL);
+				if (g_configManager().getBoolean(TOGGLE_MAINTAIN_MODE)) {
+					g_game().setGameState(GAME_STATE_CLOSED);
+					g_logger().warn("Initialized in maintain mode!");
+					g_webhook().sendMessage("Server is now online", "The server is now online. Access is currently restricted to administrators only.", WEBHOOK_COLOR_ONLINE);
+				} else {
+					g_game().setGameState(GAME_STATE_NORMAL);
+					g_webhook().sendMessage("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE);
+				}
 
-				g_webhook().sendMessage("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE);
-
-				loaderDone = true;
-				loaderSignal.notify_all();
+				loaderStatus = LoaderStatus::LOADED;
 			} catch (FailedToInitializeCanary &err) {
-				loadFailed = true;
+				loaderStatus = LoaderStatus::FAILED;
 				logger.error(err.what());
 
 				logger.error("The program will close after pressing the enter key...");
@@ -104,16 +108,16 @@ int CanaryServer::run() {
 				if (isatty(STDIN_FILENO)) {
 					getchar();
 				}
-
-				loaderSignal.notify_all();
 			}
+
+			loaderStatus.notify_one();
 		},
 		"CanaryServer::run"
 	);
 
-	loaderSignal.wait(loaderUniqueLock, [this] { return loaderDone || loadFailed; });
+	loaderStatus.wait(LoaderStatus::LOADING);
 
-	if (loadFailed || !serviceManager.is_running()) {
+	if (loaderStatus == LoaderStatus::FAILED || !serviceManager.is_running()) {
 		logger.error("No services running. The server is NOT online!");
 		shutdown();
 		return EXIT_FAILURE;

@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"XogixathDeath",
+}
+
 monster.health = 28000
 monster.maxHealth = 28000
 monster.race = "fire"

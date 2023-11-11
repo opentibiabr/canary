@@ -27,7 +27,7 @@ void KVStore::set(const std::string &key, const std::initializer_list<std::pair<
 }
 
 void KVStore::set(const std::string &key, const ValueWrapper &value) {
-	std::lock_guard lock(mutex_);
+	std::scoped_lock lock(mutex_);
 	return setLocked(key, value);
 }
 
@@ -54,7 +54,7 @@ void KVStore::setLocked(const std::string &key, const ValueWrapper &value) {
 
 std::optional<ValueWrapper> KVStore::get(const std::string &key, bool forceLoad /*= false */) {
 	logger.debug("KVStore::get({})", key);
-	std::lock_guard lock(mutex_);
+	std::scoped_lock lock(mutex_);
 	if (forceLoad || !store_.contains(key)) {
 		auto value = load(key);
 		if (value) {

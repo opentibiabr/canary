@@ -73,3 +73,16 @@ end
 function Party.hasDruid(self)
 	return self:hasVocation(VOCATION.BASE_ID.DRUID)
 end
+
+function Participants(player, requireSharedExperience)
+	local party = player:getParty()
+	if not party then
+		return { player }
+	end
+	if requiredSharedExperience and not party:isSharedExperienceActive() then
+		return { player }
+	end
+	local members = party:getMembers()
+	table.insert(members, party:getLeader())
+	return members
+end

@@ -717,13 +717,6 @@ function isInRange(pos, fromPos, toPos)
 	return pos.x >= fromPos.x and pos.y >= fromPos.y and pos.z >= fromPos.z and pos.x <= toPos.x and pos.y <= toPos.y and pos.z <= toPos.z
 end
 
-function isInRangeIgnoreZ(pos, fromPos, toPos)
-	local checkZ = pos.z >= fromPos.z and pos.z <= toPos.z
-	local checkX = pos.x >= fromPos.x and pos.x <= toPos.x
-	local checkY = pos.y >= fromPos.y and pos.y <= toPos.y
-	return checkZ and checkX and checkY
-end
-
 function isNumber(str)
 	return tonumber(str) ~= nil
 end

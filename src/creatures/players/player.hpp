@@ -922,7 +922,8 @@ public:
 	void onAttacked() override;
 	void onAttackedCreatureDrainHealth(std::shared_ptr<Creature> target, int32_t points) override;
 	void onTargetCreatureGainHealth(std::shared_ptr<Creature> target, int32_t points) override;
-	bool onKilledCreature(std::shared_ptr<Creature> target, bool lastHit = true) override;
+	bool onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit) override;
+	bool onKilledMonster(const std::shared_ptr<Monster> &target) override;
 	void onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target) override;
 	void onGainSharedExperience(uint64_t gainExp, std::shared_ptr<Creature> target);
 	void onAttackedCreatureBlockHit(BlockType_t blockType) override;
@@ -2612,8 +2613,6 @@ private:
 	void addHuntingTaskKill(const std::shared_ptr<MonsterType> &mType);
 	void addBestiaryKill(const std::shared_ptr<MonsterType> &mType);
 	void addBosstiaryKill(const std::shared_ptr<MonsterType> &mType);
-	bool onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit);
-	bool onKilledMonster(const std::shared_ptr<Monster> &target, bool lastHit);
 
 	phmap::flat_hash_set<uint32_t> attackedSet;
 	phmap::flat_hash_set<uint32_t> VIPList;

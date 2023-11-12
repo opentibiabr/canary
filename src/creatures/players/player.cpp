@@ -4633,12 +4633,17 @@ void Player::addBosstiaryKill(const std::shared_ptr<MonsterType> &mType) {
 		return;
 	}
 	uint32_t kills = g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER);
-
+	if (g_ioBosstiary().getBoostedBossId() == mType->info.raceid) {
+		kills *= g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS);
+	}
 	g_ioBosstiary().addBosstiaryKill(getPlayer(), mType, kills);
 }
 
-bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster, bool lastHit) {
-	if (lastHit || monster->isSummon()) {
+bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster) {
+	if (hasFlag(PlayerFlags_t::NotGenerateLoot)) {
+		monster->setDropLoot(false);
+	}
+	if (monster->isSummon()) {
 		return false;
 	}
 	auto party = getParty();
@@ -4648,22 +4653,6 @@ bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster, bool lastH
 		player->addHuntingTaskKill(mType);
 		player->addBestiaryKill(mType);
 		player->addBosstiaryKill(mType);
-	}
-
-	return false;
-}
-
-bool Player::onKilledCreature(std::shared_ptr<Creature> target, bool lastHit /* = true*/) {
-	if (hasFlag(PlayerFlags_t::NotGenerateLoot)) {
-		target->setDropLoot(false);
-	}
-
-	Creature::onKilledCreature(target, lastHit);
-
-	if (auto targetPlayer = target->getPlayer()) {
-		return onKilledPlayer(targetPlayer, lastHit);
-	} else if (auto targetMonster = target->getMonster()) {
-		return onKilledMonster(targetMonster, lastHit);
 	}
 
 	return false;

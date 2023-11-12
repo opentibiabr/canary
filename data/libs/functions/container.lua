@@ -12,7 +12,7 @@ function Container:addLoot(loot)
 			logger.warn("Container:addLoot: invalid item type: {}", itemId)
 			goto continue
 		end
-		if iType:isStackable() then
+		if iType:isStackable() or iType:getCharges() ~= 0 then
 			local tmpItem = self:addItem(itemId, item.count, INDEX_WHEREEVER, FLAG_NOLIMIT)
 			if not tmpItem then
 				logger.warn("Container:addLoot: failed to add item: {}, to corpse {} with id {}", ItemType(itemId):getName(), self:getName(), self:getId())

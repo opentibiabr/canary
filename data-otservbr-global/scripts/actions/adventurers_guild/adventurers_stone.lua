@@ -49,7 +49,7 @@ function adventurersStone.onUse(player, item, fromPosition, target, toPosition, 
 	local playerPos, allowed, townId = player:getPosition(), false
 	if config.enableTemples then
 		for _, temple in ipairs(config.Temples) do
-			if isInRangeIgnoreZ(playerPos, temple.fromPos, temple.toPos) then
+			if isInRange(playerPos, temple.fromPos, temple.toPos) then
 				allowed, townId = true, temple.townId
 				break
 			end

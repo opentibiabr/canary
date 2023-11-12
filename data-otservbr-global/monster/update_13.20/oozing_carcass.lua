@@ -81,7 +81,7 @@ monster.loot = {
 	{ name = "skull staff", chance = 12316, maxCount = 1 },
 	{ name = "bone shield", chance = 6752, maxCount = 1 },
 	{ name = "yellow gem", chance = 8634, maxCount = 1 },
-	{ name = "rotten root", chance = 13133, maxCount = 1 },
+	{ name = "rotten roots", chance = 13133, maxCount = 1 },
 	{ name = "decayed finger bone", chance = 6964, maxCount = 1 },
 	{ name = "ultimate health potion", chance = 10285, maxCount = 2 },
 	{ name = "bloody edge", chance = 12270, maxCount = 1 },

@@ -77,7 +77,7 @@ monster.loot = {
 	{ name = "crystal coin", chance = 10340, maxCount = 1 },
 	{ name = "small amethyst", chance = 7364, maxCount = 2 },
 	{ name = "lichen gobbler", chance = 8391, maxCount = 1 },
-	{ name = "rotten root", chance = 11619, maxCount = 1 },
+	{ name = "rotten roots", chance = 11619, maxCount = 1 },
 	{ name = "death ring", chance = 12591, maxCount = 1 },
 	{ name = "wood cape", chance = 14371, maxCount = 1 },
 	{ id = 3039, chance = 5155, maxCount = 1 }, -- red gem

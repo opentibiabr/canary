@@ -78,7 +78,7 @@ monster.loot = {
 	{ name = "soul orb", chance = 10090, maxCount = 3 },
 	{ name = "lichen gobbler", chance = 8558, maxCount = 1 },
 	{ name = "decayed finger bone", chance = 10309, maxCount = 1 },
-	{ name = "rotten root", chance = 7678, maxCount = 1 },
+	{ name = "rotten roots", chance = 7678, maxCount = 1 },
 	{ name = "yellow gem", chance = 12992, maxCount = 1 },
 	{ name = "underworld rod", chance = 12980, maxCount = 1 },
 	{ id = 3039, chance = 11333, maxCount = 1 }, -- red gem

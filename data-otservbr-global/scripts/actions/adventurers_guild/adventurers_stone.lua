@@ -45,43 +45,48 @@ local config = {
 
 local adventurersStone = Action()
 
+local function doNotTeleport(player)
+	local enabledLocations = {}
+	if config.enableTemples then
+		table.insert(enabledLocations, "temple")
+	end
+	if config.enableDepots then
+		table.insert(enabledLocations, "depot")
+	end
+	local message = "Try to move more to the center of a " .. table.concat(enabledLocations, " or ") .. " to use the spiritual energy for a teleport."
+	player:getPosition():sendMagicEffect(CONST_ME_POFF)
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
+end
+
 function adventurersStone.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local allowed = false
-
 	local tile = Tile(player:getPosition())
-	if tile:hasFlag(TILESTATE_PROTECTIONZONE) and not tile:hasFlag(TILESTATE_HOUSE) and not player:isPzLocked() and not player:getCondition(CONDITION_INFIGHT, CONDITIONID_DEFAULT) then
-		local playerPos, townId = player:getPosition(), player:getTown():getId()
+	if not tile:hasFlag(TILESTATE_PROTECTIONZONE) or tile:hasFlag(TILESTATE_HOUSE) or player:isPzLocked() or player:getCondition(CONDITION_INFIGHT, CONDITIONID_DEFAULT) then
+		doNotTeleport(player)
+		return false
+	end
 
-		if config.enableTemples then
-			for _, temple in ipairs(config.Temples) do
-				if isInRangeIgnoreZ(playerPos, temple.fromPos, temple.toPos) then
-					allowed, townId = true, temple.townId
-					break
-				end
+	local playerPos, allowed, townId = player:getPosition(), false, player:getTown():getId()
+
+	if config.enableTemples then
+		for _, temple in ipairs(config.Temples) do
+			if isInRange(playerPos, temple.fromPos, temple.toPos) then
+				allowed, townId = true, temple.townId
+				break
 			end
 		end
+	end
 
-		if config.enableDepots then
-			for _, depot in ipairs(config.Depots) do
-				if isInRangeIgnoreZ(playerPos, depot.fromPos, depot.toPos) then
-					allowed, townId = true, depot.townId
-					break
-				end
+	if config.enableDepots then
+		for _, depot in ipairs(config.Depots) do
+			if isInRange(playerPos, depot.fromPos, depot.toPos) then
+				allowed, townId = true, depot.townId
+				break
 			end
 		end
 	end
 
 	if not allowed then
-		local enabledLocations = {}
-		if config.enableTemples then
-			table.insert(enabledLocations, "temple")
-		end
-		if config.enableDepots then
-			table.insert(enabledLocations, "depot")
-		end
-		local message = "Try to move more to the center of a " .. table.concat(enabledLocations, " or ") .. " to use the spiritual energy for a teleport."
-		player:getPosition():sendMagicEffect(CONST_ME_POFF)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
+		doNotTeleport(player)
 		return false
 	end
 

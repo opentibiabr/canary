@@ -690,7 +690,7 @@ void Creature::onDeath() {
 		it.first->onGainExperience(it.second, getCreature());
 	}
 
-	mostDamageCreature = mostDamageCreature->getMaster() ? mostDamageCreature->getMaster() : mostDamageCreature;
+	mostDamageCreature = mostDamageCreature && mostDamageCreature->getMaster() ? mostDamageCreature->getMaster() : mostDamageCreature;
 	for (const auto &killer : killers) {
 		if (auto monster = getMonster()) {
 			killer->onKilledMonster(monster);

@@ -58,7 +58,7 @@ function adventurersStone.onUse(player, item, fromPosition, target, toPosition, 
 
 	if config.enableDepots then
 		for _, depot in ipairs(config.Depots) do
-			if isInRangeIgnoreZ(playerPos, depot.fromPos, depot.toPos) then
+			if isInRange(playerPos, depot.fromPos, depot.toPos) then
 				allowed, townId = true, depot.townId
 				break
 			end

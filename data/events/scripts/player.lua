@@ -253,8 +253,8 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 			return false
 		end
 		exhaust[playerId] = true
-		addEvent(function()
-			exhaust[playerId] = false
+		addEvent(function(id)
+			exhaust[id] = false
 		end, 2000, playerId)
 		return true
 	end

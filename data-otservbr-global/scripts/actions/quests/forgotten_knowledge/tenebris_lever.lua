@@ -4,7 +4,7 @@ local config = {
 		position = Position(32912, 31599, 14),
 	},
 	requiredLevel = 250,
-	
+
 	playerPositions = {
 		{ pos = Position(32902, 31623, 14), teleport = Position(32911, 31603, 14) },
 		{ pos = Position(32902, 31624, 14), teleport = Position(32911, 31603, 14) },

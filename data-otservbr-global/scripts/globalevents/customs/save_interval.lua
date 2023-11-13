@@ -5,7 +5,7 @@ local function serverSave(interval)
 
 	saveServer()
 	local message = string.format(SAVE_INTERVAL_CONFIG_TIME > 1 and "Server save complete. Next save in %d %ss!" or "Server save complete. Next save in %d %s!", SAVE_INTERVAL_CONFIG_TIME, SAVE_INTERVAL_TYPE)
-	--Game.broadcastMessage(message, MESSAGE_GAME_HIGHLIGHT)
+	Game.broadcastMessage(message, MESSAGE_GAME_HIGHLIGHT)
 	logger.info(message)
 	Webhook.sendMessage("Server save", message, WEBHOOK_COLOR_WARNING)
 end

@@ -157,21 +157,10 @@ function Lever.teleportPlayers(self) -- It will teleport all players to the posi
 	end
 end
 
---[[
-    lever:setPositions(key, value)
-
-    | Method | Type | Usage   | Default |
-    |--------|------|---------|---------|
-    | key    | int  | Storage | nil     |
-    | value  | int  | Value   | nil     |
-
-    lever:setStorageAllPlayers(10000, 1)
-]]
----@generic Storage
----@param key Storage
+---@param bossName string
 ---@param value number
 ---@return nil
-function Lever.setStorageAllPlayers(self, key, value) -- Will set storage on all players
+function Lever.setCooldownAllPlayers(self, bossName, value)
 	local info = self:getInfoPositions()
 	if not info then
 		error("Necessary information from players")
@@ -182,9 +171,21 @@ function Lever.setStorageAllPlayers(self, key, value) -- Will set storage on all
 		if v.creature then
 			local player = v.creature:getPlayer()
 			if player then
-				player:setStorageValue(key, value)
-				player:sendBosstiaryCooldownTimer()
+				player:setBossCooldown(bossName, value)
 			end
 		end
 	end
+end
+
+function Lever.canUseLever(self, player, bossName, timeToFightAgain)
+	local info = self:getInfoPositions()
+	for _, v in pairs(info) do
+		local newPlayer = v.creature
+		if newPlayer and not newPlayer:canFightBoss(bossName) then
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. timeToFightAgain .. " hours to face " .. bossName .. " again!")
+			newPlayer:getPosition():sendMagicEffect(CONST_ME_POFF)
+			return false
+		end
+	end
+	return true
 end

@@ -16,7 +16,6 @@ monster.outfit = {
 monster.bosstiary = {
 	bossRaceId = 1982,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U10_80.Grimvale.YirkasTimer,
 }
 
 monster.health = 6300

@@ -14,6 +14,11 @@ monster.corpse = 0
 monster.speed = 235
 monster.manaCost = 0
 
+monster.events = {
+	"ForgottenKnowledgeBossDeath",
+	"AstralGlyphDeath",
+}
+
 monster.changeTarget = {
 	interval = 2000,
 	chance = 0,
@@ -44,10 +49,6 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-}
-
-monster.events = {
-	"AstralGlyphDeath",
 }
 
 monster.light = {

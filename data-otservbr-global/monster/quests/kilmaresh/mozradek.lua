@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"MozradekDeath",
+}
+
 monster.bosstiary = {
 	bossRaceId = 1829,
 	bossRace = RARITY_BANE,

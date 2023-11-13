@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"GraveDangerBossDeath",
+}
+
 monster.health = 75000
 monster.maxHealth = 75000
 monster.race = "venom"
@@ -28,7 +32,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1757,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_20.GraveDanger.Bosses.EarlOsamTimer,
 }
 
 monster.strategiesTarget = {

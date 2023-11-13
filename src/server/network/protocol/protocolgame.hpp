@@ -132,7 +132,7 @@ private:
 	void parseHighscores(NetworkMessage &msg);
 	void parseTaskHuntingAction(NetworkMessage &msg);
 	void sendHighscoresNoData();
-	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages);
+	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer);
 
 	void parseGreet(NetworkMessage &msg);
 	void parseBugReport(NetworkMessage &msg);
@@ -145,7 +145,7 @@ private:
 	void parseBestiarysendCreatures(NetworkMessage &msg);
 	void BestiarysendCharms();
 	void sendBestiaryEntryChanged(uint16_t raceid);
-	void refreshCyclopediaMonsterTracker(const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &trackerSet, bool isBoss);
+	void refreshCyclopediaMonsterTracker(const std::unordered_set<std::shared_ptr<MonsterType>> &trackerSet, bool isBoss);
 	void sendTeamFinderList();
 	void sendLeaderTeamFinder(bool reset);
 	void createLeaderTeamFinder(NetworkMessage &msg);
@@ -265,7 +265,7 @@ private:
 	void parseSendBosstiary();
 	void parseSendBosstiarySlots();
 	void parseBosstiarySlot(NetworkMessage &msg);
-	void sendPodiumDetails(NetworkMessage &msg, const phmap::parallel_flat_hash_set<uint16_t> &toSendMonsters, bool isBoss) const;
+	void sendPodiumDetails(NetworkMessage &msg, const std::vector<uint16_t> &toSendMonsters, bool isBoss) const;
 	void sendMonsterPodiumWindow(std::shared_ptr<Item> podium, const Position &position, uint16_t itemId, uint8_t stackPos);
 	void parseSetMonsterPodium(NetworkMessage &msg) const;
 	void sendBosstiaryCooldownTimer();
@@ -471,7 +471,7 @@ private:
 	friend class Player;
 	friend class PlayerWheel;
 
-	phmap::flat_hash_set<uint32_t> knownCreatureSet;
+	std::unordered_set<uint32_t> knownCreatureSet;
 	std::shared_ptr<Player> player = nullptr;
 
 	uint32_t eventConnect = 0;

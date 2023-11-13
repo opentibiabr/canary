@@ -2,6 +2,9 @@ function PrettyString(tbl, indent)
 	if not indent then
 		indent = 0
 	end
+	if type(tbl) ~= "table" then
+		return tostring(tbl)
+	end
 	local toprint = string.rep(" ", indent) .. "{\n"
 	indent = indent + 2
 	for k, v in pairs(tbl) do
@@ -714,10 +717,6 @@ function isInRange(pos, fromPos, toPos)
 	return pos.x >= fromPos.x and pos.y >= fromPos.y and pos.z >= fromPos.z and pos.x <= toPos.x and pos.y <= toPos.y and pos.z <= toPos.z
 end
 
-function isInRangeIgnoreZ(pos, fromPos, toPos)
-	return pos.x >= fromPos.x and pos.y >= fromPos.y and pos.z >= fromPos.z and pos.x <= toPos.x
-end
-
 function isNumber(str)
 	return tonumber(str) ~= nil
 end
@@ -727,7 +726,7 @@ function isInteger(n)
 end
 
 -- Function for the reload talkaction
-local logFormat = "[%s] %s %s"
+local logFormat = "[%s] %s (params: %s)"
 
 function logCommand(player, words, param)
 	local file = io.open(CORE_DIRECTORY .. "/logs/" .. player:getName() .. " commands.log", "a")

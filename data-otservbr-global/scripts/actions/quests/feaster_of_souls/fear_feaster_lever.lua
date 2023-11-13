@@ -17,7 +17,6 @@ local config = {
 		to = Position(33719, 31477, 14),
 	},
 	exit = Position(33609, 31499, 10),
-	storage = Storage.Quest.U12_30.FeasterOfSouls.FearFeasterTimer,
 }
 
 local lever = BossLever(config)

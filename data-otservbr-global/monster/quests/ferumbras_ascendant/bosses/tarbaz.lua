@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"AscendantBossesDeath",
+}
+
 monster.health = 290000
 monster.maxHealth = 290000
 monster.race = "undead"
@@ -28,7 +32,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1188,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.FerumbrasAscension.TarbazTimer,
 }
 
 monster.strategiesTarget = {

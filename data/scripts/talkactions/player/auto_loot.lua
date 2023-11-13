@@ -16,7 +16,7 @@ function autoLoot.onSay(player, words, param)
 		player:setStorageValue(STORAGEVALUE_AUTO_LOOT, 1)
 		player:sendTextMessage(MESSAGE_LOOK, "You have successfully enabled your automatic looting!")
 	elseif param == "off" then
-		player:setStorageValue(STORAGEVALUE_AUTO_LOOT, 0)
+		player:setStorageValue(STORAGEVALUE_AUTO_LOOT, -1)
 		player:sendTextMessage(MESSAGE_LOOK, "You have successfully disabled your automatic looting!")
 	end
 	return true

@@ -17,7 +17,6 @@ local config = {
 		to = Position(33721, 31512, 14),
 	},
 	exit = Position(33557, 31524, 10),
-	storage = Storage.Quest.U12_30.FeasterOfSouls.DreadMaidenTimer,
 }
 
 local lever = BossLever(config)

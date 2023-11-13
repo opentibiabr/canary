@@ -11,18 +11,16 @@ local crystals = {
 
 local riftInvaderDeath = CreatureEvent("RiftInvaderDeath")
 function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekiller, lasthitunjustified, mostdamageunjustified)
-	if not targetMonster or targetMonster:getName():lower() ~= "rift invader" then
+	local pos = Position(33392 + math.random(-10, 10), 31473 + math.random(-10, 10), 14)
+	local name = creature:getName():lower()
+	if name ~= "rift invader" then
 		return true
 	end
-
-	local targetMonster = creature:getMonster()
-	local pos = Position(33392 + math.random(-10, 10), 31473 + math.random(-10, 10), 14)
-	local name = targetMonster:getName():lower()
 	Game.createMonster(name, pos)
 
 	for i = 1, #crystals do
 		local crystal = crystals[i]
-		if isInRange(targetMonster:getPosition(), crystal.fromPosition, crystal.toPosition) then
+		if isInRange(creature:getPosition(), crystal.fromPosition, crystal.toPosition) then
 			if Game.getStorageValue(crystal.globalStorage) > 8 then
 				local item = Tile(crystal.crystalPosition):getItemById(14955)
 				if not item then

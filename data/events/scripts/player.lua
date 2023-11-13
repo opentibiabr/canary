@@ -247,14 +247,14 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	-- SSA exhaust
 	local exhaust = {}
 	if toPosition.x == CONTAINER_POSITION and toPosition.y == CONST_SLOT_NECKLACE and item:getId() == ITEM_STONE_SKIN_AMULET then
-		local pid = self:getId()
-		if exhaust[pid] then
+		local playerId = self:getId()
+		if exhaust[playerId] then
 			self:sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED)
 			return false
 		end
 		exhaust[playerId] = true
-		addEvent(function()
-			exhaust[playerId] = false
+		addEvent(function(id)
+			exhaust[id] = false
 		end, 2000, playerId)
 		return true
 	end

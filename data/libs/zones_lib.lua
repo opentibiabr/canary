@@ -41,6 +41,16 @@ function Zone:countMonsters(name)
 	return count
 end
 
+function Zone:getMonstersByName(name)
+	local monsters = {}
+	for _, monster in ipairs(self:getMonsters()) do
+		if monster:getName():lower() == name:lower() then
+			table.insert(monsters, monster)
+		end
+	end
+	return monsters
+end
+
 function Zone:countPlayers(notFlag)
 	local players = self:getPlayers()
 	local count = 0

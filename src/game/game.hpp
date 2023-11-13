@@ -38,6 +38,7 @@ class Guild;
 class Mounts;
 class Spectators;
 
+static constexpr uint16_t SERVER_BEAT = 0x32;
 static constexpr int32_t EVENT_MS = 10000;
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
 static constexpr int32_t EVENT_DECAYINTERVAL = 250;
@@ -50,12 +51,16 @@ static constexpr std::chrono::minutes HIGHSCORE_CACHE_EXPIRATION_TIME { 10 }; //
 
 struct QueryHighscoreCacheEntry {
 	std::string query;
+	uint32_t page;
+	uint8_t entriesPerPage;
 	std::chrono::time_point<std::chrono::steady_clock> timestamp;
 };
 
 struct HighscoreCacheEntry {
 	std::vector<HighscoreCharacter> characters;
-	std::chrono::time_point<std::chrono::steady_clock> timestamp;
+	uint32_t page;
+	uint32_t entriesPerPage;
+	std::chrono::time_point<std::chrono::system_clock> timestamp;
 };
 
 class Game {
@@ -164,8 +169,8 @@ public:
 	bool removeCreature(std::shared_ptr<Creature> creature, bool isLogout = true);
 	void executeDeath(uint32_t creatureId);
 
-	void addCreatureCheck(std::shared_ptr<Creature> creature);
-	static void removeCreatureCheck(std::shared_ptr<Creature> creature);
+	void addCreatureCheck(const std::shared_ptr<Creature> &creature);
+	static void removeCreatureCheck(const std::shared_ptr<Creature> &creature);
 
 	size_t getPlayersOnline() const {
 		return players.size();
@@ -316,8 +321,8 @@ public:
 	void playerCloseNpcChannel(uint32_t playerId);
 	void playerReceivePing(uint32_t playerId);
 	void playerReceivePingBack(uint32_t playerId);
-	void playerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
-	void forcePlayerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
+	void playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir);
+	void forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir);
 	void playerStopAutoWalk(uint32_t playerId);
 	void playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t fromStackPos, uint16_t fromItemId, const Position &toPos, uint8_t toStackPos, uint16_t toItemId);
 	void playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId);
@@ -448,6 +453,10 @@ public:
 	void handleHazardSystemAttack(CombatDamage &damage, std::shared_ptr<Player> player, const std::shared_ptr<Monster> monster, bool isPlayerAttacker);
 	void notifySpectators(const CreatureVector &spectators, const Position &targetPos, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Monster> targetMonster);
 
+	// Custom PvP System combat helpers
+	void applyPvPDamage(CombatDamage &damage, std::shared_ptr<Player> attacker, std::shared_ptr<Player> target);
+	float pvpLevelDifferenceDamageMultiplier(std::shared_ptr<Player> attacker, std::shared_ptr<Player> target);
+
 	// Wheel of destiny combat helpers
 	void applyWheelOfDestinyHealing(CombatDamage &damage, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Creature> target);
 	void applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Creature> target) const;
@@ -553,7 +562,7 @@ public:
 	Raids raids;
 	Canary::protobuf::appearances::Appearances appearances;
 
-	phmap::flat_hash_set<std::shared_ptr<Tile>> getTilesToClean() const {
+	auto getTilesToClean() const {
 		return tilesToClean;
 	}
 	void addTileToClean(std::shared_ptr<Tile> tile) {
@@ -595,11 +604,11 @@ public:
 		mapLuaItemsStored[position] = itemId;
 	}
 
-	std::set<uint32_t> getFiendishMonsters() const {
+	auto getFiendishMonsters() const {
 		return fiendishMonsters;
 	}
 
-	std::set<uint32_t> getInfluencedMonsters() const {
+	auto getInfluencedMonsters() const {
 		return influencedMonsters;
 	}
 
@@ -669,8 +678,8 @@ public:
 	 */
 	bool tryRetrieveStashItems(std::shared_ptr<Player> player, std::shared_ptr<Item> item);
 
-	ReturnValue beforeCreatureZoneChange(std::shared_ptr<Creature> creature, const phmap::flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::flat_hash_set<std::shared_ptr<Zone>> &toZones, bool force = false) const;
-	void afterCreatureZoneChange(std::shared_ptr<Creature> creature, const phmap::flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::flat_hash_set<std::shared_ptr<Zone>> &toZones) const;
+	ReturnValue beforeCreatureZoneChange(std::shared_ptr<Creature> creature, const std::unordered_set<std::shared_ptr<Zone>> &fromZones, const std::unordered_set<std::shared_ptr<Zone>> &toZones, bool force = false) const;
+	void afterCreatureZoneChange(std::shared_ptr<Creature> creature, const std::unordered_set<std::shared_ptr<Zone>> &fromZones, const std::unordered_set<std::shared_ptr<Zone>> &toZones) const;
 
 	std::unique_ptr<IOWheel> &getIOWheel();
 	const std::unique_ptr<IOWheel> &getIOWheel() const;
@@ -680,8 +689,8 @@ public:
 
 private:
 	std::map<uint32_t, int32_t> forgeMonsterEventIds;
-	std::set<uint32_t> fiendishMonsters;
-	std::set<uint32_t> influencedMonsters;
+	std::unordered_set<uint32_t> fiendishMonsters;
+	std::unordered_set<uint32_t> influencedMonsters;
 	void checkImbuements();
 	bool playerSaySpell(std::shared_ptr<Player> player, SpeakClasses type, const std::string &text);
 	void playerWhisper(std::shared_ptr<Player> player, const std::string &text);
@@ -818,7 +827,7 @@ private:
 
 	std::map<uint32_t, std::shared_ptr<BedItem>> bedSleepersMap;
 
-	phmap::flat_hash_set<std::shared_ptr<Tile>> tilesToClean;
+	std::unordered_set<std::shared_ptr<Tile>> tilesToClean;
 
 	ModalWindow offlineTrainingWindow { std::numeric_limits<uint32_t>::max(), "Choose a Skill", "Please choose a skill:" };
 
@@ -900,10 +909,9 @@ private:
 	// Variable members (m_)
 	std::unique_ptr<IOWheel> m_IOWheel;
 
-	void cacheQueryHighscore(const std::string &key, const std::string &query);
+	void cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage);
 	void processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
 
-	std::string getCachedQueryHighscore(const std::string &key);
 	std::string generateVocationConditionHighscore(uint32_t vocation);
 	std::string generateHighscoreQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
 	std::string generateHighscoreQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);

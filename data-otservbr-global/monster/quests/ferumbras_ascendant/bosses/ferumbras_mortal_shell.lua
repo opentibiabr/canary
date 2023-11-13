@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"AscendantBossesDeath",
+}
+
 monster.health = 300000
 monster.maxHealth = 300000
 monster.race = "venom"
@@ -28,7 +32,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1204,
 	bossRace = RARITY_NEMESIS,
-	storageCooldown = Storage.FerumbrasAscension.FerumbrasTimer,
 }
 
 monster.strategiesTarget = {

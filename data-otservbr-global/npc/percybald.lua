@@ -134,6 +134,99 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end
+
+	if MsgContains(message, "outfit") or MsgContains(message, "addon") or MsgContains(message, "royal") then
+		npcHandler:say("In exchange for a generous donation of gold and silver tokens, I can offer you a special outfit. Would you like to donate?", npc, creature)
+		npcHandler:setTopic(playerId, 12)
+	elseif MsgContains(message, "yes") then
+		-- Topic 12: Initial explanation about the outfit
+		if npcHandler:getTopic(playerId) == 12 then
+			npcHandler:say({
+				"Great! To clarify, donating 30,000 silver tokens and 25,000 gold tokens will entitle you to a unique outfit. ...",
+				"For 15,000 silver tokens and 12,500 gold tokens, you will receive the {armor}. For an additional 7,500 silver tokens and 6,250 gold tokens each, you can also receive the {shield} and {crown}. ...",
+				"What will you choose?",
+			}, npc, creature)
+			npcHandler:setTopic(playerId, 13)
+
+		-- Topic 13: User already accepted to learn about donations, further actions here
+		elseif npcHandler:getTopic(playerId) == 13 then
+			npcHandler:say("If you haven't made up your mind, please come back when you are ready.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
+		elseif npcHandler:getTopic(playerId) == 14 then
+			if player:getStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit) < 1 then
+				if player:removeItem(22516, 15000) and player:removeItem(22721, 12500) then
+					npcHandler:say("Take this armor as a token of great gratitude. Let us forever remember this day, my friend!", npc, creature)
+					player:addOutfit(1457)
+					player:addOutfit(1456)
+					player:getPosition():sendMagicEffect(171)
+					player:setStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit, 1)
+				else
+					npcHandler:say("You do not have enough tokens to donate that amount.", npc, creature)
+				end
+			else
+				npcHandler:say("You alread have that addon.", npc, creature)
+			end
+			npcHandler:setTopic(playerId, 13)
+		elseif npcHandler:getTopic(playerId) == 15 then
+			if player:getStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit) == 1 then
+				if player:getStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit) < 2 then
+					if player:removeItem(22516, 7500) and player:removeItem(22721, 6250) then
+						npcHandler:say("Take this sheild as a token of great gratitude. Let us forever remember this day, my friend. ", npc, creature)
+						player:addOutfitAddon(1457, 1)
+						player:addOutfitAddon(1456, 1)
+						player:getPosition():sendMagicEffect(171)
+						player:setStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit, 2)
+						npcHandler:setTopic(playerId, 13)
+					else
+						npcHandler:say("You do not have enough tokens to donate that amount.", npc, creature)
+						npcHandler:setTopic(playerId, 13)
+					end
+				else
+					npcHandler:say("You alread have that outfit.", npc, creature)
+					npcHandler:setTopic(playerId, 13)
+				end
+			else
+				npcHandler:say("You need to donate {armor} outfit first.", npc, creature)
+				npcHandler:setTopic(playerId, 13)
+			end
+			npcHandler:setTopic(playerId, 13)
+		elseif npcHandler:getTopic(playerId) == 16 then
+			if player:getStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit) == 2 then
+				if player:getStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit) < 3 then
+					if player:removeItem(22516, 7500) and player:removeItem(22721, 6250) then
+						npcHandler:say("Take this crown as a token of great gratitude. Let us forever remember this day, my friend. ", npc, creature)
+						player:addOutfitAddon(1457, 2)
+						player:addOutfitAddon(1456, 2)
+						player:getPosition():sendMagicEffect(171)
+						player:setStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit, 3)
+						npcHandler:setTopic(playerId, 13)
+					else
+						npcHandler:say("You do not have enough tokens to donate that amount.", npc, creature)
+						npcHandler:setTopic(playerId, 13)
+					end
+				else
+					npcHandler:say("You alread have that outfit.", npc, creature)
+					npcHandler:setTopic(playerId, 13)
+				end
+			else
+				npcHandler:say("You need to donate {shield} addon first.", npc, creature)
+				npcHandler:setTopic(playerId, 13)
+			end
+			npcHandler:setTopic(playerId, 13)
+		end
+
+	-- Handle options for armor, shield, and crown
+	elseif MsgContains(message, "armor") and npcHandler:getTopic(playerId) == 13 then
+		npcHandler:say("Would you like to donate 15,000 silver tokens and 12,500 gold tokens for a unique red armor?", npc, creature)
+		npcHandler:setTopic(playerId, 14)
+	elseif MsgContains(message, "shield") and npcHandler:getTopic(playerId) == 13 then
+		npcHandler:say("Would you like to donate 7,500 silver tokens and 6,250 gold tokens for a unique shield?", npc, creature)
+		npcHandler:setTopic(playerId, 15)
+	elseif MsgContains(message, "crown") and npcHandler:getTopic(playerId) == 13 then
+		npcHandler:say("Would you like to donate 7,500 silver tokens and 6,250 gold tokens for a unique crown?", npc, creature)
+		npcHandler:setTopic(playerId, 16)
+	end
+
 	return true
 end
 

@@ -72,7 +72,7 @@ public:
 	bool hasCharmUnlockedRuneBit(const std::shared_ptr<Charm> charm, int32_t input) const;
 
 	std::list<charmRune_t> getCharmUsedRuneBitAll(std::shared_ptr<Player> player);
-	phmap::parallel_flat_hash_set<uint16_t> getBestiaryFinished(std::shared_ptr<Player> player) const;
+	std::vector<uint16_t> getBestiaryFinished(const std::shared_ptr<Player> &player) const;
 
 	charmRune_t getCharmFromTarget(std::shared_ptr<Player> player, const std::shared_ptr<MonsterType> mtype);
 

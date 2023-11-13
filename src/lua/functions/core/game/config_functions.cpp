@@ -128,6 +128,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", RED_SKULL_DURATION);
 	registerEnumIn(L, "configKeys", BLACK_SKULL_DURATION);
 	registerEnumIn(L, "configKeys", ORANGE_SKULL_DURATION);
+	registerEnumIn(L, "configKeys", RANDOM_MONSTER_SPAWN);
 	registerEnumIn(L, "configKeys", RATE_MONSTER_HEALTH);
 	registerEnumIn(L, "configKeys", RATE_MONSTER_ATTACK);
 	registerEnumIn(L, "configKeys", RATE_MONSTER_DEFENSE);

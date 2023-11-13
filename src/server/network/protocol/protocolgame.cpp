@@ -498,7 +498,12 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 		if (g_game().getGameState() == GAME_STATE_CLOSED && !player->hasFlag(PlayerFlags_t::CanAlwaysLogin)) {
 			g_game().removePlayerUniqueLogin(player);
-			disconnectClient("Server is currently closed.\nPlease try again later.");
+			auto maintainMessage = g_configManager().getString(MAINTAIN_MODE_MESSAGE);
+			if (!maintainMessage.empty()) {
+				disconnectClient(maintainMessage);
+			} else {
+				disconnectClient("Server is currently closed.\nPlease try again later.");
+			}
 			return;
 		}
 
@@ -6078,7 +6083,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 	msg.addByte(0x17);
 
 	msg.add<uint32_t>(player->getID());
-	msg.add<uint16_t>(0x32); // beat duration (50)
+	msg.add<uint16_t>(SERVER_BEAT); // beat duration (50)
 
 	msg.addDouble(Creature::speedA, 3);
 	msg.addDouble(Creature::speedB, 3);

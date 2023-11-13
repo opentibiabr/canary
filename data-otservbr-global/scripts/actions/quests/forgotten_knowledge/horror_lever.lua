@@ -1,13 +1,14 @@
 local eggPos = Position(32269, 31084, 14)
 local config = {
 	boss = {
-		name = "Frozen Horror",
+		name = "Melting Frozen Horror",
 		createFunction = function()
 			Tile(eggPos):getTopCreature():setHealth(1)
 			return Game.createMonster("solid frozen horror", Position(32269, 31091, 14), true, true)
 		end,
 	},
 	timeToDefeat = 15 * 60, -- In seconds
+	requiredLevel = 250,
 	playerPositions = {
 		{ pos = Position(32302, 31088, 14), teleport = Position(32271, 31097, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32302, 31089, 14), teleport = Position(32271, 31097, 14), effect = CONST_ME_TELEPORT },

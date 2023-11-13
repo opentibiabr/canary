@@ -24,9 +24,10 @@ local function sendExerciseRewardModal(player)
 				end
 
 				local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-				if inbox and inbox:getEmptySlots() > 0 then
+				if inbox and inbox:getEmptySlots() > 0 and player:getFreeCapacity() >= iType:getWeight() then
 					local item = inbox:addItem(it.id, it.charges)
 					if item then
+						item:setActionId(IMMOVABLE_ACTION_ID)
 						item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 					else
 						player:sendTextMessage(MESSAGE_LOOK, "You need to have capacity and empty slots to receive.")

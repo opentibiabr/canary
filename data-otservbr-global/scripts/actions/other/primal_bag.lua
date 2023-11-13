@@ -13,6 +13,7 @@ local rewards = {
 	{ id = 39186, name = "charged arboreal ring" },
 }
 
+PrimalBagId = 39546
 local primalBag = Action()
 
 function primalBag.onUse(player, item, fromPosition, target, toPosition, isHotkey)
@@ -29,5 +30,5 @@ function primalBag.onUse(player, item, fromPosition, target, toPosition, isHotke
 	return true
 end
 
-primalBag:id(39546)
+primalBag:id(PrimalBagId)
 primalBag:register()

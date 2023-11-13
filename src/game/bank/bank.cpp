@@ -97,7 +97,7 @@ bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) 
 		return false;
 	}
 	if (destinationBankable->getPlayer() != nullptr) {
-		auto player = bankable->getPlayer();
+		auto player = destinationBankable->getPlayer();
 		auto name = asLowerCaseString(player->getName());
 		replaceString(name, " ", "");
 		if (deniedNames.contains(name)) {

@@ -6,7 +6,7 @@ local bosses = {
 
 -- This will set the status of warzone (killing 1, 2 and 3 wz bosses in order you can open the chest and get "some golden fruits") and the reward chest storages
 local bossesWarzone = CreatureEvent("BossesWarzoneDeath")
-function bossesWarzone.onDeath(target)
+function bossesWarzone.onDeath(creature)
 	local bossConfig = bosses[creature:getName():lower()]
 	if not bossConfig then
 		return true

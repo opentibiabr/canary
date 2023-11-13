@@ -6,7 +6,7 @@ local function isDummy(id)
 	return dummies[id] and dummies[id] > 0
 end
 
-local cooldown = 2
+local cooldown = 10
 
 function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if not target then
@@ -17,8 +17,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 
 	if target:isItem() and isDummy(targetId) then
 		if onExerciseTraining[playerId] then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This exercise dummy can only be used after a " .. cooldown .. " second cooldown.")
-			LeaveTraining(playerId)
+			player:sendTextMessage(MESSAGE_FAILURE, "You are already training!")
 			return true
 		end
 
@@ -56,7 +55,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 		end
 
 		if player:getStorageValue(Storage.IsTraining) > os.time() then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This exercise dummy can only be used after a " .. cooldown .. " second cooldown.")
+			player:sendTextMessage(MESSAGE_FAILURE, "You are already training!")
 			return true
 		end
 
@@ -66,6 +65,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 			onExerciseTraining[playerId].dummyPos = targetPos
 			player:setTraining(true)
 			player:setStorageValue(Storage.IsTraining, os.time() + cooldown)
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have started training on an exercise dummy.")
 		end
 		return true
 	end

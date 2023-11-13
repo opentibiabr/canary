@@ -71,13 +71,18 @@ local transfer = TalkAction("!transfer")
 
 function transfer.onSay(player, words, param)
 	local split = param:split(",")
-	local name = split[1]:trim()
 	local amount = tonumber(split[2])
 	if not amount or amount <= 0 and isValidMoney(amount) then
 		player:sendTextMessage(config.messageStyle, "Invalid amount.")
 		return true
 	end
 
+	local name = split[1]
+	if not name then
+		player:sendTextMessage(config.messageStyle, "Invalid name.")
+		return true
+	end
+	name = name:trim()
 	local normalizedName = Game.getNormalizedPlayerName(name)
 	if not normalizedName then
 		player:sendTextMessage(config.messageStyle, "A player with name " .. name .. " does not exist.")

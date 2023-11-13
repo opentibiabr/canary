@@ -3,6 +3,7 @@ local config = {
 		name = "Lloyd",
 		position = Position(32799, 32827, 14),
 	},
+	requiredLevel = 250,
 	playerPositions = {
 		{ pos = Position(32759, 32868, 14), teleport = Position(32800, 32831, 14) },
 		{ pos = Position(32759, 32869, 14), teleport = Position(32800, 32831, 14) },

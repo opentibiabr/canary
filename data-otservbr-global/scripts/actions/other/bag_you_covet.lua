@@ -15,6 +15,8 @@ local rewards = {
 	{ id = 43887, name = "Sanguine Galoshes" },
 }
 
+BagYouCovetId = 43895
+
 local bagyouCovet = Action()
 
 function bagyouCovet.onUse(player, item, fromPosition, target, toPosition, isHotkey)
@@ -28,5 +30,5 @@ function bagyouCovet.onUse(player, item, fromPosition, target, toPosition, isHot
 	return true
 end
 
-bagyouCovet:id(43895)
+bagyouCovet:id(BagYouCovetId)
 bagyouCovet:register()

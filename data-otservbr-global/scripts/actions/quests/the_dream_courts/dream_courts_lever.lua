@@ -51,17 +51,7 @@ function dreamCourtsLever.onUse(player, item, fromPosition, target, toPosition, 
 			creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "All the players need to be level " .. config.requiredLevel .. " or higher.")
 			return false
 		end
-		if creature:getStorageValue(config.storage) > os.time() then
-			local info = lever:getInfoPositions()
-			for _, v in pairs(info) do
-				local newPlayer = v.creature
-				if newPlayer then
-					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. config.timeToFightAgain .. " hours to face " .. bossToday .. " again!")
-					if newPlayer:getStorageValue(config.storage) > os.time() then
-						newPlayer:getPosition():sendMagicEffect(CONST_ME_POFF)
-					end
-				end
-			end
+		if not lever:canUseLever(player, bossToday, config.timeToFightAgain) then
 			return false
 		end
 		return true

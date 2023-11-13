@@ -614,6 +614,18 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 void Creature::onDeath() {
 	bool lastHitUnjustified = false;
 	bool mostDamageUnjustified = false;
+	std::shared_ptr<Creature> lastHitCreature = g_game().getCreatureByID(lastHitCreatureId);
+	std::shared_ptr<Creature> lastHitCreatureMaster;
+	if (lastHitCreature && getPlayer()) {
+		/**
+		 * @deprecated -- This is here to trigger the deprecated onKill events in lua
+		 */
+		lastHitCreature->deprecatedOnKilledCreature(getCreature(), true);
+		lastHitUnjustified = lastHitCreature->onKilledPlayer(getPlayer(), true);
+		lastHitCreatureMaster = lastHitCreature->getMaster();
+	} else {
+		lastHitCreatureMaster = nullptr;
+	}
 
 	std::shared_ptr<Creature> mostDamageCreature = nullptr;
 
@@ -621,6 +633,7 @@ void Creature::onDeath() {
 	const uint32_t inFightTicks = g_configManager().getNumber(PZ_LOCKED);
 	int32_t mostDamage = 0;
 	std::map<std::shared_ptr<Creature>, uint64_t> experienceMap;
+	std::unordered_set<std::shared_ptr<Player>> killers;
 	for (const auto &it : damageMap) {
 		if (auto attacker = g_game().getCreatureByID(it.first)) {
 			CountBlock_t cb = it.second;
@@ -631,13 +644,20 @@ void Creature::onDeath() {
 
 			if (attacker != getCreature()) {
 				uint64_t gainExp = getGainedExperience(attacker);
-				if (auto attackerPlayer = attacker->getPlayer()) {
+				auto attackerMaster = attacker->getMaster() ? attacker->getMaster() : attacker;
+				if (auto attackerPlayer = attackerMaster->getPlayer()) {
 					attackerPlayer->removeAttacked(getPlayer());
 
 					auto party = attackerPlayer->getParty();
+					killers.insert(attackerPlayer);
 					if (party && party->getLeader() && party->isSharedExperienceActive() && party->isSharedExperienceEnabled()) {
 						attacker = party->getLeader();
+						killers.insert(party->getLeader());
 						mostDamageCreature = attacker;
+
+						for (const auto &partyMember : party->getMembers()) {
+							killers.insert(partyMember);
+						}
 					}
 				}
 
@@ -655,15 +675,23 @@ void Creature::onDeath() {
 		it.first->onGainExperience(it.second, getCreature());
 	}
 
-	std::shared_ptr<Creature> mostDamageCreatureMaster = nullptr;
-	if (mostDamageCreature) {
-		mostDamageCreatureMaster = mostDamageCreature->getMaster();
-		mostDamageUnjustified = mostDamageCreature->onKilledCreature(getCreature(), false);
+	mostDamageCreature = mostDamageCreature && mostDamageCreature->getMaster() ? mostDamageCreature->getMaster() : mostDamageCreature;
+	for (const auto &killer : killers) {
+		if (auto monster = getMonster()) {
+			killer->onKilledMonster(monster);
+		} else if (auto player = getPlayer(); player && mostDamageCreature != killer) {
+			killer->onKilledPlayer(player, false);
+		}
 	}
 
-	std::shared_ptr<Creature> lastHitCreature = g_game().getCreatureByID(lastHitCreatureId);
-	if (lastHitCreature && lastHitCreature != mostDamageCreature && lastHitCreature != mostDamageCreatureMaster) {
-		lastHitUnjustified = lastHitCreature->onKilledCreature(getCreature(), true);
+	/**
+	 * @deprecated -- This is here to trigger the deprecated onKill events in lua
+	 */
+	if (mostDamageCreature && (mostDamageCreature != lastHitCreature || getMonster()) && mostDamageCreature != lastHitCreatureMaster) {
+		auto mostDamageCreatureMaster = mostDamageCreature->getMaster();
+		if (lastHitCreature != mostDamageCreatureMaster && (lastHitCreatureMaster == nullptr || mostDamageCreatureMaster != lastHitCreatureMaster)) {
+			mostDamageUnjustified = mostDamageCreature->deprecatedOnKilledCreature(getCreature(), false);
+		}
 	}
 
 	bool droppedCorpse = dropCorpse(lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
@@ -994,14 +1022,16 @@ void Creature::goToFollowCreature() {
 		}
 	}
 
-	if (listDir.empty()) {
-		hasFollowPath = getPathTo(getFollowCreature()->getPosition(), listDir, fpp);
+	if (followCreature->getPlayer() && followCreature->getPlayer()->isDisconnected()) {
+		hasFollowPath = false;
+	} else if (listDir.empty()) {
+		hasFollowPath = getPathTo(followCreature->getPosition(), listDir, fpp);
 	}
 
 	startAutoWalk(listDir.data());
 
 	if (executeOnFollow) {
-		onFollowCreatureComplete(getFollowCreature());
+		onFollowCreatureComplete(followCreature);
 	}
 }
 
@@ -1165,10 +1195,10 @@ void Creature::onAttackedCreatureKilled(std::shared_ptr<Creature> target) {
 	}
 }
 
-bool Creature::onKilledCreature(std::shared_ptr<Creature> target, bool lastHit) {
+bool Creature::deprecatedOnKilledCreature(std::shared_ptr<Creature> target, bool lastHit) {
 	auto master = getMaster();
 	if (master) {
-		master->onKilledCreature(target, lastHit);
+		master->deprecatedOnKilledCreature(target, lastHit);
 	}
 
 	// scripting event - onKill

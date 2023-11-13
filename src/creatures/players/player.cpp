@@ -2548,14 +2548,6 @@ BlockType_t Player::blockHit(std::shared_ptr<Creature> attacker, CombatType_t co
 	return blockType;
 }
 
-uint32_t Player::getIP() const {
-	if (client) {
-		return client->getIP();
-	}
-
-	return 0;
-}
-
 void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 	loginPosition = town->getTemplePosition();
 
@@ -4641,39 +4633,23 @@ void Player::addBosstiaryKill(const std::shared_ptr<MonsterType> &mType) {
 		return;
 	}
 	uint32_t kills = g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER);
-
+	if (g_ioBosstiary().getBoostedBossId() == mType->info.raceid) {
+		kills *= g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS);
+	}
 	g_ioBosstiary().addBosstiaryKill(getPlayer(), mType, kills);
 }
 
-bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster, bool lastHit) {
-	if (lastHit || monster->isSummon()) {
+bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster) {
+	if (hasFlag(PlayerFlags_t::NotGenerateLoot)) {
+		monster->setDropLoot(false);
+	}
+	if (monster->isSummon()) {
 		return false;
 	}
-	auto party = getParty();
-	auto participants = party && party->isSharedExperienceEnabled() && party->isSharedExperienceActive() ? party->getPlayers() : std::vector<std::shared_ptr<Player>> { getPlayer() };
 	auto mType = monster->getMonsterType();
-	for (const auto &player : participants) {
-		player->addHuntingTaskKill(mType);
-		player->addBestiaryKill(mType);
-		player->addBosstiaryKill(mType);
-	}
-
-	return false;
-}
-
-bool Player::onKilledCreature(std::shared_ptr<Creature> target, bool lastHit /* = true*/) {
-	if (hasFlag(PlayerFlags_t::NotGenerateLoot)) {
-		target->setDropLoot(false);
-	}
-
-	Creature::onKilledCreature(target, lastHit);
-
-	if (auto targetPlayer = target->getPlayer()) {
-		return onKilledPlayer(targetPlayer, lastHit);
-	} else if (auto targetMonster = target->getMonster()) {
-		return onKilledMonster(targetMonster, lastHit);
-	}
-
+	addHuntingTaskKill(mType);
+	addBestiaryKill(mType);
+	addBosstiaryKill(mType);
 	return false;
 }
 

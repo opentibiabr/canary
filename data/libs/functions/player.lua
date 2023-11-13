@@ -224,7 +224,9 @@ function Player:removeMoneyBank(amount)
 		-- Removes player inventory money
 		self:removeMoney(amount)
 
-		self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from inventory."):format(amount))
+		if amount > 0 then
+			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from inventory."):format(amount))
+		end
 		return true
 
 		-- The player doens't have all the money with him
@@ -238,7 +240,9 @@ function Player:removeMoneyBank(amount)
 			-- Removes player bank money
 			Bank.debit(self, remains)
 
-			self:sendTextMessage(MESSAGE_TRADE, ("Paid %s from inventory and %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(moneyCount), FormatNumber(amount - moneyCount), FormatNumber(self:getBankBalance())))
+			if amount > 0 then
+				self:sendTextMessage(MESSAGE_TRADE, ("Paid %s from inventory and %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(moneyCount), FormatNumber(amount - moneyCount), FormatNumber(self:getBankBalance())))
+			end
 			return true
 		end
 		self:setBankBalance(bankCount - amount)
@@ -677,5 +681,5 @@ end
 
 function Player:canFightBoss(bossNameOrId)
 	local cooldown = self:getBossCooldown(bossNameOrId)
-	return cooldown > os.time() and false or true
+	return cooldown <= os.time()
 end

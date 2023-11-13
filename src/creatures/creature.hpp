@@ -424,7 +424,16 @@ public:
 	virtual void onAttackedCreatureDrainHealth(std::shared_ptr<Creature> target, int32_t points);
 	virtual void onTargetCreatureGainHealth(std::shared_ptr<Creature>, int32_t) { }
 	void onAttackedCreatureKilled(std::shared_ptr<Creature> target);
-	virtual bool onKilledCreature(std::shared_ptr<Creature> target, bool lastHit = true);
+	/**
+	 * @deprecated -- This is here to trigger the deprecated onKill events in lua
+	 */
+	bool deprecatedOnKilledCreature(std::shared_ptr<Creature> target, bool lastHit);
+	virtual bool onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit) {
+		return false;
+	};
+	virtual bool onKilledMonster(const std::shared_ptr<Monster> &target) {
+		return false;
+	};
 	virtual void onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target);
 	virtual void onAttackedCreatureBlockHit(BlockType_t) { }
 	virtual void onBlockHit() { }

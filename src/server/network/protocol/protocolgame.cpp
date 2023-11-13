@@ -498,7 +498,12 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 		if (g_game().getGameState() == GAME_STATE_CLOSED && !player->hasFlag(PlayerFlags_t::CanAlwaysLogin)) {
 			g_game().removePlayerUniqueLogin(player);
-			disconnectClient("Server is currently closed.\nPlease try again later.");
+			auto maintainMessage = g_configManager().getString(MAINTAIN_MODE_MESSAGE);
+			if (!maintainMessage.empty()) {
+				disconnectClient(maintainMessage);
+			} else {
+				disconnectClient("Server is currently closed.\nPlease try again later.");
+			}
 			return;
 		}
 

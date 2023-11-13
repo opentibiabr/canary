@@ -21,7 +21,16 @@ function Monster:setRewardBoss()
 	end
 end
 
+local equipmentBags = {
+	BagYouCovetId,
+	BagYouDesireId,
+	PrimalBagId,
+}
+
 local function isEquipment(itemType)
+	if table.contains(equipmentBags, itemType:getId()) then
+		return true
+	end
 	local t = itemType:getType()
 	local equipmentTypes = {
 		ITEM_TYPE_ARMOR,

@@ -665,6 +665,7 @@ void Creature::onDeath() {
 					attackerPlayer->removeAttacked(getPlayer());
 
 					auto party = attackerPlayer->getParty();
+					killers.insert(attackerPlayer);
 					if (party && party->getLeader() && party->isSharedExperienceActive() && party->isSharedExperienceEnabled()) {
 						attacker = party->getLeader();
 						killers.insert(party->getLeader());

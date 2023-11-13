@@ -235,8 +235,8 @@ void SpawnMonster::checkSpawnMonster() {
 		spawnBlock_t currentSb;
 		if (g_configManager().getBoolean(RANDOM_MONSTER_SPAWN)) {
 			currentSb = std::next(spawnMonsterMap.begin(), uniform_random(0, spawnMonsterMap.size() - 1))->second;
-			currentSb.pos = sb.pos; // Manter a posição original
-			currentSb.direction = sb.direction; // Manter a direção original
+			currentSb.pos = sb.pos;
+			currentSb.direction = sb.direction;
 		} else {
 			currentSb = sb;
 		}

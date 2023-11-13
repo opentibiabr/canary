@@ -163,6 +163,16 @@ bool Vocations::loadFromXml() {
 				if (armorAttribute) {
 					voc.armorMultiplier = pugi::cast<float>(armorAttribute.value());
 				}
+			} else if (strcasecmp(childNode.name(), "pvp") == 0) {
+				pugi::xml_attribute pvpDamageReceivedMultiplier = childNode.attribute("damageReceivedMultiplier");
+				if (pvpDamageReceivedMultiplier) {
+					voc.pvpDamageReceivedMultiplier = pugi::cast<float>(pvpDamageReceivedMultiplier.value());
+				}
+
+				pugi::xml_attribute pvpDamageDealtMultiplier = childNode.attribute("damageDealtMultiplier");
+				if (pvpDamageDealtMultiplier) {
+					voc.pvpDamageDealtMultiplier = pugi::cast<float>(pvpDamageDealtMultiplier.value());
+				}
 			}
 		}
 	}

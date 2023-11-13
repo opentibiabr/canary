@@ -703,7 +703,6 @@ void Creature::onDeath() {
 	/**
 	 * @deprecated -- This is here to trigger the deprecated onKill events in lua
 	 */
-	auto mostDamageCreatureMaster = mostDamageCreature ? mostDamageCreature->getMaster() : nullptr;
 	if (mostDamageCreature && (mostDamageCreature != lastHitCreature || getMonster()) && mostDamageCreature != lastHitCreatureMaster) {
 		auto mostDamageCreatureMaster = mostDamageCreature->getMaster();
 		if (lastHitCreature != mostDamageCreatureMaster && (lastHitCreatureMaster == nullptr || mostDamageCreatureMaster != lastHitCreatureMaster)) {

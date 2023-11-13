@@ -158,6 +158,14 @@ loyaltyPointsPerPremiumDaySpent = 0
 loyaltyPointsPerPremiumDayPurchased = 0
 loyaltyBonusPercentageMultiplier = 1.0
 
+-- Custom PvP system
+-- NOTE: Rate is additive percent for each level and applied multiplicative to totalDamage
+-- NOTE: Damage multipliers for each vocation are adjusted in data/XML/vocations.xml
+pvpRateDamageTakenPerLevel = 0.0 -- recommended to start with 0.1
+pvpRateDamageReductionPerLevel = 0.0 -- recommended to start with 0.1
+pvpMaxLevelDifference = 0
+
+
 -- Wheel of destiny system
 -- NOTE: set wheelSystemEnabled = false to disable the wheel of destiny
 -- NOTE: only the wheel points are modified, all other data is on the client executable and cannot be modified
@@ -196,6 +204,7 @@ onlyPremiumAccount = false
 -- NOTE: buyBlessCommandFee will add fee when player buy bless by command (!bless), active changing value between 1 and 100 (fee percent. ex: 3 = 3%, 30 = 30%)
 -- NOTE: teleportPlayerToVocationRoom will enable oressa to teleport player to his/her room vocation
 -- NOTE: toggleReceiveReward = true, will enable players to choose one of reward exercise weapon by command !reward
+-- NOTE: randomMonsterSpawn = true, will enable monsters from the same spawn to be randomized between them, thus making a variable hunt
 weatherRain = false
 thunderEffect = false
 allConsoleLog = false
@@ -211,6 +220,7 @@ buyAolCommandFee = 0
 buyBlessCommandFee = 0
 teleportPlayerToVocationRoom = true
 toggleReceiveReward = false
+randomMonsterSpawn = false
 
 -- Teleport summon
 -- Set to true will never remove the summon

@@ -324,7 +324,7 @@ bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFron
 
 bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 	if (!creature) {
-		return;
+		return false;
 	}
 
 	const auto &it = getTargetIterator(creature);

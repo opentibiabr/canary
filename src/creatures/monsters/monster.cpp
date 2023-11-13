@@ -301,36 +301,44 @@ void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
 	});
 }
 
-void Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
+bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
 	assert(creature.get() != this);
 
 	const auto &it = getTargetIterator(creature);
-	if (it == targetList.end()) {
-		if (pushFront) {
-			targetList.emplace_front(creature);
-		} else {
-			targetList.emplace_back(creature);
-		}
-
-		if (!getMaster() && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
-			totalPlayersOnScreen++;
-		}
+	if (it != targetList.end()) {
+		return false;
 	}
+
+	if (pushFront) {
+		targetList.emplace_front(creature);
+	} else {
+		targetList.emplace_back(creature);
+	}
+
+	if (!getMaster() && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
+		totalPlayersOnScreen++;
+	}
+
+	return true;
 }
 
-void Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
+bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 	if (!creature) {
 		return;
 	}
 
 	const auto &it = getTargetIterator(creature);
-	if (it != targetList.end()) {
-		if (!getMaster() && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
-			totalPlayersOnScreen--;
-		}
-
-		targetList.erase(it);
+	if (it == targetList.end()) {
+		return false;
 	}
+
+	if (!getMaster() && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
+		totalPlayersOnScreen--;
+	}
+
+	targetList.erase(it);
+
+	return true;
 }
 
 void Monster::updateTargetList() {
@@ -576,15 +584,16 @@ void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature
 		return;
 	}
 
-	removeTarget(creature);
-	if (hasFollowPath || !isSummon()) {
-		addTarget(creature, hasFollowPath);
-	}
+	if (removeTarget(creature)) {
+		if (hasFollowPath || !isSummon()) {
+			addTarget(creature, hasFollowPath);
+		}
 
-	// Change the target if necessary
-	if (!hasFollowPath && !isSummon() && !targetList.empty() && targetList.front().lock() != creature) {
-		if (const auto &target = targetList.front().lock()) {
-			selectTarget(target);
+		// Change the target if necessary
+		if (!hasFollowPath && !isSummon() && !targetList.empty() && targetList.front().lock() != creature) {
+			if (const auto &target = targetList.front().lock()) {
+				selectTarget(target);
+			}
 		}
 	}
 }

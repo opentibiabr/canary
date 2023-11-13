@@ -397,8 +397,8 @@ private:
 
 	void addFriend(const std::shared_ptr<Creature> &creature);
 	void removeFriend(const std::shared_ptr<Creature> &creature);
-	void addTarget(const std::shared_ptr<Creature> &creature, bool pushFront = false);
-	void removeTarget(const std::shared_ptr<Creature> &creature);
+	bool addTarget(const std::shared_ptr<Creature> &creature, bool pushFront = false);
+	bool removeTarget(const std::shared_ptr<Creature> &creature);
 
 	void death(std::shared_ptr<Creature> lastHitCreature) override;
 	std::shared_ptr<Item> getCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature) override;

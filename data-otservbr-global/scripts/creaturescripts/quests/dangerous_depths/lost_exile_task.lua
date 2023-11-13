@@ -25,7 +25,7 @@ lostExileKill:register()
 
 local wormKill = CreatureEvent("WarzoneWormDeath")
 function wormKill.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
-	local storage = player:getStorageValue(Storage.DangerousDepths.Dwarves.Organisms)
+	local storage = mostDamageKiller:getStorageValue(Storage.DangerousDepths.Dwarves.Organisms)
 	onDeathForParty(creature, mostDamageKiller, function(creature, player)
 		if player:getStorageValue(Storage.DangerousDepths.Dwarves.Subterranean) ~= 1 then
 			return

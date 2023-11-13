@@ -77,6 +77,7 @@ monster.loot = {
 	{ id = 281, chance = 28000 }, -- giant shimmering pearl (green)
 	{ name = "cobra crest", chance = 11000 },
 	{ name = "skull helmet", chance = 7500 },
+	{ name = "cobra club", chance = 100 },
 }
 
 monster.attacks = {

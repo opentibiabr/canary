@@ -88,9 +88,9 @@ struct OpenContainer {
 
 using MuteCountMap = std::map<uint32_t, uint32_t>;
 
-static constexpr int32_t PLAYER_MAX_SPEED = 65535;
-static constexpr int32_t PLAYER_MIN_SPEED = 10;
-static constexpr int32_t PLAYER_SOUND_HEALTH_CHANGE = 10;
+static constexpr uint16_t PLAYER_MAX_SPEED = std::numeric_limits<uint16_t>::max();
+static constexpr uint16_t PLAYER_MIN_SPEED = 10;
+static constexpr uint8_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
 class Player final : public Creature, public Cylinder, public Bankable {
 public:

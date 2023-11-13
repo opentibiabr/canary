@@ -291,13 +291,12 @@ void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses typ
 
 void Monster::addFriend(const std::shared_ptr<Creature> &creature) {
 	assert(creature.get() != this);
-
 	friendList.try_emplace(creature->getID(), creature);
 }
 
 void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
-	std::erase_if(targetList, [id = creature->getID()](const std::weak_ptr<Creature> &ref) {
-		const auto &target = ref.lock();
+	std::erase_if(friendList, [id = creature->getID()](const auto &it) {
+		const auto &target = it.second.lock();
 		return !target || target->getID() == id;
 	});
 }
@@ -577,28 +576,15 @@ void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature
 		return;
 	}
 
-	const auto &it = getTargetIterator(creature);
-	if (it == targetList.end()) {
-		return;
-	}
-
-	if (const auto &target = (*it).lock()) {
-		targetList.erase(it);
-
-		if (hasFollowPath) {
-			targetList.emplace_front(target);
-		} else if (!isSummon()) {
-			targetList.emplace_back(target);
-		}
+	removeTarget(creature);
+	if (hasFollowPath || !isSummon()) {
+		addTarget(creature, hasFollowPath);
 	}
 
 	// Change the target if necessary
-	if (!hasFollowPath && !isSummon() && !targetIDList.empty() && targetIDList.front() != creature->getID()) {
-		const auto &itMap = targetListMap.find(targetIDList.front());
-		if (itMap != targetListMap.end()) {
-			if (const auto &target = itMap->second.lock()) {
-				selectTarget(target);
-			}
+	if (!hasFollowPath && !isSummon() && !targetList.empty() && targetList.front().lock() != creature) {
+		if (const auto &target = targetList.front().lock()) {
+			selectTarget(target);
 		}
 	}
 }

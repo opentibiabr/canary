@@ -225,13 +225,9 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 		}
 
 		updateIdleStatus();
-		if (!m_attackedCreature.expired()) {
-			return;
-		}
 
 		if (!isSummon()) {
-			auto followCreature = getFollowCreature();
-			if (followCreature) {
+			if (const auto &followCreature = getFollowCreature()) {
 				const Position &followPosition = followCreature->getPosition();
 				const Position &pos = getPosition();
 
@@ -239,12 +235,11 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 				int32_t offset_y = Position::getDistanceY(followPosition, pos);
 				if ((offset_x > 1 || offset_y > 1) && mType->info.changeTargetChance > 0) {
 					Direction dir = getDirectionTo(pos, followPosition);
-					const Position &checkPosition = getNextPosition(dir, pos);
+					const auto &checkPosition = getNextPosition(dir, pos);
 
-					auto nextTile = g_game().map.getTile(checkPosition);
-					if (nextTile) {
-						auto topCreature = nextTile->getTopCreature();
-						if (topCreature && followCreature != topCreature && isOpponent(topCreature)) {
+					if (const auto &nextTile = g_game().map.getTile(checkPosition)) {
+						const auto &topCreature = nextTile->getTopCreature();
+						if (followCreature != topCreature && isOpponent(topCreature)) {
 							selectTarget(topCreature);
 						}
 					}
@@ -404,6 +399,10 @@ bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
 }
 
 bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
+	if (!creature) {
+		return false;
+	}
+
 	if (isSummon() && getMaster()->getPlayer()) {
 		return creature != getMaster();
 	}
@@ -580,21 +579,8 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 }
 
 void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature) {
-	if (!creature) {
-		return;
-	}
-
-	if (removeTarget(creature)) {
-		if (hasFollowPath || !isSummon()) {
-			addTarget(creature, hasFollowPath);
-		}
-
-		// Change the target if necessary
-		if (!hasFollowPath && !isSummon() && !targetList.empty() && targetList.front().lock() != creature) {
-			if (const auto &target = targetList.front().lock()) {
-				selectTarget(target);
-			}
-		}
+	if (removeTarget(creature) && (hasFollowPath || !isSummon())) {
+		addTarget(creature, hasFollowPath);
 	}
 }
 
@@ -634,10 +620,17 @@ bool Monster::isTarget(std::shared_ptr<Creature> creature) {
 	if (creature->getPosition().z != getPosition().z) {
 		return false;
 	}
-	Faction_t targetFaction = creature->getFaction();
-	if (getFaction() != FACTION_DEFAULT && !isSummon()) {
-		return isEnemyFaction(targetFaction);
+
+	if (!isSummon()) {
+		if (creature->getPlayer() && creature->getPlayer()->isDisconnected()) {
+			return false;
+		}
+
+		if (getFaction() != FACTION_DEFAULT) {
+			return isEnemyFaction(creature->getFaction());
+		}
 	}
+
 	return true;
 }
 
@@ -758,8 +751,8 @@ void Monster::onThink(uint32_t interval) {
 		if (!isIdle) {
 			addEventWalk();
 
-			auto attackedCreature = getAttackedCreature();
-			auto followCreature = getFollowCreature();
+			const auto &attackedCreature = getAttackedCreature();
+			const auto &followCreature = getFollowCreature();
 			if (isSummon()) {
 				if (!attackedCreature) {
 					if (getMaster() && getMaster()->getAttackedCreature()) {
@@ -775,11 +768,12 @@ void Monster::onThink(uint32_t interval) {
 					// This happens just after a master orders an attack, so lets follow it aswell.
 					setFollowCreature(attackedCreature);
 				}
-			} else if (!attackedCreature && !targetList.empty()) {
-				if (!followCreature || !hasFollowPath) {
-					searchTarget(TARGETSEARCH_NEAREST);
-				} else if (isFleeing()) {
-					if (attackedCreature && !canUseAttack(getPosition(), attackedCreature)) {
+			} else {
+				const bool attackedCreatureIsDisconnected = attackedCreature && attackedCreature->getPlayer() && attackedCreature->getPlayer()->isDisconnected();
+				if ((!attackedCreature || attackedCreatureIsDisconnected) && !targetList.empty()) {
+					if (!followCreature || !hasFollowPath || attackedCreatureIsDisconnected) {
+						searchTarget(TARGETSEARCH_NEAREST);
+					} else if (isFleeing() && attackedCreature && !canUseAttack(getPosition(), attackedCreature)) {
 						searchTarget(TARGETSEARCH_DEFAULT);
 					}
 				}

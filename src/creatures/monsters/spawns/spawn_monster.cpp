@@ -220,35 +220,30 @@ void SpawnMonster::checkSpawnMonster() {
 			continue;
 		}
 
-		const spawnBlock_t &sb = it.second;
-
-		if (!sb.monsterType->canSpawn(sb.pos)) {
-			spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
-			continue;
-		}
-
-		if (sb.monsterType->info.isBlockable && findPlayer(sb.pos)) {
-			spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
-			continue;
-		}
-
-		spawnBlock_t currentSb;
+		spawnBlock_t &sb = it.second;
 		if (g_configManager().getBoolean(RANDOM_MONSTER_SPAWN)) {
-			currentSb = std::next(spawnMonsterMap.begin(), uniform_random(0, spawnMonsterMap.size() - 1))->second;
-			currentSb.pos = sb.pos;
-			currentSb.direction = sb.direction;
-		} else {
-			currentSb = sb;
+			const spawnBlock_t &randSb = std::next(spawnMonsterMap.begin(), uniform_random(0, spawnMonsterMap.size() - 1))->second;
+			sb.monsterType = randSb.monsterType;
+		}
+		if (!sb.monsterType->canSpawn(sb.pos)) {
+			sb.lastSpawn = OTSYS_TIME();
+			continue;
 		}
 
-		if (currentSb.monsterType->info.isBlockable) {
-			spawnMonster(spawnMonsterId, currentSb.monsterType, currentSb.pos, currentSb.direction, true);
-		} else {
-			scheduleSpawn(spawnMonsterId, currentSb, 3 * NONBLOCKABLE_SPAWN_MONSTER_INTERVAL);
-		}
+		if (OTSYS_TIME() >= sb.lastSpawn + sb.interval) {
+			if (sb.monsterType->info.isBlockable && findPlayer(sb.pos)) {
+				sb.lastSpawn = OTSYS_TIME();
+				continue;
+			}
+			if (sb.monsterType->info.isBlockable) {
+				spawnMonster(spawnMonsterId, sb.monsterType, sb.pos, sb.direction);
+			} else {
+				scheduleSpawn(spawnMonsterId, sb, 3 * NONBLOCKABLE_SPAWN_MONSTER_INTERVAL);
+			}
 
-		if (++spawnMonsterCount >= static_cast<uint32_t>(g_configManager().getNumber(RATE_SPAWN))) {
-			break;
+			if (++spawnMonsterCount >= static_cast<uint32_t>(g_configManager().getNumber(RATE_SPAWN))) {
+				break;
+			}
 		}
 	}
 

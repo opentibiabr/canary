@@ -213,7 +213,7 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 	if (requestedInfo & REQUEST_SERVER_SOFTWARE_INFO) {
 		output->addByte(0x23); // server software info
 		output->addString(ProtocolStatus::SERVER_NAME, "ProtocolStatus::sendInfo - ProtocolStatus::SERVER_NAME");
-		output->addString(ProtocolStatus::SERVER_VERSION, "ProtocolStatus::sendInfo - ProtocolStatus::SERVER_VERSION)";
+		output->addString(ProtocolStatus::SERVER_VERSION, "ProtocolStatus::sendInfo - ProtocolStatus::SERVER_VERSION)");
 		output->addString(fmt::format("{}.{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER), "ProtocolStatus::sendInfo - fmt::format(CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER)");
 	}
 	send(output);

@@ -4670,7 +4670,7 @@ void ProtocolGame::sendMarketAcceptOffer(const MarketOfferEx &offer) {
 		} else {
 			msg.add<uint64_t>(static_cast<uint64_t>(offer.price));
 		}
-		msg.addString(offer.playerName "ProtocolGame::sendMarketAcceptOffer - offer.playerName");
+		msg.addString(offer.playerName, "ProtocolGame::sendMarketAcceptOffer - offer.playerName");
 	}
 
 	writeToOutputBuffer(msg);
@@ -7632,7 +7632,7 @@ void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg) {
 	// Empty bytes from AddShopItem
 	msg.add<uint16_t>(0);
 	msg.addByte(0);
-	msg.addString(std::string(), "ProtocolGame::AddHiddenShopItem - std::string()";
+	msg.addString(std::string(), "ProtocolGame::AddHiddenShopItem - std::string()");
 	msg.add<uint32_t>(0);
 	msg.add<uint32_t>(0);
 	msg.add<uint32_t>(0);

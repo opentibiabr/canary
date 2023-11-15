@@ -745,48 +745,47 @@ void Monster::onThink(uint32_t interval) {
 	if (!isInSpawnRange(position)) {
 		g_game().internalTeleport(static_self_cast<Monster>(), masterPos);
 		setIdle(true);
-	} else {
-		updateIdleStatus();
+		return;
+	} 
 
-		if (isIdle) {
-			return;
-		}
+	updateIdleStatus();
 
-		addEventWalk();
-
-		const auto &attackedCreature = getAttackedCreature();
-		const auto &followCreature = getFollowCreature();
-		if (isSummon()) {
-			if (!attackedCreature) {
-				if (getMaster() && getMaster()->getAttackedCreature()) {
-					// This happens if the monster is summoned during combat
-					selectTarget(getMaster()->getAttackedCreature());
-				} else if (getMaster() != followCreature) {
-					// Our master has not ordered us to attack anything, lets follow him around instead.
-					setFollowCreature(getMaster());
-				}
-			} else if (attackedCreature.get() == this) {
-				setFollowCreature(nullptr);
-			} else if (followCreature != attackedCreature) {
-				// This happens just after a master orders an attack, so lets follow it aswell.
-				setFollowCreature(attackedCreature);
-			}
-		} else {
-			const bool attackedCreatureIsDisconnected = attackedCreature && attackedCreature->getPlayer() && attackedCreature->getPlayer()->isDisconnected();
-			if ((!attackedCreature || attackedCreatureIsDisconnected) && !targetList.empty()) {
-				if (!followCreature || !hasFollowPath || attackedCreatureIsDisconnected) {
-					searchTarget(TARGETSEARCH_NEAREST);
-				} else if (isFleeing() && attackedCreature && !canUseAttack(getPosition(), attackedCreature)) {
-					searchTarget(TARGETSEARCH_DEFAULT);
-				}
-			}
-		}
-
-		onThinkTarget(interval);
-		onThinkYell(interval);
-		onThinkDefense(interval);
-		onThinkSound(interval);
+	if (isIdle) {
+		return;
 	}
+
+	addEventWalk();
+
+	const auto &attackedCreature = getAttackedCreature();
+	const auto &followCreature = getFollowCreature();
+	if (isSummon()) {
+		if (attackedCreature.get() == this) {
+			setFollowCreature(nullptr);			
+		} else if (attackedCreature && followCreature != attackedCreature) {
+			// This happens just after a master orders an attack, so lets follow it aswell.
+			setFollowCreature(attackedCreature);
+		} else if (getMaster() && getMaster()->getAttackedCreature()) {
+			// This happens if the monster is summoned during combat
+			selectTarget(getMaster()->getAttackedCreature());
+		} else if (getMaster() != followCreature) {
+			// Our master has not ordered us to attack anything, lets follow him around instead.
+			setFollowCreature(getMaster());
+		}
+	} else if(!targetList.empty()) {
+		const bool attackedCreatureIsDisconnected = attackedCreature && attackedCreature->getPlayer() && attackedCreature->getPlayer()->isDisconnected();
+		if (!attackedCreature || attackedCreatureIsDisconnected) {
+			if (!followCreature || !hasFollowPath || attackedCreatureIsDisconnected) {
+				searchTarget(TARGETSEARCH_NEAREST);
+			} else if (attackedCreature && isFleeing() && !canUseAttack(getPosition(), attackedCreature)) {
+				searchTarget(TARGETSEARCH_DEFAULT);	 
+			}																				  
+		}
+	}
+
+	onThinkTarget(interval);
+	onThinkYell(interval);
+	onThinkDefense(interval);
+	onThinkSound(interval);
 }
 
 void Monster::doAttacking(uint32_t interval) {

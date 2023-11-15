@@ -22,8 +22,9 @@ local config = {
 		Position(33271, 31480, 14),
 		Position(33271, 31481, 14),
 	},
+	days = 14,
 	range = 20,
-	time = 30, -- time in minutes to remove the player
+	time = 60, -- time in minutes to remove the player
 }
 local function clearFerumbrasRoom()
 	local spectators = Game.getSpectators(config.bossPos, false, false, 20, 20, 20, 20)
@@ -83,9 +84,9 @@ function ferumbrasAscendantLever.onUse(player, item, fromPosition, target, toPos
 					playerTile:getPosition():sendMagicEffect(CONST_ME_POFF)
 					playerTile:teleportTo(config.newPos)
 					playerTile:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-					playerTile:setBossCooldown("Ferumbras Mortal Shell", os.time() + 280 * 60 * 3600) -- 14 days
-					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have 30 minutes to kill and loot this boss. Otherwise you will lose that chance and will be kicked out.")
-					addEvent(clearFerumbrasRoom, 60 * config.time * 1000, player:getId(), config.centerRoom, config.range, config.range, config.exitPosition)
+					playerTile:setBossCooldown("Ferumbras Mortal Shell", os.time() + config.days * 24 * 3600)
+					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have %d minutes to kill and loot this boss. Otherwise you will lose that chance and will be kicked out.", config.time))
+					addEvent(clearFerumbrasRoom, config.time * 60 * 1000, player:getId(), config.centerRoom, config.range, config.range, config.exitPosition)
 
 					for b = 1, 10 do
 						local xrand = math.random(-10, 10)

@@ -39,7 +39,7 @@ function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		return false
 	end
 
-	local charges = item:getCharges()
+	local charges = target:getCharges()
 	local itemCount = item:getCount()
 	local recharged = itemCount
 

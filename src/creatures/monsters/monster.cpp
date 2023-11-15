@@ -601,20 +601,28 @@ void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature
 		return;
 	}
 
-	auto it = std::find(targetIDList.begin(), targetIDList.end(), creature->getID());
-	if (it == targetIDList.end()) {
-		return;
+	const auto &it = std::find(targetIDList.begin(), targetIDList.end(), creature->getID());
+	if (it != targetIDList.end()) {
+		if (const auto &target = targetListMap[*it].lock()) {
+			targetIDList.erase(it);
+
+			if (hasFollowPath) {
+				targetIDList.push_front(target->getID());
+			} else if (!isSummon()) {
+				targetIDList.push_back(target->getID());
+			} else {
+				targetListMap.erase(target->getID());
+			}
+		}
 	}
 
-	if (const auto &target = targetListMap[*it].lock()) {
-		targetIDList.erase(it);
-
-		if (hasFollowPath) {
-			targetIDList.push_front(target->getID());
-		} else if (!isSummon()) {
-			targetIDList.push_back(target->getID());
-		} else {
-			targetListMap.erase(target->getID());
+	// Change the target if necessary
+	if (!hasFollowPath && !isSummon() && !targetIDList.empty() && targetIDList.front() != creature->getID()) {
+		const auto &itMap = targetListMap.find(targetIDList.front());
+		if (itMap != targetListMap.end()) {
+			if (const auto &target = itMap->second.lock()) {
+				selectTarget(target);
+			}
 		}
 	}
 }

@@ -178,17 +178,7 @@ function BossLever:onUse(player)
 			return false
 		end
 
-		if self:lastEncounterTime(creature) > os.time() then
-			local info = lever:getInfoPositions()
-			for _, v in pairs(info) do
-				local newPlayer = v.creature
-				if newPlayer then
-					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. self.timeToFightAgain / 60 / 60 .. " hours to face " .. self.name .. " again!")
-					if self:lastEncounterTime(newPlayer) > os.time() then
-						newPlayer:getPosition():sendMagicEffect(CONST_ME_POFF)
-					end
-				end
-			end
+		if not lever:canUseLever(player, self.name, self.timeToFightAgain / 60 / 60) then
 			return false
 		end
 		self.onUseExtra(creature)

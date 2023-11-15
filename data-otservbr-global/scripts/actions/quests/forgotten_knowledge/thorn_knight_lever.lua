@@ -5,6 +5,7 @@ local config = {
 			return Game.createMonster("Mounted Thorn Knight", Position(32624, 32880, 14), true, true)
 		end,
 	},
+	requiredLevel = 250,
 	playerPositions = {
 		{ pos = Position(32657, 32877, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32657, 32878, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },

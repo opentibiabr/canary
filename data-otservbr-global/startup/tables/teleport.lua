@@ -29,6 +29,11 @@ TeleportAction = {
 }
 
 TeleportUnique = {
+	-- Issavi town teleport
+	[9515] = {
+		itemId = 1949,
+		itemPos = { x = 33926, y = 31477, z = 5 },
+	},
 	-- The first dragon quest
 	-- Path: data\scripts\movements\quests\first_dragon\entrance_teleport.lua
 	-- Tazhadur entrance

@@ -746,7 +746,7 @@ void Monster::onThink(uint32_t interval) {
 		g_game().internalTeleport(static_self_cast<Monster>(), masterPos);
 		setIdle(true);
 		return;
-	} 
+	}
 
 	updateIdleStatus();
 
@@ -760,7 +760,7 @@ void Monster::onThink(uint32_t interval) {
 	const auto &followCreature = getFollowCreature();
 	if (isSummon()) {
 		if (attackedCreature.get() == this) {
-			setFollowCreature(nullptr);			
+			setFollowCreature(nullptr);
 		} else if (attackedCreature && followCreature != attackedCreature) {
 			// This happens just after a master orders an attack, so lets follow it aswell.
 			setFollowCreature(attackedCreature);
@@ -771,14 +771,14 @@ void Monster::onThink(uint32_t interval) {
 			// Our master has not ordered us to attack anything, lets follow him around instead.
 			setFollowCreature(getMaster());
 		}
-	} else if(!targetList.empty()) {
+	} else if (!targetList.empty()) {
 		const bool attackedCreatureIsDisconnected = attackedCreature && attackedCreature->getPlayer() && attackedCreature->getPlayer()->isDisconnected();
 		if (!attackedCreature || attackedCreatureIsDisconnected) {
 			if (!followCreature || !hasFollowPath || attackedCreatureIsDisconnected) {
 				searchTarget(TARGETSEARCH_NEAREST);
 			} else if (attackedCreature && isFleeing() && !canUseAttack(getPosition(), attackedCreature)) {
-				searchTarget(TARGETSEARCH_DEFAULT);	 
-			}																				  
+				searchTarget(TARGETSEARCH_DEFAULT);
+			}
 		}
 	}
 

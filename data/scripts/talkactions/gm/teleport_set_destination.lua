@@ -11,7 +11,7 @@ function teleportSetDestination.onSay(player, words, param)
 		return true
 	end
 
-	local params = param:split(',')
+	local params = param:split(",")
 	if params[3] then
 		local position = player:getPosition()
 		position:getNextPosition(player:getDirection(), 1)

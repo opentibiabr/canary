@@ -234,9 +234,6 @@ local function queueSendStoreAlertToUser(message, delay, playerId, storeErrorCod
 end
 
 function onRecvbyte(player, msg, byte)
-	if not configManager.getBoolean(STOREMODULES) then
-		return true
-	end
 	if player:getVocation():getId() == 0 and not GameStore.haveCategoryRook() then
 		return player:sendCancelMessage("Store don't have offers for rookgaard citizen.")
 	end
@@ -296,9 +293,9 @@ function parseTransferableCoins(playerId, msg)
 	player:removeTransferableCoinsBalance(amount)
 	addPlayerEvent(sendStorePurchaseSuccessful, 550, playerId, "You have transfered " .. amount .. " coins to " .. reciver .. " successfully")
 
-	-- Adding history for both reciver/sender
-	GameStore.insertHistory(accountId, GameStore.HistoryTypes.HISTORY_TYPE_NONE, player:getName() .. " transfered you this amount.", amount, GameStore.CoinType.Coin)
-	GameStore.insertHistory(player:getAccountId(), GameStore.HistoryTypes.HISTORY_TYPE_NONE, "You transfered this amount to " .. reciver, -1 * amount, GameStore.CoinType.Coin)
+	-- Adding history for both receiver/sender
+	GameStore.insertHistory(accountId, GameStore.HistoryTypes.HISTORY_TYPE_NONE, player:getName() .. " transferred you this amount.", amount, GameStore.CoinType.Coin)
+	GameStore.insertHistory(player:getAccountId(), GameStore.HistoryTypes.HISTORY_TYPE_NONE, "You transferred this amount to " .. reciver, -1 * amount, GameStore.CoinType.Coin)
 	openStore(playerId)
 end
 
@@ -1995,7 +1992,7 @@ function Player.makeCoinTransaction(self, offer, desc)
 		op = self:removeTransferableCoinsBalance(offer.price)
 	end
 
-	-- When the transaction is suscessfull add to the history
+	-- When the transaction is successful add to the history
 	if op then
 		GameStore.insertHistory(self:getAccountId(), GameStore.HistoryTypes.HISTORY_TYPE_NONE, desc, offer.price * -1, offer.coinType)
 	end

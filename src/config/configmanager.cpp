@@ -390,6 +390,11 @@ bool ConfigManager::load() {
 	boolean[REWARD_CHEST_COLLECT_ENABLED] = getGlobalBoolean(L, "rewardChestCollectEnabled", true);
 	integer[REWARD_CHEST_MAX_COLLECT_ITEMS] = getGlobalNumber(L, "rewardChestMaxCollectItems", 200);
 
+	// PVP System
+	floating[PVP_RATE_DAMAGE_TAKEN_PER_LEVEL] = getGlobalFloat(L, "pvpRateDamageTakenPerLevel", 0.0);
+	floating[PVP_RATE_DAMAGE_REDUCTION_PER_LEVEL] = getGlobalFloat(L, "pvpRateDamageReductionPerLevel", 0.0);
+	integer[PVP_MAX_LEVEL_DIFFERENCE] = getGlobalNumber(L, "pvpMaxLevelDifference", 0);
+
 	boolean[TOGGLE_MOUNT_IN_PZ] = getGlobalBoolean(L, "toggleMountInProtectionZone", false);
 
 	boolean[TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART] = getGlobalBoolean(L, "togglehouseTransferOnRestart", false);

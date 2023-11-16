@@ -858,6 +858,7 @@ bool Game::internalPlaceCreature(std::shared_ptr<Creature> creature, const Posit
 
 	creature->setID();
 	creature->addList();
+	creature->updateCalculatedStepSpeed();
 
 	if (creatureCheck) {
 		addCreatureCheck(creature);
@@ -3955,7 +3956,7 @@ std::shared_ptr<Item> Game::wrapItem(std::shared_ptr<Item> item, std::shared_ptr
 	auto itemName = item->getName();
 	std::shared_ptr<Item> newItem = transformItem(item, ITEM_DECORATION_KIT);
 	newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
-	item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + itemName + ">.");
+	newItem->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + itemName + ">.");
 	if (hiddenCharges > 0) {
 		newItem->setAttribute(DATE, hiddenCharges);
 	}
@@ -6277,6 +6278,38 @@ void Game::notifySpectators(const CreatureVector &spectators, const Position &ta
 	}
 }
 
+// Custom PvP System combat helpers
+void Game::applyPvPDamage(CombatDamage &damage, std::shared_ptr<Player> attacker, std::shared_ptr<Player> target) {
+	float targetDamageReceivedMultiplier = target->vocation->pvpDamageReceivedMultiplier;
+	float attackerDamageDealtMultiplier = attacker->vocation->pvpDamageDealtMultiplier;
+	float levelDifferenceDamageMultiplier = this->pvpLevelDifferenceDamageMultiplier(attacker, target);
+
+	float pvpDamageMultiplier = targetDamageReceivedMultiplier * attackerDamageDealtMultiplier * levelDifferenceDamageMultiplier;
+
+	damage.primary.value = std::round(damage.primary.value * pvpDamageMultiplier);
+	damage.secondary.value = std::round(damage.secondary.value * pvpDamageMultiplier);
+}
+
+float Game::pvpLevelDifferenceDamageMultiplier(std::shared_ptr<Player> attacker, std::shared_ptr<Player> target) {
+	int32_t levelDifference = target->getLevel() - attacker->getLevel();
+	levelDifference = std::abs(levelDifference);
+	bool isLowerLevel = target->getLevel() < attacker->getLevel();
+
+	int32_t maxLevelDifference = g_configManager().getNumber(PVP_MAX_LEVEL_DIFFERENCE);
+	levelDifference = std::min(levelDifference, maxLevelDifference);
+
+	float levelDiffRate = 1.0;
+	if (isLowerLevel) {
+		float rateDamageTakenByLevel = g_configManager().getFloat(PVP_RATE_DAMAGE_TAKEN_PER_LEVEL) / 100;
+		levelDiffRate += levelDifference * rateDamageTakenByLevel;
+	} else {
+		float rateDamageReductionByLevel = g_configManager().getFloat(PVP_RATE_DAMAGE_REDUCTION_PER_LEVEL) / 100;
+		levelDiffRate -= levelDifference * rateDamageReductionByLevel;
+	}
+
+	return levelDiffRate;
+}
+
 // Wheel of destiny combat helpers
 void Game::applyWheelOfDestinyHealing(CombatDamage &damage, std::shared_ptr<Player> attackerPlayer, std::shared_ptr<Creature> target) {
 	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100.;
@@ -6728,6 +6761,11 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 			damage.secondary.value = 0;
 		} else if (damage.secondary.value) {
 			damage.secondary.value = std::min<int32_t>(damage.secondary.value, targetHealth - damage.primary.value);
+		}
+
+		// Apply Custom PvP Damage (must be placed here to avoid recursive calls)
+		if (attackerPlayer && targetPlayer) {
+			applyPvPDamage(damage, attackerPlayer, targetPlayer);
 		}
 
 		realDamage = damage.primary.value + damage.secondary.value;

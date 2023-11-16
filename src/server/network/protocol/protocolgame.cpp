@@ -6083,7 +6083,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 	msg.addByte(0x17);
 
 	msg.add<uint32_t>(player->getID());
-	msg.add<uint16_t>(0x32); // beat duration (50)
+	msg.add<uint16_t>(SERVER_BEAT); // beat duration (50)
 
 	msg.addDouble(Creature::speedA, 3);
 	msg.addDouble(Creature::speedB, 3);

@@ -18,7 +18,7 @@ monster.events = {
 	"NomadDeath",
 }
 
-monster.raceId = 777
+monster.raceId = 776
 monster.Bestiary = {
 	class = "Human",
 	race = BESTY_RACE_HUMAN,

@@ -126,7 +126,7 @@
 		<attribute key="item" value="9685" count="25" />
 		<attribute key="item" value="9633" count="15" />
 	</imbuement>
-	<imbuement name="Vampirism" base="3" category="1" iconid="46" premium="1" storage="50488">
+	<imbuement name="Vampirism" base="3" category="1" iconid="46" premium="1" storage="0">
 		<attribute key="description" value="Converts 25% of damage to HP with a chance of 100%." />
 		<attribute key="effect" type="skill" value="lifeleech" bonus="2500" chance="100" />
 		<attribute key="item" value="9685" count="25" />
@@ -145,7 +145,7 @@
 		<attribute key="item" value="11492" count="25" />
 		<attribute key="item" value="20200" count="25" />
 	</imbuement>
-	<imbuement name="Void" base="3" category="2" iconid="49" premium="1" storage="50494">
+	<imbuement name="Void" base="3" category="2" iconid="49" premium="1" storage="0">
 		<attribute key="description" value="Converts 8% of damage to MP with a chance of 100%." />
 		<attribute key="effect" type="skill" value="manaleech" bonus="800" chance="100" />
 		<attribute key="item" value="11492" count="25" />
@@ -164,7 +164,7 @@
 		<attribute key="item" value="11444" count="20" />
 		<attribute key="item" value="10311" count="25" />
 	</imbuement>
-	<imbuement name="Strike" base="3" category="3" iconid="1" premium="1" storage="50501">
+	<imbuement name="Strike" base="3" category="3" iconid="1" premium="1" storage="0">
 		<attribute key="description" value="Raises crit hit damage by 50% and crit hit chance by 10%." />
 		<attribute key="effect" type="skill" value="critical" bonus="50" chance="10" />
 		<attribute key="item" value="11444" count="20" />

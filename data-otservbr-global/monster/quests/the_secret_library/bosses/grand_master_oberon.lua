@@ -141,7 +141,7 @@ mType.onDisappear = function(monster, creature) end
 mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
 mType.onSay = function(monster, creature, type, message)
-	if type ~= TALKTYPE_SAY then
+	if type ~= TALKTYPE_SPELL_USE then
 		return false
 	end
 	local exhaust = GrandMasterOberonConfig.Storage.Exhaust
@@ -152,14 +152,14 @@ mType.onSay = function(monster, creature, type, message)
 		local asking_storage = monster:getStorageValue(GrandMasterOberonConfig.Storage.Asking)
 		local oberonMessagesTable = GrandMasterOberonResponses[asking_storage]
 
-		if oberonMessagesTable then
-			if message == oberonMessagesTable.msg:lower() or message == oberonMessagesTable.msg2:lower() then
+--		if oberonMessagesTable then
+--			if message == oberonMessagesTable.msg:lower() or message == oberonMessagesTable.msg2:lower() then
 				monster:say("GRRRAAANNGH!", TALKTYPE_MONSTER_SAY)
 				monster:unregisterEvent("OberonImmunity")
-			else
-				monster:say("HAHAHAHA!", TALKTYPE_MONSTER_SAY)
-			end
-		end
+--			else
+--				monster:say("HAHAHAHA!", TALKTYPE_MONSTER_SAY)
+--			end
+--		end
 	end
 end
 

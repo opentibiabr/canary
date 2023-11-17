@@ -46155,6 +46155,7 @@
 		<attribute key="partnerdirection" value="south"/>
 		<attribute key="femaletransformto" value="26092"/>
 		<attribute key="maletransformto" value="26088"/>
+		<attribute key="rotateTo" value="23398"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26097" article="a" name="verdant bed">
@@ -46164,6 +46165,7 @@
 		<attribute key="partnerdirection" value="north"/>
 		<attribute key="femaletransformto" value="26093"/>
 		<attribute key="maletransformto" value="26089"/>
+		<attribute key="rotateTo" value="23399"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26098" article="a" name="verdant bed">
@@ -46173,6 +46175,7 @@
 		<attribute key="partnerdirection" value="east"/>
 		<attribute key="femaletransformto" value="26094"/>
 		<attribute key="maletransformto" value="26090"/>
+		<attribute key="rotateTo" value="23396"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26099" article="a" name="verdant bed">
@@ -46182,6 +46185,7 @@
 		<attribute key="partnerdirection" value="west"/>
 		<attribute key="femaletransformto" value="26095"/>
 		<attribute key="maletransformto" value="26091"/>
+		<attribute key="rotateTo" value="23397"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26100" article="a" name="bath tub">

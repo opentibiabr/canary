@@ -43,7 +43,7 @@ function drumeAction.onUse(player, item, fromPosition, target, toPosition, isHot
 	if player:getPosition() ~= config.firstPlayerPosition then
 		return false
 	end
-	
+
 	local spectators = Game.getSpectators(config.centerPosition, false, true, config.rangeX, config.rangeX, config.rangeY, config.rangeY)
 	if #spectators ~= 0 then
 		player:sendCancelMessage("There's someone already in the skirmish.")

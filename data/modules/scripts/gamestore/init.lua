@@ -234,9 +234,6 @@ local function queueSendStoreAlertToUser(message, delay, playerId, storeErrorCod
 end
 
 function onRecvbyte(player, msg, byte)
-	if not configManager.getBoolean(STOREMODULES) then
-		return true
-	end
 	if player:getVocation():getId() == 0 and not GameStore.haveCategoryRook() then
 		return player:sendCancelMessage("Store don't have offers for rookgaard citizen.")
 	end

@@ -246,7 +246,7 @@ Blessings.useCharm = function(player, item)
 end
 
 Blessings.checkBless = function(player)
-	local result, bless = "Received blessings:"
+	local result = "Received blessings:"
 	for k, v in pairs(Blessings.All) do
 		result = player:hasBlessing(k) and result .. "\n" .. v.name or result
 	end

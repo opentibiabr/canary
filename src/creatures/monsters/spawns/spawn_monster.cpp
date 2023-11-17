@@ -198,12 +198,7 @@ void SpawnMonster::startup() {
 	for (const auto &it : spawnMonsterMap) {
 		uint32_t spawnMonsterId = it.first;
 		const spawnBlock_t &sb = it.second;
-		if (g_configManager().getBoolean(RANDOM_MONSTER_SPAWN)) {
-			const spawnBlock_t &randSb = std::next(spawnMonsterMap.begin(), uniform_random(0, spawnMonsterMap.size() - 1))->second;
-			spawnMonster(spawnMonsterId, randSb.monsterType, sb.pos, sb.direction, true);
-		} else {
-			spawnMonster(spawnMonsterId, sb.monsterType, sb.pos, sb.direction, true);
-		}
+		spawnMonster(spawnMonsterId, sb.monsterType, sb.pos, sb.direction, true);
 	}
 }
 
@@ -220,35 +215,27 @@ void SpawnMonster::checkSpawnMonster() {
 			continue;
 		}
 
-		const spawnBlock_t &sb = it.second;
-
+		spawnBlock_t &sb = it.second;
 		if (!sb.monsterType->canSpawn(sb.pos)) {
-			spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
+			sb.lastSpawn = OTSYS_TIME();
 			continue;
 		}
 
-		if (sb.monsterType->info.isBlockable && findPlayer(sb.pos)) {
-			spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
-			continue;
-		}
+		if (OTSYS_TIME() >= sb.lastSpawn + sb.interval) {
+			if (sb.monsterType->info.isBlockable && findPlayer(sb.pos)) {
+				sb.lastSpawn = OTSYS_TIME();
+				continue;
+			}
 
-		spawnBlock_t currentSb;
-		if (g_configManager().getBoolean(RANDOM_MONSTER_SPAWN)) {
-			currentSb = std::next(spawnMonsterMap.begin(), uniform_random(0, spawnMonsterMap.size() - 1))->second;
-			currentSb.pos = sb.pos;
-			currentSb.direction = sb.direction;
-		} else {
-			currentSb = sb;
-		}
+			if (sb.monsterType->info.isBlockable) {
+				spawnMonster(spawnMonsterId, sb.monsterType, sb.pos, sb.direction);
+			} else {
+				scheduleSpawn(spawnMonsterId, sb, 3 * NONBLOCKABLE_SPAWN_MONSTER_INTERVAL);
+			}
 
-		if (currentSb.monsterType->info.isBlockable) {
-			spawnMonster(spawnMonsterId, currentSb.monsterType, currentSb.pos, currentSb.direction, true);
-		} else {
-			scheduleSpawn(spawnMonsterId, currentSb, 3 * NONBLOCKABLE_SPAWN_MONSTER_INTERVAL);
-		}
-
-		if (++spawnMonsterCount >= static_cast<uint32_t>(g_configManager().getNumber(RATE_SPAWN))) {
-			break;
+			if (++spawnMonsterCount >= static_cast<uint32_t>(g_configManager().getNumber(RATE_SPAWN))) {
+				break;
+			}
 		}
 	}
 

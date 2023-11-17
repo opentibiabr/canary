@@ -257,6 +257,15 @@ void trim_left(std::string &source, char t) {
 	source.erase(0, source.find_first_not_of(t));
 }
 
+std::string keepFirstWordOnly(std::string &str) {
+	size_t spacePos = str.find(' ');
+	if (spacePos != std::string::npos) {
+		str.erase(spacePos);
+	}
+
+	return str;
+}
+
 void toLowerCaseString(std::string &source) {
 	std::transform(source.begin(), source.end(), source.begin(), tolower);
 }

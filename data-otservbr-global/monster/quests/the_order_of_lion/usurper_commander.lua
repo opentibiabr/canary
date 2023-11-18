@@ -21,7 +21,7 @@ monster.speed = 125
 monster.manaCost = 0
 
 monster.faction = FACTION_LIONUSURPERS
-monster.enemyFactions = { FACTION_LION, FACTION_PLAYER }
+monster.enemyFactions = { FACTION_PLAYER, FACTION_LION }
 
 monster.changeTarget = {
 	interval = 4000,

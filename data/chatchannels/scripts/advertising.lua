@@ -1,5 +1,5 @@
 function canJoin(player)
-	return player:getVocation():getId() ~= VOCATION_NONE or player:getAccountType() >= ACCOUNT_TYPE_SENIORTUTOR
+	return player:getVocation():getId() ~= VOCATION_NONE or player:getGroup():getId() >= GROUP_TYPE_SENIORTUTOR
 end
 
 local CHANNEL_ADVERTISING = 5
@@ -9,7 +9,7 @@ muted:setParameter(CONDITION_PARAM_SUBID, CHANNEL_ADVERTISING)
 muted:setParameter(CONDITION_PARAM_TICKS, 120000)
 
 function onSpeak(player, type, message)
-	if player:getAccountType() >= ACCOUNT_TYPE_GAMEMASTER then
+	if player:getGroup():getId() >= GROUP_TYPE_GAMEMASTER then
 		if type == TALKTYPE_CHANNEL_Y then
 			return TALKTYPE_CHANNEL_O
 		end
@@ -28,7 +28,7 @@ function onSpeak(player, type, message)
 	player:addCondition(muted)
 
 	if type == TALKTYPE_CHANNEL_O then
-		if player:getAccountType() < ACCOUNT_TYPE_GAMEMASTER then
+		if player:getGroup():getId() < GROUP_TYPE_GAMEMASTER then
 			type = TALKTYPE_CHANNEL_Y
 		end
 	elseif type == TALKTYPE_CHANNEL_R1 then

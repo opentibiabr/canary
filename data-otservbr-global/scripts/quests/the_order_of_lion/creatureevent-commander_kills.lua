@@ -5,7 +5,7 @@ local config = {
 	rangeY = 16,
 }
 
-local lionCommanderDeath = CreatureEvent("lionCommanderDeath")
+local lionCommanderDeath = CreatureEvent("LionCommanderDeath")
 function lionCommanderDeath.onPrepareDeath(creature)
 	local totalCommanders = Game.getStorageValue(GlobalStorage.TheOrderOfTheLion.Drume.TotalLionCommanders)
 	if totalCommanders > 1 then
@@ -27,7 +27,7 @@ end
 
 lionCommanderDeath:register()
 
-local usurperCommanderDeath = CreatureEvent("usurperCommanderDeath")
+local usurperCommanderDeath = CreatureEvent("UsurperCommanderDeath")
 function usurperCommanderDeath.onPrepareDeath(creature)
 	local totalCommanders = Game.getStorageValue(GlobalStorage.TheOrderOfTheLion.Drume.TotalUsurperCommanders)
 	if totalCommanders > 0 then
@@ -42,7 +42,7 @@ end
 
 usurperCommanderDeath:register()
 
-local kesarHealthChange = CreatureEvent("kesarImmortal")
+local kesarHealthChange = CreatureEvent("KesarImmortal")
 function kesarHealthChange.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)
 	return 0, 0, 0, 0
 end

@@ -33,7 +33,7 @@ monster.strategiesTarget = {
 }
 
 monster.events = {
-	"lionCommanderDeath",
+	"LionCommanderDeath",
 }
 
 monster.flags = {

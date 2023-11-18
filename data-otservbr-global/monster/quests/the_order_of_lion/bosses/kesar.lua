@@ -33,7 +33,7 @@ monster.strategiesTarget = {
 }
 
 monster.events = {
-	"kesarImmortal",
+	"KesarImmortal",
 }
 
 monster.flags = {

@@ -231,14 +231,22 @@ void SpawnMonster::startup() {
 			}
 		}
 	}
-	checkSpawnMonster();
+	for (auto &[spawnMonsterId, sb] : spawnMonsterMap) {
+		const auto &mType = sb.getMonsterType();
+		if (!mType) {
+			continue;
+		}
+		spawnMonster(spawnMonsterId, mType, sb.pos, sb.direction, true);
+	}
 }
 
 void SpawnMonster::checkSpawnMonster() {
+	if (checkSpawnMonsterEvent == 0) {
+		return;
+	}
+
 	checkSpawnMonsterEvent = 0;
-
 	cleanup();
-
 	uint32_t spawnMonsterCount = 0;
 
 	for (auto &it : spawnMonsterMap) {
@@ -292,10 +300,8 @@ void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, cons
 void SpawnMonster::cleanup() {
 	auto it = spawnedMonsterMap.begin();
 	while (it != spawnedMonsterMap.end()) {
-		uint32_t spawnMonsterId = it->first;
-		std::shared_ptr<Monster> monster = it->second;
-		if (!monster || monster->isRemoved()) {
-			spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
+		auto monster = it->second;
+		if (monster == nullptr || monster->isRemoved()) {
 			it = spawnedMonsterMap.erase(it);
 		} else {
 			++it;
@@ -387,6 +393,9 @@ std::shared_ptr<MonsterType> spawnBlock_t::getMonsterType() const {
 	}
 	uint32_t totalWeight = 0;
 	for (const auto &[mType, weight] : monsterTypes) {
+		if (!mType) {
+			continue;
+		}
 		if (mType->isBoss()) {
 			if (monsterTypes.size() > 1) {
 				g_logger().warn("[SpawnMonster] Boss monster {} has been added to spawn block with other monsters. This is not allowed.", mType->name);

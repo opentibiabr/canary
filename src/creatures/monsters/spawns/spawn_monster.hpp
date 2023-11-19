@@ -17,10 +17,13 @@ class MonsterType;
 
 struct spawnBlock_t {
 	Position pos;
-	std::shared_ptr<MonsterType> monsterType;
+	std::unordered_map<std::shared_ptr<MonsterType>, uint32_t> monsterTypes;
 	int64_t lastSpawn;
 	uint32_t interval;
 	Direction direction;
+
+	std::shared_ptr<MonsterType> getMonsterType() const;
+	bool hasBoss() const;
 };
 
 class SpawnMonster {
@@ -33,7 +36,7 @@ public:
 	SpawnMonster(const SpawnMonster &) = delete;
 	SpawnMonster &operator=(const SpawnMonster &) = delete;
 
-	bool addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t interval);
+	bool addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t interval, uint32_t weight = 1);
 	void removeMonster(std::shared_ptr<Monster> monster);
 
 	uint32_t getInterval() const {
@@ -71,7 +74,7 @@ private:
 	static bool findPlayer(const Position &pos);
 	bool spawnMonster(uint32_t spawnMonsterId, const std::shared_ptr<MonsterType> monsterType, const Position &pos, Direction dir, bool startup = false);
 	void checkSpawnMonster();
-	void scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, uint16_t interval);
+	void scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> monsterType, uint16_t interval);
 };
 
 class SpawnsMonster {

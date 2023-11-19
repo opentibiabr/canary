@@ -31,7 +31,7 @@ function golden.onUse(player, item, fromPosition, target, toPosition, monster, i
 	end
 
 	if toPosition == Position(33606, 32362, 11) then
-		if roomIsOccupied(setting.centerRoom, setting.range, setting.range) or Game.getStorageValue(setting.clearRoomStorage) == 1 then
+		if roomIsOccupied(setting.centerRoom, false, setting.range, setting.range) or Game.getStorageValue(setting.clearRoomStorage) == 1 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Someone is fighting against the boss! You need wait awhile.")
 			return true
 		end

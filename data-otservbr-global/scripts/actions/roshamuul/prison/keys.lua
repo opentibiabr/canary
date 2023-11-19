@@ -37,30 +37,6 @@ local config = {
 	},
 }
 
-local function roomIsOccupied(centerPosition, rangeX, rangeY)
-	local spectators = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
-	if #spectators ~= 0 then
-		return true
-	end
-
-	return false
-end
-
-local function clearBossRoom(playerId, centerPosition, rangeX, rangeY, exitPosition)
-	local spectators, spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
-	for i = 1, #spectators do
-		spectator = spectators[i]
-		if spectator:isPlayer() and spectator.uid == playerId then
-			spectator:teleportTo(exitPosition)
-			exitPosition:sendMagicEffect(CONST_ME_TELEPORT)
-		end
-
-		if spectator:isMonster() then
-			spectator:remove()
-		end
-	end
-end
-
 local keys = Action()
 
 function keys.onUse(player, item, fromPosition, target, toPosition, isHotkey)
@@ -78,7 +54,7 @@ function keys.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		return true
 	end
 
-	if roomIsOccupied(tmpConfig.centerPosition, tmpConfig.rangeX, tmpConfig.rangeY) then
+	if roomIsOccupied(tmpConfig.centerPosition, false, tmpConfig.rangeX, tmpConfig.rangeY) then
 		player:sendCancelMessage("There is someone in the room.")
 		return true
 	end
@@ -93,7 +69,7 @@ function keys.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have fifteen minutes to kill and loot this boss, else you will lose that chance.")
 
 	-- Let's roll
-	addEvent(clearBossRoom, 60 * tmpConfig.time * 1000, player:getId(), tmpConfig.centerPosition, tmpConfig.rangeX, tmpConfig.rangeY, tmpConfig.exitPosition)
+	addEvent(clearBossRoom, 60 * tmpConfig.time * 1000, player:getId(), tmpConfig.centerPosition, false, tmpConfig.rangeX, tmpConfig.rangeY, tmpConfig.exitPosition)
 	item:remove()
 	player:teleportTo(tmpConfig.newPosition)
 	player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

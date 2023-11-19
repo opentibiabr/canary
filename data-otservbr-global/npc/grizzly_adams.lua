@@ -438,7 +438,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("You are ready to advance one rank in our society |PLAYERNAME|. Ask me for a {promotion} first.", npc, creature)
 			return true
 		end
-		local messageAlt, messageAltPoints, messageAltExtra, messageAltExtraPoints = false
+		local messageAlt, messageAltPoints, messageAltExtra, messageAltExtraPoints = false, false, false, false
 		local extraValue = 0
 		local messageAltId = 1
 		local started = player:getStartedTasks()

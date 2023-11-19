@@ -6,8 +6,8 @@ muted:setParameter(CONDITION_PARAM_SUBID, CHANNEL_HELP)
 muted:setParameter(CONDITION_PARAM_TICKS, 3600000)
 
 function onSpeak(player, type, message)
-	local playerAccountType = player:getAccountType()
-	if player:getLevel() == 1 and playerAccountType == ACCOUNT_TYPE_NORMAL then
+	local playerGroupType = player:getGroup():getId()
+	if player:getLevel() == 1 and playerGroupType == GROUP_TYPE_NORMAL then
 		player:sendCancelMessage("You may not speak into channels as long as you are on level 1.")
 		return false
 	end
@@ -17,12 +17,12 @@ function onSpeak(player, type, message)
 		return false
 	end
 
-	if playerAccountType >= ACCOUNT_TYPE_TUTOR then
+	if playerGroupType >= GROUP_TYPE_TUTOR then
 		if string.sub(message, 1, 6) == "!mute " then
 			local targetName = string.sub(message, 7)
 			local target = Player(targetName)
 			if target then
-				if playerAccountType > target:getAccountType() then
+				if playerGroupType > target:getAccountType() then
 					if not target:getCondition(CONDITION_CHANNELMUTEDTICKS, CONDITIONID_DEFAULT, CHANNEL_HELP) then
 						target:addCondition(muted)
 						target:setStorageValue(storage, os.time() + 180)
@@ -41,7 +41,7 @@ function onSpeak(player, type, message)
 			local targetName = string.sub(message, 9)
 			local target = Player(targetName)
 			if target then
-				if playerAccountType > target:getAccountType() then
+				if playerGroupType > target:getAccountType() then
 					if target:getStorageValue(storage) > os.time() then
 						target:removeCondition(CONDITION_CHANNELMUTEDTICKS, CONDITIONID_DEFAULT, CHANNEL_HELP)
 						sendChannelMessage(CHANNEL_HELP, TALKTYPE_CHANNEL_R1, target:getName() .. " has been unmuted.")
@@ -60,16 +60,16 @@ function onSpeak(player, type, message)
 	end
 
 	if type == TALKTYPE_CHANNEL_Y then
-		if playerAccountType >= ACCOUNT_TYPE_TUTOR or player:hasFlag(PlayerFlag_TalkOrangeHelpChannel) then
+		if playerGroupType >= GROUP_TYPE_TUTOR or player:hasFlag(PlayerFlag_TalkOrangeHelpChannel) then
 			type = TALKTYPE_CHANNEL_O
 		end
 	elseif type == TALKTYPE_CHANNEL_O then
-		if playerAccountType < ACCOUNT_TYPE_TUTOR and not player:hasFlag(PlayerFlag_TalkOrangeHelpChannel) then
+		if playerGroupType < GROUP_TYPE_TUTOR and not player:hasFlag(PlayerFlag_TalkOrangeHelpChannel) then
 			type = TALKTYPE_CHANNEL_Y
 		end
 	elseif type == TALKTYPE_CHANNEL_R1 then
-		if playerAccountType < ACCOUNT_TYPE_GAMEMASTER and not player:hasFlag(PlayerFlag_CanTalkRedChannel) then
-			if playerAccountType >= ACCOUNT_TYPE_TUTOR or player:hasFlag(PlayerFlag_TalkOrangeHelpChannel) then
+		if playerGroupType < GROUP_TYPE_GAMEMASTER and not player:hasFlag(PlayerFlag_CanTalkRedChannel) then
+			if playerGroupType >= GROUP_TYPE_TUTOR or player:hasFlag(PlayerFlag_TalkOrangeHelpChannel) then
 				type = TALKTYPE_CHANNEL_O
 			else
 				type = TALKTYPE_CHANNEL_Y

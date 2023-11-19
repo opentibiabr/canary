@@ -62,6 +62,10 @@ monster.flags = {
 	canWalkOnPoison = false,
 }
 
+monster.events = {
+	"WhiteDeerDeath",
+}
+
 monster.light = {
 	level = 0,
 	color = 0,

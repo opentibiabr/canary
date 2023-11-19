@@ -1,10 +1,15 @@
-local ferumbrasSoulSplinter = CreatureEvent("FerumbrasSoulSplinter")
+local ferumbrasSoulSplinter = CreatureEvent("FerumbrasSoulSplinterDeath")
+
 function ferumbrasSoulSplinter.onDeath(creature, corpse, lasthitkiller, mostdamagekiller, lasthitunjustified, mostdamageunjustified)
-	local monster = Game.createMonster("ferumbras essence", creature:getPosition(), true, true)
-	if not monster then
-		return true
-	end
+	Game.createMonster("ferumbras essence", creature:getPosition(), true, true)
 	return true
 end
 
 ferumbrasSoulSplinter:register()
+
+local ferumbrasEssenceImmortal = CreatureEvent("FerumbrasEssenceImmortal")
+function ferumbrasEssenceImmortal.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)
+	return 0, 0, 0, 0
+end
+
+ferumbrasEssenceImmortal:register()

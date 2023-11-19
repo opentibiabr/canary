@@ -10,7 +10,7 @@ AscendingFerumbrasConfig = {
 	days = 14,
 	range = 20,
 	time = 60, -- time in minutes to remove the player
-	vortex = 20121
+	vortex = 20121,
 }
 
 local config = AscendingFerumbrasConfig

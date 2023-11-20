@@ -24,7 +24,7 @@ local setting = {
 local leverTheRavager = Action()
 function leverTheRavager.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 2772 then
-		if roomIsOccupied(setting.centerRoom, setting.range, setting.range) then
+		if roomIsOccupied(setting.centerRoom, false, setting.range, setting.range) then
 			player:say("Someone is fighting against the boss! You need wait awhile.", TALKTYPE_MONSTER_SAY)
 			return true
 		end

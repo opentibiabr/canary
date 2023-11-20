@@ -14,7 +14,7 @@ local arena2x2 = Action()
 
 function arena2x2.onUse(player, item, fromPosition, target, toPosition, monster, isHotkey)
 	if toPosition == Position(32271, 32180, 8) then
-		if roomIsOccupied(setting.centerRoom, setting.range, setting.range) then
+		if roomIsOccupied(setting.centerRoom, false, setting.range, setting.range) then
 			player:say("Please wait for the fighters come out of the arena.", TALKTYPE_ORANGE_1)
 			return true
 		end

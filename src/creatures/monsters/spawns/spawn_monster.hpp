@@ -42,7 +42,7 @@ public:
 	uint32_t getInterval() const {
 		return interval;
 	}
-	void startup();
+	void startup(bool delayed = false);
 
 	void startSpawnMonsterCheck();
 	void stopEvent();
@@ -58,12 +58,10 @@ public:
 
 private:
 	// map of the spawned creatures
-	using SpawnedMap = std::multimap<uint32_t, std::shared_ptr<Monster>>;
-	using spawned_pair = SpawnedMap::value_type;
-	SpawnedMap spawnedMonsterMap;
+	phmap::parallel_flat_hash_map_m<uint32_t, std::shared_ptr<Monster>> spawnedMonsterMap;
 
 	// map of creatures in the spawn
-	std::map<uint32_t, spawnBlock_t> spawnMonsterMap;
+	phmap::parallel_flat_hash_map_m<uint32_t, spawnBlock_t> spawnMonsterMap;
 
 	Position centerPos;
 	int32_t radius;

@@ -162,8 +162,7 @@ void SpawnMonster::startSpawnMonsterCheck() {
 }
 
 SpawnMonster::~SpawnMonster() {
-	for (const auto &it : spawnedMonsterMap) {
-		std::shared_ptr<Monster> monster = it.second;
+	for (const auto &[_, monster] : spawnedMonsterMap) {
 		monster->setSpawnMonster(nullptr);
 	}
 }
@@ -183,6 +182,9 @@ bool SpawnMonster::isInSpawnMonsterZone(const Position &pos) {
 }
 
 bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, const std::shared_ptr<MonsterType> monsterType, const Position &pos, Direction dir, bool startup /*= false*/) {
+	if (spawnedMonsterMap.contains(spawnMonsterId)) {
+		return false;
+	}
 	auto monster = std::make_shared<Monster>(monsterType);
 	if (startup) {
 		// No need to send out events to the surrounding since there is no one out there to listen!
@@ -199,14 +201,14 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, const std::shared_ptr<M
 	monster->setSpawnMonster(this);
 	monster->setMasterPos(pos);
 
-	spawnedMonsterMap.insert(spawned_pair(spawnMonsterId, monster));
+	spawnedMonsterMap[spawnMonsterId] = monster;
 	spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
 	g_events().eventMonsterOnSpawn(monster, pos);
 	g_callbacks().executeCallback(EventCallback_t::monsterOnSpawn, &EventCallback::monsterOnSpawn, monster, pos);
 	return true;
 }
 
-void SpawnMonster::startup() {
+void SpawnMonster::startup(bool delayed) {
 	if (g_configManager().getBoolean(RANDOM_MONSTER_SPAWN)) {
 		for (auto it = spawnMonsterMap.begin(); it != spawnMonsterMap.end(); ++it) {
 			auto &[spawnMonsterId, sb] = *it;
@@ -236,7 +238,11 @@ void SpawnMonster::startup() {
 		if (!mType) {
 			continue;
 		}
-		spawnMonster(spawnMonsterId, mType, sb.pos, sb.direction, true);
+		if (delayed) {
+			g_dispatcher().addEvent(std::bind(&SpawnMonster::scheduleSpawn, this, spawnMonsterId, sb, mType, 0), "SpawnMonster::startup");
+		} else {
+			scheduleSpawn(spawnMonsterId, sb, mType, 0);
+		}
 	}
 }
 
@@ -249,13 +255,11 @@ void SpawnMonster::checkSpawnMonster() {
 	cleanup();
 	uint32_t spawnMonsterCount = 0;
 
-	for (auto &it : spawnMonsterMap) {
-		uint32_t spawnMonsterId = it.first;
-		if (spawnedMonsterMap.find(spawnMonsterId) != spawnedMonsterMap.end()) {
+	for (auto &[spawnMonsterId, sb] : spawnMonsterMap) {
+		if (spawnedMonsterMap.contains(spawnMonsterId)) {
 			continue;
 		}
 
-		spawnBlock_t &sb = it.second;
 		const auto &mType = sb.getMonsterType();
 		if (!mType) {
 			continue;
@@ -298,14 +302,14 @@ void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, cons
 }
 
 void SpawnMonster::cleanup() {
-	auto it = spawnedMonsterMap.begin();
-	while (it != spawnedMonsterMap.end()) {
-		auto monster = it->second;
+	std::vector<uint32_t> removeList;
+	for (const auto &[spawnMonsterId, monster] : spawnedMonsterMap) {
 		if (monster == nullptr || monster->isRemoved()) {
-			it = spawnedMonsterMap.erase(it);
-		} else {
-			++it;
+			removeList.push_back(spawnMonsterId);
 		}
+	}
+	for (const auto &spawnMonsterId : removeList) {
+		spawnedMonsterMap.erase(spawnMonsterId);
 	}
 }
 
@@ -360,12 +364,14 @@ bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Dire
 }
 
 void SpawnMonster::removeMonster(std::shared_ptr<Monster> monster) {
-	for (auto it = spawnedMonsterMap.begin(), end = spawnedMonsterMap.end(); it != end; ++it) {
-		if (it->second == monster) {
-			spawnedMonsterMap.erase(it);
+	uint32_t spawnMonsterId = 0;
+	for (const auto &[id, m] : spawnedMonsterMap) {
+		if (m == monster) {
+			spawnMonsterId = id;
 			break;
 		}
 	}
+	spawnedMonsterMap.erase(spawnMonsterId);
 }
 
 void SpawnMonster::setMonsterVariant(const std::string &variant) {

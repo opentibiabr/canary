@@ -96,6 +96,7 @@ private:
 			"Raids::checkRaids",
 			"SpawnMonster::checkSpawnMonster",
 			"SpawnMonster::scheduleSpawn",
+			"SpawnMonster::startup",
 			"SpawnNpc::checkSpawnNpc",
 			"Webhook::run",
 			"Protocol::sendRecvMessageCallback",

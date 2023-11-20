@@ -17,7 +17,6 @@ local config = {
 		to = Position(32763, 32729, 10),
 	},
 	exit = Position(32660, 32713, 13),
-	storage = Storage.Quest.U11_80.TheSecretLibrary.GhuloshTimer,
 }
 
 local lever = BossLever(config)

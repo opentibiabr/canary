@@ -30,6 +30,11 @@ public:
 	}
 
 	template <typename T>
+	std::shared_ptr<const T> static_self_cast() const {
+		return std::static_pointer_cast<const T>(shared_from_this());
+	}
+
+	template <typename T>
 	std::shared_ptr<T> dynamic_self_cast() {
 		return std::dynamic_pointer_cast<T>(shared_from_this());
 	}

@@ -10,8 +10,6 @@
 #include "pch.hpp"
 #include "task.hpp"
 #include "lib/logging/log_with_spd_log.hpp"
-
-std::chrono::system_clock::time_point Task::TIME_NOW = SYSTEM_TIME_ZERO;
 std::atomic_uint_fast64_t Task::LAST_EVENT_ID = 0;
 
 bool Task::execute() const {

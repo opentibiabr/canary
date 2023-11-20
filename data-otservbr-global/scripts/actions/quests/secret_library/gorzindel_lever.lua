@@ -17,7 +17,6 @@ local config = {
 		to = Position(32695, 32726, 10),
 	},
 	exit = Position(32660, 32734, 12),
-	storage = Storage.Quest.U11_80.TheSecretLibrary.GorzindelTimer,
 }
 
 local lever = BossLever(config)

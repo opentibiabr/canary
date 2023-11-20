@@ -17,7 +17,6 @@ local config = {
 		to = Position(33495, 32347, 13),
 	},
 	exit = Position(33319, 32318, 13),
-	storage = Storage.FerumbrasAscension.RagiazTimer,
 }
 
 local deathDragons = {

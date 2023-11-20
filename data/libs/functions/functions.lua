@@ -244,8 +244,26 @@ function setPlayerMarriageStatus(id, val)
 	db.query("UPDATE `players` SET `marriage_status` = " .. val .. " WHERE `id` = " .. id)
 end
 
-function clearBossRoom(playerId, bossId, centerPosition, rangeX, rangeY, exitPosition)
-	local spectators, spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
+function checkBoss(centerPosition, rangeX, rangeY, bossName, bossPos)
+	local spectators, found = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY), false
+	for i = 1, #spectators do
+		local spec = spectators[i]
+		if spec:isMonster() then
+			if spec:getName() == bossName then
+				found = true
+				break
+			end
+		end
+	end
+	if not found then
+		local boss = Game.createMonster(bossName, bossPos, true, true)
+		boss:setReward(true)
+	end
+	return found
+end
+
+function clearBossRoom(playerId, centerPosition, onlyPlayers, rangeX, rangeY, exitPosition)
+	local spectators, spectator = Game.getSpectators(centerPosition, false, onlyPlayers, rangeX, rangeX, rangeY, rangeY)
 	for i = 1, #spectators do
 		spectator = spectators[i]
 		if spectator:isPlayer() and spectator.uid == playerId then
@@ -267,13 +285,13 @@ function clearRoom(centerPosition, rangeX, rangeY, resetGlobalStorage)
 			spectator:remove()
 		end
 	end
-	if Game.getStorageValue(resetGlobalStorage) == 1 then
+	if resetGlobalStorage ~= nil and Game.getStorageValue(resetGlobalStorage) == 1 then
 		Game.setStorageValue(resetGlobalStorage, -1)
 	end
 end
 
-function roomIsOccupied(centerPosition, rangeX, rangeY)
-	local spectators = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
+function roomIsOccupied(centerPosition, onlyPlayers, rangeX, rangeY)
+	local spectators = Game.getSpectators(centerPosition, false, onlyPlayers, rangeX, rangeX, rangeY, rangeY)
 	if #spectators ~= 0 then
 		return true
 	end

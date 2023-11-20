@@ -40,6 +40,9 @@ public:
 	std::shared_ptr<Npc> getNpc() override {
 		return static_self_cast<Npc>();
 	}
+	std::shared_ptr<const Npc> getNpc() const override {
+		return static_self_cast<Npc>();
+	}
 
 	void setID() override {
 		if (id == 0) {

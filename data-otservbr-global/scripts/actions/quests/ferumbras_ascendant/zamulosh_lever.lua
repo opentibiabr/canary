@@ -17,7 +17,6 @@ local config = {
 		to = Position(33654, 32765, 11),
 	},
 	exit = Position(33319, 32318, 13),
-	storage = Storage.FerumbrasAscension.ZamuloshTimer,
 }
 
 local zamuloshSummons = {

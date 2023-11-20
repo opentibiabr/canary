@@ -17,7 +17,6 @@ local config = {
 		to = Position(32758, 32696, 10),
 	},
 	exit = Position(32466, 32654, 12),
-	storage = Storage.Quest.U11_80.TheSecretLibrary.LokathmorTimer,
 }
 
 local lever = BossLever(config)

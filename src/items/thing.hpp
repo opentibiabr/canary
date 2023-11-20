@@ -54,19 +54,19 @@ public:
 	virtual std::shared_ptr<Container> getContainer() {
 		return nullptr;
 	}
-	virtual std::shared_ptr<Container> getContainer() const {
+	virtual std::shared_ptr<const Container> getContainer() const {
 		return nullptr;
 	}
 	virtual std::shared_ptr<Item> getItem() {
 		return nullptr;
 	}
-	virtual std::shared_ptr<Item> getItem() const {
+	virtual std::shared_ptr<const Item> getItem() const {
 		return nullptr;
 	}
 	virtual std::shared_ptr<Creature> getCreature() {
 		return nullptr;
 	}
-	virtual std::shared_ptr<Creature> getCreature() const {
+	virtual std::shared_ptr<const Creature> getCreature() const {
 		return nullptr;
 	}
 

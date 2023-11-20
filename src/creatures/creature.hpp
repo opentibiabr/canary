@@ -76,7 +76,7 @@ public:
 	std::shared_ptr<Creature> getCreature() override final {
 		return static_self_cast<Creature>();
 	}
-	std::shared_ptr<Creature> getCreature() const override final {
+	std::shared_ptr<const Creature> getCreature() const override final {
 		return static_self_cast<Creature>();
 	}
 	virtual std::shared_ptr<Player> getPlayer() {

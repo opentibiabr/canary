@@ -55,7 +55,7 @@ public:
 		return static_self_cast<Container>();
 	}
 
-	std::shared_ptr<Container> getContainer() const override final {
+	std::shared_ptr<const Container> getContainer() const override final {
 		return static_self_cast<Container>();
 	}
 

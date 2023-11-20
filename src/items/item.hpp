@@ -235,7 +235,7 @@ public:
 	std::shared_ptr<Item> getItem() override final {
 		return static_self_cast<Item>();
 	}
-	std::shared_ptr<Item> getItem() const override final {
+	std::shared_ptr<const Item> getItem() const override final {
 		return static_self_cast<Item>();
 	}
 	virtual std::shared_ptr<Teleport> getTeleport() {

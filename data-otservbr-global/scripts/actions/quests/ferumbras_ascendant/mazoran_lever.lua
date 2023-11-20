@@ -17,7 +17,6 @@ local config = {
 		to = Position(33597, 32700, 14),
 	},
 	exit = Position(33319, 32318, 13),
-	storage = Storage.FerumbrasAscension.MazoranTimer,
 }
 
 local lever = BossLever(config)

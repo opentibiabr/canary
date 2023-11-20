@@ -22,7 +22,6 @@ local config = {
 		to = Position(32220, 32055, 15),
 	},
 	exit = Position(32211, 32084, 15),
-	storage = Storage.Quest.U12_00.TheDreamCourts.NightmareBeastTimer,
 }
 
 local lever = BossLever(config)

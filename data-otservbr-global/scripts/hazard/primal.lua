@@ -3,8 +3,6 @@ local hazard = Hazard.new({
 	from = Position(33502, 32740, 13),
 	to = Position(33796, 32996, 15),
 	maxLevel = 12,
-	storageMax = Storage.Quest.U12_90.PrimalOrdeal.Hazard.Max,
-	storageCurrent = Storage.Quest.U12_90.PrimalOrdeal.Hazard.Current,
 
 	crit = true,
 	dodge = true,

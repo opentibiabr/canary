@@ -121,6 +121,9 @@ public:
 	std::shared_ptr<Player> getPlayer() override {
 		return static_self_cast<Player>();
 	}
+	std::shared_ptr<const Player> getPlayer() const override {
+		return static_self_cast<Player>();
+	}
 
 	static std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, std::string context);
 

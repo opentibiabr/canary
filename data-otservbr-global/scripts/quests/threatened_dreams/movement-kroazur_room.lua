@@ -49,7 +49,7 @@ function kroazurRoom.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if roomIsOccupied(room.bossPos, room.rangeX, room.rangeY) then
+	if roomIsOccupied(room.bossPos, false, room.rangeX, room.rangeY) then
 		position:sendMagicEffect(CONST_ME_TELEPORT)
 		player:teleportTo(fromPosition, true)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -57,7 +57,7 @@ function kroazurRoom.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	clearRoom(room.bossPos, room.rangeX, room.rangeY, fromPosition)
+	clearRoom(room.bossPos, room.rangeX, room.rangeY)
 	local monster = Game.createMonster(room.bossName, room.bossPos, true, true)
 	if not monster then
 		return true
@@ -67,7 +67,7 @@ function kroazurRoom.onStepIn(creature, item, position, fromPosition)
 	player:teleportTo(room.newPos)
 	player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	player:say("You have ten minutes to kill and loot this boss, else you will lose that chance and will be kicked out.", TALKTYPE_MONSTER_SAY)
-	addEvent(clearBossRoom, 60 * room.time * 1000, player.uid, room.centerPos, room.rangeX, room.rangeY, room.exitPos)
+	addEvent(clearBossRoom, 60 * room.time * 1000, player.uid, room.centerPos, false, room.rangeX, room.rangeY, room.exitPos)
 	player:setBossCooldown(room.bossName, os.time() + 2 * 3600)
 	return true
 end

@@ -1102,6 +1102,17 @@ void Game::playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t 
 			playerMoveCreature(player, movingCreature, movingCreature->getPosition(), tile);
 		}
 	} else if (thing->getItem()) {
+
+		if (thing->getItem()->isStoreItem()) {
+			// '0x40' -> To store inbox.
+			// '0x41' -> To depot.
+			// '0x42:0x50' -> To all depot slot.
+			if (toPos.y < 0x40 || toPos.y > 0x50) {
+				player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+				return;
+			}
+		}
+
 		std::shared_ptr<Cylinder> toCylinder = internalGetCylinder(player, toPos);
 		if (!toCylinder) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);

@@ -252,6 +252,10 @@ void Weapon::onUsedWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> 
 	if (manaCost != 0) {
 		player->addManaSpent(manaCost);
 		player->changeMana(-static_cast<int32_t>(manaCost));
+
+		if(g_configManager().getBoolean(REFUND_BEGINNING_WEAPON_MANA) && (item->getName() == "wand of vortex" || item->getName() == "snakebite rod")){
+			player->changeMana(static_cast<int32_t>(manaCost));
+		}
 	}
 
 	uint32_t healthCost = getHealthCost(player);
@@ -269,9 +273,10 @@ void Weapon::onUsedWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> 
 		return;
 	}
 
+	bool skipRemoveBeginningWeaponAmmo = !g_configManager().getBoolean(REMOVE_BEGINNING_WEAPON_AMMO) && (item->getName() == "arrow" || item->getName() == "bolt" || item->getName() == "spear");
 	switch (action) {
 		case WEAPONACTION_REMOVECOUNT:
-			if (g_configManager().getBoolean(REMOVE_WEAPON_AMMO)) {
+			if (!skipRemoveBeginningWeaponAmmo && g_configManager().getBoolean(REMOVE_WEAPON_AMMO)) {
 				Weapon::decrementItemCount(item);
 				player->updateSupplyTracker(item);
 			}

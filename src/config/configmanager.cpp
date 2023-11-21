@@ -159,6 +159,8 @@ bool ConfigManager::load() {
 	boolean[REMOVE_WEAPON_AMMO] = getGlobalBoolean(L, "removeWeaponAmmunition", true);
 	boolean[REMOVE_WEAPON_CHARGES] = getGlobalBoolean(L, "removeWeaponCharges", true);
 	boolean[REMOVE_POTION_CHARGES] = getGlobalBoolean(L, "removeChargesFromPotions", true);
+	boolean[REMOVE_BEGINNING_WEAPON_AMMO] = getGlobalBoolean(L, "removeBeginningWeaponAmmunition", true);
+	boolean[REFUND_BEGINNING_WEAPON_MANA] = getGlobalBoolean(L, "refundBeginningWeaponMana", false);
 	boolean[GLOBAL_SERVER_SAVE_NOTIFY_MESSAGE] = getGlobalBoolean(L, "globalServerSaveNotifyMessage", true);
 	boolean[GLOBAL_SERVER_SAVE_CLEAN_MAP] = getGlobalBoolean(L, "globalServerSaveCleanMap", false);
 	boolean[GLOBAL_SERVER_SAVE_CLOSE] = getGlobalBoolean(L, "globalServerSaveClose", false);

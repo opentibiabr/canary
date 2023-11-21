@@ -6722,6 +6722,10 @@ std::pair<std::vector<std::shared_ptr<Item>>, std::map<uint16_t, std::map<uint8_
 				continue;
 			}
 
+			if (item->isStoreItem()) {
+				continue;
+			}
+
 			const ItemType &itemType = Item::items[item->getID()];
 			if (itemType.wareId == 0) {
 				continue;
@@ -7711,4 +7715,25 @@ std::shared_ptr<Container> Player::getLootPouch() {
 	}
 
 	return container;
+}
+
+bool Player::hasPermittedConditionInPZ() const {
+	static const std::unordered_set<ConditionType_t> allowedConditions = {
+		CONDITION_ENERGY,
+		CONDITION_FIRE,
+		CONDITION_POISON,
+		CONDITION_BLEEDING,
+		CONDITION_CURSED,
+		CONDITION_DAZZLED
+	};
+
+	bool hasPermittedCondition = false;
+	for (auto condition : allowedConditions) {
+		if (getCondition(condition)) {
+			hasPermittedCondition = true;
+			break;
+		}
+	}
+
+	return hasPermittedCondition;
 }

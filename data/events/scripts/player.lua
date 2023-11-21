@@ -222,16 +222,6 @@ function Player:onLookInBattleList(creature, distance)
 			description = string.format("%s\nIP: %s", description, Game.convertIpToString(creature:getIp()))
 		end
 	end
-
-	if creature:isPlayer() then
-		local restores = creature:getStorageValue(Storage.restoreSystemRestoresCount) or 0
-		if restores > 0 then
-			description = string.format("%s Restores: %d.", description, restores)
-		end
-		-- description = string.format("%s Mining Title: %s.", description, creature:getMiningTitle())
-		description = string.format("%s Holy Kills: %d.", description, math.max(0, creature:getStorageValue(Storage.holyKills)))
-	end
-
 	self:sendTextMessage(MESSAGE_LOOK, description)
 end
 
@@ -416,8 +406,12 @@ function Player:onMoveCreature(creature, fromPosition, toPosition)
 	return true
 end
 
-local function hasPendingReport(name, targetName, reportType)
-	local name = name:gsub("%s+", "_")
+local function hasPendingReport(playerGuid, targetName, reportType)
+	local player = Player(playerGuid)
+	if not player then
+		return false
+	end
+	local name = player:getName():gsub("%s+", "_")
 	FS.mkdir_p(string.format("%s/reports/players/%s", CORE_DIRECTORY, name))
 	local file = io.open(string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType), "r")
 	if file then
@@ -429,7 +423,7 @@ end
 
 function Player:onReportRuleViolation(targetName, reportType, reportReason, comment, translation)
 	local name = self:getName()
-	if hasPendingReport(name, targetName, reportType) then
+	if hasPendingReport(self:getGuid(), targetName, reportType) then
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your report is being processed.")
 		return
 	end

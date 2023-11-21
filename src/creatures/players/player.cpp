@@ -6722,6 +6722,10 @@ std::pair<std::vector<std::shared_ptr<Item>>, std::map<uint16_t, std::map<uint8_
 				continue;
 			}
 
+			if (item->isStoreItem()) {
+				continue;
+			}
+
 			const ItemType &itemType = Item::items[item->getID()];
 			if (itemType.wareId == 0) {
 				continue;

@@ -267,13 +267,13 @@ void Weapon::onUsedWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> 
 		player->changeSoul(-static_cast<int32_t>(soul));
 	}
 
-	if (breakChance != 0 && uniform_random(1, 100) <= breakChance) {
+	bool skipRemoveBeginningWeaponAmmo = !g_configManager().getBoolean(REMOVE_BEGINNING_WEAPON_AMMO) && (item->getName() == "arrow" || item->getName() == "bolt" || item->getName() == "spear");
+	if (!skipRemoveBeginningWeaponAmmo && breakChance != 0 && uniform_random(1, 100) <= breakChance) {
 		Weapon::decrementItemCount(item);
 		player->updateSupplyTracker(item);
 		return;
 	}
 
-	bool skipRemoveBeginningWeaponAmmo = !g_configManager().getBoolean(REMOVE_BEGINNING_WEAPON_AMMO) && (item->getName() == "arrow" || item->getName() == "bolt" || item->getName() == "spear");
 	switch (action) {
 		case WEAPONACTION_REMOVECOUNT:
 			if (!skipRemoveBeginningWeaponAmmo && g_configManager().getBoolean(REMOVE_WEAPON_AMMO)) {

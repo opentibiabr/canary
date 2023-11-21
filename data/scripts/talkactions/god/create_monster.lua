@@ -43,7 +43,7 @@ local function createCreaturesAround(player, maxRadius, creatureName, creatureCo
 	if sendMessage == true then
 		player:sendCancelMessage("Only allowed monsters can be fiendish or influenced.")
 	end
-	
+
 	logger.info("Created '{}' monsters", createdCount)
 end
 

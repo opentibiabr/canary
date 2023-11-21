@@ -1,7 +1,7 @@
 local function createCreaturesAround(player, maxRadius, creatureName, creatureCount, creatureForge, boolForceCreate)
 	local position = player:getPosition()
 	local createdCount = 0
-	local sendMessage
+	local sendMessage = false
 	local canSetFiendish, canSetInfluenced, influencedLevel = CheckDustLevel(creatureForge, player)
 	for radius = 1, maxRadius do
 		if createdCount >= creatureCount then

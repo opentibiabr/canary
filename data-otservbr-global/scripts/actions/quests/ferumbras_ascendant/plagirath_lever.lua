@@ -17,7 +17,6 @@ local config = {
 		to = Position(33190, 31515, 13),
 	},
 	exit = Position(33319, 32318, 13),
-	storage = Storage.FerumbrasAscension.PlagirathTimer,
 }
 
 local lever = BossLever(config)

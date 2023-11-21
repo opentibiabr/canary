@@ -132,12 +132,9 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool) {
 				continue;
 			}
 
-			std::shared_ptr<Player> player = g_game().getPlayerByGUID(playerId);
+			std::shared_ptr<Player> player = g_game().getPlayerByGUID(playerId, true);
 			if (!player) {
-				player = std::make_shared<Player>(nullptr);
-				if (!IOLoginData::loadPlayerById(player, playerId)) {
-					continue;
-				}
+				continue;
 			}
 
 			if (itemType.stackable) {

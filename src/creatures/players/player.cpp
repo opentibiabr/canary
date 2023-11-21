@@ -7714,12 +7714,12 @@ std::shared_ptr<Container> Player::getLootPouch() {
 }
 
 namespace {
-std::unordered_set<ConditionType_t> allowedConditions = {
-	CONDITION_ENERGY,
-	CONDITION_FIRE,
-	CONDITION_POISON,
-	CONDITION_BLEEDING
-};
+	std::unordered_set<ConditionType_t> allowedConditions = {
+		CONDITION_ENERGY,
+		CONDITION_FIRE,
+		CONDITION_POISON,
+		CONDITION_BLEEDING
+	};
 }
 
 bool Player::hasPermittedConditionInPZ() const {

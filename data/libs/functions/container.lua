@@ -15,7 +15,7 @@ function Container:addLoot(loot)
 		if iType:isStackable() or iType:getCharges() ~= 0 then
 			local stackSize = iType:getStackSize()
 			local remainingCount = item.count
-		
+
 			while remainingCount > 0 do
 				local countToAdd = math.min(remainingCount, stackSize)
 				local tmpItem = self:addItem(itemId, countToAdd, INDEX_WHEREEVER, FLAG_NOLIMIT)
@@ -23,7 +23,7 @@ function Container:addLoot(loot)
 					logger.warn("Container:addLoot: failed to add item: {}, to corpse {} with id {}", ItemType(itemId):getName(), self:getName(), self:getId())
 					goto continue
 				end
-		
+
 				remainingCount = remainingCount - countToAdd
 			end
 		else

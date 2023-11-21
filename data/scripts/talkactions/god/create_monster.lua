@@ -44,7 +44,7 @@ local function createCreaturesAround(player, maxRadius, creatureName, creatureCo
 		player:sendCancelMessage("Only allowed monsters can be fiendish or influenced.")
 	end
 
-	logger.info("Created '{}' monsters", createdCount)
+	logger.info("Player {} created '{}' monsters", player:getName(), createdCount)
 end
 
 local createMonster = TalkAction("/m")

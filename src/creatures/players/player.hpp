@@ -2544,6 +2544,8 @@ public:
 
 	std::shared_ptr<Container> getLootPouch();
 
+	bool hasPermittedConditionInPZ() const;
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;

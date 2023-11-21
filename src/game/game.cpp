@@ -1654,11 +1654,9 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 				}
 			}
 
-			if (item->isStoreItem() && !toHouseTile) {
+			if (item->isStoreItem() && !house) {
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
-
-			return RETURNVALUE_NOERROR;
 		}
 	}
 

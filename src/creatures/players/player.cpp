@@ -7717,8 +7717,8 @@ std::shared_ptr<Container> Player::getLootPouch() {
 	return container;
 }
 
-namespace {
-	std::unordered_set<ConditionType_t> allowedConditions = {
+bool Player::hasPermittedConditionInPZ() const {
+	static const std::unordered_set<ConditionType_t> allowedConditions = {
 		CONDITION_ENERGY,
 		CONDITION_FIRE,
 		CONDITION_POISON,
@@ -7726,9 +7726,6 @@ namespace {
 		CONDITION_CURSED,
 		CONDITION_DAZZLED
 	};
-}
-
-bool Player::hasPermittedConditionInPZ() const {
 
 	bool hasPermittedCondition = false;
 	for (auto condition : allowedConditions) {

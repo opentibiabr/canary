@@ -6722,7 +6722,7 @@ std::pair<std::vector<std::shared_ptr<Item>>, std::map<uint16_t, std::map<uint8_
 				continue;
 			}
 
-			if (item.get()->isStoreItem()) {
+			if (item->isStoreItem()) {
 				continue;
 			}
 

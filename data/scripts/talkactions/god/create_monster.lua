@@ -1,7 +1,7 @@
-local function createCreaturesAround(player, maxRadius, creatureName, creatureCount, creatureForge, mustBeReachable)
+local function createCreaturesAround(player, maxRadius, creatureName, creatureCount, creatureForge, boolForceCreate)
 	local position = player:getPosition()
 	local createdCount = 0
-	local sendMessage = false
+	local sendMessage
 	local canSetFiendish, canSetInfluenced, influencedLevel = CheckDustLevel(creatureForge, player)
 	for radius = 1, maxRadius do
 		if createdCount >= creatureCount then
@@ -17,8 +17,8 @@ local function createCreaturesAround(player, maxRadius, creatureName, creatureCo
 				if (dx == minX or dx == maxX or dy == minY or dy == maxY) and createdCount < creatureCount then
 					local checkPosition = Position(dx, dy, position.z)
 					local tile = Tile(checkPosition)
-					if tile and tile:getCreatureCount() == 0 and not tile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) and (not mustBeReachable or player:getPathTo(checkPosition)) then
-						local monster = Game.createMonster(creatureName, checkPosition)
+					if tile and not tile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) then
+						local monster = Game.createMonster(creatureName, checkPosition, false, boolForceCreate)
 						if monster then
 							createdCount = createdCount + 1
 							monster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -40,17 +40,27 @@ local function createCreaturesAround(player, maxRadius, creatureName, creatureCo
 			end
 		end
 	end
-	player:sendCancelMessage("Only allowed monsters can be fiendish or influenced.")
+	if sendMessage == true then
+		player:sendCancelMessage("Only allowed monsters can be fiendish or influenced.")
+	end
+	
+	logger.info("Created '{}' monsters", createdCount)
 end
 
 local createMonster = TalkAction("/m")
 
+-- @function createMonster.onSay
+-- @desc TalkAction to create monsters with multiple options.
+-- @param player: The player executing the command.
+-- @param words: Command words.
+-- @param param: String containing the command parameters.
+-- Format: "/m monstername, monstercount, [fiendish/influenced level], spawnRadius, [forceCreate]"
+-- Example: "/m rat, 10, fiendish, 5, true"
+-- @param: the last param is by default "false", if add "," or any value i'ts set to true
+-- @return true if the command is executed successfully, false otherwise.
 function createMonster.onSay(player, words, param)
 	-- create log
 	logCommand(player, words, param)
-
-	-- Usage: "/m monstername, fiendish" for create a fiendish monster (/m rat, fiendish)
-	-- Usage: "/m monstername, [1-5]" for create a influenced monster with specific level (/m rat, 2)
 	if param == "" then
 		player:sendCancelMessage("Monster name param required.")
 		logger.error("[createMonster.onSay] - Monster name param not found.")
@@ -72,9 +82,21 @@ function createMonster.onSay(player, words, param)
 		split[3] = split[3]:gsub("^%s*(.-)$", "%1") --Trim left
 		monsterForge = split[3]
 	end
-	-- Check dust level
+
 	if monsterCount > 1 then
-		createCreaturesAround(player, 20, monsterName, monsterCount, monsterForge, true)
+		local spawnRadius = 5
+		if split[4] then
+			split[4] = split[4]:gsub("^%s*(.-)$", "%1") --Trim left
+			spawnRadius = split[4]
+			print(spawnRadius)
+		end
+
+		local forceCreate = false
+		if split[5] then
+			forceCreate = true
+		end
+
+		createCreaturesAround(player, spawnRadius, monsterName, monsterCount, monsterForge, forceCreate)
 		return true
 	end
 

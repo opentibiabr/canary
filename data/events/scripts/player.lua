@@ -40,7 +40,7 @@ local storeItemID = {
 -- Players cannot throw items on teleports if set to true
 local blockTeleportTrashing = true
 
-local config = {
+local configPush = {
 	maxItemsPerSeconds = 1,
 	exhaustTime = 2000,
 }
@@ -80,8 +80,8 @@ local function antiPush(player, item, count, fromPosition, toPosition, fromCylin
 		pushDelay[playerId].items = 0
 	end
 
-	if pushDelay[playerId].items > config.maxItemsPerSeconds then
-		pushDelay[playerId].time = currentTime + config.exhaustTime
+	if pushDelay[playerId].items > configPush.maxItemsPerSeconds then
+		pushDelay[playerId].time = currentTime + configPush.exhaustTime
 	end
 
 	if pushDelay[playerId].time > currentTime then
@@ -195,6 +195,10 @@ local function useConcoctionTime(player)
 end
 
 function Player:onLookInBattleList(creature, distance)
+	if not creature then
+		return false
+	end
+
 	local description = "You see " .. creature:getDescription(distance)
 	if creature:isMonster() then
 		local master = creature:getMaster()
@@ -218,8 +222,20 @@ function Player:onLookInBattleList(creature, distance)
 			description = string.format("%s\nIP: %s", description, Game.convertIpToString(creature:getIp()))
 		end
 	end
+
+	if creature:isPlayer() then
+		local restores = creature:getStorageValue(Storage.restoreSystemRestoresCount) or 0
+		if restores > 0 then
+			description = string.format("%s Restores: %d.", description, restores)
+		end
+		-- description = string.format("%s Mining Title: %s.", description, creature:getMiningTitle())
+		description = string.format("%s Holy Kills: %d.", description, math.max(0, creature:getStorageValue(Storage.holyKills)))
+	end
+
 	self:sendTextMessage(MESSAGE_LOOK, description)
 end
+
+local exhaust = {}
 
 function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
 	if item:getActionId() == IMMOVABLE_ACTION_ID then
@@ -235,8 +251,8 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	end
 
 	-- Players cannot throw items on teleports
-	if blockTeleportTrashing and toPosition.x ~= CONTAINER_POSITION then
-		local thing = Tile(toPosition):getItemByType(ITEM_TYPE_TELEPORT)
+	if blockTeleportTrashing and tile and toPosition.x ~= CONTAINER_POSITION then
+		local thing = tile:getItemByType(ITEM_TYPE_TELEPORT)
 		if thing then
 			self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 			self:getPosition():sendMagicEffect(CONST_ME_POFF)
@@ -245,7 +261,6 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	end
 
 	-- SSA exhaust
-	local exhaust = {}
 	if toPosition.x == CONTAINER_POSITION and toPosition.y == CONST_SLOT_NECKLACE and item:getId() == ITEM_STONE_SKIN_AMULET then
 		local playerId = self:getId()
 		if exhaust[playerId] then
@@ -254,16 +269,18 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		end
 		exhaust[playerId] = true
 		addEvent(function(id)
-			exhaust[id] = false
+			exhaust[id] = nil
 		end, 2000, playerId)
 		return true
 	end
 
 	-- Bath tube
 	local toTile = Tile(toCylinder:getPosition())
-	local topDownItem = toTile:getTopDownItem()
-	if topDownItem and table.contains({ BATHTUB_EMPTY, BATHTUB_FILLED }, topDownItem:getId()) then
-		return false
+	if toTile then
+		local topDownItem = toTile:getTopDownItem()
+		if topDownItem and table.contains({ BATHTUB_EMPTY, BATHTUB_FILLED }, topDownItem:getId()) then
+			return false
+		end
 	end
 
 	-- Handle move items to the ground
@@ -313,10 +330,12 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 
 		-- The player also shouldn't be able to insert items into the boss corpse
 		local tileCorpse = Tile(container:getPosition())
-		for index, value in ipairs(tileCorpse:getItems() or {}) do
-			if value:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 and value:getName() == container:getName() then
-				self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-				return false
+		if tileCorpse then
+			for index, value in ipairs(tileCorpse:getItems() or {}) do
+				if value:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 and value:getName() == container:getName() then
+					self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+					return false
+				end
 			end
 		end
 	end
@@ -398,7 +417,7 @@ function Player:onMoveCreature(creature, fromPosition, toPosition)
 end
 
 local function hasPendingReport(name, targetName, reportType)
-	name = self:getName():gsub("%s+", "_")
+	local name = name:gsub("%s+", "_")
 	FS.mkdir_p(string.format("%s/reports/players/%s", CORE_DIRECTORY, name))
 	local file = io.open(string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType), "r")
 	if file then
@@ -409,7 +428,7 @@ local function hasPendingReport(name, targetName, reportType)
 end
 
 function Player:onReportRuleViolation(targetName, reportType, reportReason, comment, translation)
-	name = self:getName()
+	local name = self:getName()
 	if hasPendingReport(name, targetName, reportType) then
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your report is being processed.")
 		return
@@ -618,10 +637,11 @@ function Player:onChangeZone(zone)
 
 		if configManager.getBoolean(configKeys.STAMINA_PZ) then
 			if zone == ZONE_PROTECTION then
-				if self:getStamina() < 2520 then
+				local stamina = self:getStamina()
+				if stamina < 2520 then
 					if not event then
 						local delay = configManager.getNumber(configKeys.STAMINA_ORANGE_DELAY)
-						if self:getStamina() > 2400 and self:getStamina() <= 2520 then
+						if stamina > 2400 and stamina <= 2520 then
 							delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY)
 						end
 

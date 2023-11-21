@@ -1,25 +1,3 @@
-local invalidIds = {
-	1,
-	2,
-	3,
-	4,
-	5,
-	6,
-	7,
-	10,
-	11,
-	13,
-	14,
-	15,
-	19,
-	21,
-	26,
-	27,
-	28,
-	35,
-	43,
-}
-
 local createItem = TalkAction("/i")
 
 function createItem.onSay(player, words, param)
@@ -37,7 +15,7 @@ function createItem.onSay(player, words, param)
 		end
 	end
 
-	if table.contains(invalidIds, itemType:getId()) then
+	if itemType:getId() < 100 then
 		return true
 	end
 
@@ -45,7 +23,17 @@ function createItem.onSay(player, words, param)
 	local count = tonumber(split[2])
 	if count then
 		if itemType:isStackable() then
-			count = math.min(10000, math.max(1, count))
+			local item = Game.createItem(itemType:getId(), count)
+			if not item then
+				player:sendCancelMessage("Cannot create item")
+				return true
+			end
+
+			local ret = player:addItemEx(item, INDEX_WHEREEVER, FLAG_NOLIMIT)
+			if ret ~= RETURNVALUE_NOERROR then
+				player:sendCancelMessage(ret)
+			end
+			return true
 		elseif not itemType:isFluidContainer() then
 			local min = 100
 			if charges > 0 then

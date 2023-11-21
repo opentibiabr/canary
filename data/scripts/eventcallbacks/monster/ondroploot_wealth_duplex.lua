@@ -29,7 +29,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 
 	local wealthDuplex = Concoction.find(Concoction.Ids.WealthDuplex)
 	if not wealthDuplex then
-		logger.warn("[Monster:onDropLoot] - Could not find WealthDuplex concoction.")
+		logger.debug("[Monster:onDropLoot] - Could not find WealthDuplex concoction.")
 		return
 	end
 	local chance = 0

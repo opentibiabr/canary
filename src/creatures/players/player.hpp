@@ -344,6 +344,10 @@ public:
 		operatingSystem = clientos;
 	}
 
+	bool isOldProtocol() {
+		return client && client->oldProtocol;
+	}
+
 	uint32_t getProtocolVersion() const {
 		if (!client) {
 			return 0;

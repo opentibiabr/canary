@@ -16,7 +16,7 @@ function playersOnline.onSay(player, words, param)
 
 	for _, targetPlayer in ipairs(players) do
 		if hasAccess or not targetPlayer:isInGhostMode() then
-			if onExerciseTraining[targetPlayer:getId()] then
+			if _G.OnExerciseTraining[targetPlayer:getId()] then
 				table.insert(onlineList.Training, targetPlayer)
 			elseif targetPlayer:getIdleTime() >= 5 * 60 * 1000 then
 				table.insert(onlineList.Idle, targetPlayer)

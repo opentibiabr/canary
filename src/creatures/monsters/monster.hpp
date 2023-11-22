@@ -32,6 +32,9 @@ public:
 	std::shared_ptr<Monster> getMonster() override {
 		return static_self_cast<Monster>();
 	}
+	std::shared_ptr<const Monster> getMonster() const override {
+		return static_self_cast<Monster>();
+	}
 
 	void setID() override {
 		if (id == 0) {

@@ -469,6 +469,8 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		writeToOutputBuffer(opcodeMessage);
 	}
 
+	g_logger().debug("Player logging in in version '{}' and oldProtocol '{}'", getVersion(), oldProtocol);
+
 	// dispatcher thread
 	std::shared_ptr<Player> foundPlayer = g_game().getPlayerUniqueLogin(name);
 	if (!foundPlayer) {
@@ -734,6 +736,11 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 
 	std::shared_ptr<Player> foundPlayer = g_game().getPlayerUniqueLogin(characterName);
 	if (foundPlayer && foundPlayer->client) {
+		if (foundPlayer->getProtocolVersion() != getVersion() && foundPlayer->isOldProtocol() != oldProtocol) {
+			disconnectClient(fmt::format("You are already logged in using protocol '{}'. Please log out from the other session to connect here.", foundPlayer->getProtocolVersion()));
+			return;
+		}
+
 		foundPlayer->client->disconnectClient("You are already connected through another client. Please use only one client at a time!");
 	}
 
@@ -6899,7 +6906,10 @@ void ProtocolGame::sendPreyData(const std::unique_ptr<PreySlot> &slot) {
 	}
 
 	if (oldProtocol) {
-		msg.add<uint16_t>(static_cast<uint16_t>(std::max<uint32_t>(std::max<uint32_t>(static_cast<uint32_t>(((slot->freeRerollTimeStamp - OTSYS_TIME()) / 1000)), 0), 0)));
+		auto currentTime = OTSYS_TIME();
+		auto timeDiffMs = (slot->freeRerollTimeStamp > currentTime) ? (slot->freeRerollTimeStamp - currentTime) : 0;
+		auto timeDiffMinutes = timeDiffMs / 60000;
+		msg.add<uint16_t>(timeDiffMinutes ? timeDiffMinutes : 0);
 	} else {
 		msg.add<uint32_t>(std::max<uint32_t>(static_cast<uint32_t>(((slot->freeRerollTimeStamp - OTSYS_TIME()) / 1000)), 0));
 		msg.addByte(static_cast<uint8_t>(slot->option));

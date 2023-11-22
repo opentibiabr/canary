@@ -754,7 +754,7 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 				auto monster = getMonster();
 				if (monster && !monster->isRewardBoss()) {
 					std::ostringstream lootMessage;
-					lootMessage << "Loot of " << getNameDescription() << ": " << corpse->getContainer()->getContentDescription(player->getProtocolVersion() < 1200);
+					lootMessage << "Loot of " << getNameDescription() << ": " << corpse->getContainer()->getContentDescription(player->getProtocolVersion() < 1200) << ".";
 					auto suffix = corpse->getContainer()->getAttribute<std::string>(ItemAttribute_t::LOOTMESSAGE_SUFFIX);
 					if (!suffix.empty()) {
 						lootMessage << suffix;

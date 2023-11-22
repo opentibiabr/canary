@@ -96,14 +96,14 @@ function InsertRewardItems(playerGuid, timestamp, itemList)
 end
 
 function GetPlayerStats(bossId, playerGuid, autocreate)
-	local ret = GlobalBosses[bossId][playerGuid]
+	local ret = _G.GlobalBosses[bossId][playerGuid]
 	if not ret and autocreate then
 		ret = {
 			bossId = bossId,
 			damageIn = 0, -- damage taken from the boss
 			healing = 0, -- healing (other players) done
 		}
-		GlobalBosses[bossId][playerGuid] = ret
+		_G.GlobalBosses[bossId][playerGuid] = ret
 		return ret
 	end
 	return ret
@@ -115,7 +115,7 @@ function ResetAndSetTargetList(creature)
 	end
 
 	local bossId = creature:getId()
-	local info = GlobalBosses[bossId]
+	local info = _G.GlobalBosses[bossId]
 	-- Reset all players' status
 	for _, player in pairs(info) do
 		player.active = false

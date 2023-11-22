@@ -105,8 +105,8 @@ if onExerciseTraining == nil then
 end
 
 -- Stamina
-if nextUseStaminaTime == nil then
-	nextUseStaminaTime = {}
+if not _G.NextUseStaminaTime then
+	_G.NextUseStaminaTime = {}
 end
 
 if nextUseXpStamina == nil then

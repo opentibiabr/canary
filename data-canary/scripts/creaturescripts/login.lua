@@ -14,7 +14,7 @@ function login.onLogin(player)
 	end
 
 	-- Stamina
-	nextUseStaminaTime[player.uid] = 0
+	_G.NextUseStaminaTime[player.uid] = 0
 
 	-- Promotion
 	local vocation = player:getVocation()
@@ -98,7 +98,7 @@ function login.onLogin(player)
 	local playerId = player:getId()
 
 	-- Stamina
-	nextUseStaminaTime[playerId] = 1
+	_G.NextUseStaminaTime[playerId] = 1
 
 	-- EXP Stamina
 	nextUseXpStamina[playerId] = 1

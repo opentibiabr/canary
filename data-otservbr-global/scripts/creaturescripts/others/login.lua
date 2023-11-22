@@ -208,7 +208,7 @@ function playerLogin.onLogin(player)
 	player:initializeLoyaltySystem()
 
 	-- Stamina
-	nextUseStaminaTime[playerId] = 1
+	_G.NextUseStaminaTime[playerId] = 1
 
 	-- EXP Stamina
 	nextUseXpStamina[playerId] = 1

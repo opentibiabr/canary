@@ -8,8 +8,8 @@ MYSQL_PASS=pass
 MYSQL_DATABASE=dbname
 
 function do_mysql_backup {
-    data=$(date +"%F_%H-%M-%S")
-    backup_name="mysql_backup_$data.sql"
+	data=$(date +"%F_%H-%M-%S")
+	backup_name="mysql_backup_$data.sql"
 	mysqldump -u $MYSQL_USER -p$MYSQL_PASS --single-transaction --databases $MYSQL_DATABASE --compress --result-file=mysql_backup/$backup_name
 }
 

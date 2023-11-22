@@ -6,8 +6,8 @@ MYSQL_PASS=pass
 MYSQL_DATABASE=dbname
 
 function do_mysql_backup {
-    data=$(date +"%F_%H-%M-%S")
-    backup_name="mysql_backup_$data.sql"
+	data=$(date +"%F_%H-%M-%S")
+	backup_name="mysql_backup_$data.sql"
 	mysqldump -u $MYSQL_USER -p$MYSQL_PASS --single-transaction --databases $MYSQL_DATABASE --compress --result-file=mysql_backup/$backup_name
 }
 
@@ -29,7 +29,7 @@ ulimit -c unlimited
 set -o pipefail
 
 while true; do
-    
+
 	if [ "$MYSQL_BACKUP_ACTIVED" = true ]; then
 		do_mysql_backup
 		find mysql_backup/ -name "*.sql" -mtime +3  -print -exec gzip -f {} \;

@@ -33,9 +33,9 @@ function login.onLogin(player)
 	player:registerEvent("DropLoot")
 	player:registerEvent("BossParticipation")
 
-	if onExerciseTraining[player:getId()] then -- onLogin & onLogout
-		stopEvent(onExerciseTraining[player:getId()].event)
-		onExerciseTraining[player:getId()] = nil
+	if _G.OnExerciseTraining[player:getId()] then -- onLogin & onLogout
+		stopEvent(_G.OnExerciseTraining[player:getId()].event)
+		_G.OnExerciseTraining[player:getId()] = nil
 		player:setTraining(false)
 	end
 
@@ -101,7 +101,7 @@ function login.onLogin(player)
 	_G.NextUseStaminaTime[playerId] = 1
 
 	-- EXP Stamina
-	nextUseXpStamina[playerId] = 1
+	_G.NextUseXpStamina[playerId] = 1
 
 	-- Set Client XP Gain Rate --
 	if configManager.getBoolean(configKeys.XP_DISPLAY_MODE) then

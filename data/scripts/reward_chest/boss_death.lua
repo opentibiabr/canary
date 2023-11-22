@@ -28,7 +28,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 		local totalDamageOut, totalDamageIn, totalHealing = 0.1, 0.1, 0.1
 
 		local scores = {}
-		local info = GlobalBosses[bossId]
+		local info = _G.GlobalBosses[bossId]
 		local damageMap = creature:getDamageMap()
 
 		for guid, stats in pairs(info) do
@@ -124,7 +124,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 				end
 			end
 		end
-		GlobalBosses[bossId] = nil
+		_G.GlobalBosses[bossId] = nil
 	end
 	return true
 end

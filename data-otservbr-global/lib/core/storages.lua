@@ -1705,8 +1705,6 @@ Storage = {
 		-- Reserved storage 52396-52410 (TheOrderOfTheLion)
 		Drume = {
 			Commander = 52396, -- Global
-			TotalLionCommanders = 52397, -- Global
-			TotalUsurperCommanders = 52398, -- Global
 		},
 	},
 	-- News quest development
@@ -2793,10 +2791,6 @@ Storage = {
 		U12_90 = { -- update 12.90 - Reserved Storages 47851 - 47900
 			PrimalOrdeal = {
 				QuestLine = 47851,
-				Hazard = {
-					Current = 47856,
-					Max = 47857,
-				},
 				Bosses = {
 					MagmaBubbleKilled = 47853,
 					ThePrimalMenaceKilled = 47855,
@@ -3066,6 +3060,13 @@ GlobalStorage = {
 		ThalasSwitchesGlobalStorage = 60160,
 		DiprathSwitchesGlobalStorage = 60161,
 		AshmunrahSwitchesGlobalStorage = 60162,
+	},
+	TheOrderOfTheLion = {
+		-- Reserved storage from 60170 - 60171
+		Drume = {
+			TotalLionCommanders = 60170, -- Global
+			TotalUsurperCommanders = 60171, -- Global
+		},
 	},
 	FuryGates = 65000,
 	Yakchal = 65001,

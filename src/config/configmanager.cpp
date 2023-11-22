@@ -223,6 +223,7 @@ bool ConfigManager::load() {
 
 	integer[HOUSE_PRICE_PER_SQM] = getGlobalNumber(L, "housePriceEachSQM", 1000);
 	integer[HOUSE_BUY_LEVEL] = getGlobalNumber(L, "houseBuyLevel", 0);
+	integer[HOUSE_LOSE_AFTER_INACTIVITY] = getGlobalNumber(L, "houseLoseAfterInactivity", 0);
 	boolean[HOUSE_PURSHASED_SHOW_PRICE] = getGlobalBoolean(L, "housePurchasedShowPrice", false);
 	boolean[ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS] = getGlobalBoolean(L, "onlyInvitedCanMoveHouseItems", true);
 
@@ -384,6 +385,7 @@ bool ConfigManager::load() {
 	integer[VIP_BONUS_LOOT] = getGlobalNumber(L, "vipBonusLoot", 0);
 	integer[VIP_BONUS_SKILL] = getGlobalNumber(L, "vipBonusSkill", 0);
 	boolean[VIP_AUTOLOOT_VIP_ONLY] = getGlobalBoolean(L, "vipAutoLootVipOnly", false);
+	boolean[VIP_KEEP_HOUSE] = getGlobalBoolean(L, "vipKeepHouse", false);
 	boolean[VIP_STAY_ONLINE] = getGlobalBoolean(L, "vipStayOnline", false);
 	integer[VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION] = getGlobalNumber(L, "vipFamiliarTimeCooldownReduction", 0);
 

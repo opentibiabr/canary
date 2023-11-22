@@ -49,7 +49,7 @@ function entranceTeleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if roomIsOccupied(setting.bossPos, setting.range, setting.range) then
+	if roomIsOccupied(setting.bossPos, false, setting.range, setting.range) then
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:teleportTo(fromPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -84,7 +84,7 @@ function entranceTeleport.onStepIn(creature, item, position, fromPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:say("You have ten minutes to kill and loot this boss. Otherwise you will lose that chance and will be kicked out.", TALKTYPE_MONSTER_SAY)
 		player:setBossCooldown(setting.bossName, os.time() + 2 * 3600)
-		addEvent(clearBossRoom, 60 * 30 * 1000, player.uid, monster.uid, setting.bossPos, setting.range, fromPosition)
+		addEvent(clearBossRoom, 60 * 30 * 1000, player.uid, setting.bossPos, false, setting.range, setting.range, fromPosition)
 		return true
 	end
 	return true

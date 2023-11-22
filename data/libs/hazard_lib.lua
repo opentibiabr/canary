@@ -110,8 +110,8 @@ function Hazard:levelUp(player)
 end
 
 function Hazard:setPlayerMaxLevel(player, level)
-	if level > self.maxLevel then
-		level = self.maxLevel
+	if level > self.maxLevelLevel then
+		level = self.maxLevelLevel
 	end
 
 	if self.storageMax then

@@ -151,7 +151,7 @@ local function useStaminaXpBoost(player)
 	end
 
 	local currentTime = os.time()
-	local timePassed = currentTime - nextUseXpStamina[playerId]
+	local timePassed = currentTime - _G.NextUseXpStamina[playerId]
 	if timePassed <= 0 then
 		return
 	end
@@ -162,10 +162,10 @@ local function useStaminaXpBoost(player)
 		else
 			staminaMinutes = 0
 		end
-		nextUseXpStamina[playerId] = currentTime + 120
+		_G.NextUseXpStamina[playerId] = currentTime + 120
 	else
 		staminaMinutes = staminaMinutes - 1
-		nextUseXpStamina[playerId] = currentTime + 60
+		_G.NextUseXpStamina[playerId] = currentTime + 60
 	end
 	player:setExpBoostStamina(staminaMinutes * 60)
 end
@@ -176,22 +176,22 @@ local function useConcoctionTime(player)
 	end
 
 	local playerId = player:getId()
-	if not playerId or not nextUseConcoctionTime[playerId] then
+	if not playerId or not _G.NextUseConcoctionTime[playerId] then
 		return false
 	end
 
 	local currentTime = os.time()
-	local timePassed = currentTime - nextUseConcoctionTime[playerId]
+	local timePassed = currentTime - _G.NextUseConcoctionTime[playerId]
 	if timePassed <= 0 then
 		return false
 	end
 
 	local deduction = 60
 	if timePassed > 60 then
-		nextUseConcoctionTime[playerId] = currentTime + 120
+		_G.NextUseConcoctionTime[playerId] = currentTime + 120
 		deduction = 120
 	else
-		nextUseConcoctionTime[playerId] = currentTime + 60
+		_G.NextUseConcoctionTime[playerId] = currentTime + 60
 	end
 	Concoction.experienceTick(player, deduction)
 end
@@ -392,7 +392,7 @@ end
 
 function Player:onMoveCreature(creature, fromPosition, toPosition)
 	local player = creature:getPlayer()
-	if player and onExerciseTraining[player:getId()] and not self:getGroup():hasFlag(PlayerFlag_CanPushAllCreatures) then
+	if player and _G.OnExerciseTraining[player:getId()] and not self:getGroup():hasFlag(PlayerFlag_CanPushAllCreatures) then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
 	end

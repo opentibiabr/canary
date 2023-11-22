@@ -5,7 +5,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 	local targetId = target:getId()
 
 	if target:isItem() and (table.contains(HouseDummies, targetId) or table.contains(FreeDummies, targetId)) then
-		if onExerciseTraining[playerId] then
+		if _G.OnExerciseTraining[playerId] then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This exercise dummy can only be used after a 30 second cooldown.")
 			LeaveTraining(playerId)
 			return true
@@ -26,7 +26,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 
 		if table.contains(HouseDummies, targetId) then
 			local playersOnDummy = 0
-			for _, playerTraining in pairs(onExerciseTraining) do
+			for _, playerTraining in pairs(_G.OnExerciseTraining) do
 				if playerTraining.dummyPos == targetPos then
 					playersOnDummy = playersOnDummy + 1
 				end
@@ -43,10 +43,10 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 			return true
 		end
 
-		onExerciseTraining[playerId] = {}
-		if not onExerciseTraining[playerId].event then
-			onExerciseTraining[playerId].event = addEvent(ExerciseEvent, 0, playerId, targetPos, item.itemid, targetId)
-			onExerciseTraining[playerId].dummyPos = targetPos
+		_G.OnExerciseTraining[playerId] = {}
+		if not _G.OnExerciseTraining[playerId].event then
+			_G.OnExerciseTraining[playerId].event = addEvent(ExerciseEvent, 0, playerId, targetPos, item.itemid, targetId)
+			_G.OnExerciseTraining[playerId].dummyPos = targetPos
 			player:setTraining(true)
 			player:setStorageValue(Storage.IsTraining, os.time() + 30)
 		end

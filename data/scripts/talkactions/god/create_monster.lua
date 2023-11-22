@@ -1,3 +1,47 @@
+local function SetInfluenced(monsterType, monster, player, influencedLevel)
+	if monsterType and not monsterType:isForgeCreature() then
+		player:sendCancelMessage("Only allowed monsters can be influenced.")
+		return false
+	end
+	local influencedMonster = Monster(ForgeMonster:pickInfluenced())
+	-- If it's reached the limit, we'll remove one to add the new one.
+	if ForgeMonster:exceededMaxInfluencedMonsters() then
+		if influencedMonster then
+			Game.removeInfluencedMonster(influencedMonster:getId())
+		end
+	end
+	Game.addInfluencedMonster(monster)
+	monster:setForgeStack(influencedLevel)
+end
+
+local function CheckDustLevel(monsterForge, player)
+	local canSetFiendish = false
+	local canSetInfluenced
+	if type(monsterForge) == "string" and monsterForge == "fiendish" then
+		canSetFiendish = true
+	end
+	local influencedLevel
+	if not canSetFiendish then
+		influencedLevel = tonumber(monsterForge)
+	end
+	if influencedLevel and influencedLevel > 0 then
+		if influencedLevel > 5 then
+			player:sendCancelMessage("Invalid influenced level.")
+			return false
+		end
+		canSetInfluenced = true
+	end
+	return canSetFiendish, canSetInfluenced, influencedLevel
+end
+
+local function SetFiendish(monsterType, position, player, monster)
+	if monsterType and not monsterType:isForgeCreature() then
+		player:sendCancelMessage("Only allowed monsters can be fiendish.")
+		return false
+	end
+	monster:setFiendish(position, player)
+end
+
 local function createCreaturesAround(player, maxRadius, creatureName, creatureCount, creatureForge, boolForceCreate)
 	local position = player:getPosition()
 	local createdCount = 0

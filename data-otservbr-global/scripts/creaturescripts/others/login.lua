@@ -142,8 +142,6 @@ function playerLogin.onLogin(player)
 	local playerId = player:getId()
 	DailyReward.init(playerId)
 
-	player:loadSpecialStorage()
-
 	if player:getGroup():getId() >= GROUP_TYPE_GAMEMASTER then
 		player:setGhostMode(true)
 	end

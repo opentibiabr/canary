@@ -598,21 +598,6 @@ function getPlayerGUIDByName(name)
 	return 0
 end
 
-function getAccountNumberByPlayerName(name)
-	local player = Player(name)
-	if player then
-		return player:getAccountId()
-	end
-
-	local resultId = db.storeQuery("SELECT `account_id` FROM `players` WHERE `name` = " .. db.escapeString(name))
-	if resultId ~= false then
-		local accountId = Result.getNumber(resultId, "account_id")
-		result.free(resultId)
-		return accountId
-	end
-	return 0
-end
-
 getPlayerAccountBalance = getPlayerBalance
 getIpByName = getIPByPlayerName
 
@@ -1605,3 +1590,8 @@ function doSetCreatureLight(cid, lightLevel, lightColor, time)
 	creature:addCondition(condition)
 	return true
 end
+
+function isInRange(pos, fromPos, toPos)
+	return pos.x >= fromPos.x and pos.y >= fromPos.y and pos.z >= fromPos.z and pos.x <= toPos.x and pos.y <= toPos.y and pos.z <= toPos.z
+end
+

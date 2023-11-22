@@ -1,3 +1,44 @@
+--- Convert a duration in milliseconds into a string
+---@param duration number The duration in milliseconds
+---@return string The string representation of the duration
+local function FormatDuration(duration)
+	if type(duration) == "string" then
+		duration = ParseDuration(duration)
+	end
+	if not duration or type(duration) ~= "number" then
+		return ""
+	end
+
+	local units = {
+		{ "w", 7 * 24 * 60 * 60 * 1000 },
+		{ "d", 24 * 60 * 60 * 1000 },
+		{ "h", 60 * 60 * 1000 },
+		{ "m", 60 * 1000 },
+		{ "s", 1000 },
+		{ "ms", 1 },
+	}
+
+	local remaining = duration
+	local parts = {}
+
+	for _, unitInfo in ipairs(units) do
+		local unit = unitInfo[1]
+		local multiplier = unitInfo[2]
+
+		local count = math.floor(remaining / multiplier)
+		if count > 0 then
+			table.insert(parts, tostring(count) .. unit)
+			remaining = remaining - (count * multiplier)
+		end
+	end
+
+	if #parts == 0 then
+		return "0ms"
+	end
+
+	return table.concat(parts)
+end
+
 ---@alias Weekday 'Monday'|'Tuesday'|'Wednesday'|'Thursday'|'Friday'|'Saturday'|'Sunday
 
 ---@class Raid : Encounter

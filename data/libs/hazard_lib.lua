@@ -88,7 +88,8 @@ function Hazard:getPlayerMaxLevel(player)
 		local fromStorage = player:getStorageValue(self.storageMax)
 		return fromStorage <= 0 and 1 or fromStorage
 	end
-	local fromKV = player:kv():scoped(self.name):get("maxLevel")
+	local fromKV = player:kv():scoped(self.name):get("maxLevel") or 1
+
 	return fromKV <= 0 and 1 or fromKV
 end
 

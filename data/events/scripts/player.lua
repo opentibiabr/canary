@@ -96,7 +96,7 @@ local soulCondition = Condition(CONDITION_SOUL, CONDITIONID_DEFAULT)
 soulCondition:setTicks(4 * 60 * 1000)
 soulCondition:setParameter(CONDITION_PARAM_SOULGAIN, 1)
 
-local function useStamina(player)
+local function useStamina(player, isStaminaEnabled)
 	if not player then
 		return false
 	end
@@ -107,12 +107,12 @@ local function useStamina(player)
 	end
 
 	local playerId = player:getId()
-	if not playerId or not nextUseStaminaTime[playerId] then
+	if not playerId or not _G.NextUseStaminaTime[playerId] then
 		return false
 	end
 
 	local currentTime = os.time()
-	local timePassed = currentTime - nextUseStaminaTime[playerId]
+	local timePassed = currentTime - _G.NextUseStaminaTime[playerId]
 	if timePassed <= 0 then
 		return
 	end
@@ -123,14 +123,16 @@ local function useStamina(player)
 		else
 			staminaMinutes = 0
 		end
-		nextUseStaminaTime[playerId] = currentTime + 120
+		_G.NextUseStaminaTime[playerId] = currentTime + 120
 		player:removePreyStamina(120)
 	else
 		staminaMinutes = staminaMinutes - 1
-		nextUseStaminaTime[playerId] = currentTime + 60
+		_G.NextUseStaminaTime[playerId] = currentTime + 60
 		player:removePreyStamina(60)
 	end
-	player:setStamina(staminaMinutes)
+	if isStaminaEnabled then
+		player:setStamina(staminaMinutes)
+	end
 end
 
 local function useStaminaXpBoost(player)
@@ -514,8 +516,9 @@ function Player:onGainExperience(target, exp, rawExp)
 
 	-- Stamina Bonus
 	local staminaBonusXp = 1
-	if configManager.getBoolean(configKeys.STAMINA_SYSTEM) then
-		useStamina(self)
+	local isStaminaEnabled = configManager.getBoolean(configKeys.STAMINA_SYSTEM)
+	useStamina(self, isStaminaEnabled)
+	if isStaminaEnabled then
 		staminaBonusXp = self:getFinalBonusStamina()
 		self:setStaminaXpBoost(staminaBonusXp * 100)
 	end

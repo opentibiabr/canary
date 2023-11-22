@@ -2,8 +2,8 @@ local playerLogout = CreatureEvent("PlayerLogout")
 function playerLogout.onLogout(player)
 	local playerId = player:getId()
 
-	if nextUseStaminaTime[playerId] ~= nil then
-		nextUseStaminaTime[playerId] = nil
+	if _G.NextUseStaminaTime[playerId] ~= nil then
+		_G.NextUseStaminaTime[playerId] = nil
 	end
 
 	player:saveSpecialStorage()

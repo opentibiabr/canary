@@ -344,6 +344,10 @@ public:
 		operatingSystem = clientos;
 	}
 
+	bool isOldProtocol() {
+		return client && client->oldProtocol;
+	}
+
 	uint32_t getProtocolVersion() const {
 		if (!client) {
 			return 0;
@@ -2543,6 +2547,8 @@ public:
 	void sendLootMessage(const std::string &message) const;
 
 	std::shared_ptr<Container> getLootPouch();
+
+	bool hasPermittedConditionInPZ() const;
 
 private:
 	friend class PlayerLock;

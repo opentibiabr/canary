@@ -77,7 +77,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	output->addString(g_configManager().getString(SERVER_NAME));
 	output->addString(g_configManager().getString(IP));
 
-	output->add<uint16_t>(g_configManager().getShortNumber(GAME_PORT));
+	output->add<uint16_t>(g_configManager().getNumber(GAME_PORT));
 
 	output->addByte(0);
 

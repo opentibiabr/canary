@@ -82,7 +82,7 @@ void ProtocolStatus::sendStatusString() {
 	uint64_t uptime = (OTSYS_TIME() - ProtocolStatus::start) / 1000;
 	serverinfo.append_attribute("uptime") = std::to_string(uptime).c_str();
 	serverinfo.append_attribute("ip") = g_configManager().getString(IP).c_str();
-	serverinfo.append_attribute("servername") = g_configManager().getString(stringConfig_t::SERVER_NAME).c_str();
+	serverinfo.append_attribute("servername") = g_configManager().getString(ConfigKey_t::SERVER_NAME).c_str();
 	serverinfo.append_attribute("port") = std::to_string(g_configManager().getNumber(LOGIN_PORT)).c_str();
 	serverinfo.append_attribute("location") = g_configManager().getString(LOCATION).c_str();
 	serverinfo.append_attribute("url") = g_configManager().getString(URL).c_str();
@@ -154,7 +154,7 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 
 	if (requestedInfo & REQUEST_BASIC_SERVER_INFO) {
 		output->addByte(0x10);
-		output->addString(g_configManager().getString(stringConfig_t::SERVER_NAME));
+		output->addString(g_configManager().getString(ConfigKey_t::SERVER_NAME));
 		output->addString(g_configManager().getString(IP));
 		output->addString(std::to_string(g_configManager().getNumber(LOGIN_PORT)));
 	}

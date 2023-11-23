@@ -19,62 +19,6 @@
 	#define lua_strlen lua_rawlen
 #endif
 
-namespace {
-
-	std::string getGlobalString(lua_State* L, const char* identifier, const char* defaultValue) {
-		lua_getglobal(L, identifier);
-		if (!lua_isstring(L, -1)) {
-			return defaultValue;
-		}
-
-		size_t len = lua_strlen(L, -1);
-		std::string ret(lua_tostring(L, -1), len);
-		lua_pop(L, 1);
-		return ret;
-	}
-
-	int32_t getGlobalNumber(lua_State* L, const char* identifier, const int32_t defaultValue = 0) {
-		lua_getglobal(L, identifier);
-		if (!lua_isnumber(L, -1)) {
-			return defaultValue;
-		}
-
-		int32_t val = lua_tonumber(L, -1);
-		lua_pop(L, 1);
-		return val;
-	}
-
-	bool getGlobalBoolean(lua_State* L, const char* identifier, const bool defaultValue) {
-		lua_getglobal(L, identifier);
-		if (!lua_isboolean(L, -1)) {
-			if (!lua_isstring(L, -1)) {
-				return defaultValue;
-			}
-
-			size_t len = lua_strlen(L, -1);
-			std::string ret(lua_tostring(L, -1), len);
-			lua_pop(L, 1);
-			return booleanString(ret);
-		}
-
-		int val = lua_toboolean(L, -1);
-		lua_pop(L, 1);
-		return val != 0;
-	}
-
-	float getGlobalFloat(lua_State* L, const char* identifier, const float defaultValue = 0.0) {
-		lua_getglobal(L, identifier);
-		if (!lua_isnumber(L, -1)) {
-			return defaultValue;
-		}
-
-		float val = lua_tonumber(L, -1);
-		lua_pop(L, 1);
-		return val;
-	}
-
-}
-
 bool ConfigManager::load() {
 	lua_State* L = luaL_newstate();
 	if (!L) {
@@ -90,318 +34,318 @@ bool ConfigManager::load() {
 	}
 
 #ifndef DEBUG_LOG
-	g_logger().setLevel(getGlobalString(L, "logLevel", "info"));
+	g_logger().setLevel(loadStringConfig(L, LOGLEVEL, "logLevel", "info"));
 #endif
 
 	// Parse config
 	// Info that must be loaded one time (unless we reset the modules involved)
 	if (!loaded) {
-		boolean[BIND_ONLY_GLOBAL_ADDRESS] = getGlobalBoolean(L, "bindOnlyGlobalAddress", false);
-		boolean[OPTIMIZE_DATABASE] = getGlobalBoolean(L, "startupDatabaseOptimization", true);
-		boolean[TOGGLE_MAP_CUSTOM] = getGlobalBoolean(L, "toggleMapCustom", true);
-		boolean[TOGGLE_MAINTAIN_MODE] = getGlobalBoolean(L, "toggleMaintainMode", false);
-		string[MAINTAIN_MODE_MESSAGE] = getGlobalString(L, "maintainModeMessage", "");
+		loadBoolConfig(L, BIND_ONLY_GLOBAL_ADDRESS, "bindOnlyGlobalAddress", false);
+		loadBoolConfig(L, OPTIMIZE_DATABASE, "startupDatabaseOptimization", true);
+		loadBoolConfig(L, TOGGLE_MAP_CUSTOM, "toggleMapCustom", true);
+		loadBoolConfig(L, TOGGLE_MAINTAIN_MODE, "toggleMaintainMode", false);
+		loadStringConfig(L, MAINTAIN_MODE_MESSAGE, "maintainModeMessage", "");
 
-		string[IP] = getGlobalString(L, "ip", "127.0.0.1");
-		string[MAP_NAME] = getGlobalString(L, "mapName", "canary");
-		string[MAP_DOWNLOAD_URL] = getGlobalString(L, "mapDownloadUrl", "");
-		string[MAP_AUTHOR] = getGlobalString(L, "mapAuthor", "Eduardo Dantas");
+		loadStringConfig(L, IP, "ip", "127.0.0.1");
+		loadStringConfig(L, MAP_NAME, "mapName", "canary");
+		loadStringConfig(L, MAP_DOWNLOAD_URL, "mapDownloadUrl", "");
+		loadStringConfig(L, MAP_AUTHOR, "mapAuthor", "Eduardo Dantas");
 
-		string[MAP_CUSTOM_NAME] = getGlobalString(L, "mapCustomName", "");
-		string[MAP_CUSTOM_AUTHOR] = getGlobalString(L, "mapCustomAuthor", "OTServBR");
+		loadStringConfig(L, MAP_CUSTOM_NAME, "mapCustomName", "");
+		loadStringConfig(L, MAP_CUSTOM_AUTHOR, "mapCustomAuthor", "OTServBR");
 
-		string[HOUSE_RENT_PERIOD] = getGlobalString(L, "houseRentPeriod", "never");
-		floating[HOUSE_PRICE_RENT_MULTIPLIER] = getGlobalFloat(L, "housePriceRentMultiplier", 1.0);
-		floating[HOUSE_RENT_RATE] = getGlobalFloat(L, "houseRentRate", 1.0);
-		string[MYSQL_HOST] = getGlobalString(L, "mysqlHost", "127.0.0.1");
-		string[MYSQL_USER] = getGlobalString(L, "mysqlUser", "root");
-		string[MYSQL_PASS] = getGlobalString(L, "mysqlPass", "");
-		string[MYSQL_DB] = getGlobalString(L, "mysqlDatabase", "canary");
-		string[MYSQL_SOCK] = getGlobalString(L, "mysqlSock", "");
+		loadStringConfig(L, HOUSE_RENT_PERIOD, "houseRentPeriod", "never");
+		loadFloatConfig(L, HOUSE_PRICE_RENT_MULTIPLIER, "housePriceRentMultiplier", 1.0);
+		loadFloatConfig(L, HOUSE_RENT_RATE, "houseRentRate", 1.0);
+		loadStringConfig(L, MYSQL_HOST, "mysqlHost", "127.0.0.1");
+		loadStringConfig(L, MYSQL_USER, "mysqlUser", "root");
+		loadStringConfig(L, MYSQL_PASS, "mysqlPass", "");
+		loadStringConfig(L, MYSQL_DB, "mysqlDatabase", "canary");
+		loadStringConfig(L, MYSQL_SOCK, "mysqlSock", "");
 
-		string[AUTH_TYPE] = getGlobalString(L, "authType", "password");
-		boolean[RESET_SESSIONS_ON_STARTUP] = getGlobalBoolean(L, "resetSessionsOnStartup", false);
+		loadStringConfig(L, AUTH_TYPE, "authType", "password");
+		loadBoolConfig(L, RESET_SESSIONS_ON_STARTUP, "resetSessionsOnStartup", false);
 
-		integer[SQL_PORT] = getGlobalNumber(L, "mysqlPort", 3306);
-		integer[GAME_PORT] = getGlobalNumber(L, "gameProtocolPort", 7172);
-		integer[LOGIN_PORT] = getGlobalNumber(L, "loginProtocolPort", 7171);
-		integer[STATUS_PORT] = getGlobalNumber(L, "statusProtocolPort", 7171);
+		loadIntConfig(L, SQL_PORT, "mysqlPort", 3306);
+		loadIntConfig(L, GAME_PORT, "gameProtocolPort", 7172);
+		loadIntConfig(L, LOGIN_PORT, "loginProtocolPort", 7171);
+		loadIntConfig(L, STATUS_PORT, "statusProtocolPort", 7171);
 
-		integer[MARKET_OFFER_DURATION] = getGlobalNumber(L, "marketOfferDuration", 30 * 24 * 60 * 60);
+		loadIntConfig(L, MARKET_OFFER_DURATION, "marketOfferDuration", 30 * 24 * 60 * 60);
 
-		integer[FREE_DEPOT_LIMIT] = getGlobalNumber(L, "freeDepotLimit", 2000);
-		integer[PREMIUM_DEPOT_LIMIT] = getGlobalNumber(L, "premiumDepotLimit", 8000);
-		integer[DEPOT_BOXES] = getGlobalNumber(L, "depotBoxes", 20);
-		integer[STASH_ITEMS] = getGlobalNumber(L, "stashItemCount", 5000);
+		loadIntConfig(L, FREE_DEPOT_LIMIT, "freeDepotLimit", 2000);
+		loadIntConfig(L, PREMIUM_DEPOT_LIMIT, "premiumDepotLimit", 8000);
+		loadIntConfig(L, DEPOT_BOXES, "depotBoxes", 20);
+		loadIntConfig(L, STASH_ITEMS, "stashItemCount", 5000);
 
-		boolean[OLD_PROTOCOL] = getGlobalBoolean(L, "allowOldProtocol", true);
+		loadBoolConfig(L, OLD_PROTOCOL, "allowOldProtocol", true);
 	}
 
-	boolean[ALLOW_CHANGEOUTFIT] = getGlobalBoolean(L, "allowChangeOutfit", true);
-	boolean[ONE_PLAYER_ON_ACCOUNT] = getGlobalBoolean(L, "onePlayerOnlinePerAccount", true);
-	boolean[AIMBOT_HOTKEY_ENABLED] = getGlobalBoolean(L, "hotkeyAimbotEnabled", true);
-	boolean[REMOVE_RUNE_CHARGES] = getGlobalBoolean(L, "removeChargesFromRunes", true);
-	boolean[EXPERIENCE_FROM_PLAYERS] = getGlobalBoolean(L, "experienceByKillingPlayers", false);
-	boolean[FREE_PREMIUM] = getGlobalBoolean(L, "freePremium", false);
-	boolean[REPLACE_KICK_ON_LOGIN] = getGlobalBoolean(L, "replaceKickOnLogin", true);
-	boolean[MARKET_PREMIUM] = getGlobalBoolean(L, "premiumToCreateMarketOffer", true);
-	boolean[EMOTE_SPELLS] = getGlobalBoolean(L, "emoteSpells", false);
-	boolean[STAMINA_SYSTEM] = getGlobalBoolean(L, "staminaSystem", true);
-	boolean[WARN_UNSAFE_SCRIPTS] = getGlobalBoolean(L, "warnUnsafeScripts", true);
-	boolean[CONVERT_UNSAFE_SCRIPTS] = getGlobalBoolean(L, "convertUnsafeScripts", true);
-	boolean[CLASSIC_ATTACK_SPEED] = getGlobalBoolean(L, "classicAttackSpeed", false);
-	boolean[TOGGLE_ATTACK_SPEED_ONFIST] = getGlobalBoolean(L, "toggleAttackSpeedOnFist", false);
-	integer[MULTIPLIER_ATTACKONFIST] = getGlobalNumber(L, "multiplierSpeedOnFist", 5);
-	integer[MAX_SPEED_ATTACKONFIST] = getGlobalNumber(L, "maxSpeedOnFist", 500);
-	boolean[SCRIPTS_CONSOLE_LOGS] = getGlobalBoolean(L, "showScriptsLogInConsole", true);
-	boolean[STASH_MOVING] = getGlobalBoolean(L, "stashMoving", false);
-	boolean[ALLOW_BLOCK_SPAWN] = getGlobalBoolean(L, "allowBlockSpawn", true);
-	boolean[REMOVE_WEAPON_AMMO] = getGlobalBoolean(L, "removeWeaponAmmunition", true);
-	boolean[REMOVE_WEAPON_CHARGES] = getGlobalBoolean(L, "removeWeaponCharges", true);
-	boolean[REMOVE_POTION_CHARGES] = getGlobalBoolean(L, "removeChargesFromPotions", true);
-	boolean[GLOBAL_SERVER_SAVE_NOTIFY_MESSAGE] = getGlobalBoolean(L, "globalServerSaveNotifyMessage", true);
-	boolean[GLOBAL_SERVER_SAVE_CLEAN_MAP] = getGlobalBoolean(L, "globalServerSaveCleanMap", false);
-	boolean[GLOBAL_SERVER_SAVE_CLOSE] = getGlobalBoolean(L, "globalServerSaveClose", false);
-	boolean[FORCE_MONSTERTYPE_LOAD] = getGlobalBoolean(L, "forceMonsterTypesOnLoad", true);
-	boolean[HOUSE_OWNED_BY_ACCOUNT] = getGlobalBoolean(L, "houseOwnedByAccount", false);
-	boolean[CLEAN_PROTECTION_ZONES] = getGlobalBoolean(L, "cleanProtectionZones", false);
-	boolean[GLOBAL_SERVER_SAVE_SHUTDOWN] = getGlobalBoolean(L, "globalServerSaveShutdown", true);
-	boolean[PUSH_WHEN_ATTACKING] = getGlobalBoolean(L, "pushWhenAttacking", false);
+	loadBoolConfig(L, ALLOW_CHANGEOUTFIT, "allowChangeOutfit", true);
+	loadBoolConfig(L, ONE_PLAYER_ON_ACCOUNT, "onePlayerOnlinePerAccount", true);
+	loadBoolConfig(L, AIMBOT_HOTKEY_ENABLED, "hotkeyAimbotEnabled", true);
+	loadBoolConfig(L, REMOVE_RUNE_CHARGES, "removeChargesFromRunes", true);
+	loadBoolConfig(L, EXPERIENCE_FROM_PLAYERS, "experienceByKillingPlayers", false);
+	loadBoolConfig(L, FREE_PREMIUM, "freePremium", false);
+	loadBoolConfig(L, REPLACE_KICK_ON_LOGIN, "replaceKickOnLogin", true);
+	loadBoolConfig(L, MARKET_PREMIUM, "premiumToCreateMarketOffer", true);
+	loadBoolConfig(L, EMOTE_SPELLS, "emoteSpells", false);
+	loadBoolConfig(L, STAMINA_SYSTEM, "staminaSystem", true);
+	loadBoolConfig(L, WARN_UNSAFE_SCRIPTS, "warnUnsafeScripts", true);
+	loadBoolConfig(L, CONVERT_UNSAFE_SCRIPTS, "convertUnsafeScripts", true);
+	loadBoolConfig(L, CLASSIC_ATTACK_SPEED, "classicAttackSpeed", false);
+	loadBoolConfig(L, TOGGLE_ATTACK_SPEED_ONFIST, "toggleAttackSpeedOnFist", false);
+	loadIntConfig(L, MULTIPLIER_ATTACKONFIST, "multiplierSpeedOnFist", 5);
+	loadIntConfig(L, MAX_SPEED_ATTACKONFIST, "maxSpeedOnFist", 500);
+	loadBoolConfig(L, SCRIPTS_CONSOLE_LOGS, "showScriptsLogInConsole", true);
+	loadBoolConfig(L, STASH_MOVING, "stashMoving", false);
+	loadBoolConfig(L, ALLOW_BLOCK_SPAWN, "allowBlockSpawn", true);
+	loadBoolConfig(L, REMOVE_WEAPON_AMMO, "removeWeaponAmmunition", true);
+	loadBoolConfig(L, REMOVE_WEAPON_CHARGES, "removeWeaponCharges", true);
+	loadBoolConfig(L, REMOVE_POTION_CHARGES, "removeChargesFromPotions", true);
+	loadBoolConfig(L, GLOBAL_SERVER_SAVE_NOTIFY_MESSAGE, "globalServerSaveNotifyMessage", true);
+	loadBoolConfig(L, GLOBAL_SERVER_SAVE_CLEAN_MAP, "globalServerSaveCleanMap", false);
+	loadBoolConfig(L, GLOBAL_SERVER_SAVE_CLOSE, "globalServerSaveClose", false);
+	loadBoolConfig(L, FORCE_MONSTERTYPE_LOAD, "forceMonsterTypesOnLoad", true);
+	loadBoolConfig(L, HOUSE_OWNED_BY_ACCOUNT, "houseOwnedByAccount", false);
+	loadBoolConfig(L, CLEAN_PROTECTION_ZONES, "cleanProtectionZones", false);
+	loadBoolConfig(L, GLOBAL_SERVER_SAVE_SHUTDOWN, "globalServerSaveShutdown", true);
+	loadBoolConfig(L, PUSH_WHEN_ATTACKING, "pushWhenAttacking", false);
 
-	boolean[WEATHER_RAIN] = getGlobalBoolean(L, "weatherRain", false);
-	boolean[WEATHER_THUNDER] = getGlobalBoolean(L, "thunderEffect", false);
-	boolean[ALL_CONSOLE_LOG] = getGlobalBoolean(L, "allConsoleLog", false);
-	boolean[TOGGLE_FREE_QUEST] = getGlobalBoolean(L, "toggleFreeQuest", true);
-	boolean[AUTOLOOT] = getGlobalBoolean(L, "autoLoot", false);
-	boolean[AUTOBANK] = getGlobalBoolean(L, "autoBank", false);
-	boolean[STAMINA_TRAINER] = getGlobalBoolean(L, "staminaTrainer", false);
-	boolean[STAMINA_PZ] = getGlobalBoolean(L, "staminaPz", false);
-	boolean[SORT_LOOT_BY_CHANCE] = getGlobalBoolean(L, "sortLootByChance", false);
-	boolean[TOGGLE_SAVE_INTERVAL] = getGlobalBoolean(L, "toggleSaveInterval", false);
-	boolean[TOGGLE_SAVE_INTERVAL_CLEAN_MAP] = getGlobalBoolean(L, "toggleSaveIntervalCleanMap", false);
-	boolean[TELEPORT_SUMMONS] = getGlobalBoolean(L, "teleportSummons", false);
-	boolean[ALLOW_RELOAD] = getGlobalBoolean(L, "allowReload", false);
+	loadBoolConfig(L, WEATHER_RAIN, "weatherRain", false);
+	loadBoolConfig(L, WEATHER_THUNDER, "thunderEffect", false);
+	loadBoolConfig(L, ALL_CONSOLE_LOG, "allConsoleLog", false);
+	loadBoolConfig(L, TOGGLE_FREE_QUEST, "toggleFreeQuest", true);
+	loadBoolConfig(L, AUTOLOOT, "autoLoot", false);
+	loadBoolConfig(L, AUTOBANK, "autoBank", false);
+	loadBoolConfig(L, STAMINA_TRAINER, "staminaTrainer", false);
+	loadBoolConfig(L, STAMINA_PZ, "staminaPz", false);
+	loadBoolConfig(L, SORT_LOOT_BY_CHANCE, "sortLootByChance", false);
+	loadBoolConfig(L, TOGGLE_SAVE_INTERVAL, "toggleSaveInterval", false);
+	loadBoolConfig(L, TOGGLE_SAVE_INTERVAL_CLEAN_MAP, "toggleSaveIntervalCleanMap", false);
+	loadBoolConfig(L, TELEPORT_SUMMONS, "teleportSummons", false);
+	loadBoolConfig(L, ALLOW_RELOAD, "allowReload", false);
 
-	boolean[ONLY_PREMIUM_ACCOUNT] = getGlobalBoolean(L, "onlyPremiumAccount", false);
-	boolean[RATE_USE_STAGES] = getGlobalBoolean(L, "rateUseStages", false);
-	boolean[TOGGLE_IMBUEMENT_SHRINE_STORAGE] = getGlobalBoolean(L, "toggleImbuementShrineStorage", true);
-	boolean[TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY] = getGlobalBoolean(L, "toggleImbuementNonAggressiveFightOnly", false);
+	loadBoolConfig(L, ONLY_PREMIUM_ACCOUNT, "onlyPremiumAccount", false);
+	loadBoolConfig(L, RATE_USE_STAGES, "rateUseStages", false);
+	loadBoolConfig(L, TOGGLE_IMBUEMENT_SHRINE_STORAGE, "toggleImbuementShrineStorage", true);
+	loadBoolConfig(L, TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY, "toggleImbuementNonAggressiveFightOnly", false);
 
-	boolean[TOGGLE_DOWNLOAD_MAP] = getGlobalBoolean(L, "toggleDownloadMap", false);
-	boolean[USE_ANY_DATAPACK_FOLDER] = getGlobalBoolean(L, "useAnyDatapackFolder", false);
-	boolean[INVENTORY_GLOW] = getGlobalBoolean(L, "inventoryGlowOnFiveBless", false);
-	boolean[XP_DISPLAY_MODE] = getGlobalBoolean(L, "experienceDisplayRates", true);
+	loadBoolConfig(L, TOGGLE_DOWNLOAD_MAP, "toggleDownloadMap", false);
+	loadBoolConfig(L, USE_ANY_DATAPACK_FOLDER, "useAnyDatapackFolder", false);
+	loadBoolConfig(L, INVENTORY_GLOW, "inventoryGlowOnFiveBless", false);
+	loadBoolConfig(L, XP_DISPLAY_MODE, "experienceDisplayRates", true);
 
-	string[DEFAULT_PRIORITY] = getGlobalString(L, "defaultPriority", "high");
-	string[SERVER_NAME] = getGlobalString(L, "serverName", "");
-	string[SERVER_MOTD] = getGlobalString(L, "serverMotd", "");
-	string[OWNER_NAME] = getGlobalString(L, "ownerName", "");
-	string[OWNER_EMAIL] = getGlobalString(L, "ownerEmail", "");
-	string[URL] = getGlobalString(L, "url", "");
-	string[LOCATION] = getGlobalString(L, "location", "");
-	string[WORLD_TYPE] = getGlobalString(L, "worldType", "pvp");
-	string[STORE_IMAGES_URL] = getGlobalString(L, "coinImagesURL", "");
-	string[DISCORD_WEBHOOK_URL] = getGlobalString(L, "discordWebhookURL", "");
-	string[SAVE_INTERVAL_TYPE] = getGlobalString(L, "saveIntervalType", "");
-	string[GLOBAL_SERVER_SAVE_TIME] = getGlobalString(L, "globalServerSaveTime", "06:00");
-	string[DATA_DIRECTORY] = getGlobalString(L, "dataPackDirectory", "data-otservbr-global");
-	string[CORE_DIRECTORY] = getGlobalString(L, "coreDirectory", "data");
+	loadStringConfig(L, DEFAULT_PRIORITY, "defaultPriority", "high");
+	loadStringConfig(L, SERVER_NAME, "serverName", "");
+	loadStringConfig(L, SERVER_MOTD, "serverMotd", "");
+	loadStringConfig(L, OWNER_NAME, "ownerName", "");
+	loadStringConfig(L, OWNER_EMAIL, "ownerEmail", "");
+	loadStringConfig(L, URL, "url", "");
+	loadStringConfig(L, LOCATION, "location", "");
+	loadStringConfig(L, WORLD_TYPE, "worldType", "pvp");
+	loadStringConfig(L, STORE_IMAGES_URL, "coinImagesURL", "");
+	loadStringConfig(L, DISCORD_WEBHOOK_URL, "discordWebhookURL", "");
+	loadStringConfig(L, SAVE_INTERVAL_TYPE, "saveIntervalType", "");
+	loadStringConfig(L, GLOBAL_SERVER_SAVE_TIME, "globalServerSaveTime", "06:00");
+	loadStringConfig(L, DATA_DIRECTORY, "dataPackDirectory", "data-otservbr-global");
+	loadStringConfig(L, CORE_DIRECTORY, "coreDirectory", "data");
 
-	string[FORGE_FIENDISH_INTERVAL_TYPE] = getGlobalString(L, "forgeFiendishIntervalType", "hour");
-	string[FORGE_FIENDISH_INTERVAL_TIME] = getGlobalString(L, "forgeFiendishIntervalTime", "1");
+	loadStringConfig(L, FORGE_FIENDISH_INTERVAL_TYPE, "forgeFiendishIntervalType", "hour");
+	loadStringConfig(L, FORGE_FIENDISH_INTERVAL_TIME, "forgeFiendishIntervalTime", "1");
 
-	integer[MAX_PLAYERS] = getGlobalNumber(L, "maxPlayers");
-	integer[PZ_LOCKED] = getGlobalNumber(L, "pzLocked", 60000);
-	integer[DEFAULT_DESPAWNRANGE] = getGlobalNumber(L, "deSpawnRange", 2);
-	integer[DEFAULT_DESPAWNRADIUS] = getGlobalNumber(L, "deSpawnRadius", 50);
-	integer[RATE_EXPERIENCE] = getGlobalNumber(L, "rateExp", 1);
-	integer[RATE_SKILL] = getGlobalNumber(L, "rateSkill", 1);
-	integer[RATE_LOOT] = getGlobalNumber(L, "rateLoot", 1);
-	integer[RATE_MAGIC] = getGlobalNumber(L, "rateMagic", 1);
-	integer[RATE_SPAWN] = getGlobalNumber(L, "rateSpawn", 1);
-	integer[RATE_KILLING_IN_THE_NAME_OF_POINTS] = getGlobalNumber(L, "rateKillingInTheNameOfPoints", 1);
+	loadIntConfig(L, MAX_PLAYERS, "maxPlayers", 0);
+	loadIntConfig(L, PZ_LOCKED, "pzLocked", 60000);
+	loadIntConfig(L, DEFAULT_DESPAWNRANGE, "deSpawnRange", 2);
+	loadIntConfig(L, DEFAULT_DESPAWNRADIUS, "deSpawnRadius", 50);
+	loadIntConfig(L, RATE_EXPERIENCE, "rateExp", 1);
+	loadIntConfig(L, RATE_SKILL, "rateSkill", 1);
+	loadIntConfig(L, RATE_LOOT, "rateLoot", 1);
+	loadIntConfig(L, RATE_MAGIC, "rateMagic", 1);
+	loadIntConfig(L, RATE_SPAWN, "rateSpawn", 1);
+	loadIntConfig(L, RATE_KILLING_IN_THE_NAME_OF_POINTS, "rateKillingInTheNameOfPoints", 1);
 
-	integer[HOUSE_PRICE_PER_SQM] = getGlobalNumber(L, "housePriceEachSQM", 1000);
-	integer[HOUSE_BUY_LEVEL] = getGlobalNumber(L, "houseBuyLevel", 0);
-	integer[HOUSE_LOSE_AFTER_INACTIVITY] = getGlobalNumber(L, "houseLoseAfterInactivity", 0);
-	boolean[HOUSE_PURSHASED_SHOW_PRICE] = getGlobalBoolean(L, "housePurchasedShowPrice", false);
-	boolean[ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS] = getGlobalBoolean(L, "onlyInvitedCanMoveHouseItems", true);
+	loadIntConfig(L, HOUSE_PRICE_PER_SQM, "housePriceEachSQM", 1000);
+	loadIntConfig(L, HOUSE_BUY_LEVEL, "houseBuyLevel", 0);
+	loadIntConfig(L, HOUSE_LOSE_AFTER_INACTIVITY, "houseLoseAfterInactivity", 0);
+	loadBoolConfig(L, HOUSE_PURSHASED_SHOW_PRICE, "housePurchasedShowPrice", false);
+	loadBoolConfig(L, ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS, "onlyInvitedCanMoveHouseItems", true);
 
-	integer[ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenActions", 200);
-	integer[EX_ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenExActions", 1000);
-	integer[MAX_MESSAGEBUFFER] = getGlobalNumber(L, "maxMessageBuffer", 4);
-	integer[KICK_AFTER_MINUTES] = getGlobalNumber(L, "kickIdlePlayerAfterMinutes", 15);
-	integer[PROTECTION_LEVEL] = getGlobalNumber(L, "protectionLevel", 1);
-	integer[DEATH_LOSE_PERCENT] = getGlobalNumber(L, "deathLosePercent", -1);
-	integer[STATUSQUERY_TIMEOUT] = getGlobalNumber(L, "statusTimeout", 5000);
-	integer[FRAG_TIME] = getGlobalNumber(L, "timeToDecreaseFrags", 24 * 60 * 60 * 1000);
-	integer[WHITE_SKULL_TIME] = getGlobalNumber(L, "whiteSkullTime", 15 * 60 * 1000);
-	integer[STAIRHOP_DELAY] = getGlobalNumber(L, "stairJumpExhaustion", 2000);
-	integer[MAX_CONTAINER] = getGlobalNumber(L, "maxContainer", 500);
-	integer[MAX_CONTAINER_ITEM] = getGlobalNumber(L, "maxItem", 5000);
-	integer[EXP_FROM_PLAYERS_LEVEL_RANGE] = getGlobalNumber(L, "expFromPlayersLevelRange", 75);
-	integer[CHECK_EXPIRED_MARKET_OFFERS_EACH_MINUTES] = getGlobalNumber(L, "checkExpiredMarketOffersEachMinutes", 60);
-	integer[MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER] = getGlobalNumber(L, "maxMarketOffersAtATimePerPlayer", 100);
-	integer[MAX_PACKETS_PER_SECOND] = getGlobalNumber(L, "maxPacketsPerSecond", 25);
-	integer[COMPRESSION_LEVEL] = getGlobalNumber(L, "packetCompressionLevel", 6);
-	integer[STORE_COIN_PACKET] = getGlobalNumber(L, "coinPacketSize", 25);
-	integer[DAY_KILLS_TO_RED] = getGlobalNumber(L, "dayKillsToRedSkull", 3);
-	integer[WEEK_KILLS_TO_RED] = getGlobalNumber(L, "weekKillsToRedSkull", 5);
-	integer[MONTH_KILLS_TO_RED] = getGlobalNumber(L, "monthKillsToRedSkull", 10);
-	integer[RED_SKULL_DURATION] = getGlobalNumber(L, "redSkullDuration", 30);
-	integer[BLACK_SKULL_DURATION] = getGlobalNumber(L, "blackSkullDuration", 45);
-	integer[ORANGE_SKULL_DURATION] = getGlobalNumber(L, "orangeSkullDuration", 7);
-	integer[GLOBAL_SERVER_SAVE_NOTIFY_DURATION] = getGlobalNumber(L, "globalServerSaveNotifyDuration", 5);
+	loadIntConfig(L, ACTIONS_DELAY_INTERVAL, "timeBetweenActions", 200);
+	loadIntConfig(L, EX_ACTIONS_DELAY_INTERVAL, "timeBetweenExActions", 1000);
+	loadIntConfig(L, MAX_MESSAGEBUFFER, "maxMessageBuffer", 4);
+	loadIntConfig(L, KICK_AFTER_MINUTES, "kickIdlePlayerAfterMinutes", 15);
+	loadIntConfig(L, PROTECTION_LEVEL, "protectionLevel", 1);
+	loadIntConfig(L, DEATH_LOSE_PERCENT, "deathLosePercent", -1);
+	loadIntConfig(L, STATUSQUERY_TIMEOUT, "statusTimeout", 5000);
+	loadIntConfig(L, FRAG_TIME, "timeToDecreaseFrags", 24 * 60 * 60 * 1000);
+	loadIntConfig(L, WHITE_SKULL_TIME, "whiteSkullTime", 15 * 60 * 1000);
+	loadIntConfig(L, STAIRHOP_DELAY, "stairJumpExhaustion", 2000);
+	loadIntConfig(L, MAX_CONTAINER, "maxContainer", 500);
+	loadIntConfig(L, MAX_CONTAINER_ITEM, "maxItem", 5000);
+	loadIntConfig(L, EXP_FROM_PLAYERS_LEVEL_RANGE, "expFromPlayersLevelRange", 75);
+	loadIntConfig(L, CHECK_EXPIRED_MARKET_OFFERS_EACH_MINUTES, "checkExpiredMarketOffersEachMinutes", 60);
+	loadIntConfig(L, MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER, "maxMarketOffersAtATimePerPlayer", 100);
+	loadIntConfig(L, MAX_PACKETS_PER_SECOND, "maxPacketsPerSecond", 25);
+	loadIntConfig(L, COMPRESSION_LEVEL, "packetCompressionLevel", 6);
+	loadIntConfig(L, STORE_COIN_PACKET, "coinPacketSize", 25);
+	loadIntConfig(L, DAY_KILLS_TO_RED, "dayKillsToRedSkull", 3);
+	loadIntConfig(L, WEEK_KILLS_TO_RED, "weekKillsToRedSkull", 5);
+	loadIntConfig(L, MONTH_KILLS_TO_RED, "monthKillsToRedSkull", 10);
+	loadIntConfig(L, RED_SKULL_DURATION, "redSkullDuration", 30);
+	loadIntConfig(L, BLACK_SKULL_DURATION, "blackSkullDuration", 45);
+	loadIntConfig(L, ORANGE_SKULL_DURATION, "orangeSkullDuration", 7);
+	loadIntConfig(L, GLOBAL_SERVER_SAVE_NOTIFY_DURATION, "globalServerSaveNotifyDuration", 5);
 
-	integer[PARTY_LIST_MAX_DISTANCE] = getGlobalNumber(L, "partyListMaxDistance", 0);
+	loadIntConfig(L, PARTY_LIST_MAX_DISTANCE, "partyListMaxDistance", 0);
 
-	integer[PUSH_DELAY] = getGlobalNumber(L, "pushDelay", 1000);
-	integer[PUSH_DISTANCE_DELAY] = getGlobalNumber(L, "pushDistanceDelay", 1500);
+	loadIntConfig(L, PUSH_DELAY, "pushDelay", 1000);
+	loadIntConfig(L, PUSH_DISTANCE_DELAY, "pushDistanceDelay", 1500);
 
-	integer[STAMINA_ORANGE_DELAY] = getGlobalNumber(L, "staminaOrangeDelay", 1);
-	integer[STAMINA_GREEN_DELAY] = getGlobalNumber(L, "staminaGreenDelay", 5);
-	integer[STAMINA_PZ_GAIN] = getGlobalNumber(L, "staminaPzGain", 1);
-	integer[STAMINA_TRAINER_DELAY] = getGlobalNumber(L, "staminaTrainerDelay", 5);
-	integer[STAMINA_TRAINER_GAIN] = getGlobalNumber(L, "staminaTrainerGain", 1);
-	integer[SAVE_INTERVAL_TIME] = getGlobalNumber(L, "saveIntervalTime", 1);
-	integer[MAX_ALLOWED_ON_A_DUMMY] = getGlobalNumber(L, "maxAllowedOnADummy", 1);
-	integer[FREE_QUEST_STAGE] = getGlobalNumber(L, "freeQuestStage", 1);
-	integer[DEPOTCHEST] = getGlobalNumber(L, "depotChest", 4);
-	integer[CRITICALCHANCE] = getGlobalNumber(L, "criticalChance", 10);
+	loadIntConfig(L, STAMINA_ORANGE_DELAY, "staminaOrangeDelay", 1);
+	loadIntConfig(L, STAMINA_GREEN_DELAY, "staminaGreenDelay", 5);
+	loadIntConfig(L, STAMINA_PZ_GAIN, "staminaPzGain", 1);
+	loadIntConfig(L, STAMINA_TRAINER_DELAY, "staminaTrainerDelay", 5);
+	loadIntConfig(L, STAMINA_TRAINER_GAIN, "staminaTrainerGain", 1);
+	loadIntConfig(L, SAVE_INTERVAL_TIME, "saveIntervalTime", 1);
+	loadIntConfig(L, MAX_ALLOWED_ON_A_DUMMY, "maxAllowedOnADummy", 1);
+	loadIntConfig(L, FREE_QUEST_STAGE, "freeQuestStage", 1);
+	loadIntConfig(L, DEPOTCHEST, "depotChest", 4);
+	loadIntConfig(L, CRITICALCHANCE, "criticalChance", 10);
 
-	integer[ADVENTURERSBLESSING_LEVEL] = getGlobalNumber(L, "adventurersBlessingLevel", 21);
-	integer[FORGE_MAX_ITEM_TIER] = getGlobalNumber(L, "forgeMaxItemTier", 10);
-	integer[FORGE_COST_ONE_SLIVER] = getGlobalNumber(L, "forgeCostOneSliver", 20);
-	integer[FORGE_SLIVER_AMOUNT] = getGlobalNumber(L, "forgeSliverAmount", 3);
-	integer[FORGE_CORE_COST] = getGlobalNumber(L, "forgeCoreCost", 50);
-	integer[FORGE_MAX_DUST] = getGlobalNumber(L, "forgeMaxDust", 225);
-	integer[FORGE_FUSION_DUST_COST] = getGlobalNumber(L, "forgeFusionCost", 100);
-	integer[FORGE_TRANSFER_DUST_COST] = getGlobalNumber(L, "forgeTransferCost", 100);
-	integer[FORGE_BASE_SUCCESS_RATE] = getGlobalNumber(L, "forgeBaseSuccessRate", 50);
-	integer[FORGE_BONUS_SUCCESS_RATE] = getGlobalNumber(L, "forgeBonusSuccessRate", 15);
-	integer[FORGE_TIER_LOSS_REDUCTION] = getGlobalNumber(L, "forgeTierLossReduction", 50);
-	integer[FORGE_AMOUNT_MULTIPLIER] = getGlobalNumber(L, "forgeAmountMultiplier", 3);
-	integer[FORGE_MIN_SLIVERS] = getGlobalNumber(L, "forgeMinSlivers", 3);
-	integer[FORGE_MAX_SLIVERS] = getGlobalNumber(L, "forgeMaxSlivers", 7);
-	integer[FORGE_INFLUENCED_CREATURES_LIMIT] = getGlobalNumber(L, "forgeInfluencedLimit", 300);
-	integer[FORGE_FIENDISH_CREATURES_LIMIT] = getGlobalNumber(L, "forgeFiendishLimit", 3);
-	integer[DISCORD_WEBHOOK_DELAY_MS] = getGlobalNumber(L, "discordWebhookDelayMs", Webhook::DEFAULT_DELAY_MS);
+	loadIntConfig(L, ADVENTURERSBLESSING_LEVEL, "adventurersBlessingLevel", 21);
+	loadIntConfig(L, FORGE_MAX_ITEM_TIER, "forgeMaxItemTier", 10);
+	loadIntConfig(L, FORGE_COST_ONE_SLIVER, "forgeCostOneSliver", 20);
+	loadIntConfig(L, FORGE_SLIVER_AMOUNT, "forgeSliverAmount", 3);
+	loadIntConfig(L, FORGE_CORE_COST, "forgeCoreCost", 50);
+	loadIntConfig(L, FORGE_MAX_DUST, "forgeMaxDust", 225);
+	loadIntConfig(L, FORGE_FUSION_DUST_COST, "forgeFusionCost", 100);
+	loadIntConfig(L, FORGE_TRANSFER_DUST_COST, "forgeTransferCost", 100);
+	loadIntConfig(L, FORGE_BASE_SUCCESS_RATE, "forgeBaseSuccessRate", 50);
+	loadIntConfig(L, FORGE_BONUS_SUCCESS_RATE, "forgeBonusSuccessRate", 15);
+	loadIntConfig(L, FORGE_TIER_LOSS_REDUCTION, "forgeTierLossReduction", 50);
+	loadIntConfig(L, FORGE_AMOUNT_MULTIPLIER, "forgeAmountMultiplier", 3);
+	loadIntConfig(L, FORGE_MIN_SLIVERS, "forgeMinSlivers", 3);
+	loadIntConfig(L, FORGE_MAX_SLIVERS, "forgeMaxSlivers", 7);
+	loadIntConfig(L, FORGE_INFLUENCED_CREATURES_LIMIT, "forgeInfluencedLimit", 300);
+	loadIntConfig(L, FORGE_FIENDISH_CREATURES_LIMIT, "forgeFiendishLimit", 3);
+	loadIntConfig(L, DISCORD_WEBHOOK_DELAY_MS, "discordWebhookDelayMs", Webhook::DEFAULT_DELAY_MS);
 
-	floating[BESTIARY_RATE_CHARM_SHOP_PRICE] = getGlobalFloat(L, "bestiaryRateCharmShopPrice", 1.0);
-	floating[RATE_HEALTH_REGEN] = getGlobalFloat(L, "rateHealthRegen", 1.0);
-	floating[RATE_HEALTH_REGEN_SPEED] = getGlobalFloat(L, "rateHealthRegenSpeed", 1.0);
-	floating[RATE_MANA_REGEN] = getGlobalFloat(L, "rateManaRegen", 1.0);
-	floating[RATE_MANA_REGEN_SPEED] = getGlobalFloat(L, "rateManaRegenSpeed", 1.0);
-	floating[RATE_SOUL_REGEN] = getGlobalFloat(L, "rateSoulRegen", 1.0);
-	floating[RATE_SOUL_REGEN_SPEED] = getGlobalFloat(L, "rateSoulRegenSpeed", 1.0);
-	floating[RATE_SPELL_COOLDOWN] = getGlobalFloat(L, "rateSpellCooldown", 1.0);
-	floating[RATE_ATTACK_SPEED] = getGlobalFloat(L, "rateAttackSpeed", 1.0);
-	floating[RATE_OFFLINE_TRAINING_SPEED] = getGlobalFloat(L, "rateOfflineTrainingSpeed", 1.0);
-	floating[RATE_EXERCISE_TRAINING_SPEED] = getGlobalFloat(L, "rateExerciseTrainingSpeed", 1.0);
+	loadFloatConfig(L, BESTIARY_RATE_CHARM_SHOP_PRICE, "bestiaryRateCharmShopPrice", 1.0);
+	loadFloatConfig(L, RATE_HEALTH_REGEN, "rateHealthRegen", 1.0);
+	loadFloatConfig(L, RATE_HEALTH_REGEN_SPEED, "rateHealthRegenSpeed", 1.0);
+	loadFloatConfig(L, RATE_MANA_REGEN, "rateManaRegen", 1.0);
+	loadFloatConfig(L, RATE_MANA_REGEN_SPEED, "rateManaRegenSpeed", 1.0);
+	loadFloatConfig(L, RATE_SOUL_REGEN, "rateSoulRegen", 1.0);
+	loadFloatConfig(L, RATE_SOUL_REGEN_SPEED, "rateSoulRegenSpeed", 1.0);
+	loadFloatConfig(L, RATE_SPELL_COOLDOWN, "rateSpellCooldown", 1.0);
+	loadFloatConfig(L, RATE_ATTACK_SPEED, "rateAttackSpeed", 1.0);
+	loadFloatConfig(L, RATE_OFFLINE_TRAINING_SPEED, "rateOfflineTrainingSpeed", 1.0);
+	loadFloatConfig(L, RATE_EXERCISE_TRAINING_SPEED, "rateExerciseTrainingSpeed", 1.0);
 
-	floating[RATE_MONSTER_HEALTH] = getGlobalFloat(L, "rateMonsterHealth", 1.0);
-	floating[RATE_MONSTER_ATTACK] = getGlobalFloat(L, "rateMonsterAttack", 1.0);
-	floating[RATE_MONSTER_DEFENSE] = getGlobalFloat(L, "rateMonsterDefense", 1.0);
-	floating[RATE_BOSS_HEALTH] = getGlobalFloat(L, "rateBossHealth", 1.0);
-	floating[RATE_BOSS_ATTACK] = getGlobalFloat(L, "rateBossAttack", 1.0);
-	floating[RATE_BOSS_DEFENSE] = getGlobalFloat(L, "rateBossDefense", 1.0);
-	integer[BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN] = getGlobalNumber(L, "bossDefaultTimeToFightAgain", 20 * 60 * 60);
-	integer[BOSS_DEFAULT_TIME_TO_DEFEAT] = getGlobalNumber(L, "bossDefaultTimeToDefeat", 20 * 60);
+	loadFloatConfig(L, RATE_MONSTER_HEALTH, "rateMonsterHealth", 1.0);
+	loadFloatConfig(L, RATE_MONSTER_ATTACK, "rateMonsterAttack", 1.0);
+	loadFloatConfig(L, RATE_MONSTER_DEFENSE, "rateMonsterDefense", 1.0);
+	loadFloatConfig(L, RATE_BOSS_HEALTH, "rateBossHealth", 1.0);
+	loadFloatConfig(L, RATE_BOSS_ATTACK, "rateBossAttack", 1.0);
+	loadFloatConfig(L, RATE_BOSS_DEFENSE, "rateBossDefense", 1.0);
+	loadIntConfig(L, BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN, "bossDefaultTimeToFightAgain", 20 * 60 * 60);
+	loadIntConfig(L, BOSS_DEFAULT_TIME_TO_DEFEAT, "bossDefaultTimeToDefeat", 20 * 60);
 
-	floating[RATE_NPC_HEALTH] = getGlobalFloat(L, "rateNpcHealth", 1.0);
-	floating[RATE_NPC_ATTACK] = getGlobalFloat(L, "rateNpcAttack", 1.0);
-	floating[RATE_NPC_DEFENSE] = getGlobalFloat(L, "rateNpcDefense", 1.0);
+	loadFloatConfig(L, RATE_NPC_HEALTH, "rateNpcHealth", 1.0);
+	loadFloatConfig(L, RATE_NPC_ATTACK, "rateNpcAttack", 1.0);
+	loadFloatConfig(L, RATE_NPC_DEFENSE, "rateNpcDefense", 1.0);
 
-	boolean[PREY_ENABLED] = getGlobalBoolean(L, "preySystemEnabled", true);
-	boolean[PREY_FREE_THIRD_SLOT] = getGlobalBoolean(L, "preyFreeThirdSlot", false);
-	integer[PREY_REROLL_PRICE_LEVEL] = getGlobalNumber(L, "preyRerollPricePerLevel", 200);
-	integer[PREY_SELECTION_LIST_PRICE] = getGlobalNumber(L, "preySelectListPrice", 5);
-	integer[PREY_BONUS_TIME] = getGlobalNumber(L, "preyBonusTime", 7200);
-	integer[PREY_BONUS_REROLL_PRICE] = getGlobalNumber(L, "preyBonusRerollPrice", 1);
-	integer[PREY_FREE_REROLL_TIME] = getGlobalNumber(L, "preyFreeRerollTime", 72000);
+	loadBoolConfig(L, PREY_ENABLED, "preySystemEnabled", true);
+	loadBoolConfig(L, PREY_FREE_THIRD_SLOT, "preyFreeThirdSlot", false);
+	loadIntConfig(L, PREY_REROLL_PRICE_LEVEL, "preyRerollPricePerLevel", 200);
+	loadIntConfig(L, PREY_SELECTION_LIST_PRICE, "preySelectListPrice", 5);
+	loadIntConfig(L, PREY_BONUS_TIME, "preyBonusTime", 7200);
+	loadIntConfig(L, PREY_BONUS_REROLL_PRICE, "preyBonusRerollPrice", 1);
+	loadIntConfig(L, PREY_FREE_REROLL_TIME, "preyFreeRerollTime", 72000);
 
-	boolean[TASK_HUNTING_ENABLED] = getGlobalBoolean(L, "taskHuntingSystemEnabled", true);
-	boolean[TASK_HUNTING_FREE_THIRD_SLOT] = getGlobalBoolean(L, "taskHuntingFreeThirdSlot", false);
-	integer[TASK_HUNTING_LIMIT_EXHAUST] = getGlobalNumber(L, "taskHuntingLimitedTasksExhaust", 72000);
-	integer[TASK_HUNTING_REROLL_PRICE_LEVEL] = getGlobalNumber(L, "taskHuntingRerollPricePerLevel", 200);
-	integer[TASK_HUNTING_SELECTION_LIST_PRICE] = getGlobalNumber(L, "taskHuntingSelectListPrice", 5);
-	integer[TASK_HUNTING_BONUS_REROLL_PRICE] = getGlobalNumber(L, "taskHuntingBonusRerollPrice", 1);
-	integer[TASK_HUNTING_FREE_REROLL_TIME] = getGlobalNumber(L, "taskHuntingFreeRerollTime", 72000);
+	loadBoolConfig(L, TASK_HUNTING_ENABLED, "taskHuntingSystemEnabled", true);
+	loadBoolConfig(L, TASK_HUNTING_FREE_THIRD_SLOT, "taskHuntingFreeThirdSlot", false);
+	loadIntConfig(L, TASK_HUNTING_LIMIT_EXHAUST, "taskHuntingLimitedTasksExhaust", 72000);
+	loadIntConfig(L, TASK_HUNTING_REROLL_PRICE_LEVEL, "taskHuntingRerollPricePerLevel", 200);
+	loadIntConfig(L, TASK_HUNTING_SELECTION_LIST_PRICE, "taskHuntingSelectListPrice", 5);
+	loadIntConfig(L, TASK_HUNTING_BONUS_REROLL_PRICE, "taskHuntingBonusRerollPrice", 1);
+	loadIntConfig(L, TASK_HUNTING_FREE_REROLL_TIME, "taskHuntingFreeRerollTime", 72000);
 
-	integer[BESTIARY_KILL_MULTIPLIER] = getGlobalNumber(L, "bestiaryKillMultiplier", 1);
-	integer[BOSSTIARY_KILL_MULTIPLIER] = getGlobalNumber(L, "bosstiaryKillMultiplier", 1);
-	boolean[BOOSTED_BOSS_SLOT] = getGlobalBoolean(L, "boostedBossSlot", true);
-	integer[BOOSTED_BOSS_LOOT_BONUS] = getGlobalNumber(L, "boostedBossLootBonus", 250);
-	integer[BOOSTED_BOSS_KILL_BONUS] = getGlobalNumber(L, "boostedBossKillBonus", 3);
+	loadIntConfig(L, BESTIARY_KILL_MULTIPLIER, "bestiaryKillMultiplier", 1);
+	loadIntConfig(L, BOSSTIARY_KILL_MULTIPLIER, "bosstiaryKillMultiplier", 1);
+	loadBoolConfig(L, BOOSTED_BOSS_SLOT, "boostedBossSlot", true);
+	loadIntConfig(L, BOOSTED_BOSS_LOOT_BONUS, "boostedBossLootBonus", 250);
+	loadIntConfig(L, BOOSTED_BOSS_KILL_BONUS, "boostedBossKillBonus", 3);
 
-	integer[FAMILIAR_TIME] = getGlobalNumber(L, "familiarTime", 30);
+	loadIntConfig(L, FAMILIAR_TIME, "familiarTime", 30);
 
-	boolean[TOGGLE_GOLD_POUCH_ALLOW_ANYTHING] = getGlobalBoolean(L, "toggleGoldPouchAllowAnything", false);
-	boolean[TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY] = getGlobalBoolean(L, "toggleGoldPouchQuickLootOnly", false);
-	boolean[TOGGLE_SERVER_IS_RETRO] = getGlobalBoolean(L, "toggleServerIsRetroPVP", false);
-	boolean[TOGGLE_TRAVELS_FREE] = getGlobalBoolean(L, "toggleTravelsFree", false);
-	integer[BUY_AOL_COMMAND_FEE] = getGlobalNumber(L, "buyAolCommandFee", 0);
-	integer[BUY_BLESS_COMMAND_FEE] = getGlobalNumber(L, "buyBlessCommandFee", 0);
-	boolean[TELEPORT_PLAYER_TO_VOCATION_ROOM] = getGlobalBoolean(L, "teleportPlayerToVocationRoom", true);
+	loadBoolConfig(L, TOGGLE_GOLD_POUCH_ALLOW_ANYTHING, "toggleGoldPouchAllowAnything", false);
+	loadBoolConfig(L, TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY, "toggleGoldPouchQuickLootOnly", false);
+	loadBoolConfig(L, TOGGLE_SERVER_IS_RETRO, "toggleServerIsRetroPVP", false);
+	loadBoolConfig(L, TOGGLE_TRAVELS_FREE, "toggleTravelsFree", false);
+	loadIntConfig(L, BUY_AOL_COMMAND_FEE, "buyAolCommandFee", 0);
+	loadIntConfig(L, BUY_BLESS_COMMAND_FEE, "buyBlessCommandFee", 0);
+	loadBoolConfig(L, TELEPORT_PLAYER_TO_VOCATION_ROOM, "teleportPlayerToVocationRoom", true);
 
-	boolean[TOGGLE_HAZARDSYSTEM] = getGlobalBoolean(L, "toogleHazardSystem", true);
-	integer[HAZARD_CRITICAL_INTERVAL] = getGlobalNumber(L, "hazardCriticalInterval", 2000);
-	integer[HAZARD_CRITICAL_CHANCE] = getGlobalNumber(L, "hazardCriticalChance", 750);
-	integer[HAZARD_CRITICAL_MULTIPLIER] = getGlobalNumber(L, "hazardCriticalMultiplier", 25);
-	integer[HAZARD_DAMAGE_MULTIPLIER] = getGlobalNumber(L, "hazardDamageMultiplier", 200);
-	integer[HAZARD_DODGE_MULTIPLIER] = getGlobalNumber(L, "hazardDodgeMultiplier", 85);
-	integer[HAZARD_PODS_DROP_MULTIPLIER] = getGlobalNumber(L, "hazardPodsDropMultiplier", 87);
-	integer[HAZARD_PODS_TIME_TO_DAMAGE] = getGlobalNumber(L, "hazardPodsTimeToDamage", 2000);
-	integer[HAZARD_PODS_TIME_TO_SPAWN] = getGlobalNumber(L, "hazardPodsTimeToSpawn", 4000);
-	integer[HAZARD_EXP_BONUS_MULTIPLIER] = getGlobalNumber(L, "hazardExpBonusMultiplier", 2);
-	integer[HAZARD_LOOT_BONUS_MULTIPLIER] = getGlobalNumber(L, "hazardLootBonusMultiplier", 2);
-	integer[HAZARD_PODS_DAMAGE] = getGlobalNumber(L, "hazardPodsDamage", 5);
-	integer[HAZARD_SPAWN_PLUNDER_MULTIPLIER] = getGlobalNumber(L, "hazardSpawnPlunderMultiplier", 25);
-	integer[LOW_LEVEL_BONUS_EXP] = getGlobalNumber(L, "lowLevelBonusExp", 50);
+	loadBoolConfig(L, TOGGLE_HAZARDSYSTEM, "toogleHazardSystem", true);
+	loadIntConfig(L, HAZARD_CRITICAL_INTERVAL, "hazardCriticalInterval", 2000);
+	loadIntConfig(L, HAZARD_CRITICAL_CHANCE, "hazardCriticalChance", 750);
+	loadIntConfig(L, HAZARD_CRITICAL_MULTIPLIER, "hazardCriticalMultiplier", 25);
+	loadIntConfig(L, HAZARD_DAMAGE_MULTIPLIER, "hazardDamageMultiplier", 200);
+	loadIntConfig(L, HAZARD_DODGE_MULTIPLIER, "hazardDodgeMultiplier", 85);
+	loadIntConfig(L, HAZARD_PODS_DROP_MULTIPLIER, "hazardPodsDropMultiplier", 87);
+	loadIntConfig(L, HAZARD_PODS_TIME_TO_DAMAGE, "hazardPodsTimeToDamage", 2000);
+	loadIntConfig(L, HAZARD_PODS_TIME_TO_SPAWN, "hazardPodsTimeToSpawn", 4000);
+	loadIntConfig(L, HAZARD_EXP_BONUS_MULTIPLIER, "hazardExpBonusMultiplier", 2);
+	loadIntConfig(L, HAZARD_LOOT_BONUS_MULTIPLIER, "hazardLootBonusMultiplier", 2);
+	loadIntConfig(L, HAZARD_PODS_DAMAGE, "hazardPodsDamage", 5);
+	loadIntConfig(L, HAZARD_SPAWN_PLUNDER_MULTIPLIER, "hazardSpawnPlunderMultiplier", 25);
+	loadIntConfig(L, LOW_LEVEL_BONUS_EXP, "lowLevelBonusExp", 50);
 
-	boolean[LOYALTY_ENABLED] = getGlobalBoolean(L, "loyaltyEnabled", true);
-	integer[LOYALTY_POINTS_PER_CREATION_DAY] = getGlobalNumber(L, "loyaltyPointsPerCreationDay", 1);
-	integer[LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT] = getGlobalNumber(L, "loyaltyPointsPerPremiumDaySpent", 0);
-	integer[LOYALTY_POINTS_PER_PREMIUM_DAY_PURCHASED] = getGlobalNumber(L, "loyaltyPointsPerPremiumDayPurchased", 0);
-	floating[LOYALTY_BONUS_PERCENTAGE_MULTIPLIER] = getGlobalFloat(L, "loyaltyBonusPercentageMultiplier", 1.0);
+	loadBoolConfig(L, LOYALTY_ENABLED, "loyaltyEnabled", true);
+	loadIntConfig(L, LOYALTY_POINTS_PER_CREATION_DAY, "loyaltyPointsPerCreationDay", 1);
+	loadIntConfig(L, LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT, "loyaltyPointsPerPremiumDaySpent", 0);
+	loadIntConfig(L, LOYALTY_POINTS_PER_PREMIUM_DAY_PURCHASED, "loyaltyPointsPerPremiumDayPurchased", 0);
+	loadFloatConfig(L, LOYALTY_BONUS_PERCENTAGE_MULTIPLIER, "loyaltyBonusPercentageMultiplier", 1.0);
 
-	boolean[TOGGLE_WHEELSYSTEM] = getGlobalBoolean(L, "wheelSystemEnabled", true);
-	integer[WHEEL_POINTS_PER_LEVEL] = getGlobalNumber(L, "wheelPointsPerLevel", 1);
+	loadBoolConfig(L, TOGGLE_WHEELSYSTEM, "wheelSystemEnabled", true);
+	loadIntConfig(L, WHEEL_POINTS_PER_LEVEL, "wheelPointsPerLevel", 1);
 
-	boolean[PARTY_AUTO_SHARE_EXPERIENCE] = getGlobalBoolean(L, "partyAutoShareExperience", true);
-	boolean[PARTY_SHARE_LOOT_BOOSTS] = getGlobalBoolean(L, "partyShareLootBoosts", true);
-	floating[PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR] = getGlobalFloat(L, "partyShareLootBoostsDimishingFactor", 0.7f);
-	integer[TIBIADROME_CONCOCTION_COOLDOWN] = getGlobalNumber(L, "tibiadromeConcoctionCooldown", 24 * 60 * 60);
-	integer[TIBIADROME_CONCOCTION_DURATION] = getGlobalNumber(L, "tibiadromeConcoctionDuration", 1 * 60 * 60);
-	string[TIBIADROME_CONCOCTION_TICK_TYPE] = getGlobalString(L, "tibiadromeConcoctionTickType", "online");
+	loadBoolConfig(L, PARTY_AUTO_SHARE_EXPERIENCE, "partyAutoShareExperience", true);
+	loadBoolConfig(L, PARTY_SHARE_LOOT_BOOSTS, "partyShareLootBoosts", true);
+	loadFloatConfig(L, PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR, "partyShareLootBoostsDimishingFactor", 0.7f);
+	loadIntConfig(L, TIBIADROME_CONCOCTION_COOLDOWN, "tibiadromeConcoctionCooldown", 24 * 60 * 60);
+	loadIntConfig(L, TIBIADROME_CONCOCTION_DURATION, "tibiadromeConcoctionDuration", 1 * 60 * 60);
+	loadStringConfig(L, TIBIADROME_CONCOCTION_TICK_TYPE, "tibiadromeConcoctionTickType", "online");
 
-	string[M_CONST] = getGlobalString(L, "memoryConst", "1<<16");
-	integer[T_CONST] = getGlobalNumber(L, "temporaryConst", 2);
-	integer[PARALLELISM] = getGlobalNumber(L, "parallelism", 2);
+	loadStringConfig(L, M_CONST, "memoryConst", "1<<16");
+	loadIntConfig(L, T_CONST, "temporaryConst", 2);
+	loadIntConfig(L, PARALLELISM, "parallelism", 2);
 
 	// Vip System
-	boolean[VIP_SYSTEM_ENABLED] = getGlobalBoolean(L, "vipSystemEnabled", false);
-	integer[VIP_BONUS_EXP] = getGlobalNumber(L, "vipBonusExp", 0);
-	integer[VIP_BONUS_LOOT] = getGlobalNumber(L, "vipBonusLoot", 0);
-	integer[VIP_BONUS_SKILL] = getGlobalNumber(L, "vipBonusSkill", 0);
-	boolean[VIP_AUTOLOOT_VIP_ONLY] = getGlobalBoolean(L, "vipAutoLootVipOnly", false);
-	boolean[VIP_KEEP_HOUSE] = getGlobalBoolean(L, "vipKeepHouse", false);
-	boolean[VIP_STAY_ONLINE] = getGlobalBoolean(L, "vipStayOnline", false);
-	integer[VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION] = getGlobalNumber(L, "vipFamiliarTimeCooldownReduction", 0);
+	loadBoolConfig(L, VIP_SYSTEM_ENABLED, "vipSystemEnabled", false);
+	loadIntConfig(L, VIP_BONUS_EXP, "vipBonusExp", 0);
+	loadIntConfig(L, VIP_BONUS_LOOT, "vipBonusLoot", 0);
+	loadIntConfig(L, VIP_BONUS_SKILL, "vipBonusSkill", 0);
+	loadBoolConfig(L, VIP_AUTOLOOT_VIP_ONLY, "vipAutoLootVipOnly", false);
+	loadBoolConfig(L, VIP_KEEP_HOUSE, "vipKeepHouse", false);
+	loadBoolConfig(L, VIP_STAY_ONLINE, "vipStayOnline", false);
+	loadIntConfig(L, VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION, "vipFamiliarTimeCooldownReduction", 0);
 
-	boolean[REWARD_CHEST_COLLECT_ENABLED] = getGlobalBoolean(L, "rewardChestCollectEnabled", true);
-	integer[REWARD_CHEST_MAX_COLLECT_ITEMS] = getGlobalNumber(L, "rewardChestMaxCollectItems", 200);
+	loadBoolConfig(L, REWARD_CHEST_COLLECT_ENABLED, "rewardChestCollectEnabled", true);
+	loadIntConfig(L, REWARD_CHEST_MAX_COLLECT_ITEMS, "rewardChestMaxCollectItems", 200);
 
 	// PVP System
-	floating[PVP_RATE_DAMAGE_TAKEN_PER_LEVEL] = getGlobalFloat(L, "pvpRateDamageTakenPerLevel", 0.0);
-	floating[PVP_RATE_DAMAGE_REDUCTION_PER_LEVEL] = getGlobalFloat(L, "pvpRateDamageReductionPerLevel", 0.0);
-	integer[PVP_MAX_LEVEL_DIFFERENCE] = getGlobalNumber(L, "pvpMaxLevelDifference", 0);
+	loadFloatConfig(L, PVP_RATE_DAMAGE_TAKEN_PER_LEVEL, "pvpRateDamageTakenPerLevel", 0.0);
+	loadFloatConfig(L, PVP_RATE_DAMAGE_REDUCTION_PER_LEVEL, "pvpRateDamageReductionPerLevel", 0.0);
+	loadIntConfig(L, PVP_MAX_LEVEL_DIFFERENCE, "pvpMaxLevelDifference", 0);
 
-	boolean[TOGGLE_MOUNT_IN_PZ] = getGlobalBoolean(L, "toggleMountInProtectionZone", false);
+	loadBoolConfig(L, TOGGLE_MOUNT_IN_PZ, "toggleMountInProtectionZone", false);
 
-	boolean[TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART] = getGlobalBoolean(L, "togglehouseTransferOnRestart", false);
+	loadBoolConfig(L, TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, "togglehouseTransferOnRestart", false);
 
-	boolean[TOGGLE_RECEIVE_REWARD] = getGlobalBoolean(L, "toggleReceiveReward", false);
+	loadBoolConfig(L, TOGGLE_RECEIVE_REWARD, "toggleReceiveReward", false);
 
 	loaded = true;
 	lua_close(L);
@@ -409,51 +353,86 @@ bool ConfigManager::load() {
 }
 
 bool ConfigManager::reload() {
-	bool result = load();
+	const bool result = load();
 	if (transformToSHA1(getString(SERVER_MOTD)) != g_game().getMotdHash()) {
 		g_game().incrementMotdNum();
 	}
 	return result;
 }
 
-static std::string dummyStr;
-
-const std::string &ConfigManager::getString(stringConfig_t what) const {
-	if (what >= LAST_STRING_CONFIG) {
-		g_logger().warn("[ConfigManager::getString] - Accessing invalid index: {}", fmt::underlying(what));
-		return dummyStr;
+std::string ConfigManager::loadStringConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const std::string &defaultValue) {
+	std::string value = defaultValue;
+	lua_getglobal(L, identifier);
+	if (lua_isstring(L, -1)) {
+		value = lua_tostring(L, -1);
 	}
-	return string[what];
+	configs[key] = value;
+	lua_pop(L, 1);
+	return value;
 }
 
-int32_t ConfigManager::getNumber(integerConfig_t what) const {
-	if (what >= LAST_INTEGER_CONFIG) {
-		g_logger().warn("[ConfigManager::getNumber] - Accessing invalid index: {}", fmt::underlying(what));
-		return 0;
+int32_t ConfigManager::loadIntConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const int32_t &defaultValue) {
+	int32_t value = defaultValue;
+	lua_getglobal(L, identifier);
+	if (lua_isnumber(L, -1)) {
+		value = static_cast<int32_t>(lua_tointeger(L, -1));
 	}
-	return integer[what];
+	configs[key] = value;
+	lua_pop(L, 1);
+	return value;
 }
 
-int16_t ConfigManager::getShortNumber(integerConfig_t what) const {
-	if (what >= LAST_INTEGER_CONFIG) {
-		g_logger().warn("[ConfigManager::getShortNumber] - Accessing invalid index: {}", fmt::underlying(what));
-		return 0;
+bool ConfigManager::loadBoolConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const bool &defaultValue) {
+	bool value = defaultValue;
+	lua_getglobal(L, identifier);
+	if (lua_isboolean(L, -1)) {
+		value = static_cast<bool>(lua_toboolean(L, -1));
 	}
-	return integer[what];
+	configs[key] = value;
+	lua_pop(L, 1);
+	return value;
 }
 
-bool ConfigManager::getBoolean(booleanConfig_t what) const {
-	if (what >= LAST_BOOLEAN_CONFIG) {
-		g_logger().warn("[ConfigManager::getBoolean] - Accessing invalid index: {}", fmt::underlying(what));
-		return false;
+float ConfigManager::loadFloatConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const float &defaultValue) {
+	float value = defaultValue;
+	lua_getglobal(L, identifier);
+	if (lua_isnumber(L, -1)) {
+		value = static_cast<float>(lua_tonumber(L, -1));
 	}
-	return boolean[what];
+	configs[key] = value;
+	lua_pop(L, 1);
+	return value;
 }
 
-float ConfigManager::getFloat(floatingConfig_t what) const {
-	if (what >= LAST_FLOATING_CONFIG) {
-		g_logger().warn("[ConfigManager::getFLoat] - Accessing invalid index: {}", fmt::underlying(what));
-		return 0;
+const std::string &ConfigManager::getString(const ConfigKey_t &key) const {
+	static const std::string dummyStr;
+	if (configs.contains(key) && std::holds_alternative<std::string>(configs.at(key))) {
+		return std::get<std::string>(configs.at(key));
 	}
-	return floating[what];
+	g_logger().warn("[ConfigManager::getString] - Accessing invalid or wrong type index: {}", fmt::underlying(key));
+	return dummyStr;
+}
+
+int32_t ConfigManager::getNumber(const ConfigKey_t &key) const {
+	if (configs.contains(key) && std::holds_alternative<int32_t>(configs.at(key))) {
+		return std::get<int32_t>(configs.at(key));
+	}
+	g_logger().warn("[ConfigManager::getNumber] - Accessing invalid or wrong type index: {}", fmt::underlying(key));
+	return 0;
+}
+
+bool ConfigManager::getBoolean(const ConfigKey_t &key) const {
+	if (configs.contains(key) && std::holds_alternative<bool>(configs.at(key))) {
+		return std::get<bool>(configs.at(key));
+	}
+	g_logger().warn("[ConfigManager::getBoolean] - Accessing invalid or wrong type index: {}", fmt::underlying(key));
+	return false;
+}
+
+float ConfigManager::getFloat(const ConfigKey_t &key) const {
+	if (configs.contains(key) && std::holds_alternative<float>(configs.at(key))) {
+		return std::get<float>(configs.at(key));
+	}
+	g_logger().warn("[ConfigManager::getFloat] - Accessing invalid or wrong type index: {}", fmt::underlying(key));
+	return 0.0f;
 }

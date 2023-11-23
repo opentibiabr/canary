@@ -95,7 +95,18 @@
 
 #include "lua/global/shared_object.hpp"
 
-// Magic Enum
+/**
+ * @brief Magic Enum is a C++ library that facilitates easy conversion between enums and strings.
+ * By default, the range of supported enum values is from -128 to 128. We need extends that range.
+ *
+ * @def MAGIC_ENUM_RANGE_MIN
+ * @note Sets the lower limit of the enum value range to -500.
+ *
+ * @def MAGIC_ENUM_RANGE_MAX
+ * @note Sets the upper limit of the enum value range to 500.
+ */
+#define MAGIC_ENUM_RANGE_MIN -500
+#define MAGIC_ENUM_RANGE_MAX 500
 #include <magic_enum.hpp>
 
 // Memory Mapped File

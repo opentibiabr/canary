@@ -2051,8 +2051,8 @@ void Combat::applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<C
 
 	if (chance != 0 && uniform_random(1, 100) <= chance) {
 		damage.critical = true;
-		damage.primary.value *= multiplier;
-		damage.secondary.value *= multiplier;
+		damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
+		damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));
 	}
 
 	if (player) {

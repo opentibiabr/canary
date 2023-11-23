@@ -1654,11 +1654,9 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 				}
 			}
 
-			if (item->isStoreItem() && !toHouseTile) {
+			if (item->isStoreItem() && !house) {
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
-
-			return RETURNVALUE_NOERROR;
 		}
 	}
 
@@ -4216,6 +4214,8 @@ void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t coun
 	if (player->isDepotSearchOpenOnItem(itemId)) {
 		player->requestDepotSearchItem(itemId, 0);
 	}
+
+	player->sendOpenStash(true);
 }
 
 void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index, uint8_t containerCategory) {

@@ -34,7 +34,10 @@ function MonsterType:generateLootRoll(config, resultTable)
 		end
 
 		local count = 0
-		if iType:isStackable() then
+		local charges = iType:getCharges()
+		if charges > 0 then
+			count = charges
+		elseif iType:isStackable() then
 			local maxc, minc = item.maxCount or 1, item.minCount or 1
 			count = math.max(0, randValue % (maxc - minc + 1)) + minc
 		else

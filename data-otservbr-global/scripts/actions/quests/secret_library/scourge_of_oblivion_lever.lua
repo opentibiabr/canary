@@ -22,7 +22,6 @@ local config = {
 		to = Position(32738, 32748, 11),
 	},
 	exit = Position(32480, 32599, 15),
-	storage = Storage.Quest.U11_80.TheSecretLibrary.ScourgeOfOblivionTimer,
 }
 
 local lever = BossLever(config)

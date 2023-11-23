@@ -11,19 +11,15 @@
 #include "utils/tools.hpp"
 #include <unordered_set>
 
-static constexpr auto SYSTEM_TIME_ZERO = std::chrono::system_clock::time_point(std::chrono::milliseconds(0));
-
 class Task {
 public:
-	static std::chrono::system_clock::time_point TIME_NOW;
-
 	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context) :
-		func(std::move(f)), context(context), utime(TIME_NOW), expiration(expiresAfterMs > 0 ? TIME_NOW + std::chrono::milliseconds(expiresAfterMs) : SYSTEM_TIME_ZERO) {
+		func(std::move(f)), context(context), utime(OTSYS_TIME()), expiration(expiresAfterMs > 0 ? OTSYS_TIME() + expiresAfterMs : 0) {
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
 	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true) :
-		func(std::move(f)), context(context), utime(TIME_NOW + std::chrono::milliseconds(delay)), delay(delay), cycle(cycle), log(log) {
+		func(std::move(f)), context(context), utime(OTSYS_TIME() + delay), delay(delay), cycle(cycle), log(log) {
 		assert(!this->context.empty() && "Context cannot be empty!");
 	}
 
@@ -54,7 +50,7 @@ public:
 	}
 
 	bool hasExpired() const {
-		return expiration != SYSTEM_TIME_ZERO && expiration < TIME_NOW;
+		return expiration != 0 && expiration < OTSYS_TIME();
 	}
 
 	bool isCycle() const {
@@ -75,7 +71,7 @@ private:
 	static std::atomic_uint_fast64_t LAST_EVENT_ID;
 
 	void updateTime() {
-		utime = TIME_NOW + std::chrono::milliseconds(delay);
+		utime = OTSYS_TIME() + delay;
 	}
 
 	bool hasTraceableContext() const {
@@ -117,8 +113,8 @@ private:
 	std::function<void(void)> func = nullptr;
 	std::string_view context;
 
-	std::chrono::system_clock::time_point utime = SYSTEM_TIME_ZERO;
-	std::chrono::system_clock::time_point expiration = SYSTEM_TIME_ZERO;
+	int64_t utime = 0;
+	int64_t expiration = 0;
 
 	uint64_t id = 0;
 	uint32_t delay = 0;

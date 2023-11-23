@@ -59786,7 +59786,7 @@
 		<attribute key="bedpartof" value="35193"/>
 		<attribute key="partnerdirection" value="north"/>
 		<attribute key="femaletransformto" value="35207"/>
-		<attribute key="rotateTo" value="37205"/>
+		<attribute key="rotateTo" value="35205"/>
 		<attribute key="description" value="Somebody is sleeping there"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
@@ -59826,7 +59826,7 @@
 		<attribute key="partnerdirection" value="north"/>
 		<attribute key="femaletransformto" value="35203"/>
 		<attribute key="maletransformto" value="35190"/>
-		<attribute key="rotateTo" value="37209"/>
+		<attribute key="rotateTo" value="35209"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="35208" name="wrought-iron bed">
@@ -59836,7 +59836,7 @@
 		<attribute key="partnerdirection" value="east"/>
 		<attribute key="femaletransformto" value="35204"/>
 		<attribute key="maletransformto" value="35191"/>
-		<attribute key="rotateTo" value="37206"/>
+		<attribute key="rotateTo" value="35206"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="35209" name="wrought-iron bed">

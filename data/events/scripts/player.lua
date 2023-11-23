@@ -96,7 +96,7 @@ local soulCondition = Condition(CONDITION_SOUL, CONDITIONID_DEFAULT)
 soulCondition:setTicks(4 * 60 * 1000)
 soulCondition:setParameter(CONDITION_PARAM_SOULGAIN, 1)
 
-local function useStamina(player)
+local function useStamina(player, isStaminaEnabled)
 	if not player then
 		return false
 	end
@@ -107,12 +107,12 @@ local function useStamina(player)
 	end
 
 	local playerId = player:getId()
-	if not playerId or not nextUseStaminaTime[playerId] then
+	if not playerId or not _G.NextUseStaminaTime[playerId] then
 		return false
 	end
 
 	local currentTime = os.time()
-	local timePassed = currentTime - nextUseStaminaTime[playerId]
+	local timePassed = currentTime - _G.NextUseStaminaTime[playerId]
 	if timePassed <= 0 then
 		return
 	end
@@ -123,14 +123,16 @@ local function useStamina(player)
 		else
 			staminaMinutes = 0
 		end
-		nextUseStaminaTime[playerId] = currentTime + 120
+		_G.NextUseStaminaTime[playerId] = currentTime + 120
 		player:removePreyStamina(120)
 	else
 		staminaMinutes = staminaMinutes - 1
-		nextUseStaminaTime[playerId] = currentTime + 60
+		_G.NextUseStaminaTime[playerId] = currentTime + 60
 		player:removePreyStamina(60)
 	end
-	player:setStamina(staminaMinutes)
+	if isStaminaEnabled then
+		player:setStamina(staminaMinutes)
+	end
 end
 
 local function useStaminaXpBoost(player)
@@ -149,7 +151,7 @@ local function useStaminaXpBoost(player)
 	end
 
 	local currentTime = os.time()
-	local timePassed = currentTime - nextUseXpStamina[playerId]
+	local timePassed = currentTime - _G.NextUseXpStamina[playerId]
 	if timePassed <= 0 then
 		return
 	end
@@ -160,10 +162,10 @@ local function useStaminaXpBoost(player)
 		else
 			staminaMinutes = 0
 		end
-		nextUseXpStamina[playerId] = currentTime + 120
+		_G.NextUseXpStamina[playerId] = currentTime + 120
 	else
 		staminaMinutes = staminaMinutes - 1
-		nextUseXpStamina[playerId] = currentTime + 60
+		_G.NextUseXpStamina[playerId] = currentTime + 60
 	end
 	player:setExpBoostStamina(staminaMinutes * 60)
 end
@@ -174,22 +176,22 @@ local function useConcoctionTime(player)
 	end
 
 	local playerId = player:getId()
-	if not playerId or not nextUseConcoctionTime[playerId] then
+	if not playerId or not _G.NextUseConcoctionTime[playerId] then
 		return false
 	end
 
 	local currentTime = os.time()
-	local timePassed = currentTime - nextUseConcoctionTime[playerId]
+	local timePassed = currentTime - _G.NextUseConcoctionTime[playerId]
 	if timePassed <= 0 then
 		return false
 	end
 
 	local deduction = 60
 	if timePassed > 60 then
-		nextUseConcoctionTime[playerId] = currentTime + 120
+		_G.NextUseConcoctionTime[playerId] = currentTime + 120
 		deduction = 120
 	else
-		nextUseConcoctionTime[playerId] = currentTime + 60
+		_G.NextUseConcoctionTime[playerId] = currentTime + 60
 	end
 	Concoction.experienceTick(player, deduction)
 end
@@ -390,7 +392,7 @@ end
 
 function Player:onMoveCreature(creature, fromPosition, toPosition)
 	local player = creature:getPlayer()
-	if player and onExerciseTraining[player:getId()] and not self:getGroup():hasFlag(PlayerFlag_CanPushAllCreatures) then
+	if player and _G.OnExerciseTraining[player:getId()] and not self:getGroup():hasFlag(PlayerFlag_CanPushAllCreatures) then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
 	end
@@ -514,8 +516,9 @@ function Player:onGainExperience(target, exp, rawExp)
 
 	-- Stamina Bonus
 	local staminaBonusXp = 1
-	if configManager.getBoolean(configKeys.STAMINA_SYSTEM) then
-		useStamina(self)
+	local isStaminaEnabled = configManager.getBoolean(configKeys.STAMINA_SYSTEM)
+	useStamina(self, isStaminaEnabled)
+	if isStaminaEnabled then
 		staminaBonusXp = self:getFinalBonusStamina()
 		self:setStaminaXpBoost(staminaBonusXp * 100)
 	end

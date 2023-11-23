@@ -17,7 +17,6 @@ local config = {
 		to = Position(33473, 32856, 11),
 	},
 	exit = Position(33319, 32318, 13),
-	storage = Storage.FerumbrasAscension.TarbazTimer,
 }
 
 local lever = BossLever(config)

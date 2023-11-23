@@ -10,7 +10,7 @@
 #pragma once
 
 // Enum
-enum ConfigKey : uint16_t {
+enum ConfigKey_t : uint16_t {
 	ALLOW_CHANGEOUTFIT,
 	ONE_PLAYER_ON_ACCOUNT,
 	AIMBOT_HOTKEY_ENABLED,

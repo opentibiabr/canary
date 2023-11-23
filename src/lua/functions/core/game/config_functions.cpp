@@ -26,7 +26,7 @@ void ConfigFunctions::init(lua_State* L) {
 		registerVariable(L, tableName, name, value);         \
 	} while (0)
 	registerTable(L, "configKeys");
-	for (auto value : magic_enum::enum_values<ConfigKey>()) {
+	for (auto value : magic_enum::enum_values<ConfigKey_t>()) {
 		auto enumName = magic_enum::enum_name(value).data();
 		if (enumName) {
 			registerMagicEnumIn(L, "configKeys", value);
@@ -37,21 +37,21 @@ void ConfigFunctions::init(lua_State* L) {
 }
 
 int ConfigFunctions::luaConfigManagerGetString(lua_State* L) {
-	pushString(L, g_configManager().getString(getNumber<ConfigKey>(L, -1)));
+	pushString(L, g_configManager().getString(getNumber<ConfigKey_t>(L, -1)));
 	return 1;
 }
 
 int ConfigFunctions::luaConfigManagerGetNumber(lua_State* L) {
-	lua_pushnumber(L, g_configManager().getNumber(getNumber<ConfigKey>(L, -1)));
+	lua_pushnumber(L, g_configManager().getNumber(getNumber<ConfigKey_t>(L, -1)));
 	return 1;
 }
 
 int ConfigFunctions::luaConfigManagerGetBoolean(lua_State* L) {
-	pushBoolean(L, g_configManager().getBoolean(getNumber<ConfigKey>(L, -1)));
+	pushBoolean(L, g_configManager().getBoolean(getNumber<ConfigKey_t>(L, -1)));
 	return 1;
 }
 
 int ConfigFunctions::luaConfigManagerGetFloat(lua_State* L) {
-	lua_pushnumber(L, g_configManager().getFloat(getNumber<ConfigKey>(L, -1)));
+	lua_pushnumber(L, g_configManager().getFloat(getNumber<ConfigKey_t>(L, -1)));
 	return 1;
 }

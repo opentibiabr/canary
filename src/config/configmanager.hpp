@@ -37,17 +37,17 @@ public:
 		return configFileLua;
 	};
 
-	[[nodiscard]] const std::string &getString(const ConfigKey &key) const;
-	[[nodiscard]] int32_t getNumber(const ConfigKey &key) const;
-	[[nodiscard]] bool getBoolean(const ConfigKey &key) const;
-	[[nodiscard]] float getFloat(const ConfigKey &key) const;
+	[[nodiscard]] const std::string &getString(const ConfigKey_t &key) const;
+	[[nodiscard]] int32_t getNumber(const ConfigKey_t &key) const;
+	[[nodiscard]] bool getBoolean(const ConfigKey_t &key) const;
+	[[nodiscard]] float getFloat(const ConfigKey_t &key) const;
 
 private:
-	phmap::flat_hash_map<ConfigKey, ConfigValue> configs;
-	std::string loadStringConfig(lua_State* L, const ConfigKey &key, const char* identifier, const std::string &defaultValue);
-	int32_t loadIntConfig(lua_State* L, const ConfigKey &key, const char* identifier, const int32_t &defaultValue);
-	bool loadBoolConfig(lua_State* L, const ConfigKey &key, const char* identifier, const bool &defaultValue);
-	float loadFloatConfig(lua_State* L, const ConfigKey &key, const char* identifier, const float &defaultValue);
+	phmap::flat_hash_map<ConfigKey_t, ConfigValue> configs;
+	std::string loadStringConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const std::string &defaultValue);
+	int32_t loadIntConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const int32_t &defaultValue);
+	bool loadBoolConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const bool &defaultValue);
+	float loadFloatConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const float &defaultValue);
 
 	std::string configFileLua = { "config.lua" };
 	bool loaded = false;

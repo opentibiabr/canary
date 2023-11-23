@@ -360,7 +360,7 @@ bool ConfigManager::reload() {
 	return result;
 }
 
-std::string ConfigManager::loadStringConfig(lua_State* L, const ConfigKey &key, const char* identifier, const std::string &defaultValue) {
+std::string ConfigManager::loadStringConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const std::string &defaultValue) {
 	std::string value = defaultValue;
 	lua_getglobal(L, identifier);
 	if (lua_isstring(L, -1)) {
@@ -371,7 +371,7 @@ std::string ConfigManager::loadStringConfig(lua_State* L, const ConfigKey &key, 
 	return value;
 }
 
-int32_t ConfigManager::loadIntConfig(lua_State* L, const ConfigKey &key, const char* identifier, const int32_t &defaultValue) {
+int32_t ConfigManager::loadIntConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const int32_t &defaultValue) {
 	int32_t value = defaultValue;
 	lua_getglobal(L, identifier);
 	if (lua_isnumber(L, -1)) {
@@ -382,7 +382,7 @@ int32_t ConfigManager::loadIntConfig(lua_State* L, const ConfigKey &key, const c
 	return value;
 }
 
-bool ConfigManager::loadBoolConfig(lua_State* L, const ConfigKey &key, const char* identifier, const bool &defaultValue) {
+bool ConfigManager::loadBoolConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const bool &defaultValue) {
 	bool value = defaultValue;
 	lua_getglobal(L, identifier);
 	if (lua_isboolean(L, -1)) {
@@ -393,7 +393,7 @@ bool ConfigManager::loadBoolConfig(lua_State* L, const ConfigKey &key, const cha
 	return value;
 }
 
-float ConfigManager::loadFloatConfig(lua_State* L, const ConfigKey &key, const char* identifier, const float &defaultValue) {
+float ConfigManager::loadFloatConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const float &defaultValue) {
 	float value = defaultValue;
 	lua_getglobal(L, identifier);
 	if (lua_isnumber(L, -1)) {
@@ -404,7 +404,7 @@ float ConfigManager::loadFloatConfig(lua_State* L, const ConfigKey &key, const c
 	return value;
 }
 
-const std::string &ConfigManager::getString(const ConfigKey &key) const {
+const std::string &ConfigManager::getString(const ConfigKey_t &key) const {
 	static const std::string dummyStr;
 	if (configs.contains(key) && std::holds_alternative<std::string>(configs.at(key))) {
 		return std::get<std::string>(configs.at(key));
@@ -413,7 +413,7 @@ const std::string &ConfigManager::getString(const ConfigKey &key) const {
 	return dummyStr;
 }
 
-int32_t ConfigManager::getNumber(const ConfigKey &key) const {
+int32_t ConfigManager::getNumber(const ConfigKey_t &key) const {
 	if (configs.contains(key) && std::holds_alternative<int32_t>(configs.at(key))) {
 		return std::get<int32_t>(configs.at(key));
 	}
@@ -421,7 +421,7 @@ int32_t ConfigManager::getNumber(const ConfigKey &key) const {
 	return 0;
 }
 
-bool ConfigManager::getBoolean(const ConfigKey &key) const {
+bool ConfigManager::getBoolean(const ConfigKey_t &key) const {
 	if (configs.contains(key) && std::holds_alternative<bool>(configs.at(key))) {
 		return std::get<bool>(configs.at(key));
 	}
@@ -429,7 +429,7 @@ bool ConfigManager::getBoolean(const ConfigKey &key) const {
 	return false;
 }
 
-float ConfigManager::getFloat(const ConfigKey &key) const {
+float ConfigManager::getFloat(const ConfigKey_t &key) const {
 	if (configs.contains(key) && std::holds_alternative<float>(configs.at(key))) {
 		return std::get<float>(configs.at(key));
 	}

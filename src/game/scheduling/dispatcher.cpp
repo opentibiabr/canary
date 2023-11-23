@@ -21,13 +21,13 @@ Dispatcher &Dispatcher::getInstance() {
 }
 
 void Dispatcher::init() {
-	updateClock();
+	UPDATE_OTSYS_TIME();
 
 	threadPool.addLoad([this] {
 		std::unique_lock asyncLock(dummyMutex);
 
 		while (!threadPool.getIoContext().stopped()) {
-			updateClock();
+			UPDATE_OTSYS_TIME();
 
 			executeEvents();
 			executeScheduledEvents();
@@ -104,7 +104,7 @@ void Dispatcher::executeScheduledEvents() {
 	auto it = scheduledTasks.begin();
 	while (it != scheduledTasks.end()) {
 		const auto &task = *it;
-		if (task->getTime() > Task::TIME_NOW) {
+		if (task->getTime() > OTSYS_TIME()) {
 			break;
 		}
 
@@ -168,17 +168,17 @@ void Dispatcher::mergeEvents() {
 	checkPendingTasks();
 }
 
-std::chrono::nanoseconds Dispatcher::timeUntilNextScheduledTask() const {
-	static constexpr auto CHRONO_NANO_0 = std::chrono::nanoseconds(0);
-	static constexpr auto CHRONO_MILI_MAX = std::chrono::milliseconds::max();
+std::chrono::milliseconds Dispatcher::timeUntilNextScheduledTask() const {
+	constexpr auto CHRONO_0 = std::chrono::milliseconds(0);
+	constexpr auto CHRONO_MILI_MAX = std::chrono::milliseconds::max();
 
 	if (scheduledTasks.empty()) {
 		return CHRONO_MILI_MAX;
 	}
 
 	const auto &task = *scheduledTasks.begin();
-	const auto timeRemaining = task->getTime() - Task::TIME_NOW;
-	return std::max<std::chrono::nanoseconds>(timeRemaining, CHRONO_NANO_0);
+	const auto timeRemaining = std::chrono::milliseconds(task->getTime() - OTSYS_TIME());
+	return std::max<std::chrono::milliseconds>(timeRemaining, CHRONO_0);
 }
 
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {

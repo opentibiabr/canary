@@ -70,7 +70,7 @@ private:
 	uint32_t checkSpawnMonsterEvent = 0;
 
 	static bool findPlayer(const Position &pos);
-	bool spawnMonster(uint32_t spawnMonsterId, const std::shared_ptr<MonsterType> monsterType, const Position &pos, Direction dir, bool startup = false);
+	bool spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> monsterType, bool startup = false);
 	void checkSpawnMonster();
 	void scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> monsterType, uint16_t interval);
 };

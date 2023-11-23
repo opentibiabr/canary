@@ -9,7 +9,7 @@ function teleportToCreature.onSay(player, words, param)
 
 	for _, targetPlayer in ipairs(players) do
 		local isGhost = targetPlayer:isInGhostMode()
-		local isTraining = onExerciseTraining[targetPlayer:getId()]
+		local isTraining = _G.OnExerciseTraining[targetPlayer:getId()]
 		local isIdle = targetPlayer:getIdleTime() >= 5 * 60 * 1000
 		local isActive = not isGhost and not isTraining and not isIdle
 		if isActive then

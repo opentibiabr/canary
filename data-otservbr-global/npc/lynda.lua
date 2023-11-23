@@ -155,6 +155,61 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 end
 
+local function tryEngage(npc, creature, message, keywords, parameters, node)
+	local player = Player(creature)
+	local playerStatus = getPlayerMarriageStatus(player:getGuid())
+	local playerSpouse = getPlayerSpouse(player:getGuid())
+	if playerStatus == MARRIED_STATUS then -- check if the player is already married
+		npcHandler:say("You are already married to {" .. player:getName() .. "}.", npc, creature)
+	elseif playerStatus == PROPOSED_STATUS then --check if the player already made a proposal to some1 else
+		npcHandler:say("You already made a wedding proposal to {" .. player:getName() .. "}. You can always remove the proposal by saying {remove} proposal.", npc, creature)
+	else
+		local candidate = getPlayerGUIDByName(message)
+		if candidate == 0 then -- check if there is actually a player called like this
+			npcHandler:say("A player with this name does not exist.", npc, creature)
+		elseif candidate == player:getGuid() then -- if it's himself, cannot marry
+			npcHandler:say("You REALLY want to marry yourself? c'mon, be serious.", npc, creature)
+		else
+			if player:getItemCount(ITEM_WEDDING_RING) == 0 or player:getItemCount(9586) == 0 then -- check for items (wedding ring and outfit box)
+				npcHandler:say("As I said, you need a wedding ring and the wedding outfit box in order to marry.", npc, creature)
+			else
+				local candidateStatus = getPlayerMarriageStatus(candidate)
+				local candidateSpouse = getPlayerSpouse(candidate)
+				if candidateStatus == MARRIED_STATUS then -- if the player you want to marry is already married and to whom
+					npcHandler:say("{" .. getPlayerNameById(candidate) .. "} is already married to {" .. getPlayerNameById(candidateSpouse) .. "}.", npc, creature)
+				elseif candidateStatus == PROPACCEPT_STATUS then -- if the player you want to marry is already going to marry some1 else
+					npcHandler:say("{" .. getPlayerNameById(candidate) .. "} is already engaged to {" .. getPlayerNameById(candidateSpouse) .. "} and they will going to marry soon.", npc, creature)
+				elseif candidateStatus == PROPOSED_STATUS then -- if he/she already made a proposal to some1
+					if candidateSpouse == player:getGuid() then -- if this someone is you.
+						-- if this some1 is not you
+						npcHandler:say("Since both of you are willing to marry, I accept to celebrate your marriage, go prepare yourself, and tell me when you are ready for the {celebration}", npc, creature)
+						player:removeItem(ITEM_WEDDING_RING, 1)
+						player:removeItem(9586, 1) -- wedding outfit box
+						player:addOutfit(329) --Wife
+						player:addOutfit(328) --Husb
+						setPlayerMarriageStatus(player:getGuid(), PROPACCEPT_STATUS)
+						setPlayerMarriageStatus(candidate, PROPACCEPT_STATUS)
+						setPlayerSpouse(player:getGuid(), candidate)
+						local player = Player(getPlayerNameById(candidate))
+						player:addOutfit(329)
+						player:addOutfit(328)
+					else
+						npcHandler:say("{" .. getPlayerNameById(candidate) .. "} already made a wedding proposal to {" .. getPlayerNameById(candidateSpouse) .. "}.", npc, creature)
+					end
+				else -- if the player i want to propose doesn't have other proposal
+					npcHandler:say("Ok, now let's wait and see if {" .. getPlayerNameById(candidate) .. "} accepts your proposal. I'll give you back your wedding ring as soon as {" .. getPlayerNameById(candidate) .. "} accepts your proposal or you {remove} it.", npc, creature)
+					player:removeItem(ITEM_WEDDING_RING, 1)
+					player:removeItem(9586, 1)
+					setPlayerMarriageStatus(player:getGuid(), PROPOSED_STATUS)
+					setPlayerSpouse(player:getGuid(), candidate)
+				end
+			end
+		end
+	end
+	keywordHandler:moveUp(player, 1)
+	return false
+end
+
 local function confirmWedding(npc, creature, message, keywords, parameters, node)
 	local player = Player(creature)
 	local playerStatus = getPlayerMarriageStatus(player:getGuid())
@@ -199,12 +254,12 @@ local function confirmRemoveEngage(npc, creature, message, keywords, parameters,
 			setPlayerMarriageStatus(player:getGuid(), 0)
 			setPlayerSpouse(player:getGuid(), -1)
 			npcHandler:say(parameters.text, npc, creature)
-			keywordHandler:moveUp(parameters.moveup)
+			keywordHandler:moveUp(player, parameters.moveup)
 		end
 		node:addChildKeyword({ "yes" }, removeEngage, { moveup = 3, text = "Ok, your marriage proposal to {" .. getPlayerNameById(playerSpouse) .. "} has been removed. Take your wedding ring back." })
 	else
 		npcHandler:say("You don't have any pending proposal to be removed.", npc, creature)
-		keywordHandler:moveUp(2)
+		keywordHandler:moveUp(player, 2)
 	end
 	return true
 end
@@ -225,12 +280,12 @@ local function confirmDivorce(npc, creature, message, keywords, parameters, node
 			setPlayerMarriageStatus(spouse, 0)
 			setPlayerSpouse(spouse, -1)
 			npcHandler:say(parameters.text, npc, creature)
-			keywordHandler:moveUp(parameters.moveup)
+			keywordHandler:moveUp(player, parameters.moveup)
 		end
 		node:addChildKeyword({ "yes" }, divorce, { moveup = 3, text = "Ok, you are now divorced of {" .. getPlayerNameById(playerSpouse) .. "}. Think better next time after marrying someone." })
 	else
 		npcHandler:say("You aren't married to get a divorce.", npc, creature)
-		keywordHandler:moveUp(2)
+		keywordHandler:moveUp(player, 2)
 	end
 	return true
 end

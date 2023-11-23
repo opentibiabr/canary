@@ -36,9 +36,9 @@ ExerciseWeaponsTable = {
 local dummies = Game.getDummies()
 
 function LeaveTraining(playerId)
-	if onExerciseTraining[playerId] then
-		stopEvent(onExerciseTraining[playerId].event)
-		onExerciseTraining[playerId] = nil
+	if _G.OnExerciseTraining[playerId] then
+		stopEvent(_G.OnExerciseTraining[playerId].event)
+		_G.OnExerciseTraining[playerId] = nil
 	end
 
 	local player = Player(playerId)
@@ -120,6 +120,6 @@ function ExerciseEvent(playerId, tilePosition, weaponId, dummyId)
 	end
 
 	local vocation = player:getVocation()
-	onExerciseTraining[playerId].event = addEvent(ExerciseEvent, vocation:getBaseAttackSpeed() / configManager.getFloat(configKeys.RATE_EXERCISE_TRAINING_SPEED), playerId, tilePosition, weaponId, dummyId)
+	_G.OnExerciseTraining[playerId].event = addEvent(ExerciseEvent, vocation:getBaseAttackSpeed() / configManager.getFloat(configKeys.RATE_EXERCISE_TRAINING_SPEED), playerId, tilePosition, weaponId, dummyId)
 	return true
 end

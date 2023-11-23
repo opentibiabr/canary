@@ -773,7 +773,9 @@ void Monster::onThink(uint32_t interval) {
 		}
 	} else if (!targetList.empty()) {
 		const bool attackedCreatureIsDisconnected = attackedCreature && attackedCreature->getPlayer() && attackedCreature->getPlayer()->isDisconnected();
-		if (!attackedCreature || attackedCreatureIsDisconnected) {
+		const bool attackedCreatureIsUnattackable = attackedCreature && !canUseAttack(getPosition(), attackedCreature);
+		const bool attackedCreatureIsUnreachable = targetDistance <= 1 && attackedCreature && followCreature && !hasFollowPath;
+		if (!attackedCreature || attackedCreatureIsDisconnected || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {
 			if (!followCreature || !hasFollowPath || attackedCreatureIsDisconnected) {
 				searchTarget(TARGETSEARCH_NEAREST);
 			} else if (attackedCreature && isFleeing() && !canUseAttack(getPosition(), attackedCreature)) {

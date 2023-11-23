@@ -96,6 +96,8 @@
 #include "lua/global/shared_object.hpp"
 
 // Magic Enum
+#define MAGIC_ENUM_RANGE_MIN -500
+#define MAGIC_ENUM_RANGE_MAX 500
 #include <magic_enum.hpp>
 
 // Memory Mapped File

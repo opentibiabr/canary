@@ -297,19 +297,20 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> attacker, std::shared_
 		return RETURNVALUE_NOERROR;
 	}
 
+	auto targetPlayer = target ? target->getPlayer() : nullptr;
 	if (target) {
 		std::shared_ptr<Tile> tile = target->getTile();
 		if (tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
 			return RETURNVALUE_NOTENOUGHROOM;
 		}
 		if (tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-			return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
+			auto permittedOnPz = targetPlayer ? targetPlayer->hasPermittedConditionInPZ() : false;
+			return permittedOnPz ? RETURNVALUE_NOERROR : RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
 		}
 	}
 
 	if (attacker) {
 		const std::shared_ptr<Creature> attackerMaster = attacker->getMaster();
-		auto targetPlayer = target ? target->getPlayer() : nullptr;
 		if (targetPlayer) {
 			if (targetPlayer->hasFlag(PlayerFlags_t::CannotBeAttacked)) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;

@@ -286,6 +286,7 @@ houseRentRate = 1.0
 houseOwnedByAccount = false
 houseBuyLevel = 100
 housePurchasedShowPrice = false
+houseLoseAfterInactivity = 30 -- days; 0 = never
 onlyInvitedCanMoveHouseItems = true
 togglehouseTransferOnRestart = true
 
@@ -480,6 +481,7 @@ vipBonusSkill = 0
 vipAutoLootVipOnly = false
 vipStayOnline = false
 vipFamiliarTimeCooldownReduction = 0
+vipKeepHouse = false
 
 -- NOTE: set rewardChestCollectEnabled to true to enable the reward collect system
 -- NOTE set rewardChestMaxCollectItems max items per collect action

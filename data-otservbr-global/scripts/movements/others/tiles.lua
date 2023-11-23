@@ -33,7 +33,7 @@ function tiles.onStepIn(creature, item, position, fromPosition)
 
 			if depotItem ~= nil then
 				local depotItems = 0
-				for id = 1, configManager.getNumber("depotBoxes") do
+				for id = 1, configManager.getNumber(configKeys.DEPOT_BOXES) do
 					depotItems = depotItems + player:getDepotChest(id, true):getItemHoldingCount()
 				end
 

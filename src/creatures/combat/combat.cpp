@@ -276,7 +276,7 @@ bool Combat::isInPvpZone(std::shared_ptr<Creature> attacker, std::shared_ptr<Cre
 }
 
 bool Combat::isProtected(std::shared_ptr<Player> attacker, std::shared_ptr<Player> target) {
-	uint32_t protectionLevel = g_configManager().getNumber(PROTECTION_LEVEL);
+	uint32_t protectionLevel = g_configManager().getNumber(PROTECTION_LEVEL, __FUNCTION__);
 	if (target->getLevel() < protectionLevel || attacker->getLevel() < protectionLevel) {
 		return true;
 	}
@@ -569,7 +569,7 @@ void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<
 		targetPlayer = target->getPlayer();
 	}
 
-	if (caster && attackerPlayer) {
+	if (attackerPlayer) {
 		std::shared_ptr<Item> item = attackerPlayer->getWeapon();
 		damage = applyImbuementElementalDamage(attackerPlayer, item, damage);
 		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
@@ -582,6 +582,9 @@ void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<
 				damage.secondary.value /= 2;
 			}
 		}
+
+		damage.damageMultiplier += attackerPlayer->wheel()->getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
+		g_logger().debug("Wheel Divine Empowerment damage multiplier {}", damage.damageMultiplier);
 	}
 
 	if (g_game().combatBlockHit(damage, caster, target, params.blockedByShield, params.blockedByArmor, params.itemId != 0)) {

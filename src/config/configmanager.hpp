@@ -37,10 +37,10 @@ public:
 		return configFileLua;
 	};
 
-	[[nodiscard]] const std::string &getString(const ConfigKey_t &key) const;
-	[[nodiscard]] int32_t getNumber(const ConfigKey_t &key) const;
-	[[nodiscard]] bool getBoolean(const ConfigKey_t &key) const;
-	[[nodiscard]] float getFloat(const ConfigKey_t &key) const;
+	[[nodiscard]] const std::string &getString(const ConfigKey_t &key, std::string_view context) const;
+	[[nodiscard]] int32_t getNumber(const ConfigKey_t &key, std::string_view context) const;
+	[[nodiscard]] bool getBoolean(const ConfigKey_t &key, std::string_view context) const;
+	[[nodiscard]] float getFloat(const ConfigKey_t &key, std::string_view context) const;
 
 private:
 	phmap::flat_hash_map<ConfigKey_t, ConfigValue> configs;

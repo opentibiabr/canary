@@ -3877,7 +3877,7 @@ int PlayerFunctions::luaPlayerUpgradeSpellWOD(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerRevelationStageWOD(lua_State* L) {
-	// player:revelationStagesWOD([name[, set]])
+	// player:revelationStageWOD([name[, set]])
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);

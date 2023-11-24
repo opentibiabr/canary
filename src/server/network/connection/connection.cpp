@@ -126,7 +126,7 @@ void Connection::parseProxyIdentification(const std::error_code &error) {
 
 	uint8_t* msgBuffer = msg.getBuffer();
 	auto charData = static_cast<char*>(static_cast<void*>(msgBuffer));
-	std::string serverName = g_configManager().getString(SERVER_NAME) + "\n";
+	std::string serverName = g_configManager().getString(SERVER_NAME, __FUNCTION__) + "\n";
 	if (connectionState == CONNECTION_STATE_IDENTIFYING) {
 		if (msgBuffer[1] == 0x00 || strncasecmp(charData, &serverName[0], 2) != 0) {
 			// Probably not proxy identification so let's try standard parsing method
@@ -178,7 +178,7 @@ void Connection::parseHeader(const std::error_code &error) {
 	}
 
 	uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
-	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND))) {
+	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND, __FUNCTION__))) {
 		g_logger().warn("{} disconnected for exceeding packet per second limit.", convertIPToString(getIP()));
 		close();
 		return;

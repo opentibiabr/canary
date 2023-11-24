@@ -27,7 +27,7 @@ Imbuement* Imbuements::getImbuement(uint16_t id) {
 
 bool Imbuements::loadFromXml(bool /* reloading */) {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/imbuements.xml";
+	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/imbuements.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
@@ -346,7 +346,7 @@ std::vector<Imbuement*> Imbuements::getImbuements(std::shared_ptr<Player> player
 		}
 
 		// Parse the storages for each imbuement in imbuements.xml and config.lua (enable/disable storage)
-		if (g_configManager().getBoolean(TOGGLE_IMBUEMENT_SHRINE_STORAGE)
+		if (g_configManager().getBoolean(TOGGLE_IMBUEMENT_SHRINE_STORAGE, __FUNCTION__)
 			&& imbuement->getStorage() != 0
 			&& player->getStorageValue(imbuement->getStorage() == -1)
 			&& imbuement->getBaseID() >= 1 && imbuement->getBaseID() <= 3) {

@@ -1064,7 +1064,7 @@ bool Creature::setFollowCreature(std::shared_ptr<Creature> creature) {
 			onWalkAborted();
 		}
 
-		hasFollowPath = false;
+		hasFollowPath = true;
 		forceUpdateFollowPath = false;
 		m_followCreature = creature;
 		isUpdatingPath = true;

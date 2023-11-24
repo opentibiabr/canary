@@ -75,7 +75,7 @@ bool Items::reload() {
 void Items::loadFromProtobuf() {
 	using namespace Canary::protobuf::appearances;
 
-	bool supportAnimation = g_configManager().getBoolean(OLD_PROTOCOL);
+	bool supportAnimation = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__);
 	for (uint32_t it = 0; it < g_game().appearances.object_size(); ++it) {
 		Appearance object = g_game().appearances.object(it);
 
@@ -192,7 +192,7 @@ void Items::loadFromProtobuf() {
 
 bool Items::loadFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/items/items.xml";
+	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/items/items.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);

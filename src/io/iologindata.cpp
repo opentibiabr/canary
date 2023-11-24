@@ -25,7 +25,7 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 		return false;
 	}
 
-	if (g_configManager().getString(AUTH_TYPE) == "session") {
+	if (g_configManager().getString(AUTH_TYPE, __FUNCTION__) == "session") {
 		if (!account.authenticate()) {
 			return false;
 		}

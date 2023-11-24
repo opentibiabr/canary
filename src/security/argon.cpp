@@ -21,10 +21,10 @@ Argon2::Argon2() {
 }
 
 void Argon2::updateConstants() {
-	m_const_str = g_configManager().getString(M_CONST);
+	m_const_str = g_configManager().getString(M_CONST, __FUNCTION__);
 	m_cost = parseBitShift(m_const_str);
-	t_cost = g_configManager().getNumber(T_CONST);
-	parallelism = g_configManager().getNumber(PARALLELISM);
+	t_cost = g_configManager().getNumber(T_CONST, __FUNCTION__);
+	parallelism = g_configManager().getNumber(PARALLELISM, __FUNCTION__);
 }
 
 uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {

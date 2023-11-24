@@ -27,9 +27,9 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 	uint32_t ip = getIP();
 	if (ip != 0x0100007F) {
 		std::string ipStr = convertIPToString(ip);
-		if (ipStr != g_configManager().getString(IP)) {
+		if (ipStr != g_configManager().getString(IP, __FUNCTION__)) {
 			std::map<uint32_t, int64_t>::const_iterator it = ipConnectMap.find(ip);
-			if (it != ipConnectMap.end() && (OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT)))) {
+			if (it != ipConnectMap.end() && (OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT, __FUNCTION__)))) {
 				disconnect();
 				return;
 			}
@@ -81,18 +81,18 @@ void ProtocolStatus::sendStatusString() {
 	pugi::xml_node serverinfo = tsqp.append_child("serverinfo");
 	uint64_t uptime = (OTSYS_TIME() - ProtocolStatus::start) / 1000;
 	serverinfo.append_attribute("uptime") = std::to_string(uptime).c_str();
-	serverinfo.append_attribute("ip") = g_configManager().getString(IP).c_str();
-	serverinfo.append_attribute("servername") = g_configManager().getString(ConfigKey_t::SERVER_NAME).c_str();
-	serverinfo.append_attribute("port") = std::to_string(g_configManager().getNumber(LOGIN_PORT)).c_str();
-	serverinfo.append_attribute("location") = g_configManager().getString(LOCATION).c_str();
-	serverinfo.append_attribute("url") = g_configManager().getString(URL).c_str();
+	serverinfo.append_attribute("ip") = g_configManager().getString(IP, __FUNCTION__).c_str();
+	serverinfo.append_attribute("servername") = g_configManager().getString(ConfigKey_t::SERVER_NAME, __FUNCTION__).c_str();
+	serverinfo.append_attribute("port") = std::to_string(g_configManager().getNumber(LOGIN_PORT, __FUNCTION__)).c_str();
+	serverinfo.append_attribute("location") = g_configManager().getString(LOCATION, __FUNCTION__).c_str();
+	serverinfo.append_attribute("url") = g_configManager().getString(URL, __FUNCTION__).c_str();
 	serverinfo.append_attribute("server") = ProtocolStatus::SERVER_NAME.c_str();
 	serverinfo.append_attribute("version") = ProtocolStatus::SERVER_VERSION.c_str();
 	serverinfo.append_attribute("client") = fmt::format("{}.{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER).c_str();
 
 	pugi::xml_node owner = tsqp.append_child("owner");
-	owner.append_attribute("name") = g_configManager().getString(OWNER_NAME).c_str();
-	owner.append_attribute("email") = g_configManager().getString(OWNER_EMAIL).c_str();
+	owner.append_attribute("name") = g_configManager().getString(OWNER_NAME, __FUNCTION__).c_str();
+	owner.append_attribute("email") = g_configManager().getString(OWNER_EMAIL, __FUNCTION__).c_str();
 
 	pugi::xml_node players = tsqp.append_child("players");
 	uint32_t real = 0;
@@ -112,7 +112,7 @@ void ProtocolStatus::sendStatusString() {
 		}
 	}
 	players.append_attribute("online") = std::to_string(real).c_str();
-	players.append_attribute("max") = std::to_string(g_configManager().getNumber(MAX_PLAYERS)).c_str();
+	players.append_attribute("max") = std::to_string(g_configManager().getNumber(MAX_PLAYERS, __FUNCTION__)).c_str();
 	players.append_attribute("peak") = std::to_string(g_game().getPlayersRecord()).c_str();
 
 	pugi::xml_node monsters = tsqp.append_child("monsters");
@@ -122,15 +122,15 @@ void ProtocolStatus::sendStatusString() {
 	npcs.append_attribute("total") = std::to_string(g_game().getNpcsOnline()).c_str();
 
 	pugi::xml_node rates = tsqp.append_child("rates");
-	rates.append_attribute("experience") = std::to_string(g_configManager().getNumber(RATE_EXPERIENCE)).c_str();
-	rates.append_attribute("skill") = std::to_string(g_configManager().getNumber(RATE_SKILL)).c_str();
-	rates.append_attribute("loot") = std::to_string(g_configManager().getNumber(RATE_LOOT)).c_str();
-	rates.append_attribute("magic") = std::to_string(g_configManager().getNumber(RATE_MAGIC)).c_str();
-	rates.append_attribute("spawn") = std::to_string(g_configManager().getNumber(RATE_SPAWN)).c_str();
+	rates.append_attribute("experience") = std::to_string(g_configManager().getNumber(RATE_EXPERIENCE, __FUNCTION__)).c_str();
+	rates.append_attribute("skill") = std::to_string(g_configManager().getNumber(RATE_SKILL, __FUNCTION__)).c_str();
+	rates.append_attribute("loot") = std::to_string(g_configManager().getNumber(RATE_LOOT, __FUNCTION__)).c_str();
+	rates.append_attribute("magic") = std::to_string(g_configManager().getNumber(RATE_MAGIC, __FUNCTION__)).c_str();
+	rates.append_attribute("spawn") = std::to_string(g_configManager().getNumber(RATE_SPAWN, __FUNCTION__)).c_str();
 
 	pugi::xml_node map = tsqp.append_child("map");
-	map.append_attribute("name") = g_configManager().getString(MAP_NAME).c_str();
-	map.append_attribute("author") = g_configManager().getString(MAP_AUTHOR).c_str();
+	map.append_attribute("name") = g_configManager().getString(MAP_NAME, __FUNCTION__).c_str();
+	map.append_attribute("author") = g_configManager().getString(MAP_AUTHOR, __FUNCTION__).c_str();
 
 	uint32_t mapWidth, mapHeight;
 	g_game().getMapDimensions(mapWidth, mapHeight);
@@ -138,7 +138,7 @@ void ProtocolStatus::sendStatusString() {
 	map.append_attribute("height") = std::to_string(mapHeight).c_str();
 
 	pugi::xml_node motd = tsqp.append_child("motd");
-	motd.text() = g_configManager().getString(SERVER_MOTD).c_str();
+	motd.text() = g_configManager().getString(SERVER_MOTD, __FUNCTION__).c_str();
 
 	std::ostringstream ss;
 	doc.save(ss, "", pugi::format_raw);
@@ -154,36 +154,36 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 
 	if (requestedInfo & REQUEST_BASIC_SERVER_INFO) {
 		output->addByte(0x10);
-		output->addString(g_configManager().getString(ConfigKey_t::SERVER_NAME));
-		output->addString(g_configManager().getString(IP));
-		output->addString(std::to_string(g_configManager().getNumber(LOGIN_PORT)));
+		output->addString(g_configManager().getString(ConfigKey_t::SERVER_NAME, __FUNCTION__));
+		output->addString(g_configManager().getString(IP, __FUNCTION__));
+		output->addString(std::to_string(g_configManager().getNumber(LOGIN_PORT, __FUNCTION__)));
 	}
 
 	if (requestedInfo & REQUEST_OWNER_SERVER_INFO) {
 		output->addByte(0x11);
-		output->addString(g_configManager().getString(OWNER_NAME));
-		output->addString(g_configManager().getString(OWNER_EMAIL));
+		output->addString(g_configManager().getString(OWNER_NAME, __FUNCTION__));
+		output->addString(g_configManager().getString(OWNER_EMAIL, __FUNCTION__));
 	}
 
 	if (requestedInfo & REQUEST_MISC_SERVER_INFO) {
 		output->addByte(0x12);
-		output->addString(g_configManager().getString(SERVER_MOTD));
-		output->addString(g_configManager().getString(LOCATION));
-		output->addString(g_configManager().getString(URL));
+		output->addString(g_configManager().getString(SERVER_MOTD, __FUNCTION__));
+		output->addString(g_configManager().getString(LOCATION, __FUNCTION__));
+		output->addString(g_configManager().getString(URL, __FUNCTION__));
 		output->add<uint64_t>((OTSYS_TIME() - ProtocolStatus::start) / 1000);
 	}
 
 	if (requestedInfo & REQUEST_PLAYERS_INFO) {
 		output->addByte(0x20);
 		output->add<uint32_t>(static_cast<uint32_t>(g_game().getPlayersOnline()));
-		output->add<uint32_t>(g_configManager().getNumber(MAX_PLAYERS));
+		output->add<uint32_t>(g_configManager().getNumber(MAX_PLAYERS, __FUNCTION__));
 		output->add<uint32_t>(g_game().getPlayersRecord());
 	}
 
 	if (requestedInfo & REQUEST_MAP_INFO) {
 		output->addByte(0x30);
-		output->addString(g_configManager().getString(MAP_NAME));
-		output->addString(g_configManager().getString(MAP_AUTHOR));
+		output->addString(g_configManager().getString(MAP_NAME, __FUNCTION__));
+		output->addString(g_configManager().getString(MAP_AUTHOR, __FUNCTION__));
 		uint32_t mapWidth, mapHeight;
 		g_game().getMapDimensions(mapWidth, mapHeight);
 		output->add<uint16_t>(mapWidth);

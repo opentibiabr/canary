@@ -167,14 +167,14 @@ const std::string &LuaScriptInterface::getFileById(int32_t scriptId) {
 
 std::string LuaScriptInterface::getStackTrace(const std::string &error_desc) {
 	lua_getglobal(luaState, "debug");
-	if (!lua_istable(luaState, -1)) {
+	if (!isTable(luaState, -1)) {
 		lua_pop(luaState, 1);
 		g_logger().error("Lua debug table not found.");
 		return error_desc;
 	}
 
 	lua_getfield(luaState, -1, "traceback");
-	if (!lua_isfunction(luaState, -1)) {
+	if (!isFunction(luaState, -1)) {
 		lua_pop(luaState, 2);
 		g_logger().error("Lua traceback function not found.");
 		return error_desc;
@@ -184,7 +184,7 @@ std::string LuaScriptInterface::getStackTrace(const std::string &error_desc) {
 	pushString(luaState, error_desc);
 	if (lua_pcall(luaState, 1, 1, 0) != LUA_OK) {
 		std::string luaError = lua_tostring(luaState, -1);
-		lua_pop(luaState, 1); // Remove o erro da pilha
+		lua_pop(luaState, 1);
 		g_logger().error("Error running Lua traceback: {}", luaError);
 		return "Lua traceback failed: " + luaError;
 	}

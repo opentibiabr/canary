@@ -274,7 +274,7 @@ bool IOMapSerialize::loadHouseInfo() {
 			uint32_t owner = result->getNumber<uint32_t>("owner");
 			int32_t newOwner = result->getNumber<int32_t>("new_owner");
 			// Transfer house owner
-			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
 			if (isTransferOnRestart && newOwner >= 0) {
 				g_game().setTransferPlayerHouseItems(houseId, owner);
 				if (newOwner == 0) {

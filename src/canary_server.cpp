@@ -60,7 +60,7 @@ int CanaryServer::run() {
 			try {
 				loadConfigLua();
 
-				logger.info("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");
+				logger.info("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__) ? " and 10x allowed!" : "");
 
 				rsa.start();
 				initializeDatabase();
@@ -89,7 +89,7 @@ int CanaryServer::run() {
 
 				g_game().start(&serviceManager);
 				g_game().setGameState(GAME_STATE_NORMAL);
-				if (g_configManager().getBoolean(TOGGLE_MAINTAIN_MODE)) {
+				if (g_configManager().getBoolean(TOGGLE_MAINTAIN_MODE, __FUNCTION__)) {
 					g_game().setGameState(GAME_STATE_CLOSED);
 					g_logger().warn("Initialized in maintain mode!");
 					g_webhook().sendMessage("Server is now online", "The server is now online. Access is currently restricted to administrators only.", WEBHOOK_COLOR_ONLINE);
@@ -123,7 +123,7 @@ int CanaryServer::run() {
 		return EXIT_FAILURE;
 	}
 
-	logger.info("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
+	logger.info("{} {}", g_configManager().getString(SERVER_NAME, __FUNCTION__), "server online!");
 
 	serviceManager.run();
 
@@ -132,7 +132,7 @@ int CanaryServer::run() {
 }
 
 void CanaryServer::setWorldType() {
-	std::string worldType = asLowerCaseString(g_configManager().getString(WORLD_TYPE));
+	const std::string worldType = asLowerCaseString(g_configManager().getString(WORLD_TYPE, __FUNCTION__));
 	if (worldType == "pvp") {
 		g_game().setWorldType(WORLD_TYPE_PVP);
 	} else if (worldType == "no-pvp") {
@@ -143,7 +143,7 @@ void CanaryServer::setWorldType() {
 		throw FailedToInitializeCanary(
 			fmt::format(
 				"Unknown world type: {}, valid world types are: pvp, no-pvp and pvp-enforced",
-				g_configManager().getString(WORLD_TYPE)
+				g_configManager().getString(WORLD_TYPE, __FUNCTION__)
 			)
 		);
 	}
@@ -153,11 +153,11 @@ void CanaryServer::setWorldType() {
 
 void CanaryServer::loadMaps() const {
 	try {
-		g_game().loadMainMap(g_configManager().getString(MAP_NAME));
+		g_game().loadMainMap(g_configManager().getString(MAP_NAME, __FUNCTION__));
 
 		// If "mapCustomEnabled" is true on config.lua, then load the custom map
-		if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
-			g_game().loadCustomMaps(g_configManager().getString(DATA_DIRECTORY) + "/world/custom/");
+		if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM, __FUNCTION__)) {
+			g_game().loadCustomMaps(g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/world/custom/");
 		}
 		Zone::refreshAll();
 	} catch (const std::exception &err) {
@@ -167,7 +167,7 @@ void CanaryServer::loadMaps() const {
 
 void CanaryServer::setupHousesRent() {
 	RentPeriod_t rentPeriod;
-	std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
+	std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD, __FUNCTION__));
 
 	if (strRentPeriod == "yearly") {
 		rentPeriod = RENTPERIOD_YEARLY;
@@ -214,8 +214,8 @@ void CanaryServer::logInfos() {
  */
 void CanaryServer::toggleForceCloseButton() {
 #ifdef OS_WINDOWS
-	HWND hwnd = GetConsoleWindow();
-	HMENU hmenu = GetSystemMenu(hwnd, FALSE);
+	const HWND hwnd = GetConsoleWindow();
+	const HMENU hmenu = GetSystemMenu(hwnd, FALSE);
 	EnableMenuItem(hmenu, SC_CLOSE, MF_GRAYED);
 #endif
 }
@@ -280,7 +280,7 @@ void CanaryServer::loadConfigLua() {
 	modulesLoadHelper(g_configManager().load(), g_configManager().getConfigFileLua());
 
 #ifdef _WIN32
-	const std::string &defaultPriority = g_configManager().getString(DEFAULT_PRIORITY);
+	const std::string &defaultPriority = g_configManager().getString(DEFAULT_PRIORITY, __FUNCTION__);
 	if (strcasecmp(defaultPriority.c_str(), "high") == 0) {
 		SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 	} else if (strcasecmp(defaultPriority.c_str(), "above-normal") == 0) {
@@ -306,7 +306,7 @@ void CanaryServer::initializeDatabase() {
 
 	DatabaseManager::updateDatabase();
 
-	if (g_configManager().getBoolean(OPTIMIZE_DATABASE)
+	if (g_configManager().getBoolean(OPTIMIZE_DATABASE, __FUNCTION__)
 		&& !DatabaseManager::optimizeTables()) {
 		logger.debug("No tables were optimized");
 	}
@@ -314,8 +314,8 @@ void CanaryServer::initializeDatabase() {
 
 void CanaryServer::loadModules() {
 	// If "USE_ANY_DATAPACK_FOLDER" is set to true then you can choose any datapack folder for your server
-	auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER);
-	auto datapackName = g_configManager().getString(DATA_DIRECTORY);
+	const auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER, __FUNCTION__);
+	auto datapackName = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
 	if (!useAnyDatapack && (datapackName != "data-canary" && datapackName != "data-otservbr-global" || datapackName != "data-otservbr-global" && datapackName != "data-canary")) {
 		throw FailedToInitializeCanary(fmt::format(
 			"The datapack folder name '{}' is wrong, please select valid "
@@ -330,12 +330,12 @@ void CanaryServer::loadModules() {
 		g_luaEnvironment().initState();
 	}
 
-	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+	auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
 	// Load items dependencies
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
 	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");
 
-	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+	const auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
 	logger.debug("Loading core scripts on folder: {}/", coreFolder);
 	// Load first core Lua libs
 	modulesLoadHelper((g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0), "core.lua");

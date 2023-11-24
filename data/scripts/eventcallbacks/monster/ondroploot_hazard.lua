@@ -29,7 +29,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 		rolls = math.floor(rolls)
 	end
 
-	if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) and rolls > 1 then
+	if configManager.getBoolean(configKeys.PARTY_SHARE_LOOT_BOOSTS) and rolls > 1 then
 		msgSuffix = msgSuffix .. " (hazard system, " .. rolls .. " extra rolls)"
 	elseif rolls == 1 then
 		msgSuffix = msgSuffix .. " (hazard system)"

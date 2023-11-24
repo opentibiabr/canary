@@ -32,7 +32,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	account::Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
-	if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL)) {
+	if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__)) {
 		disconnectClient(fmt::format("Only protocol version {}.{} is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
 		return;
 	} else if (!oldProtocol) {
@@ -48,7 +48,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	}
 
 	auto output = OutputMessagePool::getOutputMessage();
-	const std::string &motd = g_configManager().getString(SERVER_MOTD);
+	const std::string &motd = g_configManager().getString(SERVER_MOTD, __FUNCTION__);
 	if (!motd.empty()) {
 		// Add MOTD
 		output->addByte(0x14);
@@ -74,10 +74,10 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	output->addByte(1); // number of worlds
 
 	output->addByte(0); // world id
-	output->addString(g_configManager().getString(SERVER_NAME));
-	output->addString(g_configManager().getString(IP));
+	output->addString(g_configManager().getString(SERVER_NAME, __FUNCTION__));
+	output->addString(g_configManager().getString(IP, __FUNCTION__));
 
-	output->add<uint16_t>(g_configManager().getNumber(GAME_PORT));
+	output->add<uint16_t>(g_configManager().getNumber(GAME_PORT, __FUNCTION__));
 
 	output->addByte(0);
 

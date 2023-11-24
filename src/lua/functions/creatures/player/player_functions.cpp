@@ -2569,7 +2569,7 @@ int PlayerFunctions::luaPlayerAddTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->addCoins(enumToValue(CoinType::Normal), getNumber<uint32_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
+	if (player->account->addCoins(enumToValue(CoinType::Normal), getNumber<uint32_t>(L, 2), "") != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("Failed to add coins");
 		lua_pushnil(L);
 		return 1;
@@ -2672,6 +2672,59 @@ int PlayerFunctions::luaPlayerRemoveTransferableCoins(lua_State* L) {
 
 	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("failed to save account");
+		lua_pushnil(L);
+		return 1;
+	}
+
+	pushBoolean(L, true);
+
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetTournamentCoins(lua_State* L) {
+	// player:getTournamentCoins()
+	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
+	if (!player || !player->getAccount()) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto [coins, result] = player->getAccount()->getCoins(account::CoinType::TOURNAMENT);
+
+	if (result == account::ERROR_NO) {
+		lua_pushnumber(L, coins);
+	}
+
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerUpdateTournamentCoins(lua_State* L) {
+	// player:updateTournamentCoins(coins, action: 'add' | 'remove')
+	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
+	if (!player || !player->getAccount()) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+
+	std::string tournamentCoinName = asLowerCaseString(g_configManager().getString(TOURNAMENT_COINS_NAME, __FUNCTION__));
+	const std::string &action = getString(L, 3);
+	uint32_t amount = getNumber<uint32_t>(L, 2);
+	if (action == "add" && player->account->addCoins(account::CoinType::TOURNAMENT, amount, "", false) != account::ERROR_NO) {
+		reportErrorFunc(fmt::format("Failed to update (add) {}", tournamentCoinName));
+		lua_pushnil(L);
+		return 1;
+	} else if (action == "remove" && player->account->removeCoins(account::CoinType::TOURNAMENT, amount) != account::ERROR_NO) {
+		if (player->account->removeCoins(account::CoinType::COIN, getNumber<uint32_t>(L, 2)) != account::ERROR_NO) {
+			reportErrorFunc(fmt::format("Failed to update (remove) {}", tournamentCoinName));
+			lua_pushnil(L);
+			return 1;
+		}
+	}
+
+	if (player->getAccount()->save() != account::ERROR_NO) {
+		reportErrorFunc("Failed to save account");
 		lua_pushnil(L);
 		return 1;
 	}

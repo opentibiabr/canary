@@ -127,7 +127,7 @@ int HouseFunctions::luaHouseSetNewOwnerGuid(lua_State* L) {
 	// house:setNewOwnerGuid(guid[, updateDatabase = true])
 	auto house = getUserdataShared<House>(L, 1);
 	if (house) {
-		auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+		auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
 		if (isTransferOnRestart && house->hasNewOwnership()) {
 			const auto player = g_game().getPlayerByGUID(house->getOwner());
 			if (player) {
@@ -168,7 +168,7 @@ int HouseFunctions::luaHouseHasNewOwnership(lua_State* L) {
 		return 1;
 	}
 
-	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
 	pushBoolean(L, isTransferOnRestart && house->hasNewOwnership());
 	return 1;
 }
@@ -210,7 +210,7 @@ int HouseFunctions::luaHouseStartTrade(lua_State* L) {
 		return 1;
 	}
 
-	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
 	if (isTransferOnRestart && house->hasNewOwnership()) {
 		tradePartner->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You cannot buy this house. Ownership is already scheduled to be transferred upon the next server restart.");
 		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You cannot sell this house. Ownership is already scheduled to be transferred upon the next server restart.");

@@ -276,7 +276,7 @@ bool Combat::isInPvpZone(std::shared_ptr<Creature> attacker, std::shared_ptr<Cre
 }
 
 bool Combat::isProtected(std::shared_ptr<Player> attacker, std::shared_ptr<Player> target) {
-	uint32_t protectionLevel = g_configManager().getNumber(PROTECTION_LEVEL);
+	uint32_t protectionLevel = g_configManager().getNumber(PROTECTION_LEVEL, __FUNCTION__);
 	if (target->getLevel() < protectionLevel || attacker->getLevel() < protectionLevel) {
 		return true;
 	}

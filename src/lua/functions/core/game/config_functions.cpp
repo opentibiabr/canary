@@ -37,21 +37,45 @@ void ConfigFunctions::init(lua_State* L) {
 }
 
 int ConfigFunctions::luaConfigManagerGetString(lua_State* L) {
-	pushString(L, g_configManager().getString(getNumber<ConfigKey_t>(L, -1)));
+	auto key = getNumber<ConfigKey_t>(L, -1);
+	if (!key) {
+		reportErrorFunc("Wrong enum");
+		return 1;
+	}
+
+	pushString(L, g_configManager().getString(getNumber<ConfigKey_t>(L, -1), __FUNCTION__));
 	return 1;
 }
 
 int ConfigFunctions::luaConfigManagerGetNumber(lua_State* L) {
-	lua_pushnumber(L, g_configManager().getNumber(getNumber<ConfigKey_t>(L, -1)));
+	auto key = getNumber<ConfigKey_t>(L, -1);
+	if (!key) {
+		reportErrorFunc("Wrong enum");
+		return 1;
+	}
+
+	lua_pushnumber(L, g_configManager().getNumber(getNumber<ConfigKey_t>(L, -1), __FUNCTION__));
 	return 1;
 }
 
 int ConfigFunctions::luaConfigManagerGetBoolean(lua_State* L) {
-	pushBoolean(L, g_configManager().getBoolean(getNumber<ConfigKey_t>(L, -1)));
+	auto key = getNumber<ConfigKey_t>(L, -1);
+	if (!key) {
+		reportErrorFunc("Wrong enum");
+		return 1;
+	}
+
+	pushBoolean(L, g_configManager().getBoolean(getNumber<ConfigKey_t>(L, -1), __FUNCTION__));
 	return 1;
 }
 
 int ConfigFunctions::luaConfigManagerGetFloat(lua_State* L) {
-	lua_pushnumber(L, g_configManager().getFloat(getNumber<ConfigKey_t>(L, -1)));
+	auto key = getNumber<ConfigKey_t>(L, -1);
+	if (!key) {
+		reportErrorFunc("Wrong enum");
+		return 1;
+	}
+
+	lua_pushnumber(L, g_configManager().getFloat(key, __FUNCTION__));
 	return 1;
 }

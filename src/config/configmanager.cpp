@@ -153,6 +153,7 @@ bool ConfigManager::load() {
 	loadStringConfig(L, GLOBAL_SERVER_SAVE_TIME, "globalServerSaveTime", "06:00");
 	loadStringConfig(L, DATA_DIRECTORY, "dataPackDirectory", "data-otservbr-global");
 	loadStringConfig(L, CORE_DIRECTORY, "coreDirectory", "data");
+	loadStringConfig(L, TOURNAMENT_COINS_NAME, "tournamentCoinsName", "Tournament Coins");
 
 	loadStringConfig(L, FORGE_FIENDISH_INTERVAL_TYPE, "forgeFiendishIntervalType", "hour");
 	loadStringConfig(L, FORGE_FIENDISH_INTERVAL_TIME, "forgeFiendishIntervalTime", "1");

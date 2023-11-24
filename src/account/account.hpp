@@ -36,9 +36,11 @@ namespace account {
 		 *
 		 * @param type Type of the coin
 		 * @param amount Amount of coins to be added
+		 * @param detail
+		 * @param registerHistory
 		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
 		 */
-		error_t addCoins(const CoinType &type, const uint32_t &amount, const std::string &detail = "ADD Coins");
+		error_t addCoins(const CoinType &type, const uint32_t &amount, const std::string &detail = "ADD Coins", bool registerHistory = true);
 
 		/**
 		 * @brief Removes coins from the account.

@@ -111,19 +111,35 @@ void LuaFunctionsLoader::reportError(const char* function, const std::string &er
 	LuaScriptInterface* scriptInterface;
 	getScriptEnv()->getEventInfo(scriptId, scriptInterface, callbackId, timerEvent);
 
-	std::string scriptIdStr = scriptId && scriptInterface ? scriptInterface->getFileById(scriptId) : "N/A";
-	std::string callbackIdStr = callbackId && scriptInterface ? scriptInterface->getFileById(callbackId) : "N/A";
-	std::string interfaceName = scriptInterface ? scriptInterface->getInterfaceName() : "N/A";
-	std::string stackTrace = stack_trace && scriptInterface ? scriptInterface->getStackTrace(error_desc) : error_desc;
+	std::stringstream logMsg;
+	logMsg << "Lua Script Error Detected\n";
+	logMsg << "---------------------------------------\n";
+	if (scriptInterface) {
+		logMsg << "Interface: " << scriptInterface->getInterfaceName() << "\n";
+		if (scriptId) {
+			logMsg << "Script ID: " << scriptInterface->getFileById(scriptId) << "\n";
+		}
+		if (timerEvent) {
+			logMsg << "Timer Event: Yes\n";
+		}
+		if (callbackId) {
+			logMsg << "Callback ID: " << scriptInterface->getFileById(callbackId) << "\n";
+		}
+	}
+	if (function && strcmp(function, "N/A") != 0) {
+		logMsg << "Function: " << function << "\n";
+	}
+	logMsg << "Error Description: " << error_desc << "\n";
+	if (stack_trace && scriptInterface) {
+		std::string stackTrace = scriptInterface->getStackTrace(error_desc);
+		if (!stackTrace.empty() && stackTrace != "N/A") {
+			logMsg << "Stack Trace:\n"
+				   << stackTrace << "\n";
+		}
+	}
+	logMsg << "---------------------------------------\n";
 
-	g_logger().error("Lua Script Error\n"
-					 "Interface: {}\n"
-					 "ScriptID: {}\n"
-					 "Timer Event: {}\n"
-					 "CallbackID: {}\n"
-					 "Function: {}\n"
-					 "Error: {}\n",
-					 interfaceName, scriptIdStr, timerEvent ? "Yes" : "No", callbackIdStr, function ? function : "N/A", stackTrace);
+	g_logger().error(logMsg.str());
 }
 
 int LuaFunctionsLoader::luaErrorHandler(lua_State* L) {

@@ -3,12 +3,12 @@ function Player.getRewardChest(self, autocreate)
 end
 
 function Player.inBossFight(self)
-	if not next(GlobalBosses) then
+	if not next(_G.GlobalBosses) then
 		return false
 	end
 
 	local playerGuid = self:getGuid()
-	for _, info in pairs(GlobalBosses) do
+	for _, info in pairs(_G.GlobalBosses) do
 		local stats = info[playerGuid]
 		if stats and stats.active then
 			return stats

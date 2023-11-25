@@ -38,7 +38,6 @@ function position.onSay(player, words, param)
 		end
 
 		player:teleportTo(teleportPosition)
-		return true
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Invalid position format. Use one of the following formats: \n/pos {x = ..., y = ..., z = ...}\n/pos Position(..., ..., ...)\n/pos x, y, z.")
 	end

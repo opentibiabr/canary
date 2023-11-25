@@ -261,10 +261,11 @@ local function creatureSayCallback(npc, creature, type, message)
 					if inbox and inbox:getEmptySlots() > 0 and player:getFreeCapacity() >= itemT:getCapacity() then
 						player:updateTournamentCoins(selected.value, "remove")
 
-						if selected.charges > 0 then
+						if selected.charges ~= nil and selected.charges > 0 then
 							local addedItem = player:addItem(selected.id, selected.count, true)
 							addedItem:setAttribute("charges", selected.charges)
 						else
+							selected.charges = 0
 							if selected.wrap then
 								local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
 								if decoKit then

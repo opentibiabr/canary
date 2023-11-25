@@ -67,6 +67,7 @@ GameStore.ActionType = {
 GameStore.CoinType = {
 	Coin = 0,
 	Transferable = 1,
+	Tournament = 2,
 }
 
 GameStore.Storages = {

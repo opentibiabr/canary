@@ -554,6 +554,28 @@ function Player.updateHazard(self)
 	return true
 end
 
+function Player:addItemStoreInbox(itemId, amount, moveable)
+	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
+	if not moveable then
+		for _, item in pairs(inbox:getItems()) do
+			if item:getId() == itemId then
+				item:removeAttribute(ITEM_ATTRIBUTE_STORE)
+			end
+		end
+	end
+
+	local newItem = inbox:addItem(itemId, amount, INDEX_WHEREEVER, FLAG_NOLIMIT)
+
+	if not moveable then
+		for _, item in pairs(inbox:getItems()) do
+			if item:getId() == itemId then
+				item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+			end
+		end
+	end
+	return newItem
+end
+
 ---@param monster Monster
 ---@return {factor: number, msgSuffix: string}
 function Player:calculateLootFactor(monster)

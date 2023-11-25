@@ -421,7 +421,7 @@ int HouseFunctions::luaHouseKickPlayer(lua_State* L) {
 	}
 
 	auto player = getPlayer(L, 2);
-	if (!player ) {
+	if (!player) {
 		reportErrorFunc("Player is nullptr");
 		return 1;
 	}

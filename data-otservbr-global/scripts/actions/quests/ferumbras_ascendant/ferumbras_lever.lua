@@ -81,7 +81,9 @@ function ferumbrasAscendantLever.onUse(player, item, fromPosition, target, toPos
 						local xrand = math.random(-10, 10)
 						local yrand = math.random(-10, 10)
 						local position = Position(33392 + xrand, 31473 + yrand, 14)
-						Game.createMonster(config.summonName, position)
+						if not Game.createMonster(config.summonName, position) then
+							logger.error("[ferumbrasAscendantLever.onUse] can't create monster {}, on position {}", config.summonName, position:toString())
+						end
 					end
 
 					Game.createMonster(config.bossName, config.bossPos, true, true)

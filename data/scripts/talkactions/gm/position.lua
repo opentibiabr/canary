@@ -25,7 +25,7 @@ function position.onSay(player, words, param)
 	if param == "" then
 		local pos = player:getPosition()
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your current position is: " .. pos.x .. ", " .. pos.y .. ", " .. pos.z .. ".")
-		return true
+		return
 	end
 
 	local x, y, z = extractCoordinates(param)
@@ -34,7 +34,7 @@ function position.onSay(player, words, param)
 		local tile = Tile(teleportPosition)
 		if not tile then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Invalid tile or position. Send a valid position.")
-			return true
+			return
 		end
 
 		player:teleportTo(teleportPosition)

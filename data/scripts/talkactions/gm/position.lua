@@ -30,14 +30,14 @@ function position.onSay(player, words, param)
 
 	local x, y, z = extractCoordinates(param)
 	if x and y and z then
-		local position = Position(x, y, z)
-		local tile = Tile(position)
+		local teleportPosition = Position(x, y, z)
+		local tile = Tile(teleportPosition)
 		if not tile then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Invalid tile or position. Send a valid position.")
 			return true
 		end
 
-		player:teleportTo(position)
+		player:teleportTo(teleportPosition)
 		return true
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Invalid position format. Use one of the following formats: \n/pos {x = ..., y = ..., z = ...}\n/pos Position(..., ..., ...)\n/pos x, y, z.")

@@ -125,8 +125,8 @@ int BankFunctions::luaBankDeposit(lua_State* L) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;
 	}
-
 	const auto bank = std::make_shared<Bank>(player);
+
 	uint64_t amount = 0;
 	if (lua_isnumber(L, 2)) {
 		amount = getNumber<uint64_t>(L, 2);

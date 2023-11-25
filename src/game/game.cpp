@@ -6565,6 +6565,9 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 					int32_t totalDamage = damageX;
 					if (distanceX != distanceY) {
 						totalDamage += damageY;
+						if (damage.critical) {
+							totalDamage += (totalDamage * attackerPlayer->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE));
+						}
 					}
 					damage.primary.value += totalDamage;
 					if (!damage.exString.empty()) {
@@ -6971,6 +6974,10 @@ void Game::buildMessageAsAttacker(
 	}
 	if (damage.fatal) {
 		ss << " (Onslaught)";
+	}
+	if (damage.critical) {
+		ss.str("");
+		ss << ucfirst(target->getNameDescription()) << " loses " << damageString << " due to your critical attack.";
 	}
 	message.type = MESSAGE_DAMAGE_DEALT;
 	message.text = ss.str();

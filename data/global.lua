@@ -100,8 +100,8 @@ if not _G.NextUseXpStamina then
 	_G.NextUseXpStamina = {}
 end
 
-if not _G._G.NextUseConcoctionTime then
-	_G._G.NextUseConcoctionTime = {}
+if not _G.NextUseConcoctionTime then
+	_G.NextUseConcoctionTime = {}
 end
 
 -- Delay potion

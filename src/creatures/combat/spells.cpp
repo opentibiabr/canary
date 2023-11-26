@@ -609,7 +609,7 @@ void Spell::setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t gr
 void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 	WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
 	bool isUpgraded = getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0;
-	auto rate_cooldown = (int32_t)g_configManager().getFloat(RATE_SPELL_COOLDOWN);
+	auto rate_cooldown = (int32_t)g_configManager().getFloat(RATE_SPELL_COOLDOWN, __FUNCTION__);
 	if (cooldown > 0) {
 		int32_t spellCooldown = cooldown;
 		if (isUpgraded) {
@@ -981,7 +981,7 @@ bool RuneSpell::executeUse(std::shared_ptr<Player> player, std::shared_ptr<Item>
 	}
 
 	postCastSpell(player);
-	if (hasCharges && item && g_configManager().getBoolean(REMOVE_RUNE_CHARGES)) {
+	if (hasCharges && item && g_configManager().getBoolean(REMOVE_RUNE_CHARGES, __FUNCTION__)) {
 		int32_t newCount = std::max<int32_t>(0, item->getItemCount() - 1);
 		g_game().transformItem(item, item->getID(), newCount);
 		player->updateSupplyTracker(item);

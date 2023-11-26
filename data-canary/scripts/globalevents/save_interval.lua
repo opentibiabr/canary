@@ -1,3 +1,14 @@
+local SAVE_INTERVAL_TYPE = configManager.getString(configKeys.SAVE_INTERVAL_TYPE)
+local SAVE_INTERVAL_CONFIG_TIME = configManager.getNumber(configKeys.SAVE_INTERVAL_TIME)
+local SAVE_INTERVAL_TIME = 0
+if SAVE_INTERVAL_TYPE == "second" then
+	SAVE_INTERVAL_TIME = 1000
+elseif SAVE_INTERVAL_TYPE == "minute" then
+	SAVE_INTERVAL_TIME = 60 * 1000
+elseif SAVE_INTERVAL_TYPE == "hour" then
+	SAVE_INTERVAL_TIME = 60 * 60 * 1000
+end
+
 local function serverSave(interval)
 	if configManager.getBoolean(configKeys.TOGGLE_SAVE_INTERVAL_CLEAN_MAP) then
 		cleanMap()

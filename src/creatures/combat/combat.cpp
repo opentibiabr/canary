@@ -569,7 +569,7 @@ void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<
 		targetPlayer = target->getPlayer();
 	}
 
-	if (caster && attackerPlayer) {
+	if (attackerPlayer) {
 		std::shared_ptr<Item> item = attackerPlayer->getWeapon();
 		damage = applyImbuementElementalDamage(attackerPlayer, item, damage);
 		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
@@ -582,6 +582,9 @@ void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<
 				damage.secondary.value /= 2;
 			}
 		}
+
+		damage.damageMultiplier += attackerPlayer->wheel()->getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
+		g_logger().debug("Wheel Divine Empowerment damage multiplier {}", damage.damageMultiplier);
 	}
 
 	if (g_game().combatBlockHit(damage, caster, target, params.blockedByShield, params.blockedByArmor, params.itemId != 0)) {
@@ -2021,13 +2024,12 @@ void Combat::applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<C
 
 	// Critical hit
 	uint16_t chance = 0;
-	int32_t multiplier = 50;
+	int32_t bonus = 50;
 	auto player = caster->getPlayer();
 	auto monster = caster->getMonster();
 	if (player) {
 		chance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
-		multiplier = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE);
-
+		bonus = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE);
 		if (target) {
 			uint16_t playerCharmRaceid = player->parseRacebyCharm(CHARM_LOW, false, 0);
 			if (playerCharmRaceid != 0) {
@@ -2045,8 +2047,8 @@ void Combat::applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<C
 		chance = monster->critChance();
 	}
 
-	multiplier += damage.criticalDamage;
-	multiplier = 1 + multiplier / 100;
+	bonus += damage.criticalDamage;
+	double multiplier = 1.0 + static_cast<double>(bonus) / 100;
 	chance += (uint16_t)damage.criticalChance;
 
 	if (chance != 0 && uniform_random(1, 100) <= chance) {

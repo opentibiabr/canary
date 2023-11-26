@@ -23,16 +23,22 @@ function createItem.onSay(player, words, param)
 	local count = tonumber(split[2])
 	if count then
 		if itemType:isStackable() then
-			local item = Game.createItem(itemType:getId(), count)
-			if not item then
-				player:sendCancelMessage("Cannot create item")
-				return true
+			local stackSize = itemType:getStackSize()
+			local container = Game.createItem(2854)
+			local remainingCount = count
+
+			while remainingCount > 0 do
+				local countToAdd = math.min(remainingCount, stackSize)
+				local tmpItem = container:addItem(itemType:getId(), countToAdd, INDEX_WHEREEVER, FLAG_NOLIMIT)
+				if tmpItem then
+					remainingCount = remainingCount - countToAdd
+				else
+					logger.warn("Failed to add item: {}, to container", itemType:getName())
+				end
 			end
 
-			local ret = player:addItemEx(item, INDEX_WHEREEVER, FLAG_NOLIMIT)
-			if ret ~= RETURNVALUE_NOERROR then
-				player:sendCancelMessage(ret)
-			end
+			player:addItemEx(container)
+			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 			return true
 		elseif not itemType:isFluidContainer() then
 			local min = 100

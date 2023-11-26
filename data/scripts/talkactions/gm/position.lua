@@ -1,22 +1,46 @@
 local position = TalkAction("/pos", "!pos")
 
+local function extractCoordinates(input)
+	local patterns = {
+		-- table format
+		"{%s*x%s*=%s*(%d+)%s*,%s*y%s*=%s*(%d+)%s*,%s*z%s*=%s*(%d+)%s*}",
+		-- Position format
+		"Position%s*%((%d+)%s*,%s*(%d+)%s*,%s*(%d+)%s*%)",
+		-- x, y, z format
+		"(%d+)%s*,%s*(%d+)%s*,%s*(%d+)",
+	}
+
+	for _, pattern in ipairs(patterns) do
+		local x, y, z = string.match(input, pattern)
+		if x and y and z then
+			return tonumber(x), tonumber(y), tonumber(z)
+		end
+	end
+end
+
 function position.onSay(player, words, param)
 	-- create log
 	logCommand(player, words, param)
 
-	local param = string.gsub(param, "%s+", "")
-	local tile = load("return " .. param)()
-	local split = param:split(",")
-	if type(tile) == "table" and tile.x and tile.y and tile.z then
-		player:teleportTo(Position(tile.x, tile.y, tile.z))
-	elseif split and param ~= "" then
-		player:teleportTo(Position(split[1], split[2], split[3]))
-	elseif param == "" then
-		local playerPosition = player:getPosition()
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your current position is: \z
-		" .. playerPosition.x .. ", " .. playerPosition.y .. ", " .. playerPosition.z .. ".")
+	if param == "" then
+		local pos = player:getPosition()
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your current position is: " .. pos.x .. ", " .. pos.y .. ", " .. pos.z .. ".")
+		return
 	end
-	return true
+
+	local x, y, z = extractCoordinates(param)
+	if x and y and z then
+		local teleportPosition = Position(x, y, z)
+		local tile = Tile(teleportPosition)
+		if not tile then
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Invalid tile or position. Send a valid position.")
+			return
+		end
+
+		player:teleportTo(teleportPosition)
+	else
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Invalid position format. Use one of the following formats: \n/pos {x = ..., y = ..., z = ...}\n/pos Position(..., ..., ...)\n/pos x, y, z.")
+	end
 end
 
 position:separator(" ")

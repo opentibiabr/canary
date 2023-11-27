@@ -1197,7 +1197,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 
 			if (it.abilities->speed) {
 				ss.str("");
-				ss << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
+				ss << std::showpos << it.abilities->speed << std::noshowpos;
 				descriptions.emplace_back("Speed", ss.str());
 			}
 
@@ -1512,7 +1512,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			ss.str("");
 			bool skillBoost = false;
 			if (it.abilities->speed) {
-				ss << std::showpos << "speed " << (it.abilities->speed >> 1) << std::noshowpos;
+				ss << std::showpos << "speed " << it.abilities->speed << std::noshowpos;
 				skillBoost = true;
 			}
 
@@ -1559,14 +1559,11 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 					ss << it.abilities->skills[i];
 				}
 				ss << '%' << std::noshowpos;
-
 				skillBoost = true;
 			}
 
-			if (it.abilities->stats[STAT_MAGICPOINTS]) {
-				ss.str("");
-				ss << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
-				descriptions.emplace_back("Magic Level", ss.str());
+			if (skillBoost) {
+				descriptions.emplace_back("Skill Boost", ss.str());
 			}
 
 			for (uint8_t i = 1; i <= 11; i++) {
@@ -1598,12 +1595,6 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				descriptions.emplace_back("Damage Reflection", ss.str());
 			}
 
-			if (it.abilities->speed) {
-				ss.str("");
-				ss << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
-				descriptions.emplace_back("Speed", ss.str());
-			}
-
 			if (it.abilities->cleavePercent) {
 				ss.str("");
 				ss << std::showpos << (it.abilities->cleavePercent) << std::noshowpos << "%";
@@ -1632,17 +1623,6 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				ss.str("");
 				ss << "Mana Shield";
 				descriptions.emplace_back("Effect", ss.str());
-			}
-
-			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-				if (it.abilities->absorbPercent[i] == 0) {
-					continue;
-				}
-
-				ss.str("");
-				ss << getCombatName(indexToCombatType(i)) << ' '
-				   << std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
-				descriptions.emplace_back("Protection", ss.str());
 			}
 
 			for (size_t i = 0; i < COMBAT_COUNT; ++i) {

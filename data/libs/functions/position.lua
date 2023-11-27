@@ -385,7 +385,7 @@ function Position.getWithinRange(self, otherPosition, range)
 	local distance = math.max(math.abs(self.x - otherPosition.x), math.abs(self.y - otherPosition.y))
 	if distance > range then
 		return self
-	else
-		return otherPosition
 	end
+
+	return otherPosition
 end

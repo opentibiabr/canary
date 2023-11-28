@@ -150,9 +150,13 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	// position:sendMagicEffect(magicEffect[, player = nullptr])
 	CreatureVector spectators;
 	if (lua_gettop(L) >= 3) {
-		if (const auto &player = getPlayer(L, 3)) {
-			spectators.emplace_back(player);
+		const auto &player = getPlayer(L, 3);
+		if (!player) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+			return 1;
 		}
+
+		spectators.emplace_back(player);
 	}
 
 	MagicEffectClasses magicEffect = getNumber<MagicEffectClasses>(L, 2);
@@ -177,9 +181,13 @@ int PositionFunctions::luaPositionRemoveMagicEffect(lua_State* L) {
 	// position:removeMagicEffect(magicEffect[, player = nullptr])
 	CreatureVector spectators;
 	if (lua_gettop(L) >= 3) {
-		if (const auto &player = getPlayer(L, 3)) {
-			spectators.emplace_back(player);
+		const auto &player = getPlayer(L, 3);
+		if (!player) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+			return 1;
 		}
+
+		spectators.emplace_back(player);
 	}
 
 	MagicEffectClasses magicEffect = getNumber<MagicEffectClasses>(L, 2);
@@ -204,9 +212,13 @@ int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	// position:sendDistanceEffect(positionEx, distanceEffect[, player = nullptr])
 	CreatureVector spectators;
 	if (lua_gettop(L) >= 4) {
-		if (const auto &player = getPlayer(L, 4)) {
-			spectators.emplace_back(player);
+		const auto &player = getPlayer(L, 4);
+		if (!player) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+			return 1;
 		}
+
+		spectators.emplace_back(player);
 	}
 
 	ShootType_t distanceEffect = getNumber<ShootType_t>(L, 3);

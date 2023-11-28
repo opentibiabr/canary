@@ -741,16 +741,16 @@ int GlobalFunctions::luaDebugPrint(lua_State* L) {
 
 int GlobalFunctions::luaIsInWar(lua_State* L) {
 	// isInWar(cid, target)
-	std::shared_ptr<Player> player = getPlayer(L, 1);
+	const auto &player = getPlayer(L, 1);
 	if (!player) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		reportErrorFunc(fmt::format("{} - Player", getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND)));
 		pushBoolean(L, false);
 		return 1;
 	}
 
-	std::shared_ptr<Player> targetPlayer = getPlayer(L, 2);
+	const auto &targetPlayer = getPlayer(L, 2);
 	if (!targetPlayer) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		reportErrorFunc(fmt::format("{} - TargetPlayer", getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND)));
 		pushBoolean(L, false);
 		return 1;
 	}

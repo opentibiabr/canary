@@ -38,7 +38,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = true,
+	rewardBoss = false,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -53,7 +53,7 @@ monster.flags = {
 }
 
 monster.events = {
-	"FerumbrasSoulSplinter",
+	"FerumbrasSoulSplinterDeath",
 }
 
 monster.light = {

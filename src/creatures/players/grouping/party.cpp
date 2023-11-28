@@ -187,16 +187,16 @@ bool Party::passPartyLeadership(std::shared_ptr<Player> player) {
 
 	for (auto member : getMembers()) {
 		member->sendPartyCreatureShield(oldLeader);
-		member->sendPartyCreatureShield(leader);
+		member->sendPartyCreatureShield(player);
 	}
 
 	for (auto invitee : getInvitees()) {
 		invitee->sendCreatureShield(oldLeader);
-		invitee->sendCreatureShield(leader);
+		invitee->sendCreatureShield(player);
 	}
 
-	leader->sendPartyCreatureShield(oldLeader);
-	leader->sendPartyCreatureShield(leader);
+	player->sendPartyCreatureShield(oldLeader);
+	player->sendPartyCreatureShield(player);
 
 	player->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "You are now the leader of the party.");
 	return true;

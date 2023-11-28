@@ -69,14 +69,14 @@ int PartyFunctions::luaPartyGetLeader(lua_State* L) {
 
 int PartyFunctions::luaPartySetLeader(lua_State* L) {
 	// party:setLeader(player)
-	auto player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;
 	}
 
 	std::shared_ptr<Party> party = getUserdataShared<Party>(L, 1);
-	if (party && player) {
+	if (party) {
 		pushBoolean(L, party->passPartyLeadership(player));
 	} else {
 		lua_pushnil(L);
@@ -144,7 +144,7 @@ int PartyFunctions::luaPartyGetInviteeCount(lua_State* L) {
 
 int PartyFunctions::luaPartyAddInvite(lua_State* L) {
 	// party:addInvite(player)
-	auto player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;
@@ -161,7 +161,7 @@ int PartyFunctions::luaPartyAddInvite(lua_State* L) {
 
 int PartyFunctions::luaPartyRemoveInvite(lua_State* L) {
 	// party:removeInvite(player)
-	auto player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;
@@ -178,7 +178,7 @@ int PartyFunctions::luaPartyRemoveInvite(lua_State* L) {
 
 int PartyFunctions::luaPartyAddMember(lua_State* L) {
 	// party:addMember(player)
-	auto player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;
@@ -195,7 +195,7 @@ int PartyFunctions::luaPartyAddMember(lua_State* L) {
 
 int PartyFunctions::luaPartyRemoveMember(lua_State* L) {
 	// party:removeMember(player)
-	auto player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;

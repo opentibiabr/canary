@@ -983,7 +983,7 @@ int PlayerFunctions::luaPlayerGetMaxMana(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSetMaxMana(lua_State* L) {
 	// player:setMaxMana(maxMana)
-	auto player = getPlayer(L, 1);
+	const auto &player = getPlayer(L, 1);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;

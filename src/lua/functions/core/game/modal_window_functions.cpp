@@ -204,7 +204,7 @@ int ModalWindowFunctions::luaModalWindowSetPriority(lua_State* L) {
 
 int ModalWindowFunctions::luaModalWindowSendToPlayer(lua_State* L) {
 	// modalWindow:sendToPlayer(player)
-	auto player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;

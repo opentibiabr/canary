@@ -369,7 +369,7 @@ int HouseFunctions::luaHouseCanEditAccessList(lua_State* L) {
 
 	uint32_t listId = getNumber<uint32_t>(L, 2);
 
-	auto player = getPlayer(L, 3);
+	const auto &player = getPlayer(L, 3);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;
@@ -420,7 +420,7 @@ int HouseFunctions::luaHouseKickPlayer(lua_State* L) {
 		return 1;
 	}
 
-	auto player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc("Player is nullptr");
 		return 1;
@@ -444,7 +444,7 @@ int HouseFunctions::luaHouseIsInvited(lua_State* L) {
 		return 1;
 	}
 
-	auto player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;

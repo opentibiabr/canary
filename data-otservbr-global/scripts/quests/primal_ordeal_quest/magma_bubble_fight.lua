@@ -4,7 +4,7 @@ local config = {
 	heatedCrystalId = 39168,
 	cooledCrystalId = 39169,
 	bossPos = Position(33654, 32909, 15),
-	timeToLeftAfterKill = 60
+	timeToLeftAfterKill = 60,
 }
 
 local overheatedZone = Zone("fight.magma-bubble.overheated")

@@ -347,7 +347,7 @@ int NpcFunctions::luaNpcOpenShopWindow(lua_State* L) {
 		return 1;
 	}
 
-	std::shared_ptr<Player> player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -360,7 +360,7 @@ int NpcFunctions::luaNpcOpenShopWindow(lua_State* L) {
 
 int NpcFunctions::luaNpcCloseShopWindow(lua_State* L) {
 	// npc:closeShopWindow(player)
-	std::shared_ptr<Player> player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -452,7 +452,13 @@ int NpcFunctions::luaNpcFollow(lua_State* L) {
 		return 1;
 	}
 
-	pushBoolean(L, npc->setFollowCreature(getPlayer(L, 2)));
+	const auto &player = getPlayer(L, 2);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	pushBoolean(L, npc->setFollowCreature(player));
 	return 1;
 }
 
@@ -478,7 +484,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 		return 1;
 	}
 
-	std::shared_ptr<Player> player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);

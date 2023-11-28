@@ -17,7 +17,7 @@
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
-	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM));
+	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM, __FUNCTION__));
 	if (getID() == ITEM_GOLD_POUCH || isStoreInbox()) {
 		pagination = true;
 		m_maxItems = 2000;
@@ -476,7 +476,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 	if (std::shared_ptr<Container> topParentContainer = getTopParentContainer()) {
 		if (std::shared_ptr<Container> addContainer = item->getContainer()) {
 			uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
-			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER));
+			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
 			if (addContainerCount + topParentContainer->getContainerHoldingCount() > maxContainer) {
 				return RETURNVALUE_CONTAINERISFULL;
 			}

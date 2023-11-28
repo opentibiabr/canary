@@ -66,7 +66,7 @@ function enchanting.onUse(player, item, fromPosition, target, toPosition, isHotk
 		return true
 	end
 
-	if item.itemid == 676 and table.contains({ 3123, 9020 }, target.itemid) then
+	if item.itemid == 676 and target.itemid == 9020 then
 		target:transform(9019)
 		item:remove(1)
 		toPosition:sendMagicEffect(CONST_ME_MAGIC_RED)

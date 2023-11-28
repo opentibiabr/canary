@@ -4,7 +4,6 @@ local config = {
 		position = Position(33805, 31504, 14),
 	},
 	requiredLevel = 250,
-
 	timeToDefeat = 25 * 60,
 	playerPositions = {
 		{ pos = Position(33772, 31504, 14), teleport = Position(33808, 31513, 14), effect = CONST_ME_TELEPORT },

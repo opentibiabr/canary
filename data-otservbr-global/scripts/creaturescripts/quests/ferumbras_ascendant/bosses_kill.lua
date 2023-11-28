@@ -49,7 +49,7 @@ function ascendantBossesKill.onDeath(creature)
 
 	onDeathForDamagingPlayers(creature, function(creature, player)
 		if creature:getName():lower() == "ferumbras mortal shell" then
-			player:setBossCooldown(creature:getName(), os.time() + 60 * 60 * 14 * 24)
+			player:setBossCooldown(creature:getName(), os.time() + AscendingFerumbrasConfig.days * 24 * 3600)
 		elseif creature:getName():lower() == "the lord of the lice" then
 			player:setStorageValue(Storage.FerumbrasAscension.TheLordOfTheLiceAccess, 1)
 		end

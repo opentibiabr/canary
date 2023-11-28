@@ -588,7 +588,7 @@ function Player:calculateLootFactor(monster)
 
 	local participants = { self }
 	local factor = 1
-	if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) then
+	if configManager.getBoolean(configKeys.PARTY_SHARE_LOOT_BOOSTS) then
 		local party = self:getParty()
 		if party and party:isSharedExperienceEnabled() then
 			participants = party:getMembers()

@@ -124,7 +124,7 @@ namespace std {
 	template <>
 	struct hash<Position> {
 		std::size_t operator()(const Position &p) const {
-			return static_cast<std::size_t>(p.x) | (static_cast<std::size_t>(p.y) << 16) | (static_cast<std::size_t>(p.z) << 32);
+			return safe_convert<std::size_t>(p.x, __FUNCTION__) | (safe_convert<std::size_t>(p.y, __FUNCTION__) << 16) | (safe_convert<std::size_t>(p.z, __FUNCTION__) << 32);
 		}
 	};
 }

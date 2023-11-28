@@ -507,7 +507,7 @@ uint32_t Party::getHighestLevel() {
 }
 
 uint32_t Party::getMinLevel() {
-	return static_cast<uint32_t>(std::ceil((static_cast<float>(getHighestLevel()) * 2) / 3));
+	return safe_convert<uint32_t>(std::ceil((safe_convert<float>(getHighestLevel(), __FUNCTION__) * 2) / 3), __FUNCTION__);
 }
 
 uint32_t Party::getLowestLevel() {
@@ -525,7 +525,7 @@ uint32_t Party::getLowestLevel() {
 }
 
 uint32_t Party::getMaxLevel() {
-	return static_cast<uint32_t>(std::floor((static_cast<float>(getLowestLevel()) * 3) / 2));
+	return safe_convert<uint32_t>(std::floor((safe_convert<float>(getLowestLevel(), __FUNCTION__) * 3) / 2), __FUNCTION__);
 }
 
 bool Party::isPlayerActive(std::shared_ptr<Player> player) {
@@ -590,16 +590,16 @@ void Party::showPlayerStatus(std::shared_ptr<Player> player, std::shared_ptr<Pla
 	if (showStatus) {
 		for (const auto &summon : member->getSummons()) {
 			player->sendPartyCreatureShowStatus(summon, showStatus);
-			player->sendPartyCreatureHealth(summon, std::ceil((static_cast<double>(summon->getHealth()) / std::max<int32_t>(summon->getMaxHealth(), 1)) * 100));
+			player->sendPartyCreatureHealth(summon, std::ceil((safe_convert<double>(summon->getHealth(), __FUNCTION__) / std::max<int32_t>(summon->getMaxHealth(), 1)) * 100));
 		}
 		for (const auto &summon : player->getSummons()) {
 			member->sendPartyCreatureShowStatus(summon, showStatus);
-			member->sendPartyCreatureHealth(summon, std::ceil((static_cast<double>(summon->getHealth()) / std::max<int32_t>(summon->getMaxHealth(), 1)) * 100));
+			member->sendPartyCreatureHealth(summon, std::ceil((safe_convert<double>(summon->getHealth(), __FUNCTION__) / std::max<int32_t>(summon->getMaxHealth(), 1)) * 100));
 		}
-		player->sendPartyCreatureHealth(member, std::ceil((static_cast<double>(member->getHealth()) / std::max<int32_t>(member->getMaxHealth(), 1)) * 100));
-		member->sendPartyCreatureHealth(player, std::ceil((static_cast<double>(player->getHealth()) / std::max<int32_t>(player->getMaxHealth(), 1)) * 100));
-		player->sendPartyPlayerMana(member, std::ceil((static_cast<double>(member->getMana()) / std::max<int32_t>(member->getMaxMana(), 1)) * 100));
-		member->sendPartyPlayerMana(player, std::ceil((static_cast<double>(player->getMana()) / std::max<int32_t>(player->getMaxMana(), 1)) * 100));
+		player->sendPartyCreatureHealth(member, std::ceil((safe_convert<double>(member->getHealth(), __FUNCTION__) / std::max<int32_t>(member->getMaxHealth(), 1)) * 100));
+		member->sendPartyCreatureHealth(player, std::ceil((safe_convert<double>(player->getHealth(), __FUNCTION__) / std::max<int32_t>(player->getMaxHealth(), 1)) * 100));
+		player->sendPartyPlayerMana(member, std::ceil((safe_convert<double>(member->getMana(), __FUNCTION__) / std::max<int32_t>(member->getMaxMana(), 1)) * 100));
+		member->sendPartyPlayerMana(player, std::ceil((safe_convert<double>(player->getMana(), __FUNCTION__) / std::max<int32_t>(player->getMaxMana(), 1)) * 100));
 	} else {
 		for (const auto &summon : player->getSummons()) {
 			member->sendPartyCreatureShowStatus(summon, showStatus);

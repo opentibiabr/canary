@@ -134,23 +134,23 @@ void Items::loadFromProtobuf() {
 		}
 
 		if (object.flags().has_clothes()) {
-			iType.slotPosition |= static_cast<SlotPositionBits>(1 << (object.flags().clothes().slot() - 1));
+			iType.slotPosition |= safe_convert<SlotPositionBits>(1 << (object.flags().clothes().slot() - 1), __FUNCTION__);
 		}
 
 		if (object.flags().has_market()) {
-			iType.type = static_cast<ItemTypes_t>(object.flags().market().category());
+			iType.type = safe_convert<ItemTypes_t>(object.flags().market().category(), __FUNCTION__);
 		}
 
 		iType.name = object.name();
 		iType.description = object.description();
 
-		iType.upgradeClassification = object.flags().has_upgradeclassification() ? static_cast<uint8_t>(object.flags().upgradeclassification().upgrade_classification()) : 0;
-		iType.lightLevel = object.flags().has_light() ? static_cast<uint8_t>(object.flags().light().brightness()) : 0;
-		iType.lightColor = object.flags().has_light() ? static_cast<uint8_t>(object.flags().light().color()) : 0;
+		iType.upgradeClassification = object.flags().has_upgradeclassification() ? safe_convert<uint8_t>(object.flags().upgradeclassification().upgrade_classification(), __FUNCTION__) : 0;
+		iType.lightLevel = object.flags().has_light() ? safe_convert<uint8_t>(object.flags().light().brightness(), __FUNCTION__) : 0;
+		iType.lightColor = object.flags().has_light() ? safe_convert<uint8_t>(object.flags().light().color(), __FUNCTION__) : 0;
 
-		iType.id = static_cast<uint16_t>(object.id());
-		iType.speed = object.flags().has_bank() ? static_cast<uint16_t>(object.flags().bank().waypoints()) : 0;
-		iType.wareId = object.flags().has_market() ? static_cast<uint16_t>(object.flags().market().trade_as_object_id()) : 0;
+		iType.id = safe_convert<uint16_t>(object.id(), __FUNCTION__);
+		iType.speed = object.flags().has_bank() ? safe_convert<uint16_t>(object.flags().bank().waypoints(), __FUNCTION__) : 0;
+		iType.wareId = object.flags().has_market() ? safe_convert<uint16_t>(object.flags().market().trade_as_object_id(), __FUNCTION__) : 0;
 
 		iType.isCorpse = object.flags().corpse() || object.flags().player_corpse();
 		iType.forceUse = object.flags().forceuse();

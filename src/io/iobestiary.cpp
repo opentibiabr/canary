@@ -174,7 +174,7 @@ std::list<charmRune_t> IOBestiary::getCharmUsedRuneBitAll(std::shared_ptr<Player
 	std::list<charmRune_t> rtn;
 	while (input != 0) {
 		if ((input & 1) == 1) {
-			charmRune_t tmpcharm = static_cast<charmRune_t>(i);
+			charmRune_t tmpcharm = safe_convert<charmRune_t>(i, __FUNCTION__);
 			rtn.push_front(tmpcharm);
 		}
 		input = input >> 1;
@@ -354,28 +354,28 @@ std::map<uint8_t, int16_t> IOBestiary::getMonsterElements(const std::shared_ptr<
 	for (const auto &elementEntry : mtype->info.elementMap) {
 		switch (elementEntry.first) {
 			case COMBAT_PHYSICALDAMAGE:
-				defaultMap[0] -= static_cast<int16_t>(elementEntry.second);
+				defaultMap[0] -= safe_convert<int16_t>(elementEntry.second, __FUNCTION__);
 				break;
 			case COMBAT_FIREDAMAGE:
-				defaultMap[1] -= static_cast<int16_t>(elementEntry.second);
+				defaultMap[1] -= safe_convert<int16_t>(elementEntry.second, __FUNCTION__);
 				break;
 			case COMBAT_EARTHDAMAGE:
-				defaultMap[2] -= static_cast<int16_t>(elementEntry.second);
+				defaultMap[2] -= safe_convert<int16_t>(elementEntry.second, __FUNCTION__);
 				break;
 			case COMBAT_ENERGYDAMAGE:
-				defaultMap[3] -= static_cast<int16_t>(elementEntry.second);
+				defaultMap[3] -= safe_convert<int16_t>(elementEntry.second, __FUNCTION__);
 				break;
 			case COMBAT_ICEDAMAGE:
-				defaultMap[4] -= static_cast<int16_t>(elementEntry.second);
+				defaultMap[4] -= safe_convert<int16_t>(elementEntry.second, __FUNCTION__);
 				break;
 			case COMBAT_HOLYDAMAGE:
-				defaultMap[5] -= static_cast<int16_t>(elementEntry.second);
+				defaultMap[5] -= safe_convert<int16_t>(elementEntry.second, __FUNCTION__);
 				break;
 			case COMBAT_DEATHDAMAGE:
-				defaultMap[6] -= static_cast<int16_t>(elementEntry.second);
+				defaultMap[6] -= safe_convert<int16_t>(elementEntry.second, __FUNCTION__);
 				break;
 			case COMBAT_HEALING:
-				defaultMap[7] -= static_cast<int16_t>(elementEntry.second);
+				defaultMap[7] -= safe_convert<int16_t>(elementEntry.second, __FUNCTION__);
 				break;
 			default:
 				break;

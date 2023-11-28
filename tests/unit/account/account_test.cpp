@@ -256,8 +256,8 @@ suite<"account"> accountTest = [] {
 		auto [type, coins, coinType, description] = accountRepository.coinsTransactions_[1][0];
 		expect(
 			eq(coins, 100) and
-			eq(static_cast<uint8_t>(coinType), static_cast<uint8_t>(CoinType::COIN)) and
-			eq(static_cast<uint8_t>(type), static_cast<uint8_t>(CoinTransactionType::ADD)) and
+			eq(safe_convert<uint8_t>(coinType), safe_convert<uint8_t>(CoinType::COIN)) and
+			eq(safe_convert<uint8_t>(type), safe_convert<uint8_t>(CoinTransactionType::ADD)) and
 			eq(description, std::string { "ADD Coins" })
 		);
 	};
@@ -352,8 +352,8 @@ suite<"account"> accountTest = [] {
 		auto [type, coins, coinType, description] = accountRepository.coinsTransactions_[1][0];
 		expect(
 			eq(coins, 100) and
-			eq(static_cast<uint8_t>(coinType), static_cast<uint8_t>(CoinType::COIN)) and
-			eq(static_cast<uint8_t>(type), static_cast<uint8_t>(CoinTransactionType::REMOVE)) and
+			eq(safe_convert<uint8_t>(coinType), safe_convert<uint8_t>(CoinType::COIN)) and
+			eq(safe_convert<uint8_t>(type), safe_convert<uint8_t>(CoinTransactionType::REMOVE)) and
 			eq(description, std::string { "REMOVE Coins" })
 		);
 	};
@@ -387,8 +387,8 @@ suite<"account"> accountTest = [] {
 		auto [type, coins, coinType, description] = accountRepository.coinsTransactions_[1][0];
 		expect(
 			eq(coins, 100) and
-			eq(static_cast<uint8_t>(coinType), static_cast<uint8_t>(CoinType::COIN)) and
-			eq(static_cast<uint8_t>(type), static_cast<uint8_t>(CoinTransactionType::REMOVE)) and
+			eq(safe_convert<uint8_t>(coinType), safe_convert<uint8_t>(CoinType::COIN)) and
+			eq(safe_convert<uint8_t>(type), safe_convert<uint8_t>(CoinTransactionType::REMOVE)) and
 			eq(description, std::string { "REMOVE Coins" })
 		);
 

@@ -871,7 +871,7 @@ void ItemParse::parseStackSize(const std::string &tmpStrValue, pugi::xml_attribu
 			stackSize = 255;
 			g_logger().warn("[{}] Invalid stack size value: {}. Stack size must be between 1 and 255.", __FUNCTION__, stackSize);
 		}
-		itemType.stackSize = static_cast<uint8_t>(stackSize);
+		itemType.stackSize = safe_convert<uint8_t>(stackSize, __FUNCTION__);
 	}
 }
 

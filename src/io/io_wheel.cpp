@@ -125,7 +125,7 @@ bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 	for (const auto &data : getWheelBonusData().spells.druid) {
 		for (size_t i = 1; i < 3; ++i) {
 			const auto grade = data.grade[i];
-			InternalPlayerWheel::registerWheelSpellTable(grade, data.name, static_cast<WheelSpellGrade_t>(i));
+			InternalPlayerWheel::registerWheelSpellTable(grade, data.name, safe_convert<WheelSpellGrade_t>(i, __FUNCTION__));
 		}
 	}
 
@@ -133,7 +133,7 @@ bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 	for (const auto &data : getWheelBonusData().spells.knight) {
 		for (size_t i = 1; i < 3; ++i) {
 			const auto &grade = data.grade[i];
-			InternalPlayerWheel::registerWheelSpellTable(grade, data.name, static_cast<WheelSpellGrade_t>(i));
+			InternalPlayerWheel::registerWheelSpellTable(grade, data.name, safe_convert<WheelSpellGrade_t>(i, __FUNCTION__));
 		}
 	}
 
@@ -141,7 +141,7 @@ bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 	for (const auto &data : getWheelBonusData().spells.paladin) {
 		for (size_t i = 1; i < 3; ++i) {
 			const auto &grade = data.grade[i];
-			InternalPlayerWheel::registerWheelSpellTable(grade, data.name, static_cast<WheelSpellGrade_t>(i));
+			InternalPlayerWheel::registerWheelSpellTable(grade, data.name, safe_convert<WheelSpellGrade_t>(i, __FUNCTION__));
 		}
 	}
 
@@ -149,7 +149,7 @@ bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 	for (const auto &data : getWheelBonusData().spells.sorcerer) {
 		for (size_t i = 1; i < 3; ++i) {
 			const auto &grade = data.grade[i];
-			InternalPlayerWheel::registerWheelSpellTable(grade, data.name, static_cast<WheelSpellGrade_t>(i));
+			InternalPlayerWheel::registerWheelSpellTable(grade, data.name, safe_convert<WheelSpellGrade_t>(i, __FUNCTION__));
 		}
 	}
 
@@ -178,7 +178,7 @@ const VocationBonusMap &IOWheel::getWheelMapFunctions() const {
 
 std::pair<int, int> IOWheel::getRevelationStatByStage(WheelStageEnum_t stageType) const {
 	// Let's remove one, because the std::array starts with 0 and the stages with 1
-	auto array = m_wheelBonusData.revelation.stats[static_cast<uint8_t>(stageType) - 1];
+	auto array = m_wheelBonusData.revelation.stats[safe_convert<uint8_t>(stageType, __FUNCTION__) - 1];
 	return std::make_pair(array.damage, array.healing);
 }
 

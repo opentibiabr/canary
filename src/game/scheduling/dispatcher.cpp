@@ -62,7 +62,7 @@ void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t g
 	for (const auto &task : tasks) {
 		threadPool.addLoad([groupId, &task, &isTasksCompleted, &totalTaskSize] {
 			dispacherContext.type = DispatcherType::AsyncEvent;
-			dispacherContext.group = static_cast<TaskGroup>(groupId);
+			dispacherContext.group = safe_convert<TaskGroup>(groupId, __FUNCTION__);
 			dispacherContext.taskName = task.getContext();
 
 			task.execute();
@@ -83,13 +83,13 @@ void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t g
 }
 
 void Dispatcher::executeEvents(const TaskGroup startGroup) {
-	for (uint_fast8_t groupId = static_cast<uint8_t>(startGroup); groupId < static_cast<uint8_t>(TaskGroup::Last); ++groupId) {
+	for (uint_fast8_t groupId = safe_convert<uint8_t>(startGroup, __FUNCTION__); groupId < safe_convert<uint8_t>(TaskGroup::Last, __FUNCTION__); ++groupId) {
 		auto &tasks = m_tasks[groupId];
 		if (tasks.empty()) {
 			return;
 		}
 
-		if (groupId == static_cast<uint8_t>(TaskGroup::Serial)) {
+		if (groupId == safe_convert<uint8_t>(TaskGroup::Serial, __FUNCTION__)) {
 			executeSerialEvents(tasks);
 			mergeAsyncEvents();
 		} else {
@@ -184,7 +184,7 @@ std::chrono::milliseconds Dispatcher::timeUntilNextScheduledTask() const {
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	thread->tasks[static_cast<uint8_t>(TaskGroup::Serial)].emplace_back(expiresAfterMs, std::move(f), context);
+	thread->tasks[safe_convert<uint8_t>(TaskGroup::Serial, __FUNCTION__)].emplace_back(expiresAfterMs, std::move(f), context);
 	notify();
 }
 
@@ -203,7 +203,7 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);
+	thread->tasks[safe_convert<uint8_t>(group, __FUNCTION__)].emplace_back(0, std::move(f), dispacherContext.taskName);
 	notify();
 }
 

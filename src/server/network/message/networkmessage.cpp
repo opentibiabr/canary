@@ -62,7 +62,7 @@ void NetworkMessage::addString(const std::string &value, const std::string &func
 
 void NetworkMessage::addDouble(double value, uint8_t precision /* = 2*/) {
 	addByte(precision);
-	add<uint32_t>((value * std::pow(static_cast<float>(10), precision)) + std::numeric_limits<int32_t>::max());
+	add<uint32_t>((value * std::pow(safe_convert<float>(10, __FUNCTION__), precision)) + std::numeric_limits<int32_t>::max());
 }
 
 void NetworkMessage::addBytes(const char* bytes, size_t size) {

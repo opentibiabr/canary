@@ -70,7 +70,7 @@ bool SpawnsNpc::loadFromXml(const std::string &fileNpcName) {
 
 				pugi::xml_attribute directionAttribute = childNode.attribute("direction");
 				if (directionAttribute) {
-					dir = static_cast<Direction>(pugi::cast<uint16_t>(directionAttribute.value()));
+					dir = safe_convert<Direction>(pugi::cast<uint16_t>(directionAttribute.value()), __FUNCTION__);
 				} else {
 					dir = DIRECTION_NORTH;
 				}
@@ -78,13 +78,13 @@ bool SpawnsNpc::loadFromXml(const std::string &fileNpcName) {
 				auto xOffset = pugi::cast<int16_t>(childNode.attribute("x").value());
 				auto yOffset = pugi::cast<int16_t>(childNode.attribute("y").value());
 				Position pos(
-					static_cast<uint16_t>(centerPos.x + xOffset),
-					static_cast<uint16_t>(centerPos.y + yOffset),
+					safe_convert<uint16_t>(centerPos.x + xOffset, __FUNCTION__),
+					safe_convert<uint16_t>(centerPos.y + yOffset, __FUNCTION__),
 					centerPos.z
 				);
 				int64_t interval = pugi::cast<int64_t>(childNode.attribute("spawntime").value()) * 1000;
 				if (interval >= MINSPAWN_INTERVAL && interval <= MAXSPAWN_INTERVAL) {
-					spawnNpc->addNpc(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
+					spawnNpc->addNpc(nameAttribute.as_string(), pos, dir, safe_convert<uint32_t>(interval, __FUNCTION__));
 				} else {
 					if (interval <= MINSPAWN_INTERVAL) {
 						g_logger().warn("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be less than {} seconds", nameAttribute.as_string(), pos.toString(), MINSPAWN_INTERVAL / 1000);

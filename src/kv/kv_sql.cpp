@@ -33,7 +33,7 @@ std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 	ValueWrapper valueWrapper;
 	auto timestamp = result->getNumber<uint64_t>("timestamp");
 	Canary::protobuf::kv::ValueWrapper protoValue;
-	if (protoValue.ParseFromArray(data, static_cast<int>(size))) {
+	if (protoValue.ParseFromArray(data, safe_convert<int>(size, __FUNCTION__))) {
 		valueWrapper = ProtoSerializable<ValueWrapper>::fromProto(protoValue, timestamp);
 		return valueWrapper;
 	}

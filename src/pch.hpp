@@ -160,3 +160,5 @@
 #include <eventpp/eventdispatcher.h>
 
 #include "lua/global/shared_object.hpp"
+
+#include "utils/safe_convert.hpp"

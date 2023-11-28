@@ -319,7 +319,7 @@ bool CreatureEvent::executeAdvance(std::shared_ptr<Player> player, skills_t skil
 	getScriptInterface()->pushFunction(getScriptId());
 	LuaScriptInterface::pushUserdata(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
-	lua_pushnumber(L, static_cast<uint32_t>(skill));
+	lua_pushnumber(L, safe_convert<uint32_t>(skill, __FUNCTION__));
 	lua_pushnumber(L, oldLevel);
 	lua_pushnumber(L, newLevel);
 

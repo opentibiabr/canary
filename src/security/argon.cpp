@@ -77,7 +77,7 @@ std::vector<uint8_t> Argon2::base64_decode(const std::string &input) const {
 		} else if (pos > std::numeric_limits<uint32_t>::max()) {
 			g_logger().warn("Position too large for uint32_t");
 		} else {
-			val = (val << 6) + static_cast<uint32_t>(pos);
+			val = (val << 6) + safe_convert<uint32_t>(pos, __FUNCTION__);
 		}
 
 		if (++i % 4 == 0) {

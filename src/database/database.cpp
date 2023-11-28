@@ -173,7 +173,7 @@ retry:
 
 std::string Database::escapeString(const std::string &s) const {
 	std::string::size_type len = s.length();
-	auto length = static_cast<uint32_t>(len);
+	auto length = safe_convert<uint32_t>(len, __FUNCTION__);
 	std::string escaped = escapeBlob(s.c_str(), length);
 	if (escaped.empty()) {
 		g_logger().warn("Error escaping string");
@@ -245,7 +245,7 @@ const char* DBResult::getStream(const std::string &s, unsigned long &size) const
 }
 
 uint8_t DBResult::getU8FromString(const std::string &string, const std::string &function) const {
-	auto result = static_cast<uint8_t>(std::atoi(string.c_str()));
+	auto result = safe_convert<uint8_t>(std::atoi(string.c_str()), __FUNCTION__);
 	if (result > std::numeric_limits<uint8_t>::max()) {
 		g_logger().error("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);
 		return 0;
@@ -255,7 +255,7 @@ uint8_t DBResult::getU8FromString(const std::string &string, const std::string &
 }
 
 int8_t DBResult::getInt8FromString(const std::string &string, const std::string &function) const {
-	auto result = static_cast<int8_t>(std::atoi(string.c_str()));
+	auto result = safe_convert<int8_t>(std::atoi(string.c_str()), __FUNCTION__);
 	if (result > std::numeric_limits<int8_t>::max()) {
 		g_logger().error("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);
 		return 0;
@@ -265,7 +265,7 @@ int8_t DBResult::getInt8FromString(const std::string &string, const std::string 
 }
 
 size_t DBResult::countResults() const {
-	return static_cast<size_t>(mysql_num_rows(handle));
+	return safe_convert<size_t>(mysql_num_rows(handle), __FUNCTION__);
 }
 
 bool DBResult::hasNext() const {

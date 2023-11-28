@@ -57,7 +57,7 @@ public:
 
 	double getNumber() const {
 		if (std::holds_alternative<IntType>(data_)) {
-			return static_cast<double>(std::get<IntType>(data_));
+			return safe_convert<double>(std::get<IntType>(data_), __FUNCTION__);
 		} else if (std::holds_alternative<DoubleType>(data_)) {
 			return std::get<DoubleType>(data_);
 		}

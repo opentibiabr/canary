@@ -116,7 +116,7 @@ public:
 	}
 
 	uint32_t getAnalyzerTimeNow() const {
-		return static_cast<uint32_t>(time(nullptr) - trackerTime);
+		return safe_convert<uint32_t>(time(nullptr) - trackerTime, __FUNCTION__);
 	}
 
 public:

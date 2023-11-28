@@ -158,7 +158,7 @@ private:
 
 	inline void checkPendingTasks() {
 		hasPendingTasks = false;
-		for (uint_fast8_t i = 0; i < static_cast<uint8_t>(TaskGroup::Last); ++i) {
+		for (uint_fast8_t i = 0; i < safe_convert<uint8_t>(TaskGroup::Last, __FUNCTION__); ++i) {
 			if (!m_tasks[i].empty()) {
 				hasPendingTasks = true;
 				break;

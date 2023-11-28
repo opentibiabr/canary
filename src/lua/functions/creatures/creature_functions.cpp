@@ -51,7 +51,7 @@ int CreatureFunctions::luaCreatureGetEvents(lua_State* L) {
 
 	CreatureEventType_t eventType = getNumber<CreatureEventType_t>(L, 2);
 	const auto eventList = creature->getCreatureEvents(eventType);
-	lua_createtable(L, static_cast<int>(eventList.size()), 0);
+	lua_createtable(L, safe_convert<int>(eventList.size(), __FUNCTION__), 0);
 
 	int index = 0;
 	for (const auto eventPtr : eventList) {
@@ -1000,7 +1000,7 @@ int CreatureFunctions::luaCreatureGetZones(lua_State* L) {
 	}
 
 	const auto zones = creature->getZones();
-	lua_createtable(L, static_cast<int>(zones.size()), 0);
+	lua_createtable(L, safe_convert<int>(zones.size(), __FUNCTION__), 0);
 	int index = 0;
 	for (auto zone : zones) {
 		index++;
@@ -1046,13 +1046,13 @@ int CreatureFunctions::luaCreatureGetIcons(lua_State* L) {
 	}
 
 	auto icons = creature->getIcons();
-	lua_createtable(L, static_cast<int>(icons.size()), 0);
+	lua_createtable(L, safe_convert<int>(icons.size(), __FUNCTION__), 0);
 	for (auto &icon : icons) {
 		lua_createtable(L, 0, 3);
-		setField(L, "category", static_cast<uint8_t>(icon.category));
+		setField(L, "category", safe_convert<uint8_t>(icon.category, __FUNCTION__));
 		setField(L, "icon", icon.serialize());
 		setField(L, "count", icon.count);
-		lua_rawseti(L, -2, static_cast<int>(icon.category));
+		lua_rawseti(L, -2, safe_convert<int>(icon.category, __FUNCTION__));
 	}
 	return 1;
 }
@@ -1069,7 +1069,7 @@ int CreatureFunctions::luaCreatureGetIcon(lua_State* L) {
 	auto icon = creature->getIcon(key);
 	if (icon.isSet()) {
 		lua_createtable(L, 0, 3);
-		setField(L, "category", static_cast<uint8_t>(icon.category));
+		setField(L, "category", safe_convert<uint8_t>(icon.category, __FUNCTION__));
 		setField(L, "icon", icon.serialize());
 		setField(L, "count", icon.count);
 	} else {

@@ -96,7 +96,7 @@ std::shared_ptr<Thing> ScriptEnvironment::getThingByUID(uint32_t uid) {
 	}
 
 	if (uid <= std::numeric_limits<uint16_t>::max()) {
-		std::shared_ptr<Item> item = g_game().getUniqueItem(static_cast<uint16_t>(uid));
+		std::shared_ptr<Item> item = g_game().getUniqueItem(safe_convert<uint16_t>(uid, __FUNCTION__));
 		if (item && !item->isRemoved()) {
 			return item;
 		}
@@ -131,7 +131,7 @@ std::shared_ptr<Container> ScriptEnvironment::getContainerByUID(uint32_t uid) {
 
 void ScriptEnvironment::removeItemByUID(uint32_t uid) {
 	if (uid <= std::numeric_limits<uint16_t>::max()) {
-		g_game().removeUniqueItem(static_cast<uint16_t>(uid));
+		g_game().removeUniqueItem(safe_convert<uint16_t>(uid, __FUNCTION__));
 		return;
 	}
 

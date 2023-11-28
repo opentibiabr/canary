@@ -295,11 +295,11 @@ bool CombatSpell::castSpell(std::shared_ptr<Creature> creature) {
 	}
 
 	if (soundCastEffect != SoundEffect_t::SILENCE) {
-		combat->setParam(COMBAT_PARAM_CASTSOUND, static_cast<uint32_t>(soundCastEffect));
+		combat->setParam(COMBAT_PARAM_CASTSOUND, safe_convert<uint32_t>(soundCastEffect, __FUNCTION__));
 	}
 
 	if (soundImpactEffect != SoundEffect_t::SILENCE) {
-		combat->setParam(COMBAT_PARAM_IMPACTSOUND, static_cast<uint32_t>(soundImpactEffect));
+		combat->setParam(COMBAT_PARAM_IMPACTSOUND, safe_convert<uint32_t>(soundImpactEffect, __FUNCTION__));
 	}
 
 	combat->doCombat(creature, pos);
@@ -333,11 +333,11 @@ bool CombatSpell::castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<
 	}
 
 	if (soundCastEffect != SoundEffect_t::SILENCE) {
-		combat->setParam(COMBAT_PARAM_CASTSOUND, static_cast<uint32_t>(soundCastEffect));
+		combat->setParam(COMBAT_PARAM_CASTSOUND, safe_convert<uint32_t>(soundCastEffect, __FUNCTION__));
 	}
 
 	if (soundImpactEffect != SoundEffect_t::SILENCE) {
-		combat->setParam(COMBAT_PARAM_IMPACTSOUND, static_cast<uint32_t>(soundImpactEffect));
+		combat->setParam(COMBAT_PARAM_IMPACTSOUND, safe_convert<uint32_t>(soundImpactEffect, __FUNCTION__));
 	}
 
 	if (combat->hasArea()) {
@@ -597,10 +597,10 @@ int32_t Spell::getWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t
 	int32_t value = 0;
 	try {
 		if (grade >= WheelSpellGrade_t::REGULAR) {
-			value += wheelOfDestinyRegularBoost.at(static_cast<uint8_t>(boost));
+			value += wheelOfDestinyRegularBoost.at(safe_convert<uint8_t>(boost, __FUNCTION__));
 		}
 		if (grade >= WheelSpellGrade_t::UPGRADED) {
-			value += wheelOfDestinyUpgradedBoost.at(static_cast<uint8_t>(boost));
+			value += wheelOfDestinyUpgradedBoost.at(safe_convert<uint8_t>(boost, __FUNCTION__));
 		}
 	} catch (const std::out_of_range &e) {
 		g_logger().error("[{}] invalid grade value, error code: {}", __FUNCTION__, e.what());
@@ -616,9 +616,9 @@ void Spell::setWheelOfDestinyUpgraded(bool value) {
 void Spell::setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t grade, int32_t value) {
 	try {
 		if (grade == WheelSpellGrade_t::REGULAR) {
-			wheelOfDestinyRegularBoost.at(static_cast<uint8_t>(boost)) = value;
+			wheelOfDestinyRegularBoost.at(safe_convert<uint8_t>(boost, __FUNCTION__)) = value;
 		} else if (grade == WheelSpellGrade_t::UPGRADED) {
-			wheelOfDestinyUpgradedBoost.at(static_cast<uint8_t>(boost)) = value;
+			wheelOfDestinyUpgradedBoost.at(safe_convert<uint8_t>(boost, __FUNCTION__)) = value;
 		}
 	} catch (const std::out_of_range &e) {
 		g_logger().error("[{}] invalid grade value, error code: {}", __FUNCTION__, e.what());
@@ -627,15 +627,14 @@ void Spell::setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t gr
 
 void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 	WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
-	bool isUpgraded = getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0;
+	bool isUpgraded = getWheelOfDestinyUpgraded() && safe_convert<uint8_t>(spellGrade, __FUNCTION__) > 0;
 	// Safety check to prevent division by zero
 	auto rateCooldown = g_configManager().getFloat(RATE_SPELL_COOLDOWN, __FUNCTION__);
 	if (std::abs(rateCooldown) < std::numeric_limits<float>::epsilon()) {
 		rateCooldown = 0.1; // Safe minimum value
 	}
-
 	if (cooldown > 0) {
-		int32_t spellCooldown = cooldown;
+		int32_t spellCooldown = safe_convert<int32_t>(cooldown, __FUNCTION__);
 		if (isUpgraded) {
 			spellCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, spellGrade);
 		}
@@ -646,7 +645,7 @@ void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 	}
 
 	if (groupCooldown > 0) {
-		int32_t spellGroupCooldown = groupCooldown;
+		int32_t spellGroupCooldown = safe_convert<int32_t>(groupCooldown, __FUNCTION__);
 		if (isUpgraded) {
 			spellGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::GROUP_COOLDOWN, spellGrade);
 		}
@@ -657,7 +656,7 @@ void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 	}
 
 	if (secondaryGroupCooldown > 0) {
-		int32_t spellSecondaryGroupCooldown = secondaryGroupCooldown;
+		int32_t spellSecondaryGroupCooldown = safe_convert<int32_t>(secondaryGroupCooldown, __FUNCTION__);
 		if (isUpgraded) {
 			spellSecondaryGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, spellGrade);
 		}
@@ -691,12 +690,12 @@ void Spell::postCastSpell(std::shared_ptr<Player> player, bool finishedCast /*= 
 void Spell::postCastSpell(std::shared_ptr<Player> player, uint32_t manaCost, uint32_t soulCost) {
 	if (manaCost > 0) {
 		player->addManaSpent(manaCost);
-		player->changeMana(-static_cast<int32_t>(manaCost));
+		player->changeMana(-safe_convert<int32_t>(manaCost, __FUNCTION__));
 	}
 
 	if (!player->hasFlag(PlayerFlags_t::HasInfiniteSoul)) {
 		if (soulCost > 0) {
-			player->changeSoul(-static_cast<int32_t>(soulCost));
+			player->changeSoul(-safe_convert<int32_t>(soulCost, __FUNCTION__));
 		}
 	}
 }
@@ -704,7 +703,7 @@ void Spell::postCastSpell(std::shared_ptr<Player> player, uint32_t manaCost, uin
 uint32_t Spell::getManaCost(std::shared_ptr<Player> player) const {
 	if (mana != 0) {
 		WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
-		if (getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0) {
+		if (getWheelOfDestinyUpgraded() && safe_convert<uint8_t>(spellGrade, __FUNCTION__) > 0) {
 			if (getWheelOfDestinyBoost(WheelSpellBoost_t::MANA, spellGrade) >= mana) {
 				return 0;
 			} else {
@@ -718,7 +717,7 @@ uint32_t Spell::getManaCost(std::shared_ptr<Player> player) const {
 		uint32_t maxMana = player->getMaxMana();
 		uint32_t manaCost = (maxMana * manaPercent) / 100;
 		WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
-		if (getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0) {
+		if (getWheelOfDestinyUpgraded() && safe_convert<uint8_t>(spellGrade, __FUNCTION__) > 0) {
 			if (getWheelOfDestinyBoost(WheelSpellBoost_t::MANA, spellGrade) >= manaCost) {
 				return 0;
 			} else {

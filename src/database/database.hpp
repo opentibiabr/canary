@@ -42,7 +42,7 @@ public:
 	std::string escapeBlob(const char* s, uint32_t length) const;
 
 	uint64_t getLastInsertId() const {
-		return static_cast<uint64_t>(mysql_insert_id(handle));
+		return safe_convert<uint64_t>(mysql_insert_id(handle), __FUNCTION__);
 	}
 
 	static const char* getClientVersion() {
@@ -97,33 +97,33 @@ public:
 				// Check if the type T is int8_t or int16_t
 				if constexpr (std::is_same_v<T, int8_t> || std::is_same_v<T, int16_t>) {
 					// Use std::stoi to convert string to int8_t
-					data = static_cast<T>(std::stoi(row[it->second]));
+					data = safe_convert<T>(std::stoi(row[it->second]), __FUNCTION__);
 				}
 				// Check if the type T is int32_t
 				else if constexpr (std::is_same_v<T, int32_t>) {
 					// Use std::stol to convert string to int32_t
-					data = static_cast<T>(std::stol(row[it->second]));
+					data = safe_convert<T>(std::stol(row[it->second]), __FUNCTION__);
 				}
 				// Check if the type T is int64_t
 				else if constexpr (std::is_same_v<T, int64_t>) {
 					// Use std::stoll to convert string to int64_t
-					data = static_cast<T>(std::stoll(row[it->second]));
+					data = safe_convert<T>(std::stoll(row[it->second]), __FUNCTION__);
 				} else {
 					// Throws exception indicating that type T is invalid
 					g_logger().error("Invalid signed type T");
 				}
 			} else if (std::is_same<T, bool>::value) {
-				data = static_cast<T>(std::stoi(row[it->second]));
+				data = safe_convert<T>(std::stoi(row[it->second]), __FUNCTION__);
 			} else {
 				// Check if the type T is uint8_t or uint16_t or uint32_t
 				if constexpr (std::is_same_v<T, uint8_t> || std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>) {
 					// Use std::stoul to convert string to uint8_t
-					data = static_cast<T>(std::stoul(row[it->second]));
+					data = safe_convert<T>(std::stoul(row[it->second]), __FUNCTION__);
 				}
 				// Check if the type T is uint64_t
 				else if constexpr (std::is_same_v<T, uint64_t>) {
 					// Use std::stoull to convert string to uint64_t
-					data = static_cast<T>(std::stoull(row[it->second]));
+					data = safe_convert<T>(std::stoull(row[it->second]), __FUNCTION__);
 				} else {
 					// Send log indicating that type T is invalid
 					g_logger().error("Column '{}' has an invalid unsigned T is invalid", s);

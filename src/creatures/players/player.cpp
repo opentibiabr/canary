@@ -216,12 +216,12 @@ std::shared_ptr<Item> Player::getInventoryItem(Slots_t slot) const {
 }
 
 bool Player::isSuppress(ConditionType_t conditionType) const {
-	return m_conditionSuppressions[static_cast<size_t>(conditionType)];
+	return m_conditionSuppressions[safe_convert<size_t>(conditionType, __FUNCTION__)];
 }
 
 void Player::addConditionSuppressions(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addConditions) {
 	for (const auto &conditionType : addConditions) {
-		m_conditionSuppressions[static_cast<size_t>(conditionType)] = true;
+		m_conditionSuppressions[safe_convert<size_t>(conditionType, __FUNCTION__)] = true;
 	}
 }
 
@@ -346,7 +346,7 @@ int32_t Player::getArmor() const {
 			armor += inventoryItem->getArmor();
 		}
 	}
-	return static_cast<int32_t>(armor * vocation->armorMultiplier);
+	return safe_convert<int32_t>(armor * vocation->armorMultiplier, __FUNCTION__);
 }
 
 void Player::getShieldAndWeapon(std::shared_ptr<Item> &shield, std::shared_ptr<Item> &weapon) const {
@@ -474,7 +474,7 @@ uint32_t Player::getClientIcons() {
 
 	// Game client debugs with 10 or more icons
 	// so let's prevent that from happening.
-	std::bitset<32> icon_bitset(static_cast<uint64_t>(icons));
+	std::bitset<32> icon_bitset(safe_convert<uint64_t>(icons, __FUNCTION__));
 	for (size_t pos = 0, bits_set = icon_bitset.count(); bits_set >= 10; ++pos) {
 		if (icon_bitset[pos]) {
 			icon_bitset.reset(pos);
@@ -960,7 +960,7 @@ bool Player::canWalkthrough(std::shared_ptr<Creature> creature) {
 
 	if (player) {
 		std::shared_ptr<Tile> playerTile = player->getTile();
-		if (!playerTile || (!playerTile->hasFlag(TILESTATE_NOPVPZONE) && !playerTile->hasFlag(TILESTATE_PROTECTIONZONE) && player->getLevel() > static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL, __FUNCTION__)) && g_game().getWorldType() != WORLD_TYPE_NO_PVP)) {
+		if (!playerTile || (!playerTile->hasFlag(TILESTATE_NOPVPZONE) && !playerTile->hasFlag(TILESTATE_PROTECTIONZONE) && player->getLevel() > safe_convert<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL, __FUNCTION__), __FUNCTION__) && g_game().getWorldType() != WORLD_TYPE_NO_PVP)) {
 			return false;
 		}
 
@@ -1008,7 +1008,7 @@ bool Player::canWalkthroughEx(std::shared_ptr<Creature> creature) {
 	std::shared_ptr<Npc> npc = creature->getNpc();
 	if (player) {
 		std::shared_ptr<Tile> playerTile = player->getTile();
-		return playerTile && (playerTile->hasFlag(TILESTATE_NOPVPZONE) || playerTile->hasFlag(TILESTATE_PROTECTIONZONE) || player->getLevel() <= static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL, __FUNCTION__)) || g_game().getWorldType() == WORLD_TYPE_NO_PVP);
+		return playerTile && (playerTile->hasFlag(TILESTATE_NOPVPZONE) || playerTile->hasFlag(TILESTATE_PROTECTIONZONE) || player->getLevel() <= safe_convert<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL, __FUNCTION__), __FUNCTION__) || g_game().getWorldType() == WORLD_TYPE_NO_PVP);
 	} else if (npc) {
 		std::shared_ptr<Tile> tile = npc->getTile();
 		std::shared_ptr<HouseTile> houseTile = std::dynamic_pointer_cast<HouseTile>(tile);
@@ -1138,7 +1138,7 @@ bool Player::isNearDepotBox() {
 	const Position &pos = getPosition();
 	for (int32_t cx = -1; cx <= 1; ++cx) {
 		for (int32_t cy = -1; cy <= 1; ++cy) {
-			std::shared_ptr<Tile> posTile = g_game().map.getTile(static_cast<uint16_t>(pos.x + cx), static_cast<uint16_t>(pos.y + cy), pos.z);
+			std::shared_ptr<Tile> posTile = g_game().map.getTile(safe_convert<uint16_t>(pos.x + cx, __FUNCTION__), safe_convert<uint16_t>(pos.y + cy, __FUNCTION__), pos.z);
 			if (!posTile) {
 				continue;
 			}
@@ -1198,7 +1198,7 @@ std::shared_ptr<DepotLocker> Player::getDepotLocker(uint32_t depotId) {
 	if (createSupplyStash) {
 		depotLocker->internalAddThing(Item::CreateItem(ITEM_SUPPLY_STASH));
 	}
-	std::shared_ptr<Container> depotChest = Item::CreateItemAsContainer(ITEM_DEPOT, static_cast<uint16_t>(g_configManager().getNumber(DEPOT_BOXES, __FUNCTION__)));
+	std::shared_ptr<Container> depotChest = Item::CreateItemAsContainer(ITEM_DEPOT, safe_convert<uint16_t>(g_configManager().getNumber(DEPOT_BOXES, __FUNCTION__), __FUNCTION__));
 	for (uint32_t i = g_configManager().getNumber(DEPOT_BOXES, __FUNCTION__); i > 0; i--) {
 		std::shared_ptr<DepotChest> depotBox = getDepotChest(i, true);
 		depotChest->internalAddThing(depotBox);
@@ -1632,7 +1632,7 @@ void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) 
 			std::shared_ptr<Item> item = inventory[slot];
 			if (item) {
 				item->startDecaying();
-				g_moveEvents().onPlayerEquip(getPlayer(), item, static_cast<Slots_t>(slot), false);
+				g_moveEvents().onPlayerEquip(getPlayer(), item, safe_convert<Slots_t>(slot, __FUNCTION__), false);
 			}
 		}
 
@@ -2148,7 +2148,7 @@ uint32_t Player::isMuted() const {
 			muteTicks = condition->getTicks();
 		}
 	}
-	return static_cast<uint32_t>(muteTicks) / 1000;
+	return safe_convert<uint32_t>(muteTicks, __FUNCTION__) / 1000;
 }
 
 void Player::addMessageBuffer() {
@@ -2184,7 +2184,7 @@ void Player::removeMessageBuffer() {
 }
 
 void Player::drainHealth(std::shared_ptr<Creature> attacker, int32_t damage) {
-	if (PLAYER_SOUND_HEALTH_CHANGE >= static_cast<uint32_t>(uniform_random(1, 100))) {
+	if (PLAYER_SOUND_HEALTH_CHANGE >= safe_convert<uint32_t>(uniform_random(1, 100), __FUNCTION__)) {
 		g_game().sendSingleSoundEffect(static_self_cast<Player>()->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_BARK : SoundEffect_t::HUMAN_MALE_BARK, getPlayer());
 	}
 
@@ -2457,7 +2457,7 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 		levelPercent = 0;
 	}
 	sendStats();
-	sendExperienceTracker(0, -static_cast<int64_t>(exp));
+	sendExperienceTracker(0, -safe_convert<int64_t>(exp, __FUNCTION__));
 }
 
 double_t Player::getPercentLevel(uint64_t count, uint64_t nextLevelCount) {
@@ -2541,7 +2541,7 @@ BlockType_t Player::blockHit(std::shared_ptr<Creature> attacker, CombatType_t co
 
 	if (damage > 0) {
 		for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-			if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
+			if (!isItemAbilityEnabled(safe_convert<Slots_t>(slot, __FUNCTION__))) {
 				continue;
 			}
 
@@ -2622,10 +2622,10 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 		}
 		bool pvpDeath = false;
 		if (playerDmg > 0 || othersDmg > 0) {
-			pvpDeath = (Player::lastHitIsPlayer(lastHitCreature) || playerDmg / (playerDmg + static_cast<double>(othersDmg)) >= 0.05);
+			pvpDeath = (Player::lastHitIsPlayer(lastHitCreature) || playerDmg / (playerDmg + safe_convert<double>(othersDmg, __FUNCTION__)) >= 0.05);
 		}
 		if (pvpDeath && sumLevels > level) {
-			double reduce = level / static_cast<double>(sumLevels);
+			double reduce = level / safe_convert<double>(sumLevels, __FUNCTION__);
 			unfairFightReduction = std::max<uint8_t>(20, std::floor((reduce * 100) + 0.5));
 		}
 
@@ -2652,7 +2652,7 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 			}
 		}
 
-		lostMana = static_cast<uint64_t>(sumMana * deathLossPercent);
+		lostMana = safe_convert<uint64_t>(sumMana * deathLossPercent, __FUNCTION__);
 
 		while (lostMana > manaSpent && magLevel > 0) {
 			lostMana -= manaSpent;
@@ -2670,7 +2670,7 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 		}
 
 		// Level loss
-		uint64_t expLoss = static_cast<uint64_t>(experience * deathLossPercent);
+		uint64_t expLoss = safe_convert<uint64_t>(experience * deathLossPercent, __FUNCTION__);
 		g_events().eventPlayerOnLoseExperience(static_self_cast<Player>(), expLoss);
 		g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, &EventCallback::playerOnLoseExperience, getPlayer(), expLoss);
 
@@ -2687,7 +2687,7 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 
 			sumSkillTries += skills[i].tries;
 
-			uint32_t lostSkillTries = static_cast<uint32_t>(sumSkillTries * deathLossPercent);
+			uint32_t lostSkillTries = safe_convert<uint32_t>(sumSkillTries * deathLossPercent, __FUNCTION__);
 			while (lostSkillTries > skills[i].tries) {
 				lostSkillTries -= skills[i].tries;
 
@@ -3272,7 +3272,7 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 
 	if (ret == RETURNVALUE_NOERROR || ret == RETURNVALUE_NOTENOUGHROOM) {
 		// need an exchange with source?
-		std::shared_ptr<Item> inventoryItem = getInventoryItem(static_cast<Slots_t>(index));
+		std::shared_ptr<Item> inventoryItem = getInventoryItem(safe_convert<Slots_t>(index, __FUNCTION__));
 		if (inventoryItem && (!inventoryItem->isStackable() || inventoryItem->getID() != item->getID())) {
 			return RETURNVALUE_NEEDEXCHANGE;
 		}
@@ -3282,7 +3282,7 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 			return RETURNVALUE_NOTENOUGHCAPACITY;
 		}
 
-		if (!g_moveEvents().onPlayerEquip(getPlayer(), item, static_cast<Slots_t>(index), true)) {
+		if (!g_moveEvents().onPlayerEquip(getPlayer(), item, safe_convert<Slots_t>(index, __FUNCTION__), true)) {
 			return RETURNVALUE_CANNOTBEDRESSED;
 		}
 	}
@@ -3534,7 +3534,7 @@ void Player::addThing(int32_t index, std::shared_ptr<Thing> thing) {
 	inventory[index] = item;
 
 	// send to client
-	sendInventoryItem(static_cast<Slots_t>(index), item);
+	sendInventoryItem(safe_convert<Slots_t>(index, __FUNCTION__), item);
 }
 
 void Player::updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t count) {
@@ -3552,7 +3552,7 @@ void Player::updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t
 	item->setSubType(count);
 
 	// send to client
-	sendInventoryItem(static_cast<Slots_t>(index), item);
+	sendInventoryItem(safe_convert<Slots_t>(index, __FUNCTION__), item);
 
 	// event methods
 	onUpdateInventoryItem(item, item);
@@ -3563,7 +3563,7 @@ void Player::replaceThing(uint32_t index, std::shared_ptr<Thing> thing) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
 
-	std::shared_ptr<Item> oldItem = getInventoryItem(static_cast<Slots_t>(index));
+	std::shared_ptr<Item> oldItem = getInventoryItem(safe_convert<Slots_t>(index, __FUNCTION__));
 	if (!oldItem) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
@@ -3574,7 +3574,7 @@ void Player::replaceThing(uint32_t index, std::shared_ptr<Thing> thing) {
 	}
 
 	// send to client
-	sendInventoryItem(static_cast<Slots_t>(index), item);
+	sendInventoryItem(safe_convert<Slots_t>(index, __FUNCTION__), item);
 
 	// event methods
 	onUpdateInventoryItem(oldItem, item);
@@ -3598,7 +3598,7 @@ void Player::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 	if (item->isStackable()) {
 		if (count == item->getItemCount()) {
 			// send change to client
-			sendInventoryItem(static_cast<Slots_t>(index), nullptr);
+			sendInventoryItem(safe_convert<Slots_t>(index, __FUNCTION__), nullptr);
 
 			// event methods
 			onRemoveInventoryItem(item);
@@ -3606,18 +3606,18 @@ void Player::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 			item->resetParent();
 			inventory[index] = nullptr;
 		} else {
-			uint8_t newCount = static_cast<uint8_t>(std::max<int32_t>(0, item->getItemCount() - count));
+			uint8_t newCount = safe_convert<uint8_t>(std::max<int32_t>(0, item->getItemCount() - count), __FUNCTION__);
 			item->setItemCount(newCount);
 
 			// send change to client
-			sendInventoryItem(static_cast<Slots_t>(index), item);
+			sendInventoryItem(safe_convert<Slots_t>(index, __FUNCTION__), item);
 
 			// event methods
 			onUpdateInventoryItem(item, item);
 		}
 	} else {
 		// send change to client
-		sendInventoryItem(static_cast<Slots_t>(index), nullptr);
+		sendInventoryItem(safe_convert<Slots_t>(index, __FUNCTION__), nullptr);
 
 		// event methods
 		onRemoveInventoryItem(item);
@@ -3992,7 +3992,7 @@ std::vector<std::shared_ptr<Item>> Player::getEquippedItems() const {
 
 std::map<uint32_t, uint32_t> &Player::getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const {
 	for (const auto item : getAllInventoryItems()) {
-		countMap[static_cast<uint32_t>(item->getID())] += Item::countByType(item, -1);
+		countMap[safe_convert<uint32_t>(item->getID(), __FUNCTION__)] += Item::countByType(item, -1);
 	}
 	return countMap;
 }
@@ -4009,9 +4009,9 @@ void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t> &countMa
 	for (const auto item : getAllInventoryItems()) {
 		uint16_t itemId = item->getID();
 		if (Item::items[itemId].isFluidContainer()) {
-			countMap[static_cast<uint32_t>(itemId) | (item->getAttribute<uint32_t>(ItemAttribute_t::FLUIDTYPE)) << 16] += item->getItemCount();
+			countMap[safe_convert<uint32_t>(itemId, __FUNCTION__) | (item->getAttribute<uint32_t>(ItemAttribute_t::FLUIDTYPE)) << 16] += item->getItemCount();
 		} else {
-			countMap[static_cast<uint32_t>(itemId)] += item->getItemCount();
+			countMap[safe_convert<uint32_t>(itemId, __FUNCTION__)] += item->getItemCount();
 		}
 	}
 }
@@ -4040,7 +4040,7 @@ std::shared_ptr<Thing> Player::getThing(size_t index) const {
 void Player::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link /*= LINK_OWNER*/) {
 	if (link == LINK_OWNER) {
 		// calling movement scripts
-		g_moveEvents().onPlayerEquip(getPlayer(), thing->getItem(), static_cast<Slots_t>(index), false);
+		g_moveEvents().onPlayerEquip(getPlayer(), thing->getItem(), safe_convert<Slots_t>(index, __FUNCTION__), false);
 	}
 
 	bool requireListUpdate = true;
@@ -4098,7 +4098,7 @@ void Player::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<C
 void Player::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t link /*= LINK_OWNER*/) {
 	if (link == LINK_OWNER) {
 		// calling movement scripts
-		g_moveEvents().onPlayerDeEquip(getPlayer(), thing->getItem(), static_cast<Slots_t>(index));
+		g_moveEvents().onPlayerDeEquip(getPlayer(), thing->getItem(), safe_convert<Slots_t>(index, __FUNCTION__));
 	}
 
 	bool requireListUpdate = true;
@@ -4320,7 +4320,7 @@ void Player::doAttacking(uint32_t) {
 uint64_t Player::getGainedExperience(std::shared_ptr<Creature> attacker) const {
 	if (g_configManager().getBoolean(EXPERIENCE_FROM_PLAYERS, __FUNCTION__)) {
 		auto attackerPlayer = attacker->getPlayer();
-		if (attackerPlayer && attackerPlayer.get() != this && skillLoss && std::abs(static_cast<int32_t>(attackerPlayer->getLevel() - level)) <= g_configManager().getNumber(EXP_FROM_PLAYERS_LEVEL_RANGE, __FUNCTION__)) {
+		if (attackerPlayer && attackerPlayer.get() != this && skillLoss && std::abs(safe_convert<int32_t>(attackerPlayer->getLevel() - level, __FUNCTION__)) <= g_configManager().getNumber(EXP_FROM_PLAYERS_LEVEL_RANGE, __FUNCTION__)) {
 			return std::max<uint64_t>(0, std::floor(getLostExperience() * getDamageRatio(attacker) * 0.75));
 		}
 	}
@@ -4501,7 +4501,7 @@ void Player::onCombatRemoveCondition(std::shared_ptr<Condition> condition) {
 	if (condition->getId() > 0) {
 		// Means the condition is from an item, id == slot
 		if (g_game().getWorldType() == WORLD_TYPE_PVP_ENFORCED) {
-			std::shared_ptr<Item> item = getInventoryItem(static_cast<Slots_t>(condition->getId()));
+			std::shared_ptr<Item> item = getInventoryItem(safe_convert<Slots_t>(condition->getId(), __FUNCTION__));
 			if (item) {
 				// 25% chance to destroy the item
 				if (25 >= uniform_random(1, 100)) {
@@ -4750,7 +4750,7 @@ bool Player::isImmune(ConditionType_t type) const {
 		return true;
 	}
 
-	return m_conditionImmunities[static_cast<size_t>(type)];
+	return m_conditionImmunities[safe_convert<size_t>(type, __FUNCTION__)];
 }
 
 bool Player::isAttackable() const {
@@ -5100,11 +5100,11 @@ void Player::addUnjustifiedDead(std::shared_ptr<Player> attacked) {
 		if (dayKills >= 2 * g_configManager().getNumber(DAY_KILLS_TO_RED, __FUNCTION__) || weekKills >= 2 * g_configManager().getNumber(WEEK_KILLS_TO_RED, __FUNCTION__) || monthKills >= 2 * g_configManager().getNumber(MONTH_KILLS_TO_RED, __FUNCTION__)) {
 			setSkull(SKULL_BLACK);
 			// start black skull time
-			skullTicks = static_cast<int64_t>(g_configManager().getNumber(BLACK_SKULL_DURATION, __FUNCTION__)) * 24 * 60 * 60;
+			skullTicks = safe_convert<int64_t>(g_configManager().getNumber(BLACK_SKULL_DURATION, __FUNCTION__), __FUNCTION__) * 24 * 60 * 60;
 		} else if (dayKills >= g_configManager().getNumber(DAY_KILLS_TO_RED, __FUNCTION__) || weekKills >= g_configManager().getNumber(WEEK_KILLS_TO_RED, __FUNCTION__) || monthKills >= g_configManager().getNumber(MONTH_KILLS_TO_RED, __FUNCTION__)) {
 			setSkull(SKULL_RED);
 			// reset red skull time
-			skullTicks = static_cast<int64_t>(g_configManager().getNumber(RED_SKULL_DURATION, __FUNCTION__)) * 24 * 60 * 60;
+			skullTicks = safe_convert<int64_t>(g_configManager().getNumber(RED_SKULL_DURATION, __FUNCTION__), __FUNCTION__) * 24 * 60 * 60;
 		}
 	}
 
@@ -5297,7 +5297,7 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 		skillLevel = avatarCritChance; // 100%
 	}
 
-	return std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), std::max<uint16_t>(0, static_cast<uint16_t>(skillLevel)));
+	return std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), std::max<uint16_t>(0, safe_convert<uint16_t>(skillLevel, __FUNCTION__)));
 }
 
 bool Player::isPremium() const {
@@ -5638,7 +5638,7 @@ uint8_t Player::getLastMount() const {
 	if (value > 0) {
 		return value;
 	}
-	return static_cast<uint8_t>(kv()->get("last-mount")->get<int>());
+	return safe_convert<uint8_t>(kv()->get("last-mount")->get<int>(), __FUNCTION__);
 }
 
 uint8_t Player::getCurrentMount() const {
@@ -5672,7 +5672,7 @@ uint8_t Player::getRandomMountId() const {
 		}
 	}
 
-	auto playerMountsSize = static_cast<int32_t>(playerMounts.size() - 1);
+	auto playerMountsSize = safe_convert<int32_t>(playerMounts.size() - 1, __FUNCTION__);
 	auto randomIndex = uniform_random(0, std::max<int32_t>(0, playerMountsSize));
 	return playerMounts.at(randomIndex);
 }
@@ -5846,7 +5846,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		}
 
 		oldSkillValue = magLevel;
-		oldPercentToNextLevel = static_cast<long double>(manaSpent * 100) / nextReqMana;
+		oldPercentToNextLevel = safe_convert<long double>(manaSpent * 100, __FUNCTION__) / nextReqMana;
 
 		g_events().eventPlayerOnGainSkillTries(static_self_cast<Player>(), SKILL_MAGLEVEL, tries);
 		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), SKILL_MAGLEVEL, tries);
@@ -5881,7 +5881,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		uint8_t newPercent;
 		if (nextReqMana > currReqMana) {
 			newPercent = Player::getPercentLevel(manaSpent, nextReqMana);
-			newPercentToNextLevel = static_cast<long double>(manaSpent * 100) / nextReqMana;
+			newPercentToNextLevel = safe_convert<long double>(manaSpent * 100, __FUNCTION__) / nextReqMana;
 		} else {
 			newPercent = 0;
 			newPercentToNextLevel = 0;
@@ -5901,7 +5901,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		}
 
 		oldSkillValue = skills[skill].level;
-		oldPercentToNextLevel = static_cast<long double>(skills[skill].tries * 100) / nextReqTries;
+		oldPercentToNextLevel = safe_convert<long double>(skills[skill].tries * 100, __FUNCTION__) / nextReqTries;
 
 		g_events().eventPlayerOnGainSkillTries(static_self_cast<Player>(), skill, tries);
 		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), skill, tries);
@@ -5937,7 +5937,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		uint8_t newPercent;
 		if (nextReqTries > currReqTries) {
 			newPercent = Player::getPercentLevel(skills[skill].tries, nextReqTries);
-			newPercentToNextLevel = static_cast<long double>(skills[skill].tries * 100) / nextReqTries;
+			newPercentToNextLevel = safe_convert<long double>(skills[skill].tries * 100, __FUNCTION__) / nextReqTries;
 		} else {
 			newPercent = 0;
 			newPercentToNextLevel = 0;
@@ -6003,15 +6003,15 @@ uint16_t Player::getHelpers() const {
 
 		helperSet.emplace(m_party->getLeader());
 
-		return static_cast<uint16_t>(helperSet.size());
+		return safe_convert<uint16_t>(helperSet.size(), __FUNCTION__);
 	}
 
 	if (guild) {
-		return static_cast<uint16_t>(guild->getMemberCountOnline());
+		return safe_convert<uint16_t>(guild->getMemberCountOnline(), __FUNCTION__);
 	}
 
 	if (m_party) {
-		return static_cast<uint16_t>(m_party->getMemberCount() + m_party->getInvitationCount() + 1);
+		return safe_convert<uint16_t>(m_party->getMemberCount() + m_party->getInvitationCount() + 1, __FUNCTION__);
 	}
 
 	return 0u;
@@ -6213,7 +6213,7 @@ void Player::addItemImbuementStats(const Imbuement* imbuement) {
 	for (int32_t skill = SKILL_FIRST; skill <= SKILL_LAST; ++skill) {
 		if (imbuement->skills[skill]) {
 			requestUpdate = true;
-			setVarSkill(static_cast<skills_t>(skill), imbuement->skills[skill]);
+			setVarSkill(safe_convert<skills_t>(skill, __FUNCTION__), imbuement->skills[skill]);
 		}
 	}
 
@@ -6221,7 +6221,7 @@ void Player::addItemImbuementStats(const Imbuement* imbuement) {
 	for (int32_t stat = STAT_FIRST; stat <= STAT_LAST; ++stat) {
 		if (imbuement->stats[stat]) {
 			requestUpdate = true;
-			setVarStats(static_cast<stats_t>(stat), imbuement->stats[stat]);
+			setVarStats(safe_convert<stats_t>(stat, __FUNCTION__), imbuement->stats[stat]);
 		}
 	}
 
@@ -6252,7 +6252,7 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 	for (int32_t skill = SKILL_FIRST; skill <= SKILL_LAST; ++skill) {
 		if (imbuement->skills[skill]) {
 			requestUpdate = true;
-			setVarSkill(static_cast<skills_t>(skill), -imbuement->skills[skill]);
+			setVarSkill(safe_convert<skills_t>(skill, __FUNCTION__), -imbuement->skills[skill]);
 		}
 	}
 
@@ -6260,7 +6260,7 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 	for (int32_t stat = STAT_FIRST; stat <= STAT_LAST; ++stat) {
 		if (imbuement->stats[stat]) {
 			requestUpdate = true;
-			setVarStats(static_cast<stats_t>(stat), -imbuement->stats[stat]);
+			setVarStats(safe_convert<stats_t>(stat, __FUNCTION__), -imbuement->stats[stat]);
 		}
 	}
 
@@ -6419,7 +6419,7 @@ void Player::openPlayerContainers() {
 void Player::initializePrey() {
 	if (preys.empty()) {
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			auto slot = std::make_unique<PreySlot>(static_cast<PreySlot_t>(slotId));
+			auto slot = std::make_unique<PreySlot>(safe_convert<PreySlot_t>(slotId, __FUNCTION__));
 			if (!g_configManager().getBoolean(PREY_ENABLED, __FUNCTION__)) {
 				slot->state = PreyDataState_Inactive;
 			} else if (slot->id == PreySlot_Three && !g_configManager().getBoolean(PREY_FREE_THIRD_SLOT, __FUNCTION__)) {
@@ -6447,7 +6447,7 @@ void Player::removePreySlotById(PreySlot_t slotid) {
 void Player::initializeTaskHunting() {
 	if (taskHunting.empty()) {
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			auto slot = std::make_unique<TaskHuntingSlot>(static_cast<PreySlot_t>(slotId));
+			auto slot = std::make_unique<TaskHuntingSlot>(safe_convert<PreySlot_t>(slotId, __FUNCTION__));
 			if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED, __FUNCTION__)) {
 				slot->state = PreyTaskDataState_Inactive;
 			} else if (slot->id == PreySlot_Three && !g_configManager().getBoolean(TASK_HUNTING_FREE_THIRD_SLOT, __FUNCTION__)) {
@@ -6479,7 +6479,7 @@ std::string Player::getBlessingsName() const {
 	std::ostringstream os;
 	for (uint8_t i = 1; i <= 8; i++) {
 		if (hasBlessing(i)) {
-			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i));
+			if (auto blessName = BlessingNames.find(safe_convert<Blessings_t>(i, __FUNCTION__));
 				blessName != BlessingNames.end()) {
 				os << (*blessName).second;
 			} else {
@@ -6524,13 +6524,13 @@ void Player::triggerMomentum() {
 			ConditionType_t type = condItem->getType();
 			auto maxu16 = std::numeric_limits<uint16_t>::max();
 			auto checkSpellId = condItem->getSubId();
-			auto spellId = checkSpellId > maxu16 ? 0u : static_cast<uint16_t>(checkSpellId);
+			auto spellId = checkSpellId > maxu16 ? 0u : safe_convert<uint16_t>(checkSpellId, __FUNCTION__);
 			int32_t ticks = condItem->getTicks();
 			int32_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
 			triggered = true;
 			if (type == CONDITION_SPELLCOOLDOWN || (type == CONDITION_SPELLGROUPCOOLDOWN && spellId > SPELLGROUP_SUPPORT)) {
 				condItem->setTicks(newTicks);
-				type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(spellId, newTicks);
+				type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(safe_convert<SpellGroup_t>(spellId, __FUNCTION__), newTicks) : sendSpellCooldown(spellId, newTicks);
 			}
 			++it;
 		}
@@ -6548,10 +6548,10 @@ void Player::clearCooldowns() {
 		ConditionType_t type = condItem->getType();
 		auto maxu16 = std::numeric_limits<uint16_t>::max();
 		auto checkSpellId = condItem->getSubId();
-		auto spellId = checkSpellId > maxu16 ? 0u : static_cast<uint16_t>(checkSpellId);
+		auto spellId = checkSpellId > maxu16 ? 0u : safe_convert<uint16_t>(checkSpellId, __FUNCTION__);
 		if (type == CONDITION_SPELLCOOLDOWN || type == CONDITION_SPELLGROUPCOOLDOWN) {
 			condItem->setTicks(0);
-			type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), 0) : sendSpellCooldown(spellId, 0);
+			type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(safe_convert<SpellGroup_t>(spellId, __FUNCTION__), 0) : sendSpellCooldown(spellId, 0);
 		}
 		++it;
 	}
@@ -6997,7 +6997,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 		return;
 	}
 
-	auto dustCost = static_cast<uint64_t>(g_configManager().getNumber(FORGE_FUSION_DUST_COST, __FUNCTION__));
+	auto dustCost = safe_convert<uint64_t>(g_configManager().getNumber(FORGE_FUSION_DUST_COST, __FUNCTION__), __FUNCTION__);
 	if (success) {
 		firstForgedItem->setTier(tier + 1);
 
@@ -7272,14 +7272,14 @@ void Player::forgeResourceConversion(uint8_t action) {
 	ReturnValue returnValue = RETURNVALUE_NOERROR;
 	if (actionEnum == ForgeConversion_t::FORGE_ACTION_DUSTTOSLIVERS) {
 		auto dusts = getForgeDusts();
-		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER, __FUNCTION__) * g_configManager().getNumber(FORGE_SLIVER_AMOUNT, __FUNCTION__));
+		auto cost = safe_convert<uint16_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER, __FUNCTION__) * g_configManager().getNumber(FORGE_SLIVER_AMOUNT, __FUNCTION__), __FUNCTION__);
 		if (cost > dusts) {
 			g_logger().error("[{}] Not enough dust", __FUNCTION__);
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
 
-		auto itemCount = static_cast<uint16_t>(g_configManager().getNumber(FORGE_SLIVER_AMOUNT, __FUNCTION__));
+		auto itemCount = safe_convert<uint16_t>(g_configManager().getNumber(FORGE_SLIVER_AMOUNT, __FUNCTION__), __FUNCTION__);
 		std::shared_ptr<Item> item = Item::CreateItem(ITEM_FORGE_SLIVER, itemCount);
 		returnValue = g_game().internalPlayerAddItem(static_self_cast<Player>(), item);
 		if (returnValue != RETURNVALUE_NOERROR) {
@@ -7293,7 +7293,7 @@ void Player::forgeResourceConversion(uint8_t action) {
 		setForgeDusts(dusts - cost);
 	} else if (actionEnum == ForgeConversion_t::FORGE_ACTION_SLIVERSTOCORES) {
 		auto [sliverCount, coreCount] = getForgeSliversAndCores();
-		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_CORE_COST, __FUNCTION__));
+		auto cost = safe_convert<uint16_t>(g_configManager().getNumber(FORGE_CORE_COST, __FUNCTION__), __FUNCTION__);
 		if (cost > sliverCount) {
 			g_logger().error("[{}] Not enough sliver", __FUNCTION__);
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
@@ -7674,7 +7674,7 @@ void Player::parseAttackRecvHazardSystem(CombatDamage &damage, std::shared_ptr<M
 	}
 
 	uint16_t stage = 0;
-	auto chance = static_cast<uint16_t>(normal_random(1, 10000));
+	auto chance = safe_convert<uint16_t>(normal_random(1, 10000), __FUNCTION__);
 	auto critChance = g_configManager().getNumber(HAZARD_CRITICAL_CHANCE, __FUNCTION__);
 	// Critical chance
 	if (monster->getHazardSystemCrit() && (lastHazardSystemCriticalHit + g_configManager().getNumber(HAZARD_CRITICAL_INTERVAL, __FUNCTION__)) <= OTSYS_TIME() && chance <= critChance && !damage.critical) {
@@ -7682,21 +7682,21 @@ void Player::parseAttackRecvHazardSystem(CombatDamage &damage, std::shared_ptr<M
 		damage.extension = true;
 		damage.exString = "(Hazard)";
 
-		stage = (points - 1) * static_cast<uint16_t>(g_configManager().getNumber(HAZARD_CRITICAL_MULTIPLIER, __FUNCTION__));
-		damage.primary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.primary.value) * (5000 + stage)) / 10000));
-		damage.secondary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.secondary.value) * (5000 + stage)) / 10000));
+		stage = (points - 1) * safe_convert<uint16_t>(g_configManager().getNumber(HAZARD_CRITICAL_MULTIPLIER, __FUNCTION__), __FUNCTION__);
+		damage.primary.value += safe_convert<int32_t>(std::ceil((safe_convert<double>(damage.primary.value, __FUNCTION__) * (5000 + stage)) / 10000), __FUNCTION__);
+		damage.secondary.value += safe_convert<int32_t>(std::ceil((safe_convert<double>(damage.secondary.value, __FUNCTION__) * (5000 + stage)) / 10000), __FUNCTION__);
 		lastHazardSystemCriticalHit = OTSYS_TIME();
 	}
 
 	// To prevent from punish the player twice with critical + damage boost, just uncomment code from the if
 	if (monster->getHazardSystemDamageBoost() /* && !damage.critical*/) {
-		stage = points * static_cast<uint16_t>(g_configManager().getNumber(HAZARD_DAMAGE_MULTIPLIER, __FUNCTION__));
+		stage = points * safe_convert<uint16_t>(g_configManager().getNumber(HAZARD_DAMAGE_MULTIPLIER, __FUNCTION__), __FUNCTION__);
 		if (stage != 0) {
 			damage.extension = true;
 			damage.exString = "(Hazard)";
-			damage.primary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.primary.value) * stage) / 10000));
+			damage.primary.value += safe_convert<int32_t>(std::ceil((safe_convert<double>(damage.primary.value, __FUNCTION__) * stage) / 10000), __FUNCTION__);
 			if (damage.secondary.value != 0) {
-				damage.secondary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.secondary.value) * stage) / 10000));
+				damage.secondary.value += safe_convert<int32_t>(std::ceil((safe_convert<double>(damage.secondary.value, __FUNCTION__) * stage) / 10000), __FUNCTION__);
 			}
 		}
 	}
@@ -7736,7 +7736,7 @@ void Player::parseAttackDealtHazardSystem(CombatDamage &damage, std::shared_ptr<
 	uint16_t stage;
 	if (monster->getHazardSystemDodge()) {
 		stage = points * g_configManager().getNumber(HAZARD_DODGE_MULTIPLIER, __FUNCTION__);
-		auto chance = static_cast<uint16_t>(normal_random(1, 10000));
+		auto chance = safe_convert<uint16_t>(normal_random(1, 10000), __FUNCTION__);
 		if (chance <= stage) {
 			damage.primary.value = 0;
 			damage.secondary.value = 0;
@@ -7744,12 +7744,12 @@ void Player::parseAttackDealtHazardSystem(CombatDamage &damage, std::shared_ptr<
 		}
 	}
 	if (monster->getHazardSystemDefenseBoost()) {
-		stage = points * static_cast<uint16_t>(g_configManager().getNumber(HAZARD_DEFENSE_MULTIPLIER, __FUNCTION__));
+		stage = points * safe_convert<uint16_t>(g_configManager().getNumber(HAZARD_DEFENSE_MULTIPLIER, __FUNCTION__), __FUNCTION__);
 		if (stage != 0) {
 			damage.exString = fmt::format("(hazard -{}%)", stage / 100.);
-			damage.primary.value -= static_cast<int32_t>(std::ceil((static_cast<double>(damage.primary.value) * stage) / 10000));
+			damage.primary.value -= safe_convert<int32_t>(std::ceil((static_cast<double>(damage.primary.value) * stage) / 10000), __FUNCTION__);
 			if (damage.secondary.value != 0) {
-				damage.secondary.value -= static_cast<int32_t>(std::ceil((static_cast<double>(damage.secondary.value) * stage) / 10000));
+				damage.secondary.value -= safe_convert<int32_t>(std::ceil((static_cast<double>(damage.secondary.value) * stage) / 10000), __FUNCTION__);
 			}
 			return;
 		}

@@ -155,7 +155,7 @@ int CharmFunctions::luaCharmCastSound(lua_State* L) {
 	// get: charm:castSound() set: charm:castSound(sound)
 	const auto charm = getUserdataShared<Charm>(L, 1);
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, static_cast<lua_Number>(charm->soundCastEffect));
+		lua_pushnumber(L, safe_convert<lua_Number>(charm->soundCastEffect, __FUNCTION__));
 	} else {
 		charm->soundCastEffect = getNumber<SoundEffect_t>(L, 2);
 		pushBoolean(L, true);
@@ -167,7 +167,7 @@ int CharmFunctions::luaCharmImpactSound(lua_State* L) {
 	// get: charm:impactSound() set: charm:impactSound(sound)
 	const auto charm = getUserdataShared<Charm>(L, 1);
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, static_cast<lua_Number>(charm->soundImpactEffect));
+		lua_pushnumber(L, safe_convert<lua_Number>(charm->soundImpactEffect, __FUNCTION__));
 	} else {
 		charm->soundImpactEffect = getNumber<SoundEffect_t>(L, 2);
 		pushBoolean(L, true);

@@ -177,7 +177,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetConditionType(lua_State* L) {
 			return 1;
 		}
 
-		spell->conditionType = static_cast<ConditionType_t>(conditionType);
+		spell->conditionType = safe_convert<ConditionType_t>(conditionType, __FUNCTION__);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -287,7 +287,7 @@ int MonsterSpellFunctions::luaMonsterSpellCastSound(lua_State* L) {
 	// get: monsterSpell:castSound() set: monsterSpell:castSound(sound)
 	const auto spell = getUserdataShared<MonsterSpell>(L, 1);
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, static_cast<lua_Number>(spell->soundCastEffect));
+		lua_pushnumber(L, safe_convert<lua_Number>(spell->soundCastEffect, __FUNCTION__));
 	} else {
 		spell->soundCastEffect = getNumber<SoundEffect_t>(L, 2);
 		pushBoolean(L, true);
@@ -299,7 +299,7 @@ int MonsterSpellFunctions::luaMonsterSpellImpactSound(lua_State* L) {
 	// get: monsterSpell:impactSound() set: monsterSpell:impactSound(sound)
 	const auto spell = getUserdataShared<MonsterSpell>(L, 1);
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, static_cast<lua_Number>(spell->soundImpactEffect));
+		lua_pushnumber(L, safe_convert<lua_Number>(spell->soundImpactEffect, __FUNCTION__));
 	} else {
 		spell->soundImpactEffect = getNumber<SoundEffect_t>(L, 2);
 		pushBoolean(L, true);

@@ -38,9 +38,9 @@ Monster::Monster(const std::shared_ptr<MonsterType> mType) :
 	defaultOutfit = mType->info.outfit;
 	currentOutfit = mType->info.outfit;
 	skull = mType->info.skull;
-	health = mType->info.health * mType->getHealthMultiplier();
-	healthMax = mType->info.healthMax * mType->getHealthMultiplier();
-	runAwayHealth = mType->info.runAwayHealth * mType->getHealthMultiplier();
+	health = mType->info.health * safe_convert<int32_t>(mType->getHealthMultiplier(), __FUNCTION__);
+	healthMax = mType->info.healthMax * safe_convert<int32_t>(mType->getHealthMultiplier(), __FUNCTION__);
+	runAwayHealth = mType->info.runAwayHealth * safe_convert<int32_t>(mType->getHealthMultiplier(), __FUNCTION__);
 	baseSpeed = mType->getBaseSpeed();
 	internalLight = mType->info.light;
 	hiddenHealth = mType->info.hiddenHealth;
@@ -486,7 +486,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 				if (++it != resultList.end()) {
 					const Position &targetPosition = getTarget->getPosition();
 					int32_t minRange = std::max<int32_t>(Position::getDistanceX(myPos, targetPosition), Position::getDistanceY(myPos, targetPosition));
-					int32_t factionOffset = static_cast<int32_t>(getTarget->getFaction()) * 100;
+					int32_t factionOffset = safe_convert<int32_t>(getTarget->getFaction(), __FUNCTION__) * 100;
 					do {
 						const Position &pos = (*it)->getPosition();
 
@@ -505,7 +505,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 					}
 
 					const Position &pos = creature->getPosition();
-					int32_t factionOffset = static_cast<int32_t>(getTarget->getFaction()) * 100;
+					int32_t factionOffset = safe_convert<int32_t>(getTarget->getFaction(), __FUNCTION__) * 100;
 					int32_t distance = std::max<int32_t>(Position::getDistanceX(myPos, pos), Position::getDistanceY(myPos, pos)) + factionOffset;
 					if (distance < minRange) {
 						getTarget = creature;
@@ -525,11 +525,11 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 				auto it = resultList.begin();
 				getTarget = *it;
 				if (++it != resultList.end()) {
-					int32_t factionOffset = static_cast<int32_t>(getTarget->getFaction()) * 100000;
+					int32_t factionOffset = safe_convert<int32_t>(getTarget->getFaction(), __FUNCTION__) * 100000;
 					int32_t minHp = getTarget->getHealth() + factionOffset;
 					do {
 						auto hp = (*it)->getHealth() + factionOffset;
-						factionOffset = static_cast<int32_t>((*it)->getFaction()) * 100000;
+						factionOffset = safe_convert<int32_t>((*it)->getFaction(), __FUNCTION__) * 100000;
 						if (hp < minHp) {
 							getTarget = *it;
 							minHp = hp;
@@ -550,7 +550,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 				if (++it != resultList.end()) {
 					int32_t mostDamage = 0;
 					do {
-						int32_t factionOffset = static_cast<int32_t>((*it)->getFaction()) * 100000;
+						int32_t factionOffset = safe_convert<int32_t>((*it)->getFaction(), __FUNCTION__) * 100000;
 						const auto dmg = damageMap.find((*it)->getID());
 						if (dmg != damageMap.end() && dmg->second.total + factionOffset > mostDamage) {
 							mostDamage = dmg->second.total;
@@ -568,7 +568,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 		default: {
 			if (!resultList.empty()) {
 				auto it = resultList.begin();
-				std::advance(it, uniform_random(0, resultList.size() - 1));
+				std::advance(it, uniform_random(0, safe_convert<int32_t>(resultList.size(), __FUNCTION__) - 1));
 				return selectTarget(*it);
 			}
 			break;
@@ -590,7 +590,7 @@ void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature
 float Monster::getMitigation() const {
 	float mitigation = mType->info.mitigation * getDefenseMultiplier();
 	if (g_configManager().getBoolean(DISABLE_MONSTER_ARMOR, __FUNCTION__)) {
-		mitigation += std::ceil(static_cast<float>(getDefense() + getArmor()) / 100.f) * getDefenseMultiplier() * 2.f;
+		mitigation += std::ceil(safe_convert<float>(getDefense() + getArmor(), __FUNCTION__) / 100.f) * getDefenseMultiplier() * 2.f;
 	}
 	return std::min<float>(mitigation, 30.f);
 }
@@ -612,7 +612,7 @@ BlockType_t Monster::blockHit(std::shared_ptr<Creature> attacker, CombatType_t c
 		}
 
 		if (elementMod != 0) {
-			damage = static_cast<int32_t>(std::round(damage * ((100 - elementMod) / 100.)));
+			damage = safe_convert<int32_t>(std::round(damage * ((100 - elementMod) / 100.)), __FUNCTION__);
 			if (damage <= 0) {
 				damage = 0;
 				blockType = BLOCK_ARMOR;
@@ -741,7 +741,7 @@ void Monster::onThink(uint32_t interval) {
 	}
 
 	if (challengeMeleeDuration != 0) {
-		challengeMeleeDuration -= interval;
+		challengeMeleeDuration -= safe_convert<int32_t>(interval, __FUNCTION__);
 		if (challengeMeleeDuration <= 0) {
 			challengeMeleeDuration = 0;
 			targetDistance = mType->info.targetDistance;
@@ -822,7 +822,7 @@ void Monster::doAttacking(uint32_t interval) {
 		}
 
 		if (canUseSpell(myPos, targetPos, spellBlock, interval, inRange, resetTicks)) {
-			if (spellBlock.chance >= static_cast<uint32_t>(uniform_random(1, 100))) {
+			if (spellBlock.chance >= safe_convert<uint32_t>(uniform_random(1, 100), __FUNCTION__)) {
 				if (updateLook) {
 					updateLookDirection();
 					updateLook = false;
@@ -910,7 +910,7 @@ void Monster::onThinkTarget(uint32_t interval) {
 			bool canChangeTarget = true;
 
 			if (challengeFocusDuration > 0) {
-				challengeFocusDuration -= interval;
+				challengeFocusDuration -= safe_convert<int32_t>(interval, __FUNCTION__);
 				canChangeTarget = false;
 
 				if (challengeFocusDuration <= 0) {
@@ -919,7 +919,7 @@ void Monster::onThinkTarget(uint32_t interval) {
 			}
 
 			if (m_targetChangeCooldown > 0) {
-				m_targetChangeCooldown -= interval;
+				m_targetChangeCooldown -= safe_convert<int32_t>(interval, __FUNCTION__);
 
 				if (m_targetChangeCooldown <= 0) {
 					m_targetChangeCooldown = 0;
@@ -934,7 +934,7 @@ void Monster::onThinkTarget(uint32_t interval) {
 
 				if (targetChangeTicks >= mType->info.changeTargetSpeed) {
 					targetChangeTicks = 0;
-					m_targetChangeCooldown = mType->info.changeTargetSpeed;
+					m_targetChangeCooldown = safe_convert<int32_t>(mType->info.changeTargetSpeed, __FUNCTION__);
 
 					if (challengeFocusDuration > 0) {
 						challengeFocusDuration = 0;
@@ -968,7 +968,7 @@ void Monster::onThinkDefense(uint32_t interval) {
 			continue;
 		}
 
-		if ((spellBlock.chance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
+		if ((spellBlock.chance >= safe_convert<uint32_t>(uniform_random(1, 100), __FUNCTION__))) {
 			minCombatValue = spellBlock.minCombatValue;
 			maxCombatValue = spellBlock.maxCombatValue;
 			spellBlock.spell->castSpell(getMonster(), getMonster());
@@ -1002,7 +1002,7 @@ void Monster::onThinkDefense(uint32_t interval) {
 				continue;
 			}
 
-			if (summonBlock.chance < static_cast<uint32_t>(uniform_random(1, 100))) {
+			if (summonBlock.chance < safe_convert<uint32_t>(uniform_random(1, 100), __FUNCTION__)) {
 				continue;
 			}
 
@@ -1032,8 +1032,8 @@ void Monster::onThinkYell(uint32_t interval) {
 	if (yellTicks >= mType->info.yellSpeedTicks) {
 		yellTicks = 0;
 
-		if (!mType->info.voiceVector.empty() && (mType->info.yellChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
-			uint32_t index = uniform_random(0, mType->info.voiceVector.size() - 1);
+		if (!mType->info.voiceVector.empty() && (mType->info.yellChance >= safe_convert<uint32_t>(uniform_random(1, 100), __FUNCTION__))) {
+			uint32_t index = uniform_random(0, safe_convert<int32_t>(mType->info.voiceVector.size() - 1, __FUNCTION__));
 			const voiceBlock_t &vb = mType->info.voiceVector[index];
 
 			if (vb.yellText) {
@@ -1054,8 +1054,8 @@ void Monster::onThinkSound(uint32_t interval) {
 	if (soundTicks >= mType->info.soundSpeedTicks) {
 		soundTicks = 0;
 
-		if (!mType->info.soundVector.empty() && (mType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
-			int64_t index = uniform_random(0, static_cast<int64_t>(mType->info.soundVector.size() - 1));
+		if (!mType->info.soundVector.empty() && (mType->info.soundChance >= safe_convert<uint32_t>(uniform_random(1, 100), __FUNCTION__))) {
+			int64_t index = uniform_random(0, safe_convert<int32_t>(mType->info.soundVector.size() - 1, __FUNCTION__));
 			g_game().sendSingleSoundEffect(static_self_cast<Monster>()->getPosition(), mType->info.soundVector[index], getMonster());
 		}
 	}
@@ -1203,7 +1203,7 @@ void Monster::doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &
 		if (attackedCreature && attackedCreature == followCreature) {
 			if (isFleeing()) {
 				result = getDanceStep(getPosition(), nextDirection, false, false);
-			} else if (mType->info.staticAttackChance < static_cast<uint32_t>(uniform_random(1, 100))) {
+			} else if (mType->info.staticAttackChance < safe_convert<uint32_t>(uniform_random(1, 100), __FUNCTION__)) {
 				result = getDanceStep(getPosition(), nextDirection);
 			}
 		}
@@ -1311,7 +1311,7 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 
 	if (!dirList.empty()) {
 		std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
-		moveDirection = dirList[uniform_random(0, dirList.size() - 1)];
+		moveDirection = dirList[uniform_random(0, safe_convert<int32_t>(dirList.size() - 1, __FUNCTION__))];
 		return true;
 	}
 	return false;
@@ -1323,7 +1323,7 @@ bool Monster::getDistanceStep(const Position &targetPos, Direction &moveDirectio
 	int_fast32_t dx = Position::getDistanceX(creaturePos, targetPos);
 	int_fast32_t dy = Position::getDistanceY(creaturePos, targetPos);
 
-	if (int32_t distance = std::max<int32_t>(static_cast<int32_t>(dx), static_cast<int32_t>(dy)); !flee && (distance > targetDistance || !g_game().isSightClear(creaturePos, targetPos, true))) {
+	if (int32_t distance = std::max<int32_t>(safe_convert<int32_t>(dx, __FUNCTION__), safe_convert<int32_t>(dy, __FUNCTION__)); !flee && (distance > targetDistance || !g_game().isSightClear(creaturePos, targetPos, true))) {
 		return false; // let the A* calculate it
 	} else if (!flee && distance == targetDistance) {
 		return true; // we don't really care here, since it's what we wanted to reach (a dancestep will take of dancing in that position)
@@ -1967,7 +1967,7 @@ void Monster::dropLoot(std::shared_ptr<Container> corpse, std::shared_ptr<Creatu
 			auto minSlivers = g_configManager().getNumber(FORGE_MIN_SLIVERS, __FUNCTION__);
 			auto maxSlivers = g_configManager().getNumber(FORGE_MAX_SLIVERS, __FUNCTION__);
 
-			auto sliverCount = static_cast<uint16_t>(uniform_random(minSlivers, maxSlivers));
+			auto sliverCount = safe_convert<uint16_t>(uniform_random(minSlivers, maxSlivers), __FUNCTION__);
 
 			std::shared_ptr<Item> sliver = Item::CreateItem(ITEM_FORGE_SLIVER, sliverCount);
 			if (g_game().internalAddItem(corpse, sliver) != RETURNVALUE_NOERROR) {
@@ -1999,8 +1999,8 @@ void Monster::drainHealth(std::shared_ptr<Creature> attacker, int32_t damage) {
 }
 
 void Monster::changeHealth(int32_t healthChange, bool sendHealthChange /* = true*/) {
-	if (mType && !mType->info.soundVector.empty() && mType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100))) {
-		auto index = uniform_random(0, mType->info.soundVector.size() - 1);
+	if (mType && !mType->info.soundVector.empty() && mType->info.soundChance >= safe_convert<uint32_t>(uniform_random(1, 100), __FUNCTION__)) {
+		auto index = uniform_random(0, safe_convert<int32_t>(mType->info.soundVector.size() - 1, __FUNCTION__));
 		g_game().sendSingleSoundEffect(static_self_cast<Monster>()->getPosition(), mType->info.soundVector[index], getMonster());
 	}
 
@@ -2037,7 +2037,7 @@ bool Monster::changeTargetDistance(int32_t distance, uint32_t duration /* = 1200
 	}
 
 	bool shouldUpdate = mType->info.targetDistance > distance ? true : false;
-	challengeMeleeDuration = duration;
+	challengeMeleeDuration = safe_convert<int32_t>(duration, __FUNCTION__);
 	targetDistance = distance;
 
 	if (shouldUpdate) {
@@ -2047,7 +2047,7 @@ bool Monster::changeTargetDistance(int32_t distance, uint32_t duration /* = 1200
 }
 
 bool Monster::isImmune(ConditionType_t conditionType) const {
-	return mType->info.m_conditionImmunities[static_cast<size_t>(conditionType)];
+	return mType->info.m_conditionImmunities[safe_convert<size_t>(conditionType, __FUNCTION__)];
 }
 
 bool Monster::isImmune(CombatType_t combatType) const {
@@ -2092,15 +2092,15 @@ void Monster::configureForgeSystem() {
 		setIcon("forge", CreatureIcon(CreatureIconModifications_t::Fiendish, 0 /* don't show stacks on fiends */));
 		g_game().updateCreatureIcon(static_self_cast<Monster>());
 	} else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER) {
-		auto stack = static_cast<uint16_t>(normal_random(1, 5));
+		auto stack = safe_convert<uint16_t>(normal_random(1, 5), __FUNCTION__);
 		setForgeStack(stack);
 		setIcon("forge", CreatureIcon(CreatureIconModifications_t::Influenced, stack));
 		g_game().updateCreatureIcon(static_self_cast<Monster>());
 	}
 
 	// Change health based in stacks
-	float percentToIncrement = static_cast<float>((forgeStack * 6) + 100) / 100.f;
-	auto newHealth = static_cast<int32_t>(std::ceil(static_cast<float>(healthMax) * percentToIncrement));
+	float percentToIncrement = safe_convert<float>((forgeStack * 6) + 100, __FUNCTION__) / 100.f;
+	auto newHealth = safe_convert<int32_t>(std::ceil(safe_convert<float>(healthMax, __FUNCTION__) * percentToIncrement), __FUNCTION__);
 
 	healthMax = newHealth;
 	health = newHealth;
@@ -2117,8 +2117,8 @@ void Monster::clearFiendishStatus() {
 	forgeStack = 0;
 	monsterForgeClassification = ForgeClassifications_t::FORGE_NORMAL_MONSTER;
 
-	health = mType->info.health * mType->getHealthMultiplier();
-	healthMax = mType->info.healthMax * mType->getHealthMultiplier();
+	health = mType->info.health * safe_convert<int32_t>(mType->getHealthMultiplier(), __FUNCTION__);
+	healthMax = mType->info.healthMax * safe_convert<int32_t>(mType->getHealthMultiplier(), __FUNCTION__);
 
 	removeIcon("forge");
 	g_game().updateCreatureIcon(static_self_cast<Monster>());

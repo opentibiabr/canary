@@ -30,7 +30,7 @@ void WaitingList::cleanupList(WaitList &list) {
 
 	auto it = list.begin();
 	while (it != list.end()) {
-		auto timeout = static_cast<int64_t>(it->timeout);
+		auto timeout = safe_convert<int64_t>(it->timeout, __FUNCTION__);
 		g_logger().warn("time: {}", timeout - time);
 		if ((timeout - time) <= 0) {
 			info->playerReferences.erase(it->playerGUID);
@@ -64,7 +64,7 @@ bool WaitingList::clientLogin(std::shared_ptr<Player> player) {
 		return true;
 	}
 
-	auto maxPlayers = static_cast<uint32_t>(g_configManager().getNumber(MAX_PLAYERS, __FUNCTION__));
+	auto maxPlayers = safe_convert<uint32_t>(g_configManager().getNumber(MAX_PLAYERS, __FUNCTION__), __FUNCTION__);
 	if (maxPlayers == 0 || (info->priorityWaitList.empty() && info->waitList.empty() && g_game().getPlayersOnline() < maxPlayers)) {
 		return true;
 	}

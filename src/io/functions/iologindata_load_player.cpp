@@ -76,7 +76,7 @@ bool IOLoginDataLoad::preLoadPlayer(std::shared_ptr<Player> player, const std::s
 
 	auto [coins, error] = player->account->getCoins(account::CoinType::COIN);
 	if (error != account::ERROR_NO) {
-		g_logger().error("Failed to get coins for player {}, error {}", player->name, static_cast<uint8_t>(error));
+		g_logger().error("Failed to get coins for player {}, error {}", player->name, safe_convert<uint8_t>(error, __FUNCTION__));
 		return false;
 	}
 
@@ -84,7 +84,7 @@ bool IOLoginDataLoad::preLoadPlayer(std::shared_ptr<Player> player, const std::s
 
 	auto [transferableCoins, errorT] = player->account->getCoins(account::CoinType::TRANSFERABLE);
 	if (errorT != account::ERROR_NO) {
-		g_logger().error("Failed to get transferable coins for player {}, error {}", player->name, static_cast<uint8_t>(errorT));
+		g_logger().error("Failed to get transferable coins for player {}, error {}", player->name, safe_convert<uint8_t>(errorT, __FUNCTION__));
 		return false;
 	}
 
@@ -127,10 +127,10 @@ bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_p
 
 	player->setBankBalance(result->getNumber<uint64_t>("balance"));
 	player->quickLootFallbackToMainContainer = result->getNumber<bool>("quickloot_fallback");
-	player->setSex(static_cast<PlayerSex_t>(result->getNumber<uint16_t>("sex")));
-	player->setPronoun(static_cast<PlayerPronoun_t>(result->getNumber<uint16_t>("pronoun")));
+	player->setSex(safe_convert<PlayerSex_t>(result->getNumber<uint16_t>("sex"), __FUNCTION__));
+	player->setPronoun(safe_convert<PlayerPronoun_t>(result->getNumber<uint16_t>("pronoun"), __FUNCTION__));
 	player->level = std::max<uint32_t>(1, result->getNumber<uint32_t>("level"));
-	player->soul = static_cast<uint8_t>(result->getNumber<unsigned short>("soul"));
+	player->soul = safe_convert<uint8_t>(result->getNumber<unsigned short>("soul"), __FUNCTION__);
 	player->capacity = result->getNumber<uint32_t>("cap") * 100;
 	player->mana = result->getNumber<uint32_t>("mana");
 	player->manaMax = result->getNumber<uint32_t>("manamax");
@@ -144,15 +144,15 @@ bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_p
 	player->magLevelPercent = Player::getPercentLevel(player->manaSpent, nextManaCount);
 	player->health = result->getNumber<int32_t>("health");
 	player->healthMax = result->getNumber<int32_t>("healthmax");
-	player->isDailyReward = static_cast<uint8_t>(result->getNumber<uint16_t>("isreward"));
+	player->isDailyReward = safe_convert<uint8_t>(result->getNumber<uint16_t>("isreward"), __FUNCTION__);
 	player->loginPosition.x = result->getNumber<uint16_t>("posx");
 	player->loginPosition.y = result->getNumber<uint16_t>("posy");
-	player->loginPosition.z = static_cast<uint8_t>(result->getNumber<uint16_t>("posz"));
+	player->loginPosition.z = safe_convert<uint8_t>(result->getNumber<uint16_t>("posz"), __FUNCTION__);
 	player->addPreyCards(result->getNumber<uint64_t>("prey_wildcard"));
 	player->addTaskHuntingPoints(result->getNumber<uint64_t>("task_points"));
 	player->addForgeDusts(result->getNumber<uint64_t>("forge_dusts"));
 	player->addForgeDustLevel(result->getNumber<uint64_t>("forge_dust_level"));
-	player->setRandomMount(static_cast<uint8_t>(result->getNumber<uint16_t>("randomize_mount")));
+	player->setRandomMount(safe_convert<uint8_t>(result->getNumber<uint16_t>("randomize_mount"), __FUNCTION__));
 	player->addBossPoints(result->getNumber<uint32_t>("boss_points"));
 	player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
 	player->lastLogout = result->getNumber<time_t>("lastlogout");
@@ -197,7 +197,7 @@ void IOLoginDataLoad::loadPlayerExperience(std::shared_ptr<Player> player, DBRes
 	player->experience = experience;
 
 	if (currExpCount < nextExpCount) {
-		player->levelPercent = static_cast<uint8_t>(std::round(Player::getPercentLevel(player->experience - currExpCount, nextExpCount - currExpCount)));
+		player->levelPercent = safe_convert<uint8_t>(std::round(Player::getPercentLevel(player->experience - currExpCount, nextExpCount - currExpCount)), __FUNCTION__);
 	} else {
 		player->levelPercent = 0;
 	}
@@ -212,7 +212,7 @@ void IOLoginDataLoad::loadPlayerBlessings(std::shared_ptr<Player> player, DBResu
 	for (int i = 1; i <= 8; i++) {
 		std::ostringstream ss;
 		ss << "blessings" << i;
-		player->addBlessing(static_cast<uint8_t>(i), static_cast<uint8_t>(result->getNumber<uint16_t>(ss.str())));
+		player->addBlessing(safe_convert<uint8_t>(i, __FUNCTION__), safe_convert<uint8_t>(result->getNumber<uint16_t>(ss.str()), __FUNCTION__));
 	}
 }
 
@@ -248,15 +248,15 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 		return;
 	}
 
-	player->defaultOutfit.lookHead = static_cast<uint8_t>(result->getNumber<uint16_t>("lookhead"));
-	player->defaultOutfit.lookBody = static_cast<uint8_t>(result->getNumber<uint16_t>("lookbody"));
-	player->defaultOutfit.lookLegs = static_cast<uint8_t>(result->getNumber<uint16_t>("looklegs"));
-	player->defaultOutfit.lookFeet = static_cast<uint8_t>(result->getNumber<uint16_t>("lookfeet"));
-	player->defaultOutfit.lookAddons = static_cast<uint8_t>(result->getNumber<uint16_t>("lookaddons"));
-	player->defaultOutfit.lookMountHead = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmounthead"));
-	player->defaultOutfit.lookMountBody = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountbody"));
-	player->defaultOutfit.lookMountLegs = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountlegs"));
-	player->defaultOutfit.lookMountFeet = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountfeet"));
+	player->defaultOutfit.lookHead = safe_convert<uint8_t>(result->getNumber<uint16_t>("lookhead"), __FUNCTION__);
+	player->defaultOutfit.lookBody = safe_convert<uint8_t>(result->getNumber<uint16_t>("lookbody"), __FUNCTION__);
+	player->defaultOutfit.lookLegs = safe_convert<uint8_t>(result->getNumber<uint16_t>("looklegs"), __FUNCTION__);
+	player->defaultOutfit.lookFeet = safe_convert<uint8_t>(result->getNumber<uint16_t>("lookfeet"), __FUNCTION__);
+	player->defaultOutfit.lookAddons = safe_convert<uint8_t>(result->getNumber<uint16_t>("lookaddons"), __FUNCTION__);
+	player->defaultOutfit.lookMountHead = safe_convert<uint8_t>(result->getNumber<uint16_t>("lookmounthead"), __FUNCTION__);
+	player->defaultOutfit.lookMountBody = safe_convert<uint8_t>(result->getNumber<uint16_t>("lookmountbody"), __FUNCTION__);
+	player->defaultOutfit.lookMountLegs = safe_convert<uint8_t>(result->getNumber<uint16_t>("lookmountlegs"), __FUNCTION__);
+	player->defaultOutfit.lookMountFeet = safe_convert<uint8_t>(result->getNumber<uint16_t>("lookmountfeet"), __FUNCTION__);
 	player->defaultOutfit.lookFamiliarsType = result->getNumber<uint16_t>("lookfamiliarstype");
 
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
@@ -300,7 +300,7 @@ void IOLoginDataLoad::loadPlayerSkill(std::shared_ptr<Player> player, DBResult_p
 	for (size_t i = 0; i < skillNames.size(); ++i) {
 		uint16_t skillLevel = result->getNumber<uint16_t>(skillNames[i]);
 		uint64_t skillTries = result->getNumber<uint64_t>(skillNameTries[i]);
-		uint64_t nextSkillTries = player->vocation->getReqSkillTries(static_cast<uint8_t>(i), skillLevel + 1);
+		uint64_t nextSkillTries = player->vocation->getReqSkillTries(safe_convert<uint8_t>(i, __FUNCTION__), skillLevel + 1);
 		if (skillTries > nextSkillTries) {
 			skillTries = 0;
 		}
@@ -358,7 +358,7 @@ void IOLoginDataLoad::loadPlayerGuild(std::shared_ptr<Player> player, DBResult_p
 				query << "SELECT `id`, `name`, `level` FROM `guild_ranks` WHERE `id` = " << playerRankId;
 
 				if ((result = db.storeQuery(query.str()))) {
-					guild->addRank(result->getNumber<uint32_t>("id"), result->getString("name"), static_cast<uint8_t>(result->getNumber<uint16_t>("level")));
+					guild->addRank(result->getNumber<uint32_t>("id"), result->getString("name"), safe_convert<uint8_t>(result->getNumber<uint16_t>("level"), __FUNCTION__));
 				}
 
 				rank = guild->getRankById(playerRankId);
@@ -519,8 +519,8 @@ void IOLoginDataLoad::loadPlayerInventoryItems(std::shared_ptr<Player> player, D
 					if (item->hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
 						auto flags = item->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
 						for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
-							if (hasBitSet(1 << category, static_cast<uint32_t>(flags))) {
-								player->setLootContainer(static_cast<ObjectCategory_t>(category), itemContainer, true);
+							if (hasBitSet(1 << category, safe_convert<uint32_t>(flags, __FUNCTION__))) {
+								player->setLootContainer(safe_convert<ObjectCategory_t>(category, __FUNCTION__), itemContainer, true);
 							}
 						}
 					}
@@ -691,8 +691,8 @@ void IOLoginDataLoad::loadPlayerPreyClass(std::shared_ptr<Player> player, DBResu
 		query << "SELECT * FROM `player_prey` WHERE `player_id` = " << player->getGUID();
 		if (result = db.storeQuery(query.str())) {
 			do {
-				auto slot = std::make_unique<PreySlot>(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
-				auto state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
+				auto slot = std::make_unique<PreySlot>(safe_convert<PreySlot_t>(result->getNumber<uint16_t>("slot"), __FUNCTION__));
+				auto state = safe_convert<PreyDataState_t>(result->getNumber<uint16_t>("state"), __FUNCTION__);
 				if (slot->id == PreySlot_Two && state == PreyDataState_Locked) {
 					if (!player->isPremium()) {
 						slot->state = PreyDataState_Locked;
@@ -703,9 +703,9 @@ void IOLoginDataLoad::loadPlayerPreyClass(std::shared_ptr<Player> player, DBResu
 					slot->state = state;
 				}
 				slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
-				slot->option = static_cast<PreyOption_t>(result->getNumber<uint16_t>("option"));
-				slot->bonus = static_cast<PreyBonus_t>(result->getNumber<uint16_t>("bonus_type"));
-				slot->bonusRarity = static_cast<uint8_t>(result->getNumber<uint16_t>("bonus_rarity"));
+				slot->option = safe_convert<PreyOption_t>(result->getNumber<uint16_t>("option"), __FUNCTION__);
+				slot->bonus = safe_convert<PreyBonus_t>(result->getNumber<uint16_t>("bonus_type"), __FUNCTION__);
+				slot->bonusRarity = safe_convert<uint8_t>(result->getNumber<uint16_t>("bonus_rarity"), __FUNCTION__);
 				slot->bonusPercentage = result->getNumber<uint16_t>("bonus_percentage");
 				slot->bonusTimeLeft = result->getNumber<uint16_t>("bonus_time");
 				slot->freeRerollTimeStamp = result->getNumber<int64_t>("free_reroll");
@@ -738,8 +738,8 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(std::shared_ptr<Player> player,
 		query << "SELECT * FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
 		if (result = db.storeQuery(query.str())) {
 			do {
-				auto slot = std::make_unique<TaskHuntingSlot>(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
-				auto state = static_cast<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"));
+				auto slot = std::make_unique<TaskHuntingSlot>(safe_convert<PreySlot_t>(result->getNumber<uint16_t>("slot"), __FUNCTION__));
+				auto state = safe_convert<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"), __FUNCTION__);
 				if (slot->id == PreySlot_Two && state == PreyTaskDataState_Locked) {
 					if (!player->isPremium()) {
 						slot->state = PreyTaskDataState_Locked;
@@ -751,7 +751,7 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(std::shared_ptr<Player> player,
 				}
 				slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
 				slot->upgrade = result->getNumber<bool>("upgrade");
-				slot->rarity = static_cast<uint8_t>(result->getNumber<uint16_t>("rarity"));
+				slot->rarity = safe_convert<uint8_t>(result->getNumber<uint16_t>("rarity"), __FUNCTION__);
 				slot->currentKills = result->getNumber<uint16_t>("kills");
 				slot->disabledUntilTimeStamp = result->getNumber<int64_t>("disabled_time");
 				slot->freeRerollTimeStamp = result->getNumber<int64_t>("free_reroll");

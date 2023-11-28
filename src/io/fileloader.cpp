@@ -38,7 +38,7 @@ namespace OTB {
 
 	const Node &Loader::parseTree() {
 		auto it = fileContents.begin() + sizeof(Identifier);
-		if (static_cast<uint8_t>(*it) != Node::START) {
+		if (safe_convert<uint8_t>(*it, __FUNCTION__) != Node::START) {
 			throw InvalidOTBFormat {};
 		}
 		root.type = *(++it);
@@ -47,7 +47,7 @@ namespace OTB {
 		parseStack.push(&root);
 
 		for (; it != fileContents.end(); ++it) {
-			switch (static_cast<uint8_t>(*it)) {
+			switch (safe_convert<uint8_t>(*it, __FUNCTION__)) {
 				case Node::START: {
 					auto &currentNode = getCurrentNode(parseStack);
 					if (currentNode.children.empty()) {
@@ -98,7 +98,7 @@ namespace OTB {
 		bool lastEscaped = false;
 
 		auto escapedPropEnd = std::copy_if(node.propsBegin, node.propsEnd, propBuffer.begin(), [&lastEscaped](const char &byte) {
-			lastEscaped = byte == static_cast<char>(Node::ESCAPE) && !lastEscaped;
+			lastEscaped = byte == safe_convert<char>(Node::ESCAPE, __FUNCTION__) && !lastEscaped;
 			return !lastEscaped;
 		});
 		props.init(&propBuffer[0], std::distance(propBuffer.begin(), escapedPropEnd));

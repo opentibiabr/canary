@@ -17,7 +17,7 @@
 #include "game/scheduling/save_manager.hpp"
 
 uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {
-	auto tier = static_cast<uint8_t>(std::atoi(string.c_str()));
+	auto tier = safe_convert<uint8_t>(std::atoi(string.c_str()), __FUNCTION__);
 	if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER, __FUNCTION__)) {
 		g_logger().error("{} - Failed to get number value {} for tier table result", __FUNCTION__, tier);
 		return 0;
@@ -130,7 +130,7 @@ HistoryMarketOfferList IOMarket::getOwnHistory(MarketAction_t action, uint32_t p
 		offer.timestamp = result->getNumber<uint32_t>("expires_at");
 		offer.tier = getTierFromDatabaseTable(result->getString("tier"));
 
-		MarketOfferState_t offerState = static_cast<MarketOfferState_t>(result->getNumber<uint16_t>("state"));
+		MarketOfferState_t offerState = safe_convert<MarketOfferState_t>(result->getNumber<uint16_t>("state"), __FUNCTION__);
 		if (offerState == OFFERSTATE_ACCEPTEDEX) {
 			offerState = OFFERSTATE_ACCEPTED;
 		}
@@ -260,7 +260,7 @@ MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter) 
 	}
 
 	offer.id = result->getNumber<uint32_t>("id");
-	offer.type = static_cast<MarketAction_t>(result->getNumber<uint16_t>("sale"));
+	offer.type = safe_convert<MarketAction_t>(result->getNumber<uint16_t>("sale"), __FUNCTION__);
 	offer.amount = result->getNumber<uint16_t>("amount");
 	offer.counter = result->getNumber<uint32_t>("id") & 0xFFFF;
 	offer.timestamp = result->getNumber<uint32_t>("created");
@@ -321,7 +321,7 @@ bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state) {
 
 	appendHistory(
 		result->getNumber<uint32_t>("player_id"),
-		static_cast<MarketAction_t>(result->getNumber<uint16_t>("sale")),
+		safe_convert<MarketAction_t>(result->getNumber<uint16_t>("sale"), __FUNCTION__),
 		result->getNumber<uint16_t>("itemtype"),
 		result->getNumber<uint16_t>("amount"),
 		result->getNumber<uint64_t>("price"),

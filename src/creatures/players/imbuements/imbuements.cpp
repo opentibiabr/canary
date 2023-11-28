@@ -100,7 +100,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 			imbuement.icon = pugi::cast<uint16_t>(iconBase.value());
 
 			if (pugi::xml_attribute soundBase = baseNode.attribute("sound")) {
-				imbuement.soundEffect = static_cast<SoundEffect_t>(pugi::cast<uint16_t>(soundBase.value()));
+				imbuement.soundEffect = safe_convert<SoundEffect_t>(pugi::cast<uint16_t>(soundBase.value()), __FUNCTION__);
 			}
 
 			pugi::xml_attribute premiumBase = baseNode.attribute("premium");
@@ -355,7 +355,7 @@ std::vector<Imbuement*> Imbuements::getImbuements(std::shared_ptr<Player> player
 
 		// Send only the imbuements registered on item (in items.xml) to the imbuement window
 		const CategoryImbuement* categoryImbuement = getCategoryByID(imbuement->getCategory());
-		if (!item->hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
+		if (!item->hasImbuementType(safe_convert<ImbuementTypes_t>(categoryImbuement->id, __FUNCTION__), imbuement->getBaseID())) {
 			continue;
 		}
 

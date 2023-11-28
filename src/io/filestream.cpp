@@ -34,7 +34,7 @@ uint32_t FileStream::size() const {
 		throw std::overflow_error("File size exceeds uint32_t range");
 	}
 
-	return static_cast<uint32_t>(size);
+	return safe_convert<uint32_t>(size, __FUNCTION__);
 }
 
 template <typename T>

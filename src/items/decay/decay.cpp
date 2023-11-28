@@ -132,7 +132,7 @@ void Decay::checkDecay() {
 	}
 
 	if (it != end) {
-		eventId = g_dispatcher().scheduleEvent(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
+		eventId = g_dispatcher().scheduleEvent(std::max<int32_t>(SCHEDULER_MINTICKS, safe_convert<int32_t>(it->first - timestamp, __FUNCTION__)), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
 	}
 }
 
@@ -157,7 +157,7 @@ void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 			for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
 				if (it.abilities && it.abilities->skills[i] != 0) {
 					needUpdateSkills = true;
-					player->setVarSkill(static_cast<skills_t>(i), -it.abilities->skills[i]);
+					player->setVarSkill(safe_convert<skills_t>(i, __FUNCTION__), -it.abilities->skills[i]);
 				}
 			}
 
@@ -170,11 +170,11 @@ void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 				if (it.abilities && it.abilities->stats[s] != 0) {
 					needUpdateStats = true;
 					needUpdateSkills = true;
-					player->setVarStats(static_cast<stats_t>(s), -it.abilities->stats[s]);
+					player->setVarStats(safe_convert<stats_t>(s, __FUNCTION__), -it.abilities->stats[s]);
 				}
 				if (it.abilities && it.abilities->statsPercent[s] != 0) {
 					needUpdateStats = true;
-					player->setVarStats(static_cast<stats_t>(s), -static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
+					player->setVarStats(safe_convert<stats_t>(s, __FUNCTION__), -safe_convert<int32_t>(player->getDefaultStats(safe_convert<stats_t>(s, __FUNCTION__)) * ((it.abilities->statsPercent[s] - 100) / 100.f), __FUNCTION__));
 				}
 			}
 
@@ -186,7 +186,7 @@ void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 				player->sendSkills();
 			}
 		}
-		g_game().transformItem(item, static_cast<uint16_t>(it.decayTo));
+		g_game().transformItem(item, safe_convert<uint16_t>(it.decayTo, __FUNCTION__));
 	} else {
 		if (item->isLoadedFromMap()) {
 			return;
@@ -196,7 +196,7 @@ void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 		if (ret != RETURNVALUE_NOERROR) {
 			g_logger().error("[Decay::internalDecayItem] - internalDecayItem failed, "
 							 "error code: {}, item id: {}",
-							 static_cast<uint32_t>(ret), item->getID());
+							 safe_convert<uint32_t>(ret, __FUNCTION__), item->getID());
 		}
 	}
 }

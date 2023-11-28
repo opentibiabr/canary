@@ -366,7 +366,7 @@ int MonsterFunctions::luaMonsterSetSpawnPosition(lua_State* L) {
 	g_game().map.spawnsMonster.getspawnMonsterList().emplace_front(pos, 5);
 	SpawnMonster &spawnMonster = g_game().map.spawnsMonster.getspawnMonsterList().front();
 	uint32_t interval = getNumber<uint32_t>(L, 2, 90) * 1000 * 100 / std::max((uint32_t)1, (g_configManager().getNumber(RATE_SPAWN, __FUNCTION__) * eventschedule));
-	spawnMonster.addMonster(monster->mType->typeName, pos, DIRECTION_NORTH, static_cast<uint32_t>(interval));
+	spawnMonster.addMonster(monster->mType->typeName, pos, DIRECTION_NORTH, safe_convert<uint32_t>(interval, __FUNCTION__));
 	spawnMonster.startSpawnMonsterCheck();
 
 	pushBoolean(L, true);
@@ -398,7 +398,7 @@ int MonsterFunctions::luaMonsterGetTimeToChangeFiendish(lua_State* L) {
 		return 0;
 	}
 
-	lua_pushnumber(L, static_cast<lua_Number>(monster->getTimeToChangeFiendish()));
+	lua_pushnumber(L, safe_convert<lua_Number>(monster->getTimeToChangeFiendish(), __FUNCTION__));
 	return 1;
 }
 
@@ -425,7 +425,7 @@ int MonsterFunctions::luaMonsterGetMonsterForgeClassification(lua_State* L) {
 		return 0;
 	}
 
-	auto classification = static_cast<lua_Number>(monster->getMonsterForgeClassification());
+	auto classification = safe_convert<lua_Number>(monster->getMonsterForgeClassification(), __FUNCTION__);
 	lua_pushnumber(L, classification);
 	return 1;
 }
@@ -471,7 +471,7 @@ int MonsterFunctions::luaMonsterSetForgeStack(lua_State* L) {
 	auto icon = stack < 15
 		? CreatureIconModifications_t::Influenced
 		: CreatureIconModifications_t::Fiendish;
-	monster->setIcon("forge", CreatureIcon(icon, icon == CreatureIconModifications_t::Influenced ? static_cast<uint8_t>(stack) : 0));
+	monster->setIcon("forge", CreatureIcon(icon, icon == CreatureIconModifications_t::Influenced ? safe_convert<uint8_t>(stack, __FUNCTION__) : 0));
 	g_game().updateCreatureIcon(monster);
 	g_game().sendUpdateCreature(monster);
 	return 1;

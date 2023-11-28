@@ -684,9 +684,9 @@ void LuaFunctionsLoader::registerClass(lua_State* L, const std::string &classNam
 	// className.metatable['t'] = type
 	auto userTypeEnum = magic_enum::enum_cast<LuaData_t>(className);
 	if (userTypeEnum.has_value()) {
-		lua_pushnumber(L, static_cast<lua_Number>(userTypeEnum.value()));
+		lua_pushnumber(L, safe_convert<lua_Number>(userTypeEnum.value(), __FUNCTION__));
 	} else {
-		lua_pushnumber(L, static_cast<lua_Number>(LuaData_t::Unknown));
+		lua_pushnumber(L, safe_convert<lua_Number>(LuaData_t::Unknown, __FUNCTION__));
 	}
 	lua_rawseti(L, metatable, 't');
 

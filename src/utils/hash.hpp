@@ -9,7 +9,7 @@ namespace stdext {
 		x ^= x >> 33U;
 		x *= UINT64_C(0xff51afd7ed558ccd);
 		x ^= x >> 33U;
-		return static_cast<size_t>(x);
+		return safe_convert<size_t>(x, __FUNCTION__);
 	}
 
 	// Boost Lib

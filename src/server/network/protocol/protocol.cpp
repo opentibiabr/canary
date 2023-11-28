@@ -115,7 +115,7 @@ void Protocol::XTEA_encrypt(OutputMessage &msg) const {
 	}
 
 	uint8_t* buffer = msg.getOutputBuffer();
-	auto messageLength = static_cast<int32_t>(msg.getLength());
+	auto messageLength = safe_convert<int32_t>(msg.getLength(), __FUNCTION__);
 	int32_t readPos = 0;
 	const std::array<uint32_t, 4> newKey = { key[0], key[1], key[2], key[3] };
 	// TODO: refactor this for not use c-style
@@ -147,7 +147,7 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 	const uint32_t delta = 0x61C88647;
 
 	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
-	auto messageLength = static_cast<int32_t>(msgLength);
+	auto messageLength = safe_convert<int32_t>(msgLength, __FUNCTION__);
 	int32_t readPos = 0;
 	const std::array<uint32_t, 4> newKey = { key[0], key[1], key[2], key[3] };
 	// TODO: refactor this for not use c-style

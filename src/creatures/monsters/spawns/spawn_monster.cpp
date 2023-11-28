@@ -76,7 +76,7 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 
 				pugi::xml_attribute directionAttribute = childMonsterNode.attribute("direction");
 				if (directionAttribute) {
-					dir = static_cast<Direction>(pugi::cast<uint16_t>(directionAttribute.value()));
+					dir = safe_convert<Direction>(pugi::cast<uint16_t>(directionAttribute.value()), __FUNCTION__);
 				} else {
 					dir = DIRECTION_NORTH;
 				}
@@ -84,8 +84,8 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 				auto xOffset = pugi::cast<int16_t>(childMonsterNode.attribute("x").value());
 				auto yOffset = pugi::cast<int16_t>(childMonsterNode.attribute("y").value());
 				Position pos(
-					static_cast<uint16_t>(centerPos.x + xOffset),
-					static_cast<uint16_t>(centerPos.y + yOffset),
+					safe_convert<uint16_t>(centerPos.x + xOffset, __FUNCTION__),
+					safe_convert<uint16_t>(centerPos.y + yOffset, __FUNCTION__),
 					centerPos.z
 				);
 

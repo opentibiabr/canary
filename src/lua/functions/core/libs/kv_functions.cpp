@@ -110,7 +110,7 @@ int KVFunctions::luaKVKeys(lua_State* L) {
 	}
 
 	int index = 0;
-	lua_createtable(L, static_cast<int>(keys.size()), 0);
+	lua_createtable(L, safe_convert<int>(keys.size(), __FUNCTION__), 0);
 	for (const auto &key : keys) {
 		pushString(L, key);
 		lua_rawseti(L, -2, ++index);

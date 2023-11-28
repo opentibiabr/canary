@@ -19,7 +19,7 @@ int ResultFunctions::luaResultGetNumber(lua_State* L) {
 	}
 
 	const std::string &s = getString(L, 2);
-	lua_pushnumber(L, res->getNumber<int64_t>(s));
+	lua_pushnumber(L, safe_convert<lua_Number>(res->getNumber<int64_t>(s), __FUNCTION__));
 	return 1;
 }
 

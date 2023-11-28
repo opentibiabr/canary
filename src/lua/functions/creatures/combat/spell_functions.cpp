@@ -35,7 +35,7 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 			return 1;
 		}
 
-		spellType = static_cast<SpellType_t>(id);
+		spellType = safe_convert<SpellType_t>(id, __FUNCTION__);
 	} else if (isString(L, 2)) {
 		std::string arg = getString(L, 2);
 		std::shared_ptr<InstantSpell> instant = g_spells().getInstantSpellByName(arg);
@@ -139,8 +139,8 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 			if (iType.name.empty()) {
 				iType.name = rune->getName();
 			}
-			iType.runeMagLevel = rune->getMagicLevel();
-			iType.runeLevel = rune->getLevel();
+			iType.runeMagLevel = safe_convert<int32_t>(rune->getMagicLevel(), __FUNCTION__);
+			iType.runeLevel = safe_convert<int32_t>(rune->getLevel(), __FUNCTION__);
 			iType.charges = rune->getCharges();
 		}
 		if (!rune->isLoadedCallback()) {
@@ -270,9 +270,9 @@ int SpellFunctions::luaSpellCastSound(lua_State* L) {
 	const auto spell = getUserdataShared<Spell>(L, 1);
 	if (spell) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, static_cast<uint16_t>(spell->soundCastEffect));
+			lua_pushnumber(L, safe_convert<lua_Number>(spell->soundCastEffect, __FUNCTION__));
 		} else {
-			spell->soundCastEffect = static_cast<SoundEffect_t>(getNumber<uint16_t>(L, 2));
+			spell->soundCastEffect = safe_convert<SoundEffect_t>(getNumber<uint16_t>(L, 2), __FUNCTION__);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -286,9 +286,9 @@ int SpellFunctions::luaSpellImpactSound(lua_State* L) {
 	const auto spell = getUserdataShared<Spell>(L, 1);
 	if (spell) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, static_cast<uint16_t>(spell->soundImpactEffect));
+			lua_pushnumber(L, safe_convert<lua_Number>(spell->soundImpactEffect, __FUNCTION__));
 		} else {
-			spell->soundImpactEffect = static_cast<SoundEffect_t>(getNumber<uint16_t>(L, 2));
+			spell->soundImpactEffect = safe_convert<SoundEffect_t>(getNumber<uint16_t>(L, 2), __FUNCTION__);
 			pushBoolean(L, true);
 		}
 	} else {

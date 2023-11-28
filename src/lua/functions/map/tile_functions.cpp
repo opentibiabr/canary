@@ -88,7 +88,7 @@ int TileFunctions::luaTileGetThingCount(lua_State* L) {
 	// tile:getThingCount()
 	std::shared_ptr<Tile> tile = getUserdataShared<Tile>(L, 1);
 	if (tile) {
-		lua_pushnumber(L, tile->getThingCount());
+		lua_pushnumber(L, safe_convert<lua_Number>(tile->getThingCount(), __FUNCTION__));
 	} else {
 		lua_pushnil(L);
 	}
@@ -416,7 +416,7 @@ int TileFunctions::luaTileGetItems(lua_State* L) {
 		return 1;
 	}
 
-	lua_createtable(L, itemVector->size(), 0);
+	lua_createtable(L, safe_convert<int>(itemVector->size(), __FUNCTION__), 0);
 
 	int index = 0;
 	for (auto &item : *itemVector) {
@@ -435,7 +435,7 @@ int TileFunctions::luaTileGetItemCount(lua_State* L) {
 		return 1;
 	}
 
-	lua_pushnumber(L, tile->getItemCount());
+	lua_pushnumber(L, safe_convert<lua_Number>(tile->getItemCount(), __FUNCTION__));
 	return 1;
 }
 
@@ -476,7 +476,7 @@ int TileFunctions::luaTileGetCreatures(lua_State* L) {
 		return 1;
 	}
 
-	lua_createtable(L, creatureVector->size(), 0);
+	lua_createtable(L, safe_convert<int>(creatureVector->size(), __FUNCTION__), 0);
 
 	int index = 0;
 	for (auto &creature : *creatureVector) {
@@ -495,7 +495,7 @@ int TileFunctions::luaTileGetCreatureCount(lua_State* L) {
 		return 1;
 	}
 
-	lua_pushnumber(L, tile->getCreatureCount());
+	lua_pushnumber(L, safe_convert<lua_Number>(tile->getCreatureCount(), __FUNCTION__));
 	return 1;
 }
 

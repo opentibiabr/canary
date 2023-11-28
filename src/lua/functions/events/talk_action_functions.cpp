@@ -57,7 +57,7 @@ int TalkActionFunctions::luaTalkActionGroupType(lua_State* L) {
 
 	int type = lua_type(L, 2);
 	if (type == LUA_TNUMBER) {
-		groupType = static_cast<account::GroupType>(getNumber<uint8_t>(L, 2));
+		groupType = safe_convert<account::GroupType>(getNumber<uint8_t>(L, 2), __FUNCTION__);
 	} else if (type == LUA_TSTRING) {
 		std::string strValue = getString(L, 2);
 		if (strValue == "normal") {
@@ -151,6 +151,6 @@ int TalkActionFunctions::luaTalkActionGetGroupType(lua_State* L) {
 		return 1;
 	}
 
-	lua_pushnumber(L, static_cast<lua_Number>(talkactionSharedPtr->getGroupType()));
+	lua_pushnumber(L, safe_convert<lua_Number>(talkactionSharedPtr->getGroupType(), __FUNCTION__));
 	return 1;
 }

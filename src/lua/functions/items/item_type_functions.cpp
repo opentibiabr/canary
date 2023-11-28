@@ -337,7 +337,7 @@ int ItemTypeFunctions::luaItemTypeGetWeight(lua_State* L) {
 		return 1;
 	}
 
-	uint64_t weight = static_cast<uint64_t>(itemType->weight) * std::max<int32_t>(1, count);
+	uint64_t weight = safe_convert<uint64_t>(itemType->weight, __FUNCTION__) * std::max<int32_t>(1, count);
 	lua_pushnumber(L, weight);
 	return 1;
 }
@@ -350,7 +350,7 @@ int ItemTypeFunctions::luaItemTypeGetStackSize(lua_State* L) {
 		return 1;
 	}
 
-	uint64_t stackSize = static_cast<uint64_t>(itemType->stackSize);
+	uint64_t stackSize = safe_convert<uint64_t>(itemType->stackSize, __FUNCTION__);
 	lua_pushnumber(L, stackSize);
 	return 1;
 }

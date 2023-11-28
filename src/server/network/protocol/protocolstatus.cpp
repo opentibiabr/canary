@@ -175,7 +175,7 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 
 	if (requestedInfo & REQUEST_PLAYERS_INFO) {
 		output->addByte(0x20);
-		output->add<uint32_t>(static_cast<uint32_t>(g_game().getPlayersOnline()));
+		output->add<uint32_t>(safe_convert<uint32_t>(g_game().getPlayersOnline(), __FUNCTION__));
 		output->add<uint32_t>(g_configManager().getNumber(MAX_PLAYERS, __FUNCTION__));
 		output->add<uint32_t>(g_game().getPlayersRecord());
 	}

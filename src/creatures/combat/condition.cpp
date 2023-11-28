@@ -27,7 +27,7 @@ bool Condition::setParam(ConditionParam_t param, int32_t value) {
 		}
 
 		case CONDITION_PARAM_DRAIN_BODY: {
-			drainBodyStage = std::min(static_cast<uint8_t>(value), std::numeric_limits<uint8_t>::max());
+			drainBodyStage = std::min(safe_convert<uint8_t>(value, __FUNCTION__), std::numeric_limits<uint8_t>::max());
 			return true;
 		}
 
@@ -42,12 +42,12 @@ bool Condition::setParam(ConditionParam_t param, int32_t value) {
 		}
 
 		case CONDITION_PARAM_SOUND_TICK: {
-			tickSound = static_cast<SoundEffect_t>(value);
+			tickSound = safe_convert<SoundEffect_t>(value, __FUNCTION__);
 			return true;
 		}
 
 		case CONDITION_PARAM_SOUND_ADD: {
-			addSound = static_cast<SoundEffect_t>(value);
+			addSound = safe_convert<SoundEffect_t>(value, __FUNCTION__);
 			return true;
 		}
 
@@ -64,7 +64,7 @@ bool Condition::setPositionParam(ConditionParam_t param, const Position &pos) {
 bool Condition::unserialize(PropStream &propStream) {
 	uint8_t attr_type;
 	while (propStream.read<uint8_t>(attr_type) && attr_type != CONDITIONATTR_END) {
-		if (!unserializeProp(static_cast<ConditionAttr_t>(attr_type), propStream)) {
+		if (!unserializeProp(safe_convert<ConditionAttr_t>(attr_type, __FUNCTION__), propStream)) {
 			return false;
 		}
 	}
@@ -79,7 +79,7 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 				return false;
 			}
 
-			conditionType = static_cast<ConditionType_t>(value);
+			conditionType = safe_convert<ConditionType_t>(value, __FUNCTION__);
 			return true;
 		}
 
@@ -89,7 +89,7 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 				return false;
 			}
 
-			id = static_cast<ConditionId_t>(value);
+			id = safe_convert<ConditionId_t>(value, __FUNCTION__);
 			return true;
 		}
 
@@ -117,7 +117,7 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 				return false;
 			}
 
-			tickSound = static_cast<SoundEffect_t>(value);
+			tickSound = safe_convert<SoundEffect_t>(value, __FUNCTION__);
 			return true;
 		}
 
@@ -127,7 +127,7 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 				return false;
 			}
 
-			addSound = static_cast<SoundEffect_t>(value);
+			addSound = safe_convert<SoundEffect_t>(value, __FUNCTION__);
 			return true;
 		}
 
@@ -156,10 +156,10 @@ void Condition::serialize(PropWriteStream &propWriteStream) {
 	propWriteStream.write<uint32_t>(subId);
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_TICKSOUND);
-	propWriteStream.write<uint16_t>(static_cast<uint16_t>(tickSound));
+	propWriteStream.write<uint16_t>(safe_convert<uint16_t>(tickSound, __FUNCTION__));
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_ADDSOUND);
-	propWriteStream.write<uint16_t>(static_cast<uint16_t>(addSound));
+	propWriteStream.write<uint16_t>(safe_convert<uint16_t>(addSound, __FUNCTION__));
 }
 
 void Condition::setTicks(int32_t newTicks) {
@@ -295,7 +295,7 @@ std::shared_ptr<Condition> Condition::createCondition(PropStream &propStream) {
 		return nullptr;
 	}
 
-	return createCondition(static_cast<ConditionId_t>(id), static_cast<ConditionType_t>(type), ticks, 0, buff != 0, subId);
+	return createCondition(safe_convert<ConditionId_t>(id, __FUNCTION__), safe_convert<ConditionType_t>(type, __FUNCTION__), ticks, 0, buff != 0, subId);
 }
 
 bool Condition::startCondition(std::shared_ptr<Creature>) {
@@ -560,19 +560,19 @@ void ConditionAttributes::updatePercentStats(std::shared_ptr<Player> player) {
 
 		switch (i) {
 			case STAT_MAXHITPOINTS:
-				stats[i] = static_cast<int32_t>(player->getMaxHealth() * ((statsPercent[i] - 100) / 100.f));
+				stats[i] = safe_convert<int32_t>(player->getMaxHealth() * ((statsPercent[i] - 100) / 100.f), __FUNCTION__);
 				break;
 
 			case STAT_MAXMANAPOINTS:
-				stats[i] = static_cast<int32_t>(player->getMaxMana() * ((statsPercent[i] - 100) / 100.f));
+				stats[i] = safe_convert<int32_t>(player->getMaxMana() * ((statsPercent[i] - 100) / 100.f), __FUNCTION__);
 				break;
 
 			case STAT_MAGICPOINTS:
-				stats[i] = static_cast<int32_t>(player->getBaseMagicLevel() * ((statsPercent[i] - 100) / 100.f));
+				stats[i] = safe_convert<int32_t>(player->getBaseMagicLevel() * ((statsPercent[i] - 100) / 100.f), __FUNCTION__);
 				break;
 
 			case STAT_CAPACITY:
-				stats[i] = static_cast<int32_t>(player->getCapacity() * (statsPercent[i] / 100.f));
+				stats[i] = safe_convert<int32_t>(player->getCapacity() * (statsPercent[i] / 100.f), __FUNCTION__);
 				break;
 		}
 	}
@@ -584,7 +584,7 @@ void ConditionAttributes::updateStats(std::shared_ptr<Player> player) {
 	for (int32_t i = STAT_FIRST; i <= STAT_LAST; ++i) {
 		if (stats[i]) {
 			needUpdate = true;
-			player->setVarStats(static_cast<stats_t>(i), stats[i]);
+			player->setVarStats(safe_convert<stats_t>(i, __FUNCTION__), stats[i]);
 		}
 	}
 
@@ -596,13 +596,13 @@ void ConditionAttributes::updateStats(std::shared_ptr<Player> player) {
 
 void ConditionAttributes::updatePercentSkills(std::shared_ptr<Player> player) {
 	for (uint8_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-		skills_t skill = static_cast<skills_t>(i);
+		skills_t skill = safe_convert<skills_t>(i, __FUNCTION__);
 		if (skillsPercent[skill] == 0) {
 			continue;
 		}
 
 		int32_t unmodifiedSkill = player->getBaseSkill(skill);
-		skills[skill] = static_cast<int32_t>(unmodifiedSkill * ((skillsPercent[skill] - 100) / 100.f));
+		skills[skill] = safe_convert<int32_t>(unmodifiedSkill * ((skillsPercent[skill] - 100) / 100.f), __FUNCTION__);
 	}
 }
 
@@ -612,7 +612,7 @@ void ConditionAttributes::updateSkills(std::shared_ptr<Player> player) {
 	for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
 		if (skills[i]) {
 			needUpdateSkills = true;
-			player->setVarSkill(static_cast<skills_t>(i), skills[i]);
+			player->setVarSkill(safe_convert<skills_t>(i, __FUNCTION__), skills[i]);
 		}
 	}
 
@@ -673,7 +673,7 @@ void ConditionAttributes::updatePercentBuffs(std::shared_ptr<Creature> creature)
 		}
 
 		int32_t actualBuff = creature->getBuff(i);
-		buffs[i] = static_cast<int32_t>(actualBuff * ((buffsPercent[i] - 100) / 100.f));
+		buffs[i] = safe_convert<int32_t>(actualBuff * ((buffsPercent[i] - 100) / 100.f), __FUNCTION__);
 	}
 }
 
@@ -682,7 +682,7 @@ void ConditionAttributes::updateBuffs(std::shared_ptr<Creature> creature) {
 	for (int32_t i = BUFF_FIRST; i <= BUFF_LAST; ++i) {
 		if (buffs[i]) {
 			needUpdate = true;
-			creature->setBuff(static_cast<buffs_t>(i), buffs[i]);
+			creature->setBuff(safe_convert<buffs_t>(i, __FUNCTION__), buffs[i]);
 		}
 	}
 	if (creature->getMonster() && needUpdate) {
@@ -702,14 +702,14 @@ void ConditionAttributes::endCondition(std::shared_ptr<Creature> creature) {
 		for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
 			if (skills[i] || skillsPercent[i]) {
 				needUpdate = true;
-				player->setVarSkill(static_cast<skills_t>(i), -skills[i]);
+				player->setVarSkill(safe_convert<skills_t>(i, __FUNCTION__), -skills[i]);
 			}
 		}
 
 		for (int32_t i = STAT_FIRST; i <= STAT_LAST; ++i) {
 			if (stats[i]) {
 				needUpdate = true;
-				player->setVarStats(static_cast<stats_t>(i), -stats[i]);
+				player->setVarStats(safe_convert<stats_t>(i, __FUNCTION__), -stats[i]);
 			}
 		}
 
@@ -724,7 +724,7 @@ void ConditionAttributes::endCondition(std::shared_ptr<Creature> creature) {
 	for (int32_t i = BUFF_FIRST; i <= BUFF_LAST; ++i) {
 		if (buffs[i]) {
 			needUpdateIcons = true;
-			creature->setBuff(static_cast<buffs_t>(i), -buffs[i]);
+			creature->setBuff(safe_convert<buffs_t>(i, __FUNCTION__), -buffs[i]);
 		}
 	}
 	for (uint8_t i = 0; i < COMBAT_COUNT; i++) {
@@ -1016,7 +1016,7 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value) {
 		}
 
 		case CONDITION_PARAM_CHARM_CHANCE_MODIFIER: {
-			charmChanceModifier = static_cast<int8_t>(value);
+			charmChanceModifier = safe_convert<int8_t>(value, __FUNCTION__);
 			return true;
 		}
 
@@ -1167,7 +1167,7 @@ bool ConditionRegeneration::executeCondition(std::shared_ptr<Creature> creature,
 	auto player = creature->getPlayer();
 	int32_t dailyStreak = 0;
 	if (player) {
-		dailyStreak = static_cast<int32_t>(player->kv()->scoped("daily-reward")->get("streak")->getNumber());
+		dailyStreak = safe_convert<int32_t>(player->kv()->scoped("daily-reward")->get("streak")->getNumber(), __FUNCTION__);
 	}
 	if (creature->getZoneType() != ZONE_PROTECTION || dailyStreak >= DAILY_REWARD_HP_REGENERATION) {
 		if (internalHealthTicks >= getHealthTicks(creature)) {
@@ -1655,7 +1655,7 @@ bool ConditionDamage::doDamage(std::shared_ptr<Creature> creature, int32_t healt
 
 	std::shared_ptr<Creature> attacker = g_game().getCreatureByID(owner);
 	if (field && creature->getPlayer() && attacker && attacker->getPlayer()) {
-		damage.primary.value = static_cast<int32_t>(std::round(damage.primary.value / 2.));
+		damage.primary.value = safe_convert<int32_t>(std::round(damage.primary.value / 2.), __FUNCTION__);
 	}
 
 	if (!creature->isAttackable() || Combat::canDoCombat(attacker, creature, damage.primary.type != COMBAT_HEALING) != RETURNVALUE_NOERROR) {
@@ -1792,8 +1792,8 @@ void ConditionDamage::generateDamageList(int32_t amount, int32_t start, std::lis
 			sum += i;
 			list.push_back(i);
 
-			x1 = std::fabs(1.0 - ((static_cast<float>(sum)) + i) / med);
-			x2 = std::fabs(1.0 - (static_cast<float>(sum) / med));
+			x1 = std::fabs(1.0 - ((safe_convert<float>(sum, __FUNCTION__)) + i) / med);
+			x2 = std::fabs(1.0 - (safe_convert<float>(sum, __FUNCTION__) / med));
 		} while (x1 < x2);
 	}
 }
@@ -1826,7 +1826,7 @@ bool ConditionFeared::getRandomDirection(std::shared_ptr<Creature> creature, Pos
 	std::ranges::shuffle(directions.begin(), directions.end(), getRandomGenerator());
 	for (Direction dir : directions) {
 		if (canWalkTo(creature, pos, dir)) {
-			this->fleeIndx = static_cast<uint8_t>(dir);
+			this->fleeIndx = safe_convert<uint8_t>(dir, __FUNCTION__);
 			return true;
 		}
 	}
@@ -2492,7 +2492,7 @@ void ConditionSpellGroupCooldown::addCondition(std::shared_ptr<Creature> creatur
 		if (subId != 0 && ticks > 0) {
 			std::shared_ptr<Player> player = creature->getPlayer();
 			if (player) {
-				player->sendSpellGroupCooldown(static_cast<SpellGroup_t>(subId), ticks);
+				player->sendSpellGroupCooldown(safe_convert<SpellGroup_t>(subId, __FUNCTION__), ticks);
 			}
 		}
 	}
@@ -2506,7 +2506,7 @@ bool ConditionSpellGroupCooldown::startCondition(std::shared_ptr<Creature> creat
 	if (subId != 0 && ticks > 0) {
 		std::shared_ptr<Player> player = creature->getPlayer();
 		if (player) {
-			player->sendSpellGroupCooldown(static_cast<SpellGroup_t>(subId), ticks);
+			player->sendSpellGroupCooldown(safe_convert<SpellGroup_t>(subId, __FUNCTION__), ticks);
 		}
 	}
 	return true;

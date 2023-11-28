@@ -40,7 +40,7 @@ namespace account {
 		bool successful = db.executeQuery(
 			fmt::format(
 				"UPDATE `accounts` SET `type` = {}, `premdays` = {}, `lastday` = {}, `creation` = {}, `premdays_purchased` = {} WHERE `id` = {}",
-				static_cast<uint8_t>(accInfo.accountType),
+				safe_convert<uint8_t>(accInfo.accountType, __FUNCTION__),
 				accInfo.premiumRemainingDays,
 				accInfo.premiumLastDay,
 				accInfo.creationTime,
@@ -109,8 +109,8 @@ namespace account {
 			fmt::format(
 				"INSERT INTO `coins_transactions` (`account_id`, `type`, `coin_type`, `amount`, `description`) VALUES ({}, {}, {}, {}, {})",
 				id,
-				static_cast<uint16_t>(type),
-				static_cast<uint8_t>(coinType),
+				safe_convert<uint16_t>(type, __FUNCTION__),
+				safe_convert<uint8_t>(coinType, __FUNCTION__),
 				coins,
 				db.escapeString(description)
 			)
@@ -120,8 +120,8 @@ namespace account {
 			logger.error(
 				"Error registering coin transaction! account_id:[{}], type:[{}], coin_type:[{}], coins:[{}], description:[{}]",
 				id,
-				static_cast<uint16_t>(type),
-				static_cast<uint8_t>(coinType),
+				safe_convert<uint16_t>(type, __FUNCTION__),
+				safe_convert<uint8_t>(coinType, __FUNCTION__),
 				coins,
 				db.escapeString(description)
 			);
@@ -159,7 +159,7 @@ namespace account {
 		}
 
 		acc.id = result->getNumber<uint32_t>("id");
-		acc.accountType = static_cast<AccountType>(result->getNumber<int32_t>("type"));
+		acc.accountType = safe_convert<AccountType>(result->getNumber<int32_t>("type"), __FUNCTION__);
 		acc.premiumLastDay = result->getNumber<time_t>("lastday");
 		acc.sessionExpires = result->getNumber<time_t>("expires");
 		acc.premiumDaysPurchased = result->getNumber<uint32_t>("premdays_purchased");

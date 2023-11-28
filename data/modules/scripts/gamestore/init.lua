@@ -2140,7 +2140,7 @@ function sendHomePage(playerId)
 			if mount then
 				msg:addU16(mount:getClientId())
 			else
-				logger.debug("[sendHomePage] mount with id {} not exist, ignoring to avoid a debug on the client")
+				logger.debug("[sendHomePage] mount with id {} not exist, ignoring to avoid a debug on the client", offer.id)
 				msg:addU16(0)
 			end
 		elseif type == GameStore.ConverType.SHOW_ITEM then

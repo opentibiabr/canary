@@ -374,7 +374,7 @@ std::string LuaFunctionsLoader::getFormatedLoggerMessage(lua_State* L) {
 		return fmt::vformat(format, args);
 	} catch (const fmt::format_error &e) {
 		g_logger().debug("[{}] format error: {}", __FUNCTION__, e.what());
-		reportErrorFunc(fmt::format("format error: {}", e.what()));
+		reportErrorFunc(fmt::format("Format error, {}", e.what()));
 	}
 
 	return {};

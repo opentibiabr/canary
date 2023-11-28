@@ -1274,7 +1274,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>If the Coralripper moves its fins, it generates enough air pressure that it can even float over land. Its numerous eyes allow it to quickly detect dangers even in confusing situations and eliminate them with one powerful bite. If you watch your fingers, you are going to be good friends.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			--[[{
 				icons = { "Corpsefire_Skull.png" },
 				name = "Corpsefire Skull",
 				price = 750,
@@ -1283,7 +1283,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 				state = GameStore.States.STATE_NEW,
 				home = true,
-			},
+			},]]
 			{
 				icons = { "Cranium_Spider.png" },
 				name = "Cranium Spider",
@@ -1348,7 +1348,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Its roaring is piercing marrow and bone and can be heard over ten miles away. The Desert King is the undisputed ruler of its territory and no one messes with this animal. Show no fear and prove yourself worthy of its trust and you will get yourself a valuable companion for your adventures.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			--[[{
 				icons = { "Doom_Skull.png" },
 				name = "Doom Skull",
 				price = 750,
@@ -1357,7 +1357,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 				state = GameStore.States.STATE_NEW,
 				home = true,
-			},
+			},]]
 			{
 				icons = { "Doombringer.png" },
 				name = "Doombringer",
@@ -1734,7 +1734,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Magic Carpet is the perfect mount for those who are too busy to take care of an animal mount or simply like to travel on a beautiful, magic hand-woven carpet.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			--[[{
 				icons = { "Magma_Skull.png" },
 				name = "Magma Skull",
 				price = 750,
@@ -1743,7 +1743,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 				state = GameStore.States.STATE_NEW,
 				home = true,
-			},
+			},]]
 			{
 				icons = { "Marsh_Toad.png" },
 				name = "Marsh Toad",

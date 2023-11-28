@@ -17,7 +17,6 @@ local config = {
 		to = Position(32732, 32728, 10),
 	},
 	exit = Position(32616, 32531, 13),
-	storage = Storage.Quest.U11_80.TheSecretLibrary.MazzinorTimer,
 }
 
 local lever = BossLever(config)

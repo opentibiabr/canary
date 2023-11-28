@@ -127,23 +127,8 @@ function Position:compare(position)
 	return self.x == position.x and self.y == position.y and self.z == position.z
 end
 
-function Position.hasPlayer(centerPosition, rangeX, rangeY)
-	local spectators = Game.getSpectators(centerPosition, false, true, rangeX, rangeX, rangeY, rangeY)
-	if #spectators ~= 0 then
-		return true
-	end
-	return false
-end
-
 function Position.removeMonster(centerPosition, rangeX, rangeY)
-	local spectators = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
-	local spectators, spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
-	for i = 1, #spectators do
-		spectator = spectators[i]
-		if spectator:isMonster() then
-			spectator:remove()
-		end
-	end
+	clearRoom(centerPosition, false, false)
 end
 
 function Position.getFreePosition(from, to)

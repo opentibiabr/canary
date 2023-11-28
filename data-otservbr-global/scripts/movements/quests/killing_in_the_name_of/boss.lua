@@ -1,26 +1,3 @@
-local function roomIsOccupied(centerPosition, rangeX, rangeY)
-	local spectators = Game.getSpectators(centerPosition, false, true, rangeX, rangeX, rangeY, rangeY)
-	if #spectators ~= 0 then
-		return true
-	end
-	return false
-end
-
-local function clearBossRoom(playerId, bossId, centerPosition, rangeX, rangeY, exitPosition)
-	local spectators = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
-	local spectator
-	for i = 1, #spectators do
-		spectator = spectators[i]
-		if spectator:isPlayer() and spectator.uid == playerId then
-			spectator:teleportTo(exitPosition)
-			exitPosition:sendMagicEffect(CONST_ME_TELEPORT)
-		end
-		if spectator:isMonster() and spectator.uid == bossId then
-			spectator:remove()
-		end
-	end
-end
-
 local bosses = {
 	{
 		bossName = "the snapper",
@@ -418,7 +395,7 @@ function boss.onStepIn(creature, item, position, fromPosition)
 	end
 	for a = 1, #bosses do
 		if player:getPosition() == Position(bosses[a].teleportPosition) then
-			if player:getStorageValue(bosses[a].storage) ~= 1 or roomIsOccupied(bosses[a].centerPosition, bosses[a].rangeX, bosses[a].rangeY) then
+			if player:getStorageValue(bosses[a].storage) ~= 1 or roomIsOccupied(bosses[a].centerPosition, true, bosses[a].rangeX, bosses[a].rangeY) then
 				player:teleportTo(fromPosition)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				return true
@@ -436,7 +413,7 @@ function boss.onStepIn(creature, item, position, fromPosition)
 			if not monster then
 				return true
 			end
-			addEvent(clearBossRoom, 60 * 10 * 1000, player.uid, monster.uid, bosses[a].centerPosition, bosses[a].rangeX, bosses[a].rangeY, fromPosition)
+			addEvent(clearBossRoom, 60 * 10 * 1000, player.uid, bosses[a].centerPosition, false, bosses[a].rangeX, bosses[a].rangeY, fromPosition)
 			player:say("You have ten minutes to kill and loot this boss. Otherwise you will lose that chance and will be kicked out.", TALKTYPE_MONSTER_SAY)
 		end
 	end

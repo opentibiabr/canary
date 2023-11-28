@@ -25,6 +25,8 @@ std::string generateToken(const std::string &secret, uint32_t ticks);
 void replaceString(std::string &str, const std::string &sought, const std::string &replacement);
 void trim_right(std::string &source, char t);
 void trim_left(std::string &source, char t);
+std::string keepFirstWordOnly(std::string &str);
+
 void toLowerCaseString(std::string &source);
 std::string asLowerCaseString(std::string source);
 std::string asUpperCaseString(std::string source);
@@ -133,6 +135,7 @@ bool isCaskItem(uint16_t itemId);
 std::string getObjectCategoryName(ObjectCategory_t category);
 
 int64_t OTSYS_TIME();
+void UPDATE_OTSYS_TIME();
 
 SpellGroup_t stringToSpellGroup(const std::string &value);
 

@@ -84,11 +84,22 @@ bool BedItem::canUse(std::shared_ptr<Player> player) {
 		return false;
 	}
 
-	if (getNextBedItem() == nullptr) {
+	auto nextBedItem = getNextBedItem();
+	if (nextBedItem == nullptr) {
 		return false;
 	}
 
-	if (Item::items[id].bedPart != BED_PILLOW_PART) {
+	const auto &itemType = Item::items[id];
+	if (itemType.bedPart != BED_PILLOW_PART) {
+		return false;
+	}
+
+	auto partName = itemType.name;
+	auto nextPartname = nextBedItem->getName();
+	auto firstPart = keepFirstWordOnly(partName);
+	auto nextPartOf = keepFirstWordOnly(nextPartname);
+	g_logger().debug("First bed part name {}, second part name {}", firstPart, nextPartOf);
+	if (!isMoveable() || !nextBedItem->isMoveable() || firstPart != nextPartOf) {
 		return false;
 	}
 
@@ -225,8 +236,8 @@ void BedItem::regeneratePlayer(std::shared_ptr<Player> player) const {
 			regen = sleptTime / 30;
 		}
 
-		player->changeHealth(regen * g_configManager().getFloat(RATE_HEALTH_REGEN), false);
-		player->changeMana(regen * g_configManager().getFloat(RATE_MANA_REGEN));
+		player->changeHealth(regen * g_configManager().getFloat(RATE_HEALTH_REGEN, __FUNCTION__), false);
+		player->changeMana(regen * g_configManager().getFloat(RATE_MANA_REGEN, __FUNCTION__));
 	}
 
 	const int32_t soulRegen = sleptTime / (60 * 15); // RATE_SOUL_REGEN_SPEED?

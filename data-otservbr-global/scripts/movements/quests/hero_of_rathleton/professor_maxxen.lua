@@ -1,24 +1,24 @@
 local function startWaves()
-	local position = math.random(33704, 33718), math.random(32040, 32053), 15
+	local position = Position(math.random(33704, 33718), math.random(32040, 32053), 15)
 	Game.setStorageValue(GlobalStorage.HeroRathleton.MaxxenRunning, 1)
 	if Game.getStorageValue(GlobalStorage.HeroRathleton.GloothWave) < 8 then
 		for i = 1, 4 do
 			local chance = math.random(2)
 			if chance == 1 then
-				Game.createMonster("glooth masher", Position(position), true, true)
+				Game.createMonster("glooth masher", position, true, true)
 			else
-				Game.createMonster("glooth golem", Position(position), true, true)
+				Game.createMonster("glooth golem", position, true, true)
 			end
 		end
 	elseif Game.getStorageValue(GlobalStorage.HeroRathleton.GloothWave) == 8 then
 		for i = 1, 4 do
 			local chance = math.random(3)
 			if chance == 1 then
-				Game.createMonster("glooth trasher", Position(position), true, true)
+				Game.createMonster("glooth trasher", position, true, true)
 			elseif chance == 2 then
-				Game.createMonster("glooth slasher", Position(position), true, true)
+				Game.createMonster("glooth slasher", position, true, true)
 			else
-				Game.createMonster("glooth golem", Position(position), true, true)
+				Game.createMonster("glooth golem", position, true, true)
 			end
 		end
 		Game.createMonster("professor maxxen", Position(33711, 32046, 15), true, true)

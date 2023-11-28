@@ -17,7 +17,6 @@ local config = {
 		to = Position(33439, 32481, 14),
 	},
 	exit = Position(33319, 32318, 13),
-	storage = Storage.FerumbrasAscension.RazzagornTimer,
 }
 
 local lever = BossLever(config)

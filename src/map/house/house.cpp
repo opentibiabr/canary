@@ -26,7 +26,7 @@ void House::addTile(std::shared_ptr<HouseTile> tile) {
 }
 
 void House::setNewOwnerGuid(int32_t newOwnerGuid, bool serverStartup) {
-	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
 	if (!isTransferOnRestart) {
 		setOwner(newOwnerGuid, true);
 		return;
@@ -99,7 +99,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, std::shared
 	if (owner != 0) {
 		tryTransferOwnership(player, false);
 	} else {
-		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
+		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD, __FUNCTION__));
 		time_t currentTime = time(nullptr);
 		if (strRentPeriod == "yearly") {
 			currentTime += 24 * 60 * 60 * 365;
@@ -149,10 +149,10 @@ void House::updateDoorDescription() const {
 	ss << " It is " << getSize() << " square meters.";
 	const int32_t housePrice = getPrice();
 	if (housePrice != -1) {
-		if (g_configManager().getBoolean(HOUSE_PURSHASED_SHOW_PRICE) || owner == 0) {
+		if (g_configManager().getBoolean(HOUSE_PURSHASED_SHOW_PRICE, __FUNCTION__) || owner == 0) {
 			ss << " It costs " << formatNumber(getPrice()) << " gold coins.";
 		}
-		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
+		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD, __FUNCTION__));
 		if (strRentPeriod != "never") {
 			ss << " The rent cost is " << formatNumber(getRent()) << " gold coins and it is billed " << strRentPeriod << ".";
 		}
@@ -168,7 +168,7 @@ AccessHouseLevel_t House::getHouseAccessLevel(std::shared_ptr<Player> player) co
 		return HOUSE_OWNER;
 	}
 
-	if (g_configManager().getBoolean(HOUSE_OWNED_BY_ACCOUNT)) {
+	if (g_configManager().getBoolean(HOUSE_OWNED_BY_ACCOUNT, __FUNCTION__)) {
 		if (ownerAccountId == player->getAccountId()) {
 			return HOUSE_OWNER;
 		}
@@ -456,7 +456,7 @@ std::shared_ptr<HouseTransferItem> HouseTransferItem::createHouseTransferItem(st
 void HouseTransferItem::onTradeEvent(TradeEvents_t event, std::shared_ptr<Player> owner) {
 	if (event == ON_TRADE_TRANSFER) {
 		if (house) {
-			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
 			auto ownershipTransferMessage = " The ownership will be transferred upon server restart.";
 			auto boughtMessage = fmt::format("You have successfully bought the house.{}", isTransferOnRestart ? ownershipTransferMessage : "");
 			auto soldMessage = fmt::format("You have successfully sold your house.{}", isTransferOnRestart ? ownershipTransferMessage : "");
@@ -483,7 +483,7 @@ bool House::executeTransfer(std::shared_ptr<HouseTransferItem> item, std::shared
 		return false;
 	}
 
-	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
 	if (isTransferOnRestart) {
 		if (hasNewOwnerOnStartup) {
 			return false;
@@ -752,11 +752,6 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 			continue;
 		}
 
-		const uint32_t rent = house->getRent();
-		if (rent == 0 || house->getPaidUntil() > currentTime) {
-			continue;
-		}
-
 		const uint32_t ownerId = house->getOwner();
 		const auto &town = g_game().map.towns.getTown(house->getTownId());
 		if (!town) {
@@ -767,6 +762,27 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 		if (!player) {
 			// Player doesn't exist, reset house owner
 			house->setOwner(0);
+			continue;
+		}
+
+		// Player hasn't logged in for a while, reset house owner
+		auto daysToReset = g_configManager().getNumber(HOUSE_LOSE_AFTER_INACTIVITY, __FUNCTION__);
+		if (daysToReset > 0) {
+			auto daysSinceLastLogin = (currentTime - player->getLastLoginSaved()) / (60 * 60 * 24);
+			bool vipKeep = g_configManager().getBoolean(VIP_KEEP_HOUSE, __FUNCTION__) && player->isVip();
+			bool activityKeep = daysSinceLastLogin < daysToReset;
+			if (vipKeep && !activityKeep) {
+				g_logger().info("Player {} has not logged in for {} days, but is a VIP, so the house will not be reset.", player->getName(), daysToReset);
+			} else if (!vipKeep && !activityKeep) {
+				g_logger().info("Player {} has not logged in for {} days, so the house will be reset.", player->getName(), daysToReset);
+				house->setOwner(0, true, player);
+				g_saveManager().savePlayer(player);
+				continue;
+			}
+		}
+
+		const uint32_t rent = house->getRent();
+		if (rent == 0 || house->getPaidUntil() > currentTime) {
 			continue;
 		}
 
@@ -835,11 +851,11 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 }
 
 uint32_t House::getRent() const {
-	return static_cast<uint32_t>(g_configManager().getFloat(HOUSE_RENT_RATE) * static_cast<float>(rent));
+	return static_cast<uint32_t>(g_configManager().getFloat(HOUSE_RENT_RATE, __FUNCTION__) * static_cast<float>(rent));
 }
 
 uint32_t House::getPrice() const {
-	auto sqmPrice = static_cast<uint32_t>(g_configManager().getNumber(HOUSE_PRICE_PER_SQM)) * getSize();
-	auto rentPrice = static_cast<uint32_t>(static_cast<float>(getRent()) * g_configManager().getFloat(HOUSE_PRICE_RENT_MULTIPLIER));
+	auto sqmPrice = static_cast<uint32_t>(g_configManager().getNumber(HOUSE_PRICE_PER_SQM, __FUNCTION__)) * getSize();
+	auto rentPrice = static_cast<uint32_t>(static_cast<float>(getRent()) * g_configManager().getFloat(HOUSE_PRICE_RENT_MULTIPLIER, __FUNCTION__));
 	return sqmPrice + rentPrice;
 }

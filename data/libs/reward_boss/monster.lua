@@ -4,11 +4,11 @@ function Monster.setReward(self, enable)
 			error("Rewards can only be enabled to rewards bosses.")
 			return false
 		end
-		GlobalBosses[self:getId()] = {}
+		_G.GlobalBosses[self:getId()] = {}
 		self:registerEvent("BossDeath")
 		self:registerEvent("BossThink")
 	else
-		GlobalBosses[self:getId()] = nil
+		_G.GlobalBosses[self:getId()] = nil
 		self:unregisterEvent("BossDeath")
 		self:unregisterEvent("BossThink")
 	end

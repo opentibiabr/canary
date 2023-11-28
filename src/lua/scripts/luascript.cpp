@@ -169,19 +169,29 @@ std::string LuaScriptInterface::getStackTrace(const std::string &error_desc) {
 	lua_getglobal(luaState, "debug");
 	if (!isTable(luaState, -1)) {
 		lua_pop(luaState, 1);
+		g_logger().error("Lua debug table not found.");
 		return error_desc;
 	}
 
 	lua_getfield(luaState, -1, "traceback");
 	if (!isFunction(luaState, -1)) {
 		lua_pop(luaState, 2);
+		g_logger().error("Lua traceback function not found.");
 		return error_desc;
 	}
 
 	lua_replace(luaState, -2);
 	pushString(luaState, error_desc);
-	lua_call(luaState, 1, 1);
-	return popString(luaState);
+	if (lua_pcall(luaState, 1, 1, 0) != LUA_OK) {
+		std::string luaError = lua_tostring(luaState, -1);
+		lua_pop(luaState, 1);
+		g_logger().error("Error running Lua traceback: {}", luaError);
+		return "Lua traceback failed: " + luaError;
+	}
+
+	std::string stackTrace = popString(luaState);
+
+	return stackTrace;
 }
 
 bool LuaScriptInterface::pushFunction(int32_t functionId) {

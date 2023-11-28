@@ -1,7 +1,7 @@
 local bossParticipation = CreatureEvent("BossParticipation")
 
 function bossParticipation.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)
-	if not next(GlobalBosses) then
+	if not next(_G.GlobalBosses) then
 		return primaryDamage, primaryType, secondaryDamage, secondaryType
 	end
 

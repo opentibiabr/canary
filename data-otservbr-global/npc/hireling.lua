@@ -7,6 +7,7 @@ function createHirelingType(HirelingName)
 	end
 
 	local npcConfig = {}
+	local enableBankSystem = {}
 
 	npcConfig.name = HirelingName
 	npcConfig.description = HirelingName
@@ -355,6 +356,7 @@ function createHirelingType(HirelingName)
 	end
 
 	npcType.onDisappear = function(npc, creature)
+		enableBankSystem[creature:getId()] = nil
 		npcHandler:onDisappear(npc, creature)
 	end
 
@@ -363,6 +365,7 @@ function createHirelingType(HirelingName)
 	end
 
 	npcType.onCloseChannel = function(npc, creature)
+		enableBankSystem[creature:getId()] = nil
 		npcHandler:onCloseChannel(npc, creature)
 	end
 
@@ -586,7 +589,9 @@ function createHirelingType(HirelingName)
 			elseif MsgContains(message, "stash") then
 				if hireling:hasSkill(HIRELING_SKILLS.STEWARD) then
 					npcHandler:say(GREETINGS.STASH, npc, creature)
+					player:setSpecialContainersAvailable(true)
 					player:openStash(true)
+					player:sendTextMessage(MESSAGE_FAILURE, "Your supply stash contains " .. player:getStashCount() .. " item" .. (player:getStashCount() > 1 and "s." or "."))
 				else
 					sendSkillNotLearned(npc, creature, HIRELING_SKILLS.STEWARD)
 				end
@@ -614,15 +619,18 @@ function createHirelingType(HirelingName)
 				npcHandler:setTopic(playerId, TOPIC.SERVICES)
 				npcHandler:say("Alright then, I will be here.", npc, creature)
 			end
-		elseif npcHandler:getTopic(playerId) >= TOPIC.BANK and npcHandler:getTopic(playerId) < TOPIC.FOOD then
+		elseif npcHandler:getTopic(playerId) == TOPIC.BANK then
+			enableBankSystem[playerId] = true
+		elseif npcHandler:getTopic(playerId) >= TOPIC.FOOD and npcHandler:getTopic(playerId) < TOPIC.GOODS then
+			handleFoodActions(npc, creature, message)
+		end
+		if enableBankSystem[playerId] then
 			-- Parse bank
 			npc:parseBank(message, npc, creature, npcHandler)
 			-- Parse guild bank
 			npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
 			-- Normal messages
 			npc:parseBankMessages(message, npc, creature, npcHandler)
-		elseif npcHandler:getTopic(playerId) >= TOPIC.FOOD and npcHandler:getTopic(playerId) < TOPIC.GOODS then
-			handleFoodActions(npc, creature, message)
 		end
 		return true
 	end

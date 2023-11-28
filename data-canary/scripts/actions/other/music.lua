@@ -23,7 +23,6 @@ local setting = {
 	[3259] = { effect = CONST_ME_SOUND_BLUE }, -- the horn of sundering (actual effect is unknown; immovable)
 	[3260] = { effect = CONST_ME_SOUND_GREEN }, -- lyre (immovable)
 	[3261] = { effect = CONST_ME_SOUND_GREEN }, -- panpipes (immovable)
-	[2951] = { effect = CONST_ME_SOUND_BLUE }, -- bongo drum (actual effect is unknown)
 	[2965] = { effects = { failure = CONST_ME_POFF, success = CONST_ME_SOUND_GREEN }, chance = 20 }, -- didgeridoo
 	[2966] = { effect = CONST_ME_SOUND_RED }, -- war drum
 	[3103] = { effect = CONST_ME_SOUND_YELLOW, itemId = 3592, itemCount = 10, chance = 80, remove = true }, -- cornucopia

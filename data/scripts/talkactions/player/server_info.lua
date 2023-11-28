@@ -54,10 +54,13 @@ function serverInfo.onSay(player, words, param)
 			.. configManager.getNumber(configKeys.RATE_SPAWN)
 			.. "x"
 	end
+	local loseHouseText = configManager.getNumber(configKeys.HOUSE_LOSE_AFTER_INACTIVITY) > 0 and configManager.getNumber(configKeys.HOUSE_LOSE_AFTER_INACTIVITY) .. " days" or "never"
 	text = text
 		.. "\n\nMore Server Info: \n"
 		.. "\nLevel to buy house: "
 		.. configManager.getNumber(configKeys.HOUSE_BUY_LEVEL)
+		.. "\nLose house after inactivity: "
+		.. loseHouseText
 		.. "\nProtection level: "
 		.. configManager.getNumber(configKeys.PROTECTION_LEVEL)
 		.. "\nWorldType: "

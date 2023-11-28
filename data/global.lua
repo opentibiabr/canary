@@ -82,48 +82,31 @@ SCARLETT_MAY_DIE = 0
 ropeSpots = { 386, 421, 386, 7762, 12202, 12936, 14238, 17238, 23363, 21965, 21966, 21967, 21968 }
 specialRopeSpots = { 12935 }
 
--- Impact Analyser
-if not GlobalBosses then
-	GlobalBosses = {}
+-- Global tables for systems
+if not _G.GlobalBosses then
+	_G.GlobalBosses = {}
 end
 
--- Healing
--- Global table to insert data
-if healingImpact == nil then
-	healingImpact = {}
-end
-
--- Damage
--- Global table to insert data
-if damageImpact == nil then
-	damageImpact = {}
-end
-
--- Exercise Training
-if onExerciseTraining == nil then
-	onExerciseTraining = {}
+if not _G.OnExerciseTraining then
+	_G.OnExerciseTraining = {}
 end
 
 -- Stamina
-if nextUseStaminaTime == nil then
-	nextUseStaminaTime = {}
+if not _G.NextUseStaminaTime then
+	_G.NextUseStaminaTime = {}
 end
 
-if nextUseXpStamina == nil then
-	nextUseXpStamina = {}
+if not _G.NextUseXpStamina then
+	_G.NextUseXpStamina = {}
 end
 
-if nextUseConcoctionTime == nil then
-	nextUseConcoctionTime = {}
-end
-
-if lastItemImbuing == nil then
-	lastItemImbuing = {}
+if not _G.NextUseConcoctionTime then
+	_G.NextUseConcoctionTime = {}
 end
 
 -- Delay potion
-if not playerDelayPotion then
-	playerDelayPotion = {}
+if not _G.PlayerDelayPotion then
+	_G.PlayerDelayPotion = {}
 end
 
 table.contains = function(array, value)

@@ -41,7 +41,7 @@ function dreamerStone.onUse(player, item, fromPosition, target, toPosition, isHo
 	end
 
 	if lever.sacrifices then
-		local sacrificeItems, sacrificeItem = true
+		local sacrificeItems, sacrificeItem = true, true
 		for i = 1, #lever.sacrifices do
 			sacrificeItem = Tile(lever.sacrifices[i].position):getItemById(lever.sacrifices[i].itemId)
 			if not sacrificeItem then

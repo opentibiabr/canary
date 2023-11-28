@@ -17,11 +17,6 @@ class Creature;
 class Game;
 class Spawn;
 
-using CreatureList = std::list<std::shared_ptr<Creature>>;
-
-using CreatureWeakHashMap = phmap::flat_hash_map<uint32_t, std::weak_ptr<Creature>>;
-using CreatureIDList = std::list<uint32_t>;
-
 class Monster final : public Creature {
 public:
 	static std::shared_ptr<Monster> createMonster(const std::string &name);
@@ -35,6 +30,9 @@ public:
 	Monster &operator=(const Monster &) = delete;
 
 	std::shared_ptr<Monster> getMonster() override {
+		return static_self_cast<Monster>();
+	}
+	std::shared_ptr<const Monster> getMonster() const override {
 		return static_self_cast<Monster>();
 	}
 
@@ -187,34 +185,37 @@ public:
 	}
 
 	bool searchTarget(TargetSearchType_t searchType = TARGETSEARCH_DEFAULT);
-	bool selectTarget(std::shared_ptr<Creature> creature);
+	bool selectTarget(const std::shared_ptr<Creature> &creature);
 
-	CreatureList getTargetList() {
-		std::list<std::shared_ptr<Creature>> list;
-		for (auto it = targetIDList.begin(); it != targetIDList.end();) {
-			auto cid = *it;
-			if (auto targetCreature = targetListMap[cid].lock()) {
-				list.push_back(targetCreature);
-				++it;
-			} else {
-				it = targetIDList.erase(it);
-				targetListMap.erase(cid);
+	auto getTargetList() {
+		CreatureVector list;
+		list.reserve(targetList.size());
+
+		std::erase_if(targetList, [&list](const std::weak_ptr<Creature> &ref) {
+			if (const auto &creature = ref.lock()) {
+				list.emplace_back(creature);
+				return false;
 			}
-		}
+
+			return true;
+		});
+
 		return list;
 	}
 
-	std::vector<std::shared_ptr<Creature>> getFriendList() {
-		std::vector<std::shared_ptr<Creature>> list;
+	auto getFriendList() {
+		CreatureVector list;
+		list.reserve(friendList.size());
 
-		for (auto it = friendList.begin(); it != friendList.end();) {
-			if (auto friendCreature = it->second.lock()) {
-				list.emplace_back(friendCreature);
-				++it;
-			} else {
-				it = friendList.erase(it);
+		std::erase_if(friendList, [&list](const auto &it) {
+			if (const auto &creature = it.second.lock()) {
+				list.emplace_back(creature);
+				return false;
 			}
-		}
+
+			return true;
+		});
+
 		return list;
 	}
 
@@ -340,9 +341,15 @@ public:
 	}
 
 private:
-	CreatureWeakHashMap friendList;
-	CreatureIDList targetIDList;
-	CreatureWeakHashMap targetListMap;
+	auto getTargetIterator(const std::shared_ptr<Creature> &creature) {
+		return std::ranges::find_if(targetList.begin(), targetList.end(), [id = creature->getID()](const std::weak_ptr<Creature> &ref) {
+			const auto &target = ref.lock();
+			return target && target->getID() == id;
+		});
+	}
+
+	std::unordered_map<uint32_t, std::weak_ptr<Creature>> friendList;
+	std::deque<std::weak_ptr<Creature>> targetList;
 
 	time_t timeToChangeFiendish = 0;
 
@@ -391,10 +398,10 @@ private:
 
 	void updateLookDirection();
 
-	void addFriend(std::shared_ptr<Creature> creature);
-	void removeFriend(std::shared_ptr<Creature> creature);
-	void addTarget(std::shared_ptr<Creature> creature, bool pushFront = false);
-	void removeTarget(std::shared_ptr<Creature> creature);
+	void addFriend(const std::shared_ptr<Creature> &creature);
+	void removeFriend(const std::shared_ptr<Creature> &creature);
+	bool addTarget(const std::shared_ptr<Creature> &creature, bool pushFront = false);
+	bool removeTarget(const std::shared_ptr<Creature> &creature);
 
 	void death(std::shared_ptr<Creature> lastHitCreature) override;
 	std::shared_ptr<Item> getCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature) override;
@@ -425,8 +432,8 @@ private:
 	void onThinkDefense(uint32_t interval);
 	void onThinkSound(uint32_t interval);
 
-	bool isFriend(std::shared_ptr<Creature> creature) const;
-	bool isOpponent(std::shared_ptr<Creature> creature) const;
+	bool isFriend(const std::shared_ptr<Creature> &creature) const;
+	bool isOpponent(const std::shared_ptr<Creature> &creature) const;
 
 	uint64_t getLostExperience() const override {
 		return skillLoss ? mType->info.experience : 0;

@@ -46155,6 +46155,7 @@
 		<attribute key="partnerdirection" value="south"/>
 		<attribute key="femaletransformto" value="26092"/>
 		<attribute key="maletransformto" value="26088"/>
+		<attribute key="rotateTo" value="23398"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26097" article="a" name="verdant bed">
@@ -46164,6 +46165,7 @@
 		<attribute key="partnerdirection" value="north"/>
 		<attribute key="femaletransformto" value="26093"/>
 		<attribute key="maletransformto" value="26089"/>
+		<attribute key="rotateTo" value="23399"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26098" article="a" name="verdant bed">
@@ -46173,6 +46175,7 @@
 		<attribute key="partnerdirection" value="east"/>
 		<attribute key="femaletransformto" value="26094"/>
 		<attribute key="maletransformto" value="26090"/>
+		<attribute key="rotateTo" value="23396"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26099" article="a" name="verdant bed">
@@ -46182,6 +46185,7 @@
 		<attribute key="partnerdirection" value="west"/>
 		<attribute key="femaletransformto" value="26095"/>
 		<attribute key="maletransformto" value="26091"/>
+		<attribute key="rotateTo" value="23397"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26100" article="a" name="bath tub">
@@ -59782,7 +59786,7 @@
 		<attribute key="bedpartof" value="35193"/>
 		<attribute key="partnerdirection" value="north"/>
 		<attribute key="femaletransformto" value="35207"/>
-		<attribute key="rotateTo" value="37205"/>
+		<attribute key="rotateTo" value="35205"/>
 		<attribute key="description" value="Somebody is sleeping there"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
@@ -59822,7 +59826,7 @@
 		<attribute key="partnerdirection" value="north"/>
 		<attribute key="femaletransformto" value="35203"/>
 		<attribute key="maletransformto" value="35190"/>
-		<attribute key="rotateTo" value="37209"/>
+		<attribute key="rotateTo" value="35209"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="35208" name="wrought-iron bed">
@@ -59832,7 +59836,7 @@
 		<attribute key="partnerdirection" value="east"/>
 		<attribute key="femaletransformto" value="35204"/>
 		<attribute key="maletransformto" value="35191"/>
-		<attribute key="rotateTo" value="37206"/>
+		<attribute key="rotateTo" value="35206"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="35209" name="wrought-iron bed">

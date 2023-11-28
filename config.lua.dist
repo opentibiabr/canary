@@ -204,7 +204,6 @@ onlyPremiumAccount = false
 -- NOTE: buyBlessCommandFee will add fee when player buy bless by command (!bless), active changing value between 1 and 100 (fee percent. ex: 3 = 3%, 30 = 30%)
 -- NOTE: teleportPlayerToVocationRoom will enable oressa to teleport player to his/her room vocation
 -- NOTE: toggleReceiveReward = true, will enable players to choose one of reward exercise weapon by command !reward
--- NOTE: randomMonsterSpawn = true, will enable monsters from the same spawn to be randomized between them, thus making a variable hunt
 weatherRain = false
 thunderEffect = false
 allConsoleLog = false
@@ -220,7 +219,6 @@ buyAolCommandFee = 0
 buyBlessCommandFee = 0
 teleportPlayerToVocationRoom = true
 toggleReceiveReward = false
-randomMonsterSpawn = false
 
 -- Teleport summon
 -- Set to true will never remove the summon
@@ -288,6 +286,7 @@ houseRentRate = 1.0
 houseOwnedByAccount = false
 houseBuyLevel = 100
 housePurchasedShowPrice = false
+houseLoseAfterInactivity = 30 -- days; 0 = never
 onlyInvitedCanMoveHouseItems = true
 togglehouseTransferOnRestart = true
 
@@ -482,6 +481,7 @@ vipBonusSkill = 0
 vipAutoLootVipOnly = false
 vipStayOnline = false
 vipFamiliarTimeCooldownReduction = 0
+vipKeepHouse = false
 
 -- NOTE: set rewardChestCollectEnabled to true to enable the reward collect system
 -- NOTE set rewardChestMaxCollectItems max items per collect action

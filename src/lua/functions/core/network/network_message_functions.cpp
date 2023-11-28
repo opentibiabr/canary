@@ -289,12 +289,12 @@ int NetworkMessageFunctions::luaNetworkMessageSendToPlayer(lua_State* L) {
 	}
 
 	const auto &player = getPlayer(L, 2);
-	if (player) {
-		player->sendNetworkMessage(*message);
-		pushBoolean(L, true);
-	} else {
+	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
-		lua_pushnil(L);
+		return 1;
 	}
+
+	player->sendNetworkMessage(*message);
+	pushBoolean(L, true);
 	return 1;
 }

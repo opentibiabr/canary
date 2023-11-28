@@ -49,7 +49,6 @@ function Position:moveUpstairs()
 	return self
 end
 
--- Functions from OTServBR-Global
 function Position:isInRange(from, to)
 	-- No matter what corner from and to is, we want to make
 	-- life easier by calculating north-west and south-east
@@ -372,4 +371,21 @@ function Position:isProtectionZoneTile()
 		return false
 	end
 	return tile:hasFlag(TILESTATE_PROTECTIONZONE)
+end
+
+--- Calculates and returns a position based on a specified range.
+-- This method determines which position (self or the other) is returned based on the provided range.
+-- If the distance between self and the other position is greater than the specified range,
+-- it returns the self position. Otherwise, it returns the other position.
+-- @param self The position object calling the method.
+-- @param otherPosition Position The other position to compare with.
+-- @param range number The range to compare the distance against.
+-- @return Position The position within the specified range (either self or otherPosition).
+function Position.getWithinRange(self, otherPosition, range)
+	local distance = math.max(math.abs(self.x - otherPosition.x), math.abs(self.y - otherPosition.y))
+	if distance > range then
+		return self
+	end
+
+	return otherPosition
 end

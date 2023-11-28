@@ -28,12 +28,12 @@ function printTable(t)
 end
 
 -- [[ Constants and ENUMS ]]
-
+-- This is for server registration only, high ids to avoid conflicting with the gamestore subaction
 HIRELING_SKILLS = {
-	BANKER = 1, -- 1<<0
-	COOKING = 2, -- 1<<1
-	STEWARD = 4, -- 1<<2
-	TRADER = 8, -- 1<<3
+	BANKER = { 1001, "banker" },
+	COOKING = { 1002, "cooker" },
+	STEWARD = { 1003, "steward" },
+	TRADER = { 1004, "trader" },
 }
 
 HIRELING_SEX = {
@@ -68,7 +68,6 @@ HIRELING_OUTFITS_TABLE = {
 }
 
 HIRELING_STORAGE = {
-	SKILL = 28800,
 	OUTFIT = 28900,
 }
 
@@ -144,9 +143,24 @@ local function addStorageCacheValue(player_id, storage, value)
 	HIRELING_CACHE_STORAGE[player_id][storage] = value
 end
 
-local function initStorageCache()
-	local sql = string.format("SELECT `player_id`, `key`, `value` FROM `player_storage` " .. "WHERE `key` IN (%d,%d)", HIRELING_STORAGE.SKILL, HIRELING_STORAGE.OUTFIT)
+local function hasHirelingSkillByType(player_id, skillType)
+	local function hasSkillFromPlayer(player)
+		if player then
+			return player:kv():scoped("hireling-skills"):get(skillType)
+		end
+		return false
+	end
 
+	local player = Player(player_id) or Game.getOfflinePlayer(player_id)
+	return hasSkillFromPlayer(player)
+end
+
+local function initStorageCache()
+	local keys = {}
+	table.insert(keys, HIRELING_STORAGE.OUTFIT)
+	local whereClause = table.concat(keys, ",")
+
+	local sql = string.format("SELECT `player_id`, `key`, `value` FROM `player_storage` WHERE `key` IN (%s)", whereClause)
 	local resultId = db.storeQuery(sql)
 	if resultId ~= false then
 		local player_id, key, value
@@ -165,9 +179,9 @@ local function getStorageForPlayer(player_id, storage)
 	local player = Player(player_id)
 	if player then
 		return player:getStorageValue(storage)
-	else
-		return HIRELING_CACHE_STORAGE[player_id] and HIRELING_CACHE_STORAGE[player_id][storage] or -1
 	end
+
+	return HIRELING_CACHE_STORAGE[player_id] and HIRELING_CACHE_STORAGE[player_id][storage] or -1
 end
 
 -- [[ DEFINING HIRELING CLASS ]]
@@ -317,13 +331,8 @@ function Hireling:changeOutfit(outfit)
 	self:setOutfit(outfit)
 end
 
-function Hireling:hasSkill(SKILL)
-	local skills = getStorageForPlayer(self:getOwnerId(), HIRELING_STORAGE.SKILL)
-	if skills <= 0 then
-		return false
-	else
-		return hasBitSet(SKILL, skills)
-	end
+function Hireling:hasSkill(skillType)
+	return hasHirelingSkillByType(self:getOwnerId(), skillType)
 end
 
 function Hireling:setCreature(cid)
@@ -441,6 +450,15 @@ function getHirelingByPosition(position)
 		hireling = HIRELINGS[i]
 		if hireling.posx == position.x and hireling.posy == position.y and hireling.posz == position.z then
 			return hireling
+		end
+	end
+	return nil
+end
+
+function GetHirelingSkillNameById(id)
+	for _, skill in pairs(HIRELING_SKILLS) do
+		if skill[1] == id then
+			return skill[2]
 		end
 	end
 	return nil
@@ -637,9 +655,7 @@ end
 
 function Player:copyHirelingStorageToCache()
 	if self:hasHirelings() then
-		local storageSkill = self:getStorageValue(HIRELING_STORAGE.SKILL)
 		local storageOutfit = self:getStorageValue(HIRELING_STORAGE.OUTFIT)
-		addStorageCacheValue(self:getGuid(), HIRELING_STORAGE.SKILL, storageSkill)
 		addStorageCacheValue(self:getGuid(), HIRELING_STORAGE.OUTFIT, storageOutfit)
 	end
 end
@@ -705,22 +721,17 @@ function Player:showInfoModal(title, message, buttonText)
 	modal:sendToPlayer(self)
 end
 
-function Player:hasHirelingSkill(SKILL)
-	local skills = self:getStorageValue(HIRELING_STORAGE.SKILL)
-	if skills <= 0 then
-		return false
-	else
-		return hasBitSet(SKILL, skills)
-	end
+function Player:hasHirelingSkill(skillName)
+	return self:kv():scoped("hireling-skills"):get(skillName)
 end
 
-function Player:enableHirelingSkill(SKILL)
-	local skills = self:getStorageValue(HIRELING_STORAGE.SKILL)
-	if skills < 0 then
-		skills = 0
+function Player:enableHirelingSkill(skillName)
+	if self:kv():scoped("hireling-skills"):get(skillName) then
+		logger.debug("Player {} already have hireling skill type {}", self:getName(), skillName)
+		return
 	end
-	skills = setFlag(SKILL, skills)
-	self:setStorageValue(HIRELING_STORAGE.SKILL, skills)
+
+	self:kv():scoped("hireling-skills"):set(skillName, true)
 	self:copyHirelingStorageToCache()
 end
 

@@ -436,14 +436,14 @@ function createHirelingType(HirelingName)
 
 	local function getHirelingSkills()
 		local skills = {}
-		if hireling:hasSkill(HIRELING_SKILLS.BANKER) then
-			table.insert(skills, HIRELING_SKILLS.BANKER)
+		if hireling:hasSkill(HIRELING_SKILLS.BANKER[2]) then
+			table.insert(skills, HIRELING_SKILLS.BANKER[1])
 		end
-		if hireling:hasSkill(HIRELING_SKILLS.COOKING) then
-			table.insert(skills, HIRELING_SKILLS.COOKING)
+		if hireling:hasSkill(HIRELING_SKILLS.COOKING[2]) then
+			table.insert(skills, HIRELING_SKILLS.COOKING[1])
 		end
-		if hireling:hasSkill(HIRELING_SKILLS.STEWARD) then
-			table.insert(skills, HIRELING_SKILLS.STEWARD)
+		if hireling:hasSkill(HIRELING_SKILLS.STEWARD[2]) then
+			table.insert(skills, HIRELING_SKILLS.STEWARD[1])
 		end
 		-- ignoring trader skills as it shows the same message about {goods}
 		return skills
@@ -460,11 +460,11 @@ function createHirelingType(HirelingName)
 				str = str .. ", "
 			end
 
-			if skills[i] == HIRELING_SKILLS.BANKER then
+			if skills[i] == HIRELING_SKILLS.BANKER[1] then
 				str = str .. "to access your {bank} account" -- TODO: this setence is not official
-			elseif skills[i] == HIRELING_SKILLS.COOKING then
+			elseif skills[i] == HIRELING_SKILLS.COOKING[1] then
 				str = str .. "to order {food}"
-			elseif skills[i] == HIRELING_SKILLS.STEWARD then
+			elseif skills[i] == HIRELING_SKILLS.STEWARD[1] then
 				str = str .. "to open your {stash}"
 			end
 		end
@@ -478,21 +478,10 @@ function createHirelingType(HirelingName)
 		return str
 	end
 
-	local function sendSkillNotLearned(npc, creature, SKILL)
+	local function sendSkillNotLearned(npc, creature, skillName)
 		local message = "Sorry, but I do not have mastery in this skill yet."
-		local profession
-		if SKILL == HIRELING_SKILLS.BANKER then
-			profession = "banker"
-		elseif SKILL == HIRELING_SKILLS.COOKING then
-			profession = "cooker"
-		elseif SKILL == HIRELING_SKILLS.STEWARD then
-			profession = "steward"
-		elseif SKILL == HIRELING_SKILLS.TRADER then
-			profession = "trader"
-		end
-
-		if profession then
-			message = string.format("I'm not a %s and would not know how to help you with that, sorry. I can start a %s apprenticeship if you buy it for me in the store!", profession, profession)
+		if skillName then
+			message = string.format("I'm not a %s and would not know how to help you with that, sorry. I can start a %s apprenticeship if you buy it for me in the store!", skillName, skillName)
 		end
 
 		npcHandler:say(message, npc, creature)
@@ -614,28 +603,31 @@ function createHirelingType(HirelingName)
 			npcHandler:say(servicesMsg, npc, creature)
 		elseif npcHandler:getTopic(playerId) == TOPIC.SERVICES then
 			if MsgContains(message, "bank") then
-				if hireling:hasSkill(HIRELING_SKILLS.BANKER) then
+				local bankerSkillName = HIRELING_SKILLS.BANKER[2]
+				if hireling:hasSkill(bankerSkillName) then
 					npcHandler:setTopic(playerId, TOPIC.BANK)
 					count[playerId], transfer[playerId] = nil, nil
 					npcHandler:say(GREETINGS.BANK, npc, creature)
 				else
-					sendSkillNotLearned(npc, creature, HIRELING_SKILLS.BANKER)
+					sendSkillNotLearned(npc, creature, bankerSkillName)
 				end
 			elseif MsgContains(message, "food") then
-				if hireling:hasSkill(HIRELING_SKILLS.COOKING) then
+				local bankerSkillName = HIRELING_SKILLS.COOKING[2]
+				if hireling:hasSkill(bankerSkillName) then
 					npcHandler:setTopic(playerId, TOPIC.FOOD)
 					npcHandler:say(GREETINGS.FOOD, npc, creature)
 				else
-					sendSkillNotLearned(npc, creature, HIRELING_SKILLS.COOKING)
+					sendSkillNotLearned(npc, creature, bankerSkillName)
 				end
 			elseif MsgContains(message, "stash") then
-				if hireling:hasSkill(HIRELING_SKILLS.STEWARD) then
+				local bankerSkillName = HIRELING_SKILLS.STEWARD[2]
+				if hireling:hasSkill(bankerSkillName) then
 					npcHandler:say(GREETINGS.STASH, npc, creature)
 					player:setSpecialContainersAvailable(true)
 					player:openStash(true)
 					player:sendTextMessage(MESSAGE_FAILURE, "Your supply stash contains " .. player:getStashCount() .. " item" .. (player:getStashCount() > 1 and "s." or "."))
 				else
-					sendSkillNotLearned(npc, creature, HIRELING_SKILLS.STEWARD)
+					sendSkillNotLearned(npc, creature, bankerSkillName)
 				end
 			elseif MsgContains(message, "goods") then
 				local string

@@ -733,8 +733,7 @@ function Player.canBuyOffer(self, offer)
 				disabledReason = "You already have bought the maximum number of allowed hirelings."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL then
-			local skill = (HIRELING_STORAGE.SKILL + offer.id)
-			if self:hasHirelingSkill(skill) then
+			if self:hasHirelingSkill(GetHirelingSkillNameById(offer.id)) then
 				disabled = 1
 				disabledReason = "This skill is already unlocked."
 			end
@@ -1871,8 +1870,7 @@ function GameStore.processHirelingSkillPurchase(player, offer)
 	end
 
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-	local skill = offer.id - HIRELING_STORAGE.SKILL
-	player:enableHirelingSkill(skill)
+	player:enableHirelingSkill(GetHirelingSkillNameById(offer.id))
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "A new hireling skill has been added to all your hirelings")
 end
 

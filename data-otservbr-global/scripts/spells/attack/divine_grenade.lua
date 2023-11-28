@@ -47,7 +47,7 @@ local function removeGrenadeEffect(position)
 end
 
 function onTargetCreature(creature, target)
-	if not creature and target and creature:isPlayer() then
+	if not (creature and target and creature:isPlayer()) then
 		return false
 	end
 

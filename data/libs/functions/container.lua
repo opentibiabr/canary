@@ -23,7 +23,6 @@ function Container:addLoot(loot)
 					logger.warn("Container:addLoot: failed to add stackable item: {}, to corpse {} with id {}", ItemType(itemId):getName(), self:getName(), self:getId())
 					goto continue
 				end
-
 				remainingCount = remainingCount - countToAdd
 			end
 		elseif iType:getCharges() ~= 0 then

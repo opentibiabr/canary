@@ -30,14 +30,14 @@ function createItem.onSay(player, words, param)
 			end
 			local remainingCount = count
 			local stackSize = itemType:getStackSize()
-		
+
 			while remainingCount > 0 do
 				local freeSlots = mainContainer and (mainContainer:getCapacity() - mainContainer:getSize()) or 0
 				if freeSlots <= 1 and mainContainer:getSize() ~= 0 then
 					mainContainer = Game.createItem(2854)
 					player:addItemEx(mainContainer)
 				end
-		
+
 				local countToAdd = math.min(remainingCount, stackSize)
 				local tmpItem = mainContainer:addItem(itemType:getId(), countToAdd)
 				if tmpItem then
@@ -47,7 +47,7 @@ function createItem.onSay(player, words, param)
 					break
 				end
 			end
-		
+
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 			return true
 		elseif not itemType:isFluidContainer() then

@@ -23,21 +23,37 @@ function createItem.onSay(player, words, param)
 	local count = tonumber(split[2])
 	if count then
 		if itemType:isStackable() then
-			local stackSize = itemType:getStackSize()
-			local container = Game.createItem(2854)
+			local mainContainer = player:getSlotItem(CONST_SLOT_BACKPACK)
 			local remainingCount = count
+			local freeSlots = mainContainer and (mainContainer:getCapacity() - mainContainer:getSize()) or 0
+			local stackSize = itemType:getStackSize()
+			local slotsNeeded = math.ceil(remainingCount / stackSize)
 
-			while remainingCount > 0 do
-				local countToAdd = math.min(remainingCount, stackSize)
-				local tmpItem = container:addItem(itemType:getId(), countToAdd, INDEX_WHEREEVER, FLAG_NOLIMIT)
-				if tmpItem then
-					remainingCount = remainingCount - countToAdd
-				else
-					logger.warn("Failed to add item: {}, to container", itemType:getName())
+			if freeSlots < slotsNeeded then
+				local newContainer = Game.createItem(2854)
+				while remainingCount > 0 do
+					local countToAdd = math.min(remainingCount, stackSize)
+					local tmpItem = newContainer:addItem(itemType:getId(), countToAdd, INDEX_WHEREEVER, FLAG_NOLIMIT)
+					if tmpItem then
+						remainingCount = remainingCount - countToAdd
+					else
+						logger.warn("Failed to add item: {}, to new container", itemType:getName())
+						break
+					end
+				end
+				player:addItemEx(newContainer, true, CONST_SLOT_BACKPACK)
+			else
+				while remainingCount > 0 do
+					local countToAdd = math.min(remainingCount, stackSize)
+					local tmpItem = mainContainer:addItem(itemType:getId(), countToAdd, INDEX_WHEREEVER, FLAG_NOLIMIT)
+					if tmpItem then
+						remainingCount = remainingCount - countToAdd
+					else
+						logger.warn("Failed to add item: {}, to main container", itemType:getName())
+						break
+					end
 				end
 			end
-
-			player:addItemEx(container)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 			return true
 		elseif not itemType:isFluidContainer() then

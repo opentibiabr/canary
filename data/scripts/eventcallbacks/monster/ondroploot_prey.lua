@@ -42,7 +42,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 		return
 	end
 
-	if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) then
+	if configManager.getBoolean(configKeys.PARTY_SHARE_LOOT_BOOSTS) then
 		msgSuffix = msgSuffix .. " (active prey bonus for " .. table.concat(preyActivators, ", ") .. ")"
 	else
 		msgSuffix = msgSuffix .. " (active prey bonus)"

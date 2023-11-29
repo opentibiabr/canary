@@ -24,36 +24,30 @@ function createItem.onSay(player, words, param)
 	if count then
 		if itemType:isStackable() then
 			local mainContainer = player:getSlotItem(CONST_SLOT_BACKPACK)
+			if not mainContainer then
+				player:addItemEx(Game.createItem(2854), CONST_SLOT_BACKPACK)
+				mainContainer = player:getSlotItem(CONST_SLOT_BACKPACK)
+			end
 			local remainingCount = count
-			local freeSlots = mainContainer and (mainContainer:getCapacity() - mainContainer:getSize()) or 0
 			local stackSize = itemType:getStackSize()
-			local slotsNeeded = math.ceil(remainingCount / stackSize)
-
-			if freeSlots < slotsNeeded then
-				local newContainer = Game.createItem(2854)
-				while remainingCount > 0 do
-					local countToAdd = math.min(remainingCount, stackSize)
-					local tmpItem = newContainer:addItem(itemType:getId(), countToAdd, INDEX_WHEREEVER, FLAG_NOLIMIT)
-					if tmpItem then
-						remainingCount = remainingCount - countToAdd
-					else
-						logger.warn("Failed to add item: {}, to new container", itemType:getName())
-						break
-					end
+		
+			while remainingCount > 0 do
+				local freeSlots = mainContainer and (mainContainer:getCapacity() - mainContainer:getSize()) or 0
+				if freeSlots <= 1 and mainContainer:getSize() ~= 0 then
+					mainContainer = Game.createItem(2854)
+					player:addItemEx(mainContainer)
 				end
-				player:addItemEx(newContainer, true, CONST_SLOT_BACKPACK)
-			else
-				while remainingCount > 0 do
-					local countToAdd = math.min(remainingCount, stackSize)
-					local tmpItem = mainContainer:addItem(itemType:getId(), countToAdd, INDEX_WHEREEVER, FLAG_NOLIMIT)
-					if tmpItem then
-						remainingCount = remainingCount - countToAdd
-					else
-						logger.warn("Failed to add item: {}, to main container", itemType:getName())
-						break
-					end
+		
+				local countToAdd = math.min(remainingCount, stackSize)
+				local tmpItem = mainContainer:addItem(itemType:getId(), countToAdd)
+				if tmpItem then
+					remainingCount = remainingCount - countToAdd
+				else
+					logger.warn("Failed to add item: {}, to container", itemType:getName())
+					break
 				end
 			end
+		
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 			return true
 		elseif not itemType:isFluidContainer() then

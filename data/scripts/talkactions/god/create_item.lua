@@ -23,16 +23,32 @@ function createItem.onSay(player, words, param)
 	local count = tonumber(split[2])
 	if count then
 		if itemType:isStackable() then
-			local item = Game.createItem(itemType:getId(), count)
-			if not item then
-				player:sendCancelMessage("Cannot create item")
-				return true
+			local mainContainer = player:getSlotItem(CONST_SLOT_BACKPACK)
+			if not mainContainer then
+				player:addItemEx(Game.createItem(2854), CONST_SLOT_BACKPACK)
+				mainContainer = player:getSlotItem(CONST_SLOT_BACKPACK)
+			end
+			local remainingCount = count
+			local stackSize = itemType:getStackSize()
+
+			while remainingCount > 0 do
+				local freeSlots = mainContainer and (mainContainer:getCapacity() - mainContainer:getSize()) or 0
+				if freeSlots <= 1 and mainContainer:getSize() ~= 0 then
+					mainContainer = Game.createItem(2854)
+					player:addItemEx(mainContainer)
+				end
+
+				local countToAdd = math.min(remainingCount, stackSize)
+				local tmpItem = mainContainer:addItem(itemType:getId(), countToAdd)
+				if tmpItem then
+					remainingCount = remainingCount - countToAdd
+				else
+					logger.warn("Failed to add item: {}, to container", itemType:getName())
+					break
+				end
 			end
 
-			local ret = player:addItemEx(item, INDEX_WHEREEVER, FLAG_NOLIMIT)
-			if ret ~= RETURNVALUE_NOERROR then
-				player:sendCancelMessage(ret)
-			end
+			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 			return true
 		elseif not itemType:isFluidContainer() then
 			local min = 100

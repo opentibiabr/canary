@@ -438,7 +438,7 @@ function parseBuyStoreOffer(playerId, msg)
 	-- Handled errors have a code index and unhandled errors do not
 	local pcallOk, pcallError = pcall(function()
 		if offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM then
-			GameStore.processItemPurchase(player, offer.itemtype, offer.count, offer.moveable)
+			GameStore.processItemPurchase(player, offer.itemtype, offer.count, offer.movable)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_POUCH then
 			GameStore.processItemPurchase(player, offer.itemtype, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS then
@@ -446,13 +446,13 @@ function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_CHARMS then
 			GameStore.processCharmsPurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_BLESSINGS then
-			GameStore.processSignleBlessingPurchase(player, offer.blessid, offer.count)
+			GameStore.processSingleBlessingPurchase(player, offer.blessid, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS then
 			GameStore.processAllBlessingsPurchase(player, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREMIUM then
 			GameStore.processPremiumPurchase(player, offer.id)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_STACKABLE then
-			GameStore.processStackablePurchase(player, offer.itemtype, offer.count, offer.name, offer.moveable)
+			GameStore.processStackablePurchase(player, offer.itemtype, offer.count, offer.name, offer.movable)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HOUSE then
 			GameStore.processHouseRelatedPurchase(player, offer)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT then
@@ -477,7 +477,7 @@ function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_TEMPLE then
 			GameStore.processTempleTeleportPurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_CHARGES then
-			GameStore.processChargesPurchase(player, offer.itemtype, offer.name, offer.charges, offer.moveable)
+			GameStore.processChargesPurchase(player, offer.itemtype, offer.name, offer.charges, offer.movable)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING then
 			local hirelingName = msg:getString()
 			local sex = msg:getByte()
@@ -1495,7 +1495,7 @@ end
 -- take a table {code = ..., message = ...} if the error is handled. When no code
 -- index is present the error is assumed to be unhandled.
 
-function GameStore.processItemPurchase(player, offerId, offerCount, moveable)
+function GameStore.processItemPurchase(player, offerId, offerCount, movable)
 	if player:getFreeCapacity() < ItemType(offerId):getWeight(offerCount) then
 		return error({ code = 0, message = "Please make sure you have free capacity to hold this item." })
 	end
@@ -1504,7 +1504,7 @@ function GameStore.processItemPurchase(player, offerId, offerCount, moveable)
 	if inbox then
 		for t = 1, offerCount do
 			local inboxItem = inbox:addItem(offerId, offerCount or 1)
-			if moveable ~= true and inboxItem then
+			if movable ~= true and inboxItem then
 				inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 			end
 		end
@@ -1513,7 +1513,7 @@ function GameStore.processItemPurchase(player, offerId, offerCount, moveable)
 	end
 end
 
-function GameStore.processChargesPurchase(player, itemtype, name, charges, moveable)
+function GameStore.processChargesPurchase(player, itemtype, name, charges, movable)
 	if player:getFreeCapacity() < ItemType(itemtype):getWeight(1) then
 		return error({ code = 0, message = "Please make sure you have free capacity to hold this item." })
 	end
@@ -1522,7 +1522,7 @@ function GameStore.processChargesPurchase(player, itemtype, name, charges, movea
 	if inbox then
 		local inboxItem = inbox:addItem(itemtype, charges)
 
-		if moveable ~= true and inboxItem then
+		if movable ~= true and inboxItem then
 			inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 		end
 	else
@@ -1530,7 +1530,7 @@ function GameStore.processChargesPurchase(player, itemtype, name, charges, movea
 	end
 end
 
-function GameStore.processSignleBlessingPurchase(player, blessId, count)
+function GameStore.processSingleBlessingPurchase(player, blessId, count)
 	player:addBlessing(blessId, count)
 end
 
@@ -1563,7 +1563,7 @@ function GameStore.processPremiumPurchase(player, offerId)
 	end
 end
 
-function GameStore.processStackablePurchase(player, offerId, offerCount, offerName, moveable)
+function GameStore.processStackablePurchase(player, offerId, offerCount, offerName, movable)
 	local function isKegItem(itemId)
 		return itemId >= ITEM_KEG_START and itemId <= ITEM_KEG_END
 	end
@@ -1599,12 +1599,12 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 						local kegItem = parcel:addItem(offerId, 1)
 						kegItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, pack)
 
-						if moveable ~= true and kegItem then
+						if movable ~= true and kegItem then
 							kegItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 						end
 					else
 						local parcelItem = parcel:addItem(offerId, pack)
-						if moveable ~= true and parcelItem then
+						if movable ~= true and parcelItem then
 							parcelItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 						end
 					end
@@ -1613,7 +1613,7 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 			end
 		else
 			local item = inbox:addItem(offerId, isKeg and 1 or offerCount)
-			if moveable ~= true and item then
+			if movable ~= true and item then
 				item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 			end
 			if item and isKeg then
@@ -1645,7 +1645,7 @@ function GameStore.processHouseRelatedPurchase(player, offer)
 					decoKit:setAttribute(ITEM_ATTRIBUTE_DATE, offer.count)
 				end
 
-				if offer.moveable ~= true then
+				if offer.movable ~= true then
 					decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 				end
 			end
@@ -2137,7 +2137,12 @@ function sendHomePage(playerId)
 			msg:addString(offer.icons[1])
 		elseif type == GameStore.ConverType.SHOW_MOUNT then
 			local mount = Mount(offer.id)
-			msg:addU16(mount:getClientId())
+			if mount then
+				msg:addU16(mount:getClientId())
+			else
+				logger.debug("[sendHomePage] mount with id {} not exist, ignoring to avoid a debug on the client", offer.id)
+				msg:addU16(0)
+			end
 		elseif type == GameStore.ConverType.SHOW_ITEM then
 			msg:addU16(offer.itemtype)
 		elseif type == GameStore.ConverType.SHOW_OUTFIT then

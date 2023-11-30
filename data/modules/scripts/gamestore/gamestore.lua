@@ -1115,19 +1115,19 @@ GameStore.Categories = {
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
-				icons = { "Arctic_Unicorn.png" },
-				name = "Artic Unicorn",
-				price = 870,
-				id = 114,
-				description = "{character}\n{speedboost}\n\n<i>The Arctic Unicorn lives in a deep rivalry with its cousin the Blazing Unicorn. Even though they were born in completely different areas, they somehow share the same bloodline. The eternal battle between fire and ice continues. Who will win? Tangerine vs.crystal blue! The choice is yours!</i>",
-				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
-			},
-			{
 				icons = { "Armoured_War_Horse.png" },
 				name = "Armoured War Horse",
 				price = 870,
 				id = 23,
 				description = "{character}\n{speedboost}\n\n<i>The Armoured War Horse is a dangerous black beauty! When you see its threatening, blood-red eyes coming towards you, you'll know trouble is on its way. Protected by its heavy armour plates, the warhorse is the perfect partner for dangerous hunting sessions and excessive enemy slaughtering.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+			},
+			{
+				icons = { "Arctic_Unicorn.png" },
+				name = "Artic Unicorn",
+				price = 870,
+				id = 114,
+				description = "{character}\n{speedboost}\n\n<i>The Arctic Unicorn lives in a deep rivalry with its cousin the Blazing Unicorn. Even though they were born in completely different areas, they somehow share the same bloodline. The eternal battle between fire and ice continues. Who will win? Tangerine vs.crystal blue! The choice is yours!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
 			{
@@ -1179,6 +1179,14 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
 			{
+				icons = { "Bogwurm.png" },
+				name = "Bogwurm",
+				price = 870,
+				id = 189,
+				description = "{character}\n{speedboost}\n\n<i>The Bogwurm, Gloomwurm, and Rustwurm belong to a little known subset of the dragon family, and usually live out their lives in habitats far away from human interaction. Them being cunning hunters, and their keen sense of perception make these wurms great companions for whomever can locate and tame them.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+			},
+			{
 				icons = { "Boreal_Owl.png" },
 				name = "Boreal Owl",
 				price = 870,
@@ -1192,14 +1200,6 @@ GameStore.Categories = {
 				price = 750,
 				id = 208,
 				description = "{character}\n{speedboost}\n\n<i>The vibrant colours and elegance of a Tangerine Flecked Koi, a Brass Speckled Koi, and an Ink Spotted Koi make them a fascinating sight to behold, and their boisterous nature and speed will make you the first to arrive wherever there are riches to gain. Wield your weapon as gracefully and effortlessly as your swimming companion glides through the water, and the two of you will make the perfect and most deadly pair.</i>",
-				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
-			},
-			{
-				icons = { "Bogwurm.png" },
-				name = "Bogwurm",
-				price = 870,
-				id = 189,
-				description = "{character}\n{speedboost}\n\n<i>The Bogwurm, Gloomwurm, and Rustwurm belong to a little known subset of the dragon family, and usually live out their lives in habitats far away from human interaction. Them being cunning hunters, and their keen sense of perception make these wurms great companions for whomever can locate and tame them.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
 			{
@@ -1274,6 +1274,16 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>If the Coralripper moves its fins, it generates enough air pressure that it can even float over land. Its numerous eyes allow it to quickly detect dangers even in confusing situations and eliminate them with one powerful bite. If you watch your fingers, you are going to be good friends.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
+			--[[{
+				icons = { "Corpsefire_Skull.png" },
+				name = "Corpsefire Skull",
+				price = 750,
+				id = 221,
+				description = "{character}\n{speedboost}\n\n<i>Skulls are the infernal heralds of untamed power. Bodies are obsolete when sinister forces animate your being. Embrace their presence and command the devastating might that awaits on the back of an eerie Corpsefire Skull!</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				state = GameStore.States.STATE_NEW,
+				home = true,
+			},]]
 			{
 				icons = { "Cranium_Spider.png" },
 				name = "Cranium Spider",
@@ -1307,6 +1317,14 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
 			{
+				icons = { "Darkfire_Devourer.png" },
+				name = "Darkfire Devourer",
+				price = 1300,
+				id = 213,
+				description = "{character}\n{speedboost}\n\n<i>A wild, ancient creature, which had been hiding in the depths of the shadows for a very long time, has been spotted in Tibia again! The almighty Shadow Draptor has returned and only the bravest Tibians can control such a beast!</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+			},
+			{
 				icons = { "Dawn_Strayer.png" },
 				name = "Dawn Strayer",
 				price = 870,
@@ -1330,6 +1348,16 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Its roaring is piercing marrow and bone and can be heard over ten miles away. The Desert King is the undisputed ruler of its territory and no one messes with this animal. Show no fear and prove yourself worthy of its trust and you will get yourself a valuable companion for your adventures.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
+			--[[{
+				icons = { "Doom_Skull.png" },
+				name = "Doom Skull",
+				price = 750,
+				id = 219,
+				description = "{character}\n{speedboost}\n\n<i>Skulls are the infernal heralds of untamed power. Bodies are obsolete when sinister forces animate your being. Embrace their presence and command the devastating might that awaits on the back of a grim Doom Skull.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				state = GameStore.States.STATE_NEW,
+				home = true,
+			},]]
 			{
 				icons = { "Doombringer.png" },
 				name = "Doombringer",
@@ -1496,6 +1524,14 @@ GameStore.Categories = {
 				price = 900,
 				id = 65,
 				description = "{character}\n{speedboost}\n\n<i>The Flying Divan is the perfect mount for those who are too busy to take care of an animal mount or simply like to travel on a beautiful, magic hand-woven carpet.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+			},
+			{
+				icons = { "Foxmouse.png" },
+				name = "Foxmouse",
+				price = 750,
+				id = 218,
+				description = "{character}\n{speedboost}\n\n<i>A wild, ancient creature, which had been hiding in the depths of the shadows for a very long time, has been spotted in Tibia again! The almighty Shadow Draptor has returned and only the bravest Tibians can control such a beast!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
 			{
@@ -1698,6 +1734,16 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Magic Carpet is the perfect mount for those who are too busy to take care of an animal mount or simply like to travel on a beautiful, magic hand-woven carpet.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
+			--[[{
+				icons = { "Magma_Skull.png" },
+				name = "Magma Skull",
+				price = 750,
+				id = 220,
+				description = "{character}\n{speedboost}\n\n<i>Skulls are the infernal heralds of untamed power. Bodies are obsolete when sinister forces animate your being. Embrace their presence and command the devastating might that awaits on the back of a blazing Magma Skull.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				state = GameStore.States.STATE_NEW,
+				home = true,
+			},]]
 			{
 				icons = { "Marsh_Toad.png" },
 				name = "Marsh Toad",
@@ -2027,6 +2073,14 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
 			{
+				icons = { "Snow_Strider.png" },
+				name = "Snow Strider",
+				price = 870,
+				id = 164,
+				description = "{character}\n{speedboost}\n\n<i>A magical fire burns inside these wolves. Bred as the faithful guardians for an eccentric wizard's tower, these creatures make for loyal companions during your travels. While not originally intended for riding, their sturdy frame makes the Dawn Strayer, Dusk Pryer and Snow Strider suitable mounts.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+			},
+			{
 				icons = { "Snowy_Owl.png" },
 				name = "Snowy Owl",
 				price = 870,
@@ -2035,11 +2089,11 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
 			{
-				icons = { "Snow_Strider.png" },
-				name = "Snow Strider",
-				price = 870,
-				id = 164,
-				description = "{character}\n{speedboost}\n\n<i>A magical fire burns inside these wolves. Bred as the faithful guardians for an eccentric wizard's tower, these creatures make for loyal companions during your travels. While not originally intended for riding, their sturdy frame makes the Dawn Strayer, Dusk Pryer and Snow Strider suitable mounts.</i>",
+				icons = { "Spirit_of_Purity.png" },
+				name = "Spirit of Purity",
+				price = 1000,
+				id = 215,
+				description = "{character}\n{speedboost}\n\n<i>A wild, ancient creature, which had been hiding in the depths of the shadows for a very long time, has been spotted in Tibia again! The almighty Shadow Draptor has returned and only the bravest Tibians can control such a beast!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
 			{

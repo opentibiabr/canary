@@ -127,7 +127,7 @@ int HouseFunctions::luaHouseSetNewOwnerGuid(lua_State* L) {
 	// house:setNewOwnerGuid(guid[, updateDatabase = true])
 	auto house = getUserdataShared<House>(L, 1);
 	if (house) {
-		auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+		auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
 		if (isTransferOnRestart && house->hasNewOwnership()) {
 			const auto player = g_game().getPlayerByGUID(house->getOwner());
 			if (player) {
@@ -168,7 +168,7 @@ int HouseFunctions::luaHouseHasNewOwnership(lua_State* L) {
 		return 1;
 	}
 
-	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
 	pushBoolean(L, isTransferOnRestart && house->hasNewOwnership());
 	return 1;
 }
@@ -210,7 +210,7 @@ int HouseFunctions::luaHouseStartTrade(lua_State* L) {
 		return 1;
 	}
 
-	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
 	if (isTransferOnRestart && house->hasNewOwnership()) {
 		tradePartner->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You cannot buy this house. Ownership is already scheduled to be transferred upon the next server restart.");
 		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You cannot sell this house. Ownership is already scheduled to be transferred upon the next server restart.");
@@ -368,7 +368,12 @@ int HouseFunctions::luaHouseCanEditAccessList(lua_State* L) {
 	}
 
 	uint32_t listId = getNumber<uint32_t>(L, 2);
-	std::shared_ptr<Player> player = getPlayer(L, 3);
+
+	const auto &player = getPlayer(L, 3);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
 
 	pushBoolean(L, house->canEditAccessList(listId, player));
 	return 1;
@@ -415,7 +420,19 @@ int HouseFunctions::luaHouseKickPlayer(lua_State* L) {
 		return 1;
 	}
 
-	pushBoolean(L, house->kickPlayer(getPlayer(L, 2), getPlayer(L, 3)));
+	const auto &player = getPlayer(L, 2);
+	if (!player) {
+		reportErrorFunc("Player is nullptr");
+		return 1;
+	}
+
+	auto targetPlayer = getPlayer(L, 3);
+	if (!targetPlayer) {
+		reportErrorFunc("Target player is nullptr");
+		return 1;
+	}
+
+	pushBoolean(L, house->kickPlayer(player, targetPlayer));
 	return 1;
 }
 
@@ -427,9 +444,9 @@ int HouseFunctions::luaHouseIsInvited(lua_State* L) {
 		return 1;
 	}
 
-	std::shared_ptr<Player> player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;
 	}
 

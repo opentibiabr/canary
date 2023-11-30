@@ -19,7 +19,7 @@ std::shared_ptr<Party> Party::create(std::shared_ptr<Player> leader) {
 	auto party = std::make_shared<Party>();
 	party->m_leader = leader;
 	leader->setParty(party);
-	if (g_configManager().getBoolean(PARTY_AUTO_SHARE_EXPERIENCE)) {
+	if (g_configManager().getBoolean(PARTY_AUTO_SHARE_EXPERIENCE, __FUNCTION__)) {
 		party->setSharedExperience(leader, true);
 	}
 	return party;
@@ -187,16 +187,16 @@ bool Party::passPartyLeadership(std::shared_ptr<Player> player) {
 
 	for (auto member : getMembers()) {
 		member->sendPartyCreatureShield(oldLeader);
-		member->sendPartyCreatureShield(leader);
+		member->sendPartyCreatureShield(player);
 	}
 
 	for (auto invitee : getInvitees()) {
 		invitee->sendCreatureShield(oldLeader);
-		invitee->sendCreatureShield(leader);
+		invitee->sendCreatureShield(player);
 	}
 
-	leader->sendPartyCreatureShield(oldLeader);
-	leader->sendPartyCreatureShield(leader);
+	player->sendPartyCreatureShield(oldLeader);
+	player->sendPartyCreatureShield(player);
 
 	player->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "You are now the leader of the party.");
 	return true;
@@ -616,7 +616,7 @@ void Party::updatePlayerStatus(std::shared_ptr<Player> player) {
 		return;
 	}
 
-	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
+	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE, __FUNCTION__);
 	for (auto member : getMembers()) {
 		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
 		if (condition) {
@@ -639,7 +639,7 @@ void Party::updatePlayerStatus(std::shared_ptr<Player> player, const Position &o
 		return;
 	}
 
-	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
+	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE, __FUNCTION__);
 	if (maxDistance != 0) {
 		for (auto member : getMembers()) {
 			bool condition1 = (Position::getDistanceX(oldPos, member->getPosition()) <= maxDistance && Position::getDistanceY(oldPos, member->getPosition()) <= maxDistance);
@@ -667,7 +667,7 @@ void Party::updatePlayerHealth(std::shared_ptr<Player> player, std::shared_ptr<C
 		return;
 	}
 
-	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
+	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE, __FUNCTION__);
 	auto playerPosition = player->getPosition();
 	auto leaderPosition = leader->getPosition();
 	for (auto member : getMembers()) {
@@ -689,7 +689,7 @@ void Party::updatePlayerMana(std::shared_ptr<Player> player, uint8_t manaPercent
 		return;
 	}
 
-	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
+	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE, __FUNCTION__);
 	for (auto member : getMembers()) {
 		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
 		if (condition) {
@@ -708,7 +708,7 @@ void Party::updatePlayerVocation(std::shared_ptr<Player> player) {
 		return;
 	}
 
-	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
+	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE, __FUNCTION__);
 	for (auto member : getMembers()) {
 		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
 		if (condition) {

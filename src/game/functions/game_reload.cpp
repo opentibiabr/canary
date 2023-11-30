@@ -95,10 +95,10 @@ bool GameReload::reloadEvents() const {
 }
 
 bool GameReload::reloadCore() const {
-	if (auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+	if (auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
 		g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0) {
 		// Reload scripts lib
-		auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+		auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
 		if (!g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false)) {
 			return false;
 		}
@@ -124,7 +124,7 @@ bool GameReload::reloadMonsters() const {
 	// Clear registered MonsterType vector
 	g_monsters().clear();
 	// Resets monster spells to prevent the spell from being incorrectly cleared from memory
-	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
 	if (!g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false)) {
 		return false;
 	}
@@ -151,9 +151,9 @@ bool GameReload::reloadScripts() const {
 	g_scripts().clearAllScripts();
 	Zone::clearZones();
 	// Reset scripts lib to prevent the objects from being incorrectly cleared from memory
-	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
 	g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false);
-	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+	auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
 	g_scripts().loadScripts(datapackFolder + "/scripts", false, true);
 	g_scripts().loadScripts(coreFolder + "/scripts", false, true);
 

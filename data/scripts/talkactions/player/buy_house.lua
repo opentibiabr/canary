@@ -1,7 +1,7 @@
 local buyHouse = TalkAction("!buyhouse")
 
 function buyHouse.onSay(player, words, param)
-	local housePrice = configManager.getNumber(configKeys.HOUSE_PRICE)
+	local housePrice = configManager.getNumber(configKeys.HOUSE_PRICE_PER_SQM)
 	if housePrice == -1 then
 		return true
 	end

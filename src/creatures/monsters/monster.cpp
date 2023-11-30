@@ -773,7 +773,9 @@ void Monster::onThink(uint32_t interval) {
 		}
 	} else if (!targetList.empty()) {
 		const bool attackedCreatureIsDisconnected = attackedCreature && attackedCreature->getPlayer() && attackedCreature->getPlayer()->isDisconnected();
-		if (!attackedCreature || attackedCreatureIsDisconnected) {
+		const bool attackedCreatureIsUnattackable = attackedCreature && !canUseAttack(getPosition(), attackedCreature);
+		const bool attackedCreatureIsUnreachable = targetDistance <= 1 && attackedCreature && followCreature && !hasFollowPath;
+		if (!attackedCreature || attackedCreatureIsDisconnected || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {
 			if (!followCreature || !hasFollowPath || attackedCreatureIsDisconnected) {
 				searchTarget(TARGETSEARCH_NEAREST);
 			} else if (attackedCreature && isFleeing() && !canUseAttack(getPosition(), attackedCreature)) {
@@ -1951,8 +1953,8 @@ void Monster::dropLoot(std::shared_ptr<Container> corpse, std::shared_ptr<Creatu
 		if (ForgeClassifications_t classification = getMonsterForgeClassification();
 			// Condition
 			classification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
-			auto minSlivers = g_configManager().getNumber(FORGE_MIN_SLIVERS);
-			auto maxSlivers = g_configManager().getNumber(FORGE_MAX_SLIVERS);
+			auto minSlivers = g_configManager().getNumber(FORGE_MIN_SLIVERS, __FUNCTION__);
+			auto maxSlivers = g_configManager().getNumber(FORGE_MAX_SLIVERS, __FUNCTION__);
 
 			auto sliverCount = static_cast<uint16_t>(uniform_random(minSlivers, maxSlivers));
 
@@ -1961,7 +1963,7 @@ void Monster::dropLoot(std::shared_ptr<Container> corpse, std::shared_ptr<Creatu
 				corpse->internalAddThing(sliver);
 			}
 		}
-		if (!this->isRewardBoss() && g_configManager().getNumber(RATE_LOOT) > 0) {
+		if (!this->isRewardBoss() && g_configManager().getNumber(RATE_LOOT, __FUNCTION__) > 0) {
 			g_callbacks().executeCallback(EventCallback_t::monsterOnDropLoot, &EventCallback::monsterOnDropLoot, getMonster(), corpse);
 			g_callbacks().executeCallback(EventCallback_t::monsterPostDropLoot, &EventCallback::monsterPostDropLoot, getMonster(), corpse);
 		}

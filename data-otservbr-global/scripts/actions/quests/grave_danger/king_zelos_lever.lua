@@ -4,7 +4,6 @@ local config = {
 		position = Position(33443, 31545, 13),
 	},
 	requiredLevel = 250,
-
 	playerPositions = {
 		{ pos = Position(33485, 31546, 13), teleport = Position(33443, 31554, 13), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33485, 31547, 13), teleport = Position(33443, 31554, 13), effect = CONST_ME_TELEPORT },

@@ -381,7 +381,7 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 	}
 
 	auto toRemove = amount;
-	for (auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore); auto item : inventoryItems) {
+	for (auto item : player->getInventoryItemsFromId(itemId, ignore)) {
 		if (!item || item->getTier() > 0 || item->hasImbuements()) {
 			continue;
 		}

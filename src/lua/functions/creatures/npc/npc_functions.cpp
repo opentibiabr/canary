@@ -359,8 +359,8 @@ int NpcFunctions::luaNpcOpenShopWindow(lua_State* L) {
 	return 1;
 }
 
-int NpcFunctions::luaNpcOpenShopWindowCallback(lua_State* L) {
-	// npc:openShopWindowCallback(player, items)
+int NpcFunctions::luaNpcOpenShopWindowTable(lua_State* L) {
+	// npc:openShopWindowTable(player, items)
 	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));

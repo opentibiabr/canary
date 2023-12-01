@@ -676,7 +676,7 @@ function createHirelingType(HirelingName)
 			local categoryTable = itemsTable[message:lower()]
 			if categoryTable then
 				npcHandler:say("Here are the items for the category " .. message, npc, creature)
-				npc:openShopWindowCallback(player, categoryTable)
+				npc:openShopWindowTable(player, categoryTable)
 			end
 		end
 		if enableBankSystem[playerId] then

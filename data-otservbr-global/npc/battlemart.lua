@@ -206,7 +206,7 @@ local function creatureSayCallback(npc, player, type, message)
 		npcHandler:say("I sell a selection of " .. table.concat(formattedCategoryNames, ", "), npc, player)
 	elseif categoryTable then
 		npcHandler:say("Here are the items for the category " .. message, npc, player)
-		npc:openShopWindowCallback(player, categoryTable)
+		npc:openShopWindowTable(player, categoryTable)
 	end
 end
 

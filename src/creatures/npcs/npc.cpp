@@ -642,7 +642,7 @@ bool Npc::getRandomStep(Direction &moveDirection) {
 	return false;
 }
 
-void Npc::addShopPlayer(const std::shared_ptr<Player> &player, const std::vector<ShopBlock> &shopItems) {
+void Npc::addShopPlayer(const std::shared_ptr<Player> &player, const std::vector<ShopBlock> &shopItems /* = {}*/) {
 	if (!player) {
 		return;
 	}

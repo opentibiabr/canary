@@ -122,18 +122,6 @@ local function spawnNPCs()
 	end
 end
 
-local function hasHirelingOutfitByType(player_id, outfitName)
-	local function hasOutfitFromPlayer(player)
-		if player then
-			return player:kv():scoped("hireling-outfits"):get(outfitName)
-		end
-		return false
-	end
-
-	local player = Player(player_id) or Game.getOfflinePlayer(player_id)
-	return hasOutfitFromPlayer(player)
-end
-
 Hireling = {
 	id = -1,
 	player_id = -1,
@@ -449,7 +437,6 @@ end
 function HirelingsInit()
 	local rows = db.storeQuery("SELECT * FROM `player_hirelings`")
 	if rows then
-		local hirelingsById = {}
 		local player_id, hireling
 		repeat
 			player_id = Result.getNumber(rows, "player_id")
@@ -471,6 +458,7 @@ function HirelingsInit()
 			hireling.lookhead = Result.getNumber(rows, "lookhead")
 			hireling.looklegs = Result.getNumber(rows, "looklegs")
 			hireling.looktype = Result.getNumber(rows, "looktype")
+
 			table.insert(PLAYER_HIRELINGS[player_id], hireling)
 			table.insert(HIRELINGS, hireling)
 		until not Result.next(rows)

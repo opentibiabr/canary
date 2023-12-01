@@ -659,7 +659,7 @@ void Npc::removeShopPlayer(const std::shared_ptr<Player> &player) {
 }
 
 void Npc::closeAllShopWindows() {
-	for (auto &[playerGUID, playerPtr] : shopPlayerMap) {
+	for (const auto &[playerGUID, playerPtr] : shopPlayerMap) {
 		auto shopPlayer = g_game().getPlayerByGUID(playerGUID);
 		if (shopPlayer) {
 			shopPlayer->closeShopWindow();

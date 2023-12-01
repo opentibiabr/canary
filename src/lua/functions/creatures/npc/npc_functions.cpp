@@ -361,14 +361,14 @@ int NpcFunctions::luaNpcOpenShopWindow(lua_State* L) {
 
 int NpcFunctions::luaNpcOpenShopWindowCallback(lua_State* L) {
 	// npc:openShopWindowCallback(player, items)
-	auto &npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
 		pushBoolean(L, false);
 		return 1;
 	}
 
-	auto &player = getUserdataShared<Player>(L, 2);
+	const auto &player = getUserdataShared<Player>(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;
@@ -386,7 +386,7 @@ int NpcFunctions::luaNpcOpenShopWindowCallback(lua_State* L) {
 		const auto tableIndex = lua_gettop(L);
 		ShopBlock item;
 
-		uint16_t itemId = static_cast<uint16_t>(getField<uint32_t>(L, tableIndex, "clientId"));
+		auto itemId = getField<uint16_t>(L, tableIndex, "clientId");
 		int32_t subType = getField<int32_t>(L, tableIndex, "subType");
 		if (subType == 0) {
 			subType = getField<int32_t>(L, tableIndex, "subtype");

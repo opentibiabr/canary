@@ -6820,7 +6820,9 @@ bool Player::saySpell(
 	// Send to client
 	for (std::shared_ptr<Creature> spectator : spectators) {
 		if (std::shared_ptr<Player> tmpPlayer = spectator->getPlayer()) {
-			valueEmote = tmpPlayer->getStorageValue(STORAGEVALUE_EMOTE);
+			if (g_configManager().getBoolean(EMOTE_SPELLS, __FUNCTION__)) {
+				valueEmote = tmpPlayer->getStorageValue(STORAGEVALUE_EMOTE);
+			}
 			if (!ghostMode || tmpPlayer->canSeeCreature(static_self_cast<Player>())) {
 				if (valueEmote == 1) {
 					tmpPlayer->sendCreatureSay(static_self_cast<Player>(), TALKTYPE_MONSTER_SAY, text, pos);

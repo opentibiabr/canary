@@ -354,6 +354,60 @@ int NpcFunctions::luaNpcOpenShopWindow(lua_State* L) {
 		return 1;
 	}
 
+	npc->addShopPlayer(player);
+	pushBoolean(L, player->openShopWindow(npc));
+	return 1;
+}
+
+int NpcFunctions::luaNpcOpenShopWindowTable(lua_State* L) {
+	// npc:openShopWindowTable(player, items)
+	const auto &npc = getUserdataShared<Npc>(L, 1);
+	if (!npc) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	const auto &player = getUserdataShared<Player>(L, 2);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	if (lua_istable(L, 3) == 0) {
+		reportError(__FUNCTION__, "item list is not a table.");
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	std::vector<ShopBlock> items;
+	lua_pushnil(L);
+	while (lua_next(L, 3) != 0) {
+		const auto tableIndex = lua_gettop(L);
+		ShopBlock item;
+
+		auto itemId = getField<uint16_t>(L, tableIndex, "clientId");
+		auto subType = getField<int32_t>(L, tableIndex, "subType");
+		if (subType == 0) {
+			subType = getField<int32_t>(L, tableIndex, "subtype");
+			lua_pop(L, 1);
+		}
+
+		auto buyPrice = getField<uint32_t>(L, tableIndex, "buy");
+		auto sellPrice = getField<uint32_t>(L, tableIndex, "sell");
+		auto storageKey = getField<int32_t>(L, tableIndex, "storageKey");
+		auto storageValue = getField<int32_t>(L, tableIndex, "storageValue");
+		auto realName = getFieldString(L, tableIndex, "name");
+		g_logger().debug("[{}] item '{}' sell price '{}', buyprice '{}'", __FUNCTION__, realName, sellPrice, buyPrice);
+
+		items.emplace_back(itemId, subType, buyPrice, sellPrice, storageKey, storageValue, std::move(realName));
+		lua_pop(L, 8);
+	}
+	lua_pop(L, 3);
+
+	// Close any eventual other shop window currently open.
+	player->closeShopWindow(true);
+	npc->addShopPlayer(player, items);
 	pushBoolean(L, player->openShopWindow(npc));
 	return 1;
 }
@@ -391,8 +445,8 @@ int NpcFunctions::luaNpcIsMerchant(lua_State* L) {
 		return 1;
 	}
 
-	const std::vector<ShopBlock> shopItems = npc->getShopItemVector();
-
+	auto playerGUID = getNumber<uint32_t>(L, 2, 0);
+	const auto &shopItems = npc->getShopItemVector(playerGUID);
 	if (shopItems.empty()) {
 		pushBoolean(L, false);
 		return 1;
@@ -411,8 +465,9 @@ int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 		return 1;
 	}
 
-	const std::vector<ShopBlock> &shopVector = npc->getShopItemVector();
-	for (ShopBlock shopBlock : shopVector) {
+	auto playerGUID = getNumber<uint32_t>(L, 2, 0);
+	const auto &shopItems = npc->getShopItemVector(playerGUID);
+	for (ShopBlock shopBlock : shopItems) {
 		setField(L, "id", shopBlock.itemId);
 		setField(L, "name", shopBlock.itemName);
 		setField(L, "subType", shopBlock.itemSubType);
@@ -522,7 +577,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 	}
 
 	uint64_t pricePerUnit = 0;
-	const std::vector<ShopBlock> &shopVector = npc->getShopItemVector();
+	const std::vector<ShopBlock> &shopVector = npc->getShopItemVector(player->getGUID());
 	for (ShopBlock shopBlock : shopVector) {
 		if (itemId == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
 			pricePerUnit = shopBlock.itemBuyPrice;

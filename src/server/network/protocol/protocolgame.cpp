@@ -4360,7 +4360,7 @@ void ProtocolGame::sendShop(std::shared_ptr<Npc> npc) {
 		msg.addString(std::string()); // Currency name
 	}
 
-	std::vector<ShopBlock> shoplist = npc->getShopItemVector();
+	std::vector<ShopBlock> shoplist = npc->getShopItemVector(player->getGUID());
 	uint16_t itemsToSend = std::min<size_t>(shoplist.size(), std::numeric_limits<uint16_t>::max());
 	msg.add<uint16_t>(itemsToSend);
 

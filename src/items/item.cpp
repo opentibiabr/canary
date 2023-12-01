@@ -2473,6 +2473,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 			if (!begin) {
 				s << ')';
 			}
+		// This block refers to the look of the weapons.
 		} else if (it.weaponType != WEAPON_AMMO) {
 			bool begin = true;
 
@@ -2487,6 +2488,28 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 				extraDefense = it.extraDefense;
 			}
 
+			if (it.isContainer() || (item && item->getContainer())) {
+				uint32_t volume = 0;
+
+				if (!item || !item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
+					if (it.isContainer()) {
+						volume = it.maxItems;
+					} else if (item) {
+						volume = item->getContainer()->capacity();
+					}
+				}
+
+				if (volume != 0) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+					
+					s << "Vol:" << volume;
+				}
+			}
 			if (attack != 0) {
 				begin = false;
 				s << " (Atk:" << attack;

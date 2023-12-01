@@ -96,7 +96,14 @@ public:
 		npcType->info.currencyId = currency;
 	}
 
-	std::vector<ShopBlock> getShopItemVector() {
+	std::vector<ShopBlock> getShopItemVector(uint32_t playerGUID) {
+		if (playerGUID != 0) {
+			auto it = shopPlayerMap.find(playerGUID);
+			if (it != shopPlayerMap.end() && !it->second.empty()) {
+				return it->second;
+			}
+		}
+
 		return npcType->info.shopItemVector;
 	}
 
@@ -159,7 +166,7 @@ public:
 		internalLight = npcType->info.light;
 	}
 
-	void addShopPlayer(const std::shared_ptr<Player> &player);
+	void addShopPlayer(const std::shared_ptr<Player> &player, const std::vector<ShopBlock> &shopItems = {});
 	void removeShopPlayer(const std::shared_ptr<Player> &player);
 	void closeAllShopWindows();
 
@@ -178,7 +185,7 @@ private:
 
 	std::map<uint32_t, uint16_t> playerInteractions;
 
-	phmap::flat_hash_map<uint32_t, std::weak_ptr<Player>> shopPlayerMap;
+	phmap::flat_hash_map<uint32_t, std::vector<ShopBlock>> shopPlayerMap;
 
 	std::shared_ptr<NpcType> npcType;
 	std::shared_ptr<SpawnNpc> spawnNpc;

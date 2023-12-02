@@ -7223,7 +7223,7 @@ bool Game::combatChangeMana(std::shared_ptr<Creature> attacker, std::shared_ptr<
 		}
 
 		target->drainMana(attacker, manaLoss);
-		if(targetPlayer){
+		if (targetPlayer) {
 			std::string cause = "(other)";
 			if (attacker) {
 				cause = attacker->getName();

@@ -6920,7 +6920,7 @@ void ProtocolGame::sendPreyData(const std::unique_ptr<PreySlot> &slot) {
 		auto timeDiffMinutes = timeDiffMs / 60000;
 		msg.add<uint16_t>(timeDiffMinutes ? timeDiffMinutes : 0);
 	} else {
-		msg.add<uint32_t>(std::max<uint32_t>(safe_convert<uint32_t>(((slot->freeRerollTimeStamp - OTSYS_TIME()) / 1000), __FUNCTION__), 0));
+		msg.add<int32_t>(std::max<int32_t>(safe_convert<int32_t>(((slot->freeRerollTimeStamp - OTSYS_TIME()) / 1000), __FUNCTION__), 0));
 		msg.addByte(safe_convert<uint8_t>(slot->option, __FUNCTION__));
 	}
 
@@ -7558,7 +7558,7 @@ void ProtocolGame::sendTaskHuntingData(const std::unique_ptr<TaskHuntingSlot> &s
 		return;
 	}
 
-	msg.add<uint32_t>(std::max<uint32_t>(safe_convert<uint32_t>(((slot->freeRerollTimeStamp - OTSYS_TIME()) / 1000), __FUNCTION__), 0));
+	msg.add<int32_t>(std::max<int32_t>(safe_convert<int32_t>(((slot->freeRerollTimeStamp - OTSYS_TIME()) / 1000), __FUNCTION__), 0));
 	writeToOutputBuffer(msg);
 }
 

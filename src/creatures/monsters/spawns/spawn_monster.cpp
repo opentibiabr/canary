@@ -193,7 +193,7 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const
 }
 
 void SpawnMonster::startup(bool delayed) {
-	if (g_configManager().getBoolean(RANDOM_MONSTER_SPAWN)) {
+	if (g_configManager().getBoolean(RANDOM_MONSTER_SPAWN, __FUNCTION__)) {
 		for (auto it = spawnMonsterMap.begin(); it != spawnMonsterMap.end(); ++it) {
 			auto &[spawnMonsterId, sb] = *it;
 			for (auto &[monsterType, weight] : sb.monsterTypes) {
@@ -223,9 +223,9 @@ void SpawnMonster::startup(bool delayed) {
 			continue;
 		}
 		if (delayed) {
-			g_dispatcher().addEvent(std::bind(&SpawnMonster::scheduleSpawn, this, spawnMonsterId, sb, mType, 0), "SpawnMonster::startup");
+			g_dispatcher().addEvent(std::bind(&SpawnMonster::scheduleSpawn, this, spawnMonsterId, sb, mType, 0, true), "SpawnMonster::startup");
 		} else {
-			scheduleSpawn(spawnMonsterId, sb, mType, 0);
+			scheduleSpawn(spawnMonsterId, sb, mType, 0, true);
 		}
 	}
 }
@@ -267,7 +267,7 @@ void SpawnMonster::checkSpawnMonster() {
 	}
 }
 
-void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> mType, uint16_t interval) {
+void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> mType, uint16_t interval, bool startup /*= false*/) {
 	if (interval <= 0) {
 		spawnMonster(spawnMonsterId, sb, mType, startup);
 	} else {
@@ -310,7 +310,7 @@ bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Dire
 		boostedrate = 2;
 	}
 	// eventschedule is a whole percentage, so we need to multiply by 100 to match the order of magnitude of the other values
-	scheduleInterval = scheduleInterval * 100 / std::max((uint32_t)1, (g_configManager().getNumber(RATE_SPAWN) * boostedrate * eventschedule));
+	scheduleInterval = scheduleInterval * 100 / std::max((uint32_t)1, (g_configManager().getNumber(RATE_SPAWN, __FUNCTION__) * boostedrate * eventschedule));
 	if (scheduleInterval < MONSTER_MINSPAWN_INTERVAL) {
 		g_logger().warn("[SpawnsMonster::addMonster] - {} {} spawntime cannot be less than {} seconds, set to {} by default.", name, pos.toString(), MONSTER_MINSPAWN_INTERVAL / 1000, MONSTER_MINSPAWN_INTERVAL / 1000);
 		scheduleInterval = MONSTER_MINSPAWN_INTERVAL;

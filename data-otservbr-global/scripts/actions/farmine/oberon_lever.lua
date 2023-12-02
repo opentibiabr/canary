@@ -3,7 +3,6 @@ local config = {
 		name = "Grand Master Oberon",
 		position = Position(33364, 31317, 9),
 	},
-	timeAfterKill = 60,
 	playerPositions = {
 		{ pos = Position(33362, 31344, 9), teleport = Position(33364, 31322, 9) },
 		{ pos = Position(33363, 31344, 9), teleport = Position(33364, 31322, 9) },

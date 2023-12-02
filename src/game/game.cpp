@@ -7223,7 +7223,13 @@ bool Game::combatChangeMana(std::shared_ptr<Creature> attacker, std::shared_ptr<
 		}
 
 		target->drainMana(attacker, manaLoss);
-
+		if (targetPlayer) {
+			std::string cause = "(other)";
+			if (attacker) {
+				cause = attacker->getName();
+			}
+			targetPlayer->updateInputAnalyzer(damage.primary.type, damage.primary.value * -1, cause);
+		}
 		std::stringstream ss;
 
 		std::string damageString = std::to_string(manaLoss);

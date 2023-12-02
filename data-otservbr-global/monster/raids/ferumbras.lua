@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Ferumbras")
 local monster = {}
 
 monster.description = "Ferumbras"
-monster.experience = 35000
+monster.experience = 12000
 monster.outfit = {
 	lookType = 229,
 	lookHead = 0,

@@ -14,7 +14,7 @@ monster.corpse = 0
 monster.speed = 0
 
 monster.changeTarget = {
-	interval = 1 * 1000,
+	interval = 1000,
 	chance = 0,
 }
 
@@ -49,13 +49,13 @@ monster.voices = {
 monster.loot = {}
 
 monster.attacks = {
-	{ name = "melee", attack = 130, interval = 2 * 1000, minDamage = -1, maxDamage = -2 },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -2, maxDamage = -7, attack = 130 },
 }
 
 monster.defenses = {
-	defense = 1,
-	armor = 1,
-	{ name = "combat", type = COMBAT_HEALING, chance = 15, interval = 2 * 1000, minDamage = 10000, maxDamage = 50000, effect = CONST_ME_MAGIC_BLUE },
+	defense = 10,
+	armor = 7,
+	{ name = "combat", type = COMBAT_HEALING, chance = 15, interval = 2000, minDamage = 10000, maxDamage = 50000, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {}

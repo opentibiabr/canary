@@ -107,7 +107,11 @@ monster.loot = {
 	{ name = "platinum amulet", chance = 940 },
 	{ name = "devil helmet", chance = 520 },
 	{ name = "rift crossbow", chance = 370 },
+	{ name = "rift bow", chance = 370 },
+	{ name = "rift shield", chance = 370 },
+	{ name = "demon shield", chance = 370 },
 	{ name = "magic plate armor", chance = 70 },
+	{ name = "golden legs", chance = 50 },
 	{ name = "demonrage sword", chance = 30 },
 }
 

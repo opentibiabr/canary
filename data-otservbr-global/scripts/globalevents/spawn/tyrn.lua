@@ -8,7 +8,7 @@ local config = {
 
 local tyrn = GlobalEvent("tyrn")
 function tyrn.onThink(interval, lastExecution)
-	if not checkBoss(config.centerPosition, config.rangeX, config.rangeY, config.monsterName) then
+	if not checkBoss(config.centerPosition, config.rangeX, config.rangeY, config.monsterName, config.bossPosition) then
 		addEvent(Game.broadcastMessage, 150, "Beware of Tyrn!", MESSAGE_EVENT_ADVANCE)
 	end
 	return true

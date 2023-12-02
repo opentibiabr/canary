@@ -15,6 +15,7 @@
 #include "creatures/monsters/monsters.hpp"
 #include "lua/functions/creatures/monster/monster_functions.hpp"
 #include "map/spectators.hpp"
+#include "game/scheduling/events_scheduler.hpp"
 
 int MonsterFunctions::luaMonsterCreate(lua_State* L) {
 	// Monster(id or userdata)
@@ -350,19 +351,22 @@ int MonsterFunctions::luaMonsterSearchTarget(lua_State* L) {
 }
 
 int MonsterFunctions::luaMonsterSetSpawnPosition(lua_State* L) {
-	// monster:setSpawnPosition()
+	// monster:setSpawnPosition(interval)
 	std::shared_ptr<Monster> monster = getUserdataShared<Monster>(L, 1);
 	if (!monster) {
 		lua_pushnil(L);
 		return 1;
 	}
 
+	uint32_t eventschedule = g_eventsScheduler().getSpawnMonsterSchedule();
+
 	const Position &pos = monster->getPosition();
 	monster->setMasterPos(pos);
 
 	g_game().map.spawnsMonster.getspawnMonsterList().emplace_front(pos, 5);
 	SpawnMonster &spawnMonster = g_game().map.spawnsMonster.getspawnMonsterList().front();
-	spawnMonster.addMonster(monster->mType->name, pos, DIRECTION_NORTH, 60000);
+	uint32_t interval = getNumber<uint32_t>(L, 2, 90) * 1000 * 100 / std::max((uint32_t)1, (g_configManager().getNumber(RATE_SPAWN, __FUNCTION__) * eventschedule));
+	spawnMonster.addMonster(monster->mType->typeName, pos, DIRECTION_NORTH, static_cast<uint32_t>(interval));
 	spawnMonster.startSpawnMonsterCheck();
 
 	pushBoolean(L, true);

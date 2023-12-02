@@ -221,7 +221,7 @@ if NpcHandler == nil then
 	function NpcHandler:removeInteraction(npc, player)
 		local playerId = player:getId()
 		if Player(player) == nil then
-			return logger.error("[NpcHandler:removeInteraction] - Player is missing or nil")
+			return logger.error("[NpcHandler:removeInteraction] - Player parameter for npc '{}' is missing or nil", npc:getName())
 		end
 
 		if self:getEventDelayedSay(playerId) then

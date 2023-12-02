@@ -61,7 +61,7 @@ setmetatable(BossLever, {
 			bossPosition = boss.position,
 			timeToFightAgain = config.timeToFightAgain or configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN),
 			timeToDefeat = config.timeToDefeat or configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_DEFEAT),
-			timeAfterKill = config.timeAfterKill or 0,
+			timeAfterKill = config.timeAfterKill or 60,
 			requiredLevel = config.requiredLevel or 0,
 			createBoss = boss.createFunction,
 			disabled = config.disabled,
@@ -214,9 +214,9 @@ function BossLever:onUse(player)
 			stopEvent(self.timeoutEvent)
 			self.timeoutEvent = nil
 		end
-		self.timeoutEvent = addEvent(function(zone)
-			zone:refresh()
-			zone:removePlayers()
+		self.timeoutEvent = addEvent(function(zn)
+			zn:refresh()
+			zn:removePlayers()
 		end, self.timeToDefeat * 1000, zone)
 	end
 	return true

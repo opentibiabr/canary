@@ -19,9 +19,9 @@ function onBossDeath.onDeath(creature)
 	end
 	if bossLever.timeAfterKill > 0 then
 		zone:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. name .. " has been defeated. You have " .. bossLever.timeAfterKill .. " seconds to leave the room.")
-		bossLever.timeoutEvent = addEvent(function(zone)
-			zone:refresh()
-			zone:removePlayers()
+		bossLever.timeoutEvent = addEvent(function(zn)
+			zn:refresh()
+			zn:removePlayers()
 		end, bossLever.timeAfterKill * 1000, zone)
 	end
 	return true

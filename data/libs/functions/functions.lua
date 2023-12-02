@@ -266,7 +266,7 @@ function clearBossRoom(playerId, centerPosition, onlyPlayers, rangeX, rangeY, ex
 	local spectators, spectator = Game.getSpectators(centerPosition, false, onlyPlayers, rangeX, rangeX, rangeY, rangeY)
 	for i = 1, #spectators do
 		spectator = spectators[i]
-		if spectator:isPlayer() and spectator.uid == playerId then
+		if spectator:isPlayer() and ((playerId ~= nil and spectator.uid == playerId) or playerId == nil) then
 			spectator:teleportTo(exitPosition)
 			exitPosition:sendMagicEffect(CONST_ME_TELEPORT)
 		end

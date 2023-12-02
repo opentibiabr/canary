@@ -72,16 +72,19 @@ end
 
 local serverstartup = GlobalEvent("GameMigrations")
 function serverstartup.onStartup()
-	table.sort(Migration.registry, function(a, b)
-		return a.name < b.name
-	end)
-	logger.info("[migration] === Executing game migrations ===")
-	local start = os.time()
-	for _, migration in ipairs(Migration.registry) do
-		logger.info("[migration] Executing game migration {}", migration.name)
-		migration:execute()
+	if #Migration.registry > 0 then
+		table.sort(Migration.registry, function(a, b)
+			return a.name < b.name
+		end)
+		logger.info("[migration] === Executing game migrations ===")
+		local start = os.time()
+		for _, migration in ipairs(Migration.registry) do
+			logger.info("[migration] Executing game migration {}", migration.name)
+			migration:execute()
+		end
+		logger.info("[migration] === Game migrations executed in {}s ===", os.time() - start)
+	else
 	end
-	logger.info("[migration] === Game migrations executed in {}s ===", os.time() - start)
 end
 
 serverstartup:register()

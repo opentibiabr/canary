@@ -18,7 +18,6 @@ local config = {
 			return scarlett
 		end,
 	},
-	timeAfterKill = 60,
 	playerPositions = {
 		{ pos = Position(33395, 32661, 6), teleport = Position(33396, 32651, 6) },
 		{ pos = Position(33394, 32662, 6), teleport = Position(33396, 32651, 6) },

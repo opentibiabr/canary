@@ -68,7 +68,7 @@ public:
 		// If there is overflow, we return the value 0
 		if constexpr (std::is_integral_v<T> && std::is_unsigned_v<T>) {
 			if (number < 0) {
-				g_logger().warn("[{}] overflow, setting to default signed value (0)", __FUNCTION__);
+				g_logger().debug("[{}] overflow, setting to default signed value (0)", __FUNCTION__);
 				number = T(0);
 			}
 		}

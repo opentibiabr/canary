@@ -38,27 +38,6 @@ npcConfig.voices = {
 	{ text = "Mana potions to refill your magic power!" },
 }
 
-npcConfig.shop = {
-	{ itemName = "blank rune", clientId = 3147, buy = 10 },
-	{ itemName = "cure poison rune", clientId = 3153, buy = 65 },
-	{ itemName = "destroy field rune", clientId = 3148, buy = 15 },
-	{ itemName = "energy field rune", clientId = 3164, buy = 38 },
-	{ itemName = "fire field rune", clientId = 3188, buy = 28 },
-	{ itemName = "health potion", clientId = 266, buy = 50 },
-	{ itemName = "intense healing rune", clientId = 3152, buy = 95 },
-	{ itemName = "light stone shower rune", clientId = 21351, buy = 25 },
-	{ itemName = "lightest missile rune", clientId = 21352, buy = 20 },
-	{ itemName = "mana potion", clientId = 268, buy = 56 },
-	{ itemName = "moonlight rod", clientId = 3070, buy = 1000 },
-	{ itemName = "necrotic rod", clientId = 3069, buy = 5000 },
-	{ itemName = "poison field rune", clientId = 3172, buy = 21 },
-	{ itemName = "small health potion", clientId = 7876, buy = 20 },
-	{ itemName = "snakebite rod", clientId = 3066, buy = 500 },
-	{ itemName = "wand of decay", clientId = 3072, buy = 5000 },
-	{ itemName = "wand of dragonbreath", clientId = 3075, buy = 1000 },
-	{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
-}
-
 local itemsTable = {
 	["potions"] = {
 		{ itemName = "health potion", clientId = 266, buy = 50 },
@@ -85,6 +64,13 @@ local itemsTable = {
 		{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
 	},
 }
+
+npcConfig.shop = {}
+for _, categoryTable in pairs(itemsTable) do
+	for _, itemTable in ipairs(categoryTable) do
+		table.insert(npcConfig.shop, itemTable)
+	end
+end
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)

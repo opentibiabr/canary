@@ -29,81 +29,6 @@ npcConfig.voices = {
 	{ text = "Selling all sorts of magic equipment. Come and have a look" },
 }
 
-local keywordHandler = KeywordHandler:new()
-local npcHandler = NpcHandler:new(keywordHandler)
-
-npcType.onThink = function(npc, interval)
-	npcHandler:onThink(npc, interval)
-end
-
-npcType.onAppear = function(npc, creature)
-	npcHandler:onAppear(npc, creature)
-end
-
-npcType.onDisappear = function(npc, creature)
-	npcHandler:onDisappear(npc, creature)
-end
-
-npcType.onMove = function(npc, creature, fromPosition, toPosition)
-	npcHandler:onMove(npc, creature, fromPosition, toPosition)
-end
-
-npcType.onSay = function(npc, creature, type, message)
-	npcHandler:onSay(npc, creature, type, message)
-end
-
-npcType.onCloseChannel = function(npc, creature)
-	npcHandler:onCloseChannel(npc, creature)
-end
-
-local items = {
-	[VOCATION.BASE_ID.SORCERER] = 3074,
-	[VOCATION.BASE_ID.DRUID] = 3066,
-}
-
-local function creatureSayCallback(npc, creature, type, message)
-	local player = Player(creature)
-	local playerId = player:getId()
-
-	if not npcHandler:checkInteraction(npc, creature) then
-		return false
-	end
-
-	local itemId = items[player:getVocation():getBaseId()]
-	if MsgContains(message, "first rod") or MsgContains(message, "first wand") then
-		if player:isMage() then
-			if player:getStorageValue(Storage.FirstMageWeapon) == -1 then
-				npcHandler:say("So you ask me for a {" .. ItemType(itemId):getName() .. "} to begin your adventure?", npc, creature)
-				npcHandler:setTopic(playerId, 1)
-			else
-				npcHandler:say("What? I have already gave you one {" .. ItemType(itemId):getName() .. "}!", npc, creature)
-			end
-		else
-			npcHandler:say("Sorry, you aren't a druid either a sorcerer.", npc, creature)
-		end
-	elseif MsgContains(message, "yes") then
-		if npcHandler:getTopic(playerId) == 1 then
-			player:addItem(itemId, 1)
-			npcHandler:say("Here you are young adept, take care yourself.", npc, creature)
-			player:setStorageValue(Storage.FirstMageWeapon, 1)
-		end
-		npcHandler:setTopic(playerId, 0)
-	elseif MsgContains(message, "no") and npcHandler:getTopic(playerId) == 1 then
-		npcHandler:say("Ok then.", npc, creature)
-		npcHandler:setTopic(playerId, 0)
-	end
-	return true
-end
-
-keywordHandler:addKeyword({ "magic" }, StdModule.say, { npcHandler = npcHandler, text = "I'm selling runes, life rings, wands, rods and crystal balls. I also buy powerful spellbooks. If you like to see my offers, ask me for a {trade}." })
-
-npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
-npcHandler:setMessage(MESSAGE_GREET, "Hi there |PLAYERNAME|, and welcome to the {magic} store.")
-npcHandler:setMessage(MESSAGE_FAREWELL, "See you, |PLAYERNAME|.")
-npcHandler:setMessage(MESSAGE_WALKAWAY, "See you, |PLAYERNAME|.")
-npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just browse through my wares. Or do you want to look only at {runes} or {wands}?")
-npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
-
 npcConfig.shop = {
 	{ itemName = "animate dead rune", clientId = 3203, buy = 375 },
 	{ itemName = "blank rune", clientId = 3147, buy = 10 },
@@ -151,6 +76,127 @@ npcConfig.shop = {
 	{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
 	{ itemName = "wild growth rune", clientId = 3156, buy = 160 },
 }
+
+local itemsTable = {
+	["runes"] = {
+		{ itemName = "animate dead rune", clientId = 3203, buy = 375 },
+		{ itemName = "blank rune", clientId = 3147, buy = 10 },
+		{ itemName = "desintegrate rune", clientId = 3197, buy = 26 },
+		{ itemName = "energy bomb rune", clientId = 3149, buy = 203 },
+		{ itemName = "fireball rune", clientId = 3189, buy = 30 },
+		{ itemName = "holy missile rune", clientId = 3182, buy = 16 },
+		{ itemName = "icicle rune", clientId = 3158, buy = 30 },
+		{ itemName = "magic wall rune", clientId = 3180, buy = 116 },
+		{ itemName = "paralyze rune", clientId = 3165, buy = 700 },
+		{ itemName = "poison bomb rune", clientId = 3173, buy = 85 },
+		{ itemName = "soulfire rune", clientId = 3195, buy = 46 },
+		{ itemName = "stone shower rune", clientId = 3175, buy = 37 },
+		{ itemName = "thunderstorm rune", clientId = 3202, buy = 47 },
+		{ itemName = "wild growth rune", clientId = 3156, buy = 160 },
+	},
+	["wands"] = {
+		{ itemName = "hailstorm rod", clientId = 3067, buy = 15000 },
+		{ itemName = "moonlight rod", clientId = 3070, buy = 1000 },
+		{ itemName = "necrotic rod", clientId = 3069, buy = 5000 },
+		{ itemName = "northwind rod", clientId = 8083, buy = 7500 },
+		{ itemName = "springsprout rod", clientId = 8084, buy = 18000 },
+		{ itemName = "terra rod", clientId = 3065, buy = 10000 },
+		{ itemName = "underworld rod", clientId = 8082, buy = 22000 },
+		{ itemName = "wand of cosmic energy", clientId = 3073, buy = 10000 },
+		{ itemName = "wand of decay", clientId = 3072, buy = 5000 },
+		{ itemName = "wand of draconia", clientId = 8093, buy = 7500 },
+		{ itemName = "wand of dragonbreath", clientId = 3075, buy = 1000 },
+		{ itemName = "wand of inferno", clientId = 3071, buy = 15000 },
+		{ itemName = "wand of starstorm", clientId = 8092, buy = 18000 },
+		{ itemName = "wand of voodoo", clientId = 8094, buy = 22000 },
+		{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
+	},
+}
+
+local keywordHandler = KeywordHandler:new()
+local npcHandler = NpcHandler:new(keywordHandler)
+
+npcType.onThink = function(npc, interval)
+	npcHandler:onThink(npc, interval)
+end
+
+npcType.onAppear = function(npc, creature)
+	npcHandler:onAppear(npc, creature)
+end
+
+npcType.onDisappear = function(npc, creature)
+	npcHandler:onDisappear(npc, creature)
+end
+
+npcType.onMove = function(npc, creature, fromPosition, toPosition)
+	npcHandler:onMove(npc, creature, fromPosition, toPosition)
+end
+
+npcType.onSay = function(npc, creature, type, message)
+	npcHandler:onSay(npc, creature, type, message)
+end
+
+npcType.onCloseChannel = function(npc, creature)
+	npcHandler:onCloseChannel(npc, creature)
+end
+
+local items = {
+	[VOCATION.BASE_ID.SORCERER] = 3074,
+	[VOCATION.BASE_ID.DRUID] = 3066,
+}
+
+local function creatureSayCallback(npc, creature, type, message)
+	local player = Player(creature)
+	local playerId = player:getId()
+
+	if not npcHandler:checkInteraction(npc, creature) then
+		return false
+	end
+
+	local formattedCategoryNames = {}
+	for categoryName, _ in pairs(itemsTable) do
+		table.insert(formattedCategoryNames, "{" .. categoryName .. "}")
+	end
+
+	local categoryTable = itemsTable[message:lower()]
+	local itemId = items[player:getVocation():getBaseId()]
+	if MsgContains(message, "first rod") or MsgContains(message, "first wand") then
+		if player:isMage() then
+			if player:getStorageValue(Storage.FirstMageWeapon) == -1 then
+				npcHandler:say("So you ask me for a {" .. ItemType(itemId):getName() .. "} to begin your adventure?", npc, creature)
+				npcHandler:setTopic(playerId, 1)
+			else
+				npcHandler:say("What? I have already gave you one {" .. ItemType(itemId):getName() .. "}!", npc, creature)
+			end
+		else
+			npcHandler:say("Sorry, you aren't a druid either a sorcerer.", npc, creature)
+		end
+	elseif MsgContains(message, "yes") then
+		if npcHandler:getTopic(playerId) == 1 then
+			player:addItem(itemId, 1)
+			npcHandler:say("Here you are young adept, take care yourself.", npc, creature)
+			player:setStorageValue(Storage.FirstMageWeapon, 1)
+		end
+		npcHandler:setTopic(playerId, 0)
+	elseif MsgContains(message, "no") and npcHandler:getTopic(playerId) == 1 then
+		npcHandler:say("Ok then.", npc, creature)
+		npcHandler:setTopic(playerId, 0)
+	elseif categoryTable then
+		npcHandler:say("Of course, just browse through my wares.", npc, player)
+		npc:openShopWindowTable(player, categoryTable)
+	end
+	return true
+end
+
+keywordHandler:addKeyword({ "magic" }, StdModule.say, { npcHandler = npcHandler, text = "I'm selling runes, life rings, wands, rods and crystal balls. I also buy powerful spellbooks. If you like to see my offers, ask me for a {trade}." })
+
+npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+npcHandler:setMessage(MESSAGE_GREET, "Hi there |PLAYERNAME|, and welcome to the {magic} store.")
+npcHandler:setMessage(MESSAGE_FAREWELL, "See you, |PLAYERNAME|.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "See you, |PLAYERNAME|.")
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just browse through my wares. Or do you want to look only at {runes} or {wands}?")
+npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
+
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)

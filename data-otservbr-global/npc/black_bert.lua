@@ -80,6 +80,8 @@ npcConfig.shop = {
 	{ clientId = 10009, buy = 700, count = 1 },
 	{ clientId = 10011, buy = 650, count = 1 },
 	{ clientId = 10025, buy = 600, count = 1 },
+	{ clientId = 10026, buy = 600, count = 1 },
+	{ clientId = 10027, buy = 550, count = 1 },
 	{ clientId = 10028, buy = 666, count = 1 },
 	{ clientId = 10183, buy = 1000, count = 1 },
 	{ clientId = 10187, buy = 1000, count = 1 },

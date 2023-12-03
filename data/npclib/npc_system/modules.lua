@@ -106,6 +106,7 @@ if Modules == nil then
 			else
 				npcHandler:say(parameters.text, npc, player)
 				player:setVocation(promotion)
+				player:kv():set("promoted", true)
 			end
 		else
 			npcHandler:say("You need a premium account in order to get promoted.", npc, player)

@@ -208,7 +208,7 @@ void CanaryServer::logInfos() {
 /**
  *It is preferable to keep the close button off as it closes the server without saving (this can cause the player to lose items from houses and others informations, since windows automatically closes the process in five seconds, when forcing the close)
  * Choose to use "CTROL + C" or "CTROL + BREAK" for security close
- * To activate/desactivate window;
+ * To activate/deactivate window;
  * \param MF_GRAYED Disable the "x" (force close) button
  * \param MF_ENABLED Enable the "x" (force close) button
  */

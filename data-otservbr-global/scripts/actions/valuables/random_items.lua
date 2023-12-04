@@ -98,7 +98,7 @@ local config = {
 			{ from = 9781, to = 9842, itemId = 7459 }, -- Pair of Earmuffs (0.61%)
 			{ from = 9843, to = 9894, itemId = 20275 }, -- Dream Warden Claw (0.51%)
 			{ from = 9895, to = 9946, itemId = 20273 }, -- Golden Prison Key (0.51%)
-			{ from = 9947, to = 9987, itemId = 3242}, -- Stuffed Bunny (0.40%)
+			{ from = 9947, to = 9987, itemId = 3242 }, -- Stuffed Bunny (0.40%)
 			{ from = 9988, to = 10001, itemId = 12548 }, -- Bag of Apple Slices (0.13%)
 		},
 		effect = CONST_ME_BUBBLES,

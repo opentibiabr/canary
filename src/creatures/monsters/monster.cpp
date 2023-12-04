@@ -431,8 +431,13 @@ void Monster::onCreatureLeave(std::shared_ptr<Creature> creature) {
 	// update targetList
 	if (isOpponent(creature)) {
 		removeTarget(creature);
-		if (targetList.empty()) {
-			updateIdleStatus();
+		updateIdleStatus();
+
+		if (!isSummon() && targetList.empty()) {
+			int32_t walkToSpawnRadius = g_configManager().getNumber(DEFAULT_WALKTOSPAWNRADIUS, __FUNCTION__);
+			if (walkToSpawnRadius > 0 && !Position::areInRange(position, masterPos, walkToSpawnRadius, walkToSpawnRadius)) {
+				walkToSpawn();
+			}
 		}
 	}
 }
@@ -681,7 +686,6 @@ void Monster::updateIdleStatus() {
 			}
 		}
 	}
-
 	setIdle(idle);
 }
 
@@ -743,6 +747,7 @@ void Monster::onThink(uint32_t interval) {
 	}
 
 	if (!isInSpawnRange(position)) {
+		g_game().addMagicEffect(this->getPosition(), CONST_ME_POFF);		
 		g_game().internalTeleport(static_self_cast<Monster>(), masterPos);
 		setIdle(true);
 		return;
@@ -776,7 +781,7 @@ void Monster::onThink(uint32_t interval) {
 		const bool attackedCreatureIsUnattackable = attackedCreature && !canUseAttack(getPosition(), attackedCreature);
 		const bool attackedCreatureIsUnreachable = targetDistance <= 1 && attackedCreature && followCreature && !hasFollowPath;
 		if (!attackedCreature || attackedCreatureIsDisconnected || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {
-			if (!followCreature || !hasFollowPath || attackedCreatureIsDisconnected) {
+			if (!walkingToSpawn && (!followCreature || !hasFollowPath || attackedCreatureIsDisconnected)) {
 				searchTarget(TARGETSEARCH_NEAREST);
 			} else if (attackedCreature && isFleeing() && !canUseAttack(getPosition(), attackedCreature)) {
 				searchTarget(TARGETSEARCH_DEFAULT);
@@ -1050,6 +1055,34 @@ void Monster::onThinkSound(uint32_t interval) {
 	}
 }
 
+bool Monster::walkToSpawn() {
+	if (walkingToSpawn || !spawnMonster || !targetList.empty()) {
+		return false;
+	}
+
+	int32_t distance = std::max<int32_t>(Position::getDistanceX(position, masterPos), Position::getDistanceY(position, masterPos));
+	if (distance == 0) {
+		return false;
+	}
+
+	listWalkDir.clear();
+	if (!getPathTo(masterPos, listWalkDir, 0, std::max<int32_t>(0, distance - 5), true, true, distance)) {
+		return false;
+	}
+
+	walkingToSpawn = true;
+	startAutoWalk();
+	return true;
+}
+
+void Monster::onWalkComplete() {
+	// Continue walking to spawn
+	if (walkingToSpawn) {
+		walkingToSpawn = false;
+		walkToSpawn();
+	}
+}
+
 bool Monster::pushItem(std::shared_ptr<Item> item, const Direction &nextDirection) {
 	const Position &centerPos = item->getPosition();
 	for (const auto &[x, y] : getPushItemLocationOptions(nextDirection)) {
@@ -1138,7 +1171,7 @@ void Monster::pushCreatures(std::shared_ptr<Tile> tile) {
 }
 
 bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
-	if (isIdle || getHealth() <= 0) {
+	if (!walkingToSpawn && (isIdle || getHealth() <= 0)) {
 		// we dont have anyone watching might aswell stop walking
 		eventWalk = 0;
 		return false;
@@ -1146,7 +1179,7 @@ bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 
 	bool result = false;
 
-	if (getFollowCreature() && hasFollowPath) {
+	if (getFollowCreature() && hasFollowPath || walkingToSpawn) {
 		doFollowCreature(flags, nextDirection, result);
 	} else {
 		doRandomStep(nextDirection, result);

@@ -149,6 +149,13 @@ public:
 
 	void drainHealth(std::shared_ptr<Creature> attacker, int32_t damage) override;
 	void changeHealth(int32_t healthChange, bool sendHealthChange = true) override;
+
+	bool isWalkingToSpawn() const {
+		return walkingToSpawn;
+	}
+	bool walkToSpawn();
+	void onWalkComplete() override;	
+	
 	bool getNextStep(Direction &direction, uint32_t &flags) override;
 	void onFollowCreatureComplete(const std::shared_ptr<Creature> &creature) override;
 
@@ -382,10 +389,11 @@ private:
 
 	Position masterPos;
 
+	bool ignoreFieldDamage = false;
 	bool isIdle = true;
 	bool extraMeleeAttack = false;
 	bool randomStepping = false;
-	bool ignoreFieldDamage = false;
+	bool walkingToSpawn = false;
 
 	bool hazard = false;
 	bool hazardCrit = false;

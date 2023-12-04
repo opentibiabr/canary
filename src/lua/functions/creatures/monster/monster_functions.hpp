@@ -44,6 +44,8 @@ private:
 		registerMethod(L, "Monster", "searchTarget", MonsterFunctions::luaMonsterSearchTarget);
 		registerMethod(L, "Monster", "setSpawnPosition", MonsterFunctions::luaMonsterSetSpawnPosition);
 		registerMethod(L, "Monster", "getRespawnType", MonsterFunctions::luaMonsterGetRespawnType);
+		registerMethod(L, "Monster", "isWalkingToSpawn", MonsterFunctions::luaMonsterIsWalkingToSpawn);
+		registerMethod(L, "Monster", "walkToSpawn", MonsterFunctions::luaMonsterWalkToSpawn);		
 
 		registerMethod(L, "Monster", "getTimeToChangeFiendish", MonsterFunctions::luaMonsterGetTimeToChangeFiendish);
 		registerMethod(L, "Monster", "setTimeToChangeFiendish", MonsterFunctions::luaMonsterSetTimeToChangeFiendish);
@@ -120,6 +122,9 @@ private:
 	static int luaMonsterHazardCrit(lua_State* L);
 	static int luaMonsterHazardDodge(lua_State* L);
 	static int luaMonsterHazardDamageBoost(lua_State* L);
+
+	static int luaMonsterIsWalkingToSpawn(lua_State* L);
+	static int luaMonsterWalkToSpawn(lua_State* L);
 
 	friend class CreatureFunctions;
 };

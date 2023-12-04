@@ -331,7 +331,6 @@ CREATE TABLE IF NOT EXISTS `guildwar_kills` (
     `time` bigint(15) NOT NULL,
     INDEX `warid` (`warid`),
     CONSTRAINT `guildwar_kills_pk` PRIMARY KEY (`id`),
-    CONSTRAINT `guildwar_kills_unique` UNIQUE (`warid`),
     CONSTRAINT `guildwar_kills_warid_fk`
         FOREIGN KEY (`warid`) REFERENCES `guild_wars` (`id`)
         ON DELETE CASCADE

@@ -102,6 +102,8 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, ALLOW_BLOCK_SPAWN, "allowBlockSpawn", true);
 	loadBoolConfig(L, REMOVE_WEAPON_AMMO, "removeWeaponAmmunition", true);
 	loadBoolConfig(L, REMOVE_WEAPON_CHARGES, "removeWeaponCharges", true);
+	loadBoolConfig(L, REMOVE_BEGINNING_WEAPON_AMMO, "removeBeginningWeaponAmmunition", true);
+	loadBoolConfig(L, REFUND_BEGINNING_WEAPON_MANA, "refundBeginningWeaponMana", false);
 	loadBoolConfig(L, REMOVE_POTION_CHARGES, "removeChargesFromPotions", true);
 	loadBoolConfig(L, GLOBAL_SERVER_SAVE_NOTIFY_MESSAGE, "globalServerSaveNotifyMessage", true);
 	loadBoolConfig(L, GLOBAL_SERVER_SAVE_CLEAN_MAP, "globalServerSaveCleanMap", false);

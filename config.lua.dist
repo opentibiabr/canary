@@ -437,8 +437,12 @@ bossDefaultTimeToFightAgain = 20 * 60 * 60 -- 20 hours
 bossDefaultTimeToDefeat = 20 * 60 -- 20 minutes
 
 -- Monsters
+-- despawnRange is the amount of floors a monster can be from its spawn position.
+-- despawnRadius is how many tiles away it can be from its spawn position.
+-- walkToSpawnRadius is the allowed distance that the monster will stay away from spawn position when left with no targets, 0 to disable.
 deSpawnRange = 2
 deSpawnRadius = 50
+walkToSpawnRadius = 15
 
 -- Stamina
 staminaSystem = true

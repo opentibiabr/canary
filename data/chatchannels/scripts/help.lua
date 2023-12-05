@@ -12,7 +12,7 @@ function onSpeak(player, type, message)
 	end
 
 	local hasExhaustion = player:kv():get("channel-help-exhaustion") or 0
-	if hasExhaustion >= os.time() then
+	if hasExhaustion > os.time() then
 		player:sendCancelMessage("You are muted from the Help channel for using it inappropriately.")
 		return false
 	end

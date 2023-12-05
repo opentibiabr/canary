@@ -120,7 +120,7 @@ function jeanPierreFood.onUse(player, item, frompos, item2, topos)
 		return true
 	elseif item.itemid == 9087 then
 		item:remove(1)
-		player):addCondition(condition_dist)
+		player:addCondition(condition_dist)
 		player:say("Mmmm.", TALKTYPE_MONSTER_SAY)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You feel more focused.")
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)

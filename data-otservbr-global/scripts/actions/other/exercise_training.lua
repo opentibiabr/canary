@@ -65,7 +65,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 			_G.OnExerciseTraining[playerId].event = addEvent(ExerciseEvent, 0, playerId, targetPos, item.itemid, targetId)
 			_G.OnExerciseTraining[playerId].dummyPos = targetPos
 			player:setTraining(true)
-			player:kv():set("training-exhaustion", os.time() + 30)
+			player:kv():set("training-exhaustion", os.time() + cooldown)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have started training on an exercise dummy.")
 		end
 		return true

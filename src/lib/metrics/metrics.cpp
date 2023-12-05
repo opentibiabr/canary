@@ -17,7 +17,7 @@ Metrics &Metrics::getInstance() {
 }
 
 void Metrics::init(Options opts) {
-	provider = metrics_sdk::MeterProviderFactory::Create();
+	auto provider = metrics_sdk::MeterProviderFactory::Create();
 	auto* p = static_cast<metrics_sdk::MeterProvider*>(provider.get());
 
 	if (opts.enableOStreamExporter) {
@@ -70,7 +70,7 @@ void Metrics::init(Options opts) {
 	}
 
 	if (opts.enableOStreamExporter || opts.enablePrometheusExporter) {
-		metrics_api::Provider::SetMeterProvider(provider);
+		metrics_api::Provider::SetMeterProvider(std::move(provider));
 	} else {
 		std::shared_ptr<metrics_api::MeterProvider> none;
 		metrics_api::Provider::SetMeterProvider(none);

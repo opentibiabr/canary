@@ -145,12 +145,11 @@ namespace metrics {
 		phmap::flat_hash_map<std::string, Counter<double>> counters;
 
 		Meter getMeter() {
-			return provider->GetMeter(meterName, otelVersion);
+			return metrics_api::Provider::GetMeterProvider()->GetMeter(meterName, otelVersion);
 		}
 
 	private:
 		std::mutex mutex_;
-		std::shared_ptr<opentelemetry::metrics::MeterProvider> provider;
 
 		std::string meterName { "stats" };
 		std::string otelVersion { "1.2.0" };

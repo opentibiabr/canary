@@ -4360,7 +4360,7 @@ void ProtocolGame::sendShop(std::shared_ptr<Npc> npc) {
 		msg.addString(std::string()); // Currency name
 	}
 
-	std::vector<ShopBlock> shoplist = npc->getShopItemVector();
+	std::vector<ShopBlock> shoplist = npc->getShopItemVector(player->getGUID());
 	uint16_t itemsToSend = std::min<size_t>(shoplist.size(), std::numeric_limits<uint16_t>::max());
 	msg.add<uint16_t>(itemsToSend);
 
@@ -7653,6 +7653,18 @@ void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopBlock &shopBlock) 
 	if (shopBlock.itemStorageKey != 0 && player->getStorageValue(shopBlock.itemStorageKey) < shopBlock.itemStorageValue) {
 		AddHiddenShopItem(msg);
 		return;
+	}
+
+	// Hidden sell items from the shop if they are not in the player's inventory
+	auto talkactionHidden = player->kv()->get("npc-shop-hidden-sell-item");
+	if (talkactionHidden && talkactionHidden->get<BooleanType>() == true) {
+		std::map<uint16_t, uint16_t> inventoryMap;
+		player->getAllSaleItemIdAndCount(inventoryMap);
+		auto inventoryItems = inventoryMap.find(shopBlock.itemId);
+		if (inventoryItems == inventoryMap.end() && shopBlock.itemSellPrice > 0 && shopBlock.itemBuyPrice == 0) {
+			AddHiddenShopItem(msg);
+			return;
+		}
 	}
 
 	const ItemType &it = Item::items[shopBlock.itemId];

@@ -31,7 +31,7 @@ function onlineCoinsEvent.onThink(interval)
 
 	local checkIp = {}
 	for _, player in pairs(players) do
-		if player:getGroup():getId() > GROUP_TYPE_SENIORTUTOR then
+		if player:getGroup():getId() > GROUP_TYPE_SENIORTUTOR or (config.coinsPerHour.free < 1 and not player:isVip()) then
 			goto continue
 		end
 

@@ -125,7 +125,6 @@ Storage = {
 	Navigator = 30048,
 	DwarvenLegs = 30049,
 	PrinceDrazzakTime = 30050,
-	-- Reserved in Global.Storage.StoreExaust = 30051
 	LemonCupcake = 30052,
 	BlueberryCupcake = 30053,
 	-- Reserved in Global.Storage.FamiliarSummonEvent10 = 30054

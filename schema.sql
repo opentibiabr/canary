@@ -315,6 +315,8 @@ CREATE TABLE IF NOT EXISTS `guild_wars` (
     `status` tinyint(2) NOT NULL DEFAULT '0',
     `started` bigint(15) NOT NULL DEFAULT '0',
     `ended` bigint(15) NOT NULL DEFAULT '0',
+    `frags` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+    `payment` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     INDEX `guild1` (`guild1`),
     INDEX `guild2` (`guild2`),
     CONSTRAINT `guild_wars_pk` PRIMARY KEY (`id`)

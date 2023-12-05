@@ -206,8 +206,9 @@ function Player:onLookInBattleList(creature, distance)
 		local master = creature:getMaster()
 		local summons = { "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar" }
 		if master and table.contains(summons, creature:getName():lower()) then
+			local familiarSummonTime = master:kv():get("familiar-summon-time") or 0
 			description = description .. " (Master: " .. master:getName() .. "). \z
-				It will disappear in " .. getTimeInWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
+				It will disappear in " .. getTimeInWords(familiarSummonTime - os.time())
 		end
 	end
 	if self:getGroup():getAccess() then

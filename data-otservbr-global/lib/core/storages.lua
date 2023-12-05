@@ -102,7 +102,6 @@ Storage = {
 	MaryzaCookbook = 30022,
 	Factions = 30024,
 	-- Reserved in Global.Storage.BlockMovementStorage = 30025
-	-- Reserved in Global.Storage.FamiliarSummon = 30026
 	-- unused TrainerRoom = 30027,
 	-- unused NpcSpawn = 30028,
 	ExerciseDummyExhaust = 30029,

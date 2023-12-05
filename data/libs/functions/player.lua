@@ -431,7 +431,7 @@ function Player:createFamiliar(familiarName, timeLeft)
 	playerPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	myFamiliar:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	-- Divide by 2 to get half the time (the default total time is 30 / 2 = 15)
-	self:setStorageValue(Global.Storage.FamiliarSummon, os.time() + timeLeft)
+	self:kv():set("familiar-summon-time", os.time() + timeLeft)
 	addEvent(RemoveFamiliar, timeLeft * 1000, myFamiliar:getId(), self:getId())
 	for sendMessage = 1, #FAMILIAR_TIMER do
 		self:setStorageValue(

@@ -121,11 +121,12 @@ function Player.getCookiesDelivered(self)
 end
 
 function Player.allowMovement(self, allow)
-	return self:setStorageValue(Global.Storage.BlockMovementStorage, allow and -1 or 1)
+	return self:kv():set("block-movement", allow and nil or 1)
 end
 
 function Player.hasAllowMovement(self)
-	return self:getStorageValue(Global.Storage.BlockMovementStorage) ~= 1
+	local blockMovement = self:kv():get("block-movement") or 0
+	return blockMovement ~= 1
 end
 
 function Player.checkGnomeRank(self)

@@ -6,7 +6,7 @@ local function onMovementRemoveProtection(playerId, oldPos, time)
 
 	local playerPos = player:getPosition()
 	if (playerPos.x ~= oldPos.x or playerPos.y ~= oldPos.y or playerPos.z ~= oldPos.z) or player:getTarget() then
-		player:kv():set("combat-protection-exhaustion", nil)
+		player:kv():set("combat-protection", nil)
 		return true
 	end
 
@@ -250,9 +250,9 @@ function playerLogin.onLogin(player)
 		stats.playerId = player:getId()
 	end
 
-	local hasExhaustion = player:kv():get("combat-protection-exhaustion") or 0
-	if hasExhaustion < 1 then
-		player:kv():set("combat-protection-exhaustion", 1)
+	local isProtected = player:kv():get("combat-protection") or 0
+	if isProtected < 1 then
+		player:kv():set("combat-protection", 1)
 		onMovementRemoveProtection(playerId, player:getPosition(), 10)
 	end
 

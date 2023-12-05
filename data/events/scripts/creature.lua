@@ -13,14 +13,14 @@ local function removeCombatProtection(playerUid)
 		time = 30
 	end
 
-	player:kv():set("combat-protection-exhaustion", os.time() + 2) -- 2 seconds
+	player:kv():set("combat-protection", 2)
 	addEvent(function(playerFuncUid)
 		local playerEvent = Player(playerFuncUid)
 		if not playerEvent then
 			return
 		end
 
-		playerEvent:kv():set("combat-protection-exhaustion", nil)
+		playerEvent:kv():set("combat-protection", nil)
 		playerEvent:remove()
 	end, time * 1000, playerUid)
 end
@@ -32,7 +32,7 @@ function Creature:onTargetCombat(target)
 
 	if target:isPlayer() then
 		if self:isMonster() then
-			local isProtected = target:kv():get("combat-protection-exhaustion") or 0
+			local isProtected = target:kv():get("combat-protection") or 0
 
 			if target:getIp() == 0 then -- If player is disconnected, monster shall ignore to attack the player
 				if target:isPzLocked() then
@@ -40,7 +40,7 @@ function Creature:onTargetCombat(target)
 				end
 				if isProtected <= 0 then
 					addEvent(removeCombatProtection, 30 * 1000, target.uid)
-					target:kv():set("combat-protection-exhaustion", 1)
+					target:kv():set("combat-protection", 1)
 				elseif isProtected == 1 then
 					self:searchTarget()
 					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER

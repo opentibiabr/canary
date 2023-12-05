@@ -13,14 +13,14 @@ local function removeCombatProtection(playerUid)
 		time = 30
 	end
 
-	player:setStorageValue(Global.Storage.CombatProtectionStorage, 2)
+	player:kv():set("combat-protection-exhaustion", os.time() + 2) -- 2 seconds
 	addEvent(function(playerFuncUid)
 		local playerEvent = Player(playerFuncUid)
 		if not playerEvent then
 			return
 		end
 
-		playerEvent:setStorageValue(Global.Storage.CombatProtectionStorage, 0)
+		playerEvent:kv():set("combat-protection-exhaustion", nil)
 		playerEvent:remove()
 	end, time * 1000, playerUid)
 end

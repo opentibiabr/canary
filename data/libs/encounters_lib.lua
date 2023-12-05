@@ -83,26 +83,25 @@ function Encounter:resetConfig(config)
 	self.registered = false
 	self.global = config.global or false
 	self.timeToSpawnMonsters = ParseDuration(config.timeToSpawnMonsters or "3s")
-	self.events = {}
+	self.events = Set()
 end
 
 ---@param callable function The callable function for the event
 ---@param delay number The delay time for the event
 function Encounter:addEvent(callable, delay, ...)
-	local index = #self.events + 1
 	local event = addEvent(function(callable, ...)
 		pcall(callable, ...)
-		table.remove(self.events, index)
+		self.events:remove(event)
 	end, ParseDuration(delay), callable, ...)
-	table.insert(self.events, index, event)
+	self.events:insert(event)
 end
 
 ---Cancels all the events associated with the encounter
 function Encounter:cancelEvents()
-	for _, event in ipairs(self.events) do
+	for event in self.events:iter() do
 		stopEvent(event)
 	end
-	self.events = {}
+	self.events = Set()
 end
 
 ---Returns the stage of the encounter by the given stage number

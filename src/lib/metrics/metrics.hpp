@@ -118,6 +118,9 @@ namespace metrics {
 
 		void addCounter(std::string_view name, double value, std::map<std::string, std::string> attrs = {}) {
 			std::scoped_lock lock(mutex_);
+			if (!getMeter()) {
+				return;
+			}
 			if (counters.find(name) == counters.end()) {
 				std::string nameStr(name);
 				counters[name] = getMeter()->CreateDoubleCounter(nameStr);
@@ -128,6 +131,9 @@ namespace metrics {
 
 		void addUpDownCounter(std::string_view name, int value, std::map<std::string, std::string> attrs = {}) {
 			std::scoped_lock lock(mutex_);
+			if (!getMeter()) {
+				return;
+			}
 			if (upDownCounters.find(name) == upDownCounters.end()) {
 				std::string nameStr(name);
 				upDownCounters[name] = getMeter()->CreateInt64UpDownCounter(nameStr);
@@ -145,7 +151,11 @@ namespace metrics {
 		phmap::flat_hash_map<std::string, Counter<double>> counters;
 
 		Meter getMeter() {
-			return metrics_api::Provider::GetMeterProvider()->GetMeter(meterName, otelVersion);
+			auto provider = metrics_api::Provider::GetMeterProvider();
+			if (provider == nullptr) {
+				return {};
+			}
+			return provider->GetMeter(meterName, otelVersion);
 		}
 
 	private:

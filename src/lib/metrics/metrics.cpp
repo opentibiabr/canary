@@ -17,6 +17,10 @@ Metrics &Metrics::getInstance() {
 }
 
 void Metrics::init(Options opts) {
+	if (!opts.enableOStreamExporter && !opts.enablePrometheusExporter) {
+		return;
+	}
+
 	auto provider = metrics_sdk::MeterProviderFactory::Create();
 	auto* p = static_cast<metrics_sdk::MeterProvider*>(provider.get());
 
@@ -69,12 +73,7 @@ void Metrics::init(Options opts) {
 		latencyHistograms[name] = getMeter()->CreateDoubleHistogram(name, "Latency", "us");
 	}
 
-	if (opts.enableOStreamExporter || opts.enablePrometheusExporter) {
-		metrics_api::Provider::SetMeterProvider(std::move(provider));
-	} else {
-		std::shared_ptr<metrics_api::MeterProvider> none;
-		metrics_api::Provider::SetMeterProvider(none);
-	}
+	metrics_api::Provider::SetMeterProvider(std::move(provider));
 }
 
 void Metrics::shutdown() {
@@ -85,7 +84,6 @@ void Metrics::shutdown() {
 ScopedLatency::ScopedLatency(std::string_view name, const std::string &histogramName, const std::string &scopeKey) :
 	ScopedLatency(name, g_metrics().latencyHistograms[histogramName], { { scopeKey, std::string(name) } }, g_metrics().defaultContext) {
 	if (histogram == nullptr) {
-		g_logger().debug("ScopedLatency: Histogram {} not found", histogramName);
 		stopped = true;
 		return;
 	}

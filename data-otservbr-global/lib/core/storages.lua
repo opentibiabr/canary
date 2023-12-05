@@ -101,7 +101,6 @@ Storage = {
 	RookgaardDestiny = 30020,
 	EruaranGreeting = 30021,
 	MaryzaCookbook = 30022,
-	-- Reserved in Global.Storage.CombatProtectionStorage = 30023
 	Factions = 30024,
 	-- Reserved in Global.Storage.BlockMovementStorage = 30025
 	-- Reserved in Global.Storage.FamiliarSummon = 30026

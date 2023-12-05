@@ -1,16 +1,16 @@
-local function onMovementRemoveProtection(cid, oldPos, time)
-	local player = Player(cid)
+local function onMovementRemoveProtection(playerId, oldPos, time)
+	local player = Player(playerId)
 	if not player then
 		return true
 	end
 
 	local playerPos = player:getPosition()
 	if (playerPos.x ~= oldPos.x or playerPos.y ~= oldPos.y or playerPos.z ~= oldPos.z) or player:getTarget() then
-		player:setStorageValue(Global.Storage.CombatProtectionStorage, 0)
+		player:kv():set("combat-protection-exhaustion", nil)
 		return true
 	end
 
-	addEvent(onMovementRemoveProtection, 1000, cid, oldPos, time - 1)
+	addEvent(onMovementRemoveProtection, 1000, playerId, oldPos, time - 1)
 end
 
 local function protectionZoneCheck(playerName)
@@ -250,8 +250,9 @@ function playerLogin.onLogin(player)
 		stats.playerId = player:getId()
 	end
 
-	if player:getStorageValue(Global.Storage.CombatProtectionStorage) < 1 then
-		player:setStorageValue(Global.Storage.CombatProtectionStorage, 1)
+	local hasExhaustion = player:kv():get("combat-protection-exhaustion") or 0
+	if hasExhaustion < 1 then
+		player:kv():set("combat-protection-exhaustion", 1)
 		onMovementRemoveProtection(playerId, player:getPosition(), 10)
 	end
 

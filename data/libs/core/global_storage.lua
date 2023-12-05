@@ -24,7 +24,6 @@ Reserved player action storage key ranges (const.hpp)
 Global = {
 	Storage = {
 		NpcExhaust = 30001,
-		CombatProtectionStorage = 30023,
 		BlockMovementStorage = 30025,
 		FamiliarSummon = 30026,
 		StoreExaust = 30051,

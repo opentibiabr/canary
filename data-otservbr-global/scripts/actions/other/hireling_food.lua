@@ -30,45 +30,44 @@ carrotPie:setParameter(CONDITION_PARAM_SKILL_DISTANCE, 7)
 local hirelingFood = Action()
 
 function hirelingFood.onUse(player, item, frompos, item2, topos)
-	local cid = player:getId()
 	if player:getStorageValue(config.storage) <= os.time() then
 		if item.itemid == 29408 then
 			player:say("Chomp.", TALKTYPE_MONSTER_SAY)
-			Creature(cid):addCondition(roastedWyvernWings)
+			player:addCondition(roastedWyvernWings)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
 		elseif item.itemid == 29409 then
 			player:say("Yummm.", TALKTYPE_MONSTER_SAY)
-			Creature(cid):addCondition(carrotPie)
+			player:addCondition(carrotPie)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
 		elseif item.itemid == 29410 then
 			player:say("Munch.", TALKTYPE_MONSTER_SAY)
-			Creature(cid):addCondition(tropicalMarinatedTiger)
+			player:addCondition(tropicalMarinatedTiger)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
 		elseif item.itemid == 29411 then
 			player:say("Munch.", TALKTYPE_MONSTER_SAY)
-			Creature(cid):addCondition(delicatessenSalad)
+			player:addCondition(delicatessenSalad)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
 		elseif item.itemid == 29412 then
 			player:say("Yummm.", TALKTYPE_MONSTER_SAY)
-			Creature(cid):addCondition(chilliConCarniphila)
+			player:addCondition(chilliConCarniphila)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
 		elseif item.itemid == 29413 then
 			player:say("Mmmmm.", TALKTYPE_MONSTER_SAY)
-			Creature(cid):addCondition(svargrondSalmonFilet)
+			player:addCondition(svargrondSalmonFilet)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
 		elseif item.itemid == 29414 then
-			Creature(cid):addHealth(getCreatureMaxHealth(cid) * 0.3)
+			player:addHealth(player:getMaxHealth() * 0.3)
 			player:say("Munch.", TALKTYPE_MONSTER_SAY)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)
 		elseif item.itemid == 29415 then
-			Creature(cid):addMana(Creature(cid):getMaxMana() * 0.3)
+			player:addMana(player:getMaxMana() * 0.3)
 			player:say("Chomp.", TALKTYPE_MONSTER_SAY)
 			item:remove(1)
 			player:setStorageValue(config.storage, os.time() + config.exhaust)

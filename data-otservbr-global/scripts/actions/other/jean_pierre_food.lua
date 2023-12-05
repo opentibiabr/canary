@@ -63,7 +63,7 @@ function jeanPierreFood.onUse(player, item, frompos, item2, topos)
 
 	if item.itemid == 9079 then
 		item:remove(1)
-		Creature(cid):addHealth(getCreatureMaxHealth(cid) - getCreatureHealth(cid))
+		player:addHealth(player:getMaxHealth() - player:getHealth())
 		player:say("Gulp.", TALKTYPE_MONSTER_SAY)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your health has been refilled.")
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
@@ -79,14 +79,14 @@ function jeanPierreFood.onUse(player, item, frompos, item2, topos)
 		return true
 	elseif item.itemid == 9081 then
 		item:remove(1)
-		Creature(cid):addCondition(condition_shield)
+		player:addCondition(condition_shield)
 		player:say("Chomp.", TALKTYPE_MONSTER_SAY)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You feel less vulnerable.")
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
 		return true
 	elseif item.itemid == 9082 then
 		item:remove(1)
-		Creature(cid):addCondition(condition_ml)
+		player:addCondition(condition_ml)
 		player:say("Chomp.", TALKTYPE_MONSTER_SAY)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You feel smarter.")
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
@@ -99,35 +99,35 @@ function jeanPierreFood.onUse(player, item, frompos, item2, topos)
 		return true
 	elseif item.itemid == 9084 then
 		item:remove(1)
-		Creature(cid):addCondition(condition_melee)
+		player:addCondition(condition_melee)
 		player:say("Yum.", TALKTYPE_MONSTER_SAY)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You feel stronger.")
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
 		return true
 	elseif item.itemid == 9085 then
 		item:remove(1)
-		Creature(cid):addCondition(condition_speed)
+		player:addCondition(condition_speed)
 		player:say("Munch.", TALKTYPE_MONSTER_SAY)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your speed has been increased.")
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
 		return true
 	elseif item.itemid == 9086 then
 		item:remove(1)
-		Creature(cid):addMana(Creature(cid):getMaxMana() - Creature(cid):getMana())
+		player:addMana(Cplayer:getMaxMana() - player:getMana())
 		player:say("Chomp.", TALKTYPE_MONSTER_SAY)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your mana has been refilled.")
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
 		return true
 	elseif item.itemid == 9087 then
 		item:remove(1)
-		Creature(cid):addCondition(condition_dist)
+		player):addCondition(condition_dist)
 		player:say("Mmmm.", TALKTYPE_MONSTER_SAY)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You feel more focused.")
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
 		return true
 	elseif item.itemid == 9088 then
 		item:remove(1)
-		Creature(cid):addCondition(condition_f)
+		player:addCondition(condition_f)
 		player:say("Smack.", TALKTYPE_MONSTER_SAY)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You felt fishing inspiration.")
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
@@ -146,7 +146,7 @@ function jeanPierreFood.onUse(player, item, frompos, item2, topos)
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You take a gulp from the large bowl, but there's still some blackjack in it.")
 		end
-		Creature(cid):addHealth(getCreatureMaxHealth(cid) - getCreatureHealth(cid))
+		player:addHealth(player:getMaxHealth() - player:getHealth())
 		player:say("Gulp.", TALKTYPE_MONSTER_SAY)
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
 		return true
@@ -155,17 +155,17 @@ function jeanPierreFood.onUse(player, item, frompos, item2, topos)
 		local c = { condition_shield, condition_ml, condition_melee, condition_dist, condition_speed }
 		local r = math.random(1, 4)
 		if r == 1 then
-			Creature(cid):addCondition(c[math.random(1, #c)])
+			player:addCondition(c[math.random(1, #c)])
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You feel stronger, but you have no idea what was increased.")
 		elseif r == 2 then
 			doSetCreatureLight(cid, 15, 154, 60 * 60 * 1000)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You feel enlightened.")
 		elseif r == 3 then
-			Creature(cid):addCondition(condition_i)
+			player:addCondition(condition_i)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You became invisible.")
 		elseif r == 4 then
-			Creature(cid):addHealth(getCreatureMaxHealth(cid) - getCreatureHealth(cid))
-			Creature(cid):addMana(Creature(cid):getMaxMana() - Creature(cid):getMana())
+			player:addHealth(player:getMaxHealth() - player:getHealth())
+			player:addMana(player:getMaxMana() - player:getMana())
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your vitality has been restored.")
 		end
 		player:say("Smack.", TALKTYPE_MONSTER_SAY)

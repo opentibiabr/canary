@@ -132,11 +132,17 @@ function getCreatureName(cid)
 end
 
 function getCreatureHealth(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("The function 'getCreatureHealth(cid)' is old and its new format is 'c:getHealth()', where the 'c' refers to a Creature (player or monster), adjust it to: {}, {}.", line, source)
 	local c = Creature(cid)
 	return c and c:getHealth() or false
 end
 
 function getCreatureMaxHealth(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("The function 'getCreatureMaxHealth(cid)' is old and its new format is 'c:getMaxHealth()', where the 'c' refers to a Creature (player or monster), adjust it to: {}, {}.", line, source)
 	local c = Creature(cid)
 	return c and c:getMaxHealth() or false
 end

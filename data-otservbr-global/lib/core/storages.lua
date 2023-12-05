@@ -79,7 +79,6 @@ Reserved player action storage key ranges (const.h)
 
 Storage = {
 	-- General storages
-	-- Reserved in Global.Storage.NpcExhaust = 30001
 	Dragonfetish = 30003,
 	EdronRopeQuest = 30004,
 	GhostShipQuest = 30005,

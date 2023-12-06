@@ -1066,12 +1066,13 @@ bool Monster::walkToSpawn() {
 	}
 
 	listWalkDir.clear();
-	if (!getPathTo(masterPos, listWalkDir, 0, std::max<int32_t>(0, distance - 5), true, true, distance)) {
+	stdext::arraylist<Direction> listDir(128);
+	if (!getPathTo(masterPos, listDir, 0, std::max<int32_t>(0, distance - 5), true, true, distance)) {
 		return false;
 	}
 
 	walkingToSpawn = true;
-	startAutoWalk();
+	startAutoWalk(listDir.data());
 	return true;
 }
 

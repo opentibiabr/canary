@@ -13,6 +13,7 @@
 #include "declarations.hpp"
 #include "game/game.hpp"
 #include "server/network/webhook/webhook.hpp"
+#include "creatures/monsters/monsters.hpp"
 
 #if LUA_VERSION_NUM >= 502
 	#undef lua_strlen
@@ -160,6 +161,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, PZ_LOCKED, "pzLocked", 60000);
 	loadIntConfig(L, DEFAULT_DESPAWNRANGE, "deSpawnRange", 2);
 	loadIntConfig(L, DEFAULT_DESPAWNRADIUS, "deSpawnRadius", 50);
+	loadIntConfig(L, DEFAULT_WALKTOSPAWNRADIUS, "walkToSpawnRadius", 15);	
 	loadIntConfig(L, RATE_EXPERIENCE, "rateExp", 1);
 	loadIntConfig(L, RATE_SKILL, "rateSkill", 1);
 	loadIntConfig(L, RATE_LOOT, "rateLoot", 1);

@@ -37,6 +37,7 @@ function keyDoor.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	for index, value in ipairs(KeyDoorTable) do
 		if value.closedDoor == item.itemid then
 			item:transform(value.openDoor)
+			item:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ACTION_OPEN_DOOR)
 			return true
 		end
 	end
@@ -46,6 +47,7 @@ function keyDoor.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				return false
 			end
 			item:transform(value.closedDoor)
+			item:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ACTION_CLOSE_DOOR)
 			return true
 		end
 	end
@@ -60,8 +62,12 @@ function keyDoor.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			if item.actionid == target.actionid then
 				if value.lockedDoor == target.itemid then
 					target:transform(value.openDoor)
+					item:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ACTION_OPEN_DOOR)
 					return true
 				elseif table.contains({ value.openDoor, value.closedDoor }, target.itemid) then
+					if value.openDoor == item.itemid then
+						item:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ACTION_CLOSE_DOOR)
+					end
 					target:transform(value.lockedDoor)
 					return true
 				end

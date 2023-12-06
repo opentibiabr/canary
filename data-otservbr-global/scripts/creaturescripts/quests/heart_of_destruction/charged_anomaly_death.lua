@@ -10,10 +10,13 @@ local monsterTable = {
 	[4] = 275500,
 }
 
-
 local chargedAnomalyDeath = CreatureEvent("ChargedAnomalyDeath")
 
 function chargedAnomalyDeath.onDeath(creature)
+	if not creature then
+		return true
+	end
+
 	local healthRemove = monsterTable[Game.getStorageValue(GlobalStorage.HeartOfDestruction.ChargedAnomaly)]
 	if not healthRemove then
 		return true

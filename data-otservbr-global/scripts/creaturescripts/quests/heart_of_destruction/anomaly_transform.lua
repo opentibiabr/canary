@@ -10,7 +10,7 @@ end
 local anomalyTransform = CreatureEvent("AnomalyTransform")
 
 function anomalyTransform.onThink(creature)
-	if not creature or not creature:isMonster() then
+	if not creature then
 		return false
 	end
 

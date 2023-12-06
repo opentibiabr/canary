@@ -50,7 +50,7 @@ function rottinWoodtrap.onUse(cid, item, fromPosition, itemEx, toPosition, isHot
 					doRemoveItem(item.uid, 1)
 					Game.createItem(12187, 1, toPosition)
 					doTeleportThing(cid, { x = 32660, y = 32193, z = 7 })
-					doSendMagicEffect(getCreaturePosition(cid), 45)
+					Player(cid):getPosition():sendMagicEffect(CONST_ME_STONES)
 					Game.createItem(2768, 1, { x = 32662, y = 32190, z = 7 }) -- small fir tree
 					----------------------- SUMMON MERCHANT -----------------------------
 					doSummonCreature("Travelling Merchant", { x = 32656, y = 32182, z = 7 })

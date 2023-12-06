@@ -151,6 +151,9 @@ function getCreatureMaxHealth(cid)
 end
 
 function getCreaturePosition(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'getCreaturePosition(cid)' is outdated. Please use the new format 'c:getPosition()', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	local c = Creature(cid)
 	return c and c:getPosition() or false
 end

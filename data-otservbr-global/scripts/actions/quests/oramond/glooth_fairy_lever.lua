@@ -6,7 +6,7 @@ local function removeBosst(fromArea1, fromArea2, bossName)
 				if tile then
 					local monster = tile:getTopCreature()
 					if monster and monster:isMonster() then
-						if monster:getName():lower == string.lower(bossName) then
+						if monster:getName():lower == bossName then
 							monster:remove()
 						end
 					end

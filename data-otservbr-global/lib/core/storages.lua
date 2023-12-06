@@ -3070,7 +3070,7 @@ GlobalStorage = {
 		},
 	},
 	HeartOfDestruction = {
-		-- Reserved storage from 60172 - 60171
+		-- Reserved storage from 60172 - 60177
 		ChargedAnomaly = 60172,
 	},
 	FuryGates = 65000,

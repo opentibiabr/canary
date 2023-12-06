@@ -127,6 +127,9 @@ function isContainer(uid)
 end
 
 function getCreatureName(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'getCreatureName(cid)' is outdated. Please use the new format 'c:getName()', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	local c = Creature(cid)
 	return c and c:getName() or false
 end

@@ -23,6 +23,8 @@ maintainModeMessage = ""
 
 -- Combat settings
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
+-- NOTE: removeBeginningWeaponAmmunition: spears, arrows, bolt have endless ammo (allows training for paladins)
+-- NOTE: refundManaOnBeginningWeapons: wand of vortex and snakebite refund mana used (allows training for mages)
 worldType = "pvp"
 hotkeyAimbotEnabled = true
 protectionLevel = 7
@@ -31,6 +33,8 @@ removeChargesFromRunes = true
 removeChargesFromPotions = true
 removeWeaponAmmunition = true
 removeWeaponCharges = true
+removeBeginningWeaponAmmunition = true
+refundBeginningWeaponMana = false
 timeToDecreaseFrags = 24 * 60 * 60 * 1000
 whiteSkullTime = 15 * 60 * 1000
 stairJumpExhaustion = 2 * 1000
@@ -164,7 +168,6 @@ loyaltyBonusPercentageMultiplier = 1.0
 pvpRateDamageTakenPerLevel = 0.0 -- recommended to start with 0.1
 pvpRateDamageReductionPerLevel = 0.0 -- recommended to start with 0.1
 pvpMaxLevelDifference = 0
-
 
 -- Wheel of destiny system
 -- NOTE: set wheelSystemEnabled = false to disable the wheel of destiny

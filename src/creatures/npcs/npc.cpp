@@ -261,7 +261,7 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 	}
 
 	uint32_t buyPrice = 0;
-	const std::vector<ShopBlock> &shopVector = getShopItemVector();
+	const std::vector<ShopBlock> &shopVector = getShopItemVector(player->getGUID());
 	for (ShopBlock shopBlock : shopVector) {
 		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
 			buyPrice = shopBlock.itemBuyPrice;
@@ -370,7 +370,7 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 
 	uint32_t sellPrice = 0;
 	const ItemType &itemType = Item::items[itemId];
-	const std::vector<ShopBlock> &shopVector = getShopItemVector();
+	const std::vector<ShopBlock> &shopVector = getShopItemVector(player->getGUID());
 	for (ShopBlock shopBlock : shopVector) {
 		if (itemType.id == shopBlock.itemId && shopBlock.itemSellPrice != 0) {
 			sellPrice = shopBlock.itemSellPrice;
@@ -381,7 +381,7 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 	}
 
 	auto toRemove = amount;
-	for (auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore); auto item : inventoryItems) {
+	for (auto item : player->getInventoryItemsFromId(itemId, ignore)) {
 		if (!item || item->getTier() > 0 || item->hasImbuements()) {
 			continue;
 		}
@@ -642,23 +642,25 @@ bool Npc::getRandomStep(Direction &moveDirection) {
 	return false;
 }
 
-void Npc::addShopPlayer(const std::shared_ptr<Player> &player) {
+void Npc::addShopPlayer(const std::shared_ptr<Player> &player, const std::vector<ShopBlock> &shopItems /* = {}*/) {
 	if (!player) {
 		return;
 	}
-	shopPlayerMap.try_emplace(player->getID(), player);
+
+	shopPlayerMap.try_emplace(player->getGUID(), shopItems);
 }
 
 void Npc::removeShopPlayer(const std::shared_ptr<Player> &player) {
 	if (!player) {
 		return;
 	}
-	shopPlayerMap.erase(player->getID());
+
+	shopPlayerMap.erase(player->getGUID());
 }
 
 void Npc::closeAllShopWindows() {
-	for (auto &[_, playerPtr] : shopPlayerMap) {
-		auto shopPlayer = playerPtr.lock();
+	for (const auto &[playerGUID, playerPtr] : shopPlayerMap) {
+		auto shopPlayer = g_game().getPlayerByGUID(playerGUID);
 		if (shopPlayer) {
 			shopPlayer->closeShopWindow();
 		}

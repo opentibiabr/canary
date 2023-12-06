@@ -983,16 +983,17 @@ int PlayerFunctions::luaPlayerGetMaxMana(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSetMaxMana(lua_State* L) {
 	// player:setMaxMana(maxMana)
-	std::shared_ptr<Player> player = getPlayer(L, 1);
-	if (player) {
-		player->manaMax = getNumber<int32_t>(L, 2);
-		player->mana = std::min<int32_t>(player->mana, player->manaMax);
-		g_game().addPlayerMana(player);
-		player->sendStats();
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
+	const auto &player = getPlayer(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
 	}
+
+	player->manaMax = getNumber<int32_t>(L, 2);
+	player->mana = std::min<int32_t>(player->mana, player->manaMax);
+	g_game().addPlayerMana(player);
+	player->sendStats();
+	pushBoolean(L, true);
 	return 1;
 }
 

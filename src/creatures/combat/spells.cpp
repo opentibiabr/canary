@@ -611,7 +611,7 @@ void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 	bool isUpgraded = getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0;
 	// Safety check to prevent division by zero
 	if (std::abs(rate_cooldown) < std::numeric_limits<float>::epsilon()) {
-			rate_cooldown = 0.1; // Safe minimum value
+		rate_cooldown = 0.1; // Safe minimum value
 	}
 
 	if (cooldown > 0) {

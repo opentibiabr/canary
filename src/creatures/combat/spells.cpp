@@ -609,9 +609,9 @@ void Spell::setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t gr
 void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 	WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
 	bool isUpgraded = getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0;
-	auto rate_cooldown = g_configManager().getFloat(RATE_SPELL_COOLDOWN, __FUNCTION__);
+	// Safety check to prevent division by zero
 	if (std::abs(rate_cooldown) < std::numeric_limits<float>::epsilon()) {
-		rate_cooldown = 0.1;
+			rate_cooldown = 0.1; // Safe minimum value
 	}
 
 	if (cooldown > 0) {

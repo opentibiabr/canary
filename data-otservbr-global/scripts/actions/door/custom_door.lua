@@ -18,12 +18,14 @@ function customDoor.onUse(player, item, fromPosition, target, toPosition, isHotk
 	for index, value in ipairs(CustomDoorTable) do
 		if value.closedDoor == item.itemid then
 			item:transform(value.openDoor)
+			item:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ACTION_OPEN_DOOR)
 			return true
 		end
 	end
 	for index, value in ipairs(CustomDoorTable) do
 		if value.openDoor == item.itemid then
 			item:transform(value.closedDoor)
+			item:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ACTION_CLOSE_DOOR)
 			return true
 		end
 	end

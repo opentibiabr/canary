@@ -103,11 +103,13 @@ function closingDoor.onStepOut(creature, item, position, fromPosition)
 	for index, value in ipairs(LevelDoorTable) do
 		if value.openDoor == item.itemid then
 			item:transform(value.closedDoor)
+			item:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ACTION_CLOSE_DOOR)
 		end
 	end
 	for index, value in ipairs(QuestDoorTable) do
 		if value.openDoor == item.itemid then
 			item:transform(value.closedDoor)
+			item:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ACTION_CLOSE_DOOR)
 		end
 	end
 	return true

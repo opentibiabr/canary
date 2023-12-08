@@ -52,6 +52,9 @@ function Set:insert(key)
 end
 
 function Set:remove(key)
+	if not self:contains(key) then
+		return
+	end
 	key = self:__key(key)
 	self.values[key] = nil
 end

@@ -24931,13 +24931,13 @@
 	<item id="11240" article="an" name="open door">
 		<attribute key="type" value="door"/>
 	</item>
-	<item id="11241" article="a" name="closed door">
-		<attribute key="type" value="door"/>
-		<attribute key="blockProjectile" value="1"/>
-	</item>
-	<item id="11242" article="a" name="closed door" editorsuffix="(it is locked)">
+	<item id="11241" article="a" name="closed door" editorsuffix="(it is locked)">
 		<attribute key="type" value="door"/>
 		<attribute key="description" value="It is locked."/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="11242" article="a" name="closed door">
+		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
 	</item>
 	<item id="11243" article="an" name="open door">
@@ -61565,6 +61565,7 @@
 	<item id="36666" article="a" name="eldritch quiver">
 		<attribute key="primarytype" value="quivers"/>
 		<attribute key="slotType" value="right-hand"/>
+		<attribute key="showattributes" value="1"/>
 		<attribute key="containersize" value="8"/>
 		<attribute key="weight" value="2200"/>
 		<attribute key="perfectshotdamage" value="20"/>
@@ -65289,6 +65290,7 @@
 	<item id="39150" article="an" name="alicorn quiver">
 		<attribute key="primarytype" value="quivers"/>
 		<attribute key="slotType" value="right-hand"/>
+		<attribute key="showattributes" value="1"/>
 		<attribute key="containersize" value="12"/>
 		<attribute key="weight" value="2000"/>
 		<attribute key="magiclevelpoints" value="1"/>

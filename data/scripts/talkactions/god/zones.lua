@@ -5,7 +5,7 @@ function zones.onSay(player, words, param)
 	local cmd = params[1]
 	if not cmd then
 		player:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "Command not found.")
-		return false
+		return true
 	end
 
 	if cmd == "list" then
@@ -21,12 +21,12 @@ function zones.onSay(player, words, param)
 		local zoneName = params[2]:trim()
 		if not zoneName then
 			player:sendTextMessage(MESSAGE_HEALED, "Zone not found.")
-			return false
+			return true
 		end
 		local zone = Zone.getByName(zoneName)
 		if not zone then
 			player:sendTextMessage(MESSAGE_HEALED, "Zone not found.")
-			return false
+			return true
 		end
 		return zone
 	end
@@ -36,7 +36,7 @@ function zones.onSay(player, words, param)
 			local pos = zone:randomPosition()
 			if not pos then
 				player:sendTextMessage(MESSAGE_HEALED, "No position found.")
-				return false
+				return true
 			end
 			player:teleportTo(pos)
 			player:sendTextMessage(MESSAGE_HEALED, "You have been teleported to " .. zone:getName() .. ".")
@@ -82,11 +82,11 @@ function zones.onSay(player, words, param)
 	local command = commands[cmd]
 	if not command then
 		player:sendTextMessage(MESSAGE_HEALED, "Command not found.")
-		return false
+		return true
 	end
 	local zone = zoneFromParam()
 	if not zone then
-		return false
+		return true
 	end
 	return command(zone)
 end

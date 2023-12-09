@@ -20,6 +20,7 @@
 #include "items/item.hpp"
 #include "lua/functions/creatures/player/player_functions.hpp"
 #include "game/scheduling/save_manager.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "map/spectators.hpp"
 
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {

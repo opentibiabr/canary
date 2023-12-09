@@ -44,6 +44,7 @@ bool ConfigManager::load() {
 		loadBoolConfig(L, OPTIMIZE_DATABASE, "startupDatabaseOptimization", true);
 		loadBoolConfig(L, TOGGLE_MAP_CUSTOM, "toggleMapCustom", true);
 		loadBoolConfig(L, TOGGLE_MAINTAIN_MODE, "toggleMaintainMode", false);
+		loadBoolConfig(L, RANDOM_MONSTER_SPAWN, "randomMonsterSpawn", false);
 		loadStringConfig(L, MAINTAIN_MODE_MESSAGE, "maintainModeMessage", "");
 
 		loadStringConfig(L, IP, "ip", "127.0.0.1");

@@ -3069,6 +3069,10 @@ GlobalStorage = {
 			TotalUsurperCommanders = 60171, -- Global
 		},
 	},
+	HeartOfDestruction = {
+		-- Reserved storage from 60172 - 60177
+		ChargedAnomaly = 60172,
+	},
 	FuryGates = 65000,
 	Yakchal = 65001,
 	PitsOfInfernoLevers = 65002,

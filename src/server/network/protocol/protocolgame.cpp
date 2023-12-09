@@ -3917,7 +3917,7 @@ void ProtocolGame::sendBasicData() {
 	std::vector<std::shared_ptr<InstantSpell>> validSpells;
 	for (uint16_t sid : spellsList) {
 		auto spell = g_spells().getInstantSpellById(sid);
-		if (spell && spell->getId() > 0) {
+		if (spell && spell->getSpellId() > 0) {
 			validSpells.push_back(spell);
 		}
 	}
@@ -3932,7 +3932,7 @@ void ProtocolGame::sendBasicData() {
 
 		// Only send valid spells to old client
 		if (oldProtocol) {
-			msg.addByte(spell->getId());
+			msg.addByte(spell->getSpellId());
 			continue;
 		}
 
@@ -3944,10 +3944,10 @@ void ProtocolGame::sendBasicData() {
 			if (static_cast<uint8_t>(grade) == 0) {
 				msg.add<uint16_t>(0);
 			} else {
-				msg.add<uint16_t>(spell->getId());
+				msg.add<uint16_t>(spell->getSpellId());
 			}
 		} else {
-			msg.add<uint16_t>(spell->getId());
+			msg.add<uint16_t>(spell->getSpellId());
 		}
 	}
 

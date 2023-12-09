@@ -179,9 +179,9 @@ int SpellFunctions::luaSpellId(lua_State* L) {
 			return 1;
 		}
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, spell->getId());
+			lua_pushnumber(L, spell->getSpellId());
 		} else {
-			spell->setId(getNumber<uint16_t>(L, 2));
+			spell->setSpellId(getNumber<uint16_t>(L, 2));
 			pushBoolean(L, true);
 		}
 	} else {

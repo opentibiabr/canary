@@ -11,6 +11,7 @@
 
 #include "lua/scripts/luascript.hpp"
 #include "lua/scripts/lua_environment.hpp"
+#include "lib/metrics/metrics.hpp"
 
 ScriptEnvironment::DBResultMap ScriptEnvironment::tempResults;
 uint32_t ScriptEnvironment::lastResultId = 0;
@@ -236,7 +237,35 @@ bool LuaScriptInterface::closeState() {
 	return true;
 }
 
+std::string LuaScriptInterface::getMetricsScope() {
+	metrics::method_latency measure(__METHOD_NAME__);
+	int32_t scriptId;
+	int32_t callbackId;
+	bool timerEvent;
+	LuaScriptInterface* scriptInterface;
+	getScriptEnv()->getEventInfo(scriptId, scriptInterface, callbackId, timerEvent);
+
+	std::string name;
+	if (scriptId == EVENT_ID_LOADING) {
+		name = "loading";
+	} else if (scriptId == EVENT_ID_USER) {
+		name = "user";
+	} else {
+		name = scriptInterface->getFileById(scriptId);
+		if (name.empty()) {
+			return "unknown";
+		}
+		auto pos = name.find("data");
+		if (pos != std::string::npos) {
+			name = name.substr(pos);
+		}
+	}
+
+	return fmt::format("{}:{}", name, timerEvent ? "timer" : "<direct>");
+}
+
 bool LuaScriptInterface::callFunction(int params) {
+	metrics::lua_latency measure(getMetricsScope());
 	bool result = false;
 	int size = lua_gettop(luaState);
 	if (protectedCall(luaState, params, 1) != 0) {
@@ -255,6 +284,7 @@ bool LuaScriptInterface::callFunction(int params) {
 }
 
 void LuaScriptInterface::callVoidFunction(int params) {
+	metrics::lua_latency measure(getMetricsScope());
 	int size = lua_gettop(luaState);
 	if (protectedCall(luaState, params, 0) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(luaState));

@@ -61,6 +61,16 @@ int CanaryServer::run() {
 				loadConfigLua();
 
 				logger.info("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__) ? " and 10x allowed!" : "");
+				metrics::Options metricsOptions;
+				metricsOptions.enablePrometheusExporter = g_configManager().getBoolean(METRICS_ENABLE_PROMETHEUS, __FUNCTION__);
+				if (metricsOptions.enablePrometheusExporter) {
+					metricsOptions.prometheusOptions.url = g_configManager().getString(METRICS_PROMETHEUS_ADDRESS, __FUNCTION__);
+				}
+				metricsOptions.enableOStreamExporter = g_configManager().getBoolean(METRICS_ENABLE_OSTREAM, __FUNCTION__);
+				if (metricsOptions.enableOStreamExporter) {
+					metricsOptions.ostreamOptions.export_interval_millis = std::chrono::milliseconds(g_configManager().getNumber(METRICS_OSTREAM_INTERVAL, __FUNCTION__));
+				}
+				g_metrics().init(metricsOptions);
 
 				rsa.start();
 				initializeDatabase();
@@ -375,4 +385,5 @@ void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {
 void CanaryServer::shutdown() {
 	inject<ThreadPool>().shutdown();
 	g_dispatcher().shutdown();
+	g_metrics().shutdown();
 }

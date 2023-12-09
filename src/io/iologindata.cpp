@@ -15,6 +15,7 @@
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "lib/metrics/metrics.hpp"
 
 bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, const std::string &password, std::string &characterName, uint32_t &accountId, bool oldProtocol) {
 	account::Account account(accountDescriptor);
@@ -74,9 +75,11 @@ void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
 
 	std::ostringstream query;
 	if (login) {
+		g_metrics().addUpDownCounter("players_online", 1);
 		query << "INSERT INTO `players_online` VALUES (" << guid << ')';
 		updateOnline[guid] = true;
 	} else {
+		g_metrics().addUpDownCounter("players_online", -1);
 		query << "DELETE FROM `players_online` WHERE `player_id` = " << guid;
 		updateOnline.erase(guid);
 	}

@@ -12,7 +12,7 @@ combat:addCondition(skill)
 
 local speed = Condition(CONDITION_PARALYZE)
 speed:setParameter(CONDITION_PARAM_TICKS, 10000)
-speed:setFormula(-0.7, 56, -0.7, 56)
+speed:setFormula(-0.73, 0, -0.73, 0)
 combat:addCondition(speed)
 
 local exhaustHealGroup = Condition(CONDITION_SPELLGROUPCOOLDOWN)

@@ -49,7 +49,7 @@ namespace InternalPlayerWheel {
 	void registerWheelSpellTable(const T &spellData, const std::string &name, WheelSpellGrade_t gradeType) {
 		if (name == "Any_Focus_Mage_Spell") {
 			for (const std::string &focusSpellName : m_focusSpells) {
-				g_logger().debug("[{}] registered any spell: {}", __FUNCTION__, focusSpellName);
+				g_logger().trace("[{}] registered any spell: {}", __FUNCTION__, focusSpellName);
 				registerWheelSpellTable(spellData, focusSpellName, gradeType);
 			}
 			return;
@@ -57,7 +57,7 @@ namespace InternalPlayerWheel {
 
 		auto spell = g_spells().getInstantSpellByName(name);
 		if (spell) {
-			g_logger().debug("[{}] registering instant spell with name {}", __FUNCTION__, spell->getName());
+			g_logger().trace("[{}] registering instant spell with name {}", __FUNCTION__, spell->getName());
 			// Increase data
 			const auto increaseData = spellData.increase;
 			if (increaseData.damage > 0) {

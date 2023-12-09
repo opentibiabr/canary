@@ -15,6 +15,7 @@
 #include "game/game.hpp"
 #include "items/bed.hpp"
 #include "game/scheduling/save_manager.hpp"
+#include "lib/metrics/metrics.hpp"
 
 House::House(uint32_t houseId) :
 	id(houseId) { }
@@ -788,6 +789,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 
 		if (player->getBankBalance() >= rent) {
 			g_game().removeMoney(player, rent, 0, true);
+			g_metrics().addCounter("balance_decrease", rent, { { "player", player->getName() }, { "context", "house_rent" } });
 
 			time_t paidUntil = currentTime;
 			switch (rentPeriod) {

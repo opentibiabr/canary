@@ -26,7 +26,7 @@ std::shared_ptr<Zone> Zone::addZone(const std::string &name, uint32_t zoneID /* 
 		return nullZone;
 	}
 	if (zoneID != 0 && zonesByID.contains(zoneID)) {
-		g_logger().debug("Found with ID {} while adding {}, linking them together...", zoneID, name);
+		g_logger().trace("[Zone::addZone] Found with ID {} while adding {}, linking them together...", zoneID, name);
 		auto zone = zonesByID[zoneID];
 		zone->name = name;
 		zones[name] = zone;
@@ -244,7 +244,7 @@ void Zone::refresh() {
 	for (const auto &position : getPositions()) {
 		g_game().map.refreshZones(position);
 	}
-	g_logger().debug("Refreshed zone '{}' in {} milliseconds", name, bm_refresh.duration());
+	g_logger().trace("Refreshed zone '{}' in {} milliseconds", name, bm_refresh.duration());
 }
 
 void Zone::setMonsterVariant(const std::string &variant) {

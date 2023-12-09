@@ -42,7 +42,7 @@ function buyHouse.onSay(player, words, param)
 
 	if house:hasItemOnTile() then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You cannot buy this house, as there are items inside it. Please, contact an administrator.")
-		return false
+		return true
 	end
 
 	local price = house:getPrice()

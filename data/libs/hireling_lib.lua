@@ -609,7 +609,7 @@ function Player:sendHirelingOutfitWindow(hireling)
 	msg:addU16(#availableOutfits)
 	for _, outfit in ipairs(availableOutfits) do
 		msg:addU16(outfit.lookType)
-		msg:addString(outfit.name)
+		msg:addString(outfit.name, "Player:sendHirelingOutfitWindow - outfit.name")
 		msg:addByte(0x00) -- addons
 		msg:addByte(0x00) -- Store bool
 	end

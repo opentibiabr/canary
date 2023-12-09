@@ -90,6 +90,14 @@ target_link_libraries(${PROJECT_NAME}_lib
         unofficial::argon2::libargon2
         unofficial::libmariadb
         unofficial::mariadbclient
+		opentelemetry-cpp::common
+		opentelemetry-cpp::metrics
+		opentelemetry-cpp::api
+		opentelemetry-cpp::ext
+		opentelemetry-cpp::sdk
+		opentelemetry-cpp::logs
+		opentelemetry-cpp::ostream_metrics_exporter
+		opentelemetry-cpp::prometheus_exporter
 )
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)

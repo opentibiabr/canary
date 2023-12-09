@@ -48,12 +48,9 @@ function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 		end
 	end
 
-	local tilePool = Tile(creature:getPosition())
-	if tilePool then
-		local pool = tilePool:getItemById(2886)
-		if pool then
-			pool:remove()
-		end
+	local pool = Tile(creature:getPosition()):getItemById(2886)
+	if pool then
+		pool:remove()
 	end
 
 	local vortex = Game.createItem(config.vortex, 1, creature:getPosition())

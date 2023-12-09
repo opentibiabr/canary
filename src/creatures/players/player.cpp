@@ -31,6 +31,7 @@
 #include "items/weapons/weapons.hpp"
 #include "core.hpp"
 #include "map/spectators.hpp"
+#include "lib/metrics/metrics.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -1107,6 +1108,23 @@ void Player::checkLootContainers(std::shared_ptr<Item> item) {
 }
 
 void Player::sendLootStats(std::shared_ptr<Item> item, uint8_t count) {
+	uint64_t value = 0;
+	if (item->getID() == ITEM_GOLD_COIN || item->getID() == ITEM_PLATINUM_COIN || item->getID() == ITEM_CRYSTAL_COIN) {
+		if (item->getID() == ITEM_PLATINUM_COIN) {
+			value = count * 100;
+		} else if (item->getID() == ITEM_CRYSTAL_COIN) {
+			value = count * 10000;
+		} else {
+			value = count;
+		}
+	} else if (
+		auto npc = g_game().getNpcByName("The Lootmonger")
+	) {
+		const auto &iType = Item::items.getItemType(item->getID());
+		value = iType.sellPrice * count;
+	}
+	g_metrics().addCounter("player_loot", value, { { "player", getName() } });
+
 	if (client) {
 		client->sendLootStats(item, count);
 	}
@@ -1256,6 +1274,10 @@ void Player::sendStats() {
 }
 
 void Player::updateSupplyTracker(std::shared_ptr<Item> item) {
+	const auto &iType = Item::items.getItemType(item->getID());
+	auto value = iType.buyPrice;
+	g_metrics().addCounter("player_supply", value, { { "player", getName() } });
+
 	if (client) {
 		client->sendUpdateSupplyTracker(item);
 	}
@@ -1382,6 +1404,8 @@ void Player::onApplyImbuement(Imbuement* imbuement, std::shared_ptr<Item> item, 
 		return;
 	}
 
+	g_metrics().addCounter("balance_decrease", price, { { "player", getName() }, { "context", "apply_imbuement" } });
+
 	for (auto &[key, value] : items) {
 		std::stringstream withdrawItemMessage;
 
@@ -1444,6 +1468,7 @@ void Player::onClearImbuement(std::shared_ptr<Item> item, uint8_t slot) {
 		this->openImbuementWindow(item);
 		return;
 	}
+	g_metrics().addCounter("balance_decrease", baseImbuement->removeCost, { { "player", getName() }, { "context", "clear_imbuement" } });
 
 	if (item->getParent() == getPlayer()) {
 		removeItemImbuementStats(imbuementInfo.imbuement);
@@ -2234,6 +2259,16 @@ void Player::addExperience(std::shared_ptr<Creature> target, uint64_t exp, bool 
 	g_events().eventPlayerOnGainExperience(static_self_cast<Player>(), target, exp, rawExp);
 	if (exp == 0) {
 		return;
+	}
+
+	auto rate = exp / rawExp;
+	std::map<std::string, std::string> attrs({ { "player", getName() }, { "level", std::to_string(getLevel()) }, { "rate", std::to_string(rate) } });
+	if (sendText) {
+		g_metrics().addCounter("player_experience_raw", rawExp, attrs);
+		g_metrics().addCounter("player_experience_actual", exp, attrs);
+	} else {
+		g_metrics().addCounter("player_experience_bonus_raw", rawExp, attrs);
+		g_metrics().addCounter("player_experience_bonus_actual", exp, attrs);
 	}
 
 	// Hazard system experience
@@ -6961,6 +6996,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 				sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 				return;
 			}
+			g_metrics().addCounter("balance_decrease", cost, { { "player", getName() }, { "context", "forge_fuse" } });
 			history.cost = cost;
 		}
 
@@ -7034,6 +7070,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
+		g_metrics().addCounter("balance_decrease", cost, { { "player", getName() }, { "context", "forge_fuse" } });
 
 		history.cost = cost;
 	}
@@ -7165,6 +7202,7 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 		return;
 	}
 	history.cost = cost;
+	g_metrics().addCounter("balance_decrease", cost, { { "player", getName() }, { "context", "forge_transfer" } });
 
 	returnValue = g_game().internalAddItem(static_self_cast<Player>(), exaltationContainer, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {

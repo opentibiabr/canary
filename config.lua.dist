@@ -490,3 +490,12 @@ vipKeepHouse = false
 -- NOTE set rewardChestMaxCollectItems max items per collect action
 rewardChestCollectEnabled = true
 rewardChestMaxCollectItems = 200
+
+-- Metrics
+--- Prometheus
+metricsEnablePrometheus = false
+metricsPrometheusAddress = "0.0.0.0:9464"
+
+--- OStream
+metricsEnableOstream = false
+metricsOstreamInterval = 1000

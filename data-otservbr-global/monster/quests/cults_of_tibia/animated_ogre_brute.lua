@@ -80,7 +80,6 @@ monster.loot = {
 	{ id = 22172, chance = 600 }, -- ogre choppa
 	{ id = 22171, chance = 800 }, -- ogre klubba
 	{ id = 3465, chance = 500 }, -- pot
-	{ id = 8906, chance = 200 }, -- heavily rusted helmet
 	{ id = 22192, chance = 300 }, -- shamanic mask
 }
 

@@ -3,7 +3,7 @@ local chayenneLever = Action()
 function chayenneLever.onUse(player, item, fromPosition, itemEx, toPosition)
 	if item.itemid == 2772 then
 		if Game.getStorageValue(Storage.ChayenneKeyTime) > os.time() then
-			player:sendTendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to wait few minutes to use again.")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to wait few minutes to use again.")
 			return true
 		end
 

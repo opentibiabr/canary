@@ -32,7 +32,7 @@ function onlineTokensEvent.onThink(interval)
 
 	local checkIp = {}
 	for _, player in pairs(players) do
-		if player:getAccountType() >= ACCOUNT_TYPE_GAMEMASTER then
+		if player:getGroup():getId() > GROUP_TYPE_SENIORTUTOR then
 			goto continue
 		end
 

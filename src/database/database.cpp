@@ -12,6 +12,7 @@
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
 #include "lib/di/container.hpp"
+#include "lib/metrics/metrics.hpp"
 
 Database::~Database() {
 	if (handle != nullptr) {
@@ -24,7 +25,7 @@ Database &Database::getInstance() {
 }
 
 bool Database::connect() {
-	return connect(&g_configManager().getString(MYSQL_HOST), &g_configManager().getString(MYSQL_USER), &g_configManager().getString(MYSQL_PASS), &g_configManager().getString(MYSQL_DB), g_configManager().getNumber(SQL_PORT), &g_configManager().getString(MYSQL_SOCK));
+	return connect(&g_configManager().getString(MYSQL_HOST, __FUNCTION__), &g_configManager().getString(MYSQL_USER, __FUNCTION__), &g_configManager().getString(MYSQL_PASS, __FUNCTION__), &g_configManager().getString(MYSQL_DB, __FUNCTION__), g_configManager().getNumber(SQL_PORT, __FUNCTION__), &g_configManager().getString(MYSQL_SOCK, __FUNCTION__));
 }
 
 bool Database::connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock) {
@@ -60,7 +61,10 @@ bool Database::beginTransaction() {
 	if (!executeQuery("BEGIN")) {
 		return false;
 	}
+	metrics::lock_latency measureLock("database");
 	databaseLock.lock();
+	measureLock.stop();
+
 	return true;
 }
 
@@ -121,11 +125,14 @@ bool Database::executeQuery(const std::string_view &query) {
 
 	g_logger().trace("Executing Query: {}", query);
 
+	metrics::lock_latency measureLock("database");
 	std::scoped_lock lock { databaseLock };
+	measureLock.stop();
 
+	metrics::query_latency measure(query.substr(0, 50));
 	bool success = retryQuery(query, 10);
-
 	mysql_free_result(mysql_store_result(handle));
+
 	return success;
 }
 
@@ -136,8 +143,11 @@ DBResult_ptr Database::storeQuery(const std::string_view &query) {
 	}
 	g_logger().trace("Storing Query: {}", query);
 
+	metrics::lock_latency measureLock("database");
 	std::scoped_lock lock { databaseLock };
+	measureLock.stop();
 
+	metrics::query_latency measure(query.substr(0, 50));
 retry:
 	if (mysql_query(handle, query.data()) != 0) {
 		g_logger().error("Query: {}", query);

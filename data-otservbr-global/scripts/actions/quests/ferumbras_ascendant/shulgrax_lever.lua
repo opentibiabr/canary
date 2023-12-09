@@ -17,7 +17,6 @@ local config = {
 		to = Position(33496, 32798, 13),
 	},
 	exit = Position(33319, 32318, 13),
-	storage = Storage.FerumbrasAscension.ShulgraxTimer,
 }
 
 local lever = BossLever(config)

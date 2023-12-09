@@ -33,7 +33,7 @@ function playerLogin.onLogin(player)
 				backpack:addItem(items[i][1], items[i][2])
 			end
 		end
-		player:addItem(2920, 1, true, 1, CONST_SLOT_AMMO)
+
 		db.query("UPDATE `players` SET `istutorial` = 0 where `id`=" .. player:getGuid())
 		-- Open channels
 		if table.contains({ TOWNS_LIST.DAWNPORT, TOWNS_LIST.DAWNPORT_TUTORIAL }, player:getTown():getId()) then
@@ -208,13 +208,13 @@ function playerLogin.onLogin(player)
 	player:initializeLoyaltySystem()
 
 	-- Stamina
-	nextUseStaminaTime[playerId] = 1
+	_G.NextUseStaminaTime[playerId] = 1
 
 	-- EXP Stamina
-	nextUseXpStamina[playerId] = 1
+	_G.NextUseXpStamina[playerId] = 1
 
 	-- Concoction Duration
-	nextUseConcoctionTime[playerId] = 1
+	_G.NextUseConcoctionTime[playerId] = 1
 
 	if player:getAccountType() == ACCOUNT_TYPE_TUTOR then
 		local msg = [[:: Tutor Rules
@@ -275,10 +275,10 @@ function playerLogin.onLogin(player)
 
 	player:getFinalLowLevelBonus()
 
-	if onExerciseTraining[player:getId()] then
+	if _G.OnExerciseTraining[player:getId()] then
 		-- onLogin & onLogout
-		stopEvent(onExerciseTraining[player:getId()].event)
-		onExerciseTraining[player:getId()] = nil
+		stopEvent(_G.OnExerciseTraining[player:getId()].event)
+		_G.OnExerciseTraining[player:getId()] = nil
 		player:setTraining(false)
 	end
 	return true

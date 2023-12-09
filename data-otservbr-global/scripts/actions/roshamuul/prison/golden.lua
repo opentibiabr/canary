@@ -1,26 +1,28 @@
 local setting = {
 	timeToFightAgain = 10,
-	clearRoomTime = 60, -- In hour
-	centerRoom = { x = 33528, y = 32334, z = 12 },
+	ignorePlayersCount = true,
+	clearRoomTime = 60, -- In minutes
+	leverPosition = Position(33606, 32362, 11),
+	centerRoom = Position(33528, 32334, 12),
 	range = 10,
 	storage = Storage.PrinceDrazzakTime,
 	clearRoomStorage = GlobalStorage.PrinceDrazzakEventTime,
-	bossName = "prince drazzak",
-	bossPosition = { x = 33528, y = 32333, z = 12 },
+	bossName = "Prince Drazzak",
+	bossPosition = Position(33528, 32333, 12),
 }
 
 local playerPositions = {
-	{ fromPos = { x = 33607, y = 32362, z = 11 }, toPos = { x = 33526, y = 32341, z = 12 } },
-	{ fromPos = { x = 33608, y = 32362, z = 11 }, toPos = { x = 33527, y = 32341, z = 12 } },
-	{ fromPos = { x = 33609, y = 32362, z = 11 }, toPos = { x = 33528, y = 32341, z = 12 } },
-	{ fromPos = { x = 33610, y = 32362, z = 11 }, toPos = { x = 33529, y = 32341, z = 12 } },
-	{ fromPos = { x = 33611, y = 32362, z = 11 }, toPos = { x = 33530, y = 32341, z = 12 } },
+	{ fromPos = Position(33607, 32362, 11), toPos = Position(33526, 32341, 12) },
+	{ fromPos = Position(33608, 32362, 11), toPos = Position(33527, 32341, 12) },
+	{ fromPos = Position(33609, 32362, 11), toPos = Position(33528, 32341, 12) },
+	{ fromPos = Position(33610, 32362, 11), toPos = Position(33529, 32341, 12) },
+	{ fromPos = Position(33611, 32362, 11), toPos = Position(33530, 32341, 12) },
 }
 
 local golden = Action()
 
-function golden.onUse(player, item, fromPosition, target, toPosition, monster, isHotkey)
-	if toPosition == Position(33606, 32362, 11) then
+function golden.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	if toPosition == setting.leverPosition and not setting.ignorePlayersCount then
 		for i = 1, #playerPositions do
 			local creature = Tile(playerPositions[i].fromPos):getTopCreature()
 			if not creature then
@@ -30,10 +32,14 @@ function golden.onUse(player, item, fromPosition, target, toPosition, monster, i
 		end
 	end
 
-	if toPosition == Position(33606, 32362, 11) then
-		if roomIsOccupied(setting.centerRoom, setting.range, setting.range) or Game.getStorageValue(setting.clearRoomStorage) == 1 then
+	if toPosition == setting.leverPosition then
+		if roomIsOccupied(setting.centerRoom, false, setting.range, setting.range) then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Someone is fighting against the boss! You need wait awhile.")
 			return true
+		end
+		if Game.getStorageValue(setting.clearRoomStorage) == 1 then
+			Game.setStorageValue(setting.clearRoomStorage, 0)
+			clearRoom(setting.centerRoom, setting.range, setting.range, setting.clearRoomStorage)
 		end
 
 		for i = 1, #playerPositions do
@@ -49,7 +55,9 @@ function golden.onUse(player, item, fromPosition, target, toPosition, monster, i
 					creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				end
 			else
-				return false
+				if not setting.ignorePlayersCount then
+					return false
+				end
 			end
 		end
 		item:remove()

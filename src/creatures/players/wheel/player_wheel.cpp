@@ -87,7 +87,7 @@ namespace {
 
 PlayerWheel::PlayerWheel(Player &initPlayer) :
 	m_player(initPlayer) {
-	auto pointsPerLevel = (uint16_t)g_configManager().getNumber(WHEEL_POINTS_PER_LEVEL);
+	auto pointsPerLevel = (uint16_t)g_configManager().getNumber(WHEEL_POINTS_PER_LEVEL, __FUNCTION__);
 	m_pointsPerLevel = pointsPerLevel > 0 ? pointsPerLevel : 1;
 }
 
@@ -2173,7 +2173,6 @@ void PlayerWheel::downgradeSpell(const std::string &name) {
 
 std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
 	std::shared_ptr<Spell> spell = nullptr;
-	damage.damageMultiplier += getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
 	WheelSpellGrade_t spellGrade = WheelSpellGrade_t::NONE;
 	if (!(damage.instantSpellName).empty()) {
 		spellGrade = getSpellUpgrade(damage.instantSpellName);

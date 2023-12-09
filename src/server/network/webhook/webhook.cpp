@@ -39,7 +39,7 @@ Webhook &Webhook::getInstance() {
 void Webhook::run() {
 	threadPool.addLoad([this] { sendWebhook(); });
 	g_dispatcher().scheduleEvent(
-		g_configManager().getNumber(DISCORD_WEBHOOK_DELAY_MS), [this] { run(); }, "Webhook::run"
+		g_configManager().getNumber(DISCORD_WEBHOOK_DELAY_MS, __FUNCTION__), [this] { run(); }, "Webhook::run"
 	);
 }
 
@@ -50,7 +50,7 @@ void Webhook::sendMessage(const std::string payload, std::string url) {
 
 void Webhook::sendMessage(const std::string title, const std::string message, int color, std::string url) {
 	if (url.empty()) {
-		url = g_configManager().getString(DISCORD_WEBHOOK_URL);
+		url = g_configManager().getString(DISCORD_WEBHOOK_URL, __FUNCTION__);
 	}
 
 	if (url.empty() || title.empty() || message.empty()) {
@@ -106,7 +106,7 @@ std::string Webhook::getPayload(const std::string title, const std::string messa
 
 	std::stringstream footer_text;
 	footer_text
-		<< g_configManager().getString(SERVER_NAME) << " | "
+		<< g_configManager().getString(SERVER_NAME, __FUNCTION__) << " | "
 		<< time_buf;
 
 	std::stringstream payload;

@@ -28,7 +28,7 @@ function inboxCommand.onSay(player, words, param)
 		player:sendCancelMessage("Creature not found.")
 	end
 
-	return false
+	return true
 end
 
 inboxCommand:separator(" ")

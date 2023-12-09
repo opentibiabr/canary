@@ -15,7 +15,7 @@ monster.outfit = {
 
 monster.raceId = 2339
 monster.Bestiary = {
-	class = "Hybrids",
+	class = "Humanoid",
 	race = BESTY_RACE_HUMANOID,
 	toKill = 2500,
 	FirstUnlock = 100,

@@ -35,14 +35,14 @@ function caveSpiderRoom.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if roomIsOccupied(room.centerPos, room.rangeX, room.rangeY) then
+	if roomIsOccupied(room.centerPos, false, room.rangeX, room.rangeY) then
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:teleportTo(room.exitPos)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		return true
 	end
 
-	clearRoom(room.centerPos, room.rangeX, room.rangeY, fromPosition)
+	clearRoom(room.centerPos, room.rangeX, room.rangeY)
 	local monster = Game.createMonster(room.bossName, room.bossPos, true, true)
 	for i = 1, 3 do
 		Game.createMonster("Tarantula", room.tarantulasPos[i], true, true)
@@ -54,7 +54,7 @@ function caveSpiderRoom.onStepIn(creature, item, position, fromPosition)
 	position:sendMagicEffect(CONST_ME_TELEPORT)
 	player:teleportTo(room.newPos)
 	player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-	addEvent(clearBossRoom, 60 * room.time * 1000, player.uid, room.centerPos, room.rangeX, room.rangeY, room.exitPos)
+	addEvent(clearBossRoom, 60 * room.time * 1000, player.uid, room.centerPos, false, room.rangeX, room.rangeY, room.exitPos)
 	player:setStorageValue(room.access, 10)
 	return true
 end

@@ -90,7 +90,7 @@ public:
 	void addBytes(const char* bytes, size_t size);
 	void addPaddingBytes(size_t n);
 
-	void addString(const std::string &value);
+	void addString(const std::string &value, const std::string &function);
 
 	void addDouble(double value, uint8_t precision = 2);
 

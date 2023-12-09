@@ -230,10 +230,10 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 	end
 
 	-- Delay potion
-	if not playerDelayPotion[player:getId()] then
-		playerDelayPotion[player:getId()] = 0
+	if not _G.PlayerDelayPotion[player:getId()] then
+		_G.PlayerDelayPotion[player:getId()] = 0
 	end
-	if playerDelayPotion[player:getId()] > systemTime() then
+	if _G.PlayerDelayPotion[player:getId()] > systemTime() then
 		player:sendTextMessage(MESSAGE_FAILURE, Game.getReturnMessage(RETURNVALUE_YOUAREEXHAUSTED))
 		return true
 	end
@@ -284,7 +284,7 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 
 	player:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ITEM_USE_POTION, player:isInGhostMode() and nil or player)
 	-- Delay potion
-	playerDelayPotion[player:getId()] = systemTime() + 500
+	_G.PlayerDelayPotion[player:getId()] = systemTime() + 500
 
 	if potion.func then
 		potion.func(player)

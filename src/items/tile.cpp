@@ -382,7 +382,7 @@ void Tile::onAddTileItem(std::shared_ptr<Item> item) {
 		spectator->onAddTileItem(static_self_cast<Tile>(), cylinderMapPos);
 	}
 
-	if ((!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES))
+	if ((!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES, __FUNCTION__))
 		&& item->isCleanable()) {
 		if (!this->getHouse()) {
 			g_game().addTileToClean(static_self_cast<Tile>());
@@ -499,7 +499,7 @@ void Tile::onRemoveTileItem(const CreatureVector &spectators, const std::vector<
 		spectator->onRemoveTileItem(static_self_cast<Tile>(), cylinderMapPos, iType, item);
 	}
 
-	if (!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES)) {
+	if (!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES, __FUNCTION__)) {
 		auto items = getItemList();
 		if (!items || items->empty()) {
 			g_game().removeTileToClean(static_self_cast<Tile>());

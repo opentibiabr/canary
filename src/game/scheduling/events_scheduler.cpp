@@ -15,7 +15,7 @@
 
 bool EventsScheduler::loadScheduleEventFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/events.xml";
+	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/events.xml";
 	if (!doc.load_file(folder.c_str())) {
 		printXMLError(__FUNCTION__, folder, doc.load_file(folder.c_str()));
 		consoleHandlerExit();

@@ -4,7 +4,6 @@ local config = {
 		position = Position(32687, 32715, 10),
 	},
 	requiredLevel = 250,
-
 	playerPositions = {
 		{ pos = Position(32747, 32749, 10), teleport = Position(32686, 32721, 10), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32748, 32749, 10), teleport = Position(32686, 32721, 10), effect = CONST_ME_TELEPORT },
@@ -17,7 +16,6 @@ local config = {
 		to = Position(32695, 32726, 10),
 	},
 	exit = Position(32660, 32734, 12),
-	storage = Storage.Quest.U11_80.TheSecretLibrary.GorzindelTimer,
 }
 
 local lever = BossLever(config)

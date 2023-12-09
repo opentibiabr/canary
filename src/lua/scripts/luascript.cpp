@@ -11,6 +11,7 @@
 
 #include "lua/scripts/luascript.hpp"
 #include "lua/scripts/lua_environment.hpp"
+#include "lib/metrics/metrics.hpp"
 
 ScriptEnvironment::DBResultMap ScriptEnvironment::tempResults;
 uint32_t ScriptEnvironment::lastResultId = 0;
@@ -169,19 +170,29 @@ std::string LuaScriptInterface::getStackTrace(const std::string &error_desc) {
 	lua_getglobal(luaState, "debug");
 	if (!isTable(luaState, -1)) {
 		lua_pop(luaState, 1);
+		g_logger().error("Lua debug table not found.");
 		return error_desc;
 	}
 
 	lua_getfield(luaState, -1, "traceback");
 	if (!isFunction(luaState, -1)) {
 		lua_pop(luaState, 2);
+		g_logger().error("Lua traceback function not found.");
 		return error_desc;
 	}
 
 	lua_replace(luaState, -2);
 	pushString(luaState, error_desc);
-	lua_call(luaState, 1, 1);
-	return popString(luaState);
+	if (lua_pcall(luaState, 1, 1, 0) != LUA_OK) {
+		std::string luaError = lua_tostring(luaState, -1);
+		lua_pop(luaState, 1);
+		g_logger().error("Error running Lua traceback: {}", luaError);
+		return "Lua traceback failed: " + luaError;
+	}
+
+	std::string stackTrace = popString(luaState);
+
+	return stackTrace;
 }
 
 bool LuaScriptInterface::pushFunction(int32_t functionId) {
@@ -226,7 +237,35 @@ bool LuaScriptInterface::closeState() {
 	return true;
 }
 
+std::string LuaScriptInterface::getMetricsScope() {
+	metrics::method_latency measure(__METHOD_NAME__);
+	int32_t scriptId;
+	int32_t callbackId;
+	bool timerEvent;
+	LuaScriptInterface* scriptInterface;
+	getScriptEnv()->getEventInfo(scriptId, scriptInterface, callbackId, timerEvent);
+
+	std::string name;
+	if (scriptId == EVENT_ID_LOADING) {
+		name = "loading";
+	} else if (scriptId == EVENT_ID_USER) {
+		name = "user";
+	} else {
+		name = scriptInterface->getFileById(scriptId);
+		if (name.empty()) {
+			return "unknown";
+		}
+		auto pos = name.find("data");
+		if (pos != std::string::npos) {
+			name = name.substr(pos);
+		}
+	}
+
+	return fmt::format("{}:{}", name, timerEvent ? "timer" : "<direct>");
+}
+
 bool LuaScriptInterface::callFunction(int params) {
+	metrics::lua_latency measure(getMetricsScope());
 	bool result = false;
 	int size = lua_gettop(luaState);
 	if (protectedCall(luaState, params, 1) != 0) {
@@ -245,6 +284,7 @@ bool LuaScriptInterface::callFunction(int params) {
 }
 
 void LuaScriptInterface::callVoidFunction(int params) {
+	metrics::lua_latency measure(getMetricsScope());
 	int size = lua_gettop(luaState);
 	if (protectedCall(luaState, params, 0) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(luaState));

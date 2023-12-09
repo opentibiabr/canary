@@ -32,7 +32,7 @@ enum class DispatcherType : uint8_t {
 
 struct DispatcherContext {
 	bool isOn() const {
-		return Task::TIME_NOW != SYSTEM_TIME_ZERO;
+		return OTSYS_TIME() != 0;
 	}
 
 	bool isGroup(const TaskGroup _group) const {
@@ -134,11 +134,6 @@ public:
 private:
 	thread_local static DispatcherContext dispacherContext;
 
-	// Update Time Cache
-	static void updateClock() {
-		Task::TIME_NOW = std::chrono::system_clock::now();
-	}
-
 	const auto &getThreadTask() const {
 		return threads[ThreadPool::getThreadId()];
 	}
@@ -159,7 +154,7 @@ private:
 
 	inline void executeSerialEvents(std::vector<Task> &tasks);
 	inline void executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId);
-	inline std::chrono::nanoseconds timeUntilNextScheduledTask() const;
+	inline std::chrono::milliseconds timeUntilNextScheduledTask() const;
 
 	inline void checkPendingTasks() {
 		hasPendingTasks = false;

@@ -1,7 +1,7 @@
 local buyHouse = TalkAction("!buyhouse")
 
 function buyHouse.onSay(player, words, param)
-	local housePrice = configManager.getNumber(configKeys.HOUSE_PRICE)
+	local housePrice = configManager.getNumber(configKeys.HOUSE_PRICE_PER_SQM)
 	if housePrice == -1 then
 		return true
 	end
@@ -42,7 +42,7 @@ function buyHouse.onSay(player, words, param)
 
 	if house:hasItemOnTile() then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You cannot buy this house, as there are items inside it. Please, contact an administrator.")
-		return false
+		return true
 	end
 
 	local price = house:getPrice()

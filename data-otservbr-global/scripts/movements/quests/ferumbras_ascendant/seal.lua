@@ -98,7 +98,8 @@ function seal.onStepIn(creature, item, position, fromPosition)
 		player:teleportTo(setting.toPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	elseif item.actionid == 24846 then
-		player:say("You cannot enter, you must wait fourteen days after preventing the ascension of Ferumbras.", TALKTYPE_MONSTER_SAY)
+		local days = AscendingFerumbrasConfig.days
+		player:say("You cannot enter, you must wait " .. days .. " days after preventing the ascension of Ferumbras.", TALKTYPE_MONSTER_SAY)
 	else
 		player:teleportTo(setting.backPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

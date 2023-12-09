@@ -12,11 +12,23 @@ function Container:addLoot(loot)
 			logger.warn("Container:addLoot: invalid item type: {}", itemId)
 			goto continue
 		end
-		if iType:isStackable() or iType:getCharges() ~= 0 then
+		if iType:isStackable() then
+			local stackSize = iType:getStackSize()
+			local remainingCount = item.count
+
+			while remainingCount > 0 do
+				local countToAdd = math.min(remainingCount, stackSize)
+				local tmpItem = self:addItem(itemId, countToAdd, INDEX_WHEREEVER, FLAG_NOLIMIT)
+				if not tmpItem then
+					logger.warn("Container:addLoot: failed to add stackable item: {}, to corpse {} with id {}", ItemType(itemId):getName(), self:getName(), self:getId())
+					goto continue
+				end
+				remainingCount = remainingCount - countToAdd
+			end
+		elseif iType:getCharges() ~= 0 then
 			local tmpItem = self:addItem(itemId, item.count, INDEX_WHEREEVER, FLAG_NOLIMIT)
 			if not tmpItem then
-				logger.warn("Container:addLoot: failed to add item: {}, to corpse {} with id {}", ItemType(itemId):getName(), self:getName(), self:getId())
-				goto continue
+				logger.warn("Container:addLoot: failed to add charge item: {}, to corpse {} with id {}", ItemType(itemId):getName(), self:getName(), self:getId())
 			end
 		else
 			for i = 1, item.count do

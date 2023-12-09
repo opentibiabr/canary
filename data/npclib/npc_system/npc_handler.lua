@@ -221,7 +221,7 @@ if NpcHandler == nil then
 	function NpcHandler:removeInteraction(npc, player)
 		local playerId = player:getId()
 		if Player(player) == nil then
-			return logger.error("[NpcHandler:removeInteraction] - Player is missing or nil")
+			return logger.error("[NpcHandler:removeInteraction] - Player parameter for npc '{}' is missing or nil", npc:getName())
 		end
 
 		if self:getEventDelayedSay(playerId) then
@@ -467,6 +467,7 @@ if NpcHandler == nil then
 
 				-- If is npc shop, send shop window and parse default message (if not have callback on the npc)
 				if npc:isMerchant() then
+					npc:closeShopWindow(player)
 					npc:openShopWindow(player)
 					self:say(msg, npc, player)
 				end

@@ -19,7 +19,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 	local factor = 1.0
 	local msgSuffix = ""
 	local participants = { player }
-	if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) then
+	if configManager.getBoolean(configKeys.PARTY_SHARE_LOOT_BOOSTS) then
 		local party = player:getParty()
 		if party and party:isSharedExperienceEnabled() then
 			participants = party:getMembers()
@@ -29,7 +29,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 
 	local wealthDuplex = Concoction.find(Concoction.Ids.WealthDuplex)
 	if not wealthDuplex then
-		logger.warn("[Monster:onDropLoot] - Could not find WealthDuplex concoction.")
+		logger.debug("[Monster:onDropLoot] - Could not find WealthDuplex concoction.")
 		return
 	end
 	local chance = 0
@@ -57,7 +57,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 		return
 	end
 
-	if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) and rolls > 1 then
+	if configManager.getBoolean(configKeys.PARTY_SHARE_LOOT_BOOSTS) and rolls > 1 then
 		msgSuffix = msgSuffix .. " (active wealth duplex, " .. rolls .. " extra rolls)"
 	else
 		msgSuffix = msgSuffix .. " (active wealth duplex)"

@@ -26,7 +26,7 @@ bool Raids::loadFromXml() {
 	}
 
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(DATA_DIRECTORY) + "/raids/raids.xml";
+	auto folder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/raids/raids.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
@@ -82,7 +82,7 @@ bool Raids::loadFromXml() {
 		}
 
 		auto newRaid = std::make_shared<Raid>(name, interval, margin, repeat);
-		if (newRaid->loadFromXml(g_configManager().getString(DATA_DIRECTORY) + "/raids/" + file)) {
+		if (newRaid->loadFromXml(g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/raids/" + file)) {
 			raidList.push_back(newRaid);
 		} else {
 			g_logger().error("{} - Failed to load raid: {}", __FUNCTION__, name);
@@ -566,7 +566,7 @@ bool ScriptEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 
 	std::string scriptName = std::string(scriptAttribute.as_string());
 
-	if (!loadScript(g_configManager().getString(DATA_DIRECTORY) + "/raids/scripts/" + scriptName, scriptName)) {
+	if (!loadScript(g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/raids/scripts/" + scriptName, scriptName)) {
 		g_logger().error("[{}] can not load raid script: {}", __FUNCTION__, scriptName);
 		return false;
 	}

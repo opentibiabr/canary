@@ -32,6 +32,10 @@ monster.strategiesTarget = {
 	nearest = 100,
 }
 
+monster.events = {
+	"LionCommanderDeath",
+}
+
 monster.flags = {
 	summonable = false,
 	attackable = true,

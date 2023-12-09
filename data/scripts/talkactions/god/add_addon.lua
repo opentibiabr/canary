@@ -20,24 +20,24 @@ function addons.onSay(player, words, param)
 
 	if not target then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player " .. name .. " is currently not online.")
-		return false
+		return true
 	end
 
 	local looktype = tonumber(split[2])
 	if not looktype then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Invalid looktype.")
-		return false
+		return true
 	end
 
 	local addons = tonumber(split[3])
 	if not addons or addons < 0 or addons > 3 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Invalid addon.")
-		return false
+		return true
 	end
 
 	target:addOutfitAddon(looktype, addons)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Addon for looktype  " .. looktype .. "a for " .. target:getName() .. " set to " .. addons .. ".")
-	return false
+	return true
 end
 
 addons:separator(" ")

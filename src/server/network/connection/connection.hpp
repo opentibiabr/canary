@@ -61,9 +61,10 @@ public:
 	void close(bool force = false);
 	// Used by protocols that require server to send first
 	void accept(Protocol_ptr protocolPtr);
-	void accept(bool toggleParseHeader = true);
+	void acceptInternal(bool toggleParseHeader = true);
 
 	void resumeWork();
+
 	void send(const OutputMessage_ptr &outputMessage);
 
 	uint32_t getIP();

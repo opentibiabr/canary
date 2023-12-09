@@ -40,17 +40,17 @@ Position NetworkMessage::getPosition() {
 	return pos;
 }
 
-void NetworkMessage::addString(const std::string &value) {
+void NetworkMessage::addString(const std::string &value, const std::string &function) {
 	size_t stringLen = value.length();
 	if (value.empty()) {
-		g_logger().debug("[NetworkMessage::addString] - Value string is empty");
+		g_logger().debug("[NetworkMessage::addString] - Value string is empty, function '{}'", function);
 	}
 	if (!canAdd(stringLen + 2)) {
-		g_logger().error("[NetworkMessage::addString] - NetworkMessage size is wrong: {}", stringLen);
+		g_logger().error("[NetworkMessage::addString] - NetworkMessage size is wrong: {}, function '{}'", stringLen, function);
 		return;
 	}
 	if (stringLen > NETWORKMESSAGE_MAXSIZE) {
-		g_logger().error("[NetworkMessage::addString] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, stringLen);
+		g_logger().error("[NetworkMessage::addString] - Exceded NetworkMessage max size: {}, actually size: {}, function '{}'", NETWORKMESSAGE_MAXSIZE, stringLen, function);
 		return;
 	}
 

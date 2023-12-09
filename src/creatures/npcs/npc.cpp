@@ -16,6 +16,7 @@
 #include "lua/callbacks/creaturecallback.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "map/spectators.hpp"
+#include "lib/metrics/metrics.hpp"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -279,6 +280,7 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 	if (getCurrency() == ITEM_GOLD_COIN && (player->getMoney() + player->getBankBalance()) < totalCost) {
 		g_logger().error("[Npc::onPlayerBuyItem (getMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
 		g_logger().debug("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
+		g_metrics().addCounter("balance_decrease", totalCost, { { "player", player->getName() }, { "context", "npc_purchase" } });
 		return;
 	} else if (getCurrency() != ITEM_GOLD_COIN && (player->getItemTypeCount(getCurrency()) < totalCost || ((player->getMoney() + player->getBankBalance()) < bagsCost))) {
 		g_logger().error("[Npc::onPlayerBuyItem (getItemTypeCount)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
@@ -416,6 +418,7 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 		} else {
 			g_game().addMoney(player, totalCost);
 		}
+		g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
 	} else {
 		std::shared_ptr<Item> newItem = Item::CreateItem(getCurrency(), totalCost);
 		if (newItem) {

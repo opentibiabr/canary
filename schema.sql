@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '41'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '43'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -331,7 +331,6 @@ CREATE TABLE IF NOT EXISTS `guildwar_kills` (
     `time` bigint(15) NOT NULL,
     INDEX `warid` (`warid`),
     CONSTRAINT `guildwar_kills_pk` PRIMARY KEY (`id`),
-    CONSTRAINT `guildwar_kills_unique` UNIQUE (`warid`),
     CONSTRAINT `guildwar_kills_warid_fk`
         FOREIGN KEY (`warid`) REFERENCES `guild_wars` (`id`)
         ON DELETE CASCADE

@@ -18,7 +18,7 @@ jobs:
           access_token: ${{ github.token }}
 
   build:
-    runs-on: linux
+    runs-on: [linux, x64]
     steps:
       - name: Set up Git
         if: ${{ github.ref != 'refs/heads/main' }}

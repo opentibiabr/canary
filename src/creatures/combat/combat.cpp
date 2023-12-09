@@ -14,11 +14,13 @@
 #include "lua/creature/events.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "io/iobestiary.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "items/weapons/weapons.hpp"
 #include "map/spectators.hpp"
+#include "lib/metrics/metrics.hpp"
 
 int32_t Combat::getLevelFormula(std::shared_ptr<Player> player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
@@ -584,7 +586,7 @@ void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<
 		}
 
 		damage.damageMultiplier += attackerPlayer->wheel()->getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
-		g_logger().debug("Wheel Divine Empowerment damage multiplier {}", damage.damageMultiplier);
+		g_logger().trace("Wheel Divine Empowerment damage multiplier {}", damage.damageMultiplier);
 	}
 
 	if (g_game().combatBlockHit(damage, caster, target, params.blockedByShield, params.blockedByArmor, params.itemId != 0)) {
@@ -919,6 +921,7 @@ void Combat::doChainEffect(const Position &origin, const Position &dest, uint8_t
 }
 
 bool Combat::doCombatChain(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, bool aggressive) const {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (!params.chainCallback) {
 		return false;
 	}
@@ -1309,6 +1312,7 @@ void Combat::setRuneSpellName(const std::string &value) {
 }
 
 std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets(std::shared_ptr<Creature> caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive, std::shared_ptr<Creature> initialTarget /* = nullptr */) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (!caster) {
 		return {};
 	}
@@ -2016,6 +2020,7 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 }
 
 void Combat::applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, CombatDamage &damage, const CombatParams &params) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (damage.extension || !caster || damage.primary.type == COMBAT_HEALING) {
 		return;
 	}

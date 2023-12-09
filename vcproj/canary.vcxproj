@@ -108,6 +108,7 @@
     <ClInclude Include="..\src\lib\di\soft_singleton.hpp" />
     <ClInclude Include="..\src\lib\logging\logger.hpp" />
     <ClInclude Include="..\src\lib\logging\log_with_spd_log.hpp" />
+    <ClInclude Include="..\src\lib\metrics\metrics.hpp" />
     <ClInclude Include="..\src\lib\thread\thread_pool.hpp" />
     <ClInclude Include="..\src\lib\messaging\command.hpp" />
     <ClInclude Include="..\src\lib\messaging\event.hpp" />
@@ -128,6 +129,7 @@
     <ClInclude Include="..\src\lua\functions\core\game\global_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\bank_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\zone_functions.hpp" />
+    <ClInclude Include="..\src\lua\functions\core\game\zone_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\lua_enums.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\modal_window_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\bit_functions.hpp" />
@@ -136,6 +138,7 @@
     <ClInclude Include="..\src\lua\functions\core\libs\db_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\result_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\logger_functions.hpp" />
+    <ClInclude Include="..\src\lua\functions\core\libs\metrics_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\network\core_network_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\network\network_message_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\network\webhook_functions.hpp" />
@@ -303,6 +306,7 @@
     <ClCompile Include="..\src\kv\kv.cpp" />
     <ClCompile Include="..\src\lib\di\soft_singleton.cpp" />
     <ClCompile Include="..\src\lib\logging\log_with_spd_log.cpp" />
+    <ClCompile Include="..\src\lib\metrics\metrics.cpp" />
     <ClCompile Include="..\src\lib\thread\thread_pool.cpp" />
     <ClCompile Include="..\src\lua\callbacks\creaturecallback.cpp" />
     <ClCompile Include="..\src\lua\callbacks\event_callback.cpp" />
@@ -325,6 +329,7 @@
     <ClCompile Include="..\src\lua\functions\core\libs\db_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\result_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\logger_functions.cpp" />
+    <ClCompile Include="..\src\lua\functions\core\libs\metrics_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\network\network_message_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\network\webhook_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\creatures\combat\combat_functions.cpp" />
@@ -502,6 +507,8 @@
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <IncludeInUnityFile>true</IncludeInUnityFile>
       <OpenMPSupport>true</OpenMPSupport>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -534,6 +541,7 @@
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <IncludeInUnityFile>true</IncludeInUnityFile>
       <OpenMPSupport>true</OpenMPSupport>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

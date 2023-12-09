@@ -13,6 +13,7 @@
 #include "config/configmanager.hpp"
 #include "utils/definitions.hpp"
 #include "security/argon.hpp"
+#include "utils/tools.hpp"
 
 namespace account {
 	class Account {
@@ -106,7 +107,7 @@ namespace account {
 		void addPremiumDays(const int32_t &days);
 		void setPremiumDays(const int32_t &days);
 		[[nodiscard]] inline uint32_t getPremiumRemainingDays() const {
-			return m_account.premiumRemainingDays;
+			return m_account.premiumLastDay > getTimeNow() ? static_cast<uint32_t>((m_account.premiumLastDay - getTimeNow()) / 86400) : 0;
 		}
 
 		[[nodiscard]] inline uint32_t getPremiumDaysPurchased() const {

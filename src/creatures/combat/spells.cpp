@@ -143,7 +143,7 @@ std::list<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId) {
 
 		if (vocSpellsIt != vocSpells.end()
 			&& vocSpellsIt->second) {
-			spellsList.push_back(it.second->getId());
+			spellsList.push_back(it.second->getSpellId());
 		}
 	}
 
@@ -162,7 +162,7 @@ std::shared_ptr<RuneSpell> Spells::getRuneSpell(uint16_t id) {
 	auto it = runes.find(id);
 	if (it == runes.end()) {
 		for (auto &rune : runes) {
-			if (rune.second->getId() == id) {
+			if (rune.second->getRuneItemId() == id) {
 				return rune.second;
 			}
 		}
@@ -216,7 +216,7 @@ std::shared_ptr<InstantSpell> Spells::getInstantSpell(const std::string &words) 
 
 std::shared_ptr<InstantSpell> Spells::getInstantSpellById(uint16_t spellId) {
 	for (auto &it : instants) {
-		if (it.second->getId() == spellId) {
+		if (it.second->getSpellId() == spellId) {
 			return it.second;
 		}
 	}
@@ -391,7 +391,7 @@ bool Spell::playerSpellCheck(std::shared_ptr<Player> player) const {
 		return false;
 	}
 
-	if (player->hasCondition(CONDITION_SPELLGROUPCOOLDOWN, group) || player->hasCondition(CONDITION_SPELLCOOLDOWN, spellId) || (secondaryGroup != SPELLGROUP_NONE && player->hasCondition(CONDITION_SPELLGROUPCOOLDOWN, secondaryGroup))) {
+	if (player->hasCondition(CONDITION_SPELLGROUPCOOLDOWN, group) || player->hasCondition(CONDITION_SPELLCOOLDOWN, m_spellId) || (secondaryGroup != SPELLGROUP_NONE && player->hasCondition(CONDITION_SPELLGROUPCOOLDOWN, secondaryGroup))) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 
 		if (isInstant()) {
@@ -621,7 +621,7 @@ void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 			spellCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, spellGrade);
 		}
 		if (spellCooldown > 0) {
-			std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, spellId);
+			std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, m_spellId);
 			player->addCondition(condition);
 		}
 	}

@@ -64,7 +64,7 @@ function Player.sendExtendedOpcode(self, opcode, buffer)
 	local networkMessage = NetworkMessage()
 	networkMessage:addByte(0x32)
 	networkMessage:addByte(opcode)
-	networkMessage:addString(buffer)
+	networkMessage:addString(buffer, "Player.sendExtendedOpcode - buffer")
 	networkMessage:sendToPlayer(self)
 	networkMessage:delete()
 	return true

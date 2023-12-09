@@ -367,7 +367,7 @@ function Player.sendOpenRewardWall(self, shrine)
 	msg:addByte(self:getDayStreak()) -- current reward? day = 0, day 1, ... this should be resetted to 0 every week imo
 	if DailyReward.isRewardTaken(self:getId()) then -- state (player already took reward? but just make sure noone wpe)
 		msg:addByte(1)
-		msg:addString("Sorry, you have already taken your daily reward or you are unable to collect it.") -- Unknown message
+		msg:addString("Sorry, you have already taken your daily reward or you are unable to collect it.", "Player.sendOpenRewardWall - Sorry, you have already taken your daily reward or you are unable to collect it.") -- Unknown message
 		if self:getJokerTokens() > 0 then
 			msg:addByte(1)
 			msg:addU16(self:getJokerTokens())
@@ -529,7 +529,7 @@ function Player.sendError(self, error)
 	local msg = NetworkMessage()
 	msg:addByte(ServerPackets.ShowDialog)
 	msg:addByte(0x14)
-	msg:addString(error)
+	msg:addString(error, "Player.sendError - error")
 	msg:sendToPlayer(self)
 end
 
@@ -562,7 +562,7 @@ function Player.sendRewardHistory(self)
 	for k, entry in ipairs(entries) do
 		msg:addU32(entry.timestamp)
 		msg:addByte(0) -- (self:isPremium() and 0 or 0)
-		msg:addString(entry.description)
+		msg:addString(entry.description, "Player.sendRewardHistory - entry.description")
 		msg:addU16(entry.daystreak + 1)
 	end
 	msg:sendToPlayer(self)
@@ -595,7 +595,7 @@ function Player.readDailyReward(self, msg, currentDay, state)
 				local itemName = itemType:getArticle() .. " " .. itemType:getName()
 				local itemWeight = itemType:getWeight()
 				msg:addU16(itemId)
-				msg:addString(itemName)
+				msg:addString(itemName, "Player.readDailyReward - itemName")
 				msg:addU32(itemWeight)
 			end
 		end
@@ -605,7 +605,7 @@ function Player.readDailyReward(self, msg, currentDay, state)
 			-- for i = 1, #rewards.things do
 			-- msg:addByte(DAILY_REWARD_SYSTEM_TYPE_OTHER) -- type
 			-- msg:addU16(rewards.things[i].id * 100)
-			-- msg:addString(rewards.things[i].name)
+			-- msg:addString(rewards.things[i].name, "Player.readDailyReward - rewards.things[i].name")
 			-- msg:addByte(rewards.things[i].quantity)
 			-- end
 		elseif type == DAILY_REWARD_TYPE_PREY_REROLL then
@@ -636,7 +636,7 @@ function Player.sendDailyReward(self)
 	local maxBonus = 7
 	msg:addByte(maxBonus - 1)
 	for i = 2, maxBonus do
-		msg:addString(DailyReward.strikeBonuses[i].text)
+		msg:addString(DailyReward.strikeBonuses[i].text, "Player.sendDailyReward - DailyReward.strikeBonuses[i].text")
 		msg:addByte(i)
 	end
 	msg:addByte(1) -- Unknown

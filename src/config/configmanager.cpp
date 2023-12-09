@@ -349,6 +349,12 @@ bool ConfigManager::load() {
 
 	loadBoolConfig(L, TOGGLE_RECEIVE_REWARD, "toggleReceiveReward", false);
 
+	loadBoolConfig(L, METRICS_ENABLE_PROMETHEUS, "metricsEnablePrometheus", false);
+	loadStringConfig(L, METRICS_PROMETHEUS_ADDRESS, "metricsPrometheusAddress", "localhost:9464");
+
+	loadBoolConfig(L, METRICS_ENABLE_OSTREAM, "metricsEnableOstream", false);
+	loadIntConfig(L, METRICS_OSTREAM_INTERVAL, "metricsOstreamInterval", 1000);
+
 	loaded = true;
 	lua_close(L);
 	return true;

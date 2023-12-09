@@ -572,9 +572,9 @@ function openStore(playerId)
 		GameStoreCategories, GameStoreCount = GameStore.Categories, #GameStore.Categories
 	end
 	local addCategory = function(category)
-		msg:addString(category.name)
+		msg:addString(category.name, "openStore - category.name")
 		if oldProtocol then
-			msg:addString(category.description)
+			msg:addString(category.description, "openStore - category.description")
 		end
 
 		msg:addByte(category.state or GameStore.States.STATE_NONE)
@@ -582,13 +582,13 @@ function openStore(playerId)
 		msg:addByte(size)
 		for _, icon in ipairs(category.icons) do
 			if size > 0 then
-				msg:addString(icon)
+				msg:addString(icon, "openStore - icon")
 				size = size - 1
 			end
 		end
 
 		if category.parent then
-			msg:addString(category.parent)
+			msg:addString(category.parent, "openStore - category.parent")
 		else
 			msg:addU16(0)
 		end
@@ -608,7 +608,7 @@ function sendOfferDescription(player, offerId, description)
 	local msg = NetworkMessage()
 	msg:addByte(0xEA)
 	msg:addU32(offerId)
-	msg:addString(description)
+	msg:addString(description, "sendOfferDescription - description")
 	msg:sendToPlayer(player)
 end
 
@@ -777,7 +777,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 	local msg = NetworkMessage()
 	local haveSaleOffer = 0
 	msg:addByte(GameStore.SendingPackets.S_StoreOffers)
-	msg:addString(category.name)
+	msg:addString(category.name, "sendShowStoreOffers - category.name")
 
 	local categoryLimit = 65535
 	if oldProtocol then
@@ -844,7 +844,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 
 	msg:addU16(#disableReasons)
 	for _, reason in ipairs(disableReasons) do
-		msg:addString(reason)
+		msg:addString(reason, "sendShowStoreOffers - reason")
 	end
 
 	if count > categoryLimit then
@@ -855,7 +855,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 	for name, offer in pairs(offers) do
 		if count > 0 then
 			count = count - 1
-			msg:addString(name)
+			msg:addString(name, "sendShowStoreOffers - name")
 			msg:addByte(#offer.offers)
 			sendOfferDescription(player, offer.id and offer.id or 0xFFFF, offer.description)
 			for _, off in ipairs(offer.offers) do
@@ -900,7 +900,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 
 			msg:addByte(type)
 			if type == GameStore.ConverType.SHOW_NONE then
-				msg:addString(offer.icons[1])
+				msg:addString(offer.icons[1], "sendShowStoreOffers - offer.icons[1]")
 			elseif type == GameStore.ConverType.SHOW_MOUNT then
 				local mount = Mount(offer.id)
 				msg:addU16(mount:getClientId())
@@ -966,7 +966,7 @@ function sendShowStoreOffersOnOldProtocol(playerId, category)
 	local msg = NetworkMessage()
 	local haveSaleOffer = 0
 	msg:addByte(GameStore.SendingPackets.S_StoreOffers)
-	msg:addString(category.name)
+	msg:addString(category.name, "sendShowStoreOffersOnOldProtocol - category.name")
 
 	if not category.offers then
 		msg:addU16(0)
@@ -1012,8 +1012,8 @@ function sendShowStoreOffersOnOldProtocol(playerId, category)
 			local disabled, disabledReason = player:canBuyOffer(offer).disabled, player:canBuyOffer(offer).disabledReason
 			local offerPrice = offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST and GameStore.ExpBoostValues[player:getStorageValue(GameStore.Storages.expBoostCount)] or (newPrice or offer.price or 0xFFFF)
 			msg:addU32(offer.id and offer.id or 0xFFFF)
-			msg:addString(name)
-			msg:addString(offer.description or GameStore.getDefaultDescription(offer.type, offer.count))
+			msg:addString(name, "sendShowStoreOffersOnOldProtocol - name")
+			msg:addString(offer.description or GameStore.getDefaultDescription(offer.type, offer.count), "sendShowStoreOffersOnOldProtocol - offer.description or GameStore.getDefaultDescription(offer.type, offer.count)")
 			msg:addU32(offerPrice)
 			if offer.state then
 				if offer.state == GameStore.States.STATE_SALE then
@@ -1035,20 +1035,20 @@ function sendShowStoreOffersOnOldProtocol(playerId, category)
 
 			msg:addByte(disabled)
 			if disabled == 1 then
-				msg:addString(disabledReason)
+				msg:addString(disabledReason, "sendShowStoreOffersOnOldProtocol - disabledReason")
 			end
 
 			if offer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT then
 				msg:addByte(1)
-				msg:addString((offer.name):gsub("% ", "_") .. ".png")
+				msg:addString((offer.name):gsub("% ", "_") .. ".png", "sendShowStoreOffersOnOldProtocol - (offer.name).png")
 			elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT then
 				msg:addByte(2)
-				msg:addString(offer.icons[1])
-				msg:addString(offer.icons[2])
+				msg:addString(offer.icons[1], "sendShowStoreOffersOnOldProtocol - offer.icons[1]")
+				msg:addString(offer.icons[2], "sendShowStoreOffersOnOldProtocol - offer.icons[2]")
 			else
 				msg:addByte(#offer.icons)
 				for k, icon in ipairs(offer.icons) do
-					msg:addString(icon)
+					msg:addString(icon, "sendShowStoreOffersOnOldProtocol - icon")
 				end
 			end
 
@@ -1089,7 +1089,7 @@ function sendStoreTransactionHistory(playerId, page, entriesPerPage)
 		if not oldProtocol then
 			msg:addByte(0x0) -- 0 = transferable tibia coin, 1 = normal tibia coin
 		end
-		msg:addString(entry.description)
+		msg:addString(entry.description, "sendStoreTransactionHistory - entry.description")
 		if not oldProtocol then
 			msg:addByte(0) -- details
 		end
@@ -1107,7 +1107,7 @@ function sendStorePurchaseSuccessful(playerId, message)
 	local msg = NetworkMessage()
 	msg:addByte(GameStore.SendingPackets.S_CompletePurchase)
 	msg:addByte(0x00)
-	msg:addString(message)
+	msg:addString(message, "sendStorePurchaseSuccessful - message")
 	if oldProtocol then
 		-- Send all coins can be used for buy store offers
 		local totalCoins = player:getTibiaCoins() + player:getTransferableCoins()
@@ -1129,7 +1129,7 @@ function sendStoreError(playerId, errorType, message)
 	msg:addByte(GameStore.SendingPackets.S_StoreError)
 
 	msg:addByte(errorType)
-	msg:addString(message)
+	msg:addString(message, "sendStoreError - message")
 
 	msg:sendToPlayer(player)
 end
@@ -2080,7 +2080,7 @@ function sendHomePage(playerId)
 	local msg = NetworkMessage()
 	msg:addByte(GameStore.SendingPackets.S_StoreOffers)
 
-	msg:addString("Home")
+	msg:addString("Home", "sendHomePage - Home")
 	msg:addU32(0x0) -- Redirect ID (not used here)
 	msg:addByte(0x0) -- Window Type
 	msg:addByte(0x0) -- Collections Size
@@ -2106,13 +2106,13 @@ function sendHomePage(playerId)
 
 	msg:addU16(#disableReasons)
 	for _, reason in ipairs(disableReasons) do
-		msg:addString(reason)
+		msg:addString(reason, "sendHomePage - reason")
 	end
 
 	msg:addU16(#homeOffers) -- offers
 
 	for p, offer in pairs(homeOffers) do
-		msg:addString(offer.name)
+		msg:addString(offer.name, "sendHomePage - offer.name")
 		msg:addByte(0x1) -- ?
 		msg:addU32(offer.id or 0) -- id
 		msg:addU16(0x1)
@@ -2132,7 +2132,7 @@ function sendHomePage(playerId)
 
 		msg:addByte(type)
 		if type == GameStore.ConverType.SHOW_NONE then
-			msg:addString(offer.icons[1])
+			msg:addString(offer.icons[1], "sendHomePage - offer.icons[1]")
 		elseif type == GameStore.ConverType.SHOW_MOUNT then
 			local mount = Mount(offer.id)
 			if mount then
@@ -2163,7 +2163,7 @@ function sendHomePage(playerId)
 	local banner = HomeBanners
 	msg:addByte(#banner.images)
 	for m, image in ipairs(banner.images) do
-		msg:addString(image)
+		msg:addString(image, "sendHomePage - image")
 		msg:addByte(0x04) -- Banner Type (offer)
 		msg:addU32(0x00) -- Offer Id
 		msg:addByte(0)

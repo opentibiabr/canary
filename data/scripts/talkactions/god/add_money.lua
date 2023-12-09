@@ -20,7 +20,7 @@ function addMoney.onSay(player, words, param)
 	local normalizedName = Game.getNormalizedPlayerName(name)
 	if not normalizedName then
 		player:sendCancelMessage("A player with name " .. name .. " does not exist.")
-		return false
+		return true
 	end
 	name = normalizedName
 
@@ -32,14 +32,14 @@ function addMoney.onSay(player, words, param)
 	-- Check if the coins is valid
 	if amount <= 0 or amount == nil then
 		player:sendCancelMessage("Invalid amount.")
-		return false
+		return true
 	end
 
 	if not Bank.credit(name, amount) then
 		player:sendCancelMessage("Failed to add money to " .. name .. ".")
 		-- Distro log
 		logger.error("[addMoney.onSay] - Failed to add money to player")
-		return false
+		return true
 	end
 
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull added " .. amount .. " gold coins to " .. name .. ".")

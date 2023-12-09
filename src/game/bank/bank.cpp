@@ -14,6 +14,7 @@
 #include "creatures/players/player.hpp"
 #include "io/iologindata.hpp"
 #include "game/scheduling/save_manager.hpp"
+#include "lib/metrics/metrics.hpp"
 
 Bank::Bank(const std::shared_ptr<Bankable> bankable) :
 	m_bankable(bankable) {
@@ -110,7 +111,12 @@ bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) 
 		}
 	}
 
-	return debit(amount) && destination->credit(amount);
+	if (!(debit(amount) && destination->credit(amount))) {
+		return false;
+	}
+	g_metrics().addCounter("balance_increase", amount, { { "player", destination->getBankable()->getPlayer()->getName() }, { "context", "bank_transfer" } });
+	g_metrics().addCounter("balance_decrease", amount, { { "player", getBankable()->getPlayer()->getName() }, { "context", "bank_transfer" } });
+	return true;
 }
 
 bool Bank::withdraw(std::shared_ptr<Player> player, uint64_t amount) {
@@ -118,6 +124,7 @@ bool Bank::withdraw(std::shared_ptr<Player> player, uint64_t amount) {
 		return false;
 	}
 	g_game().addMoney(player, amount);
+	g_metrics().addCounter("balance_decrease", amount, { { "player", player->getName() }, { "context", "bank_withdraw" } });
 	return true;
 }
 
@@ -144,5 +151,6 @@ bool Bank::deposit(const std::shared_ptr<Bank> destination, uint64_t amount) {
 	if (!g_game().removeMoney(bankable->getPlayer(), amount)) {
 		return false;
 	}
+	g_metrics().addCounter("balance_increase", amount, { { "player", bankable->getPlayer()->getName() }, { "context", "bank_deposit" } });
 	return destination->credit(amount);
 }

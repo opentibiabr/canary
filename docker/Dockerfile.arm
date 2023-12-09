@@ -4,6 +4,7 @@ FROM ubuntu:23.04 AS dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends cmake git \
 	unzip build-essential ca-certificates curl zip unzip tar \
 	pkg-config ninja-build autoconf automake libtool libluajit-5.1-dev libluajit-5.1-common \
+	python3 \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 

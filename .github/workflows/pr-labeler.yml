@@ -1,12 +1,12 @@
 ---
-name: 'PR - Labeler'
+name: "PR - Labeler"
 on:
   - pull_request_target
 
 jobs:
   triage:
-    runs-on: ubuntu-latest
+    runs-on: linux
     steps:
       - uses: actions/labeler@main
         with:
-          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"

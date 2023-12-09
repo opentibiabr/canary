@@ -3,22 +3,22 @@ name: Clang-format
 on:
   pull_request:
     paths:
-      - 'src/**'
+      - "src/**"
   push:
     paths:
-      - 'src/**'
+      - "src/**"
 jobs:
   cancel-runs:
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: [linux]
     steps:
-    - name: Cancel Previous Runs
-      uses: styfle/cancel-workflow-action@0.9.1
-      with:
-        access_token: ${{ github.token }}
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: linux
     steps:
       - name: Set up Git
         if: ${{ github.ref != 'refs/heads/main' }}

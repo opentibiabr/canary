@@ -10,7 +10,7 @@ on:
 jobs:
   job:
     name: Run Lua Tests
-    runs-on: ubuntu-latest
+    runs-on: linux
 
     steps:
       - name: Update

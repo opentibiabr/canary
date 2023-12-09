@@ -5,23 +5,23 @@ on:
   pull_request_target:
     types: [opened, synchronize, reopened]
     paths:
-      - 'src/**'
+      - "src/**"
   push:
     paths:
-      - 'src/**'
+      - "src/**"
     branches:
       - main
 
 env:
   VCPKG_BUILD_TYPE: debug
   CMAKE_BUILD_PARALLEL_LEVEL: 2
-  MAKEFLAGS: '-j 2'
+  MAKEFLAGS: "-j 2"
   VCPKG_BINARY_SOURCES: clear;default,readwrite
 
 jobs:
   sonarcloud:
     name: SonarCloud
-    runs-on: ubuntu-22.04
+    runs-on: [linux, x64]
 
     steps:
       - uses: actions/checkout@v3

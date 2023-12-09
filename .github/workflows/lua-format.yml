@@ -3,13 +3,13 @@ name: Lua-format
 on:
   pull_request:
     paths:
-      - 'data*/**'
+      - "data*/**"
   push:
     paths:
-      - 'data*/**'
+      - "data*/**"
 jobs:
   lua-formatter:
-    runs-on: ubuntu-latest
+    runs-on: linux
     steps:
       - name: Set up Git
         if: ${{ github.ref != 'refs/heads/main' }}

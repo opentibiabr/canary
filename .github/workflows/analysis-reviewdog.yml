@@ -53,7 +53,7 @@ jobs:
           reviewdog -reporter=github-pr-check -runners=luacheck
 
   shellcheck:
-    runs-on: linux
+    runs-on: [linux, x64]
     steps:
       - name: Check out code.
         uses: actions/checkout@main
@@ -99,7 +99,7 @@ jobs:
           reporter: github-pr-check
 
   hadolint:
-    runs-on: linux
+    runs-on: [linux, x64]
     steps:
       - name: Check out code
         uses: actions/checkout@main

@@ -6411,7 +6411,7 @@ void ProtocolGame::sendOutfitWindow() {
 
 	if (oldProtocol) {
 		Outfit_t currentOutfit = player->getDefaultOutfit();
-		const auto currentMount = g_game().mounts.getMountByID(player->getCurrentMount());
+		const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
 		if (currentMount) {
 			currentOutfit.lookMount = currentMount->clientId;
 		}
@@ -6471,7 +6471,7 @@ void ProtocolGame::sendOutfitWindow() {
 
 	bool mounted = false;
 	Outfit_t currentOutfit = player->getDefaultOutfit();
-	const auto currentMount = g_game().mounts.getMountByID(player->getCurrentMount());
+	const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
 	if (currentMount) {
 		mounted = (currentOutfit.lookMount == currentMount->clientId);
 		currentOutfit.lookMount = currentMount->clientId;

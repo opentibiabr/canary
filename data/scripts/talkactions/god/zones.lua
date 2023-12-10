@@ -10,8 +10,15 @@ function zones.onSay(player, words, param)
 
 	if cmd == "list" then
 		local list = {}
+		local filter = params[2] and params[2]:trim()
 		for _, zone in ipairs(Zone.getAll()) do
+			if filter then
+				if not zone:getName():lower():find(filter:lower()) then
+					goto continue
+				end
+			end
 			table.insert(list, zone:getName())
+			::continue::
 		end
 		player:sendTextMessage(MESSAGE_HEALED, "Zones:\n" .. table.concat(list, "\n "))
 		return true

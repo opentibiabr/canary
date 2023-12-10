@@ -19,7 +19,7 @@ function demonOakVoices.onThink(interval, lastExecution)
 	local sound = sounds[math.random(#sounds)]
 	for i = 1, #spectators do
 		spectator = spectators[i]
-		if isInRange(spectator:getPosition(), questArea[1], questArea[2]) then
+		if spectator:getPosition():isInRange(questArea[1], questArea[2]) then
 			return true
 		end
 		spectator:say(sound, TALKTYPE_MONSTER_YELL, false, 0, DEMON_OAK_POSITION)

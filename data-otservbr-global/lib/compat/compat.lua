@@ -788,18 +788,6 @@ function doSendAnimatedText()
 	return true
 end
 
-function doPlayerAddExp(cid, exp, useMult, ...)
-	local player = Player(cid)
-	if player == nil then
-		return false
-	end
-
-	if useMult then
-		exp = exp * getRateFromTable(experienceStages, player:getLevel(), configManager.getNumber(configKeys.RATE_EXPERIENCE))
-	end
-	return player:addExperience(exp, ...)
-end
-
 function doPlayerAddManaSpent(cid, mana)
 	local p = Player(cid)
 	return p and p:addManaSpent(mana) or false

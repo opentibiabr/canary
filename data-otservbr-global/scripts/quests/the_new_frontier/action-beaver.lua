@@ -13,16 +13,16 @@ function beaverTrees.onUse(player, item, fromPosition, target, toPosition, isHot
 	if toPosition == config.treesBeaver[1] or toPosition == config.treesBeaver[2] or toPosition == config.treesBeaver[3] and player:getStorageValue(TheNewFrontier.Questline) == 5 then
 		if toPosition == config.treesBeaver[1] and player:getStorageValue(TheNewFrontier.Mission02.Beaver1) < 1 then
 			for i = 1, 3 do
-				pos = toPosition
-				Game.createMonster("enraged squirrel", pos)
+				position = toPosition
+				Game.createMonster("enraged squirrel", position)
 				toPosition:sendMagicEffect(CONST_ME_TELEPORT)
 			end
 			player:setStorageValue(TheNewFrontier.Mission02.Beaver1, 1)
 			player:say("You have marked the tree, but you also angered the aquirrel family who lived on it!", TALKTYPE_MONSTER_SAY)
 		elseif toPosition == config.treesBeaver[2] and player:getStorageValue(TheNewFrontier.Mission02.Beaver2) < 1 then
 			for i = 1, 5 do
-				pos = toPosition
-				Game.createMonster("wolf", pos)
+				position = toPosition
+				Game.createMonster("wolf", position)
 				toPosition:sendMagicEffect(CONST_ME_TELEPORT)
 			end
 			Game.createMonster("war wolf", toPosition)

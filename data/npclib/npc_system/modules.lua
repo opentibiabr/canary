@@ -46,7 +46,7 @@ if Modules == nil then
 			return false
 		end
 
-		local cost, costMessage = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost, "%d gold"
+		local cost, costMessage = (IsTravelFree() and 0) or parameters.cost, "%d gold"
 		if cost and cost > 0 then
 			if parameters.discount then
 				cost = cost - StdModule.travelDiscount(npc, player, parameters.discount)
@@ -64,8 +64,13 @@ if Modules == nil then
 			[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel(), false),
 			[TAG_TRAVELCOST] = costMessage,
 		}
+		if parameters.replacements then
+			for k, v in pairs(parameters.replacements) do
+				parseInfo[k] = v
+			end
+		end
 		if parameters.text then
-			npcHandler:say(npcHandler:parseMessage(parameters.text, parseInfo), npc, player)
+			npcHandler:say(npcHandler:parseMessage(parameters.text, parseInfo, player, message), npc, player)
 		end
 
 		if parameters.ungreet then
@@ -195,7 +200,7 @@ if Modules == nil then
 			return false
 		end
 
-		local cost = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost
+		local cost = (IsTravelFree() and 0) or parameters.cost
 		if cost and cost > 0 then
 			if parameters.discount then
 				cost = cost - StdModule.travelDiscount(npc, player, parameters.discount)
@@ -509,7 +514,7 @@ if Modules == nil then
 			return false
 		end
 
-		local cost = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost
+		local cost = (IsTravelFree() and 0) or parameters.cost
 
 		module.npcHandler:say(string.format("Do you want to travel to '%s' for '%d' gold coins?", keywords[1], cost), npc, player)
 		return true
@@ -523,7 +528,7 @@ if Modules == nil then
 
 		local npcHandler = module.npcHandler
 
-		local cost = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost
+		local cost = (IsTravelFree() and 0) or parameters.cost
 		local destination = parameters.destination
 		local premium = parameters.premium
 

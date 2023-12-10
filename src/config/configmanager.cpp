@@ -80,6 +80,7 @@ bool ConfigManager::load() {
 		loadIntConfig(L, STASH_ITEMS, "stashItemCount", 5000);
 
 		loadBoolConfig(L, OLD_PROTOCOL, "allowOldProtocol", true);
+		loadBoolConfig(L, DISABLE_LEGACY_RAIDS, "disableLegacyRaids", false);
 	}
 
 	loadBoolConfig(L, ALLOW_CHANGEOUTFIT, "allowChangeOutfit", true);

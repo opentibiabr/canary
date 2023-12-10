@@ -379,6 +379,7 @@ experienceDisplayRates = true
 toggleAttackSpeedOnFist = false
 multiplierSpeedOnFist = 5
 maxSpeedOnFist = 500
+disableLegacyRaids = false -- disable legacy XML raids
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes

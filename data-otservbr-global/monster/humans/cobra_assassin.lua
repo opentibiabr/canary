@@ -92,7 +92,7 @@ monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -450 },
 	{ name = "wave t", interval = 2000, chance = 10, minDamage = -300, maxDamage = -380, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -300, maxDamage = -500, radius = 4, effect = CONST_ME_EXPLOSIONHIT, target = false },
-	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_PHYSICALDAMAGE, minDamage = -300, maxDamage = -500, length = 5, spread = 1, effect = CONST_ME_BLOCKHIT, target = false },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_PHYSICALDAMAGE, minDamage = -300, maxDamage = -500, length = 5, spread = 0, effect = CONST_ME_BLOCKHIT, target = false },
 }
 
 monster.defenses = {

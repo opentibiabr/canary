@@ -428,6 +428,9 @@ function parseBuyStoreOffer(playerId, msg)
 	-- At this point the purchase is assumed to be formatted correctly
 	local offerPrice = offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST and GameStore.ExpBoostValues[player:getStorageValue(GameStore.Storages.expBoostCount)] or offer.price
 	local offerCoinType = offer.coinType
+	if offer.type == GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE and player:kv():get("namelock") then
+		offerPrice = 0
+	end
 	-- Check if offer can be honored
 	if not player:canPayForOffer(offerPrice, offerCoinType) then
 		return queueSendStoreAlertToUser("You don't have enough coins. Your purchase has been cancelled.", 250, playerId)
@@ -1713,25 +1716,20 @@ function GameStore.processNameChangePurchase(player, offer, productType, newName
 			return error({ code = 1, message = result.reason })
 		end
 
-		player:makeCoinTransaction(offer)
-
-		local message = string.format("You have purchased %s for %d coins.", offer.name, offer.price)
-		addPlayerEvent(sendStorePurchaseSuccessful, 500, playerId, message)
+		local namelockReason = player:kv():get("namelock")
+		if not namelockReason then
+			player:makeCoinTransaction(offer)
+			local message = string.format("You have purchased %s for %d coins.", offer.name, offer.price)
+			addPlayerEvent(sendStorePurchaseSuccessful, 500, playerId, message)
+		else
+			local message = string.format("Your character has been renamed and locked successfuly.")
+			addPlayerEvent(sendStorePurchaseSuccessful, 500, playerId, message)
+		end
 
 		newName = newName:lower():gsub("(%l)(%w*)", function(a, b)
 			return string.upper(a) .. b
 		end)
-		db.query("UPDATE `players` SET `name` = " .. db.escapeString(newName) .. " WHERE `id` = " .. player:getGuid())
-		message = "You have successfully changed you name, relogin!"
-		addEvent(function()
-			local player = Player(playerId)
-			if not player then
-				return false
-			end
-
-			player:remove()
-		end, 1000)
-		-- If not, we ask him to do!
+		player:changeName(newName)
 	else
 		return addPlayerEvent(sendRequestPurchaseData, 250, playerId, offer.id, GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_NAMECHANGE)
 	end

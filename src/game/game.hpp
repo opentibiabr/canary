@@ -160,7 +160,7 @@ public:
 
 	ReturnValue getPlayerByNameWildcard(const std::string &s, std::shared_ptr<Player> &player);
 
-	std::shared_ptr<Player> getPlayerByAccount(uint32_t acc);
+	std::vector<std::shared_ptr<Player>> getPlayersByAccount(std::shared_ptr<account::Account> acc, bool allowOffline = false);
 
 	bool internalPlaceCreature(std::shared_ptr<Creature> creature, const Position &pos, bool extendedPos = false, bool forced = false, bool creatureCheck = false);
 

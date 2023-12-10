@@ -86,7 +86,6 @@ monster.loot = {
 	{ name = "wand of inferno", chance = 7690 },
 	{ name = "dragon necklace", chance = 800 },
 }
-spread = 1
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -450 },

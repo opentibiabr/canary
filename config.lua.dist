@@ -381,6 +381,9 @@ multiplierSpeedOnFist = 5
 maxSpeedOnFist = 500
 disableMonsterArmor = false
 combatChainDelay = 50 -- minimum: 50 miliseconds
+minElementalResistance = -200
+maxElementalResistance = 200
+maxDamageReflection = 200
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes

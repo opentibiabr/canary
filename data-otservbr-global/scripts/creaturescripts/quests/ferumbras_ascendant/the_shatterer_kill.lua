@@ -95,7 +95,7 @@ function theShattererKill.onDeath(creature)
 	local oldPos = teleport:getDestination()
 	if teleport then
 		teleport:transform(22761)
-		targetMonster:getPosition():sendMagicEffect(CONST_ME_THUNDER)
+		creature:getPosition():sendMagicEffect(CONST_ME_THUNDER)
 		teleport:setDestination(newPos)
 		addEvent(revertTeleport, 2 * 60 * 1000, teleportPos, 22761, 1949, oldPos)
 		revert()

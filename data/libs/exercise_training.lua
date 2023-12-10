@@ -55,7 +55,7 @@ function ExerciseEvent(playerId, tilePosition, weaponId, dummyId)
 	end
 
 	if player:isTraining() == 0 then
-		player:sendTextMessage(MESSAGE_FAILURE, "You've stopped training!")
+		player:sendTextMessage(MESSAGE_FAILURE, "You have stopped training.")
 		return LeaveTraining(playerId)
 	end
 

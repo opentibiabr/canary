@@ -1075,7 +1075,7 @@ void Monster::pushItems(std::shared_ptr<Tile> tile, const Direction &nextDirecti
 	auto it = items->begin();
 	while (it != items->end()) {
 		std::shared_ptr<Item> item = *it;
-		if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != IMMOVABLE_ACTION_ID) {
+		if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->canBeMoved()) {
 			if (moveCount < 20 && pushItem(item, nextDirection)) {
 				++moveCount;
 			} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {

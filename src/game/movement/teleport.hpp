@@ -20,6 +20,10 @@ public:
 		return static_self_cast<Teleport>();
 	}
 
+	std::shared_ptr<Cylinder> getCylinder() override final {
+		return getTeleport();
+	}
+
 	// serialization
 	Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
 	void serializeAttr(PropWriteStream &propWriteStream) const override;

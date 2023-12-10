@@ -2482,6 +2482,9 @@ void Player::onBlockHit() {
 	}
 }
 
+void Player::onTakeDamage(std::shared_ptr<Creature> attacker, int32_t damage) {
+}
+
 void Player::onAttackedCreatureBlockHit(BlockType_t blockType) {
 	lastAttackBlockType = blockType;
 
@@ -7722,6 +7725,17 @@ void Player::parseAttackDealtHazardSystem(CombatDamage &damage, std::shared_ptr<
 		if (chance <= stage) {
 			damage.primary.value = 0;
 			damage.secondary.value = 0;
+			return;
+		}
+	}
+	if (monster->getHazardSystemDefenseBoost()) {
+		stage = points * static_cast<uint16_t>(g_configManager().getNumber(HAZARD_DEFENSE_MULTIPLIER, __FUNCTION__));
+		if (stage != 0) {
+			damage.exString = "(hazard -" + std::to_string(stage / 100) + "%)";
+			damage.primary.value -= static_cast<int32_t>(std::ceil((static_cast<double>(damage.primary.value) * stage) / 10000));
+			if (damage.secondary.value != 0) {
+				damage.secondary.value -= static_cast<int32_t>(std::ceil((static_cast<double>(damage.secondary.value) * stage) / 10000));
+			}
 			return;
 		}
 	}

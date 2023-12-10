@@ -147,6 +147,7 @@ hazardCriticalInterval = 2000
 hazardCriticalChance = 750
 hazardCriticalMultiplier = 25
 hazardDamageMultiplier = 200
+hazardDefenseMultiplier = 200
 hazardDodgeMultiplier = 85
 hazardPodsDropMultiplier = 87
 hazardPodsTimeToDamage = 2000

@@ -297,6 +297,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, HAZARD_CRITICAL_CHANCE, "hazardCriticalChance", 750);
 	loadIntConfig(L, HAZARD_CRITICAL_MULTIPLIER, "hazardCriticalMultiplier", 25);
 	loadIntConfig(L, HAZARD_DAMAGE_MULTIPLIER, "hazardDamageMultiplier", 200);
+	loadIntConfig(L, HAZARD_DEFENSE_MULTIPLIER, "hazardDefenseMultiplier", 200);
 	loadIntConfig(L, HAZARD_DODGE_MULTIPLIER, "hazardDodgeMultiplier", 85);
 	loadIntConfig(L, HAZARD_PODS_DROP_MULTIPLIER, "hazardPodsDropMultiplier", 87);
 	loadIntConfig(L, HAZARD_PODS_TIME_TO_DAMAGE, "hazardPodsTimeToDamage", 2000);

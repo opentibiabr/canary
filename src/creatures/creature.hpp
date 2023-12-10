@@ -449,6 +449,7 @@ public:
 	virtual void onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target);
 	virtual void onAttackedCreatureBlockHit(BlockType_t) { }
 	virtual void onBlockHit() { }
+	virtual void onTakeDamage(std::shared_ptr<Creature>, int32_t) { }
 	virtual void onChangeZone(ZoneType_t zone);
 	virtual void onAttackedCreatureChangeZone(ZoneType_t zone);
 	virtual void onIdleStatus();

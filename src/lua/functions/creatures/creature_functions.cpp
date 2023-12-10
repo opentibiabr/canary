@@ -581,6 +581,29 @@ int CreatureFunctions::luaCreatureSetMoveLocked(lua_State* L) {
 	return 1;
 }
 
+int CreatureFunctions::luaCreatureIsDirectionLocked(lua_State* L) {
+	// creature:isDirectionLocked()
+	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
+	if (creature) {
+		pushBoolean(L, creature->isDirectionLocked());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureSetDirectionLocked(lua_State* L) {
+	// creature:setDirectionLocked(directionLocked)
+	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
+	if (creature) {
+		creature->setDirectionLocked(getBoolean(L, 2));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int CreatureFunctions::luaCreatureGetSkull(lua_State* L) {
 	// creature:getSkull()
 	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);

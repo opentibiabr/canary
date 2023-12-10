@@ -73,9 +73,7 @@ public:
 	RaceType_t getRace() const override {
 		return mType->info.race;
 	}
-	float getMitigation() const override {
-		return mType->info.mitigation * getDefenseMultiplier();
-	}
+	float getMitigation() const override;
 	int32_t getArmor() const override {
 		return mType->info.armor * getDefenseMultiplier();
 	}

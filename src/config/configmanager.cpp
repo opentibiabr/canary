@@ -96,6 +96,7 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, CONVERT_UNSAFE_SCRIPTS, "convertUnsafeScripts", true);
 	loadBoolConfig(L, CLASSIC_ATTACK_SPEED, "classicAttackSpeed", false);
 	loadBoolConfig(L, TOGGLE_ATTACK_SPEED_ONFIST, "toggleAttackSpeedOnFist", false);
+	loadBoolConfig(L, DISABLE_MONSTER_ARMOR, "disableMonsterArmor", false);
 	loadIntConfig(L, MULTIPLIER_ATTACKONFIST, "multiplierSpeedOnFist", 5);
 	loadIntConfig(L, MAX_SPEED_ATTACKONFIST, "maxSpeedOnFist", 500);
 	loadBoolConfig(L, SCRIPTS_CONSOLE_LOGS, "showScriptsLogInConsole", true);
@@ -245,6 +246,7 @@ bool ConfigManager::load() {
 	loadFloatConfig(L, RATE_ATTACK_SPEED, "rateAttackSpeed", 1.0);
 	loadFloatConfig(L, RATE_OFFLINE_TRAINING_SPEED, "rateOfflineTrainingSpeed", 1.0);
 	loadFloatConfig(L, RATE_EXERCISE_TRAINING_SPEED, "rateExerciseTrainingSpeed", 1.0);
+	loadIntConfig(L, COMBAT_CHAIN_DELAY, "combatChainDelay", 50);
 
 	loadFloatConfig(L, RATE_MONSTER_HEALTH, "rateMonsterHealth", 1.0);
 	loadFloatConfig(L, RATE_MONSTER_ATTACK, "rateMonsterAttack", 1.0);
@@ -254,6 +256,10 @@ bool ConfigManager::load() {
 	loadFloatConfig(L, RATE_BOSS_DEFENSE, "rateBossDefense", 1.0);
 	loadIntConfig(L, BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN, "bossDefaultTimeToFightAgain", 20 * 60 * 60);
 	loadIntConfig(L, BOSS_DEFAULT_TIME_TO_DEFEAT, "bossDefaultTimeToDefeat", 20 * 60);
+
+	loadIntConfig(L, MIN_ELEMENTAL_RESISTANCE, "minElementalResistance", -200);
+	loadIntConfig(L, MAX_ELEMENTAL_RESISTANCE, "maxElementalResistance", 200);
+	loadIntConfig(L, MAX_DAMAGE_REFLECTION, "maxDamageReflection", 200);
 
 	loadFloatConfig(L, RATE_NPC_HEALTH, "rateNpcHealth", 1.0);
 	loadFloatConfig(L, RATE_NPC_ATTACK, "rateNpcAttack", 1.0);

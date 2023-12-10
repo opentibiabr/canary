@@ -5722,7 +5722,10 @@ bool Game::internalCreatureTurn(std::shared_ptr<Creature> creature, Direction di
 	if (const auto &player = creature->getPlayer()) {
 		player->cancelPush();
 	}
-	creature->setDirection(dir);
+
+	if (!creature->isDirectionLocked()) {
+		creature->setDirection(dir);
+	}
 
 	for (const auto &spectator : Spectators().find<Player>(creature->getPosition(), true)) {
 		spectator->getPlayer()->sendCreatureTurn(creature);

@@ -379,6 +379,8 @@ experienceDisplayRates = true
 toggleAttackSpeedOnFist = false
 multiplierSpeedOnFist = 5
 maxSpeedOnFist = 500
+disableMonsterArmor = false
+combatChainDelay = 50 -- minimum: 50 miliseconds
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes

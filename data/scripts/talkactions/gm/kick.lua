@@ -15,7 +15,7 @@ function kick.onSay(player, words, param)
 		return true
 	end
 
-	Webhook.sendMessage("Player Kicked", target:getName() .. " has been kicked by " .. player:getName(), WEBHOOK_COLOR_WARNING, announcementChannels["serverAnnouncements"])
+	Webhook.sendMessage("Player Kicked", target:getName() .. " has been kicked by " .. player:getName(), WEBHOOK_COLOR_YELLOW, announcementChannels["serverAnnouncements"])
 	target:remove()
 	return true
 end

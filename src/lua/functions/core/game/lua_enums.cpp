@@ -1237,10 +1237,10 @@ void LuaEnums::initForgeEnums(lua_State* L) {
 
 // Webhook default colors
 void LuaEnums::initWebhookEnums(lua_State* L) {
-	registerEnum(L, WEBHOOK_COLOR_ONLINE);
-	registerEnum(L, WEBHOOK_COLOR_OFFLINE);
-	registerEnum(L, WEBHOOK_COLOR_WARNING);
-	registerEnum(L, WEBHOOK_COLOR_RAID);
+	registerEnum(L, WEBHOOK_COLOR_GREEN);
+	registerEnum(L, WEBHOOK_COLOR_RED);
+	registerEnum(L, WEBHOOK_COLOR_YELLOW);
+	registerEnum(L, WEBHOOK_COLOR_BLUE);
 }
 
 void LuaEnums::initBosstiaryEnums(lua_State* L) {

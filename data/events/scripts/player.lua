@@ -665,3 +665,24 @@ function Player:onChangeZone(zone)
 end
 
 function Player:onInventoryUpdate(item, slot, equip) end
+
+function Player:getURL()
+	local playerLink = string.gsub(self:getName(), "%s+", "+")
+	local serverURL = configManager.getString(configKeys.URL)
+	return serverURL .. "/characters/" .. playerLink
+end
+
+function Player:getMarkdownLink()
+	local vocation = self:vocationAbbrev()
+	local emoji = ":school_satchel:"
+	if self:isKnight() then
+		emoji = ":crossed_swords:"
+	elseif self:isPaladin() then
+		emoji = ":bow_and_arrow:"
+	elseif self:isDruid() then
+		emoji = ":herb:"
+	elseif self:isSorcerer() then
+		emoji = ":crystal_ball:"
+	end
+	return "**[" .. self:getName() .. "](" .. self:getURL() .. ")** " .. emoji .. " [_" .. vocation .. "_]"
+end

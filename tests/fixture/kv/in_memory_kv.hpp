@@ -35,6 +35,9 @@ public:
 	}
 
 protected:
+	std::vector<std::string> loadPrefix(const std::string &prefix = "") override {
+		return {};
+	}
 	std::optional<ValueWrapper> load(const std::string &key) override {
 		return std::nullopt;
 	}

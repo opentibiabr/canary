@@ -128,11 +128,11 @@ public:
 	void setName(std::string n) {
 		name = std::move(n);
 	}
-	[[nodiscard]] uint16_t getId() const {
-		return spellId;
+	[[nodiscard]] uint16_t getSpellId() const {
+		return m_spellId;
 	}
-	void setId(uint16_t id) {
-		spellId = id;
+	void setSpellId(uint16_t id) {
+		m_spellId = id;
 	}
 
 	void postCastSpell(std::shared_ptr<Player> player, bool finishedCast = true, bool payCost = true) const;
@@ -355,7 +355,7 @@ protected:
 	uint32_t magLevel = 0;
 	int32_t range = -1;
 
-	uint16_t spellId = 0;
+	uint16_t m_spellId = 0;
 
 	bool selfTarget = false;
 	bool needTarget = false;

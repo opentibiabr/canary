@@ -6,7 +6,7 @@ function ferumbrasAscendantBoneFlute.onUse(player, item, fromPosition, target, t
 	if player:getStorageValue(Storage.FerumbrasAscension.BoneFlute) >= 1 then
 		return false
 	end
-	if not isInRange(target:getPosition(), Position(33477, 32775, 11), Position(33493, 32781, 11)) then
+	if not target:getPosition():isInRange(Position(33477, 32775, 11), Position(33493, 32781, 11)) then
 		return false
 	end
 	if target:getName():lower() == "snake" or target:getName():lower() == "lion" or target:getName():lower() == "bear" or target:getName():lower() == "seagull" or target:getName():lower() == "pig" then

@@ -15,18 +15,8 @@ get:register()
 
 local set = TalkAction("/setkv")
 
-local function splitFirst(str, delimiter)
-	local start, finish = string.find(str, delimiter)
-	if start == nil then
-		return str, nil
-	end
-	local firstPart = string.sub(str, 1, start - 1)
-	local secondPart = string.sub(str, finish + 1)
-	return firstPart, secondPart
-end
-
 function set.onSay(player, words, param)
-	local key, value = splitFirst(param, " ")
+	local key, value = string.splitFirst(param, " ")
 	value = load("return " .. value)()
 	kv.set(key, value)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "kv[" .. key .. "] = " .. PrettyString(value))
@@ -39,7 +29,7 @@ set:register()
 local bossCooldown = TalkAction("/clearcooldown")
 
 function bossCooldown.onSay(player, words, param)
-	local boss, playerName = splitFirst(param, ",")
+	local boss, playerName = string.splitFirst(param, ",")
 	if not playerName then
 		playerName = player:getName()
 	end

@@ -32,6 +32,8 @@ public:
 
 	virtual std::shared_ptr<KV> scoped(const std::string &scope) = 0;
 
+	virtual std::unordered_set<std::string> keys(const std::string &prefix = "") = 0;
+
 	void remove(const std::string &key);
 
 	virtual void flush() {
@@ -60,6 +62,7 @@ public:
 	}
 
 	std::shared_ptr<KV> scoped(const std::string &scope) override final;
+	std::unordered_set<std::string> keys(const std::string &prefix = "");
 
 protected:
 	phmap::parallel_flat_hash_map<std::string, std::pair<ValueWrapper, std::list<std::string>::iterator>> getStore() {
@@ -76,6 +79,7 @@ protected:
 
 	virtual std::optional<ValueWrapper> load(const std::string &key) = 0;
 	virtual bool save(const std::string &key, const ValueWrapper &value) = 0;
+	virtual std::vector<std::string> loadPrefix(const std::string &prefix = "") = 0;
 
 private:
 	void setLocked(const std::string &key, const ValueWrapper &value);
@@ -118,8 +122,12 @@ public:
 	}
 
 	std::shared_ptr<KV> scoped(const std::string &scope) override final {
-		logger.debug("ScopedKV::scoped({})", buildKey(scope));
+		logger.trace("ScopedKV::scoped({})", buildKey(scope));
 		return std::make_shared<ScopedKV>(logger, rootKV_, buildKey(scope));
+	}
+
+	std::unordered_set<std::string> keys(const std::string &prefix = "") override {
+		return rootKV_.keys(buildKey(prefix));
 	}
 
 private:

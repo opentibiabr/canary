@@ -20,6 +20,9 @@ local config = {
 	-- rascoohan
 	[35595] = { female = 1372, male = 1371, addon = 1, achievement = "Honorary Rascoohan" },
 	[35695] = { female = 1372, male = 1371, addon = 2, achievement = "Honorary Rascoohan" },
+	-- fire-fighter
+	[39544] = { female = 1569, male = 1568, addon = 1, achievement = "Friendly Fire" },
+	[39545] = { female = 1569, male = 1568, addon = 2, achievement = "Friendly Fire" },
 }
 
 local addons = Action()

@@ -97,10 +97,8 @@ void NpcType::loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBl
 				shopBlock.childShop.push_back(child);
 			}
 		}
-		npcType->info.shopItemVector.push_back(shopBlock);
-	} else {
-		npcType->info.shopItemVector.push_back(shopBlock);
 	}
+	npcType->info.shopItemVector.push_back(shopBlock);
 
 	info.speechBubble = SPEECHBUBBLE_TRADE;
 }

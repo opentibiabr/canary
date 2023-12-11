@@ -22,7 +22,7 @@ function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 
 	for i = 1, #crystals do
 		local crystal = crystals[i]
-		if isInRange(creature:getPosition(), crystal.fromPosition, crystal.toPosition) then
+		if creature:getPosition():isInRange(crystal.fromPosition, crystal.toPosition) then
 			if Game.getStorageValue(crystal.globalStorage) > 8 then
 				local item = Tile(crystal.crystalPosition):getItemById(14955)
 				if not item then
@@ -48,12 +48,9 @@ function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 		end
 	end
 
-	local tilePool = Tile(creature:getPosition())
-	if tilePool then
-		local pool = tilePool:getItemById(2886)
-		if pool then
-			pool:remove()
-		end
+	local pool = Tile(creature:getPosition()):getItemById(2886)
+	if pool then
+		pool:remove()
 	end
 
 	local vortex = Game.createItem(config.vortex, 1, creature:getPosition())

@@ -6411,7 +6411,7 @@ void ProtocolGame::sendOutfitWindow() {
 
 	if (oldProtocol) {
 		Outfit_t currentOutfit = player->getDefaultOutfit();
-		const auto currentMount = g_game().mounts.getMountByID(player->getCurrentMount());
+		const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
 		if (currentMount) {
 			currentOutfit.lookMount = currentMount->clientId;
 		}
@@ -6471,7 +6471,7 @@ void ProtocolGame::sendOutfitWindow() {
 
 	bool mounted = false;
 	Outfit_t currentOutfit = player->getDefaultOutfit();
-	const auto currentMount = g_game().mounts.getMountByID(player->getCurrentMount());
+	const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
 	if (currentMount) {
 		mounted = (currentOutfit.lookMount == currentMount->clientId);
 		currentOutfit.lookMount = currentMount->clientId;
@@ -7802,18 +7802,21 @@ void ProtocolGame::sendItemsPrice() {
 	NetworkMessage msg;
 	msg.addByte(0xCD);
 
-	msg.add<uint16_t>(g_game().getItemsPriceCount());
-	if (g_game().getItemsPriceCount() > 0) {
-		for (const auto &[itemId, tierAndPriceMap] : g_game().getItemsPrice()) {
-			for (const auto &[tier, price] : tierAndPriceMap) {
-				msg.add<uint16_t>(itemId);
-				if (Item::items[itemId].upgradeClassification > 0) {
-					msg.addByte(tier);
-				}
-				msg.add<uint64_t>(price);
+	auto countBuffer = msg.getBufferPosition();
+	uint16_t count = 0;
+	msg.skipBytes(2);
+	for (const auto &[itemId, tierAndPriceMap] : g_game().getItemsPrice()) {
+		for (const auto &[tier, price] : tierAndPriceMap) {
+			msg.add<uint16_t>(itemId);
+			if (Item::items[itemId].upgradeClassification > 0) {
+				msg.addByte(tier);
 			}
+			msg.add<uint64_t>(price);
+			count++;
 		}
 	}
+	msg.setBufferPosition(countBuffer);
+	msg.add<uint16_t>(count);
 
 	writeToOutputBuffer(msg);
 }

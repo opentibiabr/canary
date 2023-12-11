@@ -731,10 +731,6 @@ if not bosssPlayers then
 	}
 end
 
-function isInRange(pos, fromPos, toPos)
-	return pos.x >= fromPos.x and pos.y >= fromPos.y and pos.z >= fromPos.z and pos.x <= toPos.x and pos.y <= toPos.y and pos.z <= toPos.z
-end
-
 function isNumber(str)
 	return tonumber(str) ~= nil
 end

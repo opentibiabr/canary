@@ -18,7 +18,7 @@
 ---@field private exit Position
 ---@field private encounter Encounter
 ---@field private timeoutEvent Event
----@field private testMode boolean
+---@field private disableCooldown boolean
 BossLever = {}
 
 --[[
@@ -71,7 +71,7 @@ setmetatable(BossLever, {
 			exit = config.exit,
 			area = config.specPos,
 			monsters = config.monsters or {},
-			testMode = config.testMode,
+			disableCooldown = config.disableCooldown,
 			_position = nil,
 			_uid = nil,
 			_aid = nil,
@@ -115,7 +115,7 @@ end
 ---@param player Player
 ---@return number
 function BossLever:lastEncounterTime(player)
-	if not player or self.testMode then
+	if not player or self.disableCooldown then
 		return 0
 	end
 	return player:getBossCooldown(self.name)
@@ -178,7 +178,18 @@ function BossLever:onUse(player)
 			return false
 		end
 
-		if not lever:canUseLever(player, self.name, self.timeToFightAgain / 60 / 60) then
+		if self:lastEncounterTime(creature) > os.time() then
+			local info = lever:getInfoPositions()
+			for _, v in pairs(info) do
+				local newPlayer = v.creature
+				if newPlayer then
+					local timeLeft = self:lastEncounterTime(newPlayer) - os.time()
+					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. getTimeInWords(timeLeft) .. " to face " .. self.name .. " again!")
+					if self:lastEncounterTime(newPlayer) > os.time() then
+						newPlayer:getPosition():sendMagicEffect(CONST_ME_POFF)
+					end
+				end
+			end
 			return false
 		end
 		self.onUseExtra(creature)

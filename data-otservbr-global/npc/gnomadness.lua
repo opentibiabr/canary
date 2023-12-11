@@ -78,11 +78,18 @@ local function creatureSayCallback(npc, creature, type, message)
 			local desiredLevel = getMoneyCount(message)
 			if desiredLevel <= 0 then
 				npcHandler:say("I'm sorry, I don't understand. What hazard level would you like to set?", npc, creature)
-				npcHandler:setTopic(playerId, 0)
+				npcHandler:setTopic(playerId, 2)
 				return true
 			end
 			if hazard:setPlayerCurrentLevel(player, desiredLevel) then
 				npcHandler:say("Your hazard level has been set to " .. desiredLevel .. ". Good luck!", npc, creature)
+				if desiredLevel >= hazard.maxLevel and not player:kv():scoped("primal-ordeal"):get("received-prize") then
+					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Congratulations you received the Noxious Ripptor mount.")
+					player:addMount(202)
+					npcHandler:say("You've achived the maximum hazard level. As a reward, you've received the Noxious Ripptor mount and a primal bag.", npc, creature)
+					player:addItem(PrimalBagId, 1)
+					player:kv():scoped("primal-ordeal"):set("received-prize", true)
+				end
 			else
 				npcHandler:say("You can't set your hazard level higher than your maximum unlocked level.", npc, creature)
 			end

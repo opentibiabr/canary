@@ -14,6 +14,7 @@
 #include "io/iobestiary.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
+#include "lib/metrics/metrics.hpp"
 
 SoftSingleton IOBestiary::instanceTracker("IOBestiary");
 
@@ -26,7 +27,7 @@ bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> charm, std::share
 	if (charm->type == CHARM_OFFENSIVE) {
 		if (charm->id == CHARM_CRIPPLE) {
 			std::shared_ptr<ConditionSpeed> cripple = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_PARALYZE, 10000, 0)->static_self_cast<ConditionSpeed>();
-			cripple->setFormulaVars(-1, 81, -1, 81);
+			cripple->setFormulaVars(-1, 0, -1, 0);
 			target->addCondition(cripple);
 			player->sendCancelMessage(charm->cancelMsg);
 			return false;
@@ -70,14 +71,14 @@ bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> charm, std::share
 			}
 			case CHARM_ADRENALINE: {
 				std::shared_ptr<ConditionSpeed> adrenaline = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_HASTE, 10000, 0)->static_self_cast<ConditionSpeed>();
-				adrenaline->setFormulaVars(1.5, -0, 1.5, -0);
+				adrenaline->setFormulaVars(2.5, 40, 2.5, 40);
 				player->addCondition(adrenaline);
 				player->sendCancelMessage(charm->cancelMsg);
 				return false;
 			}
 			case CHARM_NUMB: {
 				std::shared_ptr<ConditionSpeed> numb = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_PARALYZE, 10000, 0)->static_self_cast<ConditionSpeed>();
-				numb->setFormulaVars(-1, 81, -1, 81);
+				numb->setFormulaVars(-1, 0, -1, 0);
 				target->addCondition(numb);
 				player->sendCancelMessage(charm->cancelMsg);
 				return false;
@@ -336,6 +337,7 @@ void IOBestiary::sendBuyCharmRune(std::shared_ptr<Player> player, charmRune_t ru
 			resetCharmRuneCreature(player, charm);
 			player->sendFYIBox("You successfully removed the creature.");
 			player->BestiarysendCharms();
+			g_metrics().addCounter("balance_decrease", fee, { { "player", player->getName() }, { "context", "charm_removal" } });
 			return;
 		}
 		player->sendFYIBox("You don't have enough gold.");

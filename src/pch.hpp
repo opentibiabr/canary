@@ -41,6 +41,7 @@
 #include <thread>
 #include <vector>
 #include <variant>
+#include <numeric>
 
 // --------------------
 // System Includes

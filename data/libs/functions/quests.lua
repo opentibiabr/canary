@@ -297,7 +297,7 @@ function Player.sendQuestLog(self)
 	for questId = 1, #Quests do
 		if self:questIsStarted(questId) then
 			msg:addU16(questId)
-			msg:addString(Quests[questId].name .. (self:questIsCompleted(questId) and " (completed)" or ""))
+			msg:addString(Quests[questId].name .. (self:questIsCompleted(questId) and " (completed)" or ""), "Player.sendQuestLog")
 			msg:addByte(self:questIsCompleted(questId))
 		end
 	end
@@ -319,8 +319,8 @@ function Player.sendQuestLine(self, questId)
 					if self:getClient().version >= 1200 then
 						msg:addU16(self:getMissionId(questId, missionId))
 					end
-					msg:addString(self:getMissionName(questId, missionId))
-					msg:addString(self:getMissionDescription(questId, missionId))
+					msg:addString(self:getMissionName(questId, missionId), "Player.sendQuestLine - self:getMissionName(questId, missionId)")
+					msg:addString(self:getMissionDescription(questId, missionId), "Player.sendQuestLine - self:getMissionDescription(questId, missionId)")
 				end
 			end
 		end
@@ -338,9 +338,9 @@ function Player.sendTrackedQuests(self, remainingQuests, missions)
 	msg:addByte(#missions)
 	for _, mission in ipairs(missions) do
 		msg:addU16(mission.missionId)
-		msg:addString(mission.questName)
-		msg:addString(mission.missionName)
-		msg:addString(mission.missionDesc)
+		msg:addString(mission.questName, "Player.sendTrackedQuests - mission.questName")
+		msg:addString(mission.missionName, "Player.sendTrackedQuests - mission.missionName")
+		msg:addString(mission.missionDesc, "Player.sendTrackedQuests - mission.missionDesc")
 	end
 	msg:sendToPlayer(self)
 	msg:delete()
@@ -351,8 +351,8 @@ function Player.sendUpdateTrackedQuest(self, mission)
 	msg:addByte(0xD0)
 	msg:addByte(0x00)
 	msg:addU16(mission.missionId)
-	msg:addString(mission.missionName)
-	msg:addString(mission.missionDesc)
+	msg:addString(mission.missionName, "Player.sendUpdateTrackedQuest - mission.missionName")
+	msg:addString(mission.missionDesc, "Player.sendUpdateTrackedQuest - mission.missionDesc")
 	msg:sendToPlayer(self)
 	msg:delete()
 end

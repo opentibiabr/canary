@@ -570,6 +570,10 @@ achievements = {
 	[475] = { name = "Taskmaster", grade = 1, points = 2, description = "Having hunted and bested them all, you live for the thrill of the hunt!" },
 	[476] = { name = "Verminbane", grade = 1, points = 2, description = "And so it begins!" },
 
+	--12.60
+	[480] = { name = "Honorary Rascoohan", grade = 1, points = 2, description = "When in Rascacoon, do as the Rascoohans do!" },
+	[481] = { name = "Release the Kraken", grade = 1, points = 3, description = "Riding around on this squishy companion gives you the feeling of flying through the air... uhm... swimming through the seven seas!" },
+
 	--Custom
 	[477] = { name = "Waypoint Explorer", grade = 1, points = 1, description = "You've explored all the towns of Tibia and discovered each town's waypoint." },
 	[478] = { name = "Up the Molehill", grade = 1, points = 3, description = "Putting this candle stump on your new mount was kind of a waiting game. You're even tempted to call it whack-a-mole. But in the end you found a loyal companion for your journeys into the depths." },
@@ -578,6 +582,12 @@ achievements = {
 	--12.60
 	[480] = { name = "Honorary Rascoohan", grade = 1, points = 2, description = "When in Rascacoon, do as the Rascoohans do!" },
 	[481] = { name = "Release the Kraken", grade = 1, points = 3, description = "Riding around on this squishy companion gives you the feeling of flying through the air... uhm... swimming through the seven seas!" },
+
+	-- 12.90
+	[482] = { name = "Friendly Fire", grade = 1, points = 2, description = "You mastered the fire and tamed a supervulcano!" },
+
+	--
+	[483] = { name = "Dream Warrior", grade = 2, points = 6, description = "You became an acquaintance of the courts of dreams and acquired the right to display your new status and title of 'dream warrior'." },
 }
 
 ACHIEVEMENT_FIRST = 1

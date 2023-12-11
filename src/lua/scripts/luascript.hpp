@@ -73,6 +73,8 @@ protected:
 	std::map<int32_t, std::string> cacheFiles;
 
 private:
+	std::string getMetricsScope();
+
 	std::string lastLuaError;
 	std::string interfaceName;
 	std::string loadingFile;

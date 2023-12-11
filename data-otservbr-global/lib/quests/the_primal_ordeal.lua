@@ -7,8 +7,11 @@ function RegisterPrimalPackBeast(template)
 	primalMonster.name = "Primal Pack Beast"
 	primalMonster.description = "a primal pack beast"
 
+	primalMonster.health = primalMonster.health
+	primalMonster.maxHealth = primalMonster.maxHealth
 	primalMonster.raceId = nil
 	primalMonster.Bestiary = nil
+	primalMonster.corpse = 0
 
 	primal:register(primalMonster)
 end

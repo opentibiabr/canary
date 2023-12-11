@@ -41,6 +41,24 @@ std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 	return std::nullopt;
 }
 
+std::vector<std::string> KVSQL::loadPrefix(const std::string &prefix /* = ""*/) {
+	std::vector<std::string> keys;
+	std::string keySearch = db.escapeString(prefix + "%");
+	auto query = fmt::format("SELECT `key_name` FROM `kv_store` WHERE `key_name` LIKE {}", keySearch);
+	auto result = db.storeQuery(query);
+	if (result == nullptr) {
+		return keys;
+	}
+
+	do {
+		std::string key = result->getString("key_name");
+		replaceString(key, prefix, "");
+		keys.push_back(key);
+	} while (result->next());
+
+	return keys;
+}
+
 bool KVSQL::save(const std::string &key, const ValueWrapper &value) {
 	auto update = dbUpdate();
 	prepareSave(key, value, update);
@@ -58,7 +76,7 @@ bool KVSQL::prepareSave(const std::string &key, const ValueWrapper &value, DBIns
 		return db.executeQuery(query);
 	}
 
-	update.addRow(fmt::format("{}, {}, {}", db.escapeString(key), getTimeMsNow(), db.escapeString(data)));
+	update.addRow(fmt::format("{}, {}, {}", db.escapeString(key), value.getTimestamp(), db.escapeString(data)));
 	return true;
 }
 

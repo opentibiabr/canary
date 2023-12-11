@@ -13,9 +13,9 @@ local setting = {
 	},
 }
 
-local teleport = MoveEvent()
+local event = MoveEvent()
 
-function teleport.onStepIn(creature, item, position, fromPosition)
+function event.onStepIn(creature, item, position, fromPosition)
 	local player = creature:getPlayer()
 	if not player then
 		return true
@@ -32,10 +32,10 @@ function teleport.onStepIn(creature, item, position, fromPosition)
 	return true
 end
 
-teleport:type("stepin")
+event:type("stepin")
 
 for index, value in pairs(setting) do
-	teleport:aid(index)
+	event:aid(index)
 end
 
-teleport:register()
+event:register()

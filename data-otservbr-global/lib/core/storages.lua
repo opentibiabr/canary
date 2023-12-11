@@ -2951,6 +2951,7 @@ GlobalStorage = {
 		ZamuloshSummon = 60030,
 		FerumbrasEssence = 60031,
 		DesperateSoul = 60032,
+		FlowerPuzzleTimer = 60033,
 		Crystals = {
 			Crystal1 = 60040,
 			Crystal2 = 60041,
@@ -3062,6 +3063,10 @@ GlobalStorage = {
 			TotalLionCommanders = 60170, -- Global
 			TotalUsurperCommanders = 60171, -- Global
 		},
+	},
+	HeartOfDestruction = {
+		-- Reserved storage from 60172 - 60177
+		ChargedAnomaly = 60172,
 	},
 	FuryGates = 65000,
 	Yakchal = 65001,

@@ -46,7 +46,7 @@ function onSpeak(player, type, message)
 					if hasExhaustionTarget > os.time() then
 						target:removeCondition(CONDITION_CHANNELMUTEDTICKS, CONDITIONID_DEFAULT, CHANNEL_HELP)
 						sendChannelMessage(CHANNEL_HELP, TALKTYPE_CHANNEL_R1, target:getName() .. " has been unmuted.")
-						target:kv():set("channel-help-exhaustion", nil)
+						target:kv():remove("channel-help-exhaustion")
 					else
 						player:sendCancelMessage("That player is not muted.")
 					end

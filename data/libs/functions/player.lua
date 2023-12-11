@@ -121,7 +121,7 @@ function Player.getCookiesDelivered(self)
 end
 
 function Player.allowMovement(self, allow)
-	return self:kv():set("block-movement", allow and nil or 1)
+	return allow and self:kv():remove("block-movement") or self:kv():set("block-movement", 1)
 end
 
 function Player.hasAllowMovement(self)

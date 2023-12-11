@@ -20,7 +20,7 @@ local function removeCombatProtection(playerUid)
 			return
 		end
 
-		playerEvent:kv():set("combat-protection", nil)
+		playerEvent:kv():remove("combat-protection")
 		playerEvent:remove()
 	end, time * 1000, playerUid)
 end

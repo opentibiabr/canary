@@ -6,7 +6,7 @@ local function onMovementRemoveProtection(playerId, oldPos, time)
 
 	local playerPos = player:getPosition()
 	if (playerPos.x ~= oldPos.x or playerPos.y ~= oldPos.y or playerPos.z ~= oldPos.z) or player:getTarget() then
-		player:kv():set("combat-protection", nil)
+		player:kv():remove("combat-protection")
 		return true
 	end
 

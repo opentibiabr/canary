@@ -91,7 +91,6 @@ monster.loot = {
 	{ name = "royal star", chance = 1010, maxCount = 3 },
 	{ name = "wand of everblazing", chance = 1010 },
 	{ name = "magma legs", chance = 340 },
-	spread = 1,
 }
 
 monster.attacks = {

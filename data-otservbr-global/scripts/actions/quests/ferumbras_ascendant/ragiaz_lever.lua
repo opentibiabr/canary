@@ -12,6 +12,12 @@ local config = {
 		{ pos = Position(33459, 32356, 13), teleport = Position(33482, 32339, 13), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33460, 32356, 13), teleport = Position(33482, 32339, 13), effect = CONST_ME_TELEPORT },
 	},
+	monsters = {
+		{ name = "Death Dragon", pos = Position(33476, 32331, 13) },
+		{ name = "Death Dragon", pos = Position(33476, 32340, 13) },
+		{ name = "Death Dragon", pos = Position(33487, 32340, 13) },
+		{ name = "Death Dragon", pos = Position(33488, 32331, 13) },
+	},
 	specPos = {
 		from = Position(33468, 32319, 13),
 		to = Position(33495, 32347, 13),
@@ -19,23 +25,6 @@ local config = {
 	exit = Position(33319, 32318, 13),
 }
 
-local deathDragons = {
-	Position(33476, 32331, 13),
-	Position(33476, 32340, 13),
-	Position(33487, 32340, 13),
-	Position(33488, 32331, 13),
-}
-
-local ferumbrasAscendantRagiaz = Action()
-function ferumbrasAscendantRagiaz.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if CreateDefaultLeverBoss(player, config) then
-		for _, pos in pairs(deathDragons) do
-			Game.createMonster("Death Dragon", pos, true, true)
-		end
-		return true
-	end
-	return false
-end
-
-ferumbrasAscendantRagiaz:uid(1023)
-ferumbrasAscendantRagiaz:register()
+local lever = BossLever(config)
+lever:uid(1023)
+lever:register()

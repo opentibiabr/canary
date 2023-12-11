@@ -8,15 +8,14 @@ end
 
 local azerus = CreatureEvent("AzerusDeath")
 function azerus.onDeath(creature)
-	local targetMonster = creature:getMonster()
-	local position = targetMonster:getPosition()
+	local position = creature:getPosition()
 	position:sendMagicEffect(CONST_ME_TELEPORT)
 	local item = Game.createItem(1949, 1, position)
 	local teleportToPosition = Position(32780, 31168, 14)
 	if item:isTeleport() then
 		item:setDestination(teleportToPosition)
 	end
-	targetMonster:say("Azerus ran into teleporter! It will disappear in 2 minutes. Enter it!", TALKTYPE_MONSTER_SAY, 0, 0, position)
+	creature:say("Azerus ran into teleporter! It will disappear in 2 minutes. Enter it!", TALKTYPE_MONSTER_SAY, 0, 0, position)
 	--remove portal after 2 min
 	addEvent(removeTeleport, 2 * 60 * 1000, position)
 

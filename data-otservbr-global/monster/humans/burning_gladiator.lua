@@ -108,7 +108,7 @@ monster.attacks = {
 	{ name = "firering", interval = 2000, chance = 10, minDamage = -300, maxDamage = -500, target = false },
 	{ name = "firex", interval = 2000, chance = 15, minDamage = -300, maxDamage = -500, target = false },
 	{ name = "combat", interval = 2000, chance = 17, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -500, radius = 2, effect = CONST_ME_FIREATTACK, target = false },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -500, length = 3, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -500, length = 3, spread = 1, effect = CONST_ME_ENERGYHIT, target = false },
 }
 
 monster.defenses = {

@@ -4692,7 +4692,7 @@ bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster) {
 	if (hasFlag(PlayerFlags_t::NotGenerateLoot)) {
 		monster->setDropLoot(false);
 	}
-	if (monster->isSummon()) {
+	if (monster->hasBeenSummoned()) {
 		return false;
 	}
 	auto mType = monster->getMonsterType();

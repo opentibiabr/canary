@@ -19,6 +19,10 @@ function IsRetroPVP()
 	return configManager.getBoolean(configKeys.TOGGLE_SERVER_IS_RETRO)
 end
 
+function IsTravelFree()
+	return configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE)
+end
+
 -- NOTE: 0 is disabled.
 PARTY_PROTECTION = (IsRetroPVP() and 0) or 1
 ADVANCED_SECURE_MODE = (IsRetroPVP() and 0) or 1
@@ -159,7 +163,7 @@ function addStamina(playerId, ...)
 					staminaBonus.eventsTrainer[playerId] = nil
 				else
 					player:setStamina(player:getStamina() + staminaBonus.bonus)
-					player:sendTextMessage(MESSAGE_STATUS, string.format("%i of stamina has been refilled.", configManager.getNumber(configKeys.STAMINA_TRAINER_GAIN)))
+					player:sendTextMessage(MESSAGE_FAILURE, string.format("%i of stamina has been refilled.", configManager.getNumber(configKeys.STAMINA_TRAINER_GAIN)))
 					staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)
 				end
 			end
@@ -196,8 +200,9 @@ function addStamina(playerId, ...)
 			return false
 		end
 
-		player:setStamina(player:getStamina() + configManager.getNumber(configKeys.STAMINA_PZ_GAIN))
-		player:sendTextMessage(MESSAGE_STATUS, string.format("%i of stamina has been refilled.", configManager.getNumber(configKeys.STAMINA_PZ_GAIN)))
+		local regen = configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
+		player:setStamina(player:getStamina() + regen)
+		player:sendTextMessage(MESSAGE_STATUS, string.format("%i minute%s of stamina has been refilled.", regen, regen == 1 and "" or "s"))
 		staminaBonus.eventsPz[localPlayerId] = addEvent(addStamina, delay, nil, localPlayerId, delay)
 		return true
 	end

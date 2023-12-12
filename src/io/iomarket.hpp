@@ -23,6 +23,7 @@ public:
 		return inject<IOMarket>();
 	}
 
+	static MarketOfferList getActiveOffers(MarketAction_t action);
 	static MarketOfferList getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier);
 	static MarketOfferList getOwnOffers(MarketAction_t action, uint32_t playerId);
 	static HistoryMarketOfferList getOwnHistory(MarketAction_t action, uint32_t playerId);

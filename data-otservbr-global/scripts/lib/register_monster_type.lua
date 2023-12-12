@@ -931,6 +931,11 @@ function readSpell(incomingLua, mtype)
 
 			spell:setConditionDamage(incomingLua.condition.totalDamage, incomingLua.condition.totalDamage, 0)
 		end
+		local isArea = (incomingLua.radius and incomingLua.radius > 1) or incomingLua.length or incomingLua.spread
+		if isArea and incomingLua.effect == nil and not string.find(incomingLua.name, "field") then
+			logger.warn("[readSpell] - Monster {}: Spell {} is area but has no effect. Set to `false` explicitly to supress this alert and hide the effect", mtype:name(), incomingLua.name)
+			spell:setCombatEffect(CONST_ME_POFF)
+		end
 	elseif incomingLua.script then
 		spell:setScriptName("monster/" .. incomingLua.script .. ".lua")
 		if incomingLua.interval then

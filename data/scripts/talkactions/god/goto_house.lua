@@ -20,7 +20,7 @@ function sellHouse.onSay(player, words, param)
 		player:teleportTo(house:getExitPosition())
 	end
 
-	return false
+	return true
 end
 
 sellHouse:separator(" ")

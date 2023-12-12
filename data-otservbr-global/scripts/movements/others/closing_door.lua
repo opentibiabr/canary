@@ -13,6 +13,9 @@ for index, value in ipairs(LevelDoorTable) do
 		table.insert(doorIds, value.openDoor)
 	end
 end
+local skipActionIds = {
+	12107,
+}
 
 function closingDoor.onStepIn(creature, item, position, fromPosition)
 	local player = creature:getPlayer()
@@ -22,7 +25,7 @@ function closingDoor.onStepIn(creature, item, position, fromPosition)
 
 	for index, value in ipairs(QuestDoorTable) do
 		if value.openDoor == item.itemid then
-			if player:getStorageValue(item.actionid) ~= -1 then
+			if player:getStorageValue(item.actionid) ~= -1 or table.contains(skipActionIds, item.actionid) then
 				return true
 			else
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The door seems to be sealed against unwanted intruders.")
@@ -103,11 +106,13 @@ function closingDoor.onStepOut(creature, item, position, fromPosition)
 	for index, value in ipairs(LevelDoorTable) do
 		if value.openDoor == item.itemid then
 			item:transform(value.closedDoor)
+			item:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ACTION_CLOSE_DOOR)
 		end
 	end
 	for index, value in ipairs(QuestDoorTable) do
 		if value.openDoor == item.itemid then
 			item:transform(value.closedDoor)
+			item:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ACTION_CLOSE_DOOR)
 		end
 	end
 	return true

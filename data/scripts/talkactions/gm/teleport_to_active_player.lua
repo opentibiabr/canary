@@ -19,12 +19,12 @@ function teleportToCreature.onSay(player, words, param)
 
 	if #activePlayers == 0 then
 		player:sendCancelMessage("There are no active players.")
-		return false
+		return true
 	end
 
 	local targetPlayer = activePlayers[math.random(#activePlayers)]
 	player:teleportTo(targetPlayer:getPosition())
-	return false
+	return true
 end
 
 teleportToCreature:separator(" ")

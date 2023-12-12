@@ -32,7 +32,7 @@ void KVStore::set(const std::string &key, const ValueWrapper &value) {
 }
 
 void KVStore::setLocked(const std::string &key, const ValueWrapper &value) {
-	logger.debug("KVStore::set({})", key);
+	logger.trace("KVStore::set({})", key);
 	auto it = store_.find(key);
 	if (it != store_.end()) {
 		it->second.first = value;
@@ -53,7 +53,7 @@ void KVStore::setLocked(const std::string &key, const ValueWrapper &value) {
 }
 
 std::optional<ValueWrapper> KVStore::get(const std::string &key, bool forceLoad /*= false */) {
-	logger.debug("KVStore::get({})", key);
+	logger.trace("KVStore::get({})", key);
 	std::scoped_lock lock(mutex_);
 	if (forceLoad || !store_.contains(key)) {
 		auto value = load(key);
@@ -72,11 +72,26 @@ std::optional<ValueWrapper> KVStore::get(const std::string &key, bool forceLoad 
 	return value;
 }
 
+std::unordered_set<std::string> KVStore::keys(const std::string &prefix /*= ""*/) {
+	std::scoped_lock lock(mutex_);
+	std::unordered_set<std::string> keys;
+	for (const auto &[key, value] : store_) {
+		if (key.find(prefix) == 0) {
+			std::string suffix = key.substr(prefix.size());
+			keys.insert(suffix);
+		}
+	}
+	for (const auto &key : loadPrefix(prefix)) {
+		keys.insert(key);
+	}
+	return keys;
+}
+
 void KV::remove(const std::string &key) {
 	set(key, ValueWrapper::deleted());
 }
 
 std::shared_ptr<KV> KVStore::scoped(const std::string &scope) {
-	logger.debug("KVStore::scoped({})", scope);
+	logger.trace("KVStore::scoped({})", scope);
 	return std::make_shared<ScopedKV>(logger, *this, scope);
 }

@@ -14,6 +14,7 @@
 #include "config/configmanager.hpp"
 #include "game/game.hpp"
 #include "io/ioprey.hpp"
+#include "lib/metrics/metrics.hpp"
 
 // Prey class
 PreySlot::PreySlot(PreySlot_t id) :
@@ -301,6 +302,8 @@ void IOPrey::parsePreyAction(std::shared_ptr<Player> player, PreySlot_t slotId, 
 			return;
 		} else if (slot->freeRerollTimeStamp <= OTSYS_TIME()) {
 			slot->freeRerollTimeStamp = OTSYS_TIME() + g_configManager().getNumber(PREY_FREE_REROLL_TIME, __FUNCTION__) * 1000;
+		} else {
+			g_metrics().addCounter("balance_decrease", player->getPreyRerollPrice(), { { "player", player->getName() }, { "context", "prey_reroll" } });
 		}
 
 		slot->eraseBonus(true);
@@ -406,6 +409,8 @@ void IOPrey::parseTaskHuntingAction(std::shared_ptr<Player> player, PreySlot_t s
 			return;
 		} else if (slot->freeRerollTimeStamp <= OTSYS_TIME()) {
 			slot->freeRerollTimeStamp = OTSYS_TIME() + g_configManager().getNumber(TASK_HUNTING_FREE_REROLL_TIME, __FUNCTION__) * 1000;
+		} else {
+			g_metrics().addCounter("balance_decrease", player->getTaskHuntingRerollPrice(), { { "player", player->getName() }, { "context", "hunting_task_reroll" } });
 		}
 
 		slot->eraseTask();
@@ -465,6 +470,7 @@ void IOPrey::parseTaskHuntingAction(std::shared_ptr<Player> player, PreySlot_t s
 			return;
 		}
 
+		g_metrics().addCounter("balance_decrease", player->getTaskHuntingRerollPrice(), { { "player", player->getName() }, { "context", "hunting_task_cancel" } });
 		slot->eraseTask();
 		slot->reloadReward();
 		slot->state = PreyTaskDataState_Selection;

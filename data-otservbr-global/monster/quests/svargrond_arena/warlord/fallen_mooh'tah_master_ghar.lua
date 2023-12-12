@@ -69,12 +69,12 @@ monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -525, condition = { type = CONDITION_POISON, totalDamage = 18, interval = 4000 } },
-	{ name = "combat", interval = 6000, chance = 30, type = COMBAT_FIREDAMAGE, minDamage = -80, maxDamage = -300, length = 8, spread = 3, effect = CONST_ME_FIREAREA, target = false },
-	{ name = "combat", interval = 3000, chance = 45, type = COMBAT_FIREDAMAGE, minDamage = -80, maxDamage = -400, radius = 5, shootEffect = CONST_ANI_FIRE, target = true },
+	{ name = "combat", interval = 6000, chance = 30, type = COMBAT_FIREDAMAGE, minDamage = -80, maxDamage = -300, length = 8, spread = 0, effect = CONST_ME_FIREAREA, target = false },
+	{ name = "combat", interval = 3000, chance = 45, type = COMBAT_FIREDAMAGE, minDamage = -80, maxDamage = -400, radius = 5, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
 	{ name = "combat", interval = 4000, chance = 30, type = COMBAT_DEATHDAMAGE, minDamage = -80, maxDamage = -270, shootEffect = CONST_ANI_DEATH, effect = CONST_ME_MORTAREA, target = false },
 	-- poison
 	{ name = "condition", type = CONDITION_POISON, interval = 4500, chance = 40, minDamage = -10, maxDamage = -200, range = 10, shootEffect = CONST_ANI_POISON, target = false },
-	{ name = "combat", interval = 5000, chance = 30, type = COMBAT_EARTHDAMAGE, minDamage = -60, maxDamage = -300, length = 8, spread = 3, effect = CONST_ME_POISONAREA, target = false },
+	{ name = "combat", interval = 5000, chance = 30, type = COMBAT_EARTHDAMAGE, minDamage = -60, maxDamage = -300, length = 8, spread = 0, effect = CONST_ME_POISONAREA, target = false },
 }
 
 monster.defenses = {

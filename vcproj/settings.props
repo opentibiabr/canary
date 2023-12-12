@@ -24,6 +24,15 @@
       jsoncpp.lib;
       abseil_dll.lib;
       argon2.lib;
+			opentelemetry_common.lib;
+			opentelemetry_resources.lib;
+			opentelemetry_metrics.lib;
+			opentelemetry_exporter_ostream_metrics.lib;
+			opentelemetry_exporter_prometheus.lib;
+			prometheus-cpp-core.lib;
+			prometheus-cpp-pull.lib;
+			civetweb.lib;
+			civetweb-cpp.lib
     </CANARY_LIBDEPS>
     <CANARY_LIBDEPS_D>
       comctl32.lib;
@@ -41,6 +50,15 @@
       jsoncpp.lib;
       abseil_dll.lib;
       argon2.lib;
+			opentelemetry_common.lib;
+			opentelemetry_resources.lib;
+			opentelemetry_metrics.lib;
+			opentelemetry_exporter_ostream_metrics.lib;
+			opentelemetry_exporter_prometheus.lib;
+			prometheus-cpp-core.lib;
+			prometheus-cpp-pull.lib;
+			civetweb.lib;
+			civetweb-cpp.lib
   </CANARY_LIBDEPS_D>
   </PropertyGroup>
   <PropertyGroup>

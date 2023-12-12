@@ -27,7 +27,7 @@ function Player.feed(self, food)
 end
 
 function Player.getClosestFreePosition(self, position, extended)
-	if self:getGroup():getAccess() and self:getAccountType() >= ACCOUNT_TYPE_GOD then
+	if self:getGroup():getAccess() and self:getAccountType() == ACCOUNT_TYPE_GOD then
 		return position
 	end
 	return Creature.getClosestFreePosition(self, position, extended)
@@ -64,7 +64,7 @@ function Player.sendExtendedOpcode(self, opcode, buffer)
 	local networkMessage = NetworkMessage()
 	networkMessage:addByte(0x32)
 	networkMessage:addByte(opcode)
-	networkMessage:addString(buffer)
+	networkMessage:addString(buffer, "Player.sendExtendedOpcode - buffer")
 	networkMessage:sendToPlayer(self)
 	networkMessage:delete()
 	return true
@@ -650,6 +650,62 @@ function Player:setFiendish()
 		monster:setFiendish(position, self)
 	end
 	return false
+end
+
+function Player:findItemInInbox(itemId, name)
+	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
+	local items = inbox:getItems()
+	for _, item in pairs(items) do
+		if item:getId() == itemId and (not name or item:getName() == name) then
+			return item
+		end
+	end
+	return nil
+end
+
+function Player:sendColoredMessage(message)
+	local grey = 3003
+	local blue = 3043
+	local green = 3415
+	local purple = 36792
+	local yellow = 34021
+
+	local msg = message:gsub("{grey|", "{" .. grey .. "|"):gsub("{blue|", "{" .. blue .. "|"):gsub("{green|", "{" .. green .. "|"):gsub("{purple|", "{" .. purple .. "|"):gsub("{yellow|", "{" .. yellow .. "|")
+	return self:sendTextMessage(MESSAGE_LOOT, msg)
+end
+
+function Player:showInfoModal(title, message, buttonText)
+	local modal = ModalWindow({
+		title = title,
+		message = message,
+	})
+	buttonText = buttonText or "Close"
+	modal:addButton(buttonText, function() end)
+	modal:setDefaultEscapeButton(buttonText)
+
+	modal:sendToPlayer(self)
+end
+
+function Player:showConfirmationModal(title, message, yesCallback, noCallback, yesText, noText)
+	local modal = ModalWindow({
+		title = title,
+		message = message,
+	})
+	yesText = yesText or "Yes"
+	modal:addButton(yesText, yesCallback or function() end)
+	noText = noText or "No"
+	modal:addButton(noText, noCallback or function() end)
+	modal:setDefaultEscapeButton(noText)
+
+	modal:sendToPlayer(self)
+end
+
+function Player:removeAll(itemId)
+	local count = 0
+	while self:removeItem(itemId, 1) do
+		count = count + 1
+	end
+	return count
 end
 
 local function bossKVScope(bossNameOrId)

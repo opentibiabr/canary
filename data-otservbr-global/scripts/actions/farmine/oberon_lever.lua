@@ -14,12 +14,6 @@ local config = {
 		from = Position(33357, 31312, 9),
 		to = Position(33371, 31324, 9),
 	},
-	monsters = {
-		{ name = "Oberon's Bile", pos = Position(33361, 31316, 9) },
-		{ name = "Oberon's Hate", pos = Position(33367, 31316, 9) },
-		{ name = "Oberon's Spite", pos = Position(33361, 31320, 9) },
-		{ name = "Oberon's Ire", pos = Position(33367, 31320, 9) },
-	},
 	exit = Position(33364, 31341, 9),
 }
 

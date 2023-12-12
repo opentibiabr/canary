@@ -74,7 +74,7 @@ monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -160 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -25, maxDamage = -155, range = 7, radius = 2, effect = CONST_ME_STONES, target = true },
 	-- poison
-	{ name = "condition", type = CONDITION_POISON, interval = 1000, chance = 10, minDamage = 0, maxDamage = -26, length = 6, spread = 3, effect = CONST_ME_GROUNDSHAKER, target = false },
+	{ name = "condition", type = CONDITION_POISON, interval = 1000, chance = 10, minDamage = 0, maxDamage = -26, length = 6, spread = 0, effect = CONST_ME_GROUNDSHAKER, target = false },
 }
 
 monster.defenses = {

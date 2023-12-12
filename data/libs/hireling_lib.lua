@@ -609,7 +609,7 @@ function Player:sendHirelingOutfitWindow(hireling)
 	msg:addU16(#availableOutfits)
 	for _, outfit in ipairs(availableOutfits) do
 		msg:addU16(outfit.lookType)
-		msg:addString(outfit.name)
+		msg:addString(outfit.name, "Player:sendHirelingOutfitWindow - outfit.name")
 		msg:addByte(0x00) -- addons
 		msg:addByte(0x00) -- Store bool
 	end
@@ -672,18 +672,6 @@ function Player:sendHirelingSelectionModal(title, message, callback, data)
 	modal:setDefaultEnterButton("Select")
 	modal:addButton("Cancel", internalCancel)
 	modal:setDefaultEscapeButton("Cancel")
-
-	modal:sendToPlayer(self)
-end
-
-function Player:showInfoModal(title, message, buttonText)
-	local modal = ModalWindow({
-		title = title,
-		message = message,
-	})
-	buttonText = buttonText or "Close"
-	modal:addButton(buttonText, function() end)
-	modal:setDefaultEscapeButton(buttonText)
 
 	modal:sendToPlayer(self)
 end

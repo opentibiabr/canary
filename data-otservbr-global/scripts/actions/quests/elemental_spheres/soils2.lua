@@ -18,7 +18,7 @@ function elementalSpheresSoils2.onUse(player, item, fromPosition, target, toPosi
 		return false
 	end
 
-	if not isInRange(toPosition, { x = 33238, y = 31806, z = 12 }, { x = 33297, y = 31865, z = 12 }) then
+	if not toPosition:isInRange({ x = 33238, y = 31806, z = 12 }, { x = 33297, y = 31865, z = 12 }) then
 		return false
 	end
 

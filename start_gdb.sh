@@ -8,7 +8,7 @@ MYSQL_DATABASE=dbname
 function do_mysql_backup {
 	data=$(date +"%F_%H-%M-%S")
 	backup_name="mysql_backup_$data.sql"
-	mysqldump -u $MYSQL_USER -p$MYSQL_PASS --single-transaction --databases $MYSQL_DATABASE --compress --result-file=mysql_backup/$backup_name
+	mysqldump -u $MYSQL_USER -p$MYSQL_PASS --single-transaction --databases $MYSQL_DATABASE --compress --result-file=mysql_backup/"$backup_name"
 }
 
 if [ "$MYSQL_BACKUP_ACTIVED" = true ]; then

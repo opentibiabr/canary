@@ -515,9 +515,11 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (g_configManager().getBoolean(ONE_PLAYER_ON_ACCOUNT, __FUNCTION__) && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && g_game().getPlayerByAccount(player->getAccountId())) {
+		auto onlineCount = g_game().getPlayersByAccount(player->getAccount()).size();
+		auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT, __FUNCTION__);
+		if (player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && onlineCount >= maxOnline) {
 			g_game().removePlayerUniqueLogin(player);
-			disconnectClient("You may only login with one character\nof your account at the same time.");
+			disconnectClient(fmt::format("You may only login with {} character{}\nof your account at the same time.", maxOnline, maxOnline > 1 ? "s" : ""));
 			return;
 		}
 
@@ -569,6 +571,24 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		}
 
 		player->setOperatingSystem(operatingSystem);
+
+		const auto tile = g_game().map.getOrCreateTile(player->getLoginPosition());
+		// moving from a pz tile to a non-pz tile
+		if (maxOnline > 1 && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+			auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT, __FUNCTION__);
+			auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
+			int countOutsizePZ = 0;
+			for (const auto &accountPlayer : accountPlayers) {
+				if (accountPlayer != player && accountPlayer->getTile() && !accountPlayer->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
+					++countOutsizePZ;
+				}
+			}
+			if (countOutsizePZ >= maxOutsizePZ) {
+				g_game().removePlayerUniqueLogin(player);
+				disconnectClient(fmt::format("You can only have {} character{} from your account outside of a protection zone.", maxOutsizePZ == 1 ? "one" : std::to_string(maxOutsizePZ), maxOutsizePZ > 1 ? "s" : ""));
+				return;
+			}
+		}
 
 		if (!g_game().placeCreature(player, player->getLoginPosition()) && !g_game().placeCreature(player, player->getTemplePosition(), false, true)) {
 			g_game().removePlayerUniqueLogin(player);

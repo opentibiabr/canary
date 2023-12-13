@@ -384,7 +384,6 @@ int NpcFunctions::luaNpcOpenShopWindowTable(lua_State* L) {
 	lua_pushnil(L);
 	while (lua_next(L, 3) != 0) {
 		const auto tableIndex = lua_gettop(L);
-		ShopBlock item;
 
 		auto itemId = getField<uint16_t>(L, tableIndex, "clientId");
 		auto subType = getField<int32_t>(L, tableIndex, "subType");
@@ -397,10 +396,11 @@ int NpcFunctions::luaNpcOpenShopWindowTable(lua_State* L) {
 		auto sellPrice = getField<uint32_t>(L, tableIndex, "sell");
 		auto storageKey = getField<int32_t>(L, tableIndex, "storageKey");
 		auto storageValue = getField<int32_t>(L, tableIndex, "storageValue");
-		auto realName = getFieldString(L, tableIndex, "name");
-		g_logger().debug("[{}] item '{}' sell price '{}', buyprice '{}'", __FUNCTION__, realName, sellPrice, buyPrice);
-
-		items.emplace_back(itemId, subType, buyPrice, sellPrice, storageKey, storageValue, std::move(realName));
+		auto itemName = getFieldString(L, tableIndex, "itemName");
+		if (itemName.empty()) {
+			itemName = Item::items[itemId].name;
+		}
+		items.emplace_back(itemId, subType, buyPrice, sellPrice, storageKey, storageValue, itemName);
 		lua_pop(L, 8);
 	}
 	lua_pop(L, 3);

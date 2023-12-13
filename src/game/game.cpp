@@ -830,13 +830,19 @@ ReturnValue Game::getPlayerByNameWildcard(const std::string &s, std::shared_ptr<
 	return RETURNVALUE_NOERROR;
 }
 
-std::shared_ptr<Player> Game::getPlayerByAccount(uint32_t acc) {
-	for (const auto &it : players) {
-		if (it.second->getAccountId() == acc) {
-			return it.second;
+std::vector<std::shared_ptr<Player>> Game::getPlayersByAccount(std::shared_ptr<account::Account> acc, bool allowOffline /* = false */) {
+	auto [accountPlayers, error] = acc->getAccountPlayers();
+	if (error != account::ERROR_NO) {
+		return {};
+	}
+	std::vector<std::shared_ptr<Player>> ret;
+	for (const auto &[name, _] : accountPlayers) {
+		auto player = getPlayerByName(name, allowOffline);
+		if (player) {
+			ret.push_back(player);
 		}
 	}
-	return nullptr;
+	return ret;
 }
 
 bool Game::internalPlaceCreature(std::shared_ptr<Creature> creature, const Position &pos, bool extendedPos /*=false*/, bool forced /*= false*/, bool creatureCheck /*= false*/) {

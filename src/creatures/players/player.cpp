@@ -4692,7 +4692,7 @@ bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster) {
 	if (hasFlag(PlayerFlags_t::NotGenerateLoot)) {
 		monster->setDropLoot(false);
 	}
-	if (monster->isSummon()) {
+	if (monster->hasBeenSummoned()) {
 		return false;
 	}
 	auto mType = monster->getMonsterType();
@@ -5987,32 +5987,28 @@ void Player::clearModalWindows() {
 }
 
 uint16_t Player::getHelpers() const {
-	uint16_t helpers;
-
 	if (guild && party) {
-		phmap::flat_hash_set<std::shared_ptr<Player>> helperSet;
+		const auto &guildMembers = guild->getMembersOnline();
 
-		const auto guildMembers = guild->getMembersOnline();
-		helperSet.insert(guildMembers.begin(), guildMembers.end());
+		stdext::vector_set<std::shared_ptr<Player>> helperSet;
+		helperSet.insert(helperSet.end(), guildMembers.begin(), guildMembers.end());
+		helperSet.insertAll(party->getMembers());
+		helperSet.insertAll(party->getInvitees());
 
-		const auto partyMembers = party->getMembers();
-		helperSet.insert(partyMembers.begin(), partyMembers.end());
+		helperSet.emplace(party->getLeader());
 
-		const auto partyInvitees = party->getInvitees();
-		helperSet.insert(partyInvitees.begin(), partyInvitees.end());
-
-		helperSet.insert(party->getLeader());
-
-		helpers = helperSet.size();
-	} else if (guild) {
-		helpers = guild->getMemberCountOnline();
-	} else if (party) {
-		helpers = party->getMemberCount() + party->getInvitationCount() + 1;
-	} else {
-		helpers = 0;
+		return static_cast<uint16_t>(helperSet.size());
 	}
 
-	return helpers;
+	if (guild) {
+		return static_cast<uint16_t>(guild->getMemberCountOnline());
+	}
+
+	if (party) {
+		return static_cast<uint16_t>(party->getMemberCount() + party->getInvitationCount() + 1);
+	}
+
+	return 0u;
 }
 
 void Player::sendClosePrivate(uint16_t channelId) {

@@ -6,7 +6,7 @@ local function removeBosst(fromArea1, fromArea2, bossName)
 				if tile then
 					local monster = tile:getTopCreature()
 					if monster and monster:isMonster() then
-						if monster:getName():lower == bossName then
+						if monster:getName() == bossName then
 							monster:remove()
 						end
 					end
@@ -36,7 +36,7 @@ local function teleportAllPlayersFromAreat(fromArea1, fromArea2, toPos)
 end
 
 local function PrepareEnter()
-	removeBosst({ x = 33679, y = 31919, z = 9 }, { x = 33701, y = 31941, z = 9 }, "glooth fairy")
+	removeBosst({ x = 33679, y = 31919, z = 9 }, { x = 33701, y = 31941, z = 9 }, "Glooth Fairy")
 	teleportAllPlayersFromAreat({ x = 33659, y = 31935, z = 9 }, { x = 33668, y = 31939, z = 9 }, { x = 33684, y = 31935, z = 9 })
 	Game.createMonster("Glooth Fairy", { x = 33688, y = 31937, z = 9 })
 end

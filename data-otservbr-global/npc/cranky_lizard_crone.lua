@@ -82,7 +82,7 @@ function WayfarerSecond(npc, creature, message, keywords, parameters, node)
 		if player:getStorageValue(Storage.WayfarerOutfit + 1) < 1 then
 			if player:getItemCount(11700) > 0 then
 				if player:removeItem(11700, 1) then
-					npcHandler:say(newaddon, npc, creature)					
+					npcHandler:say(newaddon, npc, creature)
 					player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 					player:addOutfitAddon(366, 2)
 					player:addOutfitAddon(367, 2)

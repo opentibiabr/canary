@@ -296,6 +296,7 @@ void Game::start(ServiceManager* manager) {
 	g_dispatcher().cycleEvent(
 		EVENT_LUA_GARBAGE_COLLECTION, [this] { g_luaEnvironment().collectGarbage(); }, "Calling GC"
 	);
+	g_dispatcher().cycleEvent(EVENT_REFRESH_MARKET_PRICES, std::bind_front(&Game::loadItemsPrice, this), "Game::loadItemsPrice");
 }
 
 GameState_t Game::getGameState() const {
@@ -388,7 +389,7 @@ void Game::setGameState(GameState_t newState) {
 }
 
 bool Game::loadItemsPrice() {
-	itemsSaleCount = 0;
+	IOMarket::getInstance().updateStatistics();
 	std::ostringstream query, marketQuery;
 	query << "SELECT DISTINCT `itemtype` FROM `market_offers`;";
 
@@ -398,20 +399,19 @@ bool Game::loadItemsPrice() {
 		return false;
 	}
 
-	do {
-		marketQuery.str(std::string());
-		uint16_t itemId = result->getNumber<uint16_t>("itemtype");
-		marketQuery << "SELECT `price`, `tier` FROM `market_offers` WHERE `itemtype` = " << itemId << " ORDER BY `price` DESC LIMIT 1";
-		DBResult_ptr marketOffersResult = db.storeQuery(marketQuery.str());
-		if (marketOffersResult) {
-			std::map<uint8_t, uint64_t> tierAndCount;
-			auto tier = marketOffersResult->getNumber<uint8_t>("tier");
-			auto price = marketOffersResult->getNumber<uint64_t>("price");
-			tierAndCount[tier] = price;
-			itemsPriceMap[itemId] = tierAndCount;
-			itemsSaleCount++;
+	auto stats = IOMarket::getInstance().getPurchaseStatistics();
+	for (const auto &[itemId, itemStats] : stats) {
+		std::map<uint8_t, uint64_t> tierToPrice;
+		for (const auto &[tier, tierStats] : itemStats) {
+			auto averagePrice = tierStats.totalPrice / tierStats.numTransactions;
+			tierToPrice[tier] = averagePrice;
 		}
-	} while (result->next());
+		itemsPriceMap[itemId] = tierToPrice;
+	}
+	auto offers = IOMarket::getInstance().getActiveOffers(MARKETACTION_BUY);
+	for (const auto &offer : offers) {
+		itemsPriceMap[offer.itemId][offer.tier] = std::max(itemsPriceMap[offer.itemId][offer.tier], offer.price);
+	}
 
 	return true;
 }
@@ -691,13 +691,13 @@ std::shared_ptr<Npc> Game::getNpcByID(uint32_t id) {
 	return it->second;
 }
 
-std::shared_ptr<Player> Game::getPlayerByID(uint32_t id, bool loadTmp /* = false */) {
+std::shared_ptr<Player> Game::getPlayerByID(uint32_t id, bool allowOffline /* = false */) {
 	auto playerMap = players.find(id);
 	if (playerMap != players.end()) {
 		return playerMap->second;
 	}
 
-	if (!loadTmp) {
+	if (!allowOffline) {
 		return nullptr;
 	}
 	std::shared_ptr<Player> tmpPlayer = std::make_shared<Player>(nullptr);
@@ -748,14 +748,14 @@ std::shared_ptr<Npc> Game::getNpcByName(const std::string &s) {
 	return nullptr;
 }
 
-std::shared_ptr<Player> Game::getPlayerByName(const std::string &s, bool loadTmp /* = false */) {
+std::shared_ptr<Player> Game::getPlayerByName(const std::string &s, bool allowOffline /* = false */) {
 	if (s.empty()) {
 		return nullptr;
 	}
 
 	auto it = mappedPlayerNames.find(asLowerCaseString(s));
 	if (it == mappedPlayerNames.end() || it->second.expired()) {
-		if (!loadTmp) {
+		if (!allowOffline) {
 			return nullptr;
 		}
 		std::shared_ptr<Player> tmpPlayer = std::make_shared<Player>(nullptr);
@@ -769,7 +769,7 @@ std::shared_ptr<Player> Game::getPlayerByName(const std::string &s, bool loadTmp
 	return it->second.lock();
 }
 
-std::shared_ptr<Player> Game::getPlayerByGUID(const uint32_t &guid, bool loadTmp /* = false */) {
+std::shared_ptr<Player> Game::getPlayerByGUID(const uint32_t &guid, bool allowOffline /* = false */) {
 	if (guid == 0) {
 		return nullptr;
 	}
@@ -778,7 +778,7 @@ std::shared_ptr<Player> Game::getPlayerByGUID(const uint32_t &guid, bool loadTmp
 			return it.second;
 		}
 	}
-	if (!loadTmp) {
+	if (!allowOffline) {
 		return nullptr;
 	}
 	std::shared_ptr<Player> tmpPlayer = std::make_shared<Player>(nullptr);
@@ -830,13 +830,19 @@ ReturnValue Game::getPlayerByNameWildcard(const std::string &s, std::shared_ptr<
 	return RETURNVALUE_NOERROR;
 }
 
-std::shared_ptr<Player> Game::getPlayerByAccount(uint32_t acc) {
-	for (const auto &it : players) {
-		if (it.second->getAccountId() == acc) {
-			return it.second;
+std::vector<std::shared_ptr<Player>> Game::getPlayersByAccount(std::shared_ptr<account::Account> acc, bool allowOffline /* = false */) {
+	auto [accountPlayers, error] = acc->getAccountPlayers();
+	if (error != account::ERROR_NO) {
+		return {};
+	}
+	std::vector<std::shared_ptr<Player>> ret;
+	for (const auto &[name, _] : accountPlayers) {
+		auto player = getPlayerByName(name, allowOffline);
+		if (player) {
+			ret.push_back(player);
 		}
 	}
-	return nullptr;
+	return ret;
 }
 
 bool Game::internalPlaceCreature(std::shared_ptr<Creature> creature, const Position &pos, bool extendedPos /*=false*/, bool forced /*= false*/, bool creatureCheck /*= false*/) {
@@ -869,6 +875,7 @@ bool Game::internalPlaceCreature(std::shared_ptr<Creature> creature, const Posit
 }
 
 bool Game::placeCreature(std::shared_ptr<Creature> creature, const Position &pos, bool extendedPos /*=false*/, bool forced /*= false*/) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (!internalPlaceCreature(creature, pos, extendedPos, forced)) {
 		return false;
 	}
@@ -895,6 +902,7 @@ bool Game::placeCreature(std::shared_ptr<Creature> creature, const Position &pos
 }
 
 bool Game::removeCreature(std::shared_ptr<Creature> creature, bool isLogout /* = true*/) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (!creature || creature->isRemoved()) {
 		return false;
 	}
@@ -962,6 +970,7 @@ bool Game::removeCreature(std::shared_ptr<Creature> creature, bool isLogout /* =
 }
 
 void Game::executeDeath(uint32_t creatureId) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	std::shared_ptr<Creature> creature = getCreatureByID(creatureId);
 	if (creature && !creature->isRemoved()) {
 		afterCreatureZoneChange(creature, creature->getZones(), {});
@@ -970,6 +979,7 @@ void Game::executeDeath(uint32_t creatureId) {
 }
 
 void Game::playerTeleport(uint32_t playerId, const Position &newPosition) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || !player->hasFlag(PlayerFlags_t::CanMapClickTeleport)) {
 		return;
@@ -982,6 +992,7 @@ void Game::playerTeleport(uint32_t playerId, const Position &newPosition) {
 }
 
 void Game::playerInspectItem(std::shared_ptr<Player> player, const Position &pos) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	std::shared_ptr<Thing> thing = internalGetThing(player, pos, 0, 0, STACKPOS_TOPDOWN_ITEM);
 	if (!thing) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
@@ -998,6 +1009,7 @@ void Game::playerInspectItem(std::shared_ptr<Player> player, const Position &pos
 }
 
 void Game::playerInspectItem(std::shared_ptr<Player> player, uint16_t itemId, uint8_t itemCount, bool cyclopedia) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	player->sendItemInspection(itemId, itemCount, nullptr, cyclopedia);
 }
 
@@ -1051,6 +1063,7 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 }
 
 void Game::playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -1133,6 +1146,7 @@ void Game::playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, 
 }
 
 void Game::playerMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> movingCreature, const Position &movingCreatureOrigPos, std::shared_ptr<Tile> toTile) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (!player->canDoAction()) {
 		uint32_t delay = 600;
 		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerMoveCreatureByID, this, player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()), "Game::playerMoveCreatureByID");
@@ -1272,6 +1286,7 @@ ReturnValue Game::internalMoveCreature(std::shared_ptr<Creature> creature, Direc
 }
 
 ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &toTile, uint32_t flags /*= 0*/) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (creature->hasCondition(CONDITION_ROOTED)) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -1668,6 +1683,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 }
 
 ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder, int32_t index, std::shared_ptr<Item> item, uint32_t count, std::shared_ptr<Item>* movedItem, uint32_t flags /*= 0*/, std::shared_ptr<Creature> actor /*=nullptr*/, std::shared_ptr<Item> tradeItem /* = nullptr*/, bool checkTile /* = true*/) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (fromCylinder == nullptr) {
 		g_logger().error("[{}] fromCylinder is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
@@ -1918,6 +1934,7 @@ ReturnValue Game::internalAddItem(std::shared_ptr<Cylinder> toCylinder, std::sha
 }
 
 ReturnValue Game::internalAddItem(std::shared_ptr<Cylinder> toCylinder, std::shared_ptr<Item> item, int32_t index, uint32_t flags, bool test, uint32_t &remainderCount) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (toCylinder == nullptr) {
 		g_logger().error("[{}] fromCylinder is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
@@ -2004,6 +2021,7 @@ ReturnValue Game::internalAddItem(std::shared_ptr<Cylinder> toCylinder, std::sha
 }
 
 ReturnValue Game::internalRemoveItem(std::shared_ptr<Item> item, int32_t count /*= -1*/, bool test /*= false*/, uint32_t flags /*= 0*/, bool force /*= false*/) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (item == nullptr) {
 		g_logger().debug("{} - Item is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
@@ -2063,6 +2081,7 @@ ReturnValue Game::internalRemoveItem(std::shared_ptr<Item> item, int32_t count /
 }
 
 std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared_ptr<Cylinder> &toCylinder, const std::vector<std::shared_ptr<Item>> &items, uint32_t flags /* = 0 */, bool dropOnMap /* = true */, uint32_t autoContainerId /* = 0 */) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	const auto player = toCylinder->getPlayer();
 	bool dropping = false;
 	ReturnValue ret = RETURNVALUE_NOTPOSSIBLE;
@@ -2130,6 +2149,7 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 }
 
 std::tuple<ReturnValue, uint32_t, uint32_t> Game::createItemBatch(const std::shared_ptr<Cylinder> &toCylinder, const std::vector<std::tuple<uint16_t, uint32_t, uint16_t>> &itemCounts, uint32_t flags /* = 0 */, bool dropOnMap /* = true */, uint32_t autoContainerId /* = 0 */) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	std::vector<std::shared_ptr<Item>> items;
 	for (const auto &[itemId, count, subType] : itemCounts) {
 		const auto &itemType = Item::items[itemId];
@@ -2163,6 +2183,7 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::createItem(const std::shared_p
 }
 
 ReturnValue Game::internalPlayerAddItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, bool dropOnMap /*= true*/, Slots_t slot /*= CONST_SLOT_WHEREEVER*/) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	uint32_t remainderCount = 0;
 	ReturnValue ret = internalAddItem(player, item, static_cast<int32_t>(slot), 0, false, remainderCount);
 	if (remainderCount != 0) {
@@ -2185,6 +2206,7 @@ ReturnValue Game::internalPlayerAddItem(std::shared_ptr<Player> player, std::sha
 }
 
 std::shared_ptr<Item> Game::findItemOfType(std::shared_ptr<Cylinder> cylinder, uint16_t itemId, bool depthSearch /*= true*/, int32_t subType /*= -1*/) const {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (cylinder == nullptr) {
 		g_logger().error("[{}] Cylinder is nullptr", __FUNCTION__);
 		return nullptr;
@@ -2360,6 +2382,7 @@ void Game::addMoney(std::shared_ptr<Cylinder> cylinder, uint64_t money, uint32_t
 }
 
 std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t newId, int32_t newCount /*= -1*/) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (item->getID() == newId && (newCount == -1 || (newCount == item->getSubType() && newCount != 0))) { // chargeless item placed on map = infinite
 		return item;
 	}
@@ -2490,7 +2513,8 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 	return newItem;
 }
 
-ReturnValue Game::internalTeleport(std::shared_ptr<Thing> thing, const Position &newPos, bool pushMove /* = true*/, uint32_t flags /*= 0*/) {
+ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Position &newPos, bool pushMove /* = true*/, uint32_t flags /*= 0*/) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (thing == nullptr) {
 		g_logger().error("[{}] thing is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
@@ -2781,6 +2805,7 @@ ReturnValue Game::internalCollectLootItems(std::shared_ptr<Player> player, std::
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
 			player->setBankBalance(player->getBankBalance() + money);
+			g_metrics().addCounter("balance_increase", money, { { "player", player->getName() }, { "context", "loot" } });
 			return RETURNVALUE_NOERROR;
 		}
 	}
@@ -3239,6 +3264,7 @@ void Game::playerStopAutoWalk(uint32_t playerId) {
 }
 
 void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t fromStackPos, uint16_t fromItemId, const Position &toPos, uint8_t toStackPos, uint16_t toItemId) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -3368,6 +3394,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 }
 
 void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -3462,6 +3489,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 }
 
 void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uint8_t fromStackPos, uint32_t creatureId, uint16_t itemId) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -4671,6 +4699,7 @@ void Game::internalCloseTrade(std::shared_ptr<Player> player) {
 }
 
 void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint16_t amount, bool ignoreCap /* = false*/, bool inBackpacks /* = false*/) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (amount == 0) {
 		return;
 	}
@@ -4709,6 +4738,7 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 }
 
 void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint16_t amount, bool ignoreEquipped) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (amount == 0) {
 		return;
 	}
@@ -5455,7 +5485,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 
 		auto deltaSpeedChange = mount->speed;
 		if (player->isMounted()) {
-			const auto prevMount = mounts.getMountByID(player->getCurrentMount());
+			const auto prevMount = mounts.getMountByID(player->getLastMount());
 			if (prevMount) {
 				deltaSpeedChange -= prevMount->speed;
 			}
@@ -5786,12 +5816,14 @@ void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 }
 
 void Game::removeCreatureCheck(const std::shared_ptr<Creature> &creature) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	if (creature->inCheckCreaturesVector) {
 		creature->creatureCheck = false;
 	}
 }
 
 void Game::checkCreatures() {
+	metrics::method_latency measure(__METHOD_NAME__);
 	static size_t index = 0;
 
 	auto &checkCreatureList = checkCreatureLists[index];
@@ -5990,6 +6022,31 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 	std::shared_ptr<Player> targetPlayer = target->getPlayer();
 
 	if (damage.primary.type != COMBAT_NONE) {
+
+		damage.primary.value = -damage.primary.value;
+		// Damage healing primary
+		if (attacker) {
+			if (target->getMonster()) {
+				uint32_t primaryHealing = target->getMonster()->getHealingCombatValue(damage.primary.type);
+				if (primaryHealing > 0) {
+					damageHeal.primary.value = std::ceil((damage.primary.value) * (primaryHealing / 100.));
+					canHeal = true;
+				}
+			}
+			if (targetPlayer && attacker->getAbsorbPercent(damage.primary.type) != 0) {
+				damageAbsorbMessage = true;
+			}
+			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.primary.type) != 0) {
+				damageIncreaseMessage = true;
+			}
+			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
+		}
+		damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
+
+		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
+
+		damage.primary.value = -damage.primary.value;
+		InternalGame::sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition(), attacker);
 		// Damage reflection primary
 		if (!damage.extension && attacker) {
 			if (targetPlayer && attacker->getMonster() && damage.primary.type != COMBAT_HEALING) {
@@ -6028,57 +6085,12 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 				}
 			}
 		}
-		damage.primary.value = -damage.primary.value;
-		// Damage healing primary
-		if (attacker) {
-			if (target->getMonster()) {
-				uint32_t primaryHealing = target->getMonster()->getHealingCombatValue(damage.primary.type);
-				if (primaryHealing > 0) {
-					damageHeal.primary.value = std::ceil((damage.primary.value) * (primaryHealing / 100.));
-					canHeal = true;
-				}
-			}
-			if (targetPlayer && attacker->getAbsorbPercent(damage.primary.type) != 0) {
-				damageAbsorbMessage = true;
-			}
-			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.primary.type) != 0) {
-				damageIncreaseMessage = true;
-			}
-			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
-		}
-		damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
-
-		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
-
-		damage.primary.value = -damage.primary.value;
-		InternalGame::sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition(), attacker);
 	} else {
 		primaryBlockType = BLOCK_NONE;
 	}
 
 	if (damage.secondary.type != COMBAT_NONE) {
-		// Damage reflection secondary
-		if (!damage.extension && attacker && target->getMonster()) {
-			uint32_t secondaryReflectPercent = target->getReflectPercent(damage.secondary.type, true);
-			uint32_t secondaryReflectFlat = target->getReflectFlat(damage.secondary.type, true);
-			if (secondaryReflectPercent > 0 || secondaryReflectFlat > 0) {
-				if (!canReflect) {
-					damageReflected.primary.type = damage.secondary.type;
-					damageReflected.primary.value = std::ceil(damage.secondary.value * secondaryReflectPercent / 100.) + std::max(-static_cast<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01)), std::max(damage.secondary.value, -(static_cast<int32_t>(secondaryReflectFlat))));
-					if (!damageReflected.exString.empty()) {
-						damageReflected.exString += ", ";
-					}
-					damageReflected.extension = true;
-					damageReflected.exString += "damage reflection";
-					damageReflectedParams.combatType = damage.primary.type;
-					damageReflectedParams.aggressive = true;
-					canReflect = true;
-				} else {
-					damageReflected.secondary.type = damage.secondary.type;
-					damageReflected.primary.value = std::ceil(damage.secondary.value * secondaryReflectPercent / 100.) + std::max(-static_cast<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01)), std::max(damage.secondary.value, -(static_cast<int32_t>(secondaryReflectFlat))));
-				}
-			}
-		}
+
 		damage.secondary.value = -damage.secondary.value;
 		// Damage healing secondary
 		if (attacker && target->getMonster()) {
@@ -6102,9 +6114,32 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 
 		damage.secondary.value = -damage.secondary.value;
 		InternalGame::sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition(), attacker);
+
+		if (!damage.extension && attacker && target->getMonster()) {
+			int32_t secondaryReflectPercent = target->getReflectPercent(damage.secondary.type, true);
+			int32_t secondaryReflectFlat = target->getReflectFlat(damage.secondary.type, true);
+			if (secondaryReflectPercent > 0 || secondaryReflectFlat > 0) {
+				if (!canReflect) {
+					damageReflected.primary.type = damage.secondary.type;
+					damageReflected.primary.value = std::ceil(damage.secondary.value * secondaryReflectPercent / 100.) + std::max(-static_cast<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01)), std::max(damage.secondary.value, -(static_cast<int32_t>(secondaryReflectFlat))));
+					if (!damageReflected.exString.empty()) {
+						damageReflected.exString += ", ";
+					}
+					damageReflected.extension = true;
+					damageReflected.exString += "damage reflection";
+					damageReflectedParams.combatType = damage.primary.type;
+					damageReflectedParams.aggressive = true;
+					canReflect = true;
+				} else {
+					damageReflected.secondary.type = damage.secondary.type;
+					damageReflected.primary.value = std::ceil(damage.secondary.value * secondaryReflectPercent / 100.) + std::max(-static_cast<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01)), std::max(damage.secondary.value, -(static_cast<int32_t>(secondaryReflectFlat))));
+				}
+			}
+		}
 	} else {
 		secondaryBlockType = BLOCK_NONE;
 	}
+	// Damage reflection secondary
 
 	if (damage.primary.type == COMBAT_HEALING) {
 		damage.primary.value *= target->getBuff(BUFF_HEALINGRECEIVED) / 100.;
@@ -7223,13 +7258,7 @@ bool Game::combatChangeMana(std::shared_ptr<Creature> attacker, std::shared_ptr<
 		}
 
 		target->drainMana(attacker, manaLoss);
-		if (targetPlayer) {
-			std::string cause = "(other)";
-			if (attacker) {
-				cause = attacker->getName();
-			}
-			targetPlayer->updateInputAnalyzer(damage.primary.type, damage.primary.value * -1, cause);
-		}
+
 		std::stringstream ss;
 
 		std::string damageString = std::to_string(manaLoss);
@@ -8470,6 +8499,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		}
 
 		g_game().removeMoney(player, fee, 0, true);
+		g_metrics().addCounter("balance_decrease", fee, { { "player", player->getName() }, { "context", "market_fee" } });
 	} else {
 		uint64_t totalPrice = price * amount;
 		totalPrice += fee;
@@ -8479,6 +8509,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		}
 
 		g_game().removeMoney(player, totalPrice, 0, true);
+		g_metrics().addCounter("balance_decrease", totalPrice, { { "player", player->getName() }, { "context", "market_offer" } });
 	}
 
 	// Send market window again for update item stats and avoid item clone
@@ -8497,17 +8528,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	}
 
 	IOMarket::createOffer(player->getGUID(), static_cast<MarketAction_t>(type), it.id, amount, price, tier, anonymous);
-
-	// uint8_t = tier, uint64_t price
-	std::map<uint8_t, uint64_t> tierAndPriceMap;
-	tierAndPriceMap[tier] = price;
-	auto ColorItem = itemsPriceMap.find(it.id);
-	if (ColorItem == itemsPriceMap.end()) {
-		itemsPriceMap[it.id] = tierAndPriceMap;
-		itemsSaleCount++;
-	} else if (auto priceIt = ColorItem->second.find(tier); priceIt->second < price) {
-		itemsPriceMap[it.id] = tierAndPriceMap;
-	}
 
 	const MarketOfferList &buyOffers = IOMarket::getActiveOffers(MARKETACTION_BUY, it.id, tier);
 	const MarketOfferList &sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id, tier);
@@ -8540,6 +8560,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	if (offer.type == MARKETACTION_BUY) {
 		player->setBankBalance(player->getBankBalance() + offer.price * offer.amount);
+		g_metrics().addCounter("balance_decrease", offer.price * offer.amount, { { "player", player->getName() }, { "context", "market_purchase" } });
 		// Send market window again for update stats
 		player->sendMarketEnter(player->getLastDepotId());
 	} else {
@@ -8700,6 +8721,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		player->setBankBalance(player->getBankBalance() + totalPrice);
+		g_metrics().addCounter("balance_increase", totalPrice, { { "player", player->getName() }, { "context", "market_sale" } });
 
 		if (it.id == ITEM_STORE_COIN) {
 			buyerPlayer->getAccount()->addCoins(account::CoinType::TRANSFERABLE, amount, "Purchased on Market");
@@ -8770,6 +8792,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			player->setBankBalance(0);
 			g_game().removeMoney(player, remainsPrice);
 		}
+		g_metrics().addCounter("balance_decrease", totalPrice, { { "player", player->getName() }, { "context", "market_purchase" } });
 
 		if (it.id == ITEM_STORE_COIN) {
 			player->getAccount()->addCoins(account::CoinType::TRANSFERABLE, amount, "Purchased on Market");
@@ -8824,6 +8847,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
+		g_metrics().addCounter("balance_increase", totalPrice, { { "player", sellerPlayer->getName() }, { "context", "market_sale" } });
 		if (it.id == ITEM_STORE_COIN) {
 			sellerPlayer->getAccount()->registerCoinTransaction(account::CoinTransactionType::REMOVE, account::CoinType::TRANSFERABLE, amount, "Sold on Market");
 		}
@@ -8932,6 +8956,7 @@ void Game::playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, ui
 }
 
 void Game::playerForgeFuseItems(uint32_t playerId, uint16_t itemId, uint8_t tier, bool usedCore, bool reduceTierLoss) {
+	metrics::method_latency measure(__METHOD_NAME__);
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -9015,6 +9040,7 @@ void Game::playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selec
 		uint8_t removeTimes = player->getRemoveTimes();
 		uint32_t removePrice = g_ioBosstiary().calculteRemoveBoss(removeTimes);
 		g_game().removeMoney(player, removePrice, 0, true);
+		g_metrics().addCounter("balance_decrease", removePrice, { { "player", player->getName() }, { "context", "bosstiary_remove" } });
 		player->addRemoveTime();
 	}
 

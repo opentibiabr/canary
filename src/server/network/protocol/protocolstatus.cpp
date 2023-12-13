@@ -154,22 +154,22 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 
 	if (requestedInfo & REQUEST_BASIC_SERVER_INFO) {
 		output->addByte(0x10);
-		output->addString(g_configManager().getString(ConfigKey_t::SERVER_NAME, __FUNCTION__));
-		output->addString(g_configManager().getString(IP, __FUNCTION__));
-		output->addString(std::to_string(g_configManager().getNumber(LOGIN_PORT, __FUNCTION__)));
+		output->addString(g_configManager().getString(ConfigKey_t::SERVER_NAME, __FUNCTION__), "ProtocolStatus::sendInfo - g_configManager().getString(stringConfig_t::SERVER_NAME)");
+		output->addString(g_configManager().getString(IP, __FUNCTION__), "ProtocolStatus::sendInfo - g_configManager().getString(IP)");
+		output->addString(std::to_string(g_configManager().getNumber(LOGIN_PORT, __FUNCTION__)), "ProtocolStatus::sendInfo - std::to_string(g_configManager().getNumber(LOGIN_PORT))");
 	}
 
 	if (requestedInfo & REQUEST_OWNER_SERVER_INFO) {
 		output->addByte(0x11);
-		output->addString(g_configManager().getString(OWNER_NAME, __FUNCTION__));
-		output->addString(g_configManager().getString(OWNER_EMAIL, __FUNCTION__));
+		output->addString(g_configManager().getString(OWNER_NAME, __FUNCTION__), "ProtocolStatus::sendInfo - g_configManager().getString(OWNER_NAME)");
+		output->addString(g_configManager().getString(OWNER_EMAIL, __FUNCTION__), "ProtocolStatus::sendInfo - g_configManager().getString(OWNER_EMAIL)");
 	}
 
 	if (requestedInfo & REQUEST_MISC_SERVER_INFO) {
 		output->addByte(0x12);
-		output->addString(g_configManager().getString(SERVER_MOTD, __FUNCTION__));
-		output->addString(g_configManager().getString(LOCATION, __FUNCTION__));
-		output->addString(g_configManager().getString(URL, __FUNCTION__));
+		output->addString(g_configManager().getString(SERVER_MOTD, __FUNCTION__), "ProtocolStatus::sendInfo - g_configManager().getString(SERVER_MOTD)");
+		output->addString(g_configManager().getString(LOCATION, __FUNCTION__), "ProtocolStatus::sendInfo - g_configManager().getString(LOCATION)");
+		output->addString(g_configManager().getString(URL, __FUNCTION__), "ProtocolStatus::sendInfo - g_configManager().getString(URL)");
 		output->add<uint64_t>((OTSYS_TIME() - ProtocolStatus::start) / 1000);
 	}
 
@@ -182,8 +182,8 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 
 	if (requestedInfo & REQUEST_MAP_INFO) {
 		output->addByte(0x30);
-		output->addString(g_configManager().getString(MAP_NAME, __FUNCTION__));
-		output->addString(g_configManager().getString(MAP_AUTHOR, __FUNCTION__));
+		output->addString(g_configManager().getString(MAP_NAME, __FUNCTION__), "ProtocolStatus::sendInfo - g_configManager().getString(MAP_NAME)");
+		output->addString(g_configManager().getString(MAP_AUTHOR, __FUNCTION__), "ProtocolStatus::sendInfo - g_configManager().getString(MAP_AUTHOR)");
 		uint32_t mapWidth, mapHeight;
 		g_game().getMapDimensions(mapWidth, mapHeight);
 		output->add<uint16_t>(mapWidth);
@@ -196,7 +196,7 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 		const auto players = g_game().getPlayers();
 		output->add<uint32_t>(players.size());
 		for (const auto &it : players) {
-			output->addString(it.second->getName());
+			output->addString(it.second->getName(), "ProtocolStatus::sendInfo - it.second->getName()");
 			output->add<uint32_t>(it.second->getLevel());
 		}
 	}
@@ -212,9 +212,9 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 
 	if (requestedInfo & REQUEST_SERVER_SOFTWARE_INFO) {
 		output->addByte(0x23); // server software info
-		output->addString(ProtocolStatus::SERVER_NAME);
-		output->addString(ProtocolStatus::SERVER_VERSION);
-		output->addString(fmt::format("{}.{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+		output->addString(ProtocolStatus::SERVER_NAME, "ProtocolStatus::sendInfo - ProtocolStatus::SERVER_NAME");
+		output->addString(ProtocolStatus::SERVER_VERSION, "ProtocolStatus::sendInfo - ProtocolStatus::SERVER_VERSION)");
+		output->addString(fmt::format("{}.{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER), "ProtocolStatus::sendInfo - fmt::format(CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER)");
 	}
 	send(output);
 	disconnect();

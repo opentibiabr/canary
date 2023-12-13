@@ -62,12 +62,13 @@ statusProtocolPort = 7171
 maxPlayers = 0
 serverName = "OTServBR-Global"
 serverMotd = "Welcome to the OTServBR-Global!"
-onePlayerOnlinePerAccount = true
 statusTimeout = 5 * 1000
 replaceKickOnLogin = true
 maxPacketsPerSecond = 25
 maxItem = 2000
 maxContainer = 100
+maxPlayersOnlinePerAccount = 1
+maxPlayersOutsidePZPerAccount = 1
 
 -- Packet Compression
 -- Minimize network bandwith and reduce ping
@@ -207,6 +208,7 @@ onlyPremiumAccount = false
 -- NOTE: buyBlessCommandFee will add fee when player buy bless by command (!bless), active changing value between 1 and 100 (fee percent. ex: 3 = 3%, 30 = 30%)
 -- NOTE: teleportPlayerToVocationRoom will enable oressa to teleport player to his/her room vocation
 -- NOTE: toggleReceiveReward = true, will enable players to choose one of reward exercise weapon by command !reward
+-- NOTE: randomMonsterSpawn = true, will enable monsters from the same spawn to be randomized between them, thus making a variable hunt
 weatherRain = false
 thunderEffect = false
 allConsoleLog = false
@@ -222,6 +224,7 @@ buyAolCommandFee = 0
 buyBlessCommandFee = 0
 teleportPlayerToVocationRoom = true
 toggleReceiveReward = false
+randomMonsterSpawn = false
 
 -- Teleport summon
 -- Set to true will never remove the summon
@@ -490,3 +493,12 @@ vipKeepHouse = false
 -- NOTE set rewardChestMaxCollectItems max items per collect action
 rewardChestCollectEnabled = true
 rewardChestMaxCollectItems = 200
+
+-- Metrics
+--- Prometheus
+metricsEnablePrometheus = false
+metricsPrometheusAddress = "0.0.0.0:9464"
+
+--- OStream
+metricsEnableOstream = false
+metricsOstreamInterval = 1000

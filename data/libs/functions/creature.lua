@@ -7,9 +7,14 @@ function Creature.getClosestFreePosition(self, position, maxRadius, mustBeReacha
 	end
 
 	local checkPosition = Position(position)
+	local closestDistance = -1
+	local closestPosition = Position()
 	for radius = 0, maxRadius do
 		checkPosition.x = checkPosition.x - math.min(1, radius)
 		checkPosition.y = checkPosition.y + math.min(1, radius)
+		if closestDistance ~= -1 then
+			return closestPosition
+		end
 
 		local total = math.max(1, radius * 8)
 		for i = 1, total do
@@ -20,11 +25,15 @@ function Creature.getClosestFreePosition(self, position, maxRadius, mustBeReacha
 
 			local tile = Tile(checkPosition)
 			if tile and tile:getCreatureCount() == 0 and not tile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) and (not mustBeReachable or self:getPathTo(checkPosition)) then
-				return checkPosition
+				local distance = self:getPosition():getDistance(checkPosition)
+				if closestDistance == -1 or closestDistance > distance then
+					closestDistance = distance
+					closestPosition = Position(checkPosition)
+				end
 			end
 		end
 	end
-	return Position()
+	return closestPosition
 end
 
 function Creature.getMonster(self)

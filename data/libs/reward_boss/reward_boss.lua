@@ -116,6 +116,9 @@ function ResetAndSetTargetList(creature)
 
 	local bossId = creature:getId()
 	local info = _G.GlobalBosses[bossId]
+	if not info then
+		return
+	end
 	-- Reset all players' status
 	for _, player in pairs(info) do
 		player.active = false

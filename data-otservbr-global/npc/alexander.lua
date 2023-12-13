@@ -29,6 +29,49 @@ npcConfig.voices = {
 	{ text = "Selling all sorts of magic equipment. Come and have a look" },
 }
 
+local itemsTable = {
+	["runes"] = {
+		{ itemName = "animate dead rune", clientId = 3203, buy = 375 },
+		{ itemName = "blank rune", clientId = 3147, buy = 10 },
+		{ itemName = "desintegrate rune", clientId = 3197, buy = 26 },
+		{ itemName = "energy bomb rune", clientId = 3149, buy = 203 },
+		{ itemName = "fireball rune", clientId = 3189, buy = 30 },
+		{ itemName = "holy missile rune", clientId = 3182, buy = 16 },
+		{ itemName = "icicle rune", clientId = 3158, buy = 30 },
+		{ itemName = "magic wall rune", clientId = 3180, buy = 116 },
+		{ itemName = "paralyze rune", clientId = 3165, buy = 700 },
+		{ itemName = "poison bomb rune", clientId = 3173, buy = 85 },
+		{ itemName = "soulfire rune", clientId = 3195, buy = 46 },
+		{ itemName = "stone shower rune", clientId = 3175, buy = 37 },
+		{ itemName = "thunderstorm rune", clientId = 3202, buy = 47 },
+		{ itemName = "wild growth rune", clientId = 3156, buy = 160 },
+	},
+	["wands"] = {
+		{ itemName = "hailstorm rod", clientId = 3067, buy = 15000 },
+		{ itemName = "moonlight rod", clientId = 3070, buy = 1000 },
+		{ itemName = "necrotic rod", clientId = 3069, buy = 5000 },
+		{ itemName = "northwind rod", clientId = 8083, buy = 7500 },
+		{ itemName = "springsprout rod", clientId = 8084, buy = 18000 },
+		{ itemName = "terra rod", clientId = 3065, buy = 10000 },
+		{ itemName = "underworld rod", clientId = 8082, buy = 22000 },
+		{ itemName = "wand of cosmic energy", clientId = 3073, buy = 10000 },
+		{ itemName = "wand of decay", clientId = 3072, buy = 5000 },
+		{ itemName = "wand of draconia", clientId = 8093, buy = 7500 },
+		{ itemName = "wand of dragonbreath", clientId = 3075, buy = 1000 },
+		{ itemName = "wand of inferno", clientId = 3071, buy = 15000 },
+		{ itemName = "wand of starstorm", clientId = 8092, buy = 18000 },
+		{ itemName = "wand of voodoo", clientId = 8094, buy = 22000 },
+		{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
+	},
+}
+
+npcConfig.shop = {}
+for _, categoryTable in pairs(itemsTable) do
+	for _, itemTable in ipairs(categoryTable) do
+		table.insert(npcConfig.shop, itemTable)
+	end
+end
+
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 
@@ -69,6 +112,12 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
+	local formattedCategoryNames = {}
+	for categoryName, _ in pairs(itemsTable) do
+		table.insert(formattedCategoryNames, "{" .. categoryName .. "}")
+	end
+
+	local categoryTable = itemsTable[message:lower()]
 	local itemId = items[player:getVocation():getBaseId()]
 	if MsgContains(message, "first rod") or MsgContains(message, "first wand") then
 		if player:isMage() then
@@ -91,6 +140,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "no") and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:say("Ok then.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
+	elseif categoryTable then
+		npcHandler:say("Of course, just browse through my wares.", npc, player)
+		npc:openShopWindowTable(player, categoryTable)
 	end
 	return true
 end
@@ -104,53 +156,6 @@ npcHandler:setMessage(MESSAGE_WALKAWAY, "See you, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just browse through my wares. Or do you want to look only at {runes} or {wands}?")
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-npcConfig.shop = {
-	{ itemName = "animate dead rune", clientId = 3203, buy = 375 },
-	{ itemName = "blank rune", clientId = 3147, buy = 10 },
-	{ itemName = "crystal ball", clientId = 3076, buy = 530, sell = 190 },
-	{ itemName = "desintegrate rune", clientId = 3197, buy = 26 },
-	{ itemName = "durable exercise rod", clientId = 35283, buy = 945000, count = 1800 },
-	{ itemName = "durable exercise wand", clientId = 35284, buy = 945000, count = 1800 },
-	{ itemName = "energy bomb rune", clientId = 3149, buy = 203 },
-	{ itemName = "exercise rod", clientId = 28556, buy = 262500, count = 500 },
-	{ itemName = "exercise wand", clientId = 28557, buy = 262500, count = 500 },
-	{ itemName = "fireball rune", clientId = 3189, buy = 30 },
-	{ itemName = "hailstorm rod", clientId = 3067, buy = 15000 },
-	{ itemName = "holy missile rune", clientId = 3182, buy = 16 },
-	{ itemName = "icicle rune", clientId = 3158, buy = 30 },
-	{ itemName = "lasting exercise rod", clientId = 35289, buy = 7560000, count = 14400 },
-	{ itemName = "lasting exercise wand", clientId = 35290, buy = 7560000, count = 14400 },
-	{ itemName = "life crystal", clientId = 3061, sell = 85 },
-	{ itemName = "life ring", clientId = 3052, buy = 900 },
-	{ itemName = "magic wall rune", clientId = 3180, buy = 116 },
-	{ itemName = "mind stone", clientId = 3062, sell = 170 },
-	{ itemName = "moonlight rod", clientId = 3070, buy = 1000 },
-	{ itemName = "necrotic rod", clientId = 3069, buy = 5000 },
-	{ itemName = "northwind rod", clientId = 8083, buy = 7500 },
-	{ itemName = "paralyze rune", clientId = 3165, buy = 700 },
-	{ itemName = "poison bomb rune", clientId = 3173, buy = 85 },
-	{ itemName = "snakebite rod", clientId = 3066, buy = 500 },
-	{ itemName = "soulfire rune", clientId = 3195, buy = 46 },
-	{ itemName = "spellbook of enlightenment", clientId = 8072, sell = 4000 },
-	{ itemName = "spellbook of lost souls", clientId = 8075, sell = 19000 },
-	{ itemName = "spellbook of mind control", clientId = 8074, sell = 13000 },
-	{ itemName = "spellbook of warding", clientId = 8073, sell = 8000 },
-	{ itemName = "spellwand", clientId = 651, sell = 299 },
-	{ itemName = "springsprout rod", clientId = 8084, buy = 18000 },
-	{ itemName = "stone shower rune", clientId = 3175, buy = 37 },
-	{ itemName = "terra rod", clientId = 3065, buy = 10000 },
-	{ itemName = "thunderstorm rune", clientId = 3202, buy = 47 },
-	{ itemName = "underworld rod", clientId = 8082, buy = 22000 },
-	{ itemName = "wand of cosmic energy", clientId = 3073, buy = 10000 },
-	{ itemName = "wand of decay", clientId = 3072, buy = 5000 },
-	{ itemName = "wand of draconia", clientId = 8093, buy = 7500 },
-	{ itemName = "wand of dragonbreath", clientId = 3075, buy = 1000 },
-	{ itemName = "wand of inferno", clientId = 3071, buy = 15000 },
-	{ itemName = "wand of starstorm", clientId = 8092, buy = 18000 },
-	{ itemName = "wand of voodoo", clientId = 8094, buy = 22000 },
-	{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
-	{ itemName = "wild growth rune", clientId = 3156, buy = 160 },
-}
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)

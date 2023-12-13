@@ -12,6 +12,7 @@
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
 #include "lib/di/container.hpp"
+#include "lib/metrics/metrics.hpp"
 
 Database::~Database() {
 	if (handle != nullptr) {
@@ -60,7 +61,10 @@ bool Database::beginTransaction() {
 	if (!executeQuery("BEGIN")) {
 		return false;
 	}
+	metrics::lock_latency measureLock("database");
 	databaseLock.lock();
+	measureLock.stop();
+
 	return true;
 }
 
@@ -121,11 +125,14 @@ bool Database::executeQuery(const std::string_view &query) {
 
 	g_logger().trace("Executing Query: {}", query);
 
+	metrics::lock_latency measureLock("database");
 	std::scoped_lock lock { databaseLock };
+	measureLock.stop();
 
+	metrics::query_latency measure(query.substr(0, 50));
 	bool success = retryQuery(query, 10);
-
 	mysql_free_result(mysql_store_result(handle));
+
 	return success;
 }
 
@@ -136,8 +143,11 @@ DBResult_ptr Database::storeQuery(const std::string_view &query) {
 	}
 	g_logger().trace("Storing Query: {}", query);
 
+	metrics::lock_latency measureLock("database");
 	std::scoped_lock lock { databaseLock };
+	measureLock.stop();
 
+	metrics::query_latency measure(query.substr(0, 50));
 retry:
 	if (mysql_query(handle, query.data()) != 0) {
 		g_logger().error("Query: {}", query);

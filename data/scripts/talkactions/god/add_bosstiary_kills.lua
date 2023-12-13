@@ -13,13 +13,13 @@ function talkaction.onSay(player, words, param)
 
 	if not kills or kills < 1 then
 		player:sendCancelMessage("Invalid kill count.")
-		return false
+		return true
 	end
 
 	local target = targetName ~= "" and Player(targetName) or player
 	if not target then
 		player:sendCancelMessage("Target player not found.")
-		return false
+		return true
 	end
 
 	local message = "Added received kills: " .. kills .. ", for boss: " .. monsterName

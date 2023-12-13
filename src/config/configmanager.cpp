@@ -44,6 +44,7 @@ bool ConfigManager::load() {
 		loadBoolConfig(L, OPTIMIZE_DATABASE, "startupDatabaseOptimization", true);
 		loadBoolConfig(L, TOGGLE_MAP_CUSTOM, "toggleMapCustom", true);
 		loadBoolConfig(L, TOGGLE_MAINTAIN_MODE, "toggleMaintainMode", false);
+		loadBoolConfig(L, RANDOM_MONSTER_SPAWN, "randomMonsterSpawn", false);
 		loadStringConfig(L, MAINTAIN_MODE_MESSAGE, "maintainModeMessage", "");
 
 		loadStringConfig(L, IP, "ip", "127.0.0.1");
@@ -82,7 +83,8 @@ bool ConfigManager::load() {
 	}
 
 	loadBoolConfig(L, ALLOW_CHANGEOUTFIT, "allowChangeOutfit", true);
-	loadBoolConfig(L, ONE_PLAYER_ON_ACCOUNT, "onePlayerOnlinePerAccount", true);
+	loadIntConfig(L, MAX_PLAYERS_PER_ACCOUNT, "maxPlayersOnlinePerAccount", 1);
+	loadIntConfig(L, MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT, "maxPlayersOutsidePZPerAccount", 1);
 	loadBoolConfig(L, AIMBOT_HOTKEY_ENABLED, "hotkeyAimbotEnabled", true);
 	loadBoolConfig(L, REMOVE_RUNE_CHARGES, "removeChargesFromRunes", true);
 	loadBoolConfig(L, EXPERIENCE_FROM_PLAYERS, "experienceByKillingPlayers", false);
@@ -348,6 +350,12 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, "togglehouseTransferOnRestart", false);
 
 	loadBoolConfig(L, TOGGLE_RECEIVE_REWARD, "toggleReceiveReward", false);
+
+	loadBoolConfig(L, METRICS_ENABLE_PROMETHEUS, "metricsEnablePrometheus", false);
+	loadStringConfig(L, METRICS_PROMETHEUS_ADDRESS, "metricsPrometheusAddress", "localhost:9464");
+
+	loadBoolConfig(L, METRICS_ENABLE_OSTREAM, "metricsEnableOstream", false);
+	loadIntConfig(L, METRICS_OSTREAM_INTERVAL, "metricsOstreamInterval", 1000);
 
 	loaded = true;
 	lua_close(L);

@@ -371,6 +371,10 @@ local questTable = {
 
 	{ storage = Storage.HeroRathleton.AccessDoor, storageValue = 1 },
 	{ storage = Storage.HeroRathleton.FastWay, storageValue = 1 },
+
+	-- Sea Serpent Quest
+	{ storage = Storage.Quest.U8_2.FishForASerpent.QuestLine, storageValue = 5 },
+	{ storage = Storage.Quest.U8_2.TheHuntForTheSeaSerpent.QuestLine, storageValue = 2 },
 }
 
 -- from Position: (33201, 31762, 1)

@@ -361,6 +361,10 @@ Blessings.BuyAllBlesses = function(player)
 	end
 
 	if player:removeMoneyBank(totalCost) then
+		metrics.addCounter("balance_decrease", remainsPrice, {
+			player = player:getName(),
+			context = "blessings",
+		})
 		for i, v in ipairs(missingBless) do
 			player:addBlessing(v.id, 1)
 		end

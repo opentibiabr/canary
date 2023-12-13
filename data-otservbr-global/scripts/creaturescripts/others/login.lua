@@ -13,11 +13,6 @@ local function onMovementRemoveProtection(cid, oldPos, time)
 	addEvent(onMovementRemoveProtection, 1000, cid, oldPos, time - 1)
 end
 
-local function protectionZoneCheck(playerName)
-	doRemoveCreature(playerName)
-	return true
-end
-
 local playerLogin = CreatureEvent("PlayerLogin")
 
 function playerLogin.onLogin(player)

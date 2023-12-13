@@ -573,16 +573,6 @@ function getOnlinePlayers()
 	return result
 end
 
-function getPlayersByAccountNumber(accountNumber)
-	local result = {}
-	for _, player in ipairs(Game.getPlayers()) do
-		if player:getAccountId() == accountNumber then
-			result[#result + 1] = player:getId()
-		end
-	end
-	return result
-end
-
 function getPlayerGUIDByName(name)
 	local player = Player(name)
 	if player then

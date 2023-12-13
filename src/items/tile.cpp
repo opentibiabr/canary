@@ -668,6 +668,27 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 			}
 
 			const auto playerTile = player->getTile();
+			// moving from a pz tile to a non-pz tile
+			if (playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+				auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT, __FUNCTION__);
+				if (maxOnline > 1 && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && !hasFlag(TILESTATE_PROTECTIONZONE)) {
+					auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT, __FUNCTION__);
+					auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
+					int countOutsizePZ = 0;
+					for (const auto &accountPlayer : accountPlayers) {
+						if (accountPlayer == player || accountPlayer->isOffline()) {
+							continue;
+						}
+						if (accountPlayer->getTile() && !accountPlayer->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
+							++countOutsizePZ;
+						}
+					}
+					if (countOutsizePZ >= maxOutsizePZ) {
+						player->sendCreatureSay(player, TALKTYPE_MONSTER_SAY, fmt::format("You can only have {} character{} from your account outside of a protection zone.", maxOutsizePZ == 1 ? "one" : std::to_string(maxOutsizePZ), maxOutsizePZ > 1 ? "s" : ""), &getPosition());
+						return RETURNVALUE_NOTPOSSIBLE;
+					}
+				}
+			}
 			if (playerTile && player->isPzLocked()) {
 				if (!playerTile->hasFlag(TILESTATE_PVPZONE)) {
 					// player is trying to enter a pvp zone while being pz-locked

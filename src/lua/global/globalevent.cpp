@@ -199,7 +199,7 @@ std::string GlobalEvent::getScriptTypeName() const {
 			return "onPeriodChange";
 		case GLOBALEVENT_ON_THINK:
 			return "onThink";
-		case GLOBALEVENT_ON_SAVE:
+		case GLOBALEVENT_SAVE:
 			return "onSave";
 		default:
 			g_logger().error("[GlobalEvent::getScriptTypeName] - Invalid event type");

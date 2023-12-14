@@ -274,6 +274,7 @@ function playerLogin.onLogin(player)
 	player:setStaminaXpBoost(staminaBonus * 100)
 
 	player:getFinalLowLevelBonus()
+	player:disableLoginMusic()
 
 	if _G.OnExerciseTraining[player:getId()] then
 		-- onLogin & onLogout

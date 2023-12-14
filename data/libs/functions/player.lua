@@ -739,3 +739,13 @@ function Player:canFightBoss(bossNameOrId)
 	local cooldown = self:getBossCooldown(bossNameOrId)
 	return cooldown <= os.time()
 end
+
+function Player:disableLoginMusic()
+	local msg = NetworkMessage()
+	msg:addByte(0x85)
+	msg:addByte(0x01)
+	msg:addByte(0x00)
+	msg:addByte(0x00)
+	msg:sendToPlayer(self)
+	msg:delete()
+end

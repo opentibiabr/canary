@@ -723,7 +723,7 @@ int GlobalFunctions::luaStopEvent(lua_State* L) {
 }
 
 int GlobalFunctions::luaSaveServer(lua_State* L) {
-	g_globalEvents->save();
+	g_globalEvents().save();
 	g_saveManager().scheduleAll();
 	pushBoolean(L, true);
 	return 1;

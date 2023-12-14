@@ -2545,7 +2545,7 @@ ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Po
 	return RETURNVALUE_NOTPOSSIBLE;
 }
 
-void Game::internalQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr<Container> corpse) {
+void Game::playerQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr<Container> corpse) {
 	if (!player || !corpse) {
 		return;
 	}
@@ -5000,11 +5000,11 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 			auto rewardId = corpse->getAttribute<time_t>(ItemAttribute_t::DATE);
 			auto reward = player->getReward(rewardId, false);
 			if (reward) {
-				internalQuickLootCorpse(player, reward->getContainer());
+				playerQuickLootCorpse(player, reward->getContainer());
 			}
 		} else {
 			if (!lootAllCorpses) {
-				internalQuickLootCorpse(player, corpse);
+				playerQuickLootCorpse(player, corpse);
 			} else {
 				playerLootAllCorpses(player, pos, lootAllCorpses);
 			}
@@ -5041,7 +5041,7 @@ void Game::playerLootAllCorpses(std::shared_ptr<Player> player, const Position &
 			}
 
 			corpses++;
-			internalQuickLootCorpse(player, tileCorpse);
+			playerQuickLootCorpse(player, tileCorpse);
 			if (corpses >= 30) {
 				break;
 			}

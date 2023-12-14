@@ -122,6 +122,7 @@ function login.onLogin(player)
 	player:setStaminaXpBoost(staminaBonus * 100)
 
 	player:getFinalLowLevelBonus()
+	player:sendHotkeyPreset()
 
 	return true
 end

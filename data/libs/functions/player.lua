@@ -739,3 +739,12 @@ function Player:canFightBoss(bossNameOrId)
 	local cooldown = self:getBossCooldown(bossNameOrId)
 	return cooldown <= os.time()
 end
+
+function Player:sendHotkeyPreset()
+	local msg = NetworkMessage()
+	msg:addByte(0x9D)
+	msg:addU32(self:getVocation():getClientId())
+	msg:sendToPlayer(self)
+	msg:delete()
+	return true
+end

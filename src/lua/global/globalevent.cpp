@@ -64,6 +64,14 @@ void GlobalEvents::startup() const {
 	execute(GLOBALEVENT_STARTUP);
 }
 
+void GlobalEvents::shutdown() const {
+	execute(GLOBALEVENT_SHUTDOWN);
+}
+
+void GlobalEvents::save() const {
+	execute(GLOBALEVENT_SAVE);
+}
+
 void GlobalEvents::timer() {
 	time_t now = time(nullptr);
 
@@ -159,7 +167,8 @@ GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type) {
 		case GLOBALEVENT_PERIODCHANGE:
 		case GLOBALEVENT_STARTUP:
 		case GLOBALEVENT_SHUTDOWN:
-		case GLOBALEVENT_RECORD: {
+		case GLOBALEVENT_RECORD:
+		case GLOBALEVENT_SAVE: {
 			GlobalEventMap retMap;
 			for (const auto &it : serverMap) {
 				if (it.second->getEventType() == type) {
@@ -190,6 +199,8 @@ std::string GlobalEvent::getScriptTypeName() const {
 			return "onPeriodChange";
 		case GLOBALEVENT_ON_THINK:
 			return "onThink";
+		case GLOBALEVENT_ON_SAVE:
+			return "onSave";
 		default:
 			g_logger().error("[GlobalEvent::getScriptTypeName] - Invalid event type");
 			return std::string();

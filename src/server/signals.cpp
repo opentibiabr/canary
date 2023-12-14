@@ -92,6 +92,7 @@ void Signals::sigtermHandler() {
 void Signals::sigusr1Handler() {
 	// Dispatcher thread
 	g_logger().info("SIGUSR1 received, saving the game state...");
+	g_globalEvents->save();
 	g_saveManager().scheduleAll();
 }
 

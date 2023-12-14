@@ -15,6 +15,7 @@
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/scripts/lua_environment.hpp"
+#include "lua/global/globalevent.hpp"
 #include "server/signals.hpp"
 
 Signals::Signals(asio::io_service &service) :

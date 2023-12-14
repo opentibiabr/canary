@@ -10,7 +10,7 @@ skill:setParameter(CONDITION_PARAM_DISABLE_DEFENSE, true)
 skill:setParameter(CONDITION_PARAM_BUFF_SPELL, true)
 combat:addCondition(skill)
 
-local speed = Condition(CONDITION_PARALYZE)
+local speed = Condition(CONDITION_HASTE)
 speed:setParameter(CONDITION_PARAM_TICKS, 10000)
 speed:setFormula(0.7, 0, 0.7, 0)
 combat:addCondition(speed)

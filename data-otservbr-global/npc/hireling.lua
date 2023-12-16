@@ -29,6 +29,19 @@ function createHirelingType(HirelingName)
 	npcConfig.flags = {
 		floorchange = false,
 	}
+	
+npcConfig.voices = {
+	interval = 15000,
+	chance = 20,
+	{ text = "Let me know if you need anything!" },
+	{ text = "I trust you are satisfied with my services?" },	
+	{ text = "I hope you are having a nice day so far!" },	
+	{ text = "What can I do for you?" },
+	{ text = "Hope you're doing fine!" },
+	{ text = "Can I help you?" },
+	{ text = "Home sweet home!" },		
+	{ text = "Same procedure as every year?" },	
+}	
 
 	local itemsTable = {
 		["various"] = {
@@ -254,6 +267,8 @@ function createHirelingType(HirelingName)
 		},
 		["rods"] = {
 			{ itemName = "exercise rod", clientId = 28556, buy = 236250, subType = 500 },
+			{ itemName = "durable exercise rod", clientId = 35283, buy = 945000, subType = 1800 },
+			{ itemName = "lasting exercise rod", clientId = 35289, buy = 7560000, subType = 14400 },			
 			{ itemName = "hailstorm rod", clientId = 3067, buy = 15000 },
 			{ itemName = "moonlight rod", clientId = 3070, buy = 1000 },
 			{ itemName = "necrotic rod", clientId = 3069, buy = 5000 },
@@ -265,6 +280,8 @@ function createHirelingType(HirelingName)
 		},
 		["wands"] = {
 			{ itemName = "exercise wand", clientId = 28557, buy = 236250, subType = 500 },
+			{ itemName = "durable exercise wand", clientId = 35284, buy = 945000, subType = 1800 },
+			{ itemName = "lasting exercise wand", clientId = 35290, buy = 7560000, subType = 14400 },			
 			{ itemName = "wand of cosmic energy", clientId = 3073, buy = 10000 },
 			{ itemName = "wand of decay", clientId = 3072, buy = 5000 },
 			{ itemName = "wand of draconia", clientId = 8093, buy = 7500 },
@@ -331,7 +348,6 @@ function createHirelingType(HirelingName)
 			{ itemName = "brown mushroom", clientId = 3725, buy = 10 },
 			{ itemName = "ham", clientId = 3582, buy = 10 },
 			{ itemName = "meat", clientId = 3577, buy = 5 },
-			{ itemName = "shapeshifter ring", clientId = 907, buy = 5500, subType = 15 },
 		},
 		["tools"] = {
 			{ itemName = "basket", clientId = 2855, buy = 6 },
@@ -347,11 +363,9 @@ function createHirelingType(HirelingName)
 			{ itemName = "rope", clientId = 3003, buy = 50, sell = 15 },
 			{ itemName = "scythe", clientId = 3453, buy = 50, sell = 10 },
 			{ itemName = "shovel", clientId = 3457, buy = 50, sell = 8 },
-			{ itemName = "spellwand", clientId = 651, sell = 299 },
 			{ itemName = "torch", clientId = 2920, buy = 2 },
 			{ itemName = "watch", clientId = 2906, buy = 20, sell = 6 },
 			{ itemName = "worm", clientId = 3492, buy = 1 },
-			{ itemName = "spellwand", clientId = 651, sell = 299 },
 		},
 		["postal"] = {
 			{ itemName = "label", clientId = 3507, buy = 1 },
@@ -423,9 +437,10 @@ function createHirelingType(HirelingName)
 	}
 
 	local GREETINGS = {
-		BANK = "Alright! What can I do for you and your bank business, |PLAYERNAME|?",
+		BANK = "We can change money for you. You can also access your {bank account} or your {guild} account options.",
 		FOOD = "Hmm, yes! A variety of fine food awaits! However, a small expense of 15000 gold is expected to make these delicious masterpieces happen. Shall I?",
 		STASH = "Of course, here is your stash! Well-maintained and neatly sorted for your convenience!",
+		POSTAL = "I have all the necessary items to properly enhance your communication, feel free to browse!",
 	}
 
 	local function getHirelingSkills()
@@ -509,7 +524,6 @@ function createHirelingType(HirelingName)
 		elseif food_id == 29416 then
 			message = "Oooh, well... that one didn't quite turn out as it was supposed to be, I'm sorry."
 		end
-
 		return message
 	end
 
@@ -584,14 +598,7 @@ function createHirelingType(HirelingName)
 		end
 
 		-- roleplay
-		if MsgContains(message, "sword of fury") then
-			npcHandler:say("In my youth I dreamt to wield it! Now I wield the broom of... brooming. I guess that's the next best thing!", npc, creature)
-		elseif MsgContains(message, "rookgaard") then
-			npcHandler:say("What an uncivilised place without any culture.", npc, creature)
-		elseif MsgContains(message, "excalibug") then
-			-- end roleplay
-			npcHandler:say("I'll keep an eye open for it when cleaning up the things you brought home!", npc, creature)
-		elseif MsgContains(message, "service") then
+		if MsgContains(message, "service") then
 			npcHandler:setTopic(playerId, TOPIC.SERVICES)
 			local servicesMsg = getHirelingServiceString(creature)
 			npcHandler:say(servicesMsg, npc, creature)
@@ -688,10 +695,17 @@ function createHirelingType(HirelingName)
 		end
 		return true
 	end
+	
+	-- roleplay
+	keywordHandler:addKeyword({ "sword of fury" }, StdModule.say, { npcHandler = npcHandler, text = "In my youth I dreamt to wield it! Now I wield the broom of... brooming. I guess that's the next best thing!" })
+	keywordHandler:addKeyword({ "rookgaard" }, StdModule.say, { npcHandler = npcHandler, text = "What an uncivilised place without any culture." })
+	keywordHandler:addKeyword({ "thais" }, StdModule.say, { npcHandler = npcHandler, text = "The city is somewhat crowded and I noticed some unsavoury people lurking in the alleys." })
+	keywordHandler:addKeyword({ "carlin" }, StdModule.say, { npcHandler = npcHandler, text = "Carlin has a somewhat rustic charm. Its dedication to the finer arts is admirable, however." })	
+	keywordHandler:addKeyword({ "excalibug" }, StdModule.say, { npcHandler = npcHandler, text = "I'll keep an eye open for it when cleaning up the things you brought home!" })
 
 	npcHandler:setMessage(MESSAGE_GREET, "It is good to see you. I'm always at your {service}.")
-	npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell, |PLAYERNAME|, I'll be here if you need me again.")
-	npcHandler:setMessage(MESSAGE_WALKAWAY, "Come back soon!")
+	npcHandler:setMessage(MESSAGE_FAREWELL, "Goodbye!")
+	npcHandler:setMessage(MESSAGE_WALKAWAY, "Have a nice day!")
 
 	npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 	npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

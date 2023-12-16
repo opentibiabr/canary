@@ -611,13 +611,23 @@ int GameFunctions::luaGameHasDistanceEffect(lua_State* L) {
 }
 
 int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
-	uint32_t playerId = getNumber<uint32_t>(L, 1);
-
-	auto offlinePlayer = std::make_shared<Player>(nullptr);
-	if (!IOLoginData::loadPlayerById(offlinePlayer, playerId)) {
+	// Game.getOfflinePlayer(name or id)
+	std::shared_ptr<Player> player = nullptr;
+	if (isNumber(L, 1)) {
+		uint32_t id = getNumber<uint32_t>(L, 1);
+		if (id >= Player::getFirstID() && id <= Player::getLastID()) {
+			player = g_game().getPlayerByID(id, true);
+		} else {
+			player = g_game().getPlayerByGUID(id, true);
+		}
+	} else if (isString(L, 1)) {
+		auto name = getString(L, 1);
+		player = g_game().getPlayerByName(name, true);
+	}
+	if (!player) {
 		lua_pushnil(L);
 	} else {
-		pushUserdata<Player>(L, offlinePlayer);
+		pushUserdata<Player>(L, player);
 		setMetatable(L, -1, "Player");
 	}
 

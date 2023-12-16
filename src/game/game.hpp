@@ -45,6 +45,7 @@ static constexpr int32_t EVENT_DECAYINTERVAL = 250;
 static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
 static constexpr int32_t EVENT_FORGEABLEMONSTERCHECKINTERVAL = 300000;
 static constexpr int32_t EVENT_LUA_GARBAGE_COLLECTION = 60000 * 10; // 10min
+static constexpr int32_t EVENT_REFRESH_MARKET_PRICES = 60000; // 1min
 
 static constexpr std::chrono::minutes CACHE_EXPIRATION_TIME { 10 }; // 10min
 static constexpr std::chrono::minutes HIGHSCORE_CACHE_EXPIRATION_TIME { 10 }; // 10min
@@ -160,7 +161,7 @@ public:
 
 	ReturnValue getPlayerByNameWildcard(const std::string &s, std::shared_ptr<Player> &player);
 
-	std::shared_ptr<Player> getPlayerByAccount(uint32_t acc);
+	std::vector<std::shared_ptr<Player>> getPlayersByAccount(std::shared_ptr<account::Account> acc, bool allowOffline = false);
 
 	bool internalPlaceCreature(std::shared_ptr<Creature> creature, const Position &pos, bool extendedPos = false, bool forced = false, bool creatureCheck = false);
 
@@ -183,9 +184,6 @@ public:
 	}
 	uint32_t getPlayersRecord() const {
 		return playersRecord;
-	}
-	uint16_t getItemsPriceCount() const {
-		return itemsSaleCount;
 	}
 
 	void addItemsClassification(ItemClassification* itemsClassification) {
@@ -236,7 +234,7 @@ public:
 
 	std::shared_ptr<Item> transformItem(std::shared_ptr<Item> item, uint16_t newId, int32_t newCount = -1);
 
-	ReturnValue internalTeleport(std::shared_ptr<Thing> thing, const Position &newPos, bool pushMove = true, uint32_t flags = 0);
+	ReturnValue internalTeleport(const std::shared_ptr<Thing> &thing, const Position &newPos, bool pushMove = true, uint32_t flags = 0);
 
 	bool internalCreatureTurn(std::shared_ptr<Creature> creature, Direction dir);
 
@@ -352,6 +350,7 @@ public:
 	void playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool chaseMode, bool secureMode);
 	void playerLookAt(uint32_t playerId, uint16_t itemId, const Position &pos, uint8_t stackPos);
 	void playerLookInBattleList(uint32_t playerId, uint32_t creatureId);
+	void playerQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr<Container> corpse);
 	void playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, std::shared_ptr<Item> defaultItem = nullptr, bool lootAllCorpses = false, bool autoLoot = false);
 	void playerLootAllCorpses(std::shared_ptr<Player> player, const Position &pos, bool lootAllCorpses);
 	void playerSetLootContainer(uint32_t playerId, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos);
@@ -700,13 +699,6 @@ private:
 	std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, std::string context) const;
 
 	/**
-	 * Player wants to loot a corpse
-	 * \param player Player pointer
-	 * \param corpse Container pointer to be looted
-	 */
-	void internalQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr<Container> corpse);
-
-	/**
 	 * @brief Finds the container for loot based on the given parameters.
 	 *
 	 * @param player Pointer to the player object.
@@ -860,7 +852,6 @@ private:
 	uint32_t motdNum = 0;
 
 	std::map<uint16_t, std::map<uint8_t, uint64_t>> itemsPriceMap;
-	uint16_t itemsSaleCount;
 
 	std::vector<ItemClassification*> itemsClassifications;
 

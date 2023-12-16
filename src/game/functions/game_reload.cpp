@@ -72,6 +72,7 @@ bool GameReload::reloadAll() const {
 	reloadResults.reserve(magic_enum::enum_count<Reload_t>());
 
 	for (auto value : magic_enum::enum_values<Reload_t>()) {
+		g_logger().info("Reloading: {}", magic_enum::enum_name(value));
 		if (value == Reload_t::RELOAD_TYPE_ALL) {
 			continue;
 		}

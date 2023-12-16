@@ -4,7 +4,7 @@ combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_UNDEFINEDDAMAGE)
 
 local condition = Condition(CONDITION_PARALYZE)
 condition:setParameter(CONDITION_PARAM_TICKS, 6000)
-condition:setFormula(-1, 81, -1, 81)
+condition:setFormula(-1, 0, -1, 0)
 combat:addCondition(condition)
 
 local rune = Spell("rune")

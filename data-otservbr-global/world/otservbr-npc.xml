@@ -2379,6 +2379,18 @@
 	<npc centerx="33007" centery="31891" centerz="9" radius="1">
 		<npc name="Gnomission" x="0" y="0" z="9" spawntime="60" />
 	</npc>
+	<npc centerx="33361" centery="31316" centerz="9" radius="1">
+		<npc name="Oberon's Bile" x="0" y="0" z="9" spawntime="60" />
+	</npc>
+	<npc centerx="33367" centery="31316" centerz="9" radius="1">
+		<npc name="Oberon's Hate" x="0" y="0" z="9" spawntime="60" />
+	</npc>
+	<npc centerx="33361" centery="31320" centerz="9" radius="1">
+		<npc name="Oberon's Spite" x="0" y="0" z="9" spawntime="60" />
+	</npc>
+	<npc centerx="33367" centery="31320" centerz="9" radius="1">
+		<npc name="Oberon's Ire" x="0" y="0" z="9" spawntime="60" />
+	</npc>
 	<npc centerx="32664" centery="31894" centerz="9" radius="1">
 		<npc name="Uzgod" x="0" y="0" z="9" spawntime="60" />
 	</npc>
@@ -2554,6 +2566,9 @@
 	<npc centerx="32855" centery="32426" centerz="10" radius="1">
 		<npc name="The Gate Keeper" x="0" y="0" z="10" spawntime="60" />
 	</npc>
+	<npc centerx="32289" centery="32813" centerz="10" radius="1">
+		<npc name="Squeekquek" x="0" y="0" z="10" spawntime="60" direction="2" />
+	</npc>
 	<npc centerx="33170" centery="31231" centerz="11" radius="1">
 		<npc name="Ztiss" x="0" y="0" z="11" spawntime="60" />
 	</npc>
@@ -2625,6 +2640,9 @@
 	</npc>
 	<npc centerx="33449" centery="32805" centerz="11" radius="1">
 		<npc name="..." x="0" y="0" z="11" spawntime="60" />
+	</npc>
+	<npc centerx="32268" centery="32811" centerz="11" radius="1">
+		<npc name="Larry" x="0" y="0" z="11" spawntime="60" />
 	</npc>
 	<npc centerx="32116" centery="32968" centerz="11" radius="1">
 		<npc name="Polly" x="0" y="0" z="11" spawntime="60" />

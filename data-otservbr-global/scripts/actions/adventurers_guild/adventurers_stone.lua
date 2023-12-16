@@ -29,7 +29,7 @@ local config = {
 		{ fromPos = Position(32340, 32217, 7), toPos = Position(32355, 32232, 7), townId = TOWNS_LIST.THAIS },
 		{ fromPos = Position(32910, 32070, 7), toPos = Position(32930, 32082, 7), townId = TOWNS_LIST.VENORE },
 		{ fromPos = Position(33119, 32836, 7), toPos = Position(33133, 32850, 7), townId = TOWNS_LIST.ANKRAHMUN },
-		{ fromPos = Position(33160, 31794, 8), toPos = Position(33175, 31814, 8), townId = TOWNS_LIST.EDRON },
+		{ fromPos = Position(33160, 31794, 9), toPos = Position(33175, 31814, 8), townId = TOWNS_LIST.EDRON },
 		{ fromPos = Position(33018, 31448, 11), toPos = Position(33035, 31457, 11), townId = TOWNS_LIST.FARMINE },
 		{ fromPos = Position(33205, 32455, 8), toPos = Position(33223, 32466, 8), townId = TOWNS_LIST.DARASHIA },
 		{ fromPos = Position(32327, 32831, 7), toPos = Position(32340, 32847, 7), townId = TOWNS_LIST.LIBERTY_BAY },
@@ -69,16 +69,16 @@ function adventurersStone.onUse(player, item, fromPosition, target, toPosition, 
 
 	if config.enableTemples then
 		for _, temple in ipairs(config.Temples) do
-			if isInRange(playerPos, temple.fromPos, temple.toPos) then
+			if playerPos:isInRange(temple.fromPos, temple.toPos) then
 				allowed, townId = true, temple.townId
 				break
 			end
 		end
 	end
 
-	if config.enableDepots then
+	if config.enableDepots and not allowed then
 		for _, depot in ipairs(config.Depots) do
-			if isInRange(playerPos, depot.fromPos, depot.toPos) then
+			if playerPos:isInRange(depot.fromPos, depot.toPos) then
 				allowed, townId = true, depot.townId
 				break
 			end

@@ -5,5 +5,5 @@ function watch.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	return true
 end
 
-watch:id(2445, 2446, 2447, 2448, 2906, 2771)
+watch:id(2445, 2446, 2447, 2448, 2906, 2771, 6091)
 watch:register()

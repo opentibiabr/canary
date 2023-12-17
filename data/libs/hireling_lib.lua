@@ -676,18 +676,6 @@ function Player:sendHirelingSelectionModal(title, message, callback, data)
 	modal:sendToPlayer(self)
 end
 
-function Player:showInfoModal(title, message, buttonText)
-	local modal = ModalWindow({
-		title = title,
-		message = message,
-	})
-	buttonText = buttonText or "Close"
-	modal:addButton(buttonText, function() end)
-	modal:setDefaultEscapeButton(buttonText)
-
-	modal:sendToPlayer(self)
-end
-
 function Player:hasHirelingSkill(skillName)
 	return self:kv():scoped("hireling-skills"):get(skillName)
 end

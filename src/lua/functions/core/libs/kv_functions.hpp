@@ -18,17 +18,23 @@ public:
 		registerMethod(L, "kv", "scoped", KVFunctions::luaKVScoped);
 		registerMethod(L, "kv", "set", KVFunctions::luaKVSet);
 		registerMethod(L, "kv", "get", KVFunctions::luaKVGet);
+		registerMethod(L, "kv", "keys", KVFunctions::luaKVKeys);
+		registerMethod(L, "kv", "remove", KVFunctions::luaKVRemove);
 
 		registerClass(L, "KV", "");
 		registerMethod(L, "KV", "scoped", KVFunctions::luaKVScoped);
 		registerMethod(L, "KV", "set", KVFunctions::luaKVSet);
 		registerMethod(L, "KV", "get", KVFunctions::luaKVGet);
+		registerMethod(L, "KV", "keys", KVFunctions::luaKVKeys);
+		registerMethod(L, "KV", "remove", KVFunctions::luaKVRemove);
 	}
 
 private:
 	static int luaKVScoped(lua_State* L);
 	static int luaKVSet(lua_State* L);
 	static int luaKVGet(lua_State* L);
+	static int luaKVKeys(lua_State* L);
+	static int luaKVRemove(lua_State* L);
 
 	static std::optional<ValueWrapper> getValueWrapper(lua_State* L);
 	static void pushStringValue(lua_State* L, const StringType &value);

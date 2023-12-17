@@ -1,11 +1,11 @@
 local config = {
-	[24830] = { storageKey = Storage.FerumbrasAscension.Razzagorn },
-	[24831] = { storageKey = Storage.FerumbrasAscension.Ragiaz },
-	[24832] = { storageKey = Storage.FerumbrasAscension.Zamulosh },
-	[24833] = { storageKey = Storage.FerumbrasAscension.Mazoran },
-	[24834] = { storageKey = Storage.FerumbrasAscension.Tarbaz },
-	[24835] = { storageKey = Storage.FerumbrasAscension.Shulgrax },
-	[24836] = { storageKey = Storage.FerumbrasAscension.Plagirath },
+	[22174] = { storageKey = Storage.FerumbrasAscension.Razzagorn },
+	[22175] = { storageKey = Storage.FerumbrasAscension.Ragiaz },
+	[22176] = { storageKey = Storage.FerumbrasAscension.Zamulosh },
+	[22177] = { storageKey = Storage.FerumbrasAscension.Mazoran },
+	[22178] = { storageKey = Storage.FerumbrasAscension.Tarbaz },
+	[22179] = { storageKey = Storage.FerumbrasAscension.Shulgrax },
+	[22180] = { storageKey = Storage.FerumbrasAscension.Plagirath },
 }
 
 local ferumbrasAscendantTeleportation = Action()

@@ -1706,8 +1706,8 @@ function GameStore.processNameChangePurchase(player, offer, productType, newName
 			end
 		end
 
-		local resultId = db.storeQuery("SELECT * FROM `players` WHERE `name` = " .. db.escapeString(newName) .. "")
-		if resultId ~= false then
+		local normalizedName = Game.getNormalizedPlayerName(newName)
+		if normalizedName then
 			return error({ code = 1, message = "This name is already used, please try again!" })
 		end
 
@@ -2108,13 +2108,21 @@ function sendHomePage(playerId)
 	end
 
 	msg:addU16(#homeOffers) -- offers
-
 	for p, offer in pairs(homeOffers) do
+		local offerPrice = offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST and GameStore.ExpBoostValues[player:getStorageValue(GameStore.Storages.expBoostCount)] or offer.price
+		local offerCoinType = offer.coinType
+		if offerCoinType == GameStore.CoinType.Online then
+			offerPrice = offer.price
+		end
+		if offer.type == GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE and player:kv():get("namelock") then
+			offerPrice = 0
+		end
+
 		msg:addString(offer.name, "sendHomePage - offer.name")
 		msg:addByte(0x1) -- ?
 		msg:addU32(offer.id or 0) -- id
 		msg:addU16(0x1)
-		msg:addU32(offer.price)
+		msg:addU32(offerPrice)
 		msg:addByte(offer.coinType or 0x00)
 
 		msg:addByte((offer.disabledReadonIndex ~= nil) and 1 or 0)

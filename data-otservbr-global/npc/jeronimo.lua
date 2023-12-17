@@ -186,6 +186,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic("selected", {})
 			npcHandler:setTopic("outfit", {})
 			npcHandler:setTopic("mount", {})
+			return true
 		end
 
 		local descCharge = ""

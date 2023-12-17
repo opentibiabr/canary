@@ -2716,11 +2716,9 @@ int PlayerFunctions::luaPlayerUpdateTournamentCoins(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	} else if (action == "remove" && player->account->removeCoins(account::CoinType::TOURNAMENT, amount) != account::ERROR_NO) {
-		if (player->account->removeCoins(account::CoinType::COIN, getNumber<uint32_t>(L, 2)) != account::ERROR_NO) {
-			reportErrorFunc(fmt::format("Failed to update (remove) {}", tournamentCoinName));
-			lua_pushnil(L);
-			return 1;
-		}
+		reportErrorFunc(fmt::format("Failed to update (remove) {}", tournamentCoinName));
+		lua_pushnil(L);
+		return 1;
 	}
 
 	if (player->getAccount()->save() != account::ERROR_NO) {

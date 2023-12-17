@@ -27,7 +27,7 @@ function Player.feed(self, food)
 end
 
 function Player.getClosestFreePosition(self, position, extended)
-	if self:getGroup():getAccess() and self:getAccountType() >= ACCOUNT_TYPE_GOD then
+	if self:getGroup():getAccess() and self:getAccountType() == ACCOUNT_TYPE_GOD then
 		return position
 	end
 	return Creature.getClosestFreePosition(self, position, extended)

@@ -107,7 +107,7 @@ monster.loot = {
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -5000 },
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_DEATHDAMAGE, minDamage = -1500, maxDamage = -2000, range = 7, radius = 5, shootEffect = CONST_ANI_DEATH, effect = CONST_ME_GROUNDSHAKER, target = true },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -1200, maxDamage = -2200, length = 8, spread = 1, effect = CONST_ME_FIREAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -1200, maxDamage = -2200, length = 8, spread = 0, effect = CONST_ME_FIREAREA, target = false },
 	{ name = "singlecloudchain", interval = 6000, chance = 40, minDamage = -1300, maxDamage = -1700, range = 6, effect = CONST_ME_ENERGYHIT, target = true },
 }
 

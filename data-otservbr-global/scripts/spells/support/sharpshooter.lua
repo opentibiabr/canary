@@ -4,9 +4,9 @@ local combat = Combat()
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_GREEN)
 combat:setParameter(COMBAT_PARAM_AGGRESSIVE, false)
 
-local speed = Condition(CONDITION_PARALYZE)
+local speed = Condition(CONDITION_HASTE)
 speed:setParameter(CONDITION_PARAM_TICKS, spellDuration)
-speed:setFormula(-0.7, 56, -0.7, 56)
+speed:setFormula(0.7, 0, 0.7, 0)
 combat:addCondition(speed)
 
 local exhaustHealGroup = Condition(CONDITION_SPELLGROUPCOOLDOWN)

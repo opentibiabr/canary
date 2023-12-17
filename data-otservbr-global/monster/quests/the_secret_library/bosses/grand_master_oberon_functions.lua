@@ -24,7 +24,7 @@ GrandMasterOberonResponses = {
 	[6] = { msg = "Excuse me but I still do not get the message!", msg2 = oberonOthersMessages[2] },
 	[7] = { msg = "Dare strike up a Minnesang and you will receive your last accolade!", msg2 = oberonOthersMessages[1] },
 	[8] = { msg = "Then why are we fighting alone right now?", msg2 = oberonOthersMessages[2] },
-	[9] = { msg = "SEHWO ASIMO, TOLIDO ESD!", msg2 = oberonOthersMessages[2] },
+	[9] = { msg = "SEHWO ASIMO, TOLIDO ESD", msg2 = oberonOthersMessages[2] },
 }
 
 GrandMasterOberonConfig = {

@@ -100,7 +100,7 @@ monster.loot = {
 monster.attacks = {
 	{ name = "melee", interval = 1700, chance = 100, minDamage = 0, maxDamage = -456, effect = 244 },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -350, maxDamage = -422, range = 1, radius = 0, effect = CONST_ME_GREENSMOKE, target = true },
-	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_FIREDAMAGE, minDamage = -400, maxDamage = -500, length = 5, spread = 1, effect = 216, target = false },
+	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_FIREDAMAGE, minDamage = -400, maxDamage = -500, length = 5, spread = 0, effect = 216, target = false },
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_EARTHDAMAGE, minDamage = -415, maxDamage = -570, radius = 2, effect = CONST_ME_STONE_STORM, target = false },
 	{ name = "boulder ring", interval = 2000, chance = 20, minDamage = -460, maxDamage = -500 },
 }

@@ -100,7 +100,7 @@ monster.attacks = {
 	{ name = "ice chain", interval = 5000, chance = 20, minDamage = -1050, maxDamage = -1300, range = 7 },
 	{ name = "combat", interval = 9500, chance = 52, type = COMBAT_HOLYDAMAGE, minDamage = -1050, maxDamage = -1300, range = 7, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true },
 	{ name = "combat", interval = 3000, chance = 22, type = COMBAT_HOLYDAMAGE, minDamage = -1200, maxDamage = -1400, radius = 4, effect = CONST_ME_HOLYAREA, target = false },
-	{ name = "combat", interval = 4000, chance = 23, type = COMBAT_PHYSICALDAMAGE, minDamage = -900, maxDamage = -1350, radius = 4, shootEffect = CONST_ANI_EXPLOSION, range = 7, target = true },
+	{ name = "combat", interval = 4000, chance = 23, type = COMBAT_PHYSICALDAMAGE, minDamage = -900, maxDamage = -1350, radius = 4, shootEffect = CONST_ANI_EXPLOSION, range = 7, effect = CONST_ME_EXPLOSIONHIT, target = true },
 }
 
 monster.defenses = {

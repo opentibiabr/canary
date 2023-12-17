@@ -83,7 +83,8 @@ bool ConfigManager::load() {
 	}
 
 	loadBoolConfig(L, ALLOW_CHANGEOUTFIT, "allowChangeOutfit", true);
-	loadBoolConfig(L, ONE_PLAYER_ON_ACCOUNT, "onePlayerOnlinePerAccount", true);
+	loadIntConfig(L, MAX_PLAYERS_PER_ACCOUNT, "maxPlayersOnlinePerAccount", 1);
+	loadIntConfig(L, MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT, "maxPlayersOutsidePZPerAccount", 1);
 	loadBoolConfig(L, AIMBOT_HOTKEY_ENABLED, "hotkeyAimbotEnabled", true);
 	loadBoolConfig(L, REMOVE_RUNE_CHARGES, "removeChargesFromRunes", true);
 	loadBoolConfig(L, EXPERIENCE_FROM_PLAYERS, "experienceByKillingPlayers", false);

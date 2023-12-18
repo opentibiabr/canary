@@ -3708,19 +3708,13 @@ int PlayerFunctions::luaPlayerChangeName(lua_State* L) {
 		pushBoolean(L, false);
 		return 0;
 	}
+	if (player->isOnline()) {
+		player->removePlayer(true, true);
+	}
+	player->kv()->remove("namelock");
 	auto newName = getString(L, 2);
 	player->setName(newName);
-	player->kv()->remove("namelock");
 	g_saveManager().savePlayer(player);
-	g_dispatcher().scheduleEvent(
-		1000,
-		[player]() {
-			if (player->isOnline()) {
-				player->removePlayer(true, true);
-			}
-		},
-		"PlayerFunctions::luaPlayerChangeName"
-	);
 	return 1;
 }
 

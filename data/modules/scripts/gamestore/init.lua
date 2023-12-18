@@ -432,7 +432,7 @@ function parseBuyStoreOffer(playerId, msg)
 		offerPrice = 0
 	end
 	-- Check if offer can be honored
-	if not player:canPayForOffer(offerPrice, offerCoinType) then
+	if offerPrice > 0 and not player:canPayForOffer(offerPrice, offerCoinType) then
 		return queueSendStoreAlertToUser("You don't have enough coins. Your purchase has been cancelled.", 250, playerId)
 	end
 
@@ -867,9 +867,14 @@ function sendShowStoreOffers(playerId, category, redirectId)
 					xpBoostPrice = GameStore.ExpBoostValues[player:getStorageValue(GameStore.Storages.expBoostCount)]
 				end
 
+				nameLockPrice = nil
+				if offer.type == GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE and player:kv():get("namelock") then
+					nameLockPrice = 0
+				end
+
 				msg:addU32(off.id)
 				msg:addU16(off.count)
-				msg:addU32(xpBoostPrice or off.price)
+				msg:addU32(xpBoostPrice or nameLockPrice or off.price)
 				msg:addByte(off.coinType or 0x00)
 
 				msg:addByte((off.disabledReadonIndex ~= nil) and 1 or 0)
@@ -1706,7 +1711,11 @@ function GameStore.processNameChangePurchase(player, offer, productType, newName
 			end
 		end
 
-		local normalizedName = Game.getNormalizedPlayerName(newName)
+		newName = newName:lower():trim():gsub("(%l)(%w*)", function(a, b)
+			return string.upper(a) .. b
+		end)
+
+		local normalizedName = Game.getNormalizedPlayerName(newName, true)
 		if normalizedName then
 			return error({ code = 1, message = "This name is already used, please try again!" })
 		end
@@ -1716,19 +1725,15 @@ function GameStore.processNameChangePurchase(player, offer, productType, newName
 			return error({ code = 1, message = result.reason })
 		end
 
-		local namelockReason = player:kv():get("namelock")
+		local message, namelockReason = "", player:kv():get("namelock")
 		if not namelockReason then
 			player:makeCoinTransaction(offer)
-			local message = string.format("You have purchased %s for %d coins.", offer.name, offer.price)
-			addPlayerEvent(sendStorePurchaseSuccessful, 500, playerId, message)
+			message = string.format("You have purchased %s for %d coins.", offer.name, offer.price)
 		else
-			local message = string.format("Your character has been renamed and locked successfuly.")
-			addPlayerEvent(sendStorePurchaseSuccessful, 500, playerId, message)
+			message = "Your character has been renamed successfully."
 		end
+		addPlayerEvent(sendStorePurchaseSuccessful, 500, playerId, message)
 
-		newName = newName:lower():gsub("(%l)(%w*)", function(a, b)
-			return string.upper(a) .. b
-		end)
 		player:changeName(newName)
 	else
 		return addPlayerEvent(sendRequestPurchaseData, 250, playerId, offer.id, GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_NAMECHANGE)
@@ -2108,21 +2113,13 @@ function sendHomePage(playerId)
 	end
 
 	msg:addU16(#homeOffers) -- offers
-	for p, offer in pairs(homeOffers) do
-		local offerPrice = offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST and GameStore.ExpBoostValues[player:getStorageValue(GameStore.Storages.expBoostCount)] or offer.price
-		local offerCoinType = offer.coinType
-		if offerCoinType == GameStore.CoinType.Online then
-			offerPrice = offer.price
-		end
-		if offer.type == GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE and player:kv():get("namelock") then
-			offerPrice = 0
-		end
 
+	for p, offer in pairs(homeOffers) do
 		msg:addString(offer.name, "sendHomePage - offer.name")
 		msg:addByte(0x1) -- ?
 		msg:addU32(offer.id or 0) -- id
 		msg:addU16(0x1)
-		msg:addU32(offerPrice)
+		msg:addU32(offer.price)
 		msg:addByte(offer.coinType or 0x00)
 
 		msg:addByte((offer.disabledReadonIndex ~= nil) and 1 or 0)
@@ -2182,13 +2179,14 @@ function sendHomePage(playerId)
 end
 
 function Player:openStore(serviceName) --exporting the method so other scripts can use to open store
-	openStore(self:getId())
+	local playerId = self:getId()
+	openStore(playerId)
 
 	--local serviceType = msg:getByte()
 	local category = GameStore.Categories and GameStore.Categories[1] or nil
 
 	if serviceName and serviceName:lower() == "home" then
-		return sendHomePage(self:getId())
+		return sendHomePage(playerId)
 	end
 
 	if serviceName and GameStore.getCategoryByName(serviceName) then

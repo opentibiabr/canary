@@ -32,6 +32,7 @@ function namelock.onSay(player, words, param)
 	if target and target:isPlayer() then
 		target:kv():set("namelock", reason)
 		local text = target:getName() .. " has been namelocked"
+		logger.info(text .. ", reason: " .. reason)
 		player:sendTextMessage(MESSAGE_ADMINISTRADOR, text)
 		Webhook.sendMessage("Player Namelocked", text .. " reason: " .. reason .. ".", WEBHOOK_COLOR_YELLOW, announcementChannels["serverAnnouncements"])
 		if online then

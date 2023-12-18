@@ -153,7 +153,7 @@ public:
 
 	std::shared_ptr<Player> getPlayerByID(uint32_t id, bool allowOffline = false);
 
-	std::shared_ptr<Player> getPlayerByName(const std::string &s, bool allowOffline = false);
+	std::shared_ptr<Player> getPlayerByName(const std::string &s, bool allowOffline = false, bool isNewName = false);
 
 	std::shared_ptr<Player> getPlayerByGUID(const uint32_t &guid, bool allowOffline = false);
 

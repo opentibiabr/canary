@@ -2952,4 +2952,6 @@ private:
 
 	void removeEmptyRewards();
 	bool hasOtherRewardContainerOpen(const std::shared_ptr<Container> container) const;
+
+	void checkAndShowBlessingMessage();
 };

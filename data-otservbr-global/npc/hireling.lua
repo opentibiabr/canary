@@ -597,7 +597,6 @@ npcConfig.voices = {
 			return false
 		end
 
-		-- roleplay
 		if MsgContains(message, "service") then
 			npcHandler:setTopic(playerId, TOPIC.SERVICES)
 			local servicesMsg = getHirelingServiceString(creature)

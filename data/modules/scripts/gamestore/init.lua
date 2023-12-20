@@ -1366,8 +1366,8 @@ GameStore.canUseHirelingName = function(name)
 	local result = {
 		ability = false,
 	}
-	if name:len() < 3 or name:len() > 14 then
-		result.reason = "The length of the hireling name must be between 3 and 14 characters."
+	if name:len() < 3 or name:len() > 18 then
+		result.reason = "The length of the hireling name must be between 3 and 18 characters."
 		return result
 	end
 
@@ -1422,8 +1422,8 @@ GameStore.canChangeToName = function(name)
 	local result = {
 		ability = false,
 	}
-	if name:len() < 3 or name:len() > 14 then
-		result.reason = "The length of your new name must be between 3 and 14 characters."
+	if name:len() < 3 or name:len() > 18 then
+		result.reason = "The length of your new name must be between 3 and 18 characters."
 		return result
 	end
 

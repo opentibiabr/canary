@@ -1,35 +1,28 @@
-local mType = Game.createMonsterType("The Collector")
+local mType = Game.createMonsterType("Alchemist Container")
 local monster = {}
 
-monster.description = "The Collector"
-monster.experience = 100
+monster.description = "Alchemist Container"
+monster.experience = 0
 monster.outfit = {
-	lookType = 261,
-	lookHead = 0,
-	lookBody = 0,
-	lookLegs = 0,
-	lookFeet = 0,
-	lookAddons = 0,
-	lookMount = 0,
+	lookTypeEx = 39952,
 }
 
-monster.health = 340
-monster.maxHealth = 340
+monster.health = 1200
+monster.maxHealth = 1200
 monster.race = "undead"
-monster.corpse = 9695
-monster.speed = 97
+monster.corpse = 39949
+monster.speed = 0
 monster.manaCost = 0
 
 monster.changeTarget = {
-	interval = 2000,
-	chance = 5,
+	interval = 4000,
+	chance = 15,
 }
 
 monster.strategiesTarget = {
-	nearest = 70,
-	health = 10,
+	nearest = 60,
+	health = 30,
 	damage = 10,
-	random = 10,
 }
 
 monster.flags = {
@@ -38,13 +31,14 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = true,
+	rewardBoss = false,
 	illusionable = false,
 	canPushItems = true,
-	canPushCreatures = false,
-	staticAttackChance = 50,
+	canPushCreatures = true,
+	critChance = 10,
+	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 20,
+	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = true,
@@ -57,36 +51,23 @@ monster.light = {
 	color = 0,
 }
 
-monster.voices = {
-	interval = 5000,
-	chance = 10,
-	{ text = "Leave as long as you can.", yell = false },
-}
-
-monster.loot = {}
-
-monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 100, attack = 40 },
-	{ name = "speed", interval = 1000, chance = 13, speedChange = -100, length = 8, spread = 0, effect = CONST_ME_ENERGYHIT, target = false, duration = 20000 },
-	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -85, range = 7, shootEffect = CONST_ANI_LARGEROCK, target = false },
-	{ name = "melee", interval = 2000, chance = 15, minDamage = -10, maxDamage = -80 },
-}
+monster.attacks = {}
 
 monster.defenses = {
-	defense = 26,
-	armor = 25,
-	--	mitigation = ???,
+	defense = 54,
+	armor = 59,
+	mitigation = 3.7,
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = -20 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
 	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }

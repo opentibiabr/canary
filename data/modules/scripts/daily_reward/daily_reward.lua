@@ -207,10 +207,7 @@ end
 
 -- Core functions
 DailyReward.insertHistory = function(playerId, dayStreak, description)
-	return db.query(string.format(
-		"INSERT INTO `daily_reward_history`(`player_id`, `daystreak`, `timestamp`, `description`) VALUES (%s, %s, %s, %s)",
-		playerId, dayStreak, os.time(), db.escapeString(description)
-	))
+	return db.query(string.format("INSERT INTO `daily_reward_history`(`player_id`, `daystreak`, `timestamp`, `description`) VALUES (%s, %s, %s, %s)", playerId, dayStreak, os.time(), db.escapeString(description)))
 end
 
 DailyReward.retrieveHistoryEntries = function(playerId)
@@ -220,8 +217,7 @@ DailyReward.retrieveHistoryEntries = function(playerId)
 	end
 
 	local entries = {}
-	local resultId = db.storeQuery("SELECT * FROM `daily_reward_history` WHERE `player_id` = "
-		.. player:getGuid() .. " ORDER BY `timestamp` DESC LIMIT 15;")
+	local resultId = db.storeQuery("SELECT * FROM `daily_reward_history` WHERE `player_id` = " .. player:getGuid() .. " ORDER BY `timestamp` DESC LIMIT 15;")
 	if resultId then
 		repeat
 			local entry = {

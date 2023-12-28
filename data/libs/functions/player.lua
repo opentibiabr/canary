@@ -623,11 +623,11 @@ function Player:calculateLootFactor(monster)
 end
 
 function Player:setExhaustion(scope, seconds)
-	return self:kv():set(scope, os.time() + seconds)
+	return self:kv():scoped("exhaustion"):set(scope, os.time() + seconds)
 end
 
 function Player:getExhaustion(scope)
-	local exhaustionKV = self:kv():get(scope) or 0
+	local exhaustionKV = self:kv():scoped("exhaustion"):get(scope) or 0
 	return math.max(exhaustionKV - os.time(), 0)
 end
 

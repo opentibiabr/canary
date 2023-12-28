@@ -66,7 +66,8 @@ class NpcType : public SharedObject {
 		std::vector<SoundEffect_t> soundVector;
 
 		std::vector<voiceBlock_t> voiceVector;
-		std::vector<std::string> scripts;
+		// We need to keep the order of scripts, so we use a set isntead of an unordered_set
+		std::set<std::string> scripts;
 		std::vector<ShopBlock> shopItemVector;
 
 		NpcsEvent_t eventType = NPCS_EVENT_NONE;

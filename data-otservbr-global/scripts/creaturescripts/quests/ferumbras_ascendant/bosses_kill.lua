@@ -3,7 +3,7 @@ local bosses = {
 	["tarbaz"] = { teleportPos = Position(33460, 32853, 11), godbreakerPos = Position(33427, 32852, 13) },
 	["ragiaz"] = { teleportPos = Position(33482, 32345, 13), godbreakerPos = Position(33466, 32392, 13) },
 	["plagirath"] = { teleportPos = Position(33174, 31511, 13), godbreakerPos = Position(33204, 31510, 13) },
-	["razzagorn"] = { teleportPos = Position(33413, 32467, 14), godbreakerPos = Position(33357, 32440, 13) },
+	["razzagorn"] = { teleportPos = Position(33357, 32434, 12), godbreakerPos = Position(33357, 32440, 13) },
 	["zamulosh"] = { teleportPos = Position(33644, 32764, 11), godbreakerPos = Position(33678, 32758, 13) },
 	["mazoran"] = { teleportPos = Position(33585, 32699, 14), godbreakerPos = Position(33614, 32679, 15) },
 	["shulgrax"] = { teleportPos = Position(33486, 32796, 13), godbreakerPos = Position(33459, 32820, 14) },

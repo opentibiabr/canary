@@ -65,24 +65,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 80 },
+	{ name = "platinum coin", chance = 100000, maxCount = 8 },
 	{ name = "great health potion", chance = 15701 },
-	{ name = "two-headed turtle heads", chance = 15000 },
+	{ name = "two-headed turtle heads", chance = 8700 },
 	{ name = "strong mana potion", chance = 13373 },
-	{ name = "hydrophytes", chance = 9552 },
+	{ name = "hydrophytes", chance = 11000 },
 	{ id = 1047, chance = 6388 }, -- bone
-	{ name = "glacier shoes", chance = 6239 },
+	{ name = "glacier shoes", chance = 4650 },
 	{ id = 281, chance = 3582 }, -- giant shimmering pearl (green)
 	{ name = "small tropical fish", chance = 3582 },
-	{ name = "coral brooch", chance = 3343 },
+	{ name = "coral brooch", chance = 2600 },
 	{ name = "silver brooch", chance = 2507 },
-	{ name = "lightning headband", chance = 6448 },
-	{ name = "knight legs", chance = 7269 },
+	{ name = "lightning headband", chance = 2110 },
+	{ name = "knight legs", chance = 2000 },
 	{ name = "gemmed figurine", chance = 2090 },
 	{ name = "emerald bangle", chance = 1373 },
 	{ name = "terra amulet", chance = 1373 },
 	{ id = 3040, chance = 1313 }, -- "gold nugget"
-	{ name = "spellbook of enlightenment", chance = 6134 },
+	{ name = "spellbook of enlightenment", chance = 1300 },
 	{ id = 3565, chance = 1015 }, -- "cape"
 	{ id = 10422, chance = 657 }, -- "clay lump"
 	{ name = "white gem", chance = 418 },
@@ -91,7 +91,7 @@ monster.loot = {
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -300 },
 	{ name = "combat", interval = 2500, chance = 35, type = COMBAT_ENERGYDAMAGE, minDamage = -100, maxDamage = -300, radius = 4, target = false, effect = CONST_ME_ENERGYHIT },
-	{ name = "combat", interval = 2000, chance = 35, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -300, radius = 3, target = true, effect = CONST_ME_GHOSTLYBITE },
+	{ name = "combat", interval = 2000, chance = 35, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -300, radius = 3, target = true, effect = CONST_ME_GHOSTLY_BITE },
 	{ name = "combat", interval = 3000, chance = 45, type = COMBAT_PHYSICALDAMAGE, minDamage = -100, maxDamage = -300, range = 1, radius = 1, target = true, effect = CONST_ME_EXPLOSIONAREA },
 }
 

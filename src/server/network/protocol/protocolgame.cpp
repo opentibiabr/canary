@@ -515,9 +515,11 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (g_configManager().getBoolean(ONE_PLAYER_ON_ACCOUNT, __FUNCTION__) && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && g_game().getPlayerByAccount(player->getAccountId())) {
+		auto onlineCount = g_game().getPlayersByAccount(player->getAccount()).size();
+		auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT, __FUNCTION__);
+		if (player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && onlineCount >= maxOnline) {
 			g_game().removePlayerUniqueLogin(player);
-			disconnectClient("You may only login with one character\nof your account at the same time.");
+			disconnectClient(fmt::format("You may only login with {} character{}\nof your account at the same time.", maxOnline, maxOnline > 1 ? "s" : ""));
 			return;
 		}
 
@@ -569,6 +571,24 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		}
 
 		player->setOperatingSystem(operatingSystem);
+
+		const auto tile = g_game().map.getOrCreateTile(player->getLoginPosition());
+		// moving from a pz tile to a non-pz tile
+		if (maxOnline > 1 && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+			auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT, __FUNCTION__);
+			auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
+			int countOutsizePZ = 0;
+			for (const auto &accountPlayer : accountPlayers) {
+				if (accountPlayer != player && accountPlayer->getTile() && !accountPlayer->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
+					++countOutsizePZ;
+				}
+			}
+			if (countOutsizePZ >= maxOutsizePZ) {
+				g_game().removePlayerUniqueLogin(player);
+				disconnectClient(fmt::format("You can only have {} character{} from your account outside of a protection zone.", maxOutsizePZ == 1 ? "one" : std::to_string(maxOutsizePZ), maxOutsizePZ > 1 ? "s" : ""));
+				return;
+			}
+		}
 
 		if (!g_game().placeCreature(player, player->getLoginPosition()) && !g_game().placeCreature(player, player->getTemplePosition(), false, true)) {
 			g_game().removePlayerUniqueLogin(player);
@@ -926,19 +946,7 @@ void ProtocolGame::addBless() {
 	if (!player) {
 		return;
 	}
-
-	std::string bless = player->getBlessingsName();
-	std::ostringstream lostBlesses;
-	(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses << "You are still blessed with " << bless;
-	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
-	if (player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL, __FUNCTION__) && player->getVocationId() > VOCATION_NONE) {
-		for (uint8_t i = 2; i <= 6; i++) {
-			if (!player->hasBlessing(i)) {
-				player->addBlessing(i, 1);
-			}
-		}
-		sendBlessStatus();
-	}
+	player->checkAndShowBlessingMessage();
 }
 
 void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte) {
@@ -6411,7 +6419,7 @@ void ProtocolGame::sendOutfitWindow() {
 
 	if (oldProtocol) {
 		Outfit_t currentOutfit = player->getDefaultOutfit();
-		const auto currentMount = g_game().mounts.getMountByID(player->getCurrentMount());
+		const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
 		if (currentMount) {
 			currentOutfit.lookMount = currentMount->clientId;
 		}
@@ -6471,7 +6479,7 @@ void ProtocolGame::sendOutfitWindow() {
 
 	bool mounted = false;
 	Outfit_t currentOutfit = player->getDefaultOutfit();
-	const auto currentMount = g_game().mounts.getMountByID(player->getCurrentMount());
+	const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
 	if (currentMount) {
 		mounted = (currentOutfit.lookMount == currentMount->clientId);
 		currentOutfit.lookMount = currentMount->clientId;
@@ -7802,18 +7810,21 @@ void ProtocolGame::sendItemsPrice() {
 	NetworkMessage msg;
 	msg.addByte(0xCD);
 
-	msg.add<uint16_t>(g_game().getItemsPriceCount());
-	if (g_game().getItemsPriceCount() > 0) {
-		for (const auto &[itemId, tierAndPriceMap] : g_game().getItemsPrice()) {
-			for (const auto &[tier, price] : tierAndPriceMap) {
-				msg.add<uint16_t>(itemId);
-				if (Item::items[itemId].upgradeClassification > 0) {
-					msg.addByte(tier);
-				}
-				msg.add<uint64_t>(price);
+	auto countBuffer = msg.getBufferPosition();
+	uint16_t count = 0;
+	msg.skipBytes(2);
+	for (const auto &[itemId, tierAndPriceMap] : g_game().getItemsPrice()) {
+		for (const auto &[tier, price] : tierAndPriceMap) {
+			msg.add<uint16_t>(itemId);
+			if (Item::items[itemId].upgradeClassification > 0) {
+				msg.addByte(tier);
 			}
+			msg.add<uint64_t>(price);
+			count++;
 		}
 	}
+	msg.setBufferPosition(countBuffer);
+	msg.add<uint16_t>(count);
 
 	writeToOutputBuffer(msg);
 }
@@ -8450,7 +8461,7 @@ void ProtocolGame::parseSetMonsterPodium(NetworkMessage &msg) const {
 }
 
 void ProtocolGame::sendBosstiaryCooldownTimer() {
-	if (oldProtocol) {
+	if (!player || oldProtocol) {
 		return;
 	}
 

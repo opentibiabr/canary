@@ -276,6 +276,11 @@ ItemAction = {
 }
 
 ItemUnique = {
+	-- Issavi town teleport
+	[9515] = {
+		itemId = 1949,
+		itemPos = { x = 33926, y = 31477, z = 5 },
+	},
 	-- The shattered isles
 	-- data\scripts\actions\quests\the_shattered_isles\nargor_maps.lua
 	[40001] = {

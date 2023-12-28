@@ -65,6 +65,10 @@ bool Tile::hasProperty(std::shared_ptr<Item> exclude, ItemProperty prop) const {
 
 	if (const TileItemVector* items = getItemList()) {
 		for (auto &item : *items) {
+			if (!item) {
+				g_logger().error("Tile::hasProperty: tile {} has an item which is nullptr", tilePos.toString());
+				continue;
+			}
 			if (item != exclude && item->hasProperty(prop)) {
 				return true;
 			}
@@ -668,6 +672,27 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 			}
 
 			const auto playerTile = player->getTile();
+			// moving from a pz tile to a non-pz tile
+			if (playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+				auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT, __FUNCTION__);
+				if (maxOnline > 1 && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && !hasFlag(TILESTATE_PROTECTIONZONE)) {
+					auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT, __FUNCTION__);
+					auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
+					int countOutsizePZ = 0;
+					for (const auto &accountPlayer : accountPlayers) {
+						if (accountPlayer == player || accountPlayer->isOffline()) {
+							continue;
+						}
+						if (accountPlayer->getTile() && !accountPlayer->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
+							++countOutsizePZ;
+						}
+					}
+					if (countOutsizePZ >= maxOutsizePZ) {
+						player->sendCreatureSay(player, TALKTYPE_MONSTER_SAY, fmt::format("You can only have {} character{} from your account outside of a protection zone.", maxOutsizePZ == 1 ? "one" : std::to_string(maxOutsizePZ), maxOutsizePZ > 1 ? "s" : ""), &getPosition());
+						return RETURNVALUE_NOTPOSSIBLE;
+					}
+				}
+			}
 			if (playerTile && player->isPzLocked()) {
 				if (!playerTile->hasFlag(TILESTATE_PVPZONE)) {
 					// player is trying to enter a pvp zone while being pz-locked
@@ -836,7 +861,7 @@ ReturnValue Tile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t coun
 	return RETURNVALUE_NOERROR;
 }
 
-std::shared_ptr<Cylinder> Tile::queryDestination(int32_t &, const std::shared_ptr<Thing> &, std::shared_ptr<Item>* destItem, uint32_t &tileFlags) {
+std::shared_ptr<Cylinder> Tile::queryDestination(int32_t &, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item>* destItem, uint32_t &tileFlags) {
 	std::shared_ptr<Tile> destTile = nullptr;
 	*destItem = nullptr;
 
@@ -927,6 +952,12 @@ std::shared_ptr<Cylinder> Tile::queryDestination(int32_t &, const std::shared_pt
 		std::shared_ptr<Thing> destThing = destTile->getTopDownItem();
 		if (destThing) {
 			*destItem = destThing->getItem();
+			if (thing->getItem()) {
+				auto destCylinder = destThing->getCylinder();
+				if (destCylinder && !destCylinder->getContainer()) {
+					return destThing->getCylinder();
+				}
+			}
 		}
 	}
 	return destTile;
@@ -1542,7 +1573,7 @@ void Tile::internalAddThing(uint32_t, std::shared_ptr<Thing> thing) {
 		zone->thingAdded(thing);
 	}
 
-	thing->setParent(static_self_cast<Tile>());
+	thing->setParent(getTile());
 
 	std::shared_ptr<Creature> creature = thing->getCreature();
 	if (creature) {

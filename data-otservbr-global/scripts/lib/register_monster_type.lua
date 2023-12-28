@@ -472,20 +472,40 @@ registerMonsterType.loot = function(mtype, mask)
 		end
 	end
 end
+local playerElements = { COMBAT_PHYSICALDAMAGE, COMBAT_ENERGYDAMAGE, COMBAT_EARTHDAMAGE, COMBAT_FIREDAMAGE, COMBAT_ICEDAMAGE, COMBAT_HOLYDAMAGE, COMBAT_DEATHDAMAGE }
 registerMonsterType.elements = function(mtype, mask)
+	local min = configManager.getNumber(configKeys.MIN_ELEMENTAL_RESISTANCE)
+	local max = configManager.getNumber(configKeys.MAX_ELEMENTAL_RESISTANCE)
+	local canClip = false
 	if type(mask.elements) == "table" then
+		for _, playerElement in pairs(playerElements) do
+			local found = false
+			for _, element in pairs(mask.elements) do
+				if element.type == playerElement then
+					found = true
+					canClip = canClip or element.percent ~= 100
+					break
+				end
+			end
+			canClip = canClip or not found
+		end
 		for _, element in pairs(mask.elements) do
 			if element.type and element.percent then
-				mtype:addElement(element.type, element.percent)
+				local value = element.percent
+				if canClip then
+					value = math.min(math.max(element.percent, min), max)
+				end
+				mtype:addElement(element.type, value)
 			end
 		end
 	end
 end
 registerMonsterType.reflects = function(mtype, mask)
+	local max = configManager.getNumber(configKeys.MAX_DAMAGE_REFLECTION)
 	if type(mask.reflects) == "table" then
 		for _, reflect in pairs(mask.reflects) do
 			if reflect.type and reflect.percent then
-				mtype:addReflect(reflect.type, reflect.percent)
+				mtype:addReflect(reflect.type, math.min(reflect.percent, max))
 			end
 		end
 	end
@@ -930,6 +950,11 @@ function readSpell(incomingLua, mtype)
 			end
 
 			spell:setConditionDamage(incomingLua.condition.totalDamage, incomingLua.condition.totalDamage, 0)
+		end
+		local isArea = (incomingLua.radius and incomingLua.radius > 1) or incomingLua.length or incomingLua.spread
+		if isArea and incomingLua.effect == nil and not string.find(incomingLua.name, "field") then
+			logger.warn("[readSpell] - Monster {}: Spell {} is area but has no effect. Set to `false` explicitly to supress this alert and hide the effect", mtype:name(), incomingLua.name)
+			spell:setCombatEffect(CONST_ME_POFF)
 		end
 	elseif incomingLua.script then
 		spell:setScriptName("monster/" .. incomingLua.script .. ".lua")

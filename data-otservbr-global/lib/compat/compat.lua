@@ -573,16 +573,6 @@ function getOnlinePlayers()
 	return result
 end
 
-function getPlayersByAccountNumber(accountNumber)
-	local result = {}
-	for _, player in ipairs(Game.getPlayers()) do
-		if player:getAccountId() == accountNumber then
-			result[#result + 1] = player:getId()
-		end
-	end
-	return result
-end
-
 function getPlayerGUIDByName(name)
 	local player = Player(name)
 	if player then
@@ -786,18 +776,6 @@ end
 function doSendAnimatedText()
 	debugPrint("Deprecated function.")
 	return true
-end
-
-function doPlayerAddExp(cid, exp, useMult, ...)
-	local player = Player(cid)
-	if player == nil then
-		return false
-	end
-
-	if useMult then
-		exp = exp * getRateFromTable(experienceStages, player:getLevel(), configManager.getNumber(configKeys.RATE_EXPERIENCE))
-	end
-	return player:addExperience(exp, ...)
 end
 
 function doPlayerAddManaSpent(cid, mana)

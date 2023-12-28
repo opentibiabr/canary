@@ -159,6 +159,7 @@ public:
 		return CREATURETYPE_PLAYER;
 	}
 
+	uint8_t getLastMount() const;
 	uint8_t getCurrentMount() const;
 	void setCurrentMount(uint8_t mountId);
 	bool isMounted() const {
@@ -935,6 +936,7 @@ public:
 	void onGainSharedExperience(uint64_t gainExp, std::shared_ptr<Creature> target);
 	void onAttackedCreatureBlockHit(BlockType_t blockType) override;
 	void onBlockHit() override;
+	void onTakeDamage(std::shared_ptr<Creature> attacker, int32_t damage) override;
 	void onChangeZone(ZoneType_t zone) override;
 	void onAttackedCreatureChangeZone(ZoneType_t zone) override;
 	void onIdleStatus() override;
@@ -2517,7 +2519,7 @@ public:
 	}
 
 	bool checkAutoLoot() const {
-		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT, __FUNCTION__) && getStorageValue(STORAGEVALUE_AUTO_LOOT) > 0;
+		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT, __FUNCTION__) && getStorageValue(STORAGEVALUE_AUTO_LOOT) != 0;
 		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY, __FUNCTION__)) {
 			return autoLoot && isVip();
 		}
@@ -2951,4 +2953,6 @@ private:
 
 	void removeEmptyRewards();
 	bool hasOtherRewardContainerOpen(const std::shared_ptr<Container> container) const;
+
+	void checkAndShowBlessingMessage();
 };

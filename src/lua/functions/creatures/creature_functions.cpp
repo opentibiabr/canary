@@ -581,6 +581,29 @@ int CreatureFunctions::luaCreatureSetMoveLocked(lua_State* L) {
 	return 1;
 }
 
+int CreatureFunctions::luaCreatureIsDirectionLocked(lua_State* L) {
+	// creature:isDirectionLocked()
+	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
+	if (creature) {
+		pushBoolean(L, creature->isDirectionLocked());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureSetDirectionLocked(lua_State* L) {
+	// creature:setDirectionLocked(directionLocked)
+	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
+	if (creature) {
+		creature->setDirectionLocked(getBoolean(L, 2));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int CreatureFunctions::luaCreatureGetSkull(lua_State* L) {
 	// creature:getSkull()
 	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
@@ -682,7 +705,11 @@ int CreatureFunctions::luaCreatureRemoveCondition(lua_State* L) {
 	const std::shared_ptr<Condition> condition = creature->getCondition(conditionType, conditionId, subId);
 	if (condition) {
 		bool force = getBoolean(L, 5, false);
-		creature->removeCondition(conditionType, conditionId, force);
+		if (subId == 0) {
+			creature->removeCondition(conditionType, conditionId, force);
+		} else {
+			creature->removeCondition(condition);
+		}
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

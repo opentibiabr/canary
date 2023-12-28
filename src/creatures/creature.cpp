@@ -989,6 +989,9 @@ BlockType_t Creature::blockHit(std::shared_ptr<Creature> attacker, CombatType_t 
 
 	mitigateDamage(combatType, blockType, damage);
 
+	if (damage != 0) {
+		onTakeDamage(attacker, damage);
+	}
 	onAttacked();
 	return blockType;
 }

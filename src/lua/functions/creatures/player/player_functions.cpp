@@ -3700,6 +3700,24 @@ int PlayerFunctions::luaPlayerGetName(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerChangeName(lua_State* L) {
+	// player:changeName(newName)
+	const auto player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+	if (player->isOnline()) {
+		player->removePlayer(true, true);
+	}
+	player->kv()->remove("namelock");
+	auto newName = getString(L, 2);
+	player->setName(newName);
+	g_saveManager().savePlayer(player);
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerHasGroupFlag(lua_State* L) {
 	// player:hasGroupFlag(flag)
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);

@@ -1685,6 +1685,12 @@ void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) 
 			}
 			sendBlessStatus();
 		}
+
+		if (getCurrentMount() != 0) {
+			toggleMount(true);
+		}
+
+		g_game().changePlayerSpeed(static_self_cast<Player>(), 0);
 	}
 }
 
@@ -1717,6 +1723,12 @@ void Player::onChangeZone(ZoneType_t zone) {
 			wasMounted = true;
 		}
 	} else {
+		int32_t ticks = g_configManager().getNumber(STAIRHOP_DELAY, __FUNCTION__);
+		if (ticks > 0) {
+			if (const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_PACIFIED, ticks, 0)) {
+				addCondition(condition);
+			}
+		}
 		if (wasMounted) {
 			toggleMount(true);
 			wasMounted = false;
@@ -4393,6 +4405,7 @@ void Player::onAddCondition(ConditionType_t type) {
 
 	if (type == CONDITION_OUTFIT && isMounted()) {
 		dismount();
+		wasMounted = true;
 	}
 
 	sendIcons();
@@ -4464,6 +4477,10 @@ void Player::onEndCondition(ConditionType_t type) {
 		if (getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
 			setSkull(SKULL_NONE);
 		}
+	}
+
+	if (type == CONDITION_OUTFIT && wasMounted) {
+		toggleMount(true);
 	}
 
 	sendIcons();
@@ -4675,7 +4692,7 @@ bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster) {
 	if (hasFlag(PlayerFlags_t::NotGenerateLoot)) {
 		monster->setDropLoot(false);
 	}
-	if (monster->isSummon()) {
+	if (monster->hasBeenSummoned()) {
 		return false;
 	}
 	auto mType = monster->getMonsterType();
@@ -5610,6 +5627,14 @@ void Player::sendUnjustifiedPoints() {
 	}
 }
 
+uint8_t Player::getLastMount() const {
+	int32_t value = getStorageValue(PSTRG_MOUNTS_CURRENTMOUNT);
+	if (value > 0) {
+		return value;
+	}
+	return static_cast<uint8_t>(kv()->get("last-mount")->get<int>());
+}
+
 uint8_t Player::getCurrentMount() const {
 	int32_t value = getStorageValue(PSTRG_MOUNTS_CURRENTMOUNT);
 	if (value > 0) {
@@ -5668,7 +5693,7 @@ bool Player::toggleMount(bool mount) {
 			return false;
 		}
 
-		uint8_t currentMountId = getCurrentMount();
+		uint8_t currentMountId = getLastMount();
 		if (currentMountId == 0) {
 			sendOutfitWindow();
 			return false;
@@ -5685,6 +5710,7 @@ bool Player::toggleMount(bool mount) {
 
 		if (!hasMount(currentMount)) {
 			setCurrentMount(0);
+			kv()->set("last-mount", 0);
 			sendOutfitWindow();
 			return false;
 		}
@@ -5701,6 +5727,7 @@ bool Player::toggleMount(bool mount) {
 
 		defaultOutfit.lookMount = currentMount->clientId;
 		setCurrentMount(currentMount->id);
+		kv()->set("last-mount", currentMount->id);
 
 		if (currentMount->speed != 0) {
 			g_game().changeSpeed(static_self_cast<Player>(), currentMount->speed);
@@ -5760,6 +5787,7 @@ bool Player::untameMount(uint8_t mountId) {
 		}
 
 		setCurrentMount(0);
+		kv()->set("last-mount", 0);
 	}
 
 	return true;
@@ -5791,6 +5819,7 @@ void Player::dismount() {
 	}
 
 	defaultOutfit.lookMount = 0;
+	setCurrentMount(0);
 }
 
 bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
@@ -5958,32 +5987,28 @@ void Player::clearModalWindows() {
 }
 
 uint16_t Player::getHelpers() const {
-	uint16_t helpers;
-
 	if (guild && party) {
-		phmap::flat_hash_set<std::shared_ptr<Player>> helperSet;
+		const auto &guildMembers = guild->getMembersOnline();
 
-		const auto guildMembers = guild->getMembersOnline();
-		helperSet.insert(guildMembers.begin(), guildMembers.end());
+		stdext::vector_set<std::shared_ptr<Player>> helperSet;
+		helperSet.insert(helperSet.end(), guildMembers.begin(), guildMembers.end());
+		helperSet.insertAll(party->getMembers());
+		helperSet.insertAll(party->getInvitees());
 
-		const auto partyMembers = party->getMembers();
-		helperSet.insert(partyMembers.begin(), partyMembers.end());
+		helperSet.emplace(party->getLeader());
 
-		const auto partyInvitees = party->getInvitees();
-		helperSet.insert(partyInvitees.begin(), partyInvitees.end());
-
-		helperSet.insert(party->getLeader());
-
-		helpers = helperSet.size();
-	} else if (guild) {
-		helpers = guild->getMemberCountOnline();
-	} else if (party) {
-		helpers = party->getMemberCount() + party->getInvitationCount() + 1;
-	} else {
-		helpers = 0;
+		return static_cast<uint16_t>(helperSet.size());
 	}
 
-	return helpers;
+	if (guild) {
+		return static_cast<uint16_t>(guild->getMemberCountOnline());
+	}
+
+	if (party) {
+		return static_cast<uint16_t>(party->getMemberCount() + party->getInvitationCount() + 1);
+	}
+
+	return 0u;
 }
 
 void Player::sendClosePrivate(uint16_t channelId) {

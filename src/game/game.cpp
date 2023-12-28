@@ -296,6 +296,7 @@ void Game::start(ServiceManager* manager) {
 	g_dispatcher().cycleEvent(
 		EVENT_LUA_GARBAGE_COLLECTION, [this] { g_luaEnvironment().collectGarbage(); }, "Calling GC"
 	);
+	g_dispatcher().cycleEvent(EVENT_REFRESH_MARKET_PRICES, std::bind_front(&Game::loadItemsPrice, this), "Game::loadItemsPrice");
 }
 
 GameState_t Game::getGameState() const {
@@ -388,7 +389,7 @@ void Game::setGameState(GameState_t newState) {
 }
 
 bool Game::loadItemsPrice() {
-	itemsSaleCount = 0;
+	IOMarket::getInstance().updateStatistics();
 	std::ostringstream query, marketQuery;
 	query << "SELECT DISTINCT `itemtype` FROM `market_offers`;";
 
@@ -398,20 +399,19 @@ bool Game::loadItemsPrice() {
 		return false;
 	}
 
-	do {
-		marketQuery.str(std::string());
-		uint16_t itemId = result->getNumber<uint16_t>("itemtype");
-		marketQuery << "SELECT `price`, `tier` FROM `market_offers` WHERE `itemtype` = " << itemId << " ORDER BY `price` DESC LIMIT 1";
-		DBResult_ptr marketOffersResult = db.storeQuery(marketQuery.str());
-		if (marketOffersResult) {
-			std::map<uint8_t, uint64_t> tierAndCount;
-			auto tier = marketOffersResult->getNumber<uint8_t>("tier");
-			auto price = marketOffersResult->getNumber<uint64_t>("price");
-			tierAndCount[tier] = price;
-			itemsPriceMap[itemId] = tierAndCount;
-			itemsSaleCount++;
+	auto stats = IOMarket::getInstance().getPurchaseStatistics();
+	for (const auto &[itemId, itemStats] : stats) {
+		std::map<uint8_t, uint64_t> tierToPrice;
+		for (const auto &[tier, tierStats] : itemStats) {
+			auto averagePrice = tierStats.totalPrice / tierStats.numTransactions;
+			tierToPrice[tier] = averagePrice;
 		}
-	} while (result->next());
+		itemsPriceMap[itemId] = tierToPrice;
+	}
+	auto offers = IOMarket::getInstance().getActiveOffers(MARKETACTION_BUY);
+	for (const auto &offer : offers) {
+		itemsPriceMap[offer.itemId][offer.tier] = std::max(itemsPriceMap[offer.itemId][offer.tier], offer.price);
+	}
 
 	return true;
 }
@@ -748,7 +748,7 @@ std::shared_ptr<Npc> Game::getNpcByName(const std::string &s) {
 	return nullptr;
 }
 
-std::shared_ptr<Player> Game::getPlayerByName(const std::string &s, bool allowOffline /* = false */) {
+std::shared_ptr<Player> Game::getPlayerByName(const std::string &s, bool allowOffline /* = false */, bool isNewName /* = false */) {
 	if (s.empty()) {
 		return nullptr;
 	}
@@ -760,7 +760,11 @@ std::shared_ptr<Player> Game::getPlayerByName(const std::string &s, bool allowOf
 		}
 		std::shared_ptr<Player> tmpPlayer = std::make_shared<Player>(nullptr);
 		if (!IOLoginData::loadPlayerByName(tmpPlayer, s)) {
-			g_logger().error("Failed to load player {} from database", s);
+			if (!isNewName) {
+				g_logger().error("Failed to load player {} from database", s);
+			} else {
+				g_logger().info("New name {} is available", s);
+			}
 			return nullptr;
 		}
 		tmpPlayer->setOnline(false);
@@ -830,13 +834,19 @@ ReturnValue Game::getPlayerByNameWildcard(const std::string &s, std::shared_ptr<
 	return RETURNVALUE_NOERROR;
 }
 
-std::shared_ptr<Player> Game::getPlayerByAccount(uint32_t acc) {
-	for (const auto &it : players) {
-		if (it.second->getAccountId() == acc) {
-			return it.second;
+std::vector<std::shared_ptr<Player>> Game::getPlayersByAccount(std::shared_ptr<account::Account> acc, bool allowOffline /* = false */) {
+	auto [accountPlayers, error] = acc->getAccountPlayers();
+	if (error != account::ERROR_NO) {
+		return {};
+	}
+	std::vector<std::shared_ptr<Player>> ret;
+	for (const auto &[name, _] : accountPlayers) {
+		auto player = getPlayerByName(name, allowOffline);
+		if (player) {
+			ret.push_back(player);
 		}
 	}
-	return nullptr;
+	return ret;
 }
 
 bool Game::internalPlaceCreature(std::shared_ptr<Creature> creature, const Position &pos, bool extendedPos /*=false*/, bool forced /*= false*/, bool creatureCheck /*= false*/) {
@@ -2539,7 +2549,7 @@ ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Po
 	return RETURNVALUE_NOTPOSSIBLE;
 }
 
-void Game::internalQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr<Container> corpse) {
+void Game::playerQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr<Container> corpse) {
 	if (!player || !corpse) {
 		return;
 	}
@@ -4994,11 +5004,11 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 			auto rewardId = corpse->getAttribute<time_t>(ItemAttribute_t::DATE);
 			auto reward = player->getReward(rewardId, false);
 			if (reward) {
-				internalQuickLootCorpse(player, reward->getContainer());
+				playerQuickLootCorpse(player, reward->getContainer());
 			}
 		} else {
 			if (!lootAllCorpses) {
-				internalQuickLootCorpse(player, corpse);
+				playerQuickLootCorpse(player, corpse);
 			} else {
 				playerLootAllCorpses(player, pos, lootAllCorpses);
 			}
@@ -5035,7 +5045,7 @@ void Game::playerLootAllCorpses(std::shared_ptr<Player> player, const Position &
 			}
 
 			corpses++;
-			internalQuickLootCorpse(player, tileCorpse);
+			playerQuickLootCorpse(player, tileCorpse);
 			if (corpses >= 30) {
 				break;
 			}
@@ -5479,7 +5489,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 
 		auto deltaSpeedChange = mount->speed;
 		if (player->isMounted()) {
-			const auto prevMount = mounts.getMountByID(player->getCurrentMount());
+			const auto prevMount = mounts.getMountByID(player->getLastMount());
 			if (prevMount) {
 				deltaSpeedChange -= prevMount->speed;
 			}
@@ -8522,17 +8532,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	}
 
 	IOMarket::createOffer(player->getGUID(), static_cast<MarketAction_t>(type), it.id, amount, price, tier, anonymous);
-
-	// uint8_t = tier, uint64_t price
-	std::map<uint8_t, uint64_t> tierAndPriceMap;
-	tierAndPriceMap[tier] = price;
-	auto ColorItem = itemsPriceMap.find(it.id);
-	if (ColorItem == itemsPriceMap.end()) {
-		itemsPriceMap[it.id] = tierAndPriceMap;
-		itemsSaleCount++;
-	} else if (auto priceIt = ColorItem->second.find(tier); priceIt->second < price) {
-		itemsPriceMap[it.id] = tierAndPriceMap;
-	}
 
 	const MarketOfferList &buyOffers = IOMarket::getActiveOffers(MARKETACTION_BUY, it.id, tier);
 	const MarketOfferList &sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id, tier);

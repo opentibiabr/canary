@@ -89,7 +89,7 @@ function surpriseBag.onUse(cid, item, fromPosition, itemEx, toPosition)
 	local count = 1
 	local gift = present[math.random(1, #present)]
 	if type(gift) == "table" then
-		count = gift[2]
+		count = math.random(1, gift[2])
 		gift = gift[1]
 	end
 

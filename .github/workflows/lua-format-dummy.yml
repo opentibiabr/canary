@@ -5,7 +5,6 @@ on:
   pull_request:
     paths-ignore:
       - "data*/**"
-  merge_group:
 
 jobs:
   lua-formatter:

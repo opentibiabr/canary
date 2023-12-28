@@ -17,7 +17,7 @@ env:
   MAKEFLAGS: "-j 2"
 jobs:
   cancel-runs:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Cancel Previous Runs

@@ -937,15 +937,26 @@ bool Combat::doCombatChain(std::shared_ptr<Creature> caster, std::shared_ptr<Cre
 		return false;
 	}
 
+	auto affected = targets.size();
+	int i = 0;
 	for (const auto &[from, toVector] : targets) {
 		auto combat = this;
+		auto delay = i * std::max<int32_t>(50, g_configManager().getNumber(COMBAT_CHAIN_DELAY, __FUNCTION__));
+		++i;
 		for (auto to : toVector) {
 			auto nextTarget = g_game().getCreatureByID(to);
 			if (!nextTarget) {
 				continue;
 			}
-			combat->doChainEffect(from, nextTarget->getPosition(), combat->params.chainEffect);
-			combat->doCombat(caster, nextTarget, from);
+			g_dispatcher().scheduleEvent(
+				delay, [combat, caster, nextTarget, from, affected]() {
+					if (combat && caster && nextTarget) {
+						combat->doChainEffect(from, nextTarget->getPosition(), combat->params.chainEffect);
+						combat->doCombat(caster, nextTarget, from, affected);
+					}
+				},
+				"Combat::doCombatChain"
+			);
 		}
 	}
 
@@ -960,10 +971,11 @@ bool Combat::doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature
 	return doCombat(caster, target, caster != nullptr ? caster->getPosition() : Position());
 }
 
-bool Combat::doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin) const {
+bool Combat::doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, int affected /* = 1 */) const {
 	// target combat callback function
 	if (params.combatType != COMBAT_NONE) {
 		CombatDamage damage = getCombatDamage(caster, target);
+		damage.affected = affected;
 		if (damage.primary.type != COMBAT_MANADRAIN) {
 			doCombatHealth(caster, target, origin, damage, params);
 		} else {

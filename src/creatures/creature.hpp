@@ -150,6 +150,14 @@ public:
 		moveLocked = locked;
 	}
 
+	bool isDirectionLocked() const {
+		return directionLocked;
+	}
+
+	void setDirectionLocked(bool locked) {
+		directionLocked = locked;
+	}
+
 	int32_t getThrowRange() const override final {
 		return 1;
 	}
@@ -773,6 +781,7 @@ protected:
 	bool floorChange = false;
 	bool canUseDefense = true;
 	bool moveLocked = false;
+	bool directionLocked = false;
 	bool hasFollowPath = false;
 	int8_t charmChanceModifier = 0;
 

@@ -73,9 +73,7 @@ public:
 	RaceType_t getRace() const override {
 		return mType->info.race;
 	}
-	float getMitigation() const override {
-		return mType->info.mitigation * getDefenseMultiplier();
-	}
+	float getMitigation() const override;
 	int32_t getArmor() const override {
 		return mType->info.armor * getDefenseMultiplier();
 	}
@@ -272,6 +270,12 @@ public:
 	void setHazardSystemDamageBoost(bool value) {
 		hazardDamageBoost = value;
 	}
+	bool getHazardSystemDefenseBoost() const {
+		return hazardDefenseBoost;
+	}
+	void setHazardSystemDefenseBoost(bool value) {
+		hazardDefenseBoost = value;
+	}
 	// Hazard end
 
 	void updateTargetList();
@@ -391,6 +395,7 @@ private:
 	bool hazardCrit = false;
 	bool hazardDodge = false;
 	bool hazardDamageBoost = false;
+	bool hazardDefenseBoost = false;
 
 	void onCreatureEnter(std::shared_ptr<Creature> creature);
 	void onCreatureLeave(std::shared_ptr<Creature> creature);

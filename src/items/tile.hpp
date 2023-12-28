@@ -131,6 +131,11 @@ public:
 	std::shared_ptr<Tile> getTile() override final {
 		return static_self_cast<Tile>();
 	}
+
+	std::shared_ptr<Cylinder> getCylinder() override final {
+		return getTile();
+	}
+
 	std::shared_ptr<MagicField> getFieldItem() const;
 	std::shared_ptr<Teleport> getTeleportItem() const;
 	std::shared_ptr<TrashHolder> getTrashHolder() const;

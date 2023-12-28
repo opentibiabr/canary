@@ -946,19 +946,7 @@ void ProtocolGame::addBless() {
 	if (!player) {
 		return;
 	}
-
-	std::string bless = player->getBlessingsName();
-	std::ostringstream lostBlesses;
-	(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses << "You are still blessed with " << bless;
-	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
-	if (player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL, __FUNCTION__) && player->getVocationId() > VOCATION_NONE) {
-		for (uint8_t i = 2; i <= 6; i++) {
-			if (!player->hasBlessing(i)) {
-				player->addBlessing(i, 1);
-			}
-		}
-		sendBlessStatus();
-	}
+	player->checkAndShowBlessingMessage();
 }
 
 void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte) {
@@ -8473,7 +8461,7 @@ void ProtocolGame::parseSetMonsterPodium(NetworkMessage &msg) const {
 }
 
 void ProtocolGame::sendBosstiaryCooldownTimer() {
-	if (oldProtocol) {
+	if (!player || oldProtocol) {
 		return;
 	}
 

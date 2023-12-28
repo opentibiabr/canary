@@ -2482,6 +2482,9 @@ void Player::onBlockHit() {
 	}
 }
 
+void Player::onTakeDamage(std::shared_ptr<Creature> attacker, int32_t damage) {
+}
+
 void Player::onAttackedCreatureBlockHit(BlockType_t blockType) {
 	lastAttackBlockType = blockType;
 
@@ -2742,24 +2745,28 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 		}
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, deathType.str());
 
-		std::string bless = getBlessingsName();
-		std::ostringstream blesses;
-		if (bless.length() == 0) {
-			blesses << "You weren't protected with any blessings.";
-		} else {
-			blesses << "You were blessed with " << bless;
-		}
-		sendTextMessage(MESSAGE_EVENT_ADVANCE, blesses.str());
+		auto adventurerBlessingLevel = g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL, __FUNCTION__);
+		auto willNotLoseBless = getLevel() < adventurerBlessingLevel && getVocationId() > VOCATION_NONE;
 
-		// Make player lose bless
-		uint8_t maxBlessing = 8;
-		if (pvpDeath && hasBlessing(1)) {
-			removeBlessing(1, 1); // Remove TOF only
+		std::string bless = getBlessingsName();
+		std::ostringstream blessOutput;
+		if (willNotLoseBless) {
+			blessOutput << fmt::format("You still have adventurer's blessings for being level lower than {}!", adventurerBlessingLevel);
 		} else {
-			for (int i = 2; i <= maxBlessing; i++) {
-				removeBlessing(i, 1);
+			bless.empty() ? blessOutput << "You weren't protected with any blessings."
+						  : blessOutput << "You were blessed with " << bless;
+
+			// Make player lose bless
+			uint8_t maxBlessing = 8;
+			if (pvpDeath && hasBlessing(1)) {
+				removeBlessing(1, 1); // Remove TOF only
+			} else {
+				for (int i = 2; i <= maxBlessing; i++) {
+					removeBlessing(i, 1);
+				}
 			}
 		}
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, blessOutput.str());
 
 		sendStats();
 		sendSkills();
@@ -2962,8 +2969,7 @@ void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t
 		return;
 	}
 
-	auto it = VIPList.find(loginPlayer->guid);
-	if (it == VIPList.end()) {
+	if (!VIPList.contains(loginPlayer->guid)) {
 		return;
 	}
 
@@ -2979,10 +2985,11 @@ void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t
 }
 
 bool Player::removeVIP(uint32_t vipGuid) {
-	if (VIPList.erase(vipGuid) == 0) {
+	if (!VIPList.erase(vipGuid)) {
 		return false;
 	}
 
+	VIPList.erase(vipGuid);
 	if (account) {
 		IOLoginData::removeVIPEntry(account->getID(), vipGuid);
 	}
@@ -2996,8 +3003,7 @@ bool Player::addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t st
 		return false;
 	}
 
-	auto result = VIPList.insert(vipGuid);
-	if (!result.second) {
+	if (!VIPList.insert(vipGuid).second) {
 		sendTextMessage(MESSAGE_FAILURE, "This player is already in your list.");
 		return false;
 	}
@@ -3078,6 +3084,9 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 	if (item == nullptr) {
 		g_logger().error("[Player::queryAdd] - Item is nullptr");
 		return RETURNVALUE_NOTPOSSIBLE;
+	}
+	if (item->hasOwner() && !item->isOwner(getPlayer())) {
+		return RETURNVALUE_ITEMISNOTYOURS;
 	}
 
 	bool childIsOwner = hasBitSet(FLAG_CHILDISOWNER, flags);
@@ -4629,8 +4638,7 @@ bool Player::onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit)
 				for (auto &kill : target->unjustifiedKills) {
 					if (kill.target == getGUID() && kill.unavenged) {
 						kill.unavenged = false;
-						auto it = attackedSet.find(target->guid);
-						attackedSet.erase(it);
+						attackedSet.erase(target->guid);
 						break;
 					}
 				}
@@ -5038,7 +5046,7 @@ bool Player::hasAttacked(std::shared_ptr<Player> attacked) const {
 		return false;
 	}
 
-	return attackedSet.find(attacked->guid) != attackedSet.end();
+	return attackedSet.contains(attacked->guid);
 }
 
 void Player::addAttacked(std::shared_ptr<Player> attacked) {
@@ -5046,7 +5054,7 @@ void Player::addAttacked(std::shared_ptr<Player> attacked) {
 		return;
 	}
 
-	attackedSet.insert(attacked->guid);
+	attackedSet.emplace(attacked->guid);
 }
 
 void Player::removeAttacked(std::shared_ptr<Player> attacked) {
@@ -5054,10 +5062,7 @@ void Player::removeAttacked(std::shared_ptr<Player> attacked) {
 		return;
 	}
 
-	auto it = attackedSet.find(attacked->guid);
-	if (it != attackedSet.end()) {
-		attackedSet.erase(it);
-	}
+	attackedSet.erase(attacked->guid);
 }
 
 void Player::clearAttacked() {
@@ -7725,6 +7730,17 @@ void Player::parseAttackDealtHazardSystem(CombatDamage &damage, std::shared_ptr<
 			return;
 		}
 	}
+	if (monster->getHazardSystemDefenseBoost()) {
+		stage = points * static_cast<uint16_t>(g_configManager().getNumber(HAZARD_DEFENSE_MULTIPLIER, __FUNCTION__));
+		if (stage != 0) {
+			damage.exString = "(hazard -" + std::to_string(stage / 100) + "%)";
+			damage.primary.value -= static_cast<int32_t>(std::ceil((static_cast<double>(damage.primary.value) * stage) / 10000));
+			if (damage.secondary.value != 0) {
+				damage.secondary.value -= static_cast<int32_t>(std::ceil((static_cast<double>(damage.secondary.value) * stage) / 10000));
+			}
+			return;
+		}
+	}
 }
 
 /*******************************************************************************
@@ -7741,6 +7757,7 @@ const std::unique_ptr<PlayerWheel> &Player::wheel() const {
 }
 
 void Player::sendLootMessage(const std::string &message) const {
+	auto party = getParty();
 	if (!party) {
 		sendTextMessage(MESSAGE_LOOT, message);
 		return;
@@ -7798,4 +7815,31 @@ bool Player::hasPermittedConditionInPZ() const {
 	}
 
 	return hasPermittedCondition;
+}
+
+void Player::checkAndShowBlessingMessage() {
+	auto adventurerBlessingLevel = g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL, __FUNCTION__);
+	auto willNotLoseBless = getLevel() < adventurerBlessingLevel && getVocationId() > VOCATION_NONE;
+	std::string bless = getBlessingsName();
+	std::ostringstream blessOutput;
+
+	if (willNotLoseBless) {
+		auto addedBless = false;
+		for (uint8_t i = 2; i <= 6; i++) {
+			if (!hasBlessing(i)) {
+				addBlessing(i, 1);
+				addedBless = true;
+			}
+		}
+		sendBlessStatus();
+		if (addedBless) {
+			blessOutput << fmt::format("You have received adventurer's blessings for being level lower than {}!\nYou are still blessed with {}", adventurerBlessingLevel, bless);
+		}
+	} else {
+		bless.empty() ? blessOutput << "You lost all your blessings." : blessOutput << "You are still blessed with " << bless;
+	}
+
+	if (!blessOutput.str().empty()) {
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, blessOutput.str());
+	}
 }

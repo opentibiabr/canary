@@ -2567,7 +2567,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 			if (!begin) {
 				s << ')';
 			}
-		// This block refers to the look of the weapons.
+			// This block refers to the look of the weapons.
 		} else if (it.weaponType != WEAPON_AMMO) {
 			bool begin = true;
 
@@ -2600,7 +2600,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 					} else {
 						s << ", ";
 					}
-					
+
 					s << "Vol:" << volume;
 				}
 			}

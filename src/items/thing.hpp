@@ -69,6 +69,9 @@ public:
 	virtual std::shared_ptr<const Creature> getCreature() const {
 		return nullptr;
 	}
+	virtual std::shared_ptr<Cylinder> getCylinder() {
+		return nullptr;
+	}
 
 	virtual bool isRemoved() {
 		return true;

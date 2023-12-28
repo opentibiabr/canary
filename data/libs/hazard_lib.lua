@@ -8,12 +8,14 @@ function Hazard.new(prototype)
 	instance.name = prototype.name
 	instance.from = prototype.from
 	instance.to = prototype.to
+	instance.minLevel = prototype.minLevel or 1
 	instance.maxLevel = prototype.maxLevel
 	instance.storageMax = prototype.storageMax ---@deprecated
 	instance.storageCurrent = prototype.storageCurrent ---@deprecated
 	instance.crit = prototype.crit
 	instance.dodge = prototype.dodge
 	instance.damageBoost = prototype.damageBoost
+	instance.defenseBoost = prototype.defenseBoost
 
 	instance.zone = Zone(instance.name)
 	if instance.from and instance.to then
@@ -41,19 +43,43 @@ function Hazard:getHazardPlayerAndPoints(damageMap)
 	end
 
 	if hazardPoints == -1 then
-		hazardPoints = 1
+		hazardPoints = self.minLevel
 	end
 
 	return hazardPlayer, hazardPoints
 end
 
+function Hazard:getCurrentLevel(players)
+	local hazardPlayer = nil
+	local hazardPoints = -1
+	for _, player in ipairs(players) do
+		local playerHazardPoints = self:getPlayerCurrentLevel(player)
+
+		if playerHazardPoints < hazardPoints or hazardPoints == -1 then
+			hazardPlayer = player
+			hazardPoints = playerHazardPoints
+		end
+	end
+
+	if hazardPoints == -1 then
+		hazardPoints = self.minLevel
+	end
+
+	return hazardPoints
+end
+
 function Hazard:getPlayerCurrentLevel(player)
 	if self.storageCurrent then
 		local fromStorage = player:getStorageValue(self.storageCurrent)
-		return fromStorage <= 0 and 1 or fromStorage
+		return fromStorage <= 0 and self.minLevel or fromStorage
 	end
-	local fromKV = player:kv():scoped(self.name):get("currentLevel") or 1
-	return fromKV <= 0 and 1 or fromKV
+	local fromKV = player:kv():scoped(self.name):get("current-level") or self.minLevel
+	return fromKV <= 0 and self.minLevel or fromKV
+end
+
+function Hazard:getPlayerMaxLevelEver(player)
+	local fromKV = player:kv():scoped(self.name):get("max-level-set") or self.minLevel
+	return fromKV <= 0 and self.minLevel or fromKV
 end
 
 function Hazard:setPlayerCurrentLevel(player, level)
@@ -64,7 +90,11 @@ function Hazard:setPlayerCurrentLevel(player, level)
 	if self.storageCurrent then
 		player:setStorageValue(self.storageCurrent, level)
 	else
-		player:kv():scoped(self.name):set("currentLevel", level)
+		player:kv():scoped(self.name):set("current-level", level)
+		local maxEver = player:kv():scoped(self.name):get("max-level-set") or self.minLevel
+		if level > maxEver then
+			player:kv():scoped(self.name):set("max-level-set", level)
+		end
 	end
 	local zones = player:getZones()
 	if not zones then
@@ -86,11 +116,10 @@ end
 function Hazard:getPlayerMaxLevel(player)
 	if self.storageMax then
 		local fromStorage = player:getStorageValue(self.storageMax)
-		return fromStorage <= 0 and 1 or fromStorage
+		return fromStorage <= 0 and self.minLevel or fromStorage
 	end
-	local fromKV = player:kv():scoped(self.name):get("maxLevel") or 1
-
-	return fromKV <= 0 and 1 or fromKV
+	local fromKV = player:kv():scoped(self.name):get("max-level") or self.minLevel
+	return fromKV <= 0 and self.minLevel or fromKV
 end
 
 function Hazard:levelUp(player)
@@ -110,7 +139,7 @@ function Hazard:setPlayerMaxLevel(player, level)
 		player:setStorageValue(self.storageMax, level)
 		return
 	end
-	player:kv():scoped(self.name):set("maxLevel", level)
+	player:kv():scoped(self.name):set("max-level", level)
 end
 
 function Hazard:isInZone(position)
@@ -181,6 +210,7 @@ function HazardMonster.onSpawn(monster, position)
 				monster:hazardCrit(hazard.crit)
 				monster:hazardDodge(hazard.dodge)
 				monster:hazardDamageBoost(hazard.damageBoost)
+				monster:hazardDefenseBoost(hazard.defenseBoost)
 			end
 		end
 	end

@@ -428,8 +428,11 @@ function parseBuyStoreOffer(playerId, msg)
 	-- At this point the purchase is assumed to be formatted correctly
 	local offerPrice = offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST and GameStore.ExpBoostValues[player:getStorageValue(GameStore.Storages.expBoostCount)] or offer.price
 	local offerCoinType = offer.coinType
+	if offer.type == GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE and player:kv():get("namelock") then
+		offerPrice = 0
+	end
 	-- Check if offer can be honored
-	if not player:canPayForOffer(offerPrice, offerCoinType) then
+	if offerPrice > 0 and not player:canPayForOffer(offerPrice, offerCoinType) then
 		return queueSendStoreAlertToUser("You don't have enough coins. Your purchase has been cancelled.", 250, playerId)
 	end
 
@@ -864,9 +867,14 @@ function sendShowStoreOffers(playerId, category, redirectId)
 					xpBoostPrice = GameStore.ExpBoostValues[player:getStorageValue(GameStore.Storages.expBoostCount)]
 				end
 
+				nameLockPrice = nil
+				if offer.type == GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE and player:kv():get("namelock") then
+					nameLockPrice = 0
+				end
+
 				msg:addU32(off.id)
 				msg:addU16(off.count)
-				msg:addU32(xpBoostPrice or off.price)
+				msg:addU32(xpBoostPrice or nameLockPrice or off.price)
 				msg:addByte(off.coinType or 0x00)
 
 				msg:addByte((off.disabledReadonIndex ~= nil) and 1 or 0)
@@ -1366,8 +1374,8 @@ GameStore.canUseHirelingName = function(name)
 	local result = {
 		ability = false,
 	}
-	if name:len() < 3 or name:len() > 14 then
-		result.reason = "The length of the hireling name must be between 3 and 14 characters."
+	if name:len() < 3 or name:len() > 18 then
+		result.reason = "The length of the hireling name must be between 3 and 18 characters."
 		return result
 	end
 
@@ -1422,8 +1430,8 @@ GameStore.canChangeToName = function(name)
 	local result = {
 		ability = false,
 	}
-	if name:len() < 3 or name:len() > 14 then
-		result.reason = "The length of your new name must be between 3 and 14 characters."
+	if name:len() < 3 or name:len() > 18 then
+		result.reason = "The length of your new name must be between 3 and 18 characters."
 		return result
 	end
 
@@ -1703,8 +1711,12 @@ function GameStore.processNameChangePurchase(player, offer, productType, newName
 			end
 		end
 
-		local resultId = db.storeQuery("SELECT * FROM `players` WHERE `name` = " .. db.escapeString(newName) .. "")
-		if resultId ~= false then
+		newName = newName:lower():trim():gsub("(%l)(%w*)", function(a, b)
+			return string.upper(a) .. b
+		end)
+
+		local normalizedName = Game.getNormalizedPlayerName(newName, true)
+		if normalizedName then
 			return error({ code = 1, message = "This name is already used, please try again!" })
 		end
 
@@ -1713,25 +1725,16 @@ function GameStore.processNameChangePurchase(player, offer, productType, newName
 			return error({ code = 1, message = result.reason })
 		end
 
-		player:makeCoinTransaction(offer)
-
-		local message = string.format("You have purchased %s for %d coins.", offer.name, offer.price)
+		local message, namelockReason = "", player:kv():get("namelock")
+		if not namelockReason then
+			player:makeCoinTransaction(offer)
+			message = string.format("You have purchased %s for %d coins.", offer.name, offer.price)
+		else
+			message = "Your character has been renamed successfully."
+		end
 		addPlayerEvent(sendStorePurchaseSuccessful, 500, playerId, message)
 
-		newName = newName:lower():gsub("(%l)(%w*)", function(a, b)
-			return string.upper(a) .. b
-		end)
-		db.query("UPDATE `players` SET `name` = " .. db.escapeString(newName) .. " WHERE `id` = " .. player:getGuid())
-		message = "You have successfully changed you name, relogin!"
-		addEvent(function()
-			local player = Player(playerId)
-			if not player then
-				return false
-			end
-
-			player:remove()
-		end, 1000)
-		-- If not, we ask him to do!
+		player:changeName(newName)
 	else
 		return addPlayerEvent(sendRequestPurchaseData, 250, playerId, offer.id, GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_NAMECHANGE)
 	end
@@ -2176,13 +2179,14 @@ function sendHomePage(playerId)
 end
 
 function Player:openStore(serviceName) --exporting the method so other scripts can use to open store
-	openStore(self:getId())
+	local playerId = self:getId()
+	openStore(playerId)
 
 	--local serviceType = msg:getByte()
 	local category = GameStore.Categories and GameStore.Categories[1] or nil
 
 	if serviceName and serviceName:lower() == "home" then
-		return sendHomePage(self:getId())
+		return sendHomePage(playerId)
 	end
 
 	if serviceName and GameStore.getCategoryByName(serviceName) then

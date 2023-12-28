@@ -2,6 +2,8 @@
 name: Lua-format
 on:
   pull_request:
+    paths:
+      - "data*/**"
   merge_group:
   push:
     paths:

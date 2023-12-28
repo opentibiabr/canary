@@ -2,6 +2,8 @@
 name: Clang-format
 on:
   pull_request:
+    paths:
+      - "src/**"
   merge_group:
   push:
     paths:

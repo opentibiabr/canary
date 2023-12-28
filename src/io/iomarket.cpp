@@ -26,6 +26,35 @@ uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {
 	return tier;
 }
 
+MarketOfferList IOMarket::getActiveOffers(MarketAction_t action) {
+	MarketOfferList offerList;
+
+	std::ostringstream query;
+	query << "SELECT `id`, `amount`, `price`, `tier`, `created`, `anonymous`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` FROM `market_offers` WHERE `sale` = " << action;
+
+	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
+	if (!result) {
+		return offerList;
+	}
+
+	const int32_t marketOfferDuration = g_configManager().getNumber(MARKET_OFFER_DURATION, __FUNCTION__);
+
+	do {
+		MarketOffer offer;
+		offer.amount = result->getNumber<uint16_t>("amount");
+		offer.price = result->getNumber<uint64_t>("price");
+		offer.timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
+		offer.counter = result->getNumber<uint32_t>("id") & 0xFFFF;
+		if (result->getNumber<uint16_t>("anonymous") == 0) {
+			offer.playerName = result->getString("player_name");
+		} else {
+			offer.playerName = "Anonymous";
+		}
+		offer.tier = getTierFromDatabaseTable(result->getString("tier"));
+		offerList.push_back(offer);
+	} while (result->next());
+	return offerList;
+}
 MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier) {
 	MarketOfferList offerList;
 

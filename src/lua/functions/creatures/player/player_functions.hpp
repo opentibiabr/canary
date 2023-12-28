@@ -332,6 +332,7 @@ private:
 		registerMethod(L, "Player", "sendDoubleSoundEffect", PlayerFunctions::luaPlayerSendDoubleSoundEffect);
 
 		registerMethod(L, "Player", "getName", PlayerFunctions::luaPlayerGetName);
+		registerMethod(L, "Player", "changeName", PlayerFunctions::luaPlayerChangeName);
 
 		registerMethod(L, "Player", "hasGroupFlag", PlayerFunctions::luaPlayerHasGroupFlag);
 		registerMethod(L, "Player", "setGroupFlag", PlayerFunctions::luaPlayerSetGroupFlag);
@@ -678,6 +679,7 @@ private:
 	static int luaPlayerSendDoubleSoundEffect(lua_State* L);
 
 	static int luaPlayerGetName(lua_State* L);
+	static int luaPlayerChangeName(lua_State* L);
 
 	static int luaPlayerHasGroupFlag(lua_State* L);
 	static int luaPlayerSetGroupFlag(lua_State* L);

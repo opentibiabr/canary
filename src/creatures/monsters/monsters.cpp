@@ -121,8 +121,6 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 		combatPtr->setParam(COMBAT_PARAM_TYPE, spell->combatType);
 	} else if (spellName == "speed") {
 		int32_t speedChange = 0;
-		int32_t speedChangeValue = 0;
-		int32_t speedChangeRange = 0;
 		int32_t duration = 10000;
 
 		if (spell->duration != 0) {
@@ -146,9 +144,8 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 		}
 
 		std::shared_ptr<ConditionSpeed> condition = Condition::createCondition(CONDITIONID_COMBAT, conditionType, duration, 0)->static_self_cast<ConditionSpeed>();
-		speedChangeRange = speedChange / 2;
-		speedChangeValue = uniform_random(speedChangeRange, speedChange);
-		condition->setFormulaVars(speedChangeValue / 1000.0, 40, speedChangeValue / 1000.0, 40);
+		float multiplier = 1.0f + static_cast<float>(speedChange) / 1000.0f;
+		condition->setFormulaVars(multiplier / 2, 40, multiplier, 40);
 		combatPtr->addCondition(condition);
 	} else if (spellName == "outfit") {
 		int32_t duration = 10000;

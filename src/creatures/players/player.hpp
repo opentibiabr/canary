@@ -159,6 +159,7 @@ public:
 		return CREATURETYPE_PLAYER;
 	}
 
+	uint8_t getLastMount() const;
 	uint8_t getCurrentMount() const;
 	void setCurrentMount(uint8_t mountId);
 	bool isMounted() const {

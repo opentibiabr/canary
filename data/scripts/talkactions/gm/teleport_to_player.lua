@@ -20,7 +20,7 @@ function teleportToCreature.onSay(player, words, param)
 			local isGhost = targetPlayer:isInGhostMode()
 			local isTraining = _G.OnExerciseTraining[targetPlayer:getId()]
 			local isIdle = targetPlayer:getIdleTime() >= 5 * 60 * 1000
-			local isInTrainingRoom = isInRange(targetPlayer:getPosition(), Position(1015, 1109, 7), Position(1094, 1738, 7))
+			local isInTrainingRoom = targetPlayer:getPosition():isInRange(Position(1015, 1109, 7), Position(1094, 1738, 7))
 			local isActive = not isGhost and not isTraining and not isIdle and not isInTrainingRoom
 			if isActive then
 				table.insert(playerList, targetPlayer)

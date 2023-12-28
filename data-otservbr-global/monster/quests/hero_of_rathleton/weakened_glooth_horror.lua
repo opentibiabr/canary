@@ -70,7 +70,7 @@ monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 90, attack = 100 },
-	{ name = "combat", interval = 2000, chance = 17, type = COMBAT_DEATHDAMAGE, minDamage = -300, maxDamage = -600, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 17, type = COMBAT_DEATHDAMAGE, minDamage = -300, maxDamage = -600, length = 8, spread = 0, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_DEATHDAMAGE, minDamage = -200, maxDamage = -400, range = 1, shootEffect = CONST_ANI_POISON, target = true },
 }
 

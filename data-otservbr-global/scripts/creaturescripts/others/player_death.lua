@@ -70,10 +70,8 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 	-- Start Webhook Player Death
 	local playerName = player:getName()
 	local playerLevel = player:getLevel()
-	if not player:hasFeature(Features.DisableDiscordEvents) then
-		local vocation = player:vocationAbbrev()
-		Webhook.sendMessage(":skull_crossbones: " .. player:getMarkdownLink() .. " has died. Killed at level _" .. playerLevel .. "_ by **" .. killerName .. "**.", announcementChannels["player-kills"])
-	end
+	local vocation = player:vocationAbbrev()
+	Webhook.sendMessage(":skull_crossbones: " .. player:getMarkdownLink() .. " has died. Killed at level _" .. playerLevel .. "_ by **" .. killerName .. "**.", announcementChannels["player-kills"])
 	-- End Webhook Player Death
 
 	local deathRecords = 0

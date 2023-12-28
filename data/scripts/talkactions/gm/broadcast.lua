@@ -1,15 +1,5 @@
 local broadcast = TalkAction("/b")
 
-function Broadcast(text, filter)
-	for _, targetPlayer in ipairs(Game.getPlayers()) do
-		if filter and not filter(targetPlayer) then
-			goto continue
-		end
-		targetPlayer:sendTextMessage(MESSAGE_ADMINISTRADOR, text)
-		::continue::
-	end
-end
-
 function broadcast.onSay(player, words, param)
 	-- create log
 	logCommand(player, words, param)

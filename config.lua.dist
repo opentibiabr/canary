@@ -373,7 +373,7 @@ showScriptsLogInConsole = false
 criticalChance = 10
 inventoryGlowOnFiveBless = false
 adventurersBlessingLevel = 21
-skulledDeathLoseStoreItem = true
+skulledDeathLoseStoreItem = false
 experienceDisplayRates = true
 -- configure attack base on Fist Fighting skill/experience
 -- multiplierSpeedOnFist * 5  (multiplies the value obtained from the player fist skill and multiplies it * 5) max 25 is recommended due minTicks limits else player stop attack

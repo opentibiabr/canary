@@ -232,7 +232,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddDouble(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageAddItem(lua_State* L) {
 	// networkMessage:addItem(item, player)
-	const auto &item = getUserdataShared<Item>(L, 2);
+	std::shared_ptr<Item> item = getUserdataShared<Item>(L, 2);
 	if (!item) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
 		lua_pushnil(L);
@@ -289,7 +289,7 @@ int NetworkMessageFunctions::luaNetworkMessageSendToPlayer(lua_State* L) {
 		return 1;
 	}
 
-	const auto &player = getPlayer(L, 2);
+	std::shared_ptr<Player> player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;

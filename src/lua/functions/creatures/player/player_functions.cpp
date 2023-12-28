@@ -461,10 +461,25 @@ int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerisMonsterPrey(lua_State* L) {
+	// player:isMonsterPrey(raceid)
+	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1)) {
+		if (const std::unique_ptr<PreySlot> &slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
+			slot && slot->isOccupied()) {
+			pushBoolean(L, true);
+		} else {
+			pushBoolean(L, false);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerPreyThirdSlot(lua_State* L) {
 	// get: player:preyThirdSlot() set: player:preyThirdSlot(bool)
-	if (const auto &player = getUserdataShared<Player>(L, 1)) {
-		const auto &slot = player->getPreySlotById(PreySlot_Three);
+	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
+		const auto &slot = player->getPreySlotById(PreySlot_Three)) {
 		if (!slot) {
 			lua_pushnil(L);
 		} else if (lua_gettop(L) == 1) {
@@ -1888,6 +1903,22 @@ int PlayerFunctions::luaPlayerAddItemEx(lua_State* L) {
 		ScriptEnvironment::removeTempItem(item);
 	}
 	lua_pushnumber(L, returnValue);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddItemStash(lua_State* L) {
+	// player:addItemStash(itemId, count = 1)
+	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto itemId = getNumber<uint16_t>(L, 2);
+	auto count = getNumber<uint32_t>(L, 3, 1);
+
+	player->addItemOnStash(itemId, count);
+	pushBoolean(L, true);
 	return 1;
 }
 

@@ -105,6 +105,17 @@ int ItemTypeFunctions::luaItemTypeIsStackable(lua_State* L) {
 	return 1;
 }
 
+int ItemTypeFunctions::luaItemTypeIsStowable(lua_State* L) {
+	// itemType:isStowable()
+	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	if (itemType) {
+		pushBoolean(L, itemType->stackable && itemType->wareId > 0);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int ItemTypeFunctions::luaItemTypeIsReadable(lua_State* L) {
 	// itemType:isReadable()
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
@@ -260,10 +271,12 @@ int ItemTypeFunctions::luaItemTypeGetArticle(lua_State* L) {
 }
 
 int ItemTypeFunctions::luaItemTypeGetDescription(lua_State* L) {
-	// itemType:getDescription()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	// itemType:getDescription([count])
+	auto itemType = getUserdata<ItemType>(L, 1);
 	if (itemType) {
-		pushString(L, itemType->description);
+		auto count = getNumber<uint16_t>(L, 2, -1);
+		auto description = Item::getDescription(*itemType, 1, nullptr, count);
+		pushString(L, description);
 	} else {
 		lua_pushnil(L);
 	}

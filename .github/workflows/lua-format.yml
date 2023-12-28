@@ -3,10 +3,11 @@ name: Lua-format
 on:
   pull_request:
     paths:
-      - 'data*/**'
+      - "data*/**"
+  merge_group:
   push:
     paths:
-      - 'data*/**'
+      - "data*/**"
 jobs:
   lua-formatter:
     runs-on: ubuntu-latest

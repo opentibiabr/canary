@@ -2745,24 +2745,28 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 		}
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, deathType.str());
 
-		std::string bless = getBlessingsName();
-		std::ostringstream blesses;
-		if (bless.length() == 0) {
-			blesses << "You weren't protected with any blessings.";
-		} else {
-			blesses << "You were blessed with " << bless;
-		}
-		sendTextMessage(MESSAGE_EVENT_ADVANCE, blesses.str());
+		auto adventurerBlessingLevel = g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL, __FUNCTION__);
+		auto willNotLoseBless = getLevel() < adventurerBlessingLevel && getVocationId() > VOCATION_NONE;
 
-		// Make player lose bless
-		uint8_t maxBlessing = 8;
-		if (pvpDeath && hasBlessing(1)) {
-			removeBlessing(1, 1); // Remove TOF only
+		std::string bless = getBlessingsName();
+		std::ostringstream blessOutput;
+		if (willNotLoseBless) {
+			blessOutput << fmt::format("You still have adventurer's blessings for being level lower than {}!", adventurerBlessingLevel);
 		} else {
-			for (int i = 2; i <= maxBlessing; i++) {
-				removeBlessing(i, 1);
+			bless.empty() ? blessOutput << "You weren't protected with any blessings."
+						  : blessOutput << "You were blessed with " << bless;
+
+			// Make player lose bless
+			uint8_t maxBlessing = 8;
+			if (pvpDeath && hasBlessing(1)) {
+				removeBlessing(1, 1); // Remove TOF only
+			} else {
+				for (int i = 2; i <= maxBlessing; i++) {
+					removeBlessing(i, 1);
+				}
 			}
 		}
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, blessOutput.str());
 
 		sendStats();
 		sendSkills();
@@ -7812,4 +7816,31 @@ bool Player::hasPermittedConditionInPZ() const {
 	}
 
 	return hasPermittedCondition;
+}
+
+void Player::checkAndShowBlessingMessage() {
+	auto adventurerBlessingLevel = g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL, __FUNCTION__);
+	auto willNotLoseBless = getLevel() < adventurerBlessingLevel && getVocationId() > VOCATION_NONE;
+	std::string bless = getBlessingsName();
+	std::ostringstream blessOutput;
+
+	if (willNotLoseBless) {
+		auto addedBless = false;
+		for (uint8_t i = 2; i <= 6; i++) {
+			if (!hasBlessing(i)) {
+				addBlessing(i, 1);
+				addedBless = true;
+			}
+		}
+		sendBlessStatus();
+		if (addedBless) {
+			blessOutput << fmt::format("You have received adventurer's blessings for being level lower than {}!\nYou are still blessed with {}", adventurerBlessingLevel, bless);
+		}
+	} else {
+		bless.empty() ? blessOutput << "You lost all your blessings." : blessOutput << "You are still blessed with " << bless;
+	}
+
+	if (!blessOutput.str().empty()) {
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, blessOutput.str());
+	}
 }

@@ -496,16 +496,7 @@ public:
 		return isBlocking() && isAlwaysOnTop() && !items[id].hasHeight;
 	}
 	bool canBeUsedByGuests() const {
-		std::unordered_set<uint32_t> allowedItemIds = {
-			ITEM_DEPOT,
-			ITEM_LOCKER,
-			ITEM_INBOX,
-			ITEM_MARKET,
-			ITEM_STORE_INBOX,
-			ITEM_SUPPLY_STASH,
-			25720, 25721, 25722, 25723, 25802, 25803, // reward shrine ids
-		};
-		return isDummy() || allowedItemIds.contains(id);
+		return isDummy() || items[id].m_canBeUsedByGuests;
 	}
 
 	bool isDecayDisabled() const {

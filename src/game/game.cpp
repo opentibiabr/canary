@@ -136,7 +136,7 @@ namespace InternalGame {
 				auto targetItem = targetThing ? targetThing->getItem() : nullptr;
 				uint16_t targetId = targetItem ? targetItem->getID() : 0;
 				auto invitedCheckUseWith = house && item->getRealParent() && item->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST);
-				if (targetId != 0 && targetItem && !targetItem->isDummy() && invitedCheckUseWith) {
+				if (targetId != 0 && targetItem && invitedCheckUseWith && !item->canBeUsedByGuests()) {
 					player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
 					return false;
 				}

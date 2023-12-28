@@ -23,7 +23,7 @@ Blessings.Config = {
 	AdventurerBlessingLevel = configManager.getNumber(configKeys.ADVENTURERSBLESSING_LEVEL), -- Free full bless until level
 	HasToF = false, -- Enables/disables twist of fate
 	InquisitonBlessPriceMultiplier = 1.1, -- Bless price multiplied by henricus
-	SkulledDeathLoseStoreItem = true, -- Destroy all items on store when dying with red/blackskull
+	SkulledDeathLoseStoreItem = configManager.getBoolean(configKeys.SKULLED_DEATH_LOSE_STORE_ITEM), -- Destroy all items on store when dying with red/blackskull
 	InventoryGlowOnFiveBless = configManager.getBoolean(configKeys.INVENTORY_GLOW), -- Glow in yellow inventory items when the player has 5 or more bless,
 	Debug = false, -- Prin debug messages in console if enabled
 }

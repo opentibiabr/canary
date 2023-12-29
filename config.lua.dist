@@ -147,6 +147,7 @@ hazardCriticalInterval = 2000
 hazardCriticalChance = 750
 hazardCriticalMultiplier = 25
 hazardDamageMultiplier = 200
+hazardDefenseMultiplier = 0
 hazardDodgeMultiplier = 85
 hazardPodsDropMultiplier = 87
 hazardPodsTimeToDamage = 2000
@@ -373,6 +374,7 @@ showScriptsLogInConsole = false
 criticalChance = 10
 inventoryGlowOnFiveBless = false
 adventurersBlessingLevel = 21
+skulledDeathLoseStoreItem = false
 experienceDisplayRates = true
 -- configure attack base on Fist Fighting skill/experience
 -- multiplierSpeedOnFist * 5  (multiplies the value obtained from the player fist skill and multiplies it * 5) max 25 is recommended due minTicks limits else player stop attack
@@ -380,6 +382,12 @@ experienceDisplayRates = true
 toggleAttackSpeedOnFist = false
 multiplierSpeedOnFist = 5
 maxSpeedOnFist = 500
+disableLegacyRaids = false -- disable legacy XML raids
+disableMonsterArmor = false
+combatChainDelay = 50 -- minimum: 50 miliseconds
+minElementalResistance = -200
+maxElementalResistance = 200
+maxDamageReflection = 200
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes

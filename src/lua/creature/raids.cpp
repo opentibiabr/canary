@@ -21,7 +21,7 @@ Raids::Raids() {
 }
 
 bool Raids::loadFromXml() {
-	if (isLoaded()) {
+	if (g_configManager().getBoolean(DISABLE_LEGACY_RAIDS, __FUNCTION__) || isLoaded()) {
 		return true;
 	}
 
@@ -96,7 +96,7 @@ bool Raids::loadFromXml() {
 static constexpr int32_t MAX_RAND_RANGE = 10000000;
 
 bool Raids::startup() {
-	if (!isLoaded() || isStarted()) {
+	if (!isLoaded() || isStarted() || g_configManager().getBoolean(DISABLE_LEGACY_RAIDS, __FUNCTION__)) {
 		return false;
 	}
 
@@ -109,6 +109,9 @@ bool Raids::startup() {
 }
 
 void Raids::checkRaids() {
+	if (g_configManager().getBoolean(DISABLE_LEGACY_RAIDS, __FUNCTION__)) {
+		return;
+	}
 	if (!getRunning()) {
 		uint64_t now = OTSYS_TIME();
 

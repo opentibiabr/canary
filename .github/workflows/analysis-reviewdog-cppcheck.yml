@@ -4,13 +4,12 @@ name: Analysis - Review Dog
 on:
   pull_request:
     paths:
-      - 'src/**'
+      - "src/**"
   push:
     paths:
-      - 'src/**'
+      - "src/**"
 
 jobs:
-
   cppcheck:
     runs-on: ubuntu-latest
     steps:
@@ -18,7 +17,7 @@ jobs:
         if: github.ref != 'refs/heads/main'
         uses: fkirc/skip-duplicate-actions@master
         with:
-          concurrent_skipping: 'same_content'
+          concurrent_skipping: "same_content"
           cancel_others: true
 
       - name: Check out code.

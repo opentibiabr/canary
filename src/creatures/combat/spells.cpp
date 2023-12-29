@@ -20,6 +20,25 @@ Spells::Spells() = default;
 Spells::~Spells() = default;
 
 TalkActionResult_t Spells::playerSaySpell(std::shared_ptr<Player> player, std::string &words) {
+	auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT, __FUNCTION__);
+	auto tile = player->getTile();
+	if (maxOnline > 1 && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && tile && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT, __FUNCTION__);
+		auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
+		int countOutsizePZ = 0;
+		for (const auto &accountPlayer : accountPlayers) {
+			if (accountPlayer == player || accountPlayer->isOffline()) {
+				continue;
+			}
+			if (accountPlayer->getTile() && !accountPlayer->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
+				++countOutsizePZ;
+			}
+		}
+		if (countOutsizePZ >= maxOutsizePZ) {
+			player->sendTextMessage(MESSAGE_FAILURE, fmt::format("You cannot cast spells while you have {} character(s) outside of a protection zone.", maxOutsizePZ));
+			return TALKACTION_FAILED;
+		}
+	}
 	std::string str_words = words;
 
 	if (player->hasCondition(CONDITION_FEARED)) {
@@ -546,7 +565,7 @@ bool Spell::playerRuneSpellCheck(std::shared_ptr<Player> player, const Position 
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
-	} else if (blockingSolid && tile->hasFlag(TILESTATE_BLOCKSOLID)) {
+	} else if (blockingSolid && tile->hasFlag(TILESTATE_BLOCKSOLID) && !topVisibleCreature) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;

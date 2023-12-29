@@ -269,6 +269,28 @@ public:
 		return isLootTrackeable;
 	}
 
+	void setOwner(uint32_t owner) {
+		setAttribute(ItemAttribute_t::OWNER, owner);
+	}
+
+	void setOwner(std::shared_ptr<Creature> owner);
+
+	virtual uint32_t getOwnerId() const;
+
+	bool isOwner(uint32_t ownerId);
+
+	std::string getOwnerName();
+
+	bool isOwner(std::shared_ptr<Creature> owner);
+
+	bool hasOwner() const {
+		return getOwnerId() != 0;
+	}
+
+	bool canBeMovedToStore() const {
+		return isStoreItem() || hasOwner();
+	}
+
 	static std::string parseImbuementDescription(std::shared_ptr<Item> item);
 	static std::string parseShowDurationSpeed(int32_t speed, bool &begin);
 	static std::string parseShowDuration(std::shared_ptr<Item> item);
@@ -472,6 +494,9 @@ public:
 	}
 	bool canReceiveAutoCarpet() const {
 		return isBlocking() && isAlwaysOnTop() && !items[id].hasHeight;
+	}
+	bool canBeUsedByGuests() const {
+		return isDummy() || items[id].m_canBeUsedByGuests;
 	}
 
 	bool isDecayDisabled() const {

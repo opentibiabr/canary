@@ -565,7 +565,7 @@ bool Spell::playerRuneSpellCheck(std::shared_ptr<Player> player, const Position 
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
-	} else if (blockingSolid && tile->hasFlag(TILESTATE_BLOCKSOLID)) {
+	} else if (blockingSolid && tile->hasFlag(TILESTATE_BLOCKSOLID) && !topVisibleCreature) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;

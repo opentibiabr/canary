@@ -12,7 +12,14 @@
 #include "items/trashholder.hpp"
 #include "game/game.hpp"
 
-ReturnValue TrashHolder::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature>) {
+ReturnValue TrashHolder::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, std::shared_ptr<Creature> actor) {
+	std::shared_ptr<Item> item = thing->getItem();
+	if (item == nullptr) {
+		return RETURNVALUE_NOERROR;
+	}
+	if (item->hasOwner() && !item->isOwner(actor)) {
+		return RETURNVALUE_ITEMISNOTYOURS;
+	}
 	return RETURNVALUE_NOERROR;
 }
 

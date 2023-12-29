@@ -80,6 +80,7 @@ bool ConfigManager::load() {
 		loadIntConfig(L, STASH_ITEMS, "stashItemCount", 5000);
 
 		loadBoolConfig(L, OLD_PROTOCOL, "allowOldProtocol", true);
+		loadBoolConfig(L, DISABLE_LEGACY_RAIDS, "disableLegacyRaids", false);
 	}
 
 	loadBoolConfig(L, ALLOW_CHANGEOUTFIT, "allowChangeOutfit", true);
@@ -219,6 +220,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, CRITICALCHANCE, "criticalChance", 10);
 
 	loadIntConfig(L, ADVENTURERSBLESSING_LEVEL, "adventurersBlessingLevel", 21);
+	loadBoolConfig(L, SKULLED_DEATH_LOSE_STORE_ITEM, "skulledDeathLoseStoreItem", false);
 	loadIntConfig(L, FORGE_MAX_ITEM_TIER, "forgeMaxItemTier", 10);
 	loadIntConfig(L, FORGE_COST_ONE_SLIVER, "forgeCostOneSliver", 20);
 	loadIntConfig(L, FORGE_SLIVER_AMOUNT, "forgeSliverAmount", 3);

@@ -23,11 +23,11 @@ function Player.setDayStreak(self, value)
 end
 
 function Player.getStreakLevel(self)
-	return math.max(self:getStorageValue(DailyReward.storages.currentStreakLevel), 0)
+	return self:kv():scoped("daily-reward"):get("streak") or 7
 end
 
 function Player.setStreakLevel(self, value)
-	self:setStorageValue(DailyReward.storages.currentStreakLevel, value)
+	self:kv():scoped("daily-reward"):set("streak", value)
 end
 
 function Player.setNextRewardTime(self, value)

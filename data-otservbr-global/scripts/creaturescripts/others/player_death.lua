@@ -68,10 +68,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 	)
 	local resultId = db.storeQuery("SELECT `player_id` FROM `player_deaths` WHERE `player_id` = " .. playerGuid)
 	-- Start Webhook Player Death
-	local playerName = player:getName()
-	local playerLevel = player:getLevel()
-	local vocation = player:vocationAbbrev()
-	Webhook.sendMessage(":skull_crossbones: " .. player:getMarkdownLink() .. " has died. Killed at level _" .. playerLevel .. "_ by **" .. killerName .. "**.", announcementChannels["player-kills"])
+	Webhook.sendMessage(":skull_crossbones: " .. player:getMarkdownLink() .. " has died. Killed at level _" .. player:getLevel() .. "_ by **" .. killerName .. "**.", announcementChannels["player-kills"])
 	-- End Webhook Player Death
 
 	local deathRecords = 0

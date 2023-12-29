@@ -17,13 +17,13 @@ monster.raceId = 745
 monster.Bestiary = {
 	class = "Humanoid",
 	race = BESTY_RACE_HUMANOID,
-	toKill = 500,
-	FirstUnlock = 25,
-	SecondUnlock = 250,
-	CharmsPoints = 15,
+	toKill = 5,
+	FirstUnlock = 1,
+	SecondUnlock = 3,
+	CharmsPoints = 30,
 	Stars = 2,
 	Occurrence = 3,
-	Locations = "Rookgaards central cave in the Mapper Coords125.64125.136104textnew western Troll tunnel, north-west of Carlin during raids and Thais Knights Guild arena during raids on Kingsday Mini World ChangeKingsday.",
+	Locations = "Rookgaard and in Thais during raids",
 }
 
 monster.health = 60

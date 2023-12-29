@@ -27,7 +27,7 @@ function Player.feed(self, food)
 end
 
 function Player.getClosestFreePosition(self, position, extended)
-	if self:getGroup():getAccess() and self:getAccountType() >= ACCOUNT_TYPE_GOD then
+	if self:getGroup():getAccess() and self:getAccountType() == ACCOUNT_TYPE_GOD then
 		return position
 	end
 	return Creature.getClosestFreePosition(self, position, extended)
@@ -554,26 +554,34 @@ function Player.updateHazard(self)
 	return true
 end
 
-function Player:addItemStoreInbox(itemId, amount, moveable)
+function Player:addItemStoreInboxEx(item, moveable, setOwner)
 	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
 	if not moveable then
-		for _, item in pairs(inbox:getItems()) do
-			if item:getId() == itemId then
-				item:removeAttribute(ITEM_ATTRIBUTE_STORE)
-			end
+		item:setOwner(self)
+		item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+	elseif setOwner then
+		item:setOwner(self)
+	end
+	inbox:addItemEx(item, INDEX_WHEREEVER, FLAG_NOLIMIT)
+	return item
+end
+
+function Player:addItemStoreInbox(itemId, amount, moveable, setOwner)
+	local iType = ItemType(itemId)
+	if not iType then
+		return nil
+	end
+	if iType:isStackable() then
+		while amount > iType:getStackSize() do
+			self:addItemStoreInboxEx(Game.createItem(itemId, iType:getStackSize()), moveable, setOwner)
+			amount = amount - iType:getStackSize()
 		end
 	end
-
-	local newItem = inbox:addItem(itemId, amount, INDEX_WHEREEVER, FLAG_NOLIMIT)
-
-	if not moveable then
-		for _, item in pairs(inbox:getItems()) do
-			if item:getId() == itemId then
-				item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
-			end
-		end
+	local item = Game.createItem(itemId, amount)
+	if not item then
+		return nil
 	end
-	return newItem
+	return self:addItemStoreInboxEx(item, moveable, setOwner)
 end
 
 ---@param monster Monster

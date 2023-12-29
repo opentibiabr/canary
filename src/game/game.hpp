@@ -153,7 +153,7 @@ public:
 
 	std::shared_ptr<Player> getPlayerByID(uint32_t id, bool allowOffline = false);
 
-	std::shared_ptr<Player> getPlayerByName(const std::string &s, bool allowOffline = false);
+	std::shared_ptr<Player> getPlayerByName(const std::string &s, bool allowOffline = false, bool isNewName = false);
 
 	std::shared_ptr<Player> getPlayerByGUID(const uint32_t &guid, bool allowOffline = false);
 
@@ -161,7 +161,7 @@ public:
 
 	ReturnValue getPlayerByNameWildcard(const std::string &s, std::shared_ptr<Player> &player);
 
-	std::shared_ptr<Player> getPlayerByAccount(uint32_t acc);
+	std::vector<std::shared_ptr<Player>> getPlayersByAccount(std::shared_ptr<account::Account> acc, bool allowOffline = false);
 
 	bool internalPlaceCreature(std::shared_ptr<Creature> creature, const Position &pos, bool extendedPos = false, bool forced = false, bool creatureCheck = false);
 
@@ -350,6 +350,7 @@ public:
 	void playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool chaseMode, bool secureMode);
 	void playerLookAt(uint32_t playerId, uint16_t itemId, const Position &pos, uint8_t stackPos);
 	void playerLookInBattleList(uint32_t playerId, uint32_t creatureId);
+	void playerQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr<Container> corpse);
 	void playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, std::shared_ptr<Item> defaultItem = nullptr, bool lootAllCorpses = false, bool autoLoot = false);
 	void playerLootAllCorpses(std::shared_ptr<Player> player, const Position &pos, bool lootAllCorpses);
 	void playerSetLootContainer(uint32_t playerId, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos);
@@ -696,13 +697,6 @@ private:
 	bool playerSpeakTo(std::shared_ptr<Player> player, SpeakClasses type, const std::string &receiver, const std::string &text);
 	void playerSpeakToNpc(std::shared_ptr<Player> player, const std::string &text);
 	std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, std::string context) const;
-
-	/**
-	 * Player wants to loot a corpse
-	 * \param player Player pointer
-	 * \param corpse Container pointer to be looted
-	 */
-	void internalQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr<Container> corpse);
 
 	/**
 	 * @brief Finds the container for loot based on the given parameters.

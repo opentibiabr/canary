@@ -218,7 +218,7 @@ function SvargrondArena.resetPit(pitId)
 					if movableItem and movableItem:isItem() then
 						local itemType = ItemType(movableItem:getId())
 						if itemType and itemType:isMovable() and not table.contains(SvargrondArena.itemsNotErasable, movableItem:getId()) then
-							moveableItem:remove()
+							movableItem:remove()
 						end
 					end
 

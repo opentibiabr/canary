@@ -131,7 +131,7 @@ std::shared_ptr<Container> Item::CreateItemAsContainer(const uint16_t type, uint
 		it.id == 0
 		|| it.stackable
 		|| it.multiUse
-		|| it.moveable
+		|| it.movable
 		|| it.pickupable
 		|| it.isDepot()
 		|| it.isSplash()
@@ -850,7 +850,7 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<uint16_t>(charges);
 	}
 
-	if (it.moveable) {
+	if (it.movable) {
 		if (auto actionId = getAttribute<uint16_t>(ItemAttribute_t::ACTIONID)) {
 			propWriteStream.write<uint8_t>(ATTR_ACTION_ID);
 			propWriteStream.write<uint16_t>(actionId);
@@ -1044,7 +1044,7 @@ bool Item::hasProperty(ItemProperty prop) const {
 	switch (prop) {
 		case CONST_PROP_BLOCKSOLID:
 			return it.blockSolid;
-		case CONST_PROP_MOVEABLE:
+		case CONST_PROP_MOVABLE:
 			return canBeMoved();
 		case CONST_PROP_HASHEIGHT:
 			return it.hasHeight;
@@ -1081,7 +1081,7 @@ bool Item::canBeMoved() const {
 	if (hasAttribute(ItemAttribute_t::ACTIONID) && immovableActionIds.contains(static_cast<int32_t>(getAttribute<uint16_t>(ItemAttribute_t::ACTIONID)))) {
 		return false;
 	}
-	return isMoveable();
+	return isMovable();
 }
 
 void Item::checkDecayMapItemOnMove() {
@@ -1904,7 +1904,7 @@ std::string Item::parseImbuementDescription(std::shared_ptr<Item> item) {
 
 bool Item::isSavedToHouses() {
 	const auto &it = items[id];
-	return it.moveable || it.isWrappable() || it.isCarpet() || getDoor() || (getContainer() && !getContainer()->empty()) || it.canWriteText || getBed() || it.m_transformOnUse;
+	return it.movable || it.isWrappable() || it.isCarpet() || getDoor() || (getContainer() && !getContainer()->empty()) || it.canWriteText || getBed() || it.m_transformOnUse;
 }
 
 SoundEffect_t Item::getMovementSound(std::shared_ptr<Cylinder> toCylinder) const {

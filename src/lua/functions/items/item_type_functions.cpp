@@ -76,7 +76,7 @@ int ItemTypeFunctions::luaItemTypeIsMovable(lua_State* L) {
 	// itemType:isMovable()
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
-		pushBoolean(L, itemType->moveable);
+		pushBoolean(L, itemType->movable);
 	} else {
 		lua_pushnil(L);
 	}

@@ -314,7 +314,7 @@ public:
 	virtual void serializeAttr(PropWriteStream &propWriteStream) const;
 
 	bool isPushable() override final {
-		return isMoveable();
+		return isMovable();
 	}
 	int32_t getThrowRange() const override final {
 		return (isPickupable() ? 15 : 2);
@@ -447,8 +447,8 @@ public:
 	bool isWrapContainer() const {
 		return items[id].wrapContainer;
 	}
-	bool isMoveable() const {
-		return items[id].moveable;
+	bool isMovable() const {
+		return items[id].movable;
 	}
 	bool isCorpse() const {
 		return items[id].isCorpse;

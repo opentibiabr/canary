@@ -124,8 +124,8 @@ int GlobalFunctions::luaIsDepot(lua_State* L) {
 	return 1;
 }
 
-int GlobalFunctions::luaIsMoveable(lua_State* L) {
-	// isMoveable(uid)
+int GlobalFunctions::luaIsMovable(lua_State* L) {
+	// isMovable(uid)
 	// isMovable(uid)
 	std::shared_ptr<Thing> thing = getScriptEnv()->getThingByUID(getNumber<uint32_t>(L, -1));
 	pushBoolean(L, thing && thing->isPushable());

@@ -28,7 +28,6 @@ static constexpr uint8_t IMBUEMENT_MAX_TIER = 3;
 static constexpr int32_t STORAGEVALUE_EMOTE = 30008;
 static constexpr int32_t STORAGEVALUE_PODIUM = 30020;
 static constexpr int32_t STORAGEVALUE_AUTO_LOOT = 30063;
-static constexpr int32_t STORAGEVALUE_DAILYREWARD = 14898;
 static constexpr int32_t STORAGEVALUE_BESTIARYKILLCOUNT = 61305000; // Can get up to 2000 storages!
 
 // Hazard system storage

@@ -17,18 +17,47 @@ setmetatable(EncounterStage, {
 		}, { __index = EncounterStage })
 	end,
 })
+---@type Delay number|string The delay time to advance to the next stage
+
+---@type AutoAdvanceConfig
+---@field delay Delay
+---@field monstersKilled boolean
 
 ---Automatically advances to the next stage after the given delay
----@param delay number|string The delay time to advance to the next stage
-function EncounterStage:autoAdvance(delay)
+---@param config AutoAdvanceConfig|Delay The configuration for the auto advance
+function EncounterStage:autoAdvance(config)
+	if type(config) == "number" or type(config) == "string" then
+		config = { delay = config }
+	end
+	config = config or {}
+
 	local originalStart = self.start
+	local delay = config.delay
+	local delayElapsed = false
 	function self.start()
 		delay = delay or 50 -- 50ms is minimum delay; used here for close to instant advance
-		originalStart()
+		if originalStart then
+			originalStart()
+		end
 		self.encounter:debug("Encounter[{}]:autoAdvance | next stage in: {}", self.encounter.name, delay == 50 and "instant" or delay)
 		self.encounter:addEvent(function()
-			self.encounter:nextStage()
+			delayElapsed = true
+			if not config.monstersKilled then
+				self.encounter:nextStage()
+			end
 		end, delay)
+	end
+
+	if config.monstersKilled then
+		local originalTick = self.tick
+		function self.tick()
+			if originaTick then
+				originalTick()
+			end
+			if delayElapsed and self.encounter:countMonsters() == 0 then
+				self.encounter:nextStage()
+			end
+		end
 	end
 end
 
@@ -76,8 +105,8 @@ setmetatable(Encounter, {
 ---Resets the encounter configuration
 ---@param config EncounterConfig The new configuration
 function Encounter:resetConfig(config)
-	self.zone = config.zone
-	self.spawnZone = config.spawnZone or config.zone
+	self.zone = config.zone:getName()
+	self.spawnZone = config.spawnZone and config.spawnZone:getName() or config.zone:getName()
 	self.stages = {}
 	self.currentStage = Encounter.unstarted
 	self.registered = false
@@ -145,7 +174,7 @@ function Encounter:enterStage(stageNumber, abort)
 	return true
 end
 
----@alias SpawnMonsterConfig { name: string, amount: number, event: string?, timeLimit: number?, position: Position|table?, positions: Position|table[]?, spawn: function? }
+---@alias SpawnMonsterConfig { name: string|string[], amount: number, event: string?, timeLimit: number?, position: Position|table?, positions: Position|table[]?, spawn: function? }
 
 ---Spawns monsters based on the given configuration
 ---@param config SpawnMonsterConfig The configuration for spawning monsters
@@ -164,15 +193,21 @@ function Encounter:spawnMonsters(config)
 			if config.position then
 				table.insert(positions, config.position)
 			else
-				table.insert(positions, self.spawnZone:randomPosition())
+				table.insert(positions, self:getSpawnZone():randomPosition())
 			end
 		end
 	end
 	for _, position in ipairs(positions) do
-		for i = 1, self.timeToSpawnMonsters / 1000 do
-			self:addEvent(function(position)
-				position:sendMagicEffect(CONST_ME_TELEPORT)
-			end, i * 1000, position)
+		if self.timeToSpawnMonsters >= 1000 then
+			for i = 1, self.timeToSpawnMonsters / 1000 do
+				self:addEvent(function(position)
+					position:sendMagicEffect(CONST_ME_TELEPORT)
+				end, i * 1000, position)
+			end
+		end
+		local name = config.name
+		if type(name) == "table" then
+			name = name[math.random(#name)]
 		end
 		self:addEvent(function(name, position, event, spawn, timeLimit)
 			local monster = Game.createMonster(name, position)
@@ -199,8 +234,16 @@ function Encounter:spawnMonsters(config)
 					monster:remove()
 				end, config.timeLimit, monster:getID())
 			end
-		end, self.timeToSpawnMonsters, config.name, position, config.event, config.spawn, config.timeLimit)
+		end, self.timeToSpawnMonsters, name, position, config.event, config.spawn, config.timeLimit)
 	end
+end
+
+function Encounter:getZone()
+	return Zone(self.zone)
+end
+
+function Encounter:getSpawnZone()
+	return Zone(self.spawnZone)
 end
 
 ---Broadcasts a message to all players
@@ -211,25 +254,30 @@ function Encounter:broadcast(...)
 		end
 		return
 	end
-	self.zone:sendTextMessage(...)
+	self:getZone():sendTextMessage(...)
 end
 
 ---Counts the number of monsters with the given name in the encounter zone
 ---@param name string The name of the monster to count
 ---@return number The number of monsters with the given name
 function Encounter:countMonsters(name)
-	return self.zone:countMonsters(name)
+	return self:getZone():countMonsters(name)
 end
 
 ---Counts the number of players in the encounter zone
 ---@return number The number of players in the encounter zone
 function Encounter:countPlayers()
-	return self.zone:countPlayers(IgnoredByMonsters)
+	return self:getZone():countPlayers(IgnoredByMonsters)
 end
 
 ---Removes all monsters from the encounter zone
 function Encounter:removeMonsters()
-	self.zone:removeMonsters()
+	self:getZone():removeMonsters()
+end
+
+---Removes all players from the encounter zone
+function Encounter:removePlayers()
+	self:getZone():removePlayers()
 end
 
 ---Resets the encounter to its initial state
@@ -249,7 +297,7 @@ end
 ---@param position Position The position to check
 ---@return boolean True if the position is inside the encounter zone, false otherwise
 function Encounter:isInZone(position)
-	return self.zone:isInZone(position)
+	return self:getZone():isInZone(position)
 end
 
 ---Enters the previous stage in the encounter
@@ -341,9 +389,19 @@ function Encounter:addRemoveMonsters()
 	})
 end
 
+---Adds a stage that removes all players from the encounter zone
+---@return boolean True if the remove monsters stage is added successfully, false otherwise
+function Encounter:addRemovePlayers()
+	return self:addStage({
+		start = function()
+			self:removePlayers()
+		end,
+	})
+end
+
 ---Automatically starts the encounter when players enter the zone
 function Encounter:startOnEnter()
-	local zoneEvents = ZoneEvent(self.zone)
+	local zoneEvents = ZoneEvent(self:getZone())
 
 	function zoneEvents.afterEnter(zone, creature)
 		if not self.registered then

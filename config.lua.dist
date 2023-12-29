@@ -382,6 +382,7 @@ experienceDisplayRates = true
 toggleAttackSpeedOnFist = false
 multiplierSpeedOnFist = 5
 maxSpeedOnFist = 500
+disableLegacyRaids = false -- disable legacy XML raids
 disableMonsterArmor = false
 combatChainDelay = 50 -- minimum: 50 miliseconds
 minElementalResistance = -200

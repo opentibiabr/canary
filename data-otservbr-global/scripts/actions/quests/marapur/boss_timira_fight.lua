@@ -5,18 +5,34 @@ local timiraFightConfig = {
 	corruptedWaterUsePerPlayerInFight = 2,
 	secondsDelayForUseCorruptedWater = 8,
 	chestPossibleValuables = {
-		"crystal coin", "amber", "giant sapphire", "giant amethyst", "Raw Watermelon Tourmaline", "Watermelon Tourmaline"
+		"crystal coin",
+		"amber",
+		"giant sapphire",
+		"giant amethyst",
+		"Raw Watermelon Tourmaline",
+		"Watermelon Tourmaline",
 	},
 	chestPossibleEquipment = {
-		"dawnfire sherwani", "dawnfire pantaloons", "frostflower boots", "feverbloom boots", "midnight tunic", "midnight sarong",
-		"naga sword", "naga axe", "naga club", "naga wand", "naga rod", "naga crossbow", "naga quiver"
+		"dawnfire sherwani",
+		"dawnfire pantaloons",
+		"frostflower boots",
+		"feverbloom boots",
+		"midnight tunic",
+		"midnight sarong",
+		"naga sword",
+		"naga axe",
+		"naga club",
+		"naga wand",
+		"naga rod",
+		"naga crossbow",
+		"naga quiver",
 	},
 }
 
 local fightZone = Zone("fight.timira.encounterZone")
-local firstStageZone =  Zone("fight.timira.encounterZone.firstStage")
-local secondStageZone =  Zone("fight.timira.encounterZone.secondStage")
-local bossZone =  Zone("fight.timira.encounterZone.bossStage")
+local firstStageZone = Zone("fight.timira.encounterZone.firstStage")
+local secondStageZone = Zone("fight.timira.encounterZone.secondStage")
+local bossZone = Zone("fight.timira.encounterZone.bossStage")
 
 firstStageZone:addArea({ x = 33787, y = 32684, z = 10 }, { x = 33793, y = 32694, z = 10 }) -- smaller than first stage area, its spawn area
 secondStageZone:addArea({ x = 33793, y = 32704, z = 9 }, { x = 33802, y = 32709, z = 9 }) -- smaller than first stage area, its spawn area
@@ -34,7 +50,7 @@ local monstersToKeepSpawning = {
 local stages = {
 	FIRST = 1,
 	SECOND = 2,
-	THIRD = 3
+	THIRD = 3,
 }
 
 local firstStageConfig = {
@@ -46,30 +62,47 @@ local firstStageConfig = {
 	shatteredWaterPosition = Position(33798, 32689, 10),
 	sparklesIds = { 1722, 1723 },
 	shallowWaterPositions = {
-		Position(33793, 32679, 10), Position(33794, 32679, 10),
-		Position(33793, 32680, 10), Position(33794, 32680, 10), Position(33795, 32680, 10),
-		Position(33793, 32681, 10), Position(33794, 32681, 10), Position(33795, 32681, 10), Position(33796, 32681, 10),
-		Position(33794, 32682, 10), Position(33795, 32682, 10), Position(33796, 32682, 10),
-		Position(33794, 32683, 10), Position(33795, 32683, 10), Position(33796, 32683, 10),
+		Position(33793, 32679, 10),
+		Position(33794, 32679, 10),
+		Position(33793, 32680, 10),
+		Position(33794, 32680, 10),
+		Position(33795, 32680, 10),
+		Position(33793, 32681, 10),
+		Position(33794, 32681, 10),
+		Position(33795, 32681, 10),
+		Position(33796, 32681, 10),
+		Position(33794, 32682, 10),
+		Position(33795, 32682, 10),
+		Position(33796, 32682, 10),
+		Position(33794, 32683, 10),
+		Position(33795, 32683, 10),
+		Position(33796, 32683, 10),
 	},
 	bucketsPostions = {
-		Position(33796, 32685, 10), Position(33797, 32691, 10), Position(33787, 32687, 10), Position(33785, 32676, 10)
+		Position(33796, 32685, 10),
+		Position(33797, 32691, 10),
+		Position(33787, 32687, 10),
+		Position(33785, 32676, 10),
 	},
 	shallowWaterBorderIds = {
-		38125, 38134, 38130, 38126, 38136
+		38125,
+		38134,
+		38130,
+		38126,
+		38136,
 	},
 	isWaterSparkling = false,
 	skipedSparklingIterations = 0,
 	sparklingIterationsToSkip = 3,
 	nextStageTeleportPosition = Position(33787, 32699, 10),
 	rewardChestPosition = Position(33789, 32699, 10),
-	playersTookReward = {}
+	playersTookReward = {},
 }
 
 local secondStageConfig = {
 	nextStageTeleportPosition = Position(33804, 32704, 9),
 	rewardChestPosition = Position(33802, 32703, 9),
-	playersTookReward = {}
+	playersTookReward = {},
 }
 
 local activeTeleportId = 35500
@@ -96,7 +129,7 @@ local function restartBuckets()
 end
 
 local function restartTeleports()
-	local teleports = {firstStageConfig.nextStageTeleportPosition, secondStageConfig.nextStageTeleportPosition}
+	local teleports = { firstStageConfig.nextStageTeleportPosition, secondStageConfig.nextStageTeleportPosition }
 	for _, pos in ipairs(teleports) do
 		if pos:hasItem(activeTeleportId) then
 			Tile(pos):getItemById(activeTeleportId):remove(1)
@@ -106,7 +139,7 @@ local function restartTeleports()
 end
 
 local function removeRewardChests()
-	local chests = {firstStageConfig.rewardChestPosition, secondStageConfig.rewardChestPosition}
+	local chests = { firstStageConfig.rewardChestPosition, secondStageConfig.rewardChestPosition }
 	firstStageConfig.playersTookReward = {}
 	secondStageConfig.playersTookReward = {}
 	for _, pos in ipairs(chests) do
@@ -129,39 +162,44 @@ local function restart()
 end
 
 local function activeZone()
-	local stageZones =
-	{
+	local stageZones = {
 		[stages.FIRST] = firstStageZone,
 		[stages.SECOND] = secondStageZone,
-		[stages.THIRD] = {}
+		[stages.THIRD] = {},
 	}
-	return stageZones[activeStage] 
+	return stageZones[activeStage]
 end
 
 local encounter = Encounter("Timira the Many-Headed", {
 	zone = fightZone,
-	timeToSpawnMonsters = "10ms"
+	timeToSpawnMonsters = "10ms",
 })
 
-encounter:addStage({ start = function() restart() end }):autoAdvance()
+encounter
+	:addStage({
+		start = function()
+			restart()
+		end,
+	})
+	:autoAdvance()
 encounter:addRemoveMonsters():autoAdvance()
-encounter:addStage({ start = function() end })  -- FIRST stage, Action timiraBucket.onUse activates next stage
+encounter:addStage({ start = function() end }) -- FIRST stage, Action timiraBucket.onUse activates next stage
 
 encounter:addRemoveMonsters():autoAdvance()
-encounter:addStage({ start = function() end })  -- SECOND stage, Action corruptedWater.onUse activates next stage
+encounter:addStage({ start = function() end }) -- SECOND stage, Action corruptedWater.onUse activates next stage
 
-encounter:addRemoveMonsters():autoAdvance() 
-encounter:addSpawnMonsters({					-- THIRD stage, boss fight
-    {
-        name = "Timira the Many-Headed",
-        positions = { Position(33815, 32703, 9) }
-    }
+encounter:addRemoveMonsters():autoAdvance()
+encounter:addSpawnMonsters({ -- THIRD stage, boss fight
+	{
+		name = "Timira the Many-Headed",
+		positions = { Position(33815, 32703, 9) },
+	},
 })
 
 encounter:register()
 
-local function startSecondStage() 
-	if (activeStage == stages.FIRST) then
+local function startSecondStage()
+	if activeStage == stages.FIRST then
 		local pos = firstStageConfig.shatteredWaterPosition
 		if pos:hasItem(firstStageConfig.shatteredWaterId) then
 			Tile(pos):getItemById(firstStageConfig.shatteredWaterId):remove(1)
@@ -178,8 +216,8 @@ local function startSecondStage()
 	end
 end
 
-local function startThirdStage() 
-	if (activeStage == stages.SECOND) then
+local function startThirdStage()
+	if activeStage == stages.SECOND then
 		local tpPos = secondStageConfig.nextStageTeleportPosition
 		if tpPos:hasItem(inactiveTeleportId) then
 			Tile(tpPos):getItemById(inactiveTeleportId):remove(1)
@@ -209,7 +247,7 @@ function nagaSpawner.onThink(interval, lastExecution)
 	if activeStage < 3 then
 		for _, mob in ipairs(monstersToKeepSpawning) do
 			if fightZone:countMonsters(mob.name) < mob.amount then
-				encounter:spawnMonsters({name=mob.name, positions = { activeZone():randomPosition() }})
+				encounter:spawnMonsters({ name = mob.name, positions = { activeZone():randomPosition() } })
 			end
 		end
 	end
@@ -241,7 +279,7 @@ function sparklingWater.onThink(interval, lastExecution)
 	if activeStage == stages.FIRST then
 		if not firstStageConfig.isWaterSparkling and firstStageConfig.skipedSparklingIterations >= firstStageConfig.sparklingIterationsToSkip then
 			for _, pos in ipairs(firstStageConfig.shallowWaterPositions) do
-				local spark = firstStageConfig.sparklesIds[math.random(1,#firstStageConfig.sparklesIds)]
+				local spark = firstStageConfig.sparklesIds[math.random(1, #firstStageConfig.sparklesIds)]
 				Game.createItem(spark, 1, pos)
 			end
 			firstStageConfig.isWaterSparkling = true
@@ -262,8 +300,8 @@ function timiraBucket.onUse(player, item, fromPosition, target, toPosition, isHo
 			player:addItem(firstStageConfig.emptyBucketId, 1)
 			toPosition:sendMagicEffect(CONST_ME_WATER_DROP)
 			firstStagePoints = firstStagePoints + 1
-			
-			if (activeStage == stages.FIRST and firstStagePoints >= fightZone:countPlayers() * timiraFightConfig.bucketsRequiredPerPlayerInFight) then
+
+			if activeStage == stages.FIRST and firstStagePoints >= fightZone:countPlayers() * timiraFightConfig.bucketsRequiredPerPlayerInFight then
 				player:say("The water has formed into a shape!", TALKTYPE_MONSTER_SAY, false, 0, firstStageConfig.shatteredWaterPosition)
 				startSecondStage()
 				return true
@@ -328,7 +366,7 @@ local timiraChest = Action()
 function timiraChest.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local rewards = {
 		[firstStageConfig.rewardChestPosition.z] = firstStageConfig.playersTookReward,
-		[secondStageConfig.rewardChestPosition.z] = secondStageConfig.playersTookReward
+		[secondStageConfig.rewardChestPosition.z] = secondStageConfig.playersTookReward,
 	}
 
 	if table.contains(rewards[toPosition.z], player:getGuid()) then
@@ -345,7 +383,7 @@ function timiraChest.onUse(player, item, fromPosition, target, toPosition, isHot
 
 	local rewardItem = ItemType(itemName)
 	player:addItem(rewardItem:getId(), 1)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a " .. itemName ..".")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a " .. itemName .. ".")
 	return true
 end
 timiraChest:id(chestId)

@@ -238,7 +238,15 @@ bool Item::equals(std::shared_ptr<Item> compareItem) const {
 		return false;
 	}
 
+	if (getOwnerId() != compareItem->getOwnerId()) {
+		return false;
+	}
+
 	for (const auto &attribute : getAttributeVector()) {
+		if (attribute.getAttributeType() == ItemAttribute_t::STORE) {
+			continue;
+		}
+
 		for (const auto &compareAttribute : compareItem->getAttributeVector()) {
 			if (attribute.getAttributeType() != compareAttribute.getAttributeType()) {
 				continue;
@@ -305,6 +313,20 @@ void Item::setID(uint16_t newid) {
 	}
 }
 
+bool Item::isOwner(uint32_t ownerId) {
+	if (getOwnerId() == ownerId) {
+		return true;
+	}
+	if (ownerId >= Player::getFirstID() && ownerId <= Player::getLastID()) {
+		const auto &player = g_game().getPlayerByID(ownerId);
+		return player && player->getGUID() == getOwnerId();
+	}
+	if (auto player = g_game().getPlayerByGUID(ownerId); player) {
+		return player->getID() == getOwnerId();
+	}
+	return false;
+}
+
 std::shared_ptr<Cylinder> Item::getTopParent() {
 	std::shared_ptr<Cylinder> aux = getParent();
 	std::shared_ptr<Cylinder> prevaux = std::dynamic_pointer_cast<Cylinder>(shared_from_this());
@@ -357,6 +379,9 @@ std::shared_ptr<Player> Item::getHoldingPlayer() {
 }
 
 bool Item::isItemStorable() const {
+	if (isStoreItem() || hasOwner()) {
+		return false;
+	}
 	auto isContainerAndHasSomethingInside = (getContainer() != NULL) && (getContainer()->getItemList().size() > 0);
 	return (isStowable() || isContainerAndHasSomethingInside);
 }
@@ -775,6 +800,16 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 			break;
 		}
 
+		case ATTR_OWNER: {
+			uint32_t ownerId;
+			if (!propStream.read<uint32_t>(ownerId)) {
+				g_logger().error("[{}] failed to read amount", __FUNCTION__);
+				return ATTR_READ_ERROR;
+			}
+
+			setAttribute(OWNER, ownerId);
+			break;
+		}
 		default:
 			return ATTR_READ_ERROR;
 	}
@@ -935,9 +970,15 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<uint8_t>(ATTR_AMOUNT);
 		propWriteStream.write<uint16_t>(getAttribute<uint16_t>(AMOUNT));
 	}
+
 	if (hasAttribute(STORE_INBOX_CATEGORY)) {
 		propWriteStream.write<uint8_t>(ATTR_STORE_INBOX_CATEGORY);
 		propWriteStream.writeString(getString(ItemAttribute_t::STORE_INBOX_CATEGORY));
+	}
+
+	if (hasAttribute(OWNER)) {
+		propWriteStream.write<uint8_t>(ATTR_OWNER);
+		propWriteStream.write<uint32_t>(getAttribute<uint32_t>(ItemAttribute_t::OWNER));
 	}
 
 	// Serialize custom attributes, only serialize if the map not is empty
@@ -952,6 +993,50 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 			customAttribute.serialize(propWriteStream);
 		}
 	}
+}
+
+void Item::setOwner(std::shared_ptr<Creature> owner) {
+	auto id = owner->getID();
+	if (owner->getPlayer()) {
+		id = owner->getPlayer()->getGUID();
+	}
+	setOwner(id);
+}
+
+bool Item::isOwner(std::shared_ptr<Creature> owner) {
+	if (!owner) {
+		return false;
+	}
+	auto id = owner->getID();
+	if (isOwner(id)) {
+		return true;
+	}
+	if (owner->getPlayer()) {
+		id = owner->getPlayer()->getGUID();
+	}
+	return isOwner(id);
+}
+
+uint32_t Item::getOwnerId() const {
+	if (hasAttribute(ItemAttribute_t::OWNER)) {
+		return getAttribute<uint32_t>(ItemAttribute_t::OWNER);
+	}
+	return 0;
+}
+
+std::string Item::getOwnerName() {
+	if (!hasOwner()) {
+		return "";
+	}
+
+	auto creature = g_game().getCreatureByID(getOwnerId());
+	if (creature) {
+		return creature->getName();
+	}
+	if (auto name = g_game().getPlayerNameByGUID(getOwnerId()); !name.empty()) {
+		return name;
+	}
+	return "someone else";
 }
 
 bool Item::hasProperty(ItemProperty prop) const {
@@ -987,7 +1072,16 @@ bool Item::hasProperty(ItemProperty prop) const {
 }
 
 bool Item::canBeMoved() const {
-	return isMoveable() && !hasAttribute(UNIQUEID) && (!hasAttribute(ACTIONID) || getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != IMMOVABLE_ACTION_ID);
+	static std::unordered_set<int32_t> immovableActionIds = {
+		IMMOVABLE_ACTION_ID,
+	};
+	if (hasAttribute(ItemAttribute_t::UNIQUEID)) {
+		return false;
+	}
+	if (hasAttribute(ItemAttribute_t::ACTIONID) && immovableActionIds.contains(static_cast<int32_t>(getAttribute<uint16_t>(ItemAttribute_t::ACTIONID)))) {
+		return false;
+	}
+	return isMoveable();
 }
 
 void Item::checkDecayMapItemOnMove() {
@@ -3142,11 +3236,7 @@ bool Item::hasMarketAttributes() const {
 		}
 	}
 
-	if (hasImbuements()) {
-		return false;
-	}
-
-	return true;
+	return !hasImbuements() && !isStoreItem() && !hasOwner();
 }
 
 bool Item::isInsideDepot(bool includeInbox /* = false*/) {

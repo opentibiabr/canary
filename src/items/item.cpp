@@ -313,7 +313,7 @@ void Item::setID(uint16_t newid) {
 	}
 }
 
-bool Item::isOwner(uint32_t ownerId) {
+bool Item::isOwner(uint32_t ownerId) const {
 	if (getOwnerId() == ownerId) {
 		return true;
 	}
@@ -996,25 +996,25 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 }
 
 void Item::setOwner(std::shared_ptr<Creature> owner) {
-	auto id = owner->getID();
+	auto ownerId = owner->getID();
 	if (owner->getPlayer()) {
-		id = owner->getPlayer()->getGUID();
+		ownerId = owner->getPlayer()->getGUID();
 	}
-	setOwner(id);
+	setOwner(ownerId);
 }
 
-bool Item::isOwner(std::shared_ptr<Creature> owner) {
+bool Item::isOwner(std::shared_ptr<Creature> owner) const {
 	if (!owner) {
 		return false;
 	}
-	auto id = owner->getID();
-	if (isOwner(id)) {
+	auto ownerId = owner->getID();
+	if (isOwner(ownerId)) {
 		return true;
 	}
 	if (owner->getPlayer()) {
-		id = owner->getPlayer()->getGUID();
+		ownerId = owner->getPlayer()->getGUID();
 	}
-	return isOwner(id);
+	return isOwner(ownerId);
 }
 
 uint32_t Item::getOwnerId() const {
@@ -1024,7 +1024,7 @@ uint32_t Item::getOwnerId() const {
 	return 0;
 }
 
-std::string Item::getOwnerName() {
+std::string Item::getOwnerName() const {
 	if (!hasOwner()) {
 		return "";
 	}

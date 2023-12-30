@@ -132,7 +132,7 @@ public:
 		return static_self_cast<Tile>();
 	}
 
-	std::shared_ptr<Cylinder> getCylinder() override final {
+	std::shared_ptr<Cylinder> getCylinder() final {
 		return getTile();
 	}
 

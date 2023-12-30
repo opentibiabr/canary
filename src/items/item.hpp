@@ -277,11 +277,11 @@ public:
 
 	virtual uint32_t getOwnerId() const;
 
-	bool isOwner(uint32_t ownerId);
+	bool isOwner(uint32_t ownerId) const;
 
-	std::string getOwnerName();
+	std::string getOwnerName() const;
 
-	bool isOwner(std::shared_ptr<Creature> owner);
+	bool isOwner(std::shared_ptr<Creature> owner) const;
 
 	bool hasOwner() const {
 		return getOwnerId() != 0;

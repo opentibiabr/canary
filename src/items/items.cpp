@@ -166,7 +166,7 @@ void Items::loadFromProtobuf() {
 			iType.wrapable = true;
 		}
 		iType.multiUse = object.flags().multiuse();
-		iType.moveable = object.flags().unmove() == false;
+		iType.movable = object.flags().unmove() == false;
 		iType.canReadText = (object.flags().has_lenshelp() && object.flags().lenshelp().id() == 1112) || (object.flags().has_write() && object.flags().write().max_text_length() != 0) || (object.flags().has_write_once() && object.flags().write_once().max_text_length_once() != 0);
 		iType.canReadText = object.flags().has_write() || object.flags().has_write_once();
 		iType.isVertical = object.flags().has_hook() && object.flags().hook().direction() == HOOK_TYPE_SOUTH;

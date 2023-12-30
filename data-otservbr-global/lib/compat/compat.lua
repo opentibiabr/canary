@@ -35,7 +35,7 @@ STACKPOS_FOURTH_ITEM_ABOVE_GROUNDTILE = 4
 STACKPOS_FIFTH_ITEM_ABOVE_GROUNDTILE = 5
 STACKPOS_TOP_CREATURE = 253
 STACKPOS_TOP_FIELD = 254
-STACKPOS_TOP_MOVEABLE_ITEM_OR_CREATURE = 255
+STACKPOS_TOP_MOVABLE_ITEM_OR_CREATURE = 255
 
 THING_TYPE_PLAYER = CREATURETYPE_PLAYER + 1
 THING_TYPE_MONSTER = CREATURETYPE_MONSTER + 1
@@ -1094,8 +1094,8 @@ function isCorpse(uid)
 	return i ~= nil and ItemType(i:getId()):isCorpse() or false
 end
 
-isItemMoveable = isItemMovable
-isMoveable = isMovable
+isItemMovable = isItemMovable
+isMovable = isMovable
 
 function getItemName(itemId)
 	return ItemType(itemId):getName()
@@ -1380,7 +1380,7 @@ function getThingfromPos(pos)
 
 	local thing
 	local stackpos = pos.stackpos or 0
-	if stackpos == STACKPOS_TOP_MOVEABLE_ITEM_OR_CREATURE then
+	if stackpos == STACKPOS_TOP_MOVABLE_ITEM_OR_CREATURE then
 		thing = tile:getTopCreature()
 		if thing == nil then
 			local item = tile:getTopDownItem()

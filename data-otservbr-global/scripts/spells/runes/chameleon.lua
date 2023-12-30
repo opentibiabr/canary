@@ -16,7 +16,7 @@ function rune.onCastSpell(creature, variant, isHotkey)
 		item = Tile(position):getTopDownItem()
 	end
 
-	if not item or item.itemid == 0 or not isMoveable(item.uid) then
+	if not item or item.itemid == 0 or not isMovable(item.uid) then
 		creature:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false

@@ -26,7 +26,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseRotateTo(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWrapContainer(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWrapableTo(tmpStrValue, valueAttribute, itemType);
-	ItemParse::parseMoveable(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseMovable(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseBlockProjectTile(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePickupable(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseFloorChange(tmpStrValue, valueAttribute, itemType);
@@ -196,10 +196,10 @@ void ItemParse::parseWrapableTo(const std::string &tmpStrValue, pugi::xml_attrib
 	}
 }
 
-void ItemParse::parseMoveable(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+void ItemParse::parseMovable(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	std::string stringValue = tmpStrValue;
-	if (stringValue == "moveable") {
-		itemType.moveable = valueAttribute.as_bool();
+	if (stringValue == "movable") {
+		itemType.movable = valueAttribute.as_bool();
 	}
 }
 

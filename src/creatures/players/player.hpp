@@ -362,10 +362,10 @@ public:
 	}
 
 	void setParty(std::shared_ptr<Party> newParty) {
-		this->party = newParty;
+		m_party = newParty;
 	}
 	std::shared_ptr<Party> getParty() const {
-		return party;
+		return m_party;
 	}
 
 	int32_t getCleavePercent(bool useCharges = false) const;
@@ -1821,8 +1821,8 @@ public:
 	}
 
 	void updatePartyTrackerAnalyzer() const {
-		if (client && party) {
-			client->updatePartyTrackerAnalyzer(party);
+		if (client && m_party) {
+			client->updatePartyTrackerAnalyzer(m_party);
 		}
 	}
 
@@ -2716,7 +2716,7 @@ private:
 	std::shared_ptr<Item> writeItem = nullptr;
 	std::shared_ptr<House> editHouse = nullptr;
 	std::shared_ptr<Npc> shopOwner = nullptr;
-	std::shared_ptr<Party> party = nullptr;
+	std::shared_ptr<Party> m_party = nullptr;
 	std::shared_ptr<Player> tradePartner = nullptr;
 	ProtocolGame_ptr client;
 	std::shared_ptr<Task> walkTask;

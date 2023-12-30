@@ -1,6 +1,6 @@
 local storeItemID = {
 	-- registered item ids here are not tradable with players
-	-- these items can be set to moveable at items.xml
+	-- these items can be set to movable at items.xml
 	-- 500 charges exercise weapons
 	28552, -- exercise sword
 	28553, -- exercise axe

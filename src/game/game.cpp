@@ -503,7 +503,7 @@ std::shared_ptr<Thing> Game::internalGetThing(std::shared_ptr<Player> player, co
 
 			case STACKPOS_MOVE: {
 				std::shared_ptr<Item> item = tile->getTopDownItem();
-				if (item && item->isMoveable()) {
+				if (item && item->isMovable()) {
 					thing = item;
 				} else {
 					thing = tile->getTopVisibleCreature(player);
@@ -1185,7 +1185,7 @@ void Game::playerMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Cr
 	}
 
 	if (!isFamiliar && ((!movingCreature->isPushable() && !player->hasFlag(PlayerFlags_t::CanPushAllCreatures)) || (movingCreature->isInGhostMode() && !player->isAccessPlayer()))) {
-		player->sendCancelMessage(RETURNVALUE_NOTMOVEABLE);
+		player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
 		return;
 	}
 
@@ -1447,7 +1447,7 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 	}
 
 	if (!item->isPushable() || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
-		player->sendCancelMessage(RETURNVALUE_NOTMOVEABLE);
+		player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
 		return;
 	}
 
@@ -2055,7 +2055,7 @@ ReturnValue Game::internalRemoveItem(std::shared_ptr<Item> item, int32_t count /
 	if (count == -1) {
 		count = item->getItemCount();
 	}
-	ReturnValue ret = cylinder->queryRemove(item, count, flags | FLAG_IGNORENOTMOVEABLE);
+	ReturnValue ret = cylinder->queryRemove(item, count, flags | FLAG_IGNORENOTMOVABLE);
 	if (!force && ret != RETURNVALUE_NOERROR) {
 		g_logger().debug("{} - Failed to execute query remove", __FUNCTION__);
 		return ret;
@@ -4425,7 +4425,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 		if (std::shared_ptr<HouseTile> houseTile = std::dynamic_pointer_cast<HouseTile>(tradeItem->getTile())) {
 			const auto &house = houseTile->getHouse();
 			if (house && tradeItem->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST)) {
-				player->sendCancelMessage(RETURNVALUE_NOTMOVEABLE);
+				player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
 				return;
 			}
 		}

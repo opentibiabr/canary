@@ -589,7 +589,24 @@ int MonsterFunctions::luaMonsterHazardDamageBoost(lua_State* L) {
 			pushBoolean(L, monster->getHazardSystemDamageBoost());
 		} else {
 			monster->setHazardSystemDamageBoost(hazardDamageBoost);
-			pushBoolean(L, monster->getHazardSystemCrit());
+			pushBoolean(L, monster->getHazardSystemDamageBoost());
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterHazardDefenseBoost(lua_State* L) {
+	// get: monster:hazardDefenseBoost() ; set: monster:hazardDefenseBoost(hazardDefenseBoost)
+	std::shared_ptr<Monster> monster = getUserdataShared<Monster>(L, 1);
+	bool hazardDefenseBoost = getBoolean(L, 2, false);
+	if (monster) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monster->getHazardSystemDefenseBoost());
+		} else {
+			monster->setHazardSystemDefenseBoost(hazardDefenseBoost);
+			pushBoolean(L, monster->getHazardSystemDefenseBoost());
 		}
 	} else {
 		lua_pushnil(L);

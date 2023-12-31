@@ -9213,15 +9213,18 @@
 		<attribute key="primarytype" value="furniture"/>
 		<attribute key="type" value="depot"/>
 		<attribute key="containersize" value="6"/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="3501" article="a" name="mailbox">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="type" value="mailbox"/>
 		<attribute key="description" value="Royal Tibia Mail."/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="3502" article="a" name="depot chest">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="containersize" value="30"/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="3503" article="a" name="parcel">
 		<attribute key="primarytype" value="containers"/>
@@ -11604,7 +11607,7 @@
 		<attribute key="weight" value="700"/>
 	</item>
 	<item id="4285" article="a" name="pile of bones">
-		<attribute key="moveable" value="0"/>
+		<attribute key="movable" value="0"/>
 		<attribute key="containersize" value="5"/>
 	</item>
 	<item id="4286" article="a" name="dead dragon">
@@ -27955,6 +27958,7 @@
 	</item>
 	<item id="12903" article="the" name="market"/>
 	<item id="12904" article="a" name="dread doll">
+		<attribute key="usedbyhouseguests" value="1"/>
 		<attribute key="primarytype" value="dolls and bears"/>
 		<attribute key="description" value="It is shining with positive energy and was awarded by FunTibia.com"/>
 		<attribute key="weight" value="1100"/>
@@ -31349,6 +31353,7 @@
 		<attribute key="weight" value="5000"/>
 	</item>
 	<item id="16277" article="an" name="adventurer's stone">
+		<attribute key="usedbyhouseguests" value="1"/>
 		<attribute key="description" value="Use it in a city temple to travel to the Adventurers Guild. A replacement is available at temples"/>
 		<attribute key="weight" value="30"/>
 	</item>
@@ -35637,7 +35642,7 @@
 	<item id="19201" article="an" name="ornate door with a keyhole"/>
 	<item id="19202" article="a" name="reward container">
 		<attribute key="primarytype" value="utilities"/>
-		<attribute key="moveable" value="0"/>
+		<attribute key="movable" value="0"/>
 		<attribute key="allowpickUpAble" value="0"/>
 		<attribute key="containersize" value="32"/>
 	</item>
@@ -35737,7 +35742,7 @@
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="type" value="rewardchest"/>
 		<attribute key="description" value="This chest contains your rewards earned in battles."/>
-		<attribute key="moveable" value="0"/>
+		<attribute key="movable" value="0"/>
 		<attribute key="allowpickUpAble" value="0"/>
 		<attribute key="containersize" value="32"/>
 	</item>
@@ -41612,6 +41617,7 @@
 	<item id="23396" article="your" name="your store inbox">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="containersize" value="20"/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="23397" name="RESERVED SPRITE"/>
 	<item id="23398" article="a" name="decoration kit">
@@ -42619,7 +42625,7 @@
 	<item id="23721" article="a" name="gold pouch">
 		<attribute key="description" value="A infinity bag where you can hold coins."/>
 		<attribute key="containersize" value="20"/>
-		<attribute key="moveable" value="0"/>
+		<attribute key="movable" value="0"/>
 	</item>
 	<item id="23722" article="a" name="gold converter">
 		<attribute key="primarytype" value="tools"/>
@@ -43700,11 +43706,13 @@
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25104"/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25104" article="an" name="imbuing shrine">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25103"/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item fromid="25105" toid="25111" article="a" name="dragon lair wall"/>
 	<item fromid="25112" toid="25113" article="a" name="grey stones">
@@ -43750,21 +43758,25 @@
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25175"/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25175" article="an" name="imbuing shrine">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25174"/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25182" article="a" name="gilded imbuing shrine">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25183"/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25183" article="a" name="gilded imbuing shrine">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25182"/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25185" name="dead ice dragon">
 		<attribute key="fluidsource" value="blood"/>
@@ -44352,24 +44364,28 @@
 		<attribute key="description" value="It depicts the two suns of Tibia, symbolising the course of a day"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25721"/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25721" article="a" name="reward shrine">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="description" value="It depicts the two suns of Tibia, symbolising the course of a day"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25720"/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25722" article="a" name="shiny reward shrine">
 		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It depicts the two suns of Tibia, symbolising the course of a day"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25723"/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25723" article="a" name="shiny reward shrine">
 		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It depicts the two suns of Tibia, symbolising the course of a day"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25722"/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25724" article="a" name="stuffed moohtant"/>
 	<item id="25725" article="a" name="stuffed skunk"/>
@@ -44579,6 +44595,7 @@
 	<item id="25797" article="a" name="free fairy"/>
 	<item fromid="25798" toid="25800" name="energy barrier"/>
 	<item fromid="25802" toid="25803" name="reward shrine">
+		<attribute key="usedbyhouseguests" value="1"/>
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="description" value="It depicts the two suns of Tibia, symbolising the course of a day."/>
 	</item>
@@ -49175,6 +49192,7 @@
 	<item id="28750" name="your supply stash">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="containersize" value="10"/>
+		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="28751" article="a" name="dead burning book">
 		<attribute key="duration" value="60"/>
@@ -50354,7 +50372,7 @@
 		<attribute key="primarytype" value="tools"/>
 		<attribute key="weight" value="1000"/>
 		<attribute key="description" value="This mysterious lamp summons your very own personal hireling."/>
-		<attribute key="moveable" value="0"/>
+		<attribute key="movable" value="0"/>
 	</item>
 	<item id="29433" article="a" name="chest">
 		<attribute key="primarytype" value="containers"/>

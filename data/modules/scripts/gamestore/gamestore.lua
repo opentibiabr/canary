@@ -6342,6 +6342,7 @@ GameStore.Categories = {
 			{
 				icons = { "Name_Change.png" },
 				name = "Character Name Change",
+				home = true,
 				price = 250,
 				id = 65002,
 				description = "<i>Tired of your current character name? Purchase a new one!</i>\n\n{character}\n{info} relog required after purchase to finalise the name change",

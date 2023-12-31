@@ -635,9 +635,10 @@ int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
 }
 
 int GameFunctions::luaGameGetNormalizedPlayerName(lua_State* L) {
-	// Game.getNormalizedPlayerName(name)
+	// Game.getNormalizedPlayerName(name[, isNewName = false])
 	auto name = getString(L, 1);
-	std::shared_ptr<Player> player = g_game().getPlayerByName(name, true);
+	auto isNewName = getBoolean(L, 2, false);
+	std::shared_ptr<Player> player = g_game().getPlayerByName(name, true, isNewName);
 	if (player) {
 		pushString(L, player->getName());
 	} else {

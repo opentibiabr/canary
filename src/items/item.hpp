@@ -269,6 +269,28 @@ public:
 		return isLootTrackeable;
 	}
 
+	void setOwner(uint32_t owner) {
+		setAttribute(ItemAttribute_t::OWNER, owner);
+	}
+
+	void setOwner(std::shared_ptr<Creature> owner);
+
+	virtual uint32_t getOwnerId() const;
+
+	bool isOwner(uint32_t ownerId) const;
+
+	std::string getOwnerName() const;
+
+	bool isOwner(std::shared_ptr<Creature> owner) const;
+
+	bool hasOwner() const {
+		return getOwnerId() != 0;
+	}
+
+	bool canBeMovedToStore() const {
+		return isStoreItem() || hasOwner();
+	}
+
 	static std::string parseImbuementDescription(std::shared_ptr<Item> item);
 	static std::string parseShowDurationSpeed(int32_t speed, bool &begin);
 	static std::string parseShowDuration(std::shared_ptr<Item> item);
@@ -292,7 +314,7 @@ public:
 	virtual void serializeAttr(PropWriteStream &propWriteStream) const;
 
 	bool isPushable() override final {
-		return isMoveable();
+		return isMovable();
 	}
 	int32_t getThrowRange() const override final {
 		return (isPickupable() ? 15 : 2);
@@ -425,8 +447,8 @@ public:
 	bool isWrapContainer() const {
 		return items[id].wrapContainer;
 	}
-	bool isMoveable() const {
-		return items[id].moveable;
+	bool isMovable() const {
+		return items[id].movable;
 	}
 	bool isCorpse() const {
 		return items[id].isCorpse;
@@ -472,6 +494,9 @@ public:
 	}
 	bool canReceiveAutoCarpet() const {
 		return isBlocking() && isAlwaysOnTop() && !items[id].hasHeight;
+	}
+	bool canBeUsedByGuests() const {
+		return isDummy() || items[id].m_canBeUsedByGuests;
 	}
 
 	bool isDecayDisabled() const {

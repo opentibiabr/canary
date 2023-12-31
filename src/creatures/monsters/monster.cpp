@@ -486,10 +486,11 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 				if (++it != resultList.end()) {
 					const Position &targetPosition = getTarget->getPosition();
 					int32_t minRange = std::max<int32_t>(Position::getDistanceX(myPos, targetPosition), Position::getDistanceY(myPos, targetPosition));
+					int32_t factionOffset = static_cast<int32_t>(getTarget->getFaction()) * 100;
 					do {
 						const Position &pos = (*it)->getPosition();
 
-						int32_t distance = std::max<int32_t>(Position::getDistanceX(myPos, pos), Position::getDistanceY(myPos, pos));
+						int32_t distance = std::max<int32_t>(Position::getDistanceX(myPos, pos), Position::getDistanceY(myPos, pos)) + factionOffset;
 						if (distance < minRange) {
 							getTarget = *it;
 							minRange = distance;
@@ -504,7 +505,8 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 					}
 
 					const Position &pos = creature->getPosition();
-					int32_t distance = std::max<int32_t>(Position::getDistanceX(myPos, pos), Position::getDistanceY(myPos, pos));
+					int32_t factionOffset = static_cast<int32_t>(getTarget->getFaction()) * 100;
+					int32_t distance = std::max<int32_t>(Position::getDistanceX(myPos, pos), Position::getDistanceY(myPos, pos)) + factionOffset;
 					if (distance < minRange) {
 						getTarget = creature;
 						minRange = distance;
@@ -523,12 +525,14 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 				auto it = resultList.begin();
 				getTarget = *it;
 				if (++it != resultList.end()) {
-					int32_t minHp = getTarget->getHealth();
+					int32_t factionOffset = static_cast<int32_t>(getTarget->getFaction()) * 100000;
+					int32_t minHp = getTarget->getHealth() + factionOffset;
 					do {
-						if ((*it)->getHealth() < minHp) {
+						auto hp = (*it)->getHealth() + factionOffset;
+						factionOffset = static_cast<int32_t>((*it)->getFaction()) * 100000;
+						if (hp < minHp) {
 							getTarget = *it;
-
-							minHp = getTarget->getHealth();
+							minHp = hp;
 						}
 					} while (++it != resultList.end());
 				}
@@ -546,12 +550,11 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 				if (++it != resultList.end()) {
 					int32_t mostDamage = 0;
 					do {
+						int32_t factionOffset = static_cast<int32_t>((*it)->getFaction()) * 100000;
 						const auto dmg = damageMap.find((*it)->getID());
-						if (dmg != damageMap.end()) {
-							if (dmg->second.total > mostDamage) {
-								mostDamage = dmg->second.total;
-								getTarget = *it;
-							}
+						if (dmg != damageMap.end() && dmg->second.total + factionOffset > mostDamage) {
+							mostDamage = dmg->second.total;
+							getTarget = *it;
 						}
 					} while (++it != resultList.end());
 				}
@@ -582,6 +585,14 @@ void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature
 	if (removeTarget(creature) && (hasFollowPath || !isSummon())) {
 		addTarget(creature, hasFollowPath);
 	}
+}
+
+float Monster::getMitigation() const {
+	float mitigation = mType->info.mitigation * getDefenseMultiplier();
+	if (g_configManager().getBoolean(DISABLE_MONSTER_ARMOR, __FUNCTION__)) {
+		mitigation += std::ceil(static_cast<float>(getDefense() + getArmor()) / 100.f) * getDefenseMultiplier() * 2.f;
+	}
+	return std::min<float>(mitigation, 30.f);
 }
 
 BlockType_t Monster::blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool /* field = false */) {
@@ -1075,7 +1086,7 @@ void Monster::pushItems(std::shared_ptr<Tile> tile, const Direction &nextDirecti
 	auto it = items->begin();
 	while (it != items->end()) {
 		std::shared_ptr<Item> item = *it;
-		if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != IMMOVABLE_ACTION_ID) {
+		if (item && item->hasProperty(CONST_PROP_MOVABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->canBeMoved()) {
 			if (moveCount < 20 && pushItem(item, nextDirection)) {
 				++moveCount;
 			} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {

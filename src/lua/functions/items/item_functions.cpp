@@ -553,6 +553,17 @@ int ItemFunctions::luaItemRemoveCustomAttribute(lua_State* L) {
 	return 1;
 }
 
+int ItemFunctions::luaItemCanBeMoved(lua_State* L) {
+	// item:canBeMoved()
+	std::shared_ptr<Item> item = getUserdataShared<Item>(L, 1);
+	if (item) {
+		pushBoolean(L, item->canBeMoved());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int ItemFunctions::luaItemSerializeAttributes(lua_State* L) {
 	// item:serializeAttributes()
 	std::shared_ptr<Item> item = getUserdataShared<Item>(L, 1);
@@ -615,7 +626,7 @@ int ItemFunctions::luaItemMoveTo(lua_State* L) {
 		return 1;
 	}
 
-	uint32_t flags = getNumber<uint32_t>(L, 3, FLAG_NOLIMIT | FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE | FLAG_IGNORENOTMOVEABLE);
+	uint32_t flags = getNumber<uint32_t>(L, 3, FLAG_NOLIMIT | FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE | FLAG_IGNORENOTMOVABLE);
 
 	if (item->getParent() == VirtualCylinder::virtualCylinder) {
 		pushBoolean(L, g_game().internalAddItem(toCylinder, item, INDEX_WHEREEVER, flags) == RETURNVALUE_NOERROR);
@@ -909,5 +920,109 @@ int ItemFunctions::luaItemCanReceiveAutoCarpet(lua_State* L) {
 	}
 
 	pushBoolean(L, item->canReceiveAutoCarpet());
+	return 1;
+}
+
+int ItemFunctions::luaItemSetOwner(lua_State* L) {
+	// item:setOwner(creature|creatureId)
+	std::shared_ptr<Item> item = getUserdataShared<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		return 0;
+	}
+
+	if (isUserdata(L, 2)) {
+		std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 2);
+		if (!creature) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+			return 0;
+		}
+		item->setOwner(creature);
+		pushBoolean(L, true);
+		return 1;
+	}
+
+	auto creatureId = getNumber<uint32_t>(L, 2);
+	if (creatureId != 0) {
+		item->setOwner(creatureId);
+		pushBoolean(L, true);
+		return 1;
+	}
+
+	pushBoolean(L, false);
+	return 1;
+}
+
+int ItemFunctions::luaItemGetOwnerId(lua_State* L) {
+	// item:getOwner()
+	std::shared_ptr<Item> item = getUserdataShared<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		return 0;
+	}
+
+	if (auto ownerId = item->getOwnerId()) {
+		lua_pushnumber(L, ownerId);
+		return 1;
+	}
+
+	lua_pushnil(L);
+	return 1;
+}
+
+int ItemFunctions::luaItemIsOwner(lua_State* L) {
+	// item:isOwner(creature|creatureId)
+	std::shared_ptr<Item> item = getUserdataShared<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		return 0;
+	}
+
+	if (isUserdata(L, 2)) {
+		std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 2);
+		if (!creature) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+			return 0;
+		}
+		pushBoolean(L, item->isOwner(creature));
+		return 1;
+	}
+
+	auto creatureId = getNumber<uint32_t>(L, 2);
+	if (creatureId != 0) {
+		pushBoolean(L, item->isOwner(creatureId));
+		return 1;
+	}
+
+	pushBoolean(L, false);
+	return 1;
+}
+
+int ItemFunctions::luaItemGetOwnerName(lua_State* L) {
+	// item:getOwnerName()
+	std::shared_ptr<Item> item = getUserdataShared<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		return 0;
+	}
+
+	if (auto ownerName = item->getOwnerName(); !ownerName.empty()) {
+		pushString(L, ownerName);
+		return 1;
+	}
+
+	lua_pushnil(L);
+	return 1;
+}
+
+int ItemFunctions::luaItemHasOwner(lua_State* L) {
+	// item:hasOwner()
+	std::shared_ptr<Item> item = getUserdataShared<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		return 1;
+	}
+
+	pushBoolean(L, item->hasOwner());
 	return 1;
 }

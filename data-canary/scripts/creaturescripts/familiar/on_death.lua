@@ -9,7 +9,7 @@ function familiarOnDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekill
 	local vocation = FAMILIAR_ID[player:getVocation():getBaseId()]
 
 	if table.contains(vocation, creature:getName()) then
-		player:setStorageValue(Global.Storage.FamiliarSummon, os.time())
+		player:kv():set("familiar-summon-time", os.time())
 		for sendMessage = 1, #FAMILIAR_TIMER do
 			stopEvent(player:getStorageValue(FAMILIAR_TIMER[sendMessage].storage))
 			player:setStorageValue(FAMILIAR_TIMER[sendMessage].storage, -1)

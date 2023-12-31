@@ -289,7 +289,7 @@ public:
 	static void addDistanceEffect(std::shared_ptr<Creature> caster, const Position &fromPos, const Position &toPos, uint16_t effect);
 
 	bool doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target) const;
-	bool doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin) const;
+	bool doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, int affected = 1) const;
 	bool doCombat(std::shared_ptr<Creature> caster, const Position &pos) const;
 
 	bool setCallback(CallBackParam_t key);

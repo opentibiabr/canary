@@ -150,6 +150,14 @@ public:
 		moveLocked = locked;
 	}
 
+	bool isDirectionLocked() const {
+		return directionLocked;
+	}
+
+	void setDirectionLocked(bool locked) {
+		directionLocked = locked;
+	}
+
 	int32_t getThrowRange() const override final {
 		return 1;
 	}
@@ -449,6 +457,7 @@ public:
 	virtual void onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target);
 	virtual void onAttackedCreatureBlockHit(BlockType_t) { }
 	virtual void onBlockHit() { }
+	virtual void onTakeDamage(std::shared_ptr<Creature>, int32_t) { }
 	virtual void onChangeZone(ZoneType_t zone);
 	virtual void onAttackedCreatureChangeZone(ZoneType_t zone);
 	virtual void onIdleStatus();
@@ -773,6 +782,7 @@ protected:
 	bool floorChange = false;
 	bool canUseDefense = true;
 	bool moveLocked = false;
+	bool directionLocked = false;
 	bool hasFollowPath = false;
 	int8_t charmChanceModifier = 0;
 

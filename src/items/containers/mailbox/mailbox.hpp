@@ -21,6 +21,10 @@ public:
 		return static_self_cast<Mailbox>();
 	}
 
+	std::shared_ptr<Cylinder> getCylinder() override final {
+		return getMailbox();
+	}
+
 	// cylinder implementations
 	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override;
 	ReturnValue queryMaxCount(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t &maxQueryCount, uint32_t flags) override;

@@ -125,7 +125,7 @@ ReturnValue HouseTile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t
 		if (house && !house->isInvited(actorPlayer)) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		} else if (house && house->getHouseAccessLevel(actorPlayer) == HOUSE_GUEST) {
-			return RETURNVALUE_NOTMOVEABLE;
+			return RETURNVALUE_NOTMOVABLE;
 		}
 	}
 	return Tile::queryRemove(thing, count, flags);

@@ -66,7 +66,8 @@ class MonsterType {
 		std::vector<voiceBlock_t> voiceVector;
 
 		std::vector<LootBlock> lootItems;
-		std::vector<std::string> scripts;
+		// We need to keep the order of scripts, so we use a set isntead of an unordered_set
+		std::set<std::string> scripts;
 		std::vector<spellBlock_t> attackSpells;
 		std::vector<spellBlock_t> defenseSpells;
 		std::vector<summonBlock_t> summons;

@@ -60,7 +60,9 @@ public:
 		registerMethod(L, "Creature", "setMaxHealth", CreatureFunctions::luaCreatureSetMaxHealth);
 		registerMethod(L, "Creature", "setHiddenHealth", CreatureFunctions::luaCreatureSetHiddenHealth);
 		registerMethod(L, "Creature", "isMoveLocked", CreatureFunctions::luaCreatureIsMoveLocked);
+		registerMethod(L, "Creature", "isDirectionLocked", CreatureFunctions::luaCreatureIsDirectionLocked);
 		registerMethod(L, "Creature", "setMoveLocked", CreatureFunctions::luaCreatureSetMoveLocked);
+		registerMethod(L, "Creature", "setDirectionLocked", CreatureFunctions::luaCreatureSetDirectionLocked);
 		registerMethod(L, "Creature", "getSkull", CreatureFunctions::luaCreatureGetSkull);
 		registerMethod(L, "Creature", "setSkull", CreatureFunctions::luaCreatureSetSkull);
 		registerMethod(L, "Creature", "getOutfit", CreatureFunctions::luaCreatureGetOutfit);
@@ -150,6 +152,9 @@ private:
 
 	static int luaCreatureIsMoveLocked(lua_State* L);
 	static int luaCreatureSetMoveLocked(lua_State* L);
+
+	static int luaCreatureIsDirectionLocked(lua_State* L);
+	static int luaCreatureSetDirectionLocked(lua_State* L);
 
 	static int luaCreatureGetSkull(lua_State* L);
 	static int luaCreatureSetSkull(lua_State* L);

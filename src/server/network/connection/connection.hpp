@@ -100,7 +100,7 @@ private:
 
 	asio::ip::tcp::socket socket;
 
-	time_t timeConnected;
+	std::time_t timeConnected = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	uint32_t packetsSent = 0;
 	uint32_t ip = 1;
 

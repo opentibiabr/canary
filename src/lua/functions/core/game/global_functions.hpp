@@ -37,7 +37,7 @@ public:
 		lua_register(L, "getWorldUpTime", GlobalFunctions::luaGetWorldUpTime);
 		lua_register(L, "isDepot", GlobalFunctions::luaIsDepot);
 		lua_register(L, "isInWar", GlobalFunctions::luaIsInWar);
-		lua_register(L, "isMovable", GlobalFunctions::luaIsMoveable);
+		lua_register(L, "isMovable", GlobalFunctions::luaIsMovable);
 		lua_register(L, "isValidUID", GlobalFunctions::luaIsValidUID);
 		lua_register(L, "saveServer", GlobalFunctions::luaSaveServer);
 		lua_register(L, "sendChannelMessage", GlobalFunctions::luaSendChannelMessage);
@@ -78,7 +78,7 @@ private:
 	static int luaGetWorldUpTime(lua_State* L);
 	static int luaIsDepot(lua_State* L);
 	static int luaIsInWar(lua_State* L);
-	static int luaIsMoveable(lua_State* L);
+	static int luaIsMovable(lua_State* L);
 	static int luaIsValidUID(lua_State* L);
 	static int luaSaveServer(lua_State* L);
 	static int luaSendChannelMessage(lua_State* L);

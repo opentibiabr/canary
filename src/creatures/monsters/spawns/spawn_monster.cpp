@@ -149,6 +149,8 @@ SpawnMonster::~SpawnMonster() {
 	for (const auto &[_, monster] : spawnedMonsterMap) {
 		monster->setSpawnMonster(nullptr);
 	}
+	stopEvent();
+	spawnMonsterMap.clear();
 }
 
 bool SpawnMonster::findPlayer(const Position &pos) {
@@ -365,13 +367,23 @@ void SpawnMonster::removeMonster(std::shared_ptr<Monster> monster) {
 	spawnedMonsterMap.erase(spawnMonsterId);
 }
 
+void SpawnMonster::removeMonsters() {
+	spawnMonsterMap.clear();
+	spawnedMonsterMap.clear();
+}
+
 void SpawnMonster::setMonsterVariant(const std::string &variant) {
 	for (auto &it : spawnMonsterMap) {
 		std::unordered_map<std::shared_ptr<MonsterType>, uint32_t> monsterTypes;
 		for (const auto &[monsterType, weight] : it.second.monsterTypes) {
-			auto variantName = variant + monsterType->typeName;
-			auto variantType = g_monsters().getMonsterType(variantName, false);
-			monsterTypes.emplace(variantType, weight);
+			if (!monsterType || monsterType->typeName.empty()) {
+				continue;
+			}
+			auto variantName = variant + "|" + monsterType->typeName;
+			auto variantType = g_monsters().getMonsterType(variantName, true);
+			if (variantType) {
+				monsterTypes.emplace(variantType, weight);
+			}
 		}
 		it.second.monsterTypes = monsterTypes;
 	}

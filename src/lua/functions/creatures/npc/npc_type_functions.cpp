@@ -258,7 +258,7 @@ int NpcTypeFunctions::luaNpcTypeRegisterEvent(lua_State* L) {
 	// npcType:registerEvent(name)
 	const auto &npcType = getUserdataShared<NpcType>(L, 1);
 	if (npcType) {
-		npcType->info.scripts.push_back(getString(L, 2));
+		npcType->info.scripts.insert(getString(L, 2));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

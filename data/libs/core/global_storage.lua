@@ -8,7 +8,7 @@ Reserved player action storage key ranges (const.hpp)
 	[2001 - 2011]
 
 	Others reserved player action/storages
-	[100] = unmoveable/untrade/unusable items
+	[100] = unmovable/untrade/unusable items
 	[101] = use pick floor
 	[102] = well down action
 	[103-120] = others keys action
@@ -23,11 +23,6 @@ Reserved player action storage key ranges (const.hpp)
 
 Global = {
 	Storage = {
-		NpcExhaust = 30001,
-		CombatProtectionStorage = 30023,
-		BlockMovementStorage = 30025,
-		FamiliarSummon = 30026,
-		StoreExaust = 30051,
 		FamiliarSummonEvent10 = 30054,
 		FamiliarSummonEvent60 = 30055,
 	},

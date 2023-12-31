@@ -441,7 +441,7 @@ local ferumbrasAscendantHabitatIce = Action()
 function ferumbrasAscendantHabitatIce.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 9125 then
 		if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Ice) >= 1 then
-			player:say("The lever are stuck, need some time to it can be moveable again.", TALKTYPE_MONSTER_SAY)
+			player:say("The lever are stuck, need some time to it can be movable again.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
 		Game.createMonster("lovely snake", Position(33642, 32702, 12), true, true)

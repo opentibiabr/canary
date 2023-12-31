@@ -173,9 +173,9 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 					const auto item = std::make_shared<BasicItem>();
 					item->id = id;
 
-					if (tile->isHouse() && iType.moveable) {
+					if (tile->isHouse() && iType.movable) {
 						g_logger().warn("[IOMap::loadMap] - "
-										"Moveable item with ID: {}, in house: {}, "
+										"Movable item with ID: {}, in house: {}, "
 										"at position: x {}, y {}, z {}",
 										id, tile->houseId, x, y, z);
 					} else if (iType.isGroundTile()) {
@@ -207,9 +207,9 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 
 						if (tile->isHouse() && iType.isBed()) {
 							// nothing
-						} else if (tile->isHouse() && iType.moveable) {
+						} else if (tile->isHouse() && iType.movable) {
 							g_logger().warn("[IOMap::loadMap] - "
-											"Moveable item with ID: {}, in house: {}, "
+											"Movable item with ID: {}, in house: {}, "
 											"at position: x {}, y {}, z {}",
 											id, tile->houseId, x, y, z);
 						} else if (iType.isGroundTile()) {

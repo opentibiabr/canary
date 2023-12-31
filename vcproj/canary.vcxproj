@@ -129,7 +129,6 @@
     <ClInclude Include="..\src\lua\functions\core\game\global_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\bank_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\zone_functions.hpp" />
-    <ClInclude Include="..\src\lua\functions\core\game\zone_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\lua_enums.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\modal_window_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\bit_functions.hpp" />

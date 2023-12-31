@@ -54,7 +54,8 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 			end
 		end
 
-		if player:getStorageValue(Storage.IsTraining) > os.time() then
+		local hasExhaustion = player:kv():get("training-exhaustion") or 0
+		if hasExhaustion > os.time() then
 			player:sendTextMessage(MESSAGE_FAILURE, "You are already training!")
 			return true
 		end
@@ -64,7 +65,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 			_G.OnExerciseTraining[playerId].event = addEvent(ExerciseEvent, 0, playerId, targetPos, item.itemid, targetId)
 			_G.OnExerciseTraining[playerId].dummyPos = targetPos
 			player:setTraining(true)
-			player:setStorageValue(Storage.IsTraining, os.time() + cooldown)
+			player:kv():set("training-exhaustion", os.time() + cooldown)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have started training on an exercise dummy.")
 		end
 		return true

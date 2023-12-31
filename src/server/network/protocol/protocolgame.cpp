@@ -946,19 +946,7 @@ void ProtocolGame::addBless() {
 	if (!player) {
 		return;
 	}
-
-	std::string bless = player->getBlessingsName();
-	std::ostringstream lostBlesses;
-	(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses << "You are still blessed with " << bless;
-	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
-	if (player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL, __FUNCTION__) && player->getVocationId() > VOCATION_NONE) {
-		for (uint8_t i = 2; i <= 6; i++) {
-			if (!player->hasBlessing(i)) {
-				player->addBlessing(i, 1);
-			}
-		}
-		sendBlessStatus();
-	}
+	player->checkAndShowBlessingMessage();
 }
 
 void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte) {
@@ -5747,29 +5735,29 @@ void ProtocolGame::sendRestingStatus(uint8_t protection) {
 	NetworkMessage msg;
 	msg.addByte(0xA9);
 	msg.addByte(protection); // 1 / 0
-	int32_t PlayerdailyStreak = player->getStorageValue(STORAGEVALUE_DAILYREWARD);
-	msg.addByte(PlayerdailyStreak < 2 ? 0 : 1);
-	if (PlayerdailyStreak < 2) {
+	int32_t dailyStreak = static_cast<int32_t>(player->kv()->scoped("daily-reward")->get("streak")->getNumber());
+	msg.addByte(dailyStreak < 2 ? 0 : 1);
+	if (dailyStreak < 2) {
 		msg.addString("Resting Area (no active bonus)", "ProtocolGame::sendRestingStatus - Resting Area (no active bonus)");
 	} else {
 		std::ostringstream ss;
 		ss << "Active Resting Area Bonuses: ";
-		if (PlayerdailyStreak < DAILY_REWARD_DOUBLE_HP_REGENERATION) {
+		if (dailyStreak < DAILY_REWARD_DOUBLE_HP_REGENERATION) {
 			ss << "\nHit Points Regeneration";
 		} else {
 			ss << "\nDouble Hit Points Regeneration";
 		}
-		if (PlayerdailyStreak >= DAILY_REWARD_MP_REGENERATION) {
-			if (PlayerdailyStreak < DAILY_REWARD_DOUBLE_MP_REGENERATION) {
+		if (dailyStreak >= DAILY_REWARD_MP_REGENERATION) {
+			if (dailyStreak < DAILY_REWARD_DOUBLE_MP_REGENERATION) {
 				ss << ",\nMana Points Regeneration";
 			} else {
 				ss << ",\nDouble Mana Points Regeneration";
 			}
 		}
-		if (PlayerdailyStreak >= DAILY_REWARD_STAMINA_REGENERATION) {
+		if (dailyStreak >= DAILY_REWARD_STAMINA_REGENERATION) {
 			ss << ",\nStamina Points Regeneration";
 		}
-		if (PlayerdailyStreak >= DAILY_REWARD_SOUL_REGENERATION) {
+		if (dailyStreak >= DAILY_REWARD_SOUL_REGENERATION) {
 			ss << ",\nSoul Points Regeneration";
 		}
 		ss << ".";
@@ -8473,7 +8461,7 @@ void ProtocolGame::parseSetMonsterPodium(NetworkMessage &msg) const {
 }
 
 void ProtocolGame::sendBosstiaryCooldownTimer() {
-	if (oldProtocol) {
+	if (!player || oldProtocol) {
 		return;
 	}
 

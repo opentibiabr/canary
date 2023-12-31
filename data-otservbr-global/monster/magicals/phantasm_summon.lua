@@ -3,7 +3,7 @@ local monster = {}
 
 monster.name = "Phantasm"
 monster.description = "a phantasm"
-monster.experience = 4400
+monster.experience = 1
 monster.outfit = {
 	lookType = 241,
 	lookHead = 0,
@@ -14,8 +14,8 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 3950
-monster.maxHealth = 3950
+monster.health = 65
+monster.maxHealth = 65
 monster.race = "undead"
 monster.corpse = 6343
 monster.speed = 170

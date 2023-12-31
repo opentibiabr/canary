@@ -826,7 +826,7 @@ void Combat::combatTileEffects(const CreatureVector &spectators, std::shared_ptr
 
 		std::shared_ptr<Item> item = Item::CreateItem(itemId);
 		if (caster) {
-			item->setAttribute(ItemAttribute_t::OWNER, caster->getID());
+			item->setOwner(caster);
 		}
 
 		ReturnValue ret = g_game().internalAddItem(tile, item);
@@ -937,15 +937,26 @@ bool Combat::doCombatChain(std::shared_ptr<Creature> caster, std::shared_ptr<Cre
 		return false;
 	}
 
+	auto affected = targets.size();
+	int i = 0;
 	for (const auto &[from, toVector] : targets) {
 		auto combat = this;
+		auto delay = i * std::max<int32_t>(50, g_configManager().getNumber(COMBAT_CHAIN_DELAY, __FUNCTION__));
+		++i;
 		for (auto to : toVector) {
 			auto nextTarget = g_game().getCreatureByID(to);
 			if (!nextTarget) {
 				continue;
 			}
-			combat->doChainEffect(from, nextTarget->getPosition(), combat->params.chainEffect);
-			combat->doCombat(caster, nextTarget, from);
+			g_dispatcher().scheduleEvent(
+				delay, [combat, caster, nextTarget, from, affected]() {
+					if (combat && caster && nextTarget) {
+						combat->doChainEffect(from, nextTarget->getPosition(), combat->params.chainEffect);
+						combat->doCombat(caster, nextTarget, from, affected);
+					}
+				},
+				"Combat::doCombatChain"
+			);
 		}
 	}
 
@@ -960,10 +971,11 @@ bool Combat::doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature
 	return doCombat(caster, target, caster != nullptr ? caster->getPosition() : Position());
 }
 
-bool Combat::doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin) const {
+bool Combat::doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, int affected /* = 1 */) const {
 	// target combat callback function
 	if (params.combatType != COMBAT_NONE) {
 		CombatDamage damage = getCombatDamage(caster, target);
+		damage.affected = affected;
 		if (damage.primary.type != COMBAT_MANADRAIN) {
 			doCombatHealth(caster, target, origin, damage, params);
 		} else {
@@ -1987,14 +1999,18 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 	const ItemType &it = items[getID()];
 	if (it.conditionDamage) {
 		auto conditionCopy = it.conditionDamage->clone();
-		auto ownerId = getAttribute<uint32_t>(ItemAttribute_t::OWNER);
+		auto ownerId = getOwnerId();
 		if (ownerId) {
 			bool harmfulField = true;
 			auto itemTile = getTile();
 			if (g_game().getWorldType() == WORLD_TYPE_NO_PVP || itemTile && itemTile->hasFlag(TILESTATE_NOPVPZONE)) {
-				std::shared_ptr<Creature> owner = g_game().getCreatureByID(ownerId);
-				if (owner) {
-					if (owner->getPlayer() || (owner->isSummon() && owner->getMaster()->getPlayer())) {
+				auto ownerPlayer = g_game().getPlayerByGUID(ownerId);
+				if (ownerPlayer) {
+					harmfulField = false;
+				}
+				auto ownerCreature = g_game().getCreatureByID(ownerId);
+				if (ownerCreature) {
+					if (ownerCreature->getPlayer() || (ownerCreature->isSummon() && ownerCreature->getMaster()->getPlayer())) {
 						harmfulField = false;
 					}
 				}
@@ -2049,14 +2065,14 @@ void Combat::applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<C
 			}
 		}
 	} else if (monster) {
-		chance = monster->critChance();
+		chance = monster->critChance() * 100;
 	}
 
 	bonus += damage.criticalDamage;
 	double multiplier = 1.0 + static_cast<double>(bonus) / 100;
 	chance += (uint16_t)damage.criticalChance;
 
-	if (chance != 0 && uniform_random(1, 100) <= chance) {
+	if (chance != 0 && uniform_random(1, 10000) <= chance) {
 		damage.critical = true;
 		damage.primary.value *= multiplier;
 		damage.secondary.value *= multiplier;

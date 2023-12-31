@@ -147,6 +147,7 @@ public:
 	 * @note The actual transfer of ownership will occur upon server restart if `serverStartup` is set to false.
 	 */
 	void setNewOwnerGuid(int32_t newOwnerGuid, bool serverStartup);
+	void clearHouseInfo(bool preventOwnerDeletion);
 	bool tryTransferOwnership(std::shared_ptr<Player> player, bool serverStartup);
 	void setOwner(uint32_t guid, bool updateDatabase = true, std::shared_ptr<Player> player = nullptr);
 	uint32_t getOwner() const {
@@ -226,6 +227,7 @@ public:
 	}
 
 	bool transferToDepot(std::shared_ptr<Player> player) const;
+	bool transferToDepot(std::shared_ptr<Player> player, std::shared_ptr<HouseTile> tile) const;
 
 	bool hasItemOnTile() const;
 	bool hasNewOwnership() const;

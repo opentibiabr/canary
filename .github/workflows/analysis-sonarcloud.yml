@@ -3,19 +3,14 @@ name: Analysis - SonarCloud
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - 'src/**'
-  push:
-    paths:
-      - 'src/**'
-    branches:
-      - main
+      - "src/**"
 
 env:
   VCPKG_BUILD_TYPE: debug
   CMAKE_BUILD_PARALLEL_LEVEL: 2
-  MAKEFLAGS: '-j 2'
+  MAKEFLAGS: "-j 2"
   VCPKG_BINARY_SOURCES: clear;default,readwrite
 
 jobs:

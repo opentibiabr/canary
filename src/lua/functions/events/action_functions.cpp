@@ -166,8 +166,8 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 
 		// If it is an item that can be removed, then it will be set as non-movable.
 		ItemType &itemType = Item::items.getItemType(itemId);
-		if (itemType.moveable == true) {
-			itemType.moveable = false;
+		if (itemType.movable == true) {
+			itemType.movable = false;
 		}
 
 		g_game().setCreateLuaItems(position, itemId);

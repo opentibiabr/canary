@@ -937,6 +937,11 @@ BlockType_t Creature::blockHit(std::shared_ptr<Creature> attacker, CombatType_t 
 	// Apply skills 12.72 absorbs damage
 	applyAbsorbDamageModifications(attacker, damage, combatType);
 
+	if (getMonster() && g_configManager().getBoolean(DISABLE_MONSTER_ARMOR, __FUNCTION__)) {
+		checkDefense = false;
+		checkArmor = false;
+	}
+
 	if (isImmune(combatType)) {
 		damage = 0;
 		blockType = BLOCK_IMMUNITY;
@@ -984,6 +989,9 @@ BlockType_t Creature::blockHit(std::shared_ptr<Creature> attacker, CombatType_t 
 
 	mitigateDamage(combatType, blockType, damage);
 
+	if (damage != 0) {
+		onTakeDamage(attacker, damage);
+	}
 	onAttacked();
 	return blockType;
 }

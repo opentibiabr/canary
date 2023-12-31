@@ -1004,7 +1004,7 @@ int MonsterTypeFunctions::luaMonsterTypeRegisterEvent(lua_State* L) {
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (monsterType) {
 		auto eventName = getString(L, 2);
-		monsterType->info.scripts.push_back(eventName);
+		monsterType->info.scripts.insert(eventName);
 		for (const auto &[_, monster] : g_game().getMonsters()) {
 			if (monster->getMonsterType() == monsterType) {
 				monster->registerCreatureEvent(eventName);

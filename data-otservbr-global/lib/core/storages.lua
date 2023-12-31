@@ -8,7 +8,7 @@ Reserved player action storage key ranges (const.h)
 	[2001 - 2011]
 
 	Others reserved player action/storages
-	[100] = unmoveable/untrade/unusable items
+	[100] = unmovable/untrade/unusable items
 	[101] = use pick floor
 	[102] = well down action
 	[103-120] = others keys action
@@ -79,8 +79,6 @@ Reserved player action storage key ranges (const.h)
 
 Storage = {
 	-- General storages
-	IsTraining = 30000,
-	-- Reserved in Global.Storage.NpcExhaust = 30001
 	Dragonfetish = 30003,
 	EdronRopeQuest = 30004,
 	GhostShipQuest = 30005,
@@ -102,10 +100,7 @@ Storage = {
 	RookgaardDestiny = 30020,
 	EruaranGreeting = 30021,
 	MaryzaCookbook = 30022,
-	-- Reserved in Global.Storage.CombatProtectionStorage = 30023
 	Factions = 30024,
-	-- Reserved in Global.Storage.BlockMovementStorage = 30025
-	-- Reserved in Global.Storage.FamiliarSummon = 30026
 	-- unused TrainerRoom = 30027,
 	-- unused NpcSpawn = 30028,
 	ExerciseDummyExhaust = 30029,
@@ -130,7 +125,6 @@ Storage = {
 	Navigator = 30048,
 	DwarvenLegs = 30049,
 	PrinceDrazzakTime = 30050,
-	-- Reserved in Global.Storage.StoreExaust = 30051
 	LemonCupcake = 30052,
 	BlueberryCupcake = 30053,
 	-- Reserved in Global.Storage.FamiliarSummonEvent10 = 30054

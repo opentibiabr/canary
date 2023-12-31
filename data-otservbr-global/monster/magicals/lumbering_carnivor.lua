@@ -76,21 +76,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 5 },
-	{ name = "blue glass plate", chance = 100000, maxCount = 3 },
-	{ id = 3264, chance = 15000 }, -- sword
-	{ name = "axe", chance = 14000 },
-	{ name = "ice rapier", chance = 12000 },
-	{ name = "glorious axe", chance = 6100 },
-	{ name = "blue robe", chance = 4600 },
-	{ name = "two handed sword", chance = 13000 },
-	{ name = "fur armor", chance = 5400 },
-	{ id = 281, chance = 3200 }, -- giant shimmering pearl (green)
-	{ name = "green crystal shard", chance = 3100 },
-	{ name = "violet gem", chance = 4000 },
-	{ name = "green gem", chance = 4800 },
-	{ name = "blue gem", chance = 4000 },
-	{ name = "focus cape", chance = 3000 },
+	{ name = "platinum coin", chance = 64770, maxCount = 3 },
+	{ name = "blue glass plate", chance = 20840, maxCount = 3 },
+	{ name = "axe", chance = 14620 },
+	{ name = "ice rapier", chance = 7600 },
+	{ id = 3264, chance = 5500 }, -- sword
+	{ id = 281, chance = 1830 }, -- giant shimmering pearl (green)
+	{ name = "green gem", chance = 1680 },
+	{ name = "violet gem", chance = 1560 },
+	{ name = "glorious axe", chance = 1530 },
+	{ name = "two handed sword", chance = 1490 },
+	{ name = "blue robe", chance = 760 },
+	{ name = "blue gem", chance = 990 },
+	{ name = "fur armor", chance = 950 },
+	{ name = "green crystal shard", chance = 920 },
+	{ name = "focus cape", chance = 80 },
 }
 
 monster.attacks = {

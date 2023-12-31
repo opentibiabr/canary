@@ -21,7 +21,7 @@ Raids::Raids() {
 }
 
 bool Raids::loadFromXml() {
-	if (isLoaded()) {
+	if (g_configManager().getBoolean(DISABLE_LEGACY_RAIDS, __FUNCTION__) || isLoaded()) {
 		return true;
 	}
 
@@ -96,7 +96,7 @@ bool Raids::loadFromXml() {
 static constexpr int32_t MAX_RAND_RANGE = 10000000;
 
 bool Raids::startup() {
-	if (!isLoaded() || isStarted()) {
+	if (!isLoaded() || isStarted() || g_configManager().getBoolean(DISABLE_LEGACY_RAIDS, __FUNCTION__)) {
 		return false;
 	}
 
@@ -109,6 +109,9 @@ bool Raids::startup() {
 }
 
 void Raids::checkRaids() {
+	if (g_configManager().getBoolean(DISABLE_LEGACY_RAIDS, __FUNCTION__)) {
+		return;
+	}
 	if (!getRunning()) {
 		uint64_t now = OTSYS_TIME();
 
@@ -537,7 +540,7 @@ bool AreaSpawnEvent::executeEvent() {
 			bool success = false;
 			for (int32_t tries = 0; tries < MAXIMUM_TRIES_PER_MONSTER; tries++) {
 				std::shared_ptr<Tile> tile = g_game().map.getTile(static_cast<uint16_t>(uniform_random(fromPos.x, toPos.x)), static_cast<uint16_t>(uniform_random(fromPos.y, toPos.y)), static_cast<uint8_t>(uniform_random(fromPos.z, toPos.z)));
-				if (tile && !tile->isMoveableBlocking() && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && tile->getTopCreature() == nullptr && g_game().placeCreature(monster, tile->getPosition(), false, true)) {
+				if (tile && !tile->isMovableBlocking() && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && tile->getTopCreature() == nullptr && g_game().placeCreature(monster, tile->getPosition(), false, true)) {
 					success = true;
 					monster->setForgeMonster(false);
 					break;

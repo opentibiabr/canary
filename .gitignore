@@ -382,6 +382,7 @@ client_assertions.txt
 *-house.xml
 *-monster.xml
 *-npc.xml
+monster_count.txt
 
 # SFTP for Sublime
 sftp-config.json

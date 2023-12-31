@@ -138,5 +138,5 @@ bool Mailbox::getReceiver(std::shared_ptr<Item> item, std::string &name) const {
 }
 
 bool Mailbox::canSend(std::shared_ptr<Item> item) {
-	return item->getID() == ITEM_PARCEL || item->getID() == ITEM_LETTER;
+	return !item->hasOwner() && (item->getID() == ITEM_PARCEL || item->getID() == ITEM_LETTER);
 }

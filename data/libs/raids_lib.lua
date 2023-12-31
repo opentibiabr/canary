@@ -47,8 +47,8 @@ end
 ---Starts the raid if it can be started
 ---@param self Raid The raid to try to start
 ---@return boolean True if the raid was started, false otherwise
-function Raid:tryStart()
-	if not self:canStart() then
+function Raid:tryStart(force)
+	if not force and not self:canStart() then
 		return false
 	end
 	logger.info("Starting raid {}", self.name)
@@ -65,50 +65,58 @@ function Raid:canStart()
 		logger.debug("Raid {} is already running", self.name)
 		return false
 	end
+	local forceTrigger = self.kv:get("trigger-when-possible")
+	if not forceTrigger then
+		local lastOccurrence = (self.kv:get("last-occurrence") or 0) * 1000
+		local currentTime = os.time() * 1000
+		if self.minGapBetween and lastOccurrence and currentTime - lastOccurrence < self.minGapBetween then
+			logger.debug("Raid {} occurred too recently (last: {} ago, min: {})", self.name, FormatDuration(currentTime - lastOccurrence), FormatDuration(self.minGapBetween))
+			return false
+		end
+
+		if not self.targetChancePerDay or not self.maxChancePerCheck then
+			logger.debug("Raid {} does not have a chance configured (targetChancePerDay: {}, maxChancePerCheck: {})", self.name, self.targetChancePerDay, self.maxChancePerCheck)
+			return false
+		end
+
+		local checksToday = tonumber(self.kv:get("checks-today") or 0)
+		if self.maxChecksPerDay and checksToday >= self.maxChecksPerDay then
+			logger.debug("Raid {} has already checked today (checks today: {}, max: {})", self.name, checksToday, self.maxChecksPerDay)
+			return false
+		end
+		self.kv:set("checks-today", checksToday + 1)
+
+		local failedAttempts = self.kv:get("failed-attempts") or 0
+		local checksPerDay = ParseDuration("23h") / ParseDuration(Raid.checkInterval)
+		local initialChance = self.initialChance or (self.targetChancePerDay / checksPerDay)
+		local chanceIncrease = math.max((self.targetChancePerDay - initialChance) / checksPerDay, 0)
+		local chance = initialChance + (chanceIncrease * failedAttempts)
+		if chance > self.maxChancePerCheck then
+			chance = self.maxChancePerCheck
+		end
+		chance = chance * 1000
+
+		-- offset the chance by 1000 to allow for fractional chances
+		local roll = math.random(100 * 1000)
+		if roll > chance then
+			logger.debug("Raid {} failed to start (roll: {}, chance: {}, failed attempts: {})", self.name, roll, chance, failedAttempts)
+			self.kv:set("failed-attempts", failedAttempts + 1)
+			return false
+		end
+	end
+
 	if self.allowedDays and not self:isAllowedDay() then
 		logger.debug("Raid {} is not allowed today ({})", self.name, os.date("%A"))
+		self.kv:set("trigger-when-possible", true)
 		return false
 	end
 	if self.minActivePlayers and self:getActivePlayerCount() < self.minActivePlayers then
 		logger.debug("Raid {} does not have enough players (active: {}, min: {})", self.name, self:getActivePlayerCount(), self.minActivePlayers)
-		return false
-	end
-	local lastOccurrence = (self.kv:get("last-occurrence") or 0) * 1000
-	local currentTime = os.time() * 1000
-	if self.minGapBetween and lastOccurrence and currentTime - lastOccurrence < self.minGapBetween then
-		logger.debug("Raid {} occurred too recently (last: {} ago, min: {})", self.name, FormatDuration(currentTime - lastOccurrence), FormatDuration(self.minGapBetween))
+		self.kv:set("trigger-when-possible", true)
 		return false
 	end
 
-	if not self.targetChancePerDay or not self.maxChancePerCheck then
-		logger.debug("Raid {} does not have a chance configured (targetChancePerDay: {}, maxChancePerCheck: {})", self.name, self.targetChancePerDay, self.maxChancePerCheck)
-		return false
-	end
-
-	local checksToday = tonumber(self.kv:get("checks-today") or 0)
-	if self.maxChecksPerDay and checksToday >= self.maxChecksPerDay then
-		logger.debug("Raid {} has already checked today (checks today: {}, max: {})", self.name, checksToday, self.maxChecksPerDay)
-		return false
-	end
-	self.kv:set("checks-today", checksToday + 1)
-
-	local failedAttempts = self.kv:get("failed-attempts") or 0
-	local checksPerDay = ParseDuration("23h") / ParseDuration(Raid.checkInterval)
-	local initialChance = self.initialChance or (self.targetChancePerDay / checksPerDay)
-	local chanceIncrease = (self.targetChancePerDay - initialChance) / checksPerDay
-	local chance = initialChance + (chanceIncrease * failedAttempts)
-	if chance > self.maxChancePerCheck then
-		chance = self.maxChancePerCheck
-	end
-	chance = chance * 1000
-
-	-- offset the chance by 1000 to allow for fractional chances
-	local roll = math.random(100 * 1000)
-	if roll > chance then
-		logger.debug("Raid {} failed to start (roll: {}, chance: {}, failed attempts: {})", self.name, roll, chance, failedAttempts)
-		self.kv:set("failed-attempts", failedAttempts + 1)
-		return false
-	end
+	self.kv:set("trigger-when-possible", false)
 	self.kv:set("failed-attempts", 0)
 	return true
 end
@@ -153,7 +161,7 @@ function Raid:addBroadcast(message, type)
 	return self:addStage({
 		start = function()
 			self:broadcast(type, message)
-			Webhook.sendMessage("Incoming raid", message, WEBHOOK_COLOR_RAID)
+			Webhook.sendMessage(":space_invader: " .. message, announcementChannels["raids"])
 		end,
 	})
 end

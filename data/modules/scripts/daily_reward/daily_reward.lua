@@ -80,7 +80,6 @@ DailyReward = {
 	storages = {
 		-- Player
 		currentDayStreak = 14897,
-		currentStreakLevel = 14898, -- Cpp uses the same storage value on const.h (STORAGEVALUE_DAILYREWARD)
 		nextRewardTime = 14899,
 		collectionTokens = 14901,
 		staminaBonus = 14902,
@@ -207,14 +206,7 @@ end
 
 -- Core functions
 DailyReward.insertHistory = function(playerId, dayStreak, description)
-	return db.query(string.format(
-		"INSERT INTO `daily_reward_history`(`player_id`, `daystreak`, `timestamp`, \z
-		`description`) VALUES (%s, %s, %s, %s)",
-		playerId,
-		dayStreak,
-		os.time(),
-		db.escapeString(description)
-	))
+	return db.query(string.format("INSERT INTO `daily_reward_history`(`player_id`, `daystreak`, `timestamp`, `description`) VALUES (%s, %s, %s, %s)", playerId, dayStreak, os.time(), db.escapeString(description)))
 end
 
 DailyReward.retrieveHistoryEntries = function(playerId)
@@ -224,8 +216,7 @@ DailyReward.retrieveHistoryEntries = function(playerId)
 	end
 
 	local entries = {}
-	local resultId = db.storeQuery("SELECT * FROM `daily_reward_history` WHERE `player_id` = \z
-		" .. player:getGuid() .. " ORDER BY `timestamp` DESC LIMIT 15;")
+	local resultId = db.storeQuery("SELECT * FROM `daily_reward_history` WHERE `player_id` = " .. player:getGuid() .. " ORDER BY `timestamp` DESC LIMIT 15;")
 	if resultId then
 		repeat
 			local entry = {
@@ -421,7 +412,7 @@ function Player.selectDailyReward(self, msg)
 	end
 
 	local rewardCount = dailyTable.freeAccount
-	if self:isPremium() then
+	if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and self:isVip()) or self:isPremium() then
 		rewardCount = dailyTable.premiumAccount
 	end
 
@@ -453,8 +444,7 @@ function Player.selectDailyReward(self, msg)
 		end
 
 		if totalCounter > rewardCount then
-			self:sendError("Something went wrong here, please restart this dialog.")
-			return false
+			logger.info("Player with name {} is trying to get totalCounter: {} more than rewardCount: {}!", self:getName(), totalCounter, rewardCount)
 		end
 		if totalCounter ~= orderedCounter then
 			logger.error("Player with name {} is trying to get wrong daily reward", self:getName())
@@ -471,41 +461,21 @@ function Player.selectDailyReward(self, msg)
 		local description = ""
 		for k, v in ipairs(items) do
 			if dailyTable.itemCharges then
-				for i = 1, v.count do
+				for i = 1, rewardCount do
 					local inboxItem = inbox:addItem(v.itemId, dailyTable.itemCharges) -- adding charges for each item
 					if inboxItem then
 						inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 					end
 				end
 			else
-				local inboxItem = inbox:addItem(v.itemId, v.count) -- adding single item w/o charges
+				local inboxItem = inbox:addItem(v.itemId, rewardCount) -- adding single item w/o charges
 				if inboxItem then
 					inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 				end
 			end
-			if k ~= columnsPicked then
-				description = description .. "" .. v.count .. "x " .. ItemType(v.itemId):getName() .. ", "
-			else
-				description = description .. "" .. v.count .. "x " .. ItemType(v.itemId):getName() .. "."
-			end
+			description = description .. "" .. rewardCount .. "x " .. ItemType(v.itemId):getName() .. (k ~= columnsPicked and ", " or ".")
 		end
-
 		dailyRewardMessage = "Picked items: " .. description
-
-		-- elseif dailyTable.type == DAILY_REWARD_TYPE_STORAGE then
-		-- local description = ""
-		-- for i = 1, #reward.things do
-		-- for j = 1, #reward.things[i].storages do
-		-- self:setStorageValue(reward.things[i].storages[j].storageId, reward.things[i].storages[j].value)
-		-- end
-		-- if i ~= #reward.things then
-		-- description = description .. reward.things[i].name .. ", "
-		-- else
-		-- description = description .. reward.things[i].name .. "."
-		-- end
-		-- end
-		-- dailyRewardMessage = "Picked reward: " .. description)
-		-- end
 	elseif dailyTable.type == DAILY_REWARD_TYPE_XP_BOOST then
 		self:setExpBoostStamina(self:getExpBoostStamina() + (rewardCount * 60))
 		self:setStoreXpBoost(50)

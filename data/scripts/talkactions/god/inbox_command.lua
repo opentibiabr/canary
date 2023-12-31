@@ -20,7 +20,7 @@ function inboxCommand.onSay(player, words, param)
 					end
 				end
 			elseif param[2] == "add" then
-				inbox:addItem(tonumber(param[3]), 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
+				target:addItemStoreInbox(tonumber(param[3]), 1, true, false)
 				player:say(tonumber(param[3]) .. " added")
 			end
 		end

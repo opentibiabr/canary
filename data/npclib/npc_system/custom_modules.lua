@@ -137,7 +137,7 @@ local hints = {
                health points anymore, eat something.",
 	[6] = "Always eat as much food as possible. This way, you'll regenerate health points for a longer period of time.",
 	[7] = "After you have killed a monster, you have 10 seconds in which the corpse \z
-                is not moveable and no one else but you can loot it.",
+                is not movable and no one else but you can loot it.",
 	[8] = "Be careful when you approach three or more monsters because you only can block the attacks of two. \z
                 In such a situation even a few rats can do severe damage or even kill you.",
 	[9] = "There are many ways to gather food. Many creatures drop food but you can also pick blueberries or bake \z

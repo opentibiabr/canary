@@ -131,6 +131,11 @@ public:
 	std::shared_ptr<Tile> getTile() override final {
 		return static_self_cast<Tile>();
 	}
+
+	std::shared_ptr<Cylinder> getCylinder() final {
+		return getTile();
+	}
+
 	std::shared_ptr<MagicField> getFieldItem() const;
 	std::shared_ptr<Teleport> getTeleportItem() const;
 	std::shared_ptr<TrashHolder> getTrashHolder() const;
@@ -144,7 +149,7 @@ public:
 	std::shared_ptr<Creature> getBottomVisibleCreature(std::shared_ptr<Creature> creature) const;
 	std::shared_ptr<Item> getTopTopItem() const;
 	std::shared_ptr<Item> getTopDownItem() const;
-	bool isMoveableBlocking() const;
+	bool isMovableBlocking() const;
 	std::shared_ptr<Thing> getTopVisibleThing(std::shared_ptr<Creature> creature);
 	std::shared_ptr<Item> getItemByTopOrder(int32_t topOrder);
 

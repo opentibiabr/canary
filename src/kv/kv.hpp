@@ -43,7 +43,7 @@ public:
 
 class KVStore : public KV {
 public:
-	static constexpr size_t MAX_SIZE = 10000;
+	static constexpr size_t MAX_SIZE = 1000000;
 	static KVStore &getInstance();
 
 	explicit KVStore(Logger &logger) :

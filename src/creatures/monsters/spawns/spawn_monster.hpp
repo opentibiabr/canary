@@ -38,6 +38,7 @@ public:
 
 	bool addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t interval, uint32_t weight = 1);
 	void removeMonster(std::shared_ptr<Monster> monster);
+	void removeMonsters();
 
 	uint32_t getInterval() const {
 		return interval;
@@ -82,6 +83,10 @@ public:
 	bool loadFromXML(const std::string &filemonstername);
 	void startup();
 	void clear();
+	SpawnMonster &addSpawnMonster(const Position &pos, int32_t radius) {
+		spawnMonsterList.emplace_front(pos, radius);
+		return spawnMonsterList.front();
+	}
 
 	bool isStarted() const {
 		return started;

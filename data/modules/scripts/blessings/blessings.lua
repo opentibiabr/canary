@@ -20,11 +20,11 @@ Blessings.Credits = {
 }
 
 Blessings.Config = {
-	AdventurerBlessingLevel = 0, -- Free full bless until level
+	AdventurerBlessingLevel = configManager.getNumber(configKeys.ADVENTURERSBLESSING_LEVEL), -- Free full bless until level
 	HasToF = false, -- Enables/disables twist of fate
 	InquisitonBlessPriceMultiplier = 1.1, -- Bless price multiplied by henricus
-	SkulledDeathLoseStoreItem = true, -- Destroy all items on store when dying with red/blackskull
-	InventoryGlowOnFiveBless = true, -- Glow in yellow inventory items when the player has 5 or more bless,
+	SkulledDeathLoseStoreItem = configManager.getBoolean(configKeys.SKULLED_DEATH_LOSE_STORE_ITEM), -- Destroy all items on store when dying with red/blackskull
+	InventoryGlowOnFiveBless = configManager.getBoolean(configKeys.INVENTORY_GLOW), -- Glow in yellow inventory items when the player has 5 or more bless,
 	Debug = false, -- Prin debug messages in console if enabled
 }
 
@@ -260,7 +260,7 @@ Blessings.doAdventurerBlessing = function(player)
 	end
 	player:addMissingBless(true, true)
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You received adventurers blessings for you being level lower than " .. Blessings.Config.AdventurerBlessingLevel .. "!")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have adventurer's blessings for being level lower than " .. Blessings.Config.AdventurerBlessingLevel .. "!")
 	player:getPosition():sendMagicEffect(CONST_ME_HOLYDAMAGE)
 	return true
 end

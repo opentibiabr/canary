@@ -7590,7 +7590,7 @@ void Game::dieSafely(std::string errorMsg /* = "" */) {
 }
 
 void Game::shutdown() {
-	g_webhook().sendMessage("Server is shutting down", "Shutting down...", WEBHOOK_COLOR_OFFLINE);
+	g_webhook().sendMessage(":red_circle: Server is shutting down...");
 
 	g_logger().info("Shutting down...");
 	map.spawnsMonster.clear();
@@ -9182,6 +9182,11 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 		return;
 	}
 
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
 	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS, __FUNCTION__) && !InternalGame::playerCanUseItemOnHouseTile(player, item)) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
@@ -9195,8 +9200,8 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 
 	const auto mType = g_monsters().getMonsterTypeByRaceId(static_cast<uint16_t>(monsterRaceId), itemId == ITEM_PODIUM_OF_VIGOUR);
 	if (!mType) {
-		player->sendCancelMessage(RETURNVALUE_CONTACTADMINISTRATOR);
-		g_logger().error("[{}] player {} is trying to add invalid monster to podium {}", __FUNCTION__, player->getName(), item->getName());
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		g_logger().debug("[{}] player {} is trying to add invalid monster to podium {}", __FUNCTION__, player->getName(), item->getName());
 		return;
 	}
 
@@ -9242,6 +9247,8 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 	for (const auto &spectator : Spectators().find<Player>(pos, true)) {
 		spectator->getPlayer()->sendUpdateTileItem(tile, pos, item);
 	}
+
+	player->updateUIExhausted();
 }
 
 void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId) {

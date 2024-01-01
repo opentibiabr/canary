@@ -406,7 +406,7 @@ public:
 	virtual bool isImmune(ConditionType_t type) const {
 		return false;
 	}
-	virtual bool isSuppress(ConditionType_t type) const {
+	virtual bool isSuppress(ConditionType_t type, bool attackerPlayer) const {
 		return false;
 	};
 

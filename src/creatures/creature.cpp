@@ -1492,7 +1492,7 @@ void Creature::executeConditions(uint32_t interval) {
 
 bool Creature::hasCondition(ConditionType_t type, uint32_t subId /* = 0*/) const {
 	metrics::method_latency measure(__METHOD_NAME__);
-	if (isSuppress(type)) {
+	if (isSuppress(type, false)) {
 		return false;
 	}
 

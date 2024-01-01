@@ -359,6 +359,7 @@ resetSessionsOnStartup = false
 
 -- Misc.
 -- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate
+-- NOTE: disableLegacyRaids: set to true to disable legacy XML raids
 allowChangeOutfit = true
 toggleMountInProtectionZone = false
 freePremium = false
@@ -382,7 +383,7 @@ experienceDisplayRates = true
 toggleAttackSpeedOnFist = false
 multiplierSpeedOnFist = 5
 maxSpeedOnFist = 500
-disableLegacyRaids = false -- disable legacy XML raids
+disableLegacyRaids = false
 disableMonsterArmor = false
 combatChainDelay = 50 -- minimum: 50 miliseconds
 minElementalResistance = -200

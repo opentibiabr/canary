@@ -112,6 +112,28 @@ enum ConditionType_t : uint8_t {
 	CONDITION_COUNT = 39
 };
 
+// constexpr definiting suppressible conditions
+constexpr bool IsConditionSuppressible(ConditionType_t condition) {
+	constexpr ConditionType_t suppressibleConditions[] = {
+		CONDITION_POISON,
+		CONDITION_FIRE,
+		CONDITION_ENERGY,
+		CONDITION_BLEEDING,
+		CONDITION_PARALYZE,
+		CONDITION_DROWN,
+		CONDITION_FREEZING,
+		CONDITION_CURSED,
+	};
+
+	for (const auto &suppressibleCondition : suppressibleConditions) {
+		if (condition == suppressibleCondition) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 enum ConditionParam_t {
 	CONDITION_PARAM_OWNER = 1,
 	CONDITION_PARAM_TICKS = 2,

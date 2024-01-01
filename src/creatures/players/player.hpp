@@ -899,6 +899,25 @@ public:
 		return lastAttackBlockType;
 	}
 
+	uint64_t getLastConditionTime(ConditionType_t type) const {
+		if (!lastConditionTime.contains(static_cast<uint8_t>(type))) {
+			return 0;
+		}
+		return lastConditionTime.at(static_cast<uint8_t>(type));
+	}
+
+	void updateLastConditionTime(ConditionType_t type) {
+		lastConditionTime[static_cast<uint8_t>(type)] = OTSYS_TIME();
+	}
+
+	bool checkLastConditionTimeWithin(ConditionType_t type, uint32_t interval) const {
+		if (!lastConditionTime.contains(static_cast<uint8_t>(type))) {
+			return false;
+		}
+		auto last = lastConditionTime.at(static_cast<uint8_t>(type));
+		return last > 0 && ((OTSYS_TIME() - last) < interval);
+	}
+
 	std::shared_ptr<Item> getWeapon(Slots_t slot, bool ignoreAmmo) const;
 	std::shared_ptr<Item> getWeapon(bool ignoreAmmo = false) const;
 	WeaponType_t getWeaponType() const;
@@ -2680,6 +2699,7 @@ private:
 	uint64_t experience = 0;
 	uint64_t manaSpent = 0;
 	uint64_t lastAttack = 0;
+	std::unordered_map<uint8_t, uint64_t> lastConditionTime;
 	uint64_t bankBalance = 0;
 	uint64_t lastQuestlogUpdate = 0;
 	uint64_t preyCards = 0;

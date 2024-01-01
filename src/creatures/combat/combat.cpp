@@ -744,7 +744,7 @@ void Combat::CombatConditionFunc(std::shared_ptr<Creature> caster, std::shared_p
 
 			// TODO: infight condition until all aggressive conditions has ended
 			if (target) {
-				target->addCombatCondition(conditionCopy);
+				target->addCombatCondition(conditionCopy, caster && caster->getPlayer() != nullptr);
 			}
 		}
 	}

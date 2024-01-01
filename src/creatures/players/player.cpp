@@ -215,7 +215,12 @@ std::shared_ptr<Item> Player::getInventoryItem(Slots_t slot) const {
 	return inventory[slot];
 }
 
-bool Player::isSuppress(ConditionType_t conditionType) const {
+bool Player::isSuppress(ConditionType_t conditionType, bool attackerPlayer) const {
+	auto minDelay = g_configManager().getNumber(MIN_DELAY_BETWEEN_CONDITIONS, __FUNCTION__);
+	if (IsConditionSuppressible(conditionType) && checkLastConditionTimeWithin(conditionType, minDelay)) {
+		return true;
+	}
+
 	return m_conditionSuppressions[static_cast<size_t>(conditionType)];
 }
 
@@ -4422,6 +4427,9 @@ void Player::onAddCondition(ConditionType_t type) {
 }
 
 void Player::onAddCombatCondition(ConditionType_t type) {
+	if (IsConditionSuppressible(type)) {
+		updateLastConditionTime(type);
+	}
 	switch (type) {
 		case CONDITION_POISON:
 			sendTextMessage(MESSAGE_FAILURE, "You are poisoned.");

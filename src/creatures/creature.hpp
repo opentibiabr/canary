@@ -388,8 +388,8 @@ public:
 		return SPEECHBUBBLE_NONE;
 	}
 
-	bool addCondition(std::shared_ptr<Condition> condition);
-	bool addCombatCondition(std::shared_ptr<Condition> condition);
+	bool addCondition(std::shared_ptr<Condition> condition, bool attackerPlayer = false);
+	bool addCombatCondition(std::shared_ptr<Condition> condition, bool attackerPlayer = false);
 	void removeCondition(ConditionType_t conditionType, ConditionId_t conditionId, bool force = false);
 	void removeCondition(ConditionType_t type);
 	void removeCondition(std::shared_ptr<Condition> condition);

@@ -99,7 +99,7 @@ bool BedItem::canUse(std::shared_ptr<Player> player) {
 	auto firstPart = keepFirstWordOnly(partName);
 	auto nextPartOf = keepFirstWordOnly(nextPartname);
 	g_logger().debug("First bed part name {}, second part name {}", firstPart, nextPartOf);
-	if (!isMoveable() || !nextBedItem->isMoveable() || firstPart != nextPartOf) {
+	if (!isMovable() || !nextBedItem->isMovable() || firstPart != nextPartOf) {
 		return false;
 	}
 

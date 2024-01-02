@@ -658,21 +658,21 @@ public:
 		if (getTier() == 0) {
 			return 0;
 		}
-		return (0.0307576 * getTier() * getTier()) + (0.440697 * getTier()) + 0.026;
+		return g_configManager().getFloat(FORGE_RATE_DODGE, __FUNCTION__) * ((0.0307576 * getTier() * getTier()) + (0.440697 * getTier()) + 0.026);
 	}
 
 	double_t getFatalChance() const {
 		if (getTier() == 0) {
 			return 0;
 		}
-		return 0.5 * getTier() + 0.05 * ((getTier() - 1) * (getTier() - 1));
+		return g_configManager().getFloat(FORGE_RATE_FATAL, __FUNCTION__) * (0.5 * getTier() + 0.05 * ((getTier() - 1) * (getTier() - 1)));
 	}
 
 	double_t getMomentumChance() const {
 		if (getTier() == 0) {
 			return 0;
 		}
-		return 2 * getTier() + 0.05 * ((getTier() - 1) * (getTier() - 1));
+		return g_configManager().getFloat(FORGE_RATE_MOMENTUM, __FUNCTION__) * (2 * getTier() + 0.05 * ((getTier() - 1) * (getTier() - 1)));
 	}
 
 	uint8_t getTier() const {

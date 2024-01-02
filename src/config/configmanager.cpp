@@ -237,6 +237,9 @@ bool ConfigManager::load() {
 	loadIntConfig(L, FORGE_MAX_SLIVERS, "forgeMaxSlivers", 7);
 	loadIntConfig(L, FORGE_INFLUENCED_CREATURES_LIMIT, "forgeInfluencedLimit", 300);
 	loadIntConfig(L, FORGE_FIENDISH_CREATURES_LIMIT, "forgeFiendishLimit", 3);
+	loadFloatConfig(L, FORGE_RATE_FATAL, "forgeRateFatal", 1);
+	loadFloatConfig(L, FORGE_RATE_DODGE, "forgeRateDodge", 1);
+	loadFloatConfig(L, FORGE_RATE_MOMENTUM, "forgeRateMomentum", 1);
 	loadIntConfig(L, DISCORD_WEBHOOK_DELAY_MS, "discordWebhookDelayMs", Webhook::DEFAULT_DELAY_MS);
 
 	loadFloatConfig(L, BESTIARY_RATE_CHARM_SHOP_PRICE, "bestiaryRateCharmShopPrice", 1.0);

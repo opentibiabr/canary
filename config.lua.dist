@@ -113,6 +113,7 @@ taskHuntingFreeRerollTime = 20 * 60 * 60
 -- NOTE: forgeInfluencedLimit, limit of influenced monsters that will be created in interval type and time
 -- NOTE: forgeFiendishLimit, limit of diabolic monsters that will be created in interval type and time, less than forgeInfluencedLimit
 -- NOTE: forgeFiendishIntervalType: "hour", "minute" or "second"
+-- NOTE: forgeRate is the rate compared to the global. Modify to increase or reduce the fatal/dodge/momentum chances
 forgeMaxItemTier = 10
 forgeCostOneSliver = 20
 forgeSliverAmount = 3
@@ -130,6 +131,9 @@ forgeInfluencedLimit = 300
 forgeFiendishLimit = 3
 forgeFiendishIntervalType = "hour"
 forgeFiendishIntervalTime = "1"
+forgeRateFatal = 1
+forgeRateDodge = 1
+forgeRateMomentum = 1
 
 -- Bestiary & Bosstiary system
 -- NOTE: bestiaryKillMultiplier, multiplier value of monster killed, default 1
@@ -511,3 +515,5 @@ metricsPrometheusAddress = "0.0.0.0:9464"
 --- OStream
 metricsEnableOstream = false
 metricsOstreamInterval = 1000
+
+

@@ -1976,9 +1976,9 @@ std::string Item::parseClassificationDescription(std::shared_ptr<Item> item) {
 			   << "Classification: " << std::to_string(item->getClassification()) << " Tier: " << std::to_string(item->getTier());
 		if (item->getTier() != 0) {
 			if (Item::items[item->getID()].weaponType != WEAPON_NONE) {
-				string << fmt::format(" ({}% Onslaught).", item->getFatalChance());
+				string << fmt::format(" ({:.2f}% Onslaught).", item->getFatalChance());
 			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_HELMETS) {
-				string << fmt::format(" ({}% Momentum).", item->getMomentumChance());
+				string << fmt::format(" ({:.2f}% Momentum).", item->getMomentumChance());
 			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_ARMORS) {
 				string << fmt::format(" ({:.2f}% Ruse).", item->getDodgeChance());
 			}

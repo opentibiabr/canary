@@ -180,14 +180,6 @@ int GameFunctions::luaGameLoadMap(lua_State* L) {
 	return 0;
 }
 
-int GameFunctions::luaGameloadMapChunk(lua_State* L) {
-	// Game.loadMapChunk(path, position, remove)
-	const std::string &path = getString(L, 1);
-	const Position &position = getPosition(L, 2);
-	g_dispatcher().addEvent([path, position]() { g_game().loadMap(path, position); }, "GameFunctions::luaGameloadMapChunk");
-	return 0;
-}
-
 int GameFunctions::luaGameGetMonsterCount(lua_State* L) {
 	// Game.getMonsterCount()
 	lua_pushnumber(L, g_game().getMonstersOnline());

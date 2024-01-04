@@ -639,7 +639,7 @@ function Player:onChangeZone(zone)
 				if stamina < 2520 then
 					if not event then
 						local delay = configManager.getNumber(configKeys.STAMINA_ORANGE_DELAY)
-						if stamina > 2400 and stamina <= 2520 then
+						if stamina > 2340 and stamina <= 2520 then
 							delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY)
 						end
 

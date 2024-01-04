@@ -1165,16 +1165,16 @@ bool ConditionRegeneration::executeCondition(std::shared_ptr<Creature> creature,
 	internalHealthTicks += interval;
 	internalManaTicks += interval;
 	auto player = creature->getPlayer();
-	int32_t PlayerdailyStreak = 0;
+	int32_t dailyStreak = 0;
 	if (player) {
-		PlayerdailyStreak = player->getStorageValue(STORAGEVALUE_DAILYREWARD);
+		dailyStreak = static_cast<int32_t>(player->kv()->scoped("daily-reward")->get("streak")->getNumber());
 	}
-	if (creature->getZoneType() != ZONE_PROTECTION || PlayerdailyStreak >= DAILY_REWARD_HP_REGENERATION) {
+	if (creature->getZoneType() != ZONE_PROTECTION || dailyStreak >= DAILY_REWARD_HP_REGENERATION) {
 		if (internalHealthTicks >= getHealthTicks(creature)) {
 			internalHealthTicks = 0;
 
 			int32_t realHealthGain = creature->getHealth();
-			if (creature->getZoneType() == ZONE_PROTECTION && PlayerdailyStreak >= DAILY_REWARD_DOUBLE_HP_REGENERATION) {
+			if (creature->getZoneType() == ZONE_PROTECTION && dailyStreak >= DAILY_REWARD_DOUBLE_HP_REGENERATION) {
 				creature->changeHealth(healthGain * 2); // Double regen from daily reward
 			} else {
 				creature->changeHealth(healthGain);
@@ -1205,10 +1205,10 @@ bool ConditionRegeneration::executeCondition(std::shared_ptr<Creature> creature,
 		}
 	}
 
-	if (creature->getZoneType() != ZONE_PROTECTION || PlayerdailyStreak >= DAILY_REWARD_MP_REGENERATION) {
+	if (creature->getZoneType() != ZONE_PROTECTION || dailyStreak >= DAILY_REWARD_MP_REGENERATION) {
 		if (internalManaTicks >= getManaTicks(creature)) {
 			internalManaTicks = 0;
-			if (creature->getZoneType() == ZONE_PROTECTION && PlayerdailyStreak >= DAILY_REWARD_DOUBLE_MP_REGENERATION) {
+			if (creature->getZoneType() == ZONE_PROTECTION && dailyStreak >= DAILY_REWARD_DOUBLE_MP_REGENERATION) {
 				creature->changeMana(manaGain * 2); // Double regen from daily reward
 			} else {
 				creature->changeMana(manaGain);
@@ -2150,13 +2150,8 @@ bool ConditionSpeed::startCondition(std::shared_ptr<Creature> creature) {
 		int32_t max;
 		auto baseSpeed = creature->getBaseSpeed();
 		getFormulaValues(baseSpeed, min, max);
-		speedDelta = uniform_random(min, max);
-
-		if (conditionType == CONDITION_HASTE) {
-			speedDelta = speedDelta - baseSpeed;
-		}
-
-		if (conditionType == CONDITION_PARALYZE && speedDelta < baseSpeed - 40) {
+		speedDelta = uniform_random(min, max) - baseSpeed;
+		if (conditionType == CONDITION_PARALYZE && speedDelta < 40 - baseSpeed) {
 			speedDelta = 40 - baseSpeed;
 		}
 	}
@@ -2197,13 +2192,9 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 		int32_t max;
 		auto baseSpeed = creature->getBaseSpeed();
 		getFormulaValues(baseSpeed, min, max);
-		speedDelta = uniform_random(min, max);
+		speedDelta = uniform_random(min, max) - baseSpeed;
 
-		if (conditionType == CONDITION_HASTE) {
-			speedDelta = speedDelta - baseSpeed;
-		}
-
-		if (conditionType == CONDITION_PARALYZE && speedDelta < baseSpeed - 40) {
+		if (conditionType == CONDITION_PARALYZE && speedDelta < 40 - baseSpeed) {
 			speedDelta = 40 - baseSpeed;
 		}
 	}

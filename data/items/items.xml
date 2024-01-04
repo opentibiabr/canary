@@ -11607,7 +11607,7 @@
 		<attribute key="weight" value="700"/>
 	</item>
 	<item id="4285" article="a" name="pile of bones">
-		<attribute key="moveable" value="0"/>
+		<attribute key="movable" value="0"/>
 		<attribute key="containersize" value="5"/>
 	</item>
 	<item id="4286" article="a" name="dead dragon">
@@ -35642,7 +35642,7 @@
 	<item id="19201" article="an" name="ornate door with a keyhole"/>
 	<item id="19202" article="a" name="reward container">
 		<attribute key="primarytype" value="utilities"/>
-		<attribute key="moveable" value="0"/>
+		<attribute key="movable" value="0"/>
 		<attribute key="allowpickUpAble" value="0"/>
 		<attribute key="containersize" value="32"/>
 	</item>
@@ -35742,7 +35742,7 @@
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="type" value="rewardchest"/>
 		<attribute key="description" value="This chest contains your rewards earned in battles."/>
-		<attribute key="moveable" value="0"/>
+		<attribute key="movable" value="0"/>
 		<attribute key="allowpickUpAble" value="0"/>
 		<attribute key="containersize" value="32"/>
 	</item>
@@ -42625,7 +42625,7 @@
 	<item id="23721" article="a" name="gold pouch">
 		<attribute key="description" value="A infinity bag where you can hold coins."/>
 		<attribute key="containersize" value="20"/>
-		<attribute key="moveable" value="0"/>
+		<attribute key="movable" value="0"/>
 	</item>
 	<item id="23722" article="a" name="gold converter">
 		<attribute key="primarytype" value="tools"/>
@@ -50372,7 +50372,7 @@
 		<attribute key="primarytype" value="tools"/>
 		<attribute key="weight" value="1000"/>
 		<attribute key="description" value="This mysterious lamp summons your very own personal hireling."/>
-		<attribute key="moveable" value="0"/>
+		<attribute key="movable" value="0"/>
 	</item>
 	<item id="29433" article="a" name="chest">
 		<attribute key="primarytype" value="containers"/>

@@ -102,10 +102,10 @@ int CanaryServer::run() {
 				if (g_configManager().getBoolean(TOGGLE_MAINTAIN_MODE, __FUNCTION__)) {
 					g_game().setGameState(GAME_STATE_CLOSED);
 					g_logger().warn("Initialized in maintain mode!");
-					g_webhook().sendMessage("Server is now online", "The server is now online. Access is currently restricted to administrators only.", WEBHOOK_COLOR_ONLINE);
+					g_webhook().sendMessage(":yellow_square: Server is now **online** _(access restricted to staff)_");
 				} else {
 					g_game().setGameState(GAME_STATE_NORMAL);
-					g_webhook().sendMessage("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE);
+					g_webhook().sendMessage(":green_circle: Server is now **online**");
 				}
 
 				loaderStatus = LoaderStatus::LOADED;

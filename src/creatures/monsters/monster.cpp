@@ -552,11 +552,9 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 					do {
 						int32_t factionOffset = static_cast<int32_t>((*it)->getFaction()) * 100000;
 						const auto dmg = damageMap.find((*it)->getID());
-						if (dmg != damageMap.end()) {
-							if (dmg->second.total + factionOffset > mostDamage) {
-								mostDamage = dmg->second.total;
-								getTarget = *it;
-							}
+						if (dmg != damageMap.end() && dmg->second.total + factionOffset > mostDamage) {
+							mostDamage = dmg->second.total;
+							getTarget = *it;
 						}
 					} while (++it != resultList.end());
 				}
@@ -1088,7 +1086,7 @@ void Monster::pushItems(std::shared_ptr<Tile> tile, const Direction &nextDirecti
 	auto it = items->begin();
 	while (it != items->end()) {
 		std::shared_ptr<Item> item = *it;
-		if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->canBeMoved()) {
+		if (item && item->hasProperty(CONST_PROP_MOVABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->canBeMoved()) {
 			if (moveCount < 20 && pushItem(item, nextDirection)) {
 				++moveCount;
 			} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {

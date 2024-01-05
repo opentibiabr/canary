@@ -159,21 +159,21 @@ std::string Player::getDescription(int32_t lookDistance) {
 		}
 	}
 
-	if (party) {
+	if (m_party) {
 		if (lookDistance == -1) {
 			s << " Your party has ";
 		} else {
 			s << " " << subjectPronoun << " " << getSubjectVerb() << " in a party with ";
 		}
 
-		size_t memberCount = party->getMemberCount() + 1;
+		size_t memberCount = m_party->getMemberCount() + 1;
 		if (memberCount == 1) {
 			s << "1 member and ";
 		} else {
 			s << memberCount << " members and ";
 		}
 
-		size_t invitationCount = party->getInvitationCount();
+		size_t invitationCount = m_party->getInvitationCount();
 		if (invitationCount == 1) {
 			s << "1 pending invitation.";
 		} else {
@@ -844,7 +844,7 @@ uint16_t Player::getContainerIndex(uint8_t cid) const {
 }
 
 bool Player::canOpenCorpse(uint32_t ownerId) const {
-	return getID() == ownerId || (party && party->canOpenCorpse(ownerId));
+	return getID() == ownerId || (m_party && m_party->canOpenCorpse(ownerId));
 }
 
 uint16_t Player::getLookCorpse() const {
@@ -1129,8 +1129,8 @@ void Player::sendLootStats(std::shared_ptr<Item> item, uint8_t count) {
 		client->sendLootStats(item, count);
 	}
 
-	if (party) {
-		party->addPlayerLoot(getPlayer(), item);
+	if (m_party) {
+		m_party->addPlayerLoot(getPlayer(), item);
 	}
 }
 
@@ -1282,8 +1282,8 @@ void Player::updateSupplyTracker(std::shared_ptr<Item> item) {
 		client->sendUpdateSupplyTracker(item);
 	}
 
-	if (party) {
-		party->addPlayerSupply(getPlayer(), item);
+	if (m_party) {
+		m_party->addPlayerSupply(getPlayer(), item);
 	}
 }
 
@@ -1776,8 +1776,8 @@ void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout)
 
 	if (auto player = getPlayer(); player == creature) {
 		if (isLogout) {
-			if (party) {
-				party->leaveParty(player);
+			if (m_party) {
+				m_party->leaveParty(player);
 			}
 			if (guild) {
 				guild->removeMember(player);
@@ -1901,9 +1901,9 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 		inMarket = false;
 	}
 
-	if (party) {
-		party->updateSharedExperience();
-		party->updatePlayerStatus(getPlayer(), oldPos, newPos);
+	if (m_party) {
+		m_party->updateSharedExperience();
+		m_party->updatePlayerStatus(getPlayer(), oldPos, newPos);
 	}
 
 	if (teleport || oldPos.z != newPos.z) {
@@ -2112,8 +2112,8 @@ void Player::onThink(uint32_t interval) {
 	triggerMomentum();
 	auto playerTile = getTile();
 	const bool vipStaysOnline = isVip() && g_configManager().getBoolean(VIP_STAY_ONLINE, __FUNCTION__);
+	idleTime += interval;
 	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && !vipStaysOnline) {
-		idleTime += interval;
 		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES, __FUNCTION__);
 		if (idleTime > (kickAfterMinutes * 60000) + 60000) {
 			removePlayer(true);
@@ -2355,8 +2355,8 @@ void Player::addExperience(std::shared_ptr<Creature> target, uint64_t exp, bool 
 		g_game().addCreatureHealth(static_self_cast<Player>());
 		g_game().addPlayerMana(static_self_cast<Player>());
 
-		if (party) {
-			party->updateSharedExperience();
+		if (m_party) {
+			m_party->updateSharedExperience();
 		}
 
 		g_creatureEvents().playerAdvance(static_self_cast<Player>(), SKILL_LEVEL, prevLevel, level);
@@ -2441,8 +2441,8 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 		g_game().addCreatureHealth(static_self_cast<Player>());
 		g_game().addPlayerMana(static_self_cast<Player>());
 
-		if (party) {
-			party->updateSharedExperience();
+		if (m_party) {
+			m_party->updateSharedExperience();
 		}
 
 		std::ostringstream ss;
@@ -2483,6 +2483,7 @@ void Player::onBlockHit() {
 }
 
 void Player::onTakeDamage(std::shared_ptr<Creature> attacker, int32_t damage) {
+	// nothing here yet
 }
 
 void Player::onAttackedCreatureBlockHit(BlockType_t blockType) {
@@ -3378,8 +3379,8 @@ ReturnValue Player::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t co
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	if (!item->isMoveable() && !hasBitSet(FLAG_IGNORENOTMOVEABLE, flags)) {
-		return RETURNVALUE_NOTMOVEABLE;
+	if (!item->isMovable() && !hasBitSet(FLAG_IGNORENOTMOVABLE, flags)) {
+		return RETURNVALUE_NOTMOVABLE;
 	}
 
 	return RETURNVALUE_NOERROR;
@@ -4581,8 +4582,8 @@ void Player::onAttacked() {
 void Player::onIdleStatus() {
 	Creature::onIdleStatus();
 
-	if (party) {
-		party->clearPlayerPoints(static_self_cast<Player>());
+	if (m_party) {
+		m_party->clearPlayerPoints(static_self_cast<Player>());
 	}
 }
 
@@ -4599,18 +4600,18 @@ void Player::onAttackedCreatureDrainHealth(std::shared_ptr<Creature> target, int
 	Creature::onAttackedCreatureDrainHealth(target, points);
 
 	if (target) {
-		if (party && !Combat::isPlayerCombat(target)) {
+		if (m_party && !Combat::isPlayerCombat(target)) {
 			auto tmpMonster = target->getMonster();
 			if (tmpMonster && tmpMonster->isHostile()) {
 				// We have fulfilled a requirement for shared experience
-				party->updatePlayerTicks(static_self_cast<Player>(), points);
+				m_party->updatePlayerTicks(static_self_cast<Player>(), points);
 			}
 		}
 	}
 }
 
 void Player::onTargetCreatureGainHealth(std::shared_ptr<Creature> target, int32_t points) {
-	if (target && party) {
+	if (target && m_party) {
 		std::shared_ptr<Player> tmpPlayer = nullptr;
 
 		if (isPartner(tmpPlayer) && (tmpPlayer != getPlayer())) {
@@ -4622,7 +4623,7 @@ void Player::onTargetCreatureGainHealth(std::shared_ptr<Creature> target, int32_
 		}
 
 		if (isPartner(tmpPlayer)) {
-			party->updatePlayerTicks(static_self_cast<Player>(), points);
+			m_party->updatePlayerTicks(static_self_cast<Player>(), points);
 		}
 	}
 }
@@ -4723,8 +4724,8 @@ void Player::onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target
 		return;
 	}
 
-	if (target && !target->getPlayer() && party && party->isSharedExperienceActive() && party->isSharedExperienceEnabled()) {
-		party->shareExperience(gainExp, target);
+	if (target && !target->getPlayer() && m_party && m_party->isSharedExperienceActive() && m_party->isSharedExperienceEnabled()) {
+		m_party->shareExperience(gainExp, target);
 		// We will get a share of the experience through the sharing mechanism
 		return;
 	}
@@ -5024,7 +5025,7 @@ Skulls_t Player::getSkullClient(std::shared_ptr<Creature> creature) {
 			return SKULL_YELLOW;
 		}
 
-		if (party && party == player->party) {
+		if (m_party && m_party == player->m_party) {
 			return SKULL_GREEN;
 		}
 	}
@@ -5475,14 +5476,14 @@ PartyShields_t Player::getPartyShield(std::shared_ptr<Player> player) {
 		return SHIELD_NONE;
 	}
 
-	if (party) {
-		if (party->getLeader() == player) {
-			if (party->isSharedExperienceActive()) {
-				if (party->isSharedExperienceEnabled()) {
+	if (m_party) {
+		if (m_party->getLeader() == player) {
+			if (m_party->isSharedExperienceActive()) {
+				if (m_party->isSharedExperienceEnabled()) {
 					return SHIELD_YELLOW_SHAREDEXP;
 				}
 
-				if (party->canUseSharedExperience(player)) {
+				if (m_party->canUseSharedExperience(player)) {
 					return SHIELD_YELLOW_NOSHAREDEXP;
 				}
 
@@ -5492,13 +5493,13 @@ PartyShields_t Player::getPartyShield(std::shared_ptr<Player> player) {
 			return SHIELD_YELLOW;
 		}
 
-		if (player->party == party) {
-			if (party->isSharedExperienceActive()) {
-				if (party->isSharedExperienceEnabled()) {
+		if (player->m_party == m_party) {
+			if (m_party->isSharedExperienceActive()) {
+				if (m_party->isSharedExperienceEnabled()) {
 					return SHIELD_BLUE_SHAREDEXP;
 				}
 
-				if (party->canUseSharedExperience(player)) {
+				if (m_party->canUseSharedExperience(player)) {
 					return SHIELD_BLUE_NOSHAREDEXP;
 				}
 
@@ -5517,7 +5518,7 @@ PartyShields_t Player::getPartyShield(std::shared_ptr<Player> player) {
 		return SHIELD_WHITEYELLOW;
 	}
 
-	if (player->party) {
+	if (player->m_party) {
 		return SHIELD_GRAY;
 	}
 
@@ -5525,17 +5526,17 @@ PartyShields_t Player::getPartyShield(std::shared_ptr<Player> player) {
 }
 
 bool Player::isInviting(std::shared_ptr<Player> player) const {
-	if (!player || !party || party->getLeader().get() != this) {
+	if (!player || !m_party || m_party->getLeader().get() != this) {
 		return false;
 	}
-	return party->isPlayerInvited(player);
+	return m_party->isPlayerInvited(player);
 }
 
 bool Player::isPartner(std::shared_ptr<Player> player) const {
-	if (!player || !party || player.get() == this) {
+	if (!player || !m_party || player.get() == this) {
 		return false;
 	}
-	return party == player->party;
+	return m_party == player->m_party;
 }
 
 bool Player::isGuildMate(std::shared_ptr<Player> player) const {
@@ -5992,15 +5993,15 @@ void Player::clearModalWindows() {
 }
 
 uint16_t Player::getHelpers() const {
-	if (guild && party) {
+	if (guild && m_party) {
 		const auto &guildMembers = guild->getMembersOnline();
 
 		stdext::vector_set<std::shared_ptr<Player>> helperSet;
 		helperSet.insert(helperSet.end(), guildMembers.begin(), guildMembers.end());
-		helperSet.insertAll(party->getMembers());
-		helperSet.insertAll(party->getInvitees());
+		helperSet.insertAll(m_party->getMembers());
+		helperSet.insertAll(m_party->getInvitees());
 
-		helperSet.emplace(party->getLeader());
+		helperSet.emplace(m_party->getLeader());
 
 		return static_cast<uint16_t>(helperSet.size());
 	}
@@ -6009,8 +6010,8 @@ uint16_t Player::getHelpers() const {
 		return static_cast<uint16_t>(guild->getMemberCountOnline());
 	}
 
-	if (party) {
-		return static_cast<uint16_t>(party->getMemberCount() + party->getInvitationCount() + 1);
+	if (m_party) {
+		return static_cast<uint16_t>(m_party->getMemberCount() + m_party->getInvitationCount() + 1);
 	}
 
 	return 0u;
@@ -6913,6 +6914,12 @@ bool Player::saySpell(
 
 // Forge system
 void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount) {
+	if (this->getFreeBackpackSlots() < 1) {
+		sendCancelMessage("You have no slots in your backpack.");
+		sendForgeError(RETURNVALUE_NOTENOUGHROOM);
+		return;
+	}
+
 	ForgeHistory history;
 	history.actionType = ForgeConversion_t::FORGE_ACTION_FUSION;
 	history.tier = tier;
@@ -7121,6 +7128,12 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 }
 
 void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId) {
+	if (this->getFreeBackpackSlots() < 1) {
+		sendCancelMessage("You have no slots in your backpack.");
+		sendForgeError(RETURNVALUE_NOTENOUGHROOM);
+		return;
+	}
+
 	ForgeHistory history;
 	history.actionType = ForgeConversion_t::FORGE_ACTION_TRANSFER;
 	history.tier = tier;
@@ -7644,15 +7657,15 @@ void Player::parseAttackRecvHazardSystem(CombatDamage &damage, std::shared_ptr<M
 	}
 
 	auto points = getHazardSystemPoints();
-	if (party) {
-		for (const auto partyMember : party->getMembers()) {
+	if (m_party) {
+		for (const auto partyMember : m_party->getMembers()) {
 			if (partyMember && partyMember->getHazardSystemPoints() < points) {
 				points = partyMember->getHazardSystemPoints();
 			}
 		}
 
-		if (party->getLeader() && party->getLeader()->getHazardSystemPoints() < points) {
-			points = party->getLeader()->getHazardSystemPoints();
+		if (m_party->getLeader() && m_party->getLeader()->getHazardSystemPoints() < points) {
+			points = m_party->getLeader()->getHazardSystemPoints();
 		}
 	}
 
@@ -7703,15 +7716,15 @@ void Player::parseAttackDealtHazardSystem(CombatDamage &damage, std::shared_ptr<
 	}
 
 	auto points = getHazardSystemPoints();
-	if (party) {
-		for (const auto partyMember : party->getMembers()) {
+	if (m_party) {
+		for (const auto partyMember : m_party->getMembers()) {
 			if (partyMember && partyMember->getHazardSystemPoints() < points) {
 				points = partyMember->getHazardSystemPoints();
 			}
 		}
 
-		if (party->getLeader() && party->getLeader()->getHazardSystemPoints() < points) {
-			points = party->getLeader()->getHazardSystemPoints();
+		if (m_party->getLeader() && m_party->getLeader()->getHazardSystemPoints() < points) {
+			points = m_party->getLeader()->getHazardSystemPoints();
 		}
 	}
 
@@ -7733,7 +7746,7 @@ void Player::parseAttackDealtHazardSystem(CombatDamage &damage, std::shared_ptr<
 	if (monster->getHazardSystemDefenseBoost()) {
 		stage = points * static_cast<uint16_t>(g_configManager().getNumber(HAZARD_DEFENSE_MULTIPLIER, __FUNCTION__));
 		if (stage != 0) {
-			damage.exString = "(hazard -" + std::to_string(stage / 100) + "%)";
+			damage.exString = fmt::format("(hazard -{}%)", stage / 100.);
 			damage.primary.value -= static_cast<int32_t>(std::ceil((static_cast<double>(damage.primary.value) * stage) / 10000));
 			if (damage.secondary.value != 0) {
 				damage.secondary.value -= static_cast<int32_t>(std::ceil((static_cast<double>(damage.secondary.value) * stage) / 10000));

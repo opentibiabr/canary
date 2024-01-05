@@ -2150,13 +2150,8 @@ bool ConditionSpeed::startCondition(std::shared_ptr<Creature> creature) {
 		int32_t max;
 		auto baseSpeed = creature->getBaseSpeed();
 		getFormulaValues(baseSpeed, min, max);
-		speedDelta = uniform_random(min, max);
-
-		if (conditionType == CONDITION_HASTE) {
-			speedDelta = speedDelta - baseSpeed;
-		}
-
-		if (conditionType == CONDITION_PARALYZE && speedDelta < baseSpeed - 40) {
+		speedDelta = uniform_random(min, max) - baseSpeed;
+		if (conditionType == CONDITION_PARALYZE && speedDelta < 40 - baseSpeed) {
 			speedDelta = 40 - baseSpeed;
 		}
 	}
@@ -2197,13 +2192,9 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 		int32_t max;
 		auto baseSpeed = creature->getBaseSpeed();
 		getFormulaValues(baseSpeed, min, max);
-		speedDelta = uniform_random(min, max);
+		speedDelta = uniform_random(min, max) - baseSpeed;
 
-		if (conditionType == CONDITION_HASTE) {
-			speedDelta = speedDelta - baseSpeed;
-		}
-
-		if (conditionType == CONDITION_PARALYZE && speedDelta < baseSpeed - 40) {
+		if (conditionType == CONDITION_PARALYZE && speedDelta < 40 - baseSpeed) {
 			speedDelta = 40 - baseSpeed;
 		}
 	}

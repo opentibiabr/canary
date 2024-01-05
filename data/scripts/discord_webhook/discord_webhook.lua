@@ -14,7 +14,7 @@ announcementChannels = {
 
 	local message = blablabla
 	local title = test
-	Webhook.sendMessage(title, message, WEBHOOK_COLOR_WARNING,
+	Webhook.sendMessage(title, message, WEBHOOK_COLOR_YELLOW,
                         announcementChannels["serverAnnouncements"])
 
 	Dev Comment: This lib can be used to add special webhook channels

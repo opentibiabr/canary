@@ -28,8 +28,8 @@ function serverstartup.onStartup()
 	loadLuaMapUnique(ItemUnique)
 	-- Item daily reward table
 	-- This is temporary disabled > loadLuaMapAction(DailyRewardAction)
-	-- Item unmoveable table
-	loadLuaMapAction(ItemUnmoveableAction)
+	-- Item unmovable table
+	loadLuaMapAction(ItemUnmovableAction)
 	-- Lever table
 	loadLuaMapAction(LeverAction)
 	loadLuaMapUnique(LeverUnique)

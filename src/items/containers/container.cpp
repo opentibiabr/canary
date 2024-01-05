@@ -44,7 +44,7 @@ std::shared_ptr<Container> Container::create(std::shared_ptr<Tile> tile) {
 	TileItemVector* itemVector = tile->getItemList();
 	if (itemVector) {
 		for (auto &item : *itemVector) {
-			if (((item->getContainer() || item->hasProperty(CONST_PROP_MOVEABLE)) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVEABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH))) && !item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
+			if (((item->getContainer() || item->hasProperty(CONST_PROP_MOVABLE)) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH))) && !item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 				container->itemlist.push_front(item);
 				item->setParent(container);
 			}
@@ -583,9 +583,9 @@ ReturnValue Container::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	if (!item->isMoveable() && !hasBitSet(FLAG_IGNORENOTMOVEABLE, flags)) {
-		g_logger().debug("{} - Item is not moveable", __FUNCTION__);
-		return RETURNVALUE_NOTMOVEABLE;
+	if (!item->isMovable() && !hasBitSet(FLAG_IGNORENOTMOVABLE, flags)) {
+		g_logger().debug("{} - Item is not movable", __FUNCTION__);
+		return RETURNVALUE_NOTMOVABLE;
 	}
 	std::shared_ptr<HouseTile> houseTile = std::dynamic_pointer_cast<HouseTile>(getTopParent());
 	if (houseTile) {

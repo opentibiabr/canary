@@ -131,7 +131,7 @@ std::shared_ptr<Container> Item::CreateItemAsContainer(const uint16_t type, uint
 		it.id == 0
 		|| it.stackable
 		|| it.multiUse
-		|| it.moveable
+		|| it.movable
 		|| it.pickupable
 		|| it.isDepot()
 		|| it.isSplash()
@@ -313,7 +313,7 @@ void Item::setID(uint16_t newid) {
 	}
 }
 
-bool Item::isOwner(uint32_t ownerId) {
+bool Item::isOwner(uint32_t ownerId) const {
 	if (getOwnerId() == ownerId) {
 		return true;
 	}
@@ -850,7 +850,7 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<uint16_t>(charges);
 	}
 
-	if (it.moveable) {
+	if (it.movable) {
 		if (auto actionId = getAttribute<uint16_t>(ItemAttribute_t::ACTIONID)) {
 			propWriteStream.write<uint8_t>(ATTR_ACTION_ID);
 			propWriteStream.write<uint16_t>(actionId);
@@ -996,25 +996,25 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 }
 
 void Item::setOwner(std::shared_ptr<Creature> owner) {
-	auto id = owner->getID();
+	auto ownerId = owner->getID();
 	if (owner->getPlayer()) {
-		id = owner->getPlayer()->getGUID();
+		ownerId = owner->getPlayer()->getGUID();
 	}
-	setOwner(id);
+	setOwner(ownerId);
 }
 
-bool Item::isOwner(std::shared_ptr<Creature> owner) {
+bool Item::isOwner(std::shared_ptr<Creature> owner) const {
 	if (!owner) {
 		return false;
 	}
-	auto id = owner->getID();
-	if (isOwner(id)) {
+	auto ownerId = owner->getID();
+	if (isOwner(ownerId)) {
 		return true;
 	}
 	if (owner->getPlayer()) {
-		id = owner->getPlayer()->getGUID();
+		ownerId = owner->getPlayer()->getGUID();
 	}
-	return isOwner(id);
+	return isOwner(ownerId);
 }
 
 uint32_t Item::getOwnerId() const {
@@ -1024,7 +1024,7 @@ uint32_t Item::getOwnerId() const {
 	return 0;
 }
 
-std::string Item::getOwnerName() {
+std::string Item::getOwnerName() const {
 	if (!hasOwner()) {
 		return "";
 	}
@@ -1044,7 +1044,7 @@ bool Item::hasProperty(ItemProperty prop) const {
 	switch (prop) {
 		case CONST_PROP_BLOCKSOLID:
 			return it.blockSolid;
-		case CONST_PROP_MOVEABLE:
+		case CONST_PROP_MOVABLE:
 			return canBeMoved();
 		case CONST_PROP_HASHEIGHT:
 			return it.hasHeight;
@@ -1081,7 +1081,7 @@ bool Item::canBeMoved() const {
 	if (hasAttribute(ItemAttribute_t::ACTIONID) && immovableActionIds.contains(static_cast<int32_t>(getAttribute<uint16_t>(ItemAttribute_t::ACTIONID)))) {
 		return false;
 	}
-	return isMoveable();
+	return isMovable();
 }
 
 void Item::checkDecayMapItemOnMove() {
@@ -1291,7 +1291,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 
 			if (it.abilities->speed) {
 				ss.str("");
-				ss << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
+				ss << std::showpos << it.abilities->speed << std::noshowpos;
 				descriptions.emplace_back("Speed", ss.str());
 			}
 
@@ -1606,7 +1606,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			ss.str("");
 			bool skillBoost = false;
 			if (it.abilities->speed) {
-				ss << std::showpos << "speed " << (it.abilities->speed >> 1) << std::noshowpos;
+				ss << std::showpos << "speed " << it.abilities->speed << std::noshowpos;
 				skillBoost = true;
 			}
 
@@ -1653,14 +1653,11 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 					ss << it.abilities->skills[i];
 				}
 				ss << '%' << std::noshowpos;
-
 				skillBoost = true;
 			}
 
-			if (it.abilities->stats[STAT_MAGICPOINTS]) {
-				ss.str("");
-				ss << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
-				descriptions.emplace_back("Magic Level", ss.str());
+			if (skillBoost) {
+				descriptions.emplace_back("Skill Boost", ss.str());
 			}
 
 			for (uint8_t i = 1; i <= 11; i++) {
@@ -1692,12 +1689,6 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				descriptions.emplace_back("Damage Reflection", ss.str());
 			}
 
-			if (it.abilities->speed) {
-				ss.str("");
-				ss << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
-				descriptions.emplace_back("Speed", ss.str());
-			}
-
 			if (it.abilities->cleavePercent) {
 				ss.str("");
 				ss << std::showpos << (it.abilities->cleavePercent) << std::noshowpos << "%";
@@ -1726,17 +1717,6 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				ss.str("");
 				ss << "Mana Shield";
 				descriptions.emplace_back("Effect", ss.str());
-			}
-
-			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-				if (it.abilities->absorbPercent[i] == 0) {
-					continue;
-				}
-
-				ss.str("");
-				ss << getCombatName(indexToCombatType(i)) << ' '
-				   << std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
-				descriptions.emplace_back("Protection", ss.str());
 			}
 
 			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
@@ -1924,7 +1904,7 @@ std::string Item::parseImbuementDescription(std::shared_ptr<Item> item) {
 
 bool Item::isSavedToHouses() {
 	const auto &it = items[id];
-	return it.moveable || it.isWrappable() || it.isCarpet() || getDoor() || (getContainer() && !getContainer()->empty()) || it.canWriteText || getBed() || it.m_transformOnUse;
+	return it.movable || it.isWrappable() || it.isCarpet() || getDoor() || (getContainer() && !getContainer()->empty()) || it.canWriteText || getBed() || it.m_transformOnUse;
 }
 
 SoundEffect_t Item::getMovementSound(std::shared_ptr<Cylinder> toCylinder) const {
@@ -2587,6 +2567,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 			if (!begin) {
 				s << ')';
 			}
+			// This block refers to the look of the weapons.
 		} else if (it.weaponType != WEAPON_AMMO) {
 			bool begin = true;
 
@@ -2601,6 +2582,28 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 				extraDefense = it.extraDefense;
 			}
 
+			if (it.isContainer() || (item && item->getContainer())) {
+				uint32_t volume = 0;
+
+				if (!item || !item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
+					if (it.isContainer()) {
+						volume = it.maxItems;
+					} else if (item) {
+						volume = item->getContainer()->capacity();
+					}
+				}
+
+				if (volume != 0) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "Vol:" << volume;
+				}
+			}
 			if (attack != 0) {
 				begin = false;
 				s << " (Atk:" << attack;

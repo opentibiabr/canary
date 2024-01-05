@@ -362,10 +362,10 @@ public:
 	}
 
 	void setParty(std::shared_ptr<Party> newParty) {
-		this->party = newParty;
+		m_party = newParty;
 	}
 	std::shared_ptr<Party> getParty() const {
-		return party;
+		return m_party;
 	}
 
 	int32_t getCleavePercent(bool useCharges = false) const;
@@ -936,6 +936,7 @@ public:
 	void onGainSharedExperience(uint64_t gainExp, std::shared_ptr<Creature> target);
 	void onAttackedCreatureBlockHit(BlockType_t blockType) override;
 	void onBlockHit() override;
+	void onTakeDamage(std::shared_ptr<Creature> attacker, int32_t damage) override;
 	void onChangeZone(ZoneType_t zone) override;
 	void onAttackedCreatureChangeZone(ZoneType_t zone) override;
 	void onIdleStatus() override;
@@ -1820,8 +1821,8 @@ public:
 	}
 
 	void updatePartyTrackerAnalyzer() const {
-		if (client && party) {
-			client->updatePartyTrackerAnalyzer(party);
+		if (client && m_party) {
+			client->updatePartyTrackerAnalyzer(m_party);
 		}
 	}
 
@@ -2518,7 +2519,7 @@ public:
 	}
 
 	bool checkAutoLoot() const {
-		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT, __FUNCTION__) && getStorageValue(STORAGEVALUE_AUTO_LOOT) > 0;
+		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT, __FUNCTION__) && getStorageValue(STORAGEVALUE_AUTO_LOOT) != 0;
 		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY, __FUNCTION__)) {
 			return autoLoot && isVip();
 		}
@@ -2715,7 +2716,7 @@ private:
 	std::shared_ptr<Item> writeItem = nullptr;
 	std::shared_ptr<House> editHouse = nullptr;
 	std::shared_ptr<Npc> shopOwner = nullptr;
-	std::shared_ptr<Party> party = nullptr;
+	std::shared_ptr<Party> m_party = nullptr;
 	std::shared_ptr<Player> tradePartner = nullptr;
 	ProtocolGame_ptr client;
 	std::shared_ptr<Task> walkTask;
@@ -2952,4 +2953,6 @@ private:
 
 	void removeEmptyRewards();
 	bool hasOtherRewardContainerOpen(const std::shared_ptr<Container> container) const;
+
+	void checkAndShowBlessingMessage();
 };

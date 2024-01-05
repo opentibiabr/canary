@@ -655,3 +655,40 @@ int TileFunctions::luaTileGetHouse(lua_State* L) {
 	}
 	return 1;
 }
+
+int TileFunctions::luaTileSweep(lua_State* L) {
+	// tile:sweep(actor)
+	std::shared_ptr<Tile> tile = getUserdataShared<Tile>(L, 1);
+	if (!tile) {
+		lua_pushnil(L);
+		return 1;
+	}
+	auto actor = getPlayer(L, 2);
+	if (!actor) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto house = tile->getHouse();
+	if (!house) {
+		g_logger().debug("TileFunctions::luaTileSweep: tile has no house");
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (house->getHouseAccessLevel(actor) < HOUSE_OWNER) {
+		g_logger().debug("TileFunctions::luaTileSweep: player is not owner of house");
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto houseTile = std::dynamic_pointer_cast<HouseTile>(tile);
+	if (!houseTile) {
+		g_logger().debug("TileFunctions::luaTileSweep: tile is not a house tile");
+		lua_pushnil(L);
+		return 1;
+	}
+
+	pushBoolean(L, house->transferToDepot(actor, houseTile));
+	return 1;
+}

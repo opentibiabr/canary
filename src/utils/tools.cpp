@@ -1209,7 +1209,7 @@ const char* getReturnMessage(ReturnValue value) {
 		case RETURNVALUE_DESTINATIONOUTOFREACH:
 			return "Destination is out of reach.";
 
-		case RETURNVALUE_NOTMOVEABLE:
+		case RETURNVALUE_NOTMOVABLE:
 			return "You cannot move this object.";
 
 		case RETURNVALUE_DROPTWOHANDEDITEM:
@@ -1447,6 +1447,12 @@ const char* getReturnMessage(ReturnValue value) {
 
 		case RETURNVALUE_CONTACTADMINISTRATOR:
 			return "An error has occurred, please contact your administrator.";
+
+		case RETURNVALUE_ITEMISNOTYOURS:
+			return "This item is not yours.";
+
+		case RETURNVALUE_ITEMUNTRADEABLE:
+			return "This item is untradeable.";
 
 		// Any unhandled ReturnValue will go enter here
 		default:

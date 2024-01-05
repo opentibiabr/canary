@@ -44,11 +44,23 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 # === IPO ===
-check_ipo_supported(RESULT result OUTPUT output)
-if(result)
-    set_property(TARGET ${PROJECT_NAME}_lib PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+if(MSVC)
+    target_compile_options(${PROJECT_NAME}_lib PRIVATE "/GL")
+    set_target_properties(${PROJECT_NAME}_lib PROPERTIES
+            STATIC_LINKER_FLAGS "/LTCG"
+            SHARED_LINKER_FLAGS "/LTCG"
+            MODULE_LINKER_FLAGS "/LTCG"
+            EXE_LINKER_FLAGS "/LTCG")
 else()
-    message(WARNING "IPO is not supported: ${output}")
+	include(CheckIPOSupported)
+	check_ipo_supported(RESULT result)
+    if(result)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto=auto")
+        message(STATUS "IPO/LTO enabled with -flto=auto for non-MSVC compiler.")
+        set_property(TARGET ${PROJECT_NAME}_lib PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+    else()
+        message(WARNING "IPO/LTO is not supported: ${output}")
+    endif()
 endif()
 
 # === UNITY BUILD (compile time reducer) ===

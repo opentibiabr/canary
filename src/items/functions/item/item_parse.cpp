@@ -26,7 +26,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseRotateTo(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWrapContainer(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWrapableTo(tmpStrValue, valueAttribute, itemType);
-	ItemParse::parseMoveable(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseMovable(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseBlockProjectTile(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePickupable(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseFloorChange(tmpStrValue, valueAttribute, itemType);
@@ -73,6 +73,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseTransformOnUse(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePrimaryType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseHouseRelated(tmpStrValue, valueAttribute, itemType);
 }
 
 void ItemParse::parseDummyRate(pugi::xml_node attributeNode, ItemType &itemType) {
@@ -195,10 +196,10 @@ void ItemParse::parseWrapableTo(const std::string &tmpStrValue, pugi::xml_attrib
 	}
 }
 
-void ItemParse::parseMoveable(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+void ItemParse::parseMovable(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	std::string stringValue = tmpStrValue;
-	if (stringValue == "moveable") {
-		itemType.moveable = valueAttribute.as_bool();
+	if (stringValue == "movable") {
+		itemType.movable = valueAttribute.as_bool();
 	}
 }
 
@@ -571,6 +572,8 @@ void ItemParse::parseAbsorbPercent(const std::string &tmpStrValue, pugi::xml_att
 	} else if (stringValue == "absorbpercentfire") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentpoison" || stringValue == "absorbpercentearth") {
+		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
+	} else if (stringValue == "absorbpercentearth") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentice") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
@@ -952,5 +955,12 @@ void ItemParse::parseTransformOnUse(const std::string_view &tmpStrValue, pugi::x
 void ItemParse::parsePrimaryType(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (tmpStrValue == "primarytype") {
 		itemType.m_primaryType = asLowerCaseString(valueAttribute.as_string());
+	}
+}
+
+void ItemParse::parseHouseRelated(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+	if (tmpStrValue == "usedbyhouseguests") {
+		g_logger().debug("[{}] item {}, used by guests {}", __FUNCTION__, itemType.id, valueAttribute.as_bool());
+		itemType.m_canBeUsedByGuests = valueAttribute.as_bool();
 	}
 }

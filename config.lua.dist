@@ -147,6 +147,7 @@ hazardCriticalInterval = 2000
 hazardCriticalChance = 750
 hazardCriticalMultiplier = 25
 hazardDamageMultiplier = 200
+hazardDefenseMultiplier = 0
 hazardDodgeMultiplier = 85
 hazardPodsDropMultiplier = 87
 hazardPodsTimeToDamage = 2000
@@ -358,6 +359,8 @@ resetSessionsOnStartup = false
 
 -- Misc.
 -- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate
+-- NOTE: disableLegacyRaids: set to true to disable legacy XML raids
+-- NOTE: combatChainDelay: set to minimum 50 miliseconds
 allowChangeOutfit = true
 toggleMountInProtectionZone = false
 freePremium = false
@@ -373,6 +376,7 @@ showScriptsLogInConsole = false
 criticalChance = 10
 inventoryGlowOnFiveBless = false
 adventurersBlessingLevel = 21
+skulledDeathLoseStoreItem = false
 experienceDisplayRates = true
 -- configure attack base on Fist Fighting skill/experience
 -- multiplierSpeedOnFist * 5  (multiplies the value obtained from the player fist skill and multiplies it * 5) max 25 is recommended due minTicks limits else player stop attack
@@ -380,6 +384,12 @@ experienceDisplayRates = true
 toggleAttackSpeedOnFist = false
 multiplierSpeedOnFist = 5
 maxSpeedOnFist = 500
+disableLegacyRaids = false
+disableMonsterArmor = false
+combatChainDelay = 50
+minElementalResistance = -200
+maxElementalResistance = 200
+maxDamageReflection = 200
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes
@@ -466,6 +476,7 @@ location = "South America"
 -- The URL layout is https://discord.com/api/webhooks/:id/:token
 -- Leave empty if you wish to disable.
 discordWebhookURL = ""
+discordSendFooter = true
 
 -- Vip System (Get more info in: https://github.com/opentibiabr/canary/pull/1063)
 -- NOTE: set vipSystemEnabled to true to enable the vip system functionalities (this overrides premium checks)

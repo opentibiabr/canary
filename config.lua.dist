@@ -359,6 +359,8 @@ resetSessionsOnStartup = false
 
 -- Misc.
 -- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate
+-- NOTE: disableLegacyRaids: set to true to disable legacy XML raids
+-- NOTE: combatChainDelay: set to minimum 50 miliseconds
 allowChangeOutfit = true
 toggleMountInProtectionZone = false
 freePremium = false
@@ -382,9 +384,9 @@ experienceDisplayRates = true
 toggleAttackSpeedOnFist = false
 multiplierSpeedOnFist = 5
 maxSpeedOnFist = 500
-disableLegacyRaids = false -- disable legacy XML raids
+disableLegacyRaids = false
 disableMonsterArmor = false
-combatChainDelay = 50 -- minimum: 50 miliseconds
+combatChainDelay = 50
 minElementalResistance = -200
 maxElementalResistance = 200
 maxDamageReflection = 200
@@ -474,6 +476,7 @@ location = "South America"
 -- The URL layout is https://discord.com/api/webhooks/:id/:token
 -- Leave empty if you wish to disable.
 discordWebhookURL = ""
+discordSendFooter = true
 
 -- Vip System (Get more info in: https://github.com/opentibiabr/canary/pull/1063)
 -- NOTE: set vipSystemEnabled to true to enable the vip system functionalities (this overrides premium checks)

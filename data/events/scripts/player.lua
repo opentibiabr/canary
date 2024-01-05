@@ -1,6 +1,6 @@
 local storeItemID = {
 	-- registered item ids here are not tradable with players
-	-- these items can be set to moveable at items.xml
+	-- these items can be set to movable at items.xml
 	-- 500 charges exercise weapons
 	28552, -- exercise sword
 	28553, -- exercise axe
@@ -639,7 +639,7 @@ function Player:onChangeZone(zone)
 				if stamina < 2520 then
 					if not event then
 						local delay = configManager.getNumber(configKeys.STAMINA_ORANGE_DELAY)
-						if stamina > 2400 and stamina <= 2520 then
+						if stamina > 2340 and stamina <= 2520 then
 							delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY)
 						end
 
@@ -662,3 +662,24 @@ function Player:onChangeZone(zone)
 end
 
 function Player:onInventoryUpdate(item, slot, equip) end
+
+function Player:getURL()
+	local playerLink = string.gsub(self:getName(), "%s+", "+")
+	local serverURL = configManager.getString(configKeys.URL)
+	return serverURL .. "/characters/" .. playerLink
+end
+
+function Player:getMarkdownLink()
+	local vocation = self:vocationAbbrev()
+	local emoji = ":school_satchel:"
+	if self:isKnight() then
+		emoji = ":crossed_swords:"
+	elseif self:isPaladin() then
+		emoji = ":bow_and_arrow:"
+	elseif self:isDruid() then
+		emoji = ":herb:"
+	elseif self:isSorcerer() then
+		emoji = ":crystal_ball:"
+	end
+	return "**[" .. self:getName() .. "](" .. self:getURL() .. ")** " .. emoji .. " [_" .. vocation .. "_]"
+end

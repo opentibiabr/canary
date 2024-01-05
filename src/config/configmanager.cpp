@@ -152,6 +152,7 @@ bool ConfigManager::load() {
 	loadStringConfig(L, WORLD_TYPE, "worldType", "pvp");
 	loadStringConfig(L, STORE_IMAGES_URL, "coinImagesURL", "");
 	loadStringConfig(L, DISCORD_WEBHOOK_URL, "discordWebhookURL", "");
+	loadBoolConfig(L, DISCORD_SEND_FOOTER, "discordSendFooter", true);
 	loadStringConfig(L, SAVE_INTERVAL_TYPE, "saveIntervalType", "");
 	loadStringConfig(L, GLOBAL_SERVER_SAVE_TIME, "globalServerSaveTime", "06:00");
 	loadStringConfig(L, DATA_DIRECTORY, "dataPackDirectory", "data-otservbr-global");

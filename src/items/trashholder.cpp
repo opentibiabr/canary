@@ -50,7 +50,7 @@ void TrashHolder::addThing(int32_t, std::shared_ptr<Thing> thing) {
 		return;
 	}
 
-	if (item.get() == this || !item->hasProperty(CONST_PROP_MOVEABLE)) {
+	if (item.get() == this || !item->hasProperty(CONST_PROP_MOVABLE)) {
 		return;
 	}
 

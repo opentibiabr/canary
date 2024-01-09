@@ -10,12 +10,12 @@ dofile(CORE_DIRECTORY .. "/modules/scripts/gamestore/init.lua")
 -- Config
 
 HomeBanners = {
-	images = { "home/banner_armouredarcher.png", "home/banner_podiumoftenacity.png" },
+	images = { "images/Lethal.png", "images/Lethal.png" },
 	delay = 10,
 }
 
-local premiumCategoryName = "Premium Time"
-local premiumOfferName = "Premium Time"
+local premiumCategoryName = "VIP Time"
+local premiumOfferName = "VIP Time"
 if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
 	premiumCategoryName = "VIP Shop"
 	premiumOfferName = "VIP"
@@ -98,7 +98,657 @@ GameStore.Categories = {
 			},
 		},
 	},
+
+
+	{
+		icons = { "Category_ExclusiveOffers.png" }, 
+		name = "Custom",
+		rookgaard = true,
+		subclasses = {"Backpacks", "Equipaments", "Trinkets", "WeaponsBox", "SetsBox", "OutfitsCustom"},
+		 },
+	  -- BackpacksCategory
+	   {
+		icons = { "Birthday_Backpackbp.png" },
+		name = "Backpacks",
+		parent = "Custom",
+		rookgaard = true,
+		state = GameStore.States.STATE_NONE,
+		offers = {
+			 {
+			   icons = { "deathamulet.png" },
+			   name = "Ferumbras Backpack",
+			   price = 1000,
+			   itemtype = 60286,
+			   charges = 1,
+			   description = "Ferumbras Backpack (Vol:30). ---- Imbuements:    (Empty Slot).   ------    Equiped Bonnus critical hit chance 10. Equiped Bonnus critical extra damage +15%. Classification: 4 (TOP Class) ",
+			   type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
+			 },
+   
+		 },
+	  },
+	  -- EquipamentsCategory
+	   {
+	   icons = { "Category_Tournament.png" },
+		name = "Equipaments",
+		parent = "Custom",
+		rookgaard = true,
+		state = GameStore.States.STATE_NONE,
+		offers = {
+			 {
+			   icons = { "Falcon_Circlet.png" },
+			   name = "Lethal Death Amulet",
+			   price = 2500,
+			   itemtype = 60890,
+			   charges = 1,
+			   description = "(Arm:3, critical hit chance 10%, critical extra damage +15%, life leech chance +100%, life leech amount +6%, mana leech chance +100%, mana leech amount +3%, protection physical +5%, death +10%).It can only be wielded properly by players of level 100 or higher.It weighs 5.70 oz.",
+			   type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
+			 },
+		
+	   },
+	  },
+	  -- TrinketsCategory
+	   {
+	   icons = { "Chaos_Critical_Dicebp.png" },
+		name = "Trinkets",
+		parent = "Custom",
+		rookgaard = true,
+		state = GameStore.States.STATE_NONE,
+		offers = {
+			 {
+			   icons = { "Lion_Longbow.png" },
+			   name = "Lethal Trinket",
+			   price = 250,
+			   itemtype = 60920,
+			   charges = 1,
+			   description = "Utilizado no Slot da tocha. (Protection all 7%, critical hit chance 10%, critical extra damage +15%, life leech chance +100%, life leech amount +6%, mana leech chance +100%, mana leech amount +3%).",
+			   type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
+			 },
+		 
+	   },
+	  },
+	  -- Weapons Box
+	   {
+	   icons = { "Category_ExerciseWeapons.png" },
+		name = "Weapons Random Boxs",
+		parent = "Custom",
+		rookgaard = true,
+		state = GameStore.States.STATE_NONE,
+		offers = {
+			 {
+			   icons = { "RandomBox_Helmet.png" },
+			   name = "Rod Random Box",
+			   price = 300,
+			   itemtype = 60150,
+			   charges = 1,
+			   description = "Ganhe uma Rod rara aleatoria.",
+			   type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
+			 },
+		 {
+			   icons = { "RandomBox_Armor.png" },
+			   name = "Wand Random Box",
+			   price = 100,
+			   itemtype = 60149,
+			   charges = 1,
+			   description = "Ganhe uma Wand rara aleatoria.",
+			   type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
+			 },
+		 {
+			   icons = { "RandomBox_Legs.png" },
+			   name = "Distance Random Box",
+			   price = 100,
+			   itemtype = 60148,
+			   charges = 1,
+			   description = "Ganhe um Bow, Crossbow ou Quiver raro aleatorio.",
+			   type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
+			 },
+		 {
+			   icons = { "RandomBox_Shield.png" },
+			   name = "Sword Random Box",
+			   price = 25,
+			   itemtype = 60144,
+			   charges = 1,
+			   description = "Ganhe uma Sword ou Shield raro aleatori.",
+			   type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
+			 },
+		 {
+			   icons = { "RandomBox_Sword.png" },
+			   name = "Axe Random Box",
+			   price = 25,
+			   itemtype = 60147,
+			   charges = 1,
+			   description = "Ganhe um Axe ou Shield raro aleatio.",
+			   type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
+			 },
+
+			 {
+				icons = { "RandomBox_Sword.png" },
+				name = "Club Random Box",
+				price = 25,
+				itemtype = 60145,
+				charges = 1,
+				description = "Ganhe um Club ou Shield raro aleatio.",
+				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
+			  },
+
+
+			
+	   },
+	  },
+	  -- Set Box
+
+
+	   {
+	   icons = { "Tibiora's_Boxbp.png" },
+		name = "Set Random Boxs",
+		parent = "Custom",
+		rookgaard = true,
+		state = GameStore.States.STATE_NONE,
+		offers = {
+			{
+				icons = { "RandomBox_Sword.png" },
+				name = "Druid Set Random Box",
+				price = 25,
+				itemtype = 60117,
+				charges = 1,
+				description = "Possibilidade de ganhar uma peca rara de equipamento para Druid (Head,Armor,Legs ou Boots)",
+				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
+			  },
+			  
+			  {
+				icons = { "RandomBox_Sword.png" },
+				name = "Sorcerer Set Random Box",
+				price = 25,
+				itemtype = 60116,
+				charges = 1,
+				description = "Possibilidade de ganhar uma peca rara de equipamento para Sorcerer (Head,Armor,Legs ou Boots)",
+				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
+			  },
+			  
+			  {
+				icons = { "RandomBox_Sword.png" },
+				name = "Paladin Set Random Box",
+				price = 25,
+				itemtype = 60119,
+				charges = 1,
+				description = "Possibilidade de ganhar uma peca rara de equipamento para Paladin (Head,Armor,Legs ou Boots)",
+				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
+			  },
+			  
+			  {
+				icons = { "RandomBox_Sword.png" },
+				name = "Knight SetRandom Box",
+				price = 25,
+				itemtype = 60118,
+				charges = 1,
+				description = "Possibilidade de ganhar uma peca rara de equipamento para Knight (Head,Armor,Legs ou Boots)",
+				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
+			  },
+
+
+			
+			
+	   },
+	  },
+
+	  {
+		icons = { "Category_Outfits.png" },
+		 name = "OutfitsCustom",
+		 parent = "Custom",
+		 rookgaard = true,
+		 state = GameStore.States.STATE_NONE,
+		 offers = {
+
+			{
+				icons = { "Outfit_Arbalester_Male_Addon_3.png", "Outfit_Arbalester_Female_Addon_3.png" },
+				name = "Energy Mage",
+				price = 3000,
+				sexId = { female = 2840, male = 2539 },
+				addon = 3,
+				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Armed with a powerful crossbow, and gifted with steady hands as well as a sharp eye, the Arbalester is not one to be trifled with. Requiring both skill and strength to properly wield, the arbalest is a mighty tool in the hands of an able marksman, shooting deadly bolts across great distance.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+			},
+
+			{
+				icons = { "Outfit_Arbalester_Male_Addon_3.png", "Outfit_Arbalester_Female_Addon_3.png" },
+				name = "Oufit Poison Mage",
+				price = 3000,
+				sexId = { female = 2842, male = 2841 },
+				addon = 3,
+				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Armed with a powerful crossbow, and gifted with steady hands as well as a sharp eye, the Arbalester is not one to be trifled with. Requiring both skill and strength to properly wield, the arbalest is a mighty tool in the hands of an able marksman, shooting deadly bolts across great distance.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+			},
+
+			{
+				icons = { "Outfit_Arbalester_Male_Addon_3.png", "Outfit_Arbalester_Female_Addon_3.png" },
+				name = "Oufit Fire Mage",
+				price = 3000,
+				sexId = { female = 2844, male = 2843 },
+				addon = 3,
+				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Armed with a powerful crossbow, and gifted with steady hands as well as a sharp eye, the Arbalester is not one to be trifled with. Requiring both skill and strength to properly wield, the arbalest is a mighty tool in the hands of an able marksman, shooting deadly bolts across great distance.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+			},
+			{
+				icons = { "Outfit_Arbalester_Male_Addon_3.png", "Outfit_Arbalester_Female_Addon_3.png" },
+				name = "Oufit Ice Mage",
+				price = 3000,
+				sexId = { female = 2846, male = 2845 },
+				addon = 3,
+				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Armed with a powerful crossbow, and gifted with steady hands as well as a sharp eye, the Arbalester is not one to be trifled with. Requiring both skill and strength to properly wield, the arbalest is a mighty tool in the hands of an able marksman, shooting deadly bolts across great distance.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+			},
+		},},
+
+
+		
+		{
+			icons = { "Category_Mounts.png" },
+			 name = "MontariasCustom",
+			 parent = "Custom",
+			 rookgaard = true,
+			 state = GameStore.States.STATE_NONE,
+			 offers = {
+	
+				{
+					icons = { "Arctic_Unicorn.png" },
+					name = "Black Fox",
+					price = 870,
+					id = 400,
+					description = "{character}\n{speedboost}\n\n<i></i>",
+					type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				},
+	
+				{
+					icons = { "Arctic_Unicorn.png" },
+					name = "White Fox",
+					price = 870,
+					id = 401,
+					description = "{character}\n{speedboost}\n\n<i></i>",
+					type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				},
+				{
+					icons = { "Arctic_Unicorn.png" },
+					name = "Brown Fox",
+					price = 870,
+					id = 402,
+					description = "{character}\n{speedboost}\n\n<i></i>",
+					type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				},				{
+					icons = { "Arctic_Unicorn.png" },
+					name = "Black Skuller",
+					price = 870,
+					id = 403,
+					description = "{character}\n{speedboost}\n\n<i></i>",
+					type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				},				{
+					icons = { "Arctic_Unicorn.png" },
+					name = "Blue Skuller",
+					price = 870,
+					id = 404,
+					description = "{character}\n{speedboost}\n\n<i></i>",
+					type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				},				{
+					icons = { "Arctic_Unicorn.png" },
+					name = "Peacker",
+					price = 870,
+					id = 405,
+					description = "{character}\n{speedboost}\n\n<i></i>",
+					type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				},				{
+					icons = { "Arctic_Unicorn.png" },
+					name = "Draptor Branco",
+					price = 870,
+					id = 406,
+					description = "{character}\n{speedboost}\n\n<i></i>",
+					type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				},				{
+					icons = { "Arctic_Unicorn.png" },
+					name = "Doom Skuller",
+					price = 870,
+					id = 407,
+					description = "{character}\n{speedboost}\n\n<i></i>",
+					type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				},				{
+					icons = { "Arctic_Unicorn.png" },
+					name = "Magma Skuller",
+					price = 870,
+					id = 408,
+					description = "{character}\n{speedboost}\n\n<i></i>",
+					type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				},				{
+					icons = { "Arctic_Unicorn.png" },
+					name = "Corpsefire Skull",
+					price = 870,
+					id = 409,
+					description = "{character}\n{speedboost}\n\n<i></i>",
+					type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				},				{
+					icons = { "Arctic_Unicorn.png" },
+					name = "Gorgon Hydra",
+					price = 870,
+					id = 410,
+					description = "{character}\n{speedboost}\n\n<i></i>",
+					type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				},	
+
+			},},
+
+
+	  
+	  {
+		  icons = { "Fire_Damage_Icon.gif" },
+		  name = "Stats",
+		  rookgaard = true,
+		  subclasses = {"Resilience", "Amplification", "Modifiers"},
+	  },
+	  {
+		  icons = { "Fire_Resilience.png" },
+		  parent = "Stats", 
+		  name = "Resilience",
+		  rookgaard = true,
+		  offers = {	
+			  {
+				  icons = { "Fire_Resilience.png" },
+				  name = "Fire Resilience",
+				  price = 20,
+				  itemtype = 36729,
+				  count = 1,
+				  description = "Drinking this potion will increase your Fire Damage protection by 8% for one hour.",
+				  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				},
+				{
+				  icons = { "Ice_Resilience.png" },
+				  name = "Ice Resilience",
+				  price = 20,
+				  itemtype = 36730,
+				  count = 1,
+				  description = "Drinking this potion will increase your Ice Damage protection by 8% for one hour.",
+				  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				},
+				{
+				  icons = { "Earth_Resilience.png" },
+				  name = "Earth Resilience",
+				  price = 20,
+				  itemtype = 36731,
+				  count = 1,
+				  description = "Drinking this potion will increase your Earth Damage protection by 8% for one hour.",
+				  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				},
+				{
+				  icons = { "Energy_Resilience.png" },
+				  name = "Energy Resilience",
+				  price = 20,
+				  itemtype = 36733,
+				  count = 1,
+				  description = "Drinking this potion will increase your Energy Damage protection by 8% for one hour.",
+				  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				},
+				{
+				  icons = { "Holy_Resilience.png" },
+				  name = "Holy Resilience",
+				  price = 20,
+				  itemtype = 36733,
+				  count = 1,
+				  description = "Drinking this potion will increase your Holy Damage protection by 8% for one hour.",
+				  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				},
+				{
+				  icons = { "Death_Resilience.png" },
+				  name = "Death Resilience",
+				  price = 20,
+				  itemtype = 36734,
+				  count = 1,
+				  description = "Drinking this potion will increase your Death Damage protection by 8% for one hour.",
+				  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				},
+				{
+				  icons = { "Physical_Resilience.png" },
+				  name = "Physical Resilience",
+				  price = 20,
+				  itemtype = 36735,
+				  count = 1,
+				  description = "Drinking this potion will increase your Physical Damage protection by 8% for one hour.",
+				  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				},
+		  },
+		  -- Exclusive Offers 
+		  },{
+			  icons = { "Ice_Amplification.png" },
+			  parent = "Stats", 
+			  name = "Amplification",
+			  rookgaard = true,
+			  offers = {	
+				  {
+					  icons = { "Fire_Amplification.png" },
+					  name = "Fire Amplification",
+					  price = 25,
+					  itemtype = 36736,
+					  count = 1,
+					  description = "Drinking this potion will increase your targets sensitivity to your Fire Damage attacks by 8% for one hour. It only affects attacks against monsters.",
+					  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+					},
+					{
+					  icons = { "Ice_Amplification.png" },
+					  name = "Ice Amplification",
+					  price = 25,
+					  itemtype = 36737,
+					  count = 1,
+					  description = "Drinking this potion will increase your targets sensitivity to your Ice Damage attacks by 8% for one hour. It only affects attacks against monsters.",
+					  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+					},
+					{
+					  icons = { "Earth_Amplification.png" },
+					  name = "Earth Resilience",
+					  price = 25,
+					  itemtype = 36738,
+					  count = 1,
+					  description = "Drinking this potion will increase your targets sensitivity to your Earth Damage attacks by 8% for one hour. It only affects attacks against monsters.",
+					  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+					},
+					{
+					  icons = { "Energy_Amplification.png" },
+					  name = "Energy Resilience",
+					  price = 25,
+					  itemtype = 36739,
+					  count = 1,
+					  description = "Drinking this potion will increase your targets sensitivity to your Energy Damage attacks by 8% for one hour. It only affects attacks against monsters.",
+					  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+					},
+					{
+					  icons = { "Holy_Amplification.png" },
+					  name = "Holy Resilience",
+					  price = 25,
+					  itemtype = 36740,
+					  count = 1,
+					  description = "Drinking this potion will increase your targets sensitivity to your Holy Damage attacks by 8% for one hour. It only affects attacks against monsters.",
+					  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+					},
+					{
+					  icons = { "Death_Amplification.png" },
+					  name = "Death Resilience",
+					  price = 25,
+					  itemtype = 36741,
+					  count = 1,
+					  description = "Drinking this potion will increase your targets sensitivity to your Death Damage attacks by 8% for one hour. It only affects attacks against monsters.",
+					  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+					},
+					{
+					  icons = { "Physical_Amplification.png" },
+					  name = "Physical Resilience",
+					  price = 25,
+					  itemtype = 36742,
+					  count = 1,
+					  description = "Drinking this potion will increase your targets sensitivity to your Physical Damage attacks by 8% for one hour. It only affects attacks against monsters.",
+					  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+					},
+			  },
+			  -- Exclusive Offers 
+			  }, 
+		 { 
+		  icons = { "Charm_Upgrade.png" },
+		  name = "Modifiers",
+		  parent = "Stats", 
+		  rookgaard = true,
+		  state = GameStore.States.STATE_NONE,
+		  offers = {
+			  
+			  {
+				  icons = { "Stamina_Extension.png" },
+				  name = "stamina potion",
+				  price = 200,
+				  itemtype = 36725,
+				  count = 1,
+				  description = "Refill your Stamina.",
+				  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				},	
+				{
+					icons = { "Kooldown-Aid.png" },
+					name = "Kooldown Aid",
+					price = 15,
+					itemtype = 36723,
+					count = 1,
+					description = "Resets cooldown of all spells.",
+					type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				  },
+				  {
+					icons = { "Strike_Enhancement.png" },
+					name = "Strike Enhancement",
+					price = 25,
+					itemtype = 36724,
+					count = 1,
+					description = "Drinking this potion will increase the Critical Hit chance by 5% for one hour.",
+					type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				  },
+				  {
+					icons = { "Charm_Upgrade.png" },
+					name = "Charm Upgrade",
+					price = 35,
+					itemtype = 36726,
+					count = 1,
+					description = "Drinking this potion will increase offensive Charm trigger chances by 5% (except Cripple) for one hour.",
+					type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				  },
+				  {
+					icons = { "Wealth_Duplex.png" },
+					name = "Wealth Duplex",
+					price = 100,
+					itemtype = 36727,
+					count = 1,
+					description = "Drinking this potion will double the loot from every regular monster you kill for one hour.",
+					type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				  },
+				  {
+					icons = { "Bestiary_Betterment.png" },
+					name = "Bestiary Betterment",
+					price = 100,
+					itemtype = 36728,
+					count = 1,
+					description = "Drinking this potion will make kills count twice for the Bestiary for one hour.",
+					type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				  },
+	  
+	  
+	  
+	  
+		  },
+		 },
+	  
+	   {   
+		 icons = { "misc.png" },
+		 name = "Miscellaneous",
+		 offers = { 
+		  
+			  {
+				icons = { "The_Supreme_Cube.png" },
+				name = "An Supreme cube",
+				price = 1500,
+				itemtype = 31633,
+				count = 1,
+				description = "This cube allows you to teleport on any town, forge and hunt spawn while you are in PZ.",
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				home = true, 
+			  },
+			  {
+				  icons = { "roulette_token.png" },
+				  name = "Casino Token",
+				  price = 55,
+				  itemtype = 60082,
+				  count = 1,
+				  description = "This coin is used to spin one time on the Casino Roulette upper Thais Temple.",
+				  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				  home = true, 
+				},
+				{
+					icons = { "roulette_token.png" },
+					name = "Casino Token",
+					price = 500,
+					itemtype = 60082,
+					count = 10,
+					description = "This coin is used to spin one time on the Casino Roulette upper Thais Temple.",
+					type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				  },
+				{
+				icons = { "roulette_token.png" },
+				name = "Blessed Book",
+				price = 200,
+				itemtype = 60908,
+				count = 1,
+				description = "Infinite Remote Bless.",
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				home = true, 
+			  },
+				{
+				  icons = { "roulette_token.png" },
+				  name = "A Token Teleport",
+				  price = 20,
+				  itemtype = 60132,
+				  count = 1,
+				  description = "Este token é usado para se teletransportar de qualquer lugar para o templo por 3 minutos. Você pode reabastecer e voltar ao templo e voltar à luta!",
+				  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				  home = true, 
+				},
+
+				{
+					icons = { "roulette_token.png" },
+					name = "Token Teleport",
+					price = 85,
+					itemtype = 60132,
+					count = 5,
+					description = "Este token é usado para se teletransportar de qualquer lugar para o templo por 3 minutos. Você pode reabastecer e voltar ao templo e voltar à luta!",
+					type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				  },
+
+		
+
+				{
+				  icons = { "Dust.gif" },
+				  name = "Dust",
+				  price = 5,
+				  itemtype = 37160,
+				  count = 1,
+				  description = "Use-o para obter 1 pó, pode ser usado para obter 1 pó em sua conta.",
+				  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				  home = true, 
+				},
+				{
+				  icons = { "Dust.gif" },
+				  name = "Dust",
+				  price = 350,
+				  itemtype = 37160,
+				  count = 100,
+				  description = "Você receberá 100 poeiras e poderá usá-las para obter poeiras em sua conta.",
+				  type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				},
+			},
+		 rookgaard = true,
+		 state = GameStore.States.STATE_NONE,
+		},
+
+		
 	-- Consumables
+
+
+
+
 	{
 		icons = { "Category_Consumables.png" },
 		name = "Consumables",
@@ -2292,7 +2942,7 @@ GameStore.Categories = {
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Armoured Archers are the epitome of invisible danger. Silently and nimbly, they advance in the background. For hours, they wait patiently, almost motionless, for the decisive moment. Just to be perfectly present in a deadly second.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
-				home = true,
+			
 			},
 			{
 				icons = { "Outfit_Beastmaster_Male_Addon_3.png", "Outfit_Beastmaster_Female_Addon_3.png" },
@@ -4157,7 +4807,7 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
+
 			},
 			{
 				icons = { "Portable_Aqueduct.png" },
@@ -6342,7 +6992,6 @@ GameStore.Categories = {
 			{
 				icons = { "Name_Change.png" },
 				name = "Character Name Change",
-				home = true,
 				price = 250,
 				id = 65002,
 				description = "<i>Tired of your current character name? Purchase a new one!</i>\n\n{character}\n{info} relog required after purchase to finalise the name change",
@@ -6419,12 +7068,13 @@ GameStore.Categories = {
 			},
 			{
 				icons = { "Gold_Pouch.png" },
-				name = "Gold Pouch",
+				name = "Loot Pouch",
 				price = 900,
 				itemtype = 23721,
 				count = 1,
 				description = "<i>Carries as many gold, platinum or crystal coins as your capacity allows, however, no other items.</i>\n\n{character}\n{storeinbox}\n{once}\n{useicon} use it to open it\n{info} always placed on the first position of your Store inbox",
 				type = GameStore.OfferTypes.OFFER_TYPE_POUCH,
+				home = true,
 			},
 			{
 				icons = { "Magic_Gold_Converter.png" },
@@ -6432,8 +7082,9 @@ GameStore.Categories = {
 				price = 15,
 				itemtype = 28525,
 				charges = 500,
-				description = "<i>Changes automatically either a stack of 100 gold pieces into 1 platinum coin, or a stack of 100 platinum coins into 1 crystal coin!</i>\n\n{character}\n{storeinbox}\n{useicon} use it to activate or deactivate the automatic conversion\n{info} converts all stacks of 100 gold or platinum in the inventory whenever it is activated\n{info} deactivated upon purchase\n{info} usable for 500 conversions a piece",
+				description = "<i>Deixe ativo para converter todas pilhas de coins atomaticamente. Item Infinito",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
+				home = true
 			},
 			{
 				icons = { "Prey_Bonus_Reroll.png" },
@@ -6605,7 +7256,7 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
+			
 			},
 			{
 				icons = { "Gilded_Crown.png" },
@@ -6615,7 +7266,7 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
+				
 			},
 			{
 				icons = { "Gilded_Horned_Helmet.png" },
@@ -6625,7 +7276,7 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
+				
 			},
 			{
 				icons = { "Gilded_Magic_Longsword.png" },
@@ -6635,7 +7286,7 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
+				
 			},
 			{
 				icons = { "Gilded_Warlord_Sword.png" },
@@ -6645,7 +7296,7 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
+				
 			},
 			{
 				icons = { "Guzzlemaw_Grub.png" },

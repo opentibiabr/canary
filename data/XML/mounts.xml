@@ -1,5 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mounts>
+
+
+	<mount id="411" clientid="2040" name="Red Panter" speed="10" premium="no" type="store" />
+	<mount id="412" clientid="2041" name="Purple CrystalWolf" speed="10" premium="no" type="store" />
+	<mount id="413" clientid="2042" name="Purple Scorpion" speed="10" premium="no" type="store" />
+	<mount id="413" clientid="2043" name="Purple Draptor" speed="10" premium="no" type="store" />
+	<mount id="414" clientid="2046" name="Yellow Scorpion" speed="10" premium="no" type="store" />
+	<mount id="415" clientid="2047" name="Purple Dragonling" speed="10" premium="no" type="store" />
+	<mount id="416" clientid="2048" name="Black Manta" speed="10" premium="no" type="store" />
+	<mount id="4017" clientid="2049" name="Crystal Blazing" speed="10" premium="no" type="store" />
+	<mount id="418" clientid="2050" name="Green Bug" speed="10" premium="no" type="store" />
+	<mount id="419" clientid="2051" name="Yellow Bug" speed="10" premium="no" type="store" />
+	<mount id="420" clientid="2052" name="Blue Draptor" speed="10" premium="no" type="store" />
+	<mount id="421" clientid="2053" name="Brown Draptor" speed="10" premium="no" type="store" />
+	<mount id="422" clientid="2054" name="Thornfire Wolf" speed="10" premium="no" type="store" />
+	<mount id="423" clientid="2055" name="Blue Scorpion" speed="10" premium="no" type="store" />
+	<mount id="424" clientid="2056" name="Blue Bug" speed="10" premium="no" type="store" />
+	<mount id="425" clientid="2057" name="Black Panter" speed="10" premium="no" type="store" />
+	<mount id="426" clientid="2058" name="Green Wolf" speed="10" premium="no" type="store" />
+	<mount id="427" clientid="2059" name="Red Scorpion" speed="10" premium="no" type="store" />
+	<mount id="428" clientid="2060" name="Blue Panter" speed="10" premium="no" type="store" />
+	<mount id="429" clientid="2061" name="Grey Stampor" speed="10" premium="no" type="store" />
+	<mount id="430" clientid="2062" name="Black UndeadBear" speed="10" premium="no" type="store" />
+	<mount id="431" clientid="2063" name="Purple Whorla" speed="10" premium="no" type="store" />
+	<mount id="432" clientid="2064" name="Enchanted Wolf" speed="10" premium="no" type="store" />
+	<mount id="433" clientid="2065" name="Diamond Antilope" speed="10" premium="no" type="store" />
+	<mount id="434" clientid="2066" name="Enchanted Scorpion" speed="10" premium="no" type="store" />
+	<mount id="435" clientid="2067" name="Dark Draptor" speed="10" premium="no" type="store" />
+	<mount id="436" clientid="2068" name="Panter" speed="10" premium="no" type="store" />
+	<mount id="437" clientid="2069" name="Green Hibermouth" speed="10" premium="no" type="store" />
+	<mount id="438" clientid="2082" name="Purple Flamehorse" speed="10" premium="no" type="store" />
+	<mount id="439" clientid="2083" name="Dark Catbat" speed="10" premium="no" type="store" />
+	<mount id="440" clientid="2086" name="Blue Flamehorse" speed="10" premium="no" type="store" />
+	<mount id="441" clientid="2085" name="Enchanted Carpet" speed="10" premium="no" type="store" />
+	<mount id="442" clientid="8056" name="Green Flamehose" speed="10" premium="no" type="store" />
+
+
+
+
+	<mount id="400" clientid="2008" name="Black Fox" speed="10" premium="no" type="store" />
+	<mount id="401" clientid="2009" name="White Fox" speed="10" premium="no" type="store" />
+	<mount id="402" clientid="2010" name="Brown Fox" speed="10" premium="no" type="store" />
+	<mount id="403" clientid="2011" name="Black Skull" speed="10" premium="no" type="store" />
+	<mount id="404" clientid="2012" name="Blue Skull" speed="10" premium="no" type="store" />
+	<mount id="405" clientid="2016" name="Rena" speed="10" premium="no" type="store" />
+	<mount id="406" clientid="2094" name="Draptor Branco" speed="10" premium="no" type="store" />
+	<mount id="407" clientid="1685" name="Doom Skull" speed="10" premium="no" type="store" />
+	<mount id="408" clientid="1686" name="Magma Skull" speed="10" premium="no" type="store" />
+	<mount id="409" clientid="1687" name="Corpsefire Skull" speed="10" premium="no" type="store" />
+	<mount id="410" clientid="1724" name="Gongon Hydra" speed="10" premium="no" type="store" />
+
+
 	<mount id="1" clientid="368" name="Widow Queen" speed="10" premium="yes" type="quest" />
 	<mount id="2" clientid="369" name="Racing Bird" speed="10" premium="yes" type="quest" />
 	<mount id="3" clientid="370" name="War Bear" speed="10" premium="yes" type="quest" />

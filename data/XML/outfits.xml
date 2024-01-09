@@ -117,6 +117,62 @@
 	<outfit type="0" looktype="1676" name="Darklight Evoker" premium="no" unlocked="no" enabled="yes" from="store" />
 	<outfit type="0" looktype="1681" name="Flamefury Mage" premium="no" unlocked="no" enabled="yes" from="store" />
 
+	
+		<outfit type="0" looktype="2002" name="Custumise1" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="1" looktype="2003" name="Custumise2" premium="no" unlocked="no" enabled="yes" from="store" />
+
+		<outfit type="0" looktype="2004" name="Custumise3" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="1" looktype="2005" name="Custumise4" premium="no" unlocked="no" enabled="yes" from="store" />
+
+		<outfit type="1" looktype="2007" name="Custumise5" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2006" name="Custumise6" premium="no" unlocked="no" enabled="yes" from="store" />
+
+		<outfit type="1" looktype="2013" name="Custumise7" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2013" name="Custumise8" premium="no" unlocked="no" enabled="yes" from="store" />
+		
+		<outfit type="1" looktype="2014" name="Custumise11" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2014" name="Custumise12" premium="no" unlocked="no" enabled="yes" from="store" />
+
+		<outfit type="1" looktype="2015" name="Custumise13" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2015" name="Custumise14" premium="no" unlocked="no" enabled="yes" from="store" />
+
+		<outfit type="1" looktype="2024" name="Custumise15" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2022" name="Custumise16" premium="no" unlocked="no" enabled="yes" from="store" />
+
+		<outfit type="1" looktype="2026" name="Custumise17" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2026" name="Custumise18" premium="no" unlocked="no" enabled="yes" from="store" />
+
+		<outfit type="1" looktype="2092" name="Custumise19" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2093" name="Custumise20" premium="no" unlocked="no" enabled="yes" from="store" />
+
+		<outfit type="1" looktype="2095" name="Custumise21" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2096" name="Custumise22" premium="no" unlocked="no" enabled="yes" from="store" />
+
+		<outfit type="1" looktype="2097" name="Custumise23" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2097" name="Custumise24" premium="no" unlocked="no" enabled="yes" from="store" />
+
+		<outfit type="1" looktype="2098" name="Custumise25" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2099" name="Custumise26" premium="no" unlocked="no" enabled="yes" from="store" />
+
+	
+
+	 	<outfit type="1" looktype="2027" name="New Mage" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2028" name="New Mage" premium="no" unlocked="no" enabled="yes" from="store" />
+
+		<outfit type="1" looktype="2029" name="Energy Mage" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2030" name="Energy Mage" premium="no" unlocked="no" enabled="yes" from="store" />
+
+		<outfit type="1" looktype="2031" name="Poison Mage" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2032" name="Poison Mage" premium="no" unlocked="no" enabled="yes" from="store" />
+
+		<outfit type="1" looktype="2033" name="Fire Mage" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2034" name="Fire Mage" premium="no" unlocked="no" enabled="yes" from="store" />
+
+		<outfit type="1" looktype="2035" name="Ice Mage" premium="no" unlocked="no" enabled="yes" from="store" />
+		<outfit type="0" looktype="2036" name="Ice Mage" premium="no" unlocked="no" enabled="yes" from="store" />
+	
+
+
 	<!-- Male outfits -->
 	<outfit type="1" looktype="128" name="Citizen" premium="no" unlocked="yes" enabled="yes" />
 	<outfit type="1" looktype="129" name="Hunter" premium="no" unlocked="yes" enabled="yes" />

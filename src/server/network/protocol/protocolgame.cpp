@@ -4857,7 +4857,7 @@ void ProtocolGame::sendForgingData() {
 	// Exalted core table per tier
 	msg.addByte(static_cast<uint8_t>(tierCorePrices.size()));
 	for (const auto &[tier, cores] : tierCorePrices) {
-		msg.addByte(tier);
+		msg.addByte(tier + 1);
 		msg.addByte(cores);
 	}
 

@@ -5350,6 +5350,10 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 			continue;
 		}
 
+		if (!itemType.abilities->perfectShotRange) {
+			continue;
+		}
+
 		if (itemType.abilities->perfectShotRange == range) {
 			result += itemType.abilities->perfectShotDamage;
 			uint16_t charges = item->getCharges();

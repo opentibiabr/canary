@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+<npcs>
+	<npc centerx="1014" centery="1024" centerz="5" radius="2">
+		<npc name="Tamoril" x="-1" y="0" z="5" spawntime="90" direction="2" />
+	</npc>
+	<npc centerx="31525" centery="32022" centerz="5" radius="1">
+		<npc name="Imbuement Assistant" x="-1" y="-1" z="5" spawntime="60" />
+	</npc>
+	<npc centerx="31530" centery="32022" centerz="5" radius="1">
+		<npc name="Zaidal" x="0" y="-1" z="5" spawntime="60" />
+	</npc>
+	<npc centerx="983" centery="951" centerz="6" radius="1">
+		<npc name="The Lootmonger" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="985" centery="991" centerz="6" radius="1">
+		<npc name="Battlemart" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="988" centery="1023" centerz="6" radius="1">
+		<npc name="Haroun" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="996" centery="1023" centerz="6" radius="1">
+		<npc name="Alesar" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="1002" centery="1025" centerz="6" radius="1">
+		<npc name="Esrik" x="-1" y="1" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="984" centery="1030" centerz="6" radius="1">
+		<npc name="Yasir" x="1" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="1004" centery="1031" centerz="6" radius="1">
+		<npc name="Yaman" x="0" y="1" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="990" centery="1036" centerz="6" radius="1">
+		<npc name="Nah'Bob" x="1" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="998" centery="1037" centerz="6" radius="1">
+		<npc name="Rashid of Island" x="0" y="-1" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="31523" centery="32022" centerz="6" radius="1">
+		<npc name="Nicholas" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="31525" centery="32022" centerz="6" radius="1">
+		<npc name="Peggy" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="31527" centery="32022" centerz="6" radius="1">
+		<npc name="Duncan" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="31529" centery="32022" centerz="6" radius="1">
+		<npc name="Ashtamor" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="32343" centery="32245" centerz="6" radius="1">
+		<npc name="Galuna" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="1059" centery="1018" centerz="7" radius="3">
+		<npc name="Zuma Magehide" x="-1" y="1" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="1066" centery="1018" centerz="7" radius="3">
+		<npc name="Runtel Blackspark" x="0" y="3" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="1003" centery="1019" centerz="7" radius="1">
+		<npc name="Hanna" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="998" centery="1024" centerz="7" radius="1">
+		<npc name="Imbuement Assistant" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="990" centery="1027" centerz="7" radius="1">
+		<npc name="Archery" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="994" centery="1034" centerz="7" radius="1">
+		<npc name="Rock In A Hard Place" x="-1" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="1001" centery="1036" centerz="7" radius="1">
+		<npc name="Lailene" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="32349" centery="32219" centerz="7" radius="1">
+		<npc name="Benjamin" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="32381" centery="32220" centerz="7" radius="1">
+		<npc name="Oswald" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="32342" centery="32229" centerz="7" radius="1">
+		<npc name="Naji" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="32342" centery="32235" centerz="7" radius="1">
+		<npc name="Elane" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="31581" centery="31969" centerz="8" radius="1">
+		<npc name="Yasir" x="0" y="-1" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31498" centery="31994" centerz="8" radius="1">
+		<npc name="Grizzly Adams" x="0" y="0" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31484" centery="32015" centerz="8" radius="1">
+		<npc name="Balenoc" x="0" y="1" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31508" centery="32016" centerz="8" radius="1">
+		<npc name="Estherya" x="-1" y="0" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31626" centery="32017" centerz="8" radius="1">
+		<npc name="Nah'Bob" x="0" y="-1" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31587" centery="32018" centerz="8" radius="1">
+		<npc name="Alesar" x="0" y="1" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31602" centery="32018" centerz="8" radius="1">
+		<npc name="Yaman" x="0" y="-1" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31574" centery="32022" centerz="8" radius="1">
+		<npc name="Haroun" x="0" y="-1" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31486" centery="32025" centerz="8" radius="1">
+		<npc name="Symbioze" x="0" y="1" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31507" centery="32026" centerz="8" radius="1">
+		<npc name="Loshma" x="0" y="-1" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31479" centery="32031" centerz="8" radius="1">
+		<npc name="Apothicaire" x="0" y="-1" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31552" centery="32031" centerz="8" radius="1">
+		<npc name="Rashid" x="0" y="-1" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31579" centery="32036" centerz="8" radius="1">
+		<npc name="Tamoril" x="0" y="0" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31594" centery="32039" centerz="8" radius="1">
+		<npc name="Esrik" x="0" y="0" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31653" centery="32044" centerz="8" radius="1">
+		<npc name="Imbuement Assistant" x="0" y="-1" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31502" centery="32047" centerz="8" radius="1">
+		<npc name="Naji" x="0" y="-1" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31490" centery="32048" centerz="8" radius="1">
+		<npc name="Benjamin" x="0" y="-1" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31593" centery="32054" centerz="8" radius="1">
+		<npc name="Hanna" x="-1" y="0" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31573" centery="32059" centerz="8" radius="1">
+		<npc name="Lailene" x="1" y="0" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31541" centery="32060" centerz="8" radius="1">
+		<npc name="Sabrehaven" x="0" y="0" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31548" centery="32060" centerz="8" radius="1">
+		<npc name="Zoltun" x="1" y="0" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31580" centery="32065" centerz="8" radius="1">
+		<npc name="Rock In A Hard Place" x="0" y="0" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31525" centery="32077" centerz="8" radius="1">
+		<npc name="Mythressa" x="-1" y="0" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31446" centery="32095" centerz="8" radius="1">
+		<npc name="Duncan" x="0" y="0" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31444" centery="32102" centerz="8" radius="1">
+		<npc name="Dorbin" x="0" y="0" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="31444" centery="32111" centerz="8" radius="1">
+		<npc name="Vera" x="0" y="0" z="8" spawntime="60" />
+	</npc>
+</npcs>

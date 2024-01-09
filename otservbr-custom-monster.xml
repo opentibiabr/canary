@@ -1,0 +1,3108 @@
+<?xml version="1.0"?>
+<monsters>
+	<monster centerx="31709" centery="31875" centerz="1" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="1" spawntime="60" />
+		<monster name="Sopping Corpus" x="-1" y="1" z="1" spawntime="60" />
+		<monster name="Wandering Pillar" x="0" y="1" z="1" spawntime="60" />
+	</monster>
+	<monster centerx="31717" centery="31876" centerz="1" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="1" spawntime="60" />
+		<monster name="Sopping Carcass" x="1" y="0" z="1" spawntime="60" />
+		<monster name="Walking Pillar" x="-1" y="1" z="1" spawntime="60" />
+		<monster name="Sopping Corpus" x="0" y="1" z="1" spawntime="60" />
+		<monster name="Sopping Carcass" x="1" y="1" z="1" spawntime="60" />
+	</monster>
+	<monster centerx="31707" centery="31877" centerz="1" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="1" spawntime="60" />
+	</monster>
+	<monster centerx="31709" centery="31877" centerz="1" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="1" spawntime="60" />
+	</monster>
+	<monster centerx="31708" centery="31875" centerz="2" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="2" spawntime="60" />
+		<monster name="Sopping Carcass" x="0" y="1" z="2" spawntime="60" />
+		<monster name="Sopping Corpus" x="1" y="1" z="2" spawntime="60" />
+	</monster>
+	<monster centerx="31715" centery="31876" centerz="2" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="2" spawntime="60" />
+		<monster name="Sopping Carcass" x="1" y="0" z="2" spawntime="60" />
+		<monster name="Sopping Corpus" x="1" y="1" z="2" spawntime="60" />
+	</monster>
+	<monster centerx="31722" centery="31869" centerz="3" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="3" spawntime="60" />
+	</monster>
+	<monster centerx="31725" centery="31869" centerz="3" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="3" spawntime="60" />
+	</monster>
+	<monster centerx="31719" centery="31871" centerz="3" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="3" spawntime="60" />
+	</monster>
+	<monster centerx="31721" centery="31871" centerz="3" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="3" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="31874" centerz="3" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="3" spawntime="60" />
+		<monster name="Walking Pillar" x="1" y="1" z="3" spawntime="60" />
+	</monster>
+	<monster centerx="31726" centery="31874" centerz="3" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="3" spawntime="60" />
+		<monster name="Wandering Pillar" x="1" y="1" z="3" spawntime="60" />
+	</monster>
+	<monster centerx="31766" centery="31887" centerz="3" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="3" spawntime="60" />
+	</monster>
+	<monster centerx="31762" centery="31888" centerz="3" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="3" spawntime="60" />
+		<monster name="Wandering Pillar" x="1" y="1" z="3" spawntime="60" />
+	</monster>
+	<monster centerx="31764" centery="31889" centerz="3" radius="1">
+		<monster name="Walking Pillar" x="0" y="-1" z="3" spawntime="60" />
+		<monster name="Oozing Carcass" x="0" y="0" z="3" spawntime="60" />
+	</monster>
+	<monster centerx="31767" centery="31889" centerz="3" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="3" spawntime="60" />
+	</monster>
+	<monster centerx="31762" centery="31890" centerz="3" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="3" spawntime="60" />
+	</monster>
+	<monster centerx="31766" centery="31891" centerz="3" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="3" spawntime="60" />
+	</monster>
+	<monster centerx="31708" centery="31874" centerz="4" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="4" spawntime="60" />
+	</monster>
+	<monster centerx="31705" centery="31885" centerz="4" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="4" spawntime="60" />
+	</monster>
+	<monster centerx="31754" centery="31888" centerz="4" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="4" spawntime="60" />
+	</monster>
+	<monster centerx="31751" centery="31889" centerz="4" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="4" spawntime="60" />
+	</monster>
+	<monster centerx="31749" centery="31890" centerz="4" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="4" spawntime="60" />
+		<monster name="Walking Pillar" x="1" y="1" z="4" spawntime="60" />
+	</monster>
+	<monster centerx="31754" centery="31890" centerz="4" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="4" spawntime="60" />
+	</monster>
+	<monster centerx="31726" centery="31920" centerz="4" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="4" spawntime="60" />
+	</monster>
+	<monster centerx="31722" centery="31921" centerz="4" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="4" spawntime="60" />
+	</monster>
+	<monster centerx="31719" centery="31922" centerz="4" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="4" spawntime="60" />
+	</monster>
+	<monster centerx="31715" centery="31923" centerz="4" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="4" spawntime="60" />
+	</monster>
+	<monster centerx="31726" centery="31924" centerz="4" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="4" spawntime="60" />
+	</monster>
+	<monster centerx="31713" centery="31929" centerz="4" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="4" spawntime="60" />
+	</monster>
+	<monster centerx="31708" centery="31867" centerz="5" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31711" centery="31867" centerz="5" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31706" centery="31872" centerz="5" radius="1">
+		<monster name="Walking Pillar" x="0" y="-1" z="5" spawntime="60" />
+		<monster name="Converter" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31733" centery="31872" centerz="5" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31704" centery="31873" centerz="5" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31714" centery="31873" centerz="5" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31731" centery="31873" centerz="5" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31721" centery="31874" centerz="5" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="5" spawntime="60" />
+		<monster name="Walking Pillar" x="1" y="1" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31716" centery="31875" centerz="5" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31726" centery="31875" centerz="5" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31729" centery="31875" centerz="5" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31734" centery="31875" centerz="5" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31705" centery="31884" centerz="5" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="5" spawntime="60" />
+		<monster name="Wandering Pillar" x="1" y="1" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31730" centery="31888" centerz="5" radius="1">
+		<monster name="Converter" x="0" y="0" z="5" spawntime="60" />
+		<monster name="Darklight Construct" x="1" y="1" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31751" centery="31888" centerz="5" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31754" centery="31888" centerz="5" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31750" centery="31890" centerz="5" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="1" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31754" centery="31891" centerz="5" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31752" centery="31892" centerz="5" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="31707" centery="31871" centerz="6" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="31706" centery="31884" centerz="6" radius="1">
+		<monster name="Wandering Pillar" x="-1" y="0" z="6" spawntime="60" />
+		<monster name="Walking Pillar" x="0" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="31704" centery="31885" centerz="6" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="31750" centery="31889" centerz="6" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="31752" centery="31890" centerz="6" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="31753" centery="31892" centerz="6" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="31753" centery="31895" centerz="6" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="31749" centery="31896" centerz="6" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="31755" centery="31897" centerz="6" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="31719" centery="31918" centerz="6" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="31725" centery="31920" centerz="6" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="31722" centery="31921" centerz="6" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="31456" centery="31670" centerz="7" radius="1">
+		<monster name="Desolation Tower" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31526" centery="31671" centerz="7" radius="1">
+		<monster name="Desolation Tower" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31526" centery="31699" centerz="7" radius="1">
+		<monster name="Desolation Tower" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31554" centery="31699" centerz="7" radius="1">
+		<monster name="Desolation Tower" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31450" centery="31704" centerz="7" radius="1">
+		<monster name="Haunting Tower" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31509" centery="31716" centerz="7" radius="1">
+		<monster name="Desolation Tower" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31496" centery="31729" centerz="7" radius="1">
+		<monster name="Haunting Tower" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31554" centery="31743" centerz="7" radius="1">
+		<monster name="Desolation Tower" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31450" centery="31749" centerz="7" radius="1">
+		<monster name="Haunting Tower" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31476" centery="31749" centerz="7" radius="1">
+		<monster name="Haunting Tower" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31476" centery="31775" centerz="7" radius="1">
+		<monster name="Haunting Tower" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31549" centery="31775" centerz="7" radius="1">
+		<monster name="Haunting Tower" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31722" centery="31859" centerz="7" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="7" spawntime="60" />
+		<monster name="Ayana the crimson curse" x="1" y="0" z="7" spawntime="900" />
+	</monster>
+	<monster centerx="31720" centery="31860" centerz="7" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="31863" centerz="7" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="7" spawntime="60" />
+		<monster name="Darklight Source" x="1" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31723" centery="31863" centerz="7" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31751" centery="31866" centerz="7" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31755" centery="31866" centerz="7" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31709" centery="31867" centerz="7" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31721" centery="31867" centerz="7" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31748" centery="31867" centerz="7" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31757" centery="31868" centerz="7" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="31869" centerz="7" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31744" centery="31869" centerz="7" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31749" centery="31870" centerz="7" radius="1">
+		<monster name="Elder Bloodjaw" x="-1" y="-1" z="7" spawntime="60" />
+		<monster name="Meandering Mushroom" x="0" y="0" z="7" spawntime="60" />
+		<monster name="Darklight Striker" x="-1" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31756" centery="31870" centerz="7" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="7" spawntime="60" />
+		<monster name="Darklight Striker" x="1" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31705" centery="31871" centerz="7" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31708" centery="31871" centerz="7" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31711" centery="31871" centerz="7" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31759" centery="31871" centerz="7" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31721" centery="31872" centerz="7" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31748" centery="31873" centerz="7" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31721" centery="31874" centerz="7" radius="1">
+		<monster name="Meandering Mushroom" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31748" centery="31876" centerz="7" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31744" centery="31877" centerz="7" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="7" spawntime="60" />
+		<monster name="Rotten Man-Maggot" x="-1" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31754" centery="31878" centerz="7" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31711" centery="31880" centerz="7" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="7" spawntime="60" />
+		<monster name="Oozing Carcass" x="1" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31740" centery="31881" centerz="7" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31727" centery="31883" centerz="7" radius="1">
+		<monster name="Converter" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31701" centery="31889" centerz="7" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31703" centery="31890" centerz="7" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31710" centery="31890" centerz="7" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31702" centery="31892" centerz="7" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31713" centery="31892" centerz="7" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31706" centery="31893" centerz="7" radius="1">
+		<monster name="Meandering Mushroom" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31700" centery="31895" centerz="7" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31726" centery="31895" centerz="7" radius="1">
+		<monster name="Meandering Mushroom" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31738" centery="31895" centerz="7" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31698" centery="31896" centerz="7" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="7" spawntime="60" />
+		<monster name="Darklight Matter" x="0" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31714" centery="31896" centerz="7" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31700" centery="31897" centerz="7" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="31897" centerz="7" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31722" centery="31897" centerz="7" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31740" centery="31897" centerz="7" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="7" spawntime="60" />
+		<monster name="Rotten Man-Maggot" x="-1" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31733" centery="31898" centerz="7" radius="1">
+		<monster name="Oozing Carcass" x="0" y="-1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31726" centery="31899" centerz="7" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31706" centery="31900" centerz="7" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="7" spawntime="60" />
+		<monster name="Rotten Man-Maggot" x="1" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31716" centery="31900" centerz="7" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31712" centery="31901" centerz="7" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31735" centery="31901" centerz="7" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31735" centery="31903" centerz="7" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31741" centery="31904" centerz="7" radius="1">
+		<monster name="Meandering Mushroom" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31694" centery="31905" centerz="7" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31744" centery="31905" centerz="7" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31690" centery="31906" centerz="7" radius="1">
+		<monster name="Converter" x="0" y="-1" z="7" spawntime="60" />
+		<monster name="Oozing Carcass" x="1" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31711" centery="31906" centerz="7" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31709" centery="31907" centerz="7" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31739" centery="31907" centerz="7" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31741" centery="31907" centerz="7" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31711" centery="31908" centerz="7" radius="1">
+		<monster name="Converter" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31746" centery="31910" centerz="7" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31698" centery="31913" centerz="7" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31754" centery="31913" centerz="7" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31749" centery="31914" centerz="7" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31707" centery="31915" centerz="7" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31747" centery="31915" centerz="7" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31696" centery="31916" centerz="7" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31751" centery="31916" centerz="7" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31749" centery="31917" centerz="7" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31748" centery="31919" centerz="7" radius="1">
+		<monster name="Tamru the black" x="0" y="0" z="7" spawntime="900" />
+	</monster>
+	<monster centerx="31747" centery="31921" centerz="7" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="31809" centery="31781" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31819" centery="31782" centerz="8" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31816" centery="31784" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31826" centery="31785" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31805" centery="31788" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31798" centery="31797" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31794" centery="31807" centerz="8" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31795" centery="31809" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31838" centery="31811" centerz="8" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Wandering Pillar" x="1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31795" centery="31813" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31838" centery="31813" centerz="8" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Walking Pillar" x="0" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31794" centery="31828" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31737" centery="31832" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31747" centery="31833" centerz="8" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31733" centery="31834" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Darklight Emitter" x="1" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31751" centery="31834" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Oozing Corpus" x="1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31801" centery="31835" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31747" centery="31836" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31753" centery="31836" centerz="8" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31806" centery="31837" centerz="8" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31719" centery="31838" centerz="8" radius="1">
+		<monster name="Converter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31721" centery="31838" centerz="8" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31739" centery="31838" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31811" centery="31838" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31718" centery="31840" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="31840" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31815" centery="31840" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31740" centery="31841" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31822" centery="31842" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31736" centery="31843" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="-1" z="8" spawntime="60" />
+		<monster name="Wandering Pillar" x="-1" y="0" z="8" spawntime="60" />
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31750" centery="31843" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31752" centery="31843" centerz="8" radius="1">
+		<monster name="Darklight Emitter" x="1" y="-1" z="8" spawntime="60" />
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31727" centery="31844" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31707" centery="31845" centerz="8" radius="1">
+		<monster name="Darklight Emitter" x="0" y="-1" z="8" spawntime="60" />
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Meandering Mushroom" x="1" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31709" centery="31845" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="-1" z="8" spawntime="60" />
+		<monster name="Oozing Corpus" x="1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31740" centery="31845" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31756" centery="31846" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31737" centery="31848" centerz="8" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31752" centery="31848" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Wandering Pillar" x="0" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31716" centery="31849" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="1" y="-1" z="8" spawntime="60" />
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31726" centery="31850" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Wandering Pillar" x="-1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31756" centery="31850" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31740" centery="31851" centerz="8" radius="1">
+		<monster name="Converter" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Rotten Man-Maggot" x="1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31713" centery="31852" centerz="8" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Wandering Pillar" x="1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31717" centery="31852" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31742" centery="31852" centerz="8" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31757" centery="31853" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31759" centery="31853" centerz="8" radius="1">
+		<monster name="Meandering Mushroom" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31429" centery="31854" centerz="8" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31744" centery="31854" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31723" centery="31855" centerz="8" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Oozing Corpus" x="1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31725" centery="31855" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31752" centery="31855" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Walking Pillar" x="0" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31760" centery="31855" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31427" centery="31856" centerz="8" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31595" centery="31856" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31715" centery="31856" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31429" centery="31857" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31422" centery="31858" centerz="8" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Darklight Construct" x="1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31435" centery="31859" centerz="8" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31455" centery="31860" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31598" centery="31860" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31739" centery="31860" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="-1" y="0" z="8" spawntime="60" />
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Meandering Mushroom" x="-1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31422" centery="31861" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31464" centery="31861" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31607" centery="31861" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Elder Bloodjaw" x="1" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31737" centery="31861" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31510" centery="31863" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31514" centery="31863" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="1800" />
+		<monster name="Oozing Corpus" x="0" y="1" z="8" spawntime="273155840" />
+	</monster>
+	<monster centerx="31599" centery="31863" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31452" centery="31864" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31456" centery="31864" centerz="8" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31460" centery="31864" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31712" centery="31864" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31745" centery="31864" centerz="8" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Walking Pillar" x="1" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31511" centery="31865" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31455" centery="31866" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31497" centery="31866" centerz="8" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31611" centery="31866" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31634" centery="31866" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31738" centery="31866" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31752" centery="31866" centerz="8" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="-1" z="8" spawntime="60" />
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31754" centery="31866" centerz="8" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31452" centery="31867" centerz="8" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31501" centery="31867" centerz="8" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31733" centery="31867" centerz="8" radius="1">
+		<monster name="Meandering Mushroom" x="0" y="-1" z="8" spawntime="60" />
+		<monster name="Oozing Corpus" x="1" y="-1" z="8" spawntime="60" />
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31472" centery="31868" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31484" centery="31868" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31490" centery="31868" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31586" centery="31868" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31727" centery="31868" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31439" centery="31869" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31635" centery="31869" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31609" centery="31870" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31587" centery="31871" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31625" centery="31871" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31523" centery="31872" centerz="8" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31647" centery="31872" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31420" centery="31873" centerz="8" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Darklight Construct" x="-1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31429" centery="31873" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31473" centery="31873" centerz="8" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31462" centery="31874" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31423" centery="31875" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31458" centery="31876" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31587" centery="31876" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31610" centery="31876" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31435" centery="31877" centerz="8" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31591" centery="31877" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31422" centery="31878" centerz="8" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31507" centery="31878" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="1800" />
+		<monster name="Sopping Corpus" x="1" y="1" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31641" centery="31878" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31661" centery="31878" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Oozing Carcass" x="-1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31489" centery="31879" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31518" centery="31879" centerz="8" radius="1">
+		<monster name="Foxmouse" x="0" y="0" z="8" spawntime="300" />
+	</monster>
+	<monster centerx="31438" centery="31880" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31617" centery="31880" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31638" centery="31880" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31495" centery="31881" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31506" centery="31881" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31517" centery="31881" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31499" centery="31882" centerz="8" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31623" centery="31882" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31630" centery="31882" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31656" centery="31882" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31669" centery="31882" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31444" centery="31883" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31473" centery="31883" centerz="8" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31596" centery="31883" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31470" centery="31884" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31517" centery="31884" centerz="8" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31600" centery="31885" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31436" centery="31886" centerz="8" radius="1">
+		<monster name="Darklight Construct" x="-1" y="0" z="8" spawntime="60" />
+		<monster name="Darklight Emitter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31471" centery="31886" centerz="8" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31473" centery="31886" centerz="8" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31579" centery="31886" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31582" centery="31888" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31647" centery="31888" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31463" centery="31889" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31466" centery="31889" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31609" centery="31889" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31666" centery="31889" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31431" centery="31890" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31506" centery="31891" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31430" centery="31892" centerz="8" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31573" centery="31892" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31506" centery="31893" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31509" centery="31893" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31576" centery="31893" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31588" centery="31893" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31617" centery="31893" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31642" centery="31893" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31640" centery="31894" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31464" centery="31895" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31573" centery="31895" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31628" centery="31895" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31427" centery="31896" centerz="8" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31634" centery="31896" centerz="8" radius="1">
+		<monster name="Foxmouse" x="0" y="0" z="8" spawntime="300" />
+	</monster>
+	<monster centerx="31658" centery="31896" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31498" centery="31897" centerz="8" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31656" centery="31897" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31425" centery="31898" centerz="8" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31444" centery="31898" centerz="8" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31452" centery="31899" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31511" centery="31899" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31595" centery="31899" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31408" centery="31900" centerz="8" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Darklight Construct" x="-1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31472" centery="31900" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31478" centery="31900" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="8" spawntime="60" direction="3" />
+	</monster>
+	<monster centerx="31461" centery="31901" centerz="8" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31599" centery="31901" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Oozing Carcass" x="-1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31650" centery="31901" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31519" centery="31902" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31439" centery="31903" centerz="8" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31456" centery="31903" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31474" centery="31903" centerz="8" radius="1">
+		<monster name="Darklight Emitter" x="1" y="-1" z="8" spawntime="60" direction="2" />
+		<monster name="Darklight Construct" x="-1" y="1" z="8" spawntime="60" direction="2" />
+	</monster>
+	<monster centerx="31523" centery="31903" centerz="8" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31441" centery="31905" centerz="8" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31407" centery="31906" centerz="8" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31455" centery="31906" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31644" centery="31906" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31415" centery="31907" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31473" centery="31907" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="8" spawntime="60" direction="3" />
+	</monster>
+	<monster centerx="31502" centery="31907" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31514" centery="31907" centerz="8" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31607" centery="31907" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31425" centery="31908" centerz="8" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31429" centery="31908" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31413" centery="31909" centerz="8" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31501" centery="31909" centerz="8" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31635" centery="31909" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31508" centery="31910" centerz="8" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31496" centery="31911" centerz="8" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Ayana the crimson curse" x="1" y="1" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31617" centery="31912" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31713" centery="31912" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31424" centery="31913" centerz="8" radius="1">
+		<monster name="Darklight Construct" x="-1" y="-1" z="8" spawntime="60" />
+		<monster name="Darklight Emitter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31620" centery="31913" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31428" centery="31914" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31706" centery="31915" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31710" centery="31915" centerz="8" radius="1">
+		<monster name="Tamru the black" x="0" y="-1" z="8" spawntime="1800" />
+	</monster>
+	<monster centerx="31718" centery="31916" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31439" centery="31917" centerz="8" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31448" centery="31917" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="0" y="-1" z="8" spawntime="60" />
+		<monster name="Darklight Construct" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31710" centery="31917" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31435" centery="31919" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31449" centery="31919" centerz="8" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31715" centery="31919" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31718" centery="31919" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31748" centery="31921" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="-1" y="-1" z="8" spawntime="60" />
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31750" centery="31921" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Rotten Man-Maggot" x="0" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31746" centery="31923" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31750" centery="31924" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31747" centery="31925" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31726" centery="31927" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31694" centery="31931" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31774" centery="31931" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31770" centery="31932" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31693" centery="31933" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31737" centery="31934" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31696" centery="31935" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31763" centery="31935" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31770" centery="31935" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31768" centery="31936" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31692" centery="31937" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31731" centery="31938" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31758" centery="31939" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31695" centery="31942" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31758" centery="31942" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31729" centery="31943" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31795" centery="31945" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31792" centery="31946" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31692" centery="31949" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31723" centery="31949" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" direction="2" />
+	</monster>
+	<monster centerx="31703" centery="31951" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31792" centery="31951" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="31952" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31724" centery="31953" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" direction="2" />
+	</monster>
+	<monster centerx="31764" centery="31953" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Bloated Man-Maggot" x="-1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31717" centery="31954" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" direction="2" />
+	</monster>
+	<monster centerx="31714" centery="31955" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31735" centery="31955" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31701" centery="31956" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="-1" z="8" spawntime="60" />
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31761" centery="31956" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31757" centery="31957" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31795" centery="31957" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31734" centery="31958" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31762" centery="31958" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31797" centery="31960" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31737" centery="31961" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31797" centery="31963" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31766" centery="31964" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31801" centery="31966" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31707" centery="31968" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31777" centery="31971" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31799" centery="31973" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31745" centery="31974" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31768" centery="31974" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31772" centery="31975" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31802" centery="31976" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31805" centery="31976" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31740" centery="31977" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31767" centery="31977" centerz="8" radius="1">
+		<monster name="Foxmouse" x="0" y="0" z="8" spawntime="300" />
+	</monster>
+	<monster centerx="31794" centery="31977" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31696" centery="31978" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31764" centery="31978" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31772" centery="31978" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31700" centery="31979" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31745" centery="31979" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31778" centery="31979" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31791" centery="31979" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31739" centery="31980" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31704" centery="31982" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31735" centery="31982" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31707" centery="31986" centerz="8" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31785" centery="31986" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31708" centery="31988" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31710" centery="31990" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31729" centery="31991" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31784" centery="31992" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31785" centery="31994" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31724" centery="31996" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31729" centery="31996" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32001" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31780" centery="32003" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31776" centery="32004" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31777" centery="32006" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31776" centery="32009" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31719" centery="32010" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31725" centery="32013" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31730" centery="32013" centerz="8" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31727" centery="32015" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31225" centery="32047" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31222" centery="32048" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31230" centery="32048" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31217" centery="32050" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31229" centery="32050" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31229" centery="32052" centerz="8" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31219" centery="32056" centerz="8" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31220" centery="32065" centerz="8" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31226" centery="32066" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31219" centery="32068" centerz="8" radius="1">
+		<monster name="Converter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31229" centery="32068" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31223" centery="32073" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31278" centery="32074" centerz="8" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31218" centery="32075" centerz="8" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31225" centery="32076" centerz="8" radius="1">
+		<monster name="Meandering Mushroom" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31276" centery="32076" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31231" centery="32077" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31223" centery="32079" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31277" centery="32079" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31226" centery="32080" centerz="8" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31222" centery="32083" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31218" centery="32084" centerz="8" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31231" centery="32084" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="-1" z="8" spawntime="60" />
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31275" centery="32084" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="-1" y="0" z="8" spawntime="60" />
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31227" centery="32085" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31238" centery="32086" centerz="8" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31277" centery="32086" centerz="8" radius="1">
+		<monster name="Converter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31242" centery="32087" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31272" centery="32087" centerz="8" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31234" centery="32089" centerz="8" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31240" centery="32089" centerz="8" radius="1">
+		<monster name="Meandering Mushroom" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31269" centery="32089" centerz="8" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31273" centery="32089" centerz="8" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31252" centery="32090" centerz="8" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31244" centery="32092" centerz="8" radius="1">
+		<monster name="Converter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31246" centery="32093" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31258" centery="32093" centerz="8" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31263" centery="32093" centerz="8" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31257" centery="32095" centerz="8" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31263" centery="32097" centerz="8" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31796" centery="32163" centerz="8" radius="1">
+		<monster name="Turbulent Elemental" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31799" centery="32163" centerz="8" radius="1">
+		<monster name="Rotten Golem" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31802" centery="32163" centerz="8" radius="1">
+		<monster name="Brachiodemon" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31805" centery="32163" centerz="8" radius="1">
+		<monster name="Cloak Of Terror" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31808" centery="32163" centerz="8" radius="1">
+		<monster name="Paladin'S Apparition" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31794" centery="32168" centerz="8" radius="1">
+		<monster name="Hulking Prehemoth" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31809" centery="32168" centerz="8" radius="1">
+		<monster name="Lavafungus" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31794" centery="32171" centerz="8" radius="1">
+		<monster name="Sulphider" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31809" centery="32171" centerz="8" radius="1">
+		<monster name="Varnished Diremaw" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31794" centery="32174" centerz="8" radius="1">
+		<monster name="Shrieking Cry-Stal" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31809" centery="32174" centerz="8" radius="1">
+		<monster name="Blemished Spawn" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31797" centery="32178" centerz="8" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31800" centery="32178" centerz="8" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31803" centery="32178" centerz="8" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31806" centery="32178" centerz="8" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="31831" centery="31790" centerz="9" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="9" spawntime="60" />
+		<monster name="White Weretiger" x="1" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31826" centery="31794" centerz="9" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31828" centery="31794" centerz="9" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31830" centery="31797" centerz="9" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31833" centery="31797" centerz="9" radius="1">
+		<monster name="Converter" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31844" centery="31798" centerz="9" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31830" centery="31799" centerz="9" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31832" centery="31800" centerz="9" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Oozing Corpus" x="1" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31840" centery="31800" centerz="9" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31844" centery="31800" centerz="9" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31838" centery="31801" centerz="9" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31825" centery="31802" centerz="9" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31843" centery="31802" centerz="9" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31846" centery="31804" centerz="9" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31812" centery="31805" centerz="9" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31816" centery="31805" centerz="9" radius="1">
+		<monster name="Converter" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Elder Bloodjaw" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31820" centery="31806" centerz="9" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Oozing Carcass" x="1" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31839" centery="31806" centerz="9" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31829" centery="31807" centerz="9" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31847" centery="31807" centerz="9" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="31807" centerz="9" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="31808" centerz="9" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31829" centery="31809" centerz="9" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31835" centery="31809" centerz="9" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Meandering Mushroom" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31848" centery="31809" centerz="9" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31817" centery="31810" centerz="9" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31824" centery="31810" centerz="9" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31831" centery="31810" centerz="9" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31833" centery="31810" centerz="9" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31843" centery="31810" centerz="9" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31808" centery="31811" centerz="9" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="31811" centerz="9" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31822" centery="31812" centerz="9" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31831" centery="31812" centerz="9" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31810" centery="31813" centerz="9" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Oozing Carcass" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31819" centery="31813" centerz="9" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31849" centery="31814" centerz="9" radius="1">
+		<monster name="Walking Pillar" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Darklight Emitter" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31812" centery="31815" centerz="9" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31814" centery="31815" centerz="9" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="9" spawntime="60" />
+		<monster name="White Weretiger" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31830" centery="31815" centerz="9" radius="1">
+		<monster name="Meandering Mushroom" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31835" centery="31815" centerz="9" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Oozing Carcass" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31821" centery="31816" centerz="9" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="31816" centerz="9" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31813" centery="31817" centerz="9" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31848" centery="31817" centerz="9" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Meandering Mushroom" x="1" y="0" z="9" spawntime="60" />
+		<monster name="Oozing Corpus" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31830" centery="31818" centerz="9" radius="1">
+		<monster name="Mycobiontic Beetle" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Oozing Corpus" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31814" centery="31819" centerz="9" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Elder Bloodjaw" x="1" y="0" z="9" spawntime="60" />
+		<monster name="Rotten Man-Maggot" x="1" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31839" centery="31819" centerz="9" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31820" centery="31820" centerz="9" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31832" centery="31821" centerz="9" radius="1">
+		<monster name="Weretiger" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31824" centery="31823" centerz="9" radius="1">
+		<monster name="Elder Bloodjaw" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Darklight Matter" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31828" centery="31823" centerz="9" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="9" spawntime="60" />
+		<monster name="White Weretiger" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31835" centery="31823" centerz="9" radius="1">
+		<monster name="Converter" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31838" centery="31823" centerz="9" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31835" centery="31825" centerz="9" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31808" centery="31826" centerz="9" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31815" centery="31827" centerz="9" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31827" centery="31827" centerz="9" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31831" centery="31827" centerz="9" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="31828" centerz="9" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31815" centery="31830" centerz="9" radius="1">
+		<monster name="Meandering Mushroom" x="1" y="-1" z="9" spawntime="60" />
+		<monster name="Darklight Construct" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Oozing Corpus" x="1" y="0" z="9" spawntime="60" />
+		<monster name="Elder Bloodjaw" x="1" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="31830" centerz="9" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31822" centery="31831" centerz="9" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31836" centery="31831" centerz="9" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31285" centery="31982" centerz="9" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31331" centery="31983" centerz="9" radius="1">
+		<monster name="Converter" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31290" centery="31985" centerz="9" radius="1">
+		<monster name="Feral Werecrocodile" x="0" y="-1" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31315" centery="31985" centerz="9" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31333" centery="31986" centerz="9" radius="1">
+		<monster name="Feral Werecrocodile" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31296" centery="31988" centerz="9" radius="1">
+		<monster name="Converter" x="0" y="-1" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31325" centery="31988" centerz="9" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31320" centery="31989" centerz="9" radius="1">
+		<monster name="Feral Werecrocodile" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31287" centery="31991" centerz="9" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31311" centery="31991" centerz="9" radius="1">
+		<monster name="Converter" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31332" centery="31991" centerz="9" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31305" centery="32004" centerz="9" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31324" centery="32004" centerz="9" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31290" centery="32008" centerz="9" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31322" centery="32008" centerz="9" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31307" centery="32009" centerz="9" radius="1">
+		<monster name="Converter" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31332" centery="32009" centerz="9" radius="1">
+		<monster name="Converter" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31298" centery="32010" centerz="9" radius="1">
+		<monster name="Feral Werecrocodile" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31319" centery="32011" centerz="9" radius="1">
+		<monster name="Foxmouse" x="0" y="0" z="9" spawntime="300" />
+	</monster>
+	<monster centerx="31292" centery="32012" centerz="9" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31332" centery="32012" centerz="9" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31326" centery="32013" centerz="9" radius="1">
+		<monster name="Feral Werecrocodile" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31303" centery="32014" centerz="9" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31310" centery="32017" centerz="9" radius="1">
+		<monster name="Feral Werecrocodile" x="0" y="0" z="9" spawntime="1800" />
+	</monster>
+	<monster centerx="31216" centery="32034" centerz="9" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31197" centery="32035" centerz="9" radius="1">
+		<monster name="Converter" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31202" centery="32035" centerz="9" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31226" centery="32035" centerz="9" radius="1">
+		<monster name="Sopping Corpus" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31210" centery="32036" centerz="9" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31214" centery="32036" centerz="9" radius="1">
+		<monster name="Meandering Mushroom" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31216" centery="32036" centerz="9" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31227" centery="32039" centerz="9" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31202" centery="32041" centerz="9" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31199" centery="32042" centerz="9" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31192" centery="32043" centerz="9" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31200" centery="32049" centerz="9" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31217" centery="32054" centerz="9" radius="1">
+		<monster name="Converter" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31206" centery="32055" centerz="9" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31216" centery="32056" centerz="9" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31213" centery="32057" centerz="9" radius="1">
+		<monster name="Meandering Mushroom" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31227" centery="32057" centerz="9" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31210" centery="32058" centerz="9" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31224" centery="32058" centerz="9" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31206" centery="32059" centerz="9" radius="1">
+		<monster name="Oozing Corpus" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31227" centery="32060" centerz="9" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31220" centery="32061" centerz="9" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31205" centery="32063" centerz="9" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31229" centery="32064" centerz="9" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31210" centery="32067" centerz="9" radius="1">
+		<monster name="Oozing Carcass" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31219" centery="32069" centerz="9" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31213" centery="32074" centerz="9" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31222" centery="32075" centerz="9" radius="1">
+		<monster name="Darklight Emitter" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31225" centery="32075" centerz="9" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31213" centery="32076" centerz="9" radius="1">
+		<monster name="Converter" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31218" centery="32076" centerz="9" radius="1">
+		<monster name="Elder Bloodjaw" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31211" centery="32077" centerz="9" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31202" centery="32078" centerz="9" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31216" centery="32078" centerz="9" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31206" centery="32081" centerz="9" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31199" centery="32085" centerz="9" radius="1">
+		<monster name="Sopping Carcass" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31201" centery="32089" centerz="9" radius="1">
+		<monster name="Rotten Man-Maggot" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31203" centery="32089" centerz="9" radius="1">
+		<monster name="Meandering Mushroom" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31194" centery="32090" centerz="9" radius="1">
+		<monster name="Converter" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31185" centery="32094" centerz="9" radius="1">
+		<monster name="Darklight Striker" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31191" centery="32094" centerz="9" radius="1">
+		<monster name="Darklight Construct" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31183" centery="32095" centerz="9" radius="1">
+		<monster name="Bloated Man-Maggot" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31848" centery="32181" centerz="9" radius="1">
+		<monster name="King Zelos" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32188" centerz="9" radius="1">
+		<monster name="Duke Krule" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32188" centerz="9" radius="1">
+		<monster name="The Pale Worm" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32192" centerz="9" radius="1">
+		<monster name="Sir Baeloc" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32192" centerz="9" radius="1">
+		<monster name="The Dread Maiden" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32196" centerz="9" radius="1">
+		<monster name="Earl Osam" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32196" centerz="9" radius="1">
+		<monster name="The Unwelcome" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32200" centerz="9" radius="1">
+		<monster name="Lord Azaram" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32200" centerz="9" radius="1">
+		<monster name="The Fear Feaster" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32204" centerz="9" radius="1">
+		<monster name="Count Vlarkorth" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32204" centerz="9" radius="1">
+		<monster name="Brain Head" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31819" centery="32207" centerz="9" radius="1">
+		<monster name="Mounted Thorn Knight" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31823" centery="32207" centerz="9" radius="1">
+		<monster name="Dragonking Zyrtarch" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31827" centery="32207" centerz="9" radius="1">
+		<monster name="Lady Tenebris" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31831" centery="32207" centerz="9" radius="1">
+		<monster name="Lloyd" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31835" centery="32207" centerz="9" radius="1">
+		<monster name="Solid Frozen Horror" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31861" centery="32207" centerz="9" radius="1">
+		<monster name="The Shatterer" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31865" centery="32207" centerz="9" radius="1">
+		<monster name="Shulgrax" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31869" centery="32207" centerz="9" radius="1">
+		<monster name="Mazoran" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31873" centery="32207" centerz="9" radius="1">
+		<monster name="Ragiaz" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31877" centery="32207" centerz="9" radius="1">
+		<monster name="Razzagorn" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31885" centery="32210" centerz="9" radius="1">
+		<monster name="Ascending Ferumbras" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31885" centery="32214" centerz="9" radius="1">
+		<monster name="The Scourge Of Oblivion" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31688" centery="32217" centerz="9" radius="1">
+		<monster name="Corym Vanguard" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Corym Skirmisher" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Corym Charlatan" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32217" centerz="9" radius="1">
+		<monster name="Dwarf Soldier" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Dwarf Guard" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Dwarf Geomancer" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31819" centery="32217" centerz="9" radius="1">
+		<monster name="Irgix The Flimsy" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31823" centery="32217" centerz="9" radius="1">
+		<monster name="Vok The Freakish" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31827" centery="32217" centerz="9" radius="1">
+		<monster name="Unaz The Mean" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31831" centery="32217" centerz="9" radius="1">
+		<monster name="Iks Ahpututu" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31835" centery="32217" centerz="9" radius="1">
+		<monster name="Leiden" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31861" centery="32217" centerz="9" radius="1">
+		<monster name="Mazzinor" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31865" centery="32217" centerz="9" radius="1">
+		<monster name="Gorzindel" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31869" centery="32217" centerz="9" radius="1">
+		<monster name="Ghulosh" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31873" centery="32217" centerz="9" radius="1">
+		<monster name="Lokathmor" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31877" centery="32217" centerz="9" radius="1">
+		<monster name="Tarbaz" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32220" centerz="9" radius="1">
+		<monster name="Scarlett Etzel" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32220" centerz="9" radius="1">
+		<monster name="Grand Master Oberon" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31688" centery="32221" centerz="9" radius="1">
+		<monster name="Stonerefiner" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Stonerefiner" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Stonerefiner" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31700" centery="32221" centerz="9" radius="1">
+		<monster name="Valkyrie" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Amazon" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Witch" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31704" centery="32221" centerz="9" radius="1">
+		<monster name="Cyclops Smith" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Cyclops" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Cyclops Drone" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31708" centery="32221" centerz="9" radius="1">
+		<monster name="Minotaur Guard" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Minotaur" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Minotaur Archer" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32221" centerz="9" radius="1">
+		<monster name="Vicious Squire" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Bonebeast" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Cult Believer" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31698" centery="32224" centerz="9" radius="1">
+		<monster name="Monk" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Demon Skeleton" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Smuggler" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31710" centery="32224" centerz="9" radius="1">
+		<monster name="Orc Warrior" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Orc Spearman" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Minotaur" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32224" centerz="9" radius="1">
+		<monster name="Faceless Bane" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32224" centerz="9" radius="1">
+		<monster name="Ancient Lion Knight" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31688" centery="32225" centerz="9" radius="1">
+		<monster name="Gargoyle" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Thornback Tortoise" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Blood Crab" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32225" centerz="9" radius="1">
+		<monster name="Gloom Wolf" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Wyvern" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Rorc" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31700" centery="32227" centerz="9" radius="1">
+		<monster name="Putrid Mummy" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Putrid Mummy" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Putrid Mummy" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31704" centery="32227" centerz="9" radius="1">
+		<monster name="Acid Blob" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Mutated Human" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Mutated Rat" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31708" centery="32227" centerz="9" radius="1">
+		<monster name="Merlkin" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Sibang" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Kongra" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32228" centerz="9" radius="1">
+		<monster name="Brokul" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32228" centerz="9" radius="1">
+		<monster name="The Destruction" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31688" centery="32229" centerz="9" radius="1">
+		<monster name="Noble Lion" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Ancient Scarab" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Noble Lion" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32229" centerz="9" radius="1">
+		<monster name="Water Elemental" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Water Elemental" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Water Elemental" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32232" centerz="9" radius="1">
+		<monster name="Urmahlullu The Weakened" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32232" centerz="9" radius="1">
+		<monster name="Jaul" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31688" centery="32233" centerz="9" radius="1">
+		<monster name="Undead Gladiator" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Nightmare Scion" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Undead Gladiator" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32233" centerz="9" radius="1">
+		<monster name="Swarmer" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Waspoid" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Insectoid Worker" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31700" centery="32236" centerz="9" radius="1">
+		<monster name="Minotaur Hunter" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Worm Priestess" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Mooh'Tah Warrior" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31704" centery="32236" centerz="9" radius="1">
+		<monster name="Iks Aucar" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Iks Chuka" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Iks Churrascan" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31708" centery="32236" centerz="9" radius="1">
+		<monster name="Dragon" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Dragon" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Dragon" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32236" centerz="9" radius="1">
+		<monster name="Pirat Cutthroat" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32236" centerz="9" radius="1">
+		<monster name="Tanjis" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31688" centery="32237" centerz="9" radius="1">
+		<monster name="Crystal Spider" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Frost Dragon" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Ice Witch" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32237" centerz="9" radius="1">
+		<monster name="Ghost" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Nightmare" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Grim Reaper" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31698" centery="32239" centerz="9" radius="1">
+		<monster name="Poison Spider" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Tarantula" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Giant Spider" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31710" centery="32239" centerz="9" radius="1">
+		<monster name="Dragon Lord" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Dragon Lord" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Dragon Lord" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31688" centery="32241" centerz="9" radius="1">
+		<monster name="Behemoth" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Behemoth" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Behemoth" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32241" centerz="9" radius="1">
+		<monster name="Werebadger" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Wereboar" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Werebear" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31700" centery="32242" centerz="9" radius="1">
+		<monster name="Hellspawn" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Necromancer" x="0" y="0" z="9" spawntime="60" direction="2" />
+		<monster name="Enlightened Of The Cult" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31704" centery="32242" centerz="9" radius="1">
+		<monster name="Hydra" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Hydra" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Hydra" x="1" y="0" z="9" spawntime="60" direction="2" />
+	</monster>
+	<monster centerx="31708" centery="32242" centerz="9" radius="1">
+		<monster name="Wyrm" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Wyrm" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Wyrm" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31688" centery="32245" centerz="9" radius="1">
+		<monster name="Lizard Dragon Priest" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Lizard High Guard" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Lizard Legionnaire" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32245" centerz="9" radius="1">
+		<monster name="Lava Lurker" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Lava Lurker" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Lava Lurker" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31695" centery="32252" centerz="9" radius="1">
+		<monster name="Sphinx" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Lamassu" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Crypt Warden" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31699" centery="32252" centerz="9" radius="1">
+		<monster name="Metal Gargoyle" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Demon" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Fire Elemental" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31709" centery="32252" centerz="9" radius="1">
+		<monster name="Deepling Scout" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Deepling Guard" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Deepling Elite" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31713" centery="32252" centerz="9" radius="1">
+		<monster name="Exotic Bat" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Exotic Cave Spider" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Exotic Bat" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31853" centery="32270" centerz="9" radius="1">
+		<monster name="Mounted Thorn Knight" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31855" centery="32270" centerz="9" radius="1">
+		<monster name="Dragonking Zyrtarch" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31857" centery="32270" centerz="9" radius="1">
+		<monster name="Lady Tenebris" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31859" centery="32270" centerz="9" radius="1">
+		<monster name="Lloyd" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31861" centery="32270" centerz="9" radius="1">
+		<monster name="Solid Frozen Horror" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31864" centery="32272" centerz="9" radius="1">
+		<monster name="Grand Master Oberon" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32273" centerz="9" radius="1">
+		<monster name="Jaul" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Tanjis" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31864" centery="32274" centerz="9" radius="1">
+		<monster name="Ancient Lion Knight" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31864" centery="32276" centerz="9" radius="1">
+		<monster name="Scarlett Etzel" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32277" centerz="9" radius="1">
+		<monster name="Iks Ahpututu" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="The Destruction" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31864" centery="32278" centerz="9" radius="1">
+		<monster name="Faceless Bane" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32279" centerz="9" radius="1">
+		<monster name="King Zelos" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31864" centery="32280" centerz="9" radius="1">
+		<monster name="Urmahlullu The Weakened" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32282" centerz="9" radius="1">
+		<monster name="Unaz The Mean" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Vok The Freakish" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31864" centery="32282" centerz="9" radius="1">
+		<monster name="Izcandar The Banished" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32284" centerz="9" radius="1">
+		<monster name="Irgix The Flimsy" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31864" centery="32285" centerz="9" radius="1">
+		<monster name="Ghulosh" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Razzagorn" x="0" y="0" z="9" spawntime="60" />
+		<monster name="The Scourge Of Oblivion" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32286" centerz="9" radius="1">
+		<monster name="The Unwelcome" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Brain Head" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32288" centerz="9" radius="1">
+		<monster name="The Pale Worm" x="0" y="0" z="9" spawntime="60" />
+		<monster name="The Dread Maiden" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31864" centery="32289" centerz="9" radius="1">
+		<monster name="Pirat Cutthroat" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32290" centerz="9" radius="1">
+		<monster name="The Fear Feaster" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31864" centery="32291" centerz="9" radius="1">
+		<monster name="Brokul" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32294" centerz="9" radius="1">
+		<monster name="Goshnar's Greed" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Goshnar's Hatred" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Goshnar's Cruelty" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32296" centerz="9" radius="1">
+		<monster name="Goshnar's Malice" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Goshnar's Spite" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31864" centery="32296" centerz="9" radius="1">
+		<monster name="Doctor Marrow" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31864" centery="32298" centerz="9" radius="1">
+		<monster name="Magma Bubble" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32299" centerz="9" radius="1">
+		<monster name="Goshnar's Megalomania" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32305" centerz="9" radius="1">
+		<monster name="Ichgahal" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Murcion" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Chagorz" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32307" centerz="9" radius="1">
+		<monster name="Vemiath" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32309" centerz="9" radius="1">
+		<monster name="Bakragore" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31853" centery="32311" centerz="9" radius="1">
+		<monster name="Orshabaal" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31856" centery="32311" centerz="9" radius="1">
+		<monster name="Morgaroth" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Kalyassa" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Feroxa" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31859" centery="32311" centerz="9" radius="1">
+		<monster name="Morshabaal" x="0" y="0" z="9" spawntime="60" />
+		<monster name="Terofar" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31862" centery="32311" centerz="9" radius="1">
+		<monster name="Ferumbras" x="-1" y="0" z="9" spawntime="60" />
+		<monster name="Gaz'Haragoth" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="31285" centery="31963" centerz="10" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31280" centery="31965" centerz="10" radius="1">
+		<monster name="Converter" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31289" centery="31965" centerz="10" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31332" centery="31965" centerz="10" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31313" centery="31966" centerz="10" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31309" centery="31967" centerz="10" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31324" centery="31967" centerz="10" radius="1">
+		<monster name="Converter" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31288" centery="31968" centerz="10" radius="1">
+		<monster name="Feral Werecrocodile" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31282" centery="31969" centerz="10" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31313" centery="31970" centerz="10" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31333" centery="31970" centerz="10" radius="1">
+		<monster name="Feral Werecrocodile" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31318" centery="31971" centerz="10" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31345" centery="31978" centerz="10" radius="1">
+		<monster name="Converter" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31275" centery="31979" centerz="10" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31885" centery="31980" centerz="10" radius="1">
+		<monster name="Grimeleech" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="31980" centerz="10" radius="1">
+		<monster name="Dark Torturer" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31885" centery="31984" centerz="10" radius="1">
+		<monster name="Juggernaut" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="31984" centerz="10" radius="1">
+		<monster name="Vexclaw" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31273" centery="31987" centerz="10" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31275" centery="31987" centerz="10" radius="1">
+		<monster name="Converter" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31344" centery="31988" centerz="10" radius="1">
+		<monster name="Feral Werecrocodile" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31348" centery="31988" centerz="10" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31885" centery="31988" centerz="10" radius="1">
+		<monster name="Sparkion" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="31988" centerz="10" radius="1">
+		<monster name="Lamassu" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31340" centery="31990" centerz="10" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31885" centery="31992" centerz="10" radius="1">
+		<monster name="Naga Archer" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="31992" centerz="10" radius="1">
+		<monster name="Adult Goanna" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31275" centery="31994" centerz="10" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31341" centery="31995" centerz="10" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31345" centery="31996" centerz="10" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31885" centery="31996" centerz="10" radius="1">
+		<monster name="Hellfire Fighter" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="31996" centerz="10" radius="1">
+		<monster name="Ice Dragon" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31338" centery="31997" centerz="10" radius="1">
+		<monster name="Converter" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31314" centery="31998" centerz="10" radius="1">
+		<monster name="Converter" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31296" centery="31999" centerz="10" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31273" centery="32000" centerz="10" radius="1">
+		<monster name="Feral Werecrocodile" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31885" centery="32000" centerz="10" radius="1">
+		<monster name="Dragon Wrath" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32000" centerz="10" radius="1">
+		<monster name="Draken Elite" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31333" centery="32003" centerz="10" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31270" centery="32004" centerz="10" radius="1">
+		<monster name="Converter" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31885" centery="32004" centerz="10" radius="1">
+		<monster name="Undead Dragon" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32004" centerz="10" radius="1">
+		<monster name="Frost Dragon" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31274" centery="32005" centerz="10" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31313" centery="32006" centerz="10" radius="1">
+		<monster name="Converter" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31326" centery="32006" centerz="10" radius="1">
+		<monster name="Feral Werecrocodile" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31297" centery="32007" centerz="10" radius="1">
+		<monster name="Converter" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31885" centery="32008" centerz="10" radius="1">
+		<monster name="Wyvern" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32008" centerz="10" radius="1">
+		<monster name="Wyrm" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31327" centery="32010" centerz="10" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31297" centery="32012" centerz="10" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31306" centery="32012" centerz="10" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="10" spawntime="1800" />
+	</monster>
+	<monster centerx="31885" centery="32012" centerz="10" radius="1">
+		<monster name="Cyclops" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32012" centerz="10" radius="1">
+		<monster name="Dragon Lord" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31885" centery="32016" centerz="10" radius="1">
+		<monster name="Amazon" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32016" centerz="10" radius="1">
+		<monster name="Dragon" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31847" centery="32018" centerz="10" radius="1">
+		<monster name="Magma Crawler" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31851" centery="32018" centerz="10" radius="1">
+		<monster name="Hydra" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31855" centery="32018" centerz="10" radius="1">
+		<monster name="Nightmare" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31859" centery="32018" centerz="10" radius="1">
+		<monster name="Werelion" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31863" centery="32018" centerz="10" radius="1">
+		<monster name="Werehyaena" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31867" centery="32018" centerz="10" radius="1">
+		<monster name="Guzzlemaw" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31871" centery="32018" centerz="10" radius="1">
+		<monster name="Destroyer" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31875" centery="32018" centerz="10" radius="1">
+		<monster name="Demon" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31879" centery="32018" centerz="10" radius="1">
+		<monster name="Deepling Elite" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31883" centery="32018" centerz="10" radius="1">
+		<monster name="Lizard High Guard" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31898" centery="32018" centerz="10" radius="1">
+		<monster name="Jaul" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31902" centery="32018" centerz="10" radius="1">
+		<monster name="Lady Tenebris" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31906" centery="32018" centerz="10" radius="1">
+		<monster name="Tanjis" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31910" centery="32018" centerz="10" radius="1">
+		<monster name="Morshabaal" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31914" centery="32018" centerz="10" radius="1">
+		<monster name="The Destruction" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31918" centery="32018" centerz="10" radius="1">
+		<monster name="Goshnar's Megalomania" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31922" centery="32018" centerz="10" radius="1">
+		<monster name="Ghulosh" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31926" centery="32018" centerz="10" radius="1">
+		<monster name="Faceless Bane" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31930" centery="32018" centerz="10" radius="1">
+		<monster name="Razzagorn" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31934" centery="32018" centerz="10" radius="1">
+		<monster name="Feroxa" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31847" centery="32029" centerz="10" radius="1">
+		<monster name="Hellhound" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31851" centery="32029" centerz="10" radius="1">
+		<monster name="Cobra Scout" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31855" centery="32029" centerz="10" radius="1">
+		<monster name="Dawnfire Asura" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31859" centery="32029" centerz="10" radius="1">
+		<monster name="Killer Caiman" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31863" centery="32029" centerz="10" radius="1">
+		<monster name="Grim Reaper" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31867" centery="32029" centerz="10" radius="1">
+		<monster name="Undead Gladiator" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31871" centery="32029" centerz="10" radius="1">
+		<monster name="Hero" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31875" centery="32029" centerz="10" radius="1">
+		<monster name="Falcon Knight" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31879" centery="32029" centerz="10" radius="1">
+		<monster name="Hellflayer" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31883" centery="32029" centerz="10" radius="1">
+		<monster name="Exotic Cave Spider" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31898" centery="32029" centerz="10" radius="1">
+		<monster name="Morgaroth" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31902" centery="32029" centerz="10" radius="1">
+		<monster name="Orshabaal" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31906" centery="32029" centerz="10" radius="1">
+		<monster name="Izcandar The Banished" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31910" centery="32029" centerz="10" radius="1">
+		<monster name="Kalyassa" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31914" centery="32029" centerz="10" radius="1">
+		<monster name="Lloyd" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31918" centery="32029" centerz="10" radius="1">
+		<monster name="Terofar" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31922" centery="32029" centerz="10" radius="1">
+		<monster name="Urmahlullu The Weakened" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31926" centery="32029" centerz="10" radius="1">
+		<monster name="King Zelos" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31930" centery="32029" centerz="10" radius="1">
+		<monster name="Ferumbras" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31934" centery="32029" centerz="10" radius="1">
+		<monster name="Gaz'Haragoth" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31885" centery="32031" centerz="10" radius="1">
+		<monster name="Hideous Fungus" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32031" centerz="10" radius="1">
+		<monster name="Orewalker" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31885" centery="32035" centerz="10" radius="1">
+		<monster name="Gorerilla" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32035" centerz="10" radius="1">
+		<monster name="Stalking Stalk" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31885" centery="32039" centerz="10" radius="1">
+		<monster name="Shrieking Cry-Stal" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32039" centerz="10" radius="1">
+		<monster name="Usurper Archer" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31885" centery="32043" centerz="10" radius="1">
+		<monster name="Crazed Summer Rearguard" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32043" centerz="10" radius="1">
+		<monster name="Crazed Winter Vanguard" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31885" centery="32047" centerz="10" radius="1">
+		<monster name="Iks Aucar" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32047" centerz="10" radius="1">
+		<monster name="Cursed Book" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31885" centery="32051" centerz="10" radius="1">
+		<monster name="Burning Book" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32051" centerz="10" radius="1">
+		<monster name="Infernal Demon" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31885" centery="32055" centerz="10" radius="1">
+		<monster name="Icecold Book" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32055" centerz="10" radius="1">
+		<monster name="Dark Carnisylvan" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31885" centery="32059" centerz="10" radius="1">
+		<monster name="Gazer Spectre" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32059" centerz="10" radius="1">
+		<monster name="Hellspawn" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31885" centery="32063" centerz="10" radius="1">
+		<monster name="Brachiodemon" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32063" centerz="10" radius="1">
+		<monster name="A Carved Stone Tile" x="-1" y="0" z="10" spawntime="60" />
+		<monster name="Bony Sea Devil" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31885" centery="32067" centerz="10" radius="1">
+		<monster name="Branchy Crawler" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31896" centery="32067" centerz="10" radius="1">
+		<monster name="Cloak Of Terror" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31846" centery="32181" centerz="10" radius="1">
+		<monster name="Goshnar's Megalomania" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31850" centery="32181" centerz="10" radius="1">
+		<monster name="Bakragore" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32188" centerz="10" radius="1">
+		<monster name="Goshnar's Greed" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32188" centerz="10" radius="1">
+		<monster name="Vemiath" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32192" centerz="10" radius="1">
+		<monster name="Goshnar's Hatred" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32192" centerz="10" radius="1">
+		<monster name="Chagorz" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32196" centerz="10" radius="1">
+		<monster name="Goshnar's Spite" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32196" centerz="10" radius="1">
+		<monster name="Murcion" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32200" centerz="10" radius="1">
+		<monster name="Goshnar's Cruelty" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32200" centerz="10" radius="1">
+		<monster name="Ichgahal" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32204" centerz="10" radius="1">
+		<monster name="Goshnar's Malice" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32204" centerz="10" radius="1" />
+	<monster centerx="31842" centery="32220" centerz="10" radius="1">
+		<monster name="Doctor Marrow" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32220" centerz="10" radius="1">
+		<monster name="Izcandar The Banished" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32224" centerz="10" radius="1">
+		<monster name="Fungosaurus" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32224" centerz="10" radius="1">
+		<monster name="Supercharged Mazzinor" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32228" centerz="10" radius="1">
+		<monster name="Magma Bubble" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32228" centerz="10" radius="1">
+		<monster name="The Enraged Thorn Knight" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32232" centerz="10" radius="1">
+		<monster name="Ayana the crimson curse" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32232" centerz="10" radius="1">
+		<monster name="Malofur Mangrinder" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31842" centery="32236" centerz="10" radius="1">
+		<monster name="Tamru the black" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31854" centery="32236" centerz="10" radius="1">
+		<monster name="Maxxenius" x="0" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31688" centery="32253" centerz="10" radius="1">
+		<monster name="Faun" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Dark Faun" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Pixie" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32253" centerz="10" radius="1">
+		<monster name="Crawler" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Kollos" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Waspoid" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31688" centery="32257" centerz="10" radius="1">
+		<monster name="Quara Constrictor" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Quara Hydromancer" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Quara Mantassin Scout" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31700" centery="32257" centerz="10" radius="1">
+		<monster name="Glooth Brigand" x="-1" y="0" z="10" spawntime="60" />
+		<monster name="Glooth Bandit" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Rustheap Golem" x="1" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31704" centery="32257" centerz="10" radius="1">
+		<monster name="Lizard Chosen" x="-1" y="0" z="10" spawntime="60" />
+		<monster name="Lizard Chosen" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Lizard Chosen" x="1" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31708" centery="32257" centerz="10" radius="1">
+		<monster name="Wereboar" x="-1" y="0" z="10" spawntime="60" />
+		<monster name="Werewolf" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Werebear" x="1" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32257" centerz="10" radius="1">
+		<monster name="Blood Beast" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Rot Elemental" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Acid Blob" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31710" centery="32260" centerz="10" radius="1">
+		<monster name="Enfeebled Silencer" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Weakened Frazzlemaw" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Enfeebled Silencer" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31688" centery="32261" centerz="10" radius="1">
+		<monster name="Serpent Spawn" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Sea Serpent" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Serpent Spawn" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32261" centerz="10" radius="1">
+		<monster name="Grim Reaper" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Grim Reaper" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Grim Reaper" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31700" centery="32263" centerz="10" radius="1">
+		<monster name="Midnight Asura" x="-1" y="0" z="10" spawntime="60" />
+		<monster name="Dawnfire Asura" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Frost Flower Asura" x="1" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31704" centery="32263" centerz="10" radius="1">
+		<monster name="Yielothax" x="-1" y="0" z="10" spawntime="60" />
+		<monster name="Yielothax" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Yielothax" x="1" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31708" centery="32263" centerz="10" radius="1">
+		<monster name="Ghastly Dragon" x="-1" y="0" z="10" spawntime="60" />
+		<monster name="Ghastly Dragon" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Ghastly Dragon" x="1" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31688" centery="32265" centerz="10" radius="1">
+		<monster name="Shaburak Lord" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Shaburak Demon" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Shaburak Prince" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32265" centerz="10" radius="1">
+		<monster name="Orclops Ravager" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Orclops Doomhauler" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Orclops Ravager" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31688" centery="32269" centerz="10" radius="1">
+		<monster name="War Golem" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="War Golem" x="0" y="0" z="10" spawntime="60" />
+		<monster name="War Golem" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32269" centerz="10" radius="1">
+		<monster name="Nightmare" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Plaguesmith" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Destroyer" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31688" centery="32273" centerz="10" radius="1">
+		<monster name="Wyrm" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Elder Wyrm" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Wyrm" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32273" centerz="10" radius="1">
+		<monster name="Hellfire Fighter" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Fury" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Floating Savant" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31700" centery="32274" centerz="10" radius="1">
+		<monster name="Rustheap Golem" x="-1" y="0" z="10" spawntime="60" />
+		<monster name="Glooth Golem" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Rustheap Golem" x="1" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31704" centery="32274" centerz="10" radius="1">
+		<monster name="Draken Spellweaver" x="-1" y="0" z="10" spawntime="60" />
+		<monster name="Draken Elite" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Serpent Spawn" x="1" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31708" centery="32274" centerz="10" radius="1">
+		<monster name="Draken Spellweaver" x="-1" y="0" z="10" spawntime="60" />
+		<monster name="Draken Warmaster" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Draken Spellweaver" x="1" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31698" centery="32277" centerz="10" radius="1">
+		<monster name="Vampire" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Vicious Manbat" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Vampire Viscount" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31710" centery="32277" centerz="10" radius="1">
+		<monster name="Gazer Spectre" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Burster Spectre" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Ripper Spectre" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32277" centerz="10" radius="1">
+		<monster name="Hellfire Fighter" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Hellfire Fighter" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Hellfire Fighter" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31700" centery="32280" centerz="10" radius="1">
+		<monster name="Drillworm" x="-1" y="0" z="10" spawntime="60" />
+		<monster name="Vulcongra" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Drillworm" x="1" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31704" centery="32280" centerz="10" radius="1">
+		<monster name="Barkless Devotee" x="-1" y="0" z="10" spawntime="60" />
+		<monster name="Barkless Devotee" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Barkless Devotee" x="1" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31708" centery="32280" centerz="10" radius="1">
+		<monster name="Medusa" x="-1" y="0" z="10" spawntime="60" />
+		<monster name="Hydra" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Serpent Spawn" x="1" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31720" centery="32281" centerz="10" radius="1">
+		<monster name="Silencer" x="0" y="-1" z="10" spawntime="60" />
+		<monster name="Guzzlemaw" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Frazzlemaw" x="0" y="1" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31713" centery="32288" centerz="10" radius="1">
+		<monster name="Werehyaena" x="-1" y="0" z="10" spawntime="60" />
+		<monster name="Werehyaena Shaman" x="0" y="0" z="10" spawntime="60" />
+		<monster name="Werehyaena" x="1" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="31302" centery="32000" centerz="11" radius="1">
+		<monster name="Converter" x="0" y="0" z="11" spawntime="1800" />
+	</monster>
+	<monster centerx="31300" centery="32004" centerz="11" radius="1">
+		<monster name="Werepanther" x="0" y="0" z="11" spawntime="1800" />
+	</monster>
+	<monster centerx="31312" centery="32005" centerz="11" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="11" spawntime="1800" />
+	</monster>
+	<monster centerx="31274" centery="32007" centerz="11" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="11" spawntime="1800" />
+	</monster>
+	<monster centerx="31277" centery="32007" centerz="11" radius="1">
+		<monster name="Converter" x="0" y="0" z="11" spawntime="1800" />
+	</monster>
+	<monster centerx="31315" centery="32007" centerz="11" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="11" spawntime="1800" />
+	</monster>
+	<monster centerx="31304" centery="32008" centerz="11" radius="1">
+		<monster name="Feral Werecrocodile" x="0" y="0" z="11" spawntime="1800" />
+	</monster>
+	<monster centerx="31285" centery="32010" centerz="11" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="11" spawntime="1800" />
+	</monster>
+	<monster centerx="31288" centery="32010" centerz="11" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="11" spawntime="1800" />
+	</monster>
+	<monster centerx="31277" centery="32011" centerz="11" radius="1">
+		<monster name="Feral Werecrocodile" x="0" y="0" z="11" spawntime="1800" />
+	</monster>
+	<monster centerx="31305" centery="32012" centerz="11" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="11" spawntime="1800" />
+	</monster>
+	<monster centerx="31840" centery="32204" centerz="11" radius="1" />
+	<monster centerx="31844" centery="32204" centerz="11" radius="1">
+		<monster name="Orshabaal" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31848" centery="32204" centerz="11" radius="1">
+		<monster name="Morgaroth" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31852" centery="32204" centerz="11" radius="1">
+		<monster name="Kalyassa" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31856" centery="32204" centerz="11" radius="1">
+		<monster name="Feroxa" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31840" centery="32220" centerz="11" radius="1" />
+	<monster centerx="31844" centery="32220" centerz="11" radius="1">
+		<monster name="Morshabaal" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31848" centery="32220" centerz="11" radius="1">
+		<monster name="Terofar" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31852" centery="32220" centerz="11" radius="1">
+		<monster name="Ferumbras" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31856" centery="32220" centerz="11" radius="1">
+		<monster name="Gaz'Haragoth" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31700" centery="32263" centerz="11" radius="1">
+		<monster name="Frost Flower Asura" x="-1" y="0" z="11" spawntime="60" />
+		<monster name="Dawnfire Asura" x="0" y="0" z="11" spawntime="60" />
+		<monster name="Frost Flower Asura" x="1" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31704" centery="32263" centerz="11" radius="1">
+		<monster name="Spiky Carnivor" x="-1" y="0" z="11" spawntime="60" />
+		<monster name="Menacing Carnivor" x="0" y="0" z="11" spawntime="60" />
+		<monster name="Lumbering Carnivor" x="1" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31708" centery="32263" centerz="11" radius="1">
+		<monster name="Cobra Scout" x="-1" y="0" z="11" spawntime="60" />
+		<monster name="Cobra Assassin" x="0" y="0" z="11" spawntime="60" />
+		<monster name="Cobra Vizier" x="1" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31694" centery="32266" centerz="11" radius="1">
+		<monster name="Werelion" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31714" centery="32266" centerz="11" radius="1">
+		<monster name="Diremaw" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31691" centery="32273" centerz="11" radius="1">
+		<monster name="Skeleton Elite Warrior" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31718" centery="32273" centerz="11" radius="1">
+		<monster name="Tunnel Tyrant" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31691" centery="32277" centerz="11" radius="1">
+		<monster name="Dark Carnisylvan" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31718" centery="32277" centerz="11" radius="1">
+		<monster name="Chasm Spawn" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31691" centery="32281" centerz="11" radius="1">
+		<monster name="Deathling Spellsinger" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31718" centery="32281" centerz="11" radius="1">
+		<monster name="Lost Exile" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31694" centery="32286" centerz="11" radius="1">
+		<monster name="Crazed Summer Rearguard" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31715" centery="32286" centerz="11" radius="1">
+		<monster name="Mean Lost Soul" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31696" centery="32290" centerz="11" radius="1">
+		<monster name="Crazed Winter Rearguard" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31712" centery="32290" centerz="11" radius="1">
+		<monster name="Falcon Knight" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31697" centery="32302" centerz="11" radius="1">
+		<monster name="Juvenile Bashmu" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31712" centery="32302" centerz="11" radius="1">
+		<monster name="Girtablilu Warrior" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31695" centery="32305" centerz="11" radius="1">
+		<monster name="White Weretiger" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31714" centery="32305" centerz="11" radius="1">
+		<monster name="Sparkion" x="0" y="0" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31691" centery="32312" centerz="11" radius="1">
+		<monster name="True Midnight Asura" x="0" y="-1" z="11" spawntime="60" />
+		<monster name="True Dawnfire Asura" x="0" y="0" z="11" spawntime="60" />
+		<monster name="True Frost Flower Asura" x="0" y="1" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31718" centery="32312" centerz="11" radius="1">
+		<monster name="Vexclaw" x="0" y="-1" z="11" spawntime="60" />
+		<monster name="Grimeleech" x="0" y="0" z="11" spawntime="60" />
+		<monster name="Dark Torturer" x="0" y="1" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31691" centery="32316" centerz="11" radius="1">
+		<monster name="Burning Book" x="0" y="-1" z="11" spawntime="60" />
+		<monster name="Icecold Book" x="0" y="0" z="11" spawntime="60" />
+		<monster name="Energetic Book" x="0" y="1" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31718" centery="32316" centerz="11" radius="1">
+		<monster name="Carnivostrich" x="0" y="-1" z="11" spawntime="60" />
+		<monster name="Rhindeer" x="0" y="0" z="11" spawntime="60" />
+		<monster name="Boar Man" x="0" y="1" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="31285" centery="32006" centerz="12" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="12" spawntime="1800" />
+	</monster>
+	<monster centerx="31288" centery="32007" centerz="12" radius="1">
+		<monster name="Converter" x="0" y="0" z="12" spawntime="1800" />
+	</monster>
+	<monster centerx="31283" centery="32008" centerz="12" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="12" spawntime="1800" />
+	</monster>
+	<monster centerx="31298" centery="32009" centerz="12" radius="1">
+		<monster name="Foxmouse" x="0" y="0" z="12" spawntime="300" />
+	</monster>
+	<monster centerx="31288" centery="32010" centerz="12" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="12" spawntime="1800" />
+	</monster>
+	<monster centerx="31285" centery="32013" centerz="12" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="12" spawntime="1800" />
+	</monster>
+	<monster centerx="31296" centery="32013" centerz="12" radius="1">
+		<monster name="Werecrocodile" x="0" y="0" z="12" spawntime="1800" />
+	</monster>
+	<monster centerx="31299" centery="32013" centerz="12" radius="1">
+		<monster name="Feral Werecrocodile" x="0" y="0" z="12" spawntime="1800" />
+	</monster>
+	<monster centerx="31301" centery="32013" centerz="12" radius="1">
+		<monster name="Walking Pillar" x="0" y="0" z="12" spawntime="1800" />
+	</monster>
+	<monster centerx="31305" centery="32017" centerz="12" radius="1">
+		<monster name="Wandering Pillar" x="0" y="0" z="12" spawntime="1800" />
+	</monster>
+	<monster centerx="31297" centery="32018" centerz="12" radius="1">
+		<monster name="Converter" x="0" y="0" z="12" spawntime="1800" />
+	</monster>
+</monsters>

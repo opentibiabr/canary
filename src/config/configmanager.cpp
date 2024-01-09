@@ -80,6 +80,7 @@ bool ConfigManager::load() {
 		loadIntConfig(L, STASH_ITEMS, "stashItemCount", 5000);
 
 		loadBoolConfig(L, OLD_PROTOCOL, "allowOldProtocol", true);
+		loadBoolConfig(L, DISABLE_LEGACY_RAIDS, "disableLegacyRaids", false);
 	}
 
 	loadBoolConfig(L, ALLOW_CHANGEOUTFIT, "allowChangeOutfit", true);
@@ -97,6 +98,7 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, CONVERT_UNSAFE_SCRIPTS, "convertUnsafeScripts", true);
 	loadBoolConfig(L, CLASSIC_ATTACK_SPEED, "classicAttackSpeed", false);
 	loadBoolConfig(L, TOGGLE_ATTACK_SPEED_ONFIST, "toggleAttackSpeedOnFist", false);
+	loadBoolConfig(L, DISABLE_MONSTER_ARMOR, "disableMonsterArmor", false);
 	loadIntConfig(L, MULTIPLIER_ATTACKONFIST, "multiplierSpeedOnFist", 5);
 	loadIntConfig(L, MAX_SPEED_ATTACKONFIST, "maxSpeedOnFist", 500);
 	loadBoolConfig(L, SCRIPTS_CONSOLE_LOGS, "showScriptsLogInConsole", true);
@@ -150,6 +152,7 @@ bool ConfigManager::load() {
 	loadStringConfig(L, WORLD_TYPE, "worldType", "pvp");
 	loadStringConfig(L, STORE_IMAGES_URL, "coinImagesURL", "");
 	loadStringConfig(L, DISCORD_WEBHOOK_URL, "discordWebhookURL", "");
+	loadBoolConfig(L, DISCORD_SEND_FOOTER, "discordSendFooter", true);
 	loadStringConfig(L, SAVE_INTERVAL_TYPE, "saveIntervalType", "");
 	loadStringConfig(L, GLOBAL_SERVER_SAVE_TIME, "globalServerSaveTime", "06:00");
 	loadStringConfig(L, DATA_DIRECTORY, "dataPackDirectory", "data-otservbr-global");
@@ -218,6 +221,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, CRITICALCHANCE, "criticalChance", 10);
 
 	loadIntConfig(L, ADVENTURERSBLESSING_LEVEL, "adventurersBlessingLevel", 21);
+	loadBoolConfig(L, SKULLED_DEATH_LOSE_STORE_ITEM, "skulledDeathLoseStoreItem", false);
 	loadIntConfig(L, FORGE_MAX_ITEM_TIER, "forgeMaxItemTier", 10);
 	loadIntConfig(L, FORGE_COST_ONE_SLIVER, "forgeCostOneSliver", 20);
 	loadIntConfig(L, FORGE_SLIVER_AMOUNT, "forgeSliverAmount", 3);
@@ -246,6 +250,7 @@ bool ConfigManager::load() {
 	loadFloatConfig(L, RATE_ATTACK_SPEED, "rateAttackSpeed", 1.0);
 	loadFloatConfig(L, RATE_OFFLINE_TRAINING_SPEED, "rateOfflineTrainingSpeed", 1.0);
 	loadFloatConfig(L, RATE_EXERCISE_TRAINING_SPEED, "rateExerciseTrainingSpeed", 1.0);
+	loadIntConfig(L, COMBAT_CHAIN_DELAY, "combatChainDelay", 50);
 
 	loadFloatConfig(L, RATE_MONSTER_HEALTH, "rateMonsterHealth", 1.0);
 	loadFloatConfig(L, RATE_MONSTER_ATTACK, "rateMonsterAttack", 1.0);
@@ -255,6 +260,10 @@ bool ConfigManager::load() {
 	loadFloatConfig(L, RATE_BOSS_DEFENSE, "rateBossDefense", 1.0);
 	loadIntConfig(L, BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN, "bossDefaultTimeToFightAgain", 20 * 60 * 60);
 	loadIntConfig(L, BOSS_DEFAULT_TIME_TO_DEFEAT, "bossDefaultTimeToDefeat", 20 * 60);
+
+	loadIntConfig(L, MIN_ELEMENTAL_RESISTANCE, "minElementalResistance", -200);
+	loadIntConfig(L, MAX_ELEMENTAL_RESISTANCE, "maxElementalResistance", 200);
+	loadIntConfig(L, MAX_DAMAGE_REFLECTION, "maxDamageReflection", 200);
 
 	loadFloatConfig(L, RATE_NPC_HEALTH, "rateNpcHealth", 1.0);
 	loadFloatConfig(L, RATE_NPC_ATTACK, "rateNpcAttack", 1.0);
@@ -297,6 +306,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, HAZARD_CRITICAL_CHANCE, "hazardCriticalChance", 750);
 	loadIntConfig(L, HAZARD_CRITICAL_MULTIPLIER, "hazardCriticalMultiplier", 25);
 	loadIntConfig(L, HAZARD_DAMAGE_MULTIPLIER, "hazardDamageMultiplier", 200);
+	loadIntConfig(L, HAZARD_DEFENSE_MULTIPLIER, "hazardDefenseMultiplier", 0);
 	loadIntConfig(L, HAZARD_DODGE_MULTIPLIER, "hazardDodgeMultiplier", 85);
 	loadIntConfig(L, HAZARD_PODS_DROP_MULTIPLIER, "hazardPodsDropMultiplier", 87);
 	loadIntConfig(L, HAZARD_PODS_TIME_TO_DAMAGE, "hazardPodsTimeToDamage", 2000);

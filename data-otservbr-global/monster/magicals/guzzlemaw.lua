@@ -23,8 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Guzzlemaw Valley, and a single spawn in a tower in Upper Roshamuul \z
-		(south of the Depot and west of the entrance to Roshamuul Prison).",
+	Locations = "Guzzlemaw Valley, and a single spawn in a tower in Upper Roshamuul (south of the Depot and west of the entrance to Roshamuul Prison).",
 }
 
 monster.health = 6400

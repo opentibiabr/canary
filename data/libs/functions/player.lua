@@ -121,11 +121,12 @@ function Player.getCookiesDelivered(self)
 end
 
 function Player.allowMovement(self, allow)
-	return self:setStorageValue(Global.Storage.BlockMovementStorage, allow and -1 or 1)
+	return allow and self:kv():remove("block-movement") or self:kv():set("block-movement", 1)
 end
 
 function Player.hasAllowMovement(self)
-	return self:getStorageValue(Global.Storage.BlockMovementStorage) ~= 1
+	local blockMovement = self:kv():get("block-movement") or 0
+	return blockMovement ~= 1
 end
 
 function Player.checkGnomeRank(self)
@@ -431,7 +432,7 @@ function Player:createFamiliar(familiarName, timeLeft)
 	playerPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	myFamiliar:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	-- Divide by 2 to get half the time (the default total time is 30 / 2 = 15)
-	self:setStorageValue(Global.Storage.FamiliarSummon, os.time() + timeLeft)
+	self:kv():set("familiar-summon-time", os.time() + timeLeft)
 	addEvent(RemoveFamiliar, timeLeft * 1000, myFamiliar:getId(), self:getId())
 	for sendMessage = 1, #FAMILIAR_TIMER do
 		self:setStorageValue(
@@ -554,26 +555,34 @@ function Player.updateHazard(self)
 	return true
 end
 
-function Player:addItemStoreInbox(itemId, amount, moveable)
+function Player:addItemStoreInboxEx(item, movable, setOwner)
 	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
-	if not moveable then
-		for _, item in pairs(inbox:getItems()) do
-			if item:getId() == itemId then
-				item:removeAttribute(ITEM_ATTRIBUTE_STORE)
-			end
+	if not movable then
+		item:setOwner(self)
+		item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+	elseif setOwner then
+		item:setOwner(self)
+	end
+	inbox:addItemEx(item, INDEX_WHEREEVER, FLAG_NOLIMIT)
+	return item
+end
+
+function Player:addItemStoreInbox(itemId, amount, movable, setOwner)
+	local iType = ItemType(itemId)
+	if not iType then
+		return nil
+	end
+	if iType:isStackable() then
+		while amount > iType:getStackSize() do
+			self:addItemStoreInboxEx(Game.createItem(itemId, iType:getStackSize()), movable, setOwner)
+			amount = amount - iType:getStackSize()
 		end
 	end
-
-	local newItem = inbox:addItem(itemId, amount, INDEX_WHEREEVER, FLAG_NOLIMIT)
-
-	if not moveable then
-		for _, item in pairs(inbox:getItems()) do
-			if item:getId() == itemId then
-				item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
-			end
-		end
+	local item = Game.createItem(itemId, amount)
+	if not item then
+		return nil
 	end
-	return newItem
+	return self:addItemStoreInboxEx(item, movable, setOwner)
 end
 
 ---@param monster Monster

@@ -46,7 +46,7 @@ local config = {
 }
 
 local function yasirwebhook(message) -- New local function that runs on delay to send webhook message.
-	Webhook.sendMessage("[Yasir] ", message, WEBHOOK_COLOR_ONLINE) --Sends webhook message
+	Webhook.sendMessage(":man_wearing_turban_tone4: " .. message, announcementChannels["serverAnnouncements"])
 end
 
 local yasirEnabled = true

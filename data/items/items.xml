@@ -5868,7 +5868,7 @@
 		<attribute key="primarytype" value="dolls and bears"/>
 		<attribute key="weight" value="650"/>
 	</item>
-	<item id="2992" article="a" name="snowball">
+	<item id="2992" article="an" name="snowball">
 		<attribute key="primarytype" value="distance weapons"/>
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="shootType" value="snowball"/>
@@ -9213,18 +9213,15 @@
 		<attribute key="primarytype" value="furniture"/>
 		<attribute key="type" value="depot"/>
 		<attribute key="containersize" value="6"/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="3501" article="a" name="mailbox">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="type" value="mailbox"/>
 		<attribute key="description" value="Royal Tibia Mail."/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="3502" article="a" name="depot chest">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="containersize" value="30"/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="3503" article="a" name="parcel">
 		<attribute key="primarytype" value="containers"/>
@@ -11607,7 +11604,7 @@
 		<attribute key="weight" value="700"/>
 	</item>
 	<item id="4285" article="a" name="pile of bones">
-		<attribute key="movable" value="0"/>
+		<attribute key="moveable" value="0"/>
 		<attribute key="containersize" value="5"/>
 	</item>
 	<item id="4286" article="a" name="dead dragon">
@@ -27958,7 +27955,6 @@
 	</item>
 	<item id="12903" article="the" name="market"/>
 	<item id="12904" article="a" name="dread doll">
-		<attribute key="usedbyhouseguests" value="1"/>
 		<attribute key="primarytype" value="dolls and bears"/>
 		<attribute key="description" value="It is shining with positive energy and was awarded by FunTibia.com"/>
 		<attribute key="weight" value="1100"/>
@@ -31353,7 +31349,6 @@
 		<attribute key="weight" value="5000"/>
 	</item>
 	<item id="16277" article="an" name="adventurer's stone">
-		<attribute key="usedbyhouseguests" value="1"/>
 		<attribute key="description" value="Use it in a city temple to travel to the Adventurers Guild. A replacement is available at temples"/>
 		<attribute key="weight" value="30"/>
 	</item>
@@ -35642,7 +35637,7 @@
 	<item id="19201" article="an" name="ornate door with a keyhole"/>
 	<item id="19202" article="a" name="reward container">
 		<attribute key="primarytype" value="utilities"/>
-		<attribute key="movable" value="0"/>
+		<attribute key="moveable" value="0"/>
 		<attribute key="allowpickUpAble" value="0"/>
 		<attribute key="containersize" value="32"/>
 	</item>
@@ -35742,7 +35737,7 @@
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="type" value="rewardchest"/>
 		<attribute key="description" value="This chest contains your rewards earned in battles."/>
-		<attribute key="movable" value="0"/>
+		<attribute key="moveable" value="0"/>
 		<attribute key="allowpickUpAble" value="0"/>
 		<attribute key="containersize" value="32"/>
 	</item>
@@ -39862,7 +39857,7 @@
 		<attribute key="primarytype" value="quest items"/>
 	<attribute key="weight" value="200"/>
 	</item>
-	<item id="22083" article="a" name="moonlight crystals">
+	<item id="22083" article="a" name="moonlight crystal">
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="weight" value="400"/>
 	</item>
@@ -41617,7 +41612,6 @@
 	<item id="23396" article="your" name="your store inbox">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="containersize" value="20"/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="23397" name="RESERVED SPRITE"/>
 	<item id="23398" article="a" name="decoration kit">
@@ -42622,10 +42616,10 @@
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="850"/>
 	</item>
-	<item id="23721" article="a" name="gold pouch">
-		<attribute key="description" value="A infinity bag where you can hold coins."/>
+	<item id="23721" article="a" name="Loot pouch">
+		<attribute key="description" value="A infinity bag where you can hold loot and coins. use !autoloot on or off"/>
 		<attribute key="containersize" value="20"/>
-		<attribute key="movable" value="0"/>
+		<attribute key="moveable" value="0"/>
 	</item>
 	<item id="23722" article="a" name="gold converter">
 		<attribute key="primarytype" value="tools"/>
@@ -43706,13 +43700,11 @@
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25104"/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25104" article="an" name="imbuing shrine">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25103"/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item fromid="25105" toid="25111" article="a" name="dragon lair wall"/>
 	<item fromid="25112" toid="25113" article="a" name="grey stones">
@@ -43758,25 +43750,21 @@
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25175"/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25175" article="an" name="imbuing shrine">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25174"/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25182" article="a" name="gilded imbuing shrine">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25183"/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25183" article="a" name="gilded imbuing shrine">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25182"/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25185" name="dead ice dragon">
 		<attribute key="fluidsource" value="blood"/>
@@ -44364,28 +44352,24 @@
 		<attribute key="description" value="It depicts the two suns of Tibia, symbolising the course of a day"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25721"/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25721" article="a" name="reward shrine">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="description" value="It depicts the two suns of Tibia, symbolising the course of a day"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25720"/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25722" article="a" name="shiny reward shrine">
 		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It depicts the two suns of Tibia, symbolising the course of a day"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25723"/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25723" article="a" name="shiny reward shrine">
 		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It depicts the two suns of Tibia, symbolising the course of a day"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25722"/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="25724" article="a" name="stuffed moohtant"/>
 	<item id="25725" article="a" name="stuffed skunk"/>
@@ -44595,7 +44579,6 @@
 	<item id="25797" article="a" name="free fairy"/>
 	<item fromid="25798" toid="25800" name="energy barrier"/>
 	<item fromid="25802" toid="25803" name="reward shrine">
-		<attribute key="usedbyhouseguests" value="1"/>
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="description" value="It depicts the two suns of Tibia, symbolising the course of a day."/>
 	</item>
@@ -48121,8 +48104,6 @@
 	<item id="28525" article="a" name="magic gold converter">
 		<attribute key="primarytype" value="tools"/>
 		<attribute key="description" value="It is actually in the inactive state"/>
-		<attribute key="showCharges" value="1"/>
-		<attribute key="charges" value="500"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="28526" article="a" name="magic gold converter">
@@ -49192,7 +49173,6 @@
 	<item id="28750" name="your supply stash">
 		<attribute key="primarytype" value="utilities"/>
 		<attribute key="containersize" value="10"/>
-		<attribute key="usedbyhouseguests" value="1"/>
 	</item>
 	<item id="28751" article="a" name="dead burning book">
 		<attribute key="duration" value="60"/>
@@ -50372,7 +50352,7 @@
 		<attribute key="primarytype" value="tools"/>
 		<attribute key="weight" value="1000"/>
 		<attribute key="description" value="This mysterious lamp summons your very own personal hireling."/>
-		<attribute key="movable" value="0"/>
+		<attribute key="moveable" value="0"/>
 	</item>
 	<item id="29433" article="a" name="chest">
 		<attribute key="primarytype" value="containers"/>
@@ -68973,4 +68953,956 @@
 		<attribute key="charges" value="14400"/>
 		<attribute key="weight" value="1000"/>
 	</item>
+		<item id="42391" name="stairs">
+		<attribute key="primarytype" value="stairs"/>
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="42393" article="a" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="42395" article="a" name="ramp">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="42397" article="a" name="ramp">
+		<attribute key="floorchange" value="south"/>
+	</item>
+		<item id="42965" name="stairs">
+		<attribute key="primarytype" value="stairs"/>
+		<attribute key="floorchange" value="north"/>
+	</item>
+			<item id="43130" name="stairs">
+		<attribute key="primarytype" value="stairs"/>
+		<attribute key="floorchange" value="north"/>
+	</item>	
+
+
+
+
+
+
+
+
+
+<item id="60001" article="a" name="R Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="20"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+
+<item id="60002" article="a" name="GuildBank Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="20"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+
+<item id="60003" article="a" name="Skeleton Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60004" article="a" name="Mystic Bag">
+</item>
+<item id="60005" article="a" name="R Coin">
+</item>
+
+
+<item id="60012" article="a" name="Pizza Food">
+</item>
+
+<item id="60058" article="a" name="Dukoth Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60059" article="a" name="Soulwar Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60069" article="a" name="Chicken Food">
+</item>
+<item id="60082" article="a" name="Lethal Coin">
+</item>
+<item id="60097" article="a" name="Sanguine Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60098" article="a" name="Alicorn Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60099" article="a" name="Spirittorn Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60100" article="a" name="Arcanomancer Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60101" article="a" name="Arboreal Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+
+<item id="60116" article="a" name="sorcerer chest">
+</item>
+<item id="60117" article="a" name="druid chest">
+</item>
+<item id="60118" article="a" name="knight chest">
+</item>
+<item id="60119" article="a" name="paladin chest">
+</item>
+<item id="60125" article="a" name="Royal Cape">
+</item>
+<item id="60126" article="a" name="fera bag">
+</item>
+<item id="60127" article="a" name="alba bag">
+</item>
+<item id="60128" article="a" name="tenebris bag">
+</item>
+<item id="60132" article="a" name="Temple + Volta Scroll">
+</item>
+<item id="60134" article="a" name="Halloween Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60135" article="a" name="Halloween Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60136" article="a" name="Halloween Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60137" article="a" name="Halloween Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60281" article="an" name="Feru dummy">
+    <attribute key="primarytype" value="statues"/>
+    <attribute key="description" value="You can train your skills by using training weapons with this exercise dummy."/>
+    <attribute key="type" value="dummy">
+        <attribute key="rate" value="110"/>
+    </attribute>
+</item>
+<item id="60282" article="an" name="Feru dummy">
+    <attribute key="primarytype" value="statues"/>
+    <attribute key="description" value="You can train your skills by using training weapons with this exercise dummy."/>
+    <attribute key="type" value="dummy">
+        <attribute key="rate" value="110"/>
+    </attribute>
+</item>
+<item id="60283" article="an" name="Feru dummy">
+    <attribute key="primarytype" value="statues"/>
+    <attribute key="description" value="You can train your skills by using training weapons with this exercise dummy."/>
+    <attribute key="type" value="dummy">
+        <attribute key="rate" value="110"/>
+    </attribute>
+</item>
+<item id="60284" article="an" name="Feru dummy">
+    <attribute key="primarytype" value="statues"/>
+    <attribute key="description" value="You can train your skills by using training weapons with this exercise dummy."/>
+    <attribute key="type" value="dummy">
+        <attribute key="rate" value="110"/>
+    </attribute>
+</item>
+  <item id="60285" article="a" name="F Backpack">
+        <attribute key="primarytype" value="containers"/>
+        <attribute key="containersize" value="100"/>
+        <attribute key="weight" value="1800"/>
+        <attribute key="imbuementslot" value="1">
+            <attribute key="increase capacity" value="3"/>
+        </attribute>
+    </item>
+ <item id="60286" article="a" name="Ferumbras Backpack">
+        <attribute key="primarytype" value="containers"/>
+        <attribute key="containersize" value="30"/>
+		<attribute key="criticalhitdamage" value="15"/>
+		<attribute key="criticalhitchance" value="10"/>
+        <attribute key="weight" value="1800"/>
+        <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+		<attribute key="description" value="Equiped Bonnus critical hit chance 10. Equiped Bonnus critical extra damage +15%. Classification: 4 (TOP Class)."/>
+        </attribute>
+    </item>
+  <item id="60287" article="a" name="Sinyster Backpack">
+        <attribute key="primarytype" value="containers"/>
+        <attribute key="containersize" value="100"/>
+        <attribute key="weight" value="1800"/>
+        <attribute key="imbuementslot" value="1">
+            <attribute key="increase capacity" value="3"/>
+        </attribute>
+    </item>
+	<item id="60470" article="a" name="Red Portal">
+		<attribute key="type" value="teleport"/>
+	</item>
+	<item id="60469" article="a" name="Violet Portal">
+		<attribute key="type" value="teleport"/>
+	</item>
+<item id="60480" article="a" name="Write Portal">
+		<attribute key="type" value="teleport"/>
+	</item>
+<item id="60481" article="a" name="Yellow Portal">
+		<attribute key="type" value="teleport"/>
+	</item>
+<item id="60482" article="a" name="Green Portal">
+		<attribute key="type" value="teleport"/>
+	</item>
+<item id="60505" article="a" name="Write Portal">
+		<attribute key="type" value="teleport"/>
+	</item>
+<item id="60506" article="a" name="Yellow Portal">
+		<attribute key="type" value="teleport"/>
+	</item>
+<item id="60507" article="a" name="Green Portal">
+		<attribute key="type" value="teleport"/>
+	</item>
+<item id="60508" article="a" name="Violet Portal">
+		<attribute key="type" value="teleport"/>
+	</item>
+<item id="60509" article="a" name="Red Portal">
+		<attribute key="type" value="teleport"/>
+	</item>
+<item id="60510" article="a" name="Black Portal">
+		<attribute key="type" value="teleport"/>
+	</item>
+<item id="60511" article="a" name="Red Portal">
+		<attribute key="type" value="teleport"/>
+	</item>
+<item id="60512" article="a" name="Yellow Portal">
+		<attribute key="type" value="teleport"/>
+	</item>
+<item id="60513" article="a" name="Blue Portal">
+		<attribute key="type" value="teleport"/>
+	</item>
+		<item id="60783" article="a" name="pair of demon boots">
+		<attribute key="showduration" value="1"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="manaticks" value="6000"/>
+		<attribute key="managain" value="12"/>
+		<attribute key="healthticks" value="6000"/>
+		<attribute key="healthgain" value="3"/>
+		<attribute key="duration" value="14400"/>
+		<attribute key="decayTo" value="6530"/>
+		<attribute key="weight" value="800"/>
+	</item>
+<item id="60784" article="a" name="Picachu Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60785" article="a" name="Dragon Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60786" article="a" name="Ball Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+
+
+<item id="60787" article="a" name="Blue Star">
+		<attribute key="type" value="teleport"/>
+	</item>
+	<item id="60788" article="a" name="dark quiver">
+		<attribute key="primarytype" value="quivers"/>
+		<attribute key="slotType" value="right-hand"/>
+		<attribute key="showattributes" value="1"/>
+		<attribute key="containersize" value="8"/>
+		<attribute key="weight" value="2200"/>
+		<attribute key="perfectshotdamage" value="20"/>
+		<attribute key="perfectshotrange" value="4"/>
+	</item>
+	<item id="60789" article="a" name="blood  quiver">
+		<attribute key="primarytype" value="quivers"/>
+		<attribute key="slotType" value="right-hand"/>
+		<attribute key="showattributes" value="1"/>
+		<attribute key="containersize" value="8"/>
+		<attribute key="weight" value="2200"/>
+		<attribute key="perfectshotdamage" value="20"/>
+		<attribute key="perfectshotrange" value="4"/>
+	</item>
+	<item id="60790" article="a" name="gold quiver">
+		<attribute key="primarytype" value="quivers"/>
+		<attribute key="slotType" value="right-hand"/>
+		<attribute key="showattributes" value="1"/>
+		<attribute key="containersize" value="8"/>
+		<attribute key="weight" value="2200"/>
+		<attribute key="perfectshotdamage" value="20"/>
+		<attribute key="perfectshotrange" value="4"/>
+	</item>
+<item id="60791" article="a" name="Piramide Hermetica">
+</item>
+	<item id="60809" article="a" name="green magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+		<item id="60810" article="a" name="violet dark magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60811" article="a" name="orange magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60812" article="a" name="pink magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60813" article="a" name="violet magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60814" article="a" name="ocean magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60815" article="a" name="rainbow magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60816" article="a" name="lilas magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60817" article="a" name="white magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60818" article="a" name="marina magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60819" article="a" name="violess magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60820" article="a" name="red magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60821" article="a" name="ice magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60822" article="a" name="redness magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60823" article="a" name="black magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60824" article="a" name="Violess dark magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60825" article="a" name="Yellorange magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60826" article="a" name="Orangellow magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+	<item id="60827" article="a" name="Soft magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+<item id="60828" article="a" name="Red Dark magic wall rune">
+		<attribute key="primarytype" value="attack runes"/>
+		<attribute key="type" value="rune"/>
+		<attribute key="charges" value="3"/>
+		<attribute key="weight" value="70"/>
+	</item>
+
+		<item id="60829" article="a" name="marina magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60830" article="a" name="violess magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60831" article="a" name="ice magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60832" article="a" name="redness magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60833" article="a" name="black magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60834" article="a" name="violess magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60835" article="a" name="yellorange magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60836" article="a" name="Orangellow magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60837" article="a" name="Soft magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60838" article="a" name="Red dark magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60839" article="a" name="Green magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60840" article="a" name="Violet Dark magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60841" article="a" name="Orange magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60842" article="a" name="Pink magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60843" article="a" name="Purple magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60844" article="a" name="Ocean magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60845" article="a" name="Rainbow magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60846" article="a" name="Lilasse magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+		<item id="60847" article="a" name="White magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="blocking" value="1"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+<item id="43568" article="a" name="dead Darklight Matter">
+		<attribute key="duration" value="60"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="25"/>
+	</item>
+	<item id="43569" article="a" name="dead Darklight Matter">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="43568"/>
+		<attribute key="containersize" value="25"/>
+	</item>
+	<item id="43570" article="a" name="dead Darklight Matter">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="43569"/>
+		<attribute key="containersize" value="25"/>
+	</item>
+	<item id="43571" article="a" name="dead Darklight Matter">
+		<attribute key="duration" value="10"/>
+		<attribute key="decayTo" value="43570"/>
+		<attribute key="containersize" value="25"/>
+	</item>
+
+	<item id="43851" article="a" name="darklight matter (object)">
+		<attribute key="weight" value="175"/>
+	</item>
+
+	<item id="43853" article="a" name="darklight core (object)">
+		<attribute key="weight" value="200"/>
+	</item>
+	<item id="43858" article="a" name="basalt crumb">
+		<attribute key="weight" value="90"/>
+	</item>
+	<item id="43849" article="a" name="rotten root">
+		<attribute key="weight" value="105"/>
+	</item>
+
+	<item id="60855" article="a" name="Lethal Death Ring">
+		<attribute key="primarytype" value="rings"/>
+	<attribute key="armor" value="3"/>
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="absorbpercentdeath" value="10"/>
+		<attribute key="criticalhitdamage" value="15"/>
+		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="weight" value="120"/>
+	</item>
+	<item id="60856" article="a" name="Lethal Energy Ring">
+		<attribute key="primarytype" value="rings"/>
+		<attribute key="absorbpercentenergy" value="10"/>
+	<attribute key="armor" value="3"/>
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="criticalhitdamage" value="15"/>
+		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="weight" value="570"/>
+	</item>
+	<item id="60857" article="a" name="Lethal Holy Ring">
+		<attribute key="primarytype" value="rings"/>
+		<attribute key="absorbpercentholy" value="10"/>
+	<attribute key="armor" value="3"/>
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="criticalhitdamage" value="15"/>
+		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="weight" value="570"/>
+	</item>
+
+	<item id="60858" article="a" name="Lethal Ice Ring">
+		<attribute key="primarytype" value="rings"/>
+		<attribute key="absorbpercentice" value="10"/>
+	<attribute key="armor" value="3"/>
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="criticalhitdamage" value="15"/>
+		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+	</item>
+
+	<item id="60859" article="a" name="Lethal Fire Ring">
+		<attribute key="primarytype" value="rings"/>
+		<attribute key="absorbpercentfire" value="10"/>
+	<attribute key="armor" value="3"/>
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="criticalhitdamage" value="15"/>
+		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+	</item>
+
+	<item id="60860" article="a" name="Lethal Earth Ring">
+		<attribute key="primarytype" value="rings"/>
+		<attribute key="absorbpercentpoison" value="10"/>
+		<attribute key="armor" value="3"/>
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="criticalhitdamage" value="15"/>
+		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+	</item>
+<item id="60861" article="a" name="Monster Coin">
+    </item>
+	<item id="60862" article="a" name="Majinboo Backpack">
+        <attribute key="primarytype" value="containers"/>
+        <attribute key="containersize" value="30"/>
+        <attribute key="weight" value="1800"/>
+        <attribute key="imbuementslot" value="1">
+            <attribute key="increase capacity" value="3"/>
+        </attribute>
+    </item>
+	<item id="60864" article="a" name="Sudden Backpack">
+        <attribute key="primarytype" value="containers"/>
+        <attribute key="containersize" value="30"/>
+        <attribute key="weight" value="1800"/>
+        <attribute key="imbuementslot" value="1">
+            <attribute key="increase capacity" value="3"/>
+        </attribute>
+    </item>
+	<item id="60865" article="a" name="Celestial Backpack">
+        <attribute key="primarytype" value="containers"/>
+        <attribute key="containersize" value="30"/>
+        <attribute key="weight" value="1800"/>
+        <attribute key="imbuementslot" value="1">
+            <attribute key="increase capacity" value="3"/>
+        </attribute>
+    </item>
+<item id="60866" article="a" name="Lethal Death Amulet">
+		<attribute key="primarytype" value="amulets and necklaces"/>
+		<attribute key="armor" value="3"/>
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="absorbpercentdeath" value="10"/>
+		<attribute key="criticalhitdamage" value="15"/>
+		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="weight" value="570"/>
+	</item>
+
+	<item id="60867" article="a" name="Lethal Fire Amulet">
+		<attribute key="primarytype" value="amulets and necklaces"/>
+		<attribute key="armor" value="3"/>
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="absorbpercentfire" value="10"/>
+		<attribute key="criticalhitdamage" value="15"/>
+		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="weight" value="570"/>
+	</item>
+
+
+	<item id="60868" article="a" name="Lethal Holy Amulet">
+		<attribute key="primarytype" value="amulets and necklaces"/>
+		<attribute key="armor" value="3"/>
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="absorbpercentholy" value="10"/>
+		<attribute key="criticalhitdamage" value="15"/>
+		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="weight" value="570"/>
+	</item>
+
+	
+	<item id="60869" article="a" name="Lethal Energy Amulet">
+		<attribute key="primarytype" value="amulets and necklaces"/>
+		<attribute key="armor" value="3"/>
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="absorbpercentenergy" value="10"/>
+		<attribute key="criticalhitdamage" value="15"/>
+		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="weight" value="570"/>
+	</item>
+
+	<item id="60870" article="a" name="Lethal Terra Amulet">
+		<attribute key="primarytype" value="amulets and necklaces"/>
+		<attribute key="armor" value="3"/>
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="absorbpercentpoison" value="10"/>
+		<attribute key="criticalhitdamage" value="15"/>
+		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="weight" value="570"/>
+	</item>
+
+	<item id="60871" article="a" name="Lethal Ice Amulet">
+		<attribute key="primarytype" value="amulets and necklaces"/>
+		<attribute key="armor" value="3"/>
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="absorbpercentice" value="10"/>
+		<attribute key="criticalhitdamage" value="15"/>
+		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="weight" value="570"/>
+	</item>
+<item id="60879" article="a" name="Cobra Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60880" article="a" name="Death Strike Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60884" article="a" name="Bug Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60886" article="a" name="Demona Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60895" article="a" name="Lethal Trinket">
+		<attribute key="primarytype" value="light sources"/>
+		<attribute key="armor" value="3"/>
+		<attribute key="absorbpercentphysical" value="7"/>
+		<attribute key="absorbpercentdeath" value="7"/>
+		<attribute key="absorbpercentfire" value="7"/>
+		<attribute key="absorbpercentice" value="7"/>
+		<attribute key="absorbpercentenergy" value="7"/>
+		<attribute key="absorbpercentholy" value="7"/>
+		<attribute key="criticalhitdamage" value="15"/>
+		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="weight" value="120"/>
+	</item>
+
+<item id="60899" article="a" name="Skell Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+
+
+<item id="60900" article="a" name="A Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+
+<item id="60907" article="a" name="Aared Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60908" article="a" name="Bless Book">
+</item>
+
+<item id="60915" article="a" name="A Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+<item id="60916" article="a" name="A Backpack">
+    <attribute key="primarytype" value="containers"/>
+    <attribute key="containersize" value="30"/>
+    <attribute key="weight" value="1800"/>
+    <attribute key="imbuementslot" value="1">
+        <attribute key="increase capacity" value="3"/>
+    </attribute>
+</item>
+
+	<item id="60946" article="a" name="portal">
+		<attribute key="primarytype" value="portals"/>
+	</item>
+	<item id="60947" article="a" name="portal">
+		<attribute key="primarytype" value="portals"/>
+	</item>
+	<item id="60948" article="a" name="portal">
+		<attribute key="primarytype" value="portals"/>
+	</item>
+	<item id="60949" article="a" name="portal">
+		<attribute key="primarytype" value="portals"/>
+	</item>
+	<item id="60950" article="a" name="portal">
+		<attribute key="primarytype" value="portals"/>
+	</item>
+	<item id="60951" article="a" name="portal">
+		<attribute key="primarytype" value="portals"/>
+	</item>
+	<item id="60952" article="a" name="portal">
+		<attribute key="primarytype" value="portals"/>
+	</item>
+	<item id="60953" article="a" name="portal">
+		<attribute key="primarytype" value="portals"/>
+	</item>
+	<item id="60954" article="a" name="portal">
+		<attribute key="primarytype" value="portals"/>
+	</item>
+	<item id="60955" article="a" name="portal">
+		<attribute key="primarytype" value="portals"/>
+	</item>
+	<item id="60956" article="a" name="portal">
+		<attribute key="primarytype" value="portals"/>
+	</item>
+	<item id="60957" article="a" name="portal">
+		<attribute key="primarytype" value="portals"/>
+	</item>
+	<item id="60958" article="a" name="portal">
+		<attribute key="primarytype" value="portals"/>
+	</item>
+	<item id="60969" article="an" name="exercise dummy">
+		<attribute key="primarytype" value="statues"/>
+		<attribute key="description" value="You can train your skills by using training weapons with this exercise dummy."/>
+		<attribute key="type" value="dummy">
+			<attribute key="rate" value="110"/>
+		</attribute>
+	</item>
+	<item id="60970" article="an" name="exercise dummy">
+		<attribute key="primarytype" value="statues"/>
+		<attribute key="description" value="You can train your skills by using training weapons with this exercise dummy."/>
+		<attribute key="type" value="dummy">
+			<attribute key="rate" value="110"/>
+		</attribute>
+	</item>
+
 </items>

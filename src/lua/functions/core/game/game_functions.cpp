@@ -524,7 +524,7 @@ int GameFunctions::luaGameGetBestiaryCharm(lua_State* L) {
 
 int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 	// Game.createBestiaryCharm(id)
-	if (const std::shared_ptr<Charm> charm = g_iobestiary().getBestiaryCharm(static_cast<charmRune_t>(getNumber<int8_t>(L, 1, 0)), true)) {
+	if (const std::shared_ptr<Charm> charm = g_iobestiary().getBestiaryCharm(safe_convert<charmRune_t>(getNumber<int8_t>(L, 1, 0), __FUNCTION__), true)) {
 		pushUserdata<Charm>(L, charm);
 		setMetatable(L, -1, "Charm");
 	} else {
@@ -683,7 +683,7 @@ int GameFunctions::luaGameRemoveInfluencedMonster(lua_State* L) {
 int GameFunctions::luaGameGetInfluencedMonsters(lua_State* L) {
 	// Game.getInfluencedMonsters()
 	const auto monsters = g_game().getInfluencedMonsters();
-	lua_createtable(L, static_cast<int>(monsters.size()), 0);
+	lua_createtable(L, safe_convert<int>(monsters.size(), __FUNCTION__), 0);
 	int index = 0;
 	for (const auto &monsterId : monsters) {
 		++index;
@@ -697,11 +697,11 @@ int GameFunctions::luaGameGetInfluencedMonsters(lua_State* L) {
 int GameFunctions::luaGameGetLadderIds(lua_State* L) {
 	// Game.getLadderIds()
 	const auto ladders = Item::items.getLadders();
-	lua_createtable(L, static_cast<int>(ladders.size()), 0);
+	lua_createtable(L, safe_convert<int>(ladders.size(), __FUNCTION__), 0);
 	int index = 0;
 	for (const auto ladderId : ladders) {
 		++index;
-		lua_pushnumber(L, static_cast<lua_Number>(ladderId));
+		lua_pushnumber(L, safe_convert<lua_Number>(ladderId, __FUNCTION__));
 		lua_rawseti(L, -2, index);
 	}
 
@@ -721,7 +721,7 @@ int GameFunctions::luaGameGetDummies(lua_State* L) {
 	const auto dummies = Item::items.getDummys();
 	lua_createtable(L, dummies.size(), 0);
 	for (const auto &[dummyId, rate] : dummies) {
-		lua_pushnumber(L, static_cast<lua_Number>(rate));
+		lua_pushnumber(L, safe_convert<lua_Number>(rate, __FUNCTION__));
 		lua_rawseti(L, -2, dummyId);
 	}
 	return 1;
@@ -747,7 +747,7 @@ int GameFunctions::luaGameGetFiendishMonsters(lua_State* L) {
 	// Game.getFiendishMonsters()
 	const auto monsters = g_game().getFiendishMonsters();
 
-	lua_createtable(L, static_cast<int>(monsters.size()), 0);
+	lua_createtable(L, safe_convert<int>(monsters.size(), __FUNCTION__), 0);
 	int index = 0;
 	for (const auto &monsterId : monsters) {
 		++index;
@@ -767,7 +767,7 @@ int GameFunctions::luaGameGetBoostedBoss(lua_State* L) {
 int GameFunctions::luaGameGetTalkActions(lua_State* L) {
 	// Game.getTalkActions()
 	const auto talkactionsMap = g_talkActions().getTalkActionsMap();
-	lua_createtable(L, static_cast<int>(talkactionsMap.size()), 0);
+	lua_createtable(L, safe_convert<int>(talkactionsMap.size(), __FUNCTION__), 0);
 
 	for (const auto &[talkName, talkactionSharedPtr] : talkactionsMap) {
 		pushUserdata<TalkAction>(L, talkactionSharedPtr);

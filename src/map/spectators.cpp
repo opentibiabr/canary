@@ -92,8 +92,8 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 
 	if (multifloor) {
 		if (centerPos.z > MAP_INIT_SURFACE_LAYER) {
-			minRangeZ = static_cast<uint8_t>(std::max<int8_t>(centerPos.z - MAP_LAYER_VIEW_LIMIT, 0u));
-			maxRangeZ = static_cast<uint8_t>(std::min<int8_t>(centerPos.z + MAP_LAYER_VIEW_LIMIT, MAP_MAX_LAYERS - 1));
+			minRangeZ = safe_convert<uint8_t>(std::max(safe_convert<int>(safe_convert<int8_t>(centerPos.z, __FUNCTION__), __FUNCTION__) - MAP_LAYER_VIEW_LIMIT, 0), __FUNCTION__);
+			maxRangeZ = safe_convert<uint8_t>(std::min(safe_convert<int>(safe_convert<int8_t>(centerPos.z, __FUNCTION__), __FUNCTION__) + MAP_LAYER_VIEW_LIMIT, safe_convert<int>(MAP_MAX_LAYERS - 1, __FUNCTION__)), __FUNCTION__);
 		} else if (centerPos.z == MAP_INIT_SURFACE_LAYER - 1) {
 			minRangeZ = 0;
 			maxRangeZ = (MAP_INIT_SURFACE_LAYER - 1) + MAP_LAYER_VIEW_LIMIT;
@@ -124,7 +124,7 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	const uint_fast16_t endx2 = x2 - (x2 % FLOOR_SIZE);
 	const uint_fast16_t endy2 = y2 - (y2 % FLOOR_SIZE);
 
-	const auto startLeaf = g_game().map.getQTNode(static_cast<uint16_t>(startx1), static_cast<uint16_t>(starty1));
+	const auto startLeaf = g_game().map.getQTNode(safe_convert<uint16_t>(startx1, __FUNCTION__), safe_convert<uint16_t>(starty1, __FUNCTION__));
 	const QTreeLeafNode* leafS = startLeaf;
 	const QTreeLeafNode* leafE;
 
@@ -151,14 +151,14 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 				}
 				leafE = leafE->leafE;
 			} else {
-				leafE = g_game().map.getQTNode(static_cast<uint16_t>(nx + FLOOR_SIZE), static_cast<uint16_t>(ny));
+				leafE = g_game().map.getQTNode(safe_convert<uint16_t>(nx + FLOOR_SIZE, __FUNCTION__), safe_convert<uint16_t>(ny, __FUNCTION__));
 			}
 		}
 
 		if (leafS) {
 			leafS = leafS->leafS;
 		} else {
-			leafS = g_game().map.getQTNode(static_cast<uint16_t>(startx1), static_cast<uint16_t>(ny + FLOOR_SIZE));
+			leafS = g_game().map.getQTNode(safe_convert<uint16_t>(startx1, __FUNCTION__), safe_convert<uint16_t>(ny + FLOOR_SIZE, __FUNCTION__));
 		}
 	}
 

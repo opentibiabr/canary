@@ -139,7 +139,7 @@ public:
 			return;
 		}
 
-		write(static_cast<uint16_t>(strLength));
+		write(safe_convert<uint16_t>(static_cast<uint16_t>(strLength), __FUNCTION__));
 		std::copy(str.begin(), str.end(), std::back_inserter(buffer));
 	}
 

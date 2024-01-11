@@ -133,12 +133,12 @@ std::string RSA::base64Decrypt(const std::string &input) const {
 	output.reserve(length / 4 * 3);
 	while (pos < length) {
 		uint16_t pos1 = posOfCharacter(input[pos + 1]);
-		output.push_back(static_cast<std::string::value_type>(((posOfCharacter(input[pos])) << 2) + ((pos1 & 0x30) >> 4)));
+		output.push_back(safe_convert<std::string::value_type>(((posOfCharacter(input[pos])) << 2) + ((pos1 & 0x30) >> 4), __FUNCTION__));
 		if (input[pos + 2] != '=' && input[pos + 2] != '.') {
 			uint16_t pos2 = posOfCharacter(input[pos + 2]);
-			output.push_back(static_cast<std::string::value_type>(((pos1 & 0x0f) << 4) + ((pos2 & 0x3c) >> 2)));
+			output.push_back(safe_convert<std::string::value_type>(((pos1 & 0x0f) << 4) + ((pos2 & 0x3c) >> 2), __FUNCTION__));
 			if (input[pos + 3] != '=' && input[pos + 3] != '.') {
-				output.push_back(static_cast<std::string::value_type>(((pos2 & 0x03) << 6) + posOfCharacter(input[pos + 3])));
+				output.push_back(safe_convert<std::string::value_type>(((pos2 & 0x03) << 6) + posOfCharacter(input[pos + 3]), __FUNCTION__));
 			}
 		}
 
@@ -162,7 +162,7 @@ enum {
 
 uint16_t RSA::decodeLength(char*&pos) const {
 	uint8_t buffer[4] = { 0 };
-	auto length = static_cast<uint16_t>(static_cast<uint8_t>(*pos++));
+	auto length = safe_convert<uint16_t>(safe_convert<uint8_t>(*pos++, __FUNCTION__), __FUNCTION__);
 	if (length & 0x80) {
 		length &= 0x7F;
 		if (length > 4) {
@@ -171,13 +171,13 @@ uint16_t RSA::decodeLength(char*&pos) const {
 		}
 		switch (length) {
 			case 4:
-				buffer[3] = static_cast<uint8_t>(*pos++);
+				buffer[3] = safe_convert<uint8_t>(*pos++, __FUNCTION__);
 			case 3:
-				buffer[2] = static_cast<uint8_t>(*pos++);
+				buffer[2] = safe_convert<uint8_t>(*pos++, __FUNCTION__);
 			case 2:
-				buffer[1] = static_cast<uint8_t>(*pos++);
+				buffer[1] = safe_convert<uint8_t>(*pos++, __FUNCTION__);
 			case 1:
-				buffer[0] = static_cast<uint8_t>(*pos++);
+				buffer[0] = safe_convert<uint8_t>(*pos++, __FUNCTION__);
 			default:
 				break;
 		}
@@ -187,9 +187,9 @@ uint16_t RSA::decodeLength(char*&pos) const {
 }
 
 void RSA::readHexString(char*&pos, uint16_t length, std::string &output) const {
-	output.reserve(static_cast<size_t>(length) * 2);
+	output.reserve(safe_convert<size_t>(length, __FUNCTION__) * 2);
 	for (uint16_t i = 0; i < length; ++i) {
-		auto hex = static_cast<uint8_t>(*pos++);
+		auto hex = safe_convert<uint8_t>(*pos++, __FUNCTION__);
 		output.push_back("0123456789ABCDEF"[(hex >> 4) & 15]);
 		output.push_back("0123456789ABCDEF"[hex & 15]);
 	}
@@ -227,7 +227,7 @@ bool RSA::loadPEM(const std::string &filename) {
 	}
 
 	char* pos = &key[0];
-	if (static_cast<uint8_t>(*pos++) != CRYPT_RSA_ASN1_SEQUENCE) {
+	if (safe_convert<uint8_t>(*pos++, __FUNCTION__) != CRYPT_RSA_ASN1_SEQUENCE) {
 		g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;
 	}
@@ -238,20 +238,20 @@ bool RSA::loadPEM(const std::string &filename) {
 		return false;
 	}
 
-	auto tag = static_cast<uint8_t>(*pos++);
-	if (tag == CRYPT_RSA_ASN1_INTEGER && static_cast<uint8_t>(*(pos + 0)) == 0x01 && static_cast<uint8_t>(*(pos + 1)) == 0x00 && static_cast<uint8_t>(*(pos + 2)) == 0x30) {
+	auto tag = safe_convert<uint8_t>(*pos++, __FUNCTION__);
+	if (tag == CRYPT_RSA_ASN1_INTEGER && safe_convert<uint8_t>(*(pos + 0), __FUNCTION__) == 0x01 && safe_convert<uint8_t>(*(pos + 1), __FUNCTION__) == 0x00 && safe_convert<uint8_t>(*(pos + 2), __FUNCTION__) == 0x30) {
 		pos += 3;
 		tag = CRYPT_RSA_ASN1_SEQUENCE;
 	}
 
 	if (tag == CRYPT_RSA_ASN1_SEQUENCE) {
 		pos += decodeLength(pos);
-		tag = static_cast<uint8_t>(*pos++);
+		tag = safe_convert<uint8_t>(*pos++, __FUNCTION__);
 		decodeLength(pos);
 		if (tag == CRYPT_RSA_ASN1_BITSTRING) {
 			++pos;
 		}
-		if (static_cast<uint8_t>(*pos++) != CRYPT_RSA_ASN1_SEQUENCE) {
+		if (safe_convert<uint8_t>(*pos++, __FUNCTION__) != CRYPT_RSA_ASN1_SEQUENCE) {
 			g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
 			return false;
 		}
@@ -262,7 +262,7 @@ bool RSA::loadPEM(const std::string &filename) {
 			return false;
 		}
 
-		tag = static_cast<uint8_t>(*pos++);
+		tag = safe_convert<uint8_t>(*pos++, __FUNCTION__);
 	}
 
 	if (tag != CRYPT_RSA_ASN1_INTEGER) {
@@ -272,13 +272,13 @@ bool RSA::loadPEM(const std::string &filename) {
 
 	length = decodeLength(pos);
 	pos += length;
-	if (length != 1 || static_cast<uint8_t>(*pos) > 2) {
+	if (length != 1 || safe_convert<uint8_t>(*pos, __FUNCTION__) > 2) {
 		// public key - we don't have any interest in it
 		g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;
 	}
 
-	tag = static_cast<uint8_t>(*pos++);
+	tag = safe_convert<uint8_t>(*pos++, __FUNCTION__);
 	if (tag != CRYPT_RSA_ASN1_INTEGER) {
 		g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;

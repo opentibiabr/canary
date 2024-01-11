@@ -107,7 +107,7 @@ namespace account {
 		void addPremiumDays(const int32_t &days);
 		void setPremiumDays(const int32_t &days);
 		[[nodiscard]] inline uint32_t getPremiumRemainingDays() const {
-			return m_account.premiumLastDay > getTimeNow() ? static_cast<uint32_t>((m_account.premiumLastDay - getTimeNow()) / 86400) : 0;
+			return m_account.premiumLastDay > getTimeNow() ? safe_convert<uint32_t>((m_account.premiumLastDay - getTimeNow()) / 86400, __FUNCTION__) : 0;
 		}
 
 		[[nodiscard]] inline uint32_t getPremiumDaysPurchased() const {

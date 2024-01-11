@@ -99,7 +99,7 @@ void ScopedLatency::stop() {
 	}
 	stopped = true;
 	auto end = std::chrono::steady_clock::now();
-	double elapsed = static_cast<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count()) / 1000;
+	double elapsed = safe_convert<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count(), __FUNCTION__) / 1000;
 	auto attrskv = opentelemetry::common::KeyValueIterableView<decltype(attrs)> { attrs };
 	histogram->Record(elapsed, attrskv, context);
 }

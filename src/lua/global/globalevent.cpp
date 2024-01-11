@@ -135,7 +135,7 @@ void GlobalEvents::think() {
 	}
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
-		auto delay = static_cast<uint32_t>(nextScheduledTime);
+		auto delay = safe_convert<uint32_t>(nextScheduledTime, __FUNCTION__);
 		thinkEventId = g_dispatcher().scheduleEvent(delay, std::bind(&GlobalEvents::think, this), "GlobalEvents::think");
 	}
 }

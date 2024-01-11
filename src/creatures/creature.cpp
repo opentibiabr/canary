@@ -86,7 +86,7 @@ int32_t Creature::getWalkDelay(Direction dir) {
 
 int32_t Creature::getWalkSize() {
 	auto ret = std::distance(listWalkDir.begin(), listWalkDir.end());
-	return static_cast<int32_t>(ret);
+	return safe_convert<int32_t>(ret, __FUNCTION__);
 }
 
 void Creature::onThink(uint32_t interval) {
@@ -201,7 +201,7 @@ void Creature::onWalk(Direction &dir) {
 		uint32_t r = uniform_random(0, 60);
 		if (r <= DIRECTION_DIAGONAL_MASK) {
 			if (r < DIRECTION_DIAGONAL_MASK) {
-				dir = static_cast<Direction>(r);
+				dir = safe_convert<Direction>(r, __FUNCTION__);
 			}
 			g_game().internalCreatureSay(static_self_cast<Creature>(), TALKTYPE_MONSTER_SAY, "Hicks!", false);
 		}
@@ -258,7 +258,7 @@ void Creature::addEventWalk(bool firstStep) {
 		}
 
 		self->eventWalk = g_dispatcher().scheduleEvent(
-			static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), self->getID()),
+			safe_convert<uint32_t>(ticks, __FUNCTION__), std::bind(&Game::checkCreatureWalk, &g_game(), self->getID()),
 			"Creature::checkCreatureWalk"
 		);
 	});
@@ -515,7 +515,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 
 					// update 0
 					for (int32_t x = -maxWalkCacheWidth; x <= maxWalkCacheWidth; ++x) {
-						const auto &cacheTile = g_game().map.getTile(static_cast<uint16_t>(myPos.getX() + x), static_cast<uint16_t>(myPos.getY() - maxWalkCacheHeight), myPos.z);
+						const auto &cacheTile = g_game().map.getTile(safe_convert<uint16_t>(myPos.getX() + x, __FUNCTION__), safe_convert<uint16_t>(myPos.getY() - maxWalkCacheHeight, __FUNCTION__), myPos.z);
 						updateTileCache(cacheTile, x, -maxWalkCacheHeight);
 					}
 				} else if (oldPos.y < newPos.y) { // south
@@ -526,7 +526,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 
 					// update mapWalkHeight - 1
 					for (int32_t x = -maxWalkCacheWidth; x <= maxWalkCacheWidth; ++x) {
-						const auto &cacheTile = g_game().map.getTile(static_cast<uint16_t>(myPos.getX() + x), static_cast<uint16_t>(myPos.getY() + maxWalkCacheHeight), myPos.z);
+						const auto &cacheTile = g_game().map.getTile(safe_convert<uint16_t>(myPos.getX() + x, __FUNCTION__), safe_convert<uint16_t>(myPos.getY() + maxWalkCacheHeight, __FUNCTION__), myPos.z);
 						updateTileCache(cacheTile, x, maxWalkCacheHeight);
 					}
 				}
@@ -551,7 +551,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 
 					// update mapWalkWidth - 1
 					for (int32_t y = -maxWalkCacheHeight; y <= maxWalkCacheHeight; ++y) {
-						const auto &cacheTile = g_game().map.getTile(myPos.x + maxWalkCacheWidth, static_cast<uint16_t>(myPos.y + y), myPos.z);
+						const auto &cacheTile = g_game().map.getTile(myPos.x + maxWalkCacheWidth, safe_convert<uint16_t>(myPos.y + y, __FUNCTION__), myPos.z);
 						updateTileCache(cacheTile, maxWalkCacheWidth, y);
 					}
 				} else if (oldPos.x > newPos.x) { // west
@@ -574,7 +574,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 
 					// update 0
 					for (int32_t y = -maxWalkCacheHeight; y <= maxWalkCacheHeight; ++y) {
-						std::shared_ptr<Tile> cacheTile = g_game().map.getTile(myPos.x - maxWalkCacheWidth, static_cast<uint16_t>(myPos.y + y), myPos.z);
+						std::shared_ptr<Tile> cacheTile = g_game().map.getTile(myPos.x - maxWalkCacheWidth, safe_convert<uint16_t>(myPos.y + y, __FUNCTION__), myPos.z);
 						updateTileCache(cacheTile, -maxWalkCacheWidth, y);
 					}
 				}
@@ -1154,7 +1154,7 @@ double Creature::getDamageRatio(std::shared_ptr<Creature> attacker) const {
 		return 0;
 	}
 
-	return (static_cast<double>(attackerDamage) / totalDamage);
+	return (safe_convert<double>(attackerDamage, __FUNCTION__) / totalDamage);
 }
 
 uint64_t Creature::getGainedExperience(std::shared_ptr<Creature> attacker) const {
@@ -1514,7 +1514,7 @@ uint16_t Creature::getStepDuration(Direction dir) {
 
 	if (walk.needRecache()) {
 		auto duration = std::floor(1000 * walk.groundSpeed / walk.calculatedStepSpeed);
-		walk.duration = static_cast<uint16_t>(std::ceil(duration / SERVER_BEAT) * SERVER_BEAT);
+		walk.duration = safe_convert<uint16_t>(std::ceil(duration / SERVER_BEAT) * SERVER_BEAT, __FUNCTION__);
 	}
 
 	auto duration = walk.duration;
@@ -1584,7 +1584,7 @@ bool Creature::registerCreatureEvent(const std::string &name) {
 			}
 		}
 	} else {
-		scriptEventsBitField |= static_cast<uint32_t>(1) << type;
+		scriptEventsBitField |= safe_convert<uint32_t>(1, __FUNCTION__) << type;
 	}
 
 	eventsList.push_back(event);
@@ -1619,7 +1619,7 @@ bool Creature::unregisterCreatureEvent(const std::string &name) {
 	}
 
 	if (resetTypeBit) {
-		scriptEventsBitField &= ~(static_cast<uint32_t>(1) << type);
+		scriptEventsBitField &= ~(safe_convert<uint32_t>(1, __FUNCTION__) << type);
 	}
 	return true;
 }
@@ -1744,7 +1744,7 @@ void Creature::turnToCreature(std::shared_ptr<Creature> creature) {
 
 	float tan;
 	if (dx != 0) {
-		tan = static_cast<float>(dy) / dx;
+		tan = safe_convert<float>(dy, __FUNCTION__) / dx;
 	} else {
 		tan = 10;
 	}

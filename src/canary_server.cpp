@@ -45,7 +45,7 @@ CanaryServer::CanaryServer(
 	toggleForceCloseButton();
 	g_game().setGameState(GAME_STATE_STARTUP);
 	std::set_new_handler(badAllocationHandler);
-	srand(static_cast<unsigned int>(OTSYS_TIME()));
+	srand(safe_convert<unsigned int>(OTSYS_TIME(), __FUNCTION__));
 
 	g_dispatcher().init();
 

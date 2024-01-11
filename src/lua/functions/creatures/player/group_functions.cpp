@@ -59,7 +59,7 @@ int GroupFunctions::luaGroupGetFlags(lua_State* L) {
 				flags.set(i);
 			}
 		}
-		lua_pushnumber(L, static_cast<lua_Number>(flags.to_ulong()));
+		lua_pushnumber(L, safe_convert<lua_Number>(flags.to_ulong(), __FUNCTION__));
 	} else {
 		lua_pushnil(L);
 	}
@@ -103,7 +103,7 @@ int GroupFunctions::luaGroupHasFlag(lua_State* L) {
 	// group:hasFlag(flag)
 	Group* group = getUserdata<Group>(L, 1);
 	if (group) {
-		auto flag = static_cast<PlayerFlags_t>(getNumber<int>(L, 2));
+		auto flag = safe_convert<PlayerFlags_t>(getNumber<int>(L, 2), __FUNCTION__);
 		pushBoolean(L, group->flags[Groups::getFlagNumber(flag)]);
 	} else {
 		lua_pushnil(L);

@@ -84,7 +84,7 @@ int ShopFunctions::luaShopSetNameItem(lua_State* L) {
 int ShopFunctions::luaShopSetCount(lua_State* L) {
 	// shop:setCount(count)
 	if (const auto &shop = getUserdataShared<Shop>(L, 1)) {
-		shop->shopBlock.itemSubType = getNumber<uint32_t>(L, 2);
+		shop->shopBlock.itemSubType = safe_convert<int32_t>(getNumber<uint32_t>(L, 2), __FUNCTION__);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -117,7 +117,7 @@ int ShopFunctions::luaShopSetSellPrice(lua_State* L) {
 int ShopFunctions::luaShopSetStorageKey(lua_State* L) {
 	// shop:setStorageKey(storage)
 	if (const auto &shop = getUserdataShared<Shop>(L, 1)) {
-		shop->shopBlock.itemStorageKey = getNumber<uint32_t>(L, 2);
+		shop->shopBlock.itemStorageKey = safe_convert<int32_t>(getNumber<uint32_t>(L, 2), __FUNCTION__);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -128,7 +128,7 @@ int ShopFunctions::luaShopSetStorageKey(lua_State* L) {
 int ShopFunctions::luaShopSetStorageValue(lua_State* L) {
 	// shop:setStorageValue(value)
 	if (const auto &shop = getUserdataShared<Shop>(L, 1)) {
-		shop->shopBlock.itemStorageValue = getNumber<uint32_t>(L, 2);
+		shop->shopBlock.itemStorageValue = safe_convert<int32_t>(getNumber<uint32_t>(L, 2), __FUNCTION__);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

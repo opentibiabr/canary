@@ -185,7 +185,7 @@ public:
 		return getSpeed();
 	}
 	uint16_t getSpeed() const {
-		return static_cast<uint16_t>(baseSpeed + varSpeed);
+		return safe_convert<uint16_t>(baseSpeed + varSpeed, __FUNCTION__);
 	}
 	void setSpeed(int32_t varSpeedDelta);
 
@@ -795,7 +795,7 @@ protected:
 
 	// creature script events
 	bool hasEventRegistered(CreatureEventType_t event) const {
-		return (0 != (scriptEventsBitField & (static_cast<uint32_t>(1) << event)));
+		return (0 != (scriptEventsBitField & (safe_convert<uint32_t>(1, __FUNCTION__) << event)));
 	}
 	CreatureEventList getCreatureEvents(CreatureEventType_t type);
 
@@ -847,7 +847,7 @@ private:
 		walk.calculatedStepSpeed = 1;
 		if (stepSpeed > -Creature::speedB) {
 			const auto formula = std::floor((Creature::speedA * log(stepSpeed + Creature::speedB) + Creature::speedC) + .5);
-			walk.calculatedStepSpeed = static_cast<uint16_t>(std::max(formula, 1.));
+			walk.calculatedStepSpeed = safe_convert<uint16_t>(std::max(formula, 1.), __FUNCTION__);
 		}
 
 		walk.recache();

@@ -885,11 +885,11 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 }
 
 uint32_t House::getRent() const {
-	return static_cast<uint32_t>(g_configManager().getFloat(HOUSE_RENT_RATE, __FUNCTION__) * static_cast<float>(rent));
+	return safe_convert<uint32_t>(g_configManager().getFloat(HOUSE_RENT_RATE, __FUNCTION__) * safe_convert<float>(rent, __FUNCTION__), __FUNCTION__);
 }
 
 uint32_t House::getPrice() const {
-	auto sqmPrice = static_cast<uint32_t>(g_configManager().getNumber(HOUSE_PRICE_PER_SQM, __FUNCTION__)) * getSize();
-	auto rentPrice = static_cast<uint32_t>(static_cast<float>(getRent()) * g_configManager().getFloat(HOUSE_PRICE_RENT_MULTIPLIER, __FUNCTION__));
+	auto sqmPrice = safe_convert<uint32_t>(g_configManager().getNumber(HOUSE_PRICE_PER_SQM, __FUNCTION__), __FUNCTION__) * getSize();
+	auto rentPrice = safe_convert<uint32_t>(safe_convert<float>(getRent(), __FUNCTION__) * g_configManager().getFloat(HOUSE_PRICE_RENT_MULTIPLIER, __FUNCTION__), __FUNCTION__);
 	return sqmPrice + rentPrice;
 }

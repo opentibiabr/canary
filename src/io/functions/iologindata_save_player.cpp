@@ -72,7 +72,7 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 		const char* attributes = propWriteStream.getStream(attributesSize);
 
 		// Build query string and add row
-		ss << player->getGUID() << ',' << pid << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
+		ss << player->getGUID() << ',' << pid << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, safe_convert<uint32_t>(attributesSize, __FUNCTION__));
 		if (!query_insert.addRow(ss)) {
 			g_logger().error("Error adding row to query.");
 			return false;
@@ -132,7 +132,7 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 			const char* attributes = propWriteStream.getStream(attributesSize);
 
 			// Build query string and add row
-			ss << player->getGUID() << ',' << parentId << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
+			ss << player->getGUID() << ',' << parentId << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, safe_convert<uint32_t>(attributesSize, __FUNCTION__));
 			if (!query_insert.addRow(ss)) {
 				g_logger().error("Error adding row to query for container item.");
 				return false;
@@ -184,23 +184,23 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	query << "`health` = " << player->health << ",";
 	query << "`healthmax` = " << player->healthMax << ",";
 	query << "`experience` = " << player->experience << ",";
-	query << "`lookbody` = " << static_cast<uint32_t>(player->defaultOutfit.lookBody) << ",";
-	query << "`lookfeet` = " << static_cast<uint32_t>(player->defaultOutfit.lookFeet) << ",";
-	query << "`lookhead` = " << static_cast<uint32_t>(player->defaultOutfit.lookHead) << ",";
-	query << "`looklegs` = " << static_cast<uint32_t>(player->defaultOutfit.lookLegs) << ",";
+	query << "`lookbody` = " << safe_convert<uint32_t>(player->defaultOutfit.lookBody, __FUNCTION__) << ",";
+	query << "`lookfeet` = " << safe_convert<uint32_t>(player->defaultOutfit.lookFeet, __FUNCTION__) << ",";
+	query << "`lookhead` = " << safe_convert<uint32_t>(player->defaultOutfit.lookHead, __FUNCTION__) << ",";
+	query << "`looklegs` = " << safe_convert<uint32_t>(player->defaultOutfit.lookLegs, __FUNCTION__) << ",";
 	query << "`looktype` = " << player->defaultOutfit.lookType << ",";
-	query << "`lookaddons` = " << static_cast<uint32_t>(player->defaultOutfit.lookAddons) << ",";
-	query << "`lookmountbody` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountBody) << ",";
-	query << "`lookmountfeet` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountFeet) << ",";
-	query << "`lookmounthead` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountHead) << ",";
-	query << "`lookmountlegs` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountLegs) << ",";
+	query << "`lookaddons` = " << safe_convert<uint32_t>(player->defaultOutfit.lookAddons, __FUNCTION__) << ",";
+	query << "`lookmountbody` = " << safe_convert<uint32_t>(player->defaultOutfit.lookMountBody, __FUNCTION__) << ",";
+	query << "`lookmountfeet` = " << safe_convert<uint32_t>(player->defaultOutfit.lookMountFeet, __FUNCTION__) << ",";
+	query << "`lookmounthead` = " << safe_convert<uint32_t>(player->defaultOutfit.lookMountHead, __FUNCTION__) << ",";
+	query << "`lookmountlegs` = " << safe_convert<uint32_t>(player->defaultOutfit.lookMountLegs, __FUNCTION__) << ",";
 	query << "`lookfamiliarstype` = " << player->defaultOutfit.lookFamiliarsType << ",";
-	query << "`isreward` = " << static_cast<uint16_t>(player->isDailyReward) << ",";
+	query << "`isreward` = " << safe_convert<uint16_t>(player->isDailyReward, __FUNCTION__) << ",";
 	query << "`maglevel` = " << player->magLevel << ",";
 	query << "`mana` = " << player->mana << ",";
 	query << "`manamax` = " << player->manaMax << ",";
 	query << "`manaspent` = " << player->manaSpent << ",";
-	query << "`soul` = " << static_cast<uint16_t>(player->soul) << ",";
+	query << "`soul` = " << safe_convert<uint16_t>(player->soul, __FUNCTION__) << ",";
 	query << "`town_id` = " << player->town->getID() << ",";
 
 	const Position &loginPosition = player->getLoginPosition();
@@ -213,10 +213,10 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	query << "`boss_points` = " << player->getBossPoints() << ",";
 	query << "`forge_dusts` = " << player->getForgeDusts() << ",";
 	query << "`forge_dust_level` = " << player->getForgeDustLevel() << ",";
-	query << "`randomize_mount` = " << static_cast<uint16_t>(player->isRandomMounted()) << ",";
+	query << "`randomize_mount` = " << safe_convert<uint16_t>(player->isRandomMounted(), __FUNCTION__) << ",";
 
 	query << "`cap` = " << (player->capacity / 100) << ",";
-	query << "`sex` = " << static_cast<uint16_t>(player->sex) << ",";
+	query << "`sex` = " << safe_convert<uint16_t>(player->sex, __FUNCTION__) << ",";
 
 	if (player->lastLoginSaved != 0) {
 		query << "`lastlogin` = " << player->lastLoginSaved << ",";
@@ -238,7 +238,7 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	size_t attributesSize;
 	const char* attributes = propWriteStream.getStream(attributesSize);
 
-	query << "`conditions` = " << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize)) << ",";
+	query << "`conditions` = " << db.escapeBlob(attributes, safe_convert<uint32_t>(attributesSize, __FUNCTION__)) << ",";
 
 	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
 		int64_t skullTime = 0;
@@ -256,7 +256,7 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 		} else if (player->skull == SKULL_BLACK) {
 			skull = SKULL_BLACK;
 		}
-		query << "`skull` = " << static_cast<int64_t>(skull) << ",";
+		query << "`skull` = " << safe_convert<int64_t>(skull, __FUNCTION__) << ",";
 	}
 
 	query << "`lastlogout` = " << player->getLastLogout() << ",";
@@ -304,7 +304,7 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 
 	for (int i = 1; i <= 8; i++) {
 		query << "`blessings" << i << "`"
-			  << " = " << static_cast<uint32_t>(player->getBlessingCount(static_cast<uint8_t>(i))) << ((i == 8) ? " " : ",");
+			  << " = " << safe_convert<uint32_t>(player->getBlessingCount(safe_convert<uint8_t>(i, __FUNCTION__)), __FUNCTION__) << ((i == 8) ? " " : ",");
 	}
 	query << " WHERE `id` = " << player->getGUID();
 
@@ -438,7 +438,7 @@ bool IOLoginDataSave::savePlayerBestiarySystem(std::shared_ptr<Player> player) {
 	}
 	size_t trackerSize;
 	const char* trackerList = propBestiaryStream.getStream(trackerSize);
-	query << " `tracker list` = " << db.escapeBlob(trackerList, static_cast<uint32_t>(trackerSize));
+	query << " `tracker list` = " << db.escapeBlob(trackerList, safe_convert<uint32_t>(trackerSize, __FUNCTION__));
 	query << " WHERE `player_guid` = " << player->getGUID();
 
 	if (!db.executeQuery(query.str())) {
@@ -587,16 +587,16 @@ bool IOLoginDataSave::savePlayerPreyClass(std::shared_ptr<Player> player) {
 	if (g_configManager().getBoolean(PREY_ENABLED, __FUNCTION__)) {
 		std::ostringstream query;
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			if (const auto &slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId))) {
+			if (const auto &slot = player->getPreySlotById(safe_convert<PreySlot_t>(slotId, __FUNCTION__))) {
 				query.str(std::string());
 				query << "INSERT INTO player_prey (`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, `bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) "
 					  << "VALUES (" << player->getGUID() << ", "
-					  << static_cast<uint16_t>(slot->id) << ", "
-					  << static_cast<uint16_t>(slot->state) << ", "
+					  << safe_convert<uint16_t>(slot->id, __FUNCTION__) << ", "
+					  << safe_convert<uint16_t>(slot->state, __FUNCTION__) << ", "
 					  << slot->selectedRaceId << ", "
-					  << static_cast<uint16_t>(slot->option) << ", "
-					  << static_cast<uint16_t>(slot->bonus) << ", "
-					  << static_cast<uint16_t>(slot->bonusRarity) << ", "
+					  << safe_convert<uint16_t>(slot->option, __FUNCTION__) << ", "
+					  << safe_convert<uint16_t>(slot->bonus, __FUNCTION__) << ", "
+					  << safe_convert<uint16_t>(slot->bonusRarity, __FUNCTION__) << ", "
 					  << slot->bonusPercentage << ", "
 					  << slot->bonusTimeLeft << ", "
 					  << slot->freeRerollTimeStamp << ", ";
@@ -608,7 +608,7 @@ bool IOLoginDataSave::savePlayerPreyClass(std::shared_ptr<Player> player) {
 
 				size_t preySize;
 				const char* preyList = propPreyStream.getStream(preySize);
-				query << db.escapeBlob(preyList, static_cast<uint32_t>(preySize)) << ")";
+				query << db.escapeBlob(preyList, safe_convert<uint32_t>(preySize, __FUNCTION__)) << ")";
 
 				query << " ON DUPLICATE KEY UPDATE "
 					  << "`state` = VALUES(`state`), "
@@ -641,15 +641,15 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(std::shared_ptr<Player> player)
 	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED, __FUNCTION__)) {
 		std::ostringstream query;
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			if (const auto &slot = player->getTaskHuntingSlotById(static_cast<PreySlot_t>(slotId))) {
+			if (const auto &slot = player->getTaskHuntingSlotById(safe_convert<PreySlot_t>(slotId, __FUNCTION__))) {
 				query.str("");
 				query << "INSERT INTO `player_taskhunt` (`player_id`, `slot`, `state`, `raceid`, `upgrade`, `rarity`, `kills`, `disabled_time`, `free_reroll`, `monster_list`) VALUES (";
 				query << player->getGUID() << ", ";
-				query << static_cast<uint16_t>(slot->id) << ", ";
-				query << static_cast<uint16_t>(slot->state) << ", ";
+				query << safe_convert<uint16_t>(slot->id, __FUNCTION__) << ", ";
+				query << safe_convert<uint16_t>(slot->state, __FUNCTION__) << ", ";
 				query << slot->selectedRaceId << ", ";
 				query << (slot->upgrade ? 1 : 0) << ", ";
-				query << static_cast<uint16_t>(slot->rarity) << ", ";
+				query << safe_convert<uint16_t>(slot->rarity, __FUNCTION__) << ", ";
 				query << slot->currentKills << ", ";
 				query << slot->disabledUntilTimeStamp << ", ";
 				query << slot->freeRerollTimeStamp << ", ";
@@ -661,7 +661,7 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(std::shared_ptr<Player> player)
 
 				size_t taskHuntingSize;
 				const char* taskHuntingList = propTaskHuntingStream.getStream(taskHuntingSize);
-				query << db.escapeBlob(taskHuntingList, static_cast<uint32_t>(taskHuntingSize)) << ")";
+				query << db.escapeBlob(taskHuntingList, safe_convert<uint32_t>(taskHuntingSize, __FUNCTION__)) << ")";
 
 				query << " ON DUPLICATE KEY UPDATE "
 					  << "`state` = VALUES(`state`), "
@@ -748,7 +748,7 @@ bool IOLoginDataSave::savePlayerBosstiary(std::shared_ptr<Player> player) {
 		  << player->getSlotBossId(1) << ','
 		  << player->getSlotBossId(2) << ','
 		  << std::to_string(player->getRemoveTimes()) << ','
-		  << Database::getInstance().escapeBlob(chars, static_cast<uint32_t>(size));
+		  << Database::getInstance().escapeBlob(chars, safe_convert<uint32_t>(size, __FUNCTION__));
 
 	if (!insertQuery.addRow(query)) {
 		return false;

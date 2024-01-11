@@ -25,7 +25,7 @@ namespace {
 		for (const auto &spellTable : spellsTable) {
 			auto size = std::ssize(spellTable.grade);
 			g_logger().debug("spell area stage {}, grade {}", stage, size);
-			if (spellTable.name == spellName && stage < static_cast<uint8_t>(size)) {
+			if (spellTable.name == spellName && stage < safe_convert<uint8_t>(size, __FUNCTION__)) {
 				const auto &spellData = spellTable.grade[stage];
 				if (spellData.increase.area) {
 					g_logger().debug("[{}] spell with name {}, and stage {} has increase area", __FUNCTION__, spellName, stage);
@@ -43,7 +43,7 @@ namespace {
 		for (const auto &spellTable : spellsTable) {
 			auto size = std::ssize(spellTable.grade);
 			g_logger().debug("spell target stage {}, grade {}", stage, size);
-			if (spellTable.name == spellName && stage < static_cast<uint8_t>(size)) {
+			if (spellTable.name == spellName && stage < safe_convert<uint8_t>(size, __FUNCTION__)) {
 				const auto &spellData = spellTable.grade[stage];
 				if (spellData.increase.aditionalTarget) {
 					return spellData.increase.aditionalTarget;
@@ -59,7 +59,7 @@ namespace {
 		for (const auto &spellTable : spellsTable) {
 			auto size = std::ssize(spellTable.grade);
 			g_logger().debug("spell duration stage {}, grade {}", stage, size);
-			if (spellTable.name == spellName && stage < static_cast<uint8_t>(size)) {
+			if (spellTable.name == spellName && stage < safe_convert<uint8_t>(size, __FUNCTION__)) {
 				const auto &spellData = spellTable.grade[stage];
 				if (spellData.increase.duration > 0) {
 					return spellData.increase.duration;
@@ -619,14 +619,14 @@ uint16_t PlayerWheel::getUnusedPoints() const {
 	}
 
 	for (uint8_t i = WheelSlots_t::SLOT_FIRST; i <= WheelSlots_t::SLOT_LAST; ++i) {
-		totalPoints -= getPointsBySlotType(static_cast<WheelSlots_t>(i));
+		totalPoints -= getPointsBySlotType(safe_convert<WheelSlots_t>(i, __FUNCTION__));
 	}
 
 	return totalPoints;
 }
 
 bool PlayerWheel::getSpellAdditionalArea(const std::string &spellName) const {
-	auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
+	auto stage = safe_convert<uint8_t>(getSpellUpgrade(spellName), __FUNCTION__);
 	if (stage == 0) {
 		return false;
 	}
@@ -646,7 +646,7 @@ bool PlayerWheel::getSpellAdditionalArea(const std::string &spellName) const {
 }
 
 int PlayerWheel::getSpellAdditionalTarget(const std::string &spellName) const {
-	auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
+	auto stage = safe_convert<uint8_t>(getSpellUpgrade(spellName), __FUNCTION__);
 	if (stage == 0) {
 		return 0;
 	}
@@ -666,7 +666,7 @@ int PlayerWheel::getSpellAdditionalTarget(const std::string &spellName) const {
 }
 
 int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const {
-	auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
+	auto stage = safe_convert<uint8_t>(getSpellUpgrade(spellName), __FUNCTION__);
 	if (stage == 0) {
 		return 0;
 	}
@@ -754,21 +754,21 @@ bool PlayerWheel::checkSavePointsBySlotType(WheelSlots_t slotType, uint16_t poin
 		return false;
 	}
 
-	setPointsBySlotType(static_cast<uint8_t>(slotType), 0);
+	setPointsBySlotType(safe_convert<uint8_t>(slotType, __FUNCTION__), 0);
 
 	auto unusedPoints = getUnusedPoints();
 	if (points > unusedPoints) {
 		return false;
 	}
 
-	setPointsBySlotType(static_cast<uint8_t>(slotType), points);
+	setPointsBySlotType(safe_convert<uint8_t>(slotType, __FUNCTION__), points);
 	return true;
 }
 
 void PlayerWheel::saveSlotPointsHandleRetryErrors(std::vector<SlotInfo> &retryTable, int &errors) {
 	std::vector<SlotInfo> temporaryTable;
 	for (const auto &data : retryTable) {
-		auto saved = checkSavePointsBySlotType(static_cast<WheelSlots_t>(data.slot), data.points);
+		auto saved = checkSavePointsBySlotType(safe_convert<WheelSlots_t>(data.slot, __FUNCTION__), data.points);
 		if (saved) {
 			errors--;
 		} else {
@@ -794,7 +794,7 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 	// Iterates over all slots, getting the points for each slot from the message. If the slot points exceed
 	for (uint8_t slot = WheelSlots_t::SLOT_FIRST; slot <= WheelSlots_t::SLOT_LAST; ++slot) {
 		auto slotPoints = msg.get<uint16_t>(); // Points per Slot
-		auto maxPointsPerSlot = getMaxPointsPerSlot(static_cast<WheelSlots_t>(slot));
+		auto maxPointsPerSlot = getMaxPointsPerSlot(safe_convert<WheelSlots_t>(slot, __FUNCTION__));
 		if (slotPoints > maxPointsPerSlot) {
 			m_player.sendTextMessage(MESSAGE_TRADE, "Something went wrong, try relogging and try again or contact and adminstrator");
 			g_logger().error("[{}] possible manipulation of client package using unauthorized program", __FUNCTION__);
@@ -802,7 +802,7 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 			return;
 		}
 
-		auto order = g_game().getIOWheel()->getSlotPrioritaryOrder(static_cast<WheelSlots_t>(slot));
+		auto order = g_game().getIOWheel()->getSlotPrioritaryOrder(safe_convert<WheelSlots_t>(slot, __FUNCTION__));
 		if (order == -1) {
 			continue;
 		}
@@ -821,7 +821,7 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 
 	// Processes the vector in the correct order. If it is not possible to save points for a slot,
 	for (const auto &data : sortedTable) {
-		auto canSave = checkSavePointsBySlotType(static_cast<WheelSlots_t>(data.slot), data.points);
+		auto canSave = checkSavePointsBySlotType(safe_convert<WheelSlots_t>(data.slot, __FUNCTION__), data.points);
 		if (!canSave) {
 			sortedTableRetry.emplace_back(data);
 			errors++;
@@ -1086,7 +1086,7 @@ void PlayerWheel::registerPlayerBonusData() {
 	setStat(WheelStat_t::HEALTH, m_playerBonusData.stats.health);
 	setStat(WheelStat_t::MANA, m_playerBonusData.stats.mana);
 	setStat(WheelStat_t::CAPACITY, m_playerBonusData.stats.capacity * 100);
-	setStat(WheelStat_t::MITIGATION, m_playerBonusData.mitigation * 100);
+	setStat(WheelStat_t::MITIGATION, safe_convert<int32_t>(m_playerBonusData.mitigation, __FUNCTION__) * 100);
 	setStat(WheelStat_t::DAMAGE, m_playerBonusData.stats.damage);
 	setStat(WheelStat_t::HEALING, m_playerBonusData.stats.healing);
 
@@ -1101,8 +1101,8 @@ void PlayerWheel::registerPlayerBonusData() {
 	setStat(WheelStat_t::MAGIC, m_playerBonusData.skills.magic);
 
 	// Leech
-	setPlayerCombatStats(COMBAT_LIFEDRAIN, m_playerBonusData.leech.lifeLeech * 100);
-	setPlayerCombatStats(COMBAT_MANADRAIN, m_playerBonusData.leech.manaLeech * 100);
+	setPlayerCombatStats(COMBAT_LIFEDRAIN, safe_convert<int32_t>(m_playerBonusData.leech.lifeLeech, __FUNCTION__) * 100);
+	setPlayerCombatStats(COMBAT_MANADRAIN, safe_convert<int32_t>(m_playerBonusData.leech.manaLeech, __FUNCTION__) * 100);
 
 	// Instant
 	setSpellInstant("Battle Instinct", m_playerBonusData.instant.battleInstinct);
@@ -1228,7 +1228,7 @@ void PlayerWheel::registerPlayerBonusData() {
 	}
 
 	if (m_player.getMana() > m_player.getMaxMana()) {
-		int32_t difference = m_player.getMana() - m_player.getMaxMana();
+		int32_t difference = safe_convert<int32_t>(m_player.getMana() - m_player.getMaxMana(), __FUNCTION__);
 		m_player.changeMana(-difference);
 	}
 
@@ -1280,7 +1280,7 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 		CombatType_t combatType = indexToCombatType(i);
 		std::string combatTypeStr = getCombatName(combatType);
 		// Convert to percentage
-		float percentage = bonusData.resistance[i] / 100.0f;
+		float percentage = safe_convert<float>(bonusData.resistance[i], __FUNCTION__) / 100.0f;
 		g_logger().debug("  combatName: {} value: {} ({}%)", combatTypeStr, bonusData.resistance[i], percentage);
 	}
 
@@ -1393,10 +1393,10 @@ void PlayerWheel::loadDedicationAndConvictionPerks() {
 	}
 
 	for (uint8_t i = WheelSlots_t::SLOT_FIRST; i <= WheelSlots_t::SLOT_LAST; ++i) {
-		uint16_t points = getPointsBySlotType(static_cast<WheelSlots_t>(i));
+		uint16_t points = getPointsBySlotType(safe_convert<WheelSlots_t>(i, __FUNCTION__));
 		if (points > 0) {
 			VocationBonusFunction internalData = nullptr;
-			auto it = wheelFunctions.find(static_cast<WheelSlots_t>(i));
+			auto it = wheelFunctions.find(safe_convert<WheelSlots_t>(i, __FUNCTION__));
 			if (it != wheelFunctions.end()) {
 				internalData = it->second;
 			}
@@ -1418,7 +1418,7 @@ void PlayerWheel::loadRevelationPerks() {
 		auto [statsDamage, statsHealing] = g_game().getIOWheel()->getRevelationStatByStage(greenStage);
 		m_playerBonusData.stats.damage += statsDamage;
 		m_playerBonusData.stats.healing += statsHealing;
-		m_playerBonusData.stages.giftOfLife = static_cast<int>(greenStage);
+		m_playerBonusData.stages.giftOfLife = safe_convert<int>(greenStage, __FUNCTION__);
 	}
 
 	WheelStageEnum_t redStageEnum = getPlayerSliceStage("red");
@@ -1427,7 +1427,7 @@ void PlayerWheel::loadRevelationPerks() {
 		m_playerBonusData.stats.damage += statsDamage;
 		m_playerBonusData.stats.healing += statsHealing;
 
-		auto redStageValue = static_cast<uint8_t>(redStageEnum);
+		auto redStageValue = safe_convert<uint8_t>(redStageEnum, __FUNCTION__);
 		auto vocationEnum = getPlayerVocationEnum();
 		if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
 			m_playerBonusData.stages.blessingOfTheGrove = redStageValue;
@@ -1455,7 +1455,7 @@ void PlayerWheel::loadRevelationPerks() {
 		m_playerBonusData.stats.damage += statsDamage;
 		m_playerBonusData.stats.healing += statsHealing;
 
-		auto purpleStage = static_cast<uint8_t>(purpleStageEnum);
+		auto purpleStage = safe_convert<uint8_t>(purpleStageEnum, __FUNCTION__);
 		auto vocationEnum = getPlayerVocationEnum();
 		if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 			m_playerBonusData.avatar.steel = purpleStage;
@@ -1486,7 +1486,7 @@ void PlayerWheel::loadRevelationPerks() {
 		m_playerBonusData.stats.damage += statsDamage;
 		m_playerBonusData.stats.healing += statsHealing;
 
-		auto blueStage = static_cast<uint8_t>(blueStageEnum);
+		auto blueStage = safe_convert<uint8_t>(blueStageEnum, __FUNCTION__);
 		auto vocationEnum = getPlayerVocationEnum();
 		if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 			m_playerBonusData.stages.combatMastery = blueStage;
@@ -1569,11 +1569,11 @@ WheelStageEnum_t PlayerWheel::getPlayerSliceStage(const std::string &color) cons
 	for (const auto &slot : slots) {
 		totalPoints += getPointsBySlotType(slot);
 	}
-	if (totalPoints >= static_cast<int>(WheelStagePointsEnum_t::THREE)) {
+	if (totalPoints >= safe_convert<int>(WheelStagePointsEnum_t::THREE, __FUNCTION__)) {
 		return WheelStageEnum_t::THREE;
-	} else if (totalPoints >= static_cast<int>(WheelStagePointsEnum_t::TWO)) {
+	} else if (totalPoints >= safe_convert<int>(WheelStagePointsEnum_t::TWO, __FUNCTION__)) {
 		return WheelStageEnum_t::TWO;
-	} else if (totalPoints >= static_cast<uint8_t>(WheelStagePointsEnum_t::ONE)) {
+	} else if (totalPoints >= safe_convert<uint8_t>(WheelStagePointsEnum_t::ONE, __FUNCTION__)) {
 		return WheelStageEnum_t::ONE;
 	}
 
@@ -1870,7 +1870,7 @@ void PlayerWheel::checkGiftOfLife() {
 	reduceAllSpellsCooldownTimer(reductionTimer);
 
 	// Set cooldown
-	setGiftOfCooldown(getGiftOfLifeTotalCooldown(), false);
+	setGiftOfCooldown(safe_convert<int32_t>(getGiftOfLifeTotalCooldown(), __FUNCTION__), false);
 	sendGiftOfLifeCooldown();
 }
 
@@ -1881,7 +1881,7 @@ int32_t PlayerWheel::checkBlessingGroveHealingByTarget(std::shared_ptr<Creature>
 
 	int32_t healingBonus = 0;
 	uint8_t stage = getStage(WheelStage_t::BLESSING_OF_THE_GROVE);
-	int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
+	int32_t healthPercent = safe_convert<int32_t>(std::round((safe_convert<double>(target->getHealth(), __FUNCTION__) * 100) / safe_convert<double>(target->getMaxHealth(), __FUNCTION__)), __FUNCTION__);
 	if (healthPercent <= 30) {
 		if (stage >= 3) {
 			healingBonus = 24;
@@ -1910,7 +1910,7 @@ int32_t PlayerWheel::checkTwinBurstByTarget(std::shared_ptr<Creature> target) co
 
 	int32_t damageBonus = 0;
 	uint8_t stage = getStage(WheelStage_t::TWIN_BURST);
-	int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
+	int32_t healthPercent = safe_convert<int32_t>(std::round((safe_convert<double>(target->getHealth(), __FUNCTION__) * 100) / safe_convert<double>(target->getMaxHealth(), __FUNCTION__)), __FUNCTION__);
 	if (healthPercent > 60) {
 		if (stage >= 3) {
 			damageBonus = 60;
@@ -1931,7 +1931,7 @@ int32_t PlayerWheel::checkExecutionersThrow(std::shared_ptr<Creature> target) co
 
 	int32_t damageBonus = 0;
 	uint8_t stage = getStage(WheelStage_t::EXECUTIONERS_THROW);
-	int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
+	int32_t healthPercent = safe_convert<int32_t>(std::round((safe_convert<double>(target->getHealth(), __FUNCTION__) * 100) / safe_convert<double>(target->getMaxHealth(), __FUNCTION__)), __FUNCTION__);
 	if (healthPercent <= 30) {
 		if (stage >= 3) {
 			damageBonus = 150;
@@ -2066,16 +2066,16 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 	m_creaturesNearby = 0;
 	if (!m_player.hasCondition(CONDITION_INFIGHT) || m_player.getZoneType() == ZONE_PROTECTION || (!getInstant("Battle Instinct") && !getInstant("Positional Tatics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Combat Mastery") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
 		bool mustReset = false;
-		for (int i = 0; i < static_cast<int>(WheelMajor_t::TOTAL_COUNT); i++) {
-			if (getMajorStat(static_cast<WheelMajor_t>(i)) != 0) {
+		for (int i = 0; i < safe_convert<int>(WheelMajor_t::TOTAL_COUNT, __FUNCTION__); i++) {
+			if (getMajorStat(safe_convert<WheelMajor_t>(i, __FUNCTION__)) != 0) {
 				mustReset = true;
 				break;
 			}
 		}
 
 		if (mustReset) {
-			for (int i = 0; i < static_cast<int>(WheelMajor_t::TOTAL_COUNT); i++) {
-				setMajorStat(static_cast<WheelMajor_t>(i), 0);
+			for (int i = 0; i < safe_convert<int>(WheelMajor_t::TOTAL_COUNT, __FUNCTION__); i++) {
+				setMajorStat(safe_convert<WheelMajor_t>(i, __FUNCTION__), 0);
 			}
 			m_player.sendSkills();
 			m_player.sendStats();
@@ -2136,11 +2136,11 @@ void PlayerWheel::resetUpgradedSpells() {
 	m_creaturesNearby = 0;
 	m_spellsSelected.clear();
 	m_learnedSpellsSelected.clear();
-	for (int i = 0; i < static_cast<int>(WheelMajor_t::TOTAL_COUNT); i++) {
-		setMajorStat(static_cast<WheelMajor_t>(i), 0);
+	for (int i = 0; i < safe_convert<int>(WheelMajor_t::TOTAL_COUNT, __FUNCTION__); i++) {
+		setMajorStat(safe_convert<WheelMajor_t>(i, __FUNCTION__), 0);
 	}
-	for (int i = 0; i < static_cast<int>(WheelStage_t::TOTAL_COUNT); i++) {
-		setStage(static_cast<WheelStage_t>(i), 0);
+	for (int i = 0; i < safe_convert<int>(WheelStage_t::TOTAL_COUNT, __FUNCTION__); i++) {
+		setStage(safe_convert<WheelStage_t>(i, __FUNCTION__), 0);
 	}
 	setOnThinkTimer(WheelOnThink_t::FOCUS_MASTERY, 0);
 }
@@ -2205,7 +2205,7 @@ std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
 
 // Wheel of destiny - setSpellInstant helpers
 void PlayerWheel::setStage(WheelStage_t type, uint8_t value) {
-	auto enumValue = static_cast<uint8_t>(type);
+	auto enumValue = safe_convert<uint8_t>(type, __FUNCTION__);
 	try {
 		m_stages.at(enumValue) = value;
 	} catch (const std::out_of_range &e) {
@@ -2214,7 +2214,7 @@ void PlayerWheel::setStage(WheelStage_t type, uint8_t value) {
 }
 
 void PlayerWheel::setOnThinkTimer(WheelOnThink_t type, int64_t time) {
-	auto enumValue = static_cast<uint8_t>(type);
+	auto enumValue = safe_convert<uint8_t>(type, __FUNCTION__);
 	try {
 		m_onThink.at(enumValue) = time;
 	} catch (const std::out_of_range &e) {
@@ -2223,7 +2223,7 @@ void PlayerWheel::setOnThinkTimer(WheelOnThink_t type, int64_t time) {
 }
 
 void PlayerWheel::setMajorStat(WheelMajor_t type, int32_t value) {
-	auto enumValue = static_cast<uint8_t>(type);
+	auto enumValue = safe_convert<uint8_t>(type, __FUNCTION__);
 	try {
 		m_majorStats.at(enumValue) = value;
 	} catch (const std::out_of_range &e) {
@@ -2232,7 +2232,7 @@ void PlayerWheel::setMajorStat(WheelMajor_t type, int32_t value) {
 }
 
 void PlayerWheel::setInstant(WheelInstant_t type, bool toggle) {
-	auto enumValue = static_cast<uint8_t>(type);
+	auto enumValue = safe_convert<uint8_t>(type, __FUNCTION__);
 	try {
 		m_instant.at(enumValue) = toggle;
 	} catch (const std::out_of_range &e) {
@@ -2241,7 +2241,7 @@ void PlayerWheel::setInstant(WheelInstant_t type, bool toggle) {
 }
 
 void PlayerWheel::setStat(WheelStat_t type, int32_t value) {
-	auto enumValue = static_cast<uint8_t>(type);
+	auto enumValue = safe_convert<uint8_t>(type, __FUNCTION__);
 	try {
 		m_stats.at(enumValue) = value;
 	} catch (const std::out_of_range &e) {
@@ -2377,7 +2377,7 @@ void PlayerWheel::resetResistance() {
 
 // Wheel of destiny - Header get:
 bool PlayerWheel::getInstant(WheelInstant_t type) const {
-	auto enumValue = static_cast<uint8_t>(type);
+	auto enumValue = safe_convert<uint8_t>(type, __FUNCTION__);
 	try {
 		return m_instant.at(enumValue);
 	} catch (const std::out_of_range &e) {
@@ -2433,7 +2433,7 @@ uint8_t PlayerWheel::getStage(const std::string name) const {
 }
 
 uint8_t PlayerWheel::getStage(WheelStage_t type) const {
-	auto enumValue = static_cast<uint8_t>(type);
+	auto enumValue = safe_convert<uint8_t>(type, __FUNCTION__);
 	try {
 		return m_stages.at(enumValue);
 	} catch (const std::out_of_range &e) {
@@ -2443,7 +2443,7 @@ uint8_t PlayerWheel::getStage(WheelStage_t type) const {
 }
 
 int32_t PlayerWheel::getMajorStat(WheelMajor_t type) const {
-	auto enumValue = static_cast<uint8_t>(type);
+	auto enumValue = safe_convert<uint8_t>(type, __FUNCTION__);
 	try {
 		return m_majorStats.at(enumValue);
 	} catch (const std::out_of_range &e) {
@@ -2453,7 +2453,7 @@ int32_t PlayerWheel::getMajorStat(WheelMajor_t type) const {
 }
 
 int32_t PlayerWheel::getStat(WheelStat_t type) const {
-	auto enumValue = static_cast<uint8_t>(type);
+	auto enumValue = safe_convert<uint8_t>(type, __FUNCTION__);
 	try {
 		return m_stats.at(enumValue);
 	} catch (const std::out_of_range &e) {
@@ -2482,7 +2482,7 @@ WheelSpellGrade_t PlayerWheel::getSpellUpgrade(const std::string &name) const {
 }
 
 double PlayerWheel::getMitigationMultiplier() const {
-	return static_cast<double>(getStat(WheelStat_t::MITIGATION)) / 100.;
+	return safe_convert<double>(getStat(WheelStat_t::MITIGATION), __FUNCTION__) / 100.;
 }
 
 bool PlayerWheel::getHealingLinkUpgrade(const std::string &spell) const {
@@ -2500,7 +2500,7 @@ int32_t PlayerWheel::getMajorStatConditional(const std::string &instant, WheelMa
 }
 
 int64_t PlayerWheel::getOnThinkTimer(WheelOnThink_t type) const {
-	auto enumValue = static_cast<uint8_t>(type);
+	auto enumValue = safe_convert<uint8_t>(type, __FUNCTION__);
 	try {
 		return m_onThink.at(enumValue);
 	} catch (const std::out_of_range &e) {
@@ -2730,7 +2730,7 @@ float PlayerWheel::calculateMitigation() const {
 		}
 	}
 
-	float mitigation = std::ceil(((((skill * m_player.vocation->mitigationFactor) + (shieldFactor * (float)defenseValue)) / 100.0f) * fightFactor * distanceFactor) * 100.0f) / 100.0f;
+	float mitigation = std::ceil(((((safe_convert<float>(skill, __FUNCTION__) * m_player.vocation->mitigationFactor) + (shieldFactor * (float)defenseValue)) / 100.0f) * fightFactor * distanceFactor) * 100.0f) / 100.0f;
 	mitigation += (mitigation * (float)getMitigationMultiplier()) / 100.f;
 	return mitigation;
 }

@@ -64,7 +64,7 @@ account::AccountType IOLoginData::getAccountType(uint32_t accountId) {
 	if (!result) {
 		return account::ACCOUNT_TYPE_NORMAL;
 	}
-	return static_cast<account::AccountType>(result->getNumber<uint16_t>("type"));
+	return safe_convert<account::AccountType>(result->getNumber<uint16_t>("type"), __FUNCTION__);
 }
 
 void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {

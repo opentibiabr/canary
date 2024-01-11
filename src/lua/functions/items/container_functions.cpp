@@ -246,7 +246,7 @@ int ContainerFunctions::luaContainerGetItems(lua_State* L) {
 	bool recursive = getBoolean(L, 2, false);
 	std::vector<std::shared_ptr<Item>> items = container->getItems(recursive);
 
-	lua_createtable(L, static_cast<int>(items.size()), 0);
+	lua_createtable(L, safe_convert<int>(items.size(), __FUNCTION__), 0);
 
 	int index = 0;
 	for (std::shared_ptr<Item> item : items) {

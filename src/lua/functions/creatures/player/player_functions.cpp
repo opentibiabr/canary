@@ -155,7 +155,7 @@ int PlayerFunctions::luaPlayerResetCharmsMonsters(lua_State* L) {
 		player->setUsedRunesBit(0);
 		player->setUnlockedRunesBit(0);
 		for (int8_t i = CHARM_WOUND; i <= CHARM_LAST; i++) {
-			player->parseRacebyCharm(static_cast<charmRune_t>(i), true, 0);
+			player->parseRacebyCharm(safe_convert<charmRune_t>(i, __FUNCTION__), true, 0);
 		}
 		pushBoolean(L, true);
 	} else {
@@ -169,7 +169,7 @@ int PlayerFunctions::luaPlayerUnlockAllCharmRunes(lua_State* L) {
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (player) {
 		for (int8_t i = CHARM_WOUND; i <= CHARM_LAST; i++) {
-			const auto charm = g_iobestiary().getBestiaryCharm(static_cast<charmRune_t>(i));
+			const auto charm = g_iobestiary().getBestiaryCharm(safe_convert<charmRune_t>(i, __FUNCTION__));
 			if (charm) {
 				int32_t value = g_iobestiary().bitToggle(player->getUnlockedRunesBit(), charm, true);
 				player->setUnlockedRunesBit(value);
@@ -188,10 +188,10 @@ int PlayerFunctions::luaPlayeraddCharmPoints(lua_State* L) {
 	if (player) {
 		int16_t charms = getNumber<int16_t>(L, 2);
 		if (charms >= 0) {
-			g_iobestiary().addCharmPoints(player, static_cast<uint16_t>(charms));
+			g_iobestiary().addCharmPoints(player, safe_convert<uint16_t>(charms, __FUNCTION__));
 		} else {
 			charms = -charms;
-			g_iobestiary().addCharmPoints(player, static_cast<uint16_t>(charms), true);
+			g_iobestiary().addCharmPoints(player, safe_convert<uint16_t>(charms, __FUNCTION__), true);
 		}
 		pushBoolean(L, true);
 	} else {
@@ -389,7 +389,7 @@ int PlayerFunctions::luaPlayerAddPreyCards(lua_State* L) {
 int PlayerFunctions::luaPlayerGetPreyCards(lua_State* L) {
 	// player:getPreyCards()
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1)) {
-		lua_pushnumber(L, static_cast<lua_Number>(player->getPreyCards()));
+		lua_pushnumber(L, safe_convert<lua_Number>(player->getPreyCards(), __FUNCTION__));
 	} else {
 		lua_pushnil(L);
 	}
@@ -401,7 +401,7 @@ int PlayerFunctions::luaPlayerGetPreyExperiencePercentage(lua_State* L) {
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1)) {
 		if (const std::unique_ptr<PreySlot> &slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
 			slot && slot->isOccupied() && slot->bonus == PreyBonus_Experience && slot->bonusTimeLeft > 0) {
-			lua_pushnumber(L, static_cast<lua_Number>(100 + slot->bonusPercentage));
+			lua_pushnumber(L, safe_convert<lua_Number>(100 + slot->bonusPercentage, __FUNCTION__));
 		} else {
 			lua_pushnumber(L, 100);
 		}
@@ -430,7 +430,7 @@ int PlayerFunctions::luaPlayerGetTaskHuntingPoints(lua_State* L) {
 		return 1;
 	}
 
-	lua_pushnumber(L, static_cast<double>(player->getTaskHuntingPoints()));
+	lua_pushnumber(L, safe_convert<double>(player->getTaskHuntingPoints(), __FUNCTION__));
 	return 1;
 }
 
@@ -439,7 +439,7 @@ int PlayerFunctions::luaPlayerAddTaskHuntingPoints(lua_State* L) {
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1)) {
 		auto points = getNumber<uint64_t>(L, 2);
 		player->addTaskHuntingPoints(getNumber<uint64_t>(L, 2));
-		lua_pushnumber(L, static_cast<lua_Number>(points));
+		lua_pushnumber(L, safe_convert<lua_Number>(points, __FUNCTION__));
 	} else {
 		lua_pushnil(L);
 	}
@@ -704,7 +704,7 @@ int PlayerFunctions::luaPlayerGetRewardList(lua_State* L) {
 
 	int index = 0;
 	for (const auto &rewardId : rewardVec) {
-		lua_pushnumber(L, static_cast<lua_Number>(rewardId));
+		lua_pushnumber(L, safe_convert<lua_Number>(rewardId, __FUNCTION__));
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;
@@ -820,7 +820,7 @@ int PlayerFunctions::luaPlayerGetDeathPenalty(lua_State* L) {
 	// player:getDeathPenalty()
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (player) {
-		lua_pushnumber(L, static_cast<uint32_t>(player->getLostPercent() * 100));
+		lua_pushnumber(L, safe_convert<uint32_t>(player->getLostPercent() * 100, __FUNCTION__));
 	} else {
 		lua_pushnil(L);
 	}
@@ -1992,7 +1992,7 @@ int PlayerFunctions::luaPlayerSendContainer(lua_State* L) {
 		return 1;
 	}
 
-	player->sendContainer(static_cast<uint8_t>(container->getID()), container, container->hasParent(), static_cast<uint8_t>(container->getFirstIndex()));
+	player->sendContainer(safe_convert<uint8_t>(container->getID(), __FUNCTION__), container, container->hasParent(), safe_convert<uint8_t>(container->getFirstIndex(), __FUNCTION__));
 	pushBoolean(L, true);
 	return 1;
 }
@@ -3399,7 +3399,7 @@ int PlayerFunctions::luaPlayerGetForgeDusts(lua_State* L) {
 		return 0;
 	}
 
-	lua_pushnumber(L, static_cast<lua_Number>(player->getForgeDusts()));
+	lua_pushnumber(L, safe_convert<lua_Number>(player->getForgeDusts(), __FUNCTION__));
 	return 1;
 }
 
@@ -3454,7 +3454,7 @@ int PlayerFunctions::luaPlayerGetForgeDustLevel(lua_State* L) {
 		return 0;
 	}
 
-	lua_pushnumber(L, static_cast<lua_Number>(player->getForgeDustLevel()));
+	lua_pushnumber(L, safe_convert<lua_Number>(player->getForgeDustLevel(), __FUNCTION__));
 	return 1;
 }
 
@@ -3468,7 +3468,7 @@ int PlayerFunctions::luaPlayerGetForgeSlivers(lua_State* L) {
 	}
 
 	auto [sliver, core] = player->getForgeSliversAndCores();
-	lua_pushnumber(L, static_cast<lua_Number>(sliver));
+	lua_pushnumber(L, safe_convert<lua_Number>(sliver, __FUNCTION__));
 	return 1;
 }
 
@@ -3482,7 +3482,7 @@ int PlayerFunctions::luaPlayerGetForgeCores(lua_State* L) {
 	}
 
 	auto [sliver, core] = player->getForgeSliversAndCores();
-	lua_pushnumber(L, static_cast<lua_Number>(core));
+	lua_pushnumber(L, safe_convert<lua_Number>(core, __FUNCTION__));
 	return 1;
 }
 
@@ -3590,7 +3590,7 @@ int PlayerFunctions::luaPlayerGetBosstiaryKills(lua_State* L) {
 				lua_pushnil(L);
 				return 0;
 			}
-			uint32_t currentKills = player->getBestiaryKillCount(static_cast<uint16_t>(bossId));
+			uint32_t currentKills = player->getBestiaryKillCount(safe_convert<uint16_t>(bossId, __FUNCTION__));
 			lua_pushnumber(L, currentKills);
 		} else {
 			lua_pushnil(L);
@@ -3657,7 +3657,7 @@ int PlayerFunctions::luaPlayerGetSlotBossId(lua_State* L) {
 
 	uint8_t slotId = getNumber<uint8_t>(L, 2);
 	auto bossId = player->getSlotBossId(slotId);
-	lua_pushnumber(L, static_cast<lua_Number>(bossId));
+	lua_pushnumber(L, safe_convert<lua_Number>(bossId, __FUNCTION__));
 	return 1;
 }
 
@@ -3679,7 +3679,7 @@ int PlayerFunctions::luaPlayerGetBossBonus(lua_State* L) {
 	auto bossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossId);
 	uint16_t bonusBoss = currentBonus + (bossLevel == 3 ? 25 : 0);
 
-	lua_pushnumber(L, static_cast<lua_Number>(bonusBoss));
+	lua_pushnumber(L, safe_convert<lua_Number>(bonusBoss, __FUNCTION__));
 	return 1;
 }
 
@@ -3912,7 +3912,7 @@ int PlayerFunctions::luaPlayerUpgradeSpellWOD(lua_State* L) {
 
 	std::string name = getString(L, 2);
 	if (lua_gettop(L) == 2) {
-		lua_pushnumber(L, static_cast<lua_Number>(player->wheel()->getSpellUpgrade(name)));
+		lua_pushnumber(L, safe_convert<lua_Number>(player->wheel()->getSpellUpgrade(name), __FUNCTION__));
 		return 1;
 	}
 
@@ -3942,7 +3942,7 @@ int PlayerFunctions::luaPlayerRevelationStageWOD(lua_State* L) {
 
 	std::string name = getString(L, 2);
 	if (lua_gettop(L) == 2) {
-		lua_pushnumber(L, static_cast<lua_Number>(player->wheel()->getStage(name)));
+		lua_pushnumber(L, safe_convert<lua_Number>(player->wheel()->getStage(name), __FUNCTION__));
 		return 1;
 	}
 

@@ -36,7 +36,7 @@ bool Mounts::loadFromXml() {
 		}
 
 		mounts.emplace_back(std::make_shared<Mount>(
-			static_cast<uint8_t>(pugi::cast<uint16_t>(mountNode.attribute("id").value())),
+			safe_convert<uint8_t>(pugi::cast<uint16_t>(mountNode.attribute("id").value()), __FUNCTION__),
 			lookType,
 			mountNode.attribute("name").as_string(),
 			pugi::cast<int32_t>(mountNode.attribute("speed").value()),

@@ -44,10 +44,10 @@ suite<"utils"> getDirectionToTest = [] {
 			auto [from, to, expected, expectedForExactDiagonal] = getDirectionToTestCase;
 
 			auto result = getDirectionTo(from, to);
-			expect(eq(expectedForExactDiagonal, result)) << fmt::format("[exact diagonal] {} != {}", static_cast<uint8_t>(expectedForExactDiagonal), static_cast<uint8_t>(result));
+			expect(eq(expectedForExactDiagonal, result)) << fmt::format("[exact diagonal] {} != {}", safe_convert<uint8_t>(expectedForExactDiagonal), safe_convert<uint8_t>(result));
 
 			result = getDirectionTo(from, to, false);
-			expect(eq(expected, result)) << fmt::format("[non-exact diagonal] {} != {}", static_cast<uint8_t>(expected), static_cast<uint8_t>(result));
+			expect(eq(expected, result)) << fmt::format("[non-exact diagonal] {} != {}", safe_convert<uint8_t>(expected), safe_convert<uint8_t>(result));
 		};
 	}
 };

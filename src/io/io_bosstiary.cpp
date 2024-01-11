@@ -67,7 +67,7 @@ void IOBosstiary::loadBoostedBoss() {
 
 	uint16_t oldBossRace = result->getNumber<uint16_t>("raceid");
 	while (true) {
-		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossInfo.size()));
+		uint32_t randomIndex = uniform_random(0, safe_convert<int32_t>(bossInfo.size(), __FUNCTION__));
 		auto it = std::next(bossInfo.begin(), randomIndex);
 		if (it == bossInfo.end()) {
 			break;
@@ -89,14 +89,14 @@ void IOBosstiary::loadBoostedBoss() {
 	query << "`boostname` = " << database.escapeString(bossName) << ",";
 	if (const auto bossType = getMonsterTypeByBossRaceId(bossId);
 		bossType) {
-		query << "`looktypeEx` = " << static_cast<int>(bossType->info.outfit.lookTypeEx) << ",";
-		query << "`looktype` = " << static_cast<int>(bossType->info.outfit.lookType) << ",";
-		query << "`lookfeet` = " << static_cast<int>(bossType->info.outfit.lookFeet) << ",";
-		query << "`looklegs` = " << static_cast<int>(bossType->info.outfit.lookLegs) << ",";
-		query << "`lookhead` = " << static_cast<int>(bossType->info.outfit.lookHead) << ",";
-		query << "`lookbody` = " << static_cast<int>(bossType->info.outfit.lookBody) << ",";
-		query << "`lookaddons` = " << static_cast<int>(bossType->info.outfit.lookAddons) << ",";
-		query << "`lookmount` = " << static_cast<int>(bossType->info.outfit.lookMount) << ",";
+		query << "`looktypeEx` = " << safe_convert<int>(bossType->info.outfit.lookTypeEx, __FUNCTION__) << ",";
+		query << "`looktype` = " << safe_convert<int>(bossType->info.outfit.lookType, __FUNCTION__) << ",";
+		query << "`lookfeet` = " << safe_convert<int>(bossType->info.outfit.lookFeet, __FUNCTION__) << ",";
+		query << "`looklegs` = " << safe_convert<int>(bossType->info.outfit.lookLegs, __FUNCTION__) << ",";
+		query << "`lookhead` = " << safe_convert<int>(bossType->info.outfit.lookHead, __FUNCTION__) << ",";
+		query << "`lookbody` = " << safe_convert<int>(bossType->info.outfit.lookBody, __FUNCTION__) << ",";
+		query << "`lookaddons` = " << safe_convert<int>(bossType->info.outfit.lookAddons, __FUNCTION__) << ",";
+		query << "`lookmount` = " << safe_convert<int>(bossType->info.outfit.lookMount, __FUNCTION__) << ",";
 	}
 	query << "`raceid` = '" << bossId << "'";
 	if (!database.executeQuery(query.str())) {
@@ -213,11 +213,11 @@ void IOBosstiary::addBosstiaryKill(std::shared_ptr<Player> player, const std::sh
 uint16_t IOBosstiary::calculateLootBonus(uint32_t bossPoints) const {
 	// Calculate Bonus based on Boss Points
 	if (bossPoints <= 250) {
-		return static_cast<uint16_t>(25 + bossPoints / 10);
+		return safe_convert<uint16_t>(25 + bossPoints / 10, __FUNCTION__);
 	} else if (bossPoints < 1250) {
-		return static_cast<uint16_t>(37.5 + bossPoints / 20);
+		return safe_convert<uint16_t>(37.5 + bossPoints / 20, __FUNCTION__);
 	}
-	return static_cast<uint16_t>(100 + 0.5 * (sqrt(8 * ((bossPoints - 1250) / 5) + 81) - 9));
+	return safe_convert<uint16_t>(100 + 0.5 * (sqrt(8 * ((bossPoints - 1250) / 5) + 81) - 9), __FUNCTION__);
 }
 
 uint32_t IOBosstiary::calculateBossPoints(uint16_t lootBonus) const {
@@ -231,7 +231,7 @@ uint32_t IOBosstiary::calculateBossPoints(uint16_t lootBonus) const {
 	} else if (lootBonus <= 100) {
 		return 20 * lootBonus - 750;
 	}
-	return static_cast<uint32_t>((2.5 * lootBonus * lootBonus) - (477.5 * lootBonus) + 24000);
+	return safe_convert<uint32_t>((2.5 * lootBonus * lootBonus) - (477.5 * lootBonus) + 24000, __FUNCTION__);
 }
 
 std::vector<uint16_t> IOBosstiary::getBosstiaryFinished(const std::shared_ptr<Player> &player, uint8_t level /* = 1*/) const {

@@ -17,7 +17,7 @@
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
-	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM, __FUNCTION__));
+	m_maxItems = safe_convert<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM, __FUNCTION__), __FUNCTION__);
 	if (getID() == ITEM_GOLD_POUCH || isStoreInbox()) {
 		pagination = true;
 		m_maxItems = 2000;
@@ -125,10 +125,10 @@ StashContainerList Container::getStowableItems() const {
 			auto subContainer = item->getContainer()->getStowableItems();
 			for (auto subContItem : subContainer) {
 				std::shared_ptr<Item> containerItem = subContItem.first;
-				toReturnList.push_back(std::pair<std::shared_ptr<Item>, uint32_t>(containerItem, static_cast<uint32_t>(containerItem->getItemCount())));
+				toReturnList.push_back(std::pair<std::shared_ptr<Item>, uint32_t>(containerItem, safe_convert<uint32_t>(containerItem->getItemCount(), __FUNCTION__)));
 			}
 		} else if (item->isItemStorable()) {
-			toReturnList.push_back(std::pair<std::shared_ptr<Item>, uint32_t>(item, static_cast<uint32_t>(item->getItemCount())));
+			toReturnList.push_back(std::pair<std::shared_ptr<Item>, uint32_t>(item, safe_convert<uint32_t>(item->getItemCount(), __FUNCTION__)));
 		}
 	}
 
@@ -261,7 +261,7 @@ std::deque<std::shared_ptr<Item>> Container::getStoreInboxFilteredItems() const 
 		for (std::shared_ptr<Item> item : getItemList()) {
 			auto itemId = item->getID();
 			auto attribute = item->getCustomAttribute("unWrapId");
-			uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
+			uint16_t unWrapId = attribute ? safe_convert<uint16_t>(attribute->getInteger(), __FUNCTION__) : 0;
 			if (unWrapId != 0) {
 				itemId = unWrapId;
 			}
@@ -283,7 +283,7 @@ std::vector<ContainerCategory_t> Container::getStoreInboxValidCategories() const
 	for (const auto &item : itemlist) {
 		auto itemId = item->getID();
 		auto attribute = item->getCustomAttribute("unWrapId");
-		uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
+		uint16_t unWrapId = attribute ? safe_convert<uint16_t>(attribute->getInteger(), __FUNCTION__) : 0;
 		if (unWrapId != 0) {
 			itemId = unWrapId;
 		}
@@ -292,7 +292,7 @@ std::vector<ContainerCategory_t> Container::getStoreInboxValidCategories() const
 		g_logger().debug("Store item '{}', primary type {}", itemId, convertedString);
 		auto category = magic_enum::enum_cast<ContainerCategory_t>(convertedString);
 		if (category.has_value()) {
-			g_logger().debug("Adding valid category {}", static_cast<uint8_t>(category.value()));
+			g_logger().debug("Adding valid category {}", safe_convert<uint8_t>(category.value(), __FUNCTION__));
 			validCategories.insert(category.value());
 		}
 	}
@@ -488,7 +488,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 	if (const auto topParentContainer = getTopParentContainer()) {
 		if (const auto addContainer = item->getContainer()) {
 			uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
-			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
+			uint32_t maxContainer = safe_convert<uint32_t>(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__), __FUNCTION__);
 			if (addContainerCount + topParentContainer->getContainerHoldingCount() > maxContainer) {
 				return RETURNVALUE_CONTAINERISFULL;
 			}
@@ -614,7 +614,7 @@ std::shared_ptr<Cylinder> Container::queryDestination(int32_t &index, const std:
 	if (index == 255 /*add wherever*/) {
 		index = INDEX_WHEREEVER;
 		*destItem = nullptr;
-	} else if (index >= static_cast<int32_t>(capacity()) && !hasPagination()) {
+	} else if (index >= safe_convert<int32_t>(capacity(), __FUNCTION__) && !hasPagination()) {
 		/*
 		if you have a container, maximize it to show all 20 slots
 		then you open a bag that is inside the container you will have a bag with 8 slots
@@ -674,7 +674,7 @@ void Container::addThing(int32_t index, std::shared_ptr<Thing> thing) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
 
-	if (index >= static_cast<int32_t>(capacity())) {
+	if (index >= safe_convert<int32_t>(capacity(), __FUNCTION__)) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
 
@@ -738,7 +738,7 @@ void Container::replaceThing(uint32_t index, std::shared_ptr<Thing> thing) {
 
 	itemlist[index] = item;
 	item->setParent(getContainer());
-	updateItemWeight(-static_cast<int32_t>(replacedItem->getWeight()) + item->getWeight());
+	updateItemWeight(-safe_convert<int32_t>(replacedItem->getWeight(), __FUNCTION__) + item->getWeight());
 
 	// send change to client
 	if (getParent()) {
@@ -760,7 +760,7 @@ void Container::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 	}
 
 	if (item->isStackable() && count != item->getItemCount()) {
-		uint8_t newCount = static_cast<uint8_t>(std::max<int32_t>(0, item->getItemCount() - count));
+		uint8_t newCount = safe_convert<uint8_t>(std::max<int32_t>(0, item->getItemCount() - count), __FUNCTION__);
 		const int32_t oldWeight = item->getWeight();
 		item->setItemCount(newCount);
 		updateItemWeight(-oldWeight + item->getWeight());
@@ -770,7 +770,7 @@ void Container::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 			onUpdateContainerItem(index, item, item);
 		}
 	} else {
-		updateItemWeight(-static_cast<int32_t>(item->getWeight()));
+		updateItemWeight(-safe_convert<int32_t>(item->getWeight(), __FUNCTION__));
 
 		// send change to client
 		if (getParent()) {

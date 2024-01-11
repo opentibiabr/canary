@@ -44,7 +44,7 @@ int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 		itemCount = std::max<int32_t>(1, count);
 	} else if (it.hasSubType()) {
 		if (it.stackable) {
-			itemCount = static_cast<int32_t>(std::ceil(static_cast<float>(count) / it.stackSize));
+			itemCount = safe_convert<int32_t>(std::ceil(safe_convert<float>(count, __FUNCTION__) / it.stackSize), __FUNCTION__);
 		} else {
 			itemCount = 1;
 		}
@@ -153,7 +153,7 @@ int GlobalFunctions::luaDoAddContainerItem(lua_State* L) {
 
 	if (it.hasSubType()) {
 		if (it.stackable) {
-			itemCount = static_cast<int32_t>(std::ceil(static_cast<float>(count) / it.stackSize));
+			itemCount = safe_convert<int32_t>(std::ceil(safe_convert<float>(count, __FUNCTION__) / it.stackSize), __FUNCTION__);
 		}
 
 		subType = count;

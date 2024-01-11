@@ -1110,7 +1110,7 @@ void Tile::updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t c
 }
 
 void Tile::replaceThing(uint32_t index, std::shared_ptr<Thing> thing) {
-	int32_t pos = index;
+	int32_t pos = safe_convert<int32_t>(index, __FUNCTION__);
 
 	std::shared_ptr<Item> item = thing->getItem();
 	if (item == nullptr) {
@@ -1132,7 +1132,7 @@ void Tile::replaceThing(uint32_t index, std::shared_ptr<Thing> thing) {
 
 	TileItemVector* items = getItemList();
 	if (items && !isInserted) {
-		int32_t topItemSize = getTopItemCount();
+		int32_t topItemSize = safe_convert<int32_t>(getTopItemCount(), __FUNCTION__);
 		if (pos < topItemSize) {
 			auto it = items->getBeginTopItem();
 			it += pos;
@@ -1148,15 +1148,15 @@ void Tile::replaceThing(uint32_t index, std::shared_ptr<Thing> thing) {
 
 	CreatureVector* creatures = getCreatures();
 	if (creatures) {
-		if (!isInserted && pos < static_cast<int32_t>(creatures->size())) {
+		if (!isInserted && pos < safe_convert<int32_t>(creatures->size(), __FUNCTION__)) {
 			return /*RETURNVALUE_NOTPOSSIBLE*/;
 		}
 
-		pos -= static_cast<uint32_t>(creatures->size());
+		pos -= safe_convert<int32_t>(creatures->size(), __FUNCTION__);
 	}
 
 	if (items && !isInserted) {
-		int32_t downItemSize = getDownItemCount();
+		int32_t downItemSize = safe_convert<int32_t>(getDownItemCount(), __FUNCTION__);
 		if (pos < downItemSize) {
 			auto it = items->getBeginDownItem() + pos;
 			oldItem = *it;
@@ -1244,7 +1244,7 @@ void Tile::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 
 		const ItemType &itemType = Item::items[item->getID()];
 		if (itemType.stackable && count != item->getItemCount()) {
-			uint8_t newCount = static_cast<uint8_t>(std::max<int32_t>(0, static_cast<int32_t>(item->getItemCount() - count)));
+			uint8_t newCount = safe_convert<uint8_t>(std::max<int32_t>(0, safe_convert<int32_t>(item->getItemCount() - count, __FUNCTION__)), __FUNCTION__);
 			item->setItemCount(newCount);
 			onUpdateTileItem(item, itemType, item, itemType);
 		} else {
@@ -1290,7 +1290,7 @@ int32_t Tile::getThingIndex(std::shared_ptr<Thing> thing) const {
 				}
 			}
 		} else {
-			n += items->getTopItemCount();
+			n += safe_convert<int32_t>(items->getTopItemCount(), __FUNCTION__);
 		}
 	}
 
@@ -1303,7 +1303,7 @@ int32_t Tile::getThingIndex(std::shared_ptr<Thing> thing) const {
 				}
 			}
 		} else {
-			n += creatures->size();
+			n += safe_convert<int32_t>(creatures->size(), __FUNCTION__);
 		}
 	}
 
@@ -1331,7 +1331,7 @@ int32_t Tile::getClientIndexOfCreature(std::shared_ptr<Player> player, std::shar
 
 	const TileItemVector* items = getItemList();
 	if (items) {
-		n += items->getTopItemCount();
+		n += safe_convert<int32_t>(items->getTopItemCount(), __FUNCTION__);
 	}
 
 	if (const CreatureVector* creatures = getCreatures()) {
@@ -1356,7 +1356,7 @@ int32_t Tile::getStackposOfCreature(std::shared_ptr<Player> player, std::shared_
 
 	const TileItemVector* items = getItemList();
 	if (items) {
-		n += items->getTopItemCount();
+		n += safe_convert<int32_t>(items->getTopItemCount(), __FUNCTION__);
 		if (n >= 10) {
 			return -1;
 		}
@@ -1396,7 +1396,7 @@ int32_t Tile::getStackposOfItem(std::shared_ptr<Player> player, std::shared_ptr<
 				}
 			}
 		} else {
-			n += items->getTopItemCount();
+			n += safe_convert<int32_t>(items->getTopItemCount(), __FUNCTION__);
 			if (n >= 10) {
 				return -1;
 			}

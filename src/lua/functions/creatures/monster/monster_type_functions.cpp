@@ -744,7 +744,7 @@ int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 		lua_pushnil(L);
 	}
 
-	monsterType->info.m_conditionImmunities[static_cast<size_t>(conditionType)] = true;
+	monsterType->info.m_conditionImmunities[safe_convert<size_t>(conditionType, __FUNCTION__)] = true;
 	pushBoolean(L, true);
 	return 1;
 }
@@ -1565,7 +1565,7 @@ int MonsterTypeFunctions::luaMonsterTypeBossRaceId(lua_State* L) {
 		if (monsterType->info.bosstiaryClass.empty()) {
 			lua_pushnumber(L, 0);
 		} else {
-			lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.bosstiaryRace));
+			lua_pushnumber(L, safe_convert<lua_Number>(monsterType->info.bosstiaryRace, __FUNCTION__));
 		}
 	} else {
 		auto raceId = getNumber<uint16_t>(L, 2, 0);
@@ -1636,11 +1636,11 @@ int MonsterTypeFunctions::luaMonsterTypeGetSounds(lua_State* L) {
 	}
 
 	int index = 0;
-	lua_createtable(L, static_cast<int>(monsterType->info.soundVector.size()), 0);
+	lua_createtable(L, safe_convert<int>(monsterType->info.soundVector.size(), __FUNCTION__), 0);
 	for (const auto &sound : monsterType->info.soundVector) {
 		++index;
 		lua_createtable(L, 0, 1);
-		lua_pushnumber(L, static_cast<lua_Number>(sound));
+		lua_pushnumber(L, safe_convert<lua_Number>(sound, __FUNCTION__));
 		lua_rawseti(L, -2, index);
 	}
 	return 1;
@@ -1656,7 +1656,7 @@ int MonsterTypeFunctions::luaMonsterTypedeathSound(lua_State* L) {
 	}
 
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.deathSound));
+		lua_pushnumber(L, safe_convert<lua_Number>(monsterType->info.deathSound, __FUNCTION__));
 	} else {
 		monsterType->info.deathSound = getNumber<SoundEffect_t>(L, 2);
 		pushBoolean(L, true);

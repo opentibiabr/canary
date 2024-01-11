@@ -40,7 +40,7 @@ public:
 			return getString(type);
 		} else {
 			return std::clamp(
-				static_cast<T>(getInteger(type)),
+				safe_convert<T>(getInteger(type), __FUNCTION__),
 				std::numeric_limits<T>::min(),
 				std::numeric_limits<T>::max()
 			);
@@ -119,7 +119,7 @@ public:
 	int32_t getDuration() const {
 		ItemDecayState_t decayState = getDecaying();
 		if (decayState == DECAYING_TRUE || decayState == DECAYING_STOPPING) {
-			return std::max<int32_t>(0, getAttribute<int32_t>(ItemAttribute_t::DURATION_TIMESTAMP) - static_cast<int32_t>(OTSYS_TIME()));
+			return std::max<int32_t>(0, getAttribute<int32_t>(ItemAttribute_t::DURATION_TIMESTAMP) - safe_convert<int32_t>(OTSYS_TIME(), __FUNCTION__));
 		} else {
 			return getAttribute<int32_t>(ItemAttribute_t::DURATION);
 		}
@@ -134,14 +134,14 @@ public:
 	}
 
 	void setDecaying(ItemDecayState_t decayState) {
-		setAttribute(ItemAttribute_t::DECAYSTATE, static_cast<int64_t>(decayState));
+		setAttribute(ItemAttribute_t::DECAYSTATE, safe_convert<int64_t>(decayState, __FUNCTION__));
 		if (decayState == DECAYING_FALSE) {
 			removeAttribute(ItemAttribute_t::DURATION_TIMESTAMP);
 		}
 	}
 	ItemDecayState_t getDecaying() const {
 		auto decayState = getAttribute<int64_t>(ItemAttribute_t::DECAYSTATE);
-		return static_cast<ItemDecayState_t>(decayState);
+		return safe_convert<ItemDecayState_t>(decayState, __FUNCTION__);
 	}
 
 	uint32_t getCorpseOwner() const {
@@ -149,11 +149,11 @@ public:
 	}
 
 	void setRewardCorpse() {
-		setAttribute(ItemAttribute_t::CORPSEOWNER, static_cast<uint32_t>(std::numeric_limits<int32_t>::max()));
+		setAttribute(ItemAttribute_t::CORPSEOWNER, safe_convert<uint32_t>(std::numeric_limits<int32_t>::max(), __FUNCTION__));
 	}
 
 	bool isRewardCorpse() const {
-		return getCorpseOwner() == static_cast<uint32_t>(std::numeric_limits<int32_t>::max());
+		return getCorpseOwner() == safe_convert<uint32_t>(std::numeric_limits<int32_t>::max(), __FUNCTION__);
 	}
 
 protected:

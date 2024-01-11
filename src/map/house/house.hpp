@@ -215,7 +215,7 @@ public:
 		return bedsList;
 	}
 	uint32_t getBedCount() const {
-		return static_cast<uint32_t>(std::floor(static_cast<double>(bedsList.size()) / 2.));
+		return safe_convert<uint32_t>(std::floor(safe_convert<double>(bedsList.size(), __FUNCTION__) / 2.), __FUNCTION__);
 	}
 
 	void setMaxBeds(int32_t count) {

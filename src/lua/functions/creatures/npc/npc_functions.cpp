@@ -569,7 +569,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 			slotsNedeed = inBackpacks ? std::ceil(amount / shoppingBagSlots) : amount;
 		}
 
-		if ((static_cast<double>(tile->getItemList()->size()) + (slotsNedeed - player->getFreeBackpackSlots())) > 30) {
+		if ((safe_convert<double>(tile->getItemList()->size(), __FUNCTION__) + (slotsNedeed - player->getFreeBackpackSlots())) > 30) {
 			pushBoolean(L, false);
 			player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 			return 1;

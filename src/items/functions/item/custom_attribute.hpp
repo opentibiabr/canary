@@ -33,7 +33,7 @@ public:
 			return getBool();
 		} else {
 			return std::clamp(
-				static_cast<T>(getInteger()),
+				safe_convert<T>(getInteger(), __FUNCTION__),
 				std::numeric_limits<T>::min(),
 				std::numeric_limits<T>::max()
 			);

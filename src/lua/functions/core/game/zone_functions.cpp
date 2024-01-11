@@ -110,7 +110,7 @@ int ZoneFunctions::luaZoneGetPositions(lua_State* L) {
 		return 1;
 	}
 	auto positions = zone->getPositions();
-	lua_createtable(L, static_cast<int>(positions.size()), 0);
+	lua_createtable(L, safe_convert<int>(positions.size(), __FUNCTION__), 0);
 
 	int index = 0;
 	for (auto pos : positions) {
@@ -130,7 +130,7 @@ int ZoneFunctions::luaZoneGetCreatures(lua_State* L) {
 		return 1;
 	}
 	auto creatures = zone->getCreatures();
-	lua_createtable(L, static_cast<int>(creatures.size()), 0);
+	lua_createtable(L, safe_convert<int>(creatures.size(), __FUNCTION__), 0);
 
 	int index = 0;
 	for (auto creature : creatures) {
@@ -151,7 +151,7 @@ int ZoneFunctions::luaZoneGetPlayers(lua_State* L) {
 		return 1;
 	}
 	auto players = zone->getPlayers();
-	lua_createtable(L, static_cast<int>(players.size()), 0);
+	lua_createtable(L, safe_convert<int>(players.size(), __FUNCTION__), 0);
 
 	int index = 0;
 	for (auto player : players) {
@@ -172,7 +172,7 @@ int ZoneFunctions::luaZoneGetMonsters(lua_State* L) {
 		return 1;
 	}
 	auto monsters = zone->getMonsters();
-	lua_createtable(L, static_cast<int>(monsters.size()), 0);
+	lua_createtable(L, safe_convert<int>(monsters.size(), __FUNCTION__), 0);
 
 	int index = 0;
 	for (auto monster : monsters) {
@@ -193,7 +193,7 @@ int ZoneFunctions::luaZoneGetNpcs(lua_State* L) {
 		return 1;
 	}
 	auto npcs = zone->getNpcs();
-	lua_createtable(L, static_cast<int>(npcs.size()), 0);
+	lua_createtable(L, safe_convert<int>(npcs.size(), __FUNCTION__), 0);
 
 	int index = 0;
 	for (auto npc : npcs) {
@@ -214,7 +214,7 @@ int ZoneFunctions::luaZoneGetItems(lua_State* L) {
 		return 1;
 	}
 	auto items = zone->getItems();
-	lua_createtable(L, static_cast<int>(items.size()), 0);
+	lua_createtable(L, safe_convert<int>(items.size(), __FUNCTION__), 0);
 
 	int index = 0;
 	for (auto item : items) {
@@ -304,7 +304,7 @@ int ZoneFunctions::luaZoneGetByPosition(lua_State* L) {
 	}
 	int index = 0;
 	auto zones = tile->getZones();
-	lua_createtable(L, static_cast<int>(zones.size()), 0);
+	lua_createtable(L, safe_convert<int>(zones.size(), __FUNCTION__), 0);
 	for (auto zone : zones) {
 		index++;
 		pushUserdata<Zone>(L, zone);
@@ -317,7 +317,7 @@ int ZoneFunctions::luaZoneGetByPosition(lua_State* L) {
 int ZoneFunctions::luaZoneGetAll(lua_State* L) {
 	// Zone.getAll()
 	auto zones = Zone::getZones();
-	lua_createtable(L, static_cast<int>(zones.size()), 0);
+	lua_createtable(L, safe_convert<int>(zones.size(), __FUNCTION__), 0);
 	int index = 0;
 	for (auto zone : zones) {
 		index++;

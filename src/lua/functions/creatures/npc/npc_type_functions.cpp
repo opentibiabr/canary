@@ -560,11 +560,11 @@ int NpcTypeFunctions::luaNpcTypeGetSounds(lua_State* L) {
 	}
 
 	int index = 0;
-	lua_createtable(L, static_cast<int>(npcType->info.soundVector.size()), 0);
+	lua_createtable(L, safe_convert<int>(npcType->info.soundVector.size(), __FUNCTION__), 0);
 	for (const auto &sound : npcType->info.soundVector) {
 		++index;
 		lua_createtable(L, 0, 1);
-		lua_pushnumber(L, static_cast<lua_Number>(sound));
+		lua_pushnumber(L, safe_convert<lua_Number>(sound, __FUNCTION__));
 		lua_rawseti(L, -2, index);
 	}
 	return 1;

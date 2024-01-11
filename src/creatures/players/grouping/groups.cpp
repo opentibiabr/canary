@@ -83,7 +83,7 @@ bool Groups::load() {
 		group.access = groupNode.attribute("access").as_bool();
 		group.maxDepotItems = pugi::cast<uint32_t>(groupNode.attribute("maxdepotitems").value());
 		group.maxVipEntries = pugi::cast<uint32_t>(groupNode.attribute("maxvipentries").value());
-		auto flagsInt = static_cast<uint8_t>(groupNode.attribute("flags").as_uint());
+		auto flagsInt = safe_convert<uint8_t>(groupNode.attribute("flags").as_uint(), __FUNCTION__);
 		std::bitset<magic_enum::enum_integer(PlayerFlags_t::FlagLast)> flags(flagsInt);
 		for (uint8_t i = 0; i < getFlagNumber(PlayerFlags_t::FlagLast); i++) {
 			PlayerFlags_t flag = getFlagFromNumber(i);

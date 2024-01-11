@@ -113,7 +113,7 @@ bool Module::configureEvent(const pugi::xml_node &node) {
 			return false;
 		}
 
-		recvbyte = static_cast<uint8_t>(byteAttribute.as_int());
+		recvbyte = safe_convert<uint8_t>(byteAttribute.as_int(), __FUNCTION__);
 		type = MODULE_TYPE_RECVBYTE;
 	} else {
 		g_logger().error("Invalid type for module.");
@@ -122,7 +122,7 @@ bool Module::configureEvent(const pugi::xml_node &node) {
 
 	pugi::xml_attribute delayAttribute = node.attribute("delay");
 	if (delayAttribute) {
-		delay = static_cast<uint16_t>(delayAttribute.as_uint());
+		delay = safe_convert<uint16_t>(delayAttribute.as_uint(), __FUNCTION__);
 	}
 
 	loaded = true;

@@ -1391,9 +1391,9 @@ struct CreatureIcon {
 
 	uint8_t serialize() const {
 		if (category == CreatureIconCategory_t::Modifications) {
-			return static_cast<uint8_t>(modification);
+			return safe_convert<uint8_t>(modification, __FUNCTION__);
 		} else if (category == CreatureIconCategory_t::Quests) {
-			return static_cast<uint8_t>(quest);
+			return safe_convert<uint8_t>(quest, __FUNCTION__);
 		}
 		return 0;
 	}

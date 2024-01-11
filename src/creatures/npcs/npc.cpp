@@ -194,7 +194,7 @@ void Npc::onThinkSound(uint32_t interval) {
 	if (soundTicks >= npcType->info.soundSpeedTicks) {
 		soundTicks = 0;
 
-		if (!npcType->info.soundVector.empty() && (npcType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
+		if (!npcType->info.soundVector.empty() && (npcType->info.soundChance >= safe_convert<uint32_t>(uniform_random(1, 100), __FUNCTION__))) {
 			auto index = uniform_random(0, npcType->info.soundVector.size() - 1);
 			g_game().sendSingleSoundEffect(static_self_cast<Npc>()->getPosition(), npcType->info.soundVector[index], getNpc());
 		}
@@ -250,12 +250,12 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 	if (std::shared_ptr<Tile> tile = ignore ? player->getTile() : nullptr; tile) {
 		double slotsNedeed = 0;
 		if (itemType.stackable) {
-			slotsNedeed = inBackpacks ? std::ceil(std::ceil(static_cast<double>(amount) / itemType.stackSize) / shoppingBagSlots) : std::ceil(static_cast<double>(amount) / itemType.stackSize);
+			slotsNedeed = inBackpacks ? std::ceil(std::ceil(safe_convert<double>(amount, __FUNCTION__) / itemType.stackSize) / shoppingBagSlots) : std::ceil(safe_convert<double>(amount, __FUNCTION__) / itemType.stackSize);
 		} else {
-			slotsNedeed = inBackpacks ? std::ceil(static_cast<double>(amount) / shoppingBagSlots) : static_cast<double>(amount);
+			slotsNedeed = inBackpacks ? std::ceil(safe_convert<double>(amount, __FUNCTION__) / shoppingBagSlots) : safe_convert<double>(amount, __FUNCTION__);
 		}
 
-		if ((static_cast<double>(tile->getItemList()->size()) + (slotsNedeed - player->getFreeBackpackSlots())) > 30) {
+		if ((safe_convert<double>(tile->getItemList()->size(), __FUNCTION__) + (slotsNedeed - player->getFreeBackpackSlots())) > 30) {
 			player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 			return;
 		}
@@ -272,9 +272,9 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 	uint32_t totalCost = buyPrice * amount;
 	uint32_t bagsCost = 0;
 	if (inBackpacks && itemType.stackable) {
-		bagsCost = shoppingBagPrice * static_cast<uint32_t>(std::ceil(std::ceil(static_cast<double>(amount) / itemType.stackSize) / shoppingBagSlots));
+		bagsCost = shoppingBagPrice * safe_convert<uint32_t>(std::ceil(std::ceil(safe_convert<double>(amount, __FUNCTION__) / itemType.stackSize) / shoppingBagSlots), __FUNCTION__);
 	} else if (inBackpacks && !itemType.stackable) {
-		bagsCost = shoppingBagPrice * static_cast<uint32_t>(std::ceil(static_cast<double>(amount) / shoppingBagSlots));
+		bagsCost = shoppingBagPrice * safe_convert<uint32_t>(std::ceil(safe_convert<double>(amount, __FUNCTION__) / shoppingBagSlots), __FUNCTION__);
 	}
 
 	if (getCurrency() == ITEM_GOLD_COIN && (player->getMoney() + player->getBankBalance()) < totalCost) {
@@ -410,7 +410,7 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 	}
 
 	auto totalRemoved = amount - toRemove;
-	auto totalCost = static_cast<uint64_t>(sellPrice * totalRemoved);
+	auto totalCost = safe_convert<uint64_t>(sellPrice * totalRemoved, __FUNCTION__);
 	if (getCurrency() == ITEM_GOLD_COIN) {
 		totalPrice += totalCost;
 		if (g_configManager().getBoolean(AUTOBANK, __FUNCTION__)) {
@@ -493,7 +493,7 @@ void Npc::onThinkYell(uint32_t interval) {
 	if (yellTicks >= npcType->info.yellSpeedTicks) {
 		yellTicks = 0;
 
-		if (!npcType->info.voiceVector.empty() && (npcType->info.yellChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
+		if (!npcType->info.voiceVector.empty() && (npcType->info.yellChance >= safe_convert<uint32_t>(uniform_random(1, 100), __FUNCTION__))) {
 			uint32_t index = uniform_random(0, npcType->info.voiceVector.size() - 1);
 			const voiceBlock_t &vb = npcType->info.voiceVector[index];
 

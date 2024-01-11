@@ -194,12 +194,12 @@ public:
 	void addBestiaryKillCount(uint16_t raceid, uint32_t amount) {
 		uint32_t oldCount = getBestiaryKillCount(raceid);
 		uint32_t key = STORAGEVALUE_BESTIARYKILLCOUNT + raceid;
-		addStorageValue(key, static_cast<int32_t>(oldCount + amount), true);
+		addStorageValue(key, safe_convert<int32_t>(oldCount + amount, __FUNCTION__), true);
 	}
 	uint32_t getBestiaryKillCount(uint16_t raceid) const {
 		uint32_t key = STORAGEVALUE_BESTIARYKILLCOUNT + raceid;
 		auto value = getStorageValue(key);
-		return value > 0 ? static_cast<uint32_t>(value) : 0;
+		return value > 0 ? safe_convert<uint32_t>(value, __FUNCTION__) : 0;
 	}
 
 	void setGUID(uint32_t newGuid) {
@@ -426,15 +426,15 @@ public:
 	}
 
 	bool hasFlag(PlayerFlags_t flag) const {
-		return group->flags[static_cast<std::size_t>(flag)];
+		return group->flags[safe_convert<std::size_t>(flag, __FUNCTION__)];
 	}
 
 	void setFlag(PlayerFlags_t flag) const {
-		group->flags[static_cast<std::size_t>(flag)] = true;
+		group->flags[safe_convert<std::size_t>(flag, __FUNCTION__)] = true;
 	}
 
 	void removeFlag(PlayerFlags_t flag) const {
-		group->flags[static_cast<std::size_t>(flag)] = false;
+		group->flags[safe_convert<std::size_t>(flag, __FUNCTION__)] = false;
 	}
 
 	std::shared_ptr<BedItem> getBedItem() {
@@ -2493,7 +2493,7 @@ public:
 		if (points <= 0) {
 			return 0;
 		}
-		return static_cast<uint16_t>(std::max<int32_t>(0, std::min<int32_t>(0xFFFF, points)));
+		return safe_convert<uint16_t>(std::max<int32_t>(0, std::min<int32_t>(0xFFFF, points)), __FUNCTION__);
 	}
 
 	/*******************************************************************************/
@@ -2510,7 +2510,7 @@ public:
 		return activeConcoctions;
 	}
 	bool isConcoctionActive(Concoction_t concotion) const {
-		uint16_t itemId = static_cast<uint16_t>(concotion);
+		uint16_t itemId = safe_convert<uint16_t>(concotion, __FUNCTION__);
 		if (!activeConcoctions.contains(itemId)) {
 			return false;
 		}
@@ -2867,7 +2867,7 @@ private:
 		}
 
 		if (!hasFlag(PlayerFlags_t::SetMaxSpeed)) {
-			baseSpeed = static_cast<uint16_t>(vocation->getBaseSpeed() + (level - 1));
+			baseSpeed = safe_convert<uint16_t>(vocation->getBaseSpeed() + (level - 1), __FUNCTION__);
 		} else {
 			baseSpeed = PLAYER_MAX_SPEED;
 		}
@@ -2888,7 +2888,7 @@ private:
 				attackSpeed = MAX_ATTACK_SPEED;
 			}
 
-			return static_cast<uint32_t>(attackSpeed);
+			return safe_convert<uint32_t>(attackSpeed, __FUNCTION__);
 		} else {
 			return vocation->getAttackSpeed();
 		}
@@ -2897,7 +2897,7 @@ private:
 	static double_t getPercentLevel(uint64_t count, uint64_t nextLevelCount);
 	double getLostPercent() const;
 	uint64_t getLostExperience() const override {
-		return skillLoss ? static_cast<uint64_t>(experience * getLostPercent()) : 0;
+		return skillLoss ? safe_convert<uint64_t>(experience * getLostPercent(), __FUNCTION__) : 0;
 	}
 
 	bool isSuppress(ConditionType_t conditionType) const override;

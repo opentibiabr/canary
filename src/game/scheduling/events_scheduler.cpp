@@ -63,25 +63,25 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 		EventRates currentEventRates;
 		for (const auto &ingameNode : eventNode.children()) {
 			if (ingameNode.attribute("exprate")) {
-				uint16_t exprate = static_cast<uint16_t>(ingameNode.attribute("exprate").as_uint());
+				uint16_t exprate = safe_convert<uint16_t>(ingameNode.attribute("exprate").as_uint(), __FUNCTION__);
 				currentEventRates.exprate = exprate;
 				g_eventsScheduler().setExpSchedule(exprate);
 			}
 
 			if (ingameNode.attribute("lootrate")) {
-				uint16_t lootrate = static_cast<uint16_t>(ingameNode.attribute("lootrate").as_uint());
+				uint16_t lootrate = safe_convert<uint16_t>(ingameNode.attribute("lootrate").as_uint(), __FUNCTION__);
 				currentEventRates.lootrate = lootrate;
 				g_eventsScheduler().setLootSchedule(lootrate);
 			}
 
 			if (ingameNode.attribute("spawnrate")) {
-				uint16_t spawnrate = static_cast<uint16_t>(ingameNode.attribute("spawnrate").as_uint());
+				uint16_t spawnrate = safe_convert<uint16_t>(ingameNode.attribute("spawnrate").as_uint(), __FUNCTION__);
 				currentEventRates.spawnrate = spawnrate;
 				g_eventsScheduler().setSpawnMonsterSchedule(spawnrate);
 			}
 
 			if (ingameNode.attribute("skillrate")) {
-				uint16_t skillrate = static_cast<uint16_t>(ingameNode.attribute("skillrate").as_uint());
+				uint16_t skillrate = safe_convert<uint16_t>(ingameNode.attribute("skillrate").as_uint(), __FUNCTION__);
 				currentEventRates.skillrate = skillrate;
 				g_eventsScheduler().setSkillSchedule(skillrate);
 			}

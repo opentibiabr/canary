@@ -118,8 +118,8 @@ void Raids::checkRaids() {
 		for (auto it = raidList.begin(), end = raidList.end(); it != end; ++it) {
 			const auto &raid = *it;
 			if (now >= (getLastRaidEnd() + raid->getMargin())) {
-				auto roll = static_cast<uint32_t>(uniform_random(0, MAX_RAND_RANGE));
-				auto required = static_cast<uint32_t>(MAX_RAND_RANGE * raid->getInterval()) / CHECK_RAIDS_INTERVAL;
+				auto roll = safe_convert<uint32_t>(uniform_random(0, MAX_RAND_RANGE), __FUNCTION__);
+				auto required = safe_convert<uint32_t>(MAX_RAND_RANGE * raid->getInterval(), __FUNCTION__) / CHECK_RAIDS_INTERVAL;
 				auto shouldStart = required >= roll;
 				if (shouldStart) {
 					setRunning(raid);
@@ -229,7 +229,7 @@ void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> raidEvent) {
 		const auto newRaidEvent = getNextRaidEvent();
 
 		if (newRaidEvent) {
-			uint32_t ticks = static_cast<uint32_t>(std::max<int32_t>(RAID_MINTICKS, newRaidEvent->getDelay() - raidEvent->getDelay()));
+			uint32_t ticks = safe_convert<uint32_t>(std::max<int32_t>(RAID_MINTICKS, safe_convert<int32_t>(newRaidEvent->getDelay(), __FUNCTION__) - raidEvent->getDelay()), __FUNCTION__);
 			nextEventEvent = g_dispatcher().scheduleEvent(ticks, std::bind(&Raid::executeRaidEvent, this, newRaidEvent), __FUNCTION__);
 		} else {
 			resetRaid();
@@ -305,14 +305,14 @@ bool AnnounceEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 			g_logger().warn("{} - "
 							"Unknown type tag missing for announce event, "
 							"using default: {}",
-							__FUNCTION__, static_cast<uint32_t>(messageType));
+							__FUNCTION__, safe_convert<uint32_t>(messageType, __FUNCTION__));
 		}
 	} else {
 		messageType = MESSAGE_EVENT_ADVANCE;
 		g_logger().warn("{} - "
 						"Type tag missing for announce event, "
 						"using default: {}",
-						__FUNCTION__, static_cast<uint32_t>(messageType));
+						__FUNCTION__, safe_convert<uint32_t>(messageType, __FUNCTION__));
 	}
 	return true;
 }
@@ -529,7 +529,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 
 bool AreaSpawnEvent::executeEvent() {
 	for (const MonsterSpawn &spawn : spawnMonsterList) {
-		uint32_t amount = uniform_random(spawn.minAmount, spawn.maxAmount);
+		uint32_t amount = safe_convert<uint32_t>(uniform_random(safe_convert<int32_t>(spawn.minAmount, __FUNCTION__), safe_convert<int32_t>(spawn.maxAmount, __FUNCTION__)), __FUNCTION__);
 		for (uint32_t i = 0; i < amount; ++i) {
 			std::shared_ptr<Monster> monster = Monster::createMonster(spawn.name);
 			if (!monster) {
@@ -539,7 +539,7 @@ bool AreaSpawnEvent::executeEvent() {
 
 			bool success = false;
 			for (int32_t tries = 0; tries < MAXIMUM_TRIES_PER_MONSTER; tries++) {
-				std::shared_ptr<Tile> tile = g_game().map.getTile(static_cast<uint16_t>(uniform_random(fromPos.x, toPos.x)), static_cast<uint16_t>(uniform_random(fromPos.y, toPos.y)), static_cast<uint8_t>(uniform_random(fromPos.z, toPos.z)));
+				std::shared_ptr<Tile> tile = g_game().map.getTile(safe_convert<uint16_t>(uniform_random(fromPos.x, toPos.x), __FUNCTION__), safe_convert<uint16_t>(uniform_random(fromPos.y, toPos.y), __FUNCTION__), safe_convert<uint8_t>(uniform_random(fromPos.z, toPos.z), __FUNCTION__));
 				if (tile && !tile->isMovableBlocking() && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && tile->getTopCreature() == nullptr && g_game().placeCreature(monster, tile->getPosition(), false, true)) {
 					success = true;
 					monster->setForgeMonster(false);

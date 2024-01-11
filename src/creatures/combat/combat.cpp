@@ -57,8 +57,8 @@ CombatDamage Combat::getCombatDamage(std::shared_ptr<Creature> creature, std::sh
 	// End
 	if (formulaType == COMBAT_FORMULA_DAMAGE) {
 		damage.primary.value = normal_random(
-			static_cast<int32_t>(mina),
-			static_cast<int32_t>(maxa)
+			safe_convert<int32_t>(mina, __FUNCTION__),
+			safe_convert<int32_t>(maxa, __FUNCTION__)
 		);
 	} else if (creature) {
 		int32_t min, max;
@@ -70,16 +70,16 @@ CombatDamage Combat::getCombatDamage(std::shared_ptr<Creature> creature, std::sh
 			} else if (formulaType == COMBAT_FORMULA_LEVELMAGIC) {
 				int32_t levelFormula = getLevelFormula(player, wheelSpell, damage);
 				damage.primary.value = normal_random(
-					static_cast<int32_t>(levelFormula * mina + minb),
-					static_cast<int32_t>(levelFormula * maxa + maxb)
+					safe_convert<int32_t>(levelFormula * mina + minb, __FUNCTION__),
+					safe_convert<int32_t>(levelFormula * maxa + maxb, __FUNCTION__)
 				);
 			} else if (formulaType == COMBAT_FORMULA_SKILL) {
 				std::shared_ptr<Item> tool = player->getWeapon();
 				const WeaponShared_ptr weapon = g_weapons().getWeapon(tool);
 				if (weapon) {
 					damage.primary.value = normal_random(
-						static_cast<int32_t>(minb),
-						static_cast<int32_t>(weapon->getWeaponDamage(player, target, tool, true) * maxa + maxb)
+						safe_convert<int32_t>(minb, __FUNCTION__),
+						safe_convert<int32_t>(weapon->getWeaponDamage(player, target, tool, true) * maxa + maxb, __FUNCTION__)
 					);
 
 					damage.secondary.type = weapon->getElementType();
@@ -92,8 +92,8 @@ CombatDamage Combat::getCombatDamage(std::shared_ptr<Creature> creature, std::sh
 					}
 				} else {
 					damage.primary.value = normal_random(
-						static_cast<int32_t>(minb),
-						static_cast<int32_t>(maxb)
+						safe_convert<int32_t>(minb, __FUNCTION__),
+						safe_convert<int32_t>(maxb, __FUNCTION__)
 					);
 				}
 			}
@@ -419,17 +419,17 @@ void Combat::setPlayerCombatValues(formulaType_t newFormulaType, double newMina,
 bool Combat::setParam(CombatParam_t param, uint32_t value) {
 	switch (param) {
 		case COMBAT_PARAM_TYPE: {
-			params.combatType = static_cast<CombatType_t>(value);
+			params.combatType = safe_convert<CombatType_t>(value, __FUNCTION__);
 			return true;
 		}
 
 		case COMBAT_PARAM_EFFECT: {
-			params.impactEffect = static_cast<uint16_t>(value);
+			params.impactEffect = safe_convert<uint16_t>(value, __FUNCTION__);
 			return true;
 		}
 
 		case COMBAT_PARAM_DISTANCEEFFECT: {
-			params.distanceEffect = static_cast<uint16_t>(value);
+			params.distanceEffect = safe_convert<uint16_t>(value, __FUNCTION__);
 			return true;
 		}
 
@@ -459,7 +459,7 @@ bool Combat::setParam(CombatParam_t param, uint32_t value) {
 		}
 
 		case COMBAT_PARAM_DISPEL: {
-			params.dispelType = static_cast<ConditionType_t>(value);
+			params.dispelType = safe_convert<ConditionType_t>(value, __FUNCTION__);
 			return true;
 		}
 
@@ -469,17 +469,17 @@ bool Combat::setParam(CombatParam_t param, uint32_t value) {
 		}
 
 		case COMBAT_PARAM_IMPACTSOUND: {
-			params.soundImpactEffect = static_cast<SoundEffect_t>(value);
+			params.soundImpactEffect = safe_convert<SoundEffect_t>(value, __FUNCTION__);
 			return true;
 		}
 
 		case COMBAT_PARAM_CASTSOUND: {
-			params.soundCastEffect = static_cast<SoundEffect_t>(value);
+			params.soundCastEffect = safe_convert<SoundEffect_t>(value, __FUNCTION__);
 			return true;
 		}
 
 		case COMBAT_PARAM_CHAIN_EFFECT: {
-			params.chainEffect = static_cast<uint8_t>(value);
+			params.chainEffect = safe_convert<uint8_t>(value, __FUNCTION__);
 			return true;
 		}
 	}
@@ -597,8 +597,8 @@ void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<
 	if (attackerPlayer && targetMonster) {
 		const std::unique_ptr<PreySlot> &slot = attackerPlayer->getPreyWithMonster(targetMonster->getRaceId());
 		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Damage && slot->bonusTimeLeft > 0) {
-			damage.primary.value += static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
-			damage.secondary.value += static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
+			damage.primary.value += safe_convert<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100), __FUNCTION__);
+			damage.secondary.value += safe_convert<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100), __FUNCTION__);
 		}
 	}
 
@@ -606,8 +606,8 @@ void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<
 	if (attackerMonster && targetPlayer) {
 		const std::unique_ptr<PreySlot> &slot = targetPlayer->getPreyWithMonster(attackerMonster->getRaceId());
 		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Defense && slot->bonusTimeLeft > 0) {
-			damage.primary.value -= static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
-			damage.secondary.value -= static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
+			damage.primary.value -= safe_convert<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100), __FUNCTION__);
+			damage.secondary.value -= safe_convert<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100), __FUNCTION__);
 		}
 	}
 
@@ -1822,8 +1822,8 @@ void AreaCombat::copyArea(const std::unique_ptr<MatrixArea> &input, const std::u
 				int32_t newY = y - centerY;
 
 				// perform rotation
-				int32_t rotatedX = static_cast<int32_t>(round(newX * a + newY * b));
-				int32_t rotatedY = static_cast<int32_t>(round(newX * c + newY * d));
+				int32_t rotatedX = safe_convert<int32_t>(round(newX * a + newY * b), __FUNCTION__);
+				int32_t rotatedY = safe_convert<int32_t>(round(newX * c + newY * d), __FUNCTION__);
 
 				// write in the output matrix using rotated coordinates
 				(*output)[rotatedY + rotateCenterY][rotatedX + rotateCenterX] = (*input)[y][x];
@@ -2069,7 +2069,7 @@ void Combat::applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<C
 	}
 
 	bonus += damage.criticalDamage;
-	double multiplier = 1.0 + static_cast<double>(bonus) / 100;
+	double multiplier = 1.0 + safe_convert<double>(bonus, __FUNCTION__) / 100;
 	chance += (uint16_t)damage.criticalChance;
 
 	if (chance != 0 && uniform_random(1, 10000) <= chance) {
@@ -2086,8 +2086,8 @@ void Combat::applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<C
 			double_t randomChance = uniform_random(0, 10000) / 100;
 			if (fatalChance > 0 && randomChance < fatalChance) {
 				damage.fatal = true;
-				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
-				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));
+				damage.primary.value += safe_convert<int32_t>(std::round(damage.primary.value * 0.6), __FUNCTION__);
+				damage.secondary.value += safe_convert<int32_t>(std::round(damage.secondary.value * 0.6), __FUNCTION__);
 			}
 		}
 	} else if (monster) {

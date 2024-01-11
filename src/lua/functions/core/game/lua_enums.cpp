@@ -803,7 +803,7 @@ void LuaEnums::initItemAttributeEnums(lua_State* L) {
 		auto number = magic_enum::enum_integer(value);
 		// Creation of the "ITEM_ATTRIBUTE_" namespace for lua scripts
 		std::string enumName = "ITEM_ATTRIBUTE_" + std::string(magic_enum::enum_name(value));
-		registerGlobalVariable(L, enumName, static_cast<lua_Number>(number));
+		registerGlobalVariable(L, enumName, safe_convert<lua_Number>(number, __FUNCTION__));
 	}
 }
 

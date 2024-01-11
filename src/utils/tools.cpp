@@ -25,7 +25,7 @@ void printXMLError(const std::string &where, const std::string &fileName, const 
 	uint32_t currentLine = 1;
 	std::string line;
 
-	size_t offset = static_cast<size_t>(result.offset);
+	size_t offset = safe_convert<size_t>(result.offset, __FUNCTION__);
 	size_t lineOffsetPosition = 0;
 	size_t index = 0;
 	size_t bytes;
@@ -190,7 +190,7 @@ std::string transformToSHA1(const std::string &input) {
 uint16_t getStashSize(StashItemList itemList) {
 	uint16_t size = 0;
 	for (auto item : itemList) {
-		size += ceil(item.second / (float_t)Item::items[item.first].stackSize);
+		size += ceil(safe_convert<float>(item.second, __FUNCTION__) / (float_t)Item::items[item.first].stackSize);
 	}
 	return size;
 }
@@ -199,14 +199,14 @@ std::string generateToken(const std::string &key, uint32_t ticks) {
 	// generate message from ticks
 	std::string message(8, 0);
 	for (uint8_t i = 8; --i; ticks >>= 8) {
-		message[i] = static_cast<char>(ticks & 0xFF);
+		message[i] = safe_convert<char>(ticks & 0xFF, __FUNCTION__);
 	}
 
 	// hmac key pad generation
 	std::string iKeyPad(64, 0x36), oKeyPad(64, 0x5C);
 	for (uint8_t i = 0; i < key.length(); ++i) {
-		iKeyPad[i] ^= key[i];
-		oKeyPad[i] ^= key[i];
+		iKeyPad[i] = safe_convert<char>(safe_convert<unsigned char>(iKeyPad[i], __FUNCTION__) ^ safe_convert<unsigned char>(key[i], __FUNCTION__), __FUNCTION__);
+		oKeyPad[i] = safe_convert<char>(safe_convert<unsigned char>(oKeyPad[i], __FUNCTION__) ^ safe_convert<unsigned char>(key[i], __FUNCTION__), __FUNCTION__);
 	}
 
 	oKeyPad.reserve(84);
@@ -219,14 +219,14 @@ std::string generateToken(const std::string &key, uint32_t ticks) {
 
 	// hmac concat outer pad with message, conversion from hex to int needed
 	for (uint8_t i = 0; i < message.length(); i += 2) {
-		oKeyPad.push_back(static_cast<char>(std::stol(message.substr(i, 2), nullptr, 16)));
+		oKeyPad.push_back(safe_convert<char>(std::stol(message.substr(i, 2), nullptr, 16), __FUNCTION__));
 	}
 
 	// hmac second pass
 	message.assign(transformToSHA1(oKeyPad));
 
 	// calculate hmac offset
-	uint32_t offset = static_cast<uint32_t>(std::stol(message.substr(39, 1), nullptr, 16) & 0xF);
+	uint32_t offset = safe_convert<uint32_t>(std::stol(message.substr(39, 1), nullptr, 16) & 0xF, __FUNCTION__);
 
 	// get truncated hash
 	uint32_t truncHash = std::stol(message.substr(2 * offset, 8), nullptr, 16) & 0x7FFFFFFF;
@@ -289,10 +289,10 @@ std::string toCamelCase(const std::string &str) {
 			capitalizeNext = true;
 		} else {
 			if (capitalizeNext) {
-				result += std::toupper(ch);
+				result += safe_convert<char>(std::toupper(ch), __FUNCTION__);
 				capitalizeNext = false;
 			} else {
-				result += std::tolower(ch);
+				result += safe_convert<char>(std::tolower(ch), __FUNCTION__);
 			}
 		}
 	}
@@ -309,7 +309,7 @@ std::string toPascalCase(const std::string &str) {
 			capitalizeNext = true;
 		} else {
 			if (capitalizeNext) {
-				result += std::toupper(ch);
+				result += safe_convert<char>(std::toupper(ch), __FUNCTION__);
 				capitalizeNext = false;
 			} else {
 				result += ch; // Keep the character as is.
@@ -325,7 +325,7 @@ std::string toSnakeCase(const std::string &str) {
 	for (char ch : str) {
 		if (std::isupper(ch)) {
 			result += '_';
-			result += std::tolower(ch);
+			result += safe_convert<char>(std::tolower(ch), __FUNCTION__);
 		} else if (std::isspace(ch) || ch == '-') {
 			result += '_';
 		} else {
@@ -341,7 +341,7 @@ std::string toKebabCase(const std::string &str) {
 	for (char ch : str) {
 		if (std::isupper(ch)) {
 			result += '-';
-			result += std::tolower(ch);
+			result += safe_convert<char>(std::tolower(ch), __FUNCTION__);
 		} else if (std::isspace(ch) || ch == '_') {
 			result += '-';
 		} else {
@@ -360,9 +360,9 @@ std::string toStartCaseWithSpace(const std::string &str) {
 			if (i > 0) {
 				result += ' ';
 			}
-			result += std::toupper(ch);
+			result += safe_convert<char>(std::toupper(ch), __FUNCTION__);
 		} else {
-			result += std::tolower(ch);
+			result += safe_convert<char>(std::tolower(ch), __FUNCTION__);
 		}
 	}
 	return result;
@@ -413,7 +413,7 @@ int32_t normal_random(int32_t minNumber, int32_t maxNumber) {
 	} while (v < 0.0 || v > 1.0);
 
 	auto &&[a, b] = std::minmax(minNumber, maxNumber);
-	return a + std::lround(v * (b - a));
+	return a + std::lround(v * safe_convert<float>((b - a), __FUNCTION__));
 }
 
 bool boolean_random(double probability /* = 0.5*/) {
@@ -1024,7 +1024,7 @@ uint32_t adlerChecksum(const uint8_t* data, size_t length) {
 std::string ucfirst(std::string str) {
 	for (char &i : str) {
 		if (i != ' ') {
-			i = toupper(i);
+			i = safe_convert<char>(toupper(i), __FUNCTION__);
 			break;
 		}
 	}
@@ -1037,10 +1037,10 @@ std::string ucwords(std::string str) {
 		return str;
 	}
 
-	str[0] = toupper(str.front());
+	str[0] = safe_convert<char>(toupper(str.front()), __FUNCTION__);
 	for (size_t i = 1; i < strLength; ++i) {
 		if (str[i - 1] == ' ') {
-			str[i] = toupper(str[i]);
+			str[i] = safe_convert<char>(toupper(str[i]), __FUNCTION__);
 		}
 	}
 
@@ -1052,7 +1052,7 @@ bool booleanString(const std::string &str) {
 		return false;
 	}
 
-	char ch = tolower(str.front());
+	char ch = safe_convert<char>(tolower(str.front()), __FUNCTION__);
 	return ch != 'f' && ch != 'n' && ch != '0';
 }
 
@@ -1120,7 +1120,7 @@ std::string combatTypeToName(CombatType_t combatType) {
 }
 
 CombatType_t indexToCombatType(size_t v) {
-	return static_cast<CombatType_t>(v);
+	return safe_convert<CombatType_t>(v, __FUNCTION__);
 }
 
 ItemAttribute_t stringToItemAttribute(const std::string &str) {
@@ -1753,7 +1753,7 @@ std::vector<std::string> split(const std::string &str) {
 std::string getFormattedTimeRemaining(uint32_t time) {
 	time_t timeRemaining = time - getTimeNow();
 
-	int days = static_cast<int>(std::floor(timeRemaining / 86400));
+	int days = safe_convert<int>(std::floor(timeRemaining / 86400), __FUNCTION__);
 
 	std::stringstream output;
 	if (days > 1) {
@@ -1761,9 +1761,9 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 		return output.str();
 	}
 
-	int hours = static_cast<int>(std::floor((timeRemaining % 86400) / 3600));
-	int minutes = static_cast<int>(std::floor((timeRemaining % 3600) / 60));
-	int seconds = static_cast<int>(timeRemaining % 60);
+	int hours = safe_convert<int>(std::floor((timeRemaining % 86400) / 3600), __FUNCTION__);
+	int minutes = safe_convert<int>(std::floor((timeRemaining % 3600) / 60), __FUNCTION__);
+	int seconds = safe_convert<int>(timeRemaining % 60, __FUNCTION__);
 
 	if (hours == 0 && minutes == 0 && seconds > 0) {
 		output << " less than 1 minute";
@@ -1786,7 +1786,7 @@ std::string getFormattedTimeRemaining(uint32_t time) {
  */
 std::string formatNumber(uint64_t number) {
 	std::string formattedNumber = std::to_string(number);
-	int pos = formattedNumber.length() - 3;
+	int pos = safe_convert<int>(formattedNumber.length(), __FUNCTION__) - 3;
 	while (pos > 0) {
 		formattedNumber.insert(pos, ",");
 		pos -= 3;

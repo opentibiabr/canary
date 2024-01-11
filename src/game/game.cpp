@@ -161,7 +161,7 @@ namespace InternalGame {
 			return 0;
 		}
 
-		return static_cast<T>(value);
+		return safe_convert<T>(value, __FUNCTION__);
 	}
 } // Namespace InternalGame
 
@@ -274,10 +274,10 @@ void Game::loadBoostedCreature() {
 
 void Game::start(ServiceManager* manager) {
 	// Game client protocols
-	manager->add<ProtocolGame>(static_cast<uint16_t>(g_configManager().getNumber(GAME_PORT, __FUNCTION__)));
-	manager->add<ProtocolLogin>(static_cast<uint16_t>(g_configManager().getNumber(LOGIN_PORT, __FUNCTION__)));
+	manager->add<ProtocolGame>(safe_convert<uint16_t>(g_configManager().getNumber(GAME_PORT, __FUNCTION__), __FUNCTION__));
+	manager->add<ProtocolLogin>(safe_convert<uint16_t>(g_configManager().getNumber(LOGIN_PORT, __FUNCTION__), __FUNCTION__));
 	// OT protocols
-	manager->add<ProtocolStatus>(static_cast<uint16_t>(g_configManager().getNumber(STATUS_PORT, __FUNCTION__)));
+	manager->add<ProtocolStatus>(safe_convert<uint16_t>(g_configManager().getNumber(STATUS_PORT, __FUNCTION__), __FUNCTION__));
 
 	serviceManager = manager;
 
@@ -600,12 +600,12 @@ std::shared_ptr<Thing> Game::internalGetThing(std::shared_ptr<Player> player, co
 		// '0x20' -> From depot.
 		// '0x21' -> From inbox.
 		// Both only when the item is from depot search window.
-		if (!player->isDepotSearchOpenOnItem(static_cast<uint16_t>(itemId))) {
+		if (!player->isDepotSearchOpenOnItem(safe_convert<uint16_t>(itemId, __FUNCTION__))) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return nullptr;
 		}
 
-		return player->getItemFromDepotSearch(static_cast<uint16_t>(itemId), pos);
+		return player->getItemFromDepotSearch(safe_convert<uint16_t>(itemId, __FUNCTION__), pos);
 	} else if (pos.y == 0 && pos.z == 0) {
 		const ItemType &it = Item::items[itemId];
 		if (it.id == 0) {
@@ -623,7 +623,7 @@ std::shared_ptr<Thing> Game::internalGetThing(std::shared_ptr<Player> player, co
 	}
 
 	// inventory
-	Slots_t slot = static_cast<Slots_t>(pos.y);
+	Slots_t slot = safe_convert<Slots_t>(pos.y, __FUNCTION__);
 	return player->getInventoryItem(slot);
 }
 
@@ -640,7 +640,7 @@ void Game::internalGetPosition(std::shared_ptr<Item> item, Position &pos, uint8_
 
 			std::shared_ptr<Container> container = std::dynamic_pointer_cast<Container>(item->getParent());
 			if (container) {
-				pos.y = static_cast<uint16_t>(0x40) | static_cast<uint16_t>(player->getContainerID(container));
+				pos.y = safe_convert<uint16_t>(0x40, __FUNCTION__) | safe_convert<uint16_t>(player->getContainerID(container), __FUNCTION__);
 				pos.z = container->getThingIndex(item);
 				stackpos = pos.z;
 			} else {
@@ -1009,7 +1009,7 @@ void Game::playerInspectItem(std::shared_ptr<Player> player, const Position &pos
 		return;
 	}
 
-	player->sendItemInspection(item->getID(), static_cast<uint8_t>(item->getItemCount()), item, false);
+	player->sendItemInspection(item->getID(), safe_convert<uint8_t>(item->getItemCount(), __FUNCTION__), item, false);
 }
 
 void Game::playerInspectItem(std::shared_ptr<Player> player, uint16_t itemId, uint8_t itemCount, bool cyclopedia) {
@@ -1044,17 +1044,17 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__)) {
 		// Registering distance effects
 		for (uint32_t it = 0; it < appearances.effect_size(); it++) {
-			registeredMagicEffects.push_back(static_cast<uint16_t>(appearances.effect(it).id()));
+			registeredMagicEffects.push_back(safe_convert<uint16_t>(appearances.effect(it).id(), __FUNCTION__));
 		}
 
 		// Registering missile effects
 		for (uint32_t it = 0; it < appearances.missile_size(); it++) {
-			registeredDistanceEffects.push_back(static_cast<uint16_t>(appearances.missile(it).id()));
+			registeredDistanceEffects.push_back(safe_convert<uint16_t>(appearances.missile(it).id(), __FUNCTION__));
 		}
 
 		// Registering outfits
 		for (uint32_t it = 0; it < appearances.outfit_size(); it++) {
-			registeredLookTypes.push_back(static_cast<uint16_t>(appearances.outfit(it).id()));
+			registeredLookTypes.push_back(safe_convert<uint16_t>(appearances.outfit(it).id(), __FUNCTION__));
 		}
 	}
 
@@ -1089,7 +1089,7 @@ void Game::playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t 
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return;
 		} else {
-			fromIndex = static_cast<uint8_t>(fromPos.y);
+			fromIndex = safe_convert<uint8_t>(fromPos.y, __FUNCTION__);
 		}
 	} else {
 		fromIndex = fromStackPos;
@@ -1387,7 +1387,7 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 				player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 				return;
 			} else {
-				fromIndex = static_cast<uint8_t>(fromPos.y);
+				fromIndex = safe_convert<uint8_t>(fromPos.y, __FUNCTION__);
 			}
 		} else {
 			fromIndex = fromStackPos;
@@ -1555,7 +1555,7 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		if (toPos.y & 0x40) {
 			toIndex = toPos.z;
 		} else {
-			toIndex = static_cast<uint8_t>(toPos.y);
+			toIndex = safe_convert<uint8_t>(toPos.y, __FUNCTION__);
 		}
 	}
 
@@ -1935,7 +1935,7 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 
 			// Looting analyser
 			if (it.isCorpse && toContainer->getTopParent() == player && item->getIsLootTrackeable()) {
-				player->sendLootStats(item, static_cast<uint8_t>(item->getItemCount()));
+				player->sendLootStats(item, safe_convert<uint8_t>(item->getItemCount(), __FUNCTION__));
 			}
 		}
 	}
@@ -2140,7 +2140,7 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 				std::shared_ptr<Item> remainderItem = Item::CreateItem(item->getID(), remainderCount);
 				ReturnValue remaindRet = internalAddItem(destination->getTile(), remainderItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
 				if (player && remaindRet != RETURNVALUE_NOERROR) {
-					player->sendLootStats(item, static_cast<uint8_t>(item->getItemCount()));
+					player->sendLootStats(item, safe_convert<uint8_t>(item->getItemCount(), __FUNCTION__));
 				}
 			}
 		}
@@ -2181,7 +2181,7 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::createItemBatch(const std::sha
 				countPerItem = 1;
 				item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
 				item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + itemType.name + ">.");
-				item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
+				item->setCustomAttribute("unWrapId", safe_convert<int64_t>(itemId, __FUNCTION__));
 			} else {
 				item = Item::CreateItem(itemId, itemType.stackable ? std::min<uint32_t>(countPerItem, count - i) : subType);
 			}
@@ -2200,12 +2200,12 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::createItem(const std::shared_p
 ReturnValue Game::internalPlayerAddItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, bool dropOnMap /*= true*/, Slots_t slot /*= CONST_SLOT_WHEREEVER*/) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	uint32_t remainderCount = 0;
-	ReturnValue ret = internalAddItem(player, item, static_cast<int32_t>(slot), 0, false, remainderCount);
+	ReturnValue ret = internalAddItem(player, item, safe_convert<int32_t>(slot, __FUNCTION__), 0, false, remainderCount);
 	if (remainderCount != 0) {
 		std::shared_ptr<Item> remainderItem = Item::CreateItem(item->getID(), remainderCount);
 		ReturnValue remaindRet = internalAddItem(player->getTile(), remainderItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
 		if (remaindRet != RETURNVALUE_NOERROR) {
-			player->sendLootStats(item, static_cast<uint8_t>(item->getItemCount()));
+			player->sendLootStats(item, safe_convert<uint8_t>(item->getItemCount(), __FUNCTION__));
 		}
 	}
 
@@ -2333,7 +2333,7 @@ bool Game::removeMoney(std::shared_ptr<Cylinder> cylinder, uint64_t money, uint3
 			money -= moneyEntry.first;
 		} else if (moneyEntry.first > money) {
 			const uint32_t worth = moneyEntry.first / item->getItemCount();
-			const uint32_t removeCount = std::ceil(money / static_cast<double>(worth));
+			const uint32_t removeCount = std::ceil(money / safe_convert<double>(worth, __FUNCTION__));
 			addMoney(cylinder, (worth * removeCount) - money, flags);
 			internalRemoveItem(item, removeCount);
 			return true;
@@ -3877,11 +3877,11 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 	}
 
 	if (outfit.lookType != 0) {
-		item->setCustomAttribute("PastLookType", static_cast<int64_t>(outfit.lookType));
+		item->setCustomAttribute("PastLookType", safe_convert<int64_t>(outfit.lookType, __FUNCTION__));
 	}
 
 	if (outfit.lookMount != 0) {
-		item->setCustomAttribute("PastLookMount", static_cast<int64_t>(outfit.lookMount));
+		item->setCustomAttribute("PastLookMount", safe_convert<int64_t>(outfit.lookMount, __FUNCTION__));
 	}
 
 	if (!player->canWear(outfit.lookType, outfit.lookAddons)) {
@@ -3895,12 +3895,12 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 	}
 
 	if (outfit.lookType != 0) {
-		item->setCustomAttribute("LookType", static_cast<int64_t>(outfit.lookType));
-		item->setCustomAttribute("LookHead", static_cast<int64_t>(outfit.lookHead));
-		item->setCustomAttribute("LookBody", static_cast<int64_t>(outfit.lookBody));
-		item->setCustomAttribute("LookLegs", static_cast<int64_t>(outfit.lookLegs));
-		item->setCustomAttribute("LookFeet", static_cast<int64_t>(outfit.lookFeet));
-		item->setCustomAttribute("LookAddons", static_cast<int64_t>(outfit.lookAddons));
+		item->setCustomAttribute("LookType", safe_convert<int64_t>(outfit.lookType, __FUNCTION__));
+		item->setCustomAttribute("LookHead", safe_convert<int64_t>(outfit.lookHead, __FUNCTION__));
+		item->setCustomAttribute("LookBody", safe_convert<int64_t>(outfit.lookBody, __FUNCTION__));
+		item->setCustomAttribute("LookLegs", safe_convert<int64_t>(outfit.lookLegs, __FUNCTION__));
+		item->setCustomAttribute("LookFeet", safe_convert<int64_t>(outfit.lookFeet, __FUNCTION__));
+		item->setCustomAttribute("LookAddons", safe_convert<int64_t>(outfit.lookAddons, __FUNCTION__));
 	} else if (auto pastLookType = item->getCustomAttribute("PastLookType");
 			   pastLookType && pastLookType->getInteger() > 0) {
 		item->removeCustomAttribute("LookType");
@@ -3908,19 +3908,19 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 	}
 
 	if (outfit.lookMount != 0) {
-		item->setCustomAttribute("LookMount", static_cast<int64_t>(outfit.lookMount));
-		item->setCustomAttribute("LookMountHead", static_cast<int64_t>(outfit.lookMountHead));
-		item->setCustomAttribute("LookMountBody", static_cast<int64_t>(outfit.lookMountBody));
-		item->setCustomAttribute("LookMountLegs", static_cast<int64_t>(outfit.lookMountLegs));
-		item->setCustomAttribute("LookMountFeet", static_cast<int64_t>(outfit.lookMountFeet));
+		item->setCustomAttribute("LookMount", safe_convert<int64_t>(outfit.lookMount, __FUNCTION__));
+		item->setCustomAttribute("LookMountHead", safe_convert<int64_t>(outfit.lookMountHead, __FUNCTION__));
+		item->setCustomAttribute("LookMountBody", safe_convert<int64_t>(outfit.lookMountBody, __FUNCTION__));
+		item->setCustomAttribute("LookMountLegs", safe_convert<int64_t>(outfit.lookMountLegs, __FUNCTION__));
+		item->setCustomAttribute("LookMountFeet", safe_convert<int64_t>(outfit.lookMountFeet, __FUNCTION__));
 	} else if (auto pastLookMount = item->getCustomAttribute("PastLookMount");
 			   pastLookMount && pastLookMount->getInteger() > 0) {
 		item->removeCustomAttribute("LookMount");
 		item->removeCustomAttribute("PastLookMount");
 	}
 
-	item->setCustomAttribute("PodiumVisible", static_cast<int64_t>(podiumVisible));
-	item->setCustomAttribute("LookDirection", static_cast<int64_t>(direction));
+	item->setCustomAttribute("PodiumVisible", safe_convert<int64_t>(podiumVisible, __FUNCTION__));
+	item->setCustomAttribute("LookDirection", safe_convert<int64_t>(direction, __FUNCTION__));
 
 	// Change Podium name
 	if (outfit.lookType != 0 || outfit.lookMount != 0) {
@@ -4030,7 +4030,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 	auto unWrapAttribute = item->getCustomAttribute("unWrapId");
 	uint16_t unWrapId = 0;
 	if (unWrapAttribute != nullptr) {
-		unWrapId = static_cast<uint16_t>(unWrapAttribute->getInteger());
+		unWrapId = safe_convert<uint16_t>(unWrapAttribute->getInteger(), __FUNCTION__);
 	}
 
 	// Prevent to wrap a filled bath tube
@@ -4060,7 +4060,7 @@ std::shared_ptr<Item> Game::wrapItem(std::shared_ptr<Item> item, std::shared_ptr
 	uint16_t oldItemID = item->getID();
 	auto itemName = item->getName();
 	std::shared_ptr<Item> newItem = transformItem(item, ITEM_DECORATION_KIT);
-	newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
+	newItem->setCustomAttribute("unWrapId", safe_convert<int64_t>(oldItemID, __FUNCTION__));
 	newItem->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + itemName + ">.");
 	if (hiddenCharges > 0) {
 		newItem->setAttribute(DATE, hiddenCharges);
@@ -4351,7 +4351,7 @@ void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_
 	}
 
 	if (container->isStoreInbox()) {
-		auto enumName = magic_enum::enum_name(static_cast<ContainerCategory_t>(containerCategory)).data();
+		auto enumName = magic_enum::enum_name(safe_convert<ContainerCategory_t>(containerCategory, __FUNCTION__)).data();
 		container->setAttribute(ItemAttribute_t::STORE_INBOX_CATEGORY, enumName);
 		g_logger().debug("Setting new container with store inbox category name {}", enumName);
 	}
@@ -5225,7 +5225,7 @@ void Game::playerOpenLootContainer(uint32_t playerId, ObjectCategory_t category)
 		return;
 	}
 
-	player->sendContainer(static_cast<uint8_t>(container->getID()), container, container->hasParent(), 0);
+	player->sendContainer(safe_convert<uint8_t>(container->getID(), __FUNCTION__), container, container->hasParent(), 0);
 }
 
 void Game::playerSetQuickLootFallback(uint32_t playerId, bool fallback) {
@@ -5966,7 +5966,7 @@ void Game::changeSpeed(std::shared_ptr<Creature> creature, int32_t varSpeedDelta
 }
 
 void Game::setCreatureSpeed(std::shared_ptr<Creature> creature, int32_t speed) {
-	creature->setBaseSpeed(static_cast<uint16_t>(speed));
+	creature->setBaseSpeed(safe_convert<uint16_t>(speed, __FUNCTION__));
 
 	// Send creature speed to client
 	for (const auto &spectator : Spectators().find<Player>(creature->getPosition())) {
@@ -6168,7 +6168,7 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 				int32_t distanceX = Position::getDistanceX(target->getPosition(), attacker->getPosition());
 				int32_t distanceY = Position::getDistanceY(target->getPosition(), attacker->getPosition());
 				if (target->getMonster() || damage.primary.type != COMBAT_PHYSICALDAMAGE || primaryReflectPercent > 0 || std::max(distanceX, distanceY) < 2) {
-					damageReflected.primary.value = std::ceil(damage.primary.value * primaryReflectPercent / 100.) + std::max(-static_cast<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01)), std::max(damage.primary.value, -(static_cast<int32_t>(primaryReflectFlat))));
+					damageReflected.primary.value = std::ceil(damage.primary.value * primaryReflectPercent / 100.) + std::max(-safe_convert<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01), __FUNCTION__), std::max(damage.primary.value, -(safe_convert<int32_t>(primaryReflectFlat, __FUNCTION__))));
 					if (targetPlayer) {
 						damageReflected.primary.type = COMBAT_NEUTRALDAMAGE;
 					} else {
@@ -6221,7 +6221,7 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 			if (secondaryReflectPercent > 0 || secondaryReflectFlat > 0) {
 				if (!canReflect) {
 					damageReflected.primary.type = damage.secondary.type;
-					damageReflected.primary.value = std::ceil(damage.secondary.value * secondaryReflectPercent / 100.) + std::max(-static_cast<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01)), std::max(damage.secondary.value, -(static_cast<int32_t>(secondaryReflectFlat))));
+					damageReflected.primary.value = std::ceil(damage.secondary.value * secondaryReflectPercent / 100.) + std::max(-safe_convert<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01), __FUNCTION__), std::max(damage.secondary.value, -(safe_convert<int32_t>(secondaryReflectFlat, __FUNCTION__))));
 					if (!damageReflected.exString.empty()) {
 						damageReflected.exString += ", ";
 					}
@@ -6232,7 +6232,7 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 					canReflect = true;
 				} else {
 					damageReflected.secondary.type = damage.secondary.type;
-					damageReflected.primary.value = std::ceil(damage.secondary.value * secondaryReflectPercent / 100.) + std::max(-static_cast<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01)), std::max(damage.secondary.value, -(static_cast<int32_t>(secondaryReflectFlat))));
+					damageReflected.primary.value = std::ceil(damage.secondary.value * secondaryReflectPercent / 100.) + std::max(-safe_convert<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01), __FUNCTION__), std::max(damage.secondary.value, -(safe_convert<int32_t>(secondaryReflectFlat, __FUNCTION__))));
 				}
 			}
 		}
@@ -7216,7 +7216,7 @@ void Game::applyLifeLeech(
 
 int32_t Game::calculateLeechAmount(const int32_t &realDamage, const uint16_t &skillAmount, int targetsAffected) const {
 	auto intermediateResult = realDamage * (skillAmount / 10000.0) * (0.1 * targetsAffected + 0.9) / targetsAffected;
-	return std::clamp<int32_t>(static_cast<int32_t>(std::lround(intermediateResult)), 0, realDamage);
+	return std::clamp<int32_t>(safe_convert<int32_t>(std::lround(intermediateResult), __FUNCTION__), 0, realDamage);
 }
 
 bool Game::combatChangeMana(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, CombatDamage &damage) {
@@ -7424,7 +7424,7 @@ void Game::addCreatureHealth(std::shared_ptr<Creature> target) {
 }
 
 void Game::addCreatureHealth(const CreatureVector &spectators, std::shared_ptr<Creature> target) {
-	uint8_t healthPercent = std::ceil((static_cast<double>(target->getHealth()) / std::max<int32_t>(target->getMaxHealth(), 1)) * 100);
+	uint8_t healthPercent = std::ceil((safe_convert<double>(target->getHealth(), __FUNCTION__) / std::max<int32_t>(target->getMaxHealth(), 1)) * 100);
 	if (const auto &targetPlayer = target->getPlayer()) {
 		if (const auto &party = targetPlayer->getParty()) {
 			party->updatePlayerHealth(targetPlayer, target, healthPercent);
@@ -7445,7 +7445,7 @@ void Game::addCreatureHealth(const CreatureVector &spectators, std::shared_ptr<C
 
 void Game::addPlayerMana(std::shared_ptr<Player> target) {
 	if (const auto &party = target->getParty()) {
-		uint8_t manaPercent = std::ceil((static_cast<double>(target->getMana()) / std::max<int32_t>(target->getMaxMana(), 1)) * 100);
+		uint8_t manaPercent = std::ceil((safe_convert<double>(target->getMana(), __FUNCTION__) / std::max<int32_t>(target->getMaxMana(), 1)) * 100);
 		party->updatePlayerMana(target, manaPercent);
 	}
 }
@@ -7935,7 +7935,7 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 			break;
 		case CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS: {
 			std::ostringstream query;
-			uint32_t offset = static_cast<uint32_t>(page - 1) * entriesPerPage;
+			uint32_t offset = safe_convert<uint32_t>(page - 1, __FUNCTION__) * entriesPerPage;
 			query << "SELECT `time`, `level`, `killed_by`, `mostdamage_by`, (select count(*) FROM `player_deaths` WHERE `player_id` = " << playerGUID << ") as `entries` FROM `player_deaths` WHERE `player_id` = " << playerGUID << " ORDER BY `time` DESC LIMIT " << offset << ", " << entriesPerPage;
 
 			uint32_t playerID = player->getID();
@@ -7989,7 +7989,7 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 					cause << '.';
 					entries.emplace_back(std::move(cause.str()), result->getNumber<uint32_t>("time"));
 				} while (result->next());
-				player->sendCyclopediaCharacterRecentDeaths(page, static_cast<uint16_t>(pages), entries);
+				player->sendCyclopediaCharacterRecentDeaths(page, safe_convert<uint16_t>(pages, __FUNCTION__), entries);
 			};
 			g_databaseTasks().store(query.str(), callback);
 			player->addAsyncOngoingTask(PlayerAsyncTask_RecentDeaths);
@@ -8000,7 +8000,7 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 			Database &db = Database::getInstance();
 			const std::string &escapedName = db.escapeString(player->getName());
 			std::ostringstream query;
-			uint32_t offset = static_cast<uint32_t>(page - 1) * entriesPerPage;
+			uint32_t offset = safe_convert<uint32_t>(page - 1, __FUNCTION__) * entriesPerPage;
 			query << "SELECT `d`.`time`, `d`.`killed_by`, `d`.`mostdamage_by`, `d`.`unjustified`, `d`.`mostdamage_unjustified`, `p`.`name`, (select count(*) FROM `player_deaths` WHERE ((`killed_by` = " << escapedName << " AND `is_player` = 1) OR (`mostdamage_by` = " << escapedName << " AND `mostdamage_is_player` = 1))) as `entries` FROM `player_deaths` AS `d` INNER JOIN `players` AS `p` ON `d`.`player_id` = `p`.`id` WHERE ((`d`.`killed_by` = " << escapedName << " AND `d`.`is_player` = 1) OR (`d`.`mostdamage_by` = " << escapedName << " AND `d`.`mostdamage_is_player` = 1)) ORDER BY `time` DESC LIMIT " << offset << ", " << entriesPerPage;
 
 			uint32_t playerID = player->getID();
@@ -8042,7 +8042,7 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 					description << "Killed " << name << '.';
 					entries.emplace_back(std::move(description.str()), result->getNumber<uint32_t>("time"), status);
 				} while (result->next());
-				player->sendCyclopediaCharacterRecentPvPKills(page, static_cast<uint16_t>(pages), entries);
+				player->sendCyclopediaCharacterRecentPvPKills(page, safe_convert<uint16_t>(pages, __FUNCTION__), entries);
 			};
 			g_databaseTasks().store(query.str(), callback);
 			player->addAsyncOngoingTask(PlayerAsyncTask_RecentPvPKills);
@@ -8077,13 +8077,13 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 
 std::string Game::generateHighscoreQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation) {
 	std::ostringstream query;
-	uint32_t startPage = (static_cast<uint32_t>(page - 1) * static_cast<uint32_t>(entriesPerPage));
-	uint32_t endPage = startPage + static_cast<uint32_t>(entriesPerPage);
+	uint32_t startPage = (safe_convert<uint32_t>(page - 1, __FUNCTION__) * safe_convert<uint32_t>(entriesPerPage, __FUNCTION__));
+	uint32_t endPage = startPage + safe_convert<uint32_t>(entriesPerPage, __FUNCTION__);
 
 	query << "SELECT *, @row AS `entries`, " << page << " AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn` FROM (SELECT `id`, `name`, `level`, `vocation`, `"
 		  << categoryName << "` AS `points`, @curRank := IF(@prevRank = `" << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName
 		  << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0) `r` WHERE `group_id` < "
-		  << static_cast<int>(account::GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
+		  << safe_convert<int>(account::GROUP_TYPE_GAMEMASTER, __FUNCTION__) << " ORDER BY `" << categoryName << "` DESC) `t`";
 
 	if (vocation != 0xFFFFFFFF) {
 		query << generateVocationConditionHighscore(vocation);
@@ -8100,7 +8100,7 @@ std::string Game::generateHighscoreQueryForOurRank(const std::string &categoryNa
 	query << "SELECT *, @row AS `entries`, (@ourRow DIV " << entriesStr << ") + 1 AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn`, @ourRow := IF(`id` = "
 		  << playerGUID << ", @row - 1, @ourRow) AS `rw` FROM (SELECT `id`, `name`, `level`, `vocation`, `" << categoryName << "` AS `points`, @curRank := IF(@prevRank = `"
 		  << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0, @ourRow := 0) `r` WHERE `group_id` < "
-		  << static_cast<int>(account::GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
+		  << safe_convert<int>(account::GROUP_TYPE_GAMEMASTER, __FUNCTION__) << " ORDER BY `" << categoryName << "` DESC) `t`";
 
 	if (vocation != 0xFFFFFFFF) {
 		query << generateVocationConditionHighscore(vocation);
@@ -8149,7 +8149,7 @@ void Game::processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8
 	pages /= entriesPerPage;
 
 	std::ostringstream cacheKeyStream;
-	cacheKeyStream << "Highscore_" << static_cast<int>(category) << "_" << static_cast<int>(vocation) << "_" << static_cast<int>(entriesPerPage) << "_" << page;
+	cacheKeyStream << "Highscore_" << safe_convert<int>(category, __FUNCTION__) << "_" << safe_convert<int>(vocation, __FUNCTION__) << "_" << safe_convert<int>(entriesPerPage, __FUNCTION__) << "_" << page;
 	std::string cacheKey = cacheKeyStream.str();
 
 	auto it = highscoreCache.find(cacheKey);
@@ -8159,8 +8159,8 @@ void Game::processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8
 		auto cachedTime = it->second.timestamp;
 		auto durationSinceEpoch = cachedTime.time_since_epoch();
 		auto secondsSinceEpoch = std::chrono::duration_cast<std::chrono::seconds>(durationSinceEpoch).count();
-		auto updateTimer = static_cast<uint32_t>(secondsSinceEpoch);
-		player->sendHighscores(cacheEntry.characters, category, vocation, cacheEntry.page, static_cast<uint16_t>(cacheEntry.entriesPerPage), updateTimer);
+		auto updateTimer = safe_convert<uint32_t>(secondsSinceEpoch, __FUNCTION__);
+		player->sendHighscores(cacheEntry.characters, category, vocation, cacheEntry.page, safe_convert<uint16_t>(cacheEntry.entriesPerPage, __FUNCTION__), updateTimer);
 	} else {
 		std::vector<HighscoreCharacter> characters;
 		characters.reserve(result->countResults());
@@ -8177,7 +8177,7 @@ void Game::processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8
 			} while (result->next());
 		}
 
-		player->sendHighscores(characters, category, vocation, page, static_cast<uint16_t>(pages), getTimeNow());
+		player->sendHighscores(characters, category, vocation, page, safe_convert<uint16_t>(pages, __FUNCTION__), getTimeNow());
 		highscoreCache[cacheKey] = { characters, page, pages, now };
 	}
 }
@@ -8189,7 +8189,7 @@ void Game::cacheQueryHighscore(const std::string &key, const std::string &query,
 
 std::string Game::generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation) {
 	std::ostringstream cacheKeyStream;
-	cacheKeyStream << "Entries_" << categoryName << "_" << page << "_" << static_cast<int>(entriesPerPage) << "_" << vocation;
+	cacheKeyStream << "Entries_" << categoryName << "_" << page << "_" << safe_convert<int>(entriesPerPage, __FUNCTION__) << "_" << vocation;
 	std::string cacheKey = cacheKeyStream.str();
 
 	if (queryCache.find(cacheKey) != queryCache.end()) {
@@ -8207,7 +8207,7 @@ std::string Game::generateHighscoreOrGetCachedQueryForEntries(const std::string 
 
 std::string Game::generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation) {
 	std::ostringstream cacheKeyStream;
-	cacheKeyStream << "OurRank_" << categoryName << "_" << static_cast<int>(entriesPerPage) << "_" << playerGUID << "_" << vocation;
+	cacheKeyStream << "OurRank_" << categoryName << "_" << safe_convert<int>(entriesPerPage, __FUNCTION__) << "_" << playerGUID << "_" << vocation;
 	std::string cacheKey = cacheKeyStream.str();
 
 	if (queryCache.find(cacheKey) != queryCache.end()) {
@@ -8318,7 +8318,7 @@ void Game::playerPreyAction(uint32_t playerId, uint8_t slot, uint8_t action, uin
 		return;
 	}
 
-	g_ioprey().parsePreyAction(player, static_cast<PreySlot_t>(slot), static_cast<PreyAction_t>(action), static_cast<PreyOption_t>(option), index, raceId);
+	g_ioprey().parsePreyAction(player, safe_convert<PreySlot_t>(slot, __FUNCTION__), safe_convert<PreyAction_t>(action, __FUNCTION__), safe_convert<PreyOption_t>(option, __FUNCTION__), index, raceId);
 }
 
 void Game::playerTaskHuntingAction(uint32_t playerId, uint8_t slot, uint8_t action, bool upgrade, uint16_t raceId) {
@@ -8327,7 +8327,7 @@ void Game::playerTaskHuntingAction(uint32_t playerId, uint8_t slot, uint8_t acti
 		return;
 	}
 
-	g_ioprey().parseTaskHuntingAction(player, static_cast<PreySlot_t>(slot), static_cast<PreyTaskAction_t>(action), upgrade, raceId);
+	g_ioprey().parseTaskHuntingAction(player, safe_convert<PreySlot_t>(slot, __FUNCTION__), safe_convert<PreyTaskAction_t>(action, __FUNCTION__), upgrade, raceId);
 }
 
 void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
@@ -8590,7 +8590,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			}
 
 			// Do not register a transaction for coins creating an offer
-			player->getAccount()->removeCoins(account::CoinType::TRANSFERABLE, static_cast<uint32_t>(amount), "");
+			player->getAccount()->removeCoins(account::CoinType::TRANSFERABLE, safe_convert<uint32_t>(amount, __FUNCTION__), "");
 		} else {
 			if (!removeOfferItems(player, depotLocker, it, amount, tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -8627,7 +8627,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		return;
 	}
 
-	IOMarket::createOffer(player->getGUID(), static_cast<MarketAction_t>(type), it.id, amount, price, tier, anonymous);
+	IOMarket::createOffer(player->getGUID(), safe_convert<MarketAction_t>(type, __FUNCTION__), it.id, amount, price, tier, anonymous);
 
 	const MarketOfferList &buyOffers = IOMarket::getActiveOffers(MARKETACTION_BUY, it.id, tier);
 	const MarketOfferList &sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id, tier);
@@ -9039,7 +9039,7 @@ void Game::playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, ui
 			if (choice == SKILL_SWORD || choice == SKILL_AXE || choice == SKILL_CLUB || choice == SKILL_DISTANCE || choice == SKILL_MAGLEVEL) {
 				auto bedItem = player->getBedItem();
 				if (bedItem && bedItem->sleep(player)) {
-					player->setOfflineTrainingSkill(static_cast<int8_t>(choice));
+					player->setOfflineTrainingSkill(safe_convert<int8_t>(choice, __FUNCTION__));
 					return;
 				}
 			}
@@ -9070,9 +9070,9 @@ void Game::playerForgeFuseItems(uint32_t playerId, uint16_t itemId, uint8_t tier
 	player->updateUIExhausted();
 
 	uint8_t coreCount = (usedCore ? 1 : 0) + (reduceTierLoss ? 1 : 0);
-	auto baseSuccess = static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE, __FUNCTION__));
-	auto bonusSuccess = static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE, __FUNCTION__) + g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE, __FUNCTION__));
-	auto roll = static_cast<uint8_t>(uniform_random(1, 100)) <= (usedCore ? bonusSuccess : baseSuccess);
+	auto baseSuccess = safe_convert<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE, __FUNCTION__), __FUNCTION__);
+	auto bonusSuccess = safe_convert<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE, __FUNCTION__) + g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE, __FUNCTION__), __FUNCTION__);
+	auto roll = safe_convert<uint8_t>(uniform_random(1, 100), __FUNCTION__) <= (usedCore ? bonusSuccess : baseSuccess);
 	bool success = roll ? true : false;
 
 	auto chance = uniform_random(0, 10000);
@@ -9193,12 +9193,12 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 	}
 
 	if (monsterRaceId != 0) {
-		item->setCustomAttribute("PodiumMonsterRaceId", static_cast<int64_t>(monsterRaceId));
+		item->setCustomAttribute("PodiumMonsterRaceId", safe_convert<int64_t>(monsterRaceId, __FUNCTION__));
 	} else if (auto podiumMonsterRace = item->getCustomAttribute("PodiumMonsterRaceId")) {
-		monsterRaceId = static_cast<uint32_t>(podiumMonsterRace->getInteger());
+		monsterRaceId = safe_convert<uint32_t>(podiumMonsterRace->getInteger(), __FUNCTION__);
 	}
 
-	const auto mType = g_monsters().getMonsterTypeByRaceId(static_cast<uint16_t>(monsterRaceId), itemId == ITEM_PODIUM_OF_VIGOUR);
+	const auto mType = g_monsters().getMonsterTypeByRaceId(safe_convert<uint16_t>(monsterRaceId, __FUNCTION__), itemId == ITEM_PODIUM_OF_VIGOUR);
 	if (!mType) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		g_logger().debug("[{}] player {} is trying to add invalid monster to podium {}", __FUNCTION__, player->getName(), item->getName());
@@ -9214,20 +9214,20 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 			monsterOutfit.lookTypeEx = 39003;
 			changeTentuglyName = true;
 		}
-		item->setCustomAttribute("LookTypeEx", static_cast<int64_t>(monsterOutfit.lookTypeEx));
-		item->setCustomAttribute("LookType", static_cast<int64_t>(monsterOutfit.lookType));
-		item->setCustomAttribute("LookHead", static_cast<int64_t>(monsterOutfit.lookHead));
-		item->setCustomAttribute("LookBody", static_cast<int64_t>(monsterOutfit.lookBody));
-		item->setCustomAttribute("LookLegs", static_cast<int64_t>(monsterOutfit.lookLegs));
-		item->setCustomAttribute("LookFeet", static_cast<int64_t>(monsterOutfit.lookFeet));
-		item->setCustomAttribute("LookAddons", static_cast<int64_t>(monsterOutfit.lookAddons));
+		item->setCustomAttribute("LookTypeEx", safe_convert<int64_t>(monsterOutfit.lookTypeEx, __FUNCTION__));
+		item->setCustomAttribute("LookType", safe_convert<int64_t>(monsterOutfit.lookType, __FUNCTION__));
+		item->setCustomAttribute("LookHead", safe_convert<int64_t>(monsterOutfit.lookHead, __FUNCTION__));
+		item->setCustomAttribute("LookBody", safe_convert<int64_t>(monsterOutfit.lookBody, __FUNCTION__));
+		item->setCustomAttribute("LookLegs", safe_convert<int64_t>(monsterOutfit.lookLegs, __FUNCTION__));
+		item->setCustomAttribute("LookFeet", safe_convert<int64_t>(monsterOutfit.lookFeet, __FUNCTION__));
+		item->setCustomAttribute("LookAddons", safe_convert<int64_t>(monsterOutfit.lookAddons, __FUNCTION__));
 	} else {
 		item->removeCustomAttribute("LookType");
 	}
 
-	item->setCustomAttribute("PodiumVisible", static_cast<int64_t>(podiumVisible));
-	item->setCustomAttribute("LookDirection", static_cast<int64_t>(direction));
-	item->setCustomAttribute("MonsterVisible", static_cast<int64_t>(monsterVisible));
+	item->setCustomAttribute("PodiumVisible", safe_convert<int64_t>(podiumVisible, __FUNCTION__));
+	item->setCustomAttribute("LookDirection", safe_convert<int64_t>(direction, __FUNCTION__));
+	item->setCustomAttribute("MonsterVisible", safe_convert<int64_t>(monsterVisible, __FUNCTION__));
 
 	// Change Podium name
 	if (monsterVisible) {
@@ -9291,15 +9291,15 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 	auto podiumVisible = item->getCustomAttribute("PodiumVisible");
 	auto monsterVisible = item->getCustomAttribute("MonsterVisible");
 
-	auto podiumRaceId = podiumRaceIdAttribute ? static_cast<uint16_t>(podiumRaceIdAttribute->getInteger()) : 0;
+	auto podiumRaceId = podiumRaceIdAttribute ? safe_convert<uint16_t>(podiumRaceIdAttribute->getInteger(), __FUNCTION__) : 0;
 	uint8_t directionValue;
 	if (lookDirection) {
-		directionValue = static_cast<uint8_t>(lookDirection->getInteger() >= 3 ? 0 : lookDirection->getInteger() + 1);
+		directionValue = safe_convert<uint8_t>(lookDirection->getInteger() >= 3 ? 0 : lookDirection->getInteger() + 1, __FUNCTION__);
 	} else {
 		directionValue = 2;
 	}
-	auto isPodiumVisible = podiumVisible ? static_cast<bool>(podiumVisible->getInteger()) : false;
-	bool isMonsterVisible = monsterVisible ? static_cast<bool>(monsterVisible->getInteger()) : false;
+	auto isPodiumVisible = podiumVisible ? safe_convert<bool>(podiumVisible->getInteger(), __FUNCTION__) : false;
+	bool isMonsterVisible = monsterVisible ? safe_convert<bool>(monsterVisible->getInteger(), __FUNCTION__) : false;
 
 	// Rotate monster podium (bestiary or bosstiary) to the new direction
 	bool isPodiumOfRenown = itemId == ITEM_PODIUM_OF_RENOWN1 || itemId == ITEM_PODIUM_OF_RENOWN2;
@@ -9349,7 +9349,7 @@ void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpe
 
 	std::map<Slots_t, std::shared_ptr<Item>> itemsWithImbueSlotMap;
 	for (uint8_t inventorySlot = CONST_SLOT_FIRST; inventorySlot <= CONST_SLOT_LAST; ++inventorySlot) {
-		auto item = player->getInventoryItem(static_cast<Slots_t>(inventorySlot));
+		auto item = player->getInventoryItem(safe_convert<Slots_t>(inventorySlot, __FUNCTION__));
 		if (!item) {
 			continue;
 		}
@@ -9362,7 +9362,7 @@ void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpe
 			}
 		}
 
-		itemsWithImbueSlotMap[static_cast<Slots_t>(inventorySlot)] = item;
+		itemsWithImbueSlotMap[safe_convert<Slots_t>(inventorySlot, __FUNCTION__)] = item;
 	}
 
 	player->sendInventoryImbuements(itemsWithImbueSlotMap);
@@ -9547,7 +9547,7 @@ void Game::removeUniqueItem(uint16_t uniqueId) {
 
 bool Game::hasEffect(uint16_t effectId) {
 	for (uint16_t i = CONST_ME_NONE; i <= CONST_ME_LAST; i++) {
-		MagicEffectClasses effect = static_cast<MagicEffectClasses>(i);
+		MagicEffectClasses effect = safe_convert<MagicEffectClasses>(i, __FUNCTION__);
 		if (effect == effectId) {
 			return true;
 		}
@@ -9557,7 +9557,7 @@ bool Game::hasEffect(uint16_t effectId) {
 
 bool Game::hasDistanceEffect(uint16_t effectId) {
 	for (uint16_t i = CONST_ANI_NONE; i <= CONST_ANI_LAST; i++) {
-		ShootType_t effect = static_cast<ShootType_t>(i);
+		ShootType_t effect = safe_convert<ShootType_t>(i, __FUNCTION__);
 		if (effect == effectId) {
 			return true;
 		}
@@ -9623,7 +9623,7 @@ uint32_t Game::makeInfluencedMonster() {
 
 		tries++;
 
-		auto random = static_cast<uint32_t>(normal_random(0, static_cast<int32_t>(forgeableMonsters.size() - 1)));
+		auto random = safe_convert<uint32_t>(normal_random(0, safe_convert<int32_t>(forgeableMonsters.size() - 1, __FUNCTION__)), __FUNCTION__);
 		auto monsterId = forgeableMonsters.at(random);
 		monster = getMonsterByID(monsterId);
 		if (monster == nullptr) {
@@ -9700,7 +9700,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 
 		tries++;
 
-		auto random = static_cast<uint32_t>(uniform_random(0, static_cast<int32_t>(forgeableMonsters.size() - 1)));
+		auto random = safe_convert<uint32_t>(uniform_random(0, safe_convert<int32_t>(forgeableMonsters.size() - 1, __FUNCTION__)), __FUNCTION__);
 		uint32_t fiendishMonsterId = forgeableMonsterId;
 		if (fiendishMonsterId == 0) {
 			fiendishMonsterId = forgeableMonsters.at(random);
@@ -9745,7 +9745,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 		g_logger().warn("Fiendish interval type is wrong, setting default time to 1h");
 		finalTime = 3600 * 1000;
 	} else {
-		finalTime = static_cast<uint32_t>(saveIntervalConfigTime * intervalTime);
+		finalTime = safe_convert<uint32_t>(saveIntervalConfigTime * intervalTime, __FUNCTION__);
 	}
 
 	if (monster && monster->canBeForgeMonster()) {
@@ -9893,7 +9893,7 @@ void Game::checkForgeEventId(uint32_t monsterId) {
 
 bool Game::addInfluencedMonster(std::shared_ptr<Monster> monster) {
 	if (monster && monster->canBeForgeMonster()) {
-		if (auto maxInfluencedMonsters = static_cast<uint32_t>(g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT, __FUNCTION__));
+		if (auto maxInfluencedMonsters = safe_convert<uint32_t>(g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT, __FUNCTION__), __FUNCTION__);
 			// If condition
 			(influencedMonsters.size() + 1) > maxInfluencedMonsters) {
 			return false;
@@ -9915,7 +9915,7 @@ bool Game::addItemStoreInbox(std::shared_ptr<Player> player, uint32_t itemId) {
 	const ItemType &itemType = Item::items[itemId];
 	std::string description = fmt::format("Unwrap it in your own house to create a <{}>.", itemType.name);
 	decoKit->setAttribute(ItemAttribute_t::DESCRIPTION, description);
-	decoKit->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
+	decoKit->setCustomAttribute("unWrapId", safe_convert<int64_t>(itemId, __FUNCTION__));
 
 	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
 	if (!thing) {

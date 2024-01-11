@@ -92,7 +92,7 @@ int VocationFunctions::luaVocationGetRequiredSkillTries(lua_State* L) {
 	if (vocation) {
 		skills_t skillType = getNumber<skills_t>(L, 2);
 		uint16_t skillLevel = getNumber<uint16_t>(L, 3);
-		lua_pushnumber(L, vocation->getReqSkillTries(skillType, skillLevel));
+		lua_pushnumber(L, safe_convert<lua_Number>(vocation->getReqSkillTries(skillType, skillLevel), __FUNCTION__));
 	} else {
 		lua_pushnil(L);
 	}
@@ -104,7 +104,7 @@ int VocationFunctions::luaVocationGetRequiredManaSpent(lua_State* L) {
 	Vocation* vocation = getUserdata<Vocation>(L, 1);
 	if (vocation) {
 		uint32_t magicLevel = getNumber<uint32_t>(L, 2);
-		lua_pushnumber(L, vocation->getReqMana(magicLevel));
+		lua_pushnumber(L, safe_convert<lua_Number>(vocation->getReqMana(magicLevel), __FUNCTION__));
 	} else {
 		lua_pushnil(L);
 	}

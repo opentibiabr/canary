@@ -520,12 +520,12 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 
 	if (it.abilities) {
 		if (it.abilities->invisible) {
-			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_INVISIBLE, -1, 0);
+			std::shared_ptr<Condition> condition = Condition::createCondition(safe_convert<ConditionId_t>(slot, __FUNCTION__), CONDITION_INVISIBLE, -1, 0);
 			player->addCondition(condition);
 		}
 
 		if (it.abilities->manaShield) {
-			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_MANASHIELD, -1, 0);
+			std::shared_ptr<Condition> condition = Condition::createCondition(safe_convert<ConditionId_t>(slot, __FUNCTION__), CONDITION_MANASHIELD, -1, 0);
 			player->addCondition(condition);
 		}
 
@@ -537,7 +537,7 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 		player->sendIcons();
 
 		if (it.abilities->regeneration) {
-			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_REGENERATION, -1, 0);
+			std::shared_ptr<Condition> condition = Condition::createCondition(safe_convert<ConditionId_t>(slot, __FUNCTION__), CONDITION_REGENERATION, -1, 0);
 
 			if (it.abilities->getHealthGain() != 0) {
 				condition->setParam(CONDITION_PARAM_HEALTHGAIN, it.abilities->getHealthGain());
@@ -561,17 +561,17 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 		// Skill and stats modifiers
 		for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
 			if (it.abilities->skills[i]) {
-				player->setVarSkill(static_cast<skills_t>(i), it.abilities->skills[i]);
+				player->setVarSkill(safe_convert<skills_t>(i, __FUNCTION__), it.abilities->skills[i]);
 			}
 		}
 
 		for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
 			if (it.abilities->stats[s]) {
-				player->setVarStats(static_cast<stats_t>(s), it.abilities->stats[s]);
+				player->setVarStats(safe_convert<stats_t>(s, __FUNCTION__), it.abilities->stats[s]);
 			}
 
 			if (it.abilities->statsPercent[s]) {
-				player->setVarStats(static_cast<stats_t>(s), static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
+				player->setVarStats(safe_convert<stats_t>(s, __FUNCTION__), safe_convert<int32_t>(player->getDefaultStats(safe_convert<stats_t>(s, __FUNCTION__)) * ((it.abilities->statsPercent[s] - 100) / 100.f), __FUNCTION__));
 			}
 		}
 	}
@@ -615,11 +615,11 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, std:
 
 	if (it.abilities) {
 		if (it.abilities->invisible) {
-			player->removeCondition(CONDITION_INVISIBLE, static_cast<ConditionId_t>(slot));
+			player->removeCondition(CONDITION_INVISIBLE, safe_convert<ConditionId_t>(slot, __FUNCTION__));
 		}
 
 		if (it.abilities->manaShield) {
-			player->removeCondition(CONDITION_MANASHIELD, static_cast<ConditionId_t>(slot));
+			player->removeCondition(CONDITION_MANASHIELD, safe_convert<ConditionId_t>(slot, __FUNCTION__));
 		}
 
 		if (it.abilities->speed != 0) {
@@ -630,23 +630,23 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, std:
 		player->sendIcons();
 
 		if (it.abilities->regeneration) {
-			player->removeCondition(CONDITION_REGENERATION, static_cast<ConditionId_t>(slot));
+			player->removeCondition(CONDITION_REGENERATION, safe_convert<ConditionId_t>(slot, __FUNCTION__));
 		}
 
 		// Skill and stats modifiers
 		for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
 			if (it.abilities->skills[i] != 0) {
-				player->setVarSkill(static_cast<skills_t>(i), -it.abilities->skills[i]);
+				player->setVarSkill(safe_convert<skills_t>(i, __FUNCTION__), -it.abilities->skills[i]);
 			}
 		}
 
 		for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
 			if (it.abilities->stats[s]) {
-				player->setVarStats(static_cast<stats_t>(s), -it.abilities->stats[s]);
+				player->setVarStats(safe_convert<stats_t>(s, __FUNCTION__), -it.abilities->stats[s]);
 			}
 
 			if (it.abilities->statsPercent[s]) {
-				player->setVarStats(static_cast<stats_t>(s), -static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
+				player->setVarStats(safe_convert<stats_t>(s, __FUNCTION__), -safe_convert<int32_t>(player->getDefaultStats(safe_convert<stats_t>(s, __FUNCTION__)) * ((it.abilities->statsPercent[s] - 100) / 100.f), __FUNCTION__));
 			}
 		}
 	}

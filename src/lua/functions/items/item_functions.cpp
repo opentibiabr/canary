@@ -175,7 +175,7 @@ int ItemFunctions::luaItemGetUniqueId(lua_State* L) {
 		if (uniqueId == 0) {
 			uniqueId = getScriptEnv()->addThing(item);
 		}
-		lua_pushnumber(L, static_cast<lua_Number>(uniqueId));
+		lua_pushnumber(L, safe_convert<lua_Number>(uniqueId, __FUNCTION__));
 	} else {
 		lua_pushnil(L);
 	}
@@ -233,7 +233,7 @@ int ItemFunctions::luaItemGetFluidType(lua_State* L) {
 	// item:getFluidType()
 	std::shared_ptr<Item> item = getUserdataShared<Item>(L, 1);
 	if (item) {
-		lua_pushnumber(L, static_cast<lua_Number>(item->getAttribute<uint16_t>(ItemAttribute_t::FLUIDTYPE)));
+		lua_pushnumber(L, safe_convert<lua_Number>(item->getAttribute<uint16_t>(ItemAttribute_t::FLUIDTYPE), __FUNCTION__));
 	} else {
 		lua_pushnil(L);
 	}
@@ -364,11 +364,11 @@ int ItemFunctions::luaItemGetAttribute(lua_State* L) {
 
 	if (item->isAttributeInteger(attribute)) {
 		if (attribute == ItemAttribute_t::DURATION) {
-			lua_pushnumber(L, static_cast<lua_Number>(item->getDuration()));
+			lua_pushnumber(L, safe_convert<lua_Number>(item->getDuration(), __FUNCTION__));
 			return 1;
 		}
 
-		lua_pushnumber(L, static_cast<lua_Number>(item->getAttribute<int64_t>(attribute)));
+		lua_pushnumber(L, safe_convert<lua_Number>(item->getAttribute<int64_t>(attribute), __FUNCTION__));
 	} else if (item->isAttributeString(attribute)) {
 		pushString(L, item->getAttribute<std::string>(attribute));
 	} else {
@@ -787,7 +787,7 @@ int ItemFunctions::luaItemGetImbuement(lua_State* L) {
 		lua_createtable(L, 0, 3);
 		setField(L, "id", imbuement->getID());
 		setField(L, "name", imbuement->getName());
-		setField(L, "duration", static_cast<lua_Number>(imbuementInfo.duration));
+		setField(L, "duration", safe_convert<lua_Number>(imbuementInfo.duration, __FUNCTION__));
 	}
 	return 1;
 }

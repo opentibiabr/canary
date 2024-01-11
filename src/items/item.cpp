@@ -55,7 +55,7 @@ std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0
 		} else if (it.isBed()) {
 			newItem = std::make_shared<BedItem>(type);
 		} else {
-			auto itemMap = ItemTransformationMap.find(static_cast<ItemID_t>(it.id));
+			auto itemMap = ItemTransformationMap.find(safe_convert<ItemID_t>(it.id, __FUNCTION__));
 			if (itemMap != ItemTransformationMap.end()) {
 				newItem = std::make_shared<Item>(itemMap->second, count);
 			} else {
@@ -81,7 +81,7 @@ bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo* imbuementInfo) const {
 }
 
 void Item::setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
-	auto valueDuration = (static_cast<int64_t>(duration > 0 ? (duration << 8) | imbuementId : 0));
+	auto valueDuration = (safe_convert<int64_t>(duration > 0 ? (duration << 8) | imbuementId : 0, __FUNCTION__));
 	setCustomAttribute(std::to_string(ITEM_IMBUEMENT_SLOT + slot), valueDuration);
 }
 
@@ -99,7 +99,7 @@ void Item::addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
 
 	// Get category imbuement for acess category id
 	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
-	if (!hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
+	if (!hasImbuementType(safe_convert<ImbuementTypes_t>(categoryImbuement->id, __FUNCTION__), imbuement->getBaseID())) {
 		return;
 	}
 
@@ -189,9 +189,9 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 		setAttribute(ItemAttribute_t::FLUIDTYPE, fluidType);
 	} else if (it.stackable) {
 		if (itemCount != 0) {
-			setItemCount(static_cast<uint8_t>(itemCount));
+			setItemCount(safe_convert<uint8_t>(itemCount, __FUNCTION__));
 		} else if (itemCharges != 0) {
-			setItemCount(static_cast<uint8_t>(it.charges));
+			setItemCount(safe_convert<uint8_t>(it.charges, __FUNCTION__));
 		}
 	} else if (itemCharges != 0) {
 		if (itemCount != 0) {
@@ -273,7 +273,7 @@ void Item::setDefaultSubtype() {
 	auto itemCharges = it.charges;
 	if (itemCharges != 0) {
 		if (it.stackable) {
-			setItemCount(static_cast<uint8_t>(itemCharges));
+			setItemCount(safe_convert<uint8_t>(itemCharges, __FUNCTION__));
 		} else {
 			setAttribute(ItemAttribute_t::CHARGES, it.charges);
 		}
@@ -363,7 +363,7 @@ uint16_t Item::getSubType() const {
 	} else if (it.charges != 0) {
 		return getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
 	}
-	return static_cast<uint16_t>(count);
+	return safe_convert<uint16_t>(count, __FUNCTION__);
 }
 
 std::shared_ptr<Player> Item::getHoldingPlayer() {
@@ -646,7 +646,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 				// Remove special attribute
 				removeAttribute(ItemAttribute_t::SPECIAL);
 				// Add custom attribute
-				setCustomAttribute("Hireling", static_cast<int64_t>(std::atoi(special.c_str())));
+				setCustomAttribute("Hireling", safe_convert<int64_t>(std::atoi(special.c_str()), __FUNCTION__));
 			}
 			break;
 		}
@@ -820,7 +820,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 bool Item::unserializeAttr(PropStream &propStream) {
 	uint8_t attr_type;
 	while (propStream.read<uint8_t>(attr_type) && attr_type != 0) {
-		Attr_ReadValue ret = readAttr(static_cast<AttrTypes_t>(attr_type), propStream);
+		Attr_ReadValue ret = readAttr(safe_convert<AttrTypes_t>(attr_type, __FUNCTION__), propStream);
 		if (ret == ATTR_READ_ERROR) {
 			return false;
 		} else if (ret == ATTR_READ_END) {
@@ -1078,7 +1078,7 @@ bool Item::canBeMoved() const {
 	if (hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		return false;
 	}
-	if (hasAttribute(ItemAttribute_t::ACTIONID) && immovableActionIds.contains(static_cast<int32_t>(getAttribute<uint16_t>(ItemAttribute_t::ACTIONID)))) {
+	if (hasAttribute(ItemAttribute_t::ACTIONID) && immovableActionIds.contains(safe_convert<int32_t>(getAttribute<uint16_t>(ItemAttribute_t::ACTIONID), __FUNCTION__))) {
 		return false;
 	}
 	return isMovable();
@@ -1134,7 +1134,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				if (separator) {
 					ss << ", ";
 				}
-				ss << "chance to hit +" << static_cast<int16_t>(hitChance) << "%";
+				ss << "chance to hit +" << safe_convert<int16_t>(hitChance, __FUNCTION__) << "%";
 				separator = true;
 			}
 			if (int32_t shootRange = item->getShootRange();
@@ -1142,7 +1142,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				if (separator) {
 					ss << ", ";
 				}
-				ss << static_cast<uint16_t>(shootRange) << " fields";
+				ss << safe_convert<uint16_t>(shootRange, __FUNCTION__) << " fields";
 			}
 			descriptions.emplace_back("Attack", ss.str());
 		} else if (!it.isRanged() && attack != 0) {
@@ -1545,7 +1545,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				if (separator) {
 					ss << ", ";
 				}
-				ss << "chance to hit +" << static_cast<int16_t>(hitChance) << "%";
+				ss << "chance to hit +" << safe_convert<int16_t>(hitChance, __FUNCTION__) << "%";
 				separator = true;
 			}
 			if (int32_t shootRange = it.shootRange;
@@ -1553,7 +1553,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				if (separator) {
 					ss << ", ";
 				}
-				ss << static_cast<uint16_t>(shootRange) << " fields";
+				ss << safe_convert<uint16_t>(shootRange, __FUNCTION__) << " fields";
 			}
 			descriptions.emplace_back("Attack", ss.str());
 		} else if (!it.isRanged() && attack != 0) {
@@ -2336,7 +2336,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 		if (it.weaponType == WEAPON_DISTANCE && it.ammoType != AMMO_NONE) {
 			bool begin = true;
 			begin = false;
-			s << " (Range: " << static_cast<uint16_t>(item ? item->getShootRange() : it.shootRange);
+			s << " (Range: " << safe_convert<uint16_t>(item ? item->getShootRange() : it.shootRange, __FUNCTION__);
 
 			int32_t attack;
 			int8_t hitChance;
@@ -2353,7 +2353,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 			}
 
 			if (hitChance != 0) {
-				s << ", Hit% " << std::showpos << static_cast<int16_t>(hitChance) << std::noshowpos;
+				s << ", Hit% " << std::showpos << safe_convert<int16_t>(hitChance, __FUNCTION__) << std::noshowpos;
 			}
 
 			if (it.abilities) {
@@ -3226,15 +3226,15 @@ bool Item::hasMarketAttributes() const {
 	}
 
 	for (const auto &attribute : getAttributeVector()) {
-		if (attribute.getAttributeType() == ItemAttribute_t::CHARGES && static_cast<uint16_t>(attribute.getInteger()) != items[id].charges) {
+		if (attribute.getAttributeType() == ItemAttribute_t::CHARGES && safe_convert<uint16_t>(attribute.getInteger(), __FUNCTION__) != items[id].charges) {
 			return false;
 		}
 
-		if (attribute.getAttributeType() == ItemAttribute_t::DURATION && static_cast<uint32_t>(attribute.getInteger()) != getDefaultDuration()) {
+		if (attribute.getAttributeType() == ItemAttribute_t::DURATION && safe_convert<uint32_t>(attribute.getInteger(), __FUNCTION__) != getDefaultDuration()) {
 			return false;
 		}
 
-		if (attribute.getAttributeType() == ItemAttribute_t::TIER && static_cast<uint8_t>(attribute.getInteger()) != getTier()) {
+		if (attribute.getAttributeType() == ItemAttribute_t::TIER && safe_convert<uint8_t>(attribute.getInteger(), __FUNCTION__) != getTier()) {
 			return false;
 		}
 	}

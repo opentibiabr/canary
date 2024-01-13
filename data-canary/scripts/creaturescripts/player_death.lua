@@ -1,7 +1,7 @@
-local playerDeath = CreatureEvent("PlayerDeath")
-
 local deathListEnabled = true
 local maxDeathRecords = 5
+
+local playerDeath = CreatureEvent("PlayerDeath")
 
 function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustified, mostDamageUnjustified)
 	if not deathListEnabled then
@@ -20,7 +20,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 				byPlayer = 1
 			end
 		end
-		killerName = killer:getName()
+		killerName = killer:isMonster() and killer:getType():getNameDescription() or killer:getName()
 	else
 		killerName = "field item"
 	end
@@ -37,7 +37,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 				byPlayerMostDamage = 1
 			end
 		end
-		mostDamageName = mostDamageKiller:getName()
+		mostDamageName = mostDamageKiller:isMonster() and mostDamageKiller:getType():getNameDescription() or mostDamageKiller:getName()
 	else
 		mostDamageName = "field item"
 	end
@@ -64,16 +64,21 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 			.. (mostDamageUnjustified and 1 or 0)
 			.. ")"
 	)
+
+	-- Start Webhook Player Death
+	Webhook.sendMessage(":skull_crossbones: " .. player:getMarkdownLink() .. " has died. Killed at level _" .. player:getLevel() .. "_ by **" .. killerName .. "**.", announcementChannels["player-kills"])
+	-- End Webhook Player Death
+
 	local resultId = db.storeQuery("SELECT `player_id` FROM `player_deaths` WHERE `player_id` = " .. playerGuid)
 
 	local deathRecords = 0
 	local tmpResultId = resultId
-	while tmpResultId ~= false do
+	while tmpResultId do
 		tmpResultId = Result.next(resultId)
 		deathRecords = deathRecords + 1
 	end
 
-	if resultId ~= false then
+	if resultId then
 		Result.free(resultId)
 	end
 
@@ -90,14 +95,18 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 			killerGuild = killerGuild and killerGuild:getId() or 0
 			if killerGuild ~= 0 and targetGuild ~= killerGuild and isInWar(player:getId(), killer:getId()) then
 				local warId = false
-				resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND ((`guild1` = " .. killerGuild .. " AND `guild2` = " .. targetGuild .. ") OR (`guild1` = " .. targetGuild .. " AND `guild2` = " .. killerGuild .. "))")
-				if resultId ~= false then
+				resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND \z
+					((`guild1` = " .. killerGuild .. " AND `guild2` = " .. targetGuild .. ") OR \z
+					(`guild1` = " .. targetGuild .. " AND `guild2` = " .. killerGuild .. "))")
+				if resultId then
 					warId = Result.getNumber(resultId, "id")
 					Result.free(resultId)
 				end
 
-				if warId ~= false then
-					db.asyncQuery("INSERT INTO `guildwar_kills` (`killer`, `target`, `killerguild`, `targetguild`, `time`, `warid`) VALUES (" .. db.escapeString(killerName) .. ", " .. db.escapeString(player:getName()) .. ", " .. killerGuild .. ", " .. targetGuild .. ", " .. os.time() .. ", " .. warId .. ")")
+				if warId then
+					db.asyncQuery("INSERT INTO `guildwar_kills` (`killer`, `target`, `killerguild`, `targetguild`, `time`, `warid`) \z
+						VALUES (" .. db.escapeString(killerName) .. ", " .. db.escapeString(player:getName()) .. ", " .. killerGuild .. ", \z
+						" .. targetGuild .. ", " .. os.time() .. ", " .. warId .. ")")
 				end
 			end
 		end

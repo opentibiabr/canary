@@ -69,22 +69,24 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 	Webhook.sendMessage(":skull_crossbones: " .. player:getMarkdownLink() .. " has died. Killed at level _" .. player:getLevel() .. "_ by **" .. killerName .. "**.", announcementChannels["player-kills"])
 	-- End Webhook Player Death
 
-	local resultId = db.storeQuery("SELECT `player_id` FROM `player_deaths` WHERE `player_id` = " .. playerGuid)
+	if maxDeathRecords then
+		local resultId = db.storeQuery("SELECT `player_id` FROM `player_deaths` WHERE `player_id` = " .. playerGuid)
 
-	local deathRecords = 0
-	local tmpResultId = resultId
-	while tmpResultId do
-		tmpResultId = Result.next(resultId)
-		deathRecords = deathRecords + 1
-	end
+		local deathRecords = 0
+		local tmpResultId = resultId
+		while tmpResultId do
+			tmpResultId = Result.next(resultId)
+			deathRecords = deathRecords + 1
+		end
 
-	if resultId then
-		Result.free(resultId)
-	end
+		if resultId then
+			Result.free(resultId)
+		end
 
-	local limit = deathRecords - maxDeathRecords
-	if limit > 0 then
-		db.asyncQuery("DELETE FROM `player_deaths` WHERE `player_id` = " .. playerGuid .. " ORDER BY `time` LIMIT " .. limit)
+		local limit = deathRecords - maxDeathRecords
+		if limit > 0 then
+			db.asyncQuery("DELETE FROM `player_deaths` WHERE `player_id` = " .. playerGuid .. " ORDER BY `time` LIMIT " .. limit)
+		end
 	end
 
 	if byPlayer == 1 then
@@ -95,7 +97,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 			killerGuild = killerGuild and killerGuild:getId() or 0
 			if killerGuild ~= 0 and targetGuild ~= killerGuild and isInWar(player:getId(), killer:getId()) then
 				local warId = false
-				resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND \z
+				local resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND \z
 					((`guild1` = " .. killerGuild .. " AND `guild2` = " .. targetGuild .. ") OR \z
 					(`guild1` = " .. targetGuild .. " AND `guild2` = " .. killerGuild .. "))")
 				if resultId then

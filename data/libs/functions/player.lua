@@ -631,16 +631,17 @@ function Player:calculateLootFactor(monster)
 	}
 end
 
-function Player:setExhaustion(key, seconds)
-	return self:setStorageValue(key, os.time() + seconds)
+function Player:setExhaustion(scope, seconds)
+	return self:kv():scoped("exhaustion"):set(scope, os.time() + seconds)
 end
 
-function Player:getExhaustion(key)
-	return math.max(self:getStorageValue(key) - os.time(), 0)
+function Player:getExhaustion(scope)
+	local exhaustionKV = self:kv():scoped("exhaustion"):get(scope) or 0
+	return math.max(exhaustionKV - os.time(), 0)
 end
 
-function Player:hasExhaustion(key)
-	return self:getExhaustion(key) > 0 and true or false
+function Player:hasExhaustion(scope)
+	return self:getExhaustion(scope) > 0 and true or false
 end
 
 function Player:setFiendish()

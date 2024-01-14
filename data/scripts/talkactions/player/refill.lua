@@ -21,11 +21,11 @@ function refill.onSay(player, words, param)
 		local chargeableCount = player:getItemCount(v.noChargeID)
 		local silverTokensCount = player:getItemCount(silverTokenID)
 
-		if (chargeableCount >= 1 and silverTokensCount >= v.cost) then
+		if chargeableCount >= 1 and silverTokensCount >= v.cost then
 			player:removeItem(silverTokenID, v.cost)
 			player:removeItem(v.noChargeID, 1)
 			player:addItem(v.ChargeID, 1)
-			player:sendTextMessage(MESSAGE_LOOK, "Refilled " .. k .. '.')
+			player:sendTextMessage(MESSAGE_LOOK, "Refilled " .. k .. ".")
 		end
 	end
 

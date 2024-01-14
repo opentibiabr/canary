@@ -857,7 +857,9 @@ void PlayerWheel::switchGemDomain(uint8_t index) {
 		g_logger().error("[{}] Failed to remove {} gold from player with name {}", __FUNCTION__, goldCost, m_player.getName());
 		return;
 	}
-	gem.affinity = static_cast<WheelGemAffinity_t>((static_cast<uint8_t>(gem.affinity) + 1) % 4);
+
+	auto gemAffinity = convertWheelGemAffinityToDomain(static_cast<uint8_t>(gem.affinity));
+	gem.affinity = static_cast<WheelGemAffinity_t>(gemAffinity);
 	gem.save(gemsKV());
 	sendOpenWheelWindow(m_player.getID());
 }

@@ -195,3 +195,5 @@ std::string toKey(const std::string &str);
 static inline double quadraticPoly(double a, double b, double c, double x) {
 	return a * x * x + b * x + c;
 }
+
+uint8_t convertWheelGemAffinityToDomain(uint8_t affinity);

@@ -131,7 +131,7 @@ namespace {
 		}
 		if (!imbueDmg) {
 			msg.addByte(0);
-			msg.addByte(CIPBIA_ELEMENTAL_AGONY);
+			msg.addByte(0);
 		}
 	}
 
@@ -144,7 +144,7 @@ namespace {
 	 * @param[in] player The pointer to the player whose equipped items are considered.
 	 */
 	void calculateAbsorbValues(std::shared_ptr<Player> player, NetworkMessage &msg, uint8_t &combats) {
-		alignas(16) uint16_t damageReduction[COMBAT_COUNT] = { 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100 };
+		alignas(16) uint16_t damageModifiers[COMBAT_COUNT] = { 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000 };
 
 		for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
 			if (!player->isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
@@ -162,7 +162,7 @@ namespace {
 			}
 
 			for (uint16_t i = 0; i < COMBAT_COUNT; ++i) {
-				damageReduction[i] *= (std::floor(100 - itemType.abilities->absorbPercent[i]) / 100.);
+				damageModifiers[i] *= (std::floor(100. - itemType.abilities->absorbPercent[i]) / 100.);
 			}
 
 			uint8_t imbuementSlots = itemType.imbuementSlot;
@@ -186,22 +186,23 @@ namespace {
 
 						g_logger().debug("[cyclopedia damage reduction] imbued item {}, reduced {} percent, for element {}", item->getName(), imbuementAbsorbPercent, combatTypeToName(indexToCombatType(combat)));
 
-						damageReduction[combat] *= (std::floor(100 - imbuementAbsorbPercent) / 100.);
+						damageModifiers[combat] *= (std::floor(100. - imbuementAbsorbPercent) / 100.);
 					}
 				}
 			}
 		}
 
 		for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-			damageReduction[i] -= player->getAbsorbPercent(indexToCombatType(i));
+			damageModifiers[i] -= 100 * player->getAbsorbPercent(indexToCombatType(i));
 			if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM, __FUNCTION__)) {
-				damageReduction[i] -= static_cast<int16_t>(player->wheel()->getResistance(indexToCombatType(i))) / 100.f;
+				damageModifiers[i] -= player->wheel()->getResistance(indexToCombatType(i));
 			}
 
-			if (damageReduction[i] != 100) {
-				g_logger().debug("CombatType: {}, DamageReduction: {}", i, damageReduction[i]);
+			if (damageModifiers[i] != 10000) {
+				int16_t clientModifier = std::clamp(10000 - static_cast<int16_t>(damageModifiers[i]), -10000, 10000);
+				g_logger().debug("[{}] CombatType: {}, Damage Modifier: {}, Resulting Client Modifier: {}", __FUNCTION__, i, damageModifiers[i], clientModifier);
 				msg.addByte(getCipbiaElement(indexToCombatType(i)));
-				msg.addByte(std::max<int8_t>(-100, std::min<int8_t>(100, 100 - damageReduction[i])));
+				msg.add<int16_t>(clientModifier);
 				++combats;
 			}
 		}
@@ -344,16 +345,24 @@ void ProtocolGame::AddItem(NetworkMessage &msg, std::shared_ptr<Item> item) {
 		std::shared_ptr<Container> container = item->getContainer();
 		if (container && containerType == 0 && container->getHoldingPlayer() == player) {
 			uint32_t lootFlags = 0;
-			for (auto itt : player->quickLootContainers) {
-				if (itt.second == container) {
-					lootFlags |= 1 << itt.first;
+			uint32_t obtainFlags = 0;
+			for (auto [category, containerMap] : player->m_managedContainers) {
+				if (!isValidObjectCategory(category)) {
+					continue;
+				}
+				if (containerMap.first == container) {
+					lootFlags |= 1 << category;
+				}
+				if (containerMap.second == container) {
+					obtainFlags |= 1 << category;
 				}
 			}
 
-			if (lootFlags != 0) {
-				containerType = 1;
+			if (lootFlags != 0 || obtainFlags != 0) {
+				containerType = 9;
 				msg.addByte(containerType);
 				msg.add<uint32_t>(lootFlags);
+				msg.add<uint32_t>(obtainFlags);
 			}
 		}
 
@@ -1273,7 +1282,8 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xE6:
 			parseBugReport(msg);
 			break;
-		case 0xE7: /* thank you */
+		case 0xE7:
+			parseWheelGemAction(msg);
 			break;
 		case 0xE8:
 			parseDebugAssert(msg);
@@ -1782,17 +1792,32 @@ void ProtocolGame::parseLootContainer(NetworkMessage &msg) {
 		Position pos = msg.getPosition();
 		uint16_t itemId = msg.get<uint16_t>();
 		uint8_t stackpos = msg.getByte();
-		addGameTask(&Game::playerSetLootContainer, player->getID(), category, pos, itemId, stackpos);
+		addGameTask(&Game::playerSetManagedContainer, player->getID(), category, pos, itemId, stackpos, true);
 	} else if (action == 1) {
 		ObjectCategory_t category = (ObjectCategory_t)msg.getByte();
-		addGameTask(&Game::playerClearLootContainer, player->getID(), category);
+		addGameTask(&Game::playerClearManagedContainer, player->getID(), category, true);
 	} else if (action == 2) {
 		ObjectCategory_t category = (ObjectCategory_t)msg.getByte();
-		addGameTask(&Game::playerOpenLootContainer, player->getID(), category);
+		addGameTask(&Game::playerOpenManagedContainer, player->getID(), category, true);
 	} else if (action == 3) {
 		bool useMainAsFallback = msg.getByte() == 1;
 		addGameTask(&Game::playerSetQuickLootFallback, player->getID(), useMainAsFallback);
+	} else if (action == 4) {
+		ObjectCategory_t category = (ObjectCategory_t)msg.getByte();
+		Position pos = msg.getPosition();
+		uint16_t itemId = msg.get<uint16_t>();
+		uint8_t stackpos = msg.getByte();
+		g_logger().debug("[{}] action {}, category {}, pos {}, itemId {}, stackPos {}", __FUNCTION__, action, static_cast<uint8_t>(category), pos.toString(), itemId, stackpos);
+		addGameTask(&Game::playerSetManagedContainer, player->getID(), category, pos, itemId, stackpos, false);
+	} else if (action == 5) {
+		ObjectCategory_t category = (ObjectCategory_t)msg.getByte();
+		addGameTask(&Game::playerClearManagedContainer, player->getID(), category, false);
+	} else if (action == 6) {
+		ObjectCategory_t category = (ObjectCategory_t)msg.getByte();
+		addGameTask(&Game::playerOpenManagedContainer, player->getID(), category, false);
 	}
+
+	g_logger().debug("[{}] action type {}", __FUNCTION__, action);
 }
 
 void ProtocolGame::parseQuickLootBlackWhitelist(NetworkMessage &msg) {
@@ -3475,7 +3500,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 			msg.add<uint16_t>(it.maxHitChance);
 			msg.addByte(getCipbiaElement(it.combatType));
 			msg.addByte(0);
-			msg.addByte(CIPBIA_ELEMENTAL_AGONY);
+			msg.addByte(0);
 		} else if (it.weaponType == WEAPON_DISTANCE || it.weaponType == WEAPON_AMMO || it.weaponType == WEAPON_MISSILE) {
 			int32_t attackValue = weapon->getAttack();
 			if (it.weaponType == WEAPON_AMMO) {
@@ -3525,7 +3550,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 		msg.add<uint16_t>(maxDamage >> 1);
 		msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL);
 		msg.addByte(0);
-		msg.addByte(CIPBIA_ELEMENTAL_AGONY);
+		msg.addByte(0);
 	}
 
 	msg.add<uint16_t>(player->getArmor());
@@ -4319,17 +4344,33 @@ void ProtocolGame::sendLootContainers() {
 	NetworkMessage msg;
 	msg.addByte(0xC0);
 	msg.addByte(player->quickLootFallbackToMainContainer ? 1 : 0);
-	std::map<ObjectCategory_t, std::shared_ptr<Container>> quickLoot;
-	for (auto it : player->quickLootContainers) {
-		if (it.second && !it.second->isRemoved()) {
-			quickLoot[it.first] = it.second;
+
+	std::map<ObjectCategory_t, std::pair<std::shared_ptr<Container>, std::shared_ptr<Container>>> managedContainersMap;
+	for (auto [category, containersPair] : player->m_managedContainers) {
+		if (containersPair.first && !containersPair.first->isRemoved()) {
+			managedContainersMap[category].first = containersPair.first;
+		}
+		if (containersPair.second && !containersPair.second->isRemoved()) {
+			managedContainersMap[category].second = containersPair.second;
 		}
 	}
-	msg.addByte(quickLoot.size());
-	for (auto it : quickLoot) {
-		msg.addByte(it.first);
-		msg.add<uint16_t>(it.second->getID());
+
+	auto msgPosition = msg.getBufferPosition();
+	msg.skipBytes(1);
+	uint8_t containers = 0;
+	for (auto [category, containersPair] : managedContainersMap) {
+		if (!isValidObjectCategory(category)) {
+			continue;
+		}
+		containers++;
+		msg.addByte(category);
+		uint16_t lootContainerId = containersPair.first ? containersPair.first->getID() : 0;
+		uint16_t obtainContainerId = containersPair.second ? containersPair.second->getID() : 0;
+		msg.add<uint16_t>(lootContainerId);
+		msg.add<uint16_t>(obtainContainerId);
 	}
+	msg.setBufferPosition(msgPosition);
+	msg.addByte(containers);
 
 	writeToOutputBuffer(msg);
 }
@@ -4838,6 +4879,8 @@ void ProtocolGame::sendForgingData() {
 	msg.addByte(0x86);
 
 	std::map<uint8_t, uint16_t> tierCorePrices;
+	std::map<uint8_t, uint64_t> convergenceFusionPrices;
+	std::map<uint8_t, uint64_t> convergenceTransferPrices;
 
 	const auto classifications = g_game().getItemsClassifications();
 	msg.addByte(classifications.size());
@@ -4845,13 +4888,15 @@ void ProtocolGame::sendForgingData() {
 		msg.addByte(classification->id);
 		msg.addByte(classification->tiers.size());
 		for (const auto &[tier, tierInfo] : classification->tiers) {
-			msg.addByte(tier);
-			msg.add<uint64_t>(tierInfo.priceToUpgrade);
-			tierCorePrices[tier] = tierInfo.corePriceToFuse;
+			msg.addByte(tier - 1);
+			msg.add<uint64_t>(tierInfo.regularPrice);
+			tierCorePrices[tier] = tierInfo.corePrice;
+			convergenceFusionPrices[tier] = tierInfo.convergenceFusionPrice;
+			convergenceTransferPrices[tier] = tierInfo.convergenceTransferPrice;
 		}
 	}
 
-	// Version 13.16
+	// Version 13.30
 	// Forge Config Bytes
 
 	// Exalted core table per tier
@@ -4859,6 +4904,20 @@ void ProtocolGame::sendForgingData() {
 	for (const auto &[tier, cores] : tierCorePrices) {
 		msg.addByte(tier);
 		msg.addByte(cores);
+	}
+
+	// Convergence fusion prices per tier
+	msg.addByte(static_cast<uint8_t>(convergenceFusionPrices.size()));
+	for (const auto &[tier, price] : convergenceFusionPrices) {
+		msg.addByte(tier - 1);
+		msg.add<uint64_t>(price);
+	}
+
+	// Convergence transfer prices per tier
+	msg.addByte(static_cast<uint8_t>(convergenceTransferPrices.size()));
+	for (const auto &[tier, price] : convergenceTransferPrices) {
+		msg.addByte(tier);
+		msg.add<uint64_t>(price);
 	}
 
 	// (conversion) (left column top) Cost to make 1 bottom item - 20
@@ -4871,12 +4930,16 @@ void ProtocolGame::sendForgingData() {
 	msg.addByte(75);
 	// (conversion) (right column bottom) Starting stored dust limit
 	msg.add<uint16_t>(player->getForgeDustLevel());
-	// (conversion) (right column bottom) Max stored dust limit - 225
+	// (conversion) (right column bottom) Max stored dust limit - 325
 	msg.add<uint16_t>(g_configManager().getNumber(FORGE_MAX_DUST, __FUNCTION__));
-	// (fusion) Dust cost - 100
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_FUSION_DUST_COST, __FUNCTION__)));
-	// (transfer) Dust cost - 100
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TRANSFER_DUST_COST, __FUNCTION__)));
+	// (fusion and transfer) Dust cost - 100
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_FUSION_AND_TRANSFER_DUST_COST, __FUNCTION__)));
+	// (convergence fusion) Dust cost - 130
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CONVERGENCE_FUSION_DUST_COST, __FUNCTION__)));
+	// (convergence fusion) Success rate - 100
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CONVERGENCE_FUSION_SUCCESS_RATE, __FUNCTION__)));
+	// (convergence transfer) Dust cost - 160
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CONVERGENCE_TRANSFER_DUST_COST, __FUNCTION__)));
 	// (fusion) Base success rate - 50
 	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE, __FUNCTION__)));
 	// (fusion) Bonus success rate - 15
@@ -4893,8 +4956,11 @@ void ProtocolGame::sendForgingData() {
 void ProtocolGame::sendOpenForge() {
 	// We will use it when sending the bytes to send the item information to the client
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> fusionItemsMap;
+	std::map<int32_t, std::map<uint16_t, std::map<uint8_t, uint16_t>>> convergenceItemsMap;
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> donorTierItemMap;
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> receiveTierItemMap;
+
+	auto maxConfigTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER, __FUNCTION__);
 
 	/*
 	 *Start - Parsing items informations
@@ -4906,7 +4972,6 @@ void ProtocolGame::sendOpenForge() {
 
 		auto itemClassification = item->getClassification();
 		auto itemTier = item->getTier();
-		auto maxConfigTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER, __FUNCTION__);
 		auto maxTier = (itemClassification == 4 ? maxConfigTier : itemClassification);
 		// Save fusion items on map
 		if (itemClassification != 0 && itemTier < maxTier) {
@@ -4925,12 +4990,16 @@ void ProtocolGame::sendOpenForge() {
 			if (itemTier == 0) {
 				getForgeInfoMap(item, receiveTierItemMap);
 			}
+			if (itemClassification == 4) {
+				getForgeInfoMap(item, convergenceItemsMap[item->getSlotPosition()]);
+			}
 		}
 	}
 
 	// Checking size of map to send in the addByte (total fusion items count)
 	uint8_t fusionTotalItemsCount = 0;
 	for (const auto &[itemId, tierAndCountMap] : fusionItemsMap) {
+		auto classification = Item::items[itemId].upgradeClassification;
 		for (const auto [itemTier, itemCount] : tierAndCountMap) {
 			if (itemCount >= 2) {
 				fusionTotalItemsCount++;
@@ -4942,8 +5011,10 @@ void ProtocolGame::sendOpenForge() {
 	 * Start - Sending bytes
 	 */
 	NetworkMessage msg;
+
 	// Header byte (135)
 	msg.addByte(0x87);
+
 	msg.add<uint16_t>(fusionTotalItemsCount);
 	for (const auto &[itemId, tierAndCountMap] : fusionItemsMap) {
 		for (const auto [itemTier, itemCount] : tierAndCountMap) {
@@ -4955,6 +5026,47 @@ void ProtocolGame::sendOpenForge() {
 			}
 		}
 	}
+
+	// msg.add<uint16_t>(convergenceItemsMap.size());
+	auto convergenceFusionCountPosition = msg.getBufferPosition();
+	msg.skipBytes(2);
+	uint16_t convergenceFusionCount = 0;
+	/*
+	for each convergence fusion (1 per item slot, only class 4):
+	1 byte: count fusable items
+	for each fusable item:
+		2 bytes: item id
+		1 byte: tier
+		2 bytes: count
+	*/
+	for (const auto &[slot, itemMap] : convergenceItemsMap) {
+		uint8_t totalItemsCount = 0;
+		auto totalItemsCountPosition = msg.getBufferPosition();
+		msg.skipBytes(1); // Total items count
+		for (const auto &[itemId, tierAndCountMap] : itemMap) {
+			for (const auto [tier, itemCount] : tierAndCountMap) {
+				if (tier >= maxConfigTier) {
+					continue;
+				}
+				totalItemsCount++;
+				msg.add<uint16_t>(itemId);
+				msg.addByte(tier);
+				msg.add<uint16_t>(itemCount);
+			}
+		}
+		auto endPosition = msg.getBufferPosition();
+		msg.setBufferPosition(totalItemsCountPosition);
+		if (totalItemsCount > 0) {
+			msg.addByte(totalItemsCount);
+			msg.setBufferPosition(endPosition);
+			convergenceFusionCount++;
+		}
+	}
+
+	auto transferTotalCountPosition = msg.getBufferPosition();
+	msg.setBufferPosition(convergenceFusionCountPosition);
+	msg.add<uint16_t>(convergenceFusionCount);
+	msg.setBufferPosition(transferTotalCountPosition);
 
 	auto transferTotalCount = getIterationIncreaseCount(donorTierItemMap);
 	msg.addByte(static_cast<uint8_t>(transferTotalCount));
@@ -4999,6 +5111,63 @@ void ProtocolGame::sendOpenForge() {
 		}
 	}
 
+	auto convergenceCountPosition = msg.getBufferPosition();
+	msg.skipBytes(1);
+	uint8_t convergenceTransferCount = 0;
+
+	/*
+	for each convergence transfer:
+		2 bytes: count donors
+		for each donor:
+			2 bytes: item id
+			1 byte: tier
+			2 bytes: count
+		2 bytes: count receivers
+		for each receiver:
+			2 bytes: item id
+			2 bytes: count
+	*/
+	for (const auto &[slot, itemMap] : convergenceItemsMap) {
+		uint16_t donorCount = 0;
+		uint16_t receiverCount = 0;
+		auto donorCountPosition = msg.getBufferPosition();
+		msg.skipBytes(2); // Donor count
+		for (const auto &[itemId, tierAndCountMap] : itemMap) {
+			for (const auto [tier, itemCount] : tierAndCountMap) {
+				if (tier >= 1) {
+					donorCount++;
+					msg.add<uint16_t>(itemId);
+					msg.addByte(tier);
+					msg.add<uint16_t>(itemCount);
+				} else {
+					receiverCount++;
+				}
+			}
+		}
+		if (donorCount == 0 && receiverCount == 0) {
+			msg.setBufferPosition(donorCountPosition);
+			continue;
+		}
+		auto receiverCountPosition = msg.getBufferPosition();
+		msg.setBufferPosition(donorCountPosition);
+		msg.add<uint16_t>(donorCount);
+		++convergenceTransferCount;
+		msg.setBufferPosition(receiverCountPosition);
+		msg.add<uint16_t>(receiverCount);
+		for (const auto &[itemId, tierAndCountMap] : itemMap) {
+			for (const auto [tier, itemCount] : tierAndCountMap) {
+				if (tier == 0) {
+					msg.add<uint16_t>(itemId);
+					msg.add<uint16_t>(itemCount);
+				}
+			}
+		}
+	}
+	auto dustLevelPosition = msg.getBufferPosition();
+	msg.setBufferPosition(convergenceCountPosition);
+	msg.addByte(convergenceTransferCount);
+	msg.setBufferPosition(dustLevelPosition);
+
 	msg.add<uint16_t>(player->getForgeDustLevel()); // Player dust limit
 	writeToOutputBuffer(msg);
 	// Update forging informations
@@ -5012,15 +5181,16 @@ void ProtocolGame::parseForgeEnter(NetworkMessage &msg) {
 
 	// 0xBF -> 0 = fusion, 1 = transfer, 2 = dust to sliver, 3 = sliver to core, 4 = increase dust limit
 	uint8_t action = msg.getByte();
+	bool convergence = msg.getByte();
 	uint16_t firstItem = msg.get<uint16_t>();
 	uint8_t tier = msg.getByte();
 	uint16_t secondItem = msg.get<uint16_t>();
 	bool usedCore = msg.getByte();
 	bool reduceTierLoss = msg.getByte();
 	if (action == 0) {
-		addGameTask(&Game::playerForgeFuseItems, player->getID(), firstItem, tier, usedCore, reduceTierLoss);
+		addGameTask(&Game::playerForgeFuseItems, player->getID(), firstItem, tier, secondItem, usedCore, reduceTierLoss, convergence);
 	} else if (action == 1) {
-		addGameTask(&Game::playerForgeTransferItemTier, player->getID(), firstItem, tier, secondItem);
+		addGameTask(&Game::playerForgeTransferItemTier, player->getID(), firstItem, tier, secondItem, convergence);
 	} else if (action <= 4) {
 		addGameTask(&Game::playerForgeResourceConversion, player->getID(), action);
 	}
@@ -5034,11 +5204,13 @@ void ProtocolGame::parseForgeBrowseHistory(NetworkMessage &msg) {
 	addGameTask(&Game::playerBrowseForgeHistory, player->getID(), msg.getByte());
 }
 
-void ProtocolGame::sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool success, uint8_t bonus, uint8_t coreCount) {
+void ProtocolGame::sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool success, uint8_t bonus, uint8_t coreCount, bool convergence) {
 	NetworkMessage msg;
 	msg.addByte(0x8A);
 
 	msg.addByte(0x00); // Fusion = 0
+	msg.addByte(convergence);
+
 	// Was succeeded bool
 	msg.addByte(success);
 
@@ -5060,17 +5232,18 @@ void ProtocolGame::sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool succe
 	sendOpenForge();
 }
 
-void ProtocolGame::sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem) {
+void ProtocolGame::sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem, bool convergence) {
 	NetworkMessage msg;
 	msg.addByte(0x8A);
 
 	msg.addByte(0x01); // Transfer = 1
+	msg.addByte(convergence);
 	msg.addByte(0x01); // Always success
 
 	msg.add<uint16_t>(firstItem); // Left item
 	msg.addByte(tier); // Left item tier
 	msg.add<uint16_t>(secondItem); // Right item
-	msg.addByte(tier - 1); // Right item tier
+	msg.addByte(convergence ? tier : tier - 1); // Right item tier
 
 	msg.addByte(0x00); // Bonus type always none
 
@@ -5271,7 +5444,8 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		}
 
 		for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
-			if (!it.abilities->skills[i]) {
+			auto skills = it.abilities->skills[i];
+			if (!skills) {
 				continue;
 			}
 
@@ -5281,19 +5455,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 				separator = true;
 			}
 
-			ss << getSkillName(i) << ' ';
-			if (i != SKILL_CRITICAL_HIT_CHANCE) {
-				ss << std::showpos;
-			}
-			if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
-				ss << (it.abilities->skills[i] / 100.) << '%';
-			} else {
-				ss << it.abilities->skills[i] << '%';
-			}
-
-			if (i != SKILL_CRITICAL_HIT_CHANCE) {
-				ss << std::noshowpos;
-			}
+			ss << fmt::format("{} {:+.2f}%", getSkillName(i), skills / 100.0);
 		}
 
 		if (it.abilities->stats[STAT_MAGICPOINTS] != 0) {
@@ -5735,6 +5897,7 @@ void ProtocolGame::sendRestingStatus(uint8_t protection) {
 	NetworkMessage msg;
 	msg.addByte(0xA9);
 	msg.addByte(protection); // 1 / 0
+
 	int32_t dailyStreak = static_cast<int32_t>(player->kv()->scoped("daily-reward")->get("streak")->getNumber());
 	msg.addByte(dailyStreak < 2 ? 0 : 1);
 	if (dailyStreak < 2) {
@@ -6191,12 +6354,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 	sendInventoryIds();
 	std::shared_ptr<Item> slotItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
 	if (slotItem) {
-		std::shared_ptr<Container> mainBackpack = slotItem->getContainer();
-		std::shared_ptr<Container> hasQuickLootContainer = player->getLootContainer(OBJECTCATEGORY_DEFAULT);
-		if (mainBackpack && !hasQuickLootContainer) {
-			player->setLootContainer(OBJECTCATEGORY_DEFAULT, mainBackpack);
-			sendInventoryItem(CONST_SLOT_BACKPACK, player->getInventoryItem(CONST_SLOT_BACKPACK));
-		}
+		player->setMainBackpackUnassigned(slotItem->getContainer());
 	}
 
 	sendLootContainers();
@@ -8105,7 +8263,7 @@ void ProtocolGame::sendForgeSkillStats(NetworkMessage &msg) const {
 		return;
 	}
 
-	std::vector<Slots_t> slots { CONST_SLOT_LEFT, CONST_SLOT_ARMOR, CONST_SLOT_HEAD };
+	std::vector<Slots_t> slots { CONST_SLOT_LEFT, CONST_SLOT_ARMOR, CONST_SLOT_HEAD, CONST_SLOT_LEGS };
 	for (const auto &slot : slots) {
 		double_t skill = 0;
 		if (std::shared_ptr<Item> item = player->getInventoryItem(slot); item) {
@@ -8118,6 +8276,9 @@ void ProtocolGame::sendForgeSkillStats(NetworkMessage &msg) const {
 			}
 			if (it.isHelmet()) {
 				skill = item->getMomentumChance() * 100;
+			}
+			if (it.isLegs()) {
+				skill = item->getTranscendenceChance() * 100;
 			}
 		}
 
@@ -8559,6 +8720,14 @@ void ProtocolGame::parseOpenWheel(NetworkMessage &msg) {
 
 	auto ownerId = msg.get<uint32_t>();
 	addGameTask(&Game::playerOpenWheel, player->getID(), ownerId);
+}
+
+void ProtocolGame::parseWheelGemAction(NetworkMessage &msg) {
+	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM, __FUNCTION__)) {
+		return;
+	}
+
+	addGameTask(&Game::playerWheelGemAction, player->getID(), msg);
 }
 
 void ProtocolGame::sendOpenWheelWindow(uint32_t ownerId) {

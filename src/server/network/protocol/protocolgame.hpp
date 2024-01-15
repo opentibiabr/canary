@@ -255,9 +255,10 @@ private:
 		uint8_t tier,
 		bool success,
 		uint8_t bonus,
-		uint8_t coreCount
+		uint8_t coreCount,
+		bool convergence
 	);
-	void sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem);
+	void sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem, bool convergence);
 	void sendForgeHistory(uint8_t page);
 	void sendForgeSkillStats(NetworkMessage &msg) const;
 
@@ -467,6 +468,7 @@ private:
 	void parseOpenWheel(NetworkMessage &msg);
 	void sendOpenWheelWindow(uint32_t ownerId);
 	void parseSaveWheel(NetworkMessage &msg);
+	void parseWheelGemAction(NetworkMessage &msg);
 
 	friend class Player;
 	friend class PlayerWheel;

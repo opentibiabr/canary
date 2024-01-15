@@ -43,12 +43,12 @@ void Webhook::run() {
 	);
 }
 
-void Webhook::sendPayload(const std::string &payload, std::string url) {
+void Webhook::sendPayload(const std::string payload, std::string url) {
 	std::scoped_lock lock { taskLock };
 	webhooks.push_back(std::make_shared<WebhookTask>(payload, url));
 }
 
-void Webhook::sendMessage(const std::string &title, const std::string &message, int color, std::string url, bool embed) {
+void Webhook::sendMessage(const std::string title, const std::string message, int color, std::string url, bool embed) {
 	if (url.empty()) {
 		url = g_configManager().getString(DISCORD_WEBHOOK_URL, __FUNCTION__);
 	}
@@ -60,7 +60,7 @@ void Webhook::sendMessage(const std::string &title, const std::string &message, 
 	sendPayload(getPayload(title, message, color, embed), url);
 }
 
-void Webhook::sendMessage(const std::string &message, std::string url) {
+void Webhook::sendMessage(const std::string message, std::string url) {
 	if (url.empty()) {
 		url = g_configManager().getString(DISCORD_WEBHOOK_URL, __FUNCTION__);
 	}
@@ -112,7 +112,7 @@ size_t Webhook::writeCallback(void* contents, size_t size, size_t nmemb, void* u
 	return real_size;
 }
 
-std::string Webhook::getPayload(const std::string &title, const std::string &message, int color, bool embed) const {
+std::string Webhook::getPayload(const std::string title, const std::string message, int color, bool embed) const {
 	std::time_t now = getTimeNow();
 	std::string time_buf = formatDate(now);
 

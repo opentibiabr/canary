@@ -810,6 +810,17 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 			setAttribute(OWNER, ownerId);
 			break;
 		}
+
+		case ATTR_OBTAINCONTAINER: {
+			uint32_t flags;
+			if (!propStream.read<uint32_t>(flags)) {
+				return ATTR_READ_ERROR;
+			}
+
+			g_logger().debug("Setting flag {} flags, to item id {}", flags, getID());
+			setAttribute(ItemAttribute_t::OBTAINCONTAINER, flags);
+			break;
+		}
 		default:
 			return ATTR_READ_ERROR;
 	}
@@ -992,6 +1003,13 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 			// Serializing custom attribute value type
 			customAttribute.serialize(propWriteStream);
 		}
+	}
+
+	if (hasAttribute(ItemAttribute_t::OBTAINCONTAINER)) {
+		propWriteStream.write<uint8_t>(ATTR_OBTAINCONTAINER);
+		auto flags = getAttribute<uint32_t>(ItemAttribute_t::OBTAINCONTAINER);
+		g_logger().debug("Reading flag {}, to item id {}", flags, getID());
+		propWriteStream.write<uint32_t>(flags);
 	}
 }
 

@@ -150,6 +150,7 @@ bool IOMapSerialize::loadItem(PropStream &propStream, std::shared_ptr<Cylinder> 
 				}
 				std::shared_ptr<Container> container = item->getContainer();
 				if (container && !loadContainer(propStream, container)) {
+
 					return false;
 				}
 

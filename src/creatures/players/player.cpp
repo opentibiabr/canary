@@ -7302,7 +7302,6 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 	} else {
 		setForgeDusts(getForgeDusts() - g_configManager().getNumber(configKey, __FUNCTION__));
 	}
-
 	if (convergence) {
 		newReceiveItem->setTier(tier);
 	} else {

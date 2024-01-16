@@ -8578,3 +8578,14 @@ void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
 
 	addGameTask(&Game::playerSaveWheel, player->getID(), msg);
 }
+
+void ProtocolGame::takeScreenshot(uint8_t screenshotType) {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x75);
+	msg.addByte(screenshotType);
+	writeToOutputBuffer(msg);
+}

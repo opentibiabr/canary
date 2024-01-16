@@ -4156,3 +4156,17 @@ int PlayerFunctions::luaPlayerKV(lua_State* L) {
 	setMetatable(L, -1, "KV");
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerTakeScreenshot(lua_State* L) {
+	// player:takeScreenshot(screenshotType)
+	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto screenshotType = getNumber<uint8_t>(L, 2);
+	player->sendTakeScreenshot(screenshotType);
+	pushBoolean(L, true);
+	return 1;
+}

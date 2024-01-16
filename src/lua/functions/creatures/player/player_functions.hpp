@@ -356,6 +356,8 @@ private:
 
 		registerMethod(L, "Player", "kv", PlayerFunctions::luaPlayerKV);
 
+		registerMethod(L, "Player", "takeScreenshot", PlayerFunctions::luaPlayerTakeScreenshot);
+
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
 		MountFunctions::init(L);
@@ -705,6 +707,8 @@ private:
 	static int luaPlayerGetVipTime(lua_State* L);
 
 	static int luaPlayerKV(lua_State* L);
+
+	static int luaPlayerTakeScreenshot(lua_State* L);
 
 	friend class CreatureFunctions;
 };

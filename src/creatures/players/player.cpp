@@ -7002,9 +7002,9 @@ bool Player::saySpell(
 }
 
 // Forge system
-void Player::forgeFuseItems(uint16_t firstItemId, uint8_t tier, uint16_t secondItemId, bool success, bool reduceTierLoss, bool convergence, uint8_t bonus, uint8_t coreCount) {
+void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint8_t tier, uint16_t secondItemId, bool success, bool reduceTierLoss, bool convergence, uint8_t bonus, uint8_t coreCount) {
 	ForgeHistory history;
-	history.actionType = ForgeConversion_t::FORGE_ACTION_FUSION;
+	history.actionType = actionType;
 	history.tier = tier;
 	history.success = success;
 	history.tierLoss = reduceTierLoss;
@@ -7237,12 +7237,12 @@ void Player::forgeFuseItems(uint16_t firstItemId, uint8_t tier, uint16_t secondI
 	history.convergence = convergence;
 	registerForgeHistoryDescription(history);
 
-	sendForgeFusionItem(firstItemId, tier, success, bonus, coreCount, convergence);
+	sendForgeResult(actionType, firstItemId, tier, secondItemId, tier + 1, success, bonus, coreCount, convergence);
 }
 
-void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId, bool convergence) {
+void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId, bool convergence) {
 	ForgeHistory history;
-	history.actionType = ForgeConversion_t::FORGE_ACTION_TRANSFER;
+	history.actionType = actionType;
 	history.tier = tier;
 	history.success = true;
 
@@ -7293,29 +7293,10 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
-	returnValue = g_game().internalAddItem(exaltationContainer, newDonorItem, INDEX_WHEREEVER);
-	if (returnValue != RETURNVALUE_NOERROR) {
-		g_logger().error("[Log 5] Failed to add forge item {} from player with name {}", donorItemId, getName());
-		sendCancelMessage(getReturnMessage(returnValue));
-		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
-		return;
-	}
 
 	std::shared_ptr<Item> newReceiveItem = Item::CreateItem(receiveItemId, 1);
 	if (!newReceiveItem) {
 		g_logger().error("[Log 6] Player with name {} failed to fuse item with id {}", getName(), receiveItemId);
-		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
-		return;
-	}
-	if (convergence) {
-		newReceiveItem->setTier(tier);
-	} else {
-		newReceiveItem->setTier(tier - 1);
-	}
-	returnValue = g_game().internalAddItem(exaltationContainer, newReceiveItem, INDEX_WHEREEVER);
-	if (returnValue != RETURNVALUE_NOERROR) {
-		g_logger().error("[Log 7] Failed to add forge item {} from player with name {}", receiveItemId, getName());
-		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
@@ -7327,6 +7308,19 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 		return;
 	} else {
 		setForgeDusts(getForgeDusts() - g_configManager().getNumber(configKey, __FUNCTION__));
+	}
+
+	if (convergence) {
+		newReceiveItem->setTier(tier);
+	} else {
+		newReceiveItem->setTier(tier - 1);
+	}
+	returnValue = g_game().internalAddItem(exaltationContainer, newReceiveItem, INDEX_WHEREEVER);
+	if (returnValue != RETURNVALUE_NOERROR) {
+		g_logger().error("[Log 7] Failed to add forge item {} from player with name {}", receiveItemId, getName());
+		sendCancelMessage(getReturnMessage(returnValue));
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+		return;
 	}
 
 	uint8_t coresAmount = 0;
@@ -7374,17 +7368,16 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 	history.convergence = convergence;
 	registerForgeHistoryDescription(history);
 
-	sendTransferItemTier(donorItemId, convergence ? tier + 1 : tier, receiveItemId, convergence);
+	sendForgeResult(actionType, donorItemId, tier, receiveItemId, convergence ? tier : tier - 1, true, 0, 0, convergence);
 }
 
-void Player::forgeResourceConversion(uint8_t action) {
-	auto actionEnum = magic_enum::enum_value<ForgeConversion_t>(action);
+void Player::forgeResourceConversion(ForgeAction_t actionType) {
 	ForgeHistory history;
-	history.actionType = actionEnum;
+	history.actionType = actionType;
 	history.success = true;
 
 	ReturnValue returnValue = RETURNVALUE_NOERROR;
-	if (actionEnum == ForgeConversion_t::FORGE_ACTION_DUSTTOSLIVERS) {
+	if (actionType == ForgeAction_t::DUSTTOSLIVERS) {
 		auto dusts = getForgeDusts();
 		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER, __FUNCTION__) * g_configManager().getNumber(FORGE_SLIVER_AMOUNT, __FUNCTION__));
 		if (cost > dusts) {
@@ -7405,7 +7398,7 @@ void Player::forgeResourceConversion(uint8_t action) {
 		history.cost = cost;
 		history.gained = 3;
 		setForgeDusts(dusts - cost);
-	} else if (actionEnum == ForgeConversion_t::FORGE_ACTION_SLIVERSTOCORES) {
+	} else if (actionType == ForgeAction_t::SLIVERSTOCORES) {
 		auto [sliverCount, coreCount] = getForgeSliversAndCores();
 		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_CORE_COST, __FUNCTION__));
 		if (cost > sliverCount) {
@@ -7471,7 +7464,7 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 	std::stringstream detailsResponse;
 	auto itemId = Item::items.getItemIdByName(history.firstItemName);
 	const ItemType &itemType = Item::items[itemId];
-	if (history.actionType == ForgeConversion_t::FORGE_ACTION_FUSION) {
+	if (history.actionType == ForgeAction_t::FUSION) {
 		if (history.success) {
 			detailsResponse << fmt::format(
 				"{:s}{:s} <br><br>"
@@ -7557,7 +7550,7 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 				history.coresCost, price
 			);
 		}
-	} else if (history.actionType == ForgeConversion_t::FORGE_ACTION_TRANSFER) {
+	} else if (history.actionType == ForgeAction_t::TRANSFER) {
 		detailsResponse << fmt::format(
 			"{:s}{:s} <br><br>"
 			"Transfer partners:"
@@ -7600,13 +7593,13 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 			itemType.article, itemType.name, std::to_string(history.tier),
 			price
 		);
-	} else if (history.actionType == ForgeConversion_t::FORGE_ACTION_DUSTTOSLIVERS) {
+	} else if (history.actionType == ForgeAction_t::DUSTTOSLIVERS) {
 		detailsResponse << fmt::format("Converted {:d} dust to {:d} slivers.", history.cost, history.gained);
-	} else if (history.actionType == ForgeConversion_t::FORGE_ACTION_SLIVERSTOCORES) {
-		history.actionType = ForgeConversion_t::FORGE_ACTION_DUSTTOSLIVERS;
+	} else if (history.actionType == ForgeAction_t::SLIVERSTOCORES) {
+		history.actionType = ForgeAction_t::DUSTTOSLIVERS;
 		detailsResponse << fmt::format("Converted {:d} slivers to {:d} exalted core.", history.cost, history.gained);
-	} else if (history.actionType == ForgeConversion_t::FORGE_ACTION_INCREASELIMIT) {
-		history.actionType = ForgeConversion_t::FORGE_ACTION_DUSTTOSLIVERS;
+	} else if (history.actionType == ForgeAction_t::INCREASELIMIT) {
+		history.actionType = ForgeAction_t::DUSTTOSLIVERS;
 		detailsResponse << fmt::format("Spent {:d} dust to increase the dust limit to {:d}.", history.cost, history.gained + 1);
 	} else {
 		detailsResponse << "(unknown)";

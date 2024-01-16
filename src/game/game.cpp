@@ -9082,7 +9082,7 @@ void Game::playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, ui
 	}
 }
 
-void Game::playerForgeFuseItems(uint32_t playerId, uint16_t firstItemId, uint8_t tier, uint16_t secondItemId, bool usedCore, bool reduceTierLoss, bool convergence) {
+void Game::playerForgeFuseItems(uint32_t playerId, ForgeAction_t actionType, uint16_t firstItemId, uint8_t tier, uint16_t secondItemId, bool usedCore, bool reduceTierLoss, bool convergence) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
@@ -9108,10 +9108,10 @@ void Game::playerForgeFuseItems(uint32_t playerId, uint16_t firstItemId, uint8_t
 	auto chance = uniform_random(0, 10000);
 	uint8_t bonus = convergence ? 0 : forgeBonus(chance);
 
-	player->forgeFuseItems(firstItemId, tier, secondItemId, success, reduceTierLoss, convergence, bonus, coreCount);
+	player->forgeFuseItems(actionType, firstItemId, tier, secondItemId, success, reduceTierLoss, convergence, bonus, coreCount);
 }
 
-void Game::playerForgeTransferItemTier(uint32_t playerId, uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId, bool convergence) {
+void Game::playerForgeTransferItemTier(uint32_t playerId, ForgeAction_t actionType, uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId, bool convergence) {
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -9123,10 +9123,10 @@ void Game::playerForgeTransferItemTier(uint32_t playerId, uint16_t donorItemId, 
 	}
 
 	player->updateUIExhausted();
-	player->forgeTransferItemTier(donorItemId, tier, receiveItemId, convergence);
+	player->forgeTransferItemTier(actionType, donorItemId, tier, receiveItemId, convergence);
 }
 
-void Game::playerForgeResourceConversion(uint32_t playerId, uint8_t action) {
+void Game::playerForgeResourceConversion(uint32_t playerId, ForgeAction_t actionType) {
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -9138,7 +9138,7 @@ void Game::playerForgeResourceConversion(uint32_t playerId, uint8_t action) {
 	}
 
 	player->updateUIExhausted();
-	player->forgeResourceConversion(action);
+	player->forgeResourceConversion(actionType);
 }
 
 void Game::playerBrowseForgeHistory(uint32_t playerId, uint8_t page) {

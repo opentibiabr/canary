@@ -790,7 +790,7 @@ void IOLoginDataLoad::loadPlayerForgeHistory(std::shared_ptr<Player> player, DBR
 	query << "SELECT * FROM `forge_history` WHERE `player_id` = " << player->getGUID();
 	if (result = Database::getInstance().storeQuery(query.str())) {
 		do {
-			auto actionEnum = magic_enum::enum_value<ForgeConversion_t>(result->getNumber<uint16_t>("action_type"));
+			auto actionEnum = magic_enum::enum_value<ForgeAction_t>(result->getNumber<uint16_t>("action_type"));
 			ForgeHistory history;
 			history.actionType = actionEnum;
 			history.description = result->getString("description");

@@ -5180,19 +5180,19 @@ void ProtocolGame::parseForgeEnter(NetworkMessage &msg) {
 	}
 
 	// 0xBF -> 0 = fusion, 1 = transfer, 2 = dust to sliver, 3 = sliver to core, 4 = increase dust limit
-	uint8_t action = msg.getByte();
+	auto actionType = static_cast<ForgeAction_t>(msg.getByte());
 	bool convergence = msg.getByte();
 	uint16_t firstItem = msg.get<uint16_t>();
 	uint8_t tier = msg.getByte();
 	uint16_t secondItem = msg.get<uint16_t>();
 	bool usedCore = msg.getByte();
 	bool reduceTierLoss = msg.getByte();
-	if (action == 0) {
-		addGameTask(&Game::playerForgeFuseItems, player->getID(), firstItem, tier, secondItem, usedCore, reduceTierLoss, convergence);
-	} else if (action == 1) {
-		addGameTask(&Game::playerForgeTransferItemTier, player->getID(), firstItem, tier, secondItem, convergence);
-	} else if (action <= 4) {
-		addGameTask(&Game::playerForgeResourceConversion, player->getID(), action);
+	if (actionType == ForgeAction_t::FUSION) {
+		addGameTask(&Game::playerForgeFuseItems, player->getID(), actionType, firstItem, tier, secondItem, usedCore, reduceTierLoss, convergence);
+	} else if (actionType == ForgeAction_t::TRANSFER) {
+		addGameTask(&Game::playerForgeTransferItemTier, player->getID(), actionType, firstItem, tier, secondItem, convergence);
+	} else if (actionType <= ForgeAction_t::INCREASELIMIT) {
+		addGameTask(&Game::playerForgeResourceConversion, player->getID(), actionType);
 	}
 }
 
@@ -5204,50 +5204,36 @@ void ProtocolGame::parseForgeBrowseHistory(NetworkMessage &msg) {
 	addGameTask(&Game::playerBrowseForgeHistory, player->getID(), msg.getByte());
 }
 
-void ProtocolGame::sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool success, uint8_t bonus, uint8_t coreCount, bool convergence) {
+void ProtocolGame::sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId, uint8_t leftTier, uint16_t rightItemId, uint8_t rightTier, bool success, uint8_t bonus, uint8_t coreCount, bool convergence) {
 	NetworkMessage msg;
 	msg.addByte(0x8A);
 
-	msg.addByte(0x00); // Fusion = 0
+	// 0 = fusion | 1 = transfer
+	msg.addByte(static_cast<uint8_t>(actionType));
 	msg.addByte(convergence);
 
-	// Was succeeded bool
-	msg.addByte(success);
+	msg.addByte(convergence ? true : success);
 
-	msg.add<uint16_t>(itemId); // Left item
-	msg.addByte(tier); // Left item tier
-	msg.add<uint16_t>(itemId); // Right item
-	msg.addByte(tier + 1); // Right item tier
+	msg.add<uint16_t>(leftItemId);
+	msg.addByte(leftTier);
+	msg.add<uint16_t>(rightItemId);
+	msg.addByte(rightTier);
 
-	msg.addByte(bonus); // Roll fusion bonus
-	// Core kept
-	if (bonus == 2) {
-		msg.addByte(coreCount);
-	} else if (bonus >= 4 && bonus <= 8) {
-		msg.add<uint16_t>(itemId);
-		msg.addByte(tier);
+	if (actionType == ForgeAction_t::TRANSFER) {
+		msg.addByte(0x00); // Bonus type always none for transfer
+	} else {
+		msg.addByte(bonus); // Roll fusion bonus
+		// Core kept
+		if (bonus == 2) {
+			msg.addByte(coreCount);
+		} else if (bonus >= 4 && bonus <= 8) {
+			msg.add<uint16_t>(leftItemId);
+			msg.addByte(leftTier);
+		}
 	}
 
 	writeToOutputBuffer(msg);
-	sendOpenForge();
-}
-
-void ProtocolGame::sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem, bool convergence) {
-	NetworkMessage msg;
-	msg.addByte(0x8A);
-
-	msg.addByte(0x01); // Transfer = 1
-	msg.addByte(convergence);
-	msg.addByte(0x01); // Always success
-
-	msg.add<uint16_t>(firstItem); // Left item
-	msg.addByte(tier); // Left item tier
-	msg.add<uint16_t>(secondItem); // Right item
-	msg.addByte(convergence ? tier : tier - 1); // Right item tier
-
-	msg.addByte(0x00); // Bonus type always none
-
-	writeToOutputBuffer(msg);
+	g_logger().debug("Send forge fusion: type {}, left item {}, left tier {}, right item {}, rightTier {}, success {}, bonus {}, coreCount {}, convergence {}", fmt::underlying(actionType), leftItemId, leftTier, rightItemId, rightTier, success, bonus, coreCount, convergence);
 	sendOpenForge();
 }
 

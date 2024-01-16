@@ -261,6 +261,7 @@ public:
 	void playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, uint8_t button, uint8_t choice);
 	void playerForgeFuseItems(
 		uint32_t playerId,
+		ForgeAction_t actionType,
 		uint16_t firstItemId,
 		uint8_t tier,
 		uint16_t secondItemId,
@@ -270,12 +271,13 @@ public:
 	);
 	void playerForgeTransferItemTier(
 		uint32_t playerId,
+		ForgeAction_t actionType,
 		uint16_t donorItemId,
 		uint8_t tier,
 		uint16_t receiveItemId,
 		bool convergence
 	);
-	void playerForgeResourceConversion(uint32_t playerId, uint8_t action);
+	void playerForgeResourceConversion(uint32_t playerId, ForgeAction_t actionType);
 	void playerBrowseForgeHistory(uint32_t playerId, uint8_t page);
 
 	void playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selectedBossId);

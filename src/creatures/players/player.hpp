@@ -17,6 +17,7 @@
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/depot/depotlocker.hpp"
 #include "grouping/familiars.hpp"
+#include "enums/forge_conversion.hpp"
 #include "grouping/groups.hpp"
 #include "grouping/guild.hpp"
 #include "imbuements/imbuements.hpp"
@@ -49,16 +50,8 @@ class Spell;
 class PlayerWheel;
 class Spectators;
 
-enum class ForgeConversion_t : uint8_t {
-	FORGE_ACTION_FUSION = 0,
-	FORGE_ACTION_TRANSFER = 1,
-	FORGE_ACTION_DUSTTOSLIVERS = 2,
-	FORGE_ACTION_SLIVERSTOCORES = 3,
-	FORGE_ACTION_INCREASELIMIT = 4
-};
-
 struct ForgeHistory {
-	ForgeConversion_t actionType = ForgeConversion_t::FORGE_ACTION_FUSION;
+	ForgeAction_t actionType = ForgeAction_t::FUSION;
 	uint8_t tier = 0;
 	uint8_t bonus = 0;
 
@@ -2371,9 +2364,9 @@ public:
 	);
 
 	// Forge system
-	void forgeFuseItems(uint16_t firstItemid, uint8_t tier, uint16_t secondItemId, bool success, bool reduceTierLoss, bool convergence, uint8_t bonus, uint8_t coreCount);
-	void forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId, bool convergence);
-	void forgeResourceConversion(uint8_t action);
+	void forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemid, uint8_t tier, uint16_t secondItemId, bool success, bool reduceTierLoss, bool convergence, uint8_t bonus, uint8_t coreCount);
+	void forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId, bool convergence);
+	void forgeResourceConversion(ForgeAction_t actionType);
 	void forgeHistory(uint8_t page) const;
 
 	void sendOpenForge() const {
@@ -2386,14 +2379,9 @@ public:
 			client->sendForgeError(returnValue);
 		}
 	}
-	void sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool success, uint8_t bonus, uint8_t coreCount, bool convergence) const {
+	void sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId, uint8_t leftTier, uint16_t rightItemId, uint8_t rightTier, bool success, uint8_t bonus, uint8_t coreCount, bool convergence) const {
 		if (client) {
-			client->sendForgeFusionItem(itemId, tier, success, bonus, coreCount, convergence);
-		}
-	}
-	void sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem, bool convergence) const {
-		if (client) {
-			client->sendTransferItemTier(firstItem, tier, secondItem, convergence);
+			client->sendForgeResult(actionType, leftItemId, leftTier, rightItemId, rightTier, success, bonus, coreCount, convergence);
 		}
 	}
 	void sendForgeHistory(uint8_t page) const {

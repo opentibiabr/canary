@@ -38,7 +38,8 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 			end
 		end
 
-		if player:getStorageValue(Storage.IsTraining) > os.time() then
+		local hasExhaustion = player:kv():get("training-exhaustion") or 0
+		if hasExhaustion > os.time() then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This exercise dummy can only be used after a 30 second cooldown.")
 			return true
 		end
@@ -48,7 +49,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 			_G.OnExerciseTraining[playerId].event = addEvent(ExerciseEvent, 0, playerId, targetPos, item.itemid, targetId)
 			_G.OnExerciseTraining[playerId].dummyPos = targetPos
 			player:setTraining(true)
-			player:setStorageValue(Storage.IsTraining, os.time() + 30)
+			player:kv():set("training-exhaustion", os.time() + 30)
 		end
 		return true
 	end

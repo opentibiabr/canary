@@ -137,7 +137,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, FLAG_CHILDISOWNER);
 	registerEnum(L, FLAG_PATHFINDING);
 	registerEnum(L, FLAG_IGNOREFIELDDAMAGE);
-	registerEnum(L, FLAG_IGNORENOTMOVEABLE);
+	registerEnum(L, FLAG_IGNORENOTMOVABLE);
 	registerEnum(L, FLAG_IGNOREAUTOSTACK);
 
 	// Use with house:getAccessList, house:setAccessList
@@ -687,7 +687,7 @@ void LuaEnums::initConstPropEnums(lua_State* L) {
 	registerEnum(L, CONST_PROP_BLOCKPATH);
 	registerEnum(L, CONST_PROP_ISVERTICAL);
 	registerEnum(L, CONST_PROP_ISHORIZONTAL);
-	registerEnum(L, CONST_PROP_MOVEABLE);
+	registerEnum(L, CONST_PROP_MOVABLE);
 	registerEnum(L, CONST_PROP_IMMOVABLEBLOCKSOLID);
 	registerEnum(L, CONST_PROP_IMMOVABLEBLOCKPATH);
 	registerEnum(L, CONST_PROP_IMMOVABLENOFIELDBLOCKPATH);
@@ -1130,7 +1130,7 @@ void LuaEnums::initReturnValueEnums(lua_State* L) {
 	registerEnum(L, RETURNVALUE_THEREISNOWAY);
 	registerEnum(L, RETURNVALUE_DESTINATIONOUTOFREACH);
 	registerEnum(L, RETURNVALUE_CREATUREBLOCK);
-	registerEnum(L, RETURNVALUE_NOTMOVEABLE);
+	registerEnum(L, RETURNVALUE_NOTMOVABLE);
 	registerEnum(L, RETURNVALUE_DROPTWOHANDEDITEM);
 	registerEnum(L, RETURNVALUE_BOTHHANDSNEEDTOBEFREE);
 	registerEnum(L, RETURNVALUE_CANONLYUSEONEWEAPON);
@@ -1200,6 +1200,8 @@ void LuaEnums::initReturnValueEnums(lua_State* L) {
 	registerEnum(L, RETURNVALUE_NOTENOUGHFISHLEVEL);
 	registerEnum(L, RETURNVALUE_REWARDCHESTISEMPTY);
 	registerEnum(L, RETURNVALUE_CONTACTADMINISTRATOR);
+	registerEnum(L, RETURNVALUE_ITEMISNOTYOURS);
+	registerEnum(L, RETURNVALUE_ITEMUNTRADEABLE);
 }
 
 // Reload
@@ -1237,10 +1239,10 @@ void LuaEnums::initForgeEnums(lua_State* L) {
 
 // Webhook default colors
 void LuaEnums::initWebhookEnums(lua_State* L) {
-	registerEnum(L, WEBHOOK_COLOR_ONLINE);
-	registerEnum(L, WEBHOOK_COLOR_OFFLINE);
-	registerEnum(L, WEBHOOK_COLOR_WARNING);
-	registerEnum(L, WEBHOOK_COLOR_RAID);
+	registerEnum(L, WEBHOOK_COLOR_GREEN);
+	registerEnum(L, WEBHOOK_COLOR_RED);
+	registerEnum(L, WEBHOOK_COLOR_YELLOW);
+	registerEnum(L, WEBHOOK_COLOR_BLUE);
 }
 
 void LuaEnums::initBosstiaryEnums(lua_State* L) {

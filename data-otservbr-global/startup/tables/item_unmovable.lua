@@ -1,6 +1,6 @@
 -- Look README.md for see the reserved action/unique numbers
 
-ItemUnmoveableAction = {
+ItemUnmovableAction = {
 	-- Unmovable action, add new position and it create in-game
 	[100] = {
 		itemId = false,

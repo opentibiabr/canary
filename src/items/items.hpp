@@ -326,7 +326,7 @@ public:
 	bool wrapable = false;
 	bool wrapContainer = false;
 	bool multiUse = false;
-	bool moveable = false;
+	bool movable = false;
 	bool canReadText = false;
 	bool canWriteText = false;
 	bool isVertical = false;
@@ -342,6 +342,7 @@ public:
 	bool loaded = false;
 	bool spellbook = false;
 	bool isWrapKit = false;
+	bool m_canBeUsedByGuests = false;
 };
 
 class Items {

@@ -8587,8 +8587,8 @@ void ProtocolGame::sendDisableLoginMusic() {
 
 	NetworkMessage msg;
 	msg.addByte(0x85)
-	msg.addByte(0x01)
-	msg.addByte(0x00)
-	msg.addByte(0x00)
-	writeToOutputBuffer(msg);
+		msg.addByte(0x01)
+			msg.addByte(0x00)
+				msg.addByte(0x00)
+					writeToOutputBuffer(msg);
 }

@@ -98,8 +98,6 @@ struct Position {
 		return Position(x - p1.x, y - p1.y, z - p1.z);
 	}
 
-	std::unordered_set<Position> getSurroundingPositions(uint32_t radius = 1) const;
-
 	std::string toString() const {
 		std::string str;
 		return str.append("( ")

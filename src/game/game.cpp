@@ -9101,7 +9101,6 @@ void Game::playerForgeFuseItems(uint32_t playerId, ForgeAction_t actionType, uin
 	auto coreSuccess = usedCore ? g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE, __FUNCTION__) : 0;
 	auto finalRate = baseSuccess + coreSuccess;
 	auto roll = static_cast<uint8_t>(uniform_random(1, 100)) <= finalRate;
-	auto itemName = Item::items[firstItemId].name;
 
 	bool success = roll ? true : false;
 

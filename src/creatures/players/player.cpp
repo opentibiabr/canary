@@ -7287,13 +7287,6 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 		return;
 	}
 
-	std::shared_ptr<Item> newDonorItem = Item::CreateItem(donorItemId, 1);
-	if (!newDonorItem) {
-		g_logger().error("[Log 4] Player with name {} failed to transfer item with id {}", getName(), donorItemId);
-		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
-		return;
-	}
-
 	std::shared_ptr<Item> newReceiveItem = Item::CreateItem(receiveItemId, 1);
 	if (!newReceiveItem) {
 		g_logger().error("[Log 6] Player with name {} failed to fuse item with id {}", getName(), receiveItemId);
@@ -7362,7 +7355,7 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 		return;
 	}
 
-	history.firstItemName = newDonorItem->getName();
+	history.firstItemName = Item::items[donorItemId].name;
 	history.secondItemName = newReceiveItem->getName();
 	history.createdAt = getTimeNow();
 	history.convergence = convergence;

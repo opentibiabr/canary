@@ -44510,8 +44510,8 @@
 		<attribute key="stopduration" value="0"/>
 		<attribute key="showduration" value="1"/>
 		<attribute key="magiclevelpoints" value="2"/>
-		<attribute key="criticalhitdamage" value="35"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="3500"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="duration" value="900"/>
 		<attribute key="decayTo" value="0"/>
 		<attribute key="range" value="4"/>
@@ -49510,8 +49510,8 @@
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="absorbpercentholy" value="8"/>
 		<attribute key="magiclevelpoints" value="2"/>
-		<attribute key="criticalhitdamage" value="25"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="2500"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="range" value="5"/>
 		<attribute key="weight" value="3300"/>
 		<attribute key="imbuementslot" value="2">
@@ -58814,8 +58814,8 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="magiclevelpoints" value="2"/>
-		<attribute key="criticalhitdamage" value="35"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="3500"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="range" value="5"/>
 		<attribute key="weight" value="2600"/>
 		<attribute key="imbuementslot" value="2">

@@ -47,20 +47,3 @@ std::ostream &operator<<(std::ostream &os, const Direction &dir) {
 
 	return os;
 }
-
-std::unordered_set<Position> Position::getSurroundingPositions(uint32_t radius /*= 1*/) const {
-	std::unordered_set<Position> positions;
-	int centerX = getX();
-	int centerY = getY();
-
-	for (int x = centerX - radius; x <= centerX + radius; ++x) {
-		for (int y = centerY - radius; y <= centerY + radius; ++y) {
-			int distanceSquared = (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY);
-			if (distanceSquared <= radius * radius) {
-				positions.insert(Position(x, y, getZ()));
-			}
-		}
-	}
-
-	return positions;
-}

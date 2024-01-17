@@ -708,7 +708,7 @@ private:
 
 	static int luaPlayerKV(lua_State* L);
 
-	static int luaPlayerTakeScreenshot(lua_State* L);
+	static int luaPlayerSendTakeScreenshot(lua_State* L);
 
 	friend class CreatureFunctions;
 };

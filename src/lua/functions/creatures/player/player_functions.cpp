@@ -4159,7 +4159,7 @@ int PlayerFunctions::luaPlayerKV(lua_State* L) {
 
 int PlayerFunctions::luaSendPlayerTakeScreenshot(lua_State* L) {
 	// player:sendTakeScreenshot(screenshotType)
-	const auto& player = getUserdataShared<Player>(L, 1);
+	const auto &player = getUserdataShared<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;

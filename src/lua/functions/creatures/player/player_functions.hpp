@@ -356,7 +356,7 @@ private:
 
 		registerMethod(L, "Player", "kv", PlayerFunctions::luaPlayerKV);
 
-		registerMethod(L, "Player", "takeScreenshot", PlayerFunctions::luaPlayerTakeScreenshot);
+		registerMethod(L, "Player", "sendTakeScreenshot", PlayerFunctions::luaPlayerSendTakeScreenshot);
 
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);

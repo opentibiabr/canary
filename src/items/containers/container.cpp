@@ -241,6 +241,10 @@ std::ostringstream &Container::getContentDescription(std::ostringstream &os, boo
 	return os;
 }
 
+uint32_t Container::getMaxCapacity() const {
+	return m_maxItems;
+}
+
 bool Container::isStoreInbox() const {
 	return getID() == ITEM_STORE_INBOX;
 }

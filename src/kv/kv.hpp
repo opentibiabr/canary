@@ -61,7 +61,7 @@ public:
 	}
 
 private:
-	static uint64_t lastTimestamp_;
+	static int64_t lastTimestamp_;
 	static uint64_t counter_;
 	static std::mutex mutex_;
 };

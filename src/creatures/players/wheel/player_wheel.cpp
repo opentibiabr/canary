@@ -2137,7 +2137,7 @@ bool PlayerWheel::checkDivineEmpowerment() {
 		return updateClient;
 	}
 
-	int32_t magicBonus = 0;
+	int32_t damageBonus = 0;
 	bool isOwner = false;
 	for (const auto &item : *items) {
 		if (item->getID() == ITEM_DIVINE_EMPOWERMENT && item->isOwner(m_player.getGUID())) {
@@ -2149,12 +2149,17 @@ bool PlayerWheel::checkDivineEmpowerment() {
 	if (isOwner) {
 		uint8_t stage = getStage(WheelStage_t::DIVINE_EMPOWERMENT);
 		if (stage >= 3) {
-			magicBonus = 7;
+			damageBonus = 7;
 		} else if (stage >= 2) {
-			magicBonus = 5;
+			damageBonus = 5;
 		} else if (stage >= 1) {
-			magicBonus = 3;
+			damageBonus = 3;
 		}
+	}
+
+	if (damageBonus != getMajorStat(WheelMajor_t::DAMAGE)) {
+		setMajorStat(WheelMajor_t::DAMAGE, damageBonus);
+		updateClient = true;
 	}
 
 	return updateClient;

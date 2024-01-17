@@ -12,7 +12,7 @@
 #include "kv/kv.hpp"
 #include "lib/di/container.hpp"
 
-uint64_t KV::lastTimestamp_ = 0;
+int64_t KV::lastTimestamp_ = 0;
 uint64_t KV::counter_ = 0;
 std::mutex KV::mutex_ = {};
 

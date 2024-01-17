@@ -41,9 +41,9 @@ public:
 
 		struct Revelation {
 			std::array<Stats, static_cast<size_t>(WheelStageEnum_t::TOTAL_COUNT)> stats = {
-				Stats { 16, 16 },
-				Stats { 36, 36 },
-				Stats { 80, 80 }
+				Stats { 4, 4 },
+				Stats { 9, 9 },
+				Stats { 20, 20 }
 			};
 		};
 

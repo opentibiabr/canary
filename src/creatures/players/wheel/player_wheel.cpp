@@ -2137,7 +2137,7 @@ bool PlayerWheel::checkDivineEmpowerment() {
 		return updateClient;
 	}
 
-	int32_t magicBonus = 0;
+	int32_t damageBonus = 0;
 	bool isOwner = false;
 	for (const auto &item : *items) {
 		if (item->getID() == ITEM_DIVINE_EMPOWERMENT && item->isOwner(m_player.getGUID())) {

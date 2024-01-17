@@ -4156,3 +4156,20 @@ int PlayerFunctions::luaPlayerKV(lua_State* L) {
 	setMetatable(L, -1, "KV");
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerGetStoreInbox(lua_State* L) {
+	// player:getStoreInbox()
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (auto item = player->getStoreInbox()) {
+		pushUserdata<Item>(L, item);
+		setItemMetatable(L, -1, item);
+	} else {
+		pushBoolean(L, false);
+	}
+	return 1;
+}

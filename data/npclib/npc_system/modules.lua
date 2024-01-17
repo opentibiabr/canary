@@ -99,7 +99,7 @@ if Modules == nil then
 			return false
 		end
 
-		if player:isPremium() or not parameters.premium then
+		if player:isPremium() then
 			local promotion = player:getVocation():getPromotion()
 			local hasPromotion = player:kv():get("promoted")
 			if not promotion or hasPromotion then

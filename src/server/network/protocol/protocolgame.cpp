@@ -5217,7 +5217,12 @@ void ProtocolGame::sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId
 	msg.addByte(static_cast<uint8_t>(actionType));
 	msg.addByte(convergence);
 
-	msg.addByte(convergence ? true : success);
+	if (convergence && actionType == ForgeAction_t::FUSION) {
+		success = true;
+		std::swap(leftItemId, rightItemId);
+	}
+
+	msg.addByte(success);
 
 	msg.add<uint16_t>(leftItemId);
 	msg.addByte(leftTier);

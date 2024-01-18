@@ -4118,11 +4118,16 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 			break;
 		}
 		case MESSAGE_HEALED:
-		case MESSAGE_HEALED_OTHERS:
+		case MESSAGE_HEALED_OTHERS: {
+			msg.addPosition(message.position);
+			msg.add<uint32_t>(message.primary.value);
+			msg.addByte(message.primary.color);
+			break;
+		}
 		case MESSAGE_EXPERIENCE:
 		case MESSAGE_EXPERIENCE_OTHERS: {
 			msg.addPosition(message.position);
-			msg.add<uint32_t>(message.primary.value);
+			msg.add<uint64_t>(message.primary.value);
 			msg.addByte(message.primary.color);
 			break;
 		}

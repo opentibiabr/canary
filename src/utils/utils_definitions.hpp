@@ -786,18 +786,18 @@ enum Concoction_t : uint16_t {
 	PhysicalAmplification = 36742,
 };
 
-enum Screenshot_t : uint8_t {
-	None = 0,
-	Achievement = 1,
-	BestiaryEntryCompleted = 2,
-	BestiaryEntryUnlocked = 3,
-	BossDefeated = 4,
-	DeathPve = 5,
-	DeathPvp = 6,
-	LevelUp = 7,
-	PlayerKillAssist = 8,
-	PlayerKill = 9,
-	PlayerAttacking = 10,
-	TreasureFound = 11,
-	SkillUp = 12,
+enum Screenshot_t: uint8_t {
+	SCREENSHOT_TYPE_NONE = 0,
+	SCREENSHOT_TYPE_ACHIEVEMENT = 1,
+	SCREENSHOT_TYPE_BESTIARYENTRYCOMPLETED = 2,
+	SCREENSHOT_TYPE_BESTIARYENTRYUNLOCKED = 3,
+	SCREENSHOT_TYPE_BOSSDEFEATED = 4,
+	SCREENSHOT_TYPE_DEATHPVE = 5,
+	SCREENSHOT_TYPE_DEATHPVP = 6,
+	SCREENSHOT_TYPE_LEVELUP = 7,
+	SCREENSHOT_TYPE_PLAYERKILLASSIST = 8,
+	SCREENSHOT_TYPE_PLAYERKILL = 9,
+	SCREENSHOT_TYPE_PLAYERATTACKING = 10,
+	SCREENSHOT_TYPE_TREASUREFOUND = 11,
+	SCREENSHOT_TYPE_SKILLUP = 12
 };

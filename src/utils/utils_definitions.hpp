@@ -786,7 +786,7 @@ enum Concoction_t : uint16_t {
 	PhysicalAmplification = 36742,
 };
 
-enum Screenshot_t: uint8_t {
+enum Screenshot_t : uint8_t {
 	SCREENSHOT_TYPE_NONE = 0,
 	SCREENSHOT_TYPE_ACHIEVEMENT = 1,
 	SCREENSHOT_TYPE_BESTIARYENTRYCOMPLETED = 2,

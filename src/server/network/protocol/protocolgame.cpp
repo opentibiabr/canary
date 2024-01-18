@@ -8579,9 +8579,8 @@ void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
 	addGameTask(&Game::playerSaveWheel, player->getID(), msg);
 }
 
-void ProtocolGame::sendTakeScreenshot(uint8_t screenshotType) {
-	if (screenshotType == Screenshot_t
-		: None || oldProtocol) {
+void ProtocolGame::sendTakeScreenshot(Screenshot_t screenshotType) {
+	if (screenshotType == SCREENSHOT_TYPE_NONE || oldProtocol) {
 		return;
 	}
 

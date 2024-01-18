@@ -4182,7 +4182,7 @@ int PlayerFunctions::luaSendPlayerTakeScreenshot(lua_State* L) {
 		return 1;
 	}
 
-	auto screenshotType = getNumber<uint8_t>(L, 2);
+	auto screenshotType = getNumber<Screenshot_t>(L, 2);
 	player->sendTakeScreenshot(screenshotType);
 	pushBoolean(L, true);
 	return 1;

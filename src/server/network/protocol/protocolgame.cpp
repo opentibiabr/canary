@@ -8580,12 +8580,13 @@ void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
 }
 
 void ProtocolGame::sendTakeScreenshot(uint8_t screenshotType) {
-		if (screenshotType == Screenshot_t: None || oldProtocol) {
-			return;
-		}
-
-		NetworkMessage msg;
-		msg.addByte(0x75);
-		msg.addByte(screenshotType);
-		writeToOutputBuffer(msg);
+	if (screenshotType == Screenshot_t
+		: None || oldProtocol) {
+		return;
 	}
+
+	NetworkMessage msg;
+	msg.addByte(0x75);
+	msg.addByte(screenshotType);
+	writeToOutputBuffer(msg);
+}

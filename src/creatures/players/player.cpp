@@ -7063,9 +7063,9 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 		return;
 	}
 
-	auto dustCost = static_cast<uint64_t>(g_configManager().getNumber(FORGE_FUSION_AND_TRANSFER_DUST_COST, __FUNCTION__));
+	auto configKey = convergence ? FORGE_CONVERGENCE_FUSION_DUST_COST : FORGE_FUSION_DUST_COST;
+	auto dustCost = static_cast<uint64_t>(g_configManager().getNumber(configKey, __FUNCTION__));
 	if (convergence) {
-		dustCost = static_cast<uint64_t>(g_configManager().getNumber(FORGE_CONVERGENCE_FUSION_DUST_COST, __FUNCTION__));
 		firstForgedItem->setTier(tier + 1);
 		history.dustCost = dustCost;
 		setForgeDusts(getForgeDusts() - dustCost);

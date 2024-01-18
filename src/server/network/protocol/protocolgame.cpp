@@ -4937,13 +4937,13 @@ void ProtocolGame::sendForgingData() {
 	msg.add<uint16_t>(player->getForgeDustLevel());
 	// (conversion) (right column bottom) Max stored dust limit - 325
 	msg.add<uint16_t>(g_configManager().getNumber(FORGE_MAX_DUST, __FUNCTION__));
-	// (fusion and transfer) Dust cost - 100
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_FUSION_AND_TRANSFER_DUST_COST, __FUNCTION__)));
-	// (convergence fusion) Dust cost - 130
+	// (normal fusion) dust cost - 100
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_FUSION_DUST_COST, __FUNCTION__)));
+	// (convergence fusion) dust cost - 130
 	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CONVERGENCE_FUSION_DUST_COST, __FUNCTION__)));
-	// (convergence fusion) Success rate - 100
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CONVERGENCE_FUSION_SUCCESS_RATE, __FUNCTION__)));
-	// (convergence transfer) Dust cost - 160
+	// (normal transfer) dust cost - 100
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TRANSFER_DUST_COST, __FUNCTION__)));
+	// (convergence transfer) dust cost - 160
 	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CONVERGENCE_TRANSFER_DUST_COST, __FUNCTION__)));
 	// (fusion) Base success rate - 50
 	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE, __FUNCTION__)));

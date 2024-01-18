@@ -227,10 +227,9 @@ bool ConfigManager::load() {
 	loadIntConfig(L, FORGE_SLIVER_AMOUNT, "forgeSliverAmount", 3);
 	loadIntConfig(L, FORGE_CORE_COST, "forgeCoreCost", 50);
 	loadIntConfig(L, FORGE_MAX_DUST, "forgeMaxDust", 225);
-	loadIntConfig(L, FORGE_FUSION_AND_TRANSFER_DUST_COST, "forgeFusionCost", 100);
-	loadIntConfig(L, FORGE_TRANSFER_DUST_COST, "forgeTransferCost", 100);
-	loadIntConfig(L, FORGE_CONVERGENCE_FUSION_SUCCESS_RATE, "forgeConvergenceFusionSuccessRate", 100);
+	loadIntConfig(L, FORGE_FUSION_DUST_COST, "forgeFusionDustCost", 100);
 	loadIntConfig(L, FORGE_CONVERGENCE_FUSION_DUST_COST, "forgeConvergenceFusionCost", 130);
+	loadIntConfig(L, FORGE_TRANSFER_DUST_COST, "forgeTransferDustCost", 100);
 	loadIntConfig(L, FORGE_CONVERGENCE_TRANSFER_DUST_COST, "forgeConvergenceTransferCost", 160);
 	loadIntConfig(L, FORGE_BASE_SUCCESS_RATE, "forgeBaseSuccessRate", 50);
 	loadIntConfig(L, FORGE_BONUS_SUCCESS_RATE, "forgeBonusSuccessRate", 15);

@@ -355,6 +355,7 @@ private:
 		registerMethod(L, "Player", "getVipTime", PlayerFunctions::luaPlayerGetVipTime);
 
 		registerMethod(L, "Player", "kv", PlayerFunctions::luaPlayerKV);
+		registerMethod(L, "Player", "getStoreInbox", PlayerFunctions::luaPlayerGetStoreInbox);
 
 		registerMethod(L, "Player", "sendTakeScreenshot", PlayerFunctions::luaPlayerSendTakeScreenshot);
 
@@ -707,6 +708,7 @@ private:
 	static int luaPlayerGetVipTime(lua_State* L);
 
 	static int luaPlayerKV(lua_State* L);
+	static int luaPlayerGetStoreInbox(lua_State* L);
 
 	static int luaPlayerSendTakeScreenshot(lua_State* L);
 

@@ -7813,6 +7813,16 @@ std::shared_ptr<Container> Player::getLootPouch() {
 	return container;
 }
 
+std::shared_ptr<Container> Player::getStoreInbox() const {
+	auto thing = getThing(CONST_SLOT_STORE_INBOX);
+	if (!thing) {
+		return nullptr;
+	}
+
+	auto storeInbox = thing->getContainer();
+	return storeInbox ? storeInbox : nullptr;
+}
+
 bool Player::hasPermittedConditionInPZ() const {
 	static const std::unordered_set<ConditionType_t> allowedConditions = {
 		CONDITION_ENERGY,

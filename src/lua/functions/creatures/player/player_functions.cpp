@@ -4157,6 +4157,23 @@ int PlayerFunctions::luaPlayerKV(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetStoreInbox(lua_State* L) {
+	// player:getStoreInbox()
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (auto item = player->getStoreInbox()) {
+		pushUserdata<Item>(L, item);
+		setItemMetatable(L, -1, item);
+	} else {
+		pushBoolean(L, false);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaSendPlayerTakeScreenshot(lua_State* L) {
 	// player:sendTakeScreenshot(screenshotType)
 	const auto &player = getUserdataShared<Player>(L, 1);

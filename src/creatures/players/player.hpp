@@ -1662,7 +1662,7 @@ public:
 		}
 	}
 
-	void sendTakeScreenshot(uint8_t screenshotType) {
+	void sendTakeScreenshot(Screenshot_t screenshotType) {
 		if (client) {
 			client->sendTakeScreenshot(screenshotType);
 		}

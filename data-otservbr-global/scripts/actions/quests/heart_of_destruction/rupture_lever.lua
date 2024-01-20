@@ -22,7 +22,7 @@ local config = {
 	},
 	onUseExtra = function()
 		Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceStage, 0)
-		Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceActive, false)
+		Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceActive, 0)
 
 		local tile = Tile(Position(32326, 31250, 14))
 		if tile then

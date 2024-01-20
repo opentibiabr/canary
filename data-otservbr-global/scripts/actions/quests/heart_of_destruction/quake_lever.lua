@@ -23,8 +23,8 @@ local config = {
 	onUseExtra = function()
 		Game.setStorageValue(GlobalStorage.HeartOfDestruction.ForeshockHealth, 105000)
 		Game.setStorageValue(GlobalStorage.HeartOfDestruction.AftershockHealth, 105000)
-		Game.setStorageValue(GlobalStorage.HeartOfDestruction.ForeshockStage, 0)
-		Game.setStorageValue(GlobalStorage.HeartOfDestruction.AftershockStage, 0)
+		Game.setStorageValue(GlobalStorage.HeartOfDestruction.ForeshockStage, -1)
+		Game.setStorageValue(GlobalStorage.HeartOfDestruction.AftershockStage, -1)
 		local tile = Tile(Position(32199, 31248, 14))
 		if tile then
 			local vortex = tile:getItemById(23482)

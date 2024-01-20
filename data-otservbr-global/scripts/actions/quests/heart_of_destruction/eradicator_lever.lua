@@ -25,7 +25,7 @@ local config = {
 		Game.setStorageValue(GlobalStorage.HeartOfDestruction.EradicatorWeak, 0)
 
 		eradicatorEvent = addEvent(function()
-			eradicatorReleaseT = true
+			Game.setStorageValue(GlobalStorage.HeartOfDestruction.EradicatorReleaseT, 1)
 		end, 74000)
 
 		local tile = Tile(Position(32318, 31284, 14))

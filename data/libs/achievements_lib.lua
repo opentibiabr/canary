@@ -698,6 +698,7 @@ function Player.addAchievement(self, ach, denyMsg)
 
 	if not self:hasAchievement(achievement.id) then
 		self:setStorageValue(ACHIEVEMENTS_BASE + achievement.id, 1)
+		self:sendTakeScreenshot(SCREENSHOT_TYPE_ACHIEVEMENT)
 		if not denyMsg then
 			self:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Congratulations! You earned the achievement "' .. achievement.name .. '".')
 		end

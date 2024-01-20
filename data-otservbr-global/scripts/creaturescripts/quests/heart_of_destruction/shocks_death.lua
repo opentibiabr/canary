@@ -16,6 +16,7 @@ function shocksDeath.onDeath(creature)
 	if creatureName == "foreshock" then
 		local monster = Game.createMonster("Aftershock", Position(32208, 31248, 14), false, true)
 		if monster then
+			local aftershockHealth = Game.getStorageValue(GlobalStorage.HeartOfDestruction.AftershockHealth) > 0 and Game.getStorageValue(GlobalStorage.HeartOfDestruction.AftershockHealth) or 0
 			monster:addHealth(-monster:getHealth() + aftershockHealth, COMBAT_PHYSICALDAMAGE)
 			createSparksOfDestruction()
 		end

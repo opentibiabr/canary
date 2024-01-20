@@ -15,7 +15,7 @@ function ruptureResonance.onThink(creature)
 		return false
 	end
 
-	local ruptureResonanceStage = Game.getStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceStage)
+	local ruptureResonanceStage = Game.getStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceStage) > 0 and Game.getStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceStage) or 0
 	local resonanceActive = Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceActive)
 
 	local hpPercent = (creature:getHealth() / creature:getMaxHealth()) * 100
@@ -23,7 +23,6 @@ function ruptureResonance.onThink(creature)
 		createSpawnWave(1)
 	elseif hpPercent <= 60 and ruptureResonanceStage == 1 and resonanceActive ~= 1 then
 		createSpawnWave(2)
-		Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceStage, 0)
 	elseif hpPercent <= 40 and ruptureResonanceStage == 2 and resonanceActive ~= 1 then
 		createSpawnWave(3)
 	elseif hpPercent <= 25 and ruptureResonanceStage == 3 and resonanceActive ~= 1 then

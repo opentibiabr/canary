@@ -31,8 +31,8 @@ function eradicatorTransform.onThink(creature)
 			Game.setStorageValue(GlobalStorage.HeartOfDestruction.EradicatorReleaseT, 1)
 		end, eradicatorWeak == 1 and 74000 or 9000)
 
-		Game.setStorageValue(GlobalStorage.HeartOfDestruction.EradicatorWeak, eradicatorWeak == 1 and 0 or 1)
-		Game.setStorageValue(GlobalStorage.HeartOfDestruction.EradicatorReleaseT, 0)
+		Game.setStorageValue(GlobalStorage.HeartOfDestruction.EradicatorWeak, eradicatorWeak == 1 and -1 or 1)
+		Game.setStorageValue(GlobalStorage.HeartOfDestruction.EradicatorReleaseT, -1)
 	end
 	return true
 end

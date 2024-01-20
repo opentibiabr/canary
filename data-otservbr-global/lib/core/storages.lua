@@ -2550,7 +2550,7 @@ Storage = {
 			RiftWarriorOutfits = {},
 		},
 		U10_94 = { -- update 10.94 - Reserved Storages 45351 - 45450
-			 = {},
+			HeartOfDestruction = {},
 		},
 		U11_02 = { -- update 11.02 - Reserved Storages 45451 - 45650
 			FestiveOutfits = {},

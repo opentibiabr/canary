@@ -4174,7 +4174,7 @@ int PlayerFunctions::luaPlayerGetStoreInbox(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaSendPlayerTakeScreenshot(lua_State* L) {
+int PlayerFunctions::luaPlayerSendTakeScreenshot(lua_State* L) {
 	// player:sendTakeScreenshot(screenshotType)
 	const auto &player = getUserdataShared<Player>(L, 1);
 	if (!player) {

@@ -3067,6 +3067,10 @@ GlobalStorage = {
 	HeartOfDestruction = {
 		-- Reserved storage from 60172 - 60177
 		ChargedAnomaly = 60172,
+		ForeshockHealth = 60173,
+		AftershockHealth = 60174,
+		ForeshockStage = 60175,
+		AftershockStage = 60176,
 	},
 	FuryGates = 65000,
 	Yakchal = 65001,

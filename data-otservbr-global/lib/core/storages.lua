@@ -3065,8 +3065,10 @@ GlobalStorage = {
 		},
 	},
 	HeartOfDestruction = {
-		-- Reserved storage from 60172 - 60177
+		-- Reserved storage from 60172 - 60178
 		ChargedAnomaly = 60172,
+		RuptureResonanceStage = 60177,
+		RuptureResonanceActive = 60178,
 	},
 	FuryGates = 65000,
 	Yakchal = 65001,

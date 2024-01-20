@@ -2550,7 +2550,7 @@ Storage = {
 			RiftWarriorOutfits = {},
 		},
 		U10_94 = { -- update 10.94 - Reserved Storages 45351 - 45450
-			HeartOfDestruction = {},
+			 = {},
 		},
 		U11_02 = { -- update 11.02 - Reserved Storages 45451 - 45650
 			FestiveOutfits = {},
@@ -3065,8 +3065,10 @@ GlobalStorage = {
 		},
 	},
 	HeartOfDestruction = {
-		-- Reserved storage from 60172 - 60177
+		-- Reserved storage from 60172 - 60180
 		ChargedAnomaly = 60172,
+		EradicatorWeak = 60178,
+		EradicatorReleaseT = 60179,
 	},
 	FuryGates = 65000,
 	Yakchal = 65001,

@@ -21,8 +21,8 @@ local config = {
 		{ name = "Spark of Destruction", pos = Position(32338, 31250, 14) },
 	},
 	onUseExtra = function()
-		Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceStage, 0)
-		Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceActive, 0)
+		Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceStage, -1)
+		Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceActive, -1)
 
 		local tile = Tile(Position(32326, 31250, 14))
 		if tile then

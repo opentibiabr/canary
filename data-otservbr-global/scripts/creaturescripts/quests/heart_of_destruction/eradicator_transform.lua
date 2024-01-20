@@ -11,7 +11,7 @@ function eradicatorTransform.onThink(creature)
 		local bossHealth = creature:getHealth()
 		creature:remove()
 
-		local eradicatorWeak = Game.getStorageValue(GlobalStorage.HeartOfDestruction.EradicatorWeak) > 0 and Game.getStorageValue(GlobalStorage.HeartOfDestruction.EradicatorWeak) or 0
+		local eradicatorWeak = Game.getStorageValue(GlobalStorage.HeartOfDestruction.EradicatorWeak) > 0 and 1 or 0
 		local monsterName = eradicatorWeak == 1 and "Eradicator" or "Eradicator2"
 		local monster = Game.createMonster(monsterName, bossPosition, false, true)
 		if not monster then

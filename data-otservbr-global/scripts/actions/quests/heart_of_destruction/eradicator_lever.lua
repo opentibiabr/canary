@@ -21,8 +21,8 @@ local config = {
 		{ name = "Spark of Destruction", pos = Position(32314, 31282, 14) },
 	},
 	onUseExtra = function()
-		Game.setStorageValue(GlobalStorage.HeartOfDestruction.EradicatorReleaseT, 0)
-		Game.setStorageValue(GlobalStorage.HeartOfDestruction.EradicatorWeak, 0)
+		Game.setStorageValue(GlobalStorage.HeartOfDestruction.EradicatorReleaseT, -1)
+		Game.setStorageValue(GlobalStorage.HeartOfDestruction.EradicatorWeak, -1)
 
 		eradicatorEvent = addEvent(function()
 			Game.setStorageValue(GlobalStorage.HeartOfDestruction.EradicatorReleaseT, 1)

@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1030 then
+	return
+end
+
 local internalNpcName = "Sandomo"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

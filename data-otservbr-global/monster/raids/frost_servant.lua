@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1020 then
+	return
+end
+
 local mType = Game.createMonsterType("Frost Servant")
 local monster = {}
 

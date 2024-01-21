@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 820 then
+	return
+end
+
 local internalNpcName = "Sorcerer Estrella"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

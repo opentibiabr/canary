@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1290 then
+	return
+end
+
 local internalNpcName = "Gnomish Operative"
 local npcType = Game.createNpcType("Gnomish Operative (Catching)")
 local npcConfig = {}

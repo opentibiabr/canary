@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 640 then
+	return
+end
+
 local mType = Game.createMonsterType("Fire Elemental")
 local monster = {}
 

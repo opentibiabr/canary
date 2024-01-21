@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 720 then
+	return
+end
+
 local mType = Game.createMonsterType("Banshee")
 local monster = {}
 

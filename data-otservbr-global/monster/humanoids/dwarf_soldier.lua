@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 610 then
+	return
+end
+
 local mType = Game.createMonsterType("Dwarf Soldier")
 local monster = {}
 

@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 710 then
+	return
+end
+
 local internalNpcName = "Xed"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

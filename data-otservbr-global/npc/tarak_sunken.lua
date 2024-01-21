@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 840 then
+	return
+end
+
 local internalNpcName = "Tarak"
 local npcType = Game.createNpcType("Tarak (Sunken)")
 local npcConfig = {}

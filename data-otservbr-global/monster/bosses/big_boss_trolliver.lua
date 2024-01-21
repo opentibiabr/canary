@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 820 then
+	return
+end
+
 local mType = Game.createMonsterType("Big Boss Trolliver")
 local monster = {}
 

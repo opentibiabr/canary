@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 800 then
+	return
+end
+
 local internalNpcName = "Buddel"
 local npcType = Game.createNpcType("Buddel (Tyrsung)")
 local npcConfig = {}

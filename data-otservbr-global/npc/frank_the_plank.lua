@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 980 then
+	return
+end
+
 local internalNpcName = "Frank The Plank"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

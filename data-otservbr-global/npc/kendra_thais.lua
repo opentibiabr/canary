@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1103 then
+	return
+end
+
 local internalNpcName = "Kendra"
 local npcType = Game.createNpcType("Kendra (Thais)")
 local npcConfig = {}

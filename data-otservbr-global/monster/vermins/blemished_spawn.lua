@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1270 then
+	return
+end
+
 local mType = Game.createMonsterType("Blemished Spawn")
 local monster = {}
 

@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 720 then
+	return
+end
+
 local internalNpcName = "Pydar"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

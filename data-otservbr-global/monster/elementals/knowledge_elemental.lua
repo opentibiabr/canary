@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1180 then
+	return
+end
+
 local mType = Game.createMonsterType("Knowledge Elemental")
 local monster = {}
 

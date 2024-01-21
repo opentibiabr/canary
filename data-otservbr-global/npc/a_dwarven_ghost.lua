@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 810 then
+	return
+end
+
 local internalNpcName = "A Dwarven Ghost"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1050 then
+	return
+end
+
 local mType = Game.createMonsterType("Greater Death Minion")
 local monster = {}
 

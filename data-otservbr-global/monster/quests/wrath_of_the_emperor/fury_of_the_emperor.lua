@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 860 then
+	return
+end
+
 local mType = Game.createMonsterType("Fury of the Emperor")
 local monster = {}
 

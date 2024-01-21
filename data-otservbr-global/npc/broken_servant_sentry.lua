@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 910 then
+	return
+end
+
 local internalNpcName = "Broken Servant Sentry"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

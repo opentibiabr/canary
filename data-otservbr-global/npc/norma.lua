@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 640 then
+	return
+end
+
 local internalNpcName = "Norma"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

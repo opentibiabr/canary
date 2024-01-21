@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1285 then
+	return
+end
+
 local mType = Game.createMonsterType("Memory of an Ogre")
 local monster = {}
 

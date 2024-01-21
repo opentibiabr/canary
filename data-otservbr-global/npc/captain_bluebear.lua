@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 640 then
+	return
+end
+
 local internalNpcName = "Captain Bluebear"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

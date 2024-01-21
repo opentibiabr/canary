@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 780 then
+	return
+end
+
 local internalNpcName = "Gelagos"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

@@ -21,7 +21,7 @@ function save.onSay(player, words, param)
 		saveServer()
 		SaveHirelings()
 		logger.info("Saved Hirelings")
-		player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Server is saved ...")
+		player:sendTextMessage(MESSAGE_ADMINISTRATOR, "Server is saved ...")
 	end
 end
 

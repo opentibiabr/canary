@@ -28,9 +28,9 @@ function createRavenHerb.onPeriodChange(period, light)
 	end
 	for index, item in pairs(config) do
 		if item.createItem == period then -- Adding
-			local createItem = Game.createItem(item.bushId, 1, item.pos)
-			createItem:setActionId(item.storage)
-			if createItem then
+			local newItem = Game.createItem(item.bushId, 1, item.pos)
+			if newItem then
+				newItem:setActionId(item.storage)
 				item.pos:sendMagicEffect(CONST_ME_BIGPLANTS)
 			end
 		elseif item.removeItem == period then -- Removing

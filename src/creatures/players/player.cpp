@@ -33,6 +33,10 @@
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
 
+#if CLIENT_VERSION >= 870
+	#include "creatures/appearance/mounts/mounts.hpp"
+#endif
+
 MuteCountMap Player::muteCountMap;
 
 Player::Player(ProtocolGame_ptr p) :
@@ -1218,6 +1222,7 @@ std::shared_ptr<DepotChest> Player::getDepotChest(uint32_t depotId, bool autoCre
 	}
 
 	std::shared_ptr<DepotChest> depotChest;
+#if CLIENT_VERSION >= 1100
 	if (depotId > 0 && depotId < 18) {
 		depotChest = std::make_shared<DepotChest>(ITEM_DEPOT_NULL + depotId);
 	} else if (depotId == 18) {
@@ -1227,7 +1232,11 @@ std::shared_ptr<DepotChest> Player::getDepotChest(uint32_t depotId, bool autoCre
 	} else {
 		depotChest = std::make_shared<DepotChest>(ITEM_DEPOT_XX);
 	}
-
+#else
+	if (depotId > 0 && depotId <= 20) {
+		depotChest = std::make_shared<DepotChest>(ITEM_DEPOT_NULL + depotId);
+	}
+#endif
 	depotChests[depotId] = depotChest;
 	return depotChest;
 }
@@ -1235,7 +1244,9 @@ std::shared_ptr<DepotChest> Player::getDepotChest(uint32_t depotId, bool autoCre
 std::shared_ptr<DepotLocker> Player::getDepotLocker(uint32_t depotId) {
 	auto it = depotLockerMap.find(depotId);
 	if (it != depotLockerMap.end()) {
+#if CLIENT_VERSION >= 940
 		inbox->setParent(it->second);
+#endif
 		for (uint32_t i = g_configManager().getNumber(DEPOT_BOXES, __FUNCTION__); i > 0; i--) {
 			if (std::shared_ptr<DepotChest> depotBox = getDepotChest(i, false)) {
 				depotBox->setParent(it->second->getItemByIndex(0)->getContainer());
@@ -1244,25 +1255,28 @@ std::shared_ptr<DepotLocker> Player::getDepotLocker(uint32_t depotId) {
 		return it->second;
 	}
 
-	// We need to make room for supply stash on 12+ protocol versions and remove it for 10x.
-	bool createSupplyStash = !client->oldProtocol;
-
-	std::shared_ptr<DepotLocker> depotLocker = std::make_shared<DepotLocker>(ITEM_LOCKER, createSupplyStash ? 4 : 3);
-	depotLocker->setDepotId(depotId);
-	depotLocker->internalAddThing(Item::CreateItem(ITEM_MARKET));
-	depotLocker->internalAddThing(inbox);
-	if (createSupplyStash) {
-		depotLocker->internalAddThing(Item::CreateItem(ITEM_SUPPLY_STASH));
-	}
+	uint8_t boxCount = 1;
+#if CLIENT_VERSION >= 1180
+	boxCount = client->oldProtocol ? boxCount : 4;
+#endif
+	std::shared_ptr<DepotLocker> playerDepotLocker = std::make_shared<DepotLocker>(ITEM_LOCKER, boxCount);
+	playerDepotLocker->setDepotId(depotId);
+#if CLIENT_VERSION >= 940
+	playerDepotLocker->internalAddThing(Item::CreateItem(ITEM_MARKET));
+	playerDepotLocker->internalAddThing(inbox);
+#endif
+#if CLIENT_VERSION >= 1180
+	playerDepotLocker->internalAddThing(Item::CreateItem(ITEM_SUPPLY_STASH));
+#endif
 	std::shared_ptr<Container> depotChest = Item::CreateItemAsContainer(ITEM_DEPOT, static_cast<uint16_t>(g_configManager().getNumber(DEPOT_BOXES, __FUNCTION__)));
 	for (uint32_t i = g_configManager().getNumber(DEPOT_BOXES, __FUNCTION__); i > 0; i--) {
 		std::shared_ptr<DepotChest> depotBox = getDepotChest(i, true);
 		depotChest->internalAddThing(depotBox);
 		depotBox->setParent(depotChest);
 	}
-	depotLocker->internalAddThing(depotChest);
-	depotLockerMap[depotId] = depotLocker;
-	return depotLocker;
+	playerDepotLocker->internalAddThing(depotChest);
+	depotLockerMap[depotId] = playerDepotLocker;
+	return playerDepotLocker;
 }
 
 std::shared_ptr<RewardChest> Player::getRewardChest() {
@@ -1741,10 +1755,11 @@ void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) 
 			}
 			sendBlessStatus();
 		}
-
+#if CLIENT_VERSION >= 870
 		if (getCurrentMount() != 0) {
 			toggleMount(true);
 		}
+#endif
 
 		g_game().changePlayerSpeed(static_self_cast<Player>(), 0);
 	}
@@ -1773,11 +1788,13 @@ void Player::onChangeZone(ZoneType_t zone) {
 			onAttackedCreatureDisappear(false);
 		}
 
+#if CLIENT_VERSION >= 870
 		if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && !group->access && isMounted()) {
 			dismount();
 			g_game().internalCreatureChangeOutfit(getPlayer(), defaultOutfit);
 			wasMounted = true;
 		}
+#endif
 	} else {
 		int32_t ticks = g_configManager().getNumber(STAIRHOP_DELAY, __FUNCTION__);
 		if (ticks > 0) {
@@ -1785,10 +1802,12 @@ void Player::onChangeZone(ZoneType_t zone) {
 				addCondition(condition);
 			}
 		}
+#if CLIENT_VERSION >= 870
 		if (wasMounted) {
 			toggleMount(true);
 			wasMounted = false;
 		}
+#endif
 	}
 
 	updateImbuementTrackerStats();
@@ -2178,7 +2197,7 @@ void Player::onThink(uint32_t interval) {
 		} else if (client && idleTime == 60000 * kickAfterMinutes) {
 			std::ostringstream ss;
 			ss << "There was no variation in your behaviour for " << kickAfterMinutes << " minutes. You will be disconnected in one minute if there is no change in your actions until then.";
-			client->sendTextMessage(TextMessage(MESSAGE_ADMINISTRADOR, ss.str()));
+			client->sendTextMessage(TextMessage(MESSAGE_STATUS_WARNING, ss.str()));
 		}
 	}
 
@@ -4472,10 +4491,12 @@ void Player::updateItemsLight(bool internal /*=false*/) {
 void Player::onAddCondition(ConditionType_t type) {
 	Creature::onAddCondition(type);
 
+#if CLIENT_VERSION >= 870
 	if (type == CONDITION_OUTFIT && isMounted()) {
 		dismount();
 		wasMounted = true;
 	}
+#endif
 
 	sendIcons();
 }
@@ -4548,9 +4569,11 @@ void Player::onEndCondition(ConditionType_t type) {
 		}
 	}
 
+#if CLIENT_VERSION >= 870
 	if (type == CONDITION_OUTFIT && wasMounted) {
 		toggleMount(true);
 	}
+#endif
 
 	sendIcons();
 }
@@ -4853,10 +4876,12 @@ void Player::changeSoul(int32_t soulChange) {
 }
 
 bool Player::canWear(uint16_t lookType, uint8_t addons) const {
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && lookType != 0 && !g_game().isLookTypeRegistered(lookType)) {
+#if CLIENT_VERSION > 1100
+	if (g_configManager().getBoolean(WARN_UNREGISTERED_DAT_INFO, __FUNCTION__) && lookType != 0 && !g_game().isLookTypeRegistered(lookType)) {
 		g_logger().warn("[Player::canWear] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
 		return false;
 	}
+#endif
 
 	if (group->access) {
 		return true;
@@ -5716,8 +5741,9 @@ void Player::setCurrentMount(uint8_t mount) {
 	addStorageValue(PSTRG_MOUNTS_CURRENTMOUNT, mount);
 }
 
+#if CLIENT_VERSION >= 870
 bool Player::hasAnyMount() const {
-	const auto mounts = g_game().mounts.getMounts();
+	const auto mounts = g_game().m_mountsPtr->getMounts();
 	for (const auto mount : mounts) {
 		if (hasMount(mount)) {
 			return true;
@@ -5728,7 +5754,7 @@ bool Player::hasAnyMount() const {
 
 uint8_t Player::getRandomMountId() const {
 	std::vector<uint8_t> playerMounts;
-	const auto mounts = g_game().mounts.getMounts();
+	const auto mounts = g_game().m_mountsPtr->getMounts();
 	for (const auto mount : mounts) {
 		if (hasMount(mount)) {
 			playerMounts.push_back(mount->id);
@@ -5772,7 +5798,7 @@ bool Player::toggleMount(bool mount) {
 			currentMountId = getRandomMountId();
 		}
 
-		const auto currentMount = g_game().mounts.getMountByID(currentMountId);
+		const auto currentMount = g_game().m_mountsPtr->getMountByID(currentMountId);
 		if (!currentMount) {
 			return false;
 		}
@@ -5815,7 +5841,7 @@ bool Player::toggleMount(bool mount) {
 }
 
 bool Player::tameMount(uint8_t mountId) {
-	if (!g_game().mounts.getMountByID(mountId)) {
+	if (!g_game().m_mountsPtr->getMountByID(mountId)) {
 		return false;
 	}
 
@@ -5834,7 +5860,7 @@ bool Player::tameMount(uint8_t mountId) {
 }
 
 bool Player::untameMount(uint8_t mountId) {
-	if (!g_game().mounts.getMountByID(mountId)) {
+	if (!g_game().m_mountsPtr->getMountByID(mountId)) {
 		return false;
 	}
 
@@ -5882,7 +5908,7 @@ bool Player::hasMount(const std::shared_ptr<Mount> mount) const {
 }
 
 void Player::dismount() {
-	const auto mount = g_game().mounts.getMountByID(getCurrentMount());
+	const auto mount = g_game().m_mountsPtr->getMountByID(getCurrentMount());
 	if (mount && mount->speed > 0) {
 		g_game().changeSpeed(static_self_cast<Player>(), -mount->speed);
 	}
@@ -5890,6 +5916,7 @@ void Player::dismount() {
 	defaultOutfit.lookMount = 0;
 	setCurrentMount(0);
 }
+#endif
 
 bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 	if (tries == 0 || skill == SKILL_LEVEL) {
@@ -6572,6 +6599,7 @@ bool Player::isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> 
 }
 
 void Player::triggerMomentum() {
+#if CLIENT_VERSION >= 1281
 	auto item = getInventoryItem(CONST_SLOT_HEAD);
 	if (item == nullptr) {
 		return;
@@ -6602,9 +6630,11 @@ void Player::triggerMomentum() {
 			sendTextMessage(MESSAGE_ATTENTION, "Momentum was triggered.");
 		}
 	}
+#endif
 }
 
 void Player::clearCooldowns() {
+#if CLIENT_VERSION >= 870
 	auto it = conditions.begin();
 	while (it != conditions.end()) {
 		auto condItem = *it;
@@ -6618,6 +6648,7 @@ void Player::clearCooldowns() {
 		}
 		++it;
 	}
+#endif
 }
 
 void Player::triggerTranscendance() {

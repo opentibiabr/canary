@@ -343,6 +343,10 @@ registerMonsterType.loot = function(mtype, mask)
 		SortLootByChance(mask.loot)
 		local lootError = false
 		for _, loot in pairs(mask.loot) do
+			if loot.version and CLIENT_VERSION < loot.version then
+				goto continue
+			end
+
 			local parent = Loot()
 			if loot.name then
 				if not parent:setIdFromName(loot.name) then
@@ -466,12 +470,15 @@ registerMonsterType.loot = function(mtype, mask)
 				end
 			end
 			mtype:addLoot(parent)
+
+			::continue::
 		end
 		if lootError then
 			logger.warn("[registerMonsterType.loot] - Monster: {} loot could not correctly be load", mtype:name())
 		end
 	end
 end
+
 local playerElements = { COMBAT_PHYSICALDAMAGE, COMBAT_ENERGYDAMAGE, COMBAT_EARTHDAMAGE, COMBAT_FIREDAMAGE, COMBAT_ICEDAMAGE, COMBAT_HOLYDAMAGE, COMBAT_DEATHDAMAGE }
 registerMonsterType.elements = function(mtype, mask)
 	local min = configManager.getNumber(configKeys.MIN_ELEMENTAL_RESISTANCE)

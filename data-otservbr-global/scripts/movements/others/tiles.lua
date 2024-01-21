@@ -33,13 +33,18 @@ function tiles.onStepIn(creature, item, position, fromPosition)
 
 			if depotItem ~= nil then
 				local depotItems = 0
+				local message = ""
 				for id = 1, configManager.getNumber(configKeys.DEPOT_BOXES) do
 					depotItems = depotItems + player:getDepotChest(id, true):getItemHoldingCount()
 				end
-
-				player:sendTextMessage(MESSAGE_FAILURE, "Your depot contains " .. depotItems .. " item" .. (depotItems > 1 and "s." or ".") .. "\
+				if CLIENT_VERSION >= 1100 then
+					player:sendTextMessage(MESSAGE_STATUS, "Your depot contains " .. depotItems .. " item" .. (depotItems > 1 and "s." or ".") .. "\
 				Your supply stash contains " .. player:getStashCount() .. " item" .. (player:getStashCount() > 1 and "s." or "."))
-				player:setSpecialContainersAvailable(true, true, true)
+					player:setSpecialContainersAvailable(true, true, true)
+				else
+					message = "Your depot contains " .. depotItems .. " item" .. (depotItems > 1 and "s." or ".")
+					player:sendTextMessage(MESSAGE_STATUS, message)
+				end
 				return true
 			end
 		end

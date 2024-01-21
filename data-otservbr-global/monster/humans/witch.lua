@@ -97,7 +97,7 @@ monster.loot = {
 	{ name = "witch broom", chance = 10000 },
 	{ name = "witch hat", chance = 80 },
 	{ name = "stuffed toad", chance = 10 },
-	{ name = "bag of apple slices", chance = 920 },
+	{ name = "bag of apple slices", chance = 920, version = 1100 },
 }
 
 monster.attacks = {

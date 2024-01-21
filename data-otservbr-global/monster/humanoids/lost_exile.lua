@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 980 then
+	return
+end
+
 local mType = Game.createMonsterType("Lost Exile")
 local monster = {}
 

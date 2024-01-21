@@ -9,10 +9,12 @@
 
 #include "pch.hpp"
 
-#include "creatures/appearance/mounts/mounts.hpp"
-#include "game/game.hpp"
-#include "utils/pugicast.hpp"
-#include "utils/tools.hpp"
+#if CLIENT_VERSION >= 870
+
+	#include "creatures/appearance/mounts/mounts.hpp"
+	#include "game/game.hpp"
+	#include "utils/pugicast.hpp"
+	#include "utils/tools.hpp"
 
 bool Mounts::reload() {
 	mounts.clear();
@@ -30,7 +32,7 @@ bool Mounts::loadFromXml() {
 
 	for (auto mountNode : doc.child("mounts").children()) {
 		uint16_t lookType = pugi::cast<uint16_t>(mountNode.attribute("clientid").value());
-		if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && lookType != 0 && !g_game().isLookTypeRegistered(lookType)) {
+		if (g_configManager().getBoolean(WARN_UNREGISTERED_DAT_INFO, __FUNCTION__) && lookType != 0 && !g_game().isLookTypeRegistered(lookType)) {
 			g_logger().warn("{} - An unregistered creature mount with id '{}' was blocked to prevent client crash.", __FUNCTION__, lookType);
 			continue;
 		}
@@ -72,3 +74,5 @@ std::shared_ptr<Mount> Mounts::getMountByClientID(uint16_t clientId) {
 
 	return it != mounts.end() ? *it : nullptr; // Returning the shared_ptr to the Mount object
 }
+
+#endif

@@ -109,8 +109,10 @@ void Signals::sighupHandler() {
 	Item::items.reload();
 	g_logger().info("Reloaded items");
 
-	g_game().mounts.reload();
+#if CLIENT_VERSION >= 870
+	g_game().m_mountsPtr->reload();
 	g_logger().info("Reloaded mounts");
+#endif
 
 	g_events().loadFromXml();
 	g_logger().info("Reloaded events");

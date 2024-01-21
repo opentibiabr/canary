@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1100 then
+	return
+end
+
 local spawnByDay = true
 local spawnDay = 13
 local currentDay = os.date("%d")

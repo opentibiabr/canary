@@ -46,12 +46,13 @@ bool Outfits::loadFromXml() {
 			continue;
 		}
 
-		if (uint16_t lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
-			g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && lookType != 0
-			&& !g_game().isLookTypeRegistered(lookType)) {
+		uint16_t lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
+#if CLIENT_VERSION > 1100
+		if (g_configManager().getBoolean(WARN_UNREGISTERED_DAT_INFO, __FUNCTION__) && lookType && !g_game().isLookTypeRegistered(lookType)) {
 			g_logger().warn("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was ignored to prevent client crash.", lookType);
 			continue;
 		}
+#endif
 
 		outfits[type].emplace_back(std::make_shared<Outfit>(
 			outfitNode.attribute("name").as_string(),

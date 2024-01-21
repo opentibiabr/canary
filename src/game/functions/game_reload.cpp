@@ -42,8 +42,10 @@ bool GameReload::init(Reload_t reloadTypes) const {
 			return reloadModules();
 		case Reload_t::RELOAD_TYPE_MONSTERS:
 			return reloadMonsters();
+#if CLIENT_VERSION >= 870
 		case Reload_t::RELOAD_TYPE_MOUNTS:
 			return reloadMounts();
+#endif
 		case Reload_t::RELOAD_TYPE_NPCS:
 			return reloadNpcs();
 		case Reload_t::RELOAD_TYPE_RAIDS:
@@ -136,9 +138,11 @@ bool GameReload::reloadMonsters() const {
 	return false;
 }
 
+#if CLIENT_VERSION >= 870
 bool GameReload::reloadMounts() const {
-	return g_game().mounts.reload();
+	return g_game().m_mountsPtr->reload();
 }
+#endif
 
 bool GameReload::reloadNpcs() const {
 	return g_npcs().reload();

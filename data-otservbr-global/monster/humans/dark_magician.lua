@@ -88,7 +88,7 @@ monster.loot = {
 	{ name = "strong mana potion", chance = 2860 },
 	{ name = "health potion", chance = 12000 },
 	{ name = "mana potion", chance = 11900 },
-	{ name = "reins", chance = 20 },
+	{ name = "reins", chance = 20, version = 1100 },
 }
 
 monster.attacks = {

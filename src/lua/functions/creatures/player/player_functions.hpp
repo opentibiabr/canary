@@ -78,6 +78,7 @@ private:
 		registerMethod(L, "Player", "getDepotLocker", PlayerFunctions::luaPlayerGetDepotLocker);
 		registerMethod(L, "Player", "getDepotChest", PlayerFunctions::luaPlayerGetDepotChest);
 		registerMethod(L, "Player", "getInbox", PlayerFunctions::luaPlayerGetInbox);
+		registerMethod(L, "Player", "getStoreInbox", PlayerFunctions::luaPlayerStoreGetInbox);
 
 		registerMethod(L, "Player", "getSkullTime", PlayerFunctions::luaPlayerGetSkullTime);
 		registerMethod(L, "Player", "setSkullTime", PlayerFunctions::luaPlayerSetSkullTime);
@@ -91,8 +92,10 @@ private:
 		registerMethod(L, "Player", "getMagicShieldCapacityFlat", PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat);
 		registerMethod(L, "Player", "getMagicShieldCapacityPercent", PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent);
 
+#if CLIENT_VERSION >= 870
 		registerMethod(L, "Player", "sendSpellCooldown", PlayerFunctions::luaPlayerSendSpellCooldown);
 		registerMethod(L, "Player", "sendSpellGroupCooldown", PlayerFunctions::luaPlayerSendSpellGroupCooldown);
+#endif
 
 		registerMethod(L, "Player", "getMagicLevel", PlayerFunctions::luaPlayerGetMagicLevel);
 		registerMethod(L, "Player", "getBaseMagicLevel", PlayerFunctions::luaPlayerGetBaseMagicLevel);
@@ -359,7 +362,9 @@ private:
 
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
+#if CLIENT_VERSION >= 870
 		MountFunctions::init(L);
+#endif
 		PartyFunctions::init(L);
 		VocationFunctions::init(L);
 	}
@@ -422,6 +427,7 @@ private:
 	static int luaPlayerGetDepotLocker(lua_State* L);
 	static int luaPlayerGetDepotChest(lua_State* L);
 	static int luaPlayerGetInbox(lua_State* L);
+	static int luaPlayerStoreGetInbox(lua_State* L);
 
 	static int luaPlayerGetSkullTime(lua_State* L);
 	static int luaPlayerSetSkullTime(lua_State* L);

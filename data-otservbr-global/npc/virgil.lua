@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1050 then
+	return
+end
+
 local internalNpcName = "Virgil"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

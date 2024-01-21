@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1240 then
+	return
+end
+
 local mType = Game.createMonsterType("Druid's Apparition")
 local monster = {}
 

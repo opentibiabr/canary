@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 820 then
+	return
+end
+
 local internalNpcName = "Guide Davina"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

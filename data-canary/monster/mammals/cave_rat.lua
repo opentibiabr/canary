@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 710 then
+	return
+end
+
 local mType = Game.createMonsterType("Cave Rat")
 local monster = {}
 

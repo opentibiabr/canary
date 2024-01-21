@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1220 then
+	return
+end
+
 local internalNpcName = "Shimun"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

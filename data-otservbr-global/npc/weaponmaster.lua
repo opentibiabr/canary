@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 962 then
+	return
+end
+
 local internalNpcName = "Weaponmaster"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

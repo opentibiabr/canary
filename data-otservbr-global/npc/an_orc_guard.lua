@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 910 then
+	return
+end
+
 local internalNpcName = "An Orc Guard"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

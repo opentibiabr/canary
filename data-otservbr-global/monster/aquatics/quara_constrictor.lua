@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 780 then
+	return
+end
+
 local mType = Game.createMonsterType("Quara Constrictor")
 local monster = {}
 

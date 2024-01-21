@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 840 then
+	return
+end
+
 local internalNpcName = "Maris"
 local npcType = Game.createNpcType("Maris (Mistrock)")
 local npcConfig = {}

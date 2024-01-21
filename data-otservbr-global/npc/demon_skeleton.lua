@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 500 then
+	return
+end
+
 local internalNpcName = "Demon Skeleton"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

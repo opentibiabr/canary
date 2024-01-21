@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1220 then
+	return
+end
+
 local internalNpcName = "Khanna"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

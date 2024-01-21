@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 944 then
+	return
+end
+
 local mType = Game.createMonsterType("Wolf")
 local monster = {}
 

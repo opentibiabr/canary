@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 720 then
+	return
+end
+
 local internalNpcName = "Kawill"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

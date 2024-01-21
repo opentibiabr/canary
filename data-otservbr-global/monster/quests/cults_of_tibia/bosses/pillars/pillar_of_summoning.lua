@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1140 then
+	return
+end
+
 local mType = Game.createMonsterType("Pillar of Summoning")
 local monster = {}
 

@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 661 then
+	return
+end
+
 local internalNpcName = "Brodrosch"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

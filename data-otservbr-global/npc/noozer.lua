@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1140 then
+	return
+end
+
 local internalNpcName = "Noozer"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 950 then
+	return
+end
+
 local mType = Game.createMonsterType("Deepling Brawler")
 local monster = {}
 

@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1140 then
+	return
+end
+
 local internalNpcName = "Peaceful Pooka"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

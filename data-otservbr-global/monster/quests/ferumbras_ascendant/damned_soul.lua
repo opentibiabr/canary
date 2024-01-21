@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1090 then
+	return
+end
+
 local mType = Game.createMonsterType("Damned Soul")
 local monster = {}
 

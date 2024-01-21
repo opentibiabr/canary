@@ -17,6 +17,7 @@
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/depot/depotlocker.hpp"
 #include "grouping/familiars.hpp"
+#include "enums/forge_conversion.hpp"
 #include "grouping/groups.hpp"
 #include "grouping/guild.hpp"
 #include "imbuements/imbuements.hpp"
@@ -49,16 +50,8 @@ class Spell;
 class PlayerWheel;
 class Spectators;
 
-enum class ForgeConversion_t : uint8_t {
-	FORGE_ACTION_FUSION = 0,
-	FORGE_ACTION_TRANSFER = 1,
-	FORGE_ACTION_DUSTTOSLIVERS = 2,
-	FORGE_ACTION_SLIVERSTOCORES = 3,
-	FORGE_ACTION_INCREASELIMIT = 4
-};
-
 struct ForgeHistory {
-	ForgeConversion_t actionType = ForgeConversion_t::FORGE_ACTION_FUSION;
+	ForgeAction_t actionType = ForgeAction_t::FUSION;
 	uint8_t tier = 0;
 	uint8_t bonus = 0;
 
@@ -75,6 +68,7 @@ struct ForgeHistory {
 	bool tierLoss = false;
 	bool successCore = false;
 	bool tierCore = false;
+	bool convergence = false;
 
 	std::string description;
 	std::string firstItemName;
@@ -172,6 +166,7 @@ public:
 	bool hasAnyMount() const;
 	uint8_t getRandomMountId() const;
 	void dismount();
+	uint16_t getDodgeChance() const;
 
 	uint8_t isRandomMounted() const {
 		return randomMount;
@@ -782,8 +777,9 @@ public:
 	void onReceiveMail();
 	bool isNearDepotBox();
 
-	std::shared_ptr<Container> setLootContainer(ObjectCategory_t category, std::shared_ptr<Container> container, bool loading = false);
-	std::shared_ptr<Container> getLootContainer(ObjectCategory_t category) const;
+	std::shared_ptr<Container> refreshManagedContainer(ObjectCategory_t category, std::shared_ptr<Container> container, bool isLootContainer, bool loading = false);
+	std::shared_ptr<Container> getManagedContainer(ObjectCategory_t category, bool isLootContainer) const;
+	void setMainBackpackUnassigned(std::shared_ptr<Container> container);
 
 	bool canSee(const Position &pos) override;
 	bool canSeeCreature(std::shared_ptr<Creature> creature) const override;
@@ -880,7 +876,7 @@ public:
 	BlockType_t blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 	void doAttacking(uint32_t interval) override;
 	bool hasExtraSwing() override {
-		return lastAttack > 0 && ((OTSYS_TIME() - lastAttack) >= getAttackSpeed());
+		return lastAttack > 0 && !checkLastAttackWithin(getAttackSpeed());
 	}
 
 	uint16_t getSkillLevel(skills_t skill) const;
@@ -895,9 +891,47 @@ public:
 	bool getAddAttackSkill() const {
 		return addAttackSkillPoint;
 	}
+
 	BlockType_t getLastAttackBlockType() const {
 		return lastAttackBlockType;
 	}
+
+	uint64_t getLastAttack() const {
+		return lastAttack;
+	}
+
+	bool checkLastAttackWithin(uint32_t interval) const {
+		return lastAttack > 0 && ((OTSYS_TIME() - lastAttack) < interval);
+	}
+
+	void updateLastAttack() {
+		if (lastAttack == 0) {
+			lastAttack = OTSYS_TIME() - getAttackSpeed() - 1;
+			return;
+		}
+		lastAttack = OTSYS_TIME();
+	}
+
+	uint64_t getLastAggressiveAction() const {
+		return lastAggressiveAction;
+	}
+
+	bool checkLastAggressiveActionWithin(uint32_t interval) const {
+		return lastAggressiveAction > 0 && ((OTSYS_TIME() - lastAggressiveAction) < interval);
+	}
+
+	void updateLastAggressiveAction() {
+		lastAggressiveAction = OTSYS_TIME();
+	}
+
+	uint64_t getLastFocusLost() const {
+		return lastFocusLost;
+	}
+	void setLastFocusLost(uint64_t time) {
+		lastFocusLost = time;
+	}
+
+	std::unordered_set<std::string> getNPCSkips();
 
 	std::shared_ptr<Item> getWeapon(Slots_t slot, bool ignoreAmmo) const;
 	std::shared_ptr<Item> getWeapon(bool ignoreAmmo = false) const;
@@ -2330,9 +2364,9 @@ public:
 	);
 
 	// Forge system
-	void forgeFuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount);
-	void forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId);
-	void forgeResourceConversion(uint8_t action);
+	void forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemid, uint8_t tier, uint16_t secondItemId, bool success, bool reduceTierLoss, bool convergence, uint8_t bonus, uint8_t coreCount);
+	void forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId, bool convergence);
+	void forgeResourceConversion(ForgeAction_t actionType);
 	void forgeHistory(uint8_t page) const;
 
 	void sendOpenForge() const {
@@ -2345,14 +2379,9 @@ public:
 			client->sendForgeError(returnValue);
 		}
 	}
-	void sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool success, uint8_t bonus, uint8_t coreCount) const {
+	void sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId, uint8_t leftTier, uint16_t rightItemId, uint8_t rightTier, bool success, uint8_t bonus, uint8_t coreCount, bool convergence) const {
 		if (client) {
-			client->sendForgeFusionItem(itemId, tier, success, bonus, coreCount);
-		}
-	}
-	void sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem) const {
-		if (client) {
-			client->sendTransferItemTier(firstItem, tier, secondItem);
+			client->sendForgeResult(actionType, leftItemId, leftTier, rightItemId, rightTier, success, bonus, coreCount, convergence);
 		}
 	}
 	void sendForgeHistory(uint8_t page) const {
@@ -2518,12 +2547,32 @@ public:
 		return timeLeft > 0;
 	}
 
-	bool checkAutoLoot() const {
-		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT, __FUNCTION__) && getStorageValue(STORAGEVALUE_AUTO_LOOT) != 0;
-		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY, __FUNCTION__)) {
-			return autoLoot && isVip();
+	bool checkAutoLoot(bool isBoss) const {
+		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT, __FUNCTION__);
+		if (!autoLoot) {
+			return false;
 		}
-		return autoLoot;
+		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY, __FUNCTION__) && !isVip()) {
+			return false;
+		}
+
+		auto featureKV = kv()->scoped("features")->get("autoloot");
+		if (featureKV.has_value()) {
+			auto value = featureKV->getNumber();
+			if (value == 2) {
+				return true;
+			} else if (value == 1) {
+				return !isBoss;
+			} else if (value == 0) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	QuickLootFilter_t getQuickLootFilter() const {
+		return quickLootFilter;
 	}
 
 	// Get specific inventory item from itemid
@@ -2566,7 +2615,7 @@ private:
 	void checkTradeState(std::shared_ptr<Item> item);
 	bool hasCapacity(std::shared_ptr<Item> item, uint32_t count) const;
 
-	void checkLootContainers(std::shared_ptr<Item> item);
+	void checkLootContainers(std::shared_ptr<Container> item);
 
 	void gainExperience(uint64_t exp, std::shared_ptr<Creature> target);
 	void addExperience(std::shared_ptr<Creature> target, uint64_t exp, bool sendText = false);
@@ -2640,12 +2689,12 @@ private:
 	std::map<uint8_t, uint16_t> maxValuePerSkill = {
 		{ SKILL_LIFE_LEECH_CHANCE, 100 },
 		{ SKILL_MANA_LEECH_CHANCE, 100 },
-		{ SKILL_CRITICAL_HIT_CHANCE, g_configManager().getNumber(CRITICALCHANCE, "std::map::maxValuePerSkill") }
+		{ SKILL_CRITICAL_HIT_CHANCE, 100 * g_configManager().getNumber(CRITICALCHANCE, "std::map::maxValuePerSkill") }
 	};
 
 	std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
 
-	std::map<ObjectCategory_t, std::shared_ptr<Container>> quickLootContainers;
+	std::map<ObjectCategory_t, std::pair<std::shared_ptr<Container>, std::shared_ptr<Container>>> m_managedContainers;
 	std::vector<ForgeHistory> forgeHistoryVector;
 
 	std::vector<uint16_t> quickLootListItemIds;
@@ -2682,6 +2731,8 @@ private:
 	uint64_t experience = 0;
 	uint64_t manaSpent = 0;
 	uint64_t lastAttack = 0;
+	uint64_t lastAggressiveAction = 0;
+	uint64_t lastFocusLost = 0;
 	uint64_t bankBalance = 0;
 	uint64_t lastQuestlogUpdate = 0;
 	uint64_t preyCards = 0;
@@ -2917,6 +2968,7 @@ private:
 
 	void triggerMomentum();
 	void clearCooldowns();
+	void triggerTranscendance();
 
 	friend class Game;
 	friend class SaveManager;

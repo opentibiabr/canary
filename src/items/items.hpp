@@ -125,6 +125,9 @@ public:
 	bool isFluidContainer() const {
 		return group == ITEM_GROUP_FLUID;
 	}
+	bool isShield() const {
+		return type == ITEM_TYPE_SHIELD && !isSpellBook();
+	}
 	bool isSpellBook() const {
 		return spellbook;
 	}
@@ -174,6 +177,12 @@ public:
 	bool isQuiver() const {
 		return (type == ITEM_TYPE_QUIVER);
 	}
+	bool isRing() const {
+		return (type == ITEM_TYPE_RING);
+	}
+	bool isAmulet() const {
+		return (type == ITEM_TYPE_AMULET);
+	}
 	bool isAmmo() const {
 		return (type == ITEM_TYPE_AMMO);
 	}
@@ -189,11 +198,17 @@ public:
 	bool isWeapon() const {
 		return weaponType != WEAPON_NONE && weaponType != WEAPON_SHIELD && weaponType != WEAPON_AMMO;
 	}
+	bool isWand() const {
+		return weaponType == WEAPON_WAND;
+	}
 	bool isArmor() const {
 		return slotPosition & SLOTP_ARMOR;
 	}
 	bool isHelmet() const {
 		return slotPosition & SLOTP_HEAD;
+	}
+	bool isLegs() const {
+		return slotPosition & SLOTP_LEGS;
 	}
 	bool isRanged() const {
 		return weaponType == WEAPON_DISTANCE && weaponType != WEAPON_NONE;

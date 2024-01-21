@@ -521,7 +521,7 @@ function Player.getSubjectVerb(self, past)
 end
 
 function Player.findItemInInbox(self, itemId)
-	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
+	local inbox = self:getStoreInbox()
 	local items = inbox:getItems()
 	for _, item in pairs(items) do
 		if item:getId() == itemId then
@@ -556,7 +556,7 @@ function Player.updateHazard(self)
 end
 
 function Player:addItemStoreInboxEx(item, movable, setOwner)
-	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
+	local inbox = self:getStoreInbox()
 	if not movable then
 		item:setOwner(self)
 		item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
@@ -663,7 +663,7 @@ function Player:setFiendish()
 end
 
 function Player:findItemInInbox(itemId, name)
-	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
+	local inbox = self:getStoreInbox()
 	local items = inbox:getItems()
 	for _, item in pairs(items) do
 		if item:getId() == itemId and (not name or item:getName() == name) then

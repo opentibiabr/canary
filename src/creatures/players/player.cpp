@@ -5888,7 +5888,6 @@ void Player::dismount() {
 	}
 
 	defaultOutfit.lookMount = 0;
-	setCurrentMount(0);
 }
 
 bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {

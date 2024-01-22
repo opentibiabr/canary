@@ -2051,7 +2051,7 @@ bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32
 void ConditionFeared::endCondition(std::shared_ptr<Creature> creature) {
 	creature->stopEventWalk();
 	/*
-	 * After a player is feared there's a 10 seconds before he can feared again.
+	 * After a player is feared there's a 10 seconds before they can can feared again.
 	 */
 	std::shared_ptr<Player> player = creature->getPlayer();
 	if (player) {

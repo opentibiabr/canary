@@ -1245,7 +1245,8 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			}
 
 			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
-				if (!it.abilities->skills[i]) {
+				auto skill = item->getSkill(static_cast<skills_t>(i));
+				if (!skill) {
 					continue;
 				}
 
@@ -1259,11 +1260,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 
 				ss << getSkillName(i) << ' ';
 				// Show float
-				if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
-					ss << it.abilities->skills[i] / 100;
-				} else {
-					ss << it.abilities->skills[i];
-				}
+				ss << skill / 100.;
 				ss << '%' << std::noshowpos;
 				skillBoost = true;
 			}
@@ -1651,7 +1648,8 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			}
 
 			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
-				if (!it.abilities->skills[i]) {
+				auto skill = item->getSkill(static_cast<skills_t>(i));
+				if (!skill) {
 					continue;
 				}
 
@@ -1665,12 +1663,9 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 
 				ss << getSkillName(i) << ' ';
 				// Show float
-				if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
-					ss << it.abilities->skills[i] / 100;
-				} else {
-					ss << it.abilities->skills[i];
-				}
+				ss << skill / 100.;
 				ss << '%' << std::noshowpos;
+
 				skillBoost = true;
 			}
 
@@ -2092,7 +2087,8 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 			}
 
 			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
-				if (!itemType.abilities->skills[i]) {
+				auto skill = item->getSkill(static_cast<skills_t>(i));
+				if (!skill) {
 					continue;
 				}
 
@@ -2107,11 +2103,7 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 					itemDescription << std::showpos;
 				}
 				// Show float
-				if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
-					itemDescription << itemType.abilities->skills[i] / 100;
-				} else {
-					itemDescription << itemType.abilities->skills[i];
-				}
+				itemDescription << skill / 100.;
 				if (i != SKILL_CRITICAL_HIT_CHANCE) {
 					itemDescription << std::noshowpos;
 				}
@@ -2393,7 +2385,8 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 				}
 
 				for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
-					if (!it.abilities->skills[i]) {
+					auto skill = item->getSkill(static_cast<skills_t>(i));
+					if (!skill) {
 						continue;
 					}
 
@@ -2408,11 +2401,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 						s << std::showpos;
 					}
 					// Show float
-					if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
-						s << it.abilities->skills[i] / 100;
-					} else {
-						s << it.abilities->skills[i];
-					}
+					s << skill / 100.;
 					if (i != SKILL_CRITICAL_HIT_CHANCE) {
 						s << std::noshowpos;
 					}
@@ -2664,7 +2653,8 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 				}
 
 				for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
-					if (!it.abilities->skills[i]) {
+					auto skill = item->getSkill(static_cast<skills_t>(i));
+					if (!skill) {
 						continue;
 					}
 
@@ -2679,11 +2669,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 						s << std::showpos;
 					}
 					// Show float
-					if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
-						s << it.abilities->skills[i] / 100;
-					} else {
-						s << it.abilities->skills[i];
-					}
+					s << skill / 100.;
 					if (i != SKILL_CRITICAL_HIT_CHANCE) {
 						s << std::noshowpos;
 					}

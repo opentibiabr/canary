@@ -3519,7 +3519,11 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 			msg.add<uint16_t>(maxDamage >> 1);
 			msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL);
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
-				msg.addByte(static_cast<uint32_t>(it.abilities->elementDamage) * 100 / attackValue);
+				if (attackValue) {
+					msg.addByte(static_cast<uint32_t>(it.abilities->elementDamage) * 100 / attackValue);
+				} else {
+					msg.addByte(0);
+				}
 				msg.addByte(getCipbiaElement(it.abilities->elementType));
 			} else {
 				handleImbuementDamage(msg, player);
@@ -3535,7 +3539,11 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 			msg.add<uint16_t>(maxDamage >> 1);
 			msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL);
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
-				msg.addByte(static_cast<uint32_t>(it.abilities->elementDamage) * 100 / attackValue);
+				if (attackValue) {
+					msg.addByte(static_cast<uint32_t>(it.abilities->elementDamage) * 100 / attackValue);
+				} else {
+					msg.addByte(0);
+				}
 				msg.addByte(getCipbiaElement(it.abilities->elementType));
 			} else {
 				handleImbuementDamage(msg, player);

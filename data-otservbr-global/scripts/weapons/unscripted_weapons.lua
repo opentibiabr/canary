@@ -4606,7 +4606,7 @@ local weapons = {
 		type = WEAPON_CLUB,
 	},
 	{
-		--  hunting spear
+		-- hunting spear
 		itemId = 3347,
 		type = WEAPON_MISSILE,
 		level = 20,

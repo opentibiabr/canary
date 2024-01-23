@@ -1573,8 +1573,9 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 		return error({ code = 0, message = "Please make sure you have free capacity to hold this item." })
 	end
 
-	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-	if inbox then
+	local inbox = player:getStoreInbox()
+	local inboxItems = inbox:getItems()
+	if inbox and #inboxItems <= inbox:getMaxCapacity() then
 		if (isKeg and offerCount > 500) or offerCount > 100 then
 			local parcel = inbox:addItem(PARCEL_ID, 1)
 			parcel:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
@@ -1624,12 +1625,14 @@ function GameStore.processHouseRelatedPurchase(player, offer)
 		return (itemId >= ITEM_HEALTH_CASK_START and itemId <= ITEM_HEALTH_CASK_END) or (itemId >= ITEM_MANA_CASK_START and itemId <= ITEM_MANA_CASK_END) or (itemId >= ITEM_SPIRIT_CASK_START and itemId <= ITEM_SPIRIT_CASK_END)
 	end
 
-	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
 	local itemIds = offer.itemtype
 	if type(itemIds) ~= "table" then
 		itemIds = { itemIds }
 	end
-	if inbox then
+
+	local inbox = player:getStoreInbox()
+	local inboxItems = inbox:getItems()
+	if inbox and #inboxItems <= inbox:getMaxCapacity() then
 		for _, itemId in ipairs(itemIds) do
 			local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
 			if decoKit then

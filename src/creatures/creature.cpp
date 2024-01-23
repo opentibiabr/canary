@@ -798,10 +798,10 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 			g_game().internalAddItem(tile, corpse, INDEX_WHEREEVER, FLAG_NOLIMIT);
 			dropLoot(corpse->getContainer(), lastHitCreature);
 			corpse->startDecaying();
-			bool corpses = corpse->isRewardCorpse() || (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
+			bool disallowedCorpses = corpse->isRewardCorpse() || (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
 			const auto player = mostDamageCreature ? mostDamageCreature->getPlayer() : nullptr;
 			auto corpseContainer = corpse->getContainer();
-			if (corpseContainer && player && !corpses) {
+			if (corpseContainer && player && !disallowedCorpses) {
 				auto monster = getMonster();
 				if (monster && !monster->isRewardBoss()) {
 					std::ostringstream lootMessage;
@@ -813,9 +813,9 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 					player->sendLootMessage(lootMessage.str());
 				}
 
-				if (player->checkAutoLoot() && corpseContainer && mostDamageCreature->getPlayer()) {
+				if (player->checkAutoLoot(monster->isRewardBoss()) && corpseContainer && mostDamageCreature->getPlayer()) {
 					g_dispatcher().addEvent(
-						std::bind(&Game::playerQuickLootCorpse, &g_game(), player, corpseContainer),
+						std::bind(&Game::playerQuickLootCorpse, &g_game(), player, corpseContainer, corpse->getPosition()),
 						"Game::playerQuickLootCorpse"
 					);
 				}

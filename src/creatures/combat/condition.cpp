@@ -2052,7 +2052,7 @@ bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32
 void ConditionFeared::endCondition(std::shared_ptr<Creature> creature) {
 	creature->stopEventWalk();
 	/*
-	 * After a player is feared there's a 10 seconds before he can feared again.
+	 * After a player is feared there's a 10 seconds before they can can feared again.
 	 */
 	std::shared_ptr<Player> player = creature->getPlayer();
 	if (player) {
@@ -2151,13 +2151,8 @@ bool ConditionSpeed::startCondition(std::shared_ptr<Creature> creature) {
 		int32_t max;
 		auto baseSpeed = creature->getBaseSpeed();
 		getFormulaValues(baseSpeed, min, max);
-		speedDelta = uniform_random(min, max);
-
-		if (conditionType == CONDITION_HASTE) {
-			speedDelta = speedDelta - baseSpeed;
-		}
-
-		if (conditionType == CONDITION_PARALYZE && speedDelta < baseSpeed - 40) {
+		speedDelta = uniform_random(min, max) - baseSpeed;
+		if (conditionType == CONDITION_PARALYZE && speedDelta < 40 - baseSpeed) {
 			speedDelta = 40 - baseSpeed;
 		}
 	}
@@ -2198,13 +2193,9 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 		int32_t max;
 		auto baseSpeed = creature->getBaseSpeed();
 		getFormulaValues(baseSpeed, min, max);
-		speedDelta = uniform_random(min, max);
+		speedDelta = uniform_random(min, max) - baseSpeed;
 
-		if (conditionType == CONDITION_HASTE) {
-			speedDelta = speedDelta - baseSpeed;
-		}
-
-		if (conditionType == CONDITION_PARALYZE && speedDelta < baseSpeed - 40) {
+		if (conditionType == CONDITION_PARALYZE && speedDelta < 40 - baseSpeed) {
 			speedDelta = 40 - baseSpeed;
 		}
 	}

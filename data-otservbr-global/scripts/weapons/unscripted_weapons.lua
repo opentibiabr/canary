@@ -4606,12 +4606,12 @@ local weapons = {
 		type = WEAPON_CLUB,
 	},
 	{
-	--  hunting spear
+		--  hunting spear
 		itemId = 3347,
-	 	type = WEAPON_MISSILE,
-	 	level = 20,
-	 	unproperly = true,
-	 	breakchance = 6
+		type = WEAPON_MISSILE,
+		level = 20,
+		unproperly = true,
+		breakchance = 6,
 	},
 	{
 		-- ripper lance
@@ -4651,16 +4651,16 @@ local weapons = {
 		action = "removecount",
 	},
 	{
-	 -- arrow
+		-- arrow
 		itemId = 3447,
-	 	type = WEAPON_AMMO,
-	 	action = "removecount"
+		type = WEAPON_AMMO,
+		action = "removecount",
 	},
 	{
 		-- bolt
 		itemId = 3446,
 		type = WEAPON_AMMO,
-		action = "removecount"
+		action = "removecount",
 	},
 	{
 		-- bow
@@ -5033,10 +5033,10 @@ local weapons = {
 		unproperly = true,
 	},
 	{
-	-- throwing star
+		-- throwing star
 		itemId = 3287,
-	 	type = WEAPON_MISSILE,
-	 	breakchance = 10
+		type = WEAPON_MISSILE,
+		breakchance = 10,
 	},
 	{
 		-- mace
@@ -5105,10 +5105,10 @@ local weapons = {
 		},
 	},
 	{
-	 	-- spear
-	 	itemId = 3277,
-	 	type = WEAPON_MISSILE,
-		breakchance = 3
+		-- spear
+		itemId = 3277,
+		type = WEAPON_MISSILE,
+		breakchance = 3,
 	},
 	{
 		-- hatchet

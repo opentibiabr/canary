@@ -3519,7 +3519,11 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 			msg.add<uint16_t>(maxDamage >> 1);
 			msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL);
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
-				msg.addByte(static_cast<uint32_t>(it.abilities->elementDamage) * 100 / attackValue);
+				if (attackValue) {
+					msg.addByte(static_cast<uint32_t>(it.abilities->elementDamage) * 100 / attackValue);
+				} else {
+					msg.addByte(0);
+				}
 				msg.addByte(getCipbiaElement(it.abilities->elementType));
 			} else {
 				handleImbuementDamage(msg, player);
@@ -3535,7 +3539,11 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 			msg.add<uint16_t>(maxDamage >> 1);
 			msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL);
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
-				msg.addByte(static_cast<uint32_t>(it.abilities->elementDamage) * 100 / attackValue);
+				if (attackValue) {
+					msg.addByte(static_cast<uint32_t>(it.abilities->elementDamage) * 100 / attackValue);
+				} else {
+					msg.addByte(0);
+				}
 				msg.addByte(getCipbiaElement(it.abilities->elementType));
 			} else {
 				handleImbuementDamage(msg, player);
@@ -6295,6 +6303,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 
 	if (isLogin) {
 		sendMagicEffect(pos, CONST_ME_TELEPORT);
+		sendDisableLoginMusic();
 	}
 
 	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
@@ -8742,4 +8751,17 @@ void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
 	}
 
 	addGameTask(&Game::playerSaveWheel, player->getID(), msg);
+}
+
+void ProtocolGame::sendDisableLoginMusic() {
+	if (oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x85);
+	msg.addByte(0x01);
+	msg.addByte(0x00);
+	msg.addByte(0x00);
+	writeToOutputBuffer(msg);
 }

@@ -224,6 +224,18 @@ public:
 		return *abilities;
 	}
 
+	int32_t getSpeed() const {
+		return abilities ? abilities->speed : 0;
+	}
+
+	int32_t getSkill(skills_t skill) const {
+		return abilities ? abilities->skills[skill] : 0;
+	}
+
+	int32_t getStat(stats_t stat) const {
+		return abilities ? abilities->stats[stat] : 0;
+	}
+
 	std::string getPluralName() const {
 		if (!pluralName.empty()) {
 			return pluralName;

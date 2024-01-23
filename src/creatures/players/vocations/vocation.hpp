@@ -12,6 +12,7 @@
 #include "declarations.hpp"
 #include "items/item.hpp"
 #include "lib/di/container.hpp"
+#include "creatures/players/wheel/wheel_gems.hpp"
 
 class Vocation {
 public:
@@ -39,6 +40,10 @@ public:
 
 	uint8_t getBaseId() const {
 		return baseId;
+	}
+
+	uint16_t getAvatarLookType() const {
+		return avatarLookType;
 	}
 
 	uint32_t getHPGain() const {
@@ -110,6 +115,16 @@ public:
 	float pvpDamageReceivedMultiplier = 1.0f;
 	float pvpDamageDealtMultiplier = 1.0f;
 
+	std::vector<WheelGemSupremeModifier_t> getSupremeGemModifiers();
+
+	uint16_t getWheelGemId(WheelGemQuality_t quality) {
+		if (!wheelGems.contains(quality)) {
+			return 0;
+		}
+		const auto &name = wheelGems[quality];
+		return Item::items.getItemIdByName(name);
+	}
+
 private:
 	friend class Vocations;
 
@@ -117,6 +132,7 @@ private:
 	std::map<uint32_t, absl::uint128> cacheManaTotal;
 	std::map<uint32_t, uint32_t> cacheSkill[SKILL_LAST + 1];
 	std::map<uint32_t, absl::uint128> cacheSkillTotal[SKILL_LAST + 1];
+	std::map<WheelGemQuality_t, std::string> wheelGems;
 
 	std::string name = "none";
 	std::string description;
@@ -144,6 +160,9 @@ private:
 	uint8_t soulMax = 100;
 	uint8_t clientId = 0;
 	uint8_t baseId = 0;
+	uint16_t avatarLookType = 0;
+
+	std::vector<WheelGemSupremeModifier_t> m_supremeGemModifiers;
 
 	static uint32_t skillBase[SKILL_LAST + 1];
 };

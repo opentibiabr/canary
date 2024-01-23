@@ -1,10 +1,6 @@
 -- Functions from The Forgotten Server
 local foodCondition = Condition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 
-local function firstToUpper(str)
-	return (str:gsub("^%l", string.upper))
-end
-
 function Player.feed(self, food)
 	local condition = self:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 	if condition then
@@ -322,7 +318,7 @@ function Player.getMarriageDescription(thing)
 		if self == thing then
 			descr = descr .. " You are "
 		else
-			descr = descr .. " " .. firstToUpper(thing:getSubjectPronoun()) .. " " .. thing:getSubjectVerb() .. " "
+			descr = descr .. " " .. thing:getSubjectPronoun():titleCase() .. " " .. thing:getSubjectVerb() .. " "
 		end
 		descr = descr .. "married to " .. getPlayerNameById(playerSpouse) .. "."
 	end
@@ -521,7 +517,7 @@ function Player.getSubjectVerb(self, past)
 end
 
 function Player.findItemInInbox(self, itemId)
-	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
+	local inbox = self:getStoreInbox()
 	local items = inbox:getItems()
 	for _, item in pairs(items) do
 		if item:getId() == itemId then
@@ -538,25 +534,23 @@ function Player.updateHazard(self)
 		return true
 	end
 
+	self:setHazardSystemPoints(0)
 	for _, zone in pairs(zones) do
 		local hazard = Hazard.getByName(zone:getName())
-		if not hazard then
-			self:setHazardSystemPoints(0)
+		if hazard then
+			if self:getParty() then
+				self:getParty():refreshHazard()
+			else
+				self:setHazardSystemPoints(hazard:getPlayerCurrentLevel(self))
+			end
 			return true
 		end
-
-		if self:getParty() then
-			self:getParty():refreshHazard()
-		else
-			self:setHazardSystemPoints(hazard:getPlayerCurrentLevel(self))
-		end
-		return true
 	end
 	return true
 end
 
 function Player:addItemStoreInboxEx(item, movable, setOwner)
-	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
+	local inbox = self:getStoreInbox()
 	if not movable then
 		item:setOwner(self)
 		item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
@@ -663,7 +657,7 @@ function Player:setFiendish()
 end
 
 function Player:findItemInInbox(itemId, name)
-	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
+	local inbox = self:getStoreInbox()
 	local items = inbox:getItems()
 	for _, item in pairs(items) do
 		if item:getId() == itemId and (not name or item:getName() == name) then

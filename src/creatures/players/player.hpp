@@ -896,6 +896,25 @@ public:
 		return lastAttackBlockType;
 	}
 
+	uint64_t getLastConditionTime(ConditionType_t type) const {
+		if (!lastConditionTime.contains(static_cast<uint8_t>(type))) {
+			return 0;
+		}
+		return lastConditionTime.at(static_cast<uint8_t>(type));
+	}
+
+	void updateLastConditionTime(ConditionType_t type) {
+		lastConditionTime[static_cast<uint8_t>(type)] = OTSYS_TIME();
+	}
+
+	bool checkLastConditionTimeWithin(ConditionType_t type, uint32_t interval) const {
+		if (!lastConditionTime.contains(static_cast<uint8_t>(type))) {
+			return false;
+		}
+		auto last = lastConditionTime.at(static_cast<uint8_t>(type));
+		return last > 0 && ((OTSYS_TIME() - last) < interval);
+	}
+
 	uint64_t getLastAttack() const {
 		return lastAttack;
 	}
@@ -922,13 +941,6 @@ public:
 
 	void updateLastAggressiveAction() {
 		lastAggressiveAction = OTSYS_TIME();
-	}
-
-	uint64_t getLastFocusLost() const {
-		return lastFocusLost;
-	}
-	void setLastFocusLost(uint64_t time) {
-		lastFocusLost = time;
 	}
 
 	std::unordered_set<std::string> getNPCSkips();
@@ -2731,8 +2743,8 @@ private:
 	uint64_t experience = 0;
 	uint64_t manaSpent = 0;
 	uint64_t lastAttack = 0;
+	std::unordered_map<uint8_t, uint64_t> lastConditionTime;
 	uint64_t lastAggressiveAction = 0;
-	uint64_t lastFocusLost = 0;
 	uint64_t bankBalance = 0;
 	uint64_t lastQuestlogUpdate = 0;
 	uint64_t preyCards = 0;
@@ -2953,7 +2965,7 @@ private:
 		return skillLoss ? static_cast<uint64_t>(experience * getLostPercent()) : 0;
 	}
 
-	bool isSuppress(ConditionType_t conditionType) const override;
+	bool isSuppress(ConditionType_t conditionType, bool attackerPlayer) const override;
 	void addConditionSuppression(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addConditions);
 
 	uint16_t getLookCorpse() const override;

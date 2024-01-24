@@ -13,6 +13,24 @@ if(MSVC)
     target_sources(${PROJECT_NAME} PRIVATE ../cmake/canary.rc)
 endif()
 
+if (UNIX)
+
+  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+      target_compile_options(${PROJECT_NAME}_lib
+        PRIVATE
+          -Wall -Wextra -Wpedantic
+      )
+  endif()
+
+  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_options(${PROJECT_NAME}
+      PRIVATE
+        -Wall -Wextra -Wpedantic
+    )
+  endif()
+
+endif (UNIX)
+
 setup_target(${PROJECT_NAME})
 set_output_directory(${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_lib)

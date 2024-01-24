@@ -92,7 +92,7 @@ local function checkHouseAccess(hireling)
 
 	-- Player is not invited anymore, return to lamp
 	logger.debug("Returning Hireling: {} to owner '{}' Inbox", hireling:getName(), player:getName())
-	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
+	local inbox = player:getStoreInbox()
 	if not inbox then
 		return false
 	end
@@ -359,8 +359,9 @@ function Hireling:returnToLamp(player_id)
 			return owner:sendTextMessage(MESSAGE_FAILURE, "You do not have enough capacity.")
 		end
 
-		local inbox = owner:getSlotItem(CONST_SLOT_STORE_INBOX)
-		if not inbox then
+		local inbox = owner:getStoreInbox()
+		local inboxItems = inbox:getItems()
+		if not inbox or #inboxItems > inbox:getMaxCapacity() then
 			owner:getPosition():sendMagicEffect(CONST_ME_POFF)
 			return owner:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
 		end
@@ -537,8 +538,9 @@ function Player:addNewHireling(name, sex)
 		return false
 	end
 
-	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
-	if not inbox then
+	local inbox = self:getStoreInbox()
+	local inboxItems = inbox:getItems()
+	if not inbox or #inboxItems > inbox:getMaxCapacity() then
 		self:getPosition():sendMagicEffect(CONST_ME_POFF)
 		self:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
 		return false
@@ -628,7 +630,7 @@ function Player:hasHirelings()
 end
 
 function Player:findHirelingLamp(hirelingId)
-	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
+	local inbox = self:getStoreInbox()
 	if not inbox then
 		return nil
 	end

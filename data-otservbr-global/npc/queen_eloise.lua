@@ -75,8 +75,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 3 then -- ARMOR/OUTFIT
 			if player:getStorageValue(Storage.OutfitQuest.GoldenOutfit) < 1 then
 				if player:getMoney() + player:getBankBalance() >= 500000000 then
-					local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-					if inbox then
+					local inbox = player:getStoreInbox()
+					local inboxItems = inbox:getItems()
+					if inbox and #inboxItems <= inbox:getMaxCapacity() then
 						local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
 						local decoItemName = ItemType(31510):getName()
 						decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a " .. decoItemName .. ".")

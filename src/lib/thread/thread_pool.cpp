@@ -47,11 +47,32 @@ void ThreadPool::shutdown() {
 
 	ioService.stop();
 
+	std::vector<std::future<void>> futures;
 	for (std::size_t i = 0; i < threads.size(); i++) {
 		logger.debug("Joining thread {}/{}.", i + 1, threads.size());
 
 		if (threads[i].joinable()) {
-			threads[i].join();
+			futures.emplace_back(std::async(std::launch::async, [&]() {
+				threads[i].join();
+			}));
+		}
+	}
+
+	std::future_status status = std::future_status::timeout;
+	auto timeout = std::chrono::seconds(5);
+	auto start = std::chrono::steady_clock::now();
+	int tries = 0;
+	while (status == std::future_status::timeout && std::chrono::steady_clock::now() - start < timeout) {
+		tries++;
+		if (tries > 5) {
+			logger.error("Thread pool shutdown timed out.");
+			break;
+		}
+		for (auto &future : futures) {
+			status = future.wait_for(std::chrono::seconds(0));
+			if (status != std::future_status::timeout) {
+				break;
+			}
 		}
 	}
 }

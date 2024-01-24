@@ -202,7 +202,7 @@ function addStamina(playerId, ...)
 
 		local regen = configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
 		player:setStamina(player:getStamina() + regen)
-		player:sendTextMessage(MESSAGE_STATUS, string.format("%i minute%s of stamina has been refilled.", regen, regen == 1 and "" or "s"))
+		player:sendTextMessage(MESSAGE_FAILURE, string.format("%i minute%s of stamina has been refilled.", regen, regen == 1 and "" or "s"))
 		staminaBonus.eventsPz[localPlayerId] = addEvent(addStamina, delay, nil, localPlayerId, delay)
 		return true
 	end

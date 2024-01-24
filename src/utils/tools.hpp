@@ -72,8 +72,8 @@ std::string formatTime(time_t time);
  */
 std::string formatEnumName(std::string_view name);
 std::time_t getTimeNow();
-std::time_t getTimeMsNow();
-std::time_t getTimeUsNow();
+int64_t getTimeMsNow();
+int64_t getTimeUsNow();
 std::string convertIPToString(uint32_t ip);
 
 void trimString(std::string &str);
@@ -191,3 +191,9 @@ std::string getPlayerReflexivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, 
 std::string getVerbForPronoun(PlayerPronoun_t pronoun, bool pastTense = false);
 
 std::string toKey(const std::string &str);
+
+static inline double quadraticPoly(double a, double b, double c, double x) {
+	return a * x * x + b * x + c;
+}
+
+uint8_t convertWheelGemAffinityToDomain(uint8_t affinity);

@@ -11,6 +11,7 @@
 
 #include "lua/functions/core/game/lua_enums.hpp"
 
+#include "creatures/players/wheel/wheel_gems.hpp"
 #include "creatures/players/wheel/wheel_definitions.hpp"
 #include "io/io_bosstiary.hpp"
 #include "config/configmanager.hpp"
@@ -148,7 +149,6 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, LIGHT_STATE_SUNSET);
 	registerEnum(L, LIGHT_STATE_SUNRISE);
 	registerEnum(L, STORAGEVALUE_EMOTE);
-	registerEnum(L, STORAGEVALUE_AUTO_LOOT);
 
 	registerEnum(L, IMMOVABLE_ACTION_ID);
 
@@ -1239,10 +1239,10 @@ void LuaEnums::initForgeEnums(lua_State* L) {
 
 // Webhook default colors
 void LuaEnums::initWebhookEnums(lua_State* L) {
-	registerEnum(L, WEBHOOK_COLOR_ONLINE);
-	registerEnum(L, WEBHOOK_COLOR_OFFLINE);
-	registerEnum(L, WEBHOOK_COLOR_WARNING);
-	registerEnum(L, WEBHOOK_COLOR_RAID);
+	registerEnum(L, WEBHOOK_COLOR_GREEN);
+	registerEnum(L, WEBHOOK_COLOR_RED);
+	registerEnum(L, WEBHOOK_COLOR_YELLOW);
+	registerEnum(L, WEBHOOK_COLOR_BLUE);
 }
 
 void LuaEnums::initBosstiaryEnums(lua_State* L) {

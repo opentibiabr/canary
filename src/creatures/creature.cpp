@@ -798,10 +798,10 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 			g_game().internalAddItem(tile, corpse, INDEX_WHEREEVER, FLAG_NOLIMIT);
 			dropLoot(corpse->getContainer(), lastHitCreature);
 			corpse->startDecaying();
-			bool corpses = corpse->isRewardCorpse() || (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
+			bool disallowedCorpses = corpse->isRewardCorpse() || (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
 			const auto player = mostDamageCreature ? mostDamageCreature->getPlayer() : nullptr;
 			auto corpseContainer = corpse->getContainer();
-			if (corpseContainer && player && !corpses) {
+			if (corpseContainer && player && !disallowedCorpses) {
 				auto monster = getMonster();
 				if (monster && !monster->isRewardBoss()) {
 					std::ostringstream lootMessage;
@@ -813,9 +813,9 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 					player->sendLootMessage(lootMessage.str());
 				}
 
-				if (player->checkAutoLoot() && corpseContainer && mostDamageCreature->getPlayer()) {
+				if (player->checkAutoLoot(monster->isRewardBoss()) && corpseContainer && mostDamageCreature->getPlayer()) {
 					g_dispatcher().addEvent(
-						std::bind(&Game::playerQuickLootCorpse, &g_game(), player, corpseContainer),
+						std::bind(&Game::playerQuickLootCorpse, &g_game(), player, corpseContainer, corpse->getPosition()),
 						"Game::playerQuickLootCorpse"
 					);
 				}
@@ -1334,12 +1334,14 @@ bool Creature::setMaster(std::shared_ptr<Creature> newMaster, bool reloadCreatur
 	return true;
 }
 
-bool Creature::addCondition(std::shared_ptr<Condition> condition) {
+bool Creature::addCondition(std::shared_ptr<Condition> condition, bool attackerPlayer /* = false*/) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	if (condition == nullptr) {
 		return false;
 	}
-
+	if (isSuppress(condition->getType(), attackerPlayer)) {
+		return false;
+	}
 	std::shared_ptr<Condition> prevCond = getCondition(condition->getType(), condition->getId(), condition->getSubId());
 	if (prevCond) {
 		prevCond->addCondition(getCreature(), condition);
@@ -1355,11 +1357,11 @@ bool Creature::addCondition(std::shared_ptr<Condition> condition) {
 	return false;
 }
 
-bool Creature::addCombatCondition(std::shared_ptr<Condition> condition) {
+bool Creature::addCombatCondition(std::shared_ptr<Condition> condition, bool attackerPlayer /* = false*/) {
 	// Caution: condition variable could be deleted after the call to addCondition
 	ConditionType_t type = condition->getType();
 
-	if (!addCondition(condition)) {
+	if (!addCondition(condition, attackerPlayer)) {
 		return false;
 	}
 
@@ -1490,7 +1492,7 @@ void Creature::executeConditions(uint32_t interval) {
 
 bool Creature::hasCondition(ConditionType_t type, uint32_t subId /* = 0*/) const {
 	metrics::method_latency measure(__METHOD_NAME__);
-	if (isSuppress(type)) {
+	if (isSuppress(type, false)) {
 		return false;
 	}
 

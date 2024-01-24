@@ -281,14 +281,17 @@ local function processItemInboxPurchase(player, name, id)
 		return false
 	end
 
-	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-	if inbox then
+	local inbox = player:getStoreInbox()
+	local inboxItems = inbox:getItems()
+	if inbox and #inboxItems <= inbox:getMaxCapacity() then
 		local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
 		if decoKit then
 			decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item with the Walter Jaeger.\nUnwrap it in your own house to create a <" .. name .. ">.")
 			decoKit:setCustomAttribute("unWrapId", id)
 			return true
 		end
+	else
+		player:sendTextMessage(MESSAGE_INFO_DESCR, "Please make sure you have free slots in your store inbox.")
 	end
 
 	return false

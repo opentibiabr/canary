@@ -12,7 +12,7 @@ local data = {
 local function finditem(self, cylinder, conv)
 	if cylinder == 0 then
 		cylinder = self:getSlotItem(CONST_SLOT_BACKPACK)
-		finditem(self, self:getSlotItem(CONST_SLOT_STORE_INBOX), conv)
+		finditem(self, self:getStoreInbox(), conv)
 	end
 
 	if cylinder and cylinder:isContainer() then

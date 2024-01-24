@@ -59,10 +59,10 @@ public:
 
 private:
 	// map of the spawned creatures
-	phmap::parallel_flat_hash_map_m<uint32_t, std::shared_ptr<Monster>> spawnedMonsterMap;
+	std::map<uint32_t, std::shared_ptr<Monster>> spawnedMonsterMap;
 
 	// map of creatures in the spawn
-	phmap::parallel_flat_hash_map_m<uint32_t, spawnBlock_t> spawnMonsterMap;
+	std::map<uint32_t, spawnBlock_t> spawnMonsterMap;
 
 	Position centerPos;
 	int32_t radius;

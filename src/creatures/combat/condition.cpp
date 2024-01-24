@@ -1644,7 +1644,9 @@ bool ConditionDamage::getNextDamage(int32_t &damage) {
 }
 
 bool ConditionDamage::doDamage(std::shared_ptr<Creature> creature, int32_t healthChange) {
-	if (creature->isSuppress(getType())) {
+	auto attacker = g_game().getPlayerByGUID(owner) ? g_game().getPlayerByGUID(owner)->getCreature() : g_game().getCreatureByID(owner);
+	bool isPlayer = attacker && attacker->getPlayer();
+	if (creature->isSuppress(getType(), isPlayer)) {
 		return true;
 	}
 
@@ -1653,7 +1655,6 @@ bool ConditionDamage::doDamage(std::shared_ptr<Creature> creature, int32_t healt
 	damage.primary.value = healthChange;
 	damage.primary.type = Combat::ConditionToDamageType(conditionType);
 
-	std::shared_ptr<Creature> attacker = g_game().getCreatureByID(owner);
 	if (field && creature->getPlayer() && attacker && attacker->getPlayer()) {
 		damage.primary.value = static_cast<int32_t>(std::round(damage.primary.value / 2.));
 	}
@@ -2051,7 +2052,7 @@ bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32
 void ConditionFeared::endCondition(std::shared_ptr<Creature> creature) {
 	creature->stopEventWalk();
 	/*
-	 * After a player is feared there's a 10 seconds before he can feared again.
+	 * After a player is feared there's a 10 seconds before they can can feared again.
 	 */
 	std::shared_ptr<Player> player = creature->getPlayer();
 	if (player) {
@@ -2150,13 +2151,8 @@ bool ConditionSpeed::startCondition(std::shared_ptr<Creature> creature) {
 		int32_t max;
 		auto baseSpeed = creature->getBaseSpeed();
 		getFormulaValues(baseSpeed, min, max);
-		speedDelta = uniform_random(min, max);
-
-		if (conditionType == CONDITION_HASTE) {
-			speedDelta = speedDelta - baseSpeed;
-		}
-
-		if (conditionType == CONDITION_PARALYZE && speedDelta < baseSpeed - 40) {
+		speedDelta = uniform_random(min, max) - baseSpeed;
+		if (conditionType == CONDITION_PARALYZE && speedDelta < 40 - baseSpeed) {
 			speedDelta = 40 - baseSpeed;
 		}
 	}
@@ -2197,13 +2193,9 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 		int32_t max;
 		auto baseSpeed = creature->getBaseSpeed();
 		getFormulaValues(baseSpeed, min, max);
-		speedDelta = uniform_random(min, max);
+		speedDelta = uniform_random(min, max) - baseSpeed;
 
-		if (conditionType == CONDITION_HASTE) {
-			speedDelta = speedDelta - baseSpeed;
-		}
-
-		if (conditionType == CONDITION_PARALYZE && speedDelta < baseSpeed - 40) {
+		if (conditionType == CONDITION_PARALYZE && speedDelta < 40 - baseSpeed) {
 			speedDelta = 40 - baseSpeed;
 		}
 	}

@@ -67,8 +67,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(30020) == 1 then
 			if player:removeMoney(1000000) then
 				npcHandler:say("Ah, I see you killed a lot of dangerous creatures. Here's your podium of vigour!", npc, creature)
-				local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-				if inbox then
+				local inbox = player:getStoreInbox()
+				local inboxItems = inbox:getItems()
+				if inbox and #inboxItems <= inbox:getMaxCapacity() then
 					local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
 					if decoKit then
 						decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "Unwrap it in your own house to create a <" .. ItemType(38707):getName() .. ">.")

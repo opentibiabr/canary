@@ -22,5 +22,6 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     players/storages/storages.cpp
     players/player.cpp
     players/wheel/player_wheel.cpp
+    players/wheel/wheel_gems.cpp
     players/vocations/vocation.cpp
 )

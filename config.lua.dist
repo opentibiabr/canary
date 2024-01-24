@@ -119,8 +119,10 @@ forgeCostOneSliver = 20
 forgeSliverAmount = 3
 forgeCoreCost = 50
 forgeMaxDust = 225
-forgeFusionCost = 100
-forgeTransferCost = 100
+forgeFusionDustCost = 100
+forgeConvergenceFusionDustCost = 130
+forgeTransferDustCost = 100
+forgeConvergenceTransferCost = 160
 forgeBaseSuccessRate = 50
 forgeBonusSuccessRate = 15
 forgeTierLossReduction = 50
@@ -131,6 +133,24 @@ forgeInfluencedLimit = 300
 forgeFiendishLimit = 3
 forgeFiendishIntervalType = "hour"
 forgeFiendishIntervalTime = "1"
+
+ruseChanceFormulaA = 0.0307576
+ruseChanceFormulaB = 0.440697
+ruseChanceFormulaC = 0.026
+
+onslaughtChanceFormulaA = 0.05
+onslaughtChanceFormulaB = 0.4
+onslaughtChanceFormulaC = 0.05
+
+momentumChanceFormulaA = 0.05
+momentumChanceFormulaB = 1.9
+momentumChanceFormulaC = 0.05
+
+transcendanceChanceFormulaA = 0.0127
+transcendanceChanceFormulaB = 0.1070
+transcendanceChanceFormulaC = 0.0073
+
+transcendanceAvatarDuration = 7000
 
 -- Bestiary & Bosstiary system
 -- NOTE: bestiaryKillMultiplier, multiplier value of monster killed, default 1
@@ -177,6 +197,15 @@ pvpMaxLevelDifference = 0
 -- NOTE: only the wheel points are modified, all other data is on the client executable and cannot be modified
 wheelSystemEnabled = true
 wheelPointsPerLevel = 1
+
+-- Gem Atelier
+wheelAtelierRotateLesserCost = 125000
+wheelAtelierRotateRegularCost = 250000
+wheelAtelierRotateGreaterCost = 500000
+
+wheelAtelierRevealLesserCost = 125000
+wheelAtelierRevealRegularCost = 1000000
+wheelAtelierRevealGreaterCost = 6000000
 
 -- Familiar system
 -- NOTE: the time will be divided by 2 to get half the value, the familiar lasts 15 minutes by default and the cooldown of the spell is 30 minutes
@@ -360,6 +389,8 @@ resetSessionsOnStartup = false
 
 -- Misc.
 -- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate
+-- NOTE: disableLegacyRaids: set to true to disable legacy XML raids
+-- NOTE: combatChainDelay: set to minimum 50 miliseconds
 allowChangeOutfit = true
 toggleMountInProtectionZone = false
 freePremium = false
@@ -371,6 +402,8 @@ coinPacketSize = 25
 coinImagesURL = "http://127.0.0.1/images/store/"
 classicAttackSpeed = false
 showScriptsLogInConsole = false
+-- time to suppress negative conditions after being affected by them (ms)
+minDelayBetweenConditions = 0
 -- configure maximum value of critical imbuement
 criticalChance = 10
 inventoryGlowOnFiveBless = false
@@ -383,9 +416,9 @@ experienceDisplayRates = true
 toggleAttackSpeedOnFist = false
 multiplierSpeedOnFist = 5
 maxSpeedOnFist = 500
-disableLegacyRaids = false -- disable legacy XML raids
+disableLegacyRaids = false
 disableMonsterArmor = false
-combatChainDelay = 50 -- minimum: 50 miliseconds
+combatChainDelay = 50
 minElementalResistance = -200
 maxElementalResistance = 200
 maxDamageReflection = 200
@@ -475,6 +508,7 @@ location = "South America"
 -- The URL layout is https://discord.com/api/webhooks/:id/:token
 -- Leave empty if you wish to disable.
 discordWebhookURL = ""
+discordSendFooter = true
 
 -- Vip System (Get more info in: https://github.com/opentibiabr/canary/pull/1063)
 -- NOTE: set vipSystemEnabled to true to enable the vip system functionalities (this overrides premium checks)

@@ -87,6 +87,8 @@ public:
 	bool unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream, Position &itemPosition) override;
 	std::string getContentDescription(bool oldProtocol);
 
+	uint32_t getMaxCapacity() const;
+
 	size_t size() const {
 		return itemlist.size();
 	}

@@ -38,6 +38,17 @@ int ContainerFunctions::luaContainerGetSize(lua_State* L) {
 	return 1;
 }
 
+int ContainerFunctions::luaContainerGetMaxCapacity(lua_State* L) {
+	// container:getMaxCapacity()
+	const auto &container = getUserdataShared<Container>(L, 1);
+	if (container) {
+		lua_pushnumber(L, container->getMaxCapacity());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int ContainerFunctions::luaContainerGetCapacity(lua_State* L) {
 	// container:getCapacity()
 	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);

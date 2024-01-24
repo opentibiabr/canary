@@ -299,7 +299,7 @@ Blessings.DropLoot = function(player, corpse, chance, skulled)
 		end
 	end
 	if skulled and Blessings.Config.SkulledDeathLoseStoreItem then
-		local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
+		local inbox = player:getStoreInbox()
 		local toBeDeleted = {}
 		if inbox and inbox:getSize() > 0 then
 			for i = 0, inbox:getSize() do

@@ -210,7 +210,7 @@ public:
 
 	static bool loadFromXML(const std::string &fileName, uint16_t shiftID = 0);
 
-private:
+protected:
 	bool contains(const Position &position) const;
 
 	Position removeDestination = Position();

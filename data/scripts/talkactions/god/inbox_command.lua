@@ -5,7 +5,7 @@ function inboxCommand.onSay(player, words, param)
 	player:getPosition():sendMagicEffect(CONST_ME_TUTORIALSQUARE)
 	local target = Creature(param[1])
 	if target then
-		local inbox = target:getSlotItem(CONST_SLOT_STORE_INBOX)
+		local inbox = target:getStoreInbox()
 		local inboxSize = inbox:getSize()
 		if inbox and inboxSize > 0 then
 			if param[2] == "remove" then

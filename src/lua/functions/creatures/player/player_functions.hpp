@@ -358,6 +358,7 @@ private:
 		registerMethod(L, "Player", "getVipTime", PlayerFunctions::luaPlayerGetVipTime);
 
 		registerMethod(L, "Player", "kv", PlayerFunctions::luaPlayerKV);
+		registerMethod(L, "Player", "getStoreInbox", PlayerFunctions::luaPlayerGetStoreInbox);
 
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
@@ -600,10 +601,6 @@ private:
 	static int luaPlayerIsPzLocked(lua_State* L);
 	static int luaPlayerIsOffline(lua_State* L);
 
-	static int luaPlayerGetContainers(lua_State* L);
-	static int luaPlayerSetLootContainer(lua_State* L);
-	static int luaPlayerGetLootContainer(lua_State* L);
-
 	static int luaPlayerGetClient(lua_State* L);
 
 	static int luaPlayerGetHouse(lua_State* L);
@@ -711,6 +708,7 @@ private:
 	static int luaPlayerGetVipTime(lua_State* L);
 
 	static int luaPlayerKV(lua_State* L);
+	static int luaPlayerGetStoreInbox(lua_State* L);
 
 	friend class CreatureFunctions;
 };

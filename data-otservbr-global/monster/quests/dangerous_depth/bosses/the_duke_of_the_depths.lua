@@ -111,6 +111,7 @@ monster.loot = {
 	{ name = "gnome sword", chance = 4170 },
 	{ name = "terra mantle", chance = 2080 },
 	{ name = "violet gem", chance = 2080 },
+	{ name = "gnome legs", chance = 3390 },
 }
 
 monster.attacks = {

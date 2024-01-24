@@ -11,6 +11,7 @@
 
 // Definitions of wheel of destiny enums
 #include "creatures/players/wheel/wheel_definitions.hpp"
+#include "creatures/players/wheel/wheel_gems.hpp"
 
 #include "creatures/creatures_definitions.hpp"
 
@@ -46,51 +47,24 @@ public:
 			};
 		};
 
-		struct Increase {
-			bool area = false;
-			int damage = 0;
-			int heal = 0;
-			int aditionalTarget = 0;
-			int damageReduction = 0;
-			int duration = 0;
-			int criticalDamage = 0;
-			int criticalChance = 0;
-		};
-		struct Decrease {
-			int cooldown = 0;
-			int manaCost = 0;
-			uint8_t secondaryGroupCooldown = 0;
-		};
-
-		struct Leech {
-			int mana = 0;
-			int life = 0;
-		};
-
 		struct Spells {
-			struct Grade {
-				Leech leech;
-				Increase increase;
-				Decrease decrease;
-			};
-
 			struct Druid {
-				std::array<Grade, 3> grade;
+				std::array<WheelSpells::Bonus, 3> grade;
 				std::string name;
 			};
 
 			struct Knight {
-				std::array<Grade, 3> grade;
+				std::array<WheelSpells::Bonus, 3> grade;
 				std::string name;
 			};
 
 			struct Paladin {
-				std::array<Grade, 3> grade;
+				std::array<WheelSpells::Bonus, 3> grade;
 				std::string name;
 			};
 
 			struct Sorcerer {
-				std::array<Grade, 3> grade;
+				std::array<WheelSpells::Bonus, 3> grade;
 				std::string name;
 			};
 
@@ -299,15 +273,13 @@ private:
 	void addSpell(const std::shared_ptr<Player> &player, PlayerWheelMethodsBonusData &bonusData, WheelSlots_t slotType, uint16_t points, const std::string &spellName) const;
 
 	/**
-	 * @brief Increases the resistance value of the specified combat type for the player's bonus data if the number of points is equal to the player's points in the specified slot type.
-	 * @param player The player whose resistance will be increased.
+	 * @brief Unlock a vessel resonance if the number of points is equal to the player's points in the specified slot type.
+	 * @param player The player to receive the vessel resonance.
 	 * @param bonusData The bonus data to update.
 	 * @param slotType The slot type to check the points against.
-	 * @param points The number of points required to increase the resistance.
-	 * @param combat The combat type to increase the resistance for.
-	 * @param value The value to increase the resistance by.
+	 * @param points The number of points required to add the vessel resonance.
 	 */
-	void increaseResistance(const std::shared_ptr<Player> &player, PlayerWheelMethodsBonusData &bonusData, WheelSlots_t slotType, uint16_t points, CombatType_t combat, int16_t value) const;
+	void addVesselResonance(const std::shared_ptr<Player> &player, PlayerWheelMethodsBonusData &bonusData, WheelSlots_t slotType, WheelGemAffinity_t affinity, uint16_t points) const;
 
 	/**
 	 * @brief Initialize the wheel map functions.

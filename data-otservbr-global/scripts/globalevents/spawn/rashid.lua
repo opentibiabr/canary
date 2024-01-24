@@ -9,7 +9,7 @@ local positionByDay = {
 }
 
 local function rashidwebhook(message) -- New local function that runs on delay to send webhook message.
-	Webhook.sendMessage("[Rashid] ", message, WEBHOOK_COLOR_ONLINE) --Sends webhook message
+	Webhook.sendMessage(":man_wearing_turban: " .. message, announcementChannels["serverAnnouncements"])
 end
 
 local rashid = GlobalEvent("rashid")

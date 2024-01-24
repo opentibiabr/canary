@@ -45,7 +45,7 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 		return true
 	end
 
-	local forgeAmountMultiplier = (configManager.getNumber(configKeys.FORGE_AMOUNT_MULTIPLIER) or 3)
+	local forgeAmountMultiplier = (configManager.getFloat(configKeys.FORGE_AMOUNT_MULTIPLIER) or 3)
 
 	local stack = creature:getForgeStack()
 	if stack > 0 then

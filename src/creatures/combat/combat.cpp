@@ -744,7 +744,7 @@ void Combat::CombatConditionFunc(std::shared_ptr<Creature> caster, std::shared_p
 
 			// TODO: infight condition until all aggressive conditions has ended
 			if (target) {
-				target->addCombatCondition(conditionCopy);
+				target->addCombatCondition(conditionCopy, caster && caster->getPlayer() != nullptr);
 			}
 		}
 	}
@@ -1324,6 +1324,7 @@ void Combat::setRuneSpellName(const std::string &value) {
 }
 
 std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets(std::shared_ptr<Creature> caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive, std::shared_ptr<Creature> initialTarget /* = nullptr */) {
+	Benchmark bm_pickChain;
 	metrics::method_latency measure(__METHOD_NAME__);
 	if (!caster) {
 		return {};
@@ -1342,8 +1343,8 @@ std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets
 		maxTargets++;
 	}
 
-	const int maxBacktrackingAttempts = 10; // Can be adjusted as needed
-	while (!targets.empty() && targets.size() <= maxTargets) {
+	int backtrackingAttempts = 10;
+	while (!targets.empty() && targets.size() <= maxTargets && backtrackingAttempts > 0) {
 		auto currentTarget = targets.back();
 		auto spectators = Spectators().find<Creature>(currentTarget->getPosition(), false, chainDistance, chainDistance, chainDistance, chainDistance);
 		g_logger().debug("Combat::pickChainTargets: currentTarget: {}, spectators: {}", currentTarget->getName(), spectators.size());
@@ -1367,7 +1368,7 @@ std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets
 		}
 
 		if (closestSpectator) {
-			g_logger().debug("Combat::pickChainTargets: closestSpectator: {}", closestSpectator->getName());
+			g_logger().trace("[{}] closestSpectator: {}", __METHOD_NAME__, closestSpectator->getName());
 
 			bool found = false;
 			for (auto &[pos, vec] : resultMap) {
@@ -1385,14 +1386,15 @@ std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets
 			visited.insert(closestSpectator->getID());
 			continue;
 		} else if (backtracking) {
+			g_logger().debug("[{}] backtracking", __METHOD_NAME__);
 			targets.pop_back();
-			if (targets.size() <= maxBacktrackingAttempts) {
-				continue;
-			}
+			backtrackingAttempts--;
+			continue;
 		}
 		break;
 	}
 
+	g_logger().debug("[{}] resultMap: {} in {} ms", __METHOD_NAME__, resultMap.size(), bm_pickChain.duration());
 	return resultMap;
 }
 
@@ -2069,7 +2071,7 @@ void Combat::applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<C
 	}
 
 	bonus += damage.criticalDamage;
-	double multiplier = 1.0 + static_cast<double>(bonus) / 100;
+	double multiplier = 1.0 + static_cast<double>(bonus) / 10000;
 	chance += (uint16_t)damage.criticalChance;
 
 	if (chance != 0 && uniform_random(1, 10000) <= chance) {

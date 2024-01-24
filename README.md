@@ -47,7 +47,7 @@ at [this link](https://github.com/opentibiabr/canary/blob/master/CODE_OF_CONDUCT
 
 ### Getting **Started**
 
-* [Gitbook](https://docs.opentibiabr.com/projects/canary).
+* [Gitbook](https://docs.opentibiabr.com/opentibiabr/projects/canary).
 * [Wiki](https://github.com/opentibiabr/canary/wiki).
 
 ### Issues

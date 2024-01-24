@@ -68,16 +68,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 	)
 	local resultId = db.storeQuery("SELECT `player_id` FROM `player_deaths` WHERE `player_id` = " .. playerGuid)
 	-- Start Webhook Player Death
-	local playerName = player:getName()
-	local playerLevel = player:getLevel()
-	local killerLink = string.gsub(killerName, "%s+", "+")
-	local playerLink = string.gsub(playerName, "%s+", "+")
-	local serverURL = getConfigInfo("url")
-	if killer and killer:isPlayer() then
-		Webhook.sendMessage(playerName .. " just got killed!", "**[" .. playerName .. "](" .. serverURL .. "/?characters/" .. playerLink .. ")** got killed at level " .. playerLevel .. " by **[" .. killerName .. "](" .. serverURL .. "/?characters/" .. killerLink .. ")**", WEBHOOK_COLOR_OFFLINE, announcementChannels["player-kills"])
-	else
-		Webhook.sendMessage(playerName .. " has just died!", "**[" .. playerName .. "](" .. serverURL .. "/?characters/" .. playerLink .. ")** died at level " .. playerLevel .. " by " .. killerName, WEBHOOK_COLOR_WARNING, announcementChannels["player-kills"])
-	end
+	Webhook.sendMessage(":skull_crossbones: " .. player:getMarkdownLink() .. " has died. Killed at level _" .. player:getLevel() .. "_ by **" .. killerName .. "**.", announcementChannels["player-kills"])
 	-- End Webhook Player Death
 
 	local deathRecords = 0

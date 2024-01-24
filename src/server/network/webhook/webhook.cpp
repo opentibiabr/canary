@@ -43,12 +43,12 @@ void Webhook::run() {
 	);
 }
 
-void Webhook::sendMessage(const std::string payload, std::string url) {
+void Webhook::sendPayload(const std::string &payload, std::string url) {
 	std::scoped_lock lock { taskLock };
 	webhooks.push_back(std::make_shared<WebhookTask>(payload, url));
 }
 
-void Webhook::sendMessage(const std::string title, const std::string message, int color, std::string url) {
+void Webhook::sendMessage(const std::string &title, const std::string &message, int color, std::string url, bool embed) {
 	if (url.empty()) {
 		url = g_configManager().getString(DISCORD_WEBHOOK_URL, __FUNCTION__);
 	}
@@ -57,7 +57,19 @@ void Webhook::sendMessage(const std::string title, const std::string message, in
 		return;
 	}
 
-	sendMessage(getPayload(title, message, color), url);
+	sendPayload(getPayload(title, message, color, embed), url);
+}
+
+void Webhook::sendMessage(const std::string &message, std::string url) {
+	if (url.empty()) {
+		url = g_configManager().getString(DISCORD_WEBHOOK_URL, __FUNCTION__);
+	}
+
+	if (url.empty() || message.empty()) {
+		return;
+	}
+
+	sendPayload(getPayload("", message, -1, false), url);
 }
 
 int Webhook::sendRequest(const char* url, const char* payload, std::string* response_body) const {
@@ -100,7 +112,7 @@ size_t Webhook::writeCallback(void* contents, size_t size, size_t nmemb, void* u
 	return real_size;
 }
 
-std::string Webhook::getPayload(const std::string title, const std::string message, int color) const {
+std::string Webhook::getPayload(const std::string &title, const std::string &message, int color, bool embed) const {
 	std::time_t now = getTimeNow();
 	std::string time_buf = formatDate(now);
 
@@ -110,14 +122,22 @@ std::string Webhook::getPayload(const std::string title, const std::string messa
 		<< time_buf;
 
 	std::stringstream payload;
-	payload << "{ \"embeds\": [{ ";
-	payload << "\"title\": \"" << title << "\", ";
-	payload << "\"description\": \"" << message << "\", ";
-	payload << "\"footer\": { \"text\": \"" << footer_text.str() << "\" }, ";
-	if (color >= 0) {
-		payload << "\"color\": " << color;
+	if (embed) {
+		payload << "{ \"embeds\": [{ ";
+		payload << "\"title\": \"" << title << "\", ";
+		if (!message.empty()) {
+			payload << "\"description\": \"" << message << "\", ";
+		}
+		if (g_configManager().getBoolean(DISCORD_SEND_FOOTER, __FUNCTION__)) {
+			payload << "\"footer\": { \"text\": \"" << footer_text.str() << "\" }, ";
+		}
+		if (color >= 0) {
+			payload << "\"color\": " << color;
+		}
+		payload << " }] }";
+	} else {
+		payload << "{ \"content\": \"" << (!message.empty() ? message : title) << "\" }";
 	}
-	payload << " }] }";
 
 	return payload.str();
 }

@@ -239,6 +239,7 @@ enum AttrTypes_t {
 	ATTR_CUSTOM = 41,
 	ATTR_STORE_INBOX_CATEGORY = 42,
 	ATTR_OWNER = 43,
+	ATTR_OBTAINCONTAINER = 44,
 
 	// Always the last
 	ATTR_NONE = 0

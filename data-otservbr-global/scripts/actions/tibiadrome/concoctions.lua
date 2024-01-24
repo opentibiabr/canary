@@ -17,7 +17,7 @@ local configs = {
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your spells are no longer on cooldown.")
 		end,
 	},
-	[Concoction.Ids.StrikeEnhancement] = { condition = { CONDITION_PARAM_SKILL_CRITICAL_HIT_CHANCE, 5 } },
+	[Concoction.Ids.StrikeEnhancement] = { condition = { CONDITION_PARAM_SKILL_CRITICAL_HIT_CHANCE, 500 } },
 	[Concoction.Ids.CharmUpgrade] = { condition = { CONDITION_PARAM_CHARM_CHANCE_MODIFIER, 5 } },
 	[Concoction.Ids.WealthDuplex] = { rate = 100 },
 	[Concoction.Ids.BestiaryBetterment] = { multiplier = 2.0 },

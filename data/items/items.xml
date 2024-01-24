@@ -12136,21 +12136,18 @@
 	</item>
 	<item fromid="4597" toid="4602" name="shallow water">
 		<attribute key="primarytype" value="natural tiles"/>
-		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
 	</item>
 	<item fromid="4603" toid="4608" name="grass"/>
 	<item fromid="4609" toid="4611" name="shallow water">
 		<attribute key="primarytype" value="natural tiles"/>
-		<attribute key="type" value="trashholder"/>
 		<attribute key="description" value="You see the silvery movement of fish."/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
 	</item>
 	<item id="4612" name="shallow water">
 		<attribute key="primarytype" value="natural tiles"/>
-		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
 		<attribute key="duration" value="1200"/>
@@ -12158,7 +12155,6 @@
 	</item>
 	<item id="4613" name="shallow water">
 		<attribute key="primarytype" value="natural tiles"/>
-		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
 		<attribute key="duration" value="1200"/>
@@ -12166,7 +12162,6 @@
 	</item>
 	<item id="4614" name="shallow water">
 		<attribute key="primarytype" value="natural tiles"/>
-		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
 		<attribute key="duration" value="1200"/>
@@ -12215,7 +12210,6 @@
 	</item>
 	<item fromid="4817" toid="4820" name="shallow water">
 		<attribute key="primarytype" value="natural tiles"/>
-		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
 	</item>
@@ -15581,8 +15575,8 @@
 		<attribute key="containersize" value="10"/>
 	</item>
 	<item id="6341" article="a" name="dead nightmare">
-		<attribute key="duration" value="300"/>
-		<attribute key="decayTo" value="6340"/>
+		<attribute key="duration" value="30"/>
+		<attribute key="decayTo" value="6342"/>
 		<attribute key="containersize" value="10"/>
 	</item>
 	<item id="6342" article="a" name="dead nightmare">
@@ -21338,22 +21332,22 @@
 	</item>
 	<item id="9063" article="a" name="crystal pedestal">
 		<attribute key="duration" value="15"/>
-		<attribute key="decayTo" value="9064"/>
+		<attribute key="transformOnUse" value="9064"/>
 		<attribute key="weight" value="4000"/>
 	</item>
 	<item id="9064" article="a" name="crystal pedestal">
 		<attribute key="duration" value="10"/>
-		<attribute key="decayTo" value="9065"/>
+		<attribute key="transformOnUse" value="9065"/>
 		<attribute key="weight" value="4000"/>
 	</item>
 	<item id="9065" article="a" name="crystal pedestal">
 		<attribute key="duration" value="11"/>
-		<attribute key="decayTo" value="9066"/>
+		<attribute key="transformOnUse" value="9066"/>
 		<attribute key="weight" value="4000"/>
 	</item>
 	<item id="9066" article="a" name="crystal pedestal">
 		<attribute key="duration" value="9"/>
-		<attribute key="decayTo" value="9063"/>
+		<attribute key="transformOnUse" value="9063"/>
 		<attribute key="weight" value="4000"/>
 	</item>
 	<item id="9067" article="a" name="crystal of power">
@@ -24998,7 +24992,10 @@
 	<item id="11316" article="a" name="wooden floor">
 		<attribute key="primarytype" value="artificial tiles"/>
 	</item>
-	<item id="11317" article="a" name="blob"/>
+	<item id="11317" article="a" name="blob">
+		<attribute key="duration" value="60"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
 	<item id="11318" article="a" name="watchguard"/>
 	<item fromid="11319" toid="11327" article="a" name="blob"/>
 	<item id="11328" article="a" name="marked crate">
@@ -36642,8 +36639,8 @@
 		<attribute key="primarytype" value="teleporters"/>
 		<attribute key="description" value="This vortex seems suck you right in.."/>
 	</item>
-	<item id="20123" article="a" name="stairs"/>
-	<item id="20124" article="a" name="stairs">
+	<item id="20123" name="stairs"/>
+	<item id="20124" name="stairs">
 		<attribute key="floorchange" value="south"/>
 	</item>
 	<item id="20125" article="a" name="chalk">
@@ -37181,10 +37178,10 @@
 	<item fromid="20325" toid="20327" article="a" name="sand">
 		<attribute key="primarytype" value="natural tiles"/>
 	</item>
-	<item fromid="20328" toid="20332" article="a" name="stairs">
+	<item fromid="20328" toid="20332" name="stairs">
 		<attribute key="floorchange" value="down"/>
 	</item>
-	<item fromid="20333" toid="20336" article="a" name="stairs">
+	<item fromid="20333" toid="20336" name="stairs">
 		<attribute key="floorchange" value="south"/>
 	</item>
 	<item id="20337" article="a" name="dead wounded cave draptor">
@@ -37360,18 +37357,18 @@
 		<attribute key="floorchange" value="down"/>
 	</item>
 	<item id="20490" name="sewer cover"/>
-	<item id="20491" article="a" name="stairs">
+	<item id="20491" name="stairs">
 		<attribute key="floorchange" value="north"/>
 	</item>
-	<item id="20492" article="a" name="stairs">
+	<item id="20492" name="stairs">
 		<attribute key="floorchange" value="west"/>
 	</item>
-	<item id="20493" article="a" name="stairs"/>
-	<item id="20494" article="a" name="stairs">
+	<item id="20493" name="stairs"/>
+	<item id="20494" name="stairs">
 		<attribute key="floorchange" value="south"/>
 	</item>
-	<item id="20495" article="a" name="stairs"/>
-	<item id="20496" article="a" name="stairs">
+	<item id="20495" name="stairs"/>
+	<item id="20496" name="stairs">
 		<attribute key="floorchange" value="east"/>
 	</item>
 	<item fromid="20497" toid="20500" article="a" name="street lamp"/>
@@ -37425,18 +37422,18 @@
 		<attribute key="primarytype" value="wall hangings"/>
 	</item>
 	<item fromid="20747" toid="20749" article="a" name="wall"/>
-	<item id="20750" article="a" name="stairs">
+	<item id="20750" name="stairs">
 		<attribute key="floorchange" value="north"/>
 	</item>
-	<item id="20751" article="a" name="stairs">
+	<item id="20751" name="stairs">
 		<attribute key="floorchange" value="west"/>
 	</item>
-	<item id="20752" article="a" name="stairs"/>
-	<item id="20753" article="a" name="stairs">
+	<item id="20752" name="stairs"/>
+	<item id="20753" name="stairs">
 		<attribute key="floorchange" value="south"/>
 	</item>
-	<item id="20754" article="a" name="stairs"/>
-	<item id="20755" article="a" name="stairs">
+	<item id="20754" name="stairs"/>
+	<item id="20755" name="stairs">
 		<attribute key="floorchange" value="east"/>
 	</item>
 	<item fromid="20756" toid="20759" article="a" name="brown marble floor"/>
@@ -38282,7 +38279,6 @@
 	</item>
 	<item fromid="21302" toid="21322" name="shallow water">
 		<attribute key="primarytype" value="natural tiles"/>
-		<attribute key="type" value="trashholder"/>
 		<attribute key="fluidsource" value="water"/>
 		<attribute key="effect" value="bluebubble"/>
 	</item>
@@ -38735,19 +38731,19 @@
 	<item fromid="21558" toid="21563" article="a" name="coral stone">
 		<attribute key="primarytype" value="walls"/>
 	</item>
-	<item id="21564" article="a" name="stairs">
+	<item id="21564" name="stairs">
 		<attribute key="floorchange" value="east"/>
 	</item>
 	<item id="21565" article="a" name="ramp"/>
-	<item id="21566" article="a" name="stairs">
+	<item id="21566" name="stairs">
 		<attribute key="floorchange" value="west"/>
 	</item>
 	<item id="21567" article="a" name="ramp"/>
-	<item id="21568" article="a" name="stairs">
+	<item id="21568" name="stairs">
 		<attribute key="floorchange" value="south"/>
 	</item>
 	<item id="21569" article="a" name="ramp"/>
-	<item id="21570" article="a" name="stairs">
+	<item id="21570" name="stairs">
 		<attribute key="floorchange" value="north"/>
 	</item>
 	<item id="21571" article="a" name="ramp"/>
@@ -38802,7 +38798,7 @@
 	<item id="21744" article="a" name="strange machine">
 		<attribute key="primarytype" value="machines (objects)"/>
 		<attribute key="duration" value="300"/>
-		<attribute key="decayTo" value="24112"/>
+		<attribute key="decayTo" value="21743"/>
 	</item>
 	<item id="21745" article="a" name="Brandon's wedding ring">
 		<attribute key="description" value="It is worn and scratched, with a faint engraving 'To Roswitha, Forever'"/>
@@ -40182,7 +40178,7 @@
 		<attribute key="weight" value="666"/>
 	</item>
 	<item id="22155" name="RESERVED SPRITE"/>
-	<item id="22156" article="a" name="stairs">
+	<item id="22156" name="stairs">
 		<attribute key="floorchange" value="north"/>
 	</item>
 	<item id="22157" article="a" name="ramp">
@@ -40633,7 +40629,7 @@
 	<item id="22565" name="stairs">
 		<attribute key="floorchange" value="north"/>
 	</item>
-	<item id="22566" article="a" name="stairs">
+	<item id="22566" name="stairs">
 		<attribute key="floorchange" value="west"/>
 	</item>
 	<item fromid="22567" toid="22570" name="cracked stone wall"/>
@@ -41020,7 +41016,7 @@
 	<item id="22748" article="a" name="ramp">
 		<attribute key="floorchange" value="down"/>
 	</item>
-	<item id="22749" article="a" name="stairs">
+	<item id="22749" name="stairs">
 		<attribute key="floorchange" value="west"/>
 	</item>
 	<item id="22750" article="a" name="grille">
@@ -44514,8 +44510,8 @@
 		<attribute key="stopduration" value="0"/>
 		<attribute key="showduration" value="1"/>
 		<attribute key="magiclevelpoints" value="2"/>
-		<attribute key="criticalhitdamage" value="35"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="3500"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="duration" value="900"/>
 		<attribute key="decayTo" value="0"/>
 		<attribute key="range" value="4"/>
@@ -49514,8 +49510,8 @@
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="absorbpercentholy" value="8"/>
 		<attribute key="magiclevelpoints" value="2"/>
-		<attribute key="criticalhitdamage" value="25"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="2500"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="range" value="5"/>
 		<attribute key="weight" value="3300"/>
 		<attribute key="imbuementslot" value="2">
@@ -51966,8 +51962,8 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="energy"/>
 		<attribute key="magiclevelpoints" value="2"/>
-		<attribute key="criticalhitdamage" value="35"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="3500"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weight" value="1900"/>
 		<attribute key="imbuementslot" value="2">
@@ -55309,8 +55305,8 @@
 		<attribute key="bedpart" value="blanket"/>
 		<attribute key="bedpartof" value="32496"/>
 		<attribute key="partnerdirection" value="west"/>
-		<attribute key="maletransformto" value="32505"/>
-		<attribute key="femaletransformto" value="32505"/>
+		<attribute key="maletransformto" value="32563"/>
+		<attribute key="femaletransformto" value="32563"/>
 		<attribute key="rotateTo" value="32487"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
@@ -55351,7 +55347,7 @@
 		<attribute key="type" value="bed"/>
 		<attribute key="bedpart" value="pillow"/>
 		<attribute key="bedpartof" value="32527"/>
-		<attribute key="partnerdirection" value="west"/>
+		<attribute key="partnerdirection" value="south"/>
 		<attribute key="maletransformto" value="32473"/>
 		<attribute key="femaletransformto" value="32473"/>
 		<attribute key="rotateTo" value="32536"/>
@@ -58332,8 +58328,8 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="elementice" value="47"/>
-		<attribute key="criticalhitdamage" value="10"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1000"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="skillsword" value="5"/>
 		<attribute key="attack" value="10"/>
 		<attribute key="defense" value="35"/>
@@ -58370,8 +58366,8 @@
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="elementice" value="47"/>
-		<attribute key="criticalhitdamage" value="10"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1000"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="skillaxe" value="5"/>
 		<attribute key="attack" value="10"/>
 		<attribute key="defense" value="34"/>
@@ -58408,8 +58404,8 @@
 		<attribute key="weaponType" value="club"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="elementenergy" value="47"/>
-		<attribute key="criticalhitdamage" value="10"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1000"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="skillclub" value="5"/>
 		<attribute key="attack" value="10"/>
 		<attribute key="defense" value="35"/>
@@ -58427,8 +58423,8 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="ammotype" value="arrow"/>
 		<attribute key="absorbpercentholy" value="7"/>
-		<attribute key="criticalhitdamage" value="10"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1000"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="skilldist" value="4"/>
 		<attribute key="hitchance" value="5"/>
 		<attribute key="range" value="6"/>
@@ -58449,8 +58445,8 @@
 		<attribute key="ammotype" value="bolt"/>
 		<attribute key="absorbpercentdeath" value="7"/>
 		<attribute key="skilldist" value="4"/>
-		<attribute key="criticalhitdamage" value="10"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1000"/>
+		<attribute key="criticalhitdamage" value="1000"/>
 		<attribute key="hitchance" value="6"/>
 		<attribute key="range" value="6"/>
 		<attribute key="attack" value="9"/>
@@ -58469,8 +58465,8 @@
 		<attribute key="shootType" value="suddendeath"/>
 		<attribute key="absorbpercentdeath" value="12"/>
 		<attribute key="magiclevelpoints" value="5"/>
-		<attribute key="criticalhitdamage" value="10"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1000"/>
+		<attribute key="criticalhitdamage" value="1000"/>
 		<attribute key="range" value="6"/>
 		<attribute key="weight" value="1900"/>
 		<attribute key="imbuementslot" value="2">
@@ -58818,8 +58814,8 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="magiclevelpoints" value="2"/>
-		<attribute key="criticalhitdamage" value="35"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="3500"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="range" value="5"/>
 		<attribute key="weight" value="2600"/>
 		<attribute key="imbuementslot" value="2">
@@ -60214,7 +60210,7 @@
 	</item>
 	<item id="35579" article="a" name="golden dustbin" plural="golden dustbins">
 		<attribute key="primarytype" value="valuables"/>
-	<attribute key="weight" value="720"/>
+		<attribute key="weight" value="720"/>
 	</item>
 	<item id="35580" article="a" name="golden skull" plural="golden skulls">
 		<attribute key="primarytype" value="valuables"/>
@@ -61664,7 +61660,7 @@
 	</item>
 	<item id="36672" article="a" name="eldritch folio">
 		<attribute key="primarytype" value="spellbooks"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="absorbpercentpoison" value="6"/>
 		<attribute key="magiclevelpoints" value="4"/>
 		<attribute key="deathmagiclevelpoints" value="1"/>
@@ -61683,7 +61679,7 @@
 	</item>
 	<item id="36673" article="a" name="eldritch tome">
 		<attribute key="primarytype" value="spellbooks"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="absorbpercentfire" value="6"/>
 		<attribute key="magiclevelpoints" value="4"/>
 		<attribute key="earthmagiclevelpoints" value="1"/>
@@ -65139,6 +65135,9 @@
 	<item id="38826" article="a" name="volcano barbecue"/>
 	<item fromid="38827" toid="38828" article="a" name="mushroom lamp"/>
 	<item fromid="38829" toid="38830" article="a" name="mushroom plant"/>
+	<item fromid="38831" toid="38832" article="a" name="ramp">
+		<attribute key="floorchange" value="down"/>
+	</item>
 	<item fromid="38833" toid="38834" article="a" name="railing"/>
 	<item id="38843" article="a" name="silver and a golden hand">
 		<attribute key="weight" value="300"/>
@@ -65333,7 +65332,7 @@
 	</item>
 	<item id="39152" article="an" name="arcanomancer folio">
 		<attribute key="primarytype" value="spellbooks"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="absorbpercentfire" value="8"/>
 		<attribute key="absorbpercentphysical" value="3"/>
 		<attribute key="magiclevelpoints" value="5"/>
@@ -65366,7 +65365,7 @@
 	</item>
 	<item id="39154" article="an" name="arboreal tome">
 		<attribute key="primarytype" value="spellbooks"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="absorbpercentphysical" value="4"/>
 		<attribute key="absorbpercentenergy" value="6"/>
 		<attribute key="magiclevelpoints" value="5"/>
@@ -67594,6 +67593,11 @@
 		<attribute key="shootType" value="spear"/>
 		<attribute key="range" value="3"/>
 	</item>
+	<item id="40578" article="" name="the living idol of tukh">
+		<attribute key="primarytype" value="quest items"/>
+		<attribute key="description" value="It feels warm, despite being made of pure gold and jade. It seems to observe your every move."/>
+		<attribute key="weight" value="500"/>
+	</item>
 	<item id="40582" article="a" name="crab man claws">
 		<attribute key="primarytype" value="creature products"/>
 		<attribute key="weight" value="230"/>
@@ -68532,6 +68536,73 @@
 		<attribute key="transformOnUse" value="42367"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
+	<item id="42619" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="42621" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="42623" name="stairs">
+		<attribute key="floorchange" value="south"/>
+	</item>
+	<item id="42624" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+		<attribute key="transformOnUse" value="42628"/>
+	</item>
+	<item id="42625" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+		<attribute key="transformOnUse" value="42628"/>
+	</item>
+	<item id="42626" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+		<attribute key="transformOnUse" value="42629"/>
+	</item>
+	<item id="42627" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+		<attribute key="transformOnUse" value="42629"/>
+	</item>
+	<item id="42628" article="a" name="open door">
+		<attribute key="type" value="door"/>
+		<attribute key="transformOnUse" value="42625"/>
+	</item>
+	<item id="42629" article="a" name="open door">
+		<attribute key="type" value="door"/>
+		<attribute key="transformOnUse" value="42627"/>
+	</item>
+	<item id="42632" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="43952" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+		<attribute key="transformOnUse" value="43954"/>
+	</item>
+	<item id="43953" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+		<attribute key="transformOnUse" value="43955"/>
+	</item>
+	<item id="43954" article="a" name="open door">
+		<attribute key="type" value="door"/>
+		<attribute key="transformOnUse" value="43952"/>
+	</item>
+	<item id="43955" article="a" name="open door">
+		<attribute key="type" value="door"/>
+		<attribute key="transformOnUse" value="43953"/>
+	</item>
+	<item id="43134" name="stairs">
+		<attribute key="floorchange" value="south"/>
+	</item>
+	<item id="43372" name="hole">
+		<attribute key="floorchange" value="down"/>
+	</item>
+	<item id="43374" name="vine">
+		<attribute key="type" value="ladder"/>
+	</item>
 	<item id="43510" name="tibiora's box replica">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="4200"/>
@@ -68543,6 +68614,173 @@
 	<item id="43517" article="a" name="shield of destiny replica">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="6800"/>
+	</item>
+	<item id="43729" name="werecrocodile tongue">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="showCount" value="0"/>
+		<attribute key="weight" value="280"/>
+	</item>
+	<item id="43730" name="weretiger tooth">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="showCount" value="0"/>
+		<attribute key="weight" value="280"/>
+	</item>
+	<item id="43731" name="werepanther claw">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="showCount" value="0"/>
+		<attribute key="weight" value="280"/>
+	</item>
+	<item id="43732" name="silver moon coin">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="showCount" value="0"/>
+		<attribute key="weight" value="280"/>
+	</item>
+	<item id="43733" name="silver foxmouse coin">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="showCount" value="0"/>
+		<attribute key="weight" value="280"/>
+	</item>
+	<item id="43734" name="golden sun coin">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="showCount" value="0"/>
+		<attribute key="weight" value="280"/>
+	</item>
+	<item id="43735" name="golden tiger coin">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="showCount" value="0"/>
+		<attribute key="weight" value="280"/>
+	</item>
+	<item id="43736" name="moon pin">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="showCount" value="0"/>
+		<attribute key="weight" value="280"/>
+	</item>
+	<item id="43737" name="sun brooch">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="showCount" value="0"/>
+		<attribute key="weight" value="280"/>
+	</item>
+	<item id="43740" article="a" name="scarab ocarina">
+		<attribute key="primarytype" value="light sources"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="description" value="It has a turquoise shimmer and was made from a real scarab shell."/>
+		<attribute key="absorbpercentearth" value="2"/>
+		<attribute key="weight" value="120"/>
+	</item>
+	<item id="43665" article="a" name="dead elder bloodjaw">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43667" article="a" name="dead elder bloodjaw">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43666"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43668" article="a" name="dead elder bloodjaw">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43667"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43669" article="a" name="dead elder bloodjaw">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43668"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43751" article="a" name="dead werecrocodile">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43752" article="a" name="dead werecrocodile">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43751"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43753" article="a" name="dead werecrocodile">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43752"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43754" article="a" name="dead werecrocodile">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43753"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43755" article="a" name="dead werepanther">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43756" article="a" name="dead werepanther">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43755"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43757" article="a" name="dead werepanther">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43756"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43758" article="a" name="dead werepanther">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43757"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43764" article="a" name="dead feral werecrocodile">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43765" article="a" name="dead feral werecrocodile">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43764"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43766" article="a" name="dead feral werecrocodile">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43765"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43767" article="a" name="dead feral werecrocodile">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43766"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43813" article="a" name="dead bloated man-maggot">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43814" article="a" name="dead bloated man-maggot">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43813"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43815" article="a" name="dead bloated man-maggot">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43814"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43816" article="a" name="dead bloated man-maggot">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43815"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
 	</item>
 	<item id="43864" article="a" name="sanguine blade">
 		<attribute key="primarytype" value="sword weapons"/>
@@ -68645,8 +68883,8 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="elementenergy" value="50"/>
-		<attribute key="criticalhitdamage" value="12"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1200"/>
+		<attribute key="criticalhitdamage" value="1000"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="defense" value="35"/>
 		<attribute key="skillsword" value="5"/>
@@ -68663,8 +68901,8 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="elementenergy" value="50"/>
-		<attribute key="criticalhitdamage" value="12"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1200"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="defense" value="35"/>
 		<attribute key="skillsword" value="5"/>
@@ -68681,8 +68919,8 @@
 		<attribute key="weaponType" value="club"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="elementearth" value="50"/>
-		<attribute key="criticalhitdamage" value="12"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1200"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="defense" value="35"/>
 		<attribute key="skillclub" value="5"/>
@@ -68699,8 +68937,8 @@
 		<attribute key="weaponType" value="club"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="elementearth" value="50"/>
-		<attribute key="criticalhitdamage" value="12"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1200"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="defense" value="35"/>
 		<attribute key="skillclub" value="5"/>
@@ -68717,8 +68955,8 @@
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="elementdeath" value="50"/>
-		<attribute key="criticalhitdamage" value="12"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1200"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="defense" value="35"/>
 		<attribute key="skillaxe" value="5"/>
@@ -68735,8 +68973,8 @@
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="elementdeath" value="50"/>
-		<attribute key="criticalhitdamage" value="12"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1200"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="defense" value="35"/>
 		<attribute key="skillaxe" value="5"/>
@@ -68762,8 +69000,8 @@
 		<attribute key="primarytype" value="distance weapons"/>
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="slotType" value="two-handed"/>
-		<attribute key="criticalhitdamage" value="12"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1200"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="ammotype" value="arrow"/>
 		<attribute key="absorbpercentearth" value="6"/>
 		<attribute key="skilldist" value="4"/>
@@ -68783,8 +69021,8 @@
 		<attribute key="primarytype" value="distance weapons"/>
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="slotType" value="two-handed"/>
-		<attribute key="criticalhitdamage" value="12"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1200"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="ammotype" value="arrow"/>
 		<attribute key="absorbpercentearth" value="6"/>
 		<attribute key="skilldist" value="4"/>
@@ -68804,8 +69042,8 @@
 		<attribute key="primarytype" value="distance weapons"/>
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="slotType" value="two-handed"/>
-		<attribute key="criticalhitdamage" value="12"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1200"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="ammotype" value="bolt"/>
 		<attribute key="absorbpercentfire" value="6"/>
 		<attribute key="skilldist" value="4"/>
@@ -68825,8 +69063,8 @@
 		<attribute key="primarytype" value="distance weapons"/>
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="slotType" value="two-handed"/>
-		<attribute key="criticalhitdamage" value="12"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1200"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="ammotype" value="bolt"/>
 		<attribute key="absorbpercentfire" value="6"/>
 		<attribute key="skilldist" value="4"/>
@@ -68859,8 +69097,8 @@
 		<attribute key="magiclevelpoints" value="5"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
 		<attribute key="energymagiclevelpoints" value="1"/>
-		<attribute key="criticalhitdamage" value="12"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1200"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="weight" value="2200"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
@@ -68876,8 +69114,8 @@
 		<attribute key="magiclevelpoints" value="5"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
 		<attribute key="energymagiclevelpoints" value="1"/>
-		<attribute key="criticalhitdamage" value="12"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="1200"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="weight" value="2100"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
@@ -68906,8 +69144,8 @@
 		<attribute key="magiclevelpoints" value="5"/>
 		<attribute key="earthmagiclevelpoints" value="1"/>
 		<attribute key="icemagiclevelpoints" value="1"/>
-		<attribute key="criticalhitdamage" value="5"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="500"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="weight" value="2500"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
@@ -68923,8 +69161,8 @@
 		<attribute key="magiclevelpoints" value="5"/>
 		<attribute key="earthmagiclevelpoints" value="1"/>
 		<attribute key="icemagiclevelpoints" value="1"/>
-		<attribute key="criticalhitdamage" value="5"/>
-		<attribute key="criticalhitchance" value="10"/>
+		<attribute key="criticalhitdamage" value="500"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="weight" value="2400"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
@@ -68949,6 +69187,44 @@
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="weight" value="20"/>
 	</item>
+	<item id="43902" article="a" name="crack">
+		<attribute key="description" value="You see to be able to fit through there" />
+	</item>
+	<item id="43915" article="a" name="weretiger trophy">
+		<attribute key="primarytype" value="trophies"/>
+		<attribute key="weight" value="500"/>
+	</item>
+	<item id="43916" article="a" name="werecrocodile trophy">
+		<attribute key="primarytype" value="trophies"/>
+		<attribute key="weight" value="500"/>
+	</item>
+	<item id="43917" article="a" name="werepanther trophy">
+		<attribute key="primarytype" value="trophies"/>
+		<attribute key="weight" value="500"/>
+	</item>
+	<item id="44036" article="a" name="dead ayana the crimson curse">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44037" article="a" name="dead ayana the crimson curse">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44036"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44038" article="a" name="dead ayana the crimson curse">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44037"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44039" article="a" name="dead ayana the crimson curse">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44038"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
 	<item id="44064" article="an" name="training shield">
 		<attribute key="primarytype" value="training weapons"/>
 		<attribute key="showCharges" value="1"/>
@@ -68972,5 +69248,77 @@
 		<attribute key="showCharges" value="1"/>
 		<attribute key="charges" value="14400"/>
 		<attribute key="weight" value="1000"/>
+	</item>
+	<item id="44602" article="a" name="lesser guardian gem" plural="lesser guardian gems">
+		<attribute key="description" value="Shines with the strength of knights" />
+		<attribute key="loottype" value="valuable" />
+		<attribute key="primarytype" value="valuables" />
+		<attribute key="weight" value="20" />
+	</item>
+	<item id="44603" article="a" name="guardian gem" plural="guardian gems">
+		<attribute key="description" value="Shines with the strength of knights" />
+		<attribute key="loottype" value="valuable" />
+		<attribute key="primarytype" value="valuables" />
+		<attribute key="weight" value="20" />
+	</item>
+	<item id="44604" article="a" name="greater guardian gem" plural="greater guardian gems">
+		<attribute key="description" value="Shines with the strength of knights" />
+		<attribute key="loottype" value="valuable" />
+		<attribute key="primarytype" value="valuables" />
+		<attribute key="weight" value="120" />
+	</item>
+	<item id="44605" article="a" name="lesser marksman gem" plural="lesser marksman gems">
+		<attribute key="description" value="Shines with the accuracy of paladins" />
+		<attribute key="loottype" value="valuable" />
+		<attribute key="primarytype" value="valuables" />
+		<attribute key="weight" value="20" />
+	</item>
+	<item id="44606" article="a" name="marksman gem" plural="marksman gems">
+		<attribute key="description" value="Shines with the accuracy of paladins" />
+		<attribute key="loottype" value="valuable" />
+		<attribute key="primarytype" value="valuables" />
+		<attribute key="weight" value="20" />
+	</item>
+	<item id="44607" article="a" name="greater marksman gem" plural="greater marksman gems">
+		<attribute key="description" value="Shines with the accuracy of paladins" />
+		<attribute key="loottype" value="valuable" />
+		<attribute key="primarytype" value="valuables" />
+		<attribute key="weight" value="120" />
+	</item>
+	<item id="44608" article="a" name="lesser sage gem" plural="lesser sage gems">
+		<attribute key="description" value="Shines with the power of sorcerers" />
+		<attribute key="loottype" value="valuable" />
+		<attribute key="primarytype" value="valuables" />
+		<attribute key="weight" value="20" />
+	</item>
+	<item id="44609" article="a" name="sage gem" plural="sage gems">
+		<attribute key="description" value="Shines with the power of sorcerers" />
+		<attribute key="loottype" value="valuable" />
+		<attribute key="primarytype" value="valuables" />
+		<attribute key="weight" value="50" />
+	</item>
+	<item id="44610" article="a" name="greater sage gem" plural="greater sage gems">
+		<attribute key="description" value="Shines with the power of sorcerers" />
+		<attribute key="loottype" value="valuable" />
+		<attribute key="primarytype" value="valuables" />
+		<attribute key="weight" value="120" />
+	</item>
+	<item id="44611" article="a" name="lesser mystic gem" plural="lesser mystic gems">
+		<attribute key="description" value="Shines with the wisdom of druids" />
+		<attribute key="loottype" value="valuable" />
+		<attribute key="primarytype" value="valuables" />
+		<attribute key="weight" value="20" />
+	</item>
+	<item id="44612" article="a" name="mystic gem" plural="mystic gems">
+		<attribute key="description" value="Shines with the wisdom of druids" />
+		<attribute key="loottype" value="valuable" />
+		<attribute key="primarytype" value="valuables" />
+		<attribute key="weight" value="50" />
+	</item>
+	<item id="44613" article="a" name="greater mystic gem" plural="greater mystic gems">
+		<attribute key="description" value="Shines with the wisdom of druids" />
+		<attribute key="loottype" value="valuable" />
+		<attribute key="primarytype" value="valuables" />
+		<attribute key="weight" value="120" />
 	</item>
 </items>

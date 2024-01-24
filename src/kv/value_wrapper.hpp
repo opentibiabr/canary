@@ -49,6 +49,8 @@ public:
 
 	template <typename T>
 	T get() const {
+		static_assert(std::is_same_v<T, StringType> || std::is_same_v<T, BooleanType> || std::is_same_v<T, IntType> || std::is_same_v<T, DoubleType> || std::is_same_v<T, ArrayType> || std::is_same_v<T, MapType>, "Invalid type T");
+
 		if (std::holds_alternative<T>(data_)) {
 			return std::get<T>(data_);
 		}
@@ -148,6 +150,7 @@ private:
 
 template <typename T>
 T ValueWrapper::get(const std::string &key) const {
+	static_assert(std::is_same_v<T, StringType> || std::is_same_v<T, BooleanType> || std::is_same_v<T, IntType> || std::is_same_v<T, DoubleType> || std::is_same_v<T, ArrayType> || std::is_same_v<T, MapType>, "Invalid type T");
 	auto optValue = get(key);
 	if (optValue.has_value()) {
 		if (auto pval = std::get_if<T>(&optValue->data_)) {
@@ -159,6 +162,7 @@ T ValueWrapper::get(const std::string &key) const {
 
 template <typename T>
 T ValueWrapper::get(size_t index) const {
+	static_assert(std::is_same_v<T, StringType> || std::is_same_v<T, BooleanType> || std::is_same_v<T, IntType> || std::is_same_v<T, DoubleType> || std::is_same_v<T, ArrayType> || std::is_same_v<T, MapType>, "Invalid type T");
 	auto optValue = get(index);
 	if (optValue.has_value()) {
 		if (auto pval = std::get_if<T>(&optValue->data_)) {

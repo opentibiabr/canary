@@ -12,6 +12,10 @@
 #include "kv/kv.hpp"
 #include "lib/di/container.hpp"
 
+int64_t KV::lastTimestamp_ = 0;
+uint64_t KV::counter_ = 0;
+std::mutex KV::mutex_ = {};
+
 KVStore &KVStore::getInstance() {
 	return inject<KVStore>();
 }

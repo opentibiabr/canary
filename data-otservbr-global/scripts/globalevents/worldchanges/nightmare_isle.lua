@@ -17,7 +17,7 @@ local config = {
 }
 
 local function Nightmarewebhook(message) -- New local function that runs on delay to send webhook message.
-	Webhook.sendMessage("[Nightmare Isle] ", message, WEBHOOK_COLOR_ONLINE) --Sends webhook message
+	Webhook.sendMessage(":thought_balloon: " .. message, announcementChannels["serverAnnouncements"])
 end
 
 local NightmareIsle = GlobalEvent("NightmareIsle")

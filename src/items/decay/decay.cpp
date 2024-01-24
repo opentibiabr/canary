@@ -155,9 +155,9 @@ void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 		if (player) {
 			bool needUpdateSkills = false;
 			for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-				if (it.abilities && it.abilities->skills[i] != 0) {
+				if (it.abilities && item->getSkill(static_cast<skills_t>(i)) != 0) {
 					needUpdateSkills = true;
-					player->setVarSkill(static_cast<skills_t>(i), -it.abilities->skills[i]);
+					player->setVarSkill(static_cast<skills_t>(i), -item->getSkill(static_cast<skills_t>(i)));
 				}
 			}
 
@@ -167,10 +167,10 @@ void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 
 			bool needUpdateStats = false;
 			for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
-				if (it.abilities && it.abilities->stats[s] != 0) {
+				if (item->getStat(static_cast<stats_t>(s)) != 0) {
 					needUpdateStats = true;
 					needUpdateSkills = true;
-					player->setVarStats(static_cast<stats_t>(s), -it.abilities->stats[s]);
+					player->setVarStats(static_cast<stats_t>(s), -item->getStat(static_cast<stats_t>(s)));
 				}
 				if (it.abilities && it.abilities->statsPercent[s] != 0) {
 					needUpdateStats = true;

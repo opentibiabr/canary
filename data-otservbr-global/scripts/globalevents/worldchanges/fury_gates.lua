@@ -101,7 +101,7 @@ local gates = {
 }
 
 local function Furywebhook(message) -- New local function that runs on delay to send webhook message.
-	Webhook.sendMessage("[Fury Gates] ", message, WEBHOOK_COLOR_ONLINE) --Sends webhook message
+	Webhook.sendMessage(":fire: " .. message, announcementChannels["serverAnnouncements"])
 end
 
 -- FURY GATES MAP LOAD

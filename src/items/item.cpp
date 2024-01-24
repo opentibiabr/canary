@@ -1245,7 +1245,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			}
 
 			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
-				auto skill = item->getSkill(static_cast<skills_t>(i));
+				auto skill = item ? item->getSkill(static_cast<skills_t>(i)) : it.getSkill(static_cast<skills_t>(i));
 				if (!skill) {
 					continue;
 				}
@@ -1648,7 +1648,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			}
 
 			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
-				auto skill = item->getSkill(static_cast<skills_t>(i));
+				auto skill = item ? item->getSkill(static_cast<skills_t>(i)) : it.getSkill(static_cast<skills_t>(i));
 				if (!skill) {
 					continue;
 				}
@@ -2087,7 +2087,7 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 			}
 
 			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
-				auto skill = item->getSkill(static_cast<skills_t>(i));
+				auto skill = item ? item->getSkill(static_cast<skills_t>(i)) : itemType.getSkill(static_cast<skills_t>(i));
 				if (!skill) {
 					continue;
 				}
@@ -2385,7 +2385,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 				}
 
 				for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
-					auto skill = item->getSkill(static_cast<skills_t>(i));
+					auto skill = item ? item->getSkill(static_cast<skills_t>(i)) : it.getSkill(static_cast<skills_t>(i));
 					if (!skill) {
 						continue;
 					}
@@ -2653,7 +2653,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 				}
 
 				for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
-					auto skill = item->getSkill(static_cast<skills_t>(i));
+					auto skill = item ? item->getSkill(static_cast<skills_t>(i)) : it.getSkill(static_cast<skills_t>(i));
 					if (!skill) {
 						continue;
 					}

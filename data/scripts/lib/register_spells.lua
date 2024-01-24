@@ -417,6 +417,14 @@ RANGE = {
 	[19] = { 1, 2 },
 }
 
+DEFAULT_COOLDOWN = {
+	RUNE = 2 * 1000, -- 2 secs
+	RUNE_GROUP = 2 * 1000, -- 2 secs
+
+	SPELL = 2 * 1000, -- 2 secs
+	SPELL_GROUP = 2 * 1000, -- 2 secs
+}
+
 function Creature:addDamageCondition(target, conditionType, listType, damage, time, rounds)
 	if target:isImmune(conditionType) then
 		return false

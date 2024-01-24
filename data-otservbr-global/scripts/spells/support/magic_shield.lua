@@ -27,7 +27,7 @@ spell:vocation("druid;true", "elder druid;true", "sorcerer;true", "master sorcer
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_MAGIC_SHIELD)
 spell:id(44)
 spell:cooldown(14 * 1000)
-spell:groupCooldown(2 * 1000)
+spell:groupCooldown(DEFAULT_COOLDOWN.SPELL_GROUP)
 spell:level(14)
 spell:mana(50)
 spell:isSelfTarget(true)

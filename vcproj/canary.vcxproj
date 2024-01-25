@@ -205,6 +205,8 @@
     <ClInclude Include="..\src\protobuf\kv.pb.h" />
     <ClInclude Include="..\src\security\rsa.hpp" />
     <ClInclude Include="..\src\server\network\connection\connection.hpp" />
+    <ClInclude Include="..\src\server\network\httpclient\httpclient.hpp" />
+    <ClInclude Include="..\src\server\network\httpclient\httpclientlib.h" />
     <ClInclude Include="..\src\server\network\message\networkmessage.hpp" />
     <ClInclude Include="..\src\server\network\message\outputmessage.hpp" />
     <ClInclude Include="..\src\server\network\protocol\protocol.hpp" />
@@ -398,6 +400,7 @@
     <ClCompile Include="..\src\security\argon.cpp" />
     <ClCompile Include="..\src\security\rsa.cpp" />
     <ClCompile Include="..\src\server\network\connection\connection.cpp" />
+    <ClCompile Include="..\src\server\network\httpclient\httpclient.cpp" />
     <ClCompile Include="..\src\server\network\message\networkmessage.cpp" />
     <ClCompile Include="..\src\server\network\message\outputmessage.cpp" />
     <ClCompile Include="..\src\server\network\protocol\protocol.cpp" />

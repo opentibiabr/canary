@@ -140,6 +140,7 @@
     <ClInclude Include="..\src\lua\functions\core\libs\logger_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\metrics_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\network\core_network_functions.hpp" />
+    <ClInclude Include="..\src\lua\functions\core\network\httpclient_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\network\network_message_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\network\webhook_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\creatures\combat\combat_functions.hpp" />
@@ -229,6 +230,7 @@
     <ClInclude Include="..\src\utils\vectorset.hpp" />
     <ClInclude Include="..\src\utils\vectorsort.hpp" />
     <ClInclude Include="..\src\utils\wildcardtree.hpp" />
+    <ClInclude Include="httpclient_functions.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\account\account_repository_db.cpp" />
@@ -333,6 +335,7 @@
     <ClCompile Include="..\src\lua\functions\core\libs\result_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\logger_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\metrics_functions.cpp" />
+    <ClCompile Include="..\src\lua\functions\core\network\httpclient_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\network\network_message_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\network\webhook_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\creatures\combat\combat_functions.cpp" />

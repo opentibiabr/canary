@@ -28,6 +28,11 @@ class KV;
 
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)
 
+namespace HttpClientLib {
+	class HttpRequest;
+	using HttpRequest_ptr = std::shared_ptr<HttpRequest>;
+} // namespace HttpClientLib
+
 class LuaFunctionsLoader {
 public:
 	static void load(lua_State* L);

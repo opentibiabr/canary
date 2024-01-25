@@ -1,9 +1,13 @@
-// Copyright 2023 The Forgotten Server Authors. All rights reserved.
-// Use of this source code is governed by the GPL-2.0 License that can be found
-// in the LICENSE file.
+/**
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
+ */
 
-#ifndef HTTPCLIENT_H
-#define HTTPCLIENT_H
+#pragma once
 
 #include "lua/functions/core/network/httpclient_functions.hpp"
 #include "lib/thread/thread_pool.hpp"
@@ -90,4 +94,3 @@ private:
 
 constexpr auto g_http = HttpClient::getInstance;
 
-#endif

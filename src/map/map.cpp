@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "map.hpp"
 #include "utils/astarnodes.hpp"
+#include "map.hpp"
 
 #include "creatures/monsters/monster.hpp"
 #include "game/game.hpp"

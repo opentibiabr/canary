@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "pch.hpp"
+
 // Enums
 enum Icons_t {
 	ICON_POISON = 1 << 0,

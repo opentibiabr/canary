@@ -230,7 +230,6 @@
     <ClInclude Include="..\src\utils\vectorset.hpp" />
     <ClInclude Include="..\src\utils\vectorsort.hpp" />
     <ClInclude Include="..\src\utils\wildcardtree.hpp" />
-    <ClInclude Include="httpclient_functions.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\account\account_repository_db.cpp" />

@@ -1644,7 +1644,9 @@ bool ConditionDamage::getNextDamage(int32_t &damage) {
 }
 
 bool ConditionDamage::doDamage(std::shared_ptr<Creature> creature, int32_t healthChange) {
-	if (creature->isSuppress(getType())) {
+	auto attacker = g_game().getPlayerByGUID(owner) ? g_game().getPlayerByGUID(owner)->getCreature() : g_game().getCreatureByID(owner);
+	bool isPlayer = attacker && attacker->getPlayer();
+	if (creature->isSuppress(getType(), isPlayer)) {
 		return true;
 	}
 
@@ -1653,7 +1655,6 @@ bool ConditionDamage::doDamage(std::shared_ptr<Creature> creature, int32_t healt
 	damage.primary.value = healthChange;
 	damage.primary.type = Combat::ConditionToDamageType(conditionType);
 
-	std::shared_ptr<Creature> attacker = g_game().getCreatureByID(owner);
 	if (field && creature->getPlayer() && attacker && attacker->getPlayer()) {
 		damage.primary.value = static_cast<int32_t>(std::round(damage.primary.value / 2.));
 	}

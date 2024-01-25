@@ -117,6 +117,7 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, CLEAN_PROTECTION_ZONES, "cleanProtectionZones", false);
 	loadBoolConfig(L, GLOBAL_SERVER_SAVE_SHUTDOWN, "globalServerSaveShutdown", true);
 	loadBoolConfig(L, PUSH_WHEN_ATTACKING, "pushWhenAttacking", false);
+	loadIntConfig(L, MIN_DELAY_BETWEEN_CONDITIONS, "minDelayBetweenConditions", 0);
 
 	loadBoolConfig(L, WEATHER_RAIN, "weatherRain", false);
 	loadBoolConfig(L, WEATHER_THUNDER, "thunderEffect", false);

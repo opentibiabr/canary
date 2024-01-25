@@ -381,17 +381,17 @@ public:
 	}
 
 	int32_t getSpeed() const {
-		int32_t value = items[id].abilities->speed;
+		int32_t value = items[id].getSpeed();
 		return value;
 	}
 
 	int32_t getSkill(skills_t skill) const {
-		int32_t value = items[id].abilities ? items[id].abilities->skills[skill] : 0;
+		int32_t value = items[id].getSkill(skill);
 		return value;
 	}
 
 	int32_t getStat(stats_t stat) const {
-		int32_t value = items[id].abilities ? items[id].abilities->stats[stat] : 0;
+		int32_t value = items[id].getStat(stat);
 		return value;
 	}
 

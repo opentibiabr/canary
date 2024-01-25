@@ -5,10 +5,20 @@
 #include "pch.hpp"
 
 #include "server/network/httpclient/httpclient.hpp"
-#include "server/network/httpclient/httpclientlib.hpp"
+#include "server/network/httpclient/httpclientlib.h"
 
-#include "tasks.h"
-extern Dispatcher g_dispatcher;
+#include "lib/di/container.hpp"
+
+//#include "tasks.h"
+//extern Dispatcher g_dispatcher;
+
+HttpClient::HttpClient(ThreadPool& threadPool) :
+	threadPool(threadPool) {
+}
+
+HttpClient& HttpClient::getInstance() {
+	return inject<HttpClient>();
+}
 
 void HttpClient::threadMain()
 {
@@ -17,7 +27,8 @@ void HttpClient::threadMain()
 	    [this](const HttpClientLib::HttpResponse_ptr &response) { clientRequestFailureCallback(response); });
 
 	std::unique_lock<std::mutex> requestLockUnique(requestLock, std::defer_lock);
-	while (getState() != THREAD_STATE_TERMINATED) {
+	int test = 0;
+	while (test++ < 100 /*getState() != THREAD_STATE_TERMINATED*/) {
 		requestLockUnique.lock();
 
 		if (pendingRequests.empty() && pendingResponses.empty()) {
@@ -148,7 +159,7 @@ void HttpClient::processResponse(const HttpClientLib::HttpResponse_ptr &response
 	}
 
 	if (httpRequest->callbackData.callbackFunction) {
-		g_dispatcher.addTask(createTask(std::bind(httpRequest->callbackData.callbackFunction, response)));
+		//g_dispatcher.addTask(createTask(std::bind(httpRequest->callbackData.callbackFunction, response)));
 	}
 
 	requests.erase(response->requestId);
@@ -218,7 +229,7 @@ void HttpClient::addResponse(const HttpClientLib::HttpResponse_ptr &response)
 {
 	bool signal = false;
 	requestLock.lock();
-	if (getState() == THREAD_STATE_RUNNING) {
+	if (true/*getState() == THREAD_STATE_RUNNING*/) {
 		signal = pendingResponses.empty();
 		pendingResponses.emplace_back(response);
 	}
@@ -233,7 +244,7 @@ void HttpClient::addRequest(const HttpClientLib::HttpRequest_ptr &request)
 {
 	bool signal = false;
 	requestLock.lock();
-	if (getState() == THREAD_STATE_RUNNING) {
+	if (true/*getState() == THREAD_STATE_RUNNING*/) {
 		signal = pendingRequests.empty();
 		pendingRequests.emplace_back(request);
 	}
@@ -247,7 +258,7 @@ void HttpClient::addRequest(const HttpClientLib::HttpRequest_ptr &request)
 void HttpClient::shutdown()
 {
 	requestLock.lock();
-	setState(THREAD_STATE_TERMINATED);
+	//setState(THREAD_STATE_TERMINATED);
 	requestLock.unlock();
 	requestSignal.notify_one();
 }

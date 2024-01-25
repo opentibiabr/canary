@@ -2,11 +2,11 @@
 // Use of this source code is governed by the GPL-2.0 License that can be found
 // in the LICENSE file.
 
-#ifndef HTTP_H
-#define HTTP_H
+#ifndef HTTPCLIENT_H
+#define HTTPCLIENT_H
 
 #include "lua/functions/core/network/httpclient_functions.hpp"
-#include "thread_holder_base.h"
+#include "lib/thread/thread_pool.hpp"
 
 namespace HttpClientLib {
 class Request;
@@ -55,14 +55,16 @@ public:
 using HttpRequest_ptr = std::shared_ptr<HttpRequest>;
 } // namespace HttpClientLib
 
-class HttpClient : public ThreadHolder<HttpClient>
+class HttpClient
 {
 public:
-	HttpClient() {}
+	HttpClient(ThreadPool& threadPool);
 	void threadMain();
 	void shutdown();
 
 	void addRequest(const HttpClientLib::HttpRequest_ptr &request);
+
+	static HttpClient& getInstance();
 
 private:
 	void clientRequestSuccessCallback(const HttpClientLib::HttpResponse_ptr &response);
@@ -83,8 +85,9 @@ private:
 
 	std::map<uint32_t, HttpClientLib::HttpRequest_ptr> requests;
 
+	ThreadPool& threadPool;
 };
 
-extern HttpClient g_http;
+constexpr auto g_http = HttpClient::getInstance;
 
 #endif

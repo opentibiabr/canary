@@ -221,6 +221,13 @@ public:
 		new (userData) std::shared_ptr<T>(value);
 	}
 
+	// Shared Ptr
+	template<class T>
+	static void pushSharedPtr(lua_State* L, T value)
+	{
+		new (lua_newuserdata(L, sizeof(T))) T(std::move(value));
+	}
+
 protected:
 	static void registerClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
 	static void registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);

@@ -20,7 +20,8 @@ int HttpClientFunctions::luaCreateHttpClientRequest(lua_State* L)
 	HttpClientLib::HttpRequest_ptr httpRequest = std::make_shared<HttpClientLib::HttpRequest>();
 
 	httpRequest->callbackData.scriptInterface = getScriptEnv()->getScriptInterface();
-	pushUserData<HttpClientLib::HttpRequest>(L, httpRequest);
+	//pushUserData<HttpClientLib::HttpRequest>(L, httpRequest);
+	pushSharedPtr(L, httpRequest);
 	setMetatable(L, -1, "HttpClientRequest");
 	return 1;
 }
@@ -62,7 +63,7 @@ int HttpClientFunctions::luaHttpClientRequestConnect(lua_State* L)
 	luaHttpClientBuildRequest(L, httpRequest);
 	httpRequest->method = HttpClientLib::HTTP_CONNECT;
 
-	g_http.addRequest(httpRequest);
+	g_http().addRequest(httpRequest);
 
 	pushBoolean(L, true);
 	return 1;
@@ -80,7 +81,7 @@ int HttpClientFunctions::luaHttpClientRequestTrace(lua_State* L)
 	luaHttpClientBuildRequest(L, httpRequest);
 	httpRequest->method = HttpClientLib::HTTP_TRACE;
 
-	g_http.addRequest(httpRequest);
+	g_http().addRequest(httpRequest);
 
 	pushBoolean(L, true);
 	return 1;
@@ -98,7 +99,7 @@ int HttpClientFunctions::luaHttpClientRequestOptions(lua_State* L)
 	luaHttpClientBuildRequest(L, httpRequest);
 	httpRequest->method = HttpClientLib::HTTP_OPTIONS;
 
-	g_http.addRequest(httpRequest);
+	g_http().addRequest(httpRequest);
 
 	pushBoolean(L, true);
 	return 1;
@@ -116,7 +117,7 @@ int HttpClientFunctions::luaHttpClientRequestHead(lua_State* L)
 	luaHttpClientBuildRequest(L, httpRequest);
 	httpRequest->method = HttpClientLib::HTTP_HEAD;
 
-	g_http.addRequest(httpRequest);
+	g_http().addRequest(httpRequest);
 
 	pushBoolean(L, true);
 	return 1;
@@ -134,7 +135,7 @@ int HttpClientFunctions::luaHttpClientRequestDelete(lua_State* L)
 	luaHttpClientBuildRequest(L, httpRequest);
 	httpRequest->method = HttpClientLib::HTTP_DELETE;
 
-	g_http.addRequest(httpRequest);
+	g_http().addRequest(httpRequest);
 
 	pushBoolean(L, true);
 	return 1;
@@ -152,7 +153,7 @@ int HttpClientFunctions::luaHttpClientRequestGet(lua_State* L)
 	luaHttpClientBuildRequest(L, httpRequest);
 	httpRequest->method = HttpClientLib::HTTP_GET;
 
-	g_http.addRequest(httpRequest);
+	g_http().addRequest(httpRequest);
 
 	pushBoolean(L, true);
 	return 1;
@@ -170,7 +171,7 @@ int HttpClientFunctions::luaHttpClientRequestPost(lua_State* L)
 	luaHttpClientBuildRequest(L, httpRequest);
 	httpRequest->method = HttpClientLib::HTTP_POST;
 
-	g_http.addRequest(httpRequest);
+	g_http().addRequest(httpRequest);
 
 	pushBoolean(L, true);
 	return 1;
@@ -188,7 +189,7 @@ int HttpClientFunctions::luaHttpClientRequestPatch(lua_State* L)
 	luaHttpClientBuildRequest(L, httpRequest);
 	httpRequest->method = HttpClientLib::HTTP_PATCH;
 
-	g_http.addRequest(httpRequest);
+	g_http().addRequest(httpRequest);
 
 	pushBoolean(L, true);
 	return 1;
@@ -206,7 +207,7 @@ int HttpClientFunctions::luaHttpClientRequestPut(lua_State* L)
 	luaHttpClientBuildRequest(L, httpRequest);
 	httpRequest->method = HttpClientLib::HTTP_PUT;
 
-	g_http.addRequest(httpRequest);
+	g_http().addRequest(httpRequest);
 
 	pushBoolean(L, true);
 	return 1;

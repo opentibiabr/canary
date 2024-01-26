@@ -7,6 +7,7 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     network/protocol/protocollogin.cpp
     network/protocol/protocolstatus.cpp
     network/webhook/webhook.cpp
+    network/httpclient/httpclient.cpp
     server.cpp
     signals.cpp
 )

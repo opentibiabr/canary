@@ -79,6 +79,7 @@ target_include_directories(${PROJECT_NAME}_lib
         ${GMP_INCLUDE_DIRS}
         ${LUAJIT_INCLUDE_DIRS}
         ${PARALLEL_HASHMAP_INCLUDE_DIRS}
+        ${OPENSSL_INCLUDE_DIR}
         )
 
 # *****************************************************************************
@@ -88,6 +89,7 @@ target_link_libraries(${PROJECT_NAME}_lib
     PUBLIC
         ${GMP_LIBRARIES}
         ${LUAJIT_LIBRARIES}
+        ${OPENSSL_LIBRARIES}
         CURL::libcurl
         ZLIB::ZLIB
         absl::any absl::log absl::base absl::bits

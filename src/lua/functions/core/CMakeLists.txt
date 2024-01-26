@@ -14,4 +14,5 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     libs/kv_functions.cpp
     network/network_message_functions.cpp
     network/webhook_functions.cpp
+    network/httpclient_functions.cpp
 )

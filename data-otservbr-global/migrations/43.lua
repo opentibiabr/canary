@@ -3,8 +3,9 @@ function onUpdateDatabase()
 
 	db.query([[
 			ALTER TABLE `guild_wars`
-			ADD `frags` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
-			ADD `payment` bigint(20) UNSIGNED NOT NULL DEFAULT '0'
+			ADD `frags_limit` smallint(4) UNSIGNED NOT NULL DEFAULT '0',
+			ADD `payment` bigint(13) UNSIGNED NOT NULL DEFAULT '0',
+			ADD `duration_days` tinyint(3) UNSIGNED NOT NULL DEFAULT '0'
 		]])
 
 	return true

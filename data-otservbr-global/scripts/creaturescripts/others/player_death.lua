@@ -104,7 +104,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 						VALUES (" .. db.escapeString(killerName) .. ", " .. db.escapeString(playerName) .. ", " .. killerGuildId .. ", \z
 						" .. targetGuildId .. ", " .. os.time() .. ", " .. warId .. ")")
 
-					resultId = db.storeQuery("SELECT `guild_wars`.`id`, `guild_wars`.`frags`, (SELECT COUNT(1) FROM `guildwar_kills` \z
+					resultId = db.storeQuery("SELECT `guild_wars`.`id`, `guild_wars`.`frags_limit`, (SELECT COUNT(1) FROM `guildwar_kills` \z
 						WHERE `guildwar_kills`.`warid` = `guild_wars`.`id` AND `guildwar_kills`.`killerguild` = `guild_wars`.`guild1`) AS guild1_kills, \z
 						(SELECT COUNT(1) FROM `guildwar_kills` WHERE `guildwar_kills`.`warid` = `guild_wars`.`id` AND `guildwar_kills`.`killerguild` = `guild_wars`.`guild2`) AS guild2_kills \z
 						FROM `guild_wars` WHERE (`guild1` = " .. killerGuildId .. " OR `guild2` = " .. killerGuildId .. ") AND `status` = 1 AND `id` = " .. warId)
@@ -112,17 +112,17 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 					if resultId then
 						local guild1_kills = Result.getNumber(resultId, "guild1_kills")
 						local guild2_kills = Result.getNumber(resultId, "guild2_kills")
-						local limit = Result.getNumber(resultId, "frags")
+						local frags_limit = Result.getNumber(resultId, "frags_limit")
 						Result.free(resultId)
 
 						local members = killerGuild:getMembersOnline()
 						for i = 1, #members do
-							members[i]:sendChannelMessage(members[i], string.format("%s was killed by %s. The new score is: %s %d:%d %s (frags limit: %d)", playerName, killerName, targetGuild:getName(), guild1_kills, guild2_kills, killerGuild:getName(), limit), TALKTYPE_CHANNEL_R1, CHANNEL_GUILD)
+							members[i]:sendChannelMessage(members[i], string.format("%s was killed by %s. The new score is: %s %d:%d %s (frags limit: %d)", playerName, killerName, targetGuild:getName(), guild1_kills, guild2_kills, killerGuild:getName(), frags_limit), TALKTYPE_CHANNEL_R1, CHANNEL_GUILD)
 						end
 
 						local enemyMembers = targetGuild:getMembersOnline()
 						for i = 1, #enemyMembers do
-							enemyMembers[i]:sendChannelMessage(enemyMembers[i], string.format("%s was killed by %s. The new score is: %s %d:%d %s (frags limit: %d)", playerName, killerName, targetGuild:getName(), guild1_kills, guild2_kills, killerGuild:getName(), limit), TALKTYPE_CHANNEL_R1, CHANNEL_GUILD)
+							enemyMembers[i]:sendChannelMessage(enemyMembers[i], string.format("%s was killed by %s. The new score is: %s %d:%d %s (frags limit: %d)", playerName, killerName, targetGuild:getName(), guild1_kills, guild2_kills, killerGuild:getName(), frags_limit), TALKTYPE_CHANNEL_R1, CHANNEL_GUILD)
 						end
 
 						if guild1_kills >= limit or guild2_kills >= limit then

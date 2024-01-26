@@ -83,7 +83,7 @@ monster.loot = {
 	{ name = "platinum coin", chance = 49610, maxCount = 6 },
 	{ name = "necrotic rod", chance = 980 },
 	{ name = "wand of cosmic energy", chance = 910 },
-	{ name = "spirit container", chance = 140 },
+	{ id = 5884, chance = 140 }, -- spirit container
 	{ id = 6299, chance = 300 }, -- death ring
 	{ name = "great mana potion", chance = 8000 },
 	{ name = "ultimate health potion", chance = 9400 },

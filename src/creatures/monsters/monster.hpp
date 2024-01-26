@@ -336,12 +336,15 @@ public:
 
 	float getAttackMultiplier() const {
 		float multiplier = mType->getAttackMultiplier();
-		return multiplier * std::pow(1.03f, getForgeStack());
+		if (auto stacks = getForgeStack(); stacks > 0) {
+			multiplier *= (1.35 + (stacks - 1) * 0.1);
+		}
+		return multiplier;
 	}
 
 	float getDefenseMultiplier() const {
 		float multiplier = mType->getDefenseMultiplier();
-		return multiplier * std::pow(1.01f, getForgeStack());
+		return multiplier * std::pow(1.02f, getForgeStack());
 	}
 
 private:
@@ -386,6 +389,7 @@ private:
 
 	Position masterPos;
 
+	bool isWalkingBack = false;
 	bool isIdle = true;
 	bool extraMeleeAttack = false;
 	bool randomStepping = false;
@@ -424,6 +428,7 @@ private:
 	bool canUseSpell(const Position &pos, const Position &targetPos, const spellBlock_t &sb, uint32_t interval, bool &inRange, bool &resetTicks);
 	bool getRandomStep(const Position &creaturePos, Direction &direction);
 	bool getDanceStep(const Position &creaturePos, Direction &direction, bool keepAttack = true, bool keepDistance = true);
+	bool isInSpawnLocation() const;
 	bool isInSpawnRange(const Position &pos) const;
 	bool canWalkTo(Position pos, Direction direction);
 
@@ -457,6 +462,7 @@ private:
 
 	static std::vector<std::pair<int8_t, int8_t>> getPushItemLocationOptions(const Direction &direction);
 
+	void doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result);
 	void doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &result);
 	void doRandomStep(Direction &nextDirection, bool &result);
 

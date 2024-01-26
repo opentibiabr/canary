@@ -125,7 +125,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 							enemyMembers[i]:sendChannelMessage(enemyMembers[i], string.format("%s was killed by %s. The new score is: %s %d:%d %s (frags limit: %d)", playerName, killerName, targetGuild:getName(), guild1_kills, guild2_kills, killerGuild:getName(), frags_limit), TALKTYPE_CHANNEL_R1, CHANNEL_GUILD)
 						end
 
-						if guild1_kills >= limit or guild2_kills >= limit then
+						if guild1_kills >= frags_limit or guild2_kills >= frags_limit then
 							db.query("UPDATE `guild_wars` SET `status` = 4, `ended` = " .. os.time() .. " WHERE `status` = 1 AND `id` = " .. warId)
 							Game.broadcastMessage(string.format("%s has just won the war against %s.", killerGuild:getName(), targetGuild:getName()))
 						end

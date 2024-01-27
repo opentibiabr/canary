@@ -1595,8 +1595,6 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 		else
 			return error({ code = 0, message = "Error adding item to store inbox." })
 		end
-	else
-		return error({ code = 0, message = "Error accessing store inbox." })
 	end
 end
 

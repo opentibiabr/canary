@@ -11,6 +11,7 @@
 
 #include "lua/functions/core/game/lua_enums.hpp"
 
+#include "creatures/players/wheel/wheel_gems.hpp"
 #include "creatures/players/wheel/wheel_definitions.hpp"
 #include "io/io_bosstiary.hpp"
 #include "config/configmanager.hpp"
@@ -148,7 +149,6 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, LIGHT_STATE_SUNSET);
 	registerEnum(L, LIGHT_STATE_SUNRISE);
 	registerEnum(L, STORAGEVALUE_EMOTE);
-	registerEnum(L, STORAGEVALUE_AUTO_LOOT);
 
 	registerEnum(L, IMMOVABLE_ACTION_ID);
 

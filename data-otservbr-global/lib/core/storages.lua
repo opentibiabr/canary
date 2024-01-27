@@ -3065,8 +3065,10 @@ GlobalStorage = {
 		},
 	},
 	HeartOfDestruction = {
-		-- Reserved storage from 60172 - 60177
+		-- Reserved storage from 60172 - 60180
 		ChargedAnomaly = 60172,
+		EradicatorWeak = 60178,
+		EradicatorReleaseT = 60179,
 	},
 	FuryGates = 65000,
 	Yakchal = 65001,

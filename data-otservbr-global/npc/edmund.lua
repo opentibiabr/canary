@@ -53,9 +53,9 @@ end
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
-	{ itemName = "amber", clientId = 32626, sell = 20000 },
 	{ itemName = "amber with a bug", clientId = 32624, sell = 41000 },
 	{ itemName = "amber with a dragonfly", clientId = 32625, sell = 56000 },
+	{ itemName = "amber", clientId = 32626, sell = 20000 },
 	{ itemName = "ancient coin", clientId = 24390, sell = 350 },
 	{ itemName = "black pearl", clientId = 3027, buy = 560, sell = 280 },
 	{ itemName = "blue crystal shard", clientId = 16119, sell = 1500 },
@@ -77,17 +77,29 @@ npcConfig.shop = {
 	{ itemName = "gold nugget", clientId = 3040, sell = 850 },
 	{ itemName = "golden amulet", clientId = 3013, buy = 6600 },
 	{ itemName = "golden goblet", clientId = 5805, buy = 5000 },
+	{ itemName = "greater guardian gem", clientId = 44604, sell = 10000 },
+	{ itemName = "greater marksman gem", clientId = 44607, sell = 10000 },
+	{ itemName = "greater mystic gem", clientId = 44613, sell = 10000 },
+	{ itemName = "greater sage gem", clientId = 44610, sell = 10000 },
 	{ itemName = "green crystal fragment", clientId = 16127, sell = 800 },
 	{ itemName = "green crystal shard", clientId = 16121, sell = 1500 },
 	{ itemName = "green crystal splinter", clientId = 16122, sell = 400 },
 	{ itemName = "green giant shimmering pearl", clientId = 281, sell = 3000 },
+	{ itemName = "guardian gem", clientId = 44603, sell = 5000 },
+	{ itemName = "lesser guardian gem", clientId = 44602, sell = 1000 },
+	{ itemName = "lesser marksman gem", clientId = 44605, sell = 1000 },
+	{ itemName = "lesser mystic gem", clientId = 44611, sell = 1000 },
+	{ itemName = "lesser sage gem", clientId = 44608, sell = 1000 },
 	{ itemName = "lion figurine", clientId = 33781, sell = 10000 },
+	{ itemName = "marksman gem", clientId = 44606, sell = 5000 },
+	{ itemName = "mystic gem", clientId = 44612, sell = 5000 },
 	{ itemName = "onyx chip", clientId = 22193, sell = 400 },
 	{ itemName = "opal", clientId = 22194, sell = 500 },
 	{ itemName = "ornate locket", clientId = 30056, sell = 18000 },
 	{ itemName = "prismatic quartz", clientId = 24962, sell = 450 },
 	{ itemName = "red crystal fragment", clientId = 16126, sell = 800 },
 	{ itemName = "ruby necklace", clientId = 3016, buy = 3560 },
+	{ itemName = "sage gem", clientId = 44609, sell = 5000 },
 	{ itemName = "silver goblet", clientId = 5806, buy = 3000 },
 	{ itemName = "skull coin", clientId = 32583, sell = 12000 },
 	{ itemName = "small amethyst", clientId = 3033, buy = 400, sell = 200 },
@@ -104,9 +116,10 @@ npcConfig.shop = {
 	{ itemName = "unicorn figurine", clientId = 30054, sell = 50000 },
 	{ itemName = "violet crystal shard", clientId = 16120, sell = 1500 },
 	{ itemName = "wedding ring", clientId = 3004, buy = 990 },
-	{ itemName = "white silk flower", clientId = 34008, sell = 9000 },
 	{ itemName = "white pearl", clientId = 3026, buy = 320 },
+	{ itemName = "white silk flower", clientId = 34008, sell = 9000 },
 }
+
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)

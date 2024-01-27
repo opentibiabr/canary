@@ -3065,7 +3065,7 @@ GlobalStorage = {
 		},
 	},
 	HeartOfDestruction = {
-		-- Reserved storage from 60172 - 60177
+		-- Reserved storage from 60172 - 60190
 		ChargedAnomaly = 60172,
 		ForeshockHealth = 60173,
 		AftershockHealth = 60174,

@@ -102,7 +102,8 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 					rolls = math.floor(rolls)
 				end
 
-				local playerLoot = monsterType:getBossReward(lootFactor, _ == 1, false, {})
+				local playerLoot = creature:generateGemAtelierLoot()
+				playerLoot = monsterType:getBossReward(lootFactor, _ == 1, false, playerLoot)
 				for _ = 2, rolls do
 					playerLoot = monsterType:getBossReward(lootFactor, false, true, playerLoot)
 				end

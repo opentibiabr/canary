@@ -107,6 +107,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_ICEDAMAGE, minDamage = -950, maxDamage = -1100, range = 7, radius = 5, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEAREA, target = true },
 	{ name = "ice chain", interval = 2000, chance = 15, minDamage = -1100, maxDamage = -1300, range = 7 },
 	{ name = "soulwars fear", interval = 2000, chance = 1, target = true },
+	{ name = "destroy magic walls", interval = 1000, chance = 30 },
 }
 
 monster.defenses = {

@@ -562,8 +562,8 @@ end
 
 function Player:addItemStoreInbox(itemId, amount, movable, setOwner)
 	if not amount then
-		logger.error("Offer {} amount is nil.", itemId)
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Offer amount is wrong, please contact an administrator.")
+		logger.error("Item {} amount is nil.", itemId)
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Item amount is wrong, please contact an administrator.")
 		return nil
 	end
 

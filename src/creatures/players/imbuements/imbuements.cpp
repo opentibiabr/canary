@@ -240,7 +240,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							imbuement.skills[skillId] = bonus;
 							int32_t chance = 100;
 							if ((attr = childNode.attribute("chance"))) {
-								chance = std::min<uint32_t>(100, pugi::cast<int32_t>(attr.value()));
+								chance = std::min<uint32_t>(10000, pugi::cast<int32_t>(attr.value()));
 							}
 
 							imbuement.skills[skillId - 1] = chance;

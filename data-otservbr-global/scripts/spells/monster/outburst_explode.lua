@@ -77,7 +77,6 @@ function spell.onCastSpell(creature, var)
 	if monster then
 		local outburstHealth = Game.getStorageValue(GlobalStorage.HeartOfDestruction.OutburstHealth) > 0 and Game.getStorageValue(GlobalStorage.HeartOfDestruction.OutburstHealth) or 0
 		monster:addHealth(-monster:getHealth() + outburstHealth, COMBAT_PHYSICALDAMAGE)
-		--transferBossPoints(creature:getId(), monster:getId()) -- ????????????????????
 	end
 	return true
 end

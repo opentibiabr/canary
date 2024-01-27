@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 720 then
+	return
+end
+
 local mType = Game.createMonsterType("Banshee")
 local monster = {}
 
@@ -106,7 +110,7 @@ monster.loot = {
 	{ name = "terra mantle", chance = 340 },
 	{ name = "petrified scream", chance = 4150 },
 	{ name = "hair of a banshee", chance = 4810 },
-	{ name = "sweet smelling bait", chance = 40 },
+	{ name = "sweet smelling bait", chance = 40, version = 1100 },
 }
 
 monster.attacks = {

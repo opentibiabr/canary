@@ -77,6 +77,9 @@ Blessings.S_Packet = {
 }
 
 function onRecvbyte(player, msg, byte)
+	if CLIENT_VERSION < 1100 then
+		return
+	end
 	if byte == Blessings.C_Packet.OpenWindow then
 		Blessings.sendBlessDialog(player)
 	end

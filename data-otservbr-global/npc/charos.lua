@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 980 then
+	return
+end
+
 local internalNpcName = "Charos"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

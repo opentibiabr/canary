@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 790 then
+	return
+end
+
 local internalNpcName = "Demonguard"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

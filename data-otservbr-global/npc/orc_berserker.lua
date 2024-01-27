@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 510 then
+	return
+end
+
 local internalNpcName = "Orc Berserker"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 620 then
+	return
+end
+
 local mType = Game.createMonsterType("Frost Troll")
 local monster = {}
 

@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1102 then
+	return
+end
+
 local internalNpcName = "A Strange Chalice"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

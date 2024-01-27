@@ -12,7 +12,6 @@
 #include "config/configmanager.hpp"
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
-#include "game/movement/position.hpp"
 
 struct Abilities {
 public:
@@ -370,6 +369,7 @@ public:
 	bool spellbook = false;
 	bool isWrapKit = false;
 	bool m_canBeUsedByGuests = false;
+	bool m_isAnimation = false;
 };
 
 class Items {
@@ -407,6 +407,7 @@ public:
 
 	ItemTypes_t getLootType(const std::string &strValue);
 
+	bool loadFromOtb(const std::string &file);
 	bool loadFromXml();
 	void parseItemNode(const pugi::xml_node &itemNode, uint16_t id);
 
@@ -440,4 +441,8 @@ private:
 	std::vector<uint16_t> ladders;
 	std::unordered_map<uint16_t, uint16_t> dummys;
 	InventoryVector inventory;
+
+	uint32_t majorVersion = 0;
+	uint32_t minorVersion = 0;
+	uint32_t buildNumber = 0;
 };

@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1070 then
+	return
+end
+
 local internalNpcName = "Strange Pipe"
 local npcType = Game.createNpcType("Strange Pipe (2)")
 local npcConfig = {}

@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1103 then
+	return
+end
+
 local internalNpcName = "Lora"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

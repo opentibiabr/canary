@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1150 then
+	return
+end
+
 local mType = Game.createMonsterType("The Duke of the Depths")
 local monster = {}
 

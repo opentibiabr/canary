@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 830 then
+	return
+end
+
 local mType = Game.createMonsterType("The Mutated Pumpkin")
 local monster = {}
 

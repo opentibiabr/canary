@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 790 then
+	return
+end
+
 local internalNpcName = "A Dead Bureaucrat"
 local npcType = Game.createNpcType("A Dead Bureaucrat (3)")
 local npcConfig = {}

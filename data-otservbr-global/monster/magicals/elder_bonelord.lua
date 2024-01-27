@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 740 then
+	return
+end
+
 local mType = Game.createMonsterType("Elder Bonelord")
 local monster = {}
 

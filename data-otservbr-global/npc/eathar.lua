@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1070 then
+	return
+end
+
 local internalNpcName = "Eathar"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

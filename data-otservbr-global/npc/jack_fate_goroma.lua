@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 780 then
+	return
+end
+
 local internalNpcName = "Jack Fate"
 local npcType = Game.createNpcType("Jack Fate (Goroma)")
 local npcConfig = {}

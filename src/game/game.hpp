@@ -35,8 +35,10 @@ class IOPrey;
 class IOWheel;
 class ItemClassification;
 class Guild;
-class Mounts;
 class Spectators;
+#if CLIENT_VERSION >= 870
+class Mounts;
+#endif
 
 static constexpr uint16_t SERVER_BEAT = 0x32;
 static constexpr int32_t EVENT_MS = 10000;
@@ -565,7 +567,9 @@ public:
 
 	Groups groups;
 	Map map;
-	Mounts mounts;
+#if CLIENT_VERSION >= 870
+	std::unique_ptr<Mounts> m_mountsPtr;
+#endif
 	Raids raids;
 	Canary::protobuf::appearances::Appearances appearances;
 

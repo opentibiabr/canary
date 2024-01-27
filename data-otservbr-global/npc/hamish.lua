@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1055 then
+	return
+end
+
 local internalNpcName = "Hamish"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

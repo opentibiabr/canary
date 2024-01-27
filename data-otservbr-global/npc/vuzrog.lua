@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1090 then
+	return
+end
+
 local internalNpcName = "Vuzrog"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

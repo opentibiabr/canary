@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 790 then
+	return
+end
+
 local internalNpcName = "A Ghostly Woman"
 local npcType = Game.createNpcType("A Ghostly Woman (Ghostland)")
 local npcConfig = {}

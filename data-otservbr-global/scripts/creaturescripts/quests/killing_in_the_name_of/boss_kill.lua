@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1100 then
+	return
+end
+
 local taskBoss = {
 	[0] = "the snapper",
 	[1] = "hide",

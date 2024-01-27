@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1100 then
+	return
+end
+
 local deathEvent = CreatureEvent("SvargrondArenaBossDeath")
 function deathEvent.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
 	local player = Player(mostDamageKiller)

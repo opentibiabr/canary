@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 850 then
+	return
+end
+
 local mType = Game.createMonsterType("Essence of Darkness")
 local monster = {}
 

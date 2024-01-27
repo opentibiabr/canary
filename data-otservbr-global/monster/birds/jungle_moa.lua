@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1290 then
+	return
+end
+
 local mType = Game.createMonsterType("Jungle Moa")
 local monster = {}
 

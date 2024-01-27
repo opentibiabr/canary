@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1020 then
+	return
+end
+
 local internalNpcName = "Gnomux"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

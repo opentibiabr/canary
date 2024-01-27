@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 700 then
+	return
+end
+
 local mType = Game.createMonsterType("Orc Rider")
 local monster = {}
 

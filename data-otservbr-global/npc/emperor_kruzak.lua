@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 610 then
+	return
+end
+
 local internalNpcName = "Emperor Kruzak"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

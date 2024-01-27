@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 520 then
+	return
+end
+
 local internalNpcName = "Cipfried"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

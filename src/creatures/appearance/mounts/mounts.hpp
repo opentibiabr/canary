@@ -9,6 +9,8 @@
 
 #pragma once
 
+#if CLIENT_VERSION >= 870
+
 struct Mount {
 	Mount(uint8_t initId, uint16_t initClientId, std::string initName, int32_t initSpeed, bool initPremium, std::string initType) :
 		name(initName), speed(initSpeed), clientId(initClientId), id(initId), premium(initPremium),
@@ -37,3 +39,5 @@ public:
 private:
 	std::vector<std::shared_ptr<Mount>> mounts;
 };
+
+#endif

@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1020 then
+	return
+end
+
 local internalNpcName = "A Dragon Lord"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

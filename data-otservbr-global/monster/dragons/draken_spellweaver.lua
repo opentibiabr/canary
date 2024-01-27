@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 854 then
+	return
+end
+
 local mType = Game.createMonsterType("Draken Spellweaver")
 local monster = {}
 
@@ -92,8 +96,8 @@ monster.loot = {
 	{ name = "zaoan legs", chance = 550 },
 	{ name = "zaoan robe", chance = 370 },
 	{ name = "ring of the sky", chance = 180 },
-	{ name = "bamboo leaves", chance = 180 },
-	{ name = "harness", chance = 30 },
+	{ name = "bamboo leaves", chance = 180, version = 1100 },
+	{ name = "harness", chance = 30, version = 1100 },
 	{ name = "draken trophy", chance = 10 },
 }
 

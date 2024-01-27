@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 840 then
+	return
+end
+
 local internalNpcName = "Armenius"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

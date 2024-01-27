@@ -3,54 +3,57 @@ function serverstartup.onStartup()
 	logger.debug("Loading map attributes")
 	logger.debug("Loaded {} npcs and spawned {} monsters", Game.getNpcCount(), Game.getMonsterCount())
 	logger.debug("Loaded {} towns with {} houses in total", #Game.getTowns(), #Game.getHouses())
-	-- Sign table
-	loadLuaMapSign(SignTable)
-	logger.debug("Loaded {} signs in the map", #SignTable)
-	-- Book/Document table
-	loadLuaMapBookDocument(BookDocumentTable)
+	if CLIENT_VERSION >= 1100 then
+		-- Sign table
+		loadLuaMapSign(SignTable)
 
-	-- Action and unique tables
-	-- Chest table
-	loadLuaMapAction(ChestAction)
-	loadLuaMapUnique(ChestUnique)
-	-- Corpse table
-	loadLuaMapAction(CorpseAction)
-	loadLuaMapUnique(CorpseUnique)
-	-- Doors key table
-	loadLuaMapAction(KeyDoorAction)
-	-- Doors level table
-	loadLuaMapAction(LevelDoorAction)
-	-- Doors quest table
-	loadLuaMapAction(QuestDoorAction)
-	loadLuaMapUnique(QuestDoorUnique)
-	-- Item table
-	loadLuaMapAction(ItemAction)
-	loadLuaMapUnique(ItemUnique)
-	-- Item daily reward table
-	-- This is temporary disabled > loadLuaMapAction(DailyRewardAction)
-	-- Item unmovable table
-	loadLuaMapAction(ItemUnmovableAction)
-	-- Lever table
-	loadLuaMapAction(LeverAction)
-	loadLuaMapUnique(LeverUnique)
-	-- Teleport (magic forcefields) table
-	loadLuaMapAction(TeleportAction)
-	loadLuaMapUnique(TeleportUnique)
-	-- Teleport item table
-	loadLuaMapAction(TeleportItemAction)
-	loadLuaMapUnique(TeleportItemUnique)
-	-- Tile table
-	loadLuaMapAction(TileAction)
-	loadLuaMapUnique(TileUnique)
-	-- Tile pick table
-	loadLuaMapAction(TilePickAction)
-	-- Create new item on map
-	CreateMapItem(CreateItemOnMap)
-	-- Update old quest storage keys
-	updateKeysStorage(QuestKeysUpdate)
+		logger.debug("Loaded {} signs in the map", #SignTable)
+		-- Book/Document table
+		loadLuaMapBookDocument(BookDocumentTable)
 
-	logger.debug("Loaded all actions in the map")
-	logger.debug("Loaded all uniques in the map")
+		-- Action and unique tables
+		-- Chest table
+		loadLuaMapAction(ChestAction)
+		loadLuaMapUnique(ChestUnique)
+		-- Corpse table
+		loadLuaMapAction(CorpseAction)
+		loadLuaMapUnique(CorpseUnique)
+		-- Doors key table
+		loadLuaMapAction(KeyDoorAction)
+		-- Doors level table
+		loadLuaMapAction(LevelDoorAction)
+		-- Doors quest table
+		loadLuaMapAction(QuestDoorAction)
+		loadLuaMapUnique(QuestDoorUnique)
+		-- Item table
+		loadLuaMapAction(ItemAction)
+		loadLuaMapUnique(ItemUnique)
+		-- Item daily reward table
+		-- This is temporary disabled > loadLuaMapAction(DailyRewardAction)
+		-- Item unmovable table
+		loadLuaMapAction(ItemUnmovableAction)
+		-- Lever table
+		loadLuaMapAction(LeverAction)
+		loadLuaMapUnique(LeverUnique)
+		-- Teleport (magic forcefields) table
+		loadLuaMapAction(TeleportAction)
+		loadLuaMapUnique(TeleportUnique)
+		-- Teleport item table
+		loadLuaMapAction(TeleportItemAction)
+		loadLuaMapUnique(TeleportItemUnique)
+		-- Tile table
+		loadLuaMapAction(TileAction)
+		loadLuaMapUnique(TileUnique)
+		-- Tile pick table
+		loadLuaMapAction(TilePickAction)
+		-- Create new item on map
+		CreateMapItem(CreateItemOnMap)
+		-- Update old quest storage keys
+		updateKeysStorage(QuestKeysUpdate)
+
+		logger.debug("Loaded all actions in the map")
+		logger.debug("Loaded all uniques in the map")
+	end
 
 	for i = 1, #startupGlobalStorages do
 		Game.setStorageValue(startupGlobalStorages[i], 0)

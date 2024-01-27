@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 711 then
+	return
+end
+
 local internalNpcName = "Zerbrus"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

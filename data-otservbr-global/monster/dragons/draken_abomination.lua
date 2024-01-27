@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 860 then
+	return
+end
+
 local mType = Game.createMonsterType("Draken Abomination")
 local monster = {}
 
@@ -103,7 +107,7 @@ monster.loot = {
 	{ name = "shield of corruption", chance = 10 },
 	{ name = "draken boots", chance = 540 },
 	{ name = "snake god's wristguard", chance = 10 },
-	{ name = "bamboo leaves", chance = 360 },
+	{ name = "bamboo leaves", chance = 360, version = 1100 },
 }
 
 monster.attacks = {

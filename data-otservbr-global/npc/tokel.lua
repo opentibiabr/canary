@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 600 then
+	return
+end
+
 local internalNpcName = "Tokel"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

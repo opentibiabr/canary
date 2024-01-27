@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1102 then
+	return
+end
+
 local mType = Game.createMonsterType("Golden Servant Replica")
 local monster = {}
 

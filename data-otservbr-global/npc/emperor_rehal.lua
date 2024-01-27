@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 840 then
+	return
+end
+
 local internalNpcName = "Emperor Rehal"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

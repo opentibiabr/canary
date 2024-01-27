@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 840 then
+	return
+end
+
 local mType = Game.createMonsterType("Nightmare Scion")
 local monster = {}
 

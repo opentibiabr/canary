@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 710 then
+	return
+end
+
 local mType = Game.createMonsterType("Swamp Troll")
 local monster = {}
 
@@ -87,7 +91,7 @@ monster.loot = {
 	{ name = "troll green", chance = 1200 },
 	{ id = 5901, chance = 2140 }, -- wood
 	{ name = "swamp grass", chance = 3100 },
-	{ name = "medicine pouch", chance = 2160 },
+	{ name = "medicine pouch", chance = 2160, version = 1100 },
 }
 
 monster.attacks = {

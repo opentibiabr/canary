@@ -72,7 +72,7 @@ function Player.reloadTalkaction(self, words, param)
 		saveServer()
 		SaveHirelings()
 		logger.info("Saved Hirelings")
-		self:sendTextMessage(MESSAGE_ADMINISTRADOR, "Server is saved.. Now will reload configs!")
+		self:sendTextMessage(MESSAGE_ADMINISTRATOR, "Server is saved.. Now will reload configs!")
 
 		Game.reload(reloadType)
 		self:sendTextMessage(MESSAGE_LOOK, string.format("Reloaded %s.", param:lower()))

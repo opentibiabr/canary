@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 854 then
+	return
+end
+
 local internalNpcName = "Melfar"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

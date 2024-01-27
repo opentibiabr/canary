@@ -13,6 +13,9 @@
 // Internal Includes
 // --------------------
 
+// Common macros
+#include "core.hpp"
+
 // Utils
 #include "utils/benchmark.hpp"
 #include "utils/definitions.hpp"

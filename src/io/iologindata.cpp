@@ -91,6 +91,7 @@ bool IOLoginData::loadPlayerById(std::shared_ptr<Player> player, uint32_t id, bo
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT * FROM `players` WHERE `id` = " << id;
+
 	return loadPlayer(player, db.storeQuery(query.str()), disableIrrelevantInfo);
 }
 
@@ -136,23 +137,11 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 		// guild load
 		IOLoginDataLoad::loadPlayerGuild(player, result);
 
-		// stash load items
-		IOLoginDataLoad::loadPlayerStashItems(player, result);
-
-		// bestiary charms
-		IOLoginDataLoad::loadPlayerBestiaryCharms(player, result);
-
 		// load inventory items
 		IOLoginDataLoad::loadPlayerInventoryItems(player, result);
 
-		// store Inbox
-		IOLoginDataLoad::loadPlayerStoreInbox(player);
-
 		// load depot items
 		IOLoginDataLoad::loadPlayerDepotItems(player, result);
-
-		// load reward items
-		IOLoginDataLoad::loadRewardItems(player);
 
 		// load inbox items
 		IOLoginDataLoad::loadPlayerInboxItems(player, result);
@@ -162,6 +151,19 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 
 		// load vip
 		IOLoginDataLoad::loadPlayerVip(player, result);
+
+#if CLIENT_VERSION >= 1100
+		// load reward items
+		IOLoginDataLoad::loadRewardItems(player);
+
+		// stash load items
+		IOLoginDataLoad::loadPlayerStashItems(player, result);
+
+		// bestiary charms
+		IOLoginDataLoad::loadPlayerBestiaryCharms(player, result);
+
+		// store Inbox
+		IOLoginDataLoad::loadPlayerStoreInbox(player);
 
 		// load prey class
 		IOLoginDataLoad::loadPlayerPreyClass(player, result);
@@ -180,8 +182,8 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 		IOLoginDataLoad::loadPlayerBosstiary(player, result);
 
 		IOLoginDataLoad::loadPlayerInitializeSystem(player);
+#endif
 		IOLoginDataLoad::loadPlayerUpdateSystem(player);
-
 		return true;
 	} catch (const std::system_error &error) {
 		g_logger().warn("[{}] Error while load player: {}", __FUNCTION__, error.what());
@@ -190,6 +192,7 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 		g_logger().warn("[{}] Error while load player: {}", __FUNCTION__, e.what());
 		return false;
 	}
+	return false;
 }
 
 bool IOLoginData::savePlayer(std::shared_ptr<Player> player) {

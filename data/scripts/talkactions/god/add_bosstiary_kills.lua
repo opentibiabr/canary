@@ -24,9 +24,9 @@ function talkaction.onSay(player, words, param)
 
 	local message = "Added received kills: " .. kills .. ", for boss: " .. monsterName
 	if target == player then
-		player:sendTextMessage(MESSAGE_ADMINISTRADOR, message .. " to yourself.")
+		player:sendTextMessage(MESSAGE_ADMINISTRATOR, message .. " to yourself.")
 	else
-		player:sendTextMessage(MESSAGE_ADMINISTRADOR, message .. " to player: " .. targetName)
+		player:sendTextMessage(MESSAGE_ADMINISTRATOR, message .. " to player: " .. targetName)
 		target:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You received kills: " .. kills .. ", to boss: " .. monsterName)
 	end
 	target:addBosstiaryKill(monsterName, kills)

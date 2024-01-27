@@ -34,7 +34,8 @@ void Map::load(const std::string &identifier, const Position &pos) {
 }
 
 void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool loadHouses /*= false*/, bool loadMonsters /*= false*/, bool loadNpcs /*= false*/, bool loadZones /*= false*/, const Position &pos /*= Position()*/) {
-	// Only download map if is loading the main map and it is not already downloaded
+// Only download map if is loading the main map and it is not already downloaded
+#if CLIENT_VERSION > 1100
 	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP, __FUNCTION__) && !std::filesystem::exists(identifier)) {
 		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL, __FUNCTION__);
 		if (mapDownloadUrl.empty()) {
@@ -53,6 +54,7 @@ void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 			fclose(otbm);
 		}
 	}
+#endif
 
 	// Load the map
 	load(identifier, pos);

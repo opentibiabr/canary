@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 780 then
+	return
+end
+
 local mType = Game.createMonsterType("Quara Predator")
 local monster = {}
 
@@ -91,7 +95,7 @@ monster.loot = {
 	{ name = "assassin star", chance = 530 },
 	{ name = "glacier robe", chance = 440 },
 	{ name = "skull helmet", chance = 390 },
-	{ name = "giant shrimp", chance = 10 },
+	{ name = "giant shrimp", chance = 10, version = 1100 },
 }
 
 monster.attacks = {

@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 620 then
+	return
+end
+
 local internalNpcName = "Briasol"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

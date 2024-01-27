@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1096 then
+	return
+end
+
 local mType = Game.createMonsterType("Dawn Bat")
 local monster = {}
 

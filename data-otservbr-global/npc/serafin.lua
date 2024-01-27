@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 840 then
+	return
+end
+
 local internalNpcName = "Serafin"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 780 then
+	return
+end
+
 local internalNpcName = "Tyrias"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

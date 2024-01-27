@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1055 then
+	return
+end
+
 local mType = Game.createMonsterType("Scar Tribe Shaman")
 local monster = {}
 

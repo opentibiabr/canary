@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 1150 then
+	return
+end
+
 local internalNpcName = "Corym Butler"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

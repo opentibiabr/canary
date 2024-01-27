@@ -5,7 +5,6 @@ local communicates = {
 }
 
 local scriptConfig = {
-	itemId = 19236,
 	registerPositions = {
 		{ x = 4998, y = 5000, z = 7 },
 		{ x = 4971, y = 5300, z = 5 },
@@ -21,7 +20,7 @@ local worldBoard = Action()
 
 function worldBoard.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	-- If the item id is not the one on the worldboard, it will return here
-	if item:getId() ~= scriptConfig.itemId then
+	if item:getId() ~= ITEM_WORLD_BOARD then
 		return false
 	end
 
@@ -34,7 +33,7 @@ end
 -- Usage: action:position(position, itemId)
 -- Explanation: The variable "item id" is optional, the id or the name of the item can be added, the item will be created in the map if it does not exist. If it already exists on the map, it will send a warning informing (in the distro) so the id must be removed so that the warning disappears keeping only the position)
 for index, value in pairs(scriptConfig.registerPositions) do
-	worldBoard:position(value, scriptConfig.itemId)
+	worldBoard:position(value, ITEM_WORLD_BOARD)
 end
 
 worldBoard:register()

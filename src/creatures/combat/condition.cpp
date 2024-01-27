@@ -2269,10 +2269,13 @@ void ConditionOutfit::serialize(PropWriteStream &propWriteStream) {
 }
 
 bool ConditionOutfit::startCondition(std::shared_ptr<Creature> creature) {
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
-		g_logger().warn("[ConditionOutfit::startCondition] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
+	const auto lookType = outfit.lookType;
+#if CLIENT_VERSION > 1100
+	if (g_configManager().getBoolean(WARN_UNREGISTERED_DAT_INFO, __FUNCTION__) && lookType != 0 && !g_game().isLookTypeRegistered(lookType)) {
+		g_logger().warn("[ConditionOutfit::startCondition] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
 		return false;
 	}
+#endif
 
 	if ((outfit.lookType == 0 && outfit.lookTypeEx == 0) && !monsterName.empty()) {
 		const auto monsterType = g_monsters().getMonsterType(monsterName);
@@ -2301,10 +2304,13 @@ void ConditionOutfit::endCondition(std::shared_ptr<Creature> creature) {
 }
 
 void ConditionOutfit::addCondition(std::shared_ptr<Creature> creature, const std::shared_ptr<Condition> addCondition) {
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+	const auto lookType = outfit.lookType;
+#if CLIENT_VERSION > 1100
+	if (g_configManager().getBoolean(WARN_UNREGISTERED_DAT_INFO, __FUNCTION__) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
 		g_logger().warn("[ConditionOutfit::addCondition] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
 		return;
 	}
+#endif
 
 	if (updateCondition(addCondition)) {
 		setTicks(addCondition->getTicks());
@@ -2450,12 +2456,14 @@ void ConditionSpellCooldown::addCondition(std::shared_ptr<Creature> creature, co
 	if (updateCondition(addCondition)) {
 		setTicks(addCondition->getTicks());
 
+#if CLIENT_VERSION >= 870
 		if (subId != 0 && ticks > 0) {
 			std::shared_ptr<Player> player = creature->getPlayer();
 			if (player) {
 				player->sendSpellCooldown(subId, ticks);
 			}
 		}
+#endif
 	}
 }
 
@@ -2463,13 +2471,14 @@ bool ConditionSpellCooldown::startCondition(std::shared_ptr<Creature> creature) 
 	if (!Condition::startCondition(creature)) {
 		return false;
 	}
-
+#if CLIENT_VERSION >= 870
 	if (subId != 0 && ticks > 0) {
 		std::shared_ptr<Player> player = creature->getPlayer();
 		if (player) {
 			player->sendSpellCooldown(subId, ticks);
 		}
 	}
+#endif
 	return true;
 }
 
@@ -2481,12 +2490,14 @@ void ConditionSpellGroupCooldown::addCondition(std::shared_ptr<Creature> creatur
 	if (updateCondition(addCondition)) {
 		setTicks(addCondition->getTicks());
 
+#if CLIENT_VERSION >= 870
 		if (subId != 0 && ticks > 0) {
 			std::shared_ptr<Player> player = creature->getPlayer();
 			if (player) {
 				player->sendSpellGroupCooldown(static_cast<SpellGroup_t>(subId), ticks);
 			}
 		}
+#endif
 	}
 }
 
@@ -2495,11 +2506,13 @@ bool ConditionSpellGroupCooldown::startCondition(std::shared_ptr<Creature> creat
 		return false;
 	}
 
+#if CLIENT_VERSION >= 870
 	if (subId != 0 && ticks > 0) {
 		std::shared_ptr<Player> player = creature->getPlayer();
 		if (player) {
 			player->sendSpellGroupCooldown(static_cast<SpellGroup_t>(subId), ticks);
 		}
 	}
+#endif
 	return true;
 }

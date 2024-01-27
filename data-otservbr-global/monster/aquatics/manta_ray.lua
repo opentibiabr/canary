@@ -1,3 +1,7 @@
+if CLIENT_VERSION < 940 then
+	return
+end
+
 local mType = Game.createMonsterType("Manta Ray")
 local monster = {}
 

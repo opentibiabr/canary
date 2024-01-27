@@ -117,6 +117,7 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, CLEAN_PROTECTION_ZONES, "cleanProtectionZones", false);
 	loadBoolConfig(L, GLOBAL_SERVER_SAVE_SHUTDOWN, "globalServerSaveShutdown", true);
 	loadBoolConfig(L, PUSH_WHEN_ATTACKING, "pushWhenAttacking", false);
+	loadIntConfig(L, MIN_DELAY_BETWEEN_CONDITIONS, "minDelayBetweenConditions", 0);
 
 	loadBoolConfig(L, WEATHER_RAIN, "weatherRain", false);
 	loadBoolConfig(L, WEATHER_THUNDER, "thunderEffect", false);
@@ -227,16 +228,37 @@ bool ConfigManager::load() {
 	loadIntConfig(L, FORGE_SLIVER_AMOUNT, "forgeSliverAmount", 3);
 	loadIntConfig(L, FORGE_CORE_COST, "forgeCoreCost", 50);
 	loadIntConfig(L, FORGE_MAX_DUST, "forgeMaxDust", 225);
-	loadIntConfig(L, FORGE_FUSION_DUST_COST, "forgeFusionCost", 100);
-	loadIntConfig(L, FORGE_TRANSFER_DUST_COST, "forgeTransferCost", 100);
+	loadIntConfig(L, FORGE_FUSION_DUST_COST, "forgeFusionDustCost", 100);
+	loadIntConfig(L, FORGE_CONVERGENCE_FUSION_DUST_COST, "forgeConvergenceFusionCost", 130);
+	loadIntConfig(L, FORGE_TRANSFER_DUST_COST, "forgeTransferDustCost", 100);
+	loadIntConfig(L, FORGE_CONVERGENCE_TRANSFER_DUST_COST, "forgeConvergenceTransferCost", 160);
 	loadIntConfig(L, FORGE_BASE_SUCCESS_RATE, "forgeBaseSuccessRate", 50);
 	loadIntConfig(L, FORGE_BONUS_SUCCESS_RATE, "forgeBonusSuccessRate", 15);
 	loadIntConfig(L, FORGE_TIER_LOSS_REDUCTION, "forgeTierLossReduction", 50);
-	loadIntConfig(L, FORGE_AMOUNT_MULTIPLIER, "forgeAmountMultiplier", 3);
+	loadFloatConfig(L, FORGE_AMOUNT_MULTIPLIER, "forgeAmountMultiplier", 3.0);
 	loadIntConfig(L, FORGE_MIN_SLIVERS, "forgeMinSlivers", 3);
 	loadIntConfig(L, FORGE_MAX_SLIVERS, "forgeMaxSlivers", 7);
 	loadIntConfig(L, FORGE_INFLUENCED_CREATURES_LIMIT, "forgeInfluencedLimit", 300);
 	loadIntConfig(L, FORGE_FIENDISH_CREATURES_LIMIT, "forgeFiendishLimit", 3);
+
+	loadFloatConfig(L, RUSE_CHANCE_FORMULA_A, "ruseChanceFormulaA", 0.0307576);
+	loadFloatConfig(L, RUSE_CHANCE_FORMULA_B, "ruseChanceFormulaB", 0.440697);
+	loadFloatConfig(L, RUSE_CHANCE_FORMULA_C, "ruseChanceFormulaC", 0.026);
+
+	loadFloatConfig(L, ONSLAUGHT_CHANCE_FORMULA_A, "onslaughtChanceFormulaA", 0.05);
+	loadFloatConfig(L, ONSLAUGHT_CHANCE_FORMULA_B, "onslaughtChanceFormulaB", 0.4);
+	loadFloatConfig(L, ONSLAUGHT_CHANCE_FORMULA_C, "onslaughtChanceFormulaC", 0.05);
+
+	loadFloatConfig(L, MOMENTUM_CHANCE_FORMULA_A, "momentumChanceFormulaA", 0.05);
+	loadFloatConfig(L, MOMENTUM_CHANCE_FORMULA_B, "momentumChanceFormulaB", 1.9);
+	loadFloatConfig(L, MOMENTUM_CHANCE_FORMULA_C, "momentumChanceFormulaC", 0.05);
+
+	loadFloatConfig(L, TRANSCENDANCE_CHANCE_FORMULA_A, "transcendanceChanceFormulaA", 0.0127);
+	loadFloatConfig(L, TRANSCENDANCE_CHANCE_FORMULA_B, "transcendanceChanceFormulaB", 0.1070);
+	loadFloatConfig(L, TRANSCENDANCE_CHANCE_FORMULA_C, "transcendanceChanceFormulaC", 0.0073);
+
+	loadIntConfig(L, TRANSCENDANCE_AVATAR_DURATION, "transcendanceAvatarDuration", 7000);
+
 	loadIntConfig(L, DISCORD_WEBHOOK_DELAY_MS, "discordWebhookDelayMs", Webhook::DEFAULT_DELAY_MS);
 
 	loadFloatConfig(L, BESTIARY_RATE_CHARM_SHOP_PRICE, "bestiaryRateCharmShopPrice", 1.0);
@@ -311,7 +333,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, HAZARD_PODS_DROP_MULTIPLIER, "hazardPodsDropMultiplier", 87);
 	loadIntConfig(L, HAZARD_PODS_TIME_TO_DAMAGE, "hazardPodsTimeToDamage", 2000);
 	loadIntConfig(L, HAZARD_PODS_TIME_TO_SPAWN, "hazardPodsTimeToSpawn", 4000);
-	loadIntConfig(L, HAZARD_EXP_BONUS_MULTIPLIER, "hazardExpBonusMultiplier", 2);
+	loadFloatConfig(L, HAZARD_EXP_BONUS_MULTIPLIER, "hazardExpBonusMultiplier", 2.0);
 	loadIntConfig(L, HAZARD_LOOT_BONUS_MULTIPLIER, "hazardLootBonusMultiplier", 2);
 	loadIntConfig(L, HAZARD_PODS_DAMAGE, "hazardPodsDamage", 5);
 	loadIntConfig(L, HAZARD_SPAWN_PLUNDER_MULTIPLIER, "hazardSpawnPlunderMultiplier", 25);
@@ -325,6 +347,14 @@ bool ConfigManager::load() {
 
 	loadBoolConfig(L, TOGGLE_WHEELSYSTEM, "wheelSystemEnabled", true);
 	loadIntConfig(L, WHEEL_POINTS_PER_LEVEL, "wheelPointsPerLevel", 1);
+
+	loadIntConfig(L, WHEEL_ATELIER_ROTATE_LESSER_COST, "wheelAtelierRotateLesserCost", 125000);
+	loadIntConfig(L, WHEEL_ATELIER_ROTATE_REGULAR_COST, "wheelAtelierRotateRegularCost", 250000);
+	loadIntConfig(L, WHEEL_ATELIER_ROTATE_GREATER_COST, "wheelAtelierRotateGreaterCost", 500000);
+
+	loadIntConfig(L, WHEEL_ATELIER_REVEAL_LESSER_COST, "wheelAtelierRevealLesserCost", 125000);
+	loadIntConfig(L, WHEEL_ATELIER_REVEAL_REGULAR_COST, "wheelAtelierRevealRegularCost", 1000000);
+	loadIntConfig(L, WHEEL_ATELIER_REVEAL_GREATER_COST, "wheelAtelierRevealGreaterCost", 6000000);
 
 	loadBoolConfig(L, PARTY_AUTO_SHARE_EXPERIENCE, "partyAutoShareExperience", true);
 	loadBoolConfig(L, PARTY_SHARE_LOOT_BOOSTS, "partyShareLootBoosts", true);

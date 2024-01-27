@@ -397,6 +397,9 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, METRICS_ENABLE_OSTREAM, "metricsEnableOstream", false);
 	loadIntConfig(L, METRICS_OSTREAM_INTERVAL, "metricsOstreamInterval", 1000);
 
+	loadIntConfig(L, STOREINBOX_MAXLIMIT, "storeInboxMaxLimit", 2000);
+	loadIntConfig(L, LOOTPOUCH_MAXLIMIT, "lootPouchMaxLimit", 2000);
+
 	loaded = true;
 	lua_close(L);
 	return true;

@@ -7360,8 +7360,6 @@
 		<attribute key="range" value="3"/>
 		<attribute key="attack" value="25"/>
 		<attribute key="weight" value="2000"/>
-		<attribute key="lifeleechamount" value="600"/>
-		<attribute key="lifeleechchance" value="100"/>
 	</item>
 	<item id="3278" article="a" name="magic longsword">
 		<attribute key="primarytype" value="sword weapons"/>

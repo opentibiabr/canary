@@ -1543,8 +1543,6 @@ function GameStore.processChargesPurchase(player, offerId, name, charges, movabl
 		return error({ code = 0, message = errorMsg })
 	end
 
-	print("Charge buy {}", charges)
-
 	player:addItemStoreInbox(offerId, charges, movable, setOwner)
 end
 

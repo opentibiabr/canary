@@ -271,7 +271,7 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 		local deactivatedFlasks = player:kv():get("talkaction.potions.flask") or false
 		if not deactivatedFlasks then
 			local container = Container(item:getParent().uid)
-			if fromPosition.x == CONTAINER_POSITION and not container == store_inbox then
+			if fromPosition.x == CONTAINER_POSITION then
 				container:addItem(potion.flask, 1)
 			else
 				player:addItem(potion.flask, 1)

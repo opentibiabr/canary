@@ -18,18 +18,22 @@ function ruptureResonance.onThink(creature)
 	local ruptureResonanceStage = Game.getStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceStage) > 0 and Game.getStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceStage) or 0
 	local resonanceActive = Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceActive)
 
+	local thresholds = {
+		{limit = 80, stage = 0, wave = 1},
+		{limit = 60, stage = 1, wave = 2},
+		{limit = 40, stage = 2, wave = 3},
+		{limit = 25, stage = 3, wave = 4},
+		{limit = 10, stage = 4, wave = -1},
+	}
+	
 	local hpPercent = (creature:getHealth() / creature:getMaxHealth()) * 100
-	if hpPercent <= 80 and ruptureResonanceStage == 0 and resonanceActive ~= 1 then
-		createSpawnWave(1)
-	elseif hpPercent <= 60 and ruptureResonanceStage == 1 and resonanceActive ~= 1 then
-		createSpawnWave(2)
-	elseif hpPercent <= 40 and ruptureResonanceStage == 2 and resonanceActive ~= 1 then
-		createSpawnWave(3)
-	elseif hpPercent <= 25 and ruptureResonanceStage == 3 and resonanceActive ~= 1 then
-		createSpawnWave(4)
-	elseif hpPercent <= 10 and ruptureResonanceStage == 4 and resonanceActive ~= 1 then
-		createSpawnWave(-1)
+	for _, threshold in ipairs(thresholds) do
+		if hpPercent <= threshold.limit and ruptureResonanceStage == threshold.stage and resonanceActive ~= 1 then
+			createSpawnWave(threshold.wave)
+			break
+		end
 	end
+
 
 	return true
 end

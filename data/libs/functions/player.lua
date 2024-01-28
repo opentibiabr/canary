@@ -354,7 +354,6 @@ function Player.sendWeatherEffect(self, groundEffect, fallEffect, thunderEffect)
 			if topCreature and topCreature:isPlayer() and topCreature:getAccountType() < ACCOUNT_TYPE_SENIORTUTOR then
 				position:sendMagicEffect(CONST_ME_BIGCLOUDS, self)
 				doTargetCombatHealth(0, self, COMBAT_ENERGYDAMAGE, -weatherConfig.minDMG, -weatherConfig.maxDMG, CONST_ME_NONE)
-				--self:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "You were hit by lightning and lost some health.")
 			end
 		end
 	end

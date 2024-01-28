@@ -791,7 +791,6 @@ private:
 	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
 	phmap::flat_hash_map<uint16_t, std::shared_ptr<Item>> uniqueItems;
 	phmap::parallel_flat_hash_map<uint32_t, std::string> m_playerNameCache;
-	std::map<uint32_t, uint32_t> stages;
 
 	/* Items stored from the lua scripts positions
 	 * For example: ActionFunctions::luaActionPosition

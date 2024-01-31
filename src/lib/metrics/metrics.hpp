@@ -112,6 +112,7 @@ namespace metrics {
 		~Metrics() = default;
 
 		void init(Options opts);
+		void initHistograms();
 		void shutdown();
 
 		static Metrics &getInstance();

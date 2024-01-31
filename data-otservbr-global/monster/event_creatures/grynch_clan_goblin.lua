@@ -106,7 +106,7 @@ monster.loot = {
 	{ id = 2639, chance = 4000 }, -- picture
 	{ id = 2950, chance = 5000 }, -- lute
 	{ id = 2983, chance = 500 }, -- flower bowl
-	{ name = "snowball", chance = 7000, maxCount = 5 },
+	{ id = 2992, chance = 7000, maxCount = 5 }, -- snowball
 	{ name = "piggy bank", chance = 1000 },
 	{ name = "gold coin", chance = 22500, maxCount = 22 },
 	{ name = "scarab coin", chance = 500, maxCount = 2 },

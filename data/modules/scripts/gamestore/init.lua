@@ -785,8 +785,7 @@ function Player.canReceiveStoreItems(self, offerId, offerCount)
 	local slotsAvailable = maxCapacity - slotsOccupied
 
 	if slotsOccupied + slotsNeeded > maxCapacity then
-		return false, string.format("Not enough free slots in your store inbox. You need %d more slot(s). Currently occupied: %d/%d", 
-									slotsNeeded - slotsAvailable, slotsOccupied, maxCapacity)
+		return false, string.format("Not enough free slots in your store inbox. You need %d more slot(s). Currently occupied: %d/%d", slotsNeeded - slotsAvailable, slotsOccupied, maxCapacity)
 	end
 
 	local totalWeight = itemType:getWeight(offerCount or 1)

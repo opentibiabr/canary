@@ -3067,6 +3067,8 @@ GlobalStorage = {
 	HeartOfDestruction = {
 		-- Reserved storage from 60172 - 60190
 		ChargedAnomaly = 60172,
+		EradicatorWeak = 60178,
+		EradicatorReleaseT = 60179,
 		OutburstStage = 60180,
 		OutburstHealth = 60181,
 		OutburstChargingKilled = 60182,

@@ -23,7 +23,7 @@ GameStore.OfferTypes = {
 	OFFER_TYPE_TEMPLE = 13,
 	OFFER_TYPE_BLESSINGS = 14,
 	OFFER_TYPE_PREMIUM = 15,
-	OFFER_TYPE_POUCH = 16,
+	-- 16, -- Empty
 	OFFER_TYPE_ALLBLESSINGS = 17,
 	OFFER_TYPE_INSTANT_REWARD_ACCESS = 18,
 	OFFER_TYPE_CHARMS = 19,
@@ -415,7 +415,6 @@ function parseBuyStoreOffer(playerId, msg)
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_TEMPLE
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_POUCH
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_NAMECHANGE
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_SEXCHANGE
@@ -446,8 +445,6 @@ function parseBuyStoreOffer(playerId, msg)
 			GameStore.processItemPurchase(player, offer.itemtype, offer.count, offer.movable, offer.setOwner)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
 			GameStore.processItemPurchase(player, offer.itemtype, offer.count, offer.movable, offer.setOwner)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_POUCH then
-			GameStore.processItemPurchase(player, offer.itemtype, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS then
 			GameStore.processInstantRewardAccess(player, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_CHARMS then
@@ -631,7 +628,6 @@ function Player.canBuyOffer(self, offer)
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYBONUS
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_TEMPLE
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_POUCH
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT
 		and not offer.id
@@ -645,13 +641,7 @@ function Player.canBuyOffer(self, offer)
 	end
 
 	if disabled ~= 1 then
-		if offer.type == GameStore.OfferTypes.OFFER_TYPE_POUCH then
-			local pouch = self:getItemById(23721, true)
-			if pouch then
-				disabled = 1
-				disabledReason = "You already have a Loot Pouch."
-			end
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
+		if offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
 			local item = self:getItemById(offer.itemtype, true)
 			if item then
 				disabled = 1
@@ -783,12 +773,23 @@ function Player.canReceiveStoreItems(self, offerId, offerCount)
 		return false, "No store inbox found."
 	end
 
-	local inboxItems = inbox:getItems()
-	if #inboxItems + (offerCount or 1) > inbox:getMaxCapacity() then
-		return false, "Please make sure you have enough free slots in your store inbox."
+	local itemType = ItemType(offerId)
+	local slotsNeeded = offerCount or 1
+	if itemType and itemType:isStackable() then
+		slotsNeeded = math.ceil(slotsNeeded / itemType:getStackSize())
 	end
 
-	local totalWeight = ItemType(offerId):getWeight(offerCount or 1)
+	local inboxItems = inbox:getItems(true)
+	local slotsOccupied = #inboxItems
+	local maxCapacity = inbox:getMaxCapacity()
+	local slotsAvailable = maxCapacity - slotsOccupied
+
+	if slotsOccupied + slotsNeeded > maxCapacity then
+		return false, string.format("Not enough free slots in your store inbox. You need %d more slot(s). Currently occupied: %d/%d", 
+									slotsNeeded - slotsAvailable, slotsOccupied, maxCapacity)
+	end
+
+	local totalWeight = itemType:getWeight(offerCount or 1)
 	if self:getFreeCapacity() < totalWeight then
 		return false, "Please make sure you have enough free capacity to hold this item."
 	end

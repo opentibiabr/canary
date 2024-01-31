@@ -11,7 +11,8 @@
 
 #include "server/network/httpclient/httpclient.hpp"
 #include "server/network/httpclient/httpclientlib.h"
-
+#include "game/scheduling/dispatcher.hpp"
+#include "lib/thread/thread_pool.hpp"
 #include "lib/di/container.hpp"
 
 //#include "tasks.h"
@@ -19,113 +20,18 @@
 
 HttpClient::HttpClient(ThreadPool& threadPool) :
 	threadPool(threadPool) {
+
+	requestsHandler = new HttpClientLib::Request(
+			[this](const HttpClientLib::HttpResponse_ptr &response) { clientRequestSuccessCallback(response); },
+			[this](const HttpClientLib::HttpResponse_ptr &response) { clientRequestFailureCallback(response); });
+}
+
+HttpClient::~HttpClient() {
+	delete requestsHandler;
 }
 
 HttpClient& HttpClient::getInstance() {
 	return inject<HttpClient>();
-}
-
-void HttpClient::threadMain()
-{
-	HttpClientLib::Request requestsHandler(
-	    [this](const HttpClientLib::HttpResponse_ptr &response) { clientRequestSuccessCallback(response); },
-	    [this](const HttpClientLib::HttpResponse_ptr &response) { clientRequestFailureCallback(response); });
-
-	std::unique_lock<std::mutex> requestLockUnique(requestLock, std::defer_lock);
-	int test = 0;
-	while (test++ < 100 /*getState() != THREAD_STATE_TERMINATED*/) {
-		requestLockUnique.lock();
-
-		if (pendingRequests.empty() && pendingResponses.empty()) {
-			requestSignal.wait(requestLockUnique);
-		}
-
-		if (!pendingRequests.empty() || !pendingResponses.empty()) {
-			bool shouldUnlock = false;
-
-			if (!pendingRequests.empty()) {
-				HttpClientLib::HttpRequest_ptr pendingRequest = std::move(pendingRequests.front());
-				pendingRequests.pop_front();
-
-				shouldUnlock = true;
-				dispatchRequest(requestsHandler, pendingRequest);
-			}
-
-			if (!pendingResponses.empty()) {
-				HttpClientLib::HttpResponse_ptr pendingResponse = std::move(pendingResponses.front());
-				pendingResponses.pop_front();
-
-				requestLockUnique.unlock();
-				shouldUnlock = false;
-				processResponse(pendingResponse);
-			}
-
-			if (shouldUnlock) {
-				requestLockUnique.unlock();
-			}
-		} else {
-			requestLockUnique.unlock();
-		}
-	}
-}
-
-void HttpClient::dispatchRequest(HttpClientLib::Request &requestsHandler, HttpClientLib::HttpRequest_ptr &request)
-{
-	bool succesfullyDispatched = false;
-	switch (request->method) {
-		case HttpClientLib::HttpMethod::HTTP_CONNECT:
-			requestsHandler.setTimeout(request->timeout);
-			succesfullyDispatched = requestsHandler.connect(request->url, request->fields);
-			break;
-
-		case HttpClientLib::HttpMethod::HTTP_TRACE:
-			requestsHandler.setTimeout(request->timeout);
-			succesfullyDispatched = requestsHandler.trace(request->url, request->fields);
-			break;
-
-		case HttpClientLib::HttpMethod::HTTP_OPTIONS:
-			requestsHandler.setTimeout(request->timeout);
-			succesfullyDispatched = requestsHandler.options(request->url, request->fields);
-			break;
-
-		case HttpClientLib::HttpMethod::HTTP_HEAD:
-			requestsHandler.setTimeout(request->timeout);
-			succesfullyDispatched = requestsHandler.head(request->url, request->fields);
-			break;
-
-		case HttpClientLib::HttpMethod::HTTP_DELETE:
-			requestsHandler.setTimeout(request->timeout);
-			succesfullyDispatched = requestsHandler.delete_(request->url, request->fields);
-			break;
-
-		case HttpClientLib::HttpMethod::HTTP_GET:
-			requestsHandler.setTimeout(request->timeout);
-			succesfullyDispatched = requestsHandler.get(request->url, request->fields);
-			break;
-
-		case HttpClientLib::HttpMethod::HTTP_POST:
-			requestsHandler.setTimeout(request->timeout);
-			succesfullyDispatched = requestsHandler.post(request->url, request->data, request->fields);
-			break;
-
-		case HttpClientLib::HttpMethod::HTTP_PATCH:
-			requestsHandler.setTimeout(request->timeout);
-			succesfullyDispatched = requestsHandler.patch(request->url, request->data, request->fields);
-			break;
-
-		case HttpClientLib::HttpMethod::HTTP_PUT:
-			requestsHandler.setTimeout(request->timeout);
-			succesfullyDispatched = requestsHandler.put(request->url, request->data, request->fields);
-			break;
-
-		case HttpClientLib::HttpMethod::HTTP_NONE:
-		default:
-			break;
-	}
-
-	if (request->method != HttpClientLib::HTTP_NONE && succesfullyDispatched) {
-		requests.emplace(std::make_pair(requestsHandler.getRequestId(), std::move(request)));
-	}
 }
 
 void HttpClient::clientRequestSuccessCallback(const HttpClientLib::HttpResponse_ptr &response)
@@ -136,8 +42,8 @@ void HttpClient::clientRequestSuccessCallback(const HttpClientLib::HttpResponse_
 	// std::to_string(response->requestId)) << std::endl;
 	addResponse(response);
 
-	std::string headerStr(reinterpret_cast<char *>(response->headerData.data()), response->headerData.size());
-	std::string bodyStr(reinterpret_cast<char *>(response->bodyData.data()), response->bodyData.size());
+	//std::string headerStr(reinterpret_cast<char *>(response->headerData.data()), response->headerData.size());
+	//std::string bodyStr(reinterpret_cast<char *>(response->bodyData.data()), response->bodyData.size());
 
 	// Print the string to the console
 	// std::cout << headerStr << std::endl;
@@ -149,27 +55,6 @@ void HttpClient::clientRequestFailureCallback(const HttpClientLib::HttpResponse_
 	std::cout << std::string("HTTP Response failed (" + response->errorMessage + ")") << std::endl;
 	addResponse(response);
 }
-
-void HttpClient::processResponse(const HttpClientLib::HttpResponse_ptr &response)
-{
-	auto httpRequestIt = requests.find(response->requestId);
-	if (httpRequestIt == requests.end()) {
-		return;
-	}
-
-	HttpClientLib::HttpRequest_ptr &httpRequest = httpRequestIt->second;
-
-	if (httpRequest->callbackData.isLuaCallback()) {
-		luaClientRequestCallback(httpRequest->callbackData.scriptInterface, httpRequest->callbackData);
-	}
-
-	if (httpRequest->callbackData.callbackFunction) {
-		//g_dispatcher.addTask(createTask(std::bind(httpRequest->callbackData.callbackFunction, response)));
-	}
-
-	requests.erase(response->requestId);
-}
-
 
 void HttpClient::luaClientRequestCallback(LuaScriptInterface *scriptInterface, HttpClientLib::HttpRequestCallbackData &callbackData)
 {
@@ -229,41 +114,91 @@ void HttpClient::luaClientRequestCallback(LuaScriptInterface *scriptInterface, H
 	}
 }
 
-
-void HttpClient::addResponse(const HttpClientLib::HttpResponse_ptr &response)
+void HttpClient::addResponse(const HttpClientLib::HttpResponse_ptr& response)
 {
-	bool signal = false;
-	requestLock.lock();
-	if (true/*getState() == THREAD_STATE_RUNNING*/) {
-		signal = pendingResponses.empty();
-		pendingResponses.emplace_back(response);
-	}
-	requestLock.unlock();
+	threadPool.addLoad([this, response]() {
+		const auto httpRequestIt = this->requests.find(response->requestId);
+		if (httpRequestIt == this->requests.end()) {
+			return;
+		}
 
-	if (signal) {
-		requestSignal.notify_one();
-	}
+		const HttpClientLib::HttpRequest_ptr& httpRequest = httpRequestIt->second;
+
+		if (httpRequest->callbackData.isLuaCallback()) {
+			luaClientRequestCallback(httpRequest->callbackData.scriptInterface, httpRequest->callbackData);
+		}
+
+		if (httpRequest->callbackData.callbackFunction) {
+			g_dispatcher().addEvent([httpRequest, response]() { httpRequest->callbackData.callbackFunction(response); }, "HttpClient::processResponse");
+		}
+
+		this->requests.erase(response->requestId);
+	});
 }
 
 void HttpClient::addRequest(const HttpClientLib::HttpRequest_ptr &request)
 {
-	bool signal = false;
-	requestLock.lock();
-	if (true/*getState() == THREAD_STATE_RUNNING*/) {
-		signal = pendingRequests.empty();
-		pendingRequests.emplace_back(request);
-	}
-	requestLock.unlock();
+	threadPool.addLoad([this, request]() {
 
-	if (signal) {
-		requestSignal.notify_one();
-	}
+		if (!requestsHandler) {
+			return;
+		}
+
+		bool succesfullyDispatched = false;
+		switch (request->method) {
+		case HttpClientLib::HttpMethod::HTTP_CONNECT:
+			requestsHandler->setTimeout(request->timeout);
+			succesfullyDispatched = requestsHandler->connect(request->url, request->fields);
+			break;
+
+		case HttpClientLib::HttpMethod::HTTP_TRACE:
+			requestsHandler->setTimeout(request->timeout);
+			succesfullyDispatched = requestsHandler->trace(request->url, request->fields);
+			break;
+
+		case HttpClientLib::HttpMethod::HTTP_OPTIONS:
+			requestsHandler->setTimeout(request->timeout);
+			succesfullyDispatched = requestsHandler->options(request->url, request->fields);
+			break;
+
+		case HttpClientLib::HttpMethod::HTTP_HEAD:
+			requestsHandler->setTimeout(request->timeout);
+			succesfullyDispatched = requestsHandler->head(request->url, request->fields);
+			break;
+
+		case HttpClientLib::HttpMethod::HTTP_DELETE:
+			requestsHandler->setTimeout(request->timeout);
+			succesfullyDispatched = requestsHandler->delete_(request->url, request->fields);
+			break;
+
+		case HttpClientLib::HttpMethod::HTTP_GET:
+			requestsHandler->setTimeout(request->timeout);
+			succesfullyDispatched = requestsHandler->get(request->url, request->fields);
+			break;
+
+		case HttpClientLib::HttpMethod::HTTP_POST:
+			requestsHandler->setTimeout(request->timeout);
+			succesfullyDispatched = requestsHandler->post(request->url, request->data, request->fields);
+			break;
+
+		case HttpClientLib::HttpMethod::HTTP_PATCH:
+			requestsHandler->setTimeout(request->timeout);
+			succesfullyDispatched = requestsHandler->patch(request->url, request->data, request->fields);
+			break;
+
+		case HttpClientLib::HttpMethod::HTTP_PUT:
+			requestsHandler->setTimeout(request->timeout);
+			succesfullyDispatched = requestsHandler->put(request->url, request->data, request->fields);
+			break;
+
+		case HttpClientLib::HttpMethod::HTTP_NONE:
+		default:
+			break;
+		}
+
+		if (request->method != HttpClientLib::HTTP_NONE && succesfullyDispatched) {
+			requests.emplace(std::make_pair(requestsHandler->getRequestId(), std::move(request)));
+		}
+	});
 }
 
-void HttpClient::shutdown()
-{
-	requestLock.lock();
-	//setState(THREAD_STATE_TERMINATED);
-	requestLock.unlock();
-	requestSignal.notify_one();
-}

@@ -63,8 +63,7 @@ class HttpClient
 {
 public:
 	HttpClient(ThreadPool& threadPool);
-	void threadMain();
-	void shutdown();
+	~HttpClient();
 
 	void addRequest(const HttpClientLib::HttpRequest_ptr &request);
 
@@ -76,16 +75,9 @@ private:
 
 	void clientRequestFailureCallback(const HttpClientLib::HttpResponse_ptr &response);
 
-	void dispatchRequest(HttpClientLib::Request &requestsHandler, HttpClientLib::HttpRequest_ptr &request);
-	void processResponse(const HttpClientLib::HttpResponse_ptr &response);
-
 	void addResponse(const HttpClientLib::HttpResponse_ptr &response);
 
-	std::list<HttpClientLib::HttpRequest_ptr> pendingRequests;
-	std::list<HttpClientLib::HttpResponse_ptr> pendingResponses;
-
-	std::mutex requestLock;
-	std::condition_variable requestSignal;
+	HttpClientLib::Request* requestsHandler;
 
 	std::map<uint32_t, HttpClientLib::HttpRequest_ptr> requests;
 

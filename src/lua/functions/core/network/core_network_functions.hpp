@@ -12,12 +12,14 @@
 #include "lua/scripts/luascript.hpp"
 #include "lua/functions/core/network/network_message_functions.hpp"
 #include "lua/functions/core/network/webhook_functions.hpp"
+#include "lua/functions/core/network/httpclient_functions.hpp"
 
 class CoreNetworkFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
 		NetworkMessageFunctions::init(L);
 		WebhookFunctions::init(L);
+		HttpClientFunctions::init(L);
 	}
 
 private:

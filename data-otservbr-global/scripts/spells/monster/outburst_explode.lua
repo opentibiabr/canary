@@ -31,7 +31,7 @@ local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_ENERGYDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_PURPLEENERGY)
 
-arr = {
+local spellArea = {
 	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
 	{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
@@ -47,7 +47,7 @@ arr = {
 	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
 }
 
-local area = createCombatArea(arr)
+local area = createCombatArea(spellArea)
 combat:setArea(area)
 
 local function delayedCastSpell(creature, var)
@@ -68,16 +68,16 @@ end
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	local from = creature:getId()
-
 	outExplode()
 	delayedCastSpell(creature, var)
-	chargingOutKilled = true
+	Game.setStorageValue(GlobalStorage.HeartOfDestruction.OutburstChargingKilled, 1)
 	addEvent(removeOutburst, 1000, creature.uid)
 
-	local monster = Game.createMonster("Outburst", { x = 32234, y = 31284, z = 14 }, false, true)
-	monster:addHealth(-monster:getHealth() + outburstHealth, COMBAT_PHYSICALDAMAGE)
-	transferBossPoints(from, monster:getId())
+	local monster = Game.createMonster("Outburst", Position(32234, 31284, 14), false, true)
+	if monster then
+		local outburstHealth = Game.getStorageValue(GlobalStorage.HeartOfDestruction.OutburstHealth) > 0 and Game.getStorageValue(GlobalStorage.HeartOfDestruction.OutburstHealth) or 0
+		monster:addHealth(-monster:getHealth() + outburstHealth, COMBAT_PHYSICALDAMAGE)
+	end
 	return true
 end
 

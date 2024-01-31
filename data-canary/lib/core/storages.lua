@@ -37,8 +37,20 @@ Storage = {
 }
 
 GlobalStorage = {
-	ExampleQuest = {
-		Example = 60000,
+	FuneralQuest = {
+		RotwormQuest = 6000,
+		BanditsQuest = 6001,
+		CyclopsQuest = 6002,
+		BASG = 6003,
+		KosheiQuest = 6011,
+		SecretServiceQuest = 6004,
+		BAGQ = 6005,
+		BansheeQuest = 6006,
+		BAWQ = 6007,
+		YalaharQuest = 6008,
+		POIQuest = 6009,
+		InquisitionQuest = 6010,
+		CursedSpreadQuest = 6012,
 	},
 }
 

@@ -383,7 +383,7 @@ void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {
 }
 
 void CanaryServer::shutdown() {
-	inject<ThreadPool>().shutdown();
 	g_dispatcher().shutdown();
 	g_metrics().shutdown();
+	inject<ThreadPool>().shutdown();
 }

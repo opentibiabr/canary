@@ -1,10 +1,6 @@
 -- Functions from The Forgotten Server
 local foodCondition = Condition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 
-local function firstToUpper(str)
-	return (str:gsub("^%l", string.upper))
-end
-
 function Player.feed(self, food)
 	local condition = self:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 	if condition then
@@ -322,7 +318,7 @@ function Player.getMarriageDescription(thing)
 		if self == thing then
 			descr = descr .. " You are "
 		else
-			descr = descr .. " " .. firstToUpper(thing:getSubjectPronoun()) .. " " .. thing:getSubjectVerb() .. " "
+			descr = descr .. " " .. thing:getSubjectPronoun():titleCase() .. " " .. thing:getSubjectVerb() .. " "
 		end
 		descr = descr .. "married to " .. getPlayerNameById(playerSpouse) .. "."
 	end
@@ -358,7 +354,6 @@ function Player.sendWeatherEffect(self, groundEffect, fallEffect, thunderEffect)
 			if topCreature and topCreature:isPlayer() and topCreature:getAccountType() < ACCOUNT_TYPE_SENIORTUTOR then
 				position:sendMagicEffect(CONST_ME_BIGCLOUDS, self)
 				doTargetCombatHealth(0, self, COMBAT_ENERGYDAMAGE, -weatherConfig.minDMG, -weatherConfig.maxDMG, CONST_ME_NONE)
-				--self:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "You were hit by lightning and lost some health.")
 			end
 		end
 	end
@@ -538,19 +533,17 @@ function Player.updateHazard(self)
 		return true
 	end
 
+	self:setHazardSystemPoints(0)
 	for _, zone in pairs(zones) do
 		local hazard = Hazard.getByName(zone:getName())
-		if not hazard then
-			self:setHazardSystemPoints(0)
+		if hazard then
+			if self:getParty() then
+				self:getParty():refreshHazard()
+			else
+				self:setHazardSystemPoints(hazard:getPlayerCurrentLevel(self))
+			end
 			return true
 		end
-
-		if self:getParty() then
-			self:getParty():refreshHazard()
-		else
-			self:setHazardSystemPoints(hazard:getPlayerCurrentLevel(self))
-		end
-		return true
 	end
 	return true
 end

@@ -23,7 +23,15 @@
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.hpp"
 #include "items/items_classification.hpp"
-#include "protobuf/appearances.pb.h"
+
+// Forward declaration for protobuf class
+namespace Canary {
+	namespace protobuf {
+		namespace appearances {
+			class Appearances;
+		} // namespace appearances
+	} // namespace protobuf
+} // namespace Canary
 
 class ServiceManager;
 class Creature;
@@ -567,7 +575,7 @@ public:
 	Map map;
 	Mounts mounts;
 	Raids raids;
-	Canary::protobuf::appearances::Appearances appearances;
+	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 
 	auto getTilesToClean() const {
 		return tilesToClean;

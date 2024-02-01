@@ -12,7 +12,8 @@
 #include <variant>
 
 #include "kv/value_wrapper.hpp"
-#include "protobuf/kv.pb.h"
+
+#include <kv.pb.h>
 
 template <typename T>
 struct ProtoSerializable {

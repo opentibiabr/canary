@@ -22,6 +22,7 @@
 #include "lua/modules/modules.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "game/modal_window/modal_window.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
@@ -31,6 +32,7 @@
 #include "creatures/combat/spells.hpp"
 #include "creatures/players/management/waitlist.hpp"
 #include "items/weapons/weapons.hpp"
+#include "enums/object_category.hpp"
 
 /*
  * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.hpp" file

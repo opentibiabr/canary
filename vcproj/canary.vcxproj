@@ -10,6 +10,23 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <Target Name="EnsureGeneratedDirectoryExists" BeforeTargets="ProtoCompile">
+    <MakeDir Directories="generated" />
+  </Target>
+  <ItemGroup>
+    <ProtoFiles Include="..\src\protobuf\*.proto" />
+  </ItemGroup>
+  <Target Name="ProtoCompile" BeforeTargets="PrepareForBuild">
+      <Exec Command="vcpkg_installed\$(VcpkgTriplet)\tools\protobuf\protoc --proto_path=..\src\protobuf --cpp_out=generated %(ProtoFiles.Identity)" />
+      <ItemGroup>
+          <ClCompile Include="generated\%(ProtoFiles.Filename).pb.cc" >
+            <IncludeInUnityFile>false</IncludeInUnityFile>
+          </ClCompile>
+          <ClInclude Include="generated\%(ProtoFiles.Filename).pb.h" >
+            <IncludeInUnityFile>false</IncludeInUnityFile>
+          </ClInclude>
+      </ItemGroup>
+  </Target>
   <ItemGroup>
     <ClInclude Include="..\src\account\account.hpp" />
     <ClInclude Include="..\src\account\account_definitions.hpp" />
@@ -303,6 +320,7 @@
     <ClCompile Include="..\src\items\trashholder.cpp" />
     <ClCompile Include="..\src\items\weapons\weapons.cpp" />
     <ClCompile Include="..\src\kv\value_wrapper.cpp" />
+    <ClCompile Include="..\src\kv\value_wrapper_proto.cpp" />
     <ClCompile Include="..\src\kv\kv_sql.cpp" />
     <ClCompile Include="..\src\kv\kv.cpp" />
     <ClCompile Include="..\src\lib\di\soft_singleton.cpp" />
@@ -387,14 +405,6 @@
     <ClCompile Include="..\src\map\mapcache.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\canary_server.cpp" />
-    <ClCompile Include="..\src\protobuf\appearances.pb.cc">
-      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
-      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
-    </ClCompile>
-    <ClCompile Include="..\src\protobuf\kv.pb.cc">
-      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
-      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
-    </ClCompile>
     <ClCompile Include="..\src\security\argon.cpp" />
     <ClCompile Include="..\src\security\rsa.cpp" />
     <ClCompile Include="..\src\server\network\connection\connection.cpp" />
@@ -497,7 +507,8 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>
       $(VcpkgRoot)\installed\$(VcpkgTriplet)\include\;
-      vcpkg_installed\$(VcpkgTriplet)\include\
+      vcpkg_installed\$(VcpkgTriplet)\include\;
+      generated
       </AdditionalIncludeDirectories>
       <WarningLevel>Level1</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -531,7 +542,8 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>
       $(VcpkgRoot)\installed\$(VcpkgTriplet)\include\;
-      vcpkg_installed\$(VcpkgTriplet)\include\
+      vcpkg_installed\$(VcpkgTriplet)\include\;
+      generated
       </AdditionalIncludeDirectories>
       <WarningLevel>Level1</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

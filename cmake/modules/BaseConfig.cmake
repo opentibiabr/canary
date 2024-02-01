@@ -71,6 +71,7 @@ option(DEBUG_LOG "Enable Debug Log" OFF)
 option(ASAN_ENABLED "Build this target with AddressSanitizer" OFF)
 option(BUILD_STATIC_LIBRARY "Build using static libraries" OFF)
 option(SPEED_UP_BUILD_UNITY "Compile using build unity for speed up build" ON)
+option(USE_PRECOMPILED_HEADER "Compile using precompiled header" ON)
 
 # === ASAN ===
 if(ASAN_ENABLED)

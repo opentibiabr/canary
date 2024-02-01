@@ -12,6 +12,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "game/game.hpp"
+#include "enums/object_category.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, const std::shared_ptr<Player> &player) {
 	try {

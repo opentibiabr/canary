@@ -14,6 +14,8 @@
 #include "lua/scripts/luascript.hpp"
 #include "items/weapons/weapons.hpp"
 
+#include "lua/global/lua_timer_event_descr.hpp"
+
 class AreaCombat;
 class Combat;
 class Cylinder;

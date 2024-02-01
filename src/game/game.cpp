@@ -40,6 +40,7 @@
 #include "server/network/protocol/protocolstatus.hpp"
 #include "map/spectators.hpp"
 #include "kv/kv.hpp"
+#include "enums/object_category.hpp"
 
 #include <appearances.pb.h>
 
@@ -247,8 +248,8 @@ void Game::loadBoostedCreature() {
 	const auto monsterType = g_monsters().getMonsterType(selectedMonster.name);
 	if (!monsterType) {
 		g_logger().warn("[Game::loadBoostedCreature] - "
-						"It was not possible to generate a new boosted creature-> Monster '"
-						+ selectedMonster.name + "' not found.");
+						"It was not possible to generate a new boosted creature-> Monster '{}' not found.",
+						selectedMonster.name);
 		return;
 	}
 
@@ -2165,7 +2166,7 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 			}
 		}
 
-		if (dropping || ret != RETURNVALUE_NOERROR && dropOnMap) {
+		if (dropping || (ret != RETURNVALUE_NOERROR && dropOnMap)) {
 			dropping = true;
 			ret = internalAddItem(destination->getTile(), item, INDEX_WHEREEVER, FLAG_NOLIMIT);
 		}
@@ -7611,7 +7612,7 @@ bool Game::gameIsDay() {
 	return isDay;
 }
 
-void Game::dieSafely(std::string errorMsg /* = "" */) {
+void Game::dieSafely(const std::string &errorMsg /* = "" */) {
 	g_logger().error(errorMsg);
 	shutdown();
 }

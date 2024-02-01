@@ -18,6 +18,7 @@
 #include "lua/scripts/script_environment.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "lua/global/lua_timer_event_descr.hpp"
 
 class Creature;
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {

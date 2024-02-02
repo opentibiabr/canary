@@ -138,7 +138,7 @@ bool IOMapSerialize::loadItem(PropStream &propStream, std::shared_ptr<Cylinder> 
 	}
 
 	const ItemType &iType = Item::items[id];
-	if (iType.isBed() || iType.movable || !tile || iType.isCarpet()) {
+	if (iType.isBed() || iType.movable || !tile || iType.isCarpet() || iType.isTrashHolder()) {
 		// create a new item
 		auto item = Item::CreateItem(id);
 		if (item) {

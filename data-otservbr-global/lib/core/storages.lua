@@ -3065,8 +3065,11 @@ GlobalStorage = {
 		},
 	},
 	HeartOfDestruction = {
-		-- Reserved storage from 60172 - 60177
+		-- Reserved storage from 60172 - 60190
 		ChargedAnomaly = 60172,
+		OutburstStage = 60180,
+		OutburstHealth = 60181,
+		OutburstChargingKilled = 60182,
 	},
 	FuryGates = 65000,
 	Yakchal = 65001,

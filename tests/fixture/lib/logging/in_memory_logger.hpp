@@ -56,12 +56,12 @@ public:
 		// But you can implement level filtering if you like.
 	}
 
-	[[nodiscard]] std::string getLevel() const override {
+	std::string getLevel() const override {
 		// For simplicity, let's just return a default level. You can adjust as needed.
 		return "DEBUG";
 	}
 
-	virtual void log(std::string lvl, fmt::basic_string_view<char> msg) const override {
+	virtual void log(const std::string &lvl, const fmt::basic_string_view<char> msg) const override {
 		logs.push_back({ lvl, { msg.data(), msg.size() } });
 	}
 

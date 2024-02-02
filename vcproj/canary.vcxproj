@@ -569,10 +569,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(RunProtoCompile)'=='false'">
     <ProtocPath>$(ProjectDir)vcpkg_installed\$(VcpkgTriplet)\\tools\protobuf\protoc</ProtocPath>
-    <ProtoPath>..\$(SourcePath)\protobuf</ProtoPath>
+    <ProtoPath>$(GITHUB_WORKSPACE)\src\protobuf</ProtoPath>
   </PropertyGroup>
-  <ItemGroup Condition="'$(RunProtoCompile)'=='true'">
-    <ProtoFiles Include="$(ProtoPath)\*.proto" />
+  <ItemGroup>
+      <ProtoFiles Include="$(ProtoPath)\*.proto" />
   </ItemGroup>
   <Target Name="ProtoCompile" BeforeTargets="PrepareForBuild" DependsOnTargets="VcpkgInstallManifestDependencies">
     <Exec Command="$(ProtocPath) --proto_path=$(ProtoPath) --cpp_out=generated %(ProtoFiles.Identity)" />

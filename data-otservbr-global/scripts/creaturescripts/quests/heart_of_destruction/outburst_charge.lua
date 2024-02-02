@@ -1,50 +1,37 @@
+local function createSpawnChargingOutburst(stage)
+	Game.createMonster("Spark of Destruction", Position(32229, 31282, 14), false, true)
+	Game.createMonster("Spark of Destruction", Position(32230, 31287, 14), false, true)
+	Game.createMonster("Spark of Destruction", Position(32237, 31287, 14), false, true)
+	Game.createMonster("Spark of Destruction", Position(32238, 31282, 14), false, true)
+	Game.createMonster("Charging Outburst", Position(32234, 31284, 14), false, true)
+
+	Game.setStorageValue(GlobalStorage.HeartOfDestruction.OutburstStage, stage)
+	Game.setStorageValue(GlobalStorage.HeartOfDestruction.OutburstChargingKilled, -1)
+end
+
 local outburstCharge = CreatureEvent("OutburstCharge")
+
 function outburstCharge.onThink(creature)
 	if not creature or not creature:isMonster() then
 		return false
 	end
 
-	local hp = (creature:getHealth() / creature:getMaxHealth()) * 100
-	if hp <= 80 and outburstStage == 0 then
-		outburstHealth = creature:getHealth()
+	local outburstStage = Game.getStorageValue(GlobalStorage.HeartOfDestruction.OutburstStage) > 0 and Game.getStorageValue(GlobalStorage.HeartOfDestruction.OutburstStage) or 0
+	Game.setStorageValue(GlobalStorage.HeartOfDestruction.OutburstHealth, creature:getHealth())
+
+	local hpPercent = (creature:getHealth() / creature:getMaxHealth()) * 100
+	if hpPercent <= 80 and outburstStage == 0 then
 		creature:remove()
-		Game.createMonster("spark of destruction", { x = 32229, y = 31282, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32230, y = 31287, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32237, y = 31287, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32238, y = 31282, z = 14 }, false, true)
-		Game.createMonster("charging outburst", { x = 32234, y = 31284, z = 14 }, false, true)
-		outburstStage = 1
-		chargingOutKilled = false
-	elseif hp <= 60 and outburstStage == 1 then
-		outburstHealth = creature:getHealth()
+		createSpawnChargingOutburst(1)
+	elseif hpPercent <= 60 and outburstStage == 1 then
 		creature:remove()
-		Game.createMonster("spark of destruction", { x = 32229, y = 31282, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32230, y = 31287, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32237, y = 31287, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32238, y = 31282, z = 14 }, false, true)
-		Game.createMonster("charging outburst", { x = 32234, y = 31284, z = 14 }, false, true)
-		outburstStage = 2
-		chargingOutKilled = false
-	elseif hp <= 40 and outburstStage == 2 then
-		outburstHealth = creature:getHealth()
+		createSpawnChargingOutburst(2)
+	elseif hpPercent <= 40 and outburstStage == 2 then
 		creature:remove()
-		Game.createMonster("spark of destruction", { x = 32229, y = 31282, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32230, y = 31287, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32237, y = 31287, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32238, y = 31282, z = 14 }, false, true)
-		Game.createMonster("charging outburst", { x = 32234, y = 31284, z = 14 }, false, true)
-		outburstStage = 3
-		chargingOutKilled = false
-	elseif hp <= 20 and outburstStage == 3 then
-		outburstHealth = creature:getHealth()
+		createSpawnChargingOutburst(3)
+	elseif hpPercent <= 20 and outburstStage == 3 then
 		creature:remove()
-		Game.createMonster("spark of destruction", { x = 32229, y = 31282, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32230, y = 31287, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32237, y = 31287, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32238, y = 31282, z = 14 }, false, true)
-		Game.createMonster("charging outburst", { x = 32234, y = 31284, z = 14 }, false, true)
-		outburstStage = 4
-		chargingOutKilled = false
+		createSpawnChargingOutburst(4)
 	end
 	return true
 end

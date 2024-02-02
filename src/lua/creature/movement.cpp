@@ -478,10 +478,6 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 		return 0;
 	}
 
-	if (player->isItemAbilityEnabled(slot)) {
-		return 1;
-	}
-
 	if (!player->hasFlag(PlayerFlags_t::IgnoreWeaponCheck) && moveEvent->getWieldInfo() != 0) {
 		if (player->getLevel() < moveEvent->getReqLevel() || player->getMagicLevel() < moveEvent->getReqMagLv()) {
 			return 0;
@@ -504,9 +500,13 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 	const ItemType &it = Item::items[item->getID()];
 	if (it.transformEquipTo != 0) {
 		g_game().transformItem(item, it.transformEquipTo);
-	} else {
-		player->setItemAbility(slot, true);
 	}
+
+	if (player->isItemAbilityEnabled(slot)) {
+		return 1;
+	}
+
+	player->setItemAbility(slot, true);
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 		player->updateImbuementTrackerStats();
@@ -529,8 +529,8 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 			player->addCondition(condition);
 		}
 
-		if (it.abilities->speed != 0) {
-			g_game().changePlayerSpeed(player, it.abilities->speed);
+		if (item->getSpeed() != 0) {
+			g_game().changePlayerSpeed(player, item->getSpeed());
 		}
 
 		player->addConditionSuppressions(it.abilities->conditionSuppressions);
@@ -560,20 +560,26 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 
 		// Skill and stats modifiers
 		for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-			if (it.abilities->skills[i]) {
-				player->setVarSkill(static_cast<skills_t>(i), it.abilities->skills[i]);
+			if (item->getSkill(static_cast<skills_t>(i)) != 0) {
+				player->setVarSkill(static_cast<skills_t>(i), item->getSkill(static_cast<skills_t>(i)));
 			}
 		}
 
 		for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
-			if (it.abilities->stats[s]) {
-				player->setVarStats(static_cast<stats_t>(s), it.abilities->stats[s]);
+			if (item->getStat(static_cast<stats_t>(s)) != 0) {
+				player->setVarStats(static_cast<stats_t>(s), item->getStat(static_cast<stats_t>(s)));
 			}
 
 			if (it.abilities->statsPercent[s]) {
 				player->setVarStats(static_cast<stats_t>(s), static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
 			}
 		}
+	}
+
+	// Updates the main backpack as unasigned if there is no item equipped
+	if (slot == CONST_SLOT_BACKPACK) {
+		g_logger().debug("[{}] does not have backpack, trying to add new container as unasigned", __FUNCTION__);
+		player->setMainBackpackUnassigned(item->getContainer());
 	}
 
 	player->sendStats();
@@ -593,15 +599,12 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, std:
 	}
 
 	if (!player->isItemAbilityEnabled(slot)) {
+		g_logger().debug("[{}] item ability is not enabled", __FUNCTION__);
 		return 1;
 	}
 
-	player->setItemAbility(slot, false);
-
 	const ItemType &it = Item::items[item->getID()];
-	if (it.transformDeEquipTo != 0) {
-		g_game().transformItem(item, it.transformDeEquipTo);
-	}
+	player->setItemAbility(slot, false);
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 		player->updateImbuementTrackerStats();
@@ -622,33 +625,38 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, std:
 			player->removeCondition(CONDITION_MANASHIELD, static_cast<ConditionId_t>(slot));
 		}
 
-		if (it.abilities->speed != 0) {
-			g_game().changePlayerSpeed(player, -it.abilities->speed);
-		}
-
-		player->removeConditionSuppressions();
-		player->sendIcons();
-
 		if (it.abilities->regeneration) {
 			player->removeCondition(CONDITION_REGENERATION, static_cast<ConditionId_t>(slot));
 		}
 
-		// Skill and stats modifiers
-		for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-			if (it.abilities->skills[i] != 0) {
-				player->setVarSkill(static_cast<skills_t>(i), -it.abilities->skills[i]);
-			}
-		}
-
 		for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
-			if (it.abilities->stats[s]) {
-				player->setVarStats(static_cast<stats_t>(s), -it.abilities->stats[s]);
-			}
-
 			if (it.abilities->statsPercent[s]) {
 				player->setVarStats(static_cast<stats_t>(s), -static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
 			}
 		}
+	}
+
+	for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
+		if (item->getSkill(static_cast<skills_t>(i)) != 0) {
+			player->setVarSkill(static_cast<skills_t>(i), -item->getSkill(static_cast<skills_t>(i)));
+		}
+	}
+
+	for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
+		if (item->getStat(static_cast<stats_t>(s))) {
+			player->setVarStats(static_cast<stats_t>(s), -item->getStat(static_cast<stats_t>(s)));
+		}
+	}
+
+	if (item->getSpeed() != 0) {
+		g_game().changePlayerSpeed(player, -item->getSpeed());
+	}
+
+	player->removeConditionSuppressions();
+	player->sendIcons();
+
+	if (it.transformDeEquipTo != 0) {
+		g_game().transformItem(item, it.transformDeEquipTo);
 	}
 
 	player->sendStats();

@@ -10,12 +10,76 @@
 #pragma once
 
 #include "io/io_wheel.hpp"
+#include "utils/utils_definitions.hpp"
+#include "config/config_definitions.hpp"
+#include "config/configmanager.hpp"
+#include "kv/kv.hpp"
+#include "wheel_gems.hpp"
 
 class Spell;
 class Player;
 class Creature;
 class NetworkMessage;
 class IOWheel;
+
+struct PlayerWheelGem {
+	std::string uuid;
+	bool locked;
+	WheelGemAffinity_t affinity;
+	WheelGemQuality_t quality;
+	WheelGemBasicModifier_t basicModifier1;
+	WheelGemBasicModifier_t basicModifier2;
+	WheelGemSupremeModifier_t supremeModifier;
+
+	std::string toString() const {
+		return fmt::format("[PlayerWheelGem] uuid: {}, locked: {}, affinity: {}, quality: {}, basicModifier1: {}, basicModifier2: {}, supremeModifier: {}", uuid, locked, static_cast<IntType>(affinity), static_cast<IntType>(quality), static_cast<IntType>(basicModifier1), static_cast<IntType>(basicModifier2), static_cast<IntType>(supremeModifier));
+	}
+
+	void save(const std::shared_ptr<KV> &kv) const {
+		kv->scoped("revealed")->set(uuid, serialize());
+	}
+
+	void remove(const std::shared_ptr<KV> &kv) const {
+		kv->scoped("revealed")->remove(uuid);
+	}
+
+	static PlayerWheelGem load(const std::shared_ptr<KV> &kv, const std::string &uuid) {
+		auto val = kv->scoped("revealed")->get(uuid);
+		if (!val || !val.has_value()) {
+			return {};
+		}
+		return deserialize(uuid, val.value());
+	}
+
+private:
+	ValueWrapper serialize() const {
+		return {
+			{ "uuid", uuid },
+			{ "locked", locked },
+			{ "affinity", static_cast<IntType>(affinity) },
+			{ "quality", static_cast<IntType>(quality) },
+			{ "basicModifier1", static_cast<IntType>(basicModifier1) },
+			{ "basicModifier2", static_cast<IntType>(basicModifier2) },
+			{ "supremeModifier", static_cast<IntType>(supremeModifier) }
+		};
+	}
+
+	static PlayerWheelGem deserialize(const std::string &uuid, const ValueWrapper &val) {
+		auto map = val.get<MapType>();
+		if (map.empty()) {
+			return {};
+		}
+		return {
+			uuid,
+			map["locked"]->get<BooleanType>(),
+			static_cast<WheelGemAffinity_t>(map["affinity"]->get<IntType>()),
+			static_cast<WheelGemQuality_t>(map["quality"]->get<IntType>()),
+			static_cast<WheelGemBasicModifier_t>(map["basicModifier1"]->get<IntType>()),
+			static_cast<WheelGemBasicModifier_t>(map["basicModifier2"]->get<IntType>()),
+			static_cast<WheelGemSupremeModifier_t>(map["supremeModifier"]->get<IntType>())
+		};
+	}
+};
 
 class PlayerWheel {
 public:
@@ -51,6 +115,7 @@ public:
 	 */
 	void saveSlotPointsOnPressSaveButton(NetworkMessage &msg);
 	void addPromotionScrolls(NetworkMessage &msg) const;
+	void addGems(NetworkMessage &msg) const;
 	void sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const;
 	void sendGiftOfLifeCooldown() const;
 
@@ -144,6 +209,47 @@ private:
 	uint8_t getOptions(uint32_t ownerId) const;
 	uint8_t getPlayerVocationEnum() const;
 
+	std::shared_ptr<KV> gemsKV() const;
+
+	std::vector<PlayerWheelGem> getRevealedGems() const;
+	std::vector<PlayerWheelGem> getActiveGems() const;
+
+	static uint64_t getGemRotateCost(WheelGemQuality_t quality) {
+		ConfigKey_t key;
+		switch (quality) {
+			case WheelGemQuality_t::Lesser:
+				key = WHEEL_ATELIER_ROTATE_LESSER_COST;
+				break;
+			case WheelGemQuality_t::Regular:
+				key = WHEEL_ATELIER_ROTATE_REGULAR_COST;
+				break;
+			case WheelGemQuality_t::Greater:
+				key = WHEEL_ATELIER_ROTATE_GREATER_COST;
+				break;
+			default:
+				return 0;
+		}
+		return static_cast<uint64_t>(g_configManager().getNumber(key, __FUNCTION__));
+	}
+
+	static uint64_t getGemRevealCost(WheelGemQuality_t quality) {
+		ConfigKey_t key;
+		switch (quality) {
+			case WheelGemQuality_t::Lesser:
+				key = WHEEL_ATELIER_REVEAL_LESSER_COST;
+				break;
+			case WheelGemQuality_t::Regular:
+				key = WHEEL_ATELIER_REVEAL_REGULAR_COST;
+				break;
+			case WheelGemQuality_t::Greater:
+				key = WHEEL_ATELIER_REVEAL_GREATER_COST;
+				break;
+			default:
+				return 0;
+		}
+		return static_cast<uint64_t>(g_configManager().getNumber(key, __FUNCTION__));
+	}
+
 	// Members variables
 	const uint16_t m_minLevelToStartCountPoints = 50;
 	uint16_t m_pointsPerLevel = 1;
@@ -216,24 +322,24 @@ public:
 	void setInstant(WheelInstant_t type, bool toggle);
 
 	/**
-	 * @brief Sets the value of a specific stat in the Wheel of Destiny.
+	 * @brief Adds the value of a specific stat in the Wheel of Destiny.
 	 *
 	 * This function sets the value of the specified stat in the Wheel of Destiny to the provided value.
 	 *
 	 * @param type The type of the stat to set.
 	 * @param value The value to set for the stat.
 	 */
-	void setStat(WheelStat_t type, int32_t value);
+	void addStat(WheelStat_t type, int32_t value);
 
 	/**
-	 * @brief Sets the value of a specific resistance in the Wheel of Destiny.
+	 * @brief Adds the value of a specific resistance in the Wheel of Destiny.
 	 *
 	 * This function sets the value of the specified resistance in the Wheel of Destiny to the provided value.
 	 *
 	 * @param type The type of the resistance to set.
 	 * @param value The value to set for the resistance.
 	 */
-	void setResistance(CombatType_t type, int32_t value);
+	void addResistance(CombatType_t type, int32_t value);
 
 	/**
 	 * @brief Sets the value of a specific instant in the Wheel of Destiny based on its spell name.
@@ -246,6 +352,7 @@ public:
 	 */
 	void setSpellInstant(const std::string &name, bool value);
 	void resetResistance();
+	void resetStats();
 
 	// Wheel of destiny - Header get:
 	bool getInstant(WheelInstant_t type) const;
@@ -314,6 +421,72 @@ public:
 	 * @return The calculated mitigation value.
 	 */
 	float calculateMitigation() const;
+	PlayerWheelGem getGem(uint8_t index) const;
+	PlayerWheelGem getGem(const std::string &uuid) const;
+	uint8_t getGemIndex(const std::string &uuid) const;
+	void revealGem(WheelGemQuality_t quality);
+	void destroyGem(uint8_t index);
+	void switchGemDomain(uint8_t index);
+	void toggleGemLock(uint8_t index);
+	void setActiveGem(WheelGemAffinity_t affinity, uint8_t index);
+	void removeActiveGem(WheelGemAffinity_t affinity);
+	void addRevelationBonus(WheelGemAffinity_t affinity, uint16_t points) {
+		m_bonusRevelationPoints[static_cast<size_t>(affinity)] += points;
+	}
+	void resetRevelationBonus() {
+		m_bonusRevelationPoints = { 0, 0, 0, 0 };
+	}
+
+	void addSpellBonus(const std::string &spellName, WheelSpells::Bonus bonus) {
+		if (m_spellsBonuses.contains(spellName)) {
+			m_spellsBonuses[spellName].decrease.cooldown += bonus.decrease.cooldown;
+			m_spellsBonuses[spellName].decrease.manaCost += bonus.decrease.manaCost;
+			m_spellsBonuses[spellName].decrease.secondaryGroupCooldown += bonus.decrease.secondaryGroupCooldown;
+			m_spellsBonuses[spellName].increase.aditionalTarget += bonus.increase.aditionalTarget;
+			m_spellsBonuses[spellName].increase.area = bonus.increase.area;
+			m_spellsBonuses[spellName].increase.criticalChance += bonus.increase.criticalChance;
+			m_spellsBonuses[spellName].increase.criticalDamage += bonus.increase.criticalDamage;
+			m_spellsBonuses[spellName].increase.damage += bonus.increase.damage;
+			m_spellsBonuses[spellName].increase.damageReduction += bonus.increase.damageReduction;
+			m_spellsBonuses[spellName].increase.duration += bonus.increase.duration;
+			m_spellsBonuses[spellName].increase.heal += bonus.increase.heal;
+			m_spellsBonuses[spellName].leech.life += bonus.leech.life;
+			m_spellsBonuses[spellName].leech.mana += bonus.leech.mana;
+			return;
+		}
+		m_spellsBonuses[spellName] = bonus;
+	}
+
+	int32_t getSpellBonus(const std::string &spellName, WheelSpellBoost_t boost) const {
+		if (!m_spellsBonuses.contains(spellName)) {
+			return 0;
+		}
+		auto bonus = m_spellsBonuses.at(spellName);
+		switch (boost) {
+			case WheelSpellBoost_t::COOLDOWN:
+				return bonus.decrease.cooldown;
+			case WheelSpellBoost_t::MANA:
+				return bonus.decrease.manaCost;
+			case WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN:
+				return bonus.decrease.secondaryGroupCooldown;
+			case WheelSpellBoost_t::CRITICAL_CHANCE:
+				return bonus.increase.criticalChance;
+			case WheelSpellBoost_t::CRITICAL_DAMAGE:
+				return bonus.increase.criticalDamage;
+			case WheelSpellBoost_t::DAMAGE:
+				return bonus.increase.damage;
+			case WheelSpellBoost_t::DAMAGE_REDUCTION:
+				return bonus.increase.damageReduction;
+			case WheelSpellBoost_t::HEAL:
+				return bonus.increase.heal;
+			case WheelSpellBoost_t::LIFE_LEECH:
+				return bonus.leech.life;
+			case WheelSpellBoost_t::MANA_LEECH:
+				return bonus.leech.mana;
+			default:
+				return 0;
+		}
+	}
 
 private:
 	friend class Player;
@@ -322,8 +495,10 @@ private:
 
 	// Starting count in 1 (1-37), slot enums are from 1 to 36, but the index always starts at 0 in c++
 	std::array<uint16_t, 37> m_wheelSlots = {};
+	std::array<uint16_t, 4> m_bonusRevelationPoints = { 0, 0, 0, 0 };
 
 	PlayerWheelMethodsBonusData m_playerBonusData;
+	std::unique_ptr<WheelModifierContext> m_modifierContext;
 
 	std::array<uint8_t, static_cast<size_t>(WheelStage_t::TOTAL_COUNT)> m_stages = { 0 };
 	std::array<int64_t, static_cast<size_t>(WheelOnThink_t::TOTAL_COUNT)> m_onThink = { 0 };
@@ -335,4 +510,5 @@ private:
 	int32_t m_creaturesNearby = 0;
 	std::map<std::string, WheelSpellGrade_t> m_spellsSelected;
 	std::vector<std::string> m_learnedSpellsSelected;
+	std::unordered_map<std::string, WheelSpells::Bonus> m_spellsBonuses;
 };

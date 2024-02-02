@@ -190,13 +190,12 @@ public:
 			return ZONE_PROTECTION;
 		} else if (hasFlag(TILESTATE_NOPVPZONE)) {
 			return ZONE_NOPVP;
-		} else if (hasFlag(TILESTATE_NOLOGOUT)) {
-			return ZONE_NOLOGOUT;
 		} else if (hasFlag(TILESTATE_PVPZONE)) {
 			return ZONE_PVP;
-		} else {
-			return ZONE_NORMAL;
+		} else if (hasFlag(TILESTATE_NOLOGOUT)) {
+			return ZONE_NOLOGOUT;
 		}
+		return ZONE_NORMAL;
 	}
 
 	bool hasHeight(uint32_t n) const;

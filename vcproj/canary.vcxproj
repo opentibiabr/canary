@@ -201,8 +201,6 @@
     <ClInclude Include="..\src\map\town.hpp" />
     <ClInclude Include="..\src\map\utils\astarnodes.hpp" />
     <ClInclude Include="..\src\map\utils\qtreenode.hpp" />
-    <ClInclude Include="..\src\protobuf\appearances.pb.h" />
-    <ClInclude Include="..\src\protobuf\kv.pb.h" />
     <ClInclude Include="..\src\security\rsa.hpp" />
     <ClInclude Include="..\src\server\network\connection\connection.hpp" />
     <ClInclude Include="..\src\server\network\message\networkmessage.hpp" />
@@ -576,7 +574,7 @@
   <ItemGroup Condition="'$(RunProtoCompile)'=='true'">
     <ProtoFiles Include="$(ProtoPath)\*.proto" />
   </ItemGroup>
-  <Target Name="ProtoCompile" Condition="'$(RunProtoCompile)'=='true'" BeforeTargets="PrepareForBuild">
+  <Target Name="ProtoCompile" BeforeTargets="PrepareForBuild">
     <Exec Command="$(ProtocPath) --proto_path=$(ProtoPath) --cpp_out=generated %(ProtoFiles.Identity)" />
     <ItemGroup>
       <ClCompile Include="generated\%(ProtoFiles.Filename).pb.cc">

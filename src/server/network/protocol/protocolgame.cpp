@@ -2784,7 +2784,7 @@ void ProtocolGame::refreshCyclopediaMonsterTracker(const std::unordered_set<std:
 	msg.addByte(0xB9);
 	msg.addByte(isBoss ? 0x01 : 0x00);
 	msg.addByte(trackerSet.size());
-	for (const auto mtype : trackerSet) {
+	for (const auto &mtype : trackerSet) {
 		auto raceId = mtype->info.raceid;
 		const auto stages = g_ioBosstiary().getBossRaceKillStages(mtype->info.bosstiaryRace);
 		if (isBoss && (stages.empty() || stages.size() != 3)) {
@@ -3729,7 +3729,7 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 	uint16_t mountSize = 0;
 	auto startMounts = msg.getBufferPosition();
 	msg.skipBytes(2);
-	for (const auto mount : g_game().mounts.getMounts()) {
+	for (const auto &mount : g_game().mounts.getMounts()) {
 		const std::string type = mount->type;
 		if (player->hasMount(mount)) {
 			++mountSize;

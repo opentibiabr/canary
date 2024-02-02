@@ -569,7 +569,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(RunProtoCompile)'=='false'">
     <ProtocPath>$(ProjectDir)vcpkg_installed\$(VcpkgTriplet)\\tools\protobuf\protoc</ProtocPath>
-    <ProtoPath>..\$(SourcePath)\</ProtoPath>
+    <ProtoPath>..\$(SourcePath)\protobuf</ProtoPath>
   </PropertyGroup>
   <ItemGroup Condition="'$(RunProtoCompile)'=='true'">
     <ProtoFiles Include="$(ProtoPath)\*.proto" />

@@ -57,7 +57,7 @@ jobs:
           cd vcpkg
           ./bootstrap-vcpkg.bat
           ./vcpkg integrate install
-        
+
       - name: Print useful paths
         run: |
           Write-Host "Workspace: $env:GITHUB_WORKSPACE"

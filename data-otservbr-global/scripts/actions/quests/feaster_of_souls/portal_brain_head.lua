@@ -6,6 +6,41 @@ local config = {
 	exitPosition = Position(31971, 32325, 10),
 }
 
+local entrancesTiles = {
+	{ x = 31937, y = 32324, z = 10 },
+	{ x = 31937, y = 32325, z = 10 },
+	{ x = 31937, y = 32326, z = 10 },
+	{ x = 31951, y = 32310, z = 10 },
+	{ x = 31952, y = 32309, z = 10 },
+	{ x = 31952, y = 32310, z = 10 },
+	{ x = 31953, y = 32309, z = 10 },
+	{ x = 31953, y = 32310, z = 10 },
+	{ x = 31954, y = 32310, z = 10 },
+	{ x = 31954, y = 32311, z = 10 },
+	{ x = 31955, y = 32311, z = 10 },
+	{ x = 31956, y = 32309, z = 10 },
+	{ x = 31956, y = 32310, z = 10 },
+	{ x = 31956, y = 32311, z = 10 },
+	{ x = 31957, y = 32308, z = 10 },
+	{ x = 31957, y = 32309, z = 10 },
+	{ x = 31957, y = 32310, z = 10 },
+	{ x = 31951, y = 32339, z = 10 },
+	{ x = 31952, y = 32339, z = 10 },
+	{ x = 31953, y = 32339, z = 10 },
+	{ x = 31953, y = 32340, z = 10 },
+	{ x = 31954, y = 32340, z = 10 },
+	{ x = 31955, y = 32340, z = 10 },
+	{ x = 31955, y = 32341, z = 10 },
+	{ x = 31969, y = 32323, z = 10 },
+	{ x = 31969, y = 32324, z = 10 },
+	{ x = 31969, y = 32325, z = 10 },
+	{ x = 31969, y = 32326, z = 10 },
+	{ x = 31969, y = 32327, z = 10 },
+	{ x = 31970, y = 32323, z = 10 },
+	{ x = 31970, y = 32324, z = 10 },
+	{ x = 31970, y = 32326, z = 10 },
+}
+
 local zone = Zone("boss." .. toKey(config.bossName))
 local encounter = Encounter("Brain Head", {
 	zone = zone,
@@ -99,7 +134,10 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 	player:sendBosstiaryCooldownTimer()
 end
 
-teleportBoss:aid(30407)
+for _, registerPosition in ipairs(entrancesTiles) do
+	teleportBoss:position(registerPosition)
+end
+
 teleportBoss:type("stepin")
 teleportBoss:register()
 

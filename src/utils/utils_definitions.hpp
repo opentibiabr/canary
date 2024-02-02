@@ -236,7 +236,9 @@ enum MagicEffectClasses : uint16_t {
 
 	CONST_ME_AGONY = 249,
 
-	CONST_ME_LAST = CONST_ME_AGONY
+	CONST_ME_LOOT_HIGHLIGHT = 252,
+
+	CONST_ME_LAST
 };
 
 enum ShootType_t : uint8_t {

@@ -564,11 +564,11 @@
     <Message Text="RunProtoCompile value: $(RunProtoCompile)" Importance="high" />
   </Target>
   <PropertyGroup Condition="'$(RunProtoCompile)'=='true'">
-    <ProtocPath>$(ProjectDir)vcpkg_installed\$(VcpkgTriplet)tools\protobuf\protoc</ProtocPath>
+    <ProtocPath>$(ProjectDir)vcpkg_installed\$(VcpkgTriplet)\tools\protobuf\protoc</ProtocPath>
     <ProtoPath>..\$(SourcePath)\protobuf</ProtoPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(RunProtoCompile)'=='false'">
-    <ProtocPath>$(ProjectDir)vcpkg_installed\$(VcpkgTriplet)\\tools\protobuf\protoc</ProtocPath>
+    <ProtocPath>$(ProjectDir)vcpkg_installed\$(VcpkgTriplet)\tools\protobuf\protoc</ProtocPath>
     <ProtoPath>$(GITHUB_WORKSPACE)\src\protobuf</ProtoPath>
   </PropertyGroup>
   <ItemGroup>

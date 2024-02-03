@@ -17,6 +17,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "game/game.hpp"
+#include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/task.hpp"
 #include "game/scheduling/save_manager.hpp"
@@ -32,6 +33,7 @@
 #include "core.hpp"
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "enums/object_category.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -6539,6 +6541,17 @@ void Player::initializeTaskHunting() {
 }
 
 std::string Player::getBlessingsName() const {
+	static const phmap::flat_hash_map<Blessings_t, std::string> BlessingNames = {
+		{ TWIST_OF_FATE, "Twist of Fate" },
+		{ WISDOM_OF_SOLITUDE, "The Wisdom of Solitude" },
+		{ SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix" },
+		{ FIRE_OF_THE_SUNS, "The Fire of the Suns" },
+		{ SPIRITUAL_SHIELDING, "The Spiritual Shielding" },
+		{ EMBRACE_OF_TIBIA, "The Embrace of Tibia" },
+		{ BLOOD_OF_THE_MOUNTAIN, "Blood of the Mountain" },
+		{ HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain" },
+	};
+
 	uint8_t count = 0;
 	std::for_each(blessings.begin(), blessings.end(), [&count](uint8_t amount) {
 		if (amount != 0) {

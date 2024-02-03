@@ -34,6 +34,7 @@
 #include "vocations/vocation.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "game/bank/bank.hpp"
+#include "enums/object_category.hpp"
 
 class House;
 class NetworkMessage;
@@ -49,6 +50,8 @@ class TaskHuntingSlot;
 class Spell;
 class PlayerWheel;
 class Spectators;
+
+struct ModalWindow;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;

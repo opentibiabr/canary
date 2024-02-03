@@ -35,6 +35,6 @@ std::string LogWithSpdLog::getLevel() const {
 	return std::string { level.begin(), level.end() };
 }
 
-void LogWithSpdLog::log(const std::string lvl, const fmt::basic_string_view<char> msg) const {
+void LogWithSpdLog::log(const std::string &lvl, const fmt::basic_string_view<char> msg) const {
 	spdlog::log(spdlog::level::from_str(lvl), msg);
 }

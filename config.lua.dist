@@ -6,6 +6,7 @@ useAnyDatapackFolder = false
 dataPackDirectory = "data-otservbr-global"
 -- Don't change this unless you know what you're doing
 coreDirectory = "data"
+tournamentCoinsName = "Tournament Coins"
 
 -- Set log level
 -- It can be trace, debug, info, warning, error, critical, off (default: info).

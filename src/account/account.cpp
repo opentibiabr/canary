@@ -84,7 +84,7 @@ namespace account {
 		return { coins, ERROR_NO };
 	}
 
-	error_t Account::addCoins(const CoinType &type, const uint32_t &amount, const std::string &detail) {
+	error_t Account::addCoins(const CoinType &type, const uint32_t &amount, const std::string &detail, bool registerHistory /* = true*/) {
 		if (!m_accLoaded) {
 			return ERROR_NOT_INITIALIZED;
 		}
@@ -103,7 +103,9 @@ namespace account {
 			return ERROR_STORAGE;
 		}
 
-		registerCoinTransaction(CoinTransactionType::ADD, type, amount, detail);
+		if (registerHistory) {
+			registerCoinTransaction(CoinTransactionType::ADD, type, amount, detail);
+		}
 
 		return ERROR_NO;
 	}

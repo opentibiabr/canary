@@ -174,11 +174,10 @@ void Connection::parseHeader(const std::error_code &error) {
 	std::scoped_lock lock(connectionLock);
 	readTimer.cancel();
 
-	iif(error) {
+	if(error) {
 		close(FORCE_CLOSE);
 		return;
-	}
-	else if (connectionState == CONNECTION_STATE_CLOSED) {
+	} else if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
 

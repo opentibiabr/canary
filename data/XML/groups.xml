@@ -147,4 +147,5 @@
 			<flag canmapclickteleport="1" />
 		</flags>
 	</group>
+	<group id="7" name="player" access="0" maxdepotitems="0" maxvipentries="0" />
 </groups>

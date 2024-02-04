@@ -26,6 +26,8 @@ class Guild;
 class Zone;
 class KV;
 
+struct LuaVariant;
+
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)
 
 class LuaFunctionsLoader {

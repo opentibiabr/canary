@@ -4,7 +4,7 @@ function zones.onSay(player, words, param)
 	local params = string.split(param, ",")
 	local cmd = params[1]
 	if not cmd then
-		player:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "Command not found.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Command not found.")
 		return true
 	end
 

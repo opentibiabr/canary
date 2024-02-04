@@ -30,8 +30,6 @@
 		#define OS_WINDOWS
 	#endif
 
-	#define WIN32_LEAN_AND_MEAN
-
 	#ifdef _MSC_VER
 		#ifdef NDEBUG
 			#define _SECURE_SCL 0

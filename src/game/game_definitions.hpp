@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include "movement/position.hpp"
-
 // Enums
 enum StackPosType_t {
 	STACKPOS_MOVE,
@@ -108,21 +106,4 @@ enum Webhook_Colors_t : uint32_t {
 	WEBHOOK_COLOR_RED = 0xFF0000,
 	WEBHOOK_COLOR_YELLOW = 0xFFFF00,
 	WEBHOOK_COLOR_BLUE = 0x0000FF
-};
-
-// Structs
-struct ModalWindow {
-	std::list<std::pair<std::string, uint8_t>> buttons, choices;
-	std::string title, message;
-	uint32_t id;
-	uint8_t defaultEnterButton, defaultEscapeButton;
-	bool priority;
-
-	ModalWindow(uint32_t newId, std::string newTitle, std::string newMessage) :
-		title(std::move(newTitle)),
-		message(std::move(newMessage)),
-		id(newId),
-		defaultEnterButton(0xFF),
-		defaultEscapeButton(0xFF),
-		priority(false) { }
 };

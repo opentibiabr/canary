@@ -16,6 +16,8 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 
+#include "lua/global/lua_variant.hpp"
+
 Spells::Spells() = default;
 Spells::~Spells() = default;
 

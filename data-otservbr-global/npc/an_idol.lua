@@ -58,7 +58,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		player:teleportTo(Position(32366, 32531, 8), false)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	end
-	end
+end
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

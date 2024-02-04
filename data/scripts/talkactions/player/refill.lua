@@ -17,18 +17,25 @@ local silverTokenID = 22516
 
 function refill.onSay(player, words, param)
 	logger.debug("!refill executed")
-	for k, v in pairs(chargeItem) do
-		local chargeableCount = player:getItemCount(v.noChargeID)
+	local refilledItems = {}
+	local totalCost = 0
+	for itemName, itemData in pairs(chargeItem) do
+		local chargeableCount = player:getItemCount(itemData.noChargeID)
 		local silverTokensCount = player:getItemCount(silverTokenID)
-
-		if chargeableCount >= 1 and silverTokensCount >= v.cost then
-			player:removeItem(silverTokenID, v.cost)
-			player:removeItem(v.noChargeID, 1)
-			player:addItem(v.ChargeID, 1)
-			player:sendTextMessage(MESSAGE_LOOK, "Refilled " .. k .. ".")
+		if chargeableCount >= 1 and silverTokensCount >= itemData.cost then
+			totalCost = totalCost + itemData.cost
+			table.insert(refilledItems, itemName)
+			player:removeItem(silverTokenID, itemData.cost)
+			player:removeItem(itemData.noChargeID, 1)
+			player:addItem(itemData.ChargeID, 1)
 		end
 	end
-
+	if #refilledItems == 0 then
+		player:sendTextMessage(MESSAGE_INFO_DESCR, "You do not have any items to refill or lack silver tokens.")
+	else
+		local itemList = table.concat(refilledItems, ", ")
+		player:sendTextMessage(MESSAGE_INFO_DESCR, "Refilled " .. itemList .. " for a total of " .. totalCost .. " silver tokens.")
+	end
 	return true
 end
 

@@ -3067,6 +3067,10 @@ GlobalStorage = {
 	HeartOfDestruction = {
 		-- Reserved storage from 60172 - 60190
 		ChargedAnomaly = 60172,
+		ForeshockHealth = 60173,
+		AftershockHealth = 60174,
+		ForeshockStage = 60175,
+		AftershockStage = 60176,
 		RuptureResonanceStage = 60177,
 		RuptureResonanceActive = 60178,
 		EradicatorWeak = 60178,

@@ -25,6 +25,9 @@
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/functions/map/map_functions.hpp"
 #include "lua/functions/core/game/zone_functions.hpp"
+#include "lua/global/lua_variant.hpp"
+
+#include "enums/lua_variant_type.hpp"
 
 class LuaScriptInterface;
 

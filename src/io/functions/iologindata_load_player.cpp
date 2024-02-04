@@ -12,6 +12,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "game/game.hpp"
+#include "enums/object_category.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, const std::shared_ptr<Player> &player) {
 	try {
@@ -516,11 +517,15 @@ void IOLoginDataLoad::loadPlayerInventoryItems(std::shared_ptr<Player> player, D
 							openContainersList.emplace_back(std::make_pair(cid, itemContainer));
 						}
 					}
-					if (item->hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
-						auto flags = item->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
-						for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
-							if (hasBitSet(1 << category, static_cast<uint32_t>(flags))) {
-								player->setLootContainer(static_cast<ObjectCategory_t>(category), itemContainer, true);
+					for (bool isLootContainer : { true, false }) {
+						auto checkAttribute = isLootContainer ? ItemAttribute_t::QUICKLOOTCONTAINER : ItemAttribute_t::OBTAINCONTAINER;
+						if (item->hasAttribute(checkAttribute)) {
+							auto flags = item->getAttribute<uint32_t>(checkAttribute);
+
+							for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
+								if (hasBitSet(1 << category, flags)) {
+									player->refreshManagedContainer(static_cast<ObjectCategory_t>(category), itemContainer, isLootContainer, true);
+								}
 							}
 						}
 					}
@@ -786,7 +791,7 @@ void IOLoginDataLoad::loadPlayerForgeHistory(std::shared_ptr<Player> player, DBR
 	query << "SELECT * FROM `forge_history` WHERE `player_id` = " << player->getGUID();
 	if (result = Database::getInstance().storeQuery(query.str())) {
 		do {
-			auto actionEnum = magic_enum::enum_value<ForgeConversion_t>(result->getNumber<uint16_t>("action_type"));
+			auto actionEnum = magic_enum::enum_value<ForgeAction_t>(result->getNumber<uint16_t>("action_type"));
 			ForgeHistory history;
 			history.actionType = actionEnum;
 			history.description = result->getString("description");

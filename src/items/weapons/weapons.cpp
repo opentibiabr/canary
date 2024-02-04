@@ -14,6 +14,8 @@
 #include "lua/creature/events.hpp"
 #include "items/weapons/weapons.hpp"
 
+#include "lua/global/lua_variant.hpp"
+
 Weapons::Weapons() = default;
 Weapons::~Weapons() = default;
 
@@ -474,9 +476,10 @@ int32_t WeaponMelee::getElementDamage(std::shared_ptr<Player> player, std::share
 	int32_t attackValue = elementDamage;
 	float attackFactor = player->getAttackFactor();
 	uint32_t level = player->getLevel();
-	int32_t minValue = level / 5;
 
 	int32_t maxValue = Weapons::getMaxWeaponDamage(level, attackSkill, attackValue, attackFactor, true);
+	int32_t minValue = level / 5;
+
 	return -normal_random(minValue, static_cast<int32_t>(maxValue * player->getVocation()->meleeDamageMultiplier));
 }
 

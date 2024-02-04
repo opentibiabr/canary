@@ -9,11 +9,15 @@
 
 #pragma once
 
-#include <string>
-#include <mutex>
-#include <initializer_list>
-#include <parallel_hashmap/phmap.h>
-#include <optional>
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <string>
+	#include <mutex>
+	#include <initializer_list>
+	#include <parallel_hashmap/phmap.h>
+	#include <optional>
+	#include <unordered_set>
+	#include <iomanip>
+#endif
 
 #include "lib/logging/logger.hpp"
 #include "kv/value_wrapper.hpp"
@@ -39,6 +43,31 @@ public:
 	virtual void flush() {
 		saveAll();
 	}
+
+	static std::string generateUUID() {
+		std::lock_guard<std::mutex> lock(mutex_);
+
+		auto now = std::chrono::system_clock::now().time_since_epoch();
+		auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now).count();
+
+		if (milliseconds != lastTimestamp_) {
+			counter_ = 0;
+			lastTimestamp_ = milliseconds;
+		} else {
+			++counter_;
+		}
+
+		std::stringstream ss;
+		ss << std::setw(20) << std::setfill('0') << milliseconds << "-"
+		   << std::setw(12) << std::setfill('0') << counter_;
+
+		return ss.str();
+	}
+
+private:
+	static int64_t lastTimestamp_;
+	static uint64_t counter_;
+	static std::mutex mutex_;
 };
 
 class KVStore : public KV {

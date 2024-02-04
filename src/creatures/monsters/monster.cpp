@@ -685,7 +685,11 @@ void Monster::updateIdleStatus() {
 	bool idle = false;
 	if (conditions.empty()) {
 		if (!isSummon() && targetList.empty()) {
-			idle = true;
+			if (isInSpawnLocation()) {
+				idle = true;
+			} else {
+				isWalkingBack = true;
+			}
 		} else if (const auto &master = getMaster()) {
 			if ((!isSummon() && totalPlayersOnScreen == 0 || isSummon() && master->getMonster() && master->getMonster()->totalPlayersOnScreen == 0) && getFaction() != FACTION_DEFAULT) {
 				idle = true;
@@ -694,6 +698,13 @@ void Monster::updateIdleStatus() {
 	}
 
 	setIdle(idle);
+}
+
+bool Monster::isInSpawnLocation() const {
+	if (!spawnMonster) {
+		return true;
+	}
+	return position == masterPos || masterPos == Position();
 }
 
 void Monster::onAddCondition(ConditionType_t type) {
@@ -1159,6 +1170,8 @@ bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 
 	if (getFollowCreature() && hasFollowPath) {
 		doFollowCreature(flags, nextDirection, result);
+	} else if (isWalkingBack) {
+		doWalkBack(flags, nextDirection, result);
 	} else {
 		doRandomStep(nextDirection, result);
 	}
@@ -1184,6 +1197,31 @@ void Monster::doRandomStep(Direction &nextDirection, bool &result) {
 	if (getTimeSinceLastMove() >= 1000) {
 		randomStepping = true;
 		result = getRandomStep(getPosition(), nextDirection);
+	}
+}
+
+void Monster::doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result) {
+	result = Creature::getNextStep(nextDirection, flags);
+	if (result) {
+		flags |= FLAG_PATHFINDING;
+	} else {
+		if (ignoreFieldDamage) {
+			ignoreFieldDamage = false;
+			updateMapCache();
+		}
+
+		int32_t distance = std::max<int32_t>(Position::getDistanceX(position, masterPos), Position::getDistanceY(position, masterPos));
+		if (distance == 0) {
+			isWalkingBack = false;
+			return;
+		}
+
+		stdext::arraylist<Direction> listDir(128);
+		if (!getPathTo(masterPos, listDir, 0, std::max<int32_t>(0, distance - 5), true, true, distance)) {
+			isWalkingBack = false;
+			return;
+		}
+		startAutoWalk(listDir.data());
 	}
 }
 

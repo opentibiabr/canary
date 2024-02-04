@@ -99,6 +99,10 @@ bool Database::commit() {
 	return true;
 }
 
+bool Database::isRecoverableError(unsigned int error) const {
+	return error == CR_SERVER_LOST || error == CR_SERVER_GONE_ERROR || error == CR_CONN_HOST_ERROR || error == 1053 /*ER_SERVER_SHUTDOWN*/ || error == CR_CONNECTION_ERROR;
+}
+
 bool Database::retryQuery(const std::string_view &query, int retries) {
 	while (retries > 0 && mysql_query(handle, query.data()) != 0) {
 		g_logger().error("Query: {}", query.substr(0, 256));

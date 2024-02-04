@@ -13,6 +13,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/scripts/script_environment.hpp"
+#include "lua/global/lua_timer_event_descr.hpp"
 
 bool LuaEnvironment::shuttingDown = false;
 

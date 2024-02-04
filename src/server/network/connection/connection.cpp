@@ -174,11 +174,10 @@ void Connection::parseHeader(const std::error_code &error) {
 	std::scoped_lock lock(connectionLock);
 	readTimer.cancel();
 
-	if (error || connectionState == CONNECTION_STATE_CLOSED) {
-		if (error != asio::error::operation_aborted && error != asio::error::eof && error != asio::error::connection_reset) {
-			g_logger().error("[Connection::parseHeader] - Read error: {}", error.message());
-		}
+	iif (error) {
 		close(FORCE_CLOSE);
+		return;
+	} else if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
 

@@ -21,6 +21,8 @@ class WeaponMelee;
 class WeaponDistance;
 class WeaponWand;
 
+struct LuaVariant;
+
 using WeaponUnique_ptr = std::unique_ptr<Weapon>;
 using WeaponShared_ptr = std::shared_ptr<Weapon>;
 

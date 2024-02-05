@@ -9,13 +9,11 @@
 
 #include "pch.hpp"
 
-#include <ranges>
-#include <algorithm>
-
 #include "kv/kv_sql.hpp"
 #include "kv/value_wrapper_proto.hpp"
-#include "protobuf/kv.pb.h"
 #include "utils/tools.hpp"
+
+#include <kv.pb.h>
 
 std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 	auto query = fmt::format("SELECT `key_name`, `timestamp`, `value` FROM `kv_store` WHERE `key_name` = {}", db.escapeString(key));
@@ -34,7 +32,7 @@ std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 	auto timestamp = result->getNumber<uint64_t>("timestamp");
 	Canary::protobuf::kv::ValueWrapper protoValue;
 	if (protoValue.ParseFromArray(data, static_cast<int>(size))) {
-		valueWrapper = ProtoSerializable<ValueWrapper>::fromProto(protoValue, timestamp);
+		valueWrapper = ProtoSerializable::fromProto(protoValue, timestamp);
 		return valueWrapper;
 	}
 	logger.error("Failed to deserialize value for key {}", key);
@@ -66,7 +64,7 @@ bool KVSQL::save(const std::string &key, const ValueWrapper &value) {
 }
 
 bool KVSQL::prepareSave(const std::string &key, const ValueWrapper &value, DBInsert &update) {
-	auto protoValue = ProtoSerializable<ValueWrapper>::toProto(value);
+	auto protoValue = ProtoSerializable::toProto(value);
 	std::string data;
 	if (!protoValue.SerializeToString(&data)) {
 		return false;

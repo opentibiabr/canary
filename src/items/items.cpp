@@ -14,6 +14,8 @@
 #include "game/game.hpp"
 #include "utils/pugicast.hpp"
 
+#include <appearances.pb.h>
+
 Items::Items() = default;
 
 void Items::clear() {
@@ -76,8 +78,8 @@ void Items::loadFromProtobuf() {
 	using namespace Canary::protobuf::appearances;
 
 	bool supportAnimation = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__);
-	for (uint32_t it = 0; it < g_game().appearances.object_size(); ++it) {
-		Appearance object = g_game().appearances.object(it);
+	for (uint32_t it = 0; it < g_game().m_appearancesPtr->object_size(); ++it) {
+		Appearance object = g_game().m_appearancesPtr->object(it);
 
 		// This scenario should never happen but on custom assets this can break the loader.
 		if (!object.has_flags()) {

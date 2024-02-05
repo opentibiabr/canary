@@ -15,7 +15,7 @@ local rewards = {
 	{ id = 43887, name = "Sanguine Galoshes" },
 }
 
-BagYouCovetId = 43898
+BagYouCovetId = 43895
 
 local bagyouCovet = Action()
 

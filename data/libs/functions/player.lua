@@ -561,20 +561,39 @@ function Player:addItemStoreInboxEx(item, movable, setOwner)
 end
 
 function Player:addItemStoreInbox(itemId, amount, movable, setOwner)
+	if not amount then
+		logger.error("[Player:addItemStoreInbox] item '{}' amount is nil.", itemId)
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Item amount is wrong, please contact an administrator.")
+		return nil
+	end
+
 	local iType = ItemType(itemId)
 	if not iType then
 		return nil
 	end
+
 	if iType:isStackable() then
-		while amount > iType:getStackSize() do
-			self:addItemStoreInboxEx(Game.createItem(itemId, iType:getStackSize()), movable, setOwner)
-			amount = amount - iType:getStackSize()
+		local stackSize = iType:getStackSize()
+		while amount > stackSize do
+			self:addItemStoreInboxEx(Game.createItem(itemId, stackSize), movable, setOwner)
+			amount = amount - stackSize
 		end
 	end
-	local item = Game.createItem(itemId, amount)
+
+	local item
+	if iType:getCharges() > 0 then
+		item = Game.createItem(itemId, 1)
+		if item then
+			item:setAttribute(ITEM_ATTRIBUTE_CHARGES, amount)
+		end
+	else
+		item = Game.createItem(itemId, amount)
+	end
+
 	if not item then
 		return nil
 	end
+
 	return self:addItemStoreInboxEx(item, movable, setOwner)
 end
 

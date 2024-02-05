@@ -268,13 +268,12 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 
 		player:addAchievementProgress("Potion Addict", 100000)
 		target:say("Aaaah...", MESSAGE_POTION)
-		if fromPosition.x == CONTAINER_POSITION and not container == store_inbox then
-			local container = Container(item:getParent().uid)
-			if player:getStorageValueByName("talkaction.potions.flask") ~= 1 then
+		local deactivatedFlasks = player:kv():get("talkaction.potions.flask") or false
+		if not deactivatedFlasks then
+			if fromPosition.x == CONTAINER_POSITION then
+				local container = Container(item:getParent().uid)
 				container:addItem(potion.flask, 1)
-			end
-		else
-			if player:getStorageValueByName("talkaction.potions.flask") ~= 1 then
+			else
 				player:addItem(potion.flask, 1)
 			end
 		end

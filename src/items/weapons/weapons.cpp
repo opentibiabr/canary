@@ -14,6 +14,8 @@
 #include "lua/creature/events.hpp"
 #include "items/weapons/weapons.hpp"
 
+#include "lua/global/lua_variant.hpp"
+
 Weapons::Weapons() = default;
 Weapons::~Weapons() = default;
 

@@ -9,7 +9,10 @@
 
 #pragma once
 
-#include <cstdint>
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <parallel_hashmap/phmap.h>
+	#include <cstdint>
+#endif
 
 namespace account {
 	enum Errors : uint8_t {

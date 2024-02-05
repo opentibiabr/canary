@@ -175,6 +175,7 @@ void Connection::parseHeader(const std::error_code &error) {
 	readTimer.cancel();
 
 	if (error) {
+		g_logger().debug("[Connection::parseHeader] - Read error: {}", error.message());
 		close(FORCE_CLOSE);
 		return;
 	} else if (connectionState == CONNECTION_STATE_CLOSED) {

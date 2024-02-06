@@ -16,7 +16,7 @@
         "BUILD_STATIC_LIBRARY": "ON",
         "SPEED_UP_BUILD_UNITY": "ON",
         "OPTIONS_ENABLE_SCCACHE": "ON",
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
       }
     },
     {

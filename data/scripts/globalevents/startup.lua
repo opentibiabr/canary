@@ -28,7 +28,7 @@ local function checkAndLogDuplicateKeys(variableNames)
 	end
 end
 
-local startup = GlobalEvent("Startup")
+local startup = GlobalEvent("Server Initialization")
 
 function startup.onStartup()
 	checkAndLogDuplicateKeys({ "Global", "GlobalStorage", "Storage" })

@@ -18,7 +18,7 @@
 
 namespace di = boost::di;
 
-namespace account::tests {
+namespace tests {
 	class InMemoryAccountRepository : public AccountRepository {
 	public:
 		static di::extension::injector<> &install(di::extension::injector<> &injector) {
@@ -142,6 +142,6 @@ namespace account::tests {
 }
 
 template <>
-struct TestInjection<account::AccountRepository> {
-	using type = account::tests::InMemoryAccountRepository;
+struct TestInjection<AccountRepository> {
+	using type = tests::InMemoryAccountRepository;
 };

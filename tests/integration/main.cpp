@@ -34,7 +34,7 @@ void createAccount(Database &db) {
 	));
 }
 
-void assertAccountLoad(account::AccountInfo acc) {
+void assertAccountLoad(AccountInfo acc) {
 	expect(eq(acc.id, 111));
 	expect(eq(acc.accountType, AccountType::ACCOUNT_TYPE_SENIORTUTOR));
 	expect(eq(acc.premiumRemainingDays, 11));

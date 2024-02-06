@@ -11,6 +11,7 @@
 
 #include "creatures/players/player.hpp"
 #include "lua/functions/core/game/modal_window_functions.hpp"
+#include "game/modal_window/modal_window.hpp"
 
 // ModalWindow
 int ModalWindowFunctions::luaModalWindowCreate(lua_State* L) {

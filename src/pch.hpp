@@ -36,12 +36,15 @@
 #include <queue>
 #include <random>
 #include <ranges>
+#include <algorithm>
 #include <regex>
 #include <set>
 #include <thread>
 #include <vector>
 #include <variant>
 #include <numeric>
+#include <cmath>
+#include <mutex>
 
 // --------------------
 // System Includes

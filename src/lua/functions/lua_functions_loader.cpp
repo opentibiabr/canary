@@ -148,6 +148,11 @@ void LuaFunctionsLoader::reportError(const char* function, const std::string &er
 int LuaFunctionsLoader::luaErrorHandler(lua_State* L) {
 	const std::string &errorMessage = popString(L);
 	auto interface = getScriptEnv()->getScriptInterface();
+	if (!interface) {
+		g_logger().error("[{}]: LuaScriptInterface not found, error: {}", __FUNCTION__, errorMessage);
+		return 0;
+	}
+
 	assert(interface); // This fires if the ScriptEnvironment hasn't been setup
 	pushString(L, interface->getStackTrace(errorMessage));
 	return 1;

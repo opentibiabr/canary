@@ -1,7 +1,18 @@
--- Function to reset familiars message storage
-local function resetFamiliarsMessageStorage()
-	db.query("DELETE FROM `player_storage` WHERE `key` = " .. Global.Storage.FamiliarSummonEvent10)
-	db.query("DELETE FROM `player_storage` WHERE `key` = " .. Global.Storage.FamiliarSummonEvent60)
+-- Function to perform database cleanup tasks
+local function cleanupDatabase()
+	db.query("TRUNCATE TABLE `players_online`")
+
+	local currentTime = os.time()
+	db.asyncQuery("DELETE FROM `guild_wars` WHERE `status` IN (0, 2, 3) OR (`status` = 0 AND (`started` + 72 * 60 * 60) <= " .. currentTime)
+	db.asyncQuery("DELETE FROM `players` WHERE `deletion` != 0 AND `deletion` < " .. currentTime)
+	db.asyncQuery("DELETE FROM `ip_bans` WHERE `expires_at` != 0 AND `expires_at` <= " .. currentTime)
+
+	local marketOfferDuration = configManager.getNumber(configKeys.MARKET_OFFER_DURATION)
+	db.asyncQuery("DELETE FROM `market_history` WHERE `inserted` <= " .. (currentTime - marketOfferDuration))
+
+	db.query("UPDATE `players` SET `isreward` = " .. DAILY_REWARD_NOTCOLLECTED)
+	db.query("UPDATE `player_storage` SET `value` = 0 WHERE `player_storage`.`key` = 51052")
+	db.query("DELETE FROM `player_storage` WHERE `key` IN (" .. Global.Storage.FamiliarSummonEvent10 .. ", " .. Global.Storage.FamiliarSummonEvent60 .. ")")
 end
 
 -- Function to move expired bans to ban history
@@ -93,19 +104,32 @@ local function updateEventRates()
 	end
 end
 
+-- Function to reset account sessions based on configuration and authentication type
+local function resetAccountSessions()
+	local resetSessionsOnStartup = configManager.getBoolean(configKeys.RESET_SESSIONS_ON_STARTUP)
+	if AUTH_TYPE == "session" then
+			if resetSessionsOnStartup then
+					db.query("TRUNCATE TABLE `account_sessions`")
+			else
+					db.query("DELETE FROM `account_sessions` WHERE `expires` <= " .. os.time())
+			end
+	end
+end
+
 local startup = GlobalEvent("Server Initialization")
 
 function startup.onStartup()
 	logger.debug("Loaded {} npcs and spawned {} monsters", Game.getNpcCount(), Game.getMonsterCount())
 	logger.debug("Loaded {} towns with {} houses in total", #Game.getTowns(), #Game.getHouses())
 
-	resetFamiliarsMessageStorage()
+	cleanupDatabase()
 	moveExpiredBansToHistory()
 	processHouseAuctions()
 	storeTownsInDatabase()
 	checkAndLogDuplicateKeys({"Global", "GlobalStorage", "Storage"})
 	updateEventRates()
 	HirelingsInit()
+	resetAccountSessions()
 end
 
 startup:register()

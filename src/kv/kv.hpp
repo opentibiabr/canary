@@ -17,6 +17,7 @@
 	#include <optional>
 	#include <unordered_set>
 	#include <iomanip>
+	#include <list>
 #endif
 
 #include "lib/logging/logger.hpp"

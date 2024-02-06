@@ -10,8 +10,14 @@
 #include "pch.hpp"
 
 #include "items/decay/decay.hpp"
+
+#include "lib/di/container.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+
+Decay &Decay::getInstance() {
+	return inject<Decay>();
+}
 
 void Decay::startDecay(std::shared_ptr<Item> item) {
 	if (!item) {

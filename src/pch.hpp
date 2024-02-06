@@ -69,9 +69,6 @@
 // ABSL
 #include <absl/numeric/int128.h>
 
-// ARGON2
-#include <argon2.h>
-
 // ASIO
 #include <asio.hpp>
 
@@ -169,6 +166,7 @@ struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : formatter<
 #include "lib/messaging/message.hpp"
 #include "lib/messaging/command.hpp"
 #include "lib/messaging/event.hpp"
+#include "lib/logging/log_with_spd_log.hpp"
 
 #include <eventpp/utilities/scopedremover.h>
 #include <eventpp/eventdispatcher.h>

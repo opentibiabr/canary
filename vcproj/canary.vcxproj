@@ -227,6 +227,7 @@
     <ClInclude Include="..\src\utils\wildcardtree.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\account\account_repository.cpp" />
     <ClCompile Include="..\src\account\account_repository_db.cpp" />
     <ClCompile Include="..\src\config\configmanager.cpp" />
     <ClCompile Include="..\src\creatures\appearance\mounts\mounts.cpp" />

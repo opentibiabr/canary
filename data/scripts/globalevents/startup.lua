@@ -96,25 +96,15 @@ end
 local startup = GlobalEvent("Server Initialization")
 
 function startup.onStartup()
-	-- Call the function to reset familiars message storage
+	logger.debug("Loaded {} npcs and spawned {} monsters", Game.getNpcCount(), Game.getMonsterCount())
+	logger.debug("Loaded {} towns with {} houses in total", #Game.getTowns(), #Game.getHouses())
+
 	resetFamiliarsMessageStorage()
-
-	-- Call the function to move expired bans to ban history
 	moveExpiredBansToHistory()
-
-	-- Call the function to check and process house auctions
 	processHouseAuctions()
-
-	-- Call the function to store towns in the database
 	storeTownsInDatabase()
-
-	-- Call the checkAndLogDuplicateKeys function with the list of variable names
 	checkAndLogDuplicateKeys({"Global", "GlobalStorage", "Storage"})
-
-	-- Call the function to update event rates
 	updateEventRates()
-
-	-- Hireling System
 	HirelingsInit()
 end
 

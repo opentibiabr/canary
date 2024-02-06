@@ -1,8 +1,7 @@
 local serverstartup = GlobalEvent("serverstartup")
 function serverstartup.onStartup()
 	logger.debug("Loading map attributes")
-	logger.debug("Loaded {} npcs and spawned {} monsters", Game.getNpcCount(), Game.getMonsterCount())
-	logger.debug("Loaded {} towns with {} houses in total", #Game.getTowns(), #Game.getHouses())
+
 	-- Sign table
 	loadLuaMapSign(SignTable)
 	logger.debug("Loaded {} signs in the map", #SignTable)

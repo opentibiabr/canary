@@ -136,9 +136,9 @@ local function resetAccountSessions()
 	end
 end
 
-local startup = GlobalEvent("Server Initialization")
+local serverInitialization = GlobalEvent("Server Initialization")
 
-function startup.onStartup()
+function serverInitialization.onStartup()
 	logger.debug("Loaded {} npcs and spawned {} monsters", Game.getNpcCount(), Game.getMonsterCount())
 	logger.debug("Loaded {} towns with {} houses in total", #Game.getTowns(), #Game.getHouses())
 
@@ -152,4 +152,4 @@ function startup.onStartup()
 	resetAccountSessions()
 end
 
-startup:register()
+serverInitialization:register()

@@ -56,6 +56,11 @@ public:
 private:
 	template <typename T>
 	void add_header(T addHeader) {
+		if (outputBufferStart < sizeof(T)) {
+			g_logger().error("[{}]: Insufficient buffer space for header!", __FUNCTION__);
+			return;
+		}
+
 		assert(outputBufferStart >= sizeof(T));
 		outputBufferStart -= sizeof(T);
 		memcpy(buffer + outputBufferStart, &addHeader, sizeof(T));

@@ -155,6 +155,7 @@
 #include "lib/messaging/message.hpp"
 #include "lib/messaging/command.hpp"
 #include "lib/messaging/event.hpp"
+#include "lib/logging/log_with_spd_log.hpp"
 
 #include <eventpp/utilities/scopedremover.h>
 #include <eventpp/eventdispatcher.h>

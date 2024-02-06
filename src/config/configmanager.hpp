@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "config_definitions.hpp"
+#include "config_enums.hpp"
 
 using ConfigValue = std::variant<std::string, int32_t, bool, float>;
 

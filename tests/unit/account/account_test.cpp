@@ -358,7 +358,7 @@ suite<"account"> accountTest = [] {
 		expect(
 			eq(coins, 100) and
 			eq(coinType, enumToValue(CoinType::Normal)) and
-			eq(type, CoinTransactionType::Remove) and
+			eq(type, enumToValue(CoinTransactionType::Remove)) and
 			eq(description, std::string { "REMOVE Coins" })
 		);
 	};
@@ -393,7 +393,7 @@ suite<"account"> accountTest = [] {
 		expect(
 			eq(coins, 100) and
 			eq(coinType,enumToValue(CoinType::Normal)) and
-			eq(type, CoinTransactionType::Remove) and
+			eq(type, enumToValue(CoinTransactionType::Remove)) and
 			eq(description, std::string { "REMOVE Coins" })
 		);
 

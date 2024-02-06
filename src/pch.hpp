@@ -69,9 +69,6 @@
 // ABSL
 #include <absl/numeric/int128.h>
 
-// ARGON2
-#include <argon2.h>
-
 // ASIO
 #include <asio.hpp>
 

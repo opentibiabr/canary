@@ -140,7 +140,7 @@ namespace tests {
 		std::string password_ = "123456";
 		phmap::flat_hash_map<std::string, AccountInfo> accounts;
 		phmap::flat_hash_map<uint32_t, phmap::flat_hash_map<uint8_t, uint32_t>> coins_;
-		phmap::flat_hash_map<uint32_t, std::vector<std::tuple<CoinTransactionType, uint32_t, uint8_t, std::string>>> coinsTransactions_;
+		phmap::flat_hash_map<uint32_t, std::vector<std::tuple<uint8_t, uint32_t, uint8_t, std::string>>> coinsTransactions_;
 	};
 }
 

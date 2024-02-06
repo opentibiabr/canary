@@ -67,7 +67,6 @@ function randomItems.onUse(player, item, fromPosition, target, toPosition, isHot
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You received a " .. rewardItem.name .. ".")
 
 	local text = player:getName() .. " received a " .. rewardItem.name .. " from a " .. item:getName() .. "."
-	local vocation = player:vocationAbbrev()
 	Webhook.sendMessage(":game_die: " .. player:getMarkdownLink() .. " received a **" .. rewardItem.name .. "** from a _" .. item:getName() .. "_.")
 	Broadcast(text, function(targetPlayer)
 		return targetPlayer ~= player

@@ -255,6 +255,8 @@ buyBlessCommandFee = 0
 teleportPlayerToVocationRoom = true
 toggleReceiveReward = false
 randomMonsterSpawn = false
+lootPouchMaxLimit = 2000
+storeInboxMaxLimit = 2000
 
 -- Teleport summon
 -- Set to true will never remove the summon

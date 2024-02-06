@@ -17,6 +17,9 @@ on:
 env:
   CMAKE_BUILD_PARALLEL_LEVEL: 2
   MAKEFLAGS: "-j 2"
+  GITHUB_WORKSPACE: ${{ github.workspace }}
+  VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+  VCPKG_TRIPLET: x64-windows
 
 jobs:
   cancel-runs:
@@ -55,8 +58,16 @@ jobs:
           ./bootstrap-vcpkg.bat
           ./vcpkg integrate install
 
+      - name: Print useful paths
+        run: |
+          Write-Host "Workspace: $env:GITHUB_WORKSPACE"
+          Write-Host "Vcpkg Path: $env:GITHUB_WORKSPACE\vcpkg"
+          Write-Host "Triplet: ${{ matrix.triplet }}"
+
       - name: Build project
-        run: msbuild.exe /p:VcpkgEnableManifest=true /p:Configuration=Debug /p:Platform=x64 /p:VcpkgRoot=$env:GITHUB_WORKSPACE/vcpkg vcproj/canary.sln
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+        run: msbuild.exe /p:VcpkgEnableManifest=true /p:Configuration=Debug /p:Platform=x64 /p:GITHUB_WORKSPACE="$env:GITHUB_WORKSPACE" vcproj/canary.sln
 
       - name: Upload artifacts
         uses: actions/upload-artifact@main

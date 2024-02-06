@@ -10,7 +10,6 @@
 
 #include "account/account_repository_db.hpp"
 #include "lib/di/injector.hpp"
-#include "lib/logging/logger.hpp"
 #include "lib/logging/log_with_spd_log.hpp"
 #include "kv/kv_sql.hpp"
 

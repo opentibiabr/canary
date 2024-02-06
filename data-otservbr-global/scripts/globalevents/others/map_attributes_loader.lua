@@ -1,12 +1,3 @@
-local function loadMapAttributes()
-	logger.debug("Loading map attributes")
-	loadLuaMapSign(SignTable)
-	loadLuaMapBookDocument(BookDocumentTable)
-
-	loadMapActionsAndUniques()
-	logger.debug("Loaded all actions and uniques in the map")
-end
-
 local function loadMapActionsAndUniques()
 	loadLuaMapAction(ChestAction)
 	loadLuaMapUnique(ChestUnique)
@@ -30,6 +21,15 @@ local function loadMapActionsAndUniques()
 	loadLuaMapAction(TilePickAction)
 	CreateMapItem(CreateItemOnMap)
 	updateKeysStorage(QuestKeysUpdate)
+end
+
+local function loadMapAttributes()
+	logger.debug("Loading map attributes")
+	loadLuaMapSign(SignTable)
+	loadLuaMapBookDocument(BookDocumentTable)
+
+	loadMapActionsAndUniques()
+	logger.debug("Loaded all actions and uniques in the map")
 end
 
 local function resetGlobalStorages()

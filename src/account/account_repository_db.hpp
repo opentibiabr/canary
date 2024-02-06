@@ -13,7 +13,7 @@
 
 class AccountRepositoryDB final : public AccountRepository {
 public:
-	AccountRepositoryDB() = default;
+	AccountRepositoryDB();
 
 	bool loadByID(const uint32_t &id, AccountInfo &acc) override;
 	bool loadByEmailOrName(bool oldProtocol, const std::string &emailOrName, AccountInfo &acc) override;

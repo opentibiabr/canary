@@ -66,7 +66,8 @@ uint8_t IOLoginData::getAccountType(uint32_t accountId) {
 	if (!result) {
 		return ACCOUNT_TYPE_NORMAL;
 	}
-	return static_cast<AccountType>(result->getNumber<uint16_t>("type"));
+
+	return result->getNumber<uint8_t>("type");
 }
 
 void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {

@@ -56,12 +56,12 @@ suite<"account"> accountTest = [] {
 		test(accountLoadTestCase.description) = [&injectionFixture, &accountLoadTestCase] {
 			auto [accountRepository] = injectionFixture.get<AccountRepository>();
 			accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-			expect(eq(accountLoadTestCase.account.load(), accountLoadTestCase.expectedError)) << accountLoadTestCase.description;
+			expect(eq(accountLoadTestCase.account.load(), enumToValue(accountLoadTestCase.expectedError))) << accountLoadTestCase.description;
 		};
 	}
 
 	test("Account::reload returns error if not yet loaded") = [] {
-		expect(eq(Account { 1 }.reload(), AccountErrors_t::NotInitialized));
+		expect(eq(Account { 1 }.reload(), enumToValue(AccountErrors_t::NotInitialized)));
 	};
 
 	test("Account::reload reloads account info") = [&injectionFixture] {
@@ -71,20 +71,20 @@ suite<"account"> accountTest = [] {
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
 			eq(acc.getAccountType(), AccountType::ACCOUNT_TYPE_GOD)
 		);
 
 		accountRepository.addAccount("canary2@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GAMEMASTER });
 
 		expect(
-			eq(acc.reload(), AccountErrors_t::Ok) and
+			eq(acc.reload(), enumToValue(AccountErrors_t::Ok)) and
 			eq(acc.getAccountType(), AccountType::ACCOUNT_TYPE_GAMEMASTER)
 		);
 	};
 
 	test("Account::save returns error if not yet loaded") = [] {
-		expect(eq(Account { 1 }.save(), AccountErrors_t::NotInitialized));
+		expect(eq(Account { 1 }.save(), enumToValue(AccountErrors_t::NotInitialized)));
 	};
 
 	test("Account::save returns error if it fails") = [&injectionFixture] {
@@ -94,7 +94,7 @@ suite<"account"> accountTest = [] {
 		accountRepository.failSave = true;
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 
-		expect(eq(acc.load(), AccountErrors_t::Ok and eq(acc.save(), AccountErrors_t::Storage)));
+		expect(eq(acc.load(), enumToValue(AccountErrors_t::Ok) and eq(acc.save(), enumToValue(AccountErrors_t::Storage))));
 	};
 
 	test("Account::save saves account info") = [&injectionFixture] {
@@ -104,11 +104,11 @@ suite<"account"> accountTest = [] {
 		accountRepository.failSave = false;
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 
-		expect(eq(acc.load(), AccountErrors_t::Ok and eq(acc.save(), AccountErrors_t::Ok)));
+		expect(eq(acc.load(), enumToValue(AccountErrors_t::Ok) and eq(acc.save(), enumToValue(AccountErrors_t::Ok))));
 	};
 
 	test("Account::getCoins returns error if not yet loaded") = [&injectionFixture] {
-		expect(eq(std::get<1>(Account { 1 }.getCoins(enumToValue(CoinType::Normal))), AccountErrors_t::NotInitialized));
+		expect(eq(std::get<1>(Account { 1 }.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::NotInitialized)));
 	};
 
 	test("Account::getCoins returns error if it fails") = [&injectionFixture] {
@@ -118,8 +118,8 @@ suite<"account"> accountTest = [] {
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), AccountErrors_t::Storage)
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
+			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Storage))
 		);
 	};
 
@@ -131,9 +131,9 @@ suite<"account"> accountTest = [] {
 		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 100) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), AccountErrors_t::Ok)
+			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok))
 		);
 	};
 
@@ -148,9 +148,9 @@ suite<"account"> accountTest = [] {
 		accountRepository.setCoins(2, enumToValue(CoinType::Normal), 33);
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 33) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), AccountErrors_t::Ok)
+			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok))
 		);
 	};
 
@@ -163,16 +163,16 @@ suite<"account"> accountTest = [] {
 		accountRepository.setCoins(1, enumToValue(CoinType::Tournament), 100);
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 100) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), AccountErrors_t::Ok) and
+			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Tournament))), 100) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Tournament))), AccountErrors_t::Ok)
+			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Tournament))), enumToValue(AccountErrors_t::Ok))
 		);
 	};
 
 	test("Account::addCoins returns error if not yet loaded") = [] {
-		expect(eq(Account { 1 }.addCoins(enumToValue(CoinType::Normal), 100), AccountErrors_t::NotInitialized));
+		expect(eq(Account { 1 }.addCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::NotInitialized)));
 	};
 
 	test("Account::addCoins returns error if it fails") = [&injectionFixture] {
@@ -184,8 +184,8 @@ suite<"account"> accountTest = [] {
 		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
-			eq(acc.addCoins(enumToValue(CoinType::Normal), 100), AccountErrors_t::Storage)
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
+			eq(acc.addCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Storage))
 		);
 	};
 
@@ -197,8 +197,8 @@ suite<"account"> accountTest = [] {
 		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
-			eq(acc.addCoins(enumToValue(CoinType::Tournament), 100), AccountErrors_t::Storage)
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
+			eq(acc.addCoins(enumToValue(CoinType::Tournament), 100), enumToValue(AccountErrors_t::Storage))
 		);
 	};
 
@@ -211,10 +211,10 @@ suite<"account"> accountTest = [] {
 		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
-			eq(acc.addCoins(enumToValue(CoinType::Normal), 100), AccountErrors_t::Ok)
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
+			eq(acc.addCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Ok))
 			and eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 200) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), AccountErrors_t::Ok)
+			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok))
 		);
 	};
 
@@ -230,10 +230,10 @@ suite<"account"> accountTest = [] {
 		accountRepository.setCoins(2, enumToValue(CoinType::Normal), 33);
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
-			eq(acc.addCoins(enumToValue(CoinType::Normal), 100), AccountErrors_t::Ok) and
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
+			eq(acc.addCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 133) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), AccountErrors_t::Ok)
+			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok))
 		);
 	};
 
@@ -247,12 +247,12 @@ suite<"account"> accountTest = [] {
         accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
-			eq(acc.addCoins(enumToValue(CoinType::Normal), 100), AccountErrors_t::Ok) and
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
+			eq(acc.addCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 200) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), AccountErrors_t::Ok) and
+			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Tournament))), 57) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Tournament))), AccountErrors_t::Ok)
+			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Tournament))), enumToValue(AccountErrors_t::Ok))
 		);
 
 		expect(eq(accountRepository.coinsTransactions_.size(), 1) >> fatal);
@@ -268,7 +268,7 @@ suite<"account"> accountTest = [] {
 	};
 
 	test("Account::removeCoins returns error if not yet loaded") = [] {
-		expect(eq(Account { 1 }.removeCoins(enumToValue(CoinType::Normal), 100), AccountErrors_t::NotInitialized));
+		expect(eq(Account { 1 }.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::NotInitialized)));
 	};
 
 	test("Account::removeCoins returns error if it fails") = [&injectionFixture] {
@@ -280,8 +280,8 @@ suite<"account"> accountTest = [] {
 		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
-			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), AccountErrors_t::Storage)
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
+			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Storage))
 		);
 	};
 
@@ -293,8 +293,8 @@ suite<"account"> accountTest = [] {
 		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
-			eq(acc.removeCoins(enumToValue(CoinType::Tournament), 100), AccountErrors_t::Storage)
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
+			eq(acc.removeCoins(enumToValue(CoinType::Tournament), 100), enumToValue(AccountErrors_t::Storage))
 		);
 	};
 
@@ -307,10 +307,10 @@ suite<"account"> accountTest = [] {
 		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
-			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), AccountErrors_t::Ok) and
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
+			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 0) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), AccountErrors_t::Ok)
+			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok))
 		);
 	};
 
@@ -326,10 +326,10 @@ suite<"account"> accountTest = [] {
 		accountRepository.setCoins(2, enumToValue(CoinType::Normal), 33);
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
-			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), AccountErrors_t::Ok) and
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
+			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 0) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), AccountErrors_t::Ok)
+			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok))
 		);
 	};
 
@@ -343,12 +343,12 @@ suite<"account"> accountTest = [] {
 		accountRepository.setCoins(1, enumToValue(CoinType::Tournament), 57);
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
-			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), AccountErrors_t::Ok) and
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
+			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 0) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), AccountErrors_t::Ok) and
+			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Tournament))), 57) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Tournament))), AccountErrors_t::Ok)
+			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Tournament))), enumToValue(AccountErrors_t::Ok))
 		);
 
 		expect(eq(accountRepository.coinsTransactions_.size(), 1) >> fatal);
@@ -371,19 +371,19 @@ suite<"account"> accountTest = [] {
 		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 1);
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), AccountErrors_t::RemoveCoins)
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::RemoveCoins))
 		);
 
 		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 50);
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
-			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), AccountErrors_t::RemoveCoins)
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
+			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::RemoveCoins))
 		);
 
 		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
-			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), AccountErrors_t::Ok)
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
+			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Ok))
 		);
 
 		expect(eq(accountRepository.coinsTransactions_.size(), 1) >> fatal);
@@ -398,7 +398,7 @@ suite<"account"> accountTest = [] {
 		);
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), AccountErrors_t::RemoveCoins)
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::RemoveCoins))
 		);
 
 		expect(eq(accountRepository.coinsTransactions_.size(), 1) >> fatal);
@@ -410,14 +410,14 @@ suite<"account"> accountTest = [] {
 
 		Account acc { 1 };
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		expect(eq(acc.load(), AccountErrors_t::Ok));
+		expect(eq(acc.load(), enumToValue(AccountErrors_t::Ok)));
 		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 1);
 
-		expect(eq(acc.addCoins(enumToValue(CoinType::Normal), 100, ""), AccountErrors_t::Ok));
-		expect(eq(acc.removeCoins(enumToValue(CoinType::Normal), 80, ""), AccountErrors_t::Ok));
+		expect(eq(acc.addCoins(enumToValue(CoinType::Normal), 100, ""), enumToValue(AccountErrors_t::Ok)));
+		expect(eq(acc.removeCoins(enumToValue(CoinType::Normal), 80, ""), enumToValue(AccountErrors_t::Ok)));
 
 		expect(eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 21));
-		expect(eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), AccountErrors_t::Ok));
+		expect(eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok)));
 
 		acc.registerCoinTransaction(enumToValue(CoinTransactionType::Add), enumToValue(CoinType::Normal), 100, "");
 		acc.registerCoinTransaction(enumToValue(CoinTransactionType::Remove), enumToValue(CoinType::Normal), 100, "");
@@ -436,7 +436,7 @@ suite<"account"> accountTest = [] {
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
 			eq(acc.getPassword(), std::string { "123456" })
 		);
 	};
@@ -449,7 +449,7 @@ suite<"account"> accountTest = [] {
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 
 		expect(
-			eq(acc.load(), AccountErrors_t::Ok) and
+			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::string{}, acc.getPassword()) and
 			eq(std::string{"error"}, logger.logs[0].level) and
 			eq(std::string{"Failed to get password for account[1]!"}, logger.logs[0].message)
@@ -501,7 +501,7 @@ suite<"account"> accountTest = [] {
 	test("Account::setAccountType sets account type") = [] {
 		Account acc { 1 };
 		expect(
-			eq(acc.setAccountType(AccountType::ACCOUNT_TYPE_GAMEMASTER), AccountErrors_t::Ok) and
+			eq(acc.setAccountType(AccountType::ACCOUNT_TYPE_GAMEMASTER), enumToValue(AccountErrors_t::Ok)) and
 			eq(acc.getAccountType(), AccountType::ACCOUNT_TYPE_GAMEMASTER)
 		);
 	};
@@ -543,7 +543,7 @@ suite<"account"> accountTest = [] {
 	};
 
 	test("Account::getAccountPlayer returns error if not yet loaded") = [] {
-		expect(eq(std::get<1>(Account { 1 }.getAccountPlayers()), AccountErrors_t::NotInitialized));
+		expect(eq(std::get<1>(Account { 1 }.getAccountPlayers()), enumToValue(AccountErrors_t::NotInitialized)));
 	};
 
 	test("Account::getAccountPlayer returns players") = [&injectionFixture] {
@@ -559,7 +559,7 @@ suite<"account"> accountTest = [] {
 		auto [players, error] = acc.getAccountPlayers();
 
 		expect(
-			eq(error, AccountErrors_t::Ok) and
+			eq(error, enumToValue(AccountErrors_t::Ok)) and
 			eq(players.size(), 2) and
 			eq(players["Canary"], 1) and
 			eq(players["Canary2"], 2)

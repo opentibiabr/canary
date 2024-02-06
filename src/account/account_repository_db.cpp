@@ -16,7 +16,13 @@
 #include "utils/definitions.hpp"
 #include "utils/tools.hpp"
 #include "enums/account_type.hpp"
+#include "enums/account_coins.hpp"
 #include "account/account_info.hpp"
+
+AccountRepositoryDB::AccountRepositoryDB() :
+	coinTypeToColumn({ { enumToValue(CoinType::Normal), "coins" },
+					   { enumToValue(CoinType::Tournament), "tournament_coins" },
+					   { enumToValue(CoinType::Transferable), "coins_transferable" } }) { }
 
 bool AccountRepositoryDB::loadByID(const uint32_t &id, AccountInfo &acc) {
 	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `id` = {}", id);
@@ -72,6 +78,11 @@ bool AccountRepositoryDB::getPassword(const uint32_t &id, std::string &password)
 };
 
 bool AccountRepositoryDB::getCoins(const uint32_t &id, const uint8_t &type, uint32_t &coins) {
+	if (coinTypeToColumn.find(type) == coinTypeToColumn.end()) {
+		g_logger().error("[{}]: invalid coin type:[{}]", __FUNCTION__, type);
+		return false;
+	}
+
 	auto result = g_database().storeQuery(fmt::format(
 		"SELECT `{}` FROM `accounts` WHERE `id` = {}",
 		coinTypeToColumn.at(type),
@@ -88,6 +99,11 @@ bool AccountRepositoryDB::getCoins(const uint32_t &id, const uint8_t &type, uint
 };
 
 bool AccountRepositoryDB::setCoins(const uint32_t &id, const uint8_t &type, const uint32_t &amount) {
+	if (coinTypeToColumn.find(type) == coinTypeToColumn.end()) {
+		g_logger().error("[{}]: invalid coin type:[{}]", __FUNCTION__, type);
+		return false;
+	}
+
 	bool successful = g_database().executeQuery(fmt::format(
 		"UPDATE `accounts` SET `{}` = {} WHERE `id` = {}",
 		coinTypeToColumn.at(type),
@@ -113,8 +129,8 @@ bool AccountRepositoryDB::registerCoinsTransaction(
 		fmt::format(
 			"INSERT INTO `coins_transactions` (`account_id`, `type`, `coin_type`, `amount`, `description`) VALUES ({}, {}, {}, {}, {})",
 			id,
-			static_cast<uint16_t>(type),
-			static_cast<uint8_t>(coinType),
+			type,
+			coinType,
 			coins,
 			g_database().escapeString(description)
 		)
@@ -124,8 +140,8 @@ bool AccountRepositoryDB::registerCoinsTransaction(
 		g_logger().error(
 			"Error registering coin transaction! account_id:[{}], type:[{}], coin_type:[{}], coins:[{}], description:[{}]",
 			id,
-			static_cast<uint16_t>(type),
-			static_cast<uint8_t>(coinType),
+			type,
+			coinType,
 			coins,
 			g_database().escapeString(description)
 		);
@@ -163,7 +179,7 @@ bool AccountRepositoryDB::load(const std::string &query, AccountInfo &acc) {
 	}
 
 	acc.id = result->getNumber<uint32_t>("id");
-	acc.accountType = static_cast<AccountType>(result->getNumber<int32_t>("type"));
+	acc.accountType = result->getNumber<uint16_t>("type");
 	acc.premiumLastDay = result->getNumber<time_t>("lastday");
 	acc.sessionExpires = result->getNumber<time_t>("expires");
 	acc.premiumDaysPurchased = result->getNumber<uint32_t>("premdays_purchased");

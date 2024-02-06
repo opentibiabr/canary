@@ -28,6 +28,11 @@ void ServiceManager::die() {
 }
 
 void ServiceManager::run() {
+	if (running) {
+		g_logger().error("ServiceManager is already running!", __FUNCTION__);
+		return;
+	}
+
 	assert(!running);
 	running = true;
 	io_service.run();

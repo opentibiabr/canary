@@ -4109,16 +4109,11 @@ void Player::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<C
 	}
 
 	bool requireListUpdate = true;
-
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
 		std::shared_ptr<Item> i = (oldParent ? oldParent->getItem() : nullptr);
-
-		// Check if we owned the old container too, so we don't need to do anything,
-		// as the list was updated in postRemoveNotification
-		assert(i ? i->getContainer() != nullptr : true);
-
-		if (i) {
-			requireListUpdate = i->getContainer()->getHoldingPlayer() != getPlayer();
+		const auto &container = i ? i->getContainer() : nullptr;
+		if (container) {
+			requireListUpdate = container->getHoldingPlayer() != getPlayer();
 		} else {
 			requireListUpdate = oldParent != getPlayer();
 		}
@@ -4170,15 +4165,9 @@ void Player::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_pt
 
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
 		std::shared_ptr<Item> i = (newParent ? newParent->getItem() : nullptr);
-
-		// Check if we owned the old container too, so we don't need to do anything,
-		// as the list was updated in postRemoveNotification
-		assert(i ? i->getContainer() != nullptr : true);
-
-		if (i) {
-			if (auto container = i->getContainer()) {
-				requireListUpdate = container->getHoldingPlayer() != getPlayer();
-			}
+		const auto &container = i ? i->getContainer() : nullptr;
+		if (container) {
+			requireListUpdate = container->getHoldingPlayer() != getPlayer();
 		} else {
 			requireListUpdate = newParent != getPlayer();
 		}
@@ -7023,6 +7012,11 @@ bool Player::saySpell(
 
 // Forge system
 void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint8_t tier, uint16_t secondItemId, bool success, bool reduceTierLoss, bool convergence, uint8_t bonus, uint8_t coreCount) {
+	if (getFreeBackpackSlots() == 0) {
+		sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+		return;
+	}
+
 	ForgeHistory history;
 	history.actionType = actionType;
 	history.tier = tier;
@@ -7261,6 +7255,11 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 }
 
 void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId, bool convergence) {
+	if (getFreeBackpackSlots() == 0) {
+		sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+		return;
+	}
+
 	ForgeHistory history;
 	history.actionType = actionType;
 	history.tier = tier;

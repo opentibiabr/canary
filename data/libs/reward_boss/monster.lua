@@ -24,7 +24,7 @@ end
 local equipmentBags = {
 	BAG_YOU_DESIRE,
 	PRIMAL_BAG,
-	BAG_YOU_COVET
+	BAG_YOU_COVET,
 }
 
 local function isEquipment(itemType)

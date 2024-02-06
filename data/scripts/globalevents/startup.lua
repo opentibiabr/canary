@@ -66,6 +66,23 @@ local function storeTownsInDatabase()
 	end
 end
 
+-- Function to check for duplicate keys in a given variable's storage
+local function checkDuplicateStorageKeys(varName)
+	local keys = _G[varName]
+	local seen = {}
+	local duplicates = {}
+
+	for k, v in pairs(keys) do
+		if seen[v] then
+			table.insert(duplicates, v)
+		else
+			seen[v] = true
+		end
+	end
+
+	return next(duplicates) and duplicates or false
+end
+
 -- Function to check duplicated variable keys and log the results
 local function checkAndLogDuplicateKeys(variableNames)
 	for _, variableName in ipairs(variableNames) do
@@ -129,7 +146,7 @@ function startup.onStartup()
 	moveExpiredBansToHistory()
 	processHouseAuctions()
 	storeTownsInDatabase()
-	checkAndLogDuplicateKeys({"Global", "GlobalStorage", "Storage"})
+	checkAndLogDuplicateKeys({ "Global", "GlobalStorage", "Storage" })
 	updateEventRates()
 	HirelingsInit()
 	resetAccountSessions()

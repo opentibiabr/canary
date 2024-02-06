@@ -285,7 +285,12 @@ void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses typ
 }
 
 void Monster::addFriend(const std::shared_ptr<Creature> &creature) {
-	assert(creature.get() != this);
+	if (creature == getMonster()) {
+		g_logger().error("[{}]: adding creature is same of monster", __FUNCTION__);
+		return;
+	}
+
+	assert(creature != getMonster());
 	friendList.try_emplace(creature->getID(), creature);
 }
 
@@ -297,7 +302,12 @@ void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
 }
 
 bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
-	assert(creature.get() != this);
+	if (creature == getMonster()) {
+		g_logger().error("[{}]: adding creature is same of monster", __FUNCTION__);
+		return false;
+	}
+
+	assert(creature != getMonster());
 
 	const auto &it = getTargetIterator(creature);
 	if (it != targetList.end()) {

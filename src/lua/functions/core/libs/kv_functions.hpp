@@ -18,7 +18,7 @@ class ValueWrapper;
 	#include <optional>
 	#include <vector>
 	#include <memory>
-	#include <phmap.h>
+	#include <parallel_hashmap/phmap.h>
 #endif
 
 using MapType = phmap::flat_hash_map<std::string, std::shared_ptr<ValueWrapper>>;

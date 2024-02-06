@@ -28,7 +28,7 @@ if (NOT SPEED_UP_BUILD_UNITY)
 endif()
 
 if(NOT SPEED_UP_BUILD_UNITY AND USE_PRECOMPILED_HEADERS)
-    target_compile_definitions(${PROJECT_NAME}_lib PUBLIC -DUSE_PRECOMPILED_HEADER)
+    target_compile_definitions(${PROJECT_NAME}_lib PUBLIC -DUSE_PRECOMPILED_HEADERS)
 endif()
 
 # *****************************************************************************
@@ -37,6 +37,14 @@ endif()
 if (CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(${PROJECT_NAME}_lib PRIVATE -Wno-deprecated-declarations)
 endif()
+
+# Sets the NDEBUG macro for RelWithDebInfo and Release configurations.
+# This disables assertions in these configurations, optimizing the code for performance
+# and reducing debugging overhead, while keeping debug information available for diagnostics.
+target_compile_definitions(${PROJECT_NAME}_lib PUBLIC
+    $<$<CONFIG:RelWithDebInfo>:NDEBUG>
+    $<$<CONFIG:Release>:NDEBUG>
+)
 
 # === IPO ===
 if(MSVC)

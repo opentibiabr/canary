@@ -57,6 +57,11 @@ bool Tile::hasProperty(ItemProperty prop) const {
 }
 
 bool Tile::hasProperty(std::shared_ptr<Item> exclude, ItemProperty prop) const {
+	if (!exclude) {
+		g_logger().error("[{}]: exclude is nullptr", __FUNCTION__);
+		return false;
+	}
+
 	assert(exclude);
 
 	if (ground && exclude != ground && ground->hasProperty(prop)) {

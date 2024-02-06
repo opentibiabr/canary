@@ -1,3 +1,20 @@
+-- Function to check for duplicate keys in a given variable's storage
+local function checkDuplicateStorageKeys(varName)
+	local keys = _G[varName]
+	local seen = {}
+	local duplicates = {}
+
+	for k, v in pairs(keys) do
+			if seen[v] then
+					table.insert(duplicates, v)
+			else
+					seen[v] = true
+			end
+	end
+
+	return next(duplicates) and duplicates or false
+end
+
 -- Function to check duplicated variable keys and log the results
 local function checkAndLogDuplicateKeys(variableNames)
 	for _, variableName in ipairs(variableNames) do
@@ -14,9 +31,7 @@ end
 local startup = GlobalEvent("Startup")
 
 function startup.onStartup()
-	-- Call the checkAndLogDuplicateKeys function with the list of variable names
-	local variableNames = {"Global", "GlobalStorage", "Storage"}
-	checkAndLogDuplicateKeys(variableNames)
+	checkAndLogDuplicateKeys({"Global", "GlobalStorage", "Storage"})
 end
 
 startup:register()

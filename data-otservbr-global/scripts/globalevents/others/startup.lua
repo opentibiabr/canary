@@ -57,15 +57,15 @@ end
 
 local function resetGlobalStorages()
 	for i = 1, #startupGlobalStorages do
-			Game.setStorageValue(startupGlobalStorages[i], 0)
+		Game.setStorageValue(startupGlobalStorages[i], 0)
 	end
 end
 
 local function resetFerumbrasAscendantQuestHabitats()
 	-- Ferumbras Ascendant quest
 	for i = 1, #GlobalStorage.FerumbrasAscendant.Habitats do
-			local storage = GlobalStorage.FerumbrasAscendant.Habitats[i]
-			Game.setStorageValue(storage, 0)
+		local storage = GlobalStorage.FerumbrasAscendant.Habitats[i]
+		Game.setStorageValue(storage, 0)
 	end
 end
 

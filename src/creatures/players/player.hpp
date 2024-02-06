@@ -611,7 +611,7 @@ public:
 	}
 
 	bool isVip() const {
-		return g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && getPremiumDays() > 0;
+		return g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && (getPremiumDays() > 0 || getPremiumLastDay() > getTimeNow());
 	}
 
 	void setTibiaCoins(int32_t v);

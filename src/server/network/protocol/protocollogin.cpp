@@ -88,10 +88,9 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		output->addString(name, "ProtocolLogin::getCharacterList - name");
 	}
 
-	// Add premium days
-	output->addByte(0);
-
-	output->addByte(account.getPremiumRemainingDays() > 0);
+	// Get premium days, check is premium and get lastday
+	output->addByte(account.getPremiumRemainingDays());
+	output->addByte(account.getPremiumLastDay() > getTimeNow());
 	output->add<uint32_t>(account.getPremiumLastDay());
 
 	send(output);

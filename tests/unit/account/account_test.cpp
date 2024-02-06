@@ -13,6 +13,10 @@
 #include "account/account.hpp"
 #include "utils/tools.hpp"
 #include "injection_fixture.hpp"
+#include "enums/account_coins.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_errors.hpp"
+#include "enums/account_group_type.hpp"
 
 suite<"account"> accountTest = [] {
 	InjectionFixture injectionFixture {};

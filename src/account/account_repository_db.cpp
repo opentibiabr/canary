@@ -15,7 +15,7 @@
 #include "lib/logging/logger.hpp"
 #include "utils/definitions.hpp"
 #include "utils/tools.hpp"
-
+#include "enums/account_type.hpp"
 #include "account/account_info.hpp"
 
 bool AccountRepositoryDB::loadByID(const uint32_t &id, AccountInfo &acc) {

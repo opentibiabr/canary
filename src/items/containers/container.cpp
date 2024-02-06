@@ -18,9 +18,15 @@
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
 	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM, __FUNCTION__));
-	if (getID() == ITEM_GOLD_POUCH || isStoreInbox()) {
+	if (getID() == ITEM_GOLD_POUCH) {
 		pagination = true;
-		m_maxItems = 2000;
+		m_maxItems = g_configManager().getNumber(LOOTPOUCH_MAXLIMIT, __FUNCTION__);
+		maxSize = 32;
+	}
+
+	if (isStoreInbox()) {
+		pagination = true;
+		m_maxItems = g_configManager().getNumber(STOREINBOX_MAXLIMIT, __FUNCTION__);
 		maxSize = 32;
 	}
 }

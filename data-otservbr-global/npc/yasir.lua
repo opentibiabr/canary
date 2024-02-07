@@ -679,7 +679,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-local function onTradeRequest(npc, creature, message)
+local function onTradeRequest(npc, creature)
 	creature:addAchievement("Si, Ariki!")
 	return true
 end

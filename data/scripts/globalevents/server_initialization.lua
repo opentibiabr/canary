@@ -17,13 +17,13 @@ end
 local function moveExpiredBansToHistory()
 	local resultId = db.storeQuery("SELECT * FROM `account_bans` WHERE `expires_at` != 0 AND `expires_at` <= " .. os.time())
 	if resultId then
-		repeat
-			local accountId = Result.getNumber(resultId, "account_id")
-			db.asyncQuery("INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, `expired_at`, `banned_by`) VALUES (" .. accountId .. ", " .. db.escapeString(Result.getString(resultId, "reason")) .. ", " .. Result.getNumber(resultId, "banned_at") .. ", " .. Result.getNumber(resultId, "expires_at") .. ", " .. Result.getNumber(resultId, "banned_by") .. ")")
-			db.asyncQuery("DELETE FROM `account_bans` WHERE `account_id` = " .. accountId)
-		until not Result.next(resultId)
+			repeat
+					local accountId = Result.getNumber(resultId, "account_id")
+					db.asyncQuery("INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, `expired_at`, `banned_by`) VALUES (" .. accountId .. ", " .. db.escapeString(Result.getString(resultId, "reason")) .. ", " .. Result.getNumber(resultId, "banned_at") .. ", " .. Result.getNumber(resultId, "expires_at") .. ", " .. Result.getNumber(resultId, "banned_by") .. ")")
+					db.asyncQuery("DELETE FROM `account_bans` WHERE `account_id` = " .. accountId)
+			until not Result.next(resultId)
 
-		Result.free(resultId)
+			Result.free(resultId)
 	end
 end
 
@@ -31,22 +31,22 @@ end
 local function processHouseAuctions()
 	local resultId = db.storeQuery("SELECT `id`, `highest_bidder`, `last_bid`, " .. "(SELECT `balance` FROM `players` WHERE `players`.`id` = `highest_bidder`) AS `balance` " .. "FROM `houses` WHERE `owner` = 0 AND `bid_end` != 0 AND `bid_end` < " .. os.time())
 	if resultId then
-		repeat
-			local house = House(Result.getNumber(resultId, "id"))
-			if house then
-				local highestBidder = Result.getNumber(resultId, "highest_bidder")
-				local balance = Result.getNumber(resultId, "balance")
-				local lastBid = Result.getNumber(resultId, "last_bid")
-				if balance >= lastBid then
-					db.query("UPDATE `players` SET `balance` = " .. (balance - lastBid) .. " WHERE `id` = " .. highestBidder)
-					house:setOwnerGuid(highestBidder)
-				end
+			repeat
+					local house = House(Result.getNumber(resultId, "id"))
+					if house then
+							local highestBidder = Result.getNumber(resultId, "highest_bidder")
+							local balance = Result.getNumber(resultId, "balance")
+							local lastBid = Result.getNumber(resultId, "last_bid")
+							if balance >= lastBid then
+									db.query("UPDATE `players` SET `balance` = " .. (balance - lastBid) .. " WHERE `id` = " .. highestBidder)
+									house:setOwnerGuid(highestBidder)
+							end
 
-				db.asyncQuery("UPDATE `houses` SET `last_bid` = 0, `bid_end` = 0, `highest_bidder` = 0, `bid` = 0 " .. "WHERE `id` = " .. house:getId())
-			end
-		until not Result.next(resultId)
+							db.asyncQuery("UPDATE `houses` SET `last_bid` = 0, `bid_end` = 0, `highest_bidder` = 0, `bid` = 0 " .. "WHERE `id` = " .. house:getId())
+					end
+			until not Result.next(resultId)
 
-		Result.free(resultId)
+			Result.free(resultId)
 	end
 end
 
@@ -55,38 +55,50 @@ local function storeTownsInDatabase()
 	db.query("TRUNCATE TABLE `towns`")
 
 	for i, town in ipairs(Game.getTowns()) do
-		local position = town:getTemplePosition()
-		db.query("INSERT INTO `towns` (`id`, `name`, `posx`, `posy`, `posz`) VALUES (" .. town:getId() .. ", " .. db.escapeString(town:getName()) .. ", " .. position.x .. ", " .. position.y .. ", " .. position.z .. ")")
+			local position = town:getTemplePosition()
+			db.query("INSERT INTO `towns` (`id`, `name`, `posx`, `posy`, `posz`) VALUES (" .. town:getId() .. ", " .. db.escapeString(town:getName()) .. ", " .. position.x .. ", " .. position.y .. ", " .. position.z .. ")")
 	end
 end
 
--- Function to check for duplicate keys in a given variable's storage
-local function checkDuplicateStorageKeys(varName)
+-- Function to recursively check for duplicate values in a given variable's storage
+local function checkDuplicateStorageValues(varTable, seen, duplicates)
+	for _, value in pairs(varTable) do
+			if type(value) == "table" then
+					checkDuplicateStorageValues(value, seen, duplicates)
+			elseif seen[value] then
+					table.insert(duplicates, value)
+			else
+					seen[value] = true
+			end
+	end
+end
+
+-- Function to check for duplicate values in a given variable's storage
+local function checkDuplicateStorageValuesWrapper(varName)
 	local seen = {}
 	local duplicates = {}
 
-	for k, v in pairs(_G[varName]) do
-		if seen[v] then
-			table.insert(duplicates, v)
-		else
-			seen[v] = true
-		end
+	local varTable = _G[varName]
+	if type(varTable) == "table" then
+			checkDuplicateStorageValues(varTable, seen, duplicates)
+	else
+			logger.warn("Warning: '" .. varName .. "' is not a table.")
 	end
 
 	return next(duplicates) and duplicates or false
 end
 
--- Function to check duplicated variable keys and log the results
-local function checkAndLogDuplicateKeys(variableNames)
+-- Function to check duplicated variable values and log the results
+local function checkAndLogDuplicateValues(variableNames)
 	for _, variableName in ipairs(variableNames) do
-		local duplicates = checkDuplicateStorageKeys(variableName)
-		if duplicates then
-			local message = "Duplicate keys found: " .. table.concat(duplicates, ", ")
-			logger.warn("Checking " .. variableName .. ": " .. message)
-		else
-			local message = "No duplicate keys found."
-			logger.info("Checking " .. variableName .. ": " .. message)
-		end
+			local duplicates = checkDuplicateStorageValuesWrapper(variableName)
+			if duplicates then
+					local message = "Duplicate values found: " .. table.concat(duplicates, ", ")
+					logger.warn("Checking " .. variableName .. ": " .. message)
+			else
+					local message = "No duplicate values found."
+					logger.info("Checking " .. variableName .. ": " .. message)
+			end
 	end
 end
 
@@ -94,38 +106,38 @@ end
 local function updateEventRates()
 	local lootRate = EventsScheduler.getEventSLoot()
 	if lootRate ~= 100 then
-		SCHEDULE_LOOT_RATE = lootRate
+			SCHEDULE_LOOT_RATE = lootRate
 	end
 
 	local expRate = EventsScheduler.getEventSExp()
 	if expRate ~= 100 then
-		SCHEDULE_EXP_RATE = expRate
+			SCHEDULE_EXP_RATE = expRate
 	end
 
 	local skillRate = EventsScheduler.getEventSSkill()
 	if skillRate ~= 100 then
-		SCHEDULE_SKILL_RATE = skillRate
+			SCHEDULE_SKILL_RATE = skillRate
 	end
 
 	local spawnRate = EventsScheduler.getSpawnMonsterSchedule()
 	if spawnRate ~= 100 then
-		SCHEDULE_SPAWN_RATE = spawnRate
+			SCHEDULE_SPAWN_RATE = spawnRate
 	end
 
 	-- Log information if any of the rates are not 100%
 	if expRate ~= 100 or lootRate ~= 100 or spawnRate ~= 100 or skillRate ~= 100 then
-		logger.info("[Events] Exp: {}%, loot: {}%, Spawn: {}%, Skill: {}%", expRate, lootRate, spawnRate, skillRate)
+			logger.info("[Events] Exp: {}%, loot: {}%, Spawn: {}%, Skill: {}%", expRate, lootRate, spawnRate, skillRate)
 	end
 end
 
 -- Function to reset account sessions based on configuration and authentication type
 local function resetAccountSessions()
 	if AUTH_TYPE == "session" then
-		if configManager.getBoolean(configKeys.RESET_SESSIONS_ON_STARTUP) then
-			db.query("TRUNCATE TABLE `account_sessions`")
-		else
-			db.query("DELETE FROM `account_sessions` WHERE `expires` <= " .. os.time())
-		end
+			if configManager.getBoolean(configKeys.RESET_SESSIONS_ON_STARTUP) then
+					db.query("TRUNCATE TABLE `account_sessions`")
+			else
+					db.query("DELETE FROM `account_sessions` WHERE `expires` <= " .. os.time())
+			end
 	end
 end
 
@@ -139,7 +151,7 @@ function serverInitialization.onStartup()
 	moveExpiredBansToHistory()
 	processHouseAuctions()
 	storeTownsInDatabase()
-	checkAndLogDuplicateKeys({ "Global", "GlobalStorage", "Storage" })
+	checkAndLogDuplicateValues({ "Global", "GlobalStorage", "Storage" })
 	updateEventRates()
 	HirelingsInit()
 	resetAccountSessions()

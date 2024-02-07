@@ -47,13 +47,8 @@ public:
 	bool executeSay(std::shared_ptr<Player> player, const std::string &words, const std::string &param, SpeakClasses type) const;
 	//
 
-	void setGroupType(account::GroupType newGroupType) {
-		m_groupType = newGroupType;
-	}
-
-	const account::GroupType &getGroupType() const {
-		return m_groupType;
-	}
+	void setGroupType(uint8_t newGroupType);
+	const uint8_t &getGroupType() const;
 
 private:
 	std::string getScriptTypeName() const override {
@@ -62,7 +57,7 @@ private:
 
 	std::string m_word;
 	std::string separator = "\"";
-	account::GroupType m_groupType = account::GROUP_TYPE_NONE;
+	uint8_t m_groupType = 0;
 };
 
 class TalkActions final : public Scripts {

@@ -85,19 +85,18 @@ local function checkDuplicateStorageValuesWrapper(varName)
 		logger.warn("Warning: '" .. varName .. "' is not a table.")
 	end
 
-	return next(duplicates) and duplicates or false
+	return #duplicates > 0 and duplicates or false
 end
 
 -- Function to check duplicated variable values and log the results
 local function checkAndLogDuplicateValues(variableNames)
 	for _, variableName in ipairs(variableNames) do
 		local duplicates = checkDuplicateStorageValuesWrapper(variableName)
+
 		if duplicates then
-			local message = "Duplicate values found: " .. table.concat(duplicates, ", ")
-			logger.warn("Checking " .. variableName .. ": " .. message)
+			logger.warn("Checking " .. variableName .. ": Duplicate values found: " .. table.concat(duplicates, ", "))
 		else
-			local message = "No duplicate values found."
-			logger.info("Checking " .. variableName .. ": " .. message)
+			logger.info("Checking " .. variableName .. ": No duplicate values found.")
 		end
 	end
 end

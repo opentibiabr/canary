@@ -205,3 +205,13 @@ static inline double quadraticPoly(double a, double b, double c, double x) {
 }
 
 uint8_t convertWheelGemAffinityToDomain(uint8_t affinity);
+
+template <typename EnumType, typename UnderlyingType = std::underlying_type_t<EnumType>>
+UnderlyingType enumToValue(EnumType value) {
+	return static_cast<UnderlyingType>(value);
+}
+
+template <typename EnumType, typename UnderlyingType = std::underlying_type_t<EnumType>>
+EnumType enumFromValue(UnderlyingType value) {
+	return static_cast<EnumType>(value);
+}

@@ -175,50 +175,52 @@ function Monster:setRewardBoss()
 end
 
 local equipmentBags = {
-	BagYouCovetId,
-	BagYouDesireId,
-	PrimalBagId,
+	BAG_YOU_DESIRE,
+	PRIMAL_BAG,
+	BAG_YOU_COVET,
 }
-
-local function isEquipment(itemType)
-	if table.contains(equipmentBags, itemType:getId()) then
-		return true
-	end
-	local t = itemType:getType()
-	local equipmentTypes = {
-		ITEM_TYPE_ARMOR,
-		ITEM_TYPE_AMULET,
-		ITEM_TYPE_BOOTS,
-		ITEM_TYPE_HELMET,
-		ITEM_TYPE_LEGS,
-		ITEM_TYPE_RING,
-		ITEM_TYPE_SHIELD,
-		ITEM_TYPE_AXE,
-		ITEM_TYPE_CLUB,
-		ITEM_TYPE_DISTANCE,
-		ITEM_TYPE_SWORD,
-		ITEM_TYPE_WAND,
-		ITEM_TYPE_QUIVER,
-	}
-	return table.contains(equipmentTypes, t)
-end
-
-function MonsterType.getBossReward(self, lootFactor, topScore, equipmentOnly, lootTable)
-	if configManager.getNumber(configKeys.RATE_LOOT) <= 0 then
-		return lootTable or {}
-	end
-
-	return self:generateLootRoll({
-		factor = lootFactor,
-		gut = false,
-		filter = function(itemType, unique)
-			if unique and not topScore then
-				return false
-			end
-			if equipmentOnly then
-				return not unique and isEquipment(itemType)
-			end
+do
+	local function isEquipment(itemType)
+		if table.contains(equipmentBags, itemType:getId()) then
 			return true
-		end,
-	}, lootTable)
+		end
+
+		local t = itemType:getType()
+		local equipmentTypes = {
+			ITEM_TYPE_ARMOR,
+			ITEM_TYPE_AMULET,
+			ITEM_TYPE_BOOTS,
+			ITEM_TYPE_HELMET,
+			ITEM_TYPE_LEGS,
+			ITEM_TYPE_RING,
+			ITEM_TYPE_SHIELD,
+			ITEM_TYPE_AXE,
+			ITEM_TYPE_CLUB,
+			ITEM_TYPE_DISTANCE,
+			ITEM_TYPE_SWORD,
+			ITEM_TYPE_WAND,
+			ITEM_TYPE_QUIVER,
+		}
+		return table.contains(equipmentTypes, t)
+	end
+
+	function MonsterType.getBossReward(self, lootFactor, topScore, equipmentOnly, lootTable)
+		if configManager.getNumber(configKeys.RATE_LOOT) <= 0 then
+			return lootTable or {}
+		end
+
+		return self:generateLootRoll({
+			factor = lootFactor,
+			gut = false,
+			filter = function(itemType, unique)
+				if unique and not topScore then
+					return false
+				end
+				if equipmentOnly then
+					return not unique and isEquipment(itemType)
+				end
+				return true
+			end,
+		}, lootTable)
+	end
 end

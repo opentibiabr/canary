@@ -950,7 +950,7 @@ do
 			[3] = { name = "Steward of Tibia", points = 200 },
 			[4] = { name = "Warden of Tibia", points = 400 },
 			[5] = { name = "Squire of Tibia", points = 1000 },
-			[6] = { name = "	Warrior of Tibia", points = 2000 },
+			[6] = { name = "Warrior of Tibia", points = 2000 },
 			[7] = { name = "Keeper of Tibia", points = 3000 },
 			[8] = { name = "Guardian of Tibia", points = 4000 },
 			[9] = { name = "Sage of Tibia", points = 5000 },

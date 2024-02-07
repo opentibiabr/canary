@@ -25,7 +25,7 @@ local config = {
 			yasirPosition = Position(32314, 32895, 6),
 			mapName = "Liberty Bay",
 		},
-	}
+	},
 }
 
 local function yasirwebhook(message)

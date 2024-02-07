@@ -22,9 +22,9 @@ function Monster:setRewardBoss()
 end
 
 local equipmentBags = {
-	BagYouCovetId,
-	BagYouDesireId,
-	PrimalBagId,
+	BAG_YOU_DESIRE,
+	PRIMAL_BAG,
+	BAG_YOU_COVET,
 }
 
 local function isEquipment(itemType)

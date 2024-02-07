@@ -2,28 +2,30 @@ local config = {
 	enableSpawn = true,
 	spawnChance = 33,
 
-	[1] = {
-		removeItems = {
-			{ position = Position(33096, 32882, 6), itemId = 4977 },
-			{ position = Position(33096, 32883, 6), itemId = 4977 },
-			{ position = Position(33096, 32883, 6), itemId = 4920 },
-			{ position = Position(33096, 32884, 6), itemId = 4920 },
-			{ position = Position(33096, 32885, 6), itemId = 4920 },
+	towns = {
+		[1] = {
+			removeItems = {
+				{ position = Position(33096, 32882, 6), itemId = 4977 },
+				{ position = Position(33096, 32883, 6), itemId = 4977 },
+				{ position = Position(33096, 32883, 6), itemId = 4920 },
+				{ position = Position(33096, 32884, 6), itemId = 4920 },
+				{ position = Position(33096, 32885, 6), itemId = 4920 },
+			},
+
+			yasirPosition = Position(33102, 32884, 6),
+			mapName = "Ankrahmun",
 		},
 
-		yasirPosition = Position(33102, 32884, 6),
-		mapName = "Ankrahmun",
-	},
+		[2] = {
+			yasirPosition = Position(32400, 31815, 6),
+			mapName = "Carlin",
+		},
 
-	[2] = {
-		yasirPosition = Position(32400, 31815, 6),
-		mapName = "Carlin",
-	},
-
-	[3] = {
-		yasirPosition = Position(32314, 32895, 6),
-		mapName = "Liberty Bay",
-	},
+		[3] = {
+			yasirPosition = Position(32314, 32895, 6),
+			mapName = "Liberty Bay",
+		},
+	}
 }
 
 local function yasirwebhook(message)
@@ -41,7 +43,7 @@ local orientalTrader = GlobalEvent("Oriental Trader")
 
 function orientalTrader.onStartup()
 	if config.enableSpawn and math.random(100) <= config.spawnChance then
-		local randTown = config[math.random(#config)]
+		local randTown = config.towns[math.random(#config.towns)]
 		logger.info("[World Change] Yasir has arrived in {} today!", randTown.mapName)
 
 		if randTown.removeItems then

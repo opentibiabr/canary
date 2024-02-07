@@ -9,13 +9,16 @@
 
 #pragma once
 
-#include "utils/const.hpp"
-#include "creatures/creatures_definitions.hpp"
-#include "database/database_definitions.hpp"
-#include "game/game_definitions.hpp"
-#include "io/io_definitions.hpp"
-#include "items/items_definitions.hpp"
-#include "lua/lua_definitions.hpp"
-#include "map/map_definitions.hpp"
-#include "server/server_definitions.hpp"
-#include "utils/utils_definitions.hpp"
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <cstdint>
+#endif
+
+enum GroupType : uint8_t {
+	GROUP_TYPE_NONE = 0,
+	GROUP_TYPE_NORMAL = 1,
+	GROUP_TYPE_TUTOR = 2,
+	GROUP_TYPE_SENIORTUTOR = 3,
+	GROUP_TYPE_GAMEMASTER = 4,
+	GROUP_TYPE_COMMUNITYMANAGER = 5,
+	GROUP_TYPE_GOD = 6
+};

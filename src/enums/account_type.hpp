@@ -9,13 +9,14 @@
 
 #pragma once
 
-#include "utils/const.hpp"
-#include "creatures/creatures_definitions.hpp"
-#include "database/database_definitions.hpp"
-#include "game/game_definitions.hpp"
-#include "io/io_definitions.hpp"
-#include "items/items_definitions.hpp"
-#include "lua/lua_definitions.hpp"
-#include "map/map_definitions.hpp"
-#include "server/server_definitions.hpp"
-#include "utils/utils_definitions.hpp"
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <cstdint>
+#endif
+
+enum AccountType : uint8_t {
+	ACCOUNT_TYPE_NORMAL = 1,
+	ACCOUNT_TYPE_TUTOR = 2,
+	ACCOUNT_TYPE_SENIORTUTOR = 3,
+	ACCOUNT_TYPE_GAMEMASTER = 4,
+	ACCOUNT_TYPE_GOD = 5
+};

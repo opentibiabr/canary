@@ -11,6 +11,11 @@
 
 #include "creatures/creature.hpp"
 #include "lib/di/container.hpp"
+// TODO: Convert to shared_ptr later and use forward declaration
+#include "lua/scripts/luascript.hpp"
+
+import outfit_type;
+import light_info;
 
 class Shop {
 public:
@@ -32,7 +37,7 @@ class NpcType : public SharedObject {
 
 		LightInfo light = {};
 
-		uint8_t speechBubble = SPEECHBUBBLE_NORMAL;
+		SpeechBubble_t speechBubble = SpeechBubble_t::SPEECHBUBBLE_NORMAL;
 
 		uint16_t currencyId = ITEM_GOLD_COIN;
 

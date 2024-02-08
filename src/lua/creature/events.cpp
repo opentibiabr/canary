@@ -14,6 +14,8 @@
 #include "items/item.hpp"
 #include "creatures/players/player.hpp"
 
+import outfit_type;
+
 Events::Events() :
 	scriptInterface("Event Interface") {
 	scriptInterface.initState();
@@ -398,9 +400,9 @@ void Events::eventCreatureOnDrainHealth(std::shared_ptr<Creature> creature, std:
 		lua_pushnil(L);
 	}
 
-	lua_pushnumber(L, typePrimary);
+	lua_pushnumber(L, combatToValue(typePrimary));
 	lua_pushnumber(L, damagePrimary);
-	lua_pushnumber(L, typeSecondary);
+	lua_pushnumber(L, combatToValue(typeSecondary));
 	lua_pushnumber(L, damageSecondary);
 	lua_pushnumber(L, colorPrimary);
 	lua_pushnumber(L, colorSecondary);
@@ -824,7 +826,7 @@ void Events::eventPlayerOnChangeZone(std::shared_ptr<Player> player, ZoneType_t 
 	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
-	lua_pushnumber(L, zone);
+	lua_pushnumber(L, static_cast<lua_Number>(zone));
 	scriptInterface.callVoidFunction(2);
 }
 
@@ -1182,7 +1184,7 @@ void Events::eventPlayerOnCombat(std::shared_ptr<Player> player, std::shared_ptr
 		damage.secondary.type = LuaScriptInterface::getNumber<CombatType_t>(L, -1);
 
 		lua_pop(L, 4);
-		if (damage.primary.type != COMBAT_HEALING) {
+		if (damage.primary.type != CombatType_t::COMBAT_HEALING) {
 			damage.primary.value = -damage.primary.value;
 			damage.secondary.value = -damage.secondary.value;
 		}

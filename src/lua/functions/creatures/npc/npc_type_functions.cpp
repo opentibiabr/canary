@@ -14,6 +14,8 @@
 #include "lua/scripts/scripts.hpp"
 #include "game/game.hpp"
 
+import outfit_type;
+
 void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock> &shopVector) {
 	lua_createtable(L, shopVector.size(), 0);
 
@@ -474,9 +476,9 @@ int NpcTypeFunctions::luaNpcTypeSpeechBubble(lua_State* L) {
 	}
 
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, npcType->info.speechBubble);
+		lua_pushnumber(L, static_cast<lua_Number>(npcType->info.speechBubble));
 	} else {
-		npcType->info.speechBubble = getNumber<uint8_t>(L, 2);
+		npcType->info.speechBubble = getNumber<SpeechBubble_t>(L, 2);
 		pushBoolean(L, true);
 	}
 	return 1;

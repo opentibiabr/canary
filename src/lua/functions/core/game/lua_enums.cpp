@@ -199,11 +199,11 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 
 	registerEnum(L, VOCATION_NONE);
 
-	registerEnum(L, ZONE_PROTECTION);
-	registerEnum(L, ZONE_NOPVP);
-	registerEnum(L, ZONE_PVP);
-	registerEnum(L, ZONE_NOLOGOUT);
-	registerEnum(L, ZONE_NORMAL);
+	registerEnum(L, zonesToValue(ZoneType_t::ZONE_PROTECTION));
+	registerEnum(L, zonesToValue(ZoneType_t::ZONE_NOPVP));
+	registerEnum(L, zonesToValue(ZoneType_t::ZONE_PVP));
+	registerEnum(L, zonesToValue(ZoneType_t::ZONE_NOLOGOUT));
+	registerEnum(L, zonesToValue(ZoneType_t::ZONE_NORMAL));
 
 	registerEnum(L, WEAPON_NONE);
 	registerEnum(L, WEAPON_SWORD);
@@ -260,21 +260,21 @@ void LuaEnums::initCallbackParamEnums(lua_State* L) {
 }
 
 void LuaEnums::initCombatEnums(lua_State* L) {
-	registerEnum(L, COMBAT_NONE);
-	registerEnum(L, COMBAT_PHYSICALDAMAGE);
-	registerEnum(L, COMBAT_ENERGYDAMAGE);
-	registerEnum(L, COMBAT_EARTHDAMAGE);
-	registerEnum(L, COMBAT_FIREDAMAGE);
-	registerEnum(L, COMBAT_UNDEFINEDDAMAGE);
-	registerEnum(L, COMBAT_LIFEDRAIN);
-	registerEnum(L, COMBAT_MANADRAIN);
-	registerEnum(L, COMBAT_HEALING);
-	registerEnum(L, COMBAT_DROWNDAMAGE);
-	registerEnum(L, COMBAT_ICEDAMAGE);
-	registerEnum(L, COMBAT_HOLYDAMAGE);
-	registerEnum(L, COMBAT_DEATHDAMAGE);
-	registerEnum(L, COMBAT_AGONYDAMAGE);
-	registerEnum(L, COMBAT_NEUTRALDAMAGE);
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_NONE));
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_PHYSICALDAMAGE));
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_ENERGYDAMAGE));
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_EARTHDAMAGE));
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_FIREDAMAGE));
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_UNDEFINEDDAMAGE));
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_LIFEDRAIN));
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_MANADRAIN));
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_HEALING));
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_DROWNDAMAGE));
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_ICEDAMAGE));
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_HOLYDAMAGE));
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_DEATHDAMAGE));
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_AGONYDAMAGE));
+	registerEnum(L, combatToValue(CombatType_t::COMBAT_NEUTRALDAMAGE));
 }
 
 void LuaEnums::initCombatParamEnums(lua_State* L) {
@@ -302,66 +302,29 @@ void LuaEnums::initDirectionEnums(lua_State* L) {
 }
 
 void LuaEnums::initFactionEnums(lua_State* L) {
-	registerEnum(L, FACTION_DEFAULT);
-	registerEnum(L, FACTION_PLAYER);
-	registerEnum(L, FACTION_LION);
-	registerEnum(L, FACTION_LIONUSURPERS);
-	registerEnum(L, FACTION_MARID);
-	registerEnum(L, FACTION_EFREET);
-	registerEnum(L, FACTION_DEEPLING);
-	registerEnum(L, FACTION_DEATHLING);
-	registerEnum(L, FACTION_ANUMA);
-	registerEnum(L, FACTION_FAFNAR);
-	registerEnum(L, FACTION_LAST);
+	registerEnum(L, static_cast<lua_Number>(Faction_t::FACTION_DEFAULT));
+	registerEnum(L, static_cast<lua_Number>(Faction_t::FACTION_PLAYER));
+	registerEnum(L, static_cast<lua_Number>(Faction_t::FACTION_LION));
+	registerEnum(L, static_cast<lua_Number>(Faction_t::FACTION_LIONUSURPERS));
+	registerEnum(L, static_cast<lua_Number>(Faction_t::FACTION_MARID));
+	registerEnum(L, static_cast<lua_Number>(Faction_t::FACTION_EFREET));
+	registerEnum(L, static_cast<lua_Number>(Faction_t::FACTION_DEEPLING));
+	registerEnum(L, static_cast<lua_Number>(Faction_t::FACTION_DEATHLING));
+	registerEnum(L, static_cast<lua_Number>(Faction_t::FACTION_ANUMA));
+	registerEnum(L, static_cast<lua_Number>(Faction_t::FACTION_FAFNAR));
+	registerEnum(L, static_cast<lua_Number>(Faction_t::FACTION_LAST));
 }
 
 void LuaEnums::initConditionEnums(lua_State* L) {
-	registerEnum(L, CONDITION_NONE);
-	registerEnum(L, CONDITION_POISON);
-	registerEnum(L, CONDITION_FIRE);
-	registerEnum(L, CONDITION_ENERGY);
-	registerEnum(L, CONDITION_BLEEDING);
-	registerEnum(L, CONDITION_HASTE);
-	registerEnum(L, CONDITION_PARALYZE);
-	registerEnum(L, CONDITION_OUTFIT);
-	registerEnum(L, CONDITION_INVISIBLE);
-	registerEnum(L, CONDITION_LIGHT);
-	registerEnum(L, CONDITION_MANASHIELD);
-	registerEnum(L, CONDITION_INFIGHT);
-	registerEnum(L, CONDITION_DRUNK);
-	registerEnum(L, CONDITION_EXHAUST);
-	registerEnum(L, CONDITION_REGENERATION);
-	registerEnum(L, CONDITION_SOUL);
-	registerEnum(L, CONDITION_DROWN);
-	registerEnum(L, CONDITION_MUTED);
-	registerEnum(L, CONDITION_CHANNELMUTEDTICKS);
-	registerEnum(L, CONDITION_YELLTICKS);
-	registerEnum(L, CONDITION_ATTRIBUTES);
-	registerEnum(L, CONDITION_FREEZING);
-	registerEnum(L, CONDITION_DAZZLED);
-	registerEnum(L, CONDITION_CURSED);
-	registerEnum(L, CONDITION_EXHAUST_COMBAT);
-	registerEnum(L, CONDITION_EXHAUST_HEAL);
-	registerEnum(L, CONDITION_PACIFIED);
-	registerEnum(L, CONDITION_SPELLCOOLDOWN);
-	registerEnum(L, CONDITION_SPELLGROUPCOOLDOWN);
-	registerEnum(L, CONDITION_ROOTED);
-	registerEnum(L, CONDITION_FEARED);
+	for (auto value : magic_enum::enum_values<ConditionType_t>()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initConditionIdEnums(lua_State* L) {
-	registerEnum(L, CONDITIONID_DEFAULT);
-	registerEnum(L, CONDITIONID_COMBAT);
-	registerEnum(L, CONDITIONID_HEAD);
-	registerEnum(L, CONDITIONID_NECKLACE);
-	registerEnum(L, CONDITIONID_BACKPACK);
-	registerEnum(L, CONDITIONID_ARMOR);
-	registerEnum(L, CONDITIONID_RIGHT);
-	registerEnum(L, CONDITIONID_LEFT);
-	registerEnum(L, CONDITIONID_LEGS);
-	registerEnum(L, CONDITIONID_FEET);
-	registerEnum(L, CONDITIONID_RING);
-	registerEnum(L, CONDITIONID_AMMO);
+	for (auto value : magic_enum::enum_values<ConditionId_t>()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initConditionParamEnums(lua_State* L) {
@@ -714,19 +677,9 @@ void LuaEnums::initConstSlotEnums(lua_State* L) {
 }
 
 void LuaEnums::initCreatureEventEnums(lua_State* L) {
-	registerEnum(L, CREATURE_EVENT_NONE);
-	registerEnum(L, CREATURE_EVENT_LOGIN);
-	registerEnum(L, CREATURE_EVENT_LOGOUT);
-	registerEnum(L, CREATURE_EVENT_THINK);
-	registerEnum(L, CREATURE_EVENT_PREPAREDEATH);
-	registerEnum(L, CREATURE_EVENT_DEATH);
-	registerEnum(L, CREATURE_EVENT_KILL);
-	registerEnum(L, CREATURE_EVENT_ADVANCE);
-	registerEnum(L, CREATURE_EVENT_MODALWINDOW);
-	registerEnum(L, CREATURE_EVENT_TEXTEDIT);
-	registerEnum(L, CREATURE_EVENT_HEALTHCHANGE);
-	registerEnum(L, CREATURE_EVENT_MANACHANGE);
-	registerEnum(L, CREATURE_EVENT_EXTENDED_OPCODE);
+	for (auto value : magic_enum::enum_values<CreatureEventType_t>()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initGameStateEnums(lua_State* L) {
@@ -775,12 +728,9 @@ void LuaEnums::initMessageEnums(lua_State* L) {
 }
 
 void LuaEnums::initCreatureTypeEnums(lua_State* L) {
-	registerEnum(L, CREATURETYPE_PLAYER);
-	registerEnum(L, CREATURETYPE_MONSTER);
-	registerEnum(L, CREATURETYPE_NPC);
-	registerEnum(L, CREATURETYPE_SUMMON_PLAYER);
-	registerEnum(L, CREATURETYPE_SUMMON_OTHERS);
-	registerEnum(L, CREATURETYPE_HIDDEN);
+	for (auto value : magic_enum::enum_values<CreatureType_t>()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initClientOsEnums(lua_State* L) {
@@ -985,32 +935,28 @@ void LuaEnums::initSkillEnums(lua_State* L) {
 }
 
 void LuaEnums::initSkullEnums(lua_State* L) {
-	registerEnum(L, SKULL_NONE);
-	registerEnum(L, SKULL_YELLOW);
-	registerEnum(L, SKULL_GREEN);
-	registerEnum(L, SKULL_WHITE);
-	registerEnum(L, SKULL_RED);
-	registerEnum(L, SKULL_BLACK);
-	registerEnum(L, SKULL_ORANGE);
+	for (auto value : magic_enum::enum_values<Skulls_t>()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initTalkTypeEnums(lua_State* L) {
-	registerEnum(L, TALKTYPE_SAY);
-	registerEnum(L, TALKTYPE_WHISPER);
-	registerEnum(L, TALKTYPE_YELL);
-	registerEnum(L, TALKTYPE_PRIVATE_FROM);
-	registerEnum(L, TALKTYPE_PRIVATE_TO);
-	registerEnum(L, TALKTYPE_CHANNEL_Y);
-	registerEnum(L, TALKTYPE_CHANNEL_O);
-	registerEnum(L, TALKTYPE_PRIVATE_NP);
-	registerEnum(L, TALKTYPE_PRIVATE_PN);
-	registerEnum(L, TALKTYPE_BROADCAST);
-	registerEnum(L, TALKTYPE_CHANNEL_R1);
-	registerEnum(L, TALKTYPE_PRIVATE_RED_FROM);
-	registerEnum(L, TALKTYPE_PRIVATE_RED_TO);
-	registerEnum(L, TALKTYPE_MONSTER_SAY);
-	registerEnum(L, TALKTYPE_MONSTER_YELL);
-	registerEnum(L, TALKTYPE_CHANNEL_R2);
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_SAY));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_WHISPER));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_YELL));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_PRIVATE_FROM));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_PRIVATE_TO));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_CHANNEL_Y));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_CHANNEL_O));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_PRIVATE_NP));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_PRIVATE_PN));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_BROADCAST));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_CHANNEL_R1));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_PRIVATE_RED_FROM));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_PRIVATE_RED_TO));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_MONSTER_SAY));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_MONSTER_YELL));
+	registerEnum(L, speakToValue(SpeakClasses::TALKTYPE_CHANNEL_R2));
 }
 
 void LuaEnums::initBestiaryEnums(lua_State* L) {
@@ -1089,12 +1035,12 @@ void LuaEnums::initTileStateEnums(lua_State* L) {
 
 // Use with npc:setSpeechBubble
 void LuaEnums::initSpeechBubbleEnums(lua_State* L) {
-	registerEnum(L, SPEECHBUBBLE_NONE);
-	registerEnum(L, SPEECHBUBBLE_NORMAL);
-	registerEnum(L, SPEECHBUBBLE_TRADE);
-	registerEnum(L, SPEECHBUBBLE_QUEST);
-	registerEnum(L, SPEECHBUBBLE_QUESTTRADER);
-	registerEnum(L, SPEECHBUBBLE_HIRELING);
+	registerEnum(L, bubbleToValue(SpeechBubble_t::SPEECHBUBBLE_NONE));
+	registerEnum(L, bubbleToValue(SpeechBubble_t::SPEECHBUBBLE_NORMAL));
+	registerEnum(L, bubbleToValue(SpeechBubble_t::SPEECHBUBBLE_TRADE));
+	registerEnum(L, bubbleToValue(SpeechBubble_t::SPEECHBUBBLE_QUEST));
+	registerEnum(L, bubbleToValue(SpeechBubble_t::SPEECHBUBBLE_QUESTTRADER));
+	registerEnum(L, bubbleToValue(SpeechBubble_t::SPEECHBUBBLE_HIRELING));
 }
 
 // Use with player:addMapMark

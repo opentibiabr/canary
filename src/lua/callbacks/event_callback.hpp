@@ -23,6 +23,8 @@ class ItemType;
 class Monster;
 class Zone;
 
+struct Outfit_t;
+
 /**
  * @class EventCallback
  * @brief Represents an individual event callback within the game.

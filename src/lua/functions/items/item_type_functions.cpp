@@ -464,7 +464,7 @@ int ItemTypeFunctions::luaItemTypeGetElementType(lua_State* L) {
 
 	auto &abilities = itemType->abilities;
 	if (abilities) {
-		lua_pushnumber(L, abilities->elementType);
+		lua_pushnumber(L, combatToValue(abilities->elementType));
 	} else {
 		lua_pushnil(L);
 	}

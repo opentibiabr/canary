@@ -64,30 +64,34 @@ void Monster::removeList() {
 	g_game().removeMonster(static_self_cast<Monster>());
 }
 
+CreatureType_t Monster::getType() const {
+	return CreatureType_t::CREATURETYPE_MONSTER;
+}
+
 bool Monster::canWalkOnFieldType(CombatType_t combatType) const {
 	switch (combatType) {
-		case COMBAT_ENERGYDAMAGE:
+		case CombatType_t::COMBAT_ENERGYDAMAGE:
 			return mType->info.canWalkOnEnergy;
-		case COMBAT_FIREDAMAGE:
+		case CombatType_t::COMBAT_FIREDAMAGE:
 			return mType->info.canWalkOnFire;
-		case COMBAT_EARTHDAMAGE:
+		case CombatType_t::COMBAT_EARTHDAMAGE:
 			return mType->info.canWalkOnPoison;
 		default:
 			return true;
 	}
 }
 
-int32_t Monster::getReflectPercent(CombatType_t reflectType, bool useCharges) const {
-	int32_t result = Creature::getReflectPercent(reflectType, useCharges);
-	auto it = mType->info.reflectMap.find(reflectType);
+int32_t Monster::getReflectPercent(CombatType_t combatType, bool useCharges) const {
+	int32_t result = Creature::getReflectPercent(combatType, useCharges);
+	auto it = mType->info.reflectMap.find(combatType);
 	if (it != mType->info.reflectMap.end()) {
 		result += it->second;
 	}
 	return result;
 }
 
-uint32_t Monster::getHealingCombatValue(CombatType_t healingType) const {
-	auto it = mType->info.healingMap.find(healingType);
+uint32_t Monster::getHealingCombatValue(CombatType_t combatType) const {
+	auto it = mType->info.healingMap.find(combatType);
 	if (it != mType->info.healingMap.end()) {
 		return it->second;
 	}
@@ -252,8 +256,8 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 	}
 }
 
-void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text) {
-	Creature::onCreatureSay(creature, type, text);
+void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses creatureSayType, const std::string &text) {
+	Creature::onCreatureSay(creature, creatureSayType, text);
 
 	if (mType->info.creatureSayEvent != -1) {
 		// onCreatureSay(self, creature, type, message)
@@ -277,7 +281,7 @@ void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses typ
 		LuaScriptInterface::pushUserdata<Creature>(L, creature);
 		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
 
-		lua_pushnumber(L, type);
+		lua_pushnumber(L, static_cast<lua_Number>(creatureSayType));
 		LuaScriptInterface::pushString(L, text);
 
 		scriptInterface->callVoidFunction(4);
@@ -320,7 +324,7 @@ bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFron
 		targetList.emplace_back(creature);
 	}
 
-	if (!getMaster() && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
+	if (!getMaster() && getFaction() != Faction_t::FACTION_DEFAULT && creature->getPlayer()) {
 		totalPlayersOnScreen++;
 	}
 
@@ -337,7 +341,7 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
-	if (!getMaster() && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
+	if (!getMaster() && getFaction() != Faction_t::FACTION_DEFAULT && creature->getPlayer()) {
 		totalPlayersOnScreen--;
 	}
 
@@ -421,8 +425,8 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 		return false;
 	}
 
-	if (getFaction() != FACTION_DEFAULT) {
-		return isEnemyFaction(creature->getFaction()) || creature->getFaction() == FACTION_PLAYER;
+	if (getFaction() != Faction_t::FACTION_DEFAULT) {
+		return isEnemyFaction(creature->getFaction()) || creature->getFaction() == Faction_t::FACTION_PLAYER;
 	}
 
 	if ((creature->getPlayer()) || (creature->getMaster() && creature->getMaster()->getPlayer())) {
@@ -605,12 +609,29 @@ float Monster::getMitigation() const {
 	return std::min<float>(mitigation, 30.f);
 }
 
+Faction_t Monster::getFaction() const {
+	auto master = getMaster();
+	if (getMaster()) {
+		return getMaster()->getFaction();
+	}
+	return mType->info.faction;
+}
+
+bool Monster::isEnemyFaction(Faction_t faction) const {
+	auto master = getMaster();
+	if (master && master->getMonster()) {
+		return master->getMonster()->isEnemyFaction(faction);
+	}
+	return mType->info.enemyFactions.empty() ? false : mType->info.enemyFactions.contains(faction);
+}
+
 BlockType_t Monster::blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool /* field = false */) {
 	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor);
 
+	auto combatTypeEnum = enumFromValue<CombatType_t>(combatType);
 	if (damage != 0) {
 		int32_t elementMod = 0;
-		auto it = mType->info.elementMap.find(combatType);
+		auto it = mType->info.elementMap.find(combatTypeEnum);
 		if (it != mType->info.elementMap.end()) {
 			elementMod = it->second;
 		}
@@ -618,14 +639,14 @@ BlockType_t Monster::blockHit(std::shared_ptr<Creature> attacker, CombatType_t c
 		// Wheel of destiny
 		std::shared_ptr<Player> player = attacker ? attacker->getPlayer() : nullptr;
 		if (player && player->wheel()->getInstant("Ballistic Mastery")) {
-			elementMod -= player->wheel()->checkElementSensitiveReduction(combatType);
+			elementMod -= player->wheel()->checkElementSensitiveReduction(combatTypeEnum);
 		}
 
 		if (elementMod != 0) {
 			damage = static_cast<int32_t>(std::round(damage * ((100 - elementMod) / 100.)));
 			if (damage <= 0) {
 				damage = 0;
-				blockType = BLOCK_ARMOR;
+				blockType = BlockType_t::BLOCK_ARMOR;
 			}
 		}
 	}
@@ -634,7 +655,7 @@ BlockType_t Monster::blockHit(std::shared_ptr<Creature> attacker, CombatType_t c
 }
 
 bool Monster::isTarget(std::shared_ptr<Creature> creature) {
-	if (creature->isRemoved() || !creature->isAttackable() || creature->getZoneType() == ZONE_PROTECTION || !canSeeCreature(creature)) {
+	if (creature->isRemoved() || !creature->isAttackable() || creature->getZoneType() == ZoneType_t::ZONE_PROTECTION || !canSeeCreature(creature)) {
 		return false;
 	}
 
@@ -647,7 +668,7 @@ bool Monster::isTarget(std::shared_ptr<Creature> creature) {
 			return false;
 		}
 
-		if (getFaction() != FACTION_DEFAULT) {
+		if (getFaction() != Faction_t::FACTION_DEFAULT) {
 			return isEnemyFaction(creature->getFaction());
 		}
 	}
@@ -701,7 +722,7 @@ void Monster::updateIdleStatus() {
 				isWalkingBack = true;
 			}
 		} else if (const auto &master = getMaster()) {
-			if ((!isSummon() && totalPlayersOnScreen == 0 || isSummon() && master->getMonster() && master->getMonster()->totalPlayersOnScreen == 0) && getFaction() != FACTION_DEFAULT) {
+			if ((!isSummon() && totalPlayersOnScreen == 0 || isSummon() && master->getMonster() && master->getMonster()->totalPlayersOnScreen == 0) && getFaction() != Faction_t::FACTION_DEFAULT) {
 				idle = true;
 			}
 		}
@@ -717,19 +738,19 @@ bool Monster::isInSpawnLocation() const {
 	return position == masterPos || masterPos == Position();
 }
 
-void Monster::onAddCondition(ConditionType_t type) {
-	onConditionStatusChange(type);
+void Monster::onAddCondition(ConditionType_t conditionType) {
+	onConditionStatusChange(conditionType);
 }
 
-void Monster::onConditionStatusChange(const ConditionType_t &type) {
-	if (type == CONDITION_FIRE || type == CONDITION_ENERGY || type == CONDITION_POISON) {
+void Monster::onConditionStatusChange(const ConditionType_t &conditionType) {
+	if (conditionType == ConditionType_t::CONDITION_FIRE || conditionType == ConditionType_t::CONDITION_ENERGY || conditionType == ConditionType_t::CONDITION_POISON) {
 		updateMapCache();
 	}
 	updateIdleStatus();
 }
 
-void Monster::onEndCondition(ConditionType_t type) {
-	onConditionStatusChange(type);
+void Monster::onEndCondition(ConditionType_t conditionType) {
+	onConditionStatusChange(conditionType);
 }
 
 void Monster::onThink(uint32_t interval) {
@@ -1058,9 +1079,9 @@ void Monster::onThinkYell(uint32_t interval) {
 			const voiceBlock_t &vb = mType->info.voiceVector[index];
 
 			if (vb.yellText) {
-				g_game().internalCreatureSay(static_self_cast<Monster>(), TALKTYPE_MONSTER_YELL, vb.text, false);
+				g_game().internalCreatureSay(static_self_cast<Monster>(), SpeakClasses::TALKTYPE_MONSTER_YELL, vb.text, false);
 			} else {
-				g_game().internalCreatureSay(static_self_cast<Monster>(), TALKTYPE_MONSTER_SAY, vb.text, false);
+				g_game().internalCreatureSay(static_self_cast<Monster>(), SpeakClasses::TALKTYPE_MONSTER_SAY, vb.text, false);
 			}
 		}
 	}
@@ -2042,7 +2063,7 @@ void Monster::drainHealth(std::shared_ptr<Creature> attacker, int32_t damage) {
 	}
 
 	if (isInvisible()) {
-		removeCondition(CONDITION_INVISIBLE);
+		removeCondition(ConditionType_t::CONDITION_INVISIBLE);
 	}
 }
 
@@ -2094,12 +2115,12 @@ bool Monster::changeTargetDistance(int32_t distance, uint32_t duration /* = 1200
 	return true;
 }
 
-bool Monster::isImmune(ConditionType_t conditionType) const {
+bool Monster::isConditionImmune(ConditionType_t conditionType) const {
 	return mType->info.m_conditionImmunities[static_cast<size_t>(conditionType)];
 }
 
-bool Monster::isImmune(CombatType_t combatType) const {
-	return mType->info.m_damageImmunities[combatTypeToIndex(combatType)];
+bool Monster::isCombatImmune(CombatType_t combatType) const {
+	return mType->info.m_damageImmunities[combatToValue(combatType)];
 }
 
 void Monster::getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) {

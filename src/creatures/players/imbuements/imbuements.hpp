@@ -129,7 +129,7 @@ public:
 	int16_t elementDamage = 0;
 	SoundEffect_t soundEffect = SoundEffect_t::SILENCE;
 
-	CombatType_t combatType = COMBAT_NONE;
+	CombatType_t combatType = CombatType_t::COMBAT_NONE;
 
 protected:
 	friend class Imbuements;

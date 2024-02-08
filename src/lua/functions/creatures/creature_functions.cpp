@@ -9,10 +9,16 @@
 
 #include "pch.hpp"
 
+#include "lua/functions/creatures/creature_functions.hpp"
+
 #include "game/game.hpp"
 #include "creatures/creature.hpp"
-#include "lua/functions/creatures/creature_functions.hpp"
+#include "creatures/creatures_definitions.hpp"
+#include "lua/creature/creatureevent.hpp"
 #include "map/spectators.hpp"
+
+import outfit_type;
+import light_info;
 
 int CreatureFunctions::luaCreatureCreate(lua_State* L) {
 	// Creature(id or name or userdata)
@@ -504,11 +510,11 @@ int CreatureFunctions::luaCreatureAddHealth(lua_State* L) {
 	CombatDamage damage;
 	damage.primary.value = getNumber<int32_t>(L, 2);
 	if (damage.primary.value >= 0) {
-		damage.primary.type = COMBAT_HEALING;
+		damage.primary.type = CombatType_t::COMBAT_HEALING;
 	} else if (damage.primary.value < 0) {
 		damage.primary.type = getNumber<CombatType_t>(L, 3);
 	} else {
-		damage.primary.type = COMBAT_UNDEFINEDDAMAGE;
+		damage.primary.type = CombatType_t::COMBAT_UNDEFINEDDAMAGE;
 	}
 	pushBoolean(L, g_game().combatChangeHealth(nullptr, creature, damage));
 	return 1;
@@ -608,7 +614,7 @@ int CreatureFunctions::luaCreatureGetSkull(lua_State* L) {
 	// creature:getSkull()
 	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
 	if (creature) {
-		lua_pushnumber(L, creature->getSkull());
+		lua_pushnumber(L, static_cast<lua_Number>(creature->getSkull()));
 	} else {
 		lua_pushnil(L);
 	}
@@ -658,7 +664,7 @@ int CreatureFunctions::luaCreatureSetOutfit(lua_State* L) {
 }
 
 int CreatureFunctions::luaCreatureGetCondition(lua_State* L) {
-	// creature:getCondition(conditionType[, conditionId = CONDITIONID_COMBAT[, subId = 0]])
+	// creature:getCondition(conditionType[, conditionId = ConditionId_t::CONDITIONID_COMBAT[, subId = 0]])
 	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
 	if (!creature) {
 		lua_pushnil(L);
@@ -666,7 +672,7 @@ int CreatureFunctions::luaCreatureGetCondition(lua_State* L) {
 	}
 
 	ConditionType_t conditionType = getNumber<ConditionType_t>(L, 2);
-	ConditionId_t conditionId = getNumber<ConditionId_t>(L, 3, CONDITIONID_COMBAT);
+	ConditionId_t conditionId = getNumber<ConditionId_t>(L, 3, ConditionId_t::CONDITIONID_COMBAT);
 	uint32_t subId = getNumber<uint32_t>(L, 4, 0);
 
 	const std::shared_ptr<Condition> condition = creature->getCondition(conditionType, conditionId, subId);
@@ -692,7 +698,7 @@ int CreatureFunctions::luaCreatureAddCondition(lua_State* L) {
 }
 
 int CreatureFunctions::luaCreatureRemoveCondition(lua_State* L) {
-	// creature:removeCondition(conditionType[, conditionId = CONDITIONID_COMBAT[, subId = 0[, force = false]]])
+	// creature:removeCondition(conditionType[, conditionId = ConditionId_t::CONDITIONID_COMBAT[, subId = 0[, force = false]]])
 	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
 	if (!creature) {
 		lua_pushnil(L);
@@ -700,7 +706,7 @@ int CreatureFunctions::luaCreatureRemoveCondition(lua_State* L) {
 	}
 
 	ConditionType_t conditionType = getNumber<ConditionType_t>(L, 2);
-	ConditionId_t conditionId = getNumber<ConditionId_t>(L, 3, CONDITIONID_COMBAT);
+	ConditionId_t conditionId = getNumber<ConditionId_t>(L, 3, ConditionId_t::CONDITIONID_COMBAT);
 	uint32_t subId = getNumber<uint32_t>(L, 4, 0);
 	const std::shared_ptr<Condition> condition = creature->getCondition(conditionType, conditionId, subId);
 	if (condition) {
@@ -739,13 +745,14 @@ int CreatureFunctions::luaCreatureIsImmune(lua_State* L) {
 		return 1;
 	}
 
+	ConditionType_t conditionType;
 	if (isNumber(L, 2)) {
-		pushBoolean(L, creature->isImmune(getNumber<ConditionType_t>(L, 2)));
-	} else if (auto condition = getUserdataShared<Condition>(L, 2)) {
-		pushBoolean(L, creature->isImmune(condition->getType()));
-	} else {
-		lua_pushnil(L);
+		conditionType = getNumber<ConditionType_t>(L, 2);
+	} else if (const auto &condition = getUserdataShared<Condition>(L, 2)) {
+		conditionType = condition->getType();
 	}
+
+	pushBoolean(L, creature->isConditionImmune(conditionType));
 	return 1;
 }
 
@@ -817,7 +824,7 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 }
 
 int CreatureFunctions::luaCreatureSay(lua_State* L) {
-	// creature:say(text[, type = TALKTYPE_MONSTER_SAY[, ghost = false[, target = nullptr[, position]]]])
+	// creature:say(text[, type = SpeakClasses::TALKTYPE_MONSTER_SAY[, ghost = false[, target = nullptr[, position]]]])
 	int parameters = lua_gettop(L);
 
 	Position position;
@@ -837,7 +844,7 @@ int CreatureFunctions::luaCreatureSay(lua_State* L) {
 
 	bool ghost = getBoolean(L, 4, false);
 
-	SpeakClasses type = getNumber<SpeakClasses>(L, 3, TALKTYPE_MONSTER_SAY);
+	SpeakClasses type = getNumber<SpeakClasses>(L, 3, SpeakClasses::TALKTYPE_MONSTER_SAY);
 	const std::string &text = getString(L, 2);
 	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
 	if (!creature) {
@@ -984,7 +991,7 @@ int CreatureFunctions::luaCreatureGetZoneType(lua_State* L) {
 	// creature:getZoneType()
 	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
 	if (creature) {
-		lua_pushnumber(L, creature->getZoneType());
+		lua_pushnumber(L, static_cast<lua_Number>(creature->getZoneType()));
 	} else {
 		lua_pushnil(L);
 	}

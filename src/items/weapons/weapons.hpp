@@ -243,7 +243,7 @@ public:
 private:
 	bool getSkillType(std::shared_ptr<Player> player, std::shared_ptr<Item> item, skills_t &skill, uint32_t &skillpoint) const override;
 	uint16_t elementDamage = 0;
-	CombatType_t elementType = COMBAT_NONE;
+	CombatType_t elementType = CombatType_t::COMBAT_NONE;
 };
 
 class WeaponDistance final : public Weapon {
@@ -271,7 +271,7 @@ public:
 private:
 	bool getSkillType(std::shared_ptr<Player> player, std::shared_ptr<Item> item, skills_t &skill, uint32_t &skillpoint) const override;
 
-	CombatType_t elementType = COMBAT_NONE;
+	CombatType_t elementType = CombatType_t::COMBAT_NONE;
 	uint16_t elementDamage = 0;
 };
 
@@ -290,7 +290,7 @@ public:
 		return 0;
 	}
 	CombatType_t getElementType() const override {
-		return COMBAT_NONE;
+		return CombatType_t::COMBAT_NONE;
 	}
 	virtual int16_t getElementDamageValue() const override;
 	void setMinChange(int32_t change) {

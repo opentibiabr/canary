@@ -15,6 +15,8 @@
 #include "game/movement/position.hpp"
 #include "enums/object_category.hpp"
 
+import enum_modules;
+
 namespace pugi {
 	class xml_parse_result;
 }
@@ -113,22 +115,12 @@ std::string getCombatName(CombatType_t combatType);
 CombatType_t getCombatTypeByName(const std::string &combatname);
 
 /**
- * @brief Convert the CombatType_t enumeration to its corresponding index.
- * @param combatType The CombatType_t enumeration to convert.
- * @return The corresponding index of the CombatType_t enumeration.
- * If the CombatType_t is out of range, this function will log an error and return an empty size_t.
- */
-size_t combatTypeToIndex(CombatType_t combatType);
-
-/**
- * @brief Convert the CombatType_t enumeration to its corresponding string representation.
- * @param combatType The CombatType_t enumeration to convert.
- * @return The corresponding string representation of the CombatType_t enumeration.
- * If the CombatType_t is out of range, this function will log an error and return an empty string.
+ * @brief Convert the uint8_t enumeration to its corresponding string representation.
+ * @param combatType The uint8_t enumeration to convert.
+ * @return The corresponding string representation of the uint8_t enumeration.
+ * If the uint8_t is out of range, this function will log an error and return an empty string.
  */
 std::string combatTypeToName(CombatType_t combatType);
-
-CombatType_t indexToCombatType(size_t v);
 
 ItemAttribute_t stringToItemAttribute(const std::string &str);
 
@@ -157,39 +149,7 @@ std::string getFormattedTimeRemaining(uint32_t time);
 
 unsigned int getNumberOfCores();
 
-static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
-	switch (combatType) {
-		case COMBAT_PHYSICALDAMAGE:
-			return CIPBIA_ELEMENTAL_PHYSICAL;
-		case COMBAT_ENERGYDAMAGE:
-			return CIPBIA_ELEMENTAL_ENERGY;
-		case COMBAT_EARTHDAMAGE:
-			return CIPBIA_ELEMENTAL_EARTH;
-		case COMBAT_FIREDAMAGE:
-			return CIPBIA_ELEMENTAL_FIRE;
-		case COMBAT_LIFEDRAIN:
-			return CIPBIA_ELEMENTAL_LIFEDRAIN;
-		case COMBAT_HEALING:
-			return CIPBIA_ELEMENTAL_HEALING;
-		case COMBAT_DROWNDAMAGE:
-			return CIPBIA_ELEMENTAL_DROWN;
-		case COMBAT_ICEDAMAGE:
-			return CIPBIA_ELEMENTAL_ICE;
-		case COMBAT_HOLYDAMAGE:
-			return CIPBIA_ELEMENTAL_HOLY;
-		case COMBAT_DEATHDAMAGE:
-			return CIPBIA_ELEMENTAL_DEATH;
-		case COMBAT_MANADRAIN:
-			return CIPBIA_ELEMENTAL_MANADRAIN;
-		case COMBAT_AGONYDAMAGE:
-			return CIPBIA_ELEMENTAL_AGONY;
-		case COMBAT_NEUTRALDAMAGE:
-			return CIPBIA_ELEMENTAL_AGONY;
-		default:
-			return CIPBIA_ELEMENTAL_UNDEFINED;
-	}
-}
-
+Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType);
 std::string formatNumber(uint64_t number);
 
 std::string getPlayerSubjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
@@ -215,3 +175,6 @@ template <typename EnumType, typename UnderlyingType = std::underlying_type_t<En
 EnumType enumFromValue(UnderlyingType value) {
 	return static_cast<EnumType>(value);
 }
+
+const std::vector<uint8_t> &getAllCombatValueTypes();
+const std::vector<CombatType_t> &getAllCombatTypes();

@@ -187,15 +187,15 @@ public:
 
 	ZoneType_t getZoneType() const {
 		if (hasFlag(TILESTATE_PROTECTIONZONE)) {
-			return ZONE_PROTECTION;
+			return ZoneType_t::ZONE_PROTECTION;
 		} else if (hasFlag(TILESTATE_NOPVPZONE)) {
-			return ZONE_NOPVP;
+			return ZoneType_t::ZONE_NOPVP;
 		} else if (hasFlag(TILESTATE_PVPZONE)) {
-			return ZONE_PVP;
+			return ZoneType_t::ZONE_PVP;
 		} else if (hasFlag(TILESTATE_NOLOGOUT)) {
-			return ZONE_NOLOGOUT;
+			return ZoneType_t::ZONE_NOLOGOUT;
 		}
-		return ZONE_NORMAL;
+		return ZoneType_t::ZONE_NORMAL;
 	}
 
 	bool hasHeight(uint32_t n) const;

@@ -29,6 +29,8 @@
 
 #include "enums/lua_variant_type.hpp"
 
+import outfit_type;
+
 class LuaScriptInterface;
 
 void LuaFunctionsLoader::load(lua_State* L) {
@@ -581,9 +583,9 @@ void LuaFunctionsLoader::pushCombatDamage(lua_State* L, const CombatDamage &dama
 	}
 
 	lua_pushnumber(L, damage.primary.value);
-	lua_pushnumber(L, damage.primary.type);
+	lua_pushnumber(L, combatToValue(damage.primary.type));
 	lua_pushnumber(L, damage.secondary.value);
-	lua_pushnumber(L, damage.secondary.type);
+	lua_pushnumber(L, combatToValue(damage.secondary.type));
 	lua_pushnumber(L, damage.origin);
 }
 

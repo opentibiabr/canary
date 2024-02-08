@@ -16,6 +16,8 @@
 #include "creatures/players/player.hpp"
 #include "game/zones/zone.hpp"
 
+import outfit_type;
+
 /**
  * @class EventCallback
  * @brief Class representing an event callback.
@@ -203,9 +205,9 @@ void EventCallback::creatureOnDrainHealth(std::shared_ptr<Creature> creature, st
 		lua_pushnil(L);
 	}
 
-	lua_pushnumber(L, typePrimary);
+	lua_pushnumber(L, combatToValue(typePrimary));
 	lua_pushnumber(L, damagePrimary);
-	lua_pushnumber(L, typeSecondary);
+	lua_pushnumber(L, combatToValue(typeSecondary));
 	lua_pushnumber(L, damageSecondary);
 	lua_pushnumber(L, colorPrimary);
 	lua_pushnumber(L, colorSecondary);
@@ -568,7 +570,7 @@ void EventCallback::playerOnChangeZone(std::shared_ptr<Player> player, ZoneType_
 	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
-	lua_pushnumber(L, zone);
+	lua_pushnumber(L, static_cast<lua_Number>(zone));
 	getScriptInterface()->callVoidFunction(2);
 }
 
@@ -875,7 +877,7 @@ void EventCallback::playerOnCombat(std::shared_ptr<Player> player, std::shared_p
 		damage.secondary.type = LuaScriptInterface::getNumber<CombatType_t>(L, -1);
 
 		lua_pop(L, 4);
-		if (damage.primary.type != COMBAT_HEALING) {
+		if (damage.primary.type != CombatType_t::COMBAT_HEALING) {
 			damage.primary.value = -damage.primary.value;
 			damage.secondary.value = -damage.secondary.value;
 		}
@@ -885,7 +887,7 @@ void EventCallback::playerOnCombat(std::shared_ptr<Player> player, std::shared_p
 		if (damage.origin == ORIGIN_SPELL) {
 			if (player->getVocationId() != 4 && player->getVocationId() != 8) {
 				damage.primary.value = damage.primary.value + damage.secondary.value;
-				damage.secondary.type = COMBAT_NONE;
+				damage.secondary.type = CombatType_t::COMBAT_NONE;
 				damage.secondary.value = 0;
 			}
 		}

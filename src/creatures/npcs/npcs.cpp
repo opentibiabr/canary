@@ -100,7 +100,7 @@ void NpcType::loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBl
 	}
 	npcType->info.shopItemVector.push_back(shopBlock);
 
-	info.speechBubble = SPEECHBUBBLE_TRADE;
+	info.speechBubble = SpeechBubble_t::SPEECHBUBBLE_TRADE;
 }
 
 bool Npcs::load(bool loadLibs /* = true*/, bool loadNpcs /* = true*/, bool reloading /* = false*/) const {

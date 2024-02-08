@@ -10,6 +10,7 @@
 #include "pch.hpp"
 
 #include "io/functions/iologindata_save_player.hpp"
+
 #include "game/game.hpp"
 
 bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
@@ -250,11 +251,11 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 
 		query << "`skulltime` = " << skullTime << ",";
 
-		Skulls_t skull = SKULL_NONE;
-		if (player->skull == SKULL_RED) {
-			skull = SKULL_RED;
-		} else if (player->skull == SKULL_BLACK) {
-			skull = SKULL_BLACK;
+		Skulls_t skull = Skulls_t::SKULL_NONE;
+		if (player->skull == Skulls_t::SKULL_RED) {
+			skull = Skulls_t::SKULL_RED;
+		} else if (player->skull == Skulls_t::SKULL_BLACK) {
+			skull = Skulls_t::SKULL_BLACK;
 		}
 		query << "`skull` = " << static_cast<int64_t>(skull) << ",";
 	}

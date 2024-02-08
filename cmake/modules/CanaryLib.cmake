@@ -2,6 +2,12 @@
 add_library(${PROJECT_NAME}_lib)
 setup_target(${PROJECT_NAME}_lib)
 
+# Add modules subdirectories
+# They should always be before normal files
+add_subdirectory(enums)
+add_subdirectory(game/info)
+add_subdirectory(creatures/appearance/outfit)
+
 # Add subdirectories
 add_subdirectory(account)
 add_subdirectory(config)
@@ -65,6 +71,10 @@ else()
         message(WARNING "IPO/LTO is not supported: ${output}")
     endif()
 endif()
+
+target_compile_options(${PROJECT_NAME}_lib PRIVATE
+    "/experimental:module"
+)
 
 # === UNITY BUILD (compile time reducer) ===
 if(SPEED_UP_BUILD_UNITY)

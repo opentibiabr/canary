@@ -46,7 +46,7 @@ TalkActionResult_t Spells::playerSaySpell(std::shared_ptr<Player> player, std::s
 	}
 	std::string str_words = words;
 
-	if (player->hasCondition(CONDITION_FEARED)) {
+	if (player->hasCondition(ConditionType_t::CONDITION_FEARED)) {
 		player->sendTextMessage(MESSAGE_FAILURE, "You are feared.");
 		return TALKACTION_FAILED;
 	}
@@ -390,7 +390,7 @@ bool Spell::playerSpellCheck(std::shared_ptr<Player> player) const {
 		return true;
 	}
 
-	if (player->hasCondition(CONDITION_FEARED)) {
+	if (player->hasCondition(ConditionType_t::CONDITION_FEARED)) {
 		player->sendTextMessage(MESSAGE_FAILURE, "You are feared.");
 		return false;
 	}
@@ -399,23 +399,23 @@ bool Spell::playerSpellCheck(std::shared_ptr<Player> player) const {
 		return false;
 	}
 
-	if (aggressive && (range < 1 || (range > 0 && !player->getAttackedCreature())) && player->getSkull() == SKULL_BLACK) {
+	if (aggressive && (range < 1 || (range > 0 && !player->getAttackedCreature())) && player->getSkull() == Skulls_t::SKULL_BLACK) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return false;
 	}
 
-	if (aggressive && player->hasCondition(CONDITION_PACIFIED)) {
+	if (aggressive && player->hasCondition(ConditionType_t::CONDITION_PACIFIED)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
 	}
 
-	if (aggressive && !player->hasFlag(PlayerFlags_t::IgnoreProtectionZone) && player->getZoneType() == ZONE_PROTECTION) {
+	if (aggressive && !player->hasFlag(PlayerFlags_t::IgnoreProtectionZone) && player->getZoneType() == ZoneType_t::ZONE_PROTECTION) {
 		player->sendCancelMessage(RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE);
 		return false;
 	}
 
-	if (player->hasCondition(CONDITION_SPELLGROUPCOOLDOWN, group) || player->hasCondition(CONDITION_SPELLCOOLDOWN, m_spellId) || (secondaryGroup != SPELLGROUP_NONE && player->hasCondition(CONDITION_SPELLGROUPCOOLDOWN, secondaryGroup))) {
+	if (player->hasCondition(ConditionType_t::CONDITION_SPELLGROUPCOOLDOWN, group) || player->hasCondition(ConditionType_t::CONDITION_SPELLCOOLDOWN, m_spellId) || (secondaryGroup != SPELLGROUP_NONE && player->hasCondition(ConditionType_t::CONDITION_SPELLGROUPCOOLDOWN, secondaryGroup))) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 
 		if (isInstant()) {
@@ -584,7 +584,7 @@ bool Spell::playerRuneSpellCheck(std::shared_ptr<Player> player, const Position 
 
 	if (aggressive && needTarget && topVisibleCreature && player->hasSecureMode()) {
 		const std::shared_ptr<Player> targetPlayer = topVisibleCreature->getPlayer();
-		if (targetPlayer && targetPlayer != player && player->getSkullClient(targetPlayer) == SKULL_NONE && !Combat::isInPvpZone(player, targetPlayer)) {
+		if (targetPlayer && targetPlayer != player && player->getSkullClient(targetPlayer) == Skulls_t::SKULL_NONE && !Combat::isInPvpZone(player, targetPlayer)) {
 			player->sendCancelMessage(RETURNVALUE_TURNSECUREMODETOATTACKUNMARKEDPLAYERS);
 			g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 			return false;
@@ -647,7 +647,7 @@ void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 		g_logger().debug("[{}] spell name: {}, spellCooldown: {}, bonus: {}", __FUNCTION__, name, spellCooldown, player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN));
 		spellCooldown -= player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN);
 		if (spellCooldown > 0) {
-			std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, m_spellId);
+			std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::CONDITIONID_DEFAULT, ConditionType_t::CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, m_spellId);
 			player->addCondition(condition);
 		}
 	}
@@ -658,7 +658,7 @@ void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 			spellGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::GROUP_COOLDOWN, spellGrade);
 		}
 		if (spellGroupCooldown > 0) {
-			std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellGroupCooldown / rateCooldown, 0, false, group);
+			std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::CONDITIONID_DEFAULT, ConditionType_t::CONDITION_SPELLGROUPCOOLDOWN, spellGroupCooldown / rateCooldown, 0, false, group);
 			player->addCondition(condition);
 		}
 	}
@@ -669,7 +669,7 @@ void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 			spellSecondaryGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, spellGrade);
 		}
 		if (spellSecondaryGroupCooldown > 0) {
-			std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellSecondaryGroupCooldown / rateCooldown, 0, false, secondaryGroup);
+			std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::CONDITIONID_DEFAULT, ConditionType_t::CONDITION_SPELLGROUPCOOLDOWN, spellSecondaryGroupCooldown / rateCooldown, 0, false, secondaryGroup);
 			player->addCondition(condition);
 		}
 	}

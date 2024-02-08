@@ -71,9 +71,12 @@ public:
 		npcType->name = newName;
 	}
 
-	CreatureType_t getType() const override {
-		return CREATURETYPE_NPC;
-	}
+	/**
+	 * @brief Get the type of the NPC.
+	 * @note This function returns the type of the NPC, which is a constant value representing the creature type "NPC."
+	 * @return An unsigned 8-bit integer representing the creature type, see CreatureType_t enum for possible types.
+	 */
+	CreatureType_t getType() const override;
 
 	const Position &getMasterPos() const {
 		return masterPos;
@@ -82,10 +85,10 @@ public:
 		masterPos = pos;
 	}
 
-	uint8_t getSpeechBubble() const override {
+	SpeechBubble_t getSpeechBubble() const override {
 		return npcType->info.speechBubble;
 	}
-	void setSpeechBubble(const uint8_t bubble) {
+	void setSpeechBubble(const SpeechBubble_t bubble) {
 		npcType->info.speechBubble = bubble;
 	}
 
@@ -148,7 +151,13 @@ public:
 	void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) override;
 	void onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) override;
 	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
-	void onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text) override;
+	/**
+	 * @brief Creature say function to send a message to the creature
+	 * @param Creature as the target
+	 * @param creatureSayType as SpeakClasses enum
+	 * @param text as the message to send
+	 */
+	void onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses creatureSayType, const std::string &text) override;
 	void onThink(uint32_t interval) override;
 	void onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, bool inBackpacks);
 	void onPlayerSellAllLoot(uint32_t playerId, uint16_t itemid, bool ignore, uint64_t totalPrice);
@@ -190,7 +199,7 @@ private:
 	std::shared_ptr<NpcType> npcType;
 	std::shared_ptr<SpawnNpc> spawnNpc;
 
-	uint8_t speechBubble;
+	SpeechBubble_t speechBubble;
 
 	uint32_t yellTicks = 0;
 	uint32_t walkTicks = 0;

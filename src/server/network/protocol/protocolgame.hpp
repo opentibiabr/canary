@@ -26,8 +26,11 @@ class ProtocolGame;
 class PreySlot;
 class TaskHuntingSlot;
 class TaskHuntingOption;
+class MonsterType;
 
 struct ModalWindow;
+struct Outfit_t;
+struct LightInfo;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
@@ -115,6 +118,7 @@ private:
 	// Depot search
 	void sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count);
 	void sendCloseDepotSearch();
+	using ItemVector = std::vector<std::shared_ptr<Item>>;
 	void sendDepotSearchResultDetail(uint16_t itemId, uint8_t tier, uint32_t depotCount, const ItemVector &depotItems, uint32_t inboxCount, const ItemVector &inboxItems, uint32_t stashCount);
 	void parseOpenDepotSearch();
 	void parseCloseDepotSearch();
@@ -329,7 +333,7 @@ private:
 	void sendCreatureShield(std::shared_ptr<Creature> creature);
 	void sendCreatureEmblem(std::shared_ptr<Creature> creature);
 	void sendCreatureSkull(std::shared_ptr<Creature> creature);
-	void sendCreatureType(std::shared_ptr<Creature> creature, uint8_t creatureType);
+	void sendCreatureType(std::shared_ptr<Creature> creature, CreatureType_t creatureType);
 
 	void sendShop(std::shared_ptr<Npc> npc);
 	void sendCloseShop();

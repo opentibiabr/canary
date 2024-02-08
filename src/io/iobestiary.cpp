@@ -26,7 +26,7 @@ bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> charm, std::share
 	CombatDamage charmDamage;
 	if (charm->type == CHARM_OFFENSIVE) {
 		if (charm->id == CHARM_CRIPPLE) {
-			std::shared_ptr<ConditionSpeed> cripple = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_PARALYZE, 10000, 0)->static_self_cast<ConditionSpeed>();
+			std::shared_ptr<ConditionSpeed> cripple = Condition::createCondition(ConditionId_t::CONDITIONID_COMBAT, ConditionType_t::CONDITION_PARALYZE, 10000, 0)->static_self_cast<ConditionSpeed>();
 			cripple->setFormulaVars(-1, 0, -1, 0);
 			target->addCondition(cripple);
 			player->sendCancelMessage(charm->cancelMsg);
@@ -52,7 +52,7 @@ bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> charm, std::share
 	} else if (charm->type == CHARM_DEFENSIVE) {
 		switch (charm->id) {
 			case CHARM_PARRY: {
-				charmDamage.primary.type = COMBAT_NEUTRALDAMAGE;
+				charmDamage.primary.type = CombatType_t::COMBAT_NEUTRALDAMAGE;
 				charmDamage.primary.value = -realDamage;
 				charmDamage.extension = true;
 				if (!charmDamage.exString.empty()) {
@@ -70,14 +70,14 @@ bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> charm, std::share
 				return true;
 			}
 			case CHARM_ADRENALINE: {
-				std::shared_ptr<ConditionSpeed> adrenaline = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_HASTE, 10000, 0)->static_self_cast<ConditionSpeed>();
+				std::shared_ptr<ConditionSpeed> adrenaline = Condition::createCondition(ConditionId_t::CONDITIONID_COMBAT, ConditionType_t::CONDITION_HASTE, 10000, 0)->static_self_cast<ConditionSpeed>();
 				adrenaline->setFormulaVars(2.5, 40, 2.5, 40);
 				player->addCondition(adrenaline);
 				player->sendCancelMessage(charm->cancelMsg);
 				return false;
 			}
 			case CHARM_NUMB: {
-				std::shared_ptr<ConditionSpeed> numb = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_PARALYZE, 10000, 0)->static_self_cast<ConditionSpeed>();
+				std::shared_ptr<ConditionSpeed> numb = Condition::createCondition(ConditionId_t::CONDITIONID_COMBAT, ConditionType_t::CONDITION_PARALYZE, 10000, 0)->static_self_cast<ConditionSpeed>();
 				numb->setFormulaVars(-1, 0, -1, 0);
 				target->addCondition(numb);
 				player->sendCancelMessage(charm->cancelMsg);
@@ -353,28 +353,28 @@ std::map<uint8_t, int16_t> IOBestiary::getMonsterElements(const std::shared_ptr<
 	}
 	for (const auto &elementEntry : mtype->info.elementMap) {
 		switch (elementEntry.first) {
-			case COMBAT_PHYSICALDAMAGE:
+			case CombatType_t::COMBAT_PHYSICALDAMAGE:
 				defaultMap[0] -= static_cast<int16_t>(elementEntry.second);
 				break;
-			case COMBAT_FIREDAMAGE:
+			case CombatType_t::COMBAT_FIREDAMAGE:
 				defaultMap[1] -= static_cast<int16_t>(elementEntry.second);
 				break;
-			case COMBAT_EARTHDAMAGE:
+			case CombatType_t::COMBAT_EARTHDAMAGE:
 				defaultMap[2] -= static_cast<int16_t>(elementEntry.second);
 				break;
-			case COMBAT_ENERGYDAMAGE:
+			case CombatType_t::COMBAT_ENERGYDAMAGE:
 				defaultMap[3] -= static_cast<int16_t>(elementEntry.second);
 				break;
-			case COMBAT_ICEDAMAGE:
+			case CombatType_t::COMBAT_ICEDAMAGE:
 				defaultMap[4] -= static_cast<int16_t>(elementEntry.second);
 				break;
-			case COMBAT_HOLYDAMAGE:
+			case CombatType_t::COMBAT_HOLYDAMAGE:
 				defaultMap[5] -= static_cast<int16_t>(elementEntry.second);
 				break;
-			case COMBAT_DEATHDAMAGE:
+			case CombatType_t::COMBAT_DEATHDAMAGE:
 				defaultMap[6] -= static_cast<int16_t>(elementEntry.second);
 				break;
-			case COMBAT_HEALING:
+			case CombatType_t::COMBAT_HEALING:
 				defaultMap[7] -= static_cast<int16_t>(elementEntry.second);
 				break;
 			default:

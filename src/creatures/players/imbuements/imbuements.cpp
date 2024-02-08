@@ -251,8 +251,8 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							continue;
 						}
 
-						CombatType_t combatType = getCombatTypeByName(attr.as_string());
-						if (combatType == COMBAT_NONE) {
+						auto combatType = getCombatTypeByName(attr.as_string());
+						if (combatType == CombatType_t::COMBAT_NONE) {
 							g_logger().warn("Unknown combat type for element {}", attr.as_string());
 							continue;
 						}
@@ -264,7 +264,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 
 						uint32_t percent = std::min<uint32_t>(100, pugi::cast<uint32_t>(attr.value()));
 
-						imbuement.combatType = combatType;
+						imbuement.combatType = enumFromValue<CombatType_t>(combatType);
 						imbuement.elementDamage = std::min<int16_t>(100, percent);
 					} else if (strcasecmp(effecttype.c_str(), "reduction") == 0) {
 						if (!(attr = childNode.attribute("combat"))) {
@@ -272,8 +272,8 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							continue;
 						}
 
-						CombatType_t combatType = getCombatTypeByName(attr.as_string());
-						if (combatType == COMBAT_NONE) {
+						auto combatType = getCombatTypeByName(attr.as_string());
+						if (combatType == CombatType_t::COMBAT_NONE) {
 							g_logger().warn("Unknown combat type for element {}", attr.as_string());
 							continue;
 						}
@@ -285,7 +285,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 
 						uint32_t percent = std::min<uint32_t>(100, pugi::cast<uint32_t>(attr.value()));
 
-						imbuement.absorbPercent[combatTypeToIndex(combatType)] = percent;
+						imbuement.absorbPercent[combatToValue(combatType)] = percent;
 					} else if (strcasecmp(effecttype.c_str(), "speed") == 0) {
 						if (!(attr = childNode.attribute("value"))) {
 							g_logger().warn("Missing speed value for imbuement name {}", imbuement.name);

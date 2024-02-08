@@ -17,6 +17,7 @@ class Npc;
 struct Position;
 
 using SpectatorList = std::vector<std::shared_ptr<Creature>>;
+using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 
 struct SpectatorsCache {
 	struct FloorData {

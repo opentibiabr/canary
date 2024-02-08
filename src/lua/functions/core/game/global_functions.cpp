@@ -20,6 +20,8 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "lua/global/lua_timer_event_descr.hpp"
 
+import light_info;
+
 class Creature;
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 	// doPlayerAddItem(cid, itemid, <optional: default: 1> count/subtype, <optional: default: 1> canDropOnMap)
@@ -106,7 +108,7 @@ int GlobalFunctions::luaDoSetCreatureLight(lua_State* L) {
 	uint16_t level = getNumber<uint16_t>(L, 2);
 	uint16_t color = getNumber<uint16_t>(L, 3);
 	uint32_t time = getNumber<uint32_t>(L, 4);
-	std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_LIGHT, time, level | (color << 8));
+	std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::CONDITIONID_COMBAT, ConditionType_t::CONDITION_LIGHT, time, level | (color << 8));
 	creature->addCondition(condition);
 	pushBoolean(L, true);
 	return 1;
@@ -353,7 +355,7 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 	}
 
 	// Check if it's a healing then we sould add the non-aggresive tag
-	if (combatType == COMBAT_HEALING || (combatType == COMBAT_MANADRAIN && damage.primary.value > 0)) {
+	if (combatType == CombatType_t::COMBAT_HEALING || (combatType == CombatType_t::COMBAT_MANADRAIN && damage.primary.value > 0)) {
 		params.aggressive = false;
 	}
 
@@ -379,7 +381,7 @@ int GlobalFunctions::luaDoAreaCombatMana(lua_State* L) {
 
 		CombatDamage damage;
 		damage.origin = getNumber<CombatOrigin>(L, 7, ORIGIN_SPELL);
-		damage.primary.type = COMBAT_MANADRAIN;
+		damage.primary.type = CombatType_t::COMBAT_MANADRAIN;
 		damage.primary.value = normal_random(getNumber<int32_t>(L, 4), getNumber<int32_t>(L, 5));
 
 		damage.instantSpellName = getString(L, 8);
@@ -424,7 +426,7 @@ int GlobalFunctions::luaDoTargetCombatMana(lua_State* L) {
 
 	CombatDamage damage;
 	damage.origin = getNumber<CombatOrigin>(L, 6, ORIGIN_SPELL);
-	damage.primary.type = COMBAT_MANADRAIN;
+	damage.primary.type = CombatType_t::COMBAT_MANADRAIN;
 	damage.primary.value = normal_random(minval, maxval);
 
 	damage.instantSpellName = getString(L, 7);

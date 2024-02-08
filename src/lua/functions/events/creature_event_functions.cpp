@@ -29,29 +29,29 @@ int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 		std::string typeName = getString(L, 2);
 		std::string tmpStr = asLowerCaseString(typeName);
 		if (tmpStr == "login") {
-			creatureEvent->setEventType(CREATURE_EVENT_LOGIN);
+			creatureEvent->setEventType(CreatureEventType_t::CREATURE_EVENT_LOGIN);
 		} else if (tmpStr == "logout") {
-			creatureEvent->setEventType(CREATURE_EVENT_LOGOUT);
+			creatureEvent->setEventType(CreatureEventType_t::CREATURE_EVENT_LOGOUT);
 		} else if (tmpStr == "think") {
-			creatureEvent->setEventType(CREATURE_EVENT_THINK);
+			creatureEvent->setEventType(CreatureEventType_t::CREATURE_EVENT_THINK);
 		} else if (tmpStr == "preparedeath") {
-			creatureEvent->setEventType(CREATURE_EVENT_PREPAREDEATH);
+			creatureEvent->setEventType(CreatureEventType_t::CREATURE_EVENT_PREPAREDEATH);
 		} else if (tmpStr == "death") {
-			creatureEvent->setEventType(CREATURE_EVENT_DEATH);
+			creatureEvent->setEventType(CreatureEventType_t::CREATURE_EVENT_DEATH);
 		} else if (tmpStr == "kill") {
-			creatureEvent->setEventType(CREATURE_EVENT_KILL);
+			creatureEvent->setEventType(CreatureEventType_t::CREATURE_EVENT_KILL);
 		} else if (tmpStr == "advance") {
-			creatureEvent->setEventType(CREATURE_EVENT_ADVANCE);
+			creatureEvent->setEventType(CreatureEventType_t::CREATURE_EVENT_ADVANCE);
 		} else if (tmpStr == "modalwindow") {
-			creatureEvent->setEventType(CREATURE_EVENT_MODALWINDOW);
+			creatureEvent->setEventType(CreatureEventType_t::CREATURE_EVENT_MODALWINDOW);
 		} else if (tmpStr == "textedit") {
-			creatureEvent->setEventType(CREATURE_EVENT_TEXTEDIT);
+			creatureEvent->setEventType(CreatureEventType_t::CREATURE_EVENT_TEXTEDIT);
 		} else if (tmpStr == "healthchange") {
-			creatureEvent->setEventType(CREATURE_EVENT_HEALTHCHANGE);
+			creatureEvent->setEventType(CreatureEventType_t::CREATURE_EVENT_HEALTHCHANGE);
 		} else if (tmpStr == "manachange") {
-			creatureEvent->setEventType(CREATURE_EVENT_MANACHANGE);
+			creatureEvent->setEventType(CreatureEventType_t::CREATURE_EVENT_MANACHANGE);
 		} else if (tmpStr == "extendedopcode") {
-			creatureEvent->setEventType(CREATURE_EVENT_EXTENDED_OPCODE);
+			creatureEvent->setEventType(CreatureEventType_t::CREATURE_EVENT_EXTENDED_OPCODE);
 		} else {
 			g_logger().error("[CreatureEventFunctions::luaCreatureEventType] - "
 							 "Invalid type for creature event: {}",

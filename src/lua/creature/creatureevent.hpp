@@ -61,7 +61,7 @@ private:
 	std::string getScriptTypeName() const override;
 
 	std::string eventName;
-	CreatureEventType_t type = CREATURE_EVENT_NONE;
+	CreatureEventType_t type = CreatureEventType_t::CREATURE_EVENT_NONE;
 	bool loaded = false;
 };
 

@@ -9,16 +9,13 @@
 
 #pragma once
 
-#include "declarations.hpp"
-#include "creatures/combat/condition.hpp"
-#include "utils/utils_definitions.hpp"
-#include "lua/creature/creatureevent.hpp"
-#include "map/map.hpp"
 #include "game/movement/position.hpp"
-#include "items/tile.hpp"
+#include "items/thing.hpp"
+#include "map/map_const.hpp"
 
-using ConditionList = std::list<std::shared_ptr<Condition>>;
-using CreatureEventList = std::list<std::shared_ptr<CreatureEvent>>;
+import enum_modules;
+import outfit_type;
+import light_info;
 
 class Map;
 class Thing;
@@ -29,6 +26,16 @@ class Npc;
 class Item;
 class Tile;
 class Zone;
+class CreatureEvent;
+class Condition;
+class ItemType;
+class Cylinder;
+
+struct FindPathParams;
+struct CreatureIcon;
+
+using ConditionList = std::list<std::shared_ptr<Condition>>;
+using CreatureEventList = std::list<std::shared_ptr<CreatureEvent>>;
 
 static constexpr uint8_t WALK_TARGET_NEARBY_EXTRA_COST = 2;
 static constexpr uint8_t WALK_FLOOR_CHANGE_EXTRA_COST = 2;
@@ -103,6 +110,11 @@ public:
 	virtual const std::string &getTypeName() const = 0;
 	virtual const std::string &getNameDescription() const = 0;
 
+	/**
+	 * @brief Get the type of the Creature.
+	 * @note This function returns the type of the creature
+	 * @return An unsigned 8-bit integer representing the creature type, see CreatureType_t enum for possible types.
+	 */
 	virtual CreatureType_t getType() const = 0;
 
 	virtual void setID() = 0;
@@ -120,7 +132,7 @@ public:
 	virtual bool canSeeCreature(std::shared_ptr<Creature> creature) const;
 
 	virtual RaceType_t getRace() const {
-		return RACE_NONE;
+		return RaceType_t::RACE_NONE;
 	}
 	virtual Skulls_t getSkull() const {
 		return skull;
@@ -225,51 +237,23 @@ public:
 		maxManaShield = value;
 	}
 
-	int32_t getBuff(int32_t buff) {
-		return varBuffs[buff];
+	int32_t getBuff(Buffs_t buff) {
+		return varBuffs[buffToValue(buff)];
 	}
 
-	int32_t getBuff(int32_t buff) const {
-		return varBuffs[buff];
+	int32_t getBuff(Buffs_t buff) const {
+		return varBuffs[buffToValue(buff)];
 	}
 
-	void setBuff(buffs_t buff, int32_t modifier) {
-		varBuffs[buff] += modifier;
+	void setBuff(Buffs_t buff, int32_t modifier) {
+		varBuffs[buffToValue(buff)] += modifier;
 	}
 
-	virtual std::vector<CreatureIcon> getIcons() const {
-		std::vector<CreatureIcon> icons;
-		icons.reserve(creatureIcons.size());
-		for (const auto &[_, icon] : creatureIcons) {
-			if (icon.isSet()) {
-				icons.push_back(icon);
-			}
-		}
-		return icons;
-	}
-
-	virtual CreatureIcon getIcon(const std::string &key) const {
-		if (!creatureIcons.contains(key)) {
-			return CreatureIcon();
-		}
-		return creatureIcons.at(key);
-	}
-
-	void setIcon(const std::string &key, CreatureIcon icon) {
-		creatureIcons[key] = icon;
-		iconChanged();
-	}
-
-	void removeIcon(const std::string &key) {
-		creatureIcons.erase(key);
-		iconChanged();
-	}
-
-	void clearIcons() {
-		creatureIcons.clear();
-		iconChanged();
-	}
-
+	virtual std::vector<CreatureIcon> getIcons() const;
+	virtual CreatureIcon getIcon(const std::string &key) const;
+	void setIcon(const std::string &key, CreatureIcon icon);
+	void removeIcon(const std::string &key);
+	void clearIcons();
 	void iconChanged();
 
 	const Outfit_t getCurrentOutfit() const {
@@ -282,13 +266,7 @@ public:
 		return defaultOutfit;
 	}
 	bool isInvisible() const;
-	ZoneType_t getZoneType() {
-		if (getTile()) {
-			return getTile()->getZoneType();
-		}
-
-		return ZONE_NORMAL;
-	}
+	ZoneType_t getZoneType();
 
 	std::unordered_set<std::shared_ptr<Zone>> getZones();
 
@@ -334,7 +312,7 @@ public:
 	 *
 	 * @param creature Reference to the creature that is receiving the damage.
 	 * @param combatType Type of combat that is inflicting the damage. Note that mana drain and life drain are not mitigated.
-	 * @param blockType Reference to the block type, which may be modified to BLOCK_ARMOR if the damage is reduced to 0.
+	 * @param blockType Reference to the block type, which may be modified to BlockType_t::BLOCK_ARMOR if the damage is reduced to 0.
 	 * @param damage Reference to the amount of damage inflicted, which will be reduced by the creature's mitigation factor.
 	 */
 	void mitigateDamage(const CombatType_t &combatType, BlockType_t &blockType, int32_t &damage) const;
@@ -384,29 +362,28 @@ public:
 		return 1.0f;
 	}
 
-	virtual uint8_t getSpeechBubble() const {
-		return SPEECHBUBBLE_NONE;
+	virtual SpeechBubble_t getSpeechBubble() const {
+		return SpeechBubble_t::SPEECHBUBBLE_NONE;
 	}
 
 	bool addCondition(std::shared_ptr<Condition> condition, bool attackerPlayer = false);
 	bool addCombatCondition(std::shared_ptr<Condition> condition, bool attackerPlayer = false);
 	void removeCondition(ConditionType_t conditionType, ConditionId_t conditionId, bool force = false);
-	void removeCondition(ConditionType_t type);
+	void removeCondition(ConditionType_t conditionType);
 	void removeCondition(std::shared_ptr<Condition> condition);
-	void removeCombatCondition(ConditionType_t type);
-	std::shared_ptr<Condition> getCondition(ConditionType_t type) const;
-	std::shared_ptr<Condition> getCondition(ConditionType_t type, ConditionId_t conditionId, uint32_t subId = 0) const;
-	std::vector<std::shared_ptr<Condition>> getConditionsByType(ConditionType_t type) const;
+	void removeCombatCondition(ConditionType_t conditionType);
+	std::shared_ptr<Condition> getCondition(ConditionType_t conditionType) const;
+	std::shared_ptr<Condition> getCondition(ConditionType_t conditionType, ConditionId_t conditionId, uint32_t subId = 0) const;
 	void executeConditions(uint32_t interval);
-	bool hasCondition(ConditionType_t type, uint32_t subId = 0) const;
+	bool hasCondition(ConditionType_t conditionType, uint32_t subId = 0) const;
 
-	virtual bool isImmune(CombatType_t type) const {
+	virtual bool isConditionImmune(ConditionType_t conditionType) const {
 		return false;
 	}
-	virtual bool isImmune(ConditionType_t type) const {
+	virtual bool isCombatImmune(CombatType_t combatType) const {
 		return false;
 	}
-	virtual bool isSuppress(ConditionType_t type, bool attackerPlayer) const {
+	virtual bool isSuppress(ConditionType_t conditionType, bool attackerPlayer) const {
 		return false;
 	};
 
@@ -414,7 +391,7 @@ public:
 		return true;
 	}
 	virtual Faction_t getFaction() const {
-		return FACTION_DEFAULT;
+		return Faction_t::FACTION_DEFAULT;
 	}
 
 	virtual void changeHealth(int32_t healthChange, bool sendHealthChange = true);
@@ -434,10 +411,10 @@ public:
 	bool hasBeenAttacked(uint32_t attackerId);
 
 	// combat event functions
-	virtual void onAddCondition(ConditionType_t type);
-	virtual void onAddCombatCondition(ConditionType_t type);
-	virtual void onEndCondition(ConditionType_t type);
-	void onTickCondition(ConditionType_t type, bool &bRemove);
+	virtual void onAddCondition(ConditionType_t conditionType);
+	virtual void onAddCombatCondition(ConditionType_t conditionType);
+	virtual void onEndCondition(ConditionType_t conditionType);
+	void onTickCondition(ConditionType_t conditionType, bool &bRemove);
 	virtual void onCombatRemoveCondition(std::shared_ptr<Condition> condition);
 	virtual void onAttackedCreature(std::shared_ptr<Creature>) { }
 	virtual void onAttacked();
@@ -494,7 +471,13 @@ public:
 	virtual void onAttackedCreatureDisappear(bool) { }
 	virtual void onFollowCreatureDisappear(bool) { }
 
-	virtual void onCreatureSay(std::shared_ptr<Creature>, SpeakClasses, const std::string &) { }
+	/**
+	 * @brief Creature say function to send a message to the creature
+	 * @param Creature as the target
+	 * @param creatureSayType as SpeakClasses enum
+	 * @param text as the message to send
+	 */
+	virtual void onCreatureSay(std::shared_ptr<Creature>, SpeakClasses creatureSayType, const std::string &text) { }
 
 	virtual void onPlacedCreature() { }
 
@@ -533,39 +516,15 @@ public:
 	bool registerCreatureEvent(const std::string &name);
 	bool unregisterCreatureEvent(const std::string &name);
 
-	std::shared_ptr<Cylinder> getParent() override final {
-		return getTile();
-	}
+	std::shared_ptr<Cylinder> getParent() override final;
 
-	void setParent(std::weak_ptr<Cylinder> cylinder) override final {
-		const auto oldGroundSpeed = walk.groundSpeed;
-		walk.groundSpeed = 150;
-
-		if (const auto &lockedCylinder = cylinder.lock()) {
-			const auto &newParent = lockedCylinder->getTile();
-			position = newParent->getPosition();
-			m_tile = newParent;
-
-			if (newParent->getGround()) {
-				const auto &it = Item::items[newParent->getGround()->getID()];
-				if (it.speed > 0) {
-					walk.groundSpeed = it.speed;
-				}
-			}
-		}
-
-		if (walk.groundSpeed != oldGroundSpeed) {
-			walk.recache();
-		}
-	}
+	void setParent(std::weak_ptr<Cylinder> cylinder) override final;
 
 	const Position &getPosition() override final {
 		return position;
 	}
 
-	std::shared_ptr<Tile> getTile() override final {
-		return m_tile.lock();
-	}
+	std::shared_ptr<Tile> getTile() override final;
 
 	int32_t getWalkCache(const Position &pos);
 
@@ -635,42 +594,42 @@ public:
 	/**
 	 * @brief Retrieves the flat absorption value for a given combat type.
 	 *
-	 * @param combat The combat type.
+	 * @param combatType The combat type.
 	 * @return The flat absorption value for the specified combat type.
 	 */
-	int32_t getAbsorbFlat(CombatType_t combat) const;
+	int32_t getAbsorbFlat(CombatType_t combatType) const;
 
 	/**
 	 * @brief Sets the flat absorption value for a given combat type.
 	 *
-	 * @param combat The combat type.
+	 * @param combatType The combat type.
 	 * @param value The flat absorption value.
 	 */
-	void setAbsorbFlat(CombatType_t combat, int32_t value);
+	void setAbsorbFlat(CombatType_t combatType, int32_t value);
 
 	/**
 	 * @brief Retrieves the absorption percentage for a given combat type.
 	 *
-	 * @param combat The combat type.
+	 * @param combatType The combat type.
 	 * @return The absorption percentage for the specified combat type.
 	 */
-	int32_t getAbsorbPercent(CombatType_t combat) const;
+	int32_t getAbsorbPercent(CombatType_t combatType) const;
 
 	/**
 	 * @brief Sets the absorption percentage for a given combat type.
 	 *
-	 * @param combat The combat type.
+	 * @param combatType The combat type.
 	 * @param value The absorption percentage value.
 	 */
-	void setAbsorbPercent(CombatType_t combat, int32_t value);
+	void setAbsorbPercent(CombatType_t combatType, int32_t value);
 
 	/**
 	 * @brief Retrieves the increase percentage for a given combat type.
 	 *
-	 * @param combat The combat type.
+	 * @param combatType The combat type.
 	 * @return The increase percentage for the specified combat type.
 	 */
-	int32_t getIncreasePercent(CombatType_t combat) const;
+	int32_t getIncreasePercent(CombatType_t combatType) const;
 
 	/**
 	 * @brief Sets the increase percentage for a given combat type.
@@ -678,7 +637,7 @@ public:
 	 * @param combat The combat type.
 	 * @param value The increase percentage value.
 	 */
-	void setIncreasePercent(CombatType_t combat, int32_t value);
+	void setIncreasePercent(CombatType_t combatType, int32_t value);
 
 	/**
 	 * @brief Retrieves the charm percent modifier for the creature.
@@ -766,7 +725,7 @@ protected:
 	LightInfo internalLight;
 
 	Direction direction = DIRECTION_SOUTH;
-	Skulls_t skull = SKULL_NONE;
+	Skulls_t skull = Skulls_t::SKULL_NONE;
 
 	bool localMapCache[mapWalkHeight][mapWalkWidth] = { { false } };
 	bool isInternalRemoved = false;
@@ -795,9 +754,9 @@ protected:
 
 	// creature script events
 	bool hasEventRegistered(CreatureEventType_t event) const {
-		return (0 != (scriptEventsBitField & (static_cast<uint32_t>(1) << event)));
+		return (0 != (scriptEventsBitField & (static_cast<uint32_t>(1) << eventToValue(event))));
 	}
-	CreatureEventList getCreatureEvents(CreatureEventType_t type);
+	CreatureEventList getCreatureEvents(CreatureEventType_t creatureEventType);
 
 	void updateMapCache();
 	void updateTileCache(std::shared_ptr<Tile> tile, int32_t dx, int32_t dy);

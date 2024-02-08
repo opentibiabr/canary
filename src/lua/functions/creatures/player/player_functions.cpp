@@ -2180,7 +2180,7 @@ int PlayerFunctions::luaPlayerSendPrivateMessage(lua_State* L) {
 
 	std::shared_ptr<Player> speaker = getUserdataShared<Player>(L, 2);
 	const std::string &text = getString(L, 3);
-	SpeakClasses type = getNumber<SpeakClasses>(L, 4, TALKTYPE_PRIVATE_FROM);
+	SpeakClasses type = getNumber<SpeakClasses>(L, 4, SpeakClasses::TALKTYPE_PRIVATE_FROM);
 	player->sendPrivateMessage(speaker, type, text);
 	pushBoolean(L, true);
 	return 1;
@@ -3514,7 +3514,7 @@ int PlayerFunctions::luaPlayerGetFaction(lua_State* L) {
 		return 0;
 	}
 
-	lua_pushnumber(L, player->getFaction());
+	lua_pushnumber(L, static_cast<lua_Number>(player->getFaction()));
 	return 1;
 }
 

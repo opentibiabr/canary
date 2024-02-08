@@ -21,6 +21,10 @@ class Spell;
 class Player;
 class MatrixArea;
 
+struct CombatDamage;
+
+import enum_modules;
+
 // for luascript callback
 class ValueCallback final : public CallBack {
 public:
@@ -78,8 +82,8 @@ struct CombatParams {
 
 	uint16_t itemId = 0;
 
-	ConditionType_t dispelType = CONDITION_NONE;
-	CombatType_t combatType = COMBAT_NONE;
+	ConditionType_t dispelType = ConditionType_t::CONDITION_NONE;
+	CombatType_t combatType = CombatType_t::COMBAT_NONE;
 	CombatOrigin origin = ORIGIN_SPELL;
 
 	uint16_t impactEffect = CONST_ME_NONE;

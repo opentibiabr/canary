@@ -17,6 +17,8 @@
 #include "lua/scripts/scripts.hpp"
 #include "utils/tools.hpp"
 
+import enum_modules;
+
 int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 	// Weapon(type)
 	WeaponType_t type = getNumber<WeaponType_t>(L, 2);
@@ -268,21 +270,21 @@ int WeaponFunctions::luaWeaponElement(lua_State* L) {
 	// weapon:element(combatType)
 	const WeaponShared_ptr &weapon = getUserdataShared<Weapon>(L, 1);
 	if (weapon) {
-		if (!getNumber<CombatType_t>(L, 2)) {
+		if (!getNumber<uint8_t>(L, 2)) {
 			std::string element = getString(L, 2);
 			std::string tmpStrValue = asLowerCaseString(element);
 			if (tmpStrValue == "earth") {
-				weapon->params.combatType = COMBAT_EARTHDAMAGE;
+				weapon->params.combatType = CombatType_t::COMBAT_EARTHDAMAGE;
 			} else if (tmpStrValue == "ice") {
-				weapon->params.combatType = COMBAT_ICEDAMAGE;
+				weapon->params.combatType = CombatType_t::COMBAT_ICEDAMAGE;
 			} else if (tmpStrValue == "energy") {
-				weapon->params.combatType = COMBAT_ENERGYDAMAGE;
+				weapon->params.combatType = CombatType_t::COMBAT_ENERGYDAMAGE;
 			} else if (tmpStrValue == "fire") {
-				weapon->params.combatType = COMBAT_FIREDAMAGE;
+				weapon->params.combatType = CombatType_t::COMBAT_FIREDAMAGE;
 			} else if (tmpStrValue == "death") {
-				weapon->params.combatType = COMBAT_DEATHDAMAGE;
+				weapon->params.combatType = CombatType_t::COMBAT_DEATHDAMAGE;
 			} else if (tmpStrValue == "holy") {
-				weapon->params.combatType = COMBAT_HOLYDAMAGE;
+				weapon->params.combatType = CombatType_t::COMBAT_HOLYDAMAGE;
 			} else {
 				g_logger().warn("[WeaponFunctions:luaWeaponElement] - "
 								"Type {} does not exist",
@@ -587,21 +589,21 @@ int WeaponFunctions::luaWeaponExtraElement(lua_State* L) {
 		ItemType &it = Item::items.getItemType(id);
 		it.abilities->elementDamage = getNumber<uint16_t>(L, 2);
 
-		if (!getNumber<CombatType_t>(L, 3)) {
+		if (!getNumber<uint8_t>(L, 3)) {
 			std::string element = getString(L, 3);
 			std::string tmpStrValue = asLowerCaseString(element);
 			if (tmpStrValue == "earth") {
-				it.abilities->elementType = COMBAT_EARTHDAMAGE;
+				it.abilities->elementType = CombatType_t::COMBAT_EARTHDAMAGE;
 			} else if (tmpStrValue == "ice") {
-				it.abilities->elementType = COMBAT_ICEDAMAGE;
+				it.abilities->elementType = CombatType_t::COMBAT_ICEDAMAGE;
 			} else if (tmpStrValue == "energy") {
-				it.abilities->elementType = COMBAT_ENERGYDAMAGE;
+				it.abilities->elementType = CombatType_t::COMBAT_ENERGYDAMAGE;
 			} else if (tmpStrValue == "fire") {
-				it.abilities->elementType = COMBAT_FIREDAMAGE;
+				it.abilities->elementType = CombatType_t::COMBAT_FIREDAMAGE;
 			} else if (tmpStrValue == "death") {
-				it.abilities->elementType = COMBAT_DEATHDAMAGE;
+				it.abilities->elementType = CombatType_t::COMBAT_DEATHDAMAGE;
 			} else if (tmpStrValue == "holy") {
-				it.abilities->elementType = COMBAT_HOLYDAMAGE;
+				it.abilities->elementType = CombatType_t::COMBAT_HOLYDAMAGE;
 			} else {
 				g_logger().warn("[WeaponFunctions:luaWeaponExtraElement] - "
 								"Type {} does not exist",

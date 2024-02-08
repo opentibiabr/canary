@@ -11,6 +11,7 @@
 
 #include "spectators.hpp"
 #include "game/game.hpp"
+#include "creatures/creature.hpp"
 
 phmap::flat_hash_map<Position, SpectatorsCache> Spectators::spectatorsCache;
 

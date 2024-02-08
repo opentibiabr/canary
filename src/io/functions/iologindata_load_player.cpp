@@ -283,11 +283,11 @@ void IOLoginDataLoad::loadPlayerSkullSystem(std::shared_ptr<Player> player, DBRe
 			// ensure that we round up the number of ticks
 			player->skullTicks = (skullSeconds + 2);
 
-			uint16_t skull = result->getNumber<uint16_t>("skull");
-			if (skull == SKULL_RED) {
-				player->skull = SKULL_RED;
-			} else if (skull == SKULL_BLACK) {
-				player->skull = SKULL_BLACK;
+			auto skull = skullsFromValue(result->getNumber<uint8_t>("skull"));
+			if (skull == Skulls_t::SKULL_RED) {
+				player->skull = Skulls_t::SKULL_RED;
+			} else if (skull == Skulls_t::SKULL_BLACK) {
+				player->skull = Skulls_t::SKULL_BLACK;
 			}
 		}
 	}

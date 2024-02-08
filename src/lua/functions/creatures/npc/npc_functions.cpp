@@ -99,7 +99,7 @@ int NpcFunctions::luaNpcGetSpeechBubble(lua_State* L) {
 		lua_pushnil(L);
 	}
 
-	lua_pushnumber(L, npc->getSpeechBubble());
+	lua_pushnumber(L, static_cast<lua_Number>(npc->getSpeechBubble()));
 	return 1;
 }
 
@@ -111,7 +111,7 @@ int NpcFunctions::luaNpcSetSpeechBubble(lua_State* L) {
 		lua_pushnil(L);
 	}
 
-	npc->setSpeechBubble(getNumber<uint8_t>(L, 2));
+	npc->setSpeechBubble(getNumber<SpeechBubble_t>(L, 2));
 	return 1;
 }
 
@@ -163,7 +163,7 @@ int NpcFunctions::luaNpcPlace(lua_State* L) {
 }
 
 int NpcFunctions::luaNpcSay(lua_State* L) {
-	// npc:say(text[, type = TALKTYPE_PRIVATE_NP[, ghost = false[, target = nullptr[, position]]]])
+	// npc:say(text[, type = SpeakClasses::TALKTYPE_PRIVATE_NP[, ghost = false[, target = nullptr[, position]]]])
 	int parameters = lua_gettop(L);
 
 	Position position;
@@ -183,7 +183,7 @@ int NpcFunctions::luaNpcSay(lua_State* L) {
 
 	bool ghost = getBoolean(L, 4, false);
 
-	SpeakClasses type = getNumber<SpeakClasses>(L, 3, TALKTYPE_PRIVATE_NP);
+	SpeakClasses type = getNumber<SpeakClasses>(L, 3, SpeakClasses::TALKTYPE_PRIVATE_NP);
 	const std::string &text = getString(L, 2);
 	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {

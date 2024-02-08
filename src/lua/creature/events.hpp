@@ -18,6 +18,8 @@ class ItemType;
 class Tile;
 class Imbuements;
 
+struct Outfit_t;
+
 class Events {
 	struct EventsInfo {
 		// Creature

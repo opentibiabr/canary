@@ -22,6 +22,8 @@
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
 
+import enum_modules;
+
 int32_t Combat::getLevelFormula(std::shared_ptr<Player> player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
 		return 0;
@@ -116,65 +118,65 @@ void Combat::getCombatArea(const Position &centerPos, const Position &targetPos,
 
 CombatType_t Combat::ConditionToDamageType(ConditionType_t type) {
 	switch (type) {
-		case CONDITION_FIRE:
-			return COMBAT_FIREDAMAGE;
+		case ConditionType_t::CONDITION_FIRE:
+			return CombatType_t::COMBAT_FIREDAMAGE;
 
-		case CONDITION_ENERGY:
-			return COMBAT_ENERGYDAMAGE;
+		case ConditionType_t::CONDITION_ENERGY:
+			return CombatType_t::COMBAT_ENERGYDAMAGE;
 
-		case CONDITION_BLEEDING:
-			return COMBAT_PHYSICALDAMAGE;
+		case ConditionType_t::CONDITION_BLEEDING:
+			return CombatType_t::COMBAT_PHYSICALDAMAGE;
 
-		case CONDITION_DROWN:
-			return COMBAT_DROWNDAMAGE;
+		case ConditionType_t::CONDITION_DROWN:
+			return CombatType_t::COMBAT_DROWNDAMAGE;
 
-		case CONDITION_POISON:
-			return COMBAT_EARTHDAMAGE;
+		case ConditionType_t::CONDITION_POISON:
+			return CombatType_t::COMBAT_EARTHDAMAGE;
 
-		case CONDITION_FREEZING:
-			return COMBAT_ICEDAMAGE;
+		case ConditionType_t::CONDITION_FREEZING:
+			return CombatType_t::COMBAT_ICEDAMAGE;
 
-		case CONDITION_DAZZLED:
-			return COMBAT_HOLYDAMAGE;
+		case ConditionType_t::CONDITION_DAZZLED:
+			return CombatType_t::COMBAT_HOLYDAMAGE;
 
-		case CONDITION_CURSED:
-			return COMBAT_DEATHDAMAGE;
+		case ConditionType_t::CONDITION_CURSED:
+			return CombatType_t::COMBAT_DEATHDAMAGE;
 
 		default:
 			break;
 	}
 
-	return COMBAT_NONE;
+	return CombatType_t::COMBAT_NONE;
 }
 
 ConditionType_t Combat::DamageToConditionType(CombatType_t type) {
 	switch (type) {
-		case COMBAT_FIREDAMAGE:
-			return CONDITION_FIRE;
+		case CombatType_t::COMBAT_FIREDAMAGE:
+			return ConditionType_t::CONDITION_FIRE;
 
-		case COMBAT_ENERGYDAMAGE:
-			return CONDITION_ENERGY;
+		case CombatType_t::COMBAT_ENERGYDAMAGE:
+			return ConditionType_t::CONDITION_ENERGY;
 
-		case COMBAT_DROWNDAMAGE:
-			return CONDITION_DROWN;
+		case CombatType_t::COMBAT_DROWNDAMAGE:
+			return ConditionType_t::CONDITION_DROWN;
 
-		case COMBAT_EARTHDAMAGE:
-			return CONDITION_POISON;
+		case CombatType_t::COMBAT_EARTHDAMAGE:
+			return ConditionType_t::CONDITION_POISON;
 
-		case COMBAT_ICEDAMAGE:
-			return CONDITION_FREEZING;
+		case CombatType_t::COMBAT_ICEDAMAGE:
+			return ConditionType_t::CONDITION_FREEZING;
 
-		case COMBAT_HOLYDAMAGE:
-			return CONDITION_DAZZLED;
+		case CombatType_t::COMBAT_HOLYDAMAGE:
+			return ConditionType_t::CONDITION_DAZZLED;
 
-		case COMBAT_DEATHDAMAGE:
-			return CONDITION_CURSED;
+		case CombatType_t::COMBAT_DEATHDAMAGE:
+			return ConditionType_t::CONDITION_CURSED;
 
-		case COMBAT_PHYSICALDAMAGE:
-			return CONDITION_BLEEDING;
+		case CombatType_t::COMBAT_PHYSICALDAMAGE:
+			return ConditionType_t::CONDITION_BLEEDING;
 
 		default:
-			return CONDITION_NONE;
+			return ConditionType_t::CONDITION_NONE;
 	}
 }
 
@@ -197,21 +199,21 @@ ReturnValue Combat::canTargetCreature(std::shared_ptr<Player> player, std::share
 
 	if (!player->hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
 		// pz-zone
-		if (player->getZoneType() == ZONE_PROTECTION) {
+		if (player->getZoneType() == ZoneType_t::ZONE_PROTECTION) {
 			return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
 		}
 
-		if (target->getZoneType() == ZONE_PROTECTION) {
+		if (target->getZoneType() == ZoneType_t::ZONE_PROTECTION) {
 			return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
 		}
 
 		// nopvp-zone
 		if (isPlayerCombat(target)) {
-			if (player->getZoneType() == ZONE_NOPVP) {
+			if (player->getZoneType() == ZoneType_t::ZONE_NOPVP) {
 				return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 			}
 
-			if (target->getZoneType() == ZONE_NOPVP) {
+			if (target->getZoneType() == ZoneType_t::ZONE_NOPVP) {
 				return RETURNVALUE_YOUMAYNOTATTACKAPERSONINPROTECTIONZONE;
 			}
 		}
@@ -230,7 +232,7 @@ ReturnValue Combat::canTargetCreature(std::shared_ptr<Player> player, std::share
 			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 		}
 
-		if (player->hasSecureMode() && !Combat::isInPvpZone(player, target) && player->getSkullClient(target->getPlayer()) == SKULL_NONE) {
+		if (player->hasSecureMode() && !Combat::isInPvpZone(player, target) && player->getSkullClient(target->getPlayer()) == Skulls_t::SKULL_NONE) {
 			return RETURNVALUE_TURNSECUREMODETOATTACKUNMARKEDPLAYERS;
 		}
 	}
@@ -274,7 +276,7 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> caster, std::shared_pt
 }
 
 bool Combat::isInPvpZone(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target) {
-	return attacker->getZoneType() == ZONE_PVP && target->getZoneType() == ZONE_PVP;
+	return attacker->getZoneType() == ZoneType_t::ZONE_PVP && target->getZoneType() == ZoneType_t::ZONE_PVP;
 }
 
 bool Combat::isProtected(std::shared_ptr<Player> attacker, std::shared_ptr<Player> target) {
@@ -287,7 +289,7 @@ bool Combat::isProtected(std::shared_ptr<Player> attacker, std::shared_ptr<Playe
 		return true;
 	}
 
-	if (attacker->getSkull() == SKULL_BLACK && attacker->getSkullClient(target) == SKULL_NONE) {
+	if (attacker->getSkull() == Skulls_t::SKULL_BLACK && attacker->getSkullClient(target) == Skulls_t::SKULL_NONE) {
 		return true;
 	}
 
@@ -337,7 +339,7 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> attacker, std::shared_
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 				}
 
-				if (attackerPlayer->getFaction() != FACTION_DEFAULT && attackerPlayer->getFaction() != FACTION_PLAYER && attackerPlayer->getFaction() == targetPlayer->getFaction()) {
+				if (attackerPlayer->getFaction() != Faction_t::FACTION_DEFAULT && attackerPlayer->getFaction() != Faction_t::FACTION_PLAYER && attackerPlayer->getFaction() == targetPlayer->getFaction()) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 				}
 			}
@@ -359,12 +361,12 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> attacker, std::shared_
 			}
 
 			if (attacker->getMonster() && (!attackerMaster || attackerMaster->getMonster())) {
-				if (attacker->getFaction() != FACTION_DEFAULT && !attacker->getMonster()->isEnemyFaction(targetPlayer->getFaction())) {
+				if (attacker->getFaction() != Faction_t::FACTION_DEFAULT && !attacker->getMonster()->isEnemyFaction(targetPlayer->getFaction())) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 				}
 			}
 		} else if (target && target->getMonster()) {
-			if (attacker->getFaction() != FACTION_DEFAULT && attacker->getFaction() != FACTION_PLAYER && attacker->getMonster() && !attacker->getMonster()->isEnemyFaction(target->getFaction())) {
+			if (attacker->getFaction() != Faction_t::FACTION_DEFAULT && attacker->getFaction() != Faction_t::FACTION_PLAYER && attacker->getMonster() && !attacker->getMonster()->isEnemyFaction(target->getFaction())) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 			}
 
@@ -373,13 +375,13 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> attacker, std::shared_
 					return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 				}
 
-				if (target->isSummon() && target->getMaster()->getPlayer() && target->getZoneType() == ZONE_NOPVP) {
+				if (target->isSummon() && target->getMaster()->getPlayer() && target->getZoneType() == ZoneType_t::ZONE_NOPVP) {
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 				}
 			} else if (attacker->getMonster()) {
 				const std::shared_ptr<Creature> targetMaster = target->getMaster();
 
-				if ((!targetMaster || !targetMaster->getPlayer()) && attacker->getFaction() == FACTION_DEFAULT) {
+				if ((!targetMaster || !targetMaster->getPlayer()) && attacker->getFaction() == Faction_t::FACTION_DEFAULT) {
 					if (!attackerMaster || !attackerMaster->getPlayer()) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 					}
@@ -581,11 +583,11 @@ void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<
 		damage = applyImbuementElementalDamage(attackerPlayer, item, damage);
 		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
 
-		if (targetPlayer && targetPlayer->getSkull() != SKULL_BLACK) {
-			if (damage.primary.type != COMBAT_HEALING) {
+		if (targetPlayer && targetPlayer->getSkull() != Skulls_t::SKULL_BLACK) {
+			if (damage.primary.type != CombatType_t::COMBAT_HEALING) {
 				damage.primary.value /= 2;
 			}
-			if (damage.secondary.type != COMBAT_HEALING) {
+			if (damage.secondary.type != CombatType_t::COMBAT_HEALING) {
 				damage.secondary.value /= 2;
 			}
 		}
@@ -637,9 +639,9 @@ CombatDamage Combat::applyImbuementElementalDamage(std::shared_ptr<Player> attac
 			continue;
 		}
 
-		if (imbuementInfo.imbuement->combatType == COMBAT_NONE
-			|| damage.primary.type == COMBAT_HEALING
-			|| damage.secondary.type == COMBAT_HEALING) {
+		if (imbuementInfo.imbuement->combatType == CombatType_t::COMBAT_NONE
+			|| damage.primary.type == CombatType_t::COMBAT_HEALING
+			|| damage.secondary.type == CombatType_t::COMBAT_HEALING) {
 			continue;
 		}
 
@@ -669,7 +671,7 @@ void Combat::CombatManaFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Cr
 	assert(data);
 	CombatDamage damage = *data;
 	if (damage.primary.value < 0) {
-		if (caster && target && caster->getPlayer() && target->getSkull() != SKULL_BLACK && target->getPlayer()) {
+		if (caster && target && caster->getPlayer() && target->getSkull() != Skulls_t::SKULL_BLACK && target->getPlayer()) {
 			damage.primary.value /= 2;
 		}
 	}
@@ -684,7 +686,7 @@ bool Combat::checkFearConditionAffected(std::shared_ptr<Player> player) {
 		return false;
 	}
 
-	if (player->hasCondition(CONDITION_FEARED)) {
+	if (player->hasCondition(ConditionType_t::CONDITION_FEARED)) {
 		return false;
 	}
 
@@ -694,7 +696,7 @@ bool Combat::checkFearConditionAffected(std::shared_ptr<Player> player) {
 		g_logger().debug("[{}] Player is member of a party, {} members can be feared", __FUNCTION__, affectedCount);
 
 		for (const auto member : party->getMembers()) {
-			if (member->hasCondition(CONDITION_FEARED)) {
+			if (member->hasCondition(ConditionType_t::CONDITION_FEARED)) {
 				affectedCount -= 1;
 			}
 		}
@@ -740,12 +742,12 @@ void Combat::CombatConditionFunc(std::shared_ptr<Creature> caster, std::shared_p
 				}
 			}
 
-			if (condition->getType() == CONDITION_FEARED && !checkFearConditionAffected(player)) {
+			if (condition->getType() == ConditionType_t::CONDITION_FEARED && !checkFearConditionAffected(player)) {
 				return;
 			}
 		}
 
-		if (caster == target || target && !target->isImmune(condition->getType())) {
+		if (caster == target || target && !target->isConditionImmune(condition->getType())) {
 			auto conditionCopy = condition->clone();
 			if (caster) {
 				conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
@@ -983,10 +985,10 @@ bool Combat::doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature
 
 bool Combat::doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, int affected /* = 1 */) const {
 	// target combat callback function
-	if (params.combatType != COMBAT_NONE) {
+	if (params.combatType != CombatType_t::COMBAT_NONE) {
 		CombatDamage damage = getCombatDamage(caster, target);
 		damage.affected = affected;
-		if (damage.primary.type != COMBAT_MANADRAIN) {
+		if (damage.primary.type != CombatType_t::COMBAT_MANADRAIN) {
 			doCombatHealth(caster, target, origin, damage, params);
 		} else {
 			doCombatMana(caster, target, origin, damage, params);
@@ -1004,9 +1006,9 @@ bool Combat::doCombat(std::shared_ptr<Creature> caster, const Position &position
 	}
 
 	// area combat callback function
-	if (params.combatType != COMBAT_NONE) {
+	if (params.combatType != CombatType_t::COMBAT_NONE) {
 		CombatDamage damage = getCombatDamage(caster, nullptr);
-		if (damage.primary.type != COMBAT_MANADRAIN) {
+		if (damage.primary.type != CombatType_t::COMBAT_MANADRAIN) {
 			doCombatHealth(caster, position, area, damage, params);
 		} else {
 			doCombatMana(caster, position, area, damage, params);
@@ -1162,7 +1164,7 @@ void Combat::doCombatHealth(std::shared_ptr<Creature> caster, std::shared_ptr<Cr
 		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
-	if (target && params.combatType == COMBAT_HEALING && target->getMonster()) {
+	if (target && params.combatType == CombatType_t::COMBAT_HEALING && target->getMonster()) {
 		if (target != caster) {
 			return;
 		}
@@ -1491,7 +1493,7 @@ void ValueCallback::getMinMaxValues(std::shared_ptr<Player> player, CombatDamage
 				CombatType_t elementType = weapon->getElementType();
 				damage.secondary.type = elementType;
 
-				if (elementType != COMBAT_NONE) {
+				if (elementType != CombatType_t::COMBAT_NONE) {
 					if (weapon) {
 						elementAttack = weapon->getElementDamageValue();
 						shouldCalculateSecondaryDamage = true;
@@ -1540,7 +1542,7 @@ void ValueCallback::getMinMaxValues(std::shared_ptr<Player> player, CombatDamage
 			damage.secondary.value = elementDamage;
 		} else {
 			damage.primary.value = defaultDmg;
-			damage.secondary.type = COMBAT_NONE;
+			damage.secondary.type = CombatType_t::COMBAT_NONE;
 			damage.secondary.value = 0;
 		}
 
@@ -2049,7 +2051,7 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 
 void Combat::applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, CombatDamage &damage, const CombatParams &params) {
 	metrics::method_latency measure(__METHOD_NAME__);
-	if (damage.extension || !caster || damage.primary.type == COMBAT_HEALING) {
+	if (damage.extension || !caster || damage.primary.type == CombatType_t::COMBAT_HEALING) {
 		return;
 	}
 

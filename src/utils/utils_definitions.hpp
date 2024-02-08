@@ -309,35 +309,11 @@ enum ShootType_t : uint8_t {
 	CONST_ANI_WEAPONTYPE = 0xFE, // 254
 };
 
-enum SpeakClasses : uint8_t {
-	TALKTYPE_SAY = 1,
-	TALKTYPE_WHISPER = 2,
-	TALKTYPE_YELL = 3,
-	TALKTYPE_PRIVATE_FROM = 4,
-	TALKTYPE_PRIVATE_TO = 5,
-	TALKTYPE_CHANNEL_MANAGER = 6,
-	TALKTYPE_CHANNEL_Y = 7,
-	TALKTYPE_CHANNEL_O = 8,
-	TALKTYPE_SPELL_USE = 9,
-	TALKTYPE_PRIVATE_NP = 10,
-	TALKTYPE_NPC_UNKOWN = 11, /* no effect (?)*/
-	TALKTYPE_PRIVATE_PN = 12,
-	TALKTYPE_BROADCAST = 13,
-	TALKTYPE_CHANNEL_R1 = 14, // red - #c text
-	TALKTYPE_PRIVATE_RED_FROM = 15, //@name@text
-	TALKTYPE_PRIVATE_RED_TO = 16, //@name@text
-	TALKTYPE_MONSTER_SAY = 36,
-	TALKTYPE_MONSTER_YELL = 37,
-
-	TALKTYPE_MONSTER_LAST_OLDPROTOCOL = 38, /* Dont forget about the CHANNEL_R2*/
-	TALKTYPE_CHANNEL_R2 = 0xFF // #d
-};
-
 enum MessageClasses : uint8_t {
 	MESSAGE_NONE = 0, /* None */
 
 	MESSAGE_GAMEMASTER_CONSOLE = 13,
-	/* Red message in the console*/ /* TALKTYPE_BROADCAST */
+	/* Red message in the console*/ /* SpeakClasses::TALKTYPE_BROADCAST */
 
 	MESSAGE_LOGIN = 17, /* White message at the bottom of the game window and in the console*/
 	MESSAGE_ADMINISTRADOR = 18, /* Red message in game window and in the console*/
@@ -458,16 +434,6 @@ enum PartyAnalyzerAction_t : uint8_t {
 	PARTYANALYZERACTION_RESET = 0,
 	PARTYANALYZERACTION_PRICETYPE = 1,
 	PARTYANALYZERACTION_PRICEVALUE = 2,
-};
-
-enum Skulls_t : uint8_t {
-	SKULL_NONE = 0,
-	SKULL_YELLOW = 1,
-	SKULL_GREEN = 2,
-	SKULL_WHITE = 3,
-	SKULL_RED = 4,
-	SKULL_BLACK = 5,
-	SKULL_ORANGE = 6,
 };
 
 enum PartyShields_t : uint8_t {

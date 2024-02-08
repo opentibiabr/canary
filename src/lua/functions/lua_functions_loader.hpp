@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include "declarations.hpp"
 #include "lua/scripts/luajit_sync.hpp"
 #include "game/movement/position.hpp"
 #include "lua/scripts/script_environment.hpp"
@@ -27,6 +26,7 @@ class Zone;
 class KV;
 
 struct LuaVariant;
+struct Outfit_t;
 
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)
 

@@ -48,6 +48,9 @@ class Guild;
 class Mounts;
 class Spectators;
 
+struct Outfit_t;
+struct LightInfo;
+
 static constexpr uint16_t SERVER_BEAT = 0x32;
 static constexpr int32_t EVENT_MS = 10000;
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;

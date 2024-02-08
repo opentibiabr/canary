@@ -18,6 +18,7 @@
 	#include <cstdint>
 	#include <memory>
 	#include <cmath>
+	#include <array>
 #endif
 
 // Enum
@@ -75,74 +76,6 @@ enum ConditionAttr_t {
 	// reserved for serialization
 	CONDITIONATTR_END = 254,
 };
-
-enum ConditionType_t : uint8_t {
-	CONDITION_NONE = 0,
-
-	CONDITION_POISON = 1,
-	CONDITION_FIRE = 2,
-	CONDITION_ENERGY = 3,
-	CONDITION_BLEEDING = 4,
-	CONDITION_HASTE = 5,
-	CONDITION_PARALYZE = 6,
-	CONDITION_OUTFIT = 7,
-	CONDITION_INVISIBLE = 8,
-	CONDITION_LIGHT = 9,
-	CONDITION_MANASHIELD = 10,
-	CONDITION_INFIGHT = 11,
-	CONDITION_DRUNK = 12,
-	CONDITION_EXHAUST = 13, // unused
-	CONDITION_REGENERATION = 14,
-	CONDITION_SOUL = 15,
-	CONDITION_DROWN = 16,
-	CONDITION_MUTED = 17,
-	CONDITION_CHANNELMUTEDTICKS = 18,
-	CONDITION_YELLTICKS = 19,
-	CONDITION_ATTRIBUTES = 20,
-	CONDITION_FREEZING = 21,
-	CONDITION_DAZZLED = 22,
-	CONDITION_CURSED = 23,
-	CONDITION_EXHAUST_COMBAT = 24, // unused
-	CONDITION_EXHAUST_HEAL = 25, // unused
-	CONDITION_PACIFIED = 26,
-	CONDITION_SPELLCOOLDOWN = 27,
-	CONDITION_SPELLGROUPCOOLDOWN = 28,
-	CONDITION_ROOTED = 29,
-	CONDITION_FEARED = 30,
-	CONDITION_LESSERHEX = 31,
-	CONDITION_INTENSEHEX = 32,
-	CONDITION_GREATERHEX = 33,
-	CONDITION_GOSHNAR1 = 34,
-	CONDITION_GOSHNAR2 = 35,
-	CONDITION_GOSHNAR3 = 36,
-	CONDITION_GOSHNAR4 = 37,
-	CONDITION_GOSHNAR5 = 38,
-
-	// Need the last ever
-	CONDITION_COUNT = 39
-};
-
-// constexpr definiting suppressible conditions
-constexpr bool IsConditionSuppressible(ConditionType_t condition) {
-	constexpr ConditionType_t suppressibleConditions[] = {
-		CONDITION_POISON,
-		CONDITION_FIRE,
-		CONDITION_ENERGY,
-		CONDITION_BLEEDING,
-		CONDITION_PARALYZE,
-		CONDITION_DROWN,
-		CONDITION_FREEZING,
-		CONDITION_CURSED,
-	};
-
-	for (const auto &suppressibleCondition : suppressibleConditions) {
-		if (condition == suppressibleCondition) {
-			return true;
-		}
-	}
-
-	return false;
-}
 
 enum ConditionParam_t {
 	CONDITION_PARAM_OWNER = 1,
@@ -240,15 +173,6 @@ enum stats_t {
 	STAT_LAST = STAT_CAPACITY
 };
 
-enum buffs_t {
-	BUFF_DAMAGEDEALT,
-	BUFF_DAMAGERECEIVED,
-	BUFF_HEALINGRECEIVED,
-
-	BUFF_FIRST = BUFF_DAMAGEDEALT,
-	BUFF_LAST = BUFF_HEALINGRECEIVED,
-};
-
 enum formulaType_t {
 	COMBAT_FORMULA_UNDEFINED,
 	COMBAT_FORMULA_LEVELMAGIC,
@@ -294,15 +218,6 @@ enum charm_t {
 	CHARM_OFFENSIVE = 1,
 	CHARM_DEFENSIVE = 2,
 	CHARM_PASSIVE = 3,
-};
-
-enum SpeechBubble_t {
-	SPEECHBUBBLE_NONE = 0,
-	SPEECHBUBBLE_NORMAL = 1,
-	SPEECHBUBBLE_TRADE = 2,
-	SPEECHBUBBLE_QUEST = 3,
-	SPEECHBUBBLE_QUESTTRADER = 4,
-	SPEECHBUBBLE_HIRELING = 7,
 };
 
 enum MarketAction_t {
@@ -376,21 +291,6 @@ enum charmRune_t : int8_t {
 	CHARM_LAST = CHARM_VOID,
 };
 
-enum ConditionId_t : int8_t {
-	CONDITIONID_DEFAULT = -1,
-	CONDITIONID_COMBAT,
-	CONDITIONID_HEAD,
-	CONDITIONID_NECKLACE,
-	CONDITIONID_BACKPACK,
-	CONDITIONID_ARMOR,
-	CONDITIONID_RIGHT,
-	CONDITIONID_LEFT,
-	CONDITIONID_LEGS,
-	CONDITIONID_FEET,
-	CONDITIONID_RING,
-	CONDITIONID_AMMO,
-};
-
 enum PlayerSex_t : uint8_t {
 	PLAYERSEX_FEMALE = 0,
 	PLAYERSEX_MALE = 1,
@@ -432,37 +332,10 @@ enum skills_t : int8_t {
 	SKILL_LAST = SKILL_MANA_LEECH_AMOUNT
 };
 
-enum CreatureType_t : uint8_t {
-	CREATURETYPE_PLAYER = 0,
-	CREATURETYPE_MONSTER = 1,
-	CREATURETYPE_NPC = 2,
-	CREATURETYPE_SUMMON_PLAYER = 3,
-	CREATURETYPE_SUMMON_OTHERS = 4,
-	CREATURETYPE_HIDDEN = 5,
-};
-
 enum SpellType_t : uint8_t {
 	SPELL_UNDEFINED = 0,
 	SPELL_INSTANT = 1,
 	SPELL_RUNE = 2,
-};
-
-enum RaceType_t : uint8_t {
-	RACE_NONE,
-	RACE_VENOM,
-	RACE_BLOOD,
-	RACE_UNDEAD,
-	RACE_FIRE,
-	RACE_ENERGY,
-	RACE_INK,
-};
-
-enum BlockType_t : uint8_t {
-	BLOCK_NONE,
-	BLOCK_DEFENSE,
-	BLOCK_ARMOR,
-	BLOCK_IMMUNITY,
-	BLOCK_DODGE
 };
 
 enum BestiaryType_t : uint8_t {
@@ -763,28 +636,6 @@ enum TradeState_t : uint8_t {
 	TRADE_ACCEPT,
 	TRADE_ACKNOWLEDGE,
 	TRADE_TRANSFER,
-};
-
-enum CombatType_t : uint8_t {
-	COMBAT_PHYSICALDAMAGE = 0,
-	COMBAT_ENERGYDAMAGE = 1,
-	COMBAT_EARTHDAMAGE = 2,
-	COMBAT_FIREDAMAGE = 3,
-	COMBAT_UNDEFINEDDAMAGE = 4,
-	COMBAT_LIFEDRAIN = 5,
-	COMBAT_MANADRAIN = 6,
-	COMBAT_HEALING = 7,
-	COMBAT_DROWNDAMAGE = 8,
-	COMBAT_ICEDAMAGE = 9,
-	COMBAT_HOLYDAMAGE = 10,
-	COMBAT_DEATHDAMAGE = 11,
-	COMBAT_AGONYDAMAGE = 12,
-	COMBAT_NEUTRALDAMAGE = 13,
-
-	COMBAT_COUNT = 14,
-
-	// Server read only
-	COMBAT_NONE = 255
 };
 
 enum PlayerAsyncOngoingTaskFlags : uint64_t {
@@ -1560,17 +1411,12 @@ struct ProtocolFamiliars {
 	uint16_t lookType;
 };
 
-struct LightInfo {
-	uint8_t level = 0;
-	uint8_t color = 215;
-	constexpr LightInfo() = default;
-	constexpr LightInfo(uint8_t newLevel, uint8_t newColor) :
-		level(newLevel), color(newColor) { }
-};
+// TODO move CombatDamage struct to own file later
+import enum_modules;
 
 struct CombatDamage {
 	struct {
-		CombatType_t type = COMBAT_NONE;
+		CombatType_t type = CombatType_t::COMBAT_NONE;
 		int32_t value = 0;
 	} primary, secondary;
 
@@ -1678,22 +1524,6 @@ struct summonBlock_t {
 	uint32_t speed;
 	uint32_t count;
 	bool force = false;
-};
-
-struct Outfit_t {
-	uint16_t lookType = 0;
-	uint16_t lookTypeEx = 0;
-	uint16_t lookMount = 0;
-	uint8_t lookHead = 0;
-	uint8_t lookBody = 0;
-	uint8_t lookLegs = 0;
-	uint8_t lookFeet = 0;
-	uint8_t lookAddons = 0;
-	uint8_t lookMountHead = 0;
-	uint8_t lookMountBody = 0;
-	uint8_t lookMountLegs = 0;
-	uint8_t lookMountFeet = 0;
-	uint16_t lookFamiliarsType = 0;
 };
 
 struct voiceBlock_t {

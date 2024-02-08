@@ -31,6 +31,8 @@ class BedItem;
 class Imbuement;
 class Item;
 
+struct LightInfo;
+
 // This class ItemProperties that serves as an interface to access and modify attributes of an item. The item's attributes are stored in an instance of ItemAttribute. The class ItemProperties has methods to get and set integer and string attributes, check if an attribute exists, remove an attribute, get the underlying attribute bits, and get a vector of attributes. It also has methods to get and set custom attributes, which are stored in a std::map<std::string, CustomAttribute, std::less<>>. The class has a data member attributePtr of type std::unique_ptr<ItemAttribute> that stores a pointer to the item's attributes methods.
 class ItemProperties {
 public:
@@ -358,26 +360,6 @@ public:
 	}
 	uint8_t getPerfectShotRange() const {
 		return items[id].abilities->perfectShotRange;
-	}
-
-	int32_t getReflectionFlat(CombatType_t combatType) const {
-		return items[id].abilities->reflectFlat[combatTypeToIndex(combatType)];
-	}
-
-	int32_t getReflectionPercent(CombatType_t combatType) const {
-		return items[id].abilities->reflectPercent[combatTypeToIndex(combatType)];
-	}
-
-	int16_t getMagicShieldCapacityPercent() const {
-		return items[id].abilities->magicShieldCapacityPercent;
-	}
-
-	int32_t getMagicShieldCapacityFlat() const {
-		return items[id].abilities->magicShieldCapacityFlat;
-	}
-
-	int32_t getSpecializedMagicLevel(CombatType_t combat) const {
-		return items[id].abilities->specializedMagicLevel[combatTypeToIndex(combat)];
 	}
 
 	int32_t getSpeed() const {

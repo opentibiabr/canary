@@ -13,10 +13,12 @@
 #include "game/game.hpp"
 #include "lua/functions/creatures/combat/condition_functions.hpp"
 
+import outfit_type;
+
 int ConditionFunctions::luaConditionCreate(lua_State* L) {
-	// Condition(conditionType[, conditionId = CONDITIONID_COMBAT[, subid = 0]])
+	// Condition(conditionType[, conditionId = ConditionId_t::CONDITIONID_COMBAT[, subid = 0]])
 	ConditionType_t conditionType = getNumber<ConditionType_t>(L, 2);
-	ConditionId_t conditionId = getNumber<ConditionId_t>(L, 3, CONDITIONID_COMBAT);
+	ConditionId_t conditionId = getNumber<ConditionId_t>(L, 3, ConditionId_t::CONDITIONID_COMBAT);
 	uint32_t subId = getNumber<uint32_t>(L, 4, 0);
 
 	std::shared_ptr<Condition> condition = Condition::createCondition(conditionId, conditionType, 0, 0, false, subId);
@@ -42,7 +44,7 @@ int ConditionFunctions::luaConditionGetId(lua_State* L) {
 	// condition:getId()
 	std::shared_ptr<Condition> condition = getUserdataShared<Condition>(L, 1);
 	if (condition) {
-		lua_pushnumber(L, condition->getId());
+		lua_pushnumber(L, static_cast<lua_Number>(condition->getId()));
 	} else {
 		lua_pushnil(L);
 	}
@@ -64,7 +66,7 @@ int ConditionFunctions::luaConditionGetType(lua_State* L) {
 	// condition:getType()
 	std::shared_ptr<Condition> condition = getUserdataShared<Condition>(L, 1);
 	if (condition) {
-		lua_pushnumber(L, condition->getType());
+		lua_pushnumber(L, static_cast<lua_Number>(condition->getType()));
 	} else {
 		lua_pushnil(L);
 	}

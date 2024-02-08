@@ -23,6 +23,8 @@
 #include "lua/creature/actions.hpp"
 #include "creatures/combat/spells.hpp"
 
+import light_info;
+
 #define ITEM_IMBUEMENT_SLOT 500
 
 Items Item::items;
@@ -773,7 +775,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 				return ATTR_READ_ERROR;
 			}
 
-			setAttribute(AMOUNT, amount);
+			setAttribute(ItemAttribute_t::AMOUNT, amount);
 			break;
 		}
 
@@ -821,7 +823,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 				return ATTR_READ_ERROR;
 			}
 
-			setAttribute(OWNER, ownerId);
+			setAttribute(ItemAttribute_t::OWNER, ownerId);
 			break;
 		}
 
@@ -991,17 +993,17 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<uint8_t>(getTier());
 	}
 
-	if (hasAttribute(AMOUNT)) {
+	if (hasAttribute(ItemAttribute_t::AMOUNT)) {
 		propWriteStream.write<uint8_t>(ATTR_AMOUNT);
-		propWriteStream.write<uint16_t>(getAttribute<uint16_t>(AMOUNT));
+		propWriteStream.write<uint16_t>(getAttribute<uint16_t>(ItemAttribute_t::AMOUNT));
 	}
 
-	if (hasAttribute(STORE_INBOX_CATEGORY)) {
+	if (hasAttribute(ItemAttribute_t::STORE_INBOX_CATEGORY)) {
 		propWriteStream.write<uint8_t>(ATTR_STORE_INBOX_CATEGORY);
 		propWriteStream.writeString(getString(ItemAttribute_t::STORE_INBOX_CATEGORY));
 	}
 
-	if (hasAttribute(OWNER)) {
+	if (hasAttribute(ItemAttribute_t::OWNER)) {
 		propWriteStream.write<uint8_t>(ATTR_OWNER);
 		propWriteStream.write<uint32_t>(getAttribute<uint32_t>(ItemAttribute_t::OWNER));
 	}
@@ -1178,7 +1180,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			}
 			descriptions.emplace_back("Attack", ss.str());
 		} else if (!it.isRanged() && attack != 0) {
-			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
+			if (it.abilities && it.abilities->elementType != CombatType_t::COMBAT_NONE && it.abilities->elementDamage != 0) {
 				ss.str("");
 				ss << attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
 				descriptions.emplace_back("Attack", ss.str());
@@ -1212,8 +1214,11 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			// Protection
 			ss.str("");
 			bool protection = false;
-			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-				if (it.abilities->absorbPercent[i] == 0) {
+			for (const auto &combat : getAllCombatValueTypes()) {
+				if (combat >= COMBAT_COUNT) {
+					continue;
+				}
+				if (it.abilities->absorbPercent[combat] == 0) {
 					continue;
 				}
 
@@ -1221,7 +1226,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 					ss << ", ";
 				}
 
-				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->fieldAbsorbPercent[i]);
+				ss << fmt::format("{} {:+}%", getCombatName(combatFromValue(combat)), it.abilities->fieldAbsorbPercent[combat]);
 				protection = true;
 			}
 			if (protection) {
@@ -1289,12 +1294,17 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				descriptions.emplace_back("Magic Level", ss.str());
 			}
 
-			for (uint8_t i = 1; i <= 11; i++) {
-				if (it.abilities->specializedMagicLevel[i]) {
+			for (const auto &combat : getAllCombatTypes()) {
+				if (combat >= CombatType_t::COMBAT_AGONYDAMAGE) {
+					continue;
+				}
+
+				auto abilities = it.abilities->specializedMagicLevel[combatToValue(combat)];
+				if (abilities) {
 					ss.str("");
 
-					ss << std::showpos << it.abilities->specializedMagicLevel[i] << std::noshowpos;
-					std::string combatName = getCombatName(indexToCombatType(i));
+					ss << std::showpos << abilities << std::noshowpos;
+					std::string combatName = getCombatName(combat);
 					combatName[0] = toupper(combatName[0]);
 					descriptions.emplace_back(combatName + " Magic Level", ss.str());
 				}
@@ -1312,9 +1322,9 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				descriptions.emplace_back("Perfect Shot", ss.str());
 			}
 
-			if (it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)]) {
+			if (it.abilities->reflectFlat[combatToValue(CombatType_t::COMBAT_PHYSICALDAMAGE)]) {
 				ss.str("");
-				ss << it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)];
+				ss << it.abilities->reflectFlat[combatToValue(CombatType_t::COMBAT_PHYSICALDAMAGE)];
 				descriptions.emplace_back("Damage Reflection", ss.str());
 			}
 
@@ -1330,7 +1340,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				descriptions.emplace_back("Cleave", ss.str());
 			}
 
-			if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
+			if (it.abilities->conditionSuppressions[conditionToValue(ConditionType_t::CONDITION_DRUNK)] != ConditionType_t::CONDITION_NONE) {
 				ss.str("");
 				ss << "Hard Drinking";
 				descriptions.emplace_back("Effect", ss.str());
@@ -1354,27 +1364,35 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				descriptions.emplace_back("Effect", ss.str());
 			}
 
-			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-				if (it.abilities->absorbPercent[i] == 0) {
+			for (const auto &combat : getAllCombatValueTypes()) {
+				if (combat >= COMBAT_COUNT) {
+					continue;
+				}
+
+				if (it.abilities->absorbPercent[combat] == 0) {
 					continue;
 				}
 
 				ss.str("");
-				ss << getCombatName(indexToCombatType(i)) << ' '
-				   << std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
+				ss << getCombatName(combatFromValue(combat)) << ' '
+				   << std::showpos << it.abilities->absorbPercent[combat] << std::noshowpos << '%';
 				descriptions.emplace_back("Protection", ss.str());
 			}
-			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-				if (it.abilities->fieldAbsorbPercent[i] == 0) {
+			for (const auto &combat : getAllCombatValueTypes()) {
+				if (combat >= COMBAT_COUNT) {
+					continue;
+				}
+
+				if (it.abilities->fieldAbsorbPercent[combat] == 0) {
 					continue;
 				}
 
 				ss.str("");
-				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->fieldAbsorbPercent[i]);
+				ss << fmt::format("{} {:+}%", getCombatName(combatFromValue(combat)), it.abilities->fieldAbsorbPercent[combat]);
 				descriptions.emplace_back("Field Protection", ss.str());
 			}
 
-			if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
+			if (it.abilities->conditionSuppressions[conditionToValue(ConditionType_t::CONDITION_DRUNK)] != ConditionType_t::CONDITION_NONE) {
 				ss.str("");
 				ss << "Hard Drinking";
 				descriptions.emplace_back("Skill Boost", ss.str());
@@ -1586,7 +1604,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			}
 			descriptions.emplace_back("Attack", ss.str());
 		} else if (!it.isRanged() && attack != 0) {
-			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
+			if (it.abilities && it.abilities->elementType != CombatType_t::COMBAT_NONE && it.abilities->elementDamage != 0) {
 				ss.str("");
 				ss << attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
 				descriptions.emplace_back("Attack", ss.str());
@@ -1615,8 +1633,12 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			// Protection
 			ss.str("");
 			bool protection = false;
-			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-				if (it.abilities->absorbPercent[i] == 0) {
+			for (const auto &combat : getAllCombatValueTypes()) {
+				if (combat >= COMBAT_COUNT) {
+					continue;
+				}
+
+				if (it.abilities->absorbPercent[combat] == 0) {
 					continue;
 				}
 
@@ -1624,7 +1646,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 					ss << ", ";
 				}
 
-				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
+				ss << fmt::format("{} {:+}%", getCombatName(combatFromValue(combat)), it.abilities->absorbPercent[combat]);
 				protection = true;
 			}
 			if (protection) {
@@ -1687,12 +1709,17 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				descriptions.emplace_back("Skill Boost", ss.str());
 			}
 
-			for (uint8_t i = 1; i <= 11; i++) {
-				if (it.abilities->specializedMagicLevel[i]) {
+			for (const auto &combat : getAllCombatTypes()) {
+				if (combat >= CombatType_t::COMBAT_AGONYDAMAGE) {
+					continue;
+				}
+
+				auto abilities = it.abilities->specializedMagicLevel[combatToValue(combat)];
+				if (abilities) {
 					ss.str("");
 
-					ss << std::showpos << it.abilities->specializedMagicLevel[i] << std::noshowpos;
-					std::string combatName = getCombatName(indexToCombatType(i));
+					ss << std::showpos << abilities << std::noshowpos;
+					std::string combatName = getCombatName(combat);
 					combatName[0] = toupper(combatName[0]);
 					descriptions.emplace_back(combatName + " Magic Level", ss.str());
 				}
@@ -1710,9 +1737,9 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				descriptions.emplace_back("Perfect Shot", ss.str());
 			}
 
-			if (it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)]) {
+			if (it.abilities->reflectFlat[combatToValue(CombatType_t::COMBAT_PHYSICALDAMAGE)]) {
 				ss.str("");
-				ss << it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)];
+				ss << it.abilities->reflectFlat[combatToValue(CombatType_t::COMBAT_PHYSICALDAMAGE)];
 				descriptions.emplace_back("Damage Reflection", ss.str());
 			}
 
@@ -1722,7 +1749,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				descriptions.emplace_back("Cleave", ss.str());
 			}
 
-			if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
+			if (it.abilities->conditionSuppressions[conditionToValue(ConditionType_t::CONDITION_DRUNK)] != ConditionType_t::CONDITION_NONE) {
 				ss.str("");
 				ss << "Hard Drinking";
 				descriptions.emplace_back("Effect", ss.str());
@@ -1746,17 +1773,22 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				descriptions.emplace_back("Effect", ss.str());
 			}
 
-			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-				if (it.abilities->fieldAbsorbPercent[i] == 0) {
+			for (const auto &combat : getAllCombatValueTypes()) {
+				if (combat >= COMBAT_COUNT) {
+					continue;
+				}
+
+				auto absordPercent = it.abilities->fieldAbsorbPercent[combat];
+				if (absordPercent == 0) {
 					continue;
 				}
 
 				ss.str("");
-				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->fieldAbsorbPercent[i]);
+				ss << fmt::format("{} {:+}%", getCombatName(combatFromValue(combat)), absordPercent);
 				descriptions.emplace_back("Field Protection", ss.str());
 			}
 
-			if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
+			if (it.abilities->conditionSuppressions[conditionToValue(ConditionType_t::CONDITION_DRUNK)] != ConditionType_t::CONDITION_NONE) {
 				ss.str("");
 				ss << "Hard Drinking";
 				descriptions.emplace_back("Skill Boost", ss.str());
@@ -2135,8 +2167,13 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 				itemDescription << "magic level " << std::showpos << itemType.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
 			}
 
-			for (uint8_t i = 1; i <= 11; i++) {
-				if (itemType.abilities->specializedMagicLevel[i]) {
+			for (const auto &combat : getAllCombatTypes()) {
+				if (combat >= CombatType_t::COMBAT_AGONYDAMAGE) {
+					continue;
+				}
+
+				auto abilities = itemType.abilities->specializedMagicLevel[combatToValue(combat)];
+				if (abilities) {
 					if (begin) {
 						begin = false;
 						itemDescription << " (";
@@ -2144,7 +2181,7 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 						itemDescription << ", ";
 					}
 
-					itemDescription << getCombatName(indexToCombatType(i)) << " magic level " << std::showpos << itemType.abilities->specializedMagicLevel[i] << std::noshowpos;
+					itemDescription << getCombatName(combat) << " magic level " << std::showpos << abilities << std::noshowpos;
 				}
 			}
 
@@ -2183,8 +2220,12 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 
 			int16_t show = itemType.abilities->absorbPercent[0];
 			if (show != 0) {
-				for (size_t i = 1; i < COMBAT_COUNT; ++i) {
-					if (itemType.abilities->absorbPercent[i] != show) {
+				for (const auto &combat : getAllCombatValueTypes()) {
+					if (combat >= COMBAT_COUNT) {
+						continue;
+					}
+
+					if (itemType.abilities->absorbPercent[combat] != show) {
 						show = 0;
 						break;
 					}
@@ -2193,8 +2234,13 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 
 			if (!show) {
 				bool protectionBegin = true;
-				for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-					if (itemType.abilities->absorbPercent[i] == 0) {
+				for (const auto &combat : getAllCombatValueTypes()) {
+					if (combat >= COMBAT_COUNT) {
+						continue;
+					}
+
+					auto absordPercent = itemType.abilities->absorbPercent[combat];
+					if (absordPercent == 0) {
 						continue;
 					}
 
@@ -2212,7 +2258,7 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 					} else {
 						itemDescription << ", ";
 					}
-					itemDescription << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), itemType.abilities->absorbPercent[i]);
+					itemDescription << fmt::format("{} {:+}%", getCombatName(combatFromValue(combat)), absordPercent);
 				}
 			} else {
 				if (begin) {
@@ -2227,8 +2273,13 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 
 			show = itemType.abilities->fieldAbsorbPercent[0];
 			if (show != 0) {
-				for (size_t i = 1; i < COMBAT_COUNT; ++i) {
-					if (itemType.abilities->absorbPercent[i] != show) {
+				for (const auto &combat : getAllCombatValueTypes()) {
+					if (combat >= COMBAT_COUNT) {
+						continue;
+					}
+
+					auto absorbPercent = itemType.abilities->absorbPercent[combat];
+					if (absorbPercent != show) {
 						show = 0;
 						break;
 					}
@@ -2238,8 +2289,13 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 			if (!show) {
 				bool tmp = true;
 
-				for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-					if (itemType.abilities->fieldAbsorbPercent[i] == 0) {
+				for (const auto &combat : getAllCombatValueTypes()) {
+					if (combat >= COMBAT_COUNT) {
+						continue;
+					}
+
+					auto fieldAbsorbPercent = itemType.abilities->fieldAbsorbPercent[combat];
+					if (fieldAbsorbPercent == 0) {
 						continue;
 					}
 
@@ -2258,7 +2314,7 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 						itemDescription << ", ";
 					}
 
-					itemDescription << fmt::format("{} field {:+}%", getCombatName(indexToCombatType(i)), itemType.abilities->fieldAbsorbPercent[i]);
+					itemDescription << fmt::format("{} field {:+}%", getCombatName(combatFromValue(combat)), fieldAbsorbPercent);
 				}
 			} else {
 				if (begin) {
@@ -2433,8 +2489,13 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 					s << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
 				}
 
-				for (uint8_t i = 1; i <= 11; i++) {
-					if (it.abilities->specializedMagicLevel[i]) {
+				for (const auto &combat : getAllCombatTypes()) {
+					if (combat >= CombatType_t::COMBAT_AGONYDAMAGE) {
+						continue;
+					}
+
+					auto abilities = it.abilities->specializedMagicLevel[combatToValue(combat)];
+					if (abilities) {
 						if (begin) {
 							begin = false;
 							s << " (";
@@ -2442,7 +2503,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 							s << ", ";
 						}
 
-						s << getCombatName(indexToCombatType(i)) << " magic level " << std::showpos << it.abilities->specializedMagicLevel[i] << std::noshowpos;
+						s << getCombatName(combat) << " magic level " << std::showpos << abilities << std::noshowpos;
 					}
 				}
 
@@ -2468,7 +2529,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 					s << "perfect shot " << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(it.abilities->perfectShotRange);
 				}
 
-				if (it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)]) {
+				if (it.abilities->reflectFlat[combatToValue(CombatType_t::COMBAT_PHYSICALDAMAGE)]) {
 					if (begin) {
 						begin = false;
 						s << " (";
@@ -2476,13 +2537,18 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 						s << ", ";
 					}
 
-					s << "damage reflection " << std::showpos << it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)] << std::noshowpos;
+					s << "damage reflection " << std::showpos << it.abilities->reflectFlat[combatToValue(CombatType_t::COMBAT_PHYSICALDAMAGE)] << std::noshowpos;
 				}
 
 				int16_t show = it.abilities->absorbPercent[0];
 				if (show != 0) {
-					for (size_t i = 1; i < COMBAT_COUNT; ++i) {
-						if (it.abilities->absorbPercent[i] != show) {
+					for (const auto &combat : getAllCombatValueTypes()) {
+						if (combat >= COMBAT_COUNT) {
+							continue;
+						}
+
+						auto absorbPercent = it.abilities->absorbPercent[combat];
+						if (absorbPercent != show) {
 							show = 0;
 							break;
 						}
@@ -2491,9 +2557,13 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 
 				if (show == 0) {
 					bool tmp = true;
+					for (const auto &combat : getAllCombatValueTypes()) {
+						if (combat >= COMBAT_COUNT) {
+							continue;
+						}
 
-					for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-						if (it.abilities->absorbPercent[i] == 0) {
+						auto absorbPercent = it.abilities->absorbPercent[combat];
+						if (absorbPercent == 0) {
 							continue;
 						}
 
@@ -2512,7 +2582,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 							s << ", ";
 						}
 
-						s << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
+						s << fmt::format("{} {:+}%", getCombatName(combatFromValue(combat)), absorbPercent);
 					}
 				} else {
 					if (begin) {
@@ -2527,8 +2597,13 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 
 				show = it.abilities->fieldAbsorbPercent[0];
 				if (show != 0) {
-					for (size_t i = 1; i < COMBAT_COUNT; ++i) {
-						if (it.abilities->absorbPercent[i] != show) {
+					for (const auto &combat : getAllCombatValueTypes()) {
+						if (combat >= COMBAT_COUNT) {
+							continue;
+						}
+
+						auto absorbPercent = it.abilities->absorbPercent[combat];
+						if (absorbPercent != show) {
 							show = 0;
 							break;
 						}
@@ -2538,8 +2613,13 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 				if (show == 0) {
 					bool tmp = true;
 
-					for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-						if (it.abilities->fieldAbsorbPercent[i] == 0) {
+					for (const auto &combat : getAllCombatValueTypes()) {
+						if (combat >= COMBAT_COUNT) {
+							continue;
+						}
+
+						auto absorbPercent = it.abilities->fieldAbsorbPercent[combat];
+						if (absorbPercent == 0) {
 							continue;
 						}
 
@@ -2558,7 +2638,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 							s << ", ";
 						}
 
-						s << fmt::format("{} field {:+}%", getCombatName(indexToCombatType(i)), it.abilities->fieldAbsorbPercent[i]);
+						s << fmt::format("{} field {:+}%", getCombatName(combatFromValue(combat)), absorbPercent);
 					}
 				} else {
 					if (begin) {
@@ -2631,7 +2711,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 				begin = false;
 				s << " (Atk:" << attack;
 
-				if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
+				if (it.abilities && it.abilities->elementType != CombatType_t::COMBAT_NONE && it.abilities->elementDamage != 0) {
 					s << " physical + " << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
 				}
 			}
@@ -2701,8 +2781,13 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 					s << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
 				}
 
-				for (uint8_t i = 1; i <= 11; i++) {
-					if (it.abilities->specializedMagicLevel[i]) {
+				for (const auto &combat : getAllCombatTypes()) {
+					if (combat >= CombatType_t::COMBAT_AGONYDAMAGE) {
+						continue;
+					}
+
+					auto abilities = it.abilities->specializedMagicLevel[combatToValue(combat)];
+					if (abilities) {
 						if (begin) {
 							begin = false;
 							s << " (";
@@ -2710,7 +2795,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 							s << ", ";
 						}
 
-						s << getCombatName(indexToCombatType(i)) << " magic level " << std::showpos << it.abilities->specializedMagicLevel[i] << std::noshowpos;
+						s << getCombatName(combat) << " magic level " << std::showpos << abilities << std::noshowpos;
 					}
 				}
 
@@ -2736,7 +2821,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 					s << "perfect shot " << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(it.abilities->perfectShotRange);
 				}
 
-				if (it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)]) {
+				if (it.abilities->reflectFlat[combatToValue(CombatType_t::COMBAT_PHYSICALDAMAGE)]) {
 					if (begin) {
 						begin = false;
 						s << " (";
@@ -2744,13 +2829,18 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 						s << ", ";
 					}
 
-					s << "damage reflection " << std::showpos << it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)] << std::noshowpos;
+					s << "damage reflection " << std::showpos << it.abilities->reflectFlat[combatToValue(CombatType_t::COMBAT_PHYSICALDAMAGE)] << std::noshowpos;
 				}
 
 				int16_t show = it.abilities->absorbPercent[0];
 				if (show != 0) {
-					for (size_t i = 1; i < COMBAT_COUNT; ++i) {
-						if (it.abilities->absorbPercent[i] != show) {
+					for (const auto &combat : getAllCombatValueTypes()) {
+						if (combat >= COMBAT_COUNT) {
+							continue;
+						}
+
+						auto absorbPercent = it.abilities->absorbPercent[combat];
+						if (absorbPercent != show) {
 							show = 0;
 							break;
 						}
@@ -2760,8 +2850,13 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 				if (show == 0) {
 					bool tmp = true;
 
-					for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-						if (it.abilities->absorbPercent[i] == 0) {
+					for (const auto &combat : getAllCombatValueTypes()) {
+						if (combat >= COMBAT_COUNT) {
+							continue;
+						}
+
+						auto absorbPercent = it.abilities->absorbPercent[combat];
+						if (absorbPercent == 0) {
 							continue;
 						}
 
@@ -2780,7 +2875,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 							s << ", ";
 						}
 
-						s << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
+						s << fmt::format("{} {:+}%", getCombatName(combatFromValue(combat)), absorbPercent);
 					}
 				} else {
 					if (begin) {
@@ -2795,8 +2890,13 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 
 				show = it.abilities->fieldAbsorbPercent[0];
 				if (show != 0) {
-					for (size_t i = 1; i < COMBAT_COUNT; ++i) {
-						if (it.abilities->absorbPercent[i] != show) {
+					for (const auto &combat : getAllCombatValueTypes()) {
+						if (combat >= COMBAT_COUNT) {
+							continue;
+						}
+
+						auto absorbPercent = it.abilities->absorbPercent[combat];
+						if (absorbPercent != show) {
 							show = 0;
 							break;
 						}
@@ -2806,8 +2906,13 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 				if (show == 0) {
 					bool tmp = true;
 
-					for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-						if (it.abilities->fieldAbsorbPercent[i] == 0) {
+					for (const auto &combat : getAllCombatValueTypes()) {
+						if (combat >= COMBAT_COUNT) {
+							continue;
+						}
+
+						auto absorbPercent = it.abilities->fieldAbsorbPercent[combat];
+						if (absorbPercent == 0) {
 							continue;
 						}
 
@@ -2826,7 +2931,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 							s << ", ";
 						}
 
-						s << fmt::format("{} field {:+}%", getCombatName(indexToCombatType(i)), it.abilities->fieldAbsorbPercent[i]);
+						s << fmt::format("{} field {:+}%", getCombatName(combatFromValue(combat)), absorbPercent);
 					}
 				} else {
 					if (begin) {
@@ -2879,7 +2984,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 			if (it.abilities->speed > 0) {
 				bool begin = true;
 				s << parseShowDurationSpeed(it.abilities->speed, begin) << ")" << parseShowDuration(item);
-			} else if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
+			} else if (it.abilities->conditionSuppressions[conditionToValue(ConditionType_t::CONDITION_DRUNK)] != ConditionType_t::CONDITION_NONE) {
 				s << " (hard drinking)";
 			} else if (it.abilities->invisible) {
 				s << " (invisibility)";

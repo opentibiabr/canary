@@ -642,7 +642,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 
 				// There is 3 options for a monster to enter a magic field
 				// 1) Monster is immune
-				if (!monster->isImmune(combatType)) {
+				if (!monster->isCombatImmune(combatType)) {
 					// 1) Monster is able to walk over field type
 					// 2) Being attacked while random stepping will make it ignore field damages
 					if (hasBitSet(FLAG_IGNOREFIELDDAMAGE, tileFlags)) {
@@ -694,7 +694,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 						}
 					}
 					if (countOutsizePZ >= maxOutsizePZ) {
-						player->sendCreatureSay(player, TALKTYPE_MONSTER_SAY, fmt::format("You can only have {} character{} from your account outside of a protection zone.", maxOutsizePZ == 1 ? "one" : std::to_string(maxOutsizePZ), maxOutsizePZ > 1 ? "s" : ""), &getPosition());
+						player->sendCreatureSay(player, SpeakClasses::TALKTYPE_MONSTER_SAY, fmt::format("You can only have {} character{} from your account outside of a protection zone.", maxOutsizePZ == 1 ? "one" : std::to_string(maxOutsizePZ), maxOutsizePZ > 1 ? "s" : ""), &getPosition());
 						return RETURNVALUE_NOTPOSSIBLE;
 					}
 				}

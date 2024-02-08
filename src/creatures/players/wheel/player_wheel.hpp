@@ -328,7 +328,7 @@ public:
 	WheelSpellGrade_t getSpellUpgrade(const std::string &name) const;
 	int32_t getMajorStat(WheelMajor_t type) const;
 	int32_t getStat(WheelStat_t type) const;
-	int32_t getResistance(CombatType_t type) const;
+	int32_t getResistance(CombatType_t) const;
 	int32_t getMajorStatConditional(const std::string &instant, WheelMajor_t major) const;
 	int64_t getOnThinkTimer(WheelOnThink_t type) const;
 	bool getInstant(const std::string name) const;

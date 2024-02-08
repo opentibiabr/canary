@@ -14,6 +14,8 @@
 #include "utils/pugicast.hpp"
 #include "game/scheduling/dispatcher.hpp"
 
+import enum_modules;
+
 bool PrivateChatChannel::isInvited(uint32_t guid) const {
 	if (guid == getOwner()) {
 		return true;
@@ -476,12 +478,12 @@ bool Chat::talkToChannel(const std::shared_ptr<Player> &player, SpeakClasses typ
 	if (channelId == CHANNEL_GUILD) {
 		GuildRank_ptr rank = player->getGuildRank();
 		if (rank && rank->level > 1) {
-			type = TALKTYPE_CHANNEL_O;
-		} else if (type != TALKTYPE_CHANNEL_Y) {
-			type = TALKTYPE_CHANNEL_Y;
+			type = SpeakClasses::TALKTYPE_CHANNEL_O;
+		} else if (type != SpeakClasses::TALKTYPE_CHANNEL_Y) {
+			type = SpeakClasses::TALKTYPE_CHANNEL_Y;
 		}
-	} else if (type != TALKTYPE_CHANNEL_Y && (channelId == CHANNEL_PRIVATE || channelId == CHANNEL_PARTY)) {
-		type = TALKTYPE_CHANNEL_Y;
+	} else if (type != SpeakClasses::TALKTYPE_CHANNEL_Y && (channelId == CHANNEL_PRIVATE || channelId == CHANNEL_PARTY)) {
+		type = SpeakClasses::TALKTYPE_CHANNEL_Y;
 	}
 
 	if (!channel->executeOnSpeakEvent(player, type, text)) {

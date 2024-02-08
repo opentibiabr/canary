@@ -520,12 +520,12 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 
 	if (it.abilities) {
 		if (it.abilities->invisible) {
-			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_INVISIBLE, -1, 0);
+			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), ConditionType_t::CONDITION_INVISIBLE, -1, 0);
 			player->addCondition(condition);
 		}
 
 		if (it.abilities->manaShield) {
-			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_MANASHIELD, -1, 0);
+			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), ConditionType_t::CONDITION_MANASHIELD, -1, 0);
 			player->addCondition(condition);
 		}
 
@@ -537,7 +537,7 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 		player->sendIcons();
 
 		if (it.abilities->regeneration) {
-			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_REGENERATION, -1, 0);
+			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), ConditionType_t::CONDITION_REGENERATION, -1, 0);
 
 			if (it.abilities->getHealthGain() != 0) {
 				condition->setParam(CONDITION_PARAM_HEALTHGAIN, it.abilities->getHealthGain());
@@ -618,15 +618,15 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, std:
 
 	if (it.abilities) {
 		if (it.abilities->invisible) {
-			player->removeCondition(CONDITION_INVISIBLE, static_cast<ConditionId_t>(slot));
+			player->removeCondition(ConditionType_t::CONDITION_INVISIBLE, static_cast<ConditionId_t>(slot));
 		}
 
 		if (it.abilities->manaShield) {
-			player->removeCondition(CONDITION_MANASHIELD, static_cast<ConditionId_t>(slot));
+			player->removeCondition(ConditionType_t::CONDITION_MANASHIELD, static_cast<ConditionId_t>(slot));
 		}
 
 		if (it.abilities->regeneration) {
-			player->removeCondition(CONDITION_REGENERATION, static_cast<ConditionId_t>(slot));
+			player->removeCondition(ConditionType_t::CONDITION_REGENERATION, static_cast<ConditionId_t>(slot));
 		}
 
 		for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {

@@ -9,7 +9,12 @@
 
 #pragma once
 
+// TODO: remove this include
 #include "declarations.hpp"
+
+import enum_modules;
+import outfit_type;
+import light_info;
 
 class Creature;
 class Player;
@@ -120,14 +125,14 @@ public:
 
 private:
 	// Helpers
-	int32_t getAbsorbByIndex(uint8_t index) const;
-	void setAbsorb(uint8_t index, int32_t value);
-	int32_t getAbsorbPercentByIndex(uint8_t index) const;
-	void setAbsorbPercent(uint8_t index, int32_t value);
-	int32_t getIncreaseByIndex(uint8_t index) const;
-	void setIncrease(uint8_t index, int32_t value);
-	int32_t getIncreasePercentById(uint8_t index) const;
-	void setIncreasePercent(uint8_t index, int32_t value);
+	int32_t getAbsorbByIndex(CombatType_t index) const;
+	void setAbsorb(CombatType_t index, int32_t value);
+	int32_t getAbsorbPercentByIndex(CombatType_t index) const;
+	void setAbsorbPercent(CombatType_t index, int32_t value);
+	int32_t getIncreaseByIndex(CombatType_t index) const;
+	void setIncrease(CombatType_t index, int32_t value);
+	int32_t getIncreasePercentById(CombatType_t index) const;
+	void setIncreasePercent(CombatType_t index, int32_t value);
 
 	int32_t skills[SKILL_LAST + 1] = {};
 	int32_t skillsPercent[SKILL_LAST + 1] = {};

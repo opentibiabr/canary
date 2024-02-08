@@ -12,6 +12,9 @@
 #include "creatures/monsters/monsters.hpp"
 #include "declarations.hpp"
 #include "items/tile.hpp"
+#include "creatures/monsters/spawns/spawn_monster.hpp"
+
+import enum_modules;
 
 class Creature;
 class Game;
@@ -59,9 +62,12 @@ public:
 		return strDescription + '.';
 	}
 
-	CreatureType_t getType() const override {
-		return CREATURETYPE_MONSTER;
-	}
+	/**
+	 * @brief Get the type of the Monster.
+	 * @note This function returns the type of the creature
+	 * @return An unsigned 8-bit integer representing the creature type, see CreatureType_t enum for possible types.
+	 */
+	CreatureType_t getType() const override;
 
 	const Position &getMasterPos() const {
 		return masterPos;
@@ -81,21 +87,8 @@ public:
 		return mType->info.defense * getDefenseMultiplier();
 	}
 
-	Faction_t getFaction() const override {
-		auto master = getMaster();
-		if (getMaster()) {
-			return getMaster()->getFaction();
-		}
-		return mType->info.faction;
-	}
-
-	bool isEnemyFaction(Faction_t faction) const {
-		auto master = getMaster();
-		if (master && master->getMonster()) {
-			return master->getMonster()->isEnemyFaction(faction);
-		}
-		return mType->info.enemyFactions.empty() ? false : mType->info.enemyFactions.contains(faction);
-	}
+	Faction_t getFaction() const override;
+	bool isEnemyFaction(Faction_t faction) const;
 
 	bool isPushable() override {
 		return mType->info.pushable && baseSpeed != 0;
@@ -119,7 +112,7 @@ public:
 		return mType->info.isFamiliar;
 	}
 	bool canSeeInvisibility() const override {
-		return isImmune(CONDITION_INVISIBLE);
+		return isConditionImmune(ConditionType_t::CONDITION_INVISIBLE);
 	}
 	uint16_t critChance() const {
 		return mType->info.critChance;
@@ -135,7 +128,7 @@ public:
 	}
 
 	int32_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const override;
-	uint32_t getHealingCombatValue(CombatType_t healingType) const;
+	uint32_t getHealingCombatValue(CombatType_t combatType) const;
 
 	bool canWalkOnFieldType(CombatType_t combatType) const;
 	void onAttackedCreatureDisappear(bool isLogout) override;
@@ -143,7 +136,13 @@ public:
 	void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) override;
 	void onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) override;
 	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
-	void onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text) override;
+	/**
+	 * @brief Creature say function to send a message to the creature
+	 * @param Creature as the target
+	 * @param creatureSayType as SpeakClasses enum
+	 * @param text as the message to send
+	 */
+	void onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses creatureSayType, const std::string &text) override;
 
 	void drainHealth(std::shared_ptr<Creature> attacker, int32_t damage) override;
 	void changeHealth(int32_t healthChange, bool sendHealthChange = true) override;
@@ -166,9 +165,9 @@ public:
 		}
 		if (challengeMeleeDuration > 0 && mType->info.targetDistance > targetDistance) {
 			return { CreatureIcon(CreatureIconModifications_t::TurnedMelee) };
-		} else if (varBuffs[BUFF_DAMAGERECEIVED] > 100) {
+		} else if (varBuffs[buffToValue(Buffs_t::BUFF_DAMAGERECEIVED)] > 100) {
 			return { CreatureIcon(CreatureIconModifications_t::HigherDamageReceived) };
-		} else if (varBuffs[BUFF_DAMAGEDEALT] < 100) {
+		} else if (varBuffs[buffToValue(Buffs_t::BUFF_DAMAGEDEALT)] < 100) {
 			return { CreatureIcon(CreatureIconModifications_t::LowerDamageDealt) };
 		}
 		return {};
@@ -282,6 +281,21 @@ public:
 	void clearTargetList();
 	void clearFriendList();
 
+	/**
+	 * @brief Perform a block action when attacked by a creature.
+	 *
+	 * This function calculates the type of block action to be taken by a monster when it is attacked by another creature. The result is based on various factors, including the type of combat, the attacker, and the damage to be inflicted.
+	 *
+	 * @param attacker A shared pointer to the attacking creature.
+	 * @param combatType An unsigned 8-bit integer representing the type of combat (seed CombatType_t enumeration for possible values)
+	 * @param damage A reference to an integer that stores the calculated damage. It may be modified by this function.
+	 * @param checkDefense A boolean indicating whether to check the monster's defense during the block action (default is false).
+	 * @param checkArmor A boolean indicating whether to check the monster's armor during the block action (default is false).
+	 *
+	 * \return An unsigned 8-bit integer representing the type of block action taken by the monster.
+	 *
+	 * \note The `field` parameter is not used in this function.
+	 */
 	BlockType_t blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 
 	static uint32_t monsterAutoID;
@@ -331,8 +345,8 @@ public:
 	void clearFiendishStatus();
 	bool canDropLoot() const;
 
-	bool isImmune(ConditionType_t conditionType) const override;
-	bool isImmune(CombatType_t combatType) const override;
+	bool isConditionImmune(ConditionType_t conditionType) const override;
+	bool isCombatImmune(CombatType_t combatType) const override;
 
 	float getAttackMultiplier() const {
 		float multiplier = mType->getAttackMultiplier();
@@ -421,8 +435,8 @@ private:
 		return isIdle;
 	}
 
-	void onAddCondition(ConditionType_t type) override;
-	void onEndCondition(ConditionType_t type) override;
+	void onAddCondition(ConditionType_t conditionType) override;
+	void onEndCondition(ConditionType_t conditionType) override;
 
 	bool canUseAttack(const Position &pos, const std::shared_ptr<Creature> &target) const;
 	bool canUseSpell(const Position &pos, const Position &targetPos, const spellBlock_t &sb, uint32_t interval, bool &inRange, bool &resetTicks);
@@ -466,5 +480,5 @@ private:
 	void doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &result);
 	void doRandomStep(Direction &nextDirection, bool &result);
 
-	void onConditionStatusChange(const ConditionType_t &type);
+	void onConditionStatusChange(const ConditionType_t &conditionType);
 };

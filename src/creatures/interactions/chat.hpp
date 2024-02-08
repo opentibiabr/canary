@@ -13,6 +13,8 @@
 #include "lib/di/container.hpp"
 #include "lua/scripts/luascript.hpp"
 
+import enum_modules;
+
 class Party;
 class Player;
 

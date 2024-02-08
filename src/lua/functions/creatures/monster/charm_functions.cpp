@@ -83,7 +83,7 @@ int CharmFunctions::luaCharmDamageType(lua_State* L) {
 	// get: charm:damageType() set: charm:damageType(type)
 	const auto charm = getUserdataShared<Charm>(L, 1);
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, charm->dmgtype);
+		lua_pushnumber(L, combatToValue(charm->dmgtype));
 	} else {
 		charm->dmgtype = getNumber<CombatType_t>(L, 2);
 		pushBoolean(L, true);

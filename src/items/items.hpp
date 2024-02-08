@@ -14,10 +14,12 @@
 #include "declarations.hpp"
 #include "game/movement/position.hpp"
 
+import enum_modules;
+
 struct Abilities {
 public:
-	std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionImmunities = {};
-	std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionSuppressions = {};
+	std::array<ConditionType_t, CONDITION_COUNT> conditionImmunities = {};
+	std::array<ConditionType_t, CONDITION_COUNT> conditionSuppressions = {};
 
 	// stats modifiers
 	int32_t stats[STAT_LAST + 1] = { 0 };
@@ -39,7 +41,7 @@ public:
 
 	// elemental damage
 	uint16_t elementDamage = 0;
-	CombatType_t elementType = COMBAT_NONE;
+	CombatType_t elementType = CombatType_t::COMBAT_NONE;
 
 	// 12.72 modifiers
 	// Specialized magic level modifiers
@@ -292,7 +294,7 @@ public:
 	int32_t runeLevel = 0;
 	int32_t wrapableTo = 0;
 
-	CombatType_t combatType = COMBAT_NONE;
+	CombatType_t combatType = CombatType_t::COMBAT_NONE;
 
 	ItemAnimation_t animationType = ANIMATION_NONE;
 
@@ -316,7 +318,7 @@ public:
 	WeaponType_t weaponType = WEAPON_NONE;
 	Ammo_t ammoType = AMMO_NONE;
 	ShootType_t shootType = CONST_ANI_NONE;
-	RaceType_t corpseType = RACE_NONE;
+	RaceType_t corpseType = RaceType_t::RACE_NONE;
 	Fluids_t fluidSource = FLUID_NONE;
 	TileFlags_t floorChange = TILESTATE_NONE;
 	std::map<ImbuementTypes_t, uint16_t> imbuementTypes;

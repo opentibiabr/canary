@@ -72,7 +72,7 @@ end
 teleportEntrace:uid(64001, 64002, 64003)
 teleportEntrace:register()
 
-local setting = {
+local teleportPositions = {
 	[64103] = Position(33475, 32641, 10),
 	[64104] = Position(33473, 32647, 9),
 	[64105] = Position(33463, 32585, 8),
@@ -99,28 +99,20 @@ function teleportLadder.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(Storage.TheShatteredIsles.AccessToLagunaIsland) ~= 1 and item.uid == 3206 then
-		local accessPosition = Position(32340, 32540, 7)
-		player:teleportTo(accessPosition)
-		position:sendMagicEffect(CONST_ME_TELEPORT)
-		accessPosition:sendMagicEffect(CONST_ME_TELEPORT)
-		return true
-	end
-
-	local targetPosition = setting[item.actionid]
+	local targetPosition = teleportPositions[item.actionid]
 	if not targetPosition then
 		return true
 	end
 
+	player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	player:teleportTo(targetPosition)
-	position:sendMagicEffect(CONST_ME_TELEPORT)
-	targetPosition:sendMagicEffect(CONST_ME_TELEPORT)
+	player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	return true
 end
 
 teleportLadder:type("stepin")
 
-for index, value in pairs(setting) do
+for index, value in pairs(teleportPositions) do
 	teleportLadder:aid(index)
 end
 

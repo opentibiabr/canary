@@ -26,10 +26,8 @@ function goldenOutfitDisplay.onUse(player, item, fromPosition, target, toPositio
 	end
 
 	if player:getStorageValue(Storage.OutfitQuest.GoldenOutfit) == 3 then
-		if newItemID then
-			item:transform(newItemID)
-			item:getPosition():sendMagicEffect(CONST_ME_EARLY_THUNDER)
-		end
+		item:transform(newItemID)
+		item:getPosition():sendMagicEffect(CONST_ME_EARLY_THUNDER)
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need Full Golden Outfit to use it.")
 		item:getPosition():sendMagicEffect(CONST_ME_POFF)

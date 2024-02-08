@@ -8,7 +8,7 @@ local gates = {
 	{ city = "Liberty Bay", mapName = "libertybay", exitPosition = Position(32348, 32693, 7) },
 	{ city = "Port Hope", mapName = "porthope", exitPosition = Position(32530, 32712, 7) },
 	{ city = "Thais", mapName = "thais", exitPosition = Position(32265, 32164, 7) },
-	{ city = "Venore", mapName = "venore", exitPosition = Position(32834, 32082, 7) }
+	{ city = "Venore", mapName = "venore", exitPosition = Position(32834, 32082, 7) },
 }
 
 local furyGates = GlobalEvent("Load Fury Gates")

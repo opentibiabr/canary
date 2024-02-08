@@ -22,7 +22,7 @@ Reserved player action storage key ranges (const.hpp)
 ]]
 
 PlayerStorageKeys = {
-	vortexTamer = 30000,
+	VortexTamer = 30000,
 }
 
 Global = {

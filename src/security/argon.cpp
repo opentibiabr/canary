@@ -13,6 +13,8 @@
 #include "database/database.hpp"
 #include "security/argon.hpp"
 
+#include <argon2.h>
+
 const std::regex Argon2::re("\\$([A-Za-z0-9+/]+)\\$([A-Za-z0-9+/]+)");
 const std::string Argon2::base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 

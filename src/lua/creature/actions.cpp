@@ -15,6 +15,7 @@
 #include "game/game.hpp"
 #include "creatures/combat/spells.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
+#include "enums/account_group_type.hpp"
 
 Actions::Actions() = default;
 Actions::~Actions() = default;
@@ -344,7 +345,7 @@ ReturnValue Actions::internalUseItem(std::shared_ptr<Player> player, const Posit
 		uint32_t corpseOwner = container->getCorpseOwner();
 		if (container->isRewardCorpse()) {
 			// only players who participated in the fight can open the corpse
-			if (player->getGroup()->id >= account::GROUP_TYPE_GAMEMASTER) {
+			if (player->getGroup()->id >= GROUP_TYPE_GAMEMASTER) {
 				return RETURNVALUE_YOUCANTOPENCORPSEADM;
 			}
 			auto reward = player->getReward(rewardId, false);

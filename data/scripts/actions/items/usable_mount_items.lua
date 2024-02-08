@@ -1,25 +1,25 @@
 local config = {
 	[23538] = { -- vibrant egg
-			name = "vortexion",
-			mountId = 94,
-			tameMessage = "You receive the permission to ride a sparkion."
+		name = "vortexion",
+		mountId = 94,
+		tameMessage = "You receive the permission to ride a sparkion.",
 	},
 	[23684] = { -- crackling egg
-			name = "neon sparkid",
-			mountId = 98,
-			tameMessage = "You receive the permission to ride a neon sparkid."
+		name = "neon sparkid",
+		mountId = 98,
+		tameMessage = "You receive the permission to ride a neon sparkid.",
 	},
 	[23685] = { -- menacing egg
-			name = "vortexion",
-			mountId = 99,
-			tameMessage = "You receive the permission to ride a vortexion."
+		name = "vortexion",
+		mountId = 99,
+		tameMessage = "You receive the permission to ride a vortexion.",
 	},
 	[32629] = { -- spectral scrap of cloth
-			name = "haze",
-			mountId = 162,
-			achievement = "Nothing but Hot Air",
-			tameMessage = "You are now versed to ride the haze!"
-	}
+		name = "haze",
+		mountId = 162,
+		achievement = "Nothing but Hot Air",
+		tameMessage = "You are now versed to ride the haze!",
+	},
 }
 
 local usableItemMounts = Action()

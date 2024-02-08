@@ -3135,4 +3135,7 @@ startupGlobalStorages = {
 	GlobalStorage.FerumbrasAscendant.Elements.Second,
 	GlobalStorage.FerumbrasAscendant.Elements.Third,
 	GlobalStorage.FerumbrasAscendant.Elements.Done,
+	GlobalStorage.WorldBoard.NightmareIsle.ankrahmunNorth,
+	GlobalStorage.WorldBoard.NightmareIsle.darashiaNorth,
+	GlobalStorage.WorldBoard.NightmareIsle.darashiaWest,
 }

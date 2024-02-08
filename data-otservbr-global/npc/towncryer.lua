@@ -32,7 +32,7 @@ npcConfig.voices = {
 }
 
 local worldChanges = {
-	{ text = "In Ankrahmun's desert, a storm has revealed the entry to a nightmare that can't be sealed. Horrible creatures there spell instant death to all young adventurers who dare take a breath!", storage = GlobalStorage.WorldBoard.NightmareIsle.ankrahmunNorthEast },
+	{ text = "In Ankrahmun's desert, a storm has revealed the entry to a nightmare that can't be sealed. Horrible creatures there spell instant death to all young adventurers who dare take a breath!", storage = GlobalStorage.WorldBoard.NightmareIsle.ankrahmunNorth },
 	{ text = "Near Darashia's coast, a storm has revealed the entry to a nightmare that can't be sealed. Horrible creatures there spell instant death to all young adventurers who dare take a breath!", storage = GlobalStorage.WorldBoard.NightmareIsle.darashiaNorth },
 	{ text = "Near Drefia's mountains, a storm has revealed the entry to a nightmare that can't be sealed. Horrible creatures there spell instant death to all young adventurers who dare take a breath!", storage = GlobalStorage.WorldBoard.NightmareIsle.darashiaWest },
 	{ text = "Hear ye! Hear ye! What a lucky and beautiful day! Visit Carlin, Ankrahmun, or Liberty Bay. Yasir, the oriental trader might be there. Gather your creature products, for this chance is rare.", storage = GlobalStorage.WorldBoard.Yasir },

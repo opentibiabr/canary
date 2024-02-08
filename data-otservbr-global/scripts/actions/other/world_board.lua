@@ -2,7 +2,7 @@ local worldBoard = Action()
 
 local communicates = {
 	[1] = {
-		storageValue = GlobalStorage.FuryGate,
+		storageValue = GlobalStorage.FuryGates,
 		communicate = "A fiery fury gate has opened near one of the major cities somewhere in Tibia.",
 	},
 

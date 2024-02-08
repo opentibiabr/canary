@@ -3,7 +3,7 @@ local config = {
 	[23684] = { name = "neon sparkid", mountId = 98, tameMessage = "You receive the permission to ride a neon sparkid." }, -- crackling egg
 	[23685] = { name = "vortexion", mountId = 99, tameMessage = "You receive the permission to ride a vortexion." }, -- menacing egg
 	[32629] = { name = "haze", mountId = 162, achievement = "Nothing but Hot Air", tameMessage = "You are now versed to ride the haze!" }, -- spectral scrap of cloth
-},
+}
 
 local usableItemMounts = Action()
 

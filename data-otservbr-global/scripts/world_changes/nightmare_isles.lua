@@ -11,6 +11,10 @@ local nightmareIsleConfig = {
 local nightmareIsleEvent = GlobalEvent("Nightmare Isle")
 
 function nightmareIsleEvent.onStartup()
+	for _, config in ipairs(nightmareIsleConfig) do
+		Game.setStorageValue(config.storage, -1)
+	end
+
 	local randomMap = nightmareIsleConfig[math.random(#nightmareIsleConfig)]
 	Game.loadMap(DATA_DIRECTORY .. "/world/world_changes/nightmare_isle/" .. randomMap.mapName .. ".otbm")
 	Game.setStorageValue(randomMap.storage, 1)
@@ -38,8 +42,7 @@ function teleportExit.onStepIn(creature, item, position, fromPosition)
 	end
 
 	for _, config in ipairs(teleportExits) do
-		local storageValue = Game.getStorageValue(config.storage)
-		if storageValue == 1 then
+		if Game.getStorageValue(config.storage) == 1 then
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			player:teleportTo(config.position)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

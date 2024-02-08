@@ -27,7 +27,7 @@ npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
 	{ text = "Hear me! Hear me! The mage Wyrdin in the Edron academy is looking for brave adventurers to undertake a task!" },
-	{ text = "Hear me! Hear me! The postmaster\'s guild has open spots for aspiring postmen! Contact Kevin Postner at the post office in the plains south of Kazordoon!" },
+	{ text = "Hear me! Hear me! The postmaster's guild has open spots for aspiring postmen! Contact Kevin Postner at the post office in the plains south of Kazordoon!" },
 	{ text = "Hear me! Hear me! The inquisition is looking for daring people to fight evil! Apply at the inquisition headquarters next to the Thaian jail!" },
 }
 
@@ -40,7 +40,7 @@ local worldChanges = {
 
 for i = 1, #worldChanges do
 	if Game.getStorageValue(worldChanges[i].storage) > 0 then
-		table.insert(npcConfig.voices, {text = worldChanges[i].text})
+		table.insert(npcConfig.voices, { text = worldChanges[i].text })
 	end
 end
 

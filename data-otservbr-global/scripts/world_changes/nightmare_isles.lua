@@ -5,7 +5,7 @@ end
 local nightmareIsleConfig = {
 	{ displayName = "North of Ankrahmun", mapName = "ankrahmun-north", storage = GlobalStorage.WorldBoard.NightmareIsle.ankrahmunNorth },
 	{ displayName = "North of Darashia", mapName = "darashia-north", storage = GlobalStorage.WorldBoard.NightmareIsle.darashiaNorth },
-	{ displayName = "West of Darashia", mapName = "darashia-west", storage = GlobalStorage.WorldBoard.NightmareIsle.darashiaWest }
+	{ displayName = "West of Darashia", mapName = "darashia-west", storage = GlobalStorage.WorldBoard.NightmareIsle.darashiaWest },
 }
 
 local nightmareIsleEvent = GlobalEvent("Nightmare Isle")
@@ -26,7 +26,7 @@ nightmareIsleEvent:register()
 local teleportExits = {
 	{ position = Position(33255, 32678, 7), storage = GlobalStorage.WorldBoard.NightmareIsle.ankrahmunNorth },
 	{ position = Position(33215, 32273, 7), storage = GlobalStorage.WorldBoard.NightmareIsle.darashiaNorth },
-	{ position = Position(33032, 32400, 7), storage = GlobalStorage.WorldBoard.NightmareIsle.darashiaWest }
+	{ position = Position(33032, 32400, 7), storage = GlobalStorage.WorldBoard.NightmareIsle.darashiaWest },
 }
 
 local teleportExit = MoveEvent()

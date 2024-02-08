@@ -5,22 +5,22 @@ local config = {
 			{ position = Position(33096, 32883, 6), itemId = 4977 },
 			{ position = Position(33096, 32883, 6), itemId = 4920 },
 			{ position = Position(33096, 32884, 6), itemId = 4920 },
-			{ position = Position(33096, 32885, 6), itemId = 4920 }
+			{ position = Position(33096, 32885, 6), itemId = 4920 },
 		},
 
 		yasirPosition = Position(33102, 32884, 6),
-		mapName = "Ankrahmun"
+		mapName = "Ankrahmun",
 	},
 
 	[2] = {
 		yasirPosition = Position(32400, 31815, 6),
-		mapName = "Carlin"
+		mapName = "Carlin",
 	},
 
 	[3] = {
 		yasirPosition = Position(32314, 32895, 6),
-		mapName = "Liberty Bay"
-	}
+		mapName = "Liberty Bay",
+	},
 }
 
 local function yasirwebhook(message)
@@ -53,7 +53,7 @@ function orientalTrader.onStartup()
 	logger.info("[World Change] Yasir has arrived in {} today!", randTown.mapName)
 
 	if randTown.removeItems then
-		removeItems(randTown.removeItems)  -- Use the function to remove items
+		removeItems(randTown.removeItems) -- Use the function to remove items
 	end
 
 	local mapName = string.removeAllSpaces(randTown.mapName):lower()

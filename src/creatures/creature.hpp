@@ -9,13 +9,13 @@
 
 #pragma once
 
-#include "game/movement/position.hpp"
 #include "items/thing.hpp"
 #include "map/map_const.hpp"
 
 import enum_modules;
 import outfit_type;
 import light_info;
+import game_movement;
 
 class Map;
 class Thing;
@@ -188,11 +188,11 @@ public:
 
 	int32_t getWalkSize();
 
-	int32_t getWalkDelay(Direction dir = DIRECTION_NONE);
+	int32_t getWalkDelay(Direction dir = Direction::NONE);
 	int64_t getTimeSinceLastMove() const;
 
 	int64_t getEventStepTicks(bool onlyDelay = false);
-	uint16_t getStepDuration(Direction dir = DIRECTION_NONE);
+	uint16_t getStepDuration(Direction dir = Direction::NONE);
 	virtual uint16_t getStepSpeed() const {
 		return getSpeed();
 	}
@@ -724,7 +724,7 @@ protected:
 	Position lastPosition;
 	LightInfo internalLight;
 
-	Direction direction = DIRECTION_SOUTH;
+	Direction direction = Direction::SOUTH;
 	Skulls_t skull = Skulls_t::SKULL_NONE;
 
 	bool localMapCache[mapWalkHeight][mapWalkWidth] = { { false } };

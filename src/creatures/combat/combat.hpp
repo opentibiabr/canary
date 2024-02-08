@@ -24,6 +24,7 @@ class MatrixArea;
 struct CombatDamage;
 
 import enum_modules;
+import game_movement;
 
 // for luascript callback
 class ValueCallback final : public CallBack {
@@ -228,31 +229,31 @@ private:
 
 		Direction dir;
 		if (dx < 0) {
-			dir = DIRECTION_WEST;
+			dir = Direction::WEST;
 		} else if (dx > 0) {
-			dir = DIRECTION_EAST;
+			dir = Direction::EAST;
 		} else if (dy < 0) {
-			dir = DIRECTION_NORTH;
+			dir = Direction::NORTH;
 		} else {
-			dir = DIRECTION_SOUTH;
+			dir = Direction::SOUTH;
 		}
 
 		if (hasExtArea) {
 			if (dx < 0 && dy < 0) {
-				dir = DIRECTION_NORTHWEST;
+				dir = Direction::NORTHWEST;
 			} else if (dx > 0 && dy < 0) {
-				dir = DIRECTION_NORTHEAST;
+				dir = Direction::NORTHEAST;
 			} else if (dx < 0 && dy > 0) {
-				dir = DIRECTION_SOUTHWEST;
+				dir = Direction::SOUTHWEST;
 			} else if (dx > 0 && dy > 0) {
-				dir = DIRECTION_SOUTHEAST;
+				dir = Direction::SOUTHEAST;
 			}
 		}
 
-		return areas[dir];
+		return areas[directionToValue(dir)];
 	}
 
-	std::array<std::unique_ptr<MatrixArea>, Direction::DIRECTION_LAST + 1> areas {};
+	std::array<std::unique_ptr<MatrixArea>, DIRECTION_LAST + 1> areas {};
 	bool hasExtArea = false;
 };
 

@@ -18,6 +18,8 @@
 #include "utils/tools.hpp"
 #include "io/fileloader.hpp"
 
+import game_movement;
+
 class Creature;
 class Player;
 class Container;

@@ -1,9 +1,11 @@
 module;
 
-export module enum_modules;
+#pragma once
 
-#include <cstdint>
 #include <array>
+#include <cstdint>
+
+export module enum_modules;
 
 /**
  * @file

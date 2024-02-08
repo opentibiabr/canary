@@ -17,7 +17,6 @@
 #include "items/item.hpp"
 #include "map/map.hpp"
 #include "creatures/npcs/npc.hpp"
-#include "movement/position.hpp"
 #include "creatures/players/player.hpp"
 #include "lua/creature/raids.hpp"
 #include "creatures/players/grouping/team_finder.hpp"
@@ -25,6 +24,8 @@
 #include "items/items_classification.hpp"
 #include "modal_window/modal_window.hpp"
 #include "enums/object_category.hpp"
+
+import game_movement;
 
 // Forward declaration for protobuf class
 namespace Canary {

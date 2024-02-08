@@ -19,6 +19,7 @@
 
 import outfit_type;
 import light_info;
+import game_movement;
 
 int CreatureFunctions::luaCreatureCreate(lua_State* L) {
 	// Creature(id or name or userdata)
@@ -451,7 +452,7 @@ int CreatureFunctions::luaCreatureGetDirection(lua_State* L) {
 	// creature:getDirection()
 	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
 	if (creature) {
-		lua_pushnumber(L, creature->getDirection());
+		lua_pushnumber(L, static_cast<lua_Number>(creature->getDirection()));
 	} else {
 		lua_pushnil(L);
 	}
@@ -809,14 +810,14 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 	if (!pushMovement) {
 		if (oldPosition.x == position.x) {
 			if (oldPosition.y < position.y) {
-				g_game().internalCreatureTurn(creature, DIRECTION_SOUTH);
+				g_game().internalCreatureTurn(creature, Direction::SOUTH);
 			} else {
-				g_game().internalCreatureTurn(creature, DIRECTION_NORTH);
+				g_game().internalCreatureTurn(creature, Direction::NORTH);
 			}
 		} else if (oldPosition.x > position.x) {
-			g_game().internalCreatureTurn(creature, DIRECTION_WEST);
+			g_game().internalCreatureTurn(creature, Direction::WEST);
 		} else if (oldPosition.x < position.x) {
-			g_game().internalCreatureTurn(creature, DIRECTION_EAST);
+			g_game().internalCreatureTurn(creature, Direction::EAST);
 		}
 	}
 	pushBoolean(L, true);
@@ -951,7 +952,7 @@ int CreatureFunctions::luaCreatureGetPathTo(lua_State* L) {
 
 		int index = 0;
 		for (Direction dir : dirList) {
-			lua_pushnumber(L, dir);
+			lua_pushnumber(L, static_cast<lua_Number>(dir));
 			lua_rawseti(L, -2, ++index);
 		}
 	} else {
@@ -971,7 +972,7 @@ int CreatureFunctions::luaCreatureMove(lua_State* L) {
 
 	if (isNumber(L, 2)) {
 		Direction direction = getNumber<Direction>(L, 2);
-		if (direction > DIRECTION_LAST) {
+		if (direction > Direction::LAST) {
 			lua_pushnil(L);
 			return 1;
 		}

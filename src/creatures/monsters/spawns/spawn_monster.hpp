@@ -10,7 +10,8 @@
 #pragma once
 
 #include "items/tile.hpp"
-#include "game/movement/position.hpp"
+
+import game_movement;
 
 class Monster;
 class MonsterType;

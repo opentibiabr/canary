@@ -13,6 +13,8 @@
 #include "lua/scripts/luascript.hpp"
 #include "creatures/combat/spells.hpp"
 
+import game_movement;
+
 class Party;
 class ItemType;
 class Tile;

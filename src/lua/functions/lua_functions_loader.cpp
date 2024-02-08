@@ -30,6 +30,7 @@
 #include "enums/lua_variant_type.hpp"
 
 import outfit_type;
+import game_movement;
 
 class LuaScriptInterface;
 

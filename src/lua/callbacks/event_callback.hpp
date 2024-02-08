@@ -24,6 +24,7 @@ class Monster;
 class Zone;
 
 struct Outfit_t;
+struct Position;
 
 /**
  * @class EventCallback

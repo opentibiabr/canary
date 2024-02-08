@@ -17,6 +17,8 @@
 #include "game/scheduling/save_manager.hpp"
 #include "lib/metrics/metrics.hpp"
 
+import game_movement;
+
 House::House(uint32_t houseId) :
 	id(houseId) { }
 

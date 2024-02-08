@@ -17,6 +17,7 @@
 #include "game/zones/zone.hpp"
 
 import outfit_type;
+import game_movement;
 
 /**
  * @class EventCallback
@@ -673,7 +674,7 @@ bool EventCallback::playerOnTurn(std::shared_ptr<Player> player, Direction direc
 	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
-	lua_pushnumber(L, direction);
+	lua_pushnumber(L, static_cast<lua_Number>(direction));
 
 	return getScriptInterface()->callFunction(2);
 }

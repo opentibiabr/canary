@@ -23,6 +23,7 @@
 #include "lib/metrics/metrics.hpp"
 
 import enum_modules;
+import game_movement;
 
 int32_t Combat::getLevelFormula(std::shared_ptr<Player> player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
@@ -1737,7 +1738,7 @@ void AreaCombat::clear() {
 
 AreaCombat::AreaCombat(const AreaCombat &rhs) {
 	hasExtArea = rhs.hasExtArea;
-	for (uint_fast8_t i = 0; i <= Direction::DIRECTION_LAST; ++i) {
+	for (uint_fast8_t i = 0; i <= DIRECTION_LAST; ++i) {
 		if (const auto &area = rhs.areas[i]) {
 			areas[i] = area->clone();
 		}
@@ -1894,10 +1895,10 @@ void AreaCombat::setupArea(const std::list<uint32_t> &list, uint32_t rows) {
 	auto westArea = std::make_unique<MatrixArea>(maxOutput, maxOutput);
 	copyArea(northArea, westArea, MATRIXOPERATION_ROTATE270);
 
-	areas[DIRECTION_NORTH] = std::move(northArea);
-	areas[DIRECTION_SOUTH] = std::move(southArea);
-	areas[DIRECTION_EAST] = std::move(eastArea);
-	areas[DIRECTION_WEST] = std::move(westArea);
+	areas[directionToValue(Direction::NORTH)] = std::move(northArea);
+	areas[directionToValue(Direction::SOUTH)] = std::move(southArea);
+	areas[directionToValue(Direction::EAST)] = std::move(eastArea);
+	areas[directionToValue(Direction::WEST)] = std::move(westArea);
 }
 
 void AreaCombat::setupArea(int32_t length, int32_t spread) {
@@ -1992,10 +1993,10 @@ void AreaCombat::setupExtArea(const std::list<uint32_t> &list, uint32_t rows) {
 	auto seArea = std::make_unique<MatrixArea>(maxOutput, maxOutput);
 	copyArea(swArea, seArea, MATRIXOPERATION_MIRROR);
 
-	areas[DIRECTION_NORTHWEST] = std::move(nwArea);
-	areas[DIRECTION_SOUTHWEST] = std::move(swArea);
-	areas[DIRECTION_NORTHEAST] = std::move(neArea);
-	areas[DIRECTION_SOUTHEAST] = std::move(seArea);
+	areas[directionToValue(Direction::NORTHWEST)] = std::move(nwArea);
+	areas[directionToValue(Direction::SOUTHWEST)] = std::move(swArea);
+	areas[directionToValue(Direction::NORTHEAST)] = std::move(neArea);
+	areas[directionToValue(Direction::SOUTHEAST)] = std::move(seArea);
 }
 
 //**********************************************************//

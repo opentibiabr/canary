@@ -43,6 +43,7 @@
 import enum_modules;
 import outfit_type;
 import light_info;
+import game_movement;
 
 /*
  * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.hpp" file
@@ -1033,43 +1034,43 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			parseAutoWalk(msg);
 			break;
 		case 0x65:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_NORTH);
+			addGameTask(&Game::playerMove, player->getID(), Direction::NORTH);
 			break;
 		case 0x66:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_EAST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::EAST);
 			break;
 		case 0x67:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_SOUTH);
+			addGameTask(&Game::playerMove, player->getID(), Direction::SOUTH);
 			break;
 		case 0x68:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_WEST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::WEST);
 			break;
 		case 0x69:
 			addGameTask(&Game::playerStopAutoWalk, player->getID());
 			break;
 		case 0x6A:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_NORTHEAST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::NORTHEAST);
 			break;
 		case 0x6B:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_SOUTHEAST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::SOUTHEAST);
 			break;
 		case 0x6C:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_SOUTHWEST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::SOUTHWEST);
 			break;
 		case 0x6D:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_NORTHWEST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::NORTHWEST);
 			break;
 		case 0x6F:
-			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), DIRECTION_NORTH);
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::NORTH);
 			break;
 		case 0x70:
-			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), DIRECTION_EAST);
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::EAST);
 			break;
 		case 0x71:
-			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), DIRECTION_SOUTH);
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::SOUTH);
 			break;
 		case 0x72:
-			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), DIRECTION_WEST);
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::WEST);
 			break;
 		case 0x73:
 			parseTeleport(msg);
@@ -1612,28 +1613,28 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 		uint8_t rawdir = msg.getPreviousByte();
 		switch (rawdir) {
 			case 1:
-				path.push_front(DIRECTION_EAST);
+				path.push_front(Direction::EAST);
 				break;
 			case 2:
-				path.push_front(DIRECTION_NORTHEAST);
+				path.push_front(Direction::NORTHEAST);
 				break;
 			case 3:
-				path.push_front(DIRECTION_NORTH);
+				path.push_front(Direction::NORTH);
 				break;
 			case 4:
-				path.push_front(DIRECTION_NORTHWEST);
+				path.push_front(Direction::NORTHWEST);
 				break;
 			case 5:
-				path.push_front(DIRECTION_WEST);
+				path.push_front(Direction::WEST);
 				break;
 			case 6:
-				path.push_front(DIRECTION_SOUTHWEST);
+				path.push_front(Direction::SOUTHWEST);
 				break;
 			case 7:
-				path.push_front(DIRECTION_SOUTH);
+				path.push_front(Direction::SOUTH);
 				break;
 			case 8:
-				path.push_front(DIRECTION_SOUTHEAST);
+				path.push_front(Direction::SOUTHEAST);
 				break;
 			default:
 				break;
@@ -1692,7 +1693,9 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 			newOutfit.lookMountBody = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookMountLegs = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookMountFeet = std::min<uint8_t>(132, msg.getByte());
-			uint8_t direction = std::max<uint8_t>(DIRECTION_NORTH, std::min<uint8_t>(DIRECTION_WEST, msg.getByte()));
+			const auto &northValue = directionToValue(Direction::NORTH);
+			const auto &westValue = directionToValue(Direction::WEST);
+			uint8_t direction = std::max<uint8_t>(northValue, std::min<uint8_t>(westValue, msg.getByte()));
 			uint8_t podiumVisible = msg.getByte();
 			g_game().playerSetShowOffSocket(player->getID(), newOutfit, pos, stackpos, itemId, podiumVisible, direction);
 		}
@@ -5753,7 +5756,7 @@ void ProtocolGame::sendCreatureTurn(std::shared_ptr<Creature> creature, uint32_t
 	msg.addByte(stackPos);
 	msg.add<uint16_t>(0x63);
 	msg.add<uint32_t>(creature->getID());
-	msg.addByte(creature->getDirection());
+	msg.addByte(directionToValue(creature->getDirection()));
 	msg.addByte(player->canWalkthroughEx(creature) ? 0x00 : 0x01);
 	writeToOutputBuffer(msg);
 }
@@ -5884,7 +5887,7 @@ void ProtocolGame::sendCancelWalk() {
 	if (player) {
 		NetworkMessage msg;
 		msg.addByte(0xB5);
-		msg.addByte(player->getDirection());
+		msg.addByte(directionToValue(player->getDirection()));
 		writeToOutputBuffer(msg);
 	}
 }
@@ -7218,7 +7221,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> cr
 		msg.addByte(std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100));
 	}
 
-	msg.addByte(creature->getDirection());
+	msg.addByte(directionToValue(creature->getDirection()));
 
 	if (!creature->isInGhostMode() && !creature->isInvisible()) {
 		const Outfit_t &outfit = creature->getCurrentOutfit();

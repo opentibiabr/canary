@@ -15,8 +15,9 @@
 class Map;
 class Tile;
 class Item;
-class Position;
 class FileStream;
+
+struct Position;
 
 #pragma pack(1)
 struct BasicItem {
@@ -47,7 +48,7 @@ struct BasicItem {
 private:
 	void hash(size_t &h) const;
 
-	friend class BasicTile;
+	friend struct BasicTile;
 };
 
 struct BasicTile {

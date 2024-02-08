@@ -21,6 +21,8 @@
 #include "enums/account_type.hpp"
 #include "enums/account_group_type.hpp"
 
+import game_movement;
+
 #define registerMagicEnum(luaState, enumClassType)               \
 	{                                                            \
 		auto number = magic_enum::enum_integer(enumClassType);   \
@@ -291,14 +293,9 @@ void LuaEnums::initCombatFormulaEnums(lua_State* L) {
 }
 
 void LuaEnums::initDirectionEnums(lua_State* L) {
-	registerEnum(L, DIRECTION_NORTH);
-	registerEnum(L, DIRECTION_EAST);
-	registerEnum(L, DIRECTION_SOUTH);
-	registerEnum(L, DIRECTION_WEST);
-	registerEnum(L, DIRECTION_SOUTHWEST);
-	registerEnum(L, DIRECTION_SOUTHEAST);
-	registerEnum(L, DIRECTION_NORTHWEST);
-	registerEnum(L, DIRECTION_NORTHEAST);
+	for (const auto &value : Position::getDirectionVector()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initFactionEnums(lua_State* L) {

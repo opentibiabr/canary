@@ -9,9 +9,12 @@
 
 #include "pch.hpp"
 
+#include "utils/tools.hpp"
+
 #include "core.hpp"
 #include "items/item.hpp"
-#include "utils/tools.hpp"
+
+import game_movement;
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
 	g_logger().error("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -490,24 +493,24 @@ BedItemPart_t getBedPart(const std::string_view string) {
 }
 
 Direction getDirection(const std::string &string) {
-	Direction direction = DIRECTION_NORTH;
+	Direction direction = Direction::NORTH;
 
 	if (string == "north" || string == "n" || string == "0") {
-		direction = DIRECTION_NORTH;
+		direction = Direction::NORTH;
 	} else if (string == "east" || string == "e" || string == "1") {
-		direction = DIRECTION_EAST;
+		direction = Direction::EAST;
 	} else if (string == "south" || string == "s" || string == "2") {
-		direction = DIRECTION_SOUTH;
+		direction = Direction::SOUTH;
 	} else if (string == "west" || string == "w" || string == "3") {
-		direction = DIRECTION_WEST;
+		direction = Direction::WEST;
 	} else if (string == "southwest" || string == "south west" || string == "south-west" || string == "sw" || string == "4") {
-		direction = DIRECTION_SOUTHWEST;
+		direction = Direction::SOUTHWEST;
 	} else if (string == "southeast" || string == "south east" || string == "south-east" || string == "se" || string == "5") {
-		direction = DIRECTION_SOUTHEAST;
+		direction = Direction::SOUTHEAST;
 	} else if (string == "northwest" || string == "north west" || string == "north-west" || string == "nw" || string == "6") {
-		direction = DIRECTION_NORTHWEST;
+		direction = Direction::NORTHWEST;
 	} else if (string == "northeast" || string == "north east" || string == "north-east" || string == "ne" || string == "7") {
-		direction = DIRECTION_NORTHEAST;
+		direction = Direction::NORTHEAST;
 	}
 
 	return direction;
@@ -515,38 +518,38 @@ Direction getDirection(const std::string &string) {
 
 Position getNextPosition(Direction direction, Position pos) {
 	switch (direction) {
-		case DIRECTION_NORTH:
+		case Direction::NORTH:
 			pos.y--;
 			break;
 
-		case DIRECTION_SOUTH:
+		case Direction::SOUTH:
 			pos.y++;
 			break;
 
-		case DIRECTION_WEST:
+		case Direction::WEST:
 			pos.x--;
 			break;
 
-		case DIRECTION_EAST:
+		case Direction::EAST:
 			pos.x++;
 			break;
 
-		case DIRECTION_SOUTHWEST:
+		case Direction::SOUTHWEST:
 			pos.x--;
 			pos.y++;
 			break;
 
-		case DIRECTION_NORTHWEST:
+		case Direction::NORTHWEST:
 			pos.x--;
 			pos.y--;
 			break;
 
-		case DIRECTION_NORTHEAST:
+		case Direction::NORTHEAST:
 			pos.x++;
 			pos.y--;
 			break;
 
-		case DIRECTION_SOUTHEAST:
+		case Direction::SOUTHEAST:
 			pos.x++;
 			pos.y++;
 			break;
@@ -570,34 +573,34 @@ Direction getDirectionTo(const Position &from, const Position &to, bool exactDia
 		 * Only consider diagonal if dx and dy are equal (exact diagonal).
 		 */
 		if (absDx > absDy) {
-			return dx < 0 ? DIRECTION_EAST : DIRECTION_WEST;
+			return dx < 0 ? Direction::EAST : Direction::WEST;
 		}
 		if (absDx < absDy) {
-			return dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH;
+			return dy > 0 ? Direction::NORTH : Direction::SOUTH;
 		}
 	}
 
 	if (dx < 0) {
 		if (dy < 0) {
-			return DIRECTION_SOUTHEAST;
+			return Direction::SOUTHEAST;
 		}
 		if (dy > 0) {
-			return DIRECTION_NORTHEAST;
+			return Direction::NORTHEAST;
 		}
-		return DIRECTION_EAST;
+		return Direction::EAST;
 	}
 
 	if (dx > 0) {
 		if (dy < 0) {
-			return DIRECTION_SOUTHWEST;
+			return Direction::SOUTHWEST;
 		}
 		if (dy > 0) {
-			return DIRECTION_NORTHWEST;
+			return Direction::NORTHWEST;
 		}
-		return DIRECTION_WEST;
+		return Direction::WEST;
 	}
 
-	return dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH;
+	return dy > 0 ? Direction::NORTH : Direction::SOUTH;
 }
 
 using MagicEffectNames = phmap::flat_hash_map<std::string, MagicEffectClasses>;

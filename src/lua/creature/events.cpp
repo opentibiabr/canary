@@ -15,6 +15,7 @@
 #include "creatures/players/player.hpp"
 
 import outfit_type;
+import game_movement;
 
 Events::Events() :
 	scriptInterface("Event Interface") {
@@ -949,7 +950,7 @@ bool Events::eventPlayerOnTurn(std::shared_ptr<Player> player, Direction directi
 	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
-	lua_pushnumber(L, direction);
+	lua_pushnumber(L, static_cast<lua_Number>(direction));
 
 	return scriptInterface.callFunction(2);
 }

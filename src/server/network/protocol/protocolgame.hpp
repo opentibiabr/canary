@@ -14,6 +14,8 @@
 #include "creatures/creature.hpp"
 #include "enums/forge_conversion.hpp"
 
+import game_movement;
+
 class NetworkMessage;
 class Player;
 class Game;
@@ -31,6 +33,7 @@ class MonsterType;
 struct ModalWindow;
 struct Outfit_t;
 struct LightInfo;
+struct Position;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 

@@ -1,5 +1,9 @@
 module;
 
+#pragma once
+
+#include <cstdint>
+
 export module outfit_type;
 
 /**
@@ -16,8 +20,6 @@ export module outfit_type;
  * @details Each member of the struct defines a specific aspect of the outfit, including
  * @details body parts colors, types, and additional elements like addons or mounts.
  */
-
-#include <cstdint>
 
 export struct Outfit_t {
 	uint16_t lookType = 0;

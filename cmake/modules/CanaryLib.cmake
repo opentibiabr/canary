@@ -1,12 +1,31 @@
-# Define and setup CanaryLib main library target
+SET(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
+
+# === Define and configure ModulesLib target ===
+if(BUILD_STATIC_LIBRARY)
+    add_library(ModulesLib STATIC)
+else()
+    add_library(ModulesLib SHARED)
+endif()
+setup_target(ModulesLib)
+
+set(MODULE_FILES
+    ${SOURCE_DIR}/enums/enum_modules.ixx
+    ${SOURCE_DIR}/game/info/light_info.ixx
+    ${SOURCE_DIR}/creatures/appearance/outfit/outfit_type.ixx
+    ${SOURCE_DIR}/game/movement/position.ixx
+)
+
+target_sources(ModulesLib
+    PRIVATE
+        ${MODULE_FILES}
+)
+
+# === OpenMP ===
+setup_open_mp(ModulesLib)
+
+# === Define and setup CanaryLib main library target ===
 add_library(${PROJECT_NAME}_lib)
 setup_target(${PROJECT_NAME}_lib)
-
-# Add modules subdirectories
-# They should always be before normal files
-add_subdirectory(enums)
-add_subdirectory(game/info)
-add_subdirectory(creatures/appearance/outfit)
 
 # Add subdirectories
 add_subdirectory(account)
@@ -37,13 +56,6 @@ if(NOT SPEED_UP_BUILD_UNITY AND USE_PRECOMPILED_HEADERS)
     target_compile_definitions(${PROJECT_NAME}_lib PUBLIC -DUSE_PRECOMPILED_HEADERS)
 endif()
 
-# *****************************************************************************
-# Build flags - need to be set before the links and sources
-# *****************************************************************************
-if (CMAKE_COMPILER_IS_GNUCXX)
-    target_compile_options(${PROJECT_NAME}_lib PRIVATE -Wno-deprecated-declarations)
-endif()
-
 # Sets the NDEBUG macro for RelWithDebInfo and Release configurations.
 # This disables assertions in these configurations, optimizing the code for performance
 # and reducing debugging overhead, while keeping debug information available for diagnostics.
@@ -72,10 +84,6 @@ else()
     endif()
 endif()
 
-target_compile_options(${PROJECT_NAME}_lib PRIVATE
-    "/experimental:module"
-)
-
 # === UNITY BUILD (compile time reducer) ===
 if(SPEED_UP_BUILD_UNITY)
     set_target_properties(${PROJECT_NAME}_lib PROPERTIES UNITY_BUILD ON)
@@ -88,7 +96,7 @@ endif()
 target_include_directories(${PROJECT_NAME}_lib
         PUBLIC
         ${BOOST_DI_INCLUDE_DIRS}
-        ${CMAKE_SOURCE_DIR}/src
+        ${SOURCE_DIR}
         ${GMP_INCLUDE_DIRS}
         ${LUAJIT_INCLUDE_DIRS}
         ${PARALLEL_HASHMAP_INCLUDE_DIRS}
@@ -124,6 +132,7 @@ target_link_libraries(${PROJECT_NAME}_lib
         opentelemetry-cpp::ostream_metrics_exporter
         opentelemetry-cpp::prometheus_exporter
         protobuf
+        ModulesLib
 )
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -147,12 +156,4 @@ else()
 endif (MSVC)
 
 # === OpenMP ===
-if(OPTIONS_ENABLE_OPENMP)
-    log_option_enabled("openmp")
-    find_package(OpenMP)
-    if(OpenMP_CXX_FOUND)
-        target_link_libraries(${PROJECT_NAME}_lib PUBLIC OpenMP::OpenMP_CXX)
-    endif()
-else()
-    log_option_disabled("openmp")
-endif()
+setup_open_mp(${PROJECT_NAME}_lib)

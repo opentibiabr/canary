@@ -16,6 +16,8 @@
 #include "creatures/players/player.hpp"
 #include "utils/pugicast.hpp"
 
+import game_movement;
+
 phmap::parallel_flat_hash_map<std::string, std::shared_ptr<Zone>> Zone::zones = {};
 phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Zone>> Zone::zonesByID = {};
 const static std::shared_ptr<Zone> nullZone = nullptr;

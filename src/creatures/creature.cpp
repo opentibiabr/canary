@@ -25,6 +25,7 @@
 
 import enum_modules;
 import light_info;
+import game_movement;
 
 Creature::Creature() {
 	onIdleStatus();
@@ -85,7 +86,7 @@ int32_t Creature::getWalkDelay(Direction dir) {
 
 	const int64_t ct = OTSYS_TIME();
 	uint16_t stepDuration = getStepDuration(dir);
-	if (dir == DIRECTION_NONE) {
+	if (dir == Direction::NONE) {
 		stepDuration *= lastStepCost;
 	}
 
@@ -206,10 +207,10 @@ void Creature::onCreatureWalk() {
 
 void Creature::onWalk(Direction &dir) {
 	if (hasCondition(ConditionType_t::CONDITION_DRUNK)) {
-		uint32_t r = uniform_random(0, 60);
-		if (r <= DIRECTION_DIAGONAL_MASK) {
-			if (r < DIRECTION_DIAGONAL_MASK) {
-				dir = static_cast<Direction>(r);
+		auto randomDir = directionFromValue(uniform_random(0, 60));
+		if (randomDir <= Direction::DIAGONAL_MASK) {
+			if (randomDir < Direction::DIAGONAL_MASK) {
+				dir = randomDir;
 			}
 			g_game().internalCreatureSay(static_self_cast<Creature>(), SpeakClasses::TALKTYPE_MONSTER_SAY, "Hicks!", false);
 		}
@@ -1107,14 +1108,14 @@ void Creature::goToFollowCreature() {
 	getPathSearchParams(followCreature, fpp);
 
 	if (monster && !monster->getMaster() && (monster->isFleeing() || fpp.maxTargetDist > 1)) {
-		Direction dir = DIRECTION_NONE;
+		Direction dir = Direction::NONE;
 
 		if (monster->isFleeing()) {
 			monster->getDistanceStep(followCreature->getPosition(), dir, true);
 		} else if (!monster->getDistanceStep(followCreature->getPosition(), dir)) { // maxTargetDist > 1
 			// if we can't get anything then let the A* calculate
 			executeOnFollow = false;
-		} else if (dir != DIRECTION_NONE) {
+		} else if (dir != Direction::NONE) {
 			listDir.push_back(dir);
 			hasFollowPath = true;
 		}
@@ -1550,7 +1551,7 @@ uint16_t Creature::getStepDuration(Direction dir) {
 	}
 
 	auto duration = walk.duration;
-	if ((dir & DIRECTION_DIAGONAL_MASK) != 0) {
+	if ((directionToValue(dir) & directionToValue(Direction::DIAGONAL_MASK)) != 0) {
 		duration *= WALK_DIAGONAL_EXTRA_COST;
 	} else if (const auto &monster = getMonster()) {
 		if (monster->isTargetNearby() && !monster->isFleeing() && !monster->getMaster()) {
@@ -1784,15 +1785,15 @@ void Creature::turnToCreature(std::shared_ptr<Creature> creature) {
 	Direction dir;
 	if (std::abs(tan) < 1) {
 		if (dx > 0) {
-			dir = DIRECTION_WEST;
+			dir = Direction::WEST;
 		} else {
-			dir = DIRECTION_EAST;
+			dir = Direction::EAST;
 		}
 	} else {
 		if (dy > 0) {
-			dir = DIRECTION_NORTH;
+			dir = Direction::NORTH;
 		} else {
-			dir = DIRECTION_SOUTH;
+			dir = Direction::SOUTH;
 		}
 	}
 	g_game().internalCreatureTurn(static_self_cast<Creature>(), dir);

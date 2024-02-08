@@ -19,6 +19,8 @@
 #include "utils/pugicast.hpp"
 #include "map/spectators.hpp"
 
+import game_movement;
+
 static constexpr int32_t MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MAXSPAWN_INTERVAL = 86400000; // 1 day
 
@@ -72,7 +74,7 @@ bool SpawnsNpc::loadFromXml(const std::string &fileNpcName) {
 				if (directionAttribute) {
 					dir = static_cast<Direction>(pugi::cast<uint16_t>(directionAttribute.value()));
 				} else {
-					dir = DIRECTION_NORTH;
+					dir = Direction::NORTH;
 				}
 
 				auto xOffset = pugi::cast<int16_t>(childNode.attribute("x").value());

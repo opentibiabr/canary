@@ -15,6 +15,7 @@
 import enum_modules;
 import outfit_type;
 import light_info;
+import game_movement;
 
 class Creature;
 class Player;
@@ -341,17 +342,6 @@ private:
 	bool getFleePath(std::shared_ptr<Creature> creature, const Position &pos, stdext::arraylist<Direction> &dirList);
 	bool getRandomDirection(std::shared_ptr<Creature> creature, Position pos);
 	bool isStuck(std::shared_ptr<Creature> creature, Position pos) const;
-
-	std::vector<Direction> m_directionsVector {
-		DIRECTION_NORTH,
-		DIRECTION_NORTHEAST,
-		DIRECTION_EAST,
-		DIRECTION_SOUTHEAST,
-		DIRECTION_SOUTH,
-		DIRECTION_SOUTHWEST,
-		DIRECTION_WEST,
-		DIRECTION_NORTHWEST
-	};
 
 	Position fleeingFromPos; // Caster Position
 	uint8_t fleeIndx = 99;

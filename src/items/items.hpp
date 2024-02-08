@@ -12,9 +12,9 @@
 #include "config/configmanager.hpp"
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
-#include "game/movement/position.hpp"
 
 import enum_modules;
+import game_movement;
 
 struct Abilities {
 public:
@@ -313,7 +313,7 @@ public:
 	uint16_t m_transformOnUse = 0;
 
 	MagicEffectClasses magicEffect = CONST_ME_NONE;
-	Direction bedPartnerDir = DIRECTION_NONE;
+	Direction bedPartnerDir = Direction::NONE;
 	BedItemPart_t bedPart = BED_NONE_PART;
 	WeaponType_t weaponType = WEAPON_NONE;
 	Ammo_t ammoType = AMMO_NONE;

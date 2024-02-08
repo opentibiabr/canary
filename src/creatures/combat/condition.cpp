@@ -19,6 +19,7 @@
 import enum_modules;
 import outfit_type;
 import light_info;
+import game_movement;
 
 /**
  *  Condition
@@ -1808,7 +1809,7 @@ void ConditionDamage::generateDamageList(int32_t amount, int32_t start, std::lis
  *  ConditionFeared
  */
 bool ConditionFeared::isStuck(std::shared_ptr<Creature> creature, Position pos) const {
-	for (Direction dir : m_directionsVector) {
+	for (Direction dir : Position::getDirectionVector()) {
 		if (canWalkTo(creature, pos, dir)) {
 			return false;
 		}
@@ -1819,14 +1820,14 @@ bool ConditionFeared::isStuck(std::shared_ptr<Creature> creature, Position pos) 
 
 bool ConditionFeared::getRandomDirection(std::shared_ptr<Creature> creature, Position pos) {
 	static std::vector<Direction> directions {
-		DIRECTION_NORTH,
-		DIRECTION_NORTHEAST,
-		DIRECTION_EAST,
-		DIRECTION_SOUTHEAST,
-		DIRECTION_SOUTH,
-		DIRECTION_SOUTHWEST,
-		DIRECTION_WEST,
-		DIRECTION_NORTHWEST
+		Direction::NORTH,
+		Direction::NORTHEAST,
+		Direction::EAST,
+		Direction::SOUTHEAST,
+		Direction::SOUTH,
+		Direction::SOUTHWEST,
+		Direction::WEST,
+		Direction::NORTHWEST
 	};
 
 	std::ranges::shuffle(directions.begin(), directions.end(), getRandomGenerator());
@@ -1956,46 +1957,46 @@ bool ConditionFeared::getFleePath(std::shared_ptr<Creature> creature, const Posi
 
 			futurePos = pos; // Reset position to be the same as creature
 
-			switch (m_directionsVector[fleeIndx]) {
-				case DIRECTION_NORTH:
+			switch (Position::getDirectionVector()[fleeIndx]) {
+				case Direction::NORTH:
 					futurePos.y += wsize;
 					g_logger().debug("[{}] Trying to flee to NORTH to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 
-				case DIRECTION_NORTHEAST:
+				case Direction::NORTHEAST:
 					futurePos.x += wsize;
 					futurePos.y -= wsize;
 					g_logger().debug("[{}] Trying to flee to NORTHEAST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 
-				case DIRECTION_EAST:
+				case Direction::EAST:
 					futurePos.x -= wsize;
 					g_logger().debug("[{}] Trying to flee to EAST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 
-				case DIRECTION_SOUTHEAST:
+				case Direction::SOUTHEAST:
 					futurePos.x -= wsize;
 					futurePos.y += wsize;
 					g_logger().debug("[{}] Trying to flee to SOUTHEAST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 
-				case DIRECTION_SOUTH:
+				case Direction::SOUTH:
 					futurePos.y += wsize;
 					g_logger().debug("[{}] Trying to flee to SOUTH to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 
-				case DIRECTION_SOUTHWEST:
+				case Direction::SOUTHWEST:
 					futurePos.x += wsize;
 					futurePos.y += wsize;
 					g_logger().debug("[{}] Trying to flee to SOUTHWEST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 
-				case DIRECTION_WEST:
+				case Direction::WEST:
 					futurePos.x += wsize;
 					g_logger().debug("[{}] Trying to flee to WEST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 
-				case DIRECTION_NORTHWEST:
+				case Direction::NORTHWEST:
 					futurePos.x += wsize;
 					futurePos.y -= wsize;
 					g_logger().debug("[{}] Trying to flee to NORTHWEST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);

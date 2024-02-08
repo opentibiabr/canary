@@ -1,5 +1,9 @@
 module;
 
+#pragma once
+
+#include <cstdint>
+
 export module light_info;
 
 /**
@@ -13,8 +17,6 @@ export module light_info;
  * @struct LightInfo
  * @brief Represents the level and color from game light info.
  */
-
-#include <cstdint>
 
 export struct LightInfo {
 	uint8_t level = 0;

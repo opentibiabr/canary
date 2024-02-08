@@ -18,6 +18,8 @@
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
 
+import game_movement;
+
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
 
@@ -631,10 +633,10 @@ bool Npc::getNextStep(Direction &nextDirection, uint32_t &flags) {
 
 bool Npc::getRandomStep(Direction &moveDirection) {
 	static std::vector<Direction> directionvector {
-		Direction::DIRECTION_NORTH,
-		Direction::DIRECTION_WEST,
-		Direction::DIRECTION_EAST,
-		Direction::DIRECTION_SOUTH
+		Direction::NORTH,
+		Direction::WEST,
+		Direction::EAST,
+		Direction::SOUTH
 	};
 	std::ranges::shuffle(directionvector, getRandomGenerator());
 

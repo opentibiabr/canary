@@ -21,6 +21,8 @@
 #include "game/zones/zone.hpp"
 #include "map/spectators.hpp"
 
+import game_movement;
+
 static constexpr int32_t MONSTER_MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MONSTER_MAXSPAWN_INTERVAL = 86400000; // 1 day
 
@@ -78,7 +80,7 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 				if (directionAttribute) {
 					dir = static_cast<Direction>(pugi::cast<uint16_t>(directionAttribute.value()));
 				} else {
-					dir = DIRECTION_NORTH;
+					dir = Direction::NORTH;
 				}
 
 				auto xOffset = pugi::cast<int16_t>(childMonsterNode.attribute("x").value());

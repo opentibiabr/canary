@@ -37,6 +37,7 @@
 
 import enum_modules;
 import light_info;
+import game_movement;
 
 class House;
 class NetworkMessage;

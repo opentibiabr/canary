@@ -113,14 +113,24 @@ endif(DEBUG_LOG)
 # *****************************************************************************
 # Compiler Options
 # *****************************************************************************
-if (MSVC)
+if(MSVC)
     foreach(type RELEASE DEBUG RELWITHDEBINFO MINSIZEREL)
         string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_${type} "${CMAKE_CXX_FLAGS_${type}}")
         string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_${type} "${CMAKE_C_FLAGS_${type}}")
     endforeach(type)
 
-    add_compile_options(/MP /FS /Zf /EHsc)
-endif (MSVC)
+    add_compile_options(
+        "/MP"
+        "/FS"
+        "/Zf"
+        "/EHsc"
+    )
+else()
+    add_compile_options(
+        "-fmodules-ts"
+        "-Wno-deprecated-declarations"
+    )
+endif()
 
 ## Link compilation files to build/bin folder, else link to the main dir
 function(set_output_directory target_name)
@@ -141,6 +151,19 @@ endfunction()
 function(setup_target TARGET_NAME)
     if (MSVC AND BUILD_STATIC_LIBRARY)
         set_property(TARGET ${TARGET_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    endif()
+endfunction()
+
+# === OpenMP ===
+function(setup_open_mp target_name)
+    if(OPTIONS_ENABLE_OPENMP)
+        log_option_enabled("openmp")
+        find_package(OpenMP)
+        if(OpenMP_CXX_FOUND)
+            target_link_libraries(${target_name} PUBLIC OpenMP::OpenMP_CXX)
+        endif()
+    else()
+        log_option_disabled("openmp")
     endif()
 endfunction()
 

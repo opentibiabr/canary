@@ -55,6 +55,7 @@
 import enum_modules;
 import outfit_type;
 import light_info;
+import game_movement;
 
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, std::shared_ptr<Creature> source) {
@@ -1262,7 +1263,7 @@ ReturnValue Game::internalMoveCreature(std::shared_ptr<Creature> creature, Direc
 	Position destPos = getNextPosition(direction, currentPos);
 	std::shared_ptr<Player> player = creature->getPlayer();
 
-	bool diagonalMovement = (direction & DIRECTION_DIAGONAL_MASK) != 0;
+	bool diagonalMovement = (directionToValue(direction) & directionToValue(Direction::DIAGONAL_MASK)) != 0;
 	if (player && !diagonalMovement) {
 		// try go up
 		auto tile = creature->getTile();
@@ -1361,7 +1362,7 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 		const Position &toPosition = toCylinder->getPosition();
 		if (fromPosition.z != toPosition.z && (fromPosition.x != toPosition.x || fromPosition.y != toPosition.y)) {
 			Direction dir = getDirectionTo(fromPosition, toPosition);
-			if ((dir & DIRECTION_DIAGONAL_MASK) == 0) {
+			if ((directionToValue(dir) & directionToValue(Direction::DIAGONAL_MASK)) == 0) {
 				internalCreatureTurn(creature, dir);
 			}
 		}

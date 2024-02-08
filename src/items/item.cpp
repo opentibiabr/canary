@@ -24,6 +24,7 @@
 #include "creatures/combat/spells.hpp"
 
 import light_info;
+import game_movement;
 
 #define ITEM_IMBUEMENT_SLOT 500
 

@@ -10,7 +10,8 @@
 #pragma once
 
 #include "enums/lua_variant_type.hpp"
-#include "game/movement/position.hpp"
+
+import game_movement;
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <cstdint>

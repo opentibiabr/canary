@@ -7,23 +7,23 @@ local config = {
 	["midnight panther"] = { mountId = 5, achievement = "Starless Night", tameMessage = "The wild panther will accompany you as a friend from now on.", sound = "Purrrrrrr" },
 	["wailing widow"] = { mountId = 1, achievement = "Spin-Off", tameMessage = "You have tamed the wailing widow.", sound = "Sssssssss" },
 	["wild horse"] = { mountId = 17, achievement = "Lucky Horseshoe", tameMessage = "The horse accepts you as its new master.", sound = "*snort*" },
-	["panda"] = { mountId = 19, achievement = "Chequered Teddy", tameMessage = "The panda will accompany you as a friend from now on.", sound = "Rrrrr... Grrrr" }
+	["panda"] = { mountId = 19, achievement = "Chequered Teddy", tameMessage = "The panda will accompany you as a friend from now on.", sound = "Rrrrr... Grrrr" },
 }
 
 local musicBox = Action()
 
 function musicBox.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if not target:isCreature() or not target:isMonster() or target:getMaster() then
-			return false
+		return false
 	end
 
 	local monsterConfig = config[target:getName():lower()]
 	if not monsterConfig then
-			return false
+		return false
 	end
 
 	if player:hasMount(monsterConfig.mountId) then
-			return false
+		return false
 	end
 
 	player:addMount(monsterConfig.mountId)

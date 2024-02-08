@@ -35,7 +35,7 @@ function goldenOutfitDisplay.onUse(player, item, fromPosition, target, toPositio
 	return true
 end
 
-for index, value in pairs(transformDisplay) do
+for index, value in pairs(transformations) do
 	goldenOutfitDisplay:id(index)
 end
 

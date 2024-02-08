@@ -1,13 +1,5 @@
 SET(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 
-# === Define and configure ModulesLib target ===
-if(BUILD_STATIC_LIBRARY)
-    add_library(ModulesLib STATIC)
-else()
-    add_library(ModulesLib SHARED)
-endif()
-setup_target(ModulesLib)
-
 set(MODULE_FILES
     ${SOURCE_DIR}/enums/enum_modules.ixx
     ${SOURCE_DIR}/game/info/light_info.ixx
@@ -15,10 +7,9 @@ set(MODULE_FILES
     ${SOURCE_DIR}/game/movement/position.ixx
 )
 
-target_sources(ModulesLib
-    PRIVATE
-        ${MODULE_FILES}
-)
+# Sets the module library to compile before source
+add_library(ModulesLib OBJECT ${MODULE_FILES})
+setup_target(ModulesLib)
 
 # === OpenMP ===
 setup_open_mp(ModulesLib)

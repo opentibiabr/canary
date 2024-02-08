@@ -127,7 +127,11 @@ if(MSVC)
     )
 else()
     add_compile_options(
+        # Enable modules on gcc
         "-fmodules-ts"
+        # Compile ixx on gcc
+        "-x" "c++"
+
         "-Wno-deprecated-declarations"
     )
 endif()

@@ -574,9 +574,17 @@ function Player:addItemStoreInbox(itemId, amount, movable, setOwner)
 
 	if iType:isStackable() then
 		local stackSize = iType:getStackSize()
-		while amount > stackSize do
-			self:addItemStoreInboxEx(Game.createItem(itemId, stackSize), movable, setOwner)
-			amount = amount - stackSize
+		if amount > stackSize then
+			local parcel = self:addItemStoreInboxEx(Game.createItem(3504, 1), movable, setOwner)
+			while amount > 0 do
+				parcel:addItem(itemId, amount)
+				amount = amount - stackSize
+			end
+		else
+			while amount > stackSize do
+				self:addItemStoreInboxEx(Game.createItem(itemId, stackSize), movable, setOwner)
+				amount = amount - stackSize
+			end
 		end
 	end
 

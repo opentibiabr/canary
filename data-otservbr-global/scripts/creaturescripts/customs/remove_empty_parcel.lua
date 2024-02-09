@@ -5,8 +5,7 @@ function playerLogin.onLogin(player)
 	local removed = false
 	local countP = 0
 	for _, itemZ in ipairs(player:getStoreInbox():getItems(true)) do
-		local PARCEL_ID = 3504
-		if itemZ:getId() == PARCEL_ID and itemZ:getEmptySlots() == 10 then
+		if itemZ:getId() == PARCEL_STAMPED and itemZ:getEmptySlots() == 10 then
 			toRemove[itemZ] = itemZ
 			countP = countP + 1
 		end

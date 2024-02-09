@@ -24,33 +24,32 @@
 import game_movement;
 import enum_modules;
 
-#define registerMagicEnum(luaState, enumClassType)			   \
-	{															\
+#define registerMagicEnum(luaState, enumClassType)               \
+	{                                                            \
 		auto number = magic_enum::enum_integer(enumClassType);   \
 		auto name = magic_enum::enum_name(enumClassType).data(); \
-		registerGlobalVariable(luaState, name, number);		  \
-	}															\
+		registerGlobalVariable(luaState, name, number);          \
+	}                                                            \
 	void(0)
 
-#define magicEnumNamespaceUpper(luaState, luaNamespace, enumClassType, toUpper)                    \
-	{                                                                                      \
-		auto number = magic_enum::enum_integer(enumClassType);                             \
-		std::string name = std::string(luaNamespace) + magic_enum::enum_name(enumClassType).data(); \
-		if (toUpper) {                                                                      \
-			std::transform(name.begin(), name.end(), name.begin(),                             \
-						   [](unsigned char c) -> unsigned char { return std::toupper(c); });  \
-		}                                                                             \
-		registerGlobalVariable(luaState, name, static_cast<lua_Number>(number));          \
-	}                                                                                      \
+#define magicEnumNamespaceUpper(luaState, luaNamespace, enumClassType, toUpper)                                                       \
+	{                                                                                                                                 \
+		auto number = magic_enum::enum_integer(enumClassType);                                                                        \
+		std::string name = std::string(luaNamespace) + magic_enum::enum_name(enumClassType).data();                                   \
+		if (toUpper) {                                                                                                                \
+			std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) -> unsigned char { return std::toupper(c); }); \
+		}                                                                                                                             \
+		registerGlobalVariable(luaState, name, static_cast<lua_Number>(number));                                                      \
+	}                                                                                                                                 \
 	void(0)
 
 #define registerMagicEnumNamespace(luaState, luaNamespace, enumClassType) magicEnumNamespaceUpper(luaState, luaNamespace, enumClassType, false)
 
-#define registerEnum(L, value)															 \
-	{																					  \
-		std::string enumName = #value;													 \
+#define registerEnum(L, value)                                                             \
+	{                                                                                      \
+		std::string enumName = #value;                                                     \
 		registerGlobalVariable(L, enumName.substr(enumName.find_last_of(':') + 1), value); \
-	}																					  \
+	}                                                                                      \
 	void(0)
 
 /**

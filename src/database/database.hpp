@@ -72,6 +72,8 @@ private:
 	friend class DBTransaction;
 };
 
+constexpr auto g_database = Database::getInstance;
+
 class DBResult {
 public:
 	explicit DBResult(MYSQL_RES* res);

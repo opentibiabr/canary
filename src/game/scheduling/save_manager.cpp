@@ -72,20 +72,19 @@ bool SaveManager::doSavePlayer(std::shared_ptr<Player> player) {
 		logger.debug("Failed to save player because player is null.");
 		return false;
 	}
+
 	Benchmark bm_savePlayer;
 	Player::PlayerLock lock(player);
 	m_playerMap.erase(player->getGUID());
 	logger.debug("Saving player {}...", player->getName());
+
 	bool saveSuccess = IOLoginData::savePlayer(player);
 	if (!saveSuccess) {
 		logger.error("Failed to save player {}.", player->getName());
 	}
+
 	auto duration = bm_savePlayer.duration();
-	if (duration > 100) {
-		logger.warn("Saving player {} took {} milliseconds.", player->getName(), duration);
-	} else {
-		logger.debug("Saving player {} took {} milliseconds.", player->getName(), duration);
-	}
+	logger.debug("Saving player {} took {} milliseconds.", player->getName(), duration);
 	return saveSuccess;
 }
 
@@ -102,15 +101,13 @@ void SaveManager::saveGuild(std::shared_ptr<Guild> guild) {
 		logger.debug("Failed to save guild because guild is null.");
 		return;
 	}
+
 	Benchmark bm_saveGuild;
 	logger.debug("Saving guild {}...", guild->getName());
 	IOGuild::saveGuild(guild);
+
 	auto duration = bm_saveGuild.duration();
-	if (duration > 100) {
-		logger.warn("Saving guild {} took {} milliseconds.", guild->getName(), duration);
-	} else {
-		logger.debug("Saving guild {} took {} milliseconds.", guild->getName(), duration);
-	}
+	logger.debug("Saving guild {} took {} milliseconds.", guild->getName(), duration);
 }
 
 void SaveManager::saveMap() {
@@ -120,12 +117,9 @@ void SaveManager::saveMap() {
 	if (!saveSuccess) {
 		logger.error("Failed to save map.");
 	}
+
 	auto duration = bm_saveMap.duration();
-	if (duration > 100) {
-		logger.warn("Map saved in {} milliseconds.", bm_saveMap.duration());
-	} else {
-		logger.debug("Map saved in {} milliseconds.", bm_saveMap.duration());
-	}
+	logger.debug("Map saved in {} milliseconds.", duration);
 }
 
 void SaveManager::saveKV() {
@@ -135,10 +129,7 @@ void SaveManager::saveKV() {
 	if (!saveSuccess) {
 		logger.error("Failed to save key-value store.");
 	}
+
 	auto duration = bm_saveKV.duration();
-	if (duration > 100) {
-		logger.warn("Key-value store saved in {} milliseconds.", bm_saveKV.duration());
-	} else {
-		logger.debug("Key-value store saved in {} milliseconds.", bm_saveKV.duration());
-	}
+	logger.debug("Key-value store saved in {} milliseconds.", duration);
 }

@@ -493,24 +493,24 @@ BedItemPart_t getBedPart(const std::string_view string) {
 }
 
 Direction getDirection(const std::string &string) {
-	Direction direction = Direction::NORTH;
+	Direction direction = Direction::North;
 
 	if (string == "north" || string == "n" || string == "0") {
-		direction = Direction::NORTH;
+		direction = Direction::North;
 	} else if (string == "east" || string == "e" || string == "1") {
-		direction = Direction::EAST;
+		direction = Direction::East;
 	} else if (string == "south" || string == "s" || string == "2") {
-		direction = Direction::SOUTH;
+		direction = Direction::South;
 	} else if (string == "west" || string == "w" || string == "3") {
-		direction = Direction::WEST;
+		direction = Direction::West;
 	} else if (string == "southwest" || string == "south west" || string == "south-west" || string == "sw" || string == "4") {
-		direction = Direction::SOUTHWEST;
+		direction = Direction::SouthWest;
 	} else if (string == "southeast" || string == "south east" || string == "south-east" || string == "se" || string == "5") {
-		direction = Direction::SOUTHEAST;
+		direction = Direction::SouthEast;
 	} else if (string == "northwest" || string == "north west" || string == "north-west" || string == "nw" || string == "6") {
-		direction = Direction::NORTHWEST;
+		direction = Direction::NorthWest;
 	} else if (string == "northeast" || string == "north east" || string == "north-east" || string == "ne" || string == "7") {
-		direction = Direction::NORTHEAST;
+		direction = Direction::NorthEast;
 	}
 
 	return direction;
@@ -518,38 +518,38 @@ Direction getDirection(const std::string &string) {
 
 Position getNextPosition(Direction direction, Position pos) {
 	switch (direction) {
-		case Direction::NORTH:
+		case Direction::North:
 			pos.y--;
 			break;
 
-		case Direction::SOUTH:
+		case Direction::South:
 			pos.y++;
 			break;
 
-		case Direction::WEST:
+		case Direction::West:
 			pos.x--;
 			break;
 
-		case Direction::EAST:
+		case Direction::East:
 			pos.x++;
 			break;
 
-		case Direction::SOUTHWEST:
+		case Direction::SouthWest:
 			pos.x--;
 			pos.y++;
 			break;
 
-		case Direction::NORTHWEST:
+		case Direction::NorthWest:
 			pos.x--;
 			pos.y--;
 			break;
 
-		case Direction::NORTHEAST:
+		case Direction::NorthEast:
 			pos.x++;
 			pos.y--;
 			break;
 
-		case Direction::SOUTHEAST:
+		case Direction::SouthEast:
 			pos.x++;
 			pos.y++;
 			break;
@@ -573,34 +573,34 @@ Direction getDirectionTo(const Position &from, const Position &to, bool exactDia
 		 * Only consider diagonal if dx and dy are equal (exact diagonal).
 		 */
 		if (absDx > absDy) {
-			return dx < 0 ? Direction::EAST : Direction::WEST;
+			return dx < 0 ? Direction::East : Direction::West;
 		}
 		if (absDx < absDy) {
-			return dy > 0 ? Direction::NORTH : Direction::SOUTH;
+			return dy > 0 ? Direction::North : Direction::South;
 		}
 	}
 
 	if (dx < 0) {
 		if (dy < 0) {
-			return Direction::SOUTHEAST;
+			return Direction::SouthEast;
 		}
 		if (dy > 0) {
-			return Direction::NORTHEAST;
+			return Direction::NorthEast;
 		}
-		return Direction::EAST;
+		return Direction::East;
 	}
 
 	if (dx > 0) {
 		if (dy < 0) {
-			return Direction::SOUTHWEST;
+			return Direction::SouthWest;
 		}
 		if (dy > 0) {
-			return Direction::NORTHWEST;
+			return Direction::NorthWest;
 		}
-		return Direction::WEST;
+		return Direction::West;
 	}
 
-	return dy > 0 ? Direction::NORTH : Direction::SOUTH;
+	return dy > 0 ? Direction::North : Direction::South;
 }
 
 using MagicEffectNames = phmap::flat_hash_map<std::string, MagicEffectClasses>;

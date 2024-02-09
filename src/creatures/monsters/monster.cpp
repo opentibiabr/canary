@@ -1147,9 +1147,9 @@ void Monster::pushItems(std::shared_ptr<Tile> tile, const Direction &nextDirecti
 
 bool Monster::pushCreature(std::shared_ptr<Creature> creature) {
 	static std::vector<Direction> dirList {
-		Direction::NORTH,
-		Direction::WEST, Direction::EAST,
-		Direction::SOUTH
+		Direction::North,
+		Direction::West, Direction::East,
+		Direction::South
 	};
 	std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
 
@@ -1283,9 +1283,9 @@ void Monster::doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &
 
 bool Monster::getRandomStep(const Position &creaturePos, Direction &moveDirection) {
 	static std::vector<Direction> dirList {
-		Direction::NORTH,
-		Direction::WEST, Direction::EAST,
-		Direction::SOUTH
+		Direction::North,
+		Direction::West, Direction::East,
+		Direction::South
 	};
 	std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
 
@@ -1322,7 +1322,7 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 	std::vector<Direction> dirList;
 	if (!keepDistance || offset_y >= 0) {
 		uint32_t tmpDist = std::max<uint32_t>(distance_x, std::abs((creaturePos.getY() - 1) - centerPos.getY()));
-		if (tmpDist == centerToDist && canWalkTo(creaturePos, Direction::NORTH)) {
+		if (tmpDist == centerToDist && canWalkTo(creaturePos, Direction::North)) {
 			bool result = true;
 
 			if (keepAttack) {
@@ -1330,14 +1330,14 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 			}
 
 			if (result) {
-				dirList.push_back(Direction::NORTH);
+				dirList.push_back(Direction::North);
 			}
 		}
 	}
 
 	if (!keepDistance || offset_y <= 0) {
 		uint32_t tmpDist = std::max<uint32_t>(distance_x, std::abs((creaturePos.getY() + 1) - centerPos.getY()));
-		if (tmpDist == centerToDist && canWalkTo(creaturePos, Direction::SOUTH)) {
+		if (tmpDist == centerToDist && canWalkTo(creaturePos, Direction::South)) {
 			bool result = true;
 
 			if (keepAttack) {
@@ -1345,14 +1345,14 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 			}
 
 			if (result) {
-				dirList.push_back(Direction::SOUTH);
+				dirList.push_back(Direction::South);
 			}
 		}
 	}
 
 	if (!keepDistance || offset_x <= 0) {
 		uint32_t tmpDist = std::max<uint32_t>(std::abs((creaturePos.getX() + 1) - centerPos.getX()), distance_y);
-		if (tmpDist == centerToDist && canWalkTo(creaturePos, Direction::EAST)) {
+		if (tmpDist == centerToDist && canWalkTo(creaturePos, Direction::East)) {
 			bool result = true;
 
 			if (keepAttack) {
@@ -1360,14 +1360,14 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 			}
 
 			if (result) {
-				dirList.push_back(Direction::EAST);
+				dirList.push_back(Direction::East);
 			}
 		}
 	}
 
 	if (!keepDistance || offset_x >= 0) {
 		uint32_t tmpDist = std::max<uint32_t>(std::abs((creaturePos.getX() - 1) - centerPos.getX()), distance_y);
-		if (tmpDist == centerToDist && canWalkTo(creaturePos, Direction::WEST)) {
+		if (tmpDist == centerToDist && canWalkTo(creaturePos, Direction::West)) {
 			bool result = true;
 
 			if (keepAttack) {
@@ -1375,7 +1375,7 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 			}
 
 			if (result) {
-				dirList.push_back(Direction::WEST);
+				dirList.push_back(Direction::West);
 			}
 		}
 	}
@@ -1421,186 +1421,186 @@ bool Monster::getDistanceStep(const Position &targetPos, Direction &moveDirectio
 		if (offsetx >= 1 && offsety >= 1) {
 			// player is NW
 			// escape to SE, S or E [and some extra]
-			bool s = canWalkTo(creaturePos, Direction::SOUTH);
-			bool e = canWalkTo(creaturePos, Direction::EAST);
+			bool s = canWalkTo(creaturePos, Direction::South);
+			bool e = canWalkTo(creaturePos, Direction::East);
 
 			if (s && e) {
-				moveDirection = boolean_random() ? Direction::SOUTH : Direction::EAST;
+				moveDirection = boolean_random() ? Direction::South : Direction::East;
 				return true;
 			} else if (s) {
-				moveDirection = Direction::SOUTH;
+				moveDirection = Direction::South;
 				return true;
 			} else if (e) {
-				moveDirection = Direction::EAST;
+				moveDirection = Direction::East;
 				return true;
-			} else if (canWalkTo(creaturePos, Direction::SOUTHEAST)) {
-				moveDirection = Direction::SOUTHEAST;
+			} else if (canWalkTo(creaturePos, Direction::SouthEast)) {
+				moveDirection = Direction::SouthEast;
 				return true;
 			}
 
 			/* fleeing */
-			bool n = canWalkTo(creaturePos, Direction::NORTH);
-			bool w = canWalkTo(creaturePos, Direction::WEST);
+			bool n = canWalkTo(creaturePos, Direction::North);
+			bool w = canWalkTo(creaturePos, Direction::West);
 
 			if (flee) {
 				if (n && w) {
-					moveDirection = boolean_random() ? Direction::NORTH : Direction::WEST;
+					moveDirection = boolean_random() ? Direction::North : Direction::West;
 					return true;
 				} else if (n) {
-					moveDirection = Direction::NORTH;
+					moveDirection = Direction::North;
 					return true;
 				} else if (w) {
-					moveDirection = Direction::WEST;
+					moveDirection = Direction::West;
 					return true;
 				}
 			}
 
 			/* end of fleeing */
 
-			if (w && canWalkTo(creaturePos, Direction::SOUTHWEST)) {
-				moveDirection = Direction::WEST;
-			} else if (n && canWalkTo(creaturePos, Direction::NORTHEAST)) {
-				moveDirection = Direction::NORTH;
+			if (w && canWalkTo(creaturePos, Direction::SouthWest)) {
+				moveDirection = Direction::West;
+			} else if (n && canWalkTo(creaturePos, Direction::NorthEast)) {
+				moveDirection = Direction::North;
 			}
 
 			return true;
 		} else if (offsetx <= -1 && offsety <= -1) {
 			// player is SE
 			// escape to NW , W or N [and some extra]
-			bool w = canWalkTo(creaturePos, Direction::WEST);
-			bool n = canWalkTo(creaturePos, Direction::NORTH);
+			bool w = canWalkTo(creaturePos, Direction::West);
+			bool n = canWalkTo(creaturePos, Direction::North);
 
 			if (w && n) {
-				moveDirection = boolean_random() ? Direction::WEST : Direction::NORTH;
+				moveDirection = boolean_random() ? Direction::West : Direction::North;
 				return true;
 			} else if (w) {
-				moveDirection = Direction::WEST;
+				moveDirection = Direction::West;
 				return true;
 			} else if (n) {
-				moveDirection = Direction::NORTH;
+				moveDirection = Direction::North;
 				return true;
 			}
 
-			if (canWalkTo(creaturePos, Direction::NORTHWEST)) {
-				moveDirection = Direction::NORTHWEST;
+			if (canWalkTo(creaturePos, Direction::NorthWest)) {
+				moveDirection = Direction::NorthWest;
 				return true;
 			}
 
 			/* fleeing */
-			bool s = canWalkTo(creaturePos, Direction::SOUTH);
-			bool e = canWalkTo(creaturePos, Direction::EAST);
+			bool s = canWalkTo(creaturePos, Direction::South);
+			bool e = canWalkTo(creaturePos, Direction::East);
 
 			if (flee) {
 				if (s && e) {
-					moveDirection = boolean_random() ? Direction::SOUTH : Direction::EAST;
+					moveDirection = boolean_random() ? Direction::South : Direction::East;
 					return true;
 				} else if (s) {
-					moveDirection = Direction::SOUTH;
+					moveDirection = Direction::South;
 					return true;
 				} else if (e) {
-					moveDirection = Direction::EAST;
+					moveDirection = Direction::East;
 					return true;
 				}
 			}
 
 			/* end of fleeing */
 
-			if (s && canWalkTo(creaturePos, Direction::SOUTHWEST)) {
-				moveDirection = Direction::SOUTH;
-			} else if (e && canWalkTo(creaturePos, Direction::NORTHEAST)) {
-				moveDirection = Direction::EAST;
+			if (s && canWalkTo(creaturePos, Direction::SouthWest)) {
+				moveDirection = Direction::South;
+			} else if (e && canWalkTo(creaturePos, Direction::NorthEast)) {
+				moveDirection = Direction::East;
 			}
 
 			return true;
 		} else if (offsetx >= 1 && offsety <= -1) {
 			// player is SW
 			// escape to NE, N, E [and some extra]
-			bool n = canWalkTo(creaturePos, Direction::NORTH);
-			bool e = canWalkTo(creaturePos, Direction::EAST);
+			bool n = canWalkTo(creaturePos, Direction::North);
+			bool e = canWalkTo(creaturePos, Direction::East);
 			if (n && e) {
-				moveDirection = boolean_random() ? Direction::NORTH : Direction::EAST;
+				moveDirection = boolean_random() ? Direction::North : Direction::East;
 				return true;
 			} else if (n) {
-				moveDirection = Direction::NORTH;
+				moveDirection = Direction::North;
 				return true;
 			} else if (e) {
-				moveDirection = Direction::EAST;
+				moveDirection = Direction::East;
 				return true;
 			}
 
-			if (canWalkTo(creaturePos, Direction::NORTHEAST)) {
-				moveDirection = Direction::NORTHEAST;
+			if (canWalkTo(creaturePos, Direction::NorthEast)) {
+				moveDirection = Direction::NorthEast;
 				return true;
 			}
 
 			/* fleeing */
-			bool s = canWalkTo(creaturePos, Direction::SOUTH);
-			bool w = canWalkTo(creaturePos, Direction::WEST);
+			bool s = canWalkTo(creaturePos, Direction::South);
+			bool w = canWalkTo(creaturePos, Direction::West);
 
 			if (flee) {
 				if (s && w) {
-					moveDirection = boolean_random() ? Direction::SOUTH : Direction::WEST;
+					moveDirection = boolean_random() ? Direction::South : Direction::West;
 					return true;
 				} else if (s) {
-					moveDirection = Direction::SOUTH;
+					moveDirection = Direction::South;
 					return true;
 				} else if (w) {
-					moveDirection = Direction::WEST;
+					moveDirection = Direction::West;
 					return true;
 				}
 			}
 
 			/* end of fleeing */
 
-			if (w && canWalkTo(creaturePos, Direction::NORTHWEST)) {
-				moveDirection = Direction::WEST;
-			} else if (s && canWalkTo(creaturePos, Direction::SOUTHEAST)) {
-				moveDirection = Direction::SOUTH;
+			if (w && canWalkTo(creaturePos, Direction::NorthWest)) {
+				moveDirection = Direction::West;
+			} else if (s && canWalkTo(creaturePos, Direction::SouthEast)) {
+				moveDirection = Direction::South;
 			}
 
 			return true;
 		} else if (offsetx <= -1 && offsety >= 1) {
 			// player is NE
 			// escape to SW, S, W [and some extra]
-			bool w = canWalkTo(creaturePos, Direction::WEST);
-			bool s = canWalkTo(creaturePos, Direction::SOUTH);
+			bool w = canWalkTo(creaturePos, Direction::West);
+			bool s = canWalkTo(creaturePos, Direction::South);
 			if (w && s) {
-				moveDirection = boolean_random() ? Direction::WEST : Direction::SOUTH;
+				moveDirection = boolean_random() ? Direction::West : Direction::South;
 				return true;
 			} else if (w) {
-				moveDirection = Direction::WEST;
+				moveDirection = Direction::West;
 				return true;
 			} else if (s) {
-				moveDirection = Direction::SOUTH;
+				moveDirection = Direction::South;
 				return true;
-			} else if (canWalkTo(creaturePos, Direction::SOUTHWEST)) {
-				moveDirection = Direction::SOUTHWEST;
+			} else if (canWalkTo(creaturePos, Direction::SouthWest)) {
+				moveDirection = Direction::SouthWest;
 				return true;
 			}
 
 			/* fleeing */
-			bool n = canWalkTo(creaturePos, Direction::NORTH);
-			bool e = canWalkTo(creaturePos, Direction::EAST);
+			bool n = canWalkTo(creaturePos, Direction::North);
+			bool e = canWalkTo(creaturePos, Direction::East);
 
 			if (flee) {
 				if (n && e) {
-					moveDirection = boolean_random() ? Direction::NORTH : Direction::EAST;
+					moveDirection = boolean_random() ? Direction::North : Direction::East;
 					return true;
 				} else if (n) {
-					moveDirection = Direction::NORTH;
+					moveDirection = Direction::North;
 					return true;
 				} else if (e) {
-					moveDirection = Direction::EAST;
+					moveDirection = Direction::East;
 					return true;
 				}
 			}
 
 			/* end of fleeing */
 
-			if (e && canWalkTo(creaturePos, Direction::SOUTHEAST)) {
-				moveDirection = Direction::EAST;
-			} else if (n && canWalkTo(creaturePos, Direction::NORTHWEST)) {
-				moveDirection = Direction::NORTH;
+			if (e && canWalkTo(creaturePos, Direction::SouthEast)) {
+				moveDirection = Direction::East;
+			} else if (n && canWalkTo(creaturePos, Direction::NorthWest)) {
+				moveDirection = Direction::North;
 			}
 
 			return true;
@@ -1609,66 +1609,66 @@ bool Monster::getDistanceStep(const Position &targetPos, Direction &moveDirectio
 
 	// Now let's decide where the player is located to the monster (what direction) so we can decide where to escape.
 	if (dy > dx) {
-		Direction playerDir = offsety < 0 ? Direction::SOUTH : Direction::NORTH;
+		Direction playerDir = offsety < 0 ? Direction::South : Direction::North;
 		switch (playerDir) {
-			case Direction::NORTH: {
+			case Direction::North: {
 				// Player is to the NORTH, so obviously we need to check if we can go SOUTH, if not then let's choose WEST or EAST and again if we can't we need to decide about some diagonal movements.
-				if (canWalkTo(creaturePos, Direction::SOUTH)) {
-					moveDirection = Direction::SOUTH;
+				if (canWalkTo(creaturePos, Direction::South)) {
+					moveDirection = Direction::South;
 					return true;
 				}
 
-				bool w = canWalkTo(creaturePos, Direction::WEST);
-				bool e = canWalkTo(creaturePos, Direction::EAST);
+				bool w = canWalkTo(creaturePos, Direction::West);
+				bool e = canWalkTo(creaturePos, Direction::East);
 				if (w && e && offsetx == 0) {
-					moveDirection = boolean_random() ? Direction::WEST : Direction::EAST;
+					moveDirection = boolean_random() ? Direction::West : Direction::East;
 					return true;
 				} else if (w && offsetx <= 0) {
-					moveDirection = Direction::WEST;
+					moveDirection = Direction::West;
 					return true;
 				} else if (e && offsetx >= 0) {
-					moveDirection = Direction::EAST;
+					moveDirection = Direction::East;
 					return true;
 				}
 
 				/* fleeing */
 				if (flee) {
 					if (w && e) {
-						moveDirection = boolean_random() ? Direction::WEST : Direction::EAST;
+						moveDirection = boolean_random() ? Direction::West : Direction::East;
 						return true;
 					} else if (w) {
-						moveDirection = Direction::WEST;
+						moveDirection = Direction::West;
 						return true;
 					} else if (e) {
-						moveDirection = Direction::EAST;
+						moveDirection = Direction::East;
 						return true;
 					}
 				}
 
 				/* end of fleeing */
 
-				bool sw = canWalkTo(creaturePos, Direction::SOUTHWEST);
-				bool se = canWalkTo(creaturePos, Direction::SOUTHEAST);
+				bool sw = canWalkTo(creaturePos, Direction::SouthWest);
+				bool se = canWalkTo(creaturePos, Direction::SouthEast);
 				if (sw || se) {
 					// we can move both dirs
 					if (sw && se) {
-						moveDirection = boolean_random() ? Direction::SOUTHWEST : Direction::SOUTHEAST;
+						moveDirection = boolean_random() ? Direction::SouthWest : Direction::SouthEast;
 					} else if (w) {
-						moveDirection = Direction::WEST;
+						moveDirection = Direction::West;
 					} else if (sw) {
-						moveDirection = Direction::SOUTHWEST;
+						moveDirection = Direction::SouthWest;
 					} else if (e) {
-						moveDirection = Direction::EAST;
+						moveDirection = Direction::East;
 					} else if (se) {
-						moveDirection = Direction::SOUTHEAST;
+						moveDirection = Direction::SouthEast;
 					}
 					return true;
 				}
 
 				/* fleeing */
-				if (flee && canWalkTo(creaturePos, Direction::NORTH)) {
+				if (flee && canWalkTo(creaturePos, Direction::North)) {
 					// towards player, yea
-					moveDirection = Direction::NORTH;
+					moveDirection = Direction::North;
 					return true;
 				}
 
@@ -1676,63 +1676,63 @@ bool Monster::getDistanceStep(const Position &targetPos, Direction &moveDirectio
 				break;
 			}
 
-			case Direction::SOUTH: {
-				if (canWalkTo(creaturePos, Direction::NORTH)) {
-					moveDirection = Direction::NORTH;
+			case Direction::South: {
+				if (canWalkTo(creaturePos, Direction::North)) {
+					moveDirection = Direction::North;
 					return true;
 				}
 
-				bool w = canWalkTo(creaturePos, Direction::WEST);
-				bool e = canWalkTo(creaturePos, Direction::EAST);
+				bool w = canWalkTo(creaturePos, Direction::West);
+				bool e = canWalkTo(creaturePos, Direction::East);
 				if (w && e && offsetx == 0) {
-					moveDirection = boolean_random() ? Direction::WEST : Direction::EAST;
+					moveDirection = boolean_random() ? Direction::West : Direction::East;
 					return true;
 				} else if (w && offsetx <= 0) {
-					moveDirection = Direction::WEST;
+					moveDirection = Direction::West;
 					return true;
 				} else if (e && offsetx >= 0) {
-					moveDirection = Direction::EAST;
+					moveDirection = Direction::East;
 					return true;
 				}
 
 				/* fleeing */
 				if (flee) {
 					if (w && e) {
-						moveDirection = boolean_random() ? Direction::WEST : Direction::EAST;
+						moveDirection = boolean_random() ? Direction::West : Direction::East;
 						return true;
 					} else if (w) {
-						moveDirection = Direction::WEST;
+						moveDirection = Direction::West;
 						return true;
 					} else if (e) {
-						moveDirection = Direction::EAST;
+						moveDirection = Direction::East;
 						return true;
 					}
 				}
 
 				/* end of fleeing */
 
-				bool nw = canWalkTo(creaturePos, Direction::NORTHWEST);
-				bool ne = canWalkTo(creaturePos, Direction::NORTHEAST);
+				bool nw = canWalkTo(creaturePos, Direction::NorthWest);
+				bool ne = canWalkTo(creaturePos, Direction::NorthEast);
 				if (nw || ne) {
 					// we can move both dirs
 					if (nw && ne) {
-						moveDirection = boolean_random() ? Direction::NORTHWEST : Direction::NORTHEAST;
+						moveDirection = boolean_random() ? Direction::NorthWest : Direction::NorthEast;
 					} else if (w) {
-						moveDirection = Direction::WEST;
+						moveDirection = Direction::West;
 					} else if (nw) {
-						moveDirection = Direction::NORTHWEST;
+						moveDirection = Direction::NorthWest;
 					} else if (e) {
-						moveDirection = Direction::EAST;
+						moveDirection = Direction::East;
 					} else if (ne) {
-						moveDirection = Direction::NORTHEAST;
+						moveDirection = Direction::NorthEast;
 					}
 					return true;
 				}
 
 				/* fleeing */
-				if (flee && canWalkTo(creaturePos, Direction::SOUTH)) {
+				if (flee && canWalkTo(creaturePos, Direction::South)) {
 					// towards player, yea
-					moveDirection = Direction::SOUTH;
+					moveDirection = Direction::South;
 					return true;
 				}
 
@@ -1744,64 +1744,64 @@ bool Monster::getDistanceStep(const Position &targetPos, Direction &moveDirectio
 				break;
 		}
 	} else {
-		Direction playerDir = offsetx < 0 ? Direction::EAST : Direction::WEST;
+		Direction playerDir = offsetx < 0 ? Direction::East : Direction::West;
 		switch (playerDir) {
-			case Direction::WEST: {
-				if (canWalkTo(creaturePos, Direction::EAST)) {
-					moveDirection = Direction::EAST;
+			case Direction::West: {
+				if (canWalkTo(creaturePos, Direction::East)) {
+					moveDirection = Direction::East;
 					return true;
 				}
 
-				bool n = canWalkTo(creaturePos, Direction::NORTH);
-				bool s = canWalkTo(creaturePos, Direction::SOUTH);
+				bool n = canWalkTo(creaturePos, Direction::North);
+				bool s = canWalkTo(creaturePos, Direction::South);
 				if (n && s && offsety == 0) {
-					moveDirection = boolean_random() ? Direction::NORTH : Direction::SOUTH;
+					moveDirection = boolean_random() ? Direction::North : Direction::South;
 					return true;
 				} else if (n && offsety <= 0) {
-					moveDirection = Direction::NORTH;
+					moveDirection = Direction::North;
 					return true;
 				} else if (s && offsety >= 0) {
-					moveDirection = Direction::SOUTH;
+					moveDirection = Direction::South;
 					return true;
 				}
 
 				/* fleeing */
 				if (flee) {
 					if (n && s) {
-						moveDirection = boolean_random() ? Direction::NORTH : Direction::SOUTH;
+						moveDirection = boolean_random() ? Direction::North : Direction::South;
 						return true;
 					} else if (n) {
-						moveDirection = Direction::NORTH;
+						moveDirection = Direction::North;
 						return true;
 					} else if (s) {
-						moveDirection = Direction::SOUTH;
+						moveDirection = Direction::South;
 						return true;
 					}
 				}
 
 				/* end of fleeing */
 
-				bool se = canWalkTo(creaturePos, Direction::SOUTHEAST);
-				bool ne = canWalkTo(creaturePos, Direction::NORTHEAST);
+				bool se = canWalkTo(creaturePos, Direction::SouthEast);
+				bool ne = canWalkTo(creaturePos, Direction::NorthEast);
 				if (se || ne) {
 					if (se && ne) {
-						moveDirection = boolean_random() ? Direction::SOUTHEAST : Direction::NORTHEAST;
+						moveDirection = boolean_random() ? Direction::SouthEast : Direction::NorthEast;
 					} else if (s) {
-						moveDirection = Direction::SOUTH;
+						moveDirection = Direction::South;
 					} else if (se) {
-						moveDirection = Direction::SOUTHEAST;
+						moveDirection = Direction::SouthEast;
 					} else if (n) {
-						moveDirection = Direction::NORTH;
+						moveDirection = Direction::North;
 					} else if (ne) {
-						moveDirection = Direction::NORTHEAST;
+						moveDirection = Direction::NorthEast;
 					}
 					return true;
 				}
 
 				/* fleeing */
-				if (flee && canWalkTo(creaturePos, Direction::WEST)) {
+				if (flee && canWalkTo(creaturePos, Direction::West)) {
 					// towards player, yea
-					moveDirection = Direction::WEST;
+					moveDirection = Direction::West;
 					return true;
 				}
 
@@ -1809,62 +1809,62 @@ bool Monster::getDistanceStep(const Position &targetPos, Direction &moveDirectio
 				break;
 			}
 
-			case Direction::EAST: {
-				if (canWalkTo(creaturePos, Direction::WEST)) {
-					moveDirection = Direction::WEST;
+			case Direction::East: {
+				if (canWalkTo(creaturePos, Direction::West)) {
+					moveDirection = Direction::West;
 					return true;
 				}
 
-				bool n = canWalkTo(creaturePos, Direction::NORTH);
-				bool s = canWalkTo(creaturePos, Direction::SOUTH);
+				bool n = canWalkTo(creaturePos, Direction::North);
+				bool s = canWalkTo(creaturePos, Direction::South);
 				if (n && s && offsety == 0) {
-					moveDirection = boolean_random() ? Direction::NORTH : Direction::SOUTH;
+					moveDirection = boolean_random() ? Direction::North : Direction::South;
 					return true;
 				} else if (n && offsety <= 0) {
-					moveDirection = Direction::NORTH;
+					moveDirection = Direction::North;
 					return true;
 				} else if (s && offsety >= 0) {
-					moveDirection = Direction::SOUTH;
+					moveDirection = Direction::South;
 					return true;
 				}
 
 				/* fleeing */
 				if (flee) {
 					if (n && s) {
-						moveDirection = boolean_random() ? Direction::NORTH : Direction::SOUTH;
+						moveDirection = boolean_random() ? Direction::North : Direction::South;
 						return true;
 					} else if (n) {
-						moveDirection = Direction::NORTH;
+						moveDirection = Direction::North;
 						return true;
 					} else if (s) {
-						moveDirection = Direction::SOUTH;
+						moveDirection = Direction::South;
 						return true;
 					}
 				}
 
 				/* end of fleeing */
 
-				bool nw = canWalkTo(creaturePos, Direction::NORTHWEST);
-				bool sw = canWalkTo(creaturePos, Direction::SOUTHWEST);
+				bool nw = canWalkTo(creaturePos, Direction::NorthWest);
+				bool sw = canWalkTo(creaturePos, Direction::SouthWest);
 				if (nw || sw) {
 					if (nw && sw) {
-						moveDirection = boolean_random() ? Direction::NORTHWEST : Direction::SOUTHWEST;
+						moveDirection = boolean_random() ? Direction::NorthWest : Direction::SouthWest;
 					} else if (n) {
-						moveDirection = Direction::NORTH;
+						moveDirection = Direction::North;
 					} else if (nw) {
-						moveDirection = Direction::NORTHWEST;
+						moveDirection = Direction::NorthWest;
 					} else if (s) {
-						moveDirection = Direction::SOUTH;
+						moveDirection = Direction::South;
 					} else if (sw) {
-						moveDirection = Direction::SOUTHWEST;
+						moveDirection = Direction::SouthWest;
 					}
 					return true;
 				}
 
 				/* fleeing */
-				if (flee && canWalkTo(creaturePos, Direction::EAST)) {
+				if (flee && canWalkTo(creaturePos, Direction::East)) {
 					// towards player, yea
-					moveDirection = Direction::EAST;
+					moveDirection = Direction::East;
 					return true;
 				}
 
@@ -1987,42 +1987,42 @@ void Monster::updateLookDirection() {
 	if (dx > dy) {
 		// look EAST/WEST
 		if (offsetx < 0) {
-			newDir = Direction::WEST;
+			newDir = Direction::West;
 		} else {
-			newDir = Direction::EAST;
+			newDir = Direction::East;
 		}
 	} else if (dx < dy) {
 		// look NORTH/SOUTH
 		if (offsety < 0) {
-			newDir = Direction::NORTH;
+			newDir = Direction::North;
 		} else {
-			newDir = Direction::SOUTH;
+			newDir = Direction::South;
 		}
 	} else {
 		Direction dir = getDirection();
 		if (offsetx < 0 && offsety < 0) {
-			if (dir == Direction::SOUTH) {
-				newDir = Direction::WEST;
-			} else if (dir == Direction::EAST) {
-				newDir = Direction::NORTH;
+			if (dir == Direction::South) {
+				newDir = Direction::West;
+			} else if (dir == Direction::East) {
+				newDir = Direction::North;
 			}
 		} else if (offsetx < 0 && offsety > 0) {
-			if (dir == Direction::NORTH) {
-				newDir = Direction::WEST;
-			} else if (dir == Direction::EAST) {
-				newDir = Direction::SOUTH;
+			if (dir == Direction::North) {
+				newDir = Direction::West;
+			} else if (dir == Direction::East) {
+				newDir = Direction::South;
 			}
 		} else if (offsetx > 0 && offsety < 0) {
-			if (dir == Direction::SOUTH) {
-				newDir = Direction::EAST;
-			} else if (dir == Direction::WEST) {
-				newDir = Direction::NORTH;
+			if (dir == Direction::South) {
+				newDir = Direction::East;
+			} else if (dir == Direction::West) {
+				newDir = Direction::North;
 			}
 		} else {
-			if (dir == Direction::NORTH) {
-				newDir = Direction::EAST;
-			} else if (dir == Direction::WEST) {
-				newDir = Direction::SOUTH;
+			if (dir == Direction::North) {
+				newDir = Direction::East;
+			} else if (dir == Direction::West) {
+				newDir = Direction::South;
 			}
 		}
 	}
@@ -2201,22 +2201,22 @@ bool Monster::canDropLoot() const {
 }
 
 std::vector<std::pair<int8_t, int8_t>> Monster::getPushItemLocationOptions(const Direction &direction) {
-	if (direction == Direction::WEST || direction == Direction::EAST) {
+	if (direction == Direction::West || direction == Direction::East) {
 		return { { 0, -1 }, { 0, 1 } };
 	}
-	if (direction == Direction::NORTH || direction == Direction::SOUTH) {
+	if (direction == Direction::North || direction == Direction::South) {
 		return { { -1, 0 }, { 1, 0 } };
 	}
-	if (direction == Direction::NORTHWEST) {
+	if (direction == Direction::NorthWest) {
 		return { { 0, -1 }, { -1, 0 } };
 	}
-	if (direction == Direction::NORTHEAST) {
+	if (direction == Direction::NorthEast) {
 		return { { 0, -1 }, { 1, 0 } };
 	}
-	if (direction == Direction::SOUTHWEST) {
+	if (direction == Direction::SouthWest) {
 		return { { 0, 1 }, { -1, 0 } };
 	}
-	if (direction == Direction::SOUTHEAST) {
+	if (direction == Direction::SouthEast) {
 		return { { 0, 1 }, { 1, 0 } };
 	}
 

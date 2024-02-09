@@ -188,11 +188,11 @@ public:
 
 	int32_t getWalkSize();
 
-	int32_t getWalkDelay(Direction dir = Direction::NONE);
+	int32_t getWalkDelay(Direction dir = Direction::None);
 	int64_t getTimeSinceLastMove() const;
 
 	int64_t getEventStepTicks(bool onlyDelay = false);
-	uint16_t getStepDuration(Direction dir = Direction::NONE);
+	uint16_t getStepDuration(Direction dir = Direction::None);
 	virtual uint16_t getStepSpeed() const {
 		return getSpeed();
 	}
@@ -724,7 +724,7 @@ protected:
 	Position lastPosition;
 	LightInfo internalLight;
 
-	Direction direction = Direction::SOUTH;
+	Direction direction = Direction::South;
 	Skull_t skull = Skull_t::None;
 
 	bool localMapCache[mapWalkHeight][mapWalkWidth] = { { false } };

@@ -80,7 +80,7 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 				if (directionAttribute) {
 					dir = static_cast<Direction>(pugi::cast<uint16_t>(directionAttribute.value()));
 				} else {
-					dir = Direction::NORTH;
+					dir = Direction::North;
 				}
 
 				auto xOffset = pugi::cast<int16_t>(childMonsterNode.attribute("x").value());

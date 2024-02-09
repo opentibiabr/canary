@@ -810,14 +810,14 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 	if (!pushMovement) {
 		if (oldPosition.x == position.x) {
 			if (oldPosition.y < position.y) {
-				g_game().internalCreatureTurn(creature, Direction::SOUTH);
+				g_game().internalCreatureTurn(creature, Direction::South);
 			} else {
-				g_game().internalCreatureTurn(creature, Direction::NORTH);
+				g_game().internalCreatureTurn(creature, Direction::North);
 			}
 		} else if (oldPosition.x > position.x) {
-			g_game().internalCreatureTurn(creature, Direction::WEST);
+			g_game().internalCreatureTurn(creature, Direction::West);
 		} else if (oldPosition.x < position.x) {
-			g_game().internalCreatureTurn(creature, Direction::EAST);
+			g_game().internalCreatureTurn(creature, Direction::East);
 		}
 	}
 	pushBoolean(L, true);
@@ -972,7 +972,7 @@ int CreatureFunctions::luaCreatureMove(lua_State* L) {
 
 	if (isNumber(L, 2)) {
 		Direction direction = getNumber<Direction>(L, 2);
-		if (direction > Direction::LAST) {
+		if (direction > Direction::Last) {
 			lua_pushnil(L);
 			return 1;
 		}

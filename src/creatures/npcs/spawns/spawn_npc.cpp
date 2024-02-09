@@ -74,7 +74,7 @@ bool SpawnsNpc::loadFromXml(const std::string &fileNpcName) {
 				if (directionAttribute) {
 					dir = static_cast<Direction>(pugi::cast<uint16_t>(directionAttribute.value()));
 				} else {
-					dir = Direction::NORTH;
+					dir = Direction::North;
 				}
 
 				auto xOffset = pugi::cast<int16_t>(childNode.attribute("x").value());

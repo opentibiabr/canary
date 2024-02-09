@@ -313,7 +313,7 @@ public:
 	uint16_t m_transformOnUse = 0;
 
 	MagicEffectClasses magicEffect = CONST_ME_NONE;
-	Direction bedPartnerDir = Direction::NONE;
+	Direction bedPartnerDir = Direction::None;
 	BedItemPart_t bedPart = BED_NONE_PART;
 	WeaponType_t weaponType = WEAPON_NONE;
 	Ammo_t ammoType = AMMO_NONE;

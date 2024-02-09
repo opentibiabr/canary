@@ -369,15 +369,15 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 
 	if (!teleport) {
 		if (oldPos.y > newPos.y) {
-			creature->setDirection(Direction::NORTH);
+			creature->setDirection(Direction::North);
 		} else if (oldPos.y < newPos.y) {
-			creature->setDirection(Direction::SOUTH);
+			creature->setDirection(Direction::South);
 		}
 
 		if (oldPos.x < newPos.x) {
-			creature->setDirection(Direction::EAST);
+			creature->setDirection(Direction::East);
 		} else if (oldPos.x > newPos.x) {
-			creature->setDirection(Direction::WEST);
+			creature->setDirection(Direction::West);
 		}
 	}
 
@@ -574,26 +574,26 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 			const int_fast32_t offset_y = n->parent->y - y;
 			if (offset_y == 0) {
 				if (offset_x == -1) {
-					neighbors = *dirNeighbors[directionToValue(Direction::WEST)];
+					neighbors = *dirNeighbors[directionToValue(Direction::West)];
 				} else {
-					neighbors = *dirNeighbors[directionToValue(Direction::EAST)];
+					neighbors = *dirNeighbors[directionToValue(Direction::East)];
 				}
 			} else if (!fpp.allowDiagonal || offset_x == 0) {
 				if (offset_y == -1) {
-					neighbors = *dirNeighbors[directionToValue(Direction::NORTH)];
+					neighbors = *dirNeighbors[directionToValue(Direction::North)];
 				} else {
-					neighbors = *dirNeighbors[directionToValue(Direction::SOUTH)];
+					neighbors = *dirNeighbors[directionToValue(Direction::South)];
 				}
 			} else if (offset_y == -1) {
 				if (offset_x == -1) {
-					neighbors = *dirNeighbors[directionToValue(Direction::NORTHWEST)];
+					neighbors = *dirNeighbors[directionToValue(Direction::NorthWest)];
 				} else {
-					neighbors = *dirNeighbors[directionToValue(Direction::NORTHEAST)];
+					neighbors = *dirNeighbors[directionToValue(Direction::NorthEast)];
 				}
 			} else if (offset_x == -1) {
-				neighbors = *dirNeighbors[directionToValue(Direction::SOUTHWEST)];
+				neighbors = *dirNeighbors[directionToValue(Direction::SouthWest)];
 			} else {
-				neighbors = *dirNeighbors[directionToValue(Direction::SOUTHEAST)];
+				neighbors = *dirNeighbors[directionToValue(Direction::SouthEast)];
 			}
 			dirCount = fpp.allowDiagonal ? 5 : 3;
 		} else {
@@ -671,21 +671,21 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 		prevy = pos.y;
 
 		if (dx == 1 && dy == 1) {
-			dirList.push_front(Direction::NORTHWEST);
+			dirList.push_front(Direction::NorthWest);
 		} else if (dx == -1 && dy == 1) {
-			dirList.push_front(Direction::NORTHEAST);
+			dirList.push_front(Direction::NorthEast);
 		} else if (dx == 1 && dy == -1) {
-			dirList.push_front(Direction::SOUTHWEST);
+			dirList.push_front(Direction::SouthWest);
 		} else if (dx == -1 && dy == -1) {
-			dirList.push_front(Direction::SOUTHEAST);
+			dirList.push_front(Direction::SouthEast);
 		} else if (dx == 1) {
-			dirList.push_front(Direction::WEST);
+			dirList.push_front(Direction::West);
 		} else if (dx == -1) {
-			dirList.push_front(Direction::EAST);
+			dirList.push_front(Direction::East);
 		} else if (dy == 1) {
-			dirList.push_front(Direction::NORTH);
+			dirList.push_front(Direction::North);
 		} else if (dy == -1) {
-			dirList.push_front(Direction::SOUTH);
+			dirList.push_front(Direction::South);
 		}
 
 		found = found->parent;

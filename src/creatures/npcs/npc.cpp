@@ -633,10 +633,10 @@ bool Npc::getNextStep(Direction &nextDirection, uint32_t &flags) {
 
 bool Npc::getRandomStep(Direction &moveDirection) {
 	static std::vector<Direction> directionvector {
-		Direction::NORTH,
-		Direction::WEST,
-		Direction::EAST,
-		Direction::SOUTH
+		Direction::North,
+		Direction::West,
+		Direction::East,
+		Direction::South
 	};
 	std::ranges::shuffle(directionvector, getRandomGenerator());
 

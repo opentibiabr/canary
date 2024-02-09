@@ -86,7 +86,7 @@ int32_t Creature::getWalkDelay(Direction dir) {
 
 	const int64_t ct = OTSYS_TIME();
 	uint16_t stepDuration = getStepDuration(dir);
-	if (dir == Direction::NONE) {
+	if (dir == Direction::None) {
 		stepDuration *= lastStepCost;
 	}
 
@@ -208,8 +208,8 @@ void Creature::onCreatureWalk() {
 void Creature::onWalk(Direction &dir) {
 	if (hasCondition(ConditionType::Drunk)) {
 		auto randomDir = directionFromValue(uniform_random(0, 60));
-		if (randomDir <= Direction::DIAGONAL_MASK) {
-			if (randomDir < Direction::DIAGONAL_MASK) {
+		if (randomDir <= Direction::DiagonalMask) {
+			if (randomDir < Direction::DiagonalMask) {
 				dir = randomDir;
 			}
 			g_game().internalCreatureSay(static_self_cast<Creature>(), TalkType::MonsterSay, "Hicks!", false);
@@ -1108,14 +1108,14 @@ void Creature::goToFollowCreature() {
 	getPathSearchParams(followCreature, fpp);
 
 	if (monster && !monster->getMaster() && (monster->isFleeing() || fpp.maxTargetDist > 1)) {
-		Direction dir = Direction::NONE;
+		Direction dir = Direction::None;
 
 		if (monster->isFleeing()) {
 			monster->getDistanceStep(followCreature->getPosition(), dir, true);
 		} else if (!monster->getDistanceStep(followCreature->getPosition(), dir)) { // maxTargetDist > 1
 			// if we can't get anything then let the A* calculate
 			executeOnFollow = false;
-		} else if (dir != Direction::NONE) {
+		} else if (dir != Direction::None) {
 			listDir.push_back(dir);
 			hasFollowPath = true;
 		}
@@ -1551,7 +1551,7 @@ uint16_t Creature::getStepDuration(Direction dir) {
 	}
 
 	auto duration = walk.duration;
-	if ((directionToValue(dir) & directionToValue(Direction::DIAGONAL_MASK)) != 0) {
+	if ((directionToValue(dir) & directionToValue(Direction::DiagonalMask)) != 0) {
 		duration *= WALK_DIAGONAL_EXTRA_COST;
 	} else if (const auto &monster = getMonster()) {
 		if (monster->isTargetNearby() && !monster->isFleeing() && !monster->getMaster()) {
@@ -1785,15 +1785,15 @@ void Creature::turnToCreature(std::shared_ptr<Creature> creature) {
 	Direction dir;
 	if (std::abs(tan) < 1) {
 		if (dx > 0) {
-			dir = Direction::WEST;
+			dir = Direction::West;
 		} else {
-			dir = Direction::EAST;
+			dir = Direction::East;
 		}
 	} else {
 		if (dy > 0) {
-			dir = Direction::NORTH;
+			dir = Direction::North;
 		} else {
-			dir = Direction::SOUTH;
+			dir = Direction::South;
 		}
 	}
 	g_game().internalCreatureTurn(static_self_cast<Creature>(), dir);

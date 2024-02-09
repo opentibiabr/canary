@@ -1738,7 +1738,7 @@ void AreaCombat::clear() {
 
 AreaCombat::AreaCombat(const AreaCombat &rhs) {
 	hasExtArea = rhs.hasExtArea;
-	for (uint_fast8_t i = 0; i <= DIRECTION_LAST; ++i) {
+	for (uint_fast8_t i = 0; i <= directionToValue(Direction::Last); ++i) {
 		if (const auto &area = rhs.areas[i]) {
 			areas[i] = area->clone();
 		}
@@ -1895,10 +1895,10 @@ void AreaCombat::setupArea(const std::list<uint32_t> &list, uint32_t rows) {
 	auto westArea = std::make_unique<MatrixArea>(maxOutput, maxOutput);
 	copyArea(northArea, westArea, MATRIXOPERATION_ROTATE270);
 
-	areas[directionToValue(Direction::NORTH)] = std::move(northArea);
-	areas[directionToValue(Direction::SOUTH)] = std::move(southArea);
-	areas[directionToValue(Direction::EAST)] = std::move(eastArea);
-	areas[directionToValue(Direction::WEST)] = std::move(westArea);
+	areas[directionToValue(Direction::North)] = std::move(northArea);
+	areas[directionToValue(Direction::South)] = std::move(southArea);
+	areas[directionToValue(Direction::East)] = std::move(eastArea);
+	areas[directionToValue(Direction::West)] = std::move(westArea);
 }
 
 void AreaCombat::setupArea(int32_t length, int32_t spread) {
@@ -1993,10 +1993,10 @@ void AreaCombat::setupExtArea(const std::list<uint32_t> &list, uint32_t rows) {
 	auto seArea = std::make_unique<MatrixArea>(maxOutput, maxOutput);
 	copyArea(swArea, seArea, MATRIXOPERATION_MIRROR);
 
-	areas[directionToValue(Direction::NORTHWEST)] = std::move(nwArea);
-	areas[directionToValue(Direction::SOUTHWEST)] = std::move(swArea);
-	areas[directionToValue(Direction::NORTHEAST)] = std::move(neArea);
-	areas[directionToValue(Direction::SOUTHEAST)] = std::move(seArea);
+	areas[directionToValue(Direction::NorthWest)] = std::move(nwArea);
+	areas[directionToValue(Direction::SouthWest)] = std::move(swArea);
+	areas[directionToValue(Direction::NorthEast)] = std::move(neArea);
+	areas[directionToValue(Direction::SouthEast)] = std::move(seArea);
 }
 
 //**********************************************************//

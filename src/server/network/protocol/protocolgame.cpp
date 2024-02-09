@@ -1034,43 +1034,43 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			parseAutoWalk(msg);
 			break;
 		case 0x65:
-			addGameTask(&Game::playerMove, player->getID(), Direction::NORTH);
+			addGameTask(&Game::playerMove, player->getID(), Direction::North);
 			break;
 		case 0x66:
-			addGameTask(&Game::playerMove, player->getID(), Direction::EAST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::East);
 			break;
 		case 0x67:
-			addGameTask(&Game::playerMove, player->getID(), Direction::SOUTH);
+			addGameTask(&Game::playerMove, player->getID(), Direction::South);
 			break;
 		case 0x68:
-			addGameTask(&Game::playerMove, player->getID(), Direction::WEST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::West);
 			break;
 		case 0x69:
 			addGameTask(&Game::playerStopAutoWalk, player->getID());
 			break;
 		case 0x6A:
-			addGameTask(&Game::playerMove, player->getID(), Direction::NORTHEAST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::NorthEast);
 			break;
 		case 0x6B:
-			addGameTask(&Game::playerMove, player->getID(), Direction::SOUTHEAST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::SouthEast);
 			break;
 		case 0x6C:
-			addGameTask(&Game::playerMove, player->getID(), Direction::SOUTHWEST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::SouthWest);
 			break;
 		case 0x6D:
-			addGameTask(&Game::playerMove, player->getID(), Direction::NORTHWEST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::NorthWest);
 			break;
 		case 0x6F:
-			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::NORTH);
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::North);
 			break;
 		case 0x70:
-			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::EAST);
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::East);
 			break;
 		case 0x71:
-			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::SOUTH);
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::South);
 			break;
 		case 0x72:
-			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::WEST);
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::West);
 			break;
 		case 0x73:
 			parseTeleport(msg);
@@ -1613,28 +1613,28 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 		uint8_t rawdir = msg.getPreviousByte();
 		switch (rawdir) {
 			case 1:
-				path.push_front(Direction::EAST);
+				path.push_front(Direction::East);
 				break;
 			case 2:
-				path.push_front(Direction::NORTHEAST);
+				path.push_front(Direction::NorthEast);
 				break;
 			case 3:
-				path.push_front(Direction::NORTH);
+				path.push_front(Direction::North);
 				break;
 			case 4:
-				path.push_front(Direction::NORTHWEST);
+				path.push_front(Direction::NorthWest);
 				break;
 			case 5:
-				path.push_front(Direction::WEST);
+				path.push_front(Direction::West);
 				break;
 			case 6:
-				path.push_front(Direction::SOUTHWEST);
+				path.push_front(Direction::SouthWest);
 				break;
 			case 7:
-				path.push_front(Direction::SOUTH);
+				path.push_front(Direction::South);
 				break;
 			case 8:
-				path.push_front(Direction::SOUTHEAST);
+				path.push_front(Direction::SouthEast);
 				break;
 			default:
 				break;
@@ -1693,8 +1693,8 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 			newOutfit.lookMountBody = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookMountLegs = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookMountFeet = std::min<uint8_t>(132, msg.getByte());
-			const auto &northValue = directionToValue(Direction::NORTH);
-			const auto &westValue = directionToValue(Direction::WEST);
+			const auto &northValue = directionToValue(Direction::North);
+			const auto &westValue = directionToValue(Direction::West);
 			uint8_t direction = std::max<uint8_t>(northValue, std::min<uint8_t>(westValue, msg.getByte()));
 			uint8_t podiumVisible = msg.getByte();
 			g_game().playerSetShowOffSocket(player->getID(), newOutfit, pos, stackpos, itemId, podiumVisible, direction);

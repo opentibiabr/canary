@@ -229,31 +229,31 @@ private:
 
 		Direction dir;
 		if (dx < 0) {
-			dir = Direction::WEST;
+			dir = Direction::West;
 		} else if (dx > 0) {
-			dir = Direction::EAST;
+			dir = Direction::East;
 		} else if (dy < 0) {
-			dir = Direction::NORTH;
+			dir = Direction::North;
 		} else {
-			dir = Direction::SOUTH;
+			dir = Direction::South;
 		}
 
 		if (hasExtArea) {
 			if (dx < 0 && dy < 0) {
-				dir = Direction::NORTHWEST;
+				dir = Direction::NorthWest;
 			} else if (dx > 0 && dy < 0) {
-				dir = Direction::NORTHEAST;
+				dir = Direction::NorthEast;
 			} else if (dx < 0 && dy > 0) {
-				dir = Direction::SOUTHWEST;
+				dir = Direction::SouthWest;
 			} else if (dx > 0 && dy > 0) {
-				dir = Direction::SOUTHEAST;
+				dir = Direction::SouthEast;
 			}
 		}
 
 		return areas[directionToValue(dir)];
 	}
 
-	std::array<std::unique_ptr<MatrixArea>, DIRECTION_LAST + 1> areas {};
+	std::array<std::unique_ptr<MatrixArea>, directionToValue(Direction::Last) + 1> areas {};
 	bool hasExtArea = false;
 };
 

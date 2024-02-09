@@ -368,7 +368,7 @@ int MonsterFunctions::luaMonsterSetSpawnPosition(lua_State* L) {
 	g_game().map.spawnsMonster.getspawnMonsterList().emplace_front(pos, 5);
 	SpawnMonster &spawnMonster = g_game().map.spawnsMonster.getspawnMonsterList().front();
 	uint32_t interval = getNumber<uint32_t>(L, 2, 90) * 1000 * 100 / std::max((uint32_t)1, (g_configManager().getNumber(RATE_SPAWN, __FUNCTION__) * eventschedule));
-	spawnMonster.addMonster(monster->mType->typeName, pos, Direction::NORTH, static_cast<uint32_t>(interval));
+	spawnMonster.addMonster(monster->mType->typeName, pos, Direction::North, static_cast<uint32_t>(interval));
 	spawnMonster.startSpawnMonsterCheck();
 
 	pushBoolean(L, true);

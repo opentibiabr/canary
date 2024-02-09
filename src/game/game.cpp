@@ -1263,7 +1263,7 @@ ReturnValue Game::internalMoveCreature(std::shared_ptr<Creature> creature, Direc
 	Position destPos = getNextPosition(direction, currentPos);
 	std::shared_ptr<Player> player = creature->getPlayer();
 
-	bool diagonalMovement = (directionToValue(direction) & directionToValue(Direction::DIAGONAL_MASK)) != 0;
+	bool diagonalMovement = (directionToValue(direction) & directionToValue(Direction::DiagonalMask)) != 0;
 	if (player && !diagonalMovement) {
 		// try go up
 		auto tile = creature->getTile();
@@ -1362,7 +1362,7 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 		const Position &toPosition = toCylinder->getPosition();
 		if (fromPosition.z != toPosition.z && (fromPosition.x != toPosition.x || fromPosition.y != toPosition.y)) {
 			Direction dir = getDirectionTo(fromPosition, toPosition);
-			if ((directionToValue(dir) & directionToValue(Direction::DIAGONAL_MASK)) == 0) {
+			if ((directionToValue(dir) & directionToValue(Direction::DiagonalMask)) == 0) {
 				internalCreatureTurn(creature, dir);
 			}
 		}

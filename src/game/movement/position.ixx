@@ -16,28 +16,26 @@ module;
 export module game_movement;
 
 export enum class Direction : uint8_t {
-	NORTH = 0,
-	EAST = 1,
-	SOUTH = 2,
-	WEST = 3,
+	North = 0,
+	East = 1,
+	South = 2,
+	West = 3,
 
-	DIAGONAL_MASK = 4,
-	SOUTHWEST = DIAGONAL_MASK | 0,
-	SOUTHEAST = DIAGONAL_MASK | 1,
-	NORTHWEST = DIAGONAL_MASK | 2,
-	NORTHEAST = DIAGONAL_MASK | 3,
+	DiagonalMask = 4,
+	SouthWest = DiagonalMask | 0,
+	SouthEast = DiagonalMask | 1,
+	NorthWest = DiagonalMask | 2,
+	NorthEast = DiagonalMask | 3,
 
-	LAST = NORTHEAST,
-	NONE = 8,
+	Last = NorthEast,
+	None = 8,
 };
 
-export constexpr auto DIRECTION_LAST = static_cast<uint8_t>(Direction::LAST);
-
-export uint8_t directionToValue(Direction type) {
+export constexpr uint8_t directionToValue(Direction type) {
 	return static_cast<uint8_t>(type);
 }
 
-export Direction directionFromValue(uint8_t value) {
+export constexpr Direction directionFromValue(uint8_t value) {
 	return static_cast<Direction>(value);
 }
 
@@ -133,14 +131,14 @@ export struct Position {
 
     static inline std::vector<Direction> getDirectionVector() {
         static std::vector<Direction> directionVector {
-            Direction::NORTH,
-            Direction::NORTHEAST,
-            Direction::EAST,
-            Direction::SOUTHEAST,
-            Direction::SOUTH,
-            Direction::SOUTHWEST,
-            Direction::WEST,
-            Direction::NORTHWEST
+            Direction::North,
+            Direction::NorthEast,
+            Direction::East,
+            Direction::SouthEast,
+            Direction::South,
+            Direction::SouthWest,
+            Direction::West,
+            Direction::NorthWest
         };
 
         return directionVector;
@@ -176,10 +174,10 @@ double Position::getEuclideanDistance(const Position &p1, const Position &p2) {
 
 Direction Position::getRandomDirection() {
 	static std::vector<Direction> dirList {
-		Direction::NORTH,
-		Direction::WEST,
-		Direction::EAST,
-		Direction::SOUTH
+		Direction::North,
+		Direction::West,
+		Direction::East,
+		Direction::South
 	};
 	std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
 
@@ -192,14 +190,14 @@ export std::ostream &operator<<(std::ostream &os, const Position &pos) {
 
 export std::ostream &operator<<(std::ostream &os, const Direction &dir) {
 	static const std::map<Direction, std::string> directionStrings = {
-		{ Direction::NORTH, "North" },
-		{ Direction::EAST, "East" },
-		{ Direction::WEST, "West" },
-		{ Direction::SOUTH, "South" },
-		{ Direction::SOUTHWEST, "South-West" },
-		{ Direction::SOUTHEAST, "South-East" },
-		{ Direction::NORTHWEST, "North-West" },
-		{ Direction::NORTHEAST, "North-East" }
+		{ Direction::North, "North" },
+		{ Direction::East, "East" },
+		{ Direction::West, "West" },
+		{ Direction::South, "South" },
+		{ Direction::SouthWest, "South-West" },
+		{ Direction::SouthEast, "South-East" },
+		{ Direction::NorthWest, "North-West" },
+		{ Direction::NorthEast, "North-East" }
 	};
 
 	auto it = directionStrings.find(dir);

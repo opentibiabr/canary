@@ -66,24 +66,24 @@ void Monster::removeList() {
 	g_game().removeMonster(static_self_cast<Monster>());
 }
 
-CreatureType_t Monster::getType() const {
-	return CreatureType_t::CREATURETYPE_MONSTER;
+CreatureType Monster::getType() const {
+	return CreatureType::Monster;
 }
 
-bool Monster::canWalkOnFieldType(CombatType_t combatType) const {
+bool Monster::canWalkOnFieldType(CombatType combatType) const {
 	switch (combatType) {
-		case CombatType_t::COMBAT_ENERGYDAMAGE:
+		case CombatType::EnergyDamage:
 			return mType->info.canWalkOnEnergy;
-		case CombatType_t::COMBAT_FIREDAMAGE:
+		case CombatType::FireDamage:
 			return mType->info.canWalkOnFire;
-		case CombatType_t::COMBAT_EARTHDAMAGE:
+		case CombatType::EarthDamage:
 			return mType->info.canWalkOnPoison;
 		default:
 			return true;
 	}
 }
 
-int32_t Monster::getReflectPercent(CombatType_t combatType, bool useCharges) const {
+int32_t Monster::getReflectPercent(CombatType combatType, bool useCharges) const {
 	int32_t result = Creature::getReflectPercent(combatType, useCharges);
 	auto it = mType->info.reflectMap.find(combatType);
 	if (it != mType->info.reflectMap.end()) {
@@ -92,7 +92,7 @@ int32_t Monster::getReflectPercent(CombatType_t combatType, bool useCharges) con
 	return result;
 }
 
-uint32_t Monster::getHealingCombatValue(CombatType_t combatType) const {
+uint32_t Monster::getHealingCombatValue(CombatType combatType) const {
 	auto it = mType->info.healingMap.find(combatType);
 	if (it != mType->info.healingMap.end()) {
 		return it->second;
@@ -258,7 +258,7 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 	}
 }
 
-void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses creatureSayType, const std::string &text) {
+void Monster::onCreatureSay(std::shared_ptr<Creature> creature, TalkType creatureSayType, const std::string &text) {
 	Creature::onCreatureSay(creature, creatureSayType, text);
 
 	if (mType->info.creatureSayEvent != -1) {
@@ -326,7 +326,7 @@ bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFron
 		targetList.emplace_back(creature);
 	}
 
-	if (!getMaster() && getFaction() != Faction_t::FACTION_DEFAULT && creature->getPlayer()) {
+	if (!getMaster() && getFaction() != Faction_t::Default && creature->getPlayer()) {
 		totalPlayersOnScreen++;
 	}
 
@@ -343,7 +343,7 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
-	if (!getMaster() && getFaction() != Faction_t::FACTION_DEFAULT && creature->getPlayer()) {
+	if (!getMaster() && getFaction() != Faction_t::Default && creature->getPlayer()) {
 		totalPlayersOnScreen--;
 	}
 
@@ -427,8 +427,8 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 		return false;
 	}
 
-	if (getFaction() != Faction_t::FACTION_DEFAULT) {
-		return isEnemyFaction(creature->getFaction()) || creature->getFaction() == Faction_t::FACTION_PLAYER;
+	if (getFaction() != Faction_t::Default) {
+		return isEnemyFaction(creature->getFaction()) || creature->getFaction() == Faction_t::Player;
 	}
 
 	if ((creature->getPlayer()) || (creature->getMaster() && creature->getMaster()->getPlayer())) {
@@ -627,10 +627,10 @@ bool Monster::isEnemyFaction(Faction_t faction) const {
 	return mType->info.enemyFactions.empty() ? false : mType->info.enemyFactions.contains(faction);
 }
 
-BlockType_t Monster::blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool /* field = false */) {
-	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor);
+BlockType Monster::blockHit(std::shared_ptr<Creature> attacker, CombatType combatType, int32_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool /* field = false */) {
+	BlockType blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor);
 
-	auto combatTypeEnum = enumFromValue<CombatType_t>(combatType);
+	auto combatTypeEnum = enumFromValue<CombatType>(combatType);
 	if (damage != 0) {
 		int32_t elementMod = 0;
 		auto it = mType->info.elementMap.find(combatTypeEnum);
@@ -648,7 +648,7 @@ BlockType_t Monster::blockHit(std::shared_ptr<Creature> attacker, CombatType_t c
 			damage = static_cast<int32_t>(std::round(damage * ((100 - elementMod) / 100.)));
 			if (damage <= 0) {
 				damage = 0;
-				blockType = BlockType_t::BLOCK_ARMOR;
+				blockType = BlockType::Armor;
 			}
 		}
 	}
@@ -657,7 +657,7 @@ BlockType_t Monster::blockHit(std::shared_ptr<Creature> attacker, CombatType_t c
 }
 
 bool Monster::isTarget(std::shared_ptr<Creature> creature) {
-	if (creature->isRemoved() || !creature->isAttackable() || creature->getZoneType() == ZoneType_t::ZONE_PROTECTION || !canSeeCreature(creature)) {
+	if (creature->isRemoved() || !creature->isAttackable() || creature->getZoneType() == ZoneType::Protection || !canSeeCreature(creature)) {
 		return false;
 	}
 
@@ -670,7 +670,7 @@ bool Monster::isTarget(std::shared_ptr<Creature> creature) {
 			return false;
 		}
 
-		if (getFaction() != Faction_t::FACTION_DEFAULT) {
+		if (getFaction() != Faction_t::Default) {
 			return isEnemyFaction(creature->getFaction());
 		}
 	}
@@ -724,7 +724,7 @@ void Monster::updateIdleStatus() {
 				isWalkingBack = true;
 			}
 		} else if (const auto &master = getMaster()) {
-			if ((!isSummon() && totalPlayersOnScreen == 0 || isSummon() && master->getMonster() && master->getMonster()->totalPlayersOnScreen == 0) && getFaction() != Faction_t::FACTION_DEFAULT) {
+			if ((!isSummon() && totalPlayersOnScreen == 0 || isSummon() && master->getMonster() && master->getMonster()->totalPlayersOnScreen == 0) && getFaction() != Faction_t::Default) {
 				idle = true;
 			}
 		}
@@ -740,18 +740,18 @@ bool Monster::isInSpawnLocation() const {
 	return position == masterPos || masterPos == Position();
 }
 
-void Monster::onAddCondition(ConditionType_t conditionType) {
+void Monster::onAddCondition(ConditionType conditionType) {
 	onConditionStatusChange(conditionType);
 }
 
-void Monster::onConditionStatusChange(const ConditionType_t &conditionType) {
-	if (conditionType == ConditionType_t::CONDITION_FIRE || conditionType == ConditionType_t::CONDITION_ENERGY || conditionType == ConditionType_t::CONDITION_POISON) {
+void Monster::onConditionStatusChange(const ConditionType &conditionType) {
+	if (conditionType == ConditionType::Fire || conditionType == ConditionType::Energy || conditionType == ConditionType::Poison) {
 		updateMapCache();
 	}
 	updateIdleStatus();
 }
 
-void Monster::onEndCondition(ConditionType_t conditionType) {
+void Monster::onEndCondition(ConditionType conditionType) {
 	onConditionStatusChange(conditionType);
 }
 
@@ -1081,9 +1081,9 @@ void Monster::onThinkYell(uint32_t interval) {
 			const voiceBlock_t &vb = mType->info.voiceVector[index];
 
 			if (vb.yellText) {
-				g_game().internalCreatureSay(static_self_cast<Monster>(), SpeakClasses::TALKTYPE_MONSTER_YELL, vb.text, false);
+				g_game().internalCreatureSay(static_self_cast<Monster>(), TalkType::MonsterYell, vb.text, false);
 			} else {
-				g_game().internalCreatureSay(static_self_cast<Monster>(), SpeakClasses::TALKTYPE_MONSTER_SAY, vb.text, false);
+				g_game().internalCreatureSay(static_self_cast<Monster>(), TalkType::MonsterSay, vb.text, false);
 			}
 		}
 	}
@@ -2065,7 +2065,7 @@ void Monster::drainHealth(std::shared_ptr<Creature> attacker, int32_t damage) {
 	}
 
 	if (isInvisible()) {
-		removeCondition(ConditionType_t::CONDITION_INVISIBLE);
+		removeCondition(ConditionType::Invisible);
 	}
 }
 
@@ -2117,11 +2117,11 @@ bool Monster::changeTargetDistance(int32_t distance, uint32_t duration /* = 1200
 	return true;
 }
 
-bool Monster::isConditionImmune(ConditionType_t conditionType) const {
+bool Monster::isConditionImmune(ConditionType conditionType) const {
 	return mType->info.m_conditionImmunities[static_cast<size_t>(conditionType)];
 }
 
-bool Monster::isCombatImmune(CombatType_t combatType) const {
+bool Monster::isCombatImmune(CombatType combatType) const {
 	return mType->info.m_damageImmunities[combatToValue(combatType)];
 }
 

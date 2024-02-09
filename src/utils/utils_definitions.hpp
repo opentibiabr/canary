@@ -313,7 +313,7 @@ enum MessageClasses : uint8_t {
 	MESSAGE_NONE = 0, /* None */
 
 	MESSAGE_GAMEMASTER_CONSOLE = 13,
-	/* Red message in the console*/ /* SpeakClasses::TALKTYPE_BROADCAST */
+	/* Red message in the console*/ /* TalkType::Broadcast */
 
 	MESSAGE_LOGIN = 17, /* White message at the bottom of the game window and in the console*/
 	MESSAGE_ADMINISTRADOR = 18, /* Red message in game window and in the console*/

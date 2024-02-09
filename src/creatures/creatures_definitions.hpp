@@ -1413,7 +1413,7 @@ import enum_modules;
 
 struct CombatDamage {
 	struct {
-		CombatType_t type = CombatType_t::COMBAT_NONE;
+		CombatType type = CombatType::None;
 		int32_t value = 0;
 	} primary, secondary;
 

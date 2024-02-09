@@ -647,8 +647,8 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 	}
 
 	if (lua_gettop(L) == 1) {
-		lua_createtable(L, COMBAT_COUNT, 0);
-		for (int i = 0; i < COMBAT_COUNT; i++) {
+		lua_createtable(L, combatToValue(CombatType::Count), 0);
+		for (int i = 0; i < combatToValue(CombatType::Count); i++) {
 			lua_pushnumber(L, monsterType->info.m_damageImmunities.test(i));
 			lua_rawseti(L, -2, i);
 		}
@@ -656,31 +656,31 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 	}
 
 	std::string immunity = getString(L, 2);
-	CombatType_t combatType = CombatType_t::COMBAT_NONE;
+	CombatType combatType = CombatType::None;
 	if (immunity == "physical") {
-		combatType = CombatType_t::COMBAT_PHYSICALDAMAGE;
+		combatType = CombatType::PhysicalDamage;
 	} else if (immunity == "energy") {
-		combatType = CombatType_t::COMBAT_ENERGYDAMAGE;
+		combatType = CombatType::EnergyDamage;
 	} else if (immunity == "fire") {
-		combatType = CombatType_t::COMBAT_FIREDAMAGE;
+		combatType = CombatType::FireDamage;
 	} else if (immunity == "poison" || immunity == "earth") {
-		combatType = CombatType_t::COMBAT_EARTHDAMAGE;
+		combatType = CombatType::EarthDamage;
 	} else if (immunity == "drown") {
-		combatType = CombatType_t::COMBAT_DROWNDAMAGE;
+		combatType = CombatType::DrownDamage;
 	} else if (immunity == "ice") {
-		combatType = CombatType_t::COMBAT_ICEDAMAGE;
+		combatType = CombatType::IceDamage;
 	} else if (immunity == "holy") {
-		combatType = CombatType_t::COMBAT_HOLYDAMAGE;
+		combatType = CombatType::HolyDamage;
 	} else if (immunity == "death") {
-		combatType = CombatType_t::COMBAT_DEATHDAMAGE;
+		combatType = CombatType::DeathDamage;
 	} else if (immunity == "lifedrain") {
-		combatType = CombatType_t::COMBAT_LIFEDRAIN;
+		combatType = CombatType::LifeDrain;
 	} else if (immunity == "manadrain") {
-		combatType = CombatType_t::COMBAT_MANADRAIN;
+		combatType = CombatType::ManaDrain;
 	} else if (immunity == "agony") {
-		combatType = CombatType_t::COMBAT_AGONYDAMAGE;
+		combatType = CombatType::AgonyDamage;
 	} else if (immunity == "neutral") {
-		combatType = CombatType_t::COMBAT_NEUTRALDAMAGE;
+		combatType = CombatType::NeutralDamage;
 	} else {
 		g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeCombatImmunities] - "
 						"Unknown immunity name {} for monster: {}",
@@ -703,8 +703,8 @@ int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 	}
 
 	if (lua_gettop(L) == 1) {
-		lua_createtable(L, CONDITION_COUNT, 0);
-		for (int i = 0; i < CONDITION_COUNT; i++) {
+		lua_createtable(L, conditionToValue(ConditionType::Count), 0);
+		for (int i = 0; i < conditionToValue(ConditionType::Count); i++) {
 			lua_pushnumber(L, monsterType->info.m_conditionImmunities.test(i));
 			lua_rawseti(L, -2, i);
 		}
@@ -712,33 +712,33 @@ int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 	}
 
 	std::string immunity = getString(L, 2);
-	ConditionType_t conditionType = ConditionType_t::CONDITION_NONE;
+	ConditionType conditionType = ConditionType::None;
 	if (immunity == "physical") {
-		conditionType = ConditionType_t::CONDITION_BLEEDING;
+		conditionType = ConditionType::Bleeding;
 	} else if (immunity == "energy") {
-		conditionType = ConditionType_t::CONDITION_ENERGY;
+		conditionType = ConditionType::Energy;
 	} else if (immunity == "fire") {
-		conditionType = ConditionType_t::CONDITION_FIRE;
+		conditionType = ConditionType::Fire;
 	} else if (immunity == "poison" || immunity == "earth") {
-		conditionType = ConditionType_t::CONDITION_POISON;
+		conditionType = ConditionType::Poison;
 	} else if (immunity == "drown") {
-		conditionType = ConditionType_t::CONDITION_DROWN;
+		conditionType = ConditionType::Drown;
 	} else if (immunity == "ice") {
-		conditionType = ConditionType_t::CONDITION_FREEZING;
+		conditionType = ConditionType::Freezing;
 	} else if (immunity == "holy") {
-		conditionType = ConditionType_t::CONDITION_DAZZLED;
+		conditionType = ConditionType::Dazzled;
 	} else if (immunity == "death") {
-		conditionType = ConditionType_t::CONDITION_CURSED;
+		conditionType = ConditionType::Cursed;
 	} else if (immunity == "paralyze") {
-		conditionType = ConditionType_t::CONDITION_PARALYZE;
+		conditionType = ConditionType::Paralyze;
 	} else if (immunity == "outfit") {
-		conditionType = ConditionType_t::CONDITION_OUTFIT;
+		conditionType = ConditionType::Outfit;
 	} else if (immunity == "drunk") {
-		conditionType = ConditionType_t::CONDITION_DRUNK;
+		conditionType = ConditionType::Drunk;
 	} else if (immunity == "invisible" || immunity == "invisibility") {
-		conditionType = ConditionType_t::CONDITION_INVISIBLE;
+		conditionType = ConditionType::Invisible;
 	} else if (immunity == "bleed") {
-		conditionType = ConditionType_t::CONDITION_BLEEDING;
+		conditionType = ConditionType::Bleeding;
 	} else {
 		g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeConditionImmunities] - "
 						"Unknown immunity name: {} for monster: {}",
@@ -868,7 +868,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddElement(lua_State* L) {
 	// monsterType:addElement(type, percent)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (monsterType) {
-		CombatType_t element = getNumber<CombatType_t>(L, 2);
+		CombatType element = getNumber<CombatType>(L, 2);
 		monsterType->info.elementMap[element] = getNumber<int32_t>(L, 3);
 		pushBoolean(L, true);
 	} else {
@@ -881,7 +881,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddReflect(lua_State* L) {
 	// monsterType:addReflect(type, percent)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (monsterType) {
-		CombatType_t element = getNumber<CombatType_t>(L, 2);
+		CombatType element = getNumber<CombatType>(L, 2);
 		monsterType->info.reflectMap[element] = getNumber<int32_t>(L, 3);
 		pushBoolean(L, true);
 	} else {
@@ -894,7 +894,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddHealing(lua_State* L) {
 	// monsterType:addHealing(type, percent)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (monsterType) {
-		CombatType_t element = getNumber<CombatType_t>(L, 2);
+		CombatType element = getNumber<CombatType>(L, 2);
 		monsterType->info.healingMap[element] = getNumber<int32_t>(L, 3);
 		pushBoolean(L, true);
 	} else {
@@ -1184,17 +1184,17 @@ int MonsterTypeFunctions::luaMonsterTypeRace(lua_State* L) {
 			lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.race));
 		} else {
 			if (race == "venom") {
-				monsterType->info.race = RaceType_t::RACE_VENOM;
+				monsterType->info.race = RaceType::Venom;
 			} else if (race == "blood") {
-				monsterType->info.race = RaceType_t::RACE_BLOOD;
+				monsterType->info.race = RaceType::Blood;
 			} else if (race == "undead") {
-				monsterType->info.race = RaceType_t::RACE_UNDEAD;
+				monsterType->info.race = RaceType::Unded;
 			} else if (race == "fire") {
-				monsterType->info.race = RaceType_t::RACE_FIRE;
+				monsterType->info.race = RaceType::Fire;
 			} else if (race == "energy") {
-				monsterType->info.race = RaceType_t::RACE_ENERGY;
+				monsterType->info.race = RaceType::Energy;
 			} else if (race == "ink") {
-				monsterType->info.race = RaceType_t::RACE_INK;
+				monsterType->info.race = RaceType::Ink;
 			} else {
 				g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeRace] - "
 								"Unknown race type {}",

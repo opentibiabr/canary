@@ -540,11 +540,11 @@ void ItemParse::parseMagicLevelPoint(const std::string &tmpStrValue, pugi::xml_a
 void ItemParse::parseFieldAbsorbPercent(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "fieldabsorbpercentenergy") {
-		itemType.getAbilities().fieldAbsorbPercent[combatToValue(CombatType_t::COMBAT_ENERGYDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
+		itemType.getAbilities().fieldAbsorbPercent[combatToValue(CombatType::EnergyDamage)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "fieldabsorbpercentfire") {
-		itemType.getAbilities().fieldAbsorbPercent[combatToValue(CombatType_t::COMBAT_FIREDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
+		itemType.getAbilities().fieldAbsorbPercent[combatToValue(CombatType::FireDamage)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "fieldabsorbpercentpoison") {
-		itemType.getAbilities().fieldAbsorbPercent[combatToValue(CombatType_t::COMBAT_EARTHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
+		itemType.getAbilities().fieldAbsorbPercent[combatToValue(CombatType::EarthDamage)] += pugi::cast<int16_t>(valueAttribute.value());
 	}
 }
 
@@ -559,113 +559,113 @@ void ItemParse::parseAbsorbPercent(const std::string &tmpStrValue, pugi::xml_att
 	} else if (stringValue == "absorbpercentelements") {
 		int16_t value = pugi::cast<int16_t>(valueAttribute.value());
 		Abilities &abilities = itemType.getAbilities();
-		abilities.absorbPercent[combatToValue(CombatType_t::COMBAT_ENERGYDAMAGE)] += value;
-		abilities.absorbPercent[combatToValue(CombatType_t::COMBAT_FIREDAMAGE)] += value;
-		abilities.absorbPercent[combatToValue(CombatType_t::COMBAT_EARTHDAMAGE)] += value;
-		abilities.absorbPercent[combatToValue(CombatType_t::COMBAT_ICEDAMAGE)] += value;
+		abilities.absorbPercent[combatToValue(CombatType::EnergyDamage)] += value;
+		abilities.absorbPercent[combatToValue(CombatType::FireDamage)] += value;
+		abilities.absorbPercent[combatToValue(CombatType::EarthDamage)] += value;
+		abilities.absorbPercent[combatToValue(CombatType::IceDamage)] += value;
 	} else if (stringValue == "absorbpercentmagic") {
 		int16_t value = pugi::cast<int16_t>(valueAttribute.value());
 		Abilities &abilities = itemType.getAbilities();
-		abilities.absorbPercent[combatToValue(CombatType_t::COMBAT_ENERGYDAMAGE)] += value;
-		abilities.absorbPercent[combatToValue(CombatType_t::COMBAT_FIREDAMAGE)] += value;
-		abilities.absorbPercent[combatToValue(CombatType_t::COMBAT_EARTHDAMAGE)] += value;
-		abilities.absorbPercent[combatToValue(CombatType_t::COMBAT_ICEDAMAGE)] += value;
-		abilities.absorbPercent[combatToValue(CombatType_t::COMBAT_HOLYDAMAGE)] += value;
-		abilities.absorbPercent[combatToValue(CombatType_t::COMBAT_DEATHDAMAGE)] += value;
+		abilities.absorbPercent[combatToValue(CombatType::EnergyDamage)] += value;
+		abilities.absorbPercent[combatToValue(CombatType::FireDamage)] += value;
+		abilities.absorbPercent[combatToValue(CombatType::EarthDamage)] += value;
+		abilities.absorbPercent[combatToValue(CombatType::IceDamage)] += value;
+		abilities.absorbPercent[combatToValue(CombatType::HolyDamage)] += value;
+		abilities.absorbPercent[combatToValue(CombatType::DeathDamage)] += value;
 	} else if (stringValue == "absorbpercentenergy") {
-		itemType.getAbilities().absorbPercent[combatToValue(CombatType_t::COMBAT_ENERGYDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
+		itemType.getAbilities().absorbPercent[combatToValue(CombatType::EnergyDamage)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentfire") {
-		itemType.getAbilities().absorbPercent[combatToValue(CombatType_t::COMBAT_FIREDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
+		itemType.getAbilities().absorbPercent[combatToValue(CombatType::FireDamage)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentpoison" || stringValue == "absorbpercentearth") {
-		itemType.getAbilities().absorbPercent[combatToValue(CombatType_t::COMBAT_EARTHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
+		itemType.getAbilities().absorbPercent[combatToValue(CombatType::EarthDamage)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentice") {
-		itemType.getAbilities().absorbPercent[combatToValue(CombatType_t::COMBAT_ICEDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
+		itemType.getAbilities().absorbPercent[combatToValue(CombatType::IceDamage)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentholy") {
-		itemType.getAbilities().absorbPercent[combatToValue(CombatType_t::COMBAT_HOLYDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
+		itemType.getAbilities().absorbPercent[combatToValue(CombatType::HolyDamage)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentdeath") {
-		itemType.getAbilities().absorbPercent[combatToValue(CombatType_t::COMBAT_DEATHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
+		itemType.getAbilities().absorbPercent[combatToValue(CombatType::DeathDamage)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentlifedrain") {
-		itemType.getAbilities().absorbPercent[combatToValue(CombatType_t::COMBAT_LIFEDRAIN)] += pugi::cast<int16_t>(valueAttribute.value());
+		itemType.getAbilities().absorbPercent[combatToValue(CombatType::LifeDrain)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentmanadrain") {
-		itemType.getAbilities().absorbPercent[combatToValue(CombatType_t::COMBAT_MANADRAIN)] += pugi::cast<int16_t>(valueAttribute.value());
+		itemType.getAbilities().absorbPercent[combatToValue(CombatType::ManaDrain)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentdrown") {
-		itemType.getAbilities().absorbPercent[combatToValue(CombatType_t::COMBAT_DROWNDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
+		itemType.getAbilities().absorbPercent[combatToValue(CombatType::DrownDamage)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentphysical") {
-		itemType.getAbilities().absorbPercent[combatToValue(CombatType_t::COMBAT_PHYSICALDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
+		itemType.getAbilities().absorbPercent[combatToValue(CombatType::PhysicalDamage)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercenthealing") {
-		itemType.getAbilities().absorbPercent[combatToValue(CombatType_t::COMBAT_HEALING)] += pugi::cast<int16_t>(valueAttribute.value());
+		itemType.getAbilities().absorbPercent[combatToValue(CombatType::Healing)] += pugi::cast<int16_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseSupressDrunk(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	std::string stringValue = tmpStrValue;
 	if (valueAttribute.as_bool()) {
-		ConditionType_t conditionType = ConditionType_t::CONDITION_NONE;
+		ConditionType conditionType = ConditionType::None;
 		if (stringValue == "suppressdrunk") {
-			conditionType = ConditionType_t::CONDITION_DRUNK;
+			conditionType = ConditionType::Drunk;
 		} else if (stringValue == "suppressenergy") {
-			conditionType = ConditionType_t::CONDITION_ENERGY;
+			conditionType = ConditionType::Energy;
 		} else if (stringValue == "suppressfire") {
-			conditionType = ConditionType_t::CONDITION_FIRE;
+			conditionType = ConditionType::Fire;
 		} else if (stringValue == "suppresspoison") {
-			conditionType = ConditionType_t::CONDITION_POISON;
+			conditionType = ConditionType::Poison;
 		} else if (stringValue == "suppressdrown") {
-			conditionType = ConditionType_t::CONDITION_DROWN;
+			conditionType = ConditionType::Drown;
 		} else if (stringValue == "suppressphysical") {
-			conditionType = ConditionType_t::CONDITION_BLEEDING;
+			conditionType = ConditionType::Bleeding;
 		} else if (stringValue == "suppressfreeze") {
-			conditionType = ConditionType_t::CONDITION_FREEZING;
+			conditionType = ConditionType::Freezing;
 		} else if (stringValue == "suppressdazzle") {
-			conditionType = ConditionType_t::CONDITION_DAZZLED;
+			conditionType = ConditionType::Dazzled;
 		} else if (stringValue == "suppresscurse") {
-			conditionType = ConditionType_t::CONDITION_CURSED;
+			conditionType = ConditionType::Cursed;
 		}
 
 		itemType.getAbilities().conditionSuppressions[conditionToValue(conditionType)] = conditionType;
 	}
 }
 
-std::tuple<ConditionId_t, ConditionType_t> ItemParse::parseFieldConditions(std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
+std::tuple<ConditionId_t, ConditionType> ItemParse::parseFieldConditions(std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
 	lowerStringValue = asLowerCaseString(valueAttribute.as_string());
-	ConditionId_t conditionId = ConditionId_t::CONDITIONID_COMBAT;
-	ConditionType_t conditionType = ConditionType_t::CONDITION_NONE;
+	ConditionId_t conditionId = ConditionId_t::Combat;
+	ConditionType conditionType = ConditionType::None;
 	if (lowerStringValue == "fire") {
-		conditionType = ConditionType_t::CONDITION_FIRE;
+		conditionType = ConditionType::Fire;
 		return std::make_tuple(conditionId, conditionType);
 	} else if (lowerStringValue == "energy") {
-		conditionType = ConditionType_t::CONDITION_ENERGY;
+		conditionType = ConditionType::Energy;
 		return std::make_tuple(conditionId, conditionType);
 	} else if (lowerStringValue == "poison") {
-		conditionType = ConditionType_t::CONDITION_POISON;
+		conditionType = ConditionType::Poison;
 		return std::make_tuple(conditionId, conditionType);
 	} else if (lowerStringValue == "drown") {
-		conditionType = ConditionType_t::CONDITION_DROWN;
+		conditionType = ConditionType::Drown;
 		return std::make_tuple(conditionId, conditionType);
 	} else if (lowerStringValue == "physical") {
-		conditionType = ConditionType_t::CONDITION_BLEEDING;
+		conditionType = ConditionType::Bleeding;
 		return std::make_tuple(conditionId, conditionType);
 	} else {
 		g_logger().warn("[Items::parseItemNode] Unknown field value {}", valueAttribute.as_string());
 	}
-	return std::make_tuple(ConditionId_t::CONDITIONID_DEFAULT, ConditionType_t::CONDITION_NONE);
+	return std::make_tuple(ConditionId_t::Default, ConditionType::None);
 }
 
-CombatType_t ItemParse::parseFieldCombatType(std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
+CombatType ItemParse::parseFieldCombatType(std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
 	lowerStringValue = asLowerCaseString(valueAttribute.as_string());
 	if (lowerStringValue == "fire") {
-		return CombatType_t::COMBAT_FIREDAMAGE;
+		return CombatType::FireDamage;
 	} else if (lowerStringValue == "energy") {
-		return CombatType_t::COMBAT_ENERGYDAMAGE;
+		return CombatType::EnergyDamage;
 	} else if (lowerStringValue == "poison") {
-		return CombatType_t::COMBAT_EARTHDAMAGE;
+		return CombatType::EarthDamage;
 	} else if (lowerStringValue == "drown") {
-		return CombatType_t::COMBAT_DROWNDAMAGE;
+		return CombatType::DrownDamage;
 	} else if (lowerStringValue == "physical") {
-		return CombatType_t::COMBAT_PHYSICALDAMAGE;
+		return CombatType::PhysicalDamage;
 	} else {
 		g_logger().warn("[Items::parseItemNode] Unknown field value {}", valueAttribute.as_string());
 	}
-	return CombatType_t::COMBAT_NONE;
+	return CombatType::None;
 }
 
 void ItemParse::parseFieldCombatDamage(std::shared_ptr<ConditionDamage> conditionDamage, std::string stringValue, pugi::xml_node attributeNode) {
@@ -711,14 +711,14 @@ void ItemParse::parseFieldCombatDamage(std::shared_ptr<ConditionDamage> conditio
 
 void ItemParse::parseField(const std::string &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (tmpStrValue == "field") {
-		CombatType_t combatType = CombatType_t::COMBAT_NONE;
+		CombatType combatType = CombatType::None;
 		std::shared_ptr<ConditionDamage> conditionDamage = nullptr;
 
 		// Parse fields conditions (fire/energy/poison/drown/physical)
 		combatType = parseFieldCombatType(tmpStrValue, valueAttribute);
 		auto [conditionId, conditionType] = parseFieldConditions(tmpStrValue, valueAttribute);
 
-		if (combatType != CombatType_t::COMBAT_NONE) {
+		if (combatType != CombatType::None) {
 			if (conditionDamage) {
 			}
 
@@ -796,27 +796,27 @@ void ItemParse::parseElement(const std::string &tmpStrValue, pugi::xml_attribute
 	if (stringValue == "elementice") {
 		Abilities &abilities = itemType.getAbilities();
 		abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
-		abilities.elementType = CombatType_t::COMBAT_ICEDAMAGE;
+		abilities.elementType = CombatType::IceDamage;
 	} else if (stringValue == "elementearth") {
 		Abilities &abilities = itemType.getAbilities();
 		abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
-		abilities.elementType = CombatType_t::COMBAT_EARTHDAMAGE;
+		abilities.elementType = CombatType::EarthDamage;
 	} else if (stringValue == "elementfire") {
 		Abilities &abilities = itemType.getAbilities();
 		abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
-		abilities.elementType = CombatType_t::COMBAT_FIREDAMAGE;
+		abilities.elementType = CombatType::FireDamage;
 	} else if (stringValue == "elementenergy") {
 		Abilities &abilities = itemType.getAbilities();
 		abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
-		abilities.elementType = CombatType_t::COMBAT_ENERGYDAMAGE;
+		abilities.elementType = CombatType::EnergyDamage;
 	} else if (stringValue == "elementdeath") {
 		Abilities &abilities = itemType.getAbilities();
 		abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
-		abilities.elementType = CombatType_t::COMBAT_DEATHDAMAGE;
+		abilities.elementType = CombatType::DeathDamage;
 	} else if (stringValue == "elementholy") {
 		Abilities &abilities = itemType.getAbilities();
 		abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
-		abilities.elementType = CombatType_t::COMBAT_HOLYDAMAGE;
+		abilities.elementType = CombatType::HolyDamage;
 	}
 }
 
@@ -882,29 +882,29 @@ void ItemParse::parseSpecializedMagicLevelPoint(const std::string &tmpStrValue, 
 	std::string stringValue = tmpStrValue;
 	Abilities &abilities = itemType.getAbilities();
 	if (stringValue == "deathmagiclevelpoints") {
-		abilities.specializedMagicLevel[combatToValue(CombatType_t::COMBAT_DEATHDAMAGE)] += pugi::cast<int32_t>(valueAttribute.value());
-		abilities.elementType = CombatType_t::COMBAT_DEATHDAMAGE;
+		abilities.specializedMagicLevel[combatToValue(CombatType::DeathDamage)] += pugi::cast<int32_t>(valueAttribute.value());
+		abilities.elementType = CombatType::DeathDamage;
 	} else if (stringValue == "energymagiclevelpoints") {
-		abilities.specializedMagicLevel[combatToValue(CombatType_t::COMBAT_ENERGYDAMAGE)] += pugi::cast<int32_t>(valueAttribute.value());
-		abilities.elementType = CombatType_t::COMBAT_ENERGYDAMAGE;
+		abilities.specializedMagicLevel[combatToValue(CombatType::EnergyDamage)] += pugi::cast<int32_t>(valueAttribute.value());
+		abilities.elementType = CombatType::EnergyDamage;
 	} else if (stringValue == "earthmagiclevelpoints") {
-		abilities.specializedMagicLevel[combatToValue(CombatType_t::COMBAT_EARTHDAMAGE)] += pugi::cast<int32_t>(valueAttribute.value());
-		abilities.elementType = CombatType_t::COMBAT_EARTHDAMAGE;
+		abilities.specializedMagicLevel[combatToValue(CombatType::EarthDamage)] += pugi::cast<int32_t>(valueAttribute.value());
+		abilities.elementType = CombatType::EarthDamage;
 	} else if (stringValue == "firemagiclevelpoints") {
-		abilities.specializedMagicLevel[combatToValue(CombatType_t::COMBAT_FIREDAMAGE)] += pugi::cast<int32_t>(valueAttribute.value());
-		abilities.elementType = CombatType_t::COMBAT_FIREDAMAGE;
+		abilities.specializedMagicLevel[combatToValue(CombatType::FireDamage)] += pugi::cast<int32_t>(valueAttribute.value());
+		abilities.elementType = CombatType::FireDamage;
 	} else if (stringValue == "healingmagiclevelpoints") {
-		abilities.specializedMagicLevel[combatToValue(CombatType_t::COMBAT_HEALING)] += pugi::cast<int32_t>(valueAttribute.value());
-		abilities.elementType = CombatType_t::COMBAT_HEALING;
+		abilities.specializedMagicLevel[combatToValue(CombatType::Healing)] += pugi::cast<int32_t>(valueAttribute.value());
+		abilities.elementType = CombatType::Healing;
 	} else if (stringValue == "holymagiclevelpoints") {
-		abilities.specializedMagicLevel[combatToValue(CombatType_t::COMBAT_HOLYDAMAGE)] += pugi::cast<int32_t>(valueAttribute.value());
-		abilities.elementType = CombatType_t::COMBAT_HOLYDAMAGE;
+		abilities.specializedMagicLevel[combatToValue(CombatType::HolyDamage)] += pugi::cast<int32_t>(valueAttribute.value());
+		abilities.elementType = CombatType::HolyDamage;
 	} else if (stringValue == "icemagiclevelpoints") {
-		abilities.specializedMagicLevel[combatToValue(CombatType_t::COMBAT_ICEDAMAGE)] += pugi::cast<int32_t>(valueAttribute.value());
-		abilities.elementType = CombatType_t::COMBAT_ICEDAMAGE;
+		abilities.specializedMagicLevel[combatToValue(CombatType::IceDamage)] += pugi::cast<int32_t>(valueAttribute.value());
+		abilities.elementType = CombatType::IceDamage;
 	} else if (stringValue == "physicalmagiclevelpoints") {
-		abilities.specializedMagicLevel[combatToValue(CombatType_t::COMBAT_PHYSICALDAMAGE)] += pugi::cast<int32_t>(valueAttribute.value());
-		abilities.elementType = CombatType_t::COMBAT_PHYSICALDAMAGE;
+		abilities.specializedMagicLevel[combatToValue(CombatType::PhysicalDamage)] += pugi::cast<int32_t>(valueAttribute.value());
+		abilities.elementType = CombatType::PhysicalDamage;
 	}
 }
 
@@ -940,7 +940,7 @@ void ItemParse::parseReflectDamage(const std::string &tmpStrValue, pugi::xml_att
 	std::string stringValue = tmpStrValue;
 	Abilities &abilities = itemType.getAbilities();
 	if (stringValue == "reflectdamage") {
-		abilities.reflectFlat[combatToValue(CombatType_t::COMBAT_PHYSICALDAMAGE)] += pugi::cast<int32_t>(valueAttribute.value());
+		abilities.reflectFlat[combatToValue(CombatType::PhysicalDamage)] += pugi::cast<int32_t>(valueAttribute.value());
 	} else if (stringValue == "reflectpercentall") {
 		int32_t value = pugi::cast<int32_t>(valueAttribute.value());
 		std::transform(std::begin(abilities.reflectPercent), std::end(abilities.reflectPercent), std::begin(abilities.reflectPercent), [&](const auto &i) {

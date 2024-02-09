@@ -65,8 +65,8 @@ void Npc::removeList() {
 	g_game().removeNpc(static_self_cast<Npc>());
 }
 
-CreatureType_t Npc::getType() const {
-	return CreatureType_t::CREATURETYPE_NPC;
+CreatureType Npc::getType() const {
+	return CreatureType::Npc;
 }
 
 bool Npc::canInteract(const Position &pos, uint32_t range /* = 4 */) {
@@ -170,7 +170,7 @@ void Npc::onPlayerDisappear(std::shared_ptr<Player> player) {
 	}
 }
 
-void Npc::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses creatureSayType, const std::string &text) {
+void Npc::onCreatureSay(std::shared_ptr<Creature> creature, TalkType creatureSayType, const std::string &text) {
 	Creature::onCreatureSay(creature, creatureSayType, text);
 
 	if (!creature->getPlayer()) {
@@ -503,9 +503,9 @@ void Npc::onThinkYell(uint32_t interval) {
 			const voiceBlock_t &vb = npcType->info.voiceVector[index];
 
 			if (vb.yellText) {
-				g_game().internalCreatureSay(static_self_cast<Npc>(), SpeakClasses::TALKTYPE_YELL, vb.text, false);
+				g_game().internalCreatureSay(static_self_cast<Npc>(), TalkType::Yell, vb.text, false);
 			} else {
-				g_game().internalCreatureSay(static_self_cast<Npc>(), SpeakClasses::TALKTYPE_SAY, vb.text, false);
+				g_game().internalCreatureSay(static_self_cast<Npc>(), TalkType::Say, vb.text, false);
 			}
 		}
 	}

@@ -45,8 +45,8 @@ bool MonsterType::canSpawn(const Position &pos) {
 	return canSpawn;
 }
 
-std::shared_ptr<ConditionDamage> Monsters::getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval) {
-	std::shared_ptr<ConditionDamage> condition = Condition::createCondition(ConditionId_t::CONDITIONID_COMBAT, conditionType, 0, 0)->static_self_cast<ConditionDamage>();
+std::shared_ptr<ConditionDamage> Monsters::getDamageCondition(ConditionType conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval) {
+	std::shared_ptr<ConditionDamage> condition = Condition::createCondition(ConditionId_t::Combat, conditionType, 0, 0)->static_self_cast<ConditionDamage>();
 	condition->setParam(CONDITION_PARAM_TICKINTERVAL, tickInterval);
 	condition->setParam(CONDITION_PARAM_MINVALUE, minDamage);
 	condition->setParam(CONDITION_PARAM_MAXVALUE, maxDamage);
@@ -109,15 +109,15 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 		}
 
 		sb.range = 1;
-		combatPtr->setParam(COMBAT_PARAM_TYPE, combatToValue(CombatType_t::COMBAT_PHYSICALDAMAGE));
+		combatPtr->setParam(COMBAT_PARAM_TYPE, combatToValue(CombatType::PhysicalDamage));
 		combatPtr->setParam(COMBAT_PARAM_BLOCKARMOR, 1);
 		combatPtr->setParam(COMBAT_PARAM_BLOCKSHIELD, 1);
 		combatPtr->setOrigin(ORIGIN_MELEE);
 	} else if (spellName == "combat") {
-		if (spell->combatType == CombatType_t::COMBAT_PHYSICALDAMAGE) {
+		if (spell->combatType == CombatType::PhysicalDamage) {
 			combatPtr->setParam(COMBAT_PARAM_BLOCKARMOR, 1);
 			combatPtr->setOrigin(ORIGIN_RANGED);
-		} else if (spell->combatType == CombatType_t::COMBAT_HEALING) {
+		} else if (spell->combatType == CombatType::Healing) {
 			combatPtr->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
 		}
 
@@ -138,15 +138,15 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 			}
 		}
 
-		ConditionType_t conditionType;
+		ConditionType conditionType;
 		if (speedChange > 0) {
-			conditionType = ConditionType_t::CONDITION_HASTE;
+			conditionType = ConditionType::Haste;
 			combatPtr->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
 		} else {
-			conditionType = ConditionType_t::CONDITION_PARALYZE;
+			conditionType = ConditionType::Paralyze;
 		}
 
-		std::shared_ptr<ConditionSpeed> condition = Condition::createCondition(ConditionId_t::CONDITIONID_COMBAT, conditionType, duration, 0)->static_self_cast<ConditionSpeed>();
+		std::shared_ptr<ConditionSpeed> condition = Condition::createCondition(ConditionId_t::Combat, conditionType, duration, 0)->static_self_cast<ConditionSpeed>();
 		float multiplier = 1.0f + static_cast<float>(speedChange) / 1000.0f;
 		condition->setFormulaVars(multiplier / 2, 40, multiplier, 40);
 		combatPtr->addCondition(condition);
@@ -157,7 +157,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 			duration = spell->duration;
 		}
 
-		std::shared_ptr<ConditionOutfit> condition = Condition::createCondition(ConditionId_t::CONDITIONID_COMBAT, ConditionType_t::CONDITION_OUTFIT, duration, 0)->static_self_cast<ConditionOutfit>();
+		std::shared_ptr<ConditionOutfit> condition = Condition::createCondition(ConditionId_t::Combat, ConditionType::Outfit, duration, 0)->static_self_cast<ConditionOutfit>();
 
 		if (spell->outfitMonster != "") {
 			condition->setLazyMonsterOutfit(spell->outfitMonster);
@@ -181,7 +181,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 			duration = spell->duration;
 		}
 
-		std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::CONDITIONID_COMBAT, ConditionType_t::CONDITION_INVISIBLE, duration, 0);
+		std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::Combat, ConditionType::Invisible, duration, 0);
 		combatPtr->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
 		combatPtr->addCondition(condition);
 	} else if (spellName == "drunk") {
@@ -191,7 +191,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 			duration = spell->duration;
 		}
 
-		std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::CONDITIONID_COMBAT, ConditionType_t::CONDITION_DRUNK, duration, 0);
+		std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::Combat, ConditionType::Drunk, duration, 0);
 		combatPtr->addCondition(condition);
 	} else if (spellName == "soulwars fear" || spellName == "fear") {
 		int32_t duration = 6000;
@@ -200,7 +200,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 			duration = spell->duration;
 		}
 
-		const auto condition = Condition::createCondition(ConditionId_t::CONDITIONID_COMBAT, ConditionType_t::CONDITION_FEARED, duration, 0);
+		const auto condition = Condition::createCondition(ConditionId_t::Combat, ConditionType::Feared, duration, 0);
 		combatPtr->addCondition(condition);
 	} else if (spellName == "firefield") {
 		combatPtr->setParam(COMBAT_PARAM_CREATEITEM, ITEM_FIREFIELD_PVP_FULL);
@@ -209,7 +209,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 	} else if (spellName == "energyfield") {
 		combatPtr->setParam(COMBAT_PARAM_CREATEITEM, ITEM_ENERGYFIELD_PVP);
 	} else if (spellName == "condition") {
-		if (spell->conditionType == ConditionType_t::CONDITION_NONE) {
+		if (spell->conditionType == ConditionType::None) {
 			g_logger().error("[Monsters::deserializeSpell] - "
 							 "{} condition is not set for: {}",
 							 description, spell->name);
@@ -233,7 +233,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 	}
 
 	// If a spell has a condition, it always applies, no matter what kind of spell it is
-	if (spell->conditionType != ConditionType_t::CONDITION_NONE) {
+	if (spell->conditionType != ConditionType::None) {
 		int32_t minDamage = std::abs(spell->conditionMinDamage);
 		int32_t maxDamage = std::abs(spell->conditionMaxDamage);
 		int32_t startDamage = std::abs(spell->conditionStartDamage);

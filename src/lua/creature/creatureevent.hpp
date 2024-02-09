@@ -20,10 +20,10 @@ class CreatureEvent final : public Script {
 public:
 	explicit CreatureEvent(LuaScriptInterface* interface);
 
-	CreatureEventType_t getEventType() const {
+	CreatureEventType getEventType() const {
 		return type;
 	}
-	void setEventType(CreatureEventType_t eventType) {
+	void setEventType(CreatureEventType eventType) {
 		type = eventType;
 	}
 	const std::string &getName() const {
@@ -61,7 +61,7 @@ private:
 	std::string getScriptTypeName() const override;
 
 	std::string eventName;
-	CreatureEventType_t type = CreatureEventType_t::CREATURE_EVENT_NONE;
+	CreatureEventType type = CreatureEventType::None;
 	bool loaded = false;
 };
 

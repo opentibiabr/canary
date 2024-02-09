@@ -12,7 +12,7 @@ export module enum_modules;
  */
 
 /**
- * @enum CombatType_t
+ * @enum CombatType
  * @brief Enumerates types of enum.
  *
  * @fn combatToValue
@@ -23,39 +23,37 @@ export module enum_modules;
  * @brief Converts a numeric value into a enum type.
  * @return The enum type of the numeric value
  * 
- * @var COMBAT_COUNT
+ * @var COUNT
  * @brief The number of enum types (+1) for iteration purposes.
  */
-export enum class CombatType_t : uint8_t {
-	COMBAT_PHYSICALDAMAGE = 0,
-	COMBAT_ENERGYDAMAGE = 1,
-	COMBAT_EARTHDAMAGE = 2,
-	COMBAT_FIREDAMAGE = 3,
-	COMBAT_UNDEFINEDDAMAGE = 4,
-	COMBAT_LIFEDRAIN = 5,
-	COMBAT_MANADRAIN = 6,
-	COMBAT_HEALING = 7,
-	COMBAT_DROWNDAMAGE = 8,
-	COMBAT_ICEDAMAGE = 9,
-	COMBAT_HOLYDAMAGE = 10,
-	COMBAT_DEATHDAMAGE = 11,
-	COMBAT_AGONYDAMAGE = 12,
-	COMBAT_NEUTRALDAMAGE = 13,
+export enum class CombatType : uint8_t {
+	PhysicalDamage = 0,
+	EnergyDamage = 1,
+	EarthDamage = 2,
+	FireDamage = 3,
+	UndefinedDamage = 4,
+	LifeDrain = 5,
+	ManaDrain = 6,
+	Healing = 7,
+	DrownDamage = 8,
+	IceDamage = 9,
+	HolyDamage = 10,
+	DeathDamage = 11,
+	AgonyDamage = 12,
+	NeutralDamage = 13,
 
-	COUNT = 14,
+	Count = 14,
 
 	// Server read only
-	COMBAT_NONE = 255
+	None = 255
 };
 
-export constexpr auto COMBAT_COUNT = static_cast<uint8_t>(CombatType_t::COUNT);
-
-export uint8_t combatToValue(CombatType_t combatType) {
+export constexpr uint8_t combatToValue(CombatType combatType) {
 	return static_cast<uint8_t>(combatType);
 }
 
-export CombatType_t combatFromValue(uint8_t combatvalue) {
-	return static_cast<CombatType_t>(combatvalue);
+export constexpr CombatType combatFromValue(uint8_t combatvalue) {
+	return static_cast<CombatType>(combatvalue);
 }
 
 /**
@@ -70,28 +68,26 @@ export CombatType_t combatFromValue(uint8_t combatvalue) {
  * @brief Converts a numeric value into a enum type.
  * @return The enum type of the numeric value
  * 
- * @var BUFF_FIRST
+ * @var FIRST
  * @brief The number first buff type.
  * 
- * @var BUFF_LAST
+ * @var LAST
  * @brief The number last buff type.
  */
 export enum class Buffs_t : uint8_t {
-	BUFF_DAMAGEDEALT,
-	BUFF_DAMAGERECEIVED,
-	BUFF_HEALINGRECEIVED,
+	DamageDealt = 0,
+	DamageReceived = 1,
+	HealingReceived = 2,
 
-	BUFF_LAST,
+	First = DamageDealt,
+	Last = HealingReceived,
 };
 
-export constexpr auto BUFF_FIRST = static_cast<uint8_t>(Buffs_t::BUFF_DAMAGEDEALT);
-export constexpr auto BUFF_LAST = static_cast<uint8_t>(Buffs_t::BUFF_LAST);
-
-export uint8_t buffToValue(Buffs_t buffType) {
+export constexpr uint8_t buffToValue(Buffs_t buffType) {
 	return static_cast<uint8_t>(buffType);
 }
 
-export Buffs_t buffFromValue(uint8_t buffValue) {
+export constexpr Buffs_t buffFromValue(uint8_t buffValue) {
 	return static_cast<Buffs_t>(buffValue);
 }
 
@@ -111,32 +107,30 @@ export Buffs_t buffFromValue(uint8_t buffValue) {
  * @brief The number last buff type.
  */
 export enum class Faction_t {
-	FACTION_DEFAULT = 0,
-	FACTION_PLAYER = 1,
-	FACTION_LION = 2,
-	FACTION_LIONUSURPERS = 3,
-	FACTION_MARID = 4,
-	FACTION_EFREET = 5,
-	FACTION_DEEPLING = 6,
-	FACTION_DEATHLING = 7,
-	FACTION_ANUMA = 8,
-	FACTION_FAFNAR = 9,
+	Default = 0,
+	Player = 1,
+	Lion = 2,
+	LionUsurpers = 3,
+	Marid = 4,
+	Efreet = 5,
+	Deepling = 6,
+	Deathling = 7,
+	Anuma = 8,
+	Fafnar = 9,
 
-	FACTION_LAST,
+	Last
 };
 
-export uint8_t factionToValue(Faction_t factionType) {
+export constexpr uint8_t factionToValue(Faction_t factionType) {
 	return static_cast<uint8_t>(factionType);
 }
 
-export Faction_t factionFromValue(uint8_t factionValue) {
+export constexpr Faction_t factionFromValue(uint8_t factionValue) {
 	return static_cast<Faction_t>(factionValue);
 }
 
-export constexpr auto FACTION_LAST = static_cast<uint8_t>(Faction_t::FACTION_LAST);
-
 /**
- * @enum SpeakClasses
+ * @enum TalkType
  * @brief Enumerates types of enum.
  *
  * @fn factionToValue
@@ -147,42 +141,40 @@ export constexpr auto FACTION_LAST = static_cast<uint8_t>(Faction_t::FACTION_LAS
  * @brief Converts a numeric value into a enum type.
  * @return The enum type of the numeric value
  */
-export enum SpeakClasses : uint8_t {
-	TALKTYPE_SAY = 1,
-	TALKTYPE_WHISPER = 2,
-	TALKTYPE_YELL = 3,
-	TALKTYPE_PRIVATE_FROM = 4,
-	TALKTYPE_PRIVATE_TO = 5,
-	TALKTYPE_CHANNEL_MANAGER = 6,
-	TALKTYPE_CHANNEL_Y = 7,
-	TALKTYPE_CHANNEL_O = 8,
-	TALKTYPE_SPELL_USE = 9,
-	TALKTYPE_PRIVATE_NP = 10,
-	TALKTYPE_NPC_UNKOWN = 11, /* no effect (?)*/
-	TALKTYPE_PRIVATE_PN = 12,
-	TALKTYPE_BROADCAST = 13,
-	TALKTYPE_CHANNEL_R1 = 14, // red - #c text
-	TALKTYPE_PRIVATE_RED_FROM = 15, //@name@text
-	TALKTYPE_PRIVATE_RED_TO = 16, //@name@text
-	TALKTYPE_MONSTER_SAY = 36,
-	TALKTYPE_MONSTER_YELL = 37,
+export enum TalkType : uint8_t {
+	Say = 1,
+	Whisper = 2,
+	Yell = 3,
+	PrivateFrom = 4,
+	PrivateTo = 5,
+	ChannelManager = 6,
+	ChannelY = 7,
+	ChannelO = 8,
+	SpellUse = 9,
+	PrivateNpcToPlayer = 10,
+	NpcUnknown = 11, /* no effect (?)*/
+	PrivatePlayerToNpc = 12,
+	Broadcast = 13,
+	ChannelR1 = 14, // red - #c text
+	PrivateRedFrom = 15, //@name@text
+	PrivateRedTo = 16, //@name@text
+	MonsterSay = 36,
+	MonsterYell = 37,
 
-	TALKTYPE_MONSTER_LAST_OLDPROTOCOL = 38, /* Dont forget about the CHANNEL_R2*/
-	TALKTYPE_CHANNEL_R2 = 0xFF // #d
+	LastOldProtocol = 38, /* Dont forget about the CHANNEL_R2*/
+	ChannelR2 = 255 // #d
 };
 
-export uint8_t speakToValue(SpeakClasses type) {
+export constexpr uint8_t speakToValue(TalkType type) {
 	return static_cast<uint8_t>(type);
 }
 
-export SpeakClasses speakFromValue(uint8_t value) {
-	return static_cast<SpeakClasses>(value);
+export constexpr TalkType speakFromValue(uint8_t value) {
+	return static_cast<TalkType>(value);
 }
 
-export constexpr auto TALK_LAST_OLDPROTOCOL = static_cast<uint8_t>(SpeakClasses::TALKTYPE_MONSTER_LAST_OLDPROTOCOL);
-
 /**
- * @enum CreatureType_t
+ * @enum CreatureType
  * @brief Enumerates types of enum.
  *
  * @fn creatureTypeToValue
@@ -193,84 +185,84 @@ export constexpr auto TALK_LAST_OLDPROTOCOL = static_cast<uint8_t>(SpeakClasses:
  * @brief Converts a numeric value into a enum type.
  * @return The enum type of the numeric value
  */
-export enum class CreatureType_t : uint8_t {
-	CREATURETYPE_PLAYER = 0,
-	CREATURETYPE_MONSTER = 1,
-	CREATURETYPE_NPC = 2,
-	CREATURETYPE_SUMMON_PLAYER = 3,
-	CREATURETYPE_SUMMON_OTHERS = 4,
-	CREATURETYPE_HIDDEN = 5,
+export enum class CreatureType : uint8_t {
+	Player = 0,
+	Monster = 1,
+	Npc = 2,
+	SummonPlayer = 3,
+	SummonOthers = 4,
+	Hidden = 5,
 };
 
-export uint8_t creatureTypeToValue(CreatureType_t type) {
+export constexpr uint8_t creatureTypeToValue(CreatureType type) {
 	return static_cast<uint8_t>(type);
 }
 
-export CreatureType_t creatureTypeFromValue(uint8_t value) {
-	return static_cast<CreatureType_t>(value);
+export constexpr CreatureType creatureTypeFromValue(uint8_t value) {
+	return static_cast<CreatureType>(value);
 }
 
 /**
- * @enum Skulls_t
+ * @enum Skull_t
  * @brief Enumerates types of enum.
  *
- * @fn skullsToValue
+ * @fn skullToValue
  * @brief Converts a enum type to its underlying numeric value.
  * @return The numeric value of the enum type.
  * 
- * @fn skullsFromValue
+ * @fn skullFromValue
  * @brief Converts a numeric value into a enum type.
  * @return The enum type of the numeric value
  */
-export enum class Skulls_t : uint8_t {
-	SKULL_NONE = 0,
-	SKULL_YELLOW = 1,
-	SKULL_GREEN = 2,
-	SKULL_WHITE = 3,
-	SKULL_RED = 4,
-	SKULL_BLACK = 5,
-	SKULL_ORANGE = 6,
+export enum class Skull_t : uint8_t {
+	None = 0,
+	Yellow = 1,
+	Green = 2,
+	White = 3,
+	Red = 4,
+	Black = 5,
+	Orange = 6,
 };
 
-export uint8_t skullsToValue(Skulls_t type) {
+export constexpr uint8_t skullToValue(Skull_t type) {
 	return static_cast<uint8_t>(type);
 }
 
-export Skulls_t skullsFromValue(uint8_t value) {
-	return static_cast<Skulls_t>(value);
+export constexpr Skull_t skullFromValue(uint8_t value) {
+	return static_cast<Skull_t>(value);
 }
 
 /**
- * @enum ZoneType_t
+ * @enum ZoneType
  * @brief Enumerates types of enum.
  *
- * @fn zonesToValue
+ * @fn zoneToValue
  * @brief Converts a enum type to its underlying numeric value.
  * @return The numeric value of the enum type.
  * 
- * @fn zonesFromValue
+ * @fn zoneFromValue
  * @brief Converts a numeric value into a enum type.
  * @return The enum type of the numeric value
  */
 
-export enum class ZoneType_t {
-	ZONE_PROTECTION,
-	ZONE_NOPVP,
-	ZONE_PVP,
-	ZONE_NOLOGOUT,
-	ZONE_NORMAL,
+export enum class ZoneType {
+	Protection,
+	NoPvp,
+	Pvp,
+	NoLogout,
+	Normal,
 };
 
-export uint8_t zonesToValue(ZoneType_t type) {
+export constexpr uint8_t zoneToValue(ZoneType type) {
 	return static_cast<uint8_t>(type);
 }
 
-export ZoneType_t zonesFromValue(uint8_t value) {
-	return static_cast<ZoneType_t>(value);
+export constexpr ZoneType zoneFromValue(uint8_t value) {
+	return static_cast<ZoneType>(value);
 }
 
 /**
- * @enum RaceType_t
+ * @enum RaceType
  * @brief Enumerates types of enum.
  *
  * @fn raceToValue
@@ -282,26 +274,26 @@ export ZoneType_t zonesFromValue(uint8_t value) {
  * @return The enum type of the numeric value
  */
 
-export enum class RaceType_t : uint8_t {
-	RACE_NONE,
-	RACE_VENOM,
-	RACE_BLOOD,
-	RACE_UNDEAD,
-	RACE_FIRE,
-	RACE_ENERGY,
-	RACE_INK,
+export enum class RaceType : uint8_t {
+	None,
+	Venom,
+	Blood,
+	Unded,
+	Fire,
+	Energy,
+	Ink,
 };
 
-export uint8_t raceToValue(RaceType_t type) {
+export constexpr uint8_t raceToValue(RaceType type) {
 	return static_cast<uint8_t>(type);
 }
 
-export RaceType_t raceFromValue(uint8_t value) {
-	return static_cast<RaceType_t>(value);
+export constexpr RaceType raceFromValue(uint8_t value) {
+	return static_cast<RaceType>(value);
 }
 
 /**
- * @enum BlockType_t
+ * @enum BlockType
  * @brief Enumerates types of enum.
  *
  * @fn blockToValue
@@ -313,24 +305,24 @@ export RaceType_t raceFromValue(uint8_t value) {
  * @return The enum type of the numeric value
  */
 
-export enum class BlockType_t : uint8_t {
-	BLOCK_NONE,
-	BLOCK_DEFENSE,
-	BLOCK_ARMOR,
-	BLOCK_IMMUNITY,
-	BLOCK_DODGE
+export enum class BlockType : uint8_t {
+	None,
+	Defense,
+	Armor,
+	Immunity,
+	Dodge
 };
 
-export uint8_t blockToValue(BlockType_t type) {
+export constexpr uint8_t blockToValue(BlockType type) {
 	return static_cast<uint8_t>(type);
 }
 
-export BlockType_t blockFromValue(uint8_t value) {
-	return static_cast<BlockType_t>(value);
+export constexpr BlockType blockFromValue(uint8_t value) {
+	return static_cast<BlockType>(value);
 }
 
 /**
- * @enum ConditionType_t
+ * @enum ConditionType
  * @brief Enumerates types of enum.
  *
  * @fn conditionToValue
@@ -342,72 +334,70 @@ export BlockType_t blockFromValue(uint8_t value) {
  * @return The enum type of the numeric value
  */
 
-export enum class ConditionType_t : uint8_t {
-	CONDITION_NONE = 0,
+export enum class ConditionType : uint8_t {
+	None = 0,
 
-	CONDITION_POISON = 1,
-	CONDITION_FIRE = 2,
-	CONDITION_ENERGY = 3,
-	CONDITION_BLEEDING = 4,
-	CONDITION_HASTE = 5,
-	CONDITION_PARALYZE = 6,
-	CONDITION_OUTFIT = 7,
-	CONDITION_INVISIBLE = 8,
-	CONDITION_LIGHT = 9,
-	CONDITION_MANASHIELD = 10,
-	CONDITION_INFIGHT = 11,
-	CONDITION_DRUNK = 12,
-	CONDITION_EXHAUST = 13, // unused
-	CONDITION_REGENERATION = 14,
-	CONDITION_SOUL = 15,
-	CONDITION_DROWN = 16,
-	CONDITION_MUTED = 17,
-	CONDITION_CHANNELMUTEDTICKS = 18,
-	CONDITION_YELLTICKS = 19,
-	CONDITION_ATTRIBUTES = 20,
-	CONDITION_FREEZING = 21,
-	CONDITION_DAZZLED = 22,
-	CONDITION_CURSED = 23,
-	CONDITION_EXHAUST_COMBAT = 24, // unused
-	CONDITION_EXHAUST_HEAL = 25, // unused
-	CONDITION_PACIFIED = 26,
-	CONDITION_SPELLCOOLDOWN = 27,
-	CONDITION_SPELLGROUPCOOLDOWN = 28,
-	CONDITION_ROOTED = 29,
-	CONDITION_FEARED = 30,
-	CONDITION_LESSERHEX = 31,
-	CONDITION_INTENSEHEX = 32,
-	CONDITION_GREATERHEX = 33,
-	CONDITION_GOSHNAR1 = 34,
-	CONDITION_GOSHNAR2 = 35,
-	CONDITION_GOSHNAR3 = 36,
-	CONDITION_GOSHNAR4 = 37,
-	CONDITION_GOSHNAR5 = 38,
+	Poison = 1,
+	Fire = 2,
+	Energy = 3,
+	Bleeding = 4,
+	Haste = 5,
+	Paralyze = 6,
+	Outfit = 7,
+	Invisible = 8,
+	Light = 9,
+	ManaShield = 10,
+	InFight = 11,
+	Drunk = 12,
+	Exhaust = 13, // unused
+	Regeneration = 14,
+	Soul = 15,
+	Drown = 16,
+	Muted = 17,
+	ChannelMutedTicks = 18,
+	YellTicks = 19,
+	Attributes = 20,
+	Freezing = 21,
+	Dazzled = 22,
+	Cursed = 23,
+	ExhaustCombat = 24, // unused
+	ExhaustHeal = 25, // unused
+	Pacified = 26,
+	SpellCooldown = 27,
+	SpellGroupCooldown = 28,
+	Rooted = 29,
+	Feared = 30,
+	LesserHex = 31,
+	IntenseHex = 32,
+	GreaterHex = 33,
+	Goshnar1 = 34,
+	Goshnar2 = 35,
+	Goshnar3 = 36,
+	Goshnar4 = 37,
+	Goshnar5 = 38,
 
 	// Need the last ever
-	CONDITION_COUNT,
+	Count,
 };
 
-export constexpr auto CONDITION_COUNT = static_cast<uint8_t>(ConditionType_t::CONDITION_COUNT);
-
-export uint8_t conditionToValue(ConditionType_t type) {
+export constexpr uint8_t conditionToValue(ConditionType type) {
 	return static_cast<uint8_t>(type);
 }
 
-export ConditionType_t conditionFromValue(uint8_t value) {
-	return static_cast<ConditionType_t>(value);
+export constexpr ConditionType conditionFromValue(uint8_t value) {
+	return static_cast<ConditionType>(value);
 }
 
-export bool IsConditionSuppressible(ConditionType_t condition) {
-	static std::array<ConditionType_t, 8> suppressibleConditions = {
-		ConditionType_t::CONDITION_POISON,
-		ConditionType_t::CONDITION_FIRE,
-		ConditionType_t::CONDITION_ENERGY,
-		ConditionType_t::CONDITION_BLEEDING,
-		ConditionType_t::CONDITION_PARALYZE,
-		ConditionType_t::CONDITION_DROWN,
-		ConditionType_t::CONDITION_FREEZING,
-		ConditionType_t::CONDITION_CURSED,
+export bool IsConditionSuppressible(ConditionType condition) {
+	static std::array<ConditionType, 8> suppressibleConditions = {
+		ConditionType::Poison,
+		ConditionType::Fire,
+		ConditionType::Energy,
+		ConditionType::Bleeding,
+		ConditionType::Paralyze,
+		ConditionType::Drown,
+		ConditionType::Freezing,
+		ConditionType::Cursed,
 	};
 
 	for (const auto &suppressibleCondition : suppressibleConditions) {
@@ -433,25 +423,25 @@ export bool IsConditionSuppressible(ConditionType_t condition) {
  */
 
 export enum class ConditionId_t : int8_t {
-	CONDITIONID_DEFAULT = -1,
-	CONDITIONID_COMBAT,
-	CONDITIONID_HEAD,
-	CONDITIONID_NECKLACE,
-	CONDITIONID_BACKPACK,
-	CONDITIONID_ARMOR,
-	CONDITIONID_RIGHT,
-	CONDITIONID_LEFT,
-	CONDITIONID_LEGS,
-	CONDITIONID_FEET,
-	CONDITIONID_RING,
-	CONDITIONID_AMMO,
+	Default = -1,
+	Combat = 0,
+	Head = 1,
+	Necklace = 2,
+	Backpack = 3,
+	Armor = 4,
+	Right = 5,
+	Left = 6,
+	Legs = 7,
+	Feet = 8,
+	Ring = 9,
+	Ammo = 10,
 };
 
 export int8_t conditionIdToValue(ConditionId_t type) {
 	return static_cast<int8_t>(type);
 }
 
-export ConditionId_t conditionIdFromValue(int8_t value) {
+export constexpr ConditionId_t conditionIdFromValue(int8_t value) {
 	return static_cast<ConditionId_t>(value);
 }
 
@@ -468,24 +458,24 @@ export ConditionId_t conditionIdFromValue(int8_t value) {
  * @return The enum type of the numeric value
  */
 export enum class SpeechBubble_t {
-	SPEECHBUBBLE_NONE = 0,
-	SPEECHBUBBLE_NORMAL = 1,
-	SPEECHBUBBLE_TRADE = 2,
-	SPEECHBUBBLE_QUEST = 3,
-	SPEECHBUBBLE_QUESTTRADER = 4,
-	SPEECHBUBBLE_HIRELING = 7,
+	None = 0,
+	Normal = 1,
+	Trade = 2,
+	Quest = 3,
+	QuestTrader = 4,
+	Hireling = 7,
 };
 
-export uint8_t bubbleToValue(SpeechBubble_t type) {
+export constexpr uint8_t bubbleToValue(SpeechBubble_t type) {
 	return static_cast<uint8_t>(type);
 }
 
-export SpeechBubble_t bubbleFromValue(uint8_t value) {
+export constexpr SpeechBubble_t bubbleFromValue(uint8_t value) {
 	return static_cast<SpeechBubble_t>(value);
 }
 
 /**
- * @enum CreatureEventType_t
+ * @enum CreatureEventType
  * @brief Enumerates types of enum.
  *
  * @fn eventToValue
@@ -496,27 +486,27 @@ export SpeechBubble_t bubbleFromValue(uint8_t value) {
  * @brief Converts a numeric value into a enum type.
  * @return The enum type of the numeric value
  */
-export enum class CreatureEventType_t : uint8_t {
-	CREATURE_EVENT_NONE,
-	CREATURE_EVENT_LOGIN,
-	CREATURE_EVENT_LOGOUT,
-	CREATURE_EVENT_THINK,
-	CREATURE_EVENT_PREPAREDEATH,
-	CREATURE_EVENT_DEATH,
-	CREATURE_EVENT_KILL,
-	CREATURE_EVENT_ADVANCE,
-	CREATURE_EVENT_MODALWINDOW,
-	CREATURE_EVENT_TEXTEDIT,
-	CREATURE_EVENT_HEALTHCHANGE,
-	CREATURE_EVENT_MANACHANGE,
+export enum class CreatureEventType : uint8_t {
+	None,
+	Login,
+	Logout,
+	Think,
+	PrepareDeath,
+	Death,
+	Kill,
+	Advance,
+	ModalWindow,
+	TextEdit,
+	HealthChange,
+	ManaChange,
 	// Otclient additional network opcodes.
-	CREATURE_EVENT_EXTENDED_OPCODE,
+	ExtendedOpcode,
 };
 
-export uint8_t eventToValue(CreatureEventType_t type) {
+export constexpr uint8_t eventToValue(CreatureEventType type) {
 	return static_cast<uint8_t>(type);
 }
 
-export CreatureEventType_t eventFromValue(uint8_t value) {
-	return static_cast<CreatureEventType_t>(value);
+export constexpr CreatureEventType eventFromValue(uint8_t value) {
+	return static_cast<CreatureEventType>(value);
 }

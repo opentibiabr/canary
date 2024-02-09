@@ -74,9 +74,9 @@ public:
 	/**
 	 * @brief Get the type of the NPC.
 	 * @note This function returns the type of the NPC, which is a constant value representing the creature type "NPC."
-	 * @return An unsigned 8-bit integer representing the creature type, see CreatureType_t enum for possible types.
+	 * @return An unsigned 8-bit integer representing the creature type, see CreatureType enum for possible types.
 	 */
-	CreatureType_t getType() const override;
+	CreatureType getType() const override;
 
 	const Position &getMasterPos() const {
 		return masterPos;
@@ -154,10 +154,10 @@ public:
 	/**
 	 * @brief Creature say function to send a message to the creature
 	 * @param Creature as the target
-	 * @param creatureSayType as SpeakClasses enum
+	 * @param creatureSayType as TalkType enum
 	 * @param text as the message to send
 	 */
-	void onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses creatureSayType, const std::string &text) override;
+	void onCreatureSay(std::shared_ptr<Creature> creature, TalkType creatureSayType, const std::string &text) override;
 	void onThink(uint32_t interval) override;
 	void onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, bool inBackpacks);
 	void onPlayerSellAllLoot(uint32_t playerId, uint16_t itemid, bool ignore, uint64_t totalPrice);

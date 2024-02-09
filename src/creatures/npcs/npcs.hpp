@@ -37,7 +37,7 @@ class NpcType : public SharedObject {
 
 		LightInfo light = {};
 
-		SpeechBubble_t speechBubble = SpeechBubble_t::SPEECHBUBBLE_NORMAL;
+		SpeechBubble_t speechBubble = SpeechBubble_t::Normal;
 
 		uint16_t currencyId = ITEM_GOLD_COIN;
 

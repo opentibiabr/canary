@@ -119,13 +119,13 @@ bool ChatChannel::hasUser(const std::shared_ptr<Player> &player) {
 	return users.find(player->getID()) != users.end();
 }
 
-void ChatChannel::sendToAll(const std::string &message, SpeakClasses type) const {
+void ChatChannel::sendToAll(const std::string &message, TalkType type) const {
 	for (const auto &it : users) {
 		it.second->sendChannelMessage("", message, type, id);
 	}
 }
 
-bool ChatChannel::talk(const std::shared_ptr<Player> &fromPlayer, SpeakClasses type, const std::string &text) {
+bool ChatChannel::talk(const std::shared_ptr<Player> &fromPlayer, TalkType type, const std::string &text) {
 	if (users.find(fromPlayer->getID()) == users.end()) {
 		return false;
 	}
@@ -214,7 +214,7 @@ bool ChatChannel::executeOnLeaveEvent(const std::shared_ptr<Player> &player) {
 	return scriptInterface->callFunction(1);
 }
 
-bool ChatChannel::executeOnSpeakEvent(const std::shared_ptr<Player> &player, SpeakClasses &type, const std::string &message) {
+bool ChatChannel::executeOnSpeakEvent(const std::shared_ptr<Player> &player, TalkType &type, const std::string &message) {
 	if (onSpeakEvent == -1) {
 		return true;
 	}
@@ -250,7 +250,7 @@ bool ChatChannel::executeOnSpeakEvent(const std::shared_ptr<Player> &player, Spe
 			result = LuaScriptInterface::getBoolean(L, -1);
 		} else if (lua_isnumber(L, -1)) {
 			result = true;
-			type = LuaScriptInterface::getNumber<SpeakClasses>(L, -1);
+			type = LuaScriptInterface::getNumber<TalkType>(L, -1);
 		}
 		lua_pop(L, 1);
 	}
@@ -469,7 +469,7 @@ void Chat::removeUserFromAllChannels(const std::shared_ptr<Player> &player) {
 	}
 }
 
-bool Chat::talkToChannel(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &text, uint16_t channelId) {
+bool Chat::talkToChannel(const std::shared_ptr<Player> &player, TalkType type, const std::string &text, uint16_t channelId) {
 	const auto &channel = getChannel(player, channelId);
 	if (channel == nullptr) {
 		return false;
@@ -478,12 +478,12 @@ bool Chat::talkToChannel(const std::shared_ptr<Player> &player, SpeakClasses typ
 	if (channelId == CHANNEL_GUILD) {
 		GuildRank_ptr rank = player->getGuildRank();
 		if (rank && rank->level > 1) {
-			type = SpeakClasses::TALKTYPE_CHANNEL_O;
-		} else if (type != SpeakClasses::TALKTYPE_CHANNEL_Y) {
-			type = SpeakClasses::TALKTYPE_CHANNEL_Y;
+			type = TalkType::ChannelO;
+		} else if (type != TalkType::ChannelY) {
+			type = TalkType::ChannelY;
 		}
-	} else if (type != SpeakClasses::TALKTYPE_CHANNEL_Y && (channelId == CHANNEL_PRIVATE || channelId == CHANNEL_PARTY)) {
-		type = SpeakClasses::TALKTYPE_CHANNEL_Y;
+	} else if (type != TalkType::ChannelY && (channelId == CHANNEL_PRIVATE || channelId == CHANNEL_PARTY)) {
+		type = TalkType::ChannelY;
 	}
 
 	if (!channel->executeOnSpeakEvent(player, type, text)) {

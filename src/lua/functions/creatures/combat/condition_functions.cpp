@@ -16,9 +16,9 @@
 import outfit_type;
 
 int ConditionFunctions::luaConditionCreate(lua_State* L) {
-	// Condition(conditionType[, conditionId = ConditionId_t::CONDITIONID_COMBAT[, subid = 0]])
-	ConditionType_t conditionType = getNumber<ConditionType_t>(L, 2);
-	ConditionId_t conditionId = getNumber<ConditionId_t>(L, 3, ConditionId_t::CONDITIONID_COMBAT);
+	// Condition(conditionType[, conditionId = ConditionId_t::Combat[, subid = 0]])
+	ConditionType conditionType = getNumber<ConditionType>(L, 2);
+	ConditionId_t conditionId = getNumber<ConditionId_t>(L, 3, ConditionId_t::Combat);
 	uint32_t subId = getNumber<uint32_t>(L, 4, 0);
 
 	std::shared_ptr<Condition> condition = Condition::createCondition(conditionId, conditionType, 0, 0, false, subId);

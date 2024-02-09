@@ -85,7 +85,7 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 				return false;
 			}
 
-			conditionType = static_cast<ConditionType_t>(value);
+			conditionType = static_cast<ConditionType>(value);
 			return true;
 		}
 
@@ -191,62 +191,62 @@ bool Condition::executeCondition(std::shared_ptr<Creature> creature, int32_t int
 	return true;
 }
 
-std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param /* = 0*/, bool buff /* = false*/, uint32_t subId /* = 0*/) {
+std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, ConditionType type, int32_t ticks, int32_t param /* = 0*/, bool buff /* = false*/, uint32_t subId /* = 0*/) {
 	switch (type) {
-		case ConditionType_t::CONDITION_POISON:
-		case ConditionType_t::CONDITION_FIRE:
-		case ConditionType_t::CONDITION_ENERGY:
-		case ConditionType_t::CONDITION_DROWN:
-		case ConditionType_t::CONDITION_FREEZING:
-		case ConditionType_t::CONDITION_DAZZLED:
-		case ConditionType_t::CONDITION_CURSED:
-		case ConditionType_t::CONDITION_BLEEDING:
+		case ConditionType::Poison:
+		case ConditionType::Fire:
+		case ConditionType::Energy:
+		case ConditionType::Drown:
+		case ConditionType::Freezing:
+		case ConditionType::Dazzled:
+		case ConditionType::Cursed:
+		case ConditionType::Bleeding:
 			return std::make_shared<ConditionDamage>(id, type, buff, subId);
 
-		case ConditionType_t::CONDITION_HASTE:
-		case ConditionType_t::CONDITION_PARALYZE:
+		case ConditionType::Haste:
+		case ConditionType::Paralyze:
 			return std::make_shared<ConditionSpeed>(id, type, ticks, buff, subId, param);
 
-		case ConditionType_t::CONDITION_INVISIBLE:
+		case ConditionType::Invisible:
 			return std::make_shared<ConditionInvisible>(id, type, ticks, buff, subId);
 
-		case ConditionType_t::CONDITION_OUTFIT:
+		case ConditionType::Outfit:
 			return std::make_shared<ConditionOutfit>(id, type, ticks, buff, subId);
 
-		case ConditionType_t::CONDITION_LIGHT:
+		case ConditionType::Light:
 			return std::make_shared<ConditionLight>(id, type, ticks, buff, subId, param & 0xFF, (param & 0xFF00) >> 8);
 
-		case ConditionType_t::CONDITION_REGENERATION:
+		case ConditionType::Regeneration:
 			return std::make_shared<ConditionRegeneration>(id, type, ticks, buff, subId);
 
-		case ConditionType_t::CONDITION_SOUL:
+		case ConditionType::Soul:
 			return std::make_shared<ConditionSoul>(id, type, ticks, buff, subId);
 
-		case ConditionType_t::CONDITION_ATTRIBUTES:
+		case ConditionType::Attributes:
 			return std::make_shared<ConditionAttributes>(id, type, ticks, buff, subId);
 
-		case ConditionType_t::CONDITION_SPELLCOOLDOWN:
+		case ConditionType::SpellCooldown:
 			return std::make_shared<ConditionSpellCooldown>(id, type, ticks, buff, subId);
 
-		case ConditionType_t::CONDITION_SPELLGROUPCOOLDOWN:
+		case ConditionType::SpellGroupCooldown:
 			return std::make_shared<ConditionSpellGroupCooldown>(id, type, ticks, buff, subId);
 
-		case ConditionType_t::CONDITION_MANASHIELD:
+		case ConditionType::ManaShield:
 			return std::make_shared<ConditionManaShield>(id, type, ticks, buff, subId);
 
-		case ConditionType_t::CONDITION_FEARED:
+		case ConditionType::Feared:
 			return std::make_shared<ConditionFeared>(id, type, ticks, buff, subId);
 
-		case ConditionType_t::CONDITION_ROOTED:
-		case ConditionType_t::CONDITION_INFIGHT:
-		case ConditionType_t::CONDITION_DRUNK:
-		case ConditionType_t::CONDITION_EXHAUST:
-		case ConditionType_t::CONDITION_EXHAUST_COMBAT:
-		case ConditionType_t::CONDITION_EXHAUST_HEAL:
-		case ConditionType_t::CONDITION_MUTED:
-		case ConditionType_t::CONDITION_CHANNELMUTEDTICKS:
-		case ConditionType_t::CONDITION_YELLTICKS:
-		case ConditionType_t::CONDITION_PACIFIED:
+		case ConditionType::Rooted:
+		case ConditionType::InFight:
+		case ConditionType::Drunk:
+		case ConditionType::Exhaust:
+		case ConditionType::ExhaustCombat:
+		case ConditionType::ExhaustHeal:
+		case ConditionType::Muted:
+		case ConditionType::ChannelMutedTicks:
+		case ConditionType::YellTicks:
+		case ConditionType::Pacified:
 			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId);
 
 		default:
@@ -301,7 +301,7 @@ std::shared_ptr<Condition> Condition::createCondition(PropStream &propStream) {
 		return nullptr;
 	}
 
-	return createCondition(static_cast<ConditionId_t>(id), static_cast<ConditionType_t>(type), ticks, 0, buff != 0, subId);
+	return createCondition(static_cast<ConditionId_t>(id), static_cast<ConditionType>(type), ticks, 0, buff != 0, subId);
 }
 
 bool Condition::startCondition(std::shared_ptr<Creature>) {
@@ -316,7 +316,7 @@ bool Condition::isPersistent() const {
 		return false;
 	}
 
-	if (!(id == ConditionId_t::CONDITIONID_DEFAULT || id == ConditionId_t::CONDITIONID_COMBAT)) {
+	if (!(id == ConditionId_t::Default || id == ConditionId_t::Combat)) {
 		return false;
 	}
 
@@ -328,7 +328,7 @@ bool Condition::isRemovableOnDeath() const {
 		return false;
 	}
 
-	if (conditionType == ConditionType_t::CONDITION_SPELLCOOLDOWN || conditionType == ConditionType_t::CONDITION_SPELLGROUPCOOLDOWN || conditionType == ConditionType_t::CONDITION_MUTED) {
+	if (conditionType == ConditionType::SpellCooldown || conditionType == ConditionType::SpellGroupCooldown || conditionType == ConditionType::Muted) {
 		return false;
 	}
 
@@ -385,15 +385,15 @@ uint32_t ConditionGeneric::getIcons() const {
 	uint32_t icons = Condition::getIcons();
 
 	switch (conditionType) {
-		case ConditionType_t::CONDITION_INFIGHT:
+		case ConditionType::InFight:
 			icons |= ICON_SWORDS;
 			break;
 
-		case ConditionType_t::CONDITION_DRUNK:
+		case ConditionType::Drunk:
 			icons |= ICON_DRUNK;
 			break;
 
-		case ConditionType_t::CONDITION_ROOTED:
+		case ConditionType::Rooted:
 			icons |= ICON_ROOTED;
 			break;
 
@@ -506,7 +506,7 @@ void ConditionAttributes::serialize(PropWriteStream &propWriteStream) {
 		propWriteStream.write<int32_t>(stats[i]);
 	}
 
-	for (int32_t i = BUFF_FIRST; i <= BUFF_LAST; ++i) {
+	for (int32_t i = buffToValue(Buffs_t::First); i <= buffToValue(Buffs_t::Last); ++i) {
 		propWriteStream.write<uint8_t>(CONDITIONATTR_BUFFS);
 		propWriteStream.write<int32_t>(buffs[i]);
 	}
@@ -673,7 +673,7 @@ void ConditionAttributes::updateCharmChanceModifier(std::shared_ptr<Creature> cr
 }
 
 void ConditionAttributes::updatePercentBuffs(std::shared_ptr<Creature> creature) {
-	for (int32_t i = BUFF_FIRST; i <= BUFF_LAST; ++i) {
+	for (int32_t i = buffToValue(Buffs_t::First); i <= buffToValue(Buffs_t::Last); ++i) {
 		if (buffsPercent[i] == 0) {
 			continue;
 		}
@@ -685,7 +685,7 @@ void ConditionAttributes::updatePercentBuffs(std::shared_ptr<Creature> creature)
 
 void ConditionAttributes::updateBuffs(std::shared_ptr<Creature> creature) {
 	bool needUpdate = false;
-	for (int32_t i = BUFF_FIRST; i <= BUFF_LAST; ++i) {
+	for (int32_t i = buffToValue(Buffs_t::First); i <= buffToValue(Buffs_t::Last); ++i) {
 		if (buffs[i]) {
 			needUpdate = true;
 			creature->setBuff(static_cast<Buffs_t>(i), buffs[i]);
@@ -727,7 +727,7 @@ void ConditionAttributes::endCondition(std::shared_ptr<Creature> creature) {
 		}
 	}
 	bool needUpdateIcons = false;
-	for (int32_t i = BUFF_FIRST; i <= BUFF_LAST; ++i) {
+	for (int32_t i = buffToValue(Buffs_t::First); i <= buffToValue(Buffs_t::Last); ++i) {
 		if (buffs[i]) {
 			needUpdateIcons = true;
 			creature->setBuff(static_cast<Buffs_t>(i), -buffs[i]);
@@ -912,112 +912,112 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value) {
 		}
 
 		case CONDITION_PARAM_BUFF_DAMAGEDEALT: {
-			buffsPercent[buffToValue(Buffs_t::BUFF_DAMAGEDEALT)] = std::max<int32_t>(0, value);
+			buffsPercent[buffToValue(Buffs_t::DamageDealt)] = std::max<int32_t>(0, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_BUFF_DAMAGERECEIVED: {
-			buffsPercent[buffToValue(Buffs_t::BUFF_DAMAGERECEIVED)] = std::max<int32_t>(0, value);
+			buffsPercent[buffToValue(Buffs_t::DamageReceived)] = std::max<int32_t>(0, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_PHYSICALPERCENT: {
-			setAbsorbPercent(CombatType_t::COMBAT_PHYSICALDAMAGE, value);
+			setAbsorbPercent(CombatType::PhysicalDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_FIREPERCENT: {
-			setAbsorbPercent(CombatType_t::COMBAT_FIREDAMAGE, value);
+			setAbsorbPercent(CombatType::FireDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_ENERGYPERCENT: {
-			setAbsorbPercent(CombatType_t::COMBAT_ENERGYDAMAGE, value);
+			setAbsorbPercent(CombatType::EnergyDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_ICEPERCENT: {
-			setAbsorbPercent(CombatType_t::COMBAT_ICEDAMAGE, value);
+			setAbsorbPercent(CombatType::IceDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_EARTHPERCENT: {
-			setAbsorbPercent(CombatType_t::COMBAT_EARTHDAMAGE, value);
+			setAbsorbPercent(CombatType::EarthDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_DEATHPERCENT: {
-			setAbsorbPercent(CombatType_t::COMBAT_DEATHDAMAGE, value);
+			setAbsorbPercent(CombatType::DeathDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_HOLYPERCENT: {
-			setAbsorbPercent(CombatType_t::COMBAT_HOLYDAMAGE, value);
+			setAbsorbPercent(CombatType::HolyDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_LIFEDRAINPERCENT: {
-			setAbsorbPercent(CombatType_t::COMBAT_LIFEDRAIN, value);
+			setAbsorbPercent(CombatType::LifeDrain, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_MANADRAINPERCENT: {
-			setAbsorbPercent(CombatType_t::COMBAT_MANADRAIN, value);
+			setAbsorbPercent(CombatType::ManaDrain, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_DROWNPERCENT: {
-			setAbsorbPercent(CombatType_t::COMBAT_DROWNDAMAGE, value);
+			setAbsorbPercent(CombatType::DrownDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_PHYSICALPERCENT: {
-			setIncreasePercent(CombatType_t::COMBAT_PHYSICALDAMAGE, value);
+			setIncreasePercent(CombatType::PhysicalDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_FIREPERCENT: {
-			setIncreasePercent(CombatType_t::COMBAT_FIREDAMAGE, value);
+			setIncreasePercent(CombatType::FireDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_ENERGYPERCENT: {
-			setIncreasePercent(CombatType_t::COMBAT_ENERGYDAMAGE, value);
+			setIncreasePercent(CombatType::EnergyDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_ICEPERCENT: {
-			setIncreasePercent(CombatType_t::COMBAT_ICEDAMAGE, value);
+			setIncreasePercent(CombatType::IceDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_EARTHPERCENT: {
-			setIncreasePercent(CombatType_t::COMBAT_EARTHDAMAGE, value);
+			setIncreasePercent(CombatType::EarthDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_DEATHPERCENT: {
-			setIncreasePercent(CombatType_t::COMBAT_DEATHDAMAGE, value);
+			setIncreasePercent(CombatType::DeathDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_HOLYPERCENT: {
-			setIncreasePercent(CombatType_t::COMBAT_HOLYDAMAGE, value);
+			setIncreasePercent(CombatType::HolyDamage, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_LIFEDRAINPERCENT: {
-			setIncreasePercent(CombatType_t::COMBAT_LIFEDRAIN, value);
+			setIncreasePercent(CombatType::LifeDrain, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_MANADRAINPERCENT: {
-			setIncreasePercent(CombatType_t::COMBAT_MANADRAIN, value);
+			setIncreasePercent(CombatType::ManaDrain, value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_DROWNPERCENT: {
-			setIncreasePercent(CombatType_t::COMBAT_DROWNDAMAGE, value);
+			setIncreasePercent(CombatType::DrownDamage, value);
 			return true;
 		}
 
@@ -1031,7 +1031,7 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value) {
 	}
 }
 
-int32_t ConditionAttributes::getAbsorbByIndex(CombatType_t index) const {
+int32_t ConditionAttributes::getAbsorbByIndex(CombatType index) const {
 	try {
 		return absorbs.at(combatToValue(index));
 	} catch (const std::out_of_range &e) {
@@ -1040,7 +1040,7 @@ int32_t ConditionAttributes::getAbsorbByIndex(CombatType_t index) const {
 	return 0;
 }
 
-void ConditionAttributes::setAbsorb(CombatType_t index, int32_t value) {
+void ConditionAttributes::setAbsorb(CombatType index, int32_t value) {
 	try {
 		absorbs.at(combatToValue(index)) = value;
 	} catch (const std::out_of_range &e) {
@@ -1048,7 +1048,7 @@ void ConditionAttributes::setAbsorb(CombatType_t index, int32_t value) {
 	}
 }
 
-int32_t ConditionAttributes::getAbsorbPercentByIndex(CombatType_t index) const {
+int32_t ConditionAttributes::getAbsorbPercentByIndex(CombatType index) const {
 	try {
 		return absorbsPercent.at(combatToValue(index));
 	} catch (const std::out_of_range &e) {
@@ -1057,7 +1057,7 @@ int32_t ConditionAttributes::getAbsorbPercentByIndex(CombatType_t index) const {
 	return 0;
 }
 
-void ConditionAttributes::setAbsorbPercent(CombatType_t index, int32_t value) {
+void ConditionAttributes::setAbsorbPercent(CombatType index, int32_t value) {
 	try {
 		absorbsPercent.at(combatToValue(index)) = value;
 	} catch (const std::out_of_range &e) {
@@ -1065,7 +1065,7 @@ void ConditionAttributes::setAbsorbPercent(CombatType_t index, int32_t value) {
 	}
 }
 
-int32_t ConditionAttributes::getIncreaseByIndex(CombatType_t index) const {
+int32_t ConditionAttributes::getIncreaseByIndex(CombatType index) const {
 	try {
 		return increases.at(combatToValue(index));
 	} catch (const std::out_of_range &e) {
@@ -1074,7 +1074,7 @@ int32_t ConditionAttributes::getIncreaseByIndex(CombatType_t index) const {
 	return 0;
 }
 
-void ConditionAttributes::setIncrease(CombatType_t index, int32_t value) {
+void ConditionAttributes::setIncrease(CombatType index, int32_t value) {
 	try {
 		increases.at(combatToValue(index)) = value;
 	} catch (const std::out_of_range &e) {
@@ -1082,7 +1082,7 @@ void ConditionAttributes::setIncrease(CombatType_t index, int32_t value) {
 	}
 }
 
-int32_t ConditionAttributes::getIncreasePercentById(CombatType_t index) const {
+int32_t ConditionAttributes::getIncreasePercentById(CombatType index) const {
 	try {
 		return increasesPercent.at(combatToValue(index));
 	} catch (const std::out_of_range &e) {
@@ -1091,7 +1091,7 @@ int32_t ConditionAttributes::getIncreasePercentById(CombatType_t index) const {
 	return 0;
 }
 
-void ConditionAttributes::setIncreasePercent(CombatType_t index, int32_t value) {
+void ConditionAttributes::setIncreasePercent(CombatType index, int32_t value) {
 	try {
 		increasesPercent.at(combatToValue(index)) = value;
 	} catch (const std::out_of_range &e) {
@@ -1175,12 +1175,12 @@ bool ConditionRegeneration::executeCondition(std::shared_ptr<Creature> creature,
 	if (player) {
 		dailyStreak = static_cast<int32_t>(player->kv()->scoped("daily-reward")->get("streak")->getNumber());
 	}
-	if (creature->getZoneType() != ZoneType_t::ZONE_PROTECTION || dailyStreak >= DAILY_REWARD_HP_REGENERATION) {
+	if (creature->getZoneType() != ZoneType::Protection || dailyStreak >= DAILY_REWARD_HP_REGENERATION) {
 		if (internalHealthTicks >= getHealthTicks(creature)) {
 			internalHealthTicks = 0;
 
 			int32_t realHealthGain = creature->getHealth();
-			if (creature->getZoneType() == ZoneType_t::ZONE_PROTECTION && dailyStreak >= DAILY_REWARD_DOUBLE_HP_REGENERATION) {
+			if (creature->getZoneType() == ZoneType::Protection && dailyStreak >= DAILY_REWARD_DOUBLE_HP_REGENERATION) {
 				creature->changeHealth(healthGain * 2); // Double regen from daily reward
 			} else {
 				creature->changeHealth(healthGain);
@@ -1211,10 +1211,10 @@ bool ConditionRegeneration::executeCondition(std::shared_ptr<Creature> creature,
 		}
 	}
 
-	if (creature->getZoneType() != ZoneType_t::ZONE_PROTECTION || dailyStreak >= DAILY_REWARD_MP_REGENERATION) {
+	if (creature->getZoneType() != ZoneType::Protection || dailyStreak >= DAILY_REWARD_MP_REGENERATION) {
 		if (internalManaTicks >= getManaTicks(creature)) {
 			internalManaTicks = 0;
-			if (creature->getZoneType() == ZoneType_t::ZONE_PROTECTION && dailyStreak >= DAILY_REWARD_DOUBLE_MP_REGENERATION) {
+			if (creature->getZoneType() == ZoneType::Protection && dailyStreak >= DAILY_REWARD_DOUBLE_MP_REGENERATION) {
 				creature->changeMana(manaGain * 2); // Double regen from daily reward
 			} else {
 				creature->changeMana(manaGain);
@@ -1386,7 +1386,7 @@ bool ConditionSoul::executeCondition(std::shared_ptr<Creature> creature, int32_t
 	internalSoulTicks += interval;
 
 	if (std::shared_ptr<Player> player = creature->getPlayer()) {
-		if (player->getZoneType() != ZoneType_t::ZONE_PROTECTION) {
+		if (player->getZoneType() != ZoneType::Protection) {
 			if (internalSoulTicks >= soulTicks) {
 				internalSoulTicks = 0;
 				player->changeSoul(soulGain);
@@ -1665,7 +1665,7 @@ bool ConditionDamage::doDamage(std::shared_ptr<Creature> creature, int32_t healt
 		damage.primary.value = static_cast<int32_t>(std::round(damage.primary.value / 2.));
 	}
 
-	if (!creature->isAttackable() || Combat::canDoCombat(attacker, creature, damage.primary.type != CombatType_t::COMBAT_HEALING) != RETURNVALUE_NOERROR) {
+	if (!creature->isAttackable() || Combat::canDoCombat(attacker, creature, damage.primary.type != CombatType::Healing) != RETURNVALUE_NOERROR) {
 		if (!creature->isInGhostMode() && !creature->getNpc()) {
 			g_game().addMagicEffect(creature->getPosition(), CONST_ME_POFF);
 		}
@@ -1748,35 +1748,35 @@ int32_t ConditionDamage::getTotalDamage() const {
 uint32_t ConditionDamage::getIcons() const {
 	uint32_t icons = Condition::getIcons();
 	switch (conditionType) {
-		case ConditionType_t::CONDITION_FIRE:
+		case ConditionType::Fire:
 			icons |= ICON_BURN;
 			break;
 
-		case ConditionType_t::CONDITION_ENERGY:
+		case ConditionType::Energy:
 			icons |= ICON_ENERGY;
 			break;
 
-		case ConditionType_t::CONDITION_DROWN:
+		case ConditionType::Drown:
 			icons |= ICON_DROWNING;
 			break;
 
-		case ConditionType_t::CONDITION_POISON:
+		case ConditionType::Poison:
 			icons |= ICON_POISON;
 			break;
 
-		case ConditionType_t::CONDITION_FREEZING:
+		case ConditionType::Freezing:
 			icons |= ICON_FREEZING;
 			break;
 
-		case ConditionType_t::CONDITION_DAZZLED:
+		case ConditionType::Dazzled:
 			icons |= ICON_DAZZLED;
 			break;
 
-		case ConditionType_t::CONDITION_CURSED:
+		case ConditionType::Cursed:
 			icons |= ICON_CURSED;
 			break;
 
-		case ConditionType_t::CONDITION_BLEEDING:
+		case ConditionType::Bleeding:
 			icons |= ICON_BLEEDING;
 			break;
 
@@ -2106,9 +2106,9 @@ bool ConditionSpeed::setParam(ConditionParam_t param, int32_t value) {
 	speedDelta = value;
 
 	if (value > 0) {
-		conditionType = ConditionType_t::CONDITION_HASTE;
+		conditionType = ConditionType::Haste;
 	} else {
-		conditionType = ConditionType_t::CONDITION_PARALYZE;
+		conditionType = ConditionType::Paralyze;
 	}
 	return true;
 }
@@ -2158,7 +2158,7 @@ bool ConditionSpeed::startCondition(std::shared_ptr<Creature> creature) {
 		auto baseSpeed = creature->getBaseSpeed();
 		getFormulaValues(baseSpeed, min, max);
 		speedDelta = uniform_random(min, max) - baseSpeed;
-		if (conditionType == ConditionType_t::CONDITION_PARALYZE && speedDelta < 40 - baseSpeed) {
+		if (conditionType == ConditionType::Paralyze && speedDelta < 40 - baseSpeed) {
 			speedDelta = 40 - baseSpeed;
 		}
 	}
@@ -2201,7 +2201,7 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 		getFormulaValues(baseSpeed, min, max);
 		speedDelta = uniform_random(min, max) - baseSpeed;
 
-		if (conditionType == ConditionType_t::CONDITION_PARALYZE && speedDelta < 40 - baseSpeed) {
+		if (conditionType == ConditionType::Paralyze && speedDelta < 40 - baseSpeed) {
 			speedDelta = 40 - baseSpeed;
 		}
 	}
@@ -2215,11 +2215,11 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 uint32_t ConditionSpeed::getIcons() const {
 	uint32_t icons = Condition::getIcons();
 	switch (conditionType) {
-		case ConditionType_t::CONDITION_HASTE:
+		case ConditionType::Haste:
 			icons |= ICON_HASTE;
 			break;
 
-		case ConditionType_t::CONDITION_PARALYZE:
+		case ConditionType::Paralyze:
 			icons |= ICON_PARALYZE;
 			break;
 

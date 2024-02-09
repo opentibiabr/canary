@@ -18,8 +18,8 @@ import game_movement;
 
 struct Abilities {
 public:
-	std::array<ConditionType_t, CONDITION_COUNT> conditionImmunities = {};
-	std::array<ConditionType_t, CONDITION_COUNT> conditionSuppressions = {};
+	std::array<ConditionType, conditionToValue(ConditionType::Count)> conditionImmunities = {};
+	std::array<ConditionType, conditionToValue(ConditionType::Count)> conditionSuppressions = {};
 
 	// stats modifiers
 	int32_t stats[STAT_LAST + 1] = { 0 };
@@ -31,22 +31,22 @@ public:
 	int32_t speed = 0;
 
 	// field damage abilities modifiers
-	int16_t fieldAbsorbPercent[COMBAT_COUNT] = { 0 };
+	int16_t fieldAbsorbPercent[combatToValue(CombatType::Count)] = { 0 };
 
 	// damage abilities modifiers
-	int16_t absorbPercent[COMBAT_COUNT] = { 0 };
+	int16_t absorbPercent[combatToValue(CombatType::Count)] = { 0 };
 
 	// relfect abilities modifires
-	int16_t reflectPercent[COMBAT_COUNT] = { 0 };
+	int16_t reflectPercent[combatToValue(CombatType::Count)] = { 0 };
 
 	// elemental damage
 	uint16_t elementDamage = 0;
-	CombatType_t elementType = CombatType_t::COMBAT_NONE;
+	CombatType elementType = CombatType::None;
 
 	// 12.72 modifiers
 	// Specialized magic level modifiers
-	int32_t reflectFlat[COMBAT_COUNT] = { 0 };
-	int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
+	int32_t reflectFlat[combatToValue(CombatType::Count)] = { 0 };
+	int32_t specializedMagicLevel[combatToValue(CombatType::Count)] = { 0 };
 
 	// magic shield capacity
 	int32_t magicShieldCapacityPercent = 0;
@@ -294,7 +294,7 @@ public:
 	int32_t runeLevel = 0;
 	int32_t wrapableTo = 0;
 
-	CombatType_t combatType = CombatType_t::COMBAT_NONE;
+	CombatType combatType = CombatType::None;
 
 	ItemAnimation_t animationType = ANIMATION_NONE;
 
@@ -318,7 +318,7 @@ public:
 	WeaponType_t weaponType = WEAPON_NONE;
 	Ammo_t ammoType = AMMO_NONE;
 	ShootType_t shootType = CONST_ANI_NONE;
-	RaceType_t corpseType = RaceType_t::RACE_NONE;
+	RaceType corpseType = RaceType::None;
 	Fluids_t fluidSource = FLUID_NONE;
 	TileFlags_t floorChange = TILESTATE_NONE;
 	std::map<ImbuementTypes_t, uint16_t> imbuementTypes;

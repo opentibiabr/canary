@@ -87,8 +87,8 @@ public:
 	bool eventCreatureOnChangeOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit);
 	ReturnValue eventCreatureOnAreaCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> tile, bool aggressive);
 	ReturnValue eventCreatureOnTargetCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target);
-	void eventCreatureOnHear(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> speaker, const std::string &words, SpeakClasses type);
-	void eventCreatureOnDrainHealth(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary);
+	void eventCreatureOnHear(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> speaker, const std::string &words, TalkType type);
+	void eventCreatureOnDrainHealth(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatType &typePrimary, int32_t &damagePrimary, CombatType &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary);
 
 	// Party
 	bool eventPartyOnJoin(std::shared_ptr<Party> party, std::shared_ptr<Player> player);
@@ -104,7 +104,7 @@ public:
 	bool eventPlayerOnLookInShop(std::shared_ptr<Player> player, const ItemType* itemType, uint8_t count);
 	bool eventPlayerOnMoveItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder);
 	void eventPlayerOnItemMoved(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder);
-	void eventPlayerOnChangeZone(std::shared_ptr<Player> player, ZoneType_t zone);
+	void eventPlayerOnChangeZone(std::shared_ptr<Player> player, ZoneType zone);
 	bool eventPlayerOnMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature, const Position &fromPosition, const Position &toPosition);
 	void eventPlayerOnReportRuleViolation(std::shared_ptr<Player> player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation);
 	bool eventPlayerOnReportBug(std::shared_ptr<Player> player, const std::string &message, const Position &position, uint8_t category);

@@ -85,7 +85,7 @@ int CharmFunctions::luaCharmDamageType(lua_State* L) {
 	if (lua_gettop(L) == 1) {
 		lua_pushnumber(L, combatToValue(charm->dmgtype));
 	} else {
-		charm->dmgtype = getNumber<CombatType_t>(L, 2);
+		charm->dmgtype = getNumber<CombatType>(L, 2);
 		pushBoolean(L, true);
 	}
 	return 1;

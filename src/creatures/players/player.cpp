@@ -225,7 +225,7 @@ std::shared_ptr<Item> Player::getInventoryItem(Slots_t slot) const {
 	return inventory[slot];
 }
 
-bool Player::isSuppress(ConditionType_t conditionType, bool attackerPlayer) const {
+bool Player::isSuppress(ConditionType conditionType, bool attackerPlayer) const {
 	auto minDelay = g_configManager().getNumber(MIN_DELAY_BETWEEN_CONDITIONS, __FUNCTION__);
 	if (IsConditionSuppressible(conditionType) && checkLastConditionTimeWithin(conditionType, minDelay)) {
 		return true;
@@ -234,7 +234,7 @@ bool Player::isSuppress(ConditionType_t conditionType, bool attackerPlayer) cons
 	return m_conditionSuppressions[static_cast<size_t>(conditionType)];
 }
 
-void Player::addConditionSuppressions(const std::array<ConditionType_t, CONDITION_COUNT> &addConditions) {
+void Player::addConditionSuppressions(const std::array<ConditionType, conditionToValue(ConditionType::Count)> &addConditions) {
 	for (const auto &conditionType : addConditions) {
 		m_conditionSuppressions[static_cast<size_t>(conditionType)] = true;
 	}
@@ -578,7 +578,7 @@ void Player::updateInventoryImbuement() {
 	// Check if the player is in a protection zone
 	bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
 	// Check if the player is in fight mode
-	bool isInFightMode = hasCondition(ConditionType_t::CONDITION_INFIGHT);
+	bool isInFightMode = hasCondition(ConditionType::InFight);
 	bool nonAggressiveFightOnly = g_configManager().getBoolean(TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY, __FUNCTION__);
 
 	// Iterate through all items in the player's inventory
@@ -1372,15 +1372,15 @@ void Player::updateSupplyTracker(std::shared_ptr<Item> item) {
 	}
 }
 
-void Player::updateImpactTracker(CombatType_t combatType, int32_t amount) const {
+void Player::updateImpactTracker(CombatType combatType, int32_t amount) const {
 	if (client) {
-		client->sendUpdateImpactTracker(enumFromValue<CombatType_t>(combatType), amount);
+		client->sendUpdateImpactTracker(enumFromValue<CombatType>(combatType), amount);
 	}
 }
 
-void Player::updateInputAnalyzer(CombatType_t combatType, int32_t amount, std::string target) {
+void Player::updateInputAnalyzer(CombatType combatType, int32_t amount, std::string target) {
 	if (client) {
-		client->sendUpdateInputAnalyzer(enumFromValue<CombatType_t>(combatType), amount, target);
+		client->sendUpdateInputAnalyzer(enumFromValue<CombatType>(combatType), amount, target);
 	}
 }
 
@@ -1801,8 +1801,8 @@ void Player::onFollowCreatureDisappear(bool isLogout) {
 	}
 }
 
-void Player::onChangeZone(ZoneType_t zone) {
-	if (zone == ZoneType_t::ZONE_PROTECTION) {
+void Player::onChangeZone(ZoneType zone) {
+	if (zone == ZoneType::Protection) {
 		if (getAttackedCreature() && !hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
 			setAttackedCreature(nullptr);
 			onAttackedCreatureDisappear(false);
@@ -1816,7 +1816,7 @@ void Player::onChangeZone(ZoneType_t zone) {
 	} else {
 		int32_t ticks = g_configManager().getNumber(STAIRHOP_DELAY, __FUNCTION__);
 		if (ticks > 0) {
-			if (const auto &condition = Condition::createCondition(ConditionId_t::CONDITIONID_DEFAULT, ConditionType_t::CONDITION_PACIFIED, ticks, 0)) {
+			if (const auto &condition = Condition::createCondition(ConditionId_t::Default, ConditionType::Pacified, ticks, 0)) {
 				addCondition(condition);
 			}
 		}
@@ -1836,24 +1836,24 @@ void Player::onChangeZone(ZoneType_t zone) {
 	g_callbacks().executeCallback(EventCallback_t::playerOnChangeZone, &EventCallback::playerOnChangeZone, getPlayer(), zone);
 }
 
-void Player::onAttackedCreatureChangeZone(ZoneType_t zone) {
+void Player::onAttackedCreatureChangeZone(ZoneType zone) {
 	auto attackedCreature = getAttackedCreature();
 	if (!attackedCreature) {
 		return;
 	}
-	if (zone == ZoneType_t::ZONE_PROTECTION) {
+	if (zone == ZoneType::Protection) {
 		if (!hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
 			setAttackedCreature(nullptr);
 			onAttackedCreatureDisappear(false);
 		}
-	} else if (zone == ZoneType_t::ZONE_NOPVP) {
+	} else if (zone == ZoneType::NoPvp) {
 		if (attackedCreature->getPlayer()) {
 			if (!hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
 				setAttackedCreature(nullptr);
 				onAttackedCreatureDisappear(false);
 			}
 		}
-	} else if (zone == ZoneType_t::ZONE_NORMAL && g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
+	} else if (zone == ZoneType::Normal && g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
 		// attackedCreature can leave a pvp zone if not pzlocked
 		if (attackedCreature->getPlayer()) {
 			setAttackedCreature(nullptr);
@@ -1932,7 +1932,7 @@ bool Player::closeShopWindow(bool sendCloseShopWindow /*= true*/) {
 }
 
 void Player::onWalk(Direction &dir) {
-	if (hasCondition(ConditionType_t::CONDITION_FEARED)) {
+	if (hasCondition(ConditionType::Feared)) {
 		Position pos = getNextPosition(dir, getPosition());
 
 		std::shared_ptr<Tile> tile = g_game().map.getTile(pos);
@@ -2000,7 +2000,7 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 	if (teleport || oldPos.z != newPos.z) {
 		int32_t ticks = g_configManager().getNumber(STAIRHOP_DELAY, __FUNCTION__);
 		if (ticks > 0) {
-			if (const auto &condition = Condition::createCondition(ConditionId_t::CONDITIONID_DEFAULT, ConditionType_t::CONDITION_PACIFIED, ticks, 0)) {
+			if (const auto &condition = Condition::createCondition(ConditionId_t::Default, ConditionType::Pacified, ticks, 0)) {
 				addCondition(condition);
 			}
 		}
@@ -2237,7 +2237,7 @@ uint32_t Player::isMuted() const {
 
 	int32_t muteTicks = 0;
 	for (std::shared_ptr<Condition> condition : conditions) {
-		if (condition->getType() == ConditionType_t::CONDITION_MUTED && condition->getTicks() > muteTicks) {
+		if (condition->getType() == ConditionType::Muted && condition->getTicks() > muteTicks) {
 			muteTicks = condition->getTicks();
 		}
 	}
@@ -2266,7 +2266,7 @@ void Player::removeMessageBuffer() {
 
 			uint32_t muteTime = 5 * muteCount * muteCount;
 			muteCountMap[guid] = muteCount + 1;
-			std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::CONDITIONID_DEFAULT, ConditionType_t::CONDITION_MUTED, muteTime * 1000, 0);
+			std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::Default, ConditionType::Muted, muteTime * 1000, 0);
 			addCondition(condition);
 
 			std::ostringstream ss;
@@ -2579,19 +2579,19 @@ void Player::onTakeDamage(std::shared_ptr<Creature> attacker, int32_t damage) {
 	// nothing here yet
 }
 
-void Player::onAttackedCreatureBlockHit(BlockType_t blockType) {
+void Player::onAttackedCreatureBlockHit(BlockType blockType) {
 	lastAttackBlockType = blockType;
 
 	switch (blockType) {
-		case BlockType_t::BLOCK_NONE: {
+		case BlockType::None: {
 			addAttackSkillPoint = true;
 			bloodHitCount = 30;
 			shieldBlockCount = 30;
 			break;
 		}
 
-		case BlockType_t::BLOCK_DEFENSE:
-		case BlockType_t::BLOCK_ARMOR: {
+		case BlockType::Defense:
+		case BlockType::Armor: {
 			// need to draw blood every 30 hits
 			if (bloodHitCount > 0) {
 				addAttackSkillPoint = true;
@@ -2622,13 +2622,13 @@ bool Player::hasShield() const {
 	return false;
 }
 
-BlockType_t Player::blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool field /* = false*/) {
-	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor, field);
+BlockType Player::blockHit(std::shared_ptr<Creature> attacker, CombatType combatType, int32_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool field /* = false*/) {
+	BlockType blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor, field);
 	if (attacker) {
 		sendCreatureSquare(attacker, SQ_COLOR_BLACK);
 	}
 
-	if (blockType != BlockType_t::BLOCK_NONE) {
+	if (blockType != BlockType::None) {
 		return blockType;
 	}
 
@@ -2685,7 +2685,7 @@ BlockType_t Player::blockHit(std::shared_ptr<Creature> attacker, CombatType_t co
 
 		if (damage <= 0) {
 			damage = 0;
-			blockType = BlockType_t::BLOCK_ARMOR;
+			blockType = BlockType::Armor;
 		}
 	}
 
@@ -2867,7 +2867,7 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 		sendSkills();
 		sendReLoginWindow(unfairFightReduction);
 		sendBlessStatus();
-		if (getSkull() == Skulls_t::SKULL_BLACK) {
+		if (getSkull() == Skull_t::Black) {
 			health = 40;
 			mana = 0;
 		} else {
@@ -2991,7 +2991,7 @@ void Player::despawn() {
 }
 
 bool Player::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified) {
-	if (getZoneType() != ZoneType_t::ZONE_PVP || !Player::lastHitIsPlayer(lastHitCreature)) {
+	if (getZoneType() != ZoneType::Pvp || !Player::lastHitIsPlayer(lastHitCreature)) {
 		return Creature::dropCorpse(lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
 	}
 
@@ -3030,7 +3030,7 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 
 	updateImbuementTrackerStats();
 
-	std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::CONDITIONID_DEFAULT, ConditionType_t::CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED, __FUNCTION__), 0);
+	std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::Default, ConditionType::InFight, g_configManager().getNumber(PZ_LOCKED, __FUNCTION__), 0);
 	addCondition(condition);
 }
 
@@ -3968,11 +3968,11 @@ std::vector<std::shared_ptr<Item>> Player::getInventoryItemsFromId(uint16_t item
 	return itemVector;
 }
 
-std::array<double_t, COMBAT_COUNT> Player::getFinalDamageReduction() const {
-	std::array<double_t, COMBAT_COUNT> combatReductionArray;
+std::array<double_t, combatToValue(CombatType::Count)> Player::getFinalDamageReduction() const {
+	std::array<double_t, combatToValue(CombatType::Count)> combatReductionArray;
 	combatReductionArray.fill(0);
 	calculateDamageReductionFromEquipedItems(combatReductionArray);
-	for (int combatTypeIndex = 0; combatTypeIndex < COMBAT_COUNT; combatTypeIndex++) {
+	for (int combatTypeIndex = 0; combatTypeIndex < combatToValue(CombatType::Count); combatTypeIndex++) {
 		combatReductionArray[combatTypeIndex] = std::clamp<double_t>(
 			std::floor(combatReductionArray[combatTypeIndex]),
 			-100.,
@@ -3982,7 +3982,7 @@ std::array<double_t, COMBAT_COUNT> Player::getFinalDamageReduction() const {
 	return combatReductionArray;
 }
 
-void Player::calculateDamageReductionFromEquipedItems(std::array<double_t, COMBAT_COUNT> &combatReductionArray) const {
+void Player::calculateDamageReductionFromEquipedItems(std::array<double_t, combatToValue(CombatType::Count)> &combatReductionArray) const {
 	for (uint8_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
 		std::shared_ptr<Item> item = inventory[slot];
 		if (item) {
@@ -3991,15 +3991,15 @@ void Player::calculateDamageReductionFromEquipedItems(std::array<double_t, COMBA
 	}
 }
 
-void Player::calculateDamageReductionFromItem(std::array<double_t, COMBAT_COUNT> &combatReductionArray, std::shared_ptr<Item> item) const {
-	for (uint16_t combatTypeIndex = 0; combatTypeIndex < COMBAT_COUNT; combatTypeIndex++) {
+void Player::calculateDamageReductionFromItem(std::array<double_t, combatToValue(CombatType::Count)> &combatReductionArray, std::shared_ptr<Item> item) const {
+	for (uint16_t combatTypeIndex = 0; combatTypeIndex < combatToValue(CombatType::Count); combatTypeIndex++) {
 		updateDamageReductionFromItemImbuement(combatReductionArray, item, combatTypeIndex);
 		updateDamageReductionFromItemAbility(combatReductionArray, item, combatTypeIndex);
 	}
 }
 
 void Player::updateDamageReductionFromItemImbuement(
-	std::array<double_t, COMBAT_COUNT> &combatReductionArray, std::shared_ptr<Item> item, uint16_t combatTypeIndex
+	std::array<double_t, combatToValue(CombatType::Count)> &combatReductionArray, std::shared_ptr<Item> item, uint16_t combatTypeIndex
 ) const {
 	for (uint8_t imbueSlotId = 0; imbueSlotId < item->getImbuementSlot(); imbueSlotId++) {
 		ImbuementInfo imbuementInfo;
@@ -4013,7 +4013,7 @@ void Player::updateDamageReductionFromItemImbuement(
 }
 
 void Player::updateDamageReductionFromItemAbility(
-	std::array<double_t, COMBAT_COUNT> &combatReductionArray, std::shared_ptr<Item> item, uint16_t combatTypeIndex
+	std::array<double_t, combatToValue(CombatType::Count)> &combatReductionArray, std::shared_ptr<Item> item, uint16_t combatTypeIndex
 ) const {
 	if (!item) {
 		return;
@@ -4356,7 +4356,7 @@ void Player::doAttacking(uint32_t) {
 		lastAttack = OTSYS_TIME() - getAttackSpeed() - 1;
 	}
 
-	if (hasCondition(ConditionType_t::CONDITION_PACIFIED)) {
+	if (hasCondition(ConditionType::Pacified)) {
 		return;
 	}
 
@@ -4442,7 +4442,7 @@ void Player::onWalkAborted() {
 }
 
 void Player::onWalkComplete() {
-	if (hasCondition(ConditionType_t::CONDITION_FEARED)) {
+	if (hasCondition(ConditionType::Feared)) {
 		/**
 		 * The walk is only processed during the fear condition execution,
 		 * but adding this check and executing the condition here as soon it ends
@@ -4450,7 +4450,7 @@ void Player::onWalkComplete() {
 		 */
 
 		g_logger().debug("[Player::onWalkComplete] Executing feared conditions as players completed it's walk.");
-		std::shared_ptr<Condition> f = getCondition(ConditionType_t::CONDITION_FEARED);
+		std::shared_ptr<Condition> f = getCondition(ConditionType::Feared);
 		f->executeCondition(static_self_cast<Player>(), 0);
 	}
 
@@ -4494,10 +4494,10 @@ void Player::updateItemsLight(bool internal /*=false*/) {
 	}
 }
 
-void Player::onAddCondition(ConditionType_t conditionType) {
+void Player::onAddCondition(ConditionType conditionType) {
 	Creature::onAddCondition(conditionType);
 
-	if (conditionType == ConditionType_t::CONDITION_OUTFIT && isMounted()) {
+	if (conditionType == ConditionType::Outfit && isMounted()) {
 		dismount();
 		wasMounted = true;
 	}
@@ -4505,56 +4505,56 @@ void Player::onAddCondition(ConditionType_t conditionType) {
 	sendIcons();
 }
 
-void Player::onAddCombatCondition(ConditionType_t conditionType) {
+void Player::onAddCombatCondition(ConditionType conditionType) {
 	if (IsConditionSuppressible(conditionType)) {
 		updateLastConditionTime(conditionType);
 	}
 	switch (conditionType) {
-		case ConditionType_t::CONDITION_POISON:
+		case ConditionType::Poison:
 			sendTextMessage(MESSAGE_FAILURE, "You are poisoned.");
 			break;
 
-		case ConditionType_t::CONDITION_DROWN:
+		case ConditionType::Drown:
 			sendTextMessage(MESSAGE_FAILURE, "You are drowning.");
 			break;
 
-		case ConditionType_t::CONDITION_PARALYZE:
+		case ConditionType::Paralyze:
 			sendTextMessage(MESSAGE_FAILURE, "You are paralyzed.");
 			break;
 
-		case ConditionType_t::CONDITION_DRUNK:
+		case ConditionType::Drunk:
 			sendTextMessage(MESSAGE_FAILURE, "You are drunk.");
 			break;
 
-		case ConditionType_t::CONDITION_LESSERHEX:
+		case ConditionType::LesserHex:
 
-		case ConditionType_t::CONDITION_INTENSEHEX:
+		case ConditionType::IntenseHex:
 
-		case ConditionType_t::CONDITION_GREATERHEX:
+		case ConditionType::GreaterHex:
 
 			sendTextMessage(MESSAGE_FAILURE, "You are hexed.");
 			break;
-		case ConditionType_t::CONDITION_ROOTED:
+		case ConditionType::Rooted:
 			sendTextMessage(MESSAGE_FAILURE, "You are rooted.");
 			break;
 
-		case ConditionType_t::CONDITION_FEARED:
+		case ConditionType::Feared:
 			sendTextMessage(MESSAGE_FAILURE, "You are feared.");
 			break;
 
-		case ConditionType_t::CONDITION_CURSED:
+		case ConditionType::Cursed:
 			sendTextMessage(MESSAGE_FAILURE, "You are cursed.");
 			break;
 
-		case ConditionType_t::CONDITION_FREEZING:
+		case ConditionType::Freezing:
 			sendTextMessage(MESSAGE_FAILURE, "You are freezing.");
 			break;
 
-		case ConditionType_t::CONDITION_DAZZLED:
+		case ConditionType::Dazzled:
 			sendTextMessage(MESSAGE_FAILURE, "You are dazzled.");
 			break;
 
-		case ConditionType_t::CONDITION_BLEEDING:
+		case ConditionType::Bleeding:
 			sendTextMessage(MESSAGE_FAILURE, "You are bleeding.");
 			break;
 
@@ -4563,20 +4563,20 @@ void Player::onAddCombatCondition(ConditionType_t conditionType) {
 	}
 }
 
-void Player::onEndCondition(ConditionType_t conditionType) {
+void Player::onEndCondition(ConditionType conditionType) {
 	Creature::onEndCondition(conditionType);
 
-	if (conditionType == ConditionType_t::CONDITION_INFIGHT) {
+	if (conditionType == ConditionType::InFight) {
 		onIdleStatus();
 		pzLocked = false;
 		clearAttacked();
 
-		if (getSkull() != Skulls_t::SKULL_RED && getSkull() != Skulls_t::SKULL_BLACK) {
-			setSkull(Skulls_t::SKULL_NONE);
+		if (getSkull() != Skull_t::Red && getSkull() != Skull_t::Black) {
+			setSkull(Skull_t::None);
 		}
 	}
 
-	if (conditionType == ConditionType_t::CONDITION_OUTFIT && wasMounted) {
+	if (conditionType == ConditionType::Outfit && wasMounted) {
 		toggleMount(true);
 	}
 
@@ -4585,7 +4585,7 @@ void Player::onEndCondition(ConditionType_t conditionType) {
 
 void Player::onCombatRemoveCondition(std::shared_ptr<Condition> condition) {
 	// Creature::onCombatRemoveCondition(condition);
-	if (condition->getId() > ConditionId_t::CONDITIONID_COMBAT) {
+	if (condition->getId() > ConditionId_t::Combat) {
 		// Means the condition is from an item, id == slot
 		if (g_game().getWorldType() == WORLD_TYPE_PVP_ENFORCED) {
 			std::shared_ptr<Item> item = getInventoryItem(static_cast<Slots_t>(condition->getId()));
@@ -4600,7 +4600,7 @@ void Player::onCombatRemoveCondition(std::shared_ptr<Condition> condition) {
 		if (!canDoAction()) {
 			const uint32_t delay = getNextActionTime();
 			const int32_t ticks = delay - (delay % EVENT_CREATURE_THINK_INTERVAL);
-			if (ticks < 0 || condition->getType() == ConditionType_t::CONDITION_PARALYZE) {
+			if (ticks < 0 || condition->getType() == ConditionType::Paralyze) {
 				removeCondition(condition);
 			} else {
 				condition->setTicks(ticks);
@@ -4614,7 +4614,7 @@ void Player::onCombatRemoveCondition(std::shared_ptr<Condition> condition) {
 void Player::onAttackedCreature(std::shared_ptr<Creature> target) {
 	Creature::onAttackedCreature(target);
 
-	if (target->getZoneType() == ZoneType_t::ZONE_PVP) {
+	if (target->getZoneType() == ZoneType::Pvp) {
 		return;
 	}
 
@@ -4634,7 +4634,7 @@ void Player::onAttackedCreature(std::shared_ptr<Creature> target) {
 			sendIcons();
 		}
 
-		if (getSkull() == Skulls_t::SKULL_NONE && getSkullClient(targetPlayer) == Skulls_t::SKULL_YELLOW) {
+		if (getSkull() == Skull_t::None && getSkullClient(targetPlayer) == Skull_t::Yellow) {
 			addAttacked(targetPlayer);
 			targetPlayer->sendCreatureSkull(static_self_cast<Player>());
 		} else if (!targetPlayer->hasAttacked(static_self_cast<Player>())) {
@@ -4646,11 +4646,11 @@ void Player::onAttackedCreature(std::shared_ptr<Creature> target) {
 			if (!Combat::isInPvpZone(static_self_cast<Player>(), targetPlayer) && !isInWar(targetPlayer)) {
 				addAttacked(targetPlayer);
 
-				if (targetPlayer->getSkull() == Skulls_t::SKULL_NONE && getSkull() == Skulls_t::SKULL_NONE && !targetPlayer->hasKilled(static_self_cast<Player>())) {
-					setSkull(Skulls_t::SKULL_WHITE);
+				if (targetPlayer->getSkull() == Skull_t::None && getSkull() == Skull_t::None && !targetPlayer->hasKilled(static_self_cast<Player>())) {
+					setSkull(Skull_t::White);
 				}
 
-				if (getSkull() == Skulls_t::SKULL_NONE) {
+				if (getSkull() == Skull_t::None) {
 					targetPlayer->sendCreatureSkull(static_self_cast<Player>());
 				}
 			}
@@ -4717,7 +4717,7 @@ void Player::onTargetCreatureGainHealth(std::shared_ptr<Creature> target, int32_
 
 bool Player::onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit) {
 	bool unjustified = false;
-	if (target->getZoneType() == ZoneType_t::ZONE_PVP) {
+	if (target->getZoneType() == ZoneType::Pvp) {
 		target->setDropLoot(false);
 		target->setSkillLoss(false);
 	} else if (!hasFlag(PlayerFlags_t::NotGainInFight) && !isPartner(target)) {
@@ -4730,14 +4730,14 @@ bool Player::onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit)
 						break;
 					}
 				}
-			} else if (target->getSkull() == Skulls_t::SKULL_NONE && !isInWar(target)) {
+			} else if (target->getSkull() == Skull_t::None && !isInWar(target)) {
 				unjustified = true;
 				addUnjustifiedDead(target);
 			}
 
-			if (lastHit && hasCondition(ConditionType_t::CONDITION_INFIGHT)) {
+			if (lastHit && hasCondition(ConditionType::InFight)) {
 				pzLocked = true;
-				std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::CONDITIONID_DEFAULT, ConditionType_t::CONDITION_INFIGHT, g_configManager().getNumber(WHITE_SKULL_TIME, __FUNCTION__), 0);
+				std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::Default, ConditionType::InFight, g_configManager().getNumber(WHITE_SKULL_TIME, __FUNCTION__), 0);
 				addCondition(condition);
 			}
 		}
@@ -4825,14 +4825,14 @@ void Player::onGainSharedExperience(uint64_t gainExp, std::shared_ptr<Creature> 
 	gainExperience(gainExp, target);
 }
 
-bool Player::isCombatImmune(CombatType_t combatType) const {
+bool Player::isCombatImmune(CombatType combatType) const {
 	if (hasFlag(PlayerFlags_t::CannotBeAttacked)) {
 		return true;
 	}
 	return Creature::isCombatImmune(combatType);
 }
 
-bool Player::isConditionImmune(ConditionType_t conditionType) const {
+bool Player::isConditionImmune(ConditionType conditionType) const {
 	if (hasFlag(PlayerFlags_t::CannotBeAttacked)) {
 		return true;
 	}
@@ -4930,7 +4930,7 @@ bool Player::canLogout() {
 		return true;
 	}
 
-	return !isPzLocked() && !hasCondition(ConditionType_t::CONDITION_INFIGHT);
+	return !isPzLocked() && !hasCondition(ConditionType::InFight);
 }
 
 void Player::genReservedStorageRange() {
@@ -5082,38 +5082,38 @@ void Player::setPronoun(PlayerPronoun_t newPronoun) {
 	pronoun = newPronoun;
 }
 
-Skulls_t Player::getSkull() const {
+Skull_t Player::getSkull() const {
 	if (hasFlag(PlayerFlags_t::NotGainInFight)) {
-		return Skulls_t::SKULL_NONE;
+		return Skull_t::None;
 	}
 	return skull;
 }
 
-Skulls_t Player::getSkullClient(std::shared_ptr<Creature> creature) {
+Skull_t Player::getSkullClient(std::shared_ptr<Creature> creature) {
 	if (!creature || g_game().getWorldType() != WORLD_TYPE_PVP) {
-		return Skulls_t::SKULL_NONE;
+		return Skull_t::None;
 	}
 
 	std::shared_ptr<Player> player = creature->getPlayer();
-	if (player && player->getSkull() == Skulls_t::SKULL_NONE) {
+	if (player && player->getSkull() == Skull_t::None) {
 		if (player.get() == this) {
 			for (const auto &kill : unjustifiedKills) {
 				if (kill.unavenged && (time(nullptr) - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION, __FUNCTION__) * 24 * 60 * 60) {
-					return Skulls_t::SKULL_ORANGE;
+					return Skull_t::Orange;
 				}
 			}
 		}
 
 		if (player->hasKilled(getPlayer())) {
-			return Skulls_t::SKULL_ORANGE;
+			return Skull_t::Orange;
 		}
 
 		if (player->hasAttacked(getPlayer())) {
-			return Skulls_t::SKULL_YELLOW;
+			return Skull_t::Yellow;
 		}
 
 		if (m_party && m_party == player->m_party) {
-			return Skulls_t::SKULL_GREEN;
+			return Skull_t::Green;
 		}
 	}
 	return Creature::getSkullClient(creature);
@@ -5183,13 +5183,13 @@ void Player::addUnjustifiedDead(std::shared_ptr<Player> attacked) {
 		}
 	}
 
-	if (getSkull() != Skulls_t::SKULL_BLACK) {
+	if (getSkull() != Skull_t::Black) {
 		if (dayKills >= 2 * g_configManager().getNumber(DAY_KILLS_TO_RED, __FUNCTION__) || weekKills >= 2 * g_configManager().getNumber(WEEK_KILLS_TO_RED, __FUNCTION__) || monthKills >= 2 * g_configManager().getNumber(MONTH_KILLS_TO_RED, __FUNCTION__)) {
-			setSkull(Skulls_t::SKULL_BLACK);
+			setSkull(Skull_t::Black);
 			// start black skull time
 			skullTicks = static_cast<int64_t>(g_configManager().getNumber(BLACK_SKULL_DURATION, __FUNCTION__)) * 24 * 60 * 60;
 		} else if (dayKills >= g_configManager().getNumber(DAY_KILLS_TO_RED, __FUNCTION__) || weekKills >= g_configManager().getNumber(WEEK_KILLS_TO_RED, __FUNCTION__) || monthKills >= g_configManager().getNumber(MONTH_KILLS_TO_RED, __FUNCTION__)) {
-			setSkull(Skulls_t::SKULL_RED);
+			setSkull(Skull_t::Red);
 			// reset red skull time
 			skullTicks = static_cast<int64_t>(g_configManager().getNumber(RED_SKULL_DURATION, __FUNCTION__)) * 24 * 60 * 60;
 		}
@@ -5206,8 +5206,8 @@ void Player::checkSkullTicks(int64_t ticks) {
 		skullTicks = newTicks;
 	}
 
-	if ((skull == Skulls_t::SKULL_RED || skull == Skulls_t::SKULL_BLACK) && skullTicks < 1 && !hasCondition(ConditionType_t::CONDITION_INFIGHT)) {
-		setSkull(Skulls_t::SKULL_NONE);
+	if ((skull == Skull_t::Red || skull == Skull_t::Black) && skullTicks < 1 && !hasCondition(ConditionType::InFight)) {
+		setSkull(Skull_t::None);
 	}
 }
 
@@ -5469,7 +5469,7 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 	return result;
 }
 
-int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) const {
+int32_t Player::getSpecializedMagicLevel(CombatType combat, bool useCharges) const {
 	const auto &combatValue = combatToValue(combat);
 	int32_t result = specializedMagicLevel[combatValue];
 	for (const auto item : getEquippedItems()) {
@@ -5491,7 +5491,7 @@ int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) c
 	return result;
 }
 
-void Player::setSpecializedMagicLevel(CombatType_t combat, int32_t value) {
+void Player::setSpecializedMagicLevel(CombatType combat, int32_t value) {
 	const auto &combatValue = combatToValue(combat);
 	specializedMagicLevel[combatValue] = std::max(0, specializedMagicLevel[combatValue] + value);
 }
@@ -5538,7 +5538,7 @@ int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 	return result;
 }
 
-int32_t Player::getReflectPercent(CombatType_t combatType, bool useCharges) const {
+int32_t Player::getReflectPercent(CombatType combatType, bool useCharges) const {
 	const auto &combatValue = combatToValue(combatType);
 	int32_t result = reflectPercent[combatValue];
 	for (const auto item : getEquippedItems()) {
@@ -5560,7 +5560,7 @@ int32_t Player::getReflectPercent(CombatType_t combatType, bool useCharges) cons
 	return result;
 }
 
-int32_t Player::getReflectFlat(CombatType_t combatType, bool useCharges) const {
+int32_t Player::getReflectFlat(CombatType combatType, bool useCharges) const {
 	const auto &combatValue = combatToValue(combatType);
 	int32_t result = reflectFlat[combatValue];
 	for (const auto item : getEquippedItems()) {
@@ -5731,7 +5731,7 @@ void Player::sendUnjustifiedPoints() {
 			}
 		}
 
-		bool isRed = getSkull() == Skulls_t::SKULL_RED;
+		bool isRed = getSkull() == Skull_t::Red;
 
 		auto dayMax = ((isRed ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED, __FUNCTION__));
 		auto weekMax = ((isRed ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED, __FUNCTION__));
@@ -5748,8 +5748,8 @@ void Player::sendUnjustifiedPoints() {
 	}
 }
 
-CreatureType_t Player::getType() const {
-	return CreatureType_t::CREATURETYPE_PLAYER;
+CreatureType Player::getType() const {
+	return CreatureType::Player;
 }
 
 uint8_t Player::getLastMount() const {
@@ -5845,7 +5845,7 @@ bool Player::toggleMount(bool mount) {
 			return false;
 		}
 
-		if (hasCondition(ConditionType_t::CONDITION_OUTFIT)) {
+		if (hasCondition(ConditionType::Outfit)) {
 			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return false;
 		}
@@ -6276,7 +6276,7 @@ std::forward_list<std::shared_ptr<Condition>> Player::getMuteConditions() const 
 		}
 
 		auto type = condition->getType();
-		if (type != ConditionType_t::CONDITION_MUTED && type != ConditionType_t::CONDITION_CHANNELMUTEDTICKS && type != ConditionType_t::CONDITION_YELLTICKS) {
+		if (type != ConditionType::Muted && type != ConditionType::ChannelMutedTicks && type != ConditionType::YellTicks) {
 			continue;
 		}
 
@@ -6315,7 +6315,7 @@ void Player::updateRegeneration() {
 		return;
 	}
 
-	std::shared_ptr<Condition> condition = getCondition(ConditionType_t::CONDITION_REGENERATION, ConditionId_t::CONDITIONID_DEFAULT);
+	std::shared_ptr<Condition> condition = getCondition(ConditionType::Regeneration, ConditionId_t::Default);
 	if (condition) {
 		condition->setParam(CONDITION_PARAM_HEALTHGAIN, vocation->getHealthGainAmount());
 		condition->setParam(CONDITION_PARAM_HEALTHTICKS, vocation->getHealthGainTicks());
@@ -6334,13 +6334,13 @@ void Player::updateUIExhausted() {
 }
 
 void Player::setImmuneFear() {
-	m_fearCondition.first = ConditionType_t::CONDITION_FEARED;
+	m_fearCondition.first = ConditionType::Feared;
 	m_fearCondition.second = OTSYS_TIME() + 10000;
 }
 
 bool Player::isImmuneFear() const {
 	uint64_t timenow = OTSYS_TIME();
-	return (m_fearCondition.first == ConditionType_t::CONDITION_FEARED) && (timenow <= m_fearCondition.second);
+	return (m_fearCondition.first == ConditionType::Feared) && (timenow <= m_fearCondition.second);
 }
 
 uint64_t Player::getItemCustomPrice(uint16_t itemId, bool buyPrice /* = false*/) const {
@@ -6689,7 +6689,7 @@ void Player::triggerMomentum() {
 
 	double_t chance = item->getMomentumChance();
 	double_t randomChance = uniform_random(0, 10000) / 100.;
-	if (getZoneType() != ZoneType_t::ZONE_PROTECTION && hasCondition(ConditionType_t::CONDITION_INFIGHT) && ((OTSYS_TIME() / 1000) % 2) == 0 && chance > 0 && randomChance < chance) {
+	if (getZoneType() != ZoneType::Protection && hasCondition(ConditionType::InFight) && ((OTSYS_TIME() / 1000) % 2) == 0 && chance > 0 && randomChance < chance) {
 		bool triggered = false;
 		auto it = conditions.begin();
 		while (it != conditions.end()) {
@@ -6701,9 +6701,9 @@ void Player::triggerMomentum() {
 			int32_t ticks = condItem->getTicks();
 			int32_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
 			triggered = true;
-			if (type == ConditionType_t::CONDITION_SPELLCOOLDOWN || (type == ConditionType_t::CONDITION_SPELLGROUPCOOLDOWN && spellId > SPELLGROUP_SUPPORT)) {
+			if (type == ConditionType::SpellCooldown || (type == ConditionType::SpellGroupCooldown && spellId > SPELLGROUP_SUPPORT)) {
 				condItem->setTicks(newTicks);
-				type == ConditionType_t::CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(spellId, newTicks);
+				type == ConditionType::SpellGroupCooldown ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(spellId, newTicks);
 			}
 			++it;
 		}
@@ -6722,9 +6722,9 @@ void Player::clearCooldowns() {
 		auto maxu16 = std::numeric_limits<uint16_t>::max();
 		auto checkSpellId = condItem->getSubId();
 		auto spellId = checkSpellId > maxu16 ? 0u : static_cast<uint16_t>(checkSpellId);
-		if (type == ConditionType_t::CONDITION_SPELLCOOLDOWN || type == ConditionType_t::CONDITION_SPELLGROUPCOOLDOWN) {
+		if (type == ConditionType::SpellCooldown || type == ConditionType::SpellGroupCooldown) {
 			condItem->setTicks(0);
-			type == ConditionType_t::CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), 0) : sendSpellCooldown(spellId, 0);
+			type == ConditionType::SpellGroupCooldown ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), 0) : sendSpellCooldown(spellId, 0);
 		}
 		++it;
 	}
@@ -6738,9 +6738,9 @@ void Player::triggerTranscendance() {
 
 	double_t chance = item->getTranscendenceChance();
 	double_t randomChance = uniform_random(0, 10000) / 100.;
-	if (getZoneType() != ZoneType_t::ZONE_PROTECTION && checkLastAggressiveActionWithin(2000) && ((OTSYS_TIME() / 1000) % 2) == 0 && chance > 0 && randomChance < chance) {
+	if (getZoneType() != ZoneType::Protection && checkLastAggressiveActionWithin(2000) && ((OTSYS_TIME() / 1000) % 2) == 0 && chance > 0 && randomChance < chance) {
 		int64_t duration = g_configManager().getNumber(TRANSCENDANCE_AVATAR_DURATION, __FUNCTION__);
-		auto outfitCondition = Condition::createCondition(ConditionId_t::CONDITIONID_COMBAT, ConditionType_t::CONDITION_OUTFIT, duration, 0)->static_self_cast<ConditionOutfit>();
+		auto outfitCondition = Condition::createCondition(ConditionId_t::Combat, ConditionType::Outfit, duration, 0)->static_self_cast<ConditionOutfit>();
 		Outfit_t outfit;
 		outfit.lookType = getVocation()->getAvatarLookType();
 		outfitCondition->setOutfit(outfit);
@@ -7047,7 +7047,7 @@ std::pair<std::vector<std::shared_ptr<Item>>, uint16_t> Player::getLockerItemsAn
 }
 
 bool Player::saySpell(
-	SpeakClasses creatureSayType,
+	TalkType creatureSayType,
 	const std::string &text,
 	bool ghostMode,
 	Spectators* spectatorsPtr /* = nullptr*/,
@@ -7069,7 +7069,7 @@ bool Player::saySpell(
 		// is used if available and if it can be used, else a local vector is
 		// used (hopefully the compiler will optimize away the construction of
 		// the temporary when it's not used).
-		if (creatureSayType != SpeakClasses::TALKTYPE_YELL && creatureSayType != SpeakClasses::TALKTYPE_MONSTER_YELL) {
+		if (creatureSayType != TalkType::Yell && creatureSayType != TalkType::MonsterYell) {
 			spectators.find<Creature>(*pos, false, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_Y, MAP_MAX_CLIENT_VIEW_PORT_Y);
 		} else {
 			spectators.find<Creature>(*pos, true, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2);
@@ -7087,9 +7087,9 @@ bool Player::saySpell(
 			}
 			if (!ghostMode || tmpPlayer->canSeeCreature(static_self_cast<Player>())) {
 				if (valueEmote == 1) {
-					tmpPlayer->sendCreatureSay(static_self_cast<Player>(), SpeakClasses::TALKTYPE_MONSTER_SAY, text, pos);
+					tmpPlayer->sendCreatureSay(static_self_cast<Player>(), TalkType::MonsterSay, text, pos);
 				} else {
-					tmpPlayer->sendCreatureSay(static_self_cast<Player>(), SpeakClasses::TALKTYPE_SPELL_USE, text, pos);
+					tmpPlayer->sendCreatureSay(static_self_cast<Player>(), TalkType::SpellUse, text, pos);
 				}
 			}
 		}
@@ -7898,7 +7898,7 @@ void Player::parseAttackRecvHazardSystem(CombatDamage &damage, std::shared_ptr<M
 		return;
 	}
 
-	if (damage.primary.type == CombatType_t::COMBAT_HEALING) {
+	if (damage.primary.type == CombatType::Healing) {
 		return;
 	}
 
@@ -7957,7 +7957,7 @@ void Player::parseAttackDealtHazardSystem(CombatDamage &damage, std::shared_ptr<
 		return;
 	}
 
-	if (damage.primary.type == CombatType_t::COMBAT_HEALING) {
+	if (damage.primary.type == CombatType::Healing) {
 		return;
 	}
 
@@ -8066,13 +8066,13 @@ std::shared_ptr<Container> Player::getStoreInbox() const {
 }
 
 bool Player::hasPermittedConditionInPZ() const {
-	static const std::unordered_set<ConditionType_t> allowedConditions = {
-		ConditionType_t::CONDITION_ENERGY,
-		ConditionType_t::CONDITION_FIRE,
-		ConditionType_t::CONDITION_POISON,
-		ConditionType_t::CONDITION_BLEEDING,
-		ConditionType_t::CONDITION_CURSED,
-		ConditionType_t::CONDITION_DAZZLED
+	static const std::unordered_set<ConditionType> allowedConditions = {
+		ConditionType::Energy,
+		ConditionType::Fire,
+		ConditionType::Poison,
+		ConditionType::Bleeding,
+		ConditionType::Cursed,
+		ConditionType::Dazzled
 	};
 
 	bool hasPermittedCondition = false;

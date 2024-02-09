@@ -85,8 +85,8 @@ public:
 	bool creatureOnChangeOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit) const;
 	ReturnValue creatureOnAreaCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> tile, bool aggressive) const;
 	ReturnValue creatureOnTargetCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) const;
-	void creatureOnHear(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> speaker, const std::string &words, SpeakClasses type) const;
-	void creatureOnDrainHealth(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) const;
+	void creatureOnHear(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> speaker, const std::string &words, TalkType type) const;
+	void creatureOnDrainHealth(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatType &typePrimary, int32_t &damagePrimary, CombatType &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) const;
 
 	// Party
 	bool partyOnJoin(std::shared_ptr<Party> party, std::shared_ptr<Player> player) const;
@@ -102,7 +102,7 @@ public:
 	bool playerOnLookInShop(std::shared_ptr<Player> player, const ItemType* itemType, uint8_t count) const;
 	bool playerOnMoveItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) const;
 	void playerOnItemMoved(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) const;
-	void playerOnChangeZone(std::shared_ptr<Player> player, ZoneType_t zone) const;
+	void playerOnChangeZone(std::shared_ptr<Player> player, ZoneType zone) const;
 	bool playerOnMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature, const Position &fromPosition, const Position &toPosition) const;
 	void playerOnReportRuleViolation(std::shared_ptr<Player> player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) const;
 	void playerOnReportBug(std::shared_ptr<Player> player, const std::string &message, const Position &position, uint8_t category) const;

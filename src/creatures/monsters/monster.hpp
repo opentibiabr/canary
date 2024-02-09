@@ -65,9 +65,9 @@ public:
 	/**
 	 * @brief Get the type of the Monster.
 	 * @note This function returns the type of the creature
-	 * @return An unsigned 8-bit integer representing the creature type, see CreatureType_t enum for possible types.
+	 * @return An unsigned 8-bit integer representing the creature type, see CreatureType enum for possible types.
 	 */
-	CreatureType_t getType() const override;
+	CreatureType getType() const override;
 
 	const Position &getMasterPos() const {
 		return masterPos;
@@ -76,7 +76,7 @@ public:
 		masterPos = pos;
 	}
 
-	RaceType_t getRace() const override {
+	RaceType getRace() const override {
 		return mType->info.race;
 	}
 	float getMitigation() const override;
@@ -112,7 +112,7 @@ public:
 		return mType->info.isFamiliar;
 	}
 	bool canSeeInvisibility() const override {
-		return isConditionImmune(ConditionType_t::CONDITION_INVISIBLE);
+		return isConditionImmune(ConditionType::Invisible);
 	}
 	uint16_t critChance() const {
 		return mType->info.critChance;
@@ -127,10 +127,10 @@ public:
 		this->spawnMonster = newSpawnMonster;
 	}
 
-	int32_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const override;
-	uint32_t getHealingCombatValue(CombatType_t combatType) const;
+	int32_t getReflectPercent(CombatType combatType, bool useCharges = false) const override;
+	uint32_t getHealingCombatValue(CombatType combatType) const;
 
-	bool canWalkOnFieldType(CombatType_t combatType) const;
+	bool canWalkOnFieldType(CombatType combatType) const;
 	void onAttackedCreatureDisappear(bool isLogout) override;
 
 	void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) override;
@@ -139,10 +139,10 @@ public:
 	/**
 	 * @brief Creature say function to send a message to the creature
 	 * @param Creature as the target
-	 * @param creatureSayType as SpeakClasses enum
+	 * @param creatureSayType as TalkType enum
 	 * @param text as the message to send
 	 */
-	void onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses creatureSayType, const std::string &text) override;
+	void onCreatureSay(std::shared_ptr<Creature> creature, TalkType creatureSayType, const std::string &text) override;
 
 	void drainHealth(std::shared_ptr<Creature> attacker, int32_t damage) override;
 	void changeHealth(int32_t healthChange, bool sendHealthChange = true) override;
@@ -165,9 +165,9 @@ public:
 		}
 		if (challengeMeleeDuration > 0 && mType->info.targetDistance > targetDistance) {
 			return { CreatureIcon(CreatureIconModifications_t::TurnedMelee) };
-		} else if (varBuffs[buffToValue(Buffs_t::BUFF_DAMAGERECEIVED)] > 100) {
+		} else if (varBuffs[buffToValue(Buffs_t::DamageReceived)] > 100) {
 			return { CreatureIcon(CreatureIconModifications_t::HigherDamageReceived) };
-		} else if (varBuffs[buffToValue(Buffs_t::BUFF_DAMAGEDEALT)] < 100) {
+		} else if (varBuffs[buffToValue(Buffs_t::DamageDealt)] < 100) {
 			return { CreatureIcon(CreatureIconModifications_t::LowerDamageDealt) };
 		}
 		return {};
@@ -287,7 +287,7 @@ public:
 	 * This function calculates the type of block action to be taken by a monster when it is attacked by another creature. The result is based on various factors, including the type of combat, the attacker, and the damage to be inflicted.
 	 *
 	 * @param attacker A shared pointer to the attacking creature.
-	 * @param combatType An unsigned 8-bit integer representing the type of combat (seed CombatType_t enumeration for possible values)
+	 * @param combatType An unsigned 8-bit integer representing the type of combat (seed CombatType enumeration for possible values)
 	 * @param damage A reference to an integer that stores the calculated damage. It may be modified by this function.
 	 * @param checkDefense A boolean indicating whether to check the monster's defense during the block action (default is false).
 	 * @param checkArmor A boolean indicating whether to check the monster's armor during the block action (default is false).
@@ -296,7 +296,7 @@ public:
 	 *
 	 * \note The `field` parameter is not used in this function.
 	 */
-	BlockType_t blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
+	BlockType blockHit(std::shared_ptr<Creature> attacker, CombatType combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 
 	static uint32_t monsterAutoID;
 
@@ -345,8 +345,8 @@ public:
 	void clearFiendishStatus();
 	bool canDropLoot() const;
 
-	bool isConditionImmune(ConditionType_t conditionType) const override;
-	bool isCombatImmune(CombatType_t combatType) const override;
+	bool isConditionImmune(ConditionType conditionType) const override;
+	bool isCombatImmune(CombatType combatType) const override;
 
 	float getAttackMultiplier() const {
 		float multiplier = mType->getAttackMultiplier();
@@ -435,8 +435,8 @@ private:
 		return isIdle;
 	}
 
-	void onAddCondition(ConditionType_t conditionType) override;
-	void onEndCondition(ConditionType_t conditionType) override;
+	void onAddCondition(ConditionType conditionType) override;
+	void onEndCondition(ConditionType conditionType) override;
 
 	bool canUseAttack(const Position &pos, const std::shared_ptr<Creature> &target) const;
 	bool canUseSpell(const Position &pos, const Position &targetPos, const spellBlock_t &sb, uint32_t interval, bool &inRange, bool &resetTicks);
@@ -480,5 +480,5 @@ private:
 	void doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &result);
 	void doRandomStep(Direction &nextDirection, bool &result);
 
-	void onConditionStatusChange(const ConditionType_t &conditionType);
+	void onConditionStatusChange(const ConditionType &conditionType);
 };

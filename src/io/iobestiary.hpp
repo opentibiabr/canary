@@ -30,7 +30,7 @@ public:
 
 	charm_t type;
 	charmRune_t id = CHARM_NONE;
-	CombatType_t dmgtype = CombatType_t::COMBAT_NONE;
+	CombatType dmgtype = CombatType::None;
 	uint16_t effect = CONST_ME_NONE;
 
 	SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;

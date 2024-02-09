@@ -346,9 +346,9 @@ void LuaFunctionsLoader::setCreatureMetatable(lua_State* L, int32_t index, std::
 CombatDamage LuaFunctionsLoader::getCombatDamage(lua_State* L) {
 	CombatDamage damage;
 	damage.primary.value = getNumber<int32_t>(L, -4);
-	damage.primary.type = getNumber<CombatType_t>(L, -3);
+	damage.primary.type = getNumber<CombatType>(L, -3);
 	damage.secondary.value = getNumber<int32_t>(L, -2);
-	damage.secondary.type = getNumber<CombatType_t>(L, -1);
+	damage.secondary.type = getNumber<CombatType>(L, -1);
 
 	lua_pop(L, 4);
 	return damage;

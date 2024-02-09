@@ -163,7 +163,7 @@ int NpcFunctions::luaNpcPlace(lua_State* L) {
 }
 
 int NpcFunctions::luaNpcSay(lua_State* L) {
-	// npc:say(text[, type = SpeakClasses::TALKTYPE_PRIVATE_NP[, ghost = false[, target = nullptr[, position]]]])
+	// npc:say(text[, type = TalkType::PrivateNpcToPlayer[, ghost = false[, target = nullptr[, position]]]])
 	int parameters = lua_gettop(L);
 
 	Position position;
@@ -183,7 +183,7 @@ int NpcFunctions::luaNpcSay(lua_State* L) {
 
 	bool ghost = getBoolean(L, 4, false);
 
-	SpeakClasses type = getNumber<SpeakClasses>(L, 3, SpeakClasses::TALKTYPE_PRIVATE_NP);
+	TalkType type = getNumber<TalkType>(L, 3, TalkType::PrivateNpcToPlayer);
 	const std::string &text = getString(L, 2);
 	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {

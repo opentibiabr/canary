@@ -150,7 +150,7 @@ ReturnValue EventCallback::creatureOnTargetCombat(std::shared_ptr<Creature> crea
 	return returnValue;
 }
 
-void EventCallback::creatureOnHear(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> speaker, const std::string &words, SpeakClasses type) const {
+void EventCallback::creatureOnHear(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> speaker, const std::string &words, TalkType type) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::creatureOnHear - "
 						 "Creature {} speaker {}] "
@@ -177,7 +177,7 @@ void EventCallback::creatureOnHear(std::shared_ptr<Creature> creature, std::shar
 	getScriptInterface()->callVoidFunction(4);
 }
 
-void EventCallback::creatureOnDrainHealth(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) const {
+void EventCallback::creatureOnDrainHealth(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatType &typePrimary, int32_t &damagePrimary, CombatType &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::creatureOnDrainHealth - "
 						 "Creature {} attacker {}] "
@@ -216,9 +216,9 @@ void EventCallback::creatureOnDrainHealth(std::shared_ptr<Creature> creature, st
 	if (getScriptInterface()->protectedCall(L, 8, 6) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
-		typePrimary = LuaScriptInterface::getNumber<CombatType_t>(L, -6);
+		typePrimary = LuaScriptInterface::getNumber<CombatType>(L, -6);
 		damagePrimary = LuaScriptInterface::getNumber<int32_t>(L, -5);
-		typeSecondary = LuaScriptInterface::getNumber<CombatType_t>(L, -4);
+		typeSecondary = LuaScriptInterface::getNumber<CombatType>(L, -4);
 		damageSecondary = LuaScriptInterface::getNumber<int32_t>(L, -3);
 		colorPrimary = LuaScriptInterface::getNumber<TextColor_t>(L, -2);
 		colorSecondary = LuaScriptInterface::getNumber<TextColor_t>(L, -1);
@@ -553,7 +553,7 @@ void EventCallback::playerOnItemMoved(std::shared_ptr<Player> player, std::share
 	getScriptInterface()->callVoidFunction(7);
 }
 
-void EventCallback::playerOnChangeZone(std::shared_ptr<Player> player, ZoneType_t zone) const {
+void EventCallback::playerOnChangeZone(std::shared_ptr<Player> player, ZoneType zone) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnChangeZone - "
 						 "Player {}] "
@@ -873,12 +873,12 @@ void EventCallback::playerOnCombat(std::shared_ptr<Player> player, std::shared_p
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
 		damage.primary.value = std::abs(LuaScriptInterface::getNumber<int32_t>(L, -4));
-		damage.primary.type = LuaScriptInterface::getNumber<CombatType_t>(L, -3);
+		damage.primary.type = LuaScriptInterface::getNumber<CombatType>(L, -3);
 		damage.secondary.value = std::abs(LuaScriptInterface::getNumber<int32_t>(L, -2));
-		damage.secondary.type = LuaScriptInterface::getNumber<CombatType_t>(L, -1);
+		damage.secondary.type = LuaScriptInterface::getNumber<CombatType>(L, -1);
 
 		lua_pop(L, 4);
-		if (damage.primary.type != CombatType_t::COMBAT_HEALING) {
+		if (damage.primary.type != CombatType::Healing) {
 			damage.primary.value = -damage.primary.value;
 			damage.secondary.value = -damage.secondary.value;
 		}
@@ -888,7 +888,7 @@ void EventCallback::playerOnCombat(std::shared_ptr<Player> player, std::shared_p
 		if (damage.origin == ORIGIN_SPELL) {
 			if (player->getVocationId() != 4 && player->getVocationId() != 8) {
 				damage.primary.value = damage.primary.value + damage.secondary.value;
-				damage.secondary.type = CombatType_t::COMBAT_NONE;
+				damage.secondary.type = CombatType::None;
 				damage.secondary.value = 0;
 			}
 		}

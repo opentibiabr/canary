@@ -83,8 +83,8 @@ struct CombatParams {
 
 	uint16_t itemId = 0;
 
-	ConditionType_t dispelType = ConditionType_t::CONDITION_NONE;
-	CombatType_t combatType = CombatType_t::COMBAT_NONE;
+	ConditionType dispelType = ConditionType::None;
+	CombatType combatType = CombatType::None;
 	CombatOrigin origin = ORIGIN_SPELL;
 
 	uint16_t impactEffect = CONST_ME_NONE;
@@ -284,8 +284,8 @@ public:
 	static bool isInPvpZone(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target);
 	static bool isProtected(std::shared_ptr<Player> attacker, std::shared_ptr<Player> target);
 	static bool isPlayerCombat(std::shared_ptr<Creature> target);
-	static CombatType_t ConditionToDamageType(ConditionType_t type);
-	static ConditionType_t DamageToConditionType(CombatType_t type);
+	static CombatType ConditionToDamageType(ConditionType type);
+	static ConditionType DamageToConditionType(CombatType type);
 	static ReturnValue canTargetCreature(std::shared_ptr<Player> attacker, std::shared_ptr<Creature> target);
 	static ReturnValue canDoCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Tile> tile, bool aggressive);
 	static ReturnValue canDoCombat(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, bool aggressive);
@@ -411,7 +411,7 @@ public:
 	bool isReplaceable() const {
 		return Item::items[getID()].replaceable;
 	}
-	CombatType_t getCombatType() const {
+	CombatType getCombatType() const {
 		const ItemType &it = items[getID()];
 		return it.combatType;
 	}

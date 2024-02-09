@@ -154,7 +154,7 @@ bool Weapon::useFist(std::shared_ptr<Player> player, std::shared_ptr<Creature> t
 	int32_t maxDamage = Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, attackValue, attackFactor, true);
 
 	CombatParams params;
-	params.combatType = CombatType_t::COMBAT_PHYSICALDAMAGE;
+	params.combatType = CombatType::PhysicalDamage;
 	params.blockedByArmor = true;
 	params.blockedByShield = true;
 	params.soundImpactEffect = SoundEffect_t::HUMAN_CLOSE_ATK_FIST;
@@ -213,7 +213,7 @@ void Weapon::internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 			damage.exString += "cleave damage";
 		}
 
-		if (damage.secondary.type == CombatType_t::COMBAT_NONE) {
+		if (damage.secondary.type == CombatType::None) {
 			damage.primary.value = (getWeaponDamage(player, target, item, false) * damageModifier / 100) * damagePercent / 100;
 			damage.secondary.value = 0;
 		} else {
@@ -361,7 +361,7 @@ WeaponMelee::WeaponMelee(LuaScriptInterface* interface) :
 	// Add combat type and blocked attributes to the weapon
 	params.blockedByArmor = true;
 	params.blockedByShield = true;
-	params.combatType = CombatType_t::COMBAT_PHYSICALDAMAGE;
+	params.combatType = CombatType::PhysicalDamage;
 }
 
 void WeaponMelee::configureWeapon(const ItemType &it) {
@@ -371,7 +371,7 @@ void WeaponMelee::configureWeapon(const ItemType &it) {
 		params.aggressive = true;
 		params.useCharges = true;
 	} else {
-		elementType = CombatType_t::COMBAT_NONE;
+		elementType = CombatType::None;
 		elementDamage = 0;
 	}
 	Weapon::configureWeapon(it);
@@ -438,7 +438,7 @@ bool WeaponMelee::useWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item
 }
 
 bool WeaponMelee::getSkillType(std::shared_ptr<Player> player, std::shared_ptr<Item> item, skills_t &skill, uint32_t &skillpoint) const {
-	if (player->getAddAttackSkill() && player->getLastAttackBlockType() != BlockType_t::BLOCK_IMMUNITY) {
+	if (player->getAddAttackSkill() && player->getLastAttackBlockType() != BlockType::Immunity) {
 		skillpoint = 1;
 	} else {
 		skillpoint = 0;
@@ -468,7 +468,7 @@ bool WeaponMelee::getSkillType(std::shared_ptr<Player> player, std::shared_ptr<I
 }
 
 int32_t WeaponMelee::getElementDamage(std::shared_ptr<Player> player, std::shared_ptr<Creature>, std::shared_ptr<Item> item) const {
-	if (elementType == CombatType_t::COMBAT_NONE) {
+	if (elementType == CombatType::None) {
 		return 0;
 	}
 
@@ -509,7 +509,7 @@ WeaponDistance::WeaponDistance(LuaScriptInterface* interface) :
 	Weapon(interface) {
 	// Add combat type and distance effect to the weapon
 	params.blockedByArmor = true;
-	params.combatType = CombatType_t::COMBAT_PHYSICALDAMAGE;
+	params.combatType = CombatType::PhysicalDamage;
 }
 
 void WeaponDistance::configureWeapon(const ItemType &it) {
@@ -520,7 +520,7 @@ void WeaponDistance::configureWeapon(const ItemType &it) {
 		params.aggressive = true;
 		params.useCharges = true;
 	} else {
-		elementType = CombatType_t::COMBAT_NONE;
+		elementType = CombatType::None;
 		elementDamage = 0;
 	}
 
@@ -704,7 +704,7 @@ bool WeaponDistance::useWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 }
 
 int32_t WeaponDistance::getElementDamage(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item) const {
-	if (elementType == CombatType_t::COMBAT_NONE) {
+	if (elementType == CombatType::None) {
 		return 0;
 	}
 
@@ -785,13 +785,13 @@ bool WeaponDistance::getSkillType(std::shared_ptr<Player> player, std::shared_pt
 
 	if (player->getAddAttackSkill()) {
 		switch (player->getLastAttackBlockType()) {
-			case BlockType_t::BLOCK_NONE: {
+			case BlockType::None: {
 				skillpoint = 2;
 				break;
 			}
 
-			case BlockType_t::BLOCK_DEFENSE:
-			case BlockType_t::BLOCK_ARMOR: {
+			case BlockType::Defense:
+			case BlockType::Armor: {
 				skillpoint = 1;
 				break;
 			}

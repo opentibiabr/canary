@@ -183,7 +183,7 @@ protected:
 
 class GemModifierResistanceStrategy : public GemModifierStrategy {
 public:
-	explicit GemModifierResistanceStrategy(PlayerWheel &wheel, CombatType_t combatType, int32_t resistance) :
+	explicit GemModifierResistanceStrategy(PlayerWheel &wheel, CombatType combatType, int32_t resistance) :
 		GemModifierStrategy(wheel),
 		m_combatType(combatType),
 		m_resistance(resistance) { }
@@ -191,7 +191,7 @@ public:
 	void execute() override;
 
 private:
-	CombatType_t m_combatType;
+	CombatType m_combatType;
 	int32_t m_resistance;
 };
 

@@ -605,10 +605,10 @@ Direction getDirectionTo(const Position &from, const Position &to, bool exactDia
 
 using MagicEffectNames = phmap::flat_hash_map<std::string, MagicEffectClasses>;
 using ShootTypeNames = phmap::flat_hash_map<std::string, ShootType_t>;
-using CombatTypeNames = phmap::flat_hash_map<CombatType_t, std::string, std::hash<CombatType_t>>;
+using CombatTypeNames = phmap::flat_hash_map<CombatType, std::string, std::hash<CombatType>>;
 using AmmoTypeNames = phmap::flat_hash_map<std::string, Ammo_t>;
 using WeaponActionNames = phmap::flat_hash_map<std::string, WeaponAction_t>;
-using SkullNames = phmap::flat_hash_map<std::string, Skulls_t>;
+using SkullNames = phmap::flat_hash_map<std::string, Skull_t>;
 using ImbuementTypeNames = phmap::flat_hash_map<std::string, ImbuementTypes_t>;
 
 /**
@@ -794,20 +794,20 @@ ShootTypeNames shootTypeNames = {
 };
 
 CombatTypeNames combatTypeNames = {
-	{ CombatType_t::COMBAT_DROWNDAMAGE, "drown" },
-	{ CombatType_t::COMBAT_DEATHDAMAGE, "death" },
-	{ CombatType_t::COMBAT_ENERGYDAMAGE, "energy" },
-	{ CombatType_t::COMBAT_EARTHDAMAGE, "earth" },
-	{ CombatType_t::COMBAT_FIREDAMAGE, "fire" },
-	{ CombatType_t::COMBAT_HEALING, "healing" },
-	{ CombatType_t::COMBAT_HOLYDAMAGE, "holy" },
-	{ CombatType_t::COMBAT_ICEDAMAGE, "ice" },
-	{ CombatType_t::COMBAT_UNDEFINEDDAMAGE, "undefined" },
-	{ CombatType_t::COMBAT_LIFEDRAIN, "lifedrain" },
-	{ CombatType_t::COMBAT_MANADRAIN, "manadrain" },
-	{ CombatType_t::COMBAT_PHYSICALDAMAGE, "physical" },
-	{ CombatType_t::COMBAT_AGONYDAMAGE, "agony" },
-	{ CombatType_t::COMBAT_NEUTRALDAMAGE, "neutral" },
+	{ CombatType::DrownDamage, "drown" },
+	{ CombatType::DeathDamage, "death" },
+	{ CombatType::EnergyDamage, "energy" },
+	{ CombatType::EarthDamage, "earth" },
+	{ CombatType::FireDamage, "fire" },
+	{ CombatType::Healing, "healing" },
+	{ CombatType::HolyDamage, "holy" },
+	{ CombatType::IceDamage, "ice" },
+	{ CombatType::UndefinedDamage, "undefined" },
+	{ CombatType::LifeDrain, "lifedrain" },
+	{ CombatType::ManaDrain, "manadrain" },
+	{ CombatType::PhysicalDamage, "physical" },
+	{ CombatType::AgonyDamage, "agony" },
+	{ CombatType::NeutralDamage, "neutral" },
 };
 
 AmmoTypeNames ammoTypeNames = {
@@ -845,13 +845,13 @@ WeaponActionNames weaponActionNames = {
 };
 
 SkullNames skullNames = {
-	{ "black", Skulls_t::SKULL_BLACK },
-	{ "green", Skulls_t::SKULL_GREEN },
-	{ "none", Skulls_t::SKULL_NONE },
-	{ "orange", Skulls_t::SKULL_ORANGE },
-	{ "red", Skulls_t::SKULL_RED },
-	{ "yellow", Skulls_t::SKULL_YELLOW },
-	{ "white", Skulls_t::SKULL_WHITE },
+	{ "black", Skull_t::Black },
+	{ "green", Skull_t::Green },
+	{ "none", Skull_t::None },
+	{ "orange", Skull_t::Orange },
+	{ "red", Skull_t::Red },
+	{ "yellow", Skull_t::Yellow },
+	{ "white", Skull_t::White },
 };
 
 const ImbuementTypeNames imbuementTypeNames = {
@@ -919,12 +919,12 @@ WeaponAction_t getWeaponAction(const std::string &strValue) {
 	return WEAPONACTION_NONE;
 }
 
-Skulls_t getSkullType(const std::string &strValue) {
+Skull_t getSkullType(const std::string &strValue) {
 	auto skullType = skullNames.find(strValue);
 	if (skullType != skullNames.end()) {
 		return skullType->second;
 	}
-	return Skulls_t::SKULL_NONE;
+	return Skull_t::None;
 }
 
 ImbuementTypes_t getImbuementType(const std::string &strValue) {
@@ -1080,7 +1080,7 @@ std::string getWeaponName(WeaponType_t weaponType) {
 	}
 }
 
-std::string getCombatName(CombatType_t combatType) {
+std::string getCombatName(CombatType combatType) {
 	auto combatName = combatTypeNames.find(combatType);
 	if (combatName != combatTypeNames.end()) {
 		return combatName->second;
@@ -1088,17 +1088,17 @@ std::string getCombatName(CombatType_t combatType) {
 	return "unknown";
 }
 
-CombatType_t getCombatTypeByName(const std::string &combatname) {
-	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](const std::pair<CombatType_t, std::string> &pair) {
+CombatType getCombatTypeByName(const std::string &combatname) {
+	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](const std::pair<CombatType, std::string> &pair) {
 		return pair.second == combatname;
 	});
 
-	return it != combatTypeNames.end() ? it->first : CombatType_t::COMBAT_NONE;
+	return it != combatTypeNames.end() ? it->first : CombatType::None;
 }
 
-std::string combatTypeToName(CombatType_t combatType) {
-	std::string_view name = magic_enum::enum_name(static_cast<CombatType_t>(combatType));
-	if (!name.empty() && combatToValue(combatType) < COMBAT_COUNT) {
+std::string combatTypeToName(CombatType combatType) {
+	std::string_view name = magic_enum::enum_name(static_cast<CombatType>(combatType));
+	if (!name.empty() && combatToValue(combatType) < combatToValue(CombatType::Count)) {
 		return formatEnumName(name);
 	} else {
 		g_logger().error("[{}] Combat type {} is out of range", __FUNCTION__, combatType);
@@ -1801,33 +1801,33 @@ unsigned int getNumberOfCores() {
 	return cores;
 }
 
-Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
+Cipbia_Elementals_t getCipbiaElement(CombatType combatType) {
 	switch (combatType) {
-		case CombatType_t::COMBAT_PHYSICALDAMAGE:
+		case CombatType::PhysicalDamage:
 			return CIPBIA_ELEMENTAL_PHYSICAL;
-		case CombatType_t::COMBAT_ENERGYDAMAGE:
+		case CombatType::EnergyDamage:
 			return CIPBIA_ELEMENTAL_ENERGY;
-		case CombatType_t::COMBAT_EARTHDAMAGE:
+		case CombatType::EarthDamage:
 			return CIPBIA_ELEMENTAL_EARTH;
-		case CombatType_t::COMBAT_FIREDAMAGE:
+		case CombatType::FireDamage:
 			return CIPBIA_ELEMENTAL_FIRE;
-		case CombatType_t::COMBAT_LIFEDRAIN:
+		case CombatType::LifeDrain:
 			return CIPBIA_ELEMENTAL_LIFEDRAIN;
-		case CombatType_t::COMBAT_HEALING:
+		case CombatType::Healing:
 			return CIPBIA_ELEMENTAL_HEALING;
-		case CombatType_t::COMBAT_DROWNDAMAGE:
+		case CombatType::DrownDamage:
 			return CIPBIA_ELEMENTAL_DROWN;
-		case CombatType_t::COMBAT_ICEDAMAGE:
+		case CombatType::IceDamage:
 			return CIPBIA_ELEMENTAL_ICE;
-		case CombatType_t::COMBAT_HOLYDAMAGE:
+		case CombatType::HolyDamage:
 			return CIPBIA_ELEMENTAL_HOLY;
-		case CombatType_t::COMBAT_DEATHDAMAGE:
+		case CombatType::DeathDamage:
 			return CIPBIA_ELEMENTAL_DEATH;
-		case CombatType_t::COMBAT_MANADRAIN:
+		case CombatType::ManaDrain:
 			return CIPBIA_ELEMENTAL_MANADRAIN;
-		case CombatType_t::COMBAT_AGONYDAMAGE:
+		case CombatType::AgonyDamage:
 			return CIPBIA_ELEMENTAL_AGONY;
-		case CombatType_t::COMBAT_NEUTRALDAMAGE:
+		case CombatType::NeutralDamage:
 			return CIPBIA_ELEMENTAL_AGONY;
 		default:
 			return CIPBIA_ELEMENTAL_UNDEFINED;
@@ -1884,9 +1884,9 @@ uint8_t convertWheelGemAffinityToDomain(uint8_t affinity) {
 const std::vector<uint8_t> &getAllCombatValueTypes() {
 	static const std::vector<uint8_t> validTypes = [] {
 		std::vector<uint8_t> v;
-		for (auto combat : magic_enum::enum_values<CombatType_t>()) {
+		for (auto combat : magic_enum::enum_values<CombatType>()) {
 			const auto &value = combatToValue(combat);
-			if (value != COMBAT_COUNT && combat != CombatType_t::COMBAT_NONE) {
+			if (value != combatToValue(CombatType::Count) && combat != CombatType::None) {
 				v.push_back(value);
 			}
 		}
@@ -1895,12 +1895,12 @@ const std::vector<uint8_t> &getAllCombatValueTypes() {
 	return validTypes;
 }
 
-const std::vector<CombatType_t> &getAllCombatTypes() {
-	static const std::vector<CombatType_t> validTypes = [] {
-		std::vector<CombatType_t> v;
-		for (auto combat : magic_enum::enum_values<CombatType_t>()) {
+const std::vector<CombatType> &getAllCombatTypes() {
+	static const std::vector<CombatType> validTypes = [] {
+		std::vector<CombatType> v;
+		for (auto combat : magic_enum::enum_values<CombatType>()) {
 			const auto &value = combatToValue(combat);
-			if (value != COMBAT_COUNT && combat != CombatType_t::COMBAT_NONE) {
+			if (value != combatToValue(CombatType::Count) && combat != CombatType::None) {
 				v.push_back(combat);
 			}
 		}

@@ -1005,7 +1005,7 @@ void PlayerWheel::sendGiftOfLifeCooldown() const {
 	msg.add<uint32_t>(getGiftOfCooldown());
 	msg.add<uint32_t>(getGiftOfLifeTotalCooldown());
 	// Checking if the cooldown if decreasing or it's stopped
-	if (m_player.getZoneType() != ZoneType_t::ZONE_PROTECTION && m_player.hasCondition(ConditionType_t::CONDITION_INFIGHT)) {
+	if (m_player.getZoneType() != ZoneType::Protection && m_player.hasCondition(ConditionType::InFight)) {
 		msg.addByte(0x01);
 	} else {
 		msg.addByte(0x00);
@@ -1252,7 +1252,7 @@ uint8_t PlayerWheel::getOptions(uint32_t ownerId) const {
 	}
 
 	// Check if is in the temple range (we assume the temple is within the range of 10 sqms)
-	if (m_player.getZoneType() == ZoneType_t::ZONE_PROTECTION) {
+	if (m_player.getZoneType() == ZoneType::Protection) {
 		for (auto [townid, town] : g_game().map.towns.getTowns()) {
 			if (Position::areInRange<1, 10>(town->getTemplePosition(), m_player.getPosition())) {
 				return 1;
@@ -1325,14 +1325,14 @@ void PlayerWheel::initializePlayerData() {
 	loadPlayerBonusData();
 }
 
-void PlayerWheel::setPlayerCombatStats(CombatType_t type, int32_t leechAmount) {
-	if (type == CombatType_t::COMBAT_LIFEDRAIN) {
+void PlayerWheel::setPlayerCombatStats(CombatType type, int32_t leechAmount) {
+	if (type == CombatType::LifeDrain) {
 		if (leechAmount > 0) {
 			addStat(WheelStat_t::LIFE_LEECH, leechAmount);
 		} else {
 			addStat(WheelStat_t::LIFE_LEECH, 0);
 		}
-	} else if (type == CombatType_t::COMBAT_MANADRAIN) {
+	} else if (type == CombatType::ManaDrain) {
 		if (leechAmount > 0) {
 			addStat(WheelStat_t::MANA_LEECH, leechAmount);
 		} else {
@@ -1400,8 +1400,8 @@ void PlayerWheel::registerPlayerBonusData() {
 	addStat(WheelStat_t::MAGIC, m_playerBonusData.skills.magic);
 
 	// Leech
-	setPlayerCombatStats(CombatType_t::COMBAT_LIFEDRAIN, m_playerBonusData.leech.lifeLeech * 100);
-	setPlayerCombatStats(CombatType_t::COMBAT_MANADRAIN, m_playerBonusData.leech.manaLeech * 100);
+	setPlayerCombatStats(CombatType::LifeDrain, m_playerBonusData.leech.lifeLeech * 100);
+	setPlayerCombatStats(CombatType::ManaDrain, m_playerBonusData.leech.manaLeech * 100);
 
 	// Instant
 	setSpellInstant("Battle Instinct", m_playerBonusData.instant.battleInstinct);
@@ -2226,7 +2226,7 @@ void PlayerWheel::checkGiftOfLife() {
 	// Healing
 	CombatDamage giftDamage;
 	giftDamage.primary.value = (m_player.getMaxHealth() * getGiftOfLifeValue()) / 100;
-	giftDamage.primary.type = CombatType_t::COMBAT_HEALING;
+	giftDamage.primary.type = CombatType::Healing;
 	m_player.sendTextMessage(MESSAGE_EVENT_ADVANCE, "That was close! Fortunately, your were saved by the Gift of Life.");
 	g_game().addMagicEffect(m_player.getPosition(), CONST_ME_WATER_DROP);
 	g_game().combatChangeHealth(m_player.getPlayer(), m_player.getPlayer(), giftDamage);
@@ -2330,7 +2330,7 @@ int32_t PlayerWheel::checkDrainBodyLeech(std::shared_ptr<Creature> target, skill
 	}
 
 	uint8_t stage = target->getWheelOfDestinyDrainBodyDebuff();
-	if (target->getBuff(Buffs_t::BUFF_DAMAGERECEIVED) > 100 && skill == SKILL_MANA_LEECH_AMOUNT) {
+	if (target->getBuff(Buffs_t::DamageReceived) > 100 && skill == SKILL_MANA_LEECH_AMOUNT) {
 		int32_t manaLeechSkill = 0;
 		if (stage >= 3) {
 			manaLeechSkill = 400;
@@ -2342,7 +2342,7 @@ int32_t PlayerWheel::checkDrainBodyLeech(std::shared_ptr<Creature> target, skill
 		return manaLeechSkill;
 	}
 
-	if (target->getBuff(Buffs_t::BUFF_DAMAGEDEALT) < 100 && skill == SKILL_LIFE_LEECH_AMOUNT) {
+	if (target->getBuff(Buffs_t::DamageDealt) < 100 && skill == SKILL_LIFE_LEECH_AMOUNT) {
 		int32_t lifeLeechSkill = 0;
 		if (stage >= 3) {
 			lifeLeechSkill = 500;
@@ -2416,11 +2416,11 @@ int32_t PlayerWheel::checkFocusMasteryDamage() {
 	}
 	return 0;
 }
-int32_t PlayerWheel::checkElementSensitiveReduction(CombatType_t type) const {
+int32_t PlayerWheel::checkElementSensitiveReduction(CombatType type) const {
 	int32_t rt = 0;
-	if (type == CombatType_t::COMBAT_PHYSICALDAMAGE) {
+	if (type == CombatType::PhysicalDamage) {
 		rt += getMajorStatConditional("Ballistic Mastery", WheelMajor_t::PHYSICAL_DMG);
-	} else if (type == CombatType_t::COMBAT_HOLYDAMAGE) {
+	} else if (type == CombatType::HolyDamage) {
 		rt += getMajorStatConditional("Ballistic Mastery", WheelMajor_t::HOLY_DMG);
 	}
 	return rt;
@@ -2433,7 +2433,7 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 	if (getGiftOfCooldown() > 0 /*getInstant("Gift of Life")*/ && getOnThinkTimer(WheelOnThink_t::GIFT_OF_LIFE) <= OTSYS_TIME()) {
 		decreaseGiftOfCooldown(1);
 	}
-	if (!m_player.hasCondition(ConditionType_t::CONDITION_INFIGHT) || m_player.getZoneType() == ZoneType_t::ZONE_PROTECTION || (!getInstant("Battle Instinct") && !getInstant("Positional Tatics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Combat Mastery") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
+	if (!m_player.hasCondition(ConditionType::InFight) || m_player.getZoneType() == ZoneType::Protection || (!getInstant("Battle Instinct") && !getInstant("Positional Tatics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Combat Mastery") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
 		bool mustReset = false;
 		for (int i = 0; i < static_cast<int>(WheelMajor_t::TOTAL_COUNT); i++) {
 			if (getMajorStat(static_cast<WheelMajor_t>(i)) != 0) {
@@ -2482,7 +2482,7 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 
 void PlayerWheel::reduceAllSpellsCooldownTimer(int32_t value) {
 	for (const auto &condition : m_player.conditions) {
-		if (condition->getType() != ConditionType_t::CONDITION_SPELLCOOLDOWN) {
+		if (condition->getType() != ConditionType::SpellCooldown) {
 			continue;
 		}
 
@@ -2618,7 +2618,7 @@ void PlayerWheel::addStat(WheelStat_t type, int32_t value) {
 	m_stats[enumValue] += value;
 }
 
-void PlayerWheel::addResistance(CombatType_t type, int32_t value) {
+void PlayerWheel::addResistance(CombatType type, int32_t value) {
 	auto index = enumToValue(type);
 	if (index >= static_cast<uint8_t>(WheelStat_t::TOTAL_COUNT)) {
 		g_logger().error("[{}]. Type {} is out of range, value {}. Error message: {}", __FUNCTION__, index, value, "Enum value is out of range");
@@ -2740,7 +2740,7 @@ void PlayerWheel::setSpellInstant(const std::string &name, bool value) {
 }
 
 void PlayerWheel::resetResistance() {
-	for (int32_t i = 0; i < COMBAT_COUNT; i++) {
+	for (int32_t i = 0; i < combatToValue(CombatType::Count); i++) {
 		m_resistance[i] = 0;
 	}
 }
@@ -2838,7 +2838,7 @@ int32_t PlayerWheel::getStat(WheelStat_t type) const {
 	return 0;
 }
 
-int32_t PlayerWheel::getResistance(CombatType_t combatType) const {
+int32_t PlayerWheel::getResistance(CombatType combatType) const {
 	try {
 		return m_resistance.at(combatToValue(combatType));
 	} catch (const std::out_of_range &e) {
@@ -3040,12 +3040,12 @@ void PlayerWheel::healIfBattleHealingActive() const {
 	if (getInstant("Battle Healing")) {
 		CombatDamage damage;
 		damage.primary.value = checkBattleHealingAmount();
-		damage.primary.type = CombatType_t::COMBAT_HEALING;
+		damage.primary.type = CombatType::Healing;
 		g_game().combatChangeHealth(m_player.getPlayer(), m_player.getPlayer(), damage);
 	}
 }
 
-void PlayerWheel::adjustDamageBasedOnResistanceAndSkill(int32_t &damage, CombatType_t combatType) const {
+void PlayerWheel::adjustDamageBasedOnResistanceAndSkill(int32_t &damage, CombatType combatType) const {
 	int32_t wheelOfDestinyElementAbsorb = getResistance(combatType);
 	if (wheelOfDestinyElementAbsorb > 0) {
 		damage -= std::ceil((damage * wheelOfDestinyElementAbsorb) / 10000.);

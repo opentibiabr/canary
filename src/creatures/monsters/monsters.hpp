@@ -70,9 +70,9 @@ class MonsterType {
 	struct MonsterInfo {
 		LuaScriptInterface* scriptInterface;
 
-		std::map<CombatType_t, int32_t> elementMap;
-		std::map<CombatType_t, int32_t> reflectMap;
-		std::map<CombatType_t, int32_t> healingMap;
+		std::map<CombatType, int32_t> elementMap;
+		std::map<CombatType, int32_t> reflectMap;
+		std::map<CombatType, int32_t> healingMap;
 
 		std::vector<voiceBlock_t> voiceVector;
 
@@ -83,9 +83,9 @@ class MonsterType {
 		std::vector<spellBlock_t> defenseSpells;
 		std::vector<summonBlock_t> summons;
 
-		Skulls_t skull = Skulls_t::SKULL_NONE;
+		Skull_t skull = Skull_t::None;
 		Outfit_t outfit = {};
-		RaceType_t race = RaceType_t::RACE_BLOOD;
+		RaceType race = RaceType::Blood;
 		RespawnType respawnType = {};
 
 		LightInfo light = {};
@@ -101,8 +101,8 @@ class MonsterType {
 		uint32_t maxSummons = 0;
 		uint32_t changeTargetSpeed = 0;
 
-		std::bitset<CONDITION_COUNT> m_conditionImmunities;
-		std::bitset<COMBAT_COUNT> m_damageImmunities;
+		std::bitset<conditionToValue(ConditionType::Count)> m_conditionImmunities;
+		std::bitset<combatToValue(CombatType::Count)> m_damageImmunities;
 
 		// Bestiary
 		uint8_t bestiaryOccurrence = 0;
@@ -147,7 +147,7 @@ class MonsterType {
 		bool targetPreferPlayer = false;
 		bool targetPreferMaster = false;
 
-		Faction_t faction = Faction_t::FACTION_DEFAULT;
+		Faction_t faction = Faction_t::Default;
 		stdext::vector_set<Faction_t> enemyFactions;
 
 		bool canPushItems = false;
@@ -252,8 +252,8 @@ public:
 
 	ShootType_t shoot = CONST_ANI_NONE;
 	MagicEffectClasses effect = CONST_ME_NONE;
-	ConditionType_t conditionType = ConditionType_t::CONDITION_NONE;
-	CombatType_t combatType = CombatType_t::COMBAT_UNDEFINEDDAMAGE;
+	ConditionType conditionType = ConditionType::None;
+	CombatType combatType = CombatType::UndefinedDamage;
 
 	SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
 	SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;
@@ -283,7 +283,7 @@ public:
 	std::map<std::string, std::shared_ptr<MonsterType>> monsters;
 
 private:
-	std::shared_ptr<ConditionDamage> getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval);
+	std::shared_ptr<ConditionDamage> getDamageCondition(ConditionType conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval);
 };
 
 constexpr auto g_monsters = Monsters::getInstance;

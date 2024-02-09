@@ -113,9 +113,9 @@ public:
 	/**
 	 * @brief Get the type of the Creature.
 	 * @note This function returns the type of the creature
-	 * @return An unsigned 8-bit integer representing the creature type, see CreatureType_t enum for possible types.
+	 * @return An unsigned 8-bit integer representing the creature type, see CreatureType enum for possible types.
 	 */
-	virtual CreatureType_t getType() const = 0;
+	virtual CreatureType getType() const = 0;
 
 	virtual void setID() = 0;
 	void setRemoved() {
@@ -131,16 +131,16 @@ public:
 	virtual bool canSee(const Position &pos);
 	virtual bool canSeeCreature(std::shared_ptr<Creature> creature) const;
 
-	virtual RaceType_t getRace() const {
-		return RaceType_t::RACE_NONE;
+	virtual RaceType getRace() const {
+		return RaceType::None;
 	}
-	virtual Skulls_t getSkull() const {
+	virtual Skull_t getSkull() const {
 		return skull;
 	}
-	virtual Skulls_t getSkullClient(std::shared_ptr<Creature> creature) {
+	virtual Skull_t getSkullClient(std::shared_ptr<Creature> creature) {
 		return creature->getSkull();
 	}
-	void setSkull(Skulls_t newSkull);
+	void setSkull(Skull_t newSkull);
 	Direction getDirection() const {
 		return direction;
 	}
@@ -266,7 +266,7 @@ public:
 		return defaultOutfit;
 	}
 	bool isInvisible() const;
-	ZoneType_t getZoneType();
+	ZoneType getZoneType();
 
 	std::unordered_set<std::shared_ptr<Zone>> getZones();
 
@@ -312,13 +312,13 @@ public:
 	 *
 	 * @param creature Reference to the creature that is receiving the damage.
 	 * @param combatType Type of combat that is inflicting the damage. Note that mana drain and life drain are not mitigated.
-	 * @param blockType Reference to the block type, which may be modified to BlockType_t::BLOCK_ARMOR if the damage is reduced to 0.
+	 * @param blockType Reference to the block type, which may be modified to BlockType::Armor if the damage is reduced to 0.
 	 * @param damage Reference to the amount of damage inflicted, which will be reduced by the creature's mitigation factor.
 	 */
-	void mitigateDamage(const CombatType_t &combatType, BlockType_t &blockType, int32_t &damage) const;
-	virtual BlockType_t blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false);
+	void mitigateDamage(const CombatType &combatType, BlockType &blockType, int32_t &damage) const;
+	virtual BlockType blockHit(std::shared_ptr<Creature> attacker, CombatType combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false);
 
-	void applyAbsorbDamageModifications(std::shared_ptr<Creature> attacker, int32_t &damage, CombatType_t combatType) const;
+	void applyAbsorbDamageModifications(std::shared_ptr<Creature> attacker, int32_t &damage, CombatType combatType) const;
 
 	bool setMaster(std::shared_ptr<Creature> newMaster, bool reloadCreature = false);
 
@@ -363,27 +363,27 @@ public:
 	}
 
 	virtual SpeechBubble_t getSpeechBubble() const {
-		return SpeechBubble_t::SPEECHBUBBLE_NONE;
+		return SpeechBubble_t::None;
 	}
 
 	bool addCondition(std::shared_ptr<Condition> condition, bool attackerPlayer = false);
 	bool addCombatCondition(std::shared_ptr<Condition> condition, bool attackerPlayer = false);
-	void removeCondition(ConditionType_t conditionType, ConditionId_t conditionId, bool force = false);
-	void removeCondition(ConditionType_t conditionType);
+	void removeCondition(ConditionType conditionType, ConditionId_t conditionId, bool force = false);
+	void removeCondition(ConditionType conditionType);
 	void removeCondition(std::shared_ptr<Condition> condition);
-	void removeCombatCondition(ConditionType_t conditionType);
-	std::shared_ptr<Condition> getCondition(ConditionType_t conditionType) const;
-	std::shared_ptr<Condition> getCondition(ConditionType_t conditionType, ConditionId_t conditionId, uint32_t subId = 0) const;
+	void removeCombatCondition(ConditionType conditionType);
+	std::shared_ptr<Condition> getCondition(ConditionType conditionType) const;
+	std::shared_ptr<Condition> getCondition(ConditionType conditionType, ConditionId_t conditionId, uint32_t subId = 0) const;
 	void executeConditions(uint32_t interval);
-	bool hasCondition(ConditionType_t conditionType, uint32_t subId = 0) const;
+	bool hasCondition(ConditionType conditionType, uint32_t subId = 0) const;
 
-	virtual bool isConditionImmune(ConditionType_t conditionType) const {
+	virtual bool isConditionImmune(ConditionType conditionType) const {
 		return false;
 	}
-	virtual bool isCombatImmune(CombatType_t combatType) const {
+	virtual bool isCombatImmune(CombatType combatType) const {
 		return false;
 	}
-	virtual bool isSuppress(ConditionType_t conditionType, bool attackerPlayer) const {
+	virtual bool isSuppress(ConditionType conditionType, bool attackerPlayer) const {
 		return false;
 	};
 
@@ -391,7 +391,7 @@ public:
 		return true;
 	}
 	virtual Faction_t getFaction() const {
-		return Faction_t::FACTION_DEFAULT;
+		return Faction_t::Default;
 	}
 
 	virtual void changeHealth(int32_t healthChange, bool sendHealthChange = true);
@@ -411,10 +411,10 @@ public:
 	bool hasBeenAttacked(uint32_t attackerId);
 
 	// combat event functions
-	virtual void onAddCondition(ConditionType_t conditionType);
-	virtual void onAddCombatCondition(ConditionType_t conditionType);
-	virtual void onEndCondition(ConditionType_t conditionType);
-	void onTickCondition(ConditionType_t conditionType, bool &bRemove);
+	virtual void onAddCondition(ConditionType conditionType);
+	virtual void onAddCombatCondition(ConditionType conditionType);
+	virtual void onEndCondition(ConditionType conditionType);
+	void onTickCondition(ConditionType conditionType, bool &bRemove);
 	virtual void onCombatRemoveCondition(std::shared_ptr<Condition> condition);
 	virtual void onAttackedCreature(std::shared_ptr<Creature>) { }
 	virtual void onAttacked();
@@ -432,11 +432,11 @@ public:
 		return false;
 	};
 	virtual void onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target);
-	virtual void onAttackedCreatureBlockHit(BlockType_t) { }
+	virtual void onAttackedCreatureBlockHit(BlockType) { }
 	virtual void onBlockHit() { }
 	virtual void onTakeDamage(std::shared_ptr<Creature>, int32_t) { }
-	virtual void onChangeZone(ZoneType_t zone);
-	virtual void onAttackedCreatureChangeZone(ZoneType_t zone);
+	virtual void onChangeZone(ZoneType zone);
+	virtual void onAttackedCreatureChangeZone(ZoneType zone);
 	virtual void onIdleStatus();
 
 	virtual LightInfo getCreatureLight() const;
@@ -474,10 +474,10 @@ public:
 	/**
 	 * @brief Creature say function to send a message to the creature
 	 * @param Creature as the target
-	 * @param creatureSayType as SpeakClasses enum
+	 * @param creatureSayType as TalkType enum
 	 * @param text as the message to send
 	 */
-	virtual void onCreatureSay(std::shared_ptr<Creature>, SpeakClasses creatureSayType, const std::string &text) { }
+	virtual void onCreatureSay(std::shared_ptr<Creature>, TalkType creatureSayType, const std::string &text) { }
 
 	virtual void onPlacedCreature() { }
 
@@ -564,7 +564,7 @@ public:
 	 * @param useCharges Indicates whether charges should be considered.
 	 * @return The reflection percentage for the specified combat type.
 	 */
-	virtual int32_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const;
+	virtual int32_t getReflectPercent(CombatType combatType, bool useCharges = false) const;
 
 	/**
 	 * @brief Retrieves the flat reflection value for a given combat type.
@@ -573,7 +573,7 @@ public:
 	 * @param useCharges Indicates whether charges should be considered.
 	 * @return The flat reflection value for the specified combat type.
 	 */
-	virtual int32_t getReflectFlat(CombatType_t combatType, bool useCharges = false) const;
+	virtual int32_t getReflectFlat(CombatType combatType, bool useCharges = false) const;
 
 	/**
 	 * @brief Sets the reflection percentage for a given combat type.
@@ -581,7 +581,7 @@ public:
 	 * @param combatType The combat type.
 	 * @param value The reflection percentage value.
 	 */
-	virtual void setReflectPercent(CombatType_t combatType, int32_t value);
+	virtual void setReflectPercent(CombatType combatType, int32_t value);
 
 	/**
 	 * @brief Sets the flat reflection value for a given combat type.
@@ -589,7 +589,7 @@ public:
 	 * @param combatType The combat type.
 	 * @param value The flat reflection value.
 	 */
-	virtual void setReflectFlat(CombatType_t combatType, int32_t value);
+	virtual void setReflectFlat(CombatType combatType, int32_t value);
 
 	/**
 	 * @brief Retrieves the flat absorption value for a given combat type.
@@ -597,7 +597,7 @@ public:
 	 * @param combatType The combat type.
 	 * @return The flat absorption value for the specified combat type.
 	 */
-	int32_t getAbsorbFlat(CombatType_t combatType) const;
+	int32_t getAbsorbFlat(CombatType combatType) const;
 
 	/**
 	 * @brief Sets the flat absorption value for a given combat type.
@@ -605,7 +605,7 @@ public:
 	 * @param combatType The combat type.
 	 * @param value The flat absorption value.
 	 */
-	void setAbsorbFlat(CombatType_t combatType, int32_t value);
+	void setAbsorbFlat(CombatType combatType, int32_t value);
 
 	/**
 	 * @brief Retrieves the absorption percentage for a given combat type.
@@ -613,7 +613,7 @@ public:
 	 * @param combatType The combat type.
 	 * @return The absorption percentage for the specified combat type.
 	 */
-	int32_t getAbsorbPercent(CombatType_t combatType) const;
+	int32_t getAbsorbPercent(CombatType combatType) const;
 
 	/**
 	 * @brief Sets the absorption percentage for a given combat type.
@@ -621,7 +621,7 @@ public:
 	 * @param combatType The combat type.
 	 * @param value The absorption percentage value.
 	 */
-	void setAbsorbPercent(CombatType_t combatType, int32_t value);
+	void setAbsorbPercent(CombatType combatType, int32_t value);
 
 	/**
 	 * @brief Retrieves the increase percentage for a given combat type.
@@ -629,7 +629,7 @@ public:
 	 * @param combatType The combat type.
 	 * @return The increase percentage for the specified combat type.
 	 */
-	int32_t getIncreasePercent(CombatType_t combatType) const;
+	int32_t getIncreasePercent(CombatType combatType) const;
 
 	/**
 	 * @brief Sets the increase percentage for a given combat type.
@@ -637,7 +637,7 @@ public:
 	 * @param combat The combat type.
 	 * @param value The increase percentage value.
 	 */
-	void setIncreasePercent(CombatType_t combatType, int32_t value);
+	void setIncreasePercent(CombatType combatType, int32_t value);
 
 	/**
 	 * @brief Retrieves the charm percent modifier for the creature.
@@ -709,14 +709,14 @@ protected:
 
 	uint16_t manaShield = 0;
 	uint16_t maxManaShield = 0;
-	int32_t varBuffs[BUFF_LAST + 1] = { 100, 100, 100 };
+	int32_t varBuffs[buffToValue(Buffs_t::Last) + 1] = { 100, 100, 100 };
 
-	std::array<int32_t, COMBAT_COUNT> reflectPercent = { 0 };
-	std::array<int32_t, COMBAT_COUNT> reflectFlat = { 0 };
+	std::array<int32_t, combatToValue(CombatType::Count)> reflectPercent = { 0 };
+	std::array<int32_t, combatToValue(CombatType::Count)> reflectFlat = { 0 };
 
-	std::array<int32_t, COMBAT_COUNT> absorbPercent = { 0 };
-	std::array<int32_t, COMBAT_COUNT> increasePercent = { 0 };
-	std::array<int32_t, COMBAT_COUNT> absorbFlat = { 0 };
+	std::array<int32_t, combatToValue(CombatType::Count)> absorbPercent = { 0 };
+	std::array<int32_t, combatToValue(CombatType::Count)> increasePercent = { 0 };
+	std::array<int32_t, combatToValue(CombatType::Count)> absorbFlat = { 0 };
 
 	Outfit_t currentOutfit;
 	Outfit_t defaultOutfit;
@@ -725,7 +725,7 @@ protected:
 	LightInfo internalLight;
 
 	Direction direction = Direction::SOUTH;
-	Skulls_t skull = Skulls_t::SKULL_NONE;
+	Skull_t skull = Skull_t::None;
 
 	bool localMapCache[mapWalkHeight][mapWalkWidth] = { { false } };
 	bool isInternalRemoved = false;
@@ -753,10 +753,10 @@ protected:
 	std::map<std::string, CreatureIcon> creatureIcons = {};
 
 	// creature script events
-	bool hasEventRegistered(CreatureEventType_t event) const {
+	bool hasEventRegistered(CreatureEventType event) const {
 		return (0 != (scriptEventsBitField & (static_cast<uint32_t>(1) << eventToValue(event))));
 	}
-	CreatureEventList getCreatureEvents(CreatureEventType_t creatureEventType);
+	CreatureEventList getCreatureEvents(CreatureEventType creatureEventType);
 
 	void updateMapCache();
 	void updateTileCache(std::shared_ptr<Tile> tile, int32_t dx, int32_t dy);

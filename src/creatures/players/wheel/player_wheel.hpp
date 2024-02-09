@@ -156,7 +156,7 @@ public:
 
 	void resetPlayerBonusData();
 
-	void setPlayerCombatStats(CombatType_t type, int32_t leechAmount);
+	void setPlayerCombatStats(CombatType type, int32_t leechAmount);
 
 	void reloadPlayerData();
 
@@ -239,7 +239,7 @@ public:
 	int32_t checkDivineGrenade(std::shared_ptr<Creature> target) const;
 	int32_t checkAvatarSkill(WheelAvatarSkill_t skill) const;
 	int32_t checkFocusMasteryDamage();
-	int32_t checkElementSensitiveReduction(CombatType_t type) const;
+	int32_t checkElementSensitiveReduction(CombatType type) const;
 	// Wheel of destiny - General functions:
 	void reduceAllSpellsCooldownTimer(int32_t value);
 	void resetUpgradedSpells();
@@ -305,7 +305,7 @@ public:
 	 * @param type The type of the resistance to set.
 	 * @param value The value to set for the resistance.
 	 */
-	void addResistance(CombatType_t type, int32_t value);
+	void addResistance(CombatType type, int32_t value);
 
 	/**
 	 * @brief Sets the value of a specific instant in the Wheel of Destiny based on its spell name.
@@ -328,7 +328,7 @@ public:
 	WheelSpellGrade_t getSpellUpgrade(const std::string &name) const;
 	int32_t getMajorStat(WheelMajor_t type) const;
 	int32_t getStat(WheelStat_t type) const;
-	int32_t getResistance(CombatType_t) const;
+	int32_t getResistance(CombatType) const;
 	int32_t getMajorStatConditional(const std::string &instant, WheelMajor_t major) const;
 	int64_t getOnThinkTimer(WheelOnThink_t type) const;
 	bool getInstant(const std::string name) const;
@@ -380,7 +380,7 @@ public:
 	 * @param damage The incoming damage, which will be adjusted within this function.
 	 * @param combatType The type of combat or damage to be resisted.
 	 */
-	void adjustDamageBasedOnResistanceAndSkill(int32_t &damage, CombatType_t combatType) const;
+	void adjustDamageBasedOnResistanceAndSkill(int32_t &damage, CombatType combatType) const;
 
 	/**
 	 * @brief Calculate and return all values required for the mitigation calculation.
@@ -471,7 +471,7 @@ private:
 	std::array<int32_t, static_cast<size_t>(WheelStat_t::TOTAL_COUNT)> m_stats = { 0 };
 	std::array<int32_t, static_cast<size_t>(WheelMajor_t::TOTAL_COUNT)> m_majorStats = { 0 };
 	std::array<bool, static_cast<size_t>(WheelInstant_t::TOTAL_COUNT)> m_instant = { false };
-	std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
+	std::array<int32_t, combatToValue(CombatType::Count)> m_resistance = { 0 };
 
 	int32_t m_creaturesNearby = 0;
 	std::map<std::string, WheelSpellGrade_t> m_spellsSelected;

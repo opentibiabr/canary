@@ -251,11 +251,11 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 
 		query << "`skulltime` = " << skullTime << ",";
 
-		Skulls_t skull = Skulls_t::SKULL_NONE;
-		if (player->skull == Skulls_t::SKULL_RED) {
-			skull = Skulls_t::SKULL_RED;
-		} else if (player->skull == Skulls_t::SKULL_BLACK) {
-			skull = Skulls_t::SKULL_BLACK;
+		Skull_t skull = Skull_t::None;
+		if (player->skull == Skull_t::Red) {
+			skull = Skull_t::Red;
+		} else if (player->skull == Skull_t::Black) {
+			skull = Skull_t::Black;
 		}
 		query << "`skull` = " << static_cast<int64_t>(skull) << ",";
 	}

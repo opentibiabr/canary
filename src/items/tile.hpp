@@ -185,17 +185,17 @@ public:
 		return zones;
 	}
 
-	ZoneType_t getZoneType() const {
+	ZoneType getZoneType() const {
 		if (hasFlag(TILESTATE_PROTECTIONZONE)) {
-			return ZoneType_t::ZONE_PROTECTION;
+			return ZoneType::Protection;
 		} else if (hasFlag(TILESTATE_NOPVPZONE)) {
-			return ZoneType_t::ZONE_NOPVP;
+			return ZoneType::NoPvp;
 		} else if (hasFlag(TILESTATE_PVPZONE)) {
-			return ZoneType_t::ZONE_PVP;
+			return ZoneType::Pvp;
 		} else if (hasFlag(TILESTATE_NOLOGOUT)) {
-			return ZoneType_t::ZONE_NOLOGOUT;
+			return ZoneType::NoLogout;
 		}
-		return ZoneType_t::ZONE_NORMAL;
+		return ZoneType::Normal;
 	}
 
 	bool hasHeight(uint32_t n) const;

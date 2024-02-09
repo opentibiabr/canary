@@ -20,7 +20,7 @@ void CreatureEvents::clear() {
 }
 
 bool CreatureEvents::registerLuaEvent(const std::shared_ptr<CreatureEvent> creatureEvent) {
-	if (creatureEvent->getEventType() == CreatureEventType_t::CREATURE_EVENT_NONE) {
+	if (creatureEvent->getEventType() == CreatureEventType::None) {
 		g_logger().error(
 			"[{}] - Trying to register event without type for script: {}",
 			__FUNCTION__,
@@ -58,7 +58,7 @@ std::shared_ptr<CreatureEvent> CreatureEvents::getEventByName(const std::string 
 bool CreatureEvents::playerLogin(std::shared_ptr<Player> player) const {
 	// fire global event if is registered
 	for (const auto &it : creatureEvents) {
-		if (it.second->getEventType() == CreatureEventType_t::CREATURE_EVENT_LOGIN) {
+		if (it.second->getEventType() == CreatureEventType::Login) {
 			if (!it.second->executeOnLogin(player)) {
 				return false;
 			}
@@ -70,7 +70,7 @@ bool CreatureEvents::playerLogin(std::shared_ptr<Player> player) const {
 bool CreatureEvents::playerLogout(std::shared_ptr<Player> player) const {
 	// fire global event if is registered
 	for (const auto &it : creatureEvents) {
-		if (it.second->getEventType() == CreatureEventType_t::CREATURE_EVENT_LOGOUT) {
+		if (it.second->getEventType() == CreatureEventType::Logout) {
 			if (!it.second->executeOnLogout(player)) {
 				return false;
 			}
@@ -86,7 +86,7 @@ bool CreatureEvents::playerAdvance(
 	uint32_t newLevel
 ) const {
 	for ([[maybe_unused]] const auto &[eventName, eventPtr] : creatureEvents) {
-		if (eventPtr->getEventType() == CreatureEventType_t::CREATURE_EVENT_ADVANCE) {
+		if (eventPtr->getEventType() == CreatureEventType::Advance) {
 			if (!eventPtr->executeAdvance(player, skill, oldLevel, newLevel)) {
 				return false;
 			}
@@ -115,43 +115,43 @@ void CreatureEvents::removeInvalidEvents() {
 std::string CreatureEvent::getScriptTypeName() const {
 	// Depending on the type script event name is different
 	switch (type) {
-		case CreatureEventType_t::CREATURE_EVENT_LOGIN:
+		case CreatureEventType::Login:
 			return "onLogin";
 
-		case CreatureEventType_t::CREATURE_EVENT_LOGOUT:
+		case CreatureEventType::Logout:
 			return "onLogout";
 
-		case CreatureEventType_t::CREATURE_EVENT_THINK:
+		case CreatureEventType::Think:
 			return "onThink";
 
-		case CreatureEventType_t::CREATURE_EVENT_PREPAREDEATH:
+		case CreatureEventType::PrepareDeath:
 			return "onPrepareDeath";
 
-		case CreatureEventType_t::CREATURE_EVENT_DEATH:
+		case CreatureEventType::Death:
 			return "onDeath";
 
-		case CreatureEventType_t::CREATURE_EVENT_KILL:
+		case CreatureEventType::Kill:
 			return "onKill";
 
-		case CreatureEventType_t::CREATURE_EVENT_ADVANCE:
+		case CreatureEventType::Advance:
 			return "onAdvance";
 
-		case CreatureEventType_t::CREATURE_EVENT_MODALWINDOW:
+		case CreatureEventType::ModalWindow:
 			return "onModalWindow";
 
-		case CreatureEventType_t::CREATURE_EVENT_TEXTEDIT:
+		case CreatureEventType::TextEdit:
 			return "onTextEdit";
 
-		case CreatureEventType_t::CREATURE_EVENT_HEALTHCHANGE:
+		case CreatureEventType::HealthChange:
 			return "onHealthChange";
 
-		case CreatureEventType_t::CREATURE_EVENT_MANACHANGE:
+		case CreatureEventType::ManaChange:
 			return "onManaChange";
 
-		case CreatureEventType_t::CREATURE_EVENT_EXTENDED_OPCODE:
+		case CreatureEventType::ExtendedOpcode:
 			return "onExtendedOpcode";
 
-		case CreatureEventType_t::CREATURE_EVENT_NONE:
+		case CreatureEventType::None:
 		default:
 			return std::string();
 	}
@@ -436,12 +436,12 @@ void CreatureEvent::executeHealthChange(std::shared_ptr<Creature> creature, std:
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
 		damage.primary.value = std::abs(LuaScriptInterface::getNumber<int32_t>(L, -4));
-		damage.primary.type = LuaScriptInterface::getNumber<CombatType_t>(L, -3);
+		damage.primary.type = LuaScriptInterface::getNumber<CombatType>(L, -3);
 		damage.secondary.value = std::abs(LuaScriptInterface::getNumber<int32_t>(L, -2));
-		damage.secondary.type = LuaScriptInterface::getNumber<CombatType_t>(L, -1);
+		damage.secondary.type = LuaScriptInterface::getNumber<CombatType>(L, -1);
 
 		lua_pop(L, 4);
-		if (damage.primary.type != CombatType_t::COMBAT_HEALING) {
+		if (damage.primary.type != CombatType::Healing) {
 			damage.primary.value = -damage.primary.value;
 			damage.secondary.value = -damage.secondary.value;
 		}
@@ -481,9 +481,9 @@ void CreatureEvent::executeManaChange(std::shared_ptr<Creature> creature, std::s
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
 		damage.primary.value = LuaScriptInterface::getNumber<int32_t>(L, -4);
-		damage.primary.type = LuaScriptInterface::getNumber<CombatType_t>(L, -3);
+		damage.primary.type = LuaScriptInterface::getNumber<CombatType>(L, -3);
 		damage.secondary.value = LuaScriptInterface::getNumber<int32_t>(L, -2);
-		damage.secondary.type = LuaScriptInterface::getNumber<CombatType_t>(L, -1);
+		damage.secondary.type = LuaScriptInterface::getNumber<CombatType>(L, -1);
 		lua_pop(L, 4);
 	}
 

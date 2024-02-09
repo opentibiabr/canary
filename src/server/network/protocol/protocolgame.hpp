@@ -234,7 +234,7 @@ private:
 	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
 
 	// Send functions
-	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);
+	void sendChannelMessage(const std::string &author, const std::string &text, TalkType type, uint16_t channel);
 	void sendChannelEvent(uint16_t channelId, const std::string &playerName, ChannelEvent_t channelEvent);
 	void sendClosePrivate(uint16_t channelId);
 	void sendCreatePrivateChannel(uint16_t channelId, const std::string &channelName);
@@ -242,8 +242,8 @@ private:
 	void sendChannel(uint16_t channelId, const std::string &channelName, const UsersMap* channelUsers, const InvitedMap* invitedUsers);
 	void sendOpenPrivateChannel(const std::string &receiver);
 	void sendExperienceTracker(int64_t rawExp, int64_t finalExp);
-	void sendToChannel(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, uint16_t channelId);
-	void sendPrivateMessage(std::shared_ptr<Player> speaker, SpeakClasses type, const std::string &text);
+	void sendToChannel(std::shared_ptr<Creature> creature, TalkType type, const std::string &text, uint16_t channelId);
+	void sendPrivateMessage(std::shared_ptr<Player> speaker, TalkType type, const std::string &text);
 	void sendIcons(uint32_t icons);
 	void sendFYIBox(const std::string &message);
 
@@ -300,7 +300,7 @@ private:
 	void sendPing();
 	void sendPingBack();
 	void sendCreatureTurn(std::shared_ptr<Creature> creature, uint32_t stackpos);
-	void sendCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, const Position* pos = nullptr);
+	void sendCreatureSay(std::shared_ptr<Creature> creature, TalkType type, const std::string &text, const Position* pos = nullptr);
 
 	// Unjust Panel
 	void sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration);
@@ -335,7 +335,7 @@ private:
 	void sendCreatureShield(std::shared_ptr<Creature> creature);
 	void sendCreatureEmblem(std::shared_ptr<Creature> creature);
 	void sendCreatureSkull(std::shared_ptr<Creature> creature);
-	void sendCreatureType(std::shared_ptr<Creature> creature, CreatureType_t creatureType);
+	void sendCreatureType(std::shared_ptr<Creature> creature, CreatureType creatureType);
 
 	void sendShop(std::shared_ptr<Npc> npc);
 	void sendCloseShop();
@@ -422,8 +422,8 @@ private:
 	// analyzers
 	void sendKillTrackerUpdate(std::shared_ptr<Container> corpse, const std::string &name, const Outfit_t creatureOutfit);
 	void sendUpdateSupplyTracker(std::shared_ptr<Item> item);
-	void sendUpdateImpactTracker(CombatType_t type, int32_t amount);
-	void sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, std::string target);
+	void sendUpdateImpactTracker(CombatType type, int32_t amount);
+	void sendUpdateInputAnalyzer(CombatType type, int32_t amount, std::string target);
 
 	// Hotkey equip/dequip item
 	void parseHotkeyEquip(NetworkMessage &msg);

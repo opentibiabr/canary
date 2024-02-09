@@ -30,115 +30,115 @@ void GemModifierSpellBonusStrategy::execute() {
 void WheelModifierContext::addStrategies(WheelGemBasicModifier_t modifier) {
 	switch (modifier) {
 		case WheelGemBasicModifier_t::General_PhysicalResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_PHYSICALDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::PhysicalDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::General_HolyResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_HOLYDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::HolyDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::General_DeathResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_DEATHDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::DeathDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::General_FireResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, 200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::FireDamage, 200));
 			break;
 		case WheelGemBasicModifier_t::General_EarthResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, 200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EarthDamage, 200));
 			break;
 		case WheelGemBasicModifier_t::General_IceResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, 200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::IceDamage, 200));
 			break;
 		case WheelGemBasicModifier_t::General_EnergyResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, 200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EnergyDamage, 200));
 			break;
 		case WheelGemBasicModifier_t::General_HolyResistance_DeathWeakness:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_HOLYDAMAGE, 150));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_DEATHDAMAGE, -100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::HolyDamage, 150));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::DeathDamage, -100));
 			break;
 		case WheelGemBasicModifier_t::General_DeathResistance_HolyWeakness:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_DEATHDAMAGE, 150));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_HOLYDAMAGE, -100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::DeathDamage, 150));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::HolyDamage, -100));
 			break;
 		case WheelGemBasicModifier_t::General_FireResistance_EarthResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, 100));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::FireDamage, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EarthDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::General_FireResistance_IceResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, 100));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::FireDamage, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::IceDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::General_FireResistance_EnergyResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, 100));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::FireDamage, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EnergyDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::General_EarthResistance_IceResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, 100));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EarthDamage, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::IceDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::General_EarthResistance_EnergyResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, 100));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EarthDamage, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EnergyDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::General_IceResistance_EnergyResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, 100));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::IceDamage, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EnergyDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::General_FireResistance_EarthWeakness:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, 300));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, -200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::FireDamage, 300));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EarthDamage, -200));
 			break;
 		case WheelGemBasicModifier_t::General_FireResistance_IceWeakness:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, 300));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, -200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::FireDamage, 300));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::IceDamage, -200));
 			break;
 		case WheelGemBasicModifier_t::General_FireResistance_EnergyWeakness:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, 300));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, -200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::FireDamage, 300));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EnergyDamage, -200));
 			break;
 		case WheelGemBasicModifier_t::General_EarthResistance_FireWeakness:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, 300));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, -200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EarthDamage, 300));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::FireDamage, -200));
 			break;
 		case WheelGemBasicModifier_t::General_EarthResistance_IceWeakness:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, 300));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, -200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EarthDamage, 300));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::IceDamage, -200));
 			break;
 		case WheelGemBasicModifier_t::General_EarthResistance_EnergyWeakness:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, 300));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, -200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EarthDamage, 300));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EnergyDamage, -200));
 			break;
 		case WheelGemBasicModifier_t::General_IceResistance_EarthWeakness:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, 300));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, -200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::IceDamage, 300));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EarthDamage, -200));
 			break;
 		case WheelGemBasicModifier_t::General_IceResistance_FireWeakness:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, 300));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, -200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::IceDamage, 300));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::FireDamage, -200));
 			break;
 		case WheelGemBasicModifier_t::General_IceResistance_EnergyWeakness:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, 300));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, -200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::IceDamage, 300));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EnergyDamage, -200));
 			break;
 		case WheelGemBasicModifier_t::General_EnergyResistance_EarthWeakness:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, 300));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, -200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EnergyDamage, 300));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EarthDamage, -200));
 			break;
 		case WheelGemBasicModifier_t::General_EnergyResistance_IceWeakness:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, 300));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, -200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EnergyDamage, 300));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::IceDamage, -200));
 			break;
 		case WheelGemBasicModifier_t::General_EnergyResistance_FireWeakness:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, 300));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, -200));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EnergyDamage, 300));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::FireDamage, -200));
 			break;
 		case WheelGemBasicModifier_t::General_ManaDrainResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_MANADRAIN, 300));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::ManaDrain, 300));
 			break;
 		case WheelGemBasicModifier_t::General_LifeDrainResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_LIFEDRAIN, 300));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::LifeDrain, 300));
 			break;
 		case WheelGemBasicModifier_t::General_ManaDrainResistance_LifeDrainResistance:
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_MANADRAIN, 150));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_LIFEDRAIN, 150));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::ManaDrain, 150));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::LifeDrain, 150));
 			break;
 		case WheelGemBasicModifier_t::General_MitigationMultiplier:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MITIGATION, 500));
@@ -149,38 +149,38 @@ void WheelModifierContext::addStrategies(WheelGemBasicModifier_t modifier) {
 			break;
 		case WheelGemBasicModifier_t::Vocation_Mana_FireResistance:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, getManaValue(m_vocation, modifier)));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::FireDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Mana_EnergyResistance:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, getManaValue(m_vocation, modifier)));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EnergyDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Mana_Earth_Resistance:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, getManaValue(m_vocation, modifier)));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EarthDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Mana_Ice_Resistance:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, getManaValue(m_vocation, modifier)));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::IceDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Mana:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, getManaValue(m_vocation, modifier)));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Health_FireResistance:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, getHealthValue(m_vocation, modifier)));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::FireDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Health_EnergyResistance:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, getHealthValue(m_vocation, modifier)));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EnergyDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Health_EarthResistance:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, getHealthValue(m_vocation, modifier)));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EarthDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Health_IceResistance:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, getHealthValue(m_vocation, modifier)));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::IceDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Mixed:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, getHealthValue(m_vocation, modifier)));
@@ -189,19 +189,19 @@ void WheelModifierContext::addStrategies(WheelGemBasicModifier_t modifier) {
 			break;
 		case WheelGemBasicModifier_t::Vocation_Capacity_FireResistance:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, getCapacityValue(m_vocation, modifier)));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::FireDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Capacity_EnergyResistance:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, getCapacityValue(m_vocation, modifier)));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EnergyDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Capacity_EarthResistance:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, getCapacityValue(m_vocation, modifier)));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::EarthDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Capacity_IceResistance:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, getCapacityValue(m_vocation, modifier)));
-			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, 100));
+			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType::IceDamage, 100));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Capacity:
 			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, getCapacityValue(m_vocation, modifier)));

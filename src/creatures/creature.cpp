@@ -70,7 +70,7 @@ bool Creature::canSeeCreature(std::shared_ptr<Creature> creature) const {
 	return true;
 }
 
-void Creature::setSkull(Skulls_t newSkull) {
+void Creature::setSkull(Skull_t newSkull) {
 	skull = newSkull;
 	g_game().updateCreatureSkull(static_self_cast<Creature>());
 }
@@ -133,7 +133,7 @@ void Creature::onThink(uint32_t interval) {
 
 	auto onThink = [self = getCreature(), interval] {
 		// scripting event - onThink
-		const auto &thinkEvents = self->getCreatureEvents(CreatureEventType_t::CREATURE_EVENT_THINK);
+		const auto &thinkEvents = self->getCreatureEvents(CreatureEventType::Think);
 		for (const auto creatureEventPtr : thinkEvents) {
 			creatureEventPtr->executeOnThink(self->static_self_cast<Creature>(), interval);
 		}
@@ -206,13 +206,13 @@ void Creature::onCreatureWalk() {
 }
 
 void Creature::onWalk(Direction &dir) {
-	if (hasCondition(ConditionType_t::CONDITION_DRUNK)) {
+	if (hasCondition(ConditionType::Drunk)) {
 		auto randomDir = directionFromValue(uniform_random(0, 60));
 		if (randomDir <= Direction::DIAGONAL_MASK) {
 			if (randomDir < Direction::DIAGONAL_MASK) {
 				dir = randomDir;
 			}
-			g_game().internalCreatureSay(static_self_cast<Creature>(), SpeakClasses::TALKTYPE_MONSTER_SAY, "Hicks!", false);
+			g_game().internalCreatureSay(static_self_cast<Creature>(), TalkType::MonsterSay, "Hicks!", false);
 		}
 	}
 }
@@ -231,7 +231,7 @@ bool Creature::getNextStep(Direction &dir, uint32_t &) {
 void Creature::startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions /* = false*/) {
 	listWalkDir.clear();
 
-	if (!ignoreConditions && (hasCondition(ConditionType_t::CONDITION_ROOTED) || hasCondition(ConditionType_t::CONDITION_FEARED))) {
+	if (!ignoreConditions && (hasCondition(ConditionType::Rooted) || hasCondition(ConditionType::Feared))) {
 		return;
 	}
 
@@ -446,17 +446,17 @@ void Creature::onCreatureDisappear(std::shared_ptr<Creature> creature, bool isLo
 	}
 }
 
-void Creature::onChangeZone(ZoneType_t zone) {
+void Creature::onChangeZone(ZoneType zone) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	auto attackedCreature = getAttackedCreature();
-	if (attackedCreature && zone == ZoneType_t::ZONE_PROTECTION) {
+	if (attackedCreature && zone == ZoneType::Protection) {
 		onCreatureDisappear(attackedCreature, false);
 	}
 }
 
-void Creature::onAttackedCreatureChangeZone(ZoneType_t zone) {
+void Creature::onAttackedCreatureChangeZone(ZoneType zone) {
 	metrics::method_latency measure(__METHOD_NAME__);
-	if (zone == ZoneType_t::ZONE_PROTECTION) {
+	if (zone == ZoneType::Protection) {
 		auto attackedCreature = getAttackedCreature();
 		if (attackedCreature) {
 			onCreatureDisappear(attackedCreature, false);
@@ -799,7 +799,7 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 	if (!lootDrop && getMonster()) {
 		if (getMaster()) {
 			// Scripting event onDeath
-			const CreatureEventList &deathEvents = getCreatureEvents(CreatureEventType_t::CREATURE_EVENT_DEATH);
+			const CreatureEventList &deathEvents = getCreatureEvents(CreatureEventType::Death);
 			for (const auto deathEventPtr : deathEvents) {
 				deathEventPtr->executeOnDeath(static_self_cast<Creature>(), nullptr, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
 			}
@@ -809,15 +809,15 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 	} else {
 		std::shared_ptr<Item> splash;
 		switch (getRace()) {
-			case RaceType_t::RACE_VENOM:
+			case RaceType::Venom:
 				splash = Item::CreateItem(ITEM_FULLSPLASH, FLUID_SLIME);
 				break;
 
-			case RaceType_t::RACE_BLOOD:
+			case RaceType::Blood:
 				splash = Item::CreateItem(ITEM_FULLSPLASH, FLUID_BLOOD);
 				break;
 
-			case RaceType_t::RACE_INK:
+			case RaceType::Ink:
 				splash = Item::CreateItem(ITEM_FULLSPLASH, FLUID_INK);
 				break;
 
@@ -862,7 +862,7 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 		}
 
 		// Scripting event onDeath
-		for (const auto deathEventPtr : getCreatureEvents(CreatureEventType_t::CREATURE_EVENT_DEATH)) {
+		for (const auto deathEventPtr : getCreatureEvents(CreatureEventType::Death)) {
 			if (deathEventPtr) {
 				deathEventPtr->executeOnDeath(static_self_cast<Creature>(), corpse, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
 			}
@@ -937,21 +937,21 @@ void Creature::drainMana(std::shared_ptr<Creature> attacker, int32_t manaLoss) {
 }
 
 // Wheel of destiny - mitigation system for creature
-void Creature::mitigateDamage(const CombatType_t &combatType, BlockType_t &blockType, int32_t &damage) const {
-	if (combatType != CombatType_t::COMBAT_MANADRAIN && combatType != CombatType_t::COMBAT_LIFEDRAIN && combatType != CombatType_t::COMBAT_AGONYDAMAGE) { // Increase mitigate damage
+void Creature::mitigateDamage(const CombatType &combatType, BlockType &blockType, int32_t &damage) const {
+	if (combatType != CombatType::ManaDrain && combatType != CombatType::LifeDrain && combatType != CombatType::AgonyDamage) { // Increase mitigate damage
 		auto originalDamage = damage;
 		damage -= (damage * getMitigation()) / 100.;
 		g_logger().trace("[mitigation] creature: {}, original damage: {}, mitigation damage: {}", getName(), originalDamage, damage);
 
 		if (damage <= 0) {
 			damage = 0;
-			blockType = BlockType_t::BLOCK_ARMOR;
+			blockType = BlockType::Armor;
 		}
 	}
 }
 
-void Creature::applyAbsorbDamageModifications(std::shared_ptr<Creature> attacker, int32_t &damage, CombatType_t combatType) const {
-	if (combatType != CombatType_t::COMBAT_HEALING && damage != 0) {
+void Creature::applyAbsorbDamageModifications(std::shared_ptr<Creature> attacker, int32_t &damage, CombatType combatType) const {
+	if (combatType != CombatType::Healing && damage != 0) {
 		int32_t value = getAbsorbPercent(combatType);
 		if (value != 0) {
 			damage -= std::round(damage * value / 100.f);
@@ -970,8 +970,8 @@ void Creature::applyAbsorbDamageModifications(std::shared_ptr<Creature> attacker
 	}
 }
 
-BlockType_t Creature::blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense /* = false */, bool checkArmor /* = false */, bool /* field  = false */) {
-	BlockType_t blockType = BlockType_t::BLOCK_NONE;
+BlockType Creature::blockHit(std::shared_ptr<Creature> attacker, CombatType combatType, int32_t &damage, bool checkDefense /* = false */, bool checkArmor /* = false */, bool /* field  = false */) {
+	BlockType blockType = BlockType::None;
 
 	// Apply skills 12.72 absorbs damage
 	applyAbsorbDamageModifications(attacker, damage, combatType);
@@ -983,7 +983,7 @@ BlockType_t Creature::blockHit(std::shared_ptr<Creature> attacker, CombatType_t 
 
 	if (isCombatImmune(combatType)) {
 		damage = 0;
-		blockType = BlockType_t::BLOCK_IMMUNITY;
+		blockType = BlockType::Immunity;
 	} else if (checkDefense || checkArmor) {
 		bool hasDefense = false;
 
@@ -997,7 +997,7 @@ BlockType_t Creature::blockHit(std::shared_ptr<Creature> attacker, CombatType_t 
 			damage -= uniform_random(defense / 2, defense);
 			if (damage <= 0) {
 				damage = 0;
-				blockType = BlockType_t::BLOCK_DEFENSE;
+				blockType = BlockType::Defense;
 				checkArmor = false;
 			}
 		}
@@ -1012,11 +1012,11 @@ BlockType_t Creature::blockHit(std::shared_ptr<Creature> attacker, CombatType_t 
 
 			if (damage <= 0) {
 				damage = 0;
-				blockType = BlockType_t::BLOCK_ARMOR;
+				blockType = BlockType::Armor;
 			}
 		}
 
-		if (hasDefense && blockType != BlockType_t::BLOCK_NONE) {
+		if (hasDefense && blockType != BlockType::None) {
 			onBlockHit();
 		}
 	}
@@ -1148,7 +1148,7 @@ bool Creature::setFollowCreature(std::shared_ptr<Creature> creature) {
 			return true;
 		}
 
-		if (hasCondition(ConditionType_t::CONDITION_FEARED)) {
+		if (hasCondition(ConditionType::Feared)) {
 			m_followCreature.reset();
 			return false;
 		}
@@ -1221,23 +1221,23 @@ void Creature::addDamagePoints(std::shared_ptr<Creature> attacker, int32_t damag
 	lastHitCreatureId = attackerId;
 }
 
-void Creature::onAddCondition(ConditionType_t conditionType) {
-	if (conditionType == ConditionType_t::CONDITION_PARALYZE && hasCondition(ConditionType_t::CONDITION_HASTE)) {
-		removeCondition(ConditionType_t::CONDITION_HASTE);
-	} else if (conditionType == ConditionType_t::CONDITION_HASTE && hasCondition(ConditionType_t::CONDITION_PARALYZE)) {
-		removeCondition(ConditionType_t::CONDITION_PARALYZE);
+void Creature::onAddCondition(ConditionType conditionType) {
+	if (conditionType == ConditionType::Paralyze && hasCondition(ConditionType::Haste)) {
+		removeCondition(ConditionType::Haste);
+	} else if (conditionType == ConditionType::Haste && hasCondition(ConditionType::Paralyze)) {
+		removeCondition(ConditionType::Paralyze);
 	}
 }
 
-void Creature::onAddCombatCondition(ConditionType_t) {
+void Creature::onAddCombatCondition(ConditionType) {
 	//
 }
 
-void Creature::onEndCondition(ConditionType_t) {
+void Creature::onEndCondition(ConditionType) {
 	//
 }
 
-void Creature::onTickCondition(ConditionType_t conditionType, bool &bRemove) {
+void Creature::onTickCondition(ConditionType conditionType, bool &bRemove) {
 	auto tile = getTile();
 	std::shared_ptr<MagicField> field = tile ? tile->getFieldItem() : nullptr;
 	if (!field) {
@@ -1245,29 +1245,29 @@ void Creature::onTickCondition(ConditionType_t conditionType, bool &bRemove) {
 	}
 
 	switch (conditionType) {
-		case ConditionType_t::CONDITION_FIRE:
-			bRemove = (field->getCombatType() != CombatType_t::COMBAT_FIREDAMAGE);
+		case ConditionType::Fire:
+			bRemove = (field->getCombatType() != CombatType::FireDamage);
 			break;
-		case ConditionType_t::CONDITION_ENERGY:
-			bRemove = (field->getCombatType() != CombatType_t::COMBAT_ENERGYDAMAGE);
+		case ConditionType::Energy:
+			bRemove = (field->getCombatType() != CombatType::EnergyDamage);
 			break;
-		case ConditionType_t::CONDITION_POISON:
-			bRemove = (field->getCombatType() != CombatType_t::COMBAT_EARTHDAMAGE);
+		case ConditionType::Poison:
+			bRemove = (field->getCombatType() != CombatType::EarthDamage);
 			break;
-		case ConditionType_t::CONDITION_FREEZING:
-			bRemove = (field->getCombatType() != CombatType_t::COMBAT_ICEDAMAGE);
+		case ConditionType::Freezing:
+			bRemove = (field->getCombatType() != CombatType::IceDamage);
 			break;
-		case ConditionType_t::CONDITION_DAZZLED:
-			bRemove = (field->getCombatType() != CombatType_t::COMBAT_HOLYDAMAGE);
+		case ConditionType::Dazzled:
+			bRemove = (field->getCombatType() != CombatType::HolyDamage);
 			break;
-		case ConditionType_t::CONDITION_CURSED:
-			bRemove = (field->getCombatType() != CombatType_t::COMBAT_DEATHDAMAGE);
+		case ConditionType::Cursed:
+			bRemove = (field->getCombatType() != CombatType::DeathDamage);
 			break;
-		case ConditionType_t::CONDITION_DROWN:
-			bRemove = (field->getCombatType() != CombatType_t::COMBAT_DROWNDAMAGE);
+		case ConditionType::Drown:
+			bRemove = (field->getCombatType() != CombatType::DrownDamage);
 			break;
-		case ConditionType_t::CONDITION_BLEEDING:
-			bRemove = (field->getCombatType() != CombatType_t::COMBAT_PHYSICALDAMAGE);
+		case ConditionType::Bleeding:
+			bRemove = (field->getCombatType() != CombatType::PhysicalDamage);
 			break;
 		default:
 			break;
@@ -1302,7 +1302,7 @@ bool Creature::deprecatedOnKilledCreature(std::shared_ptr<Creature> target, bool
 	}
 
 	// scripting event - onKill
-	const CreatureEventList &killEvents = getCreatureEvents(CreatureEventType_t::CREATURE_EVENT_KILL);
+	const CreatureEventList &killEvents = getCreatureEvents(CreatureEventType::Kill);
 	for (const auto killEventPtr : killEvents) {
 		killEventPtr->executeOnKill(static_self_cast<Creature>(), target, lastHit);
 	}
@@ -1408,7 +1408,7 @@ bool Creature::addCombatCondition(std::shared_ptr<Condition> condition, bool att
 	return true;
 }
 
-void Creature::removeCondition(ConditionType_t conditionType) {
+void Creature::removeCondition(ConditionType conditionType) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	auto it = conditions.begin(), end = conditions.end();
 	while (it != end) {
@@ -1426,7 +1426,7 @@ void Creature::removeCondition(ConditionType_t conditionType) {
 	}
 }
 
-void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t conditionId, bool force /* = false*/) {
+void Creature::removeCondition(ConditionType conditionType, ConditionId_t conditionId, bool force /* = false*/) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	auto it = conditions.begin(), end = conditions.end();
 	while (it != end) {
@@ -1436,10 +1436,10 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 			continue;
 		}
 
-		if (!force && conditionType == ConditionType_t::CONDITION_PARALYZE) {
+		if (!force && conditionType == ConditionType::Paralyze) {
 			int32_t walkDelay = getWalkDelay();
 			if (walkDelay > 0) {
-				auto sendCondition = enumFromValue<ConditionType_t>(conditionType);
+				auto sendCondition = enumFromValue<ConditionType>(conditionType);
 				auto sendConditionId = enumFromValue<ConditionId_t>(conditionId);
 				g_dispatcher().scheduleEvent(
 					walkDelay,
@@ -1458,7 +1458,7 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 	}
 }
 
-void Creature::removeCombatCondition(ConditionType_t conditionType) {
+void Creature::removeCombatCondition(ConditionType conditionType) {
 	std::vector<std::shared_ptr<Condition>> removeConditions;
 	for (const auto &condition : conditions) {
 		if (condition->getType() == conditionType) {
@@ -1483,7 +1483,7 @@ void Creature::removeCondition(std::shared_ptr<Condition> condition) {
 	onEndCondition(condition->getType());
 }
 
-std::shared_ptr<Condition> Creature::getCondition(ConditionType_t conditionType) const {
+std::shared_ptr<Condition> Creature::getCondition(ConditionType conditionType) const {
 	for (const auto &condition : conditions) {
 		if (condition->getType() == conditionType) {
 			return condition;
@@ -1492,7 +1492,7 @@ std::shared_ptr<Condition> Creature::getCondition(ConditionType_t conditionType)
 	return nullptr;
 }
 
-std::shared_ptr<Condition> Creature::getCondition(ConditionType_t conditionType, ConditionId_t conditionId, uint32_t subId /* = 0*/) const {
+std::shared_ptr<Condition> Creature::getCondition(ConditionType conditionType, ConditionId_t conditionId, uint32_t subId /* = 0*/) const {
 	metrics::method_latency measure(__METHOD_NAME__);
 	for (const auto &condition : conditions) {
 		if (condition->getType() == conditionType && condition->getId() == conditionId && condition->getSubId() == subId) {
@@ -1521,7 +1521,7 @@ void Creature::executeConditions(uint32_t interval) {
 	}
 }
 
-bool Creature::hasCondition(ConditionType_t conditionType, uint32_t subId /* = 0*/) const {
+bool Creature::hasCondition(ConditionType conditionType, uint32_t subId /* = 0*/) const {
 	metrics::method_latency measure(__METHOD_NAME__);
 	if (isSuppress(conditionType, false)) {
 		return false;
@@ -1657,7 +1657,7 @@ bool Creature::unregisterCreatureEvent(const std::string &name) {
 	return true;
 }
 
-CreatureEventList Creature::getCreatureEvents(CreatureEventType_t creatureEventType) {
+CreatureEventList Creature::getCreatureEvents(CreatureEventType creatureEventType) {
 	CreatureEventList tmpEventList;
 
 	if (!hasEventRegistered(creatureEventType)) {
@@ -1750,7 +1750,7 @@ bool FrozenPathingConditionCall::operator()(const Position &startPos, const Posi
 
 bool Creature::isInvisible() const {
 	return std::find_if(conditions.begin(), conditions.end(), [](const std::shared_ptr<Condition> condition) {
-			   return condition->getType() == ConditionType_t::CONDITION_INVISIBLE;
+			   return condition->getType() == ConditionType::Invisible;
 		   })
 		!= conditions.end();
 }
@@ -1816,7 +1816,7 @@ void Creature::handleLostSummon(bool teleportSummons) {
 	g_game().addMagicEffect(getPosition(), CONST_ME_POFF);
 }
 
-int32_t Creature::getReflectPercent(CombatType_t combatType, bool useCharges /*= false*/) const {
+int32_t Creature::getReflectPercent(CombatType combatType, bool useCharges /*= false*/) const {
 	try {
 		return reflectPercent.at(combatToValue(combatType));
 	} catch (const std::out_of_range &e) {
@@ -1825,7 +1825,7 @@ int32_t Creature::getReflectPercent(CombatType_t combatType, bool useCharges /*=
 	return 0;
 }
 
-void Creature::setReflectPercent(CombatType_t combatType, int32_t value) {
+void Creature::setReflectPercent(CombatType combatType, int32_t value) {
 	try {
 		reflectPercent.at(combatToValue(combatType)) = std::max(0, reflectPercent.at(combatToValue(combatType)) + value);
 	} catch (const std::out_of_range &e) {
@@ -1833,7 +1833,7 @@ void Creature::setReflectPercent(CombatType_t combatType, int32_t value) {
 	}
 }
 
-int32_t Creature::getReflectFlat(CombatType_t combatType, bool useCharges /* = false*/) const {
+int32_t Creature::getReflectFlat(CombatType combatType, bool useCharges /* = false*/) const {
 	try {
 		return reflectFlat.at(combatToValue(combatType));
 	} catch (const std::out_of_range &e) {
@@ -1842,7 +1842,7 @@ int32_t Creature::getReflectFlat(CombatType_t combatType, bool useCharges /* = f
 	return 0;
 }
 
-void Creature::setReflectFlat(CombatType_t combatType, int32_t value) {
+void Creature::setReflectFlat(CombatType combatType, int32_t value) {
 	try {
 		reflectFlat.at(combatToValue(combatType)) = std::max(0, reflectFlat.at(combatToValue(combatType)) + value);
 	} catch (const std::out_of_range &e) {
@@ -1850,7 +1850,7 @@ void Creature::setReflectFlat(CombatType_t combatType, int32_t value) {
 	}
 }
 
-int32_t Creature::getAbsorbFlat(CombatType_t combatType) const {
+int32_t Creature::getAbsorbFlat(CombatType combatType) const {
 	try {
 		return absorbFlat.at(combatToValue(combatType));
 	} catch (const std::out_of_range &e) {
@@ -1859,7 +1859,7 @@ int32_t Creature::getAbsorbFlat(CombatType_t combatType) const {
 	return 0;
 }
 
-void Creature::setAbsorbFlat(CombatType_t combatType, int32_t value) {
+void Creature::setAbsorbFlat(CombatType combatType, int32_t value) {
 	try {
 		absorbFlat.at(combatToValue(combatType)) += value;
 	} catch (const std::out_of_range &e) {
@@ -1867,7 +1867,7 @@ void Creature::setAbsorbFlat(CombatType_t combatType, int32_t value) {
 	}
 }
 
-int32_t Creature::getAbsorbPercent(CombatType_t combatType) const {
+int32_t Creature::getAbsorbPercent(CombatType combatType) const {
 	try {
 		return absorbPercent.at(combatToValue(combatType));
 	} catch (const std::out_of_range &e) {
@@ -1876,7 +1876,7 @@ int32_t Creature::getAbsorbPercent(CombatType_t combatType) const {
 	return 0;
 }
 
-void Creature::setAbsorbPercent(CombatType_t combatType, int32_t value) {
+void Creature::setAbsorbPercent(CombatType combatType, int32_t value) {
 	try {
 		absorbPercent.at(combatToValue(combatType)) += value;
 	} catch (const std::out_of_range &e) {
@@ -1884,7 +1884,7 @@ void Creature::setAbsorbPercent(CombatType_t combatType, int32_t value) {
 	}
 }
 
-int32_t Creature::getIncreasePercent(CombatType_t combatType) const {
+int32_t Creature::getIncreasePercent(CombatType combatType) const {
 	try {
 		return increasePercent.at(combatToValue(combatType));
 	} catch (const std::out_of_range &e) {
@@ -1893,7 +1893,7 @@ int32_t Creature::getIncreasePercent(CombatType_t combatType) const {
 	return 0;
 }
 
-void Creature::setIncreasePercent(CombatType_t combatType, int32_t value) {
+void Creature::setIncreasePercent(CombatType combatType, int32_t value) {
 	try {
 		increasePercent.at(combatToValue(combatType)) += value;
 	} catch (const std::out_of_range &e) {
@@ -1901,12 +1901,12 @@ void Creature::setIncreasePercent(CombatType_t combatType, int32_t value) {
 	}
 }
 
-ZoneType_t Creature::getZoneType() {
+ZoneType Creature::getZoneType() {
 	if (getTile()) {
 		return getTile()->getZoneType();
 	}
 
-	return ZoneType_t::ZONE_NORMAL;
+	return ZoneType::Normal;
 }
 
 std::unordered_set<std::shared_ptr<Zone>> Creature::getZones() {

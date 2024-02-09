@@ -1,6 +1,10 @@
 local spellbook = Action()
 
 function spellbook.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	if not player or not player:isPlayer() then
+		return false
+	end
+
 	local text = ""
 	local tlvl = {}
 	local tml = {}
@@ -21,6 +25,7 @@ function spellbook.onUse(player, item, fromPosition, target, toPosition, isHotke
 	table.sort(tlvl, function(a, b)
 		return a.level < b.level
 	end)
+
 	local prevLevel = -1
 	for i, spell in ipairs(tlvl) do
 		local line = ""
@@ -34,13 +39,15 @@ function spellbook.onUse(player, item, fromPosition, target, toPosition, isHotke
 		text = text .. line .. "  " .. spell.words .. " - " .. spell.name .. " : " .. spell.mana .. "\n"
 	end
 	text = text .. "\n"
+
 	table.sort(tml, function(a, b)
 		return a.mlevel < b.mlevel
 	end)
+
 	local prevmLevel = -1
 	for i, spell in ipairs(tml) do
 		local line = ""
-		if prevLevel ~= spell.mlevel then
+		if prevmLevel ~= spell.mlevel then
 			if i ~= 1 then
 				line = "\n"
 			end

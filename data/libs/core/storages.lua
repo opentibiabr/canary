@@ -21,10 +21,6 @@ Reserved player action storage key ranges (const.hpp)
 	Questline = Storage through the Quest
 ]]
 
-PlayerStorageKeys = {
-	VortexTamer = 30000,
-}
-
 Global = {
 	Storage = {
 		FamiliarSummonEvent10 = 30054,

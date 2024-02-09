@@ -40,11 +40,7 @@ function usableItemMounts.onUse(player, item, fromPosition, target, toPosition, 
 	end
 
 	if table.contains({ 23538, 23684, 23685 }, item.itemid) then
-		local storage = player:getStorageValue(PlayerStorageKeys.VortexTamer)
-		player:setStorageValue(PlayerStorageKeys.VortexTamer, storage + 1)
-		if storage == 1 then
-			player:addAchievement("Vortex Tamer")
-		end
+		player:addAchievementProgress("Vortex Tamer", 3)
 	end
 
 	player:addMount(useItem.mountId)

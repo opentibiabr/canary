@@ -13,6 +13,7 @@
 #include "lua/scripts/script_environment.hpp"
 
 import game_movement;
+import outfit_type;
 
 class Combat;
 class Creature;
@@ -27,7 +28,6 @@ class Zone;
 class KV;
 
 struct LuaVariant;
-struct Outfit_t;
 
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)
 

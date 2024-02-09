@@ -16,6 +16,7 @@
 #include "lua/scripts/scripts.hpp"
 
 import game_movement;
+import outfit_type;
 
 class Creature;
 class Player;
@@ -24,8 +25,6 @@ class Party;
 class ItemType;
 class Monster;
 class Zone;
-
-struct Outfit_t;
 
 /**
  * @class EventCallback

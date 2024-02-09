@@ -12,10 +12,10 @@
 #include "utils/utils_definitions.hpp"
 #include "lua/scripts/scripts.hpp"
 
+import light_info;
+
 class GlobalEvent;
 using GlobalEventMap = std::map<std::string, std::shared_ptr<GlobalEvent>>;
-
-struct LightInfo;
 
 class GlobalEvents final : public Scripts {
 public:

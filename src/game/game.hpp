@@ -26,6 +26,8 @@
 #include "enums/object_category.hpp"
 
 import game_movement;
+import outfit_type;
+import light_info;
 
 // Forward declaration for protobuf class
 namespace Canary {
@@ -48,9 +50,6 @@ class ItemClassification;
 class Guild;
 class Mounts;
 class Spectators;
-
-struct Outfit_t;
-struct LightInfo;
 
 static constexpr uint16_t SERVER_BEAT = 0x32;
 static constexpr int32_t EVENT_MS = 10000;

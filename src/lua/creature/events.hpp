@@ -14,13 +14,12 @@
 #include "creatures/combat/spells.hpp"
 
 import game_movement;
+import outfit_type;
 
 class Party;
 class ItemType;
 class Tile;
 class Imbuements;
-
-struct Outfit_t;
 
 class Events {
 	struct EventsInfo {

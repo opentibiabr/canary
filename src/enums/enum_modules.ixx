@@ -44,13 +44,13 @@ export enum class CombatType_t : uint8_t {
 	COMBAT_AGONYDAMAGE = 12,
 	COMBAT_NEUTRALDAMAGE = 13,
 
-	COMBAT_COUNT = 14,
+	COUNT = 14,
 
 	// Server read only
 	COMBAT_NONE = 255
 };
 
-export constexpr auto COMBAT_COUNT = static_cast<uint8_t>(CombatType_t::COMBAT_COUNT);
+export constexpr auto COMBAT_COUNT = static_cast<uint8_t>(CombatType_t::COUNT);
 
 export uint8_t combatToValue(CombatType_t combatType) {
 	return static_cast<uint8_t>(combatType);

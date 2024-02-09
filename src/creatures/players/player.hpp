@@ -38,6 +38,7 @@
 import enum_modules;
 import light_info;
 import game_movement;
+import outfit_type;
 
 class House;
 class NetworkMessage;
@@ -58,7 +59,6 @@ class MonsterType;
 class Item;
 
 struct ModalWindow;
-struct Outfit_t;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;

@@ -12,12 +12,12 @@
 #include "items/items_definitions.hpp"
 #include "utils/qtreenode.hpp"
 
+import game_movement;
+
 class Map;
 class Tile;
 class Item;
 class FileStream;
-
-struct Position;
 
 #pragma pack(1)
 struct BasicItem {

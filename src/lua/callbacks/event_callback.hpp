@@ -15,6 +15,8 @@
 #include "utils/utils_definitions.hpp"
 #include "lua/scripts/scripts.hpp"
 
+import game_movement;
+
 class Creature;
 class Player;
 class Tile;
@@ -24,7 +26,6 @@ class Monster;
 class Zone;
 
 struct Outfit_t;
-struct Position;
 
 /**
  * @class EventCallback

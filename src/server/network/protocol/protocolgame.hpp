@@ -33,7 +33,6 @@ class MonsterType;
 struct ModalWindow;
 struct Outfit_t;
 struct LightInfo;
-struct Position;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 

@@ -11,10 +11,11 @@
 
 #include "creatures/creature.hpp"
 
+import game_movement;
+
 class Player;
 class Monster;
 class Npc;
-struct Position;
 
 using SpectatorList = std::vector<std::shared_ptr<Creature>>;
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;

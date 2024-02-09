@@ -60,10 +60,9 @@ local function storeTownsInDatabase()
 	end
 end
 
-local seen = {}
-local duplicatesValues = {}
+-- Functions to recursively check for duplicate values in a given variable's storage and log the results
+local seen, duplicatesValues
 
--- Function to recursively check for duplicate values in a given variable's storage
 local function checkDuplicateStorageValues(varTable)
 	for _, value in pairs(varTable) do
 		if type(value) == "table" then
@@ -77,7 +76,6 @@ local function checkDuplicateStorageValues(varTable)
 	return #duplicatesValues > 0 and duplicatesValues or false
 end
 
--- Function to check duplicated variable values and log the results
 local function checkAndLogDuplicateValues(tableNames)
 	for _, tableName in ipairs(tableNames) do
 		local varTable = _G[tableName]
@@ -87,11 +85,16 @@ local function checkAndLogDuplicateValues(tableNames)
 
 			local duplicates = checkDuplicateStorageValues(varTable)
 			if duplicates then
-				logger.warn("Checking " .. tableName .. ": Duplicate values found: " .. table.concat(duplicates, ", "))
+				logger.warn("Checking {}: Duplicate values found: {}", tableName, table.concat(duplicates, ", "))
 			else
-				logger.info("Checking " .. tableName .. ": No duplicate values found.")
+				logger.info("Checking {}: No duplicate values found.", tableName)
 			end
+		else
+			logger.warn("{} is not a table. Unable to check for duplicate values.", varTable)
 		end
+
+		seen = nil
+		duplicatesValues = nil
 	end
 end
 

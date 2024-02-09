@@ -2,7 +2,7 @@ local playerLogin = CreatureEvent("VipLogin")
 
 function playerLogin.onLogin(player)
 	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
-		local wasVip = player:kv():get(vip) or false
+		local wasVip = player:kv():get("vip") or false
 		if wasVip and not player:isVip() then
 			player:onRemoveVip()
 		end

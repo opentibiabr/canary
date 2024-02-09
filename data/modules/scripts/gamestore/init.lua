@@ -1585,12 +1585,12 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 		return error({ code = 0, message = errorMsg })
 	end
 
-	local iType, item = ItemType(offerId)
+	local iType = ItemType(offerId)
 	if not iType then
 		return nil
 	end
 
-	local stackSize = iType:getStackSize()
+	local stackSize, item = iType:getStackSize()
 	if offerCount > stackSize then
 		local remainingCount = offerCount
 		item = Game.createItem(ITEM_PARCEL_STAMPED, 1)

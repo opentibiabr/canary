@@ -1,6 +1,5 @@
 module;
 
-#pragma once
 #include <cmath>
 #include <cstdint>
 #include <iostream>

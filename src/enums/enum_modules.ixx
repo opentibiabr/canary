@@ -1,7 +1,5 @@
 module;
 
-#pragma once
-
 #include <array>
 #include <cstdint>
 

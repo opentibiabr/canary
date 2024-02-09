@@ -1,7 +1,5 @@
 module;
 
-#pragma once
-
 #include <cstdint>
 
 export module outfit_type;

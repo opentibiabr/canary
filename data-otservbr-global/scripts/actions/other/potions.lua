@@ -307,6 +307,7 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 			item:remove(1)
 			player:addItem(potion.transform.id[math.random(#potion.transform.id)], 1)
 			item:getPosition():sendMagicEffect(potion.effect)
+			player:addAchievementProgress("Demonic Barkeeper", 250)
 			return true
 		end
 	end

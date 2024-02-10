@@ -31,7 +31,7 @@ function Player.onRemoveVip(self)
 		self:setOutfit(playerOutfit)
 	end
 
-	self:kv():remove("vip")
+	self:kv():scoped("account"):remove("vip-system")
 end
 
 function Player.onAddVip(self, days, silent)

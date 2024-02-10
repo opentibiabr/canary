@@ -367,7 +367,7 @@ function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder,
 		local frompos = Position(33023, 31904, 14) -- Checagem
 		local topos = Position(33052, 31932, 15) -- Checagem
 		local removeItem = false
-		if self:getPosition():isInRange(frompos, topos) and item:getId() == 23729 then
+		if self:getPosition():isInRange(frompos, topos) and item:getId() == 25774 then
 			local tile = Tile(toPosition)
 			if tile then
 				local tileBoss = tile:getTopCreature()

@@ -333,7 +333,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				local newpos = Position(33127, i, 15)
 				local nplayer = Tile(newpos):getTopCreature()
 				if nplayer and nplayer:isPlayer() then
-					nplayer:setBossCooldown("The Sinister Hermit", os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
+					nplayer:setBossCooldown("The Souldespoiler", os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
 					nplayer:teleportTo(Position(33130, 31919, 15), true)
 					convertTable[#convertTable + 1] = nplayer:getId()
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

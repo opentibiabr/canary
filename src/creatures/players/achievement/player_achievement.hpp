@@ -27,7 +27,7 @@ struct Achievement {
 
 class PlayerAchievement {
 public:
-	PlayerAchievement(Player &player);
+	explicit PlayerAchievement(Player &player);
 	bool add(uint16_t id, bool message = true, uint32_t timestamp = 0);
 	bool remove(uint16_t id);
 	bool isUnlocked(uint16_t id) const;

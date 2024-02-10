@@ -116,15 +116,6 @@ function Player.getCookiesDelivered(self)
 	return amount
 end
 
-function Player.allowMovement(self, allow)
-	return allow and self:kv():remove("block-movement") or self:kv():set("block-movement", 1)
-end
-
-function Player.hasAllowMovement(self)
-	local blockMovement = self:kv():get("block-movement") or 0
-	return blockMovement ~= 1
-end
-
 function Player.checkGnomeRank(self)
 	if not IsRunningGlobalDatapack() then
 		return true

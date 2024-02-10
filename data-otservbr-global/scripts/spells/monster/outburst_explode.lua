@@ -36,7 +36,7 @@ local function delayedCastSpell(creature, var)
 	if not creature then
 		return
 	end
-	return combat:execute(creature, positionToVariant(creature:getPosition()))
+	return combat:execute(creature, Variant(creature:getPosition()))
 end
 
 function removeOutburst(cid)

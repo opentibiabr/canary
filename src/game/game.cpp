@@ -5645,16 +5645,18 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 			outfit.lookMount = 0;
 		}
 
-		auto deltaSpeedChange = mount->speed;
-		if (player->isMounted()) {
-			const auto prevMount = mounts.getMountByID(player->getLastMount());
-			if (prevMount) {
-				deltaSpeedChange -= prevMount->speed;
+		if (g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && !group->access) {
+			auto deltaSpeedChange = mount->speed;
+			if (player->isMounted()) {
+				const auto prevMount = mounts.getMountByID(player->getLastMount());
+				if (prevMount) {
+					deltaSpeedChange -= prevMount->speed;
+				}
 			}
-		}
 
-		player->setCurrentMount(mount->id);
-		changeSpeed(player, deltaSpeedChange);
+			player->setCurrentMount(mount->id);
+			changeSpeed(player, deltaSpeedChange);
+		}
 	} else if (player->isMounted()) {
 		player->dismount();
 	}

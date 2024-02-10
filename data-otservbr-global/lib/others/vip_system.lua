@@ -47,7 +47,7 @@ function Player.onAddVip(self, days, silent)
 		self:addMount(mount)
 	end
 
-	self:kv():set("vip", true)
+	self:kv():scoped("account"):set("vip-system", true)
 end
 
 function CheckPremiumAndPrint(player, msgType)

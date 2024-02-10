@@ -15,6 +15,7 @@
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
@@ -47,6 +48,7 @@ Player::Player(ProtocolGame_ptr p) :
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
 	client(std::move(p)) {
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
+	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
 }
 
 Player::~Player() {
@@ -6107,6 +6109,12 @@ void Player::sendClosePrivate(uint16_t channelId) {
 	}
 }
 
+void Player::sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked) {
+	if (client) {
+		client->sendCyclopediaCharacterAchievements(secretsUnlocked, achievementsUnlocked);
+	}
+}
+
 uint64_t Player::getMoney() const {
 	std::vector<std::shared_ptr<Container>> containers;
 	uint64_t moneyCount = 0;
@@ -7931,6 +7939,15 @@ std::unique_ptr<PlayerWheel> &Player::wheel() {
 
 const std::unique_ptr<PlayerWheel> &Player::wheel() const {
 	return m_wheelPlayer;
+}
+
+// Achievement interface
+std::unique_ptr<PlayerAchievement> &Player::achiev() {
+	return m_playerAchievement;
+}
+
+const std::unique_ptr<PlayerAchievement> &Player::achiev() const {
+	return m_playerAchievement;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

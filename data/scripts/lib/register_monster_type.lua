@@ -83,13 +83,13 @@ registerMonsterType.bosstiary = function(mtype, mask)
 			end
 		end
 		if bossClass == nil then
-			Spdlog.error(string.format("Attempting to register a bosstiary boss without a race. Boss name: %s", mtype:name()))
+			logger.error("Attempting to register a bosstiary boss without a race. Boss name: {}", mtype:name())
 			return
 		end
 		if mask.bosstiary.bossRaceId then
 			mtype:bossRaceId(mask.bosstiary.bossRaceId)
 		else
-			Spdlog.error(string.format("Attempting to register a bosstiary boss without a raceId. Boss name: %s", mtype:name()))
+			logger.error("Attempting to register a bosstiary boss without a raceId. Boss name: {}", mtype:name())
 		end
 		mtype:bossRace(mask.bosstiary.bossRace, bossClass)
 	end

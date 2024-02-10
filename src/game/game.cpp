@@ -39,8 +39,14 @@
 #include "server/network/protocol/protocollogin.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "map/spectators.hpp"
+#include "utils/tools.hpp"
 #include "kv/kv.hpp"
+
 #include "enums/object_category.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_group_type.hpp"
+#include "enums/account_errors.hpp"
+#include "enums/account_coins.hpp"
 
 #include <appearances.pb.h>
 
@@ -835,9 +841,9 @@ ReturnValue Game::getPlayerByNameWildcard(const std::string &s, std::shared_ptr<
 	return RETURNVALUE_NOERROR;
 }
 
-std::vector<std::shared_ptr<Player>> Game::getPlayersByAccount(std::shared_ptr<account::Account> acc, bool allowOffline /* = false */) {
+std::vector<std::shared_ptr<Player>> Game::getPlayersByAccount(std::shared_ptr<Account> acc, bool allowOffline /* = false */) {
 	auto [accountPlayers, error] = acc->getAccountPlayers();
-	if (error != account::ERROR_NO) {
+	if (error != enumToValue(AccountErrors_t::Ok)) {
 		return {};
 	}
 	std::vector<std::shared_ptr<Player>> ret;
@@ -5804,7 +5810,7 @@ bool Game::playerYell(std::shared_ptr<Player> player, const std::string &text) {
 		return false;
 	}
 
-	if (player->getAccountType() < account::AccountType::ACCOUNT_TYPE_GAMEMASTER) {
+	if (player->getAccountType() < AccountType::ACCOUNT_TYPE_GAMEMASTER) {
 		auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_YELLTICKS, 30000, 0);
 		player->addCondition(condition);
 	}
@@ -5820,7 +5826,7 @@ bool Game::playerSpeakTo(std::shared_ptr<Player> player, SpeakClasses type, cons
 		return false;
 	}
 
-	if (type == TALKTYPE_PRIVATE_RED_TO && (player->hasFlag(PlayerFlags_t::CanTalkRedPrivate) || player->getAccountType() >= account::AccountType::ACCOUNT_TYPE_GAMEMASTER)) {
+	if (type == TALKTYPE_PRIVATE_RED_TO && (player->hasFlag(PlayerFlags_t::CanTalkRedPrivate) || player->getAccountType() >= AccountType::ACCOUNT_TYPE_GAMEMASTER)) {
 		type = TALKTYPE_PRIVATE_RED_FROM;
 	} else {
 		type = TALKTYPE_PRIVATE_FROM;
@@ -8137,7 +8143,7 @@ std::string Game::generateHighscoreQueryForEntries(const std::string &categoryNa
 	query << "SELECT *, @row AS `entries`, " << page << " AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn` FROM (SELECT `id`, `name`, `level`, `vocation`, `"
 		  << categoryName << "` AS `points`, @curRank := IF(@prevRank = `" << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName
 		  << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0) `r` WHERE `group_id` < "
-		  << static_cast<int>(account::GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
+		  << static_cast<int>(GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
 
 	if (vocation != 0xFFFFFFFF) {
 		query << generateVocationConditionHighscore(vocation);
@@ -8154,7 +8160,7 @@ std::string Game::generateHighscoreQueryForOurRank(const std::string &categoryNa
 	query << "SELECT *, @row AS `entries`, (@ourRow DIV " << entriesStr << ") + 1 AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn`, @ourRow := IF(`id` = "
 		  << playerGUID << ", @row - 1, @ourRow) AS `rw` FROM (SELECT `id`, `name`, `level`, `vocation`, `" << categoryName << "` AS `points`, @curRank := IF(@prevRank = `"
 		  << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0, @ourRow := 0) `r` WHERE `group_id` < "
-		  << static_cast<int>(account::GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
+		  << static_cast<int>(GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
 
 	if (vocation != 0xFFFFFFFF) {
 		query << generateVocationConditionHighscore(vocation);
@@ -8636,7 +8642,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			auto [transferableCoins, result] = player->getAccount()->getCoins(account::CoinType::TRANSFERABLE);
+			auto [transferableCoins, result] = player->getAccount()->getCoins(enumToValue(CoinType::Transferable));
 
 			if (amount > transferableCoins) {
 				offerStatus << "Amount is greater than coins for player " << player->getName();
@@ -8644,7 +8650,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			}
 
 			// Do not register a transaction for coins creating an offer
-			player->getAccount()->removeCoins(account::CoinType::TRANSFERABLE, static_cast<uint32_t>(amount), "");
+			player->getAccount()->removeCoins(enumToValue(CoinType::Transferable), static_cast<uint32_t>(amount), "");
 		} else {
 			if (!removeOfferItems(player, depotLocker, it, amount, tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -8725,7 +8731,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			// Do not register a transaction for coins upon cancellation
-			player->getAccount()->addCoins(account::CoinType::TRANSFERABLE, offer.amount, "");
+			player->getAccount()->addCoins(enumToValue(CoinType::Transferable), offer.amount, "");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = offer.amount;
 			while (tmpAmount > 0) {
@@ -8837,9 +8843,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			auto [transferableCoins, error] = player->getAccount()->getCoins(account::CoinType::TRANSFERABLE);
+			auto [transferableCoins, error] = player->getAccount()->getCoins(enumToValue(CoinType::Transferable));
 
-			if (error != account::ERROR_NO) {
+			if (error != enumToValue(AccountErrors_t::Ok)) {
 				offerStatus << "Failed to load transferable coins for player " << player->getName();
 				return;
 			}
@@ -8850,7 +8856,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 
 			player->getAccount()->removeCoins(
-				account::CoinType::TRANSFERABLE,
+				enumToValue(CoinType::Transferable),
 				amount,
 				"Sold on Market"
 			);
@@ -8878,7 +8884,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		g_metrics().addCounter("balance_increase", totalPrice, { { "player", player->getName() }, { "context", "market_sale" } });
 
 		if (it.id == ITEM_STORE_COIN) {
-			buyerPlayer->getAccount()->addCoins(account::CoinType::TRANSFERABLE, amount, "Purchased on Market");
+			buyerPlayer->getAccount()->addCoins(enumToValue(CoinType::Transferable), amount, "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -8949,7 +8955,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		g_metrics().addCounter("balance_decrease", totalPrice, { { "player", player->getName() }, { "context", "market_purchase" } });
 
 		if (it.id == ITEM_STORE_COIN) {
-			player->getAccount()->addCoins(account::CoinType::TRANSFERABLE, amount, "Purchased on Market");
+			player->getAccount()->addCoins(enumToValue(CoinType::Transferable), amount, "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -9003,7 +9009,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
 		g_metrics().addCounter("balance_increase", totalPrice, { { "player", sellerPlayer->getName() }, { "context", "market_sale" } });
 		if (it.id == ITEM_STORE_COIN) {
-			sellerPlayer->getAccount()->registerCoinTransaction(account::CoinTransactionType::REMOVE, account::CoinType::TRANSFERABLE, amount, "Sold on Market");
+			const auto &tranferable = enumToValue(CoinType::Transferable);
+			const auto &removeCoin = enumToValue(CoinTransactionType::Remove);
+			sellerPlayer->getAccount()->registerCoinTransaction(removeCoin, tranferable, amount, "Sold on Market");
 		}
 
 		if (it.id != ITEM_STORE_COIN) {

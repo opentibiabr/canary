@@ -69,9 +69,6 @@
 // ABSL
 #include <absl/numeric/int128.h>
 
-// ARGON2
-#include <argon2.h>
-
 // ASIO
 #include <asio.hpp>
 
@@ -83,6 +80,17 @@
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/args.h>
+
+// FMT Custom Formatter for Enums
+template <typename E>
+struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : formatter<std::underlying_type_t<E>> {
+	template <typename FormatContext>
+	auto format(E e, FormatContext &ctx) {
+		return formatter<std::underlying_type_t<E>>::format(
+			static_cast<std::underlying_type_t<E>>(e), ctx
+		);
+	}
+};
 
 // GMP
 #include <gmp.h>
@@ -158,6 +166,7 @@
 #include "lib/messaging/message.hpp"
 #include "lib/messaging/command.hpp"
 #include "lib/messaging/event.hpp"
+#include "lib/logging/log_with_spd_log.hpp"
 
 #include <eventpp/utilities/scopedremover.h>
 #include <eventpp/eventdispatcher.h>

@@ -34,6 +34,9 @@
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "enums/object_category.hpp"
+#include "enums/account_errors.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_group_type.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -5358,6 +5361,14 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 	return std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), std::max<uint16_t>(0, static_cast<uint16_t>(skillLevel)));
 }
 
+bool Player::isAccessPlayer() const {
+	return group->access;
+}
+
+bool Player::isPlayerGroup() const {
+	return group->id <= GROUP_TYPE_SENIORTUTOR;
+}
+
 bool Player::isPremium() const {
 	if (g_configManager().getBoolean(FREE_PREMIUM, __FUNCTION__) || hasFlag(PlayerFlags_t::IsAlwaysPremium)) {
 		return true;
@@ -5368,6 +5379,14 @@ bool Player::isPremium() const {
 	}
 
 	return account->getPremiumRemainingDays() > 0 || account->getPremiumLastDay() > getTimeNow();
+}
+
+uint32_t Player::getPremiumDays() const {
+	return account->getPremiumRemainingDays();
+}
+
+time_t Player::getPremiumLastDay() const {
+	return account->getPremiumLastDay();
 }
 
 void Player::setTibiaCoins(int32_t v) {
@@ -7746,6 +7765,29 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 		}
 	}
 	return false;
+}
+
+// Account
+bool Player::setAccount(uint32_t accountId) {
+	if (account) {
+		g_logger().warn("Account was already set!");
+		return true;
+	}
+
+	account = std::make_shared<Account>(accountId);
+	return AccountErrors_t::Ok == enumFromValue<AccountErrors_t>(account->load());
+}
+
+uint8_t Player::getAccountType() const {
+	return account ? account->getAccountType() : AccountType::ACCOUNT_TYPE_NORMAL;
+}
+
+uint32_t Player::getAccountId() const {
+	return account ? account->getID() : 0;
+}
+
+std::shared_ptr<Account> Player::getAccount() const {
+	return account;
 }
 
 /*******************************************************************************

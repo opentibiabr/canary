@@ -2,9 +2,9 @@ local function outExplode()
 	local spectators = Game.getSpectators(Position(32234, 31285, 14), false, true, 10, 10, 10, 10)
 	for _, spectator in ipairs(spectators) do
 		if spectator:isPlayer() then
-			spectator:teleportTo({ x = 32234, y = 31280, z = 14 })
+			spectator:teleportTo(Position(32234, 31280, 14)) 39
 		elseif spectator:isMonster() and spectator:getName() == "Charging Outburst" then
-			spectator:teleportTo({ x = 32234, y = 31279, z = 14 })
+			spectator:teleportTo(Position(32234, 31279, 14))
 		end
 	end
 end

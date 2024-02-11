@@ -1590,26 +1590,22 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 		return nil
 	end
 
-	local stackSize, item = iType:getStackSize()
-	if offerCount > stackSize then
+	local inbox = player:getStoreInbox()
+	if inbox then
+		local stackSize = iType:getStackSize()
 		local remainingCount = offerCount
-		item = Game.createItem(ITEM_PARCEL_STAMPED, 1)
 		while remainingCount > 0 do
 			local countToAdd = math.min(remainingCount, stackSize)
-			item:addItem(offerId, countToAdd)
+			local inboxItem = inbox:addItem(offerId, countToAdd)
+			if inboxItem then
+				if movable ~= true then
+					inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+				end
+			else
+				return error({ code = 0, message = "Error adding item to store inbox." })
+			end
 			remainingCount = remainingCount - countToAdd
 		end
-	else
-		item = Game.createItem(offerId, offerCount)
-	end
-
-	local inboxItem = player:addItemStoreInboxEx(item, movable, setOwner)
-	if inboxItem then
-		if movable ~= true then
-			inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
-		end
-	else
-		return error({ code = 0, message = "Error adding item to store inbox." })
 	end
 end
 

@@ -133,7 +133,7 @@ function playerLogin.onLogin(player)
 	end
 
 	-- Remove Boss Time
-	if GetDailyRewardLastServerSave >= player:getLastLoginSaved() then
+	if GetDailyRewardLastServerSave() >= player:getLastLoginSaved() then
 		player:setRemoveBossTime(1)
 	end
 

@@ -39,18 +39,10 @@ function playerLogin.onLogin(player)
 	end
 
 	-- Boosted
-	local boostedCreatureMsg = string.format(
-		"Today's boosted creature: %s. \
-	Boosted creatures yield more experience points, carry more loot than usual, and respawn at a faster rate.",
-		Game.getBoostedCreature()
-	)
-	local boostedBossMsg = string.format(
-		"Today's boosted boss: %s. \
-	Boosted bosses contain more loot and count more kills for your Bosstiary.",
-		Game.getBoostedBoss()
-	)
-	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, boostedCreatureMsg)
-	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, boostedBossMsg)
+	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Today's boosted creature: %s. \
+	Boosted creatures yield more experience points, carry more loot than usual, and respawn at a faster rate.")
+	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Today's boosted boss: %s. \
+	Boosted bosses contain more loot and count more kills for your Bosstiary.")
 
 	-- Rewards
 	local rewards = #player:getRewardList()

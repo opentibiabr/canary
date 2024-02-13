@@ -1,23 +1,3 @@
-local function onMovementRemoveProtection(playerId, oldPos, time)
-	local player = Player(playerId)
-	if not player then
-		return true
-	end
-
-	local playerPos = player:getPosition()
-	if (playerPos.x ~= oldPos.x or playerPos.y ~= oldPos.y or playerPos.z ~= oldPos.z) or player:getTarget() then
-		player:kv():remove("combat-protection")
-		return true
-	end
-
-	addEvent(onMovementRemoveProtection, 1000, playerId, oldPos, time - 1)
-end
-
-local function protectionZoneCheck(playerName)
-	doRemoveCreature(playerName)
-	return true
-end
-
 local playerLogin = CreatureEvent("PlayerLogin")
 
 function playerLogin.onLogin(player)
@@ -51,12 +31,6 @@ function playerLogin.onLogin(player)
 		end
 	end
 	-- End 'Premium Ends Teleport to Temple'
-
-	local isProtected = player:kv():get("combat-protection") or 0
-	if isProtected < 1 then
-		player:kv():set("combat-protection", 1)
-		onMovementRemoveProtection(playerId, player:getPosition(), 10)
-	end
 
 	-- Open channels
 	if table.contains({ TOWNS_LIST.DAWNPORT, TOWNS_LIST.DAWNPORT_TUTORIAL }, player:getTown():getId()) then

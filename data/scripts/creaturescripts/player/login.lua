@@ -10,6 +10,21 @@ local function sendBoostMessage(player, category, isIncreased)
 	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, boostMessage)
 end
 
+local function onMovementRemoveProtection(playerId, oldPos, time)
+	local player = Player(playerId)
+	if not player then
+		return true
+	end
+
+	local playerPos = player:getPosition()
+	if (playerPos.x ~= oldPos.x or playerPos.y ~= oldPos.y or playerPos.z ~= oldPos.z) or player:getTarget() then
+		player:kv():remove("combat-protection")
+		return true
+	end
+
+	addEvent(onMovementRemoveProtection, 1000, playerId, oldPos, time - 1)
+end
+
 local playerLogin = CreatureEvent("PlayerLogin")
 
 function playerLogin.onLogin(player)
@@ -39,16 +54,10 @@ function playerLogin.onLogin(player)
 	end
 
 	-- Boosted
-	player:sendTextMessage(
-		MESSAGE_BOOSTED_CREATURE,
-		"Today's boosted creature: %s. \
-	Boosted creatures yield more experience points, carry more loot than usual, and respawn at a faster rate."
-	)
-	player:sendTextMessage(
-		MESSAGE_BOOSTED_CREATURE,
-		"Today's boosted boss: %s. \
-	Boosted bosses contain more loot and count more kills for your Bosstiary."
-	)
+	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Today's boosted creature: " .. Game.getBoostedCreature() .. " \
+	Boosted creatures yield more experience points, carry more loot than usual and respawn at a faster rate.")
+	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Today's boosted boss: " .. Game.getBoostedBoss() .. " \
+	Boosted bosses contain more loot and count more kills for your Bosstiary.")
 
 	-- Rewards
 	local rewards = #player:getRewardList()
@@ -77,7 +86,7 @@ function playerLogin.onLogin(player)
 	local playerName = getPlayerName(player)
 	local accountId = getAccountNumberByPlayerName(playerName)
 	local resultId = db.storeQuery("SELECT `recruiter` FROM `accounts` WHERE `id`=" .. accountId)
-	if not resultId then
+	if resultId then
 		return true
 	end
 
@@ -141,6 +150,13 @@ function playerLogin.onLogin(player)
 	-- Remove Boss Time
 	if GetDailyRewardLastServerSave() >= player:getLastLoginSaved() then
 		player:setRemoveBossTime(1)
+	end
+
+	-- Remove combat protection
+	local isProtected = player:kv():get("combat-protection") or 0
+	if isProtected < 1 then
+		player:kv():set("combat-protection", 1)
+		onMovementRemoveProtection(playerId, player:getPosition(), 10)
 	end
 
 	player:loadSpecialStorage()

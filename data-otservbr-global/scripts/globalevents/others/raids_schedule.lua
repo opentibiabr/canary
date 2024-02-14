@@ -37,15 +37,13 @@ function spawnRaidsEvent.onThink(interval, lastExecution, thinkInterval)
 		raidsToSpawn[#raidsToSpawn + 1] = raidSchedule[currentDate]
 	end
 
-	if #raidsToSpawn == 0 then
-		return true
-	end
-
-	for i = 1, #raidsToSpawn do
-		local currentRaidSchedule = raidsToSpawn[i][getRealTime()]
-		if currentRaidSchedule and not currentRaidSchedule.alreadyExecuted then
-			Game.startRaid(currentRaidSchedule.raidName)
-			currentRaidSchedule.alreadyExecuted = true
+	if #raidsToSpawn > 0 then
+		for i = 1, #raidsToSpawn do
+			local currentRaidSchedule = raidsToSpawn[i][getRealTime()]
+			if currentRaidSchedule and not currentRaidSchedule.alreadyExecuted then
+				Game.startRaid(currentRaidSchedule.raidName)
+				currentRaidSchedule.alreadyExecuted = true
+			end
 		end
 	end
 	return true

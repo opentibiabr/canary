@@ -116,15 +116,6 @@ function Player.getCookiesDelivered(self)
 	return amount
 end
 
-function Player.allowMovement(self, allow)
-	return allow and self:kv():remove("block-movement") or self:kv():set("block-movement", 1)
-end
-
-function Player.hasAllowMovement(self)
-	local blockMovement = self:kv():get("block-movement") or 0
-	return blockMovement ~= 1
-end
-
 function Player.checkGnomeRank(self)
 	if not IsRunningGlobalDatapack() then
 		return true
@@ -561,20 +552,39 @@ function Player:addItemStoreInboxEx(item, movable, setOwner)
 end
 
 function Player:addItemStoreInbox(itemId, amount, movable, setOwner)
+	if not amount then
+		logger.error("[Player:addItemStoreInbox] item '{}' amount is nil.", itemId)
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Item amount is wrong, please contact an administrator.")
+		return nil
+	end
+
 	local iType = ItemType(itemId)
 	if not iType then
 		return nil
 	end
+
 	if iType:isStackable() then
-		while amount > iType:getStackSize() do
-			self:addItemStoreInboxEx(Game.createItem(itemId, iType:getStackSize()), movable, setOwner)
-			amount = amount - iType:getStackSize()
+		local stackSize = iType:getStackSize()
+		while amount > stackSize do
+			self:addItemStoreInboxEx(Game.createItem(itemId, stackSize), movable, setOwner)
+			amount = amount - stackSize
 		end
 	end
-	local item = Game.createItem(itemId, amount)
+
+	local item
+	if iType:getCharges() > 0 then
+		item = Game.createItem(itemId, 1)
+		if item then
+			item:setAttribute(ITEM_ATTRIBUTE_CHARGES, amount)
+		end
+	else
+		item = Game.createItem(itemId, amount)
+	end
+
 	if not item then
 		return nil
 	end
+
 	return self:addItemStoreInboxEx(item, movable, setOwner)
 end
 
@@ -741,4 +751,252 @@ end
 function Player:canFightBoss(bossNameOrId)
 	local cooldown = self:getBossCooldown(bossNameOrId)
 	return cooldown <= os.time()
+end
+
+function Player.getCollectionTokens(self)
+	return math.max(self:getStorageValue(DailyReward.storages.collectionTokens), 0)
+end
+
+function Player.getJokerTokens(self)
+	return math.max(self:getStorageValue(DailyReward.storages.jokerTokens), 0)
+end
+
+function Player.setJokerTokens(self, value)
+	self:setStorageValue(DailyReward.storages.jokerTokens, value)
+end
+
+function Player.setCollectionTokens(self, value)
+	self:setStorageValue(DailyReward.storages.collectionTokens, value)
+end
+
+function Player.getDayStreak(self)
+	return math.max(self:getStorageValue(DailyReward.storages.currentDayStreak), 0)
+end
+
+function Player.setDayStreak(self, value)
+	self:setStorageValue(DailyReward.storages.currentDayStreak, value)
+end
+
+function Player.getStreakLevel(self)
+	return self:kv():scoped("daily-reward"):get("streak") or 7
+end
+
+function Player.setStreakLevel(self, value)
+	self:kv():scoped("daily-reward"):set("streak", value)
+end
+
+function Player.setNextRewardTime(self, value)
+	self:setStorageValue(DailyReward.storages.nextRewardTime, value)
+end
+
+function Player.getNextRewardTime(self)
+	return math.max(self:getStorageValue(DailyReward.storages.nextRewardTime), 0)
+end
+
+function Player.isRestingAreaBonusActive(self)
+	local levelStreak = self:getStreakLevel()
+	if levelStreak > 1 then
+		return true
+	else
+		return false
+	end
+end
+
+function Player.getActiveDailyRewardBonusesName(self)
+	local msg = ""
+	local streakLevel = self:getStreakLevel()
+	if streakLevel >= 2 then
+		if streakLevel > 7 then
+			streakLevel = 7
+		end
+		for i = DAILY_REWARD_FIRST, streakLevel do
+			if i ~= streakLevel then
+				msg = msg .. "" .. DailyReward.strikeBonuses[i].text .. ", "
+			else
+				msg = msg .. "" .. DailyReward.strikeBonuses[i].text .. "."
+			end
+		end
+	end
+	return msg
+end
+
+function Player.getDailyRewardBonusesCount(self)
+	local count = 1
+	local streakLevel = self:getStreakLevel()
+	if streakLevel > 2 then
+		if streakLevel > 7 then
+			streakLevel = 7
+		end
+		for i = DAILY_REWARD_FIRST, streakLevel do
+			count = count + 1
+		end
+	else
+		count = 0
+	end
+	return count
+end
+
+function Player.isBonusActiveById(self, bonusId)
+	local streakLevel = self:getStreakLevel()
+	local bonus = "locked"
+	if streakLevel > 2 then
+		if streakLevel > 7 then
+			streakLevel = 7
+		end
+		if streakLevel >= bonusId then
+			bonus = "unlocked"
+		end
+	end
+	return bonus
+end
+
+function Player.loadDailyRewardBonuses(self)
+	local streakLevel = self:getStreakLevel()
+	-- Stamina regeneration
+	if streakLevel >= DAILY_REWARD_STAMINA_REGENERATION then
+		local staminaEvent = DailyRewardBonus.Stamina[self:getId()]
+		if not staminaEvent then
+			local delay = 3
+			if self:getStamina() > 2340 and self:getStamina() <= 2520 then
+				delay = 6
+			end
+			DailyRewardBonus.Stamina[self:getId()] = addEvent(RegenStamina, delay * 60 * 1000, self:getId(), delay * 60 * 1000)
+		end
+	end
+	-- Soul regeneration
+	if streakLevel >= DAILY_REWARD_SOUL_REGENERATION then
+		local soulEvent = DailyRewardBonus.Soul[self:getId()]
+		if not soulEvent then
+			local delay = self:getVocation():getSoulGainTicks()
+			DailyRewardBonus.Soul[self:getId()] = addEvent(RegenSoul, delay, self:getId(), delay)
+		end
+	end
+	logger.debug("Player: {}, streak level: {}, active bonuses: {}", self:getName(), streakLevel, self:getActiveDailyRewardBonusesName())
+end
+
+function Player.getRewardChest(self, autocreate)
+	return self:getDepotChest(99, autocreate)
+end
+
+function Player.inBossFight(self)
+	if not next(_G.GlobalBosses) then
+		return false
+	end
+
+	local playerGuid = self:getGuid()
+	for _, info in pairs(_G.GlobalBosses) do
+		local stats = info[playerGuid]
+		if stats and stats.active then
+			return stats
+		end
+	end
+	return false
+end
+
+-- For use of data/events/scripts/player.lua
+function Player:executeRewardEvents(item, toPosition)
+	if toPosition.x == CONTAINER_POSITION then
+		local containerId = toPosition.y - 64
+		local container = self:getContainerById(containerId)
+		if not container then
+			return true
+		end
+
+		-- Do not let the player insert items into either the Reward Container or the Reward Chest
+		local itemId = container:getId()
+		if itemId == ITEM_REWARD_CONTAINER or itemId == ITEM_REWARD_CHEST then
+			self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+			return false
+		end
+
+		-- The player also shouldn't be able to insert items into the boss corpse
+		local tileCorpse = Tile(container:getPosition())
+		for index, value in ipairs(tileCorpse:getItems() or {}) do
+			if value:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 and value:getName() == container:getName() then
+				self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+				return false
+			end
+		end
+	end
+	-- Do not let the player move the boss corpse.
+	if item:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 then
+		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		return false
+	end
+	-- Players cannot throw items on reward chest
+	local tileChest = Tile(toPosition)
+	if tileChest and tileChest:getItemById(ITEM_REWARD_CHEST) then
+		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		self:getPosition():sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
+end
+
+do
+	local loyaltySystem = {
+		enable = configManager.getBoolean(configKeys.LOYALTY_ENABLED),
+		titles = {
+			[1] = { name = "Scout of Tibia", points = 50 },
+			[2] = { name = "Sentinel of Tibia", points = 100 },
+			[3] = { name = "Steward of Tibia", points = 200 },
+			[4] = { name = "Warden of Tibia", points = 400 },
+			[5] = { name = "Squire of Tibia", points = 1000 },
+			[6] = { name = "Warrior of Tibia", points = 2000 },
+			[7] = { name = "Keeper of Tibia", points = 3000 },
+			[8] = { name = "Guardian of Tibia", points = 4000 },
+			[9] = { name = "Sage of Tibia", points = 5000 },
+			[10] = { name = "Savant of Tibia", points = 6000 },
+			[11] = { name = "Enlightened of Tibia", points = 7000 },
+		},
+		bonus = {
+			{ minPoints = 360, percentage = 5 },
+			{ minPoints = 720, percentage = 10 },
+			{ minPoints = 1080, percentage = 15 },
+			{ minPoints = 1440, percentage = 20 },
+			{ minPoints = 1800, percentage = 25 },
+			{ minPoints = 2160, percentage = 30 },
+			{ minPoints = 2520, percentage = 35 },
+			{ minPoints = 2880, percentage = 40 },
+			{ minPoints = 3240, percentage = 45 },
+			{ minPoints = 3600, percentage = 50 },
+		},
+		messageTemplate = "Due to your long-term loyalty to " .. SERVER_NAME .. " you currently benefit from a ${bonusPercentage}% bonus on all of your skills. (You have ${loyaltyPoints} loyalty points)",
+	}
+
+	function Player.initializeLoyaltySystem(self)
+		if not loyaltySystem.enable then
+			return true
+		end
+
+		local playerLoyaltyPoints = self:getLoyaltyPoints()
+
+		-- Title
+		local title = ""
+		for _, titleTable in ipairs(loyaltySystem.titles) do
+			if playerLoyaltyPoints >= titleTable.points then
+				title = titleTable.name
+			end
+		end
+
+		if title ~= "" then
+			self:setLoyaltyTitle(title)
+		end
+
+		-- Bonus
+		local playerBonusPercentage = 0
+		for _, bonusTable in ipairs(loyaltySystem.bonus) do
+			if playerLoyaltyPoints >= bonusTable.minPoints then
+				playerBonusPercentage = bonusTable.percentage
+			end
+		end
+
+		playerBonusPercentage = playerBonusPercentage * configManager.getFloat(configKeys.LOYALTY_BONUS_PERCENTAGE_MULTIPLIER)
+		self:setLoyaltyBonus(playerBonusPercentage)
+
+		if self:getLoyaltyBonus() ~= 0 then
+			self:sendTextMessage(MESSAGE_STATUS, string.formatNamed(loyaltySystem.messageTemplate, { bonusPercentage = playerBonusPercentage, loyaltyPoints = playerLoyaltyPoints }))
+		end
+
+		return true
+	end
 end

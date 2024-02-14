@@ -672,12 +672,21 @@ local function creatureSayCallback(npc, creature, type, message)
 		return npcHandler:say("Tje hari ku ne finjala. {Ariki}?", npc, creature)
 	elseif MsgContains(message, "passage") then
 		return npcHandler:say("Soso yana. <shakes his head>", npc, creature)
+	elseif MsgContains(message, "ariki") then
+		npc:openShopWindow(creature)
+		creature:addAchievement("Si, Ariki!")
 	end
+	return true
+end
+
+local function onTradeRequest(npc, creature, message)
+	creature:addAchievement("Si, Ariki!")
 	return true
 end
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Si, jema ze harun. <waves>")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+npcHandler:setCallback(CALLBACK_ON_TRADE_REQUEST, onTradeRequest)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcType:register(npcConfig)

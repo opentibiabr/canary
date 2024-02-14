@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include "pch.hpp"
-
 #include "account/account.hpp"
 #include "declarations.hpp"
 #include "lua/scripts/luascript.hpp"

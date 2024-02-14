@@ -13,6 +13,7 @@
 #include "config/configmanager.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "utils/tools.hpp"
+#include "lib/di/container.hpp"
 
 Webhook::Webhook(ThreadPool &threadPool) :
 	threadPool(threadPool) {

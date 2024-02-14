@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "items/item.hpp"
+class Item;
 
 class Decay {
 public:
@@ -18,9 +18,7 @@ public:
 	Decay(const Decay &) = delete;
 	void operator=(const Decay &) = delete;
 
-	static Decay &getInstance() {
-		return inject<Decay>();
-	}
+	static Decay &getInstance();
 
 	void startDecay(std::shared_ptr<Item> item);
 	void stopDecay(std::shared_ptr<Item> item);

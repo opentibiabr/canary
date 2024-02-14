@@ -122,6 +122,11 @@ void ItemParse::parseDescription(const std::string &tmpStrValue, pugi::xml_attri
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "description") {
 		itemType.description = valueAttribute.as_string();
+		if (g_configManager().getBoolean(TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY, __FUNCTION__) && itemType.id == ITEM_GOLD_POUCH) {
+			auto pouchLimit = g_configManager().getNumber(LOOTPOUCH_MAXLIMIT, __FUNCTION__);
+			itemType.description = fmt::format("A bag with {} slots where you can hold your loots.", pouchLimit);
+			itemType.name = "loot pouch";
+		}
 	}
 }
 
@@ -572,8 +577,6 @@ void ItemParse::parseAbsorbPercent(const std::string &tmpStrValue, pugi::xml_att
 	} else if (stringValue == "absorbpercentfire") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentpoison" || stringValue == "absorbpercentearth") {
-		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (stringValue == "absorbpercentearth") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentice") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());

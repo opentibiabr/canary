@@ -8,6 +8,10 @@
  */
 #pragma once
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <fmt/format.h>
+#endif
+
 #define LOG_LEVEL_TRACE \
 	std::string {       \
 		"trace"         \
@@ -44,7 +48,7 @@ public:
 
 	virtual void setLevel(const std::string &name) = 0;
 	[[nodiscard]] virtual std::string getLevel() const = 0;
-	virtual void log(std::string lvl, fmt::basic_string_view<char> msg) const = 0;
+	virtual void log(const std::string &lvl, fmt::basic_string_view<char> msg) const = 0;
 
 	template <typename... Args>
 	void trace(const fmt::format_string<Args...> &fmt, Args &&... args) {

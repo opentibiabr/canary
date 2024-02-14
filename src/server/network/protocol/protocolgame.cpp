@@ -22,6 +22,7 @@
 #include "lua/modules/modules.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "game/modal_window/modal_window.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
@@ -29,8 +30,13 @@
 #include "server/network/protocol/protocolgame.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "creatures/combat/spells.hpp"
+#include "utils/tools.hpp"
 #include "creatures/players/management/waitlist.hpp"
 #include "items/weapons/weapons.hpp"
+#include "enums/object_category.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_group_type.hpp"
+#include "enums/account_coins.hpp"
 
 /*
  * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.hpp" file
@@ -518,7 +524,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (g_configManager().getBoolean(ONLY_PREMIUM_ACCOUNT, __FUNCTION__) && !player->isPremium() && (player->getGroup()->id < account::GROUP_TYPE_GAMEMASTER || player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER)) {
+		if (g_configManager().getBoolean(ONLY_PREMIUM_ACCOUNT, __FUNCTION__) && !player->isPremium() && (player->getGroup()->id < GROUP_TYPE_GAMEMASTER || player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER)) {
 			g_game().removePlayerUniqueLogin(player);
 			disconnectClient("Your premium time for this account is out.\n\nTo play please buy additional premium time from our website");
 			return;
@@ -526,7 +532,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 		auto onlineCount = g_game().getPlayersByAccount(player->getAccount()).size();
 		auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT, __FUNCTION__);
-		if (player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && onlineCount >= maxOnline) {
+		if (player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER && onlineCount >= maxOnline) {
 			g_game().removePlayerUniqueLogin(player);
 			disconnectClient(fmt::format("You may only login with {} character{}\nof your account at the same time.", maxOnline, maxOnline > 1 ? "s" : ""));
 			return;
@@ -583,7 +589,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 		const auto tile = g_game().map.getOrCreateTile(player->getLoginPosition());
 		// moving from a pz tile to a non-pz tile
-		if (maxOnline > 1 && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		if (maxOnline > 1 && player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT, __FUNCTION__);
 			auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
 			int countOutsizePZ = 0;
@@ -2782,7 +2788,7 @@ void ProtocolGame::refreshCyclopediaMonsterTracker(const std::unordered_set<std:
 	msg.addByte(0xB9);
 	msg.addByte(isBoss ? 0x01 : 0x00);
 	msg.addByte(trackerSet.size());
-	for (const auto mtype : trackerSet) {
+	for (const auto &mtype : trackerSet) {
 		auto raceId = mtype->info.raceid;
 		const auto stages = g_ioBosstiary().getBossRaceKillStages(mtype->info.bosstiaryRace);
 		if (isBoss && (stages.empty() || stages.size() != 3)) {
@@ -3727,7 +3733,7 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 	uint16_t mountSize = 0;
 	auto startMounts = msg.getBufferPosition();
 	msg.skipBytes(2);
-	for (const auto mount : g_game().mounts.getMounts()) {
+	for (const auto &mount : g_game().mounts.getMounts()) {
 		const std::string type = mount->type;
 		if (player->hasMount(mount)) {
 			++mountSize;
@@ -3947,7 +3953,7 @@ void ProtocolGame::sendBasicData() {
 	msg.addByte(player->getVocation()->getClientId());
 
 	// Prey window
-	if (player->getVocation()->getId() == 0 && player->getGroup()->id < account::GROUP_TYPE_GAMEMASTER) {
+	if (player->getVocation()->getId() == 0 && player->getGroup()->id < GROUP_TYPE_GAMEMASTER) {
 		msg.addByte(0);
 	} else {
 		msg.addByte(1); // has reached Main (allow player to open Prey window)
@@ -4641,8 +4647,8 @@ void ProtocolGame::updateCoinBalance() {
 			[](uint32_t playerId) {
 				auto threadPlayer = g_game().getPlayerByID(playerId);
 				if (threadPlayer && threadPlayer->getAccount()) {
-					auto [coins, errCoin] = threadPlayer->getAccount()->getCoins(account::CoinType::COIN);
-					auto [transferCoins, errTCoin] = threadPlayer->getAccount()->getCoins(account::CoinType::TRANSFERABLE);
+					auto [coins, errCoin] = threadPlayer->getAccount()->getCoins(enumToValue(CoinType::Normal));
+					auto [transferCoins, errTCoin] = threadPlayer->getAccount()->getCoins(enumToValue(CoinType::Transferable));
 
 					threadPlayer->coinBalance = coins;
 					threadPlayer->coinTransferableBalance = transferCoins;
@@ -6250,7 +6256,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 
 		if (isLogin) {
 			if (std::shared_ptr<Player> creaturePlayer = creature->getPlayer()) {
-				if (!creaturePlayer->isAccessPlayer() || creaturePlayer->getAccountType() == account::ACCOUNT_TYPE_NORMAL) {
+				if (!creaturePlayer->isAccessPlayer() || creaturePlayer->getAccountType() == ACCOUNT_TYPE_NORMAL) {
 					sendMagicEffect(pos, CONST_ME_TELEPORT);
 				}
 			} else {
@@ -6273,7 +6279,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 
 	// Allow bug report (Ctrl + Z)
 	if (oldProtocol) {
-		if (player->getAccountType() >= account::ACCOUNT_TYPE_NORMAL) {
+		if (player->getAccountType() >= ACCOUNT_TYPE_NORMAL) {
 			msg.addByte(0x01);
 		} else {
 			msg.addByte(0x00);

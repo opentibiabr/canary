@@ -13,15 +13,9 @@
 
 class Task {
 public:
-	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context) :
-		func(std::move(f)), context(context), utime(OTSYS_TIME()), expiration(expiresAfterMs > 0 ? OTSYS_TIME() + expiresAfterMs : 0) {
-		assert(!this->context.empty() && "Context cannot be empty!");
-	}
+	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context);
 
-	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true) :
-		func(std::move(f)), context(context), utime(OTSYS_TIME() + delay), delay(delay), cycle(cycle), log(log) {
-		assert(!this->context.empty() && "Context cannot be empty!");
-	}
+	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true);
 
 	~Task() = default;
 

@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include "account/account.hpp"
 #include "items/containers/container.hpp"
 #include "creatures/creature.hpp"
 #include "items/cylinder.hpp"
@@ -34,6 +33,7 @@
 #include "vocations/vocation.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "game/bank/bank.hpp"
+#include "enums/object_category.hpp"
 
 class House;
 class NetworkMessage;
@@ -49,6 +49,9 @@ class TaskHuntingSlot;
 class Spell;
 class PlayerWheel;
 class Spectators;
+class Account;
+
+struct ModalWindow;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -593,22 +596,14 @@ public:
 	uint8_t getSoul() const {
 		return soul;
 	}
-	bool isAccessPlayer() const {
-		return group->access;
-	}
-	bool isPlayerGroup() const {
-		return group->id <= account::GROUP_TYPE_SENIORTUTOR;
-	}
+	bool isAccessPlayer() const;
+	bool isPlayerGroup() const;
 	bool isPremium() const;
-	uint32_t getPremiumDays() const {
-		return account->getPremiumRemainingDays();
-	}
-	time_t getPremiumLastDay() const {
-		return account->getPremiumLastDay();
-	}
+	uint32_t getPremiumDays() const;
+	time_t getPremiumLastDay() const;
 
 	bool isVip() const {
-		return g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && getPremiumDays() > 0;
+		return g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && (getPremiumDays() > 0 || getPremiumLastDay() > getTimeNow());
 	}
 
 	void setTibiaCoins(int32_t v);
@@ -2099,27 +2094,10 @@ public:
 	}
 
 	// Account
-	bool setAccount(uint32_t accountId) {
-		if (account) {
-			g_logger().warn("Account was already set!");
-			return true;
-		}
-
-		account = std::make_shared<account::Account>(accountId);
-		return account::ERROR_NO == account->load();
-	}
-
-	account::AccountType getAccountType() const {
-		return account ? account->getAccountType() : account::AccountType::ACCOUNT_TYPE_NORMAL;
-	}
-
-	uint32_t getAccountId() const {
-		return account ? account->getID() : 0;
-	}
-
-	std::shared_ptr<account::Account> getAccount() const {
-		return account;
-	}
+	bool setAccount(uint32_t accountId);
+	uint8_t getAccountType() const;
+	uint32_t getAccountId() const;
+	std::shared_ptr<Account> getAccount() const;
 
 	// Prey system
 	void initializePrey();
@@ -3001,7 +2979,7 @@ private:
 
 	std::mutex quickLootMutex;
 
-	std::shared_ptr<account::Account> account;
+	std::shared_ptr<Account> account;
 	bool online = true;
 
 	bool hasQuiverEquipped() const;

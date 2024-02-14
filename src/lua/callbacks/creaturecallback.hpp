@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include "pch.hpp"
 #include "creatures/creature.hpp"
 
 class Creature;

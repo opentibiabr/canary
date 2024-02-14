@@ -4139,15 +4139,21 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 		}
 		case MESSAGE_HEALED:
 		case MESSAGE_HEALED_OTHERS: {
-			msg.addPosition(message.position);
-			msg.add<uint32_t>(message.primary.value);
-			msg.addByte(message.primary.color);
+			if (!oldProtocol) {
+				msg.addPosition(message.position);
+				msg.add<uint32_t>(message.primary.value);
+				msg.addByte(message.primary.color);
+			}
 			break;
 		}
 		case MESSAGE_EXPERIENCE:
 		case MESSAGE_EXPERIENCE_OTHERS: {
 			msg.addPosition(message.position);
-			msg.add<uint64_t>(message.primary.value);
+			if (!oldProtocol) {
+				msg.add<uint64_t>(message.primary.value);
+			} else {
+				msg.add<uint32_t>(message.primary.value);
+			}
 			msg.addByte(message.primary.color);
 			break;
 		}

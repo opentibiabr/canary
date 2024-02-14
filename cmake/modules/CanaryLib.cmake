@@ -14,27 +14,22 @@ add_subdirectory(lib)
 add_subdirectory(kv)
 add_subdirectory(lua)
 add_subdirectory(map)
+add_subdirectory(protobuf)
 add_subdirectory(security)
 add_subdirectory(server)
 add_subdirectory(utils)
 
 # Add more global sources - please add preferably in the sub_directory CMakeLists.
-set(ProtobufFiles
-	protobuf/appearances.pb.cc
-	protobuf/kv.pb.cc
-)
-
-# Add more global sources - please add preferably in the sub_directory CMakeLists.
-target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp ${ProtobufFiles})
-
-# Skip unity build inclusion for protobuf files
-set_source_files_properties(
-    ${ProtobufFiles} PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON
-)
-
+target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp)
 
 # Add public pre compiler header to lib, to pass down to related targets
-target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
+if (NOT SPEED_UP_BUILD_UNITY)
+    target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
+endif()
+
+if(NOT SPEED_UP_BUILD_UNITY AND USE_PRECOMPILED_HEADERS)
+    target_compile_definitions(${PROJECT_NAME}_lib PUBLIC -DUSE_PRECOMPILED_HEADERS)
+endif()
 
 # *****************************************************************************
 # Build flags - need to be set before the links and sources
@@ -42,6 +37,14 @@ target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
 if (CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(${PROJECT_NAME}_lib PRIVATE -Wno-deprecated-declarations)
 endif()
+
+# Sets the NDEBUG macro for RelWithDebInfo and Release configurations.
+# This disables assertions in these configurations, optimizing the code for performance
+# and reducing debugging overhead, while keeping debug information available for diagnostics.
+target_compile_definitions(${PROJECT_NAME}_lib PUBLIC
+    $<$<CONFIG:RelWithDebInfo>:NDEBUG>
+    $<$<CONFIG:Release>:NDEBUG>
+)
 
 # === IPO ===
 if(MSVC)
@@ -52,8 +55,8 @@ if(MSVC)
             MODULE_LINKER_FLAGS "/LTCG"
             EXE_LINKER_FLAGS "/LTCG")
 else()
-	include(CheckIPOSupported)
-	check_ipo_supported(RESULT result)
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT result)
     if(result)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto=auto")
         message(STATUS "IPO/LTO enabled with -flto=auto for non-MSVC compiler.")
@@ -102,14 +105,15 @@ target_link_libraries(${PROJECT_NAME}_lib
         unofficial::argon2::libargon2
         unofficial::libmariadb
         unofficial::mariadbclient
-		opentelemetry-cpp::common
-		opentelemetry-cpp::metrics
-		opentelemetry-cpp::api
-		opentelemetry-cpp::ext
-		opentelemetry-cpp::sdk
-		opentelemetry-cpp::logs
-		opentelemetry-cpp::ostream_metrics_exporter
-		opentelemetry-cpp::prometheus_exporter
+        opentelemetry-cpp::common
+        opentelemetry-cpp::metrics
+        opentelemetry-cpp::api
+        opentelemetry-cpp::ext
+        opentelemetry-cpp::sdk
+        opentelemetry-cpp::logs
+        opentelemetry-cpp::ostream_metrics_exporter
+        opentelemetry-cpp::prometheus_exporter
+        protobuf
 )
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -121,8 +125,10 @@ endif()
 if (MSVC)
     if(BUILD_STATIC_LIBRARY)
         target_link_libraries(${PROJECT_NAME}_lib PUBLIC jsoncpp_static)
+        set(VCPKG_TARGET_TRIPLET "x64-windows-static" CACHE STRING "")
     else()
         target_link_libraries(${PROJECT_NAME}_lib PUBLIC jsoncpp_lib)
+        set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "")
     endif()
 
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_CLIENT_LIBS})

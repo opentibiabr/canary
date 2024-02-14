@@ -18,6 +18,8 @@
 #include "creatures/creature.hpp"
 #include "declarations.hpp"
 #include "game/functions/game_reload.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_group_type.hpp"
 
 #define registerMagicEnum(luaState, enumClassType)               \
 	{                                                            \
@@ -215,18 +217,18 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 }
 
 void LuaEnums::initAccountEnums(lua_State* L) {
-	registerEnum(L, account::ACCOUNT_TYPE_NORMAL);
-	registerEnum(L, account::ACCOUNT_TYPE_TUTOR);
-	registerEnum(L, account::ACCOUNT_TYPE_SENIORTUTOR);
-	registerEnum(L, account::ACCOUNT_TYPE_GAMEMASTER);
-	registerEnum(L, account::ACCOUNT_TYPE_GOD);
+	registerEnum(L, ACCOUNT_TYPE_NORMAL);
+	registerEnum(L, ACCOUNT_TYPE_TUTOR);
+	registerEnum(L, ACCOUNT_TYPE_SENIORTUTOR);
+	registerEnum(L, ACCOUNT_TYPE_GAMEMASTER);
+	registerEnum(L, ACCOUNT_TYPE_GOD);
 
-	registerEnum(L, account::GROUP_TYPE_NORMAL);
-	registerEnum(L, account::GROUP_TYPE_TUTOR);
-	registerEnum(L, account::GROUP_TYPE_SENIORTUTOR);
-	registerEnum(L, account::GROUP_TYPE_GAMEMASTER);
-	registerEnum(L, account::GROUP_TYPE_COMMUNITYMANAGER);
-	registerEnum(L, account::GROUP_TYPE_GOD);
+	registerEnum(L, GROUP_TYPE_NORMAL);
+	registerEnum(L, GROUP_TYPE_TUTOR);
+	registerEnum(L, GROUP_TYPE_SENIORTUTOR);
+	registerEnum(L, GROUP_TYPE_GAMEMASTER);
+	registerEnum(L, GROUP_TYPE_COMMUNITYMANAGER);
+	registerEnum(L, GROUP_TYPE_GOD);
 }
 
 void LuaEnums::initDailyRewardEnums(lua_State* L) {

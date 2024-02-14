@@ -23,7 +23,17 @@
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.hpp"
 #include "items/items_classification.hpp"
-#include "protobuf/appearances.pb.h"
+#include "modal_window/modal_window.hpp"
+#include "enums/object_category.hpp"
+
+// Forward declaration for protobuf class
+namespace Canary {
+	namespace protobuf {
+		namespace appearances {
+			class Appearances;
+		} // namespace appearances
+	} // namespace protobuf
+} // namespace Canary
 
 class ServiceManager;
 class Creature;
@@ -161,7 +171,7 @@ public:
 
 	ReturnValue getPlayerByNameWildcard(const std::string &s, std::shared_ptr<Player> &player);
 
-	std::vector<std::shared_ptr<Player>> getPlayersByAccount(std::shared_ptr<account::Account> acc, bool allowOffline = false);
+	std::vector<std::shared_ptr<Player>> getPlayersByAccount(std::shared_ptr<Account> acc, bool allowOffline = false);
 
 	bool internalPlaceCreature(std::shared_ptr<Creature> creature, const Position &pos, bool extendedPos = false, bool forced = false, bool creatureCheck = false);
 
@@ -361,7 +371,6 @@ public:
 	void playerLootAllCorpses(std::shared_ptr<Player> player, const Position &pos, bool lootAllCorpses);
 	void playerSetManagedContainer(uint32_t playerId, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos, bool isLootContainer);
 	void playerClearManagedContainer(uint32_t playerId, ObjectCategory_t category, bool isLootContainer);
-	;
 	void playerOpenManagedContainer(uint32_t playerId, ObjectCategory_t category, bool isLootContainer);
 	void playerSetQuickLootFallback(uint32_t playerId, bool fallback);
 	void playerQuickLootBlackWhitelist(uint32_t playerId, QuickLootFilter_t filter, const std::vector<uint16_t> itemIds);
@@ -410,7 +419,7 @@ public:
 
 	void cleanup();
 	void shutdown();
-	void dieSafely(std::string errorMsg);
+	void dieSafely(const std::string &errorMsg);
 	void addBestiaryList(uint16_t raceid, std::string name);
 	const std::map<uint16_t, std::string> &getBestiaryList() const {
 		return BestiaryList;
@@ -567,7 +576,7 @@ public:
 	Map map;
 	Mounts mounts;
 	Raids raids;
-	Canary::protobuf::appearances::Appearances appearances;
+	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 
 	auto getTilesToClean() const {
 		return tilesToClean;

@@ -23,7 +23,7 @@ GameStore.OfferTypes = {
 	OFFER_TYPE_TEMPLE = 13,
 	OFFER_TYPE_BLESSINGS = 14,
 	OFFER_TYPE_PREMIUM = 15,
-	OFFER_TYPE_POUCH = 16,
+	-- 16, -- Empty
 	OFFER_TYPE_ALLBLESSINGS = 17,
 	OFFER_TYPE_INSTANT_REWARD_ACCESS = 18,
 	OFFER_TYPE_CHARMS = 19,
@@ -415,7 +415,6 @@ function parseBuyStoreOffer(playerId, msg)
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_TEMPLE
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_POUCH
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_NAMECHANGE
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_SEXCHANGE
@@ -446,8 +445,6 @@ function parseBuyStoreOffer(playerId, msg)
 			GameStore.processItemPurchase(player, offer.itemtype, offer.count, offer.movable, offer.setOwner)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
 			GameStore.processItemPurchase(player, offer.itemtype, offer.count, offer.movable, offer.setOwner)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_POUCH then
-			GameStore.processItemPurchase(player, offer.itemtype, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS then
 			GameStore.processInstantRewardAccess(player, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_CHARMS then
@@ -631,7 +628,6 @@ function Player.canBuyOffer(self, offer)
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYBONUS
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_TEMPLE
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_POUCH
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT
 		and not offer.id
@@ -645,13 +641,7 @@ function Player.canBuyOffer(self, offer)
 	end
 
 	if disabled ~= 1 then
-		if offer.type == GameStore.OfferTypes.OFFER_TYPE_POUCH then
-			local pouch = self:getItemById(23721, true)
-			if pouch then
-				disabled = 1
-				disabledReason = "You already have a Loot Pouch."
-			end
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
+		if offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
 			local item = self:getItemById(offer.itemtype, true)
 			if item then
 				disabled = 1
@@ -777,6 +767,35 @@ function Player.canBuyOffer(self, offer)
 	return { disabled = disabled, disabledReason = disabledReason }
 end
 
+function Player.canReceiveStoreItems(self, offerId, offerCount)
+	local inbox = self:getStoreInbox()
+	if not inbox then
+		return false, "No store inbox found."
+	end
+
+	local itemType = ItemType(offerId)
+	local slotsNeeded = offerCount or 1
+	if itemType and itemType:isStackable() then
+		slotsNeeded = math.ceil(slotsNeeded / itemType:getStackSize())
+	end
+
+	local inboxItems = inbox:getItems(true)
+	local slotsOccupied = #inboxItems
+	local maxCapacity = inbox:getMaxCapacity()
+	local slotsAvailable = maxCapacity - slotsOccupied
+
+	if slotsOccupied + slotsNeeded > maxCapacity then
+		return false, string.format("Not enough free slots in your store inbox. You need %d more slot(s). Currently occupied: %d/%d", slotsNeeded - slotsAvailable, slotsOccupied, maxCapacity)
+	end
+
+	local totalWeight = itemType:getWeight(offerCount or 1)
+	if self:getFreeCapacity() < totalWeight then
+		return false, "Please make sure you have enough free capacity to hold this item."
+	end
+
+	return true, ""
+end
+
 function sendShowStoreOffers(playerId, category, redirectId)
 	local player = Player(playerId)
 	if not player then
@@ -881,7 +900,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 				end
 
 				msg:addU32(off.id)
-				msg:addU16(off.count)
+				msg:addU16(off.count or off.charges)
 				msg:addU32(xpBoostPrice or nameLockPrice or off.price)
 				msg:addByte(off.coinType or 0x00)
 
@@ -1508,8 +1527,9 @@ end
 -- index is present the error is assumed to be unhandled.
 
 function GameStore.processItemPurchase(player, offerId, offerCount, movable, setOwner)
-	if player:getFreeCapacity() < ItemType(offerId):getWeight(offerCount) then
-		return error({ code = 0, message = "Please make sure you have free capacity to hold this item." })
+	local canReceive, errorMsg = player:canReceiveStoreItems(offerId, offerCount)
+	if not canReceive then
+		return error({ code = 0, message = errorMsg })
 	end
 
 	for t = 1, offerCount do
@@ -1517,11 +1537,13 @@ function GameStore.processItemPurchase(player, offerId, offerCount, movable, set
 	end
 end
 
-function GameStore.processChargesPurchase(player, itemtype, name, charges, movable, setOwner)
-	if player:getFreeCapacity() < ItemType(itemtype):getWeight(1) then
-		return error({ code = 0, message = "Please make sure you have free capacity to hold this item." })
+function GameStore.processChargesPurchase(player, offerId, name, charges, movable, setOwner)
+	local canReceive, errorMsg = player:canReceiveStoreItems(offerId, 1)
+	if not canReceive then
+		return error({ code = 0, message = errorMsg })
 	end
-	player:addItemStoreInbox(itemtype, charges, movable, setOwner)
+
+	player:addItemStoreInbox(offerId, charges, movable, setOwner)
 end
 
 function GameStore.processSingleBlessingPurchase(player, blessId, count)
@@ -1558,65 +1580,21 @@ function GameStore.processPremiumPurchase(player, offerId)
 end
 
 function GameStore.processStackablePurchase(player, offerId, offerCount, offerName, movable, setOwner)
-	local function isKegItem(itemId)
-		return itemId >= ITEM_KEG_START and itemId <= ITEM_KEG_END
-	end
-
-	local PARCEL_ID = 3504
-	local isKeg = isKegItem(offerId)
-
-	if isKeg then
-		if player:getFreeCapacity() < ItemType(offerId):getWeight(1) + ItemType(PARCEL_ID):getWeight() then
-			return error({ code = 0, message = "Please make sure you have free capacity to hold this item." })
-		end
-	elseif player:getFreeCapacity() < ItemType(offerId):getWeight(offerCount) + ItemType(PARCEL_ID):getWeight() then
-		return error({ code = 0, message = "Please make sure you have free capacity to hold this item." })
+	local canReceive, errorMsg = player:canReceiveStoreItems(offerId, offerCount)
+	if not canReceive then
+		return error({ code = 0, message = errorMsg })
 	end
 
 	local inbox = player:getStoreInbox()
-	local inboxItems = inbox:getItems()
-	if inbox and #inboxItems <= inbox:getMaxCapacity() then
-		if (isKeg and offerCount > 500) or offerCount > 100 then
-			local parcel = inbox:addItem(PARCEL_ID, 1)
-			parcel:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
-			if parcel then
-				parcel:setAttribute(ITEM_ATTRIBUTE_NAME, "" .. offerCount .. "x " .. offerName .. " package.")
-				local pendingCount = offerCount
-				local limit = isKeg and 500 or 100
-				while pendingCount > 0 do
-					local pack
-					if pendingCount > limit then
-						pack = limit
-					else
-						pack = pendingCount
-					end
-					if isKeg then
-						local kegItem = parcel:addItem(offerId, 1)
-						kegItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, pack)
-
-						if movable ~= true and kegItem then
-							kegItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
-						end
-					else
-						local parcelItem = parcel:addItem(offerId, pack)
-						if movable ~= true and parcelItem then
-							parcelItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
-						end
-					end
-					pendingCount = pendingCount - pack
-				end
-			end
-		else
-			local item = inbox:addItem(offerId, isKeg and 1 or offerCount)
-			if movable ~= true and item then
+	if inbox then
+		local item = inbox:addItem(offerId, offerCount)
+		if item then
+			if movable ~= true then
 				item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 			end
-			if item and isKeg then
-				item:setAttribute(ITEM_ATTRIBUTE_CHARGES, offerCount)
-			end
+		else
+			return error({ code = 0, message = "Error adding item to store inbox." })
 		end
-	else
-		return error({ code = 0, message = "Please make sure you have free slots in your store inbox." })
 	end
 end
 
@@ -1630,9 +1608,13 @@ function GameStore.processHouseRelatedPurchase(player, offer)
 		itemIds = { itemIds }
 	end
 
+	local canReceive, errorMsg = player:canReceiveStoreItems(#itemIds)
+	if not canReceive then
+		return error({ code = 0, message = errorMsg })
+	end
+
 	local inbox = player:getStoreInbox()
-	local inboxItems = inbox:getItems()
-	if inbox and #inboxItems <= inbox:getMaxCapacity() then
+	if inbox then
 		for _, itemId in ipairs(itemIds) do
 			local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
 			if decoKit then
@@ -1648,8 +1630,6 @@ function GameStore.processHouseRelatedPurchase(player, offer)
 			end
 		end
 		player:sendUpdateContainer(inbox)
-	else
-		return error({ code = 0, message = "Please make sure you have free slots in your store inbox." })
 	end
 end
 

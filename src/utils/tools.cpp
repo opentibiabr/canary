@@ -1613,6 +1613,39 @@ std::string getObjectCategoryName(ObjectCategory_t category) {
 	}
 }
 
+bool isValidObjectCategory(ObjectCategory_t category) {
+	static std::unordered_set<ObjectCategory_t> valid = {
+		OBJECTCATEGORY_NONE,
+		OBJECTCATEGORY_ARMORS,
+		OBJECTCATEGORY_NECKLACES,
+		OBJECTCATEGORY_BOOTS,
+		OBJECTCATEGORY_CONTAINERS,
+		OBJECTCATEGORY_DECORATION,
+		OBJECTCATEGORY_FOOD,
+		OBJECTCATEGORY_HELMETS,
+		OBJECTCATEGORY_LEGS,
+		OBJECTCATEGORY_OTHERS,
+		OBJECTCATEGORY_POTIONS,
+		OBJECTCATEGORY_RINGS,
+		OBJECTCATEGORY_RUNES,
+		OBJECTCATEGORY_SHIELDS,
+		OBJECTCATEGORY_TOOLS,
+		OBJECTCATEGORY_VALUABLES,
+		OBJECTCATEGORY_AMMO,
+		OBJECTCATEGORY_AXES,
+		OBJECTCATEGORY_CLUBS,
+		OBJECTCATEGORY_DISTANCEWEAPONS,
+		OBJECTCATEGORY_SWORDS,
+		OBJECTCATEGORY_WANDS,
+		OBJECTCATEGORY_PREMIUMSCROLLS,
+		OBJECTCATEGORY_TIBIACOINS,
+		OBJECTCATEGORY_CREATUREPRODUCTS,
+		OBJECTCATEGORY_GOLD,
+		OBJECTCATEGORY_DEFAULT,
+	};
+	return valid.contains(category);
+}
+
 uint8_t forgeBonus(int32_t number) {
 	// None
 	if (number < 7400) {
@@ -1775,6 +1808,11 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 	}
 
 	return output.str();
+}
+
+unsigned int getNumberOfCores() {
+	static auto cores = std::thread::hardware_concurrency();
+	return cores;
 }
 
 /**

@@ -104,3 +104,11 @@ bool TalkAction::executeSay(std::shared_ptr<Player> player, const std::string &w
 
 	return getScriptInterface()->callFunction(4);
 }
+
+void TalkAction::setGroupType(uint8_t newGroupType) {
+	m_groupType = newGroupType;
+}
+
+const uint8_t &TalkAction::getGroupType() const {
+	return m_groupType;
+}

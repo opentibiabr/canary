@@ -1,13 +1,5 @@
 local function sendBoostMessage(player, category, isIncreased)
-	local boostMessage = ""
-	if isIncreased then
-		boostMessage = "Event! {category} is increased. Happy Hunting!"
-	else
-		boostMessage = "Event! {category} is decreased. Happy Hunting!"
-	end
-
-	boostMessage = boostMessage:gsub("{category}", category)
-	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, boostMessage)
+	return player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, string.format(isIncreased and "Event! %s is increased. Happy Hunting!" or "Event! %s is decreased. Happy Hunting!", category))
 end
 
 local function onMovementRemoveProtection(playerId, oldPos, time)

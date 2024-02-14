@@ -54,7 +54,7 @@ function playerLogin.onLogin(player)
 	-- Rewards
 	local rewards = #player:getRewardList()
 	if rewards > 0 then
-		player:sendTextMessage(MESSAGE_LOGIN, string.format("You have %d %s in your reward chest.", rewards, rewards > 1 and "rewards" or "reward"))
+		player:sendTextMessage(MESSAGE_LOGIN, string.format("You have %d reward%s in your reward chest.", rewards, rewards > 1 and "s" or ""))
 	end
 
 	-- Rate events:

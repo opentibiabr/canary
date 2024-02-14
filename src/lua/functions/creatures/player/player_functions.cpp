@@ -23,6 +23,10 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "map/spectators.hpp"
 
+#include "enums/account_errors.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_coins.hpp"
+
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 	// player:sendInventory()
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
@@ -282,12 +286,12 @@ int PlayerFunctions::luaPlayerSetAccountType(lua_State* L) {
 		return 1;
 	}
 
-	if (player->getAccount()->setAccountType(getNumber<account::AccountType>(L, 2)) != account::ERROR_NO) {
+	if (player->getAccount()->setAccountType(getNumber<uint8_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		lua_pushnil(L);
 		return 1;
 	}
@@ -2491,7 +2495,7 @@ int PlayerFunctions::luaPlayerAddPremiumDays(lua_State* L) {
 
 	player->getAccount()->addPremiumDays(addDays);
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		return 1;
 	}
 
@@ -2520,7 +2524,7 @@ int PlayerFunctions::luaPlayerRemovePremiumDays(lua_State* L) {
 
 	player->getAccount()->addPremiumDays(-removeDays);
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		return 1;
 	}
 
@@ -2537,9 +2541,9 @@ int PlayerFunctions::luaPlayerGetTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-	auto [coins, result] = player->getAccount()->getCoins(account::CoinType::COIN);
+	auto [coins, result] = player->getAccount()->getCoins(enumToValue(CoinType::Normal));
 
-	if (result == account::ERROR_NO) {
+	if (result == enumToValue(AccountErrors_t::Ok)) {
 		lua_pushnumber(L, coins);
 	}
 
@@ -2555,13 +2559,13 @@ int PlayerFunctions::luaPlayerAddTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->addCoins(account::CoinType::COIN, getNumber<uint32_t>(L, 2)) != account::ERROR_NO) {
+	if (player->account->addCoins(enumToValue(CoinType::Normal), getNumber<uint32_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("Failed to add coins");
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("Failed to save account");
 		lua_pushnil(L);
 		return 1;
@@ -2581,12 +2585,12 @@ int PlayerFunctions::luaPlayerRemoveTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->removeCoins(account::CoinType::COIN, getNumber<uint32_t>(L, 2)) != account::ERROR_NO) {
+	if (player->account->removeCoins(enumToValue(CoinType::Normal), getNumber<uint32_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("Failed to remove coins");
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("Failed to save account");
 		lua_pushnil(L);
 		return 1;
@@ -2606,9 +2610,9 @@ int PlayerFunctions::luaPlayerGetTransferableCoins(lua_State* L) {
 		return 1;
 	}
 
-	auto [coins, result] = player->getAccount()->getCoins(account::CoinType::TRANSFERABLE);
+	auto [coins, result] = player->getAccount()->getCoins(enumToValue(CoinType::Transferable));
 
-	if (result == account::ERROR_NO) {
+	if (result == enumToValue(AccountErrors_t::Ok)) {
 		lua_pushnumber(L, coins);
 	}
 
@@ -2624,13 +2628,13 @@ int PlayerFunctions::luaPlayerAddTransferableCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->addCoins(account::CoinType::TRANSFERABLE, getNumber<uint32_t>(L, 2)) != account::ERROR_NO) {
+	if (player->account->addCoins(enumToValue(CoinType::Transferable), getNumber<uint32_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("failed to add transferable coins");
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("failed to save account");
 		lua_pushnil(L);
 		return 1;
@@ -2650,13 +2654,13 @@ int PlayerFunctions::luaPlayerRemoveTransferableCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->removeCoins(account::CoinType::TRANSFERABLE, getNumber<uint32_t>(L, 2)) != account::ERROR_NO) {
+	if (player->account->removeCoins(enumToValue(CoinType::Transferable), getNumber<uint32_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("failed to remove transferable coins");
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("failed to save account");
 		lua_pushnil(L);
 		return 1;

@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include "pch.hpp"
 #include "creatures/creature.hpp"
 
 class Player;
@@ -49,56 +48,16 @@ public:
 		requires std::is_base_of_v<Creature, T>
 	Spectators filter();
 
-	bool contains(const std::shared_ptr<Creature> &creature) {
-		return creatures.contains(creature);
-	}
-
-	bool erase(const std::shared_ptr<Creature> &creature) {
-		return creatures.erase(creature);
-	}
-
-	template <class F>
-	bool erase_if(F fnc) {
-		return std::erase_if(creatures, std::move(fnc)) > 0;
-	}
-
-	Spectators insert(const std::shared_ptr<Creature> &creature) {
-		if (creature) {
-			creatures.emplace(creature);
-		}
-		return *this;
-	}
-
-	Spectators insertAll(const SpectatorList &list) {
-		if (!list.empty()) {
-			creatures.insertAll(list);
-		}
-		return *this;
-	}
-
-	Spectators join(Spectators &anotherSpectators) {
-		return insertAll(anotherSpectators.creatures.data());
-	}
-
-	bool empty() const noexcept {
-		return creatures.empty();
-	}
-
-	size_t size() noexcept {
-		return creatures.size();
-	}
-
-	auto begin() noexcept {
-		return creatures.begin();
-	}
-
-	auto end() noexcept {
-		return creatures.end();
-	}
-
-	const auto &data() noexcept {
-		return creatures.data();
-	}
+	bool contains(const std::shared_ptr<Creature> &creature);
+	bool erase(const std::shared_ptr<Creature> &creature);
+	Spectators insert(const std::shared_ptr<Creature> &creature);
+	Spectators insertAll(const SpectatorList &list);
+	Spectators join(Spectators &anotherSpectators);
+	bool empty() const noexcept;
+	size_t size() noexcept;
+	CreatureVector::iterator begin() noexcept;
+	CreatureVector::iterator end() noexcept;
+	const CreatureVector &data() noexcept;
 
 private:
 	static phmap::flat_hash_map<Position, SpectatorsCache> spectatorsCache;

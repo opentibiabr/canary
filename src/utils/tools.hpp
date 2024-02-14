@@ -13,6 +13,15 @@
 #include "declarations.hpp"
 #include "enums/item_attribute.hpp"
 #include "game/movement/position.hpp"
+#include "enums/object_category.hpp"
+
+namespace pugi {
+	class xml_parse_result;
+}
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <random>
+#endif
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result);
 
@@ -133,6 +142,7 @@ NameEval_t validateName(const std::string &name);
 bool isCaskItem(uint16_t itemId);
 
 std::string getObjectCategoryName(ObjectCategory_t category);
+bool isValidObjectCategory(ObjectCategory_t category);
 
 int64_t OTSYS_TIME();
 void UPDATE_OTSYS_TIME();
@@ -145,9 +155,7 @@ std::string formatPrice(std::string price, bool space /* = false*/);
 std::vector<std::string> split(const std::string &str);
 std::string getFormattedTimeRemaining(uint32_t time);
 
-static inline unsigned int getNumberOfCores() {
-	return std::thread::hardware_concurrency();
-}
+unsigned int getNumberOfCores();
 
 static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	switch (combatType) {
@@ -197,3 +205,13 @@ static inline double quadraticPoly(double a, double b, double c, double x) {
 }
 
 uint8_t convertWheelGemAffinityToDomain(uint8_t affinity);
+
+template <typename EnumType, typename UnderlyingType = std::underlying_type_t<EnumType>>
+UnderlyingType enumToValue(EnumType value) {
+	return static_cast<UnderlyingType>(value);
+}
+
+template <typename EnumType, typename UnderlyingType = std::underlying_type_t<EnumType>>
+EnumType enumFromValue(UnderlyingType value) {
+	return static_cast<EnumType>(value);
+}

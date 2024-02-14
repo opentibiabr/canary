@@ -30,8 +30,6 @@
 		#define OS_WINDOWS
 	#endif
 
-	#define WIN32_LEAN_AND_MEAN
-
 	#ifdef _MSC_VER
 		#ifdef NDEBUG
 			#define _SECURE_SCL 0
@@ -60,5 +58,3 @@
 #ifndef M_PI
 	#define M_PI 3.14159265358979323846
 #endif
-
-typedef int error_t;

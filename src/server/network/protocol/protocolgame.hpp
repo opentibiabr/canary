@@ -26,6 +26,9 @@ class ProtocolGame;
 class PreySlot;
 class TaskHuntingSlot;
 class TaskHuntingOption;
+
+struct ModalWindow;
+
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
 struct TextMessage {

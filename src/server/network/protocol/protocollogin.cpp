@@ -17,6 +17,7 @@
 #include "creatures/players/management/ban.hpp"
 #include "game/game.hpp"
 #include "core.hpp"
+#include "enums/account_errors.hpp"
 
 void ProtocolLogin::disconnectClient(const std::string &message) {
 	auto output = OutputMessagePool::getOutputMessage();
@@ -29,7 +30,7 @@ void ProtocolLogin::disconnectClient(const std::string &message) {
 }
 
 void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const std::string &password) {
-	account::Account account(accountDescriptor);
+	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
 	if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__)) {
@@ -40,7 +41,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		return;
 	}
 
-	if (account.load() != account::ERROR_NO || !account.authenticate(password)) {
+	if (account.load() != enumToValue(AccountErrors_t::Ok) || !account.authenticate(password)) {
 		std::ostringstream ss;
 		ss << (oldProtocol ? "Username" : "Email") << " or password is not correct.";
 		disconnectClient(ss.str());
@@ -65,7 +66,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 	// Add char list
 	auto [players, result] = account.getAccountPlayers();
-	if (account::ERROR_NO != result) {
+	if (enumToValue(AccountErrors_t::Ok) != result) {
 		g_logger().warn("Account[{}] failed to load players!", account.getID());
 	}
 
@@ -88,10 +89,9 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		output->addString(name, "ProtocolLogin::getCharacterList - name");
 	}
 
-	// Add premium days
-	output->addByte(0);
-
-	output->addByte(account.getPremiumRemainingDays() > 0);
+	// Get premium days, check is premium and get lastday
+	output->addByte(account.getPremiumRemainingDays());
+	output->addByte(account.getPremiumLastDay() > getTimeNow());
 	output->add<uint32_t>(account.getPremiumLastDay());
 
 	send(output);

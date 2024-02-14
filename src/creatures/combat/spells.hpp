@@ -20,6 +20,8 @@ class InstantSpell;
 class RuneSpell;
 class Spell;
 
+struct LuaVariant;
+
 using VocSpellMap = std::map<uint16_t, bool>;
 
 class Spells final : public Scripts {

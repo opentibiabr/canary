@@ -442,9 +442,9 @@ function parseBuyStoreOffer(playerId, msg)
 	-- Handled errors have a code index and unhandled errors do not
 	local pcallOk, pcallError = pcall(function()
 		if offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM then
-			GameStore.processItemPurchase(player, offer.itemtype, offer.count, offer.movable, offer.setOwner)
+			GameStore.processItemPurchase(player, offer.itemtype, offer.count or 1, offer.movable, offer.setOwner)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
-			GameStore.processItemPurchase(player, offer.itemtype, offer.count, offer.movable, offer.setOwner)
+			GameStore.processItemPurchase(player, offer.itemtype, offer.count or 1, offer.movable, offer.setOwner)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS then
 			GameStore.processInstantRewardAccess(player, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_CHARMS then
@@ -1585,15 +1585,26 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 		return error({ code = 0, message = errorMsg })
 	end
 
+	local iType = ItemType(offerId)
+	if not iType then
+		return nil
+	end
+
 	local inbox = player:getStoreInbox()
 	if inbox then
-		local item = inbox:addItem(offerId, offerCount)
-		if item then
-			if movable ~= true then
-				item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+		local stackSize = iType:getStackSize()
+		local remainingCount = offerCount
+		while remainingCount > 0 do
+			local countToAdd = math.min(remainingCount, stackSize)
+			local inboxItem = inbox:addItem(offerId, countToAdd)
+			if inboxItem then
+				if movable ~= true then
+					inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+				end
+			else
+				return error({ code = 0, message = "Error adding item to store inbox." })
 			end
-		else
-			return error({ code = 0, message = "Error adding item to store inbox." })
+			remainingCount = remainingCount - countToAdd
 		end
 	end
 end

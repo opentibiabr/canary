@@ -84,8 +84,7 @@ function playerLogin.onLogin(player)
 		local outfitId = (sex == 1) and 746 or 745
 		for outfitAddOn = 0, 2 do
 			if recruiterStatus >= outfitAddOn * 3 + 1 then
-				local hasOutfit = player:hasOutfit(outfitId, outfitAddOn)
-				if not hasOutfit then
+				if not player:hasOutfit(outfitId, outfitAddOn) then
 					if outfitAddOn == 0 then
 						player:addOutfit(outfitId)
 					else

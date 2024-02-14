@@ -66,6 +66,11 @@ AStarNode* AStarNodes::getBestNode() {
 
 void AStarNodes::closeNode(const AStarNode* node) {
 	size_t index = node - nodes;
+	if (index >= MAX_NODES) {
+		g_logger().error("[{}]: node index out of bounds!", __FUNCTION__);
+		return;
+	}
+
 	assert(index < MAX_NODES);
 	openNodes[index] = false;
 	++closedNodes;
@@ -73,6 +78,11 @@ void AStarNodes::closeNode(const AStarNode* node) {
 
 void AStarNodes::openNode(const AStarNode* node) {
 	size_t index = node - nodes;
+	if (index >= MAX_NODES) {
+		g_logger().error("[{}]: node index out of bounds!", __FUNCTION__);
+		return;
+	}
+
 	assert(index < MAX_NODES);
 	if (!openNodes[index]) {
 		openNodes[index] = true;

@@ -19,7 +19,7 @@ class DI final {
 private:
 	inline static di::extension::injector<>* testContainer;
 	const inline static auto defaultContainer = di::make_injector(
-		di::bind<account::AccountRepository>().to<account::AccountRepositoryDB>().in(di::singleton),
+		di::bind<AccountRepository>().to<AccountRepositoryDB>().in(di::singleton),
 		di::bind<KVStore>().to<KVSQL>().in(di::singleton),
 		di::bind<Logger>().to<LogWithSpdLog>().in(di::singleton)
 	);

@@ -548,7 +548,12 @@ CallBack* Combat::getCallback(CallBackParam_t key) {
 }
 
 void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data) {
+	if (!data) {
+		g_logger().error("[{}]: CombatDamage is nullptr", __FUNCTION__);
+		return;
+	}
 	assert(data);
+
 	CombatDamage damage = *data;
 
 	std::shared_ptr<Player> attackerPlayer = nullptr;
@@ -656,6 +661,11 @@ CombatDamage Combat::applyImbuementElementalDamage(std::shared_ptr<Player> attac
 }
 
 void Combat::CombatManaFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data) {
+	if (!data) {
+		g_logger().error("[{}]: CombatDamage is nullptr", __FUNCTION__);
+		return;
+	}
+
 	assert(data);
 	CombatDamage damage = *data;
 	if (damage.primary.value < 0) {

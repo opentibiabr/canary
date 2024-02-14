@@ -10,6 +10,7 @@
 #include "pch.hpp"
 
 #include "config/configmanager.hpp"
+#include "lib/di/container.hpp"
 #include "declarations.hpp"
 #include "game/game.hpp"
 #include "server/network/webhook/webhook.hpp"
@@ -18,6 +19,10 @@
 	#undef lua_strlen
 	#define lua_strlen lua_rawlen
 #endif
+
+ConfigManager &ConfigManager::getInstance() {
+	return inject<ConfigManager>();
+}
 
 bool ConfigManager::load() {
 	lua_State* L = luaL_newstate();

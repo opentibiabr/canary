@@ -227,6 +227,7 @@
     <ClInclude Include="..\src\utils\wildcardtree.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\account\account_repository.cpp" />
     <ClCompile Include="..\src\account\account_repository_db.cpp" />
     <ClCompile Include="..\src\config\configmanager.cpp" />
     <ClCompile Include="..\src\creatures\appearance\mounts\mounts.cpp" />
@@ -472,7 +473,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
-    <VcpkgAutoLink>false</VcpkgAutoLink>
+    <VcpkgAutoLink>true</VcpkgAutoLink>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgInstalledDir>vcpkg_installed</VcpkgInstalledDir>
@@ -482,6 +483,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Vcpkg">
     <VcpkgInstalledDir>vcpkg_installed</VcpkgInstalledDir>
     <VcpkgTriplet>x64-windows</VcpkgTriplet>
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgUseMD>false</VcpkgUseMD>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -502,7 +505,8 @@
       <IncludeInUnityFile>true</IncludeInUnityFile>
       <OpenMPSupport>true</OpenMPSupport>
       <LanguageStandard_C>Default</LanguageStandard_C>
-      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus /fsanitize=address %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>_DISABLE_VECTOR_ANNOTATION;_DISABLE_STRING_ANNOTATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -512,7 +516,7 @@
       </AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <GenerateMapFile>false</GenerateMapFile>
-      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <AdditionalDependencies>$(CANARY_LIBDEPS)</AdditionalDependencies>
@@ -537,6 +541,7 @@
       <IncludeInUnityFile>true</IncludeInUnityFile>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>_DISABLE_VECTOR_ANNOTATION;_DISABLE_STRING_ANNOTATION;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -572,7 +577,7 @@
     <ProtoPath>$(GITHUB_WORKSPACE)\src\protobuf</ProtoPath>
   </PropertyGroup>
   <ItemGroup>
-      <ProtoFiles Include="$(ProtoPath)\*.proto" />
+    <ProtoFiles Include="$(ProtoPath)\*.proto" />
   </ItemGroup>
   <Target Name="ProtoCompile" BeforeTargets="PrepareForBuild" DependsOnTargets="VcpkgInstallManifestDependencies">
     <Exec Command="$(ProtocPath) --proto_path=$(ProtoPath) --cpp_out=generated %(ProtoFiles.Identity)" />

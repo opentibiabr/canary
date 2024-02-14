@@ -1,5 +1,5 @@
 local function sendBoostMessage(player, category, isIncreased)
-	return player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, string.format(isIncreased and "Event! %s is increased. Happy Hunting!" or "Event! %s is decreased. Happy Hunting!", category))
+	return player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, string.format("Event! %s is %screased. Happy Hunting!", category, isIncreased and "in" or "de"))
 end
 
 local function onMovementRemoveProtection(playerId, oldPos, time)
@@ -79,20 +79,18 @@ function playerLogin.onLogin(player)
 	local accountId = getAccountNumberByPlayerName(playerName)
 	local resultId = db.storeQuery("SELECT `recruiter` FROM `accounts` WHERE `id`=" .. accountId)
 	if resultId then
-		return true
-	end
-
-	local recruiterStatus = Result.getNumber(resultId, "recruiter")
-	local sex = player:getSex()
-	local outfitId = (sex == 1) and 746 or 745
-	for outfitAddOn = 0, 2 do
-		if recruiterStatus >= outfitAddOn * 3 + 1 then
-			local hasOutfit = player:hasOutfit(outfitId, outfitAddOn)
-			if not hasOutfit then
-				if outfitAddOn == 0 then
-					player:addOutfit(outfitId)
-				else
-					player:addOutfitAddon(outfitId, outfitAddOn)
+		local recruiterStatus = Result.getNumber(resultId, "recruiter")
+		local sex = player:getSex()
+		local outfitId = (sex == 1) and 746 or 745
+		for outfitAddOn = 0, 2 do
+			if recruiterStatus >= outfitAddOn * 3 + 1 then
+				local hasOutfit = player:hasOutfit(outfitId, outfitAddOn)
+				if not hasOutfit then
+					if outfitAddOn == 0 then
+						player:addOutfit(outfitId)
+					else
+						player:addOutfitAddon(outfitId, outfitAddOn)
+					end
 				end
 			end
 		end

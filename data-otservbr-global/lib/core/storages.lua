@@ -3081,9 +3081,9 @@ GlobalStorage = {
 	},
 	WorldBoard = {
 		NightmareIsle = {
-			ankrahmunNorth = 60191,
-			darashiaNorth = 60192,
-			darashiaWest = 60193,
+			AnkrahmunNorth = 60191,
+			DarashiaNorth = 60192,
+			DarashiaWest = 60193,
 		},
 	},
 	FuryGates = 65000,

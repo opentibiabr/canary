@@ -1,4 +1,4 @@
-local function Furywebhook(message) -- New local function that runs on delay to send webhook message.
+local function furyWebhook(message)
 	Webhook.sendMessage(":fire: " .. message, announcementChannels["serverAnnouncements"])
 end
 
@@ -29,7 +29,7 @@ function furyGates.onStartup(interval)
 	Game.setStorageValue(GlobalStorage.FuryGates, gateId)
 
 	logger.info("[World Change] Fury Gate has arrived in {}!", selectedGate.city)
-	addEvent(Furywebhook, 60000, (string.format("Fury Gate will be active in %s today", selectedGate.city)))
+	addEvent(furyWebhook, 60000, (string.format("Fury Gate will be active in %s today", selectedGate.city)))
 	return true
 end
 

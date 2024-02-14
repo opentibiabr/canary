@@ -3,9 +3,9 @@ local function Nightmarewebhook(message) -- New local function that runs on dela
 end
 
 local nightmareIsleConfig = {
-	{ displayName = "North of Ankrahmun", mapName = "ankrahmun-north", storage = GlobalStorage.WorldBoard.NightmareIsle.ankrahmunNorth },
-	{ displayName = "North of Darashia", mapName = "darashia-north", storage = GlobalStorage.WorldBoard.NightmareIsle.darashiaNorth },
-	{ displayName = "West of Darashia", mapName = "darashia-west", storage = GlobalStorage.WorldBoard.NightmareIsle.darashiaWest },
+	{ displayName = "North of Ankrahmun", mapName = "ankrahmun-north", storage = GlobalStorage.WorldBoard.NightmareIsle.AnkrahmunNorth },
+	{ displayName = "North of Darashia", mapName = "darashia-north", storage = GlobalStorage.WorldBoard.NightmareIsle.DarashiaNorth },
+	{ displayName = "West of Darashia", mapName = "darashia-west", storage = GlobalStorage.WorldBoard.NightmareIsle.DarashiaWest },
 }
 
 local nightmareIsleEvent = GlobalEvent("Nightmare Isle")
@@ -28,9 +28,9 @@ end
 nightmareIsleEvent:register()
 
 local teleportExits = {
-	{ position = Position(33255, 32678, 7), storage = GlobalStorage.WorldBoard.NightmareIsle.ankrahmunNorth },
-	{ position = Position(33215, 32273, 7), storage = GlobalStorage.WorldBoard.NightmareIsle.darashiaNorth },
-	{ position = Position(33032, 32400, 7), storage = GlobalStorage.WorldBoard.NightmareIsle.darashiaWest },
+	{ position = Position(33255, 32678, 7), storage = GlobalStorage.WorldBoard.NightmareIsle.AnkrahmunNorth },
+	{ position = Position(33215, 32273, 7), storage = GlobalStorage.WorldBoard.NightmareIsle.DarashiaNorth },
+	{ position = Position(33032, 32400, 7), storage = GlobalStorage.WorldBoard.NightmareIsle.DarashiaWest },
 }
 
 local teleportExit = MoveEvent()

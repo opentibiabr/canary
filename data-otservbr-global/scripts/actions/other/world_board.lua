@@ -12,17 +12,17 @@ local communicates = {
 	},
 
 	[3] = {
-		storageValue = GlobalStorage.WorldBoard.NightmareIsle.ankrahmunNorth,
+		storageValue = GlobalStorage.WorldBoard.NightmareIsle.AnkrahmunNorth,
 		communicate = "A sandstorm travels through Darama, leading to isles full of deadly creatures inside a nightmare. Avoid the Ankhramun tar pits!.",
 	},
 
 	[4] = {
-		storageValue = GlobalStorage.WorldBoard.NightmareIsle.darashiaNorth,
+		storageValue = GlobalStorage.WorldBoard.NightmareIsle.DarashiaNorth,
 		communicate = "A sandstorm travels through Darama, leading to isles full of deadly creatures inside a nightmare. Avoid the northernmost coast!",
 	},
 
 	[5] = {
-		storageValue = GlobalStorage.WorldBoard.NightmareIsle.darashiaWest,
+		storageValue = GlobalStorage.WorldBoard.NightmareIsle.DarashiaWest,
 		communicate = "A sandstorm travels through Darama, leading to isles full of deadly creatures inside a nightmare. Avoid the river near Drefia!",
 	},
 }

@@ -1,7 +1,3 @@
-if ACHIEVEMENTS ~= nil then
-	return
-end
-
 ACHIEVEMENTS = {
 	[1] = { name = "Castlemania", grade = 2, points = 5, secret = true, description = "You have an eye for suspicious places and love to read other people's diaries, especially those with vampire stories in it. You're also a dedicated token collector and explorer. Respect!" },
 	[2] = { name = "Chorister", grade = 1, points = 1, description = "Lalalala... you now know the cult's hymn sung in Liberty Bay by heart. Not that hard, considering that it mainly consists of two notes and repetitive lyrics." },
@@ -636,4 +632,23 @@ function Player.getPublicAchievements(self)
 		end
 	end
 	return unlockedPublicAchievements
+end
+
+function Player.addAchievementProgress(self, achievement, totalProgress)
+	local foundAchievement = isNumber(achievement) and Game.getAchievementInfoById(achievement) or Game.getAchievementInfoByName(achievement)
+	if not foundAchievement then
+		logger.error("[Player.addAchievementProgress] - Invalid achievement '{}'", achievement)
+		return
+	end
+
+	local progressNumber = self:kv():scoped("achievements"):get("progress")
+	if progressNumber and progressNumber <= totalProgress then
+		if progressNumber == totalProgress then
+			self:addAchievement(foundAchievement.id)
+			self:kv():scoped("achievements"):remove("progress")
+			return
+		end
+
+		self:kv():scoped("achievements"):set("progress", progressNumber)
+	end
 end

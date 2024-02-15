@@ -1,8 +1,8 @@
-local serverShutdown = GlobalEvent("ServerShutdown")
+local hirelingSave = GlobalEvent("HirelingSave")
 
-function serverShutdown.onShutdown()
-	local hirelingSave = SaveHirelings()
-	if hirelingSave then
+function hirelingSave.onShutdown()
+	local saved = SaveHirelings()
+	if saved then
 		logger.info("[Server Shutdown] Hirelings successfully saved.")
 	else
 		logger.warn("[Server Shutdown] Failed to save hirelings. Please check the logs for details.")
@@ -11,4 +11,4 @@ function serverShutdown.onShutdown()
 	return true
 end
 
-serverShutdown:register()
+hirelingSave:register()

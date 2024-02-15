@@ -3077,6 +3077,13 @@ GlobalStorage = {
 		OutburstHealth = 60181,
 		OutburstChargingKilled = 60182,
 	},
+	WorldBoard = {
+		NightmareIsle = {
+			AnkrahmunNorth = 60191,
+			DarashiaNorth = 60192,
+			DarashiaWest = 60193,
+		},
+	},
 	FuryGates = 65000,
 	Yakchal = 65001,
 	PitsOfInfernoLevers = 65002,
@@ -3091,7 +3098,6 @@ GlobalStorage = {
 	CobraBastionFlask = 65012,
 	Inquisition = 65013,
 	Yasir = 65014,
-	NightmareIsle = 65015,
 	IceCrack = 65016,
 	UglyMonster = 65017,
 	KeysUpdate = 40000, -- Reserved storage from 40000 - 40000

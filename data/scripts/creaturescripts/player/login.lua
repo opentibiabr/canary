@@ -17,9 +17,9 @@ local function onMovementRemoveProtection(playerId, oldPos, time)
 	addEvent(onMovementRemoveProtection, 1000, playerId, oldPos, time - 1)
 end
 
-local playerLogin = CreatureEvent("PlayerLogin")
+local playerLoginGlobal = CreatureEvent("PlayerLoginGlobal")
 
-function playerLogin.onLogin(player)
+function playerLoginGlobal.onLogin(player)
 	-- Welcome
 	local loginStr
 	if player:getLastLoginSaved() == 0 then
@@ -37,7 +37,6 @@ function playerLogin.onLogin(player)
 	local promotion = vocation:getPromotion()
 	if player:isPremium() then
 		local hasPromotion = player:kv():get("promoted")
-
 		if not player:isPromoted() and hasPromotion then
 			player:setVocation(promotion)
 		end
@@ -153,4 +152,4 @@ function playerLogin.onLogin(player)
 	return true
 end
 
-playerLogin:register()
+playerLoginGlobal:register()

@@ -386,8 +386,18 @@ end
 -- [[ GLOBAL FUNCTIONS DEFINITIONS ]]
 
 function SaveHirelings()
+	local saved = true
 	for _, hireling in ipairs(HIRELINGS) do
-		hireling:save()
+		if not hireling:save() then
+			saved = false
+			break
+		end
+	end
+
+	if saved then
+		logger.info("Hirelings successfully saved.")
+	else
+		logger.warn("Failed to save hirelings. Please check the logs for details.")
 	end
 end
 

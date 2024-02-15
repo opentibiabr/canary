@@ -1,5 +1,4 @@
 -- Load systems functions
-dofile(CORE_DIRECTORY .. "/libs/systems/achievements.lua")
 dofile(CORE_DIRECTORY .. "/libs/systems/concoctions.lua")
 dofile(CORE_DIRECTORY .. "/libs/systems/daily_reward.lua")
 dofile(CORE_DIRECTORY .. "/libs/systems/encounters.lua")

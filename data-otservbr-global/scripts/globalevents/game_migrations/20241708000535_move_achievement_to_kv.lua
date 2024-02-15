@@ -11,7 +11,7 @@ local function migrateAchievementProgress(player)
 	end
 end
 
-local migration = Migration("move_achievement_to_kv")
+local migration = Migration("20241708000535_move_achievement_to_kv")
 
 function migration:onExecute()
 	self:forEachPlayer(migrateAchievementProgress)

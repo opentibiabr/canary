@@ -21,20 +21,11 @@ end
 local playerLogin = CreatureEvent("PlayerLogin")
 
 function playerLogin.onLogin(player)
-	local items = {
-		{ 3003, 1 },
-		{ 3457, 1 },
-	}
 	if player:getLastLoginSaved() == 0 then
 		player:sendOutfitWindow()
-		local backpack = player:addItem(2854)
-		if backpack then
-			for i = 1, #items do
-				backpack:addItem(items[i][1], items[i][2])
-			end
-		end
 
-		db.query("UPDATE `players` SET `istutorial` = 0 where `id`=" .. player:getGuid())
+		db.query("UPDATE `players` SET `istutorial` = 0 WHERE `id` = " .. player:getGuid())
+
 		-- Open channels
 		if table.contains({ TOWNS_LIST.DAWNPORT, TOWNS_LIST.DAWNPORT_TUTORIAL }, player:getTown():getId()) then
 			player:openChannel(3) -- World chat
@@ -53,14 +44,11 @@ function playerLogin.onLogin(player)
 		player:setRemoveBossTime(1)
 	end
 
-	if isPremium(player) then
-		player:setStorageValue(Storage.PremiumAccount, 1)
-	end
 	-- Premium Ends Teleport to Temple, change addon (citizen) houseless
 	local defaultTown = "Thais" -- default town where player is teleported if his home town is in premium area
 	local freeTowns = { "Ab'Dendriel", "Carlin", "Kazordoon", "Thais", "Venore", "Rookgaard", "Dawnport", "Dawnport Tutorial", "Island of Destiny" } -- towns in free account area
 
-	if isPremium(player) == false and table.contains(freeTowns, player:getTown():getName()) == false then
+	if not player:isPremium() and not table.contains(freeTowns, player:getTown():getName()) then
 		local town = player:getTown()
 		local sex = player:getSex()
 		local home = getHouseByPlayerGUID(getPlayerGUID(player))
@@ -68,13 +56,12 @@ function playerLogin.onLogin(player)
 		player:teleportTo(town:getTemplePosition())
 		player:setTown(town)
 		player:sendTextMessage(MESSAGE_FAILURE, "Your premium time has expired.")
-		player:setStorageValue(Storage.PremiumAccount, 0)
 		if sex == 1 then
 			player:setOutfit({ lookType = 128, lookFeet = 114, lookLegs = 134, lookHead = 114, lookAddons = 0 })
 		elseif sex == 0 then
 			player:setOutfit({ lookType = 136, lookFeet = 114, lookLegs = 134, lookHead = 114, lookAddons = 0 })
 		end
-		if home ~= nil and not isPremium(player) then
+		if home and not player:isPremium() then
 			setHouseOwner(home, 0)
 			player:sendTextMessage(MESSAGE_GAME_HIGHLIGHT, "You've lost your house because you are not premium anymore.")
 			player:sendTextMessage(MESSAGE_GAME_HIGHLIGHT, "Your items from house are send to your inbox.")
@@ -96,44 +83,47 @@ function playerLogin.onLogin(player)
 
 	-- Recruiter system
 	local resultId = db.storeQuery("SELECT `recruiter` from `accounts` where `id`=" .. getAccountNumberByPlayerName(getPlayerName(player)))
-	local recruiterStatus = Result.getNumber(resultId, "recruiter")
-	local sex = player:getSex()
-	if recruiterStatus >= 1 then
-		if sex == 1 then
-			local outfit = player:hasOutfit(746)
-			if outfit == false then
-				player:addOutfit(746)
-			end
-		else
-			local outfit = player:hasOutfit(745)
-			if outfit == false then
-				player:addOutfit(745)
-			end
-		end
-	end
-	if recruiterStatus >= 3 then
-		if sex == 1 then
-			local outfit = player:hasOutfit(746, 1)
-			if outfit == false then
-				player:addOutfitAddon(746, 1)
-			end
-		else
-			local outfit = player:hasOutfit(745, 1)
-			if outfit == false then
-				player:addOutfit(745, 1)
+	if resultId then
+		local recruiterStatus = Result.getNumber(resultId, "recruiter")
+		Result.free(resultId)
+		local sex = player:getSex()
+		if recruiterStatus >= 1 then
+			if sex == 1 then
+				local outfit = player:hasOutfit(746)
+				if outfit == false then
+					player:addOutfit(746)
+				end
+			else
+				local outfit = player:hasOutfit(745)
+				if outfit == false then
+					player:addOutfit(745)
+				end
 			end
 		end
-	end
-	if recruiterStatus >= 10 then
-		if sex == 1 then
-			local outfit = player:hasOutfit(746, 2)
-			if outfit == false then
-				player:addOutfitAddon(746, 2)
+		if recruiterStatus >= 3 then
+			if sex == 1 then
+				local outfit = player:hasOutfit(746, 1)
+				if outfit == false then
+					player:addOutfitAddon(746, 1)
+				end
+			else
+				local outfit = player:hasOutfit(745, 1)
+				if outfit == false then
+					player:addOutfit(745, 1)
+				end
 			end
-		else
-			local outfit = player:hasOutfit(745, 2)
-			if outfit == false then
-				player:addOutfit(745, 2)
+		end
+		if recruiterStatus >= 10 then
+			if sex == 1 then
+				local outfit = player:hasOutfit(746, 2)
+				if outfit == false then
+					player:addOutfitAddon(746, 2)
+				end
+			else
+				local outfit = player:hasOutfit(745, 2)
+				if outfit == false then
+					player:addOutfit(745, 2)
+				end
 			end
 		end
 	end

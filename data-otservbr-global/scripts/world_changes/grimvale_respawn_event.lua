@@ -23,7 +23,7 @@ local function spawnMonsters(monstersToSpawn)
 		for y = grimvaleConfig.position.fromPosition.y, grimvaleConfig.position.toPosition.y do
 			if math.random(1000) >= 983 then
 				if createRandomMonster(Position(x, y, 7), monstersToSpawn) then
-					return
+					break
 				end
 			end
 		end

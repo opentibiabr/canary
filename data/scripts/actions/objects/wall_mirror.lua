@@ -15,11 +15,12 @@ local setting = {
 local wallMirror = Action()
 
 function wallMirror.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if player:getStorageValue(PlayerStorageKeys.delayWallMirror) <= os.time() then
-		player:say(setting[math.random(1, #setting)], TALKTYPE_MONSTER_SAY)
-		player:setStorageValue(PlayerStorageKeys.delayWallMirror, os.time() + 20 * 60 * 60)
-	else
+	local hasExhaustion = player:kv():get("delay-wall-mirror") or 0
+	if hasExhaustion > os.time() then
 		player:say("Don't be so vain about your appearance.", TALKTYPE_MONSTER_SAY)
+	else
+		player:kv():set("delay-wall-mirror", os.time() + 20 * 60 * 60)
+		player:say(setting[math.random(1, #setting)], TALKTYPE_MONSTER_SAY)
 	end
 	return true
 end

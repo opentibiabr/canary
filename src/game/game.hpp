@@ -48,6 +48,9 @@ class Guild;
 class Mounts;
 class Spectators;
 
+struct Achievement;
+struct HighscoreCategory;
+
 static constexpr uint16_t SERVER_BEAT = 0x32;
 static constexpr int32_t EVENT_MS = 10000;
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
@@ -703,7 +706,24 @@ public:
 	void setTransferPlayerHouseItems(uint32_t houseId, uint32_t playerId);
 	void transferHouseItemsToDepot();
 
+	const std::unordered_map<uint8_t, std::string> &getHighscoreCategoriesName() const;
+
+	const std::vector<HighscoreCategory> &getHighscoreCategories() const;
+
+	void registerAchievement(uint16_t id, std::string name, std::string description, bool secret, uint8_t grade, uint8_t points);
+	Achievement getAchievementById(uint16_t id);
+	Achievement getAchievementByName(std::string name);
+	std::vector<Achievement> getSecretAchievements();
+	std::vector<Achievement> getPublicAchievements();
+	std::map<uint16_t, Achievement> getAchievements();
+
 private:
+	std::map<uint16_t, Achievement> m_achievements;
+	std::map<std::string, uint16_t> m_achievementsNameToId;
+
+	std::vector<HighscoreCategory> m_highscoreCategories;
+	std::unordered_map<uint8_t, std::string> m_highscoreCategoriesNames;
+
 	std::map<uint32_t, int32_t> forgeMonsterEventIds;
 	std::unordered_set<uint32_t> fiendishMonsters;
 	std::unordered_set<uint32_t> influencedMonsters;

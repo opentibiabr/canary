@@ -131,7 +131,6 @@ Storage = {
 	-- Reserved in Global.Storage.FamiliarSummonEvent60 = 30055
 	ChayenneKeyTime = 30056,
 	FreeQuests = 30057,
-	PremiumAccount = 30058,
 	BattleAxeQuest = 30059,
 	ShrineEntrance = 30060,
 	PlayerWeaponReward = 30061,
@@ -2921,7 +2920,6 @@ Storage = {
 	},
 
 	VipSystem = {
-		IsVip = 150001,
 		OnlineCoinsGain = 150002,
 		OnlineTokensGain = 150003,
 	},

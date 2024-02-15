@@ -226,7 +226,6 @@ onlyPremiumAccount = false
 -- Customs
 -- NOTE: weatherRain = true, activates weather raining effects
 -- NOTE: thunderEffect = true, activates thunder effects
--- NOTE: allConsoleLog = true, show all message logs
 -- NOTE: stashMoving = true, stow an container inside your stash
 -- NOTE: depotChest, the non-stackable items will be moved to the selected depot chest(I - XVIII).
 -- NOTE: autoBank = true, the dropped coins from monsters will be automatically deposited to your bank account.
@@ -241,7 +240,6 @@ onlyPremiumAccount = false
 -- NOTE: randomMonsterSpawn = true, will enable monsters from the same spawn to be randomized between them, thus making a variable hunt
 weatherRain = false
 thunderEffect = false
-allConsoleLog = false
 stashMoving = false
 depotChest = 4
 autoLoot = false

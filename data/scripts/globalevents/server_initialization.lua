@@ -60,44 +60,41 @@ local function storeTownsInDatabase()
 	end
 end
 
--- Function to recursively check for duplicate values in a given variable's storage
-local function checkDuplicateStorageValues(varTable, seen, duplicates)
+-- Functions to recursively check for duplicate values in a given variable's storage and log the results
+local seen, duplicatesValues
+
+local function checkDuplicateStorageValues(varTable)
 	for _, value in pairs(varTable) do
 		if type(value) == "table" then
-			checkDuplicateStorageValues(value, seen, duplicates)
+			checkDuplicateStorageValues(value)
 		elseif seen[value] then
-			table.insert(duplicates, value)
+			table.insert(duplicatesValues, value)
 		else
 			seen[value] = true
 		end
 	end
+	return #duplicatesValues > 0 and duplicatesValues or false
 end
 
--- Function to check for duplicate values in a given variable's storage
-local function checkDuplicateStorageValuesWrapper(varName)
-	local seen = {}
-	local duplicates = {}
+local function checkAndLogDuplicateValues(tableNames)
+	for _, tableName in ipairs(tableNames) do
+		local varTable = _G[tableName]
+		if type(varTable) == "table" then
+			seen = {}
+			duplicatesValues = {}
 
-	local varTable = _G[varName]
-	if type(varTable) == "table" then
-		checkDuplicateStorageValues(varTable, seen, duplicates)
-	else
-		logger.warn("Warning: '" .. varName .. "' is not a table.")
-	end
-
-	return #duplicates > 0 and duplicates or false
-end
-
--- Function to check duplicated variable values and log the results
-local function checkAndLogDuplicateValues(variableNames)
-	for _, variableName in ipairs(variableNames) do
-		local duplicates = checkDuplicateStorageValuesWrapper(variableName)
-
-		if duplicates then
-			logger.warn("Checking " .. variableName .. ": Duplicate values found: " .. table.concat(duplicates, ", "))
+			local duplicates = checkDuplicateStorageValues(varTable)
+			if duplicates then
+				logger.warn("Checking {}: Duplicate values found: {}", tableName, table.concat(duplicates, ", "))
+			else
+				logger.info("Checking {}: No duplicate values found.", tableName)
+			end
 		else
-			logger.info("Checking " .. variableName .. ": No duplicate values found.")
+			logger.warn("{} is not a table. Unable to check for duplicate values.", varTable)
 		end
+
+		seen = nil
+		duplicatesValues = nil
 	end
 end
 

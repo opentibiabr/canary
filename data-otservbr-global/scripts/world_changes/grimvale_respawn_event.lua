@@ -1,8 +1,6 @@
 local grimvaleConfig = {
 	position = { fromPosition = Position(33330, 31670, 7), toPosition = Position(33350, 31690, 7) },
 	spawnDay = 13,
-	currentDay = tonumber(os.date("%d")),
-	monsterList = {},
 }
 
 local function createRandomMonster(position, availableMonsters)
@@ -35,13 +33,7 @@ end
 local grimvaleRespawnEvent = GlobalEvent("GrimvaleRespawnEvent")
 
 function grimvaleRespawnEvent.onStartup()
-	if grimvaleConfig.currentDay == grimvaleConfig.spawnDay then
-		grimvaleConfig.monsterList = { "wereboar", "werebadger" }
-	else
-		grimvaleConfig.monsterList = { "bandit", "badger", "blue butterfly", "yellow butterfly" }
-	end
-
-	spawnMonsters(grimvaleConfig.monsterList)
+	spawnMonsters(grimvaleConfig.spawnDay == tonumber(os.date("%d")) and { "wereboar", "werebadger" } or { "bandit", "badger", "blue butterfly", "yellow butterfly" })
 	return true
 end
 

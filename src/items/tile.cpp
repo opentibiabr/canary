@@ -21,6 +21,7 @@
 #include "items/trashholder.hpp"
 #include "io/iomap.hpp"
 #include "map/spectators.hpp"
+#include "enums/account_type.hpp"
 
 auto real_nullptr_tile = std::make_shared<StaticTile>(0xFFFF, 0xFFFF, 0xFF);
 const std::shared_ptr<Tile> &Tile::nullptr_tile = real_nullptr_tile;
@@ -57,6 +58,11 @@ bool Tile::hasProperty(ItemProperty prop) const {
 }
 
 bool Tile::hasProperty(std::shared_ptr<Item> exclude, ItemProperty prop) const {
+	if (!exclude) {
+		g_logger().error("[{}]: exclude is nullptr", __FUNCTION__);
+		return false;
+	}
+
 	assert(exclude);
 
 	if (ground && exclude != ground && ground->hasProperty(prop)) {
@@ -675,7 +681,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 			// moving from a pz tile to a non-pz tile
 			if (playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 				auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT, __FUNCTION__);
-				if (maxOnline > 1 && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && !hasFlag(TILESTATE_PROTECTIONZONE)) {
+				if (maxOnline > 1 && player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER && !hasFlag(TILESTATE_PROTECTIONZONE)) {
 					auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT, __FUNCTION__);
 					auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
 					int countOutsizePZ = 0;

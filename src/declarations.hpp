@@ -10,7 +10,6 @@
 #pragma once
 
 #include "utils/const.hpp"
-#include "config/config_definitions.hpp"
 #include "creatures/creatures_definitions.hpp"
 #include "database/database_definitions.hpp"
 #include "game/game_definitions.hpp"

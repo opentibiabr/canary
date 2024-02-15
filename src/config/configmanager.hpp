@@ -9,8 +9,7 @@
 
 #pragma once
 
-#include "declarations.hpp"
-#include "lib/di/container.hpp"
+#include "config_enums.hpp"
 
 using ConfigValue = std::variant<std::string, int32_t, bool, float>;
 
@@ -22,9 +21,7 @@ public:
 	ConfigManager(const ConfigManager &) = delete;
 	void operator=(const ConfigManager &) = delete;
 
-	static ConfigManager &getInstance() {
-		return inject<ConfigManager>();
-	}
+	static ConfigManager &getInstance();
 
 	bool load();
 	bool reload();

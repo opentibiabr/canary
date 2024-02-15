@@ -131,7 +131,6 @@ Storage = {
 	-- Reserved in Global.Storage.FamiliarSummonEvent60 = 30055
 	ChayenneKeyTime = 30056,
 	FreeQuests = 30057,
-	PremiumAccount = 30058,
 	BattleAxeQuest = 30059,
 	ShrineEntrance = 30060,
 	PlayerWeaponReward = 30061,
@@ -2921,7 +2920,6 @@ Storage = {
 	},
 
 	VipSystem = {
-		IsVip = 150001,
 		OnlineCoinsGain = 150002,
 		OnlineTokensGain = 150003,
 	},
@@ -3079,6 +3077,13 @@ GlobalStorage = {
 		OutburstHealth = 60181,
 		OutburstChargingKilled = 60182,
 	},
+	WorldBoard = {
+		NightmareIsle = {
+			AnkrahmunNorth = 60191,
+			DarashiaNorth = 60192,
+			DarashiaWest = 60193,
+		},
+	},
 	FuryGates = 65000,
 	Yakchal = 65001,
 	PitsOfInfernoLevers = 65002,
@@ -3093,7 +3098,6 @@ GlobalStorage = {
 	CobraBastionFlask = 65012,
 	Inquisition = 65013,
 	Yasir = 65014,
-	NightmareIsle = 65015,
 	IceCrack = 65016,
 	UglyMonster = 65017,
 	KeysUpdate = 40000, -- Reserved storage from 40000 - 40000
@@ -3130,29 +3134,3 @@ startupGlobalStorages = {
 	GlobalStorage.FerumbrasAscendant.Elements.Third,
 	GlobalStorage.FerumbrasAscendant.Elements.Done,
 }
-
--- Values extraction function
-local function extractValues(tab, ret)
-	if type(tab) == "number" then
-		table.insert(ret, tab)
-	else
-		for _, v in pairs(tab) do
-			extractValues(v, ret)
-		end
-	end
-end
-
-local extraction = {}
-extractValues(Storage, extraction) -- Call function
-table.sort(extraction) -- Sort the table
--- The choice of sorting is due to the fact that sorting is very cheap O (n log2 (n))
--- And then we can simply compare one by one the elements finding duplicates in O(n)
-
--- Scroll through the extracted table for duplicates
-if #extraction > 1 then
-	for i = 1, #extraction - 1 do
-		if extraction[i] == extraction[i + 1] then
-			logger.warn("Duplicate storage value found: {}", extraction[i])
-		end
-	end
-end

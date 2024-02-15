@@ -6,7 +6,6 @@ function playerLogout.onLogout(player)
 		_G.NextUseStaminaTime[playerId] = nil
 	end
 
-	player:saveSpecialStorage()
 	player:setStorageValue(Storage.ExerciseDummyExhaust, 0)
 
 	local stats = player:inBossFight()

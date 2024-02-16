@@ -386,18 +386,24 @@ end
 -- [[ GLOBAL FUNCTIONS DEFINITIONS ]]
 
 function SaveHirelings()
-	local saved = true
+	local successCount = 0
+	local failedCount = 0
+
 	for _, hireling in ipairs(HIRELINGS) do
-		if not hireling:save() then
-			saved = false
-			break
+		local success = hireling:save()
+
+		if not success then
+			failedCount = failedCount + 1
+			logger.warn("Failed to save hireling: {} (ID: {}).", hireling:getName(), hireling:getId())
+		else
+			successCount = successCount + 1
 		end
 	end
 
-	if saved then
-		logger.info("Hirelings successfully saved.")
+	if successCount == #HIRELINGS then
+		logger.info("All hirelings successfully saved.")
 	else
-		logger.warn("Failed to save hirelings. Please check the logs for details.")
+		logger.warn("Failed to save {} hirelings.", failedCount)
 	end
 end
 

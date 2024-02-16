@@ -641,14 +641,17 @@ function Player.addAchievementProgress(self, achievement, totalProgress)
 		return
 	end
 
-	local progressNumber = self:kv():scoped("achievements"):get("progress")
-	if progressNumber and progressNumber <= totalProgress then
-		if progressNumber == totalProgress then
-			self:addAchievement(foundAchievement.id)
-			self:kv():scoped("achievements"):remove("progress")
-			return
-		end
+	local achievScope = self:kv():scoped("achievements")
+	local achievScopeName = tostring(foundAchievement.name .. "-progress")
+	local progressNumber = achievScope:get(achievScopeName) or 0
 
-		self:kv():scoped("achievements"):set("progress", progressNumber)
+	if progressNumber + 1 == totalProgress then
+		self:addAchievement(foundAchievement.id)
+		logger.debug("[Player.addAchievementProgress] - Achievement '{}' completed", foundAchievement.name)
+		achievScope:remove(achievScopeName)
+		return
 	end
+
+	logger.debug("[Player.addAchievementProgress] - Achievement '{}' progress updated to '{}', total progress '{}'", foundAchievement.name, progressNumber + 1, totalProgress)
+	achievScope:set(achievScopeName, progressNumber + 1)
 end

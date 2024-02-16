@@ -640,12 +640,6 @@ CREATE TABLE IF NOT EXISTS `player_kills` (
     `unavenged` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Table structure `player_misc`
-CREATE TABLE IF NOT EXISTS `player_misc` (
-    `player_id` int(11) NOT NULL,
-    `info` blob NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- Table structure `player_namelocks`
 CREATE TABLE IF NOT EXISTS `player_namelocks` (
     `player_id` int(11) NOT NULL,

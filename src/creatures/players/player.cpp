@@ -2669,6 +2669,11 @@ BlockType_t Player::blockHit(std::shared_ptr<Creature> attacker, CombatType_t co
 }
 
 void Player::death(std::shared_ptr<Creature> lastHitCreature) {
+		if (isMounted()) {
+			dismount();
+			g_game().internalCreatureChangeOutfit(getPlayer(), defaultOutfit);
+		}
+
 	loginPosition = town->getTemplePosition();
 
 	g_game().sendSingleSoundEffect(static_self_cast<Player>()->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_DEATH : SoundEffect_t::HUMAN_MALE_DEATH, getPlayer());

@@ -6,7 +6,7 @@ local function migrateAchievementProgress(player)
 		local oldStorageKey = achievementProgressStorage + id
 		local progressNumber = player:getStorageValue(oldStorageKey)
 		if progressNumber > 0 then
-			local achievScopeName = tostring(foundAchievement.name .. "-progress")
+			local achievScopeName = tostring(achievement.name .. "-progress")
 			player:kv():scoped(achievScopeName, progressNumber)
 			player:setStorageValue(oldStorageKey, -1)
 		end

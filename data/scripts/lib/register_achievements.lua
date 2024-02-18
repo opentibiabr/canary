@@ -646,11 +646,13 @@ function Player.addAchievementProgress(self, achievement, totalProgress)
 	local achievScopeName = tostring(foundAchievement.name .. "-progress")
 	local progressNumber = achievScope:get(achievScopeName) or 0
 	local newProgress = progressNumber + 1
+	if newProgress > totalProgress then
+		return
+	end
+
 	if newProgress == totalProgress then
 		self:addAchievement(foundAchievement.id)
 		logger.debug("[Player.addAchievementProgress] - Achievement '{}' completed", foundAchievement.name)
-		achievScope:remove(achievScopeName)
-		return
 	end
 
 	logger.debug("[Player.addAchievementProgress] - Achievement '{}' progress updated to '{}', total progress '{}'", foundAchievement.name, newProgress, totalProgress)

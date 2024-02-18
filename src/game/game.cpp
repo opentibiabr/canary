@@ -5694,7 +5694,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 			outfit.lookMount = 0;
 		}
 
-		if (g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && !player->group->access) {
+		if (g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__)) {
 			auto deltaSpeedChange = mount->speed;
 			if (player->isMounted()) {
 				const auto prevMount = mounts.getMountByID(player->getLastMount());

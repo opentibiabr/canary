@@ -270,7 +270,6 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	else
 		target:remove()
 	end
-	-- SE BUGAR, PEGAR SCRIPT ANTIGO
 	if toPosition.x == CONTAINER_POSITION then
 		toPosition = player:getPosition()
 	end

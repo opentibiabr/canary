@@ -120,8 +120,12 @@ local skinning = Action()
 function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local tile = Tile(toPosition)
 	if tile and tile:getTopDownItem() ~= nil then
-		topItem = Tile(toPosition):getTopDownItem()
-		skin = config[item.itemid][topItem.itemid]
+		local tile = Tile(toPosition)
+		if not tile then
+			return
+		end
+		local topItem = tile:getTopDownItem()
+		local skin = config[item.itemid][topItem.itemid]
 	else
 		skin = config[item.itemid][target.itemid]
 	end

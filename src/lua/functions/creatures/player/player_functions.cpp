@@ -4237,7 +4237,7 @@ int PlayerFunctions::luaPlayerRemoveAchievement(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerGetAchievementPoints(lua_State* L) {
-	// player:getAchievementsPoints()
+	// player:getAchievementPoints()
 	const auto &player = getUserdataShared<Player>(L, 1);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4249,7 +4249,7 @@ int PlayerFunctions::luaPlayerGetAchievementPoints(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerAddAchievementPoints(lua_State* L) {
-	// player:addAchievementsPoints(amount)
+	// player:addAchievementPoints(amount)
 	const auto &player = getUserdataShared<Player>(L, 1);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));

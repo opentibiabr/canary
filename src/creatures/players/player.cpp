@@ -2669,7 +2669,7 @@ BlockType_t Player::blockHit(std::shared_ptr<Creature> attacker, CombatType_t co
 }
 
 void Player::death(std::shared_ptr<Creature> lastHitCreature) {
-		if (isMounted()) {
+		if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && isMounted()) {
 			dismount();
 			g_game().internalCreatureChangeOutfit(getPlayer(), defaultOutfit);
 		}

@@ -183,6 +183,11 @@ public:
 	static int protectedCall(lua_State* L, int nargs, int nresults);
 
 	static ScriptEnvironment* getScriptEnv() {
+		if (scriptEnvIndex < 0 || scriptEnvIndex >= 16) {
+			g_logger().error("[{}]: scriptEnvIndex out of bounds!", __FUNCTION__);
+			return nullptr;
+		}
+
 		assert(scriptEnvIndex >= 0 && scriptEnvIndex < 16);
 		return scriptEnv + scriptEnvIndex;
 	}
@@ -192,6 +197,11 @@ public:
 	}
 
 	static void resetScriptEnv() {
+		if (scriptEnvIndex < 0) {
+			g_logger().error("[{}]: scriptEnvIndex out of bounds!", __FUNCTION__);
+			return;
+		}
+
 		assert(scriptEnvIndex >= 0);
 		scriptEnv[scriptEnvIndex--].resetEnv();
 	}

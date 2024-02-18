@@ -255,6 +255,8 @@ buyBlessCommandFee = 0
 teleportPlayerToVocationRoom = true
 toggleReceiveReward = false
 randomMonsterSpawn = false
+lootPouchMaxLimit = 2000
+storeInboxMaxLimit = 2000
 
 -- Teleport summon
 -- Set to true will never remove the summon
@@ -339,12 +341,12 @@ pushDistanceDelay = 1500
 pushWhenAttacking = false
 
 -- Map
--- NOTE: set mapName WITHOUT .otbm at the end
--- NOTE: If toggleDownloadMap if false, then the mapDownloadUrl will not be used
--- NOTE: If a map with the name already exists in the world folder, the map will not be downloaded even if the toggleDownloadMap is true
+-- Note: Set mapName without .otbm at the end.
+-- Note: If toggleDownloadMap is set to false, the mapDownloadUrl will not be used.
+-- Note: If a map with the same name already exists in the world folder, the map will not be downloaded, even if toggleDownloadMap is set to true.
 toggleDownloadMap = true
+mapDownloadUrl = "https://github.com/opentibiabr/canary/releases/download/v3.1.0/otservbr.otbm"
 mapName = "otservbr"
-mapDownloadUrl = "https://github.com/opentibiabr/canary/releases/download/v3.0.0/otservbr.otbm"
 mapAuthor = "OpenTibiaBR"
 
 -- Party List limitations

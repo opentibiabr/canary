@@ -336,7 +336,11 @@ bool IOLoginDataSave::savePlayerStash(std::shared_ptr<Player> player) {
 			return false;
 		}
 	}
-	return stashQuery.execute();
+
+	if (!stashQuery.execute()) {
+		return false;
+	}
+	return true;
 }
 
 bool IOLoginDataSave::savePlayerSpells(std::shared_ptr<Player> player) {

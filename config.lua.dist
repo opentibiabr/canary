@@ -238,6 +238,7 @@ onlyPremiumAccount = false
 -- NOTE: teleportPlayerToVocationRoom will enable oressa to teleport player to his/her room vocation
 -- NOTE: toggleReceiveReward = true, will enable players to choose one of reward exercise weapon by command !reward
 -- NOTE: randomMonsterSpawn = true, will enable monsters from the same spawn to be randomized between them, thus making a variable hunt
+-- NOTE: enablePlayerPutItemInAmmoSlot = true, will enable players to put any items on ammo slot, more used in custom shopping system
 weatherRain = false
 thunderEffect = false
 stashMoving = false
@@ -255,6 +256,7 @@ toggleReceiveReward = false
 randomMonsterSpawn = false
 lootPouchMaxLimit = 2000
 storeInboxMaxLimit = 2000
+enablePlayerPutItemInAmmoSlot = false
 
 -- Teleport summon
 -- Set to true will never remove the summon

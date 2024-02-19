@@ -279,13 +279,6 @@ CREATE TABLE IF NOT EXISTS `forge_history` (
     FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Table structure `global_storage`
-CREATE TABLE IF NOT EXISTS `global_storage` (
-    `key` varchar(32) NOT NULL,
-    `value` text NOT NULL,
-    CONSTRAINT `global_storage_unique` UNIQUE (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- Table structure `guilds`
 CREATE TABLE IF NOT EXISTS `guilds` (
     `id` int(11) NOT NULL AUTO_INCREMENT,

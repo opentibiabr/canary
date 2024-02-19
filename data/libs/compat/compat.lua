@@ -1423,15 +1423,6 @@ end
 
 saveData = saveServer
 
-function getGlobalStorageValue(key)
-	return Game.getStorageValue(key) or -1
-end
-
-function setGlobalStorageValue(key, value)
-	Game.setStorageValue(key, value)
-	return true
-end
-
 getWorldType = Game.getWorldType
 
 numberToVariant = Variant

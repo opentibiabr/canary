@@ -327,17 +327,16 @@ bool IOLoginDataSave::savePlayerStash(std::shared_ptr<Player> player) {
 		return false;
 	}
 
+	query.str("");
+
+	DBInsert stashQuery("INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES ");
 	for (const auto &[itemId, itemCount] : player->getStashItems()) {
-		query.str("");
-		query << "INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES (";
-		query << player->getGUID() << ", ";
-		query << itemId << ", ";
-		query << itemCount << ")";
-		if (!db.executeQuery(query.str())) {
+		query << player->getGUID() << ',' << itemId << ',' << itemCount;
+		if (!stashQuery.addRow(query)) {
 			return false;
 		}
 	}
-	return true;
+	return stashQuery.execute();
 }
 
 bool IOLoginDataSave::savePlayerSpells(std::shared_ptr<Player> player) {

@@ -866,6 +866,7 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 	registerEnum(L, ITEM_REWARD_CONTAINER);
 	registerEnum(L, ITEM_AMULETOFLOSS);
 	registerEnum(L, ITEM_PARCEL);
+	registerEnum(L, ITEM_PARCEL_STAMPED);
 	registerEnum(L, ITEM_LABEL);
 	registerEnum(L, ITEM_FIREFIELD_PVP_FULL);
 	registerEnum(L, ITEM_FIREFIELD_PVP_MEDIUM);

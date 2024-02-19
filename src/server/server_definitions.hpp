@@ -112,16 +112,6 @@ enum Supply_Stash_Actions_t : uint8_t {
 	SUPPLY_STASH_ACTION_WITHDRAW = 3
 };
 
-// Structs
-struct HighscoreCategory {
-	HighscoreCategory(const char* name, uint8_t id) :
-		name(name),
-		id(id) { }
-
-	const char* name;
-	uint8_t id;
-};
-
 struct HighscoreCharacter {
 	HighscoreCharacter(std::string name, uint64_t points, uint32_t id, uint32_t rank, uint16_t level, uint8_t vocation) :
 		name(std::move(name)),

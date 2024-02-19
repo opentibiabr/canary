@@ -131,7 +131,6 @@ Storage = {
 	-- Reserved in Global.Storage.FamiliarSummonEvent60 = 30055
 	ChayenneKeyTime = 30056,
 	FreeQuests = 30057,
-	PremiumAccount = 30058,
 	BattleAxeQuest = 30059,
 	ShrineEntrance = 30060,
 	PlayerWeaponReward = 30061,
@@ -818,11 +817,6 @@ Storage = {
 		-- Until all outfit quests are completed
 		DefaultStart = 50960,
 		Ref = 50961,
-		Afflicted = {
-			Outfit = 50962,
-			AddonPlagueMask = 50963,
-			AddonPlagueBell = 50964,
-		},
 		Citizen = {
 			-- Mission storages for temporary questlog entries
 			MissionHat = 50966,
@@ -2415,7 +2409,6 @@ Storage = {
 			TheColoursOfMagic = {},
 		},
 		U9_1 = { --update 9.1 - Reserved Storages 43351 - 43550
-			AfflictedOutfits = {},
 			AwashWorldChange = {},
 			DemonWarsWorldChange = {},
 			ElementalistOutfits = {},
@@ -2921,7 +2914,6 @@ Storage = {
 	},
 
 	VipSystem = {
-		IsVip = 150001,
 		OnlineCoinsGain = 150002,
 		OnlineTokensGain = 150003,
 	},
@@ -3079,6 +3071,13 @@ GlobalStorage = {
 		OutburstHealth = 60181,
 		OutburstChargingKilled = 60182,
 	},
+	WorldBoard = {
+		NightmareIsle = {
+			AnkrahmunNorth = 60191,
+			DarashiaNorth = 60192,
+			DarashiaWest = 60193,
+		},
+	},
 	FuryGates = 65000,
 	Yakchal = 65001,
 	PitsOfInfernoLevers = 65002,
@@ -3093,7 +3092,6 @@ GlobalStorage = {
 	CobraBastionFlask = 65012,
 	Inquisition = 65013,
 	Yasir = 65014,
-	NightmareIsle = 65015,
 	IceCrack = 65016,
 	UglyMonster = 65017,
 	KeysUpdate = 40000, -- Reserved storage from 40000 - 40000

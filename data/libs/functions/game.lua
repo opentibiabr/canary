@@ -82,21 +82,22 @@ if not globalStorageTable then
 end
 
 function Game.getStorageValue(key)
-	return globalStorageTable[key] or -1
+	if type(globalStorageTable) == "table" and key ~= nil then
+		return globalStorageTable[key] or -1
+	else
+		logger.error("[Game.getStorageValue] Invalid table or key: {}", key)
+		return -1
+	end
 end
 
 function Game.setStorageValue(key, value)
-	if key == nil then
-		logger.error("[Game.setStorageValue] Key is nil")
-		return
-	end
-
-	if value == -1 then
-		if globalStorageTable[key] then
+	if type(globalStorageTable) == "table" and key ~= nil then
+		if value == -1 then
 			globalStorageTable[key] = nil
+		else
+			globalStorageTable[key] = value
 		end
-		return
+	else
+		logger.error("[Game.setStorageValue] Invalid table or key: {}", key)
 	end
-
-	globalStorageTable[key] = value
 end

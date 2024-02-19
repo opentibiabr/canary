@@ -42,7 +42,7 @@ end
 local oramondGloothLever = Action()
 function oramondGloothLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 8913 then
-		if getGlobalStorageValue(15560) >= os.time() then
+		if Game.getStorageValue(15560) >= os.time() then
 			doPlayerSendTextMessage(player, 19, "You need to wait 15 minutes to use again.")
 			return true
 		end
@@ -56,7 +56,7 @@ function oramondGloothLever.onUse(player, item, fromPosition, target, toPosition
 			end
 			spec:remove()
 		end
-		setGlobalStorageValue(18081, os.time() + 15 * 60)
+		Game.setStorageValue(18081, os.time() + 15 * 60)
 		player:say("Everyone in this place will be teleported into Glooth Fairy's hideout in one minute. No way back!!!", TALKTYPE_MONSTER_SAY)
 		addEvent(PrepareEnter, 60 * 1000)
 	end

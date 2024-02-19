@@ -1,6 +1,6 @@
 local function handleCobra(monster)
 	if monster:getName():lower() == "cobra scout" or monster:getName():lower() == "cobra vizier" or monster:getName():lower() == "cobra assassin" then
-		if getGlobalStorageValue(GlobalStorage.CobraBastionFlask) >= os.time() then
+		if Game.getStorageValue(GlobalStorage.CobraBastionFlask) >= os.time() then
 			monster:setHealth(monster:getMaxHealth() * 0.75)
 		end
 	end

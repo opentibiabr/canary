@@ -1423,15 +1423,6 @@ end
 
 saveData = saveServer
 
-function getGlobalStorageValue(key)
-	return Game.getStorageValue(key) or -1
-end
-
-function setGlobalStorageValue(key, value)
-	Game.setStorageValue(key, value)
-	return true
-end
-
 getWorldType = Game.getWorldType
 
 numberToVariant = Variant
@@ -1581,5 +1572,37 @@ function doSetCreatureLight(cid, lightLevel, lightColor, time)
 	condition:setParameter(CONDITION_PARAM_LIGHT_COLOR, lightColor)
 	condition:setTicks(time)
 	creature:addCondition(condition)
+	return true
+end
+
+function getGlobalStorageValue(key)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+
+	logger.warn("Deprecation: The function 'getGlobalStorageValue(key)' is outdated. Please use the new format 'Game.getStorageValue(key)'. Update needed at: Line {}, Source: {}.", line, source)
+	return true
+end
+
+function setGlobalStorageValue(key, value)
+	line = debug.getinfo(2).currentline
+	source = debug.getinfo(2).source:match("@?(.*)")
+
+	logger.warn("Deprecation Warning: The function 'setGlobalStorageValue(key, value)' is outdated. Please use the new format 'Game.setStorageValue(key, value)'. Update needed at: Line {}, Source: {}.", line, source)
+	return true
+end
+
+function getGlobalStorage(key)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+
+	logger.warn("Deprecation: The function 'getGlobalStorage(key)' is outdated. Please use the new format 'Game.getGlobalValue(key)'. Update needed at: Line {}, Source: {}.", line, source)
+	return true
+end
+
+function setGlobalStorage(key, value)
+	line = debug.getinfo(2).currentline
+	source = debug.getinfo(2).source:match("@?(.*)")
+
+	logger.warn("Deprecation: The function 'setGlobalStorage(key, value)' is outdated. Please use the new format 'Game.setGlobalValue(key, value)'. Update needed at: Line {}, Source: {}.", line, source)
 	return true
 end

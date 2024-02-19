@@ -10,7 +10,7 @@ function cobraFlask.onUse(player, item, fromPosition, target, toPosition, isHotk
 		doSendMagicEffect(target:getPosition(), CONST_ME_GREENSMOKE)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You carefully pour just a tiny, little, finely dosed... and there goes the whole content of the bottle. Stand back!")
 		item:transform(31297)
-		setGlobalStorageValue(GlobalStorage.CobraBastionFlask, os.time() + 1800) -- 30 minutes
+		Game.setStorageValue(GlobalStorage.CobraBastionFlask, os.time() + 1800) -- 30 minutes
 	end
 	return
 end

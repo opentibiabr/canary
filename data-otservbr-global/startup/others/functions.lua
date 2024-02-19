@@ -159,7 +159,7 @@ end
 function updateKeysStorage(tablename)
 	-- It updates old storage keys from quests for all players
 	local newUpdate = tablename[0].latest
-	local oldUpdate = getGlobalStorage(GlobalStorage.KeysUpdate)
+	local oldUpdate = Game.getGlobalValue(GlobalStorage.KeysUpdate)
 	if newUpdate <= oldUpdate then
 		return true
 	end
@@ -168,11 +168,13 @@ function updateKeysStorage(tablename)
 	if oldUpdate < 1 then
 		oldUpdate = 1
 	end
+
 	for u = oldUpdate, newUpdate do
 		for i = 1, #tablename[u] do
 			db.query("UPDATE `player_storage` SET `key` = '" .. tablename[u][i].new .. "' WHERE `key` = '" .. tablename[u][i].old .. "';")
 		end
 	end
-	setGlobalStorage(GlobalStorage.KeysUpdate, newUpdate)
+
+	Game.setGlobalValue(GlobalStorage.KeysUpdate, newUpdate)
 	logger.info("Storage Keys Updated")
 end

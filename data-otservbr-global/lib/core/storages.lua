@@ -3084,6 +3084,7 @@ GlobalStorage = {
 	NaginataStone = 65003,
 	ExpBoost = 65004,
 	SwordOfFury = 65005,
+	GloothFairyTimer = 65006,
 	LionsRockFields = 65007,
 	TheMummysCurse = 65008,
 	OberonEventTime = 65009,

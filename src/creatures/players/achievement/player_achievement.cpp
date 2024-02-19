@@ -13,9 +13,21 @@
 
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "kv/kv.hpp"
 
 PlayerAchievement::PlayerAchievement(Player &player) :
-	m_player(player) { }
+	m_player(player) {
+	auto unlockedAchievements = getUnlockedKV()->keys();
+	for (const auto &achievementName : unlockedAchievements) {
+		const Achievement &achievement = g_game().getAchievementByName(achievementName);
+		if (achievement.id == 0) {
+			g_logger().error("[{}] - Achievement {} not found.", __FUNCTION__, achievementName);
+			continue;
+		}
+
+		m_achievementsUnlocked.push_back({ achievement.id, getUnlockedKV()->get(achievementName)->getNumber() });
+	}
+}
 
 bool PlayerAchievement::add(uint16_t id, bool message /* = true*/, uint32_t timestamp /* = 0*/) {
 	if (isUnlocked(id)) {
@@ -32,7 +44,9 @@ bool PlayerAchievement::add(uint16_t id, bool message /* = true*/, uint32_t time
 	}
 
 	addPoints(achievement.points);
-	m_achievementsUnlocked.push_back({ achievement.id, timestamp != 0 ? timestamp : (OTSYS_TIME() / 1000) });
+	int toSaveTimeStamp = timestamp != 0 ? timestamp : (OTSYS_TIME() / 1000);
+	getUnlockedKV()->set(achievement.name, toSaveTimeStamp);
+	m_achievementsUnlocked.push_back({ achievement.id, toSaveTimeStamp });
 	m_achievementsUnlocked.shrink_to_fit();
 	return true;
 }
@@ -51,6 +65,7 @@ bool PlayerAchievement::remove(uint16_t id) {
 			return achievement_it.first == id;
 		});
 		it != m_achievementsUnlocked.end()) {
+		getUnlockedKV()->remove(achievement.name);
 		m_achievementsUnlocked.erase(it);
 		removePoints(achievement.points);
 		m_achievementsUnlocked.shrink_to_fit();
@@ -110,4 +125,12 @@ void PlayerAchievement::sendUnlockedSecretAchievements() {
 	}
 
 	m_player.sendCyclopediaCharacterAchievements(unlockedSecret, m_achievementsUnlocked);
+}
+
+const std::shared_ptr<KV> &PlayerAchievement::getUnlockedKV() {
+	if (m_unlockedKV == nullptr) {
+		m_unlockedKV = m_player.kv()->scoped("achievements")->scoped("unlocked");
+	}
+
+	return m_unlockedKV;
 }

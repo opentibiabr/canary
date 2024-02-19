@@ -26,6 +26,7 @@
 #include "server/network/message/outputmessage.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/grouping/familiars.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -37,6 +38,8 @@
 #include "enums/account_type.hpp"
 #include "enums/account_group_type.hpp"
 #include "enums/account_coins.hpp"
+
+#include "creatures/players/highscore_category.hpp"
 
 /*
  * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.hpp" file
@@ -2155,24 +2158,13 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	}
 	msg.add<uint32_t>(selectedVocation); // Selected Vocation
 
-	HighscoreCategory highscoreCategories[] = {
-		{ "Experience Points", HIGHSCORE_CATEGORY_EXPERIENCE },
-		{ "Fist Fighting", HIGHSCORE_CATEGORY_FIST_FIGHTING },
-		{ "Club Fighting", HIGHSCORE_CATEGORY_CLUB_FIGHTING },
-		{ "Sword Fighting", HIGHSCORE_CATEGORY_SWORD_FIGHTING },
-		{ "Axe Fighting", HIGHSCORE_CATEGORY_AXE_FIGHTING },
-		{ "Distance Fighting", HIGHSCORE_CATEGORY_DISTANCE_FIGHTING },
-		{ "Shielding", HIGHSCORE_CATEGORY_SHIELDING },
-		{ "Fishing", HIGHSCORE_CATEGORY_FISHING },
-		{ "Magic Level", HIGHSCORE_CATEGORY_MAGIC_LEVEL }
-	};
-
 	uint8_t selectedCategory = 0;
-	msg.addByte(sizeof(highscoreCategories) / sizeof(HighscoreCategory)); // Category Count
-	for (HighscoreCategory &category : highscoreCategories) {
-		msg.addByte(category.id); // Category Id
-		msg.addString(category.name, "ProtocolGame::sendHighscores - category.name"); // Category Name
-		if (category.id == categoryId) {
+	const auto &highscoreCategories = g_game().getHighscoreCategories();
+	msg.addByte(highscoreCategories.size()); // Category Count
+	for (const HighscoreCategory &category : highscoreCategories) {
+		msg.addByte(category.m_id); // Category Id
+		msg.addString(category.m_name, "ProtocolGame::sendHighscores - category.name"); // Category Name
+		if (category.m_id == categoryId) {
 			selectedCategory = categoryId;
 		}
 	}
@@ -3649,7 +3641,7 @@ void ProtocolGame::sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCyclopediaCharacterAchievements() {
+void ProtocolGame::sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked) {
 	if (!player || oldProtocol) {
 		return;
 	}
@@ -3657,10 +3649,24 @@ void ProtocolGame::sendCyclopediaCharacterAchievements() {
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_ACHIEVEMENTS);
-	msg.addByte(0x00);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
+	msg.addByte(0x00); // 0x00 Here means 'no error'
+	msg.add<uint16_t>(player->achiev()->getPoints());
+	msg.add<uint16_t>(secretsUnlocked);
+	msg.add<uint16_t>(static_cast<uint16_t>(achievementsUnlocked.size()));
+	std::string messageAchievName = "ProtocolGame::sendCyclopediaCharacterAchievements - achievement.name";
+	std::string messageAchievDesc = "ProtocolGame::sendCyclopediaCharacterAchievements - achievement.description";
+	for (const auto &[achievement, addedTimestamp] : achievementsUnlocked) {
+		msg.add<uint16_t>(achievement.id);
+		msg.add<uint32_t>(addedTimestamp);
+		if (achievement.secret) {
+			msg.addByte(0x01);
+			msg.addString(achievement.name, messageAchievName);
+			msg.addString(achievement.description, messageAchievDesc);
+			msg.addByte(achievement.grade);
+		} else {
+			msg.addByte(0x00);
+		}
+	}
 	writeToOutputBuffer(msg);
 }
 
@@ -4133,15 +4139,21 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 		}
 		case MESSAGE_HEALED:
 		case MESSAGE_HEALED_OTHERS: {
-			msg.addPosition(message.position);
-			msg.add<uint32_t>(message.primary.value);
-			msg.addByte(message.primary.color);
+			if (!oldProtocol) {
+				msg.addPosition(message.position);
+				msg.add<uint32_t>(message.primary.value);
+				msg.addByte(message.primary.color);
+			}
 			break;
 		}
 		case MESSAGE_EXPERIENCE:
 		case MESSAGE_EXPERIENCE_OTHERS: {
 			msg.addPosition(message.position);
-			msg.add<uint64_t>(message.primary.value);
+			if (!oldProtocol) {
+				msg.add<uint64_t>(message.primary.value);
+			} else {
+				msg.add<uint32_t>(message.primary.value);
+			}
 			msg.addByte(message.primary.color);
 			break;
 		}
@@ -5018,7 +5030,6 @@ void ProtocolGame::sendOpenForge() {
 	// Checking size of map to send in the addByte (total fusion items count)
 	uint8_t fusionTotalItemsCount = 0;
 	for (const auto &[itemId, tierAndCountMap] : fusionItemsMap) {
-		auto classification = Item::items[itemId].upgradeClassification;
 		for (const auto [itemTier, itemCount] : tierAndCountMap) {
 			if (itemCount >= 2) {
 				fusionTotalItemsCount++;
@@ -6596,17 +6607,6 @@ void ProtocolGame::sendOutfitWindow() {
 		AddOutfit(msg, currentOutfit);
 
 		std::vector<ProtocolOutfit> protocolOutfits;
-		if (player->isAccessPlayer()) {
-			static const std::string gamemasterOutfitName = "Game Master";
-			protocolOutfits.emplace_back(gamemasterOutfitName, 75, 0);
-
-			static const std::string gmCustomerSupport = "Customer Support";
-			protocolOutfits.emplace_back(gmCustomerSupport, 266, 0);
-
-			static const std::string communityManager = "Community Manager";
-			protocolOutfits.emplace_back(communityManager, 302, 0);
-		}
-
 		const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
 		protocolOutfits.reserve(outfits.size());
 		for (const auto &outfit : outfits) {

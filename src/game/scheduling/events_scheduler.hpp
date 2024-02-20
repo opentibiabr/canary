@@ -21,6 +21,7 @@ struct EventScheduler {
 struct EventRates {
 	uint16_t exprate = 100;
 	uint32_t lootrate = 100;
+	uint32_t bosslootrate = 100;
 	uint32_t spawnrate = 100;
 	uint16_t skillrate = 100;
 };
@@ -55,6 +56,13 @@ public:
 		lootSchedule = (lootSchedule * lootrate) / 100;
 	}
 
+	uint32_t getBossLootSchedule() const {
+		return bossLootSchedule;
+	}
+	void setBossLootSchedule(uint32_t bosslootrate) {
+		bossLootSchedule = (bossLootSchedule * bosslootrate) / 100;
+	}
+
 	uint32_t getSpawnMonsterSchedule() const {
 		return spawnMonsterSchedule;
 	}
@@ -73,6 +81,7 @@ private:
 	// Event schedule
 	uint16_t expSchedule = 100;
 	uint32_t lootSchedule = 100;
+	uint32_t bossLootSchedule = 100;
 	uint16_t skillSchedule = 100;
 	uint32_t spawnMonsterSchedule = 100;
 

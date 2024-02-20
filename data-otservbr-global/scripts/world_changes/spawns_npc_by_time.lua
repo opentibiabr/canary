@@ -6,7 +6,7 @@ local npcSpawns = {
 
 local spawnsNpcByTime = GlobalEvent("SpawnsNpcByTime")
 
-function spawnsByTimeEvent.onPeriodChange(period)
+function spawnsNpcByTime.onPeriodChange(period)
 	for _, npcSpawn in ipairs(npcSpawns) do
 		if npcSpawn.spawnPeriod == period then
 			local spawnNpc = Game.createNpc(npcSpawn.name, npcSpawn.position)

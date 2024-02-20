@@ -817,11 +817,6 @@ Storage = {
 		-- Until all outfit quests are completed
 		DefaultStart = 50960,
 		Ref = 50961,
-		Afflicted = {
-			Outfit = 50962,
-			AddonPlagueMask = 50963,
-			AddonPlagueBell = 50964,
-		},
 		Citizen = {
 			-- Mission storages for temporary questlog entries
 			MissionHat = 50966,
@@ -2414,7 +2409,6 @@ Storage = {
 			TheColoursOfMagic = {},
 		},
 		U9_1 = { --update 9.1 - Reserved Storages 43351 - 43550
-			AfflictedOutfits = {},
 			AwashWorldChange = {},
 			DemonWarsWorldChange = {},
 			ElementalistOutfits = {},
@@ -3090,12 +3084,12 @@ GlobalStorage = {
 	NaginataStone = 65003,
 	ExpBoost = 65004,
 	SwordOfFury = 65005,
+	GloothFairyTimer = 65006,
 	LionsRockFields = 65007,
 	TheMummysCurse = 65008,
 	OberonEventTime = 65009,
 	PrinceDrazzakEventTime = 65010,
 	ScarlettEtzelEventTime = 65011,
-	CobraBastionFlask = 65012,
 	Inquisition = 65013,
 	Yasir = 65014,
 	IceCrack = 65016,

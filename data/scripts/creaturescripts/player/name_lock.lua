@@ -3,6 +3,7 @@ function CheckNamelock(player)
 	if not namelockReason then
 		return true
 	end
+
 	player:setMoveLocked(true)
 	player:teleportTo(player:getTown():getTemplePosition())
 	player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Your name has been locked for the following reason: " .. namelockReason .. ".")

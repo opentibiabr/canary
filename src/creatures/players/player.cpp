@@ -3177,12 +3177,18 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 	ReturnValue ret = RETURNVALUE_NOERROR;
 
 	const int32_t &slotPosition = item->getSlotPosition();
-	if ((slotPosition & SLOTP_HEAD) || (slotPosition & SLOTP_NECKLACE) || (slotPosition & SLOTP_BACKPACK) || (slotPosition & SLOTP_ARMOR) || (slotPosition & SLOTP_LEGS) || (slotPosition & SLOTP_FEET) || (slotPosition & SLOTP_RING)) {
-		ret = RETURNVALUE_CANNOTBEDRESSED;
-	} else if (slotPosition & SLOTP_TWO_HAND) {
-		ret = RETURNVALUE_PUTTHISOBJECTINBOTHHANDS;
-	} else if ((slotPosition & SLOTP_RIGHT) || (slotPosition & SLOTP_LEFT)) {
-		ret = RETURNVALUE_CANNOTBEDRESSED;
+
+	bool allowPutItemsOnAmmoSlot = g_configManager().getBoolean(ENABLE_PLAYER_PUT_ITEM_IN_AMMO_SLOT, __FUNCTION__);
+	if (allowPutItemsOnAmmoSlot && index == CONST_SLOT_AMMO) {
+		ret = RETURNVALUE_NOERROR;
+	} else {
+		if ((slotPosition & SLOTP_HEAD) || (slotPosition & SLOTP_NECKLACE) || (slotPosition & SLOTP_BACKPACK) || (slotPosition & SLOTP_ARMOR) || (slotPosition & SLOTP_LEGS) || (slotPosition & SLOTP_FEET) || (slotPosition & SLOTP_RING)) {
+			ret = RETURNVALUE_CANNOTBEDRESSED;
+		} else if (slotPosition & SLOTP_TWO_HAND) {
+			ret = RETURNVALUE_PUTTHISOBJECTINBOTHHANDS;
+		} else if ((slotPosition & SLOTP_RIGHT) || (slotPosition & SLOTP_LEFT)) {
+			ret = RETURNVALUE_CANNOTBEDRESSED;
+		}
 	}
 
 	switch (index) {
@@ -3324,8 +3330,12 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 		}
 
 		case CONST_SLOT_AMMO: {
-			if ((slotPosition & SLOTP_AMMO)) {
+			if (allowPutItemsOnAmmoSlot) {
 				ret = RETURNVALUE_NOERROR;
+			} else {
+				if ((slotPosition & SLOTP_AMMO)) {
+					ret = RETURNVALUE_NOERROR;
+				}
 			}
 			break;
 		}

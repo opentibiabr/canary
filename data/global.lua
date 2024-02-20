@@ -56,15 +56,6 @@ AUTH_TYPE = configManager.getString(configKeys.AUTH_TYPE)
 GLOBAL_CHARM_GUT = 120 -- 20% more chance to get creature products from looting
 GLOBAL_CHARM_SCAVENGE = 125 -- 25% more chance to get creature products from skinning
 
---WEATHER
-weatherConfig = {
-	groundEffect = CONST_ME_LOSEENERGY,
-	fallEffect = CONST_ANI_SMALLICE,
-	thunderEffect = configManager.getBoolean(configKeys.WEATHER_THUNDER),
-	minDMG = 1,
-	maxDMG = 5,
-}
-
 -- Event Schedule
 SCHEDULE_LOOT_RATE = 100
 SCHEDULE_EXP_RATE = 100

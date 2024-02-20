@@ -83,5 +83,5 @@ function string.diff(self)
 end
 
 function GetDailyRewardLastServerSave()
-	return Game.getStorageValue(DailyReward.storages.lastServerSave)
+	return Game.setGlobalValue(DailyReward.storages.lastServerSave)
 end

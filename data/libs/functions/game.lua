@@ -101,3 +101,37 @@ function Game.setStorageValue(key, value)
 		logger.error("[Game.setStorageValue] Invalid table or key: {}", key)
 	end
 end
+
+function Game.getGlobalValue(key)
+	local keyNumber = tonumber(key)
+	if not keyNumber then
+		key = "'" .. key .. "'"
+	end
+
+	local result = db.storeQuery("SELECT `value` FROM `global_storage` WHERE `key` = " .. key)
+	if result then
+		local value = tonumber(result:getDataInt("value")) or result:getDataString("value")
+		result:free()
+		return value
+	else
+		logger.error("[Game.getGlobalValue] Unable to retrieve value for key: {}", key)
+		return -1
+	end
+end
+
+function Game.setGlobalValue(key, value)
+	local keyNumber = tonumber(key)
+	if not keyNumber then
+		key = "'" .. key .. "'"
+	end
+
+	local valueNumber = tonumber(value)
+	if not valueNumber then
+		value = "'" .. value .. "'"
+	end
+
+	local query = db.query("INSERT INTO `global_storage` (`key`, `value`) VALUES (" .. key .. ", " .. value .. ") ON DUPLICATE KEY UPDATE `value` = " .. value)
+	if not query then
+		logger.error("[Game.setGlobalValue] Unable to set value for key {}", key)
+	end
+end

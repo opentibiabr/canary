@@ -37,8 +37,8 @@ space_around_table_append_operator = true
 
 # [indent]
 indent_style = tab
-indent_size = 2
-tab_width = 2
+indent_size = 4
+tab_width = 4
 
 # [align]
 align_call_args = false

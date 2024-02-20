@@ -126,7 +126,6 @@ bool ConfigManager::load() {
 
 	loadBoolConfig(L, WEATHER_RAIN, "weatherRain", false);
 	loadBoolConfig(L, WEATHER_THUNDER, "thunderEffect", false);
-	loadBoolConfig(L, ALL_CONSOLE_LOG, "allConsoleLog", false);
 	loadBoolConfig(L, TOGGLE_FREE_QUEST, "toggleFreeQuest", true);
 	loadBoolConfig(L, AUTOLOOT, "autoLoot", false);
 	loadBoolConfig(L, AUTOBANK, "autoBank", false);
@@ -327,6 +326,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, BUY_AOL_COMMAND_FEE, "buyAolCommandFee", 0);
 	loadIntConfig(L, BUY_BLESS_COMMAND_FEE, "buyBlessCommandFee", 0);
 	loadBoolConfig(L, TELEPORT_PLAYER_TO_VOCATION_ROOM, "teleportPlayerToVocationRoom", true);
+	loadBoolConfig(L, ENABLE_PLAYER_PUT_ITEM_IN_AMMO_SLOT, "enablePlayerPutItemInAmmoSlot", false);
 
 	loadBoolConfig(L, TOGGLE_HAZARDSYSTEM, "toogleHazardSystem", true);
 	loadIntConfig(L, HAZARD_CRITICAL_INTERVAL, "hazardCriticalInterval", 2000);

@@ -12,30 +12,26 @@ local raid = Raid("thais.rats", {
 
 raid:addBroadcast("Rat Plague in Thais!"):autoAdvance("5s")
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "Rat",
-			amount = 10,
-		},
-		{
-			name = "Cave Rat",
-			amount = 10,
-		},
-	})
-	:autoAdvance("10m")
+raid:addSpawnMonsters({
+	{
+		name = "Rat",
+		amount = 10,
+	},
+	{
+		name = "Cave Rat",
+		amount = 10,
+	},
+}):autoAdvance("10m")
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "Rat",
-			amount = 20,
-		},
-		{
-			name = "Cave Rat",
-			amount = 20,
-		},
-	})
-	:autoAdvance("10m")
+raid:addSpawnMonsters({
+	{
+		name = "Rat",
+		amount = 20,
+	},
+	{
+		name = "Cave Rat",
+		amount = 20,
+	},
+}):autoAdvance("10m")
 
 raid:register()

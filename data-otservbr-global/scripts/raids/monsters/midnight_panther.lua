@@ -16,14 +16,12 @@ local possiblePositions = {
 	Position(32856, 32738, 7),
 }
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "Midnight Panther",
-			amount = 1,
-			position = possiblePositions[math.random(1, #possiblePositions)],
-		},
-	})
-	:autoAdvance("24h")
+raid:addSpawnMonsters({
+	{
+		name = "Midnight Panther",
+		amount = 1,
+		position = possiblePositions[math.random(1, #possiblePositions)],
+	},
+}):autoAdvance("24h")
 
 raid:register()

@@ -12,14 +12,12 @@ local raid = Raid("farmine.draptor", {
 })
 
 for i = 1, 3 do
-	raid
-		:addSpawnMonsters({
-			{
-				name = "Undead Cavebear",
-				amount = 3,
-			},
-		})
-		:autoAdvance("2m")
+	raid:addSpawnMonsters({
+		{
+			name = "Undead Cavebear",
+			amount = 3,
+		},
+	}):autoAdvance("2m")
 end
 
 raid:register()

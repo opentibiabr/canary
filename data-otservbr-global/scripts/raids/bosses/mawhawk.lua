@@ -10,13 +10,11 @@ local raid = Raid("roshamuul.mawhawk", {
 	maxChancePerCheck = 0.4,
 })
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "Mawhawk",
-			amount = 1,
-		},
-	})
-	:autoAdvance("24h")
+raid:addSpawnMonsters({
+	{
+		name = "Mawhawk",
+		amount = 1,
+	},
+}):autoAdvance("24h")
 
 raid:register()

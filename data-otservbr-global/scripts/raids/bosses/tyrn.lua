@@ -10,13 +10,11 @@ local raid = Raid("darashia.tyrn", {
 	maxChancePerCheck = 0.4,
 })
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "Tyrn",
-			amount = 1,
-		},
-	})
-	:autoAdvance("24h")
+raid:addSpawnMonsters({
+	{
+		name = "Tyrn",
+		amount = 1,
+	},
+}):autoAdvance("24h")
 
 raid:register()

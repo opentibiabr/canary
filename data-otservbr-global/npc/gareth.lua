@@ -152,14 +152,22 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "bone") and player:getStorageValue(Storage.TheSecretLibrary.Mota) == 2 then
-		npcHandler:say({ "Hmm, interesting. Several years ago I have read some books dealing with strange locking mechanisms. I think what you have found here is a bone lever of category 3. ...", "Normally this is not used because it is not secure. The production failed and the lever can always be activated as follows: back, back, up, right, left. Just have a try, it should work." }, npc, creature)
+		npcHandler:say(
+			{ "Hmm, interesting. Several years ago I have read some books dealing with strange locking mechanisms. I think what you have found here is a bone lever of category 3. ...", "Normally this is not used because it is not secure. The production failed and the lever can always be activated as follows: back, back, up, right, left. Just have a try, it should work." },
+			npc,
+			creature
+		)
 		player:setStorageValue(Storage.TheSecretLibrary.Mota, 3)
 		npcHandler:setTopic(playerId, 14)
 	end
 
 	if MsgContains(message, "extension") and player:getStorageValue(Storage.TheSecretLibrary.Mota) == 11 then
 		npcHandler:say(
-			{ "You have found an inscription I would like to translate for you. The tibianus cipher was used: ...", "Those who are accorded the honour to visit this exclusive place will smash their blindness and face the truth. ...", "Astonishingly, Dedoras from Cormaya has recently asked me for these kinds of inscriptions. For sure he is able to bring light into the darkness. You should visit him. " },
+			{
+				"You have found an inscription I would like to translate for you. The tibianus cipher was used: ...",
+				"Those who are accorded the honour to visit this exclusive place will smash their blindness and face the truth. ...",
+				"Astonishingly, Dedoras from Cormaya has recently asked me for these kinds of inscriptions. For sure he is able to bring light into the darkness. You should visit him. ",
+			},
 			npc,
 			creature
 		)

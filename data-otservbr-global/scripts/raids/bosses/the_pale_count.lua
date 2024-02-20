@@ -10,14 +10,12 @@ local raid = Raid("drefia.the-pale-count", {
 	maxChancePerCheck = 0.7,
 })
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "The Pale Count",
-			amount = 1,
-			position = Position(32969, 32420, 15),
-		},
-	})
-	:autoAdvance("24h")
+raid:addSpawnMonsters({
+	{
+		name = "The Pale Count",
+		amount = 1,
+		position = Position(32969, 32420, 15),
+	},
+}):autoAdvance("24h")
 
 raid:register()

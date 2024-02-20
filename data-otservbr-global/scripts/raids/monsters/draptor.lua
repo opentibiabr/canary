@@ -14,34 +14,28 @@ local raid = Raid("farmine.draptor", {
 raid:addBroadcast("The dragons of the Dragonblaze Mountains have  descended to Zao to protect the lizardkin!"):autoAdvance("30s")
 
 for i = 1, 3 do
-	raid
-		:addSpawnMonsters({
-			{
-				name = "Dragon",
-				amount = 50,
-			},
-		})
-		:autoAdvance("2m")
+	raid:addSpawnMonsters({
+		{
+			name = "Dragon",
+			amount = 50,
+		},
+	}):autoAdvance("2m")
 end
 
 for i = 1, 8 do
-	raid
-		:addSpawnMonsters({
-			{
-				name = "Draptor",
-				amount = 1,
-			},
-		})
-		:autoAdvance("10s")
-end
-
-raid
-	:addSpawnMonsters({
+	raid:addSpawnMonsters({
 		{
-			name = "Grand Mother Foulscale",
+			name = "Draptor",
 			amount = 1,
 		},
-	})
-	:autoAdvance("10s")
+	}):autoAdvance("10s")
+end
+
+raid:addSpawnMonsters({
+	{
+		name = "Grand Mother Foulscale",
+		amount = 1,
+	},
+}):autoAdvance("10s")
 
 raid:register()

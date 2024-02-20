@@ -11,7 +11,7 @@ function spell.onCastSpell(creature, var)
 		if t:getItemById(1487) or t:getItemById(1492) or t:getItemById(1500) then
 			creature:addHealth(health)
 			cpos:sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			creature:say("Omrafir gains new strength from the fire", TALKTYPE_ORANGE_1)
+			creature:say("Omrafir gains new strength from the fire", TALKTYPE_MONSTER_SAY)
 		else
 		end
 	end

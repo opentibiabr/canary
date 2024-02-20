@@ -15,24 +15,20 @@ raid:addBroadcast("The mating season of the giant spiders is at hand. Leave the 
 raid:addBroadcast("Giant spiders have gathered on the plains of havoc for their mating season. Beware!"):autoAdvance("3m")
 
 for _ = 1, 4 do
-	raid
-		:addSpawnMonsters({
-			{
-				name = "Giant Spider",
-				amount = 8,
-			},
-		})
-		:autoAdvance("10s")
+	raid:addSpawnMonsters({
+		{
+			name = "Giant Spider",
+			amount = 8,
+		},
+	}):autoAdvance("10s")
 end
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "The Old Widow",
-			amount = 1,
-			position = Position(32776, 32296, 7),
-		},
-	})
-	:autoAdvance("24h")
+raid:addSpawnMonsters({
+	{
+		name = "The Old Widow",
+		amount = 1,
+		position = Position(32776, 32296, 7),
+	},
+}):autoAdvance("24h")
 
 raid:register()

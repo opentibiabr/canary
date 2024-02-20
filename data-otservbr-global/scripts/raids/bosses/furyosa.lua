@@ -10,23 +10,19 @@ local raid = Raid("fury-gates.furiosa", {
 	maxChancePerCheck = 0.6,
 })
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "Demon",
-			amount = 80,
-		},
-	})
-	:autoAdvance("1m")
+raid:addSpawnMonsters({
+	{
+		name = "Demon",
+		amount = 80,
+	},
+}):autoAdvance("1m")
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "Furyosa",
-			amount = 1,
-			position = Position(33281, 31804, 15),
-		},
-	})
-	:autoAdvance("24h")
+raid:addSpawnMonsters({
+	{
+		name = "Furyosa",
+		amount = 1,
+		position = Position(33281, 31804, 15),
+	},
+}):autoAdvance("24h")
 
 raid:register()

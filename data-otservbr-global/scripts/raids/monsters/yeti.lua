@@ -16,14 +16,12 @@ raid:addBroadcast("Many Yetis are emerging from the icy mountains of Folda."):au
 raid:addBroadcast("Numerous Yetis are dominating Folda, beware!"):autoAdvance("60s")
 
 for i = 1, 20 do
-	raid
-		:addSpawnMonsters({
-			{
-				name = "Yeti",
-				amount = 3,
-			},
-		})
-		:autoAdvance("3m")
+	raid:addSpawnMonsters({
+		{
+			name = "Yeti",
+			amount = 3,
+		},
+	}):autoAdvance("3m")
 end
 
 raid:register()

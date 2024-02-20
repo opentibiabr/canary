@@ -14,14 +14,12 @@ local raid = Raid("thais.wild-horses", {
 })
 
 for _ = 1, 7 do
-	raid
-		:addSpawnMonsters({
-			{
-				name = "Wild Horse",
-				amount = 3,
-			},
-		})
-		:autoAdvance("3h")
+	raid:addSpawnMonsters({
+		{
+			name = "Wild Horse",
+			amount = 3,
+		},
+	}):autoAdvance("3h")
 end
 
 raid:register()

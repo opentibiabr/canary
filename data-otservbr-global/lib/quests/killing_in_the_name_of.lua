@@ -905,7 +905,15 @@ tasksByPlayer = 3
 repeatTimes = 3
 
 function Player.getPawAndFurRank(self)
-	return (self:getStorageValue(POINTSSTORAGE) >= 100 and RANK_ELITEHUNTER or self:getStorageValue(POINTSSTORAGE) >= 70 and RANK_TROPHYHUNTER or self:getStorageValue(POINTSSTORAGE) >= 40 and RANK_BIGGAMEHUNTER or self:getStorageValue(POINTSSTORAGE) >= 20 and RANK_RANGER or self:getStorageValue(POINTSSTORAGE) >= 10 and RANK_HUNTSMAN or self:getStorageValue(JOIN_STOR) == 1 and RANK_JOIN or RANK_NONE)
+	return (
+		self:getStorageValue(POINTSSTORAGE) >= 100 and RANK_ELITEHUNTER
+		or self:getStorageValue(POINTSSTORAGE) >= 70 and RANK_TROPHYHUNTER
+		or self:getStorageValue(POINTSSTORAGE) >= 40 and RANK_BIGGAMEHUNTER
+		or self:getStorageValue(POINTSSTORAGE) >= 20 and RANK_RANGER
+		or self:getStorageValue(POINTSSTORAGE) >= 10 and RANK_HUNTSMAN
+		or self:getStorageValue(JOIN_STOR) == 1 and RANK_JOIN
+		or RANK_NONE
+	)
 end
 
 function Player.getPawAndFurPoints(self)

@@ -10,14 +10,12 @@ local raid = Raid("drefia.arachir", {
 	maxChancePerCheck = 0.8,
 })
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "Arachir the Ancient One",
-			amount = 1,
-			position = Position(32964, 32400, 12),
-		},
-	})
-	:autoAdvance("24h")
+raid:addSpawnMonsters({
+	{
+		name = "Arachir the Ancient One",
+		amount = 1,
+		position = Position(32964, 32400, 12),
+	},
+}):autoAdvance("24h")
 
 raid:register()

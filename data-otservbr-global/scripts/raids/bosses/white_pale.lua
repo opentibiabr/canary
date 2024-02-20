@@ -10,14 +10,12 @@ local raid = Raid("edron.white-pale", {
 	maxChancePerCheck = 0.8,
 })
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "White Pale",
-			amount = 1,
-			position = Position(33264, 31875, 11),
-		},
-	})
-	:autoAdvance("24h")
+raid:addSpawnMonsters({
+	{
+		name = "White Pale",
+		amount = 1,
+		position = Position(33264, 31875, 11),
+	},
+}):autoAdvance("24h")
 
 raid:register()

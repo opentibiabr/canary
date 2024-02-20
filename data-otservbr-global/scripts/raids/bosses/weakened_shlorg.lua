@@ -10,14 +10,12 @@ local raid = Raid("edron.weakened-shlorg", {
 	maxChancePerCheck = 0.8,
 })
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "Weakened Shlorg",
-			amount = 1,
-			position = Position(33164, 31716, 9),
-		},
-	})
-	:autoAdvance("24h")
+raid:addSpawnMonsters({
+	{
+		name = "Weakened Shlorg",
+		amount = 1,
+		position = Position(33164, 31716, 9),
+	},
+}):autoAdvance("24h")
 
 raid:register()

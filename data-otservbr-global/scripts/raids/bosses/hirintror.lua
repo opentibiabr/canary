@@ -10,14 +10,12 @@ local raid = Raid("svargrond.hirintror", {
 	maxChancePerCheck = 0.8,
 })
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "Hirintror",
-			amount = 1,
-			position = Position(32101, 31167, 9),
-		},
-	})
-	:autoAdvance("24h")
+raid:addSpawnMonsters({
+	{
+		name = "Hirintror",
+		amount = 1,
+		position = Position(32101, 31167, 9),
+	},
+}):autoAdvance("24h")
 
 raid:register()

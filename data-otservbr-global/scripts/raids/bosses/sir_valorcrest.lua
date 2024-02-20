@@ -10,14 +10,12 @@ local raid = Raid("edron.valorcrest", {
 	maxChancePerCheck = 0.8,
 })
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "Sir Valorcrest",
-			amount = 1,
-			position = Position(33264, 31768, 10),
-		},
-	})
-	:autoAdvance("24h")
+raid:addSpawnMonsters({
+	{
+		name = "Sir Valorcrest",
+		amount = 1,
+		position = Position(33264, 31768, 10),
+	},
+}):autoAdvance("24h")
 
 raid:register()

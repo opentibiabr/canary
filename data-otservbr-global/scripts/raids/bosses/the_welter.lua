@@ -10,13 +10,11 @@ local raid = Raid("ankrahmun.the-welter", {
 	maxChancePerCheck = 0.6,
 })
 
-raid
-	:addSpawnMonsters({
-		{
-			name = "The Welter",
-			amount = 1,
-		},
-	})
-	:autoAdvance("24h")
+raid:addSpawnMonsters({
+	{
+		name = "The Welter",
+		amount = 1,
+	},
+}):autoAdvance("24h")
 
 raid:register()

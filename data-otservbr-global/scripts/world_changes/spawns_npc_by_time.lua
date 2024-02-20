@@ -6,21 +6,19 @@ local npcSpawns = {
 
 local spawnsNpcByTime = GlobalEvent("SpawnsNpcByTime")
 
-function spawnsByTimeEvent.onPeriodChange(period)
+function spawnsNpcByTime.onPeriodChange(period)
 	for _, npcSpawn in ipairs(npcSpawns) do
 		if npcSpawn.spawnPeriod == period then
 			local spawnNpc = Game.createNpc(npcSpawn.name, npcSpawn.position)
 			if spawnNpc then
 				spawnNpc:setMasterPos(npcSpawn.position)
-				npcSpawn.position:sendMagicEffect(CONST_ME_TELEPORT)
-				logger.info("[NPC Spawn] {} has spawned", npcSpawn.name)
+				spawnNpc:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			end
 		elseif npcSpawn.despawnPeriod == period then
 			local despawnNpc = Npc(npcSpawn.name)
 			if despawnNpc then
 				despawnNpc:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				despawnNpc:remove()
-				logger.info("[NPC Despawn] {} has despawned", npcSpawn.name)
 			end
 		end
 	end

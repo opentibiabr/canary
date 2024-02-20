@@ -5,7 +5,7 @@ local config = {
 	pos = Position(33497, 32196, 7),
 	herbId = 5953,
 	herbWeight = 1,
-	storage = ThreatenedDreams.Mission03.RavenHerbTimer,
+	storage = Storage.Quest.U11_40.ThreatenedDreams.Mission03.RavenHerbTimer,
 }
 
 local createRavenHerb = GlobalEvent("createRavenHerb")
@@ -55,5 +55,5 @@ function ravenHerb.onUse(player, item, fromPosition, target, toPosition, isHotke
 	return true
 end
 
-ravenHerb:aid(ThreatenedDreams.Mission03.RavenHerbTimer)
+ravenHerb:id(25783)
 ravenHerb:register()

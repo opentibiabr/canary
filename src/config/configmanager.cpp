@@ -124,8 +124,6 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, PUSH_WHEN_ATTACKING, "pushWhenAttacking", false);
 	loadIntConfig(L, MIN_DELAY_BETWEEN_CONDITIONS, "minDelayBetweenConditions", 0);
 
-	loadBoolConfig(L, WEATHER_RAIN, "weatherRain", false);
-	loadBoolConfig(L, WEATHER_THUNDER, "thunderEffect", false);
 	loadBoolConfig(L, TOGGLE_FREE_QUEST, "toggleFreeQuest", true);
 	loadBoolConfig(L, AUTOLOOT, "autoLoot", false);
 	loadBoolConfig(L, AUTOBANK, "autoBank", false);

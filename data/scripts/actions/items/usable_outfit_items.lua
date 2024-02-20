@@ -56,7 +56,7 @@ function usableOutfitItems.onUse(player, item, fromPosition, target, toPosition,
 		player:getPosition():sendMagicEffect(outfitInfo.effect or CONST_ME_GIFT_WRAPS)
 		if outfitInfo.textorange then
 			player:say(outfitInfo.textorange, TALKTYPE_MONSTER_SAY)
-		else
+		elseif outfitInfo.textwhite then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, outfitInfo.textwhite)
 		end
 		item:remove(1)
@@ -73,7 +73,7 @@ function usableOutfitItems.onUse(player, item, fromPosition, target, toPosition,
 	player:getPosition():sendMagicEffect(outfitInfo.effect or CONST_ME_GIFT_WRAPS)
 	if outfitInfo.textorange then
 		player:say(outfitInfo.textorange, TALKTYPE_MONSTER_SAY)
-	else
+	elseif outfitInfo.textwhite then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, outfitInfo.textwhite)
 	end
 

@@ -51,7 +51,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@main
 
-       - name: Restore artifacts and install vcpkg
+      - name: Restore artifacts and install vcpkg
         id: vcpkg-step
         run: |
           $json=Get-Content vcpkg.json -Raw | ConvertFrom-Json

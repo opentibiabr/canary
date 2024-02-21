@@ -79,7 +79,7 @@ function rustRemover.onUse(player, item, fromPosition, target, toPosition, isHot
 
 	if targetItem[1].chance >= randomChance then
 		while not index do
-			randomIndex = math.random(#targetItem)
+			local randomIndex = math.random(#targetItem)
 			if targetItem[randomIndex].chance >= randomChance then
 				index = randomIndex
 			end
@@ -87,6 +87,7 @@ function rustRemover.onUse(player, item, fromPosition, target, toPosition, isHot
 	end
 
 	if not index then
+		local msg = nil
 		if table.contains({ 8894, 8895, 8896 }, target.itemid) then
 			msg = "The armor was already damaged so badly that it broke when you tried to clean it."
 		elseif table.contains({ 8897, 8898, 8899 }, target.itemid) then
@@ -105,8 +106,10 @@ function rustRemover.onUse(player, item, fromPosition, target, toPosition, isHot
 		target:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 		player:addAchievementProgress("Polisher", 1000)
 	end
-	return item:remove(1)
+
+	item:remove(1)
+	return true
 end
 
-rustRemover:id(9930)
+rustRemover:id(9016)
 rustRemover:register()

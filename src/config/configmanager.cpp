@@ -311,6 +311,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, STAMINA_PZ_GAIN, "staminaPzGain", 1);
 	loadIntConfig(L, STAMINA_TRAINER_DELAY, "staminaTrainerDelay", 5);
 	loadIntConfig(L, STAMINA_TRAINER_GAIN, "staminaTrainerGain", 1);
+	loadIntConfig(L, START_STREAK_LEVEL, "startStreakLevel", 0);
 	loadIntConfig(L, STATUSQUERY_TIMEOUT, "statusTimeout", 5000);
 	loadIntConfig(L, STORE_COIN_PACKET, "coinPacketSize", 25);
 	loadIntConfig(L, STOREINBOX_MAXLIMIT, "storeInboxMaxLimit", 2000);

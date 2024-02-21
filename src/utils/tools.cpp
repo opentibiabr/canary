@@ -1203,6 +1203,15 @@ const char* getReturnMessage(ReturnValue value) {
 		case RETURNVALUE_NOERROR:
 			return "No error.";
 
+		case RETURNVALUE_NOTBOUGHTINSTORE:
+			return "You cannot move this item into your Store inbox as it was not bought in the Store.";
+			
+		case RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH:
+			return "This item cannot be moved there. You can only place gold, platinum and Crystal coins in your gold pouch.";			
+
+		case RETURNVALUE_ITEMCANNOTBEMOVEDTHERE:
+			return "This item cannot be moved there.";		
+
 		case RETURNVALUE_REWARDCHESTISEMPTY:
 			return "The chest is currently empty. You did not take part in any battles in the last seven days or already claimed your reward.";
 

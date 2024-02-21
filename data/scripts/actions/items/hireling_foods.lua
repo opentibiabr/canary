@@ -42,23 +42,23 @@ function hirelingFoods.onUse(player, item, fromPosition, target, toPosition, isH
 		return true
 	end
 
-	local hasExhaustion = player:kv():get("hireling-foods-cooldown") or 0
-	if hasExhaustion <= os.time() then
-		player:kv():set("hireling-foods-cooldown", os.time() + 10 * 60)
-
-		if dish.condition then
-			player:addCondition(dish.condition)
-		elseif dish.healing then
-			player:addHealth(player:getMaxHealth() * 0.3)
-		elseif dish.manaRestore then
-			player:addMana(player:getMaxMana() * 0.3)
-		end
-
-		player:say(dish.message, TALKTYPE_MONSTER_SAY)
-		item:remove(1)
-	else
+	if player:hasExhaustion("hireling-foods-cooldown") then
 		player:sendCancelMessage("You're still too full to eat any gourmet dishes for a while.")
+		return true
 	end
+
+	if dish.condition then
+		player:addCondition(dish.condition)
+	elseif dish.healing then
+		player:addHealth(player:getMaxHealth() * 0.3)
+	elseif dish.manaRestore then
+		player:addMana(player:getMaxMana() * 0.3)
+	end
+
+	player:say(dish.message, TALKTYPE_MONSTER_SAY)
+	player:setExhaustion("hireling-foods-cooldown", 10 * 60)
+
+	item:remove(1)
 	return true
 end
 

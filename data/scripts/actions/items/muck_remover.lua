@@ -22,14 +22,14 @@ function muckRemover.onUse(player, item, fromPosition, target, toPosition, isHot
 		randomItem = config[i]
 		if chance >= randomItem.from and chance <= randomItem.to then
 			if toPosition.x == CONTAINER_POSITION then
-				target:getParent():addItem(randomItem.itemId, randomItem.count or 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
+				player:addItem(randomItem.itemId, randomItem.count or 1)
 			else
 				Game.createItem(randomItem.itemId, randomItem.count or 1, toPosition)
 			end
 
+			player:addAchievementProgress("Goo Goo Dancer", 100)
 			target:getPosition():sendMagicEffect(CONST_ME_GREEN_RINGS)
 			target:remove(1)
-
 			item:remove(1)
 			break
 		end

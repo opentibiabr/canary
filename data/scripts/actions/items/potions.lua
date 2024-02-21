@@ -40,9 +40,9 @@ local potions = {
 	[266] = { health = { 125, 175 }, flask = 285 },
 	[268] = { mana = { 75, 125 }, flask = 285 },
 	[6558] = { transform = { id = { 236, 237 } }, effect = CONST_ME_DRAWBLOOD },
-	[7439] = { vocations = { VOCATION.BASE_ID.KNIGHT }, condition = berserk, effect = CONST_ME_MAGIC_RED, description = "Only knights may drink this potion.", text = "You feel stronger." },
-	[7440] = { vocations = { VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID }, condition = mastermind, effect = CONST_ME_MAGIC_BLUE, description = "Only sorcerers and druids may drink this potion.", text = "You feel smarter." },
-	[7443] = { vocations = { VOCATION.BASE_ID.PALADIN }, condition = bullseye, effect = CONST_ME_MAGIC_GREEN, description = "Only paladins may drink this potion.", text = "You feel more accurate." },
+	[7439] = { vocations = { VOCATION.BASE_ID.KNIGHT }, condition = berserk, effect = CONST_ME_MAGIC_RED, description = "Only knights may drink this potion.", text = "You feel stronger.", achievement = "Berserker" },
+	[7440] = { vocations = { VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID }, condition = mastermind, effect = CONST_ME_MAGIC_BLUE, description = "Only sorcerers and druids may drink this potion.", text = "You feel smarter.", achievement = "Mastermind" },
+	[7443] = { vocations = { VOCATION.BASE_ID.PALADIN }, condition = bullseye, effect = CONST_ME_MAGIC_GREEN, description = "Only paladins may drink this potion.", text = "You feel more accurate.", achievement = "Sharpshooter" },
 	[7642] = { health = { 250, 350 }, mana = { 100, 200 }, vocations = { VOCATION.BASE_ID.PALADIN }, level = 80, flask = 284, description = "Only paladins of level 80 or above may drink this fluid." },
 	[7643] = { health = { 650, 850 }, vocations = { VOCATION.BASE_ID.KNIGHT }, level = 130, flask = 284, description = "Only knights of level 130 or above may drink this fluid." },
 	[7644] = { combat = antidote, flask = 285 },
@@ -88,11 +88,13 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 
 		local deactivatedFlasks = player:kv():get("talkaction.potions.flask") or false
 		if not deactivatedFlasks then
-			if fromPosition.x == CONTAINER_POSITION and not container == STORE_INBOX then
-				local container = Container(item:getParent().uid)
+			local container = Container(item:getParent().uid)
+			local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
+
+			if fromPosition.x == CONTAINER_POSITION and container ~= inbox and container:getEmptySlots() ~= 0 then
 				container:addItem(potion.flask, 1)
 			else
-				player:addItem(potion.flask, 1)
+				Game.createItem(potion.flask, 1, fromPosition)
 			end
 		end
 	end
@@ -103,6 +105,7 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 		potion.func(player)
 		player:say("Aaaah...", MESSAGE_POTION)
 		player:getPosition():sendMagicEffect(potion.effect)
+		player:addAchievementProgress(potion.achievement, 100)
 	end
 
 	if potion.condition then
@@ -116,6 +119,7 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 			item:remove(1)
 			player:addItem(potion.transform.id[math.random(#potion.transform.id)], 1)
 			item:getPosition():sendMagicEffect(potion.effect)
+			player:addAchievementProgress("Demonic Barkeeper", 250)
 			return true
 		end
 	end

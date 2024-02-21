@@ -483,6 +483,7 @@ ACHIEVEMENTS = {
 	[482] = { name = "Dream Catcher", grade = 1, points = 3, description = "You are the slayer of the ancient nightmare beast and prevented the nightmare to spread its madness." },
 	[483] = { name = "Champion of Summer", grade = 1, points = 2, secret = true, description = "You have vanquished numerous arena champions in the name of the Summer Court." },
 	[484] = { name = "Champion of Winter", grade = 1, points = 2, secret = true, description = "You have vanquished numerous arena champions in the name of the Winter Court." },
+	[485] = { name = "Allow Cookies?", grade = 2, points = 6, description = "With a perfectly harmless smile, you tricked all the funny guys into eating your exploding cookies. Next time you pull this prank, consider wearing a Boy Scout outfit to make it even better." },
 	[486] = { name = "Bewitcher", grade = 2, points = 5, secret = true, description = "You literally put everything in that cauldron except lilac and gooseberries." },
 	[487] = { name = "Gryphon Rider", grade = 1, points = 3, description = "Unmasking spies, killing demons, discovering omens, solving puzzles and fighting ogres, manticores and feral sphinxes. - Nobody said it was easy to become a gryphon rider." },
 	[488] = { name = "Sculptor Apprentice", grade = 1, points = 2, secret = true, description = "Granted, you didn't carve those lifelike animal figurines yourself. But helping a medusa to find proper objects and even watching her using her petrifying gaze is almost as rewarding." },
@@ -644,14 +645,16 @@ function Player.addAchievementProgress(self, achievement, totalProgress)
 	local achievScope = self:kv():scoped("achievements")
 	local achievScopeName = tostring(foundAchievement.name .. "-progress")
 	local progressNumber = achievScope:get(achievScopeName) or 0
-
-	if progressNumber + 1 == totalProgress then
-		self:addAchievement(foundAchievement.id)
-		logger.debug("[Player.addAchievementProgress] - Achievement '{}' completed", foundAchievement.name)
-		achievScope:remove(achievScopeName)
+	local newProgress = progressNumber + 1
+	if newProgress > totalProgress then
 		return
 	end
 
-	logger.debug("[Player.addAchievementProgress] - Achievement '{}' progress updated to '{}', total progress '{}'", foundAchievement.name, progressNumber + 1, totalProgress)
-	achievScope:set(achievScopeName, progressNumber + 1)
+	if newProgress == totalProgress then
+		self:addAchievement(foundAchievement.id)
+		logger.debug("[Player.addAchievementProgress] - Achievement '{}' completed", foundAchievement.name)
+	end
+
+	logger.debug("[Player.addAchievementProgress] - Achievement '{}' progress updated to '{}', total progress '{}'", foundAchievement.name, newProgress, totalProgress)
+	achievScope:set(achievScopeName, newProgress)
 end

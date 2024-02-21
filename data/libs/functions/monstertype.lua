@@ -11,7 +11,7 @@ function MonsterType:generateLootRoll(config, resultTable)
 	local uniqueItems = {}
 
 	if self:isRewardBoss() then
-			factor = factor * SCHEDULE_BOSS_LOOT_RATE / 100
+		factor = factor * SCHEDULE_BOSS_LOOT_RATE / 100
 	end
 
 	local result = resultTable or {}
@@ -59,7 +59,7 @@ function MonsterType:generateLootRoll(config, resultTable)
 			uniqueItems[item.itemId] = true
 		end
 
-		:: continue ::
+		::continue::
 	end
 
 	for itemId, item in pairs(result) do

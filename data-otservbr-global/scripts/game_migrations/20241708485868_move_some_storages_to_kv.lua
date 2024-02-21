@@ -1,5 +1,5 @@
 local oldAutolootStorage = 30063
-local flasksStorage = 'talkaction.potions.flask'
+local flasksStorage = "talkaction.potions.flask"
 
 local function migrate(player)
 	local isAutoLoot = player:getStorageValue(oldAutolootStorage)

@@ -3065,11 +3065,11 @@ GlobalStorage = {
 		AftershockStage = 60176,
 		RuptureResonanceStage = 60177,
 		RuptureResonanceActive = 60178,
-		EradicatorWeak = 60178,
-		EradicatorReleaseT = 60179,
-		OutburstStage = 60180,
-		OutburstHealth = 60181,
-		OutburstChargingKilled = 60182,
+		EradicatorWeak = 60179,
+		EradicatorReleaseT = 60180,
+		OutburstStage = 60181,
+		OutburstHealth = 60182,
+		OutburstChargingKilled = 60183,
 	},
 	WorldBoard = {
 		NightmareIsle = {

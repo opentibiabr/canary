@@ -64,7 +64,6 @@ private:
 	bool reloadNpcs() const;
 	bool reloadRaids() const;
 	bool reloadScripts() const;
-	bool reloadTalkaction() const;
 	bool reloadGroups() const;
 };
 

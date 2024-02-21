@@ -2161,7 +2161,9 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	uint8_t selectedCategory = 0;
 	const auto &highscoreCategories = g_game().getHighscoreCategories();
 	msg.addByte(highscoreCategories.size()); // Category Count
+	g_logger().debug("[ProtocolGame::sendHighscores] - Category Count: {}", highscoreCategories.size());
 	for (const HighscoreCategory &category : highscoreCategories) {
+		g_logger().debug("[ProtocolGame::sendHighscores] - Category: {} - Name: {}", category.m_id, category.m_name);
 		msg.addByte(category.m_id); // Category Id
 		msg.addString(category.m_name, "ProtocolGame::sendHighscores - category.name"); // Category Name
 		if (category.m_id == categoryId) {
@@ -5030,7 +5032,6 @@ void ProtocolGame::sendOpenForge() {
 	// Checking size of map to send in the addByte (total fusion items count)
 	uint8_t fusionTotalItemsCount = 0;
 	for (const auto &[itemId, tierAndCountMap] : fusionItemsMap) {
-		auto classification = Item::items[itemId].upgradeClassification;
 		for (const auto [itemTier, itemCount] : tierAndCountMap) {
 			if (itemCount >= 2) {
 				fusionTotalItemsCount++;

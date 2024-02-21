@@ -1,7 +1,3 @@
-if ACHIEVEMENTS ~= nil then
-	return
-end
-
 ACHIEVEMENTS = {
 	[1] = { name = "Castlemania", grade = 2, points = 5, secret = true, description = "You have an eye for suspicious places and love to read other people's diaries, especially those with vampire stories in it. You're also a dedicated token collector and explorer. Respect!" },
 	[2] = { name = "Chorister", grade = 1, points = 1, description = "Lalalala... you now know the cult's hymn sung in Liberty Bay by heart. Not that hard, considering that it mainly consists of two notes and repetitive lyrics." },
@@ -487,6 +483,7 @@ ACHIEVEMENTS = {
 	[482] = { name = "Dream Catcher", grade = 1, points = 3, description = "You are the slayer of the ancient nightmare beast and prevented the nightmare to spread its madness." },
 	[483] = { name = "Champion of Summer", grade = 1, points = 2, secret = true, description = "You have vanquished numerous arena champions in the name of the Summer Court." },
 	[484] = { name = "Champion of Winter", grade = 1, points = 2, secret = true, description = "You have vanquished numerous arena champions in the name of the Winter Court." },
+	[485] = { name = "Allow Cookies?", grade = 2, points = 6, description = "With a perfectly harmless smile, you tricked all the funny guys into eating your exploding cookies. Next time you pull this prank, consider wearing a Boy Scout outfit to make it even better." },
 	[486] = { name = "Bewitcher", grade = 2, points = 5, secret = true, description = "You literally put everything in that cauldron except lilac and gooseberries." },
 	[487] = { name = "Gryphon Rider", grade = 1, points = 3, description = "Unmasking spies, killing demons, discovering omens, solving puzzles and fighting ogres, manticores and feral sphinxes. - Nobody said it was easy to become a gryphon rider." },
 	[488] = { name = "Sculptor Apprentice", grade = 1, points = 2, secret = true, description = "Granted, you didn't carve those lifelike animal figurines yourself. But helping a medusa to find proper objects and even watching her using her petrifying gaze is almost as rewarding." },
@@ -636,4 +633,28 @@ function Player.getPublicAchievements(self)
 		end
 	end
 	return unlockedPublicAchievements
+end
+
+function Player.addAchievementProgress(self, achievement, totalProgress)
+	local foundAchievement = isNumber(achievement) and Game.getAchievementInfoById(achievement) or Game.getAchievementInfoByName(achievement)
+	if not foundAchievement then
+		logger.error("[Player.addAchievementProgress] - Invalid achievement '{}'", achievement)
+		return
+	end
+
+	local achievScope = self:kv():scoped("achievements")
+	local achievScopeName = tostring(foundAchievement.name .. "-progress")
+	local progressNumber = achievScope:get(achievScopeName) or 0
+	local newProgress = progressNumber + 1
+	if newProgress > totalProgress then
+		return
+	end
+
+	if newProgress == totalProgress then
+		self:addAchievement(foundAchievement.id)
+		logger.debug("[Player.addAchievementProgress] - Achievement '{}' completed", foundAchievement.name)
+	end
+
+	logger.debug("[Player.addAchievementProgress] - Achievement '{}' progress updated to '{}', total progress '{}'", foundAchievement.name, newProgress, totalProgress)
+	achievScope:set(achievScopeName, newProgress)
 end

@@ -207,7 +207,7 @@ Game::Game() {
 	// Create instance of IOWheel to Game class
 	m_IOWheel = std::make_unique<IOWheel>();
 
-	std::unordered_map<uint8_t, std::string> m_highscoreCategoriesNames = {
+	m_highscoreCategoriesNames = {
 		{ static_cast<uint8_t>(HighscoreCategories_t::ACHIEVEMENTS), "Achievement Points" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::AXE_FIGHTING), "Axe Fighting" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::CHARMS), "Charm Points" },
@@ -224,7 +224,7 @@ Game::Game() {
 		{ static_cast<uint8_t>(HighscoreCategories_t::SWORD_FIGHTING), "Sword Fighting" },
 	};
 
-	std::vector<HighscoreCategory> m_highscoreCategories = {
+	m_highscoreCategories = {
 		HighscoreCategory("Experience Points", static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE)),
 		HighscoreCategory("Fist Fighting", static_cast<uint8_t>(HighscoreCategories_t::FIST_FIGHTING)),
 		HighscoreCategory("Club Fighting", static_cast<uint8_t>(HighscoreCategories_t::CLUB_FIGHTING)),

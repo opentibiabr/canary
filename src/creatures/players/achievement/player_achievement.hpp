@@ -10,6 +10,7 @@
 #pragma once
 
 class Player;
+class KV;
 
 struct Achievement {
 	Achievement() { }
@@ -36,9 +37,11 @@ public:
 	void removePoints(uint16_t toRemovePoints);
 	std::vector<std::pair<uint16_t, uint32_t>> getUnlockedAchievements() const;
 	void sendUnlockedSecretAchievements();
+	const std::shared_ptr<KV> &getUnlockedKV();
 
 private:
 	// {achievement ID, time when it was unlocked}
+	std::shared_ptr<KV> m_unlockedKV;
 	std::vector<std::pair<uint16_t, uint32_t>> m_achievementsUnlocked;
 	Player &m_player;
 };

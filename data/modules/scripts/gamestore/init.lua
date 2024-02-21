@@ -412,6 +412,7 @@ function parseBuyStoreOffer(playerId, msg)
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_EXPBOOST
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYBONUS
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
+			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_TEMPLE
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS
@@ -472,6 +473,8 @@ function parseBuyStoreOffer(playerId, msg)
 			GameStore.processSexChangePurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
 			GameStore.processExpBoostPuchase(player)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT then
+			GameStore.processTaskHuntingThirdSlot(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYSLOT then
 			GameStore.processPreyThirdSlot(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYBONUS then
@@ -625,6 +628,7 @@ function Player.canBuyOffer(self, offer)
 		offer.type ~= GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_EXPBOOST
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
+		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYBONUS
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_TEMPLE
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE

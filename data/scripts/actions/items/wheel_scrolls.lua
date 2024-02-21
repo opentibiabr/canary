@@ -23,7 +23,6 @@ function scroll.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	player:setStorageValueByName(scrollData.storageName, 1)
 	player:sendTextMessage(MESSAGE_INFO_DESCR, "You have gained " .. scrollData.points .. " promotion points for the Wheel of Destiny by deciphering the " .. scrollData.name .. ".")
 	item:remove(1)
-
 	return true
 end
 

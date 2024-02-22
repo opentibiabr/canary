@@ -17,6 +17,7 @@ public:
 		registerTable(L, "EventsScheduler");
 
 		registerMethod(L, "EventsScheduler", "getEventSLoot", EventsSchedulerFunctions::luaEventsSchedulergetEventSLoot);
+		registerMethod(L, "EventsScheduler", "getEventSBossLoot", EventsSchedulerFunctions::luaEventsSchedulergetEventSBossLoot);
 		registerMethod(L, "EventsScheduler", "getEventSSkill", EventsSchedulerFunctions::luaEventsSchedulergetEventSSkill);
 		registerMethod(L, "EventsScheduler", "getEventSExp", EventsSchedulerFunctions::luaEventsSchedulergetEventSExp);
 		registerMethod(L, "EventsScheduler", "getSpawnMonsterSchedule", EventsSchedulerFunctions::luaEventsSchedulergetSpawnMonsterSchedule);
@@ -24,6 +25,7 @@ public:
 
 private:
 	static int luaEventsSchedulergetEventSLoot(lua_State* L);
+	static int luaEventsSchedulergetEventSBossLoot(lua_State* L);
 	static int luaEventsSchedulergetEventSSkill(lua_State* L);
 	static int luaEventsSchedulergetEventSExp(lua_State* L);
 	static int luaEventsSchedulergetSpawnMonsterSchedule(lua_State* L);

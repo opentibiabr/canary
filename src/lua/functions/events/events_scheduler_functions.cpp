@@ -18,6 +18,12 @@ int EventsSchedulerFunctions::luaEventsSchedulergetEventSLoot(lua_State* L) {
 	return 1;
 }
 
+int EventsSchedulerFunctions::luaEventsSchedulergetEventSBossLoot(lua_State* L) {
+	// EventsScheduler.getEventSLoot
+	lua_pushnumber(L, g_eventsScheduler().getBossLootSchedule());
+	return 1;
+}
+
 int EventsSchedulerFunctions::luaEventsSchedulergetEventSSkill(lua_State* L) {
 	// EventsScheduler.getEventSSkill
 	lua_pushnumber(L, g_eventsScheduler().getSkillSchedule());

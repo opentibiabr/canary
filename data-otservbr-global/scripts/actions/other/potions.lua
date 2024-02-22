@@ -270,18 +270,19 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 		target:say("Aaaah...", MESSAGE_POTION)
 		local deactivatedFlasks = player:kv():get("talkaction.potions.flask") or false
 		if not deactivatedFlasks then
-			if fromPosition.x == CONTAINER_POSITION then
-				local container = Container(item:getParent().uid)
-				container:addItem(potion.flask, 1)
-			else
-				player:addItem(potion.flask, 1)
-			end
+		if fromPosition.x == CONTAINER_POSITION and not container == STORE_INBOX then
+			local container = Container(item:getParent().uid)
+			container:addItem(potion.flask, 1)
+		else
+			player:addItem(potion.flask, 1)
 		end
 		player:addCondition(exhaust)
 		player:setStorageValue(38412, player:getStorageValue(38412) + 1)
 	end
+end
 
 	player:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ITEM_USE_POTION, player:isInGhostMode() and nil or player)
+
 	-- Delay potion
 	_G.PlayerDelayPotion[player:getId()] = systemTime() + 500
 

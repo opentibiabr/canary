@@ -1125,6 +1125,9 @@ void LuaEnums::initMapMarkEnums(lua_State* L) {
 // Use with Game.getReturnMessage
 void LuaEnums::initReturnValueEnums(lua_State* L) {
 	registerEnum(L, RETURNVALUE_NOERROR);
+	registerEnum(L, RETURNVALUE_NOTBOUGHTINSTORE);
+	registerEnum(L, RETURNVALUE_ITEMCANNOTBEMOVEDTHERE);
+	registerEnum(L, RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH);
 	registerEnum(L, RETURNVALUE_NOTPOSSIBLE);
 	registerEnum(L, RETURNVALUE_NOTENOUGHROOM);
 	registerEnum(L, RETURNVALUE_PLAYERISPZLOCKED);

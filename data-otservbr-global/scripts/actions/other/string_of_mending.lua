@@ -40,7 +40,7 @@ function stringOfMending.onUse(cid, item, fromPosition, itemEx, toPosition)
 	iEx:getPosition():sendMagicEffect(CONST_ME_BLOCKHIT)
 	Item(item.uid):remove(1)
 	iEx:remove()
-	doCreatureSay(cid, "50% chance, the item was broken.", TALKTYPE_ORANGE_1)
+	doCreatureSay(cid, "50% chance, the item was broken.", TALKTYPE_MONSTER_SAY)
 	return true
 end
 

@@ -100,11 +100,6 @@ if not _G.NextUseConcoctionTime then
 	_G.NextUseConcoctionTime = {}
 end
 
--- Delay potion
-if not _G.PlayerDelayPotion then
-	_G.PlayerDelayPotion = {}
-end
-
 table.contains = function(array, value)
 	for _, targetColumn in pairs(array) do
 		if targetColumn == value then

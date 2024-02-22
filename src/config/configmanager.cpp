@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -149,6 +149,7 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, TOGGLE_IMBUEMENT_SHRINE_STORAGE, "toggleImbuementShrineStorage", true);
 	loadBoolConfig(L, TOGGLE_MOUNT_IN_PZ, "toggleMountInProtectionZone", false);
 	loadBoolConfig(L, TOGGLE_RECEIVE_REWARD, "toggleReceiveReward", false);
+	loadBoolConfig(L, TOGGLE_SAVE_ASYNC, "toggleSaveAsync", false);
 	loadBoolConfig(L, TOGGLE_SAVE_INTERVAL_CLEAN_MAP, "toggleSaveIntervalCleanMap", false);
 	loadBoolConfig(L, TOGGLE_SAVE_INTERVAL, "toggleSaveInterval", false);
 	loadBoolConfig(L, TOGGLE_SERVER_IS_RETRO, "toggleServerIsRetroPVP", false);

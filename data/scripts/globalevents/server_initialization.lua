@@ -105,6 +105,11 @@ local function updateEventRates()
 		SCHEDULE_LOOT_RATE = lootRate
 	end
 
+	local bossLootRate = EventsScheduler.getEventSBossLoot()
+	if bossLootRate ~= 100 then
+		SCHEDULE_BOSS_LOOT_RATE = bossLootRate
+	end
+
 	local expRate = EventsScheduler.getEventSExp()
 	if expRate ~= 100 then
 		SCHEDULE_EXP_RATE = expRate
@@ -121,8 +126,8 @@ local function updateEventRates()
 	end
 
 	-- Log information if any of the rates are not 100%
-	if expRate ~= 100 or lootRate ~= 100 or spawnRate ~= 100 or skillRate ~= 100 then
-		logger.info("[Events] Exp: {}%, loot: {}%, Spawn: {}%, Skill: {}%", expRate, lootRate, spawnRate, skillRate)
+	if expRate ~= 100 or lootRate ~= 100 or spawnRate ~= 100 or skillRate ~= 100 or bossLootRate ~= 100 then
+		logger.info("[Events] Exp: {}%, Loot: {}%, Spawn: {}%, Skill: {}%, Boss loot: {}%", expRate, lootRate, spawnRate, skillRate, bossLootRate)
 	end
 end
 

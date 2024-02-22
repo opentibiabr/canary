@@ -1,17 +1,11 @@
-local exerciseTraining = Action()
-
-local maxAllowedOnADummy = configManager.getNumber(configKeys.MAX_ALLOWED_ON_A_DUMMY)
-local dummies = Game.getDummies()
 local function isDummy(id)
+	local dummies = Game.getDummies()
 	return dummies[id] and dummies[id] > 0
 end
 
-local cooldown = 10
+local exerciseTraining = Action()
 
 function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not target then
-		return
-	end
 	local playerId = player:getId()
 	local targetId = target:getId()
 
@@ -41,13 +35,14 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You must be inside the house to use this dummy.")
 				return true
 			end
+
 			local playersOnDummy = 0
 			for _, playerTraining in pairs(_G.OnExerciseTraining) do
 				if playerTraining.dummyPos == targetPos then
 					playersOnDummy = playersOnDummy + 1
 				end
 
-				if playersOnDummy >= maxAllowedOnADummy then
+				if playersOnDummy >= configManager.getNumber(configKeys.MAX_ALLOWED_ON_A_DUMMY) then
 					player:sendTextMessage(MESSAGE_FAILURE, "That exercise dummy is busy.")
 					return true
 				end
@@ -56,7 +51,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 
 		local hasExhaustion = player:kv():get("training-exhaustion") or 0
 		if hasExhaustion > os.time() then
-			player:sendTextMessage(MESSAGE_FAILURE, "You are already training!")
+			player:sendTextMessage(MESSAGE_FAILURE, "This exercise dummy can only be used after a 30 second cooldown.")
 			return true
 		end
 
@@ -65,7 +60,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 			_G.OnExerciseTraining[playerId].event = addEvent(ExerciseEvent, 0, playerId, targetPos, item.itemid, targetId)
 			_G.OnExerciseTraining[playerId].dummyPos = targetPos
 			player:setTraining(true)
-			player:kv():set("training-exhaustion", os.time() + cooldown)
+			player:kv():set("training-exhaustion", os.time() + 30)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have started training on an exercise dummy.")
 		end
 		return true

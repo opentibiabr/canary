@@ -105,7 +105,10 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 		potion.func(player)
 		player:say("Aaaah...", MESSAGE_POTION)
 		player:getPosition():sendMagicEffect(potion.effect)
-		player:addAchievementProgress(potion.achievement, 100)
+
+		if potion.achievement then
+			player:addAchievementProgress(potion.achievement, 100)
+		end
 	end
 
 	if potion.condition then

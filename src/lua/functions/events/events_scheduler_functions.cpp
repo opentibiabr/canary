@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -15,6 +15,12 @@
 int EventsSchedulerFunctions::luaEventsSchedulergetEventSLoot(lua_State* L) {
 	// EventsScheduler.getEventSLoot
 	lua_pushnumber(L, g_eventsScheduler().getLootSchedule());
+	return 1;
+}
+
+int EventsSchedulerFunctions::luaEventsSchedulergetEventSBossLoot(lua_State* L) {
+	// EventsScheduler.getEventSLoot
+	lua_pushnumber(L, g_eventsScheduler().getBossLootSchedule());
 	return 1;
 }
 

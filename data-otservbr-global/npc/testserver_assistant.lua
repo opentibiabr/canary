@@ -86,7 +86,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		local missingBlessAmt = #missingBless + (hasToF and 0 or 1)
 
 		if missingBlessAmt == 0 then
-			player:sendTextMessage(MESSAGE_EVENT_DEFAULT, "You are already blessed.")
+			player:sendTextMessage(MESSAGE_STATUS, "You are already blessed.")
 			player:getPosition():sendMagicEffect(CONST_ME_POFF)
 			return false
 		end
@@ -95,7 +95,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:addBlessing(v.id, 1)
 		end
 		npcHandler:say("You have been blessed by all gods, |PLAYERNAME|.", npc, creature)
-		player:sendTextMessage(MESSAGE_EVENT_DEFAULT, "You received the remaining " .. missingBlessAmt .. " blesses.")
+		player:sendTextMessage(MESSAGE_STATUS, "You received the remaining " .. missingBlessAmt .. " blesses.")
 		player:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 	end
 

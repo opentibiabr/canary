@@ -7,7 +7,7 @@ function deathEvent.onDeath(creature)
 	local monster = Game.createMonster("Raging Mage", creature:getPosition())
 	monster:setReward(true)
 
-	doCreatureSayWithRadius(creature, "GNAAAAAHRRRG!! WHAT? WHAT DID YOU DO TO ME!! I... I feel the energies crawling away... from me... DIE!!!", TALKTYPE_ORANGE_1, 35, 71)
+	doCreatureSayWithRadius(creature, "GNAAAAAHRRRG!! WHAT? WHAT DID YOU DO TO ME!! I... I feel the energies crawling away... from me... DIE!!!", TALKTYPE_MONSTER_SAY, 35, 71)
 	setGlobalStorageValue(673003, 0)
 
 	return true

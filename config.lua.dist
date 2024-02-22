@@ -277,9 +277,11 @@ maxAllowedOnADummy = 1
 
 -- Save interval per time
 -- NOTE: toggleSaveInterval: true = enable the save interval, false = disable the save interval
+-- NOTE: toggleSaveAsync = true, will enable save async (experimental), not recommended for use in production
 -- NOTE: saveIntervalType: "minute", "second" or "hour"
 -- NOTE: toggleSaveIntervalCleanMap: true = enable the clean map, false = disable the clean map
 -- NOTE: saveIntervalTime: time based on what was set in "saveIntervalType"
+toggleSaveAsync = false
 toggleSaveInterval = true
 saveIntervalType = "hour"
 toggleSaveIntervalCleanMap = true

@@ -1,3 +1,5 @@
+local exhaustionTime = 10
+
 local function isDummy(id)
 	local dummies = Game.getDummies()
 	return dummies[id] and dummies[id] > 0
@@ -49,9 +51,8 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 			end
 		end
 
-		local hasExhaustion = player:kv():get("training-exhaustion") or 0
-		if hasExhaustion > os.time() then
-			player:sendTextMessage(MESSAGE_FAILURE, "This exercise dummy can only be used after a 30 second cooldown.")
+		if player:hasExhaustion("training-exhaustion") then
+			player:sendTextMessage(MESSAGE_FAILURE, "This exercise dummy can only be used after a " .. exhaustionTime .. " seconds cooldown.")
 			return true
 		end
 
@@ -60,7 +61,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 			_G.OnExerciseTraining[playerId].event = addEvent(ExerciseEvent, 0, playerId, targetPos, item.itemid, targetId)
 			_G.OnExerciseTraining[playerId].dummyPos = targetPos
 			player:setTraining(true)
-			player:kv():set("training-exhaustion", os.time() + 30)
+			player:setExhaustion("training-exhaustion", exhaustionTime)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have started training on an exercise dummy.")
 		end
 		return true

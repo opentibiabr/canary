@@ -69,14 +69,14 @@ local function delayedCastSpell(cid, var)
 	if not creature then
 		return
 	end
-	creature:say("Gaz'haragoth calls down: DEATH AND DOOM!", TALKTYPE_ORANGE_2)
+	creature:say("Gaz'haragoth calls down: DEATH AND DOOM!", TALKTYPE_MONSTER_YELL)
 	return combat:execute(creature, positionToVariant(creature:getPosition()))
 end
 
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	creature:say("Gaz'haragoth begins to channel DEATH AND DOOM into the area! RUN!", TALKTYPE_ORANGE_2)
+	creature:say("Gaz'haragoth begins to channel DEATH AND DOOM into the area! RUN!", TALKTYPE_MONSTER_YELL)
 	addEvent(delayedCastSpell, 5000, creature:getId(), var)
 	return true
 end

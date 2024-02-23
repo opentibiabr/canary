@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -207,7 +207,7 @@ Game::Game() {
 	// Create instance of IOWheel to Game class
 	m_IOWheel = std::make_unique<IOWheel>();
 
-	std::unordered_map<uint8_t, std::string> m_highscoreCategoriesNames = {
+	m_highscoreCategoriesNames = {
 		{ static_cast<uint8_t>(HighscoreCategories_t::ACHIEVEMENTS), "Achievement Points" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::AXE_FIGHTING), "Axe Fighting" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::CHARMS), "Charm Points" },
@@ -224,7 +224,7 @@ Game::Game() {
 		{ static_cast<uint8_t>(HighscoreCategories_t::SWORD_FIGHTING), "Sword Fighting" },
 	};
 
-	std::vector<HighscoreCategory> m_highscoreCategories = {
+	m_highscoreCategories = {
 		HighscoreCategory("Experience Points", static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE)),
 		HighscoreCategory("Fist Fighting", static_cast<uint8_t>(HighscoreCategories_t::FIST_FIGHTING)),
 		HighscoreCategory("Club Fighting", static_cast<uint8_t>(HighscoreCategories_t::CLUB_FIGHTING)),
@@ -1619,7 +1619,7 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		auto toHouseTile = map.getTile(mapToPos)->dynamic_self_cast<HouseTile>();
 		auto fromHouseTile = map.getTile(mapFromPos)->dynamic_self_cast<HouseTile>();
 		if (fromHouseTile && (!toHouseTile || toHouseTile->getHouse()->getId() != fromHouseTile->getHouse()->getId())) {
-			player->sendCancelMessage("You can't move this item outside a house.");
+			player->sendCancelMessage("You cannot move this item out of this house.");
 			return;
 		}
 	}
@@ -1666,12 +1666,12 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 			bool allowAnything = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING, __FUNCTION__);
 
 			if (!allowAnything && item->getID() != ITEM_GOLD_COIN && item->getID() != ITEM_PLATINUM_COIN && item->getID() != ITEM_CRYSTAL_COIN) {
-				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+				return RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH;
 			}
 
-			// prevent move up
+			// prevent move up from ponch to store inbox.
 			if (!item->canBeMovedToStore() && fromCylinder->getContainer() && fromCylinder->getContainer()->getID() == ITEM_GOLD_POUCH) {
-				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+				return RETURNVALUE_NOTBOUGHTINSTORE;
 			}
 
 			return RETURNVALUE_NOERROR;
@@ -1681,7 +1681,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 		const auto parentContainer = topParentContainer->getParent() ? topParentContainer->getParent()->getContainer() : nullptr;
 		auto isStoreInbox = parentContainer && parentContainer->isStoreInbox();
 		if (!item->canBeMovedToStore() && (containerID == ITEM_STORE_INBOX || isStoreInbox)) {
-			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+			return RETURNVALUE_NOTBOUGHTINSTORE;
 		}
 
 		if (item->isStoreItem()) {
@@ -1705,7 +1705,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 			}
 
 			if (!isValidMoveItem) {
-				return RETURNVALUE_NOTPOSSIBLE;
+				return RETURNVALUE_ITEMCANNOTBEMOVEDTHERE;
 			}
 
 			if (item->hasOwner() && !item->isOwner(player)) {
@@ -1738,7 +1738,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 			}
 
 			if (item->isStoreItem() && !house) {
-				return RETURNVALUE_NOTPOSSIBLE;
+				return RETURNVALUE_ITEMCANNOTBEMOVEDTHERE;
 			}
 		}
 	}

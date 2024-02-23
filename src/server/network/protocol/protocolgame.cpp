@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -2161,7 +2161,9 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	uint8_t selectedCategory = 0;
 	const auto &highscoreCategories = g_game().getHighscoreCategories();
 	msg.addByte(highscoreCategories.size()); // Category Count
+	g_logger().debug("[ProtocolGame::sendHighscores] - Category Count: {}", highscoreCategories.size());
 	for (const HighscoreCategory &category : highscoreCategories) {
+		g_logger().debug("[ProtocolGame::sendHighscores] - Category: {} - Name: {}", category.m_id, category.m_name);
 		msg.addByte(category.m_id); // Category Id
 		msg.addString(category.m_name, "ProtocolGame::sendHighscores - category.name"); // Category Name
 		if (category.m_id == categoryId) {

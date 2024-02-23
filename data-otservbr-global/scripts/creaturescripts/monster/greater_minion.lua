@@ -8,7 +8,7 @@ function greaterMinion.onThink(creature)
 		local pos = creature:getPosition()
 		local creatureMaster = creature:getMaster()
 		pos:sendMagicEffect(CONST_ME_MORTAREA)
-		local say = creatureMaster:say("The minion gains greater power!", TALKTYPE_ORANGE_2)
+		local say = creatureMaster:say("The minion gains greater power!", TALKTYPE_MONSTER_YELL)
 		if not say then
 			return
 		end

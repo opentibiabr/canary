@@ -25,6 +25,10 @@ function playerLoginGlobal.onLogin(player)
 	if player:getLastLoginSaved() == 0 then
 		loginStr = "Please choose your outfit."
 		player:sendOutfitWindow()
+		local startStreakLevel = configManager.getNumber(configKeys.START_STREAK_LEVEL)
+		if startStreakLevel > 0 then
+			player:setStreakLevel(startStreakLevel)
+		end
 
 		db.query("UPDATE `players` SET `istutorial` = 0 WHERE `id` = " .. player:getGuid())
 	else
@@ -67,6 +71,10 @@ function playerLoginGlobal.onLogin(player)
 
 	if SCHEDULE_LOOT_RATE ~= 100 then
 		sendBoostMessage(player, "Loot Rate", SCHEDULE_LOOT_RATE > 100)
+	end
+
+	if SCHEDULE_BOSS_LOOT_RATE ~= 100 then
+		sendBoostMessage(player, "Boss Loot Rate", SCHEDULE_BOSS_LOOT_RATE > 100)
 	end
 
 	if SCHEDULE_SKILL_RATE ~= 100 then

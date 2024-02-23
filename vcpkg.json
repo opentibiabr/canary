@@ -16,7 +16,10 @@
     {
       "name": "opentelemetry-cpp",
       "default-features": true,
-      "features": [ "otlp-http", "prometheus" ]
+      "features": [
+        "otlp-http",
+        "prometheus"
+      ]
     },
     "parallel-hashmap",
     "protobuf",
@@ -25,7 +28,9 @@
     "zlib",
     {
       "name": "libmariadb",
-      "features": [ "mariadbclient" ]
+      "features": [
+        "mariadbclient"
+      ]
     },
     {
       "name": "gmp",

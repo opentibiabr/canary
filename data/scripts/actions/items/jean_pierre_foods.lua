@@ -96,11 +96,17 @@ local foods = {
 		appliedMessage = "You felt fishing inspiration.",
 	},
 	[11584] = {
-		equipedItem = true,
+		coconutShrimpBake = true,
 		itemSlot = CONST_SLOT_HEAD,
 		itemId = 11585,
 		message = "Yum.",
 		appliedMessage = "Underwater walking speed increased.",
+	},
+	[11586] = {
+		potOfBlackjack = true,
+		message = "Gulp.",
+		appliedMessage = "You take a gulp from the large bowl.",
+		chanceToRemove = 5,
 	},
 }
 
@@ -127,10 +133,16 @@ function jeanPierreFoods.onUse(player, item, fromPosition, target, toPosition, i
 		player:addMana(player:getMaxMana())
 	elseif food.addConditions then
 		player:addCondition(food.condition)
-	elseif food.equipedItem then
+	elseif food.coconutShrimpBake then
 		local headItem = player:getSlotItem(food.itemSlot)
 		if headItem and headItem.itemid == food.itemId then
 			player:setExhaustion("coconut-shrimp-bake", 24 * 60 * 60)
+		end
+	elseif food.potOfBlackjack then
+		if math.random(1, food.chanceToRemove) == food.chanceToRemove then
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You take the last gulp from the large bowl. No leftovers!")
+		else
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You take a gulp from the large bowl, but there's still some blackjack in it.")
 		end
 	end
 

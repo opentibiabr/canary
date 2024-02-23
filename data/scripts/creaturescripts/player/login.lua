@@ -25,6 +25,10 @@ function playerLoginGlobal.onLogin(player)
 	if player:getLastLoginSaved() == 0 then
 		loginStr = "Please choose your outfit."
 		player:sendOutfitWindow()
+		local startStreakLevel = configManager.getNumber(configKeys.START_STREAK_LEVEL)
+		if startStreakLevel > 0 then
+			player:setStreakLevel(startStreakLevel)
+		end
 
 		db.query("UPDATE `players` SET `istutorial` = 0 WHERE `id` = " .. player:getGuid())
 	else

@@ -40,7 +40,7 @@ spell:group("support")
 spell:id(264)
 spell:name("Avatar of Steel")
 spell:words("uteta res eq")
-spell:level(1)
+spell:level(300)
 spell:mana(800)
 spell:isPremium(true)
 spell:cooldown(1000) -- Cooldown is calculated on the casting

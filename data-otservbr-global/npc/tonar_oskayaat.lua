@@ -1,5 +1,5 @@
-local internalNpcName = "Hawkhurst"
-local npcType = Game.createNpcType("Hawkhurst Ingol")
+local internalNpcName = "Tonar"
+local npcType = Game.createNpcType("Tonar Oskayaat")
 local npcConfig = {}
 
 npcConfig.name = internalNpcName
@@ -11,12 +11,12 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 96,
+	lookType = 146,
 	lookHead = 0,
-	lookBody = 0,
-	lookLegs = 0,
+	lookBody = 66,
+	lookLegs = 124,
 	lookFeet = 0,
-	lookAddons = 0,
+	lookAddons = 2,
 }
 
 npcConfig.flags = {
@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = "There's a storm brewing." },
+	{ text = "I don't feel safe here ... I hope we can return to Ankrahmun soon." },
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -57,13 +57,20 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Travel
-local travelKeyword = keywordHandler:addKeyword({ "passage" }, StdModule.say, { npcHandler = npcHandler, text = "Ye' want a passage back to cormaya? {Yes} or {no}." })
-travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = 400, text = "All Hand Hoy!", destination = Position(33356, 31983, 7) })
-travelKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "We would like to serve you some time.", reset = true })
+local function addTravelKeyword(keyword, text, cost, destination, action, condition)
+	if condition then
+		keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "You are not ready yet." }, condition)
+	end
 
-npcHandler:setMessage(MESSAGE_GREET, "Ahoy, matey! Lookin' for a {passage}, eh.")
-npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")
-npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
+	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = text, cost = cost, discount = "postman" })
+	travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, text = "Alright, off we go!", cost = cost, discount = "postman", destination = destination }, nil, action)
+	travelKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "We would like to serve you some time.", reset = true })
+end
+
+addTravelKeyword("passage", "A passage to Ankrahmun? Shall we cast off?", 0, Position(33182, 32883, 7))
+
+npcHandler:setMessage(MESSAGE_GREET, "Welcome back, Sir.")
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

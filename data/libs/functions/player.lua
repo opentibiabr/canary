@@ -990,7 +990,7 @@ function Player:canGetReward(rewardId, questName)
 
 	if (self:getFreeCapacity() / 100) < itemWeight then
 		baseMessage = baseMessage .. ". Weighing " .. itemWeight .. " oz, it is too heavy for you to carry."
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, tooHeavyMessage)
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, baseMessage)
 		return false
 	end
 

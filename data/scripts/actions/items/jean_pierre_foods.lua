@@ -95,6 +95,13 @@ local foods = {
 		message = "Smack.",
 		appliedMessage = "You felt fishing inspiration.",
 	},
+	[11584] = {
+		equipedItem = true,
+		itemSlot = CONST_SLOT_HEAD,
+		itemId = 11585,
+		message = "Yum.",
+		appliedMessage = "Underwater walking speed increased.",
+	},
 }
 
 local jeanPierreFoods = Action()
@@ -120,6 +127,11 @@ function jeanPierreFoods.onUse(player, item, fromPosition, target, toPosition, i
 		player:addMana(player:getMaxMana())
 	elseif food.addConditions then
 		player:addCondition(food.condition)
+	elseif food.equipedItem then
+		local headItem = player:getSlotItem(food.itemSlot)
+		if headItem and headItem.itemid == food.itemId then
+			player:setExhaustion("coconut-shrimp-bake", 24 * 60 * 60)
+		end
 	end
 
 	if food.effectType then

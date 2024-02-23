@@ -105,6 +105,11 @@ function jeanPierreFoods.onUse(player, item, fromPosition, target, toPosition, i
 		return true
 	end
 
+	if player:hasExhaustion("jean-pierre-foods") then
+		player:say("You need to wait before using it again.", TALKTYPE_MONSTER_SAY)
+		return true
+	end
+
 	if food.removeConditions then
 		for _, conditionType in ipairs(food.conditions) do
 			player:removeCondition(conditionType)
@@ -125,6 +130,7 @@ function jeanPierreFoods.onUse(player, item, fromPosition, target, toPosition, i
 
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, food.appliedMessage)
 	player:say(food.message, TALKTYPE_MONSTER_SAY)
+	player:setExhaustion("jean-pierre-foods", 10 * 60)
 
 	item:remove(1)
 	return true

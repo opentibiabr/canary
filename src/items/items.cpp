@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -13,6 +13,8 @@
 #include "items/items.hpp"
 #include "game/game.hpp"
 #include "utils/pugicast.hpp"
+
+#include <appearances.pb.h>
 
 Items::Items() = default;
 
@@ -76,8 +78,8 @@ void Items::loadFromProtobuf() {
 	using namespace Canary::protobuf::appearances;
 
 	bool supportAnimation = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__);
-	for (uint32_t it = 0; it < g_game().appearances.object_size(); ++it) {
-		Appearance object = g_game().appearances.object(it);
+	for (uint32_t it = 0; it < g_game().m_appearancesPtr->object_size(); ++it) {
+		Appearance object = g_game().m_appearancesPtr->object(it);
 
 		// This scenario should never happen but on custom assets this can break the loader.
 		if (!object.has_flags()) {

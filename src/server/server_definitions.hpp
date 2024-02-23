@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -61,6 +61,9 @@ enum Resource_t : uint8_t {
 	RESOURCE_FORGE_DUST = 0x46,
 	RESOURCE_FORGE_SLIVER = 0x47,
 	RESOURCE_FORGE_CORES = 0x48,
+	RESOURCE_LESSER_GEMS = 0x51,
+	RESOURCE_REGULAR_GEMS = 0x52,
+	RESOURCE_GREATER_GEMS = 0x53,
 	RESOURCE_WHEEL_OF_DESTINY = 0x56
 };
 
@@ -107,16 +110,6 @@ enum Supply_Stash_Actions_t : uint8_t {
 	SUPPLY_STASH_ACTION_STOW_CONTAINER = 1,
 	SUPPLY_STASH_ACTION_STOW_STACK = 2,
 	SUPPLY_STASH_ACTION_WITHDRAW = 3
-};
-
-// Structs
-struct HighscoreCategory {
-	HighscoreCategory(const char* name, uint8_t id) :
-		name(name),
-		id(id) { }
-
-	const char* name;
-	uint8_t id;
 };
 
 struct HighscoreCharacter {

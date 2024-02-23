@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -138,7 +138,7 @@ bool IOMapSerialize::loadItem(PropStream &propStream, std::shared_ptr<Cylinder> 
 	}
 
 	const ItemType &iType = Item::items[id];
-	if (iType.isBed() || iType.movable || !tile || iType.isCarpet()) {
+	if (iType.isBed() || iType.movable || !tile || iType.isCarpet() || iType.isTrashHolder()) {
 		// create a new item
 		auto item = Item::CreateItem(id);
 		if (item) {

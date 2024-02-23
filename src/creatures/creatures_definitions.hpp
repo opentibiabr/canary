@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -9,8 +9,18 @@
 
 #pragma once
 
-// Enum
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <string>
+	#include <vector>
+	#include <map>
+	#include <list>
+	#include <utility>
+	#include <cstdint>
+	#include <memory>
+	#include <cmath>
+#endif
 
+// Enum
 enum SkillsId_t {
 	SKILLVALUE_LEVEL = 0,
 	SKILLVALUE_TRIES = 1,
@@ -111,6 +121,28 @@ enum ConditionType_t : uint8_t {
 	// Need the last ever
 	CONDITION_COUNT = 39
 };
+
+// constexpr definiting suppressible conditions
+constexpr bool IsConditionSuppressible(ConditionType_t condition) {
+	constexpr ConditionType_t suppressibleConditions[] = {
+		CONDITION_POISON,
+		CONDITION_FIRE,
+		CONDITION_ENERGY,
+		CONDITION_BLEEDING,
+		CONDITION_PARALYZE,
+		CONDITION_DROWN,
+		CONDITION_FREEZING,
+		CONDITION_CURSED,
+	};
+
+	for (const auto &suppressibleCondition : suppressibleConditions) {
+		if (condition == suppressibleCondition) {
+			return true;
+		}
+	}
+
+	return false;
+}
 
 enum ConditionParam_t {
 	CONDITION_PARAM_OWNER = 1,
@@ -293,40 +325,6 @@ enum MarketOfferState_t {
 	OFFERSTATE_ACCEPTED = 3,
 
 	OFFERSTATE_ACCEPTEDEX = 255,
-};
-
-enum ObjectCategory_t {
-	OBJECTCATEGORY_NONE = 0,
-	OBJECTCATEGORY_ARMORS = 1,
-	OBJECTCATEGORY_NECKLACES = 2,
-	OBJECTCATEGORY_BOOTS = 3,
-	OBJECTCATEGORY_CONTAINERS = 4,
-	OBJECTCATEGORY_DECORATION = 5,
-	OBJECTCATEGORY_FOOD = 6,
-	OBJECTCATEGORY_HELMETS = 7,
-	OBJECTCATEGORY_LEGS = 8,
-	OBJECTCATEGORY_OTHERS = 9,
-	OBJECTCATEGORY_POTIONS = 10,
-	OBJECTCATEGORY_RINGS = 11,
-	OBJECTCATEGORY_RUNES = 12,
-	OBJECTCATEGORY_SHIELDS = 13,
-	OBJECTCATEGORY_TOOLS = 14,
-	OBJECTCATEGORY_VALUABLES = 15,
-	OBJECTCATEGORY_AMMO = 16,
-	OBJECTCATEGORY_AXES = 17,
-	OBJECTCATEGORY_CLUBS = 18,
-	OBJECTCATEGORY_DISTANCEWEAPONS = 19,
-	OBJECTCATEGORY_SWORDS = 20,
-	OBJECTCATEGORY_WANDS = 21,
-	OBJECTCATEGORY_PREMIUMSCROLLS = 22, // not used in quickloot
-	OBJECTCATEGORY_TIBIACOINS = 23, // not used in quickloot
-	OBJECTCATEGORY_CREATUREPRODUCTS = 24,
-	OBJECTCATEGORY_STASHRETRIEVE = 27,
-	OBJECTCATEGORY_GOLD = 30,
-	OBJECTCATEGORY_DEFAULT = 31, // unassigned loot
-
-	OBJECTCATEGORY_FIRST = OBJECTCATEGORY_ARMORS,
-	OBJECTCATEGORY_LAST = OBJECTCATEGORY_DEFAULT,
 };
 
 enum RespawnPeriod_t {
@@ -1434,7 +1432,7 @@ struct FamiliarEntry {
 struct Skill {
 	uint64_t tries = 0;
 	uint16_t level = 10;
-	double_t percent = 0;
+	double percent = 0;
 };
 
 struct Kill {

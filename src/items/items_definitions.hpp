@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -35,6 +35,9 @@ enum Attr_ReadValue {
 
 enum ReturnValue {
 	RETURNVALUE_NOERROR,
+	RETURNVALUE_NOTBOUGHTINSTORE,
+	RETURNVALUE_ITEMCANNOTBEMOVEDTHERE,
+	RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH,
 	RETURNVALUE_NOTPOSSIBLE,
 	RETURNVALUE_NOTENOUGHROOM,
 	RETURNVALUE_PLAYERISPZLOCKED,
@@ -239,6 +242,7 @@ enum AttrTypes_t {
 	ATTR_CUSTOM = 41,
 	ATTR_STORE_INBOX_CATEGORY = 42,
 	ATTR_OWNER = 43,
+	ATTR_OBTAINCONTAINER = 44,
 
 	// Always the last
 	ATTR_NONE = 0

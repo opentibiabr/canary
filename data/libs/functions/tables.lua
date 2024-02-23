@@ -102,6 +102,14 @@ function table.unserialize(str)
 	return loadstring("return " .. str)()
 end
 
+function table.shallowCopy(oldTable)
+	local newTable = {}
+	for k, v in pairs(oldTable) do
+		newTable[k] = v
+	end
+	return newTable
+end
+
 function pairsByKeys(t, f)
 	local a = {}
 	for n in pairs(t) do

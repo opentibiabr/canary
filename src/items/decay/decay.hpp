@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "items/item.hpp"
+class Item;
 
 class Decay {
 public:
@@ -18,9 +18,7 @@ public:
 	Decay(const Decay &) = delete;
 	void operator=(const Decay &) = delete;
 
-	static Decay &getInstance() {
-		return inject<Decay>();
-	}
+	static Decay &getInstance();
 
 	void startDecay(std::shared_ptr<Item> item);
 	void stopDecay(std::shared_ptr<Item> item);

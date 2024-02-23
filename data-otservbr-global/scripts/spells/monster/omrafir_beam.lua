@@ -104,7 +104,7 @@ local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
 	if not creature:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT, 88888) then
-		creature:say("OMRAFIR INHALES DEEPLY!", TALKTYPE_ORANGE_2)
+		creature:say("OMRAFIR INHALES DEEPLY!", TALKTYPE_MONSTER_YELL)
 		creature:addCondition(condition)
 		addEvent(function(cid, var)
 			local creature = Creature(cid)
@@ -120,7 +120,7 @@ function spell.onCastSpell(creature, var)
 			elseif creature:getDirection() == 3 then
 				combat4:execute(creature, positionToVariant(creature:getPosition()))
 			end
-			creature:say("OMRAFIR BREATHES INFERNAL FIRE", TALKTYPE_ORANGE_2)
+			creature:say("OMRAFIR BREATHES INFERNAL FIRE", TALKTYPE_MONSTER_YELL)
 		end, 4000, creature:getId(), var)
 	else
 		return

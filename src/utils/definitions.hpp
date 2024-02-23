@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -30,8 +30,6 @@
 		#define OS_WINDOWS
 	#endif
 
-	#define WIN32_LEAN_AND_MEAN
-
 	#ifdef _MSC_VER
 		#ifdef NDEBUG
 			#define _SECURE_SCL 0
@@ -60,5 +58,3 @@
 #ifndef M_PI
 	#define M_PI 3.14159265358979323846
 #endif
-
-typedef int error_t;

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -20,6 +20,8 @@ class Weapon;
 class WeaponMelee;
 class WeaponDistance;
 class WeaponWand;
+
+struct LuaVariant;
 
 using WeaponUnique_ptr = std::unique_ptr<Weapon>;
 using WeaponShared_ptr = std::shared_ptr<Weapon>;

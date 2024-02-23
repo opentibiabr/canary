@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -190,13 +190,12 @@ public:
 			return ZONE_PROTECTION;
 		} else if (hasFlag(TILESTATE_NOPVPZONE)) {
 			return ZONE_NOPVP;
-		} else if (hasFlag(TILESTATE_NOLOGOUT)) {
-			return ZONE_NOLOGOUT;
 		} else if (hasFlag(TILESTATE_PVPZONE)) {
 			return ZONE_PVP;
-		} else {
-			return ZONE_NORMAL;
+		} else if (hasFlag(TILESTATE_NOLOGOUT)) {
+			return ZONE_NOLOGOUT;
 		}
+		return ZONE_NORMAL;
 	}
 
 	bool hasHeight(uint32_t n) const;

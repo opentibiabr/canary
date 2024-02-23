@@ -56,18 +56,10 @@ AUTH_TYPE = configManager.getString(configKeys.AUTH_TYPE)
 GLOBAL_CHARM_GUT = 120 -- 20% more chance to get creature products from looting
 GLOBAL_CHARM_SCAVENGE = 125 -- 25% more chance to get creature products from skinning
 
---WEATHER
-weatherConfig = {
-	groundEffect = CONST_ME_LOSEENERGY,
-	fallEffect = CONST_ANI_SMALLICE,
-	thunderEffect = configManager.getBoolean(configKeys.WEATHER_THUNDER),
-	minDMG = 1,
-	maxDMG = 5,
-}
-
 -- Event Schedule
 SCHEDULE_LOOT_RATE = 100
 SCHEDULE_EXP_RATE = 100
+SCHEDULE_BOSS_LOOT_RATE = 100
 SCHEDULE_SKILL_RATE = 100
 SCHEDULE_SPAWN_RATE = 100
 
@@ -106,11 +98,6 @@ end
 
 if not _G.NextUseConcoctionTime then
 	_G.NextUseConcoctionTime = {}
-end
-
--- Delay potion
-if not _G.PlayerDelayPotion then
-	_G.PlayerDelayPotion = {}
 end
 
 table.contains = function(array, value)
@@ -202,7 +189,7 @@ function addStamina(playerId, ...)
 
 		local regen = configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
 		player:setStamina(player:getStamina() + regen)
-		player:sendTextMessage(MESSAGE_STATUS, string.format("%i minute%s of stamina has been refilled.", regen, regen == 1 and "" or "s"))
+		player:sendTextMessage(MESSAGE_FAILURE, string.format("%i minute%s of stamina has been refilled.", regen, regen == 1 and "" or "s"))
 		staminaBonus.eventsPz[localPlayerId] = addEvent(addStamina, delay, nil, localPlayerId, delay)
 		return true
 	end

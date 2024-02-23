@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -174,11 +174,11 @@ void Connection::parseHeader(const std::error_code &error) {
 	std::scoped_lock lock(connectionLock);
 	readTimer.cancel();
 
-	if (error || connectionState == CONNECTION_STATE_CLOSED) {
-		if (error != asio::error::operation_aborted && error != asio::error::eof && error != asio::error::connection_reset) {
-			g_logger().error("[Connection::parseHeader] - Read error: {}", error.message());
-		}
+	if (error) {
+		g_logger().debug("[Connection::parseHeader] - Read error: {}", error.message());
 		close(FORCE_CLOSE);
+		return;
+	} else if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
 

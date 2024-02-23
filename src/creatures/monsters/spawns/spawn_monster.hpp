@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -59,10 +59,10 @@ public:
 
 private:
 	// map of the spawned creatures
-	phmap::parallel_flat_hash_map_m<uint32_t, std::shared_ptr<Monster>> spawnedMonsterMap;
+	std::map<uint32_t, std::shared_ptr<Monster>> spawnedMonsterMap;
 
 	// map of creatures in the spawn
-	phmap::parallel_flat_hash_map_m<uint32_t, spawnBlock_t> spawnMonsterMap;
+	std::map<uint32_t, spawnBlock_t> spawnMonsterMap;
 
 	Position centerPos;
 	int32_t radius;

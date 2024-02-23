@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -349,7 +349,8 @@ void CanaryServer::loadModules() {
 	logger.debug("Loading core scripts on folder: {}/", coreFolder);
 	// Load first core Lua libs
 	modulesLoadHelper((g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0), "core.lua");
-	modulesLoadHelper(g_scripts().loadScripts(coreFolder + "/scripts", false, false), "/data/scripts");
+	modulesLoadHelper(g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false), coreFolder + "/scripts/libs");
+	modulesLoadHelper(g_scripts().loadScripts(coreFolder + "/scripts", false, false), coreFolder + "/scripts");
 
 	// Second XML scripts
 	modulesLoadHelper(g_vocations().loadFromXml(), "XML/vocations.xml");
@@ -363,7 +364,6 @@ void CanaryServer::loadModules() {
 	modulesLoadHelper((g_npcs().load(true, false)), "npclib");
 
 	logger.debug("Loading datapack scripts on folder: {}/", datapackName);
-	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false), datapackFolder + "/scripts/libs");
 	// Load scripts
 	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts", false, false), datapackFolder + "/scripts");
 	// Load monsters
@@ -383,7 +383,7 @@ void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {
 }
 
 void CanaryServer::shutdown() {
-	inject<ThreadPool>().shutdown();
 	g_dispatcher().shutdown();
 	g_metrics().shutdown();
+	inject<ThreadPool>().shutdown();
 }

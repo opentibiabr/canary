@@ -1,12 +1,16 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
 #pragma once
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <fmt/format.h>
+#endif
 
 #define LOG_LEVEL_TRACE \
 	std::string {       \
@@ -44,7 +48,7 @@ public:
 
 	virtual void setLevel(const std::string &name) = 0;
 	[[nodiscard]] virtual std::string getLevel() const = 0;
-	virtual void log(std::string lvl, fmt::basic_string_view<char> msg) const = 0;
+	virtual void log(const std::string &lvl, fmt::basic_string_view<char> msg) const = 0;
 
 	template <typename... Args>
 	void trace(const fmt::format_string<Args...> &fmt, Args &&... args) {

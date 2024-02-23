@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -240,7 +240,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							imbuement.skills[skillId] = bonus;
 							int32_t chance = 100;
 							if ((attr = childNode.attribute("chance"))) {
-								chance = std::min<uint32_t>(100, pugi::cast<int32_t>(attr.value()));
+								chance = std::min<uint32_t>(10000, pugi::cast<int32_t>(attr.value()));
 							}
 
 							imbuement.skills[skillId - 1] = chance;

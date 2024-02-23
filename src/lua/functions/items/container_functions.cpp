@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -32,6 +32,17 @@ int ContainerFunctions::luaContainerGetSize(lua_State* L) {
 	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);
 	if (container) {
 		lua_pushnumber(L, container->size());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int ContainerFunctions::luaContainerGetMaxCapacity(lua_State* L) {
+	// container:getMaxCapacity()
+	const auto &container = getUserdataShared<Container>(L, 1);
+	if (container) {
+		lua_pushnumber(L, container->getMaxCapacity());
 	} else {
 		lua_pushnil(L);
 	}

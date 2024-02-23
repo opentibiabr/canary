@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -470,12 +470,12 @@ std::time_t getTimeNow() {
 	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
 
-std::time_t getTimeMsNow() {
+int64_t getTimeMsNow() {
 	auto duration = std::chrono::system_clock::now().time_since_epoch();
 	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
 }
 
-std::time_t getTimeUsNow() {
+int64_t getTimeUsNow() {
 	auto duration = std::chrono::system_clock::now().time_since_epoch();
 	return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
 }
@@ -1203,6 +1203,15 @@ const char* getReturnMessage(ReturnValue value) {
 		case RETURNVALUE_NOERROR:
 			return "No error.";
 
+		case RETURNVALUE_NOTBOUGHTINSTORE:
+			return "You cannot move this item into your store inbox as it was not bought in the store.";
+
+		case RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH:
+			return "This item cannot be moved there. You can only place gold, platinum and crystal coins in your gold pouch.";
+
+		case RETURNVALUE_ITEMCANNOTBEMOVEDTHERE:
+			return "This item cannot be moved there.";
+
 		case RETURNVALUE_REWARDCHESTISEMPTY:
 			return "The chest is currently empty. You did not take part in any battles in the last seven days or already claimed your reward.";
 
@@ -1604,8 +1613,6 @@ std::string getObjectCategoryName(ObjectCategory_t category) {
 			return "Tibia Coins";
 		case OBJECTCATEGORY_CREATUREPRODUCTS:
 			return "Creature Products";
-		case OBJECTCATEGORY_STASHRETRIEVE:
-			return "Stash Retrieve";
 		case OBJECTCATEGORY_GOLD:
 			return "Gold";
 		case OBJECTCATEGORY_DEFAULT:
@@ -1613,6 +1620,39 @@ std::string getObjectCategoryName(ObjectCategory_t category) {
 		default:
 			return std::string();
 	}
+}
+
+bool isValidObjectCategory(ObjectCategory_t category) {
+	static std::unordered_set<ObjectCategory_t> valid = {
+		OBJECTCATEGORY_NONE,
+		OBJECTCATEGORY_ARMORS,
+		OBJECTCATEGORY_NECKLACES,
+		OBJECTCATEGORY_BOOTS,
+		OBJECTCATEGORY_CONTAINERS,
+		OBJECTCATEGORY_DECORATION,
+		OBJECTCATEGORY_FOOD,
+		OBJECTCATEGORY_HELMETS,
+		OBJECTCATEGORY_LEGS,
+		OBJECTCATEGORY_OTHERS,
+		OBJECTCATEGORY_POTIONS,
+		OBJECTCATEGORY_RINGS,
+		OBJECTCATEGORY_RUNES,
+		OBJECTCATEGORY_SHIELDS,
+		OBJECTCATEGORY_TOOLS,
+		OBJECTCATEGORY_VALUABLES,
+		OBJECTCATEGORY_AMMO,
+		OBJECTCATEGORY_AXES,
+		OBJECTCATEGORY_CLUBS,
+		OBJECTCATEGORY_DISTANCEWEAPONS,
+		OBJECTCATEGORY_SWORDS,
+		OBJECTCATEGORY_WANDS,
+		OBJECTCATEGORY_PREMIUMSCROLLS,
+		OBJECTCATEGORY_TIBIACOINS,
+		OBJECTCATEGORY_CREATUREPRODUCTS,
+		OBJECTCATEGORY_GOLD,
+		OBJECTCATEGORY_DEFAULT,
+	};
+	return valid.contains(category);
 }
 
 uint8_t forgeBonus(int32_t number) {
@@ -1779,6 +1819,11 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 	return output.str();
 }
 
+unsigned int getNumberOfCores() {
+	static auto cores = std::thread::hardware_concurrency();
+	return cores;
+}
+
 /**
  * @brief Formats a number to a string with commas
  * @param number The number to format
@@ -1808,4 +1853,20 @@ std::string toKey(const std::string &str) {
 	std::replace(key.begin(), key.end(), ' ', '-');
 	key.erase(std::remove_if(key.begin(), key.end(), [](char c) { return std::isspace(c); }), key.end());
 	return key;
+}
+
+uint8_t convertWheelGemAffinityToDomain(uint8_t affinity) {
+	switch (affinity) {
+		case 0:
+			return 1;
+		case 1:
+			return 3;
+		case 2:
+			return 0;
+		case 3:
+			return 2;
+		default:
+			g_logger().error("Failed to get gem affinity {}", affinity);
+			return 0;
+	}
 }

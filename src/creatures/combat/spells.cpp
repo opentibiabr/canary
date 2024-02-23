@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -16,13 +16,18 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 
+#include "lua/global/lua_variant.hpp"
+
+#include "enums/account_type.hpp"
+#include "enums/account_group_type.hpp"
+
 Spells::Spells() = default;
 Spells::~Spells() = default;
 
 TalkActionResult_t Spells::playerSaySpell(std::shared_ptr<Player> player, std::string &words) {
 	auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT, __FUNCTION__);
 	auto tile = player->getTile();
-	if (maxOnline > 1 && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && tile && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+	if (maxOnline > 1 && player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER && tile && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 		auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT, __FUNCTION__);
 		auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
 		int countOutsizePZ = 0;
@@ -450,7 +455,7 @@ bool Spell::playerSpellCheck(std::shared_ptr<Player> player) const {
 			g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 			return false;
 		}
-	} else if (!vocSpellMap.empty() && !vocSpellMap.contains(player->getVocationId()) && player->getGroup()->id < account::GROUP_TYPE_GAMEMASTER) {
+	} else if (!vocSpellMap.empty() && !vocSpellMap.contains(player->getVocationId()) && player->getGroup()->id < GROUP_TYPE_GAMEMASTER) {
 		player->sendCancelMessage(RETURNVALUE_YOURVOCATIONCANNOTUSETHISSPELL);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
@@ -639,6 +644,8 @@ void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 		if (isUpgraded) {
 			spellCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, spellGrade);
 		}
+		g_logger().debug("[{}] spell name: {}, spellCooldown: {}, bonus: {}", __FUNCTION__, name, spellCooldown, player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN));
+		spellCooldown -= player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN);
 		if (spellCooldown > 0) {
 			std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, m_spellId);
 			player->addCondition(condition);
@@ -676,6 +683,7 @@ void Spell::postCastSpell(std::shared_ptr<Player> player, bool finishedCast /*= 
 
 		if (aggressive) {
 			player->addInFightTicks();
+			player->updateLastAggressiveAction();
 		}
 
 		if (player && soundCastEffect != SoundEffect_t::SILENCE) {
@@ -702,28 +710,26 @@ void Spell::postCastSpell(std::shared_ptr<Player> player, uint32_t manaCost, uin
 }
 
 uint32_t Spell::getManaCost(std::shared_ptr<Player> player) const {
+	WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
+	uint32_t manaRedution = 0;
+	if (getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0) {
+		manaRedution += getWheelOfDestinyBoost(WheelSpellBoost_t::MANA, spellGrade);
+	}
+	manaRedution += player->wheel()->getSpellBonus(name, WheelSpellBoost_t::MANA);
+
 	if (mana != 0) {
-		WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
-		if (getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0) {
-			if (getWheelOfDestinyBoost(WheelSpellBoost_t::MANA, spellGrade) >= mana) {
-				return 0;
-			} else {
-				return (mana - getWheelOfDestinyBoost(WheelSpellBoost_t::MANA, spellGrade));
-			}
+		if (manaRedution > mana) {
+			return 0;
 		}
-		return mana;
+		return mana - manaRedution;
 	}
 
 	if (manaPercent != 0) {
 		uint32_t maxMana = player->getMaxMana();
 		uint32_t manaCost = (maxMana * manaPercent) / 100;
 		WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
-		if (getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0) {
-			if (getWheelOfDestinyBoost(WheelSpellBoost_t::MANA, spellGrade) >= manaCost) {
-				return 0;
-			} else {
-				return (manaCost - getWheelOfDestinyBoost(WheelSpellBoost_t::MANA, spellGrade));
-			}
+		if (manaRedution > manaCost) {
+			return 0;
 		}
 		return manaCost;
 	}
@@ -842,6 +848,7 @@ bool InstantSpell::playerCastInstant(std::shared_ptr<Player> player, std::string
 	auto worldType = g_game().getWorldType();
 	if (pzLocked && (worldType == WORLD_TYPE_PVP || worldType == WORLD_TYPE_PVP_ENFORCED)) {
 		player->addInFightTicks(true);
+		player->updateLastAggressiveAction();
 	}
 
 	bool result = executeCastSpell(player, var);
@@ -1014,6 +1021,7 @@ bool RuneSpell::executeUse(std::shared_ptr<Player> player, std::shared_ptr<Item>
 	auto worldType = g_game().getWorldType();
 	if (pzLocked && (worldType == WORLD_TYPE_PVP || worldType == WORLD_TYPE_PVP_ENFORCED)) {
 		player->addInFightTicks(true);
+		player->updateLastAggressiveAction();
 	}
 
 	return true;

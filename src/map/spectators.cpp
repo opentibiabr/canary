@@ -1,11 +1,13 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
+
+#include "pch.hpp"
 
 #include "spectators.hpp"
 #include "game/game.hpp"
@@ -14,6 +16,52 @@ phmap::flat_hash_map<Position, SpectatorsCache> Spectators::spectatorsCache;
 
 void Spectators::clearCache() {
 	spectatorsCache.clear();
+}
+
+bool Spectators::contains(const std::shared_ptr<Creature> &creature) {
+	return creatures.contains(creature);
+}
+
+bool Spectators::erase(const std::shared_ptr<Creature> &creature) {
+	return creatures.erase(creature);
+}
+
+Spectators Spectators::insert(const std::shared_ptr<Creature> &creature) {
+	if (creature) {
+		creatures.emplace(creature);
+	}
+	return *this;
+}
+
+Spectators Spectators::insertAll(const SpectatorList &list) {
+	if (!list.empty()) {
+		creatures.insertAll(list);
+	}
+	return *this;
+}
+
+Spectators Spectators::join(Spectators &anotherSpectators) {
+	return insertAll(anotherSpectators.creatures.data());
+}
+
+bool Spectators::empty() const noexcept {
+	return creatures.empty();
+}
+
+size_t Spectators::size() noexcept {
+	return creatures.size();
+}
+
+CreatureVector::iterator Spectators::begin() noexcept {
+	return creatures.begin();
+}
+
+CreatureVector::iterator Spectators::end() noexcept {
+	return creatures.end();
+}
+
+const CreatureVector &Spectators::data() noexcept {
+	return creatures.data();
 }
 
 bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onlyPlayers, const Position &centerPos, bool checkDistance, bool multifloor, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY) {

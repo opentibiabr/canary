@@ -191,8 +191,14 @@ public:
 	[[nodiscard]] const VocSpellMap &getVocMap() const {
 		return vocSpellMap;
 	}
-	void addVocMap(uint16_t n, bool b) {
-		vocSpellMap[n] = b;
+	void addVocMap(uint16_t vocationId, bool b) {
+		if (vocationId == 0XFFFF) {
+			g_logger().error("Vocation overflow for spell: {}", getName());
+			return;
+		}
+
+		g_logger().trace("Adding spell: {} to voc id: {}", getName(), vocationId);
+		vocSpellMap[vocationId] = b;
 	}
 
 	SpellGroup_t getGroup() {

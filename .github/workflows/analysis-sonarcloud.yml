@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "src/**"
 
 env:
   VCPKG_BUILD_TYPE: debug

@@ -73,4 +73,3 @@ jobs:
         run: |
           sonar-scanner \
             --define sonar.cfamily.compile-commands=build/compile_commands.json
-

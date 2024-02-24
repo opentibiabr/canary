@@ -192,6 +192,7 @@ public:
 		return vocSpellMap;
 	}
 	void addVocMap(uint16_t n, bool b) {
+		g_logger().trace("Adding spell: {} to voc id: {}", getName(), n);
 		vocSpellMap[n] = b;
 	}
 

@@ -831,7 +831,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 				return ATTR_READ_ERROR;
 			}
 
-			g_logger().debug("Setting flag {} flags, to item id {}", flags, getID());
+			g_logger().trace("Setting obtain flag {} flags, to item id {}", flags, getID());
 			setAttribute(ItemAttribute_t::OBTAINCONTAINER, flags);
 			break;
 		}

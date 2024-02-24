@@ -5690,6 +5690,10 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 			return;
 		}
 
+		if (playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+			outfit.lookMount = 0;
+		}
+
 		auto deltaSpeedChange = mount->speed;
 		if (player->isMounted()) {
 			const auto prevMount = mounts.getMountByID(player->getLastMount());

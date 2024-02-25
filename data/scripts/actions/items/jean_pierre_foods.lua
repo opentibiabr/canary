@@ -39,12 +39,12 @@ fishingCondition:setParameter(CONDITION_PARAM_FORCEUPDATE, true)
 
 local foods = {
 	[9079] = {
-		healing = true,
+		rotwormStew = true,
 		message = "Gulp.",
 		appliedMessage = "Your health has been refilled.",
 	},
 	[9080] = {
-		removeConditions = true,
+		hydraTongueSalad = true,
 		conditions = { CONDITION_POISON, CONDITION_FIRE, CONDITION_ENERGY, CONDITION_PARALYZE, CONDITION_DRUNK, CONDITION_DROWN, CONDITION_FREEZING, CONDITION_DAZZLED, CONDITION_CURSED, CONDITION_BLEEDING },
 		message = "Chomp.",
 		appliedMessage = "You feel better body condition.",
@@ -79,7 +79,7 @@ local foods = {
 		appliedMessage = "Your speed has been increased.",
 	},
 	[9086] = {
-		mana = true,
+		blessedSteak = true,
 		message = "Chomp.",
 		appliedMessage = "Your mana has been refilled.",
 	},
@@ -106,7 +106,6 @@ local foods = {
 		potOfBlackjack = true,
 		message = "Gulp.",
 		appliedMessage = "You take a gulp from the large bowl.",
-		chanceToRemove = 5,
 	},
 }
 
@@ -123,13 +122,13 @@ function jeanPierreFoods.onUse(player, item, fromPosition, target, toPosition, i
 		return true
 	end
 
-	if food.removeConditions then
+	if food.hydraTongueSalad then
 		for _, conditionType in ipairs(food.conditions) do
 			player:removeCondition(conditionType)
 		end
-	elseif food.healing then
+	elseif food.rotwormStew then
 		player:addHealth(player:getMaxHealth())
-	elseif food.mana then
+	elseif food.blessedSteak then
 		player:addMana(player:getMaxMana())
 	elseif food.addConditions then
 		player:addCondition(food.condition)
@@ -139,10 +138,22 @@ function jeanPierreFoods.onUse(player, item, fromPosition, target, toPosition, i
 			player:setExhaustion("coconut-shrimp-bake", 24 * 60 * 60)
 		end
 	elseif food.potOfBlackjack then
-		if math.random(1, food.chanceToRemove) == food.chanceToRemove then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You take the last gulp from the large bowl. No leftovers!")
-		else
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You take a gulp from the large bowl, but there's still some blackjack in it.")
+		local maxGulps = math.random(2, 4)
+		local remainingGulps = player:kv():get("pot-of-blackjack") or maxGulps
+
+		if remainingGulps > 0 then
+			remainingGulps = remainingGulps - 1
+			player:kv():set("pot-of-blackjack", remainingGulps)
+
+			local message
+			if remainingGulps > 0 then
+				message = "You take a gulp from the large bowl, but there's still some blackjack in it."
+			else
+				message = "You take the last gulp from the large bowl. No leftovers!"
+			end
+
+			player:addHealth(5000)
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
 		end
 	end
 

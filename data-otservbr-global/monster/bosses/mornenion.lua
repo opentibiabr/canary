@@ -1,40 +1,37 @@
-local mType = Game.createMonsterType("Jesse the Wicked")
+local mType = Game.createMonsterType("Mornenion")
 local monster = {}
 
-monster.description = "Jesse the Wicked"
-monster.experience = 180
+monster.description = "Mornenion"
+monster.experience = 115
 monster.outfit = {
-	lookType = 134,
-	lookHead = 95,
-	lookBody = 95,
-	lookLegs = 95,
-	lookFeet = 113,
-	lookAddons = 3,
+	lookType = 64,
+	lookHead = 0,
+	lookBody = 0,
+	lookLegs = 0,
+	lookFeet = 0,
+	lookAddons = 0,
 	lookMount = 0,
 }
 
 monster.bosstiary = {
-	bossRaceId = 763,
+	bossRaceId = 765,
 	bossRace = RARITY_NEMESIS,
 }
 
-monster.health = 280
-monster.maxHealth = 280
+monster.health = 190
+monster.maxHealth = 190
 monster.race = "blood"
-monster.corpse = 18153
+monster.corpse = 6012
 monster.speed = 110
 monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 5,
+	chance = 10,
 }
 
 monster.strategiesTarget = {
-	nearest = 70,
-	health = 10,
-	damage = 10,
-	random = 10,
+	nearest = 100,
 }
 
 monster.flags = {
@@ -48,7 +45,7 @@ monster.flags = {
 	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 90,
-	targetDistance = 1,
+	targetDistance = 4,
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
@@ -65,26 +62,27 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "That banker never saw it coming!", yell = false },
-	{ text = "You will not take this gold from me!", yell = false },
-	{ text = "KEEP YOUR HANDS OFF THAT BAG!", yell = true },
-	{ text = "Kill him, men!", yell = false },
-	{ text = "Take from the rich, keep it for yourself. That's my motto.", yell = false },
+	{ text = "Come on, you don't really need this. Just let me go.", yell = false },
+	{ text = "Let us leave safely and maybe we'll give you a few coins.", yell = false },
+	{ text = "That cowardish dwarven bank keeper ran when he saw the three of us.", yell = false },
+	{ text = "You humans have enough to spare. We live in poverty.", yell = false },
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 99 },
 	{ name = "bag with stolen gold", chance = 100000 },
+	{ name = "platinum coin", chance = 75000, maxCount = 100 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100 },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -80, range = 7, shootEffect = CONST_ANI_ARROW, target = false },
 }
 
 monster.defenses = {
-	defense = 25,
-	armor = 25,
-	--	mitigation = ???,
+	defense = 10,
+	armor = 7,
+	mitigation = 0.46,
+	{ name = "combat", interval = 5000, chance = 7, type = COMBAT_HEALING, minDamage = 25, maxDamage = 35, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
@@ -101,7 +99,7 @@ monster.elements = {
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = true },
+	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },

@@ -994,14 +994,14 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 		}
 	}
 
-	Weapon* weapon = nullptr;
+	std::shared_ptr<Weapon> weapon = nullptr;
 	if (weaponType != WEAPON_NONE) {
 		if (weaponType == WEAPON_DISTANCE || weaponType == WEAPON_AMMO || weaponType == WEAPON_MISSILE) {
-			weapon = new WeaponDistance(&g_weapons().getScriptInterface());
+			weapon = std::make_shared<WeaponDistance>(&g_weapons().getScriptInterface());
 		} else if (weaponType == WEAPON_WAND) {
-			weapon = new WeaponWand(&g_weapons().getScriptInterface());
+			weapon = std::make_shared<WeaponWand>(&g_weapons().getScriptInterface());
 		} else {
-			weapon = new WeaponMelee(&g_weapons().getScriptInterface());
+			weapon = std::make_shared<WeaponMelee>(&g_weapons().getScriptInterface());
 		}
 		weapon->weaponType = weaponType;
 		itemType.weaponType = weapon->weaponType;
@@ -1166,7 +1166,7 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 	}
 
 	if (weapon) {
-		if (auto weaponWand = dynamic_cast<WeaponWand*>(weapon)) {
+		if (auto weaponWand = dynamic_pointer_cast<WeaponWand>(weapon)) {
 			g_logger().debug("Added weapon damage from '{}', to '{}'", fromDamage, toDamage);
 			weaponWand->setMinChange(fromDamage);
 			weaponWand->setMaxChange(toDamage);
@@ -1181,7 +1181,6 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 
 		if (!g_weapons().registerLuaEvent(weapon, true)) {
 			g_logger().error("[{}] failed to register weapon from item name {}", __FUNCTION__, itemType.name);
-			delete weapon;
 		}
 	}
 

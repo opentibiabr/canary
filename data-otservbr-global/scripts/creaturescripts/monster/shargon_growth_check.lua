@@ -5,7 +5,7 @@ function shargonGrowthCheck.onThink(creature)
 		return true
 	end
 	if tilePos:getItemById(2129) or tilePos:getItemById(2130) then
-		creature:say("Your tricks are older then my minions! You wont trap me! Amuse yourself with my slaves as long was your traps are in place!", TALKTYPE_ORANGE_2)
+		creature:say("Your tricks are older then my minions! You wont trap me! Amuse yourself with my slaves as long was your traps are in place!", TALKTYPE_MONSTER_YELL)
 		for i = 1, 20 do
 			Game.createMonster("Death Reaper", { x = 176 + math.random(-6, 6), y = 386 + math.random(-6, 6), z = 7 }, false, true)
 			creature:remove()

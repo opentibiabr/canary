@@ -193,7 +193,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 			Game.createMonster("Wine Cask", Position(33162, 31945, 15))
 			local leiden = Game.createMonster("Leiden", Position(33162, 31950, 15))
 			leiden:setHealth(leiden:getHealth() / 2)
-			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33121, 31951, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
+			kickerPlayerRoomAfterMin(convertTable, frompos, topos, Position(33121, 31951, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
 		end
 	end
 	if item:getActionId() == 5502 and item:getId() == 8912 then -- The False God
@@ -241,7 +241,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 			addEvent(transformMonster, 13 * 15000, 3, 3, "Sphere Of Wrath", {}, {}, 0)
 			Game.createMonster("The False God", Position(33159, 31914, 15))
 			-- funçao
-			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33181, 31894, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
+			kickerPlayerRoomAfterMin(convertTable, frompos, topos, Position(33181, 31894, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
 		end
 	end
 
@@ -285,7 +285,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				end
 			end
-			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33091, 31963, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
+			kickerPlayerRoomAfterMin(convertTable, frompos, topos, Position(33091, 31963, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
 			Game.createMonster("Pillar of Summoning", Position(33093, 31919, 15))
 			Game.createMonster("Pillar of Death", Position(33098, 31915, 15))
 			Game.createMonster("Pillar of Protection", Position(33103, 31919, 15))
@@ -339,7 +339,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				end
 			end
-			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33109, 31887, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
+			kickerPlayerRoomAfterMin(convertTable, frompos, topos, Position(33109, 31887, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
 			Game.createMonster("The Sinister Hermit Dirty", Position(33131, 31925, 15))
 			ativarGeyser()
 		end
@@ -429,7 +429,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 
 			Game.createMonster("Containment Machine", Position(33133, 31864, 15)):registerEvent("MachineDeath")
 			Game.createMonster("The Armored Voidborn", Position(33135, 31859, 15)):registerEvent("MachineDeath")
-			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33179, 31840, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
+			kickerPlayerRoomAfterMin(convertTable, frompos, topos, Position(33179, 31840, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
 		end
 	end
 	if item:getActionId() == 5505 then -- Boss da areia
@@ -485,7 +485,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 
 			Game.createMonster("the sandking fake", Position(33099, 31858, 15)):registerEvent("SandkingThink")
 			Game.setStorageValue("sandking", 1)
-			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33459, 32269, 10), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
+			kickerPlayerRoomAfterMin(convertTable, frompos, topos, Position(33459, 32269, 10), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
 		end
 	end
 
@@ -531,7 +531,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 			spawnDarkSoul(1, 30)
 			spawnDarkSoul(2, 30)
 			spawnStolenSoul(30)
-			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33072, 31867, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
+			kickerPlayerRoomAfterMin(convertTable, frompos, topos, Position(33072, 31867, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
 		end
 	end
 	return true

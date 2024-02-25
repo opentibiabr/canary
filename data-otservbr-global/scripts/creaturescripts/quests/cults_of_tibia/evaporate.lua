@@ -37,7 +37,7 @@ function evaporate.onThink(creature)
 			if not creature then
 				return
 			end
-			creature:say("The liquor spirit evaporates!", TALKTYPE_ORANGE_2)
+			creature:say("The liquor spirit evaporates!", TALKTYPE_MONSTER_YELL)
 			local var = { type = 1, number = creature:getId() }
 			combat:execute(creature, var)
 			creature:remove(1)

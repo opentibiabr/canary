@@ -59,6 +59,7 @@ GLOBAL_CHARM_SCAVENGE = 125 -- 25% more chance to get creature products from ski
 -- Event Schedule
 SCHEDULE_LOOT_RATE = 100
 SCHEDULE_EXP_RATE = 100
+SCHEDULE_BOSS_LOOT_RATE = 100
 SCHEDULE_SKILL_RATE = 100
 SCHEDULE_SPAWN_RATE = 100
 
@@ -97,11 +98,6 @@ end
 
 if not _G.NextUseConcoctionTime then
 	_G.NextUseConcoctionTime = {}
-end
-
--- Delay potion
-if not _G.PlayerDelayPotion then
-	_G.PlayerDelayPotion = {}
 end
 
 table.contains = function(array, value)

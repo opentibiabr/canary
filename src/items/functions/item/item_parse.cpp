@@ -1193,7 +1193,6 @@ void ItemParse::parseUnscriptedItems(const std::string_view &tmpStrValue, pugi::
 	if (tmpStrValue == "script") {
 		std::string scriptName = valueAttribute.as_string();
 		auto tokens = split(scriptName.data(), ';');
-		std::vector<std::shared_ptr<MoveEvent>> events;
 		for (const auto &token : tokens) {
 			if (token == "moveevent") {
 				g_logger().debug("Registering moveevent for item id '{}', name '{}'", itemType.id, itemType.name);

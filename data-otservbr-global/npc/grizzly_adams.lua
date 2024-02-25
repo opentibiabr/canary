@@ -96,7 +96,7 @@ npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBac
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_LOOK, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end
@@ -438,7 +438,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("You are ready to advance one rank in our society |PLAYERNAME|. Ask me for a {promotion} first.", npc, creature)
 			return true
 		end
-		local messageAlt, messageAltPoints, messageAltExtra, messageAltExtraPoints = false
+		local messageAlt, messageAltPoints, messageAltExtra, messageAltExtraPoints = false, false, false, false
 		local extraValue = 0
 		local messageAltId = 1
 		local started = player:getStartedTasks()

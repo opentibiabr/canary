@@ -75,24 +75,31 @@ monster.voices = {
 
 monster.loot = {
 	{ name = "platinum coin", chance = 100000, maxCount = 3 },
-	{ name = "wand of draconia", chance = 4770 },
-	{ name = "sphinx feather", chance = 3450 },
-	{ name = "fire axe", chance = 2650 },
-	{ id = 31438, chance = 3450 }, -- sphinx tiara
-	{ name = "magma legs", chance = 1860 },
-	{ name = "magma monocle", chance = 1590 },
-	{ name = "magma boots", chance = 2120 },
-	{ name = "magma amulet", chance = 7160 },
-	{ name = "wand of inferno", chance = 7690 },
-	{ name = "dragon necklace", chance = 800 },
+	{ name = "green crystal shard", chance = 8740 },
+	{ name = "cyan crystal fragment", chance = 8620 },
+	{ id = 3039, chance = 8390 }, -- red gem
+	{ name = "magma amulet", chance = 6060 },
+	{ name = "wand of inferno", chance = 5710 },
+	{ name = "small sapphire", chance = 5590, maxCount = 2 },
+	{ name = "dragon necklace", chance = 5590 },
+	{ name = "blue gem", chance = 5480 },
+	{ name = "sphinx feather", chance = 5480 },
+	{ name = "sphinx tiara", chance = 5240 },
+	{ name = "fire axe", chance = 4200 },
+	{ name = "wand of draconia", chance = 2910 },
+	{ name = "green gem", chance = 2680 },
+	{ name = "magma monocle", chance = 1400 },
+	{ name = "magma boots", chance = 1280 },
+	{ name = "small enchanted emerald", chance = 1050, maxCount = 2 },
+	{ name = "magma legs", chance = 930 },
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -450 },
-	{ name = "fire wave", interval = 2000, chance = 15, minDamage = -350, maxDamage = -500, length = 1, spread = 0, target = true },
-	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -500, radius = 4, effect = CONST_ME_ENERGYAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -350, maxDamage = -550, range = 1, shootEffect = CONST_ANI_FIRE, target = false },
-	{ name = "combat", interval = 2000, chance = 8, type = COMBAT_HOLYDAMAGE, minDamage = -400, maxDamage = -580, length = 6, spread = 3, effect = CONST_ME_HOLYAREA, target = false },
+	{ name = "fire wave", interval = 2000, chance = 15, minDamage = -350, maxDamage = -500, length = 1, spread = 0, effect = CONST_ME_FIREAREA, target = true },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -500, radius = 4, effect = CONST_ME_ENERGYAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -350, maxDamage = -550, range = 1, shootEffect = CONST_ANI_FIRE, target = false },
+	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_HOLYDAMAGE, minDamage = -400, maxDamage = -580, length = 6, spread = 3, effect = CONST_ME_HOLYAREA, target = false },
 }
 
 monster.defenses = {

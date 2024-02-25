@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"InquisitionBossDeath",
+}
+
 monster.health = 31500
 monster.maxHealth = 31500
 monster.race = "fire"
@@ -89,7 +93,7 @@ monster.loot = {
 	{ name = "mysterious voodoo skull", chance = 12500 },
 	{ name = "skull helmet", chance = 20000 },
 	{ name = "iron ore", chance = 33333 },
-	{ name = "spirit container", chance = 4761 },
+	{ id = 5884, chance = 4761 }, -- spirit container
 	{ name = "flask of warrior's sweat", chance = 5555 },
 	{ name = "enchanted chicken wing", chance = 7692 },
 	{ name = "huge chunk of crude iron", chance = 14285 },

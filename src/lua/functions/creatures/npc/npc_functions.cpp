@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -13,6 +13,7 @@
 #include "creatures/creature.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "lua/functions/creatures/npc/npc_functions.hpp"
+#include "map/spectators.hpp"
 
 int NpcFunctions::luaNpcCreate(lua_State* L) {
 	// Npc([id or name or userdata])
@@ -190,7 +191,7 @@ int NpcFunctions::luaNpcSay(lua_State* L) {
 		return 1;
 	}
 
-	SpectatorHashSet spectators;
+	Spectators spectators;
 	if (target) {
 		spectators.insert(target);
 	}
@@ -346,20 +347,74 @@ int NpcFunctions::luaNpcOpenShopWindow(lua_State* L) {
 		return 1;
 	}
 
-	std::shared_ptr<Player> player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
 		return 1;
 	}
 
+	npc->addShopPlayer(player);
+	pushBoolean(L, player->openShopWindow(npc));
+	return 1;
+}
+
+int NpcFunctions::luaNpcOpenShopWindowTable(lua_State* L) {
+	// npc:openShopWindowTable(player, items)
+	const auto &npc = getUserdataShared<Npc>(L, 1);
+	if (!npc) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	const auto &player = getUserdataShared<Player>(L, 2);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	if (lua_istable(L, 3) == 0) {
+		reportError(__FUNCTION__, "item list is not a table.");
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	std::vector<ShopBlock> items;
+	lua_pushnil(L);
+	while (lua_next(L, 3) != 0) {
+		const auto tableIndex = lua_gettop(L);
+
+		auto itemId = getField<uint16_t>(L, tableIndex, "clientId");
+		auto subType = getField<int32_t>(L, tableIndex, "subType");
+		if (subType == 0) {
+			subType = getField<int32_t>(L, tableIndex, "subtype");
+			lua_pop(L, 1);
+		}
+
+		auto buyPrice = getField<uint32_t>(L, tableIndex, "buy");
+		auto sellPrice = getField<uint32_t>(L, tableIndex, "sell");
+		auto storageKey = getField<int32_t>(L, tableIndex, "storageKey");
+		auto storageValue = getField<int32_t>(L, tableIndex, "storageValue");
+		auto itemName = getFieldString(L, tableIndex, "itemName");
+		if (itemName.empty()) {
+			itemName = Item::items[itemId].name;
+		}
+		items.emplace_back(itemId, subType, buyPrice, sellPrice, storageKey, storageValue, itemName);
+		lua_pop(L, 8);
+	}
+	lua_pop(L, 3);
+
+	// Close any eventual other shop window currently open.
+	player->closeShopWindow(true);
+	npc->addShopPlayer(player, items);
 	pushBoolean(L, player->openShopWindow(npc));
 	return 1;
 }
 
 int NpcFunctions::luaNpcCloseShopWindow(lua_State* L) {
 	// npc:closeShopWindow(player)
-	std::shared_ptr<Player> player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -390,8 +445,8 @@ int NpcFunctions::luaNpcIsMerchant(lua_State* L) {
 		return 1;
 	}
 
-	const std::vector<ShopBlock> shopItems = npc->getShopItemVector();
-
+	auto playerGUID = getNumber<uint32_t>(L, 2, 0);
+	const auto &shopItems = npc->getShopItemVector(playerGUID);
 	if (shopItems.empty()) {
 		pushBoolean(L, false);
 		return 1;
@@ -410,8 +465,9 @@ int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 		return 1;
 	}
 
-	const std::vector<ShopBlock> &shopVector = npc->getShopItemVector();
-	for (ShopBlock shopBlock : shopVector) {
+	auto playerGUID = getNumber<uint32_t>(L, 2, 0);
+	const auto &shopItems = npc->getShopItemVector(playerGUID);
+	for (ShopBlock shopBlock : shopItems) {
 		setField(L, "id", shopBlock.itemId);
 		setField(L, "name", shopBlock.itemName);
 		setField(L, "subType", shopBlock.itemSubType);
@@ -451,7 +507,13 @@ int NpcFunctions::luaNpcFollow(lua_State* L) {
 		return 1;
 	}
 
-	pushBoolean(L, npc->setFollowCreature(getPlayer(L, 2)));
+	const auto &player = getPlayer(L, 2);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	pushBoolean(L, npc->setFollowCreature(player));
 	return 1;
 }
 
@@ -477,7 +539,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 		return 1;
 	}
 
-	std::shared_ptr<Player> player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -515,7 +577,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 	}
 
 	uint64_t pricePerUnit = 0;
-	const std::vector<ShopBlock> &shopVector = npc->getShopItemVector();
+	const std::vector<ShopBlock> &shopVector = npc->getShopItemVector(player->getGUID());
 	for (ShopBlock shopBlock : shopVector) {
 		if (itemId == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
 			pricePerUnit = shopBlock.itemBuyPrice;
@@ -523,88 +585,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 		}
 	}
 
-	uint32_t itemsPurchased = 0;
-	uint8_t backpacksPurchased = 0;
-	uint8_t internalCount = it.stackable ? it.stackSize : 1;
-	auto remainingAmount = static_cast<uint32_t>(amount);
-	if (inBackpacks) {
-		while (remainingAmount > 0) {
-			std::shared_ptr<Item> container = Item::CreateItem(ITEM_SHOPPING_BAG);
-			if (!container) {
-				break;
-			}
-
-			if (g_game().internalPlayerAddItem(player, container, ignoreCap, CONST_SLOT_WHEREEVER) != RETURNVALUE_NOERROR) {
-
-				break;
-			}
-
-			backpacksPurchased++;
-			uint8_t internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
-			const ItemType &iType = Item::items[itemId];
-			std::shared_ptr<Item> item;
-			if (iType.isWrappable()) {
-				item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
-				item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
-				item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
-			} else {
-				item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
-			}
-			if (actionId != 0) {
-				item->setAttribute(ItemAttribute_t::ACTIONID, actionId);
-			}
-
-			while (remainingAmount > 0) {
-				if (g_game().internalAddItem(container->getContainer(), item, INDEX_WHEREEVER, 0) != RETURNVALUE_NOERROR) {
-
-					break;
-				}
-
-				itemsPurchased += internalAmount;
-				remainingAmount -= internalAmount;
-				internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
-				if (iType.isWrappable()) {
-					item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
-					item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
-					item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
-				} else {
-					item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
-				}
-			}
-		}
-	} else {
-		uint8_t internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
-		const ItemType &iType = Item::items[itemId];
-		std::shared_ptr<Item> item;
-		if (iType.isWrappable()) {
-			item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
-			item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
-			item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
-		} else {
-			item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
-		}
-		if (actionId != 0) {
-			item->setAttribute(ItemAttribute_t::ACTIONID, actionId);
-		}
-
-		while (remainingAmount > 0) {
-			if (g_game().internalPlayerAddItem(player, item, ignoreCap, CONST_SLOT_WHEREEVER) != RETURNVALUE_NOERROR) {
-
-				break;
-			}
-
-			itemsPurchased += internalAmount;
-			remainingAmount -= internalAmount;
-			internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
-			if (iType.isWrappable()) {
-				item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
-				item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
-				item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
-			} else {
-				item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
-			}
-		}
-	}
+	const auto &[_, itemsPurchased, backpacksPurchased] = g_game().createItem(player, itemId, amount, subType, actionId, ignoreCap, inBackpacks ? ITEM_SHOPPING_BAG : 0);
 
 	std::stringstream ss;
 	uint64_t itemCost = itemsPurchased * pricePerUnit;
@@ -612,7 +593,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 	if (npc->getCurrency() == ITEM_GOLD_COIN) {
 		if (!g_game().removeMoney(player, itemCost + backpackCost, 0, true)) {
 			g_logger().error("[NpcFunctions::luaNpcSellItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npc->getName());
-			g_logger().debug("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, npc->getName(), player->getPosition().toString());
+			g_logger().debug("[Information] Player {} bought {} x item {} on shop for npc {}, at position {}", player->getName(), itemsPurchased, itemId, npc->getName(), player->getPosition().toString());
 		} else if (backpacksPurchased > 0) {
 			ss << "Bought " << std::to_string(itemsPurchased) << "x " << it.name << " and " << std::to_string(backpacksPurchased);
 			if (backpacksPurchased > 1) {

@@ -2,20 +2,16 @@
 name: Analysis - SonarCloud
 
 on:
-  pull_request_target:
-    types: [opened, synchronize, reopened]
-    paths:
-      - 'src/**'
   push:
-    paths:
-      - 'src/**'
     branches:
       - main
+    paths:
+      - "src/**"
 
 env:
   VCPKG_BUILD_TYPE: debug
   CMAKE_BUILD_PARALLEL_LEVEL: 2
-  MAKEFLAGS: '-j 2'
+  MAKEFLAGS: "-j 2"
   VCPKG_BINARY_SOURCES: clear;default,readwrite
 
 jobs:
@@ -24,22 +20,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Cancel Previous Runs
-        if: github.ref != 'refs/heads/main'
-        uses: fkirc/skip-duplicate-actions@master
-        with:
-          concurrent_skipping: 'same_content'
-          cancel_others: true
-
       - uses: actions/checkout@v3
-        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
-        with:
-          fetch-depth: 0
-          ref: ${{github.event.pull_request.head.ref}}
-          repository: ${{github.event.pull_request.head.repo.full_name}}
-
-      - uses: actions/checkout@v3
-        if: ${{ github.event_name == 'push' }}
         with:
           fetch-depth: 0
 
@@ -85,20 +66,7 @@ jobs:
           mkdir -p build
           cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DOPTIONS_ENABLE_CCACHE=ON -DSPEED_UP_BUILD_UNITY=OFF -S . -B build
 
-      - name: Run PR sonar-scanner
-        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          sonar-scanner \
-            --define sonar.cfamily.compile-commands=build/compile_commands.json \
-            --define sonar.pullrequest.key=${{ github.event.pull_request.number }} \
-            --define sonar.pullrequest.branch=${{ github.event.pull_request.head.ref }} \
-            --define sonar.pullrequest.base=${{ github.event.pull_request.base_ref }}
-
       - name: Run sonar-scanner
-        if: ${{ github.event_name == 'push' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

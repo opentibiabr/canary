@@ -15,7 +15,7 @@ function dangerousDepthPump.onUse(player, item)
 		for _, spectator in pairs(spectators) do
 			if spectator:isPlayer() then
 				local playerSpectator = spectator
-				if playerSpectator:getStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneVI) < 1 then
+				if playerSpectator:getStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneVI) ~= 1 then
 					playerSpectator:setStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneVI, 1)
 				end
 			end
@@ -33,7 +33,7 @@ function dangerousDepthPump.onUse(player, item)
 		for _, spectator in pairs(spectators) do
 			if spectator:isPlayer() then
 				local playerSpectator = spectator
-				if playerSpectator:getStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneV) < 1 then
+				if playerSpectator:getStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneV) ~= 1 then
 					playerSpectator:setStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneV, 1)
 				end
 			end
@@ -51,7 +51,7 @@ function dangerousDepthPump.onUse(player, item)
 		for _, spectator in pairs(spectators) do
 			if spectator:isPlayer() then
 				local playerSpectator = spectator
-				if playerSpectator:getStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneIV) < 1 then
+				if playerSpectator:getStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneIV) ~= 1 then
 					playerSpectator:setStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneIV, 1)
 				end
 			end

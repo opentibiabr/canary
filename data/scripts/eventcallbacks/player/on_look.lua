@@ -10,18 +10,23 @@ function callback.playerOnLook(player, thing, position, distance)
 		elseif thing.itemid >= ITEM_HEALTH_CASK_START and thing.itemid <= ITEM_HEALTH_CASK_END or thing.itemid >= ITEM_MANA_CASK_START and thing.itemid <= ITEM_MANA_CASK_END or thing.itemid >= ITEM_SPIRIT_CASK_START and thing.itemid <= ITEM_SPIRIT_CASK_END or thing.itemid >= ITEM_KEG_START and thing.itemid <= ITEM_KEG_END then
 			description = description .. thing:getDescription(distance)
 			local charges = thing:getCharges()
-			if charges then
+			if charges > 0 then
 				description = string.format("%s\nIt has %d refillings left.", description, charges)
 			end
 		else
 			description = description .. thing:getDescription(distance)
+		end
+		local ownerName = thing:getOwnerName()
+		if ownerName then
+			description = string.format("%s\nIt belongs to %s.", description, ownerName)
 		end
 	else
 		description = description .. thing:getDescription(distance)
 		if thing:isMonster() then
 			local master = thing:getMaster()
 			if master and table.contains({ "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar" }, thing:getName():lower()) then
-				description = string.format("%s (Master: %s). \z It will disappear in %s", description, master:getName(), getTimeInWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time()))
+				local familiarSummonTime = master:kv():get("familiar-summon-time") or 0
+				description = string.format("%s (Master: %s). \z It will disappear in %s", description, master:getName(), getTimeInWords(familiarSummonTime - os.time()))
 			end
 		end
 	end
@@ -62,7 +67,7 @@ function callback.playerOnLook(player, thing, position, distance)
 			description = string.format(str, description, thing:getHealth(), thing:getMaxHealth()) .. "."
 		end
 
-		description = string.format("%s\nPosition: %d, %d, %d", description, position.x, position.y, position.z)
+		description = string.format("%s\nPosition: (%d, %d, %d)", description, position.x, position.y, position.z)
 
 		if thing:isCreature() then
 			local speedBase = thing:getBaseSpeed()

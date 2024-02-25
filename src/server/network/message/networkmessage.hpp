@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -90,7 +90,7 @@ public:
 	void addBytes(const char* bytes, size_t size);
 	void addPaddingBytes(size_t n);
 
-	void addString(const std::string &value);
+	void addString(const std::string &value, const std::string &function);
 
 	void addDouble(double value, uint8_t precision = 2);
 

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -236,7 +236,9 @@ enum MagicEffectClasses : uint16_t {
 
 	CONST_ME_AGONY = 249,
 
-	CONST_ME_LAST = CONST_ME_AGONY
+	CONST_ME_LOOT_HIGHLIGHT = 252,
+
+	CONST_ME_LAST
 };
 
 enum ShootType_t : uint8_t {
@@ -655,21 +657,10 @@ enum ItemID_t : uint16_t {
 	ITEM_PRIMAL_POD = 39176,
 	ITEM_DIVINE_EMPOWERMENT = 40450,
 
-	ITEM_NONE = 0
-};
+	ITEM_BATHTUB_FILLED = 26077,
+	ITEM_BATHTUB_FILLED_NOTMOVABLE = 26100,
 
-// A map which contains items that, when on creating, should be transformed to the default type.
-const phmap::flat_hash_map<ItemID_t, ItemID_t> ItemTransformationMap = {
-	{ ITEM_SWORD_RING_ACTIVATED, ITEM_SWORD_RING },
-	{ ITEM_CLUB_RING_ACTIVATED, ITEM_CLUB_RING },
-	{ ITEM_DWARVEN_RING_ACTIVATED, ITEM_DWARVEN_RING },
-	{ ITEM_RING_HEALING_ACTIVATED, ITEM_RING_HEALING },
-	{ ITEM_STEALTH_RING_ACTIVATED, ITEM_STEALTH_RING },
-	{ ITEM_TIME_RING_ACTIVATED, ITEM_TIME_RING },
-	{ ITEM_PAIR_SOFT_BOOTS_ACTIVATED, ITEM_PAIR_SOFT_BOOTS },
-	{ ITEM_DEATH_RING_ACTIVATED, ITEM_DEATH_RING },
-	{ ITEM_PRISMATIC_RING_ACTIVATED, ITEM_PRISMATIC_RING },
-	{ ITEM_OLD_DIAMOND_ARROW, ITEM_DIAMOND_ARROW },
+	ITEM_NONE = 0
 };
 
 enum class PlayerFlags_t : uint8_t {
@@ -729,17 +720,6 @@ enum Blessings_t : uint8_t {
 	HEARTH_OF_THE_MOUNTAIN = 8,
 };
 
-const phmap::flat_hash_map<Blessings_t, std::string> BlessingNames = {
-	{ TWIST_OF_FATE, "Twist of Fate" },
-	{ WISDOM_OF_SOLITUDE, "The Wisdom of Solitude" },
-	{ SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix" },
-	{ FIRE_OF_THE_SUNS, "The Fire of the Suns" },
-	{ SPIRITUAL_SHIELDING, "The Spiritual Shielding" },
-	{ EMBRACE_OF_TIBIA, "The Embrace of Tibia" },
-	{ BLOOD_OF_THE_MOUNTAIN, "Blood of the Mountain" },
-	{ HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain" },
-};
-
 enum BedItemPart_t : uint8_t {
 	BED_NONE_PART,
 	BED_PILLOW_PART,
@@ -758,4 +738,27 @@ enum class AttrSubId_t {
 	JeanPierreFishing,
 	BloodRageProtector,
 	Sharpshooter,
+};
+
+enum Concoction_t : uint16_t {
+	KooldownAid = 36723,
+	StaminaExtension = 36725,
+	StrikeEnhancement = 36724,
+	CharmUpgrade = 36726,
+	WealthDuplex = 36727,
+	BestiaryBetterment = 36728,
+	FireResilience = 36729,
+	IceResilience = 36730,
+	EarthResilience = 36731,
+	EnergyResilience = 36732,
+	HolyResilience = 36733,
+	DeathResilience = 36734,
+	PhysicalResilience = 36735,
+	FireAmplification = 36736,
+	IceAmplification = 36737,
+	EarthAmplification = 36738,
+	EnergyAmplification = 36739,
+	HolyAmplification = 36740,
+	DeathAmplification = 36741,
+	PhysicalAmplification = 36742,
 };

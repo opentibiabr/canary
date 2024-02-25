@@ -6,18 +6,31 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - 'src/**'
+      - "src/**"
+  merge_group:
   push:
     paths:
-      - 'src/**'
+      - "src/**"
     branches:
       - main
 
 env:
   CMAKE_BUILD_PARALLEL_LEVEL: 2
-  MAKEFLAGS: '-j 2'
+  MAKEFLAGS: "-j 2"
+  GITHUB_WORKSPACE: ${{ github.workspace }}
+  VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+  VCPKG_TRIPLET: x64-windows
 
 jobs:
+  cancel-runs:
+    if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
   job:
     if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
     name: ${{ matrix.os }}-${{ matrix.buildtype }}
@@ -32,13 +45,6 @@ jobs:
             packages: >
               sccache
     steps:
-      - name: Cancel Previous Runs
-        if: github.ref != 'refs/heads/main'
-        uses: fkirc/skip-duplicate-actions@master
-        with:
-          concurrent_skipping: 'same_content'
-          cancel_others: true
-
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v1.1
 
@@ -47,13 +53,25 @@ jobs:
 
       - name: Install vcpkg
         run: |
+          $vcpkgJson = Get-Content .\vcpkg.json -Raw | ConvertFrom-Json
+          $vcpkgCommitId = $vcpkgJson.'builtin-baseline'.Trim()
+          Write-Host "vcpkg commit ID: $vcpkgCommitId"
           git clone https://github.com/Microsoft/vcpkg.git
           cd vcpkg
-          ./bootstrap-vcpkg.bat
-          ./vcpkg integrate install
+          git checkout $vcpkgCommitId
+          .\bootstrap-vcpkg.bat
+          .\vcpkg integrate install
+
+      - name: Print useful paths
+        run: |
+          Write-Host "Workspace: $env:GITHUB_WORKSPACE"
+          Write-Host "Vcpkg Path: $env:GITHUB_WORKSPACE\vcpkg"
+          Write-Host "Triplet: ${{ matrix.triplet }}"
 
       - name: Build project
-        run: msbuild.exe /p:VcpkgEnableManifest=true /p:Configuration=Debug /p:Platform=x64 /p:VcpkgRoot=$env:GITHUB_WORKSPACE/vcpkg vcproj/canary.sln
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+        run: msbuild.exe /p:VcpkgEnableManifest=true /p:Configuration=Debug /p:Platform=x64 /p:GITHUB_WORKSPACE="$env:GITHUB_WORKSPACE" vcproj/canary.sln
 
       - name: Upload artifacts
         uses: actions/upload-artifact@main

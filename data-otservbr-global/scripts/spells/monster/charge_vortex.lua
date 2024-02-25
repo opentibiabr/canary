@@ -1,50 +1,33 @@
-local mathCount = 0
-
-local positions = {}
+local positions = {
+	Position(32264, 31253, 14),
+	Position(32269, 31258, 14),
+	Position(32275, 31255, 14),
+	Position(32280, 31253, 14),
+	Position(32271, 31248, 14),
+	Position(32264, 31245, 14),
+	Position(32270, 31240, 14),
+	Position(32269, 31253, 14),
+	Position(32275, 31245, 14),
+	Position(32276, 31250, 14),
+	Position(32266, 31249, 14),
+}
 
 local function createVortex()
-	local storedPositions = {
-		{ x = 32264, y = 31253, z = 14 },
-		{ x = 32269, y = 31258, z = 14 },
-		{ x = 32275, y = 31255, z = 14 },
-		{ x = 32280, y = 31253, z = 14 },
-		{ x = 32271, y = 31248, z = 14 },
-		{ x = 32264, y = 31245, z = 14 },
-		{ x = 32270, y = 31240, z = 14 },
-		{ x = 32269, y = 31253, z = 14 },
-		{ x = 32275, y = 31245, z = 14 },
-		{ x = 32276, y = 31250, z = 14 },
-		{ x = 32266, y = 31249, z = 14 },
-	}
-
-	if mathCount == 0 then
-		positions = storedPositions
-	end
-
-	local r1 = math.random(#positions)
-
-	local tile = Tile(positions[r1])
-
+	local tile = Tile(positions[math.random(#positions)])
 	if tile then
 		local ground = tile:getGround()
 		if ground then
 			ground:transform(22894)
-			addEvent(function(pos)
-				local tile = Tile(pos)
+			addEvent(function(positionInAddEvent)
+				local tile = Tile(positionInAddEvent)
 				if tile then
 					local ground = tile:getGround()
 					if ground then
 						ground:transform(23049)
 					end
 				end
-			end, 10 * 1000, tile:getPosition()) -- 10*1000 = 10 SECONDS
-			mathCount = mathCount + 1
-			table.remove(positions, r1)
+			end, 10 * 1000, tile:getPosition()) -- 10 seconds
 		end
-	end
-
-	if mathCount == 11 then
-		mathCount = 0
 	end
 end
 

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -8,45 +8,71 @@
  */
 
 #pragma once
+#include "utils/tools.hpp"
+#include <unordered_set>
 
 class Task {
 public:
-	// DO NOT allocate this class on the stack
-	Task(std::function<void(void)> &&f, std::string context) :
-		context(std::move(context)), func(std::move(f)) {
-		assert(!this->context.empty() && "Context cannot be empty!");
-	}
+	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context);
 
-	Task(std::function<void(void)> &&f, std::string context, uint32_t delay) :
-		delay(delay), context(std::move(context)), func(std::move(f)) {
-		assert(!this->context.empty() && "Context cannot be empty!");
-	}
+	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true);
 
-	virtual ~Task() = default;
-	void operator()() {
-		func();
-	}
+	~Task() = default;
 
-	void setEventId(uint64_t id) {
-		eventId = id;
-	}
+	uint64_t getId() {
+		if (id == 0) {
+			if (++LAST_EVENT_ID == 0) {
+				LAST_EVENT_ID = 1;
+			}
 
-	uint64_t getEventId() const {
-		return eventId;
+			id = LAST_EVENT_ID;
+		}
+
+		return id;
 	}
 
 	uint32_t getDelay() const {
 		return delay;
 	}
 
-	std::string getContext() const {
+	std::string_view getContext() const {
 		return context;
 	}
 
+	auto getTime() const {
+		return utime;
+	}
+
+	bool hasExpired() const {
+		return expiration != 0 && expiration < OTSYS_TIME();
+	}
+
+	bool isCycle() const {
+		return cycle;
+	}
+
+	bool isCanceled() const {
+		return func == nullptr;
+	}
+
+	void cancel() {
+		func = nullptr;
+	}
+
+	bool execute() const;
+
+private:
+	static std::atomic_uint_fast64_t LAST_EVENT_ID;
+
+	void updateTime() {
+		utime = OTSYS_TIME() + delay;
+	}
+
 	bool hasTraceableContext() const {
-		return std::set<std::string> {
+		const static auto tasksContext = std::unordered_set<std::string_view>({
 			"Creature::checkCreatureWalk",
 			"Decay::checkDecay",
+			"Dispatcher::asyncEvent",
 			"Game::checkCreatureAttack",
 			"Game::checkCreatures",
 			"Game::checkImbuements",
@@ -64,16 +90,33 @@ public:
 			"Raids::checkRaids",
 			"SpawnMonster::checkSpawnMonster",
 			"SpawnMonster::scheduleSpawn",
+			"SpawnMonster::startup",
 			"SpawnNpc::checkSpawnNpc",
 			"Webhook::run",
+			"Protocol::sendRecvMessageCallback",
 			"sendRecvMessageCallback",
-		}
-			.contains(context);
+		});
+
+		return tasksContext.contains(context);
 	}
 
-private:
+	struct Compare {
+		bool operator()(const std::shared_ptr<Task> &a, const std::shared_ptr<Task> &b) const {
+			return a->utime < b->utime;
+		}
+	};
+
+	std::function<void(void)> func = nullptr;
+	std::string context;
+
+	int64_t utime = 0;
+	int64_t expiration = 0;
+
+	uint64_t id = 0;
 	uint32_t delay = 0;
-	uint64_t eventId = 0;
-	std::string context {};
-	std::function<void(void)> func {};
+
+	bool cycle = false;
+	bool log = true;
+
+	friend class Dispatcher;
 };

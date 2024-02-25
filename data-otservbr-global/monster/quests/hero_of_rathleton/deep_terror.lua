@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"RathletonBossDeath",
+}
+
 monster.bosstiary = {
 	bossRaceId = 1087,
 	bossRace = RARITY_BANE,
@@ -75,7 +79,7 @@ monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 130, attack = 100 },
 	{ name = "combat", interval = 2000, chance = 32, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -400, radius = 8, effect = CONST_ME_CARNIPHILA, target = false },
 	{ name = "combat", interval = 2000, chance = 19, type = COMBAT_EARTHDAMAGE, minDamage = -300, maxDamage = -700, range = 7, radius = 3, shootEffect = CONST_ANI_POISON, effect = CONST_ME_CARNIPHILA, target = true },
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = -500, maxDamage = -1000, length = 7, spread = 3, effect = CONST_ME_GROUNDSHAKER, target = false },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = -500, maxDamage = -1000, length = 7, spread = 0, effect = CONST_ME_GROUNDSHAKER, target = false },
 }
 
 monster.defenses = {

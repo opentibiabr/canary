@@ -5,16 +5,26 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - 'src/**'
+      - "src/**"
+  merge_group:
   push:
     paths:
-      - 'src/**'
+      - "src/**"
     branches:
       - main
 env:
   CMAKE_BUILD_PARALLEL_LEVEL: 2
-  MAKEFLAGS: '-j 2'
+  MAKEFLAGS: "-j 2"
 jobs:
+  cancel-runs:
+    if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
   job:
     if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
     name: ${{ matrix.os }}-${{ matrix.buildtype }}
@@ -29,13 +39,6 @@ jobs:
             packages: >
               sccache
     steps:
-      - name: Cancel Previous Runs
-        if: github.ref != 'refs/heads/main'
-        uses: fkirc/skip-duplicate-actions@master
-        with:
-          concurrent_skipping: 'same_content'
-          cancel_others: true
-
       - name: Checkout repository
         uses: actions/checkout@main
 

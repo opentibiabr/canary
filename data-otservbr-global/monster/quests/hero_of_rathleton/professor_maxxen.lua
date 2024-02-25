@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"RathletonBossDeath",
+}
+
 monster.health = 90000
 monster.maxHealth = 90000
 monster.race = "venom"
@@ -85,8 +89,8 @@ monster.loot = {
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 180, attack = 200 },
 	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_ENERGYDAMAGE, minDamage = -250, maxDamage = -500, radius = 8, effect = CONST_ME_ENERGYHIT, target = false },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_MANADRAIN, minDamage = -450, maxDamage = -1500, length = 8, spread = 3, effect = CONST_ME_TELEPORT, target = false },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -450, maxDamage = -500, length = 8, spread = 3, effect = CONST_ME_FIREATTACK, target = false },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_MANADRAIN, minDamage = -450, maxDamage = -1500, length = 8, spread = 0, effect = CONST_ME_TELEPORT, target = false },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -450, maxDamage = -500, length = 8, spread = 0, effect = CONST_ME_FIREATTACK, target = false },
 	{ name = "war golem skill reducer", interval = 2000, chance = 22, target = false },
 	{ name = "war golem electrify", interval = 2000, chance = 16, range = 2, target = false },
 	{ name = "glooth fairy skill reducer", interval = 2000, chance = 20, target = false },

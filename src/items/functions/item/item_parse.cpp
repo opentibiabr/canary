@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -28,7 +28,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseRotateTo(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWrapContainer(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWrapableTo(tmpStrValue, valueAttribute, itemType);
-	ItemParse::parseMoveable(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseMovable(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseBlockProjectTile(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePickupable(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseFloorChange(tmpStrValue, valueAttribute, itemType);
@@ -75,6 +75,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseTransformOnUse(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePrimaryType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseHouseRelated(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseUnscriptedItems(tmpStrValue, attributeNode, valueAttribute, itemType);
 }
 
@@ -124,6 +125,11 @@ void ItemParse::parseDescription(const std::string &tmpStrValue, pugi::xml_attri
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "description") {
 		itemType.description = valueAttribute.as_string();
+		if (g_configManager().getBoolean(TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY, __FUNCTION__) && itemType.id == ITEM_GOLD_POUCH) {
+			auto pouchLimit = g_configManager().getNumber(LOOTPOUCH_MAXLIMIT, __FUNCTION__);
+			itemType.description = fmt::format("A bag with {} slots where you can hold your loots.", pouchLimit);
+			itemType.name = "loot pouch";
+		}
 	}
 }
 
@@ -198,10 +204,10 @@ void ItemParse::parseWrapableTo(const std::string &tmpStrValue, pugi::xml_attrib
 	}
 }
 
-void ItemParse::parseMoveable(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+void ItemParse::parseMovable(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	std::string stringValue = tmpStrValue;
-	if (stringValue == "moveable") {
-		itemType.moveable = valueAttribute.as_bool();
+	if (stringValue == "movable") {
+		itemType.movable = valueAttribute.as_bool();
 	}
 }
 
@@ -387,11 +393,20 @@ void ItemParse::parseTransform(const std::string &tmpStrValue, pugi::xml_attribu
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "transformequipto") {
 		itemType.transformEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
+		if (itemType.transformEquipTo == itemType.decayTo) {
+			g_logger().warn("[{}] item with id {} is transforming on equip to the same id of decay to '{}'", __FUNCTION__, itemType.id, itemType.decayTo);
+			itemType.decayTo = 0;
+		}
 		if (ItemType &transform = Item::items.getItemType(itemType.transformEquipTo);
 			transform.type == ITEM_TYPE_NONE) {
 			transform.type = itemType.type;
 		}
 	} else if (stringValue == "transformdeequipto") {
+		if (itemType.transformDeEquipTo == itemType.decayTo) {
+			g_logger().warn("[{}] item with id {} is transforming on de-equip to the same id of decay to '{}'", __FUNCTION__, itemType.id, itemType.decayTo);
+			itemType.decayTo = 0;
+		}
+
 		itemType.transformDeEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
 	} else if (stringValue == "transformto") {
 		itemType.transformToFree = pugi::cast<uint16_t>(valueAttribute.value());
@@ -564,7 +579,7 @@ void ItemParse::parseAbsorbPercent(const std::string &tmpStrValue, pugi::xml_att
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentfire") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (stringValue == "absorbpercentpoison") {
+	} else if (stringValue == "absorbpercentpoison" || stringValue == "absorbpercentearth") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "absorbpercentice") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
@@ -946,6 +961,13 @@ void ItemParse::parseTransformOnUse(const std::string_view &tmpStrValue, pugi::x
 void ItemParse::parsePrimaryType(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (tmpStrValue == "primarytype") {
 		itemType.m_primaryType = asLowerCaseString(valueAttribute.as_string());
+	}
+}
+
+void ItemParse::parseHouseRelated(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+	if (tmpStrValue == "usedbyhouseguests") {
+		g_logger().debug("[{}] item {}, used by guests {}", __FUNCTION__, itemType.id, valueAttribute.as_bool());
+		itemType.m_canBeUsedByGuests = valueAttribute.as_bool();
 	}
 }
 

@@ -1,3 +1,8 @@
+local config = {
+	bossName = "Anomaly",
+	bossPosition = Position(32271, 31249, 14),
+}
+
 local monsterTable = {
 	[1] = 72500,
 	[2] = 145000,
@@ -8,12 +13,20 @@ local monsterTable = {
 local chargedAnomalyDeath = CreatureEvent("ChargedAnomalyDeath")
 
 function chargedAnomalyDeath.onDeath(creature)
-	for storageValue, health in pairs(monsterTable) do
-		if Game.getStorageValue(14322) == storageValue then
-			local monster = Game.createMonster("anomaly", { x = 32271, y = 31249, z = 14 }, false, true)
-			monster:addHealth(-health)
-		end
+	if not creature then
+		return true
 	end
+
+	local healthRemove = monsterTable[Game.getStorageValue(GlobalStorage.HeartOfDestruction.ChargedAnomaly)]
+	if not healthRemove then
+		return true
+	end
+
+	local boss = Game.createMonster(config.bossName, config.bossPosition, false, true)
+	if boss then
+		boss:addHealth(-healthRemove)
+	end
+
 	return true
 end
 

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -15,6 +15,7 @@
 #include "game/game.hpp"
 #include "creatures/combat/spells.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
+#include "enums/account_group_type.hpp"
 
 Actions::Actions() = default;
 Actions::~Actions() = default;
@@ -310,6 +311,10 @@ ReturnValue Actions::internalUseItem(std::shared_ptr<Player> player, const Posit
 
 		// reward chest
 		if (container->getRewardChest() != nullptr && container->getParent()) {
+			if (!player->hasOtherRewardContainerOpen(container->getParent()->getContainer())) {
+				player->removeEmptyRewards();
+			}
+
 			std::shared_ptr<RewardChest> playerRewardChest = player->getRewardChest();
 			if (playerRewardChest->empty()) {
 				return RETURNVALUE_REWARDCHESTISEMPTY;
@@ -340,7 +345,7 @@ ReturnValue Actions::internalUseItem(std::shared_ptr<Player> player, const Posit
 		uint32_t corpseOwner = container->getCorpseOwner();
 		if (container->isRewardCorpse()) {
 			// only players who participated in the fight can open the corpse
-			if (player->getGroup()->id >= account::GROUP_TYPE_GAMEMASTER) {
+			if (player->getGroup()->id >= GROUP_TYPE_GAMEMASTER) {
 				return RETURNVALUE_YOUCANTOPENCORPSEADM;
 			}
 			auto reward = player->getReward(rewardId, false);
@@ -403,14 +408,14 @@ bool Actions::useItem(std::shared_ptr<Player> player, const Position &pos, uint8
 	}
 
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
-		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(ACTIONS_DELAY_INTERVAL));
+		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(ACTIONS_DELAY_INTERVAL, __FUNCTION__));
 	} else {
-		player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(ACTIONS_DELAY_INTERVAL));
+		player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(ACTIONS_DELAY_INTERVAL, __FUNCTION__));
 	}
 
 	// only send cooldown icon if it's an multi use item
 	if (it.isMultiUse()) {
-		player->sendUseItemCooldown(g_configManager().getNumber(ACTIONS_DELAY_INTERVAL));
+		player->sendUseItemCooldown(g_configManager().getNumber(ACTIONS_DELAY_INTERVAL, __FUNCTION__));
 	}
 	return true;
 }
@@ -456,13 +461,13 @@ bool Actions::useItemEx(std::shared_ptr<Player> player, const Position &fromPos,
 	}
 
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
-		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL));
+		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL, __FUNCTION__));
 	} else {
-		player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL));
+		player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL, __FUNCTION__));
 	}
 
 	if (it.isMultiUse()) {
-		player->sendUseItemCooldown(g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL));
+		player->sendUseItemCooldown(g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL, __FUNCTION__));
 	}
 	return true;
 }

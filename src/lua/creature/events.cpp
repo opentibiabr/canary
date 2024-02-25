@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -21,7 +21,7 @@ Events::Events() :
 
 bool Events::loadFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/events/events.xml";
+	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/events/events.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
@@ -30,18 +30,18 @@ bool Events::loadFromXml() {
 
 	info = {};
 
-	std::set<std::string> classes;
+	phmap::flat_hash_set<std::string> classes;
 	for (auto eventNode : doc.child("events").children()) {
 		if (!eventNode.attribute("enabled").as_bool()) {
 			continue;
 		}
 
 		const std::string &className = eventNode.attribute("class").as_string();
-		auto res = classes.insert(className);
+		auto res = classes.emplace(className);
 		if (res.second) {
 			const std::string &lowercase = asLowerCaseString(className);
 			const std::string &scriptName = lowercase + ".lua";
-			auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+			auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
 			if (scriptInterface.loadFile(coreFolder + "/events/scripts/" + scriptName, scriptName) != 0) {
 				g_logger().warn("{} - Can not load script: {}.lua", __FUNCTION__, lowercase);
 				g_logger().warn(scriptInterface.getLastLuaError());

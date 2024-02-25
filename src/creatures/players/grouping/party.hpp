@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -34,6 +34,14 @@ public:
 
 	std::shared_ptr<Player> getLeader() const {
 		return m_leader.lock();
+	}
+	std::vector<std::shared_ptr<Player>> getPlayers() const {
+		std::vector<std::shared_ptr<Player>> players;
+		for (auto &member : memberList) {
+			players.push_back(member);
+		}
+		players.push_back(getLeader());
+		return players;
 	}
 	std::vector<std::shared_ptr<Player>> getMembers() {
 		return memberList;

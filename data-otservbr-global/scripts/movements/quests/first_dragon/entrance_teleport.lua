@@ -4,7 +4,6 @@ local UniqueTable = {
 		storage = Storage.FirstDragon.DragonCounter,
 		value = 200,
 		range = 10,
-		timer = Storage.FirstDragon.TazhadurTimer,
 		newPos = { x = 32015, y = 32466, z = 8 },
 		bossName = "Tazhadur",
 		bossPos = { x = 32018, y = 32465, z = 8 },
@@ -14,7 +13,6 @@ local UniqueTable = {
 		storage = Storage.FirstDragon.ChestCounter,
 		value = 5,
 		range = 10,
-		timer = Storage.FirstDragon.KalyassaTimer,
 		newPos = { x = 32078, y = 32456, z = 8 },
 		bossName = "Kalyassa",
 		bossPos = { x = 32079, y = 32459, z = 8 },
@@ -24,7 +22,6 @@ local UniqueTable = {
 		storage = Storage.FirstDragon.SecretsCounter,
 		value = 3,
 		range = 10,
-		timer = Storage.FirstDragon.ZorvoraxTimer,
 		newPos = { x = 32008, y = 32396, z = 8 },
 		bossName = "Zorvorax",
 		bossPos = { x = 32015, y = 32396, z = 8 },
@@ -34,7 +31,6 @@ local UniqueTable = {
 		storage = Storage.FirstDragon.GelidrazahAccess,
 		value = 1,
 		range = 10,
-		timer = Storage.FirstDragon.GelidrazahTimer,
 		newPos = { x = 32076, y = 32402, z = 8 },
 		bossName = "Gelidrazah The Frozen",
 		bossPos = { x = 32078, y = 32400, z = 8 },
@@ -53,7 +49,7 @@ function entranceTeleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if roomIsOccupied(setting.bossPos, setting.range, setting.range) then
+	if roomIsOccupied(setting.bossPos, false, setting.range, setting.range) then
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:teleportTo(fromPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -61,7 +57,7 @@ function entranceTeleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(setting.timer) >= os.time() then
+	if not player:canFightBoss(setting.bossName) then
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:teleportTo(fromPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -87,8 +83,8 @@ function entranceTeleport.onStepIn(creature, item, position, fromPosition)
 		player:teleportTo(setting.newPos)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:say("You have ten minutes to kill and loot this boss. Otherwise you will lose that chance and will be kicked out.", TALKTYPE_MONSTER_SAY)
-		player:setStorageValue(setting.timer, os.time() + 2 * 3600)
-		addEvent(clearBossRoom, 60 * 30 * 1000, player.uid, monster.uid, setting.bossPos, setting.range, fromPosition)
+		player:setBossCooldown(setting.bossName, os.time() + 2 * 3600)
+		addEvent(clearBossRoom, 60 * 30 * 1000, player.uid, setting.bossPos, false, setting.range, setting.range, fromPosition)
 		return true
 	end
 	return true

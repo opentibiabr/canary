@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -11,6 +11,7 @@
 
 #include "creatures/players/player.hpp"
 #include "lua/functions/core/game/modal_window_functions.hpp"
+#include "game/modal_window/modal_window.hpp"
 
 // ModalWindow
 int ModalWindowFunctions::luaModalWindowCreate(lua_State* L) {
@@ -204,9 +205,9 @@ int ModalWindowFunctions::luaModalWindowSetPriority(lua_State* L) {
 
 int ModalWindowFunctions::luaModalWindowSendToPlayer(lua_State* L) {
 	// modalWindow:sendToPlayer(player)
-	std::shared_ptr<Player> player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;
 	}
 

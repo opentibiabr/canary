@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,7 +12,7 @@
 #include "lib/di/container.hpp"
 
 LogWithSpdLog::LogWithSpdLog() {
-	setLevel("debug");
+	setLevel("info");
 	spdlog::set_pattern("[%Y-%d-%m %H:%M:%S.%e] [%^%l%$] %v ");
 
 #ifdef DEBUG_LOG
@@ -25,7 +25,7 @@ Logger &LogWithSpdLog::getInstance() {
 }
 
 void LogWithSpdLog::setLevel(const std::string &name) {
-	info("Setting log level to {}.", name);
+	debug("Setting log level to: {}.", name);
 	auto level = spdlog::level::from_str(name);
 	spdlog::set_level(level);
 }
@@ -35,6 +35,6 @@ std::string LogWithSpdLog::getLevel() const {
 	return std::string { level.begin(), level.end() };
 }
 
-void LogWithSpdLog::log(const std::string lvl, const fmt::basic_string_view<char> msg) const {
+void LogWithSpdLog::log(const std::string &lvl, const fmt::basic_string_view<char> msg) const {
 	spdlog::log(spdlog::level::from_str(lvl), msg);
 }

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -21,7 +21,10 @@ class WeaponMelee;
 class WeaponDistance;
 class WeaponWand;
 
-using Weapon_ptr = std::unique_ptr<Weapon>;
+struct LuaVariant;
+
+using WeaponUnique_ptr = std::unique_ptr<Weapon>;
+using WeaponShared_ptr = std::shared_ptr<Weapon>;
 
 class Weapons final : public Scripts {
 public:
@@ -36,16 +39,16 @@ public:
 		return inject<Weapons>();
 	}
 
-	const Weapon* getWeapon(std::shared_ptr<Item> item) const;
+	const WeaponShared_ptr getWeapon(std::shared_ptr<Item> item) const;
 
 	static int32_t getMaxMeleeDamage(int32_t attackSkill, int32_t attackValue);
 	static int32_t getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t attackValue, float attackFactor, bool isMelee);
 
-	bool registerLuaEvent(Weapon* event, bool fromXML = false);
+	bool registerLuaEvent(WeaponShared_ptr event, bool fromXML = false);
 	void clear(bool isFromXML = false);
 
 private:
-	std::map<uint32_t, Weapon*> weapons;
+	std::map<uint32_t, WeaponShared_ptr> weapons;
 };
 
 constexpr auto g_weapons = Weapons::getInstance;

@@ -10,6 +10,10 @@ function MonsterType:generateLootRoll(config, resultTable)
 	local factor = config.factor or 1.0
 	local uniqueItems = {}
 
+	if self:isRewardBoss() then
+		factor = factor * SCHEDULE_BOSS_LOOT_RATE / 100
+	end
+
 	local result = resultTable or {}
 	for _, item in ipairs(monsterLoot) do
 		local iType = ItemType(item.itemId)
@@ -34,7 +38,10 @@ function MonsterType:generateLootRoll(config, resultTable)
 		end
 
 		local count = 0
-		if iType:isStackable() then
+		local charges = iType:getCharges()
+		if charges > 0 then
+			count = charges
+		elseif iType:isStackable() then
 			local maxc, minc = item.maxCount or 1, item.minCount or 1
 			count = math.max(0, randValue % (maxc - minc + 1)) + minc
 		else

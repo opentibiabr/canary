@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"TireczDeath",
+}
+
 monster.health = 25000
 monster.maxHealth = 25000
 monster.race = "blood"
@@ -71,7 +75,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_FIREDAMAGE, minDamage = -120, maxDamage = -460, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -290, radius = 3, effect = CONST_ME_BLOCKHIT, target = false },
 	{ name = "combat", interval = 3000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -80, maxDamage = -345, length = 8, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -370, radius = 7, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -370, radius = 7, effect = CONST_ME_BLOCKHIT, target = false },
 }
 
 monster.defenses = {

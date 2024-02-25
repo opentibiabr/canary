@@ -20,15 +20,6 @@ local config = {
 
 local currentEvent = nil
 
-local function RoomIsOccupied(centerPosition, rangeX, rangeY)
-	local spectators = Game.getSpectators(config.centerPosition, false, true, config.rangeX, config.rangeX, config.rangeY, config.rangeY)
-	if #spectators ~= 0 then
-		return true
-	end
-
-	return false
-end
-
 local function clearRoomDrume(centerPosition, rangeX, rangeY, resetGlobalStorage)
 	local spectators, spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
 	for i = 1, #spectators do
@@ -52,11 +43,14 @@ function drumeAction.onUse(player, item, fromPosition, target, toPosition, isHot
 	if player:getPosition() ~= config.firstPlayerPosition then
 		return false
 	end
-	if RoomIsOccupied(config.centerPosition, config.rangeX, config.rangeY) then
+
+	local spectators = Game.getSpectators(config.centerPosition, false, true, config.rangeX, config.rangeX, config.rangeY, config.rangeY)
+	if #spectators ~= 0 then
 		player:sendCancelMessage("There's someone already in the skirmish.")
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return true
 	end
+
 	local tempPos, tempTile, tempCreature
 	local players = {}
 	for x = config.firstPlayerPosition.x, config.firstPlayerPosition.x + 4 do
@@ -73,8 +67,8 @@ function drumeAction.onUse(player, item, fromPosition, target, toPosition, isHot
 		return false
 	end
 	for _, pi in pairs(players) do
-		if pi:getStorageValue(Storage.TheOrderOfTheLion.Drume.Timer) > os.time() then
-			player:sendCancelMessage("Someone of your team has already fought in the skirmish in the last 20h.")
+		if not pi:canFightBoss("Drume") then
+			player:sendCancelMessage("Someone of your team has already fought in the skirmish in the last 10h.")
 			player:getPosition():sendMagicEffect(CONST_ME_POFF)
 			return true
 		end
@@ -107,7 +101,7 @@ function drumeAction.onUse(player, item, fromPosition, target, toPosition, isHot
 		totalUsurper = totalUsurper + 1
 	end
 	for _, pi in pairs(players) do
-		pi:setStorageValue(Storage.TheOrderOfTheLion.Drume.Timer, os.time() + (configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN)))
+		pi:setBossCooldown("Drume", os.time() + (configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN)))
 		pi:teleportTo(config.newPosition)
 		pi:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have " .. config.timeToKill .. " minutes to defeat Drume.")
 	end
@@ -117,8 +111,8 @@ function drumeAction.onUse(player, item, fromPosition, target, toPosition, isHot
 	currentEvent = addEvent(clearRoomDrume, config.timeToKill * 60 * 1000, config.centerPosition, config.rangeX, config.rangeY, resetGlobalStorage)
 	config.newPosition:sendMagicEffect(CONST_ME_TELEPORT)
 	toPosition:sendMagicEffect(CONST_ME_POFF)
-	Game.setStorageValue(Storage.TheOrderOfTheLion.Drume.TotalLionCommanders, totalLion)
-	Game.setStorageValue(Storage.TheOrderOfTheLion.Drume.TotalUsurperCommanders, totalUsurper)
+	Game.setStorageValue(GlobalStorage.TheOrderOfTheLion.Drume.TotalLionCommanders, totalLion)
+	Game.setStorageValue(GlobalStorage.TheOrderOfTheLion.Drume.TotalUsurperCommanders, totalUsurper)
 	return true
 end
 

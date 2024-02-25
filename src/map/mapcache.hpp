@@ -14,8 +14,6 @@
 
 class Map;
 class Tile;
-class BasicItem;
-class BasicTile;
 class Item;
 class Position;
 class FileStream;
@@ -83,9 +81,10 @@ private:
 
 struct Floor {
 	explicit Floor(uint8_t z) :
-		z(z) {};
+		z(z) { }
 
 	std::shared_ptr<Tile> getTile(uint16_t x, uint16_t y) const {
+		std::shared_lock sl(mutex);
 		return tiles[x & FLOOR_MASK][y & FLOOR_MASK].first;
 	}
 
@@ -94,6 +93,7 @@ struct Floor {
 	}
 
 	std::shared_ptr<BasicTile> getTileCache(uint16_t x, uint16_t y) const {
+		std::shared_lock sl(mutex);
 		return tiles[x & FLOOR_MASK][y & FLOOR_MASK].second;
 	}
 
@@ -105,8 +105,13 @@ struct Floor {
 		return z;
 	}
 
+	auto &getMutex() const {
+		return mutex;
+	}
+
 private:
 	std::pair<std::shared_ptr<Tile>, std::shared_ptr<BasicTile>> tiles[FLOOR_SIZE][FLOOR_SIZE] = {};
+	mutable std::shared_mutex mutex;
 	uint8_t z { 0 };
 };
 

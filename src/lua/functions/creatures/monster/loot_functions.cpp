@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -259,7 +259,13 @@ int LootFunctions::luaLootAddChildLoot(lua_State* L) {
 	// loot:addChildLoot(loot)
 	const auto loot = getUserdataShared<Loot>(L, 1);
 	if (loot) {
-		loot->lootBlock.childLoot.push_back(getUserdata<Loot>(L, 2)->lootBlock);
+		const auto childLoot = getUserdata<Loot>(L, 2);
+		if (childLoot) {
+			loot->lootBlock.childLoot.push_back(childLoot->lootBlock);
+			pushBoolean(L, true);
+		} else {
+			pushBoolean(L, false);
+		}
 	} else {
 		lua_pushnil(L);
 	}

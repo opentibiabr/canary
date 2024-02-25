@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -23,7 +23,7 @@ public:
 	LuaScriptInterface &operator=(const LuaScriptInterface &) = delete;
 
 	virtual bool initState();
-	bool reInitState();
+	virtual bool reInitState();
 
 	int32_t loadFile(const std::string &file, const std::string &scriptName);
 
@@ -73,6 +73,8 @@ protected:
 	std::map<int32_t, std::string> cacheFiles;
 
 private:
+	std::string getMetricsScope();
+
 	std::string lastLuaError;
 	std::string interfaceName;
 	std::string loadingFile;

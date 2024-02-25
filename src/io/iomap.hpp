@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -17,6 +17,7 @@
 #include "map/map.hpp"
 #include "creatures/monsters/spawns/spawn_monster.hpp"
 #include "creatures/npcs/spawns/spawn_npc.hpp"
+#include "game/zones/zone.hpp"
 
 class IOMap {
 public:
@@ -31,11 +32,27 @@ public:
 		if (map->monsterfile.empty()) {
 			// OTBM file doesn't tell us about the monsterfile,
 			// Lets guess it is mapname-monster.xml.
-			map->monsterfile = g_configManager().getString(MAP_NAME);
+			map->monsterfile = g_configManager().getString(MAP_NAME, __FUNCTION__);
 			map->monsterfile += "-monster.xml";
 		}
 
 		return map->spawnsMonster.loadFromXML(map->monsterfile);
+	}
+
+	/**
+	 * Load main map zones
+	 * \param map Is the map class
+	 * \returns true if the zones spawn map was loaded successfully
+	 */
+	static bool loadZones(Map* map) {
+		if (map->zonesfile.empty()) {
+			// OTBM file doesn't tell us about the zonesfile,
+			// Lets guess it is mapname-zone.xml.
+			map->zonesfile = g_configManager().getString(MAP_NAME, __FUNCTION__);
+			map->zonesfile += "-zones.xml";
+		}
+
+		return Zone::loadFromXML(map->zonesfile);
 	}
 
 	/**
@@ -47,7 +64,7 @@ public:
 		if (map->npcfile.empty()) {
 			// OTBM file doesn't tell us about the npcfile,
 			// Lets guess it is mapname-npc.xml.
-			map->npcfile = g_configManager().getString(MAP_NAME);
+			map->npcfile = g_configManager().getString(MAP_NAME, __FUNCTION__);
 			map->npcfile += "-npc.xml";
 		}
 
@@ -63,7 +80,7 @@ public:
 		if (map->housefile.empty()) {
 			// OTBM file doesn't tell us about the housefile,
 			// Lets guess it is mapname-house.xml.
-			map->housefile = g_configManager().getString(MAP_NAME);
+			map->housefile = g_configManager().getString(MAP_NAME, __FUNCTION__);
 			map->housefile += "-house.xml";
 		}
 
@@ -83,6 +100,21 @@ public:
 			map->monsterfile += "-monster.xml";
 		}
 		return map->spawnsMonsterCustomMaps[customMapIndex].loadFromXML(map->monsterfile);
+	}
+
+	/**
+	 * Load custom  map zones
+	 * \param map Is the map class
+	 * \returns true if the zones spawn map custom was loaded successfully
+	 */
+	static bool loadZonesCustom(Map* map, const std::string &mapName, int customMapIndex) {
+		if (map->zonesfile.empty()) {
+			// OTBM file doesn't tell us about the zonesfile,
+			// Lets guess it is mapname-zones.xml.
+			map->zonesfile = mapName;
+			map->zonesfile += "-zones.xml";
+		}
+		return Zone::loadFromXML(map->zonesfile, customMapIndex);
 	}
 
 	/**

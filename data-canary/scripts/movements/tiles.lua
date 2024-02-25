@@ -33,7 +33,7 @@ function tile.onStepIn(creature, item, position, fromPosition)
 			local depotItem = playerPosition:getTile():getItemByType(ITEM_TYPE_DEPOT)
 			if depotItem ~= nil then
 				local depotItems = 0
-				for id = 1, configManager.getNumber("depotBoxes") do
+				for id = 1, configManager.getNumber(configKeys.DEPOT_BOXES) do
 					depotItems = depotItems + player:getDepotChest(id, true):getItemHoldingCount()
 				end
 				player:sendTextMessage(MESSAGE_FAILURE, "Your depot contains " .. depotItems .. " item" .. (depotItems > 1 and "s." or ".") .. "\

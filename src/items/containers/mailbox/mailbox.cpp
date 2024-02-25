@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,6 +12,8 @@
 #include "items/containers/mailbox/mailbox.hpp"
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
+#include "game/scheduling/save_manager.hpp"
+#include "map/spectators.hpp"
 
 ReturnValue Mailbox::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, std::shared_ptr<Creature>) {
 	std::shared_ptr<Item> item = thing->getItem();
@@ -81,12 +83,8 @@ bool Mailbox::sendItem(std::shared_ptr<Item> item) const {
 	}
 
 	if (item && item->getContainer() && item->getTile()) {
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, item->getTile()->getPosition(), false, true);
-		for (auto spectator : spectators) {
-			if (spectator && spectator->getPlayer()) {
-				spectator->getPlayer()->autoCloseContainers(item->getContainer());
-			}
+		for (const auto &spectator : Spectators().find<Player>(item->getTile()->getPosition())) {
+			spectator->getPlayer()->autoCloseContainers(item->getContainer());
 		}
 	}
 
@@ -110,7 +108,7 @@ bool Mailbox::sendItem(std::shared_ptr<Item> item) const {
 			if (player->isOnline()) {
 				player->onReceiveMail();
 			} else {
-				IOLoginData::savePlayer(player);
+				g_saveManager().savePlayer(player);
 			}
 			return true;
 		}
@@ -140,5 +138,5 @@ bool Mailbox::getReceiver(std::shared_ptr<Item> item, std::string &name) const {
 }
 
 bool Mailbox::canSend(std::shared_ptr<Item> item) {
-	return item->getID() == ITEM_PARCEL || item->getID() == ITEM_LETTER;
+	return !item->hasOwner() && (item->getID() == ITEM_PARCEL || item->getID() == ITEM_LETTER);
 }

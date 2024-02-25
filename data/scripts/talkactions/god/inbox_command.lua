@@ -5,7 +5,7 @@ function inboxCommand.onSay(player, words, param)
 	player:getPosition():sendMagicEffect(CONST_ME_TUTORIALSQUARE)
 	local target = Creature(param[1])
 	if target then
-		local inbox = target:getSlotItem(CONST_SLOT_STORE_INBOX)
+		local inbox = target:getStoreInbox()
 		local inboxSize = inbox:getSize()
 		if inbox and inboxSize > 0 then
 			if param[2] == "remove" then
@@ -20,7 +20,7 @@ function inboxCommand.onSay(player, words, param)
 					end
 				end
 			elseif param[2] == "add" then
-				inbox:addItem(tonumber(param[3]), 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
+				target:addItemStoreInbox(tonumber(param[3]), 1, true, false)
 				player:say(tonumber(param[3]) .. " added")
 			end
 		end
@@ -28,7 +28,7 @@ function inboxCommand.onSay(player, words, param)
 		player:sendCancelMessage("Creature not found.")
 	end
 
-	return false
+	return true
 end
 
 inboxCommand:separator(" ")

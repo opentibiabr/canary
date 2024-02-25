@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -80,7 +80,7 @@ ReturnValue HouseTile::queryAdd(int32_t index, const std::shared_ptr<Thing> &thi
 		}
 	} else if (thing->getItem() && actor) {
 		std::shared_ptr<Player> actorPlayer = actor->getPlayer();
-		if (house && (!house->isInvited(actorPlayer) || house->getHouseAccessLevel(actorPlayer) == HOUSE_GUEST) && g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
+		if (house && (!house->isInvited(actorPlayer) || house->getHouseAccessLevel(actorPlayer) == HOUSE_GUEST) && g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS, __FUNCTION__)) {
 			return RETURNVALUE_CANNOTTHROW;
 		}
 	}
@@ -120,12 +120,12 @@ ReturnValue HouseTile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	if (actor && g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
+	if (actor && g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS, __FUNCTION__)) {
 		std::shared_ptr<Player> actorPlayer = actor->getPlayer();
 		if (house && !house->isInvited(actorPlayer)) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		} else if (house && house->getHouseAccessLevel(actorPlayer) == HOUSE_GUEST) {
-			return RETURNVALUE_NOTMOVEABLE;
+			return RETURNVALUE_NOTMOVABLE;
 		}
 	}
 	return Tile::queryRemove(thing, count, flags);

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -115,15 +115,6 @@ enum ModuleType_t {
 	MODULE_TYPE_NONE,
 };
 
-enum LuaVariantType_t {
-	VARIANT_NONE,
-
-	VARIANT_NUMBER,
-	VARIANT_POSITION,
-	VARIANT_TARGETPOSITION,
-	VARIANT_STRING,
-};
-
 enum ErrorCode_t {
 	LUA_ERROR_PLAYER_NOT_FOUND,
 	LUA_ERROR_CREATURE_NOT_FOUND,
@@ -213,25 +204,4 @@ enum BugReportType_t : uint8_t {
 	BUG_CATEGORY_TYPO = 1,
 	BUG_CATEGORY_TECHNICAL = 2,
 	BUG_CATEGORY_OTHER = 3
-};
-
-// Struct
-struct LuaVariant {
-	LuaVariantType_t type = VARIANT_NONE;
-	std::string text;
-	std::string instantName;
-	std::string runeName;
-	Position pos;
-	uint32_t number = 0;
-};
-
-struct LuaTimerEventDesc {
-	int32_t scriptId = -1;
-	std::string scriptName;
-	int32_t function = -1;
-	std::list<int32_t> parameters;
-	uint32_t eventId = 0;
-
-	LuaTimerEventDesc() = default;
-	LuaTimerEventDesc(LuaTimerEventDesc &&other) = default;
 };

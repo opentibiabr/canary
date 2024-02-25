@@ -9,20 +9,20 @@ local crystals = {
 	[8] = { fromPosition = Position(33386, 31470, 14), toPosition = Position(33388, 31472, 14), crystalPosition = Position(33387, 31471, 14), globalStorage = GlobalStorage.FerumbrasAscendant.Crystals.Crystal8 },
 }
 
+local config = AscendingFerumbrasConfig
+
 local riftInvaderDeath = CreatureEvent("RiftInvaderDeath")
 function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekiller, lasthitunjustified, mostdamageunjustified)
-	if not targetMonster or targetMonster:getName():lower() ~= "rift invader" then
+	local pos = Position(33392 + math.random(-10, 10), 31473 + math.random(-10, 10), 14)
+	local name = creature:getName():lower()
+	if name ~= "rift invader" then
 		return true
 	end
-
-	local targetMonster = creature:getMonster()
-	local pos = Position(33392 + math.random(-10, 10), 31473 + math.random(-10, 10), 14)
-	local name = targetMonster:getName():lower()
 	Game.createMonster(name, pos)
 
 	for i = 1, #crystals do
 		local crystal = crystals[i]
-		if isInRange(targetMonster:getPosition(), crystal.fromPosition, crystal.toPosition) then
+		if creature:getPosition():isInRange(crystal.fromPosition, crystal.toPosition) then
 			if Game.getStorageValue(crystal.globalStorage) > 8 then
 				local item = Tile(crystal.crystalPosition):getItemById(14955)
 				if not item then
@@ -32,7 +32,7 @@ function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 				Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Crystals.AllCrystals, Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Crystals.AllCrystals) + 1)
 			end
 			if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Crystals.AllCrystals) == 8 then
-				local creature = Tile(Position(33392, 31473, 14)):getTopCreature()
+				local creature = Tile(config.bossPos):getTopCreature()
 				creature:say("NOOOOOOOOOOO!", TALKTYPE_MONSTER_YELL)
 				creature:say("FERUMBRAS BURSTS INTO SOUL SPLINTERS!", TALKTYPE_MONSTER_YELL, nil, nil, Position(33392, 31475, 14))
 				creature:remove()
@@ -48,12 +48,17 @@ function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 		end
 	end
 
-	local vortex = Game.createItem(22455, 1, creature:getPosition())
+	local pool = Tile(creature:getPosition()):getItemById(2886)
+	if pool then
+		pool:remove()
+	end
+
+	local vortex = Game.createItem(config.vortex, 1, creature:getPosition())
 	if vortex then
-		addEvent(function(pos)
-			local tile = Tile(pos)
+		addEvent(function(creaturePos)
+			local tile = Tile(creaturePos)
 			if tile then
-				local vortexItem = tile:getItemById(22455)
+				local vortexItem = tile:getItemById(config.vortex)
 				if vortexItem then
 					vortexItem:remove(1)
 				end

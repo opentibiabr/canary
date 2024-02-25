@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -24,7 +24,9 @@ class Player;
 class Thing;
 class Guild;
 class Zone;
-class KVStore;
+class KV;
+
+struct LuaVariant;
 
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)
 
@@ -63,9 +65,17 @@ public:
 		return static_cast<T>(static_cast<int64_t>(lua_tonumber(L, arg)));
 	}
 	template <typename T>
-	static typename std::enable_if<std::is_integral<T>::value || std::is_floating_point<T>::value, T>::type
-	getNumber(lua_State* L, int32_t arg) {
-		return static_cast<T>(lua_tonumber(L, arg));
+	static typename std::enable_if<std::is_integral<T>::value || std::is_floating_point<T>::value, T>::type getNumber(lua_State* L, int32_t arg) {
+		auto number = lua_tonumber(L, arg);
+		// If there is overflow, we return the value 0
+		if constexpr (std::is_integral_v<T> && std::is_unsigned_v<T>) {
+			if (number < 0) {
+				g_logger().debug("[{}] overflow, setting to default signed value (0)", __FUNCTION__);
+				number = T(0);
+			}
+		}
+
+		return static_cast<T>(number);
 	}
 	template <typename T>
 	static T getNumber(lua_State* L, int32_t arg, T defaultValue) {
@@ -101,6 +111,13 @@ public:
 
 	static std::string getFormatedLoggerMessage(lua_State* L);
 	static std::string getString(lua_State* L, int32_t arg);
+	static std::string getString(lua_State* L, int32_t arg, std::string defaultValue) {
+		const auto parameters = lua_gettop(L);
+		if (parameters == 0 || arg > parameters) {
+			return defaultValue;
+		}
+		return getString(L, arg);
+	}
 	static CombatDamage getCombatDamage(lua_State* L);
 	static Position getPosition(lua_State* L, int32_t arg, int32_t &stackpos);
 	static Position getPosition(lua_State* L, int32_t arg);
@@ -166,6 +183,11 @@ public:
 	static int protectedCall(lua_State* L, int nargs, int nresults);
 
 	static ScriptEnvironment* getScriptEnv() {
+		if (scriptEnvIndex < 0 || scriptEnvIndex >= 16) {
+			g_logger().error("[{}]: scriptEnvIndex out of bounds!", __FUNCTION__);
+			return nullptr;
+		}
+
 		assert(scriptEnvIndex >= 0 && scriptEnvIndex < 16);
 		return scriptEnv + scriptEnvIndex;
 	}
@@ -175,6 +197,11 @@ public:
 	}
 
 	static void resetScriptEnv() {
+		if (scriptEnvIndex < 0) {
+			g_logger().error("[{}]: scriptEnvIndex out of bounds!", __FUNCTION__);
+			return;
+		}
+
 		assert(scriptEnvIndex >= 0);
 		scriptEnv[scriptEnvIndex--].resetEnv();
 	}
@@ -219,4 +246,5 @@ protected:
 
 	static ScriptEnvironment scriptEnv[16];
 	static int32_t scriptEnvIndex;
+	static int validateDispatcherContext(std::string_view fncName);
 };

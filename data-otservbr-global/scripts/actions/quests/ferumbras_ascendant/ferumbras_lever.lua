@@ -1,30 +1,5 @@
-local config = {
-	bossName = "Ascending Ferumbras",
-	summonName = "Rift Invader",
-	bossPos = Position(33392, 31473, 14),
-	centerRoom = Position(33392, 31473, 14), -- Center Room
-	exitPosition = Position(33266, 31479, 14), -- Exit Position
-	newPos = Position(33392, 31479, 14), -- Player Position on room
-	playerPositions = {
-		Position(33269, 31477, 14),
-		Position(33269, 31478, 14),
-		Position(33269, 31479, 14),
-		Position(33269, 31480, 14),
-		Position(33269, 31481, 14),
-		Position(33270, 31477, 14),
-		Position(33270, 31478, 14),
-		Position(33270, 31479, 14),
-		Position(33270, 31480, 14),
-		Position(33270, 31481, 14),
-		Position(33271, 31477, 14),
-		Position(33271, 31478, 14),
-		Position(33271, 31479, 14),
-		Position(33271, 31480, 14),
-		Position(33271, 31481, 14),
-	},
-	range = 20,
-	time = 30, -- time in minutes to remove the player
-}
+local config = AscendingFerumbrasConfig
+
 local function clearFerumbrasRoom()
 	local spectators = Game.getSpectators(config.bossPos, false, false, 20, 20, 20, 20)
 	for i = 1, #spectators do
@@ -42,7 +17,7 @@ end
 local ferumbrasAscendantLever = Action()
 function ferumbrasAscendantLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 8911 then
-		if player:getPosition() ~= Position(33270, 31477, 14) then
+		if player:getPosition() ~= config.leverPos then
 			return true
 		end
 
@@ -50,8 +25,8 @@ function ferumbrasAscendantLever.onUse(player, item, fromPosition, target, toPos
 			for y = 31477, 31481 do
 				local playerTile = Tile(Position(x, y, 14)):getTopCreature()
 				if playerTile and playerTile:isPlayer() then
-					if playerTile:getStorageValue(Storage.FerumbrasAscension.FerumbrasTimer) > os.time() then
-						player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait 5 days to face Ferumbras again!")
+					if not playerTile:canFightBoss("Ferumbras Mortal Shell") then
+						player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You or a member in your team have to wait %d days to face Ferumbras again!", config.days))
 						item:transform(8912)
 						return true
 					end
@@ -83,15 +58,16 @@ function ferumbrasAscendantLever.onUse(player, item, fromPosition, target, toPos
 					playerTile:getPosition():sendMagicEffect(CONST_ME_POFF)
 					playerTile:teleportTo(config.newPos)
 					playerTile:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-					playerTile:setStorageValue(Storage.FerumbrasAscension.FerumbrasTimer, os.time() + 280 * 60 * 3600) -- 14 days
-					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have 30 minutes to kill and loot this boss. Otherwise you will lose that chance and will be kicked out.")
-					addEvent(clearFerumbrasRoom, 60 * config.time * 1000, player:getId(), config.centerRoom, config.range, config.range, config.exitPosition)
+					playerTile:setBossCooldown("Ferumbras Mortal Shell", os.time() + config.days * 24 * 3600)
+					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have %d minutes to kill and loot this boss. Otherwise you will lose that chance and will be kicked out.", config.time))
+					addEvent(clearFerumbrasRoom, config.time * 60 * 1000, player:getId(), config.centerRoom, config.range, config.range, config.exitPosition)
 
-					for b = 1, 10 do
+					for b = 1, config.maxSummon do
 						local xrand = math.random(-10, 10)
 						local yrand = math.random(-10, 10)
 						local position = Position(33392 + xrand, 31473 + yrand, 14)
-						if Game.createMonster("rift invader", position) then
+						if not Game.createMonster(config.summonName, position) then
+							logger.error("[ferumbrasAscendantLever.onUse] can't create monster {}, on position {}", config.summonName, position:toString())
 						end
 					end
 

@@ -10,7 +10,6 @@
 #include "pch.hpp"
 
 #include "creatures/creature.hpp"
-#include "map/mapcache.hpp"
 #include "qtreenode.hpp"
 
 bool QTreeLeafNode::newLeaf = false;
@@ -71,7 +70,7 @@ QTreeLeafNode* QTreeNode::getBestLeaf(uint32_t x, uint32_t y, uint32_t level) {
 	return tempLeaf;
 }
 
-void QTreeLeafNode::addCreature(std::shared_ptr<Creature> c) {
+void QTreeLeafNode::addCreature(const std::shared_ptr<Creature> &c) {
 	creature_list.push_back(c);
 
 	if (c->getPlayer()) {
@@ -81,12 +80,22 @@ void QTreeLeafNode::addCreature(std::shared_ptr<Creature> c) {
 
 void QTreeLeafNode::removeCreature(std::shared_ptr<Creature> c) {
 	auto iter = std::find(creature_list.begin(), creature_list.end(), c);
+	if (iter == creature_list.end()) {
+		g_logger().error("[{}]: Creature not found in creature_list!", __FUNCTION__);
+		return;
+	}
+
 	assert(iter != creature_list.end());
 	*iter = creature_list.back();
 	creature_list.pop_back();
 
 	if (c->getPlayer()) {
 		iter = std::find(player_list.begin(), player_list.end(), c);
+		if (iter == player_list.end()) {
+			g_logger().error("[{}]: Player not found in player_list!", __FUNCTION__);
+			return;
+		}
+
 		assert(iter != player_list.end());
 		*iter = player_list.back();
 		player_list.pop_back();

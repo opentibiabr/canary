@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -41,6 +41,7 @@ private:
 		registerMethod(L, "Player", "charmExpansion", PlayerFunctions::luaPlayercharmExpansion);
 		registerMethod(L, "Player", "getCharmMonsterType", PlayerFunctions::luaPlayergetCharmMonsterType);
 
+		registerMethod(L, "Player", "isMonsterPrey", PlayerFunctions::luaPlayerisMonsterPrey);
 		registerMethod(L, "Player", "getPreyCards", PlayerFunctions::luaPlayerGetPreyCards);
 		registerMethod(L, "Player", "getPreyLootPercentage", PlayerFunctions::luaPlayerGetPreyLootPercentage);
 		registerMethod(L, "Player", "getPreyExperiencePercentage", PlayerFunctions::luaPlayerGetPreyExperiencePercentage);
@@ -130,6 +131,7 @@ private:
 
 		registerMethod(L, "Player", "getVocation", PlayerFunctions::luaPlayerGetVocation);
 		registerMethod(L, "Player", "setVocation", PlayerFunctions::luaPlayerSetVocation);
+		registerMethod(L, "Player", "isPromoted", PlayerFunctions::luaPlayerIsPromoted);
 
 		registerMethod(L, "Player", "getSex", PlayerFunctions::luaPlayerGetSex);
 		registerMethod(L, "Player", "setSex", PlayerFunctions::luaPlayerSetSex);
@@ -174,6 +176,7 @@ private:
 
 		registerMethod(L, "Player", "addItem", PlayerFunctions::luaPlayerAddItem);
 		registerMethod(L, "Player", "addItemEx", PlayerFunctions::luaPlayerAddItemEx);
+		registerMethod(L, "Player", "addItemStash", PlayerFunctions::luaPlayerAddItemStash);
 		registerMethod(L, "Player", "removeStashItem", PlayerFunctions::luaPlayerRemoveStashItem);
 		registerMethod(L, "Player", "removeItem", PlayerFunctions::luaPlayerRemoveItem);
 		registerMethod(L, "Player", "sendContainer", PlayerFunctions::luaPlayerSendContainer);
@@ -329,6 +332,7 @@ private:
 		registerMethod(L, "Player", "sendDoubleSoundEffect", PlayerFunctions::luaPlayerSendDoubleSoundEffect);
 
 		registerMethod(L, "Player", "getName", PlayerFunctions::luaPlayerGetName);
+		registerMethod(L, "Player", "changeName", PlayerFunctions::luaPlayerChangeName);
 
 		registerMethod(L, "Player", "hasGroupFlag", PlayerFunctions::luaPlayerHasGroupFlag);
 		registerMethod(L, "Player", "setGroupFlag", PlayerFunctions::luaPlayerSetGroupFlag);
@@ -351,6 +355,14 @@ private:
 		registerMethod(L, "Player", "getVipTime", PlayerFunctions::luaPlayerGetVipTime);
 
 		registerMethod(L, "Player", "kv", PlayerFunctions::luaPlayerKV);
+		registerMethod(L, "Player", "getStoreInbox", PlayerFunctions::luaPlayerGetStoreInbox);
+
+		registerMethod(L, "Player", "hasAchievement", PlayerFunctions::luaPlayerHasAchievement);
+		registerMethod(L, "Player", "addAchievement", PlayerFunctions::luaPlayerAddAchievement);
+		registerMethod(L, "Player", "removeAchievement", PlayerFunctions::luaPlayerRemoveAchievement);
+		registerMethod(L, "Player", "getAchievementPoints", PlayerFunctions::luaPlayerGetAchievementPoints);
+		registerMethod(L, "Player", "addAchievementPoints", PlayerFunctions::luaPlayerAddAchievementPoints);
+		registerMethod(L, "Player", "removeAchievementPoints", PlayerFunctions::luaPlayerRemoveAchievementPoints);
 
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
@@ -380,6 +392,7 @@ private:
 	static int luaPlayercharmExpansion(lua_State* L);
 	static int luaPlayergetCharmMonsterType(lua_State* L);
 
+	static int luaPlayerisMonsterPrey(lua_State* L);
 	static int luaPlayerGetPreyCards(lua_State* L);
 	static int luaPlayerGetPreyLootPercentage(lua_State* L);
 	static int luaPlayerPreyThirdSlot(lua_State* L);
@@ -469,6 +482,7 @@ private:
 
 	static int luaPlayerGetVocation(lua_State* L);
 	static int luaPlayerSetVocation(lua_State* L);
+	static int luaPlayerIsPromoted(lua_State* L);
 
 	static int luaPlayerGetSex(lua_State* L);
 	static int luaPlayerSetSex(lua_State* L);
@@ -513,6 +527,7 @@ private:
 
 	static int luaPlayerAddItem(lua_State* L);
 	static int luaPlayerAddItemEx(lua_State* L);
+	static int luaPlayerAddItemStash(lua_State* L);
 	static int luaPlayerRemoveStashItem(lua_State* L);
 	static int luaPlayerRemoveItem(lua_State* L);
 	static int luaPlayerSendContainer(lua_State* L);
@@ -586,10 +601,6 @@ private:
 
 	static int luaPlayerIsPzLocked(lua_State* L);
 	static int luaPlayerIsOffline(lua_State* L);
-
-	static int luaPlayerGetContainers(lua_State* L);
-	static int luaPlayerSetLootContainer(lua_State* L);
-	static int luaPlayerGetLootContainer(lua_State* L);
 
 	static int luaPlayerGetClient(lua_State* L);
 
@@ -672,6 +683,7 @@ private:
 	static int luaPlayerSendDoubleSoundEffect(lua_State* L);
 
 	static int luaPlayerGetName(lua_State* L);
+	static int luaPlayerChangeName(lua_State* L);
 
 	static int luaPlayerHasGroupFlag(lua_State* L);
 	static int luaPlayerSetGroupFlag(lua_State* L);
@@ -697,6 +709,14 @@ private:
 	static int luaPlayerGetVipTime(lua_State* L);
 
 	static int luaPlayerKV(lua_State* L);
+	static int luaPlayerGetStoreInbox(lua_State* L);
+
+	static int luaPlayerHasAchievement(lua_State* L);
+	static int luaPlayerAddAchievement(lua_State* L);
+	static int luaPlayerRemoveAchievement(lua_State* L);
+	static int luaPlayerGetAchievementPoints(lua_State* L);
+	static int luaPlayerAddAchievementPoints(lua_State* L);
+	static int luaPlayerRemoveAchievementPoints(lua_State* L);
 
 	friend class CreatureFunctions;
 };

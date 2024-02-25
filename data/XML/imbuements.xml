@@ -155,18 +155,18 @@
 	<!-- Critical Imbuement -->
 	<imbuement name="Strike" base="1" category="3" iconid="1" premium="0" storage="0">
 		<attribute key="description" value="Raises crit hit damage by 15% and crit hit chance by 10%." />
-		<attribute key="effect" type="skill" value="critical" bonus="15" chance="10" />
+		<attribute key="effect" type="skill" value="critical" bonus="1500" chance="1000" />
 		<attribute key="item" value="11444" count="20" />
 	</imbuement>
 	<imbuement name="Strike" base="2" category="3" iconid="1" premium="1" storage="0">
 		<attribute key="description" value="Raises crit hit damage by 25% and crit hit chance by 10%." />
-		<attribute key="effect" type="skill" value="critical" bonus="25" chance="10" />
+		<attribute key="effect" type="skill" value="critical" bonus="2500" chance="1000" />
 		<attribute key="item" value="11444" count="20" />
 		<attribute key="item" value="10311" count="25" />
 	</imbuement>
 	<imbuement name="Strike" base="3" category="3" iconid="1" premium="1" storage="50501">
 		<attribute key="description" value="Raises crit hit damage by 50% and crit hit chance by 10%." />
-		<attribute key="effect" type="skill" value="critical" bonus="50" chance="10" />
+		<attribute key="effect" type="skill" value="critical" bonus="5000" chance="1000" />
 		<attribute key="item" value="11444" count="20" />
 		<attribute key="item" value="10311" count="25" />
 		<attribute key="item" value="22728" count="5" />
@@ -201,7 +201,7 @@
 		<attribute key="item" value="17823" count="25" />
 		<attribute key="item" value="9694" count="20" />
 	</imbuement>
-	<imbuement name="Snake Skin" base="3" category="5" iconid="30" premium="1" storage="50492">
+	<imbuement name="Snake Skin" base="3" category="5" iconid="28" premium="1" storage="50492">
 		<attribute key="description" value="Reduces earth damage by 15%." />
 		<attribute key="effect" type="reduction" combat="earth" value="15" />
 		<attribute key="item" value="17823" count="25" />
@@ -242,23 +242,23 @@
 		<attribute key="effect" type="reduction" combat="ice" value="15" />
 		<attribute key="item" value="10295" count="25" />
 		<attribute key="item" value="10307" count="15" />
-		<attribute key="item" value="14012" count="5" />
+		<attribute key="item" value="14012" count="10" />
 	</imbuement>
 	<imbuement name="Cloud Fabric" base="1" category="8" iconid="31" premium="0" storage="0">
 		<attribute key="description" value="Reduces energy damage by 3%." />
 		<attribute key="effect" type="reduction" combat="energy" value="3" />
-		<attribute key="item" value="9644" count="25" />
+		<attribute key="item" value="9644" count="20" />
 	</imbuement>
 	<imbuement name="Cloud Fabric" base="2" category="8" iconid="31" premium="1" storage="0">
 		<attribute key="description" value="Reduces energy damage by 8%." />
 		<attribute key="effect" type="reduction" combat="energy" value="8" />
-		<attribute key="item" value="9644" count="25" />
+		<attribute key="item" value="9644" count="20" />
 		<attribute key="item" value="14079" count="15" />
 	</imbuement>
 	<imbuement name="Cloud Fabric" base="3" category="8" iconid="31" premium="1" storage="50490">
 		<attribute key="description" value="Reduces energy damage by 15%." />
 		<attribute key="effect" type="reduction" combat="energy" value="15" />
-		<attribute key="item" value="9644" count="25" />
+		<attribute key="item" value="9644" count="20" />
 		<attribute key="item" value="14079" count="15" />
 		<attribute key="item" value="9665" count="10" />
 	</imbuement>

@@ -117,6 +117,9 @@
 	<npc centerx="32138" centery="32172" centerz="3" radius="1">
 		<npc name="Hyacinth" x="0" y="0" z="3" spawntime="60" />
 	</npc>
+	<npc centerx="32443" centery="32487" centerz="3" radius="1">
+		<npc name="John (Bounac)" x="0" y="0" z="3" spawntime="60" />
+	</npc>
 	<npc centerx="33099" centery="32522" centerz="3" radius="1">
 		<npc name="Djema" x="0" y="0" z="3" spawntime="60" />
 	</npc>
@@ -2223,6 +2226,9 @@
 	<npc centerx="33571" centery="31908" centerz="8" radius="1">
 		<npc name="Elliott" x="0" y="0" z="8" spawntime="60" />
 	</npc>
+	<npc centerx="32619" centery="31917" centerz="8" radius="1">
+		<npc name="Iwar" x="0" y="0" z="8" spawntime="60" />
+	</npc>
 	<npc centerx="32618" centery="31938" centerz="8" radius="1">
 		<npc name="Duria" x="0" y="0" z="8" spawntime="60" />
 	</npc>
@@ -2372,6 +2378,18 @@
 	</npc>
 	<npc centerx="33007" centery="31891" centerz="9" radius="1">
 		<npc name="Gnomission" x="0" y="0" z="9" spawntime="60" />
+	</npc>
+	<npc centerx="33361" centery="31316" centerz="9" radius="1">
+		<npc name="Oberon's Bile" x="0" y="0" z="9" spawntime="60" />
+	</npc>
+	<npc centerx="33367" centery="31316" centerz="9" radius="1">
+		<npc name="Oberon's Hate" x="0" y="0" z="9" spawntime="60" />
+	</npc>
+	<npc centerx="33361" centery="31320" centerz="9" radius="1">
+		<npc name="Oberon's Spite" x="0" y="0" z="9" spawntime="60" />
+	</npc>
+	<npc centerx="33367" centery="31320" centerz="9" radius="1">
+		<npc name="Oberon's Ire" x="0" y="0" z="9" spawntime="60" />
 	</npc>
 	<npc centerx="32664" centery="31894" centerz="9" radius="1">
 		<npc name="Uzgod" x="0" y="0" z="9" spawntime="60" />
@@ -2548,6 +2566,9 @@
 	<npc centerx="32855" centery="32426" centerz="10" radius="1">
 		<npc name="The Gate Keeper" x="0" y="0" z="10" spawntime="60" />
 	</npc>
+	<npc centerx="32289" centery="32813" centerz="10" radius="1">
+		<npc name="Squeekquek" x="0" y="0" z="10" spawntime="60" direction="2" />
+	</npc>
 	<npc centerx="33170" centery="31231" centerz="11" radius="1">
 		<npc name="Ztiss" x="0" y="0" z="11" spawntime="60" />
 	</npc>
@@ -2619,6 +2640,9 @@
 	</npc>
 	<npc centerx="33449" centery="32805" centerz="11" radius="1">
 		<npc name="..." x="0" y="0" z="11" spawntime="60" />
+	</npc>
+	<npc centerx="32268" centery="32811" centerz="11" radius="1">
+		<npc name="Larry" x="0" y="0" z="11" spawntime="60" />
 	</npc>
 	<npc centerx="32116" centery="32968" centerz="11" radius="1">
 		<npc name="Polly" x="0" y="0" z="11" spawntime="60" />
@@ -2956,4 +2980,19 @@
 	<npc centerx="33587" centery="32966" centerz="15" radius="1">
 		<npc name="Gnomish Operative (Raiders)" x="0" y="0" z="15" spawntime="60" />
 	</npc>
+	<npc centerx="33356" centery="31982" centerz="7" radius="1">
+		<npc name="Hawkhurst" x="0" y="0" z="15" spawntime="60" />
+	</npc>
+	<npc centerx="33710" centery="32602" centerz="6" radius="1">
+		<npc name="Hawkhurst Ingol" x="0" y="0" z="15" spawntime="60" />
+	</npc>
+	<npc centerx="34070" centery="32009" centerz="14" radius="1">
+		<npc name="Altar" x="0" y="0" z="15" spawntime="60" />
+	</npc>
+  <npc centerx="33181" centery="32883" centerz="7" radius="1">
+		<npc name="Tonar" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="33068" centery="32917" centerz="7" radius="1">
+		<npc name="Tonar Oskayaat" x="0" y="0" z="7" spawntime="60" />
+</npc>
 </npcs>

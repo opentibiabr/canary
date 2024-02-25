@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"SecretLibraryBossDeath",
+}
+
 monster.bosstiary = {
 	bossRaceId = 1574,
 	bossRace = RARITY_ARCHFOE,
@@ -94,7 +98,7 @@ monster.loot = {
 	{ name = "silver token", chance = 30000, maxCount = 4 },
 	{ name = "blue robe", chance = 30000 },
 	{ name = "dreaded cleaver", chance = 30000 },
-	{ id = 8900, chance = 30000 }, -- heavily rusted shield
+	{ name = "slightly rusted shield", chance = 26670 },
 	{ name = "wand of inferno", chance = 30000 },
 	{ id = 28341, chance = 1000 }, -- tessellated wall
 	{ name = "sturdy book", chance = 1000 },
@@ -102,7 +106,7 @@ monster.loot = {
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 150, attack = 250 },
-	{ name = "combat", interval = 2000, chance = 8, type = COMBAT_LIFEDRAIN, minDamage = -1100, maxDamage = -2800, range = 7, radius = 5, shootEffect = CONST_ANI_WHIRLWINDAXE, target = true },
+	{ name = "combat", interval = 2000, chance = 8, type = COMBAT_LIFEDRAIN, minDamage = -1100, maxDamage = -2800, range = 7, radius = 5, shootEffect = CONST_ANI_WHIRLWINDAXE, effect = CONST_ME_DRAWBLOOD, target = true },
 	{ name = "combat", interval = 1000, chance = 8, type = COMBAT_DEATHDAMAGE, minDamage = -800, maxDamage = -1900, radius = 9, effect = CONST_ME_MORTAREA, target = false },
 	-- poison
 	{ name = "condition", type = CONDITION_POISON, interval = 5000, chance = 18, minDamage = -1100, maxDamage = -2500, effect = CONST_ME_HITBYPOISON, target = false },

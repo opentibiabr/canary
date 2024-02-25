@@ -351,7 +351,7 @@ local function checarSala(qnt)
 							for _, boss in pairs(spectators) do
 								if boss:isMonster() then
 									if boss:getName():lower() == "the count of the core" then
-										boss:say("The count absorbs he power of the beast and becomes stronger.", TALKTYPE_ORANGE_2)
+										boss:say("The count absorbs he power of the beast and becomes stronger.", TALKTYPE_MONSTER_YELL)
 										boss:addHealth(math.random(0, 15000))
 									end
 								end
@@ -370,10 +370,7 @@ end
 
 local function startWarzoneIV()
 	addEvent(function()
-		local monstro = Game.createMonster("The Baron From Below", Position(33648, 32303, 15))
-		if monstro then
-			monstro:registerEvent("TheBaronFromBelowThink")
-		end
+		Game.createMonster("The Baron From Below", Position(33648, 32303, 15))
 		addEvent(sumonarLavasIV, 15 * 1000, 5)
 		addEvent(lavaHoles, 15 * 1000, 1)
 	end, 10 * 1000)
@@ -408,7 +405,7 @@ function dangerousDepthCrystals.onUse(player, item, fromPosition, target, toPosi
 		return true
 	end
 
-	if not target:isItem() then
+	if not target or not target.isItem or not target:isItem() then
 		return false
 	end
 

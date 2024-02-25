@@ -1,25 +1,19 @@
 local callback = EventCallback()
 
 function callback.monsterOnDropLoot(monster, corpse)
-	if configManager.getNumber(configKeys.RATE_LOOT) == 0 then
+	local player = Player(corpse:getCorpseOwner())
+	if not player or not player:canReceiveLoot() then
 		return
 	end
 	local mType = monster:getType()
-	if mType:isRewardBoss() then
-		return
-	end
-	local player = Player(corpse:getCorpseOwner())
-	if not player then
-		return
-	end
-	if player:getStamina() <= 840 then
+	if not mType then
 		return
 	end
 
 	local factor = 1.0
 	local msgSuffix = ""
 	local participants = { player }
-	if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) then
+	if configManager.getBoolean(configKeys.PARTY_SHARE_LOOT_BOOSTS) then
 		local party = player:getParty()
 		if party and party:isSharedExperienceEnabled() then
 			participants = party:getMembers()
@@ -42,7 +36,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 		return
 	end
 
-	if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) then
+	if configManager.getBoolean(configKeys.PARTY_SHARE_LOOT_BOOSTS) then
 		msgSuffix = msgSuffix .. " (active prey bonus for " .. table.concat(preyActivators, ", ") .. ")"
 	else
 		msgSuffix = msgSuffix .. " (active prey bonus)"

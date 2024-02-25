@@ -14,7 +14,7 @@ function warzoneEntrance.onStepIn(creature, item, position, fromPosition, toPosi
 			player:setStorageValue(Storage.DangerousDepths.Access.TimerWarzoneVI, os.time() + 8 * 60 * 60)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Entering the warzone (you can enter freely for 8 hours from now).")
 			player:teleportTo(warzoneVI)
-		elseif player:getStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneVI) < 1 and player:getStorageValue(Storage.DangerousDepths.Access.TimerWarzoneVI) <= os.time() then
+		elseif player:getStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneVI) ~= 1 and player:getStorageValue(Storage.DangerousDepths.Access.TimerWarzoneVI) <= os.time() then
 			player:teleportTo(Position(fromPosition.x + 1, fromPosition.y, fromPosition.z))
 			player:sendTextMessage(
 				MESSAGE_EVENT_ADVANCE,
@@ -34,7 +34,7 @@ function warzoneEntrance.onStepIn(creature, item, position, fromPosition, toPosi
 			player:setStorageValue(Storage.DangerousDepths.Access.TimerWarzoneV, os.time() + 8 * 60 * 60)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Entering the warzone (you can enter freely for 8 hours from now).")
 			player:teleportTo(warzoneV)
-		elseif player:getStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneV) < 1 and player:getStorageValue(Storage.DangerousDepths.Access.TimerWarzoneV) <= os.time() then
+		elseif player:getStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneV) ~= 1 and player:getStorageValue(Storage.DangerousDepths.Access.TimerWarzoneV) <= os.time() then
 			player:teleportTo(Position(fromPosition.x, fromPosition.y + 1, fromPosition.z))
 			player:sendTextMessage(
 				MESSAGE_EVENT_ADVANCE,
@@ -54,7 +54,7 @@ function warzoneEntrance.onStepIn(creature, item, position, fromPosition, toPosi
 			player:setStorageValue(Storage.DangerousDepths.Access.TimerWarzoneIV, os.time() + 8 * 60 * 60)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Entering the warzone (you can enter freely for 8 hours from now).")
 			player:teleportTo(warzoneIV)
-		elseif player:getStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneIV) < 1 and player:getStorageValue(Storage.DangerousDepths.Access.TimerWarzoneIV) <= os.time() then
+		elseif player:getStorageValue(Storage.DangerousDepths.Access.LavaPumpWarzoneIV) ~= 1 and player:getStorageValue(Storage.DangerousDepths.Access.TimerWarzoneIV) <= os.time() then
 			player:teleportTo(Position(fromPosition.x, fromPosition.y + 1, fromPosition.z))
 			player:sendTextMessage(
 				MESSAGE_EVENT_ADVANCE,

@@ -2,6 +2,9 @@ function PrettyString(tbl, indent)
 	if not indent then
 		indent = 0
 	end
+	if type(tbl) ~= "table" then
+		return tostring(tbl)
+	end
 	local toprint = string.rep(" ", indent) .. "{\n"
 	indent = indent + 2
 	for k, v in pairs(tbl) do
@@ -241,11 +244,29 @@ function setPlayerMarriageStatus(id, val)
 	db.query("UPDATE `players` SET `marriage_status` = " .. val .. " WHERE `id` = " .. id)
 end
 
-function clearBossRoom(playerId, bossId, centerPosition, rangeX, rangeY, exitPosition)
-	local spectators, spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
+function checkBoss(centerPosition, rangeX, rangeY, bossName, bossPos)
+	local spectators, found = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY), false
+	for i = 1, #spectators do
+		local spec = spectators[i]
+		if spec:isMonster() then
+			if spec:getName() == bossName then
+				found = true
+				break
+			end
+		end
+	end
+	if not found then
+		local boss = Game.createMonster(bossName, bossPos, true, true)
+		boss:setReward(true)
+	end
+	return found
+end
+
+function clearBossRoom(playerId, centerPosition, onlyPlayers, rangeX, rangeY, exitPosition)
+	local spectators, spectator = Game.getSpectators(centerPosition, false, onlyPlayers, rangeX, rangeX, rangeY, rangeY)
 	for i = 1, #spectators do
 		spectator = spectators[i]
-		if spectator:isPlayer() and spectator.uid == playerId then
+		if spectator:isPlayer() and ((playerId ~= nil and spectator.uid == playerId) or playerId == nil) then
 			spectator:teleportTo(exitPosition)
 			exitPosition:sendMagicEffect(CONST_ME_TELEPORT)
 		end
@@ -264,13 +285,13 @@ function clearRoom(centerPosition, rangeX, rangeY, resetGlobalStorage)
 			spectator:remove()
 		end
 	end
-	if Game.getStorageValue(resetGlobalStorage) == 1 then
+	if resetGlobalStorage ~= nil and Game.getStorageValue(resetGlobalStorage) == 1 then
 		Game.setStorageValue(resetGlobalStorage, -1)
 	end
 end
 
-function roomIsOccupied(centerPosition, rangeX, rangeY)
-	local spectators = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
+function roomIsOccupied(centerPosition, onlyPlayers, rangeX, rangeY)
+	local spectators = Game.getSpectators(centerPosition, false, onlyPlayers, rangeX, rangeX, rangeY, rangeY)
 	if #spectators ~= 0 then
 		return true
 	end
@@ -567,7 +588,7 @@ function cleanAreaQuest(frompos, topos, itemtable, blockmonsters)
 	return true
 end
 
-function kickerPlayerRoomAfferMin(playername, fromPosition, toPosition, teleportPos, message, monsterName, minutes, firstCall, itemtable, blockmonsters)
+function kickerPlayerRoomAfterMin(playername, fromPosition, toPosition, teleportPos, message, monsterName, minutes, firstCall, itemtable, blockmonsters)
 	local players = false
 	if type(playername) == table then
 		players = true
@@ -637,7 +658,7 @@ function kickerPlayerRoomAfferMin(playername, fromPosition, toPosition, teleport
 	end
 	local min = 60 -- Use the 60 for 1 minute
 	if firstCall then
-		addEvent(kickerPlayerRoomAfferMin, 1000, playername, fromPosition, toPosition, teleportPos, message, monsterName, minutes, false, itemtable, blockmonsters)
+		addEvent(kickerPlayerRoomAfterMin, 1000, playername, fromPosition, toPosition, teleportPos, message, monsterName, minutes, false, itemtable, blockmonsters)
 	else
 		local subt = minutes - 1
 		if monsterName ~= "" then
@@ -645,7 +666,7 @@ function kickerPlayerRoomAfferMin(playername, fromPosition, toPosition, teleport
 				subt = 2
 			end
 		end
-		addEvent(kickerPlayerRoomAfferMin, min * 1000, playername, fromPosition, toPosition, teleportPos, message, monsterName, subt, false, itemtable, blockmonsters)
+		addEvent(kickerPlayerRoomAfterMin, min * 1000, playername, fromPosition, toPosition, teleportPos, message, monsterName, subt, false, itemtable, blockmonsters)
 	end
 end
 
@@ -710,14 +731,6 @@ if not bosssPlayers then
 	}
 end
 
-function isInRange(pos, fromPos, toPos)
-	return pos.x >= fromPos.x and pos.y >= fromPos.y and pos.z >= fromPos.z and pos.x <= toPos.x and pos.y <= toPos.y and pos.z <= toPos.z
-end
-
-function isInRangeIgnoreZ(pos, fromPos, toPos)
-	return pos.x >= fromPos.x and pos.y >= fromPos.y and pos.z >= fromPos.z and pos.x <= toPos.x
-end
-
 function isNumber(str)
 	return tonumber(str) ~= nil
 end
@@ -727,7 +740,7 @@ function isInteger(n)
 end
 
 -- Function for the reload talkaction
-local logFormat = "[%s] %s %s"
+local logFormat = "[%s] %s (params: %s)"
 
 function logCommand(player, words, param)
 	local file = io.open(CORE_DIRECTORY .. "/logs/" .. player:getName() .. " commands.log", "a")
@@ -835,47 +848,6 @@ function pack(t, ...)
 		t[i] = tmp
 	end
 	return t
-end
-
-if not PLAYER_STORAGE then
-	PLAYER_STORAGE = {}
-end
-
-function Player:setSpecialStorage(storage, value)
-	if not PLAYER_STORAGE[self:getGuid()] then
-		self:loadSpecialStorage()
-	end
-
-	PLAYER_STORAGE[self:getGuid()][storage] = value
-end
-
-function Player:getSpecialStorage(storage)
-	if not PLAYER_STORAGE[self:getGuid()] then
-		self:loadSpecialStorage()
-	end
-
-	return PLAYER_STORAGE[self:getGuid()][storage]
-end
-
-function Player:loadSpecialStorage()
-	if not PLAYER_STORAGE then
-		PLAYER_STORAGE = {}
-	end
-
-	PLAYER_STORAGE[self:getGuid()] = {}
-	local resultId = db.storeQuery("SELECT * FROM `player_misc` WHERE `player_id` = " .. self:getGuid())
-	if resultId then
-		local info = Result.getStream(resultId, "info") or "{}"
-		unserializeTable(info, PLAYER_STORAGE[self:getGuid()])
-	end
-end
-
-function Player:saveSpecialStorage()
-	if PLAYER_STORAGE and PLAYER_STORAGE[self:getGuid()] then
-		local tmp = serializeTable(PLAYER_STORAGE[self:getGuid()])
-		db.query("DELETE FROM `player_misc` WHERE `player_id` = " .. self:getGuid())
-		db.query(string.format("INSERT INTO `player_misc` (`player_id`, `info`) VALUES (%d, %s)", self:getGuid(), db.escapeBlob(tmp, #tmp)))
-	end
 end
 
 -- Can be used in every boss
@@ -1138,4 +1110,36 @@ end
 
 function toKey(str)
 	return str:lower():gsub(" ", "-"):gsub("%s+", "")
+end
+
+function toboolean(value)
+	if type(value) == "boolean" then
+		return value
+	end
+	if value == "true" then
+		return true
+	elseif value == "false" then
+		return false
+	end
+end
+
+-- Utility to combine onDeath event with a "kill" event for a player with a party (or not).
+function onDeathForParty(creature, player, func)
+	if not player or not player:isPlayer() then
+		return
+	end
+
+	local participants = Participants(player, true)
+	for _, participant in ipairs(participants) do
+		func(creature, participant)
+	end
+end
+
+function onDeathForDamagingPlayers(creature, func)
+	for key, value in pairs(creature:getDamageMap()) do
+		local player = Player(key)
+		if player then
+			func(creature, player)
+		end
+	end
 end

@@ -80,7 +80,6 @@ DailyReward = {
 	storages = {
 		-- Player
 		currentDayStreak = 14897,
-		currentStreakLevel = 14898, -- Cpp uses the same storage value on const.h (STORAGEVALUE_DAILYREWARD)
 		nextRewardTime = 14899,
 		collectionTokens = 14901,
 		staminaBonus = 14902,
@@ -207,14 +206,7 @@ end
 
 -- Core functions
 DailyReward.insertHistory = function(playerId, dayStreak, description)
-	return db.query(string.format(
-		"INSERT INTO `daily_reward_history`(`player_id`, `daystreak`, `timestamp`, \z
-		`description`) VALUES (%s, %s, %s, %s)",
-		playerId,
-		dayStreak,
-		os.time(),
-		db.escapeString(description)
-	))
+	return db.query(string.format("INSERT INTO `daily_reward_history`(`player_id`, `daystreak`, `timestamp`, `description`) VALUES (%s, %s, %s, %s)", playerId, dayStreak, os.time(), db.escapeString(description)))
 end
 
 DailyReward.retrieveHistoryEntries = function(playerId)
@@ -224,8 +216,7 @@ DailyReward.retrieveHistoryEntries = function(playerId)
 	end
 
 	local entries = {}
-	local resultId = db.storeQuery("SELECT * FROM `daily_reward_history` WHERE `player_id` = \z
-		" .. player:getGuid() .. " ORDER BY `timestamp` DESC LIMIT 15;")
+	local resultId = db.storeQuery("SELECT * FROM `daily_reward_history` WHERE `player_id` = " .. player:getGuid() .. " ORDER BY `timestamp` DESC LIMIT 15;")
 	if resultId then
 		repeat
 			local entry = {
@@ -367,7 +358,7 @@ function Player.sendOpenRewardWall(self, shrine)
 	msg:addByte(self:getDayStreak()) -- current reward? day = 0, day 1, ... this should be resetted to 0 every week imo
 	if DailyReward.isRewardTaken(self:getId()) then -- state (player already took reward? but just make sure noone wpe)
 		msg:addByte(1)
-		msg:addString("Sorry, you have already taken your daily reward or you are unable to collect it.") -- Unknown message
+		msg:addString("Sorry, you have already taken your daily reward or you are unable to collect it.", "Player.sendOpenRewardWall - Sorry, you have already taken your daily reward or you are unable to collect it.") -- Unknown message
 		if self:getJokerTokens() > 0 then
 			msg:addByte(1)
 			msg:addU16(self:getJokerTokens())
@@ -421,7 +412,7 @@ function Player.selectDailyReward(self, msg)
 	end
 
 	local rewardCount = dailyTable.freeAccount
-	if self:isPremium() then
+	if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and self:isVip()) or self:isPremium() then
 		rewardCount = dailyTable.premiumAccount
 	end
 
@@ -453,8 +444,7 @@ function Player.selectDailyReward(self, msg)
 		end
 
 		if totalCounter > rewardCount then
-			self:sendError("Something went wrong here, please restart this dialog.")
-			return false
+			logger.info("Player with name {} is trying to get totalCounter: {} more than rewardCount: {}!", self:getName(), totalCounter, rewardCount)
 		end
 		if totalCounter ~= orderedCounter then
 			logger.error("Player with name {} is trying to get wrong daily reward", self:getName())
@@ -462,8 +452,9 @@ function Player.selectDailyReward(self, msg)
 		end
 
 		-- Adding items to store inbox
-		local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
-		if not inbox then
+		local inbox = self:getStoreInbox()
+		local inboxItems = inbox:getItems()
+		if not inbox or #inboxItems > inbox:getMaxCapacity() then
 			self:sendError("You do not have enough space in your store inbox.")
 			return false
 		end
@@ -471,41 +462,21 @@ function Player.selectDailyReward(self, msg)
 		local description = ""
 		for k, v in ipairs(items) do
 			if dailyTable.itemCharges then
-				for i = 1, v.count do
+				for i = 1, rewardCount do
 					local inboxItem = inbox:addItem(v.itemId, dailyTable.itemCharges) -- adding charges for each item
 					if inboxItem then
 						inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 					end
 				end
 			else
-				local inboxItem = inbox:addItem(v.itemId, v.count) -- adding single item w/o charges
+				local inboxItem = inbox:addItem(v.itemId, rewardCount) -- adding single item w/o charges
 				if inboxItem then
 					inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 				end
 			end
-			if k ~= columnsPicked then
-				description = description .. "" .. v.count .. "x " .. ItemType(v.itemId):getName() .. ", "
-			else
-				description = description .. "" .. v.count .. "x " .. ItemType(v.itemId):getName() .. "."
-			end
+			description = description .. "" .. rewardCount .. "x " .. ItemType(v.itemId):getName() .. (k ~= columnsPicked and ", " or ".")
 		end
-
 		dailyRewardMessage = "Picked items: " .. description
-
-		-- elseif dailyTable.type == DAILY_REWARD_TYPE_STORAGE then
-		-- local description = ""
-		-- for i = 1, #reward.things do
-		-- for j = 1, #reward.things[i].storages do
-		-- self:setStorageValue(reward.things[i].storages[j].storageId, reward.things[i].storages[j].value)
-		-- end
-		-- if i ~= #reward.things then
-		-- description = description .. reward.things[i].name .. ", "
-		-- else
-		-- description = description .. reward.things[i].name .. "."
-		-- end
-		-- end
-		-- dailyRewardMessage = "Picked reward: " .. description)
-		-- end
 	elseif dailyTable.type == DAILY_REWARD_TYPE_XP_BOOST then
 		self:setExpBoostStamina(self:getExpBoostStamina() + (rewardCount * 60))
 		self:setStoreXpBoost(50)
@@ -529,7 +500,7 @@ function Player.sendError(self, error)
 	local msg = NetworkMessage()
 	msg:addByte(ServerPackets.ShowDialog)
 	msg:addByte(0x14)
-	msg:addString(error)
+	msg:addString(error, "Player.sendError - error")
 	msg:sendToPlayer(self)
 end
 
@@ -562,7 +533,7 @@ function Player.sendRewardHistory(self)
 	for k, entry in ipairs(entries) do
 		msg:addU32(entry.timestamp)
 		msg:addByte(0) -- (self:isPremium() and 0 or 0)
-		msg:addString(entry.description)
+		msg:addString(entry.description, "Player.sendRewardHistory - entry.description")
 		msg:addU16(entry.daystreak + 1)
 	end
 	msg:sendToPlayer(self)
@@ -595,7 +566,7 @@ function Player.readDailyReward(self, msg, currentDay, state)
 				local itemName = itemType:getArticle() .. " " .. itemType:getName()
 				local itemWeight = itemType:getWeight()
 				msg:addU16(itemId)
-				msg:addString(itemName)
+				msg:addString(itemName, "Player.readDailyReward - itemName")
 				msg:addU32(itemWeight)
 			end
 		end
@@ -605,7 +576,7 @@ function Player.readDailyReward(self, msg, currentDay, state)
 			-- for i = 1, #rewards.things do
 			-- msg:addByte(DAILY_REWARD_SYSTEM_TYPE_OTHER) -- type
 			-- msg:addU16(rewards.things[i].id * 100)
-			-- msg:addString(rewards.things[i].name)
+			-- msg:addString(rewards.things[i].name, "Player.readDailyReward - rewards.things[i].name")
 			-- msg:addByte(rewards.things[i].quantity)
 			-- end
 		elseif type == DAILY_REWARD_TYPE_PREY_REROLL then
@@ -636,7 +607,7 @@ function Player.sendDailyReward(self)
 	local maxBonus = 7
 	msg:addByte(maxBonus - 1)
 	for i = 2, maxBonus do
-		msg:addString(DailyReward.strikeBonuses[i].text)
+		msg:addString(DailyReward.strikeBonuses[i].text, "Player.sendDailyReward - DailyReward.strikeBonuses[i].text")
 		msg:addByte(i)
 	end
 	msg:addByte(1) -- Unknown

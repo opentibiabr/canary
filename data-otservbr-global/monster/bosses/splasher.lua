@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"QuaraLeadersDeath",
+}
+
 monster.health = 1700
 monster.maxHealth = 1700
 monster.race = "blood"
@@ -73,8 +77,8 @@ monster.loot = {}
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -109, condition = { type = CONDITION_POISON, totalDamage = 5, interval = 4000 } },
 	{ name = "combat", interval = 2000, chance = 8, type = COMBAT_LIFEDRAIN, minDamage = -106, maxDamage = -169, range = 7, effect = CONST_ME_MAGIC_RED, target = true },
-	{ name = "combat", interval = 2000, chance = 7, type = COMBAT_LIFEDRAIN, minDamage = -162, maxDamage = -228, length = 8, spread = 3, effect = CONST_ME_HITBYPOISON, target = false },
-	{ name = "combat", interval = 2000, chance = 9, type = COMBAT_ICEDAMAGE, minDamage = -134, maxDamage = -148, length = 8, spread = 3, effect = CONST_ME_BUBBLES, target = false },
+	{ name = "combat", interval = 2000, chance = 7, type = COMBAT_LIFEDRAIN, minDamage = -162, maxDamage = -228, length = 8, spread = 0, effect = CONST_ME_HITBYPOISON, target = false },
+	{ name = "combat", interval = 2000, chance = 9, type = COMBAT_ICEDAMAGE, minDamage = -134, maxDamage = -148, length = 8, spread = 0, effect = CONST_ME_BUBBLES, target = false },
 	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_ICEDAMAGE, minDamage = -101, maxDamage = -149, radius = 3, effect = CONST_ME_BUBBLES, target = false },
 	{ name = "speed", interval = 2000, chance = 20, speedChange = -300, range = 1, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000 },
 }

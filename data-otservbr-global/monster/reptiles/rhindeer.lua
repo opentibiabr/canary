@@ -15,7 +15,7 @@ monster.outfit = {
 
 monster.raceId = 2342
 monster.Bestiary = {
-	class = "Hybrids",
+	class = "Humanoid",
 	race = BESTY_RACE_HUMANOID,
 	toKill = 2500,
 	FirstUnlock = 100,
@@ -76,18 +76,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 72260, maxCount = 31 },
-	{ name = "brown crystal splinter", chance = 11550, maxCount = 7 },
+	{ name = "platinum coin", chance = 72260, maxCount = 30 },
+	{ name = "brown crystal splinter", chance = 11550, maxCount = 4 },
 	{ name = "rhindeer antlers", chance = 6020 },
 	{ name = "rainbow quartz", chance = 4940, maxCount = 2 },
-	{ name = "violet gem", chance = 4050 },
 	{ name = "great mana potion", chance = 2670, maxCount = 4 },
 	{ name = "titan axe", chance = 2470 },
 	{ name = "yellow gem", chance = 1880 },
 	{ name = "knight armor", chance = 1380 },
+	{ name = "violet gem", chance = 1200 },
 	{ id = 23543, chance = 890 }, -- collar of green plasma
-	{ name = "heavy mace", chance = 890 },
-	{ name = "mastermind shield", chance = 690 },
+	{ name = "heavy mace", chance = 300 },
+	{ name = "mastermind shield", chance = 400 },
 	{ id = 3053, chance = 690 }, -- time ring
 }
 

@@ -34,7 +34,7 @@ local function copyContainerItem(originalContainer, newContainer)
 		local originalItem = originalContainer:getItem(i)
 		local newItem = Game.createItem(originalItem.itemid, originalItem.type)
 		if not newItem then
-			Spdlog.error("[questSystem1.copyContainerItem] failed to create item " .. originalItem.itemid)
+			logger.error("[questSystem1.copyContainerItem] failed to create item: {}", originalItem.itemid)
 			return false
 		end
 		newItem:setActionId(originalItem:getActionId())
@@ -88,6 +88,10 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 		end
 	else
 		local container = Container(item.uid)
+		if not container then
+			logger.error("[questSystem1.onUse] failed to create container")
+			return false
+		end
 		for i = 0, container:getSize() - 1 do
 			local originalItem = container:getItem(i)
 			local newItem = Game.createItem(originalItem.itemid, originalItem.type)

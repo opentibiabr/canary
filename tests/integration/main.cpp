@@ -3,8 +3,9 @@
 #include "account/account_repository_db.hpp"
 #include "lib/logging/in_memory_logger.hpp"
 #include "utils/tools.hpp"
+#include "enums/account_type.hpp"
+#include "account/account_info.hpp"
 
-using namespace account;
 using namespace boost::ut;
 
 auto databaseTest(Database &db, const std::function<void(void)> &load) {
@@ -34,7 +35,7 @@ void createAccount(Database &db) {
 	));
 }
 
-void assertAccountLoad(account::AccountInfo acc) {
+void assertAccountLoad(AccountInfo acc) {
 	expect(eq(acc.id, 111));
 	expect(eq(acc.accountType, AccountType::ACCOUNT_TYPE_SENIORTUTOR));
 	expect(eq(acc.premiumRemainingDays, 11));
@@ -69,7 +70,7 @@ int main() {
 
 	test("AccountRepositoryDB::loadByID") = databaseTest(db, [&db] {
 		InMemoryLogger logger{};
-		AccountRepositoryDB accRepo{db, logger};
+		AccountRepositoryDB accRepo{};
 		createAccount(db);
 
 		AccountInfo acc{};
@@ -78,20 +79,20 @@ int main() {
 		expect(eq(acc.sessionExpires, 0));
 	});
 
-	test("AccountRepositoryDB::loadByEmail") = databaseTest(db, [&db] {
+	test("AccountRepositoryDB::loadByEmailOrName") = databaseTest(db, [&db] {
 		InMemoryLogger logger {};
-		AccountRepositoryDB accRepo { db, logger };
+		AccountRepositoryDB accRepo {};
 		createAccount(db);
 
 		AccountInfo acc {};
-		accRepo.loadByEmail("@test", acc);
+		accRepo.loadByEmailOrName(false, "@test", acc);
 		assertAccountLoad(acc);
 		expect(eq(acc.sessionExpires, 0));
 	});
 
 	test("AccountRepositoryDB::loadBySession") = databaseTest(db, [&db] {
 		InMemoryLogger logger {};
-		AccountRepositoryDB accRepo { db, logger };
+		AccountRepositoryDB accRepo {};
 		createAccount(db);
 
 		AccountInfo acc {};
@@ -103,7 +104,7 @@ int main() {
 
 	test("AccountRepositoryDB load sets premium day purchased = remaining days, if needed") = databaseTest(db, [&db] {
 		InMemoryLogger logger{};
-		AccountRepositoryDB accRepo{db, logger};
+		AccountRepositoryDB accRepo{};
 
 		AccountInfo acc{};
 		accRepo.loadByID(1, acc);
@@ -117,7 +118,7 @@ int main() {
 
 	test("AccountRepositoryDB::getPassword") = databaseTest(db, [&db] {
 		InMemoryLogger logger {};
-		AccountRepositoryDB accRepo { db, logger };
+		AccountRepositoryDB accRepo {};
 
 		std::string password;
 
@@ -127,7 +128,7 @@ int main() {
 
 	test("AccountRepositoryDB::getPassword logs on failure") = databaseTest(db, [&db] {
 		InMemoryLogger logger {};
-		AccountRepositoryDB accRepo { db, logger };
+		AccountRepositoryDB accRepo {};
 
 		std::string password;
 
@@ -139,7 +140,7 @@ int main() {
 
 	test("AccountRepositoryDB::save") = databaseTest(db, [&db] {
 		InMemoryLogger logger {};
-		AccountRepositoryDB accRepo { db, logger };
+		AccountRepositoryDB accRepo {};
 
 		AccountInfo acc {};
 		acc.id = 1;

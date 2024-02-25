@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -55,6 +55,14 @@ public:
 		return static_self_cast<Container>();
 	}
 
+	std::shared_ptr<const Container> getContainer() const override final {
+		return static_self_cast<Container>();
+	}
+
+	std::shared_ptr<Cylinder> getCylinder() override final {
+		return getContainer();
+	}
+
 	std::shared_ptr<Container> getRootContainer();
 
 	virtual std::shared_ptr<DepotLocker> getDepotLocker() {
@@ -78,6 +86,8 @@ public:
 	Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
 	bool unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream, Position &itemPosition) override;
 	std::string getContentDescription(bool oldProtocol);
+
+	uint32_t getMaxCapacity() const;
 
 	size_t size() const {
 		return itemlist.size();
@@ -109,7 +119,7 @@ public:
 	bool isStoreInbox() const;
 	bool isStoreInboxFiltered() const;
 	std::deque<std::shared_ptr<Item>> getStoreInboxFilteredItems() const;
-	phmap::flat_hash_set<ContainerCategory_t> getStoreInboxValidCategories() const;
+	std::vector<ContainerCategory_t> getStoreInboxValidCategories() const;
 	std::shared_ptr<Item> getFilteredItemByIndex(size_t index) const;
 	std::shared_ptr<Item> getItemByIndex(size_t index) const;
 	bool isHoldingItem(std::shared_ptr<Item> item);
@@ -160,6 +170,13 @@ public:
 	void stopDecaying() override;
 
 	virtual void removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient = false);
+
+	uint32_t getOwnerId() const override final;
+
+	bool isAnyKindOfRewardChest();
+	bool isAnyKindOfRewardContainer();
+	bool isBrowseFieldAndHoldsRewardChest();
+	bool isInsideContainerWithId(const uint16_t id);
 
 protected:
 	std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol);

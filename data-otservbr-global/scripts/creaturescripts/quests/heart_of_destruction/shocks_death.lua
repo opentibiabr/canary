@@ -1,38 +1,31 @@
+local function createSparksOfDestruction()
+	Game.createMonster("Spark Of Destruction", Position(32203, 31246, 14), false, true)
+	Game.createMonster("Spark Of Destruction", Position(32205, 31251, 14), false, true)
+	Game.createMonster("Spark Of Destruction", Position(32210, 31251, 14), false, true)
+	Game.createMonster("Spark Of Destruction", Position(32212, 31246, 14), false, true)
+end
+
 local shocksDeath = CreatureEvent("ShocksDeath")
+
 function shocksDeath.onDeath(creature)
 	if not creature or not creature:isMonster() then
 		return true
 	end
 
-	local name = creature:getName():lower()
-	if name == "foreshock" and realityQuakeStage == 0 then
-		if realityQuakeStage == 0 then
-			local monster = Game.createMonster("aftershock", { x = 32208, y = 31248, z = 14 }, false, true)
+	local creatureName = creature:getName():lower()
+	if creatureName == "foreshock" then
+		local monster = Game.createMonster("Aftershock", Position(32208, 31248, 14), false, true)
+		if monster then
+			local aftershockHealth = Game.getStorageValue(GlobalStorage.HeartOfDestruction.AftershockHealth) > 0 and Game.getStorageValue(GlobalStorage.HeartOfDestruction.AftershockHealth) or 0
 			monster:addHealth(-monster:getHealth() + aftershockHealth, COMBAT_PHYSICALDAMAGE)
-			Game.createMonster("spark of destruction", { x = 32203, y = 31246, z = 14 }, false, true)
-			Game.createMonster("spark of destruction", { x = 32205, y = 31251, z = 14 }, false, true)
-			Game.createMonster("spark of destruction", { x = 32210, y = 31251, z = 14 }, false, true)
-			Game.createMonster("spark of destruction", { x = 32212, y = 31246, z = 14 }, false, true)
+			createSparksOfDestruction()
 		end
-	elseif name == "aftershock" and realityQuakeStage == 0 then
-		local monster = Game.createMonster("foreshock", { x = 32208, y = 31248, z = 14 }, false, true)
-		monster:addHealth(-monster:getHealth() + aftershockHealth, COMBAT_PHYSICALDAMAGE)
-		Game.createMonster("spark of destruction", { x = 32203, y = 31246, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32205, y = 31251, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32210, y = 31251, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32212, y = 31246, z = 14 }, false, true)
+	elseif creatureName == "aftershock" then
+		local monster = Game.createMonster("Realityquake", creature:getPosition(), false, true)
+		if monster then
+			createSparksOfDestruction()
+		end
 	end
-	realityQuakeStage = realityQuakeStage + 1
-
-	if realityQuakeStage == 2 then
-		local pos = creature:getPosition()
-		local monster = Game.createMonster("realityquake", pos, false, true)
-		Game.createMonster("spark of destruction", { x = 32203, y = 31246, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32205, y = 31251, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32210, y = 31251, z = 14 }, false, true)
-		Game.createMonster("spark of destruction", { x = 32212, y = 31246, z = 14 }, false, true)
-	end
-
 	return true
 end
 

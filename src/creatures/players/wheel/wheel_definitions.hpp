@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -92,8 +92,9 @@ enum class WheelStage_t : uint8_t {
 	AVATAR_OF_NATURE = 9,
 	AVATAR_OF_STEEL = 10,
 	AVATAR_OF_STORM = 11,
+	DIVINE_GRENADE = 12,
 
-	TOTAL_COUNT = 12
+	TOTAL_COUNT = 13
 };
 
 enum class WheelOnThink_t : uint8_t {
@@ -123,8 +124,10 @@ enum class WheelStat_t : uint8_t {
 	DAMAGE = 10,
 	LIFE_LEECH_CHANCE = 11,
 	MANA_LEECH_CHANCE = 12,
+	DODGE = 13,
+	CRITICAL_DAMAGE = 14,
 
-	TOTAL_COUNT = 13
+	TOTAL_COUNT = 15
 };
 
 enum class WheelMajor_t : uint8_t {
@@ -159,7 +162,7 @@ enum class WheelAvatarSkill_t : uint8_t {
 	NONE = 0,
 	DAMAGE_REDUCTION = 1,
 	CRITICAL_CHANCE = 2,
-	CRITICAL_DAMAGE = 3
+	CRITICAL_DAMAGE = 3,
 };
 
 enum class WheelSpellGrade_t : uint8_t {
@@ -197,7 +200,7 @@ struct PlayerWheelMethodsBonusData {
 		int healing = 0;
 	};
 	// value * 100. Example: 1% == 100
-	std::array<uint16_t, COMBAT_COUNT> resistance = {};
+	std::array<uint8_t, 4> unlockedVesselResonances = {};
 
 	// Raw value. Example: 1 == 1
 	struct Skills {
@@ -226,6 +229,7 @@ struct PlayerWheelMethodsBonusData {
 		int combatMastery = 0; // Knight
 		int giftOfLife = 0; // Knight/Paladin/Druid/Sorcerer
 		int divineEmpowerment = 0; // Paladin
+		int divineGrenade = 0; // Paladin
 		int blessingOfTheGrove = 0; // Druid
 		int drainBody = 0; // Sorcerer
 		int beamMastery = 0; // Sorcerer
@@ -262,3 +266,33 @@ struct SlotInfo {
 	uint8_t slot; ///< The slot index.
 	uint16_t points; ///< The points for the slot.
 };
+
+namespace WheelSpells {
+	struct Increase {
+		bool area = false;
+		int damage = 0;
+		int heal = 0;
+		int aditionalTarget = 0;
+		int damageReduction = 0;
+		int duration = 0;
+		int criticalDamage = 0;
+		int criticalChance = 0;
+	};
+
+	struct Decrease {
+		int cooldown = 0;
+		int manaCost = 0;
+		uint8_t secondaryGroupCooldown = 0;
+	};
+
+	struct Leech {
+		int mana = 0;
+		int life = 0;
+	};
+
+	struct Bonus {
+		Leech leech;
+		Increase increase;
+		Decrease decrease;
+	};
+}

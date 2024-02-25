@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -13,6 +13,8 @@
 #include "database/database.hpp"
 #include "security/argon.hpp"
 
+#include <argon2.h>
+
 const std::regex Argon2::re("\\$([A-Za-z0-9+/]+)\\$([A-Za-z0-9+/]+)");
 const std::string Argon2::base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
@@ -21,10 +23,10 @@ Argon2::Argon2() {
 }
 
 void Argon2::updateConstants() {
-	m_const_str = g_configManager().getString(M_CONST);
+	m_const_str = g_configManager().getString(M_CONST, __FUNCTION__);
 	m_cost = parseBitShift(m_const_str);
-	t_cost = g_configManager().getNumber(T_CONST);
-	parallelism = g_configManager().getNumber(PARALLELISM);
+	t_cost = g_configManager().getNumber(T_CONST, __FUNCTION__);
+	parallelism = g_configManager().getNumber(PARALLELISM, __FUNCTION__);
 }
 
 uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {

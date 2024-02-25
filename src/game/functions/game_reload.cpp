@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -61,6 +61,15 @@ uint8_t GameReload::getReloadNumber(Reload_t reloadTypes) const {
 	return magic_enum::enum_integer(reloadTypes);
 }
 
+// Helper function for logging reload status
+void logReloadStatus(const std::string &name, bool result) {
+	if (result) {
+		g_logger().info("Reloaded: {}", name);
+	} else {
+		g_logger().error("Failed to reload: {}", name);
+	}
+}
+
 /*
  * From here down have the private members functions
  * These should only be used within the class itself
@@ -72,97 +81,123 @@ bool GameReload::reloadAll() const {
 	reloadResults.reserve(magic_enum::enum_count<Reload_t>());
 
 	for (auto value : magic_enum::enum_values<Reload_t>()) {
-		if (value == Reload_t::RELOAD_TYPE_ALL) {
-			continue;
+		const auto name = magic_enum::enum_name(value);
+		g_logger().info("Reloading: {}", name);
+		if (value != Reload_t::RELOAD_TYPE_ALL) {
+			reloadResults.push_back(init(value));
 		}
-
-		reloadResults.push_back(init(value));
 	}
 
 	return std::ranges::any_of(reloadResults, [](bool result) { return result; });
 }
 
 bool GameReload::reloadChat() const {
-	return g_chat().load();
+	const bool result = g_chat().load();
+	logReloadStatus("Chat", result);
+	return result;
 }
 
 bool GameReload::reloadConfig() const {
-	return g_configManager().reload();
+	const bool result = g_configManager().reload();
+	logReloadStatus("Config", result);
+	return result;
 }
 
 bool GameReload::reloadEvents() const {
-	return g_events().loadFromXml();
+	const bool result = g_events().loadFromXml();
+	logReloadStatus("Events", result);
+	return result;
 }
 
 bool GameReload::reloadCore() const {
-	if (auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-		g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0) {
-		// Reload scripts lib
-		auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
-		if (!g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false)) {
-			return false;
-		}
+	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+	const bool coreLoaded = g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0;
 
-		return true;
+	if (coreLoaded) {
+		const auto &datapackFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+		const bool scriptsLoaded = g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
+		if (scriptsLoaded) {
+			return true;
+		}
 	}
+
+	logReloadStatus("Core", false);
 	return false;
 }
 
 bool GameReload::reloadImbuements() const {
-	return g_imbuements().reload();
+	const bool result = g_imbuements().reload();
+	logReloadStatus("Imbuements", result);
+	return result;
 }
 
 bool GameReload::reloadItems() const {
-	return Item::items.reload();
+	const bool result = Item::items.reload();
+	logReloadStatus("Items", result);
+	return result;
 }
 
 bool GameReload::reloadModules() const {
-	return g_modules().reload();
+	const bool result = g_modules().reload();
+	logReloadStatus("Modules", result);
+	return result;
 }
 
 bool GameReload::reloadMonsters() const {
-	// Clear registered MonsterType vector
 	g_monsters().clear();
-	// Resets monster spells to prevent the spell from being incorrectly cleared from memory
-	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
-	if (!g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false)) {
+	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
+	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+
+	const bool scriptsLoaded = g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
+	const bool monsterScriptsLoaded = g_scripts().loadScripts(datapackFolder + "/monster", false, true);
+
+	if (scriptsLoaded && monsterScriptsLoaded) {
+		logReloadStatus("Monsters", true);
+		return true;
+	} else {
+		logReloadStatus("Monsters", false);
 		return false;
 	}
-
-	if (g_scripts().loadScripts(datapackFolder + "/monster", false, true) && g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, true)) {
-		return true;
-	}
-	return false;
 }
 
 bool GameReload::reloadMounts() const {
-	return g_game().mounts.reload();
+	const bool result = g_game().mounts.reload();
+	logReloadStatus("Mounts", result);
+	return result;
 }
 
 bool GameReload::reloadNpcs() const {
-	return g_npcs().reload();
+	const bool result = g_npcs().reload();
+	logReloadStatus("NPCs", result);
+	return result;
 }
 
 bool GameReload::reloadRaids() const {
-	return g_game().raids.reload() && g_game().raids.startup();
+	const bool result = g_game().raids.reload() && g_game().raids.startup();
+	logReloadStatus("Raids", result);
+	return result;
 }
 
 bool GameReload::reloadScripts() const {
 	g_scripts().clearAllScripts();
 	Zone::clearZones();
-	// Reset scripts lib to prevent the objects from being incorrectly cleared from memory
-	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
-	g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false);
-	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+
+	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
+	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+
+	g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
 	g_scripts().loadScripts(datapackFolder + "/scripts", false, true);
 	g_scripts().loadScripts(coreFolder + "/scripts", false, true);
 
 	// It should come last, after everything else has been cleaned up.
 	reloadMonsters();
 	reloadNpcs();
+	logReloadStatus("Scripts", true);
 	return true;
 }
 
 bool GameReload::reloadGroups() const {
-	return g_game().groups.reload();
+	const bool result = g_game().groups.reload();
+	logReloadStatus("Groups", result);
+	return result;
 }

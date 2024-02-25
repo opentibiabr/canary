@@ -1,18 +1,27 @@
 ---
-name: 'Cron - Stale issues and PRs'
+name: "Cron - Stale issues and PRs"
 on:
   schedule:
-    - cron: '30 1 * * *'
+    - cron: "30 1 * * *"
 
 jobs:
+  cancel-runs:
+    if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
   stale:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/stale@v6
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          stale-issue-message: 'This issue is stale because it has been open 120 days with no activity.'
-          stale-pr-message: 'This PR is stale because it has been open 45 days with no activity.'
+          stale-issue-message: "This issue is stale because it has been open 120 days with no activity."
+          stale-pr-message: "This PR is stale because it has been open 45 days with no activity."
           days-before-issue-stale: 90
           days-before-pr-stale: 30
           days-before-issue-close: -1

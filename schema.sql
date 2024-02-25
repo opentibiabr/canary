@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '38'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '43'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -129,8 +129,8 @@ CREATE TABLE IF NOT EXISTS `players` (
     `skill_manaleech_amount` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `manashield` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
     `max_manashield` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
-    `xpboost_stamina` smallint(5) DEFAULT NULL,
-    `xpboost_value` tinyint(4) DEFAULT NULL,
+    `xpboost_stamina` smallint(5) UNSIGNED DEFAULT NULL,
+    `xpboost_value` tinyint(4) UNSIGNED DEFAULT NULL,
     `marriage_status` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `marriage_spouse` int(11) NOT NULL DEFAULT '-1',
     `bonus_rerolls` bigint(21) NOT NULL DEFAULT '0',
@@ -331,7 +331,6 @@ CREATE TABLE IF NOT EXISTS `guildwar_kills` (
     `time` bigint(15) NOT NULL,
     INDEX `warid` (`warid`),
     CONSTRAINT `guildwar_kills_pk` PRIMARY KEY (`id`),
-    CONSTRAINT `guildwar_kills_unique` UNIQUE (`warid`),
     CONSTRAINT `guildwar_kills_warid_fk`
         FOREIGN KEY (`warid`) REFERENCES `guild_wars` (`id`)
         ON DELETE CASCADE
@@ -438,7 +437,7 @@ DELIMITER ;
 CREATE TABLE IF NOT EXISTS `house_lists` (
   `house_id` int NOT NULL,
   `listid` int NOT NULL,
-  `version` int NOT NULL DEFAULT '0',
+  `version` bigint NOT NULL DEFAULT '0',
   `list` text NOT NULL,
   PRIMARY KEY (`house_id`, `listid`),
   KEY `house_id_index` (`house_id`),
@@ -639,12 +638,6 @@ CREATE TABLE IF NOT EXISTS `player_kills` (
     `time` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `target` int(11) NOT NULL,
     `unavenged` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Table structure `player_misc`
-CREATE TABLE IF NOT EXISTS `player_misc` (
-    `player_id` int(11) NOT NULL,
-    `info` blob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `player_namelocks`

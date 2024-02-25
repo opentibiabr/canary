@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -333,7 +333,7 @@ public:
 private:
 	bool canWalkTo(std::shared_ptr<Creature> creature, Position pos, Direction moveDirection) const;
 	bool getFleeDirection(std::shared_ptr<Creature> creature);
-	bool getFleePath(std::shared_ptr<Creature> creature, const Position &pos, std::forward_list<Direction> &dirList);
+	bool getFleePath(std::shared_ptr<Creature> creature, const Position &pos, stdext::arraylist<Direction> &dirList);
 	bool getRandomDirection(std::shared_ptr<Creature> creature, Position pos);
 	bool isStuck(std::shared_ptr<Creature> creature, Position pos) const;
 

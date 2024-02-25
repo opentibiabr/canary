@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -25,7 +25,7 @@ public:
 	void addGuild(const std::string &name);
 	void addGuildRank(const std::string &name, const std::string &rankName);
 
-	bool isInList(std::shared_ptr<Player> player);
+	bool isInList(std::shared_ptr<Player> player) const;
 
 	void getList(std::string &list) const;
 
@@ -63,7 +63,7 @@ public:
 		return getAttribute<uint32_t>(ItemAttribute_t::DOORID);
 	}
 
-	bool canUse(std::shared_ptr<Player> player);
+	bool canUse(std::shared_ptr<Player> player) const;
 
 	void setAccessList(const std::string &textlist);
 	bool getAccessList(std::string &list) const;
@@ -104,16 +104,18 @@ public:
 	void addTile(std::shared_ptr<HouseTile> tile);
 	void updateDoorDescription() const;
 
-	bool canEditAccessList(uint32_t listId, std::shared_ptr<Player> player);
+	bool canEditAccessList(uint32_t listId, const std::shared_ptr<Player> &player) const;
 	// listId special = values:
 	// GUEST_LIST = guest list
 	// SUBOWNER_LIST = subowner list
 	void setAccessList(uint32_t listId, const std::string &textlist);
 	bool getAccessList(uint32_t listId, std::string &list) const;
 
-	bool isInvited(std::shared_ptr<Player> player);
+	bool isInvited(const std::shared_ptr<Player> &player) const {
+		return getHouseAccessLevel(player) != HOUSE_NOT_INVITED;
+	}
 
-	AccessHouseLevel_t getHouseAccessLevel(std::shared_ptr<Player> player);
+	AccessHouseLevel_t getHouseAccessLevel(std::shared_ptr<Player> player) const;
 	bool kickPlayer(std::shared_ptr<Player> player, std::shared_ptr<Player> target);
 
 	void setEntryPos(Position pos) {
@@ -145,6 +147,7 @@ public:
 	 * @note The actual transfer of ownership will occur upon server restart if `serverStartup` is set to false.
 	 */
 	void setNewOwnerGuid(int32_t newOwnerGuid, bool serverStartup);
+	void clearHouseInfo(bool preventOwnerDeletion);
 	bool tryTransferOwnership(std::shared_ptr<Player> player, bool serverStartup);
 	void setOwner(uint32_t guid, bool updateDatabase = true, std::shared_ptr<Player> player = nullptr);
 	uint32_t getOwner() const {
@@ -224,6 +227,7 @@ public:
 	}
 
 	bool transferToDepot(std::shared_ptr<Player> player) const;
+	bool transferToDepot(std::shared_ptr<Player> player, std::shared_ptr<HouseTile> tile) const;
 
 	bool hasItemOnTile() const;
 	bool hasNewOwnership() const;

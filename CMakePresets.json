@@ -7,56 +7,29 @@
   },
   "configurePresets": [
     {
-      "name": "windows-release",
-      "displayName": "Windows - Release",
-      "description": "Sets Ninja generator, compilers, build and install directory and set build type as release",
+      "name": "base",
+      "hidden": true,
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": {
-          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-          "type": "FILEPATH"
-        },
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
         "BUILD_STATIC_LIBRARY": "ON",
-        "VCPKG_TARGET_TRIPLET": "x64-windows-static",
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-        "OPTIONS_ENABLE_SCCACHE": "ON"
+        "SPEED_UP_BUILD_UNITY": "ON",
+        "OPTIONS_ENABLE_SCCACHE": "ON",
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "windows-release",
+      "inherits": "base",
+      "displayName": "Windows - Release",
+      "description": "Windows Release Build",
+      "cacheVariables": {
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static"
       },
       "architecture": {
         "value": "x64",
         "strategy": "external"
-      },
-      "vendor": {
-        "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "hostOS": [ "Windows" ]
-        }
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      }
-    },
-    {
-      "name": "linux-release",
-      "displayName": "Linux - Release",
-      "description": "Sets Ninja generator, compilers, build and install directory and set build type as release",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/${presetName}",
-      "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": {
-          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-          "type": "FILEPATH"
-        },
-        "BUILD_STATIC_LIBRARY": "ON",
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-        "OPTIONS_ENABLE_CCACHE": "ON",
-        "RUN_TESTS_AFTER_BUILD": "OFF"
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Linux"
       }
     },
     {
@@ -69,10 +42,6 @@
         "DEBUG_LOG": "ON",
         "BUILD_STATIC_LIBRARY": "OFF",
         "VCPKG_TARGET_TRIPLET": "x64-windows"
-      },
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
       }
     },
     {
@@ -86,10 +55,24 @@
         "ASAN_ENABLED": "OFF",
         "BUILD_STATIC_LIBRARY": "OFF",
         "VCPKG_TARGET_TRIPLET": "x64-windows"
+      }
+    },
+    {
+      "name": "linux-release",
+      "inherits": "base",
+      "displayName": "Linux - Release",
+      "description": "Sets Ninja generator, compilers, build and install directory and set build type as release",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": {
+          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+          "type": "FILEPATH"
+        },
+        "RUN_TESTS_AFTER_BUILD": "OFF"
       },
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
       }
     },
     {

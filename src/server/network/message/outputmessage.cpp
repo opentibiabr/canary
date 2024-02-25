@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -11,13 +11,13 @@
 
 #include "outputmessage.hpp"
 #include "server/network/protocol/protocol.hpp"
-#include "game/scheduling/scheduler.hpp"
+#include "game/scheduling/dispatcher.hpp"
 
 const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
 
 void OutputMessagePool::scheduleSendAll() {
 	auto function = std::bind_front(&OutputMessagePool::sendAll, this);
-	g_scheduler().addEvent(OUTPUTMESSAGE_AUTOSEND_DELAY.count(), function, "OutputMessagePool::sendAll");
+	g_dispatcher().scheduleEvent(OUTPUTMESSAGE_AUTOSEND_DELAY.count(), function, "OutputMessagePool::sendAll");
 }
 
 void OutputMessagePool::sendAll() {

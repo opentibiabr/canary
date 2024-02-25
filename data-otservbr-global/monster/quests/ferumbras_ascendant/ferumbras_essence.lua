@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Ferumbras Essence")
 local monster = {}
 
-monster.description = " ferumbras essence"
+monster.description = "ferumbras essence"
 monster.experience = 0
 monster.outfit = {
 	lookType = 294,
@@ -13,8 +13,12 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 115
-monster.maxHealth = 115
+monster.events = {
+	"FerumbrasEssenceImmortal",
+}
+
+monster.health = 35000
+monster.maxHealth = 35000
 monster.race = "undead"
 monster.corpse = 9591
 monster.speed = 100
@@ -34,11 +38,11 @@ monster.strategiesTarget = {
 
 monster.flags = {
 	summonable = false,
-	attackable = true,
+	attackable = false,
 	hostile = true,
 	convinceable = false,
-	pushable = false,
-	rewardBoss = true,
+	pushable = true,
+	rewardBoss = false,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = false,

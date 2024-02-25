@@ -15,7 +15,7 @@ monster.outfit = {
 
 monster.raceId = 2338
 monster.Bestiary = {
-	class = "Hybrids",
+	class = "Humanoid",
 	race = BESTY_RACE_HUMANOID,
 	toKill = 2500,
 	FirstUnlock = 100,
@@ -75,7 +75,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 80540, maxCount = 18 },
+	{ name = "platinum coin", chance = 80540, maxCount = 23 },
 	{ name = "small sapphire", chance = 9790, maxCount = 4 },
 	{ name = "green crystal shard", chance = 5360 },
 	{ name = "liodile fang", chance = 4030, maxCount = 3 },
@@ -89,8 +89,8 @@ monster.loot = {
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -500 },
-	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_EARTHDAMAGE, minDamage = -325, maxDamage = -400, range = 7, shootEffect = CONST_ANI_POISONARROW, target = true },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -300, maxDamage = -400, range = 2, effect = CONST_ME_GROUNDSHAKER, target = true },
+	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_EARTHDAMAGE, minDamage = -325, maxDamage = -400, range = 7, shootEffect = CONST_ANI_POISONARROW, target = true },
+	{ name = "combat", interval = 2000, chance = 34, type = COMBAT_PHYSICALDAMAGE, minDamage = -300, maxDamage = -400, range = 2, effect = CONST_ME_GROUNDSHAKER, target = true },
 }
 
 monster.defenses = {

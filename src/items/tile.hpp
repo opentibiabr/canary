@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -25,7 +25,6 @@ class Zone;
 
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 using ItemVector = std::vector<std::shared_ptr<Item>>;
-using SpectatorHashSet = phmap::flat_hash_set<std::shared_ptr<Creature>>;
 
 class TileItemVector : private ItemVector {
 public:
@@ -132,6 +131,11 @@ public:
 	std::shared_ptr<Tile> getTile() override final {
 		return static_self_cast<Tile>();
 	}
+
+	std::shared_ptr<Cylinder> getCylinder() final {
+		return getTile();
+	}
+
 	std::shared_ptr<MagicField> getFieldItem() const;
 	std::shared_ptr<Teleport> getTeleportItem() const;
 	std::shared_ptr<TrashHolder> getTrashHolder() const;
@@ -141,10 +145,11 @@ public:
 	std::shared_ptr<Creature> getTopCreature() const;
 	std::shared_ptr<Creature> getBottomCreature() const;
 	std::shared_ptr<Creature> getTopVisibleCreature(std::shared_ptr<Creature> creature) const;
+
 	std::shared_ptr<Creature> getBottomVisibleCreature(std::shared_ptr<Creature> creature) const;
 	std::shared_ptr<Item> getTopTopItem() const;
 	std::shared_ptr<Item> getTopDownItem() const;
-	bool isMoveableBlocking() const;
+	bool isMovableBlocking() const;
 	std::shared_ptr<Thing> getTopVisibleThing(std::shared_ptr<Creature> creature);
 	std::shared_ptr<Item> getItemByTopOrder(int32_t topOrder);
 
@@ -173,21 +178,24 @@ public:
 	void resetFlag(uint32_t flag) {
 		this->flags &= ~flag;
 	}
+	void addZone(std::shared_ptr<Zone> zone);
+	void clearZones();
 
-	const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones();
+	auto getZones() const {
+		return zones;
+	}
 
 	ZoneType_t getZoneType() const {
 		if (hasFlag(TILESTATE_PROTECTIONZONE)) {
 			return ZONE_PROTECTION;
 		} else if (hasFlag(TILESTATE_NOPVPZONE)) {
 			return ZONE_NOPVP;
-		} else if (hasFlag(TILESTATE_NOLOGOUT)) {
-			return ZONE_NOLOGOUT;
 		} else if (hasFlag(TILESTATE_PVPZONE)) {
 			return ZONE_PVP;
-		} else {
-			return ZONE_NORMAL;
+		} else if (hasFlag(TILESTATE_NOLOGOUT)) {
+			return ZONE_NOLOGOUT;
 		}
+		return ZONE_NORMAL;
 	}
 
 	bool hasHeight(uint32_t n) const;
@@ -209,7 +217,7 @@ public:
 	void addThing(std::shared_ptr<Thing> thing) override final;
 	void addThing(int32_t index, std::shared_ptr<Thing> thing) override;
 
-	void updateTileFlags(std::shared_ptr<Item> item);
+	void updateTileFlags(const std::shared_ptr<Item> &item);
 	void updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t count) override final;
 	void replaceThing(uint32_t index, std::shared_ptr<Thing> thing) override final;
 
@@ -243,18 +251,24 @@ public:
 	std::shared_ptr<Item> getGround() const {
 		return ground;
 	}
-	void setGround(std::shared_ptr<Item> item) {
-		ground = item;
+	void setGround(const std::shared_ptr<Item> &item) {
+		if (ground) {
+			resetTileFlags(ground);
+		}
+
+		if (ground = item) {
+			setTileFlags(item);
+		}
 	}
 
 private:
 	void onAddTileItem(std::shared_ptr<Item> item);
 	void onUpdateTileItem(std::shared_ptr<Item> oldItem, const ItemType &oldType, std::shared_ptr<Item> newItem, const ItemType &newType);
-	void onRemoveTileItem(const SpectatorHashSet &spectators, const std::vector<int32_t> &oldStackPosVector, std::shared_ptr<Item> item);
-	void onUpdateTile(const SpectatorHashSet &spectators);
+	void onRemoveTileItem(const CreatureVector &spectators, const std::vector<int32_t> &oldStackPosVector, std::shared_ptr<Item> item);
+	void onUpdateTile(const CreatureVector &spectators);
 
-	void setTileFlags(std::shared_ptr<Item> item);
-	void resetTileFlags(std::shared_ptr<Item> item);
+	void setTileFlags(const std::shared_ptr<Item> &item);
+	void resetTileFlags(const std::shared_ptr<Item> &item);
 	bool hasHarmfulField() const;
 	ReturnValue checkNpcCanWalkIntoTile() const;
 
@@ -262,7 +276,7 @@ protected:
 	std::shared_ptr<Item> ground = nullptr;
 	Position tilePos;
 	uint32_t flags = 0;
-	std::shared_ptr<Zone> zone;
+	std::unordered_set<std::shared_ptr<Zone>> zones;
 };
 
 // Used for walkable tiles, where there is high likeliness of

@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"FafnarMissionsDeath",
+}
+
 monster.raceId = 1798
 monster.Bestiary = {
 	class = "Human",
@@ -34,7 +38,7 @@ monster.speed = 145
 monster.manaCost = 0
 
 monster.faction = FACTION_FAFNAR
-monster.enemyFactions = { FACTION_ANUMA, FACTION_PLAYER }
+monster.enemyFactions = { FACTION_PLAYER, FACTION_ANUMA }
 
 monster.changeTarget = {
 	interval = 4000,

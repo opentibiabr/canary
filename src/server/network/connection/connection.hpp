@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -42,8 +42,7 @@ public:
 	void closeAll();
 
 private:
-	phmap::flat_hash_set<Connection_ptr> connections;
-	std::mutex connectionManagerLock;
+	phmap::parallel_flat_hash_set_m<Connection_ptr> connections;
 };
 
 class Connection : public std::enable_shared_from_this<Connection> {
@@ -62,9 +61,10 @@ public:
 	void close(bool force = false);
 	// Used by protocols that require server to send first
 	void accept(Protocol_ptr protocolPtr);
-	void accept(bool toggleParseHeader = true);
+	void acceptInternal(bool toggleParseHeader = true);
 
 	void resumeWork();
+
 	void send(const OutputMessage_ptr &outputMessage);
 
 	uint32_t getIP();
@@ -100,8 +100,9 @@ private:
 
 	asio::ip::tcp::socket socket;
 
-	time_t timeConnected;
+	std::time_t timeConnected = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	uint32_t packetsSent = 0;
+	uint32_t ip = 1;
 
 	std::underlying_type_t<ConnectionState_t> connectionState = CONNECTION_STATE_OPEN;
 	bool receivedFirst = false;

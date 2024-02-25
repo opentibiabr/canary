@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -30,6 +30,9 @@ class Item;
 class Tile;
 class Zone;
 
+static constexpr uint8_t WALK_TARGET_NEARBY_EXTRA_COST = 2;
+static constexpr uint8_t WALK_FLOOR_CHANGE_EXTRA_COST = 2;
+static constexpr uint8_t WALK_DIAGONAL_EXTRA_COST = 3;
 static constexpr int32_t EVENT_CREATURECOUNT = 10;
 static constexpr int32_t EVENT_CREATURE_THINK_INTERVAL = 1000;
 static constexpr int32_t EVENT_CHECK_CREATURE_INTERVAL = (EVENT_CREATURE_THINK_INTERVAL / EVENT_CREATURECOUNT);
@@ -42,6 +45,10 @@ public:
 	bool operator()(const Position &startPos, const Position &testPos, const FindPathParams &fpp, int32_t &bestMatchDist) const;
 
 	bool isInRange(const Position &startPos, const Position &testPos, const FindPathParams &fpp) const;
+
+	Position getTargetPos() const {
+		return targetPos;
+	}
 
 private:
 	Position targetPos;
@@ -56,7 +63,9 @@ protected:
 	Creature();
 
 public:
-	static double speedA, speedB, speedC;
+	static constexpr double speedA = 857.36;
+	static constexpr double speedB = 261.29;
+	static constexpr double speedC = -4795.01;
 
 	virtual ~Creature();
 
@@ -67,13 +76,25 @@ public:
 	std::shared_ptr<Creature> getCreature() override final {
 		return static_self_cast<Creature>();
 	}
+	std::shared_ptr<const Creature> getCreature() const override final {
+		return static_self_cast<Creature>();
+	}
 	virtual std::shared_ptr<Player> getPlayer() {
+		return nullptr;
+	}
+	virtual std::shared_ptr<const Player> getPlayer() const {
 		return nullptr;
 	}
 	virtual std::shared_ptr<Npc> getNpc() {
 		return nullptr;
 	}
+	virtual std::shared_ptr<const Npc> getNpc() const {
+		return nullptr;
+	}
 	virtual std::shared_ptr<Monster> getMonster() {
+		return nullptr;
+	}
+	virtual std::shared_ptr<const Monster> getMonster() const {
 		return nullptr;
 	}
 
@@ -129,6 +150,14 @@ public:
 		moveLocked = locked;
 	}
 
+	bool isDirectionLocked() const {
+		return directionLocked;
+	}
+
+	void setDirectionLocked(bool locked) {
+		directionLocked = locked;
+	}
+
 	int32_t getThrowRange() const override final {
 		return 1;
 	}
@@ -147,13 +176,11 @@ public:
 
 	int32_t getWalkSize();
 
-	int32_t getWalkDelay(Direction dir);
-	int32_t getWalkDelay();
+	int32_t getWalkDelay(Direction dir = DIRECTION_NONE);
 	int64_t getTimeSinceLastMove() const;
 
 	int64_t getEventStepTicks(bool onlyDelay = false);
-	int64_t getStepDuration(Direction dir);
-	int64_t getStepDuration();
+	uint16_t getStepDuration(Direction dir = DIRECTION_NONE);
 	virtual uint16_t getStepSpeed() const {
 		return getSpeed();
 	}
@@ -263,12 +290,14 @@ public:
 		return ZONE_NORMAL;
 	}
 
-	const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones();
+	std::unordered_set<std::shared_ptr<Zone>> getZones();
 
 	// walk functions
-	void startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions = false);
+	void startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions = false);
 	void addEventWalk(bool firstStep = false);
 	void stopEventWalk();
+
+	void goToFollowCreature_async(std::function<void()> &&onComplete = nullptr);
 	virtual void goToFollowCreature();
 
 	// walk events
@@ -283,8 +312,12 @@ public:
 	virtual bool setFollowCreature(std::shared_ptr<Creature> creature);
 
 	// follow events
-	virtual void onFollowCreature(std::shared_ptr<Creature>) { }
-	virtual void onFollowCreatureComplete(std::shared_ptr<Creature>) { }
+	virtual void onFollowCreature(const std::shared_ptr<Creature> &) {
+		/* empty */
+	}
+	virtual void onFollowCreatureComplete(const std::shared_ptr<Creature> &) {
+		/* empty */
+	}
 
 	// combat functions
 	std::shared_ptr<Creature> getAttackedCreature() {
@@ -331,7 +364,7 @@ public:
 		return m_master.lock();
 	}
 
-	const phmap::flat_hash_set<std::shared_ptr<Creature>> &getSummons() const {
+	const auto &getSummons() const {
 		return m_summons;
 	}
 
@@ -355,8 +388,8 @@ public:
 		return SPEECHBUBBLE_NONE;
 	}
 
-	bool addCondition(std::shared_ptr<Condition> condition);
-	bool addCombatCondition(std::shared_ptr<Condition> condition);
+	bool addCondition(std::shared_ptr<Condition> condition, bool attackerPlayer = false);
+	bool addCombatCondition(std::shared_ptr<Condition> condition, bool attackerPlayer = false);
 	void removeCondition(ConditionType_t conditionType, ConditionId_t conditionId, bool force = false);
 	void removeCondition(ConditionType_t type);
 	void removeCondition(std::shared_ptr<Condition> condition);
@@ -373,7 +406,7 @@ public:
 	virtual bool isImmune(ConditionType_t type) const {
 		return false;
 	}
-	virtual bool isSuppress(ConditionType_t type) const {
+	virtual bool isSuppress(ConditionType_t type, bool attackerPlayer) const {
 		return false;
 	};
 
@@ -411,10 +444,20 @@ public:
 	virtual void onAttackedCreatureDrainHealth(std::shared_ptr<Creature> target, int32_t points);
 	virtual void onTargetCreatureGainHealth(std::shared_ptr<Creature>, int32_t) { }
 	void onAttackedCreatureKilled(std::shared_ptr<Creature> target);
-	virtual bool onKilledCreature(std::shared_ptr<Creature> target, bool lastHit = true);
+	/**
+	 * @deprecated -- This is here to trigger the deprecated onKill events in lua
+	 */
+	bool deprecatedOnKilledCreature(std::shared_ptr<Creature> target, bool lastHit);
+	virtual bool onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit) {
+		return false;
+	};
+	virtual bool onKilledMonster(const std::shared_ptr<Monster> &target) {
+		return false;
+	};
 	virtual void onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target);
 	virtual void onAttackedCreatureBlockHit(BlockType_t) { }
 	virtual void onBlockHit() { }
+	virtual void onTakeDamage(std::shared_ptr<Creature>, int32_t) { }
 	virtual void onChangeZone(ZoneType_t zone);
 	virtual void onAttackedCreatureChangeZone(ZoneType_t zone);
 	virtual void onIdleStatus();
@@ -446,7 +489,7 @@ public:
 	 * @return false
 	 */
 	void checkSummonMove(const Position &newPos, bool teleportSummon = false);
-	virtual void onCreatureMove(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> newTile, const Position &newPos, std::shared_ptr<Tile> oldTile, const Position &oldPos, bool teleport);
+	virtual void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport);
 
 	virtual void onAttackedCreatureDisappear(bool) { }
 	virtual void onFollowCreatureDisappear(bool) { }
@@ -493,12 +536,26 @@ public:
 	std::shared_ptr<Cylinder> getParent() override final {
 		return getTile();
 	}
+
 	void setParent(std::weak_ptr<Cylinder> cylinder) override final {
-		auto lockedCylinder = cylinder.lock();
-		if (lockedCylinder) {
-			auto newParent = lockedCylinder->getTile();
+		const auto oldGroundSpeed = walk.groundSpeed;
+		walk.groundSpeed = 150;
+
+		if (const auto &lockedCylinder = cylinder.lock()) {
+			const auto &newParent = lockedCylinder->getTile();
 			position = newParent->getPosition();
 			m_tile = newParent;
+
+			if (newParent->getGround()) {
+				const auto &it = Item::items[newParent->getGround()->getID()];
+				if (it.speed > 0) {
+					walk.groundSpeed = it.speed;
+				}
+			}
+		}
+
+		if (walk.groundSpeed != oldGroundSpeed) {
+			walk.recache();
 		}
 	}
 
@@ -523,8 +580,8 @@ public:
 
 	double getDamageRatio(std::shared_ptr<Creature> attacker) const;
 
-	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, const FindPathParams &fpp);
-	bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
+	bool getPathTo(const Position &targetPos, stdext::arraylist<Direction> &dirList, const FindPathParams &fpp);
+	bool getPathTo(const Position &targetPos, stdext::arraylist<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
 
 	struct CountBlock_t {
 		int32_t total;
@@ -655,11 +712,11 @@ protected:
 
 	CountMap damageMap;
 
-	phmap::flat_hash_set<std::shared_ptr<Creature>> m_summons;
+	std::vector<std::shared_ptr<Creature>> m_summons;
 	CreatureEventList eventsList;
 	ConditionList conditions;
 
-	std::forward_list<Direction> listWalkDir;
+	std::deque<Direction> listWalkDir;
 
 	std::weak_ptr<Tile> m_tile;
 	std::weak_ptr<Creature> m_attackedCreature;
@@ -720,15 +777,18 @@ protected:
 	bool skillLoss = true;
 	bool lootDrop = true;
 	bool cancelNextWalk = false;
-	bool hasFollowPath = false;
 	bool forceUpdateFollowPath = false;
 	bool hiddenHealth = false;
 	bool floorChange = false;
 	bool canUseDefense = true;
 	bool moveLocked = false;
+	bool directionLocked = false;
+	bool hasFollowPath = false;
 	int8_t charmChanceModifier = 0;
 
 	uint8_t wheelOfDestinyDrainBodyDebuff = 0;
+
+	std::atomic_bool pathfinderRunning = false;
 
 	// use map here instead of phmap to keep the keys in a predictable order
 	std::map<std::string, CreatureIcon> creatureIcons = {};
@@ -755,7 +815,7 @@ protected:
 	virtual uint16_t getLookCorpse() const {
 		return 0;
 	}
-	virtual void getPathSearchParams(std::shared_ptr<Creature> creature, FindPathParams &fpp);
+	virtual void getPathSearchParams(const std::shared_ptr<Creature> &, FindPathParams &fpp);
 	virtual void death(std::shared_ptr<Creature>) { }
 	virtual bool dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified);
 	virtual std::shared_ptr<Item> getCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature);
@@ -768,4 +828,28 @@ private:
 	bool canFollowMaster();
 	bool isLostSummon();
 	void handleLostSummon(bool teleportSummons);
+
+	struct {
+		uint16_t groundSpeed { 0 };
+		uint16_t calculatedStepSpeed { 1 };
+		uint16_t duration { 0 };
+
+		bool needRecache() const {
+			return duration == 0;
+		}
+		void recache() {
+			duration = 0;
+		}
+	} walk;
+
+	void updateCalculatedStepSpeed() {
+		const auto stepSpeed = getStepSpeed();
+		walk.calculatedStepSpeed = 1;
+		if (stepSpeed > -Creature::speedB) {
+			const auto formula = std::floor((Creature::speedA * log(stepSpeed + Creature::speedB) + Creature::speedC) + .5);
+			walk.calculatedStepSpeed = static_cast<uint16_t>(std::max(formula, 1.));
+		}
+
+		walk.recache();
+	}
 };

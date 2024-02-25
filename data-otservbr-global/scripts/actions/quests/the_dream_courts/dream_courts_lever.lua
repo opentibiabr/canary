@@ -24,8 +24,8 @@ local config = {
 		to = Position(32229, 32055, 14),
 	},
 	exit = Position(32210, 32035, 13),
-	storage = Storage.Quest.U12_00.TheDreamCourts.ArenaTimer,
 }
+local bossToday = config.bossName[os.date("%A")]
 
 local dreamCourtsLever = Action()
 function dreamCourtsLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
@@ -38,7 +38,7 @@ function dreamCourtsLever.onUse(player, item, fromPosition, target, toPosition, 
 	spec:setCheckPosition(config.specPos)
 	spec:check()
 	if spec:getPlayers() > 0 then
-		player:say("There's someone fighting with " .. config.bossName[os.date("%A")] .. ".", TALKTYPE_MONSTER_SAY)
+		player:say("There's someone fighting with " .. bossToday .. ".", TALKTYPE_MONSTER_SAY)
 		return true
 	end
 	local lever = Lever()
@@ -51,17 +51,7 @@ function dreamCourtsLever.onUse(player, item, fromPosition, target, toPosition, 
 			creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "All the players need to be level " .. config.requiredLevel .. " or higher.")
 			return false
 		end
-		if creature:getStorageValue(config.storage) > os.time() then
-			local info = lever:getInfoPositions()
-			for _, v in pairs(info) do
-				local newPlayer = v.creature
-				if newPlayer then
-					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. config.timeToFightAgain .. " hours to face " .. config.bossName[os.date("%A")] .. " again!")
-					if newPlayer:getStorageValue(config.storage) > os.time() then
-						newPlayer:getPosition():sendMagicEffect(CONST_ME_POFF)
-					end
-				end
-			end
+		if not lever:canUseLever(player, bossToday, config.timeToFightAgain) then
 			return false
 		end
 		return true
@@ -69,12 +59,12 @@ function dreamCourtsLever.onUse(player, item, fromPosition, target, toPosition, 
 	lever:checkPositions()
 	if lever:checkConditions() then
 		spec:removeMonsters()
-		local monster = Game.createMonster(config.bossName[os.date("%A")], config.bossPosition, true, true)
+		local monster = Game.createMonster(bossToday, config.bossPosition, true, true)
 		if not monster then
 			return true
 		end
 		lever:teleportPlayers()
-		lever:setStorageAllPlayers(config.storage, os.time() + config.timeToFightAgain * 3600)
+		lever:setCooldownAllPlayers(bossToday, os.time() + config.timeToFightAgain * 3600)
 		addEvent(function()
 			local old_players = lever:getInfoPositions()
 			spec:clearCreaturesCache()

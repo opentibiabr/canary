@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -13,6 +13,15 @@
 #include "declarations.hpp"
 #include "enums/item_attribute.hpp"
 #include "game/movement/position.hpp"
+#include "enums/object_category.hpp"
+
+namespace pugi {
+	class xml_parse_result;
+}
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <random>
+#endif
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result);
 
@@ -25,6 +34,8 @@ std::string generateToken(const std::string &secret, uint32_t ticks);
 void replaceString(std::string &str, const std::string &sought, const std::string &replacement);
 void trim_right(std::string &source, char t);
 void trim_left(std::string &source, char t);
+std::string keepFirstWordOnly(std::string &str);
+
 void toLowerCaseString(std::string &source);
 std::string asLowerCaseString(std::string source);
 std::string asUpperCaseString(std::string source);
@@ -70,8 +81,8 @@ std::string formatTime(time_t time);
  */
 std::string formatEnumName(std::string_view name);
 std::time_t getTimeNow();
-std::time_t getTimeMsNow();
-std::time_t getTimeUsNow();
+int64_t getTimeMsNow();
+int64_t getTimeUsNow();
 std::string convertIPToString(uint32_t ip);
 
 void trimString(std::string &str);
@@ -125,16 +136,18 @@ ItemAttribute_t stringToItemAttribute(const std::string &str);
 
 const char* getReturnMessage(ReturnValue value);
 
+void sleep_for(uint64_t ms);
 void capitalizeWords(std::string &source);
 void consoleHandlerExit();
-std::string validateNameHouse(const std::string &name);
 NameEval_t validateName(const std::string &name);
 
 bool isCaskItem(uint16_t itemId);
 
 std::string getObjectCategoryName(ObjectCategory_t category);
+bool isValidObjectCategory(ObjectCategory_t category);
 
 int64_t OTSYS_TIME();
+void UPDATE_OTSYS_TIME();
 
 SpellGroup_t stringToSpellGroup(const std::string &value);
 
@@ -144,9 +157,7 @@ std::string formatPrice(std::string price, bool space /* = false*/);
 std::vector<std::string> split(const std::string &str, char delimiter = ',');
 std::string getFormattedTimeRemaining(uint32_t time);
 
-static inline unsigned int getNumberOfCores() {
-	return std::thread::hardware_concurrency();
-}
+unsigned int getNumberOfCores();
 
 static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	switch (combatType) {
@@ -188,3 +199,21 @@ std::string getPlayerObjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, con
 std::string getPlayerPossessivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
 std::string getPlayerReflexivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
 std::string getVerbForPronoun(PlayerPronoun_t pronoun, bool pastTense = false);
+
+std::string toKey(const std::string &str);
+
+static inline double quadraticPoly(double a, double b, double c, double x) {
+	return a * x * x + b * x + c;
+}
+
+uint8_t convertWheelGemAffinityToDomain(uint8_t affinity);
+
+template <typename EnumType, typename UnderlyingType = std::underlying_type_t<EnumType>>
+UnderlyingType enumToValue(EnumType value) {
+	return static_cast<UnderlyingType>(value);
+}
+
+template <typename EnumType, typename UnderlyingType = std::underlying_type_t<EnumType>>
+EnumType enumFromValue(UnderlyingType value) {
+	return static_cast<EnumType>(value);
+}

@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"SecretLibraryBossDeath",
+}
+
 monster.bosstiary = {
 	bossRaceId = 1608,
 	bossRace = RARITY_ARCHFOE,
@@ -92,8 +96,8 @@ monster.loot = {
 	{ name = "dreaded cleaver", chance = 1000 },
 	{ name = "mercenary sword", chance = 1000 },
 	{ id = 28341, chance = 1000 }, -- tessellated wall
-	{ id = 8900, chance = 1000 }, -- heavily rusted shield
-	{ id = 8906, chance = 1000 }, -- heavily rusted helmet
+	{ name = "slightly rusted shield", chance = 5880 },
+	{ name = "slightly rusted helmet", chance = 35290 },
 	{ name = "epaulette", chance = 500 },
 	{ name = "giant emerald", chance = 500 },
 	{ name = "unliving demonbone", chance = 500 },
@@ -101,11 +105,10 @@ monster.loot = {
 
 monster.attacks = {
 	{ name = "melee", interval = 1000, chance = 100, skill = 150, attack = 280 },
-	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -900, maxDamage = -1500, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -210, maxDamage = -600, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -900, maxDamage = -1500, length = 8, spread = 0, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -210, maxDamage = -600, length = 8, spread = 0, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -210, maxDamage = -600, range = 7, radius = 3, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "melee", interval = 2000, chance = 100, skill = 90, attack = 250 },
-	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_LIFEDRAIN, minDamage = -1500, maxDamage = -2000, range = 7, radius = 3, target = false },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_LIFEDRAIN, minDamage = -1500, maxDamage = -2000, range = 7, radius = 3, effect = CONST_ME_DRAWBLOOD, target = false },
 }
 
 monster.defenses = {

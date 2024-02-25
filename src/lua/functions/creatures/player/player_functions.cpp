@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -14,11 +14,19 @@
 #include "creatures/interactions/chat.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
 #include "io/ioprey.hpp"
 #include "items/item.hpp"
 #include "lua/functions/creatures/player/player_functions.hpp"
+#include "game/scheduling/save_manager.hpp"
+#include "game/scheduling/dispatcher.hpp"
+#include "map/spectators.hpp"
+
+#include "enums/account_errors.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_coins.hpp"
 
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 	// player:sendInventory()
@@ -279,12 +287,12 @@ int PlayerFunctions::luaPlayerSetAccountType(lua_State* L) {
 		return 1;
 	}
 
-	if (player->getAccount()->setAccountType(getNumber<account::AccountType>(L, 2)) != account::ERROR_NO) {
+	if (player->getAccount()->setAccountType(getNumber<uint8_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		lua_pushnil(L);
 		return 1;
 	}
@@ -326,8 +334,7 @@ int PlayerFunctions::luaPlayerIsMonsterBestiaryUnlocked(lua_State* L) {
 		return 0;
 	}
 
-	for (auto finishedMonsters = g_iobestiary().getBestiaryFinished(player);
-		 uint16_t finishedRaceId : finishedMonsters) {
+	for (uint16_t finishedRaceId : g_iobestiary().getBestiaryFinished(player)) {
 		if (raceId == finishedRaceId) {
 			pushBoolean(L, true);
 			return 1;
@@ -459,10 +466,25 @@ int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerisMonsterPrey(lua_State* L) {
+	// player:isMonsterPrey(raceid)
+	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1)) {
+		if (const std::unique_ptr<PreySlot> &slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
+			slot && slot->isOccupied()) {
+			pushBoolean(L, true);
+		} else {
+			pushBoolean(L, false);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerPreyThirdSlot(lua_State* L) {
 	// get: player:preyThirdSlot() set: player:preyThirdSlot(bool)
-	if (const auto &player = getUserdataShared<Player>(L, 1)) {
-		const auto &slot = player->getPreySlotById(PreySlot_Three);
+	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
+		const auto &slot = player->getPreySlotById(PreySlot_Three)) {
 		if (!slot) {
 			lua_pushnil(L);
 		} else if (lua_gettop(L) == 1) {
@@ -982,16 +1004,17 @@ int PlayerFunctions::luaPlayerGetMaxMana(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSetMaxMana(lua_State* L) {
 	// player:setMaxMana(maxMana)
-	std::shared_ptr<Player> player = getPlayer(L, 1);
-	if (player) {
-		player->manaMax = getNumber<int32_t>(L, 2);
-		player->mana = std::min<int32_t>(player->mana, player->manaMax);
-		g_game().addPlayerMana(player);
-		player->sendStats();
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
+	const auto &player = getPlayer(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
 	}
+
+	player->manaMax = getNumber<int32_t>(L, 2);
+	player->mana = std::min<int32_t>(player->mana, player->manaMax);
+	g_game().addPlayerMana(player);
+	player->sendStats();
+	pushBoolean(L, true);
 	return 1;
 }
 
@@ -1378,7 +1401,23 @@ int PlayerFunctions::luaPlayerSetVocation(lua_State* L) {
 	}
 
 	player->setVocation(vocation->getId());
+	player->sendSkills();
+	player->sendStats();
+	player->sendBasicData();
+	player->wheel()->sendGiftOfLifeCooldown();
+	g_game().reloadCreature(player);
 	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerIsPromoted(lua_State* L) {
+	// player:isPromoted()
+	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
+	if (player) {
+		pushBoolean(L, player->isPromoted());
+	} else {
+		lua_pushnil(L);
+	}
 	return 1;
 }
 
@@ -1872,6 +1911,22 @@ int PlayerFunctions::luaPlayerAddItemEx(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerAddItemStash(lua_State* L) {
+	// player:addItemStash(itemId, count = 1)
+	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto itemId = getNumber<uint16_t>(L, 2);
+	auto count = getNumber<uint32_t>(L, 3, 1);
+
+	player->addItemOnStash(itemId, count);
+	pushBoolean(L, true);
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerRemoveStashItem(lua_State* L) {
 	// player:removeStashItem(itemId, count)
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
@@ -2074,7 +2129,7 @@ int PlayerFunctions::luaPlayerSendTextMessage(lua_State* L) {
 	TextMessage message(getNumber<MessageClasses>(L, 2), getString(L, 3));
 	if (parameters == 4) {
 		uint16_t channelId = getNumber<uint16_t>(L, 4);
-		ChatChannel* channel = g_chat().getChannel(player, channelId);
+		const auto &channel = g_chat().getChannel(player, channelId);
 		if (!channel || !channel->hasUser(player)) {
 			pushBoolean(L, false);
 			return 1;
@@ -2441,7 +2496,7 @@ int PlayerFunctions::luaPlayerAddPremiumDays(lua_State* L) {
 
 	player->getAccount()->addPremiumDays(addDays);
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		return 1;
 	}
 
@@ -2470,7 +2525,7 @@ int PlayerFunctions::luaPlayerRemovePremiumDays(lua_State* L) {
 
 	player->getAccount()->addPremiumDays(-removeDays);
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		return 1;
 	}
 
@@ -2487,9 +2542,9 @@ int PlayerFunctions::luaPlayerGetTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-	auto [coins, result] = player->getAccount()->getCoins(account::CoinType::COIN);
+	auto [coins, result] = player->getAccount()->getCoins(enumToValue(CoinType::Normal));
 
-	if (result == account::ERROR_NO) {
+	if (result == enumToValue(AccountErrors_t::Ok)) {
 		lua_pushnumber(L, coins);
 	}
 
@@ -2505,13 +2560,13 @@ int PlayerFunctions::luaPlayerAddTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->addCoins(account::CoinType::COIN, getNumber<uint32_t>(L, 2)) != account::ERROR_NO) {
+	if (player->account->addCoins(enumToValue(CoinType::Normal), getNumber<uint32_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("Failed to add coins");
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("Failed to save account");
 		lua_pushnil(L);
 		return 1;
@@ -2531,12 +2586,12 @@ int PlayerFunctions::luaPlayerRemoveTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->removeCoins(account::CoinType::COIN, getNumber<uint32_t>(L, 2)) != account::ERROR_NO) {
+	if (player->account->removeCoins(enumToValue(CoinType::Normal), getNumber<uint32_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("Failed to remove coins");
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("Failed to save account");
 		lua_pushnil(L);
 		return 1;
@@ -2556,9 +2611,9 @@ int PlayerFunctions::luaPlayerGetTransferableCoins(lua_State* L) {
 		return 1;
 	}
 
-	auto [coins, result] = player->getAccount()->getCoins(account::CoinType::TRANSFERABLE);
+	auto [coins, result] = player->getAccount()->getCoins(enumToValue(CoinType::Transferable));
 
-	if (result == account::ERROR_NO) {
+	if (result == enumToValue(AccountErrors_t::Ok)) {
 		lua_pushnumber(L, coins);
 	}
 
@@ -2574,13 +2629,13 @@ int PlayerFunctions::luaPlayerAddTransferableCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->addCoins(account::CoinType::TRANSFERABLE, getNumber<uint32_t>(L, 2)) != account::ERROR_NO) {
+	if (player->account->addCoins(enumToValue(CoinType::Transferable), getNumber<uint32_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("failed to add transferable coins");
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("failed to save account");
 		lua_pushnil(L);
 		return 1;
@@ -2600,13 +2655,13 @@ int PlayerFunctions::luaPlayerRemoveTransferableCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->removeCoins(account::CoinType::TRANSFERABLE, getNumber<uint32_t>(L, 2)) != account::ERROR_NO) {
+	if (player->account->removeCoins(enumToValue(CoinType::Transferable), getNumber<uint32_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("failed to remove transferable coins");
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("failed to save account");
 		lua_pushnil(L);
 		return 1;
@@ -2823,10 +2878,7 @@ int PlayerFunctions::luaPlayerSave(lua_State* L) {
 		if (!player->isOffline()) {
 			player->loginPosition = player->getPosition();
 		}
-		pushBoolean(L, IOLoginData::savePlayer(player));
-		if (player->isOffline()) {
-			// avoiding memory leak
-		}
+		pushBoolean(L, g_saveManager().savePlayer(player));
 	} else {
 		lua_pushnil(L);
 	}
@@ -2947,10 +2999,8 @@ int PlayerFunctions::luaPlayerSetGhostMode(lua_State* L) {
 	std::shared_ptr<Tile> tile = player->getTile();
 	const Position &position = player->getPosition();
 
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, position, true, true);
-	for (auto spectator : spectators) {
-		auto tmpPlayer = spectator->getPlayer();
+	for (const auto &spectator : Spectators().find<Player>(position, true)) {
+		const auto &tmpPlayer = spectator->getPlayer();
 		if (tmpPlayer != player && !tmpPlayer->isAccessPlayer()) {
 			if (enabled) {
 				tmpPlayer->sendRemoveTileThing(position, tile->getStackposOfCreature(tmpPlayer, player));
@@ -3686,6 +3736,24 @@ int PlayerFunctions::luaPlayerGetName(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerChangeName(lua_State* L) {
+	// player:changeName(newName)
+	const auto player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+	if (player->isOnline()) {
+		player->removePlayer(true, true);
+	}
+	player->kv()->remove("namelock");
+	auto newName = getString(L, 2);
+	player->setName(newName);
+	g_saveManager().savePlayer(player);
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerHasGroupFlag(lua_State* L) {
 	// player:hasGroupFlag(flag)
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
@@ -3865,7 +3933,7 @@ int PlayerFunctions::luaPlayerUpgradeSpellWOD(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerRevelationStageWOD(lua_State* L) {
-	// player:revelationStagesWOD([name[, set]])
+	// player:revelationStageWOD([name[, set]])
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
@@ -4089,7 +4157,125 @@ int PlayerFunctions::luaPlayerKV(lua_State* L) {
 		return 1;
 	}
 
-	pushUserdata<KVStore>(L, player->kv());
-	setMetatable(L, -1, "KVStore");
+	pushUserdata<KV>(L, player->kv());
+	setMetatable(L, -1, "KV");
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetStoreInbox(lua_State* L) {
+	// player:getStoreInbox()
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (auto item = player->getStoreInbox()) {
+		pushUserdata<Item>(L, item);
+		setItemMetatable(L, -1, item);
+	} else {
+		pushBoolean(L, false);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerHasAchievement(lua_State* L) {
+	// player:hasAchievement(id or name)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	uint16_t achievementId = 0;
+	if (isNumber(L, 2)) {
+		achievementId = getNumber<uint16_t>(L, 2);
+	} else {
+		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
+	}
+
+	pushBoolean(L, player->achiev()->isUnlocked(achievementId));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddAchievement(lua_State* L) {
+	// player:addAchievement(id or name[, sendMessage = true])
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	uint16_t achievementId = 0;
+	if (isNumber(L, 2)) {
+		achievementId = getNumber<uint16_t>(L, 2);
+	} else {
+		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
+	}
+
+	pushBoolean(L, player->achiev()->add(achievementId, getBoolean(L, 3, true)));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveAchievement(lua_State* L) {
+	// player:removeAchievement(id or name)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	uint16_t achievementId = 0;
+	if (isNumber(L, 2)) {
+		achievementId = getNumber<uint16_t>(L, 2);
+	} else {
+		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
+	}
+
+	pushBoolean(L, player->achiev()->remove(achievementId));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetAchievementPoints(lua_State* L) {
+	// player:getAchievementPoints()
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	lua_pushnumber(L, player->achiev()->getPoints());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddAchievementPoints(lua_State* L) {
+	// player:addAchievementPoints(amount)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	auto points = getNumber<uint16_t>(L, 2);
+	if (points > 0) {
+		player->achiev()->addPoints(points);
+	}
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveAchievementPoints(lua_State* L) {
+	// player:removeAchievementPoints(amount)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	auto points = getNumber<uint16_t>(L, 2);
+	if (points > 0) {
+		player->achiev()->removePoints(points);
+	}
+	pushBoolean(L, true);
 	return 1;
 }

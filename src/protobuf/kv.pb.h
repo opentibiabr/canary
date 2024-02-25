@@ -123,6 +123,7 @@ class ValueWrapper final :
     kDoubleValue = 3,
     kArrayValue = 4,
     kMapValue = 5,
+    kBoolValue = 6,
     VALUE_NOT_SET = 0,
   };
 
@@ -209,6 +210,7 @@ class ValueWrapper final :
     kDoubleValueFieldNumber = 3,
     kArrayValueFieldNumber = 4,
     kMapValueFieldNumber = 5,
+    kBoolValueFieldNumber = 6,
   };
   // string str_value = 1;
   bool has_str_value() const;
@@ -290,6 +292,19 @@ class ValueWrapper final :
       ::Canary::protobuf::kv::MapType* map_value);
   ::Canary::protobuf::kv::MapType* unsafe_arena_release_map_value();
 
+  // bool bool_value = 6;
+  bool has_bool_value() const;
+  private:
+  bool _internal_has_bool_value() const;
+  public:
+  void clear_bool_value();
+  bool bool_value() const;
+  void set_bool_value(bool value);
+  private:
+  bool _internal_bool_value() const;
+  void _internal_set_bool_value(bool value);
+  public:
+
   void clear_value();
   ValueCase value_case() const;
   // @@protoc_insertion_point(class_scope:Canary.protobuf.kv.ValueWrapper)
@@ -300,6 +315,7 @@ class ValueWrapper final :
   void set_has_double_value();
   void set_has_array_value();
   void set_has_map_value();
+  void set_has_bool_value();
 
   inline bool has_value() const;
   inline void clear_has_value();
@@ -316,6 +332,7 @@ class ValueWrapper final :
       double double_value_;
       ::Canary::protobuf::kv::ArrayType* array_value_;
       ::Canary::protobuf::kv::MapType* map_value_;
+      bool bool_value_;
     } value_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     uint32_t _oneof_case_[1];
@@ -1121,6 +1138,44 @@ inline ::Canary::protobuf::kv::MapType* ValueWrapper::mutable_map_value() {
   ::Canary::protobuf::kv::MapType* _msg = _internal_mutable_map_value();
   // @@protoc_insertion_point(field_mutable:Canary.protobuf.kv.ValueWrapper.map_value)
   return _msg;
+}
+
+// bool bool_value = 6;
+inline bool ValueWrapper::_internal_has_bool_value() const {
+  return value_case() == kBoolValue;
+}
+inline bool ValueWrapper::has_bool_value() const {
+  return _internal_has_bool_value();
+}
+inline void ValueWrapper::set_has_bool_value() {
+  _impl_._oneof_case_[0] = kBoolValue;
+}
+inline void ValueWrapper::clear_bool_value() {
+  if (_internal_has_bool_value()) {
+    _impl_.value_.bool_value_ = false;
+    clear_has_value();
+  }
+}
+inline bool ValueWrapper::_internal_bool_value() const {
+  if (_internal_has_bool_value()) {
+    return _impl_.value_.bool_value_;
+  }
+  return false;
+}
+inline void ValueWrapper::_internal_set_bool_value(bool value) {
+  if (!_internal_has_bool_value()) {
+    clear_value();
+    set_has_bool_value();
+  }
+  _impl_.value_.bool_value_ = value;
+}
+inline bool ValueWrapper::bool_value() const {
+  // @@protoc_insertion_point(field_get:Canary.protobuf.kv.ValueWrapper.bool_value)
+  return _internal_bool_value();
+}
+inline void ValueWrapper::set_bool_value(bool value) {
+  _internal_set_bool_value(value);
+  // @@protoc_insertion_point(field_set:Canary.protobuf.kv.ValueWrapper.bool_value)
 }
 
 inline bool ValueWrapper::has_value() const {

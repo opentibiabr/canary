@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -14,7 +14,7 @@
 class WeaponFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "Weapon", "", WeaponFunctions::luaCreateWeapon);
+		registerSharedClass(L, "Weapon", "", WeaponFunctions::luaCreateWeapon);
 		registerMethod(L, "Weapon", "action", WeaponFunctions::luaWeaponAction);
 		registerMethod(L, "Weapon", "register", WeaponFunctions::luaWeaponRegister);
 		registerMethod(L, "Weapon", "id", WeaponFunctions::luaWeaponId);

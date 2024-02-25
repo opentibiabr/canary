@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,7 +12,7 @@
 #include "server/network/message/outputmessage.hpp"
 #include "server/server.hpp"
 #include "config/configmanager.hpp"
-#include "game/scheduling/scheduler.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "creatures/players/management/ban.hpp"
 
 ServiceManager::~ServiceManager() {
@@ -28,6 +28,11 @@ void ServiceManager::die() {
 }
 
 void ServiceManager::run() {
+	if (running) {
+		g_logger().error("ServiceManager is already running!", __FUNCTION__);
+		return;
+	}
+
 	assert(!running);
 	running = true;
 	io_service.run();
@@ -97,7 +102,7 @@ void ServicePort::onAccept(Connection_ptr connection, const std::error_code &err
 			if (service->is_single_socket()) {
 				connection->accept(service->make_protocol(connection));
 			} else {
-				connection->accept();
+				connection->acceptInternal();
 			}
 		} else {
 			connection->close(FORCE_CLOSE);
@@ -108,7 +113,7 @@ void ServicePort::onAccept(Connection_ptr connection, const std::error_code &err
 		if (!pendingStart) {
 			close();
 			pendingStart = true;
-			g_scheduler().addEvent(15000, std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), serverPort), "ServicePort::openAcceptor");
+			g_dispatcher().scheduleEvent(15000, std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), serverPort), "ServicePort::openAcceptor");
 		}
 	}
 }
@@ -144,8 +149,8 @@ void ServicePort::open(uint16_t port) {
 	pendingStart = false;
 
 	try {
-		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
-			acceptor.reset(new asio::ip::tcp::acceptor(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4::from_string(g_configManager().getString(IP))), serverPort)));
+		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS, __FUNCTION__)) {
+			acceptor.reset(new asio::ip::tcp::acceptor(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4::from_string(g_configManager().getString(IP, __FUNCTION__))), serverPort)));
 		} else {
 			acceptor.reset(new asio::ip::tcp::acceptor(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort)));
 		}
@@ -157,7 +162,7 @@ void ServicePort::open(uint16_t port) {
 		g_logger().warn("[ServicePort::open] - Error code: {}", e.what());
 
 		pendingStart = true;
-		g_scheduler().addEvent(15000, std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port), "ServicePort::openAcceptor");
+		g_dispatcher().scheduleEvent(15000, std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port), "ServicePort::openAcceptor");
 	}
 }
 

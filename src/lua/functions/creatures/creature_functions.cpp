@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,6 +12,7 @@
 #include "game/game.hpp"
 #include "creatures/creature.hpp"
 #include "lua/functions/creatures/creature_functions.hpp"
+#include "map/spectators.hpp"
 
 int CreatureFunctions::luaCreatureCreate(lua_State* L) {
 	// Creature(id or name or userdata)
@@ -580,6 +581,29 @@ int CreatureFunctions::luaCreatureSetMoveLocked(lua_State* L) {
 	return 1;
 }
 
+int CreatureFunctions::luaCreatureIsDirectionLocked(lua_State* L) {
+	// creature:isDirectionLocked()
+	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
+	if (creature) {
+		pushBoolean(L, creature->isDirectionLocked());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureSetDirectionLocked(lua_State* L) {
+	// creature:setDirectionLocked(directionLocked)
+	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
+	if (creature) {
+		creature->setDirectionLocked(getBoolean(L, 2));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int CreatureFunctions::luaCreatureGetSkull(lua_State* L) {
 	// creature:getSkull()
 	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
@@ -619,7 +643,7 @@ int CreatureFunctions::luaCreatureSetOutfit(lua_State* L) {
 	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
 	if (creature) {
 		Outfit_t outfit = getOutfit(L, 2);
-		if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+		if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
 			g_logger().warn("[CreatureFunctions::luaCreatureSetOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
 			return 1;
 		}
@@ -681,7 +705,11 @@ int CreatureFunctions::luaCreatureRemoveCondition(lua_State* L) {
 	const std::shared_ptr<Condition> condition = creature->getCondition(conditionType, conditionId, subId);
 	if (condition) {
 		bool force = getBoolean(L, 5, false);
-		creature->removeCondition(conditionType, conditionId, force);
+		if (subId == 0) {
+			creature->removeCondition(conditionType, conditionId, force);
+		} else {
+			creature->removeCondition(condition);
+		}
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -817,7 +845,7 @@ int CreatureFunctions::luaCreatureSay(lua_State* L) {
 		return 1;
 	}
 
-	SpectatorHashSet spectators;
+	Spectators spectators;
 	if (target) {
 		spectators.insert(target);
 	}
@@ -910,7 +938,7 @@ int CreatureFunctions::luaCreatureGetPathTo(lua_State* L) {
 	fpp.clearSight = getBoolean(L, 6, fpp.clearSight);
 	fpp.maxSearchDist = getNumber<int32_t>(L, 7, fpp.maxSearchDist);
 
-	std::forward_list<Direction> dirList;
+	stdext::arraylist<Direction> dirList(128);
 	if (creature->getPathTo(position, dirList, fpp)) {
 		lua_newtable(L);
 

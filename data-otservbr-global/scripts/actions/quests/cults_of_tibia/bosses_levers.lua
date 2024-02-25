@@ -183,7 +183,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				local newpos = Position(33138, i, 15)
 				local nplayer = Tile(newpos):getTopCreature()
 				if nplayer and nplayer:isPlayer() then
-					nplayer:setStorageValue(Storage.CultsOfTibia.Barkless.BossTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
+					nplayer:setBossCooldown("Ravenous Hunger", os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
 					nplayer:teleportTo(Position(33161, 31959, 15), true)
 					nplayer:sendBosstiaryCooldownTimer()
 					convertTable[#convertTable + 1] = nplayer:getId()
@@ -193,7 +193,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 			Game.createMonster("Wine Cask", Position(33162, 31945, 15))
 			local leiden = Game.createMonster("Leiden", Position(33162, 31950, 15))
 			leiden:setHealth(leiden:getHealth() / 2)
-			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33121, 31951, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
+			kickerPlayerRoomAfterMin(convertTable, frompos, topos, Position(33121, 31951, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
 		end
 	end
 	if item:getActionId() == 5502 and item:getId() == 8912 then -- The False God
@@ -230,7 +230,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				local newpos = Position(33162, i, 15)
 				local nplayer = Tile(newpos):getTopCreature()
 				if nplayer and nplayer:isPlayer() then
-					nplayer:setStorageValue(Storage.CultsOfTibia.Minotaurs.BossTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
+					nplayer:setBossCooldown("The False God", os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
 					nplayer:teleportTo(Position(33169, 31915, 15), true)
 					convertTable[#convertTable + 1] = nplayer:getId()
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -241,7 +241,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 			addEvent(transformMonster, 13 * 15000, 3, 3, "Sphere Of Wrath", {}, {}, 0)
 			Game.createMonster("The False God", Position(33159, 31914, 15))
 			-- funçao
-			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33181, 31894, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
+			kickerPlayerRoomAfterMin(convertTable, frompos, topos, Position(33181, 31894, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
 		end
 	end
 
@@ -279,13 +279,13 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				local newpos = Position(33095, i, 15)
 				local nplayer = Tile(newpos):getTopCreature()
 				if nplayer and nplayer:isPlayer() then
-					nplayer:setStorageValue(Storage.CultsOfTibia.Humans.BossTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
+					nplayer:setBossCooldown("Essence of Malice", os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
 					nplayer:teleportTo(Position(33098, 31921, 15), true)
 					convertTable[#convertTable + 1] = nplayer:getId()
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				end
 			end
-			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33091, 31963, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
+			kickerPlayerRoomAfterMin(convertTable, frompos, topos, Position(33091, 31963, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
 			Game.createMonster("Pillar of Summoning", Position(33093, 31919, 15))
 			Game.createMonster("Pillar of Death", Position(33098, 31915, 15))
 			Game.createMonster("Pillar of Protection", Position(33103, 31919, 15))
@@ -299,7 +299,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 		end
 	end
 
-	if item:getActionId() == 5503 then -- The Sinister Hermit
+	if item:getActionId() == 5503 then -- The Souldespoiler
 		if player:getPosition() == Position(33127, 31892, 15) and item:getId() == 8912 then
 			local teleport = 0
 			for i = 31892, 31896, 1 do
@@ -333,13 +333,13 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				local newpos = Position(33127, i, 15)
 				local nplayer = Tile(newpos):getTopCreature()
 				if nplayer and nplayer:isPlayer() then
-					nplayer:setStorageValue(Storage.CultsOfTibia.Misguided.BossTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
+					nplayer:setBossCooldown("The Souldespoiler", os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
 					nplayer:teleportTo(Position(33130, 31919, 15), true)
 					convertTable[#convertTable + 1] = nplayer:getId()
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				end
 			end
-			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33109, 31887, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
+			kickerPlayerRoomAfterMin(convertTable, frompos, topos, Position(33109, 31887, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
 			Game.createMonster("The Sinister Hermit Dirty", Position(33131, 31925, 15))
 			ativarGeyser()
 		end
@@ -379,7 +379,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				local newpos = Position(33164, y, 15)
 				local nplayer = Tile(newpos):getTopCreature()
 				if nplayer and nplayer:isPlayer() then
-					nplayer:setStorageValue(Storage.CultsOfTibia.Orcs.BossTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
+					nplayer:setBossCooldown("The Armored Voidborn", os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
 					nplayer:teleportTo(Position(33137, 31867, 15), true)
 					convertTable[#convertTable + 1] = nplayer:getId()
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -429,7 +429,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 
 			Game.createMonster("Containment Machine", Position(33133, 31864, 15)):registerEvent("MachineDeath")
 			Game.createMonster("The Armored Voidborn", Position(33135, 31859, 15)):registerEvent("MachineDeath")
-			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33179, 31840, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
+			kickerPlayerRoomAfterMin(convertTable, frompos, topos, Position(33179, 31840, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
 		end
 	end
 	if item:getActionId() == 5505 then -- Boss da areia
@@ -476,7 +476,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				local newpos = Position(33507, _y, 10)
 				local nplayer = Tile(newpos):getTopCreature()
 				if nplayer and nplayer:isPlayer() then
-					nplayer:setStorageValue(Storage.CultsOfTibia.Life.BossTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
+					nplayer:setBossCooldown("The Sandking", os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
 					nplayer:teleportTo(Position(33099, 31864, 15), true)
 					convertTable[#convertTable + 1] = nplayer:getId()
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -485,7 +485,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 
 			Game.createMonster("the sandking fake", Position(33099, 31858, 15)):registerEvent("SandkingThink")
 			Game.setStorageValue("sandking", 1)
-			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33459, 32269, 10), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
+			kickerPlayerRoomAfterMin(convertTable, frompos, topos, Position(33459, 32269, 10), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
 		end
 	end
 
@@ -518,7 +518,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 			for _, pid in pairs(convertTable) do
 				local nplayer = Player(pid)
 				if nplayer then
-					nplayer:setStorageValue(Storage.CultsOfTibia.FinalBoss.BossTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
+					nplayer:setBossCooldown("The Source Of Corruption", os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
 					nplayer:teleportTo(Position(33039, 31925, 15), true)
 					nplayer:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				end
@@ -531,7 +531,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 			spawnDarkSoul(1, 30)
 			spawnDarkSoul(2, 30)
 			spawnStolenSoul(30)
-			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33072, 31867, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
+			kickerPlayerRoomAfterMin(convertTable, frompos, topos, Position(33072, 31867, 15), "You were kicked for exceeding the time limit within the boss room.", "", 60, true, ittable, blockmonsters)
 		end
 	end
 	return true

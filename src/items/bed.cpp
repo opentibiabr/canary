@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,7 +12,8 @@
 #include "items/bed.hpp"
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
-#include "game/scheduling/scheduler.hpp"
+#include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/save_manager.hpp"
 
 BedItem::BedItem(uint16_t id) :
 	Item(id) {
@@ -83,11 +84,22 @@ bool BedItem::canUse(std::shared_ptr<Player> player) {
 		return false;
 	}
 
-	if (getNextBedItem() == nullptr) {
+	auto nextBedItem = getNextBedItem();
+	if (nextBedItem == nullptr) {
 		return false;
 	}
 
-	if (Item::items[id].bedPart != BED_PILLOW_PART) {
+	const auto &itemType = Item::items[id];
+	if (itemType.bedPart != BED_PILLOW_PART) {
+		return false;
+	}
+
+	auto partName = itemType.name;
+	auto nextPartname = nextBedItem->getName();
+	auto firstPart = keepFirstWordOnly(partName);
+	auto nextPartOf = keepFirstWordOnly(nextPartname);
+	g_logger().debug("First bed part name {}, second part name {}", firstPart, nextPartOf);
+	if (!isMovable() || !nextBedItem->isMovable() || firstPart != nextPartOf) {
 		return false;
 	}
 
@@ -153,7 +165,7 @@ bool BedItem::sleep(std::shared_ptr<Player> player) {
 	g_game().addMagicEffect(player->getPosition(), CONST_ME_SLEEP);
 
 	// logout player after he sees himself walk onto the bed and it change id
-	g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&ProtocolGame::logout, player->client, false, false), "ProtocolGame::logout");
+	g_dispatcher().scheduleEvent(SCHEDULER_MINTICKS, std::bind(&ProtocolGame::logout, player->client, false, false), "ProtocolGame::logout");
 
 	// change self and partner's appearance
 	updateAppearance(player);
@@ -178,7 +190,7 @@ void BedItem::wakeUp(std::shared_ptr<Player> player) {
 			auto regenPlayer = std::make_shared<Player>(nullptr);
 			if (IOLoginData::loadPlayerById(regenPlayer, sleeperGUID)) {
 				regeneratePlayer(regenPlayer);
-				IOLoginData::savePlayer(regenPlayer);
+				g_saveManager().savePlayer(regenPlayer);
 			}
 		} else {
 			regeneratePlayer(player);
@@ -224,8 +236,8 @@ void BedItem::regeneratePlayer(std::shared_ptr<Player> player) const {
 			regen = sleptTime / 30;
 		}
 
-		player->changeHealth(regen * g_configManager().getFloat(RATE_HEALTH_REGEN), false);
-		player->changeMana(regen * g_configManager().getFloat(RATE_MANA_REGEN));
+		player->changeHealth(regen * g_configManager().getFloat(RATE_HEALTH_REGEN, __FUNCTION__), false);
+		player->changeMana(regen * g_configManager().getFloat(RATE_MANA_REGEN, __FUNCTION__));
 	}
 
 	const int32_t soulRegen = sleptTime / (60 * 15); // RATE_SOUL_REGEN_SPEED?

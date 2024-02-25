@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -18,23 +18,19 @@ CustomAttribute::~CustomAttribute() = default;
 
 // Constructor for int64_t
 CustomAttribute::CustomAttribute(const std::string &initStringKey, const int64_t initInt64) :
-	stringKey(initStringKey) {
-	setValue(initInt64);
+	stringKey(initStringKey), value(initInt64) {
 }
 // Constructor for string
 CustomAttribute::CustomAttribute(const std::string &initStringKey, const std::string &initStringValue) :
-	stringKey(initStringKey) {
-	setValue(initStringValue);
+	stringKey(initStringKey), value(initStringValue) {
 }
 // Constructor for double
 CustomAttribute::CustomAttribute(const std::string &initStringKey, const double initDoubleValue) :
-	stringKey(initStringKey) {
-	setValue(initDoubleValue);
+	stringKey(initStringKey), value(initDoubleValue) {
 }
 // Constructor for boolean
 CustomAttribute::CustomAttribute(const std::string &initStringKey, const bool initBoolValue) :
-	stringKey(initStringKey) {
-	setValue(initBoolValue);
+	stringKey(initStringKey), value(initBoolValue) {
 }
 
 const std::string &CustomAttribute::getStringKey() const {
@@ -122,7 +118,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 				g_logger().error("[{}] failed to read string, call function: {}", __FUNCTION__, function);
 				return false;
 			}
-			setValue(readString);
+			value = readString;
 			break;
 		}
 		case 2: {
@@ -131,7 +127,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 				g_logger().error("[{}] failed to read int64, call function: {}", __FUNCTION__, function);
 				return false;
 			}
-			setValue(readInt);
+			value = readInt;
 			break;
 		}
 		case 3: {
@@ -140,7 +136,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 				g_logger().error("[{}] failed to read double, call function: {}", __FUNCTION__, function);
 				return false;
 			}
-			setValue(readDouble);
+			value = readDouble;
 			break;
 		}
 		case 4: {
@@ -149,7 +145,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 				g_logger().error("[{}] failed to read boolean, call function: {}", __FUNCTION__, function);
 				return false;
 			}
-			setValue(readBoolean);
+			value = readBoolean;
 			break;
 		}
 		default:

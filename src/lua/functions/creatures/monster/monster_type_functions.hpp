@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -34,6 +34,8 @@ public:
 
 		registerMethod(L, "MonsterType", "canPushItems", MonsterTypeFunctions::luaMonsterTypeCanPushItems);
 		registerMethod(L, "MonsterType", "canPushCreatures", MonsterTypeFunctions::luaMonsterTypeCanPushCreatures);
+
+		registerMethod(L, "MonsterType", "critChance", MonsterTypeFunctions::luaMonsterTypeCritChance);
 
 		registerMethod(L, "MonsterType", "name", MonsterTypeFunctions::luaMonsterTypeName);
 
@@ -131,13 +133,14 @@ public:
 
 		registerMethod(L, "MonsterType", "bossRace", MonsterTypeFunctions::luaMonsterTypeBossRace);
 		registerMethod(L, "MonsterType", "bossRaceId", MonsterTypeFunctions::luaMonsterTypeBossRaceId);
-		registerMethod(L, "MonsterType", "bossStorageCooldown", MonsterTypeFunctions::luaMonsterTypeBossStorageCooldown);
 
 		registerMethod(L, "MonsterType", "soundChance", MonsterTypeFunctions::luaMonsterTypeSoundChance);
 		registerMethod(L, "MonsterType", "soundSpeedTicks", MonsterTypeFunctions::luaMonsterTypeSoundSpeedTicks);
 		registerMethod(L, "MonsterType", "addSound", MonsterTypeFunctions::luaMonsterTypeAddSound);
 		registerMethod(L, "MonsterType", "getSounds", MonsterTypeFunctions::luaMonsterTypeGetSounds);
 		registerMethod(L, "MonsterType", "deathSound", MonsterTypeFunctions::luaMonsterTypedeathSound);
+
+		registerMethod(L, "MonsterType", "variant", MonsterTypeFunctions::luaMonsterTypeVariant);
 	}
 
 private:
@@ -253,17 +256,13 @@ private:
 
 	static int luaMonsterTypeBossRace(lua_State* L);
 	static int luaMonsterTypeBossRaceId(lua_State* L);
-	static int luaMonsterTypeBossStorageCooldown(lua_State* L);
 
 	static int luaMonsterTypeSoundChance(lua_State* L);
 	static int luaMonsterTypeSoundSpeedTicks(lua_State* L);
 	static int luaMonsterTypeAddSound(lua_State* L);
 	static int luaMonsterTypeGetSounds(lua_State* L);
 	static int luaMonsterTypedeathSound(lua_State* L);
+	static int luaMonsterTypeCritChance(lua_State* L);
 
-	// Hazard system
-	static int luaMonsterTypeHazardSystemCrit(lua_State* L);
-	static int luaMonsterTypeHazardSystemDodge(lua_State* L);
-	static int luaMonsterTypeHazardSystemSpawnPod(lua_State* L);
-	static int luaMonsterTypeHazardSystemDamageBoost(lua_State* L);
+	static int luaMonsterTypeVariant(lua_State* L);
 };

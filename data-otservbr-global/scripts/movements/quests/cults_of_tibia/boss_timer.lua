@@ -2,32 +2,32 @@ local setting = {
 	{
 		tpPos = { x = 33176, y = 31894, z = 15 },
 		tpDestination = { x = 33166, y = 31894, z = 15 },
-		storage = Storage.CultsOfTibia.Minotaurs.BossTimer,
+		boss = "The False God",
 	},
 	{
 		tpPos = { x = 33125, y = 31950, z = 15 },
 		tpDestination = { x = 33136, y = 31948, z = 15 },
-		storage = Storage.CultsOfTibia.Barkless.BossTimer,
+		boss = "Ravenous Hunger",
 	},
 	{
 		tpPos = { x = 33096, y = 31963, z = 15 },
 		tpDestination = { x = 33095, y = 31953, z = 15 },
-		storage = Storage.CultsOfTibia.Humans.BossTimer,
+		boss = "Essence of Malice",
 	},
 	{
 		tpPos = { x = 33114, y = 31887, z = 15 },
 		tpDestination = { x = 33131, y = 31899, z = 15 },
-		storage = Storage.CultsOfTibia.Misguided.BossTimer,
+		boss = "The Souldespoiler",
 	},
 	{
 		tpPos = { x = 33072, y = 31871, z = 15 },
 		tpDestination = { x = 33078, y = 31889, z = 15 },
-		storage = Storage.CultsOfTibia.FinalBoss.BossTimer,
+		boss = "The Source Of Corruption",
 	},
 	{
 		tpPos = { x = 33178, y = 31845, z = 15 },
 		tpDestination = { x = 33164, y = 31866, z = 15 },
-		storage = Storage.CultsOfTibia.Orcs.BossTimer,
+		boss = "The Armored Voidborn",
 	},
 }
 
@@ -40,7 +40,7 @@ function bossTimer.onStepIn(creature, item, position, fromPosition)
 	end
 	for b = 1, #setting do
 		if player:getPosition() == Position(setting[b].tpPos) then
-			if player:getStorageValue(setting[b].storage) > os.time() then
+			if not player:canFightBoss(setting[b].boss) then
 				player:sendCancelMessage("You need to wait for 20 hours to face this boss again.")
 				player:teleportTo(fromPosition)
 				return false

@@ -20,8 +20,8 @@ local arena10x10 = Action()
 
 function arena10x10.onUse(player, item, fromPosition, target, toPosition, monster, isHotkey)
 	if toPosition == Position(32240, 32179, 8) then
-		if roomIsOccupied(setting.centerRoom, setting.range, setting.range) then
-			player:say("Please wait for the fighters come out of the arena.", TALKTYPE_ORANGE_1)
+		if roomIsOccupied(setting.centerRoom, false, setting.range, setting.range) then
+			player:say("Please wait for the fighters come out of the arena.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
 		for i = 1, #playerPositions do
@@ -30,10 +30,10 @@ function arena10x10.onUse(player, item, fromPosition, target, toPosition, monste
 				creature:teleportTo(playerPositions[i].toPos)
 				creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			elseif not creature then
-				player:say("You need 10 players for enter in the arena.", TALKTYPE_ORANGE_1)
+				player:say("You need 10 players for enter in the arena.", TALKTYPE_MONSTER_SAY)
 				return true
 			else
-				player:say("You need 10 players for enter in the arena.", TALKTYPE_ORANGE_1)
+				player:say("You need 10 players for enter in the arena.", TALKTYPE_MONSTER_SAY)
 				return true
 			end
 		end

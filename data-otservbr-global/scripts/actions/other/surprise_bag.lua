@@ -52,7 +52,7 @@ local config = {
 		5917,
 		3273,
 		10302,
-		3123,
+		9019,
 		5928,
 		5926,
 		5927,
@@ -89,7 +89,7 @@ function surpriseBag.onUse(cid, item, fromPosition, itemEx, toPosition)
 	local count = 1
 	local gift = present[math.random(1, #present)]
 	if type(gift) == "table" then
-		count = gift[2]
+		count = math.random(1, gift[2])
 		gift = gift[1]
 	end
 

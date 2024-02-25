@@ -3,21 +3,24 @@ name: Clang-format
 on:
   pull_request:
     paths:
-      - 'src/**'
+      - "src/**"
+  merge_group:
   push:
     paths:
-      - 'src/**'
+      - "src/**"
 jobs:
-  build:
+  cancel-runs:
+    if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Cancel Previous Runs
-        if: github.ref != 'refs/heads/main'
-        uses: fkirc/skip-duplicate-actions@master
+        uses: styfle/cancel-workflow-action@0.9.1
         with:
-          concurrent_skipping: 'same_content'
-          cancel_others: true
+          access_token: ${{ github.token }}
 
+  build:
+    runs-on: ubuntu-latest
+    steps:
       - name: Set up Git
         if: ${{ github.ref != 'refs/heads/main' }}
         run: |

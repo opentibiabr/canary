@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Angry Demon")
 local monster = {}
 
 monster.description = "an angry demon"
-monster.experience = 30000
+monster.experience = 6000
 monster.outfit = {
 	lookType = 35,
 	lookHead = 0,
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 60000
-monster.maxHealth = 60000
+monster.health = 8200
+monster.maxHealth = 8200
 monster.race = "fire"
 monster.corpse = 5995
 monster.speed = 128
@@ -57,7 +57,7 @@ monster.light = {
 monster.summon = {
 	maxSummons = 1,
 	summons = {
-		{ name = "massive fire elemental", chance = 25, interval = 2000, count = 1 },
+		{ name = "fire elemental", chance = 10, interval = 2000, count = 1 },
 	},
 }
 
@@ -112,7 +112,7 @@ monster.attacks = {
 	-- {name ="combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = 0, maxDamage = -120, range = 7, target = false},
 	-- {name ="combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -150, maxDamage = -250, range = 7, radius = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true},
 	-- {name ="firefield", interval = 2000, chance = 10, range = 7, radius = 1, shootEffect = CONST_ANI_FIRE, target = true},
-	-- {name ="combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -490, length = 8, spread = 3, effect = CONST_ME_PURPLEENERGY, target = false},
+	-- {name ="combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -490, length = 8,spread = 03, effect = CONST_ME_PURPLEENERGY, target = false},
 	-- {name ="combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -210, maxDamage = -300, range = 1, shootEffect = CONST_ANI_ENERGY, target = false},
 	-- {name ="speed", interval = 2000, chance = 15, speedChange = -700, radius = 1, effect = CONST_ME_MAGIC_RED, target = true, duration = 30000}
 	{ name = "melee", interval = 2000, chance = 500, minDamage = 0, maxDamage = -1940 },

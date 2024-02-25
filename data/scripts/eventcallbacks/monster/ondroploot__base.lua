@@ -1,16 +1,21 @@
 local callback = EventCallback()
 
+function Player:canReceiveLoot()
+	return self:getStamina() > 840
+end
+
 function callback.monsterOnDropLoot(monster, corpse)
 	local player = Player(corpse:getCorpseOwner())
 	local factor = 1.0
 	local msgSuffix = ""
-	if player and player:getStamina() > 840 then
+	if player and player:canReceiveLoot() then
 		local config = player:calculateLootFactor(monster)
 		factor = config.factor
 		msgSuffix = config.msgSuffix
 	end
 	local mType = monster:getType()
 	if not mType then
+		logger.warning("monsterOnDropLoot: monster has no type")
 		return
 	end
 

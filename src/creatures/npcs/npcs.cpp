@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -11,7 +11,6 @@
 
 #include "declarations.hpp"
 #include "creatures/combat/combat.hpp"
-#include "creatures/creature.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/npcs/npcs.hpp"
@@ -98,21 +97,19 @@ void NpcType::loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBl
 				shopBlock.childShop.push_back(child);
 			}
 		}
-		npcType->info.shopItemVector.push_back(shopBlock);
-	} else {
-		npcType->info.shopItemVector.push_back(shopBlock);
 	}
+	npcType->info.shopItemVector.push_back(shopBlock);
 
 	info.speechBubble = SPEECHBUBBLE_TRADE;
 }
 
 bool Npcs::load(bool loadLibs /* = true*/, bool loadNpcs /* = true*/, bool reloading /* = false*/) const {
 	if (loadLibs) {
-		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+		auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
 		return g_luaEnvironment().loadFile(coreFolder + "/npclib/load.lua", "load.lua") == 0;
 	}
 	if (loadNpcs) {
-		auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+		auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
 		return g_scripts().loadScripts(datapackFolder + "/npc", false, reloading);
 	}
 	return false;

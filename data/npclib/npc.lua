@@ -54,12 +54,12 @@ end
 function SayEvent(npcId, playerId, messageDelayed, npcHandler, textType)
 	local npc = Npc(npcId)
 	if not npc then
-		return logger.error("[NpcHandler:say] - Npc parameter is missing, nil or not found")
+		return logger.error("[{} NpcHandler:say] - Npc parameter for npc '{}' is missing, nil or not found", npc:getName(), npc:getName())
 	end
 
 	local player = Player(playerId)
 	if not player then
-		return logger.error("[NpcHandler:say] - Player parameter is missing, nil or not found")
+		return logger.error("[{} NpcHandler:say] - Player parameter for npc '{}' is missing, nil or not found", npc:getName(), npc:getName())
 	end
 
 	local parseInfo = {

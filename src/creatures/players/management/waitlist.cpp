@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -11,6 +11,8 @@
 
 #include "creatures/players/management/waitlist.hpp"
 #include "game/game.hpp"
+
+#include "enums/account_type.hpp"
 
 constexpr std::size_t SLOT_LIMIT_ONE = 5;
 constexpr std::size_t SLOT_LIMIT_TWO = 10;
@@ -60,11 +62,11 @@ std::size_t WaitingList::getTime(std::size_t slot) {
 }
 
 bool WaitingList::clientLogin(std::shared_ptr<Player> player) {
-	if (player->hasFlag(PlayerFlags_t::CanAlwaysLogin) || player->getAccountType() >= account::ACCOUNT_TYPE_GAMEMASTER) {
+	if (player->hasFlag(PlayerFlags_t::CanAlwaysLogin) || player->getAccountType() >= ACCOUNT_TYPE_GAMEMASTER) {
 		return true;
 	}
 
-	auto maxPlayers = static_cast<uint32_t>(g_configManager().getNumber(MAX_PLAYERS));
+	auto maxPlayers = static_cast<uint32_t>(g_configManager().getNumber(MAX_PLAYERS, __FUNCTION__));
 	if (maxPlayers == 0 || (info->priorityWaitList.empty() && info->waitList.empty() && g_game().getPlayersOnline() < maxPlayers)) {
 		return true;
 	}

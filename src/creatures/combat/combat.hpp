@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -20,8 +20,6 @@ class Item;
 class Spell;
 class Player;
 class MatrixArea;
-
-static const std::unique_ptr<MatrixArea> &MatrixAreaNull {};
 
 // for luascript callback
 class ValueCallback final : public CallBack {
@@ -247,15 +245,10 @@ private:
 			}
 		}
 
-		auto it = areas.find(dir);
-		if (it == areas.end()) {
-			return MatrixAreaNull;
-		}
-
-		return it->second;
+		return areas[dir];
 	}
 
-	std::map<Direction, std::unique_ptr<MatrixArea>> areas;
+	std::array<std::unique_ptr<MatrixArea>, Direction::DIRECTION_LAST + 1> areas {};
 	bool hasExtArea = false;
 };
 
@@ -266,6 +259,8 @@ public:
 	// non-copyable
 	Combat(const Combat &) = delete;
 	Combat &operator=(const Combat &) = delete;
+
+	static void applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, CombatDamage &damage, const CombatParams &params);
 
 	static void doCombatHealth(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, CombatDamage &damage, const CombatParams &params);
 	static void doCombatHealth(std::shared_ptr<Creature> caster, const Position &position, const std::unique_ptr<AreaCombat> &area, CombatDamage &damage, const CombatParams &params);
@@ -294,7 +289,7 @@ public:
 	static void addDistanceEffect(std::shared_ptr<Creature> caster, const Position &fromPos, const Position &toPos, uint16_t effect);
 
 	bool doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target) const;
-	bool doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin) const;
+	bool doCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, int affected = 1) const;
 	bool doCombat(std::shared_ptr<Creature> caster, const Position &pos) const;
 
 	bool setCallback(CallBackParam_t key);
@@ -368,7 +363,7 @@ private:
 	static void CombatDispelFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data);
 	static void CombatNullFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage* data);
 
-	static void combatTileEffects(const SpectatorHashSet &spectators, std::shared_ptr<Creature> caster, std::shared_ptr<Tile> tile, const CombatParams &params);
+	static void combatTileEffects(const CreatureVector &spectators, std::shared_ptr<Creature> caster, std::shared_ptr<Tile> tile, const CombatParams &params);
 
 	/**
 	 * @brief Calculate the level formula for combat.

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -8,8 +8,6 @@
  */
 
 #pragma once
-
-#include "pch.hpp"
 
 #include "account/account.hpp"
 #include "declarations.hpp"
@@ -35,6 +33,7 @@ private:
 	static void initConditionIdEnums(lua_State* L);
 	static void initConditionParamEnums(lua_State* L);
 	static void initAttributeConditionSubIdEnums(lua_State* L);
+	static void initConcoctionsEnum(lua_State* L);
 	static void initConstMeEnums(lua_State* L);
 	static void initConstAniEnums(lua_State* L);
 	static void initConstPropEnums(lua_State* L);

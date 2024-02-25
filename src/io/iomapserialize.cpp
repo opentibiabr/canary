@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -46,11 +46,22 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 		}
 
 		while (item_count--) {
+			if (auto houseTile = std::dynamic_pointer_cast<HouseTile>(tile)) {
+				const auto &house = houseTile->getHouse();
+				auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
+				if (!isTransferOnRestart && house->getOwner() == 0) {
+					g_logger().trace("Skipping load item from house id: {}, position: {}, house does not have owner", house->getId(), house->getEntryPosition().toString());
+					house->clearHouseInfo(false);
+					continue;
+				}
+			}
+
 			loadItem(propStream, tile, true);
 		}
 	} while (result->next());
-	g_logger().info("Loaded house items in {} seconds", bm_context.duration());
+	g_logger().info("Loaded house items in {} milliseconds", bm_context.duration());
 }
+
 bool IOMapSerialize::saveHouseItems() {
 	bool success = DBTransaction::executeWithinTransaction([]() {
 		return SaveHouseItemsGuard();
@@ -64,8 +75,6 @@ bool IOMapSerialize::saveHouseItems() {
 }
 
 bool IOMapSerialize::SaveHouseItemsGuard() {
-	Benchmark bm_context;
-
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 
@@ -79,7 +88,7 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 	PropWriteStream stream;
 	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
 		// save house items
-		for (std::shared_ptr<HouseTile> tile : house->getTiles()) {
+		for (const auto &tile : house->getTiles()) {
 			saveTile(stream, tile);
 
 			size_t attributesSize;
@@ -98,7 +107,6 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 		return false;
 	}
 
-	g_logger().info("Saved house items in {} seconds", bm_context.duration());
 	return true;
 }
 
@@ -119,8 +127,6 @@ bool IOMapSerialize::loadContainer(PropStream &propStream, std::shared_ptr<Conta
 	return true;
 }
 
-uint32_t NEW_BEDS_START_ID = 30000;
-
 bool IOMapSerialize::loadItem(PropStream &propStream, std::shared_ptr<Cylinder> parent, bool isHouseItem /*= false*/) {
 	uint16_t id;
 	if (!propStream.read<uint16_t>(id)) {
@@ -133,14 +139,16 @@ bool IOMapSerialize::loadItem(PropStream &propStream, std::shared_ptr<Cylinder> 
 	}
 
 	const ItemType &iType = Item::items[id];
-	if (isHouseItem && iType.isBed() && id < NEW_BEDS_START_ID) {
-		return false;
-	}
-	if (iType.moveable || !tile || iType.isCarpet() || iType.isBed()) {
+	if (iType.isBed() || iType.movable || !tile || iType.isCarpet() || iType.isTrashHolder()) {
 		// create a new item
-		std::shared_ptr<Item> item = Item::CreateItem(id);
+		auto item = Item::CreateItem(id);
 		if (item) {
 			if (item->unserializeAttr(propStream)) {
+				// Remove only not movable and not sleeper bed
+				auto bed = item->getBed();
+				if (isHouseItem && iType.isBed() && bed && bed->getSleeper() == 0 && !iType.movable) {
+					return false;
+				}
 				std::shared_ptr<Container> container = item->getContainer();
 				if (container && !loadContainer(propStream, container)) {
 					return false;
@@ -236,7 +244,12 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> til
 	std::forward_list<std::shared_ptr<Item>> items;
 	uint16_t count = 0;
 	for (auto &item : *tileItems) {
-		if (!item->isSavedToHouses()) {
+		if (item->getID() == ITEM_BATHTUB_FILLED_NOTMOVABLE) {
+			std::shared_ptr<Item> tub = Item::CreateItem(ITEM_BATHTUB_FILLED);
+			items.push_front(tub);
+			++count;
+			continue;
+		} else if (!item->isSavedToHouses()) {
 			continue;
 		}
 
@@ -267,12 +280,12 @@ bool IOMapSerialize::loadHouseInfo() {
 
 	do {
 		auto houseId = result->getNumber<uint32_t>("id");
-		const auto &house = g_game().map.houses.getHouse(houseId);
+		const auto house = g_game().map.houses.getHouse(houseId);
 		if (house) {
 			uint32_t owner = result->getNumber<uint32_t>("owner");
 			int32_t newOwner = result->getNumber<int32_t>("new_owner");
 			// Transfer house owner
-			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
 			if (isTransferOnRestart && newOwner >= 0) {
 				g_game().setTransferPlayerHouseItems(houseId, owner);
 				if (newOwner == 0) {

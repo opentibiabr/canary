@@ -32,7 +32,7 @@ function onlineTokensEvent.onThink(interval)
 
 	local checkIp = {}
 	for _, player in pairs(players) do
-		if player:getAccountType() >= ACCOUNT_TYPE_GAMEMASTER then
+		if player:getGroup():getId() > GROUP_TYPE_SENIORTUTOR then
 			goto continue
 		end
 
@@ -46,7 +46,7 @@ function onlineTokensEvent.onThink(interval)
 				local tokensMath = math.floor(tokens)
 				local item = player:addItem(config.tokenItemId, tokensMath)
 				if item then
-					player:sendTextMessage(MESSAGE_STATUS_SMALL, string.format("Congratulations %s!\z You have received %d %s for being online.", player:getName(), tokensMath, "tokens"))
+					player:sendTextMessage(MESSAGE_FAILURE, string.format("Congratulations %s!\z You have received %d %s for being online.", player:getName(), tokensMath, "tokens"))
 				end
 				player:setStorageValue(config.storage, (tokens - tokensMath) * 10000000)
 			end

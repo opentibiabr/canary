@@ -1,7 +1,11 @@
-local magicFieldId = 39232
-local chargedFlameId = 39230
-local heatedCrystalId = 39168
-local cooledCrystalId = 39169
+local config = {
+	magicFieldId = 39232,
+	chargedFlameId = 39230,
+	heatedCrystalId = 39168,
+	cooledCrystalId = 39169,
+	bossPos = Position(33654, 32909, 15),
+	timeToLeftAfterKill = 60,
+}
 
 local overheatedZone = Zone("fight.magma-bubble.overheated")
 local bossZone = Zone("boss.magma-bubble")
@@ -25,71 +29,70 @@ spawnZone:addArea({ x = 33647, y = 32900, z = 15 }, { x = 33659, y = 32913, z = 
 local encounter = Encounter("Magma Bubble", {
 	zone = bossZone,
 	spawnZone = spawnZone,
-	timeToSpawnMonsters = 2,
+	timeToSpawnMonsters = "2s",
 })
 
-encounter:addStage({
-	prepare = function()
-		encounter:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You've entered the volcano.")
-	end,
+function encounter:onReset(position)
+	encounter:removeMonsters()
+	bossZone:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("The Magma Bubble has been defeated. You have %i seconds to leave the room.", config.timeToLeftAfterKill))
+	self:addEvent(function(zn)
+		zn:refresh()
+		zn:removePlayers()
+	end, config.timeToLeftAfterKill * 1000, bossZone)
+end
 
-	start = function()
-		encounter:spawnMonsters({
-			name = "The End of Days",
-			amount = 3,
-			event = "fight.magma-bubble.TheEndOfDaysHealth",
-		})
-		encounter:spawnMonsters({
-			name = "Magma Crystal",
-			event = "fight.magma-bubble.MagmaCrystalDeath",
-			positions = {
-				Position(33647, 32891, 15),
-				Position(33647, 32926, 15),
-				Position(33670, 32898, 15),
-			},
-		})
-	end,
+encounter:addRemoveMonsters():autoAdvance()
+encounter:addBroadcast("You've entered the volcano."):autoAdvance("1s")
 
-	finish = function()
-		encounter:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The whole Volcano starts to vibrate! Prepare yourself!")
-	end,
+encounter:addSpawnMonsters({
+	{
+		name = "The End of Days",
+		amount = 3,
+		event = "fight.magma-bubble.TheEndOfDaysHealth",
+	},
+	{
+		name = "Magma Crystal",
+		event = "fight.magma-bubble.MagmaCrystalDeath",
+		positions = {
+			Position(33647, 32891, 15),
+			Position(33647, 32926, 15),
+			Position(33670, 32898, 15),
+		},
+	},
 })
 
-encounter:addIntermission(3000)
+encounter:addRemoveMonsters():autoAdvance()
+encounter:addBroadcast("The whole Volcano starts to vibrate! Prepare yourself!"):autoAdvance("3s")
 
-encounter:addStage({
-	start = function()
-		encounter:spawnMonsters({
-			name = "The End of Days",
-			amount = 8,
-			event = "fight.magma-bubble.TheEndOfDaysDeath",
-		})
-	end,
-
-	finish = function()
-		encounter:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You've upset the volcano and now it's going to take its revenge!")
-	end,
+encounter:addSpawnMonsters({
+	{
+		name = "The End of Days",
+		amount = 8,
+		event = "fight.magma-bubble.TheEndOfDaysDeath",
+	},
 })
 
-encounter:addIntermission(3000)
+encounter:addRemoveMonsters():autoAdvance()
+encounter:addBroadcast("You've upset the volcano and now it's going to take its revenge!"):autoAdvance("3s")
 
-encounter:addStage({
-	start = function()
-		encounter:spawnMonsters({
+encounter
+	:addSpawnMonsters({
+		{
 			name = "Magma Bubble",
 			event = "fight.magma-bubble.MagmaBubbleDeath",
-			positions = {
-				Position(33654, 32909, 15),
-			},
-		})
-		for i = 0, 4 do
-			table.insert(encounter.events, addEvent(encounter.spawnMonsters, (45 * i + 10) * 1000, encounter, { name = "Unchained Fire", amount = 5 }))
-		end
-	end,
-})
+			positions = { config.bossPos },
+		},
+	})
+	:autoAdvance("10s")
 
-function encounter.beforeEach()
-	encounter:removeMonsters()
+for i = 0, 4 do
+	local stage = encounter:addSpawnMonsters({
+		{ name = "Unchained Fire", amount = 5 },
+	})
+
+	if i < 4 then
+		stage:autoAdvance("45s")
+	end
 end
 
 encounter:register()
@@ -139,7 +142,7 @@ function overheatedDamage.onThink(interval, lastExecution)
 			player:getPosition():sendMagicEffect(effect)
 		else
 			local damage = player:getMaxHealth() * 0.6 * -1
-			doTargetCombatHealth(0, player, COMBAT_NEUTRALDAMAGE, damage, damage, CONST_ME_NONE)
+			doTargetCombatHealth(0, player, COMBAT_AGONYDAMAGE, damage, damage, CONST_ME_NONE)
 		end
 		::continue::
 	end
@@ -155,32 +158,32 @@ function crystalsCycle.onThink(interval, lastExecution)
 	local minCooled = 2
 	local crystals = {}
 	for _, item in ipairs(zoneItems) do
-		if item:getId() == cooledCrystalId or item:getId() == heatedCrystalId then
+		if item:getId() == config.cooledCrystalId or item:getId() == config.heatedCrystalId then
 			table.insert(crystals, item)
 		end
 	end
 	local shouldChange = math.random(1, 100) <= 50
 	if shouldChange and #crystals > 0 then
 		local item = crystals[math.random(1, #crystals)]
-		local newItemId = item:getId() == cooledCrystalId and heatedCrystalId or cooledCrystalId
+		local newItemId = item:getId() == config.cooledCrystalId and config.heatedCrystalId or config.cooledCrystalId
 		item:transform(newItemId)
 	end
 	local cooledCount = 0
-	local heatedCyrstas = {}
+	local heatedCrystals = {}
 	for _, item in ipairs(zoneItems) do
-		if item:getId() == cooledCrystalId then
+		if item:getId() == config.cooledCrystalId then
 			cooledCount = cooledCount + 1
-		elseif item:getId() == heatedCrystalId then
-			table.insert(heatedCyrstas, item)
+		elseif item:getId() == config.heatedCrystalId then
+			table.insert(heatedCrystals, item)
 		end
 	end
 	if cooledCount < minCooled then
 		for _ = 1, minCooled - cooledCount do
-			local index = math.random(1, #heatedCyrstas)
-			local item = heatedCyrstas[index]
+			local index = math.random(1, #heatedCrystals)
+			local item = heatedCrystals[index]
 			if item then
-				table.remove(heatedCyrstas, index)
-				item:transform(cooledCrystalId)
+				table.remove(heatedCrystals, index)
+				item:transform(config.cooledCrystalId)
 			end
 		end
 	end
@@ -208,10 +211,10 @@ function chargedFlameAction.onUse(player, item, fromPosition, target, toPosition
 	if not target or not target:isItem() then
 		return false
 	end
-	if target:getId() ~= cooledCrystalId then
+	if target:getId() ~= config.cooledCrystalId then
 		return false
 	end
-	target:transform(heatedCrystalId)
+	target:transform(config.heatedCrystalId)
 	local positions = {
 		Position(toPosition.x - 1, toPosition.y, toPosition.z),
 		Position(toPosition.x + 1, toPosition.y, toPosition.z),
@@ -224,11 +227,12 @@ function chargedFlameAction.onUse(player, item, fromPosition, target, toPosition
 	}
 	local position = randomPosition(positions)
 	position:sendMagicEffect(CONST_ME_FIREAREA)
-	Game.createItem(magicFieldId, 1, position)
+	local field = Game.createItem(config.magicFieldId, 1, position)
+	field:decay()
 	item:remove()
 end
 
-chargedFlameAction:id(chargedFlameId)
+chargedFlameAction:id(config.chargedFlameId)
 chargedFlameAction:register()
 
 local shieldField = MoveEvent()
@@ -245,7 +249,7 @@ function shieldField.onStepIn(creature, item, position, fromPosition)
 end
 
 shieldField:type("stepin")
-shieldField:id(magicFieldId)
+shieldField:id(config.magicFieldId)
 shieldField:register()
 
 local theEndOfDaysHealth = CreatureEvent("fight.magma-bubble.TheEndOfDaysHealth")
@@ -266,12 +270,11 @@ theEndOfDaysHealth:register()
 
 local magmaCrystalDeath = CreatureEvent("fight.magma-bubble.MagmaCrystalDeath")
 function magmaCrystalDeath.onDeath()
-	-- The monster count is only updated AFTER the event is called, so we need to subtract 1
-	local crystals = encounter:countMonsters("magma crystal") - 1
+	local crystals = encounter:countMonsters("magma crystal")
 	if crystals == 0 then
 		encounter:nextStage()
 	else
-		encounter:sendTextMessage(MESSAGE_EVENT_ADVANCE, "A magma crystal has been destroyed! " .. crystals .. " remaining.")
+		encounter:broadcast(MESSAGE_EVENT_ADVANCE, "A magma crystal has been destroyed! " .. crystals .. " remaining.")
 	end
 end
 
@@ -279,8 +282,7 @@ magmaCrystalDeath:register()
 
 local endOfDaysDeath = CreatureEvent("fight.magma-bubble.TheEndOfDaysDeath")
 function endOfDaysDeath.onDeath()
-	-- The monster count is only updated AFTER the event is called, so we need to subtract 1
-	local monsters = encounter:countMonsters("the end of days") - 1
+	local monsters = encounter:countMonsters("the end of days")
 	if monsters == 0 then
 		encounter:nextStage()
 	end

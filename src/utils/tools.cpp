@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -257,6 +257,15 @@ void trim_left(std::string &source, char t) {
 	source.erase(0, source.find_first_not_of(t));
 }
 
+std::string keepFirstWordOnly(std::string &str) {
+	size_t spacePos = str.find(' ');
+	if (spacePos != std::string::npos) {
+		str.erase(spacePos);
+	}
+
+	return str;
+}
+
 void toLowerCaseString(std::string &source) {
 	std::transform(source.begin(), source.end(), source.begin(), tolower);
 }
@@ -398,23 +407,13 @@ int32_t uniform_random(int32_t minNumber, int32_t maxNumber) {
 
 int32_t normal_random(int32_t minNumber, int32_t maxNumber) {
 	static std::normal_distribution<float> normalRand(0.5f, 0.25f);
-	if (minNumber == maxNumber) {
-		return minNumber;
-	} else if (minNumber > maxNumber) {
-		std::swap(minNumber, maxNumber);
-	}
+	float v;
+	do {
+		v = normalRand(getRandomGenerator());
+	} while (v < 0.0 || v > 1.0);
 
-	int32_t increment;
-	const int32_t diff = maxNumber - minNumber;
-	const float v = normalRand(getRandomGenerator());
-	if (v < 0.0) {
-		increment = diff / 2;
-	} else if (v > 1.0) {
-		increment = (diff + 1) / 2;
-	} else {
-		increment = round(v * diff);
-	}
-	return minNumber + increment;
+	auto &&[a, b] = std::minmax(minNumber, maxNumber);
+	return a + std::lround(v * (b - a));
 }
 
 bool boolean_random(double probability /* = 0.5*/) {
@@ -471,12 +470,12 @@ std::time_t getTimeNow() {
 	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
 
-std::time_t getTimeMsNow() {
+int64_t getTimeMsNow() {
 	auto duration = std::chrono::system_clock::now().time_since_epoch();
 	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
 }
 
-std::time_t getTimeUsNow() {
+int64_t getTimeUsNow() {
 	auto duration = std::chrono::system_clock::now().time_since_epoch();
 	return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
 }
@@ -834,7 +833,6 @@ AmmoTypeNames ammoTypeNames = {
 	{ "throwingknife", AMMO_THROWINGKNIFE },
 	{ "diamondarrow", AMMO_ARROW },
 	{ "spectralbolt", AMMO_BOLT },
-
 };
 
 WeaponActionNames weaponActionNames = {
@@ -1246,13 +1244,22 @@ const char* getReturnMessage(ReturnValue value) {
 		case RETURNVALUE_NOERROR:
 			return "No error.";
 
+		case RETURNVALUE_NOTBOUGHTINSTORE:
+			return "You cannot move this item into your store inbox as it was not bought in the store.";
+
+		case RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH:
+			return "This item cannot be moved there. You can only place gold, platinum and crystal coins in your gold pouch.";
+
+		case RETURNVALUE_ITEMCANNOTBEMOVEDTHERE:
+			return "This item cannot be moved there.";
+
 		case RETURNVALUE_REWARDCHESTISEMPTY:
 			return "The chest is currently empty. You did not take part in any battles in the last seven days or already claimed your reward.";
 
 		case RETURNVALUE_DESTINATIONOUTOFREACH:
 			return "Destination is out of reach.";
 
-		case RETURNVALUE_NOTMOVEABLE:
+		case RETURNVALUE_NOTMOVABLE:
 			return "You cannot move this object.";
 
 		case RETURNVALUE_DROPTWOHANDEDITEM:
@@ -1491,14 +1498,25 @@ const char* getReturnMessage(ReturnValue value) {
 		case RETURNVALUE_CONTACTADMINISTRATOR:
 			return "An error has occurred, please contact your administrator.";
 
+		case RETURNVALUE_ITEMISNOTYOURS:
+			return "This item is not yours.";
+
+		case RETURNVALUE_ITEMUNTRADEABLE:
+			return "This item is untradeable.";
+
 		// Any unhandled ReturnValue will go enter here
 		default:
 			return "Unknown error.";
 	}
 }
 
+int64_t OTSYSTIME = 0;
+void UPDATE_OTSYS_TIME() {
+	OTSYSTIME = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
+
 int64_t OTSYS_TIME() {
-	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	return OTSYSTIME;
 }
 
 SpellGroup_t stringToSpellGroup(const std::string &value) {
@@ -1553,17 +1571,6 @@ void consoleHandlerExit() {
 	return;
 }
 
-std::string validateNameHouse(const std::string &list) {
-	std::string result;
-	for (char c : list) {
-		if (isalpha(c) || c == ' ' || c == '\'' || c == '!' || c == '\n'
-			|| c == '?' || c == '#' || c == '@' || c == '*') {
-			result += c;
-		}
-	}
-	return result;
-}
-
 NameEval_t validateName(const std::string &name) {
 	StringVector prohibitedWords = { "owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "cm", "gm", "tutor", "counsellor", "god" };
 	StringVector toks;
@@ -1574,7 +1581,7 @@ NameEval_t validateName(const std::string &name) {
 	std::istream_iterator<std::string> end;
 	std::copy(begin, end, std::back_inserter(toks));
 
-	if (name.length() < 3 || name.length() > 14) {
+	if (name.length() < 3 || name.length() > 18) {
 		return INVALID_LENGTH;
 	}
 
@@ -1647,8 +1654,6 @@ std::string getObjectCategoryName(ObjectCategory_t category) {
 			return "Tibia Coins";
 		case OBJECTCATEGORY_CREATUREPRODUCTS:
 			return "Creature Products";
-		case OBJECTCATEGORY_STASHRETRIEVE:
-			return "Stash Retrieve";
 		case OBJECTCATEGORY_GOLD:
 			return "Gold";
 		case OBJECTCATEGORY_DEFAULT:
@@ -1656,6 +1661,39 @@ std::string getObjectCategoryName(ObjectCategory_t category) {
 		default:
 			return std::string();
 	}
+}
+
+bool isValidObjectCategory(ObjectCategory_t category) {
+	static std::unordered_set<ObjectCategory_t> valid = {
+		OBJECTCATEGORY_NONE,
+		OBJECTCATEGORY_ARMORS,
+		OBJECTCATEGORY_NECKLACES,
+		OBJECTCATEGORY_BOOTS,
+		OBJECTCATEGORY_CONTAINERS,
+		OBJECTCATEGORY_DECORATION,
+		OBJECTCATEGORY_FOOD,
+		OBJECTCATEGORY_HELMETS,
+		OBJECTCATEGORY_LEGS,
+		OBJECTCATEGORY_OTHERS,
+		OBJECTCATEGORY_POTIONS,
+		OBJECTCATEGORY_RINGS,
+		OBJECTCATEGORY_RUNES,
+		OBJECTCATEGORY_SHIELDS,
+		OBJECTCATEGORY_TOOLS,
+		OBJECTCATEGORY_VALUABLES,
+		OBJECTCATEGORY_AMMO,
+		OBJECTCATEGORY_AXES,
+		OBJECTCATEGORY_CLUBS,
+		OBJECTCATEGORY_DISTANCEWEAPONS,
+		OBJECTCATEGORY_SWORDS,
+		OBJECTCATEGORY_WANDS,
+		OBJECTCATEGORY_PREMIUMSCROLLS,
+		OBJECTCATEGORY_TIBIACOINS,
+		OBJECTCATEGORY_CREATUREPRODUCTS,
+		OBJECTCATEGORY_GOLD,
+		OBJECTCATEGORY_DEFAULT,
+	};
+	return valid.contains(category);
 }
 
 uint8_t forgeBonus(int32_t number) {
@@ -1822,6 +1860,11 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 	return output.str();
 }
 
+unsigned int getNumberOfCores() {
+	static auto cores = std::thread::hardware_concurrency();
+	return cores;
+}
+
 /**
  * @brief Formats a number to a string with commas
  * @param number The number to format
@@ -1835,4 +1878,36 @@ std::string formatNumber(uint64_t number) {
 		pos -= 3;
 	}
 	return formattedNumber;
+}
+
+void sleep_for(uint64_t ms) {
+	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+}
+
+/**
+ * @brief Formats a string to be used as KV key (lowercase, spaces replaced with -, no whitespace)
+ * @param str The string to format
+ * @return The formatted string
+ */
+std::string toKey(const std::string &str) {
+	std::string key = asLowerCaseString(str);
+	std::replace(key.begin(), key.end(), ' ', '-');
+	key.erase(std::remove_if(key.begin(), key.end(), [](char c) { return std::isspace(c); }), key.end());
+	return key;
+}
+
+uint8_t convertWheelGemAffinityToDomain(uint8_t affinity) {
+	switch (affinity) {
+		case 0:
+			return 1;
+		case 1:
+			return 3;
+		case 2:
+			return 0;
+		case 3:
+			return 2;
+		default:
+			g_logger().error("Failed to get gem affinity {}", affinity);
+			return 0;
+	}
 }

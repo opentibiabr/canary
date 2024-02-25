@@ -14,6 +14,7 @@ monster.outfit = {
 }
 
 monster.events = {
+	"GraveDangerBossDeath",
 	"zelosDeath",
 }
 
@@ -26,7 +27,6 @@ monster.speed = 212
 monster.bosstiary = {
 	bossRaceId = 1784,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosTimer,
 }
 
 monster.changeTarget = {
@@ -85,7 +85,7 @@ monster.loot = {
 monster.attacks = {
 	{ name = "melee", type = COMBAT_PHYSICALDAMAGE, interval = 2000, minDamage = -900, maxDamage = -2700 },
 	{ name = "combat", type = COMBAT_FIREDAMAGE, interval = 2000, chance = 15, length = 8, spread = 0, minDamage = -1200, maxDamage = -3200, effect = CONST_ME_HITBYFIRE },
-	{ name = "combat", type = COMBAT_LIFEDRAIN, interval = 2000, chance = 10, length = 8, spread = 3, minDamage = -600, maxDamage = -1600, effect = CONST_ME_SMALLCLOUDS },
+	{ name = "combat", type = COMBAT_LIFEDRAIN, interval = 2000, chance = 10, length = 8, spread = 0, minDamage = -600, maxDamage = -1600, effect = CONST_ME_SMALLCLOUDS },
 	{ name = "combat", type = COMBAT_DEATHDAMAGE, interval = 2000, chance = 30, radius = 6, minDamage = -1200, maxDamage = -1500, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "combat", type = COMBAT_DEATHDAMAGE, interval = 2000, chance = 20, length = 8, minDamage = -1700, maxDamage = -2000, effect = CONST_ME_MORTAREA, target = false },
 }

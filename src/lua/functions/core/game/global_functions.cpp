@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -11,12 +11,14 @@
 
 #include "creatures/interactions/chat.hpp"
 #include "game/game.hpp"
-#include "game/scheduling/scheduler.hpp"
+#include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/save_manager.hpp"
 #include "lua/functions/core/game/global_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/script_environment.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "lua/global/lua_timer_event_descr.hpp"
 
 class Creature;
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
@@ -123,8 +125,8 @@ int GlobalFunctions::luaIsDepot(lua_State* L) {
 	return 1;
 }
 
-int GlobalFunctions::luaIsMoveable(lua_State* L) {
-	// isMoveable(uid)
+int GlobalFunctions::luaIsMovable(lua_State* L) {
+	// isMovable(uid)
 	// isMovable(uid)
 	std::shared_ptr<Thing> thing = getScriptEnv()->getThingByUID(getNumber<uint32_t>(L, -1));
 	pushBoolean(L, thing && thing->isPushable());
@@ -591,7 +593,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 		return 1;
 	}
 
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) || g_configManager().getBoolean(CONVERT_UNSAFE_SCRIPTS)) {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) || g_configManager().getBoolean(CONVERT_UNSAFE_SCRIPTS, __FUNCTION__)) {
 		std::vector<std::pair<int32_t, LuaData_t>> indexes;
 		for (int i = 3; i <= parameters; ++i) {
 			if (lua_getmetatable(globalState, i) == 0) {
@@ -607,7 +609,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 		}
 
 		if (!indexes.empty()) {
-			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS)) {
+			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__)) {
 				bool plural = indexes.size() > 1;
 
 				std::string warningString = "Argument";
@@ -636,7 +638,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 				reportErrorFunc(warningString);
 			}
 
-			if (g_configManager().getBoolean(CONVERT_UNSAFE_SCRIPTS)) {
+			if (g_configManager().getBoolean(CONVERT_UNSAFE_SCRIPTS, __FUNCTION__)) {
 				for (const auto &entry : indexes) {
 					switch (entry.second) {
 						case LuaData_t::Item:
@@ -678,7 +680,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 	eventDesc.scriptName = getScriptEnv()->getScriptInterface()->getLoadingScriptName();
 
 	auto &lastTimerEventId = g_luaEnvironment().lastEventTimerId;
-	eventDesc.eventId = g_scheduler().addEvent(
+	eventDesc.eventId = g_dispatcher().scheduleEvent(
 		delay,
 		std::bind(&LuaEnvironment::executeTimerEvent, &g_luaEnvironment(), lastTimerEventId),
 		"LuaEnvironment::executeTimerEvent"
@@ -710,7 +712,7 @@ int GlobalFunctions::luaStopEvent(lua_State* L) {
 	LuaTimerEventDesc timerEventDesc = std::move(it->second);
 	timerEvents.erase(it);
 
-	g_scheduler().stopEvent(timerEventDesc.eventId);
+	g_dispatcher().stopEvent(timerEventDesc.eventId);
 	luaL_unref(globalState, LUA_REGISTRYINDEX, timerEventDesc.function);
 
 	for (auto parameter : timerEventDesc.parameters) {
@@ -722,7 +724,7 @@ int GlobalFunctions::luaStopEvent(lua_State* L) {
 }
 
 int GlobalFunctions::luaSaveServer(lua_State* L) {
-	g_game().saveGameState();
+	g_saveManager().scheduleAll();
 	pushBoolean(L, true);
 	return 1;
 }
@@ -740,16 +742,16 @@ int GlobalFunctions::luaDebugPrint(lua_State* L) {
 
 int GlobalFunctions::luaIsInWar(lua_State* L) {
 	// isInWar(cid, target)
-	std::shared_ptr<Player> player = getPlayer(L, 1);
+	const auto &player = getPlayer(L, 1);
 	if (!player) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		reportErrorFunc(fmt::format("{} - Player", getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND)));
 		pushBoolean(L, false);
 		return 1;
 	}
 
-	std::shared_ptr<Player> targetPlayer = getPlayer(L, 2);
+	const auto &targetPlayer = getPlayer(L, 2);
 	if (!targetPlayer) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		reportErrorFunc(fmt::format("{} - TargetPlayer", getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND)));
 		pushBoolean(L, false);
 		return 1;
 	}
@@ -774,7 +776,7 @@ int GlobalFunctions::luaGetWaypointPositionByName(lua_State* L) {
 int GlobalFunctions::luaSendChannelMessage(lua_State* L) {
 	// sendChannelMessage(channelId, type, message)
 	uint16_t channelId = getNumber<uint16_t>(L, 1);
-	const ChatChannel* channel = g_chat().getChannelById(channelId);
+	const auto &channel = g_chat().getChannelById(channelId);
 	if (!channel) {
 		pushBoolean(L, false);
 		return 1;
@@ -790,7 +792,7 @@ int GlobalFunctions::luaSendChannelMessage(lua_State* L) {
 int GlobalFunctions::luaSendGuildChannelMessage(lua_State* L) {
 	// sendGuildChannelMessage(guildId, type, message)
 	uint32_t guildId = getNumber<uint32_t>(L, 1);
-	const ChatChannel* channel = g_chat().getGuildChannelById(guildId);
+	const auto &channel = g_chat().getGuildChannelById(guildId);
 	if (!channel) {
 		pushBoolean(L, false);
 		return 1;

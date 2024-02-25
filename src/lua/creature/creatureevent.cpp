@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -326,8 +326,14 @@ bool CreatureEvent::executeAdvance(std::shared_ptr<Player> player, skills_t skil
 	return getScriptInterface()->callFunction(4);
 }
 
+/**
+ * @deprecated Prefer using registered onDeath events instead for better performance.
+ */
 void CreatureEvent::executeOnKill(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target, bool lastHit) const {
 	// onKill(creature, target, lastHit)
+	g_logger().warn("[CreatureEvent::executeOnKill - Creature {} target {} event {}] "
+					"Deprecated use of onKill event. Use registered onDeath events instead for better performance.",
+					creature->getName(), target->getName(), getName());
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeOnKill - Creature {} target {} event {}] "
 						 "Call stack overflow. Too many lua script calls being nested.",

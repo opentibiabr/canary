@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -16,6 +16,7 @@
 #include "io/iologindata.hpp"
 #include "items/item.hpp"
 #include "game/game.hpp"
+#include "game/zones/zone.hpp"
 #include "map/map.hpp"
 #include "utils/hash.hpp"
 #include "io/filestream.hpp"
@@ -106,6 +107,8 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 		return floor->getTile(x, y);
 	}
 
+	std::unique_lock l(floor->getMutex());
+
 	const uint8_t z = floor->getZ();
 
 	auto map = static_cast<Map*>(this);
@@ -132,6 +135,9 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 	}
 
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
+	for (const auto &zone : Zone::getZones(pos)) {
+		tile->addZone(zone);
+	}
 
 	floor->setTile(x, y, tile);
 

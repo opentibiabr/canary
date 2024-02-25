@@ -372,16 +372,20 @@ config.lua
 config_canary.lua
 client_assertions.txt
 .env
+otservbr.otbm
+canary.otbm
+otservbr-custom.otbm
+
 # Extensions
 *.ini
 *.otb
 *.exe
 *.manifest
-*.otbm
 *.rar
 *-house.xml
 *-monster.xml
 *-npc.xml
+monster_count.txt
 
 # SFTP for Sublime
 sftp-config.json

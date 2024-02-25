@@ -221,7 +221,7 @@ if NpcHandler == nil then
 	function NpcHandler:removeInteraction(npc, player)
 		local playerId = player:getId()
 		if Player(player) == nil then
-			return logger.error("[NpcHandler:removeInteraction] - Player is missing or nil")
+			return logger.error("[{} NpcHandler:removeInteraction] - Player parameter for npc '{}' is missing or nil", npc:getName(), npc:getName())
 		end
 
 		if self:getEventDelayedSay(playerId) then
@@ -345,16 +345,29 @@ if NpcHandler == nil then
 	end
 
 	-- Translates all message tags found in msg using parseInfo
-	function NpcHandler:parseMessage(msg, parseInfo)
+	function NpcHandler:parseMessage(msg, parseInfo, player, message)
 		local ret = msg
 		if type(ret) == "string" then
 			for search, replace in pairs(parseInfo) do
-				ret = string.gsub(ret, search, replace)
+				if type(replace) == "string" then
+					ret = string.gsub(ret, search, replace)
+				elseif type(replace) == "function" then
+					ret = string.gsub(ret, search, replace(player, message))
+				else
+					ret = string.gsub(ret, search, replace)
+				end
 			end
 		else
 			for i = 1, #ret do
 				for search, replace in pairs(parseInfo) do
 					ret[i] = string.gsub(ret[i], search, replace)
+					if type(replace) == "string" then
+						ret[i] = string.gsub(ret[i], search, replace)
+					elseif type(replace) == "function" then
+						ret = string.gsub(ret, search, replace(player, message))
+					else
+						ret[i] = string.gsub(ret[i], search, replace)
+					end
 				end
 			end
 		end
@@ -467,6 +480,7 @@ if NpcHandler == nil then
 
 				-- If is npc shop, send shop window and parse default message (if not have callback on the npc)
 				if npc:isMerchant() then
+					npc:closeShopWindow(player)
 					npc:openShopWindow(player)
 					self:say(msg, npc, player)
 				end

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -26,10 +26,7 @@ static constexpr int32_t EVENT_IMBUEMENT_INTERVAL = 1000;
 static constexpr uint8_t IMBUEMENT_MAX_TIER = 3;
 
 static constexpr int32_t STORAGEVALUE_EMOTE = 30008;
-static constexpr int32_t STORAGEVALUE_PROMOTION = 30018;
 static constexpr int32_t STORAGEVALUE_PODIUM = 30020;
-static constexpr int32_t STORAGEVALUE_AUTO_LOOT = 30063;
-static constexpr int32_t STORAGEVALUE_DAILYREWARD = 14898;
 static constexpr int32_t STORAGEVALUE_BESTIARYKILLCOUNT = 61305000; // Can get up to 2000 storages!
 
 // Hazard system storage

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,6 +12,7 @@
 #include "declarations.hpp"
 #include "items/item.hpp"
 #include "lib/di/container.hpp"
+#include "creatures/players/wheel/wheel_gems.hpp"
 
 class Vocation {
 public:
@@ -41,6 +42,10 @@ public:
 		return baseId;
 	}
 
+	uint16_t getAvatarLookType() const {
+		return avatarLookType;
+	}
+
 	uint32_t getHPGain() const {
 		return gainHP;
 	}
@@ -52,19 +57,19 @@ public:
 	}
 
 	uint32_t getManaGainTicks() const {
-		return gainManaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED);
+		return gainManaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED, __FUNCTION__);
 	}
 
 	uint32_t getManaGainAmount() const {
-		return gainManaAmount * g_configManager().getFloat(RATE_MANA_REGEN);
+		return gainManaAmount * g_configManager().getFloat(RATE_MANA_REGEN, __FUNCTION__);
 	}
 
 	uint32_t getHealthGainTicks() const {
-		return gainHealthTicks / g_configManager().getFloat(RATE_HEALTH_REGEN_SPEED);
+		return gainHealthTicks / g_configManager().getFloat(RATE_HEALTH_REGEN_SPEED, __FUNCTION__);
 	}
 
 	uint32_t getHealthGainAmount() const {
-		return gainHealthAmount * g_configManager().getFloat(RATE_HEALTH_REGEN);
+		return gainHealthAmount * g_configManager().getFloat(RATE_HEALTH_REGEN, __FUNCTION__);
 	}
 
 	uint8_t getSoulMax() const {
@@ -72,7 +77,7 @@ public:
 	}
 
 	uint32_t getSoulGainTicks() const {
-		return gainSoulTicks / g_configManager().getFloat(RATE_SOUL_REGEN_SPEED);
+		return gainSoulTicks / g_configManager().getFloat(RATE_SOUL_REGEN_SPEED, __FUNCTION__);
 	}
 
 	uint32_t getBaseAttackSpeed() const {
@@ -80,7 +85,7 @@ public:
 	}
 
 	uint32_t getAttackSpeed() const {
-		return attackSpeed / g_configManager().getFloat(RATE_ATTACK_SPEED);
+		return attackSpeed / g_configManager().getFloat(RATE_ATTACK_SPEED, __FUNCTION__);
 	}
 
 	uint32_t getBaseSpeed() const {
@@ -107,6 +112,19 @@ public:
 	float mitigationPrimaryShield = 1.0f;
 	float mitigationSecondaryShield = 1.0f;
 
+	float pvpDamageReceivedMultiplier = 1.0f;
+	float pvpDamageDealtMultiplier = 1.0f;
+
+	std::vector<WheelGemSupremeModifier_t> getSupremeGemModifiers();
+
+	uint16_t getWheelGemId(WheelGemQuality_t quality) {
+		if (!wheelGems.contains(quality)) {
+			return 0;
+		}
+		const auto &name = wheelGems[quality];
+		return Item::items.getItemIdByName(name);
+	}
+
 private:
 	friend class Vocations;
 
@@ -114,6 +132,7 @@ private:
 	std::map<uint32_t, absl::uint128> cacheManaTotal;
 	std::map<uint32_t, uint32_t> cacheSkill[SKILL_LAST + 1];
 	std::map<uint32_t, absl::uint128> cacheSkillTotal[SKILL_LAST + 1];
+	std::map<WheelGemQuality_t, std::string> wheelGems;
 
 	std::string name = "none";
 	std::string description;
@@ -141,6 +160,9 @@ private:
 	uint8_t soulMax = 100;
 	uint8_t clientId = 0;
 	uint8_t baseId = 0;
+	uint16_t avatarLookType = 0;
+
+	std::vector<WheelGemSupremeModifier_t> m_supremeGemModifiers;
 
 	static uint32_t skillBase[SKILL_LAST + 1];
 };

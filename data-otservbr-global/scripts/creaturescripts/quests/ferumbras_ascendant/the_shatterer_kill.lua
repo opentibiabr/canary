@@ -45,12 +45,14 @@ local chains = {
 		[7] = { itemid = 2126, position = Position(33406, 32421, 14) },
 	},
 }
+
 local levers = {
 	[1] = { position = Position(33385, 32410, 14) },
 	[2] = { position = Position(33403, 32391, 14) },
 	[3] = { position = Position(33430, 32418, 14) },
 	[4] = { position = Position(33410, 32441, 14) },
 }
+
 local function revert()
 	for i = 1, #chains.West do
 		local chainWest = chains.West[i]
@@ -77,30 +79,23 @@ local function revert()
 	end
 end
 
-local theShattererKill = CreatureEvent("TheShattererKill")
-function theShattererKill.onKill(creature, target)
-	local targetMonster = target:getMonster()
-	if not targetMonster or targetMonster:getMaster() or targetMonster:getName():lower() ~= "the shatterer" then
-		return true
-	end
-	for pid, _ in pairs(targetMonster:getDamageMap()) do
-		local attackerPlayer = Player(pid)
-		if attackerPlayer then
-			if targetMonster:getName():lower() == "the shatterer" then
-				attackerPlayer:setStorageValue(Storage.FerumbrasAscension.TheShatterer, 1)
-			end
-		end
-	end
+local teleportPos = Position(33393, 32438, 14)
+local newPos = Position(33436, 32443, 15)
+
+local theShattererKill = CreatureEvent("TheShattererDeath")
+function theShattererKill.onDeath(creature)
+	onDeathForDamagingPlayers(creature, function(creature, player)
+		player:setStorageValue(Storage.FerumbrasAscension.TheShatterer, 1)
+	end)
+
 	local teleport = Tile(Position(33393, 32438, 14)):getItemById(1949)
 	if not teleport then
 		return true
 	end
 	local oldPos = teleport:getDestination()
-	local teleportPos = Position(33393, 32438, 14)
-	local newPos = Position(33436, 32443, 15)
 	if teleport then
 		teleport:transform(22761)
-		targetMonster:getPosition():sendMagicEffect(CONST_ME_THUNDER)
+		creature:getPosition():sendMagicEffect(CONST_ME_THUNDER)
 		teleport:setDestination(newPos)
 		addEvent(revertTeleport, 2 * 60 * 1000, teleportPos, 22761, 1949, oldPos)
 		revert()

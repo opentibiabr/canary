@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"ReplicaServantDeath",
+}
+
 monster.raceId = 1327
 monster.Bestiary = {
 	class = "Construct",
@@ -89,7 +93,7 @@ monster.loot = {
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 40, attack = 40 },
-	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_FIREDAMAGE, minDamage = -80, maxDamage = -110, length = 5, spread = 1, effect = CONST_ME_YELLOWENERGY, target = false },
+	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_FIREDAMAGE, minDamage = -80, maxDamage = -110, length = 5, spread = 0, effect = CONST_ME_YELLOWENERGY, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -70, maxDamage = -110, range = 7, radius = 4, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_PURPLEENERGY, target = true },
 }
 

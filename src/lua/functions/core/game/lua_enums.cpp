@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -11,17 +11,17 @@
 
 #include "lua/functions/core/game/lua_enums.hpp"
 
-#include "account/account.hpp"
+#include "creatures/players/wheel/wheel_gems.hpp"
 #include "creatures/players/wheel/wheel_definitions.hpp"
 #include "io/io_bosstiary.hpp"
 #include "config/configmanager.hpp"
 #include "creatures/creature.hpp"
-#include "lua/creature/creatureevent.hpp"
 #include "declarations.hpp"
 #include "game/functions/game_reload.hpp"
-#include "game/game.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_group_type.hpp"
 
-#define registerEnumClass(luaState, enumClassType)               \
+#define registerMagicEnum(luaState, enumClassType)               \
 	{                                                            \
 		auto number = magic_enum::enum_integer(enumClassType);   \
 		auto name = magic_enum::enum_name(enumClassType).data(); \
@@ -29,7 +29,7 @@
 	}                                                            \
 	void(0)
 
-#define registerEnumClassNamespace(luaState, luaNamespace, enumClassType)                    \
+#define registerMagicEnumNamespace(luaState, luaNamespace, enumClassType)                    \
 	{                                                                                        \
 		auto number = magic_enum::enum_integer(enumClassType);                               \
 		auto name = std::string(luaNamespace) + magic_enum::enum_name(enumClassType).data(); \
@@ -111,6 +111,7 @@ void LuaEnums::init(lua_State* L) {
 	initSoundEnums(L);
 	initWheelEnums(L);
 	initAttributeConditionSubIdEnums(L);
+	initConcoctionsEnum(L);
 }
 
 void LuaEnums::initOthersEnums(lua_State* L) {
@@ -139,7 +140,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, FLAG_CHILDISOWNER);
 	registerEnum(L, FLAG_PATHFINDING);
 	registerEnum(L, FLAG_IGNOREFIELDDAMAGE);
-	registerEnum(L, FLAG_IGNORENOTMOVEABLE);
+	registerEnum(L, FLAG_IGNORENOTMOVABLE);
 	registerEnum(L, FLAG_IGNOREAUTOSTACK);
 
 	// Use with house:getAccessList, house:setAccessList
@@ -150,7 +151,6 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, LIGHT_STATE_SUNSET);
 	registerEnum(L, LIGHT_STATE_SUNRISE);
 	registerEnum(L, STORAGEVALUE_EMOTE);
-	registerEnum(L, STORAGEVALUE_AUTO_LOOT);
 
 	registerEnum(L, IMMOVABLE_ACTION_ID);
 
@@ -217,18 +217,18 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 }
 
 void LuaEnums::initAccountEnums(lua_State* L) {
-	registerEnum(L, account::ACCOUNT_TYPE_NORMAL);
-	registerEnum(L, account::ACCOUNT_TYPE_TUTOR);
-	registerEnum(L, account::ACCOUNT_TYPE_SENIORTUTOR);
-	registerEnum(L, account::ACCOUNT_TYPE_GAMEMASTER);
-	registerEnum(L, account::ACCOUNT_TYPE_GOD);
+	registerEnum(L, ACCOUNT_TYPE_NORMAL);
+	registerEnum(L, ACCOUNT_TYPE_TUTOR);
+	registerEnum(L, ACCOUNT_TYPE_SENIORTUTOR);
+	registerEnum(L, ACCOUNT_TYPE_GAMEMASTER);
+	registerEnum(L, ACCOUNT_TYPE_GOD);
 
-	registerEnum(L, account::GROUP_TYPE_NORMAL);
-	registerEnum(L, account::GROUP_TYPE_TUTOR);
-	registerEnum(L, account::GROUP_TYPE_SENIORTUTOR);
-	registerEnum(L, account::GROUP_TYPE_GAMEMASTER);
-	registerEnum(L, account::GROUP_TYPE_COMMUNITYMANAGER);
-	registerEnum(L, account::GROUP_TYPE_GOD);
+	registerEnum(L, GROUP_TYPE_NORMAL);
+	registerEnum(L, GROUP_TYPE_TUTOR);
+	registerEnum(L, GROUP_TYPE_SENIORTUTOR);
+	registerEnum(L, GROUP_TYPE_GAMEMASTER);
+	registerEnum(L, GROUP_TYPE_COMMUNITYMANAGER);
+	registerEnum(L, GROUP_TYPE_GOD);
 }
 
 void LuaEnums::initDailyRewardEnums(lua_State* L) {
@@ -279,7 +279,7 @@ void LuaEnums::initCombatEnums(lua_State* L) {
 
 void LuaEnums::initCombatParamEnums(lua_State* L) {
 	for (auto value : magic_enum::enum_values<CombatParam_t>()) {
-		registerEnumClass(L, value);
+		registerMagicEnum(L, value);
 	}
 }
 
@@ -445,8 +445,32 @@ void LuaEnums::initConditionParamEnums(lua_State* L) {
 void LuaEnums::initAttributeConditionSubIdEnums(lua_State* L) {
 	std::string luaNamespace = "AttrSubId_";
 	for (auto value : magic_enum::enum_values<AttrSubId_t>()) {
-		registerEnumClassNamespace(L, luaNamespace, value);
+		registerMagicEnumNamespace(L, luaNamespace, value);
 	}
+}
+
+void LuaEnums::initConcoctionsEnum(lua_State* L) {
+	std::string luaNamespace = "Concoction_";
+	registerEnumNamespace(L, luaNamespace, Concoction_t::KooldownAid);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::StaminaExtension);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::StrikeEnhancement);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::CharmUpgrade);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::WealthDuplex);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::BestiaryBetterment);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::FireResilience);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::IceResilience);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::EarthResilience);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::EnergyResilience);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::HolyResilience);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::DeathResilience);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::PhysicalResilience);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::FireAmplification);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::IceAmplification);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::EarthAmplification);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::EnergyAmplification);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::HolyAmplification);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::DeathAmplification);
+	registerEnumNamespace(L, luaNamespace, Concoction_t::PhysicalAmplification);
 }
 
 void LuaEnums::initConstMeEnums(lua_State* L) {
@@ -665,7 +689,7 @@ void LuaEnums::initConstPropEnums(lua_State* L) {
 	registerEnum(L, CONST_PROP_BLOCKPATH);
 	registerEnum(L, CONST_PROP_ISVERTICAL);
 	registerEnum(L, CONST_PROP_ISHORIZONTAL);
-	registerEnum(L, CONST_PROP_MOVEABLE);
+	registerEnum(L, CONST_PROP_MOVABLE);
 	registerEnum(L, CONST_PROP_IMMOVABLEBLOCKSOLID);
 	registerEnum(L, CONST_PROP_IMMOVABLEBLOCKPATH);
 	registerEnum(L, CONST_PROP_IMMOVABLENOFIELDBLOCKPATH);
@@ -827,7 +851,7 @@ void LuaEnums::initItemTypeEnums(lua_State* L) {
 
 void LuaEnums::initFluidEnums(lua_State* L) {
 	for (auto value : magic_enum::enum_values<Fluids_t>()) {
-		registerEnumClass(L, value);
+		registerMagicEnum(L, value);
 	}
 }
 
@@ -842,6 +866,7 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 	registerEnum(L, ITEM_REWARD_CONTAINER);
 	registerEnum(L, ITEM_AMULETOFLOSS);
 	registerEnum(L, ITEM_PARCEL);
+	registerEnum(L, ITEM_PARCEL_STAMPED);
 	registerEnum(L, ITEM_LABEL);
 	registerEnum(L, ITEM_FIREFIELD_PVP_FULL);
 	registerEnum(L, ITEM_FIREFIELD_PVP_MEDIUM);
@@ -898,22 +923,22 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 
 void LuaEnums::initPlayerFlagEnums(lua_State* L) {
 	for (auto value : magic_enum::enum_values<PlayerFlags_t>()) {
-		registerEnumClass(L, value);
+		registerMagicEnum(L, value);
 	}
 }
 
 void LuaEnums::initCreatureIconEnums(lua_State* L) {
 	std::string luaNamespace = "CreatureIconCategory_";
 	for (auto value : magic_enum::enum_values<CreatureIconCategory_t>()) {
-		registerEnumClassNamespace(L, luaNamespace, value);
+		registerMagicEnumNamespace(L, luaNamespace, value);
 	}
 	luaNamespace = "CreatureIconModifications_";
 	for (auto value : magic_enum::enum_values<CreatureIconModifications_t>()) {
-		registerEnumClassNamespace(L, luaNamespace, value);
+		registerMagicEnumNamespace(L, luaNamespace, value);
 	}
 	luaNamespace = "CreatureIconQuests_";
 	for (auto value : magic_enum::enum_values<CreatureIconQuests_t>()) {
-		registerEnumClassNamespace(L, luaNamespace, value);
+		registerMagicEnumNamespace(L, luaNamespace, value);
 	}
 }
 
@@ -1100,6 +1125,9 @@ void LuaEnums::initMapMarkEnums(lua_State* L) {
 // Use with Game.getReturnMessage
 void LuaEnums::initReturnValueEnums(lua_State* L) {
 	registerEnum(L, RETURNVALUE_NOERROR);
+	registerEnum(L, RETURNVALUE_NOTBOUGHTINSTORE);
+	registerEnum(L, RETURNVALUE_ITEMCANNOTBEMOVEDTHERE);
+	registerEnum(L, RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH);
 	registerEnum(L, RETURNVALUE_NOTPOSSIBLE);
 	registerEnum(L, RETURNVALUE_NOTENOUGHROOM);
 	registerEnum(L, RETURNVALUE_PLAYERISPZLOCKED);
@@ -1108,7 +1136,7 @@ void LuaEnums::initReturnValueEnums(lua_State* L) {
 	registerEnum(L, RETURNVALUE_THEREISNOWAY);
 	registerEnum(L, RETURNVALUE_DESTINATIONOUTOFREACH);
 	registerEnum(L, RETURNVALUE_CREATUREBLOCK);
-	registerEnum(L, RETURNVALUE_NOTMOVEABLE);
+	registerEnum(L, RETURNVALUE_NOTMOVABLE);
 	registerEnum(L, RETURNVALUE_DROPTWOHANDEDITEM);
 	registerEnum(L, RETURNVALUE_BOTHHANDSNEEDTOBEFREE);
 	registerEnum(L, RETURNVALUE_CANONLYUSEONEWEAPON);
@@ -1178,12 +1206,14 @@ void LuaEnums::initReturnValueEnums(lua_State* L) {
 	registerEnum(L, RETURNVALUE_NOTENOUGHFISHLEVEL);
 	registerEnum(L, RETURNVALUE_REWARDCHESTISEMPTY);
 	registerEnum(L, RETURNVALUE_CONTACTADMINISTRATOR);
+	registerEnum(L, RETURNVALUE_ITEMISNOTYOURS);
+	registerEnum(L, RETURNVALUE_ITEMUNTRADEABLE);
 }
 
 // Reload
 void LuaEnums::initReloadTypeEnums(lua_State* L) {
 	for (auto value : magic_enum::enum_values<Reload_t>()) {
-		registerEnumClass(L, value);
+		registerMagicEnum(L, value);
 	}
 }
 
@@ -1209,21 +1239,21 @@ void LuaEnums::initCreaturesEventEnums(lua_State* L) {
 
 void LuaEnums::initForgeEnums(lua_State* L) {
 	for (auto value : magic_enum::enum_values<ForgeClassifications_t>()) {
-		registerEnumClass(L, value);
+		registerMagicEnum(L, value);
 	}
 }
 
 // Webhook default colors
 void LuaEnums::initWebhookEnums(lua_State* L) {
-	registerEnum(L, WEBHOOK_COLOR_ONLINE);
-	registerEnum(L, WEBHOOK_COLOR_OFFLINE);
-	registerEnum(L, WEBHOOK_COLOR_WARNING);
-	registerEnum(L, WEBHOOK_COLOR_RAID);
+	registerEnum(L, WEBHOOK_COLOR_GREEN);
+	registerEnum(L, WEBHOOK_COLOR_RED);
+	registerEnum(L, WEBHOOK_COLOR_YELLOW);
+	registerEnum(L, WEBHOOK_COLOR_BLUE);
 }
 
 void LuaEnums::initBosstiaryEnums(lua_State* L) {
 	for (auto value : magic_enum::enum_values<BosstiaryRarity_t>()) {
-		registerEnumClass(L, value);
+		registerMagicEnum(L, value);
 	}
 }
 
@@ -1747,30 +1777,30 @@ void LuaEnums::initSoundEnums(lua_State* L) {
 void LuaEnums::initWheelEnums(lua_State* L) {
 	std::string wheelNamespace = "WHEEL_INSTANT_";
 	for (auto value : magic_enum::enum_values<WheelInstant_t>()) {
-		registerEnumClassNamespace(L, wheelNamespace, value);
+		registerMagicEnumNamespace(L, wheelNamespace, value);
 	}
 
 	wheelNamespace = "WHEEL_STAGE_";
 	for (auto value : magic_enum::enum_values<WheelStage_t>()) {
-		registerEnumClassNamespace(L, wheelNamespace, value);
+		registerMagicEnumNamespace(L, wheelNamespace, value);
 	}
 	wheelNamespace = "WHEEL_GRADE_";
 	for (auto value : magic_enum::enum_values<WheelSpellGrade_t>()) {
-		registerEnumClassNamespace(L, wheelNamespace, value);
+		registerMagicEnumNamespace(L, wheelNamespace, value);
 	}
 
 	wheelNamespace = "WHEEL_AVATAR_SKILL_";
 	for (auto value : magic_enum::enum_values<WheelAvatarSkill_t>()) {
-		registerEnumClassNamespace(L, wheelNamespace, value);
+		registerMagicEnumNamespace(L, wheelNamespace, value);
 	}
 
 	wheelNamespace = "WHEEL_STAT_";
 	for (auto value : magic_enum::enum_values<WheelStat_t>()) {
-		registerEnumClassNamespace(L, wheelNamespace, value);
+		registerMagicEnumNamespace(L, wheelNamespace, value);
 	}
 
 	wheelNamespace = "WHEEL_BOOST_";
 	for (auto value : magic_enum::enum_values<WheelSpellBoost_t>()) {
-		registerEnumClassNamespace(L, wheelNamespace, value);
+		registerMagicEnumNamespace(L, wheelNamespace, value);
 	}
 }

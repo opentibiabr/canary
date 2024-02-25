@@ -1,13 +1,13 @@
 local bosses = {
 	["the lord of the lice"] = { teleportPos = Position(33226, 31478, 12), godbreakerPos = Position(33237, 31477, 13) },
-	["tarbaz"] = { teleportPos = Position(33460, 32853, 11), godbreakerPos = Position(33427, 32852, 13), timer = Storage.FerumbrasAscension.TarbazTimer },
-	["ragiaz"] = { teleportPos = Position(33482, 32345, 13), godbreakerPos = Position(33466, 32392, 13), timer = Storage.FerumbrasAscension.RagiazTimer },
-	["plagirath"] = { teleportPos = Position(33174, 31511, 13), godbreakerPos = Position(33204, 31510, 13), timer = Storage.FerumbrasAscension.PlagirathTimer },
-	["razzagorn"] = { teleportPos = Position(33413, 32467, 14), godbreakerPos = Position(33357, 32440, 13), timer = Storage.FerumbrasAscension.RazzagornTimer },
-	["zamulosh"] = { teleportPos = Position(33644, 32764, 11), godbreakerPos = Position(33678, 32758, 13), timer = Storage.FerumbrasAscension.ZamuloshTimer },
-	["mazoran"] = { teleportPos = Position(33585, 32699, 14), godbreakerPos = Position(33614, 32679, 15), timer = Storage.FerumbrasAscension.MazoranTimer },
-	["shulgrax"] = { teleportPos = Position(33486, 32796, 13), godbreakerPos = Position(33459, 32820, 14), timer = Storage.FerumbrasAscension.ShulgraxTimer },
-	["ferumbras mortal shell"] = { teleportPos = Position(33392, 31485, 14), godbreakerPos = Position(33388, 31414, 14), timer = Storage.FerumbrasAscension.FerumbrasTimer },
+	["tarbaz"] = { teleportPos = Position(33460, 32853, 11), godbreakerPos = Position(33427, 32852, 13) },
+	["ragiaz"] = { teleportPos = Position(33482, 32345, 13), godbreakerPos = Position(33466, 32392, 13) },
+	["plagirath"] = { teleportPos = Position(33174, 31511, 13), godbreakerPos = Position(33204, 31510, 13) },
+	["razzagorn"] = { teleportPos = Position(33357, 32434, 12), godbreakerPos = Position(33357, 32440, 13) },
+	["zamulosh"] = { teleportPos = Position(33644, 32764, 11), godbreakerPos = Position(33678, 32758, 13) },
+	["mazoran"] = { teleportPos = Position(33585, 32699, 14), godbreakerPos = Position(33614, 32679, 15) },
+	["shulgrax"] = { teleportPos = Position(33486, 32796, 13), godbreakerPos = Position(33459, 32820, 14) },
+	["ferumbras mortal shell"] = { teleportPos = Position(33392, 31485, 14), godbreakerPos = Position(33388, 31414, 14) },
 }
 
 local crystals = {
@@ -40,30 +40,20 @@ local function revertTeleport(position, itemId, transformId, destination)
 	end
 end
 
-local ascendantBossesKill = CreatureEvent("AscendantBossesKill")
-function ascendantBossesKill.onKill(creature, target)
-	local targetMonster = target:getMonster()
-	if not targetMonster or targetMonster:getMaster() then
-		return true
-	end
-
-	local bossConfig = bosses[targetMonster:getName():lower()]
+local ascendantBossesKill = CreatureEvent("AscendantBossesDeath")
+function ascendantBossesKill.onDeath(creature)
+	local bossConfig = bosses[creature:getName():lower()]
 	if not bossConfig then
 		return true
 	end
 
-	for player, _ in pairs(targetMonster:getDamageMap()) do
-		local attackerPlayer = Player(player)
-		if attackerPlayer then
-			if targetMonster:getName():lower() == "ferumbras mortal shell" then
-				if bossConfig.timer then
-					attackerPlayer:setStorageValue(bossConfig.timer, os.time() + 60 * 60 * 14 * 24)
-				end
-			elseif targetMonster:getName():lower() == "the lord of the lice" then
-				attackerPlayer:setStorageValue(Storage.FerumbrasAscension.TheLordOfTheLiceAccess, 1)
-			end
+	onDeathForDamagingPlayers(creature, function(creature, player)
+		if creature:getName():lower() == "ferumbras mortal shell" then
+			player:setBossCooldown(creature:getName(), os.time() + AscendingFerumbrasConfig.days * 24 * 3600)
+		elseif creature:getName():lower() == "the lord of the lice" then
+			player:setStorageValue(Storage.FerumbrasAscension.TheLordOfTheLiceAccess, 1)
 		end
-	end
+	end)
 
 	local teleport = Tile(bossConfig.teleportPos):getItemById(1949)
 	if not teleport then
@@ -72,12 +62,12 @@ function ascendantBossesKill.onKill(creature, target)
 
 	if teleport then
 		teleport:transform(22761)
-		targetMonster:getPosition():sendMagicEffect(CONST_ME_THUNDER)
+		creature:getPosition():sendMagicEffect(CONST_ME_THUNDER)
 		teleport:setDestination(bossConfig.godbreakerPos)
 		addEvent(revertTeleport, 2 * 60 * 1000, bossConfig.teleportPos, 22761, 1949, Position(33319, 32318, 13))
 	end
 
-	if targetMonster:getName():lower() == "ferumbras mortal shell" then
+	if creature:getName():lower() == "ferumbras mortal shell" then
 		addEvent(transformCrystal, 2 * 60 * 1000)
 	end
 	return true

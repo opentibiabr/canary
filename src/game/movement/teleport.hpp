@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -18,6 +18,10 @@ public:
 
 	std::shared_ptr<Teleport> getTeleport() override {
 		return static_self_cast<Teleport>();
+	}
+
+	std::shared_ptr<Cylinder> getCylinder() override final {
+		return getTeleport();
 	}
 
 	// serialization

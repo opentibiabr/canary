@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -179,9 +179,9 @@ int SpellFunctions::luaSpellId(lua_State* L) {
 			return 1;
 		}
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, spell->getId());
+			lua_pushnumber(L, spell->getSpellId());
 		} else {
-			spell->setId(getNumber<uint16_t>(L, 2));
+			spell->setSpellId(getNumber<uint16_t>(L, 2));
 			pushBoolean(L, true);
 		}
 	} else {

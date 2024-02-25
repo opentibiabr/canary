@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -14,6 +14,8 @@
 #include "lua/scripts/luascript.hpp"
 #include "items/weapons/weapons.hpp"
 
+#include "lua/global/lua_timer_event_descr.hpp"
+
 class AreaCombat;
 class Combat;
 class Cylinder;
@@ -25,7 +27,7 @@ public:
 	static bool shuttingDown;
 
 	LuaEnvironment();
-	~LuaEnvironment();
+	~LuaEnvironment() override;
 
 	lua_State* getLuaState() override;
 
@@ -38,7 +40,7 @@ public:
 	}
 
 	bool initState() override;
-	bool reInitState();
+	bool reInitState() override;
 	bool closeState() override;
 
 	LuaScriptInterface* getTestInterface();
@@ -50,7 +52,7 @@ public:
 	template <typename T>
 	std::shared_ptr<T> createWeaponObject(LuaScriptInterface* interface) {
 		auto weapon = std::make_shared<T>(interface);
-		int weaponId = ++lastWeaponId;
+		auto weaponId = ++lastWeaponId;
 		weaponMap[weaponId] = weapon;
 		weaponIdMap[interface].push_back(weaponId);
 		return weapon;

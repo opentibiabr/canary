@@ -12,7 +12,7 @@ function spell.onCastSpell(creature, var)
 		end
 	end
 	if check < 1 then
-		creature:say("CRUSH THEM ALL!", TALKTYPE_ORANGE_2)
+		creature:say("CRUSH THEM ALL!", TALKTYPE_MONSTER_YELL)
 		Game.createMonster("Demon", Position(33528, 32330, 12))
 		Game.createMonster("Demon", Position(33523, 32338, 12))
 		Game.createMonster("Demon", Position(33532, 32337, 12))

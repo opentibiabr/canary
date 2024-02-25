@@ -75,7 +75,6 @@ local questTable = {
 	{ storage = Storage.CultsOfTibia.Barkless.Ice, storageValue = 3 },
 	{ storage = Storage.CultsOfTibia.Barkless.Objects, storageValue = 1 },
 	{ storage = Storage.CultsOfTibia.Barkless.Temp, storageValue = 1 },
-	{ storage = Storage.CultsOfTibia.Barkless.BossTimer, storageValue = 1 },
 	{ storage = Storage.CultsOfTibia.Orcs.Mission, storageValue = 1 },
 	{ storage = Storage.CultsOfTibia.Orcs.lookType, storageValue = 1 },
 	{ storage = Storage.CultsOfTibia.Orcs.bossTimer, storageValue = 1 },
@@ -275,6 +274,7 @@ local questTable = {
 	{ storage = Storage.DangerousDepths.Scouts.Diremaw, storageValue = 2 },
 	{ storage = Storage.Quest.U11_40.ThreatenedDreams.QuestLine, storageValue = 1 },
 	{ storage = Storage.Quest.U11_40.ThreatenedDreams.Mission01[1], storageValue = 16 },
+	{ storage = Storage.Quest.U11_40.ThreatenedDreams.Mission02.KroazurAccess, storageValue = 1 },
 	{ storage = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton, storageValue = 1 },
 	{ storage = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton, storageValue = 2 },
 	{ storage = Storage.Quest.U10_55.Dawnport.Questline, storageValue = 1 },
@@ -371,6 +371,10 @@ local questTable = {
 
 	{ storage = Storage.HeroRathleton.AccessDoor, storageValue = 1 },
 	{ storage = Storage.HeroRathleton.FastWay, storageValue = 1 },
+
+	-- Sea Serpent Quest
+	{ storage = Storage.Quest.U8_2.FishForASerpent.QuestLine, storageValue = 5 },
+	{ storage = Storage.Quest.U8_2.TheHuntForTheSeaSerpent.QuestLine, storageValue = 2 },
 }
 
 -- from Position: (33201, 31762, 1)
@@ -384,7 +388,7 @@ local function playerFreeQuestStart(playerId, index)
 	for i = 1, 5 do
 		index = index + 1
 		if not questTable[index] then
-			player:sendTextMessage(MESSAGE_INFO_DESCR, "Adding free quests completed.")
+			player:sendTextMessage(MESSAGE_LOOK, "Adding free quests completed.")
 			player:setStorageValue(Storage.FreeQuests, stage)
 			return
 		end
@@ -404,7 +408,7 @@ function freeQuests.onLogin(player)
 		return true
 	end
 
-	player:sendTextMessage(MESSAGE_INFO_DESCR, "Adding free acccess quests to your character.")
+	player:sendTextMessage(MESSAGE_LOOK, "Adding free acccess quests to your character.")
 	addEvent(playerFreeQuestStart, 500, player:getId(), 0)
 	player:addOutfit(251, 0)
 	player:addOutfit(252, 0)

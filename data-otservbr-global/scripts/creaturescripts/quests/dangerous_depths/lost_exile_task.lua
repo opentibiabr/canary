@@ -1,44 +1,53 @@
-local lostExileKill = CreatureEvent("LostExileKill")
-function lostExileKill.onKill(creature, target)
-	if not creature or not creature:isPlayer() then
-		return true
-	end
+local fromPos = Position(33768, 32227, 14)
+local toPos = Position(33781, 32249, 14)
 
-	if not target or not target:isMonster() then
-		return true
-	end
-
-	local fromPos = Position(33768, 32227, 14)
-	local toPos = Position(33781, 32249, 14)
-	local monsterName = target:getName():lower()
-
-	local storage = creature:getStorageValue(Storage.DangerousDepths.Dwarves.LostExiles)
-	local storage2 = creature:getStorageValue(Storage.DangerousDepths.Dwarves.Organisms)
-	if table.contains({ "lost exile" }, monsterName) then
-		if creature:getStorageValue(Storage.DangerousDepths.Dwarves.Home) == 1 then
-			if target:getPosition():isInRange(fromPos, toPos) then
-				if storage < 20 then
-					if storage < 0 then
-						creature:setStorageValue(Storage.DangerousDepths.Dwarves.LostExiles, 1)
-					end
-					creature:setStorageValue(Storage.DangerousDepths.Dwarves.LostExiles, storage + 1)
-				end
-			end
+local lostExileKill = CreatureEvent("LastExileDeath")
+function lostExileKill.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
+	onDeathForParty(creature, mostDamageKiller, function(creature, player)
+		if player:getStorageValue(Storage.DangerousDepths.Dwarves.Home) ~= 1 then
+			return
 		end
-	elseif table.contains({ "deepworm", "diremaw" }, monsterName) then
-		if creature:getStorageValue(Storage.DangerousDepths.Dwarves.Subterranean) == 1 then
-			if storage2 < 50 then
-				if storage2 < 0 then
-					creature:setStorageValue(Storage.DangerousDepths.Dwarves.Organisms, 1)
-				end
-				creature:setStorageValue(Storage.DangerousDepths.Dwarves.Organisms, storage2 + 1)
-			end
+		if not creature:getPosition():isInRange(fromPos, toPos) then
+			return
 		end
-	elseif table.contains({ "makeshift home" }, monsterName) then
-		local woodenTrash = Game.createItem(398, 1, target:getPosition())
-		woodenTrash:setActionId(57233)
-	end
+		local storage = player:getStorageValue(Storage.DangerousDepths.Dwarves.LostExiles)
+		if storage < 20 then
+			if storage < 0 then
+				player:setStorageValue(Storage.DangerousDepths.Dwarves.LostExiles, 1)
+			end
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.LostExiles, storage + 1)
+		end
+	end)
 	return true
 end
 
 lostExileKill:register()
+
+local wormKill = CreatureEvent("WarzoneWormDeath")
+function wormKill.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
+	local storage = mostDamageKiller:getStorageValue(Storage.DangerousDepths.Dwarves.Organisms)
+	onDeathForParty(creature, mostDamageKiller, function(creature, player)
+		if player:getStorageValue(Storage.DangerousDepths.Dwarves.Subterranean) ~= 1 then
+			return
+		end
+		if storage < 50 then
+			if storage < 0 then
+				player:setStorageValue(Storage.DangerousDepths.Dwarves.Organisms, 1)
+			end
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.Organisms, storage + 1)
+		end
+	end)
+
+	return true
+end
+
+wormKill:register()
+
+local makeshiftKill = CreatureEvent("MakeshiftHomeDeath")
+function makeshiftKill.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
+	local woodenTrash = Game.createItem(398, 1, creature:getPosition())
+	woodenTrash:setActionId(57233)
+	return true
+end
+
+makeshiftKill:register()

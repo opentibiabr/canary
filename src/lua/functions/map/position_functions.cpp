@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,6 +12,7 @@
 #include "game/game.hpp"
 #include "game/movement/position.hpp"
 #include "lua/functions/map/position_functions.hpp"
+#include "map/spectators.hpp"
 
 int PositionFunctions::luaPositionCreate(lua_State* L) {
 	// Position([x = 0[, y = 0[, z = 0[, stackpos = 0]]]])
@@ -96,7 +97,7 @@ int PositionFunctions::luaPositionGetPathTo(lua_State* L) {
 	fpp.clearSight = getBoolean(L, 6, fpp.clearSight);
 	fpp.maxSearchDist = getNumber<int32_t>(L, 7, fpp.maxSearchDist);
 
-	std::forward_list<Direction> dirList;
+	stdext::arraylist<Direction> dirList(128);
 	if (g_game().map.getPathMatching(pos, dirList, FrozenPathingConditionCall(position), fpp)) {
 		lua_newtable(L);
 
@@ -147,16 +148,19 @@ int PositionFunctions::luaPositionGetZones(lua_State* L) {
 
 int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	// position:sendMagicEffect(magicEffect[, player = nullptr])
-	SpectatorHashSet spectators;
+	CreatureVector spectators;
 	if (lua_gettop(L) >= 3) {
-		std::shared_ptr<Player> player = getPlayer(L, 3);
-		if (player) {
-			spectators.insert(player);
+		const auto &player = getPlayer(L, 3);
+		if (!player) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+			return 1;
 		}
+
+		spectators.emplace_back(player);
 	}
 
 	MagicEffectClasses magicEffect = getNumber<MagicEffectClasses>(L, 2);
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !g_game().isMagicEffectRegistered(magicEffect)) {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && !g_game().isMagicEffectRegistered(magicEffect)) {
 		g_logger().warn("[PositionFunctions::luaPositionSendMagicEffect] An unregistered magic effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(magicEffect));
 		pushBoolean(L, false);
 		return 1;
@@ -175,16 +179,19 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 
 int PositionFunctions::luaPositionRemoveMagicEffect(lua_State* L) {
 	// position:removeMagicEffect(magicEffect[, player = nullptr])
-	SpectatorHashSet spectators;
+	CreatureVector spectators;
 	if (lua_gettop(L) >= 3) {
-		std::shared_ptr<Player> player = getPlayer(L, 3);
-		if (player) {
-			spectators.insert(player);
+		const auto &player = getPlayer(L, 3);
+		if (!player) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+			return 1;
 		}
+
+		spectators.emplace_back(player);
 	}
 
 	MagicEffectClasses magicEffect = getNumber<MagicEffectClasses>(L, 2);
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !g_game().isMagicEffectRegistered(magicEffect)) {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && !g_game().isMagicEffectRegistered(magicEffect)) {
 		g_logger().warn("[PositionFunctions::luaPositionRemoveMagicEffect] An unregistered magic effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(magicEffect));
 		pushBoolean(L, false);
 		return 1;
@@ -203,18 +210,21 @@ int PositionFunctions::luaPositionRemoveMagicEffect(lua_State* L) {
 
 int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	// position:sendDistanceEffect(positionEx, distanceEffect[, player = nullptr])
-	SpectatorHashSet spectators;
+	CreatureVector spectators;
 	if (lua_gettop(L) >= 4) {
-		std::shared_ptr<Player> player = getPlayer(L, 4);
-		if (player) {
-			spectators.insert(player);
+		const auto &player = getPlayer(L, 4);
+		if (!player) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+			return 1;
 		}
+
+		spectators.emplace_back(player);
 	}
 
 	ShootType_t distanceEffect = getNumber<ShootType_t>(L, 3);
 	const Position &positionEx = getPosition(L, 2);
 	const Position &position = getPosition(L, 1);
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !g_game().isDistanceEffectRegistered(distanceEffect)) {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && !g_game().isDistanceEffectRegistered(distanceEffect)) {
 		g_logger().warn("[PositionFunctions::luaPositionSendDistanceEffect] An unregistered distance effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(distanceEffect));
 		return 1;
 	}

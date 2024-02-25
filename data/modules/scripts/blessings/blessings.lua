@@ -20,11 +20,11 @@ Blessings.Credits = {
 }
 
 Blessings.Config = {
-	AdventurerBlessingLevel = 0, -- Free full bless until level
+	AdventurerBlessingLevel = configManager.getNumber(configKeys.ADVENTURERSBLESSING_LEVEL), -- Free full bless until level
 	HasToF = false, -- Enables/disables twist of fate
 	InquisitonBlessPriceMultiplier = 1.1, -- Bless price multiplied by henricus
-	SkulledDeathLoseStoreItem = true, -- Destroy all items on store when dying with red/blackskull
-	InventoryGlowOnFiveBless = true, -- Glow in yellow inventory items when the player has 5 or more bless,
+	SkulledDeathLoseStoreItem = configManager.getBoolean(configKeys.SKULLED_DEATH_LOSE_STORE_ITEM), -- Destroy all items on store when dying with red/blackskull
+	InventoryGlowOnFiveBless = configManager.getBoolean(configKeys.INVENTORY_GLOW), -- Glow in yellow inventory items when the player has 5 or more bless,
 	Debug = false, -- Prin debug messages in console if enabled
 }
 
@@ -183,7 +183,7 @@ Blessings.sendBlessDialog = function(player)
 	for i = 1, historyAmount do
 		msg:addU32(os.time()) -- timestamp
 		msg:addByte(0) -- Color message (1 - Red | 0 = White loss)
-		msg:addString("Blessing Purchased") -- History message
+		msg:addString("Blessing Purchased", "Blessings.sendBlessDialog - Blessing Purchased") -- History message
 	end
 
 	msg:sendToPlayer(player)
@@ -246,7 +246,7 @@ Blessings.useCharm = function(player, item)
 end
 
 Blessings.checkBless = function(player)
-	local result, bless = "Received blessings:"
+	local result = "Received blessings:"
 	for k, v in pairs(Blessings.All) do
 		result = player:hasBlessing(k) and result .. "\n" .. v.name or result
 	end
@@ -260,7 +260,7 @@ Blessings.doAdventurerBlessing = function(player)
 	end
 	player:addMissingBless(true, true)
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You received adventurers blessings for you being level lower than " .. Blessings.Config.AdventurerBlessingLevel .. "!")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have adventurer's blessings for being level lower than " .. Blessings.Config.AdventurerBlessingLevel .. "!")
 	player:getPosition():sendMagicEffect(CONST_ME_HOLYDAMAGE)
 	return true
 end
@@ -299,7 +299,7 @@ Blessings.DropLoot = function(player, corpse, chance, skulled)
 		end
 	end
 	if skulled and Blessings.Config.SkulledDeathLoseStoreItem then
-		local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
+		local inbox = player:getStoreInbox()
 		local toBeDeleted = {}
 		if inbox and inbox:getSize() > 0 then
 			for i = 0, inbox:getSize() do
@@ -361,6 +361,10 @@ Blessings.BuyAllBlesses = function(player)
 	end
 
 	if player:removeMoneyBank(totalCost) then
+		metrics.addCounter("balance_decrease", remainsPrice, {
+			player = player:getName(),
+			context = "blessings",
+		})
 		for i, v in ipairs(missingBless) do
 			player:addBlessing(v.id, 1)
 		end

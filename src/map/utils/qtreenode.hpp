@@ -19,11 +19,7 @@ class QTreeNode {
 public:
 	constexpr QTreeNode() = default;
 
-	virtual ~QTreeNode() {
-		for (auto* ptr : child) {
-			delete ptr;
-		}
-	};
+	virtual ~QTreeNode() { }
 
 	// non-copyable
 	QTreeNode(const QTreeNode &) = delete;
@@ -76,7 +72,7 @@ public:
 		return array[z];
 	}
 
-	void addCreature(std::shared_ptr<Creature> c);
+	void addCreature(const std::shared_ptr<Creature> &c);
 	void removeCreature(std::shared_ptr<Creature> c);
 
 private:
@@ -92,4 +88,5 @@ private:
 	friend class Map;
 	friend class MapCache;
 	friend class QTreeNode;
+	friend class Spectators;
 };

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -144,7 +144,8 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 		}
 
 		std::shared_ptr<ConditionSpeed> condition = Condition::createCondition(CONDITIONID_COMBAT, conditionType, duration, 0)->static_self_cast<ConditionSpeed>();
-		condition->setFormulaVars(speedChange / 1000.0, 0, speedChange / 1000.0, 0);
+		float multiplier = 1.0f + static_cast<float>(speedChange) / 1000.0f;
+		condition->setFormulaVars(multiplier / 2, 40, multiplier, 40);
 		combatPtr->addCondition(condition);
 	} else if (spellName == "outfit") {
 		int32_t duration = 10000;
@@ -291,7 +292,7 @@ bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 	return true;
 }
 
-std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name) {
+std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name, bool silent /* = false*/) const {
 	std::string lowerCaseName = asLowerCaseString(name);
 	if (auto it = monsters.find(lowerCaseName);
 		it != monsters.end()
@@ -299,7 +300,9 @@ std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name) {
 		&& it->first.find(lowerCaseName) != it->first.npos) {
 		return it->second;
 	}
-	g_logger().error("[Monsters::getMonsterType] - Monster with name {} not exist", lowerCaseName);
+	if (!silent) {
+		g_logger().error("[Monsters::getMonsterType] - Monster with name {} not exist", lowerCaseName);
+	}
 	return nullptr;
 }
 

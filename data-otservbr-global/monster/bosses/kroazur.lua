@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"ThreatenedDreamsNightmareMonstersDeath",
+}
+
 monster.bosstiary = {
 	bossRaceId = 1515,
 	bossRace = RARITY_BANE,
@@ -91,7 +95,7 @@ monster.loot = {
 monster.attacks = {
 	{ name = "melee", interval = 200, chance = 20, minDamage = 0, maxDamage = -650 },
 	{ name = "combat", interval = 200, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -300, maxDamage = -500, target = false },
-	{ name = "combat", interval = 500, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -200, maxDamage = -300, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = true },
+	{ name = "combat", interval = 500, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -200, maxDamage = -300, length = 8, spread = 0, effect = CONST_ME_MORTAREA, target = true },
 	{ name = "combat", interval = 500, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -250, maxDamage = -300, radius = 8, effect = CONST_ME_MORTAREA, target = false },
 }
 

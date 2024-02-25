@@ -4,7 +4,7 @@ function teleportToCreature.onSay(player, words, param)
 	-- create log
 	logCommand(player, words, param)
 
-	local onlyActive = param == "active" and true or false
+	local showAll = param == "all" and true or false
 
 	local players = Game.getPlayers()
 	local playerList = {}
@@ -14,13 +14,14 @@ function teleportToCreature.onSay(player, words, param)
 			goto continue
 		end
 
-		if not onlyActive then
+		if showAll then
 			table.insert(playerList, targetPlayer)
 		else
 			local isGhost = targetPlayer:isInGhostMode()
-			local isTraining = onExerciseTraining[targetPlayer:getId()]
+			local isTraining = _G.OnExerciseTraining[targetPlayer:getId()]
 			local isIdle = targetPlayer:getIdleTime() >= 5 * 60 * 1000
-			local isActive = not isGhost and not isTraining and not isIdle
+			local isInTrainingRoom = targetPlayer:getPosition():isInRange(Position(1015, 1109, 7), Position(1094, 1738, 7))
+			local isActive = not isGhost and not isTraining and not isIdle and not isInTrainingRoom
 			if isActive then
 				table.insert(playerList, targetPlayer)
 			end
@@ -30,7 +31,7 @@ function teleportToCreature.onSay(player, words, param)
 
 	if #playerList == 0 then
 		player:sendCancelMessage("There are no active players.")
-		return false
+		return true
 	end
 
 	local window = ModalWindow({

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -20,7 +20,7 @@ bool BaseEvents::loadFromXml() {
 	}
 
 	std::string scriptsName = getScriptBaseName();
-	std::string basePath = g_configManager().getString(CORE_DIRECTORY) + "/" + scriptsName + "/";
+	std::string basePath = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/" + scriptsName + "/";
 	if (getScriptInterface().loadFile(
 			basePath + "lib/" + scriptsName + ".lua",
 			scriptsName + ".lua"

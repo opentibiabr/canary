@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,11 +12,10 @@
 #include "config/configmanager.hpp"
 #include "game/scheduling/events_scheduler.hpp"
 #include "lua/scripts/scripts.hpp"
-#include "utils/pugicast.hpp"
 
 bool EventsScheduler::loadScheduleEventFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/events.xml";
+	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/events.xml";
 	if (!doc.load_file(folder.c_str())) {
 		printXMLError(__FUNCTION__, folder, doc.load_file(folder.c_str()));
 		consoleHandlerExit();
@@ -29,7 +28,7 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 
 	// Keep track of loaded scripts to check for duplicates
 	int count = 0;
-	std::set<std::string_view, std::less<>> loadedScripts;
+	phmap::flat_hash_set<std::string_view> loadedScripts;
 	std::map<std::string, EventRates> eventsOnSameDay;
 	for (const auto &eventNode : doc.child("events").children()) {
 		std::string eventScript = eventNode.attribute("script").as_string();
@@ -75,6 +74,12 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 				g_eventsScheduler().setLootSchedule(lootrate);
 			}
 
+			if (ingameNode.attribute("bosslootrate")) {
+				uint16_t bosslootrate = static_cast<uint16_t>(ingameNode.attribute("bosslootrate").as_uint());
+				currentEventRates.bosslootrate = bosslootrate;
+				g_eventsScheduler().setBossLootSchedule(bosslootrate);
+			}
+
 			if (ingameNode.attribute("spawnrate")) {
 				uint16_t spawnrate = static_cast<uint16_t>(ingameNode.attribute("spawnrate").as_uint());
 				currentEventRates.spawnrate = spawnrate;
@@ -96,6 +101,9 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 			}
 			if (rates.lootrate != 100 && currentEventRates.lootrate != 100 && rates.lootrate == currentEventRates.lootrate) {
 				modifiedRates.emplace_back("lootrate");
+			}
+			if (rates.bosslootrate != 100 && currentEventRates.bosslootrate != 100 && rates.bosslootrate == currentEventRates.bosslootrate) {
+				modifiedRates.emplace_back("bosslootrate");
 			}
 			if (rates.spawnrate != 100 && currentEventRates.spawnrate != 100 && rates.spawnrate == currentEventRates.spawnrate) {
 				modifiedRates.emplace_back("spawnrate");

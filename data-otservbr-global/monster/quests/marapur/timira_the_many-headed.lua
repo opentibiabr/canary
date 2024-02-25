@@ -12,7 +12,6 @@ monster.outfit = {
 monster.bosstiary = {
 	bossRaceId = 2250,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_90.WithinTheTides.TimiraTimer,
 }
 
 monster.health = 75000
@@ -77,9 +76,11 @@ monster.loot = {
 	{ name = "giant topaz", chance = 2041 },
 	{ name = "dawnfire sherwani", chance = 200 },
 	{ name = "frostflower boots", chance = 200 },
+	{ name = "feverbloom boots", chance = 200 },
 	{ id = 39233, chance = 200 }, -- enchanted turtle amulet
 	{ name = "midnight tunic", chance = 200 },
 	{ name = "midnight sarong", chance = 200 },
+	{ name = "naga quiver", chance = 200 },
 	{ name = "naga sword", chance = 200 },
 	{ name = "naga axe", chance = 200 },
 	{ name = "naga club", chance = 200 },

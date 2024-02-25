@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -27,6 +27,11 @@ public:
 	template <typename T>
 	std::shared_ptr<T> static_self_cast() {
 		return std::static_pointer_cast<T>(shared_from_this());
+	}
+
+	template <typename T>
+	std::shared_ptr<const T> static_self_cast() const {
+		return std::static_pointer_cast<const T>(shared_from_this());
 	}
 
 	template <typename T>

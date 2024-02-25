@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -16,7 +16,7 @@
 
 bool Vocations::loadFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/vocations.xml";
+	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/vocations.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
@@ -111,6 +111,10 @@ bool Vocations::loadFromXml() {
 			voc.combat = attr.as_bool();
 		}
 
+		if ((attr = vocationNode.attribute("avatarlooktype"))) {
+			voc.avatarLookType = pugi::cast<uint16_t>(attr.value());
+		}
+
 		for (auto childNode : vocationNode.children()) {
 			if (strcasecmp(childNode.name(), "skill") == 0) {
 				pugi::xml_attribute skillIdAttribute = childNode.attribute("id");
@@ -163,6 +167,22 @@ bool Vocations::loadFromXml() {
 				if (armorAttribute) {
 					voc.armorMultiplier = pugi::cast<float>(armorAttribute.value());
 				}
+			} else if (strcasecmp(childNode.name(), "pvp") == 0) {
+				pugi::xml_attribute pvpDamageReceivedMultiplier = childNode.attribute("damageReceivedMultiplier");
+				if (pvpDamageReceivedMultiplier) {
+					voc.pvpDamageReceivedMultiplier = pugi::cast<float>(pvpDamageReceivedMultiplier.value());
+				}
+
+				pugi::xml_attribute pvpDamageDealtMultiplier = childNode.attribute("damageDealtMultiplier");
+				if (pvpDamageDealtMultiplier) {
+					voc.pvpDamageDealtMultiplier = pugi::cast<float>(pvpDamageDealtMultiplier.value());
+				}
+			} else if (strcasecmp(childNode.name(), "gem") == 0) {
+				pugi::xml_attribute qualityAttr = childNode.attribute("quality");
+				pugi::xml_attribute nameAttr = childNode.attribute("name");
+				auto quality = pugi::cast<uint8_t>(qualityAttr.value());
+				auto name = nameAttr.as_string();
+				voc.wheelGems[static_cast<WheelGemQuality_t>(quality)] = name;
 			}
 		}
 	}
@@ -261,4 +281,23 @@ uint64_t Vocation::getReqMana(uint32_t magLevel) {
 	uint64_t reqMana = std::floor<uint64_t>(1600 * std::pow<double>(manaMultiplier, static_cast<int32_t>(magLevel) - 1));
 	cacheMana[magLevel] = reqMana;
 	return reqMana;
+}
+
+std::vector<WheelGemSupremeModifier_t> Vocation::getSupremeGemModifiers() {
+	if (!m_supremeGemModifiers.empty()) {
+		return m_supremeGemModifiers;
+	}
+	auto baseVocation = g_vocations().getVocation(getBaseId());
+	auto vocationName = asLowerCaseString(baseVocation->getVocName());
+	auto allModifiers = magic_enum::enum_entries<WheelGemSupremeModifier_t>();
+	g_logger().debug("Loading supreme gem modifiers for vocation: {}", vocationName);
+	for (const auto &[value, modifierName] : allModifiers) {
+		std::string targetVocation(modifierName.substr(0, modifierName.find("_")));
+		toLowerCaseString(targetVocation);
+		g_logger().debug("Checking supreme gem modifier: {}, targetVocation: {}", modifierName, targetVocation);
+		if (targetVocation == "general" || targetVocation.find(vocationName) != std::string::npos) {
+			m_supremeGemModifiers.push_back(value);
+		}
+	}
+	return m_supremeGemModifiers;
 }

@@ -67,8 +67,8 @@ function trainerEntrance.onStepIn(creature, item, position, fromPosition)
 	end
 
 	calculatingRoom(creature.uid, config.firstRoomPosition, 0, 0)
-	Game.createMonster("training machine", creature:getPosition(), true, false)
-	Game.createMonster("training machine", creature:getPosition(), true, false)
+	Game.createMonster("Training Machine", creature:getPosition(), true, false)
+	Game.createMonster("Training Machine", creature:getPosition(), true, false)
 	return true
 end
 

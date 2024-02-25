@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"CultsOfTibiaBossDeath",
+}
+
 monster.health = 290000
 monster.maxHealth = 290000
 monster.race = "venom"
@@ -69,8 +73,8 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -500, length = 9, spread = 7, effect = CONST_ME_SMALLCLOUDS, target = false },
 	{ name = "remorseless wave", interval = 2000, chance = 25, target = false },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -500, radius = 7, effect = CONST_ME_HITAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -500, length = 9, spread = 3, effect = CONST_ME_STUN, target = false },
-	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -500, length = 9, spread = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -500, length = 9, spread = 0, effect = CONST_ME_STUN, target = false },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -500, length = 9, spread = 0, effect = CONST_ME_MORTAREA, target = false },
 }
 
 monster.defenses = {

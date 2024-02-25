@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -16,11 +16,20 @@
 #include "lua/scripts/lua_environment.hpp"
 
 int KVFunctions::luaKVScoped(lua_State* L) {
-	// KV.scoped(key)
+	// KV.scoped(key) | KV:scoped(key)
 	auto key = getString(L, -1);
+
+	if (isUserdata(L, 1)) {
+		auto scopedKV = getUserdataShared<KV>(L, 1);
+		auto newScope = scopedKV->scoped(key);
+		pushUserdata<KV>(L, newScope);
+		setMetatable(L, -1, "KV");
+		return 1;
+	}
+
 	auto scopedKV = g_kv().scoped(key);
-	pushUserdata<KVStore>(L, scopedKV);
-	setMetatable(L, -1, "KVStore");
+	pushUserdata<KV>(L, scopedKV);
+	setMetatable(L, -1, "KV");
 	return 1;
 }
 
@@ -36,7 +45,7 @@ int KVFunctions::luaKVSet(lua_State* L) {
 	}
 
 	if (isUserdata(L, 1)) {
-		auto scopedKV = getUserdata<KVStore>(L, 1);
+		auto scopedKV = getUserdataShared<KV>(L, 1);
 		scopedKV->set(key, valueWrapper.value());
 		pushBoolean(L, true);
 		return 1;
@@ -57,13 +66,13 @@ int KVFunctions::luaKVGet(lua_State* L) {
 		key = getString(L, -2);
 	}
 	if (isUserdata(L, 1)) {
-		auto scopedKV = getUserdata<KVStore>(L, 1);
+		auto scopedKV = getUserdataShared<KV>(L, 1);
 		valueWrapper = scopedKV->get(key, forceLoad);
 	} else {
 		valueWrapper = g_kv().get(key, forceLoad);
 	}
 
-	if (valueWrapper) {
+	if (valueWrapper.has_value()) {
 		pushValueWrapper(L, *valueWrapper);
 	} else {
 		lua_pushnil(L);
@@ -71,15 +80,53 @@ int KVFunctions::luaKVGet(lua_State* L) {
 	return 1;
 }
 
-std::optional<ValueWrapper> KVFunctions::getValueWrapper(lua_State* L) {
+int KVFunctions::luaKVRemove(lua_State* L) {
+	// KV.remove(key) | scopedKV:remove(key)
+	auto key = getString(L, -1);
+	if (isUserdata(L, 1)) {
+		auto scopedKV = getUserdataShared<KV>(L, 1);
+		scopedKV->remove(key);
+	} else {
+		g_kv().remove(key);
+	}
+	lua_pushnil(L);
+	return 1;
+}
+
+int KVFunctions::luaKVKeys(lua_State* L) {
+	// KV.keys([prefix = ""]) | scopedKV:keys([prefix = ""])
+	std::unordered_set<std::string> keys;
+	std::string prefix = "";
+
 	if (isString(L, -1)) {
-		return ValueWrapper(getString(L, -1));
+		prefix = getString(L, -1);
+	}
+
+	if (isUserdata(L, 1)) {
+		auto scopedKV = getUserdataShared<KV>(L, 1);
+		keys = scopedKV->keys();
+	} else {
+		keys = g_kv().keys(prefix);
+	}
+
+	int index = 0;
+	lua_createtable(L, static_cast<int>(keys.size()), 0);
+	for (const auto &key : keys) {
+		pushString(L, key);
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+std::optional<ValueWrapper> KVFunctions::getValueWrapper(lua_State* L) {
+	if (isBoolean(L, -1)) {
+		return ValueWrapper(getBoolean(L, -1));
 	}
 	if (isNumber(L, -1)) {
 		return ValueWrapper(getNumber<double>(L, -1));
 	}
-	if (isBoolean(L, -1)) {
-		return ValueWrapper(getBoolean(L, -1));
+	if (isString(L, -1)) {
+		return ValueWrapper(getString(L, -1));
 	}
 
 	if (isTable(L, -1) && lua_objlen(L, -1) > 0) {
@@ -154,6 +201,8 @@ void KVFunctions::pushValueWrapper(lua_State* L, const ValueWrapper &valueWrappe
 			using T = std::decay_t<decltype(arg)>;
 			if constexpr (std::is_same_v<T, StringType>) {
 				pushStringValue(L, arg);
+			} else if constexpr (std::is_same_v<T, BooleanType>) {
+				pushBoolean(L, arg);
 			} else if constexpr (std::is_same_v<T, IntType>) {
 				pushIntValue(L, arg);
 			} else if constexpr (std::is_same_v<T, DoubleType>) {

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -14,10 +14,12 @@
 #include "lua/creature/events.hpp"
 #include "items/weapons/weapons.hpp"
 
+#include "lua/global/lua_variant.hpp"
+
 Weapons::Weapons() = default;
 Weapons::~Weapons() = default;
 
-const Weapon* Weapons::getWeapon(std::shared_ptr<Item> item) const {
+const WeaponShared_ptr Weapons::getWeapon(std::shared_ptr<Item> item) const {
 	if (!item) {
 		return nullptr;
 	}
@@ -52,7 +54,7 @@ void Weapons::clear(bool isFromXML /*= false*/) {
 	weapons.clear();
 }
 
-bool Weapons::registerLuaEvent(Weapon* event, bool fromXML /*= false*/) {
+bool Weapons::registerLuaEvent(WeaponShared_ptr event, bool fromXML /*= false*/) {
 	weapons[event->getID()] = event;
 	if (fromXML) {
 		event->setFromXML(fromXML);
@@ -274,6 +276,10 @@ void Weapon::onUsedWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> 
 	if (manaCost != 0) {
 		player->addManaSpent(manaCost);
 		player->changeMana(-static_cast<int32_t>(manaCost));
+
+		if (g_configManager().getBoolean(REFUND_BEGINNING_WEAPON_MANA, __FUNCTION__) && (item->getName() == "wand of vortex" || item->getName() == "snakebite rod")) {
+			player->changeMana(static_cast<int32_t>(manaCost));
+		}
 	}
 
 	uint32_t healthCost = getHealthCost(player);
@@ -285,7 +291,8 @@ void Weapon::onUsedWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> 
 		player->changeSoul(-static_cast<int32_t>(soul));
 	}
 
-	if (breakChance != 0 && uniform_random(1, 100) <= breakChance) {
+	bool skipRemoveBeginningWeaponAmmo = !g_configManager().getBoolean(REMOVE_BEGINNING_WEAPON_AMMO, __FUNCTION__) && (item->getName() == "arrow" || item->getName() == "bolt" || item->getName() == "spear");
+	if (!skipRemoveBeginningWeaponAmmo && breakChance != 0 && uniform_random(1, 100) <= breakChance) {
 		Weapon::decrementItemCount(item);
 		player->updateSupplyTracker(item);
 		return;
@@ -293,14 +300,14 @@ void Weapon::onUsedWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> 
 
 	switch (action) {
 		case WEAPONACTION_REMOVECOUNT:
-			if (g_configManager().getBoolean(REMOVE_WEAPON_AMMO)) {
+			if (!skipRemoveBeginningWeaponAmmo && g_configManager().getBoolean(REMOVE_WEAPON_AMMO, __FUNCTION__)) {
 				Weapon::decrementItemCount(item);
 				player->updateSupplyTracker(item);
 			}
 			break;
 
 		case WEAPONACTION_REMOVECHARGE: {
-			if (uint16_t charges = item->getCharges() != 0 && g_configManager().getBoolean(REMOVE_WEAPON_CHARGES)) {
+			if (uint16_t charges = item->getCharges() != 0 && g_configManager().getBoolean(REMOVE_WEAPON_CHARGES, __FUNCTION__)) {
 				g_game().transformItem(item, item->getID(), charges - 1);
 			}
 			break;
@@ -491,9 +498,10 @@ int32_t WeaponMelee::getElementDamage(std::shared_ptr<Player> player, std::share
 	int32_t attackValue = elementDamage;
 	float attackFactor = player->getAttackFactor();
 	uint32_t level = player->getLevel();
-	int32_t minValue = level / 5;
 
 	int32_t maxValue = Weapons::getMaxWeaponDamage(level, attackSkill, attackValue, attackFactor, true);
+	int32_t minValue = level / 5;
+
 	return -normal_random(minValue, static_cast<int32_t>(maxValue * player->getVocation()->meleeDamageMultiplier));
 }
 
@@ -546,7 +554,7 @@ bool WeaponDistance::useWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 	const ItemType &it = Item::items[id];
 	if (it.weaponType == WEAPON_AMMO) {
 		std::shared_ptr<Item> mainWeaponItem = player->getWeapon(true);
-		const Weapon* mainWeapon = g_weapons().getWeapon(mainWeaponItem);
+		const WeaponShared_ptr mainWeapon = g_weapons().getWeapon(mainWeaponItem);
 		if (mainWeapon) {
 			damageModifier = mainWeapon->playerWeaponCheck(player, target, mainWeaponItem->getShootRange());
 		} else {

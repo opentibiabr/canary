@@ -13,11 +13,16 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"SoulwarsBossDeath",
+}
+
 monster.health = 500000
 monster.maxHealth = 500000
 monster.race = "undead"
 monster.corpse = 33889
 monster.speed = 165
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
@@ -27,7 +32,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1969,
 	bossRace = RARITY_NEMESIS,
-	storageCooldown = Storage.Quest.U12_40.SoulWar.GoshnarMegalomaniaTimer,
 }
 
 monster.strategiesTarget = {
@@ -108,7 +112,7 @@ monster.loot = {
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -8000 },
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_PHYSICALDAMAGE, minDamage = -2950, maxDamage = -4400, range = 7, radius = 3, shootEffect = CONST_ANI_DEATH, effect = CONST_ME_MORTAREA, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -3000, maxDamage = -5500, length = 8, spread = 3, effect = CONST_ME_INSECTS, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -3000, maxDamage = -5500, length = 8, spread = 0, effect = CONST_ME_INSECTS, target = false },
 	{ name = "singlecloudchain", interval = 6000, chance = 40, minDamage = -3300, maxDamage = -5500, range = 6, effect = CONST_ME_ENERGYHIT, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -3300, maxDamage = -5200, length = 10, spread = 0, effect = CONST_ME_BLUE_GHOST, target = false },
 }

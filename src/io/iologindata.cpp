@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -15,18 +15,20 @@
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "io/ioprey.hpp"
+#include "lib/metrics/metrics.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_errors.hpp"
 
 bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, const std::string &password, std::string &characterName, uint32_t &accountId, bool oldProtocol) {
-	account::Account account(accountDescriptor);
+	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
-	if (account::ERROR_NO != account.load()) {
+	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(account.load())) {
 		g_logger().error("Couldn't load account [{}].", account.getDescriptor());
 		return false;
 	}
 
-	if (g_configManager().getString(AUTH_TYPE) == "session") {
+	if (g_configManager().getString(AUTH_TYPE, __FUNCTION__) == "session") {
 		if (!account.authenticate()) {
 			return false;
 		}
@@ -36,13 +38,13 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 		}
 	}
 
-	if (account::ERROR_NO != account.load()) {
+	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(account.load())) {
 		g_logger().error("Failed to load account [{}]", accountDescriptor);
 		return false;
 	}
 
 	auto [players, result] = account.getAccountPlayers();
-	if (account::ERROR_NO != result) {
+	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(result)) {
 		g_logger().error("Failed to load account [{}] players", accountDescriptor);
 		return false;
 	}
@@ -57,14 +59,15 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 	return true;
 }
 
-account::AccountType IOLoginData::getAccountType(uint32_t accountId) {
+uint8_t IOLoginData::getAccountType(uint32_t accountId) {
 	std::ostringstream query;
 	query << "SELECT `type` FROM `accounts` WHERE `id` = " << accountId;
 	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
 	if (!result) {
-		return account::ACCOUNT_TYPE_NORMAL;
+		return ACCOUNT_TYPE_NORMAL;
 	}
-	return static_cast<account::AccountType>(result->getNumber<uint16_t>("type"));
+
+	return result->getNumber<uint8_t>("type");
 }
 
 void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
@@ -75,31 +78,33 @@ void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
 
 	std::ostringstream query;
 	if (login) {
+		g_metrics().addUpDownCounter("players_online", 1);
 		query << "INSERT INTO `players_online` VALUES (" << guid << ')';
 		updateOnline[guid] = true;
 	} else {
+		g_metrics().addUpDownCounter("players_online", -1);
 		query << "DELETE FROM `players_online` WHERE `player_id` = " << guid;
 		updateOnline.erase(guid);
 	}
 	Database::getInstance().executeQuery(query.str());
 }
 
-// The boolean "disable" will desactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
-bool IOLoginData::loadPlayerById(std::shared_ptr<Player> player, uint32_t id, bool disable /* = true*/) {
+// The boolean "disableIrrelevantInfo" will deactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
+bool IOLoginData::loadPlayerById(std::shared_ptr<Player> player, uint32_t id, bool disableIrrelevantInfo /* = true*/) {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT * FROM `players` WHERE `id` = " << id;
-	return loadPlayer(player, db.storeQuery(query.str()), disable);
+	return loadPlayer(player, db.storeQuery(query.str()), disableIrrelevantInfo);
 }
 
-bool IOLoginData::loadPlayerByName(std::shared_ptr<Player> player, const std::string &name, bool disable /* = true*/) {
+bool IOLoginData::loadPlayerByName(std::shared_ptr<Player> player, const std::string &name, bool disableIrrelevantInfo /* = true*/) {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT * FROM `players` WHERE `name` = " << db.escapeString(name);
-	return loadPlayer(player, db.storeQuery(query.str()), disable);
+	return loadPlayer(player, db.storeQuery(query.str()), disableIrrelevantInfo);
 }
 
-bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result, bool disable /* = false*/) {
+bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result, bool disableIrrelevantInfo /* = false*/) {
 	if (!result || !player) {
 		std::string nullptrType = !result ? "Result" : "Player";
 		g_logger().warn("[{}] - {} is nullptr", __FUNCTION__, nullptrType);
@@ -166,6 +171,10 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 
 		// Load task hunting class
 		IOLoginDataLoad::loadPlayerTaskHuntingClass(player, result);
+
+		if (disableIrrelevantInfo) {
+			return true;
+		}
 
 		// load forge history
 		IOLoginDataLoad::loadPlayerForgeHistory(player, result);
@@ -363,7 +372,9 @@ void IOLoginData::addVIPEntry(uint32_t accountId, uint32_t guid, const std::stri
 
 	std::ostringstream query;
 	query << "INSERT INTO `account_viplist` (`account_id`, `player_id`, `description`, `icon`, `notify`) VALUES (" << accountId << ',' << guid << ',' << db.escapeString(description) << ',' << icon << ',' << notify << ')';
-	db.executeQuery(query.str());
+	if (!db.executeQuery(query.str())) {
+		g_logger().error("Failed to add VIP entry for account %u. QUERY: %s", accountId, query.str().c_str());
+	}
 }
 
 void IOLoginData::editVIPEntry(uint32_t accountId, uint32_t guid, const std::string &description, uint32_t icon, bool notify) {
@@ -371,7 +382,9 @@ void IOLoginData::editVIPEntry(uint32_t accountId, uint32_t guid, const std::str
 
 	std::ostringstream query;
 	query << "UPDATE `account_viplist` SET `description` = " << db.escapeString(description) << ", `icon` = " << icon << ", `notify` = " << notify << " WHERE `account_id` = " << accountId << " AND `player_id` = " << guid;
-	db.executeQuery(query.str());
+	if (!db.executeQuery(query.str())) {
+		g_logger().error("Failed to edit VIP entry for account %u. QUERY: %s", accountId, query.str().c_str());
+	}
 }
 
 void IOLoginData::removeVIPEntry(uint32_t accountId, uint32_t guid) {

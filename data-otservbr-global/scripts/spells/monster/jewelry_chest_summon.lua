@@ -19,7 +19,7 @@ function spell.onCastSpell(creature, var)
 			if not mid then
 				return
 			end
-			mid:say("FREEZE! LET ME SEE YOUR HANDS UP!", TALKTYPE_ORANGE_2)
+			mid:say("FREEZE! LET ME SEE YOUR HANDS UP!", TALKTYPE_MONSTER_YELL)
 		end
 	end
 	return combat:execute(creature, var)

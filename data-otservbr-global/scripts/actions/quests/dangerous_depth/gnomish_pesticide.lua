@@ -4,7 +4,7 @@ function dangerousDepthPesticide.onUse(player, item, fromPosition, target, toPos
 		return true
 	end
 
-	if not target:isItem() then
+	if not (target or target:isItem()) then
 		return false
 	end
 

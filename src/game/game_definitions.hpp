@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -8,8 +8,6 @@
  */
 
 #pragma once
-
-#include "movement/position.hpp"
 
 // Enums
 enum StackPosType_t {
@@ -86,43 +84,14 @@ enum CyclopediaCharacterInfo_RecentKillStatus_t : uint8_t {
 	CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_ARENA = 4
 };
 
-enum HighscoreCategories_t : uint8_t {
-	HIGHSCORE_CATEGORY_EXPERIENCE = 0,
-	HIGHSCORE_CATEGORY_FIST_FIGHTING,
-	HIGHSCORE_CATEGORY_CLUB_FIGHTING,
-	HIGHSCORE_CATEGORY_SWORD_FIGHTING,
-	HIGHSCORE_CATEGORY_AXE_FIGHTING,
-	HIGHSCORE_CATEGORY_DISTANCE_FIGHTING,
-	HIGHSCORE_CATEGORY_SHIELDING,
-	HIGHSCORE_CATEGORY_FISHING,
-	HIGHSCORE_CATEGORY_MAGIC_LEVEL
-};
-
 enum HighscoreType_t : uint8_t {
 	HIGHSCORE_GETENTRIES = 0,
 	HIGHSCORE_OURRANK = 1
 };
 
 enum Webhook_Colors_t : uint32_t {
-	WEBHOOK_COLOR_ONLINE = 0x00FF00,
-	WEBHOOK_COLOR_OFFLINE = 0xFF0000,
-	WEBHOOK_COLOR_WARNING = 0xFFFF00,
-	WEBHOOK_COLOR_RAID = 0x0000FF
-};
-
-// Structs
-struct ModalWindow {
-	std::list<std::pair<std::string, uint8_t>> buttons, choices;
-	std::string title, message;
-	uint32_t id;
-	uint8_t defaultEnterButton, defaultEscapeButton;
-	bool priority;
-
-	ModalWindow(uint32_t newId, std::string newTitle, std::string newMessage) :
-		title(std::move(newTitle)),
-		message(std::move(newMessage)),
-		id(newId),
-		defaultEnterButton(0xFF),
-		defaultEscapeButton(0xFF),
-		priority(false) { }
+	WEBHOOK_COLOR_GREEN = 0x00FF00,
+	WEBHOOK_COLOR_RED = 0xFF0000,
+	WEBHOOK_COLOR_YELLOW = 0xFFFF00,
+	WEBHOOK_COLOR_BLUE = 0x0000FF
 };

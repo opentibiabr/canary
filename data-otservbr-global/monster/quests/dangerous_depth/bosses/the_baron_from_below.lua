@@ -13,6 +13,11 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"DepthWarzoneBossDeath",
+	"TheBaronFromBelowThink",
+}
+
 monster.health = 350000
 monster.maxHealth = 350000
 monster.race = "blood"
@@ -107,6 +112,8 @@ monster.loot = {
 	{ name = "slimy leg", chance = 4170 },
 	{ name = "badger boots", chance = 4170 },
 	{ name = "spellbook of warding", chance = 2080 },
+	{ name = "gnome sword", chance = 4170 },
+	{ name = "gnome armor", chance = 3390 },
 }
 
 monster.attacks = {

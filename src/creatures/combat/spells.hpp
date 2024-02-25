@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -19,6 +19,8 @@
 class InstantSpell;
 class RuneSpell;
 class Spell;
+
+struct LuaVariant;
 
 using VocSpellMap = std::map<uint16_t, bool>;
 
@@ -128,11 +130,11 @@ public:
 	void setName(std::string n) {
 		name = std::move(n);
 	}
-	[[nodiscard]] uint16_t getId() const {
-		return spellId;
+	[[nodiscard]] uint16_t getSpellId() const {
+		return m_spellId;
 	}
-	void setId(uint16_t id) {
-		spellId = id;
+	void setSpellId(uint16_t id) {
+		m_spellId = id;
 	}
 
 	void postCastSpell(std::shared_ptr<Player> player, bool finishedCast = true, bool payCost = true) const;
@@ -189,8 +191,14 @@ public:
 	[[nodiscard]] const VocSpellMap &getVocMap() const {
 		return vocSpellMap;
 	}
-	void addVocMap(uint16_t n, bool b) {
-		vocSpellMap[n] = b;
+	void addVocMap(uint16_t vocationId, bool b) {
+		if (vocationId == 0XFFFF) {
+			g_logger().error("Vocation overflow for spell: {}", getName());
+			return;
+		}
+
+		g_logger().trace("Adding spell: {} to voc id: {}", getName(), vocationId);
+		vocSpellMap[vocationId] = b;
 	}
 
 	SpellGroup_t getGroup() {
@@ -355,7 +363,7 @@ protected:
 	uint32_t magLevel = 0;
 	int32_t range = -1;
 
-	uint16_t spellId = 0;
+	uint16_t m_spellId = 0;
 
 	bool selfTarget = false;
 	bool needTarget = false;

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -61,6 +61,7 @@ private:
 		registerMethod(L, "Monster", "hazardCrit", MonsterFunctions::luaMonsterHazardCrit);
 		registerMethod(L, "Monster", "hazardDodge", MonsterFunctions::luaMonsterHazardDodge);
 		registerMethod(L, "Monster", "hazardDamageBoost", MonsterFunctions::luaMonsterHazardDamageBoost);
+		registerMethod(L, "Monster", "hazardDefenseBoost", MonsterFunctions::luaMonsterHazardDefenseBoost);
 
 		CharmFunctions::init(L);
 		LootFunctions::init(L);
@@ -120,6 +121,7 @@ private:
 	static int luaMonsterHazardCrit(lua_State* L);
 	static int luaMonsterHazardDodge(lua_State* L);
 	static int luaMonsterHazardDamageBoost(lua_State* L);
+	static int luaMonsterHazardDefenseBoost(lua_State* L);
 
 	friend class CreatureFunctions;
 };

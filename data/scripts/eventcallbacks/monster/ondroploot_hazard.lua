@@ -1,21 +1,15 @@
 local callback = EventCallback()
 
 function callback.monsterOnDropLoot(monster, corpse)
-	if configManager.getNumber(configKeys.RATE_LOOT) == 0 then
-		return
-	end
-	local mType = monster:getType()
-	if mType:isRewardBoss() then
-		return
-	end
 	if not monster:hazard() then
 		return
 	end
 	local player = Player(corpse:getCorpseOwner())
-	if not player then
+	if not player or not player:canReceiveLoot() then
 		return
 	end
-	if player:getStamina() <= 840 then
+	local mType = monster:getType()
+	if not mType then
 		return
 	end
 
@@ -29,7 +23,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 		rolls = math.floor(rolls)
 	end
 
-	if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) and rolls > 1 then
+	if configManager.getBoolean(configKeys.PARTY_SHARE_LOOT_BOOSTS) and rolls > 1 then
 		msgSuffix = msgSuffix .. " (hazard system, " .. rolls .. " extra rolls)"
 	elseif rolls == 1 then
 		msgSuffix = msgSuffix .. " (hazard system)"

@@ -27,20 +27,17 @@ end
 combat:setCallback(CALLBACK_PARAM_TARGETTILE, "onTargetTile")
 
 local function summonSlimes(master)
-	local contador = 0
+	local count = 0
 	local slimeCheck = Game.getSpectators(master:getPosition(), false, false, 20, 20, 20, 20)
 	for _, slime in pairs(slimeCheck) do
 		if slime:isMonster() then
 			if slime:getName():lower() == "snail slime" then
-				contador = contador + 1
+				count = count + 1
 			end
 		end
 	end
-	if contador < 3 then
-		local summon = Game.createMonster("Snail Slime", master:getPosition(), true)
-		if summon then
-			summon:registerEvent("SnailSlimeKill")
-		end
+	if count < 3 then
+		Game.createMonster("Snail Slime", master:getPosition(), true)
 	end
 end
 
@@ -60,24 +57,11 @@ end
 
 snailSlimeThink:register()
 
-local snailSlimeKill = CreatureEvent("SnailSlimeKill")
-function snailSlimeKill.onKill(player, creature)
-	if not player:isPlayer() then
-		return true
-	end
-	if not creature:isMonster() or creature:getMaster() then
-		return true
-	end
-
-	local monsterName = creature:getName():lower()
-	if monsterName == "snail slime" then
-		if not creature then
-			return
-		end
-		creature:say("!!", TALKTYPE_ORANGE_2)
-		local var = { type = 1, number = creature:getId() }
-		combat:execute(creature, var)
-	end
+local snailSlimeKill = CreatureEvent("SnailSlimeDeath")
+function snailSlimeKill.onDeath(creature)
+	creature:say("!!", TALKTYPE_MONSTER_YELL)
+	local var = { type = 1, number = creature:getId() }
+	combat:execute(creature, var)
 	return true
 end
 

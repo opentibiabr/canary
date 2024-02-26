@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -14,6 +14,7 @@
 #include "creatures/interactions/chat.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
 #include "io/ioprey.hpp"
@@ -4175,5 +4176,106 @@ int PlayerFunctions::luaPlayerGetStoreInbox(lua_State* L) {
 	} else {
 		pushBoolean(L, false);
 	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerHasAchievement(lua_State* L) {
+	// player:hasAchievement(id or name)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	uint16_t achievementId = 0;
+	if (isNumber(L, 2)) {
+		achievementId = getNumber<uint16_t>(L, 2);
+	} else {
+		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
+	}
+
+	pushBoolean(L, player->achiev()->isUnlocked(achievementId));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddAchievement(lua_State* L) {
+	// player:addAchievement(id or name[, sendMessage = true])
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	uint16_t achievementId = 0;
+	if (isNumber(L, 2)) {
+		achievementId = getNumber<uint16_t>(L, 2);
+	} else {
+		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
+	}
+
+	pushBoolean(L, player->achiev()->add(achievementId, getBoolean(L, 3, true)));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveAchievement(lua_State* L) {
+	// player:removeAchievement(id or name)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	uint16_t achievementId = 0;
+	if (isNumber(L, 2)) {
+		achievementId = getNumber<uint16_t>(L, 2);
+	} else {
+		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
+	}
+
+	pushBoolean(L, player->achiev()->remove(achievementId));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetAchievementPoints(lua_State* L) {
+	// player:getAchievementPoints()
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	lua_pushnumber(L, player->achiev()->getPoints());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddAchievementPoints(lua_State* L) {
+	// player:addAchievementPoints(amount)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	auto points = getNumber<uint16_t>(L, 2);
+	if (points > 0) {
+		player->achiev()->addPoints(points);
+	}
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveAchievementPoints(lua_State* L) {
+	// player:removeAchievementPoints(amount)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	auto points = getNumber<uint16_t>(L, 2);
+	if (points > 0) {
+		player->achiev()->removePoints(points);
+	}
+	pushBoolean(L, true);
 	return 1;
 }

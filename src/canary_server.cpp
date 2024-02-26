@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -341,8 +341,17 @@ void CanaryServer::loadModules() {
 	}
 
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
-	// Load items dependencies
+	// Load appearances.dat first
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
+
+	// Load XML folder dependencies (order matters)
+	modulesLoadHelper(g_vocations().loadFromXml(), "XML/vocations.xml");
+	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(), "XML/events.xml");
+	modulesLoadHelper(Outfits::getInstance().loadFromXml(), "XML/outfits.xml");
+	modulesLoadHelper(Familiars::getInstance().loadFromXml(), "XML/familiars.xml");
+	modulesLoadHelper(g_imbuements().loadFromXml(), "XML/imbuements.xml");
+	modulesLoadHelper(g_storages().loadFromXML(), "XML/storages.xml");
+
 	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");
 
 	const auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
@@ -351,17 +360,10 @@ void CanaryServer::loadModules() {
 	modulesLoadHelper((g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0), "core.lua");
 	modulesLoadHelper(g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false), coreFolder + "/scripts/libs");
 	modulesLoadHelper(g_scripts().loadScripts(coreFolder + "/scripts", false, false), coreFolder + "/scripts");
-
-	// Second XML scripts
-	modulesLoadHelper(g_vocations().loadFromXml(), "XML/vocations.xml");
-	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(), "XML/events.xml");
-	modulesLoadHelper(Outfits::getInstance().loadFromXml(), "XML/outfits.xml");
-	modulesLoadHelper(Familiars::getInstance().loadFromXml(), "XML/familiars.xml");
-	modulesLoadHelper(g_imbuements().loadFromXml(), "XML/imbuements.xml");
-	modulesLoadHelper(g_storages().loadFromXML(), "XML/storages.xml");
-	modulesLoadHelper(g_modules().loadFromXml(), "modules/modules.xml");
-	modulesLoadHelper(g_events().loadFromXml(), "events/events.xml");
 	modulesLoadHelper((g_npcs().load(true, false)), "npclib");
+
+	modulesLoadHelper(g_events().loadFromXml(), "events/events.xml");
+	modulesLoadHelper(g_modules().loadFromXml(), "modules/modules.xml");
 
 	logger.debug("Loading datapack scripts on folder: {}/", datapackName);
 	// Load scripts

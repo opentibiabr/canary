@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -15,6 +15,7 @@
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
@@ -52,6 +53,7 @@ Player::Player(ProtocolGame_ptr p) :
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
 	client(std::move(p)) {
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
+	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
 }
 
 Player::~Player() {
@@ -2693,6 +2695,11 @@ BlockType Player::blockHit(std::shared_ptr<Creature> attacker, CombatType combat
 }
 
 void Player::death(std::shared_ptr<Creature> lastHitCreature) {
+	if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && isMounted()) {
+		dismount();
+		g_game().internalCreatureChangeOutfit(getPlayer(), defaultOutfit);
+	}
+
 	loginPosition = town->getTemplePosition();
 
 	g_game().sendSingleSoundEffect(static_self_cast<Player>()->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_DEATH : SoundEffect_t::HUMAN_MALE_DEATH, getPlayer());
@@ -3201,12 +3208,18 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 	ReturnValue ret = RETURNVALUE_NOERROR;
 
 	const int32_t &slotPosition = item->getSlotPosition();
-	if ((slotPosition & SLOTP_HEAD) || (slotPosition & SLOTP_NECKLACE) || (slotPosition & SLOTP_BACKPACK) || (slotPosition & SLOTP_ARMOR) || (slotPosition & SLOTP_LEGS) || (slotPosition & SLOTP_FEET) || (slotPosition & SLOTP_RING)) {
-		ret = RETURNVALUE_CANNOTBEDRESSED;
-	} else if (slotPosition & SLOTP_TWO_HAND) {
-		ret = RETURNVALUE_PUTTHISOBJECTINBOTHHANDS;
-	} else if ((slotPosition & SLOTP_RIGHT) || (slotPosition & SLOTP_LEFT)) {
-		ret = RETURNVALUE_CANNOTBEDRESSED;
+
+	bool allowPutItemsOnAmmoSlot = g_configManager().getBoolean(ENABLE_PLAYER_PUT_ITEM_IN_AMMO_SLOT, __FUNCTION__);
+	if (allowPutItemsOnAmmoSlot && index == CONST_SLOT_AMMO) {
+		ret = RETURNVALUE_NOERROR;
+	} else {
+		if ((slotPosition & SLOTP_HEAD) || (slotPosition & SLOTP_NECKLACE) || (slotPosition & SLOTP_BACKPACK) || (slotPosition & SLOTP_ARMOR) || (slotPosition & SLOTP_LEGS) || (slotPosition & SLOTP_FEET) || (slotPosition & SLOTP_RING)) {
+			ret = RETURNVALUE_CANNOTBEDRESSED;
+		} else if (slotPosition & SLOTP_TWO_HAND) {
+			ret = RETURNVALUE_PUTTHISOBJECTINBOTHHANDS;
+		} else if ((slotPosition & SLOTP_RIGHT) || (slotPosition & SLOTP_LEFT)) {
+			ret = RETURNVALUE_CANNOTBEDRESSED;
+		}
 	}
 
 	switch (index) {
@@ -3348,8 +3361,12 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 		}
 
 		case CONST_SLOT_AMMO: {
-			if ((slotPosition & SLOTP_AMMO)) {
+			if (allowPutItemsOnAmmoSlot) {
 				ret = RETURNVALUE_NOERROR;
+			} else {
+				if ((slotPosition & SLOTP_AMMO)) {
+					ret = RETURNVALUE_NOERROR;
+				}
 			}
 			break;
 		}
@@ -6189,6 +6206,12 @@ void Player::sendCreatureChangeVisible(std::shared_ptr<Creature> creature, bool 
 	}
 }
 
+void Player::sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked) {
+	if (client) {
+		client->sendCyclopediaCharacterAchievements(secretsUnlocked, achievementsUnlocked);
+	}
+}
+
 uint64_t Player::getMoney() const {
 	std::vector<std::shared_ptr<Container>> containers;
 	uint64_t moneyCount = 0;
@@ -8013,6 +8036,15 @@ std::unique_ptr<PlayerWheel> &Player::wheel() {
 
 const std::unique_ptr<PlayerWheel> &Player::wheel() const {
 	return m_wheelPlayer;
+}
+
+// Achievement interface
+std::unique_ptr<PlayerAchievement> &Player::achiev() {
+	return m_playerAchievement;
+}
+
+const std::unique_ptr<PlayerAchievement> &Player::achiev() const {
+	return m_playerAchievement;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

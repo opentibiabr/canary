@@ -18,6 +18,8 @@
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
 
+import game_movement;
+
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
 
@@ -61,6 +63,10 @@ void Npc::addList() {
 
 void Npc::removeList() {
 	g_game().removeNpc(static_self_cast<Npc>());
+}
+
+CreatureType Npc::getType() const {
+	return CreatureType::Npc;
 }
 
 bool Npc::canInteract(const Position &pos, uint32_t range /* = 4 */) {
@@ -164,19 +170,19 @@ void Npc::onPlayerDisappear(std::shared_ptr<Player> player) {
 	}
 }
 
-void Npc::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text) {
-	Creature::onCreatureSay(creature, type, text);
+void Npc::onCreatureSay(std::shared_ptr<Creature> creature, TalkType creatureSayType, const std::string &text) {
+	Creature::onCreatureSay(creature, creatureSayType, text);
 
 	if (!creature->getPlayer()) {
 		return;
 	}
 
-	// onCreatureSay(self, creature, type, message)
+	// onCreatureSay(self, creature, creatureSayType, message)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
 	if (callback.startScriptInterface(npcType->info.creatureSayEvent)) {
 		callback.pushSpecificCreature(static_self_cast<Npc>());
 		callback.pushCreature(creature);
-		callback.pushNumber(type);
+		callback.pushNumber(creatureSayType);
 		callback.pushString(text);
 	}
 
@@ -497,9 +503,9 @@ void Npc::onThinkYell(uint32_t interval) {
 			const voiceBlock_t &vb = npcType->info.voiceVector[index];
 
 			if (vb.yellText) {
-				g_game().internalCreatureSay(static_self_cast<Npc>(), TALKTYPE_YELL, vb.text, false);
+				g_game().internalCreatureSay(static_self_cast<Npc>(), TalkType::Yell, vb.text, false);
 			} else {
-				g_game().internalCreatureSay(static_self_cast<Npc>(), TALKTYPE_SAY, vb.text, false);
+				g_game().internalCreatureSay(static_self_cast<Npc>(), TalkType::Say, vb.text, false);
 			}
 		}
 	}
@@ -627,10 +633,10 @@ bool Npc::getNextStep(Direction &nextDirection, uint32_t &flags) {
 
 bool Npc::getRandomStep(Direction &moveDirection) {
 	static std::vector<Direction> directionvector {
-		Direction::DIRECTION_NORTH,
-		Direction::DIRECTION_WEST,
-		Direction::DIRECTION_EAST,
-		Direction::DIRECTION_SOUTH
+		Direction::North,
+		Direction::West,
+		Direction::East,
+		Direction::South
 	};
 	std::ranges::shuffle(directionvector, getRandomGenerator());
 

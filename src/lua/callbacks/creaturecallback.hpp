@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "creatures/creature.hpp"
+#include "lua/scripts/luascript.hpp"
 
 class Creature;
 

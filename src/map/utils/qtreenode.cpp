@@ -9,8 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/creature.hpp"
 #include "qtreenode.hpp"
+
+#include "creatures/creature.hpp"
+#include "map/mapcache.hpp"
 
 bool QTreeLeafNode::newLeaf = false;
 
@@ -68,6 +70,14 @@ QTreeLeafNode* QTreeNode::getBestLeaf(uint32_t x, uint32_t y, uint32_t level) {
 	}
 
 	return tempLeaf;
+}
+
+const std::unique_ptr<Floor> &QTreeLeafNode::createFloor(uint32_t z) {
+	return array[z] ? array[z] : (array[z] = std::make_unique<Floor>(z));
+}
+
+const std::unique_ptr<Floor> &QTreeLeafNode::getFloor(uint8_t z) const {
+	return array[z];
 }
 
 void QTreeLeafNode::addCreature(const std::shared_ptr<Creature> &c) {

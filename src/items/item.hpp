@@ -18,6 +18,9 @@
 #include "utils/tools.hpp"
 #include "io/fileloader.hpp"
 
+import game_movement;
+import light_info;
+
 class Creature;
 class Player;
 class Container;
@@ -358,26 +361,6 @@ public:
 	}
 	uint8_t getPerfectShotRange() const {
 		return items[id].abilities->perfectShotRange;
-	}
-
-	int32_t getReflectionFlat(CombatType_t combatType) const {
-		return items[id].abilities->reflectFlat[combatTypeToIndex(combatType)];
-	}
-
-	int32_t getReflectionPercent(CombatType_t combatType) const {
-		return items[id].abilities->reflectPercent[combatTypeToIndex(combatType)];
-	}
-
-	int16_t getMagicShieldCapacityPercent() const {
-		return items[id].abilities->magicShieldCapacityPercent;
-	}
-
-	int32_t getMagicShieldCapacityFlat() const {
-		return items[id].abilities->magicShieldCapacityFlat;
-	}
-
-	int32_t getSpecializedMagicLevel(CombatType_t combat) const {
-		return items[id].abilities->specializedMagicLevel[combatTypeToIndex(combat)];
 	}
 
 	int32_t getSpeed() const {

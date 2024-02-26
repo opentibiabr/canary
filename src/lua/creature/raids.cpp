@@ -16,6 +16,8 @@
 #include "creatures/monsters/monster.hpp"
 #include "server/network/webhook/webhook.hpp"
 
+import game_movement;
+
 Raids::Raids() {
 	scriptInterface.initState();
 }

@@ -20,6 +20,8 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "lua/global/lua_timer_event_descr.hpp"
 
+import light_info;
+
 class Creature;
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 	// doPlayerAddItem(cid, itemid, <optional: default: 1> count/subtype, <optional: default: 1> canDropOnMap)
@@ -106,7 +108,7 @@ int GlobalFunctions::luaDoSetCreatureLight(lua_State* L) {
 	uint16_t level = getNumber<uint16_t>(L, 2);
 	uint16_t color = getNumber<uint16_t>(L, 3);
 	uint32_t time = getNumber<uint32_t>(L, 4);
-	std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_LIGHT, time, level | (color << 8));
+	std::shared_ptr<Condition> condition = Condition::createCondition(ConditionId_t::Combat, ConditionType::Light, time, level | (color << 8));
 	creature->addCondition(condition);
 	pushBoolean(L, true);
 	return 1;
@@ -289,7 +291,7 @@ int GlobalFunctions::luaDoAreaCombatHealth(lua_State* L) {
 	uint32_t areaId = getNumber<uint32_t>(L, 4);
 	const auto &area = g_luaEnvironment().getAreaObject(areaId);
 	if (area || areaId == 0) {
-		CombatType_t combatType = getNumber<CombatType_t>(L, 2);
+		CombatType combatType = getNumber<CombatType>(L, 2);
 
 		CombatParams params;
 		params.combatType = combatType;
@@ -333,7 +335,7 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 		return 1;
 	}
 
-	CombatType_t combatType = getNumber<CombatType_t>(L, 3);
+	CombatType combatType = getNumber<CombatType>(L, 3);
 
 	CombatParams params;
 	params.combatType = combatType;
@@ -353,7 +355,7 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 	}
 
 	// Check if it's a healing then we sould add the non-aggresive tag
-	if (combatType == COMBAT_HEALING || (combatType == COMBAT_MANADRAIN && damage.primary.value > 0)) {
+	if (combatType == CombatType::Healing || (combatType == CombatType::ManaDrain && damage.primary.value > 0)) {
 		params.aggressive = false;
 	}
 
@@ -379,7 +381,7 @@ int GlobalFunctions::luaDoAreaCombatMana(lua_State* L) {
 
 		CombatDamage damage;
 		damage.origin = getNumber<CombatOrigin>(L, 7, ORIGIN_SPELL);
-		damage.primary.type = COMBAT_MANADRAIN;
+		damage.primary.type = CombatType::ManaDrain;
 		damage.primary.value = normal_random(getNumber<int32_t>(L, 4), getNumber<int32_t>(L, 5));
 
 		damage.instantSpellName = getString(L, 8);
@@ -424,7 +426,7 @@ int GlobalFunctions::luaDoTargetCombatMana(lua_State* L) {
 
 	CombatDamage damage;
 	damage.origin = getNumber<CombatOrigin>(L, 6, ORIGIN_SPELL);
-	damage.primary.type = COMBAT_MANADRAIN;
+	damage.primary.type = CombatType::ManaDrain;
 	damage.primary.value = normal_random(minval, maxval);
 
 	damage.instantSpellName = getString(L, 7);
@@ -516,7 +518,7 @@ int GlobalFunctions::luaDoAreaCombatDispel(lua_State* L) {
 	if (area || areaId == 0) {
 		CombatParams params;
 		params.impactEffect = getNumber<uint16_t>(L, 5);
-		params.dispelType = getNumber<ConditionType_t>(L, 4);
+		params.dispelType = getNumber<ConditionType>(L, 4);
 		Combat::doCombatDispel(creature, getPosition(L, 2), area, params);
 
 		pushBoolean(L, true);
@@ -544,7 +546,7 @@ int GlobalFunctions::luaDoTargetCombatDispel(lua_State* L) {
 	}
 
 	CombatParams params;
-	params.dispelType = getNumber<ConditionType_t>(L, 3);
+	params.dispelType = getNumber<ConditionType>(L, 3);
 	params.impactEffect = getNumber<uint16_t>(L, 4);
 	Combat::doCombatDispel(creature, target, params);
 	pushBoolean(L, true);
@@ -782,7 +784,7 @@ int GlobalFunctions::luaSendChannelMessage(lua_State* L) {
 		return 1;
 	}
 
-	SpeakClasses type = getNumber<SpeakClasses>(L, 2);
+	TalkType type = getNumber<TalkType>(L, 2);
 	std::string message = getString(L, 3);
 	channel->sendToAll(message, type);
 	pushBoolean(L, true);
@@ -798,7 +800,7 @@ int GlobalFunctions::luaSendGuildChannelMessage(lua_State* L) {
 		return 1;
 	}
 
-	SpeakClasses type = getNumber<SpeakClasses>(L, 2);
+	TalkType type = getNumber<TalkType>(L, 2);
 	std::string message = getString(L, 3);
 	channel->sendToAll(message, type);
 	pushBoolean(L, true);

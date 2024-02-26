@@ -9,8 +9,9 @@
 
 #pragma once
 
-#include "game/movement/position.hpp"
 #include "items/tile.hpp"
+
+import game_movement;
 
 class Npc;
 class NpcType;

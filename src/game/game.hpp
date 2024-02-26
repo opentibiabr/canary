@@ -17,7 +17,6 @@
 #include "items/item.hpp"
 #include "map/map.hpp"
 #include "creatures/npcs/npc.hpp"
-#include "movement/position.hpp"
 #include "creatures/players/player.hpp"
 #include "lua/creature/raids.hpp"
 #include "creatures/players/grouping/team_finder.hpp"
@@ -25,6 +24,10 @@
 #include "items/items_classification.hpp"
 #include "modal_window/modal_window.hpp"
 #include "enums/object_category.hpp"
+
+import game_movement;
+import outfit_type;
+import light_info;
 
 // Forward declaration for protobuf class
 namespace Canary {
@@ -96,7 +99,7 @@ public:
 	void loadBoostedCreature();
 	void start(ServiceManager* manager);
 
-	void forceRemoveCondition(uint32_t creatureId, ConditionType_t type, ConditionId_t conditionId);
+	void forceRemoveCondition(uint32_t creatureId, ConditionType type, ConditionId_t conditionId);
 
 	/**
 	 * Load the main map
@@ -251,7 +254,7 @@ public:
 
 	bool internalCreatureTurn(std::shared_ptr<Creature> creature, Direction dir);
 
-	bool internalCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, bool ghostMode, Spectators* spectatorsPtr = nullptr, const Position* pos = nullptr);
+	bool internalCreatureSay(std::shared_ptr<Creature> creature, TalkType type, const std::string &text, bool ghostMode, Spectators* spectatorsPtr = nullptr, const Position* pos = nullptr);
 
 	ObjectCategory_t getObjectCategory(const std::shared_ptr<Item> item);
 	ObjectCategory_t getObjectCategory(const ItemType &it);
@@ -395,7 +398,7 @@ public:
 	void playerRequestOutfit(uint32_t playerId);
 	void playerShowQuestLog(uint32_t playerId);
 	void playerShowQuestLine(uint32_t playerId, uint16_t questId);
-	void playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, const std::string &receiver, const std::string &text);
+	void playerSay(uint32_t playerId, uint16_t channelId, TalkType type, const std::string &receiver, const std::string &text);
 	void playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMountRandomized = 0);
 	void playerInviteToParty(uint32_t playerId, uint32_t invitedId);
 	void playerJoinParty(uint32_t playerId, uint32_t leaderId);
@@ -465,7 +468,7 @@ public:
 
 	bool combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, bool checkDefense, bool checkArmor, bool field);
 
-	void combatGetTypeInfo(CombatType_t combatType, std::shared_ptr<Creature> target, TextColor_t &color, uint16_t &effect);
+	void combatGetTypeInfo(CombatType combatType, std::shared_ptr<Creature> target, TextColor_t &color, uint16_t &effect);
 
 	// Hazard combat helpers
 	void handleHazardSystemAttack(CombatDamage &damage, std::shared_ptr<Player> player, const std::shared_ptr<Monster> monster, bool isPlayerAttacker);
@@ -728,10 +731,10 @@ private:
 	std::unordered_set<uint32_t> fiendishMonsters;
 	std::unordered_set<uint32_t> influencedMonsters;
 	void checkImbuements();
-	bool playerSaySpell(std::shared_ptr<Player> player, SpeakClasses type, const std::string &text);
+	bool playerSaySpell(std::shared_ptr<Player> player, TalkType type, const std::string &text);
 	void playerWhisper(std::shared_ptr<Player> player, const std::string &text);
 	bool playerYell(std::shared_ptr<Player> player, const std::string &text);
-	bool playerSpeakTo(std::shared_ptr<Player> player, SpeakClasses type, const std::string &receiver, const std::string &text);
+	bool playerSpeakTo(std::shared_ptr<Player> player, TalkType type, const std::string &receiver, const std::string &text);
 	void playerSpeakToNpc(std::shared_ptr<Player> player, const std::string &text);
 	std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, std::string context) const;
 

@@ -15,12 +15,12 @@ if(MSVC)
     target_sources(${PROJECT_NAME} PRIVATE ../cmake/canary.rc)
 endif()
 
-if (UNIX)
-
+if(UNIX)
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-      target_compile_options(${PROJECT_NAME}_lib
-        PRIVATE
-          -Wall -Wextra -Wpedantic
+      target_compile_options(${PROJECT_NAME}_lib PRIVATE
+        "-Wall"
+        "-Wextra"
+        "-Wpedantic"
       )
   endif()
 

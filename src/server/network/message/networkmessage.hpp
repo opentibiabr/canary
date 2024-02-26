@@ -12,10 +12,11 @@
 #include "utils/const.hpp"
 #include "declarations.hpp"
 
+import game_movement;
+
 class Item;
 class Creature;
 class Player;
-struct Position;
 class RSA;
 
 class NetworkMessage {

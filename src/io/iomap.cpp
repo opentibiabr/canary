@@ -13,6 +13,8 @@
 #include "game/game.hpp"
 #include "io/filestream.hpp"
 
+import game_movement;
+
 /*
 	OTBM_ROOTV1
 	|

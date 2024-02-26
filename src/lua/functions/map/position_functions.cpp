@@ -10,9 +10,10 @@
 #include "pch.hpp"
 
 #include "game/game.hpp"
-#include "game/movement/position.hpp"
 #include "lua/functions/map/position_functions.hpp"
 #include "map/spectators.hpp"
+
+import game_movement;
 
 int PositionFunctions::luaPositionCreate(lua_State* L) {
 	// Position([x = 0[, y = 0[, z = 0[, stackpos = 0]]]])
@@ -103,7 +104,7 @@ int PositionFunctions::luaPositionGetPathTo(lua_State* L) {
 
 		int index = 0;
 		for (Direction dir : dirList) {
-			lua_pushnumber(L, dir);
+			lua_pushnumber(L, static_cast<lua_Number>(dir));
 			lua_rawseti(L, -2, ++index);
 		}
 	} else {

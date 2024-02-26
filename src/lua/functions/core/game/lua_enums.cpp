@@ -21,6 +21,9 @@
 #include "enums/account_type.hpp"
 #include "enums/account_group_type.hpp"
 
+import game_movement;
+import enum_modules;
+
 #define registerMagicEnum(luaState, enumClassType)               \
 	{                                                            \
 		auto number = magic_enum::enum_integer(enumClassType);   \
@@ -29,13 +32,18 @@
 	}                                                            \
 	void(0)
 
-#define registerMagicEnumNamespace(luaState, luaNamespace, enumClassType)                    \
-	{                                                                                        \
-		auto number = magic_enum::enum_integer(enumClassType);                               \
-		auto name = std::string(luaNamespace) + magic_enum::enum_name(enumClassType).data(); \
-		registerGlobalVariable(luaState, name, number);                                      \
-	}                                                                                        \
+#define magicEnumNamespaceUpper(luaState, luaNamespace, enumClassType, toUpper)                                                       \
+	{                                                                                                                                 \
+		auto number = magic_enum::enum_integer(enumClassType);                                                                        \
+		std::string name = std::string(luaNamespace) + magic_enum::enum_name(enumClassType).data();                                   \
+		if (toUpper) {                                                                                                                \
+			std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) -> unsigned char { return std::toupper(c); }); \
+		}                                                                                                                             \
+		registerGlobalVariable(luaState, name, static_cast<lua_Number>(number));                                                      \
+	}                                                                                                                                 \
 	void(0)
+
+#define registerMagicEnumNamespace(luaState, luaNamespace, enumClassType) magicEnumNamespaceUpper(luaState, luaNamespace, enumClassType, false)
 
 #define registerEnum(L, value)                                                             \
 	{                                                                                      \
@@ -199,11 +207,10 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 
 	registerEnum(L, VOCATION_NONE);
 
-	registerEnum(L, ZONE_PROTECTION);
-	registerEnum(L, ZONE_NOPVP);
-	registerEnum(L, ZONE_PVP);
-	registerEnum(L, ZONE_NOLOGOUT);
-	registerEnum(L, ZONE_NORMAL);
+	static const std::string luaNamespace = "ZONE_";
+	for (auto value : magic_enum::enum_values<ZoneType>()) {
+		magicEnumNamespaceUpper(L, luaNamespace, value, true);
+	}
 
 	registerEnum(L, WEAPON_NONE);
 	registerEnum(L, WEAPON_SWORD);
@@ -260,21 +267,12 @@ void LuaEnums::initCallbackParamEnums(lua_State* L) {
 }
 
 void LuaEnums::initCombatEnums(lua_State* L) {
-	registerEnum(L, COMBAT_NONE);
-	registerEnum(L, COMBAT_PHYSICALDAMAGE);
-	registerEnum(L, COMBAT_ENERGYDAMAGE);
-	registerEnum(L, COMBAT_EARTHDAMAGE);
-	registerEnum(L, COMBAT_FIREDAMAGE);
-	registerEnum(L, COMBAT_UNDEFINEDDAMAGE);
-	registerEnum(L, COMBAT_LIFEDRAIN);
-	registerEnum(L, COMBAT_MANADRAIN);
-	registerEnum(L, COMBAT_HEALING);
-	registerEnum(L, COMBAT_DROWNDAMAGE);
-	registerEnum(L, COMBAT_ICEDAMAGE);
-	registerEnum(L, COMBAT_HOLYDAMAGE);
-	registerEnum(L, COMBAT_DEATHDAMAGE);
-	registerEnum(L, COMBAT_AGONYDAMAGE);
-	registerEnum(L, COMBAT_NEUTRALDAMAGE);
+	static const std::string luaNamespace = "COMBAT_";
+	for (auto value : magic_enum::enum_values<CombatType>()) {
+		magicEnumNamespaceUpper(L, luaNamespace, value, true);
+	}
+	// None is 255 (not continuous) so we need to register it manually
+	magicEnumNamespaceUpper(L, luaNamespace, CombatType::None, true);
 }
 
 void LuaEnums::initCombatParamEnums(lua_State* L) {
@@ -291,77 +289,28 @@ void LuaEnums::initCombatFormulaEnums(lua_State* L) {
 }
 
 void LuaEnums::initDirectionEnums(lua_State* L) {
-	registerEnum(L, DIRECTION_NORTH);
-	registerEnum(L, DIRECTION_EAST);
-	registerEnum(L, DIRECTION_SOUTH);
-	registerEnum(L, DIRECTION_WEST);
-	registerEnum(L, DIRECTION_SOUTHWEST);
-	registerEnum(L, DIRECTION_SOUTHEAST);
-	registerEnum(L, DIRECTION_NORTHWEST);
-	registerEnum(L, DIRECTION_NORTHEAST);
+	for (const auto &value : Position::getDirectionVector()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initFactionEnums(lua_State* L) {
-	registerEnum(L, FACTION_DEFAULT);
-	registerEnum(L, FACTION_PLAYER);
-	registerEnum(L, FACTION_LION);
-	registerEnum(L, FACTION_LIONUSURPERS);
-	registerEnum(L, FACTION_MARID);
-	registerEnum(L, FACTION_EFREET);
-	registerEnum(L, FACTION_DEEPLING);
-	registerEnum(L, FACTION_DEATHLING);
-	registerEnum(L, FACTION_ANUMA);
-	registerEnum(L, FACTION_FAFNAR);
-	registerEnum(L, FACTION_LAST);
+	static const std::string luaNamespace = "FACTION_";
+	for (auto value : magic_enum::enum_values<Faction_t>()) {
+		magicEnumNamespaceUpper(L, luaNamespace, value, true);
+	}
 }
 
 void LuaEnums::initConditionEnums(lua_State* L) {
-	registerEnum(L, CONDITION_NONE);
-	registerEnum(L, CONDITION_POISON);
-	registerEnum(L, CONDITION_FIRE);
-	registerEnum(L, CONDITION_ENERGY);
-	registerEnum(L, CONDITION_BLEEDING);
-	registerEnum(L, CONDITION_HASTE);
-	registerEnum(L, CONDITION_PARALYZE);
-	registerEnum(L, CONDITION_OUTFIT);
-	registerEnum(L, CONDITION_INVISIBLE);
-	registerEnum(L, CONDITION_LIGHT);
-	registerEnum(L, CONDITION_MANASHIELD);
-	registerEnum(L, CONDITION_INFIGHT);
-	registerEnum(L, CONDITION_DRUNK);
-	registerEnum(L, CONDITION_EXHAUST);
-	registerEnum(L, CONDITION_REGENERATION);
-	registerEnum(L, CONDITION_SOUL);
-	registerEnum(L, CONDITION_DROWN);
-	registerEnum(L, CONDITION_MUTED);
-	registerEnum(L, CONDITION_CHANNELMUTEDTICKS);
-	registerEnum(L, CONDITION_YELLTICKS);
-	registerEnum(L, CONDITION_ATTRIBUTES);
-	registerEnum(L, CONDITION_FREEZING);
-	registerEnum(L, CONDITION_DAZZLED);
-	registerEnum(L, CONDITION_CURSED);
-	registerEnum(L, CONDITION_EXHAUST_COMBAT);
-	registerEnum(L, CONDITION_EXHAUST_HEAL);
-	registerEnum(L, CONDITION_PACIFIED);
-	registerEnum(L, CONDITION_SPELLCOOLDOWN);
-	registerEnum(L, CONDITION_SPELLGROUPCOOLDOWN);
-	registerEnum(L, CONDITION_ROOTED);
-	registerEnum(L, CONDITION_FEARED);
+	for (auto value : magic_enum::enum_values<ConditionType>()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initConditionIdEnums(lua_State* L) {
-	registerEnum(L, CONDITIONID_DEFAULT);
-	registerEnum(L, CONDITIONID_COMBAT);
-	registerEnum(L, CONDITIONID_HEAD);
-	registerEnum(L, CONDITIONID_NECKLACE);
-	registerEnum(L, CONDITIONID_BACKPACK);
-	registerEnum(L, CONDITIONID_ARMOR);
-	registerEnum(L, CONDITIONID_RIGHT);
-	registerEnum(L, CONDITIONID_LEFT);
-	registerEnum(L, CONDITIONID_LEGS);
-	registerEnum(L, CONDITIONID_FEET);
-	registerEnum(L, CONDITIONID_RING);
-	registerEnum(L, CONDITIONID_AMMO);
+	for (auto value : magic_enum::enum_values<ConditionId_t>()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initConditionParamEnums(lua_State* L) {
@@ -443,14 +392,14 @@ void LuaEnums::initConditionParamEnums(lua_State* L) {
 }
 
 void LuaEnums::initAttributeConditionSubIdEnums(lua_State* L) {
-	std::string luaNamespace = "AttrSubId_";
+	static const std::string luaNamespace = "AttrSubId_";
 	for (auto value : magic_enum::enum_values<AttrSubId_t>()) {
 		registerMagicEnumNamespace(L, luaNamespace, value);
 	}
 }
 
 void LuaEnums::initConcoctionsEnum(lua_State* L) {
-	std::string luaNamespace = "Concoction_";
+	static const std::string luaNamespace = "Concoction_";
 	registerEnumNamespace(L, luaNamespace, Concoction_t::KooldownAid);
 	registerEnumNamespace(L, luaNamespace, Concoction_t::StaminaExtension);
 	registerEnumNamespace(L, luaNamespace, Concoction_t::StrikeEnhancement);
@@ -714,19 +663,9 @@ void LuaEnums::initConstSlotEnums(lua_State* L) {
 }
 
 void LuaEnums::initCreatureEventEnums(lua_State* L) {
-	registerEnum(L, CREATURE_EVENT_NONE);
-	registerEnum(L, CREATURE_EVENT_LOGIN);
-	registerEnum(L, CREATURE_EVENT_LOGOUT);
-	registerEnum(L, CREATURE_EVENT_THINK);
-	registerEnum(L, CREATURE_EVENT_PREPAREDEATH);
-	registerEnum(L, CREATURE_EVENT_DEATH);
-	registerEnum(L, CREATURE_EVENT_KILL);
-	registerEnum(L, CREATURE_EVENT_ADVANCE);
-	registerEnum(L, CREATURE_EVENT_MODALWINDOW);
-	registerEnum(L, CREATURE_EVENT_TEXTEDIT);
-	registerEnum(L, CREATURE_EVENT_HEALTHCHANGE);
-	registerEnum(L, CREATURE_EVENT_MANACHANGE);
-	registerEnum(L, CREATURE_EVENT_EXTENDED_OPCODE);
+	for (auto value : magic_enum::enum_values<CreatureEventType>()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initGameStateEnums(lua_State* L) {
@@ -775,12 +714,9 @@ void LuaEnums::initMessageEnums(lua_State* L) {
 }
 
 void LuaEnums::initCreatureTypeEnums(lua_State* L) {
-	registerEnum(L, CREATURETYPE_PLAYER);
-	registerEnum(L, CREATURETYPE_MONSTER);
-	registerEnum(L, CREATURETYPE_NPC);
-	registerEnum(L, CREATURETYPE_SUMMON_PLAYER);
-	registerEnum(L, CREATURETYPE_SUMMON_OTHERS);
-	registerEnum(L, CREATURETYPE_HIDDEN);
+	for (auto value : magic_enum::enum_values<CreatureType>()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initClientOsEnums(lua_State* L) {
@@ -801,11 +737,11 @@ void LuaEnums::initFightModeEnums(lua_State* L) {
 }
 
 void LuaEnums::initItemAttributeEnums(lua_State* L) {
+	static const std::string baseLuaNamespace = "ITEM_ATTRIBUTE_";
 	for (auto value : magic_enum::enum_values<ItemAttribute_t>()) {
 		auto number = magic_enum::enum_integer(value);
-		// Creation of the "ITEM_ATTRIBUTE_" namespace for lua scripts
-		std::string enumName = "ITEM_ATTRIBUTE_" + std::string(magic_enum::enum_name(value));
-		registerGlobalVariable(L, enumName, static_cast<lua_Number>(number));
+		std::string enumNameWithNamespace = baseLuaNamespace + std::string(magic_enum::enum_name(value));
+		registerGlobalVariable(L, enumNameWithNamespace, static_cast<lua_Number>(number));
 	}
 }
 
@@ -986,32 +922,29 @@ void LuaEnums::initSkillEnums(lua_State* L) {
 }
 
 void LuaEnums::initSkullEnums(lua_State* L) {
-	registerEnum(L, SKULL_NONE);
-	registerEnum(L, SKULL_YELLOW);
-	registerEnum(L, SKULL_GREEN);
-	registerEnum(L, SKULL_WHITE);
-	registerEnum(L, SKULL_RED);
-	registerEnum(L, SKULL_BLACK);
-	registerEnum(L, SKULL_ORANGE);
+	for (auto value : magic_enum::enum_values<Skull_t>()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initTalkTypeEnums(lua_State* L) {
-	registerEnum(L, TALKTYPE_SAY);
-	registerEnum(L, TALKTYPE_WHISPER);
-	registerEnum(L, TALKTYPE_YELL);
-	registerEnum(L, TALKTYPE_PRIVATE_FROM);
-	registerEnum(L, TALKTYPE_PRIVATE_TO);
-	registerEnum(L, TALKTYPE_CHANNEL_Y);
-	registerEnum(L, TALKTYPE_CHANNEL_O);
-	registerEnum(L, TALKTYPE_PRIVATE_NP);
-	registerEnum(L, TALKTYPE_PRIVATE_PN);
-	registerEnum(L, TALKTYPE_BROADCAST);
-	registerEnum(L, TALKTYPE_CHANNEL_R1);
-	registerEnum(L, TALKTYPE_PRIVATE_RED_FROM);
-	registerEnum(L, TALKTYPE_PRIVATE_RED_TO);
-	registerEnum(L, TALKTYPE_MONSTER_SAY);
-	registerEnum(L, TALKTYPE_MONSTER_YELL);
-	registerEnum(L, TALKTYPE_CHANNEL_R2);
+	static const std::string luaNamespace = "TALKTYPE_";
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::Say, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::Whisper, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::Yell, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::PrivateFrom, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::PrivateTo, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::ChannelY, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::ChannelO, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::PrivateNpcToPlayer, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::PrivatePlayerToNpc, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::Broadcast, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::ChannelR1, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::PrivateRedFrom, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::PrivateRedTo, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::MonsterSay, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::MonsterYell, true);
+	magicEnumNamespaceUpper(L, luaNamespace, TalkType::ChannelR2, true);
 }
 
 void LuaEnums::initBestiaryEnums(lua_State* L) {
@@ -1090,12 +1023,13 @@ void LuaEnums::initTileStateEnums(lua_State* L) {
 
 // Use with npc:setSpeechBubble
 void LuaEnums::initSpeechBubbleEnums(lua_State* L) {
-	registerEnum(L, SPEECHBUBBLE_NONE);
-	registerEnum(L, SPEECHBUBBLE_NORMAL);
-	registerEnum(L, SPEECHBUBBLE_TRADE);
-	registerEnum(L, SPEECHBUBBLE_QUEST);
-	registerEnum(L, SPEECHBUBBLE_QUESTTRADER);
-	registerEnum(L, SPEECHBUBBLE_HIRELING);
+	static const std::string nameSpace = "SPEECHBUBBLE_";
+	magicEnumNamespaceUpper(L, nameSpace, SpeechBubble_t::None, true);
+	magicEnumNamespaceUpper(L, nameSpace, SpeechBubble_t::Normal, true);
+	magicEnumNamespaceUpper(L, nameSpace, SpeechBubble_t::Trade, true);
+	magicEnumNamespaceUpper(L, nameSpace, SpeechBubble_t::Quest, true);
+	magicEnumNamespaceUpper(L, nameSpace, SpeechBubble_t::QuestTrader, true);
+	magicEnumNamespaceUpper(L, nameSpace, SpeechBubble_t::Hireling, true);
 }
 
 // Use with player:addMapMark

@@ -19,6 +19,8 @@
 #include "creatures/npcs/spawns/spawn_npc.hpp"
 #include "game/zones/zone.hpp"
 
+import game_movement;
+
 class IOMap {
 public:
 	static void loadMap(Map* map, const Position &pos = Position());

@@ -9,7 +9,13 @@
 
 #pragma once
 
+// TODO: remove this include
 #include "declarations.hpp"
+
+import enum_modules;
+import outfit_type;
+import light_info;
+import game_movement;
 
 class Creature;
 class Player;
@@ -19,7 +25,7 @@ class PropWriteStream;
 class Condition : public SharedObject {
 public:
 	Condition() = default;
-	Condition(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
+	Condition(ConditionId_t initId, ConditionType initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
 		endTime(initTicks == -1 ? std::numeric_limits<int64_t>::max() : 0),
 		subId(initSubId), ticks(initTicks), conditionType(initType), id(initId), isBuff(initBuff) { }
 	virtual ~Condition() = default;
@@ -38,7 +44,7 @@ public:
 
 	virtual std::shared_ptr<Condition> clone() const = 0;
 
-	ConditionType_t getType() const {
+	ConditionType getType() const {
 		return conditionType;
 	}
 	int64_t getEndTime() const {
@@ -49,7 +55,7 @@ public:
 	}
 	void setTicks(int32_t newTicks);
 
-	static std::shared_ptr<Condition> createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param = 0, bool buff = false, uint32_t subId = 0);
+	static std::shared_ptr<Condition> createCondition(ConditionId_t id, ConditionType type, int32_t ticks, int32_t param = 0, bool buff = false, uint32_t subId = 0);
 	static std::shared_ptr<Condition> createCondition(PropStream &propStream);
 
 	virtual bool setParam(ConditionParam_t param, int32_t value);
@@ -68,7 +74,7 @@ protected:
 	int64_t endTime;
 	uint32_t subId;
 	int32_t ticks;
-	ConditionType_t conditionType;
+	ConditionType conditionType;
 	ConditionId_t id;
 	bool isBuff;
 
@@ -84,7 +90,7 @@ private:
 
 class ConditionGeneric : public Condition {
 public:
-	ConditionGeneric(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
+	ConditionGeneric(ConditionId_t initId, ConditionType initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
 		Condition(initId, initType, initTicks, initBuff, initSubId) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
@@ -100,7 +106,7 @@ public:
 
 class ConditionAttributes final : public ConditionGeneric {
 public:
-	ConditionAttributes(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
+	ConditionAttributes(ConditionId_t initId, ConditionType initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
 		ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) final;
@@ -120,21 +126,21 @@ public:
 
 private:
 	// Helpers
-	int32_t getAbsorbByIndex(uint8_t index) const;
-	void setAbsorb(uint8_t index, int32_t value);
-	int32_t getAbsorbPercentByIndex(uint8_t index) const;
-	void setAbsorbPercent(uint8_t index, int32_t value);
-	int32_t getIncreaseByIndex(uint8_t index) const;
-	void setIncrease(uint8_t index, int32_t value);
-	int32_t getIncreasePercentById(uint8_t index) const;
-	void setIncreasePercent(uint8_t index, int32_t value);
+	int32_t getAbsorbByIndex(CombatType index) const;
+	void setAbsorb(CombatType index, int32_t value);
+	int32_t getAbsorbPercentByIndex(CombatType index) const;
+	void setAbsorbPercent(CombatType index, int32_t value);
+	int32_t getIncreaseByIndex(CombatType index) const;
+	void setIncrease(CombatType index, int32_t value);
+	int32_t getIncreasePercentById(CombatType index) const;
+	void setIncreasePercent(CombatType index, int32_t value);
 
 	int32_t skills[SKILL_LAST + 1] = {};
 	int32_t skillsPercent[SKILL_LAST + 1] = {};
 	int32_t stats[STAT_LAST + 1] = {};
 	int32_t statsPercent[STAT_LAST + 1] = {};
-	int32_t buffsPercent[BUFF_LAST + 1] = {};
-	int32_t buffs[BUFF_LAST + 1] = {};
+	int32_t buffsPercent[buffToValue(Buffs_t::Last) + 1] = {};
+	int32_t buffs[buffToValue(Buffs_t::Last) + 1] = {};
 
 	int32_t currentSkill = 0;
 	int32_t currentStat = 0;
@@ -143,10 +149,10 @@ private:
 	int8_t charmChanceModifier = 0;
 
 	// 12.72 mechanics
-	std::array<int32_t, COMBAT_COUNT> absorbs = {};
-	std::array<int32_t, COMBAT_COUNT> absorbsPercent = {};
-	std::array<int32_t, COMBAT_COUNT> increases = {};
-	std::array<int32_t, COMBAT_COUNT> increasesPercent = {};
+	std::array<int32_t, combatToValue(CombatType::Count)> absorbs = {};
+	std::array<int32_t, combatToValue(CombatType::Count)> absorbsPercent = {};
+	std::array<int32_t, combatToValue(CombatType::Count)> increases = {};
+	std::array<int32_t, combatToValue(CombatType::Count)> increasesPercent = {};
 
 	bool disableDefense = false;
 
@@ -167,7 +173,7 @@ private:
 
 class ConditionRegeneration final : public ConditionGeneric {
 public:
-	ConditionRegeneration(ConditionId_t initId, ConditionType_t initType, int32_t iniTicks, bool initBuff = false, uint32_t initSubId = 0) :
+	ConditionRegeneration(ConditionId_t initId, ConditionType initType, int32_t iniTicks, bool initBuff = false, uint32_t initSubId = 0) :
 		ConditionGeneric(initId, initType, iniTicks, initBuff, initSubId) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
@@ -200,7 +206,7 @@ private:
 
 class ConditionManaShield final : public Condition {
 public:
-	ConditionManaShield(ConditionId_t initId, ConditionType_t initType, int32_t iniTicks, bool initBuff = false, uint32_t initSubId = 0) :
+	ConditionManaShield(ConditionId_t initId, ConditionType initType, int32_t iniTicks, bool initBuff = false, uint32_t initSubId = 0) :
 		Condition(initId, initType, iniTicks, initBuff, initSubId) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
@@ -224,7 +230,7 @@ private:
 
 class ConditionSoul final : public ConditionGeneric {
 public:
-	ConditionSoul(ConditionId_t initId, ConditionType_t initType, int32_t iniTicks, bool initBuff = false, uint32_t initSubId = 0) :
+	ConditionSoul(ConditionId_t initId, ConditionType initType, int32_t iniTicks, bool initBuff = false, uint32_t initSubId = 0) :
 		ConditionGeneric(initId, initType, iniTicks, initBuff, initSubId) { }
 
 	void addCondition(std::shared_ptr<Creature> creature, const std::shared_ptr<Condition> addCondition) override;
@@ -248,7 +254,7 @@ private:
 
 class ConditionInvisible final : public ConditionGeneric {
 public:
-	ConditionInvisible(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
+	ConditionInvisible(ConditionId_t initId, ConditionType initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
 		ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
@@ -262,7 +268,7 @@ public:
 class ConditionDamage final : public Condition {
 public:
 	ConditionDamage() = default;
-	ConditionDamage(ConditionId_t intiId, ConditionType_t initType, bool initBuff = false, uint32_t initSubId = 0) :
+	ConditionDamage(ConditionId_t intiId, ConditionType initType, bool initBuff = false, uint32_t initSubId = 0) :
 		Condition(intiId, initType, 0, initBuff, initSubId) { }
 
 	static void generateDamageList(int32_t amount, int32_t start, std::list<int32_t> &list);
@@ -315,7 +321,7 @@ private:
 class ConditionFeared final : public Condition {
 public:
 	ConditionFeared() = default;
-	ConditionFeared(ConditionId_t intiId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) :
+	ConditionFeared(ConditionId_t intiId, ConditionType initType, int32_t initTicks, bool initBuff, uint32_t initSubId) :
 		Condition(intiId, initType, initTicks, initBuff, initSubId) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
@@ -337,24 +343,13 @@ private:
 	bool getRandomDirection(std::shared_ptr<Creature> creature, Position pos);
 	bool isStuck(std::shared_ptr<Creature> creature, Position pos) const;
 
-	std::vector<Direction> m_directionsVector {
-		DIRECTION_NORTH,
-		DIRECTION_NORTHEAST,
-		DIRECTION_EAST,
-		DIRECTION_SOUTHEAST,
-		DIRECTION_SOUTH,
-		DIRECTION_SOUTHWEST,
-		DIRECTION_WEST,
-		DIRECTION_NORTHWEST
-	};
-
 	Position fleeingFromPos; // Caster Position
 	uint8_t fleeIndx = 99;
 };
 
 class ConditionSpeed final : public Condition {
 public:
-	ConditionSpeed(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId, int32_t initChangeSpeed) :
+	ConditionSpeed(ConditionId_t initId, ConditionType initType, int32_t initTicks, bool initBuff, uint32_t initSubId, int32_t initChangeSpeed) :
 		Condition(initId, initType, initTicks, initBuff, initSubId), speedDelta(initChangeSpeed) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
@@ -389,7 +384,7 @@ private:
 
 class ConditionOutfit final : public Condition {
 public:
-	ConditionOutfit(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
+	ConditionOutfit(ConditionId_t initId, ConditionType initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
 		Condition(initId, initType, initTicks, initBuff, initSubId) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
@@ -415,7 +410,7 @@ private:
 
 class ConditionLight final : public Condition {
 public:
-	ConditionLight(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId, uint8_t initLightlevel, uint8_t initLightcolor) :
+	ConditionLight(ConditionId_t initId, ConditionType initType, int32_t initTicks, bool initBuff, uint32_t initSubId, uint8_t initLightlevel, uint8_t initLightcolor) :
 		Condition(initId, initType, initTicks, initBuff, initSubId), lightInfo(initLightlevel, initLightcolor) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
@@ -441,7 +436,7 @@ private:
 
 class ConditionSpellCooldown final : public ConditionGeneric {
 public:
-	ConditionSpellCooldown(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
+	ConditionSpellCooldown(ConditionId_t initId, ConditionType initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
 		ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
@@ -454,7 +449,7 @@ public:
 
 class ConditionSpellGroupCooldown final : public ConditionGeneric {
 public:
-	ConditionSpellGroupCooldown(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
+	ConditionSpellGroupCooldown(ConditionId_t initId, ConditionType initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
 		ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;

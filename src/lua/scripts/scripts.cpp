@@ -9,11 +9,13 @@
 
 #include "pch.hpp"
 
+#include "lua/scripts/scripts.hpp"
+
+#include "lua/creature/creatureevent.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/global/globalevent.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lua/creature/movement.hpp"
-#include "lua/scripts/scripts.hpp"
 #include "creatures/combat/spells.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 

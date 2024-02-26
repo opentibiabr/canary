@@ -143,7 +143,7 @@ int ImbuementFunctions::luaImbuementGetCombatType(lua_State* L) {
 	// imbuement:getCombatType()
 	Imbuement* imbuement = getUserdata<Imbuement>(L, 1);
 	if (imbuement) {
-		lua_pushnumber(L, imbuement->combatType);
+		lua_pushnumber(L, combatToValue(imbuement->combatType));
 	} else {
 		lua_pushnil(L);
 	}

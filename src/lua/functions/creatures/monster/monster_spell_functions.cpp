@@ -96,7 +96,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetCombatType(lua_State* L) {
 	// monsterSpell:setCombatType(combatType_t)
 	const auto spell = getUserdataShared<MonsterSpell>(L, 1);
 	if (spell) {
-		spell->combatType = getNumber<CombatType_t>(L, 2);
+		spell->combatType = getNumber<CombatType>(L, 2);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -177,7 +177,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetConditionType(lua_State* L) {
 			return 1;
 		}
 
-		spell->conditionType = static_cast<ConditionType_t>(conditionType);
+		spell->conditionType = static_cast<ConditionType>(conditionType);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

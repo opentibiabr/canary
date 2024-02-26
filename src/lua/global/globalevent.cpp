@@ -14,6 +14,8 @@
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 
+import light_info;
+
 GlobalEvents::GlobalEvents() = default;
 GlobalEvents::~GlobalEvents() = default;
 

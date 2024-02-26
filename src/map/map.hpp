@@ -15,6 +15,8 @@
 #include "creatures/monsters/spawns/spawn_monster.hpp"
 #include "creatures/npcs/spawns/spawn_npc.hpp"
 
+import game_movement;
+
 class Creature;
 class Player;
 class Game;
@@ -22,7 +24,6 @@ class Tile;
 class Map;
 
 struct FindPathParams;
-
 class FrozenPathingConditionCall;
 
 /**
@@ -124,10 +125,7 @@ public:
 	std::shared_ptr<Tile> canWalkTo(const std::shared_ptr<Creature> &creature, const Position &pos);
 
 	bool getPathMatching(const std::shared_ptr<Creature> &creature, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
-
-	bool getPathMatching(const Position &startPos, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
-		return getPathMatching(nullptr, startPos, dirList, pathCondition, fpp);
-	}
+	bool getPathMatching(const Position &startPos, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
 
 	std::map<std::string, Position> waypoints;
 

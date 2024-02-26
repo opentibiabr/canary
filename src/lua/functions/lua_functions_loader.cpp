@@ -29,6 +29,9 @@
 
 #include "enums/lua_variant_type.hpp"
 
+import outfit_type;
+import game_movement;
+
 class LuaScriptInterface;
 
 void LuaFunctionsLoader::load(lua_State* L) {
@@ -343,9 +346,9 @@ void LuaFunctionsLoader::setCreatureMetatable(lua_State* L, int32_t index, std::
 CombatDamage LuaFunctionsLoader::getCombatDamage(lua_State* L) {
 	CombatDamage damage;
 	damage.primary.value = getNumber<int32_t>(L, -4);
-	damage.primary.type = getNumber<CombatType_t>(L, -3);
+	damage.primary.type = getNumber<CombatType>(L, -3);
 	damage.secondary.value = getNumber<int32_t>(L, -2);
-	damage.secondary.type = getNumber<CombatType_t>(L, -1);
+	damage.secondary.type = getNumber<CombatType>(L, -1);
 
 	lua_pop(L, 4);
 	return damage;
@@ -581,9 +584,9 @@ void LuaFunctionsLoader::pushCombatDamage(lua_State* L, const CombatDamage &dama
 	}
 
 	lua_pushnumber(L, damage.primary.value);
-	lua_pushnumber(L, damage.primary.type);
+	lua_pushnumber(L, combatToValue(damage.primary.type));
 	lua_pushnumber(L, damage.secondary.value);
-	lua_pushnumber(L, damage.secondary.type);
+	lua_pushnumber(L, combatToValue(damage.secondary.type));
 	lua_pushnumber(L, damage.origin);
 }
 

@@ -19,6 +19,10 @@
 #include "io/iomapserialize.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "map/spectators.hpp"
+#include "creatures/creatures_definitions.hpp"
+#include "creatures/creature.hpp"
+
+import game_movement;
 
 void Map::load(const std::string &identifier, const Position &pos) {
 	try {
@@ -365,15 +369,15 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 
 	if (!teleport) {
 		if (oldPos.y > newPos.y) {
-			creature->setDirection(DIRECTION_NORTH);
+			creature->setDirection(Direction::North);
 		} else if (oldPos.y < newPos.y) {
-			creature->setDirection(DIRECTION_SOUTH);
+			creature->setDirection(Direction::South);
 		}
 
 		if (oldPos.x < newPos.x) {
-			creature->setDirection(DIRECTION_EAST);
+			creature->setDirection(Direction::East);
 		} else if (oldPos.x > newPos.x) {
-			creature->setDirection(DIRECTION_WEST);
+			creature->setDirection(Direction::West);
 		}
 	}
 
@@ -514,6 +518,10 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, stdext::arr
 	return getPathMatching(creature, creature->getPosition(), dirList, pathCondition, fpp);
 }
 
+bool Map::getPathMatching(const Position &startPos, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+	return getPathMatching(nullptr, startPos, dirList, pathCondition, fpp);
+}
+
 bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &startPos, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
 	static int_fast32_t allNeighbors[8][2] = {
 		{ -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, -1 }, { 1, -1 }, { 1, 1 }, { -1, 1 }
@@ -566,26 +574,26 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 			const int_fast32_t offset_y = n->parent->y - y;
 			if (offset_y == 0) {
 				if (offset_x == -1) {
-					neighbors = *dirNeighbors[DIRECTION_WEST];
+					neighbors = *dirNeighbors[directionToValue(Direction::West)];
 				} else {
-					neighbors = *dirNeighbors[DIRECTION_EAST];
+					neighbors = *dirNeighbors[directionToValue(Direction::East)];
 				}
 			} else if (!fpp.allowDiagonal || offset_x == 0) {
 				if (offset_y == -1) {
-					neighbors = *dirNeighbors[DIRECTION_NORTH];
+					neighbors = *dirNeighbors[directionToValue(Direction::North)];
 				} else {
-					neighbors = *dirNeighbors[DIRECTION_SOUTH];
+					neighbors = *dirNeighbors[directionToValue(Direction::South)];
 				}
 			} else if (offset_y == -1) {
 				if (offset_x == -1) {
-					neighbors = *dirNeighbors[DIRECTION_NORTHWEST];
+					neighbors = *dirNeighbors[directionToValue(Direction::NorthWest)];
 				} else {
-					neighbors = *dirNeighbors[DIRECTION_NORTHEAST];
+					neighbors = *dirNeighbors[directionToValue(Direction::NorthEast)];
 				}
 			} else if (offset_x == -1) {
-				neighbors = *dirNeighbors[DIRECTION_SOUTHWEST];
+				neighbors = *dirNeighbors[directionToValue(Direction::SouthWest)];
 			} else {
-				neighbors = *dirNeighbors[DIRECTION_SOUTHEAST];
+				neighbors = *dirNeighbors[directionToValue(Direction::SouthEast)];
 			}
 			dirCount = fpp.allowDiagonal ? 5 : 3;
 		} else {
@@ -663,21 +671,21 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 		prevy = pos.y;
 
 		if (dx == 1 && dy == 1) {
-			dirList.push_front(DIRECTION_NORTHWEST);
+			dirList.push_front(Direction::NorthWest);
 		} else if (dx == -1 && dy == 1) {
-			dirList.push_front(DIRECTION_NORTHEAST);
+			dirList.push_front(Direction::NorthEast);
 		} else if (dx == 1 && dy == -1) {
-			dirList.push_front(DIRECTION_SOUTHWEST);
+			dirList.push_front(Direction::SouthWest);
 		} else if (dx == -1 && dy == -1) {
-			dirList.push_front(DIRECTION_SOUTHEAST);
+			dirList.push_front(Direction::SouthEast);
 		} else if (dx == 1) {
-			dirList.push_front(DIRECTION_WEST);
+			dirList.push_front(Direction::West);
 		} else if (dx == -1) {
-			dirList.push_front(DIRECTION_EAST);
+			dirList.push_front(Direction::East);
 		} else if (dy == 1) {
-			dirList.push_front(DIRECTION_NORTH);
+			dirList.push_front(Direction::North);
 		} else if (dy == -1) {
-			dirList.push_front(DIRECTION_SOUTH);
+			dirList.push_front(Direction::South);
 		}
 
 		found = found->parent;

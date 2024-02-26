@@ -12,6 +12,8 @@
 #include "items/thing.hpp"
 #include "items/tile.hpp"
 
+import game_movement;
+
 const Position &Thing::getPosition() {
 	std::shared_ptr<Tile> tile = getTile();
 	if (!tile) {

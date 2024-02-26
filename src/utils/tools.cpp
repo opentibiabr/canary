@@ -9,9 +9,12 @@
 
 #include "pch.hpp"
 
+#include "utils/tools.hpp"
+
 #include "core.hpp"
 #include "items/item.hpp"
-#include "utils/tools.hpp"
+
+import game_movement;
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
 	g_logger().error("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -490,24 +493,24 @@ BedItemPart_t getBedPart(const std::string_view string) {
 }
 
 Direction getDirection(const std::string &string) {
-	Direction direction = DIRECTION_NORTH;
+	Direction direction = Direction::North;
 
 	if (string == "north" || string == "n" || string == "0") {
-		direction = DIRECTION_NORTH;
+		direction = Direction::North;
 	} else if (string == "east" || string == "e" || string == "1") {
-		direction = DIRECTION_EAST;
+		direction = Direction::East;
 	} else if (string == "south" || string == "s" || string == "2") {
-		direction = DIRECTION_SOUTH;
+		direction = Direction::South;
 	} else if (string == "west" || string == "w" || string == "3") {
-		direction = DIRECTION_WEST;
+		direction = Direction::West;
 	} else if (string == "southwest" || string == "south west" || string == "south-west" || string == "sw" || string == "4") {
-		direction = DIRECTION_SOUTHWEST;
+		direction = Direction::SouthWest;
 	} else if (string == "southeast" || string == "south east" || string == "south-east" || string == "se" || string == "5") {
-		direction = DIRECTION_SOUTHEAST;
+		direction = Direction::SouthEast;
 	} else if (string == "northwest" || string == "north west" || string == "north-west" || string == "nw" || string == "6") {
-		direction = DIRECTION_NORTHWEST;
+		direction = Direction::NorthWest;
 	} else if (string == "northeast" || string == "north east" || string == "north-east" || string == "ne" || string == "7") {
-		direction = DIRECTION_NORTHEAST;
+		direction = Direction::NorthEast;
 	}
 
 	return direction;
@@ -515,38 +518,38 @@ Direction getDirection(const std::string &string) {
 
 Position getNextPosition(Direction direction, Position pos) {
 	switch (direction) {
-		case DIRECTION_NORTH:
+		case Direction::North:
 			pos.y--;
 			break;
 
-		case DIRECTION_SOUTH:
+		case Direction::South:
 			pos.y++;
 			break;
 
-		case DIRECTION_WEST:
+		case Direction::West:
 			pos.x--;
 			break;
 
-		case DIRECTION_EAST:
+		case Direction::East:
 			pos.x++;
 			break;
 
-		case DIRECTION_SOUTHWEST:
+		case Direction::SouthWest:
 			pos.x--;
 			pos.y++;
 			break;
 
-		case DIRECTION_NORTHWEST:
+		case Direction::NorthWest:
 			pos.x--;
 			pos.y--;
 			break;
 
-		case DIRECTION_NORTHEAST:
+		case Direction::NorthEast:
 			pos.x++;
 			pos.y--;
 			break;
 
-		case DIRECTION_SOUTHEAST:
+		case Direction::SouthEast:
 			pos.x++;
 			pos.y++;
 			break;
@@ -570,42 +573,42 @@ Direction getDirectionTo(const Position &from, const Position &to, bool exactDia
 		 * Only consider diagonal if dx and dy are equal (exact diagonal).
 		 */
 		if (absDx > absDy) {
-			return dx < 0 ? DIRECTION_EAST : DIRECTION_WEST;
+			return dx < 0 ? Direction::East : Direction::West;
 		}
 		if (absDx < absDy) {
-			return dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH;
+			return dy > 0 ? Direction::North : Direction::South;
 		}
 	}
 
 	if (dx < 0) {
 		if (dy < 0) {
-			return DIRECTION_SOUTHEAST;
+			return Direction::SouthEast;
 		}
 		if (dy > 0) {
-			return DIRECTION_NORTHEAST;
+			return Direction::NorthEast;
 		}
-		return DIRECTION_EAST;
+		return Direction::East;
 	}
 
 	if (dx > 0) {
 		if (dy < 0) {
-			return DIRECTION_SOUTHWEST;
+			return Direction::SouthWest;
 		}
 		if (dy > 0) {
-			return DIRECTION_NORTHWEST;
+			return Direction::NorthWest;
 		}
-		return DIRECTION_WEST;
+		return Direction::West;
 	}
 
-	return dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH;
+	return dy > 0 ? Direction::North : Direction::South;
 }
 
 using MagicEffectNames = phmap::flat_hash_map<std::string, MagicEffectClasses>;
 using ShootTypeNames = phmap::flat_hash_map<std::string, ShootType_t>;
-using CombatTypeNames = phmap::flat_hash_map<CombatType_t, std::string, std::hash<int32_t>>;
+using CombatTypeNames = phmap::flat_hash_map<CombatType, std::string, std::hash<CombatType>>;
 using AmmoTypeNames = phmap::flat_hash_map<std::string, Ammo_t>;
 using WeaponActionNames = phmap::flat_hash_map<std::string, WeaponAction_t>;
-using SkullNames = phmap::flat_hash_map<std::string, Skulls_t>;
+using SkullNames = phmap::flat_hash_map<std::string, Skull_t>;
 using ImbuementTypeNames = phmap::flat_hash_map<std::string, ImbuementTypes_t>;
 
 /**
@@ -791,20 +794,20 @@ ShootTypeNames shootTypeNames = {
 };
 
 CombatTypeNames combatTypeNames = {
-	{ COMBAT_DROWNDAMAGE, "drown" },
-	{ COMBAT_DEATHDAMAGE, "death" },
-	{ COMBAT_ENERGYDAMAGE, "energy" },
-	{ COMBAT_EARTHDAMAGE, "earth" },
-	{ COMBAT_FIREDAMAGE, "fire" },
-	{ COMBAT_HEALING, "healing" },
-	{ COMBAT_HOLYDAMAGE, "holy" },
-	{ COMBAT_ICEDAMAGE, "ice" },
-	{ COMBAT_UNDEFINEDDAMAGE, "undefined" },
-	{ COMBAT_LIFEDRAIN, "lifedrain" },
-	{ COMBAT_MANADRAIN, "manadrain" },
-	{ COMBAT_PHYSICALDAMAGE, "physical" },
-	{ COMBAT_AGONYDAMAGE, "agony" },
-	{ COMBAT_NEUTRALDAMAGE, "neutral" },
+	{ CombatType::DrownDamage, "drown" },
+	{ CombatType::DeathDamage, "death" },
+	{ CombatType::EnergyDamage, "energy" },
+	{ CombatType::EarthDamage, "earth" },
+	{ CombatType::FireDamage, "fire" },
+	{ CombatType::Healing, "healing" },
+	{ CombatType::HolyDamage, "holy" },
+	{ CombatType::IceDamage, "ice" },
+	{ CombatType::UndefinedDamage, "undefined" },
+	{ CombatType::LifeDrain, "lifedrain" },
+	{ CombatType::ManaDrain, "manadrain" },
+	{ CombatType::PhysicalDamage, "physical" },
+	{ CombatType::AgonyDamage, "agony" },
+	{ CombatType::NeutralDamage, "neutral" },
 };
 
 AmmoTypeNames ammoTypeNames = {
@@ -842,13 +845,13 @@ WeaponActionNames weaponActionNames = {
 };
 
 SkullNames skullNames = {
-	{ "black", SKULL_BLACK },
-	{ "green", SKULL_GREEN },
-	{ "none", SKULL_NONE },
-	{ "orange", SKULL_ORANGE },
-	{ "red", SKULL_RED },
-	{ "yellow", SKULL_YELLOW },
-	{ "white", SKULL_WHITE },
+	{ "black", Skull_t::Black },
+	{ "green", Skull_t::Green },
+	{ "none", Skull_t::None },
+	{ "orange", Skull_t::Orange },
+	{ "red", Skull_t::Red },
+	{ "yellow", Skull_t::Yellow },
+	{ "white", Skull_t::White },
 };
 
 const ImbuementTypeNames imbuementTypeNames = {
@@ -916,12 +919,12 @@ WeaponAction_t getWeaponAction(const std::string &strValue) {
 	return WEAPONACTION_NONE;
 }
 
-Skulls_t getSkullType(const std::string &strValue) {
+Skull_t getSkullType(const std::string &strValue) {
 	auto skullType = skullNames.find(strValue);
 	if (skullType != skullNames.end()) {
 		return skullType->second;
 	}
-	return SKULL_NONE;
+	return Skull_t::None;
 }
 
 ImbuementTypes_t getImbuementType(const std::string &strValue) {
@@ -1077,7 +1080,7 @@ std::string getWeaponName(WeaponType_t weaponType) {
 	}
 }
 
-std::string getCombatName(CombatType_t combatType) {
+std::string getCombatName(CombatType combatType) {
 	auto combatName = combatTypeNames.find(combatType);
 	if (combatName != combatTypeNames.end()) {
 		return combatName->second;
@@ -1085,42 +1088,25 @@ std::string getCombatName(CombatType_t combatType) {
 	return "unknown";
 }
 
-CombatType_t getCombatTypeByName(const std::string &combatname) {
-	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](const std::pair<CombatType_t, std::string> &pair) {
+CombatType getCombatTypeByName(const std::string &combatname) {
+	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](const std::pair<CombatType, std::string> &pair) {
 		return pair.second == combatname;
 	});
 
-	return it != combatTypeNames.end() ? it->first : COMBAT_NONE;
+	return it != combatTypeNames.end() ? it->first : CombatType::None;
 }
 
-size_t combatTypeToIndex(CombatType_t combatType) {
-	auto enum_index_opt = magic_enum::enum_index(combatType);
-	if (enum_index_opt.has_value() && enum_index_opt.value() < COMBAT_COUNT) {
-		return enum_index_opt.value();
-	} else {
-		g_logger().error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
-		// Uncomment for catch the function call with debug
-		// throw std::out_of_range("Combat is out of range");
-	}
-
-	return COMBAT_NONE;
-}
-
-std::string combatTypeToName(CombatType_t combatType) {
-	std::string_view name = magic_enum::enum_name(combatType);
-	if (!name.empty() && combatType < COMBAT_COUNT) {
+std::string combatTypeToName(CombatType combatType) {
+	std::string_view name = magic_enum::enum_name(static_cast<CombatType>(combatType));
+	if (!name.empty() && combatToValue(combatType) < combatToValue(CombatType::Count)) {
 		return formatEnumName(name);
 	} else {
-		g_logger().error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
+		g_logger().error("[{}] Combat type {} is out of range", __FUNCTION__, combatType);
 		// Uncomment for catch the function call with debug
 		// throw std::out_of_range("Index is out of range");
 	}
 
 	return {};
-}
-
-CombatType_t indexToCombatType(size_t v) {
-	return static_cast<CombatType_t>(v);
 }
 
 ItemAttribute_t stringToItemAttribute(const std::string &str) {
@@ -1824,6 +1810,39 @@ unsigned int getNumberOfCores() {
 	return cores;
 }
 
+Cipbia_Elementals_t getCipbiaElement(CombatType combatType) {
+	switch (combatType) {
+		case CombatType::PhysicalDamage:
+			return CIPBIA_ELEMENTAL_PHYSICAL;
+		case CombatType::EnergyDamage:
+			return CIPBIA_ELEMENTAL_ENERGY;
+		case CombatType::EarthDamage:
+			return CIPBIA_ELEMENTAL_EARTH;
+		case CombatType::FireDamage:
+			return CIPBIA_ELEMENTAL_FIRE;
+		case CombatType::LifeDrain:
+			return CIPBIA_ELEMENTAL_LIFEDRAIN;
+		case CombatType::Healing:
+			return CIPBIA_ELEMENTAL_HEALING;
+		case CombatType::DrownDamage:
+			return CIPBIA_ELEMENTAL_DROWN;
+		case CombatType::IceDamage:
+			return CIPBIA_ELEMENTAL_ICE;
+		case CombatType::HolyDamage:
+			return CIPBIA_ELEMENTAL_HOLY;
+		case CombatType::DeathDamage:
+			return CIPBIA_ELEMENTAL_DEATH;
+		case CombatType::ManaDrain:
+			return CIPBIA_ELEMENTAL_MANADRAIN;
+		case CombatType::AgonyDamage:
+			return CIPBIA_ELEMENTAL_AGONY;
+		case CombatType::NeutralDamage:
+			return CIPBIA_ELEMENTAL_AGONY;
+		default:
+			return CIPBIA_ELEMENTAL_UNDEFINED;
+	}
+}
+
 /**
  * @brief Formats a number to a string with commas
  * @param number The number to format
@@ -1869,4 +1888,32 @@ uint8_t convertWheelGemAffinityToDomain(uint8_t affinity) {
 			g_logger().error("Failed to get gem affinity {}", affinity);
 			return 0;
 	}
+}
+
+const std::vector<uint8_t> &getAllCombatValueTypes() {
+	static const std::vector<uint8_t> validTypes = [] {
+		std::vector<uint8_t> v;
+		for (auto combat : magic_enum::enum_values<CombatType>()) {
+			const auto &value = combatToValue(combat);
+			if (value != combatToValue(CombatType::Count) && combat != CombatType::None) {
+				v.push_back(value);
+			}
+		}
+		return v;
+	}();
+	return validTypes;
+}
+
+const std::vector<CombatType> &getAllCombatTypes() {
+	static const std::vector<CombatType> validTypes = [] {
+		std::vector<CombatType> v;
+		for (auto combat : magic_enum::enum_values<CombatType>()) {
+			const auto &value = combatToValue(combat);
+			if (value != combatToValue(CombatType::Count) && combat != CombatType::None) {
+				v.push_back(combat);
+			}
+		}
+		return v;
+	}();
+	return validTypes;
 }

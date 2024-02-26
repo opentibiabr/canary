@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "game/movement/position.hpp"
+import game_movement;
 
 // Enums
 enum {
@@ -55,23 +55,6 @@ enum class LuaData_t : uint8_t {
 	Imbuement,
 	Mount,
 	ItemClassification,
-};
-
-enum CreatureEventType_t {
-	CREATURE_EVENT_NONE,
-	CREATURE_EVENT_LOGIN,
-	CREATURE_EVENT_LOGOUT,
-	CREATURE_EVENT_THINK,
-	CREATURE_EVENT_PREPAREDEATH,
-	CREATURE_EVENT_DEATH,
-	CREATURE_EVENT_KILL,
-	CREATURE_EVENT_ADVANCE,
-	CREATURE_EVENT_MODALWINDOW,
-	CREATURE_EVENT_TEXTEDIT,
-	CREATURE_EVENT_HEALTHCHANGE,
-	CREATURE_EVENT_MANACHANGE,
-	// Otclient additional network opcodes.
-	CREATURE_EVENT_EXTENDED_OPCODE,
 };
 
 enum MoveEvent_t {

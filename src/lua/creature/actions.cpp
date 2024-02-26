@@ -17,6 +17,8 @@
 #include "items/containers/rewards/rewardchest.hpp"
 #include "enums/account_group_type.hpp"
 
+import game_movement;
+
 Actions::Actions() = default;
 Actions::~Actions() = default;
 

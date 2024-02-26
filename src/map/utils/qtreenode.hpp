@@ -64,13 +64,9 @@ public:
 	QTreeLeafNode(const QTreeLeafNode &) = delete;
 	QTreeLeafNode &operator=(const QTreeLeafNode &) = delete;
 
-	const std::unique_ptr<Floor> &createFloor(uint32_t z) {
-		return array[z] ? array[z] : (array[z] = std::make_unique<Floor>(z));
-	}
+	const std::unique_ptr<Floor> &createFloor(uint32_t z);
 
-	const std::unique_ptr<Floor> &getFloor(uint8_t z) const {
-		return array[z];
-	}
+	const std::unique_ptr<Floor> &getFloor(uint8_t z) const;
 
 	void addCreature(const std::shared_ptr<Creature> &c);
 	void removeCreature(std::shared_ptr<Creature> c);

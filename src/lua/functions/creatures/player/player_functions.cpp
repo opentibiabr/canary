@@ -2163,7 +2163,7 @@ int PlayerFunctions::luaPlayerSendChannelMessage(lua_State* L) {
 	}
 
 	uint16_t channelId = getNumber<uint16_t>(L, 5);
-	SpeakClasses type = getNumber<SpeakClasses>(L, 4);
+	TalkType type = getNumber<TalkType>(L, 4);
 	const std::string &text = getString(L, 3);
 	const std::string &author = getString(L, 2);
 	player->sendChannelMessage(author, text, type, channelId);
@@ -2181,7 +2181,7 @@ int PlayerFunctions::luaPlayerSendPrivateMessage(lua_State* L) {
 
 	std::shared_ptr<Player> speaker = getUserdataShared<Player>(L, 2);
 	const std::string &text = getString(L, 3);
-	SpeakClasses type = getNumber<SpeakClasses>(L, 4, TALKTYPE_PRIVATE_FROM);
+	TalkType type = getNumber<TalkType>(L, 4, TalkType::PrivateFrom);
 	player->sendPrivateMessage(speaker, type, text);
 	pushBoolean(L, true);
 	return 1;
@@ -2196,7 +2196,7 @@ int PlayerFunctions::luaPlayerChannelSay(lua_State* L) {
 	}
 
 	std::shared_ptr<Creature> speaker = getCreature(L, 2);
-	SpeakClasses type = getNumber<SpeakClasses>(L, 3);
+	TalkType type = getNumber<TalkType>(L, 3);
 	const std::string &text = getString(L, 4);
 	uint16_t channelId = getNumber<uint16_t>(L, 5);
 	player->sendToChannel(speaker, type, text, channelId);
@@ -3515,7 +3515,7 @@ int PlayerFunctions::luaPlayerGetFaction(lua_State* L) {
 		return 0;
 	}
 
-	lua_pushnumber(L, player->getFaction());
+	lua_pushnumber(L, static_cast<lua_Number>(player->getFaction()));
 	return 1;
 }
 

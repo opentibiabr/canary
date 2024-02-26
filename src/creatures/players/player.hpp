@@ -35,6 +35,11 @@
 #include "game/bank/bank.hpp"
 #include "enums/object_category.hpp"
 
+import enum_modules;
+import light_info;
+import game_movement;
+import outfit_type;
+
 class House;
 class NetworkMessage;
 class Weapon;
@@ -51,6 +56,8 @@ class PlayerWheel;
 class PlayerAchievement;
 class Spectators;
 class Account;
+class MonsterType;
+class Item;
 
 struct ModalWindow;
 struct Achievement;
@@ -154,9 +161,12 @@ public:
 	}
 	std::string getDescription(int32_t lookDistance) override;
 
-	CreatureType_t getType() const override {
-		return CREATURETYPE_PLAYER;
-	}
+	/**
+	 * @brief Get the type of the Player.
+	 * @note This function returns the type of the creature
+	 * @return An unsigned 8-bit integer representing the creature type, see CreatureType enum for possible types.
+	 */
+	CreatureType getType() const override;
 
 	uint8_t getLastMount() const;
 	uint8_t getCurrentMount() const;
@@ -308,30 +318,16 @@ public:
 		return guildWarVector;
 	}
 
-	const std::unordered_set<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) const {
-		return isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
-	}
-
+	const std::unordered_set<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) const;
 	void addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient = false);
-
 	void removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient = false);
-
 	void sendBestiaryEntryChanged(uint16_t raceid) {
 		if (client) {
 			client->sendBestiaryEntryChanged(raceid);
 		}
 	}
-
-	void refreshCyclopediaMonsterTracker(bool isBoss = false) {
-		refreshCyclopediaMonsterTracker(getCyclopediaMonsterTrackerSet(isBoss), isBoss);
-	}
-
-	void refreshCyclopediaMonsterTracker(const std::unordered_set<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {
-		if (client) {
-			client->refreshCyclopediaMonsterTracker(trackerList, isBoss);
-		}
-	}
-
+	void refreshCyclopediaMonsterTracker(bool isBoss = false);
+	void refreshCyclopediaMonsterTracker(const std::unordered_set<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const;
 	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const;
 
 	Vocation* getVocation() const {
@@ -387,11 +383,9 @@ public:
 		}
 	}
 
-	int32_t getSpecializedMagicLevel(CombatType_t combat, bool useCharges = false) const;
+	int32_t getSpecializedMagicLevel(CombatType combat, bool useCharges = false) const;
 
-	void setSpecializedMagicLevel(CombatType_t combat, int32_t value) {
-		specializedMagicLevel[combatTypeToIndex(combat)] = std::max(0, specializedMagicLevel[combatTypeToIndex(combat)] + value);
-	}
+	void setSpecializedMagicLevel(CombatType combat, int32_t value);
 
 	int32_t getMagicShieldCapacityFlat(bool useCharges = false) const;
 
@@ -405,9 +399,8 @@ public:
 		magicShieldCapacityPercent += value;
 	}
 
-	int32_t getReflectPercent(CombatType_t combat, bool useCharges = false) const override;
-
-	int32_t getReflectFlat(CombatType_t combat, bool useCharges = false) const override;
+	int32_t getReflectPercent(CombatType combatType, bool useCharges = false) const override;
+	int32_t getReflectFlat(CombatType combatType, bool useCharges = false) const override;
 
 	PartyShields_t getPartyShield(std::shared_ptr<Player> player);
 	bool isInviting(std::shared_ptr<Player> player) const;
@@ -759,7 +752,7 @@ public:
 	void setVarStats(stats_t stat, int32_t modifier);
 	int32_t getDefaultStats(stats_t stat) const;
 
-	void addConditionSuppressions(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addCondition);
+	void addConditionSuppressions(const std::array<ConditionType, conditionToValue(ConditionType::Count)> &addCondition);
 	void removeConditionSuppressions();
 
 	std::shared_ptr<Reward> getReward(const uint64_t rewardId, const bool autoCreate);
@@ -784,8 +777,8 @@ public:
 	bool canWalkthrough(std::shared_ptr<Creature> creature);
 	bool canWalkthroughEx(std::shared_ptr<Creature> creature);
 
-	RaceType_t getRace() const override {
-		return RACE_BLOOD;
+	RaceType getRace() const override {
+		return RaceType::Blood;
 	}
 
 	uint64_t getMoney() const;
@@ -853,8 +846,8 @@ public:
 	}
 	// combat functions
 	bool setAttackedCreature(std::shared_ptr<Creature> creature) override;
-	bool isImmune(CombatType_t type) const override;
-	bool isImmune(ConditionType_t type) const override;
+	bool isConditionImmune(ConditionType conditionType) const override;
+	bool isCombatImmune(CombatType combatType) const override;
 	bool hasShield() const;
 	bool isAttackable() const override;
 	static bool lastHitIsPlayer(std::shared_ptr<Creature> lastHitCreature);
@@ -870,7 +863,7 @@ public:
 	bool isPzLocked() const {
 		return pzLocked;
 	}
-	BlockType_t blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
+	BlockType blockHit(std::shared_ptr<Creature> attacker, CombatType combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 	void doAttacking(uint32_t interval) override;
 	bool hasExtraSwing() override {
 		return lastAttack > 0 && !checkLastAttackWithin(getAttackSpeed());
@@ -889,26 +882,26 @@ public:
 		return addAttackSkillPoint;
 	}
 
-	BlockType_t getLastAttackBlockType() const {
+	BlockType getLastAttackBlockType() const {
 		return lastAttackBlockType;
 	}
 
-	uint64_t getLastConditionTime(ConditionType_t type) const {
-		if (!lastConditionTime.contains(static_cast<uint8_t>(type))) {
+	uint64_t getLastConditionTime(ConditionType conditionType) const {
+		if (!lastConditionTime.contains(conditionType)) {
 			return 0;
 		}
-		return lastConditionTime.at(static_cast<uint8_t>(type));
+		return lastConditionTime.at(conditionType);
 	}
 
-	void updateLastConditionTime(ConditionType_t type) {
-		lastConditionTime[static_cast<uint8_t>(type)] = OTSYS_TIME();
+	void updateLastConditionTime(ConditionType conditionType) {
+		lastConditionTime[conditionType] = OTSYS_TIME();
 	}
 
-	bool checkLastConditionTimeWithin(ConditionType_t type, uint32_t interval) const {
-		if (!lastConditionTime.contains(static_cast<uint8_t>(type))) {
+	bool checkLastConditionTimeWithin(ConditionType conditionType, uint32_t interval) const {
+		if (!lastConditionTime.contains(conditionType)) {
 			return false;
 		}
-		auto last = lastConditionTime.at(static_cast<uint8_t>(type));
+		auto last = lastConditionTime.at(conditionType);
 		return last > 0 && ((OTSYS_TIME() - last) < interval);
 	}
 
@@ -965,9 +958,9 @@ public:
 	uint64_t getGainedExperience(std::shared_ptr<Creature> attacker) const override;
 
 	// combat event functions
-	void onAddCondition(ConditionType_t type) override;
-	void onAddCombatCondition(ConditionType_t type) override;
-	void onEndCondition(ConditionType_t type) override;
+	void onAddCondition(ConditionType conditionType) override;
+	void onAddCombatCondition(ConditionType conditionType) override;
+	void onEndCondition(ConditionType conditionType) override;
 	void onCombatRemoveCondition(std::shared_ptr<Condition> condition) override;
 	void onAttackedCreature(std::shared_ptr<Creature> target) override;
 	void onAttacked() override;
@@ -977,18 +970,18 @@ public:
 	bool onKilledMonster(const std::shared_ptr<Monster> &target) override;
 	void onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target) override;
 	void onGainSharedExperience(uint64_t gainExp, std::shared_ptr<Creature> target);
-	void onAttackedCreatureBlockHit(BlockType_t blockType) override;
+	void onAttackedCreatureBlockHit(BlockType blockType) override;
 	void onBlockHit() override;
 	void onTakeDamage(std::shared_ptr<Creature> attacker, int32_t damage) override;
-	void onChangeZone(ZoneType_t zone) override;
-	void onAttackedCreatureChangeZone(ZoneType_t zone) override;
+	void onChangeZone(ZoneType zone) override;
+	void onAttackedCreatureChangeZone(ZoneType zone) override;
 	void onIdleStatus() override;
 	void onPlacedCreature() override;
 
 	LightInfo getCreatureLight() const override;
 
-	Skulls_t getSkull() const override;
-	Skulls_t getSkullClient(std::shared_ptr<Creature> creature) override;
+	Skull_t getSkull() const override;
+	Skull_t getSkullClient(std::shared_ptr<Creature> creature) override;
 	int64_t getSkullTicks() const {
 		return skullTicks;
 	}
@@ -1063,7 +1056,7 @@ public:
 		}
 	}
 
-	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel) {
+	void sendChannelMessage(const std::string &author, const std::string &text, TalkType type, uint16_t channel) {
 		if (client) {
 			client->sendChannelMessage(author, text, type, channel);
 		}
@@ -1109,7 +1102,7 @@ public:
 			}
 		}
 	}
-	void sendCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, const Position* pos = nullptr) {
+	void sendCreatureSay(std::shared_ptr<Creature> creature, TalkType type, const std::string &text, const Position* pos = nullptr) {
 		if (client) {
 			client->sendCreatureSay(creature, type, text, pos);
 		}
@@ -1119,7 +1112,7 @@ public:
 			client->reloadCreature(creature);
 		}
 	}
-	void sendPrivateMessage(std::shared_ptr<Player> speaker, SpeakClasses type, const std::string &text) {
+	void sendPrivateMessage(std::shared_ptr<Player> speaker, TalkType type, const std::string &text) {
 		if (client) {
 			client->sendPrivateMessage(speaker, type, text);
 		}
@@ -1129,42 +1122,8 @@ public:
 			client->sendCreatureSquare(creature, color);
 		}
 	}
-	void sendCreatureChangeOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit) {
-		if (client) {
-			client->sendCreatureOutfit(creature, outfit);
-		}
-	}
-	void sendCreatureChangeVisible(std::shared_ptr<Creature> creature, bool visible) {
-		if (!client || !creature) {
-			return;
-		}
-
-		if (creature->getPlayer()) {
-			if (visible) {
-				client->sendCreatureOutfit(creature, creature->getCurrentOutfit());
-			} else {
-				static Outfit_t outfit;
-				client->sendCreatureOutfit(creature, outfit);
-			}
-		} else if (canSeeInvisibility()) {
-			client->sendCreatureOutfit(creature, creature->getCurrentOutfit());
-		} else {
-			auto tile = creature->getTile();
-			if (!tile) {
-				return;
-			}
-			int32_t stackpos = tile->getStackposOfCreature(static_self_cast<Player>(), creature);
-			if (stackpos == -1) {
-				return;
-			}
-
-			if (visible) {
-				client->sendAddCreature(creature, creature->getPosition(), stackpos, false);
-			} else {
-				client->sendRemoveTileThing(creature->getPosition(), stackpos);
-			}
-		}
-	}
+	void sendCreatureChangeOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit);
+	void sendCreatureChangeVisible(std::shared_ptr<Creature> creature, bool visible);
 	void sendCreatureLight(std::shared_ptr<Creature> creature) {
 		if (client) {
 			client->sendCreatureLight(creature);
@@ -1190,7 +1149,7 @@ public:
 			client->sendCreatureShield(creature);
 		}
 	}
-	void sendCreatureType(std::shared_ptr<Creature> creature, uint8_t creatureType) {
+	void sendCreatureType(std::shared_ptr<Creature> creature, CreatureType creatureType) {
 		if (client) {
 			client->sendCreatureType(creature, creatureType);
 		}
@@ -1239,6 +1198,8 @@ public:
 			client->sendCloseDepotSearch();
 		}
 	}
+
+	using ItemVector = std::vector<std::shared_ptr<Item>>;
 	void sendDepotSearchResultDetail(uint16_t itemId, uint8_t tier, uint32_t depotCount, const ItemVector &depotItems, uint32_t inboxCount, const ItemVector &inboxItems, uint32_t stashCount) const {
 		if (client) {
 			client->sendDepotSearchResultDetail(itemId, tier, depotCount, depotItems, inboxCount, inboxItems, stashCount);
@@ -1453,7 +1414,7 @@ public:
 			client->sendTextWindow(windowTextId, item, maxlen, canWrite);
 		}
 	}
-	void sendToChannel(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, uint16_t channelId) const {
+	void sendToChannel(std::shared_ptr<Creature> creature, TalkType type, const std::string &text, uint16_t channelId) const {
 		if (client) {
 			client->sendToChannel(creature, type, text, channelId);
 		}
@@ -1685,11 +1646,7 @@ public:
 			client->sendFightModes();
 		}
 	}
-	void sendNetworkMessage(const NetworkMessage &message) {
-		if (client) {
-			client->writeToOutputBuffer(message);
-		}
-	}
+	void sendNetworkMessage(const NetworkMessage &message);
 
 	void receivePing() {
 		lastPong = OTSYS_TIME();
@@ -1769,7 +1726,7 @@ public:
 	}
 
 	bool walkExhausted() {
-		if (hasCondition(CONDITION_PARALYZE)) {
+		if (hasCondition(ConditionType::Paralyze)) {
 			return lastWalking > OTSYS_TIME();
 		}
 
@@ -1867,13 +1824,9 @@ public:
 
 	void sendLootStats(std::shared_ptr<Item> item, uint8_t count);
 	void updateSupplyTracker(std::shared_ptr<Item> item);
-	void updateImpactTracker(CombatType_t type, int32_t amount) const;
+	void updateImpactTracker(CombatType combatType, int32_t amount) const;
 
-	void updateInputAnalyzer(CombatType_t type, int32_t amount, std::string target) {
-		if (client) {
-			client->sendUpdateInputAnalyzer(type, amount, target);
-		}
-	}
+	void updateInputAnalyzer(CombatType combatType, int32_t amount, std::string target);
 
 	void createLeaderTeamFinder(NetworkMessage &msg) {
 		if (client) {
@@ -1923,13 +1876,13 @@ public:
 	int32_t getUnlockedRunesBit() {
 		return UnlockedRunesBit;
 	}
-	void setImmuneCleanse(ConditionType_t conditiontype) {
-		cleanseCondition.first = conditiontype;
+	void setImmuneCleanse(ConditionType conditionType) {
+		cleanseCondition.first = conditionType;
 		cleanseCondition.second = OTSYS_TIME() + 10000;
 	}
-	bool isImmuneCleanse(ConditionType_t conditiontype) {
+	bool isImmuneCleanse(ConditionType conditionType) {
 		uint64_t timenow = OTSYS_TIME();
-		if ((cleanseCondition.first == conditiontype)
+		if ((cleanseCondition.first == conditionType)
 			&& (timenow <= cleanseCondition.second)) {
 			return true;
 		}
@@ -2344,7 +2297,7 @@ public:
 	);
 
 	bool saySpell(
-		SpeakClasses type,
+		TalkType type,
 		const std::string &text,
 		bool ghostMode,
 		Spectators* spectatorsPtr = nullptr,
@@ -2723,7 +2676,7 @@ private:
 	uint64_t experience = 0;
 	uint64_t manaSpent = 0;
 	uint64_t lastAttack = 0;
-	std::unordered_map<uint8_t, uint64_t> lastConditionTime;
+	std::unordered_map<ConditionType, uint64_t> lastConditionTime;
 	uint64_t lastAggressiveAction = 0;
 	uint64_t bankBalance = 0;
 	uint64_t lastQuestlogUpdate = 0;
@@ -2773,9 +2726,9 @@ private:
 	uint32_t capacity = 40000;
 	uint32_t bonusCapacity = 0;
 
-	std::bitset<CombatType_t::COMBAT_COUNT> m_damageImmunities;
-	std::bitset<ConditionType_t::CONDITION_COUNT> m_conditionImmunities;
-	std::bitset<ConditionType_t::CONDITION_COUNT> m_conditionSuppressions;
+	std::bitset<combatToValue(CombatType::Count)> m_damageImmunities;
+	std::bitset<conditionToValue(ConditionType::Count)> m_conditionImmunities;
+	std::bitset<conditionToValue(ConditionType::Count)> m_conditionSuppressions;
 
 	uint32_t level = 1;
 	uint32_t magLevel = 0;
@@ -2848,9 +2801,9 @@ private:
 	uint32_t charmPoints = 0;
 	int32_t UsedRunesBit = 0;
 	int32_t UnlockedRunesBit = 0;
-	std::pair<ConditionType_t, uint64_t> cleanseCondition = { CONDITION_NONE, 0 };
+	std::pair<ConditionType, uint64_t> cleanseCondition = { ConditionType::None, 0 };
 
-	std::pair<ConditionType_t, uint64_t> m_fearCondition = { CONDITION_NONE, 0 };
+	std::pair<ConditionType, uint64_t> m_fearCondition = { ConditionType::None, 0 };
 
 	uint8_t soul = 0;
 	uint8_t levelPercent = 0;
@@ -2859,10 +2812,10 @@ private:
 
 	PlayerSex_t sex = PLAYERSEX_FEMALE;
 	OperatingSystem_t operatingSystem = CLIENTOS_NONE;
-	BlockType_t lastAttackBlockType = BLOCK_NONE;
+	BlockType lastAttackBlockType = BlockType::None;
 	TradeState_t tradeState = TRADE_NONE;
 	FightMode_t fightMode = FIGHTMODE_ATTACK;
-	Faction_t faction = FACTION_PLAYER;
+	Faction_t faction = Faction_t::Player;
 	QuickLootFilter_t quickLootFilter;
 	VipStatus_t statusVipList = VIPSTATUS_ONLINE;
 	PlayerPronoun_t pronoun = PLAYERPRONOUN_THEY;
@@ -2896,7 +2849,7 @@ private:
 	// [ConcoctionID] = time
 	std::map<uint16_t, uint16_t> activeConcoctions;
 
-	int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
+	int32_t specializedMagicLevel[combatToValue(CombatType::Count)] = { 0 };
 	int32_t cleavePercent = 0;
 	std::map<uint8_t, int32_t> perfectShot;
 	int32_t magicShieldCapacityFlat = 0;
@@ -2945,8 +2898,7 @@ private:
 		return skillLoss ? static_cast<uint64_t>(experience * getLostPercent()) : 0;
 	}
 
-	bool isSuppress(ConditionType_t conditionType, bool attackerPlayer) const override;
-	void addConditionSuppression(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addConditions);
+	bool isSuppress(ConditionType conditionType, bool attackerPlayer) const override;
 
 	uint16_t getLookCorpse() const override;
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
@@ -2992,11 +2944,11 @@ private:
 
 	std::shared_ptr<Item> getQuiverAmmoOfType(const ItemType &it) const;
 
-	std::array<double_t, COMBAT_COUNT> getFinalDamageReduction() const;
-	void calculateDamageReductionFromEquipedItems(std::array<double_t, COMBAT_COUNT> &combatReductionMap) const;
-	void calculateDamageReductionFromItem(std::array<double_t, COMBAT_COUNT> &combatReductionMap, std::shared_ptr<Item> item) const;
-	void updateDamageReductionFromItemImbuement(std::array<double_t, COMBAT_COUNT> &combatReductionMap, std::shared_ptr<Item> item, uint16_t combatTypeIndex) const;
-	void updateDamageReductionFromItemAbility(std::array<double_t, COMBAT_COUNT> &combatReductionMap, std::shared_ptr<Item> item, uint16_t combatTypeIndex) const;
+	std::array<double_t, combatToValue(CombatType::Count)> getFinalDamageReduction() const;
+	void calculateDamageReductionFromEquipedItems(std::array<double_t, combatToValue(CombatType::Count)> &combatReductionMap) const;
+	void calculateDamageReductionFromItem(std::array<double_t, combatToValue(CombatType::Count)> &combatReductionMap, std::shared_ptr<Item> item) const;
+	void updateDamageReductionFromItemImbuement(std::array<double_t, combatToValue(CombatType::Count)> &combatReductionMap, std::shared_ptr<Item> item, uint16_t combatTypeIndex) const;
+	void updateDamageReductionFromItemAbility(std::array<double_t, combatToValue(CombatType::Count)> &combatReductionMap, std::shared_ptr<Item> item, uint16_t combatTypeIndex) const;
 	double_t calculateDamageReduction(double_t currentTotal, int16_t resistance) const;
 
 	void removeEmptyRewards();

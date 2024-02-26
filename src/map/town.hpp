@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "game/movement/position.hpp"
+import game_movement;
 
 class Town {
 public:

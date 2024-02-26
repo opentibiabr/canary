@@ -9,10 +9,14 @@
 
 #include "pch.hpp"
 
+#include "server/network/protocol/protocolgame.hpp"
+
 #include "creatures/players/management/ban.hpp"
 #include "core.hpp"
+#include "lua/creature/creatureevent.hpp"
 #include "declarations.hpp"
 #include "game/game.hpp"
+#include "creatures/players/highscore_category.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "io/iobestiary.hpp"
@@ -28,7 +32,6 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/grouping/familiars.hpp"
-#include "server/network/protocol/protocolgame.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "creatures/combat/spells.hpp"
 #include "utils/tools.hpp"
@@ -39,7 +42,10 @@
 #include "enums/account_group_type.hpp"
 #include "enums/account_coins.hpp"
 
-#include "creatures/players/highscore_category.hpp"
+import enum_modules;
+import outfit_type;
+import light_info;
+import game_movement;
 
 /*
  * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.hpp" file
@@ -128,7 +134,7 @@ namespace {
 
 					if (imbuementInfo.duration > 0) {
 						auto imbuement = *imbuementInfo.imbuement;
-						if (imbuement.combatType != COMBAT_NONE) {
+						if (imbuement.combatType != CombatType::None) {
 							msg.addByte(static_cast<uint32_t>(imbuement.elementDamage));
 							msg.addByte(getCipbiaElement(imbuement.combatType));
 							imbueDmg = true;
@@ -153,7 +159,7 @@ namespace {
 	 * @param[in] player The pointer to the player whose equipped items are considered.
 	 */
 	void calculateAbsorbValues(std::shared_ptr<Player> player, NetworkMessage &msg, uint8_t &combats) {
-		alignas(16) uint16_t damageModifiers[COMBAT_COUNT] = { 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000 };
+		alignas(16) uint16_t damageModifiers[combatToValue(CombatType::Count)] = { 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000 };
 
 		for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
 			if (!player->isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
@@ -170,7 +176,7 @@ namespace {
 				continue;
 			}
 
-			for (uint16_t i = 0; i < COMBAT_COUNT; ++i) {
+			for (uint16_t i = 0; i < combatToValue(CombatType::Count); ++i) {
 				damageModifiers[i] *= (std::floor(100. - itemType.abilities->absorbPercent[i]) / 100.);
 			}
 
@@ -187,30 +193,40 @@ namespace {
 					}
 
 					auto imbuement = *imbuementInfo.imbuement;
-					for (uint16_t combat = 0; combat < COMBAT_COUNT; ++combat) {
-						const int16_t &imbuementAbsorbPercent = imbuement.absorbPercent[combat];
+					for (const auto &combat : getAllCombatTypes()) {
+						if (combat >= CombatType::AgonyDamage) {
+							continue;
+						}
+
+						const auto &combatValue = combatToValue(combat);
+						auto imbuementAbsorbPercent = imbuement.absorbPercent[combatValue];
 						if (imbuementAbsorbPercent == 0) {
 							continue;
 						}
 
-						g_logger().debug("[cyclopedia damage reduction] imbued item {}, reduced {} percent, for element {}", item->getName(), imbuementAbsorbPercent, combatTypeToName(indexToCombatType(combat)));
+						g_logger().debug("[cyclopedia damage reduction] imbued item {}, reduced {} percent, for element {}", item->getName(), imbuementAbsorbPercent, combatTypeToName(combat));
 
-						damageModifiers[combat] *= (std::floor(100. - imbuementAbsorbPercent) / 100.);
+						damageModifiers[combatValue] *= (std::floor(100. - imbuementAbsorbPercent) / 100.);
 					}
 				}
 			}
 		}
 
-		for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-			damageModifiers[i] -= 100 * player->getAbsorbPercent(indexToCombatType(i));
-			if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM, __FUNCTION__)) {
-				damageModifiers[i] -= player->wheel()->getResistance(indexToCombatType(i));
+		for (const auto &combat : getAllCombatTypes()) {
+			if (combat >= CombatType::AgonyDamage) {
+				continue;
 			}
 
-			if (damageModifiers[i] != 10000) {
-				int16_t clientModifier = std::clamp(10000 - static_cast<int16_t>(damageModifiers[i]), -10000, 10000);
-				g_logger().debug("[{}] CombatType: {}, Damage Modifier: {}, Resulting Client Modifier: {}", __FUNCTION__, i, damageModifiers[i], clientModifier);
-				msg.addByte(getCipbiaElement(indexToCombatType(i)));
+			const auto &combatValue = combatToValue(combat);
+			damageModifiers[combatValue] -= 100 * player->getAbsorbPercent(combat);
+			if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM, __FUNCTION__)) {
+				damageModifiers[combatValue] -= player->wheel()->getResistance(combat);
+			}
+
+			if (damageModifiers[combatValue] != 10000) {
+				int16_t clientModifier = std::clamp(10000 - static_cast<int16_t>(damageModifiers[combatValue]), -10000, 10000);
+				g_logger().debug("[{}] CombatType: {}, Damage Modifier: {}, Resulting Client Modifier: {}", __FUNCTION__, combat, damageModifiers[combatValue], clientModifier);
+				msg.addByte(getCipbiaElement(combat));
 				msg.add<int16_t>(clientModifier);
 				++combats;
 			}
@@ -683,7 +699,7 @@ void ProtocolGame::logout(bool displayEffect, bool forced) {
 			return;
 		}
 
-		if (tile && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && player->hasCondition(CONDITION_INFIGHT)) {
+		if (tile && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && player->hasCondition(ConditionType::InFight)) {
 			player->sendCancelMessage(RETURNVALUE_YOUMAYNOTLOGOUTDURINGAFIGHT);
 			return;
 		}
@@ -1020,43 +1036,43 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			parseAutoWalk(msg);
 			break;
 		case 0x65:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_NORTH);
+			addGameTask(&Game::playerMove, player->getID(), Direction::North);
 			break;
 		case 0x66:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_EAST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::East);
 			break;
 		case 0x67:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_SOUTH);
+			addGameTask(&Game::playerMove, player->getID(), Direction::South);
 			break;
 		case 0x68:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_WEST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::West);
 			break;
 		case 0x69:
 			addGameTask(&Game::playerStopAutoWalk, player->getID());
 			break;
 		case 0x6A:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_NORTHEAST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::NorthEast);
 			break;
 		case 0x6B:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_SOUTHEAST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::SouthEast);
 			break;
 		case 0x6C:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_SOUTHWEST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::SouthWest);
 			break;
 		case 0x6D:
-			addGameTask(&Game::playerMove, player->getID(), DIRECTION_NORTHWEST);
+			addGameTask(&Game::playerMove, player->getID(), Direction::NorthWest);
 			break;
 		case 0x6F:
-			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), DIRECTION_NORTH);
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::North);
 			break;
 		case 0x70:
-			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), DIRECTION_EAST);
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::East);
 			break;
 		case 0x71:
-			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), DIRECTION_SOUTH);
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::South);
 			break;
 		case 0x72:
-			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), DIRECTION_WEST);
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, "Game::playerTurn", &Game::playerTurn, player->getID(), Direction::West);
 			break;
 		case 0x73:
 			parseTeleport(msg);
@@ -1599,28 +1615,28 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 		uint8_t rawdir = msg.getPreviousByte();
 		switch (rawdir) {
 			case 1:
-				path.push_front(DIRECTION_EAST);
+				path.push_front(Direction::East);
 				break;
 			case 2:
-				path.push_front(DIRECTION_NORTHEAST);
+				path.push_front(Direction::NorthEast);
 				break;
 			case 3:
-				path.push_front(DIRECTION_NORTH);
+				path.push_front(Direction::North);
 				break;
 			case 4:
-				path.push_front(DIRECTION_NORTHWEST);
+				path.push_front(Direction::NorthWest);
 				break;
 			case 5:
-				path.push_front(DIRECTION_WEST);
+				path.push_front(Direction::West);
 				break;
 			case 6:
-				path.push_front(DIRECTION_SOUTHWEST);
+				path.push_front(Direction::SouthWest);
 				break;
 			case 7:
-				path.push_front(DIRECTION_SOUTH);
+				path.push_front(Direction::South);
 				break;
 			case 8:
-				path.push_front(DIRECTION_SOUTHEAST);
+				path.push_front(Direction::SouthEast);
 				break;
 			default:
 				break;
@@ -1679,7 +1695,9 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 			newOutfit.lookMountBody = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookMountLegs = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookMountFeet = std::min<uint8_t>(132, msg.getByte());
-			uint8_t direction = std::max<uint8_t>(DIRECTION_NORTH, std::min<uint8_t>(DIRECTION_WEST, msg.getByte()));
+			const auto &northValue = directionToValue(Direction::North);
+			const auto &westValue = directionToValue(Direction::West);
+			uint8_t direction = std::max<uint8_t>(northValue, std::min<uint8_t>(westValue, msg.getByte()));
 			uint8_t podiumVisible = msg.getByte();
 			g_game().playerSetShowOffSocket(player->getID(), newOutfit, pos, stackpos, itemId, podiumVisible, direction);
 		}
@@ -1851,16 +1869,16 @@ void ProtocolGame::parseSay(NetworkMessage &msg) {
 	std::string receiver;
 	uint16_t channelId;
 
-	SpeakClasses type = static_cast<SpeakClasses>(msg.getByte());
+	TalkType type = static_cast<TalkType>(msg.getByte());
 	switch (type) {
-		case TALKTYPE_PRIVATE_TO:
-		case TALKTYPE_PRIVATE_RED_TO:
+		case TalkType::PrivateTo:
+		case TalkType::PrivateRedTo:
 			receiver = msg.getString();
 			channelId = 0;
 			break;
 
-		case TALKTYPE_CHANNEL_Y:
-		case TALKTYPE_CHANNEL_R1:
+		case TalkType::ChannelY:
+		case TalkType::ChannelR1:
 			channelId = msg.get<uint16_t>();
 			break;
 
@@ -3285,19 +3303,19 @@ void ProtocolGame::sendCreatureSkull(std::shared_ptr<Creature> creature) {
 	NetworkMessage msg;
 	msg.addByte(0x90);
 	msg.add<uint32_t>(creature->getID());
-	msg.addByte(player->getSkullClient(creature));
+	msg.addByte(skullToValue(player->getSkullClient(creature)));
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCreatureType(std::shared_ptr<Creature> creature, uint8_t creatureType) {
+void ProtocolGame::sendCreatureType(std::shared_ptr<Creature> creature, CreatureType creatureType) {
 	NetworkMessage msg;
 	msg.addByte(0x95);
 	msg.add<uint32_t>(creature->getID());
-	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
-		creatureType = CREATURETYPE_SUMMON_PLAYER;
+	if (creatureType == CreatureType::SummonOthers) {
+		creatureType = CreatureType::SummonPlayer;
 	}
-	msg.addByte(creatureType); // type or any byte idk
-	if (!oldProtocol && creatureType == CREATURETYPE_SUMMON_PLAYER) {
+	msg.addByte(creatureTypeToValue(creatureType)); // type or any byte idk
+	if (!oldProtocol && creatureType == CreatureType::SummonPlayer) {
 		std::shared_ptr<Creature> master = creature->getMaster();
 		if (master) {
 			msg.add<uint32_t>(master->getID());
@@ -3403,7 +3421,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	msg.addByte(player->getSoul());
 	msg.add<uint16_t>(player->getStaminaMinutes());
 
-	std::shared_ptr<Condition> condition = player->getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
+	std::shared_ptr<Condition> condition = player->getCondition(ConditionType::Regeneration, ConditionId_t::Default);
 	msg.add<uint16_t>(condition ? condition->getTicks() / 1000 : 0x00);
 	msg.add<uint16_t>(player->getOfflineTrainingTime() / 60 / 1000);
 	msg.add<uint16_t>(player->getSpeed());
@@ -3434,11 +3452,15 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	auto bufferPosition = msg.getBufferPosition();
 	msg.skipBytes(1);
 	uint8_t total = 0;
-	for (size_t i = 0; i < COMBAT_COUNT; i++) {
-		auto specializedMagicLevel = player->getSpecializedMagicLevel(indexToCombatType(i));
+	for (auto combat : magic_enum::enum_values<CombatType>()) {
+		if (combat >= CombatType::AgonyDamage) {
+			continue;
+		}
+
+		auto specializedMagicLevel = player->getSpecializedMagicLevel(combat);
 		if (specializedMagicLevel > 0) {
 			++total;
-			msg.addByte(getCipbiaElement(indexToCombatType(i)));
+			msg.addByte(getCipbiaElement(combat));
 			msg.add<uint16_t>(specializedMagicLevel);
 		}
 	}
@@ -3480,7 +3502,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	}
 
 	// Damage reflection (12.70)
-	msg.add<uint16_t>(static_cast<uint16_t>(player->getReflectFlat(COMBAT_PHYSICALDAMAGE)));
+	msg.add<uint16_t>(static_cast<uint16_t>(player->getReflectFlat(CombatType::PhysicalDamage)));
 
 	uint8_t haveBlesses = 0;
 	uint8_t blessings = 8;
@@ -3513,12 +3535,12 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 			int32_t attackSkill = player->getSkillLevel(SKILL_DISTANCE);
 			float attackFactor = player->getAttackFactor();
 			int32_t maxDamage = static_cast<int32_t>(Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, attackValue, attackFactor, true) * player->getVocation()->distDamageMultiplier);
-			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
+			if (it.abilities && it.abilities->elementType != CombatType::None) {
 				maxDamage += static_cast<int32_t>(Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, attackValue - weapon->getAttack() + it.abilities->elementDamage, attackFactor, true) * player->getVocation()->distDamageMultiplier);
 			}
 			msg.add<uint16_t>(maxDamage >> 1);
 			msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL);
-			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
+			if (it.abilities && it.abilities->elementType != CombatType::None) {
 				if (attackValue) {
 					msg.addByte(static_cast<uint32_t>(it.abilities->elementDamage) * 100 / attackValue);
 				} else {
@@ -3533,12 +3555,12 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 			int32_t attackSkill = player->getWeaponSkill(weapon);
 			float attackFactor = player->getAttackFactor();
 			int32_t maxDamage = static_cast<int32_t>(Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, attackValue, attackFactor, true) * player->getVocation()->meleeDamageMultiplier);
-			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
+			if (it.abilities && it.abilities->elementType != CombatType::None) {
 				maxDamage += static_cast<int32_t>(Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, it.abilities->elementDamage, attackFactor, true) * player->getVocation()->meleeDamageMultiplier);
 			}
 			msg.add<uint16_t>(maxDamage >> 1);
 			msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL);
-			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
+			if (it.abilities && it.abilities->elementType != CombatType::None) {
 				if (attackValue) {
 					msg.addByte(static_cast<uint32_t>(it.abilities->elementDamage) * 100 / attackValue);
 				} else {
@@ -4230,7 +4252,7 @@ void ProtocolGame::sendChannel(uint16_t channelId, const std::string &channelNam
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel) {
+void ProtocolGame::sendChannelMessage(const std::string &author, const std::string &text, TalkType type, uint16_t channel) {
 	NetworkMessage msg;
 	msg.addByte(0xAA);
 	msg.add<uint32_t>(0x00);
@@ -5362,7 +5384,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		}
 		msg.addString(ss.str(), "ProtocolGame::sendMarketDetail - ss.str()");
 	} else if (!it.isRanged() && it.attack != 0) {
-		if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
+		if (it.abilities && it.abilities->elementType != CombatType::None && it.abilities->elementDamage != 0) {
 			std::ostringstream ss;
 			ss << it.attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
 			msg.addString(ss.str(), "ProtocolGame::sendMarketDetail - ss.str()");
@@ -5414,8 +5436,14 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		std::ostringstream ss;
 		bool separator = false;
 
-		for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-			if (it.abilities->absorbPercent[i] == 0) {
+		for (const auto &combat : getAllCombatTypes()) {
+			if (combat >= CombatType::AgonyDamage) {
+				continue;
+			}
+
+			const auto &combatValue = combatToValue(combat);
+			auto abilities = it.abilities->absorbPercent[combatValue];
+			if (abilities == 0) {
 				continue;
 			}
 
@@ -5425,7 +5453,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 				separator = true;
 			}
 
-			ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
+			ss << fmt::format("{} {:+}%", getCombatName(combat), abilities);
 		}
 
 		msg.addString(ss.str(), "ProtocolGame::sendMarketDetail - ss.str()");
@@ -5492,15 +5520,21 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		}
 
 		// Version 12.72 (Specialized magic level modifier)
-		for (uint8_t i = 1; i <= 11; i++) {
-			if (it.abilities->specializedMagicLevel[i]) {
+		for (const auto &combat : getAllCombatTypes()) {
+			if (combat >= CombatType::AgonyDamage) {
+				continue;
+			}
+
+			const auto &combatValue = combatToValue(combat);
+			auto abilities = it.abilities->specializedMagicLevel[combatValue];
+			if (abilities) {
 				if (separator) {
 					ss << ", ";
 				} else {
 					separator = true;
 				}
-				std::string combatName = getCombatName(indexToCombatType(i));
-				ss << std::showpos << combatName << std::noshowpos << "magic level +" << it.abilities->specializedMagicLevel[i];
+				std::string combatName = getCombatName(combat);
+				ss << std::showpos << combatName << std::noshowpos << "magic level +" << abilities;
 			}
 		}
 
@@ -5582,9 +5616,9 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 				msg.add<uint16_t>(0x00);
 			}
 
-			if (it.abilities->reflectFlat[COMBAT_PHYSICALDAMAGE] > 0) {
+			if (it.abilities->reflectFlat[combatToValue(CombatType::PhysicalDamage)] > 0) {
 				string.clear();
-				string << it.abilities->reflectFlat[COMBAT_PHYSICALDAMAGE];
+				string << it.abilities->reflectFlat[combatToValue(CombatType::PhysicalDamage)];
 				msg.addString(string.str(), "ProtocolGame::sendMarketDetail - string.str()");
 			} else {
 				msg.add<uint16_t>(0x00);
@@ -5734,12 +5768,12 @@ void ProtocolGame::sendCreatureTurn(std::shared_ptr<Creature> creature, uint32_t
 	msg.addByte(stackPos);
 	msg.add<uint16_t>(0x63);
 	msg.add<uint32_t>(creature->getID());
-	msg.addByte(creature->getDirection());
+	msg.addByte(directionToValue(creature->getDirection()));
 	msg.addByte(player->canWalkthroughEx(creature) ? 0x00 : 0x01);
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, const Position* pos /* = nullptr*/) {
+void ProtocolGame::sendCreatureSay(std::shared_ptr<Creature> creature, TalkType type, const std::string &text, const Position* pos /* = nullptr*/) {
 	NetworkMessage msg;
 	msg.addByte(0xAA);
 
@@ -5759,8 +5793,8 @@ void ProtocolGame::sendCreatureSay(std::shared_ptr<Creature> creature, SpeakClas
 		msg.add<uint16_t>(0x00);
 	}
 
-	if (oldProtocol && type >= TALKTYPE_MONSTER_LAST_OLDPROTOCOL && type != TALKTYPE_CHANNEL_R2) {
-		msg.addByte(TALKTYPE_MONSTER_SAY);
+	if (oldProtocol && type >= TalkType::LastOldProtocol && type != TalkType::ChannelR2) {
+		msg.addByte(TalkType::MonsterSay);
 	} else {
 		msg.addByte(type);
 	}
@@ -5775,7 +5809,7 @@ void ProtocolGame::sendCreatureSay(std::shared_ptr<Creature> creature, SpeakClas
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendToChannel(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, uint16_t channelId) {
+void ProtocolGame::sendToChannel(std::shared_ptr<Creature> creature, TalkType type, const std::string &text, uint16_t channelId) {
 	NetworkMessage msg;
 	msg.addByte(0xAA);
 
@@ -5786,12 +5820,12 @@ void ProtocolGame::sendToChannel(std::shared_ptr<Creature> creature, SpeakClasse
 		if (!oldProtocol && statementId != 0) {
 			msg.addByte(0x00); // Show (Traded)
 		}
-	} else if (type == TALKTYPE_CHANNEL_R2) {
+	} else if (type == TalkType::ChannelR2) {
 		msg.add<uint32_t>(0x00);
 		if (!oldProtocol && statementId != 0) {
 			msg.addByte(0x00); // Show (Traded)
 		}
-		type = TALKTYPE_CHANNEL_R1;
+		type = TalkType::ChannelR1;
 	} else {
 		msg.addString(creature->getName(), "ProtocolGame::sendToChannel - creature->getName()");
 		if (!oldProtocol && statementId != 0) {
@@ -5806,8 +5840,8 @@ void ProtocolGame::sendToChannel(std::shared_ptr<Creature> creature, SpeakClasse
 		}
 	}
 
-	if (oldProtocol && type >= TALKTYPE_MONSTER_LAST_OLDPROTOCOL && type != TALKTYPE_CHANNEL_R2) {
-		msg.addByte(TALKTYPE_CHANNEL_O);
+	if (oldProtocol && type >= TalkType::LastOldProtocol && type != TalkType::ChannelR2) {
+		msg.addByte(TalkType::ChannelO);
 	} else {
 		msg.addByte(type);
 	}
@@ -5817,7 +5851,7 @@ void ProtocolGame::sendToChannel(std::shared_ptr<Creature> creature, SpeakClasse
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendPrivateMessage(std::shared_ptr<Player> speaker, SpeakClasses type, const std::string &text) {
+void ProtocolGame::sendPrivateMessage(std::shared_ptr<Player> speaker, TalkType type, const std::string &text) {
 	NetworkMessage msg;
 	msg.addByte(0xAA);
 	static uint32_t statementId = 0;
@@ -5835,8 +5869,8 @@ void ProtocolGame::sendPrivateMessage(std::shared_ptr<Player> speaker, SpeakClas
 		}
 	}
 
-	if (oldProtocol && type >= TALKTYPE_MONSTER_LAST_OLDPROTOCOL && type != TALKTYPE_CHANNEL_R2) {
-		msg.addByte(TALKTYPE_PRIVATE_TO);
+	if (oldProtocol && type >= TalkType::LastOldProtocol && type != TalkType::ChannelR2) {
+		msg.addByte(TalkType::PrivateTo);
 	} else {
 		msg.addByte(type);
 	}
@@ -5865,7 +5899,7 @@ void ProtocolGame::sendCancelWalk() {
 	if (player) {
 		NetworkMessage msg;
 		msg.addByte(0xB5);
-		msg.addByte(player->getDirection());
+		msg.addByte(directionToValue(player->getDirection()));
 		writeToOutputBuffer(msg);
 	}
 }
@@ -6050,7 +6084,7 @@ void ProtocolGame::sendPartyCreatureSkull(std::shared_ptr<Creature> target) {
 	NetworkMessage msg;
 	msg.addByte(0x90);
 	msg.add<uint32_t>(cid);
-	msg.addByte(player->getSkullClient(target));
+	msg.addByte(skullToValue(player->getSkullClient(target)));
 	writeToOutputBuffer(msg);
 }
 
@@ -7151,7 +7185,7 @@ void ProtocolGame::sendModalWindow(const ModalWindow &modalWindow) {
 
 ////////////// Add common messages
 void ProtocolGame::AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> creature, bool known, uint32_t remove) {
-	CreatureType_t creatureType = creature->getType();
+	auto creatureType = creature->getType();
 	std::shared_ptr<Player> otherPlayer = creature->getPlayer();
 
 	if (known) {
@@ -7162,12 +7196,12 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> cr
 		msg.add<uint32_t>(remove);
 		msg.add<uint32_t>(creature->getID());
 		if (!oldProtocol && creature->isHealthHidden()) {
-			msg.addByte(CREATURETYPE_HIDDEN);
+			msg.addByte(creatureTypeToValue(CreatureType::Hidden));
 		} else {
-			msg.addByte(creatureType);
+			msg.addByte(creatureTypeToValue(creatureType));
 		}
 
-		if (!oldProtocol && creatureType == CREATURETYPE_SUMMON_PLAYER) {
+		if (!oldProtocol && creatureType == CreatureType::SummonPlayer) {
 			if (std::shared_ptr<Creature> master = creature->getMaster()) {
 				msg.add<uint32_t>(master->getID());
 			} else {
@@ -7188,7 +7222,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> cr
 		msg.addByte(std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100));
 	}
 
-	msg.addByte(creature->getDirection());
+	msg.addByte(directionToValue(creature->getDirection()));
 
 	if (!creature->isInGhostMode() && !creature->isInvisible()) {
 		const Outfit_t &outfit = creature->getCurrentOutfit();
@@ -7212,28 +7246,28 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> cr
 
 	addCreatureIcon(msg, creature);
 
-	msg.addByte(player->getSkullClient(creature));
+	msg.addByte(skullToValue(player->getSkullClient(creature)));
 	msg.addByte(player->getPartyShield(otherPlayer));
 
 	if (!known) {
 		msg.addByte(player->getGuildEmblem(otherPlayer));
 	}
 
-	if (!oldProtocol && creatureType == CREATURETYPE_MONSTER) {
+	if (!oldProtocol && creatureType == CreatureType::Monster) {
 		if (std::shared_ptr<Creature> master = creature->getMaster()) {
 			if (std::shared_ptr<Player> masterPlayer = master->getPlayer()) {
-				creatureType = CREATURETYPE_SUMMON_PLAYER;
+				creatureType = CreatureType::SummonPlayer;
 			}
 		}
 	}
 
 	if (!oldProtocol && creature->isHealthHidden()) {
-		msg.addByte(CREATURETYPE_HIDDEN);
+		msg.addByte(creatureTypeToValue(CreatureType::Hidden));
 	} else {
-		msg.addByte(creatureType); // Type (for summons)
+		msg.addByte(creatureTypeToValue(creatureType)); // Type (for summons)
 	}
 
-	if (!oldProtocol && creatureType == CREATURETYPE_SUMMON_PLAYER) {
+	if (!oldProtocol && creatureType == CreatureType::SummonPlayer) {
 		if (std::shared_ptr<Creature> master = creature->getMaster()) {
 			msg.add<uint32_t>(master->getID());
 		} else {
@@ -7241,7 +7275,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> cr
 		}
 	}
 
-	if (!oldProtocol && creatureType == CREATURETYPE_PLAYER) {
+	if (!oldProtocol && creatureType == CreatureType::Player) {
 		if (std::shared_ptr<Player> otherCreature = creature->getPlayer()) {
 			msg.addByte(otherCreature->getVocation()->getClientId());
 		} else {
@@ -7250,7 +7284,8 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> cr
 	}
 
 	auto bubble = creature->getSpeechBubble();
-	msg.addByte(oldProtocol && bubble == SPEECHBUBBLE_HIRELING ? SPEECHBUBBLE_NONE : bubble);
+	auto bubbleToSend = bubbleToValue(oldProtocol && bubble == SpeechBubble_t::Hireling ? SpeechBubble_t::None : bubble);
+	msg.addByte(bubbleToSend);
 	msg.addByte(0xFF); // MARK_UNMARKED
 	if (!oldProtocol) {
 		msg.addByte(0x00); // inspection type
@@ -7314,7 +7349,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 
 	msg.add<uint16_t>(player->getBaseSpeed());
 
-	std::shared_ptr<Condition> condition = player->getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
+	std::shared_ptr<Condition> condition = player->getCondition(ConditionType::Regeneration, ConditionId_t::Default);
 	msg.add<uint16_t>(condition ? condition->getTicks() / 1000 : 0x00);
 
 	msg.add<uint16_t>(player->getOfflineTrainingTime() / 60 / 1000);
@@ -7620,7 +7655,7 @@ void ProtocolGame::sendUpdateSupplyTracker(std::shared_ptr<Item> item) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendUpdateImpactTracker(CombatType_t type, int32_t amount) {
+void ProtocolGame::sendUpdateImpactTracker(CombatType type, int32_t amount) {
 	if (!player || oldProtocol) {
 		return;
 	}
@@ -7632,7 +7667,7 @@ void ProtocolGame::sendUpdateImpactTracker(CombatType_t type, int32_t amount) {
 
 	NetworkMessage msg;
 	msg.addByte(0xCC);
-	if (type == COMBAT_HEALING) {
+	if (type == CombatType::Healing) {
 		msg.addByte(ANALYZER_HEAL);
 		msg.add<uint32_t>(amount);
 	} else {
@@ -7643,7 +7678,7 @@ void ProtocolGame::sendUpdateImpactTracker(CombatType_t type, int32_t amount) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, std::string target) {
+void ProtocolGame::sendUpdateInputAnalyzer(CombatType type, int32_t amount, std::string target) {
 	if (!player || oldProtocol) {
 		return;
 	}
@@ -7950,7 +7985,7 @@ void ProtocolGame::sendInventoryImbuements(const std::map<Slots_t, std::shared_p
 			// Check if the player is in a protection zone
 			bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
 			// Check if the player is in fight mode
-			bool isInFightMode = player->hasCondition(CONDITION_INFIGHT);
+			bool isInFightMode = player->hasCondition(ConditionType::InFight);
 			// Get the category of the imbuement
 			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
 			// Parent of the imbued item

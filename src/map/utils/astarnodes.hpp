@@ -9,7 +9,8 @@
 
 #pragma once
 
-struct Position;
+import game_movement;
+
 class Creature;
 class Tile;
 

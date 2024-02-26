@@ -11,10 +11,11 @@
 
 #include "items/bed.hpp"
 #include "game/game.hpp"
-#include "game/movement/position.hpp"
 #include "io/iologindata.hpp"
 #include "lua/functions/map/house_functions.hpp"
 #include "map/house/house.hpp"
+
+import game_movement;
 
 int HouseFunctions::luaHouseCreate(lua_State* L) {
 	// House(id)

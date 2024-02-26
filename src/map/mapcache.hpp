@@ -12,10 +12,11 @@
 #include "items/items_definitions.hpp"
 #include "utils/qtreenode.hpp"
 
+import game_movement;
+
 class Map;
 class Tile;
 class Item;
-class Position;
 class FileStream;
 
 #pragma pack(1)
@@ -47,7 +48,7 @@ struct BasicItem {
 private:
 	void hash(size_t &h) const;
 
-	friend class BasicTile;
+	friend struct BasicTile;
 };
 
 struct BasicTile {

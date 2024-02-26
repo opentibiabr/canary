@@ -1,7 +1,7 @@
 local coconutShrimpBake = Action()
 
 function coconutShrimpBake.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if player:hasExhaustion("jean-pierre-foods") then
+	if player:hasExhaustion("special-foods-cooldown") then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to wait before using it again.")
 		return true
 	end
@@ -21,7 +21,7 @@ function coconutShrimpBake.onUse(player, item, fromPosition, target, toPosition,
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your underwater walking speed while wearing a " .. headItem:getName() .. " has increased for twenty-four hours.")
 	player:say("Yum.", TALKTYPE_MONSTER_SAY)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
-	player:setExhaustion("jean-pierre-foods", 10 * 60)
+	player:setExhaustion("special-foods-cooldown", 10 * 60)
 	player:setExhaustion("coconut-shrimp-bake", 24 * 60 * 60)
 	item:remove(1)
 	return true

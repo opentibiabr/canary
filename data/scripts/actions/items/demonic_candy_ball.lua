@@ -33,7 +33,7 @@ speedCondition:setParameter(CONDITION_PARAM_SPEED, 729)
 local demonicCandyBall = Action()
 
 function demonicCandyBall.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if player:hasExhaustion("jean-pierre-foods") then
+	if player:hasExhaustion("special-foods-cooldown") then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to wait before using it again.")
 		return true
 	end
@@ -58,7 +58,7 @@ function demonicCandyBall.onUse(player, item, fromPosition, target, toPosition, 
 
 	player:say("Smack.", TALKTYPE_MONSTER_SAY)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
-	player:setExhaustion("jean-pierre-foods", 10 * 60)
+	player:setExhaustion("special-foods-cooldown", 10 * 60)
 	item:remove(1)
 	return true
 end

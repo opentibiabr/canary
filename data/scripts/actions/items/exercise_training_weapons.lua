@@ -37,7 +37,7 @@ local exerciseWeaponsTable = {
 
 local dummies = Game.getDummies()
 
-function leaveExerciseTraining(playerId)
+local unction leaveExerciseTraining(playerId)
 	if _G.OnExerciseTraining[playerId] then
 		stopEvent(_G.OnExerciseTraining[playerId].event)
 		_G.OnExerciseTraining[playerId] = nil
@@ -50,7 +50,7 @@ function leaveExerciseTraining(playerId)
 	return
 end
 
-function exerciseTrainingEvent(playerId, tilePosition, weaponId, dummyId)
+local function exerciseTrainingEvent(playerId, tilePosition, weaponId, dummyId)
 	local player = Player(playerId)
 	if not player then
 		return leaveExerciseTraining(playerId)
@@ -95,12 +95,12 @@ function exerciseTrainingEvent(playerId, tilePosition, weaponId, dummyId)
 		return false
 	end
 
-	local isMagic = exerciseWeaponsTable[weaponId].skill == SKILL_MAGLEVEL
 	if not dummies[dummyId] then
 		return false
 	end
-	local rate = dummies[dummyId] / 100
 
+	local rate = dummies[dummyId] / 100
+	local isMagic = exerciseWeaponsTable[weaponId].skill == SKILL_MAGLEVEL
 	if isMagic then
 		player:addManaSpent(500 * rate)
 	else

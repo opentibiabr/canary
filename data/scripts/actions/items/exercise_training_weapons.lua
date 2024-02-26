@@ -37,7 +37,7 @@ local exerciseWeaponsTable = {
 
 local dummies = Game.getDummies()
 
-local unction leaveExerciseTraining(playerId)
+local function leaveExerciseTraining(playerId)
 	if _G.OnExerciseTraining[playerId] then
 		stopEvent(_G.OnExerciseTraining[playerId].event)
 		_G.OnExerciseTraining[playerId] = nil

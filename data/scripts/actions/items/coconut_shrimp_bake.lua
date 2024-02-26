@@ -7,13 +7,20 @@ function coconutShrimpBake.onUse(player, item, fromPosition, target, toPosition,
 	end
 
 	local headItem = player:getSlotItem(CONST_SLOT_HEAD)
-	if not headItem or (headItem.itemid ~= 5460 and headItem.itemid ~= 11585 and headItem.itemid ~= 13995) then
+	if not headItem then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You should only eat this dish when wearing a helmet of the deep or a depth galea and walking underwater.")
 		return true
 	end
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Underwater walking speed increased.")
+	local acceptableHelmets = { 5460, 11585, 13995 }
+	if not table.contains(acceptableHelmets, headItem:getId()) then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You should only eat this dish when wearing a helmet of the deep or a depth galea and walking underwater.")
+		return true
+	end
+
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your underwater walking speed while wearing a " .. headItem:getName() .. " has increased for twenty-four hours.")
 	player:say("Yum.", TALKTYPE_MONSTER_SAY)
-	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
+	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 	player:setExhaustion("jean-pierre-foods", 10 * 60)
 	player:setExhaustion("coconut-shrimp-bake", 24 * 60 * 60)
 	item:remove(1)

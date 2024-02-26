@@ -13,11 +13,11 @@ drowning:type("stepin")
 function drowning.onStepIn(creature, item, position, fromPosition)
 	local player = creature:getPlayer()
 	if not player then
-		return
+		return false
 	end
 
 	local headItem = player:getSlotItem(CONST_SLOT_HEAD)
-	if headItem and table.contains({ 5460, 11585, 13995 }, headItem.itemid) then
+	if headItem and table.contains({ 5460, 11585, 13995 }, headItem:getId()) then
 		if player:hasExhaustion("coconut-shrimp-bake") then
 			player:addCondition(conditionHaste)
 		end
@@ -40,7 +40,7 @@ drowning:type("stepout")
 function drowning.onStepOut(creature, item, position, fromPosition)
 	local player = creature:getPlayer()
 	if not player then
-		return
+		return false
 	end
 
 	player:removeCondition(CONDITION_DROWN)

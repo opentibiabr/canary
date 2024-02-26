@@ -6,8 +6,7 @@ function potOfBlackjack.onUse(player, item, fromPosition, target, toPosition, is
 		return true
 	end
 
-	local maxGulps = math.random(2, 4)
-	local remainingGulps = player:kv():get("pot-of-blackjack") or maxGulps
+	local remainingGulps = player:kv():get("pot-of-blackjack") or math.random(2, 4)
 
 	if remainingGulps > 0 then
 		remainingGulps = remainingGulps - 1

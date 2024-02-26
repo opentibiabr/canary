@@ -30,6 +30,11 @@ local speedCondition = Condition(CONDITION_HASTE)
 speedCondition:setParameter(CONDITION_PARAM_TICKS, 60 * 60 * 1000)
 speedCondition:setParameter(CONDITION_PARAM_SPEED, 729)
 
+local lightCondition = Condition(CONDITION_LIGHT)
+lightCondition:setParameter(CONDITION_PARAM_LIGHT_LEVEL, 15)
+lightCondition:setParameter(CONDITION_PARAM_LIGHT_COLOR, 154)
+lightCondition:setTicks(60 * 60 * 1000)
+
 local demonicCandyBall = Action()
 
 function demonicCandyBall.onUse(player, item, fromPosition, target, toPosition, isHotkey)
@@ -45,7 +50,7 @@ function demonicCandyBall.onUse(player, item, fromPosition, target, toPosition, 
 		player:addCondition(availableConditions[math.random(1, #availableConditions)])
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You feel stronger, but you have no idea what was increased.")
 	elseif randomConditionIndex == 2 then
-		doSetCreatureLight(cid, 15, 154, 60 * 60 * 1000)
+		player:addCondition(lightCondition)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You feel enlightened.")
 	elseif randomConditionIndex == 3 then
 		player:addCondition(condition_i)

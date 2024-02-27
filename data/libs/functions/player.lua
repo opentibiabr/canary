@@ -967,6 +967,10 @@ do
 	end
 end
 
+function Player:questKV(questName)
+	return self:kv():scoped("quests"):scoped(questName)
+end
+
 function Player:canGetReward(rewardId, questName)
 	if self:questKV(questName):get("completed") then
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The box is empty.")

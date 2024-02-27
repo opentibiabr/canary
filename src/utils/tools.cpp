@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -1202,6 +1202,15 @@ const char* getReturnMessage(ReturnValue value) {
 	switch (value) {
 		case RETURNVALUE_NOERROR:
 			return "No error.";
+
+		case RETURNVALUE_NOTBOUGHTINSTORE:
+			return "You cannot move this item into your store inbox as it was not bought in the store.";
+
+		case RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH:
+			return "This item cannot be moved there. You can only place gold, platinum and crystal coins in your gold pouch.";
+
+		case RETURNVALUE_ITEMCANNOTBEMOVEDTHERE:
+			return "This item cannot be moved there.";
 
 		case RETURNVALUE_REWARDCHESTISEMPTY:
 			return "The chest is currently empty. You did not take part in any battles in the last seven days or already claimed your reward.";

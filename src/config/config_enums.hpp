@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -251,6 +251,7 @@ enum ConfigKey_t : uint16_t {
 	STAMINA_TRAINER_DELAY,
 	STAMINA_TRAINER_GAIN,
 	STAMINA_TRAINER,
+	START_STREAK_LEVEL,
 	STASH_ITEMS,
 	STASH_MOVING,
 	STATUS_PORT,
@@ -284,6 +285,7 @@ enum ConfigKey_t : uint16_t {
 	TOGGLE_MAP_CUSTOM,
 	TOGGLE_MOUNT_IN_PZ,
 	TOGGLE_RECEIVE_REWARD,
+	TOGGLE_SAVE_ASYNC,
 	TOGGLE_SAVE_INTERVAL_CLEAN_MAP,
 	TOGGLE_SAVE_INTERVAL,
 	TOGGLE_SERVER_IS_RETRO,

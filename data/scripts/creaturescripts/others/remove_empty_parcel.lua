@@ -9,10 +9,10 @@ function removeEmptyParcelsEvent.onLogin(player)
 	end
 
 	if #emptyParcelsToRemove > 0 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, #emptyParcelsToRemove .. " empty parcels were removed from your store inbox!")
 		for _, parcel in pairs(emptyParcelsToRemove) do
 			parcel:remove()
 		end
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, #emptyParcelsToRemove .. " empty parcels were removed from your store inbox!")
 	end
 	return true
 end

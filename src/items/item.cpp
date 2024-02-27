@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -831,7 +831,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 				return ATTR_READ_ERROR;
 			}
 
-			g_logger().debug("Setting flag {} flags, to item id {}", flags, getID());
+			g_logger().trace("Setting obtain flag {} flags, to item id {}", flags, getID());
 			setAttribute(ItemAttribute_t::OBTAINCONTAINER, flags);
 			break;
 		}

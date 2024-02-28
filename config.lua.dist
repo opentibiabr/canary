@@ -419,10 +419,14 @@ multiplierSpeedOnFist = 5
 maxSpeedOnFist = 500
 disableLegacyRaids = false
 disableMonsterArmor = false
-combatChainDelay = 50
 minElementalResistance = -200
 maxElementalResistance = 200
 maxDamageReflection = 200
+
+-- Chain system
+toggleChainSystem = true
+combatChainDelay = 50
+combatChainTargets = 5
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes

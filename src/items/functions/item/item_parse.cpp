@@ -13,6 +13,7 @@
 #include "items/weapons/weapons.hpp"
 #include "lua/creature/movement.hpp"
 #include "utils/pugicast.hpp"
+#include "creatures/combat/combat.hpp"
 
 void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	// Parse all item attributes
@@ -1003,10 +1004,11 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 		} else {
 			weapon = std::make_shared<WeaponMelee>(&g_weapons().getScriptInterface());
 		}
+
 		weapon->weaponType = weaponType;
 		itemType.weaponType = weapon->weaponType;
 		weapon->configureWeapon(itemType);
-		g_logger().debug("Created weapon with type '{}'", getWeaponName(weaponType));
+		g_logger().trace("Created weapon with type '{}'", getWeaponName(weaponType));
 	}
 	uint32_t fromDamage = 0;
 	uint32_t toDamage = 0;
@@ -1063,11 +1065,11 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 		} else if (stringKey == "level") {
 			auto numberValue = subValueAttribute.as_uint();
 			if (moveevent) {
-				g_logger().debug("Added required moveevent level '{}'", numberValue);
+				g_logger().trace("Added required moveevent level '{}'", numberValue);
 				moveevent->setRequiredLevel(numberValue);
 				moveevent->setWieldInfo(WIELDINFO_LEVEL);
 			} else if (weapon) {
-				g_logger().debug("Added required weapon level '{}'", numberValue);
+				g_logger().trace("Added required weapon level '{}'", numberValue);
 				weapon->setRequiredLevel(numberValue);
 				weapon->setWieldInfo(WIELDINFO_LEVEL);
 			}
@@ -1162,14 +1164,23 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 			} else {
 				g_logger().warn("[{}] - wandtype '{}' does not exist", __FUNCTION__, elementName);
 			}
+		} else if (stringKey == "chain" && weapon) {
+			auto value = subValueAttribute.as_double();
+			weapon->setChainSkillValue(value);
+			g_logger().trace("Found chain skill value '{}' for weapon: {}", value, itemType.name);
 		}
 	}
 
 	if (weapon) {
 		if (auto weaponWand = dynamic_pointer_cast<WeaponWand>(weapon)) {
-			g_logger().debug("Added weapon damage from '{}', to '{}'", fromDamage, toDamage);
+			g_logger().trace("Added weapon damage from '{}', to '{}'", fromDamage, toDamage);
 			weaponWand->setMinChange(fromDamage);
 			weaponWand->setMaxChange(toDamage);
+		}
+
+		auto combat = weapon->getCombat();
+		if (combat) {
+			combat->setupChain(weapon);
 		}
 
 		if (weapon->getWieldInfo() != 0) {
@@ -1195,7 +1206,7 @@ void ItemParse::parseUnscriptedItems(const std::string_view &tmpStrValue, pugi::
 		auto tokens = split(scriptName.data(), ';');
 		for (const auto &token : tokens) {
 			if (token == "moveevent") {
-				g_logger().debug("Registering moveevent for item id '{}', name '{}'", itemType.id, itemType.name);
+				g_logger().trace("Registering moveevent for item id '{}', name '{}'", itemType.id, itemType.name);
 				MoveEvent_t eventType = MOVE_EVENT_NONE;
 				for (auto subAttributeNode : attributeNode.children()) {
 					pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
@@ -1212,7 +1223,7 @@ void ItemParse::parseUnscriptedItems(const std::string_view &tmpStrValue, pugi::
 					if (stringKey == "eventtype") {
 						const auto &eventTypeName = asLowerCaseString(subValueAttribute.as_string());
 						eventType = getMoveEventType(eventTypeName);
-						g_logger().debug("Found event type '{}'", eventTypeName);
+						g_logger().trace("Found event type '{}'", eventTypeName);
 						break;
 					}
 				}
@@ -1226,7 +1237,7 @@ void ItemParse::parseUnscriptedItems(const std::string_view &tmpStrValue, pugi::
 				}
 			} else if (token == "weapon") {
 				WeaponType_t weaponType;
-				g_logger().debug("Registering weapon for item id '{}', name '{}'", itemType.id, itemType.name);
+				g_logger().trace("Registering weapon for item id '{}', name '{}'", itemType.id, itemType.name);
 				for (auto subAttributeNode : attributeNode.children()) {
 					pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
 					if (!subKeyAttribute) {
@@ -1241,7 +1252,7 @@ void ItemParse::parseUnscriptedItems(const std::string_view &tmpStrValue, pugi::
 					auto stringKey = asLowerCaseString(subKeyAttribute.as_string());
 					if (stringKey == "weapontype") {
 						weaponType = getWeaponType(subValueAttribute.as_string());
-						g_logger().debug("Found weapon type '{}''", subValueAttribute.as_string());
+						g_logger().trace("Found weapon type '{}''", subValueAttribute.as_string());
 						break;
 					}
 				}

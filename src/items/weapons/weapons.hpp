@@ -184,6 +184,37 @@ public:
 		return m_fromXML;
 	}
 
+	void setChainSkillValue(double value) {
+		m_chainSkillValue = value;
+	}
+
+	double getChainSkillValue() const {
+		return m_chainSkillValue;
+	}
+
+	const WeaponType_t getWeaponType() const {
+		return weaponType;
+	}
+
+	const std::shared_ptr<Combat> getCombat() const {
+		if (!m_combat) {
+			g_logger().error("Weapon::getCombat() - m_combat is nullptr");
+			return nullptr;
+		}
+
+		return m_combat;
+	}
+
+	std::shared_ptr<Combat> getCombat() {
+		if (!m_combat) {
+			m_combat = std::make_shared<Combat>();
+		}
+
+		return m_combat;
+	}
+
+	bool calculateSkillFormula(const std::shared_ptr<Player> &player, int32_t &attackSkill, int32_t &attackValue, float &attackFactor, int16_t &elementAttack, CombatDamage &damage, bool useCharges = false) const;
+
 protected:
 	void internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> item, std::shared_ptr<Creature> target, int32_t damageModifier, int32_t cleavePercent = 0) const;
 	void internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> item, std::shared_ptr<Tile> tile) const;
@@ -207,6 +238,7 @@ private:
 	uint32_t healthPercent = 0;
 	uint32_t soul = 0;
 	uint32_t wieldInfo = WIELDINFO_NONE;
+	double m_chainSkillValue = 0.0;
 	uint8_t breakChance = 0;
 	bool enabled = true;
 	bool premium = false;
@@ -221,6 +253,7 @@ private:
 	CombatParams params;
 	WeaponType_t weaponType;
 	std::map<uint16_t, bool> vocWeaponMap;
+	std::shared_ptr<Combat> m_combat;
 
 	bool m_fromXML = false;
 
@@ -301,7 +334,7 @@ public:
 		return 0;
 	}
 	CombatType_t getElementType() const override {
-		return COMBAT_NONE;
+		return params.combatType;
 	}
 	virtual int16_t getElementDamageValue() const override;
 	void setMinChange(int32_t change) {

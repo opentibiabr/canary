@@ -188,8 +188,7 @@ void Items::loadFromProtobuf() {
 		iType.isWrapKit = object.flags().wrapkit();
 
 		if (!iType.name.empty()) {
-			nameToItems.insert({ asLowerCaseString(iType.name),
-								 iType.id });
+			nameToItems.insert({ asLowerCaseString(iType.name), iType.id });
 		}
 	}
 
@@ -273,8 +272,7 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 		}
 
 		itemType.name = xmlName;
-		nameToItems.insert({ asLowerCaseString(itemType.name),
-							 id });
+		nameToItems.insert({ asLowerCaseString(itemType.name), id });
 	}
 
 	itemType.loaded = true;

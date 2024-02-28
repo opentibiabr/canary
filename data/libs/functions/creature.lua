@@ -78,15 +78,11 @@ function Creature:setMonsterOutfit(monster, time)
 		return false
 	end
 
-	if self:isPlayer() and not (self:hasFlag(PlayerFlag_CanIllusionAll) or monsterType:isIllusionable()) then
-		return false
-	end
-
 	local condition = Condition(CONDITION_OUTFIT)
 	condition:setOutfit(monsterType:getOutfit())
 	condition:setTicks(time)
-	self:addCondition(condition)
 
+	self:addCondition(condition)
 	return true
 end
 

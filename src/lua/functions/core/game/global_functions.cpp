@@ -94,24 +94,6 @@ int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 	return 1;
 }
 
-int GlobalFunctions::luaDoSetCreatureLight(lua_State* L) {
-	// doSetCreatureLight(cid, lightLevel, lightColor, time)
-	std::shared_ptr<Creature> creature = getCreature(L, 1);
-	if (!creature) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
-		pushBoolean(L, false);
-		return 1;
-	}
-
-	uint16_t level = getNumber<uint16_t>(L, 2);
-	uint16_t color = getNumber<uint16_t>(L, 3);
-	uint32_t time = getNumber<uint32_t>(L, 4);
-	std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_LIGHT, time, level | (color << 8));
-	creature->addCondition(condition);
-	pushBoolean(L, true);
-	return 1;
-}
-
 int GlobalFunctions::luaIsValidUID(lua_State* L) {
 	// isValidUID(uid)
 	pushBoolean(L, getScriptEnv()->getThingByUID(getNumber<uint32_t>(L, -1)) != nullptr);

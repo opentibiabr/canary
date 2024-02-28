@@ -239,15 +239,11 @@ void Weapon::internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 
 		if (damage.secondary.type == COMBAT_NONE) {
 			damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
-			g_logger().info("[2] Weapon::internalUseWeapon - primary damage: {}", damage.primary.value);
 			damage.secondary.value = 0;
 		} else {
-			g_logger().info("[3] Weapon::internalUseWeapon - primary damage: {}", damage.primary.value);
 			damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
 			damage.secondary.value = (getElementDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
 		}
-
-		g_logger().info("[4] Weapon::internalUseWeapon - primary damage: {}", damage.primary.value);
 
 		if (params.chainCallback) {
 			m_combat->doCombatChain(player, target, params.aggressive);

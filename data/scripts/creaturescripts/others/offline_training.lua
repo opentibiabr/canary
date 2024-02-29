@@ -71,7 +71,7 @@ function offlineTraining.onLogin(player)
 
 	local updateSkills = false
 	if tries then
-		updateSkills = player:addOfflineTrainingTries(offlineTrainingSkill, tries)
+		updateSkills = player:addOfflineTrainingTries(offlineTrainingSkill, tries / configManager.getFloat(configKeys.RATE_OFFLINE_TRAINING_SPEED))
 	end
 
 	if updateSkills then

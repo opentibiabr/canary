@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -25,7 +25,6 @@ public:
 		lua_register(L, "doAreaCombatMana", GlobalFunctions::luaDoAreaCombatMana);
 		lua_register(L, "doChallengeCreature", GlobalFunctions::luaDoChallengeCreature);
 		lua_register(L, "doPlayerAddItem", GlobalFunctions::luaDoPlayerAddItem);
-		lua_register(L, "doSetCreatureLight", GlobalFunctions::luaDoSetCreatureLight);
 		lua_register(L, "doTargetCombatCondition", GlobalFunctions::luaDoTargetCombatCondition);
 		lua_register(L, "doTargetCombatDispel", GlobalFunctions::luaDoTargetCombatDispel);
 		lua_register(L, "doTargetCombatHealth", GlobalFunctions::luaDoTargetCombatHealth);
@@ -66,7 +65,6 @@ private:
 	static int luaDoAreaCombatMana(lua_State* L);
 	static int luaDoChallengeCreature(lua_State* L);
 	static int luaDoPlayerAddItem(lua_State* L);
-	static int luaDoSetCreatureLight(lua_State* L);
 	static int luaDoTargetCombatCondition(lua_State* L);
 	static int luaDoTargetCombatDispel(lua_State* L);
 	static int luaDoTargetCombatHealth(lua_State* L);

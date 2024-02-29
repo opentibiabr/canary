@@ -1631,20 +1631,22 @@ function GameStore.processHouseRelatedPurchase(player, offer)
 	local inbox = player:getStoreInbox()
 	if inbox then
 		for _, itemId in ipairs(itemIds) do
-			local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
-			if decoKit then
-				decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(itemId):getName() .. ">.")
-				decoKit:setCustomAttribute("unWrapId", itemId)
-				if isCaskItem(itemId) then
-					decoKit:setAttribute(ITEM_ATTRIBUTE_DATE, offer.count)
-				end
+			for i = 1, offer.count do
+				local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
+				if decoKit then
+					decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(itemId):getName() .. ">.")
+					decoKit:setCustomAttribute("unWrapId", itemId)
+					if isCaskItem(itemId) then
+						decoKit:setAttribute(ITEM_ATTRIBUTE_DATE, offer.count)
+					end
 
-				if offer.movable ~= true then
-					decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+					if offer.movable ~= true then
+						decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+					end
 				end
 			end
+			player:sendUpdateContainer(inbox)
 		end
-		player:sendUpdateContainer(inbox)
 	end
 end
 

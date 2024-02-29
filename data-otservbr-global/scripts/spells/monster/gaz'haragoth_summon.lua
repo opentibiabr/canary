@@ -21,7 +21,7 @@ function spell.onCastSpell(creature, var)
 			local monster
 			for i = 1, (GazVariables.MinionsNow - check) do
 				monster = Game.createMonster("Minion of Gaz'haragoth", creature:getPosition(), true, false)
-				creature:say("Minions! Follow my call!", TALKTYPE_ORANGE_1)
+				creature:say("Minions! Follow my call!", TALKTYPE_MONSTER_SAY)
 				if monster then
 					monster:setSummon(sum)
 				end
@@ -30,7 +30,7 @@ function spell.onCastSpell(creature, var)
 		else
 			if math.random(0, 100) < 25 then
 				local monster = Game.createMonster("Minion of Gaz'haragoth", creature:getPosition(), true, false)
-				creature:say("Minions! Follow my call!", TALKTYPE_ORANGE_1)
+				creature:say("Minions! Follow my call!", TALKTYPE_MONSTER_SAY)
 				if monster then
 					monster:setSummon(sum)
 				end

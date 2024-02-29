@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -20,6 +20,7 @@ class Item;
 class Spell;
 class Player;
 class MatrixArea;
+class Weapon;
 
 // for luascript callback
 class ValueCallback final : public CallBack {
@@ -59,7 +60,22 @@ protected:
 
 class ChainCallback final : public CallBack {
 public:
-	void onChainCombat(std::shared_ptr<Creature> creature, uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking) const;
+	ChainCallback() = default;
+	ChainCallback(uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking) :
+		m_chainDistance(chainDistance), m_chainTargets(chainTargets), m_backtracking(backtracking) { }
+
+	void getChainValues(const std::shared_ptr<Creature> &creature, uint8_t &maxTargets, uint8_t &chainDistance, bool &backtracking);
+	void setFromLua(bool fromLua) {
+		m_fromLua = fromLua;
+	}
+
+private:
+	void onChainCombat(std::shared_ptr<Creature> creature, uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking);
+
+	uint8_t m_chainTargets = 0;
+	uint8_t m_chainDistance = 0;
+	bool m_backtracking = false;
+	bool m_fromLua = false;
 };
 
 class ChainPickerCallback final : public CallBack {
@@ -293,6 +309,7 @@ public:
 	bool doCombat(std::shared_ptr<Creature> caster, const Position &pos) const;
 
 	bool setCallback(CallBackParam_t key);
+	void setChainCallback(uint8_t chainTargets, uint8_t chainDistance, bool backtracking);
 	CallBack* getCallback(CallBackParam_t key);
 
 	bool setParam(CombatParam_t param, uint32_t value);
@@ -327,6 +344,9 @@ public:
 	 * @param value The name of the rune spell to be set.
 	 */
 	void setRuneSpellName(const std::string &value);
+
+	void setupChain(const std::shared_ptr<Weapon> &weapon);
+	bool doCombatChain(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, bool aggressive) const;
 
 private:
 	static void doChainEffect(const Position &origin, const Position &pos, uint8_t effect);
@@ -375,8 +395,6 @@ private:
 	 */
 	int32_t getLevelFormula(std::shared_ptr<Player> player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const;
 	CombatDamage getCombatDamage(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) const;
-
-	bool doCombatChain(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, bool aggressive) const;
 
 	// configureable
 	CombatParams params;

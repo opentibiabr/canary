@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -139,6 +139,7 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, TELEPORT_PLAYER_TO_VOCATION_ROOM, "teleportPlayerToVocationRoom", true);
 	loadBoolConfig(L, TELEPORT_SUMMONS, "teleportSummons", false);
 	loadBoolConfig(L, TOGGLE_ATTACK_SPEED_ONFIST, "toggleAttackSpeedOnFist", false);
+	loadBoolConfig(L, TOGGLE_CHAIN_SYSTEM, "toggleChainSystem", true);
 	loadBoolConfig(L, TOGGLE_DOWNLOAD_MAP, "toggleDownloadMap", false);
 	loadBoolConfig(L, TOGGLE_FREE_QUEST, "toggleFreeQuest", true);
 	loadBoolConfig(L, TOGGLE_GOLD_POUCH_ALLOW_ANYTHING, "toggleGoldPouchAllowAnything", false);
@@ -149,6 +150,7 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, TOGGLE_IMBUEMENT_SHRINE_STORAGE, "toggleImbuementShrineStorage", true);
 	loadBoolConfig(L, TOGGLE_MOUNT_IN_PZ, "toggleMountInProtectionZone", false);
 	loadBoolConfig(L, TOGGLE_RECEIVE_REWARD, "toggleReceiveReward", false);
+	loadBoolConfig(L, TOGGLE_SAVE_ASYNC, "toggleSaveAsync", false);
 	loadBoolConfig(L, TOGGLE_SAVE_INTERVAL_CLEAN_MAP, "toggleSaveIntervalCleanMap", false);
 	loadBoolConfig(L, TOGGLE_SAVE_INTERVAL, "toggleSaveInterval", false);
 	loadBoolConfig(L, TOGGLE_SERVER_IS_RETRO, "toggleServerIsRetroPVP", false);
@@ -214,6 +216,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, BUY_BLESS_COMMAND_FEE, "buyBlessCommandFee", 0);
 	loadIntConfig(L, CHECK_EXPIRED_MARKET_OFFERS_EACH_MINUTES, "checkExpiredMarketOffersEachMinutes", 60);
 	loadIntConfig(L, COMBAT_CHAIN_DELAY, "combatChainDelay", 50);
+	loadIntConfig(L, COMBAT_CHAIN_TARGETS, "combatChainTargets", 5);
 	loadIntConfig(L, COMPRESSION_LEVEL, "packetCompressionLevel", 6);
 	loadIntConfig(L, CRITICALCHANCE, "criticalChance", 10);
 	loadIntConfig(L, DAY_KILLS_TO_RED, "dayKillsToRedSkull", 3);
@@ -310,6 +313,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, STAMINA_PZ_GAIN, "staminaPzGain", 1);
 	loadIntConfig(L, STAMINA_TRAINER_DELAY, "staminaTrainerDelay", 5);
 	loadIntConfig(L, STAMINA_TRAINER_GAIN, "staminaTrainerGain", 1);
+	loadIntConfig(L, START_STREAK_LEVEL, "startStreakLevel", 0);
 	loadIntConfig(L, STATUSQUERY_TIMEOUT, "statusTimeout", 5000);
 	loadIntConfig(L, STORE_COIN_PACKET, "coinPacketSize", 25);
 	loadIntConfig(L, STOREINBOX_MAXLIMIT, "storeInboxMaxLimit", 2000);

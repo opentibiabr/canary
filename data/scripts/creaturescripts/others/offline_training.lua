@@ -56,17 +56,22 @@ function offlineTraining.onLogin(player)
 	local promotion = vocation:getPromotion()
 	local topVocation = not promotion and vocation or promotion
 
-	local updateSkills = false
+	local tries = nil
 	if table.contains({ SKILL_CLUB, SKILL_SWORD, SKILL_AXE, SKILL_DISTANCE }, offlineTrainingSkill) then
 		local modifier = topVocation:getBaseAttackSpeed() / 1000
-		updateSkills = player:addOfflineTrainingTries(offlineTrainingSkill, (trainingTime / modifier) / (offlineTrainingSkill == SKILL_DISTANCE and 4 or 2))
+		tries = (trainingTime / modifier) / (offlineTrainingSkill == SKILL_DISTANCE and 4 or 2)
 	elseif offlineTrainingSkill == SKILL_MAGLEVEL then
-		local gainTicks = topVocation:getManaGainTicks() * 2
+		local gainTicks = topVocation:getManaGainTicks() / 1000
 		if gainTicks == 0 then
 			gainTicks = 1
 		end
 
-		updateSkills = player:addOfflineTrainingTries(SKILL_MAGLEVEL, trainingTime * (vocation:getManaGainAmount() / gainTicks))
+		tries = trainingTime * (vocation:getManaGainAmount() / gainTicks)
+	end
+
+	local updateSkills = false
+	if tries then
+		updateSkills = player:addOfflineTrainingTries(offlineTrainingSkill, tries)
 	end
 
 	if updateSkills then

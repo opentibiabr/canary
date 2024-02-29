@@ -11,7 +11,7 @@ function spell.onCastSpell(creature, var)
 		if spectator:isMonster() and spectator:getName() == "Necromantic Energy" then
 			spectator:getPosition():sendMagicEffect(CONST_ME_POFF)
 			spectator:remove()
-			creature:say(msg, TALKTYPE_ORANGE_1)
+			creature:say(msg, TALKTYPE_MONSTER_SAY)
 			creature:addHealth(65000)
 			creature:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			return true

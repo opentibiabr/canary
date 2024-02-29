@@ -983,7 +983,7 @@ function Player:canGetReward(rewardId, questName)
 		return false
 	end
 
-	local itemWeight = rewardItem:getWeight()
+	local itemWeight = rewardItem:getWeight() / 100
 	local baseMessage = "You have found a " .. rewardItem:getName()
 	local backpack = self:getSlotItem(CONST_SLOT_BACKPACK)
 	if not backpack or backpack:getEmptySlots(true) < 1 then

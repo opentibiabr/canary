@@ -6,7 +6,7 @@ function scrollOfAscension.onUse(player, item, fromPosition, target, toPosition,
 	end
 
 	local playerTile = Tile(player:getPosition())
-	if playerTile and playerTile:getGround() and isInArray(swimmingTiles, playerTile:getGround():getId()) then
+	if playerTile and playerTile:getGround() and table.contains(swimmingTiles, playerTile:getGround():getId()) then
 		player:say("The scroll could get wet, step out of the water first.", TALKTYPE_MONSTER_SAY)
 		return true
 	end

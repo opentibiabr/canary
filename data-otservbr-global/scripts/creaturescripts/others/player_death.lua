@@ -84,24 +84,52 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 
 	if byPlayer == 1 then
 		local targetGuild = player:getGuild()
-		targetGuild = targetGuild and targetGuild:getId() or 0
-		if targetGuild ~= 0 then
+		local targetGuildId = targetGuild and targetGuild:getId() or 0
+		if targetGuildId ~= 0 then
 			local killerGuild = killer:getGuild()
-			killerGuild = killerGuild and killerGuild:getId() or 0
-			if killerGuild ~= 0 and targetGuild ~= killerGuild and isInWar(player:getId(), killer.uid) then
+			local killerGuildId = killerGuild and killerGuild:getId() or 0
+			if killerGuildId ~= 0 and targetGuildId ~= killerGuildId and isInWar(player:getId(), killer:getId()) then
 				local warId = false
 				resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND \z
-					((`guild1` = " .. killerGuild .. " AND `guild2` = " .. targetGuild .. ") OR \z
-					(`guild1` = " .. targetGuild .. " AND `guild2` = " .. killerGuild .. "))")
-				if resultId ~= false then
+					((`guild1` = " .. killerGuildId .. " AND `guild2` = " .. targetGuildId .. ") OR \z
+					(`guild1` = " .. targetGuildId .. " AND `guild2` = " .. killerGuildId .. "))")
+				if resultId then
 					warId = Result.getNumber(resultId, "id")
 					Result.free(resultId)
 				end
 
-				if warId ~= false then
+				if warId then
+					local playerName = player:getName()
 					db.asyncQuery("INSERT INTO `guildwar_kills` (`killer`, `target`, `killerguild`, `targetguild`, `time`, `warid`) \z
-					VALUES (" .. db.escapeString(killerName) .. ", " .. db.escapeString(player:getName()) .. ", " .. killerGuild .. ", \z
-					" .. targetGuild .. ", " .. os.time() .. ", " .. warId .. ")")
+						VALUES (" .. db.escapeString(killerName) .. ", " .. db.escapeString(playerName) .. ", " .. killerGuildId .. ", \z
+						" .. targetGuildId .. ", " .. os.time() .. ", " .. warId .. ")")
+
+					resultId = db.storeQuery("SELECT `guild_wars`.`id`, `guild_wars`.`frags_limit`, (SELECT COUNT(1) FROM `guildwar_kills` \z
+						WHERE `guildwar_kills`.`warid` = `guild_wars`.`id` AND `guildwar_kills`.`killerguild` = `guild_wars`.`guild1`) AS guild1_kills, \z
+						(SELECT COUNT(1) FROM `guildwar_kills` WHERE `guildwar_kills`.`warid` = `guild_wars`.`id` AND `guildwar_kills`.`killerguild` = `guild_wars`.`guild2`) AS guild2_kills \z
+						FROM `guild_wars` WHERE (`guild1` = " .. killerGuildId .. " OR `guild2` = " .. killerGuildId .. ") AND `status` = 1 AND `id` = " .. warId)
+
+					if resultId then
+						local guild1_kills = Result.getNumber(resultId, "guild1_kills")
+						local guild2_kills = Result.getNumber(resultId, "guild2_kills")
+						local frags_limit = Result.getNumber(resultId, "frags_limit")
+						Result.free(resultId)
+
+						local members = killerGuild:getMembersOnline()
+						for i = 1, #members do
+							members[i]:sendChannelMessage(members[i], string.format("%s was killed by %s. The new score is: %s %d:%d %s (frags limit: %d)", playerName, killerName, targetGuild:getName(), guild1_kills, guild2_kills, killerGuild:getName(), frags_limit), TALKTYPE_CHANNEL_R1, CHANNEL_GUILD)
+						end
+
+						local enemyMembers = targetGuild:getMembersOnline()
+						for i = 1, #enemyMembers do
+							enemyMembers[i]:sendChannelMessage(enemyMembers[i], string.format("%s was killed by %s. The new score is: %s %d:%d %s (frags limit: %d)", playerName, killerName, targetGuild:getName(), guild1_kills, guild2_kills, killerGuild:getName(), frags_limit), TALKTYPE_CHANNEL_R1, CHANNEL_GUILD)
+						end
+
+						if guild1_kills >= frags_limit or guild2_kills >= frags_limit then
+							db.query("UPDATE `guild_wars` SET `status` = 4, `ended` = " .. os.time() .. " WHERE `status` = 1 AND `id` = " .. warId)
+							Game.broadcastMessage(string.format("%s has just won the war against %s.", killerGuild:getName(), targetGuild:getName()))
+						end
+					end
 				end
 			end
 		end

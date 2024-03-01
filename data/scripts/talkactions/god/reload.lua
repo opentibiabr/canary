@@ -59,7 +59,7 @@ function reload.onSay(player, words, param)
 
 	Game.reload(reloadType)
 
-	player:sendTextMessage(MESSAGE_ADMINISTRADOR, string.format("The server has been reloaded, %s and configurations are now being reloaded.", param:lower()))
+	player:sendTextMessage(MESSAGE_ADMINISTRATOR, string.format("The server has been reloaded, %s and configurations are now being reloaded.", param:lower()))
 	return true
 end
 

@@ -57,7 +57,7 @@ function reload.onSay(player, words, param)
 		logger.info("Reloaded {}", param:lower())
 
 		player:sendTextMessage(MESSAGE_LOOK, string.format("Reloaded %s.", param:lower()))
-		player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Server is saved. Now will reload configs!")
+		player:sendTextMessage(MESSAGE_ADMINISTRATOR, "Server is saved. Now will reload configs!")
 	elseif not reloadType then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Reload type not found.")
 		logger.warn("[reload.onSay] - Reload type '{}' not found", param)

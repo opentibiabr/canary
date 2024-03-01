@@ -18,31 +18,35 @@ local conditions = {
 local swimming = MoveEvent()
 
 function swimming.onStepIn(creature, item, position, fromPosition)
-	if not creature:isPlayer() then
+	local player = creature:getPlayer()
+	if not player then
 		return false
 	end
+
 	for i = 1, #conditions do
-		creature:removeCondition(conditions[i])
+		player:removeCondition(conditions[i])
 	end
-	creature:addCondition(condition)
+
+	player:addCondition(condition)
 	return true
 end
 
 swimming:type("stepin")
-swimming:id(629, 630, 631, 632, 633, 634)
+swimming:id(unpack(swimmingTiles))
 swimming:register()
 
 swimming = MoveEvent()
 
 function swimming.onStepOut(creature, item, position, fromPosition)
-	if not creature:isPlayer() then
+	local player = creature:getPlayer()
+	if not player then
 		return false
 	end
 
-	creature:removeCondition(CONDITION_OUTFIT)
+	player:removeCondition(CONDITION_OUTFIT)
 	return true
 end
 
 swimming:type("stepout")
-swimming:id(629, 630, 631, 632, 633, 634)
+swimming:id(unpack(swimmingTiles))
 swimming:register()

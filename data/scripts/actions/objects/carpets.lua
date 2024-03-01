@@ -171,8 +171,12 @@ function carpets.onUse(player, item, fp, target, toPosition, isHotkey)
 
 	local fromPosition = item:getPosition()
 	local tile = fromPosition:getTile()
-	local house = tile:getHouse()
+	if not tile then
+		player:sendTextMessage(MESSAGE_FAILURE, "You may use this only inside a house.")
+		return true
+	end
 
+	local house = tile:getHouse()
 	if not house then
 		player:sendTextMessage(MESSAGE_FAILURE, "You may use this only inside a house.")
 		return true

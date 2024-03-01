@@ -6,7 +6,7 @@ function CheckNamelock(player)
 
 	player:setMoveLocked(true)
 	player:teleportTo(player:getTown():getTemplePosition())
-	player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Your name has been locked for the following reason: " .. namelockReason .. ".")
+	player:sendTextMessage(MESSAGE_ADMINISTRATOR, "Your name has been locked for the following reason: " .. namelockReason .. ".")
 	player:openStore("extras")
 	addPlayerEvent(sendRequestPurchaseData, 50, player, 65002, GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_NAMECHANGE)
 	addPlayerEvent(CheckNamelock, 30000, player)

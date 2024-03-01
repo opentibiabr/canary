@@ -2190,7 +2190,7 @@ void Player::onThink(uint32_t interval) {
 		} else if (client && idleTime == 60000 * kickAfterMinutes) {
 			std::ostringstream ss;
 			ss << "There was no variation in your behaviour for " << kickAfterMinutes << " minutes. You will be disconnected in one minute if there is no change in your actions until then.";
-			client->sendTextMessage(TextMessage(MESSAGE_ADMINISTRADOR, ss.str()));
+			client->sendTextMessage(TextMessage(MESSAGE_ADMINISTRATOR, ss.str()));
 		}
 	}
 

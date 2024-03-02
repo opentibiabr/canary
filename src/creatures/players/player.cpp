@@ -2190,7 +2190,7 @@ void Player::onThink(uint32_t interval) {
 		} else if (client && idleTime == 60000 * kickAfterMinutes) {
 			std::ostringstream ss;
 			ss << "There was no variation in your behaviour for " << kickAfterMinutes << " minutes. You will be disconnected in one minute if there is no change in your actions until then.";
-			client->sendTextMessage(TextMessage(MESSAGE_ADMINISTRADOR, ss.str()));
+			client->sendTextMessage(TextMessage(MESSAGE_ADMINISTRATOR, ss.str()));
 		}
 	}
 
@@ -8073,4 +8073,14 @@ void Player::checkAndShowBlessingMessage() {
 	if (!blessOutput.str().empty()) {
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, blessOutput.str());
 	}
+}
+
+bool Player::canSpeakWithHireling(uint8_t speechbubble) {
+	const auto &playerTile = getTile();
+	const auto &house = playerTile ? playerTile->getHouse() : nullptr;
+	if (speechbubble == SPEECHBUBBLE_HIRELING && (!house || house->getHouseAccessLevel(static_self_cast<Player>()) == HOUSE_NOT_INVITED)) {
+		return false;
+	}
+
+	return true;
 }

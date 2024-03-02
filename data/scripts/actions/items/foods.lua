@@ -125,7 +125,7 @@ local foods = {
 local food = Action()
 
 function food.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local itemFood = setting[item.itemid]
+	local itemFood = foods[item.itemid]
 	if not itemFood then
 		return false
 	end

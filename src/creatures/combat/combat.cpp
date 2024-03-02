@@ -980,15 +980,13 @@ void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
 
 	switch (weaponType) {
 		case WEAPON_SWORD:
-			setCommonValues(1.1, MELEE_ATK_SWORD, CONST_ME_SLASH);
+			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_SWORD, __FUNCTION__), MELEE_ATK_SWORD, CONST_ME_SLASH);
 			break;
-
 		case WEAPON_CLUB:
-			setCommonValues(0.7, MELEE_ATK_CLUB, CONST_ME_BLACK_BLOOD);
+			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_CLUB, __FUNCTION__), MELEE_ATK_CLUB, CONST_ME_BLACK_BLOOD);
 			break;
-
 		case WEAPON_AXE:
-			setCommonValues(0.9, MELEE_ATK_AXE, CONST_ANI_WHIRLWINDAXE);
+			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_AXE, __FUNCTION__), MELEE_ATK_AXE, CONST_ANI_WHIRLWINDAXE);
 			break;
 	}
 

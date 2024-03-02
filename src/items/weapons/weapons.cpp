@@ -245,7 +245,7 @@ void Weapon::internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 			damage.secondary.value = (getElementDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
 		}
 
-		if (params.chainCallback) {
+		if (!g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM, __FUNCTION__) && params.chainCallback) {
 			m_combat->doCombatChain(player, target, params.aggressive);
 		} else {
 			Combat::doCombatHealth(player, target, damage, params);

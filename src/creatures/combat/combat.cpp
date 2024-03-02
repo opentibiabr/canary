@@ -941,6 +941,11 @@ void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
 		return;
 	}
 
+	const auto &weaponType = weapon->getWeaponType();
+	if (weaponType == WEAPON_NONE || weaponType == WEAPON_SHIELD || weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE) {
+		return;
+	}
+
 	// clang-format off
 	static std::list<uint32_t> areaList = {
 		0, 0, 0, 1, 0, 0, 0,
@@ -957,7 +962,6 @@ void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
 	setArea(area);
 	g_logger().trace("Weapon: {}, element type: {}", Item::items[weapon->getID()].name, weapon->params.combatType);
 	setParam(COMBAT_PARAM_TYPE, weapon->params.combatType);
-	const auto &weaponType = weapon->getWeaponType();
 	if (weaponType != WEAPON_WAND) {
 		setParam(COMBAT_PARAM_BLOCKARMOR, true);
 	}

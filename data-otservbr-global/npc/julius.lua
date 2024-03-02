@@ -163,7 +163,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 	elseif MsgContains(message, "aaah") then
-		if npcHandler:getTopic(playerId) == 4 and player:removeItem(9087, 1) then
+		if npcHandler:getTopic(playerId) == 4 and player:removeItem(8194, 1) then
 			npcHandler:say("Very well. I think I can trust you now. Sorry that I had to put you through this embarassing procedure, but I'm sure you understand. So, are you ready for your first real task?", npc, creature)
 			player:setStorageValue(BloodBrothers.Mission01, 4)
 			npcHandler:setTopic(playerId, 5)

@@ -5,5 +5,5 @@ function garlicBread.onUse(player, item, fromPosition, target, toPosition, isHot
 	return true
 end
 
-garlicBread:id(9087)
+garlicBread:id(8194)
 garlicBread:register()

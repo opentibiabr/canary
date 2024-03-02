@@ -524,7 +524,7 @@ bool Combat::setCallback(CallBackParam_t key) {
 
 void Combat::setChainCallback(uint8_t chainTargets, uint8_t chainDistance, bool backtracking) {
 	params.chainCallback = std::make_unique<ChainCallback>(chainTargets, chainDistance, backtracking);
-	g_logger().debug("ChainCallback created: {}, with targets: {}, distance: {}, backtracking: {}", params.chainCallback != nullptr, chainTargets, chainDistance, backtracking);
+	g_logger().trace("ChainCallback created: {}, with targets: {}, distance: {}, backtracking: {}", params.chainCallback != nullptr, chainTargets, chainDistance, backtracking);
 }
 
 CallBack* Combat::getCallback(CallBackParam_t key) {

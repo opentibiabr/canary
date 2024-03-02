@@ -209,7 +209,7 @@ function ModalWindow:sendToPlayer(player)
 	local playerId = player:getId()
 	ModalWindows[playerId] = ModalWindows[playerId] or {}
 	ModalWindows[playerId][self.modalWindowId] = self
-	player:registerEvent("modalWindowHelper")
+	player:registerEvent("ModalWindowHelper")
 	self.using = self.using + 1
 	return modalWindow:sendToPlayer(player)
 end

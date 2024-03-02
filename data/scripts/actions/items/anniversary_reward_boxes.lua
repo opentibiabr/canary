@@ -55,22 +55,24 @@ local config = {
 }
 
 local rewardBox = Action()
+
 function rewardBox.onUse(player, item, fromPosition, itemEx, toPosition)
 	local box = config[item:getId()]
-	if not box or not player then
+	if not box then
 		return false
 	end
-	for i = 1, #box do
-		if box[i] then
-			player:addItem(box[i].id, box[i].count)
-			player:getPosition():sendMagicEffect(CONST_ME_PRISMATIC_SPARK)
-		end
+
+	for _, reward in ipairs(box) do
+		player:addItem(reward.id, reward.count)
+		player:getPosition():sendMagicEffect(CONST_ME_PRISMATIC_SPARK)
 	end
+
 	item:remove()
 	return true
 end
 
-for index, value in pairs(config) do
+for index, _ in pairs(config) do
 	rewardBox:id(index)
 end
+
 rewardBox:register()

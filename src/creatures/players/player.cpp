@@ -8077,7 +8077,7 @@ void Player::checkAndShowBlessingMessage() {
 
 bool Player::canSpeakWithHireling(uint8_t speechbubble) {
 	const auto &playerTile = getTile();
-	const auto house = playerTile ? playerTile->getHouse() : nullptr;
+	const auto &house = playerTile ? playerTile->getHouse() : nullptr;
 	if (speechbubble == SPEECHBUBBLE_HIRELING && (!house || house->getHouseAccessLevel(static_self_cast<Player>()) == HOUSE_NOT_INVITED)) {
 		return false;
 	}

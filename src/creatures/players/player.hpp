@@ -2595,6 +2595,8 @@ public:
 
 	std::shared_ptr<Container> getStoreInbox() const;
 
+	bool canSpeakWithHireling(uint8_t speechbubble);
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;

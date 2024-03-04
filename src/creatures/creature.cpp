@@ -259,7 +259,7 @@ void Creature::addEventWalk(bool firstStep) {
 
 		self->eventWalk = g_dispatcher().scheduleEvent(
 			static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), self->getID()),
-			"Creature::checkCreatureWalk"
+			"Game::checkCreatureWalk"
 		);
 	});
 }

@@ -12,18 +12,18 @@ function startRaid.onSay(player, words, param)
 	if Raid.registry[param] then
 		local raid = Raid.registry[param]
 		if raid:tryStart(true) then
-			player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Raid " .. param .. " started.")
+			player:sendTextMessage(MESSAGE_ADMINISTRATOR, "Raid " .. param .. " started.")
 		else
-			player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Raid " .. param .. " could not be started.")
+			player:sendTextMessage(MESSAGE_ADMINISTRATOR, "Raid " .. param .. " could not be started.")
 		end
 		return true
 	end
 
 	local returnValue = Game.startRaid(param)
 	if returnValue ~= RETURNVALUE_NOERROR then
-		player:sendTextMessage(MESSAGE_ADMINISTRADOR, Game.getReturnMessage(returnValue))
+		player:sendTextMessage(MESSAGE_ADMINISTRATOR, Game.getReturnMessage(returnValue))
 	else
-		player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Raid started.")
+		player:sendTextMessage(MESSAGE_ADMINISTRATOR, "Raid started.")
 	end
 	return true
 end

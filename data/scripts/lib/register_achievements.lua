@@ -551,7 +551,7 @@ Functions:
 ACHIEVEMENT_FIRST = 1
 ACHIEVEMENT_LAST = #ACHIEVEMENTS
 
-for id, achievTable in ipairs(ACHIEVEMENTS) do
+for id, achievTable in pairs(ACHIEVEMENTS) do
 	if achievTable.name == nil then
 		logger.error(string.format("[Achievements registration] - Invalid achievement with no name, id: '%s'", id))
 		goto continue -- Skips to the next iteration using the 'continue' label
@@ -567,7 +567,7 @@ for id, achievTable in ipairs(ACHIEVEMENTS) do
 	local grade = achievTable.grade or 0
 	local points = achievTable.points or 0
 
-	logger.debug("[Achievements registration] - Registering achievement '{}' with id '{}'", achievTable.name, id)
+	logger.trace("[Achievements registration] - Registering achievement '{}' with id '{}'", achievTable.name, id)
 	Game.registerAchievement(id, achievTable.name, achievTable.description, secret, grade, points)
 
 	::continue:: -- Label used by 'goto' to continue the loop

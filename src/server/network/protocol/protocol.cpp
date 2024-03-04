@@ -50,7 +50,7 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 				protocol->parsePacket(msg);
 				protocolConnection->resumeWork();
 			}
-		} }, __FUNCTION__);
+		} }, "Protocol::sendRecvMessageCallback");
 
 	return true;
 }

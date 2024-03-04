@@ -15,5 +15,5 @@ function galthensTree.onUse(player, item, fromPosition, target, toPosition, isHo
 	return true
 end
 
-galthensTree:uid(14044)
+galthensTree:position(Position(32366, 32542, 8))
 galthensTree:register()

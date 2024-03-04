@@ -1938,6 +1938,9 @@
 	<npc centerx="33238" centery="32482" centerz="7" radius="1">
 		<npc name="Miraia" x="0" y="0" z="7" spawntime="60" />
 	</npc>
+	<npc centerx="32398" centery="32509" centerz="7" radius="1">
+		<npc name="An Idol" x="0" y="0" z="7" spawntime="60" />
+	</npc>
 	<npc centerx="32329" centery="32528" centerz="7" radius="1">
 		<npc name="Marina" x="0" y="0" z="7" spawntime="60" />
 	</npc>

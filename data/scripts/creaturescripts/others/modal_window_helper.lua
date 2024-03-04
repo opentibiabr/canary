@@ -1,4 +1,4 @@
-local creatureEvent = CreatureEvent("modalWindowHelper")
+local creatureEvent = CreatureEvent("ModalWindowHelper")
 
 function creatureEvent.onModalWindow(player, modalWindowId, buttonId, choiceId)
 	local playerId = player:getId()

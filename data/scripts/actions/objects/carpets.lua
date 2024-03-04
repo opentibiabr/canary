@@ -170,23 +170,35 @@ function carpets.onUse(player, item, fp, target, toPosition, isHotkey)
 	end
 
 	local fromPosition = item:getPosition()
-	local tile = Tile(fromPosition)
-	if not fromPosition:getTile():getHouse() then
+	local tile = fromPosition:getTile()
+	if not tile then
 		player:sendTextMessage(MESSAGE_FAILURE, "You may use this only inside a house.")
-	elseif tile:getItemCountById(item.itemid) == 1 then
+		return true
+	end
+
+	local house = tile:getHouse()
+	if not house then
+		player:sendTextMessage(MESSAGE_FAILURE, "You may use this only inside a house.")
+		return true
+	end
+
+	local itemCount = tile:getItemCountById(item.itemid)
+	if itemCount == 1 then
 		local topItem = tile:getTopTopItem()
 		if topItem and topItem:canReceiveAutoCarpet() then
 			item:remove()
 			return true
 		end
+
 		for k, v in pairs(carpetItems) do
-			if tile:getItemCountById(k) > 0 and k ~= item.itemid then
+			if k ~= item.itemid and tile:getItemCountById(k) > 0 then
 				player:sendCancelMessage(Game.getReturnMessage(RETURNVALUE_NOTPOSSIBLE))
 				return true
 			end
 		end
-		item:transform(carpet)
 	end
+
+	item:transform(carpet)
 	return true
 end
 

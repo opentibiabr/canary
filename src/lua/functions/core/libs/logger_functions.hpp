@@ -25,4 +25,5 @@ private:
 	static int luaLoggerError(lua_State* L);
 	static int luaLoggerInfo(lua_State* L);
 	static int luaLoggerWarn(lua_State* L);
+	static int luaLoggerTrace(lua_State* L);
 };

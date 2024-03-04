@@ -2334,9 +2334,9 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 				break;
 		}
 
-		if (g_configManager().getBoolean(SHOW_LOOTS_IN_BESTIARY, __FUNCTION__)){
+		if (g_configManager().getBoolean(SHOW_LOOTS_IN_BESTIARY, __FUNCTION__)) {
 			newmsg.add<uint16_t>(loot.id);
-		}else{
+		} else {
 			newmsg.add<uint16_t>(shouldAddItem == true ? loot.id : 0);
 		}
 		newmsg.addByte(difficult);

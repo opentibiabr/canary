@@ -1,19 +1,20 @@
 local idol = {
-	{ clickPos = { x = 32398, y = 32509, z = 7 }, destination = Position(32366, 32531, 8) },
+	{ clickPos = Position(32398, 32509, 7), destination = Position(32366, 32531, 8) },
 }
 
-local anidol = Action()
-function anidol.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+local anIdolStatue = Action()
+function anIdolStatue.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	for i = 1, #idol do
 		if item:getPosition() == Position(idol[i].clickPos) then
 			player:teleportTo(idol[i].destination)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			return true
+			break
 		end
 	end
+	return true
 end
 
 for j = 1, #idol do
-	anidol:position(idol[j].clickPos)
+	anIdolStatue:position(idol[j].clickPos)
 end
-anidol:register()
+anIdolStatue:register()

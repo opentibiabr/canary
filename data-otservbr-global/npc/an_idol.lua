@@ -47,21 +47,22 @@ end
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
-	local playerId = player:getId()
 
 	if not npcHandler:checkInteraction(npc, creature) then
 		return false
 	end
 
-	if MsgContains(message, "VBOX") or MsgContains(message, "XBOX") then
+	if MsgContains(message, "VBOX") then
 		npcHandler:say("J-T B^C J^BXT°", npc, creature)
 		player:teleportTo(Position(32366, 32531, 8), false)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	end
+
+	return true
 end
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
-npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
+npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, false)
 
 -- npcType registering the npcConfig table
 npcType:register(npcConfig)

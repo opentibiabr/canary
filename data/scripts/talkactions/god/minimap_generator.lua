@@ -45,11 +45,11 @@ local function minimapScan(cid, minX, maxX, minY, maxY, x, y, z, lastProgress)
 		return false
 	end
 
-	local startTimeCheck = os.mtime()
+	local startTimeCheck = os.time()
 	local teleportsDone = 0
 
 	while true do
-		if startTimeCheck + config.maxEventExecutionTime < os.mtime() then
+		if startTimeCheck + config.maxEventExecutionTime < startTimeCheck then
 			lastProgress = sendScanProgress(player, minX, maxX, minY, maxY, x, y, z, lastProgress)
 			addEvent(minimapScan, config.addEventDelay, cid, minX, maxX, minY, maxY, x, y, z, lastProgress)
 			break
@@ -60,7 +60,7 @@ local function minimapScan(cid, minX, maxX, minY, maxY, x, y, z, lastProgress)
 			x, y = minX, y + config.distanceBetweenPositionsY
 
 			if y > maxY then
-				player:sendTextMessage(MESSAGE_ADMINISTRATOR, "Scan finished: " .. os.time())
+				player:sendTextMessage(MESSAGE_ADMINISTRATOR, "Scan finished: " .. startTimeCheck)
 				break
 			end
 		end

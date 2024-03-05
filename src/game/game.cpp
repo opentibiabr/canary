@@ -5691,7 +5691,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 			return;
 		}
 
-		if (playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			outfit.lookMount = 0;
 		}
 

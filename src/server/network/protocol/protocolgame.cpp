@@ -1665,7 +1665,6 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 			}
 			uint8_t isMountRandomized = msg.getByte();
 			g_game().playerChangeOutfit(player->getID(), newOutfit, isMountRandomized);
-			player->toggleMount(newOutfit.lookMount != 0);
 		} else if (outfitType == 1) {
 			// This value probably has something to do with try outfit variable inside outfit window dialog
 			// if try outfit is set to 2 it expects uint32_t value after mounted and disable mounts from outfit window dialog

@@ -98,14 +98,6 @@ other open-source initiatives.
   <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" alt="JetBrains" width="150" />
 </a>
 
-## Project supported by [TNT Cloud](https://tntcloudbr.com.br/)
-
-Thanks for supporting our open-source project with your game cloud hosting services.
-
-<a href="https://tntcloudbr.com.br/">
-  <img src="https://tntcloudbr.com.br/logo.png" alt="TNT Cloud - Game Hosting" width="300" />
-</a>
-
 ### Partners
 
 [![Supported by OTServ Brasil](https://raw.githubusercontent.com/otbr/otserv-brasil/main/otbr.png)](https://forums.otserv.com.br)

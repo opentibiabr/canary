@@ -49,19 +49,17 @@ function reload.onSay(player, words, param)
 	logCommand(player, "/reload", param)
 
 	local reloadType = reloadTypes[param:lower()]
-	if reloadType then
-		saveServer()
-		SaveHirelings()
-
-		Game.reload(reloadType)
-		logger.info("Reloaded {}", param:lower())
-
-		player:sendTextMessage(MESSAGE_LOOK, string.format("Reloaded %s.", param:lower()))
-		player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Server is saved. Now will reload configs!")
-	elseif not reloadType then
+	if not reloadType then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Reload type not found.")
-		logger.warn("[reload.onSay] - Reload type '{}' not found", param)
+		return true
 	end
+
+	saveServer()
+	SaveHirelings()
+
+	Game.reload(reloadType)
+
+	player:sendTextMessage(MESSAGE_ADMINISTRATOR, string.format("The server has been reloaded, %s and configurations are now being reloaded.", param:lower()))
 	return true
 end
 

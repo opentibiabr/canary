@@ -25,7 +25,7 @@ function die.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		player:kv():remove("die-rolled-six")
 	end
 
-	item:transform(5792 + value)
+	item:transform(5791 + value)
 	return true
 end
 

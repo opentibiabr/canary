@@ -12,6 +12,16 @@ function die.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		player:say(player:getName() .. " rolled a " .. value .. ".", TALKTYPE_MONSTER_SAY, isInGhostMode, spectator, position)
 	end
 
+	if value == 6 then
+		player:kv():set("die-rolled-six", player:kv():get("die-rolled-six") + 1)
+
+		if player:kv():get("die-rolled-six") == 3 then
+			player:addAchievement("Number of the Beast")
+		end
+	else
+		player:kv():remove("die-rolled-six")
+	end
+
 	item:transform(5791 + value)
 	return true
 end

@@ -2334,10 +2334,10 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 				break;
 		}
 
-		newmsg.add<uint16_t>(shouldAddItem == true ? loot.id : 0);
+		newmsg.add<uint16_t>(g_configManager().getBoolean(SHOW_LOOTS_IN_BESTIARY, __FUNCTION__) || shouldAddItem == true ? loot.id : 0);
 		newmsg.addByte(difficult);
 		newmsg.addByte(0); // 1 if special event - 0 if regular loot (?)
-		if (shouldAddItem == true) {
+		if (g_configManager().getBoolean(SHOW_LOOTS_IN_BESTIARY, __FUNCTION__) || shouldAddItem == true) {
 			newmsg.addString(loot.name, "ProtocolGame::parseBestiarysendMonsterData - loot.name");
 			newmsg.addByte(loot.countmax > 0 ? 0x1 : 0x0);
 		}

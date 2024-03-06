@@ -14,10 +14,11 @@ function die.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		end
 	end
 
+	local rolledSixCount = player:kv():get("die-rolled-six") or 0
 	if value == 6 then
-		player:kv():set("die-rolled-six", player:kv():get("die-rolled-six") + 1)
+		player:kv():set("die-rolled-six", rolledSixCount + 1)
 
-		if player:kv():get("die-rolled-six") == 3 then
+		if rolledSixCount == 2 then
 			player:addAchievement("Number of the Beast")
 		end
 	else

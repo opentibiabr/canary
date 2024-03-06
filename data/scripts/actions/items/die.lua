@@ -14,8 +14,8 @@ function die.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		end
 	end
 
-	local rolledSixCount = player:kv():get("die-rolled-six") or 0
 	if value == 6 then
+		local rolledSixCount = player:kv():get("die-rolled-six") or 0
 		player:kv():set("die-rolled-six", rolledSixCount + 1)
 
 		if rolledSixCount == 2 then

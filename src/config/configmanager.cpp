@@ -128,6 +128,7 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, REPLACE_KICK_ON_LOGIN, "replaceKickOnLogin", true);
 	loadBoolConfig(L, REWARD_CHEST_COLLECT_ENABLED, "rewardChestCollectEnabled", true);
 	loadBoolConfig(L, SCRIPTS_CONSOLE_LOGS, "showScriptsLogInConsole", true);
+	loadBoolConfig(L, SHOW_LOOTS_IN_BESTIARY, "showLootsInBestiary", false);
 	loadBoolConfig(L, SKULLED_DEATH_LOSE_STORE_ITEM, "skulledDeathLoseStoreItem", false);
 	loadBoolConfig(L, SORT_LOOT_BY_CHANCE, "sortLootByChance", false);
 	loadBoolConfig(L, STAMINA_PZ, "staminaPz", false);

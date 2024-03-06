@@ -221,9 +221,10 @@ void Weapon::internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 		} else {
 			damage.origin = ORIGIN_MELEE;
 		}
+
 		damage.primary.type = params.combatType;
 		damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
-		g_logger().info("[1] Weapon::internalUseWeapon - primary damage: {}", damage.primary.value);
+		g_logger().debug("[1] Weapon::internalUseWeapon - primary damage: {}", damage.primary.value);
 		damage.secondary.type = getElementType();
 
 		// Cleave damage
@@ -245,11 +246,12 @@ void Weapon::internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 			damage.secondary.value = (getElementDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
 		}
 
-		if (params.chainCallback) {
+		if (g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM, __FUNCTION__) && params.chainCallback) {
 			m_combat->doCombatChain(player, target, params.aggressive);
 		} else {
 			Combat::doCombatHealth(player, target, damage, params);
 		}
+
 		g_logger().debug("Weapon::internalUseWeapon - cpp callback executed.");
 	}
 

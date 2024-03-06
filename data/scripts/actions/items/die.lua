@@ -6,7 +6,7 @@ function die.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local isInGhostMode = player:isInGhostMode()
 
 	if not isInGhostMode then
-		player:getPosition():sendMagicEffect(CONST_ME_CRAPS)
+		position:sendMagicEffect(CONST_ME_CRAPS)
 
 		local spectators = Game.getSpectators(position, false, true, 3, 3)
 		for _, spectator in ipairs(spectators) do
@@ -25,7 +25,7 @@ function die.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		player:kv():remove("die-rolled-six")
 	end
 
-	item:transform(5791 + value)
+	item:transform(5792 + value)
 	return true
 end
 

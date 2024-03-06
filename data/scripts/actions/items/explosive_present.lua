@@ -8,5 +8,5 @@ function explosivePresent.onUse(player, item, fromPosition, target, toPosition, 
 	return true
 end
 
-explosivePresent:id(3218)
+explosivePresent:id(906)
 explosivePresent:register()

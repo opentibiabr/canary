@@ -1165,9 +1165,14 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 				g_logger().warn("[{}] - wandtype '{}' does not exist", __FUNCTION__, elementName);
 			}
 		} else if (stringKey == "chain" && weapon) {
-			auto value = subValueAttribute.as_double();
-			weapon->setChainSkillValue(value);
-			g_logger().trace("Found chain skill value '{}' for weapon: {}", value, itemType.name);
+			if (auto value = subValueAttribute.as_double()) {
+				weapon->setChainSkillValue(value);
+				g_logger().trace("Found chain skill value '{}' for weapon: {}", value, itemType.name);
+			}
+			if (subValueAttribute.as_bool() == false) {
+				weapon->setDisabledChain();
+				g_logger().warn("Chain disabled for weapon: {}", itemType.name);
+			}
 		}
 	}
 

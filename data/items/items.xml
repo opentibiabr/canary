@@ -3113,7 +3113,6 @@
 	</item>
 	<item id="906" article="a" name="present">
 		<attribute key="primarytype" value="containers"/>
-		<attribute key="containersize" value="5"/>
 		<attribute key="weight" value="600"/>
 	</item>
 	<item id="907" article="a" name="shapeshifter ring">
@@ -48690,8 +48689,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item fromid="25632" toid="25634" article="a" name="loremaster doll">
 		<attribute key="primarytype" value="dolls and bears"/>
-		<attribute key="description" value="This doll possesses an infinite knowledge within. It was rewarded by 
-TibiaTome.com"/>
+		<attribute key="description" value="This doll possesses an infinite knowledge within. It was rewarded by TibiaTome.com"/>
 		<attribute key="weight" value="7700"/>
 	</item>
 	<item fromid="25635" toid="25640" article="a" name="rose arch">

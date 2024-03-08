@@ -28,7 +28,6 @@ function Player.getStorageValueTalkaction(self, param)
 		local storageName = tostring(split[2])
 		local storageValue = target:getStorageValueByName(storageName)
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. storageName .. " from player " .. split[1] .. " is: " .. storageValue .. ".")
-		return true
 	else
 		local storageValue = target:getStorageValue(storageKey)
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. storageKey .. " from player " .. split[1] .. " is: " .. storageValue .. ".")

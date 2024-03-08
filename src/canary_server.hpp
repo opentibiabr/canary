@@ -53,7 +53,6 @@ private:
 	std::atomic<LoaderStatus> loaderStatus = LoaderStatus::LOADING;
 
 	void logInfos();
-	static void toggleForceCloseButton();
 	static void badAllocationHandler();
 	static void shutdown();
 
@@ -67,4 +66,5 @@ private:
 	void loadMaps() const;
 	void setupHousesRent();
 	void modulesLoadHelper(bool loaded, std::string moduleName);
+	void saveServerAtClose();
 };

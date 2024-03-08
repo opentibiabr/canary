@@ -1186,4 +1186,8 @@ ChestUnique = {
 		itemId = 11810,
 		itemPos = { x = 33195, y = 31765, z = 1 },
 	},
+	[14042] = {
+		itemId = 2473,
+		itemPos = { x = 32099, y = 32198, z = 9 },
+	},
 }

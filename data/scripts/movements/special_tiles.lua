@@ -1,17 +1,15 @@
 local increasing = { [419] = 420, [431] = 430, [452] = 453, [563] = 564, [549] = 562, [10145] = 10146 }
 local decreasing = { [420] = 419, [430] = 431, [453] = 452, [564] = 563, [562] = 549, [10146] = 10145 }
 
--- onStepIn
 local tile = MoveEvent()
-tile:type("stepin")
 
 function tile.onStepIn(creature, item, position, fromPosition)
-	if not increasing[item.itemid] then
+	local player = creature:getPlayer()
+	if not player or player:isInGhostMode() then
 		return true
 	end
 
-	local player = creature:getPlayer()
-	if not player or player:isInGhostMode() then
+	if not increasing[item.itemid] then
 		return true
 	end
 
@@ -30,14 +28,19 @@ function tile.onStepIn(creature, item, position, fromPosition)
 		for _, direction in ipairs(DIRECTIONS_TABLE) do
 			local playerPosition = player:getPosition()
 			playerPosition:getNextPosition(direction)
+
 			local depotItem = playerPosition:getTile():getItemByType(ITEM_TYPE_DEPOT)
-			if depotItem ~= nil then
+			if depotItem then
 				local depotItems = 0
+
 				for id = 1, configManager.getNumber(configKeys.DEPOT_BOXES) do
 					depotItems = depotItems + player:getDepotChest(id, true):getItemHoldingCount()
 				end
-				player:sendTextMessage(MESSAGE_FAILURE, "Your depot contains " .. depotItems .. " item" .. (depotItems > 1 and "s." or ".") .. "\
-				Your supply stash contains " .. player:getStashCount() .. " item" .. (player:getStashCount() > 1 and "s." or "."))
+
+				local depotMessage = "Your depot contains " .. depotItems .. " item" .. (depotItems ~= 1 and "s." or ".")
+				local stashMessage = "Your supply stash contains " .. player:getStashCount() .. " item" .. (player:getStashCount() ~= 1 and "s." or ".")
+
+				player:sendTextMessage(MESSAGE_FAILURE, depotMessage .. "\n" .. stashMessage)
 				player:setSpecialContainersAvailable(true, true, true)
 				return true
 			end
@@ -57,18 +60,18 @@ for index, value in pairs(increasing) do
 	tile:id(index)
 end
 
+tile:type("stepin")
 tile:register()
 
 tile = MoveEvent()
-tile:type("stepout")
 
 function tile.onStepOut(creature, item, position, fromPosition)
-	if not decreasing[item.itemid] then
+	local player = creature:getPlayer()
+	if not player or player:isInGhostMode() then
 		return true
 	end
 
-	local player = creature:getPlayer()
-	if not player or player:isInGhostMode() then
+	if not decreasing[item.itemid] then
 		return true
 	end
 
@@ -81,4 +84,5 @@ for index, value in pairs(decreasing) do
 	tile:id(index)
 end
 
+tile:type("stepout")
 tile:register()

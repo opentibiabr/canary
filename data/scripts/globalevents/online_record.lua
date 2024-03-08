@@ -1,8 +1,8 @@
-local globalevent = GlobalEvent("Player Record")
+local onlineRecord = GlobalEvent("OnlineRecord")
 
-function globalevent.onRecord(current, old)
+function onlineRecord.onRecord(current, old)
 	addEvent(Game.broadcastMessage, 150, "New record: " .. current .. " players are logged in.", MESSAGE_LOGIN)
 	return true
 end
 
-globalevent:register()
+onlineRecord:register()

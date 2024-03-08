@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -285,7 +285,12 @@ void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses typ
 }
 
 void Monster::addFriend(const std::shared_ptr<Creature> &creature) {
-	assert(creature.get() != this);
+	if (creature == getMonster()) {
+		g_logger().error("[{}]: adding creature is same of monster", __FUNCTION__);
+		return;
+	}
+
+	assert(creature != getMonster());
 	friendList.try_emplace(creature->getID(), creature);
 }
 
@@ -297,7 +302,12 @@ void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
 }
 
 bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
-	assert(creature.get() != this);
+	if (creature == getMonster()) {
+		g_logger().error("[{}]: adding creature is same of monster", __FUNCTION__);
+		return false;
+	}
+
+	assert(creature != getMonster());
 
 	const auto &it = getTargetIterator(creature);
 	if (it != targetList.end()) {

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -24,6 +24,7 @@ void LoggerFunctions::init(lua_State* L) {
 	registerMethod(L, "logger", "warn", LoggerFunctions::luaLoggerWarn);
 	registerMethod(L, "logger", "error", LoggerFunctions::luaLoggerError);
 	registerMethod(L, "logger", "debug", LoggerFunctions::luaLoggerDebug);
+	registerMethod(L, "logger", "trace", LoggerFunctions::luaLoggerTrace);
 }
 
 int LoggerFunctions::luaSpdlogInfo(lua_State* L) {
@@ -102,6 +103,16 @@ int LoggerFunctions::luaLoggerDebug(lua_State* L) {
 	// logger.debug(text)
 	if (isString(L, 1)) {
 		g_logger().debug(getFormatedLoggerMessage(L));
+	} else {
+		reportErrorFunc("First parameter needs to be a string");
+	}
+	return 1;
+}
+
+int LoggerFunctions::luaLoggerTrace(lua_State* L) {
+	// logger.trace(text)
+	if (isString(L, 1)) {
+		g_logger().trace(getFormatedLoggerMessage(L));
 	} else {
 		reportErrorFunc("First parameter needs to be a string");
 	}

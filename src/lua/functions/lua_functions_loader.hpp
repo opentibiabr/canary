@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -183,6 +183,11 @@ public:
 	static int protectedCall(lua_State* L, int nargs, int nresults);
 
 	static ScriptEnvironment* getScriptEnv() {
+		if (scriptEnvIndex < 0 || scriptEnvIndex >= 16) {
+			g_logger().error("[{}]: scriptEnvIndex out of bounds!", __FUNCTION__);
+			return nullptr;
+		}
+
 		assert(scriptEnvIndex >= 0 && scriptEnvIndex < 16);
 		return scriptEnv + scriptEnvIndex;
 	}
@@ -192,6 +197,11 @@ public:
 	}
 
 	static void resetScriptEnv() {
+		if (scriptEnvIndex < 0) {
+			g_logger().error("[{}]: scriptEnvIndex out of bounds!", __FUNCTION__);
+			return;
+		}
+
 		assert(scriptEnvIndex >= 0);
 		scriptEnv[scriptEnvIndex--].resetEnv();
 	}

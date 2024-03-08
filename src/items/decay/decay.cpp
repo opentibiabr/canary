@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -10,8 +10,14 @@
 #include "pch.hpp"
 
 #include "items/decay/decay.hpp"
+
+#include "lib/di/container.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+
+Decay &Decay::getInstance() {
+	return inject<Decay>();
+}
 
 void Decay::startDecay(std::shared_ptr<Item> item) {
 	if (!item) {

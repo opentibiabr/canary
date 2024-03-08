@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -15,6 +15,7 @@
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
@@ -34,6 +35,9 @@
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "enums/object_category.hpp"
+#include "enums/account_errors.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_group_type.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -44,6 +48,7 @@ Player::Player(ProtocolGame_ptr p) :
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
 	client(std::move(p)) {
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
+	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
 }
 
 Player::~Player() {
@@ -2185,7 +2190,7 @@ void Player::onThink(uint32_t interval) {
 		} else if (client && idleTime == 60000 * kickAfterMinutes) {
 			std::ostringstream ss;
 			ss << "There was no variation in your behaviour for " << kickAfterMinutes << " minutes. You will be disconnected in one minute if there is no change in your actions until then.";
-			client->sendTextMessage(TextMessage(MESSAGE_ADMINISTRADOR, ss.str()));
+			client->sendTextMessage(TextMessage(MESSAGE_ADMINISTRATOR, ss.str()));
 		}
 	}
 
@@ -2664,6 +2669,11 @@ BlockType_t Player::blockHit(std::shared_ptr<Creature> attacker, CombatType_t co
 }
 
 void Player::death(std::shared_ptr<Creature> lastHitCreature) {
+	if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && isMounted()) {
+		dismount();
+		g_game().internalCreatureChangeOutfit(getPlayer(), defaultOutfit);
+	}
+
 	loginPosition = town->getTemplePosition();
 
 	g_game().sendSingleSoundEffect(static_self_cast<Player>()->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_DEATH : SoundEffect_t::HUMAN_MALE_DEATH, getPlayer());
@@ -3172,12 +3182,18 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 	ReturnValue ret = RETURNVALUE_NOERROR;
 
 	const int32_t &slotPosition = item->getSlotPosition();
-	if ((slotPosition & SLOTP_HEAD) || (slotPosition & SLOTP_NECKLACE) || (slotPosition & SLOTP_BACKPACK) || (slotPosition & SLOTP_ARMOR) || (slotPosition & SLOTP_LEGS) || (slotPosition & SLOTP_FEET) || (slotPosition & SLOTP_RING)) {
-		ret = RETURNVALUE_CANNOTBEDRESSED;
-	} else if (slotPosition & SLOTP_TWO_HAND) {
-		ret = RETURNVALUE_PUTTHISOBJECTINBOTHHANDS;
-	} else if ((slotPosition & SLOTP_RIGHT) || (slotPosition & SLOTP_LEFT)) {
-		ret = RETURNVALUE_CANNOTBEDRESSED;
+
+	bool allowPutItemsOnAmmoSlot = g_configManager().getBoolean(ENABLE_PLAYER_PUT_ITEM_IN_AMMO_SLOT, __FUNCTION__);
+	if (allowPutItemsOnAmmoSlot && index == CONST_SLOT_AMMO) {
+		ret = RETURNVALUE_NOERROR;
+	} else {
+		if ((slotPosition & SLOTP_HEAD) || (slotPosition & SLOTP_NECKLACE) || (slotPosition & SLOTP_BACKPACK) || (slotPosition & SLOTP_ARMOR) || (slotPosition & SLOTP_LEGS) || (slotPosition & SLOTP_FEET) || (slotPosition & SLOTP_RING)) {
+			ret = RETURNVALUE_CANNOTBEDRESSED;
+		} else if (slotPosition & SLOTP_TWO_HAND) {
+			ret = RETURNVALUE_PUTTHISOBJECTINBOTHHANDS;
+		} else if ((slotPosition & SLOTP_RIGHT) || (slotPosition & SLOTP_LEFT)) {
+			ret = RETURNVALUE_CANNOTBEDRESSED;
+		}
 	}
 
 	switch (index) {
@@ -3319,8 +3335,12 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 		}
 
 		case CONST_SLOT_AMMO: {
-			if ((slotPosition & SLOTP_AMMO)) {
+			if (allowPutItemsOnAmmoSlot) {
 				ret = RETURNVALUE_NOERROR;
+			} else {
+				if ((slotPosition & SLOTP_AMMO)) {
+					ret = RETURNVALUE_NOERROR;
+				}
 			}
 			break;
 		}
@@ -4109,16 +4129,11 @@ void Player::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<C
 	}
 
 	bool requireListUpdate = true;
-
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
 		std::shared_ptr<Item> i = (oldParent ? oldParent->getItem() : nullptr);
-
-		// Check if we owned the old container too, so we don't need to do anything,
-		// as the list was updated in postRemoveNotification
-		assert(i ? i->getContainer() != nullptr : true);
-
-		if (i) {
-			requireListUpdate = i->getContainer()->getHoldingPlayer() != getPlayer();
+		const auto &container = i ? i->getContainer() : nullptr;
+		if (container) {
+			requireListUpdate = container->getHoldingPlayer() != getPlayer();
 		} else {
 			requireListUpdate = oldParent != getPlayer();
 		}
@@ -4170,15 +4185,9 @@ void Player::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_pt
 
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
 		std::shared_ptr<Item> i = (newParent ? newParent->getItem() : nullptr);
-
-		// Check if we owned the old container too, so we don't need to do anything,
-		// as the list was updated in postRemoveNotification
-		assert(i ? i->getContainer() != nullptr : true);
-
-		if (i) {
-			if (auto container = i->getContainer()) {
-				requireListUpdate = container->getHoldingPlayer() != getPlayer();
-			}
+		const auto &container = i ? i->getContainer() : nullptr;
+		if (container) {
+			requireListUpdate = container->getHoldingPlayer() != getPlayer();
 		} else {
 			requireListUpdate = newParent != getPlayer();
 		}
@@ -5369,6 +5378,14 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 	return std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), std::max<uint16_t>(0, static_cast<uint16_t>(skillLevel)));
 }
 
+bool Player::isAccessPlayer() const {
+	return group->access;
+}
+
+bool Player::isPlayerGroup() const {
+	return group->id <= GROUP_TYPE_SENIORTUTOR;
+}
+
 bool Player::isPremium() const {
 	if (g_configManager().getBoolean(FREE_PREMIUM, __FUNCTION__) || hasFlag(PlayerFlags_t::IsAlwaysPremium)) {
 		return true;
@@ -5379,6 +5396,14 @@ bool Player::isPremium() const {
 	}
 
 	return account->getPremiumRemainingDays() > 0 || account->getPremiumLastDay() > getTimeNow();
+}
+
+uint32_t Player::getPremiumDays() const {
+	return account->getPremiumRemainingDays();
+}
+
+time_t Player::getPremiumLastDay() const {
+	return account->getPremiumLastDay();
 }
 
 void Player::setTibiaCoins(int32_t v) {
@@ -6096,6 +6121,12 @@ void Player::sendClosePrivate(uint16_t channelId) {
 
 	if (client) {
 		client->sendClosePrivate(channelId);
+	}
+}
+
+void Player::sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked) {
+	if (client) {
+		client->sendCyclopediaCharacterAchievements(secretsUnlocked, achievementsUnlocked);
 	}
 }
 
@@ -7023,6 +7054,11 @@ bool Player::saySpell(
 
 // Forge system
 void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint8_t tier, uint16_t secondItemId, bool success, bool reduceTierLoss, bool convergence, uint8_t bonus, uint8_t coreCount) {
+	if (getFreeBackpackSlots() == 0) {
+		sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+		return;
+	}
+
 	ForgeHistory history;
 	history.actionType = actionType;
 	history.tier = tier;
@@ -7261,6 +7297,11 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 }
 
 void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId, bool convergence) {
+	if (getFreeBackpackSlots() == 0) {
+		sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+		return;
+	}
+
 	ForgeHistory history;
 	history.actionType = actionType;
 	history.tier = tier;
@@ -7749,6 +7790,29 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 	return false;
 }
 
+// Account
+bool Player::setAccount(uint32_t accountId) {
+	if (account) {
+		g_logger().warn("Account was already set!");
+		return true;
+	}
+
+	account = std::make_shared<Account>(accountId);
+	return AccountErrors_t::Ok == enumFromValue<AccountErrors_t>(account->load());
+}
+
+uint8_t Player::getAccountType() const {
+	return account ? account->getAccountType() : AccountType::ACCOUNT_TYPE_NORMAL;
+}
+
+uint32_t Player::getAccountId() const {
+	return account ? account->getID() : 0;
+}
+
+std::shared_ptr<Account> Player::getAccount() const {
+	return account;
+}
+
 /*******************************************************************************
  * Hazard system
  ******************************************************************************/
@@ -7892,6 +7956,15 @@ const std::unique_ptr<PlayerWheel> &Player::wheel() const {
 	return m_wheelPlayer;
 }
 
+// Achievement interface
+std::unique_ptr<PlayerAchievement> &Player::achiev() {
+	return m_playerAchievement;
+}
+
+const std::unique_ptr<PlayerAchievement> &Player::achiev() const {
+	return m_playerAchievement;
+}
+
 void Player::sendLootMessage(const std::string &message) const {
 	auto party = getParty();
 	if (!party) {
@@ -8000,4 +8073,14 @@ void Player::checkAndShowBlessingMessage() {
 	if (!blessOutput.str().empty()) {
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, blessOutput.str());
 	}
+}
+
+bool Player::canSpeakWithHireling(uint8_t speechbubble) {
+	const auto &playerTile = getTile();
+	const auto &house = playerTile ? playerTile->getHouse() : nullptr;
+	if (speechbubble == SPEECHBUBBLE_HIRELING && (!house || house->getHouseAccessLevel(static_self_cast<Player>()) == HOUSE_NOT_INVITED)) {
+		return false;
+	}
+
+	return true;
 }

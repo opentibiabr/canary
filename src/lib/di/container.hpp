@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -19,7 +19,7 @@ class DI final {
 private:
 	inline static di::extension::injector<>* testContainer;
 	const inline static auto defaultContainer = di::make_injector(
-		di::bind<account::AccountRepository>().to<account::AccountRepositoryDB>().in(di::singleton),
+		di::bind<AccountRepository>().to<AccountRepositoryDB>().in(di::singleton),
 		di::bind<KVStore>().to<KVSQL>().in(di::singleton),
 		di::bind<Logger>().to<LogWithSpdLog>().in(di::singleton)
 	);

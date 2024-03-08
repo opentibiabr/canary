@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -16,6 +16,8 @@
 #include "game/game.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/combat/spells.hpp"
+
+#include "config/configmanager.hpp"
 
 const static std::vector<WheelGemBasicModifier_t> wheelGemBasicSlot1Allowed = {
 	WheelGemBasicModifier_t::General_FireResistance,
@@ -766,6 +768,42 @@ std::vector<PlayerWheelGem> PlayerWheel::getActiveGems() const {
 		activeGems.push_back(gem);
 	}
 	return activeGems;
+}
+
+uint64_t PlayerWheel::getGemRotateCost(WheelGemQuality_t quality) {
+	ConfigKey_t key;
+	switch (quality) {
+		case WheelGemQuality_t::Lesser:
+			key = WHEEL_ATELIER_ROTATE_LESSER_COST;
+			break;
+		case WheelGemQuality_t::Regular:
+			key = WHEEL_ATELIER_ROTATE_REGULAR_COST;
+			break;
+		case WheelGemQuality_t::Greater:
+			key = WHEEL_ATELIER_ROTATE_GREATER_COST;
+			break;
+		default:
+			return 0;
+	}
+	return static_cast<uint64_t>(g_configManager().getNumber(key, __FUNCTION__));
+}
+
+uint64_t PlayerWheel::getGemRevealCost(WheelGemQuality_t quality) {
+	ConfigKey_t key;
+	switch (quality) {
+		case WheelGemQuality_t::Lesser:
+			key = WHEEL_ATELIER_REVEAL_LESSER_COST;
+			break;
+		case WheelGemQuality_t::Regular:
+			key = WHEEL_ATELIER_REVEAL_REGULAR_COST;
+			break;
+		case WheelGemQuality_t::Greater:
+			key = WHEEL_ATELIER_REVEAL_GREATER_COST;
+			break;
+		default:
+			return 0;
+	}
+	return static_cast<uint64_t>(g_configManager().getNumber(key, __FUNCTION__));
 }
 
 void PlayerWheel::revealGem(WheelGemQuality_t quality) {

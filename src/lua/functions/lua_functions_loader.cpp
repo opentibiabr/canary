@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -148,6 +148,11 @@ void LuaFunctionsLoader::reportError(const char* function, const std::string &er
 int LuaFunctionsLoader::luaErrorHandler(lua_State* L) {
 	const std::string &errorMessage = popString(L);
 	auto interface = getScriptEnv()->getScriptInterface();
+	if (!interface) {
+		g_logger().error("[{}]: LuaScriptInterface not found, error: {}", __FUNCTION__, errorMessage);
+		return 0;
+	}
+
 	assert(interface); // This fires if the ScriptEnvironment hasn't been setup
 	pushString(L, interface->getStackTrace(errorMessage));
 	return 1;

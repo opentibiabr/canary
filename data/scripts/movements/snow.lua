@@ -9,7 +9,7 @@ function snow.onStepOut(creature, item, position, fromPosition)
 	else
 		item:transform(item.itemid + 15)
 	end
-	
+
 	local player = creature:getPlayer()
 	if player and player:isPlayer() then
 		player:addAchievementProgress("Snowbunny", 10000)

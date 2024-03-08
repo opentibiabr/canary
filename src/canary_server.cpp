@@ -42,7 +42,6 @@ CanaryServer::CanaryServer(
 	rsa(rsa),
 	serviceManager(serviceManager) {
 	logInfos();
-	toggleForceCloseButton();
 	g_game().setGameState(GAME_STATE_STARTUP);
 	std::set_new_handler(badAllocationHandler);
 	srand(static_cast<unsigned int>(OTSYS_TIME()));
@@ -51,6 +50,7 @@ CanaryServer::CanaryServer(
 
 #ifdef _WIN32
 	SetConsoleTitleA(ProtocolStatus::SERVER_NAME.c_str());
+	saveServerAtClose();
 #endif
 }
 
@@ -216,18 +216,22 @@ void CanaryServer::logInfos() {
 }
 
 /**
- *It is preferable to keep the close button off as it closes the server without saving (this can cause the player to lose items from houses and others informations, since windows automatically closes the process in five seconds, when forcing the close)
- * Choose to use "CTROL + C" or "CTROL + BREAK" for security close
- * To activate/deactivate window;
- * \param MF_GRAYED Disable the "x" (force close) button
- * \param MF_ENABLED Enable the "x" (force close) button
+ *Save players on server closing
  */
-void CanaryServer::toggleForceCloseButton() {
-#ifdef OS_WINDOWS
-	const HWND hwnd = GetConsoleWindow();
-	const HMENU hmenu = GetSystemMenu(hwnd, FALSE);
-	EnableMenuItem(hmenu, SC_CLOSE, MF_GRAYED);
-#endif
+void CanaryServer::saveServerAtClose() {
+	SetConsoleCtrlHandler(
+		[](DWORD ctrlType) -> BOOL {
+			if (ctrlType == CTRL_CLOSE_EVENT) {
+				if (!g_game().getGameState() == GAME_STATE_STARTUP) {
+					g_logger().info("Closing the server and saving the players");
+					g_saveManager().scheduleAll();
+					exit(0);
+				}
+			}
+			return FALSE;
+		},
+		TRUE
+	);
 }
 
 void CanaryServer::badAllocationHandler() {

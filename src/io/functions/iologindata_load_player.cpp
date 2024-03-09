@@ -256,22 +256,22 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	std::ostringstream queryOutfits;
 	queryOutfits << "SELECT `outfit_id`, `addons` FROM `player_outfits` WHERE `player_id` = {:d}", player->getGUID();
 
-	DBResult_ptr result = Database::getInstance().storeQuery(queryOutfits.str());
-	if (result) {
+	DBResult_ptr result1 = Database::getInstance().storeQuery(queryOutfits.str());
+	if (result1) {
 		do {
-			player->addOutfit(result->getNumber<uint16_t>("outfit_id"), result->getNumber<uint8_t>("addons"));
-		} while (result->next());
+			player->addOutfit(result1->getNumber<uint16_t>("outfit_id"), result1->getNumber<uint8_t>("addons"));
+		} while (result1->next());
 	}
 
 	// load mounts
 	std::ostringstream queryMounts;
 	queryMounts << "SELECT `mount_id` FROM `player_mounts` WHERE `player_id` = {:d}", player->getGUID();
 
-	DBResult_ptr result = Database::getInstance().storeQuery(queryMounts.str());
-	if (result) {
+	DBResult_ptr result2 = Database::getInstance().storeQuery(queryMounts.str());
+	if (result2) {
 		do {
-			player->tameMount(result->getNumber<uint16_t>("mount_id"));
-		} while (result->next());
+			player->tameMount(result2->getNumber<uint16_t>("mount_id"));
+		} while (result2->next());
 	}
 	
 	player->defaultOutfit.lookHead = static_cast<uint8_t>(result->getNumber<uint16_t>("lookhead"));

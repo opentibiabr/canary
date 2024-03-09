@@ -1,19 +1,22 @@
 local snow = MoveEvent()
 
 function snow.onStepOut(creature, item, position, fromPosition)
-	if creature:isInGhostMode() then
+	local player = creature:getPlayer()
+	if not player then
 		return true
 	end
+
+	if player:isInGhostMode() then
+		return true
+	end
+
 	if item.itemid == 799 then
 		item:transform(6594)
 	else
 		item:transform(item.itemid + 15)
 	end
 
-	local player = creature:getPlayer()
-	if player and player:isPlayer() then
-		player:addAchievementProgress("Snowbunny", 10000)
-	end
+	player:addAchievementProgress("Snowbunny", 10000)
 	item:decay()
 	return true
 end

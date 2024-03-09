@@ -39,10 +39,10 @@ function onUpdateDatabase()
 	if resultId then
 		repeat
 			for i = 1, 200 do
-				local key = mountRange + ((i-1) / 31)
+				local key = mountRange + ((i - 1) / 31)
 				if key == Result.getNumber(resultId, "key") then
 					local playerId = Result.getNumber(resultId, "player_id")
-					local lshift = bit.lshift(1, ((i-1) % 31))
+					local lshift = bit.lshift(1, ((i - 1) % 31))
 					local mount = bit.band(lshift, Result.getNumber(resultId, "value"))
 
 					if mount ~= 0 then

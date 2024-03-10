@@ -1049,6 +1049,8 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 					moveevent->setSlot(SLOTP_RING);
 				} else if (slotName == "ammo") {
 					moveevent->setSlot(SLOTP_AMMO);
+				} else if (slotName == "two-handed") {
+					moveevent->setSlot(SLOTP_TWO_HAND);
 				} else {
 					g_logger().warn("[{}] unknown slot type '{}'", __FUNCTION__, slotName);
 				}

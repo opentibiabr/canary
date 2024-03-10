@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -742,7 +742,7 @@ void LuaEnums::initGameStateEnums(lua_State* L) {
 void LuaEnums::initMessageEnums(lua_State* L) {
 	registerEnum(L, MESSAGE_GAMEMASTER_CONSOLE);
 	registerEnum(L, MESSAGE_LOGIN);
-	registerEnum(L, MESSAGE_ADMINISTRADOR);
+	registerEnum(L, MESSAGE_ADMINISTRATOR);
 	registerEnum(L, MESSAGE_EVENT_ADVANCE);
 	registerEnum(L, MESSAGE_GAME_HIGHLIGHT);
 	registerEnum(L, MESSAGE_FAILURE);
@@ -1125,6 +1125,9 @@ void LuaEnums::initMapMarkEnums(lua_State* L) {
 // Use with Game.getReturnMessage
 void LuaEnums::initReturnValueEnums(lua_State* L) {
 	registerEnum(L, RETURNVALUE_NOERROR);
+	registerEnum(L, RETURNVALUE_NOTBOUGHTINSTORE);
+	registerEnum(L, RETURNVALUE_ITEMCANNOTBEMOVEDTHERE);
+	registerEnum(L, RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH);
 	registerEnum(L, RETURNVALUE_NOTPOSSIBLE);
 	registerEnum(L, RETURNVALUE_NOTENOUGHROOM);
 	registerEnum(L, RETURNVALUE_PLAYERISPZLOCKED);

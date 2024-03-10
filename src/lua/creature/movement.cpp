@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -15,7 +15,34 @@
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/movement.hpp"
 
-void MoveEvents::clear() {
+void MoveEvents::clear(bool isFromXML /*= false*/) {
+	if (isFromXML) {
+		int numRemoved = 0;
+		for (auto &pair : itemIdMap) {
+			MoveEventList &moveEventList = pair.second;
+
+			for (int moveEventType = 0; moveEventType < MOVE_EVENT_LAST; ++moveEventType) {
+				auto &eventList = moveEventList.moveEvent[moveEventType];
+
+				int originalSize = eventList.size();
+
+				eventList.remove_if([&](const std::shared_ptr<MoveEvent> &moveEvent) {
+					bool removed = moveEvent && moveEvent->isFromXML();
+					if (removed) {
+						g_logger().debug("MoveEvent with id '{}' is from XML and will be removed.", pair.first);
+						++numRemoved;
+					}
+					return removed;
+				});
+			}
+		}
+
+		if (numRemoved > 0) {
+			g_logger().debug("Removed '{}' MoveEvent from XML.", numRemoved);
+		}
+		return;
+	}
+
 	uniqueIdMap.clear();
 	actionIdMap.clear();
 	itemIdMap.clear();

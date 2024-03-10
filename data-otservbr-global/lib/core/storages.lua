@@ -103,7 +103,7 @@ Storage = {
 	Factions = 30024,
 	-- unused TrainerRoom = 30027,
 	-- unused NpcSpawn = 30028,
-	ExerciseDummyExhaust = 30029,
+	-- unused ExerciseDummyExhaust = 30029,
 	SamsOldBackpack = 30030,
 	SamsOldBackpackDoor = 30031,
 	StrawberryCupcake = 30032,
@@ -2105,12 +2105,15 @@ Storage = {
 				JumpTimer = 41841,
 			},
 			VampireHunter = {},
+			TheMutatedPumpkin = {
+				Skinned = 41860,
+			},
 		},
 		U8_4 = { -- update 8.4 - Reserved Storages 41901 - 42145
 			BloodBrothers = {
 				QuestLine = 41901,
 				Mission01 = 41902,
-				GarlicBread = 41903,
+				-- unused GarlicBread = 41903,
 				Mission02 = 41904,
 				Cookies = {
 					Serafin = 41905,
@@ -3065,11 +3068,11 @@ GlobalStorage = {
 		AftershockStage = 60176,
 		RuptureResonanceStage = 60177,
 		RuptureResonanceActive = 60178,
-		EradicatorWeak = 60178,
-		EradicatorReleaseT = 60179,
-		OutburstStage = 60180,
-		OutburstHealth = 60181,
-		OutburstChargingKilled = 60182,
+		EradicatorWeak = 60179,
+		EradicatorReleaseT = 60180,
+		OutburstStage = 60181,
+		OutburstHealth = 60182,
+		OutburstChargingKilled = 60183,
 	},
 	WorldBoard = {
 		NightmareIsle = {

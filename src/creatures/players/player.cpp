@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -2190,7 +2190,7 @@ void Player::onThink(uint32_t interval) {
 		} else if (client && idleTime == 60000 * kickAfterMinutes) {
 			std::ostringstream ss;
 			ss << "There was no variation in your behaviour for " << kickAfterMinutes << " minutes. You will be disconnected in one minute if there is no change in your actions until then.";
-			client->sendTextMessage(TextMessage(MESSAGE_ADMINISTRADOR, ss.str()));
+			client->sendTextMessage(TextMessage(MESSAGE_ADMINISTRATOR, ss.str()));
 		}
 	}
 
@@ -2669,6 +2669,11 @@ BlockType_t Player::blockHit(std::shared_ptr<Creature> attacker, CombatType_t co
 }
 
 void Player::death(std::shared_ptr<Creature> lastHitCreature) {
+	if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && isMounted()) {
+		dismount();
+		g_game().internalCreatureChangeOutfit(getPlayer(), defaultOutfit);
+	}
+
 	loginPosition = town->getTemplePosition();
 
 	g_game().sendSingleSoundEffect(static_self_cast<Player>()->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_DEATH : SoundEffect_t::HUMAN_MALE_DEATH, getPlayer());
@@ -8068,4 +8073,14 @@ void Player::checkAndShowBlessingMessage() {
 	if (!blessOutput.str().empty()) {
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, blessOutput.str());
 	}
+}
+
+bool Player::canSpeakWithHireling(uint8_t speechbubble) {
+	const auto &playerTile = getTile();
+	const auto &house = playerTile ? playerTile->getHouse() : nullptr;
+	if (speechbubble == SPEECHBUBBLE_HIRELING && (!house || house->getHouseAccessLevel(static_self_cast<Player>()) == HOUSE_NOT_INVITED)) {
+		return false;
+	}
+
+	return true;
 }

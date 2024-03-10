@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -91,24 +91,6 @@ int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 	}
 
 	pushBoolean(L, false);
-	return 1;
-}
-
-int GlobalFunctions::luaDoSetCreatureLight(lua_State* L) {
-	// doSetCreatureLight(cid, lightLevel, lightColor, time)
-	std::shared_ptr<Creature> creature = getCreature(L, 1);
-	if (!creature) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
-		pushBoolean(L, false);
-		return 1;
-	}
-
-	uint16_t level = getNumber<uint16_t>(L, 2);
-	uint16_t color = getNumber<uint16_t>(L, 3);
-	uint32_t time = getNumber<uint32_t>(L, 4);
-	std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_LIGHT, time, level | (color << 8));
-	creature->addCondition(condition);
-	pushBoolean(L, true);
 	return 1;
 }
 

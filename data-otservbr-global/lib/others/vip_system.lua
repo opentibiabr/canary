@@ -3,7 +3,7 @@ local config = {
 	activationMessageType = MESSAGE_EVENT_ADVANCE,
 
 	expirationMessage = "Your VIP days ran out.",
-	expirationMessageType = MESSAGE_STATUS_WARNING,
+	expirationMessageType = MESSAGE_ADMINISTRATOR,
 
 	outfits = {},
 	mounts = {},

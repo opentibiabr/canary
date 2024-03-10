@@ -1,38 +1,12 @@
-TRUE = true
-FALSE = false
-
-MESSAGE_STATUS_CONSOLE_RED = MESSAGE_GAMEMASTER_CONSOLE
-
-MESSAGE_STATUS_DEFAULT = MESSAGE_LOGIN
-MESSAGE_STATUS_WARNING = MESSAGE_ADMINISTRADOR
-MESSAGE_EVENT_ADVANCE = MESSAGE_EVENT_ADVANCE
-
-MESSAGE_STATUS_SMALL = MESSAGE_FAILURE
-MESSAGE_INFO_DESCR = MESSAGE_LOOK
-MESSAGE_DAMAGE_DEALT = MESSAGE_DAMAGE_DEALT
-MESSAGE_DAMAGE_RECEIVED = MESSAGE_DAMAGE_RECEIVED
-MESSAGE_EVENT_DEFAULT = MESSAGE_STATUS
-
-MESSAGE_EVENT_ORANGE = TALKTYPE_MONSTER_SAY
-MESSAGE_STATUS_CONSOLE_ORANGE = TALKTYPE_MONSTER_YELL
-
 if type(result) then
 	result = Result
 end
+
 result.getDataInt = result.getNumber
 result.getDataLong = result.getNumber
 result.getDataString = result.getString
 result.getDataStream = result.getStream
 
-LUA_ERROR = false
-LUA_NO_ERROR = true
-
-STACKPOS_GROUND = 0
-STACKPOS_FIRST_ITEM_ABOVE_GROUNDTILE = 1
-STACKPOS_SECOND_ITEM_ABOVE_GROUNDTILE = 2
-STACKPOS_THIRD_ITEM_ABOVE_GROUNDTILE = 3
-STACKPOS_FOURTH_ITEM_ABOVE_GROUNDTILE = 4
-STACKPOS_FIFTH_ITEM_ABOVE_GROUNDTILE = 5
 STACKPOS_TOP_CREATURE = 253
 STACKPOS_TOP_FIELD = 254
 STACKPOS_TOP_MOVABLE_ITEM_OR_CREATURE = 255
@@ -40,11 +14,6 @@ STACKPOS_TOP_MOVABLE_ITEM_OR_CREATURE = 255
 THING_TYPE_PLAYER = CREATURETYPE_PLAYER + 1
 THING_TYPE_MONSTER = CREATURETYPE_MONSTER + 1
 THING_TYPE_NPC = CREATURETYPE_NPC + 1
-
-COMBAT_POISONDAMAGE = COMBAT_EARTHDAMAGE
-CONDITION_EXHAUST = CONDITION_EXHAUST_WEAPON
-TALKTYPE_ORANGE_1 = TALKTYPE_MONSTER_SAY
-TALKTYPE_ORANGE_2 = TALKTYPE_MONSTER_YELL
 
 function pushThing(thing)
 	local t = { uid = 0, itemid = 0, type = 0, actionid = 0 }
@@ -84,7 +53,7 @@ Combat.setCondition = function(...)
 end
 
 setCombatCondition = function(...)
-	logger.warn("[setCombatCondition] - Function was renamed to addCombatCondition and will be removed in the future")
+	logger.warn("[setCombatCondition] - Function was renamed to Combat.addCondition and will be removed in the future")
 	Combat.addCondition(...)
 end
 
@@ -95,73 +64,121 @@ addDamageCondition = Condition.addDamage
 addOutfitCondition = Condition.setOutfit
 
 function doCombat(cid, combat, var)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'doCombat(cid, combat, var)' is outdated. Please use the new format 'combat:execute(cid, var)'. Update needed at: Line {}, Source: {}.", line, source)
 	return combat:execute(cid, var)
 end
 
 function isCreature(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'isCreature(cid)' is outdated. Please use the new format 'Creature(cid)'. Update needed at: Line {}, Source: {}.", line, source)
 	return Creature(cid) ~= nil
 end
 
 function isPlayer(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'isPlayer(cid)' is outdated. Please use the new format 'Player(cid)'. Update needed at: Line {}, Source: {}.", line, source)
 	return Player(cid) ~= nil
 end
 
 function isMonster(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'isMonster(cid)' is outdated. Please use the new format 'Monster(cid)'. Update needed at: Line {}, Source: {}.", line, source)
 	return Monster(cid) ~= nil
 end
 
 function isSummon(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'isSummon(cid)' is outdated. Please use the new format 'c:getMaster()', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	return Creature(cid):getMaster() ~= nil
 end
 
 function isNpc(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'isNpc(cid)' is outdated. Please use the new format 'Npc(cid)'. Update needed at: Line {}, Source: {}.", line, source)
 	return Npc(cid) ~= nil
 end
 
 function isItem(uid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'isItem(uid)' is outdated. Please use the new format 'Item(uid)'. Update needed at: Line {}, Source: {}.", line, source)
 	return Item(uid) ~= nil
 end
 
 function isContainer(uid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'isContainer(uid)' is outdated. Please use the new format 'Container(uid)'. Update needed at: Line {}, Source: {}.", line, source)
 	return Container(uid) ~= nil
 end
 
 function getCreatureName(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'getCreatureName(cid)' is outdated. Please use the new format 'c:getName()', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	local c = Creature(cid)
 	return c and c:getName() or false
 end
 
 function getCreatureHealth(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'getCreatureHealth(cid)' is outdated. Please use the new format 'c:getHealth()', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	local c = Creature(cid)
 	return c and c:getHealth() or false
 end
 
 function getCreatureMaxHealth(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'getCreatureMaxHealth(cid)' is outdated. Please use the new format 'c:getMaxHealth()', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	local c = Creature(cid)
 	return c and c:getMaxHealth() or false
 end
 
 function getCreaturePosition(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'getCreaturePosition(cid)' is outdated. Please use the new format 'c:getPosition()', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	local c = Creature(cid)
 	return c and c:getPosition() or false
 end
 
 function getCreatureOutfit(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'getCreatureOutfit(cid)' is outdated. Please use the new format 'c:getOutfit()', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	local c = Creature(cid)
 	return c and c:getOutfit() or false
 end
 
 function getCreatureSpeed(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'getCreatureSpeed(cid)' is outdated. Please use the new format 'c:getSpeed()', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	local c = Creature(cid)
 	return c and c:getSpeed() or false
 end
 
 function getCreatureBaseSpeed(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'getCreatureBaseSpeed(cid)' is outdated. Please use the new format 'c:getBaseSpeed()', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	local c = Creature(cid)
 	return c and c:getBaseSpeed() or false
 end
 
 function getCreatureTarget(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'getCreatureTarget(cid)' is outdated. Please use the new format 'c:getTarget():getId()', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	local c = Creature(cid)
 	if c then
 		local target = c:getTarget()
@@ -171,6 +188,9 @@ function getCreatureTarget(cid)
 end
 
 function getCreatureMaster(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'getCreatureMaster(cid)' is outdated. Please use the new format 'c:getMaster():getId()', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	local c = Creature(cid)
 	if c then
 		local master = c:getMaster()
@@ -181,7 +201,7 @@ end
 
 function getCreatureSummons(cid)
 	local c = Creature(cid)
-	if c == nil then
+	if not c then
 		return false
 	end
 
@@ -195,16 +215,25 @@ end
 getCreaturePos = getCreaturePosition
 
 function doCreatureAddHealth(cid, health)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'doCreatureAddHealth(cid, health)' is outdated. Please use the new format 'c:addHealth(health)', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	local c = Creature(cid)
 	return c and c:addHealth(health) or false
 end
 
 function doRemoveCreature(cid)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'doRemoveCreature(cid)' is outdated. Please use the new format 'c:remove()', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	local c = Creature(cid)
 	return c and c:remove() or false
 end
 
 function doCreatureSetLookDir(cid, direction)
+	local line = debug.getinfo(2).currentline
+	local source = debug.getinfo(2).source:match("@?(.*)")
+	logger.warn("Deprecation Warning: The function 'doCreatureSetLookDir(cid, direction)' is outdated. Please use the new format 'c:setDirection(direction)', where 'c' refers to a Creature (player or monster). Update needed at: Line {}, Source: {}.", line, source)
 	local c = Creature(cid)
 	return c and c:setDirection(direction) or false
 end
@@ -582,7 +611,7 @@ function getPlayerGUIDByName(name)
 	local resultId = db.storeQuery("SELECT `id` FROM `players` WHERE `name` = " .. db.escapeString(name))
 	if resultId ~= false then
 		local guid = Result.getNumber(resultId, "id")
-		result.free(resultId)
+		Result.free(resultId)
 		return guid
 	end
 	return 0
@@ -597,7 +626,7 @@ function getAccountNumberByPlayerName(name)
 	local resultId = db.storeQuery("SELECT `account_id` FROM `players` WHERE `name` = " .. db.escapeString(name))
 	if resultId ~= false then
 		local accountId = Result.getNumber(resultId, "account_id")
-		result.free(resultId)
+		Result.free(resultId)
 		return accountId
 	end
 	return 0
@@ -1032,7 +1061,7 @@ function getGuildId(guildName)
 	end
 
 	local guildId = Result.getNumber(resultId, "id")
-	result.free(resultId)
+	Result.free(resultId)
 	return guildId
 end
 

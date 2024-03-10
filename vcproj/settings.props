@@ -24,15 +24,28 @@
       jsoncpp.lib;
       abseil_dll.lib;
       argon2.lib;
-			opentelemetry_common.lib;
-			opentelemetry_resources.lib;
-			opentelemetry_metrics.lib;
-			opentelemetry_exporter_ostream_metrics.lib;
-			opentelemetry_exporter_prometheus.lib;
-			prometheus-cpp-core.lib;
-			prometheus-cpp-pull.lib;
-			civetweb.lib;
-			civetweb-cpp.lib
+      opentelemetry_common.lib;
+      opentelemetry_exporter_in_memory.lib;
+      opentelemetry_exporter_ostream_logs.lib;
+      opentelemetry_exporter_ostream_metrics.lib;
+      opentelemetry_exporter_ostream_span.lib;
+      opentelemetry_exporter_otlp_http.lib;
+      opentelemetry_exporter_otlp_http_client.lib;
+      opentelemetry_exporter_otlp_http_log.lib;
+      opentelemetry_exporter_otlp_http_metric.lib;
+      opentelemetry_exporter_prometheus.lib;
+      opentelemetry_http_client_curl.lib;
+      opentelemetry_logs.lib;
+      opentelemetry_metrics.lib;
+      opentelemetry_otlp_recordable.lib;
+      opentelemetry_proto.lib;
+      opentelemetry_resources.lib;
+      opentelemetry_trace.lib;
+      opentelemetry_version.lib;
+      prometheus-cpp-core.lib;
+      prometheus-cpp-pull.lib;
+      civetweb.lib;
+      civetweb-cpp.lib
     </CANARY_LIBDEPS>
     <CANARY_LIBDEPS_D>
       comctl32.lib;
@@ -50,15 +63,26 @@
       jsoncpp.lib;
       abseil_dll.lib;
       argon2.lib;
-			opentelemetry_common.lib;
-			opentelemetry_resources.lib;
-			opentelemetry_metrics.lib;
-			opentelemetry_exporter_ostream_metrics.lib;
-			opentelemetry_exporter_prometheus.lib;
-			prometheus-cpp-core.lib;
-			prometheus-cpp-pull.lib;
-			civetweb.lib;
-			civetweb-cpp.lib
+      opentelemetry_common.lib;
+      opentelemetry_exporter_in_memory.lib;
+      opentelemetry_exporter_ostream_logs.lib;
+      opentelemetry_exporter_ostream_metrics.lib;
+      opentelemetry_exporter_ostream_span.lib;
+      opentelemetry_exporter_otlp_http.lib;
+      opentelemetry_exporter_otlp_http_client.lib;
+      opentelemetry_exporter_otlp_http_log.lib;
+      opentelemetry_exporter_otlp_http_metric.lib;
+      opentelemetry_exporter_prometheus.lib;
+      opentelemetry_http_client_curl.lib;
+      opentelemetry_logs.lib;
+      opentelemetry_metrics.lib;
+      opentelemetry_otlp_recordable.lib;
+      opentelemetry_proto.lib;
+      opentelemetry_resources.lib;
+      opentelemetry_trace.lib;
+      opentelemetry_version.lib;
+      civetweb.lib;
+      civetweb-cpp.lib
   </CANARY_LIBDEPS_D>
   </PropertyGroup>
   <PropertyGroup>

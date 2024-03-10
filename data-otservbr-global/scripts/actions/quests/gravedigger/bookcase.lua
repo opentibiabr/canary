@@ -3,9 +3,9 @@ function gravediggerBook.onUse(player, item, fromPosition, itemEx, toPosition)
 	if player:getStorageValue(Storage.GravediggerOfDrefia.Bookcase) < 1 then
 		player:setStorageValue(Storage.GravediggerOfDrefia.Bookcase, 1)
 		player:addItem(19158, 1)
-		player:say("You have found a crumpled paper.", TALKTYPE_ORANGE_1)
+		player:say("You have found a crumpled paper.", TALKTYPE_MONSTER_SAY)
 	else
-		player:say("You've picked up here.", TALKTYPE_ORANGE_1)
+		player:say("You've picked up here.", TALKTYPE_MONSTER_SAY)
 		return true
 	end
 	return true

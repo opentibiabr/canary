@@ -4213,6 +4213,7 @@ int PlayerFunctions::luaPlayerAddAchievement(lua_State* L) {
 		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
 	}
 
+	player->sendTakeScreenshot(SCREENSHOT_TYPE_ACHIEVEMENT);
 	pushBoolean(L, player->achiev()->add(achievementId, getBoolean(L, 3, true)));
 	return 1;
 }

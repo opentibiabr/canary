@@ -652,6 +652,7 @@ function Player.addAchievementProgress(self, achievement, totalProgress)
 
 	if newProgress == totalProgress then
 		self:addAchievement(foundAchievement.id)
+		self:sendTakeScreenshot(SCREENSHOT_TYPE_ACHIEVEMENT)
 		logger.debug("[Player.addAchievementProgress] - Achievement '{}' completed", foundAchievement.name)
 	end
 

@@ -61,7 +61,7 @@ GameStore.Categories = {
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
-				icons = { "Premium_Time_30.png" },
+				icons = { "Product_PremiumTime30.png" },
 				name = string.format("30 Days of %s", premiumOfferName),
 				price = 250,
 				id = 3030,
@@ -70,7 +70,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
 			},
 			{
-				icons = { "Premium_Time_90.png" },
+				icons = { "Product_PremiumTime90.png" },
 				name = string.format("90 Days of %s", premiumOfferName),
 				price = 750,
 				id = 3090,
@@ -79,7 +79,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
 			},
 			{
-				icons = { "Premium_Time_180.png" },
+				icons = { "Product_PremiumTime180.png" },
 				name = string.format("180 Days of %s", premiumOfferName),
 				price = 1500,
 				id = 3180,
@@ -88,7 +88,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
 			},
 			{
-				icons = { "Premium_Time_360.png" },
+				icons = { "Product_PremiumTime360.png" },
 				name = string.format("360 Days of %s", premiumOfferName),
 				price = 3000,
 				id = 3360,
@@ -114,7 +114,7 @@ GameStore.Categories = {
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
-				icons = { "All_PvE_Blessings.png" },
+				icons = { "Product_Blessing_AllPvE.png" },
 				name = "All Regular Blessings",
 				price = 130,
 				id = GameStore.SubActions.BLESSING_ALL_PVE,
@@ -123,7 +123,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS,
 			},
 			{
-				icons = { "All_PvE_Blessings.png" },
+				icons = { "Product_Blessing_AllPvE.png" },
 				name = "All Regular Blessings",
 				price = 650,
 				id = GameStore.SubActions.BLESSING_ALL_PVP,
@@ -132,7 +132,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS,
 			},
 			{
-				icons = { "Blood_of_the_Mountain.png" },
+				icons = { "Product_Blessing_BloodOfTheMountain.png" },
 				name = "Blood of the Mountain",
 				price = 25,
 				blessid = 8,
@@ -142,7 +142,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
 			{
-				icons = { "Death_Redemption.png" },
+				icons = { "Product_Blessing_Subsequent.png" },
 				name = "Death Redemption",
 				price = 260,
 				blessid = 10,
@@ -151,7 +151,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
 			{
-				icons = { "Heart_of_the_Mountain.png" },
+				icons = { "Product_Blessing_HeartOfTheMountain.png" },
 				name = "Heart of the Mountain",
 				price = 25,
 				blessid = 7,
@@ -161,7 +161,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
 			{
-				icons = { "Embrace_of_Tibia.png" },
+				icons = { "Product_Blessing_Tibia.png" },
 				name = "The Embrace of Tibia",
 				price = 15,
 				blessid = 6,
@@ -171,7 +171,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
 			{
-				icons = { "Fire_of_the_Suns.png" },
+				icons = { "Product_Blessing_Suns.png" },
 				name = "The Fire of the Suns",
 				price = 15,
 				blessid = 4,
@@ -181,7 +181,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
 			{
-				icons = { "Spark_of_the_Phoenix.png" },
+				icons = { "Product_Blessing_Phoenix.png" },
 				name = "The Spark of the Phoenix",
 				price = 20,
 				blessid = 3,
@@ -191,7 +191,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
 			{
-				icons = { "Spiritual_Shielding.png" },
+				icons = { "Product_Blessing_Shielding.png" },
 				name = "The Spiritual Shielding",
 				price = 15,
 				blessid = 5,
@@ -201,7 +201,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
 			{
-				icons = { "Wisdom_of_Solitude.png" },
+				icons = { "Product_Blessing_Solitude.png" },
 				name = "The Wisdom of Solitude",
 				price = 15,
 				blessid = 2,
@@ -211,7 +211,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
 			{
-				icons = { "Twist_of_Fate.png" },
+				icons = { "Product_Blessing_Fate.png" },
 				name = "Twist of Fate",
 				price = 8,
 				blessid = 1,
@@ -221,7 +221,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
 			{
-				icons = { "Twist_of_Fate.png" },
+				icons = { "Product_Blessing_Fate.png" },
 				name = "Twist of Fate",
 				price = 40,
 				blessid = 1,
@@ -4820,7 +4820,7 @@ GameStore.Categories = {
 	},
 	-- House ~ Furniture
 	{
-		icons = { "Category_HouseFurniture.png" },
+		icons = { "Category_Furniture.png" },
 		name = "Furniture",
 		parent = "Houses",
 		rookgaard = true,
@@ -6037,7 +6037,7 @@ GameStore.Categories = {
 	},
 	-- House ~ Upgrades
 	{
-		icons = { "Category_HouseUpgrades.png" },
+		icons = { "Category_Houseupgrades.png" },
 		name = "Upgrades",
 		parent = "Houses",
 		rookgaard = true,
@@ -6315,7 +6315,7 @@ GameStore.Categories = {
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
-				icons = { "XP_Boost.png" },
+				icons = { "Product_XpBoost.png" },
 				name = "XP Boost",
 				price = 30,
 				id = 65010,
@@ -6340,7 +6340,7 @@ GameStore.Categories = {
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
-				icons = { "Name_Change.png" },
+				icons = { "Product_CharacterNameChange.png" },
 				name = "Character Name Change",
 				home = true,
 				price = 250,
@@ -6349,7 +6349,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE,
 			},
 			{
-				icons = { "Sex_Change.png" },
+				icons = { "Product_CharacterSexChange.png" },
 				name = "Character Sex Change",
 				price = 120,
 				id = 65003,
@@ -6360,14 +6360,14 @@ GameStore.Categories = {
 	},
 	-- Extras ~ Usefull Things
 	{
-		icons = { "Category_UsefulThings.png" },
+		icons = { "Category_Convenience.png" },
 		name = "Useful Things",
 		parent = "Extras",
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
-				icons = { "Prey_Bonus_Reroll.png" },
+				icons = { "Product_UsefulThings_PreyBonusReroll.png" },
 				name = "Prey Wildcard",
 				price = 50,
 				id = GameStore.SubActions.PREY_WILDCARD,
@@ -6376,7 +6376,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_PREYBONUS,
 			},
 			{
-				icons = { "Instant_Reward_Access.png" },
+				icons = { "Product_UsefulThings_CollectionTokens.png" },
 				name = "Instant Reward Access",
 				price = 100,
 				id = GameStore.SubActions.INSTANT_REWARD,
@@ -6385,7 +6385,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS,
 			},
 			{
-				icons = { "Charm_Expansion_Offer.png" },
+				icons = { "Product_UsefulThings_UnlimitedBonusUsage.png" },
 				name = "Charm Expansion",
 				price = 450,
 				id = GameStore.SubActions.CHARM_EXPANSION,
@@ -6393,7 +6393,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARMS,
 			},
 			{
-				icons = { "Permanent_Prey_Slot.png" },
+				icons = { "Product_UsefulThings_PermanentPreySlot.png" },
 				name = "Permanent Prey Slot",
 				price = 900,
 				id = GameStore.SubActions.PREY_THIRDSLOT_REDIRECT,
@@ -6401,7 +6401,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_PREYSLOT,
 			},
 			{
-				icons = { "Permanent_Hunting_Task_Slot.png" },
+				icons = { "Product_UsefulThings_PermanentHuntingTaskSlot.png" },
 				name = "Permanent Hunting Task Slot",
 				price = 900,
 				id = GameStore.SubActions.TASKHUNTING_THIRDSLOT,
@@ -6436,7 +6436,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Prey_Bonus_Reroll.png" },
+				icons = { "Product_UsefulThings_PreyBonusReroll.png" },
 				name = "Prey Wildcard",
 				price = 50,
 				count = 20,
@@ -6444,7 +6444,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_PREYBONUS,
 			},
 			{
-				icons = { "Temple_Teleport.png" },
+				icons = { "Product_Transportation_TempleTeleport.png" },
 				name = "Temple Teleport",
 				price = 15,
 				description = "<i>Teleports you instantly to your home temple.</i>\n\n{character}\n{useicon} use it to teleport you to your home temple</i>\n{battlesign}\n{info} does not work in no-logout zones or close to a character's home temple",

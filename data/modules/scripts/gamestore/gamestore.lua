@@ -5908,7 +5908,7 @@ GameStore.Categories = {
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
-				icons = { "Flower_Bed.png" },
+				icons = { "Product_HouseEquipment_FlowerBed.png" },
 				name = "Flower Bed",
 				price = 150,
 				itemtype = { 39788, 39789 },
@@ -5917,7 +5917,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
 			},
 			{
-				icons = { "Grandiose_Bed.png" },
+				icons = { "Product_HouseEquipment_GrandioseBed_Bundle.png" },
 				name = "Grandiose Bed",
 				price = 150,
 				itemtype = { 35936, 35937 },
@@ -5926,7 +5926,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
 			},
 			{
-				icons = { "Homely_Bed.png" },
+				icons = { "Product_HouseEquipment_HomelyBed.png" },
 				name = "Homely Bed",
 				price = 120,
 				itemtype = { 34320, 34321 },
@@ -5935,7 +5935,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
 			},
 			{
-				icons = { "Knightly_Bed.png" },
+				icons = { "Product_HouseEquipment_KnightlySetBed_Bundle.png" },
 				name = "Knightly Bed",
 				price = 180,
 				itemtype = { 39437, 39438 },
@@ -5944,7 +5944,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
 			},
 			{
-				icons = { "Kraken_Bed.png" },
+				icons = { "Product_HouseEquipment_KrakenBed.png" },
 				name = "Kraken Bed",
 				price = 150,
 				itemtype = { 37201, 37202 },
@@ -5953,7 +5953,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
 			},
 			{
-				icons = { "Log_Bed.png" },
+				icons = { "Product_HouseEquipment_TrunkBed_Bundle.png" },
 				name = "Log Bed",
 				price = 150,
 				itemtype = { 37031, 37032 },
@@ -5962,7 +5962,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
 			},
 			{
-				icons = { "Magnificent_Bed.png" },
+				icons = { "Product_HouseEquipment_MagnificentBed_Bundle.png" },
 				name = "Magnificent Bed",
 				price = 180,
 				itemtype = { 35859, 35860 },
@@ -5971,7 +5971,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
 			},
 			{
-				icons = { "Opulent_Kline.png" },
+				icons = { "Product_HouseEquipment_Opulent_Kline.png" },
 				name = "Opulent Kline",
 				price = 120,
 				itemtype = { 42359, 42360 },
@@ -5980,7 +5980,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
 			},
 			{
-				icons = { "Ornate_Bed.png" },
+				icons = { "Product_HouseEquipment_OrnateBed_Bundle.png" },
 				name = "Ornate Bed",
 				price = 180,
 				itemtype = { 35871, 35872 },
@@ -5989,7 +5989,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
 			},
 			{
-				icons = { "Seafarer_Bed.png" },
+				icons = { "Product_HouseEquipment_SeafarerBed.png" },
 				name = "Seafarer Bed",
 				price = 180,
 				itemtype = { 42287, 42288 },
@@ -5998,7 +5998,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
 			},
 			{
-				icons = { "Sleeping_Mat.png" },
+				icons = { "Product_HouseEquipment_SleepingMat.png" },
 				name = "Sleeping Mat",
 				price = 120,
 				itemtype = { 37793, 37794 },
@@ -6007,7 +6007,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
 			},
 			{
-				icons = { "Vengothic_Bed.png" },
+				icons = { "Product_HouseEquipment_VengothicBed_Bundle.png" },
 				name = "Vengothic Bed",
 				price = 180,
 				itemtype = { 35883, 35884 },
@@ -6016,7 +6016,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
 			},
 			{
-				icons = { "Verdant_Bed.png" },
+				icons = { "Product_HouseEquipment_VerdantBed.png" },
 				name = "Verdant Bed",
 				price = 150,
 				itemtype = { 26096, 26097 },
@@ -6025,7 +6025,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
 			},
 			{
-				icons = { "Wrought-Iron_Bed.png" },
+				icons = { "Product_HouseEquipment_SmithyBed_Bundle.png" },
 				name = "Wrought-Iron Bed",
 				price = 150,
 				itemtype = { 35206, 35207 },

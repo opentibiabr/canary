@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -357,6 +357,13 @@ private:
 		registerMethod(L, "Player", "kv", PlayerFunctions::luaPlayerKV);
 		registerMethod(L, "Player", "getStoreInbox", PlayerFunctions::luaPlayerGetStoreInbox);
 
+		registerMethod(L, "Player", "hasAchievement", PlayerFunctions::luaPlayerHasAchievement);
+		registerMethod(L, "Player", "addAchievement", PlayerFunctions::luaPlayerAddAchievement);
+		registerMethod(L, "Player", "removeAchievement", PlayerFunctions::luaPlayerRemoveAchievement);
+		registerMethod(L, "Player", "getAchievementPoints", PlayerFunctions::luaPlayerGetAchievementPoints);
+		registerMethod(L, "Player", "addAchievementPoints", PlayerFunctions::luaPlayerAddAchievementPoints);
+		registerMethod(L, "Player", "removeAchievementPoints", PlayerFunctions::luaPlayerRemoveAchievementPoints);
+
 		registerMethod(L, "Player", "sendTakeScreenshot", PlayerFunctions::luaPlayerSendTakeScreenshot);
 
 		GroupFunctions::init(L);
@@ -706,6 +713,13 @@ private:
 	static int luaPlayerKV(lua_State* L);
 	static int luaPlayerGetStoreInbox(lua_State* L);
 
+	static int luaPlayerHasAchievement(lua_State* L);
+	static int luaPlayerAddAchievement(lua_State* L);
+	static int luaPlayerRemoveAchievement(lua_State* L);
+	static int luaPlayerGetAchievementPoints(lua_State* L);
+	static int luaPlayerAddAchievementPoints(lua_State* L);
+	static int luaPlayerRemoveAchievementPoints(lua_State* L);
+	
 	static int luaPlayerSendTakeScreenshot(lua_State* L);
 
 	friend class CreatureFunctions;

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -9,6 +9,8 @@
 
 #include "pch.hpp"
 
+#include "game/game.hpp"
+
 #include "lua/creature/actions.hpp"
 #include "items/bed.hpp"
 #include "creatures/creature.hpp"
@@ -16,7 +18,7 @@
 #include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
-#include "game/game.hpp"
+#include "creatures/players/highscore_category.hpp"
 #include "game/zones/zone.hpp"
 #include "lua/global/globalevent.hpp"
 #include "io/iologindata.hpp"
@@ -34,6 +36,7 @@
 #include "items/weapons/weapons.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "server/network/protocol/protocollogin.hpp"
@@ -49,6 +52,23 @@
 #include "enums/account_coins.hpp"
 
 #include <appearances.pb.h>
+
+enum class HighscoreCategories_t : uint8_t {
+	EXPERIENCE = 0,
+	FIST_FIGHTING = 1,
+	CLUB_FIGHTING = 2,
+	SWORD_FIGHTING = 3,
+	AXE_FIGHTING = 4,
+	DISTANCE_FIGHTING = 5,
+	SHIELDING = 6,
+	FISHING = 7,
+	MAGIC_LEVEL = 8,
+	LOYALTY = 9,
+	ACHIEVEMENTS = 10,
+	CHARMS = 11,
+	DROME = 12,
+	GOSHNAR = 13,
+};
 
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, std::shared_ptr<Creature> source) {
@@ -186,6 +206,35 @@ Game::Game() {
 
 	// Create instance of IOWheel to Game class
 	m_IOWheel = std::make_unique<IOWheel>();
+
+	m_highscoreCategoriesNames = {
+		{ static_cast<uint8_t>(HighscoreCategories_t::ACHIEVEMENTS), "Achievement Points" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::AXE_FIGHTING), "Axe Fighting" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::CHARMS), "Charm Points" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::CLUB_FIGHTING), "Club Fighting" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE), "Experience Points" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::DISTANCE_FIGHTING), "Distance Fighting" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::DROME), "Drome Score" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::FISHING), "Fishing" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::FIST_FIGHTING), "Fist Fighting" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::GOSHNAR), "Goshnar's Taint" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::LOYALTY), "Loyalty Points" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::MAGIC_LEVEL), "Magic Level" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::SHIELDING), "Shielding" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::SWORD_FIGHTING), "Sword Fighting" },
+	};
+
+	m_highscoreCategories = {
+		HighscoreCategory("Experience Points", static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE)),
+		HighscoreCategory("Fist Fighting", static_cast<uint8_t>(HighscoreCategories_t::FIST_FIGHTING)),
+		HighscoreCategory("Club Fighting", static_cast<uint8_t>(HighscoreCategories_t::CLUB_FIGHTING)),
+		HighscoreCategory("Sword Fighting", static_cast<uint8_t>(HighscoreCategories_t::SWORD_FIGHTING)),
+		HighscoreCategory("Axe Fighting", static_cast<uint8_t>(HighscoreCategories_t::AXE_FIGHTING)),
+		HighscoreCategory("Distance Fighting", static_cast<uint8_t>(HighscoreCategories_t::DISTANCE_FIGHTING)),
+		HighscoreCategory("Shielding", static_cast<uint8_t>(HighscoreCategories_t::SHIELDING)),
+		HighscoreCategory("Fishing", static_cast<uint8_t>(HighscoreCategories_t::FISHING)),
+		HighscoreCategory("Magic Level", static_cast<uint8_t>(HighscoreCategories_t::MAGIC_LEVEL))
+	};
 }
 
 Game::~Game() = default;
@@ -1570,7 +1619,7 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		auto toHouseTile = map.getTile(mapToPos)->dynamic_self_cast<HouseTile>();
 		auto fromHouseTile = map.getTile(mapFromPos)->dynamic_self_cast<HouseTile>();
 		if (fromHouseTile && (!toHouseTile || toHouseTile->getHouse()->getId() != fromHouseTile->getHouse()->getId())) {
-			player->sendCancelMessage("You can't move this item outside a house.");
+			player->sendCancelMessage("You cannot move this item out of this house.");
 			return;
 		}
 	}
@@ -1617,12 +1666,12 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 			bool allowAnything = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING, __FUNCTION__);
 
 			if (!allowAnything && item->getID() != ITEM_GOLD_COIN && item->getID() != ITEM_PLATINUM_COIN && item->getID() != ITEM_CRYSTAL_COIN) {
-				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+				return RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH;
 			}
 
-			// prevent move up
+			// prevent move up from ponch to store inbox.
 			if (!item->canBeMovedToStore() && fromCylinder->getContainer() && fromCylinder->getContainer()->getID() == ITEM_GOLD_POUCH) {
-				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+				return RETURNVALUE_NOTBOUGHTINSTORE;
 			}
 
 			return RETURNVALUE_NOERROR;
@@ -1632,7 +1681,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 		const auto parentContainer = topParentContainer->getParent() ? topParentContainer->getParent()->getContainer() : nullptr;
 		auto isStoreInbox = parentContainer && parentContainer->isStoreInbox();
 		if (!item->canBeMovedToStore() && (containerID == ITEM_STORE_INBOX || isStoreInbox)) {
-			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+			return RETURNVALUE_NOTBOUGHTINSTORE;
 		}
 
 		if (item->isStoreItem()) {
@@ -1656,7 +1705,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 			}
 
 			if (!isValidMoveItem) {
-				return RETURNVALUE_NOTPOSSIBLE;
+				return RETURNVALUE_ITEMCANNOTBEMOVEDTHERE;
 			}
 
 			if (item->hasOwner() && !item->isOwner(player)) {
@@ -1689,7 +1738,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 			}
 
 			if (item->isStoreItem() && !house) {
-				return RETURNVALUE_NOTPOSSIBLE;
+				return RETURNVALUE_ITEMCANNOTBEMOVEDTHERE;
 			}
 		}
 	}
@@ -5236,7 +5285,8 @@ void Game::playerSetManagedContainer(uint32_t playerId, ObjectCategory_t categor
 	}
 
 	std::shared_ptr<Container> container = thing->getContainer();
-	if (!container || (container->getID() == ITEM_GOLD_POUCH && category != OBJECTCATEGORY_GOLD && !g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING, __FUNCTION__))) {
+	auto allowConfig = !g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING, __FUNCTION__) || !g_configManager().getBoolean(TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY, __FUNCTION__);
+	if (!container || (container->getID() == ITEM_GOLD_POUCH && category != OBJECTCATEGORY_GOLD) && !allowConfig) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -5641,7 +5691,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 			return;
 		}
 
-		if (playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			outfit.lookMount = 0;
 		}
 
@@ -5858,6 +5908,10 @@ void Game::playerSpeakToNpc(std::shared_ptr<Player> player, const std::string &t
 	}
 
 	for (const auto &spectator : Spectators().find<Creature>(player->getPosition()).filter<Npc>()) {
+		if (!player->canSpeakWithHireling(spectator->getNpc()->getSpeechBubble())) {
+			continue;
+		}
+
 		spectator->getNpc()->onCreatureSay(player, TALKTYPE_PRIVATE_PN, text);
 	}
 
@@ -8109,7 +8163,7 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 			break;
 		}
 		case CYCLOPEDIA_CHARACTERINFO_ACHIEVEMENTS:
-			player->sendCyclopediaCharacterAchievements();
+			player->achiev()->sendUnlockedSecretAchievements();
 			break;
 		case CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY:
 			player->sendCyclopediaCharacterItemSummary();
@@ -8289,33 +8343,34 @@ void Game::playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type
 	}
 
 	std::string categoryName;
-	switch (category) {
-		case HIGHSCORE_CATEGORY_FIST_FIGHTING:
+	const auto &categoryType = static_cast<HighscoreCategories_t>(category);
+	switch (categoryType) {
+		case HighscoreCategories_t::FIST_FIGHTING:
 			categoryName = "skill_fist";
 			break;
-		case HIGHSCORE_CATEGORY_CLUB_FIGHTING:
+		case HighscoreCategories_t::CLUB_FIGHTING:
 			categoryName = "skill_club";
 			break;
-		case HIGHSCORE_CATEGORY_SWORD_FIGHTING:
+		case HighscoreCategories_t::SWORD_FIGHTING:
 			categoryName = "skill_sword";
 			break;
-		case HIGHSCORE_CATEGORY_AXE_FIGHTING:
+		case HighscoreCategories_t::AXE_FIGHTING:
 			categoryName = "skill_axe";
 			break;
-		case HIGHSCORE_CATEGORY_DISTANCE_FIGHTING:
+		case HighscoreCategories_t::DISTANCE_FIGHTING:
 			categoryName = "skill_dist";
 			break;
-		case HIGHSCORE_CATEGORY_SHIELDING:
+		case HighscoreCategories_t::SHIELDING:
 			categoryName = "skill_shielding";
 			break;
-		case HIGHSCORE_CATEGORY_FISHING:
+		case HighscoreCategories_t::FISHING:
 			categoryName = "skill_fishing";
 			break;
-		case HIGHSCORE_CATEGORY_MAGIC_LEVEL:
+		case HighscoreCategories_t::MAGIC_LEVEL:
 			categoryName = "maglevel";
 			break;
 		default: {
-			category = HIGHSCORE_CATEGORY_EXPERIENCE;
+			category = static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE);
 			categoryName = "experience";
 			break;
 		}
@@ -8401,6 +8456,16 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
 		return;
 	}
 
+	// Check npc say exhausted
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	if (!player->canSpeakWithHireling(npc->getSpeechBubble())) {
+		return;
+	}
+
 	auto spectators = Spectators().find<Player>(player->getPosition(), true);
 	spectators.insert(npc);
 	internalCreatureSay(player, TALKTYPE_SAY, "hi", false, &spectators);
@@ -8412,6 +8477,8 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
 	} else {
 		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "sail", false, &npcsSpectators);
 	}
+
+	player->updateUIExhausted();
 }
 
 void Game::playerLeaveMarket(uint32_t playerId) {
@@ -10279,4 +10346,62 @@ void Game::afterCreatureZoneChange(std::shared_ptr<Creature> creature, const std
 	for (const auto &zone : zonesEntering) {
 		g_callbacks().executeCallback(EventCallback_t::zoneAfterCreatureEnter, &EventCallback::zoneAfterCreatureEnter, zone, creature);
 	}
+}
+
+const std::unordered_map<uint8_t, std::string> &Game::getHighscoreCategoriesName() const {
+	return m_highscoreCategoriesNames;
+}
+
+const std::vector<HighscoreCategory> &Game::getHighscoreCategories() const {
+	return m_highscoreCategories;
+}
+
+void Game::registerAchievement(uint16_t id, std::string name, std::string description, bool secret, uint8_t grade, uint8_t points) {
+	m_achievements[id] = Achievement();
+	m_achievements[id].id = id;
+	m_achievements[id].name = name;
+	m_achievements[id].description = description;
+	m_achievements[id].secret = secret;
+	m_achievements[id].grade = grade;
+	m_achievements[id].points = points;
+
+	m_achievementsNameToId.emplace(name, id);
+}
+
+Achievement Game::getAchievementById(uint16_t id) {
+	return m_achievements[id];
+}
+
+Achievement Game::getAchievementByName(std::string name) {
+	auto it = m_achievementsNameToId.find(name);
+	if (it != m_achievementsNameToId.end()) {
+		return getAchievementById(it->second);
+	}
+	return {};
+}
+
+std::vector<Achievement> Game::getSecretAchievements() {
+	std::vector<Achievement> secrets;
+	for (const auto &achievement : m_achievements) {
+		if (achievement.second.secret) {
+			secrets.emplace_back(achievement.second);
+		}
+	}
+
+	return secrets;
+}
+
+std::vector<Achievement> Game::getPublicAchievements() {
+	std::vector<Achievement> publics;
+	for (const auto &achievement : m_achievements) {
+		if (!achievement.second.secret) {
+			publics.emplace_back(achievement.second);
+		}
+	}
+
+	return publics;
+}
+
+std::map<uint16_t, Achievement> Game::getAchievements() {
+	return m_achievements;
 }

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -340,7 +340,7 @@ enum MessageClasses : uint8_t {
 	/* Red message in the console*/ /* TALKTYPE_BROADCAST */
 
 	MESSAGE_LOGIN = 17, /* White message at the bottom of the game window and in the console*/
-	MESSAGE_ADMINISTRADOR = 18, /* Red message in game window and in the console*/
+	MESSAGE_ADMINISTRATOR = 18, /* Red message in game window and in the console*/
 	MESSAGE_EVENT_ADVANCE = 19, /* White message in game window and in the console*/
 	MESSAGE_GAME_HIGHLIGHT = 20, /* Red message in game window and in the console*/
 	MESSAGE_FAILURE = 21, /* White message at the bottom of the game window"*/

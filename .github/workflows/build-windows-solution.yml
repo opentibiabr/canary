@@ -53,10 +53,14 @@ jobs:
 
       - name: Install vcpkg
         run: |
+          $vcpkgJson = Get-Content .\vcpkg.json -Raw | ConvertFrom-Json
+          $vcpkgCommitId = $vcpkgJson.'builtin-baseline'.Trim()
+          Write-Host "vcpkg commit ID: $vcpkgCommitId"
           git clone https://github.com/Microsoft/vcpkg.git
           cd vcpkg
-          ./bootstrap-vcpkg.bat
-          ./vcpkg integrate install
+          git checkout $vcpkgCommitId
+          .\bootstrap-vcpkg.bat
+          .\vcpkg integrate install
 
       - name: Print useful paths
         run: |

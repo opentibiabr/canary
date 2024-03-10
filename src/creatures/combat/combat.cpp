@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -510,6 +510,7 @@ bool Combat::setCallback(CallBackParam_t key) {
 
 		case CALLBACK_PARAM_CHAINVALUE: {
 			params.chainCallback = std::make_unique<ChainCallback>();
+			params.chainCallback->setFromLua(true);
 			return true;
 		}
 
@@ -519,6 +520,11 @@ bool Combat::setCallback(CallBackParam_t key) {
 		}
 	}
 	return false;
+}
+
+void Combat::setChainCallback(uint8_t chainTargets, uint8_t chainDistance, bool backtracking) {
+	params.chainCallback = std::make_unique<ChainCallback>(chainTargets, chainDistance, backtracking);
+	g_logger().trace("ChainCallback created: {}, with targets: {}, distance: {}, backtracking: {}", params.chainCallback != nullptr, chainTargets, chainDistance, backtracking);
 }
 
 CallBack* Combat::getCallback(CallBackParam_t key) {
@@ -930,6 +936,82 @@ void Combat::doChainEffect(const Position &origin, const Position &dest, uint8_t
 	}
 }
 
+void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
+	if (!weapon) {
+		return;
+	}
+
+	if (weapon->isChainDisabled()) {
+		return;
+	}
+
+	const auto &weaponType = weapon->getWeaponType();
+	if (weaponType == WEAPON_NONE || weaponType == WEAPON_SHIELD || weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE) {
+		return;
+	}
+
+	// clang-format off
+	static std::list<uint32_t> areaList = {
+		0, 0, 0, 1, 0, 0, 0,
+		0, 1, 1, 1, 1, 1, 0,
+		0, 1, 1, 1, 1, 1, 0,
+		1, 1, 1, 3, 1, 1, 1,
+		0, 1, 1, 1, 1, 1, 0,
+		0, 1, 1, 1, 1, 1, 0,
+		0, 0, 0, 1, 0, 0, 0,
+	};
+	// clang-format on
+	auto area = std::make_unique<AreaCombat>();
+	area->setupArea(areaList, 7);
+	setArea(area);
+	g_logger().trace("Weapon: {}, element type: {}", Item::items[weapon->getID()].name, weapon->params.combatType);
+	setParam(COMBAT_PARAM_TYPE, weapon->params.combatType);
+	if (weaponType != WEAPON_WAND) {
+		setParam(COMBAT_PARAM_BLOCKARMOR, true);
+	}
+
+	weapon->params.chainCallback = std::make_unique<ChainCallback>();
+
+	auto setCommonValues = [this, weapon](double formula, SoundEffect_t impactSound, uint32_t effect) {
+		double weaponSkillFormula = weapon->getChainSkillValue();
+		setPlayerCombatValues(COMBAT_FORMULA_SKILL, 0, 0, weaponSkillFormula ? weaponSkillFormula : formula, 0);
+		setParam(COMBAT_PARAM_IMPACTSOUND, impactSound);
+		setParam(COMBAT_PARAM_EFFECT, effect);
+		setParam(COMBAT_PARAM_BLOCKARMOR, true);
+	};
+
+	setChainCallback(g_configManager().getNumber(COMBAT_CHAIN_TARGETS, __FUNCTION__), 1, true);
+
+	switch (weaponType) {
+		case WEAPON_SWORD:
+			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_SWORD, __FUNCTION__), MELEE_ATK_SWORD, CONST_ME_SLASH);
+			break;
+		case WEAPON_CLUB:
+			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_CLUB, __FUNCTION__), MELEE_ATK_CLUB, CONST_ME_BLACK_BLOOD);
+			break;
+		case WEAPON_AXE:
+			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_AXE, __FUNCTION__), MELEE_ATK_AXE, CONST_ANI_WHIRLWINDAXE);
+			break;
+	}
+
+	if (weaponType == WEAPON_WAND) {
+		static const std::map<CombatType_t, std::pair<MagicEffectClasses, MagicEffectClasses>> elementEffects = {
+			{ COMBAT_DEATHDAMAGE, { CONST_ME_MORTAREA, CONST_ME_BLACK_BLOOD } },
+			{ COMBAT_ENERGYDAMAGE, { CONST_ME_ENERGYAREA, CONST_ME_PINK_ENERGY_SPARK } },
+			{ COMBAT_FIREDAMAGE, { CONST_ME_FIREATTACK, CONST_ME_FIREATTACK } },
+			{ COMBAT_ICEDAMAGE, { CONST_ME_ICEATTACK, CONST_ME_ICEATTACK } },
+			{ COMBAT_EARTHDAMAGE, { CONST_ME_STONES, CONST_ME_POISONAREA } },
+		};
+
+		auto it = elementEffects.find(weapon->getElementType());
+		if (it != elementEffects.end()) {
+			setPlayerCombatValues(COMBAT_FORMULA_SKILL, 0, 0, 1.0, 0);
+			setParam(COMBAT_PARAM_EFFECT, it->second.first);
+			setParam(COMBAT_PARAM_CHAIN_EFFECT, it->second.second);
+		}
+	}
+}
+
 bool Combat::doCombatChain(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, bool aggressive) const {
 	metrics::method_latency measure(__METHOD_NAME__);
 	if (!params.chainCallback) {
@@ -939,7 +1021,7 @@ bool Combat::doCombatChain(std::shared_ptr<Creature> caster, std::shared_ptr<Cre
 	uint8_t maxTargets;
 	uint8_t chainDistance;
 	bool backtracking = false;
-	params.chainCallback->onChainCombat(caster, maxTargets, chainDistance, backtracking);
+	params.chainCallback->getChainValues(caster, maxTargets, chainDistance, backtracking);
 	auto targets = pickChainTargets(caster, params, chainDistance, maxTargets, backtracking, aggressive, target);
 
 	g_logger().debug("[{}] Chain targets: {}", __FUNCTION__, targets.size());
@@ -1476,42 +1558,16 @@ void ValueCallback::getMinMaxValues(std::shared_ptr<Player> player, CombatDamage
 		case COMBAT_FORMULA_SKILL: {
 			// onGetPlayerMinMaxValues(player, attackSkill, attackValue, attackFactor)
 			std::shared_ptr<Item> tool = player->getWeapon();
-			const WeaponShared_ptr weapon = g_weapons().getWeapon(tool);
-			std::shared_ptr<Item> item = nullptr;
-
+			const auto &weapon = g_weapons().getWeapon(tool);
+			int32_t attackSkill = 0;
+			float attackFactor = 0;
 			if (weapon) {
-				attackValue = tool->getAttack();
-				if (tool->getWeaponType() == WEAPON_AMMO) {
-					item = player->getWeapon(true);
-					if (item) {
-						attackValue += item->getAttack();
-					}
-				}
-
-				CombatType_t elementType = weapon->getElementType();
-				damage.secondary.type = elementType;
-
-				if (elementType != COMBAT_NONE) {
-					if (weapon) {
-						elementAttack = weapon->getElementDamageValue();
-						shouldCalculateSecondaryDamage = true;
-						attackValue += elementAttack;
-					}
-				} else {
-					shouldCalculateSecondaryDamage = false;
-				}
-
-				if (useCharges) {
-					auto charges = tool->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
-					if (charges != 0) {
-						g_game().transformItem(tool, tool->getID(), charges - 1);
-					}
-				}
+				shouldCalculateSecondaryDamage = weapon->calculateSkillFormula(player, attackSkill, attackValue, attackFactor, elementAttack, damage, useCharges);
 			}
 
-			lua_pushnumber(L, player->getWeaponSkill(item ? item : tool));
+			lua_pushnumber(L, attackSkill);
 			lua_pushnumber(L, attackValue);
-			lua_pushnumber(L, player->getAttackFactor());
+			lua_pushnumber(L, attackFactor);
 			parameters += 3;
 			break;
 		}
@@ -1635,7 +1691,19 @@ void TargetCallback::onTargetCombat(std::shared_ptr<Creature> creature, std::sha
 
 //**********************************************************//
 
-void ChainCallback::onChainCombat(std::shared_ptr<Creature> creature, uint8_t &maxTargets, uint8_t &chainDistance, bool &backtracking) const {
+void ChainCallback::getChainValues(const std::shared_ptr<Creature> &creature, uint8_t &maxTargets, uint8_t &chainDistance, bool &backtracking) {
+	if (m_fromLua) {
+		onChainCombat(creature, maxTargets, chainDistance, backtracking);
+		return;
+	}
+
+	if (m_chainTargets && m_chainDistance) {
+		maxTargets = m_chainTargets;
+		chainDistance = m_chainDistance;
+		backtracking = m_backtracking;
+	}
+}
+void ChainCallback::onChainCombat(std::shared_ptr<Creature> creature, uint8_t &maxTargets, uint8_t &chainDistance, bool &backtracking) {
 	// onChainCombat(creature)
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[ChainCallback::onTargetCombat - Creature {}] "

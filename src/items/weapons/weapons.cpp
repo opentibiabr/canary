@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -31,12 +31,34 @@ const WeaponShared_ptr Weapons::getWeapon(std::shared_ptr<Item> item) const {
 	return it->second;
 }
 
-void Weapons::clear() {
+void Weapons::clear(bool isFromXML /*= false*/) {
+	if (isFromXML) {
+		int numRemoved = 0;
+		for (auto it = weapons.begin(); it != weapons.end();) {
+			if (it->second && it->second->isFromXML()) {
+				g_logger().debug("Weapon with id '{}' is from XML and will be removed.", it->first);
+				it = weapons.erase(it);
+				++numRemoved;
+			} else {
+				++it;
+			}
+		}
+
+		if (numRemoved > 0) {
+			g_logger().debug("Removed '{}' Weapon from XML.", numRemoved);
+		}
+
+		return;
+	}
+
 	weapons.clear();
 }
 
-bool Weapons::registerLuaEvent(WeaponShared_ptr event) {
+bool Weapons::registerLuaEvent(WeaponShared_ptr event, bool fromXML /*= false*/) {
 	weapons[event->getID()] = event;
+	if (fromXML) {
+		event->setFromXML(fromXML);
+	}
 	return true;
 }
 
@@ -190,6 +212,7 @@ void Weapon::internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 		var.type = VARIANT_NUMBER;
 		var.number = target->getID();
 		executeUseWeapon(player, var);
+		g_logger().debug("Weapon::internalUseWeapon - Lua callback executed.");
 	} else {
 		CombatDamage damage;
 		WeaponType_t weaponType = item->getWeaponType();
@@ -198,8 +221,10 @@ void Weapon::internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 		} else {
 			damage.origin = ORIGIN_MELEE;
 		}
+
 		damage.primary.type = params.combatType;
 		damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
+		g_logger().debug("[1] Weapon::internalUseWeapon - primary damage: {}", damage.primary.value);
 		damage.secondary.type = getElementType();
 
 		// Cleave damage
@@ -214,14 +239,20 @@ void Weapon::internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 		}
 
 		if (damage.secondary.type == COMBAT_NONE) {
-			damage.primary.value = (getWeaponDamage(player, target, item, false) * damageModifier / 100) * damagePercent / 100;
+			damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
 			damage.secondary.value = 0;
 		} else {
-			damage.primary.value = (getWeaponDamage(player, target, item, false) * damageModifier / 100) * damagePercent / 100;
+			damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
 			damage.secondary.value = (getElementDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
 		}
 
-		Combat::doCombatHealth(player, target, damage, params);
+		if (g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM, __FUNCTION__) && params.chainCallback) {
+			m_combat->doCombatChain(player, target, params.aggressive);
+		} else {
+			Combat::doCombatHealth(player, target, damage, params);
+		}
+
+		g_logger().debug("Weapon::internalUseWeapon - cpp callback executed.");
 	}
 
 	onUsedWeapon(player, item, target->getTile());
@@ -354,6 +385,43 @@ void Weapon::decrementItemCount(std::shared_ptr<Item> item) {
 	} else {
 		g_game().internalRemoveItem(item);
 	}
+}
+
+bool Weapon::calculateSkillFormula(const std::shared_ptr<Player> &player, int32_t &attackSkill, int32_t &attackValue, float &attackFactor, int16_t &elementAttack, CombatDamage &damage, bool useCharges /* = false*/) const {
+	std::shared_ptr<Item> tool = player->getWeapon();
+	if (!tool) {
+		return false;
+	}
+
+	std::shared_ptr<Item> item = nullptr;
+	attackValue = tool->getAttack();
+	if (tool->getWeaponType() == WEAPON_AMMO) {
+		item = player->getWeapon(true);
+		if (item) {
+			attackValue += item->getAttack();
+		}
+	}
+
+	CombatType_t elementType = getElementType();
+	damage.secondary.type = elementType;
+
+	bool shouldCalculateSecondaryDamage = false;
+	if (elementType != COMBAT_NONE) {
+		elementAttack = getElementDamageValue();
+		shouldCalculateSecondaryDamage = true;
+		attackValue += elementAttack;
+	}
+
+	if (useCharges) {
+		auto charges = tool->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
+		if (charges != 0) {
+			g_game().transformItem(tool, tool->getID(), charges - 1);
+		}
+	}
+
+	attackSkill = player->getWeaponSkill(item ? item : tool);
+	attackFactor = player->getAttackFactor();
+	return shouldCalculateSecondaryDamage;
 }
 
 WeaponMelee::WeaponMelee(LuaScriptInterface* interface) :
@@ -813,11 +881,27 @@ void WeaponWand::configureWeapon(const ItemType &it) {
 	Weapon::configureWeapon(it);
 }
 
-int32_t WeaponWand::getWeaponDamage(std::shared_ptr<Player>, std::shared_ptr<Creature>, std::shared_ptr<Item>, bool maxDamage /*= false*/) const {
-	if (maxDamage) {
-		return -maxChange;
+int32_t WeaponWand::getWeaponDamage(std::shared_ptr<Player> player, std::shared_ptr<Creature>, std::shared_ptr<Item>, bool maxDamage /* = false*/) const {
+	if (!g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM, __FUNCTION__)) {
+		// Returns maximum damage or a random value between minChange and maxChange
+		return maxDamage ? -maxChange : -normal_random(minChange, maxChange);
 	}
-	return -normal_random(minChange, maxChange);
+
+	// If chain system is enabled, calculates magic-based damage
+	int32_t attackSkill;
+	int32_t attackValue;
+	float attackFactor;
+	[[maybe_unused]] int16_t elementAttack;
+	[[maybe_unused]] CombatDamage combatDamage;
+	calculateSkillFormula(player, attackSkill, attackValue, attackFactor, elementAttack, combatDamage);
+
+	auto magLevel = player->getMagicLevel();
+	auto level = player->getLevel();
+	double min = (level / 5.0) + (magLevel + attackValue) / 3.0;
+	double max = (level / 5.0) + (magLevel + attackValue);
+
+	// Returns the calculated maximum damage or a random value between the calculated minimum and maximum
+	return maxDamage ? -max : -normal_random(min, max);
 }
 
 int16_t WeaponWand::getElementDamageValue() const {

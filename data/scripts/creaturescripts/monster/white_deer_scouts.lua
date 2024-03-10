@@ -1,5 +1,6 @@
 local whiteDeerScoutsDeath = CreatureEvent("WhiteDeerScoutsDeath")
-function whiteDeerScoutsDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekiller, lasthitunjustified, mostdamageunjustified)
+
+function whiteDeerScoutsDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)
 	local targetMonster = creature:getMonster()
 	if not targetMonster or targetMonster:getMaster() then
 		return true
@@ -16,6 +17,7 @@ function whiteDeerScoutsDeath.onDeath(creature, corpse, lasthitkiller, mostdamag
 
 		targetMonster:say("The elves came too late to save the deer, however they might avenge it.", TALKTYPE_MONSTER_SAY)
 	end
+	return true
 end
 
 whiteDeerScoutsDeath:register()

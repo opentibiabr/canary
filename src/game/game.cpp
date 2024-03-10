@@ -5694,7 +5694,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 			return;
 		}
 
-		if (playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			outfit.lookMount = 0;
 		}
 
@@ -5911,6 +5911,10 @@ void Game::playerSpeakToNpc(std::shared_ptr<Player> player, const std::string &t
 	}
 
 	for (const auto &spectator : Spectators().find<Creature>(player->getPosition()).filter<Npc>()) {
+		if (!player->canSpeakWithHireling(spectator->getNpc()->getSpeechBubble())) {
+			continue;
+		}
+
 		spectator->getNpc()->onCreatureSay(player, TALKTYPE_PRIVATE_PN, text);
 	}
 
@@ -8455,6 +8459,16 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
 		return;
 	}
 
+	// Check npc say exhausted
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	if (!player->canSpeakWithHireling(npc->getSpeechBubble())) {
+		return;
+	}
+
 	auto spectators = Spectators().find<Player>(player->getPosition(), true);
 	spectators.insert(npc);
 	internalCreatureSay(player, TALKTYPE_SAY, "hi", false, &spectators);
@@ -8466,6 +8480,8 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
 	} else {
 		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "sail", false, &npcsSpectators);
 	}
+
+	player->updateUIExhausted();
 }
 
 void Game::playerLeaveMarket(uint32_t playerId) {

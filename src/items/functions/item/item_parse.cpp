@@ -1026,7 +1026,7 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 		auto stringKey = asLowerCaseString(subKeyAttribute.as_string());
 		if (stringKey == "slot") {
 			auto slotName = asLowerCaseString(subValueAttribute.as_string());
-			if (moveevent && slotName != "two-handed" && (moveevent->getEventType() == MOVE_EVENT_EQUIP || moveevent->getEventType() == MOVE_EVENT_DEEQUIP)) {
+			if (moveevent && (moveevent->getEventType() == MOVE_EVENT_EQUIP || moveevent->getEventType() == MOVE_EVENT_DEEQUIP)) {
 				if (slotName == "head") {
 					moveevent->setSlot(SLOTP_HEAD);
 				} else if (slotName == "necklace") {

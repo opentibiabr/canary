@@ -46,7 +46,8 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 			if (msg.getString(4) == "info") {
 				g_dispatcher().addEvent([self = std::static_pointer_cast<ProtocolStatus>(shared_from_this())] {
 					self->sendStatusString();
-				}, "ProtocolStatus::sendStatusString");
+				},
+										"ProtocolStatus::sendStatusString");
 				return;
 			}
 			break;
@@ -61,7 +62,8 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 			}
 			g_dispatcher().addEvent([self = std::static_pointer_cast<ProtocolStatus>(shared_from_this()), requestedInfo, characterName] {
 				self->sendInfo(requestedInfo, characterName);
-				}, "ProtocolStatus::sendInfo");
+			},
+									"ProtocolStatus::sendInfo");
 
 			return;
 		}

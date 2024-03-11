@@ -176,5 +176,6 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 
 	g_dispatcher().addEvent([self = std::static_pointer_cast<ProtocolLogin>(shared_from_this()), accountDescriptor, password] {
 		self->getCharacterList(accountDescriptor, password);
-	}, "ProtocolLogin::getCharacterList");
+	},
+							"ProtocolLogin::getCharacterList");
 }

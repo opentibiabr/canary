@@ -4378,8 +4378,10 @@ void Player::doAttacking(uint32_t) {
 			result = Weapon::useFist(static_self_cast<Player>(), attackedCreature);
 		}
 
-		const auto& task = createPlayerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay),
-			[playerId = getID()] { g_game().checkCreatureAttack(playerId); }, "Game::checkCreatureAttack");
+		const auto &task = createPlayerTask(
+			std::max<uint32_t>(SCHEDULER_MINTICKS, delay),
+			[playerId = getID()] { g_game().checkCreatureAttack(playerId); }, "Game::checkCreatureAttack"
+		);
 
 		if (!classicSpeed) {
 			setNextActionTask(task, false);

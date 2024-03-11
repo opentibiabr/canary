@@ -270,7 +270,6 @@ void SpawnMonster::checkSpawnMonster() {
 		checkSpawnMonsterEvent = g_dispatcher().scheduleEvent(
 			getInterval(), [this] { checkSpawnMonster(); }, "SpawnMonster::checkSpawnMonster"
 		);
-
 	}
 }
 

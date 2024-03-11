@@ -257,7 +257,8 @@ void Creature::addEventWalk(bool firstStep) {
 			g_game().checkCreatureWalk(self->getID());
 		}
 
-		self->eventWalk = g_dispatcher().scheduleEvent(static_cast<uint32_t>(ticks),
+		self->eventWalk = g_dispatcher().scheduleEvent(
+			static_cast<uint32_t>(ticks),
 			[creatureId = self->getID()] { g_game().checkCreatureWalk(creatureId); }, "Creature::checkCreatureWalk"
 		);
 	});
@@ -599,7 +600,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 	if (followCreature && (creature == getCreature() || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
-			g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId);	}, "Game::updateCreatureWalk");
+			g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, "Game::updateCreatureWalk");
 		}
 
 		if (newPos.z != oldPos.z || !canSee(followCreature->getPosition())) {
@@ -815,7 +816,8 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 				if (player->checkAutoLoot(monster->isRewardBoss()) && corpseContainer && mostDamageCreature->getPlayer()) {
 					g_dispatcher().addEvent([player, corpseContainer, corpsePosition = corpse->getPosition()] {
 						g_game().playerQuickLootCorpse(player, corpseContainer, corpsePosition);
-						}, "Game::playerQuickLootCorpse");
+					},
+											"Game::playerQuickLootCorpse");
 				}
 			}
 		}

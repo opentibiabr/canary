@@ -524,7 +524,7 @@ bool Combat::setCallback(CallBackParam_t key) {
 
 void Combat::setChainCallback(uint8_t chainTargets, uint8_t chainDistance, bool backtracking) {
 	params.chainCallback = std::make_unique<ChainCallback>(chainTargets, chainDistance, backtracking);
-	g_logger().debug("ChainCallback created: {}, with targets: {}, distance: {}, backtracking: {}", params.chainCallback != nullptr, chainTargets, chainDistance, backtracking);
+	g_logger().trace("ChainCallback created: {}, with targets: {}, distance: {}, backtracking: {}", params.chainCallback != nullptr, chainTargets, chainDistance, backtracking);
 }
 
 CallBack* Combat::getCallback(CallBackParam_t key) {
@@ -941,6 +941,15 @@ void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
 		return;
 	}
 
+	if (weapon->isChainDisabled()) {
+		return;
+	}
+
+	const auto &weaponType = weapon->getWeaponType();
+	if (weaponType == WEAPON_NONE || weaponType == WEAPON_SHIELD || weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE) {
+		return;
+	}
+
 	// clang-format off
 	static std::list<uint32_t> areaList = {
 		0, 0, 0, 1, 0, 0, 0,
@@ -957,7 +966,6 @@ void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
 	setArea(area);
 	g_logger().trace("Weapon: {}, element type: {}", Item::items[weapon->getID()].name, weapon->params.combatType);
 	setParam(COMBAT_PARAM_TYPE, weapon->params.combatType);
-	const auto &weaponType = weapon->getWeaponType();
 	if (weaponType != WEAPON_WAND) {
 		setParam(COMBAT_PARAM_BLOCKARMOR, true);
 	}
@@ -976,15 +984,13 @@ void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
 
 	switch (weaponType) {
 		case WEAPON_SWORD:
-			setCommonValues(1.1, MELEE_ATK_SWORD, CONST_ME_SLASH);
+			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_SWORD, __FUNCTION__), MELEE_ATK_SWORD, CONST_ME_SLASH);
 			break;
-
 		case WEAPON_CLUB:
-			setCommonValues(0.7, MELEE_ATK_CLUB, CONST_ME_BLACK_BLOOD);
+			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_CLUB, __FUNCTION__), MELEE_ATK_CLUB, CONST_ME_BLACK_BLOOD);
 			break;
-
 		case WEAPON_AXE:
-			setCommonValues(0.9, MELEE_ATK_AXE, CONST_ANI_WHIRLWINDAXE);
+			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_AXE, __FUNCTION__), MELEE_ATK_AXE, CONST_ANI_WHIRLWINDAXE);
 			break;
 	}
 

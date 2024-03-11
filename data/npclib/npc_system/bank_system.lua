@@ -181,7 +181,6 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 	elseif npcHandler:getTopic(playerId) == 7 then
 	if MsgContains(message, "yes") then
 		local totalValue = count[playerId]
-		local totalPiles = 0
 		local crystalCoins = math.floor(totalValue / 10000)
 		totalValue = totalValue % 10000
 		local platinumCoins = math.floor(totalValue / 100)
@@ -190,7 +189,7 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 		local crystalPiles = math.floor((crystalCoins + 99) / 100)
 		local platinumPiles = math.floor((platinumCoins + 99) / 100)
 		local goldPiles = math.floor((goldCoins + 99) / 100)
-		totalPiles = crystalPiles + platinumPiles + goldPiles
+		local totalPiles = crystalPiles + platinumPiles + goldPiles
 		if player:getFreeCapacity() >= getMoneyWeight(count[playerId]) then
 			if player:getFreeBackpackSlots() >= totalPiles then
 				if not player:withdrawMoney(count[playerId]) then

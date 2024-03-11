@@ -4656,23 +4656,17 @@ void ProtocolGame::updateCoinBalance() {
 		return;
 	}
 
-	g_dispatcher().addEvent(
-		std::bind(
-			[](uint32_t playerId) {
-				auto threadPlayer = g_game().getPlayerByID(playerId);
-				if (threadPlayer && threadPlayer->getAccount()) {
-					auto [coins, errCoin] = threadPlayer->getAccount()->getCoins(enumToValue(CoinType::Normal));
-					auto [transferCoins, errTCoin] = threadPlayer->getAccount()->getCoins(enumToValue(CoinType::Transferable));
+		g_dispatcher().addEvent([playerId = player->getID()] {
+			const auto& threadPlayer = g_game().getPlayerByID(playerId);
+			if (threadPlayer && threadPlayer->getAccount()) {
+				const auto [coins, errCoin] = threadPlayer->getAccount()->getCoins(enumToValue(CoinType::Normal));
+				const auto [transferCoins, errTCoin] = threadPlayer->getAccount()->getCoins(enumToValue(CoinType::Transferable));
 
-					threadPlayer->coinBalance = coins;
-					threadPlayer->coinTransferableBalance = transferCoins;
-					threadPlayer->sendCoinBalance();
-				}
-			},
-			player->getID()
-		),
-		"ProtocolGame::updateCoinBalance"
-	);
+				threadPlayer->coinBalance = coins;
+				threadPlayer->coinTransferableBalance = transferCoins;
+				threadPlayer->sendCoinBalance();
+			}
+		}, "ProtocolGame::updateCoinBalance");
 }
 
 void ProtocolGame::sendMarketLeave() {

@@ -47,7 +47,7 @@ void ServiceManager::stop() {
 
 	for (auto &servicePortIt : acceptors) {
 		try {
-			io_service.post(std::bind_front(&ServicePort::onStopServer, servicePortIt.second));
+			io_service.post([servicePort = servicePortIt.second] { servicePort->onStopServer(); });
 		} catch (const std::system_error &e) {
 			g_logger().warn("[ServiceManager::stop] - Network error: {}", e.what());
 		}
@@ -56,7 +56,9 @@ void ServiceManager::stop() {
 	acceptors.clear();
 
 	death_timer.expires_from_now(std::chrono::seconds(3));
-	death_timer.async_wait(std::bind(&ServiceManager::die, this));
+	death_timer.async_wait([this](const std::error_code &err) {
+		die();
+	});
 }
 
 ServicePort::~ServicePort() {

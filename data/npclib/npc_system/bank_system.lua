@@ -216,8 +216,8 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 	elseif MsgContains(message, "no") then
 			npcHandler:say("The customer is king! Come back anytime you want to if you wish to {withdraw} your money.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
-	end
-	return true
+		end
+		return true
 		-- Transfer
 	elseif MsgContains(message, "transfer") then
 		count[playerId] = getMoneyCount(message)

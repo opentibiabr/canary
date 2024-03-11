@@ -82,7 +82,6 @@ local foods = {
 	[8017] = { 5, "Munch." }, -- beetroot
 	[8019] = { 11, "Yum." }, -- chocolate cake
 	[8177] = { 7, "Slurp." }, -- yummy gummy worm
-	[8194] = { 0, "Urgh.", CONST_ME_MAGIC_BLUE }, -- garlic bread
 	[8197] = { 5, "Crunch." }, -- bulb of garlic
 	[9537] = { 0, "Your head begins to feel better." }, -- headache pill
 	[10329] = { 15, "Yum." }, -- rice ball
@@ -124,29 +123,24 @@ local foods = {
 }
 
 local food = Action()
+
 function food.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local bloodBrothersStorage = Storage.Quest.U8_4.BloodBrothers
 	local itemFood = foods[item.itemid]
-	local effect = itemFood[3]
 	if not itemFood then
 		return false
 	end
+
 	local condition = player:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 	if condition and math.floor(condition:getTicks() / 1000 + (itemFood[1] * 12)) >= 1200 then
 		player:sendTextMessage(MESSAGE_FAILURE, "You are full.")
 		return true
 	end
-	if item.itemid == 8194 and player:getStorageValue(bloodBrothersStorage.GarlicBread) == 0 then
-		player:setStorageValue(bloodBrothersStorage.GarlicBread, 1)
-	end
+
 	player:feed(itemFood[1] * 12)
 	player:say(itemFood[2], TALKTYPE_MONSTER_SAY)
-	item:remove(1)
 	player:updateSupplyTracker(item)
 	player:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ACTION_EAT, player:isInGhostMode() and nil or player)
-	if effect then
-		player:getPosition():sendMagicEffect(effect)
-	end
+	item:remove(1)
 	return true
 end
 

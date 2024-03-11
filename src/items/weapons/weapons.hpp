@@ -192,6 +192,14 @@ public:
 		return m_chainSkillValue;
 	}
 
+	void setDisabledChain() {
+		m_isDisabledChain = true;
+	}
+
+	bool isChainDisabled() const {
+		return m_isDisabledChain;
+	}
+
 	const WeaponType_t getWeaponType() const {
 		return weaponType;
 	}
@@ -243,6 +251,7 @@ private:
 	bool enabled = true;
 	bool premium = false;
 	bool wieldUnproperly = false;
+	bool m_isDisabledChain = false;
 	std::string vocationString = "";
 
 	void onUsedWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> item, std::shared_ptr<Tile> destTile) const;

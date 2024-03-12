@@ -342,17 +342,30 @@ void Game::start(ServiceManager* manager) {
 	int minutes = tms->tm_min;
 	lightHour = (minutes * LIGHT_DAY_LENGTH) / 60;
 
-	g_dispatcher().scheduleEvent(EVENT_MS + 1000, std::bind_front(&Game::createFiendishMonsters, this), "Game::createFiendishMonsters");
-	g_dispatcher().scheduleEvent(EVENT_MS + 1000, std::bind_front(&Game::createInfluencedMonsters, this), "Game::createInfluencedMonsters");
-
-	g_dispatcher().cycleEvent(EVENT_MS, std::bind_front(&Game::updateForgeableMonsters, this), "Game::updateForgeableMonsters");
-	g_dispatcher().cycleEvent(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this), "Game::checkLight");
-	g_dispatcher().cycleEvent(EVENT_CHECK_CREATURE_INTERVAL, std::bind(&Game::checkCreatures, this), "Game::checkCreatures");
-	g_dispatcher().cycleEvent(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this), "Game::checkImbuements");
+	g_dispatcher().scheduleEvent(
+		EVENT_MS + 1000, [this] { createFiendishMonsters(); }, "Game::createFiendishMonsters"
+	);
+	g_dispatcher().scheduleEvent(
+		EVENT_MS + 1000, [this] { createInfluencedMonsters(); }, "Game::createInfluencedMonsters"
+	);
+	g_dispatcher().cycleEvent(
+		EVENT_MS, [this] { updateForgeableMonsters(); }, "Game::updateForgeableMonsters"
+	);
+	g_dispatcher().cycleEvent(
+		EVENT_LIGHTINTERVAL_MS, [this] { checkLight(); }, "Game::checkLight"
+	);
+	g_dispatcher().cycleEvent(
+		EVENT_CHECK_CREATURE_INTERVAL, [this] { checkCreatures(); }, "Game::checkCreatures"
+	);
+	g_dispatcher().cycleEvent(
+		EVENT_IMBUEMENT_INTERVAL, [this] { checkImbuements(); }, "Game::checkImbuements"
+	);
 	g_dispatcher().cycleEvent(
 		EVENT_LUA_GARBAGE_COLLECTION, [this] { g_luaEnvironment().collectGarbage(); }, "Calling GC"
 	);
-	g_dispatcher().cycleEvent(EVENT_REFRESH_MARKET_PRICES, std::bind_front(&Game::loadItemsPrice, this), "Game::loadItemsPrice");
+	g_dispatcher().cycleEvent(
+		EVENT_REFRESH_MARKET_PRICES, [this] { loadItemsPrice(); }, "Game::loadItemsPrice"
+	);
 }
 
 GameState_t Game::getGameState() const {
@@ -418,7 +431,7 @@ void Game::setGameState(GameState_t newState) {
 			saveMotdNum();
 			g_saveManager().saveAll();
 
-			g_dispatcher().addEvent(std::bind(&Game::shutdown, this), "Game::shutdown");
+			g_dispatcher().addEvent([this] { shutdown(); }, "Game::shutdown");
 
 			break;
 		}
@@ -1165,9 +1178,11 @@ void Game::playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t 
 		}
 
 		if (Position::areInRange<1, 1, 0>(movingCreature->getPosition(), player->getPosition())) {
-			std::shared_ptr<Task> task = createPlayerTask(
+			const auto &task = createPlayerTask(
 				g_configManager().getNumber(PUSH_DELAY, __FUNCTION__),
-				std::bind(&Game::playerMoveCreatureByID, this, player->getID(), movingCreature->getID(), movingCreature->getPosition(), tile->getPosition()),
+				[this, player, movingCreature, tile] {
+					playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreature->getPosition(), tile->getPosition());
+				},
 				"Game::playerMoveCreatureByID"
 			);
 			player->setNextActionPushTask(task);
@@ -1208,8 +1223,9 @@ void Game::playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, 
 void Game::playerMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> movingCreature, const Position &movingCreatureOrigPos, std::shared_ptr<Tile> toTile) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	if (!player->canDoAction()) {
-		uint32_t delay = 600;
-		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerMoveCreatureByID, this, player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()), "Game::playerMoveCreatureByID");
+		const auto &task = createPlayerTask(
+			600, [this, player, movingCreature, toTile, movingCreatureOrigPos] { playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()); }, "Game::playerMoveCreatureByID"
+		);
 
 		player->setNextActionPushTask(task);
 		return;
@@ -1222,9 +1238,9 @@ void Game::playerMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Cr
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(movingCreatureOrigPos, listDir, 0, 1, true, true)) {
 			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
-
-			std::shared_ptr<Task> task = createPlayerTask(600, std::bind(&Game::playerMoveCreatureByID, this, player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()), "Game::playerMoveCreatureByID");
-
+			const auto &task = createPlayerTask(
+				600, [this, player, movingCreature, toTile, movingCreatureOrigPos] { playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()); }, "Game::playerMoveCreatureByID"
+			);
 			player->pushEvent(true);
 			player->setNextActionPushTask(task);
 		} else {
@@ -6232,7 +6248,6 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 	std::shared_ptr<Player> targetPlayer = target->getPlayer();
 
 	if (damage.primary.type != COMBAT_NONE) {
-
 		damage.primary.value = -damage.primary.value;
 		// Damage healing primary
 		if (attacker) {

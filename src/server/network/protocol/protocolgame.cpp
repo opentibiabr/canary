@@ -3949,6 +3949,10 @@ void ProtocolGame::sendStats() {
 }
 
 void ProtocolGame::sendBasicData() {
+	if (!player) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0x9F);
 	if (player->isPremium() || player->isVip()) {
@@ -6110,6 +6114,10 @@ void ProtocolGame::sendPartyCreatureShowStatus(std::shared_ptr<Creature> target,
 }
 
 void ProtocolGame::sendPartyPlayerVocation(std::shared_ptr<Player> target) {
+	if (!target) {
+		return;
+	}
+
 	uint32_t cid = target->getID();
 	if (!knownCreatureSet.contains(cid)) {
 		sendPartyCreatureUpdate(target);
@@ -6129,7 +6137,7 @@ void ProtocolGame::sendPartyPlayerVocation(std::shared_ptr<Player> target) {
 }
 
 void ProtocolGame::sendPlayerVocation(std::shared_ptr<Player> target) {
-	if (!player || oldProtocol) {
+	if (!player || !target || oldProtocol) {
 		return;
 	}
 

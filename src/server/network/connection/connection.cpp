@@ -355,7 +355,7 @@ uint32_t Connection::getIP() {
 }
 
 void Connection::internalSend(const OutputMessage_ptr &outputMessage) {
-	writeTimer.expires_from_now(std::chrono::seconds(CONNECTION_WRITE_TIMEOUT));																														
+	writeTimer.expires_from_now(std::chrono::seconds(CONNECTION_WRITE_TIMEOUT));
 	readTimer.async_wait([self = shared_from_this()](const std::error_code &error) { Connection::handleTimeout(std::weak_ptr<Connection>(self), error); });
 
 	try {

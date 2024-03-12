@@ -166,9 +166,10 @@ void ServicePort::open(uint16_t port) {
 		g_logger().warn("[ServicePort::open] - Error code: {}", e.what());
 
 		pendingStart = true;
-		g_dispatcher().scheduleEvent(15000,
-			[self = shared_from_this(), port] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), port); }
-		, "ServicePort::openAcceptor");
+		g_dispatcher().scheduleEvent(
+			15000,
+			[self = shared_from_this(), port] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), port); }, "ServicePort::openAcceptor"
+		);
 	}
 }
 

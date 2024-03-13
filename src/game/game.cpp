@@ -2581,7 +2581,15 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 			uint16_t itemId = item->getID();
 			int32_t count = item->getSubType();
 
-			if (curType.id != newType.id) {
+			auto decaying = item->getDecaying();
+			// If the item is decaying, we need to transform it to the new item
+			if (decaying > DECAYING_FALSE && item->getDuration() <= 1) {
+				g_logger().debug("Decay duration old type {}, transformEquipTo {}, transformDeEquipTo {}", curType.decayTo, curType.transformEquipTo, curType.transformDeEquipTo);
+				g_logger().debug("Decay duration new type, decayTo {}, transformEquipTo {}, transformDeEquipTo {}", newType.decayTo, newType.transformEquipTo, newType.transformDeEquipTo);
+				if (newType.decayTo) {
+					itemId = newType.decayTo;
+				}
+			} else if (curType.id != newType.id) {
 				if (newType.group != curType.group) {
 					item->setDefaultSubtype();
 				}

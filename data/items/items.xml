@@ -22329,7 +22329,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="slot" value="hand"/>
-			<attribute key="chain" value="1"/>
+			<attribute key="chain" value="0.9"/>
 		</attribute>
 	</item>
 	<item id="8097" article="a" name="solar axe">

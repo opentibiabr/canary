@@ -16,18 +16,7 @@
 #include "kv/kv.hpp"
 
 PlayerAchievement::PlayerAchievement(Player &player) :
-	m_player(player) {
-	auto unlockedAchievements = getUnlockedKV()->keys();
-	for (const auto &achievementName : unlockedAchievements) {
-		const Achievement &achievement = g_game().getAchievementByName(achievementName);
-		if (achievement.id == 0) {
-			g_logger().error("[{}] - Achievement {} not found.", __FUNCTION__, achievementName);
-			continue;
-		}
-
-		m_achievementsUnlocked.push_back({ achievement.id, getUnlockedKV()->get(achievementName)->getNumber() });
-	}
-}
+	m_player(player) { }
 
 bool PlayerAchievement::add(uint16_t id, bool message /* = true*/, uint32_t timestamp /* = 0*/) {
 	if (isUnlocked(id)) {
@@ -106,6 +95,22 @@ void PlayerAchievement::removePoints(uint16_t points) {
 
 std::vector<std::pair<uint16_t, uint32_t>> PlayerAchievement::getUnlockedAchievements() const {
 	return m_achievementsUnlocked;
+}
+
+void PlayerAchievement::loadUnlockedAchievements() {
+	const auto &unlockedAchievements = getUnlockedKV()->keys();
+	g_logger().debug("[{}] - Loading unlocked achievements: {}", __FUNCTION__, unlockedAchievements.size());
+	for (const auto &achievementName : unlockedAchievements) {
+		const Achievement &achievement = g_game().getAchievementByName(achievementName);
+		if (achievement.id == 0) {
+			g_logger().error("[{}] - Achievement {} not found.", __FUNCTION__, achievementName);
+			continue;
+		}
+
+		g_logger().debug("[{}] - Achievement {} found for player {}.", __FUNCTION__, achievementName, m_player.getName());
+
+		m_achievementsUnlocked.push_back({ achievement.id, getUnlockedKV()->get(achievementName)->getNumber() });
+	}
 }
 
 void PlayerAchievement::sendUnlockedSecretAchievements() {

@@ -1743,7 +1743,7 @@ function GameStore.processExpBoostPuchase(player)
 		player:setStorageValue(GameStore.Storages.expBoostCount, 1)
 	end
 
-	player:setStorageValue(GameStore.Storages.expBoostCount, expBoostCount + 1)
+	player:setStorageValue(GameStore.Storages.expBoostCount, player:getStorageValue(GameStore.Storages.expBoostCount) + 1)
 end
 
 function GameStore.processPreyThirdSlot(player)

@@ -1025,8 +1025,8 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 
 		auto stringKey = asLowerCaseString(subKeyAttribute.as_string());
 		if (stringKey == "slot") {
-			if (moveevent && (moveevent->getEventType() == MOVE_EVENT_EQUIP || moveevent->getEventType() == MOVE_EVENT_DEEQUIP)) {
-				auto slotName = asLowerCaseString(subValueAttribute.as_string());
+			auto slotName = asLowerCaseString(subValueAttribute.as_string());
+			if (moveevent && slotName != "two-handed" && (moveevent->getEventType() == MOVE_EVENT_EQUIP || moveevent->getEventType() == MOVE_EVENT_DEEQUIP)) {
 				if (slotName == "head") {
 					moveevent->setSlot(SLOTP_HEAD);
 				} else if (slotName == "necklace") {
@@ -1055,7 +1055,6 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 			} else if (weapon) {
 				uint16_t id = weapon->getID();
 				ItemType &it = Item::items.getItemType(id);
-				auto slotName = asLowerCaseString(subValueAttribute.as_string());
 				if (slotName == "two-handed") {
 					it.slotPosition = SLOTP_TWO_HAND;
 				} else {

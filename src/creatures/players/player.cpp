@@ -4892,7 +4892,7 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 				return true;
 			}
 			return false; // have lookType on list and addons don't match
-		}								 
+		}
 	}
 	return false;
 }
@@ -4919,7 +4919,7 @@ bool Player::canLogout() {
 }
 
 void Player::addOutfit(uint16_t lookType, uint8_t addons) {
-	for (auto &[outfit, addon] : outfits) {
+	for (auto& [outfit, addon] : outfits) {
 		if (outfit == lookType) {
 			addon |= addons;
 			return;

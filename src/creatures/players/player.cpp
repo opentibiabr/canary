@@ -4886,7 +4886,7 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 		return true;
 	}
 
-	for (auto& [outfit, addon] : outfits) {
+	for (auto &[outfit, addon] : outfits) {
 		if (outfit == lookType) {
 			if (addon == addons || addon == 3 || addons == 0) {
 				return true;
@@ -4919,7 +4919,7 @@ bool Player::canLogout() {
 }
 
 void Player::addOutfit(uint16_t lookType, uint8_t addons) {
-	for (auto& [outfit, addon] : outfits) {
+	for (auto &[outfit, addon] : outfits) {
 		if (outfit == lookType) {
 			addon |= addons;
 			return;
@@ -4929,7 +4929,7 @@ void Player::addOutfit(uint16_t lookType, uint8_t addons) {
 }
 
 bool Player::removeOutfit(uint16_t lookType) {
-	for (auto& [outfit, addon] : outfits) {
+	for (auto &[outfit, addon] : outfits) {
 		if (outfit == lookType) {
 			outfits.erase(outfit);
 			return true;
@@ -4939,7 +4939,7 @@ bool Player::removeOutfit(uint16_t lookType) {
 }
 
 bool Player::removeOutfitAddon(uint16_t lookType, uint8_t addons) {
-	for (auto& [outfit, addon] : outfits) {
+	for (auto &[outfit, addon] : outfits) {
 		if (outfit == lookType) {
 			addon &= ~addons;
 			return true;
@@ -4958,7 +4958,7 @@ bool Player::getOutfitAddons(const std::shared_ptr<Outfit> outfit, uint8_t &addo
 		return false;
 	}
 
-	for (auto& [lookType, addon] : outfits) {
+	for (auto &[lookType, addon] : outfits) {
 		if (lookType != outfit->lookType) {
 			continue;
 		}
@@ -5711,11 +5711,17 @@ void Player::sendUnjustifiedPoints() {
 	}
 }
 
-uint16_t Player::getLastMount() const { return currentMount; }
+uint16_t Player::getLastMount() const {
+	return currentMount;
+}
 
-uint16_t Player::getCurrentMount() const { return currentMount; }
+uint16_t Player::getCurrentMount() const {
+	return currentMount;
+}
 
-void Player::setCurrentMount(uint16_t mountId) { currentMount = mountId; }
+void Player::setCurrentMount(uint16_t mountId) {
+	currentMount = mountId;
+}
 
 bool Player::hasAnyMount() const {
 	const auto mounts = g_game().mounts.getMounts();

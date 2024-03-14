@@ -205,7 +205,7 @@ bool IOLoginData::savePlayer(std::shared_ptr<Player> player) {
 
 	DBInsert outfitQuery("INSERT INTO `player_outfits` (`player_id`, `outfit_id`, `addons`) VALUES ");
 
-	for (const auto& it : player->outfits) {
+	for (const auto &it : player->outfits) {
 		if (!outfitQuery.addRow(fmt::format("{:d}, {:d}, {:d}", player->getGUID(), it.first, it.second))) {
 			return false;
 		}
@@ -222,7 +222,7 @@ bool IOLoginData::savePlayer(std::shared_ptr<Player> player) {
 
 	DBInsert mountQuery("INSERT INTO `player_mounts` (`player_id`, `mount_id`) VALUES ");
 
-	for (const auto& it : player->mounts) {
+	for (const auto &it : player->mounts) {
 		if (!mountQuery.addRow(fmt::format("{:d}, {:d}", player->getGUID(), it))) {
 			return false;
 		}

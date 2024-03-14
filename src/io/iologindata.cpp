@@ -196,42 +196,6 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 }
 
 bool IOLoginData::savePlayer(std::shared_ptr<Player> player) {
-	// save outfits & addons
-	Database &db = Database::getInstance();
-
-	if (!db.executeQuery(fmt::format("DELETE FROM `player_outfits` WHERE `player_id` = {:d}", player->getGUID()))) {
-		return false;
-	}
-
-	DBInsert outfitQuery("INSERT INTO `player_outfits` (`player_id`, `outfit_id`, `addons`) VALUES ");
-
-	for (const auto &it : player->outfits) {
-		if (!outfitQuery.addRow(fmt::format("{:d}, {:d}, {:d}", player->getGUID(), it.first, it.second))) {
-			return false;
-		}
-	}
-
-	if (!outfitQuery.execute()) {
-		return false;
-	}
-
-	// save mounts
-	if (!db.executeQuery(fmt::format("DELETE FROM `player_mounts` WHERE `player_id` = {:d}", player->getGUID()))) {
-		return false;
-	}
-
-	DBInsert mountQuery("INSERT INTO `player_mounts` (`player_id`, `mount_id`) VALUES ");
-
-	for (const auto &it : player->mounts) {
-		if (!mountQuery.addRow(fmt::format("{:d}, {:d}", player->getGUID(), it))) {
-			return false;
-		}
-	}
-
-	if (!mountQuery.execute()) {
-		return false;
-	}
-
 	bool success = DBTransaction::executeWithinTransaction([player]() {
 		return savePlayerGuard(player);
 	});

@@ -508,6 +508,8 @@ public:
 		return g_kv().scoped("player")->scoped(fmt::format("{}", getGUID()));
 	}
 
+	void genReservedStorageRange();
+
 	void setGroup(Group* newGroup) {
 		group = newGroup;
 	}

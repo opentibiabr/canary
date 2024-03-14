@@ -781,6 +781,7 @@ bool IOLoginDataSave::savePlayerStorage(std::shared_ptr<Player> player) {
 	query.str("");
 
 	DBInsert storageQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
+	player->genReservedStorageRange();
 
 	for (const auto &[key, value] : player->storageMap) {
 		query << player->getGUID() << ',' << key << ',' << value;
@@ -812,8 +813,8 @@ bool IOLoginDataSave::savePlayerOutfits(std::shared_ptr<Player> player) {
 
 	DBInsert outfitQuery("INSERT INTO `player_outfits` (`player_id`, `outfit_id`, `addons`) VALUES ");
 
-	for (const auto &[outfitIdPlayer, addonsPlayer] : player->outfits) {
-		query << player->getGUID() << ',' << outfitIdPlayer << ',' << addonsPlayer;
+	for (const auto &it : player->outfits) {
+		query << player->getGUID() << ',' << it.first << ',' << it.second;
 		if (!outfitQuery.addRow(query)) {
 			return false;
 		}

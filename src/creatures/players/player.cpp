@@ -3246,11 +3246,7 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 					}
 				}
 			} else if (slotPosition & SLOTP_TWO_HAND) {
-				if (inventory[CONST_SLOT_LEFT] && inventory[CONST_SLOT_LEFT] != item) {
-					ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
-				} else {
-					ret = RETURNVALUE_NOERROR;
-				}
+				ret = RETURNVALUE_CANNOTBEDRESSED;
 			} else if (inventory[CONST_SLOT_LEFT]) {
 				std::shared_ptr<Item> leftItem = inventory[CONST_SLOT_LEFT];
 				WeaponType_t type = item->getWeaponType(), leftType = leftItem->getWeaponType();
@@ -3273,22 +3269,24 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 		}
 
 		case CONST_SLOT_LEFT: {
-			if (slotPosition & SLOTP_LEFT) {
+			if (item->isQuiver()) {
+				ret = RETURNVALUE_CANNOTBEDRESSED;
+			} else if (slotPosition & SLOTP_LEFT) {
 				WeaponType_t type = item->getWeaponType();
 				if (type == WEAPON_NONE || type == WEAPON_SHIELD || type == WEAPON_AMMO) {
 					ret = RETURNVALUE_CANNOTBEDRESSED;
-				} else if (inventory[CONST_SLOT_RIGHT] && (slotPosition & SLOTP_TWO_HAND)) {
+				} else {
+					ret = RETURNVALUE_NOERROR;
+				}
+			} else if (slotPosition & SLOTP_TWO_HAND) {
+				if (inventory[CONST_SLOT_RIGHT]) {
+					WeaponType_t type = item->getWeaponType();
+					// Allow equip bow when quiver is in SLOT_RIGHT
 					if (type == WEAPON_DISTANCE && inventory[CONST_SLOT_RIGHT]->isQuiver()) {
 						ret = RETURNVALUE_NOERROR;
 					} else {
 						ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
 					}
-				} else {
-					ret = RETURNVALUE_NOERROR;
-				}
-			} else if (slotPosition & SLOTP_TWO_HAND) {
-				if (inventory[CONST_SLOT_RIGHT] && inventory[CONST_SLOT_RIGHT] != item) {
-					ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
 				} else {
 					ret = RETURNVALUE_NOERROR;
 				}

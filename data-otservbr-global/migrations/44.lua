@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 36 (rework on outfits(addons) & mount saving/loading)")
+	logger.info("Updating database to version 45 (rework on outfits(addons) & mount saving/loading)")
 
 	db.query([[
 		CREATE TABLE IF NOT EXISTS `player_outfits` (`player_id` int DEFAULT 0 NOT NULL,`outfit_id` smallint unsigned DEFAULT 0 NOT NULL,`addons` tinyint unsigned DEFAULT 0 NOT NULL,
@@ -35,7 +35,7 @@ function onUpdateDatabase()
 		Result.free(resultId)
 	end
 
-	local resultId = db.storeQuery(string.format("SELECT `player_id`, `key`, `value` FROM `player_storage` WHERE `key`>= %d AND `key` <= %d", mountRange, mountRange + 10))
+	local resultId = db.storeQuery(string.format("SELECT `player_id`, `key`, `value` FROM `player_storage` WHERE `key` >= %d AND `key` <= %d", mountRange, mountRange + 10))
 	if resultId then
 		repeat
 			for i = 1, 200 do

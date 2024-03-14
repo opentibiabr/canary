@@ -4886,9 +4886,9 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 		return true;
 	}
 
-	for (auto &[outfit, addon] : outfits) {
-		if (outfit == lookType) {
-			if (addon == addons || addon == 3 || addons == 0) {
+	for (auto &[outfitPlayer, addonPlayer] : outfits) {
+		if (outfitPlayer == lookType) {
+			if (addonPlayer == addons || addonPlayer == 3 || addons == 0) {
 				return true;
 			}
 			return false; // have lookType on list and addons don't match
@@ -4919,9 +4919,9 @@ bool Player::canLogout() {
 }
 
 void Player::addOutfit(uint16_t lookType, uint8_t addons) {
-	for (auto &[outfit, addon] : outfits) {
-		if (outfit == lookType) {
-			addon |= addons;
+	for (auto &[outfitPlayer, addonPlayer] : outfits) {
+		if (outfitPlayer == lookType) {
+			addonPlayer |= addons;
 			return;
 		}
 	}
@@ -4929,9 +4929,9 @@ void Player::addOutfit(uint16_t lookType, uint8_t addons) {
 }
 
 bool Player::removeOutfit(uint16_t lookType) {
-	for (auto &[outfit, addon] : outfits) {
-		if (outfit == lookType) {
-			outfits.erase(outfit);
+	for (auto &[outfitPlayer, addonPlayer] : outfits) {
+		if (outfitPlayer == lookType) {
+			outfits.erase(outfitPlayer);
 			return true;
 		}
 	}
@@ -4939,9 +4939,9 @@ bool Player::removeOutfit(uint16_t lookType) {
 }
 
 bool Player::removeOutfitAddon(uint16_t lookType, uint8_t addons) {
-	for (auto &[outfit, addon] : outfits) {
-		if (outfit == lookType) {
-			addon &= ~addons;
+	for (auto &[outfitPlayer, addonPlayer] : outfits) {
+		if (outfitPlayer == lookType) {
+			addonPlayer &= ~addons;
 			return true;
 		}
 	}
@@ -4958,8 +4958,8 @@ bool Player::getOutfitAddons(const std::shared_ptr<Outfit> outfit, uint8_t &addo
 		return false;
 	}
 
-	for (auto &[lookType, addon] : outfits) {
-		if (lookType != outfit->lookType) {
+	for (auto &[outfitPlayer, addon] : outfits) {
+		if (outfitPlayer != outfit->lookType) {
 			continue;
 		}
 

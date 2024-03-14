@@ -524,16 +524,17 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 		return 1;
 	}
 
-	const ItemType &it = Item::items[item->getID()];
-	if (it.transformEquipTo != 0) {
-		g_game().transformItem(item, it.transformEquipTo);
-	}
-
 	if (player->isItemAbilityEnabled(slot)) {
+		g_logger().debug("[{}] item ability is already enabled", __FUNCTION__);
 		return 1;
 	}
 
 	player->setItemAbility(slot, true);
+
+	const ItemType &it = Item::items[item->getID()];
+	if (it.transformEquipTo != 0) {
+		g_game().transformItem(item, it.transformEquipTo);
+	}
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 		player->updateImbuementTrackerStats();

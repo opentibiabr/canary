@@ -4918,6 +4918,14 @@ bool Player::canLogout() {
 	return !isPzLocked() && !hasCondition(CONDITION_INFIGHT);
 }
 
+void Player::genReservedStorageRange() {
+	// generate familiars range
+	uint32_t familiar_key = PSTRG_FAMILIARS_RANGE_START;
+	for (const FamiliarEntry &entry : familiars) {
+		storageMap[++familiar_key] = (entry.lookType << 16);
+	}
+}
+
 void Player::addOutfit(uint16_t lookType, uint8_t addons) {
 	for (auto &[outfitPlayer, addonPlayer] : outfits) {
 		if (outfitPlayer == lookType) {

@@ -840,7 +840,7 @@ bool IOLoginDataSave::savePlayerMounts(std::shared_ptr<Player> player) {
 
 	query.str("");
 
-	DBInsert mountQuery("INSERT INTO `player_outfits` (`player_id`, `mount_id`) VALUES ");
+	DBInsert mountQuery("INSERT INTO `player_mounts` (`player_id`, `mount_id`) VALUES ");
 
 	for (const auto &mount : player->mounts) {
 		query << player->getGUID() << ',' << mount;

@@ -308,6 +308,14 @@ bool IOLoginData::savePlayerGuard(std::shared_ptr<Player> player) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerStorage] - Failed to save player storage: " + player->getName());
 	}
 
+	if (!IOLoginDataSave::savePlayerOutfits(player)) {
+		throw DatabaseException("[IOLoginDataSave::savePlayerOutfits] - Failed to save player outfits: " + player->getName());
+	}
+
+	if (!IOLoginDataSave::savePlayerMounts(player)) {
+		throw DatabaseException("[IOLoginDataSave::savePlayerMounts] - Failed to save player mounts: " + player->getName());
+	}
+
 	return true;
 }
 

@@ -255,7 +255,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 
 	// load outfits & addons
 	std::ostringstream queryOutfits;
-	queryOutfits << "SELECT `outfit_id`, `addons` FROM `player_outfits` WHERE `player_id` = {:d}", player->getGUID();
+	queryOutfits << "SELECT `outfit_id`, `addons` FROM `player_outfits` WHERE `player_id` = " << player->getGUID();
 
 	DBResult_ptr result1 = Database::getInstance().storeQuery(queryOutfits.str());
 	if (result1) {
@@ -266,7 +266,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 
 	// load mounts
 	std::ostringstream queryMounts;
-	queryMounts << "SELECT `mount_id` FROM `player_mounts` WHERE `player_id` = {:d}", player->getGUID();
+	queryMounts << "SELECT `mount_id` FROM `player_mounts` WHERE `player_id` = " << player->getGUID();
 
 	DBResult_ptr result2 = Database::getInstance().storeQuery(queryMounts.str());
 	if (result2) {

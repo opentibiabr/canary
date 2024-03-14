@@ -28,8 +28,8 @@ monster.Bestiary = {
 	Oramond Dungeon, Grounds of Destruction and Halls of Ascension.",
 }
 
-monster.health = 20000
-monster.maxHealth = 20000
+monster.health = 18000
+monster.maxHealth = 18000
 monster.race = "blood"
 monster.corpse = 6335
 monster.speed = 170

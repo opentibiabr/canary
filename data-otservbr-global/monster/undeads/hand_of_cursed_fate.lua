@@ -26,8 +26,8 @@ monster.Bestiary = {
 	Locations = "Pits of Inferno, The Battlefield, The Arcanum, The Blood Halls and The Crystal Caves.",
 }
 
-monster.health = 7500
-monster.maxHealth = 7500
+monster.health = 6600
+monster.maxHealth = 6600
 monster.race = "blood"
 monster.corpse = 6311
 monster.speed = 130

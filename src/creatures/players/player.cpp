@@ -5712,7 +5712,10 @@ void Player::sendUnjustifiedPoints() {
 }
 
 uint16_t Player::getLastMount() const {
-	return currentMount;
+	if (currentMount > 0) {
+		return currentMount;
+	}
+	return static_cast<uint8_t>(kv()->get("last-mount")->get<int>());
 }
 
 uint16_t Player::getCurrentMount() const {

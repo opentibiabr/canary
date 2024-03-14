@@ -615,7 +615,7 @@ public:
 		return std::find(registeredDistanceEffects.begin(), registeredDistanceEffects.end(), type) != registeredDistanceEffects.end();
 	}
 
-	bool isLookTypeRegistered(uint32_t type) const {
+	bool isLookTypeRegistered(uint16_t type) const {
 		return std::find(registeredLookTypes.begin(), registeredLookTypes.end(), type) != registeredLookTypes.end();
 	}
 

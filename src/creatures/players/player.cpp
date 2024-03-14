@@ -4958,8 +4958,8 @@ bool Player::getOutfitAddons(const std::shared_ptr<Outfit> outfit, uint8_t &addo
 		return false;
 	}
 
-	for (auto &[outfitPlayer, addon] : outfits) {
-		if (outfitPlayer != outfit->lookType) {
+	for (auto &[lookType, addon] : outfits) {
+		if (lookType != outfit->lookType) {
 			continue;
 		}
 

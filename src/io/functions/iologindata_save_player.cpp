@@ -812,8 +812,8 @@ bool IOLoginDataSave::savePlayerOutfits(std::shared_ptr<Player> player) {
 
 	DBInsert outfitQuery("INSERT INTO `player_outfits` (`player_id`, `outfit_id`, `addons`) VALUES ");
 
-	for (const auto &[outfit_id, addons] : player->outfits) {
-		query << player->getGUID() << ',' << outfit_id << ',' << addons;
+	for (const auto &[outfitIdPlayer, addonsPlayer] : player->outfits) {
+		query << player->getGUID() << ',' << outfitIdPlayer << ',' << addonsPlayer;
 		if (!outfitQuery.addRow(query)) {
 			return false;
 		}
@@ -842,8 +842,8 @@ bool IOLoginDataSave::savePlayerMounts(std::shared_ptr<Player> player) {
 
 	DBInsert mountQuery("INSERT INTO `player_mounts` (`player_id`, `mount_id`) VALUES ");
 
-	for (const auto &mount : player->mounts) {
-		query << player->getGUID() << ',' << mount;
+	for (const auto &mountId : player->mounts) {
+		query << player->getGUID() << ',' << mountId;
 		if (!mountQuery.addRow(query)) {
 			return false;
 		}

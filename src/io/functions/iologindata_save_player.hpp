@@ -27,6 +27,8 @@ public:
 	static bool savePlayerForgeHistory(std::shared_ptr<Player> player);
 	static bool savePlayerBosstiary(std::shared_ptr<Player> player);
 	static bool savePlayerStorage(std::shared_ptr<Player> palyer);
+	static bool savePlayerOutfits(std::shared_ptr<Player> player);
+	static bool savePlayerMounts(std::shared_ptr<Player> player);
 
 protected:
 	using ItemBlockList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;

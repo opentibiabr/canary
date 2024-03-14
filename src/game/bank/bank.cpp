@@ -80,23 +80,24 @@ const std::set<std::string> deniedNames = {
 	"paladinsample"
 };
 
-const uint32_t minTownId = 3;
-
 bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) {
 	if (!destination) {
 		g_logger().error("Bank::transferTo: destination is nullptr");
 		return false;
 	}
+
 	auto bankable = getBankable();
 	if (!bankable) {
 		g_logger().error("Bank::transferTo: bankable is nullptr");
 		return false;
 	}
+
 	auto destinationBankable = destination->getBankable();
 	if (!destinationBankable) {
 		g_logger().error("Bank::transferTo: destinationBankable is nullptr");
 		return false;
 	}
+
 	if (destinationBankable->getPlayer() != nullptr) {
 		auto player = destinationBankable->getPlayer();
 		auto name = asLowerCaseString(player->getName());
@@ -105,7 +106,8 @@ bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) 
 			g_logger().warn("Bank::transferTo: denied name: {}", name);
 			return false;
 		}
-		if (player->getTown()->getID() < minTownId) {
+
+		if (player->getTown()->getID() < g_configManager().getNumber(MIN_TOWN_ID_TO_BANK_TRANSFER, __FUNCTION__)) {
 			g_logger().warn("Bank::transferTo: denied town: {}", player->getTown()->getID());
 			return false;
 		}
@@ -114,6 +116,7 @@ bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) 
 	if (!(debit(amount) && destination->credit(amount))) {
 		return false;
 	}
+
 	g_metrics().addCounter("balance_increase", amount, { { "player", destination->getBankable()->getPlayer()->getName() }, { "context", "bank_transfer" } });
 	g_metrics().addCounter("balance_decrease", amount, { { "player", getBankable()->getPlayer()->getName() }, { "context", "bank_transfer" } });
 	return true;

@@ -1026,7 +1026,7 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 		auto stringKey = asLowerCaseString(subKeyAttribute.as_string());
 		if (stringKey == "slot") {
 			auto slotName = asLowerCaseString(subValueAttribute.as_string());
-			if (moveevent && slotName != "two-handed" && (moveevent->getEventType() == MOVE_EVENT_EQUIP || moveevent->getEventType() == MOVE_EVENT_DEEQUIP)) {
+			if (moveevent && (moveevent->getEventType() == MOVE_EVENT_EQUIP || moveevent->getEventType() == MOVE_EVENT_DEEQUIP)) {
 				if (slotName == "head") {
 					moveevent->setSlot(SLOTP_HEAD);
 				} else if (slotName == "necklace") {
@@ -1049,6 +1049,8 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 					moveevent->setSlot(SLOTP_RING);
 				} else if (slotName == "ammo") {
 					moveevent->setSlot(SLOTP_AMMO);
+				} else if (slotName == "two-handed") {
+					moveevent->setSlot(SLOTP_TWO_HAND);
 				} else {
 					g_logger().warn("[{}] unknown slot type '{}'", __FUNCTION__, slotName);
 				}

@@ -34,7 +34,8 @@ int KVFunctions::luaKVScoped(lua_State* L) {
 }
 
 int KVFunctions::luaKVSet(lua_State* L) {
-    if (lua_gettop(L) < 2) {
+	// KV.set(key, value) | scopedKV:set(key, value)
+	if (lua_gettop(L) < 2) {
         luaL_error(L, "Invalig amought arguments in KV.set ou scopedKV:set");
         return 0;
     }

@@ -495,13 +495,13 @@ uint32_t MoveEvent::RemoveItemField(std::shared_ptr<Item>, std::shared_ptr<Item>
 }
 
 uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool isCheck) {
-	if (player == nullptr) {
-		g_logger().error("[MoveEvent::EquipItem] - Player is nullptr");
+	if (!moveEvent) {
+		g_logger().error("[MoveEvent::EquipItem] - MoveEvent is nullptr");
 		return 0;
 	}
 
-	if (item == nullptr) {
-		g_logger().error("[MoveEvent::EquipItem] - Item is nullptr");
+	if (!player || !item) {
+		g_logger().error("[MoveEvent::EquipItem] - Player or Item is nullptr");
 		return 0;
 	}
 

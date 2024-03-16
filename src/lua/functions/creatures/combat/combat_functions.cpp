@@ -16,201 +16,207 @@
 #include "lua/global/lua_variant.hpp"
 
 int CombatFunctions::luaCombatCreate(lua_State* L) {
-	// Combat()
-	pushUserdata<Combat>(L, g_luaEnvironment().createCombatObject(getScriptEnv()->getScriptInterface()));
-	setMetatable(L, -1, "Combat");
-	return 1;
+    // Combat()
+    auto combatPtr = g_luaEnvironment().createCombatObject(getScriptEnv()->getScriptInterface());
+    if (combatPtr) {
+        pushUserdata<Combat>(L, combatPtr);
+        setMetatable(L, -1, "Combat");
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 int CombatFunctions::luaCombatSetParameter(lua_State* L) {
-	// combat:setParameter(key, value)
-	const auto &combat = getUserdataShared<Combat>(L, 1);
-	if (!combat) {
-		lua_pushnil(L);
-		return 1;
-	}
+    // combat:setParameter(key, value)
+    auto combat = getUserdataShared<Combat>(L, 1);
+    if (!combat) {
+        lua_pushboolean(L, false);
+        return 1;
+    }
 
-	CombatParam_t key = getNumber<CombatParam_t>(L, 2);
-	uint32_t value;
-	if (isBoolean(L, 3)) {
-		value = getBoolean(L, 3) ? 1 : 0;
-	} else {
-		value = getNumber<uint32_t>(L, 3);
-	}
-	combat->setParam(key, value);
-	pushBoolean(L, true);
-	return 1;
+    CombatParam_t key = static_cast<CombatParam_t>(getNumber<int>(L, 2));
+    uint32_t value = 0;
+    if (lua_isboolean(L, 3)) {
+        value = lua_toboolean(L, 3) ? 1 : 0;
+    } else if (lua_isnumber(L, 3)) {
+        value = static_cast<uint32_t>(lua_tonumber(L, 3));
+    } else {
+        lua_pushstring(L, "Invalid value type for combat parameter");
+        lua_error(L);
+        return 0;
+    }
+
+    combat->setParam(key, value);
+    lua_pushboolean(L, true);
+    return 1;
 }
 
 int CombatFunctions::luaCombatSetFormula(lua_State* L) {
-	// combat:setFormula(type, mina, minb, maxa, maxb)
-	const auto &combat = getUserdataShared<Combat>(L, 1);
-	if (!combat) {
-		lua_pushnil(L);
-		return 1;
-	}
+    // combat:setFormula(type, mina, minb, maxa, maxb)
+    auto combat = getUserdataShared<Combat>(L, 1);
+    if (!combat) {
+        lua_pushboolean(L, false);
+        return 1;
+    }
 
-	formulaType_t type = getNumber<formulaType_t>(L, 2);
-	double mina = getNumber<double>(L, 3);
-	double minb = getNumber<double>(L, 4);
-	double maxa = getNumber<double>(L, 5);
-	double maxb = getNumber<double>(L, 6);
-	combat->setPlayerCombatValues(type, mina, minb, maxa, maxb);
-	pushBoolean(L, true);
-	return 1;
+    if (lua_gettop(L) != 6) {
+        lua_pushstring(L, "Incorrect number of arguments");
+        lua_error(L);
+        return 0;
+    }
+
+    formulaType_t type = static_cast<formulaType_t>(getNumber<int>(L, 2));
+    double mina = lua_tonumber(L, 3);
+    double minb = lua_tonumber(L, 4);
+    double maxa = lua_tonumber(L, 5);
+    double maxb = lua_tonumber(L, 6);
+
+    combat->setPlayerCombatValues(type, mina, minb, maxa, maxb);
+    lua_pushboolean(L, true);
+    return 1;
 }
 
 int CombatFunctions::luaCombatSetArea(lua_State* L) {
-	// combat:setArea(area)
-	if (getScriptEnv()->getScriptId() != EVENT_ID_LOADING) {
-		reportErrorFunc("This function can only be used while loading the script.");
-		lua_pushnil(L);
-		return 1;
-	}
+    // combat:setArea(area)
+    if (getScriptEnv()->getScriptId() != EVENT_ID_LOADING) {
+        reportErrorFunc("This function can only be used while loading the script.");
+        lua_pushnil(L);
+        return 1;
+    }
 
-	const std::unique_ptr<AreaCombat> &area = g_luaEnvironment().getAreaObject(getNumber<uint32_t>(L, 2));
-	if (!area) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_AREA_NOT_FOUND));
-		lua_pushnil(L);
-		return 1;
-	}
+    auto areaId = getNumber<uint32_t>(L, 2);
+    const auto& area = g_luaEnvironment().getAreaObject(areaId);
+    if (!area) {
+        reportErrorFunc(getErrorDesc(LUA_ERROR_AREA_NOT_FOUND));
+        lua_pushnil(L);
+        return 1;
+    }
 
-	const auto &combat = getUserdataShared<Combat>(L, 1);
-	if (combat) {
-		auto areaClone = area->clone();
-		combat->setArea(areaClone);
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+    auto combat = getUserdataShared<Combat>(L, 1);
+    if (combat) {
+        auto areaClone = area->clone();
+        combat->setArea(areaClone);
+        lua_pushboolean(L, true);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 int CombatFunctions::luaCombatSetCondition(lua_State* L) {
-	// combat:addCondition(condition)
-	std::shared_ptr<Condition> condition = getUserdataShared<Condition>(L, 2);
-	Combat* combat = getUserdata<Combat>(L, 1);
-	if (combat && condition) {
-		combat->addCondition(condition->clone());
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+    // combat:addCondition(condition)
+    auto condition = getUserdataShared<Condition>(L, 2);
+    auto combat = getUserdata<Combat>(L, 1);
+    if (combat && condition) {
+        combat->addCondition(condition->clone());
+        lua_pushboolean(L, true);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 int CombatFunctions::luaCombatSetCallback(lua_State* L) {
-	// combat:setCallback(key, function)
-	const auto &combat = getUserdataShared<Combat>(L, 1);
-	if (!combat) {
-		lua_pushnil(L);
-		return 1;
-	}
+    // combat:setCallback(key, function)
+    auto combat = getUserdataShared<Combat>(L, 1);
+    if (!combat) {
+        lua_pushnil(L);
+        return 1;
+    }
 
-	CallBackParam_t key = getNumber<CallBackParam_t>(L, 2);
-	if (!combat->setCallback(key)) {
-		lua_pushnil(L);
-		return 1;
-	}
+    CallBackParam_t key = static_cast<CallBackParam_t>(getNumber<int>(L, 2));
+    if (!combat->setCallback(key)) {
+        lua_pushnil(L);
+        return 1;
+    }
 
-	CallBack* callback = combat->getCallback(key);
-	if (!callback) {
-		lua_pushnil(L);
-		return 1;
-	}
+    auto callback = combat->getCallback(key);
+    if (!callback) {
+        lua_pushnil(L);
+        return 1;
+    }
 
-	const std::string &function = getString(L, 3);
-	pushBoolean(L, callback->loadCallBack(getScriptEnv()->getScriptInterface(), function));
-	return 1;
+    std::string function = getString(L, 3);
+    pushBoolean(L, callback->loadCallBack(getScriptEnv()->getScriptInterface(), function));
+    return 1;
 }
 
 int CombatFunctions::luaCombatSetOrigin(lua_State* L) {
-	// combat:setOrigin(origin)
-	const auto &combat = getUserdataShared<Combat>(L, 1);
-	if (combat) {
-		combat->setOrigin(getNumber<CombatOrigin>(L, 2));
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+    // combat:setOrigin(origin)
+    auto combat = getUserdataShared<Combat>(L, 1);
+    if (combat) {
+        combat->setOrigin(getNumber<CombatOrigin>(L, 2));
+        lua_pushboolean(L, true);  // Indica sucesso
+    } else {
+        lua_pushboolean(L, false);  // Indica falha
+    }
+    return 1;
 }
 
 int CombatFunctions::luaCombatExecute(lua_State* L) {
-	// combat:execute(creature, variant)
-	const auto &combat = getUserdataShared<Combat>(L, 1);
-	if (!combat) {
-		pushBoolean(L, false);
-		return 1;
-	}
+    // combat:execute(creature, variant)
+    auto combat = getUserdataShared<Combat>(L, 1);
+    if (!combat) {
+        pushBoolean(L, false);
+        return 1;
+    }
 
-	if (isUserdata(L, 2)) {
-		LuaData_t type = getUserdataType(L, 2);
-		if (type != LuaData_t::Player && type != LuaData_t::Monster && type != LuaData_t::Npc) {
-			pushBoolean(L, false);
-			return 1;
-		}
-	}
+    std::shared_ptr<Creature> creature = getCreature(L, 2);
 
-	std::shared_ptr<Creature> creature = getCreature(L, 2);
+    const LuaVariant &variant = getVariant(L, 3);
+    combat->setInstantSpellName(variant.instantName);
+    combat->setRuneSpellName(variant.runeName);
 
-	const LuaVariant &variant = getVariant(L, 3);
-	combat->setInstantSpellName(variant.instantName);
-	combat->setRuneSpellName(variant.runeName);
-	bool result = true;
-	switch (variant.type) {
-		case VARIANT_NUMBER: {
-			std::shared_ptr<Creature> target = g_game().getCreatureByID(variant.number);
-			if (!target) {
-				pushBoolean(L, false);
-				return 1;
-			}
+    bool result = false;
 
-			if (combat->hasArea()) {
-				combat->doCombat(creature, target->getPosition());
-			} else {
-				combat->doCombat(creature, target);
-			}
-			break;
-		}
+    switch (variant.type) {
+        case VARIANT_NUMBER: {
+            std::shared_ptr<Creature> target = g_game().getCreatureByID(variant.number);
+            if (target) {
+                if (combat->hasArea()) {
+                    result = combat->doCombat(creature, target->getPosition());
+                } else {
+                    result = combat->doCombat(creature, target);
+                }
+            }
+            break;
+        }
 
-		case VARIANT_POSITION: {
-			result = combat->doCombat(creature, variant.pos);
-			break;
-		}
+        case VARIANT_POSITION: {
+            result = combat->doCombat(creature, variant.pos);
+            break;
+        }
 
-		case VARIANT_TARGETPOSITION: {
-			if (combat->hasArea()) {
-				result = combat->doCombat(creature, variant.pos);
-			} else {
-				combat->postCombatEffects(creature, creature->getPosition(), variant.pos);
-				g_game().addMagicEffect(variant.pos, CONST_ME_POFF);
-			}
-			break;
-		}
+        case VARIANT_TARGETPOSITION: {
+            if (combat->hasArea()) {
+                result = combat->doCombat(creature, variant.pos);
+            } else {
+                combat->postCombatEffects(creature, creature->getPosition(), variant.pos);
+                g_game().addMagicEffect(variant.pos, CONST_ME_POFF);
+                result = true;
+            }
+            break;
+        }
 
-		case VARIANT_STRING: {
-			std::shared_ptr<Player> target = g_game().getPlayerByName(variant.text);
-			if (!target) {
-				pushBoolean(L, false);
-				return 1;
-			}
+        case VARIANT_STRING: {
+            std::shared_ptr<Player> target = g_game().getPlayerByName(variant.text);
+            if (target) {
+                result = combat->doCombat(creature, target);
+            }
+            break;
+        }
 
-			result = combat->doCombat(creature, target);
-			break;
-		}
+        case VARIANT_NONE: {
+            reportErrorFunc(getErrorDesc(LUA_ERROR_VARIANT_NOT_FOUND));
+            break;
+        }
 
-		case VARIANT_NONE: {
-			reportErrorFunc(getErrorDesc(LUA_ERROR_VARIANT_NOT_FOUND));
-			pushBoolean(L, false);
-			return 1;
-		}
+        default: {
+            break;
+        }
+    }
 
-		default: {
-			break;
-		}
-	}
-
-	pushBoolean(L, result);
-	return 1;
+    pushBoolean(L, result);
+    return 1;
 }

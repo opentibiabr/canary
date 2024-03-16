@@ -16,7 +16,7 @@
 
 int32_t PartyFunctions::luaPartyCreate(lua_State* L) {
 	// Party(userdata)
-	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 2);
+	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1); // sounds correct number 1 for the first argument ?
 	if (!player) {
 		lua_pushnil(L);
 		return 1;

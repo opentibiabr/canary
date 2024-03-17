@@ -54,11 +54,9 @@ end
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
-
 	if not npcHandler:checkInteraction(npc, creature) then
 		return false
 	end
-
 	if MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.AdventurersGuild.TheLostBrother) < 1 then
 			npcHandler:setTopic(playerId, 1)

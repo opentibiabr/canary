@@ -179,21 +179,32 @@ ConditionType_t Combat::DamageToConditionType(CombatType_t type) {
 }
 
 bool Combat::isPlayerCombat(std::shared_ptr<Creature> target) {
-	if (target->getPlayer()) {
-		return true;
-	}
+    if (!target) {
+        return false;
+    }
+    // in combat
+    if (target->getPlayer()) {
+        return true;
+    }
 
-	if (target->isSummon() && target->getMaster()->getPlayer()) {
-		return true;
-	}
+    if (target->isSummon()) {
+        auto master = target->getMaster();
+        if (master && master->getPlayer()) {
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 ReturnValue Combat::canTargetCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> target) {
-	if (player == target) {
-		return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-	}
+    if (!player || !target) {
+        return RETURNVALUE_NOERROR;
+    }
+
+    if (player == target) {
+        return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
+    }
 
 	if (!player->hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
 		// pz-zone
@@ -239,20 +250,25 @@ ReturnValue Combat::canTargetCreature(std::shared_ptr<Player> player, std::share
 }
 
 ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Tile> tile, bool aggressive) {
-	if (tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
-		return RETURNVALUE_NOTENOUGHROOM;
-	}
-	if (aggressive && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-		return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
-	}
+    if (!tile) {
+        return RETURNVALUE_NOERROR;
+    }
 
-	if (tile->hasFlag(TILESTATE_FLOORCHANGE)) {
-		return RETURNVALUE_NOTENOUGHROOM;
-	}
+    if (tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
+        return RETURNVALUE_NOTENOUGHROOM;
+    }
 
-	if (tile->getTeleportItem()) {
-		return RETURNVALUE_NOTENOUGHROOM;
-	}
+    if (aggressive && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+        return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
+    }
+
+    if (tile->hasFlag(TILESTATE_FLOORCHANGE)) {
+        return RETURNVALUE_NOTENOUGHROOM;
+    }
+
+    if (tile->getTeleportItem()) {
+        return RETURNVALUE_NOTENOUGHROOM;
+    }
 
 	if (caster) {
 		const Position &casterPosition = caster->getPosition();
@@ -278,6 +294,10 @@ bool Combat::isInPvpZone(std::shared_ptr<Creature> attacker, std::shared_ptr<Cre
 }
 
 bool Combat::isProtected(std::shared_ptr<Player> attacker, std::shared_ptr<Player> target) {
+    if (!attacker || !target) {
+        return true;
+    }
+	
 	uint32_t protectionLevel = g_configManager().getNumber(PROTECTION_LEVEL, __FUNCTION__);
 	if (target->getLevel() < protectionLevel || attacker->getLevel() < protectionLevel) {
 		return true;
@@ -295,9 +315,9 @@ bool Combat::isProtected(std::shared_ptr<Player> attacker, std::shared_ptr<Playe
 }
 
 ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, bool aggressive) {
-	if (!aggressive) {
-		return RETURNVALUE_NOERROR;
-	}
+    if (!target || !aggressive) {
+        return RETURNVALUE_NOERROR;
+    }
 
 	auto targetPlayer = target ? target->getPlayer() : nullptr;
 	if (target) {

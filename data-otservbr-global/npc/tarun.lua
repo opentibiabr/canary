@@ -64,9 +64,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				{
 					"My brother is missing. I fear, he went to this evil palace north of here. A place of great beauty, certainly filled with riches and luxury. But in truth it is a threshold to hell and demonesses are after his blood. ...",
 					"He is my brother, and I am deeply ashamed to admit but I don't dare to go there. Perhaps your heart is more courageous than mine. Would you go to see this place and search for my brother?"
-				},
-				npc,
-				creature
+				},npc,creature
 			)
 		elseif player:getStorageValue(Storage.AdventurersGuild.TheLostBrother) == 1 then
 			npcHandler:say("I hope you will find my brother.", npc, creature)

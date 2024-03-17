@@ -182,7 +182,7 @@ bool Combat::isPlayerCombat(std::shared_ptr<Creature> target) {
     if (!target) {
         return false;
     }
-    // in combat
+
     if (target->getPlayer()) {
         return true;
     }

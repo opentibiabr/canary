@@ -1861,7 +1861,7 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 }
 
 unsigned int getNumberOfCores() {
-	static auto cores = std::thread::hardware_concurrency();
+	static auto cores = std::jthread::hardware_concurrency();
 	return cores;
 }
 

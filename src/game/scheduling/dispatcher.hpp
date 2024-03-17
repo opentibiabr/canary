@@ -14,6 +14,7 @@
 
 static constexpr uint16_t DISPATCHER_TASK_EXPIRATION = 2000;
 static constexpr uint16_t SCHEDULER_MINTICKS = 50;
+static constexpr uint32_t SERVER_BEAT_MILISECONDS = 50;
 
 enum class TaskGroup : int8_t {
 	ThreadPool = -1,

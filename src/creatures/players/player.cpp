@@ -716,8 +716,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 	}
 
 	if (sendUpdateSkills) {
-		sendSkills();
-		sendStats();
+		addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats) | static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 	}
 }
 
@@ -1912,11 +1911,11 @@ void Player::onWalk(Direction &dir) {
 	if (hasCondition(CONDITION_FEARED)) {
 		Position pos = getNextPosition(dir, getPosition());
 
-		std::shared_ptr<Tile> tile = g_game().map.getTile(pos);
+		const std::shared_ptr<Tile> tile = g_game().map.getTile(pos);
 		if (tile) {
-			std::shared_ptr<MagicField> field = tile->getFieldItem();
+			const std::shared_ptr<MagicField> field = tile->getFieldItem();
 			if (field && !field->isBlocking() && field->getDamage() != 0) {
-				setNextActionTask(nullptr);
+				stopNextActionTask();
 				setNextAction(OTSYS_TIME() + getStepDuration(dir));
 				return;
 			}
@@ -1924,18 +1923,12 @@ void Player::onWalk(Direction &dir) {
 	}
 
 	Creature::onWalk(dir);
-	setNextActionTask(nullptr);
+	stopNextActionTask();
 	setNextAction(OTSYS_TIME() + getStepDuration(dir));
 }
 
 void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
 	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
-
-	const auto &followCreature = getFollowCreature();
-	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
-		isUpdatingPath = false;
-		g_dispatcher().addEvent(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
-	}
 
 	if (creature != getPlayer()) {
 		return;
@@ -2085,68 +2078,77 @@ void Player::checkTradeState(std::shared_ptr<Item> item) {
 	}
 }
 
-void Player::setNextWalkActionTask(std::shared_ptr<Task> task) {
+void Player::stopNextWalkActionTask() {
 	if (walkTaskEvent != 0) {
 		g_dispatcher().stopEvent(walkTaskEvent);
 		walkTaskEvent = 0;
 	}
 
-	walkTask = task;
+	walkTask = nullptr;
 }
 
-void Player::setNextWalkTask(std::shared_ptr<Task> task) {
+void Player::stopNextWalkTask() {
 	if (nextStepEvent != 0) {
 		g_dispatcher().stopEvent(nextStepEvent);
 		nextStepEvent = 0;
 	}
-
-	if (task) {
-		nextStepEvent = g_dispatcher().scheduleEvent(task);
-		resetIdleTime();
-	}
 }
 
-void Player::setNextActionTask(std::shared_ptr<Task> task, bool resetIdleTime /*= true */) {
+void Player::stopNextActionTask() {
 	if (actionTaskEvent != 0) {
 		g_dispatcher().stopEvent(actionTaskEvent);
 		actionTaskEvent = 0;
 	}
+}
+
+void Player::stopNextActionPushTask() {
+	if (actionTaskEventPush != 0) {
+		g_dispatcher().stopEvent(actionTaskEventPush);
+		actionTaskEventPush = 0;
+	}
+}
+
+void Player::stopNextPotionActionTask() {
+	if (actionPotionTaskEvent != 0) {
+		g_dispatcher().stopEvent(actionPotionTaskEvent);
+		actionPotionTaskEvent = 0;
+	}
+}
+
+void Player::setNextWalkActionTask(uint32_t delay, std::function<void(void)> f, std::string_view context) {
+	stopNextWalkActionTask();
+	walkTask = std::make_shared<std::tuple<uint32_t, std::function<void(void)>, std::string>>(delay, std::move(f), context);
+}
+
+void Player::setNextWalkTask(uint32_t delay, std::function<void(void)> f) {
+	stopNextWalkTask();
+	nextStepEvent = g_dispatcher().scheduleEvent(delay, std::move(f), __FUNCTION__);
+	resetIdleTime();
+}
+
+void Player::setNextActionTask(uint32_t delay, std::function<void(void)> f, bool resetIdleTime /*= true */) {
+	stopNextActionTask();
+	actionTaskEvent = g_dispatcher().scheduleEvent(delay, std::move(f), __FUNCTION__);
 
 	if (!inEventMovePush && !g_configManager().getBoolean(PUSH_WHEN_ATTACKING, __FUNCTION__)) {
 		cancelPush();
 	}
 
-	if (task) {
-		actionTaskEvent = g_dispatcher().scheduleEvent(task);
-		if (resetIdleTime) {
-			this->resetIdleTime();
-		}
+	if (resetIdleTime) {
+		this->resetIdleTime();
 	}
 }
 
-void Player::setNextActionPushTask(std::shared_ptr<Task> task) {
-	if (actionTaskEventPush != 0) {
-		g_dispatcher().stopEvent(actionTaskEventPush);
-		actionTaskEventPush = 0;
-	}
-
-	if (task) {
-		actionTaskEventPush = g_dispatcher().scheduleEvent(task);
-	}
+void Player::setNextActionPushTask(uint32_t delay, std::function<void(void)> f, std::string_view context) {
+	stopNextActionPushTask();
+	actionTaskEventPush = g_dispatcher().scheduleEvent(delay, std::move(f), context);
+	resetIdleTime();
 }
 
-void Player::setNextPotionActionTask(std::shared_ptr<Task> task) {
-	if (actionPotionTaskEvent != 0) {
-		g_dispatcher().stopEvent(actionPotionTaskEvent);
-		actionPotionTaskEvent = 0;
-	}
-
+void Player::setNextPotionActionTask(uint32_t delay, std::function<void(void)> f, std::string_view context) {
+	stopNextPotionActionTask();
+	actionPotionTaskEvent = g_dispatcher().scheduleEvent(delay, std::move(f), context);
 	cancelPush();
-
-	if (task) {
-		actionPotionTaskEvent = g_dispatcher().scheduleEvent(task);
-		// resetIdleTime();
-	}
 }
 
 uint32_t Player::getNextActionTime() const {
@@ -2320,8 +2322,7 @@ void Player::addManaSpent(uint64_t amount) {
 	}
 
 	if (sendUpdateStats) {
-		sendStats();
-		sendSkills();
+		addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats) | static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 	}
 }
 
@@ -2332,7 +2333,7 @@ void Player::addExperience(std::shared_ptr<Creature> target, uint64_t exp, bool 
 	if (currLevelExp >= nextLevelExp) {
 		// player has reached max level
 		levelPercent = 0;
-		sendStats();
+		addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats));
 		return;
 	}
 
@@ -4147,8 +4148,8 @@ void Player::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<C
 			onSendContainer(container);
 		}
 
-		if (shopOwner && !scheduledSaleUpdate && requireListUpdate) {
-			updateSaleShopList(item);
+		if (requireListUpdate) {
+			addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Inventory));
 		}
 	} else if (std::shared_ptr<Creature> creature = thing->getCreature()) {
 		if (creature == getPlayer()) {
@@ -4232,22 +4233,10 @@ void Player::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_pt
 			requireListUpdate = true;
 		}
 
-		if (shopOwner && !scheduledSaleUpdate && requireListUpdate) {
-			updateSaleShopList(item);
+		if (requireListUpdate) {
+			addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Inventory));
 		}
 	}
-}
-
-// i will keep this function so it can be reviewed
-bool Player::updateSaleShopList(std::shared_ptr<Item> item) {
-	uint16_t itemId = item->getID();
-	if (!itemId || !item) {
-		return true;
-	}
-
-	g_dispatcher().addEvent(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID()), "updatePlayerSaleItems");
-	scheduledSaleUpdate = true;
-	return true;
 }
 
 bool Player::hasShopItemForSale(uint16_t itemId, uint8_t subType) const {
@@ -4376,11 +4365,10 @@ void Player::doAttacking(uint32_t) {
 			result = Weapon::useFist(static_self_cast<Player>(), attackedCreature);
 		}
 
-		std::shared_ptr<Task> task = createPlayerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay), std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
 		if (!classicSpeed) {
-			setNextActionTask(task, false);
+			setNextActionTask(std::max<uint32_t>(SERVER_BEAT_MILISECONDS, delay), std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
 		} else {
-			g_dispatcher().scheduleEvent(task);
+			g_dispatcher().scheduleEvent(std::max<uint32_t>(SERVER_BEAT_MILISECONDS, delay), std::bind(&Game::checkCreatureAttack, &g_game(), getID()), __FUNCTION__);
 		}
 
 		if (result) {
@@ -4426,7 +4414,7 @@ void Player::setChaseMode(bool mode) {
 }
 
 void Player::onWalkAborted() {
-	setNextWalkActionTask(nullptr);
+	stopNextWalkActionTask();
 	sendCancelWalk();
 }
 
@@ -4444,7 +4432,18 @@ void Player::onWalkComplete() {
 	}
 
 	if (walkTask) {
-		walkTaskEvent = g_dispatcher().scheduleEvent(walkTask);
+		// Acessando os elementos do tuple.
+		auto delay = std::get<0>(*walkTask);
+		auto task = std::get<1>(*walkTask);
+		auto context = std::get<2>(*walkTask);
+		// O contexto agora é acessível via std::get<2>(*walkTask), mas não é usado diretamente aqui.
+
+		// Agendando o evento com o delay e a task.
+		// Supondo que g_dispatcher().scheduleEvent aceite os mesmos argumentos,
+		// o std::move(task) é necessário pois std::function geralmente é movido para evitar cópias.
+		walkTaskEvent = g_dispatcher().scheduleEvent(delay, std::move(task), context);
+
+		// Resetando o walkTask para nullptr depois de agendar o evento.
 		walkTask = nullptr;
 	}
 }
@@ -6047,8 +6046,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 	}
 
 	if (sendUpdate) {
-		sendSkills();
-		sendStats();
+		addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats) | static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 	}
 
 	std::string message = fmt::format(
@@ -6338,8 +6336,7 @@ void Player::addItemImbuementStats(const Imbuement* imbuement) {
 	}
 
 	if (requestUpdate) {
-		sendStats();
-		sendSkills();
+		addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats) | static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 	}
 }
 
@@ -6377,8 +6374,7 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 	}
 
 	if (requestUpdate) {
-		sendStats();
-		sendSkills();
+		addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats) | static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 	}
 }
 
@@ -6687,8 +6683,7 @@ void Player::triggerTranscendance() {
 		wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR, OTSYS_TIME() + duration);
 		g_game().addMagicEffect(getPosition(), CONST_ME_AVATAR_APPEAR);
 		sendTextMessage(MESSAGE_ATTENTION, "Transcendance was triggered.");
-		sendSkills();
-		sendStats();
+		addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats) | static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 		sendBasicData();
 		wheel()->sendGiftOfLifeCooldown();
 		g_game().reloadCreature(getPlayer());
@@ -7778,8 +7773,7 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
 			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir.data()), __FUNCTION__);
 
-			std::shared_ptr<Task> task = createPlayerTask(delay, function, __FUNCTION__);
-			setNextWalkActionTask(task);
+			setNextWalkActionTask(delay, function, __FUNCTION__);
 			return true;
 		} else {
 			sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -8081,4 +8075,13 @@ bool Player::canSpeakWithHireling(uint8_t speechbubble) {
 	}
 
 	return true;
+}
+
+void Player::addScheduledUpdates(uint32_t flags) {
+	scheduledUpdates |= flags;
+	if (!scheduledUpdate) {
+		// To make it work even better it's possible to use slightly delayed scheduler task so it'll cache even more updates at once
+		g_dispatcher().scheduleEvent(SERVER_BEAT_MILISECONDS, std::bind(&Game::updatePlayerEvent, &g_game(), getPlayer()), __FUNCTION__);
+		scheduledUpdate = true;
+	}
 }

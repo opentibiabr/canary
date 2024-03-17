@@ -538,7 +538,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 	int32_t bestMatch = 0;
 
 	AStarNode* found = nullptr;
-	while (fpp.maxSearchDist != 0 || nodes.getClosedNodes() < 100) {
+	do {
 		AStarNode* n = nodes.getBestNode();
 		if (!n) {
 			if (found) {
@@ -640,9 +640,8 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 				}
 			}
 		}
-
 		nodes.closeNode(n);
-	}
+	} while (fpp.maxSearchDist != 0 || nodes.getClosedNodes() < 100);
 
 	if (!found) {
 		return false;

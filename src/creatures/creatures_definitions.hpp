@@ -1363,6 +1363,15 @@ enum class CreatureIconQuests_t {
 	BloodDrop,
 };
 
+enum class PlayerUpdateFlags : uint32_t {
+	PlayerUpdate_Weight = 1 << 0,
+	PlayerUpdate_Light = 1 << 1,
+	PlayerUpdate_Stats = 1 << 2,
+	PlayerUpdate_Skills = 1 << 3,
+	PlayerUpdate_Inventory = 1 << 4,
+	PlayerUpdate_Sale = 1 << 5
+};
+
 struct CreatureIcon {
 	CreatureIcon() = default;
 

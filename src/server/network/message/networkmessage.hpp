@@ -132,7 +132,7 @@ public:
 	}
 
 	uint8_t* getBodyBuffer() {
-		info.position = 2;
+		info.position = HEADER_LENGTH;
 		return buffer + HEADER_LENGTH;
 	}
 

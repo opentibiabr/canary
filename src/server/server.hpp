@@ -75,6 +75,7 @@ private:
 	asio::io_service &io_service;
 	std::unique_ptr<asio::ip::tcp::acceptor> acceptor;
 	std::vector<Service_ptr> services;
+	asio::high_resolution_timer deadline_timer { io_service };
 
 	uint16_t serverPort = 0;
 	bool pendingStart = false;

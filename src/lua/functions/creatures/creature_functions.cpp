@@ -487,7 +487,7 @@ int CreatureFunctions::luaCreatureSetHealth(lua_State* L) {
 
 	std::shared_ptr<Player> player = creature->getPlayer();
 	if (player) {
-		player->sendStats();
+		player->addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats));
 	}
 	pushBoolean(L, true);
 	return 1;
@@ -539,7 +539,7 @@ int CreatureFunctions::luaCreatureSetMaxHealth(lua_State* L) {
 
 	std::shared_ptr<Player> player = creature->getPlayer();
 	if (player) {
-		player->sendStats();
+		player->addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats));
 	}
 	pushBoolean(L, true);
 	return 1;

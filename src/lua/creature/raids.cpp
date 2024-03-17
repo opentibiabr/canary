@@ -83,11 +83,12 @@ bool Raids::loadFromXml() {
 
 		auto newRaid = std::make_shared<Raid>(name, interval, margin, repeat);
 		if (newRaid->loadFromXml(g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/raids/" + file)) {
-			raidList.push_back(newRaid);
+			raidList.emplace_back(std::move(newRaid));
 		} else {
 			g_logger().error("{} - Failed to load raid: {}", __FUNCTION__, name);
 		}
 	}
+	raidList.shrink_to_fit();
 
 	loaded = true;
 	return true;
@@ -126,7 +127,8 @@ void Raids::checkRaids() {
 					raid->startRaid();
 
 					if (!raid->canBeRepeated()) {
-						raidList.erase(it);
+						(*it) = std::move(raidList.back());
+						raidList.pop_back();
 					}
 					break;
 				}
@@ -524,6 +526,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 
 		spawnMonsterList.emplace_back(name, minAmount, maxAmount);
 	}
+	spawnMonsterList.shrink_to_fit();
 	return true;
 }
 

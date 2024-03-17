@@ -309,7 +309,7 @@ public:
 
 	void playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
 
-	void updatePlayerSaleItems(uint32_t playerId);
+	void updatePlayerEvent(std::shared_ptr<Player> player) const;
 
 	bool internalStartTrade(std::shared_ptr<Player> player, std::shared_ptr<Player> partner, std::shared_ptr<Item> tradeItem);
 	void internalCloseTrade(std::shared_ptr<Player> player);

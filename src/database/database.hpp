@@ -25,7 +25,7 @@ public:
 	static const size_t MAX_QUERY_SIZE = 8 * 1024 * 1024; // 8 Mb -- half the default MySQL max_allowed_packet size
 
 	Database() = default;
-	~Database();
+	~Database() = default;
 
 	// Singleton - ensures we don't accidentally copy it.
 	Database(const Database &) = delete;
@@ -33,7 +33,10 @@ public:
 
 	static Database &getInstance();
 
+	bool init() const;
+	void end() const;
 	bool connect();
+	void disconnect();
 
 	bool connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock);
 

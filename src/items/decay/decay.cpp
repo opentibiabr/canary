@@ -168,7 +168,7 @@ void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 			}
 
 			if (needUpdateSkills) {
-				player->sendSkills();
+				player->addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 			}
 
 			bool needUpdateStats = false;
@@ -185,11 +185,11 @@ void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 			}
 
 			if (needUpdateStats) {
-				player->sendStats();
+				player->addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats));
 			}
 
 			if (needUpdateSkills) {
-				player->sendSkills();
+				player->addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 			}
 		}
 		g_game().transformItem(item, static_cast<uint16_t>(it.decayTo));

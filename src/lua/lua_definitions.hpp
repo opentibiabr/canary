@@ -88,7 +88,7 @@ enum MoveEvent_t {
 	MOVE_EVENT_NONE
 };
 
-enum RaidState_t {
+enum RaidState_t : uint8_t {
 	RAIDSTATE_IDLE,
 	RAIDSTATE_EXECUTING,
 };

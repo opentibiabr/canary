@@ -18,6 +18,17 @@ struct MonsterSpawn {
 	MonsterSpawn(std::string initName, uint32_t initMinAmount, uint32_t initMaxAmount) :
 		name(std::move(initName)), minAmount(initMinAmount), maxAmount(initMaxAmount) { }
 
+	// Destructor
+	~MonsterSpawn() = default;
+
+	// non-copyable
+	MonsterSpawn(const MonsterSpawn &) = delete;
+	MonsterSpawn &operator=(const MonsterSpawn &) = delete;
+
+	// moveable
+	MonsterSpawn(MonsterSpawn &&) = default;
+	MonsterSpawn &operator=(MonsterSpawn &&) = default;
+
 	std::string name;
 	uint32_t minAmount;
 	uint32_t maxAmount;
@@ -78,10 +89,10 @@ public:
 private:
 	LuaScriptInterface scriptInterface { "Raid Interface" };
 
-	std::list<std::shared_ptr<Raid>> raidList;
+	std::vector<std::shared_ptr<Raid>> raidList;
 	std::shared_ptr<Raid> running = nullptr;
 	uint64_t lastRaidEnd = 0;
-	uint32_t checkRaidsEvent = 0;
+	uint64_t checkRaidsEvent = 0;
 	bool loaded = false;
 	bool started = false;
 };
@@ -89,18 +100,38 @@ private:
 class Raid {
 public:
 	Raid(std::string initName, uint32_t initInterval, uint32_t initMarginTime, bool initRepeat) :
-		name(std::move(initName)), interval(initInterval), margin(initMarginTime), repeat(initRepeat) { }
+		name(std::move(initName)), margin(initMarginTime), interval(initInterval), repeat(initRepeat) { }
 	~Raid() = default;
 
 	// non-copyable
 	Raid(const Raid &) = delete;
 	Raid &operator=(const Raid &) = delete;
 
+	// moveable
+	Raid(Raid &&rhs) noexcept :
+		raidEvents(std::move(rhs.raidEvents)), name(std::move(rhs.name)),
+		margin(rhs.margin), nextEventEvent(rhs.nextEventEvent), interval(rhs.interval), nextEvent(rhs.nextEvent),
+		state(rhs.state), loaded(rhs.loaded), repeat(rhs.repeat) { }
+	Raid &operator=(Raid &&rhs) noexcept {
+		if (this != &rhs) {
+			raidEvents = std::move(rhs.raidEvents);
+			name = std::move(rhs.name);
+			margin = rhs.margin;
+			nextEventEvent = rhs.nextEventEvent;
+			interval = rhs.interval;
+			nextEvent = rhs.nextEvent;
+			state = rhs.state;
+			loaded = rhs.loaded;
+			repeat = rhs.repeat;
+		}
+		return *this;
+	}
+
 	bool loadFromXml(const std::string &filename);
 
 	void startRaid();
 
-	void executeRaidEvent(const std::shared_ptr<RaidEvent> raidEvent);
+	void executeRaidEvent(std::shared_ptr<RaidEvent> raidEvent);
 	void resetRaid();
 
 	std::shared_ptr<RaidEvent> getNextRaidEvent();
@@ -129,11 +160,11 @@ public:
 private:
 	std::vector<std::shared_ptr<RaidEvent>> raidEvents;
 	std::string name;
+	uint64_t margin;
+	uint64_t nextEventEvent = 0;
 	uint32_t interval;
 	uint32_t nextEvent = 0;
-	uint64_t margin;
 	RaidState_t state = RAIDSTATE_IDLE;
-	uint32_t nextEventEvent = 0;
 	bool loaded = false;
 	bool repeat;
 };
@@ -184,7 +215,7 @@ public:
 	bool executeEvent() override;
 
 private:
-	std::list<MonsterSpawn> spawnMonsterList;
+	std::vector<MonsterSpawn> spawnMonsterList;
 	Position fromPos, toPos;
 };
 

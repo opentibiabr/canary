@@ -14,10 +14,16 @@
 #include "lib/di/container.hpp"
 #include "lib/metrics/metrics.hpp"
 
-Database::~Database() {
-	if (handle != nullptr) {
-		mysql_close(handle);
+bool Database::init() const {
+	if (mysql_library_init(0, nullptr, nullptr) != 0) {
+		g_logger().error("Failed to initialize MySQL client library.");
+		return false;
 	}
+	return true;
+}
+
+void Database::end() const {
+	mysql_library_end();
 }
 
 Database &Database::getInstance() {
@@ -25,10 +31,22 @@ Database &Database::getInstance() {
 }
 
 bool Database::connect() {
+	// thread-specific variables initialization
+	if (mysql_thread_init() != 0) {
+		g_logger().error("Failed to initialize MySQL thread-specific variables.");
+		return false;
+	}
+
 	return connect(&g_configManager().getString(MYSQL_HOST, __FUNCTION__), &g_configManager().getString(MYSQL_USER, __FUNCTION__), &g_configManager().getString(MYSQL_PASS, __FUNCTION__), &g_configManager().getString(MYSQL_DB, __FUNCTION__), g_configManager().getNumber(SQL_PORT, __FUNCTION__), &g_configManager().getString(MYSQL_SOCK, __FUNCTION__));
 }
 
 bool Database::connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock) {
+	// thread-specific variables initialization
+	if (mysql_thread_init() != 0) {
+		g_logger().error("Failed to initialize MySQL thread-specific variables.");
+		return false;
+	}
+
 	// connection handle initialization
 	handle = mysql_init(nullptr);
 	if (!handle) {
@@ -55,6 +73,15 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 		maxPacketSize = result->getNumber<uint64_t>("Value");
 	}
 	return true;
+}
+
+void Database::disconnect() {
+	if (handle != nullptr) {
+		mysql_close(handle);
+		handle = nullptr;
+	}
+
+	mysql_thread_end();
 }
 
 bool Database::beginTransaction() {
@@ -189,17 +216,17 @@ std::string Database::escapeBlob(const char* s, uint32_t length) const {
 	size_t maxLength = (length * 2) + 1;
 
 	std::string escaped;
-	escaped.reserve(maxLength + 2);
-	escaped.push_back('\'');
+	escaped.resize(maxLength + 2);
+
+	size_t position = 0;
+	escaped[position++] = '\'';
 
 	if (length != 0) {
-		std::string output(maxLength, '\0');
-		size_t escapedLength = mysql_real_escape_string(handle, &output[0], s, length);
-		output.resize(escapedLength);
-		escaped.append(output);
+		position += mysql_real_escape_string(handle, &escaped[position], s, length);
 	}
 
-	escaped.push_back('\'');
+	escaped[position++] = '\'';
+	escaped.resize(position);
 	return escaped;
 }
 

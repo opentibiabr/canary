@@ -40,13 +40,13 @@ static constexpr int32_t EVENT_CHECK_CREATURE_INTERVAL = (EVENT_CREATURE_THINK_I
 class FrozenPathingConditionCall {
 public:
 	explicit FrozenPathingConditionCall(Position newTargetPos) :
-		targetPos(std::move(newTargetPos)) { }
+		targetPos(newTargetPos) { }
 
 	bool operator()(const Position &startPos, const Position &testPos, const FindPathParams &fpp, int32_t &bestMatchDist) const;
 
-	bool isInRange(const Position &startPos, const Position &testPos, const FindPathParams &fpp) const;
+	[[nodiscard]] bool isInRange(const Position &startPos, const Position &testPos, const FindPathParams &fpp) const;
 
-	Position getTargetPos() const {
+	[[nodiscard]] Position getTargetPos() const {
 		return targetPos;
 	}
 
@@ -73,13 +73,13 @@ public:
 	Creature(const Creature &) = delete;
 	Creature &operator=(const Creature &) = delete;
 
-	std::shared_ptr<Creature> getCreature() override final {
+	std::shared_ptr<Creature> getCreature() final {
 		return static_self_cast<Creature>();
 	}
-	std::shared_ptr<const Creature> getCreature() const override final {
+	std::shared_ptr<const Creature> getCreature() const final {
 		return static_self_cast<Creature>();
 	}
-	virtual std::shared_ptr<Player> getPlayer() {
+	std::shared_ptr<Player> getPlayer() override {
 		return nullptr;
 	}
 	virtual std::shared_ptr<const Player> getPlayer() const {
@@ -158,13 +158,13 @@ public:
 		directionLocked = locked;
 	}
 
-	int32_t getThrowRange() const override final {
+	int32_t getThrowRange() const final {
 		return 1;
 	}
 	bool isPushable() override {
 		return getWalkDelay() <= 0;
 	}
-	bool isRemoved() override final {
+	bool isRemoved() final {
 		return isInternalRemoved;
 	}
 	virtual bool canSeeInvisibility() const {
@@ -238,21 +238,22 @@ public:
 	}
 
 	virtual std::vector<CreatureIcon> getIcons() const {
+		auto filteredIcons = creatureIcons | std::views::values | std::views::filter([](const CreatureIcon &icon) {
+								 return icon.isSet();
+							 });
+
 		std::vector<CreatureIcon> icons;
-		icons.reserve(creatureIcons.size());
-		for (const auto &[_, icon] : creatureIcons) {
-			if (icon.isSet()) {
-				icons.push_back(icon);
-			}
-		}
+		icons.reserve(std::distance(filteredIcons.begin(), filteredIcons.end())); // Isso evita múltiplas realocações
+		std::ranges::copy(filteredIcons, std::back_inserter(icons));
 		return icons;
 	}
 
 	virtual CreatureIcon getIcon(const std::string &key) const {
-		if (!creatureIcons.contains(key)) {
-			return CreatureIcon();
+		auto it = creatureIcons.find(key);
+		if (it == creatureIcons.end()) {
+			return {};
 		}
-		return creatureIcons.at(key);
+		return it->second;
 	}
 
 	void setIcon(const std::string &key, CreatureIcon icon) {
@@ -272,13 +273,13 @@ public:
 
 	void iconChanged();
 
-	const Outfit_t getCurrentOutfit() const {
+	Outfit_t getCurrentOutfit() const {
 		return currentOutfit;
 	}
-	void setCurrentOutfit(Outfit_t outfit) {
+	void setCurrentOutfit(const Outfit_t &outfit) {
 		currentOutfit = outfit;
 	}
-	const Outfit_t getDefaultOutfit() const {
+	Outfit_t getDefaultOutfit() const {
 		return defaultOutfit;
 	}
 	bool isInvisible() const;
@@ -320,7 +321,7 @@ public:
 	}
 
 	// combat functions
-	std::shared_ptr<Creature> getAttackedCreature() {
+	std::shared_ptr<Creature> getAttackedCreature() const {
 		return m_attackedCreature.lock();
 	}
 	virtual bool setAttackedCreature(std::shared_ptr<Creature> creature);
@@ -533,11 +534,11 @@ public:
 	bool registerCreatureEvent(const std::string &name);
 	bool unregisterCreatureEvent(const std::string &name);
 
-	std::shared_ptr<Cylinder> getParent() override final {
+	std::shared_ptr<Cylinder> getParent() final {
 		return getTile();
 	}
 
-	void setParent(std::weak_ptr<Cylinder> cylinder) override final {
+	void setParent(const std::weak_ptr<Cylinder> cylinder) final {
 		const auto oldGroundSpeed = walk.groundSpeed;
 		walk.groundSpeed = 150;
 
@@ -559,11 +560,11 @@ public:
 		}
 	}
 
-	const Position &getPosition() override final {
+	const Position &getPosition() final {
 		return position;
 	}
 
-	std::shared_ptr<Tile> getTile() override final {
+	std::shared_ptr<Tile> getTile() final {
 		return m_tile.lock();
 	}
 
@@ -834,7 +835,7 @@ private:
 		uint16_t calculatedStepSpeed { 1 };
 		uint16_t duration { 0 };
 
-		bool needRecache() const {
+		[[nodiscard]] bool needRecache() const {
 			return duration == 0;
 		}
 		void recache() {

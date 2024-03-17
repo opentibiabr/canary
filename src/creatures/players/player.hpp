@@ -833,7 +833,6 @@ public:
 	void stopWalk();
 	bool openShopWindow(std::shared_ptr<Npc> npc);
 	bool closeShopWindow(bool sendCloseShopWindow = true);
-	bool updateSaleShopList(std::shared_ptr<Item> item);
 	bool hasShopItemForSale(uint16_t itemId, uint8_t subType) const;
 
 	void setChaseMode(bool mode);
@@ -1752,12 +1751,14 @@ public:
 
 	void updateRegeneration();
 
-	void setScheduledSaleUpdate(bool scheduled) {
-		scheduledSaleUpdate = scheduled;
+	void addScheduledUpdates(uint32_t flags);
+	bool hasScheduledUpdates(uint32_t flags) const {
+		return (scheduledUpdates & flags);
 	}
 
-	bool getScheduledSaleUpdate() {
-		return scheduledSaleUpdate;
+	void resetScheduledUpdates() {
+		scheduledUpdates = 0;
+		scheduledUpdate = false;
 	}
 
 	bool inPushEvent() {
@@ -2622,11 +2623,17 @@ private:
 	 */
 	void updateInventoryImbuement();
 
-	void setNextWalkActionTask(std::shared_ptr<Task> task);
-	void setNextWalkTask(std::shared_ptr<Task> task);
-	void setNextActionTask(std::shared_ptr<Task> task, bool resetIdleTime = true);
-	void setNextActionPushTask(std::shared_ptr<Task> task);
-	void setNextPotionActionTask(std::shared_ptr<Task> task);
+	void stopNextWalkActionTask();
+	void stopNextWalkTask();
+	void stopNextActionTask();
+	void stopNextActionPushTask();
+	void stopNextPotionActionTask();
+
+	void setNextWalkActionTask(uint32_t delay, std::function<void(void)> f, std::string_view context);
+	void setNextWalkTask(uint32_t delay, std::function<void(void)> f);
+	void setNextActionTask(uint32_t delay, std::function<void(void)> f, bool resetIdleTime = true);
+	void setNextActionPushTask(uint32_t delay, std::function<void(void)> f, std::string_view context);
+	void setNextPotionActionTask(uint32_t delay, std::function<void(void)> f, std::string_view context);
 
 	void death(std::shared_ptr<Creature> lastHitCreature) override;
 	bool spawn();
@@ -2729,6 +2736,9 @@ private:
 	uint64_t lastAggressiveAction = 0;
 	uint64_t bankBalance = 0;
 	uint64_t lastQuestlogUpdate = 0;
+	uint64_t actionTaskEvent = 0;
+	uint64_t nextStepEvent = 0;
+	uint64_t walkTaskEvent = 0;
 	uint64_t preyCards = 0;
 	uint64_t taskHuntingPoints = 0;
 	uint32_t bossPoints = 0;
@@ -2766,11 +2776,13 @@ private:
 	std::shared_ptr<Party> m_party = nullptr;
 	std::shared_ptr<Player> tradePartner = nullptr;
 	ProtocolGame_ptr client;
-	std::shared_ptr<Task> walkTask;
+	// std::shared_ptr<Task> walkTask;
+	std::shared_ptr<std::tuple<uint32_t, std::function<void(void)>, std::string>> walkTask;
 	std::shared_ptr<Town> town;
 	Vocation* vocation = nullptr;
 	std::shared_ptr<RewardChest> rewardChest = nullptr;
 
+	uint32_t scheduledUpdates = 0;
 	uint32_t inventoryWeight = 0;
 	uint32_t capacity = 40000;
 	uint32_t bonusCapacity = 0;
@@ -2781,11 +2793,8 @@ private:
 
 	uint32_t level = 1;
 	uint32_t magLevel = 0;
-	uint32_t actionTaskEvent = 0;
 	uint32_t actionTaskEventPush = 0;
 	uint32_t actionPotionTaskEvent = 0;
-	uint32_t nextStepEvent = 0;
-	uint32_t walkTaskEvent = 0;
 	uint32_t MessageBufferTicks = 0;
 	uint32_t lastIP = 0;
 	uint32_t guid = 0;
@@ -2880,7 +2889,7 @@ private:
 	bool inventoryAbilities[CONST_SLOT_LAST + 1] = {};
 	bool quickLootFallbackToMainContainer = false;
 	bool logged = false;
-	bool scheduledSaleUpdate = false;
+	bool scheduledUpdate = false;
 	bool inEventMovePush = false;
 	bool supplyStash = false; // Menu option 'stow, stow container ...'
 	bool marketMenu = false; // Menu option 'show in market'

@@ -115,7 +115,7 @@ bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) 
 		return false;
 	}
 	if (destinationBankable->getPlayer() != nullptr) {
-		g_metrics().addCounter("balance_increase", amount, { { "player", destinationBankable()->getPlayer()->getName() }, { "context", "bank_transfer" } });
+		g_metrics().addCounter("balance_increase", amount, { { "player", destinationBankable->getPlayer()->getName() }, { "context", "bank_transfer" } });
 		g_metrics().addCounter("balance_decrease", amount, { { "player", getBankable()->getPlayer()->getName() }, { "context", "bank_transfer" } });
 	}
 	return true;

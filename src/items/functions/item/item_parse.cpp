@@ -1165,6 +1165,7 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 			} else {
 				g_logger().warn("[{}] - wandtype '{}' does not exist", __FUNCTION__, elementName);
 			}
+
 		} else if (stringKey == "chain" && weapon) {
 			auto doubleValue = subValueAttribute.as_double();
 			if (doubleValue > 0) {
@@ -1183,6 +1184,7 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 			g_logger().trace("Added weapon damage from '{}', to '{}'", fromDamage, toDamage);
 			weaponWand->setMinChange(fromDamage);
 			weaponWand->setMaxChange(toDamage);
+			weaponWand->configureWeapon(itemType);
 		}
 
 		auto combat = weapon->getCombat();

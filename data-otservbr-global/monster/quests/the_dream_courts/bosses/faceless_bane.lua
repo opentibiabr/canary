@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Faceless Bane")
 local monster = {}
 
 monster.description = "Faceless Bane"
-monster.experience = 30000
+monster.experience = 20000
 monster.outfit = {
 	lookType = 1119,
 	lookHead = 0,
@@ -22,7 +22,11 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10,
+	chance = 20
+}
+
+monster.reflects = {
+	{ type = COMBAT_DEATHDAMAGE, percent = 90 },
 }
 
 monster.bosstiary = {
@@ -131,12 +135,9 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 99 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
 
-monster.heals = {
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
-}
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
@@ -149,6 +150,9 @@ mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
+		Game.setStorageValue(GlobalStorage.FacelessBaneResetSteps, 1)
+		monster:registerEvent("facelessBaneImmunity")
+		monster:registerEvent("facelessBaneOnDeath")
 		monster:setReward(true)
 	end
 end

@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 20
+	chance = 20,
 }
 
 monster.reflects = {
@@ -137,7 +137,6 @@ monster.elements = {
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
 	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
-
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },

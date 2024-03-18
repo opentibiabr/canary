@@ -15,7 +15,7 @@ end
 
 -- energy effect to make the boss mortal
 local function sendEnergyEffect()
- -- positions: pipes on room, that should be electrocuted
+	-- positions: pipes on room, that should be electrocuted
 	local pipePositions = {
 		Position(33612, 32568, 13),
 		Position(33612, 32567, 13),
@@ -42,7 +42,7 @@ local function sendEnergyEffect()
 		Position(33622, 32565, 13),
 		Position(33622, 32566, 13),
 		Position(33622, 32567, 13),
-		Position(33622, 32568, 13)
+		Position(33622, 32568, 13),
 	}
 
 	-- energy effect / sound on pipes
@@ -56,70 +56,56 @@ end
 
 local facelessBaneStepPositions = MoveEvent()
 
- -- capture steps in the specific SQM's to make the boss mortal
- -- 
+-- capture steps in the specific SQM's to make the boss mortal
+--
 function facelessBaneStepPositions.onStepIn(creature, item, position, fromPosition)
-		local player = creature:getPlayer()
-		if not player then
+	local player = creature:getPlayer()
+	if not player then
+		return true
+	end
+
+	if Game.getStorageValue(GlobalStorage.FacelessBaneResetSteps) == 1 then
+		Game.setStorageValue(GlobalStorage.FacelessBaneResetSteps, 0)
+		lastResetTime = os.time()
+		resetWalkedPositions()
+	end
+
+	if Game.getStorageValue(GlobalStorage.FacelessBaneStepsOn) < 1 then
+		local positionAlreadyAdded = false
+		if #walkedPositions == 0 then
+			position:sendSingleSoundEffect(SOUND_EFFECT_TYPE_SPELL_BUZZ)
+			position:sendMagicEffect(CONST_ME_YELLOWENERGY)
+			table.insert(walkedPositions, position)
 			return true
 		end
 
-		if Game.getStorageValue(GlobalStorage.FacelessBaneResetSteps) == 1 then
-			Game.setStorageValue(GlobalStorage.FacelessBaneResetSteps, 0)
-			lastResetTime = os.time()
-			resetWalkedPositions()
+		for _, p in ipairs(walkedPositions) do
+			if p == position then
+				positionAlreadyAdded = true
+				break
+			end
 		end
 
-		if Game.getStorageValue(GlobalStorage.FacelessBaneStepsOn) < 1 then
-			local positionAlreadyAdded = false
-			if #walkedPositions == 0 then
-				position:sendSingleSoundEffect(SOUND_EFFECT_TYPE_SPELL_BUZZ)
-				position:sendMagicEffect(CONST_ME_YELLOWENERGY)
-				table.insert(walkedPositions, position)
-				return true
-			end
-
-			for _, p in ipairs(walkedPositions) do
-					if p == position then
-							positionAlreadyAdded = true
-							break
-					end
-			end
-
-			if positionAlreadyAdded then
-				return true
-			else
-				position:sendSingleSoundEffect(SOUND_EFFECT_TYPE_SPELL_BUZZ)
-				position:sendMagicEffect(CONST_ME_YELLOWENERGY)
-				table.insert(walkedPositions, position)
-
-				if #walkedPositions == 13 then
-					Game.setStorageValue(GlobalStorage.FacelessBaneStepsOn, 1)
-					addEvent(resetWalkedPositions, 60 * 1000)
-					sendEnergyEffect()
-					return true
-				end
-			end
-
+		if positionAlreadyAdded then
 			return true
+		else
+			position:sendSingleSoundEffect(SOUND_EFFECT_TYPE_SPELL_BUZZ)
+			position:sendMagicEffect(CONST_ME_YELLOWENERGY)
+			table.insert(walkedPositions, position)
+
+			if #walkedPositions == 13 then
+				Game.setStorageValue(GlobalStorage.FacelessBaneStepsOn, 1)
+				addEvent(resetWalkedPositions, 60 * 1000)
+				sendEnergyEffect()
+				return true
+			end
 		end
+
+		return true
+	end
 	return true
 end
 
 -- positions: SQM's to step
-facelessBaneStepPositions:position(
-	Position(33615, 32567, 13),
-	Position(33613, 32567, 13),
-	Position(33611, 32563, 13),
-	Position(33610, 32561, 13),
-	Position(33611, 32558, 13),
-	Position(33614, 32557, 13),
-	Position(33617, 32558, 13),
-	Position(33620, 32557, 13),
-	Position(33623, 32558, 13),
-	Position(33624, 32561, 13),
-	Position(33623, 32563, 13),
-	Position(33621, 32567, 13),
-	Position(33619, 32567, 13)
-)
+facelessBaneStepPositions:position(Position(33615, 32567, 13), Position(33613, 32567, 13), Position(33611, 32563, 13), Position(33610, 32561, 13), Position(33611, 32558, 13), Position(33614, 32557, 13), Position(33617, 32558, 13), Position(33620, 32557, 13), Position(33623, 32558, 13), Position(33624, 32561, 13), Position(33623, 32563, 13), Position(33621, 32567, 13), Position(33619, 32567, 13))
 facelessBaneStepPositions:register()

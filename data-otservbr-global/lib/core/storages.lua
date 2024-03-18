@@ -1574,7 +1574,7 @@ Storage = {
 			DragonCounter = 52147,
 		},
 		QuestLine = 52148,
-		TheLostBrother = 52149
+		TheLostBrother = 52149,
 	},
 	DreamersChallenge = {
 		-- Reserved storage from 52160 - 52199

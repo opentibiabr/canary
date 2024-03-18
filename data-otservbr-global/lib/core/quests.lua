@@ -5607,17 +5607,17 @@ if not Quests then
 					end,
 				},
 				[2] = {
-						name = "The Lost Brother",
-						storageId = Storage.AdventurersGuild.TheLostBrother,
-						missionId = 11000,
-						startValue = 1,
-						endValue = 3,
-						states = {
-							[1] = "At the Kha'zeel Mountains you met the merchant Tarun. His brother has gone missing and was last seen following a beautiful woman into a palace. Tarun fears this woman might have been a demon.",
-							[2] = "You found the remains of Tarun's brother containing a message. Go back to Tarun and report his brother's last words.",
-							[3] = "You told Tarun about his brother's sad fate. He was very downhearted but gave you his sincere thanks. The beautiful asuri have taken a young man's life and the happiness of another one.",
-						},
-				}
+					name = "The Lost Brother",
+					storageId = Storage.AdventurersGuild.TheLostBrother,
+					missionId = 11000,
+					startValue = 1,
+					endValue = 3,
+					states = {
+						[1] = "At the Kha'zeel Mountains you met the merchant Tarun. His brother has gone missing and was last seen following a beautiful woman into a palace. Tarun fears this woman might have been a demon.",
+						[2] = "You found the remains of Tarun's brother containing a message. Go back to Tarun and report his brother's last words.",
+						[3] = "You told Tarun about his brother's sad fate. He was very downhearted but gave you his sincere thanks. The beautiful asuri have taken a young man's life and the happiness of another one.",
+					},
+				},
 			},
 		},
 		[42] = {

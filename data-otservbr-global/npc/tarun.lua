@@ -64,20 +64,17 @@ local function creatureSayCallback(npc, creature, type, message)
 
 		if theLostBrotherStorage < 1 then
 			npcHandler:setTopic(playerId, 1)
-			npcHandler:say(
-				{
-					"My brother is missing. I fear, he went to this evil palace north of here. A place of great beauty, certainly filled with riches and luxury. But in truth it is a threshold to hell and demonesses are after his blood. ...",
-					"He is my brother, and I am deeply ashamed to admit but I don't dare to go there. Perhaps your heart is more courageous than mine. Would you go to see this place and search for my brother?"
-				},
-				npc,
-				creature
-			)
+			npcHandler:say({
+				"My brother is missing. I fear, he went to this evil palace north of here. A place of great beauty, certainly filled with riches and luxury. But in truth it is a threshold to hell and demonesses are after his blood. ...",
+				"He is my brother, and I am deeply ashamed to admit but I don't dare to go there. Perhaps your heart is more courageous than mine. Would you go to see this place and search for my brother?",
+			}, npc, creature)
 		elseif theLostBrotherStorage == 1 then
 			npcHandler:say("I hope you will find my brother.", npc, creature)
 		elseif theLostBrotherStorage == 2 then
 			npcHandler:say({
 				"So, he is dead as I feared. I warned him not to go with this woman, but he gave in to temptation. My heart darkens and moans. But you have my sincere thanks. ...",
-				"Without your help I would have stayed in the dark about his fate. Please, take this as a little recompense."}, npc, creature)
+				"Without your help I would have stayed in the dark about his fate. Please, take this as a little recompense.",
+			}, npc, creature)
 			player:addItem(3039, 1)
 			player:addExperience(3000, true)
 			player:setStorageValue(Storage.AdventurersGuild.TheLostBrother, 3)

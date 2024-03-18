@@ -26,8 +26,8 @@ monster.Bestiary = {
 	Locations = "Pits of Inferno, Edron (In the Vats during The Inquisition Quest), Roshamuul Prison, Grounds of Undeath.",
 }
 
-monster.health = 8900
-monster.maxHealth = 8900
+monster.health = 8100
+monster.maxHealth = 8100
 monster.race = "undead"
 monster.corpse = 6353
 monster.speed = 175

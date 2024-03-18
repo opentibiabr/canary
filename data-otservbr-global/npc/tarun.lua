@@ -60,7 +60,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.AdventurersGuild.TheLostBrother) < 1 then
+		local theLostBrotherStorage = player:getStorageValue(Storage.AdventurersGuild.TheLostBrother)
+
+		if theLostBrotherStorage < 1 then
 			npcHandler:setTopic(playerId, 1)
 			npcHandler:say(
 				{
@@ -70,9 +72,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				npc,
 				creature
 			)
-		elseif player:getStorageValue(Storage.AdventurersGuild.TheLostBrother) == 1 then
+		elseif theLostBrotherStorage == 1 then
 			npcHandler:say("I hope you will find my brother.", npc, creature)
-		elseif player:getStorageValue(Storage.AdventurersGuild.TheLostBrother) == 2 then
+		elseif theLostBrotherStorage == 2 then
 			npcHandler:say({
 				"So, he is dead as I feared. I warned him not to go with this woman, but he gave in to temptation. My heart darkens and moans. But you have my sincere thanks. ...",
 				"Without your help I would have stayed in the dark about his fate. Please, take this as a little recompense."}, npc, creature)
@@ -83,7 +85,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("I thank you! This is more than I could hope!", npc, creature)
-			if player:getStorageValue(Storage.AdventurersGuild.QuestLine) < 1 then
+			if theLostBrotherStorage < 1 then
 				player:setStorageValue(Storage.AdventurersGuild.QuestLine, 1)
 			end
 			player:setStorageValue(Storage.AdventurersGuild.TheLostBrother, 1)

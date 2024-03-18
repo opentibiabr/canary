@@ -416,7 +416,7 @@ void IOWheel::slotGreen200(const std::shared_ptr<Player> &player, uint16_t point
 // SLOT_GREEN_TOP_150 = 2
 void IOWheel::slotGreenTop150(const std::shared_ptr<Player> &player, uint16_t points, uint8_t, PlayerWheelMethodsBonusData &bonusData) const {
 	bonusData.mitigation += MITIGATION_INCREASE * points;
-	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_GREEN_BOTTOM_150)) {
+	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_GREEN_TOP_150)) {
 		bonusData.leech.manaLeech += MANA_LEECH_INCREASE;
 	}
 }
@@ -522,7 +522,7 @@ void IOWheel::slotGreenTop75(const std::shared_ptr<Player> &player, uint16_t poi
 	} else {
 		bonusData.stats.mana += 6 * points;
 	}
-	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_GREEN_TOP_100)) {
+	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_GREEN_TOP_75)) {
 		bonusData.leech.lifeLeech += HEALTH_LEECH_INCREASE;
 	}
 }
@@ -566,7 +566,7 @@ void IOWheel::slotRedBottom150(const std::shared_ptr<Player> &player, uint16_t p
 	} else {
 		bonusData.stats.health += 1 * points;
 	}
-	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_RED_TOP_150)) {
+	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_RED_BOTTOM_150)) {
 		bonusData.leech.manaLeech += MANA_LEECH_INCREASE;
 	}
 }
@@ -760,7 +760,7 @@ void IOWheel::slotBlueTop150(const std::shared_ptr<Player> &player, uint16_t poi
 	} else {
 		bonusData.stats.capacity += 2 * points;
 	}
-	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_BLUE_BOTTOM_150)) {
+	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_BLUE_TOP_150)) {
 		bonusData.leech.lifeLeech += HEALTH_LEECH_INCREASE;
 	}
 }
@@ -796,7 +796,7 @@ void IOWheel::slotBlueBottom75(const std::shared_ptr<Player> &player, uint16_t p
 // SLOT_PURPLE_BOTTOM_75 = 28
 void IOWheel::slotPurpleBottom75(const std::shared_ptr<Player> &player, uint16_t points, uint8_t, PlayerWheelMethodsBonusData &bonusData) const {
 	bonusData.mitigation += MITIGATION_INCREASE * points;
-	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_PURPLE_BOTTOM_100)) {
+	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_PURPLE_BOTTOM_75)) {
 		bonusData.leech.manaLeech += MANA_LEECH_INCREASE;
 	}
 }
@@ -898,7 +898,7 @@ void IOWheel::slotPurpleBottom150(const std::shared_ptr<Player> &player, uint16_
 	} else {
 		bonusData.stats.mana += 6 * points;
 	}
-	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_PURPLE_TOP_150)) {
+	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_PURPLE_BOTTOM_150)) {
 		bonusData.leech.lifeLeech += HEALTH_LEECH_INCREASE;
 	}
 }

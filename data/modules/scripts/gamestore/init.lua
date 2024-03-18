@@ -1739,8 +1739,8 @@ function GameStore.processExpBoostPuchase(player)
 	player:setStoreXpBoost(50)
 	player:setExpBoostStamina(currentExpBoostTime + 3600)
 
-	if player:getStorageValue(GameStore.Storages.expBoostCount) == -1 or expBoostCount == 6 then
-		player:setStorageValue(GameStore.Storages.expBoostCount, 1)
+	if expBoostCount == -1 or expBoostCount == 6 then
+		expBoostCount = 1
 	end
 
 	player:setStorageValue(GameStore.Storages.expBoostCount, expBoostCount + 1)

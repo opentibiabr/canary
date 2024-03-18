@@ -22,6 +22,7 @@ function resetBoss(creature, deaths)
 	Game.setStorageValue(GlobalStorage.FacelessBaneDeaths, deaths + 1)
 	Game.setStorageValue(GlobalStorage.FacelessBaneStepsOn, 0)
 	Game.setStorageValue(GlobalStorage.FacelessBaneResetSteps, 1)
+	return true
 end
 
 local facelessBaneImmunity = CreatureEvent("facelessBaneImmunity")
@@ -30,9 +31,10 @@ local facelessBaneImmunity = CreatureEvent("facelessBaneImmunity")
 function facelessBaneImmunity.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType)
 	if creature and creature:isMonster() and creature:getName() == bossName then
 		local creatureHealthPercent = (creature:getHealth() * 100) / creature:getMaxHealth()
+		local facelessBaneDeathsStorage = Game.getStorageValue(GlobalStorage.FacelessBaneDeaths)
 
-		if creatureHealthPercent <= 20 and Game.getStorageValue(GlobalStorage.FacelessBaneDeaths) < 1 then
-			resetBoss(creature, Game.getStorageValue(GlobalStorage.FacelessBaneDeaths))
+		if creatureHealthPercent <= 20 and facelessBaneDeathsStorage < 1 then
+			resetBoss(creature, facelessBaneDeathsStorage)
 			return true
 		end
 

@@ -217,7 +217,7 @@ int GlobalFunctions::luaGetWorldLight(lua_State* L) {
 
 int GlobalFunctions::luaGetWorldUpTime(lua_State* L) {
 	// getWorldUpTime()
-	uint64_t uptime = (OTSYS_TIME() - ProtocolStatus::start) / 1000;
+	uint64_t uptime = (OTSYS_TIME(true) - ProtocolStatus::start) / 1000;
 	lua_pushnumber(L, uptime);
 	return 1;
 }

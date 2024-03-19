@@ -23,7 +23,7 @@ maintainModeMessage = ""
 
 -- Combat settings
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
--- NOTE: removeBeginningWeaponAmmunition: spears, arrows, bolt have endless ammo (allows training for paladins)
+-- NOTE: removeBreakWeaponsCharges: Does not remove weapon charges with a chance of breaking. Like Viper Star, Spear
 -- NOTE: refundManaOnBeginningWeapons: wand of vortex and snakebite refund mana used (allows training for mages)
 worldType = "pvp"
 hotkeyAimbotEnabled = true
@@ -33,7 +33,7 @@ removeChargesFromRunes = true
 removeChargesFromPotions = true
 removeWeaponAmmunition = true
 removeWeaponCharges = true
-removeBeginningWeaponAmmunition = true
+removeBreakWeaponsCharges = true
 refundBeginningWeaponMana = false
 timeToDecreaseFrags = 24 * 60 * 60 * 1000
 whiteSkullTime = 15 * 60 * 1000

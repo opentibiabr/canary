@@ -180,19 +180,41 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 		return true
 	elseif npcHandler:getTopic(playerId) == 7 then
 		if MsgContains(message, "yes") then
+			local totalValue = count[playerId]
+			local crystalCoins = math.floor(totalValue / 10000)
+			totalValue = totalValue % 10000
+			local platinumCoins = math.floor(totalValue / 100)
+			totalValue = totalValue % 100
+			local goldCoins = math.floor(totalValue / 1)
+			local crystalPiles = math.floor((crystalCoins + 99) / 100)
+			local platinumPiles = math.floor((platinumCoins + 99) / 100)
+			local goldPiles = math.floor((goldCoins + 99) / 100)
+			local totalPiles = crystalPiles + platinumPiles + goldPiles
 			if player:getFreeCapacity() >= getMoneyWeight(count[playerId]) then
-				if not player:withdrawMoney(count[playerId]) then
-					npcHandler:say("There is not enough gold on your account.", npc, creature)
+				if player:getFreeBackpackSlots() >= totalPiles then
+					if not player:withdrawMoney(count[playerId]) then
+						npcHandler:say("There is not enough gold on your account.", npc, creature)
+					else
+						npcHandler:say(string.format("Here you are, %i gold. Please let me know if there is something else I can do for you.", count[playerId]), npc, creature)
+					end
 				else
-					npcHandler:say(string.format("Here you are, %d gold. Please let me know if there is something else I can do for you.", count[playerId]), npc, creature)
+					npcHandler:say(
+						string.format(
+							"Hold on, you don't have enough room in your backpack to carry all these coins. \nI don't want you to drop them on the floor, perhaps come back when you have more space in your backpack!\nYou will receive %i crystal stacks (%i coins), %i platinum stacks (%i coins), and %i gold stacks (%i coins). Please ensure you have at least %i free slots in your backpack.\n",
+							crystalPiles,
+							crystalCoins,
+							platinumPiles,
+							platinumCoins,
+							goldPiles,
+							goldCoins,
+							totalPiles
+						),
+						npc,
+						creature
+					)
 				end
 			else
-				npcHandler:say(
-					"Whoah, hold on, you have no room in your inventory to carry all those coins. \z
-                               I don't want you to drop it on the floor, maybe come back with a cart!",
-					npc,
-					creature
-				)
+				npcHandler:say("Whoah, hold on, you have no free capacity to carry all those coins!", npc, creature)
 			end
 			npcHandler:setTopic(playerId, 0)
 		elseif MsgContains(message, "no") then

@@ -75000,7 +75000,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="skillsword" value="5"/>
 		<attribute key="weight" value="6100"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -75023,7 +75023,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="skillsword" value="5"/>
 		<attribute key="weight" value="6000"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -75046,7 +75046,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="skillclub" value="5"/>
 		<attribute key="weight" value="6900"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -75069,7 +75069,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="skillclub" value="5"/>
 		<attribute key="weight" value="6800"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -75092,7 +75092,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="skillaxe" value="5"/>
 		<attribute key="weight" value="7200"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -75115,7 +75115,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="skillaxe" value="5"/>
 		<attribute key="weight" value="7200"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -75695,6 +75695,335 @@ Granted by TibiaGoals.com"/>
 		<attribute key="loottype" value="valuable" />
 		<attribute key="primarytype" value="valuables" />
 		<attribute key="weight" value="120" />
+	</item>
+	<item id="44619" article="a" name="stoic iks cuirass">
+		<attribute key="primarytype" value="armors"/>
+		<attribute key="absorbpercentdeath" value="5"/>
+		<attribute key="magiclevelpoints" value="4"/>
+		<attribute key="armor" value="15"/>
+		<attribute key="weight" value="4400"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="life leech" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection holy" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="armor"/>
+			<attribute key="level" value="250"/>
+			<attribute key="vocation" value="Druid;true, Elder Druid"/>
+		</attribute>
+	</item>
+	<item id="44620" article="a" name="stoic iks chestplate">
+		<attribute key="primarytype" value="armors"/>
+		<attribute key="absorbpercentphysical" value="8"/>
+		<attribute key="skillshield" value="3"/>
+		<attribute key="armor" value="16"/>
+		<attribute key="weight" value="14200"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="life leech" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection holy" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="250"/>
+			<attribute key="slot" value="armor"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
+	</item>
+	<item id="44621" article="a" name="dauntless dragon scale armor">
+		<attribute key="primarytype" value="armors"/>
+		<attribute key="absorbpercentphysical" value="8"/>
+		<attribute key="skillsword" value="3"/>
+		<attribute key="skillaxe" value="3"/>
+		<attribute key="skillclub" value="3"/>
+		<attribute key="armor" value="18"/>
+		<attribute key="weight" value="15200"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="life leech" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection holy" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="300"/>
+			<attribute key="slot" value="armor"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
+	</item>
+	<item id="44622" article="a" name="unerring dragon scale armor">
+		<attribute key="primarytype" value="armors"/>
+		<attribute key="absorbpercentearth" value="-5"/>
+		<attribute key="absorbpercentenergy" value="10"/>	
+		<attribute key="holymagiclevelpoints" value="1"/>
+		<attribute key="skilldist" value="3"/>
+		<attribute key="armor" value="17"/>
+		<attribute key="weight" value="13500"/>
+			<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost axe" value="3"/>
+			<attribute key="skillboost sword" value="3"/>
+			<attribute key="skillboost club" value="3"/>
+			<attribute key="skillboost shielding" value="3"/>
+			<attribute key="skillboost distance" value="3"/>
+			<attribute key="skillboost magic level" value="2"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="armor"/>
+			<attribute key="level" value="300"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="44623" article="a" name="arcane dragon robe">
+		<attribute key="primarytype" value="armors"/>
+		<attribute key="absorbpercentfire" value="-6"/>
+		<attribute key="absorbpercentice" value="12"/>
+		<attribute key="energymagiclevelpoints" value="1"/>	
+		<attribute key="magiclevelpoints" value="3"/>
+		<attribute key="armor" value="15"/>
+		<attribute key="weight" value="4300"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="life leech" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection holy" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="armor"/>
+			<attribute key="level" value="300"/>
+			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
+		</attribute>
+	</item>
+	<item id="44624" article="a" name="mystical dragon robe">
+		<attribute key="primarytype" value="armors"/>
+		<attribute key="absorbpercentice" value="-6"/>
+		<attribute key="absorbpercentfire" value="12"/>
+		<attribute key="earthmagiclevelpoints" value="1"/>	
+		<attribute key="magiclevelpoints" value="3"/>
+		<attribute key="armor" value="15"/>
+		<attribute key="weight" value="3800"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="life leech" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection holy" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="armor"/>
+			<attribute key="level" value="300"/>
+			<attribute key="vocation" value="Druid;true, Elder Druid"/>
+		</attribute>
+	</item>
+	<item id="44636" article="a" name="stoic iks casque">
+		<attribute key="primarytype" value="armors"/>
+		<attribute key="absorbpercentphysical" value="3"/>
+		<attribute key="absorbpercentenergy" value="6"/>	
+		<attribute key="skilldist" value="2"/>
+		<attribute key="armor" value="8"/>
+		<attribute key="weight" value="3500"/>
+			<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost axe" value="3"/>
+			<attribute key="skillboost sword" value="3"/>
+			<attribute key="skillboost club" value="3"/>
+			<attribute key="skillboost shielding" value="3"/>
+			<attribute key="skillboost distance" value="3"/>
+			<attribute key="skillboost magic level" value="2"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="armor"/>
+			<attribute key="level" value="250"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="44637" article="a" name="stoic iks headpiece">
+		<attribute key="primarytype" value="armors"/>
+		<attribute key="absorbpercentdeath" value="3"/>
+		<attribute key="magiclevelpoints" value="2"/>
+		<attribute key="armor" value="8"/>
+		<attribute key="weight" value="2100"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection holy" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="armor"/>
+			<attribute key="level" value="250"/>
+			<attribute key="vocation" value="Druid;true, Elder Druid"/>
+		</attribute>
+	</item>
+	<item id="44642" article="a" name="stoic iks culet">
+		<attribute key="primarytype" value="armors"/>
+		<attribute key="absorbpercentphysical" value="4"/>
+		<attribute key="absorbpercentenergy" value="2"/>
+		<attribute key="skillsword" value="2"/>
+		<attribute key="skillaxe" value="2"/>
+		<attribute key="skillclub" value="2"/>
+		<attribute key="armor" value="9"/>
+		<attribute key="weight" value="5100"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="250"/>
+			<attribute key="slot" value="armor"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
+	</item>
+	<item id="44643" article="a" name="stoic iks faulds">
+		<attribute key="primarytype" value="armors"/>
+		<attribute key="absorbpercentfire" value="6"/>
+		<attribute key="magiclevelpoints" value="2"/>
+		<attribute key="armor" value="8"/>
+		<attribute key="weight" value="3400"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="250"/>
+			<attribute key="slot" value="armor"/>
+			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
+		</attribute>
+	</item>
+	<item id="44648" article="a" name="stoic iks boots">
+		<attribute key="absorbpercentfire" value="5"/>
+		<attribute key="skilldist" value="1"/>
+		<attribute key="speed" value="15"/>
+		<attribute key="armor" value="2"/>
+		<attribute key="weight" value="1500"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="feet"/>
+			<attribute key="level" value="250/"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="44649" article="a" name="stoic iks sandals">
+		<attribute key="absorbpercentice" value="6"/>
+		<attribute key="magiclevelpoints" value="1"/>
+		<attribute key="armor" value="2"/>
+		<attribute key="weight" value="900"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="feet"/>
+			<attribute key="level" value="250/"/>
+			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
+		</attribute>
+	</item>
+	<item id="47714" article="a" name="dead bulltaur">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="45715" article="a" name="dead bulltaur">
+		<attribute key="containerSize" value="8"/>
+		<attribute key="decayTo" value="47714"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="44716" article="a" name="dead bulltaur">
+		<attribute key="containerSize" value="8"/>
+		<attribute key="decayTo" value="45715"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44717" article="a" name="dead bulltaur">
+		<attribute key="containerSize" value="8"/>
+		<attribute key="decayTo" value="44716"/>
+		<attribute key="duration" value="200"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+		<item id="44736" article="a" name="bulltaur horn">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="200"/>
+	</item>
+		<item id="44737" article="a" name="bulltaur hoof">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="200"/>
+	</item>
+		<item id="44738" article="a" name="bulltaur armor scrap">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="200"/>
+	</item>
+		<item id="44739" article="a" name="encrypted notes">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="200"/>
+	</item>
+		<item id="44740" article="a" name="strange substance">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="200"/>
+	</item>
+		<item id="44741" article="a" name="staff piece">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="200"/>
+	</item>
+		<item id="44742" article="a" name="idol of the forge">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="200"/>
+	</item>
+		<item id="44438" article="a" name="broken mitmah necklace">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="100"/>
+	</item>
+			<item id="44668" article="a" name="dead mitmah scout">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="44669" article="a" name="dead mitmah scout">
+		<attribute key="containerSize" value="8"/>
+		<attribute key="decayTo" value="47714"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="44670" article="a" name="dead mitmah scout">
+		<attribute key="containerSize" value="8"/>
+		<attribute key="decayTo" value="45715"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44671" article="a" name="dead mitmah scout">
+		<attribute key="containerSize" value="8"/>
+		<attribute key="decayTo" value="44716"/>
+		<attribute key="duration" value="200"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+		<item id="44684" article="a" name="dead mitmah vanguard">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="44685" article="a" name="dead mitmah vanguard">
+		<attribute key="containerSize" value="8"/>
+		<attribute key="decayTo" value="44684"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="44686" article="a" name="dead mitmah vanguard">
+		<attribute key="containerSize" value="8"/>
+		<attribute key="decayTo" value="44685"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44687" article="a" name="dead mitmah vanguard">
+		<attribute key="containerSize" value="8"/>
+		<attribute key="decayTo" value="44686"/>
+		<attribute key="duration" value="200"/>
+		<attribute key="fluidSource" value="blood"/>
 	</item>
 </items>
 

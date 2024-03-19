@@ -103,6 +103,9 @@ end
 
 local function onTradeRequest(npc, creature)
 	local player = Player(creature)
+	if not player then
+		return false
+	end
 	local playerId = player:getId()
 
 	if player:getStorageValue(Storage.AdventurersGuild.TheLostBrother) ~= 3 then

@@ -26,7 +26,7 @@ public:
 	static bool savePlayerTaskHuntingClass(std::shared_ptr<Player> player);
 	static bool savePlayerForgeHistory(std::shared_ptr<Player> player);
 	static bool savePlayerBosstiary(std::shared_ptr<Player> player);
-	static bool savePlayerStorage(std::shared_ptr<Player> palyer);
+	static bool savePlayerStorage(std::shared_ptr<Player> player);
 	static bool savePlayerOutfits(std::shared_ptr<Player> player);
 	static bool savePlayerMounts(std::shared_ptr<Player> player);
 

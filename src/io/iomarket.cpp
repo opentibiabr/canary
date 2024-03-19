@@ -55,6 +55,7 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action) {
 	} while (result->next());
 	return offerList;
 }
+
 MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier) {
 	MarketOfferList offerList;
 

@@ -2581,7 +2581,15 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 			uint16_t itemId = item->getID();
 			int32_t count = item->getSubType();
 
-			if (curType.id != newType.id) {
+			auto decaying = item->getDecaying();
+			// If the item is decaying, we need to transform it to the new item
+			if (decaying > DECAYING_FALSE && item->getDuration() <= 1) {
+				g_logger().debug("Decay duration old type {}, transformEquipTo {}, transformDeEquipTo {}", curType.decayTo, curType.transformEquipTo, curType.transformDeEquipTo);
+				g_logger().debug("Decay duration new type, decayTo {}, transformEquipTo {}, transformDeEquipTo {}", newType.decayTo, newType.transformEquipTo, newType.transformDeEquipTo);
+				if (newType.decayTo) {
+					itemId = newType.decayTo;
+				}
+			} else if (curType.id != newType.id) {
 				if (newType.group != curType.group) {
 					item->setDefaultSubtype();
 				}
@@ -5285,7 +5293,7 @@ void Game::playerSetManagedContainer(uint32_t playerId, ObjectCategory_t categor
 	}
 
 	std::shared_ptr<Container> container = thing->getContainer();
-	auto allowConfig = !g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING, __FUNCTION__) || !g_configManager().getBoolean(TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY, __FUNCTION__);
+	auto allowConfig = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING, __FUNCTION__) || g_configManager().getBoolean(TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY, __FUNCTION__);
 	if (!container || (container->getID() == ITEM_GOLD_POUCH && category != OBJECTCATEGORY_GOLD) && !allowConfig) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
